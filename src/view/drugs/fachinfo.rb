@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 28.03.2011 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 29.03.2011 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -341,7 +341,15 @@ class CompanyFachinfoPrint < FachinfoPrint
 end
 class EditFiChapterChooser < FiChapterChooser
 	def display_names(document)
-		document.chapters
+		all_names = document.chapters
+    if @container.respond_to?(:photos) and !@container.photos.nil?
+      unless all_names.include?(:photos)
+        all_names << :photos
+      end
+    else # will be stored into session
+      all_names.delete(:photos)
+    end
+    all_names
 	end
 end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite
@@ -358,7 +366,7 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 		super
 	end
 	def chapter_view(chapter)
-		if(@model.company.invoiceable?)
+    if(@model.company.invoiceable? and chapter != 'photos')
 			View::EditChapterForm.new(chapter, @document, @session, self)
 		elsif(@model.pointer.skeleton == [:create])
 			# don't show anything
