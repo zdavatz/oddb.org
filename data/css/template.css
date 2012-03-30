@@ -55,12 +55,10 @@ table.chapter {
   margin: 4px;
   border-collapse: collapse;
 }
-table.chapter tr {
-  border: 1px solid #999;
-}
 table.chapter td {
+  border: 1px solid #999;
   vertical-align: top;
-  padding: 4px;
+  padding: 4px 6px;
 }
 a {
 	text-decoration: none;
