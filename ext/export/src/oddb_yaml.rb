@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::OddbYaml -- oddb.org -- 31.03.2012 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -78,6 +79,12 @@ module ODDB
 				'@descriptions'
 			]
 		end
+    class Table
+      include ODDB::OddbYaml
+      EXPORT_PROPERTIES = [
+        '@rows'
+      ]
+    end
 	end
   module Interaction
     class AbstractLink
