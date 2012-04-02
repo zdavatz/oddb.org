@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::YamlPlugin -- oddb.org -- 12.03.2012 -- yasaka@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 02.04.2012 -- yasaka@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
@@ -13,7 +13,7 @@ module ODDB
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
 		def export(name='oddb.yaml')
-			export_obj(name, @app.companies)
+			export_array(name, @app.companies.values)
 		end
 		def export_array(name, array, opts={})
 			ids = array.collect { |item| item.odba_id }
