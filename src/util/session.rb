@@ -172,7 +172,7 @@ module ODDB
     def search_form
       search_form = cookie_set_or_get(:search_form) || \
                     @persistent_user_input[:search_form] || \
-                    "normal"
+                    "plus"
       @persistent_user_input[:search_form] = search_form
       search_form
     end

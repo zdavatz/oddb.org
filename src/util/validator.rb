@@ -87,7 +87,7 @@ module ODDB
       :route_of_administration => [nil, 'roa_O', 'roa_P', 'roa_N', 'roa_SL', 
                          'roa_TD', 'roa_R', 'roa_V'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
-			:search_form  =>  ['normal', 'instant'],
+			:search_form  =>  ['plus', 'instant'],
       :yus_privileges => [ 
         'edit|yus.entities', 
         'grant|login', 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 03.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -41,9 +41,9 @@ class CenteredSearchForm < View::CenteredSearchForm
     if(@container.respond_to?(:instant_search_enabled?) and
       @container.instant_search_enabled?)
       link = HtmlGrid::Link.new(:search_instant, model, session, self)
-      args = { :search_form => "instant" }
+      args = { :search_form => 'instant' }
       link.href  = @lookandfeel._event_url(:home, args)
-      link.value = "Instant"
+      link.value = 'Instant'
       link
     end
   end
@@ -54,7 +54,7 @@ class CenteredCompareSearchForm < CenteredSearchForm
   COMPONENTS = {
     [0,0]   => View::TabNavigation,
     [0,1,0] => 'search_type',
-    [0,1,1] => :link_to_normal,
+    [0,1,1] => :link_to_plus,
     [0,2,0] => :search_query,
   }
   SYMBOL_MAP = {
@@ -79,11 +79,11 @@ class CenteredCompareSearchForm < CenteredSearchForm
   def to_html(context)
     javascripts(context).to_s << super
   end
-  def link_to_normal(model, session=@session)
+  def link_to_plus(model, session=@session)
     link = HtmlGrid::Link.new(:search_instant, model, session, self)
-    args = { :search_form => "normal" }
+    args = { :search_form => 'plus' }
     link.href  = @lookandfeel._event_url(:home, args)
-    link.value = "Plus"
+    link.value = 'Plus'
     link
   end
 end
@@ -216,9 +216,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		@session.app.substance_count
 	end
   def search_form(model, session=@session)
-    if(@session.search_form == "instant" and instant_search_enabled?)
+    if(@session.search_form == 'instant' and instant_search_enabled?)
         View::Drugs::CenteredCompareSearchForm.new(model, session, self)
-    else # normal
+    else # plus
       View::Drugs::CenteredSearchForm.new(model, session, self)
     end
   end
