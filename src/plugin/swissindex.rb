@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::SwissindexPlugin -- oddb.org -- 02.04.2012 -- yasaka@ywesee.com
 # ODDB::SwissindexPlugin -- oddb.org -- 28.12.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
@@ -160,43 +161,45 @@ module ODDB
       return true
     end
     def update_out_of_trade
+      # Process 1
+      activated = []
+      @out_of_trade_false_list.each do |pack|
+        activated << @app.update(pack.pointer, {:out_of_trade => false, :refdata_override => false}, :refdata)
+      end
+      # Process 3
+      inactivated = []
+      @out_of_trade_true_list.each do |pack|
+        inactivated << @app.update(pack.pointer, {:out_of_trade => true}, :refdata)
+      end
+      # for debug
       log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
       log_file = File.join(log_dir, 'update_out_of_trade.log')
-
-      # Process 1
       Logging.start(log_file) do |log|
-        log.print "\nstart change out_of_trade flag (false) (Total: #{@out_of_trade_false_list.length})\n" 
-        @out_of_trade_false_list.each do |pack|
-          log.print pack.barcode, "\n" 
-          @app.update(pack.pointer, {:out_of_trade => false, :refdata_override => false}, :refdata)
-        end
-
-        # Process 3
-        log.print "\nstart change out_of_trade flag (true) (Total: #{@out_of_trade_true_list.length})\n"
-        @out_of_trade_true_list.each do |pack|
-          log.print pack.barcode, "\n"
-          @app.update(pack.pointer, {:out_of_trade => true}, :refdata)
-        end
+        log.print "\nstart change out_of_trade flag (false) (Total: #{activated.length})\n"
+        log.print activated.map{|x| x.barcode}.join("\n"), "\n"
+        log.print "\nstart change out_of_trade flag (true) (Total: #{inactivated.length})\n"
+        log.print inactivated.map{|x| x.barcode}.join("\n"), "\n"
       end
     end
     def update_pharmacode
+      # Process 2
+      updated = []
+      @update_pharmacode_list.each do |pack, pharmacode|
+        updated << @app.update(pack.pointer, {:pharmacode => pharmacode}, :bag)
+      end
+      # Process 4
+      deleted = []
+      @delete_pharmacode_list.each do |pack, pharmacode|
+        deleted << @app.update(pack.pointer, {:pharmacode => nil}, :bag)
+      end
+      # for debug
       log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
       log_file = File.join(log_dir, 'update_pharmacode.log')
-
-      # Process 2
       Logging.start(log_file) do |log|
-        log.print "\nupdate_pharmacode (Total: #{@update_pharmacode_list.length})\n" 
-        @update_pharmacode_list.each do |pack, pharmacode|
-          log.print pack.barcode, "\t", pharmacode, "\n" 
-          @app.update(pack.pointer, {:pharmacode => pharmacode}, :bag)
-        end
-
-        # Process 4
-        log.print "\ndelete_pharmacode (Total: #{@delete_pharmacode_list.length}\n" 
-        @delete_pharmacode_list.each do |pack, pharmacode|
-          log.print pack.barcode, "\t", pharmacode, "\n"
-          @app.update(pack.pointer, {:pharmacode => nil}, :bag)
-        end
+        log.print "\nupdate_pharmacode (Total: #{updated.length})\n"
+        log.print updated.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"
+        log.print "\ndelete_pharmacode (Total: #{deleted.length}\n"
+        log.print deleted.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"
       end
     end
     def report
