@@ -13,7 +13,7 @@ module ODDB
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
 			'zdavatz@ywesee.com',
-			'mhatakeyama@ywesee.com',
+			'yasaka@ywesee.com',
 		]
 		include Persistence
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
