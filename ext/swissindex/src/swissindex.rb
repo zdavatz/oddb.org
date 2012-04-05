@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
+# ODDB::Swissindex::SwissindexPharma -- 05.04.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -257,7 +258,8 @@ class SwissindexPharma
                       end
         return pharma_item
       else
-        return nil
+        # Pharmacode is not found in request result by ean(GTIN) code
+        return {}
       end
 
     rescue StandardError, Timeout::Error => err
@@ -287,6 +289,7 @@ class SwissindexPharma
           end
           out.print "#{search_type.to_s.gsub('get_by_','')}: #{code} (#{Time.new})\n"
         end
+        # Server is not respond or error caused
         return nil
       end
     end

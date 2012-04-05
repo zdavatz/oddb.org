@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissindexPlugin -- oddb.org -- 02.04.2012 -- yasaka@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 05.04.2012 -- yasaka@ywesee.com
 # ODDB::SwissindexPlugin -- oddb.org -- 28.12.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
@@ -88,7 +88,12 @@ module ODDB
       @app.each_package do |pack|
 
         SWISSINDEX_PHARMA_SERVER.session do |swissindex|
-          if item = swissindex.search_item(pack.barcode.to_s)
+          item = swissindex.search_item(pack.barcode.to_s)
+          if item.nil?
+            # NOTE
+            # nothing to do
+            # see created bag_xml_swissindex_pharmacode_error.log by swisspharmad
+          elsif !item.empty?
             # Process 1
             # Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb, 
             # if so the package becomes in trade (false)
