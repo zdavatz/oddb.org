@@ -62,7 +62,7 @@ require([
     },
 
     _onUnHover: function(/*Event*/ e) {
-      this._hideTimer = setTimeout(lang.hitch(this, "_deferredOnUnHover", arguments), 5000);
+      this._hideTimer = setTimeout(lang.hitch(this, "_deferredOnUnHover", arguments), 2000);
     },
 
     _deferredOnUnHover: function(/*Event*/ e) {
