@@ -74,13 +74,16 @@ module ODDB
             headers << context.script('type' => 'text/javascript') do
               <<-EOS
 require(['dojo/ready'], function(ready) {
-  ready(null, setTimeout(function(){
-    require(['dojox/analytics/Urchin'], function(analytics) {
-      var tracker = new dojox.analytics.Urchin({
-        acct: "UA-115196-1"
-      })
-    })
-  }, 100));
+  ready(function() {
+    setTimeout(
+      require(['dojox/analytics/Urchin'], function(analytics) {
+        var tracker = new dojox.analytics.Urchin({
+          acct: "UA-115196-1"
+        })
+      }),
+      100
+    );
+  });
 });
               EOS
             end

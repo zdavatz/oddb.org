@@ -66,7 +66,7 @@ function selectSubmit() {
   }
 }
 require(['dojo/ready'], function(ready) {
-  ready(null, function() {
+  ready(function() {
     initMatches();
   });
 });
