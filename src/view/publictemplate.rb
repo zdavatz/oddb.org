@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# View::PublicTemplate -- oddb -- 06.04.2012 -- yasaka@ywesee.com 
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/template'
@@ -9,20 +10,26 @@ require 'sbsm/time'
 require 'view/custom/head'
 require 'view/htmlgrid/component'
 
-DOJO_VERSION = "3.1"
+DOJO_VERSION = "1.7.2"
 
 module ODDB
 	module View
 		class PublicTemplate < HtmlGrid::Template
 			include View::Custom::HeadMethods
 			include HtmlGrid::DojoToolkit::DojoTemplate
-			DOJO_DEBUG = false
+      DOJO_DEBUG = false
       DOJO_ENCODING = 'UTF-8'
-      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip', 'dojo.io.script',
-                       'dojox.data.JsonRestStore', 'dijit.form.ComboBox' ]
+      DOJO_REQUIRE = [
+        'dojo/ready',
+        'dojo/parser',
+        'dojo/io/script',
+        'dojox/data/JsonRestStore',
+        'dijit/form/ComboBox',
+        'ywesee/widget/Tooltip',
+      ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
-        'ywesee'  =>  '/resources/javascript',
+        'ywesee' => '/resources/javascript/ywesee',
       }
 			CONTENT = nil
 			CSS_CLASS = "composite"
@@ -66,16 +73,15 @@ module ODDB
           if @lookandfeel.enabled?(:google_analytics)
             headers << context.script('type' => 'text/javascript') do
               <<-EOS
-dojo.addOnLoad(function(){
-  setTimeout(function(){
-    dojo.require("dojox.analytics.Urchin")
-    dojo.addOnLoad(function(){
+require(['dojo/ready'], function(ready) {
+  ready(null, setTimeout(function(){
+    require(['dojox/analytics/Urchin'], function(analytics) {
       var tracker = new dojox.analytics.Urchin({
         acct: "UA-115196-1"
       })
     })
-  }, 100)
-})
+  }, 100));
+});
               EOS
             end
           end

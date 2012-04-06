@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 20.03.2012 -- yasaka@ywesee.com 
+# ODDB::View::SearchBar -- oddb.org -- 06.04.2012 -- yasaka@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
@@ -58,7 +58,6 @@ function initMatches() {
     if(searchbar.value == '') { searchbar.value = '#{val}'; }
   });
 }
-dojo.addOnLoad(initMatches);
 function selectSubmit() {
   var popup = dojo.byId('searchbar_popup');
   var searchbar = dojo.byId('searchbar');
@@ -66,17 +65,22 @@ function selectSubmit() {
     searchbar.form.submit();
   }
 }
+require(['dojo/ready'], function(ready) {
+  ready(null, function() {
+    initMatches();
+  });
+});
     EOS
-    @attributes.update 'dojotype'      => 'dijit.form.ComboBox',
-                       'jsId'          => 'searchbar',
-                       'id'            => 'searchbar',
-                       'store'         => 'search_matches',
-                       'queryExpr'     => '${0}',
-                       'searchAttr'    => 'search_query',
-                       'hasDownArrow'  => 'false',
-                       'autoComplete'  => 'false',
-                       'onChange'      => 'selectSubmit',
-                       'value'         => @session.persistent_user_input(:search_query)
+    @attributes.update 'data-dojo-type' => 'dijit.form.ComboBox',
+                       'jsId'           => 'searchbar',
+                       'id'             => 'searchbar',
+                       'store'          => 'search_matches',
+                       'queryExpr'      => '${0}',
+                       'searchAttr'     => 'search_query',
+                       'hasDownArrow'   => 'false',
+                       'autoComplete'   => 'false',
+                       'onChange'       => 'selectSubmit',
+                       'value'          => @session.persistent_user_input(:search_query)
   end
   def to_html(context, *args)
     args = []
@@ -84,10 +88,10 @@ function selectSubmit() {
       args.push :index_name, index
     end
     target = @lookandfeel._event_url(:ajax_matches, args)
-    html = context.div 'dojoType'      => 'dojox.data.JsonRestStore',
-                       'jsId'          => 'search_matches',
-                       'idAttribute'   => 'search_query',
-                       'target'        => target
+    html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
+                       'jsId'           => 'search_matches',
+                       'idAttribute'    => 'search_query',
+                       'target'         => target
     html << super(context)
   end
 end

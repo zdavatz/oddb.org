@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Chapter -- oddb.org -- 06.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -149,7 +150,7 @@ module ODDB
       def init
         super
         @attributes.update({
-          'dojoType'    => 'dijit.Editor',
+          'data-dojo-type' => 'dijit.Editor',
         })
       end
       def _to_html(context, value=@value)
@@ -161,7 +162,6 @@ module ODDB
     class EditChapterForm < Form
       COMPONENTS = {
         [0,0]  =>  :heading,
-        #[1,1]  =>  :toolbar,
         [0,1,1]=>  :edit_chapter,
         [1,2]  =>  :submit,
       }
@@ -196,13 +196,6 @@ module ODDB
         chapter = {'name' => 'chapter', 'value' => @name}
         html = {'name' => 'html_chapter', 'value' => ''}
         super << context.hidden(chapter) << context.hidden(html)
-      end
-      def toolbar(model)
-        args = {
-          "templatePath"  => @lookandfeel.resource_global(:javascript, 
-                               'dojo/HtmlEditorToolbar.html'),
-        }
-        dojo_tag("Editor2Toolbar", args)
       end
     end
   end
