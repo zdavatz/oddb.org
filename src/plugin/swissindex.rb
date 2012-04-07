@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissindexPlugin -- oddb.org -- 05.04.2012 -- yasaka@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 07.04.2012 -- yasaka@ywesee.com
 # ODDB::SwissindexPlugin -- oddb.org -- 28.12.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
@@ -68,7 +68,7 @@ module ODDB
   end
 
 	class SwissindexPharmaPlugin < SwissindexPlugin
-		SWISSINDEX_PHARMA_SERVER    = DRbObject.new(nil, ODDB::Swissindex::SwissindexPharma::URI)
+		SWISSINDEX_PHARMA_SERVER = DRbObject.new(nil, ODDB::Swissindex::SwissindexPharma::URI)
     def update_package_trade_status(logging = false)
       Logging.flag = logging
       log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
@@ -77,7 +77,6 @@ module ODDB
         log.print "update_package_trade_status.log\n"
         log.print "out_of_trade_false_list, update_pharmacode_list, out_of_trade_true_list, delete_pharmacode_list, eancode, No./Total, Estimate time\n"
       end
-
       @out_of_trade_true_list  = []
       @out_of_trade_false_list = []
       @update_pharmacode_list  = []
@@ -85,55 +84,64 @@ module ODDB
       count = 1
       start_time = Time.now
       @total_packages = @app.packages.length
-      @app.each_package do |pack|
-
-        SWISSINDEX_PHARMA_SERVER.session do |swissindex|
-          item = swissindex.search_item(pack.barcode.to_s)
-          if item.nil?
-            # NOTE
-            # nothing to do
-            # see created bag_xml_swissindex_pharmacode_error.log by swisspharmad
-          elsif !item.empty?
+      SWISSINDEX_PHARMA_SERVER.session do |swissindex|
+        if swissindex.download_all
+          @app.each_package do |pack|
             # Process 1
-            # Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb, 
-            # if so the package becomes in trade (false)
-            if pack.out_of_trade 
-              @out_of_trade_false_list << pack
-            end
-
+            #   Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
+            #   if so the package becomes in trade (false)
             # Process 2
-            # if the package does not have a pharmacode and there is a pharmacode found in swissindex,
-            # then put the pharmacode into ch.oddb
-            # We may have to cross-check the pharmacodes in the future
-            if !pack.pharmacode and pharmacode = item[:phar] 
-              @update_pharmacode_list << [pack, pharmacode]
-            end
-          else
+            #   if the package does not have a pharmacode and there is a pharmacode found in swissindex,
+            #   then put the pharmacode into ch.oddb
+            #   We may have to cross-check the pharmacodes in the future
             # Process 3
-            # if there is no eancode in swissindex and the package is in trade in ch.oddb, 
-            # then the package becomes out of trade (true) in ch.oddb
-            unless pack.out_of_trade  
-              @out_of_trade_true_list << pack
-            end
-
+            #   if there is no eancode in swissindex and the package is in trade in ch.oddb,
+            #   then the package becomes out of trade (true) in ch.oddb
             # Process 4
-            # if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-            if pharmacode = pack.pharmacode and !pack.sl_entry
-              @delete_pharmacode_list << [pack, pharmacode]
+            #   if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
+            pharmacode = swissindex.check_item(pack.barcode.to_s)
+            case pharmacode
+            when nil   # => not found in swissindex
+              # Process 3
+              unless pack.out_of_trade
+                @out_of_trade_true_list << pack
+              end
+              # process 4
+              if pharmacode = pack.pharmacode and !pack.sl_entry
+                @delete_pharmacode_list << [pack, pharmacode]
+              end
+            when false # => status "I" (inactive)
+              # Process 3
+              unless pack.out_of_trade
+                @out_of_trade_true_list << pack
+              end
+            else       # => found in swissindex
+              # Process 1
+              if pack.out_of_trade
+                @out_of_trade_false_list << pack
+              end
+              # process 2
+              if !pack.pharmacode or
+                  pack.pharmacode != pharmacode
+                @update_pharmacode_list << [pack, pharmacode]
+              end
             end
+            # for debug
+            Logging.append(log_file) do |log|
+              log.print @out_of_trade_false_list.length, ",", @update_pharmacode_list.length, ","
+              log.print @out_of_trade_true_list.length, ",", @delete_pharmacode_list.length, "\t"
+              log.print pack.barcode, "\t"
+            end
+            Logging.append_estimate_time(log_file, count, @total_packages)
+            count += 1
           end
-          sleep(0.05)
+        else
+          # NOTE
+          # Nothing to do, if unexpected error is caused
+          # See bag_xml_swissindex_pharmacode_download_all_error.log
         end
-
-        Logging.append(log_file) do |log|
-          log.print @out_of_trade_false_list.length, ",", @update_pharmacode_list.length, ","
-          log.print @out_of_trade_true_list.length, ",", @delete_pharmacode_list.length, "\t"
-          log.print pack.barcode, "\t"
-        end
-        Logging.append_estimate_time(log_file, count, @total_packages)
-        count += 1
+        swissindex.cleanup_items
       end
-
       # for debug
       log_file = File.join(log_dir, 'update_package_trade_status_list.log')
       Logging.start(log_file) do |log| 
@@ -149,19 +157,13 @@ module ODDB
         log.print "delete_pharmacode_list (Total: #{@delete_pharmacode_list.length})\n"
         log.print @delete_pharmacode_list.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"
       end
-
-      #
       # update part: out_of_trade flag
-      # Process1, in trade (false)    if there is a eancode  in swissindex
-      # Process3, out of trade (true) if there is no eancode in swissindex
-      #
+      #   Process1, in trade (false)    if there is a eancode or package is inactive in swissindex
+      #   Process3, out of trade (true) if there is no eancode in swissindex
       update_out_of_trade
-
-      #
       # update part: pharmacode
-      # Process2, update pharmacode if the pharmacode is different from swissindex
-      # Process4, delete pharmacode if there is no eancode in swissindex
-      #
+      #   Process2, update pharmacode if the pharmacode is different from swissindex or empty
+      #   Process4, delete pharmacode if there is no eancode in swissindex
       update_pharmacode
       return true
     end

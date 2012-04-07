@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 05.04.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 07.04.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -219,8 +219,93 @@ class SwissindexPharma
   include DRb::DRbUndumped
   def initialize
     Savon.configure do |config|
-        config.log = false            # disable logging
-        config.log_level = :info      # changing the log level
+      config.log = false       # disable logging
+      config.log_level = :info # changing the log level
+    end
+    @items = []
+  end
+  def cleanup_items
+    @items = []
+  end
+  def download_all(lang = 'DE')
+    client = Savon::Client.new do | wsdl, http |
+      #wsdl.document = "https://swissindex.refdata.ch/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL" Not responding
+      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
+    end
+    try_time = 3
+    begin
+      cleanup_items
+      response = client.request :download_all do
+        soap.xml =
+        '<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang + '</lang>
+          </soap:Body>
+        </soap:Envelope>'
+      end
+      if response.success?
+        if xml = response.to_xml
+          # historicize as xml
+          archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
+          save_dir = File.join archive_path, 'xml'
+          filename = "XMLSwissindexPharma.xml"
+          FileUtils.mkdir_p save_dir
+          archive = File.join save_dir,
+                              Date.today.strftime(filename.gsub(/\./,"-%Y.%m.%d."))
+          latest = File.join save_dir,
+                             Date.today.strftime(filename.gsub(/\./,"-latest."))
+          File.open(archive, 'w') do |f|
+            f.puts xml
+          end
+          FileUtils.cp(archive, latest)
+          @items = response.to_hash[:pharma][:item]
+          return true
+        else
+          # received broken data or unexpected error
+          raise StandardError
+        end
+      else
+        # timeout or unexpected error
+        raise StandardError
+      end
+    rescue StandardError, Timeout::Error => err
+      if try_time > 0
+        sleep 10
+        try_time -= 1
+        retry
+      else
+        cleanup_items
+        options = {
+          :type  => :download_all.to_s,
+          :error => err
+        }
+        return _logger('bag_xml_swissindex_pharmacode_download_all_error.log', options);
+      end
+    end
+  end
+  def check_item(code, check_type = :gtin, lang = 'DE')
+    item = {}
+    @items.each do |i|
+      if i.has_key?(check_type) and
+         code == i[check_type]
+        item = i
+      end
+    end
+    case
+    when item.empty?
+      return nil
+    when item[:status] == "I"
+      return false
+    else
+      # If there are some products those phamarcode is same, then the return value become an Array
+      # We take one of them which has a higher Ean-Code
+      pharmacode = if item.is_a? Array
+                     item.sort_by{|p| p[:gtin].to_i}.reverse.first[:phar]
+                   elsif item.is_a? Hash
+                     item[:phar]
+                   end
+      return pharmacode
     end
   end
   def search_item(code, search_type = :get_by_gtin, lang = 'DE')
@@ -230,23 +315,23 @@ class SwissindexPharma
     try_time = 3
     begin
       response = client.request search_type do
-      soap.xml = if search_type == :get_by_gtin
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-                 elsif search_type == :get_by_pharmacode
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-                 end
+        soap.xml = if search_type == :get_by_gtin
+        '<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
+          </soap:Body>
+        </soap:Envelope>'
+                   elsif search_type == :get_by_pharmacode
+        '<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
+          </soap:Body>
+        </soap:Envelope>'
+                   end
       end
       if pharma = response.to_hash[:pharma] 
         # If there are some products those phamarcode is same, then the return value become an Array
@@ -261,38 +346,50 @@ class SwissindexPharma
         # Pharmacode is not found in request result by ean(GTIN) code
         return {}
       end
-
     rescue StandardError, Timeout::Error => err
       if try_time > 0
         sleep 10
         try_time -= 1
         retry
       else
-        project_root = File.expand_path('../../..', File.dirname(__FILE__))
-        log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
-        log_file = File.join(log_dir, 'bag_xml_swissindex_pharmacode_error.log')
-        create_file = if File.exist?(log_file)
-                        mtime = File.mtime(log_file)
-                        last_update = [mtime.year, mtime.month, mtime.day].join.to_s
-                        now = Time.new
-                        today = [now.year, now.month, now.day].join.to_s
-                        last_update != today
-                      else
-                        true
-                      end
-        FileUtils.mkdir_p log_dir
-        wa = create_file ? 'w' : 'a'
-        open(log_file, wa) do |out|
-          if create_file 
-            out.print "The following packages (gtin or pharmacode) are not updated (probably because of no response from swissindex server).\n"
-            out.print "The second possibility is that the pharmacode is not found in the swissindex server.\n\n"
-          end
-          out.print "#{search_type.to_s.gsub('get_by_','')}: #{code} (#{Time.new})\n"
-        end
-        # Server is not respond or error caused
-        return nil
+        log_file = File.join(log_dir, '')
+        options = {
+          :type => search_type.to_s.gsub('gen_by_', ''),
+          :code => code
+        }
+        return _logger('bag_xml_swissindex_pharmacode_error.log', options)
       end
     end
+  end
+  def _logger(file, options = {:type => 'Unknown'})
+    project_root = File.expand_path('../../..', File.dirname(__FILE__))
+    log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
+    log_file = File.join(log_dir, file)
+    create_file = if File.exist?(log_file)
+                    mtime = File.mtime(log_file)
+                    last_update = [mtime.year, mtime.month, mtime.day].join.to_s
+                    now = Time.new
+                    today = [now.year, now.month, now.day].join.to_s
+                    last_update != today
+                  else
+                    true
+                  end
+    FileUtils.mkdir_p log_dir
+    wa = create_file ? 'w' : 'a'
+    open(log_file, wa) do |out|
+      if options.has_key?(:code)
+        if create_file
+          out.print "The following packages (gtin or pharmacode) are not updated (probably because of no response from swissindex server).\n"
+          out.print "The second possibility is that the pharmacode is not found in the swissindex server.\n\n"
+        end
+        out.print "#{options[:type]}: #{options[:code]} (#{Time.new})\n"
+      elsif options.has_key?(:error)
+        out.print "#{options[:type]}: #{options[:error]} (#{Time.new})\n"
+      else
+        out.print "#{options[:type]}: (#{Time.new})\n"
+      end
+    end
+    return nil
   end
 end
 
