@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 07.04.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 08.04.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -229,6 +229,7 @@ class SwissindexPharma
   end
   def download_all(lang = 'DE')
     client = Savon::Client.new do | wsdl, http |
+      http.auth.ssl.verify_mode = :none
       #wsdl.document = "https://swissindex.refdata.ch/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL" Not responding
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
     end
