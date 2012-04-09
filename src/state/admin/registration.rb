@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Admin::Registration -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
@@ -96,9 +97,6 @@ module FachinfoMethods
 			msg = ' (' << e.message << ')'
 			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
-			puts e.class
-			puts e.message
-			puts e.backtrace
 			e
 		end
 	end
