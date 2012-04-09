@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Ajax::TestDDDChart -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Ajax::TestDDDChart -- oddb.org -- 17.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -9,7 +10,7 @@ require 'test/unit'
 require 'flexmock'
 require 'view/ajax/ddd_chart'
 require 'RMagick'
-require 'encoding/character/utf-8'
+#require 'encoding/character/utf-8'
 
 class TestSideBar < Test::Unit::TestCase
   include FlexMock::TestCase

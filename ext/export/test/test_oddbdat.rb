@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::OdbaExporter::TestTable, TestLine -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::OdbaExporter::TestTable, TestLine -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
@@ -746,7 +747,7 @@ module ODDB
           d.should_receive(:each_chapter).and_yield(chapter)
         end
         fi = flexmock('fi') do |f|
-          f.should_receive(:descriptions).and_return({'lang', doc})
+          f.should_receive(:descriptions).and_return({'lang' => doc})
           f.should_receive(:oid).and_return('oid')
         end
         assert_equal(['mcmline'], @mcmtable.lines(fi))

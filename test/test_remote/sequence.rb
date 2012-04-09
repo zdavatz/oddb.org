@@ -11,7 +11,7 @@ require 'remote/sequence'
 module ODDB
   module Remote
 
-class TestSequence < Test::Unit::TestCase
+class TestSequence < ::Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
     atc       = flexmock('atc', :code => 'code')
@@ -42,4 +42,3 @@ end
 
   end # Remote
 end # ODDB
-

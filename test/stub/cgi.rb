@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# CGI -- htmlgrid -- 09.04.2012 -- yasaka@ywesee.com
 # CGI -- htmlgrid -- hwyss@ywesee.com	
 
 require 'cgi'
+require 'cgi/html'
 
 class CGI
   attr_accessor :params

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::TestNotify -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::State::TestNotify -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -11,7 +12,6 @@ require 'cgi'
 require 'view/resulttemplate'
 require 'view/notify'
 require 'model/package'
-require 'model/migel/product'
 
 module ODDB 
 	module State

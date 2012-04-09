@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
+# FiParse::TestPatinfoHpricot -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # FiParse::TestPatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'

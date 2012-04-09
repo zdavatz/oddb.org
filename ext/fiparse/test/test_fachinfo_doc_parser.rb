@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestFachinfoDocParser -- oddb -- 24.09.2003 -- rwaltert@ywesee.com
 
 $: << File.dirname(__FILE__)
@@ -207,9 +208,9 @@ class TestFachinfoDocParser2 < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Paragraph, paragraph)
     expected = <<-EOS
 ------------------------------------------------------------------------
-                   Disktest (10 µg)
+                   Disktest (10 Âµg)
                    Durchmesser (mm)
-               sensibel      intermediär   resistent
+               sensibel      intermediÃ¤r   resistent
 -------------------------------------------------------------------------
 Staphylokokken       > 29        -            < 28
 Enterokokken         > 17        -            < 16
@@ -220,7 +221,7 @@ Gram-negative
 Darmbakterien        > 17      14-16          < 13
 Haemophilus          > 22      19-21          < 18
 ------------------------------------------------------------------------
-                            Verdünnungstest
+                            VerdÃ¼nnungstest
                             MHK (mg/l)
                             sensibel      resistent
 -------------------------------------------------------------------------
@@ -692,7 +693,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.indications
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Indikationen/Anwendungsmöglichkeiten', chapter.heading)
+		assert_equal('Indikationen/AnwendungsmÃ¶glichkeiten', chapter.heading)
 		assert_equal(1, chapter.sections.size)
 	end
 	def test_usage7
@@ -737,7 +738,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.driving_ability
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen',
+		assert_equal('Wirkung auf die FahrtÃ¼chtigkeit und auf das Bedienen von Maschinen',
                  chapter.heading)
 		assert_equal(1, chapter.sections.size)
 	end
@@ -745,7 +746,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.unwanted_effects
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Unerwünschte Wirkungen', chapter.heading)
+		assert_equal('UnerwÃ¼nschte Wirkungen', chapter.heading)
 		assert_equal(3, chapter.sections.size)
     section = chapter.sections.first
 	end
@@ -753,7 +754,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.overdose
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Überdosierung', chapter.heading)
+		assert_equal('Ãœberdosierung', chapter.heading)
 		assert_equal(1, chapter.sections.size)
     section = chapter.sections.first
 	end
@@ -777,7 +778,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.preclinic
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Präklinische Daten', chapter.heading)
+		assert_equal('PrÃ¤klinische Daten', chapter.heading)
 		assert_equal(1, chapter.sections.size)
     section = chapter.sections.first
 	end

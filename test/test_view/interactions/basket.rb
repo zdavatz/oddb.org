@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Interactions::TestBasket -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Interactions::TestBasket -- oddb.org -- 25.03.2011 -- mhatakeyama@ywesee.com
 
 #$: << File.expand_path("..", File.dirname(__FILE__))
@@ -119,7 +120,7 @@ class TestBasketSubstrates < Test::Unit::TestCase
     cyp450s    = flexmock('cyp450s', 
                           :empty? => nil,
                           :keys   => ['key, '],
-                          :sort   => {'key', item}
+                          :sort   => {'key' => item}
                          )
     @model     = flexmock('model', 
                           :substance  => @substance,
@@ -177,7 +178,7 @@ class TestBasketForm < Test::Unit::TestCase
     cyp450s   = flexmock('cyp450s', 
                          :empty? => nil,
                          :keys   => ['key, '],
-                         :sort   => {'key', item}
+                         :sort   => {'key' => item}
                         )
     inducer   = flexmock('inducer')
     inhibitor = flexmock('inhibitor')

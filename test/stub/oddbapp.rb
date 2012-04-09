@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# OddbApp -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
 
+require 'syck'
+require 'yaml'
+YAML::ENGINE.yamler = "syck"
 require 'util/oddbapp'
 
 class OddbPrevalence

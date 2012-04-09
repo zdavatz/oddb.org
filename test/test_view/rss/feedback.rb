@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Rss::TestFeedback -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Rss::TestFeedback -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -11,7 +12,6 @@ require 'view/resulttemplate'
 require 'view/latin1'
 require 'view/rss/feedback'
 require 'model/package'
-require 'model/migel/product'
 
 module ODDB
   module View

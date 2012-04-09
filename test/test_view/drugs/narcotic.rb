@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::TestNarcotic -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestNarcotics -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::TestNarcotics -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
-require 'view/drugs/narcotic'
+require 'view/drugs/narcotics'
 
 
 module ODDB
@@ -39,7 +40,7 @@ class TestPackagesList < Test::Unit::TestCase
   end
 end
 
-class TestNarcoticComposite < Test::Unit::TestCase
+class TestNarcoticsComposite < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -68,7 +69,7 @@ class TestNarcoticComposite < Test::Unit::TestCase
                         :packages   => [package]
                        )
 
-    @composite = ODDB::View::Drugs::NarcoticComposite.new(@model, @session)
+    @composite = ODDB::View::Drugs::NarcoticsComposite.new(@model, @session)
   end
   def test_narcotic_connection
     assert_equal('lookup', @composite.narcotic_connection(@model))

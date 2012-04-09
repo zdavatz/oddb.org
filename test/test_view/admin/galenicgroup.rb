@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# encoding: utf-9
+# encoding: utf-8
+# ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 09.04.2012 -- y-asaka@ywesee.com
 # ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

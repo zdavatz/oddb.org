@@ -37,7 +37,7 @@ class TestEntity < Test::Unit::TestCase
                          :user         => @user,
                          :lookandfeel  => @lnf,
                          :allowed?     => nil,
-                         :valid_values => 'action|key'
+                         :valid_values => ['action', 'key']
                         )
     @group    = flexmock('group', :name => 'name')
     @model    = flexmock('model', 

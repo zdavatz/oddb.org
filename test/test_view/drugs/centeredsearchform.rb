@@ -9,7 +9,7 @@ require 'test/unit'
 require 'flexmock'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
-require 'model/migel/product'
+#require 'model/migel/product'
 
 
 class TestCenteredSearchComposite < Test::Unit::TestCase

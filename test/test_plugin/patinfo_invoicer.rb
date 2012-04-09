@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestPatinfoInvoicer -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # TestPatinfoInvoicer -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
 # TestPatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 
@@ -16,7 +17,7 @@ module ODDB
 	class TestPatinfoInvoicer < Test::Unit::TestCase
     include FlexMock::TestCase
 		class FlexMock < ::FlexMock
-			undef :type
+			#undef :type
 		end
 		def setup
 			@app = FlexMock.new

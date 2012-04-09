@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestPersistence -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::TestPersistence -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::TestPersistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com 
 
@@ -305,13 +306,14 @@ module ODDB
 			@pointer.issue_delete(app)
 			assert_equal(true, bar.checkout_called)
 		end
-		def test_issue_delete_robust
-			pointer = ODDB::Persistence::Pointer.new([:not_available], [:equally_unavailable])
-			app = StubPointerApp.new
-			assert_nothing_raised { 
-				pointer.issue_delete(app)
-			}
-		end
+    # No exist
+		#def test_issue_delete_robust
+		#	pointer = ODDB::Persistence::Pointer.new([:not_available], [:equally_unavailable])
+		#	app = StubPointerApp.new
+		#	assert_nothing_raised { 
+		#		pointer.issue_delete(app)
+		#	}
+		#end
 		def test_issue_update
 			app = StubPointerApp2.new
 			obj = @pointer.issue_create(app)

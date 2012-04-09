@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::TestNotify -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::View::TestNotify -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -10,8 +11,6 @@ require 'flexmock'
 require 'view/resulttemplate'
 require 'view/notify'
 require 'model/package'
-require 'model/migel/product'
-require 'view/migel/product'
 
 module ODDB
   module View

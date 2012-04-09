@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Admin::TestOrphanedLanguages -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::TestOrphanedLanguages -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -70,7 +71,7 @@ class TestOrphanedLanguages < Test::Unit::TestCase
                         :event       => 'event'
                        )
     document = flexmock('document', :name => 'name')
-    @model   = {'language', document}
+    @model   = ['language', document]
     @orphan  = ODDB::View::Admin::StubOrphanedLanguages.new(@model, @session)
   end
   def test_languages

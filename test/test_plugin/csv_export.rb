@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestCsvExportPlugin -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::TestCsvExportPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -20,7 +21,7 @@ module ODDB
       @plugin = ODDB::CsvExportPlugin.new(@app)
     end
     def test_report
-      counts = {'key', 12345}
+      counts = {'key' => 12345}
       @plugin.instance_eval('@counts = counts')
       expected = "key                              12345\n"
       assert_equal(expected, @plugin.report)

@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestOddbApp -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # TestOddbApp -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com, zdavatz@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'syck'
+require 'yaml'
+YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
 require 'test/unit'
 require 'stub/oddbapp'
@@ -378,7 +382,7 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort,
 			subs.connection_keys.sort)
 		assert_equal('De_name', subs.de)
-		assert_equal({subs.oid, subs}, @app.substances)
+		assert_equal(subs, @app.substances)
 	end
 	def test_create_atc_class
 		@app.atc_classes = {}

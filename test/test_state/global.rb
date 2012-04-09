@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::TestGlobal -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
@@ -16,7 +17,6 @@ require 'flexmock'
 require 'state/user/yweseecontact'
 require 'state/user/register_download'
 require 'state/migel/result'
-require 'model/migel/items'
 
 module ODDB
 	module State

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODBAStub -- ODDB -- 09.04.2012 -- yasaka@ywesee.com
 # ODBAStub -- ODDB -- 16.09.2004 -- hwyss@ywesee.com
 
 require 'odba'
@@ -27,6 +28,20 @@ module ODBA
 		def next_id
 			ODBA.storage.next_id
 		end
+    def fill_index(index_name, targets)
+      unless self.indices.empty?
+        self.indices[index_name].fill(targets)
+      else
+        []
+      end
+    end
+    def drop_index(index_name)
+    end
+    def indices
+      @indices ||= fetch_named('__cache_server_indices__', self) {
+        {}
+      }
+    end
 	end
 	class StorageStub
 		def next_id

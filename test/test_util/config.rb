@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestConfig -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # ODDB::TestConfig -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestConfig -- oddb.org -- 14.10.2004 -- hwyss@ywesee.com, usenguel@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("..", File.dirname(__FILE__))
 
+require 'rclconf'
 require 'stub/odba'
 require 'test/unit'
 require 'flexmock'
@@ -46,5 +48,15 @@ module ODDB
       assert_nil(@config.bar)
       assert_nil(@config.hatto)
     end
+  end
+  def ODDB.config
+  defaults = {
+    'text_info_searchform'  => nil,
+    'text_info_searchform2' => nil,
+    'testenvironment1'      => '/var/www/oddb.org/test/testenvironment1.rb',
+    'testenvironment2'      => '/var/www/oddb.org/test/testenvironment2.rb'
+  }
+  @config = RCLConf::RCLConf.new(ARGV, defaults)
+  @config
   end
 end

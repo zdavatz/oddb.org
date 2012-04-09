@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestSession -- oddb.org -- 09.04.2012-- yasaka@ywesee.com
 # ODDB::TestSession -- oddb.org -- 24.06.2011-- mhatakeyama@ywesee.com
 # ODDB::TestSession -- oddb.org -- 22.10.2002 -- hwyss@ywesee.com 
 
@@ -95,7 +96,7 @@ module ODDB
       request = flexmock('request', 
                          :unparsed_uri   => 'unparsed_uri',
                          :request_method => 'request_method',
-                         :params => 'params',
+                         :params => ['params'],
                          :cookies => 'cookies'
                         )
       assert_equal('', @session.process(request))

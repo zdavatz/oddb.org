@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestHtmlParser -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # TestHtmlParser -- oddb -- 11.03.2011 -- mhatakeyama@ywesee.com
 # TestHtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
@@ -280,7 +281,7 @@ class TestHtmlLinkHandler < Test::Unit::TestCase
 		assert_equal('urgl', handler.attribute('baz'))
 	end
 	def test_attribute
-		@handler.attributes = {'arb', 'crd'}
+		@handler.attributes = {'arb' => 'crd'}
 		assert_equal('crd', @handler.attribute('ARb'))
 	end
 	def test_send_adata
