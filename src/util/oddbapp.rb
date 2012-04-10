@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# OddbApp -- oddb.org -- 10.04.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -894,7 +895,7 @@ class OddbPrevalence
       atc.sequences = []
       pacs = @narcotics.values.map{|narc| narc.package}
       pacs.each do |pac|
-        if pac.name_base[0].downcase == query
+        if pac and pac.name_base[0].downcase == query
           seq = ODDB::Sequence.new(pac.sequence.seqnr)
           seq.registration = pac.registration
           seq.packages.store pac.ikscd, pac
