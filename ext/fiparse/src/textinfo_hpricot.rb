@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 10.04.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -64,6 +65,10 @@ class TextinfoHpricot
           handle_element(child, ptr)
           target = ptr.target
           target.reduce_format(:italic) if(target.is_a?(Text::Paragraph))
+          target << ' '
+        when 'sub'
+          target = ptr.target
+          handle_text(ptr, child)
           target << ' '
         when 'table'
           ptr.tablewidth = nil
