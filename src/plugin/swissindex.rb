@@ -77,6 +77,7 @@ module ODDB
         log.print "update_package_trade_status.log\n"
         log.print "out_of_trade_false_list, update_pharmacode_list, out_of_trade_true_list, delete_pharmacode_list, eancode, No./Total, Estimate time\n"
       end
+      lang = 'DE'
       @out_of_trade_true_list  = []
       @out_of_trade_false_list = []
       @update_pharmacode_list  = []
@@ -85,7 +86,7 @@ module ODDB
       start_time = Time.now
       @total_packages = @app.packages.length
       SWISSINDEX_PHARMA_SERVER.session do |swissindex|
-        if swissindex.download_all
+        if swissindex.download_all(lang)
           @app.each_package do |pack|
             # Process 1
             #   Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
@@ -99,7 +100,7 @@ module ODDB
             #   then the package becomes out of trade (true) in ch.oddb
             # Process 4
             #   if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-            pharmacode = swissindex.check_item(pack.barcode.to_s)
+            pharmacode = swissindex.check_item(pack.barcode.to_s, :gtin, lang)
             case pharmacode
             when nil   # => not found in swissindex
               # Process 3
