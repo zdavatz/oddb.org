@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 08.04.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 10.04.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -8,22 +8,141 @@ require 'savon'
 require 'mechanize'
 require 'drb'
 
-
 module ODDB
   module Swissindex
     def Swissindex.session(type = SwissindexPharma)
       yield(type.new)
     end
 
-class SwissindexNonpharma
-  URI = 'druby://localhost:50002'
-  include DRb::DRbUndumped
+module Archiver
+  def historicize(filename, content, lang = 'DE')
+    archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
+    save_dir = File.join archive_path, 'xml'
+    FileUtils.mkdir_p save_dir
+    archive = File.join save_dir,
+                        Date.today.strftime(filename.gsub(/\./,"-#{lang}-%Y.%m.%d."))
+    latest  = File.join save_dir,
+                        Date.today.strftime(filename.gsub(/\./,"-#{lang}-latest."))
+    File.open(archive, 'w') do |f|
+      f.puts content
+    end
+    FileUtils.cp(archive, latest)
+  end
+end
+
+class RequestHandler
   def initialize
     Savon.configure do |config|
-        config.log = false            # disable logging
-        config.log_level = :info      # changing the log level
+      config.log       = false # disable logging
+      config.log_level = :info # changing the log level
     end
-    @base_url   = 'https://prod.ws.e-mediat.net/wv_getMigel/wv_getMigel.aspx?Lang=DE&Query='
+    @items = []
+  end
+  def cleanup_items
+    @items = []
+  end
+  def logger(file, options={})
+    project_root = File.expand_path('../../..', File.dirname(__FILE__))
+    log_dir      = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
+    log_file     = File.join(log_dir, file)
+    create_file = if File.exist?(log_file)
+                    mtime = File.mtime(log_file)
+                    last_update = [mtime.year, mtime.month, mtime.day].join.to_s
+                    now = Time.new
+                    today = [now.year, now.month, now.day].join.to_s
+                    last_update != today
+                  else
+                    true
+                  end
+    FileUtils.mkdir_p log_dir
+    wa = create_file ? 'w' : 'a'
+    open(log_file, wa) do |out|
+      if options.has_key?(:code)
+        if create_file
+          out.print "The following packages (gtin or pharmacode) are not updated (probably because of no response from swissindex server).\n"
+          out.print "The second possibility is that the pharmacode is not found in the swissindex server.\n\n"
+        end
+        out.print "#{options[:type]}: #{options[:code]} (#{Time.new})\n"
+      elsif options.has_key?(:error)
+        out.print "#{options[:type]}: #{options[:error]} (#{Time.new})\n"
+      else
+        out.print "#{options[:type]}: (#{Time.new})\n"
+      end
+    end
+    return nil
+  end
+end
+
+class SwissindexNonpharma < RequestHandler
+  URI = 'druby://localhost:50002'
+  include DRb::DRbUndumped
+  include Archiver
+  def initialize
+    super
+    @base_url = 'https://prod.ws.e-mediat.net/wv_getMigel/wv_getMigel.aspx?Lang=DE&Query='
+  end
+  def download_all(lang = 'DE')
+    client = Savon::Client.new do | wsdl, http |
+      http.auth.ssl.verify_mode = :none
+      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL"
+    end
+    try_time = 3
+    begin
+      cleanup_items
+      response = client.request :download_all do
+        soap.xml =
+        '<?xml version="1.0" encoding="utf-8"?>
+        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+          <soap:Body>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
+          </soap:Body>
+        </soap:Envelope>'
+      end
+      if response.success?
+        if xml = response.to_xml
+          historicize("XMLSwissindexNonPharma.xml", xml, lang)
+          @items = response.to_hash[:nonpharma][:item]
+          return true
+        else
+          # received broken data or unexpected error
+          raise StandardError
+        end
+      else
+        # timeout or unexpected error
+        raise StandardError
+      end
+    rescue StandardError, Timeout::Error => err
+      if try_time > 0
+        sleep 10
+        try_time -= 1
+        retry
+      else
+        cleanup_items
+        return false
+      end
+    end
+  end
+  def check_item(pharmacode, lang = 'DE')
+    item = {}
+    @items.each do |i|
+      if i.has_key?(:phar) and
+         pharmacode == i[:phar]
+        item = i
+      end
+    end
+    case
+    when item.empty?
+      return nil
+    when item[:status] == "I"
+      return false
+    else
+      nonpharmaitem = if item.is_a? Array
+                        item.sort_by{|p| p[:gtin].to_i}.reverse.first
+                      elsif item.is_a? Hash
+                        item
+                      end
+      return nonpharmaitem
+    end
   end
   def search_item(pharmacode, lang = 'DE')
     lang.upcase!
@@ -142,7 +261,7 @@ class SwissindexNonpharma
       agent.page.search('td').each_with_index do |td, i|
         text = td.inner_text.chomp.strip
         if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/) 
-          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode, lang)
+          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = check_item(pharmacode, lang)
                          merge_swissindex_migel(swissindex_item, line)
                        else
                          merge_swissindex_migel({}, line)
@@ -160,7 +279,7 @@ class SwissindexNonpharma
       end
 
       # for the last line
-      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode, lang)
+      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = check_item(pharmacode, lang)
                      merge_swissindex_migel(swissindex_item, line)
                    else
                      merge_swissindex_migel({}, line)
@@ -213,20 +332,10 @@ class SwissindexNonpharma
   end
 end
 
-
-class SwissindexPharma
+class SwissindexPharma < RequestHandler
   URI = 'druby://localhost:50001'
   include DRb::DRbUndumped
-  def initialize
-    Savon.configure do |config|
-      config.log = false       # disable logging
-      config.log_level = :info # changing the log level
-    end
-    @items = []
-  end
-  def cleanup_items
-    @items = []
-  end
+  include Archiver
   def download_all(lang = 'DE')
     client = Savon::Client.new do | wsdl, http |
       http.auth.ssl.verify_mode = :none
@@ -247,19 +356,7 @@ class SwissindexPharma
       end
       if response.success?
         if xml = response.to_xml
-          # historicize as xml
-          archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
-          save_dir = File.join archive_path, 'xml'
-          filename = "XMLSwissindexPharma.xml"
-          FileUtils.mkdir_p save_dir
-          archive = File.join save_dir,
-                              Date.today.strftime(filename.gsub(/\./,"-%Y.%m.%d."))
-          latest = File.join save_dir,
-                             Date.today.strftime(filename.gsub(/\./,"-latest."))
-          File.open(archive, 'w') do |f|
-            f.puts xml
-          end
-          FileUtils.cp(archive, latest)
+          historicize("XMLSwissindexPharma.xml", xml, lang)
           @items = response.to_hash[:pharma][:item]
           return true
         else
@@ -281,7 +378,7 @@ class SwissindexPharma
           :type  => :download_all.to_s,
           :error => err
         }
-        return _logger('bag_xml_swissindex_pharmacode_download_all_error.log', options);
+        return logger('bag_xml_swissindex_pharmacode_download_all_error.log', options);
       end
     end
   end
@@ -358,39 +455,9 @@ class SwissindexPharma
           :type => search_type.to_s.gsub('gen_by_', ''),
           :code => code
         }
-        return _logger('bag_xml_swissindex_pharmacode_error.log', options)
+        return logger('bag_xml_swissindex_pharmacode_error.log', options)
       end
     end
-  end
-  def _logger(file, options = {:type => 'Unknown'})
-    project_root = File.expand_path('../../..', File.dirname(__FILE__))
-    log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
-    log_file = File.join(log_dir, file)
-    create_file = if File.exist?(log_file)
-                    mtime = File.mtime(log_file)
-                    last_update = [mtime.year, mtime.month, mtime.day].join.to_s
-                    now = Time.new
-                    today = [now.year, now.month, now.day].join.to_s
-                    last_update != today
-                  else
-                    true
-                  end
-    FileUtils.mkdir_p log_dir
-    wa = create_file ? 'w' : 'a'
-    open(log_file, wa) do |out|
-      if options.has_key?(:code)
-        if create_file
-          out.print "The following packages (gtin or pharmacode) are not updated (probably because of no response from swissindex server).\n"
-          out.print "The second possibility is that the pharmacode is not found in the swissindex server.\n\n"
-        end
-        out.print "#{options[:type]}: #{options[:code]} (#{Time.new})\n"
-      elsif options.has_key?(:error)
-        out.print "#{options[:type]}: #{options[:error]} (#{Time.new})\n"
-      else
-        out.print "#{options[:type]}: (#{Time.new})\n"
-      end
-    end
-    return nil
   end
 end
 
