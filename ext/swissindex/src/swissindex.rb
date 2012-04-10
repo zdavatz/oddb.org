@@ -15,8 +15,7 @@ module ODDB
     end
 
 module Archiver
-  def historicize(filename, content, lang = 'DE')
-    archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
+  def historicize(filename, archive_path, content, lang = 'DE')
     save_dir = File.join archive_path, 'xml'
     FileUtils.mkdir_p save_dir
     archive = File.join save_dir,
@@ -100,7 +99,11 @@ class SwissindexNonpharma < RequestHandler
       end
       if response.success?
         if xml = response.to_xml
-          historicize("XMLSwissindexNonPharma.xml", xml, lang)
+          archive_path = File.expand_path('../../../../migel/data', File.dirname(__FILE__))
+          unless Dir.exist?(archive_path)
+            archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
+          end
+          historicize("XMLSwissindexNonPharma.xml", archive_path, xml, lang)
           @items = response.to_hash[:nonpharma][:item]
           return true
         else
@@ -356,7 +359,8 @@ class SwissindexPharma < RequestHandler
       end
       if response.success?
         if xml = response.to_xml
-          historicize("XMLSwissindexPharma.xml", xml, lang)
+          archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
+          historicize("XMLSwissindexPharma.xml",archive_path, xml, lang)
           @items = response.to_hash[:pharma][:item]
           return true
         else
