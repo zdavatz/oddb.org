@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestAcceptOrphan -- oddb.org -- 11.04.2012 -- yasaka@ywesee.com
 # ODDB::TestAcceptOrphan -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -24,7 +25,8 @@ module ODDB
                           :odba_store => 'odba_store'
                          )
       @pointer = flexmock('pointer', :resolve => parent)
-      @command = ODDB::AcceptOrphan.new('orphan', [@pointer], 'otype')
+      languages = ['de', 'fr']
+      @command = ODDB::AcceptOrphan.new(languages, [@pointer], 'otype')
     end
     def test_execute
       accepted_orphans = flexmock('accepted_orphans', 

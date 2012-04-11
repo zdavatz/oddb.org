@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# SBSM::LookandfeelWrapper -- oddb.org -- 11.04.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper -- oddb.org -- 03.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -66,14 +67,16 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-        [0,0] =>  :name_base,
-        [1,0] =>  :company_name,
-        [2,0] =>  :comparable_size,
-        [3,0] =>  :compositions,
-        [4,0] =>  :price_public,
-        [5,0] =>  :price_difference,
-        [6,0] =>  :deductible,
-        [7,0] =>  :ikscat,
+        [0,0] => :fachinfo,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :company_name,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :price_difference,
+        [8,0] => :deductible,
+        [9,0] => :ikscat,
       }
       assert_equal(expected, @look.compare_list_components)
     end
@@ -172,16 +175,18 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ikscat,
-			}	
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference,
+        [9,0]  => :deductible,
+        [10,0] => :ikscat,
+      }
       assert_equal(expected, @look.compare_list_components)
     end
     def test_explain_result_components
@@ -278,16 +283,18 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ikscat,
-			}	
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference,
+        [9,0]  => :deductible,
+        [10,0] => :ikscat,
+      }
       assert_equal(expected, @look.compare_list_components)
     end
     def test_explain_result_components
@@ -405,15 +412,25 @@ module ODDB
     end
     def test_compare_list_components
       expected =  {
-        [0,0]	=>	:name_base,
-        [1,0]	=>	:company_name,
-        [2,0]	=>	:most_precise_dose,
-        [3,0]	=>	:comparable_size,
-        [4,0] =>	:compositions,
-        [5,0]	=>	:price_public,
-        [6,0]	=>	:price_difference,
-        [7,0]	=>	:deductible,
-        [8,0] =>  :ikscat,
+        [0,0]  => :name_base,
+        [1,0]  => :company_name,
+        [2,0]  => :most_precise_dose,
+        [3,0]  => :comparable_size,
+        [4,0]  => :compositions,
+        [5,0]  => :price_public,
+        [6,0]  => :price_difference,
+        [7,0]  => :deductible,
+        [8,0]  => :ikscat,
+        [2,0]  => :company_name,
+        [3,0]  => :most_precise_dose,
+        [4,0]  => :comparable_size,
+        [5,0]  => :compositions,
+        [6,0]  => :price_public,
+        [7,0]  => :price_difference,
+        [8,0]  => :deductible,
+        [9,0]  => :ikscat,
+        [10,0] => :fachinfo,
+        [11,0] => :patinfo,
       }
       assert_equal(expected, @look.compare_list_components)
     end
@@ -544,34 +561,35 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:ddd_price, 
-				[7,0]	=>	:price_difference, 
-				[8,0]	=>	:deductible, 
-			}	
+        [0,0] => :patinfo,
+        [1,0] => :name_base,
+        [2,0] => :company_name,
+        [3,0] => :most_precise_dose,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :ddd_price,
+        [8,0] => :price_difference,
+        [9,0] => :deductible,
+      }
       assert_equal(expected, @look.compare_list_components)
     end
     def test_explain_result_components
       expected = {
-				[0,1]	=>	:explain_original,
-				[0,2]	=>	:explain_generic,
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	'explain_pbp',
-				[0,5]	=>	:explain_deductible,
-				[0,6]	=>	:explain_ddd_price,
-				[1,0]	=>	:explain_patinfo,
-				[1,1]	=>	:explain_limitation,
-				[1,2]	=>	:explain_complementary,
-				[1,3]	=>	'explain_sl',
-				[1,4]	=>	'explain_slo',
-				[1,5]	=>	'explain_slg',
-				[1,6]	=>	:explain_lppv,
-			}
+        [0,1] => :explain_original,
+        [0,2] => :explain_generic,
+        [0,3] => 'explain_expired',
+        [0,4] => 'explain_pbp',
+        [0,5] => :explain_deductible,
+        [0,6] => :explain_ddd_price,
+        [1,1] => :explain_patinfo,
+        [1,2] => :explain_limitation,
+        [1,3] => :explain_complementary,
+        [1,4] => 'explain_sl',
+        [1,5] => 'explain_slo',
+        [1,6] => 'explain_slg',
+        [1,7] => :explain_lppv,
+      }
       assert_equal(expected, @look.explain_result_components)
     end
     def test_result_list_components
@@ -630,56 +648,60 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:ddd_price, 
-				[8,0] =>  :ikscat,
-			}	
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference,
+        [9,0]  => :ddd_price,
+        [10,0] => :ikscat,
+      }
       assert_equal(expected, @look.compare_list_components)
     end
     def test_explain_result_components
       expected = {
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	'explain_pbp',
-				[0,5]	=>	:explain_deductible,
-				[0,6]	=>	:explain_ddd_price,
-				[1,0]	=>	:explain_patinfo,
-				[1,1]	=>	:explain_feedback,
-				[1,2]	=>	:explain_google_search,
-				[1,3]	=>	'explain_sl',
-				[1,4]	=>	'explain_slo',
-				[1,5]	=>	'explain_slg',
-				[1,6]	=>	:explain_lppv,
-			}
+        [0,0] => :explain_original,
+        [0,1] => :explain_generic,
+        [0,2] => :explain_complementary,
+        [0,3] => 'explain_expired',
+        [0,4] => 'explain_pbp',
+        [0,5] => :explain_deductible,
+        [0,6] => :explain_ddd_price,
+        [1,0] => :explain_fachinfo,
+        [1,1] => :explain_patinfo,
+        [1,2] => :explain_feedback,
+        [1,3] => :explain_google_search,
+        [1,4] => 'explain_sl',
+        [1,5] => 'explain_slo',
+        [1,6] => 'explain_slg',
+        [1,7] => :explain_lppv,
+      }
       assert_equal(expected, @look.explain_result_components)
     end
     def test_result_list_components
       expected = {
-				[0,0]		=>	:patinfo,
-				[1,0]		=>	:comarketing,
-				[2,0,0]	=>	'result_item_start',
-				[2,0,1]	=>	:name_base,
-				[2,0,2]	=>	'result_item_end',
-				[3,0]		=>	:galenic_form,
-				[4,0]		=>	:most_precise_dose,
-				[5,0]		=>	:comparable_size,
-				[6,0]		=>	:price_public,
-				[7,0]		=>	:deductible,
-				[8,0]		=>	:company_name,
-				[9,0]		=>	:ddd_price,
-				[10,0]		=>	'nbsp',
-				[11,0]	=>	:ikscat,
-				[12,0]	=>	:feedback,
-				[13,0]	=>  :google_search,
-			}
+        [0,0]   => :fachinfo,
+        [1,0]   => :patinfo,
+        [2,0]   => :comarketing,
+        [3,0,0] => 'result_item_start',
+        [2,0,1] => :name_base,
+        [3,0,2] => 'result_item_end',
+        [4,0]   => :galenic_form,
+        [5,0]   => :most_precise_dose,
+        [6,0]   => :comparable_size,
+        [7,0]   => :price_public,
+        [8,0]   => :deductible,
+        [9,0]   => :company_name,
+        [10,0]  => :ddd_price,
+        [11,0]  => 'nbsp',
+        [12,0]  => :ikscat,
+        [13,0]  => :feedback,
+        [14,0]  => :google_search,
+      }
       assert_equal(expected, @look.result_list_components)
     end
     def test_section_style
@@ -748,4 +770,3 @@ module ODDB
     end
   end
 end
-

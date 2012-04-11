@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# suite.rb -- oddb.org -- 11.04.2012 -- yasaka@ywesee.com
 # suite.rb -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com 
 # In order to execute test/suite.rb,
 # yusd and meddatad is needed to run.
@@ -26,13 +27,20 @@ directories = [
 
 rcov = true
 coverage = nil
-command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.path}"'
+command = 'system "ruby #{path} >> #{temp_out.path}"'
 begin
-  Rcov
-  coverage = Tempfile.new('coverage')
+  # FIXME
+  # There is ARGV problem in test-unit
+  #require 'simplecov'
+  #SimpleCov.start
 rescue
-  rcov = false
-  command = 'system "ruby #{path} >> #{temp_out.path}"'
+  begin
+    Rcov
+    coverage = Tempfile.new('coverage')
+    command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.path}"'
+  rescue
+    rcov = false
+  end
 end
 
 temp_out = Tempfile.new('temp_out')
