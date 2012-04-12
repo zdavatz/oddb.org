@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 10.03.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 12.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -20,6 +20,7 @@ require 'state/analysis/limitationtext'
 require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
+require 'state/drugs/api_search'
 require 'state/drugs/compare'
 require 'state/drugs/compare_search'
 require 'state/drugs/ddd'
@@ -154,6 +155,7 @@ module ODDB
           :ajax_ddd_price         => State::Ajax::DDDPrice,
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
+          :api_search             => State::Drugs::ApiSearch,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 12.04.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -136,6 +136,7 @@ module ODDB
 			:ajax_swissmedic_cat,
 			:analysis,
 			:analysis_alphabetical,
+      :api_search,
 			:assign,
 			:assign_deprived_sequence,
 			:assign_fachinfo,
