@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 10.04.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 12.04.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -150,6 +150,7 @@ class SwissindexNonpharma < RequestHandler
   def search_item(pharmacode, lang = 'DE')
     lang.upcase!
     client = Savon::Client.new do | wsdl, http |
+      http.auth.ssl.verify_mode = :none
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL"
     end
     try_time = 3
@@ -342,7 +343,7 @@ class SwissindexPharma < RequestHandler
   def download_all(lang = 'DE')
     client = Savon::Client.new do | wsdl, http |
       http.auth.ssl.verify_mode = :none
-      #wsdl.document = "https://swissindex.refdata.ch/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL" Not responding
+      #wsdl.document = "https://swissindex.refdata.ch/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
     end
     try_time = 3
@@ -412,6 +413,7 @@ class SwissindexPharma < RequestHandler
   end
   def search_item(code, search_type = :get_by_gtin, lang = 'DE')
     client = Savon::Client.new do | wsdl, http |
+      http.auth.ssl.verify_mode = :none
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
     end
     try_time = 3
@@ -454,7 +456,6 @@ class SwissindexPharma < RequestHandler
         try_time -= 1
         retry
       else
-        log_file = File.join(log_dir, '')
         options = {
           :type => search_type.to_s.gsub('gen_by_', ''),
           :code => code
