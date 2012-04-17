@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 17.04.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -114,10 +114,18 @@ module ODDB
       @request_path = request.unparsed_uri
       @process_start = Time.now
       super
-      if(!is_crawler? && self.lookandfeel.enabled?(:query_limit))
+      if(!is_crawler? &&
+         !is_mobile_app? &&
+         self.lookandfeel.enabled?(:query_limit))
         limit_queries 
       end
       '' ## return empty string across the drb-border
+    end
+    def is_mobile_app?
+      config = ODDB.config
+      false if config.app_user_agent.nil?
+      app_pattern = /#{config.app_user_agent}/
+      !!app_pattern.match(@request.user_agent) && flavor == 'mobile'
     end
 		def add_to_interaction_basket(object)
 			@interaction_basket = @interaction_basket.push(object).uniq
