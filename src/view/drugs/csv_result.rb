@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -197,8 +198,8 @@ class CsvResult < HtmlGrid::Component
 	end
 	def limitation_text(pack)
 		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
-      @counts['limitation_texts'] += 1
       if txt.respond_to?(@lookandfeel.language) and lim_txt = txt.send(@lookandfeel.language).to_s
+        @counts['limitation_texts'] += 1
         lim_txt.force_encoding('utf-8')
         lim_txt.gsub(/\n/u, '|')
       end
