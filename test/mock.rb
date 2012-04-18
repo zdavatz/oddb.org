@@ -136,7 +136,7 @@ private
 
     #  The name of a precondition for a method
     def Mock.__pre( method )
-        "__pre_#{method.to_i}".intern
+        "__pre_#{method.to_s}".intern
     end
     
 		

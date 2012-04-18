@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestActiveAgent -- oddb -- 18.04.2012 -- yasaka@ywesee.com
 # TestActiveAgent -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -13,6 +14,16 @@ require 'mock'
 module ODDB
 	class ActiveAgentCommon
 		public :adjust_types
+    check_class_list = {
+      :substance            => ['ODDB::Substance', 'StubActiveAgentSubstance'],
+      :chemical_substance   => ['ODDB::Substance', 'StubActiveAgentSubstance'],
+      :equivalent_substance => ['ODDB::Substance', 'StubActiveAgentSubstance'],
+      :dose                 => ['ODDB::Dose', 'StubActiveAgentDose'],
+      :chemical_dose        => ['ODDB::Dose', 'StubActiveAgentDose'],
+      :equivalent_dose      => ['ODDB::Dose', 'StubActiveAgentDose'],
+      :sequence             => ['ODDB::Sequence', 'StubActiveAgentSequence'],
+    }
+    define_check_class_methods check_class_list
 	end
 end
 class StubActiveAgentSubstance
