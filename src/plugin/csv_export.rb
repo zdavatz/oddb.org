@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::CsvExportPlugin -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -58,15 +59,7 @@ module ODDB
                    enc.first
                  end
       exporter.to_csv_file(keys, path, :packages, encoding)
-      dups = exporter.duplicates
       @counts = exporter.counts
-      @counts['duplicates'] = dups.size
-      unless(dups.empty?)
-        log = Log.new(@@today)
-        log.report = sprintf "CSV-Export includes %i duplicates:\n%s",
-                             dups.size, dups.join("\n")
-        log.notify("CSV-Export includes %i duplicates" % dups.size)
-      end
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = @app.log_group(:bsv_sl).newest_date.strftime("#{export_name}.%Y-%m-%d.csv")
       backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))

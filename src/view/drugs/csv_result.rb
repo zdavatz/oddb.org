@@ -316,38 +316,57 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-	def to_csv(keys, symbol=:active_packages, encoding=nil)
+  def to_csv(keys, symbol=:active_packages, encoding=nil)
+    result = []
     eans = {}
-		result = []
-		lang = @lookandfeel.language
-		header = keys.collect { |key|
-			@lookandfeel.lookup("th_#{key}") || key.to_s
-		}
-		result.push(header)
-		@model.each { |atc|
-			result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
-			atc.send(symbol).each { |pack|
-        eans[pack.ikskey] = eans[pack.ikskey].to_i + 1
-				line = keys.collect { |key|
-					if(self.respond_to?(key))
-						self.send(key, pack)
-					else
-						pack.send(key)
-					end
-				}
-				result.push(line)
-			}
-		}
-    @duplicates = eans.collect { |ikskey, count| 
-      ikskey if count > 1 }.compact.sort
-		result.collect { |line|
+    index = 0
+    lang = @lookandfeel.language
+    header = keys.collect { |key|
+      @lookandfeel.lookup("th_#{key}") || key.to_s
+    }
+    result.push(header)
+    index += 1
+    @model.each { |atc|
+      result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
+      index += 1
+      ean = {}
+      # Rule:
+      # For the CSV Exporter only export the Product with the longer ATC-Code.
+      # We export the product with the ATC-Code that has more digits
+      atc.send(symbol).each { |pack|
+        if(eans[pack.ikskey].nil?)
+          eans[pack.ikskey] = {:cnt => 0}
+        end
+        eans[pack.ikskey][:cnt] += 1
+        atc_code = atc.code.to_s
+        if(eans[pack.ikskey][:cnt] > 1)
+          if(eans[pack.ikskey][:atc].length < atc_code.length)
+            result[eans[pack.ikskey][:idx]] = nil # delete
+          else
+            next # skip pack
+          end
+        end
+        eans[pack.ikskey][:atc] = atc_code
+        eans[pack.ikskey][:idx] = index
+        line = keys.collect { |key|
+          if(self.respond_to?(key))
+            self.send(key, pack)
+          else
+            pack.send(key)
+          end
+        }
+        result.push(line)
+        index += 1
+      }
+    }
+    result.compact.collect { |line|
       if encoding
         CSV.generate_line(line, {:col_sep => ';'}).encode(encoding, :invalid => :replace, :undef => :replace, :replace => '')
       else
         CSV.generate_line(line, {:col_sep => ';'})
       end
-		}
-	end
+    }
+  end
 	def to_csv_file(keys, path, symbol=:active_packages, encoding=nil)
 		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol, encoding) }
 	end
