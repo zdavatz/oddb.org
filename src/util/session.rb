@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 17.04.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -123,7 +123,7 @@ module ODDB
     end
     def is_mobile_app?
       config = ODDB.config
-      false if config.app_user_agent.nil?
+      false if config.app_user_agent.empty?
       app_pattern = /#{config.app_user_agent}/
       !!app_pattern.match(@request.user_agent) && flavor == 'mobile'
     end

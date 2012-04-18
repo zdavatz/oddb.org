@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# @config -- oddb.org -- 27.03.2012 -- yasaka@ywesee.com
+# @config -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
 # @config -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # @config -- oddb.org -- 08.09.2006 -- hwyss@ywesee.com
 
@@ -36,6 +36,7 @@ module ODDB
     'testenvironment2'    => '',
     'flickr_api_key'       => '',
     'flickr_shared_secret' => '',
+    'app_user_agent'       => '', # as Regexp
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)
