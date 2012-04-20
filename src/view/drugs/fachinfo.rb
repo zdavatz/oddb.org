@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 29.03.2011 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 21.04.2011 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -9,6 +9,7 @@ require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
 require 'view/changelog'
+require 'ostruct'
 
 module ODDB
 	module View
@@ -22,7 +23,8 @@ class FiChapterChooserLink < HtmlGrid::Link
 		end
 		@value ||= @lookandfeel.lookup("fi_" << @name.to_s)
 		@attributes['title'] = if(@document.respond_to?(@name) \
-			&& (chapter = @document.send(@name)))
+			&& (chapter = @document.send(@name))) \
+      && chapter.respond_to?(:heading)
 			title = chapter.heading
 			if(title.empty? && (section = chapter.sections.first))
 				section.subheading
@@ -114,6 +116,9 @@ class FiChapterChooser < HtmlGrid::Composite
     if @container.respond_to?(:photos) and !@container.photos.nil?
       names << :photos
     end
+    if @container.respond_to?(:links) and !@container.links.empty?
+      names << :links
+    end
     names
   end
 	def full_text(model, session)
@@ -138,7 +143,7 @@ class FiChapterChooser < HtmlGrid::Composite
     link
   end
 end
-class FachinfoPhotoView < HtmlGrid::Div
+class FachinfoPhotoView < HtmlGrid::Div # as photo chapter
   CSS_CLASS = ''
   def init
     super
@@ -175,10 +180,15 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
   CSS_STYLE_MAP = {}
   def init
     if @model # document
-      @model.chapter_names.each_with_index { |name, idx|
+      names = @model.chapter_names
+      if @container.respond_to?(:links) and !@container.links.empty?
+        names << :links
+      end
+      names.each_with_index { |name, idx|
         components.store([0,idx], name)
       }
     end
+    # insert photos into head
     if @container.respond_to?(:photos) and !@container.photos.nil?
       @css_style_map = {
         0 => 'float:right;',
@@ -190,11 +200,22 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
         image = FachinfoPhotoView.new(photo, @session, self)
         image.css_class = css_class
         images << image
-
       }
       @grid.unshift(images)
     else
       super
+    end
+  end
+  def links(model)
+    links = @container.links if @container.respond_to?(:links)
+    if links # behave as link chapter
+      # FIXME refactor in state
+      chapter = OpenStruct.new({
+        :heading => 'Links',
+        :links   => links
+      })
+      model = OpenStruct.new(:links => chapter)
+      View::Chapter.new(:links, model, @session, self)
     end
   end
 end
@@ -246,7 +267,7 @@ class FachinfoPrintInnerComposite < FachinfoInnerComposite
 	DEFAULT_CLASS = View::PrintChapter
 end
 class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPreviewComposite
-  attr_accessor :photos
+  attr_accessor :photos, :links
 	include PrintComposite
 	INNER_COMPOSITE = View::Drugs::FachinfoInnerComposite
 	PRINT_TYPE = :print_type_fachinfo
@@ -257,12 +278,13 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 	}
   def init
     @document = @model.send(@session.language)
-    @photos = @model.send(:photos, 'thumbnail')
+    @links    = @model.send(:links)
+    @photos   = @model.send(:photos, 'thumbnail')
     super
   end
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
-  attr_accessor :photos
+  attr_accessor :document, :photos, :links
 	CHOOSER_CLASS = View::Drugs::FiChapterChooser
   COMPONENTS = {
     [0,0] => :fachinfo_name,
@@ -281,7 +303,8 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 	}	
   def init
     @document = @model.send(@session.language)
-    @photos = nil
+    @links    = @model.send(:links)
+    @photos   = nil
     case @session.user_input(:chapter)
     when nil
       @photos = @model.send(:photos, 'thumbnail')
@@ -300,9 +323,20 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		end
 	end
   def chapter_view(chapter)
-    if(chapter == 'photos')
-      @document = nil
+    case chapter
+    when 'photos'
+      @document = nil # no model
       View::Drugs::FachinfoInnerComposite.new(@document, @session, self)
+    when 'links'
+      if @links # behave as link chapter
+        # FIXME refactor in state
+        chapter = OpenStruct.new({
+          :heading => 'Links',
+          :links   => @links
+        })
+        model = OpenStruct.new(:links => chapter)
+        View::Chapter.new(:links, model, @session, self)
+      end
     else
       View::Chapter.new(chapter, @document, @session, self)
     end
@@ -316,6 +350,7 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		elsif(chapter != nil)
 			chapter_view(chapter)
 		else
+      # all
 			View::Drugs::FachinfoInnerComposite.new(@document, session, self)
 		end
 	end
@@ -342,12 +377,15 @@ end
 class EditFiChapterChooser < FiChapterChooser
 	def display_names(document)
 		all_names = document.chapters
-    if @container.respond_to?(:photos) and !@container.photos.nil?
+    if @container.respond_to?(:photos) and !@container.send(:photos).nil?
       unless all_names.include?(:photos)
         all_names << :photos
       end
-    else # will be stored into session
+    else # remove from session
       all_names.delete(:photos)
+    end
+    unless all_names.include?(:links)
+      all_names << :links
     end
     all_names
 	end
@@ -365,15 +403,22 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 		end
 		super
 	end
-	def chapter_view(chapter)
-    if(@model.company.invoiceable? and chapter != 'photos')
-			View::EditChapterForm.new(chapter, @document, @session, self)
-		elsif(@model.pointer.skeleton == [:create])
-			# don't show anything
-		else
-			super
-		end
-	end
+  def chapter_view(chapter)
+    if(@model.company.invoiceable?)
+      case chapter
+      when 'photos'
+        super
+      when 'links'
+        View::EditLinkForm.new(@model.send(:links), @session, self)
+       else
+        View::EditChapterForm.new(chapter, @document, @session, self)
+       end
+    elsif(@model.pointer.skeleton == [:create])
+      # don't show anything
+    else
+      super
+    end
+  end
 	def invoiceability(model, session=@session)
 		PointerLink.new(:e_fi_not_invoiceable, model.company, @session, self)
 	end
@@ -381,6 +426,7 @@ end
 class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
+  JAVASCRIPTS = ['admin']
 	DOJO_REQUIRE = ['ywesee/widget/Editor']
 	DOJO_PARSE_WIDGETS = true
 end

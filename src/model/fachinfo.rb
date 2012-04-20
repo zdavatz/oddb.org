@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 28.03.2011 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 21.04.2011 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -16,6 +16,7 @@ module ODDB
 		class ChangeLogItem
 			attr_accessor :email, :time, :chapter, :language
 		end
+    attr_accessor :links
 		include Persistence
 		include Language
 		include RegistrationObserver
@@ -29,6 +30,10 @@ module ODDB
 			self.change_log.push(item)
 			self.odba_store
 		end
+    def links
+      @links ||= []
+			@links.sort_by{|link| link.created}.reverse
+    end
 		def atc_class
 			if(reg = @registrations.first)
 				reg.atc_classes.first
@@ -175,7 +180,6 @@ module ODDB
 		attr_accessor :interactions, :overdose, :other_advice
 		attr_accessor :date, :iksnrs, :reference, :packages
 		attr_accessor :delivery, :distribution, :fabrication
-    attr_accessor :photos
 		CHAPTERS = [
 			:galenic_form,
 			:composition,
@@ -248,4 +252,12 @@ module ODDB
 			:date,
 		]
 	end
+  class FachinfoLink
+    attr_accessor :name, :url, :created
+    def initialize
+      @name = ''
+      @url  = 'http://'
+      @created = Time.now.to_s
+    end
+  end
 end	

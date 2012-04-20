@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 06.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 21.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -9,6 +9,7 @@ require 'htmlgrid/labeltext'
 require 'htmlgrid/textarea'
 require 'htmlgrid/dojotoolkit'
 require 'view/form'
+require 'model/fachinfo'
 
 module ODDB
   module View
@@ -75,6 +76,24 @@ module ODDB
           context.h3 { self.escape(@value.heading) }
         end
       end
+      def links(context, links)
+        context.ul {
+          fi_links = ''
+          links.each do |fi_link|
+            next if fi_link.url.empty? or fi_link.url =~ /^http:\/\/$/
+            if fi_link.name.empty?
+              fi_link.name = fi_link.url
+            end
+            link_attr = {:href => self.escape(fi_link.url), :target => '_blank'}
+            fi_links << context.li {
+              context.a(link_attr) {
+                self.escape(fi_link.name)
+              }
+            }
+          end
+          fi_links
+        } << context.br
+      end
       def sections(context, sections)
         section_attr = { 'style' => @lookandfeel.section_style }
         subhead_attr = { 'style' => self.class::SUB_STYLE }
@@ -133,6 +152,9 @@ module ODDB
           end
           if @value.respond_to?(:sections)
             html << sections(context, @value.sections)
+          end
+          if @value.respond_to?(:links)
+            html << links(context, @value.links)
           end
           if(hl = @session.user_input(:highlight))
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
@@ -196,6 +218,106 @@ module ODDB
         chapter = {'name' => 'chapter', 'value' => @name}
         html = {'name' => 'html_chapter', 'value' => ''}
         super << context.hidden(chapter) << context.hidden(html)
+      end
+    end
+    class Links < HtmlGrid::List
+      COMPONENTS = {
+        [0,0] => :delete,
+        [1,0] => :link_name,
+        [2,0] => :link_url,
+        [3,0] => :link_created,
+      }
+      OMIT_HEADER = true
+      EMPTY_LIST = true
+      CSS_CLASS = 'composite tundra'
+      CSS_MAP = {
+        [0,0] => 'list',
+        [1,0] => 'list',
+        [2,0] => 'list',
+        [3,0] => 'list',
+      }
+      CSS_ID = 'links'
+      SORT_DEFAULT = nil
+      BACKGROUND_SUFFIX = ''
+      DEFAULT_CLASS = HtmlGrid::InputText
+      def compose_list(model, offset)
+        if(@model.length < 2 or 
+          (@model.last.name != '' and @model.last.url != ''))
+          @grid.add add(@model, @session), *offset
+          @grid.add_style('list', *offset)
+        end
+        x, y, = offset
+        x += 1
+        @grid.add('Link Name', x, y)
+        @grid.add_style('list', x, y)
+        x += 1
+        @grid.add('Link', x, y)
+        @grid.add_style('list', x, y)
+        offset = resolve_offset(offset, self::class::OFFSET_STEP)
+        offset = super(model, offset)
+        offset
+      end
+      def add(model, session)
+        link = HtmlGrid::Link.new(:plus, model, session, self)
+        link.set_attribute('title', @lookandfeel.lookup(:create_part))
+        link.css_class = 'create square'
+        url = @session.lookandfeel.event_url(:ajax_create_fachinfo_link, [])
+        link.onclick = "replace_element('#{css_id}', '#{url}');"
+        link
+      end
+      def delete(model, session)
+        link = HtmlGrid::Link.new(:minus, model, session, self)
+        link.set_attribute('title', @lookandfeel.lookup(:delete))
+        link.css_class = 'delete square'
+        args = [:fachinfo_index, @list_index]
+        url = @session.lookandfeel.event_url(:ajax_delete_fachinfo_link, args)
+        link.onclick = "replace_element('#{css_id}', '#{url}');"
+        link
+      end
+      def link_name(model, session)
+        input = HtmlGrid::Input.new("fi_link_name[#{@list_index}]", model, session, self)
+        input.set_attribute('title', 'Link Name')
+        input.set_attribute('style', 'width:300px;')
+        input.value = model.send(:name) if model
+        input
+      end
+      def link_url(model, session)
+        input = HtmlGrid::Input.new("fi_link_url[#{@list_index}]", model, session, self)
+        input.set_attribute('title', 'Link')
+        input.set_attribute('style', 'width:600px;')
+        if model and !model.send(:url).nil?
+          input.value = model.send(:url)
+        else
+          input.value = 'http://'
+        end
+        input
+      end
+      def link_created(model, session)
+        input = HtmlGrid::Input.new("fi_link_created[#{@list_index}]", model, session, self)
+        input.set_attribute('type', 'hidden')
+          input.value = model.send(:created)
+        input
+      end
+    end
+    class EditLinkForm < Form
+      LEGACY_INTERFACE = false
+      COMPONENTS = {
+        [0,0] => Links,
+        [0,1] => :submit,
+      }
+      CSS_MAP = {
+        [0,0] =>'list',
+        [0,1] =>'list',
+      }
+      def initialize(model, session, container)
+        if model.empty?
+          model << FachinfoLink.new
+        end
+        super model, session, container
+      end
+      def hidden_fields(context)
+        chapter = {'name' => 'chapter', 'value' => 'links'}
+        super << context.hidden(chapter)
       end
     end
   end
