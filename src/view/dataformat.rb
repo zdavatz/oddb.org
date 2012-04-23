@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::DataFormat -- oddb.org -- 28.03.2012 -- yasaka@ywesee.com
+# ODDB::View::DataFormat -- oddb.org -- 23.04.2012 -- yasaka@ywesee.com
 # ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -117,7 +117,7 @@ module ODDB
 			end
 			private
 			def formatted_price(key, model)
-				price_chf = model.send(key).to_i
+        price_chf = model.respond_to?(key) ? model.send(key).to_i : 0
 				if(price_chf != 0)
 					prices = {
 						'CHF'	=>	price_chf,
