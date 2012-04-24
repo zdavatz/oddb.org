@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::YamlPlugin -- oddb.org -- 02.04.2012 -- yasaka@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 24.04.2012 -- yasaka@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
@@ -79,7 +79,7 @@ module ODDB
 		end
 		def export_patinfos(name='patinfo.yaml')
       valid_patinfos = check_infos(name, "Sequence") do |no_descr, valid_infos|
-        @app.effective_patinfos.values.each do |patinfo|
+        @app.effective_patinfos.each do |patinfo|
           patinfo = ODBA.cache.fetch(patinfo.odba_id, nil)
           next if (patinfo.nil? or !patinfo.valid?)
           if (patinfo.sequences.first \
