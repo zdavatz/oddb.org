@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 10.04.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 24.04.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -611,6 +611,13 @@ class OddbPrevalence
 			reg.each_sequence(&block)
 		}
 	end
+  def effective_patinfos
+    # return only new active patinfos via registration.
+    # @patinfos has also old patinfos.
+    @registrations.values.map do |reg|
+      reg.sequences.values.first.patinfo unless reg.sequences.values.first.nil?
+    end.uniq.compact
+  end
 	def execute_command(command)
 		command.execute(self)
 	end
