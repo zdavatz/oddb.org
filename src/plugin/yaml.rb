@@ -79,7 +79,7 @@ module ODDB
 		end
 		def export_patinfos(name='patinfo.yaml')
       valid_patinfos = check_infos(name, "Sequence") do |no_descr, valid_infos|
-        @app.patinfos.values.each do |patinfo|
+        @app.effective_patinfos.values.each do |patinfo|
           patinfo = ODBA.cache.fetch(patinfo.odba_id, nil)
           next if (patinfo.nil? or !patinfo.valid?)
           if (patinfo.sequences.first \
