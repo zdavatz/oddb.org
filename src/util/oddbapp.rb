@@ -614,16 +614,19 @@ class OddbPrevalence
   def effective_patinfos
     # return only active patinfos via active sequence.
     # @patinfos has also old patinfos.
-    _patinfos = []
+    _patinfos = {}
     @registrations.values.compact.map do |reg|
+      next unless reg.active?
       reg.sequences.values.compact.map do |seq|
-        _patinfo = seq.patinfo if seq.active?
-        if !_patinfo.nil? and _patinfo.valid? 
-          _patinfos << _patinfo
+        next unless seq.active? and seq.public? and seq.has_patinfo?
+        if _patinfo = seq.patinfo and !_patinfo.nil? and _patinfo.valid?
+          _patinfo.article_codes
+          key = seq.iksnr + seq.seqnr
+          _patinfos[key] = _patinfo
         end
       end
     end
-    _patinfos.uniq.compact
+    _patinfos.values.uniq
   end
 	def execute_command(command)
 		command.execute(self)
