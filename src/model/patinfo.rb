@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Parinfo -- oddb -- 12.03.2012 -- yasaka@ywesee.com
+# Parinfo -- oddb -- 24.04.2012 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'
@@ -10,6 +10,29 @@ module ODDB
 	class Patinfo
 		include Language
 		include SequenceObserver
+    def article_codes
+      codes = []
+      @sequences.collect { |seq|
+        next unless seq.patinfo == self # invalid reference
+        next unless(seq.public? and seq.has_patinfo?)
+        seq.each_package { |pac|
+          cds = {
+            :article_ean13 => pac.barcode.to_s,
+          }
+          if(pcode = pac.pharmacode)
+            cds.store(:article_pcode, pcode)
+          end
+          if(psize = pac.size)
+            cds.store(:article_size, psize)
+          end
+          if(pdose = pac.dose)
+            cds.store(:article_dose, pdose.to_s)
+          end
+          codes.push(cds)
+        }
+      }
+      codes
+    end
 		def company_name
 			_sequence_delegate(:company_name)
 		end

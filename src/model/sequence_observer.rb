@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# SequenceObserver -- oddb -- 24.04.2012 -- yasaka@ywesee.com
 # SequenceObserver -- oddb -- 28.11.2003 -- rwaltert@ywesee.com
 
 module ODDB
@@ -16,27 +17,6 @@ module ODDB
 			end
 			odba_isolated_store # rewrite indices
 			seq
-		end
-		def article_codes
-			codes = []
-			@sequences.collect { |seq| 
-				seq.each_package { |pac|
-					cds = {
-						:article_ean13 => pac.barcode.to_s,
-					}
-					if(pcode = pac.pharmacode)
-						cds.store(:article_pcode, pcode)
-					end
-          if(psize = pac.size)
-            cds.store(:article_size, psize)
-          end
-          if(pdose = pac.dose)
-            cds.store(:article_dose, pdose.to_s)
-          end
-					codes.push(cds)
-				}
-			}
-			codes
 		end
 		def remove_sequence(seq)
 			## failsafe-code
