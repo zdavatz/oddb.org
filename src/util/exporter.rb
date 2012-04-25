@@ -262,13 +262,16 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-    def export_fachinfo_yaml
+    def export_fachinfo_yaml(args=[])
       exporter = YamlExporter.new(@app)
-      safe_export 'fachinfo.yaml' do
-        exporter.export_fachinfos
-      end
-      safe_export 'fachinfo_now.yaml' do
-        exporter.export_effective_fachinfos
+      if !args.empty? and args.first =~ /^now$/
+        safe_export 'fachinfo_now.yaml' do
+          exporter.export_effective_fachinfos
+        end
+      else
+        safe_export 'fachinfo.yaml' do
+          exporter.export_fachinfos
+        end
       end
     end
     def export_patinfo_yaml
