@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbYaml -- oddb.org -- 31.03.2012 -- yasaka@ywesee.com
+# ODDB::OddbYaml -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -251,12 +251,15 @@ module ODDB
 			'@descriptions',
 		]
 		def to_yaml( opts = {} )
+      unless expired = Thread.current[:expired]
+        expired = true
+      end
 			YAML::quick_emit( self.object_id, opts ) { |out|
 				out.map( taguri ) { |map|
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
-					map.add('article_codes', self.article_codes)
+					map.add('article_codes', self.article_codes(expired))
 				}
 			}
 		end

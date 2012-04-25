@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 24.04.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -611,9 +611,19 @@ class OddbPrevalence
 			reg.each_sequence(&block)
 		}
 	end
+  # return only active fachinfos/patinfos via active container.
+  # @fachinfos/@patinfos has also old patinfos.
+  def effective_fachinfos
+    _fachinfos = []
+    @registrations.values.compact.map do |reg|
+      next unless reg.active? and reg.public? and reg.has_fachinfo?
+      if _fachinfo = reg.fachinfo
+        _fachinfos << _fachinfo
+      end
+    end
+    _fachinfos.uniq
+  end
   def effective_patinfos
-    # return only active patinfos via active sequence.
-    # @patinfos has also old patinfos.
     _patinfos = []
     @registrations.values.compact.map do |reg|
       next unless reg.active?

@@ -28,7 +28,7 @@ module ODDB
     def check_infos(name, group, &block)
       # Check missing data of fachinfo/patinfo data
       no_descr = {'de' => [], 'fr' => []}
-      valid_infos = []
+      valid_infos = [] # option
       block.call(no_descr, valid_infos)
       # Send a warning report of fachinfo/patinfo description
       if no_descr.values.flatten.length > 0
@@ -56,7 +56,23 @@ module ODDB
       end
       return valid_infos
     end
-		def export_fachinfos(name='fachinfo.yaml')
+    def export_effective_fachinfos(name='fachinfo_now.yaml')
+      _fachinfos = @app.effective_fachinfos
+      check_infos(name, "Registration") do |no_descr|
+        _fachinfos.each do |fachinfo|
+          no_descr.keys.each do |language|
+            unless fachinfo.descriptions[language]
+              swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
+              no_descr[language].push(
+                [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
+              )
+            end
+          end
+        end
+      end
+      export_array(name, _fachinfos, {:expired => false})
+    end
+    def export_fachinfos(name='fachinfo.yaml')
       check_infos(name, "Registration") do |no_descr|
         @app.fachinfos.values.each do |fachinfo|
           no_descr.keys.each do |language|
@@ -70,20 +86,19 @@ module ODDB
         end
       end
       export_array(name, @app.fachinfos.values)
-		end
+    end
     def export_interactions(name='interactions.yaml')
       export_array(name, @app.substances.inject([]) { |memo, sub| memo.concat sub.substrate_connections.values })
     end
 		def export_obj(name, obj)
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end
-		def export_patinfos(name='patinfo.yaml')
+    def export_effective_patinfos(name='patinfo.yaml')
       valid_patinfos = check_infos(name, "Sequence") do |no_descr, valid_infos|
         @app.effective_patinfos.each do |patinfo|
           patinfo = ODBA.cache.fetch(patinfo.odba_id, nil)
-          next if (patinfo.nil? or !patinfo.valid?)
-          if (patinfo.sequences.first \
-            and (patinfo.descriptions['de'] || patinfo.descriptions['fr'])) then
+          if (!patinfo.sequences.empty? and
+              (patinfo.descriptions['de'] || patinfo.descriptions['fr'])) then
             valid_infos.push patinfo
           end
           no_descr.keys.each do |language|
@@ -106,8 +121,9 @@ module ODDB
           end
         end
       end
-			export_array(name, valid_patinfos)
-		end
+      export_array(name, valid_patinfos)
+    end
+    alias :export_patinfos :export_effective_patinfos
     def export_prices(name='price_history.yaml')
       packages = @app.packages.reject do |pac|
       pac.prices.all? do |key, prices| prices.empty? end

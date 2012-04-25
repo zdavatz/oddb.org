@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Exporter -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -262,15 +263,18 @@ module ODDB
 			sleep(30)
 		end
     def export_fachinfo_yaml
-			exporter = YamlExporter.new(@app)
+      exporter = YamlExporter.new(@app)
       safe_export 'fachinfo.yaml' do
         exporter.export_fachinfos
       end
+      safe_export 'fachinfo_now.yaml' do
+        exporter.export_effective_fachinfos
+      end
     end
     def export_patinfo_yaml
-			exporter = YamlExporter.new(@app)
+      exporter = YamlExporter.new(@app)
       safe_export 'patinfo.yaml' do
-        exporter.export_patinfos
+        exporter.export_effective_patinfos
       end
     end
 		def mail_download_stats
