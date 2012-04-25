@@ -11,7 +11,11 @@ require 'util/exporter'
 module ODDB
   module Util
     Job.run do |system|
-      Exporter.new(system).export_fachinfo_yaml ARGV
+      option = ''
+      unless ARGV.empty?
+        option = ARGV.first
+      end
+      Exporter.new(system).export_fachinfo_yaml option
     end
   end
 end

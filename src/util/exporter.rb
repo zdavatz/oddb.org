@@ -262,13 +262,17 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-    def export_fachinfo_yaml(args=[])
+    def export_fachinfo_yaml(option='')
       exporter = YamlExporter.new(@app)
-      if !args.empty? and args.first =~ /^now$/
+      if option =~ /^now$/
+        puts
+        puts 'option: now  (active fachinfo only)'
         safe_export 'fachinfo_now.yaml' do
           exporter.export_effective_fachinfos
         end
       else
+        puts
+        puts 'opiton: none (all fachinfo)'
         safe_export 'fachinfo.yaml' do
           exporter.export_fachinfos
         end
