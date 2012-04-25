@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 21.04.2011 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 25.04.2011 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -30,6 +30,31 @@ module ODDB
 			self.change_log.push(item)
 			self.odba_store
 		end
+    def article_codes(expired=true)
+      codes = []
+      @registrations.collect { |reg|
+        next unless reg.fachinfo == self # invalid reference
+        if !expired
+          next unless(reg.public? and reg.has_fachinfo?)
+        end
+        reg.each_package { |pac|
+          cds = {
+            :article_ean13 => pac.barcode.to_s,
+          }
+          if(pcode = pac.pharmacode)
+            cds.store(:article_pcode, pcode)
+          end
+          if(psize = pac.size)
+            cds.store(:article_size, psize)
+          end
+          if(pdose = pac.dose)
+            cds.store(:article_dose, pdose.to_s)
+          end
+          codes.push(cds)
+        }
+      }
+      codes
+    end
     def links
       @links ||= []
 			@links.sort_by{|link| link.created}.reverse
