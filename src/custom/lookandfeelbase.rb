@@ -392,6 +392,7 @@ Zeno Davatz
 				:download_analysis0				=>	'F&uuml;r den Download der kompletten Analysenliste als PDF-File klicken Sie bitte ',
 				:download_analysis1				=>	'hier',
 				:download_analysis2				=>	'.',
+				:download_app				      =>	'iPhone / iPad generika App Download',
 				:download_doctors0				=>	'F&uuml;r den Download aller Arztadressen in einem YAML-File klicken Sie bitte ',
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',

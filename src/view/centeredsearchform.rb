@@ -180,9 +180,15 @@ module ODDB
           'download[compendium_ch.oddb.org.kindle.mobi]'  => 1,
           'download[compendium_ch.oddb.org.stanza.epub]'  => 1,
         }
-#        link.href = @lookandfeel._event_url(:download_export, args)
         link.set_attribute('class', 'list')
         link.href = 'http://goo.gl/0Htzc'
+        link
+      end
+      def download_app(model, session)
+        link = HtmlGrid::Link.new(:download_app,
+                                  model, session, self)
+        link.set_attribute('class', 'list')
+        link.href = 'http://itunes.apple.com/us/app/generika/id520038123?ls=1&mt=8'
         link
       end
 			def download_export(model, session)

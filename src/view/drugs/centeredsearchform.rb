@@ -148,9 +148,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,8]		=>	:atc_chooser,
 				[0,9,0]	=>	:new_feature,
 				[0,9,1]	=>	:download_ebook,
-				[0,10]	=>	:generic_definition,
-				[0,11]	=>	:legal_note,
-				[0,12]	=>	:paypal,
+				[0,10]	=>	:download_app,
+				[0,11]	=>	:generic_definition,
+				[0,12]	=>	:legal_note,
+				[0,13]	=>	:paypal,
 			})
       if @lookandfeel.enabled?(:facebook_fan, false)
         components.update [0,12] => :facebook_fan, [0,13] => :paypal
