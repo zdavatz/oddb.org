@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 03.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 26.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -154,12 +154,12 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,13]	=>	:paypal,
 			})
       if @lookandfeel.enabled?(:facebook_fan, false)
-        components.update [0,12] => :facebook_fan, [0,13] => :paypal
-        css_map.store([0,4,1,10], 'list center')
+        components.update [0,13] => :facebook_fan, [0,14] => :paypal
+        css_map.store([0,4,1,11], 'list center')
       else
-        css_map.store([0,4,1,9], 'list center')
+        css_map.store([0,4,1,10], 'list center')
       end
-      component_css_map.store([0,11], 'legal-note')
+      component_css_map.store([0,12], 'legal-note')
 		else
 			components.update({
 				[0,5,0]	=>	'database_last_updated_txt',
