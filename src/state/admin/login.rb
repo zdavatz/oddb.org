@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Login -- oddb -- 27.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'state/admin/root'
@@ -25,7 +26,23 @@ module LoginMethods
       des = @session.desired_state
       @session.desired_state = nil
       @session.valid_input.update(@desired_input) if(@desired_input)
-      des || default || trigger(:home)
+      nextstate = (des || default || trigger(:home))
+      # login redirect
+      entrance = [
+        ODDB::State::Drugs::ResultLimit,
+        ODDB::State::Admin::Login,
+        ODDB::State::Admin::TransparentLogin
+      ]
+      if entrance.include?(self.class)
+        location = nextstate.request_path
+        self.http_headers = { # replace with stub self
+          'Status'   => '303 See Other',
+          'Location' => location ? location : '/'
+        }
+        self
+      else
+        nextstate
+      end
     else
       State::User::InvalidUser.new(@session, user)
     end
