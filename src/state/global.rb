@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 12.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 27.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -421,7 +421,16 @@ module ODDB
 			end
 			def logout
 				user = @session.logout
-				State::Drugs::Init.new(@session, user)
+				nextstate = State::Drugs::Init.new(@session, user)
+        location = nextstate.request_path
+        if location.nil?
+          location = '/'
+        end
+        nextstate.http_headers = {
+          'Status'   => '303 See Other',
+          'Location' => location
+        }
+        nextstate
 			end
 			def navigation
 				#+ zone_navigation \

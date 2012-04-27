@@ -35,9 +35,12 @@ module LoginMethods
       ]
       if entrance.include?(self.class)
         location = nextstate.request_path
-        self.http_headers = { # replace with stub self
+        if location.nil? or location =~ /logout/
+          location = '/'
+        end
+        self.http_headers = { # replace with self to prevent request loop
           'Status'   => '303 See Other',
-          'Location' => location ? location : '/'
+          'Location' => location
         }
         self
       else
