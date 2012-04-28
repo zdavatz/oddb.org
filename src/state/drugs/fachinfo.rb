@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::Fachinfo -- oddb.org -- 21.04.2011 -- yasaka@ywesee.com
+# ODDB::State::Drugs::Fachinfo -- oddb.org -- 28.04.2011 -- yasaka@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -51,6 +51,14 @@ class AjaxLinks < Global
 end
 class RootFachinfo < Fachinfo
 	VIEW = View::Drugs::RootFachinfo
+  def init
+    super
+    if _has_editor_privilege?
+      @default_view = View::Drugs::RootFachinfo
+    else # only show
+      @default_view = View::Drugs::Fachinfo
+    end
+  end
   def ajax_create_fachinfo_link
     check_model
     links = @model.links
@@ -100,6 +108,17 @@ class RootFachinfo < Fachinfo
       end
     end
     self
+  end
+  private
+  def _has_editor_privilege?
+    user = @session.user
+    [
+      'org.oddb.RootUser',
+      'org.oddb.AdminUser'
+    ].each do |priv|
+      return true if user.allowed?('login', priv)
+    end
+    return false
   end
   def _update_document(input)
     html = input[:html_chapter]
