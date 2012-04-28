@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 28.03.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1117,6 +1117,7 @@ Zeno Davatz
 				:paypal_success						=>	'Bereit zum Download',
         :screencast               =>  'Video-Anleitung (Screencast)',
         :screencast_url           =>  'http://www.youtube.com/watch?v=hCzO8J9bYcY',
+				:sl_generic_type				=>	'Original/Generikum',
 				:specialization						=>	'Erlaubnis',
         :pharmacode               =>  'Pharmacode',
 				:phone_label							=>	'Telefon:',
@@ -2484,6 +2485,7 @@ Zeno Davatz
 				:paypal_unconfirmed				=>	'Erreur',
 				:paypal_success						=>	'Prêt à télécharger',
 				:specialization						=>	'Permission',
+        :sl_generic_type           =>  'Original/G&eacute;n&eacute;rique',
 				:phone_label							=>	'T&eacute;l&eacute;phone:',
 				:phone										=>	'T&eacute;l&eacute;phone:',
         :photo_link               =>  'Link Photo produit',
@@ -3723,6 +3725,7 @@ Zeno Davatz
 				:paypal_unconfirmed				=>	'Error',
 				:paypal_success						=>	'Ready for download',
 				:specialization						=>	'Permission',
+        :sl_generic_type           =>  'Original/Generic',
 				:phone_label							=>	'Phone:',
 				:phone										=>	'Phone:',
         :photo_link               =>  'Image-Link',

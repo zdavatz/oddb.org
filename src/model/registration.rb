@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Registration -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -158,7 +159,7 @@ module ODDB
 		def generic?
 			self.generic_type == :generic
 		end
-		def generic_type
+		def generic_type # This is old value. Pleas use Package.sl_generic_type
 			@generic_type || if(@company and @company.respond_to?(:generic_type))
 				@company.generic_type
 			end

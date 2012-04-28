@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Admin::Registration -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Registration -- oddb.org -- 07.03.2003 -- hwyss@ywesee.com 
 
@@ -114,7 +115,6 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		[2,0]		=>	:registration_date,
 		[0,1]		=>	:company_name,
 		[2,1]		=>	:revision_date,
-		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
@@ -137,11 +137,6 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		:registration_date	=>	HtmlGrid::DateValue,
 		:revision_date			=>	HtmlGrid::DateValue,
 	}
-	def generic_type(model, session)
-    if(key = model.generic_type)
-      label(HtmlGrid::Text.new(key, model, session, self))
-    end
-	end
 end
 module FachinfoPdfMethods
 	TAG_METHOD = :multipart_form
@@ -176,8 +171,6 @@ class RegistrationForm < View::Form
 		[2,0]		=>	:registration_date,
 		[0,1]		=>	:company_name,
 		[2,1]		=>	:revision_date,
-		[0,2]		=>	:generic_type,
-		[0,3] 	=>	:keep_generic_type,
 		[2,2]		=>	:expiration_date,
 		[2,3]		=>	:renewal_flag,
 		[0,4,0]	=>	:complementary_select,
@@ -214,8 +207,6 @@ class RegistrationForm < View::Form
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:vaccine						=>	HtmlGrid::InputCheckbox,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
-		:generic_type				=>	HtmlGrid::Select,
-		:keep_generic_type	=>	HtmlGrid::InputCheckbox,
     :ignore_patent      =>  HtmlGrid::InputCheckbox,
 		:inactive_date			=>	HtmlGrid::DateValue,
 		:manual_inactive_date=>	HtmlGrid::InputDate,

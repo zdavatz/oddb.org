@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
 require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
@@ -43,6 +44,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,1]		=>	:name,
 		[2,1]		=>	:registration_date,
 		[0,2]		=>	:most_precise_dose,
+    [0,3]   =>  :sl_generic_type,
 		[2,2]		=>	:sequence_date,
 		[2,3]		=>	:revision_date,
 		[0,4,0]	=>	:atc_class,
@@ -212,6 +214,13 @@ class PackageInnerComposite < HtmlGrid::Composite
       link.href = @lookandfeel._event_url(:search, args, "best_result")
     end
     link
+  end
+  def sl_generic_type(model, session=@session)
+    if(key = model.sl_generic_type)
+      text = HtmlGrid::Text.new(key, model, session, self)
+      text.label = true
+      text
+    end
   end
 	def registration_holder(model, session=@session)
 		HtmlGrid::Value.new(:company_name, model, @session, self)

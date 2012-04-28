@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Admin::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -93,6 +94,7 @@ module PackageMethods
       :photo_link,
 			:refdata_override,
 			:lppv,
+      :sl_generic_type,
 		]
 		input = user_input(keys)
     part_keys = [

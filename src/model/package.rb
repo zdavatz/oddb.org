@@ -369,6 +369,10 @@ module ODDB
 			values = values.dup
 			values.dup.each { |key, value|
 				case key
+        when :sl_generic_type
+          if(value.is_a? String)
+            values[key] = value.intern
+          end
 				when :generic_group
 					values[key] = value.resolve(app)
 				when :price_public, :price_exfactory

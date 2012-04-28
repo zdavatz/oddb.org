@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Admin::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Package -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -158,6 +159,7 @@ class PackageForm < HtmlGrid::Composite
     [2,0]		=>	:ikscd,
     [0,1]		=>	:descr,
     [2,1]   =>  :photo_link,
+    [0,2]   =>  :sl_generic_type,
     [2,2]		=>	:pretty_dose,
     [0,3]		=>	:ikscat,
     [2,3]		=>	:sl_entry,
@@ -205,6 +207,7 @@ class PackageForm < HtmlGrid::Composite
 		:preview_with_market_date =>	HtmlGrid::InputCheckbox,
 		:refdata_override	=>	HtmlGrid::InputCheckbox,
 		:lppv							=>	HtmlGrid::Select,
+    :sl_generic_type  =>  HtmlGrid::Select,
 	}
 	def init
 		if(@model.out_of_trade)
