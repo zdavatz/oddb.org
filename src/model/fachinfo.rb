@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 25.04.2011 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 28.04.2011 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -57,7 +57,7 @@ module ODDB
     end
     def links
       @links ||= []
-			@links.sort_by{|link| link.created}.reverse
+			@links.compact.sort_by{|link| link.created}.reverse
     end
 		def atc_class
 			if(reg = @registrations.first)

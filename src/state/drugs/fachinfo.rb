@@ -175,8 +175,8 @@ class RootFachinfo < Fachinfo
           if !input[:fi_link_created].nil? and input[:fi_link_created][index]
             link.created = input[:fi_link_created][index]
           end
+          links << link
         end
-        links << link
       end
       @model.add_change_log_item(email, name, lang)
       @session.app.update(pointer, links, email)
