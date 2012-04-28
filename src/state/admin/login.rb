@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Login -- oddb -- 27.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Login -- oddb -- 29.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
@@ -35,7 +35,9 @@ module LoginMethods
       ]
       if entrance.include?(self.class)
         location = nextstate.request_path
-        if location.nil? or location =~ /logout/
+        if location.nil? or
+           location =~ /logout/ or
+           nextstate.class == self.class
           location = '/'
         end
         self.http_headers = { # replace with self to prevent request loop
@@ -84,24 +86,7 @@ class Login < State::Global
   ## LoginMethods are included in State::Global
 end
 class TransparentLogin < State::Admin::Login
-  attr_accessor :desired_event
-  def login
-    autologin(@session.login, self)
-    if(@model.respond_to?(:pointer))
-      klass = resolve_state(@model.pointer)
-      newstate = klass.new(@session, @model)
-      newstate.extend(@viral_module)
-      newstate
-    else
-      trigger(@desired_event)
-    end
-  rescue Yus::UnknownEntityError
-    @errors.store(:email, create_error(:e_authentication_error, :email, nil))
-    self
-  rescue Yus::AuthenticationError
-    @errors.store(:pass, create_error(:e_authentication_error, :pass, nil))
-    self
-  end
+  # LoginMethods has login redirect
 end
     end
   end
