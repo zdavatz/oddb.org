@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 02.03.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -69,7 +69,7 @@ module ODDB
       :swissmedic_source => "Hash",
       :descr => "String",
       :preview_with_market_date => ["TrueClass","NilClass","FalseClass"],
-      :generic_group_factor => ["NilClass,Float","Fixnum"],
+      :generic_group_factor => ["NilClass","Float","Fixnum"],
       :photo_link => ["NilClass","String"],
       :disable_ddd_price => ["TrueClass","NilClass","FalseClass"],
       :ddd_dose => "ODDB::Dose",
