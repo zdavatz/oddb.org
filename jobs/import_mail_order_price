@@ -10,7 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_mail_order_prices(ARGV[0], ARGV[1])
+      Updater.new(system).update_mail_order_prices(ARGV[0])
     end
   end
 end

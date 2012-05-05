@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 20.03.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -884,6 +884,9 @@ module ODDB
         [1,5] => 'explain_slo',
         [1,6] => 'explain_slg',
         [1,7] => :explain_lppv,
+        #[2,1] => :explain_mail_order_price_compare,
+        #[2,2] => :explain_mail_order_price_discount,
+        #[2,3] => :explain_mail_order_price_normal,
       }
     end
 		def result_list_components

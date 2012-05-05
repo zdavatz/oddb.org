@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 03.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -106,27 +106,27 @@ class MailOrderPriceLogo < HtmlGrid::NamedComponent
   LOGO_PATH = "http://#{SERVER_NAME}/resources/zurrose/"
   def init
     super
-    @index = 0
+    @index = 0 # latest one
   end
   def mail_order_index=(index)
     @index = index
   end
   def to_html(context)
-    @attributes['src'] = LOGO_PATH + @model.mail_order_prices.sort[@index].logo
-    src = context.img(@attributes) 
     if @model.respond_to?(:mail_order_prices) and !@model.mail_order_prices.empty?
-      #src << ' %.2f' % @model.mail_order_prices.sort.first.price.to_f
-      price = @model.mail_order_prices.sort[@index].price
-      src << '&nbsp;'
+      price = @model.mail_order_prices[@index].price
       if price =~ /(Rab\.|Rabatt)$/u
-        src << price
+        @attributes['src'] = LOGO_PATH + 'rose_orange.png'
+        src = context.img(@attributes)
+        src << "&nbsp;#{price}"
       else
+        @attributes['src'] = LOGO_PATH + 'rose_gruen.png'
+        src = context.img(@attributes)
         unless price.empty?
-          src << ' %.2f' % price.to_f
+          src << '&nbsp;%.2f' % price.to_f
         end
       end
+      src
     end
-    src
   end
 end
 class ResultList < HtmlGrid::List
@@ -271,7 +271,7 @@ class ResultList < HtmlGrid::List
   def mail_order_price(model, session=@session)
     if model.mail_order_prices and !model.mail_order_prices.empty?
       link = HtmlGrid::Link.new(:mail_order_price, model, session, self)
-      link.href = model.mail_order_prices[0].url
+      link.href = model.mail_order_prices.first.url
       link.target = '_blank'
       link.value = MailOrderPriceLogo.new(:mail_order_price, model, @session, self)
       link

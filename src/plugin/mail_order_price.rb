@@ -1,41 +1,26 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::MailOrderPricePlugin -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # ODDB::MailOrderPricePlugin -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'plugin/plugin'
 require 'model/package'
-require 'fileutils'
 
 module ODDB
 	class MailOrderPricePlugin < Plugin
-    LOGO_DIR = File.expand_path('../../doc/resources/zurrose', File.dirname(__FILE__))
     CSV_DIR  = File.expand_path('../../data/csv', File.dirname(__FILE__))
-		def initialize(app)
-			super(app)
-		end
     def report
       "Updated Packages: #{@updated_packages}"
     end
-    def update(csv_file_path, logo_file_path)
-      unless File.exist?(logo_file_path)
-       if File.exist?(File.join(LOGO_DIR, logo_file_path))
-         logo_file_path = File.join(LOGO_DIR, logo_file_path) 
-       end
-      end
+    def update(csv_file_path)
       unless File.exist?(csv_file_path)
         if File.exist?(File.join(CSV_DIR, csv_file_path))
           csv_file_path = File.join(CSV_DIR, csv_file_path)
         end
       end
-      if File.exist?(csv_file_path) and File.exist?(logo_file_path)
-        # copy logo file
-        unless File.exist?(File.join(LOGO_DIR, File.basename(logo_file_path)))
-          FileUtils.cp(logo_file_path, File.join(LOGO_DIR, File.basename(logo_file_path)))
-        end
-        logo_file_name = File.basename(logo_file_path)
-
+      if File.exist?(csv_file_path)
         # import price 
         @updated_packages = 0
         File.readlines(csv_file_path).each do |line|
@@ -45,10 +30,10 @@ module ODDB
             if reg = @app.registration(iksnr) and pac = reg.package(ikscd)
               price = x[1]
               url   = x[2].chomp
-              if pac.mail_order_prices and index = pac.mail_order_prices.index{|price| price.logo == logo_file_name}
-                pac.update_mail_order_price(index, price, url, logo_file_name)
+              if pac.mail_order_prices and index = pac.mail_order_prices.index { |price| price.url == url }
+                pac.update_mail_order_price(index, price, url)
               else
-                pac.add_mail_order_price(price, url, logo_file_name)
+                pac.insert_mail_order_price(price, url)
               end
               @updated_packages += 1
             end

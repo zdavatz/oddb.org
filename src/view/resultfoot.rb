@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::ResultFoot -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
@@ -15,27 +16,30 @@ module ODDB
 			include AdditionalInformation
 			COMPONENTS = {}
 			CSS_MAP = {}
-			CSS_KEYMAP = {
-				'explain_unknown'				=>	'infos bold',
-				'explain_expired'				=>	'infos bold expired',
-				:explain_cas						=>	'infos',
-				:explain_comarketing		=>	'infos',
-				:explain_complementary	=>'infos',
-				:explain_vaccine				=>	'infos',
-				:explain_ddd_price			=>	'infos',
-				:explain_deductible			=>	'infos',
-				:explain_phytotherapy		=>  'infos',
-				:explain_anthroposophy	=>	'infos',
-				:explain_homeopathy			=>	'infos',
-				:explain_parallel_import=>  'infos',
-				:explain_fachinfo				=>	'infos',
-				'explain_pbp'						=>	'infos',
-				:explain_patinfo		=>	'infos',
-				:explain_narc						=>	'infos',
-				:explain_limitation			=>  'infos',
-				:explain_google_search					=>  'infos',
-				:explain_feedback				=>	'infos',
-			}
+      CSS_KEYMAP = {
+        'explain_unknown'        => 'infos bold',
+        'explain_expired'        => 'infos bold expired',
+        :explain_cas             => 'infos',
+        :explain_comarketing     => 'infos',
+        :explain_complementary   => 'infos',
+        :explain_vaccine         => 'infos',
+        :explain_ddd_price       => 'infos',
+        :explain_deductible      => 'infos',
+        :explain_phytotherapy    => 'infos',
+        :explain_anthroposophy   => 'infos',
+        :explain_homeopathy      => 'infos',
+        :explain_parallel_import => 'infos',
+        :explain_fachinfo        => 'infos',
+        'explain_pbp'            => 'infos',
+        :explain_patinfo         => 'infos',
+        :explain_mail_order_price_compare  => 'infos',
+        :explain_mail_order_price_discount => 'infos',
+        :explain_mail_order_price_normal   => 'infos',
+        :explain_narc            => 'infos',
+        :explain_limitation      => 'infos',
+        :explain_google_search   => 'infos',
+        :explain_feedback        => 'infos',
+      }
       def initialize model, session, container, components=nil
         @components = components
         super model, session, container
@@ -90,6 +94,24 @@ module ODDB
 			def explain_limitation(model, session=@session)
 				[square(:limitation), @lookandfeel.lookup(:explain_limitation) ]
 			end
+      def explain_mail_order_price_compare(model, session=@session)
+        [
+          HtmlGrid::Image.new(:logo_rose_long, model, @session, self),
+          @lookandfeel.lookup(:explain_mail_order_price_compare)
+        ]
+      end
+      def explain_mail_order_price_discount(model, session=@session)
+        [
+          HtmlGrid::Image.new(:logo_rose_orange, model, @session, self),
+          @lookandfeel.lookup(:explain_mail_order_price_discount)
+        ]
+      end
+      def explain_mail_order_price_normal(model, session=@session)
+        [
+          HtmlGrid::Image.new(:logo_rose_green, model, @session, self),
+          @lookandfeel.lookup(:explain_mail_order_price_normal)
+        ]
+      end
 			def explain_minifi(model, session=@session)
 				[square(:minifi), @lookandfeel.lookup(:explain_minifi) ]
 			end

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Updater-- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -340,8 +341,8 @@ module ODDB
     def migel_nonpharma(pharmacode_file, logging = false)
       update_notify_simple(SwissindexNonpharmaPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
     end
-    def update_mail_order_prices(csv_file_path, logo_file_path)
-      update_notify_simple(MailOrderPricePlugin, 'Update Mail Order Prices', :update, [csv_file_path, logo_file_path])
+    def update_mail_order_prices(csv_file_path)
+      update_notify_simple(MailOrderPricePlugin, 'Update Mail Order Prices', :update, [csv_file_path])
     end
 
 		private

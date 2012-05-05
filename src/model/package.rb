@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -90,7 +90,7 @@ module ODDB
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
       :registration, :route_of_administration, :sequence_date, :seqnr
-    MailOrderPrice = Struct.new(:price, :url, :logo)
+    MailOrderPrice = Struct.new(:price, :url, :logo) # logo is empty (old struct)
     class MailOrderPrice
       def <=>(other)
         self.price.to_f <=> other.price.to_f
@@ -102,15 +102,21 @@ module ODDB
       @parts = []
       @mail_order_prices = [] 
 		end
-    def add_mail_order_price(price, url, logo)
+    def add_mail_order_price(price, url)
       @mail_order_prices ||= []
-      @mail_order_prices << MailOrderPrice.new(price, url, logo)
+      @mail_order_prices << MailOrderPrice.new(price, url)
       @mail_order_prices.odba_store
       odba_store
     end
-    def update_mail_order_price(index, price, url, logo)
+    def insert_mail_order_price(price, url)
+      @mail_order_prices ||= []
+      @mail_order_prices.unshift MailOrderPrice.new(price, url)
+      @mail_order_prices.odba_store
+      odba_store
+    end
+    def update_mail_order_price(index, price, url)
       if @mail_order_prices and  @mail_order_prices[index]
-        @mail_order_prices[index] = MailOrderPrice.new(price, url, logo)
+        @mail_order_prices[index] = MailOrderPrice.new(price, url)
         @mail_order_prices.odba_store
       end
       odba_store
