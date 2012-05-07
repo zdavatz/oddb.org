@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::SwissmedicPlugin -- oddb.org -- 07.05.2011 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -31,6 +32,7 @@ module ODDB
       @known_export_sequences = 0
       @export_registrations = {}
       @export_sequences = {}
+      @skipped_packages = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
     end
@@ -385,10 +387,23 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Updated existing Export-Registrations: #{@known_export_registrations}",
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
+        "Skipped Packages: #{@skipped_packages.length}",
         "Total time to update: #{"%.2f" % @update_time} [m]",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
+      unless @skipped_packages.empty? # no expiration date
+        skipped = []
+        @skipped_packages.each do |row|
+          skipped << "\"#{cell(row, column(:company))}, "
+                     "#{cell(row, column[:name_base])}, "
+                     "#{cell(row, column[:iksnr])}\""
+        end
+        lines << ""
+        lines << "There is no Gültigkeits-datum (column 'J') of the following"
+        lines << "Swissmedic Registration (Company, Product, Numbers):"
+        lines << "[" + skipped.join(',') + "]"
+      end
       lines.flatten.join("\n")
     end
     def resolve_link(ptr)
@@ -682,6 +697,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
         expiration = date_cell(row, column(:expiry_date))
+        if expiration.nil?
+          @skipped_packages << row
+          return
+        end
         reg_date = date_cell(row, column(:registration_date))
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
                     true
