@@ -111,7 +111,8 @@ module ODDB
     end
     def delete(deletions)
       deletions.each { |row|
-        @app.delete pointer(row)
+        ptr = pointer(row)
+        @app.delete ptr if ptr
       }
     end
     def describe(diff, iksnr)

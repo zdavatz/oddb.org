@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 07.05.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -152,11 +152,13 @@ module ODDB
 		end
 		def checkout
 			checkout_helper([@generic_group], :remove_package)
-      @parts.dup.each { |part|
-        part.checkout
-        part.odba_delete
-      }
-      @parts.odba_delete
+      if @parts
+        @parts.dup.each { |part|
+          part.checkout
+          part.odba_delete
+        }
+        @parts.odba_delete
+      end
 			if(@sl_entry.respond_to?(:checkout))
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
