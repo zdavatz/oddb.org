@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::ResultColors -- oddb -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::View::ResultColors -- oddb -- 07.05.2012 -- yasaka@ywesee.com
 # ODDB::View::ResultColors -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
 
 module ODDB
@@ -19,7 +19,8 @@ module ODDB
 =end
 			private
 			def resolve_suffix(model, bg_flag=false)
-				gt = model.sl_generic_type || 'unknown'
+        # only Package#sl_generic_type
+				gt = model.respond_to?(:sl_generic_type) ? model.sl_generic_type : 'unknown'
 				' ' << gt.to_s << super
 			end
 			def row_css(model, bg_flag=false)
