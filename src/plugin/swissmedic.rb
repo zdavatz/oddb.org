@@ -396,8 +396,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         skipped = []
         @skipped_packages.each do |row|
           skipped << "\"#{cell(row, column(:company))}, "
-                     "#{cell(row, column[:name_base])}, "
-                     "#{cell(row, column[:iksnr])}\""
+                     "#{cell(row, column(:name_base))}, "
+                     "#{cell(row, column(:iksnr))}\""
         end
         lines << ""
         lines << "There is no Gültigkeits-datum (column 'J') of the following"
