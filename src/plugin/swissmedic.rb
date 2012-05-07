@@ -829,7 +829,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       _sanity_check_deletions(diff.package_deletions, table)
     end
     def _sanity_check_deletions(deletions, table)
-      deletions.delete_if { |row| table[cell(row,column(:iksnr))] || cell(row,COLUMNS.size).to_i > 0 }
+      deletions.compact.delete_if { |row| table[cell(row,column(:iksnr))] || cell(row,COLUMNS.size).to_i > 0 }
     end
     def _sort_by(sort, iksnr, flags)
       case sort
