@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 07.05.2011 -- yasaka@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 08.05.2011 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -396,8 +396,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       unless @skipped_packages.empty? # no expiration date
         skipped = []
         @skipped_packages.each do |row|
-          skipped << "\"#{cell(row, column(:company))}, "
-                     "#{cell(row, column(:name_base))}, "
+          skipped << "\"#{cell(row, column(:company))}, " \
+                     "#{cell(row, column(:name_base))}, " \
                      "#{cell(row, column(:iksnr))}\""
         end
         lines << ""
