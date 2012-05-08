@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 08.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -240,13 +240,9 @@ class ResultList < HtmlGrid::List
       if(@model.respond_to?(:atc_classes))
         @model.atc_classes.each do |atc|
           atc.packages.each do |pac|
-            #p pac.basename
-            #p pac.iksnr
-            #p pac.seqnr
             if pac.mail_order_prices and n = pac.mail_order_prices.length and n > @max_mail_order_price
               @max_mail_order_price = n
             end
-            #p @max_mail_order_price
           end
         end
         self.class.add_additional_mail_order_price_method(@max_mail_order_price-1)
