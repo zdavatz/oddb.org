@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::LppvPlugin -- oddb.org -- 10.05.2012 -- yasaka@ywesee.com
 # ODDB::LppvPlugin -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
 
@@ -22,20 +23,18 @@ module ODDB
 			end
 			@table = table
 		end
-		def prices
-			prices = {}
-			pcode_style = /[0-9]{6,8}/u
-			price_style = /\d+\.\d\d/u
-			@tables.at(1).each_row { |row|
-				if(pcode_style.match(row.cdata(3)) \
-					 && price_style.match(row.cdata(5)))
-          price = Util::Money.new(row.cdata(5).to_f, :public, 'CH')
-          price.authority = :lppv
-					prices.store(row.cdata(3).to_i.to_s, price)
-				end
-			}
-			prices
-		end
+    def eans
+      eans = []
+      pcode_style = /[0-9]{6,8}/u
+      ean_style = /[0-9]{13}/u
+      @tables.at(1).each_row { |row|
+        if(pcode_style.match(row.cdata(3)) \
+           && ean_style.match(row.cdata(5)))
+          eans << row.cdata(5).to_i.to_s
+        end
+      }
+      eans
+    end
 		def send_flowing_data(data)
 			if(@table)
 				@table.send_cdata(data)	
@@ -43,44 +42,6 @@ module ODDB
 		end
 	end
 	class LppvPlugin < Plugin
-		class PriceUpdate
-			attr_reader :old, :current, :package
-			def initialize(package, current)
-				old = package.price_public
-				if old == nil
-					@old = Package.price_internal(0)
-				else
-					@old = old
-				end
-				@current = Package.price_internal(current, :public)
-				@package = package
-			end
-			def up?
-				@current > @old
-			end	
-			def down?
-				@current < @old
-			end
-			def changed?
-				@current != @old
-			end
-			def resolve_link(model)
-        if model.is_a?(ODDB::Package) and iksnr = model.iksnr and seqnr = model.seqnr and ikscd = model.ikscd
-          str = "http://ch.oddb.org/de/gcc/show/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
-        else
-          pointer = model.pointer
-          str = 'http://ch.oddb.org/de/gcc/resolve/pointer/'.concat(CGI.escape(pointer.to_s))
-        end
-			end
-			def report_lines
-				[
-					resolve_link(package),
-					sprintf("%-20s  %-20.2f  %-20.2f %s", @package.iksnr, 
-									@old.to_f, @current.to_f, @package.name),
-									nil,
-				]
-			end
-		end
 		LPPV_HOST = 'www.lppa.ch'
 		LPPV_PATH = '/index/%s.htm'
 		attr_reader :updated_packages
@@ -90,79 +51,63 @@ module ODDB
 			@packages_with_sl_entry = []
 			@not_updated_chars = []
 		end
-		def update(range = 'A'..'Z')
-			@prices = {}
-			Net::HTTP.new(LPPV_HOST).start { |http| 
-				range.each { |char| 
-					@prices.update(get_prices(char, http))
-				}
-			}
-			update_packages(@prices.dup)
-		end
-		def get_prices(char, http)
-			writer = LppvWriter.new
+    def update(range = 'A'..'Z')
+      @eans = []
+      Net::HTTP.new(LPPV_HOST).start { |http|
+        range.each { |char|
+          eans = get_eans(char, http)
+          @eans << eans
+        }
+      }
+      update_packages(@eans.dup.flatten)
+    end
+    def get_eans(char, http)
+      writer = LppvWriter.new
       path = sprintf(LPPV_PATH, char)
-			response = http.get(path)
-			formatter = HtmlFormatter.new(writer)
-			parser = HtmlParser.new(formatter)
-			parser.feed(response.body)
-			if writer.prices.empty?
-				@not_updated_chars.push(char)
-			end
+      response = http.get(path)
+      formatter = HtmlFormatter.new(writer)
+      parser = HtmlParser.new(formatter)
+      parser.feed(response.body)
+      if writer.eans.empty?
+        @not_updated_chars.push(char)
+      end
       origin = "http://#{LPPV_HOST}#{path}"
-      prices = writer.prices
-      prices.each do |key, price| price.origin = origin end
-      prices
-		end				
-		def update_package(package, data)
-			if(price_dat = data.delete(package.pharmacode))
-				if(package.sl_entry && package.price_public)
-					@packages_with_sl_entry.push(package)
-				else
-					do_price_update(package, price_dat)
-				end
-			elsif(package.lppv && package.data_origin(:lppv) == :lppv)
-				@app.update(package.pointer, {:lppv => false}, :lppv)
-			end
-		end
+      writer.eans
+    end
+    def update_package(package, data)
+      if(ean = data.delete(package.barcode))
+        if(package.sl_entry && package.price_public)
+          @packages_with_sl_entry.push(package)
+        else
+          do_lppv_update(package)
+        end
+      elsif(package.lppv && package.data_origin(:lppv) == :lppv)
+        @app.update(package.pointer, {:lppv => false}, :lppv)
+      end
+    end
 		def update_packages(data)
 			@app.each_package { |package| 
 				update_package(package, data)
 			}
 		end
-		def report
-			ups, downs = @updated_packages.sort_by { |price| 
-				price.package.name }.partition { |price| price.up? } 
-				lines = [
-					"Downloaded Prices: #{@prices.size}",
-					"Updated Packages: #{@updated_packages.size}",
-					nil,
-					"Packages with SL-Entry: #{@packages_with_sl_entry.size}",
-					nil,
-					"The following Packages experienced a Price RAISE:",
-					sprintf("%-20s  %-20s  %-20s %-s", 
-									"IKS-Number", "Old Price", "New Price", "Package Name"),
-				]
-				ups.each { |price| lines.concat(price.report_lines) }
-				lines.concat([ nil,
-					"The following Packages experienced a Price CUT:",
-					sprintf("%-20s  %-20s  %-20s %-s,", 
-									"IKS-Number", "Old Price", "New Price", "Package Name"),
-				])
-				downs.each { |price| lines.concat(price.report_lines) }
-				lines.push("Not updated were: " << @not_updated_chars.join(', '))
-				lines.flatten.join("\n")
-		end
-		def	do_price_update(package, price)
-			price_obj = PriceUpdate.new(package, price)
-			if(price_obj.changed? || !package.lppv)
-				args = {
-					:price_public => price,
-					:lppv					=> true,
-				}
-				@app.update(package.pointer, args, :lppv)
-				@updated_packages.push(price_obj)
-			end
-		end
+    def report
+      lines = [
+        "Updated Packages (lppv flag true): #{@updated_packages.size}",
+        nil,
+        "Packages with SL-Entry: #{@packages_with_sl_entry.size}",
+        nil,
+        "Not updated were: #{@not_updated_chars.join(', ')}",
+      ]
+      lines.flatten.join("\n")
+    end
+    def do_lppv_update(package)
+      if(!package.lppv)
+        args = {
+          :lppv => true
+        }
+        @app.update(package.pointer, args, :lppv)
+        @updated_packages.push(package)
+      end
+    end
 	end
 end
