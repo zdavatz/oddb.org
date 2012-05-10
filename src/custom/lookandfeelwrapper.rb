@@ -884,9 +884,9 @@ module ODDB
         [1,5] => 'explain_slo',
         [1,6] => 'explain_slg',
         [1,7] => :explain_lppv,
-        #[2,1] => :explain_mail_order_price_compare,
-        #[2,2] => :explain_mail_order_price_discount,
-        #[2,3] => :explain_mail_order_price_normal,
+        [2,1] => :explain_mail_order_price_compare,
+        [2,2] => :explain_mail_order_price_discount,
+        [2,3] => :explain_mail_order_price_normal,
       }
     end
 		def result_list_components
@@ -905,8 +905,8 @@ module ODDB
 				[8,0]		=>	:ddd_price,
 				[9,0]		=>	'nbsp',
 				[10,0]	=>	:company_name,
-        #[10,0]  =>  :mail_order_price,
-        #[11,0]  =>  :additional_mail_order_price0,
+        [10,0]  =>  :mail_order_price,
+        [11,0]  =>  :additional_mail_order_price0,
 				[11,0]	=>	:ikscat,
 				#[12,0]	=>	:ikscat,
 			}
