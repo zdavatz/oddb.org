@@ -5,14 +5,12 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'util/job'
-require 'util/updater'
+require 'util/exporter'
 
 module ODDB
   module Util
     Job.run do |system|
-      updater = Updater.new system
-      updater.export_oddb_csv
-      updater.export_oddb2_csv
+      Exporter.new(system).export_csv
     end
   end
 end
