@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MailOrderPricePlugin -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
+# ODDB::MailOrderPricePlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # ODDB::MailOrderPricePlugin -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
@@ -12,7 +12,11 @@ module ODDB
 	class MailOrderPricePlugin < Plugin
     CSV_DIR  = File.expand_path('../../data/csv', File.dirname(__FILE__))
     def report
-      "Updated Packages: #{@updated_packages}"
+      lines = [
+        "Updated Packages: #{@updated_packages.length}",
+        "Deleted Packages: #{@deleted_packages.length}"
+      ]
+      lines.join("\n")
     end
     def update(csv_file_path)
       unless File.exist?(csv_file_path)
@@ -22,7 +26,7 @@ module ODDB
       end
       if File.exist?(csv_file_path)
         # import price 
-        @updated_packages = 0
+        @updated_packages = []
         File.readlines(csv_file_path).each do |line|
           if x = line.split(/;/) and x.length == 3 and x[0][0,4] == '7680'
             iksnr = x[0][4,5]
@@ -35,8 +39,17 @@ module ODDB
               else
                 pac.insert_mail_order_price(price, url)
               end
-              @updated_packages += 1
+              @updated_packages << pac.pharmacode
             end
+          end
+        end
+        # delete price
+        @deleted_packages = []
+        @app.each_package do |pac|
+          next if pac.mail_order_prices.nil?
+          unless pac.mail_order_prices.empty? or @updated_packages.include?(pac.pharmacode)
+            pac.delete_all_mail_order_prices
+            @deleted_packages << pac.pharmacode
           end
         end
       end
