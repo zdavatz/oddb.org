@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::ResultFoot -- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
+# ODDB::View::ResultFoot -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
@@ -32,6 +32,7 @@ module ODDB
         :explain_fachinfo        => 'infos',
         'explain_pbp'            => 'infos',
         :explain_patinfo         => 'infos',
+        'explain_mail_order_price_title'   => 'bold',
         :explain_mail_order_price_compare  => 'infos',
         :explain_mail_order_price_discount => 'infos',
         :explain_mail_order_price_normal   => 'infos',
@@ -56,8 +57,6 @@ module ODDB
 					width = [x, width].max
 					height = [y.next, height].max
 				}
-				#@css_map.store([0, 0, width.next, height], 'infos')
-				css_map.store([0, 0, width.next, height], 'infos')
 				super
 			end
 			def explain_comarketing(model, session=@session)
