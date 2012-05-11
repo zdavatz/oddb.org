@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestCoMarketingPlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # ODDB::TestCoMarketingPlugin -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestCoMarketingPlugin -- oddb.org -- 09.05.2006 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'flexmock'
 require 'plugin/comarketing'
 

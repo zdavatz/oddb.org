@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestDoctorPlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # TestDoctorPlugin -- oddb.org -- 23.03.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'flexmock'
 require 'plugin/doctors'
 require 'tempfile'

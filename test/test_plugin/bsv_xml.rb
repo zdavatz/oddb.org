@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# TestBsvXmlPlubin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # TestBsvXmlPlubin -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 # TestBsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
@@ -7,7 +8,7 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
@@ -64,10 +65,7 @@ module ODDB
         c.should_receive(:next_section).and_return(section)
         c.should_receive(:clean!).and_return('clean!')
       end
-      text = [
-        '<i>hello</i>',
-        '<h>hello</h>'
-      ]
+      text = "<i>hello</i>\n<h>hello</h>"
       assert_equal('clean!', @listener.update_chapter(chapter, text, 'subheading'))
 
       # check a local variable
@@ -294,7 +292,9 @@ module ODDB
       flexmock(@app) do |app|
         app.should_receive(:update).and_return(sequence)
       end
-      assert_equal(sequence, @listener.identify_sequence(registration, 'name', 'substances'))
+      name = {:de => ''}
+      substances = [{}]
+      assert_equal(sequence, @listener.identify_sequence(registration, name, substances))
     end
     def test_identify_sequence__active_agent_nil
       pointer = flexmock('pointer') do |ptr|
@@ -317,7 +317,9 @@ module ODDB
         app.should_receive(:create).and_return(registration)
         app.should_receive(:substance)
       end
-      assert_equal(sequence, @listener.identify_sequence(registration, 'name', 'substances'))
+      name = {:de => ''}
+      substances = [{}]
+      assert_equal(sequence, @listener.identify_sequence(registration, name, substances))
     end
 =begin
     def test_load_ikskey
@@ -516,7 +518,7 @@ module ODDB
     end
     def test_tag_end__swissmedic_no_5__else
       @listener.instance_eval('@report_data = {}')
-      visited_iksnrs = {'12345' => ['atc', 'name']}
+      visited_iksnrs = {'12345' => ['atc', {:de => 'name'}]}
       @listener.instance_eval('@visited_iksnrs = visited_iksnrs')
       @listener.instance_eval('@text = "12345"')
       @listener.instance_eval('@atc_code = "atc_code"')
@@ -578,12 +580,12 @@ module ODDB
     def test_tag_end__description
       @listener.instance_eval('@in_limitation = "in_limitation"')
       @listener.instance_eval('@lim_data = {}')
-      @listener.instance_eval('@html = []')
+      @listener.instance_eval('@html = ""')
       assert_equal([nil], @listener.tag_end('DescriptionXX'))
     end
     def test_tag_end__description_else
       @listener.instance_eval('@in_limitation = "in_limitation"')
-      @listener.instance_eval('@html = []')
+      @listener.instance_eval('@html = ""')
       @listener.instance_eval('@name = {:xx => "name"}')
 
       # for update_chapter
@@ -606,7 +608,7 @@ module ODDB
     end
     def test_tag_end__description_else_it_descriptions
       @listener.instance_eval('@in_limitation = "in_limitation"')
-      @listener.instance_eval('@html = []')
+      @listener.instance_eval('@html = ""')
       @listener.instance_eval('@name = {:xx => "name"}')
 
       # for update_chapter
@@ -755,12 +757,12 @@ module ODDB
     end
     def test_report
       preparations_listener = flexmock('preparations_listener') do |p|
-        p.should_receive(:created_sl_entries)
-        p.should_receive(:updated_sl_entries)
-        p.should_receive(:deleted_sl_entries)
-        p.should_receive(:created_limitation_texts)
-        p.should_receive(:updated_limitation_texts)
-        p.should_receive(:deleted_limitation_texts)
+        p.should_receive(:created_sl_entries).and_return(0)
+        p.should_receive(:updated_sl_entries).and_return(0)
+        p.should_receive(:deleted_sl_entries).and_return(0)
+        p.should_receive(:created_limitation_texts).and_return(0)
+        p.should_receive(:updated_limitation_texts).and_return(0)
+        p.should_receive(:deleted_limitation_texts).and_return(0)
       end
       @plugin.instance_eval('@preparations_listener = preparations_listener')
       expected = "Created SL-Entries                                            0\n" +
@@ -777,12 +779,12 @@ module ODDB
       # It should be divided into small methods.
 
       preparations_listener = flexmock('preparations_listener') do |p|
-        p.should_receive(:created_sl_entries)
-        p.should_receive(:updated_sl_entries)
-        p.should_receive(:deleted_sl_entries)
-        p.should_receive(:created_limitation_texts)
-        p.should_receive(:updated_limitation_texts)
-        p.should_receive(:deleted_limitation_texts)
+        p.should_receive(:created_sl_entries).and_return(0)
+        p.should_receive(:updated_sl_entries).and_return(0)
+        p.should_receive(:deleted_sl_entries).and_return(0)
+        p.should_receive(:created_limitation_texts).and_return(0)
+        p.should_receive(:updated_limitation_texts).and_return(0)
+        p.should_receive(:deleted_limitation_texts).and_return(0)
         p.should_receive(:duplicate_iksnrs).and_return([])
         p.should_receive(:completed_registrations).and_return([])
         p.should_receive(:conflicted_registrations).and_return([])
@@ -793,7 +795,7 @@ module ODDB
         p.should_receive(:missing_ikscodes_oot).and_return([])
         p.should_receive(:unknown_packages).and_return([])
         p.should_receive(:unknown_registrations).and_return([])
-        p.should_receive(:unknown_packages_oot).and_return(['data'])
+        p.should_receive(:unknown_packages_oot).and_return([])
       end
       package = flexmock('package') do |p|
         p.should_receive(:pharmacode)
@@ -821,7 +823,7 @@ module ODDB
         p.should_receive(:missing_ikscodes_oot).and_return([])
         p.should_receive(:unknown_packages).and_return([])
         p.should_receive(:unknown_registrations).and_return([])
-        p.should_receive(:unknown_packages_oot).and_return(['data'])
+        p.should_receive(:unknown_packages_oot).and_return([{:test => 'data'}])
         p.should_receive(:missing_pharmacodes).and_return([])
         p.should_receive(:duplicate_iksnrs).and_return([])
       end
@@ -839,7 +841,7 @@ module ODDB
         p.should_receive(:missing_ikscodes_oot).and_return([])
         p.should_receive(:unknown_packages).and_return([])
         p.should_receive(:unknown_registrations).and_return([])
-        p.should_receive(:unknown_packages_oot).and_return(['data'])
+        p.should_receive(:unknown_packages_oot).and_return([{:test => 'data'}])
         p.should_receive(:missing_pharmacodes).and_return([])
         p.should_receive(:duplicate_iksnrs).and_return([])
       end

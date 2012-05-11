@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestCsvExportPlugin -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
+# ODDB::TestCsvExportPlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # ODDB::TestCsvExportPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'flexmock'
 require 'drb/drb'
 require 'plugin/csv_export'
@@ -127,7 +127,8 @@ module ODDB
               )
       export_server = flexmock('export_server', :compress => 'compress')
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        assert_equal('cp', @plugin._export_drugs('export_name', 'keys'))
+        @plugin.instance_eval('@options = {}')
+        assert_equal('cp', @plugin._export_drugs('export_name', ['keys']))
       end
     end
     def test__export_drugs__dups_empty
@@ -159,7 +160,8 @@ module ODDB
               )
       export_server = flexmock('export_server', :compress => 'compress')
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        assert_equal('cp', @plugin._export_drugs('export_name', 'keys'))
+        @plugin.instance_eval('@options = {}')
+        assert_equal('cp', @plugin._export_drugs('export_name', ['keys']))
       end
     end
     def stdout_null

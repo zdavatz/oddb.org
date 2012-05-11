@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestFachinfoInvoicer -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
 # ODDB::TestFachinfoInvoicer -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'flexmock'
 require 'plugin/fachinfo_invoicer'
 require 'model/registration'
@@ -54,6 +55,8 @@ module ODDB
     def test_run
       item     = flexmock('item', 
                           :time => Time.local(2011,2,3),
+                          :type => :processing,
+                          :expired? => false,
                           :item_pointer => 'item_pointer'
                          )
       fachinfo = flexmock('fachinfo', 
