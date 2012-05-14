@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 07.05.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -48,7 +48,7 @@ module ODDB
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
-      :generic_group_factor, :photo_link, :disable_ddd_price, :ddd_dose,
+      :generic_group_factor, :photo_link, :disable_photo_forwarding, :disable_ddd_price, :ddd_dose,
 			:sl_entry, :deductible_m, # for just-medical
       :bm_flag, :mail_order_prices
     check_accessor_list = {
@@ -71,7 +71,9 @@ module ODDB
       :preview_with_market_date => ["TrueClass","NilClass","FalseClass"],
       :generic_group_factor => ["NilClass","Float","Fixnum"],
       :photo_link => ["NilClass","String"],
+      :photo_ => ["NilClass","String"],
       :disable_ddd_price => ["TrueClass","NilClass","FalseClass"],
+      :disable_photo_forwarding => ["TrueClass","NilClass","FalseClass"],
       :ddd_dose => "ODDB::Dose",
       :sl_entry => "ODDB::SlEntry",
       :deductible_m => "String",

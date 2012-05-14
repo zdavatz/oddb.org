@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -92,6 +92,7 @@ module PackageMethods
 			:price_exfactory,
 			:price_public,
       :photo_link,
+      :disable_photo_forwarding,
 			:refdata_override,
 			:lppv,
       :sl_generic_type,

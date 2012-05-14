@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 28.04.2011 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -167,7 +167,8 @@ module ODDB
                     photo = {
                       :name => pack.name_base,
                       :url  => pack.photo_link,
-                      :src  => src
+                      :link => !pack.disable_photo_forwarding,
+                      :src  => src,
                     }
                     mutex.synchronize do
                       photos << photo

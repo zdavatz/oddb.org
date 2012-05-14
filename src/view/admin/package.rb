@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Package -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Package -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -155,26 +155,27 @@ class PackageForm < HtmlGrid::Composite
   include FormMethods
 	include HtmlGrid::ErrorMessage
   COMPONENTS = {
-    [0,0]		=>	:iksnr,
-    [2,0]		=>	:ikscd,
-    [0,1]		=>	:descr,
-    [2,1]   =>  :photo_link,
-    [0,2]   =>  :sl_generic_type,
-    [2,2]		=>	:pretty_dose,
-    [0,3]		=>	:ikscat,
-    [2,3]		=>	:sl_entry,
-    [0,4]		=>	:price_exfactory,
-    [2,4]		=>	:price_public,
-    [0,5]   =>  :market_date,
-    [2,5]   =>  :preview_with_market_date,
-    [0,6]   =>  :deductible,
-    [2,6]   =>  :lppv,
-    [0,7]   =>  :out_of_trade,
-    [0,8]   =>  :disable,
-    [2,8]   =>  :pharmacode,
-    [0,9]   =>  :generic_group,
-    [0,10]  =>  :ddd_dose,
-    [2,10]  =>  :disable_ddd_price,
+    [0,0]    => :iksnr,
+    [2,0]    => :ikscd,
+    [0,1]    => :descr,
+    [2,1]    => :photo_link,
+    [4,1]    => :disable_photo_forwarding,
+    [0,2]    => :sl_generic_type,
+    [2,2]    => :pretty_dose,
+    [0,3]    => :ikscat,
+    [2,3]    => :sl_entry,
+    [0,4]    => :price_exfactory,
+    [2,4]    => :price_public,
+    [0,5]    => :market_date,
+    [2,5]    => :preview_with_market_date,
+    [0,6]    => :deductible,
+    [2,6]    => :lppv,
+    [0,7]    => :out_of_trade,
+    [0,8]    => :disable,
+    [2,8]    => :pharmacode,
+    [0,9]    => :generic_group,
+    [0,10]   => :ddd_dose,
+    [2,10]   => :disable_ddd_price,
     [1,11,0] => :submit,
     [1,11,1] => :delete_item,
   }
@@ -188,27 +189,28 @@ class PackageForm < HtmlGrid::Composite
     [1,10]    =>  'standard',
   }
   CSS_MAP = {
-    [0,0,4,12]	=>	'list',
-    [0,9]       =>  'list top',
+    [0,0,6,12] => 'list',
+    [0,9]      => 'list top',
   }
 	LABELS = true
   LOOKANDFEEL_MAP = {
     :descr  =>  :description,
   }
-	SYMBOL_MAP = {
-		:deductible				=>	HtmlGrid::Select,
-		:disable     			=>	HtmlGrid::InputCheckbox,
-    :disable_ddd_price=>	HtmlGrid::InputCheckbox,
-		:price_exfactory	=>	HtmlGrid::InputCurrency,
-		:price_public			=>	HtmlGrid::InputCurrency,
-		:iksnr						=>	HtmlGrid::Value,
-		:market_date			=>	HtmlGrid::InputDate,
-		:out_of_trade			=>	HtmlGrid::BooleanValue,
-		:preview_with_market_date =>	HtmlGrid::InputCheckbox,
-		:refdata_override	=>	HtmlGrid::InputCheckbox,
-		:lppv							=>	HtmlGrid::Select,
-    :sl_generic_type  =>  HtmlGrid::Select,
-	}
+  SYMBOL_MAP = {
+    :deductible         => HtmlGrid::Select,
+    :disable            => HtmlGrid::InputCheckbox,
+    :disable_ddd_price  => HtmlGrid::InputCheckbox,
+    :disable_photo_forwarding => HtmlGrid::InputCheckbox,
+    :price_exfactory    => HtmlGrid::InputCurrency,
+    :price_public       => HtmlGrid::InputCurrency,
+    :iksnr              => HtmlGrid::Value,
+    :market_date        => HtmlGrid::InputDate,
+    :out_of_trade       => HtmlGrid::BooleanValue,
+    :preview_with_market_date => HtmlGrid::InputCheckbox,
+    :refdata_override   => HtmlGrid::InputCheckbox,
+    :lppv               => HtmlGrid::Select,
+    :sl_generic_type    => HtmlGrid::Select,
+  }
 	def init
 		if(@model.out_of_trade)
 			components.store([2,7], :refdata_override)

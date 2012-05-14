@@ -159,20 +159,30 @@ class FachinfoPhotoView < HtmlGrid::Div # as photo chapter
     image = HtmlGrid::Image.new(model[:name], @model, @session, self)
     image.set_attribute('alt', model[:name])
     image.set_attribute('src', model[:src])
-    link = HtmlGrid::Link.new(model[:name], @model, @session, self)
-    link.href = model[:url]
-    link.value = image
-    link.target = '_blank'
     div = HtmlGrid::Div.new(model, @session, self)
-    div.value = link
+    unless model[:link]
+      div.value = image
+    else
+      link = HtmlGrid::Link.new(model[:name], @model, @session, self)
+      link.href = model[:url]
+      link.value = image
+      link.target = '_blank'
+      div.value = link
+    end
     div
   end
   def _text_link(model)
-    link = HtmlGrid::Link.new(model[:name], @model, @session, self)
-    link.href = model[:url]
-    link.value = model[:name]
-    link.target = '_blank'
-    link
+    unless model[:link]
+      text = HtmlGrid::Value.new(model[:name], @model, @session, self)
+      text.value = model[:name]
+      text
+    else
+      link = HtmlGrid::Link.new(model[:name], @model, @session, self)
+      link.href = model[:url]
+      link.value = model[:name]
+      link.target = '_blank'
+      link
+    end
   end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
