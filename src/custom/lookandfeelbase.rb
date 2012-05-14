@@ -638,7 +638,7 @@ Zeno Davatz
 				:explain_hors_commerce		=>	'a.H. = ausser Handel, d.h. nicht in <a href="http://www.refdata.ch">refdata.ch</a> aufgelistet',
 				:explain_limitation				=>	' = Limitationen',
 				:explain_lppv							=>  'LPPV =&nbsp;Liste pharmazeutischer Pr&auml;parate mit spezieller Verwendung',
-				:explain_mail_order_price_compare  => ' = preisvergleich',
+				:explain_mail_order_price_compare  => ' = Preisvergleich',
 				:explain_mail_order_price_discount => ' = rezeptpflichtig',
 				:explain_mail_order_price_normal   => ' = frei verk&auml;uflich',
 				:explain_mail_order_price_title    => 'Pilotprojekt',
