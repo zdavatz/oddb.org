@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -267,6 +267,7 @@ module ODDB
 			:set_pass,
 			:shadow,
 			:shadow_pattern,
+      :shorten_path,
 			:show,
 			:show_interaction,
 			:sl_entry,
@@ -367,6 +368,9 @@ module ODDB
       :fi_link_name,
       :fi_link_url,
       :fi_link_created,
+      :fi_path_shorten_path,
+      :fi_path_origin_path,
+      :fi_path_created,
 			:fachinfo,
 			:fon,
       :for,

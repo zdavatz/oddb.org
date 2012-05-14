@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 27.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -49,6 +49,7 @@ require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/drugs/sequence'
 require 'state/drugs/sequences'
+require 'state/drugs/shorten_path'
 require 'state/drugs/narcotics'
 require 'state/doctors/init'
 require 'state/hospitals/init'
@@ -196,6 +197,7 @@ module ODDB
           :price_history          => State::Drugs::PriceHistory,
           :recent_registrations   => State::Drugs::RecentRegs,
           :sequences              => State::Drugs::Sequences,
+          :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,
         }	
         HOME_STATE = State::Drugs::Init

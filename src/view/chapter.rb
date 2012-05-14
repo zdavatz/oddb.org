@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 21.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -8,6 +8,7 @@ require 'htmlgrid/value'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/textarea'
 require 'htmlgrid/dojotoolkit'
+require 'htmlgrid/errormessage'
 require 'view/form'
 require 'model/fachinfo'
 
@@ -243,7 +244,7 @@ module ODDB
       def compose_list(model, offset)
         if(@model.length < 2 or 
           (@model.last.name != '' and @model.last.url != ''))
-          @grid.add add(@model, @session), *offset
+          @grid.add(add(@model, @session), *offset)
           @grid.add_style('list', *offset)
         end
         x, y, = offset
@@ -299,6 +300,47 @@ module ODDB
         input
       end
     end
+    class Path < HtmlGrid::Composite
+      COMPONENTS = {
+        [0,0] => 'Short URL',
+        [1,0] => 'Original URL',
+        [0,1] => :shorten_path,
+        [1,1] => :origin_path,
+        [2,1] => :path_created,
+      }
+      CSS_CLASS = 'composite tundra'
+      CSS_MAP = {
+        [0,0] => 'list',
+        [1,0] => 'list',
+        [2,0] => 'list',
+        [0,1] => 'list',
+        [1,1] => 'list',
+        [2,1] => 'list',
+      }
+      CSS_ID = 'paths'
+      DEFAULT_CLASS = HtmlGrid::InputText
+      def shorten_path(model, session)
+        input = HtmlGrid::Input.new("fi_path_shorten_path", model, session, self)
+        input.set_attribute('title', 'Path')
+        input.set_attribute('style', 'width:300px;')
+        input.value = model.send(:shorten_path)
+        input
+      end
+      def origin_path(model, session)
+        text = HtmlGrid::Value.new('origin_path', model, session)
+        text.value = ' => ' + model.send(:origin_path)
+        input = HtmlGrid::Input.new("fi_path_origin_path", model, session, self)
+        input.set_attribute('type', 'hidden')
+        input.value = model.send(:origin_path)
+        [text, input]
+      end
+      def path_created(model, session)
+        input = HtmlGrid::Input.new("fi_path_created", model, session, self)
+        input.set_attribute('type', 'hidden')
+        input.value = model.send(:created)
+        input
+      end
+    end
     class EditLinkForm < Form
       LEGACY_INTERFACE = false
       COMPONENTS = {
@@ -317,6 +359,29 @@ module ODDB
       end
       def hidden_fields(context)
         chapter = {'name' => 'chapter', 'value' => 'links'}
+        super << context.hidden(chapter)
+      end
+    end
+    class EditPathForm < Form
+	    include HtmlGrid::ErrorMessage
+      LEGACY_INTERFACE = false
+      COMPONENTS = {
+        [0,0] => Path,
+        [0,1] => :submit,
+      }
+      CSS_MAP = {
+        [0,0] =>'list',
+        [0,1] =>'list',
+      }
+      def initialize(model, session, container)
+        super model, session, container
+      end
+      def init
+        super
+        error_message
+      end
+      def hidden_fields(context)
+        chapter = {'name' => 'chapter', 'value' => 'shorten_path'}
         super << context.hidden(chapter)
       end
     end

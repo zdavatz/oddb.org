@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::Fachinfo -- oddb.org -- 28.04.2011 -- yasaka@ywesee.com
+# ODDB::State::Drugs::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -9,8 +9,10 @@ require 'view/drugs/fachinfo'
 require 'view/chapter'
 require 'delegate'
 require 'model/fachinfo'
+require 'model/shorten_path'
 require 'ext/chapterparse/src/chaptparser'
 require 'ext/chapterparse/src/writer'
+require 'yaml'
 
 module ODDB
 	module State
@@ -100,7 +102,10 @@ class RootFachinfo < Fachinfo
       if(input[:chapter] == 'links')
         input.merge! user_input([:fi_link_name, :fi_link_url, :fi_link_created])
         _update_links(input) unless error?
-      elsif
+      elsif(input[:chapter] == 'shorten_path')
+        input.merge! user_input([:fi_path_shorten_path, :fi_path_origin_path, :fi_path_created])
+        _update_path(input) unless error?
+      else
         mandatory = [:html_chapter]
         keys = mandatory + [:heading]
         input.merge! user_input(keys, mandatory)
@@ -182,6 +187,49 @@ class RootFachinfo < Fachinfo
       @session.app.update(pointer, links, email)
       @session.app.update(@model.pointer, {:links => links}, email)
     end
+  end
+  def _update_path(input)
+    shorten_path = sanitize_shorten_path(input[:fi_path_shorten_path])
+    origin_path = input[:fi_path_origin_path]
+    validate_shorten_path(shorten_path)
+    unless error?
+      ODBA.cache.transaction {
+        paths = @session.app.shorten_paths
+        if path = paths.select {|path| path.origin_path == origin_path}.first
+          path.shorten_path = shorten_path
+          path.origin_path = origin_path
+          path.odba_isolated_store
+        else
+          path = ODDB::ShortenPath.new(shorten_path, origin_path)
+          path.odba_isolated_store
+          paths << path
+          paths.odba_isolated_store
+        end
+      }
+    end
+  end
+  def validate_shorten_path(shorten_path)
+    paths = @session.app.shorten_paths
+    trans_handler = ODDB::PROJECT_ROOT + '/etc/trans_handler.yml'
+		static_paths = {}
+    begin
+      static_paths.update(YAML.load(File.read(trans_handler)))
+    rescue StandardError => err
+    end
+    unless shorten_path.empty? # allow empty
+      if (!static_paths.empty? and shortcut = static_paths['shortcut'][shorten_path]) or
+         paths.select {|path| path.shorten_path == shorten_path}.first
+        error = create_error(:e_path_already_exist, :fi_path_shorter_path, shorten_path)
+        @errors.store(:fi_path_shorten_path, error)
+      end
+    end
+  end
+  def sanitize_shorten_path(shorten_path)
+    shorten_path = shorten_path.gsub(/[^A-z0-9\-_]/u, '')
+    if !shorten_path.empty? and shorten_path[0] != '/'
+      shorten_path = '/' + shorten_path
+    end
+    shorten_path
   end
 end
 class CompanyFachinfo < RootFachinfo

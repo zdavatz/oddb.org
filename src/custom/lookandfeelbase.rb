@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -452,6 +452,7 @@ Zeno Davatz
 				:e_exception0							=>	'System-Fehler: "',
 				:e_exception1							=>	'"',
 				:e_empty_migel_result			=>	'Suchen Sie in der Liste von den Krankenversicherern im Rahmen<br>der obligatorischen Krankenpflegeversicherung als Pflichtleistung zu<br>verg&uuml;tenden Mittel und Gegenst&auml;nde.',
+        :e_path_already_exist     =>  'existiert bereits',
 				:effect               		=>	'Effect',
 				:effective_form_assign		=>	'Wirkform zuweisen:',
 				:effective_form_other			=>	'Wirkform:',
@@ -766,6 +767,7 @@ Zeno Davatz
 				:fi_other_advice					=>	'Sonstige H.',
 				:fi_overdose							=>	'&Uuml;berdos.',
 				:fi_packages							=>	'Packungen',
+        :fi_shorten_path          => 'Short URL',
 				:fipi_activation_charge_value	=>	"CHF 1'500.-",
 				:fipi_cost_link						=>	'http://wiki.ywesee.com/index.cgi?Kosten_Publikation_Fi_und_Pi#Kosten',
 				:fipi_counts0             =>	'Fachinformationen: ',
@@ -2009,6 +2011,8 @@ Zeno Davatz
 				:e_non_matching_set_pass	=>	'Le mot de passe et la confirmation n\'étaient pas identiques.',
 				:e_no_seq_to_activeagent	=>	"Aucune s&eacute;quence n'est assign&eacute;e &agrave; cet agent. Il n'a probablement pas &eacute;t&eacute; fourni correctement. Veuillez le supprimer et cr&eacute;ez vous lui.",
 				:e_not_a_wordfile         =>	'Le fichier téléchargé n\'est pas un Document Word.',
+
+        :e_path_already_exist     =>  'existe déjà',
 				:e_pdf_not_parsed0				=>	'Le PDF/Word ne pouvait pas être traité et sera anlysé par un administrateur. ',
 				:e_pdf_not_parsed1				=>	'',
 				:equivalent_substance			=>	'Correspondent',
@@ -2204,6 +2208,7 @@ Zeno Davatz
 				:fi_other_advice					=>	'Remarques',
 				:fi_overdose							=>	'Surdosage',
 				:fi_packages							=>	'Pr&eacute;sentations',
+        :fi_shorten_path          => 'Short URL',
 				:fipi_offer_confirmation	=>	"L'offre calcul&eacute;e conform&eacute;ment &agrave; vos indications",
 				:fipi_offer_confirm				=>	"G&eacute;n&eacute;rateur d'offre pour publier l'information destin&eacute;e aux professionnels et l'information destin&eacute;e aux patients conforme par&nbsp;",
 				:fipi_offer_disclaimer0		=>	"Toutes les indications de prix se comprennent sans la taxe sur la valeur ajout&eacute;e.<br>Cette offre a &eacute;t&eacute; calcul&eacute;e le&nbsp;",
@@ -3221,6 +3226,7 @@ Zeno Davatz
 				:e_no_sequence_selected   =>  'Please choose a sequence',
 				:e_not_a_wordfile         =>	'The uploaded file is not a Word-Document.',
 				:e_no_valid_iksnrs				=>	'None of the mentioned registration numbers can be used.',
+        :e_path_already_exist     =>  'already exist',
 				:e_pdf_not_parsed0				=>	'There was an error processing your PDF/Word-file. It will be delivered to an administrator for analysis. ',
 				:e_pdf_not_parsed1				=>	'',
 				:equivalent_substance			=>	'Corresponds to',
@@ -3432,6 +3438,7 @@ Zeno Davatz
 				:fi_other_advice					=>	'Other advice',
 				:fi_overdose							=>	'Overdose',
 				:fi_packages							=>	'Packages',
+        :fi_shorten_path          => 'Short URL',
 				:fipi_activation_charge_value	=>	"CHF 1'500.-",
 				:fipi_offer_confirmation	=>	"Our quote for your data entred:",
 				:fipi_offer_confirm				=>	"Quote for publication of DI and CI&nbsp;",

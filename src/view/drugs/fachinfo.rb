@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 21.04.2011 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -9,6 +9,7 @@ require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
 require 'view/changelog'
+require 'model/shorten_path'
 require 'ostruct'
 
 module ODDB
@@ -387,6 +388,9 @@ class EditFiChapterChooser < FiChapterChooser
     unless all_names.include?(:links)
       all_names << :links
     end
+    unless all_names.include?(:shorten_path)
+      all_names << :shorten_path
+    end
     all_names
 	end
 end
@@ -410,9 +414,18 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
         super
       when 'links'
         View::EditLinkForm.new(@model.send(:links), @session, self)
-       else
+      when 'shorten_path'
+        # FIXME refactor in state
+        url = @lookandfeel._event_url(:fachinfo, {:reg => @model.registrations.first.iksnr})
+        base = @session.http_protocol + '://' + @session.server_name
+        fachinfo_path = url.gsub(/#{base}|\/chapter\/shorten_path\/*/o, '')
+        unless path = @session.app.shorten_paths.select {|path| path.origin_path == fachinfo_path}.first
+          path = ShortenPath.new('', fachinfo_path)
+        end
+        View::EditPathForm.new(path, @session, self)
+      else
         View::EditChapterForm.new(chapter, @document, @session, self)
-       end
+      end
     elsif(@model.pointer.skeleton == [:create])
       # don't show anything
     else

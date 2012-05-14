@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -54,7 +54,7 @@ class OddbPrevalence
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
-    :generic_groups
+    :generic_groups, :shorten_paths
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -89,6 +89,7 @@ class OddbPrevalence
 		@patinfos_deprived_sequences ||= []
 		@registrations ||= {}
     @rss_updates ||= {}
+    @shorten_paths ||= []
 		@slates ||= {}
 		@sponsors ||= {}
 		@substances ||= {}
