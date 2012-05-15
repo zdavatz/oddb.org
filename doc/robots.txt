@@ -16,9 +16,6 @@ Disallow: /en/provita
 Disallow: /de/santesuisse
 Disallow: /fr/santesuisse
 Disallow: /en/santesuisse
-Disallow: /de/mymigel
-Disallow: /fr/mymigel
-Disallow: /en/mymigel
 Disallow: /de/mymedi
 Disallow: /fr/mymedi
 Disallow: /en/mymedi
