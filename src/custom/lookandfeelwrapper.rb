@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 11.05.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 15.05.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -219,9 +219,12 @@ module ODDB
 			},
 		}
 		HTML_ATTRIBUTES = { }
+    def zones(filter=false)
+      [ :drugs ]
+    end
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
-		ENABLED = [ 
+    ENABLED = [
       :ajax,
       :doctors 
     ]
@@ -245,6 +248,9 @@ module ODDB
 				'height'	=>	'96',
 			},
 		}
+    def zones(filter=false)
+      [ :doctors, :drugs ]
+    end
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -274,21 +280,24 @@ module ODDB
 				'height'	=>	'50',
 			},
 		}
+    def zones(filter=false)
+      [ :drugs ]
+    end
 	end
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
-		ENABLED = [
+    ENABLED = [
       :ajax,
-			:atupri_web,
-			:custom_navigation,
-			:drugs, 
-			:external_css,
+      :atupri_web,
+      :custom_navigation,
+      :drugs,
+      :external_css,
       :fachinfos,
-			:help_link,
-			:logout,
-			:migel,
-			:popup_links,
-			:sequences,
-		]
+      :help_link,
+      :logout,
+      :migel,
+      :popup_links,
+      :sequences,
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:DOCTYPE									=>	' <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 transitional//EN">',
@@ -350,12 +359,12 @@ module ODDB
 		end
     def migel_list_components
       {
-        [0,0] =>	:limitation_text,
-        [1,0] =>	:migel_code,
-        [2,0]	=>	:product_description,
-        [3,0] =>  :date,
-        [4,0] =>  :price,
-        [5,0]	=>	:qty_unit,
+        [0,0] => :limitation_text,
+        [1,0] => :migel_code,
+        [2,0] => :product_description,
+        [3,0] => :date,
+        [4,0] => :price,
+        [5,0] => :qty_unit,
       }
     end
 		def navigation
@@ -380,14 +389,14 @@ module ODDB
 				[12,0]	=>	:substances,
 			}
 		end
-		def zone_navigation
-			case @session.zone
-			when :migel
-				[:migel_alphabetical]
-			else
-				[:sequences]
-			end
-		end
+    def zone_navigation
+      case @session.zone
+      when :migel
+        [:migel_alphabetical]
+      else
+        [:sequences]
+      end
+    end
 	end
 	class LookandfeelCarenaSchweiz < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -414,27 +423,25 @@ module ODDB
 		HTML_ATTRIBUTES = { }
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
-		ENABLED = [
+    ENABLED = [
       :ajax,
-			:atc_chooser,
-			:custom_navigation,
+      :atc_chooser,
+      :custom_navigation,
       :custom_tab_navigation,
-			:drugs, 
-			:external_css,
+      :drugs,
+      :external_css,
       :fachinfos, 
       :feedback,
-			:home,
-			:home_drugs,
-			:home_migel,
+      :home,
+      :home_drugs,
+      :home_migel,
       :interactions, 
-			:just_medical_structure,	
-			:migel,
-			:migel_alphabetical,
-			:popup_links,
-			:search_reset,
-			:sequences,
+      :just_medical_structure,
+      :popup_links,
+      :search_reset,
+      :sequences,
       :topfoot,
-		]
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-Enzyklopädie',
@@ -552,10 +559,12 @@ module ODDB
 				[15,0]	=>  :google_search,
 			}
 		end
-		def zones
-			[ :analysis, :interactions, State::Drugs::Init, State::Drugs::AtcChooser, 
-				State::Drugs::Sequences, State::Migel::Alphabetical ]
-		end
+    def zones
+      [
+        :analysis, :interactions,
+        State::Drugs::Init, State::Drugs::AtcChooser, State::Drugs::Sequences
+      ]
+    end
 		def zone_navigation
 			case @session.zone
 			when :analysis
