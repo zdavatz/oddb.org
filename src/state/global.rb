@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 15.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -750,20 +750,25 @@ module ODDB
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
 					when :migel
-            sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
-            reverse   = @session.user_input(:reverse)
-						if result = @session.search_migel_products(query) and !result.empty?
-						  State::Migel::Result.new(@session, result)
-            elsif result = @session.app.search_migel_items(query, @session.language, sortvalue, reverse) and !result.empty?
-              product = StubProduct.new(result)
-              if items = product.items and items.length > ODDB::State::Migel::Items::ITEM_LIMIT
-                @session.set_cookie_input(:resultview, 'pages')
-              else
-                @session.set_cookie_input(:resultview, '')
-              end
-              ODDB::State::Migel::Items.new(@session, StubItems.new(product))
+            unless @session.lookandfeel.zones.include?(:migel)
+              switch_flavor(:gcc)
+              self
             else
-						  State::Migel::Result.new(@session, [])
+              sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
+              reverse   = @session.user_input(:reverse)
+              if result = @session.search_migel_products(query) and !result.empty?
+                State::Migel::Result.new(@session, result)
+              elsif result = @session.app.search_migel_items(query, @session.language, sortvalue, reverse) and !result.empty?
+                product = StubProduct.new(result)
+                if items = product.items and items.length > ODDB::State::Migel::Items::ITEM_LIMIT
+                  @session.set_cookie_input(:resultview, 'pages')
+                else
+                  @session.set_cookie_input(:resultview, '')
+                end
+                ODDB::State::Migel::Items.new(@session, StubItems.new(product))
+              else
+                State::Migel::Result.new(@session, [])
+              end
             end
 					when :analysis
 						result = @session.search_analysis(query, @session.language)
@@ -1004,6 +1009,13 @@ module ODDB
 			def mandatory_violation(value)
 				value.nil? || (value.respond_to?(:empty?) && value.empty?)
 			end
+      def switch_flavor(flavor=:gcc)
+        location = @session.request_path.gsub(/\/#{@session.lookandfeel.flavor}\//u, "/#{flavor.to_s}/")
+        self.http_headers = {
+          'Status'   => '303 See Other',
+          'Location' => location
+        }
+      end
 		end
 	end
 end
