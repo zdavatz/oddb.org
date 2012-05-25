@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.8.0
+Version:  1.8.1
+Geändert: 24.05.2012 (1.8.1) durch zdavatz@ywesee.com
 Geändert: 28.10.2009 (1.8.0) durch hwyss@ywesee.com
 Geändert: 29.09.2009 (1.7.0) durch hwyss@ywesee.com
 Geändert: 12.03.2009 (1.6.0) durch hwyss@ywesee.com
@@ -79,8 +80,8 @@ Package:
 - ikscat            (String)               -> Abgabekategorie. A-E
 - parts             (Array (Part))         -> Packungsbestandteile (siehe Part)
 - out_of_trade      (Boolean)              -> Nicht im Handel erhältlich
-- price_exfactory   (Integer)              -> Exfactorypreis in Rappen
-- price_public      (Integer)              -> Publikumspreis in Rappen
+- price_exfactory   (Float)                -> Exfactorypreis in Rappen
+- price_public      (Float)                -> Publikumspreis in Rappen
 - sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.
 - ean13             (String)               -> Ean13 des Produkts
 - narcotics         (Array (String))       -> Betäubungsmitteleinträge: CAS Registry Numbers
