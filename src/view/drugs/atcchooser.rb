@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
@@ -11,13 +12,22 @@ require 'view/pointervalue'
 module ODDB
 	module View
 		module Drugs
-module AtcDddLink
+module AtcLink
   def atc_ddd_link(atc, session=@session)
     if(atc && atc.has_ddd?)
       link = HtmlGrid::Link.new(:ddd, atc, session, self)
       link.href = @lookandfeel._event_url(:ddd, {'atc_code'=>atc.code})
       link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
+      link
+    end
+  end
+  def atc_drug_bank_link(atc, session=@session)
+    if(atc.code)
+      link = HtmlGrid::Link.new(:drug_bank, atc, session, self)
+      link.href = "http://www.drugbank.ca/search?utf8=%E2%9C%93&query=#{atc.code}&commit=Search"
+      link.set_attribute('class', 'list')
+      link.set_attribute('title', @lookandfeel.lookup(:drug_bank_title))
       link
     end
   end

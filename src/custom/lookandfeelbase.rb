@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -414,6 +414,8 @@ Zeno Davatz
 				:download_migel1					=>	'hier',
 				:download_migel2					=>	'.',
 				:drugs										=>	'Medikamente',
+                                :drug_bank                      =>      "DrugBank.ca",
+                                :drug_bank_title                =>      "Open Data Drug & Drug Target Database - www.drugbank.ca",
 				:dsp_sort									=>	'Sortierung nach St&auml;rke, Packung und Preis',
 				:ean13										=>	'EAN',
 				:ean13_header							=>	'EAN:',
