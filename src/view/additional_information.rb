@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 28.05.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -58,7 +58,7 @@ module ODDB
         end
       end
       def atc_drug_bank_link(atc, session=@session)
-        if(atc.respond_to?(:code))
+        if(atc.respond_to?(:code) and !@lookandfeel.disabled?(:atc_drug_bank_link))
           super(atc, session)
         end
       end
