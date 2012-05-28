@@ -58,7 +58,9 @@ module ODDB
         end
       end
       def atc_drug_bank_link(atc, session=@session)
-        if(atc.respond_to?(:code) and !@lookandfeel.disabled?(:atc_drug_bank_link))
+        if(atc.respond_to?(:code) and \
+           atc.code.length > 6 and \
+           !@lookandfeel.disabled?(:atc_drug_bank_link))
           super(atc, session)
         end
       end

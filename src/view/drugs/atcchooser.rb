@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::AtcChooser -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 28.05.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
@@ -26,6 +26,7 @@ module AtcLink
     if(atc.code)
       link = HtmlGrid::Link.new(:drug_bank, atc, session, self)
       link.href = "http://www.drugbank.ca/search?utf8=%E2%9C%93&query=#{atc.code}&commit=Search"
+      link.target = '_blank'
       link.set_attribute('class', 'list')
       link.set_attribute('title', @lookandfeel.lookup(:drug_bank_title))
       link
