@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TextInfoPlugin -- oddb.org -- 12.06.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -303,14 +304,15 @@ module ODDB
       end
       eventtargets
     end
-    def import_company names, agent=init_agent
+    def import_company names, agent=nil, target=:both
+      agent = init_agent if agent.nil?
       @search_term = names.to_a.join ', '
       names.to_a.each do |name|
         @current_search = [:search_company, name]
         # search for company
         page = search_company name, agent
         # import each company from the result
-        import_companies page, agent
+        import_companies page, agent, target
       end
     end
     def import_company2 names, agent=init_agent
@@ -514,14 +516,14 @@ module ODDB
         update_product name, path_list[:fi]||{}, path_list[:pi]||{}, fi_flag, pi_flag
       end
     end
-    def import_companies page, agent
+    def import_companies page, agent, target=:both
       form = page.form_with :name => 'frmResulthForm'
       page.links_with(:href => /Linkbutton1/).each do |link|
         if et = eventtarget(link.href)
           @companies.push link.text
           @current_eventtarget = et
           products = submit_event agent, form, et
-          import_products products, agent
+          import_products products, agent, target
         end
       end
     end
@@ -551,16 +553,30 @@ module ODDB
       end
       return !update_name_list.empty?
     end
-    def import_products page, agent
-      fi_sources = identify_eventtargets page, /dtgFachinfo/
-      pi_sources = identify_eventtargets page, /dtgPatienteninfo/
+    def import_products page, agent, target=:both
       form = page.form_with :name => /frmResult(Produkte|hForm)/
-      fi_sources.sort.each do |name, eventtarget|
-        import_product name, agent, form, eventtarget, pi_sources[name]
+      case target
+      when :both
+        fi_sources = identify_eventtargets page, /dtgFachinfo/
+        pi_sources = identify_eventtargets page, /dtgPatienteninfo/
+        fi_sources.sort.each do |name, eventtarget|
+          import_product name, agent, form, eventtarget, pi_sources[name]
+        end
+      when :pi
+        pi_sources = identify_eventtargets page, /dtgPatienteninfo/
+        pi_sources.sort.each do |name, eventtarget|
+          import_product name, agent, form, nil, eventtarget
+        end
       end
     end
     def import_product name, agent, form, fi_target, pi_target
-      fi_paths, fi_flags = download_info :fachinfo, name, agent, form, fi_target
+      fi_paths = {}
+      fi_flags = {}
+      pi_paths = {}
+      pi_flags = {}
+      if fi_target
+        fi_paths, fi_flags = download_info :fachinfo, name, agent, form, fi_target
+      end
       if pi_target
         pi_paths, pi_flags = download_info :patinfo, name, agent, form, pi_target
       end
@@ -612,25 +628,42 @@ module ODDB
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
       }.join("\n")
-      [
-        "Searched for #{@search_term}",
-        "Stored #{@updated_fis} Fachinfos",
-        "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
-        "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
-        "Stored #{@updated_pis} Patinfos",
-        "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
-        "Checked #{@companies.size} companies",
-        @companies.join("\n"), nil,
-        "Unknown Iks-Numbers: #{unknown_size}",
-        unknown, nil,
-        "Fachinfos without iksnrs: #{@iksless.size}",
-        @iksless.join("\n"), nil,
-        "Session failures: #{@session_failures}", nil,
-        "Download errors: #{@download_errors.size}",
-        @download_errors.join("\n"), nil,
-        "Parse Errors: #{@failures.size}", 
-        @failures.join("\n"), 
-      ].join("\n")
+      if @updated_fis.zero? # patinfo only
+        [
+          "Searched for #{@search_term}",
+          "Stored #{@updated_pis} Patinfos",
+          "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
+          "Checked #{@companies.size} companies",
+          @companies.join("\n"), nil,
+          "Unknown Iks-Numbers: #{unknown_size}",
+          unknown, nil,
+          "Session failures: #{@session_failures}", nil,
+          "Download errors: #{@download_errors.size}",
+          @download_errors.join("\n"), nil,
+          "Parse Errors: #{@failures.size}",
+          @failures.join("\n"),
+        ].join("\n")
+      else
+        [
+          "Searched for #{@search_term}",
+          "Stored #{@updated_fis} Fachinfos",
+          "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
+          "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
+          "Stored #{@updated_pis} Patinfos",
+          "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
+          "Checked #{@companies.size} companies",
+          @companies.join("\n"), nil,
+          "Unknown Iks-Numbers: #{unknown_size}",
+          unknown, nil,
+          "Fachinfos without iksnrs: #{@iksless.size}",
+          @iksless.join("\n"), nil,
+          "Session failures: #{@session_failures}", nil,
+          "Download errors: #{@download_errors.size}",
+          @download_errors.join("\n"), nil,
+          "Parse Errors: #{@failures.size}", 
+          @failures.join("\n"), 
+        ].join("\n")
+      end
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -667,19 +700,15 @@ module ODDB
       pointer = Persistence::Pointer.new(:fachinfo)
       @app.update(pointer.creator, languages)
     end
-    def store_orphaned iksnr, fis, pis
-      pointer = Persistence::Pointer.new :orphaned_fachinfo
-      store = {
-        :key => iksnr,
-        :languages => fis,
-      }
-      @app.update pointer.creator, store
-      pointer = Persistence::Pointer.new :orphaned_patinfo
-      store = {
-        :key => iksnr,
-        :languages => pis,
-      }
-      @app.update pointer.creator, store
+    def store_orphaned iksnr, info, point=:orphaned_fachinfo
+      if info
+        pointer = Persistence::Pointer.new point
+        store = {
+          :key       => iksnr,
+          :languages => info,
+        }
+        @app.update pointer.creator, store
+      end
     end
     def store_patinfo reg, languages
       @updated_pis +=1
@@ -715,6 +744,9 @@ module ODDB
       fi_paths.each do |lang, path|
         fis.store lang, parse_fachinfo(path)
       end
+      unless fis.empty?
+        update_fachinfo name, fis, fi_flags
+      end
       pis = {}
       ## there's no need to parse up-to-date patinfos
       #  if both of them are up-to-date
@@ -725,7 +757,12 @@ module ODDB
       pi_paths.each do |lang, path|
         pis.store lang, parse_patinfo(path)
       end
-      unless fis.empty?
+      unless pis.empty?
+        update_patinfo name, pis, pi_flags
+      end
+    end
+    def update_fachinfo name, fis, fi_flags
+      begin
         # identify registration
         iksnrs = extract_iksnrs fis
         if iksnrs.empty?
@@ -737,7 +774,7 @@ module ODDB
           fis.clear
           @up_to_date_fis += 1
         end
-        fachinfo, patinfo = nil
+        fachinfo = nil
         # assign infos.
         iksnrs.each do |iksnr|
           if reg = @app.registration(iksnr)
@@ -748,6 +785,24 @@ module ODDB
               fachinfo ||= store_fachinfo(fis)
               replace fachinfo, reg, :fachinfo
             end
+          else
+            store_orphaned iksnr, fis, :orphaned_fachindo
+            @unknown_iksnrs.store iksnr, name
+          end
+        end
+      rescue RuntimeError => err
+        @failures.push err.message
+      end
+    end
+    def update_patinfo name, pis, pi_flags
+      begin
+        iksnrs = extract_iksnrs pis
+        if iksnrs.empty?
+          @iksless.push name
+        end
+        patinfo = nil
+        iksnrs.each do |iksnr|
+          if reg = @app.registration(iksnr)
             unless pis.empty?
               patinfo ||= store_patinfo(reg, pis)
               reg.each_sequence do |seq|
@@ -755,13 +810,13 @@ module ODDB
               end
             end
           else
-            store_orphaned iksnr, fis, pis
+            store_orphaned iksnr, pis, :orphaned_patinfo
             @unknown_iksnrs.store iksnr, name
           end
         end
+      rescue RuntimeError => err
+        @failures.push err.message
       end
-    rescue RuntimeError => err
-      @failures.push err.message
     end
   end
 end

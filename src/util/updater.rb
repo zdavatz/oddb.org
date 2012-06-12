@@ -271,6 +271,11 @@ module ODDB
         update_textinfos *iksnrs
       end
     end
+    def update_patinfo_only *companies
+      update_notify_simple TextInfoPlugin,
+                           "Patienteninfo '#{companies.join(', ')}'",
+                           :import_company, [companies, nil, :pi]
+    end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')
 		end
