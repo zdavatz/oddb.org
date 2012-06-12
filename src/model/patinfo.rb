@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Parinfo -- oddb -- 24.04.2012 -- yasaka@ywesee.com
+# Parinfo -- oddb -- 12.06.2012 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'
@@ -75,6 +75,7 @@ module ODDB
 			:packages,
 			:distribution,
       :fabrication,
+      #:iksnrs
 			:date,
 		]
 		attr_accessor :name, :company, :galenic_form, :effects
@@ -114,6 +115,7 @@ module ODDB
 			:packages,
 			:distribution,
       :fabrication,
+      :iksnrs,
 			:date,
 		]
 		attr_accessor :amzv

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 12.06.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1158,6 +1158,7 @@ Zeno Davatz
 				:pi_charge1								=>	'.-',
 				:pi_count_link						=>	'Patienteninformationen',
 				:pi_count_text						=>	'Patienteninformationen',
+				:pi_iksnrs								=>	'Swissmedic-Nr.',
 				:pi_quantity0							=>	'Anzahl',
 				:pi_quantity1							=>	'<br>(CHF&nbsp;',
 				:pi_quantity2							=>	'.- / hochgeladene Datei)',
@@ -2529,6 +2530,7 @@ Zeno Davatz
         :pi_distribution          =>  'Distrib.',
 				:pi_activation_charge			=>	"Taxes <b>uniques</b> IPat: ",
 				:pi_count_text						=>	'Informations patient',
+				:pi_iksnrs								=>	'Estampille',
 				:pi_quantity0							=>	'Nombre des', 
 				:pi_quantity1							=>	'<br>(CHF&nbsp;',
 				:pi_quantity2							=>	'.- / document t&eacute;l&eacute;charg&eacute;)',
@@ -3778,6 +3780,7 @@ Zeno Davatz
 				:pi_charge0								=>	'<b>Consumer information</b> &aacute; CHF&nbsp;',
 				:pi_charge1								=>	'.-',
 				:pi_count_text						=>	'Consumer Informations',
+				:pi_iksnrs								=>	'Swissmedic-Nr.',
 				:pi_quantity0							=>	'Quantity', 
 				:pi_quantity1							=>	' per Sequence (Dose)<br>(CHF&nbsp;',
 				:pi_quantity2							=>	'.- / uploaded document)',
