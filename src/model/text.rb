@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Text -- oddb.org -- 13.06.2012 -- yasaka@ywesee.com
 # ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
@@ -193,15 +194,18 @@ module ODDB
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
-			def match(pattern)
+      def match(pattern)
         pattern_s = pattern.to_s
         pattern_s.force_encoding('utf-8')
         pattern = Regexp.new(pattern_s)
-				pattern.match(@subheading) or
-				@paragraphs.collect { |par| 
-					par.match(pattern) 
-				}.compact.first
-			end
+        pattern.match(@subheading) or
+        @paragraphs.collect { |par|
+          # @paragraphs contains also Class without Paragraph
+          if par.respond_to?(:match)
+            par.match(pattern)
+          end
+        }.compact.first
+      end
 			def next_image
 				@paragraphs.push(ImageLink.new).last
 			end
@@ -336,6 +340,14 @@ module ODDB
             cell.gsub! *args, &gsub
           end
         end
+      end
+      def match(pattern)
+        pattern_s = pattern.to_s
+        pattern_s.force_encoding('utf-8')
+        pattern = Regexp.new(pattern_s)
+        @rows.collect { |row|
+          row.join.match(pattern)
+        }.compact.first
       end
       def next_cell!
         cell = Cell.new
