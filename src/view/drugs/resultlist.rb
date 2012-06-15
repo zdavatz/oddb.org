@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 25.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -38,6 +38,8 @@ class AtcHeader < HtmlGrid::Composite
     [0,0,2] => :atc_ddd_link,
     [0,0,3] => '&nbsp;',
     [0,0,4] => :atc_drug_bank_link,
+    [0,0,5] => '&nbsp;-&nbsp;',
+    [0,0,6] => :atc_dosing_de_link,
     [1,0]   => :pages,
   }
 	CSS_CLASS = 'composite'

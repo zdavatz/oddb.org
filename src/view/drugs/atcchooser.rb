@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::AtcChooser -- oddb.org -- 28.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
@@ -29,6 +29,16 @@ module AtcLink
       link.target = '_blank'
       link.set_attribute('class', 'list')
       link.set_attribute('title', @lookandfeel.lookup(:drug_bank_title))
+      link
+    end
+  end
+  def atc_dosing_de_link(atc, session=@session)
+    if(atc.ni_id)
+      link = HtmlGrid::Link.new(:dosing_de, atc, session, self)
+      link.href = "http://dosing.de/Niere/arzneimittel/#{atc.ni_id}.html"
+      link.target = '_blank'
+      link.set_attribute('class', 'list')
+      link.set_attribute('title', @lookandfeel.lookup(:dosing_de_title))
       link
     end
   end

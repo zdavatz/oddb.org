@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 28.05.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 15.06.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -829,7 +829,14 @@ module ODDB
 			:ywesee_contact,
       :print,
 		]
-    DISABLED = [ :atc_ddd, :atc_drug_bank_link, :legal_note, :navigation, :price_request ]
+    DISABLED = [
+      :atc_ddd,
+      :atc_drug_bank_link,
+      :atc_dosing_de_link,
+      :legal_note,
+      :navigation,
+      :price_request
+    ]
     DICTIONARIES = {
       'de'	=>	{
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/de/tk.htm',

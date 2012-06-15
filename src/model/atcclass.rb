@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::AtcClass -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
 # ODDB::AtcClass -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::AtcClass -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -17,7 +18,7 @@ module ODDB
 		include Language
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
-		attr_accessor :code
+		attr_accessor :code, :ni_id
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes
 		attr_writer :sequences, :descriptions

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SearchResult -- oddb -- 08.07.2004 -- mwalder@ywesee.com , rwaltert@ywesee.com
+# ODDB::SearchResult -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
+# ODDB::SearchResult -- oddb.org -- 08.07.2004 -- mwalder@ywesee.com , rwaltert@ywesee.com
 
 require 'model/atcclass'
 require 'util/resultsort'
@@ -55,6 +56,9 @@ module ODDB
 		def parent_code
 			@atc.parent_code
 		end
+    def ni_id
+      @atc.ni_id
+    end
 		def sequences
 			@atc.sequences
 		end

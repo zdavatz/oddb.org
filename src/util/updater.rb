@@ -9,6 +9,7 @@ require 'plugin/analysis'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
+require 'plugin/dosing_de'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -199,6 +200,9 @@ module ODDB
 				plug.update
 			}
 		end
+    def update_atc_nierelist
+      update_notify_simple(DosingDePlugin, 'ATC Class (dosing.de)', :update_ni_id)
+    end
 		def update_bsv
 
       LogFile.append('oddb/debug', " getin update_bsv", Time.now)

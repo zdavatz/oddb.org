@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 12.06.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -388,6 +388,8 @@ Zeno Davatz
 				:doctors									=>  'Arzt',
 				:doctors_search_explain	  =>	'Suchen Sie nach Arzt oder &Auml;rztin in der Schweiz. Sie k&ouml;nnen nach Name,<br> Adresse, Telefon oder Facharzttitel suchen.',
 				:dose											=>	'St&auml;rke',
+        :dosing_de                =>  "Dosisanpassung bei Niereninsuffizienz",
+        :dosing_de_title          =>  "Wirkstoffliste Dosisanpassung bei Niereninsuffizienz - dosing.de",
 				:download									=>	'Abschicken',
 				:download_credit					=>	'auf Rechnung',
 				:download_analysis0				=>	'F&uuml;r den Download der kompletten Analysenliste als PDF-File klicken Sie bitte ',
