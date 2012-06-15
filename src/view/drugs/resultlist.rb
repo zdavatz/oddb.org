@@ -38,7 +38,7 @@ class AtcHeader < HtmlGrid::Composite
     [0,0,2] => :atc_ddd_link,
     [0,0,3] => '&nbsp;',
     [0,0,4] => :atc_drug_bank_link,
-    [0,0,5] => '&nbsp;-&nbsp;',
+    [0,0,5] => :atc_optional_link_separator,
     [0,0,6] => :atc_dosing_de_link,
     [1,0]   => :pages,
   }
@@ -85,6 +85,11 @@ class AtcHeader < HtmlGrid::Composite
     end
     link
 	end
+  def atc_optional_link_separator(model, session=@session)
+    if model.code and model.ni_id
+      "&nbsp;-&nbsp;"
+    end
+  end
 	def edit(model, session=@session)
 		link = View::PointerLink.new(:code, model, session, self)
 		link.value = @lookandfeel.lookup(:edit_atc_class) + "&nbsp;"
