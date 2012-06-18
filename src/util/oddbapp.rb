@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 18.06.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1029,22 +1029,25 @@ class OddbPrevalence
 			retrieve_from_index('substance_index_sequence', query)
 		_search_exact_classified_result(sequences, :substance)
 	end
-	def _search_exact_classified_result(sequences, type=:unknown, result=nil)
-		atc_classes = {}
-		sequences.each { |seq|
-			code = (atc = seq.atc_class) ? atc.code : 'n.n'
-			new_atc = atc_classes.fetch(code) { 
-				atc_class = ODDB::AtcClass.new(code)
-				atc_class.descriptions = atc.descriptions unless(atc.nil?)
-				atc_classes.store(code, atc_class)
-			}
-			new_atc.sequences.push(seq)
-		}
-		result ||= ODDB::SearchResult.new
-		result.search_type = type
-		result.atc_classes = atc_classes.values
-		result
-	end
+  def _search_exact_classified_result(sequences, type=:unknown, result=nil)
+    atc_classes = {}
+    sequences.each { |seq|
+      code = (atc = seq.atc_class) ? atc.code : 'n.n'
+      new_atc = atc_classes.fetch(code) {
+        atc_class = ODDB::AtcClass.new(code)
+        unless(atc.nil?)
+          atc_class.descriptions = atc.descriptions
+          atc_class.ni_id = atc.ni_id
+        end
+        atc_classes.store(code, atc_class)
+      }
+      new_atc.sequences.push(seq)
+    }
+    result ||= ODDB::SearchResult.new
+    result.search_type = type
+    result.atc_classes = atc_classes.values
+    result
+  end
 	def search_hospitals(key)
 		ODBA.cache.retrieve_from_index("hospital_index", key)
 	end
