@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::OdbaExporter -- oddb.org -- 20.06.2012 -- yasaka@ywesee.com
 # ODDB::OdbaExporter -- oddb.org -- 25.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OdbaExporter -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -16,6 +17,19 @@ require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
 require 'odba'
+# NOTE
+# If all yaml are allowd, that these have unicode characters.
+# Then please use the following. see export_yaml method.
+require 'yaml'
+YAML::ENGINE.yamler = "syck"
+# ODBA objects need YAML syck engine
+# see
+#   * odba/persistable.rb
+#   * odba/stub.rb
+#require 'yaml'
+#require 'syck'
+#require 'syck/encoding'
+#YAML::ENGINE.yamler = "syck"
 
 module ODDB
 	module OdbaExporter
@@ -230,19 +244,30 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
         nil
       }
     end
-		def OdbaExporter.export_yaml(odba_ids, dir, name, opts={})
+    def OdbaExporter.export_yaml(odba_ids, dir, name, opts={})
+      need_unescape = false
+      if name == "oddb.yaml"
+        require 'syck'
+        require 'syck/encoding'
+        need_unescape = true
+      end
       opts.each do |key, val| Thread.current[key] = val end
-			safe_export(dir, name) { |fh|
-				odba_ids.each { |odba_id|
+      safe_export(dir, name) { |fh|
+        odba_ids.each { |odba_id|
           begin
-            YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
+            yaml = YAML.dump(ODBA.cache.fetch(odba_id, nil))
+            if need_unescape
+              fh.puts Syck.unescape(yaml)
+            else
+              fh.puts yaml
+            end
             fh.puts
           rescue
           end
-				}
-				nil
-			}
-		end
+        }
+        nil
+      }
+    end
     def OdbaExporter.remote_safe_export(dir, name, &block)
       FileUtils.mkdir_p(dir)
       Tempfile.open(name, dir) { |fh|

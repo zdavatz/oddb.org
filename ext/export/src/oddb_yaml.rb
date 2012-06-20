@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbYaml -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
+# ODDB::OddbYaml -- oddb.org -- 21.06.2012 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -368,9 +368,10 @@ module ODDB
 			'@sl_entry',
       '@parts',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
+    def to_yaml( opts = {} )
+      YAML::quick_emit( self.object_id, opts ) { |out|
+        next if out.nil?
+        out.map( taguri ) { |map|
           if Thread.current[:export_prices]
             map.add('iksnr', self.iksnr)
             map.add('ikscd', self.ikscd)
@@ -389,12 +390,14 @@ module ODDB
             map.add('price_exfactory', self.price_exfactory.to_f)
             map.add('price_public', self.price_public.to_f)
             map.add('pharmacode', self.pharmacode)
-            map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
+            if @narcotics
+              map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
+            end
             map.add('deductible', {'deductible_g' => 10, 'deductible_o' => 20 }[self.deductible.to_s])
           end
-				}
-			}
-		end
+        }
+      }
+    end
 	end
   class Part
     include OddbYaml
