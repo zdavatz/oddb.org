@@ -358,16 +358,15 @@ module ODDB
 			}
 		end
 	end
-	class Package #< PackageCommon
-		include OddbYaml
-		EXPORT_PROPERTIES = [	
-			'@ikscd',
-			'@lppv',
-			'@descr',
-			'@ikscat',
-			'@sl_entry',
+  class Package #< PackageCommon
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@ikscd',
+      '@descr',
+      '@ikscat',
+      '@sl_entry',
       '@parts',
-		]
+    ]
     def to_yaml( opts = {} )
       YAML::quick_emit( self.object_id, opts ) { |out|
         next if out.nil?
@@ -387,6 +386,7 @@ module ODDB
             }
             map.add('has_generic', self.has_generic?)
             map.add('ean13', self.barcode.to_s)
+            map.add('lppv', self.lppv || false)
             map.add('price_exfactory', self.price_exfactory.to_f)
             map.add('price_public', self.price_public.to_f)
             map.add('pharmacode', self.pharmacode)
@@ -398,15 +398,16 @@ module ODDB
         }
       }
     end
-	end
+  end
   class Part
     include OddbYaml
     EXPORT_PROPERTIES = [
-      '@measure', '@addition', '@commercial_form', '@composition',
+      '@measure', '@commercial_form', '@composition',
     ]
     def to_yaml( opts = {} )
       YAML::quick_emit( self.object_id, opts ) { |out|
         out.map( taguri ) { |map|
+          map.add('addition', self.addition || 0)
           map.add('count', self.count || 1)
           map.add('multi', self.multi || 1)
           to_yaml_properties.each { |m|
