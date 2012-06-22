@@ -483,33 +483,33 @@ module ODDB
 			'@date',
 		]
 	end
-	class Registration #< RegistrationCommon
-		include OddbYaml
-		EXPORT_PROPERTIES = [
-			'@iksnr',
-			'@registration_date',
-			'@revision_date',
-			'@expiration_date',
-			'@inactive_date',
-			'@sequences',
-			'@indication',
-			'@export_flag',
-		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
+  class Registration #< RegistrationCommon
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@iksnr',
+      '@registration_date',
+      '@revision_date',
+      '@expiration_date',
+      '@inactive_date',
+      '@sequences',
+      '@indication',
+    ]
+    def to_yaml( opts = {} )
+      YAML::quick_emit( self.object_id, opts ) { |out|
+        out.map( taguri ) { |map|
+          to_yaml_properties.each { |m|
+            map.add( m[1..-1], instance_variable_get( m ) )
+          }
+          map.add('export_flag', self.export_flag || false)
           if @fachinfo
             map.add('fachinfo_oid', @fachinfo.oid)
           end
-					map.add('generic_type', self.generic_type)
-					map.add('complementary_type', self.complementary_type)
-				}
-			}
-		end
-	end
+          map.add('generic_type', self.generic_type)
+          map.add('complementary_type', self.complementary_type)
+        }
+      }
+    end
+  end
 	class Sequence #< SequenceCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [
