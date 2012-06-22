@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbYaml -- oddb.org -- 21.06.2012 -- yasaka@ywesee.com
+# ODDB::OddbYaml -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -117,24 +117,33 @@ module ODDB
 			'@type',
 		]
 	end
-	class AtcClass 
-		include OddbYaml 
-		EXPORT_PROPERTIES = [
-			'@code',
-			'@descriptions',
-			'@guidelines',
-			'@ddd_guidelines',
-			'@ddds',
-		]
-		class DDD
-			include OddbYaml 
-			EXPORT_PROPERTIES = [
-				'@administration_route',
-				'@dose',
-				'@note',
-			]
-		end
-	end
+  class AtcClass
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@code',
+      '@descriptions',
+      '@guidelines',
+      '@ddd_guidelines',
+    ]
+    def to_yaml( opts = {} )
+      YAML::quick_emit( self.object_id, opts ) { |out|
+        out.map( taguri ) { |map|
+          to_yaml_properties.each { |m|
+            map.add( m[1..-1], instance_variable_get( m ) )
+          }
+          map.add('ddds', self.ddds.values)
+        }
+      }
+    end
+    class DDD
+      include OddbYaml
+      EXPORT_PROPERTIES = [
+        '@administration_route',
+        '@dose',
+        '@note',
+      ]
+    end
+  end
   class CommercialForm
     include OddbYaml
     EXPORT_PROPERTIES = [
