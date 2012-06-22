@@ -10,6 +10,7 @@ require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/dosing_de'
+require 'plugin/drug_bank'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -202,6 +203,9 @@ module ODDB
 		end
     def update_atc_nierelist
       update_notify_simple(DosingDePlugin, 'ATC Class (dosing.de)', :update_ni_id)
+    end
+    def update_atc_drug_bank_link
+      update_notify_simple(DrugBankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
     end
 		def update_bsv
 

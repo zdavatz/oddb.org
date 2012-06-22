@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -86,7 +86,7 @@ class AtcHeader < HtmlGrid::Composite
     link
 	end
   def atc_optional_link_separator(model, session=@session)
-    if model.code and model.ni_id
+    if model.db_id and model.ni_id
       "&nbsp;-&nbsp;"
     end
   end
