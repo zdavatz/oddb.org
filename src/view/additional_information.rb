@@ -57,17 +57,17 @@ module ODDB
           super(atc, session)
         end
       end
-      def atc_drug_bank_link(atc, session=@session)
+      def atc_drugbank_link(atc, session=@session)
         if(atc.respond_to?(:db_id) and \
            atc.db_id  and \
-           !@lookandfeel.disabled?(:atc_drug_bank_link))
+           !@lookandfeel.disabled?(:atc_drugbank_link))
           super(atc, session)
         end
       end
-      def atc_dosing_de_link(atc, session=@session)
+      def atc_dosing_link(atc, session=@session)
         if(atc.respond_to?(:ni_id) and \
            atc.ni_id  and \
-           !@lookandfeel.disabled?(:atc_dosing_de_link))
+           !@lookandfeel.disabled?(:atc_dosing_link))
           super(atc, session)
         end
       end

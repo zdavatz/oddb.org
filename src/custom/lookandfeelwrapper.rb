@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 15.06.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -831,8 +831,8 @@ module ODDB
 		]
     DISABLED = [
       :atc_ddd,
-      :atc_drug_bank_link,
-      :atc_dosing_de_link,
+      :atc_drugbank_link,
+      :atc_dosing_link,
       :legal_note,
       :navigation,
       :price_request

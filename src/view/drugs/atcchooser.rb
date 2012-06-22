@@ -22,23 +22,23 @@ module AtcLink
       link
     end
   end
-  def atc_drug_bank_link(atc, session=@session)
+  def atc_drugbank_link(atc, session=@session)
     if(atc.db_id)
-      link = HtmlGrid::Link.new(:drug_bank, atc, session, self)
+      link = HtmlGrid::Link.new(:drugbank, atc, session, self)
       link.href = "http://www.drugbank.ca/drugs/#{atc.db_id}"
       link.target = '_blank'
       link.set_attribute('class', 'list')
-      link.set_attribute('title', @lookandfeel.lookup(:drug_bank_title))
+      link.set_attribute('title', @lookandfeel.lookup(:drugbank_title))
       link
     end
   end
-  def atc_dosing_de_link(atc, session=@session)
+  def atc_dosing_link(atc, session=@session)
     if(atc.ni_id)
-      link = HtmlGrid::Link.new(:dosing_de, atc, session, self)
+      link = HtmlGrid::Link.new(:dosing, atc, session, self)
       link.href = "http://dosing.de/Niere/arzneimittel/#{atc.ni_id}.html"
       link.target = '_blank'
       link.set_attribute('class', 'list')
-      link.set_attribute('title', @lookandfeel.lookup(:dosing_de_title))
+      link.set_attribute('title', @lookandfeel.lookup(:dosing_title))
       link
     end
   end

@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::DosingDePlugin -- oddb.org -- 15.06.2012 -- yasaka@ywesee.com
+# ODDB::DosingPlugin -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 
 require 'mechanize'
 
 module ODDB
   ###
-  # = ODDB::DosingDePlugin is ID updater plugin for link to dosing.de
+  # = ODDB::DosingPlugin is ID updater plugin for link to dosing.de
   #
   # Note:: Atcclass#ni_id is ID(Niere ID) from DB of dosing.de
   # See::  http://dosing.de/Niere/nierelst.htm
-  class DosingDePlugin < Plugin
+  class DosingPlugin < Plugin
     def initialize(app=nil)
       super app
       @index_url = "http://dosing.de/Niere/nierelst.htm"

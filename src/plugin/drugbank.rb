@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::DrugBankPlugin -- oddb.org -- 21.06.2012 -- yasaka@ywesee.com
+# ODDB::DrugbankPlugin -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 
 require 'mechanize'
 
 module ODDB
   ###
-  # = ODDB::DrugBankPlugin is ID updater plugin for link to drugbank.ca
+  # = ODDB::DrugbankPlugin is ID updater plugin for link to drugbank.ca
   #
   # Note:: Atcclass#db_id is ID from DB of drugbank.ca
   # See::  http://www.drugbank.ca/documentation
-  class DrugBankPlugin < Plugin
+  class DrugbankPlugin < Plugin
     def initialize(app=nil)
       super app
       @search_url = "http://www.drugbank.ca/search?utf8=✓&query=%s&commit=Search"

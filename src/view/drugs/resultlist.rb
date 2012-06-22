@@ -37,9 +37,9 @@ class AtcHeader < HtmlGrid::Composite
     [0,0,0] => :atc_description,
     [0,0,2] => :atc_ddd_link,
     [0,0,3] => '&nbsp;',
-    [0,0,4] => :atc_drug_bank_link,
+    [0,0,4] => :atc_drugbank_link,
     [0,0,5] => :atc_optional_link_separator,
-    [0,0,6] => :atc_dosing_de_link,
+    [0,0,6] => :atc_dosing_link,
     [1,0]   => :pages,
   }
 	CSS_CLASS = 'composite'

@@ -9,8 +9,8 @@ require 'plugin/analysis'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
-require 'plugin/dosing_de'
-require 'plugin/drug_bank'
+require 'plugin/dosing'
+require 'plugin/drugbank'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -201,11 +201,11 @@ module ODDB
 				plug.update
 			}
 		end
-    def update_atc_dosing_de_link
-      update_notify_simple(DosingDePlugin, 'ATC Class (dosing.de)', :update_ni_id)
+    def update_atc_dosing_link
+      update_notify_simple(DosingPlugin, 'ATC Class (dosing.de)', :update_ni_id)
     end
-    def update_atc_drug_bank_link
-      update_notify_simple(DrugBankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
+    def update_atc_drugbank_link
+      update_notify_simple(DrugbankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
     end
 		def update_bsv
 
