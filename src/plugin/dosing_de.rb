@@ -5,15 +5,19 @@
 require 'mechanize'
 
 module ODDB
+  ###
+  # = ODDB::DosingDePlugin is ID updater plugin for link to dosing.de
+  #
+  # Note:: Atcclass#ni_id is ID(Niere ID) from DB of dosing.de
+  # See::  http://dosing.de/Niere/nierelst.htm
   class DosingDePlugin < Plugin
-    @index_url = nil
     def initialize(app=nil)
       super app
       @index_url = "http://dosing.de/Niere/nierelst.htm"
       @links = []
       # report
       @checked   = 0
-      @nolinked  = 0
+      @nonlinked = 0
       @activated = 0
     end
     def update_ni_id
@@ -23,19 +27,17 @@ module ODDB
         ni_id = _extract_ni_id_of(atc)
         args = { :ni_id => ni_id }
         @app.update atc.pointer, args
-        unless ni_id.nil?
-          @activated += 1
-        else
-          @nolinked += 1
-        end
+        ni_id.nil? ? @nonlinked += 1 : @activated += 1
         @checked += 1
       end
     end
+    ##
+    # Update id of dosing.de for direct link url
     def report
       [
-        "Checked ATC classes : #{@checked}",
-        "Activate Niere Link : #{@activated}",
-        "No link ATC classes : #{@nolinked}",
+        "Checked ATC classes  : #{@checked}",
+        "Activated Niere Link : #{@activated}",
+        "Non-link ATC classes : #{@nonlinked}",
       ].join("\n")
     end
     private
@@ -47,13 +49,17 @@ module ODDB
         link unless link.text.length < 5 # except "" and "#ABC"
       end
     end
+    ##
+    # Extract ID from link url
+    #
+    # URL format is:
+    #   http://dosing.de/Niere/arzneimittel/NI_00000.html
     def _extract_ni_id_of(atc)
       ni_id = nil
       catch :ni_id do
         pattern = atc.to_s.gsub /[^A-Za-z]/u, '.'
         @links.each do |link|
           if /#{pattern}/iu.match link.text
-            # http://dosing.de/Niere/arzneimittel/NI_00000.html
             if link.uri.to_s =~ /(NI_\d{5})/iu
               ni_id = $1
               throw :ni_id

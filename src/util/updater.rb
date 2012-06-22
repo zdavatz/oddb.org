@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 05.05.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -201,7 +201,7 @@ module ODDB
 				plug.update
 			}
 		end
-    def update_atc_nierelist
+    def update_atc_dosing_de_link
       update_notify_simple(DosingDePlugin, 'ATC Class (dosing.de)', :update_ni_id)
     end
     def update_atc_drug_bank_link

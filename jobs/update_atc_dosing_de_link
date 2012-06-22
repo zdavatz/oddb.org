@@ -10,7 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_atc_nierelist
+      Updater.new(system).update_atc_dosing_de_link
     end
   end
 end
