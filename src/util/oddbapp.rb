@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 18.06.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 25.06.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1037,6 +1037,7 @@ class OddbPrevalence
         atc_class = ODDB::AtcClass.new(code)
         unless(atc.nil?)
           atc_class.descriptions = atc.descriptions
+          atc_class.db_id = atc.db_id
           atc_class.ni_id = atc.ni_id
         end
         atc_classes.store(code, atc_class)
