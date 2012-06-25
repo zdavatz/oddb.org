@@ -54,8 +54,8 @@ module ODDB
       begin
         tried += 1
         page = agent.get(@search_url % atc.code)
-      rescue Timeout::Error
-        if tried <= limit
+      rescue Net::HTTP::Persistent::Error => e
+        if /timeout/iu =~ e.message and tried <= limit
           sleep 10
           retry
         end
