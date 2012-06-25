@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::DrugbankPlugin -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::DrugbankPlugin -- oddb.org -- 25.06.2012 -- yasaka@ywesee.com
 
 require 'mechanize'
+require 'plugin/plugin'
 
 module ODDB
   ###
@@ -11,7 +12,7 @@ module ODDB
   # Note:: Atcclass#db_id is ID from DB of drugbank.ca
   # See::  http://www.drugbank.ca/documentation
   class DrugbankPlugin < Plugin
-    def initialize(app=nil)
+    def initialize app=nil
       super app
       @search_url = "http://www.drugbank.ca/search?utf8=✓&query=%s&commit=Search"
       @links = []
@@ -28,9 +29,8 @@ module ODDB
         next unless atc.code.length > 6 # short codes are not in drugbank.ca
         sleep 5
         _search_with atc
-        db_id = _extract_db_id_of atc
-        args = { :db_id => db_id }
-        @app.update atc.pointer, args
+        db_id = _extract_db_id
+        @app.update atc.pointer, { :db_id => db_id }
         db_id.nil? ? @nonlinked += 1 : @activated += 1
         @checked += 1
       end
@@ -46,7 +46,8 @@ module ODDB
     def _search_with atc
       @links = []
       agent = Mechanize.new
-      agent.user_agent_alias = "Linux Firefox"
+      agent.keep_alive = false
+      agent.user_agent_alias = 'Linux Firefox'
       page = nil
       limit = 3
       tried = 0
@@ -70,13 +71,17 @@ module ODDB
     #
     # URL format is:
     #   http://www.drugbank.ca/drugs/DB00571
-    def _extract_db_id_of(atc)
+    def _extract_db_id
       db_id = nil
-      catch :db_id do
-        @links.each do |link|
-          if link.uri.to_s =~ /drugs\/(DB\d{5})/iu
+      @links.each do |link|
+        if link.uri.to_s =~ /drugs\/(DB\d{5})/iu
+          case db_id
+          when NilClass
             db_id = $1
-            throw :db_id
+          when String
+            db_id = [db_id, $1]
+          when Array
+            db_id << $1
           end
         end
       end
