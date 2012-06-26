@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::DosingPlugin -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::DosingPlugin -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 
 require 'mechanize'
+require 'plugin/plugin'
 
 module ODDB
   ###
