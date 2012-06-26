@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Indication -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 # ODDB::Indication -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Indication -- oddb.org -- 12.05.2003 -- hwyss@ywesee.com 
 
@@ -14,13 +15,19 @@ module ODDB
 		include RegistrationObserver
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
-		def atc_classes
-			atcs = @registrations.inject([]) do |memo, reg| 
-				memo.concat reg.atc_classes
+    def atc_classes
+      atcs = []
+      if @registrations
+        atcs = @registrations.inject([]) do |memo, reg| 
+          if reg.atc_classes.is_a? Array
+            memo.concat reg.atc_classes
+          end
+          memo
+        end
       end
       @sequences.each { |seq| atcs.push seq.atc_class }
       atcs.compact.uniq
-		end
+    end
     def empty?
       @registrations.empty? && @sequences.empty?
     end

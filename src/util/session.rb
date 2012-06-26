@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -188,9 +188,9 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search_oddb(query, self.language)
 		end
-		def search_exact_indication(query)
-			@app.search_exact_indication(query, self.language)
-		end
+    def search_exact_indication(query)
+      @app.search_exact_indication(query)
+    end
     def search_hospital(ean)
       @persistent_user_input[:ean] ||= ean
       @app.hospital(ean)

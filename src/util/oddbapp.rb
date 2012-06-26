@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 25.06.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -892,7 +892,7 @@ class OddbPrevalence
 		end
 		# indication
 		if(atcs.empty?)
-			atcs = search_by_indication(key, lang, result)
+			atcs = search_by_indication(key)
 			result.search_type = :indication
 		end
 		# sequence
@@ -945,17 +945,16 @@ class OddbPrevalence
 		}
 		filtered.flatten.compact.uniq
 	end
-	def search_by_indication(key, lang, result)
-		if(lang.to_s != "fr") 
-			lang = "de"
-		end
-		atcs = ODBA.cache.\
-			retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
-		atcs += ODBA.cache.\
-			retrieve_from_index("indication_index_atc_#{lang}",
-			key.dup, result)
-		atcs.uniq
-	end
+  def search_by_indication(key)
+    pattern = key.gsub(/[^A-z0-9]/, '.')
+    atcs = []
+    indications.map do |indication|
+      if indication.search_text.match(/#{key}/i)
+        atcs.concat indication.atc_classes
+      end
+    end
+    atcs.uniq
+  end
 	def search_by_sequence(key, result=nil)
 		ODBA.cache.retrieve_from_index('sequence_index_atc', key.dup, result)
 	end
@@ -1000,13 +999,13 @@ class OddbPrevalence
 		result.atc_classes = search_by_company(query)
 		result
 	end
-	def search_exact_indication(query, lang)
-		result = ODDB::SearchResult.new
-		result.exact = true
-		result.search_type = :indication
-		result.atc_classes = search_by_indication(query, lang, result)
-		result
-	end
+  def search_exact_indication(query)
+    result = ODDB::SearchResult.new
+    result.exact = true
+    result.search_type = :indication
+    result.atc_classes = search_by_indication(query)
+    result
+  end
 	def search_narcotics(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"

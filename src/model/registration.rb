@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 07.05.2012 -- yasaka@ywesee.com
+# ODDB::Registration -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 # ODDB::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -87,9 +87,11 @@ module ODDB
 			end
 		end
 		def atc_classes
-			@sequences.values.collect { |seq|
-				seq.atc_class if seq.respond_to?(:atc_class)
-			}.compact.uniq
+      if @sequences
+        @sequences.values.collect { |seq|
+          seq.atc_class if seq.respond_to?(:atc_class)
+        }.compact.uniq
+      end
 		end
 		def atcless_sequences
 			@sequences.values.select { |seq|

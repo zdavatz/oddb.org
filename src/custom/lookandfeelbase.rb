@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1395,7 +1395,7 @@ Zeno Davatz
 				:square_phytotherapy			=>	'Ph',
 				:square_vaccine						=>	'I/B',
 				:st_company								=>	'Zulassungsinhaber',
-				:st_indication						=>	'Indikation',
+				:st_indication						=>	'Anwendung',
 				:st_oddb									=>	'Preisvergleich',
 				:st_unwanted_effect       =>	'Unerw&uuml;nschte Wirkung',
 				:st_sequence							=>	'Markenname',
@@ -2718,7 +2718,7 @@ Zeno Davatz
 				:square_phytotherapy			=>	'Ph',
 				:square_vaccine						=>	'V/S',
 				:st_company								=>	'Titulaire de l\'Autorisation',
-				:st_indication						=>	'Indication',
+				:st_indication						=>	'Application',
 				:st_oddb									=>	'Comparaison des prix',
 				:st_unwanted_effect       =>	'Effet ind&eacute;sirable',
 				:st_sequence							=>	'Nom de marque',
