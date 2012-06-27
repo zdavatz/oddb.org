@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::AtcChooser -- oddb.org -- 25.06.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 27.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
@@ -17,7 +17,7 @@ module AtcLink
     if(atc && atc.has_ddd?)
       link = HtmlGrid::Link.new(:ddd, atc, session, self)
       link.href = @lookandfeel._event_url(:ddd, {'atc_code'=>atc.code})
-      link.set_attribute('class', 'square infos')
+      link.set_attribute('class', 'list')
       link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
       link
     end
@@ -26,7 +26,7 @@ module AtcLink
     if(atc.db_id)
       link = HtmlGrid::Link.new(:drugbank, atc, session, self)
       link.target = '_blank'
-      link.set_attribute('class', 'list')
+      link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:drugbank_title))
       if atc.db_id.is_a? Array # link to search result
         link.href = "http://www.drugbank.ca/search?utf8=✓&query=#{atc.code}&commit=Search"
@@ -41,7 +41,7 @@ module AtcLink
       link = HtmlGrid::Link.new(:dosing, atc, session, self)
       link.href = "http://dosing.de/Niere/arzneimittel/#{atc.ni_id}.html"
       link.target = '_blank'
-      link.set_attribute('class', 'list')
+      link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:dosing_title))
       link
     end
