@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 12.06.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -668,13 +668,23 @@ module ODDB
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
       FileUtils.mkdir_p dir
-      tmp = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
+      name_base = name.gsub(/[\/\s\+:]/, '_')
+      tmp = File.join dir, name_base + '.tmp.html'
       page.save tmp
-      path = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.html'
+      path = File.join dir, name_base + '.html'
       if File.exist?(path) && FileUtils.compare_file(tmp, path)
         flags.store lang, :up_to_date
       end
       FileUtils.mv tmp, path
+      # save images
+      resource_dir = File.join ODDB::IMAGE_DIR, type.to_s, lang.to_s
+      FileUtils.mkdir_p resource_dir
+      page.images_with(:src => %r!data/pictures/!).each do |image|
+        filename = File.basename(image.src.strip)
+        img_file = File.join dir, name_base + '_files', filename
+        image.fetch.save img_file
+        FileUtils.cp img_file, File.join(resource_dir, filename)
+      end
       path
     end
     def search type, term, agent

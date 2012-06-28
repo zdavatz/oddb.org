@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 27.06.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -108,9 +108,23 @@ class TextinfoHpricot
               line.length }.max
             ptr.target << "\n" << ("-" * ptr.tablewidth)
           end
+        when 'div'
+          handle_element(child, ptr)
+        when 'img'
+          ptr.section = ptr.chapter.next_section
+          ptr.target = ptr.section.next_image
+          handle_image(ptr, child)
+          ptr.section = ptr.chapter.next_section
+          ptr.target = ptr.section.next_paragraph
         end
       end
     }
+  end
+  def handle_image(ptr, child)
+    file_name = File.basename child[:src].gsub('&#xA;','').strip
+    lang = file_name[0].upcase == 'D' ? 'de' : 'fr'
+    dir = File.join '/', 'resources', 'images', 'fachinfo', lang
+    ptr.target.src = File.join dir, file_name
   end
   def handle_text(ptr, child)
     ptr.section ||= ptr.chapter.next_section
