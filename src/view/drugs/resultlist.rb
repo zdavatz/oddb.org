@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -40,6 +40,8 @@ class AtcHeader < HtmlGrid::Composite
     [0,0,4] => :atc_drugbank_link,
     [0,0,5] => :atc_optional_link_separator,
     [0,0,6] => :atc_dosing_link,
+    [0,0,7] => :atc_optional_link_separator,
+    [0,0,8] => :atc_division_link,
     [1,0]   => :pages,
   }
 	CSS_CLASS = 'composite'
@@ -48,6 +50,7 @@ class AtcHeader < HtmlGrid::Composite
 	}
   LEGACY_INTERFACE = false
 	def init
+    @link_separators = 0
 		if(@session.allowed?('edit', 'org.oddb.model.!atc_class.*'))
 			components.store([0,0,1], :edit)
 		end
@@ -86,8 +89,12 @@ class AtcHeader < HtmlGrid::Composite
     link
 	end
   def atc_optional_link_separator(model, session=@session)
-    if model.db_id and model.ni_id
-      "&nbsp;-&nbsp;"
+    separator = "&nbsp;-&nbsp;"
+    @link_separators += 1
+    if @link_separators == 1
+      separator if model.db_id and model.ni_id
+    else
+      separator if model.db_id
     end
   end
 	def edit(model, session=@session)

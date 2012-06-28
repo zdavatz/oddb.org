@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -383,6 +383,8 @@ Zeno Davatz
 				:disable_invoice_patinfo  =>	'KEINE PI-Rechnung',
 				:disable_patinfo					=>	'KEINE Patinfo anzeigen',
         :disable_photo_forwarding =>  'ohne Weiterleitung',
+        :division                 =>  'Teilbarkeit',
+        :division_title           =>  'Teilbarkeit',
 				:doctor_count_text				=>	'&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:doctors									=>  'Arzt',
@@ -1909,10 +1911,14 @@ Zeno Davatz
 				:disable_invoice_fachinfo =>	'Empêcher facture automatique IPro',
 				:disable_invoice_patinfo  =>	'Empêcher facture automatique IPat',
         :disable_photo_forwarding =>  'sans transmission pas de renvoi',
+        :division                 =>  'couper ou exraser',
+        :division_title           =>  'couper ou exraser',
 				:doctorlist								=>	'Liste des m&eacute;decins Suisses',
 				:doctors									=>  'M&eacute;decin',
 				:doctors_search_explain	  =>	'Cherchez pars m&eacute;decin en Suisse. Vous pouvez chercher conform&eacute;ment au nom,<br> adresse, t&eacute;l&eacute;phone ou &agrave; titre de m&eacute;decin sp&eacute;cialiste.',
 				:dose											=>	'Concentration',
+        :dosing                   =>  'Posologie lors d’insuffisance rénale',
+        :dosing_title             =>  "Wirkstoffliste Posologie lors d’insuffisance rénale - dosing.de",
 				:download									=>	'Envoyer',
 				:download_analysis0				=>	'Pour recharcher la liste des analyses complette dans un fichier-PDF cliquer ',
 				:download_analysis1				=>	'ici',
