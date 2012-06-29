@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 12.03.2012 -- yasaka@ywesee.com
+# ODDB::Sequence -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
 # ODDB::Sequence -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'model/package'
 require 'model/dose'
+require 'model/division'
 require 'model/composition'
 
 module ODDB
@@ -31,21 +32,23 @@ module ODDB
 								:compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
                   :patinfo, :pdf_patinfo, :atc_request_time,
-                  :deactivate_patinfo, :sequence_date, :activate_patinfo
+                  :deactivate_patinfo, :sequence_date, :activate_patinfo,
+                  :division
 		attr_writer :composition_text, :dose, :inactive_date
     check_accessor_list = {
-      :registration => "ODDB::Registration",
-      :atc_class => "ODDB::AtcClass",
-      :export_flag => ["NilClass","FalseClass","TrueClass"],
-      :patinfo => "ODDB::Patinfo",
-      :pdf_patinfo => "String",
-      :atc_request_time => "Time",
+      :registration       => "ODDB::Registration",
+      :atc_class          => "ODDB::AtcClass",
+      :export_flag        => ["NilClass","FalseClass","TrueClass"],
+      :patinfo            => "ODDB::Patinfo",
+      :pdf_patinfo        => "String",
+      :atc_request_time   => "Time",
       :deactivate_patinfo => ["NilClass","Date"],
-      :sequence_date => ["NilClass", "Date"],
-      :activate_patinfo => ["NilClass","Date"],
-      :composition_text => "String",
-      :dose => ["NilClass","ODDB::Dose"],
-      #:inactive_date => "Date",
+      :sequence_date      => ["NilClass","Date"],
+      :activate_patinfo   => ["NilClass","Date"],
+      :composition_text   => "String",
+      :dose               => ["NilClass","ODDB::Dose"],
+      :division           => ["NilClass","ODDB::Division"],
+      #:inactive_date     => "Date",
     }
     define_check_class_methods check_accessor_list
 		alias :pointer_descr :seqnr
@@ -133,6 +136,12 @@ module ODDB
       comp.sequence = self
       @compositions.push comp
       comp
+    end
+    def create_division
+      div = Division.new
+      div.add_sequence self
+      @division = div
+      div
     end
 		def create_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
@@ -392,6 +401,10 @@ module ODDB
       super(patinfo)
 			@patinfo = replace_observer(@patinfo, patinfo)
 		end
+    def division=(division)
+      super(division)
+      @division = replace_observer(@division, division)
+    end
 		def	replace_observer(target, value)
 			if(target.respond_to?(:remove_sequence))
 				target.remove_sequence(self)

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -169,6 +169,12 @@ Zeno Davatz
 				:assign_other_patinfo			=>  'Ein Patinfo zur Sequenz zuweisen',
 				:assign_this_fachinfo			=>  'Diese Fachinfo anderen Registrationen zuweisen',
 				:assign_this_patinfo			=>  'Dieses Patinfo anderen Sequenzen zuweisen',
+        :assign_division           =>  'Teilbarkeit zuweisen',
+        :assign_division_equal     =>  'identisch',
+        :assign_division_explain0  =>  'Die Teilbarkeit der Sequenz "',
+        :assign_division_explain1  =>  '" zu anderen Sequenzen hinzufügen',
+        :assign_other_division     =>  'Eine Teilbarkeit zur Sequenz zuweisen',
+        :assign_this_division      =>  'Diese Teilbarkeit anderen Sequenzen zuweisen',
 				:assign										=>  'Zuweisen',
         :association              =>  'Geh&ouml;rt zu',
 				:atc_chooser							=>	'ATC-Browser',
@@ -385,6 +391,12 @@ Zeno Davatz
         :disable_photo_forwarding =>  'ohne Weiterleitung',
         :division                 =>  'Teilbarkeit',
         :division_title           =>  'Teilbarkeit, www.kantonsspitalbaden.ch',
+        :division_divisable       =>  'Teilbar',
+        :division_dissolvable     =>  'Aufl&ouml;sbar oder suspendierbar',
+        :division_crushable       =>  'Zerm&ouml;rsebar',
+        :division_openable        =>  '&Ouml;ffnen von Kapseln',
+        :division_notes           =>  'Bemerkungen / Alternativen',
+        :division_source          =>  'Quellen',
 				:doctor_count_text				=>	'&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:doctors									=>  'Arzt',
@@ -1766,6 +1778,12 @@ Zeno Davatz
 				:assign_patinfo_explain1	=>  '" &agrave; autres s&eacute;quences',
 				:assign_other_patinfo			=>  'Attribuer une information patient &agrave; cette s&eacute;quence',
 				:assign_this_patinfo			=>  'Attribuer cette information patient &agrave; autres s&eacute;quences',
+        :assign_division           =>  'Attribuer couper ou écraser',
+        :assign_division_equal     =>  'identique',
+        :assign_division_explain0  =>  ' Attribuer couper ou écraser de la s&eacute;quence "',
+        :assign_division_explain1  =>  '" &agrave; autres s&eacute;quences',
+        :assign_other_division     =>  'Attribuer une couper ou écraser &agrave; cette s&eacute;quence',
+        :assign_this_division      =>  'Attribuer cette couper ou écrase &agrave; autres s&eacute;quences',
         :association              =>  'Association',
 				:atc_chooser							=>	'Classification&nbsp;ATC',
 				:atc_chooser_text					=>	"Vous pouvez &eacute;galement rechercher d'apr&egrave;s le domaine d'indications<br> (p.ex. Dermatologie). Utilisez alors notre",
@@ -1913,6 +1931,12 @@ Zeno Davatz
         :disable_photo_forwarding =>  'sans transmission pas de renvoi',
         :division                 =>  'couper ou écraser',
         :division_title           =>  'couper ou écraser, pharmacie.hug-ge.ch',
+        :division_divisable       =>  'Couper en 2',
+        :division_dissolvable     =>  'Sonde',
+        :division_crushable       =>  'Ecraser',
+        :division_openable        =>  'Ouvrir',
+        :division_notes           =>  'Remarques',
+        :division_source          =>  'Quellen',
 				:doctorlist								=>	'Liste des m&eacute;decins Suisses',
 				:doctors									=>  'M&eacute;decin',
 				:doctors_search_explain	  =>	'Cherchez pars m&eacute;decin en Suisse. Vous pouvez chercher conform&eacute;ment au nom,<br> adresse, t&eacute;l&eacute;phone ou &agrave; titre de m&eacute;decin sp&eacute;cialiste.',

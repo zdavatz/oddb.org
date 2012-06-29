@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Admin::Sequence -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 29.02.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
 require 'view/admin/sequence'
 require 'model/sequence'
+require 'model/division'
 require 'state/admin/package'
 require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
@@ -20,13 +22,20 @@ module ODDB
 module PatinfoPdfMethods
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
   HTML_PARSER = DRbObject.new(nil, FIPARSE_URI)
-	def assign_patinfo
-		if(@model.has_patinfo?)
-			State::Admin::AssignPatinfo.new(@session, @model)
-		else
-			State::Admin::AssignDeprivedSequence.new(@session, @model)
-		end
-	end	
+  def assign_patinfo
+    if(@model.has_patinfo?)
+      State::Admin::AssignPatinfo.new(@session, @model)
+    else
+      State::Admin::AssignDeprivedSequence.new(@session, @model)
+    end
+  end
+  def assign_division
+    if(@model.division)
+      State::Admin::AssignDivision.new(@session, @model)
+    else
+      State::Admin::AssignDeprivedSequence.new(@session, @model)
+    end
+  end
 	def get_patinfo_input(input)
 		newstate = self
     if((html_file = @session.user_input(:html_upload)) \
@@ -180,6 +189,12 @@ module SequenceMethods
       :activate_patinfo,
       :deactivate_patinfo,
       :sequence_date,
+      :division_divisable,
+      :division_dissolvable,
+      :division_crushable,
+      :division_openable,
+      :division_notes,
+      :division_source,
     ]
 		input = user_input(keys)
 =begin
@@ -209,6 +224,7 @@ module SequenceMethods
 		else
 			@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
 		end
+    update_division input
 		newstate = get_patinfo_input(input)
 		if((company = @model.company) \
 			&& (mail = user_input(:regulatory_email)) && !mail.empty?)
@@ -274,6 +290,21 @@ module SequenceMethods
     end
     if !allowed?
       @errors.store :pointer, create_error(:e_not_allowed, :pointer, nil)
+    end
+  end
+  def update_division(input)
+    if !input.empty? and input[:division_divisable]
+      data = {}
+      div = @model.division
+      input.each_pair do |key, value|
+        if key.to_s =~ /division_(\w*)/
+          data[$1] = value
+        end
+      end
+      ptr = div ? div.pointer : (@model.pointer + :division).creator
+      if ptr
+        div = @session.app.update ptr, data
+      end
     end
   end
   def update_compositions(input)

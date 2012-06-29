@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Admin::Sequence -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -218,6 +219,95 @@ class RootCompositions < Compositions
     "Pragma"				=>	"no-cache",
     "Expires"				=>	Time.now.rfc1123,
   }
+end
+class DivisionComposite < HtmlGrid::Composite
+  # TODO
+  # to create show view
+end
+class RootDivisionComposite < DivisionComposite
+  COMPONENTS = {
+    [0,0] => :divisable,
+    [0,1] => :dissolvable,
+    [0,2] => :crushable,
+    [0,3] => :openable,
+    [0,4] => :notes,
+    [0,5] => :division_source,
+    [0,6] => :source,
+    [0,7] => :assign_division,
+  }
+  COLSPAN_MAP = {
+    [0,5] => 3,
+    [0,6] => 4,
+  }
+  CSS_MAP = {
+    [0,0] => 'list',
+    [0,1] => 'list',
+    [0,2] => 'list',
+    [0,3] => 'list',
+    [0,4] => 'list',
+    [0,5] => 'list',
+  }
+  LABELS = true
+  DEFAULT_CLASS = HtmlGrid::Value
+  def divisable(model, session)
+    input = HtmlGrid::InputText.new(:division_divisable, model, @session, self)
+    input.set_attribute('size', 71)
+    if model
+      input.value = model.divisable
+    end
+    input
+  end
+  def dissolvable(model, session)
+    input = HtmlGrid::InputText.new(:division_dissolvable, model, @session, self)
+    input.set_attribute('size', 40)
+    if model
+      input.value = model.dissolvable
+    end
+    input
+  end
+  def crushable(model, session)
+    input = HtmlGrid::InputText.new(:division_crushable, model, @session, self)
+    input.set_attribute('size', 40)
+    if model
+      input.value = model.crushable
+    end
+    input
+  end
+  def openable(model, session)
+    input = HtmlGrid::InputText.new(:division_openable, model, @session, self)
+    input.set_attribute('size', 40)
+    if model
+      input.value = model.openable
+    end
+    input
+  end
+  def notes(model, session)
+    input = HtmlGrid::InputText.new(:division_notes, model, @session, self)
+    input.set_attribute('size', 71)
+    if model
+      input.value = model.notes
+    end
+    input
+  end
+  def source(model, session)
+    textarea = HtmlGrid::Textarea.new(:division_source, model, @session, self)
+    textarea.set_attribute('class', 'huge')
+    if model
+      textarea.value = model.source
+    end
+    textarea
+  end
+  def assign_division(model, session)
+    link = HtmlGrid::Link.new(:assign_division, model, session, self)
+    link.href = @lookandfeel.event_url(:assign_division)
+    if model
+      link.value = @lookandfeel.lookup(:assign_this_division)
+    else
+      link.value = @lookandfeel.lookup(:assign_other_division)
+    end
+    link.set_attribute('class', 'small')
+    link
+  end
 end
 module SequencePackageList 
 	include DataFormat
@@ -546,15 +636,18 @@ class RootSequenceForm < HtmlGrid::Form
   include FormMethods
   TAG_METHOD = :multipart_form
   COMPONENTS = {
-    [0,0]	=>	View::Admin::SequenceForm,
-    [0,1]	=>	'composition',
-    [0,2]	=>	:composition_text,
-    [0,3]	=>	'active_agents',
-    [0,4]	=>	:compositions,
+    [0,0] => View::Admin::SequenceForm,
+    [0,1] => 'composition',
+    [0,2] => :composition_text,
+    [0,3] => 'active_agents',
+    [0,4] => :compositions,
+    [0,5] => 'division',
+    [0,6] => :division,
   }
   CSS_MAP = {
-    [0,1]	=>	'subheading',
-    [0,3]	=>	'subheading',
+    [0,1] => 'subheading',
+    [0,3] => 'subheading',
+    [0,5] => 'subheading',
   }
   SYMBOL_MAP = {
     :composition_text => HtmlGrid::Textarea,
@@ -564,6 +657,9 @@ class RootSequenceForm < HtmlGrid::Form
   }
   def compositions(model, session=@session)
     RootCompositions.new(model.compositions, @session, self)
+  end
+  def division(model, session=@session)
+    RootDivisionComposite.new(model.division, session, self)
   end
   def hidden_fields(context)
     super << context.hidden('patinfo', 'keep')

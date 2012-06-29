@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -142,6 +142,7 @@ module ODDB
       :api_search,
 			:assign,
 			:assign_deprived_sequence,
+      :assign_division,
 			:assign_fachinfo,
 			:assign_patinfo,
 			:atc_class,
@@ -360,6 +361,12 @@ module ODDB
 			:descr,
 			:destination,
 			:doctor,
+      :division_divisable,
+      :division_dissolvable,
+      :division_crushable,
+      :division_openable,
+      :division_notes,
+      :division_source,
 			:effective_form,
 			:en,
 			:equivalent_substance,

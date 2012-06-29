@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# State::Admin::AssignDeprivedSequence -- oddb -- 29.06.2012 -- yasaka@ywesee.com
 # State::Admin::AssignDeprivedSequence -- oddb -- 15.12.2003 -- rwaltert@ywesee.com
 
 require 'state/admin/global'
@@ -49,23 +50,25 @@ class AssignDeprivedSequence < State::Admin::Global
       @model.sequences = sequences
 		end
 	end
-	def assign_deprived_sequence
-		if(allowed?(@model.sequence) && !@session.error? \
-			&& (pointer = @session.user_input(:patinfo_pointer)))
-			values = {:pdf_patinfo => nil, :patinfo => nil}
-			if(pointer.last_step == [:pdf_patinfo])
-				values.store(:pdf_patinfo, @session.resolve(pointer))
-			else
-				values.store(:patinfo, pointer)
-			end
-			@session.app.update(@model.pointer, values, unique_email)
-			_patinfo_deprived_sequences
-		else
-			err = create_error(:e_no_sequence_selected, :pointers, nil)
-			@errors.store(:pointers, err)
-			self
-		end
-	end
+  def assign_deprived_sequence
+    if(allowed?(@model.sequence) && !@session.error? \
+      && (pointer = @session.user_input(:patinfo_pointer)))
+      values = {:pdf_patinfo => nil, :patinfo => nil}
+      unless pointer.nil?
+        if(pointer.last_step == [:pdf_patinfo])
+          values.store(:pdf_patinfo, @session.resolve(pointer))
+        else
+          values.store(:patinfo, pointer)
+        end
+        @session.app.update(@model.pointer, values, unique_email)
+        _patinfo_deprived_sequences
+      end
+    else
+      err = create_error(:e_no_sequence_selected, :pointers, nil)
+      @errors.store(:pointers, err)
+      self
+    end
+  end
 	def named_sequences(name)
 		if(name.size < 3)
 			add_warning(:w_name_to_short,:name, name)
