@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -435,6 +435,7 @@ module ODDB
       :substance_ids,
       :swissmedic_salutation,
 			:synonym_list,
+      :targets,
 			:title,
 			:token,
 			:txn_id,

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 29.02.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -12,6 +12,7 @@ require 'state/admin/package'
 require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
 require 'state/admin/assign_patinfo'
+require 'state/admin/assign_division'
 require 'fileutils'
 require 'util/smtp_tls'
 require 'mail'
@@ -25,13 +26,6 @@ module PatinfoPdfMethods
   def assign_patinfo
     if(@model.has_patinfo?)
       State::Admin::AssignPatinfo.new(@session, @model)
-    else
-      State::Admin::AssignDeprivedSequence.new(@session, @model)
-    end
-  end
-  def assign_division
-    if(@model.division)
-      State::Admin::AssignDivision.new(@session, @model)
     else
       State::Admin::AssignDeprivedSequence.new(@session, @model)
     end
@@ -116,6 +110,9 @@ module PatinfoPdfMethods
 end
 module SequenceMethods
 	include PatinfoPdfMethods
+  def assign_division
+    State::Admin::AssignDivision.new(@session, @model)
+  end
 	def delete
 		registration = @model.parent(@session.app) 
 		if(klass = resolve_state(registration.pointer))
@@ -303,7 +300,7 @@ module SequenceMethods
       end
       ptr = div ? div.pointer : (@model.pointer + :division).creator
       if ptr
-        div = @session.app.update ptr, data
+        div = @session.app.update ptr, data, unique_email
       end
     end
   end
