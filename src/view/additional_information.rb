@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -106,11 +106,12 @@ module ODDB
           link.href = @lookandfeel._event_url(:show, smart_link_format)
         else 
           old_link_format = {:pointer => model.pointer}
-				  link.href = @lookandfeel._event_url(:show, old_link_format)
+          link.href = @lookandfeel._event_url(:show, old_link_format)
         end
 
         lang = @session.language
-        parts = model.compositions.collect { |comp|
+        comps = model.compositions.empty? ? model.sequence.compositions : model.compositions
+        parts = comps.collect { |comp|
           part = ''
           if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
             part << galform.send(lang) << ': '
