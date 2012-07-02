@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Language -- oddb -- 24.03.2003 -- mhuggler@ywesee.com 
+# ODDB::Language -- oddb -- 02.07.2012 -- yasaka@ywesee.com
+# ODDB::Language -- oddb -- 24.03.2003 -- mhuggler@ywesee.com
 
 require 'util/persistence'
 
@@ -52,7 +53,7 @@ module ODDB
       ODDB.search_term(self.send(language).to_s)
     end
 		def to_s
-      if descriptions.empty?
+      if !descriptions.respond_to?(:empty) or descriptions.empty?
         ''
       else
         descriptions.first.to_s
