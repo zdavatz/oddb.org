@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 03.07.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -937,10 +937,10 @@ module ODDB
 		end
     def sequence_list_components
       {
-        [0,0]	=>	:iksnr,
-        [1,0]	=>	:patinfo,
-        [2,0]	=>	:name_base,
-        [3,0]	=>	:compositions,
+        [0,0] => :iksnr,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :compositions,
       }
     end
 		def zones
@@ -1084,10 +1084,10 @@ module ODDB
 		end
     def sequence_list_components
       {
-        [0,0]	=>	:iksnr,
-        [1,0]	=>	:patinfo,
-        [2,0]	=>	:name_base,
-        [3,0]	=>	:compositions,
+        [0,0] => :iksnr,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :compositions,
       }
     end
 		def zones

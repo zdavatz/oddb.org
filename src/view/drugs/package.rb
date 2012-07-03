@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Package -- oddb -- 28.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 03.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
 require 'view/admin/swissmedic_source'
@@ -230,25 +230,25 @@ class PackageComposite < HtmlGrid::Composite
   include View::Admin::SwissmedicSource
   include View::Facebook
   include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0]	=>	:package_name,
-		[0,1]	=>	View::Drugs::PackageInnerComposite,
-    [0,2] =>  'composition',
-    [0,3] =>  :composition_text,
-		[0,4]	=>	'th_parts',
-		[0,5]	=>	:parts,
-		[0,6]	=>	'th_source',
-		[0,7]	=>	:source,
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]	=>	'th',
-		[0,2]	=>	'subheading',
-    [0,3] =>  'list',
-		[0,4]	=>	'subheading',
-		[0,6]	=>	'subheading',
-    [0,7] =>  'list',
-	}
+  COMPONENTS = {
+    [0,0] => :package_name,
+    [0,1] => View::Drugs::PackageInnerComposite,
+    [0,2] => 'composition',
+    [0,3] => :composition_text,
+    [0,4] => 'th_parts',
+    [0,5] => :parts,
+    [0,6] => 'th_source',
+    [0,7] => :source,
+  }
+  CSS_CLASS ='composite'
+  CSS_MAP = {
+    [0,0] => 'th',
+    [0,2] => 'subheading',
+    [0,3] => 'list',
+    [0,4] => 'subheading',
+    [0,6] => 'subheading',
+    [0,7] => 'list',
+  }
   DEFAULT_CLASS = HtmlGrid::Value
   def init
     if @lookandfeel.enabled?(:twitter_share)
