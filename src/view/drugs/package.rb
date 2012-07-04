@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Package -- oddb -- 03.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 04.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
 require 'view/admin/swissmedic_source'
-require 'view/drugs/privatetemplate'
-require 'view/additional_information'
 require 'view/admin/sequence'
+require 'view/drugs/privatetemplate'
+require 'view/drugs/sequence'
+require 'view/additional_information'
 require 'view/facebook'
 require 'htmlgrid/booleanvalue'
 
@@ -235,10 +236,12 @@ class PackageComposite < HtmlGrid::Composite
     [0,1] => View::Drugs::PackageInnerComposite,
     [0,2] => 'composition',
     [0,3] => :composition_text,
-    [0,4] => 'th_parts',
-    [0,5] => :parts,
-    [0,6] => 'th_source',
-    [0,7] => :source,
+    [0,4] => 'division',
+    [0,5] => :division,
+    [0,6] => 'th_parts',
+    [0,7] => :parts,
+    [0,8] => 'th_source',
+    [0,9] => :source,
   }
   CSS_CLASS ='composite'
   CSS_MAP = {
@@ -247,7 +250,8 @@ class PackageComposite < HtmlGrid::Composite
     [0,3] => 'list',
     [0,4] => 'subheading',
     [0,6] => 'subheading',
-    [0,7] => 'list',
+    [0,8] => 'subheading',
+    [0,9] => 'list',
   }
   DEFAULT_CLASS = HtmlGrid::Value
   def init
@@ -263,6 +267,13 @@ class PackageComposite < HtmlGrid::Composite
   end
   def compositions(model, session=@session)
     View::Admin::Compositions.new(model.compositions, @session, self)
+  end
+  def division(model, session)
+    division = nil
+    if sequence = model.sequence
+      division = sequence.division
+    end
+    View::Drugs::DivisionComposite.new(division, session, self)
   end
 	def package_name(model, session)
 		[model.name, model.size].compact.join('&nbsp;-&nbsp;')

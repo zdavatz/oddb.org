@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 03.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -390,6 +390,8 @@ Zeno Davatz
 				:disable_patinfo					=>	'KEINE Patinfo anzeigen',
         :disable_photo_forwarding =>  'ohne Weiterleitung',
         :division                 =>  'Teilbarkeit',
+        :division_link_short      =>  'T',
+        :division_link_title      =>  'Teilbarkeit',
         :division_title           =>  'Teilbarkeit, www.kantonsspitalbaden.ch',
         :division_divisable       =>  'Teilbar',
         :division_dissolvable     =>  'Aufl&ouml;sbar oder suspendierbar',
@@ -1930,6 +1932,8 @@ Zeno Davatz
 				:disable_invoice_patinfo  =>	'Empêcher facture automatique IPat',
         :disable_photo_forwarding =>  'sans transmission pas de renvoi',
         :division                 =>  'couper ou écraser',
+        :division_link_short      =>  'C',
+        :division_link_title      =>  'couper ou écraser',
         :division_title           =>  'couper ou écraser, pharmacie.hug-ge.ch',
         :division_divisable       =>  'Couper en 2',
         :division_dissolvable     =>  'Sonde',

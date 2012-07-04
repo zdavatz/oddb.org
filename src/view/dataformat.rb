@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::DataFormat -- oddb.org -- 23.04.2012 -- yasaka@ywesee.com
+# ODDB::View::DataFormat -- oddb.org -- 04.07.2012 -- yasaka@ywesee.com
 # ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -52,14 +52,14 @@ module ODDB
 					dose.to_s.gsub(/\s+/u, '&nbsp;')
 				end
 			end
-			def name_base(model, session=@session)
-				## optimization: there is a new Instance of the including Component for
-				## each new query. Therefore it should be _much_ faster to have an 
-				## instance variable @query than to call @session.persistent_user_input
-				## for every line in a result
-				@query ||= @session.persistent_user_input(:search_query)
+      def name_base(model, session=@session)
+        ## optimization: there is a new Instance of the including Component for
+        ## each new query. Therefore it should be _much_ faster to have an
+        ## instance variable @query than to call @session.persistent_user_input
+        ## for every line in a result
+        @query ||= @session.persistent_user_input(:search_query)
         @type ||= @session.persistent_user_input(:search_type)
-				link = HtmlGrid::Link.new(:compare, model, session, self)
+        link = HtmlGrid::Link.new(:compare, model, session, self)
         args = [
           :pointer, model.pointer, :search_type, @type, :search_query, @query,
         ]
@@ -68,44 +68,55 @@ module ODDB
         else
           link.href = @lookandfeel._event_url(:compare, args)
         end
-				link.value = breakline(model.name_base, 25)
+        link.value = breakline(model.name_base, 25)
         link_class = 'big' << resolve_suffix(model)
-				link.css_class = link_class
-				if(model.good_result?(@query) && !@lookandfeel.disabled?(:best_result))
-					 link.set_attribute('name', 'best_result')
-				end
-				indication = model.registration.indication
-				descr = model.descr
-				if(descr && descr.empty?)
-					descr = nil
-				end
-				title = [
-					descr,
-					@lookandfeel.lookup(:ean_code, model.barcode),
-					(indication.send(@session.language) unless(indication.nil?)),
-				].compact.join(', ')
-				link.set_attribute('title', title)
+        link.css_class = link_class
+        if(model.good_result?(@query) && !@lookandfeel.disabled?(:best_result))
+           link.set_attribute('name', 'best_result')
+        end
+        indication = model.registration.indication
+        descr = model.descr
+        if(descr && descr.empty?)
+          descr = nil
+        end
+        title = [
+          descr,
+          @lookandfeel.lookup(:ean_code, model.barcode),
+          (indication.send(@session.language) unless(indication.nil?)),
+        ].compact.join(', ')
+        link.set_attribute('title', title)
+        name_bases = [link]
         url = model.photo_link
         unless url.to_s.empty?
           photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
           if model.has_flickr_photo?
             args = [
-              :reg, model.registration.iksnr,
+              :reg, model.iksnr,
               :chapter, :photos
             ]
             photo.href = @lookandfeel._event_url(:fachinfo, args)
           else
             photo.href = url
           end
-          photo.set_attribute 'title', @lookandfeel.lookup(:photo_link_title)
-          photo.css_class = 'square infos'
-          [link, ' ‐ ', photo]
-        else
-          link
+          photo.set_attribute('title', @lookandfeel.lookup(:photo_link_title))
+          photo.css_class =('square infos')
+          name_bases.concat([' ‐ ', photo])
         end
-      rescue
+        if sequence = model.sequence and sequence.division
+          div = HtmlGrid::Link.new(:division_link_short, model, @session, self)
+          args = [
+            :reg, model.iksnr,
+            :seq, model.seqnr,
+          ]
+          div.href = @lookandfeel._event_url(:show, args)
+          div.set_attribute('title', @lookandfeel.lookup(:division_link_title))
+          div.css_class = 'square infos'
+          name_bases.concat([' - ', div])
+        end
+        name_bases
+      rescue StandardError => e
         ''
-			end
+      end
 			def price(model, session=@session)
 				formatted_price(:price, model)
 			end
