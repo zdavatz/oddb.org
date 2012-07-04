@@ -23,5 +23,13 @@ module ODDB
       :source      => ['String', 'NilClass'],
     }
     define_check_class_methods check_class_list
+    def empty?
+      [
+        @divisable, @dissolvable, @crushable, @openable, @notes,
+        @source
+      ].select do |var|
+        !var.nil? and !var.empty?
+      end.empty?
+    end
   end
 end

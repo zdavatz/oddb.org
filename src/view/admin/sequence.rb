@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Sequence -- oddb.org -- 03.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Sequence -- oddb.org -- 04.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -594,9 +594,7 @@ class SequenceComposite < HtmlGrid::Composite
     [0,3] => :composition_text,
     [0,4] => 'active_agents',
     [0,5] => :compositions,
-    [0,6] => 'division',
-    [0,7] => :division,
-    [0,8] => :sequence_packages,
+    [0,6] => :sequence_packages
   }
   CSS_CLASS = 'composite'
   CSS_MAP = {
@@ -604,12 +602,20 @@ class SequenceComposite < HtmlGrid::Composite
     [0,2] => 'subheading',
     [0,3] => 'list',
     [0,4] => 'subheading',
-    [0,6] => 'subheading',
   }
 	PACKAGES = View::Admin::SequencePackages
   SYMBOL_MAP = {
     :composition_text => HtmlGrid::Value,
   }
+  def init
+    if div = @model.division and !div.empty?
+      components.store [0,6], 'division'
+      components.store [0,7], :division
+      components.store [0,8], :sequence_packages
+      css_map.store [0,6], 'subheading'
+    end
+    super
+  end
   def compositions(model, session=@session)
     Compositions.new(model.compositions, @session, self)
   end

@@ -236,12 +236,10 @@ class PackageComposite < HtmlGrid::Composite
     [0,1] => View::Drugs::PackageInnerComposite,
     [0,2] => 'composition',
     [0,3] => :composition_text,
-    [0,4] => 'division',
-    [0,5] => :division,
-    [0,6] => 'th_parts',
-    [0,7] => :parts,
-    [0,8] => 'th_source',
-    [0,9] => :source,
+    [0,4] => 'th_parts',
+    [0,5] => :parts,
+    [0,6] => 'th_source',
+    [0,7] => :source,
   }
   CSS_CLASS ='composite'
   CSS_MAP = {
@@ -249,19 +247,31 @@ class PackageComposite < HtmlGrid::Composite
     [0,2] => 'subheading',
     [0,3] => 'list',
     [0,4] => 'subheading',
+    [0,5] => 'list',
     [0,6] => 'subheading',
-    [0,8] => 'subheading',
-    [0,9] => 'list',
+    [0,7] => 'list',
   }
   DEFAULT_CLASS = HtmlGrid::Value
   def init
-    if @lookandfeel.enabled?(:twitter_share)
-      components.store [0,8,0], :twitter_share
-      css_map.store [0,8], 'list'
+    if seq = @model.sequence and div = seq.division and !div.empty?
+      components.store [0,4], 'division'
+      components.store [0,5], :division
+      components.store [0,6], 'th_part'
+      components.store [0,7], :parts
+      components.store [0,8], 'th_source'
+      components.store [0,9], :source
+      css_map.store [0,8], 'subheading'
+      css_map.store [0,9], 'list'
     end
+    y = components.length + 1
+    if @lookandfeel.enabled?(:twitter_share)
+      components.store [0,y,0], :twitter_share
+      css_map.store [0,y], 'list'
+    end
+    y = components.length + 1
     if @lookandfeel.enabled?(:facebook_share)
-      components.store [0,8,1], :facebook_share
-      css_map.store [0,8], 'list spaced'
+      components.store [0,y,1], :facebook_share
+      css_map.store [0,y], 'list spaced'
     end
     super
   end

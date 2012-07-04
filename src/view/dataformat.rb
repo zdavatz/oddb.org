@@ -102,7 +102,7 @@ module ODDB
           photo.css_class =('square infos')
           name_bases.concat([' ‐ ', photo])
         end
-        if sequence = model.sequence and sequence.division
+        if seq = model.sequence and div = seq.division and !div.empty?
           div = HtmlGrid::Link.new(:division_link_short, model, @session, self)
           args = [
             :reg, model.iksnr,
