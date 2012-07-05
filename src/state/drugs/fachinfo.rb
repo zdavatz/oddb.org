@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::Fachinfo -- oddb.org -- 05.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -119,7 +119,8 @@ class RootFachinfo < Fachinfo
     user = @session.user
     [
       'org.oddb.RootUser',
-      'org.oddb.AdminUser'
+      'org.oddb.AdminUser',
+      'org.oddb.CompanyUser',
     ].each do |priv|
       return true if user.allowed?('login', priv)
     end
