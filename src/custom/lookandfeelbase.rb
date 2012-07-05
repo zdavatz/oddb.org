@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 03.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 05.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -920,6 +920,7 @@ Zeno Davatz
 				:interaction_search_explain3	=>	'3. Auf "Interaktionskorb" klicken.',
 				:interactions							=>	'Interaktionen',
 				:interactions_button			=>	'Interaktionen Epha.ch',
+        :interactions_epha_3d_link => 'Interaktionen Epha.ch in 3D',
 				:interaction_detail				=>	'Interaktion Detail',
 				:introduction_date				=>	'Datum SL-Eintrag',
 				:invalid_user_welcome			=>	'Zeitdauer überschritten',

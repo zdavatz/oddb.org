@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Interactions::Basket -- oddb.org -- 05.07.2013 -- yasaka@ywesee.com
 # ODDB::View::Interactions::Basket -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
@@ -219,23 +220,24 @@ class BasketSubstrates < HtmlGrid::List
   end
 end
 class BasketForm < View::Form
-	COLSPAN_MAP = {
-		[0,0]	=>	2,
-		[0,2]	=>	2,
-		[0,3]	=>	2,
-		[0,4]	=>	2,
-	}
-	COMPONENTS = {
-		[0,0]		=>	:interaction_basket_count,
-		[0,1,0]	=>	'interaction_basket_explain',
-		[0,1,1]	=>  :pub_med_search_link,
-		[1,1,0]	=>	:search_query,
-		[1,1,1]	=>	:submit,
-		[0,2]		=>	View::Interactions::BasketSubstrates,
-		[0,3,0] =>	:clear_interaction_basket,
-		[0,3,1]	=>	:interaction_list,
-    [0,4]   =>  ExplainResult,
-	}
+  COLSPAN_MAP = {
+    [0,0] => 2,
+    [0,2] => 2,
+    [0,3] => 2,
+    [0,4] => 2,
+  }
+  COMPONENTS = {
+    [0,0]   => :interaction_basket_count,
+    [0,1,0] => 'interaction_basket_explain',
+    [0,1,1] => :pub_med_search_link,
+    [1,1,0] => :search_query,
+    [1,1,1] => :submit,
+    [0,2]   => View::Interactions::BasketSubstrates,
+    [0,3,0] => :clear_interaction_basket,
+    [0,3,1] => :interaction_list,
+    [0,3,2] => :epha_3d_link,
+    [0,4]   => ExplainResult,
+  }
 	CSS_CLASS = 'composite'
 	EVENT = :search
 	FORM_METHOD = 'GET'
@@ -253,6 +255,20 @@ class BasketForm < View::Form
 		[0,3,1]	=>	'list bg',
 		[0,4]	=>	'explain',
 	}
+  def epha_3d_link(model, session)
+    atc_codes = []
+    model.each do |check|
+      atc_codes << check.atc_codes.gsub(/[^A-Z0-9,]/, '') if check.atc_codes
+    end
+    unless atc_codes.empty?
+      button = HtmlGrid::Button.new(:interactions_epha_3d_link, model, session, self)
+      url = 'http://modules.epha.ch/vigi/orbit.html'
+      arg = atc_codes.join(',')
+      script = "document.location.href='#{url}##{arg}';"
+      button.set_attribute('onclick', script)
+      button
+    end
+  end
   def interaction_list(model, session)
     button = HtmlGrid::Button.new(:interactions_button, @model, @session, self)
     url = @lookandfeel._event_url(:interactions, {})
