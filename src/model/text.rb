@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Text -- oddb.org -- 13.06.2012 -- yasaka@ywesee.com
+# ODDB::Text -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
 # ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
@@ -10,27 +10,30 @@ require 'util/searchterms'
 
 module ODDB
 	module Text
-		class ImageLink
-			attr_accessor :src
-			def attributes
-				{ 'src'	=>	@src }
-			end
+    class ImageLink
+      attr_accessor :src
+      def attributes
+        { 'src' => @src }
+      end
       def clean!
       end
-			def empty?
-				@src.nil?
-			end
+      def empty?
+        @src.nil?
+      end
       def gsub! *args, &block
         @src.gsub! *args, &block
       end
       def preformatted?
         true
       end
-			def to_s opts={}
-				"(image)"
-			end
-			alias :text :to_s
-		end
+      def to_s opts={}
+        "(image)"
+      end
+      def strip
+        self
+      end
+      alias :text :to_s
+    end
 		class Format
 			attr_accessor :start, :end, :values
 			def initialize(*args)
@@ -167,128 +170,64 @@ module ODDB
 				(@raw_txt || @text)[*args]
 			end
 		end
-		class Section
-			attr_accessor :subheading
-			attr_reader		:paragraphs
-			def initialize
-				@subheading = ''
-				@paragraphs = []
-			end
-			def clean!
-        @paragraphs.compact!
-				@subheading.gsub!(/(^\s*)|([ \t\r]*$)/u, '')
-				@subheading.gsub!(/\t+/u, ' ')
-				@paragraphs.delete_if { |paragraph| paragraph.empty? }
-        @paragraphs.each do |paragraph| paragraph.clean! end
-			end
-			def empty?
-				#clean! ## empty? should have no side-effects!
-				@subheading.empty? && @paragraphs.empty?
-			end
-      def gsub! *args, &block
-        @paragraphs.each do |paragraph| paragraph.gsub! *args, &block end
-        @subheading.gsub! *args, &block
-      end
-			def to_s opts={}
-        lines = [ @subheading ] + @paragraphs.collect do |par| par.to_s opts end
-				lines.delete_if { |line| line.empty? }
-				lines.join("\n")
-			end
-      def match(pattern)
-        pattern_s = pattern.to_s
-        pattern_s.force_encoding('utf-8')
-        pattern = Regexp.new(pattern_s)
-        pattern.match(@subheading) or
-        @paragraphs.collect { |par|
-          # @paragraphs contains also Class without Paragraph
-          if par.respond_to?(:match)
-            par.match(pattern)
-          end
-        }.compact.first
-      end
-			def next_image
-				@paragraphs.push(ImageLink.new).last
-			end
-			def next_paragraph
-				if((last = @paragraphs.last) && last.empty?)
-					last
-				else
-					@paragraphs.push(Paragraph.new).last
-				end
-			end
-		end
-		class Chapter
-			include Persistence
-			ODBA_SERIALIZABLE = ["@sections"]
-			attr_accessor :heading
-			attr_accessor	:sections
-			def initialize
-				@heading = ''
-				@sections = []
-			end
-			def clean!
-				@heading.strip!
-				@heading.gsub!(/\t+/u, ' ')
-				@sections.delete_if { |section| 
-					section.clean!
-					section.empty? 
-				}
-			end
-			def empty?
-				#clean! ## empty? should have no side-effects!
-				@heading.empty? && @sections.empty?
-			end
-      def gsub! *args, &block
-        @sections.each do |section| section.gsub! *args, &block end
-        @heading.gsub! *args, &block
-      end
-			def include?(section)
-				@sections.include?(section)
-			end
-			def to_s opts={}
-				lines = [ @heading ] + @sections.collect { |sec| sec.to_s opts }
-				lines.delete_if { |line| line.empty? }
-				lines.join("\n")
-			end
-			def to_search
-        ODDB.search_term(to_s)
-			end
-			def match(pattern)
-				pattern.match(@heading) or
-				@sections.collect { |seq| 
-					seq.match(pattern) 
-				}.compact.first
-			end
-			def next_section
-				if((last = @sections.last) && last.empty?)
-					last
-				else
-					@sections.push(Section.new).last
-				end
-			end
-			def paragraphs
-				paragraphs = []
-				@sections.each { |section|
-					section.paragraphs.each { |par|
-						paragraphs << par
-					}
-				}
-				paragraphs
-			end
-			def ==(other)
-				to_s == other.to_s
-			end
-		end
-		class Document
-			include SimpleLanguage
-			ODBA_SERIALIZABLE = [ '@descriptions' ]
-		end
     class Cell < Paragraph
       attr_accessor :col_span, :row_span
       def initialize(*args)
         @col_span = 1
         @row_span = 1
         super(*args)
+      end
+    end
+    class MultiCell
+      attr_accessor :col_span, :row_span
+      attr_reader :contents
+      def initialize(*args)
+        @col_span = 1
+        @row_span = 1
+        clear!
+      end
+      def clean!
+      end
+      def clear!
+        @contents = []
+      end
+      def empty?
+        @contents.empty?
+      end
+      def length
+        @contents.length
+      end
+      def << args
+        @contents << args
+        self
+      end
+      def [] *args
+        @contents[*args]
+      end
+      def strip
+        self
+      end
+      def text
+        text = ''
+        @contents.map do |content|
+          tetx << content.text if content.is_a? Paragraph
+        end
+        text
+      end
+      def preformatted?
+        false
+      end
+      def next_image
+        image = ImageLink.new
+        @contents.push(image).last
+      end
+      def next_paragraph
+        last = @contents.last
+        if last.is_a? Paragraph and last.empty?
+          last
+        else
+          @contents.push(Paragraph.new).last
+        end
       end
     end
     class Table
@@ -351,6 +290,16 @@ module ODDB
       end
       def next_cell!
         cell = Cell.new
+        @rows.last.push cell
+        cell
+      end
+      def next_image!
+        image_cell = ImageLink.new
+        @rows.last.push image_cell
+        image_cell
+      end
+      def next_multi_cell!
+        cell = MultiCell.new
         @rows.last.push cell
         cell
       end
@@ -441,5 +390,124 @@ module ODDB
         result.strip
       end
     end
-	end
+    class Section
+      attr_accessor :subheading
+      attr_reader    :paragraphs
+      def initialize
+        @subheading = ''
+        @paragraphs = []
+      end
+      def clean!
+        @paragraphs.compact!
+        @subheading.gsub!(/(^\s*)|([ \t\r]*$)/u, '')
+        @subheading.gsub!(/\t+/u, ' ')
+        @paragraphs.delete_if { |paragraph| paragraph.empty? }
+        @paragraphs.each do |paragraph| paragraph.clean! end
+      end
+      def empty?
+        #clean! ## empty? should have no side-effects!
+        @subheading.empty? && @paragraphs.empty?
+      end
+      def gsub! *args, &block
+        @paragraphs.each do |paragraph| paragraph.gsub! *args, &block end
+        @subheading.gsub! *args, &block
+      end
+      def to_s opts={}
+        lines = [ @subheading ] + @paragraphs.collect do |par| par.to_s opts end
+        lines.delete_if { |line| line.empty? }
+        lines.join("\n")
+      end
+      def match(pattern)
+        pattern_s = pattern.to_s
+        pattern_s.force_encoding('utf-8')
+        pattern = Regexp.new(pattern_s)
+        pattern.match(@subheading) or
+        @paragraphs.collect { |par|
+          # @paragraphs contains also Class without Paragraph
+          if par.respond_to?(:match)
+            par.match(pattern)
+          end
+        }.compact.first
+      end
+      def next_image
+        @paragraphs.push(ImageLink.new).last
+      end
+      def next_paragraph
+        if((last = @paragraphs.last) && last.empty?)
+          last
+        else
+          @paragraphs.push(Paragraph.new).last
+        end
+      end
+      def next_table
+        @paragraphs.push(Table.new).last
+      end
+    end
+    class Chapter
+      include Persistence
+      ODBA_SERIALIZABLE = ["@sections"]
+      attr_accessor :heading
+      attr_accessor  :sections
+      def initialize
+        @heading = ''
+        @sections = []
+      end
+      def clean!
+        @heading.strip!
+        @heading.gsub!(/\t+/u, ' ')
+        @sections.delete_if { |section|
+          section.clean!
+          section.empty?
+        }
+      end
+      def empty?
+        #clean! ## empty? should have no side-effects!
+        @heading.empty? && @sections.empty?
+      end
+      def gsub! *args, &block
+        @sections.each do |section| section.gsub! *args, &block end
+        @heading.gsub! *args, &block
+      end
+      def include?(section)
+        @sections.include?(section)
+      end
+      def to_s opts={}
+        lines = [ @heading ] + @sections.collect { |sec| sec.to_s opts }
+        lines.delete_if { |line| line.empty? }
+        lines.join("\n")
+      end
+      def to_search
+        ODDB.search_term(to_s)
+      end
+      def match(pattern)
+        pattern.match(@heading) or
+        @sections.collect { |seq|
+          seq.match(pattern)
+        }.compact.first
+      end
+      def next_section
+        if((last = @sections.last) && last.empty?)
+          last
+        else
+          @sections.push(Section.new).last
+        end
+      end
+      def paragraphs
+        paragraphs = []
+        @sections.each { |section|
+          section.paragraphs.each { |par|
+            paragraphs << par
+          }
+        }
+        paragraphs
+      end
+      def ==(other)
+        to_s == other.to_s
+      end
+    end
+    class Document
+      include SimpleLanguage
+      ODBA_SERIALIZABLE = [ '@descriptions' ]
+    end
+  end
 end

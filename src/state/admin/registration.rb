@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
@@ -25,6 +25,15 @@ module FachinfoMethods
 		end
 	end	
 	private
+  def detect_type four_bytes
+    if four_bytes == "%PDF"
+      [:pdf, "application/pdf"]
+    elsif true
+      [:docx, "application/application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    else
+      [:doc, "application/msword"]
+    end
+  end
 	def get_fachinfo
 		new_state = self
     language = @session.user_input(:language_select)
@@ -37,9 +46,7 @@ module FachinfoMethods
                   else
                     @session.lookandfeel.event_url(:resolve, {'pointer' => model.pointer})
                   end
-      type, mimetype = (four_bytes == "%PDF") \
-        ? [:pdf, "application/pdf"] \
-        : [:doc, "application/msword"]
+      type, mimetype = detect_type four_bytes
       filename = "#{@model.iksnr}_#{language}.#{type}"
       FileUtils.mkdir_p(self::class::FI_FILE_DIR)
       path = File.expand_path(filename, self::class::FI_FILE_DIR)
@@ -51,7 +58,7 @@ module FachinfoMethods
       new_state.previous = self
       @session.app.async {
         @session.app.failsafe { 
-          if type == :doc
+          if type == :doc or type == :docx
             new_state.signal_done(parse_fachinfo(type, path), 
             path, @model, mimetype, language, mail_link)
           else
@@ -85,6 +92,8 @@ module FachinfoMethods
 			parser = DRbObject.new(nil, FIPARSE_URI)
       if type == :doc
         result = parser.send("parse_fachinfo_doc", file)
+      elsif type == :docx
+        result = parser.send("parse_fachinfo_docx", file, @model.iksnr, @session.language)
       else
         result = parser.send("parse_fachinfo_#{type}", file.read)
       end

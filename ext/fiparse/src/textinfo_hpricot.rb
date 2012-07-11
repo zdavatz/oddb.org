@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -43,7 +43,7 @@ class TextinfoHpricot
     if(title = elem.at(title_tag))
       elem.children.delete(title)
       anchor = title.at("a")
-      code = anchor['name']
+      code = anchor['name'] unless anchor.nil?
       chapter.heading = text(anchor)
     end
     handle_element(elem, ptr)
@@ -65,6 +65,10 @@ class TextinfoHpricot
     elem.each_child { |child|
       case child
       when Hpricot::Text
+        if ptr.target.is_a? Text::Table or
+           ptr.target.is_a? Text::MultiCell
+          ptr.target = ptr.target.next_paragraph
+        end
         handle_text(ptr, child)
       when Hpricot::Elem
         case child.name
@@ -74,48 +78,76 @@ class TextinfoHpricot
           handle_text(ptr, child)
           ptr.target << "\n"
         when 'p'
-          ptr.section ||= ptr.chapter.next_section
-          ptr.target = ptr.section.next_paragraph
+          if ptr.container
+            ptr.target = ptr.container.next_paragraph
+          else
+            ptr.section ||= ptr.chapter.next_section
+            ptr.target = ptr.section.next_paragraph
+          end
           handle_element(child, ptr)
-        when 'span'
+        when 'span', 'em', 'strong'
           target = ptr.target
           target << ' '
-          target.augment_format(:italic) if(target.is_a?(Text::Paragraph))
+          target.augment_format(:italic) if target.is_a?(Text::Paragraph)
           handle_element(child, ptr)
           target = ptr.target
-          target.reduce_format(:italic) if(target.is_a?(Text::Paragraph))
+          target.reduce_format(:italic) if target.is_a?(Text::Paragraph)
           target << ' '
-        when 'sub'
+        when 'sub', 'sup'
           target = ptr.target
           handle_text(ptr, child)
           target << ' '
         when 'table'
-          ptr.tablewidth = nil
-          ptr.target = ptr.section.next_paragraph
-          ptr.target.preformatted!
+          ptr.section = ptr.chapter.next_section
+          unless child.classes.empty? # old line-table in pre
+            ptr.tablewidth = nil
+            ptr.target = ptr.section.next_paragraph
+            ptr.target.preformatted!
+          else
+            ptr.target = ptr.section.next_table
+            ptr.container = ptr.target # marking of 'in-table'
+          end
           handle_element(child, ptr)
-          ptr.target = ptr.section.next_paragraph
+          ptr.section = ptr.chapter.next_section
+          ptr.container = nil
         when 'thead', 'tbody'
           handle_element(child, ptr)
         when 'tr'
-          handle_element(child, ptr)
-          ptr.target << "\n"
+          if ptr.container
+            ptr.container.next_row!
+            handle_element(child, ptr)
+            ptr.target = ptr.container
+          else
+            handle_element(child, ptr)
+            ptr.target << "\n"
+          end
         when 'td', 'th'
-          ptr.target << preformatted_text(child)
           ## the new format uses td-borders as "row-separators"
           if(child.classes.include?("rowSepBelow"))
-            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect { |line| 
-              line.length }.max
-            ptr.target << "\n" << ("-" * ptr.tablewidth)
+            ptr.target << preformatted_text(child)
+            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
+            ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
+          else
+            if ptr.container
+              ptr.target = ptr.container.next_multi_cell!
+              handle_element(child, ptr)
+            else
+              ptr.target << preformatted_text(child)
+            end
           end
         when 'div'
           handle_element(child, ptr)
         when 'img'
-          ptr.section = ptr.chapter.next_section
-          ptr.target = ptr.section.next_image
-          handle_image(ptr, child)
-          ptr.section = ptr.chapter.next_section
-          ptr.target = ptr.section.next_paragraph
+          if ptr.container
+            ptr.target = ptr.target.next_image
+            handle_image(ptr, child)
+          else
+            ptr.section = ptr.chapter.next_section
+            ptr.target = ptr.section.next_image
+            handle_image(ptr, child)
+            ptr.section = ptr.chapter.next_section
+            ptr.target = ptr.section.next_paragraph
+          end
         end
       end
     }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -22,6 +22,9 @@ module ODDB
       TD_STYLE = 'padding: 4px; vertical-align: top;'
       def formats(context, paragraph)
         res = ''
+        if paragraph.is_a? String
+          return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph }
+        end
         txt = u paragraph.text
         paragraph.formats.each { |format|
           tag = :span
@@ -134,9 +137,15 @@ module ODDB
           table.rows.collect { |row|
             context.tr {
               row.collect { |cell|
-                context.td('colspan' => cell.col_span) { 
-                  formats(context, cell)
-                }
+                if cell.is_a? Text::MultiCell
+                  context.td('colspan' => cell.col_span) {
+                    paragraphs(context, cell.contents)
+                  }
+                else
+                  context.td('colspan' => cell.col_span) {
+                    formats(context, cell)
+                  }
+                end
               }.join
             }
           }.join
