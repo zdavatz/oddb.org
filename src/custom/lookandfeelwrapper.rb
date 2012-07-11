@@ -526,7 +526,7 @@ module ODDB
 				[2,0]	=>	'explain_pbp',
 				[2,1]	=>	:explain_deductible,
 				[2,2]	=>	'explain_sl',
-				[2,3]	=>	'explain_slg',
+				[2,3]	=>	'explain_slo',
 				[2,4]	=>	'explain_slg',
 				[2,5]	=>	:explain_feedback,
 				[2,6]	=>	:explain_lppv,
