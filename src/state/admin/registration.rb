@@ -28,7 +28,7 @@ module FachinfoMethods
   def detect_type four_bytes
     if four_bytes == "%PDF"
       [:pdf, "application/pdf"]
-    elsif true
+    elsif four_bytes[0..1] == "PK"
       [:docx, "application/application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
     else
       [:doc, "application/msword"]
