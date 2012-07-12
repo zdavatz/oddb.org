@@ -289,6 +289,7 @@ module ODDB
         }.compact.first
       end
       def next_cell!
+        next_row! if @rows.empty?
         cell = Cell.new
         @rows.last.push cell
         cell
@@ -353,6 +354,7 @@ module ODDB
         @rows.collect { |row| row.length }.max  
       end
       def <<(str)
+        next_cell! unless current_cell
         current_cell << str
       end
       def wrap str, width, opts={}
