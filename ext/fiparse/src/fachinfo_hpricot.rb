@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -9,14 +10,16 @@ require 'textinfo_hpricot'
 module ODDB
   module FiParse
 class FachinfoHpricot < TextinfoHpricot
-  attr_reader :amzv, :composition, :galenic_form, :indications, :effects, :indications,
+  attr_reader :amzv, :name, :composition, :galenic_form, :indications, :effects, :indications,
               :usage, :kinetic, :restrictions, :unwanted_effects, :interactions,
               :overdose, :other_advice, :iksnrs, :date, :pregnancy, :driving_ability,
-              :contra_indications
+              :contra_indications, :packages
   def identify_chapter(code, chapter)
     case code
     when '6900'
       @amzv = chapter
+    when '6950'
+      @name = chapter
     when '3300', '7000'
       @composition = chapter
     when '7050'
@@ -61,6 +64,8 @@ class FachinfoHpricot < TextinfoHpricot
       @delivery = chapter
     when '5595'
       @distribution = chapter
+    when '7800'
+      @packages = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
     else

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
@@ -93,7 +93,8 @@ module FachinfoMethods
       if type == :doc
         result = parser.send("parse_fachinfo_doc", file)
       elsif type == :docx
-        result = parser.send("parse_fachinfo_docx", file, @model.iksnr, @session.language)
+        language = @session.user_input(:language_select)
+        result = parser.send("parse_fachinfo_docx", file, @model.iksnr, language.downcase)
       else
         result = parser.send("parse_fachinfo_#{type}", file.read)
       end

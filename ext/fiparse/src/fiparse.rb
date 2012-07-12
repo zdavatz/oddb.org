@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
+# ODDB::FiParse -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
 # ODDB::FiParse -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
@@ -27,27 +27,52 @@ module YDocx
     # * delivery
     # * distribution
     @@chapter_codes = {
-        'AMZV'                => '6900', # amzv (pseudo)
-        #'Name'                => '',
-        'Zusammens.'          => '7000', # composition
-        'Galen.Form'          => '7050', # galenic_form
-        'Ind./Anw.m&ouml;gl.' => '7100', # indications
-        'Dos./Anw.'           => '7150', # usage
-        'Kontraind.'          => '7200', # contraindication
-        'Warn.hinw.'          => '7250', # restrictions
-        'Interakt.'           => '7300', # interactions
-        'Schwangerschaft'     => '7350', # pregnancy
-        'Fahrt&uuml;cht.'     => '7400', # driving_ability
-        'Unerw.Wirkungen'     => '7450', # unwanted_effects
-        '&Uuml;berdos.'       => '7500', # overdose
-        'Eigensch.'           => '7550', # effects
-        'Pharm.kinetik'       => '7600', # kinetic
-        'Pr&auml;klin.'       => '7650', # preclinic
-        'Sonstige H.'         => '7700', # other_advice
-        'Swissmedic-Nr.'      => '7750', # iksnrs
-        #'Packungen'           => '',     # packages
-        'Reg.Inhaber'         => '7850', # registration_owner
-        'Stand d. Info.'      => '8000', # date
+      'de' => {
+        "AMZV"                => '6900', # amzv (pseudo)
+        "Name"                => '6950', # name
+        "Zusammens."          => '7000', # composition
+        "Galen.Form"          => '7050', # galenic_form
+        "Ind./Anw.m&ouml;gl." => '7100', # indications
+        "Dos./Anw."           => '7150', # usage
+        "Kontraind."          => '7200', # contraindication
+        "Warn.hinw."          => '7250', # restrictions
+        "Interakt."           => '7300', # interactions
+        "Schwangerschaft"     => '7350', # pregnancy
+        "Fahrt&uuml;cht."     => '7400', # driving_ability
+        "Unerw.Wirkungen"     => '7450', # unwanted_effects
+        "&Uuml;berdos."       => '7500', # overdose
+        "Eigensch."           => '7550', # effects
+        "Pharm.kinetik"       => '7600', # kinetic
+        "Pr&auml;klin."       => '7650', # preclinic
+        "Sonstige H."         => '7700', # other_advice
+        "Swissmedic-Nr."      => '7750', # iksnrs
+        "Packungen"           => '7800', # packages
+        "Reg.Inhaber"         => '7850', # registration_owner
+        "Stand d. Info."      => '8000', # date
+      },
+      'fr' => {
+        "AMZV"                   => '6900',
+        "Nom"                    => '6950',
+        "Composit."              => '7000',
+        "Forme gal."             => '7050',
+        "Indic./emploi"          => '7100',
+        "Posolog./mode d&apos;empl." => '7150',
+        "Contre-Ind."            => '7200',
+        "Pr&eacute;cautions"     => '7250',
+        "Interact."              => '7300',
+        "Grossesse"              => '7350',
+        "Apt.conduite"           => '7400',
+        "Effets ind&eacute;sir." => '7450',
+        "Surdosage"              => '7500',
+        "Propri&eacute;t&eacute;s" => '7550',
+        "Pharm.cin&eacute;t."    => '7600',
+        "Donn.pr&eacute;cl."     => '7650',
+        "Remarques"              => '7700',
+        "Estampille"             => '7750',
+        "Pr&eacute;sentations"   => '7800',
+        "Titulaire"              => '7850',
+        "Mise &agrave; jour"     => '8000',
+      }
     }
     def init
       @resource_path = File.join ODDB::PROJECT_ROOT, 'doc', 'resources'
@@ -55,8 +80,9 @@ module YDocx
     end
     def parse_heading(text, id)
       chapter = @indecies.last
-      if chapter and @@chapter_codes.keys.include?(chapter[:text])
-        text = markup(:a, text, {:name => @@chapter_codes[chapter[:text]]})
+      if chapter and @@chapter_codes[lang].keys.include?(chapter[:text])
+        name = @@chapter_codes[lang][chapter[:text]]
+        text = markup(:a, text, {:name => name})
       end # pseudo anchor
       return markup(:h2, text, {:id => id})
     end
@@ -67,14 +93,21 @@ module YDocx
           node.parent.previous.nil?)
         # as empty AMZV chapter heading
         @indecies << {:text => 'AMZV', :id => 'amzv'}
-        text = markup(:a, '', {:name => @@chapter_codes['AMZV']})
+        text = markup(:a, '', {:name => @@chapter_codes[lang]['AMZV']})
         return markup(:h2, text, {:id => 'amzv'})
       else
         return nil
       end
     end
+    def optional_escape(text)
+      if text =~ /^([,\s]*)\d{2}(.*)\d{3}\s*(\(\s*Swissmedic\s*\)\s*|$)/ or
+         parse_code(text)
+        text = text.gsub(@@figure_pattern, '')
+      end
+      text
+    end
     def source_path(target)
-      target = File.basename(target).gsub(/image/, "#{@lang.upcase}_#{@code}_")
+      target = File.basename(target).gsub(/image/, "#{lang.upcase}_#{@code}_")
       source = File.join @resource_path, 'fachinfo', @code, '/'
       if defined? Magick::Image and
          ext = File.extname(target).match(/\.wmf$/).to_a[0]
@@ -83,6 +116,9 @@ module YDocx
         source << target
       end
       source
+    end
+    def lang
+      @lang == 'fr' ? 'fr' : 'de'
     end
   end
   class Builder
@@ -157,10 +193,10 @@ module ODDB
       end
 			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
 		end
-    def parse_fachinfo_docx(path, iksnr, lang='DE')
+    def parse_fachinfo_docx(path, iksnr, lang='de')
       doc = YDocx::Document.open(path, {
         :iksnr => iksnr,
-        :lang  => lang.downcase
+        :lang  => lang
       })
       writer = FachinfoHpricot.new
       writer.new_format_flag = false
