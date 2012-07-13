@@ -129,8 +129,10 @@ class TextinfoHpricot
           else
             ## the new format uses td-borders as "row-separators"
             ptr.target << preformatted_text(child)
-            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
-            ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
+            if child.classes.include?('rowSepBelow')
+              ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
+              ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
+            end
           end
         when 'div'
           handle_element(child, ptr)
