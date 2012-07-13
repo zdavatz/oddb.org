@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 13.07.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -78,8 +78,8 @@ class TextinfoHpricot
           handle_text(ptr, child)
           ptr.target << "\n"
         when 'p'
-          if ptr.container
-            ptr.target = ptr.container.next_paragraph
+          if ptr.table
+            ptr.target = ptr.table.next_paragraph
           else
             ptr.section ||= ptr.chapter.next_section
             ptr.target = ptr.section.next_paragraph
@@ -99,46 +99,43 @@ class TextinfoHpricot
           target << ' '
         when 'table'
           ptr.section = ptr.chapter.next_section
-          unless child.classes.empty? # old line-table in pre
-            ptr.tablewidth = nil
-            ptr.target = ptr.section.next_paragraph
-            ptr.target.preformatted!
-          else
+          if detect_table?(child)
             ptr.target = ptr.section.next_table
-            ptr.container = ptr.target # marking of 'in-table'
+            ptr.table = ptr.target
+          else
+            ptr.target = ptr.section.next_paragraph
+            ptr.table = nil
+            ptr.tablewidth = nil
+            ptr.target.preformatted!
           end
           handle_element(child, ptr)
           ptr.section = ptr.chapter.next_section
-          ptr.container = nil
+          ptr.table = nil
         when 'thead', 'tbody'
           handle_element(child, ptr)
         when 'tr'
-          if ptr.container
-            ptr.container.next_row!
+          if ptr.table
+            ptr.table.next_row!
             handle_element(child, ptr)
-            ptr.target = ptr.container
+            ptr.target = ptr.table
           else
             handle_element(child, ptr)
             ptr.target << "\n"
           end
         when 'td', 'th'
-          ## the new format uses td-borders as "row-separators"
-          if(child.classes.include?("rowSepBelow"))
+          if ptr.table
+            ptr.target = ptr.table.next_multi_cell!
+            handle_element(child, ptr)
+          else
+            ## the new format uses td-borders as "row-separators"
             ptr.target << preformatted_text(child)
             ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
             ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
-          else
-            if ptr.container
-              ptr.target = ptr.container.next_multi_cell!
-              handle_element(child, ptr)
-            else
-              ptr.target << preformatted_text(child)
-            end
           end
         when 'div'
           handle_element(child, ptr)
         when 'img'
-          if ptr.container
+          if ptr.table
             ptr.target = ptr.target.next_image
             handle_image(ptr, child)
           else
@@ -176,6 +173,22 @@ class TextinfoHpricot
       chapter.heading = text(elem)
       chapter
     end
+  end
+  def detect_table?(elem)
+    found = true
+    if elem.attributes['border'] == '0'
+      classes = []
+      (elem/:thead/:tr/:th).each do |th|
+        classes << true if th.attributes['class'] == 'rowSepBelow'
+      end
+      (elem/:tbody/:tr/:td).each do |td|
+        classes << true if td.attributes['class'] == 'rowSepBelow'
+      end
+      unless classes.empty? # as pre-format style paragraph
+        found = false
+      end
+    end
+    found
   end
   def target_encoding(text)
     Iconv.iconv(ENCODING + "//TRANSLIT//IGNORE", 'utf8', text).first
