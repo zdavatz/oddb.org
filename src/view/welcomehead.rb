@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# View::WelcomeHead -- oddb -- 13.07.2012 -- yasaka@ywesee.com
 # View::WelcomeHead -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/composite'
@@ -13,6 +14,7 @@ module ODDB
 		class WelcomeHead < HtmlGrid::Composite
 			include Personal
 			include SponsorDisplay
+      LOGO_PATH = File.expand_path('../../../doc/resources/logos', File.dirname(__FILE__))
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0]	=>	'logo',
@@ -51,17 +53,26 @@ module ODDB
 				end
 			end
       def home_welcome(model, session=@session)
-        parts = []
-        if(@lookandfeel.enabled?(:screencast))
-          link = HtmlGrid::Link.new(:home_welcome, model, @session, self)
-          link.href = @lookandfeel.lookup(:screencast_url)
-          link.css_class = 'welcome'
-          parts.push(link)
-        else
-          parts.push @lookandfeel.lookup(:home_welcome)
+        company_logo = nil
+        if(@session.user.is_a?(ODDB::YusUser))
+          name = @session.user.name
+          if company = @session.app.yus_model(name)
+            company_logo = company.logo_filename
+          end
         end
-        parts.push '<br>', @lookandfeel.lookup(:home_welcome_data)
+        unless company_logo
+          parts = []
+          if(@lookandfeel.enabled?(:screencast))
+            link = HtmlGrid::Link.new(:home_welcome, model, @session, self)
+            link.href = @lookandfeel.lookup(:screencast_url)
+            link.css_class = 'welcome'
+            parts.push(link)
+          else
+            parts.push @lookandfeel.lookup(:home_welcome)
+          end
+          parts.push '<br>', @lookandfeel.lookup(:home_welcome_data)
+        end
       end
-		end
+    end
 	end
 end
