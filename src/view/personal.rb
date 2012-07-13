@@ -20,12 +20,11 @@ module ODDB
         if(user.is_a?(ODDB::YusUser))
           if company = @session.app.yus_model(user.name) and
              logo_filename = company.logo_filename
-            link = HtmlGrid::Link.new(:logo, company, session, self)
-            if (company.ean13 and !company.ean13.to_s.strip.empty?)
-              link.set_attribute('title',
-                @lookandfeel.lookup(:ean_code, company.ean13))
-              link.href = @lookandfeel._event_url(:company, {:ean => company.ean13})
+            if (company.url and !company.url.empty?)
+		          link = HtmlGrid::HttpLink.new(:url, company, session, self)
+              link.set_attribute('title', company.url)
             else
+              link = HtmlGrid::Link.new(:logo, company, session, self)
               link.set_attribute('href',
                 @lookandfeel.resource_global(:company_logo, logo_filename))
             end
