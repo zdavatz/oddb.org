@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 17.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
@@ -26,10 +26,11 @@ module FachinfoMethods
 	end	
 	private
   def detect_type four_bytes
-    if four_bytes == "%PDF"
-      [:pdf, "application/pdf"]
-    elsif four_bytes[0..1] == "PK"
+    if four_bytes[0..1] == "PK"
       [:docx, "application/application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    # disallow fi-pdf
+    #elsif four_bytes == "%PDF"
+    #  [:pdf, "application/pdf"]
     else
       [:doc, "application/msword"]
     end
@@ -101,11 +102,11 @@ module FachinfoMethods
 			result
     rescue ArgumentError => e
       msg = @session.lookandfeel.lookup(:e_not_a_wordfile)
-			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
+			err = create_error(:e_fi_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
 		rescue StandardError => e
 			msg = ' (' << e.message << ')'
-			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
+			err = create_error(:e_fi_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
 			e
 		end

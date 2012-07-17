@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# View::Admin::WaitForFachinfo -- oddb -- 17.07.2012 -- yasaka@ywesee.com
 # View::Admin::WaitForFachinfo -- oddb -- 18.11.2004 -- mwalder@ywesee.com  rwaltert@ywesee.com
 
 require 'view/popuptemplate'
@@ -27,7 +28,7 @@ class StatusBar < HtmlGrid::Composite
 end
 class WaitForFachinfoComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0] => 'please_wait',
+		[0,0] => 'fi_please_wait',
 		[0,1] => View::Admin::StatusBar,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
