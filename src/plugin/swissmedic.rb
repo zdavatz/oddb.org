@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 08.05.2011 -- yasaka@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 17.07.2011 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -663,11 +663,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           args.update(:pharmacode => old.pharmacode, 
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
+        part = nil
         if(pidx == 0 || package.nil?)
-          package = @app.update(ptr, args, :swissmedic)
+          package = @app.create(ptr)
+        else
+          part = package.parts[pidx] if package.parts
         end
-        part = package.parts[pidx]
-        part ||= @app.create(package.pointer + :part)
+        part ||= @app.create((ptr + [:part]).creator)
+        @app.update(ptr, args, :swissmedic)
         args = {
           :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
         }

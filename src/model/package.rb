@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 17.07.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -216,6 +216,7 @@ module ODDB
     def create_part
       part = Part.new
       part.package = self
+      @parts ||= []
       @parts.push part
       part
     end
