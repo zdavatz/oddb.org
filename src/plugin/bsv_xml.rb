@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::BsvXmlPlugin -- oddb.org -- 18.07.2012 -- yasaka@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
@@ -672,21 +673,21 @@ module ODDB
       LogFile.append('oddb/debug', " save_file   = " + save_file.to_s, Time.now)
       LogFile.append('oddb/debug', " latest_file = " + latest_file.to_s, Time.now)
     
-      # download target_file temporarily
-      temp = Tempfile.new('foo')
-      temp_file = temp.path
-      target_file.save_as temp_file
+      # FileUtils.compare_file cannot compare tempfile
+      target_file.save_as save_file
 
       LogFile.append('oddb/debug', " File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
       if(File.exists?(latest_file))
-        LogFile.append('oddb/debug', " FileUtils.compare_file(#{temp_file}, #{latest_file}) = " + FileUtils.compare_file(temp_file, latest_file).inspect.to_s, Time.now)
+        LogFile.append('oddb/debug', " FileUtils.compare_file(#{save_file}, #{latest_file}) = " + FileUtils.compare_file(save_file, latest_file).inspect.to_s, Time.now)
       end
 
       # check and compare the latest file and save
-      if(File.exists?(latest_file) && FileUtils.compare_file(temp_file, latest_file))
+      if(File.exists?(latest_file) && FileUtils.compare_file(save_file, latest_file))
+        if File.exists? save_file
+          File.unlink save_file
+        end
         return nil
       else
-        target_file.save_as save_file
         FileUtils.cp(save_file, latest_file)
         return save_file
       end
@@ -697,12 +698,10 @@ module ODDB
         sleep 10 - retries
         retry
       else
+        if File.exists? save_file
+          File.unlink save_file
+        end
         raise
-      end
-    ensure
-      if temp
-        temp.close
-        temp.unlink
       end
     end
     def save_attached_files(file_name, report)
