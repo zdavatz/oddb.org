@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -66,8 +66,8 @@ module ODDB
       backup_path = File.join(backup_dir, backup)
       unless(File.exist? backup_path)
         FileUtils.mkdir_p(backup_dir)
-        FileUtils.cp(path, backup_path)
       end
+      FileUtils.cp(path, backup_path)
     rescue
       puts $!.message
       puts $!.backtrace
@@ -110,6 +110,15 @@ module ODDB
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
+    end
+    def export_teilbarkeit
+      @options = {}
+      recipients.concat self.class::ODDB_RECIPIENTS
+      _export_drugs 'tailbarkeit', [
+        :barcode, :pharmacode, :name_base,
+        :divisable, :dissolvable, :crushable, :openable, :notes,
+        :source,
+      ]
     end
     def log_info
       hash = super

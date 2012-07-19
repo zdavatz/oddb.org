@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -60,6 +60,13 @@ class CsvResult < HtmlGrid::Component
       'routes_of_administration' => 0,
       'sl_entries'               => 0,
       'renewal_flag_swissmedic'  => 0,
+      # teilbarkeit
+      'divisability_divisable'   => 0,
+      'divisability_dissolvable' => 0,
+      'divisability_crushable'   => 0,
+      'divisability_openable'    => 0,
+      'divisability_notes'       => 0,
+      'divisability_source'      => 0,
     }
     @bsv_dossiers = {}
     @roas = {}
@@ -156,6 +163,25 @@ class CsvResult < HtmlGrid::Component
     end
 		boolean(flag)
 	end
+  def self.define_division_attributes keys
+    keys.each do |attribute|
+      define_method(attribute) { |pack|
+        if seq = pack.sequence and
+           div = seq.division and
+           !div.empty?
+          value = div.send(attribute)
+          if value
+            @counts["divisability_#{attribute.to_s}"] += 1
+          end
+          value
+        end
+      }
+    end
+  end
+  define_division_attributes [
+    :divisable, :dissolvable, :crushable, :openable, :notes,
+    :source
+  ]
 	def http_headers
 		file = @session.user_input(:filename)
     if file.nil?

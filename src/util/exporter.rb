@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 25.04.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -329,6 +329,20 @@ module ODDB
       safe_export 'price_history.csv' do
         plug = CsvExportPlugin.new(@app)
         plug.export_price_history
+      end
+      EXPORT_SERVER.clear
+      sleep(30)
+    end
+    def export_teilbarkeit_csv
+      safe_export 'teilbarkeit.csv' do
+        plug = CsvExportPlugin.new(@app)
+        plug.export_teilbarkeit
+        if report = plug.report
+          log = Log.new(@@today)
+          log.date_str = @@today.strftime("%d.%m.%Y")
+          log.report = report
+          log.notify("Teilbarkeit Export")
+        end
       end
       EXPORT_SERVER.clear
       sleep(30)
