@@ -112,13 +112,37 @@ module ODDB
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
     end
     def export_teilbarkeit
-      @options = {}
-      recipients.concat self.class::ODDB_RECIPIENTS
-      _export_drugs 'teilbarkeit', [
+      recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
+      export_name = 'teilbarkeit'
+      keys = [
         :barcode, :pharmacode, :name_base,
         :divisable, :dissolvable, :crushable, :openable, :notes,
         :source,
       ]
+      session = SessionStub.new(@app)
+      session.language = 'de'
+      session.lookandfeel = LookandfeelBase.new(session)
+      # not use atc_class
+      model = @app.sequences.values.select { |seq| (div = seq.division and !div.empty?) }
+      name = "#{export_name}.csv"
+      @file_path = path = File.join(EXPORT_DIR, name)
+      exporter = View::Drugs::CsvResult.new(model, session)
+      encoding = 'UTF-8'
+      exporter.to_csv_file(keys, path, :packages, encoding, :division)
+      @total = exporter.total
+      @counts = exporter.divisions
+      EXPORT_SERVER.compress(EXPORT_DIR, name)
+      backup = Date.today.strftime("#{export_name}.%Y-%m-%d.csv")
+      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_path = File.join(backup_dir, backup)
+      unless(File.exist? backup_path)
+        FileUtils.mkdir_p(backup_dir)
+      end
+      FileUtils.cp(path, backup_path)
+    rescue
+      puts $!.message
+      puts $!.backtrace
+      raise
     end
     def log_info
       hash = super
@@ -140,9 +164,17 @@ module ODDB
     end
     def report
       report = ''
+      if @total
+        report << sprintf("%-32s %5i\n", "total:", @total)
+      end
       if @counts
         @counts.sort.collect do |key, val|
-          report << sprintf("%-32s %5i\n", key, val)
+          case key
+          when /^notes$/    ; key = 'has_notes'
+          when /^openable$/ ; key = 'can be opened'
+          when /^source$/   ; key = 'have a source'
+          end
+          report << sprintf("%-32s %5i\n", "#{key}:", val)
         end
       end
       if @updated_arztpreis

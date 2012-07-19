@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 17.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -399,6 +399,12 @@ Zeno Davatz
         :division_openable        =>  '&Ouml;ffnen von Kapseln',
         :division_notes           =>  'Bemerkungen / Alternativen',
         :division_source          =>  'Quellen',
+        :th_divisable             =>  'Teilbar',
+        :th_dissolvable           =>  'Auflsbar oder suspendierbar',
+        :th_crushable             =>  'Zermörsebar',
+        :th_openable              =>  'Öffnen von Kapseln',
+        :th_notes                 =>  'Bemerkungen / Alternativen',
+        :th_source                =>  'Quellen',
 				:doctor_count_text				=>	'&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:doctors									=>  'Arzt',

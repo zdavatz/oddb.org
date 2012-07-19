@@ -12,7 +12,7 @@ module ODDB
 	module View
 		module Drugs
 class CsvResult < HtmlGrid::Component
-  attr_reader :duplicates, :counts
+  attr_reader :duplicates, :counts, :total, :divisions
 	CSV_KEYS = [
 		:rectype,
 		:barcode,
@@ -60,18 +60,20 @@ class CsvResult < HtmlGrid::Component
       'routes_of_administration' => 0,
       'sl_entries'               => 0,
       'renewal_flag_swissmedic'  => 0,
-      # teilbarkeit
-      'divisability_divisable'   => 0,
-      'divisability_dissolvable' => 0,
-      'divisability_crushable'   => 0,
-      'divisability_openable'    => 0,
-      'divisability_notes'       => 0,
-      'divisability_source'      => 0,
     }
+    @total = 0
     @bsv_dossiers = {}
     @roas = {}
     @galforms = {}
     @galgroups = {}
+    @divisions = {
+      'divisable'   => 0,
+      'dissolvable' => 0,
+      'crushable'   => 0,
+      'openable'    => 0,
+      'notes'       => 0,
+      'source'      => 0,
+    }
     super
   end
 	def boolean(bool)
@@ -170,8 +172,8 @@ class CsvResult < HtmlGrid::Component
            div = seq.division and
            !div.empty?
           value = div.send(attribute)
-          if value
-            @counts["divisability_#{attribute.to_s}"] += 1
+          if value and !value.empty?
+            @divisions[attribute.to_s] += 1
           end
           value
         end
@@ -342,7 +344,7 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-  def to_csv(keys, symbol=:active_packages, encoding=nil)
+  def to_csv(keys, symbol=:active_packages, encoding=nil, target=:atc_class)
     result = []
     eans = {}
     index = 0
@@ -352,39 +354,55 @@ class CsvResult < HtmlGrid::Component
     }
     result.push(header)
     index += 1
-    @model.each { |atc|
-      result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
-      index += 1
-      ean = {}
-      # Rule:
-      # For the CSV Exporter only export the Product with the longer ATC-Code.
-      # We export the product with the ATC-Code that has more digits
-      atc.send(symbol).each { |pack|
-        if(eans[pack.ikskey].nil?)
-          eans[pack.ikskey] = {:cnt => 0}
-        end
-        eans[pack.ikskey][:cnt] += 1
-        atc_code = atc.code.to_s
-        if(eans[pack.ikskey][:cnt] > 1)
-          if(eans[pack.ikskey][:atc].length < atc_code.length)
-            result[eans[pack.ikskey][:idx]] = nil # delete
-          else
-            next # skip pack
-          end
-        end
-        eans[pack.ikskey][:atc] = atc_code
-        eans[pack.ikskey][:idx] = index
-        line = keys.collect { |key|
-          if(self.respond_to?(key))
-            self.send(key, pack)
-          else
-            pack.send(key)
-          end
+    if target == :division
+      @model.each { |seq|
+        seq.packages.values.each { |pack|
+          line = keys.collect { |key|
+            if(self.respond_to?(key))
+              self.send(key, pack)
+            else
+              pack.send(key)
+            end
+          }
+          @total += 1
+          result.push(line)
         }
-        result.push(line)
-        index += 1
       }
-    }
+    else # atc_class
+      @model.each { |atc|
+        result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
+        index += 1
+        ean = {}
+        # Rule:
+        # For the CSV Exporter only export the Product with the longer ATC-Code.
+        # We export the product with the ATC-Code that has more digits
+        atc.send(symbol).each { |pack|
+          if(eans[pack.ikskey].nil?)
+            eans[pack.ikskey] = {:cnt => 0}
+          end
+          eans[pack.ikskey][:cnt] += 1
+          atc_code = atc.code.to_s
+          if(eans[pack.ikskey][:cnt] > 1)
+            if(eans[pack.ikskey][:atc].length < atc_code.length)
+              result[eans[pack.ikskey][:idx]] = nil # delete
+            else
+              next # skip pack
+            end
+          end
+          eans[pack.ikskey][:atc] = atc_code
+          eans[pack.ikskey][:idx] = index
+          line = keys.collect { |key|
+            if(self.respond_to?(key))
+              self.send(key, pack)
+            else
+              pack.send(key)
+            end
+          }
+          result.push(line)
+          index += 1
+        }
+      }
+    end
     result.compact.collect { |line|
       if encoding
         CSV.generate_line(line, {:col_sep => ';'}).encode(encoding, :invalid => :replace, :undef => :replace, :replace => '')
@@ -393,8 +411,10 @@ class CsvResult < HtmlGrid::Component
       end
     }
   end
-	def to_csv_file(keys, path, symbol=:active_packages, encoding=nil)
-		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol, encoding) }
+	def to_csv_file(keys, path, symbol=:active_packages, encoding=nil, target=:atc_class)
+		File.open(path, 'w') do |fh|
+      fh.puts to_csv(keys, symbol, encoding, target)
+    end
 	end
   def vaccine(pack)
     boolean(pack.vaccine)

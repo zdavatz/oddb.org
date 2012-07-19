@@ -334,14 +334,21 @@ module ODDB
       sleep(30)
     end
     def export_teilbarkeit_csv
-      safe_export 'teilbarkeit.csv' do
+      safe_export 'Teilbarkeit Export' do
+        today = Date.today
         plug = CsvExportPlugin.new(@app)
         plug.export_teilbarkeit
         if report = plug.report
-          log = Log.new(@@today)
-          log.date_str = @@today.strftime("%d.%m.%Y")
+          log = Log.new(today)
+          log.date_str = today.strftime("%d.%m.%Y")
           log.report = report
-          log.notify("Teilbarkeit Export")
+          file = today.strftime("teilbarkeit.%Y-%m-%d.csv")
+          dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+          path = File.join(dir, file)
+          log.files = {
+            path => ['text/csv', 'UTF-8']
+          }
+          log.notify('Teilbarkeit Export')
         end
       end
       EXPORT_SERVER.clear
