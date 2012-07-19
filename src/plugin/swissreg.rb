@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SwissregPlugin -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
+# ODDB::SwissregPlugin -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::SwissregPlugin -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
 require 'uri'
@@ -89,13 +90,14 @@ module ODDB
 				@failures.push(data)
 			end
 		end
-		def update_substances(substances)
-			substances.collect { |substance|
+    def update_substances(substances)
+      substances.collect { |substance|
+        next unless substance
         substance.force_encoding('utf-8')
-				substance.to_s.gsub(/(i|e|um)$/u, '')
-			}.compact.uniq.each { |substance_name|
-				update_registrations(substance_name) 
-			}
-		end
-	end
+        substance.to_s.gsub(/(i|e|um)$/u, '')
+      }.compact.uniq.each { |substance_name|
+        update_registrations(substance_name)
+      }
+    end
+  end
 end

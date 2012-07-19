@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
+# ODDB::Registration -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
 # ODDB::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -147,9 +147,11 @@ module ODDB
         }
       end
 		end
-		def each_sequence(&block)
-			@sequences.values.each(&block)
-		end
+    def each_sequence(&block)
+      unless @sequences.is_a?(NilClass)
+        @sequences.values.each(&block)
+      end
+    end
 		def expired?
 			inactive? \
 				|| (!@renewal_flag && @expiration_date && @expiration_date <= @@today)
