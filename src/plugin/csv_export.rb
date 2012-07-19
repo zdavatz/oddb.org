@@ -114,7 +114,7 @@ module ODDB
     def export_teilbarkeit
       @options = {}
       recipients.concat self.class::ODDB_RECIPIENTS
-      _export_drugs 'tailbarkeit', [
+      _export_drugs 'teilbarkeit', [
         :barcode, :pharmacode, :name_base,
         :divisable, :dissolvable, :crushable, :openable, :notes,
         :source,
