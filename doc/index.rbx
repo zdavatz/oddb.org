@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# index.rbx -- oddb.org -- 19.03.2012 -- yasaka@ywesee.com
+# index.rbx -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
 # index.rbx -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # index.rbx -- oddb.org -- hwyss@ywesee.com
 
@@ -12,7 +12,11 @@ DRb.start_service('druby://localhost:0')
 begin
   request = SBSM::Request.new(ODDB::SERVER_URI)
   if request.is_crawler?
-    request = SBSM::Request.new(ODDB::SERVER_URI_FOR_CRAWLER)
+    if request.cgi.user_agent =~ /google/i
+      request = SBSM::Request.new(ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER)
+    else
+      request = SBSM::Request.new(ODDB::SERVER_URI_FOR_CRAWLER)
+    end
   end
   request.process
 rescue Exception => e

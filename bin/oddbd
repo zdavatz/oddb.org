@@ -25,14 +25,21 @@ trap("USR2") {
 ODBA.cache.setup
 ODBA.cache.clean_prefetched
 
-if (opt = ARGV.first and opt == 'crawler')
+case ARGV.first
+when /google(-|_)crawler/i
+  server_uri = ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER
+  process = :google_crawler
+  $0 = "Oddb (OddbApp:Google-Crawler)"
+when 'crawler'
   server_uri = ODDB::SERVER_URI_FOR_CRAWLER
+  process = :crawler
   $0 = "Oddb (OddbApp:Crawler)"
 else
   server_uri = ODDB::SERVER_URI
+  process = :user
   $0 = "Oddb (OddbApp)"
 end
-$oddb = ODDB::App.new({:server_uri => server_uri})
+$oddb = ODDB::App.new({ :process => process })
 
 DRb.install_id_conv ODBA::DRbIdConv.new
 DRb.start_service(server_uri, $oddb)

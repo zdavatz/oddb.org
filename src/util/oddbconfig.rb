@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# OddbConfig -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
 # OddbConfig -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com 
 # OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com 
 
@@ -16,6 +17,7 @@ module ODDB
 	SMTP_FROM = 'zdavatz@ywesee.com'
 	SERVER_URI = "druby://localhost:10000"
 	SERVER_URI_FOR_CRAWLER = "druby://localhost:10001"
+	SERVER_URI_FOR_GOOGLE_CRAWLER = "druby://localhost:10008"
 	FIPARSE_URI = "druby://localhost:10002"
 	FIPDF_URI = "druby://localhost:10003"
 	DOCPARSE_URI = "druby://localhost:10004"

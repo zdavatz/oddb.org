@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1378,9 +1378,8 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
 		attr_reader :cleaner, :updater
 		def initialize opts={}
-      if opts.has_key?(:server_uri) and \
-         opts[:server_uri] == ODDB::SERVER_URI_FOR_CRAWLER
-        @process = :crawler
+      if opts.has_key?(:process)
+        @process = opts[:process]
       else
         @process = :user
       end
@@ -1946,9 +1945,6 @@ module ODDB
       puts child.class
       raise
     end
-    def process_for_crawler?
-      @process == :crawler
-    end
     def log_size
       @size_logger = Thread.new {
         time = Time.now
@@ -1956,7 +1952,11 @@ module ODDB
         threads = 0
         sessions = 0
         format = "%s %s: sessions: %4i - threads: %4i  - memory: %4iMB %s"
-        status = process_for_crawler? ? 'status_crawler' : 'status'
+        status = case @process
+                 when :google_crawler ; 'status_google_crawler'
+                 when :crawler        ; 'status_crawler'
+                 else                 ; 'status'
+                 end
         loop {
           begin
             lasttime = time
