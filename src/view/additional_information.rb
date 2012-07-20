@@ -71,6 +71,12 @@ module ODDB
           super(atc, session)
         end
       end
+      def atc_pharmacokinetic_link(atc, session=@session)
+        if(atc.code and \
+           !@lookandfeel.disabled?(:atc_pharmacokinetic_link))
+          super(atc, session)
+        end
+      end
 			def atc_description(atc, session=@session)
 				if(descr = atc.description(@lookandfeel.language))
 					descr.dup.to_s << ' (' << atc.code << ')' 

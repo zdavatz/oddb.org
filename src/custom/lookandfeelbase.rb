@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1150,6 +1150,8 @@ Zeno Davatz
 				:paypal_msg_error					=>	'Fehler bei PayPal. Wir werden Ihre bezahlung manuell überprüfen und so schnell als möglich mit Ihnen in Kontakt treten. Vielen Dank für Ihr Verständnis.',
 				:paypal_unconfirmed				=>	'Fehler',
 				:paypal_success						=>	'Bereit zum Download',
+        :pharmacokinetic          =>  "Pharmakokinetik",
+        :pharmacokinetic_title    =>  "Pharmakokinetik - modules.epha.ch",
         :screencast               =>  'Video-Anleitung (Screencast)',
         :screencast_url           =>  'http://www.youtube.com/watch?v=hCzO8J9bYcY',
 				:sl_generic_type				=>	'Original/Generikum',
