@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -110,7 +110,12 @@ module ODDB
         end
 
         lang = @session.language
-        comps = model.compositions.empty? ? model.sequence.compositions : model.compositions
+        comps = []
+        if !model.compositions.empty?
+          comps = model.compositions
+        elsif model.respond_to?(:sequence)
+          comps = model.sequence.compositions
+        end
         parts = comps.collect { |comp|
           part = ''
           if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
