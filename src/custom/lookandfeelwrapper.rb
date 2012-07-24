@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 03.07.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 24.07.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -833,6 +833,8 @@ module ODDB
       :atc_ddd,
       :atc_drugbank_link,
       :atc_dosing_link,
+      :atc_division_link,
+      :atc_pharmacokinetic_link,
       :legal_note,
       :navigation,
       :price_request

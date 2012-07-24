@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 24.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -37,13 +37,7 @@ class AtcHeader < HtmlGrid::Composite
     [0,0,0]  => :atc_description,
     [0,0,2]  => :atc_ddd_link,
     [0,0,3]  => '&nbsp;',
-    [0,0,4]  => :atc_drugbank_link,
-    [0,0,5]  => :atc_optional_link_separator,
-    [0,0,6]  => :atc_dosing_link,
-    [0,0,7]  => :atc_optional_link_separator,
-    [0,0,8]  => :atc_division_link,
-    [0,0,9]  => :atc_optional_link_separator,
-    [0,0,10] => :atc_pharmacokinetic_link,
+    [0,0,4]  => :atc_optional_links,
     [1,0]    => :pages,
   }
 	CSS_CLASS = 'composite'
@@ -90,14 +84,15 @@ class AtcHeader < HtmlGrid::Composite
     end
     link
 	end
-  def atc_optional_link_separator(model, session=@session)
-    separator = "&nbsp;-&nbsp;"
-    @link_separators += 1
-    case @link_separators
-    when 1 ; separator if model.db_id and model.ni_id
-    when 2 ; separator if model.db_id
-    when 3 ; separator if model.code.length > 6
-    end
+  def atc_optional_links(model, session=@session)
+    links = [
+      :atc_drugbank_link,
+      :atc_dosing_link,
+      :atc_division_link,
+      :atc_pharmacokinetic_link,
+    ].collect{ |link| self.send(link, *[model, session]) }.compact
+    links.dup.each_with_index{ |l, i| links.insert(links.index(l), '&nbsp;-&nbsp;') unless i.zero? }
+    links
   end
 	def edit(model, session=@session)
 		link = View::PointerLink.new(:code, model, session, self)
