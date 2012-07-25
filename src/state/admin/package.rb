@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -17,6 +17,7 @@ end
 module PackageMethods
   def ajax_create_part
     check_model
+    @model.create_part unless @model.parts
     parts = @model.parts.dup
     if(!error?)
       part = Persistence::CreateItem.new(@model.pointer + :part)
@@ -29,8 +30,9 @@ module PackageMethods
     check_model
     keys = [:reg, :seq, :pack, :part]
     input = user_input(keys, keys)
-    if(!error? \
-       && (part = @model.parts[input[:part].to_i]))
+    if(!error? and
+       @model.parts and
+       (part = @model.parts[input[:part].to_i]))
       @session.app.delete part.pointer
     end
     AjaxParts.new(@session, @model.parts)
@@ -77,6 +79,7 @@ module PackageMethods
 		if(@model.is_a? Persistence::CreateItem)
 			@model.append(ikscode)
 			@model = @session.app.create(@model.pointer)
+      @model.odba_store
 		end
 		keys = [
       :ddd_dose,
