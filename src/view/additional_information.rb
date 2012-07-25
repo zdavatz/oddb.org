@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 24.07.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -406,6 +406,16 @@ module ODDB
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
 			end
+      def receipt(model, session=@session, css='infos')
+        link = HtmlGrid::Link.new(:receipt, model, session, self)
+        link.css_class = css
+        link.set_attribute('title', @lookandfeel.lookup(:receipt))
+        link.href = @lookandfeel._event_url(:receipt, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        img = HtmlGrid::Image.new(:receipt, model, @session, self)
+        img.set_attribute('src', @lookandfeel.resource_global(:receipt))
+        link.value = img
+        link
+      end
 			def square(key, square=nil)
 				square ||= HtmlGrid::Span.new(nil, @session, self)
 				square.value = @lookandfeel.lookup("square_#{key}")

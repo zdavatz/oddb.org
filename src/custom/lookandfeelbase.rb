@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1258,6 +1258,7 @@ Zeno Davatz
 				:print_title							=>	'Druckfreundliche Version',
 				:print_type_fachinfo			=>	'Fachinformation',
 				:print_type_patinfo				=>	'Patienteninformation',
+        :print_type_receipt       =>  'Rezept',
         :privileges               =>  'Rechte',
 				:proceed_download					=>	'Weiter zur Adresseingabe',
 				:proceed_payment					=>	'Weiter',
@@ -1306,6 +1307,35 @@ Zeno Davatz
 				:query_limit_thanks1			=>	'Falls Sie Fragen, Bemerkungen oder Verbesserungsvorschläge haben senden Sie ein E-Mail an ',
 				:query_limit_thanks2			=>	' oder rufen +41 43 540 05 50 an.',
 				:query_limit_welcome			=>	"Geschätzer Kunde, willkommen auf ODDB.org",
+        :receipt_title            =>  'Rezepterstellung',
+        :receipt_for              =>  'Rezept f&uuml;r',
+        :receipt_first_name       =>  'Vorname',
+        :receipt_family_name      =>  'Nachname',
+        :receipt_birth_day        =>  'Geburtsdatum',
+        :receipt_sex              =>  'Geschlecht',
+        :receipt_sex_w            =>  'w',
+        :receipt_sex_m            =>  'm',
+        :receipt_quantity_morning =>  'Morgens',
+        :receipt_quantity_noon    =>  'Mittags',
+        :receipt_quantity_evening =>  'Abends',
+        :receipt_quantity_night   =>  'Nachts',
+        :receipt_method_as_necessary => 'Nach Bedarf',
+        :receipt_method_regulaly     => 'Nach Vorschrift',
+        :receipt_comment          =>  'Bemerkungen',
+        :receipt_generic          =>  'Original mit Generikum in der SL',
+        :receipt_type_generic     =>  'aut genericum',
+        :receipt_type_original    =>  'Original aus medizinischen Gr&uuml;nden nicht substituierbar',
+        :receipt_timing_before_meal => 'vor dem Essen',
+        :receipt_timing_with_meal   => 'mit dem Essen',
+        :receipt_timing_after_meal  => 'nach dem Essen',
+        :receipt_term_once        =>  'Einmaliges Rezept',
+        :receipt_term_repetition  =>  'Dauerrezept Wiederholungen',
+        :receipt_term_per_month   =>  'Dauerrezept G&uuml;ltigkeit in Monaten',
+        :receipt_non_dispensation =>  'dieses Medikament noch nicht zustellen (non disp)',
+        :receipt_format_paper     =>  'Papier',
+        :receipt_format_shipping  =>  'Versand (der Patient w&uuml;nscht Bezug &uuml;ber MediService.)',
+        :receipt_notes            =>  'Diese Angaben werden nicht gespeichert sondern sind nur auf dem Ausdruck zur Verf&uuml;gung.',
+	:receipt_signature        =>  'Stempel, Unterschrift Arzt (aus Ausdruck)',
 				:recent_registrations			=>	'Neuregistrierungen',
 				:recommend								=>	'Empfehlung',
         :references               =>  'References',
@@ -4319,6 +4349,7 @@ Zeno Davatz
 			:pdf_fachinfo						=>	'fachinfo',
 			:plugin_download_src		=> 'plugins/oddb.org.src',
 			:plugin_download_gif		=> 'plugins/oddb.org.gif',
+      :receipt                =>  'receipt.png',
 			:richtext_js						=>	'javascript/richtext.js',
       :rss_feed               =>  'livemarks16.png',
 			:sponsor								=>	'sponsor',
@@ -4428,32 +4459,33 @@ Zeno Davatz
         [9,0]   =>  :notify,
       }
     end
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :minifi,
-				[2,0]		=>  :fachinfo,
-				[3,0]		=>	:patinfo,
-				[4,0,0]	=>	:narcotic,
-				[4,0,1]	=>	:complementary_type,
-				[4,0,2]	=>	:comarketing,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:comparable_size,
-				[7,0]		=>	:price_exfactory,
-				[8,0]	=>	:price_public,
-				[9,0]	=>	:deductible,
-				[10,0]	=>	:ddd_price,
-				[11,0]	=>	:compositions,
-				[12,0]	=>	:company_name,
-				[13,0]	=>	:ikscat,
-				[14,0]	=>	:feedback,
-				[15,0]	=>  :twitter_share,
-				[16,0]	=>  :google_search,
-				[17,0]	=>	:notify,
-			}
-		end
+    def result_list_components
+      {
+        [0,0]   => :limitation_text,
+        [1,0]   => :receipt,
+        [2,0]   => :minifi,
+        [3,0]   => :fachinfo,
+        [4,0]   => :patinfo,
+        [5,0,0] => :narcotic,
+        [5,0,1] => :complementary_type,
+        [5,0,2] => :comarketing,
+        [6,0,0] => 'result_item_start',
+        [6,0,1] => :name_base,
+        [6,0,2] => 'result_item_end',
+        [7,0]   => :comparable_size,
+        [8,0]   => :price_exfactory,
+        [9,0]   => :price_public,
+        [10,0]  => :deductible,
+        [11,0]  => :ddd_price,
+        [12,0]  => :compositions,
+        [13,0]  => :company_name,
+        [14,0]  => :ikscat,
+        [15,0]  => :feedback,
+        [16,0]  => :twitter_share,
+        [17,0]  => :google_search,
+        [18,0]  => :notify,
+     }
+    end
 		def section_style
 			'font-size: 13px; margin-top: 4px; line-height: 1.4em'
 		end

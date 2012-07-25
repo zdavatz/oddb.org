@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 24.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -357,6 +357,9 @@ class ResultList < HtmlGrid::List
 	def fachinfo(model, session=@session)
 		super(model, session, 'square important infos')
 	end	
+  def receipt(model, session=@session)
+    super(model, session, 'important')
+  end
 	def registration_date(model, session=@session)
 		span = HtmlGrid::Span.new(model, @session, self)
 		span.value = HtmlGrid::DateValue.new(:registration_date, 

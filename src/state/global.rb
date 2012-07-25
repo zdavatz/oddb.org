@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 15.05.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -47,6 +47,7 @@ require 'state/drugs/patinfos'
 require 'state/drugs/price_history'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
+require 'state/drugs/receipt'
 require 'state/drugs/sequence'
 require 'state/drugs/sequences'
 require 'state/drugs/shorten_path'
@@ -218,6 +219,7 @@ module ODDB
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
+          [ :receipt ]                                                        => State::Drugs::Receipt,
         }	
         READONLY_STATES = RESOLVE_STATES.dup.update({
           [ :registration ]                       => State::Drugs::Registration,
@@ -227,6 +229,7 @@ module ODDB
         PRINT_STATES = {
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
           [ :patinfo ]                            => State::Drugs::PatinfoPrint,
+          [ :receipt ]                            => State::Drugs::ReceiptPrint,
         }
         REVERSE_MAP = {}
         VIEW = View::Search
@@ -482,15 +485,24 @@ module ODDB
 					State::User::PowerLink.new(@session, comp)
 				end
 			end
-			def print
-				if @session.user_input(:pointer)
+      def print
+        if @session.user_input(:receipt) and
+           ean13 = @session.user_input(:ean13) and
+           pack = @session.app.package_by_ikskey(ean13.to_s[4,8])
+          State::Drugs::ReceiptPrint.new(@session, pack)
+        elsif @session.user_input(:pointer)
           self
-        elsif iksnr = @session.user_input(:reg) and reg = @session.app.registration(iksnr) and seq = reg.sequence(@session.user_input(:seq)) and pi = seq.patinfo
+        elsif iksnr = @session.user_input(:reg) and
+              reg = @session.app.registration(iksnr) and
+              seq = reg.sequence(@session.user_input(:seq)) and
+              pi = seq.patinfo
           State::Drugs::PatinfoPrint.new(@session, pi)
-        elsif iksnr = @session.user_input(:fachinfo) and reg = @session.app.registration(iksnr) and fi = reg.fachinfo
+        elsif iksnr = @session.user_input(:fachinfo) and
+              reg = @session.app.registration(iksnr) and
+              fi = reg.fachinfo
           State::Drugs::FachinfoPrint.new(@session, fi)
-				end
-			end
+        end
+      end
 			def proceed_download
 				keys = [:download, :months, :compression]
 				input = user_input(keys, keys) 
@@ -574,6 +586,14 @@ module ODDB
 					end
 				end
 			end
+      def receipt
+        if iksnr = @session.user_input(:reg) and
+           seqnr = @session.user_input(:seq) and
+           ikscd = @session.user_input(:pack) and
+           model = @session.app.registration(iksnr).sequence(seqnr).package(ikscd)
+          State::Drugs::Receipt.new(@session, model)
+        end
+      end
       def migel_search
         @session.set_cookie_input(:resultview, '')
         sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)

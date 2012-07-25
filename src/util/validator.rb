@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -24,7 +24,7 @@ module ODDB
       :disable_invoice_fachinfo, :disable_invoice_patinfo,
       :disable_patinfo, :disable_photo_forwarding, :download, :experience, :export_flag, :helps,
       :ignore_patent, :impression, :invoice_htmlinfos, :limit_invoice_duration, :lppv,
-      :parallel_import, :preview_with_market_date, :recommend,
+      :parallel_import, :preview_with_market_date, :receipt, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
       :force_new_ydim_debitor, :textinfo_update, :keep_generic_type
@@ -257,6 +257,7 @@ module ODDB
 			:proceed_payment,
 			:proceed_poweruser,
 			:recent_registrations,
+      :receipt,
 			:resolve,
 			:result,
       :rss,
@@ -329,6 +330,21 @@ module ODDB
       :pharmacode,
 			:price_exfactory,
 			:price_public,
+      :receipt_sex,
+      :receipt_timing,
+      :receipt_term,
+      :receipt_quantity_morning,
+      :receipt_quantity_noon,
+      :receipt_quantity_evening,
+      :receipt_quantity_night,
+      :receipt_method_as_necessary,
+      :receipt_method_regulaly,
+      :receipt_type_generic,
+      :receipt_type_original,
+      :receipt_repetition,
+      :receipt_per_month,
+      :receipt_format,
+      :receipt_non_dispensation,
       :ydim_id,
 			:year,
 		]
@@ -420,6 +436,10 @@ module ODDB
 			:powerlink,
 			:position,
 			:range,
+      :receipt_first_name,
+      :receipt_family_name,
+      :receipt_birth_day,
+      :receipt_comment,
 			:register_update,
 			:regulatory_email,
       :remember,
