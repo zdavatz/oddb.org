@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 17.07.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -366,7 +366,9 @@ module ODDB
                   || registration.active?)
 		end
     def size
-      @parts.collect { |part| part.size if part.respond_to?(:size)}.compact.join(' + ')
+      unless @parts.nil?
+        @parts.collect { |part| part.size if part.respond_to?(:size)}.compact.join(' + ')
+      end
     end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
