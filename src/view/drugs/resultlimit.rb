@@ -36,7 +36,7 @@ class ResultLimitList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
-		[0,0,4]	 => 'list',
+		[0,0,5]	 => 'list',
 		[5,0]    => 'list big',
 		[6,0]    => 'list',
 		[7,0,4]  => 'list right',
