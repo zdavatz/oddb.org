@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Package -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Package -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -342,7 +342,7 @@ class RootPackageComposite < View::Admin::PackageComposite
     super
   end
   def parts(model)
-    key = model.parts.size > 1 ? :parts : :package_and_substances
+    key = (parts = model.parts and parts.size > 1) ? :parts : :package_and_substances
     @lookandfeel.lookup(key)
   end
   def parts_form(model)
