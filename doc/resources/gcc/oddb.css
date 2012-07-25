@@ -547,6 +547,11 @@ div.big {
 	font-weight: bold;
 	font-size: 26px;
 }
+div.print-title {
+	padding-top: 12px;
+	font-weight: bold;
+	font-size:   23px;
+}
 /* new style of formatting */
 /* use multiple classes to style! */
 td.interaction-connection { 
