@@ -406,13 +406,13 @@ module ODDB
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
 			end
-      def receipt(model, session=@session, css='infos')
-        link = HtmlGrid::Link.new(:receipt, model, session, self)
+      def prescription(model, session=@session, css='infos') # rezept -> prescription
+        link = HtmlGrid::Link.new(:rezept, model, session, self)
         link.css_class = css
-        link.set_attribute('title', @lookandfeel.lookup(:receipt))
-        link.href = @lookandfeel._event_url(:receipt, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
-        img = HtmlGrid::Image.new(:receipt, model, @session, self)
-        img.set_attribute('src', @lookandfeel.resource_global(:receipt))
+        link.set_attribute('title', @lookandfeel.lookup(:prescription))
+        link.href = @lookandfeel._event_url(:rezept, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        img = HtmlGrid::Image.new(:prescription, model, @session, self)
+        img.set_attribute('src', @lookandfeel.resource_global(:prescription))
         link.value = img
         link
       end

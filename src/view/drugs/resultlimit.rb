@@ -18,7 +18,7 @@ class ResultLimitList < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {
     [0,0]  => :minifi,
-    [1,0]  => :receipt,
+    [1,0]  => :prescription,
 		[2,0]	 => :fachinfo,
 		[3,0]	 =>	:patinfo,
 		[4,0]	 =>	:narcotic,

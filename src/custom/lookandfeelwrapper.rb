@@ -38,7 +38,7 @@ module ODDB
     ]
     def compare_list_components
       {
-        [0,0]  => :receipt,
+        [0,0]  => :prescription,
         [1,0]  => :fachinfo,
         [2,0]  => :patinfo,
         [3,0]  => :name_base,
@@ -84,7 +84,7 @@ module ODDB
     def result_list_components
       {
         [0,0]   => :limitation_text,
-        [1,0]   => :receipt,
+        [1,0]   => :prescription,
         [2,0]   => :fachinfo,
         [3,0]   => :patinfo,
         [4,0]   => :narcotic,

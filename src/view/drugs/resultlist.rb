@@ -171,6 +171,7 @@ class ResultList < HtmlGrid::List
 		:compositions    		=>	'list italic',
 		:ddd_price					=>	'list bold right',
 		:deductible					=>	'list bold right',
+    :prescription       =>  'list',
 		:fachinfo						=>	'list',
 		:feedback						=>	'list right',
 		:galenic_form				=>	'list',
@@ -357,8 +358,8 @@ class ResultList < HtmlGrid::List
 	def fachinfo(model, session=@session)
 		super(model, session, 'square important infos')
 	end	
-  def receipt(model, session=@session)
-    super(model, session, 'important')
+  def prescription(model, session=@session)
+    super(model, session, 'list important')
   end
 	def registration_date(model, session=@session)
 		span = HtmlGrid::Span.new(model, @session, self)

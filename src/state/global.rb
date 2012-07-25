@@ -47,7 +47,7 @@ require 'state/drugs/patinfos'
 require 'state/drugs/price_history'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
-require 'state/drugs/receipt'
+require 'state/drugs/prescription'
 require 'state/drugs/sequence'
 require 'state/drugs/sequences'
 require 'state/drugs/shorten_path'
@@ -219,7 +219,7 @@ module ODDB
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
-          [ :receipt ]                                                        => State::Drugs::Receipt,
+          [ :rezept ]                                                         => State::Drugs::Prescription,
         }	
         READONLY_STATES = RESOLVE_STATES.dup.update({
           [ :registration ]                       => State::Drugs::Registration,
@@ -229,7 +229,7 @@ module ODDB
         PRINT_STATES = {
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
           [ :patinfo ]                            => State::Drugs::PatinfoPrint,
-          [ :receipt ]                            => State::Drugs::ReceiptPrint,
+          [ :rezept ]                             => State::Drugs::PrescriptionPrint,
         }
         REVERSE_MAP = {}
         VIEW = View::Search
@@ -486,10 +486,10 @@ module ODDB
 				end
 			end
       def print
-        if @session.user_input(:receipt) and
+        if @session.user_input(:prescription) and
            ean13 = @session.user_input(:ean13) and
            pack = @session.app.package_by_ikskey(ean13.to_s[4,8])
-          State::Drugs::ReceiptPrint.new(@session, pack)
+          State::Drugs::PrescriptionPrint.new(@session, pack)
         elsif @session.user_input(:pointer)
           self
         elsif iksnr = @session.user_input(:reg) and
@@ -586,12 +586,12 @@ module ODDB
 					end
 				end
 			end
-      def receipt
+      def rezept
         if iksnr = @session.user_input(:reg) and
            seqnr = @session.user_input(:seq) and
            ikscd = @session.user_input(:pack) and
            model = @session.app.registration(iksnr).sequence(seqnr).package(ikscd)
-          State::Drugs::Receipt.new(@session, model)
+          State::Drugs::Prescription.new(@session, model)
         end
       end
       def migel_search
