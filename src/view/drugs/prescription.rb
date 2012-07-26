@@ -116,10 +116,11 @@ class PrescriptionForm < View::Form
   end
   def subheader(model, session)
     fields = []
-    fi = fachinfo(model, session, 'square bold infos')
-    fi.set_attribute('target', '_blank')
-    fields << fi
-    fields << '&nbsp;'
+    if fi = fachinfo(model, session, 'square bold infos')
+      fi.set_attribute('target', '_blank')
+      fields << fi
+      fields << '&nbsp;'
+    end
     fields << model.name
     fields << '&nbsp;-&nbsp;'
     fields << model.ddd_price
