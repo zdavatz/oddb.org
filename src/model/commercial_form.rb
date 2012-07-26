@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# CommercialForm -- oddb.org -- 23.11.2006 -- hwyss@ywesee.com
+# ODDB::CommercialForm -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
+# ODDB::CommercialForm -- oddb.org -- 23.11.2006 -- hwyss@ywesee.com
 
 require 'util/language'
 require 'model/package_observer'
@@ -27,5 +28,8 @@ module ODDB
 			}
 			self.synonyms += other.all_descriptions - self.all_descriptions
 		end
+    def to_s
+      self.description
+    end
   end
 end
