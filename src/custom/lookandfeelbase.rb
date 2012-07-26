@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1253,6 +1253,7 @@ Zeno Davatz
         :price_rise_feed_title    =>  'Preiserhöhungen SL/LPPV',
         :price_rise_feed_description =>  'Preiserhöhungen von Produkten in der Spezialitäten-Liste',
 				:print										=>	'Drucken',
+        :print_of                 =>  'Ausdruck von ',
 				:print_edit								=>  'Drucken mit 1.5 Zeilenabst.',
 				:print_head								=>	'Ausdruck von http://www.oddb.org',
 				:print_title							=>	'Druckfreundliche Version',
@@ -1309,7 +1310,7 @@ Zeno Davatz
 				:query_limit_welcome			=>	"Geschätzer Kunde, willkommen auf ODDB.org",
         :prescription                  =>  'rezept',
         :prescription_title            =>  'Rezepterstellung',
-        :prescription_for              =>  'Rezept f&uuml;r',
+        :prescription_for              =>  'Rezept f&uuml;r: ',
         :prescription_first_name       =>  'Vorname',
         :prescription_family_name      =>  'Nachname',
         :prescription_birth_day        =>  'Geburtsdatum',

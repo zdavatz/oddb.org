@@ -18,116 +18,53 @@ require 'view/form'
 module ODDB
   module View
     module Drugs
-class PrescriptionForm < View::Form
-  include HtmlGrid::InfoMessage
-  include View::AdditionalInformation
+class PrescriptionInnerForm < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0]  => :prescription_for,
-    [0,1]  => :subheader,
-    [0,2]  => 'prescription_quantity_morning',
-    [1,2]  => :prescription_quantity_morning,
-    [0,3]  => 'prescription_quantity_noon',
-    [1,3]  => :prescription_quantity_noon,
-    [0,4]  => 'prescription_quantity_evening',
-    [1,4]  => :prescription_quantity_evening,
-    [0,5]  => 'prescription_quantity_night',
-    [1,5]  => :prescription_quantity_night,
-    [2,3]  => :prescription_method_fields,
-    [0,6]  => 'prescription_comment',
-    [0,7]  => :prescription_comment,
-    [0,8]  => :prescription_timing_fields,
-    [0,9]  => :prescription_term_fields,
-    [0,11] => :prescription_signature,
-    [0,19] => :print_button,
-    [0,20] => :prescription_notes,
+    [0,0]  => 'prescription_quantity_morning',
+    [1,0]  => :prescription_quantity_morning,
+    [0,1]  => 'prescription_quantity_noon',
+    [1,1]  => :prescription_quantity_noon,
+    [0,2]  => 'prescription_quantity_evening',
+    [1,2]  => :prescription_quantity_evening,
+    [0,3]  => 'prescription_quantity_night',
+    [1,3]  => :prescription_quantity_night,
+    [2,0]  => :prescription_method_fields,
+    [0,4]  => 'prescription_comment',
+    [0,5]  => :prescription_comment,
+    [0,6]  => :prescription_timing_fields,
+    [0,7]  => :prescription_term_fields,
+    [0,9]  => :prescription_signature,
   }
   CSS_MAP = {
-    [0,0,12,1] => 'th',
-    [0,1]  => 'subheading',
+    [0,0]  => 'list bold',
+    [1,0]  => 'list',
+    [0,1]  => 'list bold',
+    [1,1]  => 'list',
     [0,2]  => 'list bold',
     [1,2]  => 'list',
     [0,3]  => 'list bold',
     [1,3]  => 'list',
+    [2,0]  => 'list',
     [0,4]  => 'list bold',
-    [1,4]  => 'list',
-    [0,5]  => 'list bold',
-    [1,5]  => 'list',
-    [2,3]  => 'list',
-    [0,6]  => 'list bold',
+    [0,5]  => 'list',
+    [0,6]  => 'list',
     [0,7]  => 'list',
-    [0,8]  => 'list',
     [0,9]  => 'list',
-    [0,11] => 'list',
-    [0,19] => 'button',
-    [0,20] => 'list',
+  }
+  COLSPAN_MAP = {
+    [0,4]  => 6,
+    [0,5]  => 6,
+    [0,6]  => 3,
+    [0,7]  => 3,
+    [2,0]  => 6,
+    [0,9]  => 6,
   }
   SYMBOL_MAP = {
     :prescription_comment   => HtmlGrid::Textarea,
     :prescription_generic   => HtmlGrid::LabelText,
     :prescription_signature => HtmlGrid::LabelText,
   }
-  COLSPAN_MAP = {
-    [0,0]  => 12,
-    [0,1]  => 12,
-    [0,6]  => 3,
-    [0,7]  => 3,
-    [0,8]  => 3,
-    [0,9]  => 3,
-    [2,3]  => 6,
-    [0,11] => 6,
-    [0,19] => 3,
-    [0,20] => 10,
-  }
-  DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
-  CSS_CLASS = 'composite'
-  def prescription_for(model, session)
-    fields = []
-    label = HtmlGrid::LabelText.new(:prescription_for, model, session, self)
-    fields << label
-    fields << '&nbsp;&nbsp;&nbsp;'
-    %w[first_name family_name birth_day].each do |attr|
-      key = "prescription_#{attr}".to_sym
-      label = HtmlGrid::LabelText.new(key, model, session, self)
-      fields << label
-      fields << '&nbsp;'
-      input = HtmlGrid::InputText.new(key, model, session, self)
-      input.set_attribute('size', 13)
-      input.label = false
-      fields << input
-      fields << '&nbsp;&nbsp;'
-    end
-    label = HtmlGrid::LabelText.new(:prescription_sex, model, session, self)
-    fields << label
-    fields << '&nbsp;'
-    radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
-    radio.value = '1' 
-    radio.set_attribute('checked', true)
-    fields << radio
-    fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_sex_w)
-    fields << '&nbsp;'
-    radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
-    radio.value = '2' 
-    fields << radio
-    fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_sex_m)
-    fields
-  end
-  def subheader(model, session)
-    fields = []
-    if fi = fachinfo(model, session, 'square bold infos')
-      fi.set_attribute('target', '_blank')
-      fields << fi
-      fields << '&nbsp;'
-    end
-    fields << model.name
-    fields << '&nbsp;-&nbsp;'
-    fields << model.ddd_price
-    fields << '&nbsp;-&nbsp;'
-    fields << model.company_name
-    fields
-  end
   def self.define_quantity_method(key)
     name = "prescription_quantity_#{key}".to_sym
     define_method(name) do |model, session|
@@ -237,6 +174,81 @@ class PrescriptionForm < View::Form
     term_fields << select
     term_fields
   end
+end
+class PrescriptionForm < View::Form
+  include HtmlGrid::InfoMessage
+  include View::AdditionalInformation
+  COMPONENTS = {
+    [0,0] => :prescription_for,
+    [0,1] => :subheader,
+    [0,2] => View::Drugs::PrescriptionInnerForm,
+    [0,8] => :print_button,
+    [0,9] => :prescription_notes,
+  }
+  CSS_MAP = {
+    [0,0] => 'th',
+    [0,1] => 'subheading',
+    [0,2] => 'list',
+    [0,8] => 'button',
+    [0,9] => 'list',
+  }
+  COLSPAN_MAP = {
+    [0,0] => 3,
+    [0,1] => 3,
+    [0,2] => 3,
+    [0,8] => 3,
+    [0,9] => 3,
+  }
+  DEFAULT_CLASS = HtmlGrid::Value
+  CSS_CLASS = 'composite'
+  LABELS = true
+  def prescription_for(model, session)
+    fields = []
+    label = HtmlGrid::LabelText.new(:prescription_for, model, session, self)
+    fields << label
+    fields << '&nbsp;&nbsp;&nbsp;'
+    %w[first_name family_name birth_day].each do |attr|
+      key = "prescription_#{attr}".to_sym
+      label = HtmlGrid::LabelText.new(key, model, session, self)
+      fields << label
+      fields << '&nbsp;'
+      input = HtmlGrid::InputText.new(key, model, session, self)
+      input.set_attribute('size', 13)
+      input.label = false
+      fields << input
+      fields << '&nbsp;&nbsp;'
+    end
+    label = HtmlGrid::LabelText.new(:prescription_sex, model, session, self)
+    fields << label
+    fields << '&nbsp;'
+    radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
+    radio.value = '1' 
+    radio.set_attribute('checked', true)
+    fields << radio
+    fields << '&nbsp;'
+    fields << @lookandfeel.lookup(:prescription_sex_w)
+    fields << '&nbsp;'
+    radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
+    radio.value = '2' 
+    fields << radio
+    fields << '&nbsp;'
+    fields << @lookandfeel.lookup(:prescription_sex_m)
+    fields
+  end
+  def subheader(model, session)
+    fields = []
+    if fi = fachinfo(model, session, 'square bold infos')
+      fi.set_attribute('target', '_blank')
+      fields << fi
+      fields << '&nbsp;'
+    end
+    fields << model.name
+    fields << '&nbsp;-&nbsp;'
+    fields << model.price_public.to_s
+    fields << '&nbsp;-&nbsp;'
+    fields << model.company_name
+    fields
+  end
   def hidden_fields(context)
     hidden = super
     hidden << context.hidden('ean13', @model.barcode)
@@ -260,65 +272,43 @@ class PrescriptionComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => View::Drugs::PrescriptionForm,
   }
-  CSS_CLASS = 'composite'
   COMPONENT_CSS_MAP = {
     [0,0] => 'composite',
   }
   COLSPAN_MAP = {
     [0,0] => 12,
   }
+  CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
 end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,1]  => :prescription_for,
-    [0,2]  => :date,
-    [0,4]  => :quantity_value,
-    [1,4]  => :method_value,
-    [0,5]  => :timing_value,
-    [0,7]  => :term_value,
-    [0,9]  => 'prescription_comment',
-    [0,10] => :comment_value,
-    [0,12] => 'prescription_signature',
+    [0,2]  => :quantity_value,
+    [1,2]  => :method_value,
+    [0,3]  => :timing_value,
+    [0,5]  => :term_value,
+    [0,7]  => 'prescription_comment',
+    [0,8]  => :comment_value,
+    [0,10] => 'prescription_signature',
   }
   CSS_MAP = {
-    [0,1]  => 'print bold',
     [0,2]  => 'print',
-    [0,4]  => 'print',
-    [1,4]  => 'print',
+    [1,2]  => 'print top',
+    [0,3]  => 'print',
     [0,5]  => 'print',
-    [0,7]  => 'print',
-    [0,9]  => 'print bold',
-    [0,10] => 'print',
-    [0,12] => 'print bold'
+    [0,7]  => 'print bold',
+    [0,8]  => 'print',
+    [0,10] => 'print bold'
   }
   COLSPAN_MAP = {
-    [0,1]  => 5,
-    [1,4]  => 4,
-    [0,5]  => 5,
-    [0,9]  => 5,
+    [1,2]  => 4,
+    [0,3]  => 5,
+    [0,7]  => 5,
+    [0,8]  => 5,
     [0,10] => 5,
-    [0,12] => 5,
   }
-  CSS_CLASS = 'composite'
+  CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
-  def prescription_for(model, session=@session)
-    fields = []
-    fields << HtmlGrid::LabelText.new(:prescription_for, model, session, self)
-    fields << '&nbsp;&nbsp;'
-    %w[first_name family_name birth_day].each do |attr|
-      key = "prescription_#{attr}".to_sym
-      text = HtmlGrid::Value.new(key, model, session, self)
-      text.value = @session.user_input(key)
-      fields << text
-      fields << '&nbsp;&nbsp;'
-    end
-    text = HtmlGrid::Value.new(:prescription_sex, model, session, self)
-    type = (@session.user_input(:prescription_sex) == '1' ? 'w' : 'm')
-    text.value = "<span>%s</span>" % @lookandfeel.lookup("prescription_sex_#{type}".to_sym)
-    fields << '&nbsp;'
-    fields << text
-  end
   def quantity_value(model, session=@session)
     fields = []
     [:morning, :noon, :evening, :night].each do |at_time|
@@ -400,28 +390,55 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   PRINT_TYPE = ""
   COMPONENTS = {
     [0,0] => :print_type,
-    [0,1] => :prescription_title,
-    [0,2] => :name,
-    [0,3] => :document,
+    [0,1] => '&nbsp;',
+    [0,2] => :prescription_for,
+    [0,3] => '&nbsp;',
+    [0,4] => :prescription_title,
+    [0,5] => '&nbsp;',
+    [0,6] => :name,
+    [0,7] => :document,
   }
   CSS_MAP = {
     0 => 'print-type',
-    1 => 'print-title',
+    1 => 'print',
     2 => 'print',
     3 => 'print',
+    4 => 'print',
+    5 => 'print',
+    6 => 'print bold',
+    7 => 'print',
   }
+  def prescription_for(model, session=@session)
+    fields = []
+    fields << HtmlGrid::LabelText.new(:prescription_for, model, session, self)
+    %w[first_name family_name birth_day].each do |attr|
+      key = "prescription_#{attr}".to_sym
+      span = HtmlGrid::Span.new(model, session, self)
+      span.set_attribute('class', 'bold')
+      span.value = @session.user_input(key)
+      fields << span
+      fields << '&nbsp;'
+    end
+    span = HtmlGrid::Span.new(model, session, self)
+    type = (@session.user_input(:prescription_sex) == '1' ? 'w' : 'm')
+    span.value = @lookandfeel.lookup("prescription_sex_#{type}".to_sym)
+    span.set_attribute('class', 'bold')
+    fields << '&nbsp;'
+    fields << span
+  end
   def prescription_title(model, session=@session)
-    title = @lookandfeel.lookup(:prescription_title)
-    "#{title}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
+    "#{@lookandfeel.lookup(:date)}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
   end
   def name(model, session=@session)
-    fields = []
-    fields << model.name
-    fields << '&nbsp;-&nbsp;'
-    fields << model.ddd_price
-    fields << '&nbsp;-&nbsp;'
-    fields << model.company_name
-    fields
+    span = HtmlGrid::Span.new(model, session, self)
+    span.value = ''
+    span.value << model.name
+    span.value << '&nbsp;-&nbsp;'
+    span.value << model.price_public.to_s
+    span.value << '&nbsp;-&nbsp;'
+    span.value << model.company_name
+    span.set_attribute('class', 'bold')
+    span
   end
   def document(model, session=@session)
     self::class::INNER_COMPOSITE.new(model, session, self)
@@ -429,9 +446,10 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
 end
 class Prescription < View::PrivateTemplate
   CONTENT = View::Drugs::PrescriptionComposite
-  SNAPBACK_EVENT = :rezept
+  SNAPBACK_EVENT = :result
   def backtracking(model, session=@session)
     fields = []
+    fields << @lookandfeel.lookup(:th_pointer_descr)
 		link = HtmlGrid::Link.new(:result, model, session, self)
     link.href = "javascript:history.back();"
     link.set_attribute('onClick', 'history.back();')
@@ -447,6 +465,12 @@ class Prescription < View::PrivateTemplate
 end
 class PrescriptionPrint < View::PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
+  def head(model, session=@session)
+    span = HtmlGrid::Span.new(model, session, self)
+    href = @lookandfeel._event_url(:rezept, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+    span.value = @lookandfeel.lookup(:print_of) << href
+    span
+  end
 end
     end
   end
