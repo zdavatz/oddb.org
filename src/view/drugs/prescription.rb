@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
 
 require 'htmlgrid/errormessage'
 require 'htmlgrid/infomessage'
@@ -132,6 +132,8 @@ class PrescriptionForm < View::Form
     define_method(name) do |model, session|
       input = HtmlGrid::InputText.new(name, model, session, self)
       input.set_attribute('size', 3)
+      input.set_attribute('onFocus', "if (this.value == '0') { value = '' };")
+      input.set_attribute('onBlur',  "if (this.value == '') { value = '0' };")
       input.label = false
       input.value = '0'
       input
@@ -269,36 +271,40 @@ end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1]  => :prescription_for,
-    [0,3]  => :quantity_value,
-    [1,3]  => :method_value,
-    [0,4]  => :timing_value,
-    [0,6]  => :term_value,
-    [0,8]  => 'prescription_comment',
-    [0,9]  => :comment_value,
-    [0,11] => 'prescription_signature',
+    [0,2]  => :date,
+    [0,4]  => :quantity_value,
+    [1,4]  => :method_value,
+    [0,5]  => :timing_value,
+    [0,7]  => :term_value,
+    [0,9]  => 'prescription_comment',
+    [0,10] => :comment_value,
+    [0,12] => 'prescription_signature',
   }
   CSS_MAP = {
-    [0,1]  => 'print',
-    [0,3]  => 'print',
-    [1,3]  => 'print',
+    [0,1]  => 'print bold',
+    [0,2]  => 'print',
     [0,4]  => 'print',
-    [0,6]  => 'print',
-    [0,8]  => 'print bold',
-    [0,9]  => 'print',
-    [0,11] => 'print bold'
+    [1,4]  => 'print',
+    [0,5]  => 'print',
+    [0,7]  => 'print',
+    [0,9]  => 'print bold',
+    [0,10] => 'print',
+    [0,12] => 'print bold'
   }
   COLSPAN_MAP = {
     [0,1]  => 5,
-    [1,3]  => 4,
-    [0,4]  => 5,
-    [0,8]  => 5,
+    [1,4]  => 4,
+    [0,5]  => 5,
     [0,9]  => 5,
-    [0,11] => 5,
+    [0,10] => 5,
+    [0,12] => 5,
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   def prescription_for(model, session=@session)
     fields = []
+    fields << HtmlGrid::LabelText.new(:prescription_for, model, session, self)
+    fields << '&nbsp;&nbsp;'
     %w[first_name family_name birth_day].each do |attr|
       key = "prescription_#{attr}".to_sym
       text = HtmlGrid::Value.new(key, model, session, self)
