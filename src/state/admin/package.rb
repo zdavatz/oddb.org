@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Package -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -51,6 +51,7 @@ module PackageMethods
 		sequence = @model.parent(@session.app) 
 		if(klass = resolve_state(sequence.pointer))
 			@session.app.delete(@model.pointer)
+      @model.odba_delete
 			klass.new(@session, sequence)
 		end
 	end
@@ -76,11 +77,6 @@ module PackageMethods
       end
       return self
     end
-		if(@model.is_a? Persistence::CreateItem)
-			@model.append(ikscode)
-			@model = @session.app.create(@model.pointer)
-      @model.odba_store
-		end
 		keys = [
       :ddd_dose,
 			:deductible,
@@ -120,7 +116,16 @@ module PackageMethods
       end
     }
 		unless(error?)
-      if(ikscode != @model.ikscd)
+      if(@model.is_a? Persistence::CreateItem)
+        @model.append(ikscode)
+        # NOTE
+        # Some non-connected packages remain in DB.
+        # We have to delete it for new creation.
+        if old = @model.pointer.resolve(@session.app) and old.odba_id
+          old.odba_delete
+        end
+        @model = @session.app.create(@model.pointer)
+      elsif(ikscode != @model.ikscd)
         @model.ikscd = ikscode
       end
       @model = @session.app.update(@model.pointer, input, unique_email)
