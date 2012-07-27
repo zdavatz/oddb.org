@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -9,6 +9,7 @@ require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
 require 'view/changelog'
+require 'view/drugs/photo'
 require 'model/shorten_path'
 require 'ostruct'
 
@@ -144,47 +145,6 @@ class FiChapterChooser < HtmlGrid::Composite
     link
   end
 end
-class FachinfoPhotoView < HtmlGrid::Div # as photo chapter
-  CSS_CLASS = ''
-  def init
-    super
-    @value = []
-    if model.has_key?(:src)
-      @value << _image_div(model)
-      @value << _text_link(model)
-    end
-  end
-  private
-  def _image_div(model)
-    image = HtmlGrid::Image.new(model[:name], @model, @session, self)
-    image.set_attribute('alt', model[:name])
-    image.set_attribute('src', model[:src])
-    div = HtmlGrid::Div.new(model, @session, self)
-    unless model[:link]
-      div.value = image
-    else
-      link = HtmlGrid::Link.new(model[:name], @model, @session, self)
-      link.href = model[:url]
-      link.value = image
-      link.target = '_blank'
-      div.value = link
-    end
-    div
-  end
-  def _text_link(model)
-    unless model[:link]
-      text = HtmlGrid::Value.new(model[:name], @model, @session, self)
-      text.value = model[:name]
-      text
-    else
-      link = HtmlGrid::Link.new(model[:name], @model, @session, self)
-      link.href = model[:url]
-      link.value = model[:name]
-      link.target = '_blank'
-      link
-    end
-  end
-end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
   COMPONENTS = {}
   DEFAULT_CLASS = View::Chapter
@@ -208,7 +168,7 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
       images = []
       css_class = @model.nil? ? 'small' : 'thumbnail'
       @container.photos.each_with_index { |photo, idx|
-        image = FachinfoPhotoView.new(photo, @session, self)
+        image = PackagePhotoView.new(photo, @session, self)
         image.css_class = css_class
         images << image
       }

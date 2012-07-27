@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 14.05.2012 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -126,20 +126,8 @@ module ODDB
       return false
     end
     def photos(image_size="Thumbnail")
-      # Flickr Image Size (max)
-      # "Square"    :  75 x  75 px
-      # "Thumbnail" : 100 x 100 px
-      # "Small"     : 180 x 240 px
-      # "Small320"  : 240 X 320 px
       image_size.capitalize!
       photos = []
-      config = ODDB.config
-      if config.flickr_api_key.empty? or
-         config.flickr_shared_secret.empty?
-        return nil
-      end
-      FlickRaw.api_key = config.flickr_api_key
-      FlickRaw.shared_secret = config.flickr_shared_secret
       threads = {}
       mutex = Mutex.new
       registrations.each do |reg|
@@ -147,34 +135,8 @@ module ODDB
           if id = pack.flickr_photo_id
             unless threads.keys.include?(id)
               threads[id] = Thread.new do
-                begin
-                  sizes = flickr.photos.getSizes :photo_id => id
-                  has_size = false
-                  fallback = nil
-                  src = nil
-                  sizes.each do |size|
-                    if size.label == image_size
-                      has_size = true
-                      src = size.source
-                    elsif size.label == 'Thumbnail'
-                      fallback = size.source
-                    end
-                  end
-                  if !has_size and fallback
-                    src = fallback
-                  end
-                  if src
-                    photo = {
-                      :name => pack.name_base,
-                      :url  => pack.photo_link,
-                      :link => !pack.disable_photo_forwarding,
-                      :src  => src,
-                    }
-                    mutex.synchronize do
-                      photos << photo
-                    end
-                  end
-                rescue FlickRaw::FailedResponse => e
+                mutex.synchronize do
+                  photos << pack.photo(image_size)
                 end
               end
             end

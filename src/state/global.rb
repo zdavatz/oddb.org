@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -52,6 +52,7 @@ require 'state/drugs/sequence'
 require 'state/drugs/sequences'
 require 'state/drugs/shorten_path'
 require 'state/drugs/narcotics'
+require 'state/drugs/photo'
 require 'state/doctors/init'
 require 'state/hospitals/init'
 require 'state/doctors/doctorlist'
@@ -191,6 +192,7 @@ module ODDB
           :minifi                 => State::Drugs::MiniFi,
           :password_lost          => State::Admin::PasswordLost,
           :patinfos               => State::Drugs::Patinfos,
+          :foto                   => State::Drugs::Photo,
           :narcotics              => State::Drugs::Narcotics,
           :plugin                 => State::User::Plugin,
           :passthru               => State::User::PassThru,
@@ -210,6 +212,7 @@ module ODDB
           [ :doctor ]                                                         => State::Doctors::Doctor,
           [ :hospital ]                                                       => State::Hospitals::Hospital,
           [ :fachinfo ]                                                       => State::Drugs::Fachinfo,
+          [ :foto ]                                                           => State::Drugs::Photo,
           [ :registration, :sequence, :package, :sl_entry, :limitation_text ] => State::Drugs::LimitationText,
           [ :migel_group, :subgroup, :product ]                               => State::Migel::Product,
           [ :migel_group, :subgroup]                                          => State::Migel::Subgroup,
@@ -478,6 +481,18 @@ module ODDB
 					State::PayPal::Return.new(@session, nil)
 				end
 			end
+      def foto
+        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
+          && (seqnr = @session.user_input(:seq)) \
+          && (ikscd = @session.user_input(:pack)) \
+          && (reg = @session.app.registration(iksnr)) \
+          && (seq = reg.sequence(seqnr)) \
+          && (package = seq.package(ikscd))
+          State::Drugs::Photo.new(@session, package)
+        else
+          Http404.new(@session, nil)
+        end
+      end
 			def powerlink
 				pointer = @session.user_input(:pointer)
 				unless(error?)

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1159,6 +1159,7 @@ Zeno Davatz
         :pharmacode               =>  'Pharmacode',
 				:phone_label							=>	'Telefon:',
 				:phone										=>	'Telefon:',
+        :photo_for                =>  'Photo f&uuml;r ',
         :photo_link               =>  'Link Produktfoto',
         :photo_link_short         =>  'F',
         :photo_link_title         =>  'Für Foto bitte klicken',
@@ -2584,6 +2585,7 @@ Zeno Davatz
         :sl_generic_type           =>  'Original/G&eacute;n&eacute;rique',
 				:phone_label							=>	'T&eacute;l&eacute;phone:',
 				:phone										=>	'T&eacute;l&eacute;phone:',
+        :photo_for                =>  'Photo pour ',
         :photo_link               =>  'Link Photo produit',
         :photo_link_short         =>  'P',
         :photo_link_title         =>  'Pour la Photo appuyer',
@@ -3832,6 +3834,7 @@ Zeno Davatz
         :sl_generic_type           =>  'Original/Generic',
 				:phone_label							=>	'Phone:',
 				:phone										=>	'Phone:',
+	:photo_for                =>  'Image for ',
         :photo_link               =>  'Image-Link',
         :photo_link_short         =>  'I',
         :photo_link_title         =>  'Please click for photo',

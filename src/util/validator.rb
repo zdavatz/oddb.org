@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -181,6 +181,7 @@ module ODDB
 			:feedbacks,
 			:fipi_offer_input,
 			:fipi_overview,
+      :foto, # photo
 			:galenic_form,
 			:galenic_group,
 			:galenic_groups,

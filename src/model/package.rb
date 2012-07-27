@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -71,7 +71,6 @@ module ODDB
       :preview_with_market_date => ["TrueClass","NilClass","FalseClass"],
       :generic_group_factor => ["NilClass","Float","Fixnum"],
       :photo_link => ["NilClass","String"],
-      :photo_ => ["NilClass","String"],
       :disable_ddd_price => ["TrueClass","NilClass","FalseClass"],
       :disable_photo_forwarding => ["TrueClass","NilClass","FalseClass"],
       :ddd_dose => "ODDB::Dose",
@@ -318,6 +317,51 @@ module ODDB
       end
     end
     alias :has_flickr_photo? :flickr_photo_id
+    def photo(image_size="Thumbnail")
+      # Flickr Image Size (max)
+      # "Square"    :  75 x  75 px
+      # "Thumbnail" : 100 x 100 px
+      # "Small"     : 180 x 240 px
+      # "Small320"  : 240 X 320 px
+      image_size.capitalize!
+      config = ODDB.config
+      if config.flickr_api_key.empty? or
+         config.flickr_shared_secret.empty?
+        return nil
+      end
+      FlickRaw.api_key       = config.flickr_api_key
+      FlickRaw.shared_secret = config.flickr_shared_secret
+      photo_hash = {}
+      if id = flickr_photo_id
+        begin
+          sizes = flickr.photos.getSizes :photo_id => id
+          has_size = false
+          fallback = nil
+          src = nil
+          sizes.each do |size|
+            if size.label == image_size
+              has_size = true
+              src = size.source
+            elsif size.label == 'Thumbnail'
+              fallback = size.source
+            end
+          end
+          if !has_size and fallback
+            src = fallback
+          end
+          if src
+            photo_hash = {
+              :name => name_base,
+              :url  => photo_link,
+              :link => !disable_photo_forwarding,
+              :src  => src,
+            }
+          end
+        rescue FlickRaw::FailedResponse => e
+        end
+      end
+      photo_hash
+    end
     def ikscd=(ikscd)
       if(/^[0-9]{3}$/u.match(ikscd))
         pacs = @sequence.packages
