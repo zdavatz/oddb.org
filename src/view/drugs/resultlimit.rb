@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultLimit -- oddb -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultLimit -- oddb -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultLimit -- oddb -- 26.07.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'
@@ -63,6 +63,9 @@ class ResultLimitList < HtmlGrid::List
 			super
 		end
 	end
+  def prescription(model, session)
+    super(model, session, 'list important')
+  end
 	def fachinfo(model, session)
 		super(model, session, 'square important infos')
 	end	

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -406,7 +406,7 @@ module ODDB
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
 			end
-      def prescription(model, session=@session, css='infos') # rezept -> prescription
+      def prescription(model, session=@session, css='important') # rezept -> prescription
         link = HtmlGrid::Link.new(:rezept, model, session, self)
         link.css_class = css
         link.set_attribute('title', @lookandfeel.lookup(:prescription))

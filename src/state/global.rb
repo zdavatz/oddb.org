@@ -199,6 +199,7 @@ module ODDB
           :paypal_thanks          => State::User::PayPalThanks,
           :price_history          => State::Drugs::PriceHistory,
           :recent_registrations   => State::Drugs::RecentRegs,
+          :rezept                 => State::Drugs::Prescription,
           :sequences              => State::Drugs::Sequences,
           :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,

@@ -450,9 +450,17 @@ class Prescription < View::PrivateTemplate
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
-		link = HtmlGrid::Link.new(:result, model, session, self)
-    link.href = "javascript:history.back();"
-    link.set_attribute('onClick', 'history.back();')
+    link = HtmlGrid::Link.new(:result, model, @session, self)
+    link.css_class = "list"
+    query = @session.persistent_user_input(:search_query)
+    if query and !query.is_a?(SBSM::InvalidDataError)
+      args = [
+        :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
+        @session.persistent_user_input(:search_type) || 'st_oddb',
+      ]
+      link.href = @lookandfeel._event_url(:search, args)
+      link.value = @lookandfeel.lookup(:result)
+    end
     fields << link
     fields << '&nbsp;-&nbsp;'
     title = @lookandfeel.lookup(:prescription_title)
