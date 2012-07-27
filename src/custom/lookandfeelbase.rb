@@ -1309,7 +1309,7 @@ Zeno Davatz
 				:query_limit_thanks1			=>	'Falls Sie Fragen, Bemerkungen oder Verbesserungsvorschläge haben senden Sie ein E-Mail an ',
 				:query_limit_thanks2			=>	' oder rufen +41 43 540 05 50 an.',
 				:query_limit_welcome			=>	"Geschätzer Kunde, willkommen auf ODDB.org",
-        :prescription                  =>  'rezept',
+        :prescription                  =>  'Rezept',
         :prescription_title            =>  'Rezepterstellung',
         :prescription_for              =>  'Rezept f&uuml;r: ',
         :prescription_first_name       =>  'Vorname',

@@ -89,12 +89,13 @@ module ODDB
         if url = model.photo_link and !url.to_s.empty?
           photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
           if model.has_flickr_photo?
-            args = [
-              :reg,  model.iksnr,
-              :seq,  model.seqnr,
-              :pack, model.ikscd,
-            ]
-            photo.href = @lookandfeel._event_url(:foto, args)
+            if model.has_fachinfo?
+              args = [:reg, model.iksnr, :chapter, :photos]
+              photo.href = @lookandfeel._event_url(:fachinfo, args)
+            else
+              args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
+              photo.href = @lookandfeel._event_url(:foto, args)
+            end
           else
             photo.href = url
           end
