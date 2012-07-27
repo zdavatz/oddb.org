@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -12,7 +12,8 @@ module ODDB
 	module View
 		module Drugs
 class CsvResult < HtmlGrid::Component
-  attr_reader :duplicates, :counts, :total, :divisions
+  attr_reader :duplicates, :counts, :total,
+              :divisions, :flickr_photos
 	CSV_KEYS = [
 		:rectype,
 		:barcode,
@@ -73,6 +74,12 @@ class CsvResult < HtmlGrid::Component
       'openable'    => 0,
       'notes'       => 0,
       'source'      => 0,
+    }
+    @flickr_photos = {
+      'barcode'         => 0,
+      'flickr_photo_id' => 0,
+      'iksnr'           => 0,
+      'seqnr'           => 0,
     }
     super
   end
@@ -367,6 +374,21 @@ class CsvResult < HtmlGrid::Component
           @total += 1
           result.push(line)
         }
+      }
+    elsif target == :flickr_photo
+      @_counted = {} # for reg and seq
+      @model.each { |pack|
+        line = keys.collect { |key|
+          value = pack.send(key)
+          uniq_key = (key == :seqnr) ? pack.iksnr + value : value
+          unless @_counted[uniq_key]
+            @_counted[uniq_key] = true
+            @flickr_photos[key.to_s] += 1
+          end
+          value
+        }
+        @total += 1
+        result.push(line)
       }
     else # atc_class
       @model.each { |atc|

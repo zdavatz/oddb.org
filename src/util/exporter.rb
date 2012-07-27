@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -349,6 +349,27 @@ module ODDB
             path => ['text/csv', 'UTF-8']
           }
           log.notify('Teilbarkeit Export')
+        end
+      end
+      EXPORT_SERVER.clear
+      sleep(30)
+    end
+    def export_flickr_photo_csv
+      safe_export 'Flickr Ean Export' do
+        today = Date.today
+        plug = CsvExportPlugin.new(@app)
+        plug.export_flickr_photo
+        if report = plug.report
+          log = Log.new(today)
+          log.date_str = today.strftime("%d.%m.%Y")
+          log.report = report
+          file = today.strftime("flickr_ean_export.%Y-%m-%d.csv")
+          dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+          path = File.join(dir, file)
+          log.files = {
+            path => ['text/csv', 'UTF-8']
+          }
+          log.notify('Flickr Ean Export')
         end
       end
       EXPORT_SERVER.clear

@@ -1163,6 +1163,7 @@ Zeno Davatz
         :photo_link               =>  'Link Produktfoto',
         :photo_link_short         =>  'F',
         :photo_link_title         =>  'Für Foto bitte klicken',
+        :th_flickr_photo_id       =>  'Flickr-ID',
 				:phytotherapy							=>	'Phytotherapeutische Arzneimittel',
         :pi_name                  =>  'Name',
         :pi_pregnancy             =>  'Schwangerschaft',

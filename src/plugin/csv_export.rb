@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -144,6 +144,37 @@ module ODDB
       puts $!.backtrace
       raise
     end
+    def export_flickr_photo
+      recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
+      export_name = 'flickr_ean_export'
+      keys = [
+        :flickr_photo_id, :barcode, :iksnr, :seqnr,
+      ]
+      session = SessionStub.new(@app)
+      session.language = 'de'
+      session.lookandfeel = LookandfeelBase.new(session)
+      # not use atc_class
+      model = @app.packages.values.select { |pack| pack.has_flickr_photo? }
+      name = "#{export_name}.csv"
+      @file_path = path = File.join(EXPORT_DIR, name)
+      exporter = View::Drugs::CsvResult.new(model, session)
+      encoding = 'UTF-8'
+      exporter.to_csv_file(keys, path, :packages, encoding, :flickr_photo)
+      @total = exporter.total
+      @counts = exporter.flickr_photos
+      EXPORT_SERVER.compress(EXPORT_DIR, name)
+      backup = Date.today.strftime("#{export_name}.%Y-%m-%d.csv")
+      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_path = File.join(backup_dir, backup)
+      unless(File.exist? backup_path)
+        FileUtils.mkdir_p(backup_dir)
+      end
+      FileUtils.cp(path, backup_path)
+    rescue
+      puts $!.message
+      puts $!.backtrace
+      raise
+    end
     def log_info
       hash = super
       if @file_path
@@ -170,9 +201,15 @@ module ODDB
       if @counts
         @counts.sort.collect do |key, val|
           case key
+          # teilbarkeit
           when /^notes$/    ; key = 'has_notes'
           when /^openable$/ ; key = 'can be opened'
           when /^source$/   ; key = 'have a source'
+          # flickr
+          when /^barcode$/  ; key = 'EAN-Codes'
+          when /^flickr_photo_id$/ ; key = 'Flickr-IDs'
+          when /^iksnr$/    ; key = 'Registration Numbers'
+          when /^seqnr$/    ; key = 'Sequence Numbers'
           end
           report << sprintf("%-32s %5i\n", "#{key}:", val)
         end
