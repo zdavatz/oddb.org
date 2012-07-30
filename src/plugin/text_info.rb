@@ -561,7 +561,7 @@ module ODDB
       news.keys.each do |type|
         if update_name_list = true_news(news[type], old_news)
           import_name(update_name_list, agent)
-          log_news news
+          log_news news[type]
           postprocess
           updated.concat update_name_list
         end
