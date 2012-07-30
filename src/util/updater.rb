@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 30.07.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -191,7 +191,7 @@ module ODDB
       }
 		end
     def run_random
-      update_fachinfo
+      update_textinfo_news
     end
 		def update_analysis
 			klass = AnalysisPlugin
@@ -273,11 +273,7 @@ module ODDB
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
     def update_fachinfo(*iksnrs)
-      if iksnrs.empty?
-        update_textinfo_news
-      else
-        update_textinfos *iksnrs
-      end
+      update_textinfos *iksnrs
     end
     def update_patinfo_only *companies
       update_notify_simple TextInfoPlugin,

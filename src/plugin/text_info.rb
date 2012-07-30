@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 28.06.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 30.07.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -283,19 +283,30 @@ module ODDB
     rescue
       []
     end
-    def fachinfo_news agent=init_agent
+    def textinfo_news agent=init_agent
       url = ODDB.config.text_info_newssource \
         or raise 'please configure ODDB.config.text_info_newssource to proceed'
-      name_list = []
+      names = {
+        :fi => [],
+        :pi => [],
+      }
       page = agent.get url
-      list = page.at('div[id="blockContentInner"]/p')
-      if list
-        list.to_html.split("\<br\>").each do |element|
-          name = element.delete("\<p\>").delete("\<\/p\>").chomp.strip
-          name_list << name
+      list = page.search('.//rss/channel/item')
+      unless list.empty?
+        list.each do |node|
+          type = nil
+          node.children.each do |element|
+            if element.text? and element.text =~ /MonType=(fi|pi)$/
+              type = $1.downcase.to_sym
+              break
+            end
+          end
+          if type
+            names[type] << node.at('title').content
+          end
         end
       end
-      return name_list.sort
+      return names
     end
     def identify_eventtargets page, ptrn
       eventtargets = {}
@@ -544,14 +555,18 @@ module ODDB
       end
     end
     def import_news agent=init_agent
-      old_news = old_fachinfo_news
-      news = fachinfo_news(agent)
-      if update_name_list = true_news(news, old_news)
-        import_name(update_name_list, agent)
-        log_news news
-        postprocess
+      updated = []
+      old_news = old_textinfo_news
+      news = textinfo_news(agent)
+      news.keys.each do |type|
+        if update_name_list = true_news(news[type], old_news)
+          import_name(update_name_list, agent)
+          log_news news
+          postprocess
+          updated.concat update_name_list
+        end
       end
-      return !update_name_list.empty?
+      return !updated.empty?
     end
     def import_products page, agent, target=:both
       form = page.form_with :name => /frmResult(Produkte|hForm)/
@@ -588,7 +603,7 @@ module ODDB
         fh.print lines.join("\n")
       end
     end
-    def old_fachinfo_news
+    def old_textinfo_news
       begin
         File.readlines(@news_log).collect do |line|
           line.strip
