@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 31.07.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1551,7 +1551,7 @@ module ODDB
     end
 		def reset
 			@random_updater.kill if(@random_updater.is_a? Thread)
-      if RUN_UPDATER
+      if RUN_UPDATER and @process == :user
         @random_updater = run_random_updater
       end
 			@mutex.synchronize {
