@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 31.07.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 01.08.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1369,7 +1369,7 @@ module ODDB
 		UPDATE_HOUR = 9
     MEMORY_LIMIT = 20480
 		RUN_CLEANER = true
-		RUN_UPDATER = true
+		RUN_UPDATER = false
 		SESSION = Session
 		UNKNOWN_USER = UnknownUser
 		UPDATE_INTERVAL = 24*60*60
