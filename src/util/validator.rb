@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -126,6 +126,7 @@ module ODDB
 			:address_suggestion,
 			:ajax,
 			:ajax_autofill,
+      :ajax_add_drug,
       :ajax_create_active_agent,
       :ajax_create_composition,
       :ajax_create_fachinfo_link,
@@ -134,6 +135,7 @@ module ODDB
       :ajax_delete_composition,
       :ajax_delete_fachinfo_link,
       :ajax_delete_part,
+      :ajax_delete_drug,
 			:ajax_ddd_price,
 			:ajax_matches,
 			:ajax_swissmedic_cat,

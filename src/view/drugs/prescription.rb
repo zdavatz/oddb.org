@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
 
 require 'htmlgrid/errormessage'
 require 'htmlgrid/infomessage'
@@ -10,7 +10,9 @@ require 'htmlgrid/inputtext'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
 require 'view/drugs/privatetemplate'
+require 'view/drugs/centeredsearchform'
 require 'view/additional_information'
+require 'view/searchbar'
 require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
@@ -175,29 +177,123 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     fields
   end
 end
-class PrescriptionForm < View::Form
-  include HtmlGrid::InfoMessage
+class PrescriptionDrugsHeader < HtmlGrid::List
   include View::AdditionalInformation
   COMPONENTS = {
+    [0,0] => :fachinfo,
+    [1,0] => :drug,
+    [2,0] => :delete,
+  }
+  CSS_MAP = {
+    [0,0] => 'small',
+    [1,0] => 'list',
+    [2,0] => 'small',
+  }
+  CSS_ID = 'drugs'
+  CSS_CLASS = 'compose'
+  OMIT_HEADER = true
+  SORT_DEFAULT = nil
+  BACKGROUND_SUFFIX = ''
+  def init
+    if drugs = @session.persistent_user_input(:drugs)
+      @model = drugs.values.unshift(@model)
+    else
+      @model = [@model]
+    end
+    super
+  end
+  def fachinfo(model, session=@session)
+    if fi = super(model, session, 'square bold infos')
+      fi.set_attribute('target', '_blank')
+      fi
+    end
+  end
+  def drug(model, session=@session)
+    div = HtmlGrid::Div.new(model, @session, self)
+    div.set_attribute('class', 'drug')
+    div.value = []
+    div.value << model.name
+    if price = model.price_public
+      div.value << '&nbsp;-&nbsp;'
+      div.value << price.to_s
+    end
+    if company = model.company_name
+      div.value << '&nbsp;-&nbsp;'
+      div.value << company
+    end
+    div
+  end
+  def delete(model, session=@session)
+    if(@model.length > 1 and model.barcode != @model.first.barcode)
+      link = HtmlGrid::Link.new(:minus, model, session, self)
+      link.set_attribute('title', @lookandfeel.lookup(:delete))
+      link.css_class = 'delete square'
+      args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :pack, @session.state.model.ikscd, :ean13, model.barcode ]
+      url = @session.lookandfeel.event_url(:ajax_delete_drug, args)
+      link.onclick = "replace_element('#{css_id}', '#{url}');"
+      link
+    end
+  end
+end
+class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::CenteredComperSearchForm
+  attr_reader :index_name
+  EVENT = :compare
+  FORM_METHOD = 'POST'
+  COMPONENTS = {
+    [0,0] => :searchbar,
+  }
+  SYMBOL_MAP = {
+    :searchbar => View::PrescriptionDrugSearchBar,
+  }
+  CSS_MAP = {
+    [0,0] => 'searchbar',
+  }
+  def init
+    super
+    self.onload = "document.getElementById('searchbar').focus();"
+    @index_name = 'oddb_package_name_with_size_and_ean13'
+    @additional_javascripts = []
+  end
+  def javascripts(context)
+    scripts = ''
+    @additional_javascripts.each do |script|
+      args = {
+        'type'     => 'text/javascript',
+        'language' => 'JavaScript',
+      }
+      scripts << context.script(args) do script end
+    end
+    scripts
+  end
+  def to_html(context)
+    javascripts(context).to_s << super
+  end
+end
+class PrescriptionForm < View::Form
+  include HtmlGrid::InfoMessage
+  COMPONENTS = {
     [0,0]  => :prescription_for,
-    [0,1]  => :subheader,
-    [0,2]  => View::Drugs::PrescriptionInnerForm,
-    [0,12] => :print_button,
-    [0,13] => :prescription_notes,
+    [0,1]  => View::Drugs::PrescriptionDrugsHeader,
+    [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
+    [0,3]  => View::Drugs::PrescriptionInnerForm,
+    [0,13] => :print_button,
+    [0,14] => :prescription_notes,
   }
   CSS_MAP = {
     [0,0]  => 'th',
     [0,1]  => 'subheading',
     [0,2]  => 'list',
-    [0,12] => 'button',
-    [0,13] => 'list',
+    [0,3]  => 'list',
+    [0,13] => 'button',
+    [0,14] => 'list',
   }
   COLSPAN_MAP = {
     [0,0]  => 3,
     [0,1]  => 3,
     [0,2]  => 3,
-    [0,12] => 3,
+    [0,3]  => 3,
     [0,13] => 3,
+    [0,14] => 3,
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
@@ -233,20 +329,6 @@ class PrescriptionForm < View::Form
     fields << radio
     fields << '&nbsp;'
     fields << @lookandfeel.lookup(:prescription_sex_m)
-    fields
-  end
-  def subheader(model, session)
-    fields = []
-    if fi = fachinfo(model, session, 'square bold infos')
-      fi.set_attribute('target', '_blank')
-      fields << fi
-      fields << '&nbsp;'
-    end
-    fields << model.name
-    fields << '&nbsp;-&nbsp;'
-    fields << model.price_public.to_s
-    fields << '&nbsp;-&nbsp;'
-    fields << model.company_name
     fields
   end
   def hidden_fields(context)
@@ -430,15 +512,29 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     "#{@lookandfeel.lookup(:date)}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
   end
   def name(model, session=@session)
-    span = HtmlGrid::Span.new(model, session, self)
-    span.value = ''
-    span.value << model.name
-    span.value << '&nbsp;-&nbsp;'
-    span.value << model.price_public.to_s
-    span.value << '&nbsp;-&nbsp;'
-    span.value << model.company_name
-    span.set_attribute('class', 'bold')
-    span
+    if drugs = session.persistent_user_input(:drugs)
+      packages = drugs.values.unshift(model)
+    else
+      packages = [model]
+    end
+    fields = []
+    packages.each do |pack|
+      span = HtmlGrid::Span.new(pack, session, self)
+      span.value = ''
+      span.value << pack.name
+      if price = pack.price_public
+        span.value << '&nbsp;-&nbsp;'
+        span.value << price.to_s
+      end
+      if company = pack.company_name
+        span.value << '&nbsp;-&nbsp;'
+        span.value << company
+      end
+      span.set_attribute('class', 'bold')
+      fields << span
+      fields << "<br/>"
+    end
+    fields
   end
   def document(model, session=@session)
     self::class::INNER_COMPOSITE.new(model, session, self)
@@ -447,6 +543,7 @@ end
 class Prescription < View::PrivateTemplate
   CONTENT = View::Drugs::PrescriptionComposite
   SNAPBACK_EVENT = :result
+  JAVASCRIPTS = ['admin']
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)

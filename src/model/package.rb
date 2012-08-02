@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -392,6 +392,9 @@ module ODDB
 		end
     def name_with_size
       [name_base, size].join(', ')
+    end
+    def name_with_size_and_ean13
+      [name_with_size, barcode].join(', ')
     end
 		def narcotic?
       @bm_flag

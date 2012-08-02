@@ -487,6 +487,10 @@ td.search {
 	text-align : right;
 	padding: 0px;
 }
+td.searchbar {
+  text-align: left;
+	padding: 2px 0px;
+}
 td.center{
 	text-align : center;
 }
@@ -708,6 +712,10 @@ div.just-medical {
 	padding : 4px;
 	text-align : left;
 	text-decoration : none;
+}
+div.drug {
+  height: 20px;
+  padding: 2px;
 }
 div.long-text {
 	max-width: 400px;
@@ -973,16 +981,23 @@ a.footnote {
   padding: 4px;
 	white-space: nowrap;
 }
-div#widget_searchbar {
+div#widget_searchbar,
+div#widget_prescription_searchbar {
   padding: 2px;
   border: 1px solid ButtonShadow;
   width: 260px;
 }
-#searchbar_popup {
+div#widget_prescription_searchbar {
+  width: 400px;
+}
+#searchbar_popup,
+#prescription_searchbar_popup {
   border: 1px solid ButtonShadow;
 }
 #searchbar_popup .dijitMenuItemHover,
-#searchbar_popup .dijitMenuItemSelected {
+#searchbar_popup .dijitMenuItemSelected,
+#prescription_searchbar_popup .dijitMenuItemHover,
+#prescription_searchbar_popup .dijitMenuItemSelected {
 	background-color: #ccff99;
   color: black;
 }
