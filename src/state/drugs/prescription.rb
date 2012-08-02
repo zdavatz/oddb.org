@@ -9,8 +9,12 @@ module ODDB
   module State
     module Drugs
 class AjaxDrugs < Global
-  VOLATILE = true
   VIEW = View::Drugs::PrescriptionDrugsHeader
+  VOLATILE = true
+end
+class PrescriptionCsvExport < State::Drugs::Global
+  VIEW = View::Drugs::PrescriptionCsv
+  VOLATILE = true
 end
 class Prescription < State::Drugs::Global
   DIRECT_EVENT = :rezept
@@ -22,6 +26,9 @@ class Prescription < State::Drugs::Global
       @session.set_persistent_user_input(:drugs, {})
     end
     super
+  end
+  def export_csv
+    PrescriptionCsvExport.new(@session, @model)
   end
   def ajax_add_drug
     check_model

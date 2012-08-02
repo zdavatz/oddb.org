@@ -2,6 +2,8 @@
 # encoding: utf-8
 # ODDB::View::Drugs::Prescription -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
 
+require 'csv'
+require 'htmlentities'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/infomessage'
 require 'htmlgrid/select'
@@ -9,6 +11,7 @@ require 'htmlgrid/textarea'
 require 'htmlgrid/inputtext'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
+require 'htmlgrid/component'
 require 'view/drugs/privatetemplate'
 require 'view/drugs/centeredsearchform'
 require 'view/additional_information'
@@ -276,7 +279,7 @@ class PrescriptionForm < View::Form
     [0,1]  => View::Drugs::PrescriptionDrugsHeader,
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
     [0,3]  => View::Drugs::PrescriptionInnerForm,
-    [0,13] => :print_button,
+    [0,13] => :buttons,
     [0,14] => :prescription_notes,
   }
   CSS_MAP = {
@@ -340,8 +343,12 @@ class PrescriptionForm < View::Form
     hidden << context.hidden('prescription', true)
     hidden
   end
-  def print_button(model, session)
-    post_event_button(:print)
+  def buttons(model, session)
+    buttons = []
+    buttons << post_event_button(:print)
+    buttons << '&nbsp;'
+    buttons << post_event_button(:export_csv)
+    buttons
   end
   private
   def init
@@ -575,6 +582,121 @@ class PrescriptionPrint < View::PrintTemplate
     span.value = @lookandfeel.lookup(:print_of) +
       @lookandfeel._event_url(:rezept, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
     span
+  end
+end
+class PrescriptionCsv < HtmlGrid::Component
+  COMPONENTS = [ # of package
+    :barcode,
+    :name_with_size,
+    :price_public,
+    :company_name,
+  ]
+  def init
+    super
+    @coder = HTMLEntities.new
+  end
+  def http_headers
+    prescription_for = []
+    %w[first_name family_name birth_day].each do |attr|
+      prescription_for << user_input(attr)
+    end
+    name = @lookandfeel.lookup(:prescription).dup + '_'
+    unless prescription_for.empty?
+      name << prescription_for.join('_').gsub(/[\s]+/u, '_')
+    else
+      name << Date.today.strftime("%d.%m.%Y")
+    end
+    {
+      'Content-Type'        => 'text/csv',
+      'Content-Disposition' => "attachment;filename=#{name}.csv",
+    }
+  end
+  def to_csv(keys)
+    result = []
+    type = (user_input(:sex) == '1' ? 'w' : 'm')
+    result << [
+      user_input(:first_name),
+      user_input(:family_name),
+      user_input(:birth_day),
+      lookup("sex_#{type}")
+    ]
+    result << [Date.today.strftime("%d.%m.%Y")]
+    if drugs = @session.persistent_user_input(:drugs)
+      packages = drugs.values.unshift(model)
+    else
+      packages = [model]
+    end
+    packages.each do |pack|
+      result << keys.collect do |key|
+        value = if(self.respond_to?(key))
+          self.send(key, pack)
+        else
+          pack.send(key)
+        end.to_s
+        value.empty? ? nil : value
+      end
+    end
+    result << []
+    [:morning, :noon, :evening, :night].each do |at_time|
+      key = "quantity_#{at_time}"
+      if quantity = user_input(key) and quantity =~ /^[0-9]+$/ and !quantity.to_i.zero?
+        text = lookup(key) + ' '
+        text << quantity.to_s
+        result << [text]
+      end
+    end
+    result << [] unless result.last.empty?
+    key = case user_input(:timing)
+    when '1'; :timing_before_meal;
+    when '2'; :timing_with_meal;
+    when '3'; :timing_after_meal;
+    end
+    result << [lookup(key)] if key
+    result << [] unless result.last.empty?
+    [:as_necessary, :regulaly].each do |method|
+      key = "method_#{method}"
+      if user_input(key)
+        result << [lookup(key)]
+      end
+    end
+    result << [] unless result.last.empty?
+    key = case user_input(:term)
+    when '1'; :term_once;
+    when '2'; :term_repetition;
+    when '3'; :term_per_month;
+    end
+    if key
+      text = lookup(key)
+      if key.to_s =~ /repetition/ and repetition = user_input(:repetition)
+        text << ' '
+        text << repetition
+      elsif key.to_s =~ /month/ and month = user_input(:per_month)
+        text << ' '
+        text << month
+      end
+      result << [text]
+    end
+    csv = ''
+    result.collect do |line|
+      csv << CSV.generate_line(line, {:col_sep => ';'})
+    end
+    csv
+  end
+  def to_html(context)
+    to_csv(COMPONENTS)
+  end
+  private
+  def user_input(attr)
+    key = "prescription_#{attr}".to_sym
+    if input = @session.user_input(key) and !input.empty?
+      @coder.decode(input).gsub(/;/, ' ')
+    end
+  end
+  def lookup(attr)
+    key = "prescription_#{attr}".to_sym
+    if value = @lookandfeel.lookup(key)
+      @coder.decode(value)
+    end
   end
 end
     end
