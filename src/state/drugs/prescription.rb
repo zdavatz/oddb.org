@@ -13,9 +13,16 @@ class AjaxDrugs < Global
   VIEW = View::Drugs::PrescriptionDrugsHeader
 end
 class Prescription < State::Drugs::Global
-  DIRECT_EVENT = :prescription
+  DIRECT_EVENT = :rezept
   VIEW = View::Drugs::Prescription
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
+  def init
+    if @session.event.to_sym == self.class::DIRECT_EVENT and
+       drugs = @session.persistent_user_input(:drugs) # init
+      @session.set_persistent_user_input(:drugs, {})
+    end
+    super
+  end
   def ajax_add_drug
     check_model
     if ean13 = @session.persistent_user_input(:ean13) and
