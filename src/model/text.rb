@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Text -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
+# ODDB::Text -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
 # ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
@@ -210,7 +210,7 @@ module ODDB
       def text
         text = ''
         @contents.map do |content|
-          tetx << content.text if content.is_a? Paragraph
+          text << content.text if content.is_a? Paragraph
         end
         text
       end

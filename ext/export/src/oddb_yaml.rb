@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbYaml -- oddb.org -- 22.06.2012 -- yasaka@ywesee.com
+# ODDB::OddbYaml -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -83,6 +83,24 @@ module ODDB
       include ODDB::OddbYaml
       EXPORT_PROPERTIES = [
         '@rows'
+      ]
+    end
+    class Cell
+      include ODDB::OddbYaml
+      EXPORT_PROPERTIES = [
+        '@col_span',
+        '@row_span',
+        '@formats',
+        '@text',
+        '@preformatted',
+      ]
+    end
+    class MultiCell
+      include ODDB::OddbYaml
+      EXPORT_PROPERTIES = [
+        '@col_span',
+        '@contents',
+        '@row_span',
       ]
     end
 	end
