@@ -981,6 +981,9 @@ a.footnote {
   padding: 4px;
 	white-space: nowrap;
 }
+form#prescription_form label {
+  font-weight: normal;
+}
 div#widget_searchbar,
 div#widget_prescription_searchbar {
   padding: 2px;

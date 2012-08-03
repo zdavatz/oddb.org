@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -137,6 +137,7 @@ Zeno Davatz
 				:address									=>	'Strasse',
 				:address_subject					=>	'Addressänderungsvorschlag für:',
 				:address_type							=>	'Adress-Art',
+				:add_drug                 =>  'Medikament hinzufügen',
 				:add_to_interaction				=>	'<span style="color:red;">Bitte NAME anklicken</span>, um das gew&uuml;nschte Produkt/Substanz zu ihrem Interaktionskorb hinzuzuf&uuml;gen.',
         :adl_stanza               =>  '(direkt im iPhone-Browser oder im iPhone-Mail anklicken!)',
 				:admin										=>	'Admin',
@@ -1338,8 +1339,7 @@ Zeno Davatz
         :prescription_non_dispensation =>  'dieses Medikament noch nicht zustellen (non disp)',
         :prescription_format_paper     =>  'Papier',
         :prescription_format_shipping  =>  'Versand (der Patient w&uuml;nscht Bezug &uuml;ber MediService.)',
-        :prescription_notes            =>  'Diese Angaben werden NICHT bei ch.oddb.org gespeichert sondern sind
-nur auf dem Ausdruck zur Verfügung. Zusätzlich können die Angaben als CSV-Datei zum Import ins lokale System runtergeladen werden.',
+        :prescription_notes            =>  'Diese Angaben werden NICHT bei ch.oddb.org gespeichert sondern sind nur auf dem Ausdruck zur Verfügung. Zusätzlich können die Angaben als CSV-Datei zum Import ins lokale System runtergeladen werden.',
 	:prescription_signature        =>  'Stempel, Unterschrift Arzt (auf Ausdruck)',
 				:recent_registrations			=>	'Neuregistrierungen',
 				:recommend								=>	'Empfehlung',

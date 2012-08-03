@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'htmlentities'
@@ -38,7 +38,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     [0,8]  => :prescription_term_fields,
     [0,10] => 'prescription_comment',
     [0,11] => :prescription_comment,
-    [0,13] => :prescription_signature,
+    [0,13] => 'prescription_signature',
   }
   CSS_MAP = {
     [0,0]  => 'list bold',
@@ -54,7 +54,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     [0,8]  => 'list top',
     [0,10] => 'list bold',
     [0,11] => 'list',
-    [0,13] => 'list',
+    [0,13] => 'list bold',
   }
   COLSPAN_MAP = {
     [0,4]  => 6,
@@ -65,9 +65,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     [0,13] => 6,
   }
   SYMBOL_MAP = {
-    :prescription_comment   => HtmlGrid::Textarea,
-    :prescription_generic   => HtmlGrid::LabelText,
-    :prescription_signature => HtmlGrid::LabelText,
+    :prescription_comment => HtmlGrid::Textarea,
   }
   LABELS = true
   def self.define_quantity_method(key)
@@ -85,45 +83,51 @@ class PrescriptionInnerForm < HtmlGrid::Composite
   %w[morning noon evening night].each do |key|
     define_quantity_method(key)
   end
-  def prescription_method_fields(model, session)
-    fields = []
-    checkbox = HtmlGrid::InputCheckbox.new(:prescription_method_as_necessary, model, session, self)
-    fields << checkbox
-    fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_method_as_necessary)
-    fields << '<br/>'
-    checkbox = HtmlGrid::InputCheckbox.new(:prescription_method_regulaly, model, session, self)
-    fields << checkbox
-    fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_method_regulaly)
-    fields
-  end
   def prescription_timing_fields(model, session)
     fields = []
     radio = HtmlGrid::InputRadio.new(:prescription_timing, model, session, self)
     radio.value = '1' 
     radio.set_attribute('checked', true)
+    radio.set_attribute('id', 'prescription_timing_before_meal')
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_timing_before_meal)
+    fields << label_for(:prescription_timing_before_meal)
     fields << '<br/>'
     radio = HtmlGrid::InputRadio.new(:prescription_timing, model, session, self)
     radio.value = '2' 
+    radio.set_attribute('id', 'prescription_timing_with_meal')
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_timing_with_meal)
+    fields << label_for(:prescription_timing_with_meal)
     fields << '<br/>'
     radio = HtmlGrid::InputRadio.new(:prescription_timing, model, session, self)
     radio.value = '3' 
+    radio.set_attribute('id', 'prescription_timing_after_meal')
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_timing_after_meal)
+    fields << label_for(:prescription_timing_after_meal)
+    fields
+  end
+  def prescription_method_fields(model, session)
+    fields = []
+    checkbox = HtmlGrid::InputCheckbox.new(:prescription_method_as_necessary, model, session, self)
+    checkbox.set_attribute('id', 'prescription_method_as_necessary')
+    fields << checkbox
+    fields << '&nbsp;'
+    fields << label_for(:prescription_method_as_necessary)
+    fields << '<br/>'
+    checkbox = HtmlGrid::InputCheckbox.new(:prescription_method_regulaly, model, session, self)
+    checkbox.set_attribute('id', 'prescription_method_regulaly')
+    fields << checkbox
+    fields << '&nbsp;'
+    fields << label_for(:prescription_method_regulaly)
     fields
   end
   def prescription_term_fields(model, session)
     fields = []
     radio = HtmlGrid::InputRadio.new(:prescription_term, model, session, self)
     radio.value = '1' 
+    radio.set_attribute('id', 'prescription_term_once')
     js = <<-JS
     var repetition = document.getElementById('repetition')
     var month = document.getElementById('per_month')
@@ -136,10 +140,11 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     radio.set_attribute('onClick', js)
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_term_once)
+    fields << label_for(:prescription_term_once)
     fields << '<br/>'
     radio = HtmlGrid::InputRadio.new(:prescription_term, model, session, self)
     radio.value = '2' 
+    radio.set_attribute('id', 'prescription_term_repetition')
     js = <<-JS
     var repetition = document.getElementById('repetition')
     var month = document.getElementById('per_month')
@@ -150,7 +155,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     radio.set_attribute('onClick', js)
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_term_repetition)
+    fields << label_for(:prescription_term_repetition)
     select = HtmlGrid::Select.new(:prescription_repetition, model, @session, self)
     select.valid_values = (1..12).to_a
     select.set_attribute('id', 'repetition')
@@ -160,6 +165,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     fields << '<br/>'
     radio = HtmlGrid::InputRadio.new(:prescription_term, model, session, self)
     radio.value = '3' 
+    radio.set_attribute('id', 'prescription_term_per_month')
     js = <<-JS
     var repetition = document.getElementById('repetition')
     var month = document.getElementById('per_month')
@@ -170,7 +176,7 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     radio.set_attribute('onClick', js)
     fields << radio
     fields << '&nbsp;'
-    fields << @lookandfeel.lookup(:prescription_term_per_month)
+    fields << label_for(:prescription_term_per_month)
     select = HtmlGrid::Select.new(:prescription_per_month, model, @session, self)
     select.valid_values = (1..12).to_a
     select.set_attribute('id', 'per_month')
@@ -178,6 +184,11 @@ class PrescriptionInnerForm < HtmlGrid::Composite
     fields << '&nbsp;'
     fields << select
     fields
+  end
+  private
+  def label_for(key)
+    text = HtmlGrid::LabelText.new(key, @model, @session, self)
+    HtmlGrid::Label.new(text, @session)
   end
 end
 class PrescriptionDrugsHeader < HtmlGrid::List
@@ -215,7 +226,7 @@ class PrescriptionDrugsHeader < HtmlGrid::List
     div = HtmlGrid::Div.new(model, @session, self)
     div.set_attribute('class', 'drug')
     div.value = []
-    div.value << model.name
+    div.value << model.name_with_size
     if price = model.price_public
       div.value << '&nbsp;-&nbsp;'
       div.value << price.to_s
@@ -280,15 +291,15 @@ class PrescriptionForm < View::Form
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
     [0,3]  => View::Drugs::PrescriptionInnerForm,
     [0,13] => :buttons,
-    [0,14] => :prescription_notes,
+    [0,14] => 'prescription_notes',
   }
   CSS_MAP = {
-    [0,0]  => 'th',
+    [0,0]  => 'th bold',
     [0,1]  => 'subheading',
     [0,2]  => 'list',
     [0,3]  => 'list',
     [0,13] => 'button',
-    [0,14] => 'list',
+    [0,14] => 'list bold',
   }
   COLSPAN_MAP = {
     [0,0]  => 3,
@@ -303,13 +314,11 @@ class PrescriptionForm < View::Form
   LABELS = true
   def prescription_for(model, session)
     fields = []
-    label = HtmlGrid::LabelText.new(:prescription_for, model, session, self)
-    fields << label
+    fields << @lookandfeel.lookup(:prescription_for)
     fields << '&nbsp;&nbsp;&nbsp;'
     %w[first_name family_name birth_day].each do |attr|
       key = "prescription_#{attr}".to_sym
-      label = HtmlGrid::LabelText.new(key, model, session, self)
-      fields << label
+      fields << @lookandfeel.lookup(key)
       fields << '&nbsp;'
       input = HtmlGrid::InputText.new(key, model, session, self)
       input.set_attribute('size', 13)
@@ -317,8 +326,7 @@ class PrescriptionForm < View::Form
       fields << input
       fields << '&nbsp;&nbsp;'
     end
-    label = HtmlGrid::LabelText.new(:prescription_sex, model, session, self)
-    fields << label
+    fields << @lookandfeel.lookup(:prescription_sex)
     fields << '&nbsp;'
     radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
     radio.value = '1' 
@@ -353,7 +361,10 @@ class PrescriptionForm < View::Form
   private
   def init
     super
-    @form_properties.update('target' => '_blank')
+    @form_properties.update({
+      'id'     => 'prescription_form',
+      'target' => '_blank'
+    })
   end
 end
 class PrescriptionComposite < HtmlGrid::Composite
@@ -528,7 +539,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     packages.each do |pack|
       span = HtmlGrid::Span.new(pack, session, self)
       span.value = ''
-      span.value << pack.name
+      span.value << pack.name_with_size
       if price = pack.price_public
         span.value << '&nbsp;-&nbsp;'
         span.value << price.to_s
@@ -613,6 +624,7 @@ class PrescriptionCsv < HtmlGrid::Component
   end
   def to_csv(keys)
     result = []
+    # person
     type = (user_input(:sex) == '1' ? 'w' : 'm')
     result << [
       user_input(:first_name),
@@ -621,6 +633,7 @@ class PrescriptionCsv < HtmlGrid::Component
       lookup("sex_#{type}")
     ]
     result << [Date.today.strftime("%d.%m.%Y")]
+    # packages
     if drugs = @session.persistent_user_input(:drugs)
       packages = drugs.values.unshift(model)
     else
@@ -636,6 +649,7 @@ class PrescriptionCsv < HtmlGrid::Component
         value.empty? ? nil : value
       end
     end
+    # prescription
     result << []
     [:morning, :noon, :evening, :night].each do |at_time|
       key = "quantity_#{at_time}"
@@ -675,6 +689,10 @@ class PrescriptionCsv < HtmlGrid::Component
         text << month
       end
       result << [text]
+    end
+    if comment = user_input(:comment)
+      result << [] unless result.last.empty?
+      result << [comment]
     end
     csv = ''
     result.collect do |line|
