@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
@@ -100,14 +100,13 @@ class PrescriptionDrugSearchBar < HtmlGrid::InputText
     super
     id  = 'prescription_searchbar'
     val = @session.lookandfeel.lookup(:add_drug)
-    args = [:reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :pack, @session.state.model.ikscd]
-    url = @session.lookandfeel.event_url(:ajax_add_drug, args)
+    url = @session.lookandfeel.event_url(:ajax_add_drug)
     @container.additional_javascripts.push <<-EOS
 function xhrGet(arg) {
   var ean13 = (arg.match(/^(\\d{13})$/)||[])[1];
   if(ean13) {
     var id = 'drugs';
-    var url = '#{url}/ean13/' + ean13;
+    var url = '#{url}/ean/' + ean13;
     replace_element(id, url)
   }
 }

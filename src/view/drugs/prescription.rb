@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'htmlentities'
@@ -242,7 +242,7 @@ class PrescriptionDrugsHeader < HtmlGrid::List
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
-      args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :pack, @session.state.model.ikscd, :ean13, model.barcode ]
+      args = [:ean, model.barcode]
       url = @session.lookandfeel.event_url(:ajax_delete_drug, args)
       link.onclick = "replace_element('#{css_id}', '#{url}');"
       link
@@ -344,10 +344,7 @@ class PrescriptionForm < View::Form
   end
   def hidden_fields(context)
     hidden = super
-    hidden << context.hidden('ean13', @model.barcode)
-    [:reg, :seq, :pack].each do |key|
-      hidden << context.hidden(key.to_s, @session.user_input(key))
-    end
+    hidden << context.hidden('ean', @model.barcode)
     hidden << context.hidden('prescription', true)
     hidden
   end
@@ -591,7 +588,7 @@ class PrescriptionPrint < View::PrintTemplate
   def head(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
     span.value = @lookandfeel.lookup(:print_of) +
-      @lookandfeel._event_url(:rezept, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+      @lookandfeel._event_url(:rezept, [:ean, model.barcode])
     span
   end
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -503,7 +503,7 @@ module ODDB
 			end
       def print
         if @session.user_input(:prescription) and
-           ean13 = @session.user_input(:ean13) and
+           ean13 = @session.user_input(:ean) and
            pack = @session.app.package_by_ikskey(ean13.to_s[4,8])
           State::Drugs::PrescriptionPrint.new(@session, pack)
         elsif @session.user_input(:pointer)
@@ -603,11 +603,9 @@ module ODDB
 				end
 			end
       def rezept
-        if iksnr = @session.user_input(:reg) and
-           seqnr = @session.user_input(:seq) and
-           ikscd = @session.user_input(:pack) and
-           model = @session.app.registration(iksnr).sequence(seqnr).package(ikscd)
-          State::Drugs::Prescription.new(@session, model)
+        if ean13 = @session.user_input(:ean) and
+           pack  = @session.app.package_by_ikskey(ean13.to_s[4,8])
+          State::Drugs::Prescription.new(@session, pack)
         end
       end
       def migel_search

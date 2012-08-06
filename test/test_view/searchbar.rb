@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Vewi::TestSearchBar -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
 # ODDB::Vewi::TestSearchBar -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+require 'test-unit'
 require 'flexmock'
 require 'view/searchbar'
 require 'htmlgrid/select'
@@ -38,12 +39,12 @@ module ODDB
       include FlexMock::TestCase
       def setup
         @container = flexmock('container', :additional_javascripts => [])
-        @lnf       = flexmock('lookandfeel', 
+        @lnf       = flexmock('lookandfeel',
                               :lookup     => 'lookup',
                               :attributes => {},
                               :_event_url => '_event_url'
                              )
-        @session   = flexmock('session', 
+        @session   = flexmock('session',
                               :lookandfeel           => @lnf,
                               :persistent_user_input => 'persistent_user_input'
                              )
@@ -52,26 +53,72 @@ module ODDB
       end
       def test_init
         expected = {
-        "queryExpr"    => "${0}", 
-        "name"         => "name", 
-        "dojotype"     => "dijit.form.ComboBox", 
-        "searchAttr"   => "search_query", 
-        "jsId"         => "searchbar", 
-        "type"         => "text", 
-        "id"           => "searchbar", 
-        "store"        => "search_matches", 
-        "hasDownArrow" => "false", 
-        "value"        => "persistent_user_input", 
-        "autoComplete" => "false"
+        "queryExpr"      => "${0}",
+        "name"           => "name",
+        "data-dojo-type" => "dijit.form.ComboBox",
+        "searchAttr"     => "search_query",
+        "jsId"           => "searchbar",
+        "type"           => "text",
+        "id"             => "searchbar",
+        "store"          => "search_matches",
+        "hasDownArrow"   => "false",
+        "value"          => "persistent_user_input",
+        "autoComplete"   => "false",
+        "onChange"       => "selectSubmit",
         }
         assert_equal(expected, @inputtext.init)
       end
       def test_to_html
-        context = flexmock('context', 
+        context = flexmock('context',
                            :div   => 'div',
                            :input => 'input'
                           )
-        flexmock(@container, :index_name => 'index_name') 
+        flexmock(@container, :index_name => 'index_name')
+        assert_equal('divinput', @inputtext.to_html(context))
+      end
+    end
+
+    class TestPrescriptionSearchBar < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @container = flexmock('container', :additional_javascripts => [])
+        @lnf       = flexmock('lookandfeel',
+                              :lookup     => 'lookup',
+                              :attributes => {},
+                              :event_url  => 'event_url',
+                              :_event_url => '_event_url',
+                             )
+        @session   = flexmock('session',
+                              :lookandfeel           => @lnf,
+                              :persistent_user_input => 'persistent_user_input'
+                             )
+        @model     = flexmock('model')
+        @inputtext = ODDB::View::PrescriptionDrugSearchBar.new('name', @model, @session, @container)
+      end
+      def test_init
+        expected = {
+        "queryExpr"      => "${0}",
+        "name"           => "name",
+        "data-dojo-type" => "dijit.form.ComboBox",
+        "searchAttr"     => "search_query",
+        "labelAttr"      => "drug",
+        "jsId"           => "prescription_searchbar",
+        "type"           => "text",
+        "id"             => "prescription_searchbar",
+        "store"          => "search_matches",
+        "hasDownArrow"   => "false",
+        "value"          => "persistent_user_input",
+        "autoComplete"   => "false",
+        "onChange"       => "selectXhrRequest",
+        }
+        assert_equal(expected, @inputtext.init)
+      end
+      def test_to_html
+        context = flexmock('context',
+                           :div   => 'div',
+                           :input => 'input'
+                          )
+        flexmock(@container, :index_name => 'index_name')
         assert_equal('divinput', @inputtext.to_html(context))
       end
     end

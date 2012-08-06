@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -410,7 +410,7 @@ module ODDB
         link = HtmlGrid::Link.new(:rezept, model, session, self)
         link.css_class = css
         link.set_attribute('title', @lookandfeel.lookup(:prescription))
-        link.href = @lookandfeel._event_url(:rezept, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        link.href = @lookandfeel._event_url(:rezept, [:ean, model.barcode])
         img = HtmlGrid::Image.new(:prescription, model, @session, self)
         img.set_attribute('src', @lookandfeel.resource_global(:prescription))
         link.value = img
