@@ -578,8 +578,14 @@ td.total {
 td.top {
 	vertical-align : top;
 }
+td.experience {
+	width: 680px;
+}
 td.address-width {
 	width: 180px;
+}
+td.border-top {
+	border-top: 2.5px solid #2ba476;
 }
 td.border-left {
 	float: right;

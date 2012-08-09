@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 01.08.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -47,9 +47,9 @@ class OddbPrevalence
     "@sorted_minifis",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
-	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
-		:companies, :doctors, :fachinfos, :galenic_groups, 
-		:hospitals, :invoices, :last_medication_update, :last_update,
+  attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
+    :companies, :doctors, :experiences, :fachinfos, :galenic_groups,
+    :hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
@@ -70,6 +70,7 @@ class OddbPrevalence
 		@currency_rates ||= {}
 		@cyp450s ||= {}
 		@doctors ||= {}
+    @experiences ||= {}
 		@fachinfos ||= {}
     @feedbacks ||= {}
 		@galenic_forms ||= []
@@ -334,6 +335,10 @@ class OddbPrevalence
 		@doctors ||= {}
 		@doctors.store(doctor.oid, doctor)
 	end
+  def create_experience
+    experience = ODDB::Experience.new
+    @experiences.store(experience.oid, experience)
+  end
 	def create_hospital(ean13)
 		hospital = ODDB::Hospital.new(ean13)
 		@hospitals.store(ean13, hospital)
@@ -576,6 +581,9 @@ class OddbPrevalence
 	def doctor(oid)
 		@doctors[oid.to_i]
 	end
+  def experience(oid)
+    @experiences[oid.to_i]
+  end
 	def hospital(ean13)
 		@hospitals[ean13]
 	end

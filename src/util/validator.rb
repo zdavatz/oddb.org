@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 02.08.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -121,6 +121,7 @@ module ODDB
 		}	
 		EVENTS = [
 			:accept,
+      :accept_experience,
 			:add_to_interaction_basket,
 			:addresses,
 			:address_suggestion,
@@ -286,6 +287,7 @@ module ODDB
 			:switch,
 			:update,
 			:update_bsv,
+      :update_experience,
       :user,
       :users,
 			:vaccines,
@@ -378,6 +380,7 @@ module ODDB
       :correspondence,
 			:de,
 			:descr,
+      :description,
 			:destination,
 			:doctor,
       :division_divisable,
@@ -389,6 +392,7 @@ module ODDB
 			:effective_form,
 			:en,
 			:equivalent_substance,
+      :experience,
 			:fax,
 			:fi_update,
       :fi_link_name,

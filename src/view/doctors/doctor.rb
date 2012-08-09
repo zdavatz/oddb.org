@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Doctors::Doctor -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Doctors::Doctor -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Doctors::Doctor -- oddb.org -- 27.05.2003 -- usenguel@ywesee.com
 
@@ -14,6 +15,7 @@ require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
 require 'view/descriptionform'
 require 'view/form'
+require 'view/captcha'
 require 'view/address'
 require 'view/pointervalue'
 require 'view/privatetemplate'
@@ -34,6 +36,31 @@ class Addresses < HtmlGrid::List
 	OFFSET_STEP = [1,0]
 	CSS_CLASS = 'component'
 	BACKGROUND_SUFFIX = ' bg'
+end
+class ExperienceList < HtmlGrid::List
+  COMPONENTS = {
+    [0,0] => :explanation,
+    [0,1] => :title,
+    [0,2] => :description,
+  }
+  CSS_MAP = {
+    [0,0] => 'list',
+    [0,1] => 'list bold',
+    [0,2] => 'list',
+  }
+  SORT_DEFAULT = nil
+  OMIT_HEADER = true
+  OFFSET_STEP = [0,4]
+  CSS_CLASS = 'composite'
+  BACKGROUND_SUFFIX = ' bg'
+  def explanation(model, session=@session)
+    [
+      @lookandfeel.lookup(:experience_of),
+      model.doctor.fullname,
+      @lookandfeel.lookup(:experience_posted),
+      model.time.strftime(@lookandfeel.lookup(:time_format))
+    ]
+  end
 end
 class DoctorInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
@@ -134,26 +161,94 @@ class DoctorForm < View::Form
     input
   end
 end
+class DoctorExperienceForm < View::Form
+  include HtmlGrid::ErrorMessage
+  include Captcha
+  COMPONENTS = {
+    [0,0] => 'experience_explain',
+    [0,1] => :title,
+    [0,2] => :description,
+    [0,3] => 'experience_notes',
+    [0,4] => :captcha,
+  }
+  COLSPAN_MAP = {
+    [0,0] => 3,
+    [0,1] => 3,
+    [0,2] => 3,
+    [0,3] => 3,
+  }
+  COMPONENT_CSS_MAP = {
+  }
+  CSS_MAP = {
+    [0,0] => 'list bold',
+    [0,1] => 'list',
+    [0,2] => 'list',
+    [0,3] => 'list',
+    [0,4] => 'list',
+  }
+  LABELS = false
+	EVENT = :update_experience
+  def init
+    super
+    error_message
+  end
+  def title(model, session)
+    input = HtmlGrid::InputText.new(:title, model, session, self)
+    title_text = session.lookandfeel.lookup(:experience_title)
+    input.set_attribute('onFocus', "if (this.value == '#{title_text}') { value = '' };")
+    input.set_attribute('onBlur',  "if (this.value == '') { value = '#{title_text}' };")
+    input.set_attribute('size', '45')
+    input.value = title_text
+    input
+  end
+  def description(model, session)
+    textarea = HtmlGrid::Textarea.new(:description, model, session, self)
+    textarea_text = session.lookandfeel.lookup(:experience_text)
+    textarea.set_attribute('onFocus', "if (this.value == '#{textarea_text}') { value = '' };")
+    textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{textarea_text}' };")
+    textarea.set_attribute('class', 'huge')
+    textarea.value = textarea_text
+    textarea
+  end
+  def captcha(model, session)
+    input = super(model)
+    captcha_text = session.lookandfeel.lookup(:captcha)
+    input.set_attribute('onFocus', "if (this.value == '#{captcha_text}') { value = '' };")
+    input.set_attribute('onBlur',  "if (this.value == '') { value = '#{captcha_text}' };")
+    input.set_attribute('size', '30')
+    input.value = captcha_text
+    button = submit(model, session)
+    button.set_attribute('value', session.lookandfeel.lookup(:update))
+    [input, '&nbsp;', button]
+  end
+end
 class DoctorComposite < HtmlGrid::Composite
 	include VCardMethods
-	COMPONENTS = {
-		[0,0,0]	=>	:title,
-		[0,0,1]	=>	:nbsp,
-		[0,0,2]	=>	:firstname,
-		[0,0,3]	=>	:nbsp,
-		[0,0,4]	=>	:name,
-		[0,1]		=> DoctorInnerComposite,
-		[0,2]		=>	:addresses,
-		[0,3]		=>	:vcard,
-	}
+  COMPONENTS = {
+    [0,0,0] => :title,
+    [0,0,1] => :nbsp,
+    [0,0,2] => :firstname,
+    [0,0,3] => :nbsp,
+    [0,0,4] => :name,
+    [0,1]   => DoctorInnerComposite,
+    [0,2]   => :addresses,
+    [0,3]   => :vcard,
+    [1,1]   => DoctorExperienceForm,
+    [1,2]   => :experiences,
+  }
 	SYMBOL_MAP = {
 		:nbsp						=>	HtmlGrid::Text,
-	}	
-	CSS_MAP = {
-		[0,0]	=> 'th',
-		[0,2]	=> 'top',
-		[0,3]	=> 'list',
 	}
+  CSS_MAP = {
+    [0,0] => 'th',
+    [0,2] => 'top',
+    [0,3] => 'list',
+    [1,1] => 'experience top',
+    [1,2] => 'experience top border-top',
+  }
+  COLSPAN_MAP = {
+    [0,0] => 2,
+  }
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
@@ -167,6 +262,13 @@ class DoctorComposite < HtmlGrid::Composite
 		end
 		Addresses.new(addrs, @session, self)
 	end
+  def experiences(model, session=@session)
+    experiences = []
+    if model.experiences and !model.experiences.empty?
+      experiences = model.experiences.select{ |exp| !exp.hidden }
+    end
+    View::Doctors::ExperienceList.new(experiences, session, self)
+  end
   def vcard(model)
     link = View::PointerLink.new(:vcard, model, @session, self)
     ean_or_oid = if ean = model.ean13 and ean.to_s.strip != ""
@@ -179,16 +281,24 @@ class DoctorComposite < HtmlGrid::Composite
   end
 end
 class RootDoctorComposite < DoctorComposite
-	COMPONENTS = {
-		[0,0,0]	=>	:title,
-		[0,0,1]	=>	:nbsp,
-		[0,0,2]	=>	:firstname,
-		[0,0,3]	=>	:nbsp,
-		[0,0,4]	=>	:name,
-		[0,1]		=> DoctorForm,
-		[0,2]		=>	:addresses,
-		[0,3]		=>	:vcard,
-	}
+  COMPONENTS = {
+    [0,0,0] => :title,
+    [0,0,1] => :nbsp,
+    [0,0,2] => :firstname,
+    [0,0,3] => :nbsp,
+    [0,0,4] => :name,
+    [0,1]   => DoctorForm,
+    [0,2]   => :addresses,
+    [0,3]   => :vcard,
+    [1,1]   => :experiences,
+  }
+  CSS_MAP = {
+    [0,0] => 'th',
+    [1,1] => 'component border-left top',
+  }
+  def experiences(model, session=@session)
+    View::Doctors::ExperienceList.new(model.experiences, session, self)
+  end
 end
 class Doctor < PrivateTemplate
 	CONTENT = View::Doctors::DoctorComposite

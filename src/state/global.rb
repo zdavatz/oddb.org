@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -256,6 +256,16 @@ module ODDB
         end
         skip_event_pointer_link(GLOBAL_MAP)
 
+      def accept_experience # for doctor
+        keys = [:token, :email, :oid]
+        input = user_input(keys, keys)
+        unless(error?)
+          if(@session.yus_allowed?(input[:email], 'accept_experience', input[:token]) and
+             model = ODBA.cache.fetch(input[:oid]))
+            State::Doctors::AcceptExperience.new(@session, model)
+          end
+        end
+      end
 			def add_to_interaction_basket
 				pointer = @session.user_input(:pointer)
 				if(object = pointer.resolve(@session.app))

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -599,6 +599,19 @@ Zeno Davatz
 				:example_download					=>	'Beispiel-Download',
 				:exception_header					=>	'Es ist ein Fehler aufgetreten:',
 				:experience								=>	'Pers&ouml;nliche Erfahrung',
+        :experience_of            =>  'Erfahrungsbericht von ',
+        :experience_posted        =>  ' erstellt am ',
+        :experience_title         =>  'Titel/Betreff',
+        :experience_text          =>  'Erfahrungsbericht in beliebiger Länge.',
+        :experience_explain       =>  'Teilen Sie ihre Erfahrung aus dem ärzlichen Alltag bezüglich Diagnose, Therapie und / oder Institution',
+        :experience_notes         =>  'Durch klicken auf "Speichern" erhalten Sie eine Email mit einem Link mittels dem Sie Ihnen Erfahrungsbereicht aktivieren k&ouml;nnen. Geben Sie die Hauptstadt der Schweiz ein und klicken Sie auf "Speichern".',
+        :experience_request_confirm =>  "Vielen Dank. Sie erhalten in Kürze ein E-Mail mit weiteren Anweisungen.",
+        :experience_mail_subject    =>  "Erfahrungsbericht von ",
+				:experience_mail_body0			=>	"Hallo ",
+        :experience_mail_body1      =>  "\n\n",
+				:experience_mail_body2			=>	"\n\nUm diesen Erfahrungsbericht zu authentifizieren, klicken Sie bitte auf den folgenden Link:\n\n",
+				:experience_mail_body3			=>	"\n\nDieser Link ist bis ",
+				:experience_mail_body4			=>	" Uhr gültig.\n\nMit freundlichen Grüssen\nZeno Davatz\n+41 43 540 05 50",
 				:expiration_date					=>	'G&uuml;ltig bis',
 				:expiry_date					    =>	'G&uuml;ltig bis',
 				:explain_anthroposophy		=>	' = Anthroposophische Arzneimittel',
