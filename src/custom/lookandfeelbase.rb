@@ -603,7 +603,7 @@ Zeno Davatz
         :experience_posted        =>  ' erstellt am ',
         :experience_title         =>  'Titel/Betreff',
         :experience_text          =>  'Erfahrungsbericht in beliebiger Länge.',
-        :experience_explain       =>  'Teilen Sie ihre Erfahrung aus dem ärzlichen Alltag bezüglich Diagnose, Therapie und / oder Institution',
+        :experience_explain       =>  'Teilen Sie ihre Erfahrung aus dem ärztlichen Alltag bezüglich Diagnose, Therapie und / oder Institution',
         :experience_notes         =>  'Durch klicken auf "Speichern" erhalten Sie eine Email mit einem Link mittels dem Sie Ihnen Erfahrungsbereicht aktivieren k&ouml;nnen. Geben Sie die Hauptstadt der Schweiz ein und klicken Sie auf "Speichern".',
         :experience_request_confirm =>  "Vielen Dank. Sie erhalten in Kürze ein E-Mail mit weiteren Anweisungen.",
         :experience_mail_subject    =>  "Erfahrungsbericht von ",
