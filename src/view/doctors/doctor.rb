@@ -260,14 +260,16 @@ class DoctorComposite < HtmlGrid::Composite
     [0,0,2] => :firstname,
     [0,0,3] => :nbsp,
     [0,0,4] => :name,
+    [1,0]   => 'experience_header',
     [0,1]   => DoctorInnerComposite,
     [1,1]   => DoctorExperienceForm,
   }
-	SYMBOL_MAP = {
-		:nbsp						=>	HtmlGrid::Text,
-	}
+  SYMBOL_MAP = {
+    :nbsp => HtmlGrid::Text,
+  }
   CSS_MAP = {
     [0,0] => 'th',
+    [1,0] => 'th',
     [0,1] => 'top',
     [0,2] => 'top',
     [0,3] => 'list',
@@ -275,11 +277,10 @@ class DoctorComposite < HtmlGrid::Composite
     [1,2] => 'experience top border-top',
   }
   COLSPAN_MAP = {
-    [0,0] => 2,
   }
-	CSS_CLASS = 'composite'
-	DEFAULT_CLASS = HtmlGrid::Value
-	LEGACY_INTERFACE = false
+  CSS_CLASS = 'composite'
+  DEFAULT_CLASS = HtmlGrid::Value
+  LEGACY_INTERFACE = false
 end
 class RootDoctorComposite < DoctorComposite
   COMPONENTS = {
@@ -291,15 +292,10 @@ class RootDoctorComposite < DoctorComposite
     [0,1]   => DoctorForm,
     [0,2]   => :addresses,
     [0,3]   => :vcard,
-    [1,1]   => :experiences,
   }
   CSS_MAP = {
     [0,0] => 'th',
-    [1,1] => 'component border-left top',
   }
-  def experiences(model, session=@session)
-    View::Doctors::ExperienceList.new(model.experiences, session, self)
-  end
 end
 class Doctor < PrivateTemplate
 	CONTENT = View::Doctors::DoctorComposite
