@@ -260,8 +260,10 @@ module ODDB
         keys = [:token, :email, :oid]
         input = user_input(keys, keys)
         unless(error?)
-          if(@session.yus_allowed?(input[:email], 'accept_experience', input[:token]) and
-             model = ODBA.cache.fetch(input[:oid]))
+          # TODO check token
+          #@session.yus_allowed?(input[:email], 'accept_experience', input[:token])
+          if(model = ODBA.cache.fetch(input[:oid]) and
+             model.doctor.email == input[:email])
             State::Doctors::AcceptExperience.new(@session, model)
           end
         end

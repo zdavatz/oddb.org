@@ -64,7 +64,9 @@ class Doctor < State::Doctors::Global
     unless(error?)
       token = Digest::MD5.hexdigest(rand.to_s)
       time = Time.now + 48 * 60 * 60
-      @session.yus_grant(email, 'accept_experience', token, time)
+      # TODO
+      # use token
+      #@session.yus_grant(email, 'accept_experience', token, time)
       notify_user(email, token, time)
       Confirm.new(@session, :experience_request_confirm)
     end
