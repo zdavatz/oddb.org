@@ -11,8 +11,8 @@ require 'htmlgrid/text'
 require 'htmlgrid/urllink'
 require 'htmlgrid/value'
 require 'htmlgrid/inputfile'
-require	'htmlgrid/errormessage'
-require	'htmlgrid/infomessage'
+require 'htmlgrid/errormessage'
+require 'htmlgrid/infomessage'
 require 'view/descriptionform'
 require 'view/form'
 require 'view/captcha'
@@ -63,24 +63,27 @@ class ExperienceList < HtmlGrid::List
   end
 end
 class DoctorInnerComposite < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	:specialities_header,
-		[0,1]	  =>	:specialities,
-		[0,2]		=>	:capabilities_header,
-		[0,3]	  =>	:capabilities,
-		[0,4,0]	=>	:language_header,
-		[0,4,1]	=>	:nbsp,
-		[0,4,2]	=>	:correspondence,
-		[0,5,0]	=>	:exam_header,
-		[0,5,1] =>	:nbsp,
-		[0,5,2]	=>	:exam,
-		[0,6,0]	=>	:ean13_header,
-		[0,6,1]	=>	:nbsp,
-		[0,6,2]	=>	:ean13,
-		[0,7,0]	=>	:email_header_doctor,
-		[0,7,1]	=>	:nbsp,
-		[0,7,2]	=>	:email,
-	}
+	include VCardMethods
+  COMPONENTS = {
+    [0,0]   => :specialities_header,
+    [0,1]   => :specialities,
+    [0,2]   => :capabilities_header,
+    [0,3]   => :capabilities,
+    [0,4,0] => :language_header,
+    [0,4,1] => :nbsp,
+    [0,4,2] => :correspondence,
+    [0,5,0] => :exam_header,
+    [0,5,1] => :nbsp,
+    [0,5,2] => :exam,
+    [0,6,0] => :ean13_header,
+    [0,6,1] => :nbsp,
+    [0,6,2] => :ean13,
+    [0,7,0] => :email_header_doctor,
+    [0,7,1] => :nbsp,
+    [0,7,2] => :email,
+    [0,8]   => :addresses,
+    [0,9]   => :vcard,
+  }
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
 		:capabilities_header => HtmlGrid::LabelText,
@@ -110,6 +113,26 @@ class DoctorInnerComposite < HtmlGrid::Composite
 		spc = model.capabilities
 		spc.join('<br>') unless spc.nil?
 	end
+  def addresses(model)
+    addrs = model.addresses
+    if(addrs.empty?)
+      addrs = addrs.dup
+      addr = ODDB::Address2.new
+      addr.pointer = model.pointer + [:address, 0]
+      addrs.push(addr)
+    end
+    Addresses.new(addrs, @session, self)
+  end
+  def vcard(model)
+    link = View::PointerLink.new(:vcard, model, @session, self)
+    ean_or_oid = if ean = model.ean13 and ean.to_s.strip != ""
+                   ean
+                 else
+                   model.oid
+                 end
+    link.href = @lookandfeel._event_url(:vcard, {:doctor => ean_or_oid})
+    link
+  end
 end
 class DoctorForm < View::Form
   include HtmlGrid::ErrorMessage
@@ -170,14 +193,14 @@ class DoctorExperienceForm < View::Form
     [0,2] => :description,
     [0,3] => 'experience_notes',
     [0,4] => :captcha,
+    [0,6] => :experiences,
   }
   COLSPAN_MAP = {
     [0,0] => 3,
     [0,1] => 3,
     [0,2] => 3,
     [0,3] => 3,
-  }
-  COMPONENT_CSS_MAP = {
+    [0,6] => 3,
   }
   CSS_MAP = {
     [0,0] => 'list bold',
@@ -185,9 +208,10 @@ class DoctorExperienceForm < View::Form
     [0,2] => 'list',
     [0,3] => 'list',
     [0,4] => 'list',
+    [0,6] => 'experience top border-top',
   }
   LABELS = false
-	EVENT = :update_experience
+  EVENT = :update_experience
   def init
     super
     error_message
@@ -206,7 +230,7 @@ class DoctorExperienceForm < View::Form
     textarea_text = session.lookandfeel.lookup(:experience_text)
     textarea.set_attribute('onFocus', "if (this.value == '#{textarea_text}') { value = '' };")
     textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{textarea_text}' };")
-    textarea.set_attribute('class', 'huge')
+    textarea.set_attribute('class', 'big')
     textarea.value = textarea_text
     textarea
   end
@@ -221,9 +245,15 @@ class DoctorExperienceForm < View::Form
     button.set_attribute('value', session.lookandfeel.lookup(:update))
     [input, '&nbsp;', button]
   end
+  def experiences(model, session=@session)
+    experiences = []
+    if model.experiences and !model.experiences.empty?
+      experiences = model.experiences.select{ |exp| !exp.hidden }
+    end
+    View::Doctors::ExperienceList.new(experiences, session, self)
+  end
 end
 class DoctorComposite < HtmlGrid::Composite
-	include VCardMethods
   COMPONENTS = {
     [0,0,0] => :title,
     [0,0,1] => :nbsp,
@@ -231,16 +261,14 @@ class DoctorComposite < HtmlGrid::Composite
     [0,0,3] => :nbsp,
     [0,0,4] => :name,
     [0,1]   => DoctorInnerComposite,
-    [0,2]   => :addresses,
-    [0,3]   => :vcard,
     [1,1]   => DoctorExperienceForm,
-    [1,2]   => :experiences,
   }
 	SYMBOL_MAP = {
 		:nbsp						=>	HtmlGrid::Text,
 	}
   CSS_MAP = {
     [0,0] => 'th',
+    [0,1] => 'top',
     [0,2] => 'top',
     [0,3] => 'list',
     [1,1] => 'experience top',
@@ -252,33 +280,6 @@ class DoctorComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
-	def addresses(model)
-		addrs = model.addresses
-		if(addrs.empty?)
-			addrs = addrs.dup
-			addr = ODDB::Address2.new
-			addr.pointer = model.pointer + [:address, 0]
-			addrs.push(addr)
-		end
-		Addresses.new(addrs, @session, self)
-	end
-  def experiences(model, session=@session)
-    experiences = []
-    if model.experiences and !model.experiences.empty?
-      experiences = model.experiences.select{ |exp| !exp.hidden }
-    end
-    View::Doctors::ExperienceList.new(experiences, session, self)
-  end
-  def vcard(model)
-    link = View::PointerLink.new(:vcard, model, @session, self)
-    ean_or_oid = if ean = model.ean13 and ean.to_s.strip != ""
-                   ean
-                 else
-                   model.oid
-                 end
-    link.href = @lookandfeel._event_url(:vcard, {:doctor => ean_or_oid})
-    link
-  end
 end
 class RootDoctorComposite < DoctorComposite
   COMPONENTS = {
