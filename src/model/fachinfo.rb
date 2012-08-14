@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Fachinfo -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 14.08.2012 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
@@ -136,7 +136,9 @@ module ODDB
             unless threads.keys.include?(id)
               threads[id] = Thread.new do
                 mutex.synchronize do
-                  photos << pack.photo(image_size)
+                  # if empty hash is returned, something error may be happened
+                  photo = pack.photo(image_size)
+                  photos << photo if !photo.empty?
                 end
               end
             end
@@ -146,7 +148,7 @@ module ODDB
       threads.values.each do |thread|
         thread.join
       end
-      return nil if photos.empty?
+      return nil if photos.empty? # return valid hash or nil
       photos.sort do |a, b| # sort_by size in name
         result = a[:name].gsub(/(\d+)/) { "%04d" % $1.to_i } <=>
                  b[:name].gsub(/(\d+)/) { "%04d" % $1.to_i }
