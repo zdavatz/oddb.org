@@ -728,6 +728,7 @@ class PrescriptionCsv < HtmlGrid::Component
   def to_csv
     @lines = []
     @lines << person
+    insert_blank
     @lines << date
     insert_blank
     if drugs = @session.persistent_user_input(:drugs)
@@ -826,8 +827,6 @@ class PrescriptionCsv < HtmlGrid::Component
         text = lookup(key) + ' '
         text << quantity.to_s
         _value << [text]
-      else
-        _value << []
       end
     end
     _value
@@ -846,8 +845,6 @@ class PrescriptionCsv < HtmlGrid::Component
       key = "method_#{method}"
       if user_input(key)
         _value << [lookup(key)]
-      else
-        _value << []
       end
     end
     _value
