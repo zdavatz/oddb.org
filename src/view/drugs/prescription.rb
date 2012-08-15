@@ -466,31 +466,31 @@ class PrescriptionComposite < HtmlGrid::Composite
 end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,1]  => :name,
-    [0,3]  => :quantity_value,
-    [0,4]  => :timing_value,
-    [0,6]  => :method_value,
-    [0,8]  => :term_value,
-    [0,10] => 'prescription_comment',
-    [0,11] => :comment_value,
+    [0,1] => :name,
+    [0,2] => :quantity_value,
+    [0,3] => :timing_value,
+    [0,4] => :method_value,
+    [0,5] => :term_value,
+    [0,7] => 'prescription_comment',
+    [0,9] => :comment_value,
   }
   CSS_MAP = {
-    [0,1]  => 'print bold',
-    [0,3]  => 'print',
-    [1,4]  => 'print',
-    [0,6]  => 'print top',
-    [0,8]  => 'print',
-    [0,10] => 'print bold',
-    [0,11] => 'print',
+    [0,1] => 'print bold',
+    [0,2] => 'print',
+    [0,3] => 'print',
+    [0,4] => 'print top',
+    [0,5] => 'print',
+    [0,7] => 'print bold',
+    [0,9] => 'print',
   }
   COLSPAN_MAP = {
-    [0,1]  => 5,
-    [0,3]  => 5,
-    [0,4]  => 5,
-    [0,6]  => 5,
-    [0,8]  => 5,
-    [0,10] => 5,
-    [0,11] => 5,
+    [0,1] => 5,
+    [0,2] => 5,
+    [0,3] => 5,
+    [0,4] => 5,
+    [0,5] => 5,
+    [0,7] => 5,
+    [0,9] => 5,
   }
   CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
@@ -525,6 +525,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
       key = "prescription_quantity_#{at_time.to_s}".to_sym
       if quantities = session.user_input(key) and quantity = quantities[@index] and
          quantity =~ /^[0-9]+$/ and !quantity.to_i.zero?
+        fields << '<br/>' if fields.empty?
         fields << HtmlGrid::LabelText.new(key, model, session, self)
         text = HtmlGrid::Value.new(:prescription_quantity, model, session, self)
         text.value = quantity
@@ -533,11 +534,12 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
         fields << '<br/>'
       end
     end
+    fields << '<br/>' unless fields.empty?
     fields
   end
   def timing_value(model, session=@session)
     timings = session.user_input(:prescription_timing)
-    name = case  timings[@index]
+    name = case timings[@index]
     when '1'; :prescription_timing_before_meal;
     when '2'; :prescription_timing_with_meal;
     when '3'; :prescription_timing_after_meal;
@@ -554,11 +556,13 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
       key = "prescription_method_#{method.to_s}".to_sym
       if methods = session.user_input(key) and name = methods[@index]
         text = HtmlGrid::Value.new(name, model, session, self)
-        text.value = @lookandfeel.lookup(name)
+        text.value = @lookandfeel.lookup(key)
+        fields << '<br/>' if fields.empty?
         fields << text
         fields << '<br/>'
       end
     end
+    fields << '<br/>' unless fields.empty?
     fields
   end
   def term_value(model, session=@session)
@@ -604,24 +608,23 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   INNER_COMPOSITE = View::Drugs::PrescriptionPrintInnerComposite
   PRINT_TYPE = ""
   COMPONENTS = {
-    [0,0]  => :print_type,
-    [0,1]  => '&nbsp;',
-    [0,2]  => :prescription_for,
-    [0,3]  => '&nbsp;',
-    [0,4]  => :prescription_title,
-    [0,5]  => '&nbsp;',
-    [0,7]  => :document,
-    [0,13] => 'prescription_signature',
+    [0,0] => :print_type,
+    [0,1] => '&nbsp;',
+    [0,2] => :prescription_for,
+    [0,3] => '&nbsp;',
+    [0,4] => :prescription_title,
+    [0,5] => :document,
+    [0,6] => '&nbsp;',
+    [0,7] => 'prescription_signature',
   }
   CSS_MAP = {
-    0  => 'print-type',
-    1  => 'print',
-    2  => 'print',
-    3  => 'print',
-    4  => 'print',
-    5  => 'print',
-    7  => 'print',
-    13 => 'print bold',
+    0 => 'print-type',
+    1 => 'print',
+    2 => 'print',
+    3 => 'print',
+    4 => 'print',
+    5 => 'print',
+    7 => 'print bold',
   }
   def init
     @drugs = @session.persistent_user_input(:drugs)
