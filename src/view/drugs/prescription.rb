@@ -55,7 +55,7 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [9,2] => 'list top',
   }
   COMPONENT_CSS_MAP = {
-    [9,2] => 'huge',
+    [9,2] => 'wide',
   }
   COLSPAN_MAP = {
     [9,0] => 2,
