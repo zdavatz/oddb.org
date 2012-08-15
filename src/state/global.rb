@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -255,19 +255,6 @@ module ODDB
           end
         end
         skip_event_pointer_link(GLOBAL_MAP)
-
-      def accept_experience # for doctor
-        keys = [:token, :email, :oid]
-        input = user_input(keys, keys)
-        unless(error?)
-          # TODO check token
-          #@session.yus_allowed?(input[:email], 'accept_experience', input[:token])
-          if(model = ODBA.cache.fetch(input[:oid]) and
-             model.doctor.email == input[:email])
-            State::Doctors::AcceptExperience.new(@session, model)
-          end
-        end
-      end
 			def add_to_interaction_basket
 				pointer = @session.user_input(:pointer)
 				if(object = pointer.resolve(@session.app))
@@ -678,12 +665,12 @@ module ODDB
         end
       end
       def doctor
-        model = if ean = @session.user_input(:ean) 
+        model = if ean = @session.user_input(:ean)
                    @session.search_doctors(ean).first
-                 elsif oid = @session.user_input(:oid) 
+                 elsif oid = @session.user_input(:oid)
                    @session.search_doctor(oid)
                  end
-        if model 
+        if model
           State::Doctors::Doctor.new(@session, model)
         end
       end
@@ -692,17 +679,17 @@ module ODDB
           self
         else
           doctor = if ean_or_oid = @session.user_input(:doctor)
-                     @session.search_doctor(ean_or_oid) or @session.search_doctors(ean_or_oid).first 
-                   elsif pointer = @session.user_input(:pointer) 
+                     @session.search_doctor(ean_or_oid) or @session.search_doctors(ean_or_oid).first
+                   elsif pointer = @session.user_input(:pointer)
                      pointer.resolve(@session)
                    end
-          hospital = if ean = @session.user_input(:hospital) 
+          hospital = if ean = @session.user_input(:hospital)
                        @session.app.hospital(ean)
                      elsif pointer = @session.user_input(:pointer)
                        pointer.resolve(@session)
                      end
           if doctor
-            State::Doctors::VCard.new(@session, doctor) 
+            State::Doctors::VCard.new(@session, doctor)
           elsif hospital
             State::Hospitals::VCard.new(@session, hospital)
           end

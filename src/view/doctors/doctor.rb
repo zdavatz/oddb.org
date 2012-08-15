@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Doctors::Doctor -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Doctors::Doctor -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Doctors::Doctor -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Doctors::Doctor -- oddb.org -- 27.05.2003 -- usenguel@ywesee.com
 
@@ -84,25 +84,25 @@ class DoctorInnerComposite < HtmlGrid::Composite
     [0,8]   => :addresses,
     [0,9]   => :vcard,
   }
-	SYMBOL_MAP = {
-		:address_email	=>	HtmlGrid::MailLink,
-		:capabilities_header => HtmlGrid::LabelText,
-		:email	=>	HtmlGrid::MailLink,
-		:email_header_doctor		=>	HtmlGrid::LabelText,
-		:exam_header		=>	HtmlGrid::LabelText,
-		:ean13_header		=>	HtmlGrid::LabelText,
-		:language_header	=>	HtmlGrid::LabelText,
-		:nbsp						=>	HtmlGrid::Text,
-		:phone_label		=>	HtmlGrid::Text,
-		:fax_label			=>	HtmlGrid::Text,
-		:specialities_header => HtmlGrid::LabelText,
-		:url						=>	HtmlGrid::HttpLink,
-		:url_header			=>	HtmlGrid::LabelText,
-		:work_header		=>	HtmlGrid::LabelText,
-	}		
-	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
-	}
+  SYMBOL_MAP = {
+    :address_email       => HtmlGrid::MailLink,
+    :capabilities_header => HtmlGrid::LabelText,
+    :email               => HtmlGrid::MailLink,
+    :email_header_doctor => HtmlGrid::LabelText,
+    :exam_header         => HtmlGrid::LabelText,
+    :ean13_header        => HtmlGrid::LabelText,
+    :language_header     => HtmlGrid::LabelText,
+    :nbsp                => HtmlGrid::Text,
+    :phone_label         => HtmlGrid::Text,
+    :fax_label           => HtmlGrid::Text,
+    :specialities_header => HtmlGrid::LabelText,
+    :url                 => HtmlGrid::HttpLink,
+    :url_header          => HtmlGrid::LabelText,
+    :work_header         => HtmlGrid::LabelText,
+  }
+  CSS_MAP = {
+    [0,0,4,8] => 'list',
+  }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def specialities(model)
@@ -152,23 +152,23 @@ class DoctorForm < View::Form
     [1,2] => 3,
     [1,3] => 3,
   }
-	COMPONENT_CSS_MAP = {
-		[0,0]	=>	'standard',
-		[0,1]	=>	'standard',
-		[2,1]	=>	'standard',
-		#[0,2]	=>	'standard',
-		#[0,3]	=>	'standard',
-		[0,4]	=>	'standard',
-		[0,5]	=>	'standard',
-		[0,6]	=>	'standard',
-		[0,7]	=>	'standard',
-	}
-	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
-		[0,2,1,2]	=>	'list top',
-	}
+  COMPONENT_CSS_MAP = {
+    [0,0] => 'standard',
+    [0,1] => 'standard',
+    [2,1] => 'standard',
+    #[0,2] => 'standard',
+    #[0,3] => 'standard',
+    [0,4] => 'standard',
+    [0,5] => 'standard',
+    [0,6] => 'standard',
+    [0,7] => 'standard',
+  }
+  CSS_MAP = {
+    [0,0,4,8] => 'list',
+    [0,2,1,2] => 'list top',
+  }
   LABELS = true
-	LEGACY_INTERFACE = false
+  LEGACY_INTERFACE = false
   def init
     super
     error_message
@@ -223,6 +223,9 @@ class DoctorExperienceForm < View::Form
     input.set_attribute('onBlur',  "if (this.value == '') { value = '#{title_text}' };")
     input.set_attribute('size', '45')
     input.value = title_text
+    if previous_text = @session.user_input(:title)
+      input.value = previous_text
+    end
     input
   end
   def description(model, session)
@@ -232,6 +235,9 @@ class DoctorExperienceForm < View::Form
     textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{textarea_text}' };")
     textarea.set_attribute('class', 'big')
     textarea.value = textarea_text
+    if previous_text = @session.user_input(:description)
+      textarea.value = previous_text
+    end
     textarea
   end
   def captcha(model, session)

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -32,7 +32,7 @@ module ODDB
 		DATES = [
       :activate_fachinfo,
       :activate_patinfo,
-			:base_patent_date, 
+			:base_patent_date,
       :deactivate_fachinfo,
       :deactivate_patinfo,
 			:deletion_date,
@@ -121,7 +121,6 @@ module ODDB
 		}	
 		EVENTS = [
 			:accept,
-      :accept_experience,
 			:add_to_interaction_basket,
 			:addresses,
 			:address_suggestion,
