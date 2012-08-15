@@ -4,8 +4,7 @@ function replace_element(id, url) {
 		url:  url,
 		load: function(data) {
       var container;
-      if(container = document.getElementById(id))
-      {
+      if (container = document.getElementById(id)) {
         container.parentNode.innerHTML = data;
       }
       document.body.style.cursor = 'auto';

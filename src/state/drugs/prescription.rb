@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::Prescription  -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::Prescription  -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/prescription'
@@ -8,13 +8,16 @@ require 'view/drugs/prescription'
 module ODDB
   module State
     module Drugs
-class AjaxDrugs < Global
-  VIEW = View::Drugs::PrescriptionDrugsHeader
+class AjaxDrug < Global
+  VIEW = View::Drugs::PrescriptionDrugDiv
+  VOLATILE = true
+end
+class AjaxEmpty < Global # empty HTML
+  VIEW = HtmlGrid::Component
   VOLATILE = true
 end
 class PrescriptionCsvExport < State::Drugs::Global
   VIEW = View::Drugs::PrescriptionCsv
-  VOLATILE = true
 end
 class Prescription < State::Drugs::Global
   DIRECT_EVENT = :rezept
@@ -40,7 +43,7 @@ class Prescription < State::Drugs::Global
         @session.set_persistent_user_input(:drugs, drugs)
       end
     end
-    AjaxDrugs.new(@session, @model)
+    AjaxDrug.new(@session, @model)
   end
   def ajax_delete_drug
     check_model
@@ -51,7 +54,7 @@ class Prescription < State::Drugs::Global
         @session.set_persistent_user_input(:drugs, drugs)
       end
     end
-    AjaxDrugs.new(@session, @model)
+    AjaxEmpty.new(@session, @model)
   end
   private
   def check_model

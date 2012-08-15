@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -198,7 +198,7 @@ module ODDB
 			def fachinfo(model, session=@session, css='square infos')
 				if(link = _fachinfo(model, css))
 					link
-				elsif(!model.has_fachinfo? && @session.allowed?('edit', model))
+				elsif(model && !model.has_fachinfo? && @session.allowed?('edit', model))
 					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
 					reg = model.is_a?(Registration) ?  model.iksnr : model.registration.iksnr
 					args = [:reg, reg, :chapter, 'composition']
