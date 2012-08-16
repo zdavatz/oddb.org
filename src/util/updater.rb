@@ -103,7 +103,7 @@ module ODDB
       }
     end
     def export_oddb2tdat
-      Exporter.new(@app).plug.export_oddb2tdat
+      Exporter.new(@app).export_oddb2tdat
     end
     def export_oddb2tdat_with_migel
       # use csv in migel/data/csv
