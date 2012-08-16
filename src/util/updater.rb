@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 01.08.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -101,6 +101,13 @@ module ODDB
         log.update_values(log_info(plug))
         log.notify(subj)
       }
+    end
+    def export_oddb2tdat
+      Exporter.new(@app).plug.export_oddb2tdat
+    end
+    def export_oddb2tdat_with_migel
+      # use csv in migel/data/csv
+      Exporter.new(@app).export_oddb2tdat_with_migel
     end
 		def export_generics_xls(date = @@today)
 			subj = 'Generikaliste'
@@ -246,6 +253,8 @@ module ODDB
       update_price_feeds
       export_oddb_csv
       export_oddb2_csv
+      export_oddb2tdat
+      export_oddb2tdat_with_migel
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss

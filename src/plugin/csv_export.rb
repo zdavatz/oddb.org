@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -11,6 +11,7 @@ module ODDB
 	class CsvExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
+    MIGEL_EXPORT_DIR = File.expand_path('../../../migel/data/csv', File.dirname(__FILE__))
     ODDB_RECIPIENTS = [ "produktion@seconag.com", "paul.wiederkehr@pharmasuisse.org" ]
     ODDB_RECIPIENTS_EXTENDED = [ "ouwerkerk@bluewin.ch" ]
 		def export_analysis
@@ -86,11 +87,6 @@ module ODDB
                                                        'ean13_idx_th.csv')
       EXPORT_SERVER.compress_many(EXPORT_DIR, 'index_therapeuticus', files)
     end
-		def export_migel
-			ids = @app.migel_products.sort_by { |product| 
-				product.migel_code }.collect { |product| product.odba_id }
-			EXPORT_SERVER.export_migel_csv(ids, EXPORT_DIR, 'migel.csv')
-		end
     def export_price_history
       ids = @app.packages.select do |pac| pac.has_price? end.collect do |pac|
         pac.odba_id
@@ -110,6 +106,22 @@ module ODDB
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
+    end
+    def export_oddb_dat_with_migel(transfer)
+      unless transfer and File.exist?(transfer)
+        transfer = File.join(EXPORT_DIR, 'transfer.dat')
+      end
+      input1 = File.join(EXPORT_DIR,       'oddb.csv')
+      input2 = File.join(MIGEL_EXPORT_DIR, 'migel_product_de.csv')
+      output = File.join(EXPORT_DIR, 'oddb_with_migel.dat')
+      @file_path = output
+      @options ||= {}
+      @options[:compression] = 'zip'
+      gem_app = Oddb2tdat.new(input1, output, input2, transfer) # see help of oddb2tdat gem
+      gem_app.target.push(:migel)
+      gem_app.run
+      @updated_arztpreis = gem_app.updated_prmo
+      EXPORT_SERVER.compress(EXPORT_DIR, 'oddb_with_migel.dat')
     end
     def export_teilbarkeit
       recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -199,8 +199,8 @@ module ODDB
     end
     def export_oddb2tdat(transfer_file=nil)
       subj = 'oddb2tdat'
-      safe_export(subj) do 
-			  plug = CsvExportPlugin.new(@app)
+      safe_export(subj) do
+        plug = CsvExportPlugin.new(@app)
         plug.export_oddb_dat(transfer_file)
         log = Log.new(@@today)
         log.update_values(plug.log_info)
@@ -208,7 +208,17 @@ module ODDB
         log.notify(subj)
       end
     end
-
+    def export_oddb2tdat_with_migel(transfer_file=nil)
+      subj = 'oddb2tdat with migel'
+      safe_export(subj) do
+        plug = CsvExportPlugin.new(@app)
+        plug.export_oddb_dat_with_migel(transfer_file)
+        log = Log.new(@@today)
+        log.update_values(plug.log_info)
+        log.report = plug.report
+        log.notify(subj)
+      end
+    end
 		def export_pdf
 			FiPDFExporter.new(@app).run
 		end
