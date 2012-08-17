@@ -123,7 +123,7 @@ module ODDB
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
       all_rows = gem_app.counts[:oddb] + gem_app.counts[:migel]
-      @total = "#{gem_app.counts[:migel]} / #{all_rows}"
+      @total = "#{gem_app.counts[:migel]}(MiGel) / #{all_rows} (Total)"
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb_with_migel.dat')
     end
     def export_teilbarkeit
