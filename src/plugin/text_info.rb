@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 30.07.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -213,8 +213,9 @@ module ODDB
       @failures = []
       @download_errors = []
       @companies = []
-      @news_log = File.join ODDB.config.log_dir, 'fachinfo.txt'
+      @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @new_format_flag = false
+      @target = :both
     end
     def init_agent
       agent = Mechanize.new
@@ -306,7 +307,7 @@ module ODDB
           end
         end
       end
-      return names
+      names
     end
     def identify_eventtargets page, ptrn
       eventtargets = {}
@@ -316,6 +317,7 @@ module ODDB
       eventtargets
     end
     def import_company names, agent=nil, target=:both
+      @target = target
       agent = init_agent if agent.nil?
       @search_term = names.to_a.join ', '
       names.to_a.each do |name|
@@ -416,7 +418,7 @@ module ODDB
       #
       # parse all the downloaded files and check iksnr
       # and store up_to_date flag
-      # 
+      #
       # fi de
       fi_de_iksnr_path = {}
       fi_de_name_iksnr = {}
@@ -515,7 +517,7 @@ module ODDB
 
       #
       # update_product
-      # 
+      #
       list.each do |name, path_list|
         fi_flag = {}
         pi_flag = {}
@@ -528,6 +530,7 @@ module ODDB
       end
     end
     def import_companies page, agent, target=:both
+      @target = target
       form = page.form_with :name => 'frmResulthForm'
       page.links_with(:href => /Linkbutton1/).each do |link|
         if et = eventtarget(link.href)
@@ -561,14 +564,15 @@ module ODDB
       news.keys.each do |type|
         if update_name_list = true_news(news[type], old_news)
           import_name(update_name_list, agent)
-          log_news news[type]
-          postprocess
+          log_news(news[type])
+          type == :fi ? postprocess : nil
           updated.concat update_name_list
         end
       end
       return !updated.empty?
     end
     def import_products page, agent, target=:both
+      @target = target
       form = page.form_with :name => /frmResult(Produkte|hForm)/
       case target
       when :both
@@ -643,7 +647,7 @@ module ODDB
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
       }.join("\n")
-      if @updated_fis.zero? # patinfo only
+      if @target == :pi
         [
           "Searched for #{@search_term}",
           "Stored #{@updated_pis} Patinfos",
