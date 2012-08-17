@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbConfig -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# OddbConfig -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
 # OddbConfig -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com 
 # OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com 
 
@@ -56,8 +56,10 @@ module ODDB
     'narcotics.yaml'			=> 100,
     'oddb.csv'						=> 500,
     'oddb2.csv'						=> 600,
-    'oddbdat'							=> 700,
     'oddb.yaml'						=> 600,
+    'oddb.dat'            => 50,
+    'oddb_with_migel.dat' => 80,
+    'oddbdat'							=> 700,
     'patents.xls'         => 500,
     'patinfo.yaml'				=> 1300,
     'price_history.yaml'  => 1000,
