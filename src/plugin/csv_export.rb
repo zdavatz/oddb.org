@@ -105,7 +105,7 @@ module ODDB
       gem_app = Oddb2tdat.new(input, output, transfer)
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
-      @total = gem_app.counts[:oddb]
+      @total = "#{gem_app.counts[:oddb]}(Medis)"
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
     end
     def export_oddb_dat_with_migel(transfer)
@@ -211,7 +211,7 @@ module ODDB
     def report
       report = ''
       if @total
-        report << sprintf("%-32s %s\n", "total:", @total.to_s)
+        report << sprintf("%-32s %s\n", "Anzahl:", @total.to_s)
       end
       if @counts
         @counts.sort.collect do |key, val|
