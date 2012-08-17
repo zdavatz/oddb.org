@@ -94,9 +94,11 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     [7,14] => :example_price_history_csv,
     [0,15] => :oddb_dat_zip_export,
     [2,15] => :oddb_dat_zip_price,
+    [5,15] => :datadesc_oddb_dat_zip,
     [7,15] => :example_oddb_dat_zip,
     [0,16] => :oddb_with_migel_dat_zip_export,
     [2,16] => :oddb_with_migel_dat_zip_price,
+    [5,16] => :datadesc_oddb_with_migel_dat_zip,
     [7,16] => :example_oddb_with_migel_dat_zip,
 
     [0,18] => 'export_added_value',
@@ -284,10 +286,18 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     datadesc('oddb.yaml')
   end
   def datadesc_oddb_dat_zip(model, session)
-    datadesc('oddb.dat')
+    link = HtmlGrid::Link.new(:data_description, model, session, self)
+    link.href      = 'http://dev.ywesee.com/ODDB/Oddb2tdat'
+    link.css_class = 'small'
+    link.set_attribute('target', '_blank')
+    link
   end
   def datadesc_oddb_with_migel_dat_zip(model, session)
-    datadesc('oddb_with_migel.dat')
+    link = HtmlGrid::Link.new(:data_description, model, session, self)
+    link.href      = 'http://dev.ywesee.com/ODDB/Oddb2tdat'
+    link.css_class = 'small'
+    link.set_attribute('target', '_blank')
+    link
   end
   def datadesc_oddbdat(model, session)
     datadesc('oddbdat')
