@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -105,6 +105,7 @@ module ODDB
       gem_app = Oddb2tdat.new(input, output, transfer)
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
+      @total = gem_app.counts[:oddb]
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
     end
     def export_oddb_dat_with_migel(transfer)
@@ -121,6 +122,8 @@ module ODDB
       gem_app.target.push(:migel)
       gem_app.run
       @updated_arztpreis = gem_app.updated_prmo
+      all_rows = gem_app.counts[:oddb] + gem_app.counts[:migel]
+      @total = "#{gem_app.counts[:migel]} / #{all_rows}"
       EXPORT_SERVER.compress(EXPORT_DIR, 'oddb_with_migel.dat')
     end
     def export_teilbarkeit
@@ -208,7 +211,7 @@ module ODDB
     def report
       report = ''
       if @total
-        report << sprintf("%-32s %5i\n", "total:", @total)
+        report << sprintf("%-32s %s\n", "total:", @total.to_s)
       end
       if @counts
         @counts.sort.collect do |key, val|
