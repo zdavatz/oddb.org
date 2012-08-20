@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::User::DownloadExport -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
+# ODDB::View::User::DownloadExport -- oddb.org -- 20.08.2012 -- yasaka@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.09.2004 -- mhuggler@ywesee.com
 
@@ -93,11 +93,11 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     [5,14] => :datadesc_price_history_csv,
     [7,14] => :example_price_history_csv,
     [0,15] => :oddb_dat_zip_export,
-    [2,15] => :oddb_dat_zip_price,
+    [3,15] => :oddb_dat_zip_price,
     [5,15] => :datadesc_oddb_dat_zip,
     [7,15] => :example_oddb_dat_zip,
     [0,16] => :oddb_with_migel_dat_zip_export,
-    [2,16] => :oddb_with_migel_dat_zip_price,
+    [3,16] => :oddb_with_migel_dat_zip_price,
     [5,16] => :datadesc_oddb_with_migel_dat_zip,
     [7,16] => :example_oddb_with_migel_dat_zip,
 
