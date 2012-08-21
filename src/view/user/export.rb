@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::User::Export -- oddb -- 16.03.2012 -- yasaka@ywesee.com
+# View::User::Export -- oddb -- 21.08.2012 -- yasaka@ywesee.com
 # View::User::Export -- oddb -- 05.09.2003 -- hwyss@ywesee.com
 
 module ODDB
@@ -11,6 +11,14 @@ module Export
 		'../../../data/downloads',
 		File.dirname(__FILE__))
 	EXPORT_FILE = ''
+  def default_month(filename)
+    case filename
+    when 'oddb.dat', 'oddb_with_migel.dat' # yearly only
+      '12'
+    else
+      '1'
+    end
+  end
 	def datadesc(filename)
 		if(display?(filename))
 			link = HtmlGrid::Link.new(:data_description, 

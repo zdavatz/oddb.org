@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -76,6 +76,7 @@ require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
 require 'state/user/download'
+require 'state/user/download_item'
 require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
 require 'state/user/fipi_offer_confirm'
@@ -153,13 +154,14 @@ module ODDB
       include UmlautSort
       include Admin::LoginMethods
         attr_reader :model, :snapback_model
-        DIRECT_EVENT = nil 
+        DIRECT_EVENT = nil
         GLOBAL_MAP = {
           :ajax_ddd_price         => State::Ajax::DDDPrice,
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
           :api_search             => State::Drugs::ApiSearch,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
+          :data                   => State::User::DownloadItem,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,

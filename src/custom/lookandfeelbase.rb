@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -442,6 +442,7 @@ Zeno Davatz
         :drugbank                 =>  "DrugBank.ca",
         :drugbank_title           =>  "Open Data Drug & Drug Target Database - www.drugbank.ca",
 				:dsp_sort									=>	'Sortierung nach St&auml;rke, Packung und Preis',
+				:direct_link                    =>      'Direkt-Link',
 				:ean13										=>	'EAN',
 				:ean13_header							=>	'EAN:',
 				:ean_code0								=>	'EAN-Code: ',
@@ -2023,6 +2024,7 @@ Zeno Davatz
 				:download_migel2					=>	's.v.p.',
 				:drugs										=>	'M&eacute;dicaments',
 				:dsp_sort									=>	'Triage d\'apr&egrave;s Concentration, Taille et Prix',
+				:direct_link                    =>      'Direct-Link',
 				:ean13										=>	'EAN',
 				:ean_code0								=>	"code d'EAN: ",
 				:ean_code1								=>	'',
@@ -3229,6 +3231,7 @@ Zeno Davatz
 				:download_migel2					=>	'.',
 				:drugs										=>	'Drugs',
 				:dsp_sort									=>	'Sort according to Concentration, Size and Price', 
+				:direct_link                    =>      'Direct-Link',
 				:ean13										=>	'EAN',
 				:ean13_header							=>	'EAN:',
 				:ean_code0								=>	'EAN-Code: ',

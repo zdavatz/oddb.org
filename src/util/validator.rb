@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -163,6 +163,7 @@ module ODDB
 			:companylist,
 			:compare,
       :compare_search,
+      :data, # download_item
 			:ddd,
       :ddd_chart,
       :ddd_price,
@@ -393,6 +394,7 @@ module ODDB
 			:equivalent_substance,
       :experience,
 			:fax,
+      :buy, # file
 			:fi_update,
       :fi_link_name,
       :fi_link_url,
