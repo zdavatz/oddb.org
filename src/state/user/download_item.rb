@@ -20,13 +20,14 @@ class DownloadItem < State::User::RegisterDownload
   def init
     keys  = [:buy, :month, :compression] # month and compression are optional
     input = user_input(keys, [:buy])
-    items = []
+    items = [] # as container (one item)
     dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
     filename = nil
-    # one item. all files have .zip compressed version without epub.
+    # All files have .zip compressed version without epub and prc.
+    # Some items have only .zip and .tar.gz only.
     if file = input[:buy]
       filename = File.exists?(File.join(dir, File.basename(file, '.zip') + '.zip')) ? file : nil
-      unless filename # epux
+      unless filename # epub, prc format
         filename = File.exists?(File.join(dir, file)) ? file : nil
       end
     end
