@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -235,14 +235,14 @@ module ODDB
 					model.localized_name(@session.language)))
 				link
 			end
-			def google_search(model, session=@session)
-				text = model.localized_name(@session.language)
-				link = HtmlGrid::Link.new(:square_google_search, @model, @session, self)
-				link.href =  "http://www.google.com/search?q=#{text}"
-				link.css_class= 'square google_search'
-				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
-				link
-			end
+      def google_search(model, session=@session)
+        text = model.localized_name(@session.language).to_s.force_encoding('utf-8')
+        link = HtmlGrid::Link.new(:square_google_search, @model, @session, self)
+        link.href =  "http://www.google.com/search?q=#{text}"
+        link.css_class= 'square google_search'
+        link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
+        link
+      end
 			def ikscat(model, session=@session)
 				@ikscat_count ||= 0
 				@ikscat_count += 1
@@ -340,13 +340,13 @@ module ODDB
           ikscd = model.ikscd
           link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/drug/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
         elsif model.is_a?(DRb::DRbObject) and model.respond_to?(:article_name) # ODDB::Migel::Item
-          name = model.article_name
-          migel_code = model.migel_code
+          name       = model.article_name.to_s.force_encoding('utf-8')
+          migel_code = model.migel_code.to_s.force_encoding('utf-8')
           link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_search/migel_code/#{migel_code}"
         elsif model.is_a?(DRb::DRbObject) # ODDB::Migel::Product
           name = [
             model,
-            (model.product_text if(model.respond_to?(:product_text))),
+            (model.product_text.to_s.force_encoding('utf-8') if(model.respond_to?(:product_text))),
           ].compact.collect { |item|
             item.send(@session.language)
           }.join(': ').gsub("\n", ' ')
@@ -397,15 +397,6 @@ module ODDB
 					link
 				end
 			end
-			def qty_unit(model, session=@session)
-				if(model.qty || model.unit)
-					unit = nil
-					if(u = model.unit)
-						unit = u.send(@session.language)
-					end
-					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
-				end
-			end
       def prescription(model, session=@session, css='important') # rezept -> prescription
         link = HtmlGrid::Link.new(:rezept, model, session, self)
         link.css_class = css
@@ -415,6 +406,16 @@ module ODDB
         img.set_attribute('src', @lookandfeel.resource_global(:prescription))
         link.value = img
         link
+      end
+      def qty_unit(model, session=@session)
+        if(model.qty || model.unit)
+          unit = nil
+          if(u = model.unit)
+            unit = u.send(@session.language)
+          end
+          unit.force_encoding('utf-8') if unit
+          [ '&nbsp;(', model.qty.to_s, unit, ')' ].compact.join(' ')
+        end
       end
 			def square(key, square=nil)
 				square ||= HtmlGrid::Span.new(nil, @session, self)
@@ -430,8 +431,9 @@ module ODDB
         url  = ''
         if model.is_a?(DRb::DRbObject)
           # in the case of migel items
-          base = model.localized_name(session.language)
-          url  = @lookandfeel._event_url(:migel_search, {:migel_pharmacode => model.pharmacode})
+          base = model.localized_name(session.language).force_encoding('utf-8')
+          code = model.pharmacode.force_encoding('utf-8')
+          url  = @lookandfeel._event_url(:migel_search, {:migel_pharmacode => code})
         else
           base = model.name_base
           url = @lookandfeel._event_url(:show, {:pointer => model.pointer})

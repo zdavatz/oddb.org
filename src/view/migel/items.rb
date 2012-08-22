@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Migel::Items -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Migel::Items -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
@@ -23,7 +24,7 @@ class SubHeader < HtmlGrid::Composite
     [0,0,4] => :migel_code,
     [1,0]   => :pages,
   }
-	CSS_CLASS = 'composite'
+  CSS_CLASS = 'composite'
   CSS_MAP = {
     [0,0] => 'subheading',
     [1,0] => 'subheading',
@@ -74,8 +75,9 @@ end
 class SearchedList < HtmlGrid::List
   include View::AdditionalInformation
   include View::LookandfeelComponents
-	CSS_CLASS = 'composite'
   SUBHEADER = ODDB::View::Migel::SubHeader
+  COMPONENTS = {}
+  CSS_CLASS = 'composite'
   CSS_HEAD_KEYMAP = {}
   CSS_KEYMAP = {
     :pharmacode           => 'list',
@@ -89,30 +91,43 @@ class SearchedList < HtmlGrid::List
     :twitter_share        => 'list',
     :notify               => 'list',
   }
+  %w(pharmacode ean_code status ppub).each do |attr|
+    define_method(attr) do |model, session|
+      if model.respond_to?(attr) and model.send(attr)
+        value = model.send(attr)
+      else
+        value = ''
+      end
+      value.force_encoding('utf-8')
+    end
+  end
   def init
     reorganize_components(:migel_item_list_components)
     super
   end
   def article_name(model = @model, session = @session)
     if model.article_name.respond_to?(session.language)
-      model.article_name.send(session.language)
+      name = model.article_name.send(session.language)
     else
-      model.article_name
+      name = model.article_name
     end
+    name.force_encoding('utf-8') if name
   end
   def companyname(model = @model, session = @session)
     if model.companyname.respond_to?(session.language)
-      model.companyname.send(session.language)
+      name = model.companyname.send(session.language)
     else
-      model.companyname
+      name = model.companyname
     end
+    name.force_encoding('utf-8') if name
   end
   def size(model = @model, session = @session)
     if model.size.respond_to?(session.language)
-      model.size.send(session.language)
+      size = model.size.send(session.language)
     else
-      model.size
+      size = model.size
     end
+    size.force_encoding('utf-8') if size
   end
   def compose_list(model = @model, offset=[0,0])
     # Grouping products with migel_code
@@ -120,7 +135,6 @@ class SearchedList < HtmlGrid::List
     model.each do |product|
       (migel_code_group[product.migel_code] ||= []) <<  product
     end
-
     # list up items
     migel_code_group.keys.sort.each do |migel_code|
       offset_length = migel_code_group[migel_code].length
@@ -153,7 +167,7 @@ class SearchedList < HtmlGrid::List
       end
       link.href = @lookandfeel._event_url(@session.event, args)
     elsif @model.first
-      args = [:migel_code, @model.first.migel_code.gsub('.',''), sort_way, component.to_s]
+      args = [:migel_code, @model.first.migel_code.force_encoding('utf-8').gsub('.',''), sort_way, component.to_s]
       if page
         args.concat [:page, page+1]
       end
@@ -166,7 +180,7 @@ class SearchedComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => SearchedList,
   }
-	CSS_CLASS = 'composite'
+  CSS_CLASS = 'composite'
 end
 class Items < View::PrivateTemplate
   JAVASCRIPTS = ['bit.ly']

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -139,6 +139,9 @@ module ODDB
           @list.each do |record|
             yield record
           end
+        end
+        def first
+          @list.first
         end
         def at(index)
           @list[index]

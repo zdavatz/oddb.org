@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# enconding: utf-8
+# Migel::Util::Multilingual -- migel -- 22.08.2012 -- yasaka@ywesee.com
 # Migel::Util::Multilingual -- migel -- 26.08.2011 -- mhatakeyama@ywesee.com
 
 module Migel
@@ -48,7 +48,7 @@ module Migel
         all.sort <=> other.all.sort
       end
     end
-    class Multilingual 
+    class Multilingual
       #include DRb::DRbUndumped
       include M10lMethods
       def initialize(canonical={})

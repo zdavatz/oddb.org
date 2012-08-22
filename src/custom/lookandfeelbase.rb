@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -4458,29 +4458,29 @@ Zeno Davatz
     end
     def migel_list_components
       {
-        [0,0] =>	:limitation_text,
-        [1,0] =>	:migel_code,
-        [2,0]	=>	:product_description,
-        [3,0] =>  :date,
-        [4,0] =>  :price,
-        [5,0]	=>	:qty_unit,
-        [6,0] =>  :facebook,
-        [7,0]	=>  :google_search,
-        [8,0] =>  :notify,
+        [0,0] => :limitation_text,
+        [1,0] => :migel_code,
+        [2,0] => :product_description,
+        [3,0] => :date,
+        [4,0] => :price,
+        [5,0] => :qty_unit,
+        [6,0] => :facebook,
+        [7,0] => :google_search,
+        [8,0] => :notify,
       }
     end
     def migel_item_list_components
       {
-        [0,0]   =>  :pharmacode,
-        [1,0]   =>  :ean_code,
-        [2,0]   =>  :article_name,
-        [3,0]   =>  :size,
-        [4,0]   =>  :status,
-        [5,0]   =>  :companyname,
-        [6,0]   =>  :ppub,
-        [7,0]   =>  :google_search,
-        [8,0]   =>  :twitter_share,
-        [9,0]   =>  :notify,
+        [0,0] => :pharmacode,
+        [1,0] => :ean_code,
+        [2,0] => :article_name,
+        [3,0] => :size,
+        [4,0] => :status,
+        [5,0] => :companyname,
+        [6,0] => :ppub,
+        [7,0] => :google_search,
+        [8,0] => :twitter_share,
+        [9,0] => :notify,
       }
     end
     def result_list_components
