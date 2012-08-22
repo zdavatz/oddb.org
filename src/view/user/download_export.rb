@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::User::DownloadExport -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
+# ODDB::View::User::DownloadExport -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.09.2004 -- mhuggler@ywesee.com
 
@@ -308,8 +308,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def datadesc_doctors_yaml(model, session)
     datadesc('doctors.yaml')
   end
-  # TODO
-  # replace method name with new alias
   def datadesc_epub(model, session)
     link = HtmlGrid::Link.new(:data_description, @model, @session, self)
     link.href = "http://www.openebook.org/specs.htm"
@@ -359,23 +357,18 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def datadesc_oddb_yaml(model, session)
     datadesc('oddb.yaml')
   end
-  def datadesc_oddb_dat(model, session)
-    link = HtmlGrid::Link.new(:data_description, model, session, self)
-    link.href      = 'http://dev.ywesee.com/ODDB/Oddb2tdat'
-    link.css_class = 'small'
-    link.set_attribute('target', '_blank')
-    link
-  end
-  def datadesc_oddb_with_migel_dat(model, session)
-    link = HtmlGrid::Link.new(:data_description, model, session, self)
-    link.href      = 'http://dev.ywesee.com/ODDB/Oddb2tdat'
-    link.css_class = 'small'
-    link.set_attribute('target', '_blank')
-    link
-  end
   def datadesc_oddbdat(model, session)
     datadesc('oddbdat')
   end
+  def datadesc_oddb2tdat(model, session)
+    link = HtmlGrid::Link.new(:data_description, model, session, self)
+    link.href      = 'http://dev.ywesee.com/ODDB/Oddb2tdat'
+    link.css_class = 'small'
+    link.set_attribute('target', '_blank')
+    link
+  end
+  alias :datadesc_oddb_dat :datadesc_oddb2tdat
+  alias :datadesc_oddb_with_migel_dat :datadesc_oddb2tdat
   def datadesc_patents_xls(model, session)
     datadesc('patents.xls')
   end
@@ -413,7 +406,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def example_fachinfo_kindle(model, session)
     example('compendium_ch.oddb.org.kindle.mobi')
   end
-  alias :example_compendium_ch_oddb_org_kindle_epub :example_fachinfo_kindle
+  alias :example_compendium_ch_oddb_org_kindle_mobi :example_fachinfo_kindle
   def example_fachinfo_stanza_epub(model, session)
     link = example('compendium_ch.oddb.org.stanza.epub')
     url = URI.parse link.href
