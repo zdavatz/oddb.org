@@ -41,11 +41,11 @@ module Job
       end
     rescue Interrupt # C-c
       puts "Interrupted !!"
-      puts "Please check pid file in #{LOG_ROOT}."
+      puts "Please check #{PID_FILE}."
       puts
     ensure
       if updater? and !running_job[:pid]
-        File.unlink(path)
+        File.unlink(PID_FILE)
         puts "#{PID_FILE} is deleted"
         system.unpeer_cache ODBA.cache unless opts[:readonly]
       end
@@ -60,14 +60,17 @@ module Job
   end
   def Job.running_job
     unless @running_job
+      @running_job = {}
       if File.exists?(PID_FILE)
         values = (File.read(PID_FILE) || '').split(',')
       else
         values =[]
       end
-      keys = [:pid, :basename, :time]
-      array = [keys, values].transpose.flatten
-      @running_job = Hash[*array]
+      if values.length == 3
+        keys  = [:pid, :basename, :time]
+        array = [keys, values].transpose.flatten
+        @running_job = Hash[*array]
+      end
     end
     @running_job
   end
