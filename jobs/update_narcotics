@@ -10,7 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_narcotics
+      Updater.new(system).update_btm ARGV.first
     end
   end
 end
