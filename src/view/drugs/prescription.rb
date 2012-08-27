@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 15.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 27.08.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -39,6 +39,7 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [0,2] => :prescription_timing_fields,
     [3,2] => :prescription_term_fields,
     [9,2] => :prescription_comment,
+    [0,3] => :atc_code,
   }
   CSS_MAP = {
     [0,0] => 'list bold',
@@ -61,7 +62,7 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [9,0] => 2,
     [0,2] => 3,
     [3,2] => 5,
-    [9,2] => 3,
+    [9,2] => 5,
   }
   LABELS = false
   def init
@@ -193,6 +194,15 @@ repetition.disabled = true;
    textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
    textarea.value = value
    textarea
+  end
+  def atc_code(model,session)
+    # this is needed by js for external link to modules.epha.ch
+    hidden = HtmlGrid::Input.new(:atc_code, model, session, self)
+    hidden.set_attribute('type', 'hidden')
+    if model.atc_class and code = model.atc_class.code
+      hidden.value = code
+    end
+    hidden
   end
   private
   # handle index
@@ -430,6 +440,7 @@ class PrescriptionForm < View::Form
   end
   def hidden_fields(context)
     hidden = super
+    # main drug
     hidden << context.hidden('ean', @model.barcode)
     hidden << context.hidden('prescription', true)
     hidden
@@ -439,6 +450,21 @@ class PrescriptionForm < View::Form
     buttons << post_event_button(:print)
     buttons << '&nbsp;'
     buttons << post_event_button(:export_csv)
+    buttons << '&nbsp;'
+    button = HtmlGrid::Button.new(:prescription_link_to_epha, model, session, self)
+    js = <<-JS
+    var link   = 'http://modules.epha.ch/vigi/orbit.html';
+    var param  = '';
+    var codes  = getElementsByName('atc_code');
+    var values = [];
+    var i = 0;
+    var c = codes.length;
+    for (; i < c; i++) { values.push(codes[i].value); }
+    if (values.length != 0) { param += '#' + values.join(); }
+    window.open(link + param);
+    JS
+    button.set_attribute("onclick", js)
+    buttons << button
     buttons
   end
   private
