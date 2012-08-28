@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Items -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Migel::Items -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Migel::Items -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
@@ -38,10 +38,11 @@ class SubHeader < HtmlGrid::Composite
   end
   def migel_code(model=@model, session=@session)
     link = HtmlGrid::Link.new(:to_s, @model, @session, self)
-    key_value = {:migel_code => model.migel_code}
+    code = model.migel_code.to_s.force_encoding('utf-8')
+    key_value = {:migel_code => code}
     event = :migel_search
     link.href = @lookandfeel._event_url(event, key_value)
-    link.value = model.migel_code
+    link.value = code
     link
   end
   def pages(model, session=@session)
@@ -56,7 +57,7 @@ class SubHeader < HtmlGrid::Composite
         event = :search
         args.update({
           :search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
-          :search_type => @session.persistent_user_input(:search_type),
+          :search_type  => @session.persistent_user_input(:search_type),
         })
       end
 
@@ -98,7 +99,7 @@ class SearchedList < HtmlGrid::List
       else
         value = ''
       end
-      value.force_encoding('utf-8')
+      value.to_s.force_encoding('utf-8')
     end
   end
   def init
@@ -111,7 +112,7 @@ class SearchedList < HtmlGrid::List
     else
       name = model.article_name
     end
-    name.force_encoding('utf-8') if name
+    name.to_s.force_encoding('utf-8') if name
   end
   def companyname(model = @model, session = @session)
     if model.companyname.respond_to?(session.language)
@@ -119,7 +120,7 @@ class SearchedList < HtmlGrid::List
     else
       name = model.companyname
     end
-    name.force_encoding('utf-8') if name
+    name.to_s.force_encoding('utf-8') if name
   end
   def size(model = @model, session = @session)
     if model.size.respond_to?(session.language)
@@ -127,7 +128,7 @@ class SearchedList < HtmlGrid::List
     else
       size = model.size
     end
-    size.force_encoding('utf-8') if size
+    size.to_s.force_encoding('utf-8') if size
   end
   def compose_list(model = @model, offset=[0,0])
     # Grouping products with migel_code

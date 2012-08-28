@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -348,7 +348,11 @@ module ODDB
             model,
             (model.product_text.to_s.force_encoding('utf-8') if(model.respond_to?(:product_text))),
           ].compact.collect { |item|
-            item.send(@session.language)
+            if item.is_a? String
+              item
+            elsif item.respond_to?(@session.language)
+              item.send(@session.language).to_s
+            end.force_encoding('utf-8')
           }.join(': ').gsub("\n", ' ')
           if(name.size > 60)
             name = name[0,57] << '...'
@@ -356,7 +360,7 @@ module ODDB
           name.gsub!(/,\s*\d*\s*\%.*/, '')
           link.href = if @session.state.respond_to?(:interval) and range = @session.state.interval
             "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_alphabetical/range/#{range}"
-                      elsif query = @session.user_input(:search_query) 
+                      elsif query = @session.user_input(:search_query)
             "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/search/zone/migel/search_query/#{query}"
                       end
         end
@@ -413,8 +417,9 @@ module ODDB
           if(u = model.unit)
             unit = u.send(@session.language)
           end
-          unit.force_encoding('utf-8') if unit
-          [ '&nbsp;(', model.qty.to_s, unit, ')' ].compact.join(' ')
+          unit.to_s.force_encoding('utf-8') if unit
+          qty = model.qty.to_s.force_encoding('utf-8')
+          [ '&nbsp;(', qty, unit, ')' ].compact.join(' ')
         end
       end
 			def square(key, square=nil)
@@ -431,8 +436,8 @@ module ODDB
         url  = ''
         if model.is_a?(DRb::DRbObject)
           # in the case of migel items
-          base = model.localized_name(session.language).force_encoding('utf-8')
-          code = model.pharmacode.force_encoding('utf-8')
+          base = model.localized_name(session.language).to_s.force_encoding('utf-8')
+          code = model.pharmacode.to_s.force_encoding('utf-8')
           url  = @lookandfeel._event_url(:migel_search, {:migel_pharmacode => code})
         else
           base = model.name_base
