@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Prescription -- oddb.org -- 27.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Prescription -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -361,7 +361,7 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
   def init
     super
     self.onload = "document.getElementById('searchbar').focus();"
-    @index_name = 'oddb_package_name_with_size_and_ean13'
+    @index_name = 'oddb_package_name_with_size_company_name_and_ean13'
     @additional_javascripts = []
   end
   def javascripts(context)
