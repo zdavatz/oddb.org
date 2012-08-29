@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Result -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
@@ -15,7 +15,6 @@ require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resultfoot'
 require 'view/lookandfeel_components'
-
 require 'view/facebook'
 
 module ODDB
@@ -41,7 +40,7 @@ class List < HtmlGrid::List
     :google_search       => 'list',
     :limitation_text     => 'list',
     :migel_code          => 'list',
-    :facebook            => 'list',
+    :facebook            => 'list right',
     :notify              => 'list',
     :price               => 'list right',
     :product_description => 'list',
@@ -78,7 +77,9 @@ class List < HtmlGrid::List
     super
   end
   def facebook(model=@model, session=@session)
-    facebook_share(model, session, @facebook_link)
+    code = model.migel_code.to_s.force_encoding('utf-8')
+    facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => code.gsub(/\./, '')})
+    [facebook_share(model, session, facebook_link), '&nbsp;']
   end
   def limitation_link(model)
     code = model.migel_code.to_s.force_encoding('utf-8')
@@ -125,9 +126,8 @@ class List < HtmlGrid::List
   end
   def migel_code(model)
     code = model.migel_code.to_s.force_encoding('utf-8')
-    @facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => code.gsub(/\./, '')})
     if model.respond_to?(:items) and items = model.items and !items.empty?
-    # If a migelid has only inactive products, link to empty result
+      # If a migelid has only inactive products, link to empty result
       link = PointerLink.new(:to_s, model, @session, self)
       link.value = code
       link.href  = @lookandfeel._event_url(:migel_search, {:migel_code => code.gsub(/\./, '')})
@@ -186,8 +186,15 @@ class ResultComposite < HtmlGrid::Composite
   }
 end
 class Result < View::PrivateTemplate
+  include View::Facebook
   CONTENT = ResultComposite
   SNAPBACK_EVENT = :result
+  def to_html(context)
+    # load javascript-sdk of fb in body
+    html = super
+    html = facebook_sdk + html
+    html
+  end
 end
 class EmptyResultForm < HtmlGrid::Form
   COMPONENTS = {
