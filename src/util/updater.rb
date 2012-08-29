@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -11,6 +11,7 @@ require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/dosing'
 require 'plugin/drugbank'
+require 'plugin/divisibility'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -271,6 +272,11 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo2 '#{companies.join(', ')}'",
                            :import_company2, [companies]
+    end
+    def update_teilbarkeit(path)
+      update_notify_simple DivisibilityPlugin,
+                           "Teilbarkeit (CSV)",
+                           :update_from_csv, [path]
     end
     def update_textinfo_news
       update_notify_simple TextInfoPlugin,

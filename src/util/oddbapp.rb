@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 09.08.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -48,7 +48,7 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
   attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
-    :companies, :doctors, :experiences, :fachinfos, :galenic_groups,
+    :companies, :divisions, :doctors, :experiences, :fachinfos, :galenic_groups,
     :hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
@@ -69,6 +69,7 @@ class OddbPrevalence
 		@companies ||= {}
 		@currency_rates ||= {}
 		@cyp450s ||= {}
+    @divisions ||= {}
 		@doctors ||= {}
     @experiences ||= {}
 		@fachinfos ||= {}
@@ -330,6 +331,10 @@ class OddbPrevalence
 		company = ODDB::Company.new
 		@companies.store(company.oid, company)
 	end
+  def create_division
+    div = ODDB::Division.new
+    @divisions.store(div.oid, div)
+  end
 	def create_doctor
 		doctor = ODDB::Doctor.new
 		@doctors ||= {}
@@ -578,6 +583,9 @@ class OddbPrevalence
 			substance
 		end
 	end
+  def division(oid)
+    @divisions[oid.to_i]
+  end
 	def doctor(oid)
 		@doctors[oid.to_i]
 	end
