@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -180,6 +180,11 @@ class OddbPrevalence
 		}
 		active
 	end
+  def active_packages
+    @registrations.inject([]) { |pacs, (iksnr,reg)|
+      pacs.concat(reg.active_packages)
+    }
+  end
 	def address_suggestion(oid)
 		@address_suggestions[oid.to_i]
 	end
