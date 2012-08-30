@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::DivisibilityPlugin -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
+# ODDB::DivisibilityPlugin -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
@@ -35,7 +35,7 @@ module ODDB
       if File.exists?(path) and File.extname(path) == '.csv'
         @updated_divisibilities = []
         @updated_sequences      = []
-        CSV.foreach(path, 'r:utf-8') do |row|
+        CSV.foreach(path, :encoding => 'UTF-8', :col_sep => ';') do |row|
           iksnr = ikscd = nil
           if ean = row[0] and /^\d{13}/u =~ ean
             iksnr = ean[4..8]
