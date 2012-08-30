@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Sequence -- oddb -- 04.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Sequence -- oddb -- 30.08.2012 -- yasaka@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/value'
@@ -34,6 +34,7 @@ class DivisionComposite < HtmlGrid::Composite
     [0,3] => 'list',
     [0,4] => 'list',
     [0,5] => 'list',
+    [0,6] => 'list',
   }
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
@@ -53,7 +54,9 @@ class DivisionComposite < HtmlGrid::Composite
     HtmlGrid::Value.new(:notes, model, session, self)
   end
   def source(model, session)
-    HtmlGrid::Value.new(:source, model, session, self)
+    text = HtmlGrid::Value.new(:source, model, session, self)
+    text.label = false
+    text
   end
 end
     end

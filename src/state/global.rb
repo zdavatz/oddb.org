@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 22.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -877,7 +877,7 @@ module ODDB
 					self
         else
           iksnr = @session.user_input(:reg)
-          seqnr = @session.user_input(:seq) 
+          seqnr = @session.user_input(:seq)
           ikscd = @session.user_input(:pack)
           pointer = if (iksnr && seqnr && ikscd) and reg = @session.app.registration(iksnr) \
                       and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)

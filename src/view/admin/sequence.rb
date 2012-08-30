@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Sequence -- oddb.org -- 04.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Sequence -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -243,6 +243,8 @@ class RootDivisionComposite < HtmlGrid::Composite
     [0,3] => 'list',
     [0,4] => 'list',
     [0,5] => 'list',
+    [0,6] => 'list',
+    [0,7] => 'list',
   }
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
@@ -288,6 +290,7 @@ class RootDivisionComposite < HtmlGrid::Composite
   end
   def source(model, session)
     textarea = HtmlGrid::Textarea.new(:division_source, model, @session, self)
+    textarea.label = false
     textarea.set_attribute('class', 'huge')
     if model
       textarea.value = model.source
@@ -306,7 +309,7 @@ class RootDivisionComposite < HtmlGrid::Composite
     link
   end
 end
-module SequencePackageList 
+module SequencePackageList
 	include DataFormat
   include PartSize
 	COMPONENTS = {
