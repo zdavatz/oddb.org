@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 27.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 31.08.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -4391,16 +4391,17 @@ Zeno Davatz
     end
     def compare_list_components
       {
-        [0,0] => :fachinfo,
-        [1,0] => :patinfo,
-        [2,0] => :name_base,
-        [3,0] => :company_name,
-        [4,0] => :comparable_size,
-        [5,0] => :compositions,
-        [6,0] => :price_public,
-        [7,0] => :price_difference,
-        [8,0] => :deductible,
-        [9,0] => :ddd_price,
+        [0,0]  => :prescription,
+        [1,0]  => :fachinfo,
+        [2,0]  => :patinfo,
+        [3,0]  => :name_base,
+        [4,0]  => :company_name,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference,
+        [9,0]  => :deductible,
+        [10,0] => :ddd_price,
       }
     end
     def comparison_sorter

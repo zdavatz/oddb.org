@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::Compare -- oddb.org -- 31.08.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Compare -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Drugs::Compare -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
@@ -21,21 +22,22 @@ class CompareList < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {}
 	CSS_CLASS = 'composite'
-	CSS_KEYMAP = {
-		:active_agents     => 'list italic',
-		:company_name			 => 'list italic',
-		:comparable_size	 => 'list',
-		:compositions      =>	'list italic',
-		:ddd_price				 => 'list right',
-		:deductible				 => 'list right',
+  CSS_KEYMAP = {
+    :active_agents     => 'list italic',
+    :company_name      => 'list italic',
+    :comparable_size   => 'list',
+    :compositions      => 'list italic',
+    :ddd_price         => 'list right',
+    :deductible        => 'list right',
+    :prescription      => 'list',
     :fachinfo          => 'list',
-		:ikscat						 => 'list italic',
-		:most_precise_dose => 'list right',
-		:name_base				 => 'list big',
+    :ikscat            => 'list italic',
+    :most_precise_dose => 'list right',
+    :name_base         => 'list big',
     :patinfo           => 'list',
-		:price_difference	 => 'list bold right',
-		:price_public			 => 'list pubprice',
-	}
+    :price_difference  => 'list bold right',
+    :price_public      => 'list pubprice',
+  }
 	CSS_HEAD_KEYMAP = {
 		:active_agents     => 'th',
 		:company_name			 => 'th',
