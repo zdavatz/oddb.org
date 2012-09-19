@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -26,6 +26,7 @@ require 'state/drugs/compare_search'
 require 'state/drugs/ddd'
 require 'state/drugs/ddd_price'
 require 'state/drugs/fachinfo'
+require 'state/drugs/fachinfo_search'
 require 'state/drugs/fachinfos'
 require 'state/drugs/feedbacks'
 require 'state/drugs/minifi'
@@ -172,6 +173,7 @@ module ODDB
           :ddd_chart              => State::Ajax::DDDChart,
           :ddd_price              => State::Drugs::DDDPrice,
           :download_export        => State::User::DownloadExport,
+          :fachinfo_search        => State::Drugs::FachinfoSearch,
           :fachinfos              => State::Drugs::Fachinfos,
           :fipi_offer_input       => State::User::FiPiOfferInput,
           :help                   => State::User::Help,

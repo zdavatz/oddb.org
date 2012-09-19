@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Ajax::Matches -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
+# ODDB::State::Ajax::Matches -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 
 require 'state/ajax/global'
 require 'view/ajax/json'

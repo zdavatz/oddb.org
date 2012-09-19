@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -14,6 +14,7 @@ require 'fileutils'
 module ODDB
   class Session < SBSM::Session
 		attr_accessor :desired_state
+    attr_reader :request
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"

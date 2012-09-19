@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 21.08.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -77,6 +77,9 @@ module ODDB
 			:search_type	=>	['st_oddb', 'st_sequence', 
         'st_substance', 'st_company', 'st_indication', 'st_interaction',
         'st_unwanted_effect', 'st_registration', 'st_pharmacode' ],
+      :fachinfo_search_type => [
+        'fi_usage', 'fi_interactions', 'fi_unwanted_effects'
+      ],
 			:fi_status		=>	['false', 'true'],
       :generic_type    => [nil, 'generic', 'original'],
       :sl_generic_type => [nil, 'generic', 'original'],
@@ -127,6 +130,7 @@ module ODDB
 			:ajax,
 			:ajax_autofill,
       :ajax_add_drug,
+      :ajax_add_fi,
       :ajax_create_active_agent,
       :ajax_create_composition,
       :ajax_create_fachinfo_link,
@@ -180,6 +184,7 @@ module ODDB
 			:effective_substances,
 			:export_csv,
       :fachinfo,
+      :fachinfo_search,
 			:fachinfos,
 			:feedbacks,
 			:fipi_offer_input,
@@ -393,6 +398,7 @@ module ODDB
 			:en,
 			:equivalent_substance,
       :experience,
+      :fachinfo_search_term,
 			:fax,
       :buy, # file
 			:fi_update,

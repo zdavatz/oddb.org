@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Compare -- oddb.org -- 31.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Compare -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Compare -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Drugs::Compare -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 

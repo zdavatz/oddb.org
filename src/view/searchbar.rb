@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
@@ -95,12 +95,23 @@ require(['dojo/ready'], function(ready) {
     html << super(context)
   end
 end
-class PrescriptionDrugSearchBar < HtmlGrid::InputText
-  def init
-    super
-    id  = 'prescription_searchbar'
-    val = @session.lookandfeel.lookup(:add_drug)
+module SearchBarMethods
+	def search_type(model, session=@session)
+		select = HtmlGrid::Select.new(:search_type, model, @session, self)
+		if(@lookandfeel.respond_to?(:search_type_selection))
+			select.valid_values = @lookandfeel.search_type_selection
+		end
+		select.set_attribute('onChange', 'this.form.onsubmit();')
+		select.selected = @session.persistent_user_input(:search_type)
+		select
+	end
+end
+module InstantSearchBarMethods
+  def xhr_request_init(keyword)
+    target = keyword.intern
+    id  = "#{target}_searchbar"
     url = @session.lookandfeel.event_url(:ajax_add_drug)
+    val = @session.lookandfeel.lookup(:add_drug)
     @container.additional_javascripts.push <<-EOS
 function xhrGet(arg) {
   var ean13 = (arg.match(/^(\\d{13})$/)||[])[1];
@@ -114,7 +125,7 @@ function initMatches() {
   var searchbar = dojo.byId('#{id}');
   searchbar.value = '#{val}';
   dojo.connect(searchbar, 'onkeypress', function(e) {
-    var popup = dojo.byId('prescription_searchbar_popup');
+    var popup = dojo.byId('#{target}_searchbar_popup');
     if(popup && popup.style.overflowX.match(/auto/) && e.keyCode == dojo.keys.ENTER) {
       xhrGet(searchbar.value);
       searchbar.value = '';
@@ -128,7 +139,7 @@ function initMatches() {
   });
 }
 function selectXhrRequest() {
-  var popup = dojo.byId('prescription_searchbar_popup');
+  var popup = dojo.byId('#{target}_searchbar_popup');
   var searchbar = dojo.byId('#{id}');
   if(!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     xhrGet(searchbar.value);
@@ -142,8 +153,8 @@ require(['dojo/ready'], function(ready) {
 });
     EOS
     @attributes.update 'data-dojo-type' => 'dijit.form.ComboBox',
-                       'jsId'           => 'prescription_searchbar',
-                       'id'             => 'prescription_searchbar',
+                       'jsId'           => "#{target}_searchbar",
+                       'id'             => "#{target}_searchbar",
                        'store'          => 'search_matches',
                        'queryExpr'      => '${0}',
                        'searchAttr'     => 'search_query', # name
@@ -166,16 +177,19 @@ require(['dojo/ready'], function(ready) {
     html << super(context)
   end
 end
-module SearchBarMethods
-	def search_type(model, session=@session)
-		select = HtmlGrid::Select.new(:search_type, model, @session, self)
-		if(@lookandfeel.respond_to?(:search_type_selection))
-			select.valid_values = @lookandfeel.search_type_selection
-		end
-		select.set_attribute('onChange', 'this.form.onsubmit();')
-		select.selected = @session.persistent_user_input(:search_type)
-		select
-	end
+class PrescriptionDrugSearchBar < HtmlGrid::InputText
+  include InstantSearchBarMethods
+  def init
+    super
+    xhr_request_init(:prescription)
+  end
+end
+class FachinfoSearchDrugSearchBar < HtmlGrid::InputText
+  include InstantSearchBarMethods
+  def init
+    super
+    xhr_request_init(:fachinfo_search)
+  end
 end
 class SelectSearchForm < HtmlGrid::DivForm
   include SearchBarMethods

@@ -505,7 +505,15 @@ td.donate {
 }
 td.button {
 	padding-bottom : 5px;
-	margin : 5px;
+	margin         : 5px;
+}
+td.inner-button {
+	padding : 5px 0 5px 5px;
+	margin  : 5px;
+}
+td.selection {
+	padding : 5px 0;
+	margin  : 5px;
 }
 td.explain {
 	padding: 4px;
@@ -997,26 +1005,32 @@ a.footnote {
   padding: 4px;
 	white-space: nowrap;
 }
-form#prescription_form label {
+form#prescription_form label,
+form#fachinfo_search_form label {
   font-weight: normal;
 }
 div#widget_searchbar,
-div#widget_prescription_searchbar {
+div#widget_prescription_searchbar,
+div#widget_fachinfo_search_searchbar {
   padding: 2px;
-  border: 1px solid ButtonShadow;
-  width: 260px;
+  border:  1px solid ButtonShadow;
+  width:   260px;
 }
-div#widget_prescription_searchbar {
+div#widget_prescription_searchbar,
+div#widget_fachinfo_search_searchbar {
   width: 400px;
 }
 #searchbar_popup,
-#prescription_searchbar_popup {
+#prescription_searchbar_popup,
+#fachinfo_search_searchbar_popup {
   border: 1px solid ButtonShadow;
 }
 #searchbar_popup .dijitMenuItemHover,
 #searchbar_popup .dijitMenuItemSelected,
 #prescription_searchbar_popup .dijitMenuItemHover,
-#prescription_searchbar_popup .dijitMenuItemSelected {
+#prescription_searchbar_popup .dijitMenuItemSelected,
+#fachinfo_search_searchbar_popup .dijitMenuItemHover,
+#fachinfo_search_searchbar_popup .dijitMenuItemSelected {
 	background-color: #ccff99;
-  color: black;
+  color:            black;
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 31.08.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -742,6 +742,10 @@ Zeno Davatz
 				:fachinfo_upload					=>	'Fachinfo-Upload',
 				:fachinfo_yaml_gz					=>	'fachinfo.yaml.gz',
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
+				:fachinfo_search                                        =>      'FI erweitert',
+				:fachinfo_search_description                            =>      'Medikamente bestimmen, FI Kapitel wählen, Suchberiff nach welchem innerhalb des FI-Kapitels gesucht werden soll eingeben und dann das Resultat anzeigen.',
+				:fachinfo_search_term                                   =>      'Suchbegriff eingeben',
+				:fachinfo_search_type                                   =>      'Kapitel in der Fachinfo wählen',
 				:false										=>	'Nein',
 				:faq_link									=>	'FAQ',
 				:faq_pagename							=>	'ODDB.FragenUndAntworten',
