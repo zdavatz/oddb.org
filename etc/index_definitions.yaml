@@ -354,3 +354,12 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.active_packages'
 fulltext: false
+--- !ruby/object:ODBA::IndexDefinition
+index_name: 'oddb_package_name_with_size_company_name_ean13_fi'
+origin_klass: 'ODDB::Package'
+target_klass: 'ODDB::Package'
+resolve_search_term: 'name_with_size_company_name_and_ean13'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.active_packages_has_fachinfo'
+fulltext: false

@@ -185,6 +185,11 @@ class OddbPrevalence
       pacs.concat(reg.active_packages)
     }
   end
+  def active_packages_has_fachinfo
+    @registrations.inject([]) { |pacs, (iksnr,reg)|
+      pacs.concat(reg.active_packages.select{|pac| pac.has_fachinfo?})
+    }
+  end
 	def address_suggestion(oid)
 		@address_suggestions[oid.to_i]
 	end

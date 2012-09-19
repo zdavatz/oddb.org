@@ -14,7 +14,9 @@ class Matches < Global
     index = @session.user_input(:index_name) || 'sequence_index_exact'
     if (term = @session.user_input(:search_query)) && term.is_a?(String)
       terms = ODBA.cache.index_matches(index, term)
-      if index == 'oddb_package_name_with_size_company_name_and_ean13'
+      case index
+      when 'oddb_package_name_with_size_company_name_and_ean13',
+           'oddb_package_name_with_size_company_name_ean13_fi'
         terms.collect! do |term|
           str = (term.match(/^(.+),\s(\d{13})$/)||[])
           { :search_query => str[2], :drug => str[1] }
