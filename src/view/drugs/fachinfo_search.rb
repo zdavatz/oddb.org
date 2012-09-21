@@ -4,14 +4,6 @@
 require 'csv'
 require 'cgi'
 require 'htmlentities'
-#require 'htmlgrid/errormessage'
-#require 'htmlgrid/infomessage'
-#require 'htmlgrid/select'
-#require 'htmlgrid/textarea'
-#require 'htmlgrid/inputtext'
-#require 'htmlgrid/inputcheckbox'
-#require 'htmlgrid/inputradio'
-#require 'htmlgrid/component'
 require 'view/drugs/privatetemplate'
 require 'view/drugs/centeredsearchform'
 require 'view/additional_information'
@@ -108,12 +100,6 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
     @value = []
     @drugs = @session.persistent_user_input(:drugs)
     if @drugs and !@drugs.empty?
-      #if @session.request.request_method == "POST"
-        #@drugs.values
-      #else
-        #[@drugs.values.pop]
-      #end
-      
       @drugs.values.each do |pac|
         @value << FachinfoSearchDrug.new(pac, @session, self)
       end
@@ -123,7 +109,7 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
     unless @value.empty?
       html = super
     else
-      html = '' # ommit <div> tag
+      html = ''
     end
     div = HtmlGrid::Div.new(@model, @session, self)
     div.set_attribute('id', 'drugs')
@@ -131,7 +117,7 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
     html
   end
 end
-class FachinfoSearchDrugSearchForm < HtmlGrid::Composite # see View::Drugs::CenteredComperSearchForm
+class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
   attr_reader :index_name
   FORM_METHOD = 'POST'
   COMPONENTS = {
@@ -193,7 +179,7 @@ class FachinfoSearchForm < View::Form
     [0,0] => 'fachinfo_search_description',
     [0,1] => View::Drugs::FachinfoSearchDrugDiv,
     [0,2] => View::Drugs::FachinfoSearchDrugSearchForm,
-    [0,3] => :button,
+    [0,3] => :buttons,
     [0,4] => '&nbsp;',
   }
   CSS_MAP = {
@@ -206,8 +192,13 @@ class FachinfoSearchForm < View::Form
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
-  def button(model, session)
-    post_event_button(:search)
+  def buttons(model, session)
+    [
+      post_event_button(:search),
+      '&nbsp;',
+      '&nbsp;',
+      post_event_button(:export_csv),
+    ]
   end
   private
   def init
@@ -319,7 +310,10 @@ class FachinfoSearchCsv < HtmlGrid::Component
     @coder = HTMLEntities.new
   end
   def http_headers
-    name << Date.today.strftime("%d.%m.%Y")
+    name = 'FI_' +
+           lookup(user_input(:type)) + '_' +
+           user_input(:term) + '_' +
+           Date.today.strftime("%d.%m.%Y")
     {
       'Content-Type'        => 'text/csv',
       'Content-Disposition' => "attachment;filename=#{name}.csv",
@@ -327,6 +321,17 @@ class FachinfoSearchCsv < HtmlGrid::Component
   end
   def to_csv
     @lines = []
+    drugs = @session.persistent_user_input(:drugs)
+    @model.each do |model|
+      if pac = drugs[model[:ean13]]
+        @lines << [
+          model[:ean13],
+          pac.pharmacode,
+          pac.name_with_size,
+          model[:text],
+        ]
+      end
+    end
     csv = ''
     @lines.collect do |line|
       csv << CSV.generate_line(line, {:col_sep => ';'})
@@ -338,42 +343,15 @@ class FachinfoSearchCsv < HtmlGrid::Component
   end
   private
   def user_input(attr)
-    key = "_#{attr}".to_sym
+    key = "fachinfo_search_#{attr}".to_sym
     input = @session.user_input(key)
-    case input
-    when String
-      # pass
-    when Hash
-       if element = input[@index] and !element.empty?
-         input = element
-       else
-         input = nil
-       end
-    else
-      input = nil
-    end
-    input = @coder.decode(input).gsub(/;/, ' ') if input.class == String
+    input = @coder.decode(input).gsub(/[\.\s]/, '')
     input
   end
   def lookup(attr)
-    key = "_#{attr}".to_sym
+    key = attr.to_sym
     if value = @lookandfeel.lookup(key)
       @coder.decode(value)
-    end
-  end
-  def insert_blank
-    if !@lines.last or !@lines.last.empty?
-      @lines << []
-    end
-  end
-  def extract(pack)
-    COMPONENTS.collect do |key|
-      value = if(self.respond_to?(key))
-        self.send(key, pack)
-      else
-        pack.send(key)
-      end.to_s
-      value.empty? ? nil : value
     end
   end
 end

@@ -49,31 +49,11 @@ class FachinfoSearch < State::Drugs::Global
     FachinfoSearchDrug.new(@session, @model)
   end
   def export_csv
+    @model = match_term
     FachinfoSearchCsvExport.new(@session, @model)
   end
   def search
-    @model = []
-    if ean13s = @session.persistent_user_input(:drugs) and
-       ean13s.is_a? Hash
-      chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
-      term    = @session.user_input(:fachinfo_search_term)
-      hits    = []
-      ean13s.keys.each do |ean13|
-        pac = package_for(ean13)
-        doc = pac.fachinfo.description(@session.language)
-        if doc.respond_to?(chapter)
-          desc = doc.send(chapter).to_s
-          if match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
-             !match.empty?
-            hits << {
-              :ean13 => ean13,
-              :text  => match.join("\n")
-            }
-          end
-        end
-      end
-      @model = hits
-    end
+    @model = match_term
     FachinfoSearch.new(@session, @model)
   end
   private
@@ -88,6 +68,29 @@ class FachinfoSearch < State::Drugs::Global
        pack = @session.app.package_by_ikskey($2 + $3)
       pack
     end
+  end
+  def match_term
+    hits = []
+    if ean13s = @session.persistent_user_input(:drugs) and
+       ean13s.is_a? Hash
+      chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
+      term    = @session.user_input(:fachinfo_search_term)
+      ean13s.keys.each do |ean13|
+        pac = package_for(ean13)
+        doc = pac.fachinfo.description(@session.language)
+        if doc.respond_to?(chapter)
+          desc = doc.send(chapter).to_s
+          if match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
+             !match.empty?
+            hits << {
+              :ean13 => ean13,
+              :text  => match.join("\n")
+            }
+          end
+        end
+      end
+    end
+    hits
   end
 end
     end
