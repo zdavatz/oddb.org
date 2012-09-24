@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 24.09.2012 -- yasaka@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo_search'
@@ -50,7 +50,11 @@ class FachinfoSearch < State::Drugs::Global
   end
   def export_csv
     @model = match_term
-    FachinfoSearchCsvExport.new(@session, @model)
+    if @model.empty?
+      FachinfoSearch.new(@session, @model)
+    else
+      FachinfoSearchCsvExport.new(@session, @model)
+    end
   end
   def search
     @model = match_term
