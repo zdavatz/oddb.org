@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 24.09.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -320,7 +320,15 @@ class FachinfoSearchCsv < HtmlGrid::Component
     }
   end
   def to_csv
-    @lines = []
+    @lines = [
+      [ # header
+        'EAN-Code',
+        'Pharmacode',
+        'Name',
+        'Search Term',
+        'Search Match',
+      ],
+    ]
     drugs = @session.persistent_user_input(:drugs)
     @model.each do |model|
       if pac = drugs[model[:ean13]]
@@ -328,6 +336,7 @@ class FachinfoSearchCsv < HtmlGrid::Component
           model[:ean13],
           pac.pharmacode,
           pac.name_with_size,
+          user_input(:term),
           model[:text],
         ]
       end
