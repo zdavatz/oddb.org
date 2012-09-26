@@ -4,7 +4,7 @@
 # index.rbx -- oddb.org -- hwyss@ywesee.com
 
 # When SBSM is updated, the SBSM lib path should also be updated
-require '/usr/local/lib/ruby/gems/1.9.1/gems/sbsm-1.1.8/lib/sbsm/request'
+require '/usr/local/lib/ruby/gems/1.9.1/gems/sbsm-1.1.9/lib/sbsm/request'
 require 'util/oddbconfig'
 
 DRb.start_service('druby://localhost:0')
