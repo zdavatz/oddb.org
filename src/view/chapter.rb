@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 11.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 26.09.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -226,8 +226,7 @@ module ODDB
       end
       def hidden_fields(context)
         chapter = {'name' => 'chapter', 'value' => @name}
-        html = {'name' => 'html_chapter', 'value' => ''}
-        super << context.hidden(chapter) << context.hidden(html)
+        super << context.hidden(chapter)
       end
     end
     class Links < HtmlGrid::List
