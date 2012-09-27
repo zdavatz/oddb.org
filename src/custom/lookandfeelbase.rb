@@ -2771,7 +2771,7 @@ Zeno Davatz
 				:registration_count				=>	"Nombre d'enregistrements",
 				:registration_date				=>	"Date d'enregistrement",
 				:registration_holder			=>	'Titulaire de l\'autorisation',
-        :remember_me              =>  'Laisser déclaré sur cet ordinateur',
+        :remember_me              =>  'Me reconnecter automatiquement aux prochaines visites avec cet ordinateur',
         :renewal_flag             =>  'En renouvellement',
 				:restriction							=>	'Restriction',
 				:result_item_end					=>	'<!-- RESULT ITEM END -->',
