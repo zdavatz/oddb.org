@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# index.rbx -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# index.rbx -- oddb.org -- 27.09.2012 -- yasaka@ywesee.com
 # index.rbx -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # index.rbx -- oddb.org -- hwyss@ywesee.com
 
