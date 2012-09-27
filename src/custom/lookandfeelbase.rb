@@ -3760,7 +3760,7 @@ Zeno Davatz
 				:migel_alphabetical				=>	'MiGel A-Z',
 				:migel_code								=>	'MiGel-Code',
 				:migel_count_text					=>	'Positions',
-				:migel_search_explain			=>	'',
+				:migel_search_explain			=>	'Search the devices list of Switzerland by devices reimbursed by the public health insurance',
         :minifi                   =>  'Short Information for Professionals',
         :minifi_feed_description  =>  'The newest drugs in the swiss healthcare market (german and french only)',
         :minifi_feed_title        =>  'Drug-News from ODDB.org',
