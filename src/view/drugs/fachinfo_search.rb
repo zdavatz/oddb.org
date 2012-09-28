@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 24.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -124,6 +124,7 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
     [0,0] => :searchbar,
     [0,1] => :chapter_type,
     [0,2] => :search_term,
+    [1,2] => :full_text,
   }
   SYMBOL_MAP = {
     :searchbar => View::FachinfoSearchDrugSearchBar,
@@ -131,7 +132,11 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
   CSS_MAP = {
     [0,0] => 'searchbar',
     [0,1] => 'selection',
-    [0,2] => '',
+    [0,2] => 'list',
+    [1,2] => 'list',
+  }
+  COLSPAN_MAP = {
+    [0,0] => 2,
   }
   def init
     super
@@ -139,8 +144,8 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
     @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
     @additional_javascripts = []
   end
-  def chapter_type(model, session)
-		select = HtmlGrid::Select.new(:fachinfo_search_type, model, @session, self)
+  def chapter_type(model, session=@session)
+		select = HtmlGrid::Select.new(:fachinfo_search_type, model, session, self)
 		select.valid_values = [
       'fachinfo_search_type',
       'fi_usage', 'fi_interactions', 'fi_unwanted_effects'
@@ -148,6 +153,20 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
 		select.selected = @session.user_input(:fachinfo_search_type)
 		select
 	end
+  def full_text(model, session=@session)
+    checkbox = HtmlGrid::InputCheckbox.new(:fachinfo_search_full_text, model, session, self)
+		[checkbox, "&nbsp;", @lookandfeel.lookup(:fachinfo_search_full_text)]
+  end
+  def search_term(model, session=@session)
+    input = HtmlGrid::InputText.new(:fachinfo_search_term, model, session, self)
+    value = @lookandfeel.lookup(:fachinfo_search_term)
+    input.set_attribute('size', 30)
+    input.set_attribute('onFocus', "if (this.value == '#{value}') { value = '' };")
+    input.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
+    term = @session.user_input(:fachinfo_search_term)
+    input.value = term ? term : value
+    input
+  end
   def javascripts(context)
     scripts = ''
     @additional_javascripts.each do |script|
@@ -158,16 +177,6 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
       scripts << context.script(args) do script end
     end
     scripts
-  end
-  def search_term(mohel, session)
-    input = HtmlGrid::InputText.new(:fachinfo_search_term, model, session, self)
-    value = @lookandfeel.lookup(:fachinfo_search_term)
-    input.set_attribute('size', 30)
-    input.set_attribute('onFocus', "if (this.value == '#{value}') { value = '' };")
-    input.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
-    term = @session.user_input(:fachinfo_search_term)
-    input.value = term ? term : value
-    input
   end
   def to_html(context)
     javascripts(context).to_s << super

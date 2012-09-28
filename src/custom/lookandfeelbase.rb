@@ -744,6 +744,7 @@ Zeno Davatz
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
 				:fachinfo_search                                        =>      'FI erweitert',
 				:fachinfo_search_description                            =>      'Medikamente bestimmen, FI Kapitel wählen, Suchberiff nach welchem innerhalb des FI-Kapitels gesucht werden soll eingeben und dann das Resultat anzeigen.',
+				:fachinfo_search_full_text                              =>      'Vollständiger Kapiteltext anzeigen',
 				:fachinfo_search_term                                   =>      'Suchbegriff eingeben',
 				:fachinfo_search_type                                   =>      'Kapitel in der Fachinfo wählen',
 				:false										=>	'Nein',

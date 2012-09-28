@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 24.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo_search'
@@ -79,16 +79,24 @@ class FachinfoSearch < State::Drugs::Global
        ean13s.is_a? Hash
       chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
       term    = @session.user_input(:fachinfo_search_term)
+      is_full = (@session.user_input(:fachinfo_search_full_text) == "1")
       ean13s.keys.each do |ean13|
         pac = package_for(ean13)
         doc = pac.fachinfo.description(@session.language)
         if doc.respond_to?(chapter)
           desc = doc.send(chapter).to_s
-          if match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
-             !match.empty?
+          if is_full and
+             (term == @session.lookandfeel.lookup(:fachinfo_search_term) \
+              or term.empty?)
             hits << {
               :ean13 => ean13,
-              :text  => match.join("\n")
+              :text  => desc,
+            }
+          elsif match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
+                !match.empty?
+            hits << {
+              :ean13 => ean13,
+              :text  => is_full ? desc : match.join("\n"),
             }
           end
         end

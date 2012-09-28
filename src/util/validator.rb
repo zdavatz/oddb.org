@@ -319,6 +319,7 @@ module ODDB
       :exam,
 			:fachinfo_price,
       :fachinfo_index,
+      :fachinfo_search_full_text,
       :factor,
 			:fi_quantity,
 			:index,
