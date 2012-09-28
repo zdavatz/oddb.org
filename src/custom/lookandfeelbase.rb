@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -354,7 +354,7 @@ Zeno Davatz
         :ddd_chart_title1         =>  "",
         :ddd_chart_source         =>  "Quelle: ch.oddb.org",
 				:ddd_dose									=>	"Tagesdosis",
-				:ddd_feature_text					=>	'&nbsp;<span style="color: red;">Neu:</span> mit Daily Drug Doses der <a href="http://www.whocc.no">WHO</a>',
+				:ddd_feature_text                                       =>      '&nbsp;<span style="color: red;">Neu:</span> mit Daily Drug Doses der <a href="http://www.whocc.no">WHO</a>',
 				:ddd_price								=>	'Tageskosten',
         :ddd_price_comparison     =>  'Tageskostenvergleich',
 				:ddd_price_for0           =>	'Tageskosten für ',
@@ -411,7 +411,7 @@ Zeno Davatz
 				:doctors									=>  'Arzt',
 				:doctors_search_explain	  =>	'Suchen Sie nach Arzt oder &Auml;rztin in der Schweiz. Sie k&ouml;nnen nach Name,<br> Adresse, Telefon oder Facharzttitel suchen.',
 				:dose											=>	'St&auml;rke',
-        :dosing                   =>  "Dosisanpassung bei Niereninsuffizienz",
+	:dosing                   =>  "Dosisanpassung bei Niereninsuffizienz",
         :dosing_title             =>  "Wirkstoffliste Dosisanpassung bei Niereninsuffizienz - dosing.de",
 				:download									=>	'Abschicken',
 				:download_credit					=>	'auf Rechnung',
@@ -1103,6 +1103,11 @@ Zeno Davatz
 				:notify_migel_title				=>	'Ich m&ouml;chte folgende Migel-Position weiterleiten: ',
 				:oddbdat_tar_gz						=>	'oddbdat.tar.gz',
 				:oddbdat_zip							=>	'oddbdat.zip',
+
+				:oddb_style_default                                             =>      'oddb.org Default',
+				:oddb_style_blue                                                =>      'Marine Blau',
+				:oddb_style_red                                                 =>      'Wein Rot',
+				:oddb_style_olive                                               =>      'Olive Grün',
         :oddb_de                  =>  'Deutschland',
         :oddb_chde                =>  'Deutschland - Schweiz',
 				:oddb_version							=>	'&nbsp;Commit-ID',
@@ -1176,6 +1181,8 @@ Zeno Davatz
         :screencast_url           =>  'http://www.youtube.com/watch?v=hCzO8J9bYcY',
 				:sl_generic_type				=>	'Original/Generikum',
 				:specialization						=>	'Erlaubnis',
+        :style_chooser             =>  'Farbe',
+        :style_chooser_description =>  'Wählen Sie die Farbe, whelche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert.',
         :pharmacode               =>  'Pharmacode',
 				:phone_label							=>	'Telefon:',
 				:phone										=>	'Telefon:',
@@ -2606,6 +2613,8 @@ Zeno Davatz
 				:paypal_success						=>	'Prêt à télécharger',
 				:specialization						=>	'Permission',
         :sl_generic_type           =>  'Original/G&eacute;n&eacute;rique',
+
+        :style_chooser            =>  'Couleur',
 				:phone_label							=>	'T&eacute;l&eacute;phone:',
 				:phone										=>	'T&eacute;l&eacute;phone:',
         :photo_for                =>  'Photo pour ',
@@ -3856,6 +3865,8 @@ Zeno Davatz
 				:paypal_success						=>	'Ready for download',
 				:specialization						=>	'Permission',
         :sl_generic_type           =>  'Original/Generic',
+
+        :style_chooser            =>  'Color',
 				:phone_label							=>	'Phone:',
 				:phone										=>	'Phone:',
 	:photo_for                =>  'Image for ',
@@ -4351,6 +4362,24 @@ Zeno Davatz
 				'href'	=>	'http://www.yaml.org',
 				'target'=>	'_blank',
 			},
+			:styles => {
+			  'default' => {
+			    :deep  => '#2ba576',
+			    :light => '#ccff9a',
+			  },
+			  'blue' => {
+			    :deep  => '#0000ff',
+			    :light => '#a0a0ff',
+			  },
+			  'red' => {
+			    :deep  => '#501616',
+			    :light => '#d35f5f',
+			  },
+			  'olive' => {
+			    :deep  => '#747400',
+			    :light => '#c2c261',
+			  },
+			}
 		}
 		RESOURCES = {
 			:banner									=>	'banner.gif',

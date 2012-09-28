@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -76,6 +76,7 @@ require 'state/migel/items'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
+require 'state/user/style_chooser'
 require 'state/user/download'
 require 'state/user/download_item'
 require 'state/user/download_export'
@@ -166,6 +167,7 @@ module ODDB
           :api_search             => State::Drugs::ApiSearch,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
           :data                   => State::User::DownloadItem,
+          :style_chooser          => State::User::StyleChooser,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
@@ -296,6 +298,13 @@ module ODDB
 					export_csv.checkout
 				end
 			end
+      def style_navigation
+        unless @session.lookandfeel.disabled?(:style_link)
+          [State::User::StyleChooser]
+        else
+          []
+        end
+      end
       def company
         if (oid = @session.user_input(:oid) and model = @session.app.company(oid)) \
           or (ean = @session.user_input(:ean) and model = @session.search_companies(ean).sort_by{|c| c.oid.to_i}.last)
@@ -447,12 +456,13 @@ module ODDB
         }
         nextstate
 			end
-			def navigation
-				#+ zone_navigation \
-				help_navigation \
-				+ user_navigation \
-				+ home_navigation
-			end
+      def navigation
+        #+ zone_navigation \
+        style_navigation \
+         + help_navigation \
+         + user_navigation \
+         + home_navigation
+      end
 			def password_reset
 				keys = [:token, :email]
 				input = user_input(keys, keys)
@@ -970,7 +980,7 @@ module ODDB
 				unless(hash.is_a?(Hash))
 					hash = {keys.first => hash}
 				end
-				keys.each { |key| 
+				keys.each { |key|
 					carryval = nil
 					value = hash[key]
 					if(value.is_a? RuntimeError)

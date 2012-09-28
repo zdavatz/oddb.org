@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::PublicTemplate -- oddb -- 06.04.2012 -- yasaka@ywesee.com 
+# View::PublicTemplate -- oddb -- 28.09.2012 -- yasaka@ywesee.com
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/template'
@@ -64,7 +64,14 @@ module ODDB
 				if(@lookandfeel.enabled?(:external_css, false))
 					super(context, @lookandfeel.resource_external(:external_css))
 				else
-					super
+					link = super
+          if @session.flavor == Session::DEFAULT_FLAVOR and
+             style = @session.get_cookie_input(:style) and
+             style != "default" and
+             @lookandfeel.attributes(:styles).keys.include?(style)
+            link.gsub!(/oddb\.css/, "oddb-#{style}.css")
+          end
+          link
 				end
 			end
       def dynamic_html_headers(context)
