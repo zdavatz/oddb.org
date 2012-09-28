@@ -38,6 +38,10 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * Masaomi Hatakeyama
 * Hanney Wyss (up to Version 1.0)
 
+== FRENCH TRANSLATION HELP
+
+* Herve Robin
+
 == LICENSE:
 
 * GPLv2.1
