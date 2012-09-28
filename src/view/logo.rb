@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Logo -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
 # ODDB::View::Logo -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
@@ -10,14 +11,21 @@ module ODDB
 		class PopupLogo < HtmlGrid::Component
 			CSS_CLASS = 'logo'
 			LOGO_KEY = :logo
-			def init
-				super
-				if(@lookandfeel)
-					@attributes.update(@lookandfeel.attributes(self::class::LOGO_KEY))
-					@attributes['src'] = zone_logo_src(self::class::LOGO_KEY)
-					@attributes['alt'] = @lookandfeel.lookup(self::class::LOGO_KEY)
-				end
-			end
+      def init
+        super
+        if(@lookandfeel)
+          @attributes.update(@lookandfeel.attributes(self::class::LOGO_KEY))
+          src = zone_logo_src(self::class::LOGO_KEY)
+          if @session.flavor == Session::DEFAULT_FLAVOR and
+             style = @session.get_cookie_input(:style) and
+             style != "default" and
+             @lookandfeel.attributes(:styles).keys.include?(style)
+            src.gsub!(/logo\.png/, "logo_#{style}.png")
+          end
+          @attributes['src'] = src
+          @attributes['alt'] = @lookandfeel.lookup(self::class::LOGO_KEY)
+        end
+      end
 			def to_html(context)
         link_attrs = if attrs = @lookandfeel.attributes(:logo) and href = attrs['href']
                        { "href"	=> href }
