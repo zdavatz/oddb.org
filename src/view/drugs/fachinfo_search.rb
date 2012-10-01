@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -278,7 +278,7 @@ class FachinfoSearchComposite < HtmlGrid::Composite
 end
 class FachinfoSearch < View::PrivateTemplate
   CONTENT = View::Drugs::FachinfoSearchComposite
-  SNAPBACK_EVENT = :result
+  SNAPBACK_EVENT = :home
   JAVASCRIPTS = ['admin']
   def init
     # warm up
@@ -288,21 +288,14 @@ class FachinfoSearch < View::PrivateTemplate
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
-    link = HtmlGrid::Link.new(:result, model, @session, self)
+    link = HtmlGrid::Link.new(:home, model, @session, self)
     link.css_class = "list"
-    query = @session.persistent_user_input(:search_query)
-    if query and !query.is_a?(SBSM::InvalidDataError)
-      args = [
-        :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
-        @session.persistent_user_input(:search_type) || 'st_oddb',
-      ]
-      link.href = @lookandfeel._event_url(:search, args)
-      link.value = @lookandfeel.lookup(:result)
-    end
+    link.href  = @lookandfeel._event_url(:home, [])
+    link.value = @lookandfeel.lookup(:home)
     fields << link
     fields << '&nbsp;-&nbsp;'
     span = HtmlGrid::Span.new(model, session, self)
-    span.value = @lookandfeel.lookup(:fachinfo_search_title)
+    span.value = @lookandfeel.lookup(:fachinfo_search)
     span.set_attribute('class', 'bold')
     fields << span
     fields
