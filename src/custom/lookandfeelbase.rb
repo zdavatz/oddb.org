@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -742,11 +742,12 @@ Zeno Davatz
 				:fachinfo_upload					=>	'Fachinfo-Upload',
 				:fachinfo_yaml_gz					=>	'fachinfo.yaml.gz',
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
-				:fachinfo_search          =>      'FI erweitert',
-				:fachinfo_search_description =>      'Medikamente bestimmen, FI Kapitel wählen, Suchberiff nach welchem innerhalb des FI-Kapitels gesucht werden soll eingeben und dann das Resultat anzeigen.',
-				:fachinfo_search_full_text  =>      'Vollständiger Kapiteltext anzeigen',
-				:fachinfo_search_term     =>      'Suchbegriff eingeben',
-				:fachinfo_search_type     =>      'Kapitel in der Fachinfo wählen',
+				:fachinfo_search                                        =>      'FI erweitert',
+				:fachinfo_search_delete_all                             =>       'Alle löschen',
+				:fachinfo_search_description                            =>      'Medikamente bestimmen, FI Kapitel wählen, Suchberiff nach welchem innerhalb des FI-Kapitels gesucht werden soll eingeben und dann das Resultat anzeigen.',
+				:fachinfo_search_full_text                              =>      'Vollständiger Kapiteltext anzeigen',
+				:fachinfo_search_term                                   =>      'Suchbegriff eingeben',
+				:fachinfo_search_type                                   =>      'Kapitel in der Fachinfo wählen',
 				:false										=>	'Nein',
 				:faq_link									=>	'FAQ',
 				:faq_pagename							=>	'ODDB.FragenUndAntworten',
@@ -2263,6 +2264,7 @@ Zeno Davatz
 				:fachinfo_upload					=>	'Information professionnelle - télécharger',
 				:fachinfo_yaml_gz					=>	'fachinfo.yaml.gz',
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
+				:fachinfo_search_delete_all                             =>       'Supprimer tout',
         :fachinfo_search_description  =>      'Précisez les médicaments, sélectionnez le chapitre de la notice légale d\'information, précisez encore la recherche de ce que vous voulez dans la section de la notice et le résultat devrait ensuite s\'afficher.',
 				:fachinfo_search_full_text => 'Visualiser la section de notice in extenso',
 				:fachinfo_search_term     =>  'Entrez ici un terme de recherche',

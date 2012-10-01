@@ -112,6 +112,13 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
       html = ''
     end
     div = HtmlGrid::Div.new(@model, @session, self)
+    if @drugs and !@drugs.empty?
+      delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
+      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
+      delete_all_link.value = @lookandfeel.lookup(:fachinfo_search_delete_all)
+      delete_all_link.css_class = 'list'
+      div.value = delete_all_link
+    end
     div.set_attribute('id', 'drugs')
     html << div.to_html(context)
     html

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -173,6 +173,7 @@ module ODDB
       :ddd_chart,
       :ddd_price,
 			:delete,
+      :delete_all,
 			:delete_connection_key,
 			:delete_orphaned_fachinfo,
 			:delete_orphaned_patinfo,

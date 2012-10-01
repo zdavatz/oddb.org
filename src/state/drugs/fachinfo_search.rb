@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo_search'
@@ -47,6 +47,17 @@ class FachinfoSearch < State::Drugs::Global
       end
     end
     FachinfoSearchDrug.new(@session, @model)
+  end
+  def delete_all
+    unless error?
+      @session.set_persistent_user_input(:drugs, {})
+      @model = []
+    end
+    self.http_headers = {
+      'Status'   => '303 See Other',
+      'Location' => @session.lookandfeel._event_url(:fachinfo_search, [])
+    }
+    self
   end
   def export_csv
     @model = match_term
