@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 12.04.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 02.10.2012 -- yasaka@ywesee.com
 # ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
@@ -252,9 +252,13 @@ class SwissindexNonpharma < RequestHandler
     }
     migel.update swissindex
   end
+  # 'MiGelCode' is also available for query_key
   def search_migel_table(code, query_key = 'Pharmacode', lang = 'DE')
-    # 'MiGelCode' is also available for query_key
-    agent = Mechanize.new
+    # prod.ws.e-mediat.net use untrusted ssl cert
+    agent = Mechanize.new { |a|
+      a.ssl_version, a.verify_mode = 'SSLv3',
+      OpenSSL::SSL::VERIFY_NONE
+    }
     try_time = 3
     begin
       agent.get(@base_url.gsub(/DE/,lang) + query_key + '=' + code)
