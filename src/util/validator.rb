@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -92,7 +92,7 @@ module ODDB
                          'roa_TD', 'roa_R', 'roa_V'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
 			:search_form  =>  ['plus', 'instant'],
-      :style        =>  ['default', 'blue', 'red', 'olive'],
+      :style        =>  ['default', 'blue', 'red', 'olive', 'purple'],
       :yus_privileges => [ 
         'edit|yus.entities', 
         'grant|login', 

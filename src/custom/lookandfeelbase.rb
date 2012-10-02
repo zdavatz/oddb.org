@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1109,6 +1109,7 @@ Zeno Davatz
 				:oddb_style_blue          =>  'Marine Blau',
 				:oddb_style_red           =>  'Wein Rot',
 				:oddb_style_olive         =>  'Olive Grün',
+        :oddb_style_purple        =>  'Lila Blau',
         :oddb_de                  =>  'Deutschland',
         :oddb_chde                =>  'Deutschland - Schweiz',
 				:oddb_version							=>	'&nbsp;Commit-ID',
@@ -2565,6 +2566,7 @@ Zeno Davatz
         :oddb_style_blue          =>  'bleu marine',
         :oddb_style_red           =>  'Bordeaux',
         :oddb_style_olive         =>  'vert olive',
+        :oddb_style_purple        =>  'violet Bleu',
         :oddb_de                  =>  'Germany',
         :oddb_chde                =>  'Germany - Switzerland',
         :oddb_yaml_gz             =>  'oddb.yaml.gz',
@@ -3853,6 +3855,7 @@ Zeno Davatz
         :oddb_style_blue          =>  'Marine Blue',
         :oddb_style_red           =>  'Bordeaux',
         :oddb_style_olive         =>  'Olive Green',
+        :oddb_style_purple        =>  'Purple Blue',
         :oddb_de                  =>  'Germany',
         :oddb_chde                =>  'Germany - Switzerland',
 				:oddb_yaml_gz							=>	'oddb.yaml.gz',
@@ -4431,6 +4434,10 @@ Zeno Davatz
 			    :deep  => '#747400',
 			    :light => '#c2c261',
 			  },
+        'purple' => {
+          :deep  => '#19245c',
+          :light => '#ddeeff',
+        }
 			}
 		}
 		RESOURCES = {
