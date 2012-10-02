@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Companies::CompanyList -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Companies::CompanyList -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Companies::CompanyList -- oddb.org -- 26.05.2003 -- mhuggler@ywesee.com
 
@@ -70,7 +71,7 @@ module CompanyList
 		link
 	end
 	def contact(model, session=@session)
-		HtmlGrid::MailLink.new('contact_email', model, @session, self)
+		HtmlGrid::MailLink.new('email', model, @session, self)
 	end
 end
 module NewCompany
