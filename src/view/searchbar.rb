@@ -96,15 +96,20 @@ require(['dojo/ready'], function(ready) {
   end
 end
 module SearchBarMethods
-	def search_type(model, session=@session)
-		select = HtmlGrid::Select.new(:search_type, model, @session, self)
-		if(@lookandfeel.respond_to?(:search_type_selection))
-			select.valid_values = @lookandfeel.search_type_selection
-		end
-		select.set_attribute('onChange', 'this.form.onsubmit();')
-		select.selected = @session.persistent_user_input(:search_type)
-		select
-	end
+  def search_type(model, session=@session)
+    select = HtmlGrid::Select.new(:search_type, model, @session, self)
+    if(@lookandfeel.respond_to?(:search_type_selection))
+      select.valid_values = @lookandfeel.search_type_selection
+    end
+    select.set_attribute('onChange', 'this.form.onsubmit();')
+    if type = @session.get_cookie_input(:search_type)
+      select.selected = type
+    end
+    if type = @session.persistent_user_input(:search_type)
+      select.selected = type
+    end
+    select
+  end
 end
 module InstantSearchBarMethods
   def xhr_request_init(keyword)

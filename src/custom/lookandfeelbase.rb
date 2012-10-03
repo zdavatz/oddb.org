@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1109,7 +1109,7 @@ Zeno Davatz
 				:oddb_style_blue          =>  'Marine Blau',
 				:oddb_style_red           =>  'Wein Rot',
 				:oddb_style_olive         =>  'Olive Grün',
-        :oddb_style_purple        =>  'Lila Blau',
+        			:oddb_style_purple        =>  'Lila Blau',
         :oddb_de                  =>  'Deutschland',
         :oddb_chde                =>  'Deutschland - Schweiz',
 				:oddb_version							=>	'&nbsp;Commit-ID',
@@ -1183,7 +1183,6 @@ Zeno Davatz
         :screencast_url           =>  'http://www.youtube.com/watch?v=hCzO8J9bYcY',
 				:sl_generic_type				=>	'Original/Generikum',
 				:specialization						=>	'Erlaubnis',
-        :style_chooser             =>  'Farbe',
         :style_chooser_description =>  'Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert.',
         :pharmacode               =>  'Pharmacode',
 				:phone_label							=>	'Telefon:',
@@ -1255,6 +1254,7 @@ Zeno Davatz
 				:poweruser_mail_subject		=>	'Power-User bei ODDB.org',
 				:poweruser_regulatory		  =>	poweruser_regulatory,
 				:praxis_header						=>	'Praxis-Adresse',
+        			:preferences                    =>      'Einstellungen',
 				:pretty_dose							=>	'St&auml;rke',
 				:preview									=>	'Vorschau',
         :preview_with_market_date =>	'Mit Markteintritts-Datum anzeigen',
@@ -1421,6 +1421,7 @@ Zeno Davatz
 				:search_sequences         =>  'Suchen',
 				:search										=>	'Suchen',
 				:search_type							=>	'Art der Suche:&nbsp;',
+				:search_type_selection_description              =>      'Wählen Sie die Default-Suche die im Drop-Down immer zuerst erscheinen soll.',
 				:select_indication				=>	'Anwendungs-Auswahl',
 				:select_indication_list		=>	'Die von Ihnen eingegebene Anwendung existiert noch nicht. Bitte wählen Sie eine andere oder erstellen Sie sie neu.',
 				:select_substance_list		=>	'Der von Ihnen eingegebene Wirkstoff existiert noch nicht. Bitte wählen Sie einen anderen oder erstellen Sie ihn neu.',
@@ -2563,11 +2564,11 @@ Zeno Davatz
 				:notify_migel_title				=>	'Je veux recommander le produit LiMA suivant: ',
 				:oddbdat_oddb_tar_gz			=>	'oddbdat.tar.gz',
 				:oddbdat_oddb_zip					=>	'oddbdat.zip',
-        :oddb_style_default       =>  'couleurs conventionnelles d\'oddb.org',
-        :oddb_style_blue          =>  'bleu marine',
-        :oddb_style_red           =>  'Bordeaux',
-        :oddb_style_olive         =>  'vert olive',
-        :oddb_style_purple        =>  'violet Bleu',
+				:oddb_style_default       =>  'couleurs conventionnelles d\'oddb.org',
+				:oddb_style_blue          =>  'bleu marine',
+				:oddb_style_red           =>  'Bordeaux',
+				:oddb_style_olive         =>  'vert olive',
+				:oddb_style_purple        =>  'violet Bleu',
         :oddb_de                  =>  'Germany',
         :oddb_chde                =>  'Germany - Switzerland',
         :oddb_yaml_gz             =>  'oddb.yaml.gz',
@@ -2632,7 +2633,6 @@ Zeno Davatz
 				:specialization						=>	'Permission',
         :sl_generic_type           =>  'Original/G&eacute;n&eacute;rique',
 
-        :style_chooser            =>  'Couleur',
         :style_chooser_description =>  'Choisissez la couleur que vous préférez. Votre choix sera automatiquement enregistré dans un Cookie.',
 				:phone_label							=>	'T&eacute;l&eacute;phone:',
 				:phone										=>	'T&eacute;l&eacute;phone:',
@@ -3852,11 +3852,11 @@ Zeno Davatz
 				:notify_migel_title				=>	'I want to recommend the following MiGeL-position: ',
 				:oddbdat_tar_gz						=>	'oddbdat.tar.gz',
 				:oddbdat_zip							=>	'oddbdat.zip',
-        :oddb_style_default       =>  'oddb.org Default',
-        :oddb_style_blue          =>  'Marine Blue',
-        :oddb_style_red           =>  'Bordeaux',
-        :oddb_style_olive         =>  'Olive Green',
-        :oddb_style_purple        =>  'Purple Blue',
+				:oddb_style_default       =>  'oddb.org Default',
+				:oddb_style_blue          =>  'Marine Blue',
+				:oddb_style_red           =>  'Bordeaux',
+				:oddb_style_olive         =>  'Olive Green',
+				:oddb_style_purple        =>  'Purple Blue',
         :oddb_de                  =>  'Germany',
         :oddb_chde                =>  'Germany - Switzerland',
 				:oddb_yaml_gz							=>	'oddb.yaml.gz',
@@ -3921,7 +3921,6 @@ Zeno Davatz
 				:specialization						=>	'Permission',
         :sl_generic_type           =>  'Original/Generic',
 
-        :style_chooser            =>  'Color',
         :style_chooser_description =>  'Choose a color that suits you best. Your choice will be saved in your cookie.',
 				:phone_label							=>	'Phone:',
 				:phone										=>	'Phone:',
@@ -3985,6 +3984,7 @@ Zeno Davatz
 				:poweruser_mail_salut2		=>	'',
 				:poweruser_mail_subject		=>	'Power-User at ODDB.org',
 				:praxis_header						=>	'Business address',
+        			:preferences                    =>      'Settings',
 				:pretty_dose							=>	'Dose',
 				:preview									=>	'Preview',
         :preview_with_market_date =>	'Publish with market-date',

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -74,9 +74,11 @@ module ODDB
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
 			:deductible_m	=>	[nil, 'deductible_g', 'deductible_o'],
-			:search_type	=>	['st_oddb', 'st_sequence', 
-        'st_substance', 'st_company', 'st_indication', 'st_interaction',
-        'st_unwanted_effect', 'st_registration', 'st_pharmacode' ],
+      :search_type => [
+        'st_oddb', 'st_sequence', 'st_substance',
+        'st_company', 'st_indication', 'st_interaction',
+        'st_unwanted_effect', 'st_registration', 'st_pharmacode'
+      ],
       :fachinfo_search_type => [
         'fi_usage', 'fi_interactions', 'fi_unwanted_effects'
       ],
@@ -287,7 +289,7 @@ module ODDB
 			:sort,
 			:sponsor,
 			:sponsorlink,
-      :style_chooser,
+      :preferences,
 			:substance,
 			:substances,
 			:suggest_address,

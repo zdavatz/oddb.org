@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -76,7 +76,7 @@ require 'state/migel/items'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
-require 'state/user/style_chooser'
+require 'state/user/preferences'
 require 'state/user/download'
 require 'state/user/download_item'
 require 'state/user/download_export'
@@ -167,7 +167,7 @@ module ODDB
           :api_search             => State::Drugs::ApiSearch,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
           :data                   => State::User::DownloadItem,
-          :style_chooser          => State::User::StyleChooser,
+          :preferences            => State::User::Preferences,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
@@ -298,9 +298,9 @@ module ODDB
 					export_csv.checkout
 				end
 			end
-      def style_navigation
-        unless @session.lookandfeel.disabled?(:style_link)
-          [State::User::StyleChooser]
+      def preferences_navigation
+        if @session.flavor == 'gcc'
+          [State::User::Preferences]
         else
           []
         end
@@ -458,7 +458,7 @@ module ODDB
 			end
       def navigation
         #+ zone_navigation \
-        style_navigation \
+        preferences_navigation \
          + help_navigation \
          + user_navigation \
          + home_navigation
