@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::FachinfoSearch  -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo_search'
@@ -96,18 +96,19 @@ class FachinfoSearch < State::Drugs::Global
         doc = pac.fachinfo.description(@session.language)
         if doc.respond_to?(chapter)
           desc = doc.send(chapter).to_s
+          # hits[:text] contains FachinfoDocument or (matched) String
           if is_full and
              (term == @session.lookandfeel.lookup(:fachinfo_search_term) \
               or term.empty?)
             hits << {
               :ean13 => ean13,
-              :text  => desc,
+              :text  => doc,
             }
           elsif match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
                 !match.empty?
             hits << {
               :ean13 => ean13,
-              :text  => is_full ? desc : match.join("\n"),
+              :text  => is_full ? doc : match.join("\n"),
             }
           end
         end

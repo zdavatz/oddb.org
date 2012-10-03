@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 26.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -166,7 +166,8 @@ module ODDB
           if @value.respond_to?(:links)
             html << links(context, @value.links)
           end
-          if(hl = @session.user_input(:highlight))
+          if hl = @session.user_input(:highlight) or
+             hl = @session.user_input(:fachinfo_search_term) # fachinfo_search
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
           end
         end

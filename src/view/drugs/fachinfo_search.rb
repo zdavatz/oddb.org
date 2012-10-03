@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 01.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -11,6 +11,7 @@ require 'view/searchbar'
 require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
+require 'view/chapter'
 
 module ODDB
   module View
@@ -253,9 +254,16 @@ class FachinfoSearchTermHitList < HtmlGrid::List
     div.set_attribute('class', 'text')
     div.label = false
     text = model[:text]
-    term = @session.user_input(:fachinfo_search_term)
-    text.gsub!(/#{term}/i, "<span class='highlight'>%s</span>" % term)
-    div.value = text
+    if text.is_a? FachinfoDocument and
+       type = @session.user_input(:fachinfo_search_type)
+      # full chapter
+      chapter = type.gsub(/^fi_/, '').intern
+      div.value = View::Chapter.new(chapter, text, @session, self)
+    else
+      term = @session.user_input(:fachinfo_search_term)
+      text.gsub!(/#{term}/i, "<span class='highlight'>%s</span>" % term)
+      div.value = text
+    end
     div
   end
 end
@@ -341,12 +349,18 @@ class FachinfoSearchCsv < HtmlGrid::Component
     drugs = @session.persistent_user_input(:drugs)
     @model.each do |model|
       if pac = drugs[model[:ean13]]
+        if model[:text].is_a? FachinfoDocument
+          chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
+          text = model[:text].send(chapter).to_s
+        else
+          text = model[:text]
+        end
         @lines << [
           model[:ean13],
           pac.pharmacode,
           pac.name_with_size,
           user_input(:term),
-          model[:text],
+          text,
         ]
       end
     end
