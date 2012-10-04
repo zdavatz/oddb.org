@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::User::Preferences -- oddb -- 03.10.2012 -- yasaka@ywesee.com
+# ODDB::State::User::Preferences -- oddb -- 04.10.2012 -- yasaka@ywesee.com
 
 require 'state/global_predefine'
 require 'view/user/preferences'
@@ -15,9 +15,11 @@ class Preferences < State::Global
     if style = @session.user_input(:style)
       @session.set_cookie_input(:style, style)
     end
-    if type = @session.user_input(:search_type)
-      @session.set_cookie_input(:search_type, type)
-      @session.set_persistent_user_input(:search_type, type)
+    [:search_type, :search_form].each do |key|
+      if val = @session.user_input(key)
+        @session.set_cookie_input(key, val)
+        @session.set_persistent_user_input(key, val)
+      end
     end
     self
   end
