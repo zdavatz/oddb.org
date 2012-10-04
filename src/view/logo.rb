@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Logo -- oddb.org -- 28.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Logo -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Logo -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
@@ -16,7 +16,8 @@ module ODDB
         if(@lookandfeel)
           @attributes.update(@lookandfeel.attributes(self::class::LOGO_KEY))
           src = zone_logo_src(self::class::LOGO_KEY)
-          if @session.flavor == Session::DEFAULT_FLAVOR and
+          if (@session.flavor == Session::DEFAULT_FLAVOR or \
+              @session.lookandfeel.enabled?(:preferences)) and
              style = @session.get_cookie_input(:style) and
              style != "default" and
              @lookandfeel.attributes(:styles).keys.include?(style)
