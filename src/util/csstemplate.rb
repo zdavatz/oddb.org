@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CssTemplate -- oddb.org -- 02.10.2012 -- yasaka@ywesee.com
+# ODDB::CssTemplate -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
 
 require 'fileutils'
 
@@ -121,7 +121,7 @@ module ODDB
         :navigation_link_font_color => 'blue',
         :std_font_family            => 'Verdana, Arial, Helvetica, sans-serif',
       },
-      :mobile    =>    {
+      :mobile => {
         :explain_font_size => '12px',
         :infos_height      => '16px',
       },
@@ -223,7 +223,7 @@ module ODDB
         :rslt_infos_bg_dark        => '#fff455',
       },
     }
-    STYLES = { # gcc
+    COLORS = { # for color_flavors()
       :blue  => {
         :atc_link_color                  => '#0000ff',
         :bg_bright                       => '#a0a0ff',
@@ -382,13 +382,18 @@ module ODDB
       :tabnavigation_text_color        => 'black',
     }
     class << self
-      def flavor_path(name)
+      def flavor_pathes(name)
         path = RESOURCE_PATH + "#{name}/oddb.css"
-        File.expand_path(path, File.dirname(__FILE__))
+        [File.expand_path(path, File.dirname(__FILE__))]
       end
-      def style_path(name)
-        path = RESOURCE_PATH + "gcc/oddb-#{name}.css"
-        File.expand_path(path, File.dirname(__FILE__))
+      def color_flavors # these flavors use color-changer in preferences
+        %w[gcc mobile]
+      end
+      def color_pathes(name)
+        %w[gcc mobile].map do |flavor|
+          path = RESOURCE_PATH + "#{flavor}/oddb-#{name}.css"
+          File.expand_path(path, File.dirname(__FILE__))
+        end
       end
       def resolve(var, flavor)
         key = var.intern
@@ -404,17 +409,25 @@ module ODDB
       def write_css()
         {
           :flavor => FLAVORS,
-          :style  => STYLES
+          :color  => COLORS,
         }.each_pair do |type, css|
           css.each { |name, updates|
-            src =  File.read(TEMPLATE)
-            path = self.send("#{type}_path".intern, name)
-            FileUtils.mkdir_p(File.dirname(path))
-            File.open(path, "w") { |fh|
-              fh << substitute(src, updates)
-            }
-            File.chmod(0664, path)
-            puts path
+            src = File.read(TEMPLATE)
+            self.send("#{type}_pathes".intern, name).each do |path|
+              # merge color into base (overwrite)
+              color_flavors.each do |flavor|
+                if path.match(/#{flavor}\/oddb-(#{COLORS.keys.join("|")})/) and
+                   base = FLAVORS[flavor.intern]
+                  updates = base.merge(updates)
+                end
+              end
+              FileUtils.mkdir_p(File.dirname(path))
+              File.open(path, "w") { |fh|
+                fh << substitute(src, updates)
+              }
+              File.chmod(0664, path)
+              puts path
+            end
           }
         end
       end
