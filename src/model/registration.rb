@@ -211,14 +211,16 @@ module ODDB
         seq.out_of_trade
 			}
     end
-		def package(ikscd)
-			@sequences.each_value { |seq|
-				if(package = seq.package(ikscd))
-          return package 
-        end
-			}
-			nil
-		end
+    def package(ikscd)
+      if @sequences
+        @sequences.each_value { |seq|
+          if package = seq.package(ikscd)
+            return package
+          end
+        }
+      end
+      nil
+    end
 		def package_count
 			@sequences.values.inject(0) { |inj, seq|
 				inj + seq.package_count
