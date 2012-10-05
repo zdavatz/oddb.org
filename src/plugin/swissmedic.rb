@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 17.07.2011 -- yasaka@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 05.10.2012 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -794,16 +794,17 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         :export_flag      => nil,
       }
       sequence = registration.sequence(seqnr)
-			if(sequence.nil? || sequence.atc_class.nil?)
-				if(atc = registration.atc_classes.first)
+      if(sequence.nil? || sequence.atc_class.nil?)
+        if(!registration.atc_classes.nil? and
+           atc = registration.atc_classes.first)
           args.store :atc_class, atc.code
         elsif((key = cell(row, column(:substances))) && !key.include?(?,) \
              && (atc = @app.unique_atc_class(key)))
           args.store :atc_class, atc.code
         elsif(code = cell(row, column(:atc_class)))
           args.store :atc_class, code
-				end
-			end
+        end
+      end
       if(indication = update_indication(cell(row, column(:indication_sequence))))
         args.store :indication, indication.pointer
       end
