@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::Registration -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
 # ODDB::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -245,11 +245,12 @@ module ODDB
 				0
 			end
 		end
-		def sequence(seqnr)
-      unless seqnr.is_a?(SBSM::InvalidDataError)
-  			@sequences[sprintf('%02d', seqnr.to_i)]
+    def sequence(seqnr)
+      if !seqnr.is_a?(SBSM::InvalidDataError) and
+         @sequences.is_a?(Hash)
+        @sequences[sprintf('%02d', seqnr.to_i)]
       end
-		end
+    end
 		def substance_names
 			@sequences.values.collect { |seq|
 				seq.substance_names
