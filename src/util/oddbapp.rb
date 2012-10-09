@@ -1991,7 +1991,7 @@ module ODDB
             lastthreads = threads
             threads = Thread.list.size
             # Shutdown if more than 100 threads are created, probably because of spiders
-            if threads > 150
+            if threads > 200
               exit
             end
             lastbytes = bytes
