@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -61,6 +61,7 @@ require 'state/hospitals/hospitallist'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
+require 'state/interactions/interaction_chooser'
 require 'state/interactions/init'
 require 'state/interactions/result'
 require 'state/interactions/interactions'
@@ -191,6 +192,7 @@ module ODDB
           :home_substances        => State::Substances::Init,
           :home_user              => State::User::Init,
           :hospitallist           => State::Hospitals::HospitalList,
+          :interaction_chooser    => State::Interactions::InteractionChooser,
           :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
           :limitation_analysis    => State::Analysis::LimitationText,

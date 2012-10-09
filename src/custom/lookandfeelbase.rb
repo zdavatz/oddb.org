@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -941,6 +941,9 @@ Zeno Davatz
 				:interaction_basket_count0	=>	'Im Interaktionskorb befinden sich&nbsp;',
 				:interaction_basket_count1	=>	'&nbsp;Substanzen',
 				:interaction_basket_explain	=>	'Below Links go to "The free archive of life sciences journals": ',
+				:interaction_chooser                                        =>      'Interaktion Instant Suchen',
+				:interaction_chooser_delete_all                             =>      'Alle löschen',
+				:interaction_chooser_description                            =>      'Medikamente wählen und dann die Interaktionen in 3D anzeigen',
 				:interaction_count0	      =>	'Im Interaktionskorb befinden sich&nbsp;',
 				:interaction_count1	      =>	'&nbsp;Interaktionen',
 				:interaction_basket				=>	'Interaktionskorb',
