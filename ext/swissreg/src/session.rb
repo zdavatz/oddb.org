@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Swissreg::Session -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
@@ -89,6 +90,8 @@ class Session < HttpSession
   def view_state(response)
     if match = /javax.faces.ViewState.*?value="([^"]+)"/u.match(response.body.force_encoding('utf-8'))
       match[1]
+    else
+      ""
     end
   end
 end
