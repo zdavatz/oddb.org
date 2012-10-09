@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
@@ -194,6 +194,13 @@ class FachinfoSearchDrugSearchBar < HtmlGrid::InputText
   def init
     super
     xhr_request_init(:fachinfo_search)
+  end
+end
+class InteractionChooserBar < HtmlGrid::InputText
+  include InstantSearchBarMethods
+  def init
+    super
+    xhr_request_init(:interaction_chooser)
   end
 end
 class SelectSearchForm < HtmlGrid::DivForm

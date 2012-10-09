@@ -1015,26 +1015,31 @@ form#fachinfo_search_form label {
 }
 div#widget_searchbar,
 div#widget_prescription_searchbar,
-div#widget_fachinfo_search_searchbar {
+div#widget_fachinfo_search_searchbar,
+div#widget_interaction_chooser_searchbar {
   padding : 2px;
   border  : 1px solid ButtonShadow;
   width   : 260px;
 }
 div#widget_prescription_searchbar,
-div#widget_fachinfo_search_searchbar {
+div#widget_fachinfo_search_searchbar,
+div#widget_interaction_chooser_searchbar {
   width : 400px;
 }
 #searchbar_popup,
 #prescription_searchbar_popup,
-#fachinfo_search_searchbar_popup {
+#fachinfo_search_searchbar_popup,
+#interaction_chooser_searchbar_popup {
   border : 1px solid ButtonShadow;
 }
 #searchbar_popup .dijitMenuItemHover,
 #searchbar_popup .dijitMenuItemSelected,
-#prescription_searchbar_popup .dijitMenuItemHover,
-#prescription_searchbar_popup .dijitMenuItemSelected,
+#prescription_searchbar_popup    .dijitMenuItemHover,
+#prescription_searchbar_popup    .dijitMenuItemSelected,
 #fachinfo_search_searchbar_popup .dijitMenuItemHover,
-#fachinfo_search_searchbar_popup .dijitMenuItemSelected {
+#fachinfo_search_searchbar_popup .dijitMenuItemSelected,
+#interaction_chooser_searchbar_popup .dijitMenuItemHover,
+#interaction_chooser_searchbar_popup .dijitMenuItemSelected {
   background-color : $bg_bright;
   color            : black;
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -38,8 +38,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 	}
 	EVENT = :search
   def switch_links(model, session=@session)
-    if(@container.respond_to?(:instant_search_enabled?) and
-      @container.instant_search_enabled?)
+    if @container.instant_search_enabled?
       fields = []
       link = HtmlGrid::Link.new(:search_instant, model, session, self)
       args = { :search_form => 'instant' }

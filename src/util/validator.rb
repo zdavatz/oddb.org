@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -214,6 +214,7 @@ module ODDB
 			:indication,
 			:indications,
 			:interaction_basket,
+      :interaction_chooser,
 			:interaction_detail,
 			:interactions,
 			:legal_note,
