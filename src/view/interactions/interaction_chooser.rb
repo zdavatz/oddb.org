@@ -176,7 +176,8 @@ class InteractionChooserForm < View::Form
   def init
     super
     @form_properties.update({
-      'id' => 'interaction_chooser_form',
+      'id'     => 'interaction_chooser_form',
+      'target' => '_blank',
     })
   end
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::InteractionChooser -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
+# ODDB::State::Drugs::InteractionChooser -- oddb.org -- 10.10.2012 -- yasaka@ywesee.com
 
 require 'state/interactions/global'
 require 'view/interactions/interaction_chooser'
@@ -59,24 +59,21 @@ class InteractionChooser < State::Interactions::Global
   end
   def show_interaction
     atc_codes = []
-    ids = []
     if drugs = @session.persistent_user_input(:drugs)
       drugs.values.each do |drug|
-        atc_codes << drug.atc_class.code
-        drug.substances.each do |subs|
-          ids << subs.oid.to_s
-        end
+        atc_codes << drug.atc_class.code.gsub(/[^A-Z0-9]/, '')
       end
     end
-    args = [:substance_ids, ids.join(","), :atc_code, atc_codes.join(",")]
-    location = @session.lookandfeel._event_url(:interaction_basket, args) do |args|
-      args.map!{ |arg| CGI.unescape(arg) }
+    unless atc_codes.empty?
+      url = 'http://modules.epha.ch/vigi/orbit.html'
+      arg = atc_codes.join(',')
+      location = "#{url}##{arg}"
+      # redirect
+      self.http_headers = {
+        'Status'   => '303 See Other',
+        'Location' => location
+      }
     end
-    # emulate get request
-    self.http_headers = {
-      'Status'   => '303 See Other',
-      'Location' => location
-    }
     self
   end
   private
@@ -96,5 +93,3 @@ end
     end
   end
 end
-
-
