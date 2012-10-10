@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 10.10.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -158,27 +158,17 @@ class InteractionChooserForm < View::Form
     [0,0]   => 'interaction_chooser_description',
     [0,1]   => View::Interactions::InteractionChooserDrugDiv,
     [0,2]   => View::Interactions::InteractionChooserInnerForm,
-    [0,4,0] => 'search_type',
-    [0,4,1] => :search_type,
-    [0,5]   => :buttons,
+    [0,4]   => :buttons,
   }
   CSS_MAP = {
     [0,0] => 'th bold',
     [0,1] => '', # none
     [0,2] => 'list',
-    [0,3] => 'list',
-    [0,4] => 'list',
-    [0,5] => 'inner-button',
+    [0,4] => 'inner-button',
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
-  def search_type(model, session)
-    link = HtmlGrid::Link.new(:home_interactions, model, session, self)
-    link.href  = @lookandfeel._event_url(:home_interactions, {})
-    link.value = 'Normal'
-    link
-  end
   def buttons(model, session)
     post_event_button(:show_interaction)
   end
