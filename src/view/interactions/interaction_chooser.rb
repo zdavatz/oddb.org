@@ -198,11 +198,6 @@ class InteractionChooser < View::PrivateTemplate
   CONTENT = View::Interactions::InteractionChooserComposite
   SNAPBACK_EVENT = :home
   JAVASCRIPTS = ['admin']
-  def init
-    # warm up
-    @session.app.registrations.length
-    super
-  end
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)

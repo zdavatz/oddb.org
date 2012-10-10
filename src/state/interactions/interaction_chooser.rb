@@ -17,9 +17,18 @@ class InteractionChooser < State::Interactions::Global
   VIEW = View::Interactions::InteractionChooser
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
-    if @session.event.to_sym == self.class::DIRECT_EVENT and
-       drugs = @session.persistent_user_input(:drugs) # init
+    if @session.event.to_sym == self.class::DIRECT_EVENT
       @session.set_persistent_user_input(:drugs, {})
+    end
+    # from centeredsearchform
+    if ean13 = @session.user_input(:search_query)
+      check_model
+      unless error?
+        pack = package_for(ean13.to_s)
+        drugs = @session.persistent_user_input(:drugs) || {}
+        drugs[ean13] = pack unless drugs.has_key?(ean13)
+        @session.set_persistent_user_input(:drugs, drugs)
+      end
     end
     super
   end
@@ -78,7 +87,8 @@ class InteractionChooser < State::Interactions::Global
   end
   private
   def check_model
-    ean13 = @session.user_input(:ean)
+    ean13 = @session.user_input(:ean) ||
+            @session.persistent_user_input(:search_query)
     unless ean13 and ean13.match(@@ean13_form)
       @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
     end

@@ -34,22 +34,60 @@ class CenteredSearchForm < View::CenteredSearchForm
   EVENT = :search
   def switch_links(model, session=@session)
     if @container.instant_search_enabled?
-      fields = []
-      link = HtmlGrid::Link.new(:interaction_chooser, model, session, self)
-      link.href  = @lookandfeel._event_url(:interaction_chooser, {})
+      link = HtmlGrid::Link.new(:search_instant, model, session, self)
+      args = { :search_form => 'instant' }
+      link.href  = @lookandfeel._event_url(:home_interactions, args)
       link.value = 'Instant'
-      fields << link
-      fields
+      link
     end
+  end
+end
+class CenteredCompareSearchForm < CenteredSearchForm
+  attr_reader :index_name
+  EVENT = :interaction_chooser
+  COMPONENTS = {
+    [0,0]   => View::TabNavigation,
+    [0,1,0] => 'search_type',
+    [0,1,1] => :switch_links,
+    [0,2,0] => :search_query,
+  }
+  SYMBOL_MAP = {
+    :search_query => View::InteractionSearchBar,
+  }
+  def init
+    @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
+    @additional_javascripts = []
+    super
+  end
+  def javascripts(context)
+    scripts = ''
+    @additional_javascripts.each do |script|
+      args = {
+        'type'     => 'text/javascript',
+        'language' => 'JavaScript',
+      }
+      scripts << context.script(args) do script end
+    end
+    scripts
+  end
+  def to_html(context)
+    javascripts(context).to_s << super
+  end
+  def switch_links(model, session=@session)
+    link = HtmlGrid::Link.new(:search_instant, model, session, self)
+    args = { :search_form => 'normal' }
+    link.href  = @lookandfeel._event_url(:home_interactions, args)
+    link.value = 'Normal'
+    link
   end
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
   COMPONENTS = {
     [0,0]   => :language_chooser,
     [0,1]   => :search_form,
-    [0,2]   => 'interaction_search_explain1',
-    [0,3]   => 'interaction_search_explain2',
-    [0,4]   => 'interaction_search_explain3',
+    [0,2]   => :interaction_search_explain1,
+    [0,3]   => :interaction_search_explain2,
+    [0,4]   => :interaction_search_explain3,
     [0,6]   => View::CenteredNavigation,
     [0,7,0] => :database_size,
     [0,7,1] => 'database_size_text',
@@ -69,10 +107,24 @@ class CenteredSearchComposite < View::CenteredSearchComposite
     [0,8] => 'legal-note',
   }
   def search_form(model, session=@session)
-    View::Interactions::CenteredSearchForm.new(model, session, self)
+    if @session.search_form == 'instant' and
+       instant_search_enabled?
+       # warm up
+       @session.app.registrations.length
+      View::Interactions::CenteredCompareSearchForm.new(model, session, self)
+    else # normal
+      View::Interactions::CenteredSearchForm.new(model, session, self)
+    end
   end
-  def substance_count(model, session)
+  def substance_count(model, session=@session)
     @session.app.substance_count.to_s << '&nbsp;'
+  end
+  3.times do |i|
+    define_method("interaction_search_explain#{i+1}") do |model, session|
+      if @session.search_form != 'instant'
+        @lookandfeel.lookup("interaction_search_explain#{i+1}")
+      end
+    end
   end
   def instant_search_enabled?
     @session.flavor == Session::DEFAULT_FLAVOR or
