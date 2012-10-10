@@ -42,7 +42,7 @@ class CenteredSearchForm < View::CenteredSearchForm
     end
   end
 end
-class CenteredCompareSearchForm < CenteredSearchForm
+class CenteredInstantSearchForm < CenteredSearchForm
   attr_reader :index_name
   EVENT = :interaction_chooser
   COMPONENTS = {
@@ -84,11 +84,11 @@ end
 class CenteredSearchComposite < View::CenteredSearchComposite
   COMPONENTS = {
     [0,0]   => :language_chooser,
-    [0,1]   => :search_form,
-    [0,2]   => :interaction_search_explain1,
-    [0,3]   => :interaction_search_explain2,
-    [0,4]   => :interaction_search_explain3,
-    [0,6]   => :centered_navigation,
+    [0,1]   => View::Interactions::CenteredSearchForm,
+    [0,2]   => 'interaction_search_explain1',
+    [0,3]   => 'interaction_search_explain2',
+    [0,4]   => 'interaction_search_explain3',
+    [0,6]   => View::CenteredNavigation,
     [0,7,0] => :database_size,
     [0,7,1] => 'database_size_text',
     [0,7,2] => 'comma_separator',
@@ -106,30 +106,31 @@ class CenteredSearchComposite < View::CenteredSearchComposite
   COMPONENT_CSS_MAP = {
     [0,8] => 'legal-note',
   }
-  def search_form(model, session=@session)
+  def init
     if @session.search_form == 'instant' and
        instant_search_enabled?
-       # warm up
-       @session.app.registrations.length
-      View::Interactions::CenteredCompareSearchForm.new(model, session, self)
-    else # normal
-      View::Interactions::CenteredSearchForm.new(model, session, self)
+      # warm up
+      @session.app.registrations.length
+      @components = {
+        [0,0]   => :language_chooser,
+        [0,1]   => View::Interactions::CenteredInstantSearchForm,
+        [0,2]   => nil,
+        [0,3,0] => :database_size,
+        [0,3,1] => 'database_size_text',
+        [0,3,2] => 'comma_separator',
+        [0,3,3] => :substance_count,
+        [0,3,4] => 'substance_count_text',
+        [0,3,5] => 'comma_separator',
+        [0,3,6] => 'database_last_updated_txt',
+        [0,3,7] => :database_last_updated,
+        [0,4]   => :legal_note,
+        [0,5]   => :paypal,
+      }
     end
+    super
   end
   def substance_count(model, session=@session)
     @session.app.substance_count.to_s << '&nbsp;'
-  end
-  3.times do |i|
-    define_method("interaction_search_explain#{i+1}") do |model, session|
-      if @session.search_form != 'instant'
-        @lookandfeel.lookup("interaction_search_explain#{i+1}")
-      end
-    end
-  end
-  def centered_navigation(model, session=@session)
-    if @session.search_form != 'instant'
-      View::CenteredNavigation.new(model, session, self)
-    end
   end
   def instant_search_enabled?
     @session.flavor == Session::DEFAULT_FLAVOR or

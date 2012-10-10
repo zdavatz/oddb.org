@@ -133,10 +133,13 @@ end
 class AutocompleteSearchBar < HtmlGrid::InputText
   def init
     super
+    @searchbar_id ||= 'searchbar'
+    @label_attr   ||= ''
+    id  = @searchbar_id
     val = @session.lookandfeel.lookup(@name)
     @container.additional_javascripts.push <<-EOS
 function initMatches() {
-  var searchbar = dojo.byId('searchbar');
+  var searchbar = dojo.byId('#{id}');
   dojo.connect(searchbar, 'onkeypress', function(e) {
     if(e.keyCode == dojo.keys.ENTER) {
       searchbar.form.submit();
@@ -151,8 +154,8 @@ function initMatches() {
   });
 }
 function selectSubmit() {
-  var popup = dojo.byId('searchbar_popup');
-  var searchbar = dojo.byId('searchbar');
+  var popup = dojo.byId('#{id}_popup');
+  var searchbar = dojo.byId('#{id}');
   if (!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     searchbar.form.submit();
   }
@@ -164,11 +167,12 @@ require(['dojo/ready'], function(ready) {
 });
     EOS
     @attributes.update 'data-dojo-type' => 'dijit.form.ComboBox',
-                       'jsId'           => 'searchbar',
-                       'id'             => 'searchbar',
+                       'jsId'           => @searchbar_id,
+                       'id'             => @searchbar_id,
                        'store'          => 'search_matches',
                        'queryExpr'      => '${0}',
-                       'searchAttr'     => 'search_query',
+                       'searchAttr'     => 'search_query', # name
+                       'labelAttr'      => @label_attr,    # label
                        'hasDownArrow'   => 'false',
                        'autoComplete'   => 'false',
                        'onChange'       => 'selectSubmit',
@@ -189,18 +193,9 @@ require(['dojo/ready'], function(ready) {
 end
 class InteractionSearchBar < AutocompleteSearchBar # home_interaction
   def init
+    @searchbar_id = 'interaction_searchbar'
+    @label_attr   = 'drug'
     super
-    @attributes.update 'data-dojo-type' => 'dijit.form.ComboBox',
-                       'jsId'           => 'searchbar',
-                       'id'             => 'searchbar',
-                       'store'          => 'search_matches',
-                       'queryExpr'      => '${0}',
-                       'searchAttr'     => 'search_query', # name
-                       'labelAttr'      => 'drug',         # label
-                       'hasDownArrow'   => 'false',
-                       'autoComplete'   => 'false',
-                       'onChange'       => 'selectSubmit',
-                       'value'          => @session.persistent_user_input(:search_query)
   end
 end
 class PrescriptionDrugSearchBar < HtmlGrid::InputText
