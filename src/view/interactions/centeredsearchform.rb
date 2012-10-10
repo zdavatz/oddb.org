@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::CenteredSearchForm -- oddb -- 09.10.2012 -- yasaka@ywesee.com
+# View::Interactions::CenteredSearchForm -- oddb -- 10.10.2012 -- yasaka@ywesee.com
 # View::Interactions::CenteredSearchForm -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'
@@ -88,7 +88,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
     [0,2]   => :interaction_search_explain1,
     [0,3]   => :interaction_search_explain2,
     [0,4]   => :interaction_search_explain3,
-    [0,6]   => View::CenteredNavigation,
+    [0,6]   => :centered_navigation,
     [0,7,0] => :database_size,
     [0,7,1] => 'database_size_text',
     [0,7,2] => 'comma_separator',
@@ -124,6 +124,11 @@ class CenteredSearchComposite < View::CenteredSearchComposite
       if @session.search_form != 'instant'
         @lookandfeel.lookup("interaction_search_explain#{i+1}")
       end
+    end
+  end
+  def centered_navigation(model, session=@session)
+    if @session.search_form != 'instant'
+      View::CenteredNavigation.new(model, session, self)
     end
   end
   def instant_search_enabled?
