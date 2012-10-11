@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::FachinfoSearch -- oddb.org -- 11.10.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -107,11 +107,6 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
     end
   end
   def to_html(context)
-    unless @value.empty?
-      html = super
-    else
-      html = ''
-    end
     div = HtmlGrid::Div.new(@model, @session, self)
     if @drugs and !@drugs.empty?
       delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
@@ -121,8 +116,8 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
       div.value = delete_all_link
     end
     div.set_attribute('id', 'drugs')
-    html << div.to_html(context)
-    html
+    @value << div
+    super
   end
 end
 class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
