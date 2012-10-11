@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 04.10.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 11.10.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -171,6 +171,12 @@ module ODDB
 			:sponsorlogo,
       :twitter_share,
 		]
+    DISABLED = [
+      :atc_drugbank_link,
+      :atc_dosing_link,
+      :atc_division_link,
+      :atc_pharmacokinetic_link,
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!', 

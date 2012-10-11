@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::DataFormat -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::View::DataFormat -- oddb.org -- 11.10.2012 -- yasaka@ywesee.com
 # ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -103,7 +103,8 @@ module ODDB
           photo.css_class =('square infos')
           name_bases.concat([' ‐ ', photo])
         end
-        if seq = model.sequence and div = seq.division and !div.empty?
+        if !@lookandfeel.disabled?(:atc_division_link) and
+           (seq = model.sequence and div = seq.division and !div.empty?)
           div = HtmlGrid::Link.new(:division_link_short, model, @session, self)
           args = [
             :reg, model.iksnr,
