@@ -142,35 +142,34 @@ module ODDB
 			:search				=>	{ "class" => "button" },
 		}
 	end
-	class LookandfeelGenerika < SBSM::LookandfeelWrapper
-		ENABLED = [
+  class LookandfeelGenerika < SBSM::LookandfeelWrapper
+    ENABLED = [
       :ajax,
       :breadcrumbs,
-			:companylist,
+      :companylist,
       :country_navigation,
       :ddd_chart,
       :facebook_fan,
       :facebook_share,
-			:fachinfos,
-			:feedback,
-			:feedback_rss,
-			:google_adsense,
-			:limitation_texts,
-			:logo,
+      :fachinfos,
+      :feedback,
+      :feedback_rss,
+      :google_adsense,
+      :limitation_texts,
+      :logo,
       :minifi_rss,
-			:multilingual_logo,
-			:patinfos, 
-			:paypal,
-			:query_limit,
+      :multilingual_logo,
+      :patinfos,
+      :paypal,
       :screencast,
       :price_cut_rss,
       :price_history,
       :price_rise_rss,
       :sl_introduction_rss,
-			:sponsor,
-			:sponsorlogo,
+      :sponsor,
+      :sponsorlogo,
       :twitter_share,
-		]
+    ]
     DISABLED = [
       :atc_drugbank_link,
       :atc_dosing_link,
@@ -206,9 +205,9 @@ module ODDB
 		def navigation(filter=false)
 			@component.navigation(false)
 		end
-		def zones(filter=false)
-			@component.zones(false)
-		end
+    def zones(filter=false)
+      [ :drugs, :user, :companies ]
+    end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		ENABLED = [
