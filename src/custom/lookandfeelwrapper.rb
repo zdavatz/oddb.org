@@ -208,6 +208,9 @@ module ODDB
     def zones(filter=false)
       [ :drugs, :user, :companies ]
     end
+    def zone_navigation(filter=false)
+      super
+    end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		ENABLED = [
