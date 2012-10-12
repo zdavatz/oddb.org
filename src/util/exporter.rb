@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 16.08.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -106,6 +106,30 @@ module ODDB
       EXPORT_SERVER.clear
       sleep(30)
 		end
+    def export_fachinfo_chapter(term, chapters, lang)
+      title = 'Fachinfo Chapter Export'
+      safe_export title do
+        today = Date.today
+        chapter_text = chapters.join('-')
+        term_text    = term.empty? ? 'all' : term.gsub(/\s/, '-')
+        file = today.strftime("fachinfo_chapter_#{chapter_text}_#{term_text}.%Y-%m-%d.csv")
+        plug = CsvExportPlugin.new(@app)
+        if plug.export_fachinfo_chapter(term, chapters, lang, file)
+          if report = plug.report
+            log = Log.new(today)
+            log.date_str = today.strftime("%d.%m.%Y")
+            log.report = report
+            path = File.join(EXPORT_DIR, "#{file}.gz")
+            log.files = {
+              path => ['application/gzip']
+            }
+            log.notify(title)
+          end
+        end
+      end
+      EXPORT_SERVER.clear
+      sleep(30)
+    end
     def export_fachinfo_pdf(langs = [:de, :fr])
       plug = FiPDFExporter.new(@app)
       langs.each { |lang|

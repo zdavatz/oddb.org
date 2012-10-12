@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -361,7 +361,8 @@ class CsvResult < HtmlGrid::Component
     }
     result.push(header)
     index += 1
-    if target == :division
+    case target
+    when :division
       @model.each { |seq|
         seq.packages.values.each { |pack|
           line = keys.collect { |key|
@@ -375,7 +376,18 @@ class CsvResult < HtmlGrid::Component
           result.push(line)
         }
       }
-    elsif target == :flickr_photo
+    when :fachinfo_chapter
+      @model.each { |model|
+        line = keys.collect { |key|
+          if model[:pack].respond_to?(key)
+            model[:pack].send(key)
+          end
+        }
+        line << model[:desc]
+        @total += 1
+        result.push(line)
+      }
+    when :flickr_photo
       @_counted = {} # for reg and seq
       @model.each { |pack|
         line = keys.collect { |key|
@@ -390,7 +402,7 @@ class CsvResult < HtmlGrid::Component
         @total += 1
         result.push(line)
       }
-    else # atc_class
+    else # atc_class(default)
       @model.each { |atc|
         result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
         index += 1

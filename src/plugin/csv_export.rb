@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -69,6 +69,67 @@ module ODDB
         FileUtils.mkdir_p(backup_dir)
       end
       FileUtils.cp(path, backup_path)
+    rescue
+      puts $!.message
+      puts $!.backtrace
+      raise
+    end
+    def export_fachinfo_chapter(term, chapters, lang, file)
+      recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
+      # target
+      model = []
+      packages = @app.active_packages_has_fachinfo
+      packages.each do |pack|
+        doc = pack.fachinfo.description(lang)
+        chapters.each do |chapter|
+          if doc.respond_to?(chapter)
+            desc = doc.send(chapter).to_s
+            if term.empty?
+              model << {
+                :pack => pack,
+                :desc => desc,
+              }
+            elsif desc.match(/#{term}/i)
+              model << {
+                :pack => pack,
+                :desc => desc,
+              }
+            end
+          end
+        end
+      end
+      if model.length.zero?
+        puts
+        puts "does not match any description"
+        return false
+      end
+      # to_csv
+      session = SessionStub.new(@app)
+      session.language    = lang
+      session.lookandfeel = LookandfeelBase.new(session)
+      @file_path = path = File.join(EXPORT_DIR, file)
+      exporter = View::Drugs::CsvResult.new(model, session)
+      encoding = 'UTF-8'
+      keys = [ # th
+        :barcode, :pharmacode, :name_base,
+        :de_description,
+      ]
+      exporter.to_csv_file(keys, path, :fachinfos, encoding, :fachinfo_chapter)
+      @total = exporter.total
+      @target_packages = packages.length
+      @notes  = {
+        'Term'     => term,
+        'Lang'     => lang,
+        'Chapters' => chapters.join(','),
+      }
+      EXPORT_SERVER.compress(EXPORT_DIR, file)
+      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_path = File.join(backup_dir, file)
+      unless(File.exist? backup_path)
+        FileUtils.mkdir_p(backup_dir)
+      end
+      FileUtils.cp(path, backup_path)
+      return true
     rescue
       puts $!.message
       puts $!.backtrace
@@ -228,6 +289,17 @@ module ODDB
           end
           report << sprintf("%-32s %5i\n", "#{key}:", val)
         end
+      end
+      if @target_packages
+        report << sprintf("%-32s %s\n", "Packages:", "#{@target_packages}")
+        report << "\n"
+        @notes.sort.collect do |key, val|
+          report << sprintf("%-32s %s\n", "#{key}:", val)
+        end
+        report << [
+            "",
+            "File: #{@file_path}",
+        ].join("\n")
       end
       if @updated_arztpreis
         report << [

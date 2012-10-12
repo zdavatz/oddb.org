@@ -1,0 +1,48 @@
+#!/usr/local/bin/ruby193
+# encoding: utf-8
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/exporter'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      option = ''
+      lang = :de
+      argv = ARGV.dup
+      if argv.delete('fr') or ARGV.delete('FR')
+        lang = :fr
+      end
+      CHAPTERS = %w[
+			  amzv
+			  composition
+			  galenic_form
+			  indications
+			  usage
+			  contra_indications
+			  restrictions
+			  interactions
+			  pregnancy
+			  driving_ability
+			  unwanted_effects
+			  overdose
+			  effects
+			  kinetic
+			  preclinic
+			  other_advice
+			  iksnrs
+			  packages
+			  registration_owner
+			  date
+      ]
+      chapters = argv.select{ |arg| CHAPTERS.include?(arg) }
+      term = argv.first || ''
+      Exporter.new(system).export_fachinfo_chapter(term, chapters, lang)
+    end
+  end
+end
+
