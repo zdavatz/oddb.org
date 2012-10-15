@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 15.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -351,18 +351,26 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-  def to_csv(keys, symbol=:active_packages, encoding=nil, target=:atc_class)
-    result = []
-    eans = {}
-    index = 0
-    lang = @lookandfeel.language
+  def header(keys, opts=nil)
     header = keys.collect { |key|
       @lookandfeel.lookup("th_#{key}") || key.to_s
     }
-    result.push(header)
-    index += 1
+    if opts
+      opts.each do |opt|
+        header << @lookandfeel.lookup(opt)
+      end
+    end
+    header
+  end
+  def to_csv(keys, symbol=:active_packages, encoding=nil, target=:atc_class)
+    result = []
+    eans   = {}
+    index  = 0
+    lang   = @lookandfeel.language
     case target
     when :division
+      result.push(header(keys))
+      index += 1
       @model.each { |seq|
         seq.packages.values.each { |pack|
           line = keys.collect { |key|
@@ -372,22 +380,31 @@ class CsvResult < HtmlGrid::Component
               pack.send(key)
             end
           }
-          @total += 1
           result.push(line)
+          index += 1
         }
       }
+      @total = index - 1
     when :fachinfo_chapter
+      opts = @model.first[:chapters].collect{ |c| "fi_#{c[:chapter]}" }.uniq
+      result.push(header(keys, opts))
+      index += 1
       @model.each { |model|
         line = keys.collect { |key|
-          if model[:pack].respond_to?(key)
-            model[:pack].send(key)
+          if model[:package].respond_to?(key)
+            model[:package].send(key).to_s
           end
         }
-        line << model[:desc]
-        @total += 1
+        model[:chapters].each do |chapter|
+          line << chapter[:matched]
+        end
         result.push(line)
+        index += 1
       }
+      @total = index - 1
     when :flickr_photo
+      result.push(header(keys))
+      index += 1
       @_counted = {} # for reg and seq
       @model.each { |pack|
         line = keys.collect { |key|
@@ -399,10 +416,13 @@ class CsvResult < HtmlGrid::Component
           end
           value
         }
-        @total += 1
         result.push(line)
+        index += 1
       }
+      @total = index - 1
     else # atc_class(default)
+      result.push(header(keys))
+      index += 1
       @model.each { |atc|
         result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
         index += 1

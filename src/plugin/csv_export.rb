@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 15.10.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -77,32 +77,44 @@ module ODDB
     def export_fachinfo_chapter(term, chapters, lang, file)
       recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
       # target
-      model = []
+      model    = []
+      found    = 0
+      matched  = 0
       packages = @app.active_packages_has_fachinfo
       packages.each do |pack|
         doc = pack.fachinfo.description(lang)
+        _model = {
+          :package  => pack,
+          :chapters => []
+        }
         chapters.each do |chapter|
           if doc.respond_to?(chapter)
             desc = doc.send(chapter).to_s
+            text = ''
             if term.empty?
-              model << {
-                :pack => pack,
-                :desc => desc,
-              }
-            elsif desc.match(/#{term}/i)
-              model << {
-                :pack => pack,
-                :desc => desc,
-              }
+              text = desc
+            elsif match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
+                  !match.empty?
+              text = match.join("\n")
+              matched += 1
             end
+            _model[:chapters] << {
+              :chapter => chapter,
+              :matched => text,
+            }
+            found += 1
           end
         end
+        model << _model
       end
-      if model.length.zero?
+      if (found.zero?) or
+         (!term.empty? and matched.zero?)
         puts
-        puts "does not match any description"
+        puts "does not found any chapter/description"
         return false
       end
+      i = 0
+      model = model.sort_by{ |m| [m[:package].name_base, i += 1] }
       # to_csv
       session = SessionStub.new(@app)
       session.language    = lang
@@ -112,7 +124,6 @@ module ODDB
       encoding = 'UTF-8'
       keys = [ # th
         :barcode, :pharmacode, :name_base,
-        :de_description,
       ]
       exporter.to_csv_file(keys, path, :fachinfos, encoding, :fachinfo_chapter)
       @total = exporter.total
