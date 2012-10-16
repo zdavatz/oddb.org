@@ -75,6 +75,7 @@ module ODDB
       raise
     end
     def export_fachinfo_chapter(term, chapters, lang, file)
+      start = Time.new.to_i
       recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
       @model  = []
       @counts = {}
@@ -145,6 +146,7 @@ module ODDB
         FileUtils.mkdir_p(backup_dir)
       end
       FileUtils.cp(path, backup_path)
+      @time = Time.new.to_i - start
       return true
     rescue
       puts $!.message
@@ -317,10 +319,8 @@ module ODDB
         @notes.sort.collect do |key, val|
           report << sprintf("%-32s %s\n", "#{key}:", val)
         end
-        report << [
-            "",
-            "File: #{@file_path}",
-        ].join("\n")
+        report << "\n"
+        report << sprintf("%-32s %s\n", "File:", @file_path.to_s)
       end
       if @updated_arztpreis
         report << [
@@ -328,6 +328,10 @@ module ODDB
           "",
           "File: #{@file_path}",
         ].join("\n")
+      end
+      if @time
+        report << "\n"
+        report << sprintf("%-32s %s\n", "Duration:", "#{(@time / 60).to_s} min.")
       end
       report
     end
