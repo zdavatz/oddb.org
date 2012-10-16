@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 12.10.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 16.10.2012 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -119,9 +119,9 @@ module ODDB
             log = Log.new(today)
             log.date_str = today.strftime("%d.%m.%Y")
             log.report = report
-            path = File.join(EXPORT_DIR, "#{file}.gz")
+            path = File.join(EXPORT_DIR, "#{file}.zip")
             log.files = {
-              path => ['application/gzip']
+              path => ['application/zip']
             }
             log.notify(title)
           end
