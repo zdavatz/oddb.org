@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 15.10.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 16.10.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -76,51 +76,56 @@ module ODDB
     end
     def export_fachinfo_chapter(term, chapters, lang, file)
       recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
-      # target
-      model    = []
-      found    = 0
-      matched  = 0
+      @model  = []
+      @counts = {}
       packages = @app.active_packages_has_fachinfo
       packages.each do |pack|
         doc = pack.fachinfo.description(lang)
+        found  = false
         _model = {
           :package  => pack,
           :chapters => []
         }
         chapters.each do |chapter|
+          key = "fi_#{chapter}"
+          @counts[key] = 0 unless @counts[key]
           if doc.respond_to?(chapter)
             desc = doc.send(chapter).to_s
-            text = ''
             if term.empty?
               text = desc
-            elsif match = desc.scan(/.*\n?.*#{term}.*\n?.*/i) and
-                  !match.empty?
-              text = match.join("\n")
-              matched += 1
+              @counts[key] += 1
+              found = true
+            elsif desc.match(/#{term}/i)
+              text = desc.scan(/.*\n?.*#{term}.*\n?.*/i).join("\n")
+              @counts[key] += 1
+              found = true
+            else
+              text = ''
             end
-            _model[:chapters] << {
-              :chapter => chapter,
-              :matched => text,
-            }
-            found += 1
+            if found # at least term is found in one chapter of this package
+              _model[:chapters] << {
+                :chapter => chapter,
+                :matched => text,
+              }
+            end
           end
         end
-        model << _model
+        unless _model[:chapters].empty?
+          @model << _model
+        end
       end
-      if (found.zero?) or
-         (!term.empty? and matched.zero?)
+      if @model.empty?
         puts
         puts "does not found any chapter/description"
         return false
       end
       i = 0
-      model = model.sort_by{ |m| [m[:package].name_base, i += 1] }
-      # to_csv
-      session = SessionStub.new(@app)
-      session.language    = lang
-      session.lookandfeel = LookandfeelBase.new(session)
+      @model = @model.sort_by{ |m| [m[:package].name_base, i += 1] }
+      @session = SessionStub.new(@app)
+      @session.language    = lang
+      @session.lookandfeel = LookandfeelBase.new(@session)
       @file_path = path = File.join(EXPORT_DIR, file)
-      exporter = View::Drugs::CsvResult.new(model, session)
+      exporter = View::Drugs::CsvResult.new(@model, @session)
       encoding = 'UTF-8'
       keys = [ # th
         :barcode, :pharmacode, :name_base,
@@ -283,7 +288,7 @@ module ODDB
     def report
       report = ''
       if @total
-        report << sprintf("%-32s %s\n", "Anzahl:", @total.to_s)
+        report << sprintf("%-32s %5i\n", "Anzahl:", @total.to_i)
       end
       if @counts
         @counts.sort.collect do |key, val|
@@ -297,12 +302,17 @@ module ODDB
           when /^flickr_photo_id$/ ; key = 'Flickr-IDs'
           when /^iksnr$/    ; key = 'Registration Numbers'
           when /^seqnr$/    ; key = 'Sequence Numbers'
+          else
+            if @session
+              key = @session.lookandfeel.lookup(key)
+            end
           end
           report << sprintf("%-32s %5i\n", "#{key}:", val)
         end
       end
       if @target_packages
-        report << sprintf("%-32s %s\n", "Packages:", "#{@target_packages}")
+        report << "\n"
+        report << sprintf("%-32s %5i\n", "Packages:", "#{@target_packages.to_i}")
         report << "\n"
         @notes.sort.collect do |key, val|
           report << sprintf("%-32s %s\n", "#{key}:", val)
