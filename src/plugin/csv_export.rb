@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 16.10.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 17.10.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -82,7 +82,7 @@ module ODDB
       packages = @app.active_packages_has_fachinfo
       packages.each do |pack|
         doc = pack.fachinfo.description(lang)
-        found  = false
+        found = false
         _model = {
           :package  => pack,
           :chapters => []
@@ -92,26 +92,23 @@ module ODDB
           @counts[key] = 0 unless @counts[key]
           if doc.respond_to?(chapter)
             desc = doc.send(chapter).to_s
+            text = ''
             if term.empty?
               text = desc
               @counts[key] += 1
               found = true
-            elsif desc.match(/#{term}/i)
-              text = desc.scan(/.*\n?.*#{term}.*\n?.*/i).join("\n")
+            elsif desc.match(/#{term}/i) and
+                  text = desc.scan(/.*\n?.*#{term}.*\n?.*/i).join("\n")
               @counts[key] += 1
               found = true
-            else
-              text = ''
             end
-            if found # at least term is found in one chapter of this package
-              _model[:chapters] << {
-                :chapter => chapter,
-                :matched => text,
-              }
-            end
+            _model[:chapters] << {
+              :chapter => chapter,
+              :matched => text
+            }
           end
         end
-        unless _model[:chapters].empty?
+        if found # at least term is found in 1 chapter
           @model << _model
         end
       end

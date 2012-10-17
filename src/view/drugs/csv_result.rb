@@ -390,11 +390,11 @@ class CsvResult < HtmlGrid::Component
       result.push(header(keys, opts))
       index += 1
       @model.each { |model|
-        line = keys.collect { |key|
+        line = keys.collect do |key|
           if model[:package].respond_to?(key)
             model[:package].send(key).to_s
           end
-        }
+        end
         model[:chapters].each do |chapter|
           line << chapter[:matched]
         end
