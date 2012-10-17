@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestCsvExportPlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
+# ODDB::TestCsvExportPlugin -- oddb.org -- 17.10.2012 -- yasaka@ywesee.com
 # ODDB::TestCsvExportPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -23,7 +23,7 @@ module ODDB
     def test_report
       counts = {'key' => 12345}
       @plugin.instance_eval('@counts = counts')
-      expected = "key                              12345\n"
+      expected = "key:                             12345\n"
       assert_equal(expected, @plugin.report)
     end
     def test_log_info
@@ -55,17 +55,6 @@ module ODDB
       flexmock(@app, :packages => [package])
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do 
         assert_equal('export_price_history_csv', @plugin.export_price_history)
-      end
-    end
-    def test_export_migel
-      migel_product = flexmock('migel_product', 
-                               :migel_code => 123,
-                               :odba_id    => 123
-                              )
-      flexmock(@app, :migel_products => [migel_product])
-      export_server = flexmock('export_server', :export_migel_csv => 'export_migel_csv')
-      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        assert_equal('export_migel_csv', @plugin.export_migel)
       end
     end
     def test_export_index_therapeuticus
@@ -172,21 +161,21 @@ module ODDB
       $stdout = STDERR
     end
     def test__export_drugs__error
-      flexmock(FileUtils, 
+      flexmock(FileUtils,
                :mkdir_p => nil,
                :cp      => 'cp'
               )
-      package   = flexmock('package', 
+      package   = flexmock('package',
                            :ikskey => 123,
                            :keys   => 'keys'
                           )
-      atc_class = flexmock('atc_class', 
+      atc_class = flexmock('atc_class',
                            :code => 123,
                            :description => 'description',
                            :packages => [package]
                           )
       log_group = flexmock('log_group', :newest_date => Time.local(2011,2,3))
-      flexmock(@app, 
+      flexmock(@app,
                :atc_classes => {'key' => atc_class},
                :log_group   => log_group
               )
@@ -194,9 +183,10 @@ module ODDB
         e.should_receive(:compress).and_raise(StandardError)
       end
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        stdout_null do 
-          assert_raise(StandardError) do 
-            @plugin._export_drugs('export_name', 'keys')
+        @plugin.instance_eval('@options = {}')
+        stdout_null do
+          assert_raise(StandardError) do
+            @plugin._export_drugs('export_name', ['keys'])
           end
         end
       end
