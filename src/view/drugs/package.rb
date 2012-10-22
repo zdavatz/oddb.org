@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Package -- oddb -- 04.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 22.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
 require 'view/admin/swissmedic_source'
@@ -89,6 +89,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:sl_entry						=>	HtmlGrid::BooleanValue,
 		:limitation					=>	HtmlGrid::BooleanValue,
+    :barcode_label      =>  HtmlGrid::LabelText,
 		:patinfo_label			=>	HtmlGrid::LabelText,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:feedback_label			=>	HtmlGrid::LabelText,
@@ -106,6 +107,17 @@ class PackageInnerComposite < HtmlGrid::Composite
       components.update([0,12] => :feedback_label, [1,12] => :feedback,
                         [0,13] => :pharmacode)
       css_map.store([0,13,4], 'list')
+    end
+    if @lookandfeel.enabled?(:show_ean13)
+      if components[[0,13]] == :pharmacode
+        components.update([0,13] => :barcode_label, [1,13] => :barcode,
+                          [0,14] => :pharmacode)
+        css_map.store([0,14,4], 'list')
+      else
+        components.update([0,12] => :barcode_label, [1,12] => :barcode,
+                          [0,13] => :pharmacode)
+        css_map.store([0,13,4], 'list')
+      end
     end
     if(@model.ddd_price)
       components.store([2,11], :ddd_price)

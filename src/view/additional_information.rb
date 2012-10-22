@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 22.10.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -89,6 +89,11 @@ module ODDB
 					atc.code
 				end
 			end
+      def barcode(model, session=@session)
+        ean13 = HtmlGrid::Value.new(:barcode, model, @session, self)
+        ean13.label = false
+        ean13
+      end
 			def comarketing(model, session=@session)
 				if(model.parallel_import)
 					square(:parallel_import)

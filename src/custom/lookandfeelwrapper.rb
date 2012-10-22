@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 11.10.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 22.10.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -33,8 +33,9 @@ module SBSM
 end
 module ODDB
 	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
-		ENABLED = [
-      :fachinfos, :feedback,
+    ENABLED = [
+      :fachinfos,
+      :feedback,
     ]
     def compare_list_components
       {
@@ -168,6 +169,7 @@ module ODDB
       :sl_introduction_rss,
       :sponsor,
       :sponsorlogo,
+      :show_ean13,
       :twitter_share,
     ]
     DISABLED = [
@@ -450,6 +452,7 @@ module ODDB
       :popup_links,
       :search_reset,
       :sequences,
+      :show_ean13,
       :topfoot,
     ]
 		DICTIONARIES = {

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 22.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -215,6 +215,7 @@ Zeno Davatz
 				:ba_pharma								=>	'Pharmaunternehmen',
 				:banner_destination				=>	"http://www.mediservice.ch/60000/d/pg000000247d.html",
 				:banner										=>	'MediService - Apotheke - Farmacia - Pharmacie',
+				:barcode_label                                          =>      'EAN-Code',
 				:base_patent							=>	'Grund-Patent Nr.',
 				:base_patent_date					=>	'Schutzbeginn des Grund-Patentes',
 				:base_patent_detail				=>	'Detaillierte Grund-Patent-Angaben bei Swissreg',
@@ -3144,6 +3145,7 @@ Zeno Davatz
 				:ba_pharma								=>	'Pharmaceutical enterprise',
 				:banner_destination				=>	"http://www.mediservice.ch/60000/d/pg000000247d.html",
 				:banner										=>	'MediService - Apotheke - Farmacia - Pharmacie',
+				:barcode_label                                          =>      'EAN-Code',
 				:base_patent							=>	'Base patent', 
 				:base_patent_date					=>	'Beginning of the protection of the base patent', 
 				:base_patent_detail				=>	'Detailed description of Base patent at Swissreg',
