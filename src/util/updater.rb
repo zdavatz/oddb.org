@@ -183,6 +183,7 @@ module ODDB
 		end
 		def run
 			logfile_stats
+      update_recall_feeds
       update_textinfo_news
 			if(update_swissmedic)
         update_swissmedic_followers
