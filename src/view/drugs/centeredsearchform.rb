@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -352,6 +352,7 @@ class SLPriceNews < RssPreview
     link
   end
 end
+class RecallNews < SLPriceNews; end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
@@ -377,6 +378,9 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     end
     if(@lookandfeel.enabled?(:price_rise_rss))
       content.push SLPriceNews.new(:price_rise, @session, self)
+    end
+    if(@lookandfeel.enabled?(:recall_rss))
+      content.push RecallNews.new(:recall, @session, self)
     end
     content
   end

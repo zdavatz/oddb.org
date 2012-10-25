@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 22.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1374,6 +1374,8 @@ Zeno Davatz
         :prescription_notes            =>  'Diese Angaben werden NICHT bei ch.oddb.org gespeichert sondern sind nur auf dem Ausdruck zur Verfügung. Zusätzlich können die Angaben als CSV-Datei zum Import ins lokale System runtergeladen werden.',
         :prescription_signature        =>  'Stempel, Unterschrift Arzt (auf Ausdruck)',
         :prescription_link_to_epha     =>  'Rezept auf Interaktionen überprüfen',
+				:recall_feed_title                      =>      'Chargenrückrufe',
+				:recall_feed_description                =>      'Chargenrückrufe',
 				:recent_registrations			=>	'Neuregistrierungen',
 				:recommend								=>	'Empfehlung',
         :references               =>  'References',
