@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 26.10.2012 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
+require 'date'
 require 'plugin/plugin'
 require 'view/rss/price_cut'
 require 'view/rss/price_rise'
@@ -72,24 +73,31 @@ module ODDB
       end
     end
     def extract_recall_entry_from(page, host='')
+      n = Time.now
       page.links.map do |link|
         entry = {}
-        if href = link.href and
+        if !@found_old_feed and
+           href = link.href and
            href.match(/\/00091\/00118\/(\d{5})/) and $1 != '01459' # "Archiv Chargenrückrufe"
-          entry_page = link.click
-          if container = entry_page.at("div[@id='webInnerContentSmall']") and
-             content   = container.xpath(".//div[@id='sprungmarke0_0']/div")
-            if h1 = container.xpath(".//h1[@id='contentStart']")
-              title = h1.text
+          if pub = link.node.next and
+             pub.text.match(/(\d{2}\.\d{2}\.\d{4})/)
+            date = $1
+          end
+          if date and # only current month
+             date =~ /^\d{2}\.#{@@today.month}\.#{@@today.year}/o
+            entry_page = link.click
+            if container = entry_page.at("div[@id='webInnerContentSmall']") and
+               content   = container.xpath(".//div[@id='sprungmarke0_0']/div")
+              if h1 = container.xpath(".//h1[@id='contentStart']")
+                title = h1.text
+              end
+              entry[:title]       = title || ''
+              entry[:date]        = Date.parse(date).to_s
+              entry[:description] = content.inner_html
+              entry[:link]        = host + href
             end
-            if p = content.xpath(".//p").first and
-               p.text.match(/^(\d{2}\.\d{2}\.\d+)/)
-              date = $1 # some entry does not have date
-            end
-            entry[:title]       = title || ''
-            entry[:date]        = date || ''
-            entry[:description] = content.inner_html
-            entry[:link]        = host + href
+          elsif !date.nil? # found previous month
+            @found_old_feed = true
           end
         end
         if entry.empty?
@@ -102,6 +110,7 @@ module ODDB
     def update_recall_feeds(month=@@today)
       entries = []
       host = "http://www.swissmedic.ch"
+      @found_old_feed = false
       per_page = 5
       base_uri = host + "/marktueberwachung/00091/00118/index.html?lang=de" # &start=0
       first_page = download(base_uri)
@@ -109,12 +118,15 @@ module ODDB
          last_uri.match(/&start=([\d]*)/)
         entries += extract_recall_entry_from(first_page, host)
         (per_page..$1.to_i).step(per_page).to_a.each do |idx|
+          break if @found_old_feed
           if page = download("#{base_uri}&start=#{idx}")
             entries += extract_recall_entry_from(page, host)
           end
         end
       end
-      update_rss_feeds('recall.rss', entries, View::Rss::Recall)
+      if entries
+        update_rss_feeds('recall.rss', entries, View::Rss::Recall)
+      end
     end
   end
 end
