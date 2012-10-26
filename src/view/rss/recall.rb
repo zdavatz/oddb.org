@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View:Rss::Recall -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
+# ODDB::View:Rss::Recall -- oddb.org -- 26.10.2012 -- yasaka@ywesee.com
 
 require 'view/latin1'
 require 'rss/maker'
@@ -26,7 +26,7 @@ class Recall < HtmlGrid::Component
       feed.encoding            = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
       language = @session.language
-      @model.each { |entry|
+      @model[@session.language].each { |entry|
         item = feed.items.new_item
         item.author           = "ODDB.org"
         item.title            = sanitize(entry[:title])
