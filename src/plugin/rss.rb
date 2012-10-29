@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 26.10.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'date'
 require 'plugin/plugin'
+require 'util/logfile'
 require 'custom/lookandfeelbase'
 require 'view/rss/price_cut'
 require 'view/rss/price_rise'
@@ -13,6 +14,10 @@ require 'view/rss/recall'
 
 module ODDB
   class RssPlugin < Plugin
+    def initialize(app)
+      super
+      @report = {}
+    end
     def sort_packages(packages)
       packages.sort_by { |pac|
         time = pac.price_public.valid_from
@@ -58,10 +63,12 @@ module ODDB
       update_rss_feeds('price_cut.rss', sort_packages(cuts), View::Rss::PriceCut)
       update_rss_feeds('price_rise.rss', sort_packages(rises), View::Rss::PriceRise)
     end
-    def download(uri)
+    def download(uri, agent=nil)
       LogFile.append('oddb/debug', " getin RssPlugin#download", Time.now)
-      agent = Mechanize.new
-      agent.user_agent_alias = "Linux Firefox"
+      unless agent
+        agent = Mechanize.new
+        agent.user_agent_alias = "Linux Firefox"
+      end
       return agent.get(uri)
     rescue EOFError
       retries ||= 3
@@ -133,7 +140,15 @@ module ODDB
         # recount only with de entries
         @app.rss_updates[name] = [@month || @@today, entries['de'].length]
         @app.odba_isolated_store
+        @report = {'Recall Feed' => entries['de'].length}
       end
+    end
+    def report
+      lines = []
+      @report.each_pair do |name, count|
+        lines << sprintf("%-32s %3i", "#{name}:", count)
+      end
+      lines.join("\n")
     end
   end
 end

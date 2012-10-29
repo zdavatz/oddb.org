@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -311,7 +311,15 @@ module ODDB
       RssPlugin.new(@app).update_price_feeds(month)
     end
     def update_recall_feeds(month = @@today)
-      RssPlugin.new(@app).update_recall_feeds(month)
+      subj = 'recall.rss'
+      wrap_update(RssPlugin, subj) {
+        plug = RssPlugin.new(@app)
+        plug.update_recall_feeds(month)
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+      #RssPlugin.new(@app).update_recall_feeds(month)
     end
 		def update_trade_status
 			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)

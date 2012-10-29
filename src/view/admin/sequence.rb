@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Sequence -- oddb.org -- 30.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Sequence -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -10,6 +10,7 @@ require 'view/form'
 require 'view/dataformat'
 require 'view/pointervalue'
 require 'view/drugs/sequence'
+require 'view/additional_information'
 require 'htmlgrid/booleanvalue'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/infomessage'
