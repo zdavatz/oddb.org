@@ -183,7 +183,10 @@ module ODDB
 		end
 		def run
 			logfile_stats
-      update_recall_feeds
+
+      # recall, hpc
+      update_swissmedic_feeds
+
       update_textinfo_news
 			if(update_swissmedic)
         update_swissmedic_followers
@@ -310,11 +313,25 @@ module ODDB
     def update_price_feeds(month = @@today)
       RssPlugin.new(@app).update_price_feeds(month)
     end
-    def update_recall_feeds(month = @@today)
+    def update_swissmedic_feeds(month = @@today)
+      update_recall_feed(month)
+      update_hpc_feed(month)
+    end
+    def update_recall_feed(month = @@today)
       subj = 'recall.rss'
       wrap_update(RssPlugin, subj) {
         plug = RssPlugin.new(@app)
-        plug.update_recall_feeds(month)
+        plug.update_recall_feed
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
+    def update_hpc_feed(month = @@today)
+      subj = 'hpc.rss'
+      wrap_update(RssPlugin, subj) {
+        plug = RssPlugin.new(@app)
+        plug.update_hpc_feed
         log = Log.new(@@today)
         log.update_values(log_info(plug))
         log.notify(subj)
