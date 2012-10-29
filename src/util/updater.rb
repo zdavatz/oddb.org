@@ -319,7 +319,6 @@ module ODDB
         log.update_values(log_info(plug))
         log.notify(subj)
       }
-      #RssPlugin.new(@app).update_recall_feeds(month)
     end
 		def update_trade_status
 			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
