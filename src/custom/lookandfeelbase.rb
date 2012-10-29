@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -902,6 +902,9 @@ Zeno Davatz
         :howto_htc                =>  'Installation HTC',
         :howto_kindle             =>  'Installation Kindle',
         :howto_epub_stanza        =>  'Installation Stanza',
+
+				:hpc_feed_title                      =>      'Health Professional Communication (HPC)',
+				:hpc_feed_description                =>      'Health Professional Communication (HPC)',
 				:html_chapter						  =>	'Inhalt',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:html_upload              =>	'Patinfo-Upload (Html)',

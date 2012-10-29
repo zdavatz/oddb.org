@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 25.10.2012 -- yasaka@ywesee.com
+# ODDB::Validator -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -68,7 +68,7 @@ module ODDB
       :channel      =>  [
         'fachinfo.rss', 'feedback.rss', 'minifi.rss',
         'price_cut.rss', 'price_rise.rss', 'sl_introduction.rss',
-        'recall.rss',
+        'recall.rss', 'hpc.rss',
       ],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
