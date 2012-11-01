@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -322,9 +322,11 @@ module ODDB
       wrap_update(RssPlugin, subj) {
         plug = RssPlugin.new(@app)
         plug.update_recall_feed
-        log = Log.new(@@today)
-        log.update_values(log_info(plug))
-        log.notify(subj)
+        unless plug.report.empty?
+          log = Log.new(@@today)
+          log.update_values(log_info(plug))
+          log.notify(subj)
+        end
       }
     end
     def update_hpc_feed(month = @@today)
@@ -332,9 +334,11 @@ module ODDB
       wrap_update(RssPlugin, subj) {
         plug = RssPlugin.new(@app)
         plug.update_hpc_feed
-        log = Log.new(@@today)
-        log.update_values(log_info(plug))
-        log.notify(subj)
+        unless plug.report.empty?
+          log = Log.new(@@today)
+          log.update_values(log_info(plug))
+          log.notify(subj)
+        end
       }
     end
 		def update_trade_status

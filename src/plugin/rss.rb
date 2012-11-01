@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'date'
@@ -10,10 +10,11 @@ require 'custom/lookandfeelbase'
 require 'view/rss/price_cut'
 require 'view/rss/price_rise'
 require 'view/rss/sl_introduction'
-require 'view/rss/recall'
+require 'view/rss/swissmedic'
 
 module ODDB
   class RssPlugin < Plugin
+    attr_reader :report
     def initialize(app)
       super
       @report = {}
@@ -48,18 +49,21 @@ module ODDB
         raise
       end
     end
-    def extract_swissmedic_entry_from(category, page, host)
+    def extract_swissmedic_entry_from(category, page, host, count=false)
       page.links.map do |link|
         entry = {}
-        if !@found_old_feed and
-           href = link.href and
+        if href = link.href and
            href.match(/\/00091\/#{category}\/(\d{5})/) and $1 != '01459' # "Archiv Chargenrückrufe"
           if pub = link.node.next and
              pub.text.match(/(\d{2}\.\d{2}\.\d{4})/)
             date = $1
-          end
-          if date and # only current month
-             date =~ /^\d{2}\.#{@@today.month}\.#{@@today.year}/o
+            # count entries of current issue
+            if count
+              if date =~ /^(\d{2})\.(#{@@today.month})\.(#{@@today.year})/o
+                @current_issue_count += 1
+                @new_entry_count     += 1 if Date.new($3.to_i, $2.to_i, $1.to_i) >= @app.rss_updates[@name].first
+              end
+            end
             entry_page = link.click
             if container = entry_page.at("div[@id='webInnerContentSmall']") and
                content   = container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div")
@@ -71,8 +75,6 @@ module ODDB
               entry[:description] = content.inner_html
               entry[:link]        = host + href
             end
-          elsif !date.nil? # found previous month
-            @found_old_feed = true
           end
         end
         if entry.empty?
@@ -82,38 +84,53 @@ module ODDB
         end
       end.compact
     end
-    def update_swissmedic_feed(type)
-      types = {
+    def swissmedic_entries_of(type)
+      entries = Hash.new{|h,k| h[k] = [] }
+      host = "http://www.swissmedic.ch"
+      per_page = 5
+      swissmedic_categories = {
         :recall => '00118',
         :hpc    => '00092',
       }
-      return unless types.include?(type)
-      host = "http://www.swissmedic.ch"
-      category = types[type]
-      per_page = 5
-      entries = Hash.new{|h,k| h[k] = [] }
+      category = swissmedic_categories[type]
+      return entries unless category
       LookandfeelBase::DICTIONARIES.each_key do |lang|
-        base_uri = host + "/marktueberwachung/00091/#{category}/index.html?lang=#{lang}" # &start=0
-        @found_old_feed = false
+        count = (lang == 'de' ? true : false)
+        base_uri   = host + "/marktueberwachung/00091/#{category}/index.html?lang=#{lang}" # &start=0
         first_page = download(base_uri)
         if last_uri = first_page.link_with(:text => /»/).href and
            last_uri.match(/&start=([\d]*)/)
-          entries[lang] += extract_swissmedic_entry_from(category, first_page, host)
+          entries[lang] += extract_swissmedic_entry_from(category, first_page, host, count)
           (per_page..$1.to_i).step(per_page).to_a.each do |idx|
-            break if @found_old_feed
             if page = download("#{base_uri}&start=#{idx}")
-              entries[lang] += extract_swissmedic_entry_from(category, page, host)
+              entries[lang] += extract_swissmedic_entry_from(category, page, host, count)
             end
           end
         end
       end
+      entries
+    end
+    def update_swissmedic_feed(type)
+      @name = "#{type.to_s}.rss"
+      @current_issue_count  = 0 # only de
+      @new_entry_count      = 0
+      entries = swissmedic_entries_of(type)
       unless entries.empty?
-        name = "#{type.to_s}.rss"
-        update_rss_feeds(name, entries, View::Rss::Recall)
-        # recount only with de entries
-        @app.rss_updates[name] = [@month || @@today, entries['de'].length]
+        previous_update = @app.rss_updates[@name]
+        update_rss_feeds(@name, entries, View::Rss::Swissmedic)
+        # re-update (overwrite)
+        if @current_issue_count > 0
+          @app.rss_updates[@name] = [@@today, @current_issue_count]
+        else
+          @app.rss_updates[@name] = previous_update
+        end
         @app.odba_isolated_store
-        @report = {"#{type.to_s.capitalize} Feed" => entries['de'].length}
+        if @new_entry_count > 0
+          @report = {
+            "New #{type.to_s}.rss feeds"         => @new_entry_count,
+            "This month(#{@@today.month}) total" => @current_issue_count,
+          }
+        end
       end
     end
     def update_recall_feed
@@ -127,7 +144,7 @@ module ODDB
       cuts = []
       rises = []
       news = []
-      cutoff = (month << 1) + 1 
+      cutoff = (month << 1) + 1
       first = Time.local(cutoff.year, cutoff.month, cutoff.day)
       last = Time.local(month.year, month.month, month.day)
       range = first..last
@@ -149,9 +166,8 @@ module ODDB
         end
       }
       update_rss_feeds('sl_introduction.rss', news, View::Rss::SlIntroduction)
-      update_rss_feeds('price_cut.rss', _sort_packages(cuts), View::Rss::PriceCut)
-      update_rss_feeds('price_rise.rss', _sort_packages(rises), View::Rss::PriceRise)
-      # no report
+      update_rss_feeds('price_cut.rss', sort_packages(cuts), View::Rss::PriceCut)
+      update_rss_feeds('price_rise.rss', sort_packages(rises), View::Rss::PriceRise)
     end
   end
 end

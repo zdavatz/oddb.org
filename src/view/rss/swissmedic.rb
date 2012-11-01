@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View:Rss::Recall -- oddb.org -- 26.10.2012 -- yasaka@ywesee.com
+# ODDB::View:Rss::Swissmedic -- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
 
 require 'view/latin1'
 require 'rss/maker'
@@ -8,14 +8,20 @@ require 'rss/maker'
 module ODDB
   module View
     module Rss
-class Recall < HtmlGrid::Component
+class Swissmedic < HtmlGrid::Component
   include View::Latin1
+  attr_accessor :name
   def init
-    @title       = :recall_feed_title
-    @description = :recall_feed_description
+    @name ||= 'recall.rss'
     super
   end
+  def setup
+    type = @name.gsub(/\.rss$/, '')
+    @title       = "#{type}_feed_title".intern
+    @description = "#{type}_feed_description".intern
+  end
   def to_html(context)
+    setup
     RSS::Maker.make('2.0') { |feed|
       feed.channel.title       = @lookandfeel.lookup(@title)
       feed.channel.link        = @lookandfeel._event_url(:home)

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com 
+# Plugin -- oddb -- 01.11.2011 -- yasaka@ywesee.com
+# Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com
 
 require 'util/http'
 require 'ostruct'
@@ -75,6 +76,9 @@ module ODDB
       return if model.empty?
       l10n_sessions { |stub|
         view = view_klass.new(model, stub, nil)
+        if view.respond_to?(:name=)
+          view.name = name
+        end
         path = File.join(RSS_PATH, stub.language, name)
         tmp = File.join(RSS_PATH, stub.language, '.' << name)
         FileUtils.mkdir_p(File.dirname(path))

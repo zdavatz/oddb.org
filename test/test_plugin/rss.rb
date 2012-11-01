@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestRssPlugin -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
+# ODDB::TestRssPlugin -- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
 
 require 'date'
 require 'pathname'
@@ -51,7 +51,8 @@ module ODDB
     # refactor (too many mock! use stastic dummy html files)
     def test_extract_swissmedic_entry_from__with_recall
       category = '00118'
-      today = "#{Date.today.day}.#{Date.today.month}.#{Date.today.year}"
+      yesterday = Date.today - 1
+      today = "#{yesterday.day}.#{yesterday.month}.#{yesterday.year}"
       host = 'http://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
@@ -84,7 +85,8 @@ module ODDB
     end
     def test_extract_swissmedic_entry_from__with_hpc
       category = '00092'
-      today = "#{Date.today.day}.#{Date.today.month}.#{Date.today.year}"
+      yesterday = Date.today - 1
+      today = "#{yesterday.day}.#{yesterday.month}.#{yesterday.year}"
       host = 'http://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
@@ -115,12 +117,55 @@ module ODDB
         @plugin.extract_swissmedic_entry_from(category, page, host)
       )
     end
+    def test_swissmedic_entries_of__with_unknown_type
+      assert_empty(@plugin.swissmedic_entries_of(:invalid_type))
+    end
+    def test_swissmedic_entries_of__with_recall
+      link = flexmock('Link')
+      link.should_receive(:href).and_return("index.html&start=10")
+      page = flexmock('Page')
+      page.should_receive(:link_with).and_return(link)
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:download).and_return(page)
+        plug.should_receive(:extract_swissmedic_entry_from).and_return([{
+          :date        => '01.11.2012',
+          :title       => 'Recall Title',
+          :description => 'Recall Description',
+          :link        => 'http://www.example.com',
+        }])
+      end
+      entries = @plugin.swissmedic_entries_of(:recall)
+      assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal('Recall Title',     entries['de'].first[:title])
+      assert_equal(3,                  entries['de'].length)
+    end
+    def test_swissmedic_entries_of__with_hpc
+      link = flexmock('Link')
+      link.should_receive(:href).and_return("index.html&start=20")
+      page = flexmock('Page')
+      page.should_receive(:link_with).and_return(link)
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:download).and_return(page)
+        plug.should_receive(:extract_swissmedic_entry_from).and_return([{
+          :date        => '01.11.2012',
+          :title       => 'HPC Title',
+          :description => 'HPC Description',
+          :link        => 'http://www.example.com',
+        }])
+      end
+      entries = @plugin.swissmedic_entries_of(:hpc)
+      assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal('HPC Title',        entries['de'].first[:title])
+      assert_equal(5,                  entries['de'].length)
+    end
     def test_update_swissmedic_feed
+      # pending
     end
     def test_update_recall_feed
       # pending
     end
     def test_update_hpc_feed
+      # pending
     end
     def test_report
       # pending
