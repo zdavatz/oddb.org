@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 02.11.2012 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'date'
@@ -49,6 +49,23 @@ module ODDB
         raise
       end
     end
+    def compose_description(content)
+      current_lang = @lang || 'de'
+      description  = content.inner_html
+      if dd = content.xpath('.//p/strong') and
+         nn = dd.text.scan(/(\d{2})([‘'])(\d{3})/) and !nn.empty?
+        nn.each do |matched|
+          number_str = matched.join
+          number_int = matched[0] + matched[2]
+          oddb_link  = "http://#{SERVER_NAME}/#{current_lang}/gcc/show/reg/#{number_int}"
+          description.gsub!(
+            number_str,
+            "<a href='#{oddb_link}' target='_blank'>#{number_str}</a>"
+          )
+        end
+      end
+      description
+    end
     def extract_swissmedic_entry_from(category, page, host, count=false)
       page.links.map do |link|
         entry = {}
@@ -72,7 +89,7 @@ module ODDB
               end
               entry[:title]       = title || ''
               entry[:date]        = Date.parse(date).to_s
-              entry[:description] = content.inner_html
+              entry[:description] = compose_description(content)
               entry[:link]        = host + href
             end
           end
@@ -95,6 +112,7 @@ module ODDB
       category = swissmedic_categories[type]
       return entries unless category
       LookandfeelBase::DICTIONARIES.each_key do |lang|
+        @lang = lang # current_lang
         count = (lang == 'de' ? true : false)
         base_uri   = host + "/marktueberwachung/00091/#{category}/index.html?lang=#{lang}" # &start=0
         first_page = download(base_uri)

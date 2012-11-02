@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestRssPlugin -- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
+# ODDB::TestRssPlugin -- oddb.org -- 02.11.2012 -- yasaka@ywesee.com
 
 require 'date'
 require 'pathname'
@@ -37,6 +37,30 @@ module ODDB
       response = @plugin.download(uri, agent)
       assert_equal('Mechanize Page', response)
     end
+    def test_compose_description
+      # 12‘345
+      desc = flexmock('Desc')
+      text = "Zulassungsnummer: 12‘345"
+      desc.should_receive(:text).and_return(text)
+      content = flexmock('Content')
+      content.should_receive(:xpath).with('.//p/strong').and_return(desc)
+      content.should_receive(:inner_html).and_return(text)
+      assert_equal(
+        "Zulassungsnummer: <a href='http://#{SERVER_NAME}/de/gcc/show/reg/12345' target='_blank'>12‘345</a>",
+        @plugin.compose_description(content)
+      )
+      # 54'321
+      desc = flexmock('Desc')
+      text = "Zulassungsnummer: 54'321"
+      desc.should_receive(:text).and_return(text)
+      content = flexmock('Content')
+      content.should_receive(:xpath).with('.//p/strong').and_return(desc)
+      content.should_receive(:inner_html).and_return(text)
+      assert_equal(
+        "Zulassungsnummer: <a href='http://#{SERVER_NAME}/de/gcc/show/reg/54321' target='_blank'>54'321</a>",
+        @plugin.compose_description(content)
+      )
+    end
     def test_extract_swissmedic_entry_from__with_no_match
       link = flexmock('Link')
       link.should_receive(:href).and_return('/../invalid.html')
@@ -47,12 +71,9 @@ module ODDB
       assert_empty(@plugin.extract_swissmedic_entry_from('00018', page, host))
       assert_empty(@plugin.extract_swissmedic_entry_from('00092', page, host))
     end
-    # TODO
-    # refactor (too many mock! use stastic dummy html files)
     def test_extract_swissmedic_entry_from__with_recall
       category = '00118'
-      yesterday = Date.today - 1
-      today = "#{yesterday.day}.#{yesterday.month}.#{yesterday.year}"
+      today = (Date.today - 1).strftime('%d.%m.%Y')
       host = 'http://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
@@ -65,14 +86,16 @@ module ODDB
       title.should_receive(:text).and_return('Recall Title')
       container = flexmock('Container')
       container.should_receive(:xpath).with(".//h1[@id='contentStart']").and_return(title)
-      content = flexmock('Content')
-      content.should_receive(:inner_html).and_return("Recall Description")
-      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return(content)
+      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return('Content')
       page = flexmock('NextPage')
       page.should_receive(:at).with("div[@id='webInnerContentSmall']").and_return(container)
       link.should_receive(:click).and_return(page)
       page = flexmock('Page')
       page.should_receive(:links).and_return([link])
+      # dependent
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:compose_description).with('Content').and_return('Recall Description')
+      end
       assert_equal(
         [{
           :date        => Date.parse(today).to_s,
@@ -85,8 +108,7 @@ module ODDB
     end
     def test_extract_swissmedic_entry_from__with_hpc
       category = '00092'
-      yesterday = Date.today - 1
-      today = "#{yesterday.day}.#{yesterday.month}.#{yesterday.year}"
+      today = (Date.today - 1).strftime('%d.%m.%Y')
       host = 'http://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
@@ -96,22 +118,24 @@ module ODDB
       node.should_receive(:next).and_return(date)
       link.should_receive(:node).and_return(node)
       title = flexmock('Title')
-      title.should_receive(:text).and_return('Health Professional Communication Title')
+      title.should_receive(:text).and_return('HPC Title')
       container = flexmock('Container')
       container.should_receive(:xpath).with(".//h1[@id='contentStart']").and_return(title)
-      content = flexmock('Content')
-      content.should_receive(:inner_html).and_return("Health Professional Communication Description")
-      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return(content)
+      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return('Content')
       page = flexmock('NextPage')
       page.should_receive(:at).with("div[@id='webInnerContentSmall']").and_return(container)
       link.should_receive(:click).and_return(page)
       page = flexmock('Page')
       page.should_receive(:links).and_return([link])
+      # dependent
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:compose_description).with('Content').and_return('HPC Description')
+      end
       assert_equal(
         [{
           :date        => Date.parse(today).to_s,
-          :title       => 'Health Professional Communication Title',
-          :description => "Health Professional Communication Description",
+          :title       => 'HPC Title',
+          :description => "HPC Description",
           :link        => 'http://www.example.com/recall/00091/00092/00000/index.html',
         }],
         @plugin.extract_swissmedic_entry_from(category, page, host)
@@ -159,16 +183,16 @@ module ODDB
       assert_equal(5,                  entries['de'].length)
     end
     def test_update_swissmedic_feed
-      # pending
+      # pass
     end
     def test_update_recall_feed
-      # pending
+      # pass
     end
     def test_update_hpc_feed
-      # pending
+      # pass
     end
     def test_report
-      # pending
+      # pass
     end
   end
 end
