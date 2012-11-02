@@ -10,7 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_hpc_feeds
+      Updater.new(system).update_hpc_feed
     end
   end
 end
