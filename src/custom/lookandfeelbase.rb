@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 08.11.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1655,7 +1655,7 @@ Zeno Davatz
 				:th_name									=>	'Name',
 				:th_names									=>	'Medikamentenname',
 				:th_narcotics							=>  'Bet.M',
-				:th_narcotic							=>  'Betäubungsmittel',
+				:th_narcotic							=>  '&nbsp;',
 				:th_nbsp									=>	'&nbsp',
 				:th_note									=>	'Note',
 				:th_num_packages					=>	'Zugeh&ouml;rige Medikamente',
