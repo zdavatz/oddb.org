@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -88,7 +88,6 @@ class AtcHeader < HtmlGrid::Composite
     links = [
       :atc_drugbank_link,
       :atc_dosing_link,
-      :atc_division_link,
       :atc_pharmacokinetic_link,
     ].collect{ |link| self.send(link, *[model, session]) }.compact
     links.dup.each_with_index{ |l, i| links.insert(links.index(l), '&nbsp;-&nbsp;') unless i.zero? }

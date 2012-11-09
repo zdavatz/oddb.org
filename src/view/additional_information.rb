@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 22.10.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -68,11 +68,6 @@ module ODDB
         if(atc.respond_to?(:ni_id) and \
            atc.ni_id  and \
            !@lookandfeel.disabled?(:atc_dosing_link))
-          super(atc, session)
-        end
-      end
-      def atc_division_link(atc, session=@session)
-        if(!@lookandfeel.disabled?(:atc_division_link))
           super(atc, session)
         end
       end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::AtcChooser -- oddb.org -- 20.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
@@ -43,20 +43,6 @@ module AtcLink
       link.target = '_blank'
       link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:dosing_title))
-      link
-    end
-  end
-  def atc_division_link(atc, session=@session)
-    if(atc.db_id) # if atc has drugbank link
-      link = HtmlGrid::Link.new(:division, atc, session, self)
-      link.target = '_blank'
-      link.set_attribute('class', 'square infos')
-      link.set_attribute('title', @lookandfeel.lookup(:division_title))
-      if @session.language.downcase == 'fr'
-        link.href = "http://pharmacie.hug-ge.ch/infomedic/utilismedic/tab_couper_ecraser.pdf"
-      else # de, en
-        link.href = "http://www.kantonsspitalbaden.ch/baden_d/Medizinische-Dienste/Dokumente-Medizinische-Dienste/Teilbarkeit-Zermoersern-Sondengabe.pdf"
-      end
       link
     end
   end
