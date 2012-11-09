@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::SwissmedicPluginTest -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -8,8 +9,11 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'stub/odba'
-require 'flexmock'
 require 'plugin/swissmedic'
+require 'model/registration'
+require 'model/sequence'
+require 'model/package'
+require 'flexmock'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
@@ -406,7 +410,7 @@ module ODDB
       part.should_receive(:pointer).and_return('part-pointer')
       part.should_receive(:composition)
       part.should_ignore_missing
-      @app.should_receive(:create).times(1).with(ptptr).and_return part
+      @app.should_receive(:create).with(ptptr).times(1).and_return part
       args = {
         :commercial_form   => 'comform-pointer',
         :composition       => 'composition-pointer',
@@ -1082,11 +1086,31 @@ module ODDB
       assert_equal(expected, @plugin.pointer(['row']))
     end
     def test_pointer_from_row
-      #assert_equal('', @plugin.pointer_from_row('row'))
+      row = ['12345', '01', '', '', '', '', '', '', '', '', '001']
+      expected = Persistence::Pointer.new([:registration, '12345'], ['sequence', '01'], ['package', '001'])
+      assert_kind_of(Persistence::Pointer, @plugin.pointer_from_row(row))
+      assert_equal(expected, @plugin.pointer_from_row(row))
     end
-    def test_resolve_link
-      expected = "http://ch.oddb.org/de/gcc/resolve/pointer/:!registration,112!sequence,111."
-      assert_equal(expected, @plugin.resolve_link('pointer'))
+    def test_resolve_link__with_pointer
+      expected = "http://ch.oddb.org/de/gcc/show/reg/12345/seq/01/pack/001"
+      pointer = Persistence::Pointer.new([:registration, '12345'], ['sequence', '01'], ['package', '001'])
+      package = flexmock('pack') do |pac|
+        pac.should_receive(:iksnr).and_return('12345')
+        pac.should_receive(:seqnr).and_return('01')
+        pac.should_receive(:ikscd).and_return('001')
+        pac.should_receive(:is_a?).with(ODDB::Registration).and_return(false)
+        pac.should_receive(:is_a?).with(ODDB::Sequence).and_return(false)
+        pac.should_receive(:is_a?).with(ODDB::Package).and_return(true)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:resolve).and_return(package)
+      end
+      assert_equal(expected, @plugin.resolve_link(pointer))
+    end
+    def test_resolve_link__with_row
+      expected = "http://ch.oddb.org/de/gcc/resolve/pointer/:!registration,12345!sequence,01!package,001."
+      row = ['12345', '01', '', '', '', '', '', '', '', '', '001']
+      assert_equal(expected, @plugin.resolve_link(row))
     end
     def test_cell
       row = [1, 2, 3]
