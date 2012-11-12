@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPluginTest -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 12.11.2012 -- yasaka@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -376,45 +376,46 @@ module ODDB
         :ikscat            => "D",
         :refdata_override  => true,
         :swissmedic_source => {
-          :atc_class       => "N02BA01",
-          :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
-          :company         => "Bayer (Schweiz) AG",
-          :name_base       => "Aspirin, Tabletten",
-          :iksnr           => "08537",
-          :import_date     => @@today,
-          :ikscat          => "D",
-          :expiry_date     => Date.new(2012,5,9),
-          :index_therapeuticus => "01.01.1.",
-          :seqnr           => "01",
-          :ikscd           => "011",
-          :production_science => "Synthetika human",
-          :unit            => "Tablette(n)",
-          :registration_date => Date.new(1936,6,30),
-          :sequence_date   => Date.new(1936,6,30),
-          :size            => "20",
-          :substances      => "acidum acetylsalicylicum",
-          :indication_sequence => nil,
+          :atc_class               => "N02BA01",
+          :composition             => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
+          :company                 => "Bayer (Schweiz) AG",
+          :name_base               => "Aspirin, Tabletten",
+          :iksnr                   => "08537",
+          :import_date             => @@today,
+          :ikscat                  => "D",
+          :expiry_date             => Date.new(2012,5,9),
+          :index_therapeuticus     => "01.01.1.",
+          :seqnr                   => "01",
+          :ikscd                   => "011",
+          :production_science      => "Synthetika human",
+          :unit                    => "Tablette(n)",
+          :registration_date       => Date.new(1936,6,30),
+          :sequence_date           => Date.new(1936,6,30),
+          :size                    => "20",
+          :substances              => "acidum acetylsalicylicum",
+          :indication_sequence     => nil,
           :indication_registration => 'Analgetikum, Antipyretikum',
         }
       }
       pac = flexmock 'package'
       pac.should_receive(:pointer).and_return pptr
+      @app.should_receive(:create).with(pptr.creator).times(1).and_return pac
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
         .times(1).and_return {
         assert true
         pac
       }
       pac.should_receive(:parts).and_return []
-      ptptr = pptr + :part
+      ptptr = pptr.creator + :part
       part = flexmock 'part'
       part.should_receive(:pointer).and_return('part-pointer')
       part.should_receive(:composition)
       part.should_ignore_missing
-      @app.should_receive(:create).with(ptptr).times(1).and_return part
+      @app.should_receive(:create).with(ptptr.creator).times(1).and_return part
       args = {
-        :commercial_form   => 'comform-pointer',
-        :composition       => 'composition-pointer',
-        :size              => "20 Tablette(n)",
+        :commercial_form => 'comform-pointer',
+        :composition     => 'composition-pointer',
+        :size            => "20 Tablette(n)",
       }
       @app.should_receive(:update).with('part-pointer', args, :swissmedic)\
         .times(1).and_return {
@@ -446,51 +447,51 @@ module ODDB
       @app.should_receive(:commercial_form_by_name).with('Tablette(n)')\
         .and_return comform
       args = {
-        :ikscat          => "D",
-        :refdata_override=> true,
-        :pharmacode      => '1234567',
-        :ancestors       => ['007'],
+        :ikscat            => "D",
+        :refdata_override  => true,
+        :pharmacode        => '1234567',
+        :ancestors         => ['007'],
         :swissmedic_source => {
-          :atc_class       => "N02BA01",
-          :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
-          :company         => "Bayer (Schweiz) AG",
-          :name_base       => "Aspirin, Tabletten",
-          :iksnr           => "08537",
-          :import_date     => @@today,
-          :ikscat          => "D",
-          :expiry_date     => Date.new(2012,5,9),
-          :index_therapeuticus => "01.01.1.",
-          :seqnr           => "01",
-          :ikscd           => "011",
-          :production_science => "Synthetika human",
-          :unit            => "Tablette(n)",
-          :registration_date => Date.new(1936,6,30),
-          :sequence_date   => Date.new(1936,6,30),
-          :size            => "20",
-          :substances      => "acidum acetylsalicylicum",
-          :indication_sequence => nil,
+          :atc_class               => "N02BA01",
+          :composition             => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
+          :company                 => "Bayer (Schweiz) AG",
+          :name_base               => "Aspirin, Tabletten",
+          :iksnr                   => "08537",
+          :import_date             => @@today,
+          :ikscat                  => "D",
+          :expiry_date             => Date.new(2012,5,9),
+          :index_therapeuticus     => "01.01.1.",
+          :seqnr                   => "01",
+          :ikscd                   => "011",
+          :production_science      => "Synthetika human",
+          :unit                    => "Tablette(n)",
+          :registration_date       => Date.new(1936,6,30),
+          :sequence_date           => Date.new(1936,6,30),
+          :size                    => "20",
+          :substances              => "acidum acetylsalicylicum",
+          :indication_sequence     => nil,
           :indication_registration => 'Analgetikum, Antipyretikum',
         }
       }
+      @app.should_receive(:create).with(pptr.creator).times(1).and_return pac
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
         .times(1).and_return {
         assert true
         pac
       }
-      pac.should_receive(:parts).and_return []
       pac.should_receive(:pointer).and_return pptr
       ptptr = pptr + :part
       part = flexmock 'part'
-      part.should_receive(:pointer).and_return('part-pointer')
+      part.should_receive(:pointer).and_return(ptptr)
       part.should_receive(:composition)
       part.should_ignore_missing
-      @app.should_receive(:create).times(1).with(ptptr).and_return part
+      pac.should_receive(:parts).and_return [part]
       args = {
         :commercial_form   => 'comform-pointer',
         :composition       => 'composition-pointer',
         :size              => "20 Tablette(n)",
       }
-      @app.should_receive(:update).with('part-pointer', args, :swissmedic)\
+      @app.should_receive(:update).with(ptptr, args, :swissmedic)\
         .times(1).and_return {
         assert true
         part
