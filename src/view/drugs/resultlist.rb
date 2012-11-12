@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 12.11.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -228,9 +228,10 @@ class ResultList < HtmlGrid::List
 		:galenic_form				=>	View::DescriptionValue,
 		:ikskey							=>	View::PointerLink,
 	}	
-	LOOKANDFEEL_MAP = {
-		:limitation_text	=>	:ltext,
-	}
+  LOOKANDFEEL_MAP = {
+    :limitation_text => :ltext,
+    :narcotic        => 'nbsp',
+  }
   class << self
     def add_additional_mail_order_price_method(n)
       n.times do |i|
