@@ -2639,6 +2639,10 @@ Zeno Davatz
 				:paypal_msg_error					=>	'Erreur à PayPal. Nous éxaminerons votre paiement le plus vite possible et vous contacterons en suite. Merci pour votre entendement.',
 				:paypal_unconfirmed				=>	'Erreur',
 				:paypal_success						=>	'Prêt à télécharger',
+        :pharmacokinetic          =>  'Pharmacocinétique',
+        :pharmacokinetic_title    =>  'Pharmacocinétique - modules.epha.ch',
+        :screencast               =>  'Video-Anleitung (Screencast)',
+        :sl_generic_type          =>  'Original/Generikum',
 				:specialization						=>	'Permission',
         :sl_generic_type           =>  'Original/G&eacute;n&eacute;rique',
 
