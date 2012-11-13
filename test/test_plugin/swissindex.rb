@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TestSwissindexPlugin -- oddb.org -- 13.11.2012 -- yasaka@ywesee.com
 # ODDB::TestSwissindexPlugin -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -100,68 +101,200 @@ module ODDB
       end
     end
     def test_update_out_of_trade
-      package = flexmock('package', 
-                         :barcode => nil,
-                         :pointer => nil
+      # Process 1,3
+      package = flexmock('package',
+                         :barcode => 12345,
+                         :pointer => 'pointer',
                         )
+      flexmock(@app) do |app|
+        app.should_receive(:update).times(2).and_return(package)
+      end
       @plugin.instance_eval('@out_of_trade_false_list = [package]')
       @plugin.instance_eval('@out_of_trade_true_list  = [package]')
-      assert_equal([package], @plugin.update_out_of_trade)
+      # no debugging log
+      assert_equal(nil, @plugin.update_out_of_trade)
     end
     def test_update_pharmacode
-      package = flexmock('package', 
-                         :barcode => nil,
-                         :pointer => nil
+      # Process 2,4
+      package = flexmock('package',
+                         :barcode    => nil,
+                         :pointer    => 'pointer',
+                         :pharmacode => '00001',
                         )
-      @plugin.instance_eval('@delete_pharmacode_list = [package]')
-      @plugin.instance_eval('@update_pharmacode_list = [package]')
-      assert_equal([package], @plugin.update_pharmacode)
+      pharmacode = '00001'
+      flexmock(@app) do |app|
+        app.should_receive(:update).with(package.pointer, {:pharmacode => pharmacode}, :bag).\
+          and_return(package)
+        app.should_receive(:update).with(package.pointer, {:pharmacode => nil}, :bag).\
+          and_return(package)
+      end
+      @plugin.instance_eval('@update_pharmacode_list = [[package, pharmacode]]')
+      @plugin.instance_eval('@delete_pharmacode_list = [[package, nil]]')
+      # no debugging log
+      assert_equal(nil, @plugin.update_pharmacode)
     end
     def test_report
-      package = flexmock('package', 
+      package = flexmock('package',
+                         :iksnr   => '00001',
+                         :seqnr   => '01',
+                         :ikscd   => '001',
                          :barcode => 12345,
-                         :pointer => 'pointer' 
+                         :pointer => 'pointer',
                         )
       @plugin.instance_eval('@out_of_trade_false_list = [package]')
       @plugin.instance_eval('@out_of_trade_true_list  = [package]')
       @plugin.instance_eval('@delete_pharmacode_list  = [package]')
       @plugin.instance_eval('@update_pharmacode_list  = [package]')
       @plugin.instance_eval('@total_packages  = 123')
+      expected = <<REPORT
+Checked 123 packages
+Updated in trade     (out_of_trade:false): 1 packages
+Updated out of trade (out_of_trade:true) : 1 packages
+Updated pharmacode: 1 packages
+Deleted pharmacode: 1 packages
 
-      expected = "Checked 123 packages\nUpdated in trade     (out_of_trade:false): 1 packages\nUpdated out of trade (out_of_trade:true) : 1 packages\nUpdated pharmacode: 1 packages\nDeleted pharmacode: 1 packages\n\nUpdated in trade     (out_of_trade:false): 1 packages\nCheck swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,\nif so the package becomes in trade (false)\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nUpdated out of trade (out_of_trade:true) : 1 packages\nIf there is no eancode in swissindex and the package is in trade in ch.oddb,\nthen the package becomes out of trade (true) in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nUpdated pharmacode: 1 packages\nIf the package does not have a pharmacode and there is a pharmacode found in swissindex,\nthen put the pharmacode into ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nDeleted pharmacode: 1 packages\nIf there is no eancode in swissindex then delete the according pharmacode in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer"
-      assert_equal(expected, @plugin.report)
+Updated in trade     (out_of_trade:false): 1 packages
+Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
+if so the package becomes in trade (false)
+        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+
+Updated out of trade (out_of_trade:true) : 1 packages
+If there is no eancode in swissindex and the package is in trade in ch.oddb,
+then the package becomes out of trade (true) in ch.oddb
+        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+
+Updated pharmacode: 1 packages
+If the package does not have a pharmacode and there is a pharmacode found in swissindex,
+then put the pharmacode into ch.oddb
+        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+
+Deleted pharmacode: 1 packages
+If there is no eancode in swissindex then delete the according pharmacode in ch.oddb
+        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+REPORT
+      assert_equal(expected.chomp, @plugin.report)
     end
-    def test_update_package_trade_status__process12
+    def test_update_package_trade_status__process1
       item = {:phar => 'pharmacode'}
-      swissindex = flexmock('swissindex', :search_item => item)
+      swissindex = flexmock('swissindex')
+      swissindex.should_receive(:download_all).and_return(true)
+      swissindex.should_receive(:check_item).and_return('00001')
+      swissindex.should_receive(:cleanup_items)
       flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
-                         :barcode => 12345,
-                         :pointer => 'pointer',
+                         :barcode      => 12345,
+                         :pointer      => 'pointer',
                          :out_of_trade => true,
-                         :pharmacode => nil
+                         :pharmacode   => '00001'
                         )
       flexmock(@app) do |app|
         app.should_receive(:each_package).and_yield(package)
         app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
       end
       assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(1,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
     end
-    def test_update_package_trade_status__process34
-      swissindex = flexmock('swissindex', :search_item => nil)
+    def test_update_package_trade_status__process2
+      item = {:phar => 'pharmacode'}
+      swissindex = flexmock('swissindex')
+      swissindex.should_receive(:download_all).and_return(true)
+      swissindex.should_receive(:check_item).and_return('00001')
+      swissindex.should_receive(:cleanup_items)
       flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
-                         :barcode => 12345,
-                         :pointer => 'pointer',
+                         :barcode      => 12345,
+                         :pointer      => 'pointer',
                          :out_of_trade => false,
-                         :pharmacode => 'pharmacode',
-                         :sl_entry => 'sl_entry'
+                         :pharmacode   => '99999',
                         )
       flexmock(@app) do |app|
         app.should_receive(:each_package).and_yield(package)
         app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
       end
       assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+      assert_equal(1,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+    end
+    def test_update_package_trade_status__process3_status_inactive
+      item = {:phar => 'pharmacode'}
+      swissindex = flexmock('swissindex')
+      swissindex.should_receive(:download_all).and_return(true)
+      swissindex.should_receive(:check_item).and_return(false) # inactive
+      swissindex.should_receive(:cleanup_items)
+      flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
+      package = flexmock('package',
+                         :barcode      => 12345,
+                         :pointer      => 'pointer',
+                         :out_of_trade => false,
+                         :pharmacode   => '00001',
+                        )
+      flexmock(@app) do |app|
+        app.should_receive(:each_package).and_yield(package)
+        app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
+      end
+      assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(1,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+    end
+    def test_update_package_trade_status__process3_pharmacode_not_found
+      item = {:phar => 'pharmacode'}
+      swissindex = flexmock('swissindex')
+      swissindex.should_receive(:download_all).and_return(true)
+      swissindex.should_receive(:check_item).and_return(nil) # not found
+      swissindex.should_receive(:cleanup_items)
+      flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
+      package = flexmock('package',
+                         :barcode      => 12345,
+                         :pointer      => 'pointer',
+                         :out_of_trade => false,
+                         :pharmacode   => '00001',
+                         :sl_entry     => true,
+                        )
+      flexmock(@app) do |app|
+        app.should_receive(:each_package).and_yield(package)
+        app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
+      end
+      assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(1,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+    end
+    def test_update_package_trade_status__process4
+      item = {:phar => 'pharmacode'}
+      swissindex = flexmock('swissindex')
+      swissindex.should_receive(:download_all).and_return(true)
+      swissindex.should_receive(:check_item).and_return(nil) # not found
+      swissindex.should_receive(:cleanup_items)
+      flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
+      package = flexmock('package',
+                         :barcode      => 12345,
+                         :pointer      => 'pointer',
+                         :out_of_trade => true,
+                         :pharmacode   => '00001',
+                         :sl_entry     => nil,
+                        )
+      flexmock(@app) do |app|
+        app.should_receive(:each_package).and_yield(package)
+        app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
+      end
+      assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(1,    @plugin.instance_eval('@delete_pharmacode_list.length'))
     end
     def test_load_ikskey
       item = {:gtin => '1234567890123'}
