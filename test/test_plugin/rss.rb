@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestRssPlugin -- oddb.org -- 02.11.2012 -- yasaka@ywesee.com
+# ODDB::TestRssPlugin -- oddb.org -- 13.11.2012 -- yasaka@ywesee.com
+# ODDB::TestRssPlugin -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 
 require 'date'
 require 'pathname'
@@ -17,6 +18,11 @@ module ODDB
   class TestRssPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
+      @current = flexmock('current', :valid_from => Time.local(2011,2,3))
+      @package = flexmock('package', 
+                         :price_public => @current,
+                         :data_origin  => 'data_origin'
+                        )
       @app = FlexMock.new 'app'
       @plugin = RssPlugin.new @app
     end
@@ -26,8 +32,16 @@ module ODDB
     def teardown
       # pass
     end
-    def test_update_price_feeds
-      # pending
+    def test_report
+      @plugin.instance_eval("@report = {'New recall.rss feeds' => 2, 'This month(2) total' => 2}")
+      expected = <<REPORT
+New recall.rss feeds:              2
+This month(2) total:               2
+REPORT
+      assert_equal(expected.chomp, @plugin.report)
+    end
+    def test_sort_packages
+      assert_equal([@package], @plugin.sort_packages([@package]))
     end
     def test_download
       agent = flexmock(Mechanize.new)
@@ -182,17 +196,73 @@ module ODDB
       assert_equal('HPC Title',        entries['de'].first[:title])
       assert_equal(5,                  entries['de'].length)
     end
-    def test_update_swissmedic_feed
-      # pass
+    def test_update_swissmedic_feed__with_recall
+      flexmock(@app) do |app|
+        app.should_receive(:rss_updates).and_return({})
+        app.should_receive(:odba_isolated_store).times(2)
+      end
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:update_rss_feeds)
+        plug.should_receive(:swissmedic_entries_of).with(:recall).and_return(['entry'])
+      end
+      assert_equal(nil, @plugin.update_swissmedic_feed(:recall))
+    end
+    def test_update_swissmedic_feed__with_hpc
+      flexmock(@app) do |app|
+        app.should_receive(:rss_updates).and_return({})
+        app.should_receive(:odba_isolated_store).times(2)
+      end
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:update_rss_feeds)
+        plug.should_receive(:swissmedic_entries_of).with(:hpc).and_return(['entry'])
+      end
+      assert_equal(nil, @plugin.update_swissmedic_feed(:hpc))
     end
     def test_update_recall_feed
-      # pass
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:update_swissmedic_feed).with(:recall).and_return(nil)
+      end
+      assert_equal(nil, @plugin.update_recall_feed)
     end
     def test_update_hpc_feed
-      # pass
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:update_swissmedic_feed).with(:hpc).and_return(nil)
+      end
+      assert_equal(nil, @plugin.update_hpc_feed)
     end
-    def test_report
-      # pass
+    def test_update_price_feeds
+      flexmock(@app).should_receive(:each_package).and_yield(@package)
+      assert_equal(nil, @plugin.update_price_feeds(Date.new(2011,2,3)))
+    end
+    def test_update_price_feeds__previous_nil
+      flexmock(@package) do |p|
+        p.should_receive(:price_public).with_no_args.and_return(@current)
+        p.should_receive(:price_public).with(1).once.and_return(nil)
+      end
+      flexmock(@current, :authority => :sl)
+      flexmock(@app).should_receive(:each_package).and_yield(@package)
+      flexmock(@plugin, :update_rss_feeds => 'update_rss_feeds')
+      assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
+    end
+    def test_update_price_feeds__sl
+      flexmock(@app).should_receive(:each_package).and_yield(@package)
+      flexmock(@package, :data_origin => :sl)
+      flexmock(@current, :> => true)
+      flexmock(@plugin, :update_rss_feeds => 'update_rss_feeds')
+      assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
+    end
+    def test_update_price_feeds__sl__current
+      flexmock(@app).should_receive(:each_package).and_yield(@package)
+      flexmock(@package, :data_origin => :sl)
+      previous = flexmock('previous')
+      flexmock(@package) do |p|
+        p.should_receive(:price_public).with_no_args.and_return(@current)
+        p.should_receive(:price_public).with(1).once.and_return(previous)
+      end
+      flexmock(previous, :> => false)
+      flexmock(@current, :> => true)
+      flexmock(@plugin, :update_rss_feeds => 'update_rss_feeds')
+      assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
     end
   end
 end
