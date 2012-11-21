@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 02.11.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 21.11.2012 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'date'
@@ -128,6 +128,26 @@ module ODDB
       end
       entries
     end
+    def generate_flavored_rss(name)
+      %w[
+        just-medical
+      ].each do |flavor|
+        l10n_sessions { |stub|
+        orig = File.join(RSS_PATH, stub.language, name)
+        file = File.basename(name, '.rss') + '-' + flavor + '.rss'
+        path = File.join(RSS_PATH, stub.language, file)
+        tmp = File.join(RSS_PATH, stub.language, '.' << file)
+        FileUtils.mkdir_p(File.dirname(path))
+        if File.exists?(orig)
+          rss = File.read(orig)
+          File.open(tmp, 'w') do |fh|
+            fh.puts rss.gsub(/\/gcc\//, "/#{flavor}/")
+          end
+          FileUtils.mv(tmp, path)
+        end
+      }
+      end
+    end
     def update_swissmedic_feed(type)
       @name = "#{type.to_s}.rss"
       @current_issue_count  = 0 # only de
@@ -136,6 +156,7 @@ module ODDB
       unless entries.empty?
         previous_update = @app.rss_updates[@name]
         update_rss_feeds(@name, entries, View::Rss::Swissmedic)
+        generate_flavored_rss(@name)
         # re-update (overwrite)
         if @current_issue_count > 0
           @app.rss_updates[@name] = [@@today, @current_issue_count]

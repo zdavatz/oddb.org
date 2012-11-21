@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestRssPlugin -- oddb.org -- 13.11.2012 -- yasaka@ywesee.com
+# ODDB::TestRssPlugin -- oddb.org -- 21.11.2012 -- yasaka@ywesee.com
 # ODDB::TestRssPlugin -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 
 require 'date'
@@ -12,9 +12,13 @@ root = Pathname.new(__FILE__).realpath.parent.parent.parent
 $: << root.join('test').join('test_plugin')
 $: << root.join('src')
 
+require 'plugin'
 require 'plugin/rss'
 
 module ODDB
+  class RssPlugin < Plugin
+    RSS_PATH = File.expand_path('../../data/rss', __FILE__)
+  end
   class TestRssPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
@@ -30,7 +34,17 @@ module ODDB
       agent
     end
     def teardown
-      # pass
+      path = RssPlugin::RSS_PATH
+      %w[recall hpc].each do |feed|
+        %w[de fr en].each do |lang|
+          %w[just-medical].each do |flavor|
+            file = File.join(path, lang, "#{feed}-#{flavor}.rss")
+            if File.exists?(file)
+              File.unlink(file)
+            end
+          end
+        end
+      end
     end
     def test_report
       @plugin.instance_eval("@report = {'New recall.rss feeds' => 2, 'This month(2) total' => 2}")
@@ -195,6 +209,20 @@ REPORT
       assert_equal(['de', 'fr', 'en'], entries.keys)
       assert_equal('HPC Title',        entries['de'].first[:title])
       assert_equal(5,                  entries['de'].length)
+    end
+    def test_generate_flavored_rss__with_recall
+      expected = ['just-medical']
+      assert_equal(expected, @plugin.generate_flavored_rss('recall.rss'))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'de', 'recall-just-medical.rss')))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'fr', 'recall-just-medical.rss')))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'en', 'recall-just-medical.rss')))
+    end
+    def test_generate_flavored_rss__with_hpc
+      expected = ['just-medical']
+      assert_equal(expected, @plugin.generate_flavored_rss('hpc.rss'))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'de', 'hpc-just-medical.rss')))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'fr', 'hpc-just-medical.rss')))
+      assert(File.exists?(File.join(RssPlugin::RSS_PATH, 'en', 'hpc-just-medical.rss')))
     end
     def test_update_swissmedic_feed__with_recall
       flexmock(@app) do |app|

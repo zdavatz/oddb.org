@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 09.10.2012 -- yasaka@ywesee.com
+# ODDB::State::Global -- oddb.org -- 21.11.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -769,6 +769,10 @@ module ODDB
         if(channel = @session.user_input(:channel))
           key = channel.gsub('.', '_').to_sym
           if(@session.lookandfeel.enabled?(key))
+            if @session.flavor != Session::DEFAULT_FLAVOR
+              channel = File.basename(channel, '.rss') + '-' + \
+                        @session.flavor + '.rss'
+            end
             Rss::PassThru.new(@session, channel)
           else
             Http404.new(@session, nil)
