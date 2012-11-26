@@ -74,7 +74,7 @@ class InteractionChooser < State::Interactions::Global
       end
     end
     unless atc_codes.empty?
-      url = 'http://modules.epha.ch/vigi/orbit.html'
+      url = 'http://matrix.epha.ch/'
       arg = atc_codes.join(',')
       location = "#{url}##{arg}"
       # redirect

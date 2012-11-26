@@ -262,7 +262,7 @@ class BasketForm < View::Form
     end
     unless atc_codes.empty?
       button = HtmlGrid::Button.new(:interactions_epha_3d_link, model, session, self)
-      url = 'http://modules.epha.ch/vigi/orbit.html'
+      url = 'http://matrix.epha.ch/'
       arg = atc_codes.join(',')
       script = "document.location.href='#{url}##{arg}';"
       button.set_attribute('onclick', script)

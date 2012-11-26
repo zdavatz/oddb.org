@@ -453,7 +453,7 @@ class PrescriptionForm < View::Form
     buttons << '&nbsp;'
     button = HtmlGrid::Button.new(:prescription_link_to_epha, model, session, self)
     js = <<-JS
-    var link   = 'http://modules.epha.ch/vigi/orbit.html';
+    var link   = 'http://matrix.epha.ch/';
     var param  = '';
     var codes  = getElementsByName('atc_code');
     var values = [];
