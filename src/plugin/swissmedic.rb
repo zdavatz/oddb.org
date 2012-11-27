@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 06.11.2012 -- yasaka@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 26.11.2012 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -43,6 +43,8 @@ module ODDB
 #        keep_active_registrations_praeparateliste
 #        keep_active_registrations_praeparateliste_with_export_flag_true
         diff target, @latest, [:atc_class, :sequence_date]
+        # check diff from stored data about date-fields of Registration
+        check_date!
         update_registrations @diff.news + @diff.updates, @diff.replacements
         set_all_export_flag_false
         update_export_sequences @export_sequences
@@ -63,6 +65,28 @@ module ODDB
           memo
         }
       end
+    end
+    # check diff from overwritten stored-objects by admin
+    # about data-fields
+    def check_date!
+      @diff.newest_rows.values.each do |obj|
+        obj.values.each do |row|
+          iksnr = row[0]
+          if reg = @app.registration(iksnr.to_s)
+            {
+              :registration_date => 7,
+              :expiration_date   => 9
+            }.each_pair do |field, i|
+              # if future date given
+              if row[i].is_a?(Date) and
+                 (!reg.send(field).is_a?(Date) or row[i] > reg.send(field))
+                @diff.updates << row
+              end
+            end
+          end
+        end
+      end
+      @diff.updates.uniq!
     end
     def set_all_export_flag_false
       @app.each_registration do |reg|
@@ -642,7 +666,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         end
       end
     end
-    def update_package(reg, seq, row, replacements={}, 
+    def update_package(reg, seq, row, replacements={},
                        opts={:create_only => false})
       cd = cell(row, column(:ikscd))
       pidx = cell(row, COLUMNS.size).to_i
@@ -660,15 +684,18 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                 (seq.pointer + [:package, cd]).creator
               end
         if((pacnr = replacements[row]) && (old = reg.package(pacnr)))
-          args.update(:pharmacode => old.pharmacode, 
+          args.update(:pharmacode => old.pharmacode,
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
-        if package.nil?
+        if package.nil? and ptr.is_a?(Persistence::Pointer)
           package = @app.create(ptr)
         end
         @app.update(ptr, args, :swissmedic)
-        part = package.parts[pidx]
-        part ||= @app.create((ptr + [:part]).creator)
+        if !package.parts or package.parts.empty? or !package.parts[pidx]
+          part = @app.create((ptr + [:part]).creator)
+        else
+          part = package.parts[pidx]
+        end
         args = {
           :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
         }
