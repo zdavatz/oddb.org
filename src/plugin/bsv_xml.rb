@@ -22,7 +22,7 @@ module ODDB
   class BsvXmlPlugin < Plugin
     RECIPIENTS = [ 'paul.wiederkehr@pharmasuisse.org' ]
     BSV_RECIPIENTS = [ 'jean-christian.krayenbuehl@bag.admin.ch',
-      'gertrud.fonatsch@bsv.admin.ch', 'hmg@hmg.ch', 'sl-errors-schweiz@googlegroups.com' ]
+      'gertrud.fonatsch@bsv.admin.ch', 'sl-errors-schweiz@googlegroups.com' ]
     class Listener
       include REXML::StreamListener
       FORMATS = {
