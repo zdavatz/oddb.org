@@ -578,6 +578,11 @@ module ODDB
         [15,0]  => :google_search,
       }
     end
+    def search_type_selection
+      [
+        'st_sequence','st_substance', 'st_company', 'st_oddb',
+      ]
+    end
     def zones
       [
         :analysis, :interactions,
