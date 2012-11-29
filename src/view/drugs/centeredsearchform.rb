@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 29.11.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -367,6 +367,7 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     [2,0] => 'sidebar',
   }
   def rss_feeds_left(model, session=@session)
+    return unless(@lookandfeel.enabled?(:rss_box))
     content = []
     if(@lookandfeel.enabled?(:fachinfo_rss))
       content.push FachinfoNews.new(model.fachinfo_news[0,5], @session, self)
@@ -389,6 +390,7 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     content
   end
   def rss_feeds_right(model, session=@session)
+    return unless(@lookandfeel.enabled?(:rss_box))
     if(@lookandfeel.enabled?(:feedback_rss))
       RssFeedbacks.new(model.feedbacks, @session, self)
     end
