@@ -510,18 +510,17 @@ module ODDB
 		}
     def compare_list_components
       {
-        [0,0]  => :prescription,
-        [1,0]  => :fachinfo,
-        [2,0]  => :patinfo,
-        [3,0]  => :name_base,
-        [4,0]  => :company_name,
-        [5,0]  => :most_precise_dose,
-        [6,0]  => :comparable_size,
-        [7,0]  => :compositions,
-        [8,0]  => :price_public,
-        [9,0]  => :price_difference,
-        [10,0] => :deductible,
-        [11,0] => :ikscat,
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference,
+        [9,0]  => :deductible,
+        [10,0] => :ikscat,
       }  
     end
 		def explain_result_components
