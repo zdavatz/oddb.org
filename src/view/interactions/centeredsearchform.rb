@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::CenteredSearchForm -- oddb -- 10.10.2012 -- yasaka@ywesee.com
+# View::Interactions::CenteredSearchForm -- oddb -- 29.11.2012 -- yasaka@ywesee.com
 # View::Interactions::CenteredSearchForm -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'
@@ -47,8 +47,6 @@ class CenteredInstantSearchForm < CenteredSearchForm
   EVENT = :interaction_chooser
   COMPONENTS = {
     [0,0]   => View::TabNavigation,
-    [0,1,0] => 'search_type',
-    [0,1,1] => :switch_links,
     [0,2,0] => :search_query,
   }
   SYMBOL_MAP = {
@@ -57,6 +55,13 @@ class CenteredInstantSearchForm < CenteredSearchForm
   def init
     @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
     @additional_javascripts = []
+    if @container.instant_search_only?
+      components.store([0,1,0], nil)
+      components.store([0,1,1], nil)
+    else
+      components.store([0,1,0], 'search_type')
+      components.store([0,1,1], :switch_links)
+    end
     super
   end
   def javascripts(context)
@@ -107,8 +112,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
     [0,8] => 'legal-note',
   }
   def init
-    if @session.search_form == 'instant' and
-       instant_search_enabled?
+    if (@session.search_form == 'instant' and instant_search_enabled?) or
+       (instant_search_only?)
       # warm up
       @session.app.registrations.length
       @components = {
@@ -135,6 +140,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
   def instant_search_enabled?
     @session.flavor == Session::DEFAULT_FLAVOR or
     @lookandfeel.enabled?(:ajax, false)
+  end
+  def instant_search_only?
+    @session.flavor == 'just-medical'
   end
 end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
