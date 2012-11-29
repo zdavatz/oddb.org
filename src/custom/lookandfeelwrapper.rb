@@ -459,6 +459,7 @@ module ODDB
     ]
     DISABLED = [
       :rss_box,
+      :search_result_tab_navigation,
       :pointer_steps_header
     ]
 		DICTIONARIES = {

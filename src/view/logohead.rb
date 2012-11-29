@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# ODDB::View::LogoHead -- oddb -- 29.11.2012 -- yasaka@ywesee.com
+# ODDB::View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
 require 'view/logo'
@@ -43,29 +44,34 @@ module ODDB
 			end
 =end
 		end
-		class CommonLogoHead < HtmlGrid::Composite
-			include Personal
-			include SponsorDisplay
-			include UserSettings
-		end
-		class LogoHead < CommonLogoHead
-			COMPONENTS = {
-				[0,0]		=>	View::Logo,
-				[1,0,0]	=>	:sponsor,
-				[1,0,1]	=>	:welcome,
-				[0,1]		=>	:language_chooser,
-				[1,1]		=>	View::TabNavigation,
-			}
-			CSS_MAP = {
-				[0,0]	=>	'logo',
-				[1,0]	=>	'right',
-				[0,1] =>	'list',
-				[1,1]	=>	'tabnavigation right',
-			}
-			COMPONENT_CSS_MAP = {	
-				[0,1] =>	'component',
-			}
-		end
+    class CommonLogoHead < HtmlGrid::Composite
+      include Personal
+      include SponsorDisplay
+      include UserSettings
+    end
+    class LogoHead < CommonLogoHead
+      COMPONENTS = {
+        [0,0]   => View::Logo,
+        [1,0,0] => :sponsor,
+        [1,0,1] => :welcome,
+        [0,1]   => :language_chooser,
+        [1,1]   => :tab_navigation,
+      }
+      CSS_MAP = {
+        [0,0] => 'logo',
+        [1,0] => 'right',
+        [0,1] => 'list',
+        [1,1] => 'tabnavigation right',
+      }
+      COMPONENT_CSS_MAP = {
+        [0,1] => 'component',
+      }
+      def tab_navigation(model, session=@session)
+        unless @lookandfeel.disabled?(:search_result_tab_navigation)
+          View::TabNavigation
+        end
+      end
+    end
 		class PopupLogoHead < CommonLogoHead
 			COMPONENTS = {
 				[0,0]		=>	View::PopupLogo,
