@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 12.11.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 29.11.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -146,7 +146,7 @@ class ResultList < HtmlGrid::List
 	include View::ResultColors
 	include View::AdditionalInformation
   include View::LookandfeelComponents
-	COMPONENTS = {}	
+	COMPONENTS = {}
 	REVERSE_MAP = {
 		:company_name			=> false,
 		:most_precise_dose=> false,
@@ -161,64 +161,64 @@ class ResultList < HtmlGrid::List
 		:substances				=> true,
 	}
 	CSS_MAP = {}
-	CSS_KEYMAP = {
-		:active_agents			=>	'list italic',
-		:comarketing        =>	'list',
-		:company_name				=>	'list italic',
-		:comparable_size		=>	'list right',
-		:complementary_type	=>	'list',
-		:compositions    		=>	'list italic',
-		:ddd_price					=>	'list bold right',
-		:deductible					=>	'list bold right',
-    :prescription       =>  'list',
-		:fachinfo						=>	'list',
-		:feedback						=>	'list right',
-		:galenic_form				=>	'list',
-		:google_search			=>	'list right',
-		:ikscat							=>	'list italic',
-		:limitation_text		=>	'list',
-		:minifi  						=>	'list',
-		:most_precise_dose	=>	'list right',
-		:name_base					=>	'list big',
-		:narcotic						=>	'list',
-		:notify							=>	'list right',
-		:patent             =>	'list',
-		:patinfo						=>	'list',
-		:price_exfactory		=>	'list right',
-		:price_public				=>	'list pubprice',
-		:registration_date	=>	'list italic',
-		:substances					=>	'list italic',
-    :twitter_share      =>  'list right',
-		'nbsp'							=>	'list',
-    :mail_order_price   =>  'list bold',
-	}
-	CSS_HEAD_KEYMAP = {
-		:active_agents			=>	'th',
-		:company_name				=>	'th',
-		:comparable_size		=>	'th right',
-		:complementary_type	=>	'th',
-		:compositions 			=>	'th',
-		:ddd_price					=>	'th right',
-		:deductible					=>	'th right',
-		:fachinfo						=>	'th',
-		:feedback						=>	'th right',
-		:galenic_form				=>	'th',
-		:google_search			=>	'th right',
-		:ikscat							=>	'th',
-		:limitation_text		=>	'th',
-		:minifi  						=>	'th',
-		:most_precise_dose	=>	'th right',
-		:name_base					=>	'th',
-		:narcotic						=>	'th',
-		:notify							=>	'th right',
-		:patinfo						=>	'th',
-		:price_exfactory		=>	'th right',
-		:price_public				=>	'th right',
-		:registration_date	=>	'th',
-		:substances					=>	'th',
-    :twitter_share      =>  'th',
-    'nbsp'							=>	'th',
-	}
+  CSS_KEYMAP = {
+    :active_agents      => 'list italic',
+    :comarketing        => 'list',
+    :company_name       => 'list italic',
+    :comparable_size    => 'list right',
+    :complementary_type => 'list',
+    :compositions       => 'list italic',
+    :ddd_price          => 'list bold right',
+    :deductible         => 'list bold right',
+    :prescription       => 'list',
+    :fachinfo           => 'list',
+    :feedback           => 'list right',
+    :galenic_form       => 'list',
+    :google_search      => 'list right',
+    :ikscat             => 'list italic',
+    :limitation_text    => 'list',
+    :minifi             => 'list',
+    :most_precise_dose  => 'list right',
+    :name_base          => 'list big',
+    :narcotic           => 'list',
+    :notify             => 'list right',
+    :patent             => 'list',
+    :patinfo            => 'list',
+    :price_exfactory    => 'list right',
+    :price_public       => 'list pubprice',
+    :registration_date  => 'list italic',
+    :substances         => 'list italic',
+    :twitter_share      => 'list right',
+    :mail_order_price   => 'list bold',
+    'nbsp'              => 'list',
+  }
+  CSS_HEAD_KEYMAP = {
+    :active_agents      => 'th',
+    :company_name       => 'th',
+    :comparable_size    => 'th right',
+    :complementary_type => 'th',
+    :compositions       => 'th',
+    :ddd_price          => 'th right',
+    :deductible         => 'th right',
+    :fachinfo           => 'th',
+    :feedback           => 'th right',
+    :galenic_form       => 'th',
+    :google_search      => 'th right',
+    :ikscat             => 'th',
+    :limitation_text    => 'th',
+    :minifi             => 'th',
+    :most_precise_dose  => 'th right',
+    :name_base          => 'th',
+    :narcotic           => 'th',
+    :notify             => 'th right',
+    :patinfo            => 'th',
+    :price_exfactory    => 'th right',
+    :price_public       => 'th right',
+    :registration_date  => 'th',
+    :substances         => 'th',
+    :twitter_share      => 'th',
+    'nbsp'              => 'th',
+  }
 	CSS_HEAD_MAP = {}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -227,10 +227,10 @@ class ResultList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:galenic_form				=>	View::DescriptionValue,
 		:ikskey							=>	View::PointerLink,
-	}	
+	}
   LOOKANDFEEL_MAP = {
     :limitation_text => :ltext,
-    :narcotic        => 'nbsp',
+    :narcotic        => '', # plugin needs :th_narcotic
   }
   class << self
     def add_additional_mail_order_price_method(n)

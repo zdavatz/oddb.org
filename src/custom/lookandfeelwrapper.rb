@@ -434,7 +434,7 @@ module ODDB
     }
 		HTML_ATTRIBUTES = { }
 	end
-	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
+  class LookandfeelJustMedical < SBSM::LookandfeelWrapper
     ENABLED = [
       :ajax,
       :atc_chooser,
@@ -442,12 +442,12 @@ module ODDB
       :custom_tab_navigation,
       :drugs,
       :external_css,
-      :fachinfos, 
+      :fachinfos,
       :feedback,
       :home,
       :home_drugs,
       :home_migel,
-      :interactions, 
+      :interactions,
       :just_medical_structure,
       :popup_links,
       :recall_rss,
@@ -458,7 +458,8 @@ module ODDB
       :topfoot,
     ]
     DISABLED = [
-      :rss_box
+      :rss_box,
+      :pointer_steps_header
     ]
 		DICTIONARIES = {
 			'de'	=>	{
@@ -504,10 +505,9 @@ module ODDB
 				:sequences									=>	'Drugs A-Z',
 			},
 		}
-		DISABLED = [ :pointer_steps_header ]
-		RESOURCES = {
-			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',
-		}
+    RESOURCES = {
+      :external_css => 'http://www.just-medical.com/css/new.oddb.css',
+    }
     def compare_list_components
       {
         [0,0]  => :fachinfo,
@@ -521,7 +521,7 @@ module ODDB
         [8,0]  => :price_difference,
         [9,0]  => :deductible,
         [10,0] => :ikscat,
-      }  
+      }
     end
 		def explain_result_components
 			{
