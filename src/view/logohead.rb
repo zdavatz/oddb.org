@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::LogoHead -- oddb -- 29.11.2012 -- yasaka@ywesee.com
+# ODDB::View::LogoHead -- oddb -- 30.11.2012 -- yasaka@ywesee.com
 # ODDB::View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
@@ -68,7 +68,7 @@ module ODDB
       }
       def tab_navigation(model, session=@session)
         unless @lookandfeel.disabled?(:search_result_tab_navigation)
-          View::TabNavigation
+          View::TabNavigation.new(model, session, self)
         end
       end
     end
