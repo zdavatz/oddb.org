@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 29.11.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 30.11.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -459,7 +459,7 @@ module ODDB
     ]
     DISABLED = [
       :rss_box,
-      :search_result_tab_navigation,
+      :search_result_head_navigation,
       :pointer_steps_header
     ]
 		DICTIONARIES = {

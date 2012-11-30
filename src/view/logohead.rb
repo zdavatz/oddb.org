@@ -66,8 +66,13 @@ module ODDB
       COMPONENT_CSS_MAP = {
         [0,1] => 'component',
       }
+      def language_chooser(model, session=@session)
+        unless @lookandfeel.disabled?(:search_result_head_navigation)
+          super
+        end
+      end
       def tab_navigation(model, session=@session)
-        unless @lookandfeel.disabled?(:search_result_tab_navigation)
+        unless @lookandfeel.disabled?(:search_result_head_navigation)
           View::TabNavigation.new(model, session, self)
         end
       end
