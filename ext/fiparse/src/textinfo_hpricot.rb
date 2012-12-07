@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 13.07.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -65,11 +65,15 @@ class TextinfoHpricot
     elem.each_child { |child|
       case child
       when Hpricot::Text
-        if ptr.target.is_a? Text::Table or
-           ptr.target.is_a? Text::MultiCell
-          ptr.target = ptr.target.next_paragraph
+        if ptr.target.is_a? Text::Table
+          # ignore text "\r\n        " in between tag.
+          return
+        else
+          if ptr.target.is_a? Text::MultiCell
+            ptr.target.next_paragraph
+          end
+          handle_text(ptr, child)
         end
-        handle_text(ptr, child)
       when Hpricot::Elem
         case child.name
         when 'h3'
@@ -85,18 +89,16 @@ class TextinfoHpricot
             ptr.target = ptr.section.next_paragraph
           end
           handle_element(child, ptr)
-        when 'span', 'em', 'strong'
-          target = ptr.target
-          target << ' '
-          target.augment_format(:italic) if target.is_a?(Text::Paragraph)
+        when 'span', 'em', 'strong', 'b'
+          ptr.target << ' '
+          ptr.target.augment_format(:italic) if ptr.target.is_a?(Text::Paragraph)
           handle_element(child, ptr)
-          target = ptr.target
-          target.reduce_format(:italic) if target.is_a?(Text::Paragraph)
-          target << ' '
+          ptr.target.reduce_format(:italic) if ptr.target.is_a?(Text::Paragraph)
+          ptr.target << ' '
         when 'sub', 'sup'
-          target = ptr.target
+          ptr.target << ' '
           handle_text(ptr, child)
-          target << ' '
+          ptr.target << ' '
         when 'table'
           ptr.section = ptr.chapter.next_section
           if detect_table?(child)
@@ -125,7 +127,10 @@ class TextinfoHpricot
         when 'td', 'th'
           if ptr.table
             ptr.target = ptr.table.next_multi_cell!
+            ptr.target.row_span = child.attributes['rowspan'].to_i unless child.attributes['rowspan'].empty?
+            ptr.target.col_span = child.attributes['colspan'].to_i unless child.attributes['colspan'].empty?
             handle_element(child, ptr)
+            ptr.target = ptr.table
           else
             ## the new format uses td-borders as "row-separators"
             ptr.target << preformatted_text(child)
@@ -138,8 +143,14 @@ class TextinfoHpricot
           handle_element(child, ptr)
         when 'img'
           if ptr.table
+            unless ptr.target.respond_to?(:next_image) # after something text (paragraph) in cell
+              ptr.target = ptr.table.next_multi_cell!
+              ptr.target.row_span = child.attributes['rowspan'].to_i if child.attributes['rowspan'].empty?
+              ptr.target.col_span = child.attributes['colspan'].to_i if child.attributes['colspan'].empty?
+            end
             ptr.target = ptr.target.next_image
             handle_image(ptr, child)
+            ptr.target = ptr.table.next_paragraph
           else
             ptr.section = ptr.chapter.next_section
             ptr.target = ptr.section.next_image
@@ -152,8 +163,10 @@ class TextinfoHpricot
     }
   end
   def handle_image(ptr, child)
-    file_name = File.basename child[:src].gsub('&#xA;','').strip
-    lang = file_name[0].upcase == 'D' ? 'de' : 'fr'
+    file_name = File.basename(child[:src].
+                              gsub('&#xA;','').
+                              gsub(/\?px=[0-9]*$/, '').strip)
+    lang = file_name[0].upcase == 'F' ? 'fr' : 'de'
     dir = File.join '/', 'resources', 'images', 'fachinfo', lang
     ptr.target.src = File.join dir, file_name
   end
@@ -179,15 +192,22 @@ class TextinfoHpricot
   def detect_table?(elem)
     found = true
     if elem.attributes['border'] == '0'
-      classes = []
-      (elem/:thead/:tr/:th).each do |th|
-        classes << true if th.attributes['class'] == 'rowSepBelow'
-      end
-      (elem/:tbody/:tr/:td).each do |td|
-        classes << true if td.attributes['class'] == 'rowSepBelow'
-      end
-      unless classes.empty? # as pre-format style paragraph
-        found = false
+      # if 'rowSepBelow' class is found,
+      # then this elem must be handled as pre-format style paragraph
+      catch :pre do
+        [
+          (elem/:thead/:tr/:th),
+          (elem/:tbody/:tr/:td),
+          (elem/:tr/:th),
+          (elem/:tr/:td)
+        ].each do |tags|
+          tags.each do |tag|
+            if tag.attributes['class'] == 'rowSepBelow'
+              found = false
+              throw :pre
+            end
+          end
+        end
       end
     end
     found

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 03.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -138,11 +138,11 @@ module ODDB
             context.tr {
               row.collect { |cell|
                 if cell.is_a? Text::MultiCell
-                  context.td('colspan' => cell.col_span) {
+                  context.td('colspan' => cell.col_span, 'rowspan' => cell.row_span) {
                     paragraphs(context, cell.contents)
                   }
                 else
-                  context.td('colspan' => cell.col_span) {
+                  context.td('colspan' => cell.col_span, 'rowspan' => cell.row_span) {
                     formats(context, cell)
                   }
                 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 01.11.2012 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -187,7 +187,7 @@ module ODDB
       # recall, hpc
       update_swissmedic_feeds
 
-      update_textinfo_news
+      update_textinfo_news2
 			if(update_swissmedic)
         update_swissmedic_followers
       end
@@ -286,6 +286,11 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo News",
                            :import_news
+    end
+    def update_textinfo_news2
+      update_notify_simple TextInfoPlugin,
+                           "Fach- und Patienteninfo News",
+                           :import_news2
     end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')

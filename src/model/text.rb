@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Text -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
+# ODDB::Text -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
 # ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
@@ -254,7 +254,7 @@ module ODDB
           end
         end
       end
-      def column_widths
+      def column_widths # as pre-formatted paragraph
         @rows.inject([]) { |memo, row|
           row.each_with_index { |cell, idx|
             lens = cell.to_s.split("\n").collect { |part| part.length }
@@ -300,6 +300,7 @@ module ODDB
         image_cell
       end
       def next_multi_cell!
+        next_row! if @rows.empty?
         cell = MultiCell.new
         @rows.last.push cell
         cell

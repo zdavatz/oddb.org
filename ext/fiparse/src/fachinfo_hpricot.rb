@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -64,7 +64,7 @@ class FachinfoHpricot < TextinfoHpricot
       @delivery = chapter
     when '5595'
       @distribution = chapter
-    when '7800'
+    when '7800', '9100'
       @packages = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
