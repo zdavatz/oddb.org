@@ -642,31 +642,43 @@ module ODDB
     def textinfo_news2(agent=init_agent2)
       url = ODDB.config.text_info_newssource2 \
         or raise 'please configure ODDB.config.text_info_newssource2 to proceed'
-      # get updates
+      # get security and innovation updates
       company_names = []
+      tags = []
       updates = agent.get(url)
-      updates.search(
-        '//span[starts-with(@id, "ctl00_MainContent_UcSecurityNews_dlNews_")]'
-      ).map do |span|
-        span['id'] =~ /_ctl(\d{2})_Label1/
-        index = $1.to_s
-        if index and span.child.text =~ /\d{2}\.\d{2}\.\d{2}/
+      tags += updates.search('//span[starts-with(@id, "ctl00_MainContent_UcNewsSecurity_dlNews_")]')
+      tags += updates.search('//span[starts-with(@id, "ctl00_MainContent_ucInnovationNews_dlNews_")]')
+      tags.map do |span|
+        span['id'] =~ /_ctl(\d{2})_(Label1|lblDate)/ # date
+        indx = ($1 ? $1.to_s : nil)
+        type = ($2 == 'lblDate' ? 'innovation' : 'security')
+        if (indx and type) and
+           span.child.text =~ /\d{2}\.\d{2}\.\d{2}/
           begin
             date = Date.strptime(span.child.text, '%d.%m.%y')
           rescue ArgumentError
           end
           if date and date >= Date.today
-            fi = updates.link_with(
-              :id => /ctl00_MainContent_UcSecurityNews_dlNews_ctl#{index}_hlDetailNews/
-            ).click.link_with(:href => /\/mpro\/mnr\//).click
-            if chapter = fi.at('//a[@name=7850]') and
-               name = chapter.parent.parent.at('.//p[@class="noSpacing"]').text
+            id = case type
+                 when 'security';   /ctl00_MainContent_UcNewsSecurity_dlNews_ctl#{indx}_hlDetailNews/
+                 when 'innovation'; /ctl00_MainContent_ucInnovationNews_dlNews_ctl#{indx}_hlDetailNews/
+                 end
+            # Sometimes, innovation detail page does not have fi-Qulle link
+            # We skip if it has only external links
+            begin
+              fi = updates.link_with(:id => id).click.
+                  link_with(:href => /\/mpro\/mnr\//).click
+            rescue NoMethodError
+            end
+            if fi and 
+               chapter = fi.at('//a[@name=7850]') and
+               name = chapter.parent.parent.at('.//p').text # first p
               company_names << name.split(',').first if name
             end
           end
         end
       end
-      company_names
+      company_names.uniq
     end
     def import_company2(name, target=:both, agent=init_agent2)
       if name.is_a?(Array) # for consistency againt old interface
