@@ -68,6 +68,8 @@ class FachinfoHpricot < TextinfoHpricot
       @packages = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
+    when '9200'
+      # skip "Beschreibung"
     else
       raise "Unknown chapter-code #{code}, while parsing #{@name}"
     end
