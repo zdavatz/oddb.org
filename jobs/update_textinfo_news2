@@ -10,7 +10,8 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_textinfo_news2
+      opts = if ARGV.first =~ /reparse/ then {:reparse => true} else nil end
+      Updater.new(system).update_textinfo_news2(opts)
     end
   end
 end

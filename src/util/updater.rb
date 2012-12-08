@@ -287,7 +287,8 @@ module ODDB
                            "Fach- und Patienteninfo News",
                            :import_news
     end
-    def update_textinfo_news2
+    def update_textinfo_news2(opts=nil)
+      @options = opts
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo News",
                            :import_news2
@@ -480,7 +481,11 @@ module ODDB
 		end
 		def update_notify_simple(klass, subj, update_method=:update, args=[])
 			wrap_update(klass, subj) {
-				plug = klass.new(@app)
+        if @options
+				  plug = klass.new(@app, @options)
+        else
+				  plug = klass.new(@app)
+        end
 				if(plug.send(update_method, *args))
 					log = Log.new(@@today)
 					log.update_values(log_info(plug))
