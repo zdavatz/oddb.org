@@ -133,7 +133,7 @@ module ODDB
               replace fachinfo, reg, :fachinfo
             end
           else
-            store_orphaned iksnr, fis, :orphaned_fachindo
+            store_orphaned iksnr, fis, :orphaned_fachinfo
             @unknown_iksnrs.store iksnr, name
           end
         end
