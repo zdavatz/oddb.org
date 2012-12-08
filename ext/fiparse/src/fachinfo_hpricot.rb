@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -77,36 +77,36 @@ class FachinfoHpricot < TextinfoHpricot
   def to_textinfo
     fi = if(@amzv)
       fi = FachinfoDocument2001.new
-      fi.amzv = @amzv
+      fi.amzv               = @amzv
       fi.contra_indications = @contra_indications
-      fi.pregnancy = @pregnancy
+      fi.pregnancy          = @pregnancy
       fi.registration_owner = @registration_owner
-      fi.driving_ability = @driving_ability
-      fi.preclinic = @preclinic
+      fi.driving_ability    = @driving_ability
+      fi.preclinic          = @preclinic
       fi
     else
       fi = FachinfoDocument.new
       fi
     end
-    fi.name = @name
-    fi.galenic_form = @galenic_form
-    fi.effects = @effects
-    fi.kinetic = @kinetic
-    fi.indications = @indications
-    fi.usage	= @usage
-    fi.restrictions = @restrictions
+    fi.name             = @name
+    fi.galenic_form     = @galenic_form
+    fi.effects          = @effects
+    fi.kinetic          = @kinetic
+    fi.indications      = @indications
+    fi.usage            = @usage
+    fi.restrictions     = @restrictions
     fi.unwanted_effects = @unwanted_effects
-    fi.interactions = @interactions
-    fi.overdose = @overdose
-    fi.other_advice = @other_advice
-    fi.composition	= @composition
-    fi.packages = @packages
-    fi.reference = @reference
-    fi.delivery = @delivery
-    fi.distribution = @distribution
-    fi.fabrication = @fabrication
-    fi.iksnrs = @iksnrs
-    fi.date = @date
+    fi.interactions     = @interactions
+    fi.overdose         = @overdose
+    fi.other_advice     = @other_advice
+    fi.composition      = @composition
+    fi.packages         = @packages
+    fi.reference        = @reference
+    fi.delivery         = @delivery
+    fi.distribution     = @distribution
+    fi.fabrication      = @fabrication
+    fi.iksnrs           = @iksnrs
+    fi.date             = @date
     fi
   end
 end

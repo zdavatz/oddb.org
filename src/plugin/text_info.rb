@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -31,7 +31,7 @@ module ODDB
       @session_failures = 0
       @up_to_date_fis = 0
       @up_to_date_pis = 0
-      @iksless = []
+      @iksless = Hash.new{|h,k| h[k] = [] }
       @unknown_iksnrs = {}
       @failures = []
       @download_errors = []
@@ -39,7 +39,7 @@ module ODDB
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @new_format_flag = false
       @target = :both
-      @search_term = ''
+      @search_term = []
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -113,7 +113,7 @@ module ODDB
         # identify registration
         iksnrs = extract_iksnrs fis
         if iksnrs.empty?
-          @iksless.push name
+          @iksless[:fi].push name
         end
         ## Now that we have identified the pertinent iksnrs, we can remove
         #  up-to-date fachinfos from the queue.
@@ -145,7 +145,7 @@ module ODDB
       begin
         iksnrs = extract_iksnrs pis
         if iksnrs.empty?
-          @iksless.push name
+          @iksless[:pi].push name
         end
         patinfo = nil
         iksnrs.each do |iksnr|
@@ -166,7 +166,6 @@ module ODDB
       end
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
-      #p "name = #{name}, fi_paths = #{fi_paths}, pi_paths = #{pi_paths}, fi_flags = #{fi_flags}, pi_flags = #{pi_flags}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
@@ -194,24 +193,10 @@ module ODDB
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
       }.join("\n")
-      if @target == :pi
+      case @target
+      when :both
         [
-          "Searched for #{@search_term}",
-          "Stored #{@updated_pis} Patinfos",
-          "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
-          "Checked #{@companies.size} companies",
-          @companies.join("\n"), nil,
-          "Unknown Iks-Numbers: #{unknown_size}",
-          unknown, nil,
-          "Session failures: #{@session_failures}", nil,
-          "Download errors: #{@download_errors.size}",
-          @download_errors.join("\n"), nil,
-          "Parse Errors: #{@failures.size}",
-          @failures.join("\n"),
-        ].join("\n")
-      else
-        [
-          "Searched for #{@search_term}",
+          "Searched for #{@search_term.join(', ')}",
           "Stored #{@updated_fis} Fachinfos",
           "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
           "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
@@ -221,8 +206,45 @@ module ODDB
           @companies.join("\n"), nil,
           "Unknown Iks-Numbers: #{unknown_size}",
           unknown, nil,
-          "Fachinfos without iksnrs: #{@iksless.size}",
-          @iksless.join("\n"), nil,
+          "Fachinfos without iksnrs: #{@iksless[:fi].size}",
+          @iksless[:fi].join("\n"), nil,
+          #"Patinfos without iksnrs: #{@iksless[:pi].size}",
+          #@iksless[:pi].join("\n"), nil,
+          "Session failures: #{@session_failures}", nil,
+          "Download errors: #{@download_errors.size}",
+          @download_errors.join("\n"), nil,
+          "Parse Errors: #{@failures.size}",
+          @failures.join("\n"),
+        ].join("\n")
+      when :fi
+        [
+          "Searched for #{@search_term.join(', ')}",
+          "Stored #{@updated_fis} Fachinfos",
+          "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
+          "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts", nil,
+          "Checked #{@companies.size} companies",
+          @companies.join("\n"), nil,
+          "Unknown Iks-Numbers: #{unknown_size}",
+          unknown, nil,
+          "Fachinfos without iksnrs: #{@iksless[:fi].size}",
+          @iksless[:fi].join("\n"), nil,
+          "Session failures: #{@session_failures}", nil,
+          "Download errors: #{@download_errors.size}",
+          @download_errors.join("\n"), nil,
+          "Parse Errors: #{@failures.size}",
+          @failures.join("\n"),
+        ].join("\n")
+      when :pi
+        [
+          "Searched for #{@search_term.join(', ')}",
+          "Stored #{@updated_pis} Patinfos",
+          "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
+          "Checked #{@companies.size} companies",
+          @companies.join("\n"), nil,
+          "Unknown Iks-Numbers: #{unknown_size}",
+          unknown, nil,
+          #"Patinfo without iksnrs: #{@iksless[:pi].size}",
+          #@iksless[:pi].join("\n"), nil,
           "Session failures: #{@session_failures}", nil,
           "Download errors: #{@download_errors.size}",
           @download_errors.join("\n"), nil,
@@ -444,7 +466,7 @@ module ODDB
     def import_company names, agent=nil, target=:both
       @target = target
       agent = init_agent if agent.nil?
-      @search_term = names.to_a.join ', '
+      @search_term += names.to_a
       names.to_a.each do |name|
         @current_search = [:search_company, name]
         # search for company
@@ -454,7 +476,7 @@ module ODDB
       end
     end
     def import_fulltext terms, agent=init_agent
-      @search_term = terms.to_a.join ', '
+      @search_term += terms.to_a
       terms.to_a.each do |term|
         @current_search = [:search_fulltext, term]
         page = search_fulltext term, agent
@@ -462,7 +484,7 @@ module ODDB
       end
     end
     def import_name terms, agent=init_agent
-      @search_term = terms.to_a.join ', '
+      @search_term += terms.to_a
       terms.to_a.each do |term|
         @current_search = [:search_product, term]
         page = search_product term, agent
@@ -489,6 +511,7 @@ module ODDB
 #
 # TODO
 #  * rename method xxx2 to xxx
+#  * refactor search2
 #
 # NOTE
 #  * import_company2(name)
@@ -569,12 +592,41 @@ module ODDB
       list = []
       result = form.click_button
       result.links_with(:href => /\/mpro\/mnr\//) do |links|
-        links.each do |link|
+        links.each do |link| # base is :fi
           if link.href =~ /\/(\d+)\/html/
+            indx    = $1.to_s
+            fi_name = link.text # de name
             _link = {}
-            _link[:indx] = $1.to_s
-            _link[:name] = link.text # de name
+            _link[:type] = :fi
+            _link[:indx] = indx
+            _link[:name] = fi_name
             list << _link
+            if @target != :fi # :both or :pi
+              if fi = link.click and
+                 prod_link = fi.link_with(:id => /^ctl00_Tools_hlProductLink$/) and
+                 prods = prod_link.click
+                prods.links_with(
+                  :id => /^ctl00_MainContent_ucProductSearch1_gvwProducts_ctl\d{2}_hlDetail1$/
+                ).each do |link|
+                  link.attributes['id'] =~ /^[0-9A-z_]*_ctl(\d{2})_[A-z0-9_]*$/
+                  number = $1.to_s
+                  if link.href =~ /\/prod\/pnr\/(\d+)\//
+                    indx = $1.to_s
+                    if prod = link.click and
+                       prod.link_with(:href => /\/mpub\/pnr\/#{indx}\/html/) # if pi exists
+                      pi_name = prods.at(
+                        "//span[@id='ctl00_MainContent_ucProductSearch1_gvwProducts_ctl#{number}_lblDescr']"
+                      )
+                      _link = {}
+                      _link[:type] = :pi
+                      _link[:indx] = indx
+                      _link[:name] = (pi_name ? pi_name.text : fi_name + "-#{indx}")
+                      list << _link
+                    end
+                  end
+                end
+              end
+            end
           end
         end
       end
@@ -621,20 +673,26 @@ module ODDB
     # = import_product2
     #
     # ::Param
-    #   * list = [ {:indx => '1234', :name => 'Fi-Name'}, ... ]
+    #   * list = [
+    #       {:type => :fi, :indx => '1234', :name => 'Fi-Name'},
+    #       {:type => :pi, :indx => '1234', :name => 'Pi-Name'},
+    #       ...
+    #     ]
     def import_products2(list)
       case @target
       when :both
         list.each do |link|
-          import_product2(:fachinfo, link[:name], link[:indx])
-          import_product2(:patinfo,  link[:name], link[:indx])
+          type = (link[:type] == :pi ? :patinfo : :fachinfo)
+          import_product2(type, link[:name], link[:indx])
         end
       when :fi
         list.each do |link|
+          next if link[:type] != :fi
           import_product2(:fachinfo, link[:name], link[:indx])
         end
       when :pi
         list.each do |link|
+          next if link[:type] != :pi
           import_product2(:patinfo,  link[:name], link[:indx])
         end
       end
@@ -670,8 +728,8 @@ module ODDB
                   link_with(:href => /\/mpro\/mnr\//).click
             rescue NoMethodError
             end
-            if fi and 
-               chapter = fi.at('//a[@name=7850]') and
+            if fi and
+               chapter = fi.at("//a[@name='7850']") and
                name = chapter.parent.parent.at('.//p').text # first p
               company_names << name.split(',').first if name
             end
@@ -686,7 +744,7 @@ module ODDB
       else
         @new_format_flag = true
         @target = target
-        @search_term << ', ' + name
+        @search_term << name
         @companies << name
         @current_search = [:search_company, name]
         list = search_company2(name)

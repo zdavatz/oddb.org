@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -67,7 +67,6 @@ class TextinfoHpricot
       when Hpricot::Text
         if ptr.target.is_a? Text::Table
           # ignore text "\r\n        " in between tag.
-          return
         else
           if ptr.target.is_a? Text::MultiCell
             ptr.target.next_paragraph
@@ -214,7 +213,7 @@ class TextinfoHpricot
   end
   def target_encoding(text)
     Iconv.iconv(ENCODING + "//TRANSLIT//IGNORE", 'utf8', text).first
-  rescue 
+  rescue
     text
   end
   def text(elem)

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# FiParse::PatinfoHpricot -- oddb -- 08.12.2012 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'
@@ -61,31 +62,31 @@ class PatinfoHpricot < TextinfoHpricot
   end
   def to_textinfo
     pat = if(@amzv)
-      pat = PatinfoDocument2001.new
-      pat.amzv = @amzv
+      pat        = PatinfoDocument2001.new
+      pat.amzv   = @amzv
       pat.iksnrs = @iksnrs
       pat
     else
       pat = PatinfoDocument.new
       pat
     end
-    pat.name = @name
-    pat.company = @company
-    pat.galenic_form = @galenic_form
-    pat.effects = @effects
-    pat.amendments = @amendments
+    pat.name               = @name
+    pat.company            = @company
+    pat.galenic_form       = @galenic_form
+    pat.effects            = @effects
+    pat.amendments         = @amendments
     pat.contra_indications = @contra_indications
-    pat.precautions = @precautions
-    pat.pregnancy = @pregnancy
-    pat.usage	= @usage
-    pat.unwanted_effects = @unwanted_effects
-    pat.general_advice	= @general_advice
-    #pat.other_advice = @other_advice ## not identified yet.
-    pat.composition	= @composition
-    pat.packages = @packages
-    pat.distribution = @distribution
-    pat.fabrication = @fabrication
-    pat.date = @date
+    pat.precautions        = @precautions
+    pat.pregnancy          = @pregnancy
+    pat.usage              = @usage
+    pat.unwanted_effects   = @unwanted_effects
+    pat.general_advice     = @general_advice
+    #pat.other_advice      = @other_advice ## not identified yet.
+    pat.composition        = @composition
+    pat.packages           = @packages
+    pat.distribution       = @distribution
+    pat.fabrication        = @fabrication
+    pat.date               = @date
     pat
   end
 end
