@@ -208,6 +208,9 @@ class TextinfoHpricot
           end
         end
       end
+      if (elem/:thead).empty? and (elem/:tbody).empty?
+        found = false
+      end
     end
     found
   end
