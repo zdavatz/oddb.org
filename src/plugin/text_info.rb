@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 11.12.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -387,6 +387,9 @@ module ODDB
         eventtargets.store link.text, eventtarget(link.href)
       end
       eventtargets
+    end
+    def search_company name, agent
+      search 'rbFirma', name, agent
     end
     def search_fulltext term, agent
       search 'rbFulltext', term, agent
