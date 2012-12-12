@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 12.12.2012 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -147,13 +147,11 @@ class TextinfoHpricot
               ptr.target.row_span = child.attributes['rowspan'].to_i if child.attributes['rowspan'].empty?
               ptr.target.col_span = child.attributes['colspan'].to_i if child.attributes['colspan'].empty?
             end
-            ptr.target = ptr.target.next_image
-            handle_image(ptr, child)
+            insert_image(ptr, child)
             ptr.target = ptr.table.next_paragraph
           else
             ptr.section = ptr.chapter.next_section
-            ptr.target = ptr.section.next_image
-            handle_image(ptr, child)
+            insert_image(ptr, child)
             ptr.section = ptr.chapter.next_section
             ptr.target = ptr.section.next_paragraph
           end
@@ -168,6 +166,13 @@ class TextinfoHpricot
     lang = file_name[0].upcase == 'F' ? 'fr' : 'de'
     dir = File.join '/', 'resources', 'images', 'fachinfo', lang
     ptr.target.src = File.join dir, file_name
+  end
+  def insert_image(ptr, child)
+    # skip image in packungen table
+    unless ptr.chapter.heading =~ /Packungen|Présentations/u
+      ptr.target = ptr.target.next_image
+      handle_image(ptr, child)
+    end
   end
   def handle_text(ptr, child)
     ptr.section ||= ptr.chapter.next_section
