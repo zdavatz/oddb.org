@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 11.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -193,6 +193,7 @@ class InteractionChooser < View::PrivateTemplate
   CONTENT = View::Interactions::InteractionChooserComposite
   SNAPBACK_EVENT = :home
   JAVASCRIPTS = ['admin']
+  SEARCH_HEAD = 'nbsp'
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
