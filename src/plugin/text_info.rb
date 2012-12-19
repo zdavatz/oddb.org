@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 11.12.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -703,6 +703,7 @@ module ODDB
     def textinfo_news2(agent=init_agent2)
       url = ODDB.config.text_info_newssource2 \
         or raise 'please configure ODDB.config.text_info_newssource2 to proceed'
+      check_date = @options[:date] ? @options[:date] : Date.today
       # get security and innovation updates
       company_names = []
       tags = []
@@ -719,7 +720,7 @@ module ODDB
             date = Date.strptime(span.child.text, '%d.%m.%y')
           rescue ArgumentError
           end
-          if date and date >= Date.today
+          if date and date >= check_date
             id = case type
                  when 'security';   /ctl00_MainContent_UcNewsSecurity_dlNews_ctl#{indx}_hlDetailNews/
                  when 'innovation'; /ctl00_MainContent_ucInnovationNews_dlNews_ctl#{indx}_hlDetailNews/

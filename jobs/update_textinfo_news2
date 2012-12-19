@@ -10,7 +10,15 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      opts = if ARGV.first =~ /reparse/ then {:reparse => true} else nil end
+      opts = {}
+      ARGV.each do |arg|
+        if arg =~ /reparse/
+          opts[:reparse] = true
+        elsif arg =~ /^\d{2}\.\d{2}\.\d{2}$/
+          date = Date.strptime(arg, '%d.%m.%y')
+          opts[:date] = date
+        end
+      end
       Updater.new(system).update_textinfo_news2(opts)
     end
   end
