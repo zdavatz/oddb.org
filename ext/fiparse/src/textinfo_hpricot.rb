@@ -151,6 +151,9 @@ class TextinfoHpricot
             ptr.target = ptr.table.next_paragraph
           else
             ptr.section = ptr.chapter.next_section
+            unless ptr.target.respond_to?(:next_image)
+              ptr.target = ptr.section
+            end
             insert_image(ptr, child)
             ptr.section = ptr.chapter.next_section
             ptr.target = ptr.section.next_paragraph
