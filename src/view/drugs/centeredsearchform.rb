@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 29.11.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 12.12.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -115,7 +115,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
 			@components = {
-				[0,0]	  =>	:language_chooser,
+				[0,0]	  =>	'nbsp',
 				[0,1]	  =>	:search_form,
 				[0,2]	  =>	'search_explain', 
 				[0,3,0]	=>	'database_last_updated_txt',
