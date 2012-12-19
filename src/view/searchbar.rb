@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 10.10.2012 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com
 
@@ -136,7 +136,12 @@ class AutocompleteSearchBar < HtmlGrid::InputText
     @searchbar_id ||= 'searchbar'
     @label_attr   ||= ''
     id  = @searchbar_id
-    val = @session.lookandfeel.lookup(@name)
+    if @session.flavor == 'just-medical' and
+       @session.zone == :interactions
+      val = @lookandfeel.lookup(:search_query_interactions)
+    else
+      val = @lookandfeel.lookup(@name)
+    end
     @container.additional_javascripts.push <<-EOS
 function initMatches() {
   var searchbar = dojo.byId('#{id}');
@@ -176,7 +181,7 @@ require(['dojo/ready'], function(ready) {
                        'hasDownArrow'   => 'false',
                        'autoComplete'   => 'false',
                        'onChange'       => 'selectSubmit',
-                       'value'          => @session.persistent_user_input(:search_query)
+                       'value'          => @session.persistent_user_input(:search_query) || val
   end
   def to_html(context, *args)
     args = []

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::CenteredSearchForm -- oddb -- 29.11.2012 -- yasaka@ywesee.com
+# View::Interactions::CenteredSearchForm -- oddb -- 19.12.2012 -- yasaka@ywesee.com
 # View::Interactions::CenteredSearchForm -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'
@@ -53,6 +53,8 @@ class CenteredInstantSearchForm < CenteredSearchForm
     :search_query => View::InteractionSearchBar,
   }
   def init
+    super
+    self.onload = "document.getElementById('interaction_searchbar').focus();"
     @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
     @additional_javascripts = []
     if @container.instant_search_only?
@@ -62,7 +64,6 @@ class CenteredInstantSearchForm < CenteredSearchForm
       components.store([0,1,0], 'search_type')
       components.store([0,1,1], :switch_links)
     end
-    super
   end
   def javascripts(context)
     scripts = ''

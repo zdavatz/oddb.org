@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 29.11.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1424,7 +1424,8 @@ Zeno Davatz
 				:search_help							=>	'Hilfe',
 				:search_narcotics					=>	'Suchen',
 				:search_oddb							=>	'-> Medikament(e) in der ODDB anzeigen',
-				:search_query             =>	'HIER Suchbegriff eingeben',
+				:search_query              =>	'HIER Suchbegriff eingeben',
+				:search_query_interactions =>	'Medikamentenname eingeben',
 				:search_registrations			=>	'Suchen',
 				:search_reset							=>	'Zur&uuml;cksetzen',
 				:search_sequences         =>  'Suchen',

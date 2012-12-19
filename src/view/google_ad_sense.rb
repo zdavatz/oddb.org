@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# GoogleAdSense -- oddb -- 19.12.2012 -- yasaka@ywesee.com
 # GoogleAdSense -- oddb -- 15.09.2004 -- jlang@ywesee.com
 
 module ODDB
@@ -69,6 +70,10 @@ google_color_text = "003399";
 			def content(model, session)
 				self::class::CONTENT.new(model, @session, self)
 			end
+      # as template
+      def onload=(script)
+        @attributes['onload'] = script
+      end
 		end
 	end
 end
