@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::InteractionChooser -- oddb.org -- 20.12.2012 -- yasaka@ywesee.com
 
 require 'csv'
 require 'cgi'
@@ -49,6 +49,10 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
       if price = model.price_public
         div.value << '&nbsp;-&nbsp;'
         div.value << price.to_s
+      end
+      unless model.substances.empty?
+        div.value << '&nbsp;-&nbsp;'
+        div.value << model.substances.join(',')
       end
       if company = model.company_name
         div.value << '&nbsp;-&nbsp;'
