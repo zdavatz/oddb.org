@@ -2836,7 +2836,7 @@ Zeno Davatz
 				:search_explain						=>	"Comparez simplement et rapidement les prix des m&eacute;dicaments en entrant <br>le nom du m&eacute;dicament ou un principe actif dans la barre d'outils de recherche.",
 				:search_help							=>	'Aide',
 				:search_oddb							=>	'-> Indiquer le(s) m&eacute;dicament(s) dans ODDB.org',
-				:search_query							=>	'Inscrire ICI le médicament/principe actif',
+				:search_query							=>	'Entrez le mot-clé ici',
         :search_query_interactions => 'Entrez le nom du médicament',
 				:search										=>	'Rechercher',
 				:search_reset							=>	'Retour',
