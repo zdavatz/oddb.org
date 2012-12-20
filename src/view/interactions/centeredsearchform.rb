@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::CenteredSearchForm -- oddb -- 19.12.2012 -- yasaka@ywesee.com
+# View::Interactions::CenteredSearchForm -- oddb -- 20.12.2012 -- yasaka@ywesee.com
 # View::Interactions::CenteredSearchForm -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'
@@ -118,7 +118,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
       # warm up
       @session.app.registrations.length
       @components = {
-        [0,0]   => :language_chooser,
+        [0,0]   => @lookandfeel.disabled?(:language_switcher) ? 'nbsp' : :language_chooser,
         [0,1]   => View::Interactions::CenteredInstantSearchForm,
         [0,2]   => nil,
         [0,3,0] => :database_size,
