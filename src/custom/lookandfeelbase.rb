@@ -2834,6 +2834,7 @@ Zeno Davatz
 				:search_help							=>	'Aide',
 				:search_oddb							=>	'-> Indiquer le(s) m&eacute;dicament(s) dans ODDB.org',
 				:search_query							=>	'Inscrire ICI le médicament/principe actif',
+        :search_query_interactions => 'Entrez le nom du médicament',
 				:search										=>	'Rechercher',
 				:search_reset							=>	'Retour',
 				:search_type							=>	'Type de la recherche:&nbsp;',
