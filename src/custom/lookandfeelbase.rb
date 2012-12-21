@@ -4135,7 +4135,7 @@ Zeno Davatz
 				:shadow_pattern						=>	'Do not show Regexp',
 				:show_email								=>  'Show e-mail',
 				:show_interaction					=>	'Show interactions',
-        :show_legend              =>  'show legend',
+        :show_legend              =>  'show caption',
 				:size											=>	'Show package size',
 				:sl_count_text						=>	"Limitationtexts",
 				:sl_create								=>	'Create',
