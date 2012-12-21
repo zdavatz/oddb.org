@@ -61,6 +61,9 @@ table.chapter td {
   vertical-align : top;
   padding        : 4px 6px;
 }
+span.link {
+  color: blue;
+}
 a {
   text-decoration : none;
 }

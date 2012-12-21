@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::ResultFoot -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
+# ODDB::View::ResultFoot -- oddb.org -- 21.12.2012 -- yasaka@ywesee.com
 # ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
@@ -41,6 +41,7 @@ module ODDB
         :explain_google_search   => 'infos',
         :explain_feedback        => 'infos',
       }
+      CSS_ID = 'explain_result'
       def initialize model, session, container, components=nil
         @components = components
         super model, session, container
@@ -172,24 +173,30 @@ module ODDB
 			include ExternalLinks
 			COLSPAN_MAP	= {
 			}
-			COMPONENTS = {
-				[0,0]	=>	:explain_result,
-			}
-			COMPONENT_CSS_MAP = {
-				[0,0]	=>	'explain',
-			}
-			CSS_MAP = {
-				[0,0]	=>	'explain',
-			}
-			CSS_CLASS = 'composite'
+      COMPONENTS = {
+        [0,0] => 'nbsp',
+        [0,1] => :explain_result,
+      }
+      CSS_MAP = {
+        [0,0] => 'explain',
+        [0,1] => 'explain',
+      }
+      CSS_CLASS = 'composite'
       def init
-        legal_coords = [1,0]
         if @lookandfeel.enabled?(:legal_note_vertical, false)
-          legal_coords = [0,1]
+          {
+            [0,0] => :toggle_switch,
+            [0,2] => :legal_note
+          }
+        else
+          {
+            [1,0] => :toggle_switch,
+            [1,1] => :legal_note
+          }
+        end.each_pair do |coordinates, element|
+          components.store(coordinates, element)
+          css_map.store(coordinates, 'explain right')
         end
-        components.store legal_coords, :legal_note
-        css_map.store legal_coords, 'explain right'
-        component_css_map.store legal_coords, 'explain right'
         super
       end
 			def explain_result(model, session=@session)
@@ -200,8 +207,32 @@ module ODDB
 				klass ||= View::ExplainResult
 				klass.new(model, @session, self)
 			end
+      def toggle_switch(model, session=@session)
+        span = HtmlGrid::Span.new(model, @session, self)
+        span.value = @lookandfeel.lookup(:hide_legend)
+        span.css_class = 'link'
+        span.set_attribute('id', 'toggle_switch')
+        span.onclick = <<JS
+(function () {
+  var span    = document.getElementById('toggle_switch');
+  var legends = document.getElementById('explain_result');
+  var note    = document.getElementById('legal_note');
+  if (note.style.display != 'none') {
+    legends.style.display = 'none';
+    note.style.display    = 'none';
+    span.innerHTML        = '#{@lookandfeel.lookup(:show_legend)}';
+  } else {
+    legends.style.display = 'block';
+    note.style.display    = 'block';
+    span.innerHTML        = '#{@lookandfeel.lookup(:hide_legend)}';
+  }
+})();
+JS
+        span
+      end
 			def legal_note(model, session=@session)
 				link = super(model)
+        link.set_attribute('id', 'legal_note')
 				link.css_class = 'subheading'
 				link
 			end

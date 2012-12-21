@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 30.12.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 21.12.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -50,38 +50,39 @@ module ODDB
         [8,0]  => :price_difference,
         [9,0]  => :deductible,
         [10,0] => :ikscat,
-      } 
+      }
     end
-		def explain_result_components
-			{
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	'explain_unknown',
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	:explain_complementary,
-				[0,5]	=>	:explain_homeopathy,
-				[0,6]	=>	:explain_anthroposophy,
-				[0,7] =>	:explain_phytotherapy,
-				[0,8]	=>	:explain_cas,
-				[1,0]	=>	:explain_parallel_import,
-				[1,1]	=>	:explain_comarketing,
-				[1,2]	=>	:explain_vaccine,
-				[1,3]	=>	:explain_narc,
-				[1,4]	=>	:explain_fachinfo,
-				[1,5]	=>	:explain_patinfo,
-				[1,6]	=>	:explain_limitation,
-				[1,7]	=>	:explain_google_search,
-				[1,8]	=>	:explain_feedback,
-				[2,0]	=>	'explain_efp',
-				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	'explain_pr',
-				[2,3]	=>	:explain_deductible,
-				[2,4]	=>	'explain_sl',
-				[2,5]	=>	'explain_slo',
-				[2,6]	=>	'explain_slg',
-				[2,7]	=>	:explain_lppv,
-			}
-		end
+    def explain_result_components
+      {
+        [0,0] => :explain_original,
+        [0,0] => :explain_original,
+        [0,1] => :explain_generic,
+        [0,2] => 'explain_unknown',
+        [0,3] => 'explain_expired',
+        [0,4] => :explain_complementary,
+        [0,5] => :explain_homeopathy,
+        [0,6] => :explain_anthroposophy,
+        [0,7] => :explain_phytotherapy,
+        [0,8] => :explain_cas,
+        [1,0] => :explain_parallel_import,
+        [1,1] => :explain_comarketing,
+        [1,2] => :explain_vaccine,
+        [1,3] => :explain_narc,
+        [1,4] => :explain_fachinfo,
+        [1,5] => :explain_patinfo,
+        [1,6] => :explain_limitation,
+        [1,7] => :explain_google_search,
+        [1,8] => :explain_feedback,
+        [2,0] => 'explain_efp',
+        [2,1] => 'explain_pbp',
+        [2,2] => 'explain_pr',
+        [2,3] => :explain_deductible,
+        [2,4] => 'explain_sl',
+        [2,5] => 'explain_slo',
+        [2,6] => 'explain_slg',
+        [2,7] => :explain_lppv,
+      }
+    end
     def result_list_components
       {
         [0,0]   => :limitation_text,

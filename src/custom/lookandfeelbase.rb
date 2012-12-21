@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 21.12.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -878,6 +878,7 @@ Zeno Davatz
 				:help_pagename						=>	"ODDB.Hilfe",
 				:help_suggest_registration=>	"Hilfe! Ich komm nicht weiter!",
 				:helps										=>	'Wirkung',
+				:hide_legend                                            =>      'Legende ausblenden',
 				:home_admin								=>	'Admin-Home',
 				:home_analysis						=>	'Analysen-Home',
 				:home_companies						=>	'Firmen-Home',
@@ -1449,6 +1450,7 @@ Zeno Davatz
 				:shadow_pattern						=>	'Regexp Ausblenden',
 				:show_email								=>  'E-Mail anzeigen',
 				:show_interaction					=>	'Wechselwirkungen anzeigen',
+				:show_legend                                            =>      'Legende einblenden',
 				:size											=>	'Packungsgr&ouml;sse',
 				:sl_count_text						=>	'Limitationstexte',
 				:sl_create								=>	'Erstellen',
