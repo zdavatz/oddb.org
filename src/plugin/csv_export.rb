@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 17.10.2012 -- yasaka@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 21.12.2012 -- yasaka@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
@@ -12,7 +12,8 @@ module ODDB
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     MIGEL_EXPORT_DIR = File.expand_path('../../../migel/data/csv', File.dirname(__FILE__))
-    ODDB_RECIPIENTS = [ "paul.wiederkehr@pharmasuisse.org" ]
+    ODDB_RECIPIENTS          = [ "paul.wiederkehr@pharmasuisse.org" ]
+    ODDB_RECIPIENTS_DAT      = [ "Carol.Rong@just-medical.com", "matthijs.ouwerkerk@just-medical.com" ]
     ODDB_RECIPIENTS_EXTENDED = [ "ouwerkerk@bluewin.ch", "carolrong8@gmail.com" ]
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
@@ -173,6 +174,7 @@ module ODDB
       unless transfer and  File.exist?(transfer)
         transfer = File.join(EXPORT_DIR, 'transfer.dat')
       end
+      recipients.concat self.class::ODDB_RECIPIENTS_DAT
       input = File.join(EXPORT_DIR, 'oddb.csv')
       output = File.join(EXPORT_DIR, 'oddb.dat')
       @file_path = output
@@ -188,6 +190,7 @@ module ODDB
       unless transfer and File.exist?(transfer)
         transfer = File.join(EXPORT_DIR, 'transfer.dat')
       end
+      recipients.concat self.class::ODDB_RECIPIENTS_DAT
       input1 = File.join(EXPORT_DIR,       'oddb.csv')
       input2 = File.join(MIGEL_EXPORT_DIR, 'migel_product_de.csv')
       output = File.join(EXPORT_DIR, 'oddb_with_migel.dat')
