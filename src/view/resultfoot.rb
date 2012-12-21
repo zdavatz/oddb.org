@@ -205,11 +205,20 @@ module ODDB
 					klass = @container.class::EXPLAIN_RESULT
 				end
 				klass ||= View::ExplainResult
-				klass.new(model, @session, self)
+				result = klass.new(model, @session, self)
+        result.set_attribute('style', 'display:none;')
+        result
 			end
+      def legal_note(model, session=@session)
+        link = super(model)
+        link.set_attribute('id', 'legal_note')
+        link.set_attribute('style', 'display:none;')
+        link.css_class = 'subheading'
+        link
+      end
       def toggle_switch(model, session=@session)
         span = HtmlGrid::Span.new(model, @session, self)
-        span.value = @lookandfeel.lookup(:hide_legend)
+        span.value = @lookandfeel.lookup(:show_legend)
         span.css_class = 'link'
         span.set_attribute('id', 'toggle_switch')
         span.onclick = <<JS
@@ -230,12 +239,6 @@ module ODDB
 JS
         span
       end
-			def legal_note(model, session=@session)
-				link = super(model)
-        link.set_attribute('id', 'legal_note')
-				link.css_class = 'subheading'
-				link
-			end
 		end
 	end
 end
