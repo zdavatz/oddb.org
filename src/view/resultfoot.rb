@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::ResultFoot -- oddb.org -- 21.12.2012 -- yasaka@ywesee.com
+# ODDB::View::ResultFoot -- oddb.org -- 24.12.2012 -- yasaka@ywesee.com
 # ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
@@ -159,14 +159,8 @@ module ODDB
 			end
 		end
 		module ResultFootBuilder
-			EXPLAIN_RESULT = ExplainResult
 			def result_foot(model, session=@session)
-				if(@lookandfeel.navigation.include?(:legal_note) \
-          || @lookandfeel.disabled?(:legal_note))
-					self.class::EXPLAIN_RESULT.new(model, @session, self)
-				else
-					View::ResultFoot.new(model, @session, self)
-				end
+				View::ResultFoot.new(model, @session, self)
 			end
 		end
 		class ResultFoot < HtmlGrid::Composite
@@ -183,19 +177,21 @@ module ODDB
       }
       CSS_CLASS = 'composite'
       def init
-        if @lookandfeel.enabled?(:legal_note_vertical, false)
-          {
-            [0,0] => :toggle_switch,
-            [0,2] => :legal_note
-          }
-        else
-          {
-            [1,0] => :toggle_switch,
-            [1,1] => :legal_note
-          }
-        end.each_pair do |coordinates, element|
-          components.store(coordinates, element)
-          css_map.store(coordinates, 'explain right')
+				if legal_note?
+          if @lookandfeel.enabled?(:legal_note_vertical, false)
+            {
+              [0,0] => :toggle_switch,
+              [0,2] => :legal_note
+            }
+          else
+            {
+              [1,0] => :toggle_switch,
+              [1,1] => :legal_note
+            }
+          end.each_pair do |coordinates, element|
+            components.store(coordinates, element)
+            css_map.store(coordinates, 'explain right')
+          end
         end
         super
       end
@@ -238,6 +234,10 @@ module ODDB
 })();
 JS
         span
+      end
+      def legal_note?
+				@lookandfeel.navigation.include?(:legal_note) or
+        !@lookandfeel.disabled?(:legal_note)
       end
 		end
 	end
