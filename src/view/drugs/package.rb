@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Package -- oddb -- 22.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Package -- oddb -- 25.12.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
 require 'view/admin/swissmedic_source'
@@ -37,33 +37,34 @@ end
 class PackageInnerComposite < HtmlGrid::Composite
 	include DataFormat
 	include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0,0]	=>	:ikskey,
-		[1,0,0]	=>	"&nbsp;",
-		[1,0,1]	=>	:comarketing,
-		[2,0]		=>	:registration_holder,
-		[0,1]		=>	:name,
-		[2,1]		=>	:registration_date,
-		[0,2]		=>	:most_precise_dose,
-    [0,3]   =>  :sl_generic_type,
-		[2,2]		=>	:sequence_date,
-		[2,3]		=>	:revision_date,
-		[0,4,0]	=>	:atc_class,
-		[1,4,1]	=>	:atc_ddd_link,
-		[2,4]		=>	:expiration_date,
-		[0,5]		=>	:galenic_form,
-		[2,5]		=>	:size,
-    [0,6]   =>  :index_therapeuticus,
-    [2,6]   =>  :descr,
-    [0,7]   =>  :ith_swissmedic,
-    [0,8]   =>  :ikscat,
-    [2,8]   =>  :indication,
-    [0,9]   =>  :sl_entry,
-    [0,10]  =>  :price_exfactory,
-    [2,10]  =>  :price_public,
-    [0,11]  =>  :deductible,
-    [0,12]  =>  :pharmacode,
-	}
+  COMPONENTS = {
+    # left
+    [0,0,0] => :ikskey,
+    [1,0,0] => "&nbsp;",
+    [1,0,1] => :comarketing,
+    [2,0]   => :registration_holder,
+    [0,1]   => :name,
+    [0,2]   => :sl_generic_type,
+    [0,3,0] => :atc_class,
+    [1,4,1] => :atc_ddd_link,
+    [0,4]   => :galenic_form,
+    [0,5]   => :index_therapeuticus,
+    [0,6]   => :ith_swissmedic,
+    [0,7]   => :ikscat,
+    [0,8]   => :sl_entry,
+    [0,9]   => :price_exfactory,
+    [0,10]  => :deductible,
+    [0,11]  => :pharmacode,
+    # right
+    [2,1]   => :registration_date,
+    [2,2]   => :sequence_date,
+    [2,3]   => :revision_date,
+    [2,4]   => :expiration_date,
+    [2,5]   => :size,
+    [2,6]   => :descr,
+    [2,8]   => :indication,
+    [2,10]  => :price_public,
+  }
 	CSS_MAP = {
 		[0,0,4] => 'list',
 		[0,1,4] => 'list',
@@ -101,21 +102,33 @@ class PackageInnerComposite < HtmlGrid::Composite
 	}
   def init
     if(@model.narcotic?)
-      components.update([2,12] => :narcotic_label, [3,12] => :narcotic)
+      components.update(
+        [2,12] => :narcotic_label,
+        [3,12] => :narcotic
+      )
     end
     if(@lookandfeel.enabled?(:feedback))
-      components.update([0,12] => :feedback_label, [1,12] => :feedback,
-                        [0,13] => :pharmacode)
+      components.update(
+        [0,12] => :feedback_label,
+        [1,12] => :feedback,
+        [0,13] => :pharmacode
+      )
       css_map.store([0,13,4], 'list')
     end
     if @lookandfeel.enabled?(:show_ean13)
       if components[[0,13]] == :pharmacode
-        components.update([0,13] => :barcode_label, [1,13] => :barcode,
-                          [0,14] => :pharmacode)
+        components.update(
+          [0,13] => :barcode_label,
+          [1,13] => :barcode,
+          [0,14] => :pharmacode
+        )
         css_map.store([0,14,4], 'list')
       else
-        components.update([0,12] => :barcode_label, [1,12] => :barcode,
-                          [0,13] => :pharmacode)
+        components.update(
+          [0,12] => :barcode_label,
+          [1,12] => :barcode,
+          [0,13] => :pharmacode
+        )
         css_map.store([0,13,4], 'list')
       end
     end
@@ -139,9 +152,9 @@ class PackageInnerComposite < HtmlGrid::Composite
       hash_insert_row(components, [0,9], :fachinfo_label)
       hash_insert_row(css_map, [0,9,4], 'list')
       components.update({
-        [1,9]		=>	:fachinfo,
-        [2,9]		=>	:patinfo_label,
-        [3,9]		=>	:patinfo,
+        [1,9] => :fachinfo,
+        [2,9] => :patinfo_label,
+        [3,9] => :patinfo,
       })
     elsif(@lookandfeel.enabled?(:patinfos))
       hash_insert_row(components, [2,9], :patinfo_label)
@@ -150,7 +163,7 @@ class PackageInnerComposite < HtmlGrid::Composite
     end
     if(idx = components.index(:limitation_text))
       css_map.store(idx, 'list top')
-      sidx = idx.dup 
+      sidx = idx.dup
       sidx[0] += 1
       colspan_map.store(sidx, 3)
     end
