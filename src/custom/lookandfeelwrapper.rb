@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 21.12.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 25.12.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -513,17 +513,16 @@ module ODDB
     }
     def compare_list_components
       {
-        [0,0]  => :fachinfo,
-        [1,0]  => :patinfo,
-        [2,0]  => :name_base,
-        [3,0]  => :company_name,
-        [4,0]  => :most_precise_dose,
-        [5,0]  => :comparable_size,
-        [6,0]  => :compositions,
-        [7,0]  => :price_public,
-        [8,0]  => :price_difference,
-        [9,0]  => :deductible,
-        [10,0] => :ikscat,
+        [0,0] => :fachinfo,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :company_name,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :price_difference,
+        [8,0] => :deductible,
+        [9,0] => :ikscat,
       }
     end
 		def explain_result_components
@@ -569,15 +568,14 @@ module ODDB
         [5,0,1] => :name_base,
         [5,0,2] => 'result_item_end',
         [6,0]   => :galenic_form,
-        [7,0]   => :most_precise_dose,
-        [8,0]   => :comparable_size,
-        [9,0]   => :price_public,
-        [10,0]  => :deductible,
-        [11,0]  => :substances,
-        [12,0]  => :company_name,
-        [13,0]  => :ikscat,
-        [14,0]  => :registration_date,
-        [15,0]  => :google_search,
+        [7,0]   => :comparable_size,
+        [8,0]   => :price_public,
+        [9,0]  => :deductible,
+        [10,0]  => :substances,
+        [11,0]  => :company_name,
+        [12,0]  => :ikscat,
+        [13,0]  => :registration_date,
+        [14,0]  => :google_search,
       }
     end
     def search_type_selection
