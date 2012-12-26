@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 25.12.2012 -- yasaka@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 26.12.2012 -- yasaka@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
@@ -570,8 +570,8 @@ module ODDB
         [6,0]   => :galenic_form,
         [7,0]   => :comparable_size,
         [8,0]   => :price_public,
-        [9,0]  => :deductible,
-        [10,0]  => :substances,
+        [9,0]   => :deductible,
+        [10,0]  => :compositions,
         [11,0]  => :company_name,
         [12,0]  => :ikscat,
         [13,0]  => :registration_date,
