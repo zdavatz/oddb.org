@@ -439,6 +439,7 @@ module ODDB
     ENABLED = [
       :ajax,
       :atc_chooser,
+      :breadcrumbs,
       :custom_navigation,
       :custom_tab_navigation,
       :drugs,
