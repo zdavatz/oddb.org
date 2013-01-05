@@ -181,7 +181,7 @@ module ODDB
           'download[compendium_ch.oddb.org.stanza.epub]'  => 1,
         }
         link.set_attribute('class', 'list')
-        link.href = 'http://goo.gl/0Htzc'
+        link.href = 'http://goo.gl/qWpPu'
         link
       end
       def download_app(model, session)
