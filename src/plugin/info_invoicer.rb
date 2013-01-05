@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# InfoInvoicer -- oddb.org -- 27.12.2012 -- yasaka@ywesee.com
 # InfoInvoicer -- oddb.org -- 26.02.2008 -- hwyss@ywesee.com
 
 require 'plugin/invoicer'
@@ -15,8 +16,10 @@ module ODDB
     end
     def active_companies
       active_companies = []
-      @app.invoices.each_value { |inv|
-        inv.items.each_value { |item|
+      invoices = @app.invoices.values.collect { |inv| inv.dup if inv }
+      invoices.each { |inv|
+        items = inv.items.values.dup
+        items.each { |item|
           if(item.type == :annual_fee && (ptr = item.item_pointer) \
             && (seq = pointer_resolved(ptr)) && seq.is_a?(parent_item_class) \
             && (company = seq.company))
