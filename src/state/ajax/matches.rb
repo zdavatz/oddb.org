@@ -1,5 +1,5 @@
 # encoding: utf-8
-# ODDB::State::Ajax::Matches -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::State::Ajax::Matches -- oddb.org -- 14.01.2013 -- yasaka@ywesee.com
 
 require 'state/ajax/global'
 require 'view/ajax/json'
@@ -13,7 +13,7 @@ class Matches < Global
     @model = []
     index = @session.user_input(:index_name) || 'sequence_index_exact'
     if (term = @session.user_input(:search_query)) && term.is_a?(String)
-      terms = ODBA.cache.index_matches(index, term)
+      terms = ODBA.cache.index_matches(index, term.downcase)
       case index
       when 'oddb_package_name_with_size_company_name_and_ean13',
            'oddb_package_name_with_size_company_name_ean13_fi'
