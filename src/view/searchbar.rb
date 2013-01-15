@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 15.01.2013 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com
 
@@ -32,6 +32,10 @@ module InstantSearchBarMethods
     id  = "#{target}_searchbar"
     url = @session.lookandfeel.event_url(:ajax_add_drug)
     val = @session.lookandfeel.lookup(:add_drug)
+    progressbar = ""
+    if @container.respond_to?(:progress_bar)
+      progressbar = "setTimeout(\"show_progressbar('#{id}')\", 100);"
+    end
     @container.additional_javascripts.push <<-EOS
 function xhrGet(arg) {
   var ean13 = (arg.match(/^(\\d{13})$/)||[])[1];
@@ -47,6 +51,7 @@ function initMatches() {
   dojo.connect(searchbar, 'onkeypress', function(e) {
     var popup = dojo.byId('#{target}_searchbar_popup');
     if(popup && popup.style.overflowX.match(/auto/) && e.keyCode == dojo.keys.ENTER) {
+      #{progressbar}
       xhrGet(searchbar.value);
       searchbar.value = '';
     }
@@ -63,6 +68,7 @@ function selectXhrRequest() {
   var popup = dojo.byId('#{target}_searchbar_popup');
   var searchbar = dojo.byId('#{id}');
   if(!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+    #{progressbar}
     xhrGet(searchbar.value);
     searchbar.value = '';
   }
@@ -119,6 +125,11 @@ class SearchBar < HtmlGrid::InputText
     args = ['zone', @session.zone, @name, '']
     submit = @lookandfeel._event_url(@container.event, args)
     script = "if(#{@name}.value!='#{val}'){"
+    # show dojo ProgressBar
+    if @container.respond_to?(:progress_bar)
+      # this method cause missing quate error
+      script << "setTimeout(show_progressbar('searchbar'), 100);"
+    end
     script << "var href = '#{submit}'"
     script << "+encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));"
     script << "if(this.search_type)"
@@ -142,11 +153,16 @@ class AutocompleteSearchBar < HtmlGrid::InputText
     else
       val = @lookandfeel.lookup(@name)
     end
+    progressbar = ""
+    if @container.respond_to?(:progress_bar)
+      progressbar = "setTimeout(\"show_progressbar('widget_searchbar')\", 100);"
+    end
     @container.additional_javascripts.push <<-EOS
 function initMatches() {
   var searchbar = dojo.byId('#{id}');
   dojo.connect(searchbar, 'onkeypress', function(e) {
     if(e.keyCode == dojo.keys.ENTER) {
+      #{progressbar}
       searchbar.form.submit();
     }
   });
@@ -162,6 +178,7 @@ function selectSubmit() {
   var popup = dojo.byId('#{id}_popup');
   var searchbar = dojo.byId('#{id}');
   if (!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+    #{progressbar}
     searchbar.form.submit();
   }
 }

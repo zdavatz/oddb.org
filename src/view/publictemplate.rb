@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::PublicTemplate -- oddb -- 04.10.2012 -- yasaka@ywesee.com
+# View::PublicTemplate -- oddb -- 15.01.2013 -- yasaka@ywesee.com
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/template'
@@ -23,8 +23,10 @@ module ODDB
         'dojo/ready',
         'dojo/parser',
         'dojo/io/script',
+        'dojo/_base/window',
         'dojox/data/JsonRestStore',
         'dijit/form/ComboBox',
+        'dijit/ProgressBar',
         'ywesee/widget/Tooltip',
       ]
       DOJO_PARSE_WIDGETS = false
@@ -76,8 +78,8 @@ module ODDB
 				end
 			end
       def dynamic_html_headers(context)
+        headers = super
         if(@lookandfeel.enabled?(:ajax))
-          headers = super
           if @lookandfeel.enabled?(:google_analytics)
             headers << context.script('type' => 'text/javascript') do
               <<-EOS
@@ -96,10 +98,16 @@ require(['dojo/ready'], function(ready) {
               EOS
             end
           end
-          headers
-        else
-          ''
         end
+        # additional dojo css
+        dojo_path = @lookandfeel.resource_global(:dojo_js)
+        dojo_path ||= '/resources/dojo/dojo/dojo.js'
+        dojo_dir = File.dirname(dojo_path)
+        headers << context.style(:type => "text/css") { <<-EOS
+            @import "#{File.join(dojo_dir, "../dijit/themes/tundra/ProgressBar.css")}";
+          EOS
+        }
+        headers
       end
 			def foot(model, session)
 				self::class::FOOT.new(model, session, self) unless self::class::FOOT.nil?

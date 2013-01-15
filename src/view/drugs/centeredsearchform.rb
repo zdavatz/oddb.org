@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 12.12.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 15.01.2013 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -16,13 +16,14 @@ module ODDB
 		module Drugs
 class CenteredSearchForm < View::CenteredSearchForm
   include SearchBarMethods
-	CSS_CLASS = 'composite'
+	CSS_CLASS = 'tundra composite'
   COMPONENTS = {
     [0,0]      => View::TabNavigation,
     [0,1,0]    => 'search_type',
     [0,1,1]    => :switch_links,
     [0,2,0,1]  => :search_type,
     [0,3,0,2]  => :search_query,
+    [0,3]      => :progress_bar,
     [0,4,0,3]  => :submit,
   }
 	SYMBOL_MAP = {
@@ -37,6 +38,44 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,2,1,3] => 'center',
 	}
 	EVENT = :search
+  def init
+    super
+    @additional_javascripts ||= []
+    # This method is called in setTimeout() from SearchBar class
+    @additional_javascripts.push <<-JS
+require(["dojo/parser", "dijit/ProgressBar"], function(){
+  show_progressbar = function(searchbar_id){
+    var progressBar = searchProgressBar.set({
+      style: "display:block;",
+      value: Infinity,
+    });
+    var searchbar = dojo.byId(searchbar_id);
+    searchbar.style.display = "none";
+  };
+});
+    JS
+  end
+  def javascripts(context)
+    scripts = ''
+    @additional_javascripts.each do |script|
+      args = {
+        'type'     => 'text/javascript',
+        'language' => 'JavaScript',
+      }
+      scripts << context.script(args) do script end
+    end
+    scripts
+  end
+  def to_html(context)
+    javascripts(context).to_s << super
+  end
+  def progress_bar(model, session=@session)
+    div =  HtmlGrid::Div.new(model, session, self)
+    div.set_attribute('data-dojo-type', 'dijit.ProgressBar')
+    div.set_attribute('data-dojo-id',   'searchProgressBar')
+    div.set_attribute(:style, 'margin:10px auto; width:300px; display:none;')
+    div
+  end
   def switch_links(model, session=@session)
     if @container.instant_search_enabled?
       fields = []
@@ -65,28 +104,15 @@ class CenteredCompareSearchForm < CenteredSearchForm
     [0,1,0] => 'search_type',
     [0,1,1] => :switch_links,
     [0,2,0] => :search_query,
+    [0,2]   => :progress_bar,
   }
   SYMBOL_MAP = {
     :search_query => View::AutocompleteSearchBar,
   }
   def init
     @index_name = 'oddb_package_name_with_size'
-    @additional_javascripts = [] # for AutocompleteSearchBar
+    @additional_javascripts ||= [] # for AutocompleteSearchBar
     super
-  end
-  def javascripts(context)
-    scripts = ''
-    @additional_javascripts.each do |script|
-      args = {
-        'type'     => 'text/javascript',
-        'language' => 'JavaScript',
-      }
-      scripts << context.script(args) do script end
-    end
-    scripts
-  end
-  def to_html(context)
-    javascripts(context).to_s << super
   end
   def switch_links(model, session=@session)
     fields = []
