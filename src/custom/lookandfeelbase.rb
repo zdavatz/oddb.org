@@ -1693,6 +1693,7 @@ Zeno Davatz
 				:th_price_public_title		=>	'Publikums-Preis, inkl. Mwst.',
 				:th_product_description		=>	'Beschreibung',
         :th_public                =>  'Publikums-Preis',
+        :th_rectype               =>  'Typ',
 				:th_rating								=>	'Rating',
 				:th_reason								=>	'Fehlerherkunft',
 				:th_registration_date			=>	'Reg.Dat.',
