@@ -16,11 +16,19 @@ module SearchBarMethods
     if(@lookandfeel.respond_to?(:search_type_selection))
       select.valid_values = @lookandfeel.search_type_selection
     end
-    script = ''
+    name = 'search_query' # name of input field
+    val  = @session.lookandfeel.lookup(name)
+    progressbar = ''
     if self.respond_to?(:progress_bar)
-      script << "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
+      progressbar = "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
     end
-    script << "this.form.submit();"
+    script = <<-JS
+var query = this.form.#{name}.value;
+if (query != "#{val}" && query != "") {
+  #{progressbar}
+  this.form.submit();
+}
+    JS
     select.set_attribute('onChange', script)
     if type = @session.get_cookie_input(:search_type)
       select.selected = type
