@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 21.12.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 18.01.2013 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -1612,6 +1612,7 @@ Zeno Davatz
 				:th_galenic_group					=>	'Galenische Gruppe',
 				:th_galenic_group_de      =>	'Galenische Gruppe (de)',
 				:th_galenic_group_fr      =>	'Galenische Gruppe (fr)',
+        :th_generic_type          =>  'Generikum',
 				:th_has_generic						=>	'Hat ein Generikum',
 				:th_hospital_name					=>	'Name',
 				:th_ikscat								=>	'Kat.',
@@ -1698,6 +1699,7 @@ Zeno Davatz
 				:th_registration_date_title =>	'Swissmedic-Registrationsdatum.',
 				:th_restriction						=>	'Einschr&auml;nkung',
 				:th_revision							=>	'Revision',
+        :th_renewal_flag_swissmedic =>  'In Erneuerung (Swissmedic',
 				:th_search_oddb						=>	'ODDB-Datenbank',
 				:th_seqnr									=>	'Seq.-Nr.',
 				:th_sequence_names				=>	'Sequenzen',
