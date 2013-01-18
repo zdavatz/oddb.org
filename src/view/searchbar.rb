@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 15.01.2013 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 18.01.2013 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com
 
@@ -16,7 +16,12 @@ module SearchBarMethods
     if(@lookandfeel.respond_to?(:search_type_selection))
       select.valid_values = @lookandfeel.search_type_selection
     end
-    select.set_attribute('onChange', 'this.form.onsubmit();')
+    script = ''
+    if self.respond_to?(:progress_bar)
+      script << "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
+    end
+    script << "this.form.submit();"
+    select.set_attribute('onChange', script)
     if type = @session.get_cookie_input(:search_type)
       select.selected = type
     end
@@ -34,7 +39,7 @@ module InstantSearchBarMethods
     val = @session.lookandfeel.lookup(:add_drug)
     progressbar = ""
     if @container.respond_to?(:progress_bar)
-      progressbar = "setTimeout(\"show_progressbar('#{id}')\", 100);"
+      progressbar = "setTimeout('show_progressbar(\'#{id}\')', 10);"
     end
     @container.additional_javascripts.push <<-EOS
 function xhrGet(arg) {
@@ -124,11 +129,19 @@ class SearchBar < HtmlGrid::InputText
     end
     args = ['zone', @session.zone, @name, '']
     submit = @lookandfeel._event_url(@container.event, args)
-    script = "if(#{@name}.value!='#{val}'){"
+    script = <<-JS
+function get_to(url) {
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url);
+  document.body.appendChild(form);
+  form.submit();
+}
+    JS
+    script << "if(#{@name}.value!='#{val}'){"
     # show dojo ProgressBar
     if @container.respond_to?(:progress_bar)
-      # this method cause missing quate error
-      script << "setTimeout(show_progressbar('searchbar'), 100);"
+      script << "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
     end
     script << "var href = '#{submit}'"
     script << "+encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));"
@@ -137,7 +150,10 @@ class SearchBar < HtmlGrid::InputText
     unless @lookandfeel.disabled?(:best_result)
       script << "href += '#best_result';"
     end
-    script << "document.location.href=href; } return false"
+    # instead of document.location.
+    # because location stops gif animation.
+    script << "get_to(href);"
+    script << "}"
     self.onsubmit = script
   end
 end
@@ -155,7 +171,7 @@ class AutocompleteSearchBar < HtmlGrid::InputText
     end
     progressbar = ""
     if @container.respond_to?(:progress_bar)
-      progressbar = "setTimeout(\"show_progressbar('widget_searchbar')\", 100);"
+      progressbar = "setTimeout('show_progressbar(\\'widget_searchbar\\')', 10);"
     end
     @container.additional_javascripts.push <<-EOS
 function initMatches() {
