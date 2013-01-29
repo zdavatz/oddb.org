@@ -21,7 +21,7 @@ require 'plugin/swissindex'
 module ODDB
   class BsvXmlPlugin < Plugin
     RECIPIENTS = [ 'paul.wiederkehr@pharmasuisse.org' ]
-    BSV_RECIPIENTS = [ 'jean-christian.krayenbuehl@bag.admin.ch',
+    BSV_RECIPIENTS = [ 'bettina.frei@bag.admin.ch',
       'gertrud.fonatsch@bsv.admin.ch', 'sl-errors-schweiz@googlegroups.com' ]
     class Listener
       include REXML::StreamListener
