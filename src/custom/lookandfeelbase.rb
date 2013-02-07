@@ -1804,6 +1804,7 @@ Zeno Davatz
 				:w_too_many_sequences			=> 'Zu viele Suchresultate, die Suche muss spezifiziert werden',
 				:w_unknown_iksnr0					=>	'Die Registration "',
 				:w_unknown_iksnr1					=>	'" ist uns nicht bekannt.',
+				:who                                                                            =>  'WHO',
 				:welcome									=>  'Willkommen',
 				:welcome0									=>  'Willkommen ',
 				:welcome1									=>  '!',

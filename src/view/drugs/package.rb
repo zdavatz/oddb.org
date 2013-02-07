@@ -47,7 +47,7 @@ class PackageInnerComposite < HtmlGrid::Composite
     [0,2]   => :sl_generic_type,
     [0,3,0] => :atc_class,
     [1,4,1] => :atc_ddd_link,
-    [0,4]   => :galenic_form,
+    [0,4]   => :who,
     [0,5]   => :index_therapeuticus,
     [0,6]   => :ith_swissmedic,
     [0,7]   => :ikscat,
@@ -109,27 +109,27 @@ class PackageInnerComposite < HtmlGrid::Composite
     end
     if(@lookandfeel.enabled?(:feedback))
       components.update(
-        [0,12] => :feedback_label,
-        [1,12] => :feedback,
-        [0,13] => :pharmacode
+        [0,11] => :feedback_label,
+        [1,11] => :feedback,
+        [0,12] => :pharmacode
       )
-      css_map.store([0,13,4], 'list')
+      css_map.store([0,12,4], 'list')
     end
     if @lookandfeel.enabled?(:show_ean13)
-      if components[[0,13]] == :pharmacode
-        components.update(
-          [0,13] => :barcode_label,
-          [1,13] => :barcode,
-          [0,14] => :pharmacode
-        )
-        css_map.store([0,14,4], 'list')
-      else
+      if components[[0,12]] == :pharmacode
         components.update(
           [0,12] => :barcode_label,
           [1,12] => :barcode,
           [0,13] => :pharmacode
         )
         css_map.store([0,13,4], 'list')
+      else
+        components.update(
+          [0,11] => :barcode_label,
+          [1,11] => :barcode,
+          [0,12] => :pharmacode
+        )
+        css_map.store([0,12,4], 'list')
       end
     end
     if(@model.ddd_price)
