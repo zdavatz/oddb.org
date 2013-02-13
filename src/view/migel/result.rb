@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Result -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 13.02.2012 -- yasaka@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
@@ -175,6 +175,7 @@ class ExplainResult < HtmlGrid::Composite
   CSS_MAP = {
     [0,0,1,3] => 'explain infos',
   }
+  CSS_ID = 'explain_result'
 end
 class ResultComposite < HtmlGrid::Composite
   include ResultFootBuilder
