@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 19.12.2012 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 19.12.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -52,6 +52,7 @@ module ODDB
         flags.store lang, :up_to_date
       end
       FileUtils.mv tmp, path
+=begin # skip all images
       # save images
       resource_dir = File.join ODDB::IMAGE_DIR, type.to_s, lang.to_s
       FileUtils.mkdir_p resource_dir
@@ -65,6 +66,7 @@ module ODDB
           save(img_file)
         FileUtils.cp img_file, File.join(resource_dir, filename)
       end
+=end
       path
     end
     def parse_fachinfo path
