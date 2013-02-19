@@ -10,6 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
+      ARGV.delete('')
       Updater.new(system).update_company_textinfos2(*ARGV)
     end
   end
