@@ -273,6 +273,7 @@ module ODDB
                            :import_company, [companies]
     end
     def update_company_textinfos2 *companies
+      @options = {:reparse => true}
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo2 '#{companies.join(', ')}'",
                            :import_company2, [companies]
