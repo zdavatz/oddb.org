@@ -216,7 +216,8 @@ class TextinfoHpricot
           end
         end
       end
-      if (elem/:thead).empty? and (elem/:tbody).empty?
+      if ((elem/:thead).empty? and (elem/:tbody).empty?) or
+         (elem.attributes['cellspacing'] == '0' and elem.attributes['cellpadding'] == '0' and elem.attributes['style'].empty?)
         found = false
       end
     end
