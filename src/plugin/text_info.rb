@@ -570,6 +570,9 @@ module ODDB
       agent.get(url)
     end
     def search2 term
+      #return [ # debug
+      #  {:type => :fi, :indx => '22100', :name => 'Xeplion®'}
+      #]
       page = init_searchform2
       form = page.form_with(:name => 'aspnetForm')
       form['__EVENTTARGET']   = 'ctl00$MainContent$ucProductSearch1$rcbSearch'
