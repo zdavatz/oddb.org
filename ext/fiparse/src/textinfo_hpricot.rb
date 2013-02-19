@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 12.12.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 19.02.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -44,7 +44,7 @@ class TextinfoHpricot
       elem.children.delete(title)
       anchor = title.at("a")
       code = anchor['name'] unless anchor.nil?
-      chapter.heading = text(anchor)
+      chapter.heading = text(anchor.next) # <a><p></p></a>
     end
     handle_element(elem, ptr)
     chapter.clean!
