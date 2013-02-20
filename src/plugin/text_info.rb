@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 19.12.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 20.12.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -739,7 +739,7 @@ module ODDB
             end
             if fi and
                chapter = fi.at("//a[@name='7850']") and
-               name = chapter.parent.parent.at('.//p').text # first p
+               name = chapter.parent.parent.at(".//p[@class='noSpacing']").text
               company_names << name.split(',').first if name
             end
           end
