@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 20.12.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 23.12.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -656,7 +656,7 @@ module ODDB
       end
       paths[:de] = save_info(type, name, :de, de, flags)
       # fr
-      fr = @agent.get(url.to_s.gsub(/\/de$/, '/fr'))
+      fr = @agent.get(url + '/fr')
       paths[:fr] = save_info(type, name, :fr, fr, flags)
       [paths, flags]
     rescue Mechanize::ResponseCodeError
@@ -706,6 +706,9 @@ module ODDB
       end
     end
     def textinfo_news2(agent=init_agent2)
+      #return [ # debug
+      #  'Janssen-Cilag AG'
+      #]
       url = ODDB.config.text_info_newssource2 \
         or raise 'please configure ODDB.config.text_info_newssource2 to proceed'
       check_date = @options[:date] ? @options[:date] : Date.today
