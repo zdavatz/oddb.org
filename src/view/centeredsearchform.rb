@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::CenteredSearchForm -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
@@ -172,16 +173,9 @@ module ODDB
 				span
 			end
       def download_ebook(model, session)
-        link = HtmlGrid::Link.new(:download_ebook,
-                                  model, session, self)
-				args = {
-          'download[compendium_ch.oddb.org.firefox.epub]' => 1,
-          'download[compendium_ch.oddb.org.htc.prc]'      => 1,
-          'download[compendium_ch.oddb.org.kindle.mobi]'  => 1,
-          'download[compendium_ch.oddb.org.stanza.epub]'  => 1,
-        }
+        link = HtmlGrid::Link.new(:download_ebook, model, session, self)
         link.set_attribute('class', 'list')
-        link.href = 'http://ch.oddb.org/de_ebook'
+        link.href = @lookandfeel.lookup(:download_ebook_link)
         link
       end
       def download_app(model, session)

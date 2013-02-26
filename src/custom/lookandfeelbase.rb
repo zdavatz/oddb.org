@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 18.01.2013 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -424,7 +424,8 @@ Zeno Davatz
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',
 				:download_generics				=>	'Alle Originale und Generika monatlich aktualisiert in einem Excel!',
-        :download_ebook           =>	'Die gesamte Fachinformation als Ebook auf dem Kindle (iPhone, Android, PC, Mac)',
+        :download_ebook           =>  'Die gesamte Fachinformation als Ebook auf dem Kindle (iPhone, Android, PC, Mac)',
+        :download_ebook_link      =>  'http://ch.oddb.org/de_ebook',
 			  :download_export_descr		=>	'Mehr Infos zu den Stammdaten von ODDB.org',
 				:download_export_feedback	=>	'Feedback bitte an zdavatz at ywesee dot com',
 				:download_export					=>	'Stammdaten Download',
@@ -2045,7 +2046,8 @@ Zeno Davatz
 				:download_doctors1				=>	'ici',
 				:download_doctors2				=>	' s.v.p.',
 				:download_generics				=>	'Tous les m&eacute;dicaments et les G&eacute;n&eacute;riques correspondants dans un fichier d\'Excel, actualis&eacute; chaque mois!',
-        :download_ebook           =>	'Tous les informations professionnelles dans un Ebook Kindle (iPhone, Android, PC, Mac)',
+        :download_ebook           =>  'Tous les informations professionnelles dans un Ebook Kindle (iPhone, Android, PC, Mac)',
+        :download_ebook_link      =>  'http://ch.oddb.org/fr_ebook',
         :download_export_descr    =>  "Plus d'information sur les donn&eacute;es de base d'ODDB.org",
 				:download_export					=>	'Download les donn&eacute;es de base',
         :download_export_feedback =>  'La r&eacute;troaction demande dessus zdavatz at ywesee dot com',
@@ -3306,7 +3308,7 @@ Zeno Davatz
 				:doctors									=>  'Doctor',
 				:doctors_search_explain	  =>	'Search for a doctor in Switzerland. Search by name,<br> address, telefon, professional title or a combination of these.',
 				:dose											=>	'Concentration',
-        :download_ebook           =>	'Download all prescription drug information in an Ebook! (iPhone, Android, PC, Mac)',
+        :download_ebook           =>  'Download all prescription drug information in an Ebook! (iPhone, Android, PC, Mac)',
 			  :download_export_descr		=>	'More Information regarding the Master Data',
 				:download_export_feedback	=>	'Send feedback to: zdavatz at ywesee ! com',
 				:download_export					=>	'Master Data Download',
