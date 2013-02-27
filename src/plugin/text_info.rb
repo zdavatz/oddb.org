@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 23.12.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -9,6 +9,9 @@ require 'drb'
 require 'mechanize'
 require 'fileutils'
 require 'config'
+require 'thread'
+require 'zip/zip'
+require 'nokogiri'
 require 'plugin/plugin'
 require 'model/fachinfo'
 require 'model/patinfo'
@@ -37,9 +40,10 @@ module ODDB
       @download_errors = []
       @companies = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
-      @new_format_flag = false
+      @format = :documed # {:documed|:compendium|:swissmedicinfo}
       @target = :both
       @search_term = []
+      @swissmedicinfo = []
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -70,10 +74,10 @@ module ODDB
       path
     end
     def parse_fachinfo path
-      @parser.parse_fachinfo_html(path, @new_format_flag)
+      @parser.parse_fachinfo_html(path, @format)
     end
     def parse_patinfo path
-      @parser.parse_patinfo_html(path, @new_format_flag)
+      @parser.parse_patinfo_html(path, @format)
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
@@ -141,6 +145,7 @@ module ODDB
         end
       rescue RuntimeError => err
         @failures.push err.message
+        []
       end
     end
     def update_patinfo name, pis, pi_flags
@@ -165,6 +170,7 @@ module ODDB
         end
       rescue RuntimeError => err
         @failures.push err.message
+        []
       end
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
@@ -217,6 +223,7 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
+          @swissmedicinfo.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -255,6 +262,17 @@ module ODDB
         ].join("\n")
       end
     end
+    def setup_default_agent
+      unless @agent
+        @agent = Mechanize.new
+        @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:16.0) Gecko/20100101 Firefox/16.0'
+        @agent.redirect_ok         = true
+        @agent.redirection_limit   = 5
+        @agent.follow_meta_refresh = true
+        @agent.ignore_bad_chunking = true
+      end
+      @agent
+    end
 
 ##
 # == interface 1 (classic)
@@ -268,9 +286,9 @@ module ODDB
 #  * import_company, names, agent=nil, target=:both
 #  * import_news agent=init_agent
     def init_agent
-      agent = Mechanize.new
-      agent.user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
-      agent
+      setup_default_agent
+      @agent.user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
+      @agent
     end
     def init_searchform agent
       url = ODDB.config.text_info_searchform \
@@ -372,7 +390,7 @@ module ODDB
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub("'", "")
+        src = doc.iksnrs.to_s.gsub(/['\s]/, "")
         if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/u))
           iksnrs.concat match.to_s.split(/\s*,\s*/u)
         end
@@ -524,42 +542,36 @@ module ODDB
 #  * import_news2(agent=init_agent2)
     SOURCE_HOST = 'compendium.ch'
     def init_agent2
-      unless @agent
-        @agent = Mechanize.new
-        @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:16.0) Gecko/20100101 Firefox/16.0'
-        @agent.redirect_ok         = true
-        @agent.redirection_limit   = 5
-        @agent.follow_meta_refresh = true
-        # entry point
-        home = @agent.get("http://#{SOURCE_HOST}/default/Desktop/de"). \
-          link_with(:href => /\/home\/prof\/de/).click
-        form = home.form_with(:name => 'aspnetForm')
-        button = form.button_with(:name => 'ctl00$MainContent$ibOptions')
-        # behaves as click
-        prng = Random.new(Time.new.to_i)
-        button.x = prng.rand(5..55).to_s
-        button.y = prng.rand(5..55).to_s
-        @agent.pre_connect_hooks << lambda do |agent, request|
-          agent.request_headers['Referer']    = "http://#{SOURCE_HOST}/home/prof/de"
-          agent.request_headers['Connection'] = 'keep-alive'
-          agent.request_headers['Host']       = SOURCE_HOST
-          agent.request_headers['Cookie']     = @agent.cookies.join(';')
-        end
-        # discard this response
-        form.click_button(button)
-        # imitate setting of monographie search mode in "options", manualy
-        option = @agent.get("http://#{SOURCE_HOST}/options/de")
-        form = option.form_with(:name => 'aspnetForm')
-        form.radiobutton_with(:id => 'ctl00_MainContent_rblMonographie_1').check # Fachinfo
-        form.radiobutton_with(:id => 'ctl00_MainContent_rblCurrentLang_0').check # DE
-        form.radiobutton_with(:id => 'ctl00_MainContent_rblContentLang_0').check # DE
-        form.submit(form.button_with(:name => 'ctl00$MainContent$btnSave'))
-        # overwrite cookie manualy for after request
-        @agent.cookie_jar.each do |cookie|
-          if cookie.name =~ /^dm\.kompendium/
-            cookie.value.gsub!(/isTypeResultMonographieTitle=0/, 'isTypeResultMonographieTitle=1')
-            cookie.value.gsub!(/language=EN/, 'language=DE')
-          end
+      setup_default_agent
+      # entry point
+      home = @agent.get("http://#{SOURCE_HOST}/default/Desktop/de"). \
+        link_with(:href => /\/home\/prof\/de/).click
+      form = home.form_with(:name => 'aspnetForm')
+      button = form.button_with(:name => 'ctl00$MainContent$ibOptions')
+      # behaves as click
+      prng = Random.new(Time.new.to_i)
+      button.x = prng.rand(5..55).to_s
+      button.y = prng.rand(5..55).to_s
+      @agent.pre_connect_hooks << lambda do |agent, request|
+        agent.request_headers['Referer']    = "http://#{SOURCE_HOST}/home/prof/de"
+        agent.request_headers['Connection'] = 'keep-alive'
+        agent.request_headers['Host']       = SOURCE_HOST
+        agent.request_headers['Cookie']     = @agent.cookies.join(';')
+      end
+      # discard this response
+      form.click_button(button)
+      # imitate setting of monographie search mode in "options", manualy
+      option = @agent.get("http://#{SOURCE_HOST}/options/de")
+      form = option.form_with(:name => 'aspnetForm')
+      form.radiobutton_with(:id => 'ctl00_MainContent_rblMonographie_1').check # Fachinfo
+      form.radiobutton_with(:id => 'ctl00_MainContent_rblCurrentLang_0').check # DE
+      form.radiobutton_with(:id => 'ctl00_MainContent_rblContentLang_0').check # DE
+      form.submit(form.button_with(:name => 'ctl00$MainContent$btnSave'))
+      # overwrite cookie manualy for after request
+      @agent.cookie_jar.each do |cookie|
+        if cookie.name =~ /^dm\.kompendium/
+          cookie.value.gsub!(/isTypeResultMonographieTitle=0/, 'isTypeResultMonographieTitle=1')
+          cookie.value.gsub!(/language=EN/, 'language=DE')
         end
       end
       @agent
@@ -754,7 +766,7 @@ module ODDB
       if name.is_a?(Array) # for consistency againt old interface
         import_companies2(name, target, agent)
       else
-        @new_format_flag = true
+        @format = :new
         @target = target
         @search_term << name
         @companies << name
@@ -772,6 +784,146 @@ module ODDB
       updated = []
       company_names = textinfo_news2(agent)
       import_companies2(company_names, target, agent)
+      postprocess
+    end
+
+    # swissmedic.ch
+    def swissmedicinfo_index(state)
+      index = {}
+      %w[DE FR].each do |lang|
+        url  = "http://www.swissmedicinfo.ch/?Lang=#{lang}"
+        home = @agent.get(url)
+        # behave as javascript click
+        form = home.form_with(:id => 'ctl01')
+        form['__EVENTTARGET']   = "ctl00$HeaderContent$ucSpecialSearch1$LB#{state}Auth"
+        form['__EVENTARGUMENT'] = ''
+        res = form.submit
+        names = {:fi => [], :pi => []}
+        %w[FI PI].each do |type|
+          res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{type}_GVMonographies']/tr").each do |tr|
+            tds = tr.search('td')
+            unless tds.empty?
+              names[type.downcase.intern] << tds[1].text
+            end
+          end
+        end
+        index[lang.downcase.intern] = names
+      end
+      index
+    end
+    def textinfo_swissmedicinfo_index
+      setup_default_agent
+      url = 'http://www.swissmedicinfo.ch/'
+      # accept form
+      accept = @agent.get(url)
+      form   = accept.form_with(:id => 'ctl01')
+      button = form.button_with(:name => 'ctl00$MainContent$btnOK')
+      form.submit(button) # discard
+      index = {}
+      %w[New Change].each do |state|
+        index[state.downcase.intern] = swissmedicinfo_index(state)
+      end
+      index
+    end
+    def download_swissmedicinfo_xml
+      setup_default_agent
+      url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
+      dir  = File.join(ODDB.config.data_dir, 'xml')
+      FileUtils.mkdir_p dir
+      name = 'swissmedicinfo'
+      zip = File.join(dir, "#{name}.zip")
+      response = nil
+      if home = @agent.get(url)
+        form = home.form_with(:id => 'Form1')
+        bttn = form.button_with(:name => 'ctl00$MainContent$btnOK')
+        if page = form.submit(bttn)
+          form = page.form_with(:id => 'Form1')
+          bttn = form.button_with(:name => 'ctl00$MainContent$BtnYes')
+          response = form.submit(bttn)
+        end
+      end
+      if response
+        tmp = File.join(dir, name + '.tmp.zip')
+        response.save_as(tmp)
+        FileUtils.mv(tmp, zip)
+        xml = ''
+        Zip::ZipFile.foreach(zip) do |entry|
+          if entry.name =~ /^AipsDownload_/iu
+            entry.get_input_stream { |io| xml = io.read }
+          end
+        end
+        file = File.join(dir, 'AipsDownload_latest.xml')
+        File.open(file, 'w') { |fh| fh.puts(xml) }
+      end
+    end
+    def import_swissmedicinfo
+      threads = []
+      threads << Thread.new do
+        download_swissmedicinfo_xml
+      end
+      index = {}
+      threads << Thread.new do
+        #index = {
+        #  # unexpected bad HTML
+        #  #:new    => {:de => {:fi => ['Famvir']}},
+        #  #:change => {:de => {:fi => ['Aromasin®']}},
+        #  :new    => {:de => {:fi => ['Desoren® 20/30']}},
+        #  :change => {:de => {:fi => ['Axura®']}},
+        #}
+        index = textinfo_swissmedicinfo_index
+      end
+      threads.map(&:join)
+      @swissmedicinfo << "New/Updates from swissmedicinfo.ch"
+      xml = File.open(File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'), 'r').read
+      doc = Nokogiri::XML(xml)
+      index.each_pair do |state, names|
+        [:de, :fr].each do |lang|
+          types = {:fi => 'fachinfo', :pi => 'patinfo'}
+          types.keys.each do |typ|
+            next if names[lang].nil? or names[lang][typ].nil?
+            type = types[typ]
+            path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
+            names[lang][typ].each do |name|
+              match = doc.xpath("//title[match(., '#{name}')]", Class.new {
+                def match node_set, name
+                  node_set.find_all {|node| node.text == name }
+                end
+              }.new).first
+              if match and content = match.parent.at('./content')
+                file = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+                html = Nokogiri::HTML(content.to_s).to_s
+                update = false
+                if File.exists?(file)
+                  prev = File.open(file, 'r').read
+                  if prev.length != html.length
+                    update = true
+                  else
+                    if html.match(/MonTitle/i)
+                      @up_to_date_fis += 1 if typ == :fi
+                      @up_to_date_pis += 1 if typ == :pi
+                    end
+                  end
+                else
+                  update = true
+                end
+                if update
+                  # update_product
+                  File.open(file, 'w') { |fh| fh.puts(html) }
+                  @format = :swissmedicinfo
+                  infos  = {lang => self.send("parse_#{type}", file)}
+                  iksnrs = []
+                  unless infos.empty?
+                    iksnrs = self.send("update_#{type}", name, infos, {})
+                  end
+                  unless iksnrs.empty?
+                    @swissmedicinfo << "#{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name} (#{iksnrs.join(',')})"
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
       postprocess
     end
   end

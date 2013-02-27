@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse -- oddb.org -- 12.07.2012 -- yasaka@ywesee.com
+# ODDB::FiParse -- oddb.org -- 27.02.2012 -- yasaka@ywesee.com
 # ODDB::FiParse -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
@@ -199,15 +199,15 @@ module ODDB
         :lang  => lang
       })
       writer = FachinfoHpricot.new
-      writer.new_format_flag = false
+      writer.format = :documed
       writer.extract(Hpricot(doc.to_html(true)))
     end
-    def parse_fachinfo_html(src, new_format_flag = false)
+    def parse_fachinfo_html(src, format = :documed)
       if File.exist?(src)
         src = File.read src
       end
       writer = FachinfoHpricot.new
-      writer.new_format_flag = new_format_flag
+      writer.format = format
       writer.extract(Hpricot(src))
     end
 		def parse_fachinfo_pdf(src)
@@ -216,12 +216,12 @@ module ODDB
 			parser.extract_text(writer)
 			writer.to_fachinfo
 		end
-		def parse_patinfo_html(src, new_format_flag = false)
+		def parse_patinfo_html(src, format = :documed)
       if File.exist?(src)
         src = File.read src
       end
 			writer = PatinfoHpricot.new
-      writer.new_format_flag = new_format_flag
+      writer.format = format
       writer.extract(Hpricot(src))
 		end
     module_function :storage=

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 08.12.2012 -- yasaka@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -18,45 +18,43 @@ class FachinfoHpricot < TextinfoHpricot
     case code
     when '6900'
       @amzv = chapter
-    when '6950'
+    when '6950', 'section1'
       @name = chapter
-    when '3300', '7000'
+    when '3300', '7000', 'section2'
       @composition = chapter
-    when '7050'
+    when '7050', 'section3'
       @galenic_form = chapter
-    when '7100'
+    when '4000', '7100', 'section4'
       @indications = chapter
-    when '7200'
+    when '7200', 'section6'
       @contra_indications = chapter
-    when '4400', '7250'
+    when '4400', '7250', 'section7'
       @restrictions = chapter
-    when '3500', '7550'
+    when '3500', '7550', 'section13'
       @effects = chapter
-    when '4000', '7100'
-      @indications = chapter
-    when '4200', '7150'
+    when '4200', '7150', 'section5'
       @usage = chapter
-    when '3700', '7600'
+    when '3700', '7600', 'section14'
       @kinetic = chapter
-    when '4700', '7450'
+    when '4700', '7450', 'section11'
       @unwanted_effects = chapter
-    when '4800', '7300'
+    when '4800', '7300', 'section8'
       @interactions = chapter
-    when '7350'
+    when '7350', 'section9'
       @pregnancy = chapter
-    when '7400'
+    when '7400', 'section10'
       @driving_ability = chapter
-    when '5000', '7500'
+    when '5000', '7500', 'section12'
       @overdose = chapter
-    when '5200', '7700'
+    when '5200', '7700', 'section16'
       @other_advice = chapter
-    when '5998', '7750'
+    when '5998', '7750', 'section17'
       @iksnrs = chapter
-    when '6100', '8000'
+    when '6100', '8000', 'section20'
       @date = chapter
-    when '7650'
+    when '7650', 'section15'
       @preclinic = chapter
-    when '7850'
+    when '7850', 'section19'
       @registration_owner = chapter
     when '5610', '7860'
       @fabrication = chapter
@@ -64,7 +62,7 @@ class FachinfoHpricot < TextinfoHpricot
       @delivery = chapter
     when '5595'
       @distribution = chapter
-    when '7800', '9100'
+    when '7800', '9100', 'section18'
       @packages = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
