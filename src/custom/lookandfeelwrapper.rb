@@ -452,6 +452,7 @@ module ODDB
       :interactions,
       :just_medical_structure,
       :popup_links,
+      :powerlink,
       :recall_rss,
       :hpc_rss,
       :search_reset,
