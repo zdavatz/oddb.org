@@ -200,7 +200,7 @@ module ODDB
       })
       writer = FachinfoHpricot.new
       writer.format = :documed
-      writer.extract(Hpricot(doc.to_html(true)))
+      writer.extract(Hpricot(doc.to_html(true)), :fi)
     end
     def parse_fachinfo_html(src, format = :documed)
       if File.exist?(src)
@@ -208,7 +208,7 @@ module ODDB
       end
       writer = FachinfoHpricot.new
       writer.format = format
-      writer.extract(Hpricot(src))
+      writer.extract(Hpricot(src), :fi)
     end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
@@ -222,7 +222,7 @@ module ODDB
       end
 			writer = PatinfoHpricot.new
       writer.format = format
-      writer.extract(Hpricot(src))
+      writer.extract(Hpricot(src), :pi)
 		end
     module_function :storage=
     module_function :parse_fachinfo_doc

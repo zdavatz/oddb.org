@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# FiParse::PatinfoHpricot -- oddb -- 08.12.2012 -- yasaka@ywesee.com
+# FiParse::PatinfoHpricot -- oddb -- 28.02.2013 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'
@@ -14,29 +14,31 @@ class PatinfoHpricot < TextinfoHpricot
     :unwanted_effects, :usage
   def identify_chapter(code, chapter)
     case code
-    when '7600'
+    when '7600', 'section1'
       @amzv = chapter
-    when '2000', '7620'
+    when 'section2'
+      @name = chapter
+    when '2000', '7620', 'section3'
       @effects = chapter
     when '2500', '7640'
       @amendments = chapter
-    when '3000', '7625', '7660', '7680'
+    when '3000', '7625', '7660', '7680', 'section4'
       @contra_indications = chapter
-    when '3500', '7700'
+    when '3500', '7700', 'section5'
       @precautions = chapter
-    when '4000', '7720'
+    when '4000', '7720', 'section6'
       @pregnancy = chapter
-    when '4500', '7740'
+    when '4500', '7740', 'section7'
       @usage = chapter
-    when '5000', '7760'
+    when '5000', '7760', 'section8'
       @unwanted_effects = chapter
-    when '5500', '7780'
+    when '5500', '7780', 'section9'
       @general_advice = chapter
-    when '6000', '7840'
+    when '6000', '7840', 'section10'
       @composition = chapter
-    when '7860'
+    when '7860', 'section11'
       @iksnrs = chapter
-    when '6500', '7880'
+    when '6500', '7880', 'section12'
       @packages = chapter
     when '7000', '7900'
       @distribution = chapter
@@ -44,7 +46,7 @@ class PatinfoHpricot < TextinfoHpricot
       @fabrication = chapter
     when '7930'
       @delivery = chapter
-    when '7520', '7940', '7950'
+    when '7520', '7940', '7950', 'section14'
       if(@date) # we are overwriting an existing @date
         chapter.sections = @date.sections
       end

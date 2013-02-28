@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 28.02.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -39,42 +39,84 @@ class TextinfoHpricot
     code = nil
     ptr = OpenStruct.new
     ptr.chapter = chapter
-    title_tag =
-      case @format
-      when :compendium, :swissmedicinfo ; 'div.absTitle'
-      else ; 'h2'
+    if @format == :swissmedicinfo
+      id = elem.attributes['id']
+      if !id.empty?
+        code            = id
+        chapter.heading = text(elem)
       end
-    if(title = elem.at(title_tag))
-      elem.children.delete(title)
-      anchor = title.at('a')
-      id     = elem.attributes['id']
-      if !anchor.nil?
-        code = anchor['name']
-        chapter.heading = text(anchor.next) # <a><p></p></a>
-      elsif !id.empty?
-        code = id.gsub(/[^0-9]/, '')
-        chapter.heading = text(title)
+      elem = elem.next
+      until end_element_in_chapter?(elem)
+        _handle_element(elem, ptr)
+        elem = elem.next
       end
+    else
+      title_tag = ((@format == :compendium) ? 'div.absTitle' : 'h2')
+      if(title = elem.at(title_tag))
+        elem.children.delete(title)
+        anchor = title.at('a')
+        if !anchor.nil?
+          code            = anchor['name']
+          chapter.heading = text(anchor.next) # <a><p></p></a>
+        end
+      end
+      handle_element(elem, ptr)
     end
-    handle_element(elem, ptr)
     chapter.clean!
     [code, chapter]
   end
-  def extract(doc)
-    title_tag =
-      case @format
-      when :compendium, :swissmedicinfo ; 'div.MonTitle'
-      else ; 'h1'
+  def extract(doc, type=:fi)
+    paragraph_tag = ''
+    case @format
+    when :compendium
+      @name    = simple_chapter(doc.at('div.MonTitle'))
+      @company = simple_chapter(doc.at('div.ownerCompany'))
+      @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
+      paragraph_tag = 'div.paragraph'
+    when :swissmedicinfo
+      name_tag = (type == :fi ? 'p#section1' : 'p#section2')
+      @name    = simple_chapter(doc.at(name_tag))
+      company_tag = (type == :fi ? 'p#section19' : 'p#section13')
+      @company    = simple_chapter(detect_text_block(doc.at(company_tag).next))
+      if type == :fi
+        @galenic_form = simple_chapter(detect_text_block(doc.at('p#section3').next))
       end
-    @name         = text(doc.at(title_tag))
-    @company      = simple_chapter(doc.at("div.ownerCompany"))
-    @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
-    (doc/"div.paragraph").each { |elem|
+      paragraph_tag = "p[@id^='section']"
+    else
+      @name    = simple_chapter(doc.at('h1'))
+      @company = simple_chapter(doc.at('div.ownerCompany'))
+      @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
+      paragraph_tag = 'div.paragraph'
+    end
+    (doc/paragraph_tag).each { |elem|
+      next if type == :fi and id = elem.attributes['id'] and id =~ /^section(1|19)$/
+      next if type == :pi and id = elem.attributes['id'] and id =~ /^section(2|13)$/
       identify_chapter(*chapter(elem))
     }
     to_textinfo
   end
   private
+  def has_italic?(elem, ptr)
+    if @format == :swissmedicinfo
+      (ptr.target.is_a?(Text::Paragraph) and
+      elem.respond_to?(:attributes) and
+      elem.attributes['class'] == 's8')
+    else
+      ptr.target.is_a?(Text::Paragraph)
+    end
+  end
+  def end_element_in_chapter?(elem)
+    (elem.nil?) or
+    (elem.respond_to?(:attributes) and !elem.attributes['id'].empty?)
+  end
+  def detect_text_block(elem) # for swissmedicinfo format
+    text = ''
+    until end_element_in_chapter?(elem)
+      text << text(elem)
+      elem = elem.next
+    end
+    text
+  end
   def _handle_element(child, ptr)
     case child
     when Hpricot::Text
@@ -84,29 +126,33 @@ class TextinfoHpricot
         if ptr.target.is_a? Text::MultiCell
           ptr.target.next_paragraph
         end
+        ptr.section ||= ptr.chapter.next_section
+        ptr.target  ||= ptr.section.next_paragraph
         handle_text(ptr, child)
       end
     when Hpricot::Elem
       case child.name
       when 'h3'
         ptr.section = ptr.chapter.next_section
-        ptr.target = ptr.section.subheading
+        ptr.target  = ptr.section.subheading
         handle_text(ptr, child)
         ptr.target << "\n"
       when 'p'
         if ptr.table
-          ptr.target = ptr.table.next_paragraph
+          ptr.target.next_paragraph if ptr.target.is_a?(Text::MultiCell)
         else
           ptr.section ||= ptr.chapter.next_section
           ptr.target = ptr.section.next_paragraph
         end
         handle_element(child, ptr)
       when 'span', 'em', 'strong', 'b'
+        if ptr.target.is_a?(Text::MultiCell)
+          ptr.target = ptr.target.next_paragraph
+        end
         ptr.target << ' '
-        has_italic = ptr.target.is_a?(Text::Paragraph)
-        ptr.target.augment_format(:italic) if has_italic
+        ptr.target.augment_format(:italic) if has_italic?(child, ptr)
         handle_element(child, ptr)
-        ptr.target.reduce_format(:italic)  if has_italic
+        ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
         ptr.target << ' '
       when 'sub', 'sup'
         ptr.target << ' '
@@ -196,8 +242,11 @@ class TextinfoHpricot
     end
   end
   def handle_text(ptr, child)
-    ptr.section ||= ptr.chapter.next_section
-    ptr.target ||= ptr.section.next_paragraph
+    # ptr.section ||= ptr.chapter.next_section
+    # unless ptr.target.is_a?(Text::Paragraph)
+      # p ptr.target.class
+      # ptr.target = ptr.section.next_paragraph
+    # end
     ptr.target << text(child)
   end
   def preformatted(target)
@@ -207,16 +256,22 @@ class TextinfoHpricot
     str = elem.inner_text || elem.to_s
     target_encoding(str.gsub(/(&nbsp;|\302\240)/u, ' '))
   end
-  def simple_chapter(elem)
-    if(elem)
+  def simple_chapter(elem_or_str)
+    if(elem_or_str)
       chapter = Text::Chapter.new
-      chapter.heading = text(elem)
+      if elem_or_str.is_a?(Hpricot::Elem)
+        chapter.heading = text(elem_or_str)
+      elsif elem_or_str.is_a?(String)
+        chapter.heading = elem_or_str
+      end
       chapter
     end
   end
   def detect_table?(elem)
     found = true
-    if elem.attributes['border'] == '0'
+    if elem.attributes['class'] == 's24' # :swissmedicinfo
+      found = true
+    elsif elem.attributes['border'] == '0'
       # if 'rowSepBelow' class is found,
       # then this elem must be handled as pre-format style paragraph
       catch :pre do

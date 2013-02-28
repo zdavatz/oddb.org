@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 28.02.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -390,7 +390,7 @@ module ODDB
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub(/['\s]/, "")
+        src = doc.iksnrs.to_s.gsub(/[’'\s]/, "")
         if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/u))
           iksnrs.concat match.to_s.split(/\s*,\s*/u)
         end
@@ -799,11 +799,11 @@ module ODDB
         form['__EVENTARGUMENT'] = ''
         res = form.submit
         names = {:fi => [], :pi => []}
-        %w[FI PI].each do |type|
-          res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{type}_GVMonographies']/tr").each do |tr|
+        {'FI' => 1,  'PI' => 0}.each_pair do |typ, i|
+          res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{typ}_GVMonographies']/tr").each do |tr|
             tds = tr.search('td')
             unless tds.empty?
-              names[type.downcase.intern] << tds[1].text
+              names[typ.downcase.intern] << tds[i].text
             end
           end
         end
@@ -856,6 +856,60 @@ module ODDB
         File.open(file, 'w') { |fh| fh.puts(xml) }
       end
     end
+    def detect_format(html)
+      html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
+    end
+    def extract_matched_content(name, type, lang)
+      content = nil
+      return content unless @doc
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., '#{name}')]"
+      match = @doc.xpath(path, Class.new do
+        def match(node_set, name)
+          node_set.find_all do |node|
+            node.text == name
+          end
+        end
+      end.new).first
+      if match
+        content = match.parent.at('./content')
+      end
+      content
+    end
+    def parse_end_update(name, type, lang)
+      iksnrs  = []
+      return iksnrs unless @doc
+      content = extract_matched_content(name, type, lang)
+      if content
+        html = Nokogiri::HTML(content.to_s).to_s
+        content = nil
+        path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
+        file = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+        update = false
+        if File.exists?(file)
+          prev = File.open(file, 'r').read
+          if prev.length != html.length
+            update = true
+          else
+            @up_to_date_fis += 1 if type == 'fachinfo'
+            @up_to_date_pis += 1 if type == 'patinfo'
+          end
+          prev = nil
+        else
+          update = true
+        end
+        if update
+          # update_product
+          @format = detect_format(html)
+          File.open(file, 'w') { |fh| fh.puts(html) }
+          html = nil
+          infos = {lang => self.send("parse_#{type}", file)}
+          if infos[lang]
+            iksnrs = self.send("update_#{type}", name, infos, {})
+          end
+        end
+      end
+      iksnrs
+    end
     def import_swissmedicinfo
       threads = []
       threads << Thread.new do
@@ -863,67 +917,37 @@ module ODDB
       end
       index = {}
       threads << Thread.new do
-        #index = {
-        #  # unexpected bad HTML
-        #  #:new    => {:de => {:fi => ['Famvir']}},
-        #  #:change => {:de => {:fi => ['Aromasin®']}},
-        #  :new    => {:de => {:fi => ['Desoren® 20/30']}},
-        #  :change => {:de => {:fi => ['Axura®']}},
-        #}
+        index = {
+          # format - swissmedicinfo
+          #:new    => {:de => {:fi => ['Famvir']}},
+          #:change => {:de => {:pi => ['Akutur®, Tropfen']}},
+          # format - compendium
+          #:new    => {:de => {:fi => ['Desoren® 20/30']}},
+          #:change => {:de => {:fi => ['Axura®']}},
+        }
         index = textinfo_swissmedicinfo_index
       end
       threads.map(&:join)
       @swissmedicinfo << "New/Updates from swissmedicinfo.ch"
-      xml = File.open(File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'), 'r').read
-      doc = Nokogiri::XML(xml)
+      @doc = Nokogiri::XML(
+        File.open(
+          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
       index.each_pair do |state, names|
         [:de, :fr].each do |lang|
-          types = {:fi => 'fachinfo', :pi => 'patinfo'}
-          types.keys.each do |typ|
+          {:fi => 'fachinfo', :pi => 'patinfo'}.each_pair do |typ, type|
             next if names[lang].nil? or names[lang][typ].nil?
-            type = types[typ]
-            path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
             names[lang][typ].each do |name|
-              match = doc.xpath("//title[match(., '#{name}')]", Class.new {
-                def match node_set, name
-                  node_set.find_all {|node| node.text == name }
-                end
-              }.new).first
-              if match and content = match.parent.at('./content')
-                file = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
-                html = Nokogiri::HTML(content.to_s).to_s
-                update = false
-                if File.exists?(file)
-                  prev = File.open(file, 'r').read
-                  if prev.length != html.length
-                    update = true
-                  else
-                    if html.match(/MonTitle/i)
-                      @up_to_date_fis += 1 if typ == :fi
-                      @up_to_date_pis += 1 if typ == :pi
-                    end
-                  end
-                else
-                  update = true
-                end
-                if update
-                  # update_product
-                  File.open(file, 'w') { |fh| fh.puts(html) }
-                  @format = :swissmedicinfo
-                  infos  = {lang => self.send("parse_#{type}", file)}
-                  iksnrs = []
-                  unless infos.empty?
-                    iksnrs = self.send("update_#{type}", name, infos, {})
-                  end
-                  unless iksnrs.empty?
-                    @swissmedicinfo << "#{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name} (#{iksnrs.join(',')})"
-                  end
-                end
+              iksnrs = parse_end_update(name, type, lang)
+              unless iksnrs.empty?
+                @swissmedicinfo <<
+                  "#{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name} (#{iksnrs.join(',')})"
               end
             end
           end
         end
       end
+      @doc,index = nil,nil
+      p "job is done. now postprocess works ..."
       postprocess
     end
   end
