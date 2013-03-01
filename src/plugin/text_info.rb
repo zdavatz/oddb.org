@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 28.02.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 01.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -799,7 +799,10 @@ module ODDB
         form['__EVENTARGUMENT'] = ''
         res = form.submit
         names = {:fi => [], :pi => []}
-        {'FI' => 1,  'PI' => 0}.each_pair do |typ, i|
+        {
+          'FI' => 1,
+          #'PI' => 0
+        }.each_pair do |typ, i|
           res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{typ}_GVMonographies']/tr").each do |tr|
             tds = tr.search('td')
             unless tds.empty?
@@ -885,7 +888,7 @@ module ODDB
         path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
         file = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
         update = false
-        if File.exists?(file)
+        if !@options[:reparse] and File.exists?(file)
           prev = File.open(file, 'r').read
           if prev.length != html.length
             update = true
@@ -917,14 +920,16 @@ module ODDB
       end
       index = {}
       threads << Thread.new do
-        index = {
+        #index = {
           # format - swissmedicinfo
           #:new    => {:de => {:fi => ['Famvir']}},
+          #:new    => {:de => {:pi => ['ALPINAMED ARNICA-GEL MIT SPILANTHES']}},
+          #:change => {:de => {:pi => ['Andriol® Testocaps']}},
           #:change => {:de => {:pi => ['Akutur®, Tropfen']}},
           # format - compendium
           #:new    => {:de => {:fi => ['Desoren® 20/30']}},
           #:change => {:de => {:fi => ['Axura®']}},
-        }
+        #}
         index = textinfo_swissmedicinfo_index
       end
       threads.map(&:join)
@@ -934,7 +939,10 @@ module ODDB
           File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
       index.each_pair do |state, names|
         [:de, :fr].each do |lang|
-          {:fi => 'fachinfo', :pi => 'patinfo'}.each_pair do |typ, type|
+          {
+            :fi => 'fachinfo',
+            #:pi => 'patinfo' # pending
+          }.each_pair do |typ, type|
             next if names[lang].nil? or names[lang][typ].nil?
             names[lang][typ].each do |name|
               iksnrs = parse_end_update(name, type, lang)

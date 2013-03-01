@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# FiParse::PatinfoHpricot -- oddb -- 28.02.2013 -- yasaka@ywesee.com
+# FiParse::PatinfoHpricot -- oddb -- 01.03.2013 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'

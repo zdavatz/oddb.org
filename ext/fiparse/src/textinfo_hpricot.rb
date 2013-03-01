@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 28.02.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 01.03.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -74,12 +74,12 @@ class TextinfoHpricot
       @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
-      name_tag = (type == :fi ? 'p#section1' : 'p#section2')
-      @name    = simple_chapter(doc.at(name_tag))
-      company_tag = (type == :fi ? 'p#section19' : 'p#section13')
-      @company    = simple_chapter(detect_text_block(doc.at(company_tag).next))
       if type == :fi
+        @name         = simple_chapter(doc.at('p#section1'))
+        @company      = simple_chapter(detect_text_block(doc.at('p#section19').next))
         @galenic_form = simple_chapter(detect_text_block(doc.at('p#section3').next))
+      elsif type == :pi
+        # pending
       end
       paragraph_tag = "p[@id^='section']"
     else
@@ -90,7 +90,7 @@ class TextinfoHpricot
     end
     (doc/paragraph_tag).each { |elem|
       next if type == :fi and id = elem.attributes['id'] and id =~ /^section(1|19)$/
-      next if type == :pi and id = elem.attributes['id'] and id =~ /^section(2|13)$/
+      next if type == :pi and id = elem.attributes['id'] and id =~ /^section(1)$/
       identify_chapter(*chapter(elem))
     }
     to_textinfo
