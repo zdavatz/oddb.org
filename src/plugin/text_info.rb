@@ -772,7 +772,7 @@ module ODDB
       if name.is_a?(Array) # for consistency againt old interface
         import_companies2(name, target, agent)
       else
-        @format = :new
+        @format = :compendium
         @target = target
         @search_term << name
         @companies << name
