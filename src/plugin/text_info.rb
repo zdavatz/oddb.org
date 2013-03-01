@@ -544,22 +544,28 @@ module ODDB
     def init_agent2
       setup_default_agent
       # entry point
-      home = @agent.get("http://#{SOURCE_HOST}/default/Desktop/de"). \
-        link_with(:href => /\/home\/prof\/de/).click
-      form = home.form_with(:name => 'aspnetForm')
-      button = form.button_with(:name => 'ctl00$MainContent$ibOptions')
-      # behaves as click
-      prng = Random.new(Time.new.to_i)
-      button.x = prng.rand(5..55).to_s
-      button.y = prng.rand(5..55).to_s
-      @agent.pre_connect_hooks << lambda do |agent, request|
-        agent.request_headers['Referer']    = "http://#{SOURCE_HOST}/home/prof/de"
-        agent.request_headers['Connection'] = 'keep-alive'
-        agent.request_headers['Host']       = SOURCE_HOST
-        agent.request_headers['Cookie']     = @agent.cookies.join(';')
+      form = nil
+      link = @agent.get("http://#{SOURCE_HOST}/default/Desktop/de").link_with(:href => /\/home\/prof\/de/)
+      if link
+        form = link.click.form_with(:name => 'aspnetForm')
+      else
+        form = @agent.get("http://#{SOURCE_HOST}/home/prof/de").form_with(:name => 'aspnetForm')
       end
-      # discard this response
-      form.click_button(button)
+      if form
+        button = form.button_with(:name => 'ctl00$MainContent$ibOptions')
+        # behaves as click
+        prng = Random.new(Time.new.to_i)
+        button.x = prng.rand(5..55).to_s
+        button.y = prng.rand(5..55).to_s
+        @agent.pre_connect_hooks << lambda do |agent, request|
+          agent.request_headers['Referer']    = "http://#{SOURCE_HOST}/home/prof/de"
+          agent.request_headers['Connection'] = 'keep-alive'
+          agent.request_headers['Host']       = SOURCE_HOST
+          agent.request_headers['Cookie']     = @agent.cookies.join(';')
+        end
+        # discard this response
+        form.click_button(button)
+      end
       # imitate setting of monographie search mode in "options", manualy
       option = @agent.get("http://#{SOURCE_HOST}/options/de")
       form = option.form_with(:name => 'aspnetForm')
