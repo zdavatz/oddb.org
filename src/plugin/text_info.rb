@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 01.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 04.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -40,10 +40,12 @@ module ODDB
       @download_errors = []
       @companies = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
+      @title  = ''       # target fi/pi name
       @format = :documed # {:documed|:compendium|:swissmedicinfo}
       @target = :both
       @search_term = []
-      @swissmedicinfo = []
+      @swissmedicinfo_updated = []
+      @swissmedicinfo_skipped = []
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -74,10 +76,10 @@ module ODDB
       path
     end
     def parse_fachinfo path
-      @parser.parse_fachinfo_html(path, @format)
+      @parser.parse_fachinfo_html(path, @format, @title)
     end
     def parse_patinfo path
-      @parser.parse_patinfo_html(path, @format)
+      @parser.parse_patinfo_html(path, @format, @title)
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
@@ -223,7 +225,8 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
-          @swissmedicinfo.join("\n"),
+          @swissmedicinfo_updated.join("\n"),
+          @swissmedicinfo_skipped.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -242,6 +245,8 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
+          @swissmedicinfo_updated.join("\n"),
+          @swissmedicinfo_skipped.join("\n"),
         ].join("\n")
       when :pi
         [
@@ -259,6 +264,8 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
+          @swissmedicinfo_updated.join("\n"),
+          @swissmedicinfo_skipped.join("\n"),
         ].join("\n")
       end
     end
@@ -890,31 +897,34 @@ module ODDB
       content = extract_matched_content(name, type, lang)
       if content
         html = Nokogiri::HTML(content.to_s).to_s
-        content = nil
+        @format = detect_format(html)
+        @title  = name
+        # save as tmp
         path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
-        file = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+        dist = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+        temp = dist + '.tmp'
+        File.open(temp, 'w') { |fh| fh.puts(html) }
+        content,html = nil,nil
         update = false
         if !@options[:reparse] and File.exists?(file)
-          prev = File.open(file, 'r').read
-          if prev.length != html.length
+          if File.size(dist) != File.size(temp)
             update = true
           else
             @up_to_date_fis += 1 if type == 'fachinfo'
             @up_to_date_pis += 1 if type == 'patinfo'
           end
-          prev = nil
         else
           update = true
         end
         if update
+          FileUtils.mv(temp, dist)
           # update_product
-          @format = detect_format(html)
-          File.open(file, 'w') { |fh| fh.puts(html) }
-          html = nil
-          infos = {lang => self.send("parse_#{type}", file)}
+          infos = {lang => self.send("parse_#{type}", dist)}
           if infos[lang]
             iksnrs = self.send("update_#{type}", name, infos, {})
           end
+        else
+          File.unlink(temp)
         end
       end
       iksnrs
@@ -927,19 +937,20 @@ module ODDB
       index = {}
       threads << Thread.new do
         #index = {
-          # format - swissmedicinfo
-          #:new    => {:de => {:fi => ['Famvir']}},
-          #:new    => {:de => {:pi => ['ALPINAMED ARNICA-GEL MIT SPILANTHES']}},
-          #:change => {:de => {:pi => ['Andriol® Testocaps']}},
-          #:change => {:de => {:pi => ['Akutur®, Tropfen']}},
-          # format - compendium
-          #:new    => {:de => {:fi => ['Desoren® 20/30']}},
-          #:change => {:de => {:fi => ['Axura®']}},
+        #  :new    => {
+        #    :de => {:fi => ['Famvir'],   :pi => []},
+        #    :fr => {:fi => ['Biafine®'], :pi => []},
+        #  },
+        #  :change => {
+        #    :de => {},
+        #    :fr => {:fi => ['Tyverb®'], :pi => ['Hepeel, comprimés']},
+        #  }
         #}
         index = textinfo_swissmedicinfo_index
       end
       threads.map(&:join)
-      @swissmedicinfo << "New/Updates from swissmedicinfo.ch"
+      @swissmedicinfo_updated << "New/Updates FI/PI from swissmedicinfo.ch"
+      @swissmedicinfo_skipped << "Skipped FI/PI form swissmedicinfo.ch"
       @doc = Nokogiri::XML(
         File.open(
           File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
@@ -953,8 +964,11 @@ module ODDB
             names[lang][typ].each do |name|
               iksnrs = parse_end_update(name, type, lang)
               unless iksnrs.empty?
-                @swissmedicinfo <<
-                  "#{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name} (#{iksnrs.join(',')})"
+                @swissmedicinfo_updated <<
+                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name} (#{iksnrs.join(',')})"
+              else
+                @swissmedicinfo_skipped <<
+                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.upcase.to_s} - #{name}"
               end
             end
           end

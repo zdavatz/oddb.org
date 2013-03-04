@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 04.03.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -18,43 +18,43 @@ class FachinfoHpricot < TextinfoHpricot
     case code
     when '6900'
       @amzv = chapter
-    when '6950', 'section1'
+    when '6950'
       @name = chapter
-    when '3300', '7000', 'section2'
+    when '3300', '7000'
       @composition = chapter
-    when '7050', 'section3'
+    when '7050'
       @galenic_form = chapter
-    when '4000', '7100', 'section4'
+    when '4000', '7100'
       @indications = chapter
-    when '7200', 'section6'
+    when '7200'
       @contra_indications = chapter
-    when '4400', '7250', 'section7'
+    when '4400', '7250'
       @restrictions = chapter
-    when '3500', '7550', 'section13'
+    when '3500', '7550'
       @effects = chapter
-    when '4200', '7150', 'section5'
+    when '4200', '7150'
       @usage = chapter
-    when '3700', '7600', 'section14'
+    when '3700', '7600'
       @kinetic = chapter
-    when '4700', '7450', 'section11'
+    when '4700', '7450'
       @unwanted_effects = chapter
-    when '4800', '7300', 'section8'
+    when '4800', '7300'
       @interactions = chapter
-    when '7350', 'section9'
+    when '7350'
       @pregnancy = chapter
-    when '7400', 'section10'
+    when '7400'
       @driving_ability = chapter
-    when '5000', '7500', 'section12'
+    when '5000', '7500'
       @overdose = chapter
-    when '5200', '7700', 'section16'
+    when '5200', '7700'
       @other_advice = chapter
-    when '5998', '7750', 'section17'
+    when '5998', '7750'
       @iksnrs = chapter
-    when '6100', '8000', 'section20'
+    when '6100', '8000'
       @date = chapter
-    when '7650', 'section15'
+    when '7650'
       @preclinic = chapter
-    when '7850', 'section19'
+    when '7850'
       @registration_owner = chapter
     when '5610', '7860'
       @fabrication = chapter
@@ -62,12 +62,12 @@ class FachinfoHpricot < TextinfoHpricot
       @delivery = chapter
     when '5595'
       @distribution = chapter
-    when '7800', '9100', 'section18'
+    when '7800', '9100'
       @packages = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
-    when '9200'
-      # skip "Beschreibung"
+    when '9200', '8500'
+      # skip "Beschreibung" and unexpected 'AMZV'
     else
       raise "Unknown chapter-code #{code}, while parsing #{@name}"
     end
@@ -106,6 +106,41 @@ class FachinfoHpricot < TextinfoHpricot
     fi.iksnrs           = @iksnrs
     fi.date             = @date
     fi
+  end
+  private
+  def detect_chapter(elem)
+    return [nil, nil] unless elem.attributes['id'].to_s =~ /^section[0-9]*$/
+    # TODO
+    #   Update chapter detection if swissmedic repairs FI/PI format.
+    #
+    #   Currently, id attribute 'section*' is not fixed number.
+    #   And Section order is also not fixed :(
+    text = text(elem)
+    code =
+    case text
+    when /^Zusammensetzung(en)?|^Composition[s]?/                                                                                               ; '7000'
+    when /^Galenische\s*Form(en)?\s*Wirkstoffmenge[n]?\s*pro\s*Einheit|^Forme[n]?\s*gal.nique[s]?\s*et\s*quantiti.[s]?\s*de\s*/                 ; '7050'
+    when /^Indikation(en)?\s*\/\s*Anwendungsm.glichkeit(en)?|^Indications\s*\/\s*[pP]ossibilit.s\s*d.emploi/                                    ; '7100'
+    when /^Dosierung\s*\/\s*Anwendung|^Posologie\s*\/\s*[mM]ode\s*d.emploi/                                                                     ; '7150'
+    when /^Kontraindikation(en)?|^Contre\s*\-\s*[iI]ndication(s)?/                                                                              ; '7200'
+    when /^Warnhinweise\s*und\s*[vV]orsichtsmassnahm(en)?|^Mises\s*en\s*garde\s*et\s*pr.cautions/                                               ; '7250'
+    when /^Interaktion(en)\s*$|^Interaction(s)\s*$/                                                                                             ; '7300'
+    when /^Schwangerschaft\s*[,\/]?\s*Stillzeit|^Grossesse\s*[,\/]?\s*[aA]llaitement/                                                           ; '7350'
+    when /^Wirkungen\s*auf\s*die\sFahrt.chtigkeit\s*und\s*auf\s*Bedienen\s*von\sMashinen|^Effet\s*sur\s*l.aptitude\s*.\s*la\s*conduite\s*et\s*/ ; '7400'
+    when /^Unerwünschte\s*Wirkung(en)?|^Effets\s*ind.sirables/                                                                                  ; '7450'
+    when /^Überdosierung|^Surdosage/                                                                                                            ; '7500'
+    when /^Eigenschaft(en)?\s*\/\s*Wirkung(en)?|^Propri.t.s\s*\/\s*[eE]ffets/                                                                   ; '7550'
+    when /^Pharmakokinetik|^Pharmacocin.tique/                                                                                                  ; '7600'
+    when /^Pr.klinische\s*Daten|Donn.es\s*pr.cliniques/                                                                                         ; '7650'
+    when /^Sonstige\s*Hinweise|^Remarques\s*particuli.res/                                                                                      ; '7700'
+    when /^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/                                                                                       ; '7750'
+    when /^Packungen|^Pr.sentation[s]?/                                                                                                         ; '7800'
+    when /^Zulassungsinhaberin(en)|^Titulaire\s*de\s*l.autorisation/                                                                            ; '7850'
+    when /^Herstellerin(en)?|^Fabricant/                                                                                                        ; '7860'
+    when /^Stand\s*der\s*Information|^Mise\s*.\s*jour\s*de\s*l.information/                                                                     ; '8000'
+    else                                                                                                                                        ; nil
+    end
+    [code, text]
   end
 end
   end

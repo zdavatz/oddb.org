@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 01.03.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 04.03.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -33,22 +33,24 @@ module ODDB
   module FiParse
 class TextinfoHpricot
   attr_reader :name, :company
-  attr_accessor :format
+  # options for swissmedicinfo
+  attr_accessor :format, :title
   def chapter(elem)
     chapter = Text::Chapter.new
     code = nil
     ptr = OpenStruct.new
     ptr.chapter = chapter
     if @format == :swissmedicinfo
-      id = elem.attributes['id']
-      if !id.empty?
-        code            = id
-        chapter.heading = text(elem)
-      end
-      elem = elem.next
-      until end_element_in_chapter?(elem)
-        _handle_element(elem, ptr)
+      code,text = detect_chapter(elem)
+      if code and text
+        code            = code
+        chapter.heading = text
+        # content
         elem = elem.next
+        until end_element_in_chapter?(elem)
+          _handle_element(elem, ptr)
+          elem = elem.next
+        end
       end
     else
       title_tag = ((@format == :compendium) ? 'div.absTitle' : 'h2')
@@ -58,6 +60,9 @@ class TextinfoHpricot
         if !anchor.nil?
           code            = anchor['name']
           chapter.heading = text(anchor.next) # <a><p></p></a>
+        elsif id = title.parent.attributes['id']  and !id.empty? # :compendium format of swissmedicinfo
+          code            = id.gsub(/[^0-9]/, '')
+          chapter.heading = text(title) # <p></p>
         end
       end
       handle_element(elem, ptr)
@@ -66,21 +71,16 @@ class TextinfoHpricot
     [code, chapter]
   end
   def extract(doc, type=:fi)
-    paragraph_tag = ''
+    paragraph = ''
+    name      = nil
     case @format
     when :compendium
-      @name    = simple_chapter(doc.at('div.MonTitle'))
-      @company = simple_chapter(doc.at('div.ownerCompany'))
+      @name         = simple_chapter(doc.at('div.MonTitle'))
       @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
-      if type == :fi
-        @name         = simple_chapter(doc.at('p#section1'))
-        @company      = simple_chapter(detect_text_block(doc.at('p#section19').next))
-        @galenic_form = simple_chapter(detect_text_block(doc.at('p#section3').next))
-      elsif type == :pi
-        # pending
-      end
+      name          = doc.at("p[text()*='#{@title}']")
+      @name         = simple_chapter(name)
       paragraph_tag = "p[@id^='section']"
     else
       @name    = simple_chapter(doc.at('h1'))
@@ -89,13 +89,14 @@ class TextinfoHpricot
       paragraph_tag = 'div.paragraph'
     end
     (doc/paragraph_tag).each { |elem|
-      next if type == :fi and id = elem.attributes['id'] and id =~ /^section(1|19)$/
-      next if type == :pi and id = elem.attributes['id'] and id =~ /^section(1)$/
-      identify_chapter(*chapter(elem))
+      identify_chapter(*chapter(elem)) if !name or elem != name
     }
     to_textinfo
   end
   private
+  def valid_heading?(text)
+    true # overwrite me
+  end
   def has_italic?(elem, ptr)
     if @format == :swissmedicinfo
       (ptr.target.is_a?(Text::Paragraph) and
