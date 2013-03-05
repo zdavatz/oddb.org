@@ -205,8 +205,8 @@ class TextinfoHpricot
         if ptr.table
           unless ptr.target.respond_to?(:next_image) # after something text (paragraph) in cell
             ptr.target = ptr.table.next_multi_cell!
-            ptr.target.row_span = child.attributes['rowspan'].to_i if child.attributes['rowspan'].empty?
-            ptr.target.col_span = child.attributes['colspan'].to_i if child.attributes['colspan'].empty?
+            ptr.target.row_span = child.attributes['rowspan'].to_i unless child.attributes['rowspan'].empty?
+            ptr.target.col_span = child.attributes['colspan'].to_i unless child.attributes['colspan'].empty?
           end
           insert_image(ptr, child)
           ptr.target = ptr.table.next_paragraph
