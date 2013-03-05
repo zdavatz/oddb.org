@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 04.03.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 05.03.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -73,7 +73,7 @@ class FachinfoHpricot < TextinfoHpricot
     end
   end
   def to_textinfo
-    fi = if(@amzv)
+    fi = if (@amzv or (@format == :swissmedicinfo))
       fi = FachinfoDocument2001.new
       fi.amzv               = @amzv
       fi.contra_indications = @contra_indications
@@ -135,7 +135,7 @@ class FachinfoHpricot < TextinfoHpricot
     when /^Sonstige\s*Hinweise|^Remarques\s*particuli.res/                                                                                      ; '7700'
     when /^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/                                                                                       ; '7750'
     when /^Packungen|^Pr.sentation[s]?/                                                                                                         ; '7800'
-    when /^Zulassungsinhaberin(en)|^Titulaire\s*de\s*l.autorisation/                                                                            ; '7850'
+    when /^Zulassungsinhaberin(en)?|^Titulaire\s*de\s*l.autorisation/                                                                           ; '7850'
     when /^Herstellerin(en)?|^Fabricant/                                                                                                        ; '7860'
     when /^Stand\s*der\s*Information|^Mise\s*.\s*jour\s*de\s*l.information/                                                                     ; '8000'
     else                                                                                                                                        ; nil
