@@ -891,6 +891,27 @@ module ODDB
       end
       content
     end
+    def extract_image(name, type, lang, dist)
+      if File.exists?(dist)
+        resource_dir = (File.join(ODDB::IMAGE_DIR, type.to_s, lang.to_s))
+        FileUtils.mkdir_p(resource_dir)
+        html = File.open(dist, 'r').read
+        if html =~ /<img\s/
+          images = Nokogiri::HTML(html).search('//img')
+          html = nil
+          name_base = File.basename(name.gsub(/[^A-z0-9]/, '_')).strip
+          dir = File.join(resource_dir, name_base + '_files')
+          FileUtils.mkdir_p(dir)
+          images.each_with_index do |img, i|
+            type,src = img.attributes['src'].to_s.split(',')
+            if type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
+              file = File.join(dir, "#{i + 1}.#{$1}")
+              File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)) }
+            end
+          end
+        end
+      end
+    end
     def parse_end_update(name, type)
       iksnrs  = []
       return iksnrs unless @doc
@@ -920,6 +941,7 @@ module ODDB
           end
           if update
             FileUtils.mv(temp, dist)
+            extract_image(name, type, lang, dist)
             infos[lang] = self.send("parse_#{type}", dist)
           else
             File.unlink(temp)

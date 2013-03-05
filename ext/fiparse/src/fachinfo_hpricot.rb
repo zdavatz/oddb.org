@@ -138,7 +138,6 @@ class FachinfoHpricot < TextinfoHpricot
     when /^Zulassungsinhaberin(en)?|^Titulaire\s*de\s*l.autorisation/                                                                           ; '7850'
     when /^Herstellerin(en)?|^Fabricant/                                                                                                        ; '7860'
     when /^Stand\s*der\s*Information|^Mise\s*.\s*jour\s*de\s*l.information/                                                                     ; '8000'
-    else                                                                                                                                        ; nil
     end
     [code, text]
   end
