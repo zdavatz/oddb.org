@@ -119,7 +119,7 @@ class FachinfoHpricot < TextinfoHpricot
     code =
     case text
     when /^Zusammensetzung(en)?|^Composition[s]?/                                                                                               ; '7000'
-    when /^Galenische\s*Form(en)?\s*Wirkstoffmenge[n]?\s*pro\s*Einheit|^Forme[n]?\s*gal.nique[s]?\s*et\s*quantiti.[s]?\s*de\s*/                 ; '7050'
+    when /^Galenische\s*Form(en)?\s*und\s*Wirkstoffmenge[n]?\s*pro\s*Einheit|^Forme[n]?\s*gal.nique[s]?\s*et\s*quantit.[s]?\s*de\s*/            ; '7050'
     when /^Indikation(en)?\s*\/\s*Anwendungsm.glichkeit(en)?|^Indications\s*\/\s*[pP]ossibilit.s\s*d.emploi/                                    ; '7100'
     when /^Dosierung\s*\/\s*Anwendung|^Posologie\s*\/\s*[mM]ode\s*d.emploi/                                                                     ; '7150'
     when /^Kontraindikation(en)?|^Contre\s*\-\s*[iI]ndication(s)?/                                                                              ; '7200'
