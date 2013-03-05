@@ -397,7 +397,7 @@ module ODDB
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub(/[’'\s]/, "")
+        src = doc.iksnrs.to_s.gsub(/[’'´\s]/, "")
         if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/u))
           iksnrs.concat match.to_s.split(/\s*,\s*/u)
         end
