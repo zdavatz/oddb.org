@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 05.03.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 06.03.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -236,15 +236,15 @@ class TextinfoHpricot
       type,_ = child[:src].split(',')
       if type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
         ext       = $1
-        lang      = (@lang || 'de')
         name_base = File.basename(@name.to_s.gsub(/[^A-z0-9]/, '_')).strip
         file_name = File.join(name_base + '_files', "#{@image_index.to_s}.#{ext}")
+        lang = (@lang || 'de')
       end
     else
-      lang      = file_name[0].upcase == 'F' ? 'fr' : 'de'
       file_name = File.basename(child[:src].
                                 gsub('&#xA;','').
                                 gsub(/\?px=[0-9]*$/, '').strip)
+      lang = (file_name[0].upcase == 'F' ? 'fr' : 'de') unless file_name.empty?
     end
     dir = File.join('/', 'resources', 'images', 'fachinfo', lang)
     ptr.target.src = File.join(dir, file_name)
