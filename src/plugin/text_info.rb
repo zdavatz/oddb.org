@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 05.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 06.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -397,9 +397,9 @@ module ODDB
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub(/[’'´\s]/, "")
-        if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/u))
-          iksnrs.concat match.to_s.split(/\s*,\s*/u)
+        src = doc.iksnrs.to_s.gsub(/[^0-9,]/, "")
+        if(match = src.match(/[0-9]{3,5}(?:,[0-9]{3,5})*/u))
+          iksnrs.concat match.to_s.split(',')
         end
       end
       iksnrs.collect! do |iksnr| sprintf("%05i", iksnr.to_i) end
