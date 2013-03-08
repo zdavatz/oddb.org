@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# FiParse::PatinfoHpricot -- oddb -- 01.03.2013 -- yasaka@ywesee.com
+# encoding: utf-8
+# FiParse::PatinfoHpricot -- oddb -- 08.03.2013 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'
@@ -54,9 +55,9 @@ class PatinfoHpricot < TextinfoHpricot
     when nil # special chapers without heading
       case chapter.to_s
       when /^\d{5}/u
-        @iksnrs = chapter
+        @iksnrs ||= chapter
       when /\b\d{4}\b/u
-        @date = chapter
+        @date ||= chapter
       end
     else
       raise "Unknown chapter-code #{code}, while parsing #{@name}"
