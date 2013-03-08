@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 06.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 08.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -912,11 +912,13 @@ module ODDB
         end
       end
     end
-    def parse_end_update(name, type)
+    def parse_end_update(names, type)
       iksnrs  = []
       return iksnrs unless @doc
       infos = {}
+      name  = ''
       [:de, :fr].each do |lang|
+        name = names[lang]
         content = extract_matched_content(name, type, lang)
         if content
           html = Nokogiri::HTML(content.to_s).to_s
@@ -962,13 +964,13 @@ module ODDB
       threads << Thread.new do
         #index = {
         #  :new    => {
-        #    :de => {:fi => ['BeneFIX®'], :pi => []},
-        #    :fr => {:fi => ['BeneFIX®'], :pi => []},
+        #    :de => {:fi => [], :pi => []},
+        #    :fr => {:fi => [], :pi => []},
         #  },
         #  :change => {
-        #    :de => {:fi => ['Tyverb®'], :pi => ['Hepeel, comprimés']},
-        #    :fr => {:fi => ['Tyverb®'], :pi => ['Hepeel, comprimés']},
-        #  }
+        #    :de => {:fi => [], :pi => []},
+        #    :fr => {:fi => [], :pi => []},
+        #  },
         #}
         index = textinfo_swissmedicinfo_index
       end
@@ -982,16 +984,25 @@ module ODDB
         {
           :fi => 'fachinfo',
           #:pi => 'patinfo' # pending
-        }.each_pair do |typ, type| # :de index is base
+        }.each_pair do |typ, type|
           next if names[:de].nil? or names[:de][typ].nil?
-          names[:de][typ].each do |name|
-            iksnrs = parse_end_update(name, type)
+          # This updater expects same order of names in DE und FR, comes from swissmedicinfo.
+          names[:de][typ].each_with_index do |name, i|
+            _names = {
+              :de => name,
+              :fr => names[:fr][typ][i]
+            }
+            iksnrs = parse_end_update(_names, type)
             unless iksnrs.empty?
-              @swissmedicinfo_updated <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{name} [#{iksnrs.join(',')}]"
+              _names.each_pair do |lang, name|
+                @swissmedicinfo_updated <<
+                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - [#{iksnrs.join(',')}]"
+              end
             else
-              @swissmedicinfo_skipped <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{name}"
+              _names.each_pair do |lang, name|
+                @swissmedicinfo_skipped <<
+                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+              end
             end
           end
         end
