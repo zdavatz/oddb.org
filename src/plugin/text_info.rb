@@ -931,7 +931,7 @@ module ODDB
           File.open(temp, 'w') { |fh| fh.puts(html) }
           content,html = nil,nil
           update = false
-          if !@options[:reparse] and File.exists?(file)
+          if !@options[:reparse] and File.exists?(dist)
             if File.size(dist) != File.size(temp)
               update = true
             else
