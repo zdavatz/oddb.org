@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 26.11.2012 -- yasaka@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
@@ -95,6 +95,7 @@ module ODDB
         @app.update reg.pointer, {:export_flag => false}, :admin
         # sequence export_flag
         reg.sequences.values.each do |seq|
+          next unless seq.is_a? ODDB::Sequence
           @known_export_sequences += 1 if seq.export_flag
           @app.update seq.pointer, {:export_flag => false}, :admin
         end
@@ -454,7 +455,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         flags = flags.select { |flag|
           origin = package.data_origin(flag)
           origin ||= package.sequence.data_origin(flag)
-          origin ||= package.registration.data_origin(flag)
+          origin ||= reg.data_origin(flag)
           origin.nil? || origin == :swissmedic
         }
       end
