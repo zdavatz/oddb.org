@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 08.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -895,7 +895,7 @@ module ODDB
       if File.exists?(dist)
         resource_dir = (File.join(ODDB::IMAGE_DIR, type.to_s, lang.to_s))
         FileUtils.mkdir_p(resource_dir)
-        html = File.open(dist, 'r').read
+        html = File.open(dist, 'r:utf-8').read
         if html =~ /<img\s/
           images = Nokogiri::HTML(html).search('//img')
           html = nil
