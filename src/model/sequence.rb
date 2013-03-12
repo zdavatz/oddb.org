@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 29.06.2012 -- yasaka@ywesee.com
+# ODDB::Sequence -- oddb.org -- 12.03.2013 -- yasaka@ywesee.com
 # ODDB::Sequence -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -86,10 +86,11 @@ module ODDB
     def active_patinfo
       active? && patinfo_active? && @pdf_patinfo
     end
-		def active?
-			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
-				&& @registration && @registration.active? && !violates_patent?
-		end
+    def active?
+      (!@inactive_date || (@inactive_date > @@two_years_ago)) \
+        && @registration && @registration.is_a?(ODDB::Registration) && @registration.active? \
+        && !violates_patent?
+    end
     def active_agents
       @compositions.inject([]) { |acts, comp|
         acts.concat comp.active_agents
