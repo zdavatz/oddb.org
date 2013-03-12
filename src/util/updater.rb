@@ -188,8 +188,8 @@ module ODDB
       update_swissmedic_feeds
 
       # textinfo
-      update_textinfo_swissmedicinfo
-      update_textinfo_news2
+      #update_textinfo_swissmedicinfo
+      #update_textinfo_news2
 
 			if(update_swissmedic)
         update_swissmedic_followers
