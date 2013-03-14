@@ -16,7 +16,7 @@ resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
 resolve_origin: 'registration.fachinfo'
 init_source: 'sequences'
 fulltext: true
-dictionary: 'default_german'
+#dictionary: 'default_german'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'interactions_index_fr'
 origin_klass: 'ODDB::Fachinfo'
@@ -26,7 +26,7 @@ resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
 resolve_origin: 'registration.fachinfo'
 init_source: 'sequences'
 fulltext: true
-dictionary: 'default_french'
+#dictionary: 'default_french'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'unwanted_effects_index_de'
 origin_klass: 'ODDB::Fachinfo'
@@ -36,7 +36,7 @@ resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
 resolve_origin: 'registration.fachinfo'
 init_source: 'sequences'
 fulltext: true
-dictionary: 'default_german'
+#dictionary: 'default_german'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'unwanted_effects_index_fr'
 origin_klass: 'ODDB::Fachinfo'
@@ -46,7 +46,7 @@ resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
 resolve_origin: 'registration.fachinfo'
 init_source: 'sequences'
 fulltext: true
-dictionary: 'default_french'
+#dictionary: 'default_french'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_atc'
 origin_klass: 'ODDB::Sequence'
@@ -81,7 +81,7 @@ target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'search_text(:de)'
 resolve_target: 'atc_class'
 resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
-dictionary: 'default_german'
+#dictionary: 'default_german'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -91,7 +91,7 @@ target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'search_text(:fr)'
 resolve_target: 'atc_class'
 resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
-dictionary: 'default_french'
+#dictionary: 'default_french'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -173,7 +173,7 @@ target_klass: 'ODDB::Doctor'
 resolve_search_term: 'search_text'
 resolve_target: ''
 resolve_origin: ''
-dictionary: 'default'
+#dictionary: 'default'
 init_source: '@doctors.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -192,7 +192,7 @@ target_klass: 'ODDB::Indication'
 resolve_search_term: 'search_text'
 resolve_target: ''
 resolve_origin: ''
-dictionary: 'default'
+#dictionary: 'default'
 init_source: '@indications.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -202,7 +202,7 @@ target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'search_text(:de)'
 resolve_target: 'atc_classes'
 resolve_origin: 'sequences.collect { |seq| seq.indication }.flatten.uniq'
-dictionary: 'default_german'
+#dictionary: 'default_german'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -212,7 +212,7 @@ target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'search_text(:fr)'
 resolve_target: 'atc_classes'
 resolve_origin: 'sequences.collect { |seq| seq.indication }.flatten.uniq'
-dictionary: 'default_french'
+#dictionary: 'default_french'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -222,7 +222,7 @@ target_klass: 'ODDB::Hospital'
 resolve_search_term: 'search_text'
 resolve_target: ''
 resolve_origin: ''
-dictionary: 'default'
+#dictionary: 'default'
 init_source: '@hospitals.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -307,7 +307,7 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.analysis_positions'
 fulltext: true
-dictionary: default_german
+#dictionary: default_german
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'analysis_alphabetical_index_de'
 origin_klass: 'ODDB::Analysis::Position'
@@ -326,7 +326,7 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.analysis_positions'
 fulltext: true
-dictionary: default_french
+#dictionary: default_french
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'analysis_alphabetical_index_fr'
 origin_klass: 'ODDB::Analysis::Position'
