@@ -125,31 +125,31 @@ flag *A:			# préfixe latin 'a(d)-'
 	[S]			>	AS
 	[T]			>	AT	# id.
 
-flag *B:			# préfixe latin 'a(d)-'
-				# non-verbes uniquement
-	[^BCDFGLMNPQRST]	>	D'AD
-	[BDGM]			>	D'A
-	[CQ]			>	D'AC
-	[F]			>	D'AF
-	[L]			>	D'AL	# exceptions !
-	[N]			>	D'AN	# id.
-	[P]			>	D'AP	# id.
-	[R]			>	D'AR
-	[S]			>	D'AS
-	[T]			>	D'AT	# id.
+# flag *B:			# préfixe latin 'a(d)-'
+				# # non-verbes uniquement
+	# [^BCDFGLMNPQRST]	>	D'AD
+	# [BDGM]			>	D'A
+	# [CQ]			>	D'AC
+	# [F]			>	D'AF
+	# [L]			>	D'AL	# exceptions !
+	# [N]			>	D'AN	# id.
+	# [P]			>	D'AP	# id.
+	# [R]			>	D'AR
+	# [S]			>	D'AS
+	# [T]			>	D'AT	# id.
 
-flag  H:			# préfixe latin 'a(d)-'
-				# non-verbes uniquement
-	[^BCDFGLMNPQRST]	>	L'AD
-	[BDGM]			>	L'A
-	[CQ]			>	L'AC
-	[F]			>	L'AF
-	[L]			>	L'AL	# exceptions !
-	[N]			>	L'AN	# id.
-	[P]			>	L'AP	# id.
-	[R]			>	L'AR
-	[S]			>	L'AS
-	[T]			>	L'AT	# id.
+# flag  H:			# préfixe latin 'a(d)-'
+				# # non-verbes uniquement
+	# [^BCDFGLMNPQRST]	>	L'AD
+	# [BDGM]			>	L'A
+	# [CQ]			>	L'AC
+	# [F]			>	L'AF
+	# [L]			>	L'AL	# exceptions !
+	# [N]			>	L'AN	# id.
+	# [P]			>	L'AP	# id.
+	# [R]			>	L'AR
+	# [S]			>	L'AS
+	# [T]			>	L'AT	# id.
 
 flag *C:			# préfixe latin 'con-'
 	[^LMR]			>	CON
@@ -171,17 +171,17 @@ flag *E:			# préfixe latin 'ex-'
 	[LMNRV]			>	é
 	[F]			>	EF
 
-flag *Y:			# préfixe latin 'ex-'
-				# non-verbes uniquement
-	[^FLMNRV]		>	D'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	D'é
-	[F]			>	D'EF
+# flag *Y:			# préfixe latin 'ex-'
+				# # non-verbes uniquement
+	# [^FLMNRV]		>	D'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	D'é
+	# [F]			>	D'EF
 
-flag  Z:			# préfixe latin 'ex-'
-				# non-verbes uniquement
-	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	L'é
-	[F]			>	L'EF
+# flag  Z:			# préfixe latin 'ex-'
+				# # non-verbes uniquement
+	# [^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	L'é
+	# [F]			>	L'EF
 
 flag *I:			# les deux préfixes latins 'in-'
 				# (privatif et locatif/inchoatif)
@@ -191,19 +191,19 @@ flag *I:			# les deux préfixes latins 'in-'
 	[BMP]			>	IM
 	[R]			>	IR
 
-flag *J:			# préfixes latins 'in-'
-				# non-verbes uniquement
-	[^BLMPR]		>	D'IN
-	[L]			>	D'IL
-	[BMP]			>	D'IM
-	[IR]			>	D'IR
+# flag *J:			# préfixes latins 'in-'
+				# # non-verbes uniquement
+	# [^BLMPR]		>	D'IN
+	# [L]			>	D'IL
+	# [BMP]			>	D'IM
+	# [IR]			>	D'IR
 
-flag  K:			# préfixes latins 'in-'
-				# non-verbes uniquement
-	[^BLMPR]		>	L'IN
-	[L]			>	L'IL
-	[BMP]			>	L'IM
-	[IR]			>	L'IR
+# flag  K:			# préfixes latins 'in-'
+				# # non-verbes uniquement
+	# [^BLMPR]		>	L'IN
+	# [L]			>	L'IL
+	# [BMP]			>	L'IM
+	# [IR]			>	L'IR
 
 flag *P:			# préfixe 'pré-'
 	.			>	PRé	# exceptions !
@@ -228,138 +228,138 @@ flag *W:			# préfixe latin 'sub-'
 	# Selon le nombre de drapeaux restant, on traitera également des
 	# préfixes 'sur' et 'sous'
 
-flag  L:
-    	[aàâeèéêiîoôuh] 	>	L'
+# flag  L:
+      # [aàâeèéêiîoôuh] 	>	L'
 
-flag *M:
-    	[aàâeèéêiîoôuh] 	>	D'
+# flag *M:
+      # [aàâeèéêiîoôuh] 	>	D'
 
-flag *Q:
-    	[aàâeèéêiîoôuh] 	>	QU'
-    	[aàâeèéêiîoôuh] 	>	QUOIQU'	
-    	[aàâeèéêiîoôuh] 	>	PUISQU'	
-    	[aàâeèéêiîoôuh]		>	LORSQU'
+# flag *Q:
+      # [aàâeèéêiîoôuh] 	>	QU'
+      # [aàâeèéêiîoôuh] 	>	QUOIQU'	
+      # [aàâeèéêiîoôuh] 	>	PUISQU'	
+      # [aàâeèéêiîoôuh]		>	LORSQU'
 
-flag *U:
-    	[aàâeèéêiîoôuh] 	>	JUSQU'
+# flag *U:
+      # [aàâeèéêiîoôuh] 	>	JUSQU'
 
 
 
 # verbes (principalement)
 
-flag  j:	# pour accompagner le système à 5 lemmes
-    	[aàâeèéêiîoôuh] 	>	J'
+# flag  j:	# pour accompagner le système à 5 lemmes
+      # [aàâeèéêiîoôuh] 	>	J'
 
-flag *n:			# élision de la négation et de 'que'
-    	[aàâeèéêiîoôuh] 	>	N'
-    	[aàâeèéêiîoôuh] 	>	QU'
+# flag *n:			# élision de la négation et de 'que'
+      # [aàâeèéêiîoôuh] 	>	N'
+      # [aàâeèéêiîoôuh] 	>	QU'
 
-flag *m:			# élision du pronom 'me'
-    	[aàâeèéêiîoôuh] 	>	M'	# tu m'aides
+# flag *m:			# élision du pronom 'me'
+      # [aàâeèéêiîoôuh] 	>	M'	# tu m'aides
 
-flag *t:			# élision du pronom 'te'
-    	[aàâeèéêiîoôuh] 	>	T'	# je t'énerve
-				# pose problème : vous t'énerviez ???
-				# moins ennuyeux que 'l'éléphants' cpdt
-				# et peu probable
+# flag *t:			# élision du pronom 'te'
+      # [aàâeèéêiîoôuh] 	>	T'	# je t'énerve
+				# # pose problème : vous t'énerviez ???
+				# # moins ennuyeux que 'l'éléphants' cpdt
+				# # et peu probable
 
-flag *l:			# élision d'un pronom complément d'objet
-				# direct uniquement, à n'employer que pour
-				# les verbes transitifs directs et surtout
-				# jamais pour les noms ou adj. (utiliser L)
-    	[aàâeèéêiîoôuh] 	>	L'	# je l'attends
+# flag *l:			# élision d'un pronom complément d'objet
+				# # direct uniquement, à n'employer que pour
+				# # les verbes transitifs directs et surtout
+				# # jamais pour les noms ou adj. (utiliser L)
+      # [aàâeèéêiîoôuh] 	>	L'	# je l'attends
 
-flag  s:			# élision du pronom réfléchi 'se'
-				# à employer uniquement devant l'infinitif
-				# (sinon avec parcimonie)
-    	[aàâeèéêiîoôuh] 	>	S'	# s'attendre
+# flag  s:			# élision du pronom réfléchi 'se'
+				# # à employer uniquement devant l'infinitif
+				# # (sinon avec parcimonie)
+      # [aàâeèéêiîoôuh] 	>	S'	# s'attendre
 
 
-flag *a:			# préfixe latin 'a(d)-'
-				# verbes transitifs uniquement
-	[^BCDFGLMNPQRST]	>	L'AD
-	[BDGM]			>	L'A
-	[CQ]			>	L'AC
-	[F]			>	L'AF
-	[L]			>	L'AL	# exceptions !
-	[N]			>	L'AN	# id.
-	[P]			>	L'AP	# id.
-	[R]			>	L'AR
-	[S]			>	L'AS
-	[T]			>	L'AT	# id.
-	[^BCDFGLMNPQRST]	>	M'AD
-	[BDGM]			>	M'A
-	[CQ]			>	M'AC
-	[F]			>	M'AF
-	[L]			>	M'AL	# exceptions !
-	[N]			>	M'AN	# id.
-	[P]			>	M'AP	# id.
-	[R]			>	M'AR
-	[S]			>	M'AS
-	[T]			>	M'AT	# id.
-	[^BCDFGLMNPQRST]	>	T'AD
-	[BDGM]			>	T'A
-	[CQ]			>	T'AC
-	[F]			>	T'AF
-	[L]			>	T'AL	# exceptions !
-	[N]			>	T'AN	# id.
-	[P]			>	T'AP	# id.
-	[R]			>	T'AR
-	[S]			>	T'AS
-	[T]			>	T'AT	# id.
+# flag *a:			# préfixe latin 'a(d)-'
+				# # verbes transitifs uniquement
+	# [^BCDFGLMNPQRST]	>	L'AD
+	# [BDGM]			>	L'A
+	# [CQ]			>	L'AC
+	# [F]			>	L'AF
+	# [L]			>	L'AL	# exceptions !
+	# [N]			>	L'AN	# id.
+	# [P]			>	L'AP	# id.
+	# [R]			>	L'AR
+	# [S]			>	L'AS
+	# [T]			>	L'AT	# id.
+	# [^BCDFGLMNPQRST]	>	M'AD
+	# [BDGM]			>	M'A
+	# [CQ]			>	M'AC
+	# [F]			>	M'AF
+	# [L]			>	M'AL	# exceptions !
+	# [N]			>	M'AN	# id.
+	# [P]			>	M'AP	# id.
+	# [R]			>	M'AR
+	# [S]			>	M'AS
+	# [T]			>	M'AT	# id.
+	# [^BCDFGLMNPQRST]	>	T'AD
+	# [BDGM]			>	T'A
+	# [CQ]			>	T'AC
+	# [F]			>	T'AF
+	# [L]			>	T'AL	# exceptions !
+	# [N]			>	T'AN	# id.
+	# [P]			>	T'AP	# id.
+	# [R]			>	T'AR
+	# [S]			>	T'AS
+	# [T]			>	T'AT	# id.
 
-flag  b:			# préfixe latin 'a(d)-'
-				# verbes uniquement
-	[^BCDFGLMNPQRST]	>	J'AD
-	[BDGM]			>	J'A
-	[CQ]			>	J'AC
-	[F]			>	J'AF
-	[L]			>	J'AL	# exceptions !
-	[N]			>	J'AN	# id.
-	[P]			>	J'AP	# id.
-	[R]			>	J'AR
-	[S]			>	J'AS
-	[T]			>	J'AT	# id.
+# flag  b:			# préfixe latin 'a(d)-'
+				# # verbes uniquement
+	# [^BCDFGLMNPQRST]	>	J'AD
+	# [BDGM]			>	J'A
+	# [CQ]			>	J'AC
+	# [F]			>	J'AF
+	# [L]			>	J'AL	# exceptions !
+	# [N]			>	J'AN	# id.
+	# [P]			>	J'AP	# id.
+	# [R]			>	J'AR
+	# [S]			>	J'AS
+	# [T]			>	J'AT	# id.
 
-flag *e:			# préfixe latin 'ex-'
-				# verbes transitifs uniquement
-	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	L'é
-	[F]			>	L'EF
-	[^FLMNRV]		>	M'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	M'é
-	[F]			>	M'EF
-	[^FLMNRV]		>	T'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	T'é
-	[F]			>	T'EF
+# flag *e:			# préfixe latin 'ex-'
+				# # verbes transitifs uniquement
+	# [^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	L'é
+	# [F]			>	L'EF
+	# [^FLMNRV]		>	M'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	M'é
+	# [F]			>	M'EF
+	# [^FLMNRV]		>	T'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	T'é
+	# [F]			>	T'EF
 
-flag  f:			# préfixe latin 'ex-'
-				# verbes uniquement
-	[^FLMNRV]		>	J'EX	# exceptions pour C,P,T !
-	[LMNRV]			>	J'é
-	[F]			>	J'EF
+# flag  f:			# préfixe latin 'ex-'
+				# # verbes uniquement
+	# [^FLMNRV]		>	J'EX	# exceptions pour C,P,T !
+	# [LMNRV]			>	J'é
+	# [F]			>	J'EF
 
-flag *i:			# préfixes latins 'in-'
-				# verbes transitifs uniquement
-	[^BLMPR]		>	L'IN
-	[L]			>	L'IL
-	[BMP]			>	L'IM
-	[R]			>	L'IR
-	[^BLMPR]		>	M'IN
-	[L]			>	M'IL
-	[BMP]			>	M'IM
-	[R]			>	M'IR
-	[^BLMPR]		>	T'IN
-	[L]			>	T'IL
-	[BMP]			>	T'IM
-	[R]			>	T'IR
+# flag *i:			# préfixes latins 'in-'
+				# # verbes transitifs uniquement
+	# [^BLMPR]		>	L'IN
+	# [L]			>	L'IL
+	# [BMP]			>	L'IM
+	# [R]			>	L'IR
+	# [^BLMPR]		>	M'IN
+	# [L]			>	M'IL
+	# [BMP]			>	M'IM
+	# [R]			>	M'IR
+	# [^BLMPR]		>	T'IN
+	# [L]			>	T'IL
+	# [BMP]			>	T'IM
+	# [R]			>	T'IR
 
-flag  k:			# préfixes latins 'in-'
-				# verbes uniquement
-	[^BLMPR]		>	J'IN
-	[L]			>	J'IL
-	[BMP]			>	J'IM
-	[R]			>	J'IR
+# flag  k:			# préfixes latins 'in-'
+				# # verbes uniquement
+	# [^BLMPR]		>	J'IN
+	# [L]			>	J'IL
+	# [BMP]			>	J'IM
+	# [R]			>	J'IR
 
 
 # ------------------------------------------------------------

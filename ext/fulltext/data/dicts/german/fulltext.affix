@@ -22,8 +22,8 @@ compoundmin 3
 #           F enhanced to handle most in endings 25. June,2004
 #
 
-PFX G N 1
-   .    > GE
+#PFX G N 1
+#   .    > GE
 
 prefixes
 

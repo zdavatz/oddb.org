@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# OddbApp -- oddb.org -- 15.03.2013 -- yasaka@ywesee.com
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
@@ -1342,21 +1342,19 @@ class OddbPrevalence
 			file.close
 		end
 	end
-	def generate_dictionary(language, locale)
+	def generate_dictionary(language)
 		ODBA.storage.remove_dictionary(language)
-		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
-			File.dirname(__FILE__))
-		ODBA.storage.generate_dictionary(language, locale, base)
+		ODBA.storage.generate_dictionary(language)
 	end
 	def generate_dictionaries
 		generate_french_dictionary
 		generate_german_dictionary
 	end
 	def generate_french_dictionary
-		generate_dictionary('french', 'fr_FR@euro')
+		generate_dictionary('french')
 	end
 	def generate_german_dictionary
-		generate_dictionary('german', 'de_DE@euro')
+		generate_dictionary('german')
 	end
   def update_ibflag
     @registrations.values.select{|r| r.production_science =~ /Blutprodukte/ or r.production_science =~ /Impfstoffe/}.sort_by{|r| r.iksnr}.each do |reg|
