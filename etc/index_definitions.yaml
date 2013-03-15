@@ -307,7 +307,7 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.analysis_positions'
 fulltext: true
-dictionary: default_german
+dictionary: 'default_german'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'analysis_alphabetical_index_de'
 origin_klass: 'ODDB::Analysis::Position'
@@ -326,7 +326,7 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.analysis_positions'
 fulltext: true
-dictionary: default_french
+dictionary: 'default_french'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'analysis_alphabetical_index_fr'
 origin_klass: 'ODDB::Analysis::Position'
