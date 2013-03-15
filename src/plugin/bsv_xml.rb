@@ -906,7 +906,7 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
         @preparations_listener.send(key).size
       end
       sprintf <<-EOS, *numbers
-Sehr geehrter Herr Krayenbühl
+Sehr geehrte Frau Frey
 Sehr geehrte Frau Fonatsch
 
 Am #{@@today.strftime('%d.%m.%Y')} haben wir Ihren aktuellen SL-Export (XML)
