@@ -895,7 +895,7 @@ Zeno Davatz
 				:home_welcome_doctors			=>	"Willkommen bei oddb.org, dem\naktuellsten Ärzte-Portal der Schweiz.\nDie monatliche Aktualisierung erfolgt direkt\nüber die offiziellen Daten der <a class='welcome' href='http://www.fmh.ch' target='_self'>FMH</a>.",
 				:home_welcome							=>  "Willkommen bei oddb.org, dem<br>aktuellsten Medikamenten-Portal der Schweiz.",
         :home_welcome_data        =>  "** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten **",
-        :home_welcome_hospitals   =>  'Willkommen bei den Spitälern der Schweiz!'
+        :home_welcome_hospitals   =>  'Willkommen bei den Spitälern der Schweiz!',
 				:hors_commerce						=>	'a.H.',
 				:hospital_count_text			=>	'Spitäler',
 				:hospitallist							=>	'Spitalverzeichnis',
