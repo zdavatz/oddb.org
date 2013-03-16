@@ -900,6 +900,7 @@ Zeno Davatz
 				:hospital_count_text			=>	'Spitäler',
 				:hospitallist							=>	'Spitalverzeichnis',
 				:hospitals								=>	'Spital',
+        :hospitals_search_explain =>  'Suchen Sie nach Spital, Ort oder einem Begriff',
         :howto                    =>  'Anleitung',
         :howto_epub_firefox       =>  'Installation Firefox',
         :howto_htc                =>  'Installation HTC',
