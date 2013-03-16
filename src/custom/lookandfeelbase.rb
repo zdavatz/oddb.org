@@ -895,6 +895,7 @@ Zeno Davatz
 				:home_welcome_doctors			=>	"Willkommen bei oddb.org, dem\naktuellsten Ärzte-Portal der Schweiz.\nDie monatliche Aktualisierung erfolgt direkt\nüber die offiziellen Daten der <a class='welcome' href='http://www.fmh.ch' target='_self'>FMH</a>.",
 				:home_welcome							=>  "Willkommen bei oddb.org, dem<br>aktuellsten Medikamenten-Portal der Schweiz.",
         :home_welcome_data        =>  "** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten **",
+        :home_welcome_hospitals   =>  'Willkommen bei den Spitälern der Schweiz!'
 				:hors_commerce						=>	'a.H.',
 				:hospital_count_text			=>	'Spitäler',
 				:hospitallist							=>	'Spitalverzeichnis',
@@ -1017,7 +1018,7 @@ Zeno Davatz
 				:lppv_url									=>	'http://www.lppv.ch',
 				:lt												=>	'Latein',
 				:mailinglist_form_descr		=>	'Bitte verwenden Sie folgendes Eingabefeld, um sich mit Ihrer E-Mail-Adresse bei unserer Mailinglist an- oder abzumelden.',
-				:mailinglist							=>	'Liste de publipostage',
+				:mailinglist							=>	'Mailing-Liste',
 				:mailinglist_title				=>	'Mailinglist - ODDB.org',
 				:manual_inactive_date			=>	'Deaktiviert am (manuell)',
 				:map											=>	'Lageplan auf map.search.ch',
