@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# RssPlugin -- oddb.org -- 21.11.2012 -- yasaka@ywesee.com
+# RssPlugin -- oddb.org -- 18.03.2013 -- yasaka@ywesee.com
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'date'
@@ -76,7 +76,7 @@ module ODDB
             date = $1
             # count entries of current issue
             if count
-              if date =~ /^(\d{2})\.(#{@@today.month})\.(#{@@today.year})/o
+              if date =~ /^(\d{2})\.(#{("%02d" % @@today.month)})\.(#{@@today.year})/o
                 @current_issue_count += 1
                 @new_entry_count     += 1 if Date.new($3.to_i, $2.to_i, $1.to_i) >= @app.rss_updates[@name].first
               end
