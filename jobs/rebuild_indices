@@ -10,7 +10,9 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      system.rebuild_indices
+      name = ARGV.first
+      puts "\nname == #{name}\n\n" if name
+      system.rebuild_indices(name)
     end
   end
 end
