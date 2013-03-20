@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 20.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -828,6 +828,16 @@ module ODDB
       index
     end
     def textinfo_swissmedicinfo_index
+      #return {
+      #  :new    => {
+      #    :de => {:fi => [], :pi => []},
+      #    :fr => {:fi => [], :pi => []},
+      #  },
+      #  :change => {
+      #    :de => {:fi => [], :pi => []},
+      #    :fr => {:fi => [], :pi => []},
+      #  },
+      #}
       setup_default_agent
       url = 'http://www.swissmedicinfo.ch/'
       # accept form
@@ -890,6 +900,22 @@ module ODDB
         content = match.parent.at('./content')
       end
       content
+    end
+    def extract_name(iksnr, type, lang)
+      name = nil
+      return name unless @doc
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., '#{iksnr}')]"
+      match = @doc.xpath(path, Class.new do
+        def match(node_set, iksnr)
+          node_set.find_all do |node|
+            node.text =~ /#{iksnr[0..1]}.?#{iksnr[2..4]}\s?/o
+          end
+        end
+      end.new).first
+      if match and title = match.parent.at('./title')
+        name = title.text
+      end
+      name
     end
     def extract_image(name, type, lang, dist)
       if File.exists?(dist)
@@ -955,59 +981,87 @@ module ODDB
       end
       iksnrs
     end
-    def import_swissmedicinfo
-      threads = []
-      threads << Thread.new do
-        download_swissmedicinfo_xml
+    def title_and_keys_by(target)
+      target = @options[:target] if @options[:target]
+      if target == :fi
+        [target.to_s.upcase, {:fi => 'fachinfo'}]
+      elsif target == :pi
+        [target.to_s.upcase, {:pi => 'patinfo'}]
+      else #both
+        ['FI/PI', {:fi => 'fachinfo', :pi => 'patinfo'}]
       end
-      index = {}
-      threads << Thread.new do
-        #index = {
-        #  :new    => {
-        #    :de => {:fi => [], :pi => []},
-        #    :fr => {:fi => [], :pi => []},
-        #  },
-        #  :change => {
-        #    :de => {:fi => [], :pi => []},
-        #    :fr => {:fi => [], :pi => []},
-        #  },
-        #}
-        index = textinfo_swissmedicinfo_index
-      end
-      threads.map(&:join)
-      @swissmedicinfo_updated << "New/Updates FI/PI from swissmedicinfo.ch"
-      @swissmedicinfo_skipped << "Skipped FI/PI form swissmedicinfo.ch"
-      @doc = Nokogiri::XML(
-        File.open(
-          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
-      index.each_pair do |state, names|
-        {
-          :fi => 'fachinfo',
-          #:pi => 'patinfo' # pending
-        }.each_pair do |typ, type|
-          next if names[:de].nil? or names[:de][typ].nil?
-          # This updater expects same order of names in DE und FR, comes from swissmedicinfo.
-          names[:de][typ].each_with_index do |name, i|
-            _names = {
-              :de => name,
-              :fr => names[:fr][typ][i]
-            }
-            iksnrs = parse_end_update(_names, type)
-            unless iksnrs.empty?
-              _names.each_pair do |lang, name|
-                @swissmedicinfo_updated <<
-                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - [#{iksnrs.join(',')}]"
-              end
-            else
-              _names.each_pair do |lang, name|
-                @swissmedicinfo_skipped <<
-                  "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
-              end
+    end
+    def import_info(keys, names, state)
+      keys.each_pair do |typ, type|
+        next if names[:de].nil? or names[:de][typ].nil?
+        # This updater expects same order of names in DE und FR, comes from swissmedicinfo.
+        names[:de][typ].each_with_index do |name, i|
+          _names = {
+            :de => name,
+            :fr => names[:fr][typ][i]
+          }
+          iksnrs = parse_end_update(_names, type)
+          unless iksnrs.empty?
+            _names.each_pair do |lang, name|
+              @swissmedicinfo_updated <<
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - [#{iksnrs.join(',')}]"
+            end
+          else
+            _names.each_pair do |lang, name|
+              @swissmedicinfo_skipped <<
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
             end
           end
         end
       end
-      @doc,index = nil,nil
+    end
+    def import_swissmedicinfo_by_index(index, target)
+      title,keys = title_and_keys_by(target)
+      @swissmedicinfo_updated << "New/Updates #{title} from swissmedicinfo.ch"
+      @swissmedicinfo_skipped << "Skipped #{title} form swissmedicinfo.ch"
+      @doc = Nokogiri::XML(
+        File.open(
+          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
+      index.each_pair do |state, names|
+        import_info(keys, names, state)
+      end
+      @doc = nil
+    end
+    def import_swissmedicinfo_by_iksnrs(iksnrs, target)
+      title,keys = title_and_keys_by(target)
+      @swissmedicinfo_updated << "Updates #{title} from swissmedicXML"
+      @swissmedicinfo_skipped << "Skipped #{title} form swissmedicXML"
+      @doc = Nokogiri::XML(
+        File.open(
+          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
+      iksnrs.each do |iksnr|
+        names = Hash.new{|h,k| h[k] = {} }
+        [:de, :fr].each do |lang|
+          keys.each_pair do |typ, type|
+            names[lang][typ] = [extract_name(iksnr, type, lang)]
+          end
+        end
+        import_info(keys, names, :isknr)
+      end
+      @doc = nil
+    end
+    def import_swissmedicinfo(target=:both)
+      threads = []
+      threads << Thread.new do
+        download_swissmedicinfo_xml
+      end
+      if @options[:iksnrs].empty?
+        index = {}
+        threads << Thread.new do
+          index = textinfo_swissmedicinfo_index
+        end
+        threads.map(&:join)
+        import_swissmedicinfo_by_index(index, target)
+        index = nil
+      else
+        import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
+        threads.map(&:join)
+      end
       p "job is done. now postprocess works ..."
       postprocess
     end

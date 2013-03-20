@@ -10,12 +10,21 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      opts = {}
+      opts = {
+        :target  => :fi,
+        :reparse => false,
+        :iksnrs  => [],
+      }
       ARGV.each do |arg|
-        if arg =~ /reparse/
+        if arg =~ /^\d{5}$/
+          opts[:iksnrs] << arg
+        elsif arg =~ /^\-\-target[\s=](fi|pi|both)$/
+          opts[:target] = $1.intern
+        elsif arg =~ /reparse/
           opts[:reparse] = true
         end
       end
+      puts "\nopts == #{opts.inspect}\n\n"
       Updater.new(system).update_textinfo_swissmedicinfo(opts)
     end
   end
