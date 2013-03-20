@@ -1003,11 +1003,13 @@ module ODDB
           iksnrs = parse_end_update(_names, type)
           unless iksnrs.empty?
             _names.each_pair do |lang, name|
+              next if name.nil? or name.empty?
               @swissmedicinfo_updated <<
                 "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - [#{iksnrs.join(',')}]"
             end
           else
             _names.each_pair do |lang, name|
+              next if name.nil? or name.empty?
               @swissmedicinfo_skipped <<
                 "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
             end
