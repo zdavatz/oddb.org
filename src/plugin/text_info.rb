@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 20.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 21.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -46,6 +46,7 @@ module ODDB
       @search_term = []
       @swissmedicinfo_updated = []
       @swissmedicinfo_skipped = []
+      @swissmedicinfo_invalid = []
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -227,6 +228,7 @@ module ODDB
           @failures.join("\n"),
           @swissmedicinfo_updated.join("\n"),
           @swissmedicinfo_skipped.join("\n"),
+          @swissmedicinfo_invalid.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -247,6 +249,7 @@ module ODDB
           @failures.join("\n"),
           @swissmedicinfo_updated.join("\n"),
           @swissmedicinfo_skipped.join("\n"),
+          @swissmedicinfo_invalid.join("\n"),
         ].join("\n")
       when :pi
         [
@@ -266,6 +269,7 @@ module ODDB
           @failures.join("\n"),
           @swissmedicinfo_updated.join("\n"),
           @swissmedicinfo_skipped.join("\n"),
+          @swissmedicinfo_invalid.join("\n"),
         ].join("\n")
       end
     end
@@ -800,7 +804,12 @@ module ODDB
       postprocess
     end
 
-    # swissmedic.ch
+##
+# == interface 3 (swissmedicinfo)
+#
+# TODO
+#  * refactor (this is temporary solution, to refactor if swissmedicinfo improves FI/PI format)
+#
     def swissmedicinfo_index(state)
       index = {}
       %w[DE FR].each do |lang|
@@ -811,17 +820,22 @@ module ODDB
         form['__EVENTTARGET']   = "ctl00$HeaderContent$ucSpecialSearch1$LB#{state}Auth"
         form['__EVENTARGUMENT'] = ''
         res = form.submit
-        names = {:fi => [], :pi => []}
+        names = {}
         {
-          'FI' => 1,
+          'FI' => [1, 3], #[name, date]
           #'PI' => 0
         }.each_pair do |typ, i|
+          _names = []
           res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{typ}_GVMonographies']/tr").each do |tr|
             tds = tr.search('td')
             unless tds.empty?
-              names[typ.downcase.intern] << tds[i].text
+              _names << [tds[i.first].text, tds[i.last].text]
             end
           end
+          names[typ.downcase.intern] =
+            _names.sort_by do |name, date|
+              Date.strptime(date, "%d.%m.%Y")
+            end.reverse!
         end
         index[lang.downcase.intern] = names
       end
@@ -901,14 +915,14 @@ module ODDB
       end
       content
     end
-    def extract_name(iksnr, type, lang)
+    def extract_matched_name(iksnr, type, lang)
       name = nil
       return name unless @doc
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., '#{iksnr}')]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
           node_set.find_all do |node|
-            node.text =~ /#{iksnr[0..1]}.?#{iksnr[2..4]}\s?/o
+            node.text =~ /#{iksnr[0..1]}(.|\&[A-z;]*|\s)?#{iksnr[2..4]}\s?/o
           end
         end
       end.new).first
@@ -938,7 +952,7 @@ module ODDB
         end
       end
     end
-    def parse_end_update(names, type)
+    def parse_and_update(names, type)
       iksnrs  = []
       return iksnrs unless @doc
       infos = {}
@@ -976,10 +990,20 @@ module ODDB
           end
         end
       end
+      _infos = {}
       unless infos.empty?
-        iksnrs = self.send("update_#{type}", name, infos, {})
+        [:de, :fr].each do |lang|
+          if infos[lang].name.to_s.length > 2700 # maybe all chapters are in title ;(
+            @swissmedicinfo_invalid <<
+              "  INVALID : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+          else
+            _infos[lang] = infos[lang]
+          end
+        end
+        infos = nil
+        iksnrs = self.send("update_#{type}", name, _infos, {})
       end
-      iksnrs
+      [iksnrs, _infos.keys]
     end
     def title_and_keys_by(target)
       target = @options[:target] if @options[:target]
@@ -996,22 +1020,25 @@ module ODDB
         next if names[:de].nil? or names[:de][typ].nil?
         # This updater expects same order of names in DE und FR, comes from swissmedicinfo.
         names[:de][typ].each_with_index do |name, i|
-          _names = {
-            :de => name,
-            :fr => names[:fr][typ][i]
-          }
-          iksnrs = parse_end_update(_names, type)
+          _names,_dates = {}, {}
+          [:de, :fr].map do |lang|
+            _names[lang],_dates[lang] = names[lang][typ][i]
+          end
+          iksnrs,updated = parse_and_update(_names, type)
+          # report
           unless iksnrs.empty?
             _names.each_pair do |lang, name|
               next if name.nil? or name.empty?
+              next if !updated.include?(lang)
+              date = (_dates[lang] ? " - #{_dates[lang]}" : '')
               @swissmedicinfo_updated <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - [#{iksnrs.join(',')}]"
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date} - [#{iksnrs.join(',')}]"
             end
           else
             _names.each_pair do |lang, name|
               next if name.nil? or name.empty?
               @swissmedicinfo_skipped <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - #{_dates[lang]}"
             end
           end
         end
@@ -1021,6 +1048,7 @@ module ODDB
       title,keys = title_and_keys_by(target)
       @swissmedicinfo_updated << "New/Updates #{title} from swissmedicinfo.ch"
       @swissmedicinfo_skipped << "Skipped #{title} form swissmedicinfo.ch"
+      @swissmedicinfo_invalid << "Invalid #{title} from swissmedicXML"
       @doc = Nokogiri::XML(
         File.open(
           File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
@@ -1033,6 +1061,7 @@ module ODDB
       title,keys = title_and_keys_by(target)
       @swissmedicinfo_updated << "Updates #{title} from swissmedicXML"
       @swissmedicinfo_skipped << "Skipped #{title} form swissmedicXML"
+      @swissmedicinfo_invalid << "Invalid #{title} from swissmedicXML"
       @doc = Nokogiri::XML(
         File.open(
           File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
@@ -1040,7 +1069,7 @@ module ODDB
         names = Hash.new{|h,k| h[k] = {} }
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
-            names[lang][typ] = [extract_name(iksnr, type, lang)]
+            names[lang][typ] = [extract_matched_name(iksnr, type, lang)]
           end
         end
         import_info(keys, names, :isknr)
