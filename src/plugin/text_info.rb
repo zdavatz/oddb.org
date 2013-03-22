@@ -44,9 +44,11 @@ module ODDB
       @format = :documed # {:documed|:compendium|:swissmedicinfo}
       @target = :both
       @search_term = []
-      @swissmedicinfo_updated = []
-      @swissmedicinfo_skipped = []
-      @swissmedicinfo_invalid = []
+      # FI/PI names
+      @updated  = []
+      @skipped  = []
+      @invalid  = []
+      @notfound = []
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -226,9 +228,11 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
-          @swissmedicinfo_updated.join("\n"),
-          @swissmedicinfo_skipped.join("\n"),
-          @swissmedicinfo_invalid.join("\n"),
+          # names
+          @updated.join("\n"),
+          @skipped.join("\n"),
+          @invalid.join("\n"),
+          @notfound.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -246,10 +250,12 @@ module ODDB
           "Download errors: #{@download_errors.size}",
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
+          # names
           @failures.join("\n"),
-          @swissmedicinfo_updated.join("\n"),
-          @swissmedicinfo_skipped.join("\n"),
-          @swissmedicinfo_invalid.join("\n"),
+          @updated.join("\n"),
+          @skipped.join("\n"),
+          @invalid.join("\n"),
+          @notfound.join("\n"),
         ].join("\n")
       when :pi
         [
@@ -267,9 +273,11 @@ module ODDB
           @download_errors.join("\n"), nil,
           "Parse Errors: #{@failures.size}",
           @failures.join("\n"),
-          @swissmedicinfo_updated.join("\n"),
-          @swissmedicinfo_skipped.join("\n"),
-          @swissmedicinfo_invalid.join("\n"),
+          # names
+          @updated.join("\n"),
+          @skipped.join("\n"),
+          @invalid.join("\n"),
+          @notfound.join("\n"),
         ].join("\n")
       end
     end
@@ -842,16 +850,6 @@ module ODDB
       index
     end
     def textinfo_swissmedicinfo_index
-      #return {
-      #  :new    => {
-      #    :de => {:fi => [], :pi => []},
-      #    :fr => {:fi => [], :pi => []},
-      #  },
-      #  :change => {
-      #    :de => {:fi => [], :pi => []},
-      #    :fr => {:fi => [], :pi => []},
-      #  },
-      #}
       setup_default_agent
       url = 'http://www.swissmedicinfo.ch/'
       # accept form
@@ -953,6 +951,15 @@ module ODDB
         end
       end
     end
+    def strange?(info)
+      if info.nil? or !info.respond_to?(:name)
+        :nil
+      elsif info.name.to_s.length > 2700 # Maybe all chapters are in title ;(
+        :invalid
+      else
+        false # expected
+      end
+    end
     def parse_and_update(names, type)
       iksnrs  = []
       return iksnrs unless @doc
@@ -991,20 +998,52 @@ module ODDB
           end
         end
       end
-      _infos = {}
       unless infos.empty?
-        [:de, :fr].each do |lang|
-          if infos[lang].name.to_s.length > 2700 # maybe all chapters are in title ;(
-            @swissmedicinfo_invalid <<
-              "  INVALID : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
-          else
+        _infos = {}
+        [:de, :fr].map do |lang|
+          unless strange?(infos[lang])
             _infos[lang] = infos[lang]
           end
         end
-        infos = nil
         iksnrs = self.send("update_#{type}", name, _infos, {})
       end
-      [iksnrs, _infos.keys]
+      [iksnrs, infos]
+    end
+    def import_info(keys, names, state)
+      keys.each_pair do |typ, type|
+        next if names[:de].nil? or names[:de][typ].nil?
+        # This importer expects same order of names in DE and FR, come from swissmedicinfo.
+        names[:de][typ].each_with_index do |name, i|
+          _names,_dates = {}, {}
+          [:de, :fr].map do |lang|
+            _names[lang],_dates[lang] = names[lang][typ][i]
+          end
+          iksnrs,infos = parse_and_update(_names, type)
+          # report
+          _names.each_pair do |lang, name|
+            unless infos.empty?
+              if strange?(infos[lang]) == :nil
+                @notfound <<
+                  "  NOTFOUND : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+              elsif strange?(infos[lang]) == :invalid
+                @invalid <<
+                  "  INVALID : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+              end
+            end
+            date = (_dates[lang] ? " - #{_dates[lang]}" : '')
+            unless iksnrs.empty?
+              next if name.nil? or name.empty?
+              next if !infos.empty? and strange?(infos[lang])
+              @updated <<
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date} - [#{iksnrs.join(',')}]"
+            else
+              next if name.nil? or name.empty?
+              @skipped <<
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}"
+            end
+          end
+        end
+      end
     end
     def title_and_keys_by(target)
       target = @options[:target] if @options[:target]
@@ -1016,43 +1055,24 @@ module ODDB
         ['FI/PI', {:fi => 'fachinfo', :pi => 'patinfo'}]
       end
     end
-    def import_info(keys, names, state)
-      keys.each_pair do |typ, type|
-        next if names[:de].nil? or names[:de][typ].nil?
-        # This updater expects same order of names in DE und FR, comes from swissmedicinfo.
-        names[:de][typ].each_with_index do |name, i|
-          _names,_dates = {}, {}
-          [:de, :fr].map do |lang|
-            _names[lang],_dates[lang] = names[lang][typ][i]
-          end
-          iksnrs,updated = parse_and_update(_names, type)
-          # report
-          unless iksnrs.empty?
-            _names.each_pair do |lang, name|
-              next if name.nil? or name.empty?
-              next if !updated.include?(lang)
-              date = (_dates[lang] ? " - #{_dates[lang]}" : '')
-              @swissmedicinfo_updated <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date} - [#{iksnrs.join(',')}]"
-            end
-          else
-            _names.each_pair do |lang, name|
-              next if name.nil? or name.empty?
-              @swissmedicinfo_skipped <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name} - #{_dates[lang]}"
-            end
-          end
-        end
-      end
+    def report_sections_by(title)
+      [
+        ["New/Updates #{title} from swissmedicinfo.ch"], # updated
+        ["Skipped #{title} form swissmedicinfo.ch"],     # skipped
+        ["Invalid #{title} from swissmedicXML"],         # invalid
+        ["Not found #{title} in swissmedicXML"],         # notfound
+      ]
+    end
+    def swissmedicinfo_xml
+      Nokogiri::XML(
+        File.open(
+          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read
+      )
     end
     def import_swissmedicinfo_by_index(index, target)
       title,keys = title_and_keys_by(target)
-      @swissmedicinfo_updated << "New/Updates #{title} from swissmedicinfo.ch"
-      @swissmedicinfo_skipped << "Skipped #{title} form swissmedicinfo.ch"
-      @swissmedicinfo_invalid << "Invalid #{title} from swissmedicXML"
-      @doc = Nokogiri::XML(
-        File.open(
-          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
+      @updated,@skipped,@invalid,@notfound = report_sections_by(title)
+      @doc = swissmedicinfo_xml
       index.each_pair do |state, names|
         import_info(keys, names, state)
       end
@@ -1060,12 +1080,8 @@ module ODDB
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
       title,keys = title_and_keys_by(target)
-      @swissmedicinfo_updated << "Updates #{title} from swissmedicXML"
-      @swissmedicinfo_skipped << "Skipped #{title} form swissmedicXML"
-      @swissmedicinfo_invalid << "Invalid #{title} from swissmedicXML"
-      @doc = Nokogiri::XML(
-        File.open(
-          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read)
+      @updated,@skipped,@invalid,@notfound = report_sections_by(title)
+      @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
         [:de, :fr].each do |lang|
@@ -1094,7 +1110,7 @@ module ODDB
         import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
         threads.map(&:join)
       end
-      p "job is done. now postprocess works ..."
+      puts "job is done. now postprocess works ..."
       postprocess
     end
   end
