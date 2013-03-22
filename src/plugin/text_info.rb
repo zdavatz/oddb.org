@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 21.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 22.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -922,7 +922,8 @@ module ODDB
       match = @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
           node_set.find_all do |node|
-            node.text =~ /#{iksnr[0..1]}(.|\&[A-z;]*|\s)?#{iksnr[2..4]}\s?/o
+            # p,span,class,nbsp
+            node.text =~ /#{iksnr[0]}[psanclb;<>\/\s\=\"0-9\&]*#{iksnr[1]}(.|\&[A-z;]*|\s)?#{iksnr[2..4]}\s?/o
           end
         end
       end.new).first
