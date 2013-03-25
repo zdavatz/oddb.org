@@ -899,7 +899,7 @@ module ODDB
     end
     def extract_matched_content(name, type, lang)
       content = nil
-      return content unless @doc
+      return content unless @doc and name
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., '#{name}')]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, name)
@@ -961,9 +961,9 @@ module ODDB
       end
     end
     def parse_and_update(names, type)
-      iksnrs  = []
-      return iksnrs unless @doc
-      infos = {}
+      iksnrs = []
+      infos  = {}
+      return [iksnrs,infos] unless @doc
       name  = ''
       [:de, :fr].each do |lang|
         name = names[lang]
@@ -1098,7 +1098,7 @@ module ODDB
       threads << Thread.new do
         download_swissmedicinfo_xml
       end
-      if @options[:iksnrs].empty?
+      if @options[:iksnrs].nil? or @options[:iksnrs].empty?
         index = {}
         threads << Thread.new do
           index = textinfo_swissmedicinfo_index
