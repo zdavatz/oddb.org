@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 22.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 25.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -829,9 +829,9 @@ module ODDB
         form['__EVENTARGUMENT'] = ''
         res = form.submit
         names = {}
-        {
-          'FI' => [1, 3], #[name, date]
-          #'PI' => 0
+        {# typ => [name, date]
+          'FI' => [1, 3],
+          'PI' => [0, 2],
         }.each_pair do |typ, i|
           _names = []
           res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{typ}_GVMonographies']/tr").each do |tr|
@@ -849,6 +849,20 @@ module ODDB
       end
       index
     end
+    ##
+    # = import_product2
+    #
+    # ::Return
+    #   * index = {
+    #       :new    => {
+    #         :de => {:fi => [['FI-NAME', 'DATE']], :pi => [['PI-NAME', 'DATE']]},
+    #         :fr => {:fi => [], :pi => []},
+    #       },
+    #       :change => {
+    #         :de => {:fi => [], :pi => []},
+    #         :fr => {:fi => [], :pi => []},
+    #       }
+    #     }
     def textinfo_swissmedicinfo_index
       setup_default_agent
       url = 'http://www.swissmedicinfo.ch/'
@@ -904,7 +918,9 @@ module ODDB
       match = @doc.xpath(path, Class.new do
         def match(node_set, name)
           node_set.find_all do |node|
-            node.text == name
+            name_text = node.text.gsub(/®/, '')
+            name      = name.gsub(/®/, '')
+            name_text == name
           end
         end
       end.new).first
@@ -1022,20 +1038,23 @@ module ODDB
           # report
           _names.each_pair do |lang, name|
             unless infos.empty?
-              if strange?(infos[lang]) == :nil
+              info = strange?(infos[lang])
+              if info == :nil
                 @notfound <<
                   "  NOTFOUND : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
-              elsif strange?(infos[lang]) == :invalid
+              elsif info == :invalid
                 @invalid <<
                   "  INVALID : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
               end
             end
             date = (_dates[lang] ? " - #{_dates[lang]}" : '')
-            unless iksnrs.empty?
+            nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : '')
+            if (typ == :fi and !iksnrs.empty?) or
+               (typ == :pi)
               next if name.nil? or name.empty?
               next if !infos.empty? and strange?(infos[lang])
               @updated <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date} - [#{iksnrs.join(',')}]"
+                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}#{nrs}"
             else
               next if name.nil? or name.empty?
               @skipped <<
@@ -1112,6 +1131,7 @@ module ODDB
       end
       puts "job is done. now postprocess works ..."
       postprocess
+      true # report
     end
   end
 end
