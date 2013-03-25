@@ -1050,7 +1050,7 @@ module ODDB
             date = (_dates[lang] ? " - #{_dates[lang]}" : '')
             nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : '')
             if (typ == :fi and !iksnrs.empty?) or
-               (typ == :pi)
+               (typ == :pi and !iksnrs.empty?)
               next if name.nil? or name.empty?
               next if !infos.empty? and strange?(infos[lang])
               @updated <<
