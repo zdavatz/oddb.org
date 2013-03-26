@@ -1,3 +1,4 @@
+# encoding: utf-8
 #
 # parse.y, quanty/parse.rb
 #
