@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# FiParse::PatinfoHpricot -- oddb -- 25.03.2013 -- yasaka@ywesee.com
+# FiParse::PatinfoHpricot -- oddb -- 26.03.2013 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'
@@ -115,7 +115,7 @@ class PatinfoHpricot < TextinfoHpricot
     when /^Was\s*ist\s*ferner\s*zu\s*beachten\??|^.\s*quoi\s*faut\-il\s*encore\s*faire\s*attention\??/     ; '7780'
     when /^Was\s*ist[\w\s,\-]*enthalten\??|^Que\s*contient/                                                ; '7840'
     when /^Zulassungsnummer|^Num.ro\s*d.autorisation/                                                      ; '7860'
-    when /^Wo\s*erhalten\s*Sie|^Q.\s*obtenez\-vous/                                                        ; '7880'
+    when /^Wo\s*erhalten\s*Sie|^O.\s*obtenez\-vous/                                                        ; '7880'
     when /^Herstellerin|^Fabricant/                                                                        ; '7920'
     when /^Diese\s*Packungsbeilage\s*wurde|^Cette\s*notice\s*/                                             ; '7940'
     when /^Zulassungsinhaberin(en)?|^Titulaire\s*de\s*l.autorisation/                                      ; '9000'
