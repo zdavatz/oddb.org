@@ -18,8 +18,12 @@ gem "archive-tarsimple"
 gem "bigdecimal"
 gem "builder"
 # gem "dbd-pg"
-gem "dbi"
-gem "deprecated"
+# gem "dbi",       :path => '/opt/dbi/pkg/'
+
+gem "deprecated", "= 2.0.1"
+gem "dbi", "0.4.5", :path => '/opt/dbi'
+gem "dojo"
+# gem "deprecated"
 gem "facets"
 gem "fastthread"
 gem "flexmock"
