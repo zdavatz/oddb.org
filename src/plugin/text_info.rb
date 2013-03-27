@@ -166,7 +166,7 @@ module ODDB
               patinfo ||= store_patinfo(reg, pis)
               reg.each_sequence do |seq|
                 # cut connection to pdf patinfo
-                unless seq.pdf_patinfo.empty?
+                if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
                   seq.pdf_patinfo = ''
                   @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
                   seq.odba_isolated_store
