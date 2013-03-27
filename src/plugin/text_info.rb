@@ -415,12 +415,11 @@ module ODDB
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub(/[^0-9,]/, "")
-        if(match = src.match(/[0-9]{3,5}(?:,[0-9]{3,5})*/u))
-          iksnrs.concat match.to_s.split(',')
+        src = doc.iksnrs.to_s.gsub(/[^0-9,\s]/, "")
+        if(matches = src.scan(/[0-9]{5}|[0-9]{2}\s*[0-9]{3}/))
+          matches.map { |iksnr| iksnrs << iksnr.gsub(/[^0-9]/, '') }
         end
       end
-      iksnrs.collect! do |iksnr| sprintf("%05i", iksnr.to_i) end
       iksnrs.uniq!
       iksnrs
     rescue
@@ -988,6 +987,7 @@ module ODDB
       return [iksnrs,infos] unless @doc
       name  = ''
       [:de, :fr].each do |lang|
+        next unless names[lang]
         name = names[lang]
         content = extract_matched_content(name, type, lang)
         if content
@@ -1035,14 +1035,10 @@ module ODDB
       keys.each_pair do |typ, type|
         next if names[:de].nil? or names[:de][typ].nil?
         # This importer expects same order of names in DE and FR, come from swissmedicinfo.
-        names[:de][typ].each_with_index do |name, i|
-          _names,_dates = {}, {}
-          [:de, :fr].map do |lang|
-            _names[lang],_dates[lang] = names[lang][typ][i]
-          end
-          iksnrs,infos = parse_and_update(_names, type)
-          # report
-          _names.each_pair do |lang, name|
+        names.each_pair do |lang, infos|
+          infos[typ].each do |name, date|
+            iksnrs,infos = parse_and_update({lang => name}, type)
+            # report
             unless infos.empty?
               info = strange?(infos[lang])
               if info == :nil
@@ -1053,10 +1049,9 @@ module ODDB
                   "  INVALID : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
               end
             end
-            date = (_dates[lang] ? " - #{_dates[lang]}" : '')
+            date = (date ? " - #{date}" : '')
             nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : '')
-            if (typ == :fi and !iksnrs.empty?) or
-               (typ == :pi and !iksnrs.empty?)
+            unless iksnrs.empty?
               next if name.nil? or name.empty?
               next if !infos.empty? and strange?(infos[lang])
               @updated <<
@@ -1071,7 +1066,6 @@ module ODDB
       end
     end
     def title_and_keys_by(target)
-      target = @options[:target] if @options[:target]
       if target == :fi
         [target.to_s.upcase, {:fi => 'fachinfo'}]
       elsif target == :pi
@@ -1119,6 +1113,7 @@ module ODDB
       @doc = nil
     end
     def import_swissmedicinfo(target=:both)
+      target = @options[:target] if @options[:target]
       threads = []
       threads << Thread.new do
         download_swissmedicinfo_xml
