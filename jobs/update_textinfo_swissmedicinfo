@@ -18,8 +18,8 @@ module ODDB
       ARGV.each do |arg|
         if arg =~ /^\d{5}$/
           opts[:iksnrs] << arg
-        elsif arg =~ /^\-\-target[\s=](fi|pi|both)$/
-          opts[:target] = $1.intern
+        elsif arg =~ /^\-\-(target|type)[\s=](fi|pi|both)$/
+          opts[:target] = $2.intern
         elsif arg =~ /reparse/
           opts[:reparse] = true
         end
