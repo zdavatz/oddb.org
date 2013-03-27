@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 25.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 27.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -165,6 +165,12 @@ module ODDB
             unless pis.empty?
               patinfo ||= store_patinfo(reg, pis)
               reg.each_sequence do |seq|
+                # cut connection to pdf patinfo
+                unless seq.pdf_patinfo.empty?
+                  seq.pdf_patinfo = ''
+                  @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
+                  seq.odba_isolated_store
+                end
                 replace patinfo, seq, :patinfo
               end
             end

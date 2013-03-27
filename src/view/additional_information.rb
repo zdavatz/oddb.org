@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 09.11.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 27.03.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -378,29 +378,29 @@ module ODDB
           square(:patent, link)
         end
       end
-			def patinfo(model, session=@session)
-				if(model.has_patinfo?)
-					href = nil
-					klass = nil
-					if(pdf_patinfo = model.pdf_patinfo)
-						klass = HtmlGrid::PopupLink
-						href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
-					elsif (model.patinfo and seqnr = model.seqnr)
-						klass = HtmlGrid::Link
+      def patinfo(model, session=@session)
+        if(model.has_patinfo?)
+          href = nil
+          klass = nil
+          if(pdf_patinfo = model.pdf_patinfo and !pdf_patinfo.empty?)
+            klass = HtmlGrid::PopupLink
+            href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
+          elsif (model.patinfo and seqnr = model.seqnr)
+            klass = HtmlGrid::Link
             smart_link_format = [:reg, model.iksnr, :seq, seqnr]
-						href = @lookandfeel._event_url(:patinfo, smart_link_format)
-					elsif (patinfo = model.patinfo) # This is an old format URL for PI. Probably no need any more (but still available).
-						klass = HtmlGrid::Link
+            href = @lookandfeel._event_url(:patinfo, smart_link_format)
+          elsif (patinfo = model.patinfo) # This is an old format URL for PI. Probably no need any more (but still available).
+            klass = HtmlGrid::Link
             old_link_format = {'pointer' => patinfo.pointer}
-						href = @lookandfeel._event_url(:resolve, old_link_format)
-					end
-					link = klass.new(:square_patinfo, model, @session, self)
-					link.href = href
-					link.set_attribute('title', @lookandfeel.lookup(:patinfo))
-					link.css_class = 'square infos'
-					link
-				end
-			end
+            href = @lookandfeel._event_url(:resolve, old_link_format)
+          end
+          link = klass.new(:square_patinfo, model, @session, self)
+          link.href = href
+          link.set_attribute('title', @lookandfeel.lookup(:patinfo))
+          link.css_class = 'square infos'
+          link
+        end
+      end
       def prescription(model, session=@session, css='important') # rezept -> prescription
         link = HtmlGrid::Link.new(:rezept, model, session, self)
         link.css_class = css
