@@ -59,7 +59,6 @@ module ODDB
 	class PatinfoDocument
 		CHAPTERS = [
 			:name,
-			:company,
 			:galenic_form,
 			:effects,
 			:purpose,
@@ -76,6 +75,7 @@ module ODDB
 			:distribution,
       :fabrication,
       :iksnrs,
+			:company,
 			:date,
 		]
 		attr_accessor :name, :company, :galenic_form, :effects
@@ -96,10 +96,9 @@ module ODDB
 		end
 	end
 	class PatinfoDocument2001 < PatinfoDocument
-		CHAPTERS = [
+		CHAPTERS = [ # display order
       :amzv,
 			:name,
-			:company,
 			:galenic_form,
 			:effects,
 			:purpose,
@@ -116,6 +115,7 @@ module ODDB
 			:distribution,
       :fabrication,
       :iksnrs,
+			:company,
 			:date,
 		]
 		attr_accessor :amzv
