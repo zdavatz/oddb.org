@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Parinfo -- oddb -- 12.06.2012 -- yasaka@ywesee.com
+# Parinfo -- oddb -- 27.03.2012 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'
@@ -75,7 +75,7 @@ module ODDB
 			:packages,
 			:distribution,
       :fabrication,
-      #:iksnrs
+      :iksnrs,
 			:date,
 		]
 		attr_accessor :name, :company, :galenic_form, :effects
@@ -83,7 +83,7 @@ module ODDB
 		attr_accessor :pregnancy, :usage, :unwanted_effects
 		attr_accessor :general_advice, :other_advice, :composition, :packages
 		attr_accessor :distribution, :date, :fabrication
-		attr_accessor :iksnrs # interface only, no data
+		attr_accessor :iksnrs
     def chapter_names
       self::class::CHAPTERS
     end
