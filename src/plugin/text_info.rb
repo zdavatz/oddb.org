@@ -974,7 +974,7 @@ module ODDB
         if html =~ /<img\s/
           images = Nokogiri::HTML(html).search('//img')
           html = nil
-          name_base = File.basename(name.gsub(/[^A-z0-9]/, '_')).strip
+          name_base = File.basename(name.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
           dir = File.join(resource_dir, name_base + '_files')
           FileUtils.mkdir_p(dir)
           images.each_with_index do |img, i|

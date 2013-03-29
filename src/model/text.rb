@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Text -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
+# ODDB::Text -- oddb.org -- 29.03.2013 -- yasaka@ywesee.com
 # ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
@@ -11,9 +11,9 @@ require 'util/searchterms'
 module ODDB
 	module Text
     class ImageLink
-      attr_accessor :src
+      attr_accessor :src, :style
       def attributes
-        { 'src' => @src }
+        { 'src' => @src, 'style' => @style }
       end
       def clean!
       end

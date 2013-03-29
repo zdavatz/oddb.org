@@ -235,8 +235,9 @@ class TextinfoHpricot
       @image_index += 1
       src,_ = child[:src].split(',')
       if src =~ /^data:image\/(jp[e]?g|gif|png);base64$/
+        ptr.target.style = child[:style]
         ext       = $1
-        name_base = File.basename(@name.to_s.gsub(/[^A-z0-9]/, '_')).strip
+        name_base = File.basename(@name.to_s.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
         file_name = File.join(name_base + '_files', "#{@image_index.to_s}.#{ext}")
         lang = (@lang || 'de')
       end
