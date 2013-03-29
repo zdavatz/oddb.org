@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 27.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 29.03.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -919,14 +919,20 @@ module ODDB
     def extract_matched_content(name, type, lang)
       content = nil
       return content unless @doc and name
-      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., '#{name}')]"
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{name}\")]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, name)
-          node_set.find_all do |node|
-            name_text = node.text.gsub(/®/, '')
-            name      = name.gsub(/®/, '')
-            name_text == name
+          found_node = catch(:found) do
+            node_set.find_all do |node|
+              unknown_chars = /[^A-z,\/\s\-']/
+              title = node.text.gsub(unknown_chars, '')
+              name  = name.gsub(unknown_chars, '')
+              throw :found, node if title == name
+              false
+            end
+            nil
           end
+          found_node ? [found_node] : []
         end
       end.new).first
       if match
@@ -937,13 +943,22 @@ module ODDB
     def extract_matched_name(iksnr, type, lang)
       name = nil
       return name unless @doc
-      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., '#{iksnr}')]"
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., \"#{iksnr}\")]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
-          node_set.find_all do |node|
-            # p,span,class,nbsp
-            node.text =~ /#{iksnr[0]}[psanclb;<>\/\s\=\"0-9\&]*#{iksnr[1]}(.|\&[A-z;]*|\s)?#{iksnr[2..4]}\s?/o
+          found_node = catch(:found) do
+            node_set.find_all do |node|
+              html = Nokogiri::HTML(node.text)
+              pos = (html.text =~ /Zulassungsnummer|Num.ro\s*d.autorisation/).to_i
+              unless pos == 0
+                src = html.text[pos..-1]
+                throw :found, node if src =~ /#{iksnr[0..1]}(.|\s)?#{iksnr[2..4]}\s?/o
+              end
+              false
+            end
+            nil
           end
+          found_node ? [found_node] : []
         end
       end.new).first
       if match and title = match.parent.at('./title')
