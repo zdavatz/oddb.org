@@ -924,7 +924,7 @@ module ODDB
         def match(node_set, name)
           found_node = catch(:found) do
             node_set.find_all do |node|
-              unknown_chars = /[^A-z,\/\s\-']/
+              unknown_chars = /[^A-z,\/\s\-]/
               title = node.text.gsub(unknown_chars, '')
               name  = name.gsub(unknown_chars, '')
               throw :found, node if title == name
