@@ -114,7 +114,7 @@ class FiChapterChooser < HtmlGrid::Composite
 		end
 	end
   def display_names(document)
-    names = document.chapter_names
+    names = (document ? document.chapter_names : [])
     if @container.respond_to?(:photos) and !@container.photos.nil?
       names << :photos
     end
@@ -231,7 +231,7 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	def fachinfo_name(model, session)
-		@lookandfeel.lookup(:fachinfo_name, model.name)
+		@lookandfeel.lookup(:fachinfo_name, model.name) if model
 	end
 end
 class FachinfoPrintInnerComposite < FachinfoInnerComposite

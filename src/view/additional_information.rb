@@ -130,7 +130,7 @@ module ODDB
         parts = comps.collect { |comp|
           part = ''
           if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
-            part << galform.send(lang) << ': '
+            part << galform.send(lang).to_s << ': '
           end
           if comp.active_agents.size > 1
             part << @lookandfeel.lookup(:active_agents, model.active_agents.size)

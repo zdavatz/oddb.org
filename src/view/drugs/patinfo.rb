@@ -95,7 +95,11 @@ class PiChapterChooser < HtmlGrid::Composite
 		super
 	end
 	def display_names(document)
-		document.chapter_names
+    if document
+		  document.chapter_names
+    else
+      []
+    end
 	end
 	def full_text(model, session)
 		if(@model.pointer.skeleton == [:create])
@@ -136,7 +140,7 @@ class PatinfoInnerComposite < HtmlGrid::DivComposite
 				(chapter = @model.send(name)) && !chapter.empty?)
 				components.store([0,idx], name)
 			end
-		}
+		} if @model
 		super
 	end
 end
@@ -185,7 +189,7 @@ class PatinfoPreviewComposite < HtmlGrid::Composite
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	def patinfo_name(model, session)
-		@lookandfeel.lookup(:patinfo_name, model.name)
+		@lookandfeel.lookup(:patinfo_name, model.name) if model
 	end
 end
 class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
