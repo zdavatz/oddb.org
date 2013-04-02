@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Language -- oddb -- 30.03.2013 -- yasaka@ywesee.com
+# ODDB::Language -- oddb -- 03.04.2013 -- yasaka@ywesee.com
 # ODDB::Language -- oddb -- 24.03.2003 -- mhuggler@ywesee.com
 
 require 'util/persistence'
@@ -30,7 +30,7 @@ module ODDB
       if descriptions.respond_to?(:[])
         if descriptions.is_a?(Array) or descriptions[key].nil?
           descriptions.first
-        elsif
+        else
           descriptions[key]
         end
       end
