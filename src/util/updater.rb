@@ -385,7 +385,7 @@ module ODDB
 			# update_trade_status # replaced by swissINDEX
       update_package_trade_status_by_swissindex
       update_comarketing
-			update_swissreg_news
+			#update_swissreg_news
       update_lppv
       update_medwin_companies
 			exporter = Exporter.new(@app)
