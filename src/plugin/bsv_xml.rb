@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 18.07.2012 -- yasaka@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 03.04.2013 -- yasaka@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
@@ -415,10 +415,13 @@ module ODDB
                 # before updating. Otherwise, the link between sl_entry and 
                 # limitation_text may not produced even if there are both objects 
                 # in ODBA cache.
-                if sl_entry.limitation_text || txt_ptr.resolve(@app)
-                  @app.delete txt_ptr
+                begin
+                  if sl_entry.limitation_text || txt_ptr.resolve(@app)
+                    @app.delete txt_ptr
+                  end
+                rescue ODDB::Persistence::UninitializedPathError
+                  # skip
                 end
-
                 @app.update txt_ptr.creator, lim_data, :bag
               end
             end
