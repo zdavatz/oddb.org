@@ -8,7 +8,6 @@ source "http://rubygems.org"
 # gem 'dbi', "<= 0.2.0" 
 # found only dbi (0.4.5)
 # dbi-dbrc (1.1.9 ruby x86-mingw32, 1.1.6 x86-mswin32-60)
-
 # gem 'ruby-gd'       # http://raa.ruby-lang.org/cache/ruby-gd/
 # gem 'tarsimple'
 # gem 'pg'            # ruby gem name is 'pg'. See http://rubygems.org/gems/pg
@@ -17,12 +16,11 @@ gem "akami"
 gem "archive-tarsimple"
 gem "bigdecimal"
 gem "builder"
-gem "dbd-pg"
+gem "dbd-pg" # must be installed via emerge
 gem "deprecated", "= 2.0.1"
-gem "dbi" # , "0.4.5", :path => '/opt/dbi' # we patch dbi installed as a gem
+gem "dbi", "0.4.5"# we patch dbi installed as a gem
 gem "dojo"
 gem "facets", "<2.0.0"
-
 gem "fastthread"
 gem "flexmock"
 gem "flickraw"
