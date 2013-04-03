@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 29.03.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 03.04.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -87,11 +87,19 @@ module ODDB
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
-    def replace text_info, container, type
-      old_ti = container.send type
-      @app.update container.pointer, type => text_info.pointer
-      if old_ti && old_ti.empty?
-        @app.delete old_ti.pointer
+    def replace(new_ti, container, type)
+      old_ti = container.send(type)
+      if old_ti
+        %w[de fr].each do |lang|
+          if old_ti.descriptions and desc = new_ti.descriptions[lang]
+            desc.odba_isolated_store
+            old_ti.descriptions[lang] = desc
+            old_ti.descriptions.odba_isolated_store
+          end
+        end
+        @app.update(old_ti.pointer, {:descriptions => old_ti.descriptions})
+      else
+        @app.update(container.pointer, {type => new_ti.pointer})
       end
     end
     def store_fachinfo languages
