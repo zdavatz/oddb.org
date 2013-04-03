@@ -419,7 +419,8 @@ module ODDB
                   if sl_entry.limitation_text || txt_ptr.resolve(@app)
                     @app.delete txt_ptr
                   end
-                rescue ODDB::Persistence::UninitializedPathError
+                rescue ODDB::Persistence::UninitializedPathError,
+                       ODDB::Persistence::InvalidPathError
                   # skip
                 end
                 @app.update txt_ptr.creator, lim_data, :bag
