@@ -19,7 +19,7 @@ gem "bigdecimal"
 gem "builder"
 # gem "dbd-pg"
 gem "deprecated", "= 2.0.1"
-gem "dbi", "0.4.5", :path => '/opt/dbi'
+gem "dbi" # , "0.4.5", :path => '/opt/dbi' # we patch dbi installed as a gem
 gem "dojo"
 gem "facets"
 gem "fastthread"
