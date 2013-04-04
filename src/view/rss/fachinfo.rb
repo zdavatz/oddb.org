@@ -56,6 +56,7 @@ class Fachinfo < HtmlGrid::Component
         item.author = "ODDB.org"
 
         name = item.title = sanitize(fachinfo.localized_name(language))
+        next unless name
         args = {:reg => fachinfo.iksnrs.first}
         item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
         item.guid.isPermaLink = true
