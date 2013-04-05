@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Parinfo -- oddb -- 27.03.2012 -- yasaka@ywesee.com
+# Parinfo -- oddb -- 05.04.2013 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'
@@ -8,6 +8,7 @@ require 'model/sequence_observer'
 
 module ODDB
 	class Patinfo
+		include Persistence
 		include Language
 		include SequenceObserver
     def article_codes
