@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 26.03.2013 -- yasaka@ywesee.com
+# ODDB::Updater-- oddb.org -- 05.04.2013 -- yasaka@ywesee.com
 # ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
@@ -189,7 +189,7 @@ module ODDB
 
       # textinfo
       update_textinfo_swissmedicinfo({:target => :fi})
-      #update_textinfo_swissmedicinfo({:target => :pi})
+      update_textinfo_swissmedicinfo({:target => :pi})
       update_textinfo_news2
 
 			if(update_swissmedic)
