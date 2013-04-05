@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 03.04.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 05.04.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -87,12 +87,12 @@ module ODDB
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
-    def replace(new_ti, container, type)
+    def replace(new_ti, container, type) # description
       old_ti = container.send(type)
       if old_ti
+        # support update with only a de/fr description
         %w[de fr].each do |lang|
           if old_ti.descriptions and desc = new_ti.descriptions[lang]
-            desc.odba_isolated_store
             old_ti.descriptions[lang] = desc
             old_ti.descriptions.odba_isolated_store
           end
@@ -102,10 +102,14 @@ module ODDB
         @app.update(container.pointer, {type => new_ti.pointer})
       end
     end
-    def store_fachinfo languages
+    def store_fachinfo reg, languages
       @updated_fis += 1
-      pointer = Persistence::Pointer.new(:fachinfo)
-      @app.update(pointer.creator, languages)
+      existing = reg.fachinfo
+      ptr = Persistence::Pointer.new(:fachinfo).creator
+      if existing
+        ptr = existing.pointer
+      end
+      @app.update ptr, languages
     end
     def store_orphaned iksnr, info, point=:orphaned_fachinfo
       if info
@@ -119,8 +123,7 @@ module ODDB
     end
     def store_patinfo reg, languages
       @updated_pis +=1
-      existing = reg.sequences.collect do |seqnr, seq|
-        seq.patinfo end.compact.first
+      existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
       if existing
         ptr = existing.pointer
@@ -148,7 +151,7 @@ module ODDB
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
-              fachinfo ||= store_fachinfo(fis)
+              fachinfo ||= store_fachinfo(reg, fis)
               replace fachinfo, reg, :fachinfo
             end
           else
