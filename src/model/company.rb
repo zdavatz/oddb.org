@@ -46,7 +46,7 @@ module ODDB
 		end
 		def atc_classes
 			@registrations.inject([]) do |memo, registration|
-				memo.concat registration.atc_classes				
+				memo.concat registration.atc_classes
       end.compact.uniq
 		end
     def disable_invoice_fachinfo

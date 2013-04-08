@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 07.12.2012 -- yasaka@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 08.04.2013 -- yasaka@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
@@ -156,6 +156,7 @@ module ODDB
       include ChapterMethods
       def to_html(context)
         html = ''
+        GC.disable
         if @value
           if(@value.respond_to?(:heading) and !@value.heading.empty?)
             html << heading(context)
@@ -171,6 +172,7 @@ module ODDB
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
           end
         end
+        GC.enable
         html
       end
     end
