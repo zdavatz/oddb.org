@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissregPlugin -- oddb.org -- 19.07.2012 -- yasaka@ywesee.com
+# ODDB::SwissregPlugin -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
 # ODDB::SwissregPlugin -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -22,7 +22,7 @@ module ODDB
 			SWISSREG_SERVER.detail(uri.request_uri)
 		end
 		def format_data(data)
-			fmt = "%s -> http://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s\n"
+			fmt = "%s -> https://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s\n"
 			iksnrs = data[:iksnrs] || []
 			sprintf(fmt, iksnrs.join(','), data[:certificate_number])
 		end

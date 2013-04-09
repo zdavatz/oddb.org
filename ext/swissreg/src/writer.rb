@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# Swissreg::Writer -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
 # Swissreg::Writer -- oddb.org -- 03.05.2006 -- hwyss@ywesee.com
 
 require 'date'
@@ -17,7 +18,8 @@ module ODDB
 			end
 			def extract_data
 				data = {}
-				@tables.at(1).each_row { |row|
+        tables = @tables.at(1)
+        tables.each_row { |row|
           case(row.cdata(0))
           when /genehmigung/iu
             data[:iksnrs] = [row.cdata(1)].flatten.collect { |str|
@@ -46,7 +48,7 @@ module ODDB
 					when /schutzbeginn grundpatent/iu
 						data.store(:base_patent_date, date(row.cdata(1)))
 					end
-				}
+				} if tables
 				data
 			end
 			def new_linkhandler(link)

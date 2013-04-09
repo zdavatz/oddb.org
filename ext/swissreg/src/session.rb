@@ -13,7 +13,9 @@ module ODDB
   module Swissreg
 class Session < HttpSession
   def initialize
-    super('www.swissreg.ch')
+    host = 'www.swissreg.ch'
+    super(host)
+    @base_uri = "https://#{host}"
     @http.read_timeout = 120
     @http.use_ssl = true
     @http.instance_variable_set("@port", '443')
@@ -24,10 +26,10 @@ class Session < HttpSession
   def extract_result_links(html)
     doc = Hpricot.make(html, {})
     path = "//a[@target='detail']/span[@title='zur Detailansicht']"
-    link = "/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s"
+    link = @base_uri + "/srclient/faces/jsp/trademark/sr300.jsp?language=de&section=spc&id=%s"
     (doc/path).collect { |span|
-      link % span.inner_html
-    }
+      link % span.inner_html unless span.inner_html =~ /^</ # skip strange images
+    }.compact
   end
   def get(url, *args) # this method can not handle redirect
     res = super
@@ -36,7 +38,7 @@ class Session < HttpSession
   end
   def fetch(uri, limit = 5)
     raise ArgumentError, 'HTTP redirect too deep' if limit == 0
-    url = URI.parse(uri)
+    url = URI.parse(URI.encode(uri.strip))
     option = {
       :use_ssl     => true,
       # ignore swissreg.ch cert
@@ -45,6 +47,7 @@ class Session < HttpSession
     response = Net::HTTP.start(url.host, option) do |http|
       http.get url.request_uri
     end
+    @referer = uri
     case response
     when Net::HTTPSuccess
       response
@@ -72,29 +75,33 @@ class Session < HttpSession
     hdrs
   end
   def get_result_list(substance)
-    base_uri = 'https://www.swissreg.ch'
     path = '/srclient/'
     # discard this first response
     # swissreg.ch could not handle cookie by redirect.
     # HTTP status code is also strange at redirection.
-    response = fetch(base_uri + path)
+    response = fetch(@base_uri + path)
     # get only view state
     state = view_state(response)
     # get cookie
     path = "/srclient/faces/jsp/start.jsp"
-    response = fetch(base_uri + path)
+    response = fetch(@base_uri + path)
     update_cookie(response)
     data = [
-      ["autoScroll", "0,91"],
+      ["autoScroll", "0,0"],
       ["id_swissreg:_link_hidden_", ""],
       ["id_swissreg_SUBMIT", "1"],
       ["id_swissreg:_idcl", "id_swissreg_sub_nav_ipiNavigation_item0"],
       ["javax.faces.ViewState", state],
     ]
-    response = post(base_uri + path, data)
+    response = post(@base_uri + path, data)
+    update_cookie(response)
+    # swissreg.ch does not recognize request.
+    # we must send same request again :(
+    sleep(1)
+    response = post(@base_uri + path, data)
     update_cookie(response)
     criteria = [
-      ["autoScroll", "0,169"],
+      ["autoScroll", "0,0"],
       ["id_swissreg:mainContent:id_txf_tm_no", ""],
       ["id_swissreg:mainContent:id_txf_app_no", ""],
       ["id_swissreg:mainContent:id_txf_tm_text", "%s*" % substance],
@@ -106,8 +113,8 @@ class Session < HttpSession
       ["id_swissreg:_link_hidden_", ""],
       ["javax.faces.ViewState", view_state(response)],
     ]
-    path = "/srclient/faces/jsp/spc/sr1.jsp"
-    response = post(base_uri + path, criteria)
+    path = "/srclient/faces/jsp/trademark/sr1.jsp"
+    response = post(@base_uri + path, criteria)
     update_cookie(response)
     extract_result_links(response.body)
   rescue Timeout::Error
