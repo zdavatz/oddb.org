@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Swissreg::Session -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
+# ODDB::Swissreg::Session -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
@@ -23,13 +23,20 @@ class Session < HttpSession
     #@http.ssl_version = 'SSLv3'
     @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
   end
-  def extract_result_links(html)
-    doc = Hpricot.make(html, {})
+  def extract_result_links(response)
+    doc = Hpricot.make(response.body, {})
     path = "//a[@target='detail']/span[@title='zur Detailansicht']"
-    link = @base_uri + "/srclient/faces/jsp/trademark/sr300.jsp?language=de&section=spc&id=%s"
+    url   = @base_uri + "/srclient/faces/jsp/trademark/sr30.jsp"
+    param = (doc/"//input[@value^=TRADEMARK]").first.attributes['value']
+    state = view_state(response)
     (doc/path).collect { |span|
-      link % span.inner_html unless span.inner_html =~ /^</ # skip strange images
-    }.compact
+      unless span.inner_html =~ /^</ # skip strange images
+        if span.parent['onclick'].to_s =~ /\[\[.*'(\d*)'\]\]/
+          id = $1
+          [url, id, state, param]
+        end
+      end
+    }.uniq.compact
   end
   def get(url, *args) # this method can not handle redirect
     res = super
@@ -57,8 +64,24 @@ class Session < HttpSession
       response.value
     end
   end
-  def get_detail(url)
-    response = fetch(url)
+  def detail(url, id, state, param)
+    criteria = [
+      ["autoScroll", "0,0"],
+      ["id_swissreg:_idcl", "id_swissreg:mainContent:data:0:tm_no_detail:id_detail"],
+      ["id_swissreg:_link_hidden_", ""],
+      ["id_swissreg:mainContent:id_sub_options_result:id_ckbTMChoice", "tm_lbl_tm_text"],
+      ["id_swissreg:mainContent:id_sub_options_result:id_ckbTMChoice", "tm_lbl_state"],
+      ["id_swissreg:mainContent:id_sub_options_result:id_ckbTMChoice", "tm_lbl_nizza_class"],
+      ["id_swissreg:mainContent:id_sub_options_result:id_ckbTMChoice", "tm_lbl_applicant"],
+      ["id_swissreg:mainContent:id_sub_options_result:sub_fieldset:id_cbxHitsPerPage", "25"],
+      ["id_swissreg:mainContent:scroll_1", ""],
+      ["id_swissreg:mainContent:vivian", param],
+      ["id_swissreg_SUBMIT", "1"],
+      ["javax.faces.ViewState", state],
+      ["tmMainId", id]
+    ]
+    response = post(url, criteria)
+    update_cookie(response)
     writer = DetailWriter.new
     formatter = ODDB::HtmlFormatter.new(writer)
     parser = ODDB::HtmlParser.new(formatter)
@@ -95,6 +118,7 @@ class Session < HttpSession
     ]
     response = post(@base_uri + path, data)
     update_cookie(response)
+    state = view_state(response)
     # swissreg.ch does not recognize request.
     # we must send same request again :(
     sleep(1)
@@ -116,7 +140,7 @@ class Session < HttpSession
     path = "/srclient/faces/jsp/trademark/sr1.jsp"
     response = post(@base_uri + path, criteria)
     update_cookie(response)
-    extract_result_links(response.body)
+    extract_result_links(response)
   rescue Timeout::Error
     []
   end

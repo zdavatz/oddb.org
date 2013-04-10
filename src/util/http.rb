@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Http -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
+# ODDB::Http -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
 # ODDB::Http -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Http -- oddb.org -- 03.12.2003 -- hwyss@ywesee.com
 
@@ -99,6 +99,7 @@ module ODDB
 		def post_headers
 			headers = get_headers
 			headers.push(['Content-Type', 'application/x-www-form-urlencoded'])
+			headers.push(['Referer', @referer])
 		end
 		def get(*args)
 			retries = RETRIES
