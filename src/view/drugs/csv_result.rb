@@ -147,10 +147,10 @@ class CsvResult < HtmlGrid::Component
     end
   end
   def galenic_form_de(pack)
-    galenic_form(pack, :de)
+    galenic_form(pack, 'de')
   end
   def galenic_form_fr(pack)
-    galenic_form(pack, :fr)
+    galenic_form(pack, 'fr')
   end
   def galenic_group(pack, lang = @lookandfeel.language)
     if(galgroup = pack.galenic_group)
