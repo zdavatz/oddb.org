@@ -420,6 +420,7 @@ Zeno Davatz
 				:download_analysis1				=>	'hier',
 				:download_analysis2				=>	'.',
 				:download_app				      =>	'iPhone / iPad generika App Download',
+				:download_amiko				    =>	'AmiKo: Fachinfo App für Android',
 				:download_doctors0				=>	'Für den Download aller Arztadressen in einem YAML-File klicken Sie bitte ',
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',
