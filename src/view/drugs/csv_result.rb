@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 15.10.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
@@ -160,10 +160,10 @@ class CsvResult < HtmlGrid::Component
     end
   end
   def galenic_group_de(pack)
-    galenic_group(pack, :de)
+    galenic_group(pack, 'de')
   end
   def galenic_group_fr(pack)
-    galenic_group(pack, :fr)
+    galenic_group(pack, 'fr')
   end
 	def has_generic(pack)
     flag = pack.has_generic?
