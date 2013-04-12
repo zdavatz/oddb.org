@@ -2045,7 +2045,7 @@ Zeno Davatz
 				:download_analysis0				=>	'Pour recharcher la liste des analyses complette dans un fichier-PDF cliquer ',
 				:download_analysis1				=>	'ici',
 				:download_analysis2				=>	'.',
-        :download_amiko           =>  'AmiKo: Informations professionnelles App pour Android',
+        :download_amiko           =>  'AmiKo : les RCP en appli Android',
 				:download_doctors0				=>	'Pour recharger les adresses de tous les docteurs dans une fichier-YAML cliquer ',
 				:download_doctors1				=>	'ici',
 				:download_doctors2				=>	' s.v.p.',
