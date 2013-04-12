@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 12.04.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -428,6 +428,11 @@ module ODDB
       languages.each_value do |doc|
         src = doc.iksnrs.to_s.gsub(/[^0-9,\s]/, "")
         if(matches = src.strip.scan(/\d{5}|\d{2}\s*\d{3}|\d\s*{5}/))
+          # support some wrong in numbers [000nnn] (too many 0)
+          if (matches.length == 2 && matches.first =~ /^0{3}\d{2}$/) and
+             (matches.first.length == 5 && matches.last.length == 1 )
+            matches = [matches.first[1..-1] + matches.last]
+          end
           _iksnr = ''
           matches.map do |iksnr|
             # support [nnnnn] and [n,n,n,n,n]
