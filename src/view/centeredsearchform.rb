@@ -179,10 +179,15 @@ module ODDB
         link
       end
       def download_app(model, session)
-        link = HtmlGrid::Link.new(:download_app,
-                                  model, session, self)
+        link = HtmlGrid::Link.new(:download_app, model, session, self)
         link.set_attribute('class', 'list')
         link.href = 'http://itunes.apple.com/us/app/generika/id520038123?ls=1&mt=8'
+        link
+      end
+      def download_amiko(model, session)
+        link = HtmlGrid::Link.new(:download_amiko, model, session, self)
+        link.set_attribute('class', 'list')
+        link.href = 'http://pillbox.oddb.org/AMiKo.apk'
         link
       end
 			def download_export(model, session)
