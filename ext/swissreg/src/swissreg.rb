@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Swissreg -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
 # Swissreg -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 

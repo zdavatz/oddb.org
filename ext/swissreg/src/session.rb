@@ -24,7 +24,9 @@ class Session < HttpSession
     @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
   end
   def extract_result_links(response)
-    doc = Hpricot.make(response.body, {})
+    body = response.body
+    body.force_encoding('utf-8')
+    doc = Hpricot.make(body, {})
     path = "//a[@target='detail']/span[@title='zur Detailansicht']"
     url   = @base_uri + "/srclient/faces/jsp/spc/sr30.jsp"
     param = nil
