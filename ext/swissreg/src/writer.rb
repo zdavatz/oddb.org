@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Swissreg::Writer -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
+# Swissreg::Writer -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
 # Swissreg::Writer -- oddb.org -- 03.05.2006 -- hwyss@ywesee.com
 
 require 'date'
@@ -18,7 +18,7 @@ module ODDB
 			end
 			def extract_data
 				data = {}
-        tables = @tables.at(1)
+        tables = @tables.at(2)
         tables.each_row { |row|
           case(row.cdata(0))
           when /genehmigung/iu
@@ -41,7 +41,7 @@ module ODDB
 						data.store(:certificate_number, row.cdata(1).strip)
 					when /grundpatent-nr/iu
 						data.store(:base_patent, row.cdata(1))
-					when /maximale laufzeit/iu
+					when /maximale\slaufzeit/iu
 						data.store(:expiry_date, date(row.cdata(1)))
 					when /publikationsdatum/iu
 						data.store(:publication_date, date(row.cdata(1)))

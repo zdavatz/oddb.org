@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
-# Swissreg -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
+# Swissreg -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
 # Swissreg -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'session'
 
 module ODDB
   module Swissreg
-    def Swissreg.search(substance)
+    def Swissreg.search(iksnr)
       session = Session.new
-      session.get_result_list(substance).collect { |url, id, state, param|
+      session.get_result_list(iksnr).collect { |url, id, state, param|
         res = {}
         retries = 2
         begin

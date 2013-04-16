@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissregPlugin -- oddb.org -- 10.04.2013 -- yasaka@ywesee.com
+# ODDB::SwissregPlugin -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
 # ODDB::SwissregPlugin -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -11,7 +11,6 @@ module ODDB
 		SWISSREG_SERVER = DRb::DRbObject.new(nil, SWISSREG_URI)
 		def initialize(app)
 			super
-			@substances = 0
 			@patents = 0
 			@iksnrs = 0
 			@successes = 0
@@ -27,13 +26,11 @@ module ODDB
 			sprintf(fmt, iksnrs.join(','), data[:certificate_number])
 		end
 		def report
-			fmt =  "Checked   %4i Substances for connected Patents\n"
-			fmt << "Found     %4i Patents\n"
+			fmt = "Found     %4i Patents\n"
 			fmt << "of which  %4i had a Swissmedic-Number.\n"
 			fmt << "          %4i Registrations were successfully updated;\n"
 			fmt << "for these %4i Swissmedic-Numbers no Registration was found:\n\n"
-			str = sprintf(fmt, 
-										@substances, @patents, @iksnrs, @successes, @failures.size)
+			str = sprintf(fmt, @patents, @iksnrs, @successes, @failures.size)
 			@failures.each { |data|
 				str << format_data(data)
 			}
@@ -58,19 +55,13 @@ module ODDB
 			if((group = @app.log_group(:swissmedic)) && (log = group.latest))
 				log.change_flags.each_key { |ptr| 
 					if(reg = ptr.resolve(@app))
-						reg.each_sequence { |seq|
-							substances += seq.active_agents.collect { |act| 
-								act.substance.to_s.split(' ').first
-							}
-						}
+            update_registrations(reg.iksnr)
 					end
 				}
 			end
-			update_substances(substances)
 		end
-		def update_registrations(substance_name)
-			@substances += 1
-			SWISSREG_SERVER.search(substance_name).each { |data|
+		def update_registrations(iksnr)
+			SWISSREG_SERVER.search(iksnr).each { |data|
 				@patents += 1
         if(iksnrs = data[:iksnrs])
           @iksnrs += 1
@@ -90,14 +81,5 @@ module ODDB
 				@failures.push(data)
 			end
 		end
-    def update_substances(substances)
-      substances.collect { |substance|
-        next unless substance
-        substance.force_encoding('utf-8')
-        substance.to_s.gsub(/(i|e|um)$/u, '')
-      }.compact.uniq.each { |substance_name|
-        update_registrations(substance_name)
-      }
-    end
   end
 end
