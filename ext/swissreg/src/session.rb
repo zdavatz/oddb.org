@@ -7,6 +7,7 @@
 require 'writer'
 require 'hpricot'
 require 'util/http'
+require 'util/hpricot'
 require 'iconv'
 
 module ODDB

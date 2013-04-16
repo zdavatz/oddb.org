@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 29.03.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -8,26 +8,8 @@ require 'hpricot'
 require 'iconv'
 require 'ostruct'
 require 'util/oddbconfig'
+require 'util/hpricot'
 require 'model/text'
-
-##
-# This Open-Class is needed for server that dose not have LANG env.
-#
-# String#force_encoding
-# See:: /path/to/gems/hpricot/lib/hpricot/builder.rb
-module Hpricot
-  def self.uxs(str)
-    str.to_s.force_encoding('utf-8').
-        gsub(/\&(\w+);/) { [NamedCharacters[$1] || 63].pack("U*") }. # 63 = ?? (query char)
-        gsub(/\&\#(\d+);/) { [$1.to_i].pack("U*") }
-  end
-  class Text
-    def to_s
-      str = content.force_encoding('utf-8')
-      Hpricot.uxs(str)
-    end
-  end
-end
 
 module ODDB
   module FiParse
