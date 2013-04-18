@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissregPlugin -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
+# ODDB::SwissregPlugin -- oddb.org -- 18.04.2013 -- yasaka@ywesee.com
 # ODDB::SwissregPlugin -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -9,13 +9,15 @@ require 'uri'
 module ODDB
 	class SwissregPlugin < Plugin
 		SWISSREG_SERVER = DRb::DRbObject.new(nil, SWISSREG_URI)
-		def initialize(app)
-			super
-			@patents = 0
-			@iksnrs = 0
-			@successes = 0
-			@failures = []
-		end
+    def initialize(app)
+      super
+      @registrations = 0
+      @patents       = 0
+      @successes     = 0
+      @iksnrs   = []
+      @failures = []
+      @notfound = []
+    end
 		def get_detail(url)
 			uri = URI.parse(url)
 			SWISSREG_SERVER.detail(uri.request_uri)
@@ -25,53 +27,52 @@ module ODDB
 			iksnrs = data[:iksnrs] || []
 			sprintf(fmt, iksnrs.join(','), data[:certificate_number])
 		end
-		def report
-			fmt = "Found     %4i Patents\n"
-			fmt << "of which  %4i had a Swissmedic-Number.\n"
-			fmt << "          %4i Registrations were successfully updated;\n"
-			fmt << "for these %4i Swissmedic-Numbers no Registration was found:\n\n"
-			str = sprintf(fmt, @patents, @iksnrs, @successes, @failures.size)
-			@failures.each { |data|
-				str << format_data(data)
-			}
-			str
-		end
-		def update
-			substances = []
-			@app.substances.each { |substance|
-				if((substance_name = substance.de.split(' ').first) \
-					 && (substance_name.length > 6) \
-					 && (substance.is_effective_form? \
-					 || (!substance.has_effective_form? && !substance.sequences.empty?)) \
-					 && !substance.sequences.any? { |seq| seq.registration.patent })
-					 #|| (!substance.has_effective_form? && !substance.sequences.empty?)))#
-					substances.push(substance_name)
-				end
-			}
-			update_substances(substances)
-		end
-		def update_news
-			substances = []
-			if((group = @app.log_group(:swissmedic)) && (log = group.latest))
-				log.change_flags.each_key { |ptr| 
-					if(reg = ptr.resolve(@app))
+    def report
+      fmt = "Checked  %4i Registrations\n"
+      fmt << "Found     %4i Patents\n"
+      fmt << "of which  %4i had a Swissmedic-Number.\n"
+      fmt << "              %4i Registrations were successfully updated;\n"
+      fmt << "for these %4i Swissmedic-Numbers no Registration was found:\n\n"
+      str = sprintf(fmt, @registrations, @patents, @iksnrs.length, @successes, @failures.length)
+      # detail
+      str << "\nUppdates:\n"
+      @iksnrs.each { |data| str << format_data(data) }
+      str << "\nFailures:\n"
+      @failures.each { |data| str << format_data(data) }
+      str << "\nNotFound:\n"
+      @notfound.each { |iksnr| str << iksnr + "\n" }
+      str
+    end
+    def update_news
+      substances = []
+      if((group = @app.log_group(:swissmedic)) && (log = group.latest))
+        log.change_flags.each_key { |ptr|
+          if(reg = ptr.resolve(@app))
+            @registrations += 1
             update_registrations(reg.iksnr)
-					end
-				}
-			end
-		end
-		def update_registrations(iksnr)
-			SWISSREG_SERVER.search(iksnr).each { |data|
-				@patents += 1
-        if(iksnrs = data[:iksnrs])
-          @iksnrs += 1
-          iksnrs.each { |iksnr|
-            update_registration(iksnr, data)
-          }
+          end
+        }
+      end
+    end
+    def update_registrations(iksnr)
+      patents = SWISSREG_SERVER.search(iksnr)
+      unless patents.empty?
+        patents.each do |data|
+          # if found in swissreg.ch
+          @patents += 1
+          if(iksnrs = data[:iksnrs])
+            @iksnrs.push(data)
+            iksnrs.each { |iksnr|
+              update_registration(iksnr, data)
+            }
+          else
+          end
+        sleep(2)
         end
-				sleep(2)
-			}
-		end
+      else
+        @notfound << iksnr
+      end
+    end
 		def update_registration(iksnr, data)
 			if(reg = @app.registration(iksnr))
 				@successes += 1

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Swissreg::Session -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
+# ODDB::Swissreg::Session -- oddb.org -- 18.04.2013 -- yasaka@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
@@ -33,6 +33,8 @@ class Session < HttpSession
     param = nil
     if input = (doc/"//input[@value^=SPC]").first
       param = input.attributes['value']
+    else
+      # Not found in swissreg.ch
     end
     if param
       state = view_state(response)
