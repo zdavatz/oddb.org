@@ -42,7 +42,7 @@ module ODDB
 				body = @response.body
 				charset = self.charset
 				unless(charset.nil? || charset.downcase == 'utf-8')
-					cd = Iconv.new('UTF-8', charset)
+					cd = Iconv.new("UTF-8//IGNORE", charset)
 					begin
 						cd.iconv body
 					rescue
@@ -99,7 +99,7 @@ module ODDB
 		def post_headers
 			headers = get_headers
 			headers.push(['Content-Type', 'application/x-www-form-urlencoded'])
-			headers.push(['Referer', @referer])
+			headers.push(['Referer', @referer.to_s])
 		end
 		def get(*args)
 			retries = RETRIES

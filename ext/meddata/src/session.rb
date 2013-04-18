@@ -57,11 +57,11 @@ class Session < HttpSession
 		@detail_key = DETAIL_KEYS[search_type]
 		super(server)
     resp = get '/'
+    sleep(2) # for Timeout::Error
     resp = get @http_path
 		handle_resp!(resp)
   rescue Timeout::Error => err
-    err.message << " - #{server} is not responding"
-    raise err
+    raise err.exception(err.message + " - #{server} is not responding")
 	end
 	def detail_html(ctl)
 		hash = post_hash({}, ctl)
@@ -83,15 +83,19 @@ class Session < HttpSession
 		@cookie_header = resp["set-cookie"]
     body = resp.body
     body.force_encoding('utf-8')
-    if(match = /VIEWSTATE.*?value="([^"]+)"/u.match(body))
-      @viewstate = match[1]
-    else
+    begin
+      if(match = /VIEWSTATE.*?value="([^"]+)"/u.match(body))
+        @viewstate = match[1]
+      else
+        @viewstate = nil
+      end
+      if(match = /EVENTVALIDATION.*?value="([^"]+)"/u.match(body))
+        @eventvalidation = match[1]
+      else
+        @eventvalidation = nil
+      end
+    rescue
       @viewstate = nil
-    end
-    if(match = /EVENTVALIDATION.*?value="([^"]+)"/u.match(body))
-      @eventvalidation = match[1]
-    else
-      @eventvalidation = nil
     end
 		@viewstate
 	end

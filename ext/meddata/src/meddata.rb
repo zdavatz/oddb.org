@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+# encoding: utf-8
 # MedData -- oddb -- 26.11.2004 -- jlang@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
