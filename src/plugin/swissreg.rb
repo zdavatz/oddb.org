@@ -35,7 +35,7 @@ module ODDB
       fmt << "for these %4i Swissmedic-Numbers no Registration was found:\n\n"
       str = sprintf(fmt, @registrations, @patents, @iksnrs.length, @successes, @failures.length)
       # detail
-      str << "\nUppdates:\n"
+      str << "\nUpdates:\n"
       @iksnrs.each { |data| str << format_data(data) }
       str << "\nFailures:\n"
       @failures.each { |data| str << format_data(data) }
