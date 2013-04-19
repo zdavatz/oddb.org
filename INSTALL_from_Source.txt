@@ -20,14 +20,14 @@ For usage also see:
 * http://wiki.oddb.org/
 
 === The simplest solution to get oddb.org up and running
-vagrant up will basically install oddb.org with a Funtoo-Box inside of
+"vagrant up" will basically install oddb.org with a Funtoo-Box inside of
 Virtualbox, apply all the patches, set all the symlinks for deamontools
 (svscan), set all the Ruby environments, install all the gems and additional
 services like yus and also set all the Apache and Postgresql configurations.
 
 * see https://github.com/ngiger/vagrant-oddb_org
 * see https://github.com/ngiger/vagrant-oddb_org/blob/master/Vagrantfile
-* you will need: Virtualbox, vagrant, git, Ruby-1.9.3 installed n your Linux, Windows or OS X
+* you will need: Virtualbox, vagrant, git, Ruby-1.9.3 installed on your Linux, Windows or OS X
 
  [ you will be amazed what is happening in front of your eyes ;) ]
 
