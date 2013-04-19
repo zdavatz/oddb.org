@@ -1,6 +1,5 @@
 .bundle
 .rbenv-version
-Gemfile*
 
 data/csv/
 data/downloads/

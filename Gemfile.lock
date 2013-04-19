@@ -1,0 +1,200 @@
+PATH
+  remote: /opt/dbi
+  specs:
+    dbi (0.4.5)
+
+GEM
+  remote: http://rubygems.org/
+  remote: http://rubygems.org/
+  specs:
+    active_support (3.0.0)
+      activesupport (= 3.0.0)
+    activesupport (3.0.0)
+    akami (1.2.0)
+      gyoku (>= 0.4.0)
+      nokogiri (>= 1.4.0)
+    archive-tarsimple (1.1.1)
+    bigdecimal (1.1.0)
+    builder (3.2.0)
+    dalli (2.6.2)
+    dbd-pg (0.3.9)
+      dbi (>= 0.4.0)
+      pg
+    deprecated (2.0.1)
+    diff-lcs (1.2.1)
+    dojo (1.01)
+      rspec
+      serialport (>= 1.1.0)
+    domain_name (0.5.9)
+      unf (>= 0.0.5, < 1.0.0)
+    facets (1.8.54)
+    fastthread (1.0.7)
+    flexmock (1.3.1)
+    flickraw (0.9.6)
+    gd2 (1.1.1)
+    gruff (0.3.7)
+    gyoku (1.0.0)
+      builder (>= 2.1.2)
+    hpricot (0.8.6)
+    htmlentities (4.3.1)
+    htmlgrid (1.0.6)
+    httpi (2.0.2)
+      rack
+    i18n (0.6.4)
+    innate (2013.02.21)
+      rack (~> 1.5.2)
+    io-console (0.4.2)
+    json (1.7.7)
+    mail (2.5.3)
+      i18n (>= 0.4.0)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
+    mechanize (2.6.0)
+      domain_name (~> 0.5, >= 0.5.1)
+      mime-types (~> 1.17, >= 1.17.2)
+      net-http-digest_auth (~> 1.1, >= 1.1.1)
+      net-http-persistent (~> 2.5, >= 2.5.2)
+      nokogiri (~> 1.4)
+      ntlm-http (~> 0.1, >= 0.1.1)
+      webrobots (>= 0.0.9, < 0.2)
+    mime-types (1.21)
+    minitest (4.7.0)
+    money (5.1.1)
+      i18n (~> 0.6.0)
+    multi_json (1.7.2)
+    needle (1.3.0)
+    net-http-digest_auth (1.2.1)
+    net-http-persistent (2.8)
+    nokogiri (1.5.9)
+    nori (2.0.4)
+    ntlm-http (0.1.1)
+    odba (1.1.0)
+    oddb2tdat (1.1.2)
+    parseexcel (0.5.2)
+    paypal (2.0.0)
+      money (> 0.0.0)
+    pg (0.15.0)
+    polyglot (0.3.3)
+    pre (0.0.2)
+      active_support
+      dalli
+      treetop
+    rack (1.5.2)
+    rake (10.0.4)
+    rake-compiler (0.8.3)
+      rake
+    ramaze (2012.12.08)
+      innate (>= 2012.12)
+      rake
+    rclconf (1.0.0)
+    rdoc (4.0.0)
+      json (~> 1.4)
+    rmagick (2.13.2)
+    rmail (1.0.0)
+    rockit (0.7.2)
+    rspec (2.13.0)
+      rspec-core (~> 2.13.0)
+      rspec-expectations (~> 2.13.0)
+      rspec-mocks (~> 2.13.0)
+    rspec-core (2.13.1)
+    rspec-expectations (2.13.0)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.13.0)
+    ruby-ole (1.2.11.6)
+    rubyzip (0.9.9)
+    savon (2.1.0)
+      akami (~> 1.2.0)
+      builder (>= 2.1.2)
+      gyoku (~> 1.0.0)
+      httpi (~> 2.0.2)
+      nokogiri (>= 1.4.0)
+      nori (~> 2.0.3)
+      wasabi (~> 3.0.0)
+    sbsm (1.2.3)
+    serialport (1.1.0)
+    spreadsheet (0.8.3)
+      ruby-ole (>= 1.0)
+    swissmedic_diff (0.1.3)
+    tmail (1.2.7.1)
+    treetop (1.4.12)
+      polyglot
+      polyglot (>= 0.3.1)
+    turing (0.0.11)
+      gd2 (>= 1.0)
+    unf (0.1.1)
+      unf_ext
+    unf_ext (0.0.6)
+    wasabi (3.0.0)
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.0)
+    webrobots (0.1.1)
+    ydim (1.0.0)
+    yus (1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport
+  akami
+  archive-tarsimple
+  bigdecimal
+  builder
+  dbd-pg
+  dbi (= 0.4.5)!
+  deprecated (= 2.0.1)
+  dojo
+  facets (< 2.0.0)
+  fastthread
+  flexmock
+  flickraw
+  gruff
+  gyoku
+  hpricot
+  htmlentities
+  htmlgrid
+  httpi
+  i18n
+  innate
+  io-console
+  json
+  mail
+  mechanize
+  mime-types
+  minitest
+  money
+  multi_json
+  needle
+  net-http-digest_auth
+  net-http-persistent
+  nokogiri
+  nori
+  odba
+  oddb2tdat
+  parseexcel
+  paypal
+  pg
+  polyglot
+  pre
+  rack
+  rake
+  rake-compiler
+  ramaze
+  rclconf
+  rdoc
+  rmagick
+  rmail
+  rockit
+  ruby-ole
+  rubyzip
+  savon
+  sbsm
+  spreadsheet
+  swissmedic_diff
+  tmail
+  treetop
+  turing
+  wasabi
+  webrobots
+  ydim
+  yus
