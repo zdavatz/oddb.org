@@ -27,9 +27,12 @@ services like yus and also set all the Apache and Postgresql configurations.
 
 * see https://github.com/ngiger/vagrant-oddb_org
 * see https://github.com/ngiger/vagrant-oddb_org/blob/master/Vagrantfile
-* you will need: Virtualbox, vagrant, git, Ruby-1.9.3 installed on your Linux, Windows or OS X
 
- [ you will be amazed what is happening in front of your eyes ;) ]
+This will show you how to do it (just do it):
+* https://github.com/ngiger/vagrant-oddb_org/blob/master/readme.textile
+
+ [ you will need: Virtualbox, vagrant, git, Ruby-1.9.3 installed on your Linux, Windows or OS X.
+   you will be amazed what is happening in front of your eyes ;). ]
 
 * The Funtoo-Box was made using veewee and puppet.
 
