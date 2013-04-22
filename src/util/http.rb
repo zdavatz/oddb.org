@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Http -- oddb.org -- 11.04.2013 -- yasaka@ywesee.com
+# ODDB::Http -- oddb.org -- 22.04.2013 -- yasaka@ywesee.com
 # ODDB::Http -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Http -- oddb.org -- 03.12.2003 -- hwyss@ywesee.com
 
@@ -38,20 +38,29 @@ module ODDB
 				@response = resp
 				super
 			end
-			def body
-				body = @response.body
-				charset = self.charset
-				unless(charset.nil? || charset.downcase == 'utf-8')
-					cd = Iconv.new("UTF-8//IGNORE", charset)
-					begin
-						cd.iconv body
-					rescue
-						body
-					end
-				else
-					body
-				end
-			end
+      def body
+        body = @response.body
+        charset = self.charset
+        # content
+        body = if @response['content-encoding'] == 'gzip'
+          begin
+            Zlib::GzipReader.new(StringIO.new(body), :encoding => "ASCII-8BIT").read
+          rescue Zlib::GzipFile::Error, Zlib::Error # actually this is not gzip :(
+            body
+          end
+        end
+        # encoding
+        body = if charset.nil? || charset.downcase != 'utf-8'
+          cd = Iconv.new("UTF-8//IGNORE", charset)
+          begin
+            cd.iconv body
+          rescue
+            body
+          end
+        else
+          body
+        end
+      end
 			def charset
 				if((ct = @response['Content-Type']) \
 					&& (match = /charset=([^;])+/u.match(ct)))

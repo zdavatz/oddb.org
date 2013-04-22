@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::MedData::Session -- oddb.org -- 22.04.2013 -- yasaka@ywesee.com
 # ODDB::MedData::Session -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::MedData::Session -- oddb.org -- 09.12.2004 -- jlang@ywesee.com
 
@@ -130,33 +131,33 @@ class Session < HttpSession
       raise
     end
 	end
-	def post_hash(criteria, ctl=nil)
-		data = if(ctl)
-			[['__EVENTTARGET',
-				"#@detail_key:#{ctl}:ctl00"],
-				['__EVENTARGUMENT',	''],
-			]
-		else
-			[
-				['__EVENTTARGET',	''],
-				['__EVENTARGUMENT',	''],
-		    ['btnSearch',	'Suche'],
-			]
-		end
-		if(@viewstate)
-			data.push(['__VIEWSTATE', @viewstate])
-		end
-    if @eventvalidation
-			data.push(['__EVENTVALIDATION', @eventvalidation])
+  def post_hash(criteria, ctl=nil)
+    data = if(ctl)
+      [['__EVENTTARGET',
+        "#@detail_key$#{ctl}$ctl00"],
+        ['__EVENTARGUMENT',  ''],
+      ]
+    else
+      [
+        ['__EVENTTARGET',  ''],
+        ['__EVENTARGUMENT',  ''],
+        ['btnSearch',  'Suche'],
+      ]
     end
-		@form_keys.each { |key, new_key|
-			if(val = criteria[key])
-				data.push([new_key, CGI.escape(val).tr('+', ' ')])
-			end
-		}
-		data.push(['hiddenlang',	'de'])
-		data
-	end
+    if(@viewstate)
+      data.push(['__VIEWSTATE', @viewstate])
+    end
+    if @eventvalidation
+      data.push(['__EVENTVALIDATION', @eventvalidation])
+    end
+    @form_keys.each { |key, new_key|
+      if(val = criteria[key])
+        data.push([new_key, CGI.escape(val).tr('+', ' ').gsub('%5B', '[').gsub('%5D', ']')])
+      end
+    }
+    data.push(['hiddenlang',  'de'])
+    data
+  end
 	def post_headers
 		headers = super
 		if(@cookie_header)

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::MedwinPlugin -- oddb.org -- 22.04.2012 -- yasaka@ywesee.com
 # ODDB::MedwinPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::MedwinPlugin -- oddb.org -- 06.10.2003 -- mhuggler@ywesee.com
 
@@ -55,26 +56,33 @@ module ODDB
 				update_company(comp)
 			}
 		end
-		def update_company(comp)
-			ean = comp.ean13.to_s
+    def update_company(comp)
+      ean = comp.ean13.to_s
       eanc = { :ean =>  ean }
       namec = { :name =>  comp.name.to_s }
-			criteria = ean.empty? ? namec : eanc
-			MEDDATA_SERVER.session(:partner) { |meddata|
-				results = meddata.search(criteria)
+      criteria = ean.empty? ? namec : eanc
+      criteria[:country]   = '0'
+      criteria[:functions] = '0'
+      criteria[:state]     = '[Tous]'
+      criteria[:city]      = ''
+      criteria[:plz]       = ''
+      criteria[:ean]  = '' unless criteria[:ean]
+      criteria[:name] = '' unless criteria[:name]
+      MEDDATA_SERVER.session(:partner) { |meddata|
+        results = meddata.search(criteria)
         if(results.empty? && criteria.include?(:ean))
           results = meddata.search(namec)
         end
-				if(results.size == 1)
-					result = results.first
-					if details = meddata.detail(result, @medwin_template)
+        if(results.size == 1)
+          result = results.first
+          if details = meddata.detail(result, @medwin_template)
             update_company_data(comp, details)
           end
-				end
-				nil # return nil across DRb
-			}
-		rescue MedData::OverflowError
-		end
+        end
+        nil # return nil across DRb
+      }
+    rescue MedData::OverflowError
+    end
 		def update_company_data(comp, data)
       addr = Address2.new
       addr.address = data[:address]
