@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MedwinPlugin -- oddb.org -- 22.04.2012 -- yasaka@ywesee.com
+# ODDB::MedwinPlugin -- oddb.org -- 24.04.2012 -- yasaka@ywesee.com
 # ODDB::MedwinPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::MedwinPlugin -- oddb.org -- 06.10.2003 -- mhuggler@ywesee.com
 
@@ -52,9 +52,9 @@ module ODDB
 		end
 		def update
 			@checked = @app.companies.size
-			@app.companies.each_value { |comp| 
+			@app.companies.each_value do |comp|
 				update_company(comp)
-			}
+      end
 		end
     def update_company(comp)
       ean = comp.ean13.to_s
@@ -83,7 +83,7 @@ module ODDB
       }
     rescue MedData::OverflowError
     end
-		def update_company_data(comp, data)
+    def update_company_data(comp, data)
       addr = Address2.new
       addr.address = data[:address]
       addr.location = [data[:plz], data[:location]].compact.join(' ')
@@ -94,15 +94,19 @@ module ODDB
         addr.fax = [fax]
       end
       update = {
-        :ean13	=>	data[:ean13],
+        :ean13     => data[:ean13],
         :addresses => [addr],
       }
-      update.delete_if { |key, val| 
-        (orig = comp.data_origin(key)) && orig != :refdata 
-      }
-      @updated.push(comp.name)
+      # MedWin-Updater updates all records
+      #update.delete_if { |key, val|
+      #  (orig = comp.data_origin(key)) && orig != :refdata
+      #}
+      @updated.push(
+        comp.name + " - " + "[#{update[:ean13]}]" + " - " +
+        sprintf("http://#{SERVER_NAME}/de/gcc/company/ean/%s", update[:ean13].to_s + " ")
+      )
       @app.update(comp.pointer, update, :refdata)
-		end
+    end
 	end
 	class MedwinPackagePlugin < MedwinPlugin
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
