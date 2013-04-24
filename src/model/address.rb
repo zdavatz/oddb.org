@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Address -- oddb.org -- 24.04.2013 -- yasaka@ywesee.com
 # ODDB::Address -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::Address -- oddb.org -- 20.09.2004 -- jlang@ywesee.com
 
@@ -49,7 +50,9 @@ module ODDB
 		end
 	end
 	class Address2
+    include Persistence
 		include PersistenceMethods
+    ODBA_SERIALIZABLE = ['@additional_lines', '@fax', '@fon']
 		@@city_pattern = /[^0-9]+[^0-9\-](?!-)([0-9]+)?/u
 		attr_accessor :name, :additional_lines, :address,
 			:location, :title, :fon, :fax, :canton, :type
@@ -154,8 +157,7 @@ module ODDB
 	end
 	class AddressSuggestion < Address2
 		include Persistence
-		ODBA_SERIALIZABLE = ['@additional_lines', '@fax',
-			'@fon'] 
+		ODBA_SERIALIZABLE = ['@additional_lines', '@fax', '@fon']
 		attr_accessor :address_pointer, :message, 
 			:email_suggestion, :email, :time, :fullname,
       :address_instance, :url, :parent
