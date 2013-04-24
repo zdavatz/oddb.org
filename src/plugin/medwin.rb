@@ -52,8 +52,7 @@ module ODDB
 		end
 		def update
 			@checked = @app.companies.size
-			#@app.companies.each_value do |comp|
-			@app.companies.select{|c| c.name =~ /Bayer/ }.each do |comp|
+			@app.companies.each_value do |comp|
 				update_company(comp)
       end
 		end
