@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::YamlPlugin -- oddb.org -- 24.04.2012 -- yasaka@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 26.04.2013 -- yasaka@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
@@ -56,16 +56,24 @@ module ODDB
       end
       return valid_infos
     end
+    def no_description(fachinfo)
+      swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
+      if !fachinfo.company_name.to_s.empty? or
+         !fachinfo.name_base.to_s.empty? or
+         !swissmedic_registration_numbers.empty?
+        [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
+      else
+        nil
+      end
+    end
     def export_effective_fachinfos(name='fachinfo_now.yaml')
       _fachinfos = @app.effective_fachinfos
       check_infos(name, "Registration") do |no_descr|
         _fachinfos.each do |fachinfo|
           no_descr.keys.each do |language|
             unless fachinfo.descriptions[language]
-              swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
-              no_descr[language].push(
-                [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
-              )
+              note = no_description(fachinfo)
+              no_descr[language].push(note) if note
             end
           end
         end
@@ -77,10 +85,8 @@ module ODDB
         @app.fachinfos.values.each do |fachinfo|
           no_descr.keys.each do |language|
             unless fachinfo.descriptions[language]
-              swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
-              no_descr[language].push(
-                [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
-              )
+              note = no_description(fachinfo)
+              no_descr[language].push(note) if note
             end
           end
         end
