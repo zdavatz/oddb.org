@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbYaml -- oddb.org -- 03.08.2012 -- yasaka@ywesee.com
+# ODDB::OddbYaml -- oddb.org -- 07.05.2013 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
@@ -311,6 +311,7 @@ module ODDB
 			'@fabrication',
 			'@reference',
 			'@iksnrs',
+      '@packages',
 			'@date',
 		]
 	end
@@ -335,6 +336,7 @@ module ODDB
 			'@preclinic',
 			'@other_advice',
 			'@iksnrs',
+      '@packages',
 			'@registration_owner',
 			'@date',
 		]
