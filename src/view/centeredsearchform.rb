@@ -187,7 +187,7 @@ module ODDB
       def download_amiko(model, session)
         link = HtmlGrid::Link.new(:download_amiko, model, session, self)
         link.set_attribute('class', 'list')
-        link.href = 'http://pillbox.oddb.org/AMiKo.apk'
+        link.href = 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'
         link
       end
 			def download_export(model, session)
