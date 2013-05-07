@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 07.05.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -61,7 +61,10 @@ class TextinfoHpricot
       @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
-      name          = doc.at("p[text()*='#{@title}']")
+      name = doc.at("p[text()*='#{@title}']")
+      unless name # fallback
+        name = doc.at("p[text()*='#{@title.gsub(/®|™/, '')}']")
+      end
       @name         = simple_chapter(name)
       paragraph_tag = "p[@id^='section']"
     else
