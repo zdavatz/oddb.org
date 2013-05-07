@@ -970,13 +970,14 @@ module ODDB
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., \"#{iksnr}\")]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
+          expr = /#{iksnr[0..1]}(.|\s)?#{iksnr[2..4]}\s?/
           found_node = catch(:found) do
             node_set.find_all do |node|
               html = Nokogiri::HTML(node.text)
               pos = (html.text =~ /Zulassungsnummer|Num.ro\s*d.autorisation/).to_i
               unless pos == 0
                 src = html.text[pos..-1]
-                throw :found, node if src =~ /#{iksnr[0..1]}(.|\s)?#{iksnr[2..4]}\s?/o
+                throw :found, node if src =~ expr
               end
               false
             end
