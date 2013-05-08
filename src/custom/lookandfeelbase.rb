@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 08.05.2013 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -420,7 +420,8 @@ Zeno Davatz
 				:download_analysis1				=>	'hier',
 				:download_analysis2				=>	'.',
 				:download_app				      =>	'iPhone / iPad generika App Download',
-				:download_amiko				    =>	'AmiKo: Fachinfo App für Android',
+        :download_amiko           => 'AmiKo: Fachinfo App für Android',
+        :download_amiko_link      => 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ',
 				:download_doctors0				=>	'Für den Download aller Arztadressen in einem YAML-File klicken Sie bitte ',
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',
@@ -2046,6 +2047,7 @@ Zeno Davatz
 				:download_analysis1				=>	'ici',
 				:download_analysis2				=>	'.',
         :download_amiko           =>  'AmiKo : les RCP en appli Android',
+        :download_amiko_link      =>  'https://play.google.com/store/apps/details?id=com.ywesee.amiko.fr&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ',
 				:download_doctors0				=>	'Pour recharger les adresses de tous les docteurs dans une fichier-YAML cliquer ',
 				:download_doctors1				=>	'ici',
 				:download_doctors2				=>	' s.v.p.',
