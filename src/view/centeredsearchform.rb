@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::CenteredSearchForm -- oddb.org -- 27.02.2013 -- yasaka@ywesee.com
+# ODDB::View::CenteredSearchForm -- oddb.org -- 08.05.2013 -- yasaka@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
@@ -187,7 +187,7 @@ module ODDB
       def download_amiko(model, session)
         link = HtmlGrid::Link.new(:download_amiko, model, session, self)
         link.set_attribute('class', 'list')
-        link.href = 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'
+        link.href = @lookandfeel.lookup(:download_amiko_link)
         link
       end
 			def download_export(model, session)
