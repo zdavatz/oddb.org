@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Swissreg::Session -- oddb.org -- 18.04.2013 -- yasaka@ywesee.com
+# ODDB::Swissreg::Session -- oddb.org -- 10.05.2013 -- yasaka@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
@@ -109,17 +109,19 @@ class Session < HttpSession
     hdrs
   end
   def get_result_list(iksnr)
-    path = '/srclient/'
+    start_path = '/srclient/'
     # discard this first response
     # swissreg.ch could not handle cookie by redirect.
     # HTTP status code is also strange at redirection.
-    response = fetch(@base_uri + path)
-    # get only view state
-    state = view_state(response)
-    # get cookie
+    _response = fetch(@base_uri + start_path)
+    state = view_state(_response) # get only view state
     path = "/srclient/faces/jsp/start.jsp"
-    response = fetch(@base_uri + path)
-    update_cookie(response)
+    _response = fetch(@base_uri + path) # get only cookie
+    update_cookie(_response)
+    _response = nil
+    # back to start point
+    response = fetch(@base_uri + start_path)
+    state = view_state(response)
     data = [
       ["autoScroll", "0,0"],
       ["id_swissreg:_link_hidden_", ""],
@@ -130,7 +132,7 @@ class Session < HttpSession
     response = post(@base_uri + path, data)
     # swissreg.ch does not recognize request.
     # we must send same request again :(
-    sleep(1)
+    sleep(2)
     response = post(@base_uri + path, data)
     update_cookie(response)
     state = view_state(response)
@@ -214,6 +216,7 @@ class Session < HttpSession
       ""
     end
   end
+
 end
   end
 end
