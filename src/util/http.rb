@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Http -- oddb.org -- 22.04.2013 -- yasaka@ywesee.com
+# ODDB::Http -- oddb.org -- 10.05.2013 -- yasaka@ywesee.com
 # ODDB::Http -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Http -- oddb.org -- 03.12.2003 -- hwyss@ywesee.com
 
@@ -43,14 +43,16 @@ module ODDB
         charset = self.charset
         # content
         body = if @response['content-encoding'] == 'gzip'
-          begin
-            Zlib::GzipReader.new(StringIO.new(body), :encoding => "ASCII-8BIT").read
-          rescue Zlib::GzipFile::Error, Zlib::Error # actually this is not gzip :(
-            body
-          end
-        end
+                 begin
+                   Zlib::GzipReader.new(StringIO.new(body), :encoding => "ASCII-8BIT").read
+                 rescue Zlib::GzipFile::Error, Zlib::Error # actually this is not gzip :(
+                   body
+                 end
+               else
+                 body
+               end
         # encoding
-        body = if charset.nil? || charset.downcase != 'utf-8'
+        if charset.nil? || charset.downcase != 'utf-8'
           cd = Iconv.new("UTF-8//IGNORE", charset)
           begin
             cd.iconv body
@@ -127,7 +129,7 @@ module ODDB
     def get_headers
       [
         ['Host', @http_server],
-        ['User-Agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:16.0) Gecko/20100101 Firefox/16.0'],
+        ['User-Agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20100101 Firefox/20.0'],
         ['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
         ['Accept-Encoding', 'gzip, deflate'],
         ['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],
