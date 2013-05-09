@@ -13,7 +13,7 @@ module ODDB
   Spreadsheet.client_encoding = 'UTF-8'
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
-			'matthijs.ouwerkerk@just-medical.com',
+			'matthijs.ouwerkerk@just-medical.com', 'carolrong8@gmail.com',
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
