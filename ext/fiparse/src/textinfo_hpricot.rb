@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 07.05.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 10.05.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -125,21 +125,29 @@ class TextinfoHpricot
         ptr.target << "\n"
       when 'p'
         if ptr.table
-          ptr.target.next_paragraph if ptr.target.is_a?(Text::MultiCell)
+          if ptr.target.is_a?(Text::MultiCell)
+            ptr.target.next_paragraph
+          end
         else
           ptr.section ||= ptr.chapter.next_section
           ptr.target = ptr.section.next_paragraph
         end
         handle_element(child, ptr)
-      when 'span', 'em', 'strong', 'b'
+      when 'span', 'em', 'strong', 'b', 'br'
         if ptr.target.is_a?(Text::MultiCell)
-          ptr.target = ptr.target.next_paragraph
+          unless ptr.table
+            ptr.target = ptr.target.next_paragraph
+          end
         end
-        ptr.target << ' '
-        ptr.target.augment_format(:italic) if has_italic?(child, ptr)
-        handle_element(child, ptr)
-        ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
-        ptr.target << ' '
+        if child.name == 'br'
+          if ptr.table
+            ptr.target << "\n"
+          end
+        else
+          ptr.target.augment_format(:italic) if has_italic?(child, ptr)
+          handle_element(child, ptr)
+          ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
+        end
       when 'sub', 'sup'
         ptr.target << ' '
         handle_text(ptr, child)
