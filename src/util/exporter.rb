@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 16.10.2012 -- yasaka@ywesee.com
+# ODDB::Exporter -- oddb.org -- 14.05.2013 -- yasaka@ywesee.com
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
@@ -279,8 +279,9 @@ module ODDB
         exporter.export_prices
       end
 			run_on_weekday(2) {
-        safe_export 'fachinfo.yaml' do
-          exporter.export_fachinfos
+        # ebooks need fachinfo_now.yaml
+        safe_export 'fachinfo_now.yaml' do
+          exporter.export_effective_fachinfos
         end
 			}
 			run_on_weekday(3) {
