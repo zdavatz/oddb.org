@@ -11,9 +11,10 @@ module ODDB
   module Util
     Job.run do |system|
       opts = {
-        :target  => :fi,
-        :reparse => false,
-        :iksnrs  => [],
+        :target   => :fi,
+        :reparse  => false,
+        :iksnrs   => [],
+        :download => true,
       }
       ARGV.each do |arg|
         if arg =~ /^\d{5}$/
@@ -22,6 +23,8 @@ module ODDB
           opts[:target] = $2.intern
         elsif arg =~ /reparse/
           opts[:reparse] = true
+        elsif arg =~ /no\-download/
+          opts[:download] = false
         end
       end
       puts "\nopts == #{opts.inspect}\n\n"

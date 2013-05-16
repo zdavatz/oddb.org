@@ -1155,8 +1155,10 @@ module ODDB
     def import_swissmedicinfo(target=:both)
       target = @options[:target] if @options[:target]
       threads = []
-      threads << Thread.new do
-        download_swissmedicinfo_xml
+      if @options[:download] != false
+        threads << Thread.new do
+          download_swissmedicinfo_xml
+        end
       end
       if @options[:iksnrs].nil? or @options[:iksnrs].empty?
         index = {}
@@ -1170,8 +1172,10 @@ module ODDB
         import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
         threads.map(&:join)
       end
-      puts "job is done. now postprocess works ..."
-      postprocess
+      if @options[:download] != false
+        puts "job is done. now postprocess works ..."
+        postprocess
+      end
       true # report
     end
   end
