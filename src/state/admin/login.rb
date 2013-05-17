@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Admin::Login -- oddb -- 17.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 29.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -37,14 +38,19 @@ module LoginMethods
         location = nextstate.request_path
         if location.nil? or
            location =~ /logout/ or
-           nextstate.class == self.class
+           nextstate.class == self.class or
+           self.class == ODDB::State::Drugs::ResultLimit
           location = '/'
         end
-        self.http_headers = { # replace with self to prevent request loop
+        _state = self
+        if self.class == ODDB::State::Drugs::ResultLimit
+          _state = nextstate
+        end
+        _state.http_headers = { # replace with self to prevent request loop
           'Status'   => '303 See Other',
           'Location' => location
         }
-        self
+        _state
       else
         nextstate
       end
@@ -66,7 +72,7 @@ module LoginMethods
     state
   end
   def viral_modules(user)
-    [ 
+    [
       ['org.oddb.RootUser', State::Admin::Root],
       ['org.oddb.AdminUser', State::Admin::Admin],
       ['org.oddb.PowerUser', State::Admin::PowerUser],
