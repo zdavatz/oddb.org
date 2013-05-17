@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 21.09.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 17.05.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -68,7 +68,7 @@ module ODDB
 		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
-			if(@state.limited?)
+			if(@state.limited? && !login_token)
 				requests.delete_if { |other| 
 					(@process_start - other) >= QUERY_LIMIT_AGE 
 				}
@@ -90,6 +90,7 @@ module ODDB
         @cookie_input.delete :remember
       end
       @user
+    rescue Yus::YusError
     end
     def login_token
       # @app.login raises Yus::YusError
