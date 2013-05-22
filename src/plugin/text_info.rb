@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 12.04.2013 -- yasaka@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 22.05.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
@@ -948,7 +948,7 @@ module ODDB
         def match(node_set, name)
           found_node = catch(:found) do
             node_set.find_all do |node|
-              unknown_chars = /[^A-z,\/\s\-]/
+              unknown_chars = /[^A-z0-9,\/\s\-]/
               title = node.text.gsub(unknown_chars, '')
               name  = name.gsub(unknown_chars, '')
               throw :found, node if title == name
@@ -1169,8 +1169,8 @@ module ODDB
         import_swissmedicinfo_by_index(index, target)
         index = nil
       else
-        import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
         threads.map(&:join)
+        import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
       end
       if @options[:download] != false
         puts "job is done. now postprocess works ..."
