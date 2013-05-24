@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 16.05.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 24.05.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -37,15 +37,16 @@ class TextinfoHpricot
     else
       title_tag = ((@format == :compendium) ? 'div.absTitle' : 'h2')
       if(title = elem.at(title_tag))
-        elem.children.delete(title)
         anchor = title.at('a')
         if !anchor.nil?
-          code            = anchor['name']
-          chapter.heading = text(anchor.next) # <a><p></p></a>
+          code    = anchor['name']
+          heading = (anchor.next ? anchor.next : title)
+          chapter.heading = text(heading) # <a><p></p></a>
         elsif id = title.parent.attributes['id']  and !id.empty? # :compendium format of swissmedicinfo
           code            = id.gsub(/[^0-9]/, '')
           chapter.heading = text(title) # <p></p>
         end
+        elem.children.delete(title)
       end
       handle_element(elem, ptr)
     end
@@ -62,13 +63,15 @@ class TextinfoHpricot
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
       name = doc.at("p[text()*='#{@title}']")
-      unless name # fallbacks
-        name = doc.at("p[text()*='#{@title.gsub(/®|™/, '')}']")
-      end
-      unless name # fallback 2
-        first_p = doc.at("p[@id^='section']")
-        if first_p.inner_text.gsub(/[^A-z0-9]/, '').downcase == @title.gsub(/[^A-z0-9]/, '').downcase
-          name = first_p
+      if type == :fi
+        unless name # fallbacks
+          name = doc.at("p[text()*='#{@title.gsub(/®|™|\s/, '')}']")
+        end
+        unless name # fallback 2
+          first_p = doc.at("p[@id^='section']")
+          if first_p.inner_text.gsub(/[^A-z0-9]/, '').downcase == @title.gsub(/[^A-z0-9]/, '').downcase
+            name = first_p
+          end
         end
       end
       name = @title unless name # fallback 3
