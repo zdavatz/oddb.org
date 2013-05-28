@@ -1,5 +1,6 @@
 .bundle
 .rbenv-version
+.ruby-version
 
 data/csv/
 data/downloads/
