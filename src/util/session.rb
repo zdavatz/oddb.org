@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 17.05.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 28.05.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -61,14 +61,14 @@ module ODDB
 			end
 		end
 		def expired?(now=Time.now)
-      super || (logged_in? && @user.expired?)
+      super || (logged_in? && !@user.expired?)
 		end
 		def flavor
 			@flavor ||= (@valid_input[:partner] || super)
 		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
-			if(@state.limited? && !login_token)
+			if(@state.limited?)
 				requests.delete_if { |other| 
 					(@process_start - other) >= QUERY_LIMIT_AGE 
 				}
@@ -82,20 +82,22 @@ module ODDB
 		end
     def login
       # @app.login raises Yus::YusError
+      # caller must rescue Yus::UnknownEntityError and Yus::AuthenticationError
 			@user = @app.login(user_input(:email), user_input(:pass))
       if cookie_set_or_get(:remember_me)
         set_cookie_input :remember, @user.generate_token
         set_cookie_input :email, @user.email
       else
+        set_persistent_user_input(:remember, @user.generate_token)
+        set_persistent_user_input(:email, @user.email)
         @cookie_input.delete :remember
       end
       @user
-    rescue Yus::YusError
     end
     def login_token
-      # @app.login raises Yus::YusError
-      email = get_cookie_input(:email)
-      token = get_cookie_input(:remember)
+      # @app.login_token raises Yus::YusError
+      email = (persistent_user_input(:email) || get_cookie_input(:email))
+      token = (persistent_user_input(:remember) || get_cookie_input(:remember))
       if email && token && !token.empty?
         @user = @app.login_token email, token
         set_cookie_input :remember, @user.generate_token
@@ -119,7 +121,7 @@ module ODDB
       if(!is_crawler? &&
          !is_mobile_app? &&
          self.lookandfeel.enabled?(:query_limit))
-        limit_queries 
+        limit_queries unless login_token
       end
       '' ## return empty string across the drb-border
     end

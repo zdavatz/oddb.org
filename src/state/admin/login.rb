@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Login -- oddb -- 17.05.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Login -- oddb -- 28.05.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 29.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -23,23 +23,21 @@ module LoginMethods
     self
   end
   def autologin(user, default=@previous)
-    newstate = if(user.valid?)
+    newstate = if !user.nil? and user.valid?
       des = @session.desired_state
       @session.desired_state = nil
       @session.valid_input.update(@desired_input) if(@desired_input)
       nextstate = (des || default || trigger(:home))
-      # login redirect
-      entrance = [
+      entrances = [ # login redirect
         ODDB::State::Drugs::ResultLimit,
         ODDB::State::Admin::Login,
         ODDB::State::Admin::TransparentLogin
       ]
-      if entrance.include?(self.class)
+      if entrances.include?(self.class)
         location = nextstate.request_path
         if location.nil? or
            location =~ /logout/ or
-           nextstate.class == self.class or
-           self.class == ODDB::State::Drugs::ResultLimit
+           nextstate.class == self.class
           location = '/'
         end
         _state = self
@@ -57,18 +55,19 @@ module LoginMethods
     else
       State::User::InvalidUser.new(@session, user)
     end
-    reconsider_permissions(user, newstate)
     if newstate.respond_to?(:augment_self)
-      reconsider_permissions user, newstate.augment_self
+      reconsider_permissions(user, newstate.augment_self)
     else
-      newstate
+      reconsider_permissions(user, newstate)
     end
   end
   private
   def reconsider_permissions(user, state)
-    viral_modules(user) { |mod|
-      state.extend(mod)
-    }
+    if user
+      viral_modules(user) { |mod|
+        state.extend(mod)
+      }
+    end
     state
   end
   def viral_modules(user)
@@ -79,7 +78,7 @@ module LoginMethods
       ['org.oddb.CompanyUser', State::Admin::CompanyUser],
       ['org.oddb.PowerLinkUser', State::Admin::PowerLinkUser],
     ].each { |key, mod|
-      if(user.allowed?("login", key))
+      if (user.allowed?("login", key))
         yield mod
       end
     }
