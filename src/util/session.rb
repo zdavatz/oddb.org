@@ -88,9 +88,14 @@ module ODDB
         set_cookie_input :remember, @user.generate_token
         set_cookie_input :email, @user.email
       else
+        @cookie_input.delete :remember
+        # TODO
+        # This works always same with remember_me ... (temporary solution)
+        set_cookie_input :remember, @user.generate_token
+        set_cookie_input :email, @user.email
+        # This does not work in session, expectedly
         set_persistent_user_input(:remember, @user.generate_token)
         set_persistent_user_input(:email, @user.email)
-        @cookie_input.delete :remember
       end
       @user
     end
