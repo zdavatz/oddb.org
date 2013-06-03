@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 18.01.2013 -- yasaka@ywesee.com
+# ODDB::View::SearchBar -- oddb.org -- 03.06.2013 -- yasaka@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com
 
@@ -146,7 +146,7 @@ function get_to(url) {
   form.submit();
 }
     JS
-    script << "if(#{@name}.value!='#{val}'){"
+    script << "if (#{@name}.value!='#{val}') {"
     # show dojo ProgressBar
     if @container.respond_to?(:progress_bar)
       script << "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
@@ -161,7 +161,8 @@ function get_to(url) {
     # instead of document.location.
     # because location stops gif animation.
     script << "get_to(href);"
-    script << "}"
+    script << "};"
+    script << "return false;"
     self.onsubmit = script
   end
 end
