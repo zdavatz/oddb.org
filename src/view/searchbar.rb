@@ -135,9 +135,13 @@ class SearchBar < HtmlGrid::InputText
     if @session.event == :interaction_chooser # remove ean13 text
       @attributes.update({'value' => val})
     end
-    args = ['zone', @session.zone, @name, '']
-    submit = @lookandfeel._event_url(@container.event, args)
-    script = <<-JS
+    submit = @lookandfeel._event_url(@container.event, ['zone', @session.zone, @name, ''])
+    # show dojo ProgressBar
+    timer = @container.respond_to?(:progress_bar) ? "  setTimeout('show_progressbar(\\'searchbar\\')', 10);" : nil
+    # instead of document.location.
+    # because location stops gif animation.
+    param = @lookandfeel.disabled?(:best_result) ? nil : " + '#best_result'"
+    self.onsubmit = <<-JS
 function get_to(url) {
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
@@ -145,25 +149,16 @@ function get_to(url) {
   document.body.appendChild(form);
   form.submit();
 }
+if (#{@name}.value!='#{val}') {
+#{timer}
+  var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
+  if (this.search_type) {
+    href += '/search_type/' + this.search_type.value#{param};
+  }
+  get_to(href);
+};
+return false;
     JS
-    script << "if (#{@name}.value!='#{val}') {"
-    # show dojo ProgressBar
-    if @container.respond_to?(:progress_bar)
-      script << "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
-    end
-    script << "var href = '#{submit}'"
-    script << "+encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));"
-    script << "if(this.search_type)"
-    script << "href += '/search_type/' + this.search_type.value;"
-    unless @lookandfeel.disabled?(:best_result)
-      script << "href += '#best_result';"
-    end
-    # instead of document.location.
-    # because location stops gif animation.
-    script << "get_to(href);"
-    script << "};"
-    script << "return false;"
-    self.onsubmit = script
   end
 end
 class AutocompleteSearchBar < HtmlGrid::InputText
