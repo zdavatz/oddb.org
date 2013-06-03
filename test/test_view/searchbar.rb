@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Vewi::TestSearchBar -- oddb.org -- 06.08.2012 -- yasaka@ywesee.com
+# ODDB::Vewi::TestSearchBar -- oddb.org -- 03.06.2013 -- yasaka@ywesee.com
 # ODDB::Vewi::TestSearchBar -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -16,21 +16,40 @@ module ODDB
       include FlexMock::TestCase
       def setup
         @container = flexmock('container', :event => 'event')
-        @lnf       = flexmock('lookandfeel', 
+        @lnf       = flexmock('lookandfeel',
                               :lookup     => 'lookup',
                               :attributes => {},
                               :_event_url => '_event_url',
                               :disabled?  => nil
                              )
-        @session   = flexmock('session', 
+        @session   = flexmock('session',
+                              :flavor      => 'gcc',
                               :lookandfeel => @lnf,
-                              :zone        => 'zone'
+                              :zone        => 'zone',
+                              :event       => 'search'
                              )
         @model     = flexmock('model')
         @inputtext = ODDB::View::SearchBar.new('name', @model, @session, @container)
       end
       def test_init
-        expected = "if(name.value!='lookup'){var href = '_event_url'+encodeURIComponent(name.value.replace(/\\//, '%2F'));if(this.search_type)href += '/search_type/' + this.search_type.value;href += '#best_result';document.location.href=href; } return false"
+        expected = <<-SCRIPT
+function get_to(url) {
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url);
+  document.body.appendChild(form);
+  form.submit();
+}
+if (name.value!='lookup') {
+
+  var href = '_event_url' + encodeURIComponent(name.value.replace(/\\//, '%2F'));
+  if (this.search_type) {
+    href += '/search_type/' + this.search_type.value + '#best_result';
+  }
+  get_to(href);
+};
+return false;
+        SCRIPT
         assert_equal(expected, @inputtext.init)
       end
     end
@@ -45,6 +64,7 @@ module ODDB
                               :_event_url => '_event_url'
                              )
         @session   = flexmock('session',
+                              :flavor                => 'gcc',
                               :lookandfeel           => @lnf,
                               :persistent_user_input => 'persistent_user_input'
                              )
@@ -58,6 +78,7 @@ module ODDB
         "data-dojo-type" => "dijit.form.ComboBox",
         "searchAttr"     => "search_query",
         "jsId"           => "searchbar",
+        "labelAttr"      => "",
         "type"           => "text",
         "id"             => "searchbar",
         "store"          => "search_matches",
@@ -89,8 +110,10 @@ module ODDB
                               :_event_url => '_event_url',
                              )
         @session   = flexmock('session',
+                              :flavor                => 'gcc',
                               :lookandfeel           => @lnf,
-                              :persistent_user_input => 'persistent_user_input'
+                              :persistent_user_input => 'persistent_user_input',
+                              :event                 => ''
                              )
         @model     = flexmock('model')
         @inputtext = ODDB::View::PrescriptionDrugSearchBar.new('name', @model, @session, @container)
@@ -103,6 +126,7 @@ module ODDB
         "searchAttr"     => "search_query",
         "labelAttr"      => "drug",
         "jsId"           => "prescription_searchbar",
+        "labelAttr"      => "drug",
         "type"           => "text",
         "id"             => "prescription_searchbar",
         "store"          => "search_matches",
@@ -122,11 +146,11 @@ module ODDB
         assert_equal('divinput', @inputtext.to_html(context))
       end
     end
-    
+
     class TestSelectSearchForm < Test::Unit::TestCase
       include FlexMock::TestCase
       def setup
-        @lnf     = flexmock('lookandfeel', 
+        @lnf     = flexmock('lookandfeel',
                             :lookup     => 'lookup',
                             :attributes => {},
                             :_event_url => '_event_url',
@@ -134,10 +158,12 @@ module ODDB
                             :base_url   => 'base_url',
                             :search_type_selection => 'search_type_selection'
                            )
-        @session = flexmock('session', 
+        @session = flexmock('session',
                             :lookandfeel => @lnf,
                             :zone        => 'zone',
-                            :persistent_user_input => 'persistent_user_input'
+                            :event       => 'search',
+                            :persistent_user_input => 'persistent_user_input',
+                            :get_cookie_input      => 'get_cookie_input'
                            )
         @model   = flexmock('model')
         @form    = ODDB::View::SelectSearchForm.new(@model, @session)
