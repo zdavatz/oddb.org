@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 24.05.2013 -- yasaka@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 04.06.2013 -- yasaka@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
@@ -62,17 +62,17 @@ class TextinfoHpricot
       @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
-      name = doc.at("p[text()*='#{@title}']")
       if type == :fi
+        name = doc.at("p[text()*='#{@title}']")
         unless name # fallbacks
           name = doc.at("p[text()*='#{@title.gsub(/®|™|\s/, '')}']")
         end
-        unless name # fallback 2
-          first_p = doc.at("p[@id^='section']")
-          if first_p.inner_text.gsub(/[^A-z0-9]/, '').downcase == @title.gsub(/[^A-z0-9]/, '').downcase
-            name = first_p
-          end
-        end
+      end
+      unless name # pi and fi fallback 2
+        chapters = doc.search("p[@id^='section']")
+        name = chapters.select do |chapter|
+          chapter.inner_text.gsub(/[^A-z0-9]/, '').downcase == @title.gsub(/[^A-z0-9]/, '').downcase
+        end.first
       end
       name = @title unless name # fallback 3
       @name         = simple_chapter(name)
