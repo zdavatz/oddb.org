@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Package -- oddb.org -- 26.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Package -- oddb.org -- 06.06.2013 -- yasaka@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
 require 'view/admin/package'
+require 'state/admin/patinfo_pdf'
 
 module ODDB
 	module State
@@ -15,6 +16,7 @@ class AjaxParts < Global
   VIEW = View::Admin::Parts
 end
 module PackageMethods
+  include PatinfoPdfMethods
   def ajax_create_part
     check_model
     @model.create_part unless @model.parts
@@ -115,6 +117,7 @@ module PackageMethods
         input.store(key, price)
       end
     }
+		get_patinfo_input(input) # discard state
 		unless(error?)
       if(@model.is_a? Persistence::CreateItem)
         @model.append(ikscode)
