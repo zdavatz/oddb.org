@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 06.06.2013 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -50,7 +50,8 @@ module ODDB
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
       :generic_group_factor, :photo_link, :disable_photo_forwarding, :disable_ddd_price, :ddd_dose,
 			:sl_entry, :deductible_m, # for just-medical
-      :bm_flag, :mail_order_prices
+      :bm_flag, :mail_order_prices,
+      :pdf_patinfo
     check_accessor_list = {
       :sequence => "ODDB::Sequence",
       :ikscat => "String",
@@ -78,6 +79,7 @@ module ODDB
       :deductible_m => "String",
       :bm_flag => ["TrueClass","NilClass","FalseClass"],
       :mail_order_prices => "Array",
+      :pdf_patinfo => "String",
     }
     define_check_class_methods check_accessor_list
 		alias :pointer_descr :ikscd
@@ -88,10 +90,20 @@ module ODDB
       :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?, :production_science, :renewal_flag,
       :renewal_flag_swissmedic
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
-      :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
-      :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
+      :fachinfo, :galenic_forms, :galenic_group, :longevity,
+      :iksnr, :indication, :name, :name_base, :patinfo,
       :registration, :route_of_administration, :sequence_date, :seqnr
     MailOrderPrice = Struct.new(:price, :url, :logo) # logo is empty (old struct)
+    def pdf_patinfo # {sequence|package}
+      @pdf_patinfo ? @pdf_patinfo : self.sequence.pdf_patinfo
+    end
+    def has_patinfo? # {sequence|package}
+      (self.sequence && self.sequence.has_patinfo?) ||
+        package_patinfo?
+    end
+    def package_patinfo?
+      !@pdf_patinfo.nil? && !@pdf_patinfo.empty?
+    end
     class MailOrderPrice
       def <=>(other)
         self.price.to_f <=> other.price.to_f

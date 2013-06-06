@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 02.07.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 06.06.2013 -- yasaka@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 29.02.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
@@ -13,6 +13,7 @@ require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
 require 'state/admin/assign_patinfo'
 require 'state/admin/assign_division'
+require 'state/admin/patinfo_pdf'
 require 'fileutils'
 require 'util/smtp_tls'
 require 'mail'
@@ -20,9 +21,8 @@ require 'mail'
 module ODDB
 	module State
 		module Admin
-module PatinfoPdfMethods
-	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
-  HTML_PARSER = DRbObject.new(nil, FIPARSE_URI)
+module SequenceMethods
+	include PatinfoPdfMethods
   def assign_patinfo
     if(@model.has_patinfo?)
       State::Admin::AssignPatinfo.new(@session, @model)
@@ -30,86 +30,6 @@ module PatinfoPdfMethods
       State::Admin::AssignDeprivedSequence.new(@session, @model)
     end
   end
-	def get_patinfo_input(input)
-		newstate = self
-    if((html_file = @session.user_input(:html_upload)) \
-       && (document = parse_patinfo(html_file.read)))
-      @model.pdf_patinfo = nil
-      lang = @session.user_input(:language_select)
-      ptr = nil
-      if(patinfo = @model.patinfo)
-        ptr = patinfo.pointer
-      else
-        ptr = Persistence::Pointer.new(:patinfo).creator
-      end
-      patinfo = @session.app.update(ptr, lang => document)
-      input.store(:patinfo, patinfo.pointer)
-      input.store(:pdf_patinfo, nil)
-      @infos.push(:i_patinfo_assigned)
-		elsif(pi_file = @session.user_input(:patinfo_upload))
-			company = @model.company
-			if(!company.invoiceable?)
-				err = create_error(:e_company_not_invoiceable, :pdf_patinfo, nil)
-				newstate = resolve_state(company.pointer).new(@session, company)
-				newstate.errors.store(:pdf_patinfo, err)
-			elsif(pi_file.read(4) == "%PDF")
-        pi_file.rewind
-				filename = "#{@model.iksnr}_#{@model.seqnr}_#{Time.now.to_f}.pdf"
-				FileUtils.mkdir_p(self::class::PDF_DIR)
-				store_file = File.new(File.expand_path(filename, 
-					self::class::PDF_DIR), "w")
-				store_file.write(pi_file.read)
-				store_file.close
-				@model.pdf_patinfo = filename
-				store_slate()
-				input.store(:pdf_patinfo, filename)
-				input.store(:patinfo, nil)
-				newstate = State::Admin::AssignPatinfo.new(@session, @model)
-			else
-				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
-			end
-		elsif(@session.user_input(:patinfo) == 'delete')
-			input.store(:patinfo, nil)
-			input.store(:pdf_patinfo, nil)
-		end
-		newstate
-	end
-  def parse_patinfo(src)
-    HTML_PARSER.parse_patinfo_html(src)
-  rescue StandardError => e
-    msg = ' (' << e.message << ')'
-    err = create_error(:e_html_not_parsed, :html_upload, msg)
-    @errors.store(:html_upload, err)
-    nil
-  end
-	def store_slate
-		store_slate_item(Time.now, :annual_fee)
-	end
-	def store_slate_item(time, type)
-		slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
-		@session.app.create(slate_pointer)
-		item_pointer = slate_pointer + :item
-		expiry_time = InvoiceItem.expiry_time(PI_UPLOAD_DURATION, time)
-		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
-		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
-		values = {
-			:data					=>	{:name => @model.name},
-			:duration			=>	PI_UPLOAD_DURATION,
-			:expiry_time	=>	expiry_time,
-			:item_pointer =>	@model.pointer,
-			:price				=>	PI_UPLOAD_PRICES[type],
-			:text					=>	text,
-			:time					=>	time,
-			:type					=>	type,
-			:unit					=>	unit,
-			:yus_name   	=>	@session.user.name,
-			:vat_rate			=>	VAT_RATE, 
-		} 
-		@session.app.update(item_pointer.creator, values, unique_email)
-	end
-end
-module SequenceMethods
-	include PatinfoPdfMethods
   def assign_division
     State::Admin::AssignDivision.new(@session, @model)
   end

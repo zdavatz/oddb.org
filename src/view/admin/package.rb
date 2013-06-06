@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Package -- oddb.org -- 25.07.2012 -- yasaka@ywesee.com
+# ODDB::View::Admin::Package -- oddb.org -- 06.06.2013 -- yasaka@ywesee.com
 # ODDB::View::Admin::Package -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -12,6 +12,7 @@ require 'view/dataformat'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputcurrency'
 require 'htmlgrid/inputdate'
+require 'htmlgrid/inputfile'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/select'
 require 'htmlgrid/link'
@@ -154,6 +155,7 @@ end
 class PackageForm < HtmlGrid::Composite
   include FormMethods
 	include HtmlGrid::ErrorMessage
+	include View::AdditionalInformation
   COMPONENTS = {
     [0,0]    => :iksnr,
     [2,0]    => :ikscd,
@@ -174,10 +176,14 @@ class PackageForm < HtmlGrid::Composite
     [0,8]    => :disable,
     [2,8]    => :pharmacode,
     [0,9]    => :generic_group,
+    [2,9]    => :patinfo_upload,
+    [2,10]   => :patinfo_label,
+    [3,10,0] => :patinfo,
+    [3,10,1] => :delete_patinfo,
     [0,10]   => :ddd_dose,
-    [2,10]   => :disable_ddd_price,
-    [1,11,0] => :submit,
-    [1,11,1] => :delete_item,
+    [0,11]   => :disable_ddd_price,
+    [1,12,0] => :submit,
+    [1,12,1] => :delete_item,
   }
   COMPONENT_CSS_MAP = {
     [0,0,4,1]	=>	'standard',
@@ -266,6 +272,30 @@ class PackageForm < HtmlGrid::Composite
     input.label = true
     input
   end
+  def patinfo(model, session=@session)
+    if (model.package_patinfo? && link = super) # directly?
+      link.set_attribute('class', 'square infos')
+      link
+    end
+  end
+  def patinfo_label(model, session=@session)
+    HtmlGrid::LabelText.new(:patinfo, model, session , self)
+  end
+  def delete_patinfo(model, session=@session)
+    if (model.package_patinfo?)
+      button = HtmlGrid::Button.new(:delete_patinfo, model, session, self)
+      script = "this.form.patinfo.value = 'delete'; this.form.submit();"
+      button.set_attribute('onclick', script)
+      button
+    end
+  end
+  def patinfo_upload(model, session=@session)
+    if(model.company.invoiceable?)
+      HtmlGrid::InputFile.new(:patinfo_upload, model, @session, self)
+    else
+      PointerLink.new(:e_company_not_invoiceable, model.company, @session, self)
+    end
+  end
 end
 class DeductiblePackageForm < View::Admin::PackageInnerComposite
 	include View::HiddenPointer
@@ -318,6 +348,7 @@ end
 class RootPackageComposite < View::Admin::PackageComposite
   include HtmlGrid::FormMethods
   include FormMethods
+  TAG_METHOD = :multipart_form
   LEGACY_INTERFACE = false
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
@@ -347,6 +378,9 @@ class RootPackageComposite < View::Admin::PackageComposite
   end
   def parts_form(model)
     Parts.new(model.parts, @session, self)
+  end
+  def hidden_fields(context)
+    super << context.hidden('patinfo', 'keep')
   end
 end
 class DeductiblePackageComposite < View::Admin::RootPackageComposite
