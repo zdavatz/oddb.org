@@ -18,9 +18,9 @@ SHELL = /bin/sh
 RUBY = #{CONFIG["ruby_install_name"]}
 RACC = racc
 RACCFLAGS = -E
-INSTALL = $(RUBY) -r ftools -e 'File::install(ARGV[0], ARGV[1], 0644, true)'
-MKDIR   = $(RUBY) -r ftools -e 'File::makedirs(*ARGV)'
-RM      = $(RUBY) -r ftools -e 'File::rm_f(*Dir[ARGV.join(" ")])'
+INSTALL = $(RUBY) -r fileutils -e 'FileUtils::install(ARGV[0], ARGV[1], :mode => 0644, :verbose => true)'
+MKDIR   = $(RUBY) -r fileutils -e 'FileUtils::makedirs(*ARGV)'
+RM      = $(RUBY) -r fileutils -e 'FileUtils::rm_f(*Dir[ARGV.join(" ")])'
 
 sitedir = $(DESTDIR)#{sitedir}
 

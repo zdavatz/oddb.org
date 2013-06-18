@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 1.9.3
+script: rake test
+notifications:
+  email:
+    recipients:
+      - niklaus.giger@hispeed.ch
+    

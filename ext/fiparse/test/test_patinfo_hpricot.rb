@@ -602,6 +602,181 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
      
 
   end
+  
+  def test_import_chapter
+    testCases = [
+      
+      # Test cases for specific name with ',' or special signs
+      ['7620','Wann wird Notakehl Salbe angewendet?'],
+      ['7620','Wann wird Traumeel, Salbe angewendet?'],
+      ['7680','Wann darf Notakeh D3, Salbe nicht oder nur mit Vorsicht angewendet werden?'],
+      ['7680','Wann darf Notakehl® D3, Salbe nicht oder nur mit Vorsicht angewendet werden?'],
+      ['0', 'Information für Patientinnen und Patienten'],
+      ['0', 'Information destinée aux patients'],
+      
+      ['9010', 'Name des Präparates'],
+      ['9010', 'Name des Präparates, Homöopathisches Arzneimittel (Homöopathisch-spagyrisches'],
+      ['9010', 'Arzneimittel)'],
+      ['9010', 'Name des Präparates, Anthroposophisches Arzneimittel'],
+      ['9010', 'Name des Präparates, Arzneimittel auf Grundlage anthroposophischer Erkenntnis'],
+      ['9010', 'Name des Präparates, Pflanzliches Arzneimittel'],
+      ['9010', 'Kurzcharakteristikum'],
+      ['9010', 'Homöopathisches Arzneimittel (Homöopathisch-spagyrisches Arzneimittel)'],
+      ['9010', 'Anthroposophisches Arzneimittel'],
+      ['9010', 'Arzneimittel auf Grundlage anthroposophischer Erkenntnis'],
+      ['9010', 'Pflanzliches Arzneimittel'],
+      ['9010', 'Nom de la préparation'],
+      ['9010', 'Nom de la préparation, Médicament homéopathique (médicamenthoméopathique-spagyrique)'],
+      ['9010', 'Nom de la préparation, Médicament anthroposophique'],
+      ['9010', 'Nom de la préparation, Médicament basé sur les connaissances anthroposophiques'],
+      ['9010', 'Nom de la préparation, Médicament phytothérapeutique'],
+      ['9010', 'Caractéristique à court'],
+      ['9010', 'Médicament homéopathique (médicament homéopathique-spagyrique)'],
+      ['9010', 'Médicament anthroposophique'],
+      ['9010', 'Médicament basé sur les connaissances anthroposophiques'],
+      ['9010', 'Médicament phytothérapeutique'],
+      
+      ['7620', 'Was ist PLATZHALTER_MEDI und wann wird es angewendet?'],
+      ['7620', 'Was sind PLATZHALTER_MEDI und wann werden sie angewendet?'],
+      ['7620', 'Qu’est-ce que le PLATZHALTER_MEDI et quand doit-il être utilisé?'],
+      ['7620', "Qu’est-ce que l' PLATZHALTER_MEDI et quand doit-il être utilisé?"],
+      ['7620', 'Qu’est-ce que la PLATZHALTER_MEDI et quand doit-elle être utilisée?'],
+      ['7620', "Qu’est-ce que l' PLATZHALTER_MEDI et quand doit-elle être utilisée?"],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand doit-il être utilisé?'],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand doit-elle être utilisée?'],
+      ['7620', 'Qu’est-ce que les PLATZHALTER_MEDI et quand doivent-ils être utilisés?'],
+      ['7620', 'Qu’est-ce que les PLATZHALTER_MEDI et quand doivent-elles être utilisées?'],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand doivent-ils être utilisés?'],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand doivent-elles être utilisées?'],
+      
+      ['7620', 'Wann wird PLATZHALTER_MEDI angewendet?'],
+      ['7620', 'Wann werden PLATZHALTER_MEDI angewendet?'],
+      ['7620', 'Quand PLATZHALTER_MEDI est-il utilisé?'],
+      ['7620', 'Quand PLATZHALTER_MEDI est-elle utilisée?'],
+      ['7620', 'Quand PLATZHALTER_MEDI sont-ils utilisés?'],
+      ['7620', 'Quand PLATZHALTER_MEDI sont-elles utilisées?'],
+      ['7620', 'Qu’est-ce que le PLATZHALTER_MEDI et quand est-il utilisé?'],
+      ['7620', "Qu’est-ce que l' PLATZHALTER_MEDI et quand est-il utilisé?"],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand est-il utilisé?'],
+      ['7620', 'Qu’est-ce que la PLATZHALTER_MEDI et quand est-elle utilisée?'],
+      ['7620', "Qu’est-ce que l' PLATZHALTER_MEDI et quand est-elle utilisée?"],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand est-elle utilisée?'],
+      ['7620', 'Qu’est-ce que les PLATZHALTER_MEDI et quand sont-ils utilisés?'],
+      ['7620', 'Qu’est-ce que les PLATZHALTER_MEDI et quand sont-elles utilisées?'],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand sont-ils utilisés?'],
+      ['7620', 'Qu’est-ce que PLATZHALTER_MEDI et quand sont-elles utilisées?'],
+      
+      ['7640', 'Was sollte dazu beachtet werden?'],
+      ['7640', 'De quoi faut-il tenir compte en dehors du traitement?'],
+      
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht eingenommen/angewendet werden?'],
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht eingenommen werden?'],
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht angewendet werden?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-il pas être pris/utilisé?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être prise/utilisée?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-il pas être pris?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-il pas être utilisé?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être prise?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être utilisée?'],      
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht eingenommen/angewendet werden?'],
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht eingenommen werden?'],
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht angewendet werden?'],
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht oder nur mit Vorsicht eingenommen/angewendet werden?'],
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht oder nur mit Vorsicht eingenommen werden?'],
+      ['7680', 'Wann darf PLATZHALTER_MEDI nicht oder nur mit Vorsicht angewendet werden?'],
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht oder nur mit Vorsicht eingenommen/angewendet werden?'],
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht oder nur mit Vorsicht eingenommen werden?'],
+      ['7680', 'Wann dürfen PLATZHALTER_MEDI nicht oder nur mit Vorsicht angewendet werden?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être pris/utilisés?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être prises/utilisées?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être pris?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être prises?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être utilisés?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être utilisées?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-il pas être pris/utilisé ou seulement avprécaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être prise/utilisée ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-il pas être pris ou seulement avec précautio?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être prise ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doit-elle pas être utilisée ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être pris/utilisés ou seulement aveprécaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être prises/utilisées ou seulemenavec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être pris ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être prises ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-ils pas être utilisés ou seulement avec précaution?'],
+      ['7680', 'Quand PLATZHALTER_MEDI ne doivent-elles pas être utilisées ou seulement avec précaution?'],
+      
+      ['7700', 'Wann ist bei der Einnahme/Anwendung von PLATZHALTER_MEDI Vorsicht geboten?'],
+      ['7700', 'Wann ist bei der Einnahme von PLATZHALTER_MEDI Vorsicht geboten?'],
+      ['7700', 'Wann ist bei der Anwendung von PLATZHALTER_MEDI Vorsicht geboten?'],
+      ['7700', 'Quelles sont les précautions à observer lors de la prise/de l’utilisation de PLATZHALTER_MEDI?'],
+      ['7700', 'Quelles sont les précautions à observer lors de la prise de PLATZHALTER_MEDI?'],
+      ['7700', 'Quelles sont les précautions à observer lors de l’utilisation de PLATZHALTER_MEDI?'],
+      
+      ['7720', 'Darf PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit eingenommen/angewendet werden?'],
+      ['7720', 'Darf PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit eingenommen werden?'],
+      ['7720', 'Darf PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit angewendet werden?'],
+      ['7720', 'Dürfen PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit eingenommen/angewendet werden?'],
+      ['7720', 'Dürfen PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit eingenommen werden?'],
+      ['7720', 'Dürfen PLATZHALTER_MEDI während einer Schwangerschaft oder in der Stillzeit angewendet werden?'],
+      ['7720', 'PLATZHALTER_MEDI peut-il être pris/utilisé pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peut-elle être prise/utilisée pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peut-il être pris pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peut-elle être prise pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peut-il être utilisé pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peut-elle être utilisée pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peuvent-ils être pris/utilisés pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peuvent-elles être prises/utilisées pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peuvent-ils être pris pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peuvent-elles être prises pendant la grossesse ou l’allaitement?'],
+      ['7720', 'PLATZHALTER_MEDI peuvent-ils être utilisés pendant la grossesse ou l’allaitement?'],
+      ['7720', ' PLATZHALTER_MEDI peuvent-elles être utilisées pendant la grossesse ou l’allaitement?'],
+      
+      ['7740', 'Wie verwenden Sie PLATZHALTER_MEDI?'],
+      ['7740', 'Comment utiliser PLATZHALTER_MEDI?'],
+      
+      ['7760', 'Welche Nebenwirkungen kann PLATZHALTER_MEDI haben?'],
+      ['7760', 'Welche Nebenwirkungen können PLATZHALTER_MEDI haben?'],
+      ['7760', 'Quels effets secondaires PLATZHALTER_MEDI peut-il provoquer?'],
+      ['7760', 'Quels effets secondaires PLATZHALTER_MEDI peut-elle provoquer?'],
+      ['7760', 'Quels effets secondaires PLATZHALTER_MEDI peuvent-ils provoquer?'],
+      ['7760', 'Quels effets secondaires PLATZHALTER_MEDI peuvent-elles provoquer?'],
+      
+      ['7780', 'Was ist ferner zu beachten?'],
+      ['7780', 'A quoi faut-il encore faire attention?'],
+      ['7780', 'À quoi faut-il encore faire attention?'],
+      
+      ['7840', 'Was ist in PLATZHALTER_MEDI enthalten?'],
+      ['7840', 'Que contient PLATZHALTER_MEDI?'],
+      
+      ['7860', 'Zulassungsnummer'],
+      ['7860', 'Numéro d’autorisation'],
+      
+      ['7880', 'Wo erhalten Sie PLATZHALTER_MEDI? Welche Packungen sind erhältlich?'],
+      ['7880', 'Que contiennent PLATZHALTER_MEDI?'],
+      ['7880', 'Où obtenez-vous PLATZHALTER_MEDI? Quels sont les emballages à disposition sur le marché?'],
+
+      ['9000', 'Zulassungsinhaberin'],
+      ['9000', 'Titulaire de l’autorisation'],
+
+      ['7920', 'Herstellerin'], 
+      ['7920', 'Fabricant'],
+
+      ['7940', 'Diese Packungsbeilage wurde im PLATZHALTER_MEDI (Monat/Jahr) letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.'],
+      ['7940', 'Cette notice d’emballage a été vérifiée pour la dernière foisen PLATZHALTER_MEDI (mois/année) par l’autorité de contrôle des médicaments (Swissmedic).'],
+      ]
+    
+    
+    nrFailures = 0
+    testCases.each{ 
+      |tc|
+        unless tc == res = ODDB::FiParse::PatinfoHpricot::text_to_chapter(tc[1])
+          $stdout.puts "Parsing chapter #{tc[1]} failed, returned #{res[0]} != #{tc[0]}"
+          nrFailures += 1
+        end
+    }
+    assert_equal nrFailures, 0
+  end
+  
 end
   end
 end
