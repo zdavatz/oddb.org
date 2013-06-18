@@ -102,12 +102,15 @@ class PatinfoHpricot < TextinfoHpricot
     #
     #   Currently, id attribute 'section*' is not fixed number.
     #   And Section order is also not fixed :(
-    text = text(elem)
+    PatinfoHpricot::text_to_chapter(text(elem))
+  end
+  
+  def PatinfoHpricot::text_to_chapter(text)
     code =
     case text
     when /^Was\s*sollte\s*dazu\s*beachtet\s*werden|^De\s*quai\s*faut\-il/                                  ; '7640'
-    when /^Wann\s*(darf|d.rfen)\s*[\w\s,\-]*nicht\s*[\w\s]*werden\??|^Quand\s*[\w\s]*ne\sdoit\-(il|elle)/  ; '7680'
-    when /^(Was|Wann)\s*[\w\s]*angewendet[\?]?|^Qu.est-ce\s*que/                                           ; '7620'
+    when /^Wann\s*(darf|d.rfen)\s*.*nicht\s*.*werden\??|^Quand\s*.*ne\sdoit\-(il|elle)/                    ; '7680'
+    when /^(Was|Wann)\s*.*angewendet[\?]?|^Qu.est-ce\s*que/                                                ; '7620'
     when /^Wann\s*ist\s*bei\s*der\s*[\w\s\/]*Vorsicht\s*geboten\??|^Quelles\s*sont\s*les\s*pr.cautions/    ; '7700'
     when /Schwangerschaft|pendant\s*la\s*grossesse\s*ou\s*l.allaitement\??/                                ; '7720'
     when /^Wie\s*verwenden\s*Sie|^Comment\s*utiliser/                                                      ; '7740'
