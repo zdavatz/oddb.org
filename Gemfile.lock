@@ -32,6 +32,8 @@ GEM
     gruff (0.3.7)
     gyoku (1.0.0)
       builder (>= 2.1.2)
+    hoe (3.6.2)
+      rake (>= 0.8, < 11.0)
     hpricot (0.8.6)
     htmlentities (4.3.1)
     htmlgrid (1.0.6)
@@ -76,6 +78,7 @@ GEM
       active_support
       dalli
       treetop
+    racc (1.4.9)
     rack (1.5.2)
     rake (10.0.4)
     rake-compiler (0.8.3)
@@ -147,6 +150,7 @@ DEPENDENCIES
   flickraw
   gruff
   gyoku
+  hoe
   hpricot
   htmlentities
   htmlgrid
@@ -173,6 +177,7 @@ DEPENDENCIES
   pg
   polyglot
   pre
+  racc
   rack
   rake
   rake-compiler

@@ -83,5 +83,4 @@ gem "yus"
 group :development, :test do
   gem 'hoe'
   gem 'racc'
-  gem 'ftools'
 end
