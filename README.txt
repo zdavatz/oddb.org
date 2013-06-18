@@ -20,7 +20,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 == TESTS:
 
 * to run the Tests you need to do
-  * rcov test/suite.rb
+  * bundle install
+  * rake test
   * look at the index.html in the coverage directory
 
 == LOCAL DOCUMENTATION:

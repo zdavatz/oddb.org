@@ -84,4 +84,5 @@ group :development, :test do
   gem 'hoe'
   gem 'racc'
   gem 'travis-lint'
+  gem 'simplecov'
 end
