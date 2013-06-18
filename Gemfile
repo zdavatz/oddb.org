@@ -79,3 +79,9 @@ gem "wasabi"
 gem "webrobots"
 gem "ydim"
 gem "yus" 
+
+group :development, :test do
+  gem 'hoe'
+  gem 'racc'
+  gem 'ftools'
+end

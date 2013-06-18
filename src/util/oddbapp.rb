@@ -6,6 +6,8 @@
 
 require 'yaml'
 YAML::ENGINE.yamler = "syck"
+# next line to fix an error paypal-2.0.0/lib/notification.rb
+require 'active_support/core_ext/class/attribute_accessors'
 require 'odba'
 require 'odba/index_definition'
 require 'odba/drbwrapper'
