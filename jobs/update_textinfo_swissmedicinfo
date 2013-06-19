@@ -14,17 +14,20 @@ module ODDB
         :target   => :fi,
         :reparse  => false,
         :iksnrs   => [],
+        :companies => [],
         :download => true,
       }
       ARGV.each do |arg|
-        if arg =~ /^\d{5}$/
-          opts[:iksnrs] << arg
-        elsif arg =~ /^\-\-(target|type)[\s=](fi|pi|both)$/
+        if arg =~ /^\-\-(target|type)[\s=](fi|pi|both)$/
           opts[:target] = $2.intern
         elsif arg =~ /reparse/
           opts[:reparse] = true
         elsif arg =~ /no\-download/
           opts[:download] = false
+        elsif arg =~ /^\d{5}$/
+          opts[:iksnrs] << arg
+        else arg =~ /^\w*$/
+          opts[:companies] << arg if arg.size > 0
         end
       end
       puts "\nopts == #{opts.inspect}\n\n"

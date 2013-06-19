@@ -904,8 +904,57 @@ module ODDB
       %w[New Change].each do |state|
         index[state.downcase.intern] = swissmedicinfo_index(state)
       end
-      index
+      index      
     end
+    def textinfo_swissmedicinfo_company_index(company)
+      setup_default_agent
+      url = 'http://www.swissmedicinfo.ch/?Lang=DE'
+      # accept form
+      accept = @agent.get(url)
+      form   = accept.form_with(:id => 'ctl01')
+      button = form.button_with(:name => 'ctl00$MainContent$btnOK')      
+      page = form.submit(button)
+      form2   = page.form_with(:id => 'ctl01')
+      form2.field_with(:id => 'LeftContent_ucSearch1_DDSearchMode').value='Auth'
+      form2.field_with(:id => 'LeftContent_ucSearch1_txtSearch').value=company
+      # behave as javascript click      
+      form2['__EVENTTARGET']   = "ctl00$LeftContent$ucSearch1$BtnSearch" # #{state}Auth"
+      form2['__EVENTARGUMENT'] = ''
+      page2 = form2.submit
+      
+      form3   = page2.form_with(:id => 'ctl01')
+      form3['__EVENTTARGET']   = "ctl00$MainContent$ucCompanySearchResult1$GVCompanies"
+      form3['__EVENTARGUMENT'] = 'Select$0'
+      page3 = form3.submit
+     
+      nrPatInfo = /Patienteninformationen\s*\((\d*)/i.match(page3.body)
+      unless nrPatInfo
+        puts Nokogiri::Slop(page3.body).text
+        puts "Could not find any Patienteninformationen for #{company}"
+        return []
+      end
+      ids = []
+      0.upto(nrPatInfo[1].to_i-1) {
+        |counter|
+          form4   = page3.form_with(:id => 'ctl01')
+          form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridPI$GVMonographies"
+          form4['__EVENTARGUMENT'] = "Select$#{counter}"
+          page4 = form4.submit
+          iksnr = /Zulassungsnummer([\d’ ]+)/.match(Nokogiri::Slop(page4.body).text)
+          next unless iksnr
+          if iksnr[1].to_i < 100
+            puts "#{company}: counter #{counter}: Found bad iksnr  in " + /Zulassungsnummer([\d’]+)........./.match(Nokogiri::Slop(page4.body).text).to_s
+          end
+          id = iksnr[1].gsub('’','').gsub(' ','')
+          if id.to_i < 100
+            puts /Zulassungsnummer([\d’]+)........./.match(Nokogiri::Slop(page4.body).text)
+            exit 
+          end
+          ids << id
+      }
+      ids.sort.uniq
+    end
+
     def download_swissmedicinfo_xml
       setup_default_agent
       url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
@@ -1152,6 +1201,15 @@ module ODDB
       end
       @doc = nil
     end
+
+    def import_swissmedicinfo_by_companies(companies, target)
+      iksnrs = []
+      companies.each do |company|
+        iksnrs += textinfo_swissmedicinfo_company_index(company)
+      end
+      import_swissmedicinfo_by_iksnrs(iksnrs, target)
+    end
+
     def import_swissmedicinfo(target=:both)
       target = @options[:target] if @options[:target]
       threads = []
@@ -1160,7 +1218,10 @@ module ODDB
           download_swissmedicinfo_xml
         end
       end
-      if @options[:iksnrs].nil? or @options[:iksnrs].empty?
+      if @options[:companies] and @options[:companies].size > 0
+        threads.map(&:join)
+        import_swissmedicinfo_by_companies(@options[:companies], target)        
+      elsif @options[:iksnrs].nil? or @options[:iksnrs].empty?
         index = {}
         threads << Thread.new do
           index = textinfo_swissmedicinfo_index
