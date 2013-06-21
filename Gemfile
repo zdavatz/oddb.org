@@ -85,4 +85,5 @@ group :development, :test do
   gem 'racc'
   gem 'travis-lint'
   gem 'simplecov'
+  gem 'test-unit'
 end
