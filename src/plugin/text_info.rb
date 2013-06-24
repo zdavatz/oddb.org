@@ -992,7 +992,8 @@ module ODDB
     def extract_matched_content(name, type, lang)
       content = nil
       return content unless @doc and name
-      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{name}\")]"
+      nameForRegexp = name.gsub('"','.')
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{nameForRegexp}\")]"
       match = @doc.xpath(path, Class.new do
         def match(node_set, name)
           found_node = catch(:found) do
