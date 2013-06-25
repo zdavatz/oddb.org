@@ -63,9 +63,10 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120./
     assert_match(expected, paragraph.text)
   end
+  
   def test_identify_chapter__raises_unknown_chaptercode
     assert_raises(RuntimeError) { 
-      @writer.identify_chapter('7800', nil)
+      @writer.identify_chapter('7800', nil) # 7800 = Packungen
     }
   end
 end
@@ -82,7 +83,7 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     assert_instance_of(FachinfoDocument, @fachinfo)
   end
   def test_name1
-    assert_equal('Alca-C®', @fachinfo.name)
+    assert_equal('Alca-C®', @fachinfo.name.to_s)
   end
   def test_company1
     ## this is unused. Since it's part of the base-class TextinfoHpricot, let's test it.
@@ -172,137 +173,77 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal('Stand der Information', chapter.heading)
   end
-end
-class TestFachinfoHpricotPonstanDe < Test::Unit::TestCase
-  def setup
-    @path = File.expand_path('data/html/de/ponstan.fi.html', 
-      File.dirname(__FILE__))
-    @writer = FachinfoHpricot.new
-    open(@path) { |fh| 
-      @fachinfo = @writer.extract(Hpricot(fh))
-    }
-  end
-  def test_fachinfo2
-    assert_instance_of(FachinfoDocument2001, @fachinfo)
-  end
-  def test_name2
-    assert_equal('Ponstan®', @fachinfo.name)
-  end
-  def test_amzv2
-    chapter = @fachinfo.amzv
-    assert_instance_of Text::Chapter, chapter
-    assert_equal 'AMZV', chapter.heading
-  end
-  def test_company2
-    ## this is unused. Since it's part of the base-class TextinfoHpricot, let's test it.
-    chapter = @writer.company
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('PFIZER', chapter.heading)
-  end
-  def test_composition2
-    chapter = @fachinfo.composition
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Zusammensetzung', chapter.heading)
-    assert_equal(2, chapter.sections.size)
-    section = chapter.sections.first
-    assert_equal("", section.subheading)
-    assert_equal(1, section.paragraphs.size)
-    paragraph = section.paragraphs.at(0)
-    expected =  "Wirkstoff: Mefenaminsäure."
-    assert_equal(expected, paragraph.text)
-    section = chapter.sections.last
-    assert_equal "Hilfsstoffe\n", section.subheading
-    assert_equal(4, section.paragraphs.size)
-    paragraph = section.paragraphs.at(0)
-    expected =  "Filmtabletten: Vanillinum, Excipiens pro compresso obducto."
-    assert_equal(expected, paragraph.text)
-  end
-  def test_galenic_form2
-    chapter = @fachinfo.galenic_form
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', chapter.heading)
-  end
-  def test_indications2
-    chapter = @fachinfo.indications
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Indikationen/Anwendungsmöglichkeiten', chapter.heading)
-  end
-  def test_usage2
-    chapter = @fachinfo.usage
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Dosierung/Anwendung', chapter.heading)
-  end
-  def test_contra_indications2
-    chapter = @fachinfo.contra_indications
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Kontraindikationen', chapter.heading)
-  end
-  def test_restrictions2
-    chapter = @fachinfo.restrictions
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Warnhinweise und Vorsichtsmassnahmen', chapter.heading)
-  end
-  def test_interactions2
-    chapter = @fachinfo.interactions
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Interaktionen', chapter.heading)
-  end
-  def test_pregnancy2
-    chapter = @fachinfo.pregnancy
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Schwangerschaft/Stillzeit', chapter.heading)
-  end
-  def test_driving_ability2
-    chapter = @fachinfo.driving_ability
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen',
-                 chapter.heading)
-  end
-  def test_unwanted_effects2
-    chapter = @fachinfo.unwanted_effects
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Unerwünschte Wirkungen', chapter.heading)
-  end
-  def test_overdose2
-    chapter = @fachinfo.overdose
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Überdosierung', chapter.heading)
-  end
-  def test_effects2
-    chapter = @fachinfo.effects
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Eigenschaften/Wirkungen', chapter.heading)
-  end
-  def test_kinetic2
-    chapter = @fachinfo.kinetic
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Pharmakokinetik', chapter.heading)
-  end
-  def test_preclinic2
-    chapter = @fachinfo.preclinic
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Präklinische Daten', chapter.heading)
-  end
-  def test_other_advice2
-    chapter = @fachinfo.other_advice
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Sonstige Hinweise', chapter.heading)
-  end
-  def test_iksnrs2
-    chapter = @fachinfo.iksnrs
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Zulassungsnummer', chapter.heading)
-  end
-  def test_registration_owner2
-    chapter = @fachinfo.registration_owner
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Zulassungsinhaberin', chapter.heading)
-  end
-  def test_date2
-    chapter = @writer.date
-    assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('Stand der Information', chapter.heading)
-  end
-end
+end  
+
+  # Zyloric had a problem that the content of the fachinfo was mostly in italic
+  class TestFachinfoHpricotZyloricDe < Test::Unit::TestCase
+    
+    def setup
+      @path = File.expand_path('data/html/de/fi_Zyloric.de.html',  File.dirname(__FILE__))
+      @writer = FachinfoHpricot.new
+      open(@path) { |fh| 
+        @writer.format =  :swissmedicinfo
+        @fachinfo = @writer.extract(Hpricot(fh))
+      }
+    end
+    
+    def test_fachinfo2
+      assert_instance_of(FachinfoDocument2001, @fachinfo)
+    end 
+    
+    def test_name
+      # fails as we find in the html 
+      # <span class="s2"><span>Zyloric</span></span><sup class="s3"><span class="s4">&acirc;</span>/sup>
+      assert_equal('Zyloric®', @fachinfo.name.to_s)
+    end
+    
+    def test_content
+      assert_nil(/span/.match(@fachinfo.indications.to_s))
+      assert_nil(/italic/.match(@fachinfo.to_s))
+      assert_nil(/span/.match(@fachinfo.to_s))
+      assert_equal("Zulassungsnummer\n32917(Swissmedic)\n ", @fachinfo.iksnrs.to_s)
+    end
+    
+    def test_galenic_form
+      assert_equal("Galenische Form und Wirkstoffmenge pro Einheit\nTabletten zu 100 mg und 300 mg.\n ", @fachinfo.galenic_form.to_s)
+    end
+    
+   end 
+  
+  # Zyloric had a problem that the content of the fachinfo was mostly in italic
+  class TestFachinfoHpricotZyloricFr < Test::Unit::TestCase
+    
+    def setup
+      @path = File.expand_path('data/html/fr/fi_Zyloric.fr.html',  File.dirname(__FILE__))
+      @writer = FachinfoHpricot.new
+      open(@path) { |fh| 
+        @writer.format =  :swissmedicinfo
+        @fachinfo = @writer.extract(Hpricot(fh))
+      }
+    end
+    
+    def test_fachinfo2
+      assert_instance_of(FachinfoDocument2001, @fachinfo)
+    end 
+    
+    def test_name2
+      assert_equal('Zyloric®', @fachinfo.name.to_s) # is okay as found this in html Zyloric&reg;
+    end
+    
+    def test_span
+      assert_nil(/span/.match(@fachinfo.indications.to_s))
+      assert_nil(/italic/.match(@fachinfo.to_s))
+      assert_nil(/span/.match(@fachinfo.to_s))
+    end
+
+    def test_iksnrs
+      assert_equal("Numéro d’autorisation\n32917 (Swissmedic).\n ", @fachinfo.iksnrs.to_s)
+    end
+    
+    def test_galenic_form
+      assert_equal("Forme galénique et quantité de principe actif par unité\nComprimés à 100 et 300 mg.\n ", @fachinfo.galenic_form.to_s)
+    end
+    
+   end 
   end
 end
