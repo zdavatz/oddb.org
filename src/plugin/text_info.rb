@@ -1172,11 +1172,11 @@ module ODDB
         ["Not found #{title} in swissmedicXML"],         # notfound
       ]
     end
-    def swissmedicinfo_xml
-      Nokogiri::XML(
-        File.open(
-          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read
-      )
+    def swissmedicinfo_xml(xml_file = File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'))
+      if @options[:xml_file]
+        xml_file = @options[:xml_file]
+      end
+      Nokogiri::XML(File.open(xml_file,'r').read)
     end
     def import_swissmedicinfo_by_index(index, target)
       title,keys = title_and_keys_by(target)
