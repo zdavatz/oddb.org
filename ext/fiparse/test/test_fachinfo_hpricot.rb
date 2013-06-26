@@ -245,5 +245,46 @@ end
     end
     
    end 
-  end
+
+  # Zyloric had a problem that the content of the fachinfo was mostly in italic
+  class TestFachinfoHpricotStreuliDe < Test::Unit::TestCase
+    
+    def setup
+      @path = File.expand_path('data/html/de/fi_58106.de.html',  File.dirname(__FILE__))
+      @writer = FachinfoHpricot.new
+      open(@path) { |fh| 
+        @writer.format =  :swissmedicinfo
+        @fachinfo = @writer.extract(Hpricot(fh))
+      }
+    end
+    
+    def test_fachinfo2
+      assert_instance_of(FachinfoDocument2001, @fachinfo)
+    end 
+    
+    def test_name2
+      assert_equal('Finasterid Streuli® 5', @fachinfo.name.to_s) # is okay as found this in html Zyloric&reg;
+    end
+    
+    def test_span
+      assert_nil(/span/.match(@fachinfo.indications.to_s))
+      assert_nil(/italic/.match(@fachinfo.to_s))
+      assert_nil(/span/.match(@fachinfo.to_s))
+    end
+
+    def test_iksnrs
+      assert_equal("Zulassungsnummer\n58’106(Swissmedic)\n ", @fachinfo.iksnrs.to_s)
+    end
+    
+    def test_galenic_form
+      assert_equal("Galenische Form und Wirkstoffmenge pro Einheit\nFilmtabletten zu 5 mg Finasterid.\n ", @fachinfo.galenic_form.to_s)
+    end
+    def test_no_closing_tag
+      assert_nil(/<\/ p>/.match(@fachinfo.unwanted_effects.to_s))
+      assert_nil(/<\/ p>/.match(@fachinfo.unwanted_effects.to_s))
+      assert_nil(/<\/ p>/.match(@fachinfo.other_advice.to_s))
+    end
+      
+    end
+  end 
 end
