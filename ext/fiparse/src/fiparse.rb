@@ -16,7 +16,8 @@ require 'indications'
 require 'minifi'
 require 'fachinfo_hpricot'
 require 'patinfo_hpricot'
-require 'rpdf2txt/parser'
+# rpdf2txt will be retired soon. As it produces error when loading I exclude it while running unit tests 
+require 'rpdf2txt/parser' unless defined?(Test::Unit)
 require 'ydocx/document'
 require 'ydocx/templates/fachinfo'
 
@@ -202,7 +203,7 @@ module ODDB
       writer.format = :documed
       writer.extract(Hpricot(doc.to_html(true)), :fi)
     end
-    def parse_fachinfo_html(src, format = :documed, title='')
+    def parse_fachinfo_html(src, format = :documed, title='', styles = nil)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
         src = File.read src
@@ -212,31 +213,31 @@ module ODDB
       writer.format = format
       writer.title  = title
       writer.lang   = lang
-      writer.extract(Hpricot(src), :fi)
+      writer.extract(Hpricot(src), :fi, title, styles)
     end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
 			parser = Rpdf2txt::Parser.new(src, 'UTF-8')
 			parser.extract_text(writer)
 			writer.to_fachinfo
-		end
-		def parse_patinfo_html(src, format=:documed, title='')
+		end unless defined?(Test::Unit)
+		def parse_patinfo_html(src, format=:documed, title='', styles = nil)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
         src = File.read src
       end
 			writer = PatinfoHpricot.new
-      # swissmedicinfo
       writer.format = format
       writer.title  = title
       writer.lang   = lang
-      writer.extract(Hpricot(src), :pi)
+      writer.extract(Hpricot(src), :pi, title, styles)
+      # swissmedicinfo
 		end
     module_function :storage=
     module_function :parse_fachinfo_doc
     module_function :parse_fachinfo_docx
     module_function :parse_fachinfo_html
-    module_function :parse_fachinfo_pdf
+    module_function :parse_fachinfo_pdf  unless defined?(Test::Unit)
     module_function :parse_patinfo_html
 	end
 end

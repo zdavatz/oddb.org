@@ -53,29 +53,18 @@ class TextinfoHpricot
     chapter.clean!
     [code, chapter]
   end
-  def extract(doc, type=:fi)
+  def extract(doc, type=:fi, name=nil, styles = nil)
     paragraph = ''
-    name      = nil
+    @stylesWithItalic = TextinfoHpricot::get_italic_style(styles)
+    puts "extract: #{@format} type #{type} name #{name} styles #{@stylesWithItalic}"
     case @format
     when :compendium
       @name         = simple_chapter(doc.at('div.MonTitle'))
       @galenic_form = simple_chapter(doc.at('div.shortCharacteristic'))
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
-      if type == :fi
-        name = doc.at("p[text()*='#{@title}']")
-        unless name # fallbacks
-          name = doc.at("p[text()*='#{@title.gsub(/®|™|\s/, '')}']")
-        end
-      end
-      unless name # pi and fi fallback 2
-        chapters = doc.search("p[@id^='section']")
-        name = chapters.select do |chapter|
-          chapter.inner_text.gsub(/[^A-z0-9]/, '').downcase == @title.gsub(/[^A-z0-9]/, '').downcase
-        end.first
-      end
-      name = @title unless name # fallback 3
-      @name         = simple_chapter(name)
+      raise "MustPassNameToExtract" unless name
+      @name = name
       paragraph_tag = "p[@id^='section']"
     else
       @name    = simple_chapter(doc.at('h1'))
@@ -88,15 +77,29 @@ class TextinfoHpricot
     }
     to_textinfo
   end
+  # return array of styles which have the attribute 
+  def TextinfoHpricot::get_italic_style(styles)
+    return ['s8'] unless styles # this was the default assumed for swissmedicinfo
+    styleNamesWithItalic =  []
+    styles.split('}').each{ 
+      |style| 
+        matches = /([^{]+){(.+)/.match(style)
+        next unless matches
+        styleNamesWithItalic << matches[1].sub('.','') if matches[2].index('font-style:italic')
+    }
+    styleNamesWithItalic
+  end
+#   
   private
   def valid_heading?(text)
     true # overwrite me
   end
   def has_italic?(elem, ptr)
     if @format == :swissmedicinfo
-      (ptr.target.is_a?(Text::Paragraph) and
-      elem.respond_to?(:attributes) and
-      elem.attributes['class'] == 's8')
+      if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
+       @stylesWithItalic.each{ |style| return true if elem.attributes['class'].eql?(style) }
+      end
+      false
     else
       ptr.target.is_a?(Text::Paragraph)
     end
