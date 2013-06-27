@@ -20,6 +20,7 @@ require 'view/rss/fachinfo'
 module ODDB
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
+    CharsNotAllowedInBasename = /[^A-z0-9,\s\-]/
     def initialize app, opts={}
       super(app)
       @options = opts
@@ -1007,9 +1008,8 @@ module ODDB
         def match(node_set, name)
           found_node = catch(:found) do
             node_set.find_all do |node|
-              unknown_chars = /[^A-z0-9,\/\s\-]/
-              title = node.text.gsub(unknown_chars, '')
-              name  = name.gsub(unknown_chars, '')
+              title = node.text.gsub(CharsNotAllowedInBasename, '')
+              name  = name.gsub(CharsNotAllowedInBasename, '')
               throw :found, node if title == name
               false
             end
@@ -1097,10 +1097,10 @@ module ODDB
           @title  = name
           # save as tmp
           path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
-          dist = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+          dist = File.join(path, name.gsub(CharsNotAllowedInBasename, '_') + '_swissmedicinfo.html')
           temp = dist + '.tmp'
           File.open(temp, 'w') { |fh| fh.puts(html) }
-          File.open( File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.styles'), 'w+') { |fh| fh.puts(styles) }
+          File.open(dist.sub('.html', '.styles'), 'w+') { |fh| fh.puts(styles) }
           content,html = nil,nil
           update = false
           if !@options[:reparse] and File.exists?(dist)
@@ -1117,8 +1117,8 @@ module ODDB
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist)
             puts "parse_and_update: calls parse_#{type}, #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
-            infos[lang] = self.send("parse_#{type}", dist, styles)
-            File.open( File.join(ODDB.config.data_dir, "#{name}_#{lang}.yaml"), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
+            infos[lang] = self.send("parse_#{type}", dist, styles)            
+            File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
             File.unlink(temp)
           end
