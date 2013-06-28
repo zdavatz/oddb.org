@@ -1117,6 +1117,7 @@ module ODDB
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist)
             puts "parse_and_update: calls parse_#{type}, #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
+            puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
