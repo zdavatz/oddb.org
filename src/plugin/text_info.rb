@@ -20,6 +20,7 @@ require 'view/rss/fachinfo'
 module ODDB
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
+    CharsNotAllowedInBasename = /[^A-z0-9,\s\-]/
     def initialize app, opts={}
       super(app)
       @options = opts
@@ -78,11 +79,11 @@ module ODDB
 =end
       path
     end
-    def parse_fachinfo path
-      @parser.parse_fachinfo_html(path, @format, @title)
+    def parse_fachinfo(path, styles=nil)
+      @parser.parse_fachinfo_html(path, @format, @title, styles)
     end
-    def parse_patinfo path
-      @parser.parse_patinfo_html(path, @format, @title)
+    def parse_patinfo(path, styles=nil)
+      @parser.parse_patinfo_html(path, @format, @title, styles)
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
@@ -423,32 +424,41 @@ module ODDB
         match[1]
       end
     end
-    def extract_iksnrs languages
+    
+    def TextInfoPlugin::get_iksnrs_from_string(string)
+      puts "get_iksnrs_from_string: #{string}"
       iksnrs = []
-      languages.each_value do |doc|
-        src = doc.iksnrs.to_s.gsub(/[^0-9,\s]/, "")
-        if(matches = src.strip.scan(/\d{5}|\d{2}\s*\d{3}|\d\s*{5}/))
-          # support some wrong in numbers [000nnn] (too many 0)
-          if (matches.length == 2 && matches.first =~ /^0{3}\d{2}$/) and
-             (matches.first.length == 5 && matches.last.length == 1 )
-            matches = [matches.first[1..-1] + matches.last]
-          end
-          _iksnr = ''
-          matches.map do |iksnr|
-            # support [nnnnn] and [n,n,n,n,n]
-            _iksnr << iksnr.gsub(/[^0-9]/, '')
-            if _iksnr.length == 5
-              iksnrs << _iksnr
-              _iksnr = ''
-            end
+      src = string.gsub(/[^0-9,\s]/, "")
+      if(matches = src.strip.scan(/\d{5}|\d{2}\s*\d{3}|\d\s*{5}/))
+        # support some wrong in numbers [000nnn] (too many 0)
+        if (matches.length == 2 && matches.first =~ /^0{3}\d{2}$/) and
+            (matches.first.length == 5 && matches.last.length == 1 )
+          matches = [matches.first[1..-1] + matches.last]
+        end
+        _iksnr = ''
+        matches.map do |iksnr|
+          # support [nnnnn] and [n,n,n,n,n]
+          _iksnr << iksnr.gsub(/[^0-9]/, '')
+          if _iksnr.length == 5
+            iksnrs << _iksnr
+            _iksnr = ''
           end
         end
       end
       iksnrs.uniq!
       iksnrs
-    rescue
+    rescue => e
+      puts "get_iksnrs_from_string: string #{string} rescued from #{e}"
       []
     end
+    
+    def extract_iksnrs languages
+      iksnrs = []
+      languages.each_value do |doc|
+        return TextInfoPlugin::get_iksnrs_from_string(doc.iksnrs.to_s)
+      end
+    end
+    
     def identify_eventtargets page, ptrn
       eventtargets = {}
       page.links_with(:href => ptrn).each do |link|
@@ -990,7 +1000,7 @@ module ODDB
       html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
     end
     def extract_matched_content(name, type, lang)
-      content = nil
+      content = nil, styles = nil, title = nil
       return content unless @doc and name
       nameForRegexp = name.gsub('"','.')
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{nameForRegexp}\")]"
@@ -998,9 +1008,8 @@ module ODDB
         def match(node_set, name)
           found_node = catch(:found) do
             node_set.find_all do |node|
-              unknown_chars = /[^A-z0-9,\/\s\-]/
-              title = node.text.gsub(unknown_chars, '')
-              name  = name.gsub(unknown_chars, '')
+              title = node.text.gsub(CharsNotAllowedInBasename, '')
+              name  = name.gsub(CharsNotAllowedInBasename, '')
               throw :found, node if title == name
               false
             end
@@ -1011,8 +1020,10 @@ module ODDB
       end.new).first
       if match
         content = match.parent.at('./content')
+        styles  = match.parent.at('./style').text
+        title   = match.parent.at('./title').text
       end
-      content
+      return content, styles, title
     end
     def extract_matched_name(iksnr, type, lang)
       name = nil
@@ -1079,16 +1090,17 @@ module ODDB
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
-        content = extract_matched_content(name, type, lang)
+        content, styles, title = extract_matched_content(name, type, lang)
         if content
           html = Nokogiri::HTML(content.to_s).to_s
           @format = detect_format(html)
           @title  = name
           # save as tmp
           path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
-          dist = File.join(path, name.gsub(/[^A-z0-9]/, '_') + '_swissmedicinfo.html')
+          dist = File.join(path, name.gsub(CharsNotAllowedInBasename, '_') + '_swissmedicinfo.html')
           temp = dist + '.tmp'
           File.open(temp, 'w') { |fh| fh.puts(html) }
+          File.open(dist.sub('.html', '.styles'), 'w+') { |fh| fh.puts(styles) }
           content,html = nil,nil
           update = false
           if !@options[:reparse] and File.exists?(dist)
@@ -1104,7 +1116,10 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist)
-            infos[lang] = self.send("parse_#{type}", dist)
+            puts "parse_and_update: calls parse_#{type}, #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
+            puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
+            infos[lang] = self.send("parse_#{type}", dist, styles)            
+            File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
             File.unlink(temp)
           end
@@ -1118,6 +1133,8 @@ module ODDB
           end
         end
         iksnrs = self.send("update_#{type}", name, _infos, {})
+        puts "parse_and_update: update_#{type} name #{name} returned #{iksnrs}"
+        $stdout.flush
       end
       [iksnrs, infos]
     end
@@ -1172,11 +1189,11 @@ module ODDB
         ["Not found #{title} in swissmedicXML"],         # notfound
       ]
     end
-    def swissmedicinfo_xml
-      Nokogiri::XML(
-        File.open(
-          File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'),'r').read
-      )
+    def swissmedicinfo_xml(xml_file = File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml'))
+      if @options[:xml_file]
+        xml_file = @options[:xml_file]
+      end
+      Nokogiri::XML(File.open(xml_file,'r').read)
     end
     def import_swissmedicinfo_by_index(index, target)
       title,keys = title_and_keys_by(target)

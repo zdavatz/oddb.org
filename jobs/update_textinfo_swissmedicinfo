@@ -16,6 +16,7 @@ module ODDB
         :iksnrs   => [],
         :companies => [],
         :download => true,
+        :xml_file => nil, # if set will force download => false 
       }
       ARGV.each do |arg|
         if arg =~ /^\-\-(target|type)[\s=](fi|pi|both)$/
@@ -23,6 +24,10 @@ module ODDB
         elsif arg =~ /reparse/
           opts[:reparse] = true
         elsif arg =~ /no\-download/
+          opts[:download] = false
+        elsif arg =~ /xml_file=(\w.+)/
+                 m = /xml_file=(\w.+)/.match(arg)
+          opts[:xml_file] = m[1]
           opts[:download] = false
         elsif arg =~ /^\d{5}$/
           opts[:iksnrs] << arg

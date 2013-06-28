@@ -477,7 +477,7 @@ module ODDB
       def to_s opts={}
         lines = [ @heading ] + @sections.collect { |sec| sec.to_s opts }
         lines.delete_if { |line| line.empty? }
-        lines.join("\n")
+        lines.join("\n").gsub(/<\/[^>]+>/,'')
       end
       def to_search
         ODDB.search_term(to_s)
