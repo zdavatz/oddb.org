@@ -64,7 +64,7 @@ class TextinfoHpricot
       paragraph_tag = 'div.paragraph'
     when :swissmedicinfo
       raise "MustPassNameToExtract" unless name
-      @name = name
+      @name = simple_chapter(name)
       paragraph_tag = "p[@id^='section']"
     else
       @name    = simple_chapter(doc.at('h1'))
