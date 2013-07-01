@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 28.05.2012 -- yasaka@ywesee.com
+# ODDB::Session -- oddb.org -- 01.07.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -41,7 +41,7 @@ module ODDB
 		end
     def active_state
       state = super
-      unless @token_login_attempted 
+      unless @token_login_attempted
         @token_login_attempted = true
         if user = login_token
           state = state.autologin user
@@ -83,7 +83,7 @@ module ODDB
     def login
       # @app.login raises Yus::YusError
       # caller must rescue Yus::UnknownEntityError and Yus::AuthenticationError
-			@user = @app.login(user_input(:email), user_input(:pass))
+      @user = @app.login(user_input(:email), user_input(:pass))
       if cookie_set_or_get(:remember_me)
         set_cookie_input :remember, @user.generate_token
         set_cookie_input :email, @user.email
@@ -103,8 +103,8 @@ module ODDB
       # @app.login_token raises Yus::YusError
       email = (persistent_user_input(:email) || get_cookie_input(:email))
       token = (persistent_user_input(:remember) || get_cookie_input(:remember))
-      if email && token && !token.empty?
-        @user = @app.login_token email, token
+      if email && token && !token.empty? && !@user.valid?
+        @user = @app.login_token(email, token)
         set_cookie_input :remember, @user.generate_token
         @user
       end
@@ -126,7 +126,7 @@ module ODDB
       if(!is_crawler? &&
          !is_mobile_app? &&
          self.lookandfeel.enabled?(:query_limit))
-        limit_queries unless login_token
+        limit_queries
       end
       '' ## return empty string across the drb-border
     end
