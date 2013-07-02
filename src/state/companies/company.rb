@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Companies::Company -- oddb.org -- 02.07.2013 -- yasaka@ywesee.com
 # ODDB::State::Companies::Company -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
@@ -139,6 +140,15 @@ class UserCompany < Company
 end
 class RootCompany < UserCompany
 	VIEW = View::Companies::RootCompany
+  def init
+    super
+    # check privileges and timeout? for access to yus.entities
+    begin
+      @session.user.entities
+    rescue Yus::NotPrivilegedError
+			@default_view = ODDB::View::Admin::Login
+    end
+  end
 	def ajax
 		ba = @session.user_input(:business_area)
 		if(@model.is_a?(Persistence::CreateItem))
