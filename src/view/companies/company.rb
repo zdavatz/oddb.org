@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Companies::Company -- oddb.org -- 02.07.2013 -- yasaka@ywesee.com
 # ODDB::View::Companies::Company -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
@@ -508,10 +509,14 @@ class AjaxCompanyComposite < CompanyComposite
 		klass.new(model, @session, self)
 	end
   def company_users(model, session=@session)
-    users = @session.user.entities.select { |entity|
-      entity.get_preference('association', YUS_DOMAIN) == model.odba_id
-    }
-		model = View::Admin::Entities.wrap_all(users)
+    begin
+      users = @session.user.entities.select { |entity|
+        entity.get_preference('association', YUS_DOMAIN) == model.odba_id
+      }
+	    model = View::Admin::Entities.wrap_all(users)
+    rescue Yus::NotPrivilegedError
+      model = []
+    end
     View::Admin::InnerEntityList.new(model, @session, self)
   end
 end

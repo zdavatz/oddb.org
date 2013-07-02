@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Login -- oddb -- 03.06.2012 -- yasaka@ywesee.com
+# ODDB::State::Admin::Login -- oddb -- 02.07.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 29.04.2012 -- yasaka@ywesee.com
 # ODDB::State::Admin::Login -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -40,19 +40,20 @@ module LoginMethods
            nextstate.class == self.class
           location = '/'
         end
-        if self.class == ODDB::State::Drugs::ResultLimit
-          _state = nextstate
-        else
-          _state = self
-          _state.http_headers = { # replace with self to prevent request loop
-            'Status'   => '303 See Other',
-            'Location' => location
-          }
-        end
-        _state
       else
-        nextstate
+        location = self.request_path
       end
+      _state = self
+      if self.class == ODDB::State::Drugs::ResultLimit or
+         nextstate.request_path == self.request_path
+        _state = nextstate
+      else
+        _state.http_headers = { # replace with self to prevent request loop
+          'Status'   => '303 See Other',
+          'Location' => location
+        }
+      end
+      _state
     else
       State::User::InvalidUser.new(@session, user)
     end
