@@ -123,7 +123,7 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     assert_equal('7740', code)
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wie verwenden Sie Ponstan?', chapter.heading)
-    assert_equal(3, chapter.sections.size)
+    assert_equal(4, chapter.sections.size)
     section = chapter.sections.at(0)
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
@@ -143,29 +143,29 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     expected << "Die übliche Dosierung für Zäpfchen beträgt 3mal täglich 1 "
     expected << "Zäpfchen Ponstan zu 500 mg."
     assert_equal(expected, paragraph.text)
-    section = chapter.sections.at(2)
+    section = chapter.sections.at(3)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected = <<-EOS
 Alter    Suspension     Kapseln     Z\303\244pfchen        
 in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg 
 Jahren   pro Tag        pro Tag     pro Tag         
------------------------------------------------------
+----------------------------------------------------
 \302\275        5 ml   3\303\227      -           1 Supp.         
                                     125 mg 2-3\303\227     
------------------------------------------------------
+----------------------------------------------------
 1-3      7,5 ml 3\303\227      -           1 Supp.         
                                     125 mg 3\303\227       
------------------------------------------------------
+----------------------------------------------------
 3-6      10 ml  3\303\227      -           1 Supp.         
                                     125 mg 4\303\227       
------------------------------------------------------
+----------------------------------------------------
 6-9      15 ml  3\303\227      -           1 Supp.         
                                     500 mg 1-2\303\227     
------------------------------------------------------
+----------------------------------------------------
 9-12     20 ml  3\303\227      1 Kps 2-3\303\227  1 Supp.         
                                     500 mg 2\303\227       
------------------------------------------------------
+----------------------------------------------------
 12-14    25 ml  3\303\227      1 Kps 3\303\227    1 Supp.         
                                     500 mg 3\303\227       
 
@@ -210,7 +210,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_instance_of(PatinfoDocument2001, @patinfo)
   end
   def test_name1
-    assert_equal('Cimifemin®', @writer.name)
+    assert_equal('Cimifemin®', @writer.name.to_s)
   end
   def test_company1
     chapter = @writer.company
@@ -450,7 +450,7 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
     }
   end
   def test_name2
-    assert_equal('Cimifemine®', @writer.name)
+    assert_equal('Cimifemine®', @writer.name.to_s)
   end
   def test_company2
     chapter = @writer.company
