@@ -950,15 +950,13 @@ module ODDB
           form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridPI$GVMonographies"
           form4['__EVENTARGUMENT'] = "Select$#{counter}"
           page4 = form4.submit
-          iksnr = /Zulassungsnummer([\d’ ]+)/.match(Nokogiri::Slop(page4.body).text)
+          match_iksnr_strict = /Zulassungsnummer([\d’ ]+)/
+          match_iksnr = /Zulassungsnummer([\d’]+.........)/
+          iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
           next unless iksnr
-          if iksnr[1].to_i < 100
-            puts "#{company}: counter #{counter}: Found bad iksnr  in " + /Zulassungsnummer([\d’]+)........./.match(Nokogiri::Slop(page4.body).text).to_s
-          end
-          id = iksnr[1].gsub('’','').gsub(' ','')
-          if id.to_i < 100
-            puts /Zulassungsnummer([\d’]+)........./.match(Nokogiri::Slop(page4.body).text)
-            exit 
+          id  = iksnr[1].gsub(/[^\d,]/,'').to_i
+          if id < 100 or id > 100000
+            puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
           end
           ids << id
       }
