@@ -23,9 +23,7 @@ module ODDB
 class TestFachinfoHpricot < Test::Unit::TestCase
   def setup
     @writer = FachinfoHpricot.new
-  end
-  def test_chapter
-    html = <<-HTML
+    @html = <<-HTML
       <div class="paragraph">
         <h2><a name="3300">Zusammensetzung</a></h2>
         <p class="spacing1"><span style="font-style:italic; ">Wirkstoffe:</span></p>
@@ -33,12 +31,36 @@ class TestFachinfoHpricot < Test::Unit::TestCase
         <p class="noSpacing"><span style="font-style:italic; ">Hilfsstoffe: </span>Saccharinum, Cyclamas, Aromatica, Color.: E 120.</p>
       </div>
     HTML
-    code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
-    assert_equal('3300', code)
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Zusammensetzung', chapter.heading)
-    assert_equal(1, chapter.sections.size)
-    section = chapter.sections.first
+    @code, @chapter = @writer.chapter(Hpricot(@html).at("div.paragraph"))
+  end
+  def test_heading
+    assert_equal('3300', @code)
+    assert_instance_of(ODDB::Text::Chapter, @chapter )
+    assert_equal('Zusammensetzung', @chapter.heading)
+  end
+  
+  def test_hilfstoffe
+    section = @chapter.sections.first
+    paragraph = section.paragraphs.at(2)
+    expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120./
+    assert_match(expected, paragraph.text)
+  end
+  
+  def test_italic_style
+    section = @chapter.sections.first
+    paragraph = section.paragraphs.at(2)
+    assert_equal(2, paragraph.formats.size)
+    fmt = paragraph.formats.first
+    assert_equal([:italic], fmt.values)
+    assert_equal(0..11, fmt.range)
+    fmt = paragraph.formats.last
+    assert_equal([], fmt.values)
+    assert_equal(12..-1, fmt.range)
+  end
+  
+  def test_chapter
+    assert_equal(1, @chapter.sections.size)
+    section = @chapter.sections.first
     assert_equal("", section.subheading)
     assert_equal(3, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
@@ -52,6 +74,8 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     assert_equal(11..-1, fmt.range)
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
+    section = @chapter.sections.first
+    paragraph = section.paragraphs.at(1)
     expected =  /1 Brausetablette enth.*lt: Carbasalatum calcicum 528.*mg corresp\. Acidum Acetylsalicylicum 415.*mg, Acidum ascorbicum 250.*mg\./
     assert_match(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
@@ -62,14 +86,14 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     fmt = paragraph.formats.last
     assert_equal([], fmt.values)
     assert_equal(12..-1, fmt.range)
-    expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120./
-    assert_match(expected, paragraph.text)
   end
-  
   def test_identify_chapter__raises_unknown_chaptercode
+    @writer = FachinfoHpricot.new
     assert_nil(@writer.identify_chapter('7800', nil)) # 7800 = Packungen
   end
+  
 end
+
 class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
   MedicalName = 'Alca-C®'
   def setup
@@ -116,6 +140,7 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     expected =  /1 Brausetablette enth.*lt: Carbasalatum calcicum 528.*mg corresp. Acidum Acetylsalicylicum 415.*mg, Acidum ascorbicum 250.*mg./
     assert_match(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
+
     expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120\./
     assert_match(expected, paragraph.text)
   end
@@ -174,7 +199,7 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal('Stand der Information', chapter.heading)
   end
-end  
+end
 
   Zyloric_Reg = 'Zyloric®'
   
@@ -213,7 +238,7 @@ end
       assert_equal("Galenische Form und Wirkstoffmenge pro Einheit\nTabletten zu 100 mg und 300 mg.\n ", @fachinfo.galenic_form.to_s)
     end   
     
-   end 
+   end
   
   # Zyloric had a problem that the content of the fachinfo was mostly in italic
   class TestFachinfoHpricotZyloricFr < Test::Unit::TestCase
@@ -255,7 +280,7 @@ end
       assert_nil(/- :italic/.match(@fachinfo.to_yaml))
     end
     
-   end 
+   end
 
   Styles_Streuli = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:14pt;font-weight:bold;}.s3{font-family:Arial;font-size:11.2pt;font-weight:bold;}.s4{line-height:150%;margin-right:113.3pt;}.s5{font-size:11pt;line-height:150%;margin-right:113.3pt;}.s6{font-family:Arial;font-size:11pt;font-weight:bold;}.s7{font-family:Arial;font-size:11pt;font-style:italic;}.s8{font-family:Arial;font-size:11pt;}.s9{font-family:Arial;font-size:8.8pt;}.s10{font-family:Arial;font-size:11pt;font-style:italic;text-decoration:line-through;}.s11{line-height:150%;margin-right:113.4pt;}.s12{font-size:11pt;line-height:150%;margin-right:113.4pt;}.s13{font-family:Arial;font-size:11pt;color:#000000;}.s14{font-family:Arial;font-size:9.5pt;}.s15{font-family:Arial;font-size:11pt;line-height:150%;margin-right:56.7pt;}.s16{line-height:150%;margin-right:56.7pt;}.s17{font-family:Times New Roman;font-size:8.8pt;}.
 s18{font-
@@ -351,7 +376,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       assert(occurrences == 72, "Find exactly 72 occurrences of italic in yaml")
     end
     
-  end   
+  end
   
  #  problem that the content of the fachinfo was mostly in italic
   StylesBisoprolol = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:12pt;font-weight:bold;}.s3{line-height:150%;margin-top:24pt;}.s4{line-height:150%;}.s5{font-family:Arial;font-size:11pt;font-weight:bold;}.s6{line-height:150%;margin-top:10pt;}.s7{font-family:Arial;font-size:11pt;font-style:italic;}.s8{font-family:Arial;font-size:11pt;}.s9{font-family:Arial;font-size:11pt;font-style:italic;font-weight:normal;}.s10{line-height:150%;margin-top:6pt;}.s11{font-family:Arial;font-size:8.8pt;}.s12{font-family:Arial;font-size:11pt;font-style:italic;color:#000000;}.s13{font-family:Arial;font-size:11pt;font-weight:normal;}.s14{font-family:Arial;font-size:8.8pt;font-weight:normal;}.s15{font-family:Arial;font-size:11pt;font-style:normal;}'
@@ -400,7 +425,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       assert(occurrences == 79, "Find exactly 79 occurrences of italic in yaml")
     end
     
-  end   
+  end
   #  problem that the content of the fachinfo was mostly in italic
   StylesBisoprolol = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:12pt;font-weight:bold;}.s3{line-height:150%;margin-top:24pt;}.s4{line-height:150%;}.s5{font-family:Arial;font-size:11pt;font-weight:bold;}.s6{line-height:150%;margin-top:10pt;}.s7{font-family:Arial;font-size:11pt;font-style:italic;}.s8{font-family:Arial;font-size:11pt;}.s9{font-family:Arial;font-size:11pt;font-style:italic;font-weight:normal;}.s10{line-height:150%;margin-top:6pt;}.s11{font-family:Arial;font-size:8.8pt;}.s12{font-family:Arial;font-size:11pt;font-style:italic;color:#000000;}.s13{font-family:Arial;font-size:11pt;font-weight:normal;}.s14{font-family:Arial;font-size:8.8pt;font-weight:normal;}.s15{font-family:Arial;font-size:11pt;font-style:normal;}'
   class TestFachinfoHpricot62111De < Test::Unit::TestCase
