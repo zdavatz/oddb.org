@@ -30,7 +30,7 @@ class TextinfoHpricot
         # content
         elem = elem.next
         until end_element_in_chapter?(elem)
-          _handle_element(elem, ptr)
+          handle_element(elem, ptr)
           elem = elem.next
         end
       end
@@ -56,7 +56,6 @@ class TextinfoHpricot
   def extract(doc, type=:fi, name=nil, styles = nil)
     paragraph = ''
     @stylesWithItalic = TextinfoHpricot::get_italic_style(styles)
-    puts "extract: #{@format} type #{type} name #{name} styles #{@stylesWithItalic}"
     case @format
     when :compendium
       @name         = simple_chapter(doc.at('div.MonTitle'))
@@ -101,7 +100,11 @@ class TextinfoHpricot
       end
       false
     else
-      ptr.target.is_a?(Text::Paragraph)
+      if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
+        return /italic/.match(elem.attributes['style']) != nil
+      else
+        return false
+      end
     end
   end
   def end_element_in_chapter?(elem)
@@ -116,7 +119,9 @@ class TextinfoHpricot
     end
     text
   end
-  def _handle_element(child, ptr)
+  def handle_element(child, ptr, isParagraph=false)
+#    puts "handle_element #{child.class} #{child.name} isParagraph #{isParagraph}"
+    ptr.target << ' ' if isParagraph and  !/^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/.match(ptr.chapter.to_s)   
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
@@ -145,7 +150,7 @@ class TextinfoHpricot
           ptr.section ||= ptr.chapter.next_section
           ptr.target = ptr.section.next_paragraph
         end
-        handle_element(child, ptr)
+        handle_all_children(child, ptr, true)
       when 'span', 'em', 'strong', 'b', 'br'
         if ptr.target.is_a?(Text::MultiCell)
           unless ptr.table
@@ -155,10 +160,10 @@ class TextinfoHpricot
         if child.name == 'br'
           if ptr.table
             ptr.target << "\n"
-          end
+          end          
         else
           ptr.target.augment_format(:italic) if has_italic?(child, ptr)
-          handle_element(child, ptr)
+          handle_all_children(child, ptr)
           ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
         end
       when 'sub', 'sup'
@@ -176,18 +181,18 @@ class TextinfoHpricot
           ptr.tablewidth = nil
           ptr.target.preformatted!
         end
-        handle_element(child, ptr)
+        handle_all_children(child, ptr)
         ptr.section = ptr.chapter.next_section
         ptr.table = nil
       when 'thead', 'tbody'
-        handle_element(child, ptr)
+        handle_all_children(child, ptr)
       when 'tr'
         if ptr.table
           ptr.table.next_row!
-          handle_element(child, ptr)
+          handle_all_children(child, ptr)
           ptr.target = ptr.table
         else
-          handle_element(child, ptr)
+          handle_all_children(child, ptr)
           ptr.target << "\n"
         end
       when 'td', 'th'
@@ -195,7 +200,7 @@ class TextinfoHpricot
           ptr.target = ptr.table.next_multi_cell!
           ptr.target.row_span = child.attributes['rowspan'].to_i unless child.attributes['rowspan'].empty?
           ptr.target.col_span = child.attributes['colspan'].to_i unless child.attributes['colspan'].empty?
-          handle_element(child, ptr)
+          handle_all_children(child, ptr)
           ptr.target = ptr.table
         else
           ## the new format uses td-borders as "row-separators"
@@ -206,7 +211,7 @@ class TextinfoHpricot
           end
         end
       when 'div'
-        handle_element(child, ptr)
+        handle_all_children(child, ptr)
       when 'img'
         if ptr.table
           unless ptr.target.respond_to?(:next_image) # after something text (paragraph) in cell
@@ -228,9 +233,9 @@ class TextinfoHpricot
       end
     end
   end
-  def handle_element(elem, ptr)
+  def handle_all_children(elem, ptr, isParagraph=false)
     elem.each_child { |child|
-      _handle_element(child, ptr)
+      handle_element(child, ptr, isParagraph)
     }
   end
   def handle_image(ptr, child)
