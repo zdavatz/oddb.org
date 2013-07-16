@@ -19,6 +19,21 @@ module ODDB
     attr_accessor :parser, :iksless, :session_failures, :current_search,
                   :current_eventtarget
   end
+  
+  class TestTextInfoPluginMethods < Test::Unit::TestCase
+    x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
+    y = %(
+data/html/fachinfo/de/Bisoprolol_Axapharm_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62111 (Swissmedic)</span></span><span class="s8"><span>.</span></span></p>
+data/html/fachinfo/de/Diclo_Acino_retard_rektale_Kapseln__Film__Retardtabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>
+data/html/fachinfo/de/Finasterid_Mepha__5_swissmedicinfo.html:    <p class="noSpacing">58107 (Swissmedic).</p>
+data/html/fachinfo/de/Finasterid_Streuli__5_swissmedicinfo.html:<p class="s4"><span class="s8"><span>58</span></span><span class="s8"><span>’</span></span><span class="s8"><span>106 </span></span><span class="s8"><span>(Swissmedic)</span></span></p>
+data/html/fachinfo/de/Olanpax__Filmtabletten_Schmelztabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>Filmtabletten: </span></span><span class="s8"><span>62</span></span><span class="s8"><span>‘</span></span><span class="s8"><span>223</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
+data/html/fachinfo/de/Olanpax__Filmtabletten_Schmelztabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>Schmelztabletten: </span></span><span class="s8"><span>62</span></span><span class="s8"><span>‘</span></span><span class="s8"><span>224</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
+data/html/fachinfo/de/Xalos_Duo_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62’439</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
+data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8"><span>32917</span></span><span class="s8"><span> </span></span><span class="s8"><span>(</span></span><span class="s8"><span>Swissmedic)</span></span><span class="s8"><span> </span></span></p>
+)
+  end
+  
   class TestTextInfoPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
@@ -180,12 +195,12 @@ module ODDB
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       assert_nothing_raised do
-        @plugin.import_company 'novartis', agent
+        @plugin.import_company ['novartis'], agent
       end
       assert_equal 5, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
-      assert_equal ['Alca-C®'], @plugin.iksless.uniq
+      assert_equal ['Alca-C®'], @plugin.iksless[:fi].uniq
     end
     def test_import_company__session_failure
       mapping = [
@@ -215,12 +230,13 @@ module ODDB
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       assert_nothing_raised do
-        @plugin.import_company 'novartis', agent
+        @plugin.import_company ['novartis'], agent
       end
       assert_equal 5, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
-      assert_equal ['Alca-C®'], @plugin.iksless.uniq
+      assert_equal ['Alca-C®'], @plugin.iksless[:fi].uniq
+      assert_equal ['Alca-C®'], @plugin.iksless[:pi].uniq
       assert_equal 8, @plugin.session_failures
     end
     def test_identify_eventtargets
@@ -309,10 +325,10 @@ module ODDB
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr).and_return fr
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_de).and_return pi_de
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr).and_return pi_fr
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :documed, "", nil).and_return pi_de
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :documed, "", nil).and_return pi_fr
 
       reg = flexmock 'registration'
       reg.should_receive(:fachinfo)
@@ -352,7 +368,7 @@ Searched for
 Stored 1 Fachinfos
 Ignored 0 Pseudo-Fachinfos
 Ignored 0 up-to-date Fachinfo-Texts
-Stored 1 Patinfos
+Stored 0 Patinfos
 Ignored 0 up-to-date Patinfo-Texts
 
 Checked 0 companies
@@ -370,7 +386,11 @@ Download errors: 0
 
 
 Parse Errors: 0
-      EOS
+
+
+
+
+EOS
     end
     def test_update_product__existing_infos
       de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
@@ -383,8 +403,8 @@ Parse Errors: 0
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr).and_return fr
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de).and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr).and_return pi_fr
 
@@ -451,10 +471,10 @@ Parse Errors: 0
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr).and_return fr
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_de).and_return pi_de
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr).and_return pi_fr
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :documed, "", nil).and_return pi_de
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :documed, "", nil).and_return pi_fr
 
       @app.should_receive(:registration).with('57363')
       @app.should_receive(:update).and_return do |pointer, data|
@@ -486,8 +506,8 @@ Parse Errors: 0
       pi_path_de = File.join(@datadir, 'Aclasta.pi.de.html')
       pi_path_fr = File.join(@datadir, 'Aclasta.pi.fr.html')
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de).times(1).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr).times(1).and_return fr
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).times(1).and_return de
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).times(1).and_return fr
 
       reg = flexmock 'registration'
       reg.should_receive(:fachinfo)
@@ -590,18 +610,19 @@ Parse Errors: 0
       page = nil
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
+      
       assert_nothing_raised do
-        @plugin.import_fulltext '53537', agent
+        @plugin.import_fulltext ['53537'], agent
       end
       assert_equal 4, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
-      assert_equal ['Topamax®'], @plugin.iksless.uniq
+      assert_equal ['Topamax®'], @plugin.iksless[:fi].uniq
     end
     def test_fachinfo_news__unconfigured
       agent = setup_mechanize
       ODDB.config.text_info_newssource = nil
-      assert_raises RuntimeError do
+      assert_raises NoMethodError do
         @plugin.fachinfo_news agent
       end
     end
@@ -724,12 +745,12 @@ AcetaPhos\302\256 750 mg
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       assert_nothing_raised do
-        @plugin.import_fulltext 'Trittico® retard', agent
+        @plugin.import_fulltext ['Trittico® retard'], agent
       end
       assert_equal 4, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
-      assert_equal ['Trittico® retard'], @plugin.iksless.uniq
+      assert_equal ['Trittico® retard'], @plugin.iksless[:pi].uniq
     end
     def test_import_news
       logfile = File.join @vardir, 'fachinfo.txt'
@@ -769,4 +790,28 @@ AcetaPhos\302\256 750 mg
       assert_equal true, success
     end
   end
+  
+  class TestExtractMatchedName < Test::Unit::TestCase
+    
+    def setup
+      file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
+      @plugin = TextInfoPlugin.new @app
+      @plugin.swissmedicinfo_xml(file)
+    end
+    
+    def test_Erbiumcitrat_de
+      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+    end
+    def test_Erbiumcitrat_fr
+      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+    end
+    def test_53662_pi_de
+      assert_equal('3TC®', @plugin.extract_matched_name('53662', :fi, 'de'))
+    end
+    def test_53663_pi_de
+      assert_equal('3TC®', @plugin.extract_matched_name('53663', :fi, 'de'))
+    end
+    
+  end
+
 end
