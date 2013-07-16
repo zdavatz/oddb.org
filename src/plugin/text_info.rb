@@ -426,7 +426,6 @@ module ODDB
     end
     
     def TextInfoPlugin::get_iksnrs_from_string(string)
-      puts "get_iksnrs_from_string: #{string}"
       iksnrs = []
       src = string.gsub(/[^0-9,\s]/, "")
       if(matches = src.strip.scan(/\d{5}|\d{2}\s*\d{3}|\d\s*{5}/))
@@ -916,7 +915,9 @@ module ODDB
       end
       index      
     end
-    def textinfo_swissmedicinfo_company_index(company)
+    def textinfo_swissmedicinfo_company_index(company, target)
+      ids = []
+      match_iksnr = /Zulassungsnummer\s*([\d’]+.........)/
       setup_default_agent
       url = 'http://www.swissmedicinfo.ch/?Lang=DE'
       # accept form
@@ -936,30 +937,66 @@ module ODDB
       form3['__EVENTTARGET']   = "ctl00$MainContent$ucCompanySearchResult1$GVCompanies"
       form3['__EVENTARGUMENT'] = 'Select$0'
       page3 = form3.submit
+      dump_file = File.join(ODDB.config.data_dir, 'html', "#{company}_index.html")
+      File.open(dump_file, 'w') { |fh| fh.puts(Nokogiri::Slop(page3.body).text) }
      
-      nrPatInfo = /Patienteninformationen\s*\((\d*)/i.match(page3.body)
-      unless nrPatInfo
-        puts Nokogiri::Slop(page3.body).text
-        puts "Could not find any Patienteninformationen for #{company}"
-        return []
+      if target.eql?(:fi) or target.eql?(:both)
+        nrFachInfo = /Fachinformationen\s*\((\d*)/i.match(page3.body)
+        unless nrFachInfo
+          puts Nokogiri::Slop(page3.body).text
+          puts "Could not find any Fachinformationen for #{company}"
+          return []
+        end
+        nrInfos = nrFachInfo[1].to_i
+        0.upto(nrInfos-1) {
+          |counter|
+            form4   = page3.form_with(:id => 'ctl01')
+            form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridFI$GVMonographies"                                        
+            form4['__EVENTARGUMENT'] = "Select$#{counter}"
+            page4 = form4.submit
+            iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
+            unless iksnr
+              puts "textinfo_swissmedicinfo_company_index counter nrFachInfo #{counter}/#{nrInfos} no iksnr in  #{Nokogiri::Slop(page4.body).text}"              
+              next
+            end
+            id  = iksnr[1].gsub(/[^\d,]/,'').to_i
+            if id < 100 or id > 100000
+              puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
+            end
+            ids << sprintf("%05d", id)
+            puts "textinfo_swissmedicinfo_company_index counter nrFachInfo #{counter}/#{nrInfos} adding #{sprintf("%05d", id)}"
+        }
       end
-      ids = []
-      0.upto(nrPatInfo[1].to_i-1) {
-        |counter|
-          form4   = page3.form_with(:id => 'ctl01')
-          form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridPI$GVMonographies"
-          form4['__EVENTARGUMENT'] = "Select$#{counter}"
-          page4 = form4.submit
-          match_iksnr_strict = /Zulassungsnummer([\d’ ]+)/
-          match_iksnr = /Zulassungsnummer([\d’]+.........)/
-          iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
-          next unless iksnr
-          id  = iksnr[1].gsub(/[^\d,]/,'').to_i
-          if id < 100 or id > 100000
-            puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
-          end
-          ids << id
-      }
+      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{dump_file}"
+      if target.eql?(:fi) or target.eql?(:both)
+        nrPatInfo = /Patienteninformationen\s*\((\d*)/i.match(page3.body)
+        unless nrPatInfo
+          puts Nokogiri::Slop(page3.body).text
+          puts "Could not find any Patienteninformationen for #{company}"
+          return []
+        end
+        nrInfos = nrPatInfo[1].to_i
+        0.upto(nrInfos-1) {
+          |counter|
+            puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}"
+            form4   = page3.form_with(:id => 'ctl01')
+            form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridPI$GVMonographies"
+            form4['__EVENTARGUMENT'] = "Select$#{counter}"
+            page4 = form4.submit
+            iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
+            unless iksnr
+              puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}/#{nrInfos} no iksnr in  #{Nokogiri::Slop(page4.body).text}"              
+              next
+            end
+            id  = iksnr[1].gsub(/[^\d,]/,'').to_i
+            if id < 100 or id > 100000
+              puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
+            end
+            ids << sprintf("%05d", id)
+            puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}/#{nrInfos} adding #{sprintf("%05d", id)}"
+        }
+      end
+      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} patinfo #{ids.sort.uniq.join(',')}"
       ids.sort.uniq
     end
 
@@ -1026,29 +1063,24 @@ module ODDB
     def extract_matched_name(iksnr, type, lang)
       name = nil
       return name unless @doc
-      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/content[match(., \"#{iksnr}\")]"
+      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/authNrs"
       match = @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
-          expr = /#{iksnr[0..1]}(.|\s)?#{iksnr[2..4]}\s?/
-          found_node = catch(:found) do
-            node_set.find_all do |node|
-              html = Nokogiri::HTML(node.text)
-              pos = (html.text =~ /Zulassungsnummer|Num.ro\s*d.autorisation/).to_i
-              unless pos == 0
-                src = html.text[pos..-1]
-                throw :found, node if src =~ expr
-              end
-              false
-            end
-            nil
+          node_set.find_all do |node|
+                        pp node
+            node.text =~ /#{iksnr}/
           end
-          found_node ? [found_node] : []
         end
-      end.new).first
-      if match and title = match.parent.at('./title')
-        name = title.text
-      end
-      name
+      end.new).each{ 
+        |x| 
+          if /#{iksnr}/.match(x.text) 
+            name = x.parent.at('./title').text 
+            puts "extract_matched_name #{iksnr} #{type} #{lang} path is #{path} returns #{name}"
+            return name
+        end
+      }
+      puts "extract_matched_name could not find #{iksnr}"
+      return name
     end
     def extract_image(name, type, lang, dist)
       if File.exists?(dist)
@@ -1191,7 +1223,7 @@ module ODDB
       if @options[:xml_file]
         xml_file = @options[:xml_file]
       end
-      Nokogiri::XML(File.open(xml_file,'r').read)
+      @doc = Nokogiri::XML(File.open(xml_file,'r').read)
     end
     def import_swissmedicinfo_by_index(index, target)
       title,keys = title_and_keys_by(target)
@@ -1203,11 +1235,13 @@ module ODDB
       @doc = nil
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
+      puts "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
+        puts "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr, type, lang)]
@@ -1221,7 +1255,7 @@ module ODDB
     def import_swissmedicinfo_by_companies(companies, target)
       iksnrs = []
       companies.each do |company|
-        iksnrs += textinfo_swissmedicinfo_company_index(company)
+        iksnrs += textinfo_swissmedicinfo_company_index(company, target)
       end
       import_swissmedicinfo_by_iksnrs(iksnrs, target)
     end

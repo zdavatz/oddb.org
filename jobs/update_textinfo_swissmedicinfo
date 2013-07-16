@@ -29,8 +29,8 @@ module ODDB
                  m = /xml_file=(\w.+)/.match(arg)
           opts[:xml_file] = m[1]
           opts[:download] = false
-        elsif arg =~ /^\d{5}$/
-          opts[:iksnrs] << arg
+        elsif arg =~ /^\d{3,5}$/
+          opts[:iksnrs] << sprintf('%05d', arg.to_i)
         else arg =~ /^\w*$/
           opts[:companies] << arg if arg.size > 0
         end
