@@ -190,7 +190,7 @@ module ODDB
       # textinfo
       update_textinfo_swissmedicinfo({:target => :fi})
       update_textinfo_swissmedicinfo({:target => :pi})
-      update_textinfo_news2
+      #update_textinfo_news2
 
 			if(update_swissmedic)
         update_swissmedic_followers
