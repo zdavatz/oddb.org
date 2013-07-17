@@ -214,7 +214,7 @@ module ODDB
     def zone_navigation(filter=false)
       super
     end
-	end
+  end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		ENABLED = [
       :ajax
@@ -598,7 +598,7 @@ module ODDB
 				[]
 			end
 		end
-	end
+  end
 	class LookandfeelKonsumInfo < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
