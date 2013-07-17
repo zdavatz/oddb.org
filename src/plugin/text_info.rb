@@ -40,6 +40,7 @@ module ODDB
       @failures = []
       @download_errors = []
       @companies = []
+      @nonconforming_content = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @title  = ''       # target fi/pi name
       @format = :documed # {:documed|:compendium|:swissmedicinfo}
@@ -221,6 +222,7 @@ module ODDB
     end
     def report
       unknown_size = @unknown_iksnrs.size
+      @nonconforming_content.uniq!.sort!
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
       }.join("\n")
@@ -250,7 +252,9 @@ module ODDB
           @updated.join("\n"),
           @skipped.join("\n"),
           @invalid.join("\n"),
-          @notfound.join("\n"),
+          @notfound.join("\n"),nil,
+          "Non conforming contents:  #{@nonconforming_content.size}",
+          @nonconforming_content.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -273,7 +277,9 @@ module ODDB
           @updated.join("\n"),
           @skipped.join("\n"),
           @invalid.join("\n"),
-          @notfound.join("\n"),
+          @notfound.join("\n"),nil,
+          "Non conforming contents:  #{@nonconforming_content.size}",
+          @nonconforming_content.join("\n"),
         ].join("\n")
       when :pi
         [
@@ -295,7 +301,9 @@ module ODDB
           @updated.join("\n"),
           @skipped.join("\n"),
           @invalid.join("\n"),
-          @notfound.join("\n"),
+          @notfound.join("\n"),nil,
+          "Non conforming contents:  #{@nonconforming_content.size}",
+          @nonconforming_content.join("\n"),
         ].join("\n")
       end
     end
@@ -1035,7 +1043,7 @@ module ODDB
       html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
     end
     def extract_matched_content(name, type, lang)
-      content = nil, styles = nil, title = nil
+      content = nil, styles = nil, title = nil, iksnrs = nil
       return content unless @doc and name
       nameForRegexp = name.gsub('"','.')
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{nameForRegexp}\")]"
@@ -1057,8 +1065,9 @@ module ODDB
         content = match.parent.at('./content')
         styles  = match.parent.at('./style').text
         title   = match.parent.at('./title').text
+        iksnrs  = match.parent.at('./authNrs').text
       end
-      return content, styles, title
+      return content, styles, title, iksnrs
     end
     def extract_matched_name(iksnr, type, lang)
       name = nil
@@ -1082,7 +1091,7 @@ module ODDB
       puts "extract_matched_name could not find #{iksnr}"
       return name
     end
-    def extract_image(name, type, lang, dist)
+    def extract_image(name, type, lang, dist, iksnrs)
       if File.exists?(dist)
         resource_dir = (File.join(ODDB::IMAGE_DIR, type.to_s, lang.to_s))
         FileUtils.mkdir_p(resource_dir)
@@ -1098,6 +1107,9 @@ module ODDB
             if type =~ /^data:image\/(jp[e]?g|gif|png|x-wmf);base64$/
               file = File.join(dir, "#{i + 1}.#{$1}")
               File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)) }
+              if /x-wmf/.match(type)
+                @nonconforming_content << "#{iksnrs}: '#{@title}' with non conforming #{type} element"
+              end
             end
           end
         end
@@ -1120,7 +1132,7 @@ module ODDB
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
-        content, styles, title = extract_matched_content(name, type, lang)
+        content, styles, title, iksnrs = extract_matched_content(name, type, lang)
         if content
           html = Nokogiri::HTML(content.to_s).to_s
           @format = detect_format(html)
@@ -1145,7 +1157,7 @@ module ODDB
           end
           if update
             FileUtils.mv(temp, dist)
-            extract_image(name, type, lang, dist)
+            extract_image(name, type, lang, dist, iksnrs)
             puts "parse_and_update: calls parse_#{type}, #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
