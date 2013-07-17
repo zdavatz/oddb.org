@@ -1132,7 +1132,7 @@ module ODDB
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
-        content, styles, title, iksnrs = extract_matched_content(name, type, lang)
+        content, styles, title, iksnrs_from_xml = extract_matched_content(name, type, lang)
         if content
           html = Nokogiri::HTML(content.to_s).to_s
           @format = detect_format(html)
@@ -1157,7 +1157,7 @@ module ODDB
           end
           if update
             FileUtils.mv(temp, dist)
-            extract_image(name, type, lang, dist, iksnrs)
+            extract_image(name, type, lang, dist, iksnrs_from_xml)
             puts "parse_and_update: calls parse_#{type}, #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
