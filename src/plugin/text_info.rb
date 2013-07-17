@@ -1095,7 +1095,7 @@ module ODDB
           FileUtils.mkdir_p(dir)
           images.each_with_index do |img, i|
             type,src = img.attributes['src'].to_s.split(',')
-            if type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
+            if type =~ /^data:image\/(jp[e]?g|gif|png|x-wmf);base64$/
               file = File.join(dir, "#{i + 1}.#{$1}")
               File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)) }
             end
