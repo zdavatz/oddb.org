@@ -1255,6 +1255,7 @@ module ODDB
     def import_swissmedicinfo_by_companies(companies, target)
       iksnrs = []
       companies.each do |company|
+        @companies << company
         iksnrs += textinfo_swissmedicinfo_company_index(company, target)
       end
       import_swissmedicinfo_by_iksnrs(iksnrs, target)
