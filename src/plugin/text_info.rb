@@ -968,7 +968,7 @@ module ODDB
         }
       end
       puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{dump_file}"
-      if target.eql?(:fi) or target.eql?(:both)
+      if target.eql?(:pi) or target.eql?(:both)
         nrPatInfo = /Patienteninformationen\s*\((\d*)/i.match(page3.body)
         unless nrPatInfo
           puts Nokogiri::Slop(page3.body).text
