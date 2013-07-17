@@ -222,7 +222,7 @@ module ODDB
     end
     def report
       unknown_size = @unknown_iksnrs.size
-      @nonconforming_content.uniq!.sort!
+      @nonconforming_content.uniq!.sort! if @nonconforming_content and @nonconforming_content.size > 0
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
       }.join("\n")
