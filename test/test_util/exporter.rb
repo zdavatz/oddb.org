@@ -51,7 +51,7 @@ module ODDB
       flexstub(PatinfoInvoicer).should_receive(:new).and_return(@plugin)
     end
     def test_export_oddbdat__on_sunday
-      flexstub(@exporter, :today => Date.new(2011,1,2))
+      flexstub(@exporter, :today => Date.new(2011,1,2)) # Sunday
       flexstub(Log) do |logclass|
         # white box test: Log.new is never called
         # if dose_missing_list is not empty or an error raises,
@@ -59,7 +59,8 @@ module ODDB
         logclass.should_receive(:new).times(0).and_return(@log)
       end
       flexstub(@plugin) do |exporter|
-          exporter.should_receive(:export).and_return([]) # this is the key point
+        exporter.should_receive(:export_fachinfos).once.with_no_args
+        exporter.should_receive(:export).and_return([]) # this is the key point
       end
 
       # the 'nil' means 'if' condition runs, otherwise it may indicate an error
@@ -78,13 +79,14 @@ module ODDB
       assert_equal(nil, @exporter.export_oddbdat)
     end
     def test_export_oddbdat__dose_missing
-      flexstub(@exporter, :today => Date.new(2011,1,4)) # Tuesday
+      flexstub(@exporter, :today => Date.new(2011,1,2)) # Sunday
       flexstub(Log) do |logclass|
         # white box test: Log.new is once called because of dose data missing
         logclass.should_receive(:new).times(1).and_return(@log)
-      end
+      end      
       flexstub(@plugin) do |exporter|
-          exporter.should_receive(:export).and_return(['dose_missing']) # this is the key point
+        exporter.should_receive(:export).and_return(['dose_missing']) # this is the key point
+        exporter.should_receive(:export_fachinfos).once.with_no_args
       end
 
       assert_equal(nil, @exporter.export_oddbdat)
@@ -99,8 +101,8 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        exp.should_receive(:export_yaml).once.with_no_args
-        exp.should_receive(:export_oddbdat).once.with_no_args
+#        exp.should_receive(:export_yaml).once.with_no_args # yaml only run on sunday
+#        exp.should_receive(:export_oddbdat).once.with_no_args # yaml only run on sunday
         exp.should_receive(:export_csv).once.with_no_args
         exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
@@ -117,8 +119,8 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        exp.should_receive(:export_yaml).once.with_no_args
-        exp.should_receive(:export_oddbdat).once.with_no_args
+#        exp.should_receive(:export_yaml).once.with_no_args # yaml only run on sunday
+#        exp.should_receive(:export_oddbdat).once.with_no_args # yaml only run on sunday
         exp.should_receive(:export_csv).once.with_no_args
         exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
@@ -175,7 +177,7 @@ module ODDB
       end
       assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_csv__errorcase1
+    def test_export_csv_errorcase1
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_drugs).and_raise(StandardError)
         plug.should_receive(:export_drugs_extended)
@@ -186,7 +188,7 @@ module ODDB
       end
       assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_csv__errorcase2
+    def test_export_csv_errorcase2
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_drugs)
         plug.should_receive(:export_drugs_extended).and_raise(StandardError)
@@ -299,61 +301,41 @@ module ODDB
       end
       assert_equal(@plugin, @exporter.export_patents_xls)
     end
-    def test_export_yaml__on_monday
+    def test_export_csv_on_monday
       flexstub(@exporter, :today => Date.new(2011,1,3)) # Monday
       # totally white box test
       flexstub(@plugin) do |plug|
-        plug.should_receive(:export).once.with_no_args
-        plug.should_receive(:export_atc_classes).once.with_no_args
-        plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_prices).once.with_no_args
-        plug.should_receive(:export_fachinfos).times(0).with_no_args
-        plug.should_receive(:export_patinfos).times(0).with_no_args
-        plug.should_receive(:export_doctors).times(0).with_no_args
+        plug.should_receive(:export_drugs).once.with_no_args
+        plug.should_receive(:export_drugs_extended).once.with_no_args
       end
-      assert_equal('sleep', @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_yaml__on_tuesday
+    def test_export_csv_on_tuesday
       flexstub(@exporter, :today => Date.new(2011,1,4)) # Tuesday
       # totally white box test
       flexstub(@plugin) do |plug|
-        plug.should_receive(:export).once.with_no_args
-        plug.should_receive(:export_atc_classes).once.with_no_args
-        plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_prices).once.with_no_args
-        plug.should_receive(:export_fachinfos).once.with_no_args
-        plug.should_receive(:export_patinfos).times(0).with_no_args
-        plug.should_receive(:export_doctors).times(0).with_no_args
+        plug.should_receive(:export_drugs).once.with_no_args
+        plug.should_receive(:export_drugs_extended).once.with_no_args
       end
-      assert_equal('sleep', @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_yaml__on_wednesday
+    def test_export_csv_on_wednesday
       flexstub(@exporter, :today => Date.new(2011,1,5)) # Wednesday
       # totally white box test
       flexstub(@plugin) do |plug|
-        plug.should_receive(:export).once.with_no_args
-        plug.should_receive(:export_atc_classes).once.with_no_args
-        plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_prices).once.with_no_args
-        plug.should_receive(:export_fachinfos).times(0).with_no_args
-        plug.should_receive(:export_patinfos).once.with_no_args
-        plug.should_receive(:export_doctors).times(0).with_no_args
+        plug.should_receive(:export_drugs).once.with_no_args
+        plug.should_receive(:export_drugs_extended).once.with_no_args
       end
-      assert_equal('sleep', @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_yaml__on_thursday
+    def test_export_csv_on_thursday
       flexstub(@exporter, :today => Date.new(2011,1,6)) # Tursday
       # totally white box test
       flexstub(@plugin) do |plug|
-        plug.should_receive(:export).once.with_no_args
-        plug.should_receive(:export_atc_classes).once.with_no_args
-        plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_prices).once.with_no_args
-        plug.should_receive(:export_fachinfos).times(0).with_no_args
-        plug.should_receive(:export_patinfos).times(0).with_no_args
-        plug.should_receive(:export_doctors).once.with_no_args
+        plug.should_receive(:export_drugs).once.with_no_args
+        plug.should_receive(:export_drugs_extended).once.with_no_args
       end
-      assert_equal('sleep', @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_csv)
     end
     def test_mail_download_stats
       flexstub(Log) do |logclass|
@@ -446,8 +428,7 @@ module ODDB
       flexstub(File).should_receive(:read)
 
       # test
-      expected_date = Date.new(2010,12,5)
-      flexstub(LogFile).should_receive(:filename).with('key', expected_date)
+      flexstub(LogFile).should_receive(:filename).once.with('key', @@today)
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_stats__after_8th
@@ -459,8 +440,7 @@ module ODDB
       flexstub(File).should_receive(:read)
 
       # test
-      expected_date = Date.new(2011,1,10)
-      flexstub(LogFile).should_receive(:filename).with('key', expected_date)
+      flexstub(LogFile).should_receive(:filename).once.with('key', @@today)
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_swissmedic_notifications
