@@ -95,7 +95,7 @@ module ODDB
 				self.collect_languages(DEFRIT, item)
 			end
 			def CsvExporter.dump(keys, item, fh, opts={})
-        CSV.open(fh.path, "w", {:col_sep => ';'}) { |csv|
+        CSV.open(fh.path, "a+", {:col_sep => ';'}) { |csv|
           csv << collect_data(keys, item, opts).flatten
         }
 			end

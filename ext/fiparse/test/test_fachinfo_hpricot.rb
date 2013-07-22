@@ -323,7 +323,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     end
     
     def test_italic_absent
-      # File.open("fi_58106.yaml", 'w+') { |fi| fi.puts @fachinfo.to_yaml }
+      File.open("fi_58106.yaml", 'w+') { |fi| fi.puts @fachinfo.to_yaml }
       # puts "#{__LINE__}: found #{@fachinfo.to_yaml.scan(/- :italic/).size} occurrences of italic in yaml"
       occurrences = @fachinfo.to_yaml.scan(/- :italic/).size
       assert(occurrences <= 70, "Find more than 70 occurrences in yaml")
@@ -420,7 +420,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     
     def test_italic_absent
       File.open("fi_62111.yaml", 'w+') { |fi| fi.puts @fachinfo.to_yaml }
-      puts "#{__LINE__}: found #{@fachinfo.to_yaml.scan(/- :italic/).size} occurrences of italic in yaml"
+      # puts "#{__LINE__}: found #{@fachinfo.to_yaml.scan(/- :italic/).size} occurrences of italic in yaml"
       occurrences = @fachinfo.to_yaml.scan(/- :italic/).size
       assert(occurrences == 79, "Find exactly 79 occurrences of italic in yaml")
     end
@@ -433,7 +433,6 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     MedicInfoName = 'Bisoprolol Axapharm'
     def test_full_import
       opts = {:target=>:fi, :reparse=>true, :iksnrs=>["58107", "58106", "78656", "62111", "62439", "62223", "62728"], :companies=>[], :download=>false}
-      pp opts
       names = {}
       names[:de] = File.expand_path('data/html/de/fi_62111.de.html',  File.dirname(__FILE__))
       type = 'fachinfo'
@@ -446,6 +445,42 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     end
   end
   
+  #  problem that the content of the fachinfo did not display correctly the firmenlogo  
+  class TestFachinfo_62580_Novartis_Seebri< Test::Unit::TestCase
+    MedicInfoName = ' Seebri Breezhaler'
+    YamlName      = 'fi_62580.yaml'
+    def setup
+      @path = File.expand_path('data/html/de/fi_62580.de.html',  File.dirname(__FILE__))     
+      @writer = FachinfoHpricot.new
+      open(@path) { |fh| 
+        @writer.format =  :swissmedicinfo
+        @fachinfo = @writer.extract(Hpricot(fh), :fi, MedicInfoName)
+      }
+      File.open(YamlName, 'w+') { |fi| fi.puts @fachinfo.to_yaml }
+    end
+    
+    def test_name2
+      assert_equal(MedicInfoName, @fachinfo.name.to_s)
+    end
+    
+    def test_firmenlogo
+      assert(@fachinfo.galenic_form.to_s.index('Firmenlogo'))
+      assert(@fachinfo.effects.to_s.index('(image)'), 'Wirkungen muss Bild enthalten')
+      assert(@fachinfo.galenic_form.to_s.index('(image)'), 'galenic_form must have an image')
+      assert(@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/5.png'), 'Must have image nr 5')
+      assert(@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/4.png'), 'Must have image nr 4')
+      assert(@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/3.png'), 'Must have image nr 3')
+
+      assert(@fachinfo.galenic_form.to_s.index('(image)'), 'Zusamensetzung muss Bild enthalten')
+      assert(@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/1.x-wmf'), 'Must have image nr 1')
+    end
+
+    def test_iksnrs
+      assert_equal("Zulassungsnummer\n62580(Swissmedic)", @fachinfo.iksnrs.to_s)
+      assert_equal(["62580"], TextInfoPlugin::get_iksnrs_from_string(@fachinfo.iksnrs.to_s))
+    end    
+  end
+ 
   class TestFachinfoHpricotStyle < Test::Unit::TestCase
 
       def test_styles
