@@ -73,6 +73,11 @@ class TextinfoHpricot
     end
     (doc/paragraph_tag).each { |elem|
       identify_chapter(*chapter(elem)) if !name or elem != name
+    } 
+    paragraph_tag_pre_2013 = "div[@id^='Section']"
+    (doc/paragraph_tag_pre_2013).each {
+      |elem|
+      identify_chapter(*chapter(elem)) if !name or elem != name
     }
     to_textinfo
   end
@@ -120,8 +125,7 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-#    puts "handle_element #{child.class} #{child.name} isParagraph #{isParagraph}"
-    ptr.target << ' ' if isParagraph and  !/^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/.match(ptr.chapter.to_s)   
+    ptr.target << ' ' if self.class.eql?(ODDB::FiParse::PatinfoHpricot) and isParagraph and  !/^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/.match(ptr.chapter.to_s)    
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
@@ -167,9 +171,7 @@ class TextinfoHpricot
           ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
         end
       when 'sub', 'sup'
-        ptr.target << ' '
         handle_text(ptr, child)
-        ptr.target << ' '
       when 'table'
         ptr.section = ptr.chapter.next_section
         if detect_table?(child)
@@ -288,7 +290,7 @@ class TextinfoHpricot
     if(elem_or_str)
       chapter = Text::Chapter.new
       if elem_or_str.is_a?(Hpricot::Elem)
-        chapter.heading = text(elem_or_str)
+        chapter.heading = text(elem_or_str).strip
       elsif elem_or_str.is_a?(String)
         chapter.heading = elem_or_str
       end
@@ -332,7 +334,9 @@ class TextinfoHpricot
   def text(elem)
     return '' unless elem
     str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').gsub(/[■]/u, '').strip)
+    res = target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').gsub(/[■]/u, '').gsub(' ', ' '))
+    res.strip! if self.class.to_s.eql?('ODDB::FiParse::PatinfoHpricot')
+    res
   end
 end
   end
