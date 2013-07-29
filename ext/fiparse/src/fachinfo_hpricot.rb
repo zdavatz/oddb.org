@@ -109,13 +109,18 @@ class FachinfoHpricot < TextinfoHpricot
   end
   private
   def detect_chapter(elem)
-    return [nil, nil] unless /^section[0-9]*$/i.match(elem.attributes['id'].to_s)
     # TODO
     #   Update chapter detection if swissmedic repairs FI/PI format.
     #
     #   Currently, id attribute 'section*' is not fixed number.
     #   And Section order is also not fixed :(
-    text = text(elem).sub(/^\s/, '')
+    text = nil
+    if elem.at("p") and elem.at("div")
+      text = elem.at("div").inner_text + "\n" + elem.at("p").inner_text  if elem.at("p") and elem.at("div")
+    else
+      return [nil, nil] unless /^section[0-9]*$/i.match(elem.attributes['id'].to_s)
+      text = text(elem).sub(/^\s/, '')      
+    end
     code =
     case text
     when /^Zusammensetzung(en)?|^Composition[s]?/                                                                                               ; '7000'

@@ -92,6 +92,71 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     assert_nil(@writer.identify_chapter('7800', nil)) # 7800 = Packungen
   end
   
+  def test_Zulassungsnummer_isentress
+    html = <<-HTML
+<p class="s4" id="section17"><span class="s44"><span>Zulassungsnummer</span></span></p>
+<p class="s4"><span class="s48"><span>58267</span></span><span class="s48"><span>, 62946</span></span><span class="s48"><span> (Swissmedic)</span></span></p>
+<p class="s4">&nbsp;</p>
+  HTML
+    xpath = "p[@id^='section'"
+    elem = Hpricot(html).at(xpath)
+    assert("Zulassungsnummer",  elem.inner_text)
+    assert("58267, 62946 (Swissmedic)", elem.next_sibling.inner_text)
+    assert_nil(elem.at("div"))
+    assert_nil(elem.at("p"))
+  end
+  
+  def test_Zulassungsnummer_isentress_html
+    isentress_html = <<-HTML
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<?xml version="1.0" encoding="utf-8"?><html><body><div xmlns="http://www.w3.org/1999/xhtml">
+<p class="s4" id="section17"><span class="s44"><span>Zulassungsnummer</span></span></p>
+<p class="s4"><span class="s48"><span>58267</span></span><span class="s48"><span>, 62946</span></span><span class="s48"><span> (Swissmedic)</span></span></p>
+</div></body></html>
+HTML
+    writer = FachinfoHpricot.new
+    writer.format =  :swissmedicinfo
+    fachinfo = writer.extract(Hpricot(isentress_html), :fi, 'Isentress')
+    assert_equal('Zulassungsnummer', fachinfo.iksnrs.heading)    
+    assert_equal("Zulassungsnummer\n58267, 62946 (Swissmedic)", fachinfo.iksnrs.to_s)    
+  end
+  
+  def test_Zulassungsnummer_cipralex
+    html = <<-HTML
+  <div class="paragraph" id="Section7750">
+    <div class="absTitle">Zulassungsnummer</div>
+    <p class="noSpacing">55961, 56366, 62184 (Swissmedic).</p>
+  </div>
+  HTML
+    elem = Hpricot(html).at("div.paragraph")
+    assert("Zulassungsnummer",  elem.at("div").inner_text)
+    assert_not_nil(elem.at("div"))
+    assert_not_nil(elem.at("p"))
+    assert("58267, 62946 (Swissmedic)", elem.at("p").inner_text)
+  end
+  
+  def test_Zulassungsnummer_cipralex_html
+    cipralex_html = <<-HTML
+    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><div id="monographie">
+  <div class="MonTitle">Cipralex&reg; Filmtabletten/Tropfen 10 mg/ml, 20 mg/ml<br>Cipralex MELTZ&reg; Schmelztabletten<br>
+</div>
+  <div class="ownerCompany">
+    <div style="text-align: right;">LUNDBECK</div>
+  </div>
+  <div class="paragraph" id="Section7750">
+    <div class="absTitle">Zulassungsnummer</div>
+    <p class="noSpacing">55961, 56366, 62184 (Swissmedic).</p>
+  </div>
+</div></body></html>
+HTML
+    writer = FachinfoHpricot.new
+    writer.format =  :swissmedicinfo
+    fachinfo = writer.extract(Hpricot(cipralex_html), :fi, 'Cipralex Filmtabletten/Tropfen 10 mg/ml, 20 mg/ml<br>Cipralex MELTZ Schmelztabletten')
+    assert_equal('Zulassungsnummer', fachinfo.iksnrs.heading)    
+    assert_equal("Zulassungsnummer\n55961, 56366, 62184 (Swissmedic).", fachinfo.iksnrs.to_s)    
+  end
+  
 end
 
 class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
@@ -213,7 +278,7 @@ end if false
       @@path = File.expand_path('data/html/de/fi_32917_zyloric.de.html',  File.dirname(__FILE__))
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        @@writer.format =  :swissmedicinfo
+        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, Zyloric_Reg)
       }
     end
@@ -251,7 +316,7 @@ end if false
       @@path = File.expand_path('data/html/fr/fi_Zyloric.fr.html',  File.dirname(__FILE__))
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        @@writer.format =  :swissmedicinfo
+        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicalName)
       }
     end
@@ -298,7 +363,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       return if defined?(@@path)
       @@path = File.expand_path('data/html/de/fi_58106_finasterid.de.html',  File.dirname(__FILE__))      
       @@writer = FachinfoHpricot.new
-      @@writer.format =  :swissmedicinfo
+      
       open(@@path) { |fh| 
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Streuli)
       }
@@ -344,7 +409,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       @@path = File.expand_path('data/html/de/fi_62439_xalos_duo.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        @@writer.format =  :swissmedicinfo
+        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesXalos)
       }
 #      open(@@path) { |fh| @@fachinfo = @@writer.extract(Hpricot(fh)) }
@@ -393,7 +458,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       @@path = File.expand_path('data/html/de/fi_62111_bisoprolol.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        @@writer.format =  :swissmedicinfo
+        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesBisoprolol)
       }
 #      open(@@path) { |fh| @@fachinfo = @@writer.extract(Hpricot(fh)) }
@@ -444,7 +509,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       @@path = File.expand_path('data/html/de/fi_62580_novartis_seebris.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        @@writer.format =  :swissmedicinfo
+        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName)
       }
     end
@@ -516,12 +581,17 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
         return if defined?(@@path)
         @@path = File.expand_path('data/html/de/fi_62184_cipralex_de.html',  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
-        @@writer.format =  :swissmedicinfo
+        
         open(@@path) { |fh| 
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Cipralex)
         }
         File.open(YamlName, 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       end
+      
+      def test_detect_format
+        assert_equal(:swissmedicinfo,  detect_format(IO.read(@@path)))
+      end 
+      
       def test_fachinfo2
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end 
@@ -530,11 +600,6 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Cipralex&reg;
       end
       
-      def test_interactions
-        assert_equal('Interaktionen', @@fachinfo.interactions.heading)
-        assert(@@fachinfo.interactions.to_s.index('(1,10, 1,93)'))
-      end
-
       def test_span
         assert_nil(/span/.match(@@fachinfo.indications.to_s))
         assert_nil(/italic/.match(@@fachinfo.to_s))
@@ -542,8 +607,8 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
       end
 
       def test_iksnrs
-        assert_equal("Zulassungsnummer\n62184, 56366, 62184 (Swissmedic).", @@fachinfo.iksnrs.to_s)
-        assert_equal(["62184"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
+        assert_equal("Zulassungsnummer\n55961, 56366, 62184 (Swissmedic).", @@fachinfo.iksnrs.to_s)
+        assert_equal(["55961", "56366", "62184"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
       end 
 
       def test_zusammenssetzung
@@ -598,7 +663,7 @@ class="
         return if defined?(@@path)
         @@path = File.expand_path('data/html/de/fi_58267_isentres_de.html',  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
-        @@writer.format =  :swissmedicinfo
+        
         open(@@path) { |fh| 
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Isentres)
         }
@@ -614,6 +679,7 @@ class="
       
       def test_interactions
         assert_equal('Interaktionen', @@fachinfo.interactions.heading)
+        assert(@@fachinfo.interactions.to_s.index('(1,10, 1,93)'), 'format of number in table (Isentress: Omeprazole, Einzeldosis) should be 1,10, 1,93)')
       end
       
       def test_galenic_form
