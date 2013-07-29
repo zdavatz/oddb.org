@@ -116,9 +116,14 @@ class FachinfoHpricot < TextinfoHpricot
     #   And Section order is also not fixed :(
     text = nil
     if elem.at("p") and elem.at("div")
-      text = elem.at("div").inner_text + "\n" + elem.at("p").inner_text  if elem.at("p") and elem.at("div")
+      if elem.at("p") and elem.at("div")
+        text = elem.at("div").inner_text;
+        text += "\n" + elem.at("p").inner_text
+      end
     else
-      return [nil, nil] unless /^section[0-9]*$/i.match(elem.attributes['id'].to_s)
+      unless /^section[0-9]*$/i.match(elem.attributes['id'].to_s)
+        return [nil, nil]
+      end
       text = text(elem).sub(/^\s/, '')      
     end
     code =

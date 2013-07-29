@@ -24,15 +24,14 @@ class TextinfoHpricot
     ptr.chapter = chapter
     if @format == :swissmedicinfo
       if elem.at("div") and elem.at("p") # formatted like cipralex iksnr 62184
-        heading = elem.at("div").inner_text
-        code , text = detect_chapter(elem)
+        heading = elem.at("div").inner_text;
+        code, text = detect_chapter(elem)
         chapter.heading = heading
-        elem = elem.at("p")
+        elem = elem.children[3] # Here we find the first relevant children
         until end_element_in_chapter?(elem)
           handle_element(elem, ptr)
           elem = elem.next
         end
-        ptr.section = ptr.chapter.next_section
       else
         code,text = detect_chapter(elem)
         if code and text
@@ -85,12 +84,18 @@ class TextinfoHpricot
       paragraph_tag = 'div.paragraph'
     end
     (doc/paragraph_tag).each { |elem|
-      identify_chapter(*chapter(elem)) if !name or elem != name
+      if !name or elem != name
+        code, text = chapter(elem)
+        identify_chapter(code, text) 
+      end
     } 
     paragraph_tag_pre_2013 = "div[@id^='Section']"
     (doc/paragraph_tag_pre_2013).each {
       |elem|
-      identify_chapter(*chapter(elem)) if !name or elem != name
+      if !name or elem != name
+        code, text = chapter(elem)
+        identify_chapter(code, text) 
+      end
     }
     to_textinfo
   end
@@ -113,6 +118,7 @@ class TextinfoHpricot
   end
   def has_italic?(elem, ptr)
     if @format == :swissmedicinfo
+      return true if /font-style:italic/.match(elem.attributes['style'])
       if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
        @stylesWithItalic.each{ |style| return true if elem.attributes['class'].eql?(style) }
       end
@@ -180,6 +186,9 @@ class TextinfoHpricot
           end          
         else
           ptr.target.augment_format(:italic) if has_italic?(child, ptr)
+          if defined?(child.parent.attributes) and /untertitle/.match(child.parent.attributes['class'])
+            ptr.target = ptr.section.next_paragraph
+          end
           handle_all_children(child, ptr)
           ptr.target.reduce_format(:italic)  if has_italic?(child, ptr)
         end
