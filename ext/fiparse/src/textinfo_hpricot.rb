@@ -23,15 +23,27 @@ class TextinfoHpricot
     ptr = OpenStruct.new
     ptr.chapter = chapter
     if @format == :swissmedicinfo
-      code,text = detect_chapter(elem)
-      if code and text
-        code            = code
-        chapter.heading = text
-        # content
-        elem = elem.next
+      if elem.at("div") and elem.at("p") # formatted like cipralex iksnr 62184
+        heading = elem.at("div").inner_text
+        code , text = detect_chapter(elem)
+        chapter.heading = heading
+        elem = elem.at("p")
         until end_element_in_chapter?(elem)
           handle_element(elem, ptr)
           elem = elem.next
+        end
+        ptr.section = ptr.chapter.next_section
+      else
+        code,text = detect_chapter(elem)
+        if code and text
+          code            = code
+          chapter.heading = text
+          # content
+          elem = elem.next
+          until end_element_in_chapter?(elem)
+            handle_element(elem, ptr)
+            elem = elem.next
+          end
         end
       end
     else
@@ -56,6 +68,7 @@ class TextinfoHpricot
   def extract(doc, type=:fi, name=nil, styles = nil)
     paragraph = ''
     @stylesWithItalic = TextinfoHpricot::get_italic_style(styles)
+    @format = :swissmedicinfo if doc.to_s.index('section1') or doc.to_s.index('Section7000')
     case @format
     when :compendium
       @name         = simple_chapter(doc.at('div.MonTitle'))
