@@ -199,38 +199,39 @@ Jahren   pro Tag        pro Tag     pro Tag
 end
 class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
   def setup
-    @path = File.expand_path('data/html/de/cimifemin.html', 
+    return if defined?(@@path)
+    @@path = File.expand_path('data/html/de/cimifemin.html', 
       File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @patinfo = @writer.extract(Hpricot(fh))
+    @@writer = PatinfoHpricot.new
+    open(@@path) { |fh| 
+      @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
   def test_patinfo
-    assert_instance_of(PatinfoDocument2001, @patinfo)
+    assert_instance_of(PatinfoDocument2001, @@patinfo)
   end
   def test_name1
-    assert_equal('Cimifemin®', @writer.name.to_s)
+    assert_equal('Cimifemin®', @@writer.name.to_s)
   end
   def test_company1
-    chapter = @writer.company
+    chapter = @@writer.company
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('ZELLER MEDICAL', chapter.heading)
   end
   def test_galenic_form1
-    chapter = @writer.galenic_form
+    chapter = @@writer.galenic_form
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal('Pflanzliches Arzneimittel', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_amzv1
-    chapter = @writer.amzv
+    chapter = @@writer.amzv
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal('AMZV', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_effects1
-    chapter = @writer.effects
+    chapter = @@writer.effects
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal("Was ist Cimifemin und wann wird es angewendet?", 
                  chapter.heading)
@@ -248,7 +249,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_amendments1
-    chapter = @writer.amendments
+    chapter = @@writer.amendments
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was sollte dazu beachtet werden?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -266,7 +267,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_contra_indications1
-    chapter = @writer.contra_indications
+    chapter = @@writer.contra_indications
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wann darf Cimifemin nicht oder nur mit Vorsicht angewendet werden?', 
                  chapter.heading)
@@ -298,7 +299,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_usage1
-    chapter = @writer.usage
+    chapter = @@writer.usage
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wie verwenden Sie Cimifemin?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -324,7 +325,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_unwanted_effects1
-    chapter = @writer.unwanted_effects
+    chapter = @@writer.unwanted_effects
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Welche Nebenwirkungen kann Cimifemin haben?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -351,7 +352,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_general_advice1
-    chapter = @writer.general_advice
+    chapter = @@writer.general_advice
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist ferner zu beachten?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -372,7 +373,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_composition1
-    chapter = @writer.composition
+    chapter = @@writer.composition
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist in Cimifemin enthalten?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -389,7 +390,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_iksnrs1
-    chapter = @writer.iksnrs
+    chapter = @@writer.iksnrs
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal("Zulassungsnummer", chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -399,7 +400,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal('48734 (Swissmedic).', paragraph.to_s)
   end
   def test_packages1
-    chapter = @writer.packages
+    chapter = @@writer.packages
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal("Wo erhalten Sie Cimifemin? Welche Packungen sind erhältlich?",
                  chapter.heading)
@@ -416,7 +417,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(3, paragraph.formats.size)
   end
   def test_distribution1
-    chapter = @writer.distribution
+    chapter = @@writer.distribution
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Zulassungsinhaberin', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -428,7 +429,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
   def test_date1
-    chapter = @writer.date
+    chapter = @@writer.date
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -442,29 +443,29 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
 end
 class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
   def setup
-    @path = File.expand_path('data/html/fr/cimifemin.html', 
+    @@path = File.expand_path('data/html/fr/cimifemin.html', 
       File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @writer.extract(Hpricot(fh))
+    @@writer = PatinfoHpricot.new
+    open(@@path) { |fh| 
+      @@writer.extract(Hpricot(fh))
     }
   end
   def test_name2
-    assert_equal('Cimifemine®', @writer.name.to_s)
+    assert_equal('Cimifemine®', @@writer.name.to_s)
   end
   def test_company2
-    chapter = @writer.company
+    chapter = @@writer.company
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('ZELLER MEDICAL', chapter.heading)
   end
   def test_amzv2
-    chapter = @writer.amzv
+    chapter = @@writer.amzv
     assert_instance_of(ODDB::Text::Chapter, chapter)
     assert_equal('OEMéd', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_composition2
-    chapter = @writer.composition
+    chapter = @@writer.composition
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Que contient Cimifemine?', chapter.heading)
     assert_equal(1, chapter.sections.size)
@@ -483,18 +484,19 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
 end
 class TestPatinfoHpricotInderalDe < Test::Unit::TestCase
   def setup
-    @path = File.expand_path('data/html/de/inderal.html', 
+    return if defined?(@@path)
+    @@path = File.expand_path('data/html/de/inderal.html',
       File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @writer.extract(Hpricot(fh))
+    @@writer = PatinfoHpricot.new
+    open(@@path) { |fh| 
+      @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
   def test_galenic_form3
-    assert_nil(@writer.galenic_form)
+    assert_nil(@@writer.galenic_form)
   end
   def test_contra_indications3
-    chapter = @writer.contra_indications
+    chapter = @@writer.contra_indications
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wann darf Inderal nicht angewendet werden?', 
                  chapter.heading)
@@ -504,7 +506,7 @@ class TestPatinfoHpricotInderalDe < Test::Unit::TestCase
     assert_equal(3, section.paragraphs.size)
   end
   def test_precautions3
-    chapter = @writer.precautions
+    chapter = @@writer.precautions
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wann ist bei der Einnahme von Inderal Vorsicht geboten?', 
                  chapter.heading)
@@ -514,7 +516,7 @@ class TestPatinfoHpricotInderalDe < Test::Unit::TestCase
     assert_equal(12, section.paragraphs.size)
   end
   def test_pregnancy3
-    chapter = @writer.pregnancy
+    chapter = @@writer.pregnancy
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Darf Inderal während einer Schwangerschaft oder in der Stillzeit eingenommen werden?', 
                  chapter.heading)
@@ -526,15 +528,15 @@ class TestPatinfoHpricotInderalDe < Test::Unit::TestCase
 end
 class TestPatinfoHpricotPonstanDe < Test::Unit::TestCase
   def setup
-    @path = File.expand_path('data/html/de/ponstan.html', 
+    @@path = File.expand_path('data/html/de/ponstan.html', 
       File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @patinfo = @writer.extract(Hpricot(fh))
+    @@writer = PatinfoHpricot.new
+    open(@@path) { |fh| 
+      @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
   def test_composition4
-    chapter = @writer.composition
+    chapter = @@writer.composition
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist in Ponstan enthalten?', chapter.heading)
     assert_equal(5, chapter.sections.size)
@@ -566,24 +568,25 @@ class TestPatinfoHpricotPonstanDe < Test::Unit::TestCase
 end
 class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
   def setup
-    @path = File.expand_path('data/html/de/nasivin.html', 
+    return if defined?(@@path)
+    @@path = File.expand_path('data/html/de/nasivin.html', 
       File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @patinfo = @writer.extract(Hpricot(fh))
+    @@writer = PatinfoHpricot.new
+    open(@@path) { |fh| 
+      @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
   def test_composition5
-    chapter = @writer.effects
+    chapter = @@writer.effects
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist Nasivin und wann wird es angewendet?', chapter.heading)
     section = chapter.sections.first
     assert_instance_of(ODDB::Text::Section, section )
     assert_equal('', section.subheading)
-    chapter = @writer.composition
+    chapter = @@writer.composition
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist in Nasivin enthalten?', chapter.heading)
-    chapter = @writer.packages
+    chapter = @@writer.packages
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?', chapter.heading)
     section = chapter.sections.first
@@ -591,7 +594,7 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Paragraph, paragraph )
     assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung.", 
                  paragraph.text)
-    chapter = @writer.date
+    chapter = @@writer.date
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('', chapter.heading)
     section = chapter.sections.first
@@ -602,7 +605,8 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
      
 
   end
-  
+end
+class TestPatinfoHpricotChapters < Test::Unit::TestCase
   def test_import_chapter
     testCases = [
       
