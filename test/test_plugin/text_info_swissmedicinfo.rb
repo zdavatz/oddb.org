@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
+$: << File.expand_path('../..', File.dirname(__FILE__))
 
 require 'test/unit'
 require 'fileutils'
@@ -22,6 +23,13 @@ module ODDB
   class TestTextInfoPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     
+    def create(dateiname, content)
+        FileUtils.makedirs(File.dirname(dateiname))
+        ausgabe = File.open(dateiname, 'w+')
+        ausgabe.write(content)
+        ausgabe.close
+    end
+    
     def setup
       @datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -29,22 +37,26 @@ module ODDB
       ODDB.config.data_dir = @vardir
       ODDB.config.log_dir = @vardir
       $opts = {
-        :target   => [:fi, :pi],
+        :target   => [:fi],
         :reparse  => false,
-        :iksnrs   => [],
+        :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
         :companies => [],
         :download => false,
         :xml_file => File.join(@datadir, 'AipsDownload.xml'), 
       }
       @app = flexmock 'application'
       @app.should_receive(:textinfo_swissmedicinfo_index)
-#      @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
-      pp $opts
-      @parser = flexmock 'parser (simulates ext/fiparse)'
+      @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
+      pi_path_de = File.join(@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
+      pi_de = PatinfoDocument.new
+      pi_path_fr = File.join(@vardir, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html') 
+      pi_fr = PatinfoDocument.new
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
       @plugin = TextInfoPlugin.new(@app, $opts)
       agent = @plugin.init_agent
       @plugin.parser = @parser
-    end
+    end # Fuer Problem mit fachinfo italic
     
     def teardown
       FileUtils.rm_r @vardir
@@ -91,11 +103,9 @@ module ODDB
     end
     
     def setup_page url, path, agent
-      pp 600
       response = {'content-type' => 'text/html'}
       Mechanize::Page.new(URI.parse(url), response,
                           File.read(path), 200, agent)
-      pp 601
     end
     
     def setup_fachinfo_document heading, text
@@ -113,35 +123,25 @@ module ODDB
     end
     
     def test_import_swissmedicinfo_xml
-      # need partial_mock here for @plugin
-#      @plugin = flexmock 'plugin' TextInfoPlugin.new(@app, opts)
- #      @plugin.textinfo_swissmedicinfo_index = flexmock 'fachinfo'
-            agent = setup_mechanize
-
       reg = flexmock 'registration'
       reg.should_receive(:fachinfo)
-      ptr = Persistence::Pointer.new([:registration, '45928'])
+      ptr = Persistence::Pointer.new([:registration, '32917'])
       reg.should_receive(:pointer).and_return ptr
         seq = flexmock 'sequence'
       seq.should_receive(:patinfo)
       seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
       reg.should_receive(:each_sequence).and_return do |block| block.call seq end
       reg.should_receive(:sequences).and_return({'01' => seq})
-      @app.should_receive(:registration).with('45928').and_return reg
+      @app.should_receive(:registration).with('32917').and_return reg
       fi = flexmock 'fachinfo'
       fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
       pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
       flags = {:de => :up_to_date, :fr => :up_to_date}
-#      ng = TextInfoPlugin.new @app
-#      ng.update_textinfo_swissmedicinfo(opts)
-      # ng.update_textinfo_swissmedicinfo(opts)
-      pp 50
-      @plugin.import_swissmedicinfo($opts)
-      pp 51
-
-#      result = @plugin.update_product '45928', fi_paths, pi_paths, flags, flags
-      assert true # no call to parse_patinfo or @app.update has been made
+      @parser.should_receive(:parse_fachinfo_html).once
+      @parser.should_receive(:parse_patinfo_html).never
+      @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
+      assert(@plugin.import_swissmedicinfo($opts), 'must be able to run import_swissmedicinfo')
     end
 
     def test_import_passion
@@ -153,17 +153,15 @@ module ODDB
       type = 'pi'
       lang = 'fr'
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{stripped}\")]"
-      puts "Matching title #{title} regexp #{path}"
       fr = setup_fachinfo_document 'Numéro d’autorisation', '45928 (Swissmedic).'
       fi_path_fr = File.join(@datadir, 'passion.fr.xml')
-      pp fi_path_fr 
       @doc = @plugin.swissmedicinfo_xml(fi_path_fr)
       match = @doc.xpath(path, Class.new do
         def match(node_set, name)
           found_node = catch(:found) do
             node_set.find_all do |node|
               unknown_chars = /[^A-z0-9,\/\s\-]/
-              title = node.text.gsub(unknown_chars, '')
+              title = (node.text + '®').gsub(unknown_chars, '')
               name  = name.gsub(unknown_chars, '')
               throw :found, node if title == name
               false
@@ -173,7 +171,38 @@ module ODDB
           found_node ? [found_node] : []
         end
       end.new).first
-    end if false
+    end
+  end
+  
+  class TestTextInfoPlugin_iksnr < Test::Unit::TestCase
+    include FlexMock::TestCase
     
+    def test_get_iksnr_comprimes
+      test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
+      assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
+    end
+
+    def test_get_iksnr_space_at_end
+      test_string = '54577 '
+      assert_equal(["54577",], TextInfoPlugin::get_iksnrs_from_string(test_string))       
+    end
+    
+    def test_find_iksnr_in_string
+      test_string = "54'577, 60’388 "
+      assert_equal('54577', TextInfoPlugin.find_iksnr_in_string(test_string, '54577'))
+      assert_equal('60388', TextInfoPlugin.find_iksnr_in_string(test_string, '60388'))
+    end
+
+    def test_get_iksnr_victrelis
+      test_string = "62'105"
+      assert_equal(['62105'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
+      assert_equal('62105', TextInfoPlugin.find_iksnr_in_string(test_string, '62105'))
+    end
+    
+    def test_get_iksnr_temodal
+      test_string = "54'577, 60’388 "
+      assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
+    end
+   
   end
 end
