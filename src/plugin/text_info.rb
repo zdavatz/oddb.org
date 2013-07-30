@@ -923,88 +923,32 @@ module ODDB
       end
       index      
     end
+    
+    def TextInfoPlugin.match_iksnr
+      /Zulassungsnummer[^\d]*([\d’ ]+).*(Wo|Packungen)/m
+    end
+    
+    def TextInfoPlugin.find_iksnr_in_string(string, iksnr)
+      nr  = ''
+      string.each_char{ 
+        |char|
+          nr << char if char >= '0' and char <= '9'
+          nr.eql?(iksnr) ? break : nr  = '' if char.eql?(' ') or char.eql?(',')
+      }
+      nr
+    end
+        
     def textinfo_swissmedicinfo_company_index(company, target)
+      swissmedicinfo_xml
       ids = []
-      match_iksnr = /Zulassungsnummer\s*([\d’]+.........)/
-      setup_default_agent
-      url = 'http://www.swissmedicinfo.ch/?Lang=DE'
-      # accept form
-      accept = @agent.get(url)
-      form   = accept.form_with(:id => 'ctl01')
-      button = form.button_with(:name => 'ctl00$MainContent$btnOK')      
-      page = form.submit(button)
-      form2   = page.form_with(:id => 'ctl01')
-      form2.field_with(:id => 'LeftContent_ucSearch1_DDSearchMode').value='Auth'
-      form2.field_with(:id => 'LeftContent_ucSearch1_txtSearch').value=company
-      # behave as javascript click      
-      form2['__EVENTTARGET']   = "ctl00$LeftContent$ucSearch1$BtnSearch" # #{state}Auth"
-      form2['__EVENTARGUMENT'] = ''
-      page2 = form2.submit
-      
-      form3   = page2.form_with(:id => 'ctl01')
-      form3['__EVENTTARGET']   = "ctl00$MainContent$ucCompanySearchResult1$GVCompanies"
-      form3['__EVENTARGUMENT'] = 'Select$0'
-      page3 = form3.submit
-      dump_file = File.join(ODDB.config.data_dir, 'html', "#{company}_index.html")
-      File.open(dump_file, 'w') { |fh| fh.puts(Nokogiri::Slop(page3.body).text) }
-     
-      if target.eql?(:fi) or target.eql?(:both)
-        nrFachInfo = /Fachinformationen\s*\((\d*)/i.match(page3.body)
-        unless nrFachInfo
-          puts Nokogiri::Slop(page3.body).text
-          puts "Could not find any Fachinformationen for #{company}"
-          return []
+      @doc.xpath(".//medicalInformation[regex(., '#{company}')]", Class.new {
+        def regex node_set, regex
+          node_set.find_all { |node| node.at('authHolder').text =~ /#{regex}/i }
         end
-        nrInfos = nrFachInfo[1].to_i
-        0.upto(nrInfos-1) {
-          |counter|
-            form4   = page3.form_with(:id => 'ctl01')
-            form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridFI$GVMonographies"                                        
-            form4['__EVENTARGUMENT'] = "Select$#{counter}"
-            page4 = form4.submit
-            iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
-            unless iksnr
-              puts "textinfo_swissmedicinfo_company_index counter nrFachInfo #{counter}/#{nrInfos} no iksnr in  #{Nokogiri::Slop(page4.body).text}"              
-              next
-            end
-            id  = iksnr[1].gsub(/[^\d,]/,'').to_i
-            if id < 100 or id > 100000
-              puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
-            end
-            ids << sprintf("%05d", id)
-            puts "textinfo_swissmedicinfo_company_index counter nrFachInfo #{counter}/#{nrInfos} adding #{sprintf("%05d", id)}"
-        }
-      end
-      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{dump_file}"
-      if target.eql?(:pi) or target.eql?(:both)
-        nrPatInfo = /Patienteninformationen\s*\((\d*)/i.match(page3.body)
-        unless nrPatInfo
-          puts Nokogiri::Slop(page3.body).text
-          puts "Could not find any Patienteninformationen for #{company}"
-          return []
-        end
-        nrInfos = nrPatInfo[1].to_i
-        0.upto(nrInfos-1) {
-          |counter|
-            puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}"
-            form4   = page3.form_with(:id => 'ctl01')
-            form4['__EVENTTARGET']   = "ctl00$MainContent$ucSearchResult1$ucResultGridPI$GVMonographies"
-            form4['__EVENTARGUMENT'] = "Select$#{counter}"
-            page4 = form4.submit
-            iksnr = match_iksnr.match(Nokogiri::Slop(page4.body).text)
-            unless iksnr
-              puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}/#{nrInfos} no iksnr in  #{Nokogiri::Slop(page4.body).text}"              
-              next
-            end
-            id  = iksnr[1].gsub(/[^\d,]/,'').to_i
-            if id < 100 or id > 100000
-              puts "#{company}: counter #{counter}: Found bad iksnr #{id} in #{iksnr[0]}"
-            end
-            ids << sprintf("%05d", id)
-            puts "textinfo_swissmedicinfo_company_index counter nrPatInfo #{counter}/#{nrInfos} adding #{sprintf("%05d", id)}"
-        }
-      end
-      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} patinfo #{ids.sort.uniq.join(',')}"
+      }.new).each{ |x| 
+                    ids += TextInfoPlugin::get_iksnrs_from_string(x.at('authNrs').text)
+                   }
+      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{@options[:xml_file]}"
       ids.sort.uniq
     end
 
@@ -1066,7 +1010,7 @@ module ODDB
         content = match.parent.at('./content')
         styles  = match.parent.at('./style').text
         title   = match.parent.at('./title').text
-        iksnrs  = match.parent.at('./authNrs').text
+        iksnrs  = TextInfoPlugin::get_iksnrs_from_string(match.parent.at('./authNrs').text)
       end
       return content, styles, title, iksnrs
     end
@@ -1074,22 +1018,21 @@ module ODDB
       name = nil
       return name unless @doc
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/authNrs"
-      match = @doc.xpath(path, Class.new do
+      @doc.xpath(path, Class.new do
         def match(node_set, iksnr)
           node_set.find_all do |node|
-                        pp node
-            node.text =~ /#{iksnr}/
+            iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(node.text, iksnr))
           end
         end
       end.new).each{ 
         |x| 
-          if /#{iksnr}/.match(x.text) 
-            name = x.parent.at('./title').text 
-            puts "extract_matched_name #{iksnr} #{type} #{lang} path is #{path} returns #{name}"
-            return name
-        end
+            if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
+              name = x.parent.at('./title').text 
+              puts "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
+              return name
+            end
       }
-      puts "extract_matched_name could not find #{iksnr}"
+      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
       return name
     end
     def extract_image(name, type, lang, dist, iksnrs)
@@ -1142,6 +1085,7 @@ module ODDB
           path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
           dist = File.join(path, name.gsub(CharsNotAllowedInBasename, '_') + '_swissmedicinfo.html')
           temp = dist + '.tmp'
+          FileUtils.makedirs(File.dirname(dist))
           File.open(temp, 'w') { |fh| fh.puts(html) }
           File.open(dist.sub('.html', '.styles'), 'w+') { |fh| fh.puts(styles) }
           content,html = nil,nil
@@ -1159,7 +1103,7 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts "parse_and_update: calls parse_#{type} format #{@format} #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
+            puts "parse_and_update: calls parse_#{type} format #{@format} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
@@ -1257,7 +1201,7 @@ module ODDB
         puts "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
-            names[lang][typ] = [extract_matched_name(iksnr, type, lang)]
+            names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
           end
         end
         import_info(keys, names, :isknr)
