@@ -681,7 +681,14 @@ class="
       
       def test_interactions
         assert_equal('Interaktionen', @@fachinfo.interactions.heading)
-        assert(@@fachinfo.interactions.to_s.index('(1,10, 1,93)'), 'format of number in table (Isentress: Omeprazole, Einzeldosis) should be 1,10, 1,93)')
+        foundInYaml = %(
+          - (1
+          - ! ','
+          - 10, 1
+          - ! ','
+          - 93)
+          )
+        assert(@@fachinfo.to_yaml.index(/- \(1\s*- ! ','\s*- 10, 1\s*- ! ','\s*- 93\)/m), 'format of number in table (Isentress: Omeprazole, Einzeldosis) should be 1,10, 1,93)')
       end
       
       def test_galenic_form
@@ -699,9 +706,9 @@ Eine Kautablette enthält 100 mg (mit Bruchrille) oder 25 mg Raltegravir als Ral
 Wirkstoff: Raltegravir
 Hilfsstoffe:
 Filmtablette:
-Kern:   mikrokristalline Cellulose, Lactose-Monohydrat, wasserfreies Calciumhydrogenphosphat, Hypromellose 2208, Poloxamer 407 (enthält 0,01% butyliertes Hydroxytoluol als Antioxidationsmittel, E 321),   Natriumstearylfumarat, Magnesiumstearat.
-Filmüberzug:  Polyvinylalkohol, Titandioxid, Polyethylenglykol 3350,
-Talkum, rotes  Eisenoxid und schwarzes Eisenoxid.
+Kern: mikrokristalline Cellulose, Lactose-Monohydrat, wasserfreies Calciumhydrogenphosphat, Hypromellose 2208, Poloxamer 407 (enthält 0,01% butyliertes Hydroxytoluol als Antioxidationsmittel, E 321), Natriumstearylfumarat, Magnesiumstearat.
+Filmüberzug: Polyvinylalkohol, Titandioxid, Polyethylenglykol 3350,
+Talkum, rotes Eisenoxid und schwarzes Eisenoxid.
 Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitratdihydrat, Mannitol, rotes Eisenoxid (nur bei 100 mg Dosierung), gelbes Eisenoxid, Monoammoniumglycyrrhizinat, Sorbitol, Fructose, natürliche und künstliche Aromen (Orange, Banane, und Maskierung, die Aspartam enthält), Crospovidon, Magnesiumstearat, Natriumstearylfumarat, Ethylcellulose 20 cP, Ammoniumhydroxid, mittelkettige Triglyceride, Ölsäure, Hypromellose 2910/6 cP, Macrogol/PEG 400.", 
                      @@fachinfo.composition.to_s)
       end                                                                                                                                                                                                                                                    
