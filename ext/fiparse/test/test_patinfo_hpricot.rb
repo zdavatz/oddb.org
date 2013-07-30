@@ -443,6 +443,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
 end
 class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
   def setup
+    return if defined?(@@path)
     @@path = File.expand_path('data/html/fr/cimifemin.html', 
       File.dirname(__FILE__))
     @@writer = PatinfoHpricot.new
@@ -566,46 +567,42 @@ class TestPatinfoHpricotPonstanDe < Test::Unit::TestCase
     assert_equal(expected, paragraph.text)
   end
 end
-class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
-  def setup
-    return if defined?(@@path)
-    @@path = File.expand_path('data/html/de/nasivin.html', 
-      File.dirname(__FILE__))
-    @@writer = PatinfoHpricot.new
-    open(@@path) { |fh| 
-      @@patinfo = @@writer.extract(Hpricot(fh))
-    }
-  end
-  def test_composition5
-    chapter = @@writer.effects
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Was ist Nasivin und wann wird es angewendet?', chapter.heading)
-    section = chapter.sections.first
-    assert_instance_of(ODDB::Text::Section, section )
-    assert_equal('', section.subheading)
-    chapter = @@writer.composition
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Was ist in Nasivin enthalten?', chapter.heading)
-    chapter = @@writer.packages
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?', chapter.heading)
-    section = chapter.sections.first
-    paragraph = section.paragraphs.first
-    assert_instance_of(ODDB::Text::Paragraph, paragraph )
-    assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung.", 
-                 paragraph.text)
-    chapter = @@writer.date
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('', chapter.heading)
-    section = chapter.sections.first
-    assert_instance_of(ODDB::Text::Section, section )
-    assert_equal("", section.subheading)
-    assert_equal(1, section.paragraphs.size)
-    assert_equal("Diese Packungsbeilage wurde im März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", section.to_s)
-     
-
-  end
-end
+   class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
+      StylesNasivin = '<style>p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-size:11pt;font-weight:bold;}.s3{font-family:Arial;font-size:12pt;line-height:150%;}.s4{font-size:11pt;}.s5{font-family:Arial;font-size:11pt;line-height:150%;}.s6{font-weight:bold;}.s7{font-size:11pt;font-style:italic;}</style>'
+      def setup
+        return if defined?(@@path)
+        @@path = File.expand_path('data/html/de/nasivin.html', File.dirname(__FILE__))
+        @@writer = PatinfoHpricot.new
+        open(@@path) { |fh| 
+          @@patinfo = @@writer.extract(Hpricot(fh), :pi, 'Nasivin', StylesNasivin)
+        }
+        File.open(File.basename(@@path.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@patinfo.to_yaml }
+      end
+      
+      def test_composition5
+#          assert_nil(/- :italic/.match(@@fachinfo.to_yaml))
+        chapter = @@writer.effects
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal('Was ist Nasivin und wann wird es angewendet?', chapter.heading)
+        section = chapter.sections.first
+        assert_instance_of(ODDB::Text::Section, section )
+        assert_equal('', section.subheading)
+        chapter = @@writer.composition
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal('Was ist in Nasivin enthalten?', chapter.heading)
+        chapter = @@writer.packages
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?', chapter.heading)
+        section = chapter.sections.first
+        paragraph = section.paragraphs.first
+        assert_instance_of(ODDB::Text::Paragraph, paragraph )
+        assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung:", 
+                    paragraph.text)
+        chapter = @@writer.date
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal("Diese Packungsbeilage wurde im Nasivin März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.to_s)
+      end
+    end
 class TestPatinfoHpricotChapters < Test::Unit::TestCase
   def test_import_chapter
     testCases = [
