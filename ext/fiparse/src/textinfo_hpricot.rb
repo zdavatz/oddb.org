@@ -144,13 +144,13 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-    ptr.target << ' ' if self.class.eql?(ODDB::FiParse::PatinfoHpricot) and isParagraph and  !/^Zulassungsnummer[n]?|^Num.ro\s*d.autorisation/.match(ptr.chapter.to_s)    
+#    puts "handle_element #{child.class} #{child.name} parent #{child.parent.class}  #{child.parent.name} isParagraph #{isParagraph}"
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
         # ignore text "\r\n        " in between tag.
       else
-        if ptr.target.is_a? Text::MultiCell
+        if ptr.target.is_a? Text::MultiCell and not child.parent.name.eql?('span')
           ptr.target.next_paragraph
         end
         ptr.section ||= ptr.chapter.next_section
@@ -357,7 +357,6 @@ class TextinfoHpricot
     return '' unless elem
     str = elem.inner_text || elem.to_s
     res = target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').gsub(/[■]/u, '').gsub(' ', ' '))
-    res.strip! if self.class.to_s.eql?('ODDB::FiParse::PatinfoHpricot')
     res
   end
 end

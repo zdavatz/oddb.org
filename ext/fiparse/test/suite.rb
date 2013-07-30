@@ -5,9 +5,9 @@ require 'find'
 
 here = File.dirname(__FILE__)
 
-$: << here
+$: << File.expand_path(here)
 Find.find(here) { |file|
-	if /test_.*\.rb$/o.match(file)
-    require file
-	end
-}
+  if /test_.*\.rb$/o.match(file) and File.file?(file)
+    require File.expand_path(file)
+  end
+} 
