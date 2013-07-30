@@ -1010,7 +1010,7 @@ module ODDB
         content = match.parent.at('./content')
         styles  = match.parent.at('./style').text
         title   = match.parent.at('./title').text
-        iksnrs  = match.parent.at('./authNrs').text
+        iksnrs  = TextInfoPlugin::get_iksnrs_from_string(match.parent.at('./authNrs').text)
       end
       return content, styles, title, iksnrs
     end
@@ -1026,9 +1026,11 @@ module ODDB
         end
       end.new).each{ 
         |x| 
-            name = x.parent.at('./title').text 
-            puts "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
-            return name
+            if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
+              name = x.parent.at('./title').text 
+              puts "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
+              return name
+            end
       }
       @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
       return name
@@ -1101,7 +1103,7 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts "parse_and_update: calls parse_#{type} format #{@format} #{dist}, name #{name} #{lang} title #{title}, styles #{styles.split('}').first}"
+            puts "parse_and_update: calls parse_#{type} format #{@format} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
