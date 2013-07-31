@@ -144,15 +144,12 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-#    puts "handle_element #{child.class} #{child.name} parent #{child.parent.class}  #{child.parent.name} isParagraph #{isParagraph}"
+#    puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}"
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
         # ignore text "\r\n        " in between tag.
       else
-        if ptr.target.is_a? Text::MultiCell and not child.parent.name.eql?('span')
-          ptr.target.next_paragraph
-        end
         ptr.section ||= ptr.chapter.next_section
         ptr.target  ||= ptr.section.next_paragraph
         handle_text(ptr, child)

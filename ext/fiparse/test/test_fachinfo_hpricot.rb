@@ -159,6 +159,101 @@ HTML
   
 end
 
+    class TestFachinfoHpricotIsentressTables < Test::Unit::TestCase
+      def test_isentress_tabelle_2        
+        writer = FachinfoHpricot.new
+        html = <<-HTML
+<table class="s51">
+<colgroup>
+<col style="width:1.15833in;">
+<col style="width:1.40278in;">
+<col style="width:1.29236in;">
+<col style="width:0.51875in;">
+<col style="width:0.48056in;">
+<col style="width:0.49583in;">
+<col style="width:0.70833in;">
+</colgroup>
+<tbody>
+<tr>
+<td class="s42" rowspan="2">
+<p class="s17"><span class="s16"><span>Arzneimittel</span><br><span>in Ko-administration</span></span></p>
+</td>
+<td class="s42" rowspan="2"><p class="s17"><span class="s16"><span>Dosis/ Verabreichungs-schema des ko-administrierten Arzneimittels</span></span></p></td>
+<td class="s42" rowspan="2"><p class="s17"><span class="s16"><span>Dosis/ Verabreichungs-schema von Raltegravir</span></span></p></td>
+<td colspan="4" class="s42">
+<p class="s17"><span class="s16"><span>Verh&auml;ltnis (90%-Konfidenzintervall) der &nbsp;pharmakokinetischen Parameter von Raltegravir mit/ohne Koadministration eines anderen Arzneimittels;</span></span></p>
+<p class="s17"><span class="s16"><span>kein Einfluss = 1,00</span></span></p>
+</td>
+</tr>
+<tr>
+<td class="s45"><p class="s17"><span class="s44"><span>n</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s44"><span>C</span></span><sub class="s46"><span>max</span></sub></p></td>
+<td class="s45"><p class="s17"><span class="s44"><span>AUC</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s44"><span>C</span></span><sub class="s46"><span>min</span></sub></p></td>
+</tr>
+<tr>
+<td class="s45"><p><span class="s47"><span>Atazanavir</span></span></p></td>
+<td class="s45"><p><span class="s47"><span>400&nbsp;mg t&auml;glich</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>100&nbsp;mg Einzeldosis</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>10</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>1,53 (1,11; 2,12)</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>1,72 (1,47; 2,02)</span></span></p></td>
+<td class="s45">
+<p class="s17"><span class="s47"><span>1,95 </span></span></p>
+<p class="s17"><span class="s47"><span>(1,30; 2,92)</span></span></p>
+</td>
+</tr>
+<tr>
+<td class="s45"><p><span class="s47"><span>Darunavir/Ritonavir</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>600 mg/100 mg zweimal t&auml;glich</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>400 mg zweimal t&auml;glich</span></span></p></td>
+<td class="s45"><p class="s17"><span class="s47"><span>6</span></span></p></td>
+<td class="s45">
+<p class="s17"><span class="s47"><span>0</span></span><span class="s47"><span>,</span></span><span class="s47"><span>67</span></span></p>
+<p class="s17"><span class="s47"><span>(0</span></span><span class="s47"><span>,</span></span><span class="s47"><span>33-1</span></span><span class="s47"><span>,</span></span><span class="s47"><span>37)</span></span></p>
+</td>
+<td class="s45">
+<p class="s17"><span class="s47"><span>0</span></span><span class="s47"><span>,</span></span><span class="s47"><span>71</span></span></p>
+<p class="s17"><span class="s47"><span>(0</span></span><span class="s47"><span>,</span></span><span class="s47"><span>38-1</span></span><span class="s47"><span>,</span></span><span class="s47"><span>33)</span></span></p>
+</td>
+<td class="s45">
+<p class="s17"><span class="s47"><span>1</span></span><span class="s47"><span>,</span></span><span class="s47"><span>38</span></span></p>
+<p class="s17"><span class="s47"><span>(0</span></span><span class="s47"><span>,</span></span><span class="s47"><span>16-12</span></span><span class="s47"><span>,</span></span><span class="s47"><span>12)</span></span></p>
+</td>
+</tr>
+</tbody>
+</table>    
+        HTML
+        code, chapter = writer.chapter(Hpricot(html).at("table"))
+        assert_equal(1, chapter.to_yaml.scan('Atazanavir').size, 'table should contain Atazanavir')
+        assert_equal(1, chapter.to_yaml.scan('(1,30; 2,92)').size, 'table should contain (1,30; 2,92)')
+        assert_equal(1, chapter.to_yaml.scan('Darunavir/Ritonavir').size, 'table should contain Darunavir/Ritonavir')
+        assert_equal(1, chapter.to_yaml.scan('16-12').size, 'table should contain 16-12')
+        
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal(27, chapter.to_yaml.scan('ruby/object:ODDB::Text::Paragraph').size, 'table should contain exactly 16 paragraphs')
+      end
+      
+      def test_isentress_tabelle_2_single_cell
+        writer = FachinfoHpricot.new
+        html = <<-HTML
+<table class="s51">
+<tbody>
+<tr>
+<td class="s45">
+<p class="s17"><span class="s47"><span>1,95 </span></span></p>
+</td>
+</tr>
+</tbody>
+</table>    
+        HTML
+        code, chapter = writer.chapter(Hpricot(html).at("table"))
+        assert_instance_of(ODDB::Text::Chapter, chapter )
+        assert_equal(1, chapter.to_yaml.scan('1,95 ').size, 'table should contain 1,95')
+        assert_equal(1, chapter.to_yaml.scan('ruby/object:ODDB::Text::Paragraph').size, 'table should contain only ony paragraph')
+      end
+    end
+
 class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
   MedicalName = 'Alca-C®'
   def setup
@@ -659,16 +754,17 @@ class="
 
   Styles_Isentres = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:11pt;}.s3{line-height:150%;}.s4{font-family:Arial;font-size:12pt;font-weight:bold;}.s5{font-family:Arial;font-size:9.6pt;font-weight:bold;}.s6{font-size:11pt;line-height:150%;}.s7{font-family:Arial;font-size:11pt;font-weight:bold;color:#000000;}.s8{font-family:Arial;font-size:11pt;font-style:italic;color:#000000;}.s9{font-family:Arial;font-size:11pt;color:#000000;}.s10{font-family:Arial;font-size:8.8pt;color:#000000;}.s11{font-family:Arial;font-size:11pt;font-style:normal;font-weight:bold;}.s12{line-height:150%;text-align:left;}.s13{font-size:11pt;text-indent:0pt;line-height:150%;margin-right:0.6pt;margin-left:0pt;}.s14{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}.s15{font-family:Arial;font-size:11pt;font-style:italic;}.s16{text-indent:0pt;line-height:150%;margin-right:0.6pt;margin-left:0pt;}.s17{font-family:Arial;font-size:11pt;font-style:italic;font-weight:normal;}.s18{text-indent:-42.55pt;line-height:150%;margin-right:0.6pt;margin-left:42.55pt;}.s19{font-family:Arial;font-size:11pt;font-style:normal;font-weight:normal;}.s20{font-family:Arial;font-size:11pt;font-style:italic;font-weight:normal;color:#000000;}.s21{font-family:Arial;font-size:11pt;font-style:normal;font-weight:normal;color:#000000;}.s22{margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s23{font-family:Symbol;font-style:normal;font-weight:normal;text-align:left;margin-left:-18pt;width:-18pt;position:absolute;}.s24{line-height:150%;margin-left:21.3pt;}.s25{height:18pt;}.s26{vertical-align:bottom;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;background-color:#339966;}.s27{vertical-align:bottom;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}.s28{height:8.5pt;}.s29{text-align:center;}.s30{vertical-align:bottom;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s31{vertical-align:middle;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-style:none;border-left-style:none;}.s32{vertical-align:middle;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-style:none;}.s33{font-family:Arial;font-size:12pt;}.s34{vertical-align:middle;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s35{vertical-align:middle;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-style:none;}.s36{font-family:Arial;font-size:9.6pt;}.s37{vertical-align:middle;margin-left:4.75pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}.s38{font-size:8pt;}.s39{font-family:Arial;font-size:6.4pt;}.s40{font-family:Arial;font-size:8pt;}.s41{margin-left:-0.65pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s42{font-size:8pt;line-height:150%;}.s43{height:17.4pt;}.s44{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-style:none;border-bottom-width:0.25pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s45{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.25pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-style:none;}.s46{font-family:Arial;font-size:12pt;color:#000000;}.s47{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.25pt;border-top-color:#000000;border-top-style:solid;border-right-style:none;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s48{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.25pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-style:none;}.s49{height:22.7pt;}.s50{font-family:Arial;font-size:12pt;font-weight:bold;color:#000000;}.s51{vertical-align:middle;margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-style:none;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s52{vertical-align:middle;margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-style:none;border-bottom-width:0.25pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s53{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.25pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-style:none;}.s54{height:15.3pt;}.s55{margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-style:none;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s56{vertical-align:middle;margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.25pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s57{vertical-align:middle;margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:1.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.75pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s58{vertical-align:middle;margin-left:0pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;border-top-width:0.75pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.75pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.75pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.75pt;border-left-color:#000000;border-left-style:solid;}.s59{margin-left:-5.4pt;padding-top:0pt;padding-right:1.5pt;padding-bottom:0pt;padding-left:1.5pt;}'
   MedicInfoName = 'Isentres® Filmtabletten/Tropfen 10 mg/ml, 20 mg/mlIsentres MELTZ® Schmelztabletten'
-      YamlName      = 'fi_58267_isentres_de.yaml'
+      HtmlName      = 'data/html/de/fi_58267_isentres_de.html'
       
       def setup
         return if defined?(@@path)
-        @@path = File.expand_path('data/html/de/fi_58267_isentres_de.html',  File.dirname(__FILE__))     
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
         
         open(@@path) { |fh| 
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Isentres)
         }
+        File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       end
       
       def test_fachinfo2
@@ -706,9 +802,9 @@ Eine Kautablette enthält 100 mg (mit Bruchrille) oder 25 mg Raltegravir als Ral
 Wirkstoff: Raltegravir
 Hilfsstoffe:
 Filmtablette:
-Kern: mikrokristalline Cellulose, Lactose-Monohydrat, wasserfreies Calciumhydrogenphosphat, Hypromellose 2208, Poloxamer 407 (enthält 0,01% butyliertes Hydroxytoluol als Antioxidationsmittel, E 321), Natriumstearylfumarat, Magnesiumstearat.
-Filmüberzug: Polyvinylalkohol, Titandioxid, Polyethylenglykol 3350,
-Talkum, rotes Eisenoxid und schwarzes Eisenoxid.
+Kern:   mikrokristalline Cellulose, Lactose-Monohydrat, wasserfreies Calciumhydrogenphosphat, Hypromellose 2208, Poloxamer 407 (enthält 0,01% butyliertes Hydroxytoluol als Antioxidationsmittel, E 321),   Natriumstearylfumarat, Magnesiumstearat.
+Filmüberzug:  Polyvinylalkohol, Titandioxid, Polyethylenglykol 3350,
+Talkum, rotes  Eisenoxid und schwarzes Eisenoxid.
 Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitratdihydrat, Mannitol, rotes Eisenoxid (nur bei 100 mg Dosierung), gelbes Eisenoxid, Monoammoniumglycyrrhizinat, Sorbitol, Fructose, natürliche und künstliche Aromen (Orange, Banane, und Maskierung, die Aspartam enthält), Crospovidon, Magnesiumstearat, Natriumstearylfumarat, Ethylcellulose 20 cP, Ammoniumhydroxid, mittelkettige Triglyceride, Ölsäure, Hypromellose 2910/6 cP, Macrogol/PEG 400.", 
                      @@fachinfo.composition.to_s)
       end                                                                                                                                                                                                                                                    
