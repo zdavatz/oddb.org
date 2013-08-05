@@ -136,7 +136,7 @@ class FachinfoHpricot < TextinfoHpricot
     when /^Warnhinweise\s*und\s*[vV]orsichtsmassnahm(en)?|^Mises\s*en\s*garde\s*et\s*pr.cautions/                                               ; '7250'
     when /^Interaktion(en)\s*$|^Interaction(s)\s*$/                                                                                             ; '7300'
     when /^Schwangerschaft\s*[,\/]?\s*Stillzeit|^Grossesse\s*[,\/]?\s*[aA]llaitement/                                                           ; '7350'
-    when /^Wirkungen\s*auf\s*die\sFahrt.chtigkeit\s*und\s*auf\s*Bedienen\s*von\sMashinen|^Effet\s*sur\s*l.aptitude\s*.\s*la\s*conduite\s*et\s*/ ; '7400'
+    when /^Wirkung(en|)\s*auf\s*die\sFahrt.chtigkeit\s*und\s*auf\s*das\s*Bedienen\s*von\sMaschinen|^Effet\s*sur\s*l.aptitude\s*.\s*la\s*conduite\s*et\s*/ ; '7400'
     when /^Unerwünschte\s*Wirkung(en)?|^Effets\s*ind.sirables/                                                                                  ; '7450'
     when /^Überdosierung|^Surdosage/                                                                                                            ; '7500'
     when /^Eigenschaft(en)?\s*\/\s*Wirkung(en)?|^Propri.t.s\s*\/\s*[eE]ffets/                                                                   ; '7550'
