@@ -775,6 +775,10 @@ class="
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Isentres&reg;
       end
       
+      def test_driving_abilities
+        assert_equal("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen", @@fachinfo.driving_ability.heading) 
+      end
+      
       def test_interactions
         assert_equal('Interaktionen', @@fachinfo.interactions.heading)
         foundInYaml = %(
