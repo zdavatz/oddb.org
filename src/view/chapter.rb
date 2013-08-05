@@ -25,7 +25,7 @@ module ODDB
         if paragraph.is_a? String
           return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph }
         end
-        txt = u paragraph.text
+        txt = paragraph.text.encode("UTF-8")
         paragraph.formats.each { |format|
           tag = :span
           style = [] 
@@ -60,7 +60,7 @@ module ODDB
         }
         if(paragraph.preformatted?)
           context.pre({ 'style' => self.class::PRE_STYLE }) { res }
-        else
+        elsif not paragraph.to_s.eql?('')
           ## this must be an inline element, to enable starting 
           ## paragraphs on the same line as the section-subheading
           context.span({ 'style' => self.class::PAR_STYLE }) { 
@@ -72,7 +72,6 @@ module ODDB
               res.gsub("\n", br) 
             end
           } << context.br.force_encoding('utf-8')
-
         end
       end
       def heading(context)
