@@ -7,11 +7,14 @@ require 'hpricot'
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
+$: << File.expand_path('../../../test', File.dirname(__FILE__))
 
 require 'test/unit'
 require 'fachinfo_hpricot'
 require 'fiparse'
 require 'plugin/text_info'
+require 'stub/cgi'
+require 'flexmock'
 
 module ODDB
 	class FachinfoDocument
@@ -816,6 +819,29 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         assert_equal(["58267", "62946"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
         assert_equal("Zulassungsnummer\n58267, 62946 (Swissmedic)", @@fachinfo.iksnrs.to_s)
      end 
+     
+     def test_all_to_html
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @session = FlexMock.new '@session'
+        @session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        @session.should_receive(:user_input)
+        assert(@session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, nil, @session)
+        @view.value = @@fachinfo.interactions
+        result = @view.to_html(CGI.new)
+        expected = [  /Interaktionen/, # heading
+                      /(1,30; 2,92)/,  # a table data
+                      /Einfluss von Raltegravir auf die Pharmakokinetik anderer Arzneimittel/, # after the table                      
+                    ]
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+
+        expected.each { |pattern|
+          assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
+        }
+        assert_equal(19, result.scan(/<br>/i).size, "Should find exactly 19 <BR> tags for the complex table")
+     end
+     
     end
   end 
 end
