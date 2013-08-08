@@ -166,6 +166,23 @@ module ODDB
         []
       end
     end
+
+    def delete_patinfo iksnr, language
+      puts "delete_patinfo iksnr #{iksnr} #{language}"
+      return unless iksnr
+      if reg = @app.registration(iksnr)          
+          reg.each_sequence{
+            |seq| 
+                next unless seq.patinfo and seq.patinfo.pointer;
+                @app.delete(seq.patinfo.pointer)
+                @app.update(seq.pointer, :patinfo => nil)
+                # seq.odba_isolated_store  needed? 
+          }
+      else
+        puts "delete_patinfo nothing to do for #{iksnr} ??"
+      end
+    end
+    
     def update_patinfo name, pis, pi_flags
       begin
         iksnrs = extract_iksnrs pis
@@ -222,6 +239,7 @@ module ODDB
     end
     def report
       unknown_size = @unknown_iksnrs.size
+      @nonconforming_content ||= []
       @nonconforming_content = @nonconforming_content.uniq.sort
       unknown = @unknown_iksnrs.collect { |iksnr, name|
         "#{name} (#{iksnr})"
@@ -1032,7 +1050,7 @@ module ODDB
               return name
             end
       }
-      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}"
+      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s.upcase}"
       return name
     end
     def extract_image(name, type, lang, dist, iksnrs)
@@ -1103,7 +1121,7 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts "parse_and_update: calls parse_#{type} format #{@format} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
+            puts "parse_and_update: calls parse_#{type} dist #{dist} format #{@format} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)            
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
@@ -1125,13 +1143,15 @@ module ODDB
       end
       [iksnrs, infos]
     end
-    def import_info(keys, names, state)
+    def import_info(keys, names, state, iksnr = nil)
       keys.each_pair do |typ, type|
         next if names[:de].nil? or names[:de][typ].nil?
         # This importer expects same order of names in DE and FR, come from swissmedicinfo.
         names.each_pair do |lang, infos|
           infos[typ].each do |name, date|
             iksnrs,infos = parse_and_update({lang => name}, type)
+            delete_patinfo iksnr, lang if infos.empty? and type.eql?('patinfo')
+
             # report
             unless infos.empty?
               info = strange?(infos[lang])
@@ -1204,7 +1224,7 @@ module ODDB
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
           end
         end
-        import_info(keys, names, :isknr)
+        import_info(keys, names, :isknr, iksnr.strip)
       end
       @doc = nil
     end
