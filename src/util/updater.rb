@@ -141,9 +141,7 @@ module ODDB
 			}
 		end
 		def log_info(plugin, method=:log_info)
-      puts "log_info #{plugin.class} method #{method}"
 			hash = plugin.send(method)
-      puts "log_info hash  #{hash}"
 			hash[:recipients] = if(rcp = hash[:recipients])
 				rcp + recipients
 			else
@@ -309,13 +307,13 @@ module ODDB
     def check_swissmedicno_fi_pi(opts=nil)
       @options = opts
       update_notify_simple TextInfoPlugin,
-                           "Check all FI and PI. Find inconsitencies in references",
+                           "Check all FI and PI for inconsistencies",
                            :check_swissmedicno_fi_pi
     end
     def update_swissmedicno_fi_pi(opts=nil)
       @options = opts
       update_notify_simple TextInfoPlugin,
-                           "Update (aka reimport) all FI and PI with error",
+                           "Check and fix inconsistencies in all FI and PI",
                            :update_swissmedicno_fi_pi
     end
 		def update_doctors

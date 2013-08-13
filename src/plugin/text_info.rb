@@ -248,6 +248,15 @@ module ODDB
       end
     end
     def report
+      if defined?(@inconsistencies)
+        if @inconsistencies.size == 0
+          return "Your database seems to be okay. No @inconsistencies found. #{@inconsistencies.inspect}"
+        else
+          return "Problems in your database?\n\n"+
+                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n\n#{@inconsistencies.inspect}\n\n"+
+                 "You might fix the problems running an import of the following iksnrs #{@iksnrs_to_import.join(' ')}"
+        end
+      end
       unknown_size = @unknown_iksnrs.size
       @wrong_meta_tags ||= []
       @nonconforming_content ||= []
@@ -961,98 +970,70 @@ module ODDB
       end
       @doc = Nokogiri::XML(File.open(xml_file,'r').read)
     end
-    def check_swissmedicno_fi_pi(options = {})
+    
+    def check_swissmedicno_fi_pi(options = {}, delete_patinfo = false)
       puts "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
       puts "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
-      inconsistencies = []
-      iksnrs_to_import = []
+      @inconsistencies = []
+      @iksnrs_to_import = []
+      nrDeletes = 0
       @app.registrations.each{
         |aReg| 
           reg= aReg[1]; 
           if  reg.fachinfo and not reg.fachinfo.iksnrs.index(reg.iksnr) 
             info = [aReg[1], reg.fachinfo.iksnr, reg.fachinfo.pointer]
-            inconsistencies << info
-            iksnrs_to_import << reg.fachinfo.iksnr
+            @inconsistencies << info
+            @iksnrs_to_import << reg.fachinfo.iksnr
             puts "check_swissmedicno_fi_pi inconsistency #{info}"
           end
+          foundPatinfo = false
+          reg.sequences.each {|aSeq|
+                              seq = aSeq[1]
+                              foundPatinfo = true if seq.patinfo and seq.patinfo.pointer
+                              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil); 
+                              if not seq.patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
+                                info =[ seq.patinfo.name_base, reg.iksnr, reg.name_base, seq.patinfo.pointer]
+                                puts "check_swissmedicno_fi_pi inconsistency #{info}"
+                                @inconsistencies << info
+                                @iksnrs_to_import << reg.iksnr
+                                if delete_patinfo                            
+                                  puts "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                                  @app.delete(seq.patinfo.pointer)
+                                  @app.update(seq.pointer, :patinfo => nil)
+                                  seq.odba_isolated_store
+                                  nrDeletes += 1
+                                end
+                              end
+                             } 
+          unless foundPatinfo
+            # seems to be a valid case, e.g. Alutard http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/Alutard%20/search_type/st_sequence#best_result
+            info =[ 'neither FI nor PI for', reg.iksnr, reg.name_base]
+            puts "check_swissmedicno_fi_pi  #{info}"
+            @inconsistencies << info
+            @iksnrs_to_import << reg.iksnr
+          end if false
       }
-      puts "check_swissmedicno_fi_pi FI found  #{inconsistencies.size} inconsistencies"
-      puts "check_swissmedicno_fi_pi FI found  #{inconsistencies.inspect} \n#{Time.now}"
-
-      inconsistencies = []
-      @app.registrations.each{
-        |aReg| 
-                             reg= aReg[1]; 
-      reg.sequences.each{ 
-                         |seq| next if (seq[1].patinfo == nil or  seq[1].patinfo.name_base == nil); 
-                        if not seq[1].patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
-                          puts "check_swissmedicno_fi_pi inconsistency #{seq[1].patinfo.name_base} #{reg.iksnr} #{reg.name_base} #{seq[1].patinfo.pointer}"
-                          inconsistencies << reg.iksnr
-                          iksnrs_to_import << reg.iksnr
-                          break if iksnrs_to_import.size > 10
-                        end
-                        } 
-      }; 
-      puts "check_swissmedicno_fi_pi PI found  #{inconsistencies.size} -> #{inconsistencies.sort.uniq.size}  inconsistencies"
-      puts "check_swissmedicno_fi_pi PI found  #{inconsistencies.sort.uniq.inspect} \n#{Time.now}"
-
-      inconsistencies = []
-      @app.registrations.each {
-        |aReg| 
-          reg= aReg[1];
-          next if reg
-          found = false
-          reg.sequences.each { 
-            |seq| 
-                if seq[1].patinfo.pointer 
-                  found = true
-                  break
-                end
-          } 
-          unless found
-            puts "check_swissmedicno_fi_pi  found neither FI or PI for #{reg.iksnr}"
-            inconsistencies << reg.iksnr
-            iksnrs_to_import << reg.iksnr
-          end
-      }; 
-      puts "check_swissmedicno_fi_pi PI or FI found  #{inconsistencies.size} -> #{inconsistencies.sort.uniq.size}  inconsistencies"
-      puts "check_swissmedicno_fi_pi PI or FI found  #{inconsistencies.sort.uniq.inspect} \n#{Time.now}"
-      iksnrs_to_import.sort.uniq
+      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.size} uniq #{@inconsistencies.sort.uniq.size} inconsistencies.\nDeleted #{nrDeletes} patinfos."
+      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.sort.uniq.inspect} \n#{Time.now}"
+      @iksnrs_to_import.sort.uniq
     end
   
     def update_swissmedicno_fi_pi(options = {})
       puts "update_swissmedicno_fi_pi #{options} \n#{Time.now}"
       threads = []
-      iksnrs_to_import =[]
+      @iksnrs_to_import =[]
       threads << Thread.new do
-        iksnrs_to_import = check_swissmedicno_fi_pi(options)[0..10]
+        @iksnrs_to_import = check_swissmedicno_fi_pi(options, true)[0..10]
       end
       threads.map(&:join)
-      puts "update_swissmedicno_fi_pi found  #{iksnrs_to_import} things to fix"
-      return true if iksnrs_to_import.size == 0
-      nrDeletes = 0
-      @app.registrations.each{
-        |aReg| 
-          reg= aReg[1]; 
-          reg.sequences.each{ 
-                         |aSeq|
-                          seq = aSeq[1]
-                          next if (seq.patinfo == nil or  seq.patinfo.name_base == nil); 
-                          if not seq.patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
-                            nrDeletes += 1
-                            puts "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
-                            @app.delete(seq.patinfo.pointer)
-                            @app.update(seq.pointer, :patinfo => nil)
-                            seq.odba_isolated_store
-                            iksnrs_to_import << reg.iksnr
-                            break if nrDeletes > 10
-                          end
-          }
-      }
-      puts "update_swissmedicno_fi_pi reimport #{iksnrs_to_import.sort.uniq.size} iksnrs_to_import \n#{iksnrs_to_import.inspect}"
+      puts "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.uniq.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
+      return true if @iksnrs_to_import.size == 0
       threads.map(&:join)
       threads << Thread.new do
-        import_swissmedicinfo_by_iksnrs(iksnrs_to_import.uniq, :both)
+        # set correct options to force a reparse (reimport)
+        @options[:reparse] = true
+        @options[:download] = false
+        import_swissmedicinfo_by_iksnrs(@iksnrs_to_import.uniq, :both)
       end
       threads.map(&:join)
       true
