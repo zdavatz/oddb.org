@@ -41,9 +41,10 @@ module ODDB
       @download_errors = []
       @companies = []
       @nonconforming_content = []
+      @wrong_meta_tags = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @title  = ''       # target fi/pi name
-      @format = :documed # {:documed|:compendium|:swissmedicinfo}
+      @format = :swissmedicinfo
       @target = :both
       @search_term = []
       # FI/PI names
@@ -127,19 +128,19 @@ module ODDB
       @updated_pis +=1
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
+      puts "store_patinfo existing #{existing} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
       if existing
         ptr = existing.pointer
       end
       @app.update ptr, languages
     end
-    def update_fachinfo name, fis, fi_flags
+    def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
       begin
-        # identify registration
-        iksnrs = extract_iksnrs fis
-        if iksnrs.empty?
+        puts "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
+        if iksnrs_from_xml.empty?
           @iksless[:fi].push name
         end
-        ## Now that we have identified the pertinent iksnrs, we can remove
+        ## Now that we have identified the pertinent iksnrs_from_xml, we can remove
         #  up-to-date fachinfos from the queue.
         if fi_flags[:de] && fi_flags[:fr] && !@options[:reparse]
           fis.clear
@@ -147,16 +148,18 @@ module ODDB
         end
         fachinfo = nil
         # assign infos.
-        iksnrs.each do |iksnr|
+        iksnrs_from_xml.each do |iksnr|
           if reg = @app.registration(iksnr)
             ## identification of Pseudo-Fachinfos happens at download-time.
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
+              puts "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
               fachinfo ||= store_fachinfo(reg, fis)
               replace fachinfo, reg, :fachinfo
             end
           else
+            puts "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, fis, :orphaned_fachinfo
             @unknown_iksnrs.store iksnr, name
           end
@@ -173,29 +176,32 @@ module ODDB
       if reg = @app.registration(iksnr)          
           reg.each_sequence{
             |seq| 
+                puts "delete_patinfo_pointer #{iksnr} #{seq.patinfo.pointer}"
                 next unless seq.patinfo and seq.patinfo.pointer;
                 @app.delete(seq.patinfo.pointer)
                 @app.update(seq.pointer, :patinfo => nil)
-                # seq.odba_isolated_store  needed? 
+                seq.odba_isolated_store
           }
       else
         puts "delete_patinfo nothing to do for #{iksnr} ??"
       end
     end
     
-    def update_patinfo name, pis, pi_flags
+    # pis is a hash of language => html
+    def update_patinfo name, iksnrs_from_xml, pis, pi_flags
       begin
-        iksnrs = extract_iksnrs pis
-        if iksnrs.empty?
-          @iksless[:pi].push name
-        end
+        puts "update_patinfo #{name} iksnrs_from_xml #{iksnrs_from_xml} empty #{pis.empty?}"
         patinfo = nil
-        iksnrs.each do |iksnr|
-          if reg = @app.registration(iksnr)
+        iksnrs_from_xml.each do |iksnr|
+          reg = @app.registration(iksnr)
+          if reg
             unless pis.empty?
+              puts "update_patinfo.pointer1 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
               patinfo ||= store_patinfo(reg, pis)
+              puts "update_patinfo.pointer2 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
               reg.each_sequence do |seq|
                 # cut connection to pdf patinfo
+                puts "update_patinfo #{name} iksnr #{iksnr} update"
                 if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
                   seq.pdf_patinfo = ''
                   @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
@@ -205,16 +211,20 @@ module ODDB
               end
             end
           else
+            puts "update_patinfo #{name} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, pis, :orphaned_patinfo
             @unknown_iksnrs.store iksnr, name
           end
         end
       rescue RuntimeError => err
         @failures.push err.message
+        puts "update_patinfo RuntimeError #{err.message}"
         []
       end
     end
+    
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
+      puts "update_product #{name} #{fi_paths}  #{pi_paths} #{fi_flags} #{pi_flags}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
@@ -238,7 +248,17 @@ module ODDB
       end
     end
     def report
+      if defined?(@inconsistencies)
+        if @inconsistencies.size == 0
+          return "Your database seems to be okay. No @inconsistencies found. #{@inconsistencies.inspect}"
+        else
+          return "Problems in your database?\n\n"+
+                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n\n#{@inconsistencies.inspect}\n\n"+
+                 "You might fix the problems running an import of the following iksnrs #{@iksnrs_to_import.join(' ')}"
+        end
+      end
       unknown_size = @unknown_iksnrs.size
+      @wrong_meta_tags ||= []
       @nonconforming_content ||= []
       @nonconforming_content = @nonconforming_content.uniq.sort
       unknown = @unknown_iksnrs.collect { |iksnr, name|
@@ -271,8 +291,8 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "Non conforming contents:  #{@nonconforming_content.size}",
-          @nonconforming_content.join("\n"),
+          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
+          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
         ].join("\n")
       when :fi
         [
@@ -296,8 +316,8 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "Non conforming contents:  #{@nonconforming_content.size}",
-          @nonconforming_content.join("\n"),
+          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
+          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
         ].join("\n")
       when :pi
         [
@@ -320,8 +340,8 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "Non conforming contents:  #{@nonconforming_content.size}",
-          @nonconforming_content.join("\n"),
+          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
+          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
         ].join("\n")
       end
     end
@@ -338,6 +358,7 @@ module ODDB
     end
 
 ##
+# == interface 1 (classic) compendium
 # == interface 1 (classic)
 #
 # TODO
@@ -477,6 +498,10 @@ module ODDB
       []
     end
     
+    def detect_format(html)
+      return :swissmedicinfo if html.index('section1') or html.index('Section7000')
+      html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
+    end    
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
@@ -612,271 +637,8 @@ module ODDB
       return !updated.empty?
     end
 
-##
-# == interface 2 (new)
-#
-# TODO
-#  * rename method xxx2 to xxx
-#  * refactor search2
-#
-# NOTE
-#  * import_company2(name)
-#  * import_companies2(company_names, target=:both, agent=nil)
-#  * import_news2(agent=init_agent2)
-    SOURCE_HOST = 'compendium.ch'
-    def init_agent2
-      setup_default_agent
-      # entry point
-      form = nil
-      link = @agent.get("http://#{SOURCE_HOST}/default/Desktop/de").link_with(:href => /\/home\/prof\/de/)
-      if link
-        form = link.click.form_with(:name => 'aspnetForm')
-      else
-        form = @agent.get("http://#{SOURCE_HOST}/home/prof/de").form_with(:name => 'aspnetForm')
-      end
-      if form
-        button = form.button_with(:name => 'ctl00$MainContent$ibOptions')
-        # behaves as click
-        prng = Random.new(Time.new.to_i)
-        button.x = prng.rand(5..55).to_s
-        button.y = prng.rand(5..55).to_s
-        @agent.pre_connect_hooks << lambda do |agent, request|
-          agent.request_headers['Referer']    = "http://#{SOURCE_HOST}/home/prof/de"
-          agent.request_headers['Connection'] = 'keep-alive'
-          agent.request_headers['Host']       = SOURCE_HOST
-          agent.request_headers['Cookie']     = @agent.cookies.join(';')
-        end
-        # discard this response
-        form.click_button(button)
-      end
-      # imitate setting of monographie search mode in "options", manualy
-      option = @agent.get("http://#{SOURCE_HOST}/options/de")
-      form = option.form_with(:name => 'aspnetForm')
-      form.radiobutton_with(:id => 'ctl00_MainContent_rblMonographie_1').check # Fachinfo
-      form.radiobutton_with(:id => 'ctl00_MainContent_rblCurrentLang_0').check # DE
-      form.radiobutton_with(:id => 'ctl00_MainContent_rblContentLang_0').check # DE
-      form.submit(form.button_with(:name => 'ctl00$MainContent$btnSave'))
-      # overwrite cookie manualy for after request
-      @agent.cookie_jar.each do |cookie|
-        if cookie.name =~ /^dm\.kompendium/
-          cookie.value.gsub!(/isTypeResultMonographieTitle=0/, 'isTypeResultMonographieTitle=1')
-          cookie.value.gsub!(/language=EN/, 'language=DE')
-        end
-      end
-      @agent
-    end
-    def init_searchform2 agent=init_agent2
-      url = ODDB.config.text_info_searchform2 \
-        or raise 'please configure ODDB.config.text_info_searchform2 to proceed'
-      agent.get(url)
-    end
-    def search2 term
-      #return [ # debug
-      #  {:type => :fi, :indx => '22100', :name => 'Xeplion®'}
-      #]
-      page = init_searchform2
-      form = page.form_with(:name => 'aspnetForm')
-      form['__EVENTTARGET']   = 'ctl00$MainContent$ucProductSearch1$rcbSearch'
-      form['__EVENTARGUMENT'] = '{"Command":"TextChanged"}'
-      form.field_with(:id => 'ctl00_MainContent_ucProductSearch1_ddlSearchType'). \
-        value   = '1' # Product / Firma / Wirukstoffe
-      form.field_with(:id => 'ctl00_MainContent_ucProductSearch1_rcbSearch_Input'). \
-        value = term  # Text
-      form.field_with(:id => 'ctl00_MainContent_ucProductSearch1_rcbSearch_ClientState').\
-        value = '{' \
-          '"logEntries":[],'       \
-          '"value":"",'            \
-          '"text":"' + term + '",' \
-          '"enabled":true,'        \
-          '"checkedIndices":[],'   \
-          '"checkedItemsTextOverflows":false' \
-        '}'
-      @agent.pre_connect_hooks << lambda do |agent, request|
-        agent.request_headers['Referer']       = ODDB.config.text_info_searchform2
-        agent.request_headers['Content-Type']  = 'application/x-www-form-urlencoded; charset=utf-8'
-        agent.request_headers['Host']          = SOURCE_HOST
-        agent.request_headers['Pragma']        = 'no-cache'
-        agent.request_headers['Cache-Control'] = 'no-cache'
-      end
-      list = []
-      result = form.click_button
-      result.links_with(:href => /\/mpro\/mnr\//) do |links|
-        links.each do |link| # base is :fi
-          if link.href =~ /\/(\d+)\/html/
-            indx    = $1.to_s
-            fi_name = link.text # de name
-            _link = {}
-            _link[:type] = :fi
-            _link[:indx] = indx
-            _link[:name] = fi_name
-            list << _link
-            if @target != :fi # :both or :pi
-              if fi = link.click and
-                 prod_link = fi.link_with(:id => /^ctl00_Tools_hlProductLink$/) and
-                 prods = prod_link.click
-                prods.links_with(
-                  :id => /^ctl00_MainContent_ucProductSearch1_gvwProducts_ctl\d{2}_hlDetail1$/
-                ).each do |link|
-                  link.attributes['id'] =~ /^[0-9A-z_]*_ctl(\d{2})_[A-z0-9_]*$/
-                  number = $1.to_s
-                  if link.href =~ /\/prod\/pnr\/(\d+)\//
-                    indx = $1.to_s
-                    if prod = link.click and
-                       prod.link_with(:href => /\/mpub\/pnr\/#{indx}\/html/) # if pi exists
-                      pi_name = prods.at(
-                        "//span[@id='ctl00_MainContent_ucProductSearch1_gvwProducts_ctl#{number}_lblDescr']"
-                      )
-                      _link = {}
-                      _link[:type] = :pi
-                      _link[:indx] = indx
-                      _link[:name] = (pi_name ? pi_name.text : fi_name + "-#{indx}")
-                      list << _link
-                    end
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-      list
-    end
-    def search_company2(name)
-      search2(name)
-    end
-    def download_info2(type, name, url)
-      paths = {}
-      flags = {}
-      de, fr = nil
-      @agent ||= init_agent2
-      # de
-      de = @agent.get(url + '/de')
-      if match = /(Pseudo-Fach|Produkt)information/i.match(de.body)
-        @ignored_pseudos += 1
-        flags[:pseudo] = true
-      end
-      paths[:de] = save_info(type, name, :de, de, flags)
-      # fr
-      fr = @agent.get(url + '/fr')
-      paths[:fr] = save_info(type, name, :fr, fr, flags)
-      [paths, flags]
-    rescue Mechanize::ResponseCodeError
-      @download_errors << name
-      [paths, flags]
-    end
-    def import_product2(type, name, url)
-      url = url.to_s
-      # use common update method :update_product
-      case type
-      when :fi, :fachinfo
-        url = "http://#{SOURCE_HOST}/mpro/mnr/#{url}/html" if url =~ /^\d+$/
-        paths, flags = download_info2(type, name, url)
-        update_product(name, paths, {}, flags, {})
-      when :pi, :patinfo
-        url = "http://#{SOURCE_HOST}/mpub/pnr/#{url}/html" if url =~ /^\d+$/
-        paths, flags = download_info2(type, name, url)
-        update_product(name, {}, paths, {}, flags)
-      end
-    end
-    ##
-    # = import_product2
-    #
-    # ::Param
-    #   * list = [
-    #       {:type => :fi, :indx => '1234', :name => 'Fi-Name'},
-    #       {:type => :pi, :indx => '1234', :name => 'Pi-Name'},
-    #       ...
-    #     ]
-    def import_products2(list)
-      case @target
-      when :both
-        list.each do |link|
-          type = (link[:type] == :pi ? :patinfo : :fachinfo)
-          import_product2(type, link[:name], link[:indx])
-        end
-      when :fi
-        list.each do |link|
-          next if link[:type] != :fi
-          import_product2(:fachinfo, link[:name], link[:indx])
-        end
-      when :pi
-        list.each do |link|
-          next if link[:type] != :pi
-          import_product2(:patinfo,  link[:name], link[:indx])
-        end
-      end
-    end
-    def textinfo_news2(agent=init_agent2)
-      #return [ # debug
-      #  'Janssen-Cilag AG'
-      #]
-      url = ODDB.config.text_info_newssource2 \
-        or raise 'please configure ODDB.config.text_info_newssource2 to proceed'
-      check_date = @options[:date] ? @options[:date] : Date.today
-      # get security and innovation updates
-      company_names = []
-      tags = []
-      updates = agent.get(url)
-      tags += updates.search('//span[starts-with(@id, "ctl00_MainContent_UcNewsSecurity_dlNews_")]')
-      tags += updates.search('//span[starts-with(@id, "ctl00_MainContent_ucInnovationNews_dlNews_")]')
-      tags.map do |span|
-        span['id'] =~ /_ctl(\d{2})_(Label1|lblDate)/ # date
-        indx = ($1 ? $1.to_s : nil)
-        type = ($2 == 'lblDate' ? 'innovation' : 'security')
-        if (indx and type) and
-           span.child.text =~ /\d{2}\.\d{2}\.\d{2}/
-          begin
-            date = Date.strptime(span.child.text, '%d.%m.%y')
-          rescue ArgumentError
-          end
-          if date and date >= check_date
-            id = case type
-                 when 'security';   /ctl00_MainContent_UcNewsSecurity_dlNews_ctl#{indx}_hlDetailNews/
-                 when 'innovation'; /ctl00_MainContent_ucInnovationNews_dlNews_ctl#{indx}_hlDetailNews/
-                 end
-            # Sometimes, innovation detail page does not have fi-Qulle link
-            # We skip if it has only external links
-            begin
-              fi = updates.link_with(:id => id).click.
-                  link_with(:href => /\/mpro\/mnr\//).click
-            rescue NoMethodError
-            end
-            if fi and
-               chapter = fi.at("//a[@name='7850']") and
-               name = chapter.parent.parent.at(".//p[@class='noSpacing']").text
-              company_names << name.split(',').first if name
-            end
-          end
-        end
-      end
-      company_names.uniq
-    end
-    def import_company2(name, target=:both, agent=init_agent2)
-      if name.is_a?(Array) # for consistency againt old interface
-        import_companies2(name, target, agent)
-      else
-        @format = :compendium
-        @target = target
-        @search_term << name
-        @companies << name
-        @current_search = [:search_company, name]
-        list = search_company2(name)
-        import_products2(list)
-      end
-    end
-    def import_companies2(company_names, target=:both, agent=init_agent2)
-      company_names.to_a.each do |name|
-        import_company2(name, target, agent)
-      end
-    end
-    def import_news2(target=:both, agent=init_agent2)
-      updated = []
-      company_names = textinfo_news2(agent)
-      import_companies2(company_names, target, agent)
-      postprocess
-    end
+# == interface 2 (new) (was for documed)
 
-##
 # == interface 3 (swissmedicinfo)
 #
 # TODO
@@ -1001,10 +763,6 @@ module ODDB
         File.open(file, 'w') { |fh| fh.puts(xml) }
       end
     end
-    def detect_format(html)
-      return :swissmedicinfo if html.index('section1') or html.index('Section7000')
-      html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
-    end
     def extract_matched_content(name, type, lang)
       content = nil, styles = nil, title = nil, iksnrs = nil
       return content unless @doc and name
@@ -1029,6 +787,9 @@ module ODDB
         styles  = match.parent.at('./style').text
         title   = match.parent.at('./title').text
         iksnrs  = TextInfoPlugin::get_iksnrs_from_string(match.parent.at('./authNrs').text)
+        unless iksnrs.size > 0
+          @wrong_meta_tags << "#{match.parent.at('./authNrs')} authNrs-text: #{match.parent.at('./authNrs').text}"
+        end
       end
       return content, styles, title, iksnrs
     end
@@ -1087,18 +848,25 @@ module ODDB
       end
     end
     def parse_and_update(names, type)
+      puts "parse_and_update #{names} #{type}"
+      # names eg. { :de => 'Alacyl'}
       iksnrs = []
       infos  = {}
       return [iksnrs,infos] unless @doc
+      iksnrs_from_xml = nil
       name  = ''
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
+        saved = iksnrs_from_xml
         content, styles, title, iksnrs_from_xml = extract_matched_content(name, type, lang)
+        unless saved == nil or saved != iksnrs_from_xml
+          puts "parse_and_update mismatch in #{iksnr} #{lang} saved #{saved} new #{iksnrs_from_xml}"
+        end
         if content
           html = Nokogiri::HTML(content.to_s).to_s
-          @format = detect_format(html)
           @title  = name
+          @format = detect_format(html)
           # save as tmp
           path = File.join(ODDB.config.data_dir, 'html', type, lang.to_s)
           dist = File.join(path, name.gsub(CharsNotAllowedInBasename, '_') + '_swissmedicinfo.html')
@@ -1121,9 +889,9 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts "parse_and_update: calls parse_#{type} dist #{dist} format #{@format} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
+            puts "parse_and_update: calls parse_#{type} dist #{dist} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
             puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
-            infos[lang] = self.send("parse_#{type}", dist, styles)            
+            infos[lang] = self.send("parse_#{type}", dist, styles)
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
             File.unlink(temp)
@@ -1137,20 +905,20 @@ module ODDB
             _infos[lang] = infos[lang]
           end
         end
-        iksnrs = self.send("update_#{type}", name, _infos, {})
-        puts "parse_and_update: update_#{type} name #{name} returned #{iksnrs}"
-        $stdout.flush
+        self.send("update_#{type}", name, iksnrs_from_xml, _infos, {})
       end
       [iksnrs, infos]
     end
-    def import_info(keys, names, state, iksnr = nil)
+    def import_info(keys, names, state)
+      puts "import_info: #{keys} names #{names}"
       keys.each_pair do |typ, type|
         next if names[:de].nil? or names[:de][typ].nil?
         # This importer expects same order of names in DE and FR, come from swissmedicinfo.
         names.each_pair do |lang, infos|
           infos[typ].each do |name, date|
             iksnrs,infos = parse_and_update({lang => name}, type)
-            delete_patinfo iksnr, lang if infos.empty? and type.eql?('patinfo')
+            puts "import_info: #{keys} names #{names} iksnrs #{iksnrs}"
+            delete_patinfo iksnrs, lang if infos.empty? and type.eql?('patinfo')
 
             # report
             unless infos.empty?
@@ -1202,7 +970,77 @@ module ODDB
       end
       @doc = Nokogiri::XML(File.open(xml_file,'r').read)
     end
+    
+    def check_swissmedicno_fi_pi(options = {}, delete_patinfo = false)
+      puts "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
+      puts "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
+      @inconsistencies = []
+      @iksnrs_to_import = []
+      nrDeletes = 0
+      @app.registrations.each{
+        |aReg| 
+          reg= aReg[1]; 
+          if  reg.fachinfo and not reg.fachinfo.iksnrs.index(reg.iksnr) 
+            info = [aReg[1], reg.fachinfo.iksnr, reg.fachinfo.pointer]
+            @inconsistencies << info
+            @iksnrs_to_import << reg.fachinfo.iksnr
+            puts "check_swissmedicno_fi_pi inconsistency #{info}"
+          end
+          foundPatinfo = false
+          reg.sequences.each {|aSeq|
+                              seq = aSeq[1]
+                              foundPatinfo = true if seq.patinfo and seq.patinfo.pointer
+                              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil); 
+                              if not seq.patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
+                                info =[ seq.patinfo.name_base, reg.iksnr, reg.name_base, seq.patinfo.pointer]
+                                puts "check_swissmedicno_fi_pi inconsistency #{info}"
+                                @inconsistencies << info
+                                @iksnrs_to_import << reg.iksnr
+                                if delete_patinfo                            
+                                  puts "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                                  @app.delete(seq.patinfo.pointer)
+                                  @app.update(seq.pointer, :patinfo => nil)
+                                  seq.odba_isolated_store
+                                  nrDeletes += 1
+                                end
+                              end
+                             } 
+          unless foundPatinfo
+            # seems to be a valid case, e.g. Alutard http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/Alutard%20/search_type/st_sequence#best_result
+            info =[ 'neither FI nor PI for', reg.iksnr, reg.name_base]
+            puts "check_swissmedicno_fi_pi  #{info}"
+            @inconsistencies << info
+            @iksnrs_to_import << reg.iksnr
+          end if false
+      }
+      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.size} uniq #{@inconsistencies.sort.uniq.size} inconsistencies.\nDeleted #{nrDeletes} patinfos."
+      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.sort.uniq.inspect} \n#{Time.now}"
+      @iksnrs_to_import.sort.uniq
+    end
+  
+    def update_swissmedicno_fi_pi(options = {})
+      puts "update_swissmedicno_fi_pi #{options} \n#{Time.now}"
+      threads = []
+      @iksnrs_to_import =[]
+      threads << Thread.new do
+        @iksnrs_to_import = check_swissmedicno_fi_pi(options, true)[0..10]
+      end
+      threads.map(&:join)
+      puts "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.uniq.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
+      return true if @iksnrs_to_import.size == 0
+      threads.map(&:join)
+      threads << Thread.new do
+        # set correct options to force a reparse (reimport)
+        @options[:reparse] = true
+        @options[:download] = false
+        import_swissmedicinfo_by_iksnrs(@iksnrs_to_import.uniq, :both)
+      end
+      threads.map(&:join)
+      true
+    end
+
     def import_swissmedicinfo_by_index(index, target)
+      puts "import_swissmedicinfo_by_index #{index} #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
@@ -1224,7 +1062,7 @@ module ODDB
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
           end
         end
-        import_info(keys, names, :isknr, iksnr.strip)
+        import_info(keys, names, :isknr)
       end
       @doc = nil
     end
