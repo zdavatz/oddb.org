@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#encoding : utf-8
 #FachinfoWriter -- oddb -- 02.02.2004 -- mwalder@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

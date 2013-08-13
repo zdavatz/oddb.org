@@ -1,0 +1,28 @@
+#!/usr/local/bin/ruby
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/updater'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      opts = {
+        :iksnrs   => [],
+        :companies => [],
+      }
+      ARGV.each do |arg|
+        if arg =~ /^\d{3,5}$/
+          opts[:iksnrs] << sprintf('%05d', arg.to_i)
+        else arg =~ /^\w*$/
+          opts[:companies] << arg if arg.size > 0
+        end
+      end
+      puts "\nopts == #{opts.inspect}\n\n"
+      Updater.new(system).check_swissmedicno_fi_pi(opts)
+    end
+  end
+end
