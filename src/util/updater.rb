@@ -304,6 +304,18 @@ module ODDB
                            "Fach- und Patienteninfo Updates (swissmedicinfo.ch)",
                            :import_swissmedicinfo
     end
+    def check_swissmedicno_fi_pi(opts=nil)
+      @options = opts
+      update_notify_simple TextInfoPlugin,
+                           "Check all FI and PI for inconsistencies",
+                           :check_swissmedicno_fi_pi
+    end
+    def update_swissmedicno_fi_pi(opts=nil)
+      @options = opts
+      update_notify_simple TextInfoPlugin,
+                           "Check and fix inconsistencies in all FI and PI",
+                           :update_swissmedicno_fi_pi
+    end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
