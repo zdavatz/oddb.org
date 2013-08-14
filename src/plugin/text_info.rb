@@ -1037,7 +1037,7 @@ module ODDB
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do
-        check_swissmedicno_fi_pi(options, true)[0..10]
+        check_swissmedicno_fi_pi(options, true)
       end
       threads.map(&:join)
       logCheckActivity "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
