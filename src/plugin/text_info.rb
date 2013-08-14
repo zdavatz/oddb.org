@@ -16,6 +16,7 @@ require 'plugin/plugin'
 require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
+require 'util/logfile'
 
 module ODDB
   class TextInfoPlugin < Plugin
@@ -971,9 +972,20 @@ module ODDB
       @doc = Nokogiri::XML(File.open(xml_file,'r').read)
     end
     
+    def logCheckActivity(msg)
+      puts msg
+      if not defined?(@checkLog) or not @checkLog
+        name = LogFile.filename('check_swissmedicno_fi_pi', Time.now)
+        puts "Opening #{name}"
+        FileUtils.makedirs(File.dirname(name))
+        @checkLog = File.open(name, 'w+') 
+      end
+      @checkLog.puts(msg)
+    end
+    
     def check_swissmedicno_fi_pi(options = {}, delete_patinfo = false)
-      puts "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
-      puts "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
+      logCheckActivity "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
+      logCheckActivity "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
       @inconsistencies = []
       @iksnrs_to_import = []
       nrDeletes = 0
@@ -984,7 +996,7 @@ module ODDB
             info = [aReg[1], reg.fachinfo.iksnr, reg.fachinfo.pointer]
             @inconsistencies << info
             @iksnrs_to_import << reg.fachinfo.iksnr
-            puts "check_swissmedicno_fi_pi inconsistency #{info}"
+            logCheckActivity "check_swissmedicno_fi_pi inconsistency #{info}"
           end
           foundPatinfo = false
           reg.sequences.each {|aSeq|
@@ -993,11 +1005,11 @@ module ODDB
                               next if (seq.patinfo == nil or  seq.patinfo.name_base == nil); 
                               if not seq.patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
                                 info =[ seq.patinfo.name_base, reg.iksnr, reg.name_base, seq.patinfo.pointer]
-                                puts "check_swissmedicno_fi_pi inconsistency #{info}"
+                                logCheckActivity "check_swissmedicno_fi_pi inconsistency #{info}"
                                 @inconsistencies << info
                                 @iksnrs_to_import << reg.iksnr
                                 if delete_patinfo                            
-                                  puts "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                                  logCheckActivity "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
                                   @app.delete(seq.patinfo.pointer)
                                   @app.update(seq.pointer, :patinfo => nil)
                                   seq.odba_isolated_store
@@ -1008,34 +1020,37 @@ module ODDB
           unless foundPatinfo
             # seems to be a valid case, e.g. Alutard http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/Alutard%20/search_type/st_sequence#best_result
             info =[ 'neither FI nor PI for', reg.iksnr, reg.name_base]
-            puts "check_swissmedicno_fi_pi  #{info}"
+            logCheckActivity "check_swissmedicno_fi_pi  #{info}"
             @inconsistencies << info
             @iksnrs_to_import << reg.iksnr
           end if false
       }
-      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.size} uniq #{@inconsistencies.sort.uniq.size} inconsistencies.\nDeleted #{nrDeletes} patinfos."
-      puts "check_swissmedicno_fi_pi found  #{@inconsistencies.sort.uniq.inspect} \n#{Time.now}"
-      @iksnrs_to_import.sort.uniq
+      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{nrDeletes} patinfos."
+      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.uniq.inspect} \n#{Time.now}"
+      logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
+      @iksnrs_to_import = @iksnrs_to_import.sort.uniq
+      true
     end
   
     def update_swissmedicno_fi_pi(options = {})
-      puts "update_swissmedicno_fi_pi #{options} \n#{Time.now}"
+      logCheckActivity "update_swissmedicno_fi_pi #{options} \n#{Time.now}"
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do
-        @iksnrs_to_import = check_swissmedicno_fi_pi(options, true)[0..10]
+        check_swissmedicno_fi_pi(options, true)[0..10]
       end
       threads.map(&:join)
-      puts "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.uniq.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
-      return true if @iksnrs_to_import.size == 0
+      logCheckActivity "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
+      @iksnrs_to_import = [ '-99999'] if @iksnrs_to_import.size == 0
       threads.map(&:join)
       threads << Thread.new do
         # set correct options to force a reparse (reimport)
         @options[:reparse] = true
         @options[:download] = false
-        import_swissmedicinfo_by_iksnrs(@iksnrs_to_import.uniq, :both)
+        import_swissmedicinfo_by_iksnrs(@iksnrs_to_import, :both)
       end
       threads.map(&:join)
+      logCheckActivity "update_swissmedicno_fi_pi finished"
       true
     end
 
