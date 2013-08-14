@@ -251,11 +251,10 @@ module ODDB
     def report
       if defined?(@inconsistencies)
         if @inconsistencies.size == 0
-          return "Your database seems to be okay. No @inconsistencies found. #{@inconsistencies.inspect}"
+          return "Your database seems to be okay. No inconsistencies found. #{@inconsistencies.inspect}"
         else
           return "Problems in your database?\n\n"+
-                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n\n#{@inconsistencies.inspect}\n\n"+
-                 "You might fix the problems running an import of the following iksnrs #{@iksnrs_to_import.join(' ')}"
+                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n\n#{@inconsistencies.inspect}"
         end
       end
       unknown_size = @unknown_iksnrs.size
@@ -988,7 +987,7 @@ module ODDB
       logCheckActivity "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
       @inconsistencies = []
       @iksnrs_to_import = []
-      nrDeletes = 0
+      @nrDeletes = 0
       @app.registrations.each{
         |aReg| 
           reg= aReg[1]; 
@@ -1002,18 +1001,22 @@ module ODDB
           reg.sequences.each {|aSeq|
                               seq = aSeq[1]
                               foundPatinfo = true if seq.patinfo and seq.patinfo.pointer
-                              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil); 
-                              if not seq.patinfo.name_base.split()[0].eql?(reg.name_base.split()[0])
+                              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil);
+                              # Check first part of the name (case-insensitive)
+                              split_reg_exp = / |,|-/
+                              pi_name  = seq.patinfo.name_base.split(split_reg_exp)[0].downcase
+                              reg_name = reg.name_base.split(split_reg_exp)[0].downcase
+                              if not reg_name.eql?(pi_name)
                                 info =[ seq.patinfo.name_base, reg.iksnr, reg.name_base, seq.patinfo.pointer]
                                 logCheckActivity "check_swissmedicno_fi_pi inconsistency #{info}"
                                 @inconsistencies << info
                                 @iksnrs_to_import << reg.iksnr
                                 if delete_patinfo                            
-                                  logCheckActivity "delete_patinfo_pointer #{nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                                  logCheckActivity "delete_patinfo_pointer #{@nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
                                   @app.delete(seq.patinfo.pointer)
                                   @app.update(seq.pointer, :patinfo => nil)
                                   seq.odba_isolated_store
-                                  nrDeletes += 1
+                                  @nrDeletes += 1
                                 end
                               end
                              } 
@@ -1025,7 +1028,7 @@ module ODDB
             @iksnrs_to_import << reg.iksnr
           end if false
       }
-      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{nrDeletes} patinfos."
+      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes} patinfos."
       logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.uniq.inspect} \n#{Time.now}"
       logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
       @iksnrs_to_import = @iksnrs_to_import.sort.uniq
