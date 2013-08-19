@@ -181,6 +181,12 @@ module ODDB
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
       assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
     end
+    
+    def test_get_iksnr_lopresor
+      test_string = "Zulassungsnummer Lopresor 100: 39'252 (Swissmedic) Lopresor Retard 200: 44'447 (Swissmedic)"
+      assert_equal(["39252", "44447 " ], TextInfoPlugin::get_iksnrs_from_string(test_string))
+    end
+
 
     def test_get_iksnr_space_at_end
       test_string = '54577 '
