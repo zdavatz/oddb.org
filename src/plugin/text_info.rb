@@ -86,16 +86,18 @@ module ODDB
     def puts_sync(msg)
       puts Time.now.to_s + ': ' + msg; $stdout.flush
     end
-    Package = Struct.new("Package", :iksnr, :seq_nr, :name_base)  
+    Package = Struct.new("Package", :iksnr, :seqnr, :name_base)  
     def read_packages # adapted from swissmedic.rb
       latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xls'
       @packages = {}
       Spreadsheet.open(latest_name) do |workbook|
         workbook.worksheet(0).each(3) do |row|
+          # row(6) 'G' is Heilmittelcode
+          next if /Tierarzneimittel/i.match(row[6].to_s) # ODDB.org is only for humans, not animals
           iksnr = row[0].to_s
-          seq_nr = row[1].to_i.to_s
+          seqnr = row[1].to_i.to_s
           name_base = row[2]
-          @packages[iksnr] = Package.new(iksnr, seq_nr, name_base)
+          @packages[iksnr] = Package.new(iksnr, seqnr, name_base)
         end
       end
     end
@@ -295,11 +297,28 @@ module ODDB
           return "Your database seems to be okay. No inconsistencies found. #{@inconsistencies.inspect}"
         else
           msg = "Problems in your database?\n\n"+
-                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n"+
-                 "Summary: \n"
-          @error_reasons.each{ |id, count|  msg += "  * found #{sprintf('%3d', count)} #{id}\n"}          
+                "Logfile saved as #{File.expand_path(@checkLog.path)}\n"+
+                "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n"+
+                "Summary: \n"
+          headings = {}
+          @error_reasons.sort.each{ |id, count|  
+                                    item = "  * found #{sprintf('%3d', count)} #{id}\n"
+                                    headings[id] = item
+                                    msg += item
+                                  }
           msg += "\n"
-          @inconsistencies.each{ |x| msg += x.inspect.to_s + "\n"}
+          # [reg.iksnr, reg.name_base, id]
+          # (1..10).sort {|a,b| b <=> a}   #=> [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+          heading = nil
+          @inconsistencies.sort.each{
+            |error|
+              unless error[0].eql?(heading)
+                msg += "\n\n   Details for #{headings[error[0]]}\n\n"
+                heading = error[0]
+              end
+              msg += error[1..-1].join(", ")
+              msg += "\n"
+          }
           msg += "\n"
           msg += @run_check_and_update ? "The following iksnr were reimported" : "Re-importing the following iksnrs might fix some problems"
           msg += "\n\n" + @iksnrs_to_import.join(' ')
@@ -918,7 +937,6 @@ module ODDB
       end
     end
     def parse_and_update(names, type)
-      puts_sync "parse_and_update #{names} #{type}"
       # names eg. { :de => 'Alacyl'}
       iksnrs = []
       infos  = {}
@@ -980,7 +998,6 @@ module ODDB
       [iksnrs, infos]
     end
     def import_info(keys, names, state)
-      puts_sync "import_info: #{keys} names #{names}"
       keys.each_pair do |typ, type|
         next if names[:de].nil? or names[:de][typ].nil?
         # This importer expects same order of names in DE and FR, come from swissmedicinfo.
@@ -1054,22 +1071,23 @@ module ODDB
       @checkLog.puts(msg)
     end
     
-    # Error reasons
-    Flagged_as_inactive               = 'flagged as nactive? in ODDB but found in packages.xls'
-    Reg_without_base_name             = 'registration has no name_base'
-    Mismatch_name_2_xls               = 'name_base in ODDB differs from packages.xls'
-    Iksnr_only_oddb                   = 'iksrn found in ODDB.db but not in packages.xls'
-    FI_iksnrs_mismatched_to_aips_xml  = 'fi-iksnrs do not match ID froms Aips.xml'
-    PI_iksnrs_mismatched_to_aips_xml  = 'pi-iksnrs do not match ID froms Aips.xml'
-    Mismatch_reg_name_to_fi_name      = 'name_base in registration do not match name_base in fachinfo'
-    Mismatch_reg_name_to_pi_name      = 'name_base in registration do not match name_base in patinfo'
+    # Error reasons 
+    Flagged_as_inactive               = "oddb.registration('Zulassungsnummer').inactive? but has Zulassungsnummer in Packungen.xls"
+    Reg_without_base_name             = 'oddb.registration has no method name_base'
+    Mismatch_name_2_xls               = 'oddb.registration.name_base differs from Sequenzname in Packungen.xls'
+    Iksnr_only_oddb                   = 'oddb.registration.iksnr has no Zulassungsnummer in Packungen.xls'
+    Iksnr_only_packages               = "Zulassungsnummer from Packungen.xls is not in oddb.registrations('Zulassungsnummer')"
+    FI_iksnrs_mismatched_to_aips_xml  = 'oddb.registration.fachinfo.iksnrs do not match authNrs from AipsDownload_latest.xml'
+    PI_iksnrs_mismatched_to_aips_xml  = "oddb.registration('iksnr').sequences['0x'].patinfo.descriptions['de'].iksnrs.to_s does not match entity authNrs from AipsDownload_latest.xml"
+    Mismatch_reg_name_to_fi_name      = 'oddb.registration.name_base differs from oddb.registration.fachinfo.name_base'
+    Mismatch_reg_name_to_pi_name      = "oddb.registration.registration.name_base differs from name_base in registration('iksnr').sequences['0x'].patinfo.name_base"
     
-    def log_error(reg, id, added_info)
-      @error_reasons[id] += 1
-      info = [reg.iksnr, reg.name_base, id]
+    def log_error(iksnr, name_base, id, added_info, suppress_re_import = false)
+      @error_reasons[id] += 1      
+      info = [id, iksnr, name_base]
       if added_info then added_info.class == Array ? info += added_info : info << added_info end
       @inconsistencies << info
-      @iksnrs_to_import << reg.iksnr
+      @iksnrs_to_import << iksnr unless suppress_re_import
       logCheckActivity "check_swissmedicno_fi_pi #{info}"
     end
 
@@ -1083,6 +1101,7 @@ module ODDB
           Reg_without_base_name             => 0,
           Mismatch_name_2_xls               => 0,
           Iksnr_only_oddb                   => 0,
+          Iksnr_only_packages               => 0,
           FI_iksnrs_mismatched_to_aips_xml  => 0,
           PI_iksnrs_mismatched_to_aips_xml  => 0,
           Mismatch_reg_name_to_fi_name      => 0,
@@ -1092,19 +1111,22 @@ module ODDB
       @iksnrs_to_import = []
       @nrDeletes = []
       split_reg_exp = / |,|-/
+      @packages.each_key{ |iksnr|
+          log_error(@packages[iksnr].iksnr, @packages[iksnr].name_base, Iksnr_only_packages, @packages[iksnr]) unless @app.registration(iksnr)
+      }
       @app.registrations.each{
         |aReg| 
           reg= aReg[1];
           iksnr_2_check = reg.iksnr
           xls_package_info = @packages[iksnr_2_check]
 
-          log_error(reg, Flagged_as_inactive, xls_package_info) if reg.inactive? and xls_package_info
+          log_error(reg.iksnr, reg.name_base, Flagged_as_inactive, xls_package_info) if reg.inactive? and xls_package_info
           next if reg.inactive? # we are only interested in the active registrations
       
-          log_error(reg, Iksnr_only_oddb, xls_package_info) unless xls_package_info
+          log_error(reg.iksnr, reg.name_base, Iksnr_only_oddb, xls_package_info, true) unless xls_package_info
 
           if xls_package_info and not xls_package_info.name_base.eql?(reg.name_base)
-            log_error(reg, Mismatch_name_2_xls, xls_package_info) unless xls_package_info
+            log_error(reg.iksnr, reg.name_base, Mismatch_name_2_xls, xls_package_info) unless xls_package_info
           end
 
           if  reg.fachinfo and reg.fachinfo.iksnrs
@@ -1113,19 +1135,19 @@ module ODDB
             if xml_iksnrs and fi_iksnrs != xml_iksnrs
               txt = ''
               xml_iksnrs.each{ |id| txt += @app.registration(id) ? "#{id} #{@app.registration(id).name_base}, " : id + ', ' }
-              log_error(reg, FI_iksnrs_mismatched_to_aips_xml, txt) 
+              log_error(reg.iksnr, reg.name_base, FI_iksnrs_mismatched_to_aips_xml, txt) 
               # TODO: update the fachinfo.iksnrs
             end
           end
 
           # Check first part of the fachinfo name (case-insensitive)
           if not reg.name_base
-            log_error(reg, Reg_without_base_name, '')
+            log_error(reg.iksnr, reg.name_base, Reg_without_base_name, '')
           elsif reg.fachinfo and reg.fachinfo.name_base
             fi_name  = reg.fachinfo.name_base.split(split_reg_exp)[0].downcase
             reg_name = reg.name_base.split(split_reg_exp)[0].downcase
             unless reg_name.eql?(fi_name)
-              log_error(reg, Mismatch_reg_name_to_fi_name, reg.fachinfo.name_base)
+              log_error(reg.iksnr, reg.name_base, Mismatch_reg_name_to_fi_name, reg.fachinfo.name_base)
               hasDefect = true
             end
           end
@@ -1142,7 +1164,7 @@ module ODDB
                 pi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(seq.patinfo.descriptions['de'].iksnrs.to_s)
                 pi_xml_iksnrs = @pis_to_iksnrs[iksnr_2_check]
                 if pi_iksnrs and pi_xml_iksnrs and pi_iksnrs.sort.uniq != pi_xml_iksnrs
-                  log_error(reg, PI_iksnrs_mismatched_to_aips_xml, pi_xml_iksnrs) 
+                  log_error(reg.iksnr, reg.name_base, PI_iksnrs_mismatched_to_aips_xml, pi_xml_iksnrs) 
                   hasDefect = true
                 end
               end
@@ -1152,7 +1174,7 @@ module ODDB
                 reg_name = reg.name_base.split(split_reg_exp)[0].downcase
                 pi_name  = seq.patinfo.name_base.split(split_reg_exp)[0].downcase
                 unless reg_name.eql?(pi_name)
-                  log_error(reg, Mismatch_reg_name_to_pi_name, [reg_name, pi_name, seq.patinfo.pointer] )
+                  log_error(reg.iksnr, reg.name_base, Mismatch_reg_name_to_pi_name, [reg_name, pi_name, seq.seqnr, seq.patinfo.pointer] )
                   hasDefect = true
                 end
               end
@@ -1169,10 +1191,10 @@ module ODDB
           } 
       }
       logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
-      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.uniq.inspect} \n#{Time.now}"
       logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
       @iksnrs_to_import = @iksnrs_to_import.sort.uniq
-      true
+      @packages = nil # free some memory if we want to import
+      true # an update/import should return true or you will never send a report
     end
   
     def update_swissmedicno_fi_pi(options = {})
@@ -1184,16 +1206,13 @@ module ODDB
         check_swissmedicno_fi_pi(options, @run_check_and_update)
       end
       threads.map(&:join)
-      logCheckActivity "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
       @iksnrs_to_import = [ '-99999'] if @iksnrs_to_import.size == 0
-      puts_sync("Sleep 10 seconds before starting importer")
-      sleep(10) 
       # set correct options to force a reparse (reimport)
       @options[:reparse] = true
       @options[:download] = false
       import_swissmedicinfo_by_iksnrs(@iksnrs_to_import, :both)
       logCheckActivity "update_swissmedicno_fi_pi finished"
-      true
+      true # an update/import should return true or you will never send a report
     end
 
     def import_swissmedicinfo_by_index(index, target)
@@ -1205,6 +1224,7 @@ module ODDB
         import_info(keys, names, state)
       end
       @doc = nil
+      true # an import should return true or you will never send a report
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
       puts_sync "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
@@ -1222,6 +1242,7 @@ module ODDB
         import_info(keys, names, :isknr)
       end
       @doc = nil
+      true # an import should return true or you will never send a report
     end
 
     def import_swissmedicinfo_by_companies(companies, target)
@@ -1231,6 +1252,7 @@ module ODDB
         iksnrs += textinfo_swissmedicinfo_company_index(company, target)
       end
       import_swissmedicinfo_by_iksnrs(iksnrs, target)
+      true # an import should return true or you will never send a report
     end
 
     def import_swissmedicinfo(target=:both)
