@@ -47,7 +47,7 @@ module Job
       if updater? and !running_job[:pid]
         File.unlink(PID_FILE)
         puts "#{PID_FILE} is deleted"
-        system.unpeer_cache ODBA.cache unless opts[:readonly]
+        system.unpeer_cache ODBA.cache unless opts[:readonly]  rescue Errno::ECONNREFUSED
       end
     end
   end

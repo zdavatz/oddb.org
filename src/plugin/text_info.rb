@@ -17,7 +17,7 @@ require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
 require 'util/logfile'
-
+require 'spreadsheet'
 module ODDB
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
@@ -82,6 +82,23 @@ module ODDB
 =end
       path
     end
+
+    def puts_sync(msg)
+      puts Time.now.to_s + ': ' + msg; $stdout.flush
+    end
+    Package = Struct.new("Package", :iksnr, :seq_nr, :name_base)  
+    def read_packages # adapted from swissmedic.rb
+      latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xls'
+      @packages = {}
+      Spreadsheet.open(latest_name) do |workbook|
+        workbook.worksheet(0).each(3) do |row|
+          iksnr = row[0].to_s
+          seq_nr = row[1].to_i.to_s
+          name_base = row[2]
+          @packages[iksnr] = Package.new(iksnr, seq_nr, name_base)
+        end
+      end
+    end
     def parse_fachinfo(path, styles=nil)
       @parser.parse_fachinfo_html(path, @format, @title, styles)
     end
@@ -129,7 +146,7 @@ module ODDB
       @updated_pis +=1
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
-      puts "store_patinfo existing #{existing} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
+      puts_sync "store_patinfo existing #{existing} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
       if existing
         ptr = existing.pointer
       end
@@ -137,7 +154,7 @@ module ODDB
     end
     def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
       begin
-        puts "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
+        puts_sync "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
         if iksnrs_from_xml.empty?
           @iksless[:fi].push name
         end
@@ -155,12 +172,12 @@ module ODDB
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
-              puts "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
+              puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
               fachinfo ||= store_fachinfo(reg, fis)
               replace fachinfo, reg, :fachinfo
             end
           else
-            puts "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
+            puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, fis, :orphaned_fachinfo
             @unknown_iksnrs.store iksnr, name
           end
@@ -172,60 +189,84 @@ module ODDB
     end
 
     def delete_patinfo iksnr, language
-      puts "delete_patinfo iksnr #{iksnr} #{language}"
+      puts_sync "delete_patinfo iksnr #{iksnr} #{language}"
       return unless iksnr
       if reg = @app.registration(iksnr)          
           reg.each_sequence{
             |seq| 
-                puts "delete_patinfo_pointer #{iksnr} #{seq.patinfo.pointer}"
                 next unless seq.patinfo and seq.patinfo.pointer;
+                puts_sync "delete_patinfo #{iksnr} pointer #{seq.patinfo.pointer}"
                 @app.delete(seq.patinfo.pointer)
                 @app.update(seq.pointer, :patinfo => nil)
                 seq.odba_isolated_store
           }
       else
-        puts "delete_patinfo nothing to do for #{iksnr} ??"
+        puts_sync "delete_patinfo nothing to do for #{iksnr} ??"
       end
     end
     
     # pis is a hash of language => html
     def update_patinfo name, iksnrs_from_xml, pis, pi_flags
       begin
-        puts "update_patinfo #{name} iksnrs_from_xml #{iksnrs_from_xml} empty #{pis.empty?}"
+        puts_sync "update_patinfo #{name} iksnrs_from_xml #{iksnrs_from_xml} empty #{pis.empty?}"
+        @corrected_pis ||= []
         patinfo = nil
         iksnrs_from_xml.each do |iksnr|
           reg = @app.registration(iksnr)
-          if reg
+          unless reg
+            puts_sync "No reg found for #{iksnr.inspect}"
+          else
             unless pis.empty?
-              puts "update_patinfo.pointer1 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
-              patinfo ||= store_patinfo(reg, pis)
-              puts "update_patinfo.pointer2 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
+              if patinfo and patinfo.pointer and @corrected_pis.index(patinfo.pointer.to_s)
+                puts_sync "Already updated #{patinfo.pointer }"
+              else
+                puts_sync "update_patinfo.pointer1 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
+                patinfo ||= store_patinfo(reg, pis)
+                puts_sync "update_patinfo.pointer2 #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
+              end
               reg.each_sequence do |seq|
+                
+                # check iksrns
+                pis.each{
+                  |language, html|
+                    unless seq.patinfo and seq.patinfo.descriptions and seq.patinfo.descriptions[language] and seq.patinfo.descriptions[language].iksnrs
+                      puts_sync "update_patinfo.mismatched_iksrns #{language} #{iksnr.inspect} are nil"
+                    else
+                      # ch.oddb> registration('44939').sequences.first[1].patinfo.descriptions['de'].iksnrs
+                      # -> Zulassungsnummer\n44939, 39622, 24926, 24959 (Swissmedic)
+                      iksnrs_from_html = TextInfoPlugin::get_iksnrs_from_string(seq.patinfo.descriptions[language].iksnrs.to_s)                 
+                      if iksnrs_from_html.sort.uniq != iksnrs_from_xml.sort.uniq
+                        puts_sync "update_patinfo.mismatched_iksrns #{iksnr} #{iksnrs_from_html} -> #{iksnrs_from_xml.sort.uniq}"
+                      end
+                    end
+                  } if false
+
                 # cut connection to pdf patinfo
-                puts "update_patinfo #{name} iksnr #{iksnr} update"
+                puts_sync "update_patinfo #{name} iksnr #{iksnr} update"
                 if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
                   seq.pdf_patinfo = ''
                   @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
                   seq.odba_isolated_store
                 end
                 replace patinfo, seq, :patinfo
+                @corrected_pis << patinfo.pointer.to_s
               end
+            else
+              puts_sync "update_patinfo #{name} iksnr #{iksnr} store_orphaned"
+              store_orphaned iksnr, pis, :orphaned_patinfo
+              @unknown_iksnrs.store iksnr, name
             end
-          else
-            puts "update_patinfo #{name} iksnr #{iksnr} store_orphaned"
-            store_orphaned iksnr, pis, :orphaned_patinfo
-            @unknown_iksnrs.store iksnr, name
           end
         end
       rescue RuntimeError => err
         @failures.push err.message
-        puts "update_patinfo RuntimeError #{err.message}"
+        puts_sync "update_patinfo RuntimeError #{err.message}"
         []
       end
     end
     
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
-      puts "update_product #{name} #{fi_paths}  #{pi_paths} #{fi_flags} #{pi_flags}"
+      puts_sync "update_product #{name} #{fi_paths}  #{pi_paths} #{fi_flags} #{pi_flags}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
@@ -253,8 +294,16 @@ module ODDB
         if @inconsistencies.size == 0
           return "Your database seems to be okay. No inconsistencies found. #{@inconsistencies.inspect}"
         else
-          return "Problems in your database?\n\n"+
-                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n\n#{@inconsistencies.inspect}"
+          msg = "Problems in your database?\n\n"+
+                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n"+
+                 "Summary: \n"
+          @error_reasons.each{ |id, count|  msg += "  * found #{sprintf('%3d', count)} #{id}\n"}          
+          msg += "\n"
+          @inconsistencies.each{ |x| msg += x.inspect.to_s + "\n"}
+          msg += "\n"
+          msg += @run_check_and_update ? "The following iksnr were reimported" : "Re-importing the following iksnrs might fix some problems"
+          msg += "\n\n" + @iksnrs_to_import.join(' ')
+          return msg
         end
       end
       unknown_size = @unknown_iksnrs.size
@@ -472,9 +521,31 @@ module ODDB
       end
     end
     
+    def get_pis_and_fis
+      @pis_to_iksnrs = {}
+      @fis_to_iksnrs = {}
+      @doc.xpath(".//medicalInformation/authNrs", 'lang' => 'de').each{
+        |x|
+        ids = TextInfoPlugin::get_iksnrs_from_string(x.text.to_s)
+        ids.each { |id| 
+                  typ = x.parent.attribute('type').text
+                  if typ.eql?('fi') 
+                    @fis_to_iksnrs[id] ? @fis_to_iksnrs[id]  += ids : @fis_to_iksnrs[id] = ids
+                elsif typ.eql?('pi') 
+                    @pis_to_iksnrs[id] ? @pis_to_iksnrs[id]  += ids : @pis_to_iksnrs[id] = ids
+                else
+                  puts_sync "anhandled type #{x.text} at #{x.text}"
+                end
+                } if ids
+      }
+      @pis_to_iksnrs.each{ |key, value| @pis_to_iksnrs[key] = value.sort.uniq }
+      @fis_to_iksnrs.each{ |key, value| @fis_to_iksnrs[key] = value.sort.uniq }
+    end
+
     def TextInfoPlugin::get_iksnrs_from_string(string)
       iksnrs = []
-      src = string.gsub(/[^0-9,\s]/, "")
+      src1 = string.gsub(/[^0-9,:\s]/, "")
+      src = src1.gsub(/[\d\w]+:/, '') # Catches stuff like "Zulassungsnummer Lopresor 100: 39'252 (Swissmedic) Lopresor Retard 200: 44'447 (Swissmedic)"
       if(matches = src.strip.scan(/\d{5}|\d{2}\s*\d{3}|\d\s*{5}/))
         # support some wrong in numbers [000nnn] (too many 0)
         if (matches.length == 2 && matches.first =~ /^0{3}\d{2}$/) and
@@ -491,10 +562,9 @@ module ODDB
           end
         end
       end
-      iksnrs.uniq!
-      iksnrs
+      iksnrs.sort.uniq
     rescue => e
-      puts "get_iksnrs_from_string: string #{string} rescued from #{e}"
+      puts_sync "get_iksnrs_from_string: string #{string} rescued from #{e}"
       []
     end
     
@@ -717,7 +787,7 @@ module ODDB
       }
       nr
     end
-        
+    
     def textinfo_swissmedicinfo_company_index(company, target)
       swissmedicinfo_xml
       ids = []
@@ -728,7 +798,7 @@ module ODDB
       }.new).each{ |x| 
                     ids += TextInfoPlugin::get_iksnrs_from_string(x.at('authNrs').text)
                    }
-      puts "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{@options[:xml_file]}"
+      puts_sync "textinfo_swissmedicinfo_company_index #{company} #{target.inspect} fachinfo #{ids.sort.uniq.join(',')}. Used #{@options[:xml_file]}"
       ids.sort.uniq
     end
 
@@ -807,7 +877,7 @@ module ODDB
         |x| 
             if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
               name = x.parent.at('./title').text 
-              puts "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
+              puts_sync "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
               return name
             end
       }
@@ -848,7 +918,7 @@ module ODDB
       end
     end
     def parse_and_update(names, type)
-      puts "parse_and_update #{names} #{type}"
+      puts_sync "parse_and_update #{names} #{type}"
       # names eg. { :de => 'Alacyl'}
       iksnrs = []
       infos  = {}
@@ -861,7 +931,7 @@ module ODDB
         saved = iksnrs_from_xml
         content, styles, title, iksnrs_from_xml = extract_matched_content(name, type, lang)
         unless saved == nil or saved != iksnrs_from_xml
-          puts "parse_and_update mismatch in #{iksnr} #{lang} saved #{saved} new #{iksnrs_from_xml}"
+          puts_sync "parse_and_update mismatch in #{iksnr} #{lang} saved #{saved} new #{iksnrs_from_xml}"
         end
         if content
           html = Nokogiri::HTML(content.to_s).to_s
@@ -889,8 +959,8 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts "parse_and_update: calls parse_#{type} dist #{dist} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
-            puts "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
+            puts_sync "parse_and_update: calls parse_#{type} dist #{dist} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
+            puts_sync "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
@@ -910,15 +980,15 @@ module ODDB
       [iksnrs, infos]
     end
     def import_info(keys, names, state)
-      puts "import_info: #{keys} names #{names}"
+      puts_sync "import_info: #{keys} names #{names}"
       keys.each_pair do |typ, type|
         next if names[:de].nil? or names[:de][typ].nil?
         # This importer expects same order of names in DE and FR, come from swissmedicinfo.
         names.each_pair do |lang, infos|
           infos[typ].each do |name, date|
             iksnrs,infos = parse_and_update({lang => name}, type)
-            puts "import_info: #{keys} names #{names} iksnrs #{iksnrs}"
-            delete_patinfo iksnrs, lang if infos.empty? and type.eql?('patinfo')
+            puts_sync "import_info: #{keys} names #{names} iksnrs #{iksnrs}"
+            delete_patinfo iksnrs, lang if infos.empty? and type.eql?('patinfo') and iksnrs.size > 0
 
             # report
             unless infos.empty?
@@ -969,68 +1039,138 @@ module ODDB
         xml_file = @options[:xml_file]
       end
       @doc = Nokogiri::XML(File.open(xml_file,'r').read)
+      get_pis_and_fis
+      @doc
     end
     
     def logCheckActivity(msg)
-      puts msg
+      puts_sync msg
       if not defined?(@checkLog) or not @checkLog
         name = LogFile.filename('check_swissmedicno_fi_pi', Time.now)
-        puts "Opening #{name}"
+        puts_sync "Opening #{name}"
         FileUtils.makedirs(File.dirname(name))
         @checkLog = File.open(name, 'w+') 
       end
       @checkLog.puts(msg)
     end
     
-    def check_swissmedicno_fi_pi(options = {}, delete_patinfo = false)
+    # Error reasons
+    Flagged_as_inactive               = 'flagged as nactive? in ODDB but found in packages.xls'
+    Reg_without_base_name             = 'registration has no name_base'
+    Mismatch_name_2_xls               = 'name_base in ODDB differs from packages.xls'
+    Iksnr_only_oddb                   = 'iksrn found in ODDB.db but not in packages.xls'
+    FI_iksnrs_mismatched_to_aips_xml  = 'fi-iksnrs do not match ID froms Aips.xml'
+    PI_iksnrs_mismatched_to_aips_xml  = 'pi-iksnrs do not match ID froms Aips.xml'
+    Mismatch_reg_name_to_fi_name      = 'name_base in registration do not match name_base in fachinfo'
+    Mismatch_reg_name_to_pi_name      = 'name_base in registration do not match name_base in patinfo'
+    
+    def log_error(reg, id, added_info)
+      @error_reasons[id] += 1
+      info = [reg.iksnr, reg.name_base, id]
+      if added_info then added_info.class == Array ? info += added_info : info << added_info end
+      @inconsistencies << info
+      @iksnrs_to_import << reg.iksnr
+      logCheckActivity "check_swissmedicno_fi_pi #{info}"
+    end
+
+    def check_swissmedicno_fi_pi(options = {}, patinfo_must_be_deleted = false)
       logCheckActivity "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
       logCheckActivity "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
+      swissmedicinfo_xml
+      read_packages      
+      @error_reasons = {
+          Flagged_as_inactive               => 0,
+          Reg_without_base_name             => 0,
+          Mismatch_name_2_xls               => 0,
+          Iksnr_only_oddb                   => 0,
+          FI_iksnrs_mismatched_to_aips_xml  => 0,
+          PI_iksnrs_mismatched_to_aips_xml  => 0,
+          Mismatch_reg_name_to_fi_name      => 0,
+          Mismatch_reg_name_to_pi_name      => 0,
+      }
       @inconsistencies = []
       @iksnrs_to_import = []
-      @nrDeletes = 0
+      @nrDeletes = []
+      split_reg_exp = / |,|-/
       @app.registrations.each{
         |aReg| 
-          reg= aReg[1]; 
-          if  reg.fachinfo and not reg.fachinfo.iksnrs.index(reg.iksnr) 
-            info = [aReg[1], reg.fachinfo.iksnr, reg.fachinfo.pointer]
-            @inconsistencies << info
-            @iksnrs_to_import << reg.fachinfo.iksnr
-            logCheckActivity "check_swissmedicno_fi_pi inconsistency #{info}"
+          reg= aReg[1];
+          iksnr_2_check = reg.iksnr
+          xls_package_info = @packages[iksnr_2_check]
+
+          log_error(reg, Flagged_as_inactive, xls_package_info) if reg.inactive? and xls_package_info
+          next if reg.inactive? # we are only interested in the active registrations
+      
+          log_error(reg, Iksnr_only_oddb, xls_package_info) unless xls_package_info
+
+          if xls_package_info and not xls_package_info.name_base.eql?(reg.name_base)
+            log_error(reg, Mismatch_name_2_xls, xls_package_info) unless xls_package_info
           end
+
+          if  reg.fachinfo and reg.fachinfo.iksnrs
+            fi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(reg.fachinfo.iksnrs.to_s) 
+            xml_iksnrs = @fis_to_iksnrs[iksnr_2_check] ? @fis_to_iksnrs[iksnr_2_check] : []
+            if xml_iksnrs and fi_iksnrs != xml_iksnrs
+              txt = ''
+              xml_iksnrs.each{ |id| txt += @app.registration(id) ? "#{id} #{@app.registration(id).name_base}, " : id + ', ' }
+              log_error(reg, FI_iksnrs_mismatched_to_aips_xml, txt) 
+              # TODO: update the fachinfo.iksnrs
+            end
+          end
+
+          # Check first part of the fachinfo name (case-insensitive)
+          if not reg.name_base
+            log_error(reg, Reg_without_base_name, '')
+          elsif reg.fachinfo and reg.fachinfo.name_base
+            fi_name  = reg.fachinfo.name_base.split(split_reg_exp)[0].downcase
+            reg_name = reg.name_base.split(split_reg_exp)[0].downcase
+            unless reg_name.eql?(fi_name)
+              log_error(reg, Mismatch_reg_name_to_fi_name, reg.fachinfo.name_base)
+              hasDefect = true
+            end
+          end
+      
           foundPatinfo = false
-          reg.sequences.each {|aSeq|
-                              seq = aSeq[1]
-                              foundPatinfo = true if seq.patinfo and seq.patinfo.pointer
-                              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil);
-                              # Check first part of the name (case-insensitive)
-                              split_reg_exp = / |,|-/
-                              pi_name  = seq.patinfo.name_base.split(split_reg_exp)[0].downcase
-                              reg_name = reg.name_base.split(split_reg_exp)[0].downcase
-                              if not reg_name.eql?(pi_name)
-                                info =[ seq.patinfo.name_base, reg.iksnr, reg.name_base, seq.patinfo.pointer]
-                                logCheckActivity "check_swissmedicno_fi_pi inconsistency #{info}"
-                                @inconsistencies << info
-                                @iksnrs_to_import << reg.iksnr
-                                if delete_patinfo                            
-                                  logCheckActivity "delete_patinfo_pointer #{@nrDeletes}: #{reg.iksnr} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
-                                  @app.delete(seq.patinfo.pointer)
-                                  @app.update(seq.pointer, :patinfo => nil)
-                                  seq.odba_isolated_store
-                                  @nrDeletes += 1
-                                end
-                              end
-                             } 
-          unless foundPatinfo
-            # seems to be a valid case, e.g. Alutard http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/Alutard%20/search_type/st_sequence#best_result
-            info =[ 'neither FI nor PI for', reg.iksnr, reg.name_base]
-            logCheckActivity "check_swissmedicno_fi_pi  #{info}"
-            @inconsistencies << info
-            @iksnrs_to_import << reg.iksnr
-          end if false
+          reg.sequences.each {
+            |aSeq|
+              seq = aSeq[1]
+              hasDefect = false
+              foundPatinfo = true if seq.patinfo and seq.patinfo.pointer
+              next if (seq.patinfo == nil or  seq.patinfo.name_base == nil)
+
+              if  seq.patinfo  and seq.patinfo.descriptions['de'] # and seq.patinfo.descriptions['de'].iksnrs
+                pi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(seq.patinfo.descriptions['de'].iksnrs.to_s)
+                pi_xml_iksnrs = @pis_to_iksnrs[iksnr_2_check]
+                if pi_iksnrs and pi_xml_iksnrs and pi_iksnrs.sort.uniq != pi_xml_iksnrs
+                  log_error(reg, PI_iksnrs_mismatched_to_aips_xml, pi_xml_iksnrs) 
+                  hasDefect = true
+                end
+              end
+
+              # Check first part of the name (case-insensitive)
+              if reg.name_base
+                reg_name = reg.name_base.split(split_reg_exp)[0].downcase
+                pi_name  = seq.patinfo.name_base.split(split_reg_exp)[0].downcase
+                unless reg_name.eql?(pi_name)
+                  log_error(reg, Mismatch_reg_name_to_pi_name, [reg_name, pi_name, seq.patinfo.pointer] )
+                  hasDefect = true
+                end
+              end
+
+              next if hasDefect == false and seq.patinfo.descriptions == nil
+              
+              if hasDefect and patinfo_must_be_deleted
+                @nrDeletes << seq.patinfo.pointer.to_s
+                logCheckActivity "delete_patinfo_pointer #{@nrDeletes.size}: #{iksnr_2_check} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                @app.delete(seq.patinfo.pointer)
+                @app.update(seq.pointer, :patinfo => nil)
+                seq.odba_isolated_store
+              end
+          } 
       }
-      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes} patinfos."
+      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
       logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.uniq.inspect} \n#{Time.now}"
-      logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
+      logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
       @iksnrs_to_import = @iksnrs_to_import.sort.uniq
       true
     end
@@ -1040,25 +1180,24 @@ module ODDB
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do
-        check_swissmedicno_fi_pi(options, true)
+        @run_check_and_update = true
+        check_swissmedicno_fi_pi(options, @run_check_and_update)
       end
       threads.map(&:join)
       logCheckActivity "update_swissmedicno_fi_pi reimport #{@iksnrs_to_import.sort.size} iksnrs_to_import \n#{@iksnrs_to_import.inspect}"
       @iksnrs_to_import = [ '-99999'] if @iksnrs_to_import.size == 0
-      threads.map(&:join)
-      threads << Thread.new do
-        # set correct options to force a reparse (reimport)
-        @options[:reparse] = true
-        @options[:download] = false
-        import_swissmedicinfo_by_iksnrs(@iksnrs_to_import, :both)
-      end
-      threads.map(&:join)
+      puts_sync("Sleep 10 seconds before starting importer")
+      sleep(10) 
+      # set correct options to force a reparse (reimport)
+      @options[:reparse] = true
+      @options[:download] = false
+      import_swissmedicinfo_by_iksnrs(@iksnrs_to_import, :both)
       logCheckActivity "update_swissmedicno_fi_pi finished"
       true
     end
 
     def import_swissmedicinfo_by_index(index, target)
-      puts "import_swissmedicinfo_by_index #{index} #{target}"
+      puts_sync "import_swissmedicinfo_by_index #{index} #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
@@ -1068,13 +1207,13 @@ module ODDB
       @doc = nil
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
-      puts "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
+      puts_sync "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
-        puts "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
+        puts_sync "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
@@ -1118,7 +1257,7 @@ module ODDB
         import_swissmedicinfo_by_iksnrs(@options[:iksnrs], target)
       end
       if @options[:download] != false
-        puts "job is done. now postprocess works ..."
+        puts_sync "job is done. now postprocess works ..."
         postprocess
       end
       true # report
