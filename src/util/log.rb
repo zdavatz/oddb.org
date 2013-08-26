@@ -19,7 +19,7 @@ module ODDB
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
 			'@files']
 		attr_accessor :report, :pointers, :recipients, :change_flags, 
-			:files, :parts, :date_str, :mail_from
+			:files, :parts, :date_str, :mail_from, :mail_to
 		attr_reader :date
 
 		def initialize(date)
@@ -76,7 +76,6 @@ module ODDB
       LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
       LogFile.append('oddb/debug', " self::class::MAIL_TO=" + self::class::MAIL_TO.to_s, Time.now)
       LogFile.append('oddb/debug', " self::class=" + self::class.to_s, Time.now)
-			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			outgoing.subject = subj
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Updater'
@@ -93,7 +92,6 @@ module ODDB
       # This is also fine. but the full file path is necessary
       #multipart.add_file('/home/masa/work/test.xls')
 			multipart.from = @mail_from || self::class::MAIL_FROM
-			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			multipart.to = @recipients
 			multipart.subject = subject
 			multipart.date = Time.now
@@ -107,9 +105,11 @@ module ODDB
 		end
 		def send_mail(multipart)
       LogFile.append('oddb/debug', " getin send_mail", Time.now)
-      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
-
       config = ODDB.config
+      LogFile.append('oddb/debug', " config.mail_to=" + config.mail_to.inspect.to_s, Time.now)
+      @recipients = config.mail_to.uniq if config.mail_to and config.mail_to.size > 0        
+      @recipients = self::class::MAIL_TO.uniq if not @recipients or @recipients.size == 0
+      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
       LogFile.append('oddb/debug', " config.smtp_server=" + config.smtp_server.inspect.to_s, Time.now)
       LogFile.append('oddb/debug', " config.smtp_port=" + config.smtp_port.inspect.to_s, Time.now)
       LogFile.append('oddb/debug', " config.smtp_domain=" + config.smtp_domain.inspect.to_s, Time.now)
