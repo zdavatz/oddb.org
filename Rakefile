@@ -25,7 +25,8 @@ class Rake::Task
 end
 
 Rake::Task[:docs].overwrite do
-  system("rdoc --formate=darkfish --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
+  FileUtils.rm_rf('documentation', :verbose => true)
+  system("rdoc --format=darkfish --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
 end
 
 Rake::Task[:test].overwrite do
