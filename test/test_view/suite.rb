@@ -1,15 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# suite.rb -- oddb -- 09.04.2012 -- yasaka@ywesee.com
-# suite.rb -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com 
+# OneDirSuite -- oddb -- 09.04.2012 -- yasaka@ywesee.com
+# OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
-require 'find'
 require 'test-unit'
 
-$: << here = File.expand_path(File.dirname(__FILE__))
+$: << File.expand_path(File.dirname(__FILE__))
 
-Find.find(here) { |file|
-	if file.match(/\.rb$/) && !file.match(/suite\.rb/)
-    require file
-	end
-}
+Dir.open(File.dirname(__FILE__)) do |dir|
+  dir.sort.each { |file|
+    if /.*\.rb$/o.match(file)&&file!='suite.rb'
+      require file 
+    end
+  }
+end

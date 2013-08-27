@@ -19,6 +19,8 @@ module ODDB
 		class FlexMock < ::FlexMock
 			#undef :type
 		end
+    @@now = Time.now.round
+
 		def setup
 			@app = FlexMock.new
 			@plugin = PatinfoInvoicer.new(@app)
@@ -204,7 +206,7 @@ module ODDB
 			item_pointer.should_receive(:resolve).and_return { sequence }
 			sequence.should_receive(:company).and_return { company2 }
 			pointer = FlexMock.new
-			time = Time.now
+			time = @@now
 			item1 = AbstractInvoiceItem.new
 			item1.yus_name = 'user1'
 			item1.item_pointer = pointer
@@ -349,7 +351,7 @@ module ODDB
         vars = o1.instance_variables
         vars.delete('@time')
         vars.each do |v|
-          if o1.instance_eval(v) != o2.instance_eval(v)
+          if o1.instance_eval(v.to_s).to_s != o2.instance_eval(v.to_s).to_s
             return false
           end
         end
@@ -382,13 +384,14 @@ module ODDB
       item = AbstractInvoiceItem.new
       item.price = PI_UPLOAD_PRICES[:annual_fee]
       item.text = 'iksnr seqnr'
-      item.time = Time.now
+      item.time = Time.now # @plugin.html_items(123)[0].time
+      item.price = '120'
       item.type = :annual_fee
       item.unit = "Jahresgeb\374hr"
       item.vat_rate = VAT_RATE
       item.item_pointer = 'pointer'
-      #assert_equal([item], @plugin.html_items(123))
-      assert(same?(item, @plugin.html_items(123)[0])) # if this fails, look at the result of comment line above
+#      assert_equal([item], @plugin.html_items(123))
+      assert(same?(item, @plugin.html_items(123)[0]), 'item should match html_items(123)[0]') # if this fails, look at the result of comment line above
     end
 	end
 end

@@ -163,7 +163,7 @@ module ODDB
 
   class TestLookandfeelAtupriWeb < Test::Unit::TestCase
     include FlexMock::TestCase
-     def setup
+    def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
         s.should_receive(:language)
@@ -271,7 +271,7 @@ module ODDB
 
   class TestLookandfeelJustMedical < Test::Unit::TestCase
     include FlexMock::TestCase
-     def setup
+    def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
         s.should_receive(:language)
@@ -377,7 +377,7 @@ module ODDB
 
   class TestLookandfeelSwissmedic < Test::Unit::TestCase
     include FlexMock::TestCase
-     def setup
+    def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
         s.should_receive(:language)
@@ -400,7 +400,7 @@ module ODDB
 
   class TestLookandfeelOekk < Test::Unit::TestCase
     include FlexMock::TestCase
-     def setup
+    def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
         s.should_receive(:language)
