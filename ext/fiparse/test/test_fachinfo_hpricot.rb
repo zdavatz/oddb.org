@@ -266,8 +266,6 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     open(@@path) { |fh| 
       @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicalName)
     }
-    puts 8
-    pp @@fachinfo
   end
   def test_fachinfo1
     assert_instance_of(FachinfoDocument, @@fachinfo)
@@ -509,10 +507,8 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       @@path = File.expand_path('data/html/de/fi_62439_xalos_duo.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
-        
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesXalos)
       }
-#      open(@@path) { |fh| @@fachinfo = @@writer.extract(Hpricot(fh)) }
     end
     
     def test_fachinfo2
@@ -854,6 +850,124 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
         }
         assert_equal(19, result.scan(/<br>/i).size, "Should find exactly 19 <BR> tags for the complex table")
+     end
+     
+    end
+    
+    CourierStyle = '<PRE style="font-family: Courier New, monospace; font-size: 12px;">'
+    
+    class TestFachinfoHpricot_49456_Clexane_De < Test::Unit::TestCase
+      
+      Styles_Clexane = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:18pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:8pt;}.s8{font-family:Arial;font-size:11pt;font-style:italic;}.s9{font-family:Arial;font-size:11pt;}.s10{line-height:115%;text-align:justify;margin-top:2pt;}.s11{line-height:115%;text-align:justify;margin-top:6pt;}.s12{font-family:Courier New;font-size:11pt;}.s13{line-height:115%;text-align:left;}.s14{height:6pt;}.s15{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;}.s16{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;}.s17{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s18{font-family:Courier;margin-top:2pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s19{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}'
+      MedicInfoName = 'Clexane® Filmtabletten/Tropfen 10 mg/ml, 20 mg/mlClexane MELTZ® Schmelztabletten'
+      HtmlName      = 'data/html/de/fi_49456_clexane_de.html'
+      
+      def setup
+        return if defined?(@@path)
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
+        @@writer = FachinfoHpricot.new
+        
+        open(@@path) { |fh| 
+          @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Clexane)
+        }
+        File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+      end
+      
+      def test_fachinfo2
+        assert_instance_of(FachinfoDocument2001, @@fachinfo)
+      end
+      
+      def test_name2
+        assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Clexane&reg;
+      end
+      
+      def test_fixed_font
+        assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
+        assert(@@fachinfo.galenic_form.to_yaml.index('Fertigspritze'))
+        search = "mg       2000 I.E.     Fertigspritze"
+        index = @@fachinfo.galenic_form.to_yaml.index(search) 
+        assert(index && index > 0, "Must find #{search} as text")
+      end
+     
+     def test_all_to_html
+        
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @session = FlexMock.new '@session'
+        @session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        @session.should_receive(:user_input)
+        assert(@session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, nil, @session)
+        @view.value = @@fachinfo.galenic_form
+        result = @view.to_html(CGI.new)
+        expected = [  /Galenische Form und Wirkstoffmenge pro Einheit/, # heading
+                      /menge       I.E. anti-Xa  Form/,
+                      /20 mg       2000 I.E.     Fertigspritze/, # after the table                      
+                     /Wirkstoff-  Äquivalent    Galenische      Wirkstoff \n/,
+                     />Wirkstoff-  Äquivalent    Galenische      Wirkstoff \n/,
+                     /#{CourierStyle}Wirkstoff-  Äquivalent    Galenische      Wirkstoff \n/,
+                    ]
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+
+        expected.each { |pattern|
+          assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
+        }
+        assert_equal(2, result.scan(/<br>/i).size, "Should find exactly 2 <BR> tags for the table")
+     end
+     
+    end
+
+    class TestFachinfoHpricot_30785_Ponstan_De < Test::Unit::TestCase
+      
+      StylesPonstan = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:18pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:8pt;}.s8{font-family:Arial;font-size:11pt;font-style:italic;}.s9{font-family:Arial;font-size:11pt;}.s10{line-height:115%;text-align:justify;margin-top:2pt;}.s11{line-height:115%;text-align:justify;margin-top:6pt;}.s12{font-family:Courier New;font-size:11pt;}.s13{line-height:115%;text-align:left;}.s14{height:6pt;}.s15{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;}.s16{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;}.s17{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s18{font-family:Courier;margin-top:2pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}'
+      MedicInfoName = 'Ponstan® Filmtabletten/Tropfen 10 mg/ml, 20 mg/mlPonstan MELTZ® Schmelztabletten'
+      HtmlName      = 'data/html/de/fi_30785_ponstan.html'
+      
+      def setup
+        return if defined?(@@path)
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
+        @@writer = FachinfoHpricot.new
+        
+        open(@@path) { |fh| 
+          @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesPonstan)
+        }
+        File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+      end
+      
+      def test_fachinfo2
+        assert_instance_of(FachinfoDocument2001, @@fachinfo)
+      end
+      
+      def test_name2
+        assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Ponstan&reg;
+      end
+      
+      def test_galenic_form
+        assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
+      end
+     
+     def test_all_to_html
+        
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @session = FlexMock.new '@session'
+        @session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        @session.should_receive(:user_input)
+        assert(@session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, nil, @session)
+        @view.value = @@fachinfo.usage
+        result = @view.to_html(CGI.new)
+        expected = [ 
+            /Alter   Suspension   Kapseln   Suppositorien zu/,
+            />Alter   Suspension   Kapseln   Suppositorien zu/,
+            /#{CourierStyle}Alter   Suspension   Kapseln   Suppositorien zu/,
+                    ]
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+
+        expected.each { |pattern|
+          assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
+        }
+        assert_equal(1, result.scan(/<br>/i).size, "Should find exactly 1 <BR> tags for the table")
      end
      
     end
