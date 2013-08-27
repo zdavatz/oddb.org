@@ -24,6 +24,30 @@ class Rake::Task
   end
 end
 
+desc 'Build quanty'
+task :quanty do
+  parse_rb_name = File.join(File.dirname(__FILE__), 'src/util/quanty/parse.rb')
+  unless File.exists?(parse_rb_name)
+    FileUtils.makedirs(File.join(File.dirname(__FILE__), 'data/pdf'))
+    Dir.chdir(File.join(File.dirname(__FILE__), 'data/quanty'))
+    exit 2 unless system('ruby extconf.rb')
+    src='parse.y'
+    dst='lib/quanty/parse.rb'
+    tmp='lib/quanty/parse.backup'
+    FileUtils.rm_f(dst)
+    FileUtils.makedirs(File.dirname(dst))
+    cmd = "ruby `which racc` -E -o #{dst} #{src}"
+    exit 2 unless system(cmd)
+    inhalt = IO.read(dst)
+    ausgabe = "# encoding: utf-8\n"+inhalt
+    aus = File.open(dst, 'w+')
+    aus.puts(ausgabe)
+    aus.close
+    exit 2 unless system("make")
+    exit 2 unless system("make install")
+  end
+end 
+
 Rake::Task[:docs].overwrite do
   FileUtils.rm_rf('documentation', :verbose => true)
   system("rdoc --format=darkfish --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
@@ -33,5 +57,7 @@ Rake::Task[:test].overwrite do
   puts "Instead of calling Rake::Test we call test/suite.rb"
   exit(1) unless system(File.join(File.dirname(__FILE__), 'test', 'suite.rb'))
 end
+
+task :test => :quanty
 
 # vim: syntax=ruby
