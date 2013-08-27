@@ -14,16 +14,17 @@ dir = File.expand_path(File.dirname(__FILE__))
 # This can result in a wrong coverage summary as shown in the example of oddbapp.rb
 # Out of this reason we run test_util/suite.rb first - but this may cause other problems. Lets see.
 directories = [
+  "#{dir}/../ext/suite.rb",
   "#{dir}/test_util/suite.rb",
   "#{dir}/test_model/suite.rb",
   "#{dir}/test_plugin/suite.rb",
   "#{dir}/test_state/suite.rb",
   "#{dir}/test_view/suite.rb",
-  "#{dir}/../ext/suite.rb",
   "#{dir}/test_custom/suite.rb",
   "#{dir}/test_command/suite.rb",
   "#{dir}/test_remote/suite.rb",
 ]
+# directories = [ "#{dir}/test_command/suite.rb", ]
 
 rcov = true
 coverage = nil
@@ -31,8 +32,8 @@ command = 'system "ruby #{path} >> #{temp_out.path}"'
 begin
   # FIXME
   # There is ARGV problem in test-unit
-  #require 'simplecov'
-  #SimpleCov.start
+  require 'simplecov'
+  SimpleCov.start
 rescue
   begin
     Rcov
@@ -46,7 +47,8 @@ end
 temp_out = Tempfile.new('temp_out')
 directories.each_with_index { |path, i|
   puts "\nNow testing #{path}\n"
-  eval(command)
+  require path
+  # eval(command)
 }
 
 # report output

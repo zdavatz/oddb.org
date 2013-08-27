@@ -1,5 +1,5 @@
 source "http://rubygems.org"
-ruby "1.9.3"
+# ruby "1.9.3" # don't specify a ruby version as I want to be able to test via travis using several versions
 
 source "http://rubygems.org"
 # gem 'password' # http://www.caliban.org/ruby/ruby-password.shtml
@@ -58,13 +58,13 @@ gem "polyglot"
 gem "rack"
 gem "rake"
 gem "rake-compiler"
-gem "ramaze"
 gem "rclconf"
 gem "rdoc"
 gem "rmagick"
 gem "rmail"
 gem "rockit"
 # gem "rpdftxt"
+gem "rpdf2txt"
 gem "ruby-ole"
 gem "rubyzip"
 # gem "rwv"
@@ -72,18 +72,23 @@ gem "savon"
 gem "sbsm"
 gem "spreadsheet"
 gem "swissmedic_diff"
+# gem "syck"
 gem "tmail"
 gem "treetop"
 gem "turing"
 gem "wasabi"
 gem "webrobots"
+gem "ydocx"
 gem "ydim"
 gem "yus" 
 
 group :development, :test do
   gem 'hoe'
+  gem 'hoe-travis'
   gem 'racc'
   gem 'travis-lint'
   gem 'simplecov'
   gem 'test-unit'
+  gem 'pry'
+  gem 'pry-debugger'
 end

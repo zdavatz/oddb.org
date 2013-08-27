@@ -90,14 +90,14 @@ module ODDB
 		end
 		def test_to_html
 			expected = <<-EOS
-			<LABEL for="de">Deutsch</LABEL>
-			<INPUT name="de" type="text" value="foo">
-			<LABEL for="fr">Franz&ouml;sisch</LABEL>
-			<INPUT name="fr" type="text" value="bar">
-			<INPUT name="update" type="submit" value="Speichern">
+      <LABEL for="de">Deutsch</LABEL>
+      <INPUT name="de" value="foo" type="text">
+      <LABEL for="fr">Franz&ouml;sisch</LABEL>
+      <INPUT name="fr" value="bar" type="text">
+      <INPUT value="Speichern" type="submit" name="update">
 			EOS
 			result = @form.to_html(CGI.new)
-			expected.each { |line| 
+			expected.split("\n").each { |line| 
 				assert(result.index(line.strip!),"Expected: \n#{line}\nin:\n#{result}")
 			}
 		end
