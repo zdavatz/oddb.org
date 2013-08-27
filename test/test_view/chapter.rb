@@ -281,7 +281,7 @@ module ODDB
         @textarea = ODDB::View::ChapterEditor.new('name', @model, @session)
       end
       def test_init
-        expected = {"name"=>"name", "dojoType"=>"dijit.Editor"}
+        expected = {"name"=>"name", "data-dojo-type"=>"dijit.Editor"}
         assert_equal(expected, @textarea.init)
       end
       def test__to_html
@@ -297,14 +297,14 @@ module ODDB
         @lnf     = flexmock('lookandfeel', 
                             :lookup     => 'lookup',
                             :attributes => {},
-                            :base_url   => 'base_url'
+                            :base_url   => 'base_url',
                            )
         @session = flexmock('session', 
                             :lookandfeel => @lnf,
-                            :error       => 'error'
+                            :error       => 'error',
                            )
         @model   = flexmock('model',
-                            :name => 'name'
+                            :name => 'name',
                            )
         @form    = ODDB::View::EditChapterForm.new('name', @model, @session)
       end
@@ -329,5 +329,46 @@ module ODDB
         assert_kind_of(HtmlGrid::Div, @form.toolbar(@model))
       end
     end
+    
+    class TestEditChapterTableToHtml < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+#        @document = ODDB::Text::Document.new
+      end
+      def test_table_to_html
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @lookandfeel.should_receive(:subheading).and_return { 'subheading' }
+        session = FlexMock.new 'session'
+        session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        session.should_receive(:user_input)
+        assert(session.respond_to?(:lookandfeel))
+        
+        @view = View::Chapter.new(:name, @model, session)
+        chapter = Text::Chapter.new
+        chapter.heading = "Tabellentest"
+        section = chapter.next_section
+        section.next_paragraph
+        section.subheading = "F?r Zwerge > 1.5 m"
+        table = Text::Table.new
+        table << 'first'
+        table.next_row!
+        cell1 = table.next_cell!
+        table << 'cell1'
+        cell2 = table.next_cell!
+        table << 'cell2'
+        section.sections << table
+        @view.value = chapter
+        result = @view.to_html(CGI.new)
+        assert_equal('xxxx', result)
+
+        @view = View::Chapter.new(:name, nil, session)
+        pp @view
+        assert_equal 'x', @view.to_html(@table)
+        assert_equal 'x', @table.to_html
+        assert false
+      end
+    end
+
 	end
 end
