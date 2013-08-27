@@ -28,7 +28,8 @@ module ODDB
     def test_attributes
       @link.src = '/foo/bar.gif'	
       expected = {
-        'src' => '/foo/bar.gif'	
+        'src' => '/foo/bar.gif',
+        'style' => nil
       }
       assert_equal(expected, @link.attributes)
     end
@@ -501,7 +502,7 @@ Schöne Welt!
       assert_equal cell1, @table.cell(0,0)
       assert_equal cell2, @table.cell(0,1)
       assert_equal cell3, @table.cell(1,0)
-      assert_equal cell4, @table.cell(1,1)
+      assert_equal cell4, @table.cell(1,1)      
     end
     def test_clean
       @table.next_row!

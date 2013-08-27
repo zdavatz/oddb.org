@@ -108,6 +108,7 @@ class TestResult < Test::Unit::TestCase
 	def test_filter
     atc = flexmock('atc') do |atc|
       atc.should_receive(:package_count).and_return(1)
+      atc.should_receive(:code) # .and_return(:atc)
     end
     model = flexmock('model') do |mod|
       mod.should_receive(:session=)
@@ -119,6 +120,8 @@ class TestResult < Test::Unit::TestCase
     flexstub(session) do |ses|
       ses.should_receive(:persistent_user_input)
       ses.should_receive(:cookie_set_or_get)
+      ses.should_receive(:set_cookie_input)
+      ses.should_receive(:event)
     end
 		state = State::Drugs::Result.new(session, model)
     state.init
@@ -130,6 +133,7 @@ class TestResult < Test::Unit::TestCase
 	def test_filter__page
     atc = flexmock('atc') do |atc|
       atc.should_receive(:package_count).and_return(1)
+      atc.should_receive(:code)
     end
     model = flexmock('model') do |mod|
       mod.should_receive(:session=)
@@ -143,6 +147,7 @@ class TestResult < Test::Unit::TestCase
       ses.should_receive(:cookie_set_or_get).and_return('pages')
       ses.should_receive(:event).and_return(:search)
       ses.should_receive(:set_persistent_user_input)
+      ses.should_receive(:set_cookie_input)
     end
 		state = State::Drugs::Result.new(session, model)
     state.init
@@ -249,7 +254,7 @@ class TestResult < Test::Unit::TestCase
     assert_equal(nil, @state.get_sortby!)
   end
   def test_init
-    atc_class = flexmock('atc_class', :package_count => 101)
+    atc_class = flexmock('atc_class', :package_count => 101, :code => nil)
     flexmock(@model, 
              :session=    => nil,
              :atc_classes => [atc_class],
@@ -258,7 +263,8 @@ class TestResult < Test::Unit::TestCase
     @model.should_receive(:each).and_yield(atc_class)
     flexmock(@session, 
              :persistent_user_input => 'persistent_user_input',
-             :cookie_set_or_get => 'pages'
+             :cookie_set_or_get => 'pages',
+             :set_cookie_input => nil,
             )
     assert_kind_of(Proc, @state.init)
   end

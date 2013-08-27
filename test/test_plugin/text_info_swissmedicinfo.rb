@@ -44,7 +44,7 @@ module ODDB
         :download => false,
         :xml_file => File.join(@datadir, 'AipsDownload.xml'), 
       }
-      @app = flexmock 'application'
+      @app = flexmock('application', :update => 'updated', :delete => 'delete') # , :registration => [])
       @app.should_receive(:textinfo_swissmedicinfo_index)
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
       pi_path_de = File.join(@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
@@ -127,7 +127,7 @@ module ODDB
       reg.should_receive(:fachinfo)
       ptr = Persistence::Pointer.new([:registration, '32917'])
       reg.should_receive(:pointer).and_return ptr
-        seq = flexmock 'sequence'
+      seq = flexmock('sequence', :patinfo= => 'patinfo', :odba_isolated_store => 'odba_isolated_store')
       seq.should_receive(:patinfo)
       seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
       reg.should_receive(:each_sequence).and_return do |block| block.call seq end
@@ -173,7 +173,67 @@ module ODDB
       end.new).first
     end
   end
-  
+  class TestTextInfoPluginChecks < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      @datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
+      @vardir = File.expand_path '../var/', File.dirname(__FILE__)
+      FileUtils.mkdir_p @vardir
+      ODDB.config.data_dir = @vardir
+      ODDB.config.log_dir = @vardir
+      $opts = {
+        :target   => [:fi],
+        :reparse  => false,
+        :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
+        :companies => [],
+        :download => false,
+        :xml_file => File.join(@datadir, 'AipsDownload.xml'), 
+      }
+      @app = flexmock('application', :update => 'updated', :delete => 'delete') # , :registration => [])
+      @app.should_receive(:registrations)
+      @app.should_receive(:registration).with(1, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return 0
+#      @app.should_receive(:registration[]).with(index)
+      @app.should_receive(:textinfo_swissmedicinfo_index)
+      @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
+      pi_path_de = File.join(@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
+      pi_de = PatinfoDocument.new
+      pi_path_fr = File.join(@vardir, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html') 
+      pi_fr = PatinfoDocument.new
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
+      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
+      @plugin = TextInfoPlugin.new(@app, $opts)
+      agent = @plugin.init_agent
+      @plugin.parser = @parser
+    end # Fuer Problem mit fachinfo italic
+    
+    def teardown
+      FileUtils.rm_r @vardir
+      super
+    end
+    
+    def test_check_swissmedicno_fi_pi
+      reg = flexmock 'registration'
+      reg.should_receive(:fachinfo)
+      ptr = Persistence::Pointer.new([:registration, '32917'])
+      reg.should_receive(:pointer).and_return ptr
+      seq = flexmock('sequence', :patinfo= => 'patinfo', :odba_isolated_store => 'odba_isolated_store')
+      seq.should_receive(:patinfo)
+      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
+      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
+      reg.should_receive(:sequences).and_return({'01' => seq})
+      @app.should_receive(:registration).with('32917').and_return reg
+      fi = flexmock 'fachinfo'
+      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
+      pi = flexmock 'patinfo'
+      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
+      flags = {:de => :up_to_date, :fr => :up_to_date}
+      @parser.should_receive(:parse_fachinfo_html).once
+      @parser.should_receive(:parse_patinfo_html).never
+      @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
+      assert(@plugin.check_swissmedicno_fi_pi($opts), 'must be able to run check_swissmedicno_fi_pi')
+    end
+  end
+        
   class TestTextInfoPlugin_iksnr < Test::Unit::TestCase
     include FlexMock::TestCase
     

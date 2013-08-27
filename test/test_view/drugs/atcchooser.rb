@@ -15,7 +15,6 @@ module ODDB
     module Drugs
 
       class StubAtcDddLink
-        include AtcDddLink
         def initialize(model, session)
           @model       = model
           @session     = session

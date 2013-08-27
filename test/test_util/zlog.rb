@@ -46,6 +46,7 @@ module ODDB
 
       flexstub(ODDB) do |oddb|
         oddb.should_receive(:config).and_return(flexmock('config') do |conf|
+          conf.should_receive(:mail_to).and_return(MAIL_TO)
           conf.should_receive(:smtp_server).and_return('smtp_server')
           conf.should_receive(:smtp_port).and_return('smtp_port')
           conf.should_receive(:smtp_domain).and_return('smtp_domain')
