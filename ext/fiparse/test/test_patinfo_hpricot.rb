@@ -20,6 +20,27 @@ class TestPatinfoHpricot < Test::Unit::TestCase
   def setup
     @writer = PatinfoHpricot.new
   end
+  def test_nasivin_spaces
+  html = <<-HTML
+    <div class="paragraph">
+      <h2><a name="7840">Was ist in Cimifemin enthalten?</a></h2>
+  <p class="s3"><span class="s4"><span>ab 6 Ja</span></span><span class="s4"><span>hren angewendet werden. Nasivin </span></span><span class="s4"><span>Nasentropfen 0.025% dürfen nur bei</span></span></p>
+    </div>
+HTML
+    code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
+    assert_equal('7840', code)
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Was ist in Cimifemin enthalten?', chapter.heading)
+    assert_equal(1, chapter.sections.size)
+    section = chapter.sections.first
+    assert_equal("", section.subheading)
+    assert_equal(1, section.paragraphs.size)
+    paragraph = section.paragraphs.at(0)
+    expected =  "ab 6 Jahren angewendet werden. Nasivin Nasentropfen 0.025% dürfen nur bei"
+    assert_equal(1, paragraph.formats.size)
+    assert_equal(expected, paragraph.text)
+  end
+  
   def test_chapter
     html = <<-HTML
     <div class="paragraph">
@@ -55,7 +76,7 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     expected =  "Dieses Präparat enthält zusätzlich Hilfsstoffe."
     assert_equal(expected, paragraph.text)
   end
-  def test_chapter__with_sections
+  def test_chapter__with_sections_ponstan
     html = <<-HTML
     <div class="paragraph">
       <h2><a name="7740">Wie verwenden Sie Ponstan?</a></h2>
