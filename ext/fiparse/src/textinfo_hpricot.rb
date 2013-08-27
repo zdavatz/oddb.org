@@ -134,6 +134,7 @@ class TextinfoHpricot
   end
   def has_fixed_font?(elem, ptr)
     if @format == :swissmedicinfo
+      return false unless elem.respond_to?(:attributes)
       return true if FixedFontRegexp.match(elem.attributes['style'])
       if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
        @stylesWithFixedFont.each{ |style| return true if elem.attributes['class'].eql?(style) }
@@ -170,7 +171,7 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-#    puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}"
+#    puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect} fixe #{has_fixed_font?(child, ptr)}"
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
@@ -240,7 +241,7 @@ class TextinfoHpricot
           ptr.target = ptr.table
         else
           handle_all_children(child, ptr)
-#          ptr.target << "\n"
+          ptr.target << "\n"
         end
       when 'td', 'th'
         if ptr.table
@@ -322,14 +323,14 @@ class TextinfoHpricot
       # p ptr.target.class
       # ptr.target = ptr.section.next_paragraph
     # end
-    ptr.target << text(child)
+    ptr.target << text(child) unless child.parent.name.eql?('tbody') or child.parent.name.eql?('table')
   end
   def preformatted(target)
     target.respond_to?(:preformatted?) && target.preformatted?
   end
   def preformatted_text(elem)
     str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub(/(&nbsp;|\302\240)/u, ' '))
+    target_encoding(str.gsub("\n", "").gsub(/(&nbsp;|\302\240)/u, ' '))
   end
   def simple_chapter(elem_or_str)
     if(elem_or_str)
@@ -343,10 +344,8 @@ class TextinfoHpricot
     end
   end
   def detect_table?(elem)
-    $stdout.puts @stylesWithFixedFont; $stdout.flush
-    $stdout.puts elem.inner_text; $stdout.flush
     found = true
-    if @stylesWithFixedFont and @stylesWithFixedFont.index(elem.attributes['class']) and false
+    if @stylesWithFixedFont and @stylesWithFixedFont.index(elem.attributes['class'])
       found = false
     elsif elem.attributes['class'] == 's24' # :swissmedicinfo
       found = true
