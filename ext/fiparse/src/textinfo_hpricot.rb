@@ -67,6 +67,7 @@ class TextinfoHpricot
   def extract(doc, type=:fi, name=nil, styles = nil)
     paragraph = ''
     @stylesWithItalic = TextinfoHpricot::get_italic_style(styles)
+    @stylesWithFixedFont = TextinfoHpricot::get_fixed_font_style(styles)
     @format = :swissmedicinfo if doc.to_s.index('section1') or doc.to_s.index('Section7000')
     case @format
     when :compendium
@@ -107,18 +108,43 @@ class TextinfoHpricot
       |style| 
         matches = /([^{]+){(.+)/.match(style)
         next unless matches
-        styleNamesWithItalic << matches[1].sub('.','') if matches[2].index('font-style:italic')
+        styleNamesWithItalic << matches[1].sub('.','') if ItalicRegexp.match(matches[2])
     }
     styleNamesWithItalic
   end
+
+  # return array of styles which are in fixed font (at the moment == have font courier
+  def TextinfoHpricot::get_fixed_font_style(styles)
+    return [] unless styles
+    styleNamesWithFixedFont =  []
+    styles.split('}').each{ 
+      |style| 
+        matches = /([^{]+){(.+)/.match(style)
+        next unless matches
+        styleNamesWithFixedFont << matches[1].sub('.','') if FixedFontRegexp.match(matches[2])
+    }
+    styleNamesWithFixedFont
+  end
 #   
   private
+  FixedFontRegexp = /font-family:Courier/i
+  ItalicRegexp = /font-style:italic/i
   def valid_heading?(text)
     true # overwrite me
   end
+  def has_fixed_font?(elem, ptr)
+    if @format == :swissmedicinfo
+      return true if FixedFontRegexp.match(elem.attributes['style'])
+      if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
+       @stylesWithFixedFont.each{ |style| return true if elem.attributes['class'].eql?(style) }
+      end
+    end
+    false
+  end
+  
   def has_italic?(elem, ptr)
     if @format == :swissmedicinfo
-      return true if /font-style:italic/.match(elem.attributes['style'])
+      return true if ItalicRegexp.match(elem.attributes['style'])
       if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
        @stylesWithItalic.each{ |style| return true if elem.attributes['class'].eql?(style) }
       end
@@ -214,7 +240,7 @@ class TextinfoHpricot
           ptr.target = ptr.table
         else
           handle_all_children(child, ptr)
-          ptr.target << "\n"
+#          ptr.target << "\n"
         end
       when 'td', 'th'
         if ptr.table
@@ -317,8 +343,12 @@ class TextinfoHpricot
     end
   end
   def detect_table?(elem)
+    $stdout.puts @stylesWithFixedFont; $stdout.flush
+    $stdout.puts elem.inner_text; $stdout.flush
     found = true
-    if elem.attributes['class'] == 's24' # :swissmedicinfo
+    if @stylesWithFixedFont and @stylesWithFixedFont.index(elem.attributes['class']) and false
+      found = false
+    elsif elem.attributes['class'] == 's24' # :swissmedicinfo
       found = true
     elsif elem.attributes['border'] == '0'
       # if 'rowSepBelow' class is found,
