@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # FachinfoDoc -- oddb -- 24.09.2003 -- rwaltert@ywesee.com
 
-require 'rwv2/rwv2'
+require 'rwv2/rwv2' unless defined?(Test::Unit)
 require 'fachinfo_writer'
 require 'iconv'
 
@@ -298,5 +298,5 @@ module ODDB
 					&& font1.italic? == font2.italic?
 			end
 		end
-	end
+	end unless defined?(Test::Unit)
 end
