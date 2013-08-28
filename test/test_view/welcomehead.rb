@@ -9,6 +9,9 @@ require 'flexmock'
 require 'view/welcomehead'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
 
 
@@ -25,6 +28,8 @@ class TestWelcomeHead < Test::Unit::TestCase
     sponsor    = flexmock('sponsor', :valid? => nil)
     @session   = flexmock('session', 
                           :user => user,
+                          :get_cookie_input     => 'get_cookie_input',
+                          :flavor => Session::DEFAULT_FLAVOR,
                           :lookandfeel => @lnf,
                           :sponsor     => sponsor
                          )

@@ -39,18 +39,20 @@ end # TestCenteredNavigation
 class TestCenteredSearchForm < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    zones     = flexmock('zones', :sort_by => [])
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
                         :disabled?  => nil,
                         :enabled?   => nil,
-                        :zones      => 'zones',
+                        :zones      => zones,
                         :base_url   => 'base_url'
                        )
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
-                        :zone        => 'zone'
+                        :zone        => 'zone',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = CenteredSearchForm.new(@model, @session)
@@ -151,8 +153,9 @@ class TestCenteredSearchComposite < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Link, @composite.plugin(@model, @session))
   end
   def test_narcotics_size
-    flexmock(@app, :narcotics_count => 'narcotics_count')
-    assert_equal('narcotics_count&nbsp;', @composite.narcotics_size(@model, @session))
+    flexmock(@app, :narcotics => 'narcotics')
+    # 9 is the length of the string narcotics
+    assert_equal('9&nbsp;', @composite.narcotics_size(@model, @session))
   end
   def test_new_feature
     assert_kind_of(HtmlGrid::Span, @composite.new_feature(@model, @session))

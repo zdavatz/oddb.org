@@ -10,18 +10,32 @@ require 'flexmock'
 require 'view/logo'
 
 module ODDB
-  module View
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
 
+  module View
+    
+    class PopupLogo
+    end
 class TestPopupLogo < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @lnf       = flexmock('lookandfeel', 
-                          :lookup     => 'lookup',
-                          :attributes => {},
-                          :enabled?   => nil,
-                          :resource   => 'resource'
-                         )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :enabled?   => true,
+                        :resource   => 'resource',
+                        :resource_localized   => 'resource_localized',
+                        :_event_url   => '_event_url',
+                       )
+    @zone = flexmock('zone', :zone => 'zone')
+    @session = flexmock('session',
+                        :state => @zone,
+                        :lookandfeel => @lnf,
+                        :flavor => Session::DEFAULT_FLAVOR,
+                        :get_cookie_input => 'get_cookie_input',
+                       )
     @model     = flexmock('model')
     @component = ODDB::View::PopupLogo.new(@model, @session)
   end
@@ -60,27 +74,43 @@ end
 
 class TestLogo < Test::Unit::TestCase
   include FlexMock::TestCase
-  def setup
+    def test_to_html
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => nil,
                         :resource   => 'resource'
                        )
-    @session = flexmock('session', :lookandfeel => @lnf)
+    @session = flexmock('session',
+                        :lookandfeel => @lnf,
+                        :flavor => Session::DEFAULT_FLAVOR,
+                        :get_cookie_input => nil,
+                       )
     @model   = flexmock('model')
     @logo    = ODDB::View::Logo.new(@model, @session)
-  end
-  def test_to_html
     context = flexmock('context')
     assert_equal('&nbsp;', @logo.to_html(context))
   end
   def test_to_html__enabled
-    flexmock(@lnf, 
-             :enabled?   => true,
-             :_event_url => '_event_url'
-            )
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :enabled?   => true,
+                        :resource   => 'resource',
+                        :resource_localized   => 'resource_localized',
+                        :_event_url   => '_event_url',
+                       )
+    @zone = flexmock('zone', :zone => 'zone')
+    @session = flexmock('session',
+                        :state => @zone,
+                        :lookandfeel => @lnf,
+                        :flavor => Session::DEFAULT_FLAVOR,
+                        :get_cookie_input => nil,
+                       )
+    @model   = flexmock('model')
+    @logo    = ODDB::View::Logo.new(@model, @session)
     context = flexmock('context', :a => 'a')
+    assert_equal('a', context.a)
     assert_equal('a', @logo.to_html(context))
   end
 end
