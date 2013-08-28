@@ -45,7 +45,7 @@ module ODDB
         :article_size  => 'size',
         :article_dose  => 'dose'
       }]
-      assert_equal(expected, @observer.article_codes)
+      assert_equal(expected, @observer.registrations)
     end
     def test_empty
       assert(@observer.empty?)
