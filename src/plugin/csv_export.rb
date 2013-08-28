@@ -25,7 +25,7 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
-      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE', :compression => 'zip'}
+      @options = { :iconv => 'UTF-8', :compression => 'zip'}
       recipients.concat self.class::ODDB_RECIPIENTS
       _export_drugs 'oddb', [ :rectype, :iksnr, :ikscd, :ikskey, :barcode,
         :bsv_dossier, :pharmacode, :name_base, :galenic_form,
@@ -152,7 +152,7 @@ module ODDB
       raise
     end
     def export_index_therapeuticus
-      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE' }
+      @options = { :iconv => 'UTF-8' }
       recipients.concat self.class::ODDB_RECIPIENTS
       ids = @app.indices_therapeutici.sort.collect { |code, idx| idx.odba_id }
       files = []
