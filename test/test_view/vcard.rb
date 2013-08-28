@@ -16,11 +16,14 @@ class TestVCard < Test::Unit::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', :lookandfeel => @lnf)
+    @fax       = flexmock('fax', :inject =>'inject')
+    @fon       = flexmock('fon', :inject =>'inject')
     address = flexmock('addresses', 
-                       :fon => 'fon',
-                       :fax => 'fax',
+                       :fon    =>  [@fon],
+                       :fax    =>  [@fax],
                        :plz => 'plz',
                        :street => 'street',
+                       :type   => 'type',
                        :number => 'number',
                        :city   => 'city'
                       )

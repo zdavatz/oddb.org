@@ -10,6 +10,9 @@ require 'view/resulttemplate'
 require 'view/notify_confirm'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     Copyright::ODDB_VERSION = 'version' 
 
@@ -25,7 +28,9 @@ class TestNotifyConfirmComposite < Test::Unit::TestCase
                          )
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
-                          :zone => 'zone'
+                          :event       => 'event',
+                          :flavor      => Session::DEFAULT_FLAVOR,
+                          :zone        =>  'zone',
                          )
     item       = flexmock('item', :name => 'name')
     @model     = flexmock('model', 
@@ -46,17 +51,30 @@ end
 class TestNotifyConfirm < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @zones = flexmock('zones',
+                      :sort_by => [],
+                      )
+    @navigation = flexmock('navigation',
+                            :sort_by => [],
+                            :each_with_index => 'each_with_index',
+                            :empty? => false,
+                            )
+    @zone_navigation = flexmock('zone_navigation',
+                                :sort_by => [],
+                                :each_with_index => 'each_with_index',
+                                :empty? => false,
+                          )
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :enabled?   => nil,
                         :attributes => {},
                         :resource   => 'resource',
-                        :zones      => 'zones',
+                        :zones      => @zones,
                         :_event_url => '_event_url',
                         :disabled?  => nil,
                         :base_url   => 'base_url',
-                        :navigation => 'navigation',
-                        :zone_navigation => 'zone_navigation',
+                        :navigation => @navigation,
+                        :zone_navigation => @zone_navigation,
                         :direct_event    => 'direct_event'
                        )
     user     = flexmock('user', :valid? => nil)
@@ -65,8 +83,11 @@ class TestNotifyConfirm < Test::Unit::TestCase
                         :lookandfeel => @lnf,
                         :user    => user,
                         :sponsor => sponsor,
+                        :event   => 'event',
                         :zone    => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :flavor      => Session::DEFAULT_FLAVOR,
+                        :get_cookie_input => 'get_cookie_input',
+                        :persistent_user_input => 'persistent_user_input',
                        )
     item     = flexmock('item', :name => 'name')
     @model   = flexmock('model', 

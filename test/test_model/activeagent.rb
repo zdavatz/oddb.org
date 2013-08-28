@@ -76,7 +76,7 @@ class TestActiveAgent < Test::Unit::TestCase
     @agent.substance = @substance
     @agent.dose = ODDB::Dose.new 100, 'mg'
 		@app = StubActiveAgentApp.new
-		@substance = StubActiveAgentSubstance.new(@substance_name)
+    @substance = StubActiveAgentSubstance.new(@substance_name)
 		@agent.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		@sequence = StubActiveAgentSequence.new
 		@sequence.pointer = ODDB::Persistence::Pointer.new(:sequence, 1)
@@ -85,6 +85,10 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
 	def test_init
 		assert_equal(@substance, @agent.substance)
+    pp 11
+    pp @sequence
+    pp @agent.substance.sequence
+    pp @agent.substance
 		assert_equal(@sequence, @agent.substance.sequence)
 	end
 	def test_equal

@@ -27,11 +27,15 @@ module ODDB
                              :error?      => nil
                             )
         @parent    = flexmock('parent')
+        @fax       = flexmock('fax', :join =>'join')
+        @fon       = flexmock('fon', :join =>'join')
         flexmock(@parent, :resolve => @parent)
         pointer   = flexmock('pointer', :parent => @parent)
         @model    = flexmock('model', 
                              :pointer => pointer,
-                             :name    => 'name'
+                             :fon    =>  @fon,
+                             :fax    =>  @fax,
+                             :name    => 'name',
                             )
         @form     = ODDB::View::SuggestAddressForm.new(@model, @session)
       end
@@ -61,8 +65,12 @@ module ODDB
         @parent    = flexmock('parent', :fullname => 'fullname')
         flexmock(@parent, :resolve => @parent)
         pointer    = flexmock('pointer', :parent => @parent)
+        @fax       = flexmock('fax', :join =>'join')
+        @fon       = flexmock('fon', :join =>'join')
         @model     = flexmock('model', 
                               :pointer => pointer,
+                              :fon    =>  @fon,
+                              :fax    =>  @fax,
                               :name    => 'name'
                              )
         @composite = ODDB::View::SuggestAddressComposite.new(@model, @session)

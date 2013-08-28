@@ -39,7 +39,9 @@ class TestDataFormat < Test::Unit::TestCase
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
-                        :_event_url => '_event_url'
+                        :enabled?   => true,
+                        :disabled?  => false,
+                       :_event_url => '_event_url',
                        )
     @session = flexmock('session', :lookandfeel => @lnf)
     @model   = flexmock('model')
@@ -49,10 +51,10 @@ class TestDataFormat < Test::Unit::TestCase
     assert_equal('111 <br>text <br>text', @format.breakline('111 text text', 0))
   end
   def test_company_name
-    company = flexmock('company', :name => 'name')
+    company = flexmock('company', :name => 'name', :powerlink => 'powerlink', :pointer => 'pointer')
     flexmock(@model, :company => company)
     flexmock(@lnf, :enabled? => nil)
-    assert_kind_of(HtmlGrid::Value, @format.company_name(@model, @session))
+    assert_kind_of(HtmlGrid::PopupLink, @format.company_name(@model, @session))
   end
   def test_company_name__powerlink
     company = flexmock('company', 
@@ -68,6 +70,7 @@ class TestDataFormat < Test::Unit::TestCase
     method  = flexmock('method', :arity => 1)
     company = flexmock('company', 
                        :name    => 'name',
+                       :powerlink => 'powerlink',
                        :listed? => true,
                        :method  => method,
                        :pointer => 'pointer'
@@ -78,7 +81,7 @@ class TestDataFormat < Test::Unit::TestCase
       l.should_receive(:enabled?).with(:companylist).and_return(true)
       l.should_receive(:language).and_return('language')
     end
-    assert_kind_of(HtmlGrid::Value, @format.company_name(@model, @session))
+    assert_kind_of(HtmlGrid::PopupLink, @format.company_name(@model, @session))
   end
   def test_most_precise_dose
     dose = flexmock('dose', 
@@ -220,7 +223,7 @@ class TestDataFormat < Test::Unit::TestCase
              :format_price => 'format_price',
              :enabled?     => nil
             )
-    assert_kind_of(HtmlGrid::Span, @format.instance_eval('formatted_price("key", @model)'))
+    assert_kind_of(HtmlGrid::PopupLink, @format.instance_eval('formatted_price("key", @model)'))
   end
   def test_formatted_price__price_history
     # This is a testcase for a private method
@@ -253,7 +256,9 @@ class TestDataFormat < Test::Unit::TestCase
     # This is a testcase for a private method
     flexmock(@model, :key => 0)
     flexmock(@lnf, :disabled? => true)
-    assert_equal('lookup', @format.instance_eval('formatted_price("key", @model)'))
+    value = @format.instance_eval('formatted_price("key", @model)')
+    assert_kind_of(HtmlGrid::PopupLink, value)
+    assert_equal('http://wiki.oddb.org/wiki.php?pagename=lookup', value.attributes['href'])
   end
   def test_price
     flexmock(@model, :price => 1.23)

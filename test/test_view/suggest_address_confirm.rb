@@ -20,8 +20,17 @@ class TestAddressSent < Test::Unit::TestCase
                           :attributes => {},
                           :_event_url => '_event_url'
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
-    pointer    = flexmock('pointer', :parent => 'parent')
+    @session   = flexmock('session', 
+                          :app => 'app',
+                          :lookandfeel => @lnf,
+                         )
+    @resolve   = flexmock('resolve', 
+                          :ean13 => 'ean13',
+                         )
+    @parent    = flexmock('parent', 
+                          :resolve => @resolve,
+                         )
+    pointer    = flexmock('pointer', :parent => @parent)
     @model     = flexmock('model', 
                           :fon   => ['fon'],
                           :fax   => ['fax'],

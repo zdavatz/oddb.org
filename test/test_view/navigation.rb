@@ -14,9 +14,14 @@ module ODDB
 class TestNavigation < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @navigation = flexmock('navigation',
+                            :each_with_index => 'each_with_index',
+                            :sort_by => [],
+                            :empty? => false,
+                            )
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
-                          :navigation => 'navigation',
+                          :navigation => @navigation,
                           :attributes => {},
                           :direct_event => 'direct_event',
                           :_event_url => '_event_url'
@@ -36,25 +41,37 @@ end
 
 class TestZoneNavigation < Test::Unit::TestCase
   include FlexMock::TestCase
-  def setup
+  def test_build_navigation
+    @zone_navigation = flexmock('zone_navigation',
+                                :sort_by => ['zone_navigation'],
+                                :each_with_index => 'each_with_index',
+                                :empty? => false,
+                          )
     @lnf       = flexmock('lookandfeel', 
                           :lookup => 'lookup',
                           :attributes   => {},
                           :direct_event => 'direct_event',
                           :_event_url   => '_event_url',
-                          :zone_navigation => 'zone_navigation'
+                          :zone_navigation => @zone_navigation,
                          )
     @session   = flexmock('session', :lookandfeel => @lnf)
     @model     = flexmock('model')
     @composite = ODDB::View::ZoneNavigation.new(@model, @session)
-  end
-  def test_build_navigation
     expected = ["zone_navigation"]
     assert_equal(expected, @composite.build_navigation)
   end
   def test_build_navigation__else
     state = flexmock('state', :direct_event => 'direct_event')
-    flexmock(@lnf, :zone_navigation => [state])
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup => 'lookup',
+                          :attributes   => {},
+                          :direct_event => 'direct_event',
+                          :_event_url   => '_event_url',
+                          :zone_navigation => [state],
+                         )
+    @session   = flexmock('session', :lookandfeel => @lnf)
+    @model     = flexmock('model')
+    @composite = ODDB::View::ZoneNavigation.new(@model, @session)
     expected = [state]
     assert_equal(expected, @composite.build_navigation)
   end

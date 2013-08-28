@@ -23,7 +23,8 @@ class TestExceptionComposite < Test::Unit::TestCase
                          )
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
-                          :zone => 'zone'
+                          :event => 'event',
+                          :zone => 'zone',
                          )
     @model     = flexmock('model', :message => 'message')
     @composite = ODDB::View::ExceptionComposite.new(@model, @session)
