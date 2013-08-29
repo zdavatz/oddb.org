@@ -9,6 +9,9 @@ require 'flexmock'
 require 'view/confirm'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
   Copyright::ODDB_VERSION = 'version'
 class TestConfirmComposite < Test::Unit::TestCase
@@ -27,23 +30,37 @@ end
 class TestConfirm < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @zones    = flexmock('zones',
+                         :sort_by => [],
+                         )
+    @navigation    = flexmock('navigation',
+                         :sort_by => [],
+                         :each_with_index => 'each_with_index',
+                         )
+    @zone_navigation    = flexmock('zone_navigation', 
+                                   :sort_by => [],
+                                   :empty? => true,
+                                   )
     @lnf      = flexmock('lookandfeel', 
                          :lookup     => 'lookup',
                          :enabled?   => nil,
                          :attributes => {},
                          :resource   => 'resource',
-                         :zones      => 'zones',
+                         :zones      => @zones,
                          :disabled?  => nil,
                          :_event_url => '_event_url',
-                         :navigation => 'navigation',
-                         :zone_navigation => 'zone_navigation',
-                         :direct_event => 'direct_event'
+                         :navigation => @navigation,
+                         :zone_navigation => @zone_navigation,
+                         :direct_event => 'direct_event',
                         )
     user      = flexmock('user', :valid? => nil)
+    @logo = flexmock('session', )
     @session  = flexmock('session', 
                          :lookandfeel => @lnf,
                          :user    => user,
-                         :sponsor => user
+                         :sponsor => user,
+                         :flavor  => 'default',
+                         :logo    => @logo,
                         )
     @model    = flexmock('model')
     @template = ODDB::View::Confirm.new(@model, @session)

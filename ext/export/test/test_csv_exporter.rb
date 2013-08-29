@@ -14,6 +14,7 @@ require 'model/doctor'
 require 'stub/odba'
 require 'model/limitationtext'
 require 'flexmock'
+require 'tempfile'
 
 module ODDB
 	module OdbaExporter
@@ -28,7 +29,7 @@ module ODDB
 				@addr = Address2.new
 				@addr.address = "Foobodenstrasse 1"
 				@addr.type = 'at_work'
-				@addr.location = "1234 Neuch?tel"
+				@addr.location = "1234 Neuchâtel"
 				@addr.canton = 'NE'
 				@addr.fon = ['fon1', 'fon2']
 				@addr.fax = []
@@ -40,7 +41,7 @@ module ODDB
 				@doc.name="Dami"
 				@doc.email="amig@amig.ch"
 				@doc.ean13="7601000616715"
-				@doc.language="franz\366sisch"
+				@doc.language="französisch"
 				@doc.firstname="Fabrice"
 				@doc.praxis=false
 				@doc.specialities = ['Kardiologie', 'Psychokardiologie']
@@ -74,30 +75,29 @@ module ODDB
 			end
 			def test_dump_1
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;\"\";\"\";Foobodenstrasse 1;1234;Neuch?tel;NE;fon1,fon2;\"\";amig@amig.ch;franz\366sisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;\"\";\"\";Foobodenstrasse 1;1234;Neuchâtel;NE;fon1,fon2;\"\";amig@amig.ch;französisch;Kardiologie,Psychokardiologie
 				CSV
-				fh = ''
+				fh = Tempfile.new('foo')
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
-				assert_equal(expected, fh)
+        assert_equal(expected, IO.read(fh))
 			end
 			def test_dump_2
 				@addr.type = 'at_praxis'
 				@doc.praxis = true
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;\"\";\"\";Foobodenstrasse 1;1234;Neuch?tel;NE;fon1,fon2;\"\";amig@amig.ch;franz\366sisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;\"\";\"\";Foobodenstrasse 1;1234;Neuchâtel;NE;fon1,fon2;\"\";amig@amig.ch;französisch;Kardiologie,Psychokardiologie
 				CSV
-				fh = ''
+				fh = Tempfile.new('foo')
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
-				assert_equal(expected, fh)
+        assert_equal(expected, IO.read(fh))
 			end
 			def test_dump_3
 				expected = <<-CSV
 8600;00;9300.00;Test de;Teste fr;Fussnote;FRussnote;Taxen;Taxes;Limit;LimitFR;Titel;Titre;C,I;30;n;{teiliste}:{spital},{list1}:{blabla};{list1}:{blabla}
 				CSV
-				fh = ''
+				fh = Tempfile.new('foo')
 				CsvExporter.dump(CsvExporter::ANALYSIS, @pos, fh)
-				#puts fh.inspect
-				assert_equal(expected, fh)
+				assert_equal(expected, IO.read(fh))
 			end
 		end
 	end

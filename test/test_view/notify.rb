@@ -11,6 +11,9 @@ require 'flexmock'
 require 'view/resulttemplate'
 require 'view/notify'
 require 'model/package'
+#require 'remote/migel/model_super'
+#require 'remote/migel/model/group'
+#require 'remote/migel/model/product'
 
 module ODDB
   module View
@@ -28,6 +31,7 @@ class TestNotifyComposite < Test::Unit::TestCase
     state      = flexmock('state', :passed_turing_test => 'passed_turing_test')
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
+                          :event       => 'event',
                           :zone        => 'zone',
                           :state       => state,
                           :error       => 'error',

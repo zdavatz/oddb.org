@@ -50,12 +50,14 @@ class TestTabNavigation < Test::Unit::TestCase
   end
   def test_to_html
     expected = "<TABLE cellspacing=\"0\" class=\"component tabnavigation right\"><TR><TD>lookup</TD><TD>lookup</TD><TD>lookup</TD></TR></TABLE>"
-    assert_equal(expected, @composite.to_html('context'))
+    context  = flexmock('context', :table => 'table')
+    assert_equal(expected, @composite.to_html(context))
   end
   def test_to_html__components_empty
     flexmock(@lnf, :zones => [])
     composite = ODDB::View::TabNavigation.new(@model, @session)
-    assert_equal('&nbsp;', composite.to_html('context'))
+    context  = flexmock('context', :table => 'table')
+    assert_equal('&nbsp;', composite.to_html(context))
   end
 
 end
