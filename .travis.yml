@@ -2,8 +2,8 @@ language: ruby
 rvm:
   - 1.9.3
 script: 
-  - rake docs
-  - ruby test/suite.rb
+  - bundle exec ruby test/suite.rb
+  - bundle exec rake docs
 notifications:
   email:
     recipients:
