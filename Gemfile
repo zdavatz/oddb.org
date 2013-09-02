@@ -66,7 +66,7 @@ gem "rockit"
 # gem "rpdftxt"
 gem "rpdf2txt"
 gem "ruby-ole"
-gem 'rubyzip'
+gem 'rubyzip', '0.9.9' # we cannot use version 1.0.0 as it does not contain zip/zip.rb
 # gem "rwv"
 gem "savon", '0.9.7'
 gem "sbsm"

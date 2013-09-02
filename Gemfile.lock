@@ -124,7 +124,7 @@ GEM
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.14.3)
     ruby-ole (1.2.11.7)
-    rubyzip (1.0.0)
+    rubyzip (0.9.9)
     savon (0.9.7)
       akami (~> 1.0)
       builder (>= 2.1.2)
@@ -221,7 +221,7 @@ DEPENDENCIES
   rockit
   rpdf2txt
   ruby-ole
-  rubyzip
+  rubyzip (= 0.9.9)
   savon (= 0.9.7)
   sbsm
   simplecov
