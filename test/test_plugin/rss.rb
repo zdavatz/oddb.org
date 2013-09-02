@@ -5,7 +5,7 @@
 
 require 'date'
 require 'pathname'
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent

@@ -3,7 +3,7 @@
 # ODDB::TestDosingPlugin -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 
 require 'pathname'
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent

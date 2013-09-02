@@ -47,7 +47,7 @@ gem "needle"
 gem "net-http-digest_auth"
 gem "net-http-persistent"
 gem "nokogiri"
-gem "nori"
+# gem "nori"
 gem "odba"
 gem "oddb2tdat"
 gem "parseexcel"
@@ -66,9 +66,9 @@ gem "rockit"
 # gem "rpdftxt"
 gem "rpdf2txt"
 gem "ruby-ole"
-gem "rubyzip"
+gem 'rubyzip'
 # gem "rwv"
-gem "savon"
+gem "savon", '0.9.7'
 gem "sbsm"
 gem "spreadsheet"
 gem "swissmedic_diff"
@@ -87,8 +87,8 @@ group :development, :test do
   gem 'hoe-travis'
   gem 'racc'
   gem 'travis-lint'
-  gem 'simplecov'
   gem 'test-unit'
+  gem 'simplecov'
   gem 'pry'
   gem 'pry-debugger'
 end

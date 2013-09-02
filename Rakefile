@@ -50,11 +50,13 @@ end
 
 Rake::Task[:docs].overwrite do
   FileUtils.rm_rf('documentation', :verbose => true)
-  system("rdoc --format=darkfish --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
+  system("rdoc --main README.txt --format=darkfish --exclude 'js' --exclude 'Gemfile*' --exclude 'sql.in' --exclude 'csv' --exclude 'bak' --exclude 'coverage' --exclude 'log' --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
 end
 
 Rake::Task[:test].overwrite do
   puts "Instead of calling Rake::Test we call test/suite.rb"
+  cov = File.expand_path(File.join(File.dirname(__FILE__), 'coverage'))
+  FileUtils.rm_rf(cov, :verbose => true)                         
   exit(1) unless system(File.join(File.dirname(__FILE__), 'test', 'suite.rb'))
 end
 

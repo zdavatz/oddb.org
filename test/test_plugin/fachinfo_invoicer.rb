@@ -5,7 +5,7 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 require 'plugin/fachinfo_invoicer'
 require 'model/registration'

@@ -4,7 +4,7 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("..", File.dirname(__FILE__))
-
+require 'pp'
 require 'test/unit'
 require 'flexmock'
 require 'util/ipn'
