@@ -13,7 +13,6 @@ require 'model/galenicform'
 require 'model/indication'
 require 'model/activeagent'
 require 'model/composition'
-require 'mock'
 require 'fileutils'
 
 module ODDB

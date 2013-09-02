@@ -12,7 +12,10 @@ module ODDB
   class TestAnalysisPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
-      @app    = flexmock('app', :create => 'create')
+      @app    = flexmock('app', 
+                         :create => 'create',
+                         :analysis_group => 'analysis_group',
+                        )
       @plugin = ODDB::AnalysisPlugin.new(@app)
     end
     def test_update_group

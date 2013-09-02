@@ -10,7 +10,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'stub/odba'
 require 'test/unit'
 require 'state/global'
-require 'mock'
 require 'util/language'
 require 'sbsm/state'
 require 'flexmock'

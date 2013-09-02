@@ -39,7 +39,7 @@ module ODDB
     def teardown
       File.delete(@latest) if File.exist?(@latest)
       File.delete(@target) if File.exist?(@target)
-      super
+      super # to clean up FlexMock
     end
     def setup_index_page
       page = flexmock 'page'

@@ -14,7 +14,6 @@ require 'model/registration'
 require 'model/substance'
 require 'util/searchterms'
 require 'flexmock'
-require 'mock'
 
 module ODDB
   class SequenceCommon
