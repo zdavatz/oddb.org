@@ -15,8 +15,26 @@ require 'model/company'
 require 'date'
 require 'model/registration'
 
+module ODDB
+  module PersistenceMethods
+    attr_reader :oid
+    def set_oid
+      @oid ||= 'oid'
+    end
+  end
+end
+
 class TestDebitorFacade < Test::Unit::TestCase
   include FlexMock::TestCase
+  
+  # must setup a dummy id_dsa before running setup the first time
+  home_id_dsa = File.join(File.expand_path('~'), '.ssh', 'id_dsa')
+  unless File.exists?(home_id_dsa)
+    cmd = "ssh-keygen -f #{home_id_dsa} -q -t dsa -N '' "
+    puts cmd
+    system(cmd)
+  end
+
   def setup
     @yus_model = flexmock('yus_model')
     @app       = flexmock('app', 
@@ -26,6 +44,7 @@ class TestDebitorFacade < Test::Unit::TestCase
                          )
     @facade    = ODDB::YdimPlugin::DebitorFacade.new('email', @app)
   end
+  
   def test_ydim_id
     assert_equal('id', @facade.ydim_id='id')
     assert_equal('yus_get_preference', @facade.ydim_id)
@@ -336,8 +355,8 @@ module ODDB
                       :text => 'text',
                       :time => Time.local(2011,2,3)
                      )
-      expected = /text\nname\n02.01.2010 - 01.02.2011\n123 Tage\nDiese Rechnungsposition wird in der n.*chsten Jahresrechnung _nicht_ vorkommen.\nDie n.*chste Jahresrechnung wird am 01.02.2010 versandt.\n/
-      assert_match(expected, @plugin.item_text(item))
+      expected = /text\nname\n02.01.2010 - 01.02.2011\n123 Tage\nDiese Rechnungsposition wird in der nächsten Jahresrechnung _nicht_ vorkommen.\nDie nächste Jahresrechnung wird am 01.02.2010 versandt.\n/
+      assert_match(expected, @plugin.item_text(item).force_encoding('utf-8'))
     end
     def test_sort_items
       data = {
@@ -461,10 +480,10 @@ module ODDB
       item       = flexmock('item',
                             :time      => Time.local(2011,2,3),
                             :text      => 'text',
-                            :data      => 'data',
+                            :data      => {:name => 'name'},
                             :type      => 'type',
                             :quantity  => 1.0,
-                            :ydim_data => 'ydim_data',
+                            :ydim_data => {:name => 'name'},
                             :item_pointer => pointer
                            ) 
       yus_model  = flexmock('yus_model')
@@ -490,10 +509,10 @@ module ODDB
       item       = flexmock('item',
                             :time      => Time.local(2011,2,3),
                             :text      => 'text',
-                            :data      => 'data',
+                            :data      => {:name => 'name'},
                             :type      => 'type',
                             :quantity  => 1.0,
-                            :ydim_data => 'ydim_data',
+                            :ydim_data => {:name => 'name'},
                             :item_pointer => pointer
                            ) 
       invoice    = flexmock('invoice', 
