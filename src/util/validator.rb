@@ -575,7 +575,6 @@ module ODDB
         value = @@utf8.iconv(value)
 			  result = @@utf8.iconv(result)
 			end
-			result = u result
 			if(result.length > 2)
 				result
 			else
