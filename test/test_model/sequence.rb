@@ -108,14 +108,14 @@ class TestSequence < Test::Unit::TestCase
     attr_accessor :substance
   end
   def setup
+    @active_registration = ODDB::Registration.new(1)
     @seq = ODDB::Sequence.new(1)
     @seq.pointer = ODDB::Persistence::Pointer.new([:sequence, 1])
   end
   def test_active
-    assert_nil @seq.active?
-    @seq.registration = flexmock :active? => false
+    @seq.registration = flexmock("ODDB::Registration", :active? => false)
     assert_equal false, @seq.active?
-    @seq.registration = flexmock :active? => true
+    @seq.registration = @active_registration
     assert_equal true, @seq.active?
     @seq.inactive_date = @@two_years_ago
     assert_equal false, @seq.active?
@@ -133,7 +133,7 @@ class TestSequence < Test::Unit::TestCase
     pac2 = flexmock :active? => false
     @seq.packages.update '001' => pac1, '002' => pac2
     assert_equal [], @seq.active_packages
-    @seq.registration = flexmock :active? => true
+    @seq.registration = @active_registration
     assert_equal [pac1], @seq.active_packages
   end
   def test_active_package_count
@@ -141,14 +141,14 @@ class TestSequence < Test::Unit::TestCase
     pac2 = flexmock :active? => false
     @seq.packages.update '001' => pac1, '002' => pac2
     assert_equal 0, @seq.active_package_count
-    @seq.registration = flexmock :active? => true
+    @seq.registration = @active_registration
     assert_equal 1, @seq.active_package_count
   end
   def test_active_patinfo
     assert_nil @seq.active_patinfo
     @seq.pdf_patinfo = 'path-to.pdf'
     assert_nil @seq.active_patinfo
-    @seq.registration = flexmock :active? => true
+    @seq.registration = @active_registration
     assert_equal 'path-to.pdf', @seq.active_patinfo
     @seq.deactivate_patinfo = @@today
     assert_equal false, @seq.active_patinfo
@@ -260,7 +260,7 @@ class TestSequence < Test::Unit::TestCase
     assert_equal [seq1], @seq.comparables
   end
   def test_comparables1
-    reg = FlexMock.new
+    reg = flexmock
     reg.should_receive(:active?).and_return { true }
     reg.should_receive(:may_violate_patent?).and_return { false }
     @seq.registration = reg
@@ -281,7 +281,7 @@ class TestSequence < Test::Unit::TestCase
     assert_equal([comparable], @seq.comparables)
   end
   def test_comparables2
-    reg = FlexMock.new
+    reg = flexmock
     reg.should_receive(:active?).and_return { true }
     reg.should_receive(:may_violate_patent?).and_return { false }
     @seq.registration = reg
@@ -308,7 +308,7 @@ class TestSequence < Test::Unit::TestCase
     assert_equal([], @seq.comparables)
   end
   def test_comparables3
-    reg = FlexMock.new
+    reg = flexmock
     reg.should_receive(:active?).and_return { true }
     reg.should_receive(:may_violate_patent?).and_return { false }
     @seq.registration = reg
@@ -485,22 +485,19 @@ class TestSequence < Test::Unit::TestCase
     assert_equal 'text', @seq.limitation_text
   end
   def test_limitation_text_count
-    mock1 = Mock.new("packet_mock1")
-    mock2 = Mock.new("packet_mock2")
-    mock3 = Mock.new("packet_mock3")
+    mock1 = flexmock("packet_mock1")
+    mock2 = flexmock("packet_mock2")
+    mock3 = flexmock("packet_mock3")
     hash = {
       :mock1 => mock1,
       :mock2 => mock2,
       :mock3 => mock3,
     }
     @seq.packages = hash
-    mock1.__next(:limitation_text) { "entry"}
-    mock2.__next(:limitation_text) {}
-    mock3.__next(:limitation_text) {}
+    mock1.should_receive(:limitation_text).once.with().and_return('entry')
+    mock2.should_receive(:limitation_text).once.with()
+    mock3.should_receive(:limitation_text).once.with()
     text_count = @seq.limitation_text_count
-    mock1.__verify
-    mock2.__verify
-    mock3.__verify
     assert_equal(1, text_count)
   end
   def test_localized_name
