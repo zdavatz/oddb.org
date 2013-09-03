@@ -428,7 +428,7 @@ module ODDB
       flexstub(File).should_receive(:read)
 
       # test
-      flexstub(LogFile).should_receive(:filename).once.with('key', @@today)
+      flexstub(LogFile).should_receive(:filename).once.with('key', Date.new(2013, 8, 3))
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_stats__after_8th
@@ -440,7 +440,7 @@ module ODDB
       flexstub(File).should_receive(:read)
 
       # test
-      flexstub(LogFile).should_receive(:filename).once.with('key', @@today)
+      flexstub(LogFile).should_receive(:filename).once.with('key', Date.new(2013, 8, 3))
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_swissmedic_notifications

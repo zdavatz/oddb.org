@@ -47,7 +47,7 @@ class TestLogFile < Test::Unit::TestCase
 			expected = "2003-08-21 19:32:10 CEST;foobar\n"
 			assert_equal(expected, File.read(file))
 			ODDB::LogFile.append(:foo, ';barbaz', Time.utc(2003,8,21,10,02,25))
-			expected << "2003-08-21 10:02:25 GMT;barbaz\n"
+			expected << "2003-08-21 10:02:25 UTC;barbaz\n"
 			assert_equal(expected, File.read(file))
 		ensure
 			if(File.exist?(file))
