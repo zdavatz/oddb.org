@@ -27,11 +27,18 @@ module ODDB
 class TestRegistration < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup 
-    @app     = flexmock('app')
+    @pointer = flexmock('pointer', :+ => @pointer)
+    @registration= flexmock('registration', 
+                            :pointer => @pointer,
+                            :company => 'company',
+                            :iksnr => 'iksnr',
+                            )
+    @app     = flexmock('app', :registration => @registration)
     @lnf     = flexmock('lookandfeel', :event_url => 'event_url')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
-                        :app         => @app
+                        :app         => @app,
+                        :persistent_user_input => 'persistent_user_input',
                        )
     @model   = flexmock('model', 
                         :fachinfo => 'fachinfo',
@@ -297,12 +304,19 @@ end
 class TestCompanyRegistration < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app')
+    @pointer = flexmock('pointer', :+ => @pointer)
+    @registration= flexmock('registration', 
+                            :pointer => @pointer,
+                            :company => 'company',
+                            :iksnr => 'iksnr',
+                            )
+    @app     = flexmock('app', :registration => @registration)
     @lnf     = flexmock('lookandfeel', :event_url => 'event_url')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :app         => @app,
-                        :allowed?    => false
+                        :allowed?    => true,
+                        :persistent_user_input => 'persistent_user_input',
                        )
     @model   = flexmock('model', 
                         :company => 'company',
@@ -311,7 +325,7 @@ class TestCompanyRegistration < Test::Unit::TestCase
     @reg = ODDB::State::Admin::CompanyRegistration.new(@session, @model)
   end
   def test_init
-    assert_equal(ODDB::View::Admin::Registration, @reg.init)
+    assert_equal(nil, @reg.init)
   end
   def test_allowed
     flexmock(@session, :allowed? => true)

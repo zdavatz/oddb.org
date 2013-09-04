@@ -7,6 +7,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
+require 'model/galenicgroup'
 require 'state/admin/galenicgroup'
 require 'util/language'
 require 'state/admin/root'
@@ -55,6 +56,9 @@ class TestGalenicGroup < Test::Unit::TestCase
       @odba_id = 123
     end
 		include Language
+    def galenic_group
+      self
+    end
 	end
 	class StubApp; end
 	class StubResolved; end
@@ -96,7 +100,7 @@ class TestGalenicGroup < Test::Unit::TestCase
   end
   def test_update
     flexmock(@lnf, :languages => ['language'])
-    flexmock(@session, :user_input => 'user_input')
+    flexmock(@session, :user_input => ['user_input'])
     flexmock(@state, :unique_email => 'unique_email')
     flexmock(@app, :update => 'update')
     assert_equal(@state, @state.update)
