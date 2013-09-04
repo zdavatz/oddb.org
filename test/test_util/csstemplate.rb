@@ -41,11 +41,6 @@ class TestCssTemplate < Test::Unit::TestCase
 	def teardown
 		File.delete(TEST_CSS_DIRECTORY + '/oddb.css') if File.exist?(TEST_CSS_DIRECTORY + '/oddb.css')
 	end
-	def test_output_path
-		result = ODDB::CssTemplate.output_path(:foo)
-		expected = File.expand_path('../data/css/foo/oddb.css', File.dirname(__FILE__))
-		assert_equal(expected, result)
-	end
 	def test_resolve
 		var = 'bar_bg'
 		result = ODDB::CssTemplate.resolve(var, @foo)

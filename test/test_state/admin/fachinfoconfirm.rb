@@ -263,9 +263,10 @@ class TestFachinfoConfirm < Test::Unit::TestCase
                         :allowed? => nil,
                         :lookandfeel => @lnf
                        )
+    @inject  = flexmock('inject', :each => [])
     @model   = flexmock('model', 
                         :registration => @registration,
-                        :inject => 'inject'
+                        :inject => @inject,
                        )
     @state   = ODDB::State::Admin::FachinfoConfirm.new(@session, @model)
   end

@@ -5,7 +5,7 @@
 # OneDirSuite -- oddb -- 20.10.2003 -- mhuggler@ywesee.com
 
 require 'find'
-require 'test-unit'
+require 'test/unit'
 
 $: << here = File.expand_path(File.dirname(__FILE__))
 

@@ -8,7 +8,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'plugin/hayes'
 require 'util/html_parser'
-require 'mock'
 
 module ODDB
 	module Interaction

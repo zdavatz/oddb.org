@@ -14,7 +14,18 @@ require 'model/commercial_form'
 module ODDB
   module State
     module Admin
-
+  class StubPointer
+    attr_writer :model
+    def resolve(app)
+      @model ||= StubResolved.new
+    end
+    def +(other)
+      self
+    end
+    def skeleton
+      'skeleton'
+    end
+  end
 class TestPackage < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
@@ -25,6 +36,7 @@ class TestPackage < Test::Unit::TestCase
     @session = flexmock('session', :app => @app)
     @model   = flexmock('model')
     @state   = ODDB::State::Admin::Package.new(@session, @model)
+    @ikscode = flexmock('ikscode', :read => 'read', :empty? => true, :to_f => 0.1)
   end
   def test_check_model
     flexmock(@model, :pointer => 'pointer')
@@ -78,7 +90,8 @@ class TestPackage < Test::Unit::TestCase
     sequence = flexmock('sequence', :pointer => pointer)
     flexmock(@model, 
              :parent  => sequence,
-             :pointer => pointer
+             :pointer => pointer,
+             :odba_delete => 'odba_delete',
             )
     assert_kind_of(ODDB::State::Companies::Company, @state.delete)
   end
@@ -171,24 +184,27 @@ class TestPackage < Test::Unit::TestCase
             ) 
     @app = flexmock('app', :update => @model)
     flexmock(@session, 
-             :user_input => 'ikscode',
+             :user_input => @ikscode,
              :app        => @app,
              :user       => 'user'
             )
     assert_kind_of(ODDB::State::Admin::Package, @state.update)
   end
   def test_update__price
-    parent  = flexmock('parent', :package => nil)
+    pointer = StubPointer.new
+    parent  = flexmock('parent', :package => pointer)
     package = flexmock('package', :pointer => 'pointer')
     generic_group = flexmock('generic_group', 
                              :pointer  => 'pointer',
                              :packages => [package]
                             )
+    company = flexmock('company', :invoiceable? => false, :pointer => pointer)
     flexmock(@model, 
              :parent        => parent,
              :ikscd         => 'ikscd',
              :ikscd=        => nil,
              :pointer       => 'pointer',
+             :company       => company,
              :galenic_form  => 'galenic_form',
              :generic_group => generic_group
             ) 
@@ -215,10 +231,11 @@ class TestPackage < Test::Unit::TestCase
 			:lppv,
 		]
     user_input = {:price_public => 'price_public'}
+    @mock_input = flexmock('mock_input', :read => 'read')
     flexmock(@session) do |s|
       s.should_receive(:user_input).with(:ikscd).and_return('ikscode')
       s.should_receive(:user_input).with(*keys).and_return(user_input)
-      s.should_receive(:user_input).with_any_args.and_return('user_input')
+      s.should_receive(:user_input).with_any_args.and_return(@mock_input)
     end
     assert_kind_of(ODDB::State::Admin::Package, @state.update)
   end
@@ -239,7 +256,7 @@ class TestPackage < Test::Unit::TestCase
             ) 
     @app = flexmock('app', :update => @model)
     flexmock(@session, 
-             :user_input => 'ikscode',
+             :user_input => @ikscode,
              :app        => @app,
              :user       => 'user',
              :create     => generic_group
@@ -267,9 +284,10 @@ class TestPackage < Test::Unit::TestCase
              :user       => 'user',
              :package_by_ikskey => package
             )
+
     flexmock(@session) do |s|
       s.should_receive(:user_input).with(:generic_group).and_return('12345678 12 x')
-      s.should_receive(:user_input).with_any_args.and_return('ikscode')
+      s.should_receive(:user_input).with_any_args.and_return(@ikscode)
     end
     assert_kind_of(ODDB::State::Admin::Package, @state.update)
   end
@@ -281,9 +299,10 @@ class TestPackage < Test::Unit::TestCase
                              :pointer  => 'pointer',
                              :packages => [package]
                             )
+    @ikscode = flexmock('ikscode', :read => 'read', :empty? => true, :to_f => 0.1)
     flexmock(@model, 
              :parent        => parent,
-             :ikscd         => 'ikscd',
+             :ikscd         => @ikscode,
              :ikscd=        => nil,
              :pointer       => 'pointer',
              :galenic_form  => 'galenic_form',
@@ -297,7 +316,7 @@ class TestPackage < Test::Unit::TestCase
                     :create => @model
                    )
     flexmock(@session, 
-             :user_input => 'ikscode',
+             :user_input => @ikscode,
              :app        => @app,
              :user       => 'user'
             )
@@ -409,8 +428,10 @@ end
 class TestCompanyPackage < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    pointer = StubPointer.new
     @session = flexmock('session')
-    @model   = flexmock('model')
+    @company = flexmock('company', :invoiceable? => false, :pointer => pointer)
+    @model   = flexmock('model', :odba_delete => 'odba_delete', :company => @company, :pointer => pointer)
     @state   = ODDB::State::Admin::CompanyPackage.new(@session, @model)
   end
   def test_init
@@ -436,7 +457,7 @@ class TestCompanyPackage < Test::Unit::TestCase
     assert_kind_of(ODDB::State::Admin::SlEntry, @state.new_item)
   end
   def test_update
-    parent  = flexmock('parent', :package => nil)
+    parent  = flexmock('parent', :package => [])
     package = flexmock('package', :pointer => 'pointer')
     generic_group = flexmock('generic_group', 
                              :pointer  => 'pointer',
@@ -451,8 +472,9 @@ class TestCompanyPackage < Test::Unit::TestCase
              :generic_group => generic_group
             ) 
     @app = flexmock('app', :update => @model)
+    ikscode = flexmock('ikscode', :read => 'read', :empty? => false)
     flexmock(@session, 
-             :user_input => 'ikscode',
+             :user_input => ikscode,
              :app        => @app,
              :user       => 'user',
              :allowed? => true

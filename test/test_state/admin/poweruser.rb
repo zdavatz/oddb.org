@@ -41,7 +41,7 @@ class TestPowerUser < Test::Unit::TestCase
     assert(@state.limited?)
   end
   def test_limit_state
-    user = flexmock('user', :allowed? => nil)
+    user = flexmock('user', :allowed? => nil, :valid? => true)
     flexmock(@session, :user => user)
     assert_kind_of(ODDB::State::User::InvalidUser, @state.limit_state)
   end

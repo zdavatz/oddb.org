@@ -6,7 +6,7 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 require 'plugin/doctors'
 require 'tempfile'

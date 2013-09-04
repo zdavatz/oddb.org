@@ -87,7 +87,8 @@ class TestStubCheckout < Test::Unit::TestCase
   def test_create_user
     user = flexmock('user', 
                     :set_preferences => 'set_preferences',
-                    :allowed?        => nil
+                    :allowed?        => nil,
+                    :valid?          => true,
                    )
     flexmock(@app, :yus_create_user => user)
     flexmock(@session, 
@@ -154,7 +155,8 @@ class TestStubCheckout < Test::Unit::TestCase
     user = flexmock('user', 
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
-                    :email           => 'email'
+                    :email           => 'email',
+                    :valid?          => true,
                    )
     abstract = flexmock('abstract', 
                         :text     => 'text',
@@ -182,7 +184,8 @@ class TestStubCheckout < Test::Unit::TestCase
     user = flexmock('user', 
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
-                    :email           => 'email'
+                    :valid?          => true,
+                    :email           => 'email',
                    )
     flexmock(@session, 
              :input_keys  => [:email, :pass],
@@ -217,6 +220,7 @@ class TestStubCheckout < Test::Unit::TestCase
     user = flexmock('user', 
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
+                    :valid?          => true,
                     :email           => 'email'
                    )
     flexmock(@session, 

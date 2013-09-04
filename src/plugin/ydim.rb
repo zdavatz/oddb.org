@@ -205,8 +205,8 @@ module ODDB
           if last_date > (first_date >> 12)
             annual_date = last_date << 12
             lines.push <<-EOS
-Diese Rechnungsposition wird in der n\344chsten Jahresrechnung _nicht_ vorkommen.
-Die n\344chste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versandt.
+Diese Rechnungsposition wird in der nächsten Jahresrechnung _nicht_ vorkommen.
+Die nächste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versandt.
             EOS
           end
 				end

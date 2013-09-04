@@ -106,7 +106,7 @@ class TestAddressSuggestion < Test::Unit::TestCase
              :user       => 'user'
             )
     flexmock(@model, :pointer => 'pointer')
-    parent = flexmock('parent', :pointer => 'pointer')
+    parent = flexmock('parent', :pointer => 'pointer', :addresses => [address])
     active_address = flexmock('active_address', :email_suggestion= => nil)
     @state.instance_eval do 
       @parent = parent

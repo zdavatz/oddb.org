@@ -67,7 +67,8 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		assert_equal(false, result)
 	end
 	def test_clear_string
-		result = @writer2.clear_string("=foo\2402OH4-OH\240bar")
+    # test with non breaking white char in unicode
+		result = @writer2.clear_string("=foo\u00A0bar")
 		assert_equal("foobar", result)
 	end
 	def test_create_update_objects

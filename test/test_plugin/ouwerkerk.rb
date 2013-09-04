@@ -13,7 +13,6 @@ require 'model/galenicform'
 require 'model/indication'
 require 'model/activeagent'
 require 'model/composition'
-require 'mock'
 require 'fileutils'
 
 module ODDB
@@ -88,6 +87,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
       FileUtils.rm_f(@plugin.file_path)
 		end
 		ODBA.storage = nil
+    super # to clean up FlexMock
 	end
 	def test_log_info
 		log = StubLogGroup.new
