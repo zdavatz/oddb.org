@@ -6,38 +6,65 @@
 # yusd and meddatad is needed to run.
 $: << File.dirname(__FILE__)
 
+
+# Some unit tests of ODDB work fine when called as individual files, but fail miserably
+# when all other unit tests are included. 
+# To work aroung this bug, we run some files separately 
+
+module IsolatedTests
+  @@directories =  Hash.new
+
+  def IsolatedTests.run_tests(files)
+    files.each { 
+      |path, res|
+      puts "\n#{Time.now}: Now testing #{path} #{res}\n"
+      base = File.basename(path).sub('.rb', '')
+      group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
+      group_name += ':'+base unless base.eql?('suite')
+      cmd = "ruby -e\"require 'simplecov'; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      result = system(cmd) 
+      @@directories[path] = result
+    }
+  end
+  def IsolatedTests.show_results
+    okay = true
+    @@directories.each{ 
+      |path,res|
+        puts "#{path} returned #{res}"
+        okay = false unless res
+    }
+    puts "Overall result is #{okay}"
+    okay
+  end
+
+end
+
 dir = File.expand_path(File.dirname(__FILE__))
+
 # Below test_suites contain tests that call each other. 
 # This can result in a wrong coverage summary as shown in the example of oddbapp.rb
 # Out of this reason we run test_util/suite.rb first - but this may cause other problems. Lets see.
-directories =  Hash.new
-
+suites =  []
   # oe next  creates additional error  Error: test_galenic_form(ODDB::TestGalenicGroup)
-directories["#{dir}/../ext/suite.rb" ] = true
-directories["#{dir}/test_state/suite.rb" ] = true # neither this one
-directories["#{dir}/test_view/suite.rb"] = true # does not crate
-directories["#{dir}/test_command/suite.rb"] = true
-directories["#{dir}/test_remote/suite.rb"] = true
-directories["#{dir}/test_custom/suite.rb"] = true
+suites << "#{dir}/../ext/suite.rb" 
+suites << "#{dir}/test_state/suite.rb"  # neither this one
+suites << "#{dir}/test_view/suite.rb" # does not crate
+suites << "#{dir}/test_command/suite.rb"
+suites << "#{dir}/test_remote/suite.rb"
+suites << "#{dir}/test_custom/suite.rb"
   # test_plugin skips bsv_xml csv_export"
-directories["#{dir}/test_plugin/suite.rb"] = true
+suites << "#{dir}/test_plugin/suite.rb"
   # test_util skips ipn oddbapp session updater
-directories["#{dir}/test_model/suite.rb"] = true 
-directories["#{dir}/test_util/suite.rb"] = true
- 
+suites << "#{dir}/test_model/suite.rb" 
+suites << "#{dir}/test_util/suite.rb"
 
-directories.each { 
-  |path, res|
-  puts "\n#{Time.now}: Now testing #{path} #{res}\n"
-  cmd = "ruby -e\"require 'simplecov'; SimpleCov.command_name '#{File.basename(File.dirname(path), '.rb').sub('test_','')}'; SimpleCov.start; require '#{path}'\""
-  result = system(cmd) 
-  directories[path] = result
-}
-okay = true
-directories.each{ 
-  |path,res|
-    puts "#{path} returned #{res}"
-    okay = false unless res
-}
-puts "Overall result is #{okay}"
-exit(okay ? 0 : 1)
+if $0 == __FILE__
+  puts suites
+  if true
+    IsolatedTests.run_tests(suites)
+    IsolatedTests.show_results
+  else
+#  suites.each{ |suite| require suite }
+#  exit(IsolatedTests.show_results ? 0 : 1)
+  end
+end

@@ -44,6 +44,7 @@ module ODDB
       @sequence.should_receive(:seqnr).and_return('000')
     end
     def teardown
+      super # to clean up FlexMock
       #pass
     end
     def test_update_from_csv_with_invalid_path

@@ -92,7 +92,8 @@ module ODDB
   class TestSwissindexPharmaPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
-      @app = flexmock('app', :update => 'update')
+      @update = flexmock('update', :barcode => 'barcode')
+      @app = flexmock('app', :update => @update)
       @plugin = ODDB::SwissindexPharmaPlugin.new(@app)
       log = flexmock('log', :print => nil)
       flexmock(ODDB::SwissindexPharmaPlugin::Logging) do |logging|
@@ -106,8 +107,11 @@ module ODDB
                          :barcode => 12345,
                          :pointer => 'pointer',
                         )
+      @app = flexmock('app')
+      @plugin = ODDB::SwissindexPharmaPlugin.new(@app)
       flexmock(@app) do |app|
-        app.should_receive(:update).times(2).and_return(package)
+        app.should_receive(:update).with('pointer', {:out_of_trade=>false, :refdata_override=>false}, :refdata).once.and_return(package)
+        app.should_receive(:update).with('pointer', {:out_of_trade=>true}, :refdata).once.and_return(package)
       end
       @plugin.instance_eval('@out_of_trade_false_list = [package]')
       @plugin.instance_eval('@out_of_trade_true_list  = [package]')

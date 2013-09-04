@@ -87,6 +87,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
       FileUtils.rm_f(@plugin.file_path)
 		end
 		ODBA.storage = nil
+    super # to clean up FlexMock
 	end
 	def test_log_info
 		log = StubLogGroup.new

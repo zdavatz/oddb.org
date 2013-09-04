@@ -37,6 +37,7 @@ module ODDB
       @atc.should_receive(:pointer).and_return('atc-pointer')
     end
     def teardown
+      super # to clean up FlexMock
       #pass
     end
     def test_update_ni_id_with_valid_atc

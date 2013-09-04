@@ -45,6 +45,7 @@ module ODDB
           end
         end
       end
+      super # to clean up FlexMock
     end
     def test_report
       @plugin.instance_eval("@report = {'New recall.rss feeds' => 2, 'This month(2) total' => 2}")
