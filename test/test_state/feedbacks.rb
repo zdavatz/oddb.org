@@ -67,12 +67,18 @@ module ODDB
       include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel')
-        @app     = flexmock('app')
+        @app     = flexmock('app', :update => 'update')
+        feedback  = flexmock('feedback', :pointer => 'pointer' )
         @session = flexmock('session', 
                             :app         => @app,
-                            :lookandfeel => @lnf
+                            :language    => 'de',
+                            :lookandfeel => @lnf,
+                            :update_feedback_rss_feed => 'update_feedback_rss_feed',
                            )
-        @model   = flexmock('model')
+        @model   = flexmock('model',
+                            :current_feedback => feedback,
+                            :current_feedback= => 'current_feedback=',
+                           )
         @state = ODDB::State::StubFeedbacks.new(@session, @model)
       end
       def test_init

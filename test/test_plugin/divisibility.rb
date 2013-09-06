@@ -3,7 +3,7 @@
 # ODDB::TestDrugbankPlugin -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
 
 require 'pathname'
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
@@ -44,6 +44,7 @@ module ODDB
       @sequence.should_receive(:seqnr).and_return('000')
     end
     def teardown
+      super # to clean up FlexMock
       #pass
     end
     def test_update_from_csv_with_invalid_path

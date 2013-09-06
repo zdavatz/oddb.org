@@ -24,6 +24,7 @@ module ODDB
     end
     def test_http_body
       response = flexmock('response') do |r|
+        r.should_receive(:[]).with('content-encoding').and_return('utf-8')
         r.should_receive(:is_a?).with(Net::HTTPOK).and_return(true)
         r.should_receive(:body).and_return('body')
       end
@@ -32,6 +33,7 @@ module ODDB
     end
     def test_http_file
       response = flexmock('response') do |r|
+        r.should_receive(:[]).with('content-encoding').and_return('utf-8')
         r.should_receive(:is_a?).with(Net::HTTPOK).and_return(true)
         r.should_receive(:body).and_return('body')
       end
@@ -61,13 +63,15 @@ module ODDB
       end
       def test_body
         flexmock(@response) do |r|
+          r.should_receive(:[]).with('content-encoding').and_return('charset=ascii')
           r.should_receive(:[]).with('Content-Type').and_return('charset=utf-8;')
           r.should_receive(:body).and_return('body')
         end
         assert_equal('body', @wrapper.body)
-      end
+      end 
       def test_body__charset_nil
         flexmock(@response) do |r|
+          r.should_receive(:[]).with('content-encoding').and_return('charset=ascii')
           r.should_receive(:[]).with('Content-Type').and_return('charset=ascii')
           r.should_receive(:body).and_return('body')
         end
@@ -75,6 +79,7 @@ module ODDB
       end
       def test_body__charset_nil_error
         flexmock(@response) do |r|
+          r.should_receive(:[]).with('content-encoding').and_return('charset=ascii')
           r.should_receive(:[]).with('Content-Type').and_return('charset=ascii')
           r.should_receive(:body).and_return('body')
         end
@@ -84,9 +89,10 @@ module ODDB
         assert_equal('body', @wrapper.body)
       end
     end
-  end # HttpSession
+  end  # HttpSession
 
   class TestHttpSession < Test::Unit::TestCase
+    HttpHeader = "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20100101 Firefox/20.0"
     include FlexMock::TestCase
     def setup
       @http        = flexmock('http')
@@ -98,9 +104,10 @@ module ODDB
       expected = [
         ["Host", @http_server],
         ["User-Agent",
-        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"],
+        HttpHeader],
         ["Accept",
         "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"],
+        ["Accept-Encoding", "gzip, deflate"],
         ["Accept-Language", "de-ch,en-us;q=0.7,en;q=0.3"],
         ["Accept-Charset", "UTF-8"],
         ["Keep-Alive", "300"],
@@ -112,14 +119,16 @@ module ODDB
       expected = [
         ["Host", @http_server],
         ["User-Agent",
-        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"],
+        HttpHeader],
         ["Accept",
         "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"],
+        ["Accept-Encoding", "gzip, deflate"],
         ["Accept-Language", "de-ch,en-us;q=0.7,en;q=0.3"],
         ["Accept-Charset", "UTF-8"],
         ["Keep-Alive", "300"],
         ["Connection", "keep-alive"],
-        ['Content-Type', 'application/x-www-form-urlencoded']
+        ['Content-Type', 'application/x-www-form-urlencoded'],
+        ["Referer", ""],
       ]
       assert_equal(expected, @session.post_headers)
     end

@@ -21,6 +21,13 @@ module Net
 	end
 end
 module ODDB
+
+  ContentHeader = %(Content-Type: text/plain;\r
+ charset=UTF-8\r
+Content-Transfer-Encoding: 7bit\r
+User-Agent: ODDB Updater\r
+\r)
+
 	class Log
     remove_const :MAIL_FROM
     remove_const :MAIL_TO
@@ -63,22 +70,18 @@ module ODDB
 			hash = {
 				:recipients	=>	['hwyss@ywesee.com'],
 				:pointers => ['aPointer'],
-				:report =>	["a lengthy report.\n"]
+				:report =>	["first lengthy report.\n"]
 			}
 			@log.update_values(hash)
 			@log.notify
 
-			report = <<-EOS
-From: update@oddb.org\r
+      report = %(From: update@oddb.org\r
 To: hwyss@ywesee.com\r
 Subject: ch.ODDB.org Report - 08/1975\r
-Content-Type: text/plain; charset=UTF-8\r
-User-Agent: ODDB Updater\r
-\r
-a lengthy report.\r
-				EOS
+#{ContentHeader}
+first lengthy report.\r)
 			expected = [
-				report.strip,
+				report,
 				'admin@ywesee.com',
 				'hwyss@ywesee.com',
 			]
@@ -90,23 +93,18 @@ a lengthy report.\r
 			hash = {
 				:recipients	=>	['hwyss@ywesee.com'],
 				:pointers => ['aPointer'],
-				:report =>	["a lengthy report.\n"],
+				:report =>	["second lengthy report.\n"],
 				:date_str =>	'Today',
 			}
 			@log.update_values(hash)
 			@log.notify('Subject')
 
-			report = <<-EOS
-From: update@oddb.org\r
-To: hwyss@ywesee.com\r
-Subject: ch.ODDB.org Report - Subject - Today\r
-Content-Type: text/plain; charset=UTF-8\r
-User-Agent: ODDB Updater\r
-\r
-a lengthy report.\r
-				EOS
+      report = %(From: update@oddb.org\r\nTo: hwyss@ywesee.com\r\nSubject: ch.ODDB.org Report - Subject - Today\r
+#{ContentHeader}
+second lengthy report.\r)
+
 			expected = [
-				report.strip,
+				report,
 				'admin@ywesee.com',
 				'hwyss@ywesee.com',
 			]

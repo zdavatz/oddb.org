@@ -4,7 +4,7 @@
 # suite.rb -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com 
 
 require 'find'
-require 'test-unit'
+require 'test/unit'
 
 $: << here = File.expand_path(File.dirname(__FILE__))
 

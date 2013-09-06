@@ -52,7 +52,7 @@ class TestOrphanedFachinfoAssign < Test::Unit::TestCase
                         :app    => @app,
                         :error? => nil
                        )
-    @model   = flexmock('model', :name => 'name')
+    @model   = flexmock('model', :name => 'name', :languages => 'languages')
     @state   = ODDB::State::Admin::OrphanedFachinfoAssign.new(@session, @model)
   end
   def test_init
@@ -66,7 +66,8 @@ class TestOrphanedFachinfoAssign < Test::Unit::TestCase
     assert_equal(@state, @state.assign)
   end
   def test_assign__else
-    flexmock(@session, :error? => true)
+    user_input = flexmock('user_input', :values => 'values', :empty? => true)
+    flexmock(@session, :error? => true, :user_input => user_input)
     assert_equal(@state, @state.assign)
   end
   def test_delete_orphaned_fachinfo

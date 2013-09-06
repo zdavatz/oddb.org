@@ -42,7 +42,7 @@ class TestCheck < Test::Unit::TestCase
                           :is_effective_form?    => false,
                           :effective_form        => @substance
                          )
-    @check     = ODDB::State::Interactions::Basket::Check.new(substance)
+    @check     = ODDB::State::Interactions::Basket::Check.new(substance, 'atc_codes')
   end
   def test_store_interaction
     interaction = flexmock('interaction', :substance => 'substance')
@@ -95,13 +95,15 @@ class TestBasekt < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', :lookup => 'lookup')
+    atc_codes = flexmock('atc_codes', )
     substance = flexmock('substance', 
                          :substrate_connections => {},
                          :has_effective_form?   => nil
                         )
     @session  = flexmock('session', 
                          :lookandfeel => @lnf,
-                         :interaction_basket => [substance]
+                         :interaction_basket => [substance],
+                         :interaction_basket_atc_codes => [atc_codes],
                         )
     @model    = flexmock('model')
     @state    = ODDB::State::Interactions::Basket.new(@session, @model)
@@ -228,9 +230,8 @@ class TestBasekt < Test::Unit::TestCase
     flexmock(@session, :interaction_basket => [substance1, substance2])
     result = @state.calculate_interactions
     assert_equal(@state.instance_eval('@model'), result)
-    assert_equal(2, result.length)
+    assert_equal(1, result.length)
     assert_kind_of(ODDB::State::Interactions::Basket::Check, result[0])
-    assert_kind_of(ODDB::State::Interactions::Basket::Check, result[1])
   end
   def test_calculate_interactions__observed_interactions
     chemical   = flexmock('chemical', 
@@ -263,9 +264,8 @@ class TestBasekt < Test::Unit::TestCase
     flexmock(@session, :interaction_basket => [substance1, substance2])
     result = @state.calculate_interactions
     assert_equal(@state.instance_eval('@model'), result)
-    assert_equal(2, result.length)
+    assert_equal(1, result.length)
     assert_kind_of(ODDB::State::Interactions::Basket::Check, result[0])
-    assert_kind_of(ODDB::State::Interactions::Basket::Check, result[1])
   end
 end
 

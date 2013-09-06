@@ -8,13 +8,13 @@ require 'test-unit'
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
 require "#{current_dir}/swissreg/test/test_writer.rb"
-require "#{current_dir}/swissreg/test/test_session.rb"
+# require "#{current_dir}/swissreg/test/test_session.rb"
 require "#{current_dir}/meddata/test/test_session.rb"
 require "#{current_dir}/meddata/test/test_result.rb"
 require "#{current_dir}/meddata/test/test_meddata.rb"
 require "#{current_dir}/meddata/test/test_ean_factory.rb"
 require "#{current_dir}/meddata/test/test_meddparser.rb"
-require "#{current_dir}/meddata/test/test_drbsession.rb"
+# require "#{current_dir}/meddata/test/test_drbsession.rb"
 require "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb"
 require "#{current_dir}/fiparse/test/test_fachinfo_hpricot.rb"
 require "#{current_dir}/fiparse/test/test_fachinfo_writer.rb"

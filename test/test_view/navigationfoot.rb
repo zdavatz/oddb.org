@@ -118,15 +118,25 @@ module ODDB
 class TestNavigationFoot2 < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @navigation = flexmock('navigation',
+                            :sort_by => [],
+                            :empty? => false,
+                            :each_with_index => 'each_with_index',
+                            )
+    @zone_navigation = flexmock('zone_navigation',
+                                :sort_by => [],
+                                :each_with_index => 'each_with_index',
+                                :empty? => false,
+                          )
     @lnf       = flexmock('lookandfeel', 
                           :lookup    => 'lookup',
                           :disabled? => nil,
                           :enabled?  => nil,
-                          :zone_navigation => 'zone_navigation',
+                          :zone_navigation => @zone_navigation,
                           :attributes      => {},
                           :direct_event    => 'direct_event',
                           :_event_url      => '_event_url',
-                          :navigation      => 'navigation'
+                          :navigation      => @navigation,
                          )
     @session   = flexmock('session', :lookandfeel => @lnf)
     @model     = flexmock('model')
@@ -171,11 +181,16 @@ end
 class TestTopFoot < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @zone_navigation = flexmock('zone_navigation',
+                                :sort_by => [],
+                                :each_with_index => 'each_with_index',
+                                :empty? => false,
+                          )
     @lnf       = flexmock('lookandfeel', 
                           :lookup   => 'lookup',
                           :enabled? => true,
                           :attributes      => {},
-                          :zone_navigation => 'zone_navigation',
+                          :zone_navigation => @zone_navigation,
                           :direct_event    => 'direct_event',
                           :_event_url      => '_event_url'
                          )

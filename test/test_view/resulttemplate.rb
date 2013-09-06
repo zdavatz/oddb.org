@@ -9,6 +9,9 @@ require 'flexmock'
 require 'view/resulttemplate'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     Copyright::ODDB_VERSION = 'version'
     class TestResultTemplate < Test::Unit::TestCase
@@ -29,24 +32,40 @@ module ODDB
         end
       end
       def setup
+        @zones = flexmock('zones',
+                          :sort_by => [],
+                          )
+        @navigation = flexmock('navigation',
+                               :sort_by => [],
+                               :empty? => false,
+                               )
+        @zone_navigation = flexmock('zone_navigation',
+                                    :sort_by => [],
+                                    :each_with_index => 'each_with_index',
+                                    :empty? => false,
+                              )
         @lnf      = flexmock('lookandfeel', 
                              :lookup     => 'lookup',
                              :enabled?   => nil,
                              :attributes => {},
                              :resource   => 'resource',
-                             :zones      => 'zones',
+                             :zones      => @zones,
                              :disabled?  => nil,
                              :_event_url => '_event_url',
-                             :navigation => 'navigation',
-                             :zone_navigation => 'zone_navigation',
+                             :navigation => @zone_navigation,
+                             :zone_navigation => @zone_navigation,
                              :direct_event => 'direct_event'
                             )
         user      = flexmock('user', :valid? => nil)
-        @session  = flexmock('session', 
-                             :lookandfeel => @lnf,
-                             :user    => user,
-                             :sponsor => user
-                            )
+        @zone = flexmock('zone', :zone => 'zone')
+        @session = flexmock('session',
+                            :state => @zone,
+                            :lookandfeel => @lnf,
+                            :flavor => Session::DEFAULT_FLAVOR,
+                            :get_cookie_input => 'get_cookie_input',
+                            :user    => user,
+                            :sponsor => user
+                        )
         @model    = flexmock('model')
         @content  = flexmock('content', :new => 'new')
         replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do 

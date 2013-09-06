@@ -8,6 +8,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
+require 'model/company'
+require 'model/galenicgroup'
+require 'model/doctor'
 require 'view/pointersteps'
 require 'stub/cgi'
 

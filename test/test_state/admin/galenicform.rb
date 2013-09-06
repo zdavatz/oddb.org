@@ -23,7 +23,8 @@ class TestGalenicForm2 < Test::Unit::TestCase
                         :app => @app,
                         :lookandfeel => @lnf
                        )
-    @model   = flexmock('model', :empty? => nil)
+    @parent = flexmock('parent', :pointer => 'pointer')
+    @model   = flexmock("model_#{__LINE__}", :empty? => nil, :parent => @parent)
     @form    = ODDB::State::Admin::GalenicForm.new(@session, @model)
   end
   def test_delete
@@ -37,7 +38,7 @@ class TestGalenicForm2 < Test::Unit::TestCase
              :parent  => parent,
              :pointer => 'pointer'
             )
-    assert_kind_of(ODDB::State::Admin::GalenicGroup, @form.delete)
+    assert_kind_of(ODDB::State::Admin::MergeGalenicForm, @form.delete)
   end
   def test_update
     galenic_form = flexmock('galenic_form')
@@ -75,7 +76,9 @@ class	TestGalenicForm < Test::Unit::TestCase
 		end
 	end
 	class StubApp
-		attr_accessor :galenic_forms
+    include FlexMock::TestCase
+    attr_accessor :galenic_forms
+    attr_accessor :model
 		attr_reader :update_called
 		def initialize
 			@update_called = false
@@ -103,8 +106,15 @@ class	TestGalenicForm < Test::Unit::TestCase
 	def setup
 		@session = StubSession.new
 		@galform = StubGalenicForm.new
-		@galform.update_values({'de'=>'Tabletten', 'fr'=>'comprim?s'})
+    @parent = flexmock('parent', :pointer => 'pointer')
+    @galform   = flexmock("model_#{__LINE__}",
+                          :empty? => nil,
+                          :parent => @parent,
+                          :pointer => 'pointer',
+                          )
+    # @galform.update_values({'de'=>'Tabletten', 'fr'=>'comprim?s'})
 		@state = State::Admin::GalenicForm.new(@session, @galform)
+
 	end
 	def test_update1
 		@session.app.galenic_forms = { 
@@ -113,7 +123,7 @@ class	TestGalenicForm < Test::Unit::TestCase
 		}
 		@session.user_input = { :de => 'Tabletten',  :fr => 'comprim?s'}
     flexstub(@state) do |sta|
-      sta.should_receive(:unique_email)
+      sta.should_receive(:unique_email).once
     end
 		@state.update
 		assert_equal(false, @state.error?)

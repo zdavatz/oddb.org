@@ -28,9 +28,13 @@ end
 
 class StubLoginMethods
   include ODDB::State::Admin::LoginMethods
+  attr_accessor  :http_headers
   def initialize(session)
     @session = session
     @errors  = {}
+  end
+  def request_path
+    'dummyLocation'
   end
 end
 
@@ -48,7 +52,7 @@ class TestLoginMethods < Test::Unit::TestCase
     assert_kind_of(ODDB::State::User::InvalidUser, @loginmethods.autologin(user))
   end
   def test_autologin__valid
-    state = flexmock('state', :augment_self => 'augment_self')
+    state = flexmock('state', :augment_self => 'augment_self', :request_path => 'request_path')
     flexmock(@session, 
              :desired_state  => state,
              :desired_state= => nil
@@ -60,7 +64,7 @@ class TestLoginMethods < Test::Unit::TestCase
     assert_equal('augment_self', @loginmethods.autologin(user))
   end
   def test_autologin__allowed
-    state = flexmock('state', :augment_self => 'augment_self')
+    state = flexmock('state', :augment_self => 'augment_self', :request_path => 'request_path')
     flexmock(@session, 
              :desired_state  => state,
              :desired_state= => nil
