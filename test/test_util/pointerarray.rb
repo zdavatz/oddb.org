@@ -19,12 +19,16 @@ class TestArray < Test::Unit::TestCase
 		assert_respond_to(@array, :pointer)
 		assert_equal('Pointer', @array.pointer)
 	end
-	def test_sort_by
-		values = @array.sort_by { |item| item }		
-		assert_equal(ODDB::PointerArray, values.class)	
-	end
+  def test_sort
+    assert_equal(Array, @array.sort.class)  
+  end
+  def test_sort_by
+    values = @array.sort_by { |item| item }
+    assert_equal(ODDB::PointerArray, values.class)  
+    assert_equal(ODDB::PointerArray, @array.class)  
+  end
 	def test_reverse
-		values = @array.reverse
-		assert_equal(ODDB::PointerArray, values.class)	
+    assert_equal(Array, @array.reverse.class) 
+    assert_equal(ODDB::PointerArray, @array.reverse!.class) 
 	end
 end

@@ -49,8 +49,9 @@ class TestSelectIndication < Test::Unit::TestCase
                            :user_input  => pointer,
                            :language    => 'language'
                           )
+    user_input    = flexmock('user_input', :[] => [])
     @model      = flexmock('model', 
-                           :user_input => 'user_input',
+                           :user_input => user_input,
                            :pointer    => 'pointer'
                           )
     @indication = ODDB::State::Admin::SelectIndication.new(@session, @model)

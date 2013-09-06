@@ -4,107 +4,67 @@
 # suite.rb -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com 
 # In order to execute test/suite.rb,
 # yusd and meddatad is needed to run.
-
 $: << File.dirname(__FILE__)
 
-require 'tempfile'
+
+# Some unit tests of ODDB work fine when called as individual files, but fail miserably
+# when all other unit tests are included. 
+# To work aroung this bug, we run some files separately 
+
+module IsolatedTests
+  @@directories =  Hash.new
+
+  def IsolatedTests.run_tests(files)
+    files.each { 
+      |path, res|
+      puts "\n#{Time.now}: Now testing #{path} #{res}\n"
+      base = File.basename(path).sub('.rb', '')
+      group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
+      group_name += ':'+base unless base.eql?('suite')
+      cmd = "ruby -e\"require 'simplecov'; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      result = system(cmd) 
+      @@directories[path] = result
+    }
+  end
+  def IsolatedTests.show_results
+    okay = true
+    @@directories.each{ 
+      |path,res|
+        puts "#{path} returned #{res}"
+        okay = false unless res
+    }
+    puts "Overall result is #{okay}"
+    okay
+  end
+
+end
 
 dir = File.expand_path(File.dirname(__FILE__))
+
 # Below test_suites contain tests that call each other. 
 # This can result in a wrong coverage summary as shown in the example of oddbapp.rb
 # Out of this reason we run test_util/suite.rb first - but this may cause other problems. Lets see.
-directories = [
-  "#{dir}/../ext/suite.rb",
-  "#{dir}/test_util/suite.rb",
-  "#{dir}/test_model/suite.rb",
-  "#{dir}/test_plugin/suite.rb",
-  "#{dir}/test_state/suite.rb",
-  "#{dir}/test_view/suite.rb",
-  "#{dir}/test_custom/suite.rb",
-  "#{dir}/test_command/suite.rb",
-  "#{dir}/test_remote/suite.rb",
-]
-# directories = [ "#{dir}/test_command/suite.rb", ]
+suites =  []
+  # oe next  creates additional error  Error: test_galenic_form(ODDB::TestGalenicGroup)
+suites << "#{dir}/../ext/suite.rb" 
+suites << "#{dir}/test_state/suite.rb"  # neither this one
+suites << "#{dir}/test_view/suite.rb" # does not crate
+suites << "#{dir}/test_command/suite.rb"
+suites << "#{dir}/test_remote/suite.rb"
+suites << "#{dir}/test_custom/suite.rb"
+  # test_plugin skips bsv_xml csv_export"
+suites << "#{dir}/test_plugin/suite.rb"
+  # test_util skips ipn oddbapp session updater
+suites << "#{dir}/test_model/suite.rb" 
+suites << "#{dir}/test_util/suite.rb"
 
-rcov = true
-coverage = nil
-command = 'system "ruby #{path} >> #{temp_out.path}"'
-begin
-  # FIXME
-  # There is ARGV problem in test-unit
-  require 'simplecov'
-  SimpleCov.start
-rescue
-  begin
-    Rcov
-    coverage = Tempfile.new('coverage')
-    command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.path}"'
-  rescue
-    rcov = false
+if $0 == __FILE__
+  puts suites
+  if true
+    IsolatedTests.run_tests(suites)
+    IsolatedTests.show_results
+  else
+#  suites.each{ |suite| require suite }
+#  exit(IsolatedTests.show_results ? 0 : 1)
   end
 end
-
-temp_out = Tempfile.new('temp_out')
-directories.each_with_index { |path, i|
-  puts "\nNow testing #{path}\n"
-  require path
-  # eval(command)
-}
-
-# report output
-test_names = []
-test_time  = 0.0
-tests      = 0
-assertions = 0
-failures   = 0
-errors     = 0
-
-failure_error = []
-failure_error_flag = false
-failure_error_no = 0
-
-rcov = nil
-temp_out.each do |line|
-  if line =~ /Loaded suite (.+)/
-    test_names << $1
-  end
-  if line =~ /Finished in ([0-9.]+) seconds/
-    test_time += $1.to_f
-  end
-  if failure_error_flag 
-    failure_error << line
-  end
-  if line =~ /(\d+)\) Failure:/ or line =~ /(\d+)\) Error:/
-    failure_error_flag = true
-    failure_error_no += 1
-    failure_error << line.gsub(/\d+/,failure_error_no.to_s)
-  end
-  if line.strip == ''
-    failure_error_flag = false
-  end
-  if line =~ /(\d+) tests, (\d+) assertions, (\d+) failures, (\d+) errors/
-    tests      += $1.to_i
-    assertions += $2.to_i
-    failures   += $3.to_i
-    errors     += $4.to_i
-  end
-  if line =~ /([0-9.]+)\%   (\d+) file\(s\)   (\d+) Lines   (\d+) LOC/
-    rcov = line
-  end
-end
-
-# result
-print <<-EOF
-
-Loaded suite 
- #{test_names.join(",\n ")}
-
-Finished in #{test_time} seconds.
-
-#{rcov if rcov}
-#{failure_error}
-#{tests} tests, #{assertions} assertions, #{failures} failures, #{errors} errors
-EOF
-
-temp_out.close
-coverage.close if coverage

@@ -16,16 +16,25 @@ module ODDB
 class TestPriceHistory < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app')
-    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     price    = flexmock('price', 
                         :valid_from => Time.local(2011,2,3),
-                        :credits => 'credits'
+                        :credits => 'credits',
+                        :to_f => 0.1,
                        )
+    package  = flexmock('package',
+                        :prices => {'public' => [price, price]},
+                        :is_a? => true,
+                       )
+    @sequence = flexmock('sequence', :pointer => 'pointer', :package => package)
+    @registration = flexmock('registration', :sequence => @sequence)
+    @app     = flexmock('app',
+                        :registration => @registration,
+                        )
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     flexmock(price, 
              :- => price,
              :/ => price,
-             :* => price
+             :* => price,
             )
     package  = flexmock('package', :prices => {'public' => [price, price]})
     pointer  = flexmock('pointer', :resolve => package)

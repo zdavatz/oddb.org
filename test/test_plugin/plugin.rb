@@ -39,6 +39,7 @@ module ODDB
     end
     def teardown
       File.delete('/tmp/oddbtest') if File.exist?('/tmp/oddbtest')
+      super # to clean up FlexMock
     end
     def test_http_file
       assert_equal(nil, @plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest'))

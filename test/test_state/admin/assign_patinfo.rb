@@ -16,13 +16,16 @@ module ODDB
 class TestAssignPatinfo < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app', :update => 'update')
+    match    = flexmock('match', :to_a => [':!registration,12345!sequence,1.'])
+    pointer  = flexmock('pointer', :resolve => true, :match => match)
+    @sequence = flexmock('sequence', :pointer => pointer)
+    @registration = flexmock('registration', :sequence => @sequence)
+    @app     = flexmock('app', :update => 'update', :registration => @registration)
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
-    pointer  = flexmock('pointer', :resolve => 'resolve')
     @session = flexmock('session', 
                         :app => @app,
                         :lookandfeel => @lnf,
-                        :user_input  => {:pointer => pointer, :pointers => {'key' => pointer}}
+                        :user_input  => { "a" => ':!registration,12345!sequence,1.', "b"=> ':!registration,12345!sequence,1.'},
                        )
     @sequence = flexmock('sequence', :pdf_patinfo => 'pdf_patinfo')
     @model   = flexmock('model', :sequence => @sequence)

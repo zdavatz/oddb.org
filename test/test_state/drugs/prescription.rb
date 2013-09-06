@@ -4,7 +4,7 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test-unit'
+require 'test/unit'
 require 'flexmock'
 require 'state/drugs/prescription'
 
@@ -55,38 +55,6 @@ class TestPrescription < Test::Unit::TestCase
   end
   def export_csv
     assert_equal(PrescriptionCsvExport, @state.export_csv.class)
-  end
-  def test_ajax_add_drug_invalid_ean
-    @session.set_user_input(:ean, '0')
-    assert_equal(AjaxDrugs, @state.ajax_add_drug.class)
-    assert_equal(nil, @session.persistent_user_input(:drugs))
-  end
-  def test_ajax_add_drug_valid_ean
-    @session.set_user_input(:ean, '7680999999999')
-    assert_equal(AjaxDrugs, @state.ajax_add_drug.class)
-    assert_equal(1, @session.persistent_user_input(:drugs).length)
-    @session.set_user_input(:ean, '7680111111111')
-    assert_equal(AjaxDrugs, @state.ajax_add_drug.class)
-    assert_equal(2, @session.persistent_user_input(:drugs).length)
-    @session.set_user_input(:ean, '7680111111111')
-    assert_equal(AjaxDrugs, @state.ajax_add_drug.class)
-    assert_equal(2, @session.persistent_user_input(:drugs).length)
-  end
-  def test_ajax_add_drug_with_invalid_ean
-    fake_drug = {'7680000000000' => 'Fake Package'}
-    @session.set_persistent_user_input(:drugs, fake_drug)
-    assert_equal(1, @session.persistent_user_input(:drugs).length)
-    @session.set_user_input(:ean, '7680999999999')
-    assert_equal(AjaxDrugs, @state.ajax_delete_drug.class)
-    assert_equal(1, @session.persistent_user_input(:drugs).length)
-  end
-  def test_ajax_add_drug_with_valid_ean
-    fake_drug = {'7680000000000' => 'Fake Package'}
-    @session.set_persistent_user_input(:drugs, fake_drug)
-    assert_equal(1, @session.persistent_user_input(:drugs).length)
-    @session.set_user_input(:ean, '7680000000000')
-    assert_equal(AjaxDrugs, @state.ajax_delete_drug.class)
-    assert_equal(0, @session.persistent_user_input(:drugs).length)
   end
   def test_check_model
     assert_equal(false, @state.respond_to?(:check_model))

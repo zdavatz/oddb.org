@@ -36,9 +36,10 @@ class TestSelectSubstance < Test::Unit::TestCase
                             :append  => 'append',
                             :inner_pointer => 'inner_pointer'
                            )
+    user_input    = flexmock('user_input', :[] => [])
     @model   = flexmock('model', 
                         :active_agent => active_agent,
-                        :user_input   => 'dose',
+                        :user_input   => user_input,
                         :pointer      => 'pointer'
                        )
     @state   = ODDB::State::Admin::SelectSubstance.new(@session, @model)

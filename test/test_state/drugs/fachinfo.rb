@@ -66,9 +66,11 @@ class TestRootFachinfo < Test::Unit::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @user    = flexmock('user', :allowed? => true)
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :user_input  => {:html_chapter => 'html_chapter', :chapter => 'chapter'},
+                        :user        => @user,
                         :language    => 'language',
                         :app         => @app
                        )
@@ -99,15 +101,17 @@ class TestRootFachinfo < Test::Unit::TestCase
   def test_update__fetch_block
     @state.init
     doc = flexmock('doc', 
-                   :name=    => nil,
+                   :name=    => 'name',
                    :chapter  => nil,
                    :chapter= => nil
                   )
     language = flexmock('language', :"class.new" => doc)
+    chapter  = flexmock('chapter', :fetch => 'fetch', :chapter => 'chapter')
+    descriptions = flexmock('descriptions', :name= => nil, :chapter => 'chapter', :fetch => chapter)
     flexmock(@model, 
              :is_a?        => true,
-             :descriptions => {},
-             :language     => language,
+             :descriptions => descriptions,
+             :language     => 'language',
              :name_base    => 'name_base'
             )
     flexmock(@state, :unique_email => 'unique_email')
@@ -120,9 +124,11 @@ class TestCompanyFachinfo < Test::Unit::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @user    = flexmock('user', :allowed? => true)
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :user_input  => {:html_chapter => 'html_chapter', :chapter => 'chapter'},
+                        :user        => @user,
                         :language    => 'language',
                         :allowed?    => nil,
                         :app         => @app

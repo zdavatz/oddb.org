@@ -20,7 +20,6 @@ require 'model/atcclass'
 require 'model/orphan'
 require 'model/galenicform'
 require 'util/language'
-require 'mock'
 require 'flexmock'
 require 'util/oddbapp'
 

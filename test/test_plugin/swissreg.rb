@@ -40,11 +40,11 @@ module ODDB
     end
     def test_format_data
       data = {:iksnr => 'iksnr'}
-      expected = " -> http://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=\n"
+      expected = " -> https://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=\n"
       assert_equal(expected, @plugin.format_data(data))
     end
     def test_report
-      expected = "Checked      0 Substances for connected Patents\nFound        0 Patents\nof which     0 had a Swissmedic-Number.\n             0 Registrations were successfully updated;\nfor these    0 Swissmedic-Numbers no Registration was found:\n\n"
+      expected = "Checked     0 Registrations\nFound        0 Patents\nof which     0 had a Swissmedic-Number.\n                 0 Registrations were successfully updated;\nfor these    0 Swissmedic-Numbers no Registration was found:\n\n\nUpdates:\n\nFailures:\n\nNotFound:\n"
       assert_equal(expected, @plugin.report)
     end
     def test_update_registration
@@ -68,7 +68,8 @@ module ODDB
       active_agent = flexmock('active_agent', :substance => 'substance')
       sequence = flexmock('sequence', :active_agents => [active_agent])
       registration = flexmock('registration') do |r|
-        r.should_receive(:each_sequence).and_yield(sequence)
+        r.should_receive(:each_sequence).once.and_yield(sequence)
+        r.should_receive(:iksnr).once.and_return(1)
       end
       pointer = flexmock('pointer', :resolve => registration)
       log = flexmock('log', :change_flags => {pointer => 'value'})
@@ -77,7 +78,7 @@ module ODDB
       server  = flexmock('server', :search => [{}])
       flexmock(@plugin, :sleep => nil)
       replace_constant('ODDB::SwissregPlugin::SWISSREG_SERVER', server) do
-        assert_equal(["substanc"], @plugin.update_news)
+        assert_equal({pointer => 'value'}, @plugin.update_news)
       end
     end
   end

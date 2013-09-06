@@ -9,7 +9,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'stub/odba'
 require 'test/unit'
 require 'model/activeagent'
-require 'mock'
+require 'flexmock'
 
 module ODDB
 	class ActiveAgentCommon
@@ -70,6 +70,7 @@ class StubActiveAgentSequence
 end
 
 class TestActiveAgent < Test::Unit::TestCase
+  include FlexMock::TestCase
 	def setup
 		@substance_name = 'ACIDUM ACETYLSALICYLICUM'
 		@agent = ODDB::ActiveAgent.new(@substance_name)
@@ -276,14 +277,13 @@ class TestActiveAgent < Test::Unit::TestCase
 	def test_same_as
 		agent = ODDB::ActiveAgent.new(@substance_name)
 		assert_equal(false, agent.same_as?('Levomentholum'))
-		subst = Mock.new
+		subst = flexmock('subst')
 		agent.instance_variable_set('@substance', subst)
-		subst.__next(:same_as?) { |arg| 
+		subst.should_receive(:same_as?).once.and_return { |arg| 
 			assert_equal('Levomentholum', arg)
 			true
 		}
 		assert_equal(true, agent.same_as?('Levomentholum'))
-		subst.__verify
 	end
   def test_to_a
     assert_equal [@substance, @agent.dose], @agent.to_a
