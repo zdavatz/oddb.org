@@ -29,7 +29,8 @@ module ODDB
 			attr_accessor :language, :flavor, :lookandfeel
 			alias :default_language :language
 		end
-		def initialize(app)
+		# options parameter is needed to be compatible with calls via update_notify_simple
+		def initialize(app, options=nil)
 			@app = app
 		end
     def run
