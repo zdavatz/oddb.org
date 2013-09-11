@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - 1.9.3
 script: 
+  - rake quanty
   - bundle exec ruby test/suite.rb 2>&1 | tee suite.log
   - rake docs
   - grep assertions, suite.log
