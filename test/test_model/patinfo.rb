@@ -83,7 +83,6 @@ class TestPatinfoDocument < Test::Unit::TestCase
 		doc.iksnrs = "iksnrs" 
 		expected = <<-EOS
 name
-company
 galenic_form
 effects
 purpose
@@ -98,6 +97,8 @@ other_advice
 composition
 packages
 distribution
+iksnrs
+company
 date
 		EOS
 		assert_equal(expected.strip, doc.to_s)
@@ -117,7 +118,6 @@ date
 		doc.iksnrs = "iksnrs" 
 		expected = <<-EOS
 name
-company
 galenic_form
 effects
 contra_indications
@@ -125,16 +125,18 @@ precautions
 unwanted_effects
 general_advice
 packages
+iksnrs
+company
 date
 		EOS
 		assert_equal(expected.strip, doc.to_s)
 	end
   def test_chapter_names
     doc = ODDB::PatinfoDocument.new
-    expected = [ :name, :company, :galenic_form, :effects, :purpose,
+    expected = [ :name, :galenic_form, :effects, :purpose,
                  :amendments, :contra_indications, :precautions, :pregnancy,
                  :usage, :unwanted_effects, :general_advice, :other_advice,
-                 :composition, :packages, :distribution, :fabrication, :date ]
+                 :composition, :packages, :distribution, :fabrication, :iksnrs, :company, :date ]
     assert_equal expected, doc.chapter_names
   end
 end
