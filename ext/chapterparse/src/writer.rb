@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ChapterParse::Writer -- oddb -- 11.08.2005 -- ffricker@ywesee.com
 
 require 'util/html_parser'

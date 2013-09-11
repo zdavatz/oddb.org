@@ -29,14 +29,28 @@ module ODDB
 			attr_accessor :language, :flavor, :lookandfeel
 			alias :default_language :language
 		end
+  private
+    def logExport(msg)
+      return if defined?(Test::Unit)
+      now = Time.now
+      $stdout.puts("#{now}: #{msg}"); $stdout.flush
+      LogFile.append('oddb/debug', ' ' + msg, now)
+      system("logger #{__FILE__}: #{msg}")
+    end
+    
+    def restart_export_server(sleep_time = 60)
+      logExport("restart_export_server. Called from #{caller[0].split(':in ')[0]}")
+      EXPORT_SERVER.clear
+      sleep(sleep_time)      
+      logExport("restart_export_server. Done sleeping #{sleep_time} seconds")
+      return sleep 0.1 # to be compatible with return code of old sleep
+    end
+  public
 		# options parameter is needed to be compatible with calls via update_notify_simple
 		def initialize(app, options=nil)
 			@app = app
 		end
     def run
-      ## restart the export server
-      EXPORT_SERVER.clear
-      sleep(30)
       #
       mail_patinfo_invoices
       mail_fachinfo_log
@@ -64,6 +78,7 @@ module ODDB
         export_fachinfo_pdf
       }
 =end
+      restart_export_server
       nil
     end
     def export_helper(name)
@@ -90,22 +105,16 @@ module ODDB
       safe_export 'oddb2.csv' do
         plug.export_drugs_extended
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
 		def export_analysis_csv
 			plug = CsvExportPlugin.new(@app)
 			plug.export_analysis
-			EXPORT_SERVER.clear
-			sleep(30)
 		end
 		def export_doc_csv
       safe_export 'doctors.csv' do
         plug = CsvExportPlugin.new(@app)
         plug.export_doctors
       end
-      EXPORT_SERVER.clear
-      sleep(30)
 		end
     def export_fachinfo_chapter(term, chapters, lang)
       title = 'Fachinfo Chapter Export'
@@ -128,8 +137,6 @@ module ODDB
           end
         end
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
     def export_fachinfo_pdf(langs = [:de, :fr])
       plug = FiPDFExporter.new(@app)
@@ -161,14 +168,10 @@ module ODDB
         plug = CsvExportPlugin.new(@app)
         plug.export_index_therapeuticus
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
 		def export_migel_csv
 			plug = CsvExportPlugin.new(@app)
 			plug.export_migel
-			EXPORT_SERVER.clear
-			sleep(30)
 		end
     def report_dose_missing_list(list)
       log = Log.new(@@today)
@@ -189,12 +192,8 @@ module ODDB
       safe_export 'oddbdat' do
         exporter = OdbaExporter::OddbDatExport.new(@app)
         dose_missing_list = exporter.export
-        EXPORT_SERVER.clear
-        sleep(30)
         
         exporter.export_fachinfos
-        EXPORT_SERVER.clear
-        sleep(30)
 
         # here to raise warning if package.parts is empty
         if !dose_missing_list.empty?
@@ -213,9 +212,6 @@ module ODDB
         log.update_values(exporter.log_info)
         log.notify(subj)
 
-        EXPORT_SERVER.clear
-        sleep(30)
-        
         # here to raise warning if package.parts is empty
         if !dose_missing_list.empty?
           report_dose_missing_list(dose_missing_list)
@@ -295,8 +291,6 @@ module ODDB
           exporter.export_doctors
         end
 			}
-			EXPORT_SERVER.clear
-			sleep(30)
 		end
     def export_fachinfo_yaml(option='')
       exporter = YamlExporter.new(@app)
@@ -366,8 +360,6 @@ module ODDB
         plug = CsvExportPlugin.new(@app)
         plug.export_price_history
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
     def export_teilbarkeit_csv
       safe_export 'Teilbarkeit Export' do
@@ -387,8 +379,6 @@ module ODDB
           log.notify('Teilbarkeit Export')
         end
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
     def export_flickr_photo_csv
       safe_export 'Flickr Ean Export' do
@@ -408,8 +398,6 @@ module ODDB
           log.notify('Flickr Ean Export')
         end
       end
-      EXPORT_SERVER.clear
-      sleep(30)
     end
 		def mail_stats(key)
 			date = @@today
@@ -433,7 +421,10 @@ module ODDB
       SwissmedicPlugin.new(@app).mail_notifications
     end
     def safe_export subject, &block
-      block.call
+      logExport "safe_export #{subject} starting"
+      res = block.call
+      logExport "safe_export #{subject} completed"
+      res
 		rescue StandardError => e
       EXPORT_SERVER.clear rescue nil
 			log = Log.new(@@today)
@@ -444,6 +435,7 @@ module ODDB
 				e.backtrace.join("\n"),
 			].join("\n")
 			log.notify("Error Export: #{subject}")
+      logExport "safe_export #{subject} failed"
       sleep(30)
     end
 	end
