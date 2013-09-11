@@ -9,9 +9,11 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'flexmock'
 require 'drb/drb'
-require 'plugin/csv_export'
 require 'plugin/plugin'
-require 'util/session'
+require 'plugin/csv_export'
+require 'test_plugin/plugin'
+require 'view/drugs/csv_result'
+require 'util/log'
 
 test_data_dir = File.expand_path('../../data/csv', __FILE__)
 ODDB::CsvExportPlugin.class_eval { remove_const(:EXPORT_DIR) }
@@ -135,6 +137,7 @@ module ODDB
                :log_group   => log_group
               )
       export_server = flexmock('export_server', :compress => 'compress')
+      
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
         @plugin.instance_eval('@options = {}')
         assert_equal('cp', @plugin._export_drugs('export_name', [:generic_type, :export_flag]))
@@ -369,10 +372,13 @@ module ODDB
         assert_equal(1,    @plugin.instance_eval("@counts['galenic_groups']"))
       end
     end
+    
     def test_export_fachinfo_chapter
+      skip('test_export_fachinfo_chapter pending')
       # pending
     end
     def test_export_fachinfo_chapter__no_match
+      skip('test_export_fachinfo_chapter__no_match pending')
       # pending
     end
     def test_export_oddb_dat
@@ -407,10 +413,10 @@ module ODDB
       end
     end
     def test_export_teilbarkeit
-      # pending
+      skip('test_export_fachinfo_chapter__no_match pending')
     end
     def test_export_flirkr_photo
-      # pending
+      skip('test_export_fachinfo_chapter__no_match pending')
     end
   end
-end
+end 

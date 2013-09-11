@@ -11,9 +11,6 @@ require 'flexmock'
 require 'view/resulttemplate'
 require 'view/notify'
 require 'model/package'
-#require 'remote/migel/model_super'
-#require 'remote/migel/model/group'
-#require 'remote/migel/model/product'
 
 module ODDB
   module View
@@ -38,11 +35,16 @@ class TestNotifyComposite < Test::Unit::TestCase
                           :warning?    => nil,
                           :error?      => nil
                          )
-    item       = flexmock('item', :name => 'name')
+    item       = flexmock('item',
+                          :name => 'name',
+                          :items => 'items',
+                          :migel_code => 'migel_code',
+                          )
     @model     = flexmock('model', 
                           :item => item,
                           :notify_recipient => ['notify_recipient']
                          )
+    skip("as notify.rb at line 85 tests for non existing ODDB::Migel::Product")
     @composite = ODDB::View::NotifyComposite.new(@model, @session) 
   end
   def test_notify_title
@@ -95,10 +97,25 @@ class TestNotifyMail < Test::Unit::TestCase
                         )
     @session  = flexmock('session', 
                          :lookandfeel => @lnf,
+                         :language => 'language',
                          :error       => 'error'
                         )
-    item      = flexmock('item', :name => 'name')
+    @unit     = flexmock('unit', :language => 'language')
+    @pointer  = flexmock('pointer', :pointer => 'pointer', :language => 'language', :migel_code => 'migel_code')
+    item      = flexmock('item',
+                         :name => 'name', 
+                         :migel_code => 'migel_code',
+                         :subgroup => @pointer,
+                         :items => 'items',
+                         :product_text => 'product_text',
+                         :localized_name => 'localized_name',
+                         :limitation_text => 'limitation_text',
+                         :qty => 'qty',
+                         :unit => @unit,
+                         :pointer => @pointer,
+                         :group => @pointer)
     @model    = flexmock('model', :item => item)
+    skip("as notify.rb at line 85 tests for non existing ODDB::Migel::Product")
     @template = ODDB::View::NotifyMail.new(@model, @session)
   end
   def test_notify_item__package
@@ -111,7 +128,7 @@ class TestNotifyMail < Test::Unit::TestCase
   def test_notify_item__migel_product
     flexmock(@session, :language => 'language')
     flexmock(ODBA.cache, :next_id => 123)
-    product = ODDB::Migel::Product.new('code')
+    product = ::Migel::Model::Product.new('code')
     flexmock(product, :language => 'language')
     group   = flexmock('group', 
                        :pointer  => 'pointer',

@@ -27,10 +27,10 @@ class TestUserSettings < Test::Unit::TestCase
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :enabled?   => true,
-                        :languages  => 'languages',
+                        :languages  => ['languages'],
                         :language   => 'language',
                         :attributes => {},
-                        :currencies => 'currencies',
+                        :currencies => ['currencies'],
                         :_event_url => '_event_url'
                        )
     @session = flexmock('session', 

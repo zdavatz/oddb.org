@@ -11,6 +11,9 @@ require 'view/publictemplate'
 require 'htmlgrid/form'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     class Copyright < HtmlGrid::Composite
       ODDB_VERSION = 'oddb_version'
@@ -31,24 +34,28 @@ module ODDB
 class TestPublicTemplate < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
+    @zones    = flexmock('zones', )
     @lnf      = flexmock('lookandfeel', 
                          :lookup     => 'lookup',
                          :enabled?   => nil,
                          :attributes => {},
                          :resource   => 'resource',
-                         :zones      => 'zones',
+                         :resource_global => 'resource_global',
+                         :zones      => [@zones],
                          :disabled?  => nil,
-                         :zone_navigation => 'zone_navigation',
+                         :zone_navigation => [ 'zone_navigation' ],
                          :direct_event    => 'direct_event',
                          :_event_url => '_event_url',
-                         :navigation => 'navigation'
+                         :navigation => ['navigation'],
                         )
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
     @session  = flexmock('session', 
                          :lookandfeel => @lnf,
+                         :flavor      => 'gcc',
                          :user        => user,
-                         :sponsor     => sponsor
+                         :sponsor     => sponsor,
+                         :get_cookie_input => nil,
                         )
     @model    = flexmock('model')
 
@@ -79,7 +86,7 @@ class TestPublicTemplate < Test::Unit::TestCase
     assert_equal(expected, @template.dynamic_html_headers(context))
   end
   def test_dynamic_html_headers__not_enabled
-    context = flexmock('context')
+    context = flexmock('context', :script => '', :style => '')
     assert_equal('', @template.dynamic_html_headers(context))
   end
   def test_javascripts

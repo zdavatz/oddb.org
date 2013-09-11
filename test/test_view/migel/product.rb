@@ -220,77 +220,6 @@ class TestProductInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestProductComposite < Test::Unit::TestCase
-  include FlexMock::TestCase
-  def setup
-    @lnf       = flexmock('lookandfeel', 
-                          :lookup     => 'lookup',
-                          :_event_url => '_event_url',
-                          :attributes => {},
-                          :disabled?  => nil,
-                          :enabled?   => nil,
-                          :language   => 'language'
-                         )
-    @session   = flexmock('session', 
-                          :lookandfeel => @lnf,
-                          :error       => 'error',
-                          :language    => 'language',
-                          :event       => 'event'
-                         )
-    method     = flexmock('method', :arity => 1)
-    group      = flexmock('group', 
-                          :pointer  => 'pointer',
-                          :language => 'language',
-                          :to_s     => 'value',
-                          :method   => method,
-                          :migel_code => 'migel_code'
-                         )
-    subgroup   = flexmock('subgroup', 
-                          :pointer  => 'pointer',
-                          :language => 'language',
-                          :migel_code => 'migel_code'
-                         )
-    product_text    = flexmock('product_text', :language => 'language')
-    limitation_text = flexmock('limitation_text', :language => 'language')
-    accessory       = flexmock('accessory', 
-                               :pointer    => 'pointer',
-                               :migel_code => 'migel_code',
-                               :method     => method
-                              )
-    unit       = flexmock('unit', :language => 'language')
-    product    = flexmock('product', 
-                          :pointer    => 'pointer',
-                          :migel_code => 'migel_code',
-                          :method     => method,
-                          :ean_code   => 'ean_code',
-                          :status     => 'status'
-                         )
-    @model     = flexmock('model', 
-                          :group    => group,
-                          :subgroup => subgroup,
-                          :language => 'language',
-                          :price    => 'price',
-                          :qty      => 'qty',
-                          :unit     => unit,
-                          :pointer  => 'pointer',
-                          :products => [product],
-                          :product_text => product_text,
-                          :accessories  => [accessory],
-                          :localized_name  => 'localized_name',
-                          :limitation_text => limitation_text,
-                          :items    => ['item'],
-                          :migel_code => 'migel_code'
-                         )
-    @composite = ODDB::View::Migel::ProductComposite.new(@model, @session)
-  end
-  def test_accessories
-    assert_kind_of(ODDB::View::Migel::AccessoryList, @composite.accessories(@model))
-  end
-  def test_accessories_acc_empty
-    flexmock(@model, :accessories => [])
-    assert_kind_of(ODDB::View::Migel::AccessoryOfList, @composite.accessories(@model))
-  end
-end
 
 class TestAccessoryOfList < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -364,7 +293,7 @@ class TestPointerSteps < Test::Unit::TestCase
     flexmock(@model) do |m|
       m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(true)
+      m.should_receive(:is_a?).with(::Migel::Group).and_return(true)
     end
     assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
   end
@@ -372,8 +301,8 @@ class TestPointerSteps < Test::Unit::TestCase
     flexmock(@model) do |m|
       m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(true)
+      m.should_receive(:is_a?).with(::Migel::Group).and_return(false)
+      m.should_receive(:is_a?).with(::Migel::Subgroup).and_return(true)
     end
     assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
   end
@@ -381,9 +310,9 @@ class TestPointerSteps < Test::Unit::TestCase
     flexmock(@model) do |m|
       m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(false)
-      m.should_receive(:is_a?).with(ODDB::Migel::Product).and_return(true)
+      m.should_receive(:is_a?).with(::Migel::Group).and_return(false)
+      m.should_receive(:is_a?).with(::Migel::Subgroup).and_return(false)
+      m.should_receive(:is_a?).with(::Migel::Product).and_return(true)
     end
     assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
   end

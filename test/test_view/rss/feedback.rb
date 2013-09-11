@@ -35,6 +35,8 @@ class TestFeedbackTemplate < Test::Unit::TestCase
                          :item  => @item,
                          :time  => Time.local(2011,2,3),
                          :email => 'email',
+                         :name => 'name',
+                         :message => 'message',
                          :helps => 'helps',
                          :show_email => 'show_email',
                          :experience => 'experience',
@@ -45,10 +47,6 @@ class TestFeedbackTemplate < Test::Unit::TestCase
   end
   def test_feedback__package
     assert_kind_of(ODDB::View::Drugs::FeedbackList, @template.feedback(@model))
-  end
-  def test_feedback__migel_product
-    flexmock(@item, :odba_instance => ODDB::Migel::Product.new('123'))
-    assert_kind_of(ODDB::View::Migel::FeedbackList, @template.feedback(@model))
   end
 end
 
@@ -77,6 +75,8 @@ class TestFeedback < Test::Unit::TestCase
                          :time  => Time.local(2011,2,3),
                          :email => 'email',
                          :helps => 'helps',
+                         :name => 'name',
+                         :message => 'message',
                          :show_email => 'show_email',
                          :experience => 'experience',
                          :recommend  => 'recommend',
@@ -87,18 +87,10 @@ class TestFeedback < Test::Unit::TestCase
   end
   def test_to_html__package
     context = flexmock('context', :html => 'html')
-    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"\n  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n  <channel>\n    <title>lookup</title>\n    <link>_event_url</link>\n    <description>lookup</description>\n    <language>language</language>\n    <image>\n      <url>resource</url>\n      <title>lookup</title>\n      <link>_event_url</link>\n    </image>\n    <item>\n      <title>lookup</title>\n      <link>_event_url</link>\n      <description>html</description>\n      <author>ODDB.org</author>\n      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>\n      <guid isPermaLink=\"true\">_event_url</guid>\n    </item>\n  </channel>\n</rss>"
+    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"\n  xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"\n  xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\"\n  xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\">\n  <channel>\n    <title>lookup</title>\n    <link>_event_url</link>\n    <description>lookup</description>\n    <language>language</language>\n    <image>\n      <url>resource</url>\n      <title>lookup</title>\n      <link>_event_url</link>\n    </image>\n    <item>\n      <title>lookup</title>\n      <link>_event_url</link>\n      <description>html</description>\n      <author>ODDB.org</author>\n      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>\n      <guid isPermaLink=\"true\">_event_url</guid>\n      <dc:date>2011-02-03T00:00:00+01:00</dc:date>\n    </item>\n  </channel>\n</rss>"
     assert_equal(expected, @component.to_html(context))
   end
-  def test_to_html__migel_product
-    flexmock(@item, :odba_instance => ODDB::Migel::Product.new('123'))
-    context = flexmock('context', :html => 'html')
-    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"\n  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n  <channel>\n    <title>lookup</title>\n    <link>_event_url</link>\n    <description>lookup</description>\n    <language>language</language>\n    <image>\n      <url>resource</url>\n      <title>lookup</title>\n      <link>_event_url</link>\n    </image>\n    <item>\n      <title>lookupname</title>\n      <link>_event_url</link>\n      <description>html</description>\n      <author>ODDB.org</author>\n      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>\n      <guid isPermaLink=\"true\">_event_url</guid>\n    </item>\n  </channel>\n</rss>"
-    assert_equal(expected, @component.to_html(context))
-  end
-
 end
-
     end # Interactions
   end # View
 end # ODDB

@@ -170,6 +170,8 @@ module ODDB
       include FlexMock::TestCase
       def test_init
         @lnf       = flexmock('lookandfeel', 
+                              :navigation => ['navigation'],
+                              :disabled?  => nil,
                               :enabled?   => true,
                               :lookup     => 'lookup',
                               :attributes => {},

@@ -3,7 +3,7 @@
 # suite.rb -- oddb.org/ext -- 09.04.2012 -- yasaka@ywesee.com
 # suite.rb -- oddb.org/ext -- 23.06.2011 -- mhatakeyama@ywesee.com 
 
-require 'test-unit'
+require 'test/unit'
 
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
