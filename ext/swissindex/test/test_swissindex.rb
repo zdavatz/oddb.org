@@ -24,6 +24,9 @@ module ODDB
       include FlexMock::TestCase
       def setup
         @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
+        @ssl  = flexmock('http', :verify_mode= => nil)
+        @auth = flexmock('http', :ssl => @ssl)
+        @http = flexmock('http', :auth => @auth)
       end
       def test_search_item
         nonpharma = {:item => {'key' => 'item'}}
@@ -34,11 +37,11 @@ module ODDB
         end
         soap = flexmock('soap', :xml= => nil)
         flexmock(@nonpharma, :soap => soap)
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         pharmacode = '1234567'
         assert_equal({'key' => 'item'}, @nonpharma.search_item(pharmacode))
       end
-      def test_search_item__array
+       def test_search_item__array
         nonpharma = {:item => [{:gtin => '223'}, {:gtin => '123'}]}
         response = flexmock('response', :to_hash => {:nonpharma => nonpharma}) 
         wsdl = flexmock('wsdl', :document= => nil)
@@ -47,7 +50,7 @@ module ODDB
         end
         soap = flexmock('soap', :xml= => nil)
         flexmock(@nonpharma, :soap => soap)
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         pharmacode = '1234567'
         assert_equal({:gtin => '223'}, @nonpharma.search_item(pharmacode))
       end
@@ -58,7 +61,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_return(response)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         pharmacode = '1234567'
         assert_nil(@nonpharma.search_item(pharmacode))
       end
@@ -75,7 +78,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_raise(StandardError)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         flexmock(@nonpharma, 
                  :sleep => nil,
                  :server => 'server'
@@ -177,7 +180,7 @@ module ODDB
         end
         soap = flexmock('soap', :xml= => nil)
         flexmock(@nonpharma, :soap => soap)
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
 
         # for migel
         td = flexmock('td', :inner_text => '1234567')
@@ -187,34 +190,21 @@ module ODDB
         end
         migel_code = '12.34.56.78.9'
         expected = [
-          {:ppub     => nil,
-           :factor   => nil,
-           :pzr      => nil, 
-           :size     => "size",
-           :ppha     => nil,
-           :ean_code => "ean_code",
-           :language => "language",
-           :datetime => "datetime",
-           :article_name  => "article_name",
-           :companyname   => "companyname",
-           :companyean    => "companyean",
-           :pharmacode    => "1234567"},
-
-          {:ppub     => nil,
-           :factor   => nil,
-           :pzr      => nil, 
-           :size     => "size",
-           :ppha     => nil,
-           :ean_code => "ean_code",
-           :language => "language",
-           :datetime => "datetime",
-           :article_name  => "article_name",
-           :companyname   => "companyname",
-           :companyean    => "companyean",
-           :pharmacode    => "1234567"},
- 
+          {:pharmacode=>"1234567",
+            :article_name=>nil,
+            :companyname=>nil,
+            :ppha=>nil,
+            :ppub=>nil,
+            :factor=>nil,
+            :pzr=>nil},
+          {:pharmacode=>"1234567",
+            :article_name=>nil,
+            :companyname=>nil,
+            :ppha=>nil,
+            :ppub=>nil,
+            :factor=>nil,
+            :pzr=>nil}
         ]
-        
         assert_equal(expected, @nonpharma.search_migel_table(migel_code))
       end
       def test_search_migel_table__no_swissindex_item
@@ -269,7 +259,7 @@ module ODDB
         end
         soap = flexmock('soap', :xml= => nil)
         flexmock(@nonpharma, :soap => soap)
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
 
         # for migel
         td = flexmock('td', :inner_text => '1234567')
@@ -320,6 +310,9 @@ module ODDB
       include FlexMock::TestCase
       def setup
         @pharma = ODDB::Swissindex::SwissindexPharma.new
+        @ssl  = flexmock('http', :verify_mode= => nil)
+        @auth = flexmock('http', :ssl => @ssl)
+        @http = flexmock('http', :auth => @auth)
       end
       def test_search_item
         pharma = {:item => {'key' => 'item'}}
@@ -328,7 +321,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_yield.and_return(response)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         soap = flexmock('soap', :xml= => nil)
         flexmock(@pharma, :soap => soap)
         pharmacode = '1234567'
@@ -341,7 +334,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_yield.and_return(response)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         soap = flexmock('soap', :xml= => nil)
         flexmock(@pharma, :soap => soap)
         pharmacode = '1234567'
@@ -355,7 +348,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_yield.and_return(response)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         soap = flexmock('soap', :xml= => nil)
         flexmock(@pharma, :soap => soap)
         pharmacode = '1234567'
@@ -368,9 +361,9 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_return(response)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         pharmacode = '1234567'
-        assert_nil(@pharma.search_item(pharmacode))
+        assert_equal({}, @pharma.search_item(pharmacode))
       end
       def stdout_null
         require 'tempfile'
@@ -384,7 +377,7 @@ module ODDB
         client = flexmock('client') do |c|
           c.should_receive(:request).and_raise(StandardError)
         end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
         flexmock(@pharma, 
                  :sleep => nil,
                  :server => 'server'

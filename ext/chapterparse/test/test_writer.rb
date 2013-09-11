@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#encoding: utf-8
 # ODDB::ChapterParse::TestWriter -- oddb.org -- 06.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::ChapterParse::TestWriter -- oddb.org -- 12.08.2005 -- ffricker@ywesee.com
 
