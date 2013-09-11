@@ -2,8 +2,9 @@ language: ruby
 rvm:
   - 1.9.3
 script: 
-  - rake test
+  - ruby test/suite.rb 2>&1 | tee suite.log
   - rake docs
+  - grep assertions, suite.log
 notifications:
   email:
     recipients:
