@@ -39,8 +39,9 @@ class TestCommercialForm < Test::Unit::TestCase
              :empty?  => true,
              :pointer => 'pointer'
             )
-    flexmock(@form, :commercial_forms => 'commercial_forms')
-    assert_equal('commercial_forms', @form.delete)
+    after_delete = @form.delete
+    assert_kind_of(State::Admin::MergeCommercialForm, after_delete)
+    refute_equal(@form, after_delete)
   end
   def test_duplicate__true
     flexmock(ODBA.cache, :retrieve_from_index => ['retrieve_from_index'])

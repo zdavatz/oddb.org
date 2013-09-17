@@ -17,11 +17,12 @@ module IsolatedTests
   def IsolatedTests.run_tests(files)
     files.each { 
       |path, res|
-      puts "\n#{Time.now}: Now testing #{path} #{res}\n"
+      rubyExe = `which ruby`
+      puts "\n#{Time.now}: Now testing #{path} #{res} using #{rubyExe}\n"
       base = File.basename(path).sub('.rb', '')
       group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
       group_name += ':'+base unless base.eql?('suite')
-      cmd = "ruby -e\"require 'simplecov'; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
       result = system(cmd) 
       @@directories[path] = result
     }

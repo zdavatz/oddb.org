@@ -214,30 +214,7 @@ module ODDB
     def teardown
       FileUtils.rm_r @@vardir
       super # to clean up FlexMock
-    end
-    
-    def test_check_swissmedicno_fi_pi
-      reg = flexmock 'registration'
-      reg.should_receive(:fachinfo)
-      ptr = Persistence::Pointer.new([:registration, '32917'])
-      reg.should_receive(:pointer).and_return ptr
-      seq = flexmock('sequence', :patinfo= => 'patinfo', :odba_isolated_store => 'odba_isolated_store')
-      seq.should_receive(:patinfo)
-      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
-      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
-      reg.should_receive(:sequences).and_return({'01' => seq})
-      @app.should_receive(:sequences).and_return([])
-      @app.should_receive(:registration).with('32917').and_return reg
-      fi = flexmock 'fachinfo'
-      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
-      pi = flexmock 'patinfo'
-      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
-      flags = {:de => :up_to_date, :fr => :up_to_date}
-      @parser.should_receive(:parse_fachinfo_html).once
-      @parser.should_receive(:parse_patinfo_html).never
-      @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      @plugin.check_swissmedicno_fi_pi($opts)
-    end
+    end    
   end
         
   class TestTextInfoPlugin_iksnr < Test::Unit::TestCase

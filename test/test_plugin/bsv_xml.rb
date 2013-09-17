@@ -69,7 +69,7 @@ module ODDB
       assert_equal('clean!', @listener.update_chapter(chapter, text, 'subheading'))
 
       # check a local variable
-      expected = ["hello", "<", "h>hello", "<", "/h>"]
+      expected = ["hello", "\n", "<", "h>hello", "<", "/h>"]
       assert_equal(expected, paragraph)
     end
   end
@@ -88,7 +88,7 @@ module ODDB
       assert_equal('', @listener.instance_eval('@html'))
     end
     def test_tag_end__GenGroupOrg
-      assert_equal([nil], @listener.tag_end('GenGroupOrg'))
+      assert_equal(nil, @listener.tag_end('GenGroupOrg'))
 
       # check an instance variable
       expected = Persistence::Pointer.new [:generic_group, @text]
@@ -98,7 +98,7 @@ module ODDB
       flexstub(Package) do |p|
         p.should_receive(:find_by_pharmacode).and_return('original')
       end
-      assert_equal([nil], @listener.tag_end('PharmacodeOrg'))
+      assert_equal(nil, @listener.tag_end('PharmacodeOrg'))
 
       # check an instance variable
       assert_equal('original', @listener.instance_eval('@original'))
@@ -107,7 +107,7 @@ module ODDB
       flexstub(Package) do |p|
         p.should_receive(:find_by_pharmacode).and_return('generic')
       end
-      assert_equal([nil], @listener.tag_end('PharmacodeGen'))
+      assert_equal(nil, @listener.tag_end('PharmacodeGen'))
 
       # check an instance variable
       assert_equal('generic', @listener.instance_eval('@generic'))
@@ -123,10 +123,10 @@ module ODDB
       @listener.instance_eval('@pointer = "pointer"')
       @listener.instance_eval('@original = package')
       @listener.instance_eval('@generic = package')
-      assert_equal([nil], @listener.tag_end('OrgGen'))
+      assert_equal(nil, @listener.tag_end('OrgGen'))
     end
     def test_tag_end__else
-      assert_equal([nil], @listener.tag_end('name'))
+      assert_equal(nil, @listener.tag_end('name'))
 
       # check instance variables
       assert_equal(nil, @listener.instance_eval('@text'))
@@ -183,28 +183,28 @@ module ODDB
       @listener.instance_eval('@pointer = pointer')
       lim_data = {'key' => 'value'}
       @listener.instance_eval('@lim_data = lim_data')
-      assert_equal([nil], @listener.tag_end('ItCode'))
+      assert_equal(nil, @listener.tag_end('ItCode'))
     end
     def test_tag_end__Limitations
       @listener.instance_eval('@target_data = {}')
-      assert_equal([nil], @listener.tag_end('Limitations'))
+      assert_equal(nil, @listener.tag_end('Limitations'))
     end
     def test_tag_end__ValidFromDate
       @listener.instance_eval('@target_data = {}')
-      assert_equal([nil], @listener.tag_end('ValidFromDate'))
+      assert_equal(nil, @listener.tag_end('ValidFromDate'))
 
       # check instance variable
       assert_equal({:valid_from=>nil}, @listener.instance_eval('@target_data'))
     end
     def test_tag_end__Points
       @listener.instance_eval('@target_data = {}')
-      assert_equal([nil], @listener.tag_end('Points'))
+      assert_equal(nil, @listener.tag_end('Points'))
 
       # check instance variable
       assert_equal({:limitation_points=>0}, @listener.instance_eval('@target_data'))
     end
     def test_tag_end__else
-      assert_equal([nil], @listener.tag_end('name'))
+      assert_equal(nil, @listener.tag_end('name'))
 
       # check instance variables
       assert_equal(nil, @listener.instance_eval('@text'))
@@ -390,7 +390,7 @@ module ODDB
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval('@pac_data = pac_data')
-      assert_raise(StandardError) do 
+      assert_raise(RuntimeError) do 
         @listener.tag_start('Pack', 'attr')
       end
     end
@@ -418,7 +418,7 @@ module ODDB
       flexmock(@app) do |app|
         app.should_receive(:update)
       end
-      assert_equal([nil], @listener.tag_end('Pack'))
+      assert_equal(nil, @listener.tag_end('Pack'))
     end
     def test_tag_end__preparation
       @listener.instance_eval('@deferred_packages = []')
@@ -453,7 +453,7 @@ module ODDB
         app.should_receive(:delete)
         app.should_receive(:update)
       end
-      assert_equal([nil], @listener.tag_end('Preparation'))
+      assert_equal(nil, @listener.tag_end('Preparation'))
     end
     def test_tag_end__preparation__limitation_text__sl_data
       @listener.instance_eval('@deferred_packages = []')
@@ -488,7 +488,7 @@ module ODDB
         app.should_receive(:delete)
         app.should_receive(:update)
       end
-      assert_equal([nil], @listener.tag_end('Preparation'))
+      assert_equal(nil, @listener.tag_end('Preparation'))
     end
     def test_tag_end__swissmedic_no_5
       @listener.instance_eval('@report_data = {}')
@@ -514,7 +514,7 @@ module ODDB
         a.should_receive(:registration).and_return(registration)
       end
       @listener.instance_eval('@name = name')
-      assert_equal([nil], @listener.tag_end('SwissmedicNo5'))
+      assert_equal(nil, @listener.tag_end('SwissmedicNo5'))
     end
     def test_tag_end__swissmedic_no_5__else
       @listener.instance_eval('@report_data = {}')
@@ -526,7 +526,7 @@ module ODDB
       flexmock(@listener) do |lis|
         lis.should_receive(:find_typo_registration)
       end
-      assert_equal([nil], @listener.tag_end('SwissmedicNo5'))
+      assert_equal(nil, @listener.tag_end('SwissmedicNo5'))
     end
     def test_tag_end__swissmedic_no_8
       @listener.instance_eval('@report = {}')
@@ -534,7 +534,7 @@ module ODDB
       flexmock(@app) do |app|
         app.should_receive(:registration)
       end
-      assert_equal([nil], @listener.tag_end('SwissmedicNo8'))
+      assert_equal(nil, @listener.tag_end('SwissmedicNo8'))
     end
     def test_tag_end__swissmedic_no_8__out_of_trade
       @listener.instance_eval('@report = {}')
@@ -543,7 +543,7 @@ module ODDB
         app.should_receive(:registration)
       end
       @listener.instance_eval('@out_of_trade = "out_of_trade"')
-      assert_equal([nil], @listener.tag_end('SwissmedicNo8'))
+      assert_equal(nil, @listener.tag_end('SwissmedicNo8'))
     end
     def test_tag_end__StatusTypeCodeSl__2_6
       @listener.instance_eval('@sl_data = {}')
@@ -553,7 +553,7 @@ module ODDB
         pac.should_receive(:pointer)
       end
       @listener.instance_eval('@pack = pack')
-      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+      assert_equal(nil, @listener.tag_end('StatusTypeCodeSl'))
     end
     def test_tag_end__StatusTypeCodeSl__3_7
       @listener.instance_eval('@sl_data = {}')
@@ -563,25 +563,25 @@ module ODDB
         pac.should_receive(:pointer)
       end
       @listener.instance_eval('@pack = pack')
-      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+      assert_equal(nil, @listener.tag_end('StatusTypeCodeSl'))
     end
     def test_tag_end__StatusTypeCodeSl__confict
       @listener.instance_eval('@sl_data = {}')
       @listener.instance_eval('@conflict = "conflict"')
       @listener.instance_eval('@out_of_trade = "out_of_trade"')
-      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+      assert_equal(nil, @listener.tag_end('StatusTypeCodeSl'))
     end
     def test_tag_end__limitation
-      assert_equal([nil], @listener.tag_end('Limitation'))
+      assert_equal(nil, @listener.tag_end('Limitation'))
     end
     def test_tag_end__limitationXXX
-      assert_equal([nil], @listener.tag_end('LimitationXXX'))
+      assert_equal(nil, @listener.tag_end('LimitationXXX'))
     end
     def test_tag_end__description
       @listener.instance_eval('@in_limitation = "in_limitation"')
       @listener.instance_eval('@lim_data = {}')
       @listener.instance_eval('@html = ""')
-      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+      assert_equal(nil, @listener.tag_end('DescriptionXX'))
     end
     def test_tag_end__description_else
       @listener.instance_eval('@in_limitation = "in_limitation"')
@@ -604,7 +604,7 @@ module ODDB
 
       lim_texts = {'key' => {:xx => chapter}}
       @listener.instance_eval('@lim_texts = lim_texts')
-      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+      assert_equal(nil, @listener.tag_end('DescriptionXX'))
     end
     def test_tag_end__description_else_it_descriptions
       @listener.instance_eval('@in_limitation = "in_limitation"')
@@ -628,11 +628,11 @@ module ODDB
       lim_texts = {'key' => {:xx => chapter}}
       @listener.instance_eval('@lim_texts = lim_texts')
       @listener.instance_eval('@it_descriptions = {:xx => "it_descriptions"}')
-      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+      assert_equal(nil, @listener.tag_end('DescriptionXX'))
     end
     def test_tag_end__points
       @listener.instance_eval('@sl_data = {}')
-      assert_equal([nil], @listener.tag_end('Points'))
+      assert_equal(nil, @listener.tag_end('Points'))
     end
     def test_tag_end__preparations
       pointer = flexmock('pointer') do |ptr|
@@ -643,7 +643,7 @@ module ODDB
       flexmock(@app) do |app|
         app.should_receive(:delete)
       end
-      assert_equal([nil], @listener.tag_end('Preparations'))
+      assert_equal(nil, @listener.tag_end('Preparations'))
     end
     def test_tag_end__error
       pointer = flexmock('pointer') do |ptr|
@@ -651,7 +651,7 @@ module ODDB
       end
       known_packages = {pointer => 'data'}
       @listener.instance_eval('@known_packages = known_packages')
-      assert_raise(StandardError) do 
+      assert_raise(RuntimeError) do 
         @listener.tag_end('Preparations')
       end
     end
@@ -727,7 +727,9 @@ module ODDB
           m.should_receive(:get).and_return(target_file)
         end)
       end
-      assert_equal(nil, @plugin.download_file('target_url', 'save_dir', 'file_name'))
+      assert_raise(Errno::ENOENT) do
+        @plugin.download_file('target_url', 'save_dir', 'file_name') 
+      end
     end
     def test_download_file__error
       flexstub(@target_file) do |t|
@@ -741,7 +743,7 @@ module ODDB
       flexstub(@plugin) do |p|
         p.should_receive(:sleep)
       end
-      assert_raise(EOFError) do 
+      assert_raise(Errno::ENOENT) do 
         @plugin.download_file('target_url', 'save_dir', 'file_name')
       end
     end
@@ -2073,6 +2075,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       session.should_receive(:search).and_return ['meddata-result']
       session.should_receive(:detail).and_return opts
     end
-  end
+  end if false
 end
 
