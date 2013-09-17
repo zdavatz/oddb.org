@@ -68,7 +68,7 @@ class TestSponsorLogo < Test::Unit::TestCase
   end
   def test_to_html
     flexmock(@lnf, :_event_url => '_event_url')
-    context = flexmock('context', :a => 'a')
+    context = flexmock('context', :a => 'a', :div => 'div')
     assert_equal('a', @component.to_html(context))
   end
 
