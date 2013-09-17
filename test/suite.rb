@@ -17,7 +17,7 @@ module IsolatedTests
   def IsolatedTests.run_tests(files)
     files.each { 
       |path, res|
-      rubyExe = `which ruby`
+      rubyExe = `which ruby`.chomp
       puts "\n#{Time.now}: Now testing #{path} #{res} using #{rubyExe}\n"
       base = File.basename(path).sub('.rb', '')
       group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
