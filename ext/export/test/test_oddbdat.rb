@@ -16,6 +16,7 @@ require 'model/sequence'
 require 'model/package'
 require 'model/text'
 require 'date'
+require 'model/fachinfo.rb'
 
 # This definition is called in TestMCMTable
 class String
@@ -774,22 +775,25 @@ module ODDB
           form.should_receive(:range).and_return(0..7)
         end
         paragraph = flexmock('paragraph') do |par|
+          par.should_receive(:class).and_return(ODDB::Text::Paragraph)
           par.should_receive(:text).and_return('par.text')
           par.should_receive(:formats).and_return([format])
           par.should_receive(:preformatted?).and_return(true)
         end
         section = flexmock('section') do |sec|
+          sec.should_receive(:class).and_return(ODDB::Text::Section)
           sec.should_receive(:subheading).and_return('subhead')
           sec.should_receive(:paragraphs).and_return([paragraph])
         end
         chapter = flexmock('chapter') do |chap|
+          chap.should_receive(:class).and_return(ODDB::Text::Chapter)
           chap.should_receive(:heading).and_return('head')
           chap.should_receive(:sections).and_return([section])
         end
 
         # test
         expected = "<BI>head<E><P><I>subhead<E><I>par.text<E><P>"
-        assert_equal(expected, @mcmtable.format_line(chapter))
+          assert_equal(expected, @mcmtable.format_line(chapter))
       end
       def test_format_lines__ImageLink
         section = flexmock('section') do |sec|
@@ -805,11 +809,20 @@ module ODDB
         expected = "<BI>head<E><P><I>subhead<E><IMG src='http://server_name/imagelink.src'/>"
         assert_equal(expected, @mcmtable.format_line(chapter))
       end
-=begin      
       def test_format_lines__Table
+        format = flexmock('format',
+                          :range => 0,
+                          :bold? => false,
+                          :italic? => false,
+                         )
+        paragraph = flexmock('paragraph',
+                             :text => 'paragraph',
+                             :preformatted? => false,
+                             :formats => [format],
+                            )
         section = flexmock('section') do |sec|
           sec.should_receive(:subheading).and_return('subhead')
-          sec.should_receive(:paragraphs).and_return([ODDB::Text::Table])
+          sec.should_receive(:paragraphs).and_return([paragraph])
         end
         chapter = flexmock('chapter') do |chap|
           chap.should_receive(:heading).and_return('head')
@@ -819,9 +832,465 @@ module ODDB
         # test
         expected = "<BI>head<E><P><I>subhead<E><N>table<E>"
         assert_equal(expected, @mcmtable.format_line(chapter))
-      end      
-=end
-    end
+      end  
+      def test_format_lines_hapatoron
+        hapatoron_problem = %(--- !ruby/object:ODDB::FachinfoDocument2001
+composition: !ruby/object:ODDB::Text::Chapter
+  heading: Was ist in Hepatodoron enthalten?
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id003 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+      formats: 
+      - *id003
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette \xC3\xA0 200mg enth\xC3\xA4lt: getrocknete Walderdbeerbl\xC3\xA4tter 40mg / getrocknete Weinrebenbl\xC3\xA4tter 40mg."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id004 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+      formats: 
+      - *id004
+      preformatted: false
+      raw_txt: 
+      text: "Hilfsstoffe: Milchzucker, Weizenst\xC3\xA4rke, Zucker, Talk."
+)    
+        fachinfo = YAML::load(hapatoron_problem)
+        expected = "<BI>Was ist in Hepatodoron enthalten?<E><P>1 Tablette à 200mg enthält: getrocknete Walderdbeerblätter 40mg / getrocknete Weinrebenblätter 40mg.<P>Hilfsstoffe: Milchzucker, Weizenstärke, Zucker, Talk.<P>"
+        assert_equal(expected, @mcmtable.format_line(fachinfo.composition))
+      end
+      
+      def test_format_lines_iopamiro
+        iopamiro_problem = %(--- !ruby/object:ODDB::Text::Chapter
+  heading: Zusammensetzung
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id002 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 8
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 7
+        start: 0
+        values: 
+        - :italic
+      - *id002
+      preformatted: false
+      raw_txt: 
+      text: Pro 1 ml
+    subheading: ""
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Table 
+      rows: 
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id022 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id022
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id023 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id023
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - IOPAMIRO
+          - "\n"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id024 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id024
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "370"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id025 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id025
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id026 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id026
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 5
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id027 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id027
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id028 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id028
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "Wirkstoff:"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id029 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id029
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id030 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id030
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id031 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id031
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id032 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id032
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - Iopamidol
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id033 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id033
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - (mg)
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id034 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id034
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id035 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id035
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id036 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id036
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id037 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id037
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "306,2"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id038 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id038
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id039 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id039
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id040 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id040
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id041 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id041
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "408,2"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id042 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id042
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id043 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id043
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id044 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id044
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id045 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id045
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "612,4"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id046 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id046
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id047 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id047
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id048 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id048
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id049 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id049
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "755,3"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id050 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id050
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id051 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id051
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+)          
+        composition = YAML::load(iopamiro_problem)
+        assert(composition.heading)
+        assert(composition.paragraphs.size > 0)
+        expected = "<BI>Zusammensetzung<E><P><I>Pro 1 ml<E><P><N>----------------------------------------- IOPAMIRO 370    ----------------------------------------- Wirkstoff:      ----------------------------------------- Iopamidol(mg)  306,2  408,2  612,4  755,3   -----------------------------------------<E>"
+        assert_equal(expected, @mcmtable.format_line(composition))
+      end
+
+    end 
     # the followings are necessary for TestCodesTable
     AtcClass = 'atcclass'
     GalenicForm = 'galenicform'
