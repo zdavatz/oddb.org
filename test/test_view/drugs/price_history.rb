@@ -7,10 +7,16 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
+require 'model/galenicgroup'
+require 'view/logo'
+require 'model/analysis/group'
 require 'view/drugs/price_history'
 require 'htmlgrid/select'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     class Copyright < HtmlGrid::Composite
        ODDB_VERSION = 'oddb_version'
@@ -105,13 +111,13 @@ class TestPriceHistory < Test::Unit::TestCase
                          :enabled?   => nil,
                          :attributes => {},
                          :resource   => 'resource',
-                         :zones      => 'zones',
+                         :zones      => ['zones'],
                          :disabled?  => nil,
                          :_event_url => '_event_url',
                          :event_url  => 'event_url',
-                         :navigation => 'navigation',
+                         :navigation => ['navigation'],
                          :base_url   => 'base_url',
-                         :zone_navigation => 'zone_navigation',
+                         :zone_navigation => ['zone_navigation'],
                          :direct_event    => 'direct_event'
                         )
     user      = flexmock('user', :valid? => nil)
@@ -125,6 +131,8 @@ class TestPriceHistory < Test::Unit::TestCase
                          :lookandfeel => @lnf,
                          :user        => user,
                          :sponsor     => sponsor,
+                         :flavor      => 'gcc',
+                         :get_cookie_input     => 'get_cookie_input',
                          :state       => state,
                          :allowed?    => nil,
                          :event       => 'event',
