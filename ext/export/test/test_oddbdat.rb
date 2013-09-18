@@ -12,10 +12,10 @@ require 'stub/odba'
 require 'test/unit'
 require 'flexmock'
 require 'oddbdat'
+require 'model/sequence'
 require 'model/package'
 require 'model/text'
 require 'date'
-
 
 # This definition is called in TestMCMTable
 class String
@@ -73,8 +73,11 @@ module ODDB
           mock.should_receive(:registration_date).and_return(Date.new(2011,2,3))
         end
         @package.sequence = flexmock('sequence') do |seq|
+          seq.should_receive(:class).and_return(ODDB::Sequence)
+          seq.should_receive(:define_check_class_methods).and_return(true)
           seq.should_receive(:registration).and_return @registration
           seq.should_receive(:iksnr).and_return('12345')
+          seq.should_receive(:ikskey).and_return('12345')
         end
         @package.create_sl_entry 
         @package.sl_entry.limitation = 'limitation'
@@ -136,6 +139,7 @@ module ODDB
           end)
         end
         package.sequence = flexmock('sequence') do |seq|
+          seq.should_receive(:class).and_return(ODDB::Sequence)
           seq.should_receive(:registration).and_return registration
           seq.should_receive(:iksnr).and_return('12345')
         end
@@ -173,6 +177,7 @@ module ODDB
       def setup
         @package = ODDB::Package.new('12')
         @package.sequence = flexmock('sequence') do |seq|
+          seq.should_receive(:class).and_return(ODDB::Sequence)
           seq.should_receive(:galenic_forms).and_return(['galenic_forms'])
           seq.should_receive(:dose).and_return(flexmock('dose') do |dose|
             dose.should_receive(:is_a?).and_return(true)
@@ -262,6 +267,7 @@ module ODDB
           end)
         end
         package.sequence = flexmock('sequence') do |seq|
+          seq.should_receive(:class).and_return(ODDB::Sequence)
           seq.should_receive(:atc_class).and_return(flexmock('atc_class') do |atc|
             atc.should_receive(:code).and_return('atc.code')
           end)
@@ -734,6 +740,7 @@ module ODDB
         # test fi.description empty case
         fi = flexmock('fi') do |f|
           f.should_receive(:descriptions).and_return([])
+          f.should_receive(:article_codes).and_return([])
         end
         assert_equal([], @mcmtable.lines(fi))
 
@@ -747,6 +754,7 @@ module ODDB
           d.should_receive(:each_chapter).and_yield(chapter)
         end
         fi = flexmock('fi') do |f|
+          f.should_receive(:article_codes).and_return([])
           f.should_receive(:descriptions).and_return({'lang' => doc})
           f.should_receive(:oid).and_return('oid')
         end
