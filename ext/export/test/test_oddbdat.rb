@@ -8,8 +8,8 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
+require 'minitest/autorun'
 require 'stub/odba'
-require 'test/unit'
 require 'flexmock'
 require 'oddbdat'
 require 'model/sequence'
@@ -43,7 +43,7 @@ module ODDB
   module OdbaExporter
     DATE = Date.today.strftime("%Y%m%d%H%M%S")
     # Tests for *Line classes
-    class TestLine < Test::Unit::TestCase
+    class TestLine < MiniTest::Unit::TestCase
       Line::LENGTH = 3
       def setup
         @line = Line.new
@@ -63,7 +63,7 @@ module ODDB
         assert_equal('', @line.to_s)
       end
     end
-    class TestAcLine < Test::Unit::TestCase
+    class TestAcLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -128,7 +128,7 @@ module ODDB
         assert_equal(expected.sort, @acline.structure.sort)
       end
     end
-    class TestAccompLine < Test::Unit::TestCase
+    class TestAccompLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -156,7 +156,7 @@ module ODDB
         assert_equal(expected.sort, @accompline.structure.sort)
       end
     end
-    class TestAcLimLine < Test::Unit::TestCase
+    class TestAcLimLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -172,7 +172,7 @@ module ODDB
         assert_equal(expected.sort, @aclimline.structure.sort)
       end
     end
-    class TestAcnamLine < Test::Unit::TestCase
+    class TestAcnamLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -255,7 +255,7 @@ module ODDB
         assert_equal(expected.sort, @acnamline.structure.sort)
       end
     end
-    class TestAcmedLine < Test::Unit::TestCase
+    class TestAcmedLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -292,7 +292,7 @@ module ODDB
         assert_equal(expected.sort, @acmedline.structure.sort)
       end
     end
-    class TestAcOddbLine < Test::Unit::TestCase
+    class TestAcOddbLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -306,7 +306,7 @@ module ODDB
         assert_equal(expected.sort, @acoddbline.structure.sort)
       end
     end
-    class TestAcpricealgPublicLine < Test::Unit::TestCase
+    class TestAcpricealgPublicLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -332,7 +332,7 @@ module ODDB
         assert_equal(expected.sort, @acpriceline.structure.sort)
       end
    end
-    class TestAcpricealgExfactoryLine < Test::Unit::TestCase
+    class TestAcpricealgExfactoryLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -351,7 +351,7 @@ module ODDB
         assert_equal(expected.sort, @acpriceline.structure.sort)
       end
     end
-    class TestAcscLine < Test::Unit::TestCase
+    class TestAcscLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         # test nil case
@@ -388,7 +388,7 @@ module ODDB
         assert_equal(expected.sort, @acscline.structure.sort)
       end
     end
-    class TestAtcLine < Test::Unit::TestCase
+    class TestAtcLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         # test nil case
@@ -414,7 +414,7 @@ module ODDB
         assert_equal(expected, @atcline.structure)
       end
     end
-    class TestCompLine < Test::Unit::TestCase
+    class TestCompLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         company = flexmock('company') do |comp|
@@ -452,7 +452,7 @@ module ODDB
         assert_equal(expected.sort, @compline.structure.sort)
       end
     end
-    class TestEanLine < Test::Unit::TestCase
+    class TestEanLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         packclass = flexmock('package') do |pack|
@@ -481,7 +481,7 @@ module ODDB
         assert_equal(expected, @eanline.structure)
       end
     end
-    class TestGalenicFormLine < Test::Unit::TestCase
+    class TestGalenicFormLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         galenic_form = flexmock('galenic_form') do |gal|
@@ -501,7 +501,7 @@ module ODDB
         assert_equal(expected.sort, @galenicline.structure.sort)
       end
     end
-    class TestScLine < Test::Unit::TestCase
+    class TestScLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -521,7 +521,7 @@ module ODDB
         assert_equal(expected.sort, @scline.structure.sort)
       end
     end
-    class TestLimitationLine < Test::Unit::TestCase
+    class TestLimitationLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -536,7 +536,7 @@ module ODDB
         assert_equal(expected.sort, @limitationline.structure.sort)
       end
     end
-    class TestLimTxtLine < Test::Unit::TestCase
+    class TestLimTxtLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -552,7 +552,7 @@ module ODDB
         assert_equal(expected.sort, @limtxtline.structure.sort)
       end
     end
-    class TestMCMLine < Test::Unit::TestCase
+    class TestMCMLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -571,14 +571,14 @@ module ODDB
     end
 
     # Tests for *Table classes
-    class TestTable < Test::Unit::TestCase
+    class TestTable < MiniTest::Unit::TestCase
       Table::FILENAME = 'table'
       def test_filename
         table = Table.new
         assert_equal('table', table.filename)
       end
     end
-    class TestAcTable < Test::Unit::TestCase
+    class TestAcTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcLine).should_receive(:new).and_return('acline')
@@ -586,7 +586,7 @@ module ODDB
         assert_equal(['acline'], @actable.lines('package'))
       end
     end
-    class TestAccompTable < Test::Unit::TestCase
+    class TestAccompTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AccompLine).should_receive(:new).and_return('accompline')
@@ -594,7 +594,7 @@ module ODDB
         assert_equal(['accompline'], @accomptable.lines('package'))
       end
     end
-    class TestAcLimTable < Test::Unit::TestCase
+    class TestAcLimTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry == nil calse
@@ -617,7 +617,7 @@ module ODDB
         assert_kind_of(ODDB::OdbaExporter::AcLimLine, @aclimtable.lines(package).first)
       end
     end
-    class TestAcmedTable < Test::Unit::TestCase
+    class TestAcmedTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcmedLine).should_receive(:new).and_return('acmedline')
@@ -625,7 +625,7 @@ module ODDB
         assert_equal(['acmedline'], @acmedtable.lines('package'))
       end
     end
-    class TestAcnamTable < Test::Unit::TestCase
+    class TestAcnamTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcnamLine).should_receive(:new).and_return('acnamline')
@@ -633,7 +633,7 @@ module ODDB
         assert_equal(['acnamline'], @acnamtable.lines('package'))
       end
     end
-    class TestAcOddbTable < Test::Unit::TestCase
+    class TestAcOddbTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.pharmacode nil case
@@ -647,7 +647,7 @@ module ODDB
         assert_equal(['acoddbline'], @acoddbtable.lines(package))
       end
     end
-    class TestAcpricealgTable < Test::Unit::TestCase
+    class TestAcpricealgTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcpricealgPublicLine).should_receive(:new).and_return('acpricepublic')
@@ -656,7 +656,7 @@ module ODDB
         assert_equal(["acpricepublic", "acpriceexfactory"], @acpricetable.lines('package'))
       end
     end
-    class TestAcscTable < Test::Unit::TestCase
+    class TestAcscTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         active_agents = ['act']
@@ -670,7 +670,7 @@ module ODDB
         assert_equal(['acscline'], @acsctable.lines(package))
       end
     end
-    class TestLimitationTable < Test::Unit::TestCase
+    class TestLimitationTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry nil case
@@ -693,7 +693,7 @@ module ODDB
         assert_equal(['limitationline'], @limitationtable.lines(package))
       end
     end
-    class TestLimTxtTable < Test::Unit::TestCase
+    class TestLimTxtTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry nil case
@@ -719,7 +719,7 @@ module ODDB
         assert_equal(['limtxtline'], @limtxttable.lines(package))
       end
     end
-    class TestEanTable < Test::Unit::TestCase
+    class TestEanTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(EanLine).should_receive(:new).and_return('eanline')
@@ -731,7 +731,7 @@ module ODDB
     ODDB::Text::ImageLink = 'imagelink'
     #ODDB::Text::Table = 'table'
     SERVER_NAME = 'server_name/'
-    class TestMCMTable < Test::Unit::TestCase
+    class TestMCMTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @mcmtable = MCMTable.new
@@ -805,7 +805,7 @@ module ODDB
         expected = "<BI>head<E><P><I>subhead<E><IMG src='http://server_name/imagelink.src'/>"
         assert_equal(expected, @mcmtable.format_line(chapter))
       end
-=begin
+=begin      
       def test_format_lines__Table
         section = flexmock('section') do |sec|
           sec.should_receive(:subheading).and_return('subhead')
@@ -819,13 +819,13 @@ module ODDB
         # test
         expected = "<BI>head<E><P><I>subhead<E><N>table<E>"
         assert_equal(expected, @mcmtable.format_line(chapter))
-      end
+      end      
 =end
     end
     # the followings are necessary for TestCodesTable
     AtcClass = 'atcclass'
     GalenicForm = 'galenicform'
-    class TestCodesTable < Test::Unit::TestCase
+    class TestCodesTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         flexstub(AtcLine).should_receive(:new).and_return('atcline')
@@ -843,7 +843,7 @@ module ODDB
         assert_equal(['galenicformline'], @codestable.lines(GalenicForm))
       end
     end
-    class TestScTable < Test::Unit::TestCase
+    class TestScTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(ScLine).should_receive(:new).and_return('scline')
@@ -851,7 +851,7 @@ module ODDB
         assert_equal(['scline'], @sctable.lines('substance'))
       end
     end
-    class TestCompTable < Test::Unit::TestCase
+    class TestCompTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(CompLine).should_receive(:new).and_return('compline')
@@ -859,7 +859,7 @@ module ODDB
         assert_equal(['compline'], @comptable.lines('company'))
       end
     end
-    class TestReadme < Test::Unit::TestCase
+    class TestReadme < MiniTest::Unit::TestCase
       def test_lines
         expected = <<-EOS
 	oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
