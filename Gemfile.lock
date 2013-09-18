@@ -143,7 +143,6 @@ GEM
     spreadsheet (0.8.9)
       ruby-ole (>= 1.0)
     swissmedic_diff (0.1.3)
-    test-unit (2.5.5)
     tmail (1.2.7.1)
     travis-lint (1.7.0)
       hashr (~> 0.0.22)
@@ -227,7 +226,6 @@ DEPENDENCIES
   simplecov
   spreadsheet
   swissmedic_diff
-  test-unit
   tmail
   travis-lint
   treetop

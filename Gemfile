@@ -40,7 +40,6 @@ gem "json"
 gem "mail"
 gem "mechanize"
 gem "mime-types"
-gem "minitest"
 gem "money"
 gem "multi_json"
 gem "needle"
@@ -86,8 +85,8 @@ group :development, :test do
   gem 'hoe'
   gem 'hoe-travis'
   gem 'racc'
+  gem "minitest"
   gem 'travis-lint'
-  gem 'test-unit'
   gem 'simplecov'
   gem 'pry'
   gem 'pry-debugger'
