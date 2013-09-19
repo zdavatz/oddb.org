@@ -170,7 +170,7 @@ module ODDB
             when ODDB::Text::Table
               string << '<N>' << par.to_s << '<E>'
             else
-              text = u par.text
+              text = par.text
 							par.formats.each { |format|
 								start_tag = ""
 								end_tag = ""
