@@ -8,14 +8,15 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
+require 'minitest/autorun'
 require 'stub/odba'
-require 'test/unit'
 require 'flexmock'
 require 'oddbdat'
 require 'model/sequence'
 require 'model/package'
 require 'model/text'
 require 'date'
+require 'model/fachinfo.rb'
 
 # This definition is called in TestMCMTable
 class String
@@ -43,7 +44,7 @@ module ODDB
   module OdbaExporter
     DATE = Date.today.strftime("%Y%m%d%H%M%S")
     # Tests for *Line classes
-    class TestLine < Test::Unit::TestCase
+    class TestLine < MiniTest::Unit::TestCase
       Line::LENGTH = 3
       def setup
         @line = Line.new
@@ -63,7 +64,7 @@ module ODDB
         assert_equal('', @line.to_s)
       end
     end
-    class TestAcLine < Test::Unit::TestCase
+    class TestAcLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -128,7 +129,7 @@ module ODDB
         assert_equal(expected.sort, @acline.structure.sort)
       end
     end
-    class TestAccompLine < Test::Unit::TestCase
+    class TestAccompLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -156,7 +157,7 @@ module ODDB
         assert_equal(expected.sort, @accompline.structure.sort)
       end
     end
-    class TestAcLimLine < Test::Unit::TestCase
+    class TestAcLimLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -172,7 +173,7 @@ module ODDB
         assert_equal(expected.sort, @aclimline.structure.sort)
       end
     end
-    class TestAcnamLine < Test::Unit::TestCase
+    class TestAcnamLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -255,7 +256,7 @@ module ODDB
         assert_equal(expected.sort, @acnamline.structure.sort)
       end
     end
-    class TestAcmedLine < Test::Unit::TestCase
+    class TestAcmedLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -292,7 +293,7 @@ module ODDB
         assert_equal(expected.sort, @acmedline.structure.sort)
       end
     end
-    class TestAcOddbLine < Test::Unit::TestCase
+    class TestAcOddbLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -306,7 +307,7 @@ module ODDB
         assert_equal(expected.sort, @acoddbline.structure.sort)
       end
     end
-    class TestAcpricealgPublicLine < Test::Unit::TestCase
+    class TestAcpricealgPublicLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @package = ODDB::Package.new('12')
@@ -332,7 +333,7 @@ module ODDB
         assert_equal(expected.sort, @acpriceline.structure.sort)
       end
    end
-    class TestAcpricealgExfactoryLine < Test::Unit::TestCase
+    class TestAcpricealgExfactoryLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -351,7 +352,7 @@ module ODDB
         assert_equal(expected.sort, @acpriceline.structure.sort)
       end
     end
-    class TestAcscLine < Test::Unit::TestCase
+    class TestAcscLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         # test nil case
@@ -388,7 +389,7 @@ module ODDB
         assert_equal(expected.sort, @acscline.structure.sort)
       end
     end
-    class TestAtcLine < Test::Unit::TestCase
+    class TestAtcLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         # test nil case
@@ -414,7 +415,7 @@ module ODDB
         assert_equal(expected, @atcline.structure)
       end
     end
-    class TestCompLine < Test::Unit::TestCase
+    class TestCompLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         company = flexmock('company') do |comp|
@@ -452,7 +453,7 @@ module ODDB
         assert_equal(expected.sort, @compline.structure.sort)
       end
     end
-    class TestEanLine < Test::Unit::TestCase
+    class TestEanLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         packclass = flexmock('package') do |pack|
@@ -481,7 +482,7 @@ module ODDB
         assert_equal(expected, @eanline.structure)
       end
     end
-    class TestGalenicFormLine < Test::Unit::TestCase
+    class TestGalenicFormLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         galenic_form = flexmock('galenic_form') do |gal|
@@ -501,7 +502,7 @@ module ODDB
         assert_equal(expected.sort, @galenicline.structure.sort)
       end
     end
-    class TestScLine < Test::Unit::TestCase
+    class TestScLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         package = ODDB::Package.new('12')
@@ -521,7 +522,7 @@ module ODDB
         assert_equal(expected.sort, @scline.structure.sort)
       end
     end
-    class TestLimitationLine < Test::Unit::TestCase
+    class TestLimitationLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -536,7 +537,7 @@ module ODDB
         assert_equal(expected.sort, @limitationline.structure.sort)
       end
     end
-    class TestLimTxtLine < Test::Unit::TestCase
+    class TestLimTxtLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -552,7 +553,7 @@ module ODDB
         assert_equal(expected.sort, @limtxtline.structure.sort)
       end
     end
-    class TestMCMLine < Test::Unit::TestCase
+    class TestMCMLine < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_structure
         flexstub(Date).should_receive(:"today.strftime").and_return('20110203000000')
@@ -571,14 +572,14 @@ module ODDB
     end
 
     # Tests for *Table classes
-    class TestTable < Test::Unit::TestCase
+    class TestTable < MiniTest::Unit::TestCase
       Table::FILENAME = 'table'
       def test_filename
         table = Table.new
         assert_equal('table', table.filename)
       end
     end
-    class TestAcTable < Test::Unit::TestCase
+    class TestAcTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcLine).should_receive(:new).and_return('acline')
@@ -586,7 +587,7 @@ module ODDB
         assert_equal(['acline'], @actable.lines('package'))
       end
     end
-    class TestAccompTable < Test::Unit::TestCase
+    class TestAccompTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AccompLine).should_receive(:new).and_return('accompline')
@@ -594,7 +595,7 @@ module ODDB
         assert_equal(['accompline'], @accomptable.lines('package'))
       end
     end
-    class TestAcLimTable < Test::Unit::TestCase
+    class TestAcLimTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry == nil calse
@@ -617,7 +618,7 @@ module ODDB
         assert_kind_of(ODDB::OdbaExporter::AcLimLine, @aclimtable.lines(package).first)
       end
     end
-    class TestAcmedTable < Test::Unit::TestCase
+    class TestAcmedTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcmedLine).should_receive(:new).and_return('acmedline')
@@ -625,7 +626,7 @@ module ODDB
         assert_equal(['acmedline'], @acmedtable.lines('package'))
       end
     end
-    class TestAcnamTable < Test::Unit::TestCase
+    class TestAcnamTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcnamLine).should_receive(:new).and_return('acnamline')
@@ -633,7 +634,7 @@ module ODDB
         assert_equal(['acnamline'], @acnamtable.lines('package'))
       end
     end
-    class TestAcOddbTable < Test::Unit::TestCase
+    class TestAcOddbTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.pharmacode nil case
@@ -647,7 +648,7 @@ module ODDB
         assert_equal(['acoddbline'], @acoddbtable.lines(package))
       end
     end
-    class TestAcpricealgTable < Test::Unit::TestCase
+    class TestAcpricealgTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(AcpricealgPublicLine).should_receive(:new).and_return('acpricepublic')
@@ -656,7 +657,7 @@ module ODDB
         assert_equal(["acpricepublic", "acpriceexfactory"], @acpricetable.lines('package'))
       end
     end
-    class TestAcscTable < Test::Unit::TestCase
+    class TestAcscTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         active_agents = ['act']
@@ -670,7 +671,7 @@ module ODDB
         assert_equal(['acscline'], @acsctable.lines(package))
       end
     end
-    class TestLimitationTable < Test::Unit::TestCase
+    class TestLimitationTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry nil case
@@ -693,7 +694,7 @@ module ODDB
         assert_equal(['limitationline'], @limitationtable.lines(package))
       end
     end
-    class TestLimTxtTable < Test::Unit::TestCase
+    class TestLimTxtTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         # test package.sl_entry nil case
@@ -719,7 +720,7 @@ module ODDB
         assert_equal(['limtxtline'], @limtxttable.lines(package))
       end
     end
-    class TestEanTable < Test::Unit::TestCase
+    class TestEanTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(EanLine).should_receive(:new).and_return('eanline')
@@ -731,7 +732,7 @@ module ODDB
     ODDB::Text::ImageLink = 'imagelink'
     #ODDB::Text::Table = 'table'
     SERVER_NAME = 'server_name/'
-    class TestMCMTable < Test::Unit::TestCase
+    class TestMCMTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         @mcmtable = MCMTable.new
@@ -774,22 +775,25 @@ module ODDB
           form.should_receive(:range).and_return(0..7)
         end
         paragraph = flexmock('paragraph') do |par|
+          par.should_receive(:class).and_return(ODDB::Text::Paragraph)
           par.should_receive(:text).and_return('par.text')
           par.should_receive(:formats).and_return([format])
           par.should_receive(:preformatted?).and_return(true)
         end
         section = flexmock('section') do |sec|
+          sec.should_receive(:class).and_return(ODDB::Text::Section)
           sec.should_receive(:subheading).and_return('subhead')
           sec.should_receive(:paragraphs).and_return([paragraph])
         end
         chapter = flexmock('chapter') do |chap|
+          chap.should_receive(:class).and_return(ODDB::Text::Chapter)
           chap.should_receive(:heading).and_return('head')
           chap.should_receive(:sections).and_return([section])
         end
 
         # test
         expected = "<BI>head<E><P><I>subhead<E><I>par.text<E><P>"
-        assert_equal(expected, @mcmtable.format_line(chapter))
+          assert_equal(expected, @mcmtable.format_line(chapter))
       end
       def test_format_lines__ImageLink
         section = flexmock('section') do |sec|
@@ -805,11 +809,20 @@ module ODDB
         expected = "<BI>head<E><P><I>subhead<E><IMG src='http://server_name/imagelink.src'/>"
         assert_equal(expected, @mcmtable.format_line(chapter))
       end
-=begin
       def test_format_lines__Table
+        format = flexmock('format',
+                          :range => 0,
+                          :bold? => false,
+                          :italic? => false,
+                         )
+        paragraph = flexmock('paragraph',
+                             :text => 'paragraph',
+                             :preformatted? => false,
+                             :formats => [format],
+                            )
         section = flexmock('section') do |sec|
           sec.should_receive(:subheading).and_return('subhead')
-          sec.should_receive(:paragraphs).and_return([ODDB::Text::Table])
+          sec.should_receive(:paragraphs).and_return([paragraph])
         end
         chapter = flexmock('chapter') do |chap|
           chap.should_receive(:heading).and_return('head')
@@ -819,13 +832,469 @@ module ODDB
         # test
         expected = "<BI>head<E><P><I>subhead<E><N>table<E>"
         assert_equal(expected, @mcmtable.format_line(chapter))
+      end  
+      def test_format_lines_hapatoron
+        hapatoron_problem = %(--- !ruby/object:ODDB::FachinfoDocument2001
+composition: !ruby/object:ODDB::Text::Chapter
+  heading: Was ist in Hepatodoron enthalten?
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id003 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+      formats: 
+      - *id003
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette \xC3\xA0 200mg enth\xC3\xA4lt: getrocknete Walderdbeerbl\xC3\xA4tter 40mg / getrocknete Weinrebenbl\xC3\xA4tter 40mg."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id004 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+      formats: 
+      - *id004
+      preformatted: false
+      raw_txt: 
+      text: "Hilfsstoffe: Milchzucker, Weizenst\xC3\xA4rke, Zucker, Talk."
+)    
+        fachinfo = YAML::load(hapatoron_problem)
+        expected = "<BI>Was ist in Hepatodoron enthalten?<E><P>1 Tablette à 200mg enthält: getrocknete Walderdbeerblätter 40mg / getrocknete Weinrebenblätter 40mg.<P>Hilfsstoffe: Milchzucker, Weizenstärke, Zucker, Talk.<P>"
+        assert_equal(expected, @mcmtable.format_line(fachinfo.composition))
       end
-=end
-    end
+      
+      def test_format_lines_iopamiro
+        iopamiro_problem = %(--- !ruby/object:ODDB::Text::Chapter
+  heading: Zusammensetzung
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id002 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 8
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 7
+        start: 0
+        values: 
+        - :italic
+      - *id002
+      preformatted: false
+      raw_txt: 
+      text: Pro 1 ml
+    subheading: ""
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Table 
+      rows: 
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id022 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id022
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id023 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id023
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - IOPAMIRO
+          - "\n"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id024 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id024
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "370"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id025 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id025
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id026 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id026
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 5
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id027 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id027
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id028 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id028
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "Wirkstoff:"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id029 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id029
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id030 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id030
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id031 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id031
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id032 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id032
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - Iopamidol
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id033 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id033
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - (mg)
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id034 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id034
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id035 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id035
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id036 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id036
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id037 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id037
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "306,2"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id038 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id038
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id039 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id039
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id040 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id040
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id041 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id041
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "408,2"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id042 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id042
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id043 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id043
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id044 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id044
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id045 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id045
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "612,4"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id046 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id046
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id047 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id047
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id048 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id048
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id049 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id049
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - "755,3"
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id050 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id050
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id051 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id051
+            preformatted: false
+            raw_txt: ""
+            text: ""
+          - ""
+          row_span: 1
+)          
+        composition = YAML::load(iopamiro_problem)
+        assert(composition.heading)
+        assert(composition.paragraphs.size > 0)
+        expected = "<BI>Zusammensetzung<E><P><I>Pro 1 ml<E><P><N>----------------------------------------- IOPAMIRO 370    ----------------------------------------- Wirkstoff:      ----------------------------------------- Iopamidol(mg)  306,2  408,2  612,4  755,3   -----------------------------------------<E>"
+        assert_equal(expected, @mcmtable.format_line(composition))
+      end
+
+    end 
     # the followings are necessary for TestCodesTable
     AtcClass = 'atcclass'
     GalenicForm = 'galenicform'
-    class TestCodesTable < Test::Unit::TestCase
+    class TestCodesTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def setup
         flexstub(AtcLine).should_receive(:new).and_return('atcline')
@@ -843,7 +1312,7 @@ module ODDB
         assert_equal(['galenicformline'], @codestable.lines(GalenicForm))
       end
     end
-    class TestScTable < Test::Unit::TestCase
+    class TestScTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(ScLine).should_receive(:new).and_return('scline')
@@ -851,7 +1320,7 @@ module ODDB
         assert_equal(['scline'], @sctable.lines('substance'))
       end
     end
-    class TestCompTable < Test::Unit::TestCase
+    class TestCompTable < MiniTest::Unit::TestCase
       include FlexMock::TestCase
       def test_lines
         flexstub(CompLine).should_receive(:new).and_return('compline')
@@ -859,7 +1328,7 @@ module ODDB
         assert_equal(['compline'], @comptable.lines('company'))
       end
     end
-    class TestReadme < Test::Unit::TestCase
+    class TestReadme < MiniTest::Unit::TestCase
       def test_lines
         expected = <<-EOS
 	oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.

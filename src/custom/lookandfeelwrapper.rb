@@ -774,6 +774,7 @@ module ODDB
       :migel,
       :patinfos, 
       :preferences,
+      :price_history,
       :query_limit,
 			:recent_registrations,
 			:search_reset,
