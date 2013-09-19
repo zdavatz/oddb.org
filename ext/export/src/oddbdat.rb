@@ -154,20 +154,19 @@ module ODDB
         end
 			end
 			def format_line(chapter)
-				string = String.new
-				unless((head = chapter.heading).empty?)
+				string = String.new        
+				unless ((head = chapter.heading).empty?)
 					string << '<BI>' << head.to_s << '<E><P>'
-				end
+				end if chapter.heading
 				chapter.sections.each { |sec|
 					unless((subhead = sec.subheading).empty?)
 						subhead = subhead.gsub(/\n/u, "<P>")
 						string << '<I>' << subhead.to_s << '<E>'
-					end
+					end if sec.subheading
 					sec.paragraphs.each { |par|
-            case par
-            when ODDB::Text::ImageLink
+            if par.eql?(ODDB::Text::ImageLink)
               string << "<IMG src='http://#{SERVER_NAME}#{par.src}'/>"
-            when ODDB::Text::Table
+            elsif par.is_a?(ODDB::Text::Table)
               string << '<N>' << par.to_s << '<E>'
             else
               text = par.text
@@ -192,7 +191,7 @@ module ODDB
 							end
             end
 					}
-				}
+				} if chapter.sections
 				string.gsub(/\n/u, ' ')
 			end
 		end
