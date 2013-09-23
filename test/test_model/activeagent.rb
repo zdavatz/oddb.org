@@ -100,9 +100,7 @@ class TestActiveAgent <Minitest::Test
 		other.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		other.init(@app)
 		assert_equal(other, @agent)
-		assert_nothing_raised {
-			@agent == nil
-		}
+		@agent == nil
 	end
 	def test_substance_writer
 		sequence = StubActiveAgentSequence.new
@@ -225,9 +223,7 @@ class TestActiveAgent <Minitest::Test
 	end
   def test_adjust_types__error
     res = nil
-    assert_nothing_raised do
-      res = @agent.adjust_types :dose => []
-    end
+    res = @agent.adjust_types :dose => []
     assert_equal({}, res)
   end
 	def test_compare1

@@ -51,23 +51,17 @@ module ODDB
       @format = ODDB::Text::Format.new
     end
     def test_initialize
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(0..-1, @format.range)
     end
     def test_start_writer
       @format.start = 3
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(3..-1, @format.range)
     end
     def test_end_writer
       @format.end = 7
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(0..7, @format.range)
     end
   end
@@ -353,7 +347,7 @@ AnOthEr pArAgrAph
       assert_equal par1.object_id, par2.object_id
       par1 << 'foo'
       par3 = @section.next_paragraph
-      assert_not_equal par1.object_id, par3.object_id
+      assert par1.object_id != par3.object_id
     end
   end
   class TestChapter <Minitest::Test
@@ -421,7 +415,7 @@ pArAgrAph
       section.subheading = 'foo'
       section2 = @chapter.next_section
       assert_equal(2, @chapter.sections.size)
-      assert_not_equal(section, section2)
+      assert(section != section2)
     end
     def test_paragraphs
       expected = []
@@ -534,7 +528,7 @@ foo
       assert_equal [5, 12], @table.column_widths
     end
     def test_current_cell
-      assert_nothing_raised do @table.current_cell end
+      @table.current_cell
       assert_nil @table.current_cell
       @table.next_row!
       assert_nil @table.current_cell
@@ -544,7 +538,7 @@ foo
       assert_equal cell2, @table.current_cell
     end
     def test_current_row
-      assert_nothing_raised do @table.current_row end
+      @table.current_row
       assert_nil @table.current_row
       row1 = @table.next_row!
       assert_equal row1, @table.current_row

@@ -1156,7 +1156,7 @@ Allergische
 				result = paragraph2.text.split(/\n/)
 				control = expected.split(/\n/)
 				control.each_with_index { |line, idx|
-					assert_not_nil(result.at(idx), line)
+					refute_nil(result.at(idx), line)
 					assert_equal(line.rstrip, result.at(idx).rstrip)
 				}
 				assert_equal(result.size, control.size)
@@ -1322,7 +1322,7 @@ Clearance   Pregabalin*                 teilung
 				EOS
 				lines = paragraph.to_s.split(/\n/)
 				expected.split(/\n/).each_with_index { |line, idx|
-					assert_not_nil(lines[idx], line)
+					refute_nil(lines[idx], line)
 					assert_equal(line.rstrip, lines[idx].rstrip)
 				}
 			end
@@ -1481,7 +1481,7 @@ Hypotension        -          3          8
 				EOS
 				lines = paragraph.to_s.split(/\n/)
 				expected.split(/\n/).each_with_index { |line, idx|
-					assert_not_nil(lines[idx], line)
+					refute_nil(lines[idx], line)
 					assert_equal(line.rstrip, lines[idx].rstrip)
 				}
 			end
@@ -1506,7 +1506,7 @@ Hypotension        -          3          8
 				EOS
 				lines = paragraph.to_s.split(/\n/)
 				expected.split(/\n/).each_with_index { |line, idx|
-					assert_not_nil(lines[idx], line)
+					refute_nil(lines[idx], line)
 					assert_equal(line.rstrip, lines[idx].rstrip)
 				}
 			end

@@ -91,7 +91,8 @@ class TestPackageFacade <Minitest::Test
 		@pack2 = Compare::Comparison::PackageFacade.new(pack2, original)
 	end
 	def test_comparable
-		assert_nothing_raised { @pack1 <=> @pack2 }
+		@pack1 <=> @pack2
+    assert(@pack1 != @pack2)
 	end
 end
 		end

@@ -231,9 +231,7 @@ module ODDB
 			pointer.append('12345')
 			assert_equal(@pointer, pointer)
 			pointer = ODDB::Persistence::Pointer.new
-			assert_nothing_raised {
-				pointer.append('12345')
-			}
+      pointer.append('12345')
 		end
 		def test_equal
 			pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
@@ -273,7 +271,7 @@ module ODDB
 		def test_fail_resolve3
 			app = StubPointerApp2.new
 			@pointer.directions[1] = [:bar]
-			assert_nothing_raised { @pointer.resolve(app) }
+			@pointer.resolve(app)
 			assert_nil(@pointer.resolve(app))
 		end
 		def test_issue_create1
@@ -385,9 +383,7 @@ module ODDB
 			assert_equal(creator, @pointer.creator)
 		end
 		def test_marshal_dump
-			assert_nothing_raised {
-				Marshal.dump(@pointer)
-			}
+      Marshal.dump(@pointer)
 		end
 		def test_hash_key
 			hash = {}
@@ -452,7 +448,7 @@ module ODDB
 		end
 		def test_respond_to_anything
 			message = :undefinded_method
-			assert_nothing_raised { @item.send(message) }
+			@item.send(message)
 			assert_equal(nil, @item.send(message))
 		end
 	end

@@ -70,11 +70,8 @@ module ODDB
 				assert_equal("1", result)
 			end
 			def test_to_html
-				assert_nothing_raised {
-					@view.to_html(CGI.new)
-				}
 				result = @view.to_html(CGI.new)
-				assert_not_nil(result.index('<TD class="pager">0</TD>'), "Page-Number without link did not have css-class")
+				refute_nil(result.index('<TD class="pager">0</TD>'), "Page-Number without link did not have css-class")
 				assert_nil(result.index('<TD class="pager-bg">'), "The pager should not have alternate bg-classes")
 			end
       def test_compose_header

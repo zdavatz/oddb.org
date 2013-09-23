@@ -134,8 +134,8 @@ HTML
   HTML
     elem = Hpricot(html).at("div.paragraph")
     assert("Zulassungsnummer",  elem.at("div").inner_text)
-    assert_not_nil(elem.at("div"))
-    assert_not_nil(elem.at("p"))
+    refute_nil(elem.at("div"))
+    refute_nil(elem.at("p"))
     assert("58267, 62946 (Swissmedic)", elem.at("p").inner_text)
   end
   
@@ -261,7 +261,7 @@ end
 class TestFachinfoHpricotAlcaCDe <Minitest::Test
   MedicalName = 'Alca-C®'
   def setup
-    return if defined?(@@path)
+    return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
     @@path = File.expand_path('data/html/de/alcac.fi.html', File.dirname(__FILE__))
     @@writer = FachinfoHpricot.new
     open(@@path) { |fh| 
@@ -371,7 +371,7 @@ end if false
   class TestFachinfoHpricot_32917_Zyloric_De <Minitest::Test
     
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_32917_zyloric.de.html',  File.dirname(__FILE__))
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
@@ -409,7 +409,7 @@ end if false
   class TestFachinfoHpricotZyloricFr <Minitest::Test
     MedicalName = Zyloric_Reg
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/fr/fi_Zyloric.fr.html',  File.dirname(__FILE__))
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
@@ -457,7 +457,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     MedicInfoName = 'Finasterid Streuli® 5'
 
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_58106_finasterid.de.html',  File.dirname(__FILE__))      
       @@writer = FachinfoHpricot.new
       
@@ -504,7 +504,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
   class TestFachinfoHpricot_62439_Xalos_Duo_De <Minitest::Test
     MedicInfoName = 'Xalos®-Duo'
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_62439_xalos_duo.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
@@ -551,7 +551,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     Styles = ''
     MedicInfoName = 'Bisoprolol Axapharm'
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_62111_bisoprolol.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
@@ -602,7 +602,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
   class TestFachinfo_62580_Novartis_Seebri<Minitest::Test
     MedicInfoName = ' Seebri Breezhaler'
     def setup
-      return if defined?(@@path)
+      return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_62580_novartis_seebris.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh| 
@@ -687,7 +687,7 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
       HtmlName      = 'data/html/de/fi_62184_cipralex_de.html'
       
       def setup
-        return if defined?(@@path)
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path('data/html/de/fi_62184_cipralex_de.html',  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
         
@@ -771,8 +771,8 @@ class="
       HtmlName      = 'data/html/de/fi_58267_isentres_de.html'
       
       def setup
-        return if defined?(@@path)
-        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))    
         @@writer = FachinfoHpricot.new
         
         open(@@path) { |fh| 
@@ -864,7 +864,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
       HtmlName      = 'data/html/de/fi_49456_clexane_de.html'
       
       def setup
-        return if defined?(@@path)
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
         
@@ -925,7 +925,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
       HtmlName      = 'data/html/de/fi_30785_ponstan.html'
       
       def setup
-        return if defined?(@@path)
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
         @@writer = FachinfoHpricot.new
         

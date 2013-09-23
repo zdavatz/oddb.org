@@ -134,9 +134,7 @@ class TestDose <Minitest::Test
 	end
 	def test_complex_unit
 		dose = nil
-		assert_nothing_raised {
-			dose = ODDB::Dose.new(20.0, 'mg/5ml')
-		}
+		dose = ODDB::Dose.new(20.0, 'mg/5ml')
 	end
 	def test_from_quanty
 		quanty = Quanty.new(1,'mg')
@@ -155,15 +153,11 @@ class TestDose <Minitest::Test
 		assert_equal(ODDB::Dose.new(1.7, 'ml kg'), dose1 * dose2)
 	end
 	def test_robust_initalizer
-		assert_nothing_raised {
-			ODDB::Dose.new(12)
-		}
+		ODDB::Dose.new(12)
 	end
 	def test_robust_to_f
 		dose = ODDB::Dose.new(12, 'mg')
-		assert_nothing_raised {
-			dose.to_f
-		}
+		dose.to_f
 	end
   def test_scale
     assert_nil @dose.scale

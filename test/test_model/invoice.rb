@@ -152,7 +152,7 @@ module ODDB
 		end
     def test_dup
       dupl = @item.dup
-      assert_not_equal @item.data.object_id, dupl.data.object_id
+      assert @item.data.object_id != dupl.data.object_id
     end
     def test_expiry_time
       now = Time.now

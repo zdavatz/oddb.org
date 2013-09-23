@@ -48,7 +48,7 @@ module ODDB
         ODDB::MedData::Session::FORM_KEYS.store   :search_type_test, [ [:name, 'txtSearchName'] ]
         ODDB::MedData::Session::DETAIL_KEYS.store :search_type_test, 'detail_key'
 
-        assert_raise(Timeout::Error) do 
+        assert_raises(Timeout::Error) do 
           ODDB::MedData::StubSession.new(:search_type_test, @http_server)
         end
       end
@@ -164,7 +164,7 @@ module ODDB
                  :flexmock_original_behavior_for_should_receive => nil
                 )
         stderr_null do 
-          assert_raise(Errno::ENETUNREACH) do 
+          assert_raises(Errno::ENETUNREACH) do 
             @session.get_result_list(criteria)
           end
         end
@@ -186,7 +186,7 @@ module ODDB
                  :flexmock_original_behavior_for_should_receive => nil
                 )
         stderr_null do 
-          assert_raise(RuntimeError) do 
+          assert_raises(RuntimeError) do 
             @session.get_result_list(criteria)
           end
         end
@@ -215,7 +215,7 @@ module ODDB
                  :flexmock_original_behavior_for_should_receive => nil
                 )
         stderr_null{stdout_null{
-          assert_raise(RuntimeError) do 
+          assert_raises(RuntimeError) do 
             @session.get_result_list(criteria)
           end
         }}
@@ -250,7 +250,7 @@ module ODDB
                 )
 
         stderr_null do 
-          assert_raise(Errno::ECONNRESET) do 
+          assert_raises(Errno::ECONNRESET) do 
             @session.detail_html(nil)
           end
         end

@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "yaml"
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 

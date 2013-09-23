@@ -209,9 +209,7 @@ module ODDB
 					}
 				}
 				result = nil
-				assert_nothing_raised {
-					result = @plugin.prepare_addresses(input)
-				}
+				result = @plugin.prepare_addresses(input)
 				assert_instance_of(Array, result)
 				assert_equal(1, result.size)
 				addr = result.first
@@ -255,9 +253,7 @@ module ODDB
 					]
 				}
 				result = nil
-				assert_nothing_raised {
-					result = @plugin.prepare_addresses(input)
-				}
+				result = @plugin.prepare_addresses(input)
 				assert_instance_of(Array, result)
 				assert_equal(2, result.size)
 				assert_equal(:praxis, result.first.type)

@@ -109,7 +109,7 @@ class TestStubCheckout <Minitest::Test
             )
     input = {'key' => 'value'}
     flexmock(@checkout, :create_error => 'create_error')
-    assert_raise(RuntimeError) do 
+    assert_raises(RuntimeError) do 
       @checkout.create_user(input)
     end
   end
@@ -123,7 +123,7 @@ class TestStubCheckout <Minitest::Test
             )
     input = {'key' => 'value'}
     flexmock(@checkout, :create_error => 'create_error')
-    assert_raise(RuntimeError) do 
+    assert_raises(RuntimeError) do 
       @checkout.create_user(input)
     end
   end

@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+!#89/usr/bin/env ruby
 # encoding: utf-8
 #TestGalenicForm - oddb - 25.02.2003 - hwyss@ywesee.com 
 
@@ -79,21 +79,21 @@ module ODDB
     def test_compare
       galform = ODDB::GalenicForm.new
       galform.update_values('de'=>'Suspension')
-      assert_nothing_raised { galform <=> @galform }
+      galform <=> @galform
       assert(@galform > galform, 'Tabletten was not > Suspension')
     end
     def test_equivalent_to
       group1 = StubGroup.new
       @galform.galenic_group = group1
       galform = ODDB::GalenicForm.new
-      assert_not_equal(@galform, galform)
+      assert(@galform != galform)
       assert(!@galform.equivalent_to?(galform), "The GalenicForms should not be equivalent")
       galform.galenic_group = group1
-      assert_not_equal(@galform, galform)
+      assert(@galform != galform)
       assert(@galform.equivalent_to?(galform), "The GalenicForms should be equivalent")
       assert(galform.equivalent_to?(@galform), "The GalenicForms should be equivalent")
       galform.galenic_group = StubGroup.new
-      assert_not_equal(@galform, galform)
+      assert(@galform != galform)
       assert(!@galform.equivalent_to?(galform), "The GalenicForms should not be equivalent")
     end
     def test_galenic_group_writer

@@ -64,7 +64,7 @@ class TestInterval <Minitest::Test
 	end
 	def test_empty_range_patterns
 		@interval.model = []
-		assert_not_nil(@interval.default_interval)
+		refute_nil(@interval.default_interval)
 	end
 end
 

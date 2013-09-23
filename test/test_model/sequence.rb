@@ -195,7 +195,7 @@ class TestSequence <Minitest::Test
     assert_equal(expected, @seq.adjust_types(values, app))
   end
   def test_atc_class_writer
-    assert_nothing_raised { @seq.atc_class = nil }
+    @seq.atc_class = nil
     atc1 = StubSequenceAtcClass.new
     atc2 = StubSequenceAtcClass.new
     assert_nil(atc1.state)
@@ -203,7 +203,7 @@ class TestSequence <Minitest::Test
     @seq.atc_class = atc1
     assert_equal(:added, atc1.state)
     assert_nil(atc2.state)
-    assert_nothing_raised { @seq.atc_class = nil }
+    @seq.atc_class = nil
     assert_equal(:added, atc1.state)
     assert_nil(atc2.state)
     assert_equal(atc1, @seq.atc_class)
@@ -516,7 +516,7 @@ class TestSequence <Minitest::Test
     assert_nil @seq.longevity
   end
   def test_match
-    assert_nothing_raised{@seq.match('Aspirin')}
+    @seq.match('Aspirin')
     assert_equal(nil, @seq.match('Aspirin'))
     @seq.name_base='Aspirin'
     assert_equal(MatchData, @seq.match('Aspirin').class)
@@ -586,9 +586,7 @@ class TestSequence <Minitest::Test
       :dose	=>	[123, 'fjdsfjdksah'],
     }
     result = {}
-    assert_nothing_raised {
-      result = @seq.adjust_types(values)
-    }
+    result = @seq.adjust_types(values)
     assert_equal(ODDB::Dose.new(123, nil), result[:dose])
   end
   def test_robust_adjust_types_fuzzy_retry
@@ -596,9 +594,7 @@ class TestSequence <Minitest::Test
       :dose	=>	[123, 'mgkKo'],
     }
     result = {}
-    assert_nothing_raised {
-      result = @seq.adjust_types(values)
-    }
+    result = @seq.adjust_types(values)
     assert_equal(ODDB::Dose.new(123, 'mg'), result[:dose])
   end
   def test_route_of_administration

@@ -348,7 +348,7 @@ class TestRegistration <Minitest::Test
   end
   def test_localized_name
     @registration.sequences = {}
-    assert_nothing_raised { @registration.localized_name(:de) }
+    @registration.localized_name(:de)
     seq = flexmock :name_base => 'A Name'
     seq.should_receive(:localized_name).with(:de).and_return 'Localized Name'
     @registration.sequences.update '02' => seq
@@ -372,7 +372,7 @@ class TestRegistration <Minitest::Test
   end
   def test_name_base
     @registration.sequences = {}
-    assert_nothing_raised { @registration.name_base }
+    @registration.name_base
     seq = flexmock :name_base => 'A Name'
     @registration.sequences.store '02', seq
     assert_equal 'A Name', @registration.name_base

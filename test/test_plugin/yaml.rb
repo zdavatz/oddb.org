@@ -221,7 +221,7 @@ module ODDB
         log.should_receive(:notify).and_return('notify')
       end
       replace_constant('ODDB::YamlExporter::EXPORT_SERVER', @server) do
-        assert_nothing_raised(NoMethodError) { @plugin.export_effective_patinfos }
+        @plugin.export_effective_patinfos
       end
     end
     def test_export_fachinfos__no_descr_fachinfo

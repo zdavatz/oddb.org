@@ -128,10 +128,8 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       ]
       agent = setup_mechanize mapping
       page = nil
-      assert_nothing_raised do
-        page = @plugin.init_searchform agent
-      end
-      assert_not_nil page.form_with(:name => 'frmSearchForm')
+      page = @plugin.init_searchform agent
+      refute_nil page.form_with(:name => 'frmSearchForm')
     end
     def test_search_company
       mapping = [
@@ -144,10 +142,8 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       ]
       agent = setup_mechanize mapping
       page = nil
-      assert_nothing_raised do
-        page = @plugin.search_company 'novartis', agent
-      end
-      assert_not_nil page.form_with(:name => 'frmResulthForm')
+      page = @plugin.search_company 'novartis', agent
+      refute_nil page.form_with(:name => 'frmResulthForm')
       assert_equal 1, @pages.size
     end
     def test_import_companies
@@ -162,9 +158,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       path = File.join @@datadir, 'Companies.html'
       result = setup_page 'http://textinfo.ch/Search.aspx', path, agent
       page = nil
-      assert_nothing_raised do
-        @plugin.import_companies result, agent
-      end
+      @plugin.import_companies result, agent
       ## we've touched only one page here, because we returned ResultEmpty.html
       assert_equal 1, @pages.size
     end
@@ -196,9 +190,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_nothing_raised do
-        @plugin.import_company ['novartis'], agent, :both
-      end
+      @plugin.import_company ['novartis'], agent, :both
       assert_equal 5, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
@@ -232,9 +224,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_nothing_raised do
-        @plugin.import_company ['novartis'], agent
-      end
+      @plugin.import_company ['novartis'], agent
       assert_equal 5, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
@@ -275,9 +265,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       page = nil
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      assert_nothing_raised do
-        @plugin.import_products result, agent
-      end
+      @plugin.import_products result, agent
     end
     def test_download_info
       mapping = [
@@ -588,10 +576,8 @@ EOS
       ]
       agent = setup_mechanize mapping
       page = nil
-      assert_nothing_raised do
-        page = @plugin.search_fulltext '53537', agent
-      end
-      assert_not_nil page.form_with(:name => 'frmResulthForm')
+      page = @plugin.search_fulltext '53537', agent
+      refute_nil page.form_with(:name => 'frmResulthForm')
       assert_equal 1, @pages.size
     end
     def test_import_fulltext
@@ -619,9 +605,7 @@ EOS
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_nothing_raised do
-        @plugin.import_fulltext ['53537'], agent
-      end
+      @plugin.import_fulltext ['53537'], agent
       assert_equal 4, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
@@ -644,9 +628,7 @@ EOS
       agent = setup_mechanize mapping
       news = nil
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_nothing_raised do
-        news = @plugin.fachinfo_news agent
-      end
+      news = @plugin.fachinfo_news agent
       assert_equal 7, news.size
       assert_equal "Abilify\302\256", news.first
     end
@@ -710,10 +692,8 @@ EOS
       ]
       agent = setup_mechanize mapping
       page = nil
-      assert_nothing_raised do
-        page = @plugin.search_product 'Trittico® retard', agent
-      end
-      assert_not_nil page.form_with(:name => 'frmResulthForm')
+      page = @plugin.search_product 'Trittico® retard', agent
+      refute_nil page.form_with(:name => 'frmResulthForm')
       assert_equal 1, @pages.size
     end
     def test_import_name
@@ -740,9 +720,7 @@ EOS
       @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_nothing_raised do
-        @plugin.import_fulltext ['Trittico® retard'], agent
-      end
+      @plugin.import_fulltext ['Trittico® retard'], agent
       assert_equal 4, @pages.size
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product

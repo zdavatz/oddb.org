@@ -122,9 +122,7 @@ second lengthy report.\r)
 				:files =>	{ file =>	'application/vnd.ms-excel' },
 			}
 			@log.update_values(hash)
-			assert_nothing_raised {
-				@log.notify
-			}
+			@log.notify
 		end
 	end
 end

@@ -82,6 +82,8 @@ gem "ydim"
 gem "yus" 
 gem 'simplecov'
 
+gem 'minitest'
+
 group :development, :test do
   gem 'hoe'
   gem 'hoe-travis'

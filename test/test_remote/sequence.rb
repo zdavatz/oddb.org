@@ -12,7 +12,7 @@ require 'remote/sequence'
 module ODDB
   module Remote
 
-class TestSequence < ::Test::Unit::TestCase
+class TestSequence < ::Minitest::Test
   include FlexMock::TestCase
   def setup
     atc       = flexmock('atc', :code => 'code')

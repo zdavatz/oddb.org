@@ -229,9 +229,8 @@ module ODDB
           m.should_receive(:is_a?).with(ODDB::LimitationText)
           m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
         end
-        assert_nothing_raised do
-          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
-        end
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        refute_nil(steps)
       end
       def test_init__pointervalue_symbol
         flexmock(@model) do |m|
@@ -239,9 +238,8 @@ module ODDB
           m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
           m.should_receive(:pointer_descr).and_return(:name)
         end
-        assert_nothing_raised do
-          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
-        end
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        refute_nil(steps)
       end
 
 		end

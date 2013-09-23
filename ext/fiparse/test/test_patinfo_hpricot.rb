@@ -224,7 +224,8 @@ Jahren   pro Tag        pro Tag     pro Tag
 end
 class TestPatinfoHpricotCimifeminDe <Minitest::Test
   def setup
-    return if defined?(@@path)
+    return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
+
     @@path = File.expand_path('data/html/de/cimifemin.html', 
       File.dirname(__FILE__))
     @@writer = PatinfoHpricot.new
@@ -468,7 +469,8 @@ class TestPatinfoHpricotCimifeminDe <Minitest::Test
 end
 class TestPatinfoHpricotCimifeminFr <Minitest::Test
   def setup
-    return if defined?(@@path)
+    return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
+
     @@path = File.expand_path('data/html/fr/cimifemin.html', 
       File.dirname(__FILE__))
     @@writer = PatinfoHpricot.new
@@ -510,7 +512,8 @@ class TestPatinfoHpricotCimifeminFr <Minitest::Test
 end
 class TestPatinfoHpricotInderalDe <Minitest::Test
   def setup
-    return if defined?(@@path)
+    return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
+
     @@path = File.expand_path('data/html/de/inderal.html',
       File.dirname(__FILE__))
     @@writer = PatinfoHpricot.new
@@ -595,7 +598,8 @@ end
    class TestPatinfoHpricotNasivinDe <Minitest::Test
       StylesNasivin = '<style>p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-size:11pt;font-weight:bold;}.s3{font-family:Arial;font-size:12pt;line-height:150%;}.s4{font-size:11pt;}.s5{font-family:Arial;font-size:11pt;line-height:150%;}.s6{font-weight:bold;}.s7{font-size:11pt;font-style:italic;}</style>'
       def setup
-        return if defined?(@@path)
+        return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
+
         @@path = File.expand_path('data/html/de/nasivin.html', File.dirname(__FILE__))
         @@writer = PatinfoHpricot.new
         open(@@path) { |fh| 
@@ -807,7 +811,8 @@ class TestPatinfoHpricotChapters <Minitest::Test
       CourierStyle = '<PRE style="font-family: Courier New, monospace; font-size: 12px;">'
       StylesPonstan = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:18pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:8pt;}.s8{font-family:Arial;font-size:11pt;}.s9{line-height:115%;text-align:justify;margin-top:2pt;}.s10{line-height:115%;text-align:justify;margin-top:6pt;}.s11{font-family:Arial;font-size:11pt;font-style:italic;}.s12{font-family:Courier New;font-size:11pt;}.s13{line-height:115%;text-align:left;}.s14{height:6pt;}.s15{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;}.s16{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;}.s17{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s18{font-family:Courier;margin-top:2pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s19{font-family:Arial;font-size:11pt;font-weight:bold;}'
       def setup
-        return if defined?(@@path)
+        return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
+
         @@path = File.expand_path('data/html/de/pi_30785_ponstan.html', File.dirname(__FILE__))
         @@writer = PatinfoHpricot.new
         open(@@path) { |fh| 

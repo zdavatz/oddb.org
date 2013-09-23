@@ -38,7 +38,7 @@ module ODDB
 			assert_equal(expected, Text::Soundex.prepare(input))
 		end
 		def test_soundex
-			assert_not_nil(Text::Soundex.soundex('essigsäure'))
+			refute_nil(Text::Soundex.soundex('essigsäure'))
 		end
 	end
 end

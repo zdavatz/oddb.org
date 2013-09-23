@@ -93,7 +93,7 @@ class TestPackage <Minitest::Test
   end
   def test_initialize
     assert_equal('012', @package.ikscd)
-    assert_not_nil(@package.oid)
+    refute_nil(@package.oid)
   end
   def test_active
     assert_equal(true, @package.active?)

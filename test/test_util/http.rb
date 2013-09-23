@@ -149,7 +149,7 @@ module ODDB
       end
       flexmock(@session, :sleep => nil)
       flexmock(@session, :flexmock_original_behavior_for_should_receive => nil) 
-      assert_raise(EOFError) do 
+      assert_raises(EOFError) do 
         @session.get('args')
       end
     end
@@ -183,7 +183,7 @@ module ODDB
       end
       flexmock(@session, :sleep => nil)
       flexmock(@session, :flexmock_original_behavior_for_should_receive => nil) 
-      assert_raise(EOFError) do 
+      assert_raises(EOFError) do 
         @session.post('path', data)
       end
     end
@@ -193,7 +193,7 @@ module ODDB
       pair2 = ['ccc', 'ddd']
       data  = [pair1, pair2]
       flexmock(@http, :post => 'response')
-      assert_raise(RuntimeError) do 
+      assert_raises(RuntimeError) do 
         @session.post('path', data) 
       end
     end

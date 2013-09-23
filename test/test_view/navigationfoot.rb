@@ -95,9 +95,7 @@ module ODDB
 			end
 			def test_to_html
 				result = ''
-				assert_nothing_raised {
-					result << @view.to_html(CGI.new)
-				}
+				result << @view.to_html(CGI.new)
 				expected = [
 					'<TABLE cellspacing="0" class="navigation">',
 					'<TD><A name="foo" class="navigation right">Foo</A></TD>',

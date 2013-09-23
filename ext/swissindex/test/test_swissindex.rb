@@ -70,6 +70,7 @@ module ODDB
         require 'tempfile'
         $stdout = Tempfile.open('stderr')
         yield
+      ensure
         $stdout.close
         $stdout = STDERR
       end

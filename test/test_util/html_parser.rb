@@ -325,9 +325,7 @@ class TestHtmlTableHandler <Minitest::Test
 		cell = @handler.next_cell([])
 		@handler.send_cdata('Moin!')
 		assert_equal('Moin!', @handler.cdata(2,1))
-		val = assert_nothing_raised {
-			@handler.cdata(0,4)
-		}
+		val = @handler.cdata(0,4)
 		assert_nil(val)
 	end
 	def test_cdata2
@@ -361,9 +359,7 @@ class TestHtmlTableHandler <Minitest::Test
 			:baz	=>	"valbaz",
 		}
 		assert_equal(expected, @handler.extract_cdata(template))
-		assert_nothing_raised {
-			@handler.extract_cdata({:no_such_pos=>[10,10]})
-		}
+		@handler.extract_cdata({:no_such_pos=>[10,10]})
 	end
   def test_add_child
     current_row = ODDB::HtmlTableHandler::Row.new({})

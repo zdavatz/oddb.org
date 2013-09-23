@@ -66,9 +66,7 @@ class TestItems <Minitest::Test
     flexmock(@state).should_receive(:umlaut_filter).and_raise(RuntimeError)
     item1 = flexmock('item1', :article_name => 'article_name1')
     item2 = flexmock('item2', :article_name => 'article_name2')
-    assert_nothing_raised do
-      assert_equal(0, @state.compare_entries(item1, item2))
-    end
+    assert_equal(0, @state.compare_entries(item1, item2))
   end
   def test_sort
     sortby   = [:article_name]

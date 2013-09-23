@@ -38,7 +38,7 @@ class TestDRbSession <Minitest::Test
     assert_equal(expected, @drb.detail(result, {'key' => [0,0]}))
   end
   def test_search__error
-    assert_raise(MedData::OverflowError) do 
+    assert_raises(MedData::OverflowError) do 
       @drb.search('criteria') do |dispatch|
       end
     end

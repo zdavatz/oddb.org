@@ -188,7 +188,7 @@ module ODDB
                          :price_public => 'price_public',
                          :sl_entry     => 'sl_entry',
                         )
-      assert_nothing_raised { @plugin.update_package(package, data) }
+      @plugin.update_package(package, data)
     end
     def test_update_package__sl_entry
       data    = {'pharmacode' => 'price_dat'}
@@ -200,7 +200,7 @@ module ODDB
                          :price_public => 'price_public',
                          :sl_entry     => 'sl_entry',
                         )
-      assert_nothing_raised { @plugin.update_package(package, data) }
+      @plugin.update_package(package, data)
     end
     def test_update_packages
       package = flexmock('package', 
@@ -215,7 +215,7 @@ module ODDB
         a.should_receive(:each_package).and_yield(package)
       end
       data = {'pharmacode' => 'price_dat'}
-      assert_nothing_raised { @plugin.update_packages(data) }
+      @plugin.update_packages(data)
     end
     def test_get_prices
       char = 'A'

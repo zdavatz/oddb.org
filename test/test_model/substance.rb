@@ -27,7 +27,7 @@ module ODDB
       ODBA.storage = nil
     end
     def test_initialize
-      assert_not_nil(@substance.oid)
+      refute_nil(@substance.oid)
     end
     def test_add_chemical_form
       form1 = flexmock 'chemical form'

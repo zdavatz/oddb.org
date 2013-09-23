@@ -73,11 +73,11 @@ module ODDB
         :company				=>	nil,
         :sponsor_until	=>	nil,
       }
-      assert_nothing_raised { @sponsor.adjust_types(values, @app) }
+      @sponsor.adjust_types(values, @app)
     end
     def test_company_name_robust
       assert_nil(@sponsor.company)
-      assert_nothing_raised { @sponsor.company_name }
+      @sponsor.company_name
     end
     def test_represents
       comp = flexmock 'company'

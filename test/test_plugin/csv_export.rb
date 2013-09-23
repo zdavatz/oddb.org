@@ -205,7 +205,7 @@ module ODDB
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
         @plugin.instance_eval('@options = {}')
         stdout_null do
-          assert_raise(StandardError) do
+          assert_raises(StandardError) do
             @plugin._export_drugs('export_name', ['keys'])
           end
         end

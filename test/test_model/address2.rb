@@ -16,8 +16,8 @@ module ODDB
 			@address = Address2.new
 		end
 		def test_street__0
-			assert_nothing_raised { @address.street }
-			assert_nothing_raised { @address.number }
+			@address.street
+			@address.number
 		end
 		def test_street__1
 			@address.address = 'Winterthurerstrasse 52'

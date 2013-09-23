@@ -114,7 +114,7 @@ class TestHospitalPlugin <Minitest::Test
     flexmock(@meddata) do |m|
       m.should_receive(:search).and_raise(StandardError)
     end
-    assert_raise(StandardError) do 
+    assert_raises(StandardError) do 
       stdout_null do 
         @plugin.update
       end
@@ -127,7 +127,7 @@ class TestHospitalPlugin <Minitest::Test
     flexmock(@meddata) do |m|
       m.should_receive(:search).and_raise(MedData::OverflowError)
     end
-    assert_raise(StandardError) do 
+    assert_raises(StandardError) do 
       stdout_null do 
         @plugin.update
       end

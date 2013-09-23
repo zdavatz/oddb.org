@@ -391,7 +391,7 @@ module ODDB
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval('@pac_data = pac_data')
-      assert_raise(RuntimeError) do 
+      assert_raises(RuntimeError) do 
         @listener.tag_start('Pack', 'attr')
       end
     end
@@ -652,7 +652,7 @@ module ODDB
       end
       known_packages = {pointer => 'data'}
       @listener.instance_eval('@known_packages = known_packages')
-      assert_raise(RuntimeError) do 
+      assert_raises(RuntimeError) do 
         @listener.tag_end('Preparations')
       end
     end
@@ -728,7 +728,7 @@ module ODDB
           m.should_receive(:get).and_return(target_file)
         end)
       end
-      assert_raise(Errno::ENOENT) do
+      assert_raises(Errno::ENOENT) do
         @plugin.download_file('target_url', 'save_dir', 'file_name') 
       end
     end
@@ -744,7 +744,7 @@ module ODDB
       flexstub(@plugin) do |p|
         p.should_receive(:sleep)
       end
-      assert_raise(Errno::ENOENT) do 
+      assert_raises(Errno::ENOENT) do 
         @plugin.download_file('target_url', 'save_dir', 'file_name')
       end
     end
@@ -1614,15 +1614,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
 
       # Downloading tests
       result = nil
-      assert_nothing_raised do
-        result = @plugin.download_file(target_url, save_dir, file_name)
-      end
+      result = @plugin.download_file(target_url, save_dir, file_name)
       assert_equal save_file, result
 
       # Not-downloading tests
-      assert_nothing_raised do
-        result = @plugin.download_file(target_url, save_dir, file_name)
-      end
+      result = @plugin.download_file(target_url, save_dir, file_name)
       assert_equal nil, result
 
       # Check files

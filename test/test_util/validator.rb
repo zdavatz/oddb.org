@@ -65,9 +65,7 @@ class TestOddbValidator <Minitest::Test
 		assert_kind_of(SBSM::InvalidDataError, @validator.validate(:pointer, ':!registration,49391!sequence,02.'))
 	end
 	def test_pointer4
-		assert_nothing_raised {
-			@validator.validate(:pointer, ':,arg,nocommand')	
-		}
+    @validator.validate(:pointer, ':,arg,nocommand')	
 	end
 	def test_search_query
 		assert_equal('Ponstan', @validator.validate(:search_query, 'Ponstan'))
@@ -104,7 +102,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal('', @validator.ean13(''))
   end
   def test_ean13__error
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.ean13('12345')
     end
   end
@@ -112,7 +110,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal(['abc@ywesee.com'], @validator.emails('abc@ywesee.com'))
   end
   def test_emails__invalid_email
-    assert_raise(SBSM::InvalidDataError) do 
+    assert_raises(SBSM::InvalidDataError) do 
       @validator.emails('abc_at_ywesee.com')
     end
   end
@@ -129,7 +127,7 @@ class TestOddbValidator <Minitest::Test
     flexmock(RMail::Address) do |r|
       r.should_receive(:parse).and_return(result)
     end
-    assert_raise(SBSM::InvalidDataError) do 
+    assert_raises(SBSM::InvalidDataError) do 
       @validator.emails('abc')
     end
   end
@@ -138,18 +136,18 @@ class TestOddbValidator <Minitest::Test
   end
   def test_pointer
     pointer = ':!registration,49390.'
-    assert_raise(SBSM::InvalidDataError) do 
+    assert_raises(SBSM::InvalidDataError) do 
       @validator.pointer(pointer)
     end
   end
   def test_pointer__invalid_pointer
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.pointer('value')
     end
   end
   def test_galenic_group
     pointer = ':!registration,49390.'
-    assert_raise(SBSM::InvalidDataError) do 
+    assert_raises(SBSM::InvalidDataError) do 
        @validator.galenic_group(pointer)
     end
   end
@@ -157,7 +155,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal('A', @validator.ikscat('Ahogehoge'))
   end
   def test_ikscat__error
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.ikscat('value')
     end
   end
@@ -171,7 +169,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal('5f4dcc3b5aa765d61d8327deb882cf99', @validator.set_pass_1('password'))
   end
   def test_set_pass_1__error
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.set_pass_1('pas')
     end
   end
@@ -179,7 +177,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal('org.oddb.model.hogehoge', @validator.yus_association('org.oddb.model.hogehoge'))
   end
   def test_yus_association__error
-    assert_raise(SBSM::InvalidDataError) do 
+    assert_raises(SBSM::InvalidDataError) do 
       @validator.yus_association('value')
     end
   end
@@ -187,12 +185,12 @@ class TestOddbValidator <Minitest::Test
     assert_equal(:admin, @validator.zone('admin'))
   end
   def test_zone__empty
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.zone('')
     end
   end
   def test_zone__error
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.zone('value')
     end
   end
@@ -200,7 +198,7 @@ class TestOddbValidator <Minitest::Test
     assert_equal(nil, @validator.code(''))
   end
   def test_dose__error
-    assert_raise(SBSM::InvalidDataError) do
+    assert_raises(SBSM::InvalidDataError) do
       @validator.dose('hogehoge')
     end
   end

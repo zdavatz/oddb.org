@@ -589,7 +589,7 @@ class TestOddbApp <Minitest::Test
 		assert_equal(false, group.empty?)
 		assert_raises(RuntimeError) { @app.delete_galenic_group('12345') }
 		group.galenic_form = nil
-		assert_nothing_raised {@app.delete_galenic_group('12345')}
+		@app.delete_galenic_group('12345')
 	end
 	def test_generic_group
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'],

@@ -37,7 +37,7 @@ class TestCsvResult <Minitest::Test
                         :sl_entry => sl_entry,
                         :barcode  => 'barcode'
                        )
-    assert_raise(RuntimeError) do 
+    assert_raises(RuntimeError) do 
       @result.bsv_dossier(package)
     end
   end
@@ -53,7 +53,7 @@ class TestCsvResult <Minitest::Test
   end
   def test_c_type__error
     package = flexmock('package', :complementary_type => 'ctype')
-    assert_raise(NoMethodError) do 
+    assert_raises(NoMethodError) do 
       @result.c_type(package)
     end
   end

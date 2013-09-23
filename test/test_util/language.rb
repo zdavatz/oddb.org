@@ -87,8 +87,8 @@ class TestLanguage <Minitest::Test
 	end
 	def test_method_missing
 		@obj.descriptions.store("de","eine Beschreibung")
-		assert_nothing_raised { @obj.de }
-		assert_nothing_raised { @obj.description('de') }
+		@obj.de
+		@obj.description('de')
 		assert_equal('eine Beschreibung', @obj.de)
 		assert_equal('eine Beschreibung', @obj.description('de'))
 	end
@@ -151,7 +151,7 @@ module ODDB
       assert_equal(false, @simplelanguage.match(/pattern/)) 
     end
     def test_method_missing
-      assert_raise(NoMethodError) do 
+      assert_raises(NoMethodError) do 
         @simplelanguage.nomethod
       end
     end
