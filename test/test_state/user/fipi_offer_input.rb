@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/user/fipi_offer_input'
 require 'htmlgrid/select'
@@ -15,7 +16,7 @@ module ODDB
 	module State
 		module User
 
-class TestFiPiOffer < Test::Unit::TestCase
+class TestFiPiOffer <Minitest::Test
   include FlexMock::TestCase
 	def setup
 		@offer = ODDB::State::User::FiPiOfferInput::FiPiOffer.new
@@ -99,7 +100,7 @@ class TestFiPiOffer < Test::Unit::TestCase
   end
 end
 
-class TestFiPiOfferInput < Test::Unit::TestCase
+class TestFiPiOfferInput <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

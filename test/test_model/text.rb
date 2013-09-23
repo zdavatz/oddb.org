@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/text'
 require 'flexmock'
 
@@ -16,7 +17,7 @@ module ODDB
       attr_reader :formats
     end
   end
-  class TestImageLink < Test::Unit::TestCase
+  class TestImageLink <Minitest::Test
     def setup
       @link = ODDB::Text::ImageLink.new
     end
@@ -45,7 +46,7 @@ module ODDB
       assert_equal '(image)', @link.to_s
     end
   end
-  class TestFormat < Test::Unit::TestCase
+  class TestFormat <Minitest::Test
     def setup
       @format = ODDB::Text::Format.new
     end
@@ -70,7 +71,7 @@ module ODDB
       assert_equal(0..7, @format.range)
     end
   end
-  class TestParagraph < Test::Unit::TestCase
+  class TestParagraph <Minitest::Test
     def setup
       @paragraph = ODDB::Text::Paragraph.new
     end
@@ -281,7 +282,7 @@ Row1 |  Cell1  |  Cell2
       assert_equal 'foo bar', @paragraph.strip
     end
   end
-  class	TestSection < Test::Unit::TestCase
+  class	TestSection <Minitest::Test
     def setup
       @section = ODDB::Text::Section.new
     end
@@ -355,7 +356,7 @@ AnOthEr pArAgrAph
       assert_not_equal par1.object_id, par3.object_id
     end
   end
-  class TestChapter < Test::Unit::TestCase
+  class TestChapter <Minitest::Test
     def setup
       @chapter = ODDB::Text::Chapter.new
     end
@@ -470,7 +471,7 @@ Schöne Welt!
       assert_equal(expected.strip, @chapter.to_s)
     end
   end
-  class TestDocument < Test::Unit::TestCase
+  class TestDocument <Minitest::Test
     def setup
       @document = ODDB::Text::Document.new
     end
@@ -484,7 +485,7 @@ Schöne Welt!
       assert_equal('barbaz', @document.en)
     end
   end
-  class TestTable < Test::Unit::TestCase
+  class TestTable <Minitest::Test
     def setup
       @table = Text::Table.new
     end

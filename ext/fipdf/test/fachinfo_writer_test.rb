@@ -4,7 +4,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fachinfo_writer'
 require 'model/text'
 require 'date'
@@ -136,7 +137,7 @@ module ODDB
 			end
 		end
 	end
-  class TestFachinfoWriter < Test::Unit::TestCase
+  class TestFachinfoWriter <Minitest::Test
     class StubFachinfoDocument	
       attr_accessor :chapters, :company_name, :name, :generic_type, :substance_names, :first_chapter
       def initialize
@@ -416,7 +417,7 @@ BT 40.000 813.798 Td /F1 7.0 Tf 0 Tr (Ein Medikament) Tj ET<
     end
     def test_write_drug_name_link
       @writer.fi_new_page
-      @writer.write_drug_name("FooBaar®")
+      @writer.write_drug_name("FooBaarÂ®")
       #@writer.save_pdf
       expected = <<-EOS
     /URI (http://www.oddb.org/de/gcc/search/search_query/Foohallo)<
@@ -682,17 +683,17 @@ BT 40.000 796.114 Td /F4 7.0 Tf 0 Tr (Noch ein Paragraph) Tj ET<
       section = @chapter.next_section
       section.subheading = "Subheading ohne Newline"
       paragraph = section.next_paragraph
-      paragraph << "Fliesstext mit hoffentlich Umbruchgemässer Länge" 
+      paragraph << "Fliesstext mit hoffentlich UmbruchgemÃ¤sser LÃ¤nge" 
       paragraph2 = section.next_paragraph
-      paragraph2 << "Ein zweiter Paragraph, so fürs Gemüt"
+      paragraph2 << "Ein zweiter Paragraph, so fÃ¼rs GemÃ¼t"
       s_wrapper = ODDB::FiPDF::SectionWrapper.new(section)
       @writer.fi_new_page
       @writer.write_section(s_wrapper)
       #@writer.save_pdf
       expected = <<-EOS
 BT 40.000 813.798 Td 3.016 Tw /F5 7.0 Tf 0 Tr (Subheading ohne Newline ) Tj /F4 7.0 Tf 0 Tr (Fliesstext mit hoffentlich) Tj ET<
-BT 40.000 805.706 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Umbruchgemässer Länge) Tj ET<
-BT 40.000 796.614 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Ein zweiter Paragraph, so fürs Gemüt) Tj ET<
+BT 40.000 805.706 Td 0.000 Tw /F4 7.0 Tf 0 Tr (UmbruchgemÃ¤sser LÃ¤nge) Tj ET<
+BT 40.000 796.614 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Ein zweiter Paragraph, so fÃ¼rs GemÃ¼t) Tj ET<
       EOS
       # NOTE: to avoid confusion about end-of-line whitespace, both
       #       expected and output have added "<"-signs at EOL
@@ -982,7 +983,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       #@writer.save_pdf
       expected = <<-EOS
   %PDF-1.3
-  %âãÏÓ
+  %Ã¢Ã£ÃÃ“
 
   1 0 obj
   << /Type /Catalog
@@ -1426,7 +1427,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
     end
     def test_write_drug_name_link
       @writer.fi_new_page
-      @writer.write_drug_name("<b>Foohallo®</b>")
+      @writer.write_drug_name("<b>FoohalloÂ®</b>")
       #@writer.save_pdf
       expected = <<-EOS
 /URI (http://www.oddb.org/de/gcc/search/search_query/Foohallo)<
@@ -1692,13 +1693,13 @@ BT 223.427 763.246 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Heilmittel) Tj ET<
 ----------------------------------------------------
         pro Tag      250 mg                         
 ----------------------------------------------------
- 1/2    3× 5 ml      -         2(-3)×tgl. 1 à 125 mg
- 1-3    3× 7,5 ml    -             3×tgl. 1 à 125 mg
- 3-6    3×10 ml      -             4×tgl. 1 à 125 mg
- 6-9    3×15 ml      -         1(-2)×tgl. 1 à 500 mg
- 9-12   3×20 ml      2(-3)×                         
-                     tgl. 1        2×tgl. 1 à 500 mg
-12-14   3×25 ml      3×tgl. 1      3×tgl. 1 à 500 mg
+ 1/2    3á¹ª 5 ml      -         2(-3)á¹ªtgl. 1 Ã  125 mg
+ 1-3    3á¹ª 7,5 ml    -             3á¹ªtgl. 1 Ã  125 mg
+ 3-6    3á¹ª10 ml      -             4á¹ªtgl. 1 Ã  125 mg
+ 6-9    3á¹ª15 ml      -         1(-2)á¹ªtgl. 1 Ã  500 mg
+ 9-12   3á¹ª20 ml      2(-3)á¹ª                         
+                     tgl. 1        2á¹ªtgl. 1 Ã  500 mg
+12-14   3á¹ª25 ml      3á¹ªtgl. 1      3á¹ªtgl. 1 Ã  500 mg
 ----------------------------------------------------
       EOS
       paragraph = ODDB::Text::Paragraph.new
@@ -1720,10 +1721,10 @@ q<
 218.427 20.000 183.427 801.890 re f<
 1 w<
 Q<
-BT 223.427 816.298 Td /F2 5.3 Tf 0 Tr ( 1/2    3× 5 ml      -         2\\(-3\\)×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 810.707 Td /F2 5.3 Tf 0 Tr ( 1-3    3× 7,5 ml    -             3×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 805.115 Td /F2 5.3 Tf 0 Tr ( 3-6    3×10 ml      -             4×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 799.524 Td /F2 5.3 Tf 0 Tr ( 6-9    3×15 ml      -         1\\(-2\\)×tgl. 1 à 500 mg) Tj ET<
+BT 223.427 816.298 Td /F2 5.3 Tf 0 Tr ( 1/2    3á¹ª 5 ml      -         2\\(-3\\)á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 810.707 Td /F2 5.3 Tf 0 Tr ( 1-3    3á¹ª 7,5 ml    -             3á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 805.115 Td /F2 5.3 Tf 0 Tr ( 3-6    3á¹ª10 ml      -             4á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 799.524 Td /F2 5.3 Tf 0 Tr ( 6-9    3á¹ª15 ml      -         1\\(-2\\)á¹ªtgl. 1 Ã  500 mg) Tj ET<
       EOF
       # NOTE: to avoid confusion about end-of-line whitespace, both
       #  expected and output have added "<"-signs at EOL

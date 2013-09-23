@@ -3,7 +3,8 @@
 # ODDB::TestDrugbankPlugin -- oddb.org -- 25.06.2012 -- yasaka@ywesee.com
 
 require 'pathname'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
@@ -24,7 +25,7 @@ module ODDB
 end
 
 module ODDB
-  class TestDrugbankPlugin < Test::Unit::TestCase
+  class TestDrugbankPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = FlexMock.new 'app'

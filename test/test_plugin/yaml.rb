@@ -6,14 +6,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/yaml'
 require 'util/today'
 require 'util/logfile'
 
 module ODDB
-  class TestYamlExporter < Test::Unit::TestCase
+  class TestYamlExporter <Minitest::Test
     include FlexMock::TestCase
     def stderr_null
       require 'tempfile'

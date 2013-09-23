@@ -4,12 +4,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/upload'
 
 module ODDB
-  class TestUpload < Test::Unit::TestCase
+  class TestUpload <Minitest::Test
     include FlexMock::TestCase
     def setup
       @io  = flexmock('io', 

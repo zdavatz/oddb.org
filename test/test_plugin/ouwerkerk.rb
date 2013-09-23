@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'plugin/ouwerkerk'
 require 'model/atcclass'
 require 'model/galenicform'
@@ -22,7 +23,7 @@ module ODDB
 	end
 end
 
-class TestOuwerkerkPlugin < Test::Unit::TestCase
+class TestOuwerkerkPlugin <Minitest::Test
 	class StubApp
 		attr_accessor :log_groups
 		def log_group(key)

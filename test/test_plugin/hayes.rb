@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'plugin/hayes'
 require 'util/html_parser'
 
@@ -24,7 +25,7 @@ module ODDB
 	end
 end
 
-class TestHayesPlugin < Test::Unit::TestCase
+class TestHayesPlugin <Minitest::Test
 	class StubApp
 		def initialize
 			@cytochromes = {}
@@ -68,7 +69,7 @@ class TestHayesPlugin < Test::Unit::TestCase
 		assert_equal(expected, result)
 	end
 end
-class TestHayesWriter < Test::Unit::TestCase
+class TestHayesWriter <Minitest::Test
 	def setup
 		@writer = ODDB::Interaction::HayesWriter.new
 		formatter = ODDB::HtmlFormatter.new(@writer)

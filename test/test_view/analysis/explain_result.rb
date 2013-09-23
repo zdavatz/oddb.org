@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/analysis/explain_result'
 
@@ -12,7 +13,7 @@ module ODDB
   module View
     module Analysis
 
-class TestExplainAnalysisTechnical1 < Test::Unit::TestCase
+class TestExplainAnalysisTechnical1 <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -36,7 +37,7 @@ class TestExplainAnalysisTechnical1 < Test::Unit::TestCase
   end
 end
 
-class TestExplainAnalysisTechnical2 < Test::Unit::TestCase
+class TestExplainAnalysisTechnical2 <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')

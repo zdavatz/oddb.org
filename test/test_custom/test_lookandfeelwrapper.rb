@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'custom/lookandfeelwrapper'
 
@@ -26,7 +27,7 @@ module SBSM
     end
     RESULT_FILTER = self.method(:filter)
   end
-  class TestLookandfeelWrapper < Test::Unit::TestCase
+  class TestLookandfeelWrapper <Minitest::Test
     include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
@@ -53,7 +54,7 @@ module SBSM
 end
 
 module ODDB
-  class TestLookandfeelStandardResult < Test::Unit::TestCase
+  class TestLookandfeelStandardResult <Minitest::Test
     include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
@@ -139,7 +140,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelGenerika < Test::Unit::TestCase
+  class TestLookandfeelGenerika <Minitest::Test
     include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
@@ -161,7 +162,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelAtupriWeb < Test::Unit::TestCase
+  class TestLookandfeelAtupriWeb <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -269,7 +270,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelJustMedical < Test::Unit::TestCase
+  class TestLookandfeelJustMedical <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -375,7 +376,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelSwissmedic < Test::Unit::TestCase
+  class TestLookandfeelSwissmedic <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -398,7 +399,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelOekk < Test::Unit::TestCase
+  class TestLookandfeelOekk <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -477,7 +478,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelMobile < Test::Unit::TestCase
+  class TestLookandfeelMobile <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -547,7 +548,7 @@ module ODDB
    end
   end
 
-  class TestLookandfeelMyMedi < Test::Unit::TestCase
+  class TestLookandfeelMyMedi <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -634,7 +635,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelSwissMedInfo < Test::Unit::TestCase
+  class TestLookandfeelSwissMedInfo <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -710,7 +711,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelComplementaryType < Test::Unit::TestCase
+  class TestLookandfeelComplementaryType <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|

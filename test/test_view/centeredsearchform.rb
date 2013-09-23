@@ -5,14 +5,15 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/centeredsearchform'
 
 module ODDB
 module View
 
-class TestPayPalForm < Test::Unit::TestCase
+class TestPayPalForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel',
@@ -36,7 +37,7 @@ class TestPayPalForm < Test::Unit::TestCase
   end
 end # TestCenteredNavigation
 
-class TestCenteredSearchForm < Test::Unit::TestCase
+class TestCenteredSearchForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     zones     = flexmock('zones', :sort_by => [])
@@ -75,7 +76,7 @@ class TestCenteredSearchForm < Test::Unit::TestCase
   end
 end # TestCenteredSearchForm
 
-class TestCenteredSearchComposite < Test::Unit::TestCase
+class TestCenteredSearchComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

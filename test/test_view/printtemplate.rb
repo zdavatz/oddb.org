@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/link'
 require 'view/printtemplate'
@@ -21,7 +22,7 @@ module ODDB
       end
     end
 
-    class TestPrint < Test::Unit::TestCase
+    class TestPrint <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel', 
@@ -41,7 +42,7 @@ module ODDB
       end
     end
 
-    class TestPrintTemplate < Test::Unit::TestCase
+    class TestPrintTemplate <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf      = flexmock('lookandfeel', 
@@ -73,7 +74,7 @@ module ODDB
       end
     end
 
-    class TestPrintComposite < Test::Unit::TestCase
+    class TestPrintComposite <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf       = flexmock('lookandfeel', :lookup => 'lookup')

@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/navigationfoot.rb'
 require 'custom/lookandfeelbase'
@@ -32,7 +33,7 @@ module ODDB
 			DIRECT_EVENT = :baz	
 		end
 
-		class TestNavigationFoot < Test::Unit::TestCase
+		class TestNavigationFoot <Minitest::Test
 			class StubLookandfeel < LookandfeelBase
 				DICTIONARIES = {
 					"de"	=>	{
@@ -115,7 +116,7 @@ end
 module ODDB
   module View
 
-class TestNavigationFoot2 < Test::Unit::TestCase
+class TestNavigationFoot2 <Minitest::Test
   include FlexMock::TestCase
   def setup
     @navigation = flexmock('navigation',
@@ -178,7 +179,7 @@ class TestNavigationFoot2 < Test::Unit::TestCase
   end
 end
 
-class TestTopFoot < Test::Unit::TestCase
+class TestTopFoot <Minitest::Test
   include FlexMock::TestCase
   def setup
     @zone_navigation = flexmock('zone_navigation',

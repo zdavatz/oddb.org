@@ -8,7 +8,8 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
@@ -23,7 +24,7 @@ module ODDB
 end
 
 module ODDB
-  class TestListener < Test::Unit::TestCase
+  class TestListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       app = flexmock('app')
@@ -74,7 +75,7 @@ module ODDB
     end
   end
 
-  class TestGenericsListener < Test::Unit::TestCase
+  class TestGenericsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock('app')
@@ -134,7 +135,7 @@ module ODDB
     end
   end
   
-  class TestItCodesListener < Test::Unit::TestCase
+  class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock('app')
@@ -218,7 +219,7 @@ module ODDB
   end
   end
 
-  class TestPreparationsListener < Test::Unit::TestCase
+  class TestPreparationsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @package = flexmock('package') do |pac|
@@ -657,7 +658,7 @@ module ODDB
     end
   end
 
-  class TestBsvXmlPlugin2 < Test::Unit::TestCase
+  class TestBsvXmlPlugin2 <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexstub(LogFile) do |log|
@@ -919,7 +920,7 @@ module ODDB
   end
   class Package < PackageCommon
   end
-  class TestBsvXmlPlugin < Test::Unit::TestCase
+  class TestBsvXmlPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'

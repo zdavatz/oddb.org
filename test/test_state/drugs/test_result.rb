@@ -7,7 +7,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'define_empty_class'
 require 'state/drugs/result'
 require 'flexmock'
@@ -87,7 +88,7 @@ class StubResultSession
 	end
 end
 
-class TestResult < Test::Unit::TestCase
+class TestResult <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :disabled? => nil)

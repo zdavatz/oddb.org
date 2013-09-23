@@ -5,12 +5,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'view/descriptionlist'
 
 module ODDB
 	module View
-		class TestDescriptionList < Test::Unit::TestCase
+		class TestDescriptionList <Minitest::Test
 			class StubModel
 				attr_reader :args
 				def description(*args)

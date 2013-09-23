@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/global'
 require 'state/admin/companyuser'
 require 'flexmock'
@@ -14,7 +15,7 @@ require 'flexmock'
 module ODDB
 	module State
 		module Admin
-class TestCompanyUserState < Test::Unit::TestCase
+class TestCompanyUserState <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input, :user
@@ -62,7 +63,7 @@ class TestCompanyUserState < Test::Unit::TestCase
 	end
 end
 
-class TestCompanyUser < Test::Unit::TestCase
+class TestCompanyUser <Minitest::Test
   include FlexMock::TestCase
   class StubSuper
     def resolve_state(pinter, type)

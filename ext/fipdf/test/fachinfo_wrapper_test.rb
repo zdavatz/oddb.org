@@ -3,7 +3,8 @@
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fachinfo_wrapper'
 require 'delegate'
 
@@ -12,7 +13,7 @@ module ODDB
     class FachinfoWrapper < SimpleDelegator
       attr_writer :wrapper_class
     end
-    class TestFachinfoWrapper < Test::Unit::TestCase
+    class TestFachinfoWrapper <Minitest::Test
       class StubChapterWrapper < SimpleDelegator
       end
       class StubFachinfo

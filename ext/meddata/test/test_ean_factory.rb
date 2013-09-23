@@ -5,11 +5,12 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 require 'ean_factory'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 
 module ODDB
 	module MedData
-		class EanFactoryTest < Test::Unit::TestCase
+		class EanFactoryTest <Minitest::Test
 			def test_next
 				factory = EanFactory.new('7601001')
 				assert_equal('7601001', factory.next)

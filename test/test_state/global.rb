@@ -8,7 +8,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/global'
 require 'util/language'
 require 'sbsm/state'
@@ -30,7 +31,7 @@ end
 		class Global < SBSM::State
 			attr_accessor :model
 		end
-		class TestGlobal < Test::Unit::TestCase
+		class TestGlobal <Minitest::Test
       include FlexMock::TestCase
       class StubSession
 				attr_accessor :user_input, :request_path, :lookandfeel, :flavor

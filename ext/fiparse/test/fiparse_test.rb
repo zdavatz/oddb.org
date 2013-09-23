@@ -4,10 +4,11 @@
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fiparse'
 
-class TestFiParse < Test::Unit::TestCase
+class TestFiParse <Minitest::Test
 	def test_parse_fachinfo_doc
 		filename = File.expand_path('data/doc/fi_df_t2.doc', 
 			File.dirname(__FILE__))

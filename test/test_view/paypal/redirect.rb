@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/paypal/redirect'
 require 'model/user'
@@ -15,7 +16,7 @@ module ODDB
       PAYPAL_SERVER   = 'server'
       PAYPAL_RECEIVER = 'receiver'
 
-class TestRedirect < Test::Unit::TestCase
+class TestRedirect <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

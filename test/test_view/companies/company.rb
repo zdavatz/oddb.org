@@ -5,11 +5,12 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/companies/company'
 
-class TestUnknownCompanyInnerComposite < Test::Unit::TestCase
+class TestUnknownCompanyInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -29,7 +30,7 @@ class TestUnknownCompanyInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestUserCompanyForm < Test::Unit::TestCase
+class TestUserCompanyForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -75,7 +76,7 @@ class TestUserCompanyForm < Test::Unit::TestCase
   end
 end
 
-class TestAjaxCompanyForm < Test::Unit::TestCase
+class TestAjaxCompanyForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -104,7 +105,7 @@ class TestAjaxCompanyForm < Test::Unit::TestCase
   end
 end
 
-class TestUnknownCompanyComposite < Test::Unit::TestCase
+class TestUnknownCompanyComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -129,7 +130,7 @@ class TestUnknownCompanyComposite < Test::Unit::TestCase
   end
 end
 
-class TestUserCompanyComposite < Test::Unit::TestCase
+class TestUserCompanyComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -161,7 +162,7 @@ class TestUserCompanyComposite < Test::Unit::TestCase
   end
 end
 
-class TestRootPharmaCompanyComposite < Test::Unit::TestCase
+class TestRootPharmaCompanyComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -223,7 +224,7 @@ module ODDB
     end
   end
 end
-class TestRootCompany < Test::Unit::TestCase
+class TestRootCompany <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|

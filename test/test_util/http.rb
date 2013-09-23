@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/http'
 require 'net/http'
@@ -17,7 +18,7 @@ module ODDB
 end
 
 module ODDB
-  class TestHttpFile < Test::Unit::TestCase
+  class TestHttpFile <Minitest::Test
     include FlexMock::TestCase
     def setup
       @file = ODDB::StubHttpFile.new
@@ -49,7 +50,7 @@ module ODDB
   end
 
   class HttpSession < SimpleDelegator
-    class TestResponseWrapper < Test::Unit::TestCase
+    class TestResponseWrapper <Minitest::Test
       include FlexMock::TestCase
       def setup
         @response = flexmock('response')
@@ -91,7 +92,7 @@ module ODDB
     end
   end  # HttpSession
 
-  class TestHttpSession < Test::Unit::TestCase
+  class TestHttpSession <Minitest::Test
     HttpHeader = "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20100101 Firefox/20.0"
     include FlexMock::TestCase
     def setup

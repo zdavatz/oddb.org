@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/centeredsearchform'
 require 'view/drugs/compare_search'
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Drugs
 
-class TestCompareSearchForm < Test::Unit::TestCase
+class TestCompareSearchForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @container = flexmock('container', :additional_javascripts => [])

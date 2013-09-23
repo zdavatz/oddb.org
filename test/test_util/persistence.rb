@@ -7,7 +7,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/persistence'
 require 'date'
 require 'stub/odba'
@@ -140,7 +141,7 @@ module ODDB
 		end
 	end
 
-	class TestPersistence < Test::Unit::TestCase
+	class TestPersistence <Minitest::Test
 		def setup
 			GC.start
 			StubPersistenceDiffable.reset_oid
@@ -206,7 +207,7 @@ module ODDB
 			assert_equal(nil, @obj.zap)
 		end
 	end
-	class TestPersistencePointer < Test::Unit::TestCase
+	class TestPersistencePointer <Minitest::Test
 		def setup
 			ODBA.storage = ODBA::StorageStub.new
 			ODBA.cache = ODBA::CacheStub.new
@@ -409,7 +410,7 @@ module ODDB
       assert_equal(pointer, Persistence::Pointer.from_yus_privilege(src))
     end
 	end
-	class TestPersistenceCreateItem < Test::Unit::TestCase
+	class TestPersistenceCreateItem <Minitest::Test
 		def setup
 			@pointer = ODDB::Persistence::Pointer.new([:fap, "fap"])
 			@item = ODDB::Persistence::CreateItem.new(@pointer)
@@ -459,7 +460,7 @@ end
 
 module ODDB
   module Persistence
-    class TestPointer < Test::Unit::TestCase
+    class TestPointer <Minitest::Test
       include FlexMock::TestCase
       def test_to_csv
         pointer = ODDB::Persistence::Pointer.new(['key', 'value'])

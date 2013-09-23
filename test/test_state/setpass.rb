@@ -6,7 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/setpass'
 
@@ -26,7 +27,7 @@ class StubSetPass
   end
 end
 
-class TestSetPass < Test::Unit::TestCase
+class TestSetPass <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app', :update => 'update')

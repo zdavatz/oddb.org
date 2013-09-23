@@ -8,7 +8,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
 require 'date'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'stub/cgi'
 require 'model/sponsor'
@@ -27,7 +28,7 @@ module ODDB
         @lookandfeel = session.lookandfeel
       end
     end
-    class TestSponsorMethods < Test::Unit::TestCase
+    class TestSponsorMethods <Minitest::Test
       include FlexMock::TestCase
       def setup
         @zones    = flexmock('zones',
@@ -71,7 +72,7 @@ module ODDB
         # TODO: assert_kind_of(ODDB::View::SponsorHead, @view.head(@model, @session))
       end
     end
-		class TestSponsorHead < Test::Unit::TestCase
+		class TestSponsorHead <Minitest::Test
 			class StubHeadSession
 				attr_writer :enabled, :attributes
 				attr_accessor :sponsor

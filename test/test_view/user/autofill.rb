@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/inputtext'
 require 'view/user/autofill'
@@ -21,7 +22,7 @@ class StubAutoFill
     @lookandfeel = session.lookandfeel
   end
 end
-class TestAutoFill < Test::Unit::TestCase
+class TestAutoFill <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

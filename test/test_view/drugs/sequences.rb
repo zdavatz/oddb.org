@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/sequences'
 
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Drugs
 
-class TestOffsetPager < Test::Unit::TestCase
+class TestOffsetPager <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -38,7 +39,7 @@ class TestOffsetPager < Test::Unit::TestCase
   end
 end
 
-class TestSequenceList < Test::Unit::TestCase
+class TestSequenceList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -78,7 +79,7 @@ class TestSequenceList < Test::Unit::TestCase
   end
 end
 
-class TestSequencesComposite < Test::Unit::TestCase
+class TestSequencesComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

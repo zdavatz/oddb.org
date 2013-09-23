@@ -11,7 +11,8 @@ require 'syck'
 require 'yaml'
 YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'digest/md5'
 require 'util/persistence'
@@ -56,7 +57,7 @@ module ODDB
 	end
 end
 
-class TestOddbApp < Test::Unit::TestCase
+class TestOddbApp <Minitest::Test
   include FlexMock::TestCase
 	class StubCompany
 		attr_accessor	:oid

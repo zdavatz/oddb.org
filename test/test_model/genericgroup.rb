@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/genericgroup'
 
 module ODDB
@@ -16,7 +17,7 @@ end
 class StubGenericGroupPackage
 end
 
-class TestGenericGroup < Test::Unit::TestCase
+class TestGenericGroup <Minitest::Test
 	def setup
 		@generic_group = ODDB::GenericGroup.new
 	end

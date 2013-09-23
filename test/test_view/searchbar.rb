@@ -5,14 +5,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/searchbar'
 require 'htmlgrid/select'
 
 module ODDB
   module View
-    class TestSearchBar < Test::Unit::TestCase
+    class TestSearchBar <Minitest::Test
       include FlexMock::TestCase
       def setup
         @container = flexmock('container', :event => 'event')
@@ -54,7 +55,7 @@ return false;
       end
     end
 
-    class TestAutocompleteSearchBar < Test::Unit::TestCase
+    class TestAutocompleteSearchBar <Minitest::Test
       include FlexMock::TestCase
       def setup
         @container = flexmock('container', :additional_javascripts => [])
@@ -99,7 +100,7 @@ return false;
       end
     end
 
-    class TestPrescriptionSearchBar < Test::Unit::TestCase
+    class TestPrescriptionSearchBar <Minitest::Test
       include FlexMock::TestCase
       def setup
         @container = flexmock('container', :additional_javascripts => [])
@@ -147,7 +148,7 @@ return false;
       end
     end
 
-    class TestSelectSearchForm < Test::Unit::TestCase
+    class TestSelectSearchForm <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel',

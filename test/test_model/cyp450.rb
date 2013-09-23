@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/cyp450'
 require 'flexmock'
 
@@ -16,7 +17,7 @@ module ODDB
 	end
 end
 
-class TestCyP450 < Test::Unit::TestCase
+class TestCyP450 <Minitest::Test
 	def setup
 		@cyp450 = ODDB::CyP450.new("foo")
 	end

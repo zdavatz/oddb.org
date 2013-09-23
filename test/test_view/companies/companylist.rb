@@ -6,7 +6,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'view/companies/companylist'
 require 'flexmock'
 
@@ -18,7 +19,7 @@ module CompanyList
 	public :sort_model
 end
 
-class TestCompanyList < Test::Unit::TestCase
+class TestCompanyList <Minitest::Test
   include FlexMock::TestCase
 	class StubModel
 		attr_reader :name
@@ -80,7 +81,7 @@ class TestCompanyList < Test::Unit::TestCase
 	end
 end
 
-class TestEmptyResultForm < Test::Unit::TestCase
+class TestEmptyResultForm <Minitest::Test
   include FlexMock::TestCase
   def test_title_none_found
     @lnf     = flexmock('lookandfeel', 
@@ -101,7 +102,7 @@ class TestEmptyResultForm < Test::Unit::TestCase
   end
 end
 
-class TestRootEmptyResultForm < Test::Unit::TestCase
+class TestRootEmptyResultForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -129,7 +130,7 @@ class StubModel
     'name'
   end
 end
-class TestUnknownCompaniesComposite < Test::Unit::TestCase
+class TestUnknownCompaniesComposite <Minitest::Test
   include FlexMock::TestCase
   def test_company_list
     @lnf     = flexmock('lookandfeel', 
@@ -156,7 +157,7 @@ class TestUnknownCompaniesComposite < Test::Unit::TestCase
   end
 end
 
-class TestRootCompaniesComposite < Test::Unit::TestCase
+class TestRootCompaniesComposite <Minitest::Test
   include FlexMock::TestCase
   def test_listed_companies
     @lnf     = flexmock('lookandfeel', 

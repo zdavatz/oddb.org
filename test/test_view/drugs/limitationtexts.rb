@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/resultfoot'
 require 'view/drugs/limitationtexts'
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Drugs
 
-class TestLimitationTextList < Test::Unit::TestCase
+class TestLimitationTextList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -43,7 +44,7 @@ class TestLimitationTextList < Test::Unit::TestCase
   end
 end
 
-class TestLimitationTextsComposite < Test::Unit::TestCase
+class TestLimitationTextsComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

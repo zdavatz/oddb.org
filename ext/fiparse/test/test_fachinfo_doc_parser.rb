@@ -6,7 +6,8 @@ $: << File.dirname(__FILE__)
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fachinfo_doc'
 
 if true
@@ -29,7 +30,7 @@ module ODDB
 		end
 	end
 end
-class TestFachinfoDocParser < Test::Unit::TestCase
+class TestFachinfoDocParser <Minitest::Test
   class StubTabDescriptor
     attr_accessor :position, :align
   end
@@ -185,7 +186,7 @@ class TestFachinfoDocParser < Test::Unit::TestCase
     assert_equal(expected, @text_handler.expand_tabs(str))
   end
 end
-class TestFachinfoDocParser2 < Test::Unit::TestCase
+class TestFachinfoDocParser2 <Minitest::Test
   class StubTabDescriptor
     attr_accessor :position
   end
@@ -243,7 +244,7 @@ Haemophilus                     < 1            > 4
     assert_match(expected, txt)
   end
 end
-class TestFachinfoDocParser4 < Test::Unit::TestCase
+class TestFachinfoDocParser4 <Minitest::Test
   def setup
     @filename = File.expand_path('data/doc/felodil_12_01.doc', 
       File.dirname(__FILE__))
@@ -339,7 +340,7 @@ class TestFachinfoDocParser4 < Test::Unit::TestCase
     assert_equal('Zulassungsinhaberin', chapter.heading)
   end
 end
-class TestFachinfoDocParser5 < Test::Unit::TestCase
+class TestFachinfoDocParser5 <Minitest::Test
   def setup
     @filename = File.expand_path('data/doc/Calcitriol_d_10.03.doc', 
       File.dirname(__FILE__))
@@ -436,7 +437,7 @@ class TestFachinfoDocParser5 < Test::Unit::TestCase
     assert_equal(1, chapter.sections.size)
   end
 end
-class TestFachinfoDocParser6 < Test::Unit::TestCase
+class TestFachinfoDocParser6 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -650,7 +651,7 @@ Cimzia noch mindestens 4 Monate lang anzuwenden\./
   end
 end
 =begin  ## this file consists of some kind of layout table - ignore for the moment
-class TestFachinfoDocParser7 < Test::Unit::TestCase
+class TestFachinfoDocParser7 <Minitest::Test
 	def setup
 		@filename = File.expand_path('data/doc/Flectoparin_d_08.doc', 
 			File.dirname(__FILE__))
@@ -821,7 +822,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 	end
 end
 =end
-class TestFachinfoDocParser8 < Test::Unit::TestCase
+class TestFachinfoDocParser8 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -968,7 +969,7 @@ class TestFachinfoDocParser8 < Test::Unit::TestCase
 		assert_match(/Titulaire de l.*autorisation/, chapter.heading)
 	end
 end
-class TestFachinfoDocParser9 < Test::Unit::TestCase
+class TestFachinfoDocParser9 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -1004,7 +1005,7 @@ class TestFachinfoDocParser9 < Test::Unit::TestCase
 		assert_match(/Titulaire de l.*autorisation/, chapter.heading)
 	end
 end
-class TestFachinfoDocParser10 < Test::Unit::TestCase
+class TestFachinfoDocParser10 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -1077,7 +1078,7 @@ class TestFachinfoDocParser10 < Test::Unit::TestCase
 		assert_equal('Zulassungsinhaberin', chapter.heading)
 	end
 end
-class TestFachinfoDocParser11 < Test::Unit::TestCase
+class TestFachinfoDocParser11 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -1149,7 +1150,7 @@ class TestFachinfoDocParser11 < Test::Unit::TestCase
 		assert_equal('Zulassungsinhaberin', chapter.heading)
 	end
 end
-class TestFachinfoDocParser12 < Test::Unit::TestCase
+class TestFachinfoDocParser12 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"
@@ -1221,7 +1222,7 @@ class TestFachinfoDocParser12 < Test::Unit::TestCase
 		assert_match(/Titulaire de l.*autorisation/, chapter.heading)
 	end
 end
-class TestFachinfoDocParser13 < Test::Unit::TestCase
+class TestFachinfoDocParser13 <Minitest::Test
   class ReplHandler
     def method_missing(*args)
       puts "inline_replacement_handler received: #{args.inspect}"

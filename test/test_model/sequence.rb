@@ -7,7 +7,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/sequence'
 require 'model/atcclass'
 require 'model/registration'
@@ -92,7 +93,7 @@ class StubAcceptable
     @accepted = true
   end
 end
-class TestSequence < Test::Unit::TestCase
+class TestSequence <Minitest::Test
   include FlexMock::TestCase
   class StubPatinfo
     attr_accessor :oid

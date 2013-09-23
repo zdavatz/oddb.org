@@ -7,7 +7,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/html_parser'
 
@@ -20,7 +21,7 @@ module ODDB
 	end
 end
 
-class TestHtmlParser < Test::Unit::TestCase
+class TestHtmlParser <Minitest::Test
 	class StubFormatter
 		attr_accessor :flowing_data, :literal_data
 		attr_reader :called
@@ -134,7 +135,7 @@ class TestHtmlParser < Test::Unit::TestCase
   end
 end
 
-class TestHtmlFormatter < Test::Unit::TestCase
+class TestHtmlFormatter <Minitest::Test
   include FlexMock::TestCase
 	class StubWriter
 		attr_reader :called, :arguments
@@ -255,7 +256,7 @@ class TestHtmlFormatter < Test::Unit::TestCase
     assert_equal(['attrs'], @formatter.send_meta('attrs'))
   end
 end
-class TestHtmlLimitationHandler < Test::Unit::TestCase
+class TestHtmlLimitationHandler <Minitest::Test
 	class StubTableHandler
 		def initialize
 			@rows = []
@@ -270,7 +271,7 @@ class TestHtmlLimitationHandler < Test::Unit::TestCase
 		assert_equal(th, @handler.rows[0])
 	end
 end
-class TestHtmlLinkHandler < Test::Unit::TestCase
+class TestHtmlLinkHandler <Minitest::Test
 	def setup
 		@handler = ODDB::HtmlLinkHandler.new([])
 	end
@@ -292,7 +293,7 @@ class TestHtmlLinkHandler < Test::Unit::TestCase
     assert_equal('', @handler.to_s)
   end
 end
-class TestHtmlTableHandler < Test::Unit::TestCase
+class TestHtmlTableHandler <Minitest::Test
 	def setup
 		@handler = ODDB::HtmlTableHandler.new([])
 	end
@@ -455,7 +456,7 @@ class TestHtmlTableHandler < Test::Unit::TestCase
     assert_equal(10, @handler.width)
   end
 end
-class TestHtmlFontHandler < Test::Unit::TestCase
+class TestHtmlFontHandler <Minitest::Test
 	def test_attribute
 		attr = [
 			['FACE', 'SYMBOL']
@@ -465,7 +466,7 @@ class TestHtmlFontHandler < Test::Unit::TestCase
 	end
 end
 
-class TestBasicHtmlParser < Test::Unit::TestCase
+class TestBasicHtmlParser <Minitest::Test
   include FlexMock::TestCase
   def setup
     @formatter = flexmock('formatter')
@@ -491,7 +492,7 @@ class TestBasicHtmlParser < Test::Unit::TestCase
   end
 end
 
-class TestHtmlTableHandlerCell < Test::Unit::TestCase
+class TestHtmlTableHandlerCell <Minitest::Test
   include FlexMock::TestCase
   def setup
     attrs = {}
@@ -534,7 +535,7 @@ class TestHtmlTableHandlerCell < Test::Unit::TestCase
   end
 end
 
-class TestHtmlTableHandlerRow < Test::Unit::TestCase
+class TestHtmlTableHandlerRow <Minitest::Test
   include FlexMock::TestCase
   def setup
     attrs = {}

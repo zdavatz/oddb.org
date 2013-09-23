@@ -4,14 +4,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'drb'
 require 'plugin/swissreg'
 require 'uri'
 
 module ODDB
-  class TestSwissregPlugin < Test::Unit::TestCase
+  class TestSwissregPlugin <Minitest::Test
     include FlexMock::TestCase
     def stderr_null
       require 'tempfile'

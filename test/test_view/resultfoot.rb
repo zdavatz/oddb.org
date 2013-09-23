@@ -5,14 +5,15 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/resultfoot'
 require 'htmlgrid/span'
 
 module ODDB
 	module View
-    class TestExplainResult < Test::Unit::TestCase
+    class TestExplainResult <Minitest::Test
       include FlexMock::TestCase
       def setup
         @container = flexmock('container')
@@ -134,7 +135,7 @@ module ODDB
       COMPONENTS = {}
     end
 
-    class TestResultFootBuilder < Test::Unit::TestCase
+    class TestResultFootBuilder <Minitest::Test
       include FlexMock::TestCase
       def test_result_foot
         @lnf     = flexmock('lookandfeel', 
@@ -166,7 +167,7 @@ module ODDB
       end
     end
 
-    class TestResultFoot < Test::Unit::TestCase
+    class TestResultFoot <Minitest::Test
       include FlexMock::TestCase
       def test_init
         @lnf       = flexmock('lookandfeel', 

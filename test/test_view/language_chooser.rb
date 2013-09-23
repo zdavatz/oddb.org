@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/language_chooser'
 
@@ -21,7 +22,7 @@ class StubUserSettings
   end
 end
 
-class TestUserSettings < Test::Unit::TestCase
+class TestUserSettings <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

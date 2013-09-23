@@ -5,7 +5,8 @@ $: << File.dirname(__FILE__)
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require	'fachinfo_pdf'
 require "yaml"
 require 'rpdf2txt/parser'
@@ -17,7 +18,7 @@ module ODDB
 		end
 	end
 	module FiParse
-		class TestFachinfoPDFWriter < Test::Unit::TestCase
+		class TestFachinfoPDFWriter <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
  #				@parser = Rpdf2txt::Parser.new(File.read(File.expand_path("../fiparse/test/data/pdf/test_file1.pdf")))
@@ -55,11 +56,11 @@ module ODDB
 			end
 			def test_indications
 				chapter = @fachinfo.indications
-				assert_equal('Indikationen/Anwendungsmöglichkeiten', chapter.heading)
+				assert_equal('Indikationen/AnwendungsmÃ¶glichkeiten', chapter.heading)
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Entzündliche und allergische Erkrankungen der oberen Atemwege wie Schnupfen, Heuschnupfen, chronisches Nasenrinnen, vasomotorische bzw. allergische Rhinitis, Rhinopharyngitis, allergische Sinusitis. Als Adjuvans bei Grippe und Erkältungen.'
+				expected = 'EntzÃ¼ndliche und allergische Erkrankungen der oberen Atemwege wie Schnupfen, Heuschnupfen, chronisches Nasenrinnen, vasomotorische bzw. allergische Rhinitis, Rhinopharyngitis, allergische Sinusitis. Als Adjuvans bei Grippe und ErkÃ¤ltungen.'
 				assert_equal(expected, paragraph1.text)
 			end
 			def test_usage
@@ -87,7 +88,7 @@ module ODDB
 				assert_equal("Relative Kontraindikationen\n", section1.subheading)
 				assert_equal(2, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Bei schwerer Krankheit der Koronargefässe oder stark erhöhtem Blutdruck darf Rhinopront N nur nach Rücksprache mit einem Arzt eingenommen werden.'
+				expected = 'Bei schwerer Krankheit der KoronargefÃ¤sse oder stark erhÃ¶htem Blutdruck darf Rhinopront N nur nach RÃ¼cksprache mit einem Arzt eingenommen werden.'
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.at(1)
 				expected = "Siehe \253Schwangerschaft/Stillzeit\273."
@@ -117,20 +118,20 @@ module ODDB
 				expected =	"Die Sicherheit von Chlorphenamin und Phenylephrin oder ihrer Kombination w\344hrend der ersten beiden Schwangerschaftstrimester wurde nicht erwiesen. Im letzten Schwangerschaftstrimester und w\344hrend der Stillzeit bergen diese Pr\344parate das Risiko schwerer unerw\374nschter Wirkungen, wie z.B. durch Chlorphenamin bewirkte Kr\344mpfe beim F\366tus und beim Neugeborenen. Folglich sind sie in diesem Stadium der Schwangerschaft kontraindiziert."
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.last
-				expected = 'Die Anwendung während der Stillzeit ist zu vermeiden.'
+				expected = 'Die Anwendung wÃ¤hrend der Stillzeit ist zu vermeiden.'
 				assert_equal(expected, paragraph2.text)
 			end
 			def test_driving_ability
 				chapter = @fachinfo.driving_ability
-				assert_equal('Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen', chapter.heading)
+				assert_equal('Wirkung auf die FahrtÃ¼chtigkeit und auf das Bedienen von Maschinen', chapter.heading)
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				assert_equal('Wenn auch die sedierende Wirkung des Antihistaminikums nur gering ist, dies um so mehr als es in Retard-Form angewandt wird, kann Rhinopront N die Reaktionsfähigkeit vermindern: beim Autofahren und Bedienen von Maschinen ist Vorsicht geboten.', paragraph1.text)
+				assert_equal('Wenn auch die sedierende Wirkung des Antihistaminikums nur gering ist, dies um so mehr als es in Retard-Form angewandt wird, kann Rhinopront N die ReaktionsfÃ¤higkeit vermindern: beim Autofahren und Bedienen von Maschinen ist Vorsicht geboten.', paragraph1.text)
 			end
 			def test_unwanted_effects
 				chapter = @fachinfo.unwanted_effects
-				assert_equal('Unerwünschte Wirkungen', chapter.heading)
+				assert_equal('UnerwÃ¼nschte Wirkungen', chapter.heading)
 
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
@@ -140,12 +141,12 @@ module ODDB
 				assert_equal(expected, paragraph1.text)
 
 				section2 = chapter.sections.at(1)
-				assert_equal("Störungen des Blut- und Lymphsystems\n", section2.subheading)
+				assert_equal("StÃ¶rungen des Blut- und Lymphsystems\n", section2.subheading)
 				assert_equal(0, section2.paragraphs.size)
 				section3 = chapter.sections.at(2)
 				assert_equal('Sehr selten:', section3.subheading)
 				paragraph1 = section3.paragraphs.first
-				expected = 'Veränderungen des Blutbildes.'
+				expected = 'VerÃ¤nderungen des Blutbildes.'
 				assert_equal(expected, paragraph1.text)
 				section4 = chapter.sections.at(3)
 				assert_equal("Augenleiden\n", section4.subheading)
@@ -157,7 +158,7 @@ module ODDB
 				section6 = chapter.sections.at(5)
 				assert_equal("St\366rungen des Nervensystem\n",section6.subheading)
 				section7 = chapter.sections.at(6)
-				assert_equal('Häufig:',section7.subheading)
+				assert_equal('HÃ¤ufig:',section7.subheading)
 				paragraph1 = section7.paragraphs.first
 				expected = "Vor\374bergehende Schl\344frigkeit (10-25%) oder eine Verminderung der Aufmerksamkeit."
 				assert_equal(expected, paragraph1.text)
@@ -190,11 +191,11 @@ module ODDB
 			end
 			def test_overdose
 				chapter = @fachinfo.overdose
-				assert_equal('Überdosierung',chapter.heading)
+				assert_equal('Ãœberdosierung',chapter.heading)
 				section1 = chapter.sections.first
 				assert_equal("Symptome in Zusammenhang mit Chlorphenamin\n", section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Stimulierung (Kinder) oder Dämpfung (Erwachsene) des ZNS.'
+				expected = 'Stimulierung (Kinder) oder DÃ¤mpfung (Erwachsene) des ZNS.'
 				assert_equal(expected, paragraph1.text)
 				section2 = chapter.sections.at(1)
 				assert_equal("Symptome in Zusammenhang mit Phenylephrin\n", section2.subheading)
@@ -221,7 +222,7 @@ module ODDB
 				expected = 'Rhinopront N vereinigt die Wirkung von:'
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section2.paragraphs.at(1)
-				expected = 'einem Antihistaminikum, Chlorphenaminmaleat. Es ist gut verträglich und bringt rasche Linderung der lästigen Erscheinungen des Schnupfens wie Nasenrinnen, Niesen, Kribbeln und Tränenfluss;'
+				expected = 'einem Antihistaminikum, Chlorphenaminmaleat. Es ist gut vertrÃ¤glich und bringt rasche Linderung der lÃ¤stigen Erscheinungen des Schnupfens wie Nasenrinnen, Niesen, Kribbeln und TrÃ¤nenfluss;'
 				assert_equal(expected, paragraph2.text)
 				paragraph3 = section2.paragraphs.at(2)
 				expected = "einem Vasokonstriktor, Phenylephrinhydrochlorid, der abschwellend auf entz\374ndete Nasenschleimhaut wirkt, die verstopften Naseng\344nge befreit und dadurch die Atmung erleichtert."
@@ -239,18 +240,18 @@ module ODDB
 				expected = "Chlorphenamin wird nach oraler Verabreichung gut resorbiert und w\344hrend seiner Resorption durch die gastrointestinale Schleimhaut und in der Leber (First-pass-Effekt) metabolisiert. Es erscheint nach 30-60 Min. im Plasma, wobei die maximale Plasmakonzentration nach 2-6 Std. erreicht wird. Es geht in den Speichel \374ber. Die Ausscheidung erfolgt haupts\344chlich \374ber die Nieren."
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.at(1)
-				expected = 'Phenylephrin wird unregelmässig aus dem Magen-Darm-Trakt resorbiert und bewirkt nach 15-20 Min. ein Abschwellen der Nasenschleimhäute, das 2-4 Std. anhält. Es wird über die MAO in der Leber und im Darm rasch metabolisiert. Einzelheiten über die Verteilung in der Muttermilch und die Ausscheidung sind nicht bekannt.'
+				expected = 'Phenylephrin wird unregelmÃ¤ssig aus dem Magen-Darm-Trakt resorbiert und bewirkt nach 15-20 Min. ein Abschwellen der NasenschleimhÃ¤ute, das 2-4 Std. anhÃ¤lt. Es wird Ã¼ber die MAO in der Leber und im Darm rasch metabolisiert. Einzelheiten Ã¼ber die Verteilung in der Muttermilch und die Ausscheidung sind nicht bekannt.'
 				assert_equal(expected, paragraph2.text)
 			end
 			def test_preclinic
 				chapter = @fachinfo.preclinic
-				assert_equal('Präklinische Daten', chapter.heading)
+				assert_equal('PrÃ¤klinische Daten', chapter.heading)
 
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				assert_equal(1, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Es sind keine für die Anwendung relevanten präklinischen Daten der im Arzneimittel enthaltenen Wirkstoffkombination vorhanden.'
+				expected = 'Es sind keine fÃ¼r die Anwendung relevanten prÃ¤klinischen Daten der im Arzneimittel enthaltenen Wirkstoffkombination vorhanden.'
 				assert_equal(expected, paragraph1.text)
 			end
 			def test_other_advice
@@ -269,7 +270,7 @@ module ODDB
 				assert_equal("Besondere Lagerungshinweise\n", section2.subheading)
 				assert_equal(1, section2.paragraphs.size)
 				paragraph2 = section2.paragraphs.first
-				expected = 'Bei Raumtemperatur (15-25 °C) und vor Licht geschützt aufbewahren.'
+				expected = 'Bei Raumtemperatur (15-25 á¸žC) und vor Licht geschÃ¼tzt aufbewahren.'
 				assert_equal(expected, paragraph2.text)
 			end
 			def test_iksnrs
@@ -288,7 +289,7 @@ module ODDB
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Pfizer AG, Zürich.'
+				expected = 'Pfizer AG, ZÃ¼rich.'
 				assert_equal(expected, paragraph1.text)
 			end
 			def test_date
@@ -1032,7 +1033,7 @@ target_encoding: latin1
 				assert_equal(expected, paragraph1.text)
 			end
 		end
-		class TestFachinfoPDFWriterPre < Test::Unit::TestCase
+		class TestFachinfoPDFWriterPre <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_pre.rb',File.dirname(__FILE__))
@@ -1041,21 +1042,21 @@ target_encoding: latin1
 			end
 			def test_unwanted_effects_pre
 				chapter = @fachinfo.unwanted_effects
-				assert_equal('Unerwünschte Wirkungen', chapter.heading)
+				assert_equal('UnerwÃ¼nschte Wirkungen', chapter.heading)
 				section1 = chapter.sections.first
 				assert_equal("Erfahrungen aus klinischen Studien\n", section1.subheading)
 				#assert_equal(1, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
-				expected = 'In den beiden massgebenden Studien erhielten die Patienten Herceptin entweder als Monotherapie oder in Kombination mit Paclitaxel. Nebenwirkungen sind bei ungefähr 50% der Patienten zu erwarten. Am häufigsten wurden infusionsbedingte Symptome wie Fieber und Schüttelfrost beobachtet, meist im Anschluss an die erste Infusion von Herceptin.'
+				expected = 'In den beiden massgebenden Studien erhielten die Patienten Herceptin entweder als Monotherapie oder in Kombination mit Paclitaxel. Nebenwirkungen sind bei ungefÃ¤hr 50% der Patienten zu erwarten. Am hÃ¤ufigsten wurden infusionsbedingte Symptome wie Fieber und SchÃ¼ttelfrost beobachtet, meist im Anschluss an die erste Infusion von Herceptin.'
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.at(1)
-				expected = 'Folgende unerwünschte Wirkungen wurden beobachtet:'
+				expected = 'Folgende unerwÃ¼nschte Wirkungen wurden beobachtet:'
 				assert_equal(expected, paragraph2.text)
 				section2 = chapter.sections.at(1)
 				assert_equal("Tabelle 1\n", section2.subheading)
 				paragraph1 = section2.paragraphs.first
-				#space wird beötigt! nicht löschen!
-				expected = "Nebenwirkungen, die bei \2635% der Patienten oder in der randomisierten Studie in erhöhter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)"
+				#space wird beÃ¶tigt! nicht lÃ¶schen!
+				expected = "Nebenwirkungen, die bei \2635% der Patienten oder in der randomisierten Studie in erhÃ¶hter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)"
 				assert_equal(expected, paragraph1.text)
 				assert_equal(3, paragraph1.formats.size)
 				assert_equal([:symbol], paragraph1.formats.at(1).values)
@@ -1069,20 +1070,20 @@ target_encoding: latin1
              n= 352  n= 91    n= 95   n= 143  n= 135
 ----------------------------------------------------
 Blut und Lymphsystem
-Anämie       4       14       9       36      26
+AnÃ¤mie       4       14       9       36      26
 Leuko-       3       24       17      52      34
  penie
 ----------------------------------------------------
-Stoffwechselstörungen
+StoffwechselstÃ¶rungen
 Periphere    10      22       20      20      17
- Ödeme
-Ödeme        8       10       8       11      5
+ Ã–deme
+Ã–deme        8       10       8       11      5
 ----------------------------------------------------
 Nervensystem
 Schlaf-      14      25       13      29      15
-störungen
+stÃ¶rungen
 Benommenheit 13      22       24      24      18
-Parästhesie  9       48       39      17      11
+ParÃ¤sthesie  9       48       39      17      11
 Depression   6       12       13      20      12
 Periphere    2       23       16      2       2
  Neuritis
@@ -1102,11 +1103,11 @@ Rhinitis     14      22       5       22      16
 Pharyngitis  12      22       14      30      18
 Sinusitis    9       21       7       13      6
 ----------------------------------------------------
-Gastrointestinale Störungen
-Übelkeit     33      51       9       76      77
-Diarrhöe     25      45       29      45      26
+Gastrointestinale StÃ¶rungen
+Ãœbelkeit     33      51       9       76      77
+DiarrhÃ¶e     25      45       29      45      26
 Erbrechen    23      37       28      53      49
-Übelkeit     8       14       11      18      9
+Ãœbelkeit     8       14       11      18      9
  und Er-
  brechen
 Appetit-     14      24       16      31      26
@@ -1132,17 +1133,17 @@ Allgemeine Reaktionen
 Schmerzen    47      61       62      57      42
 Asthenie     42      62       57      54      55
 Fieber       36      49       23      56      34
-Schüttel-    32      41       4       35      11
+SchÃ¼ttel-    32      41       4       35      11
  frost
 Kopf-        26      36       28      44      31
  schmerzen
 Bauch-       22      34       22      23      18
  schmerzen
-Rücken-      22      34       30      27      15
+RÃ¼cken-      22      34       30      27      15
  schmerzen
 Infektion    20      47       27      47      31
 Grippe-      10      12       5       12      6
- ähnliches
+ Ã¤hnliches
  Syndrom
 Versehent-   6       13       3       9       4
  liche
@@ -1161,7 +1162,7 @@ Allergische
 				assert_equal(result.size, control.size)
 			end
 		end
-		class TestFachinfoPDFWriterCetrin < Test::Unit::TestCase
+		class TestFachinfoPDFWriterCetrin <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_certin.rb',File.dirname(__FILE__))
@@ -1175,7 +1176,7 @@ Allergische
 				assert_equal("Saisonale Rhinitis, allergische Konjunktivitis: w\344hrend maximal 4 Wochen 1-mal t\344glich 1 Filmtablette oder 2-mal t\344glich \275 Filmtablette.", chapter.sections[2].paragraphs.first.text)
 			end
 		end
-		class TestFachinfoPDFWriterVelcade < Test::Unit::TestCase
+		class TestFachinfoPDFWriterVelcade <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_velcade.rb',
@@ -1191,7 +1192,7 @@ Allergische
 				assert_equal("Juni 2004.", section.to_s)
 			end
 		end
-		class TestFachinfoPDFWriterFursol < Test::Unit::TestCase
+		class TestFachinfoPDFWriterFursol <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_fursol.rb',
@@ -1218,7 +1219,7 @@ Allergische
 				assert_equal("Zusammensetzung", @fachinfo.composition.heading)
 				assert_equal("Galenische Form und Wirkstoffmenge pro Einheit",
 					@fachinfo.galenic_form.heading)
-				assert_equal("Indikationen/Anwendungsmöglichkeiten", 
+				assert_equal("Indikationen/AnwendungsmÃ¶glichkeiten", 
 					@fachinfo.indications.heading)
 				assert_equal("Dosierung/Anwendung", @fachinfo.usage.heading)
 				assert_equal("Kontraindikationen", 
@@ -1228,15 +1229,15 @@ Allergische
 				assert_equal("Interaktionen", @fachinfo.interactions.heading)
 				assert_equal("Schwangerschaft/Stillzeit", 
 					@fachinfo.pregnancy.heading)
-				assert_equal("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen", 
+				assert_equal("Wirkung auf die FahrtÃ¼chtigkeit und auf das Bedienen von Maschinen", 
 					@fachinfo.driving_ability.heading)
-				assert_equal("Unerwünschte Wirkungen", 
+				assert_equal("UnerwÃ¼nschte Wirkungen", 
 					@fachinfo.unwanted_effects.heading)
-				assert_equal("Überdosierung", @fachinfo.overdose.heading)
+				assert_equal("Ãœberdosierung", @fachinfo.overdose.heading)
 				assert_equal("Eigenschaften/Wirkungen", 
 					@fachinfo.effects.heading)
 				assert_equal("Pharmakokinetik", @fachinfo.kinetic.heading)
-				assert_equal("Präklinische Daten", @fachinfo.preclinic.heading)
+				assert_equal("PrÃ¤klinische Daten", @fachinfo.preclinic.heading)
 				assert_equal("Sonstige Hinweise", 
 					@fachinfo.other_advice.heading)
 				assert_equal("Zulassungsvermerk", @fachinfo.iksnrs.heading)
@@ -1253,7 +1254,7 @@ Allergische
 				assert_equal(8, section.paragraphs.size)
 			end
 		end
-		class TestFachinfoPDFWriterFursolFr < Test::Unit::TestCase
+		class TestFachinfoPDFWriterFursolFr <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_fursol_fr.rb',
@@ -1269,7 +1270,7 @@ Allergische
 				}
 			end
 		end
-		class TestFachinfoPDFWriterTrileptal < Test::Unit::TestCase
+		class TestFachinfoPDFWriterTrileptal <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_trileptal.rb',
@@ -1286,7 +1287,7 @@ Allergische
 				assert_equal("Antiepileptikum\n", section.subheading)
 			end
 		end
-		class TestFachinfoPDFWriterLyrica < Test::Unit::TestCase
+		class TestFachinfoPDFWriterLyrica <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_lyrica.rb',
@@ -1309,7 +1310,7 @@ Clearance   Pregabalin*                 teilung
 (CLcr)
 (ml/min)
 ----------------------------------------------------
-            Anfangsdosis  Höchstdosis
+            Anfangsdosis  HÃ¶chstdosis
             (mg/Tag)      (mg/Tag)
 ---------------------------------------------------- 
 >=60         150           600           in 2 oder 3
@@ -1326,7 +1327,7 @@ Clearance   Pregabalin*                 teilung
 				}
 			end
 		end
-		class TestFachinfoPDFWriterValcyte < Test::Unit::TestCase
+		class TestFachinfoPDFWriterValcyte <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_valcyte.rb',
@@ -1338,7 +1339,7 @@ Clearance   Pregabalin*                 teilung
 				chapter = @fachinfo.unwanted_effects
 				assert_equal(27, chapter.sections.size)
 				section = chapter.sections.at(5)
-				expected = "Tabelle 2: Prozentsatz der Patienten mit unerwünschten Wirkungen, die bei Patienten mit einer CMV-Retinitis oder nach Organtransplantation innerhalb von klinischen Studien mit Valganciclovir auftraten"
+				expected = "Tabelle 2: Prozentsatz der Patienten mit unerwÃ¼nschten Wirkungen, die bei Patienten mit einer CMV-Retinitis oder nach Organtransplantation innerhalb von klinischen Studien mit Valganciclovir auftraten"
 				assert_equal(expected, section.subheading.to_s)
 				paragraph = section.paragraphs.at(0)
 				expected = <<-EOS
@@ -1351,14 +1352,14 @@ Clearance   Pregabalin*                 teilung
                    clovir     clovir     Ganci-     
                                          clovir     
 ----------------------------------------------------
-Unerwünschte                                        
+UnerwÃ¼nschte                                        
 Wirkungen nach                                      
 einzelnen          n= 370     n= 244     n= 126     
 Organsystemen      %          %          %          
 ----------------------------------------------------
 Gastrointestinaltrakt                               
-Diarrhöe           38         30         29         
-Übelkeit           25         23         23         
+DiarrhÃ¶e           38         30         29         
+Ãœbelkeit           25         23         23         
 Orale Candidiasis  20         3          3          
 Erbrechen          20         16         14         
 Bauchschmerzen     13         14         14         
@@ -1370,25 +1371,25 @@ Ascites            -          9          6
 ----------------------------------------------------
 Gesamtorganismus                                    
 Fieber             26         13         14         
-Müdigkeit          20         13         15         
+MÃ¼digkeit          20         13         15         
 Kopfschmerzen      18         22         22         
 Influenza          9          -          -          
 Gewichtsabnahme    9          3          3          
 Verminderter                                        
  Appetit           8          4          5          
-Rückenschmerzen    8          20         15         
+RÃ¼ckenschmerzen    8          20         15         
 Dehydratation      6          5          6          
 Anorexie           5          3          -          
 Kachexie           5          -          -          
-Beinödeme          5          21         16         
+BeinÃ¶deme          5          21         16         
 Schmerzen          3          5          7          
 Oedeme             -          11         9          
 Periphere Oedeme   -          6          7          
-Schwäche           -          6          6          
+SchwÃ¤che           -          6          6          
 ----------------------------------------------------
 Blut- und Lymphsystem                               
 Neutropenie        24         8          3          
-Anämie             22         12         15         
+AnÃ¤mie             22         12         15         
 Thrombozytopenie   5          5          5          
 Leukopenie         4          14         7          
 ----------------------------------------------------
@@ -1405,60 +1406,60 @@ Pharyngitis/
 Infektion im                                        
  oberen Respira-                                    
  tionstrakt        9          7          7          
-Dyspnöe            9          11         10         
+DyspnÃ¶e            9          11         10         
 Pneumonie          7          4          2          
 Bronchitis         6          -          1          
 Pneumocystis-ca-                                    
  rinii-Pneumonie   6          -          -          
 Husten mit Auswurf 5          2          2          
-Rhinorrhöe         2          4          6          
+RhinorrhÃ¶e         2          4          6          
 Pleuraerguss       -          7          8          
 ----------------------------------------------------
 Zentrales und peripheres Nervensystem               
-Schlafstörungen    14         20         16         
+SchlafstÃ¶rungen    14         20         16         
 Schwindel          9          10         6          
 Depression         9          7          6          
 Periphere Neuro-                                    
  pathie            7          1          1          
-Parästhesie        6          5          5          
+ParÃ¤sthesie        6          5          5          
 Tremor             2          28         25         
 ----------------------------------------------------
 Sinnesorgane                                        
-Makuläre Ödeme     4          -          -          
-Netzhautablösung   13         -          -          
+MakulÃ¤re Ã–deme     4          -          -          
+NetzhautablÃ¶sung   13         -          -          
 Sinusitis          10         3          -          
 Verschwommensehen  6          1          4          
 ----------------------------------------------------
 Bewegungsapparat                                    
 Arthralgie         6          7          7          
-Muskelkrämpfe      2          6          11         
+MuskelkrÃ¤mpfe      2          6          11         
 Gliederschmerzen   -          5          7          
 ----------------------------------------------------
 Urogenitaltrakt                                     
-Beeinträchtigung                                    
+BeeintrÃ¤chtigung                                    
  der Nieren-                                        
  funktion          -          7          12         
 Dysurie            2          7          6          
 Harnwegsinfektion  5          11         9          
 ----------------------------------------------------
-Störungen des Immunsystems                          
+StÃ¶rungen des Immunsystems                          
 Abstossungs-                                        
  reaktion          -          24         30         
 ----------------------------------------------------
-Kardiovaskuläre Störungen                           
+KardiovaskulÃ¤re StÃ¶rungen                           
 Hypertension       -          18         15         
 ----------------------------------------------------
-Stoffwechsel- und Ernährungsstörungen               
-Hyperkaliämie      -          14         14         
-Hypokaliämie       -          8          8          
-Hypomagnesiämie    -          8          8          
-Hyperglykämiae     -          6          7          
-Hypophosphatämie   -          9          6          
-Hypokalziämie      -          4          6          
+Stoffwechsel- und ErnÃ¤hrungsstÃ¶rungen               
+HyperkaliÃ¤mie      -          14         14         
+HypokaliÃ¤mie       -          8          8          
+HypomagnesiÃ¤mie    -          8          8          
+HyperglykÃ¤miae     -          6          7          
+HypophosphatÃ¤mie   -          9          6          
+HypokalziÃ¤mie      -          4          6          
 ----------------------------------------------------
-Leber- und Gallenstörungen                          
+Leber- und GallenstÃ¶rungen                          
 Leberfunktions-                                     
- störungen         3          9          11         
+ stÃ¶rungen         3          9          11         
 ----------------------------------------------------
 Chirurgische und medizinische Eingriffe             
 Postoperative                                       
@@ -1470,11 +1471,11 @@ Postoperative
 ----------------------------------------------------
 Verletzung, Vergiftung und Komplikation             
 bei Eingriffen                                      
-Erhöhte Wund-                                       
+ErhÃ¶hte Wund-                                       
  drainage          -          5          9          
 Wunddehiszenz      -          5          6          
 ----------------------------------------------------
-Vaskuläre Störungen                                 
+VaskulÃ¤re StÃ¶rungen                                 
 Hypotension        -          3          8          
 ----------------------------------------------------
 				EOS
@@ -1485,7 +1486,7 @@ Hypotension        -          3          8
 				}
 			end
 		end
-		class TestFachinfoPDFHBVAXPRO < Test::Unit::TestCase
+		class TestFachinfoPDFHBVAXPRO <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_hbvaxpro.rb',
@@ -1510,7 +1511,7 @@ Hypotension        -          3          8
 				}
 			end
 		end
-		class TestFachinfoPDFCiprofloxacinSandoz < Test::Unit::TestCase
+		class TestFachinfoPDFCiprofloxacinSandoz <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_ciprofloxacin.rb',
@@ -1525,7 +1526,7 @@ Hypotension        -          3          8
         }
 			end
 		end
-		class TestFachinfoPDFAssCardioSandoz < Test::Unit::TestCase
+		class TestFachinfoPDFAssCardioSandoz <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_ass_cardio.rb',
@@ -1538,7 +1539,7 @@ Hypotension        -          3          8
         assert_equal("Zulassungsnummer\n58347 (Swissmedic).", @fachinfo.iksnrs.to_s)
       end
 		end
-		class TestFachinfoPDFMagnevist < Test::Unit::TestCase
+		class TestFachinfoPDFMagnevist <Minitest::Test
 			def setup
 				@writer = FachinfoPDFWriter.new
 				path = File.expand_path('../test/data/method_calls_magnevist.rb',

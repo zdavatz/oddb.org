@@ -7,7 +7,8 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/odba'
 require 'util/persistence'
 require 'stub/oddbdat_export'
@@ -21,7 +22,7 @@ require 'tempfile'
 require 'util/log'
 
 module ODDB
-  class SwissmedicPluginTest < Test::Unit::TestCase
+  class SwissmedicPluginTest <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock 'app'

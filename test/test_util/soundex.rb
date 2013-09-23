@@ -4,11 +4,12 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/soundex'
 
 module ODDB
-	class TestSoundex < Test::Unit::TestCase
+	class TestSoundex <Minitest::Test
 		def test_prepare
 			assert_equal('essigsaeure', Text::Soundex.prepare('essigsäure'))
 			input = "ä á à â æ ã Ä Á À Â Æ Ã"

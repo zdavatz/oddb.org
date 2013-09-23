@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/sponsor'
 require 'fileutils'
@@ -13,7 +14,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestSponsor < Test::Unit::TestCase
+class TestSponsor <Minitest::Test
   include FlexMock::TestCase
   def setup
     company  = flexmock('company', :pointer => 'pointer')

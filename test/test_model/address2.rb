@@ -6,11 +6,12 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/address'
 
 module ODDB
-	class TestAddress2 < Test::Unit::TestCase
+	class TestAddress2 <Minitest::Test
 		def setup
 			@address = Address2.new
 		end
@@ -186,7 +187,7 @@ module ODDB
       assert_equal([other, @address], [@address, other].sort)
     end
 	end
-  class TestAddressObserver < Test::Unit::TestCase
+  class TestAddressObserver <Minitest::Test
     class Observer
       include AddressObserver
       def initialize

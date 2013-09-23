@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/recentregs'
 require 'date'
@@ -15,7 +16,7 @@ module ODDB
   module View
     module Drugs
 
-class TestDateChooser < Test::Unit::TestCase
+class TestDateChooser <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -40,7 +41,7 @@ class TestDateChooser < Test::Unit::TestCase
   end
 end
 
-class TestDateHeader < Test::Unit::TestCase
+class TestDateHeader <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -57,7 +58,7 @@ class TestDateHeader < Test::Unit::TestCase
   end
 end
 
-class TestRootRecentRegsList < Test::Unit::TestCase
+class TestRootRecentRegsList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -97,7 +98,7 @@ class TestRootRecentRegsList < Test::Unit::TestCase
   end
 end
 
-class TestRecentRegsList < Test::Unit::TestCase
+class TestRecentRegsList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -130,7 +131,7 @@ class TestRecentRegsList < Test::Unit::TestCase
   end
 end
 
-class TestRecentRegsComposite < Test::Unit::TestCase
+class TestRecentRegsComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

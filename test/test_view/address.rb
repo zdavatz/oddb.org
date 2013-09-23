@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/address'
@@ -21,7 +22,7 @@ class StubVCardMethods
     @lookandfeel = session.lookandfeel
   end
 end
-class TestVCardMethods < Test::Unit::TestCase
+class TestVCardMethods <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -37,7 +38,7 @@ class TestVCardMethods < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Link, @view.vcard(@model))
   end
 end
-class TestSuggestedAddress < Test::Unit::TestCase
+class TestSuggestedAddress <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -79,7 +80,7 @@ class TestSuggestedAddress < Test::Unit::TestCase
   end
 end
 
-class TestAddress < Test::Unit::TestCase
+class TestAddress <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

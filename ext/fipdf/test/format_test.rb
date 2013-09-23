@@ -3,7 +3,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/text'
 require 'format'
 module ODDB
@@ -11,7 +12,7 @@ module ODDB
 		class Format 
 			attr_accessor :writer
 		end
-		class TestFormat < Test::Unit::TestCase
+		class TestFormat <Minitest::Test
 			class StubWriter
 				attr_accessor :num_lines, :height, :add_text_wrap_results
 				def initialize

@@ -7,13 +7,14 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'plugin/hospitals'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 
 module ODDB
 	module MedData
 
-class TestHospitalPlugin < Test::Unit::TestCase
+class TestHospitalPlugin <Minitest::Test
   include FlexMock::TestCase
   def setup 
     @app = FlexMock.new("app")

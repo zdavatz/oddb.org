@@ -5,7 +5,8 @@
 
 require 'date'
 require 'pathname'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
@@ -19,7 +20,7 @@ module ODDB
   class RssPlugin < Plugin
     RSS_PATH = File.expand_path('../../data/rss', __FILE__)
   end
-  class TestRssPlugin < Test::Unit::TestCase
+  class TestRssPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @current = flexmock('current', :valid_from => Time.local(2011,2,3))

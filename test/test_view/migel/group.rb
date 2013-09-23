@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/resulttemplate'
 require 'view/migel/group'
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Migel
 
-class TestGroupInnerComposite < Test::Unit::TestCase
+class TestGroupInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -34,7 +35,7 @@ class TestGroupInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestGroupComposite < Test::Unit::TestCase
+class TestGroupComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

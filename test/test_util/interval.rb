@@ -6,12 +6,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/interval'
 require 'odba'
 
-class TestInterval < Test::Unit::TestCase
+class TestInterval <Minitest::Test
 	class StubSession
 		attr_accessor :user_input
 		def user_input(key)
@@ -68,7 +69,7 @@ class TestInterval < Test::Unit::TestCase
 end
 
 module ODDB
-  class TestInterval < Test::Unit::TestCase
+  class TestInterval <Minitest::Test
     include FlexMock::TestCase
     class StubInterval
       include ODDB::Interval
@@ -166,7 +167,7 @@ module ODDB
 
   end
 
-  class TestIndexedInterval < Test::Unit::TestCase
+  class TestIndexedInterval <Minitest::Test
     include FlexMock::TestCase
     class StubSuper
       def init

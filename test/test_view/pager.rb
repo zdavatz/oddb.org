@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/pager'
 require 'stub/cgi'
@@ -17,7 +18,7 @@ module ODDB
 			public :page_link
 		end
 
-		class TestPager	< Test::Unit::TestCase
+		class TestPager	<Minitest::Test
       include FlexMock::TestCase
 			class StubSession
 				attr_accessor :page, :event, :dictionary

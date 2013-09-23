@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/additional_information'
 require 'view/admin/sequence'
@@ -13,7 +14,7 @@ require 'htmlgrid/span'
 require 'model/sequence'
 require 'view/admin/registration'
 
-class TestActiveAgent < Test::Unit::TestCase
+class TestActiveAgent <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -63,7 +64,7 @@ class TestActiveAgent < Test::Unit::TestCase
   end
 end
 
-class TestRootActiveAgents < Test::Unit::TestCase
+class TestRootActiveAgents <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -144,7 +145,7 @@ class TestRootActiveAgents < Test::Unit::TestCase
   end
 end
 
-class TestCompositionList < Test::Unit::TestCase
+class TestCompositionList <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -182,7 +183,7 @@ class TestCompositionList < Test::Unit::TestCase
   end
 end
 
-class TestRootCompositionList < Test::Unit::TestCase
+class TestRootCompositionList <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -227,7 +228,7 @@ class TestRootCompositionList < Test::Unit::TestCase
   end
 end
 
-class TestSequencePackage < Test::Unit::TestCase
+class TestSequencePackage <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -272,7 +273,7 @@ class TestSequencePackage < Test::Unit::TestCase
   end
 end
 
-class TestSequenceInnerComposite < Test::Unit::TestCase
+class TestSequenceInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -312,7 +313,7 @@ class TestSequenceInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestSequenceForm < Test::Unit::TestCase
+class TestSequenceForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
@@ -453,7 +454,7 @@ class TestSequenceForm < Test::Unit::TestCase
   end
 end
 
-class TestSequenceComposite < Test::Unit::TestCase
+class TestSequenceComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
@@ -524,7 +525,7 @@ class TestSequenceComposite < Test::Unit::TestCase
   end
 end
 
-class TestRootSequenceForm < Test::Unit::TestCase
+class TestRootSequenceForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
@@ -576,7 +577,7 @@ class TestRootSequenceForm < Test::Unit::TestCase
   end
 end
 
-class TestResellerSequenceComposite < Test::Unit::TestCase
+class TestResellerSequenceComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|

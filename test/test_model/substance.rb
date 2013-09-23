@@ -7,7 +7,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/substance'
 require 'util/searchterms'
 require 'flexmock'
@@ -16,7 +17,7 @@ module ODDB
   class Substance
     attr_writer :sequences, :substrate_connections
   end
-  class TestSubstance < Test::Unit::TestCase
+  class TestSubstance <Minitest::Test
     include FlexMock::TestCase
     def setup
       @substance = ODDB::Substance.new

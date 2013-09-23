@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/sponsorlogo'
 require 'htmlgrid/span'
@@ -13,7 +14,7 @@ require 'htmlgrid/span'
 module ODDB
   module View
 
-class TestCompanyLogo < Test::Unit::TestCase
+class TestCompanyLogo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -36,7 +37,7 @@ class TestCompanyLogo < Test::Unit::TestCase
   end
 end
 
-class TestSponsorLogo < Test::Unit::TestCase
+class TestSponsorLogo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

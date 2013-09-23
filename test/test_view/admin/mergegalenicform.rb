@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/admin/mergegalenicform'
 
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Admin
 
-class TestMergeGalenicFormForm < Test::Unit::TestCase
+class TestMergeGalenicFormForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -35,7 +36,7 @@ class TestMergeGalenicFormForm < Test::Unit::TestCase
   end
 end
 
-class TestMergeGalenicFormComposite < Test::Unit::TestCase
+class TestMergeGalenicFormComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

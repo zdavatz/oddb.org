@@ -3,7 +3,8 @@
 # OneDirSuite -- oddb -- 08.02.2011 -- yasaka@ywesee.com
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'pp'
 puts File.expand_path(File.dirname(__FILE__))
 $: << File.expand_path(File.dirname(__FILE__))

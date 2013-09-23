@@ -7,7 +7,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/activeagent'
 require 'flexmock'
 
@@ -69,7 +70,7 @@ class StubActiveAgentSequence
 	attr_accessor :pointer
 end
 
-class TestActiveAgent < Test::Unit::TestCase
+class TestActiveAgent <Minitest::Test
   include FlexMock::TestCase
 	def setup
 		@substance_name = 'ACIDUM ACETYLSALICYLICUM'

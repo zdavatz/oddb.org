@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/resulttemplate'
@@ -17,7 +18,7 @@ module ODDB
   module View
     module Rss
 
-class TestFeedbackTemplate < Test::Unit::TestCase
+class TestFeedbackTemplate <Minitest::Test
   include FlexMock::TestCase
   def setup
     flexmock(ODBA.cache, :next_id => 123)
@@ -50,7 +51,7 @@ class TestFeedbackTemplate < Test::Unit::TestCase
   end
 end
 
-class TestFeedback < Test::Unit::TestCase
+class TestFeedback <Minitest::Test
   include FlexMock::TestCase
   def setup
     flexmock(ODBA.cache, :next_id => 123)

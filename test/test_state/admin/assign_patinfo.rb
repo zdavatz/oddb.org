@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 #require 'htmlgrid/labeltext'
 require 'state/admin/assign_patinfo'
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Admine
 
-class TestAssignPatinfo < Test::Unit::TestCase
+class TestAssignPatinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     match    = flexmock('match', :to_a => [':!registration,12345!sequence,1.'])

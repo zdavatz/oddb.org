@@ -6,13 +6,14 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src/", File.dirname(__FILE__))
 
-require "test/unit"
+gem 'minitest'
+require 'minitest/autorun'
 require "plugin/lppv"
 require "net/http"
 require 'flexmock'
 
 module ODDB
-	class TestLppvWriter < Test::Unit::TestCase
+	class TestLppvWriter <Minitest::Test
 		def setup
 			@writer = LppvWriter.new
 			@formatter = HtmlFormatter.new(@writer)
@@ -33,7 +34,7 @@ module ODDB
 			assert_equal(expected, @writer.prices)
 		end
 	end
-	class TestLppvPlugin < Test::Unit::TestCase
+	class TestLppvPlugin <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@app = FlexMock.new('app')

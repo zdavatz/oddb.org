@@ -5,12 +5,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/dose'
 require 'util/quanty'
 
-class TestDose < Test::Unit::TestCase
+class TestDose <Minitest::Test
   include FlexMock::TestCase
 	def setup
 		@dose = ODDB::Dose.new('1,7', 'mL')

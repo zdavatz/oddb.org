@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/patent'
 
@@ -12,7 +13,7 @@ module ODDB
   module State
     module Admin
 
-class TestPatent < Test::Unit::TestCase
+class TestPatent <Minitest::Test
   include FlexMock::TestCase
   def setup
     flexmock(SwissregPlugin).new_instances do |s|
@@ -35,7 +36,7 @@ class TestPatent < Test::Unit::TestCase
   end
 end
 
-class TestCompanyPatent < Test::Unit::TestCase
+class TestCompanyPatent <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

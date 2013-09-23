@@ -4,12 +4,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/commercial_form'
 
 module ODDB
-  class TestCommercialForm < Test::Unit::TestCase
+  class TestCommercialForm <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)

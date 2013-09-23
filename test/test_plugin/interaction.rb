@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'plugin/interaction'
 require 'util/html_parser'
 require 'flexmock'
@@ -30,7 +31,7 @@ module ODDB
 	end
 end
 
-class TestInteractionPlugin < Test::Unit::TestCase
+class TestInteractionPlugin <Minitest::Test
   include FlexMock::TestCase
   def TestInteractionPlugin.cyt_hsh(cyt_range, option=nil)
     cyts = {}
@@ -593,7 +594,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
   end
 end
 
-class TestFlockhartPlugin < Test::Unit::TestCase
+class TestFlockhartPlugin <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app = flexmock 'app'
@@ -635,7 +636,7 @@ class TestFlockhartPlugin < Test::Unit::TestCase
   end
 end
 
-class TestParser < Test::Unit::TestCase
+class TestParser <Minitest::Test
   include FlexMock::TestCase
   def test_do_category
     formatter = flexmock('formatter', :end_category => 'end_category')
@@ -644,7 +645,7 @@ class TestParser < Test::Unit::TestCase
   end
 end
 
-class TestFormatter < Test::Unit::TestCase
+class TestFormatter <Minitest::Test
   include FlexMock::TestCase
   def setup
     @writer = flexmock('writer')
@@ -663,7 +664,7 @@ class TestFormatter < Test::Unit::TestCase
   end
 end
 
-class TestCytochrome < Test::Unit::TestCase
+class TestCytochrome <Minitest::Test
   include FlexMock::TestCase
   def test_has_connection?
     chrome = ODDB::Interaction::Cytochrome.new('cyt_name')

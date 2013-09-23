@@ -6,13 +6,14 @@ $: << File.expand_path("../../../src",
 	File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'meddata'
 require 'flexmock' 
 
 module ODDB
 	module MedData
-class SessionTest < Test::Unit::TestCase
+class SessionTest <Minitest::Test
 	def setup
 		@session = Session.new()
 	end
@@ -33,7 +34,7 @@ class SessionTest < Test::Unit::TestCase
 	def test_post_hash__utf8
 			# The server expects utf8-encoded data
 			data = {
-				:name	=>	'Müller',
+				:name	=>	'MÃ¼ller',
 			}
 			expected = [
 				['__EVENTTARGET', ''],
@@ -47,7 +48,7 @@ class SessionTest < Test::Unit::TestCase
 		end
 	def test_post_hash__3
 		data = {
-			:name	=>	'Müller',
+			:name	=>	'MÃ¼ller',
 			:plz	=>	'8000',
 		}
 		expected = [
@@ -63,7 +64,7 @@ class SessionTest < Test::Unit::TestCase
 	end
 	def test_post_hash__4
 		data = {
-			:name			=>	'Müller',
+			:name			=>	'MÃ¼ller',
 			:plz			=>	'8000',
 			:city			=>	'Cham',
 			:state		=>	'Zug',

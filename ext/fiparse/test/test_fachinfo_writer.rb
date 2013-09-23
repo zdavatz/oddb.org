@@ -6,13 +6,14 @@ require 'hpricot'
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'fachinfo_writer'
 
 module ODDB
   module FiParse
-    class TestFachinfoWriter < Test::Unit::TestCase
+    class TestFachinfoWriter <Minitest::Test
       include FlexMock::TestCase
       def setup
         @writer = ODDB::FiParse::FachinfoWriter.new

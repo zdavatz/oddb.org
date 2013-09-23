@@ -266,7 +266,7 @@ EOS
 @writer.send_flowing_data("r S")
 @writer.send_flowing_data("c")
 @writer.send_flowing_data("hw")
-@writer.send_flowing_data("eiz®")
+@writer.send_flowing_data("eizÂ®")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -432,7 +432,7 @@ EOS
 @writer.send_paragraph()
 @writer.send_flowing_data("Rhinopr")
 @writer.send_flowing_data("o")
-@writer.send_flowing_data("nt® N ")
+@writer.send_flowing_data("ntÂ® N ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -2733,7 +2733,7 @@ EOS
 @writer.send_flowing_data("1 Kapsel e")
 @writer.send_flowing_data("n")
 @writer.send_flowing_data("th")
-@writer.send_flowing_data("ält: Chlorp")
+@writer.send_flowing_data("Ã¤lt: Chlorp")
 @writer.send_flowing_data("he")
 @writer.send_flowing_data("namini mal")
 @writer.send_flowing_data("e")
@@ -2993,7 +2993,7 @@ EOS
 @writer.send_flowing_data("/")
 @writer.send_flowing_data("Anwen")
 @writer.send_flowing_data("dung")
-@writer.send_flowing_data("smöglichkeiten")
+@writer.send_flowing_data("smÃ¶glichkeiten")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -3236,7 +3236,7 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Entzündli")
+@writer.send_flowing_data("EntzÃ¼ndli")
 @writer.send_flowing_data("c")
 @writer.send_flowing_data("h")
 @writer.send_flowing_data("e")
@@ -3284,7 +3284,7 @@ EOS
 @writer.send_flowing_data("e")
 @writer.send_flowing_data(" und E")
 @writer.send_flowing_data("r")
-@writer.send_flowing_data("kältu")
+@writer.send_flowing_data("kÃ¤ltu")
 @writer.send_flowing_data("nge")
 @writer.send_flowing_data("n. ")
 font = YAML.load <<-EOS
@@ -4762,7 +4762,7 @@ EOS
 @writer.send_flowing_data("ern. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Übe")
+@writer.send_flowing_data("Ãœbe")
 @writer.send_flowing_data("r")
 @writer.send_flowing_data("em")
 @writer.send_flowing_data("pfindl")
@@ -4773,7 +4773,7 @@ EOS
 @writer.send_flowing_data("er ")
 @writer.send_flowing_data("eine")
 @writer.send_flowing_data("n de")
-@writer.send_flowing_data("r Hilfsstoffe, gemäss Zu")
+@writer.send_flowing_data("r Hilfsstoffe, gemÃ¤ss Zu")
 @writer.send_flowing_data("sam")
 @writer.send_flowing_data("m")
 @writer.send_flowing_data("ensetzu")
@@ -5759,13 +5759,13 @@ EOS
 @writer.send_flowing_data("r Kran")
 @writer.send_flowing_data("kheit de")
 @writer.send_flowing_data("r Korona")
-@writer.send_flowing_data("rgefä")
+@writer.send_flowing_data("rgefÃ¤")
 @writer.send_flowing_data("s")
 @writer.send_flowing_data("se ode")
 @writer.send_flowing_data("r sta")
 @writer.send_flowing_data("r")
 @writer.send_flowing_data("k erh")
-@writer.send_flowing_data("öhtem B")
+@writer.send_flowing_data("Ã¶htem B")
 @writer.send_flowing_data("l")
 @writer.send_flowing_data("utdru")
 @writer.send_flowing_data("ck d")
@@ -5775,7 +5775,7 @@ EOS
 @writer.send_flowing_data("opront N nur na")
 @writer.send_flowing_data("ch ")
 @writer.send_line_break()
-@writer.send_flowing_data("Rü")
+@writer.send_flowing_data("RÃ¼")
 @writer.send_flowing_data("cksp")
 @writer.send_flowing_data("ra")
 @writer.send_flowing_data("che ")
@@ -5787,7 +5787,7 @@ EOS
 @writer.send_flowing_data(". ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Siehe «Schwangerschaft/Stillzeit». ")
+@writer.send_flowing_data("Siehe á¸‹Schwangerschaft/Stillzeitá¹ . ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -7043,9 +7043,9 @@ target_encoding: latin1
 EOS
 @writer.new_font(font)
 @writer.send_flowing_data("MAO-Hemmer und trizyklische Antidepressiva ")
-@writer.send_flowing_data("verstärken den Vasokonstriktoreffekt des ")
+@writer.send_flowing_data("verstÃ¤rken den Vasokonstriktoreffekt des ")
 @writer.send_line_break()
-@writer.send_flowing_data("Phenylephrins. Antihistaminika verstärken die ")
+@writer.send_flowing_data("Phenylephrins. Antihistaminika verstÃ¤rken die ")
 @writer.send_flowing_data("Wirkung von Alkohol und von zentralwirkenden ")
 @writer.send_line_break()
 @writer.send_flowing_data("Beruhigungsmitteln (z.B. Barbiturate,")
@@ -7535,20 +7535,20 @@ EOS
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("Die Sicherheit von Chlorphenamin und Phenyleph")
-@writer.send_flowing_data("rin oder ihrer Kombination während der ersten ")
+@writer.send_flowing_data("rin oder ihrer Kombination wÃ¤hrend der ersten ")
 @writer.send_line_break()
 @writer.send_flowing_data("beiden Schwangerschaftstrimester wurde nicht erwi")
 @writer.send_flowing_data("esen. Im letzten Schwangerschaftstrimester und ")
 @writer.send_line_break()
-@writer.send_flowing_data("während der Stillzeit bergen diese Präparate das Risiko schwerer unerwünschter Wirkungen, wie z.B. ")
+@writer.send_flowing_data("wÃ¤hrend der Stillzeit bergen diese PrÃ¤parate das Risiko schwerer unerwÃ¼nschter Wirkungen, wie z.B. ")
 @writer.send_line_break()
-@writer.send_flowing_data("durch Chlorphenamin bewirkte Krämpfe beim Fötu")
+@writer.send_flowing_data("durch Chlorphenamin bewirkte KrÃ¤mpfe beim FÃ¶tu")
 @writer.send_flowing_data("s und beim Neugeborenen. Folglich sind sie in ")
 @writer.send_line_break()
 @writer.send_flowing_data("diesem Stadium der Schwangerschaft kontraindiziert. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Die Anwendung während der Stillzeit ist zu vermeiden. ")
+@writer.send_flowing_data("Die Anwendung wÃ¤hrend der Stillzeit ist zu vermeiden. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -7790,7 +7790,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen")
+@writer.send_flowing_data("Wirkung auf die FahrtÃ¼chtigkeit und auf das Bedienen von Maschinen")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -8035,7 +8035,7 @@ EOS
 @writer.send_paragraph()
 @writer.send_flowing_data("Wenn auch die sedierende Wirkung des Antihistaminikums nur gering ist, dies um so mehr als es in ")
 @writer.send_line_break()
-@writer.send_flowing_data("Retard-Form angewandt wird, kann Rhinopront N die Reaktionsfähigkeit vermindern: beim Autofahren ")
+@writer.send_flowing_data("Retard-Form angewandt wird, kann Rhinopront N die ReaktionsfÃ¤higkeit vermindern: beim Autofahren ")
 @writer.send_line_break()
 @writer.send_flowing_data("und Bedienen von Maschinen ist Vorsicht geboten. ")
 font = YAML.load <<-EOS
@@ -8279,7 +8279,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Unerwünschte Wirkungen")
+@writer.send_flowing_data("UnerwÃ¼nschte Wirkungen")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -8759,7 +8759,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Störungen des Blut- und Lymphsystems")
+@writer.send_flowing_data("StÃ¶rungen des Blut- und Lymphsystems")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -9475,7 +9475,7 @@ src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data(" Veränderungen des Blutbildes. ")
+@writer.send_flowing_data(" VerÃ¤nderungen des Blutbildes. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -10663,7 +10663,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Störungen des Nervensystem")
+@writer.send_flowing_data("StÃ¶rungen des Nervensystem")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -11139,7 +11139,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Häufig:")
+@writer.send_flowing_data("HÃ¤ufig:")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -11379,7 +11379,7 @@ src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data(" Vorübergehende Schläfrigkeit (10-25%) oder eine Verminderung der Aufmerksamkeit. ")
+@writer.send_flowing_data(" VorÃ¼bergehende SchlÃ¤frigkeit (10-25%) oder eine Verminderung der Aufmerksamkeit. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -11615,7 +11615,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Gastrointestinale Störungen")
+@writer.send_flowing_data("Gastrointestinale StÃ¶rungen")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -13519,7 +13519,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Störungen des muskuloskelettalen Systems")
+@writer.send_flowing_data("StÃ¶rungen des muskuloskelettalen Systems")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -14477,7 +14477,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Überdosierung")
+@writer.send_flowing_data("Ãœberdosierung")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -15196,7 +15196,7 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Stimulierung (Kinder) oder Dämpfung (Erwachsene) des ZNS. ")
+@writer.send_flowing_data("Stimulierung (Kinder) oder DÃ¤mpfung (Erwachsene) des ZNS. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -17374,31 +17374,31 @@ EOS
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("einem Antihistaminikum, Chlorphenaminmaleat. Es ")
-@writer.send_flowing_data("ist gut verträglich und bringt rasche Linderung der ")
+@writer.send_flowing_data("ist gut vertrÃ¤glich und bringt rasche Linderung der ")
 @writer.send_line_break()
-@writer.send_flowing_data("lästigen Erscheinungen des Schnupfens wie Nasenrinnen, Niesen, Kribbeln und Tränenfluss; ")
+@writer.send_flowing_data("lÃ¤stigen Erscheinungen des Schnupfens wie Nasenrinnen, Niesen, Kribbeln und TrÃ¤nenfluss; ")
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("einem Vasokonstriktor, Phenylephrinhydroc")
-@writer.send_flowing_data("hlorid, der abschwellend auf entzündete ")
+@writer.send_flowing_data("hlorid, der abschwellend auf entzÃ¼ndete ")
 @writer.send_line_break()
 @writer.send_flowing_data("Nasenschleimhaut wirkt, die verstopften Nasen")
-@writer.send_flowing_data("gänge befreit und dadurch die Atmung erleichtert. ")
+@writer.send_flowing_data("gÃ¤nge befreit und dadurch die Atmung erleichtert. ")
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("Die 10-12 Stunden anhaltende Langzeitwirkung v")
 @writer.send_flowing_data("on Rhinopront N beruht auf der Dialyse der ")
 @writer.send_line_break()
-@writer.send_flowing_data("Wirkstoffe (Diffucap®), welche in den Hunderten ")
+@writer.send_flowing_data("Wirkstoffe (DiffucapÂ®), welche in den Hunderten ")
 @writer.send_flowing_data("von Mikrogranula jeder Kapsel enthalten sind. Somit ")
 @writer.send_line_break()
 @writer.send_flowing_data("verschafft eine Kapsel, morgens beim Aufstehe")
-@writer.send_flowing_data("n eingenommen, eine währ")
+@writer.send_flowing_data("n eingenommen, eine wÃ¤hr")
 @writer.send_flowing_data("end des ganzen Tages ")
 @writer.send_line_break()
-@writer.send_flowing_data("gleichmässig anhaltende Erleichterung; eine zweite, vor dem Schlafengehen, gewährleistet eine ")
+@writer.send_flowing_data("gleichmÃ¤ssig anhaltende Erleichterung; eine zweite, vor dem Schlafengehen, gewÃ¤hrleistet eine ")
 @writer.send_line_break()
-@writer.send_flowing_data("ungestörte Nachtruhe und am nächsten Morgen ein Aufwachen ohne Verstopfung der Nase. ")
+@writer.send_flowing_data("ungestÃ¶rte Nachtruhe und am nÃ¤chsten Morgen ein Aufwachen ohne Verstopfung der Nase. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -18359,7 +18359,7 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Chlorphenamin wird nach oraler Verabreichung gut resorbiert und während seiner Resorption durch ")
+@writer.send_flowing_data("Chlorphenamin wird nach oraler Verabreichung gut resorbiert und wÃ¤hrend seiner Resorption durch ")
 @writer.send_line_break()
 @writer.send_flowing_data("die gastrointestinale Schleimhaut und in der Leber (F")
 @writer.send_flowing_data("irst-pass-Effekt) metabolisiert. Es erscheint nach ")
@@ -18367,14 +18367,14 @@ EOS
 @writer.send_flowing_data("30-60 Min. im Plasma, wobei die maximale Plasmako")
 @writer.send_flowing_data("nzentration nach 2-6 Std. erreicht wird. Es geht ")
 @writer.send_line_break()
-@writer.send_flowing_data("in den Speichel über. Die Ausscheidung erfolgt hauptsächlich über die Nieren. ")
+@writer.send_flowing_data("in den Speichel Ã¼ber. Die Ausscheidung erfolgt hauptsÃ¤chlich Ã¼ber die Nieren. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Phenylephrin wird unregelmässig aus dem Magen-Darm-Trakt resorbiert und bewirkt nach 15-20 Min. ")
+@writer.send_flowing_data("Phenylephrin wird unregelmÃ¤ssig aus dem Magen-Darm-Trakt resorbiert und bewirkt nach 15-20 Min. ")
 @writer.send_line_break()
-@writer.send_flowing_data("ein Abschwellen der Nasenschleimhäute, das 2-4 Std. anhält. Es wird über die MAO in der Leber und ")
+@writer.send_flowing_data("ein Abschwellen der NasenschleimhÃ¤ute, das 2-4 Std. anhÃ¤lt. Es wird Ã¼ber die MAO in der Leber und ")
 @writer.send_line_break()
-@writer.send_flowing_data("im Darm rasch metabolisiert. Einzelheiten über die Verteilung in der Muttermilch und die ")
+@writer.send_flowing_data("im Darm rasch metabolisiert. Einzelheiten Ã¼ber die Verteilung in der Muttermilch und die ")
 @writer.send_line_break()
 @writer.send_flowing_data("Ausscheidung sind nicht bekannt. ")
 font = YAML.load <<-EOS
@@ -18618,7 +18618,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Präklinische Daten")
+@writer.send_flowing_data("PrÃ¤klinische Daten")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -18861,7 +18861,7 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Es sind keine für die Anwendung relevanten präklinischen Daten der im Arzneimittel enthaltenen ")
+@writer.send_flowing_data("Es sind keine fÃ¼r die Anwendung relevanten prÃ¤klinischen Daten der im Arzneimittel enthaltenen ")
 @writer.send_line_break()
 @writer.send_flowing_data("Wirkstoffkombination vorhanden. ")
 font = YAML.load <<-EOS
@@ -20303,8 +20303,8 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Bei Raumtemperatur (15-25 °C) ")
-@writer.send_flowing_data("und vor Licht geschützt aufbewahren. ")
+@writer.send_flowing_data("Bei Raumtemperatur (15-25 á¸žC) ")
+@writer.send_flowing_data("und vor Licht geschÃ¼tzt aufbewahren. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -21294,7 +21294,7 @@ EOS
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("Pfiz")
-@writer.send_flowing_data("er AG, Züric")
+@writer.send_flowing_data("er AG, ZÃ¼ric")
 @writer.send_flowing_data("h")
 @writer.send_flowing_data(". ")
 font = YAML.load <<-EOS
@@ -22056,7 +22056,7 @@ EOS
 @writer.send_flowing_data(" w")
 @writer.send_flowing_data("u")
 @writer.send_flowing_data("rde b")
-@writer.send_flowing_data("ehö")
+@writer.send_flowing_data("ehÃ¶")
 @writer.send_flowing_data("rd")
 @writer.send_flowing_data("lic")
 @writer.send_flowing_data("h ")
@@ -22170,7 +22170,7 @@ EOS
 @writer.send_flowing_data("ch")
 @writer.send_flowing_data("t v")
 @writer.send_flowing_data("e")
-@writer.send_flowing_data("röff")
+@writer.send_flowing_data("rÃ¶ff")
 @writer.send_flowing_data("en")
 @writer.send_flowing_data("tli")
 @writer.send_flowing_data("c")

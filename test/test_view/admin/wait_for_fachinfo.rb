@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/admin/wait_for_fachinfo'
 
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Admin
 
-class TestStatusBar < Test::Unit::TestCase
+class TestStatusBar <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -30,7 +31,7 @@ class TestStatusBar < Test::Unit::TestCase
   end
 end
 
-class TestWaitForFachinfo < Test::Unit::TestCase
+class TestWaitForFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

@@ -5,7 +5,8 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/orphaned_patinfo'
 require 'util/pointerarray'
@@ -15,7 +16,7 @@ module ODDB
   module State
     module Admin
 
-class TestOrphanedPatinfo < Test::Unit::TestCase
+class TestOrphanedPatinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

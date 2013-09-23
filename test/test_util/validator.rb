@@ -6,13 +6,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/validator'
 require 'util/persistence'
 require 'sbsm/validator'
 
-class TestOddbValidator < Test::Unit::TestCase
+class TestOddbValidator <Minitest::Test
   include FlexMock::TestCase
 	def setup
 		@validator = ODDB::Validator.new

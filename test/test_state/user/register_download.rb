@@ -13,7 +13,8 @@ module ODDB
     end
   end
 end
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/user/register_download'
 
@@ -22,7 +23,7 @@ module ODDB
   module State
     module User
 
-class TestRegisterDownload < Test::Unit::TestCase
+class TestRegisterDownload <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
