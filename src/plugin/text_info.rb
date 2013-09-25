@@ -623,6 +623,7 @@ module ODDB
     end    
 
     def add_all_iksnr(info, typ, all_numbers)
+      @@iksnrs_meta_info ||= {}
       ids = TextInfoPlugin::get_iksnrs_from_string(all_numbers)
       ids.each { |id|
                 info.iksnr = id
@@ -1333,7 +1334,6 @@ module ODDB
       true # an import should return true or you will never send a report
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
-      @@iksnrs_meta_info = {}
       puts_sync "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
