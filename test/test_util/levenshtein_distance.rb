@@ -4,11 +4,12 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/levenshtein_distance'
 
 module ODDB
-	class TestLevenshteinDistance < Test::Unit::TestCase
+	class TestLevenshteinDistance <Minitest::Test
 		def test_equal
 			assert_equal(0, 'foo'.ld('foo'))
 		end

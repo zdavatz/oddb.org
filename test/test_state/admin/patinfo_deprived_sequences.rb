@@ -5,7 +5,8 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/patinfo_deprived_sequences'
 
@@ -13,7 +14,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestPatinfoDeprivedSequences < Test::Unit::TestCase
+class TestPatinfoDeprivedSequences <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

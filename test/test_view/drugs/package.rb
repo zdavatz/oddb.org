@@ -5,14 +5,15 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/package'
 require 'htmlgrid/span'
 require 'model/index_therapeuticus'
 require 'sbsm/validator'
 
-class TestCompositionList < Test::Unit::TestCase
+class TestCompositionList <Minitest::Test
   include FlexMock::TestCase
   def test_composition
     commercial_form = flexmock('commercial_form', :language => 'language')
@@ -53,7 +54,7 @@ class TestCompositionList < Test::Unit::TestCase
   end
 end
 
-class TestPackageInnerComposite < Test::Unit::TestCase
+class TestPackageInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -153,7 +154,7 @@ class TestPackageInnerComposite < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::DateValue, @composite.introduction_date(@model, @session))
   end
 end
-class TestODDBViewDrugsPackageComposite < Test::Unit::TestCase
+class TestODDBViewDrugsPackageComposite <Minitest::Test
   include FlexMock::TestCase
   def setup 
     @lookandfeel = flexmock('lookandfeel', 
@@ -263,7 +264,7 @@ class TestODDBViewDrugsPackageComposite < Test::Unit::TestCase
     assert_kind_of(ODDB::View::Admin::Compositions, @composite.compositions(@model, @session))
   end
 end
-class TestPackage < Test::Unit::TestCase
+class TestPackage <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel', 

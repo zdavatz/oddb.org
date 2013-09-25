@@ -4,14 +4,15 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/analysis/group'
 
 module ODDB
   module Analysis
 
-class TestGroup < Test::Unit::TestCase
+class TestGroup <Minitest::Test
   include FlexMock::TestCase
   def setup
     @group = ODDB::Analysis::Group.new('groupcd')

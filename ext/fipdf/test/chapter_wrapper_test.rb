@@ -3,7 +3,8 @@
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'chapter_wrapper'
 
 module ODDB
@@ -11,7 +12,7 @@ module ODDB
     class ChapterWrapper < SimpleDelegator
       attr_writer :wrapper_class
     end
-    class TestChapterWrapper < Test::Unit::TestCase
+    class TestChapterWrapper <Minitest::Test
       class StubSectionWrapper < SimpleDelegator
       end
       class StubChapter

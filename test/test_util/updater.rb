@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/updater'
 require 'stub/odba'
@@ -40,7 +41,7 @@ module ODDB
 		end
 		alias :recipients :incomplete_pointers
 	end
-	class TestUpdater < Test::Unit::TestCase
+	class TestUpdater <Minitest::Test
     include FlexMock::TestCase
 		class StubLog
 			include ODDB::Persistence

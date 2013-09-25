@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/search'
 
@@ -14,7 +15,7 @@ module ODDB
     Copyright::ODDB_VERSION = 'version'
     module Drugs
 
-class TestSearch < Test::Unit::TestCase
+class TestSearch <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

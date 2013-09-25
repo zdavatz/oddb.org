@@ -4,12 +4,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/selectsubstance'
 
 module ODDB
-  class TestSelectSubstance < Test::Unit::TestCase
+  class TestSelectSubstance <Minitest::Test
     include FlexMock::TestCase
     def setup
       @active_agent = flexmock('active_agent', :pointer => 'pointer')

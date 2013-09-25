@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/result'
 require 'htmlgrid/select'
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Drugs
 
-class TestDivExportCSV < Test::Unit::TestCase
+class TestDivExportCSV <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -38,7 +39,7 @@ class TestDivExportCSV < Test::Unit::TestCase
   end
 end
 
-class TestEmptyResultComposite < Test::Unit::TestCase
+class TestEmptyResultComposite <Minitest::Test
   include FlexMock::TestCase
   def test_title_none_found
     @lnf       = flexmock('lookandfeel', 
@@ -59,7 +60,7 @@ class TestEmptyResultComposite < Test::Unit::TestCase
   end
 end
 
-class TestResultComposite < Test::Unit::TestCase
+class TestResultComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

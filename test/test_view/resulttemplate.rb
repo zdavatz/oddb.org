@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/resulttemplate'
 
@@ -14,7 +15,7 @@ module ODDB
   end
   module View
     Copyright::ODDB_VERSION = 'version'
-    class TestResultTemplate < Test::Unit::TestCase
+    class TestResultTemplate <Minitest::Test
       include FlexMock::TestCase
       def stderr_null
         require 'tempfile'

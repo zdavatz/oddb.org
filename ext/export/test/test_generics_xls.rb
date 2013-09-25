@@ -5,7 +5,8 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'spreadsheet'
 require 'generics_xls'
@@ -13,7 +14,7 @@ require 'date'
 
 module ODDB
   module OdbaExporter
-    class TestGenericXls < Test::Unit::TestCase
+    class TestGenericXls <Minitest::Test
       include FlexMock::TestCase
       def setup
         @loggroup_swiss = LogGroup.new(:swissmedic_journal)
@@ -160,6 +161,7 @@ module ODDB
         # if the return value of registration.generics? is not false (ture) (point.2),
         # then you have to define the other method in the flexstub(Package),
         # since export_comparables or export_generic will be called.
+        registration = flexmock('registration')
         pac = flexstub(@pac) do |pack|
           pack.should_receive(:"registration.active?").and_return(true)
           pack.should_receive(:"registration.original?").and_return(true)
@@ -189,7 +191,7 @@ module ODDB
         end
 
         generics_xls = GenericXls.new(".")
-        assert_raise(NoMethodError) do    # This means the report process runs if this assert passes
+        assert_raises(NoMethodError) do    # This means the report process runs if this assert passes
           generics_xls.export_generics
         end
       end

@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "yaml"
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
@@ -266,7 +267,7 @@ EOS
 @writer.send_flowing_data("r S")
 @writer.send_flowing_data("c")
 @writer.send_flowing_data("hw")
-@writer.send_flowing_data("eiz®")
+@writer.send_flowing_data("eizÂ®")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -430,7 +431,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Cetrin® 10 ")
+@writer.send_flowing_data("CetrinÂ® 10 ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -2981,7 +2982,7 @@ EOS
 @writer.send_flowing_data("/")
 @writer.send_flowing_data("Anwen")
 @writer.send_flowing_data("dung")
-@writer.send_flowing_data("smöglichkeiten")
+@writer.send_flowing_data("smÃ¶glichkeiten")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -4979,7 +4980,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Übli")
+@writer.send_flowing_data("Ãœbli")
 @writer.send_flowing_data("che Ta")
 @writer.send_flowing_data("ge")
 @writer.send_flowing_data("sdo")
@@ -5472,7 +5473,7 @@ EOS
 @writer.send_flowing_data("se")
 @writer.send_flowing_data("ne ")
 @writer.send_flowing_data("und Kinde")
-@writer.send_flowing_data("r ü")
+@writer.send_flowing_data("r Ã¼")
 @writer.send_flowing_data("ber 12 ")
 @writer.send_flowing_data("Jah")
 @writer.send_flowing_data("r")
@@ -5716,7 +5717,7 @@ src: "238 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data(" 1 Filmtablette täglich. Di")
+@writer.send_flowing_data(" 1 Filmtablette tÃ¤glich. Di")
 @writer.send_flowing_data("e Einnahm")
 @writer.send_flowing_data("e sol")
 @writer.send_flowing_data("l")
@@ -5727,12 +5728,12 @@ EOS
 @writer.send_flowing_data("weil die Sym")
 @writer.send_flowing_data("p")
 @writer.send_flowing_data("tome am Ab")
-@writer.send_flowing_data("end stä")
+@writer.send_flowing_data("end stÃ¤")
 @writer.send_flowing_data("r")
 @writer.send_flowing_data("ker a")
 @writer.send_flowing_data("u")
 @writer.send_flowing_data("sg")
-@writer.send_flowing_data("eprägt sin")
+@writer.send_flowing_data("eprÃ¤gt sin")
 @writer.send_flowing_data("d")
 @writer.send_flowing_data(". ")
 font = YAML.load <<-EOS
@@ -6229,18 +6230,18 @@ EOS
 @writer.send_flowing_data("s")
 @writer.send_flowing_data("ch")
 @writer.send_flowing_data("e Konjun")
-@writer.send_flowing_data("ktivitis: wäh")
+@writer.send_flowing_data("ktivitis: wÃ¤h")
 @writer.send_flowing_data("r")
 @writer.send_flowing_data("en")
 @writer.send_flowing_data("d maximal 4 Woch")
 @writer.send_flowing_data("en 1-")
 @writer.send_line_break()
-@writer.send_flowing_data("mal täglich 1 ")
+@writer.send_flowing_data("mal tÃ¤glich 1 ")
 @writer.send_flowing_data("Filmtablette o")
 @writer.send_flowing_data("der 2")
 @writer.send_flowing_data("-")
-@writer.send_flowing_data("mal tägl")
-@writer.send_flowing_data("ich ½ Filmtab")
+@writer.send_flowing_data("mal tÃ¤gl")
+@writer.send_flowing_data("ich áº„ Filmtab")
 @writer.send_flowing_data("l")
 @writer.send_flowing_data("ette. ")
 @writer.send_line_break()
@@ -6249,7 +6250,7 @@ EOS
 @writer.send_flowing_data("sch idiopathisc")
 @writer.send_flowing_data("he ")
 @writer.send_flowing_data("Urtikari")
-@writer.send_flowing_data("a: 1× täglich 1 Filmtablette. ")
+@writer.send_flowing_data("a: 1á¹ª tÃ¤glich 1 Filmtablette. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -6739,14 +6740,14 @@ EOS
 @writer.send_flowing_data(" Sai")
 @writer.send_flowing_data("s")
 @writer.send_flowing_data("on")
-@writer.send_flowing_data("ale Rhinitis: wäh")
+@writer.send_flowing_data("ale Rhinitis: wÃ¤h")
 @writer.send_flowing_data("r")
 @writer.send_flowing_data("en")
 @writer.send_flowing_data("d m")
 @writer.send_flowing_data("a")
 @writer.send_flowing_data("ximal 4 Wo")
-@writer.send_flowing_data("chen 1-mal täg")
-@writer.send_flowing_data("lich ½ Filmta")
+@writer.send_flowing_data("chen 1-mal tÃ¤g")
+@writer.send_flowing_data("lich áº„ Filmta")
 @writer.send_flowing_data("blette. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
@@ -7257,11 +7258,11 @@ EOS
 @writer.send_flowing_data("enten mit ")
 @writer.send_line_break()
 @writer.send_flowing_data("einge")
-@writer.send_flowing_data("schrän")
+@writer.send_flowing_data("schrÃ¤n")
 @writer.send_flowing_data("kter Lebe")
 @writer.send_flowing_data("rfun")
 @writer.send_flowing_data("ktion solle")
-@writer.send_flowing_data("n täglich ½ Film")
+@writer.send_flowing_data("n tÃ¤glich áº„ Film")
 @writer.send_flowing_data("t")
 @writer.send_flowing_data("ablette Cetri")
 @writer.send_flowing_data("n")
@@ -7275,7 +7276,7 @@ EOS
 @writer.send_flowing_data(" Abend. ")
 @writer.send_line_break()
 @writer.send_flowing_data("Bei stark eing")
-@writer.send_flowing_data("eschrän")
+@writer.send_flowing_data("eschrÃ¤n")
 @writer.send_flowing_data("k")
 @writer.send_flowing_data("ter ")
 @writer.send_flowing_data("Nierenf")
@@ -7291,7 +7292,7 @@ EOS
 @writer.send_flowing_data("n")
 @writer.send_flowing_data("- und L")
 @writer.send_flowing_data("ebe")
-@writer.send_flowing_data("rschädi")
+@writer.send_flowing_data("rschÃ¤di")
 @writer.send_flowing_data("gung ")
 @writer.send_flowing_data("kann ein")
 @writer.send_flowing_data("e")
@@ -7301,7 +7302,7 @@ EOS
 @writer.send_flowing_data("si")
 @writer.send_flowing_data("sredu")
 @writer.send_flowing_data("ktion n")
-@writer.send_flowing_data("ö")
+@writer.send_flowing_data("Ã¶")
 @writer.send_flowing_data("tig sein. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
@@ -7560,14 +7561,14 @@ src: "238 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data("Bei Patienten höheren Alters richtet sich die Do")
+@writer.send_flowing_data("Bei Patienten hÃ¶heren Alters richtet sich die Do")
 @writer.send_flowing_data("sierung nach der Kreatinin")
 @writer.send_flowing_data("-Clearance. Sollten bei ")
 @writer.send_line_break()
-@writer.send_flowing_data("Erwachsenen und Kindern über 12 Jahren leichte Ne")
+@writer.send_flowing_data("Erwachsenen und Kindern Ã¼ber 12 Jahren leichte Ne")
 @writer.send_flowing_data("benreaktionen auftreten, dann empfiehlt sich die ")
 @writer.send_line_break()
-@writer.send_flowing_data("Einnahme je einer ½ Filmtablette Cetrin 10 morgens und abends. ")
+@writer.send_flowing_data("Einnahme je einer áº„ Filmtablette Cetrin 10 morgens und abends. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -8052,7 +8053,7 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Überempfindlichkeit gegenüber einem der Inhaltsstoffe. ")
+@writer.send_flowing_data("Ãœberempfindlichkeit gegenÃ¼ber einem der Inhaltsstoffe. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -9024,9 +9025,9 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Nach einer Einzeldosis von 10 mg Cetirizin wurde die Wirkung von Alkohol (0,8‰) nicht wesentlich ")
+@writer.send_flowing_data("Nach einer Einzeldosis von 10 mg Cetirizin wurde die Wirkung von Alkohol (0,8Â‰) nicht wesentlich ")
 @writer.send_line_break()
-@writer.send_flowing_data("potenziert; für einen von 16 psychometrischen Tests ko")
+@writer.send_flowing_data("potenziert; fÃ¼r einen von 16 psychometrischen Tests ko")
 @writer.send_flowing_data("nnte eine statistisch signifikante Interaktion mit ")
 @writer.send_line_break()
 @writer.send_flowing_data("Diazepam 5 mg nachgewiesen werden. ")
@@ -9040,10 +9041,10 @@ EOS
 @writer.send_flowing_data("In einer Studie mit gleichzeitiger Gabe von Theophyllin (400 mg/Tag) und Cetirizin (20 mg/Tag) wurde ")
 @writer.send_line_break()
 @writer.send_flowing_data("eine leichte, jedoch statistisch signifikante Er")
-@writer.send_flowing_data("höhung der 24-Stunden-AUC von 19% für Cetirizin und ")
+@writer.send_flowing_data("hÃ¶hung der 24-Stunden-AUC von 19% fÃ¼r Cetirizin und ")
 @writer.send_line_break()
-@writer.send_flowing_data("von 11% für Theophyllin sowie eine Zunahme der ma")
-@writer.send_flowing_data("ximalen Plasmaspiegel von 7,7% und 6,4% für ")
+@writer.send_flowing_data("von 11% fÃ¼r Theophyllin sowie eine Zunahme der ma")
+@writer.send_flowing_data("ximalen Plasmaspiegel von 7,7% und 6,4% fÃ¼r ")
 @writer.send_line_break()
 @writer.send_flowing_data("Cetirizin bzw. Theophyllin beobachtet. Gleichzeitig ve")
 @writer.send_flowing_data("rringerte sich die Clearance von Cetirizin um -")
@@ -9062,8 +9063,8 @@ EOS
 @writer.send_flowing_data("Es wurden keine pharmakodynamischen Interaktionen mit Cimetidin und Pseudoephedrin beobachtet. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Die gleichzeitige Verabreichung von täglich 10 mg Ce")
-@writer.send_flowing_data("tirizin mit Glipizid führte zu einer leichten ")
+@writer.send_flowing_data("Die gleichzeitige Verabreichung von tÃ¤glich 10 mg Ce")
+@writer.send_flowing_data("tirizin mit Glipizid fÃ¼hrte zu einer leichten ")
 @writer.send_line_break()
 @writer.send_flowing_data("Senkung der Glukosespiegel. Dieser Effekt ist klin")
 @writer.send_flowing_data("isch nicht relevant. Trotzdem wird eine separate ")
@@ -9074,7 +9075,7 @@ EOS
 @writer.send_flowing_data("Die gleichzeitige Verabreichung mit Azithromyc")
 @writer.send_flowing_data("in, Erythromycin, Ketoconazol, Theophyllin und ")
 @writer.send_line_break()
-@writer.send_flowing_data("Pseudoephedrin zeigte keine relevanten Veränderungen der klinischen Laborparameter, ")
+@writer.send_flowing_data("Pseudoephedrin zeigte keine relevanten VerÃ¤nderungen der klinischen Laborparameter, ")
 @writer.send_line_break()
 @writer.send_flowing_data("Vitalfunktionen und EKG. ")
 font = YAML.load <<-EOS
@@ -9564,13 +9565,13 @@ EOS
 @writer.send_flowing_data("Schwangerschaftskategorie B. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Reproduktionsstudien bei Tieren haben keine Risiken für die Föten gezeigt, aber man verfügt über ")
+@writer.send_flowing_data("Reproduktionsstudien bei Tieren haben keine Risiken fÃ¼r die FÃ¶ten gezeigt, aber man verfÃ¼gt Ã¼ber ")
 @writer.send_line_break()
 @writer.send_flowing_data("keine kontrollierten Studien bei schwangeren Frauen. ")
 @writer.send_flowing_data("Aus diesem Grunde sollte Cetrin 10 im ersten ")
 @writer.send_line_break()
 @writer.send_flowing_data("Trimenon nur bei zwingender Indikation verordnet we")
-@writer.send_flowing_data("rden. Während der Stillzeit sollte Cetrin 10 nicht ")
+@writer.send_flowing_data("rden. WÃ¤hrend der Stillzeit sollte Cetrin 10 nicht ")
 @writer.send_line_break()
 @writer.send_flowing_data("eingenommen werden, da Cetirizin in die Muttermilch ausgeschieden wird. ")
 font = YAML.load <<-EOS
@@ -9814,7 +9815,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen")
+@writer.send_flowing_data("Wirkung auf die FahrtÃ¼chtigkeit und auf das Bedienen von Maschinen")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -10059,12 +10060,12 @@ EOS
 @writer.send_paragraph()
 @writer.send_flowing_data("Studien an Probanden und unter realen Bedingungen haben gezeigt, dass Cetirizin in der ")
 @writer.send_line_break()
-@writer.send_flowing_data("vorgeschriebenen Dosierung die Fahrtüchtigkeit ni")
-@writer.send_flowing_data("cht wesentlich beeinträchtigt. Patienten, die ")
+@writer.send_flowing_data("vorgeschriebenen Dosierung die FahrtÃ¼chtigkeit ni")
+@writer.send_flowing_data("cht wesentlich beeintrÃ¤chtigt. Patienten, die ")
 @writer.send_line_break()
 @writer.send_flowing_data("Maschinen bedienen oder Motorfahrzeuge lenken, sollen die empfohlene Dosis von 10 mg nicht ")
 @writer.send_line_break()
-@writer.send_flowing_data("überschreiten. ")
+@writer.send_flowing_data("Ã¼berschreiten. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -10322,7 +10323,7 @@ src: "235 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data("Unerwünschte Wirkungen")
+@writer.send_flowing_data("UnerwÃ¼nschte Wirkungen")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -10565,33 +10566,33 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Leichte und vorübergehende Nebenwirkungen wie M")
-@writer.send_flowing_data("üdigkeit, Konzentrationsstörungen, Somnolenz, ")
+@writer.send_flowing_data("Leichte und vorÃ¼bergehende Nebenwirkungen wie M")
+@writer.send_flowing_data("Ã¼digkeit, KonzentrationsstÃ¶rungen, Somnolenz, ")
 @writer.send_line_break()
 @writer.send_flowing_data("Kopfschmerzen, Schwindel, Agitation, M")
-@writer.send_flowing_data("undtrockenheit und Magen-Darm-Störungen (z.B. ")
+@writer.send_flowing_data("undtrockenheit und Magen-Darm-StÃ¶rungen (z.B. ")
 @writer.send_line_break()
-@writer.send_flowing_data("Obstipation) sind beobachtet worden. Falls sich diese Reaktionen nicht von allein zurückbilden, ")
+@writer.send_flowing_data("Obstipation) sind beobachtet worden. Falls sich diese Reaktionen nicht von allein zurÃ¼ckbilden, ")
 @writer.send_line_break()
-@writer.send_flowing_data("empfiehlt sich bei Erwachsenen und bei Kindern übe")
+@writer.send_flowing_data("empfiehlt sich bei Erwachsenen und bei Kindern Ã¼be")
 @writer.send_flowing_data("r 12 Jahren eine Dosisanpassung von 2-mal ")
 @writer.send_line_break()
-@writer.send_flowing_data("täglich ½ Cetrin 10-Filmtablette (morgens und abends). ")
+@writer.send_flowing_data("tÃ¤glich áº„ Cetrin 10-Filmtablette (morgens und abends). ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("In einigen Fällen wurden Hypersensibilitätsreaktionen mit Hautreaktionen und Angioödema ")
+@writer.send_flowing_data("In einigen FÃ¤llen wurden HypersensibilitÃ¤tsreaktionen mit Hautreaktionen und AngioÃ¶dema ")
 @writer.send_line_break()
 @writer.send_flowing_data("beobachtet. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Es wurde zudem über einzelne Fälle von K")
+@writer.send_flowing_data("Es wurde zudem Ã¼ber einzelne FÃ¤lle von K")
 @writer.send_flowing_data("onvulsionen, Photosen")
-@writer.send_flowing_data("sibilitätsreaktionen, ")
+@writer.send_flowing_data("sibilitÃ¤tsreaktionen, ")
 @writer.send_line_break()
-@writer.send_flowing_data("Leberschädigungen, anaphylaktischen Schock, Krei")
+@writer.send_flowing_data("LeberschÃ¤digungen, anaphylaktischen Schock, Krei")
 @writer.send_flowing_data("slaufversagen, Taubheit, Unwohlsein, Pruritus, ")
 @writer.send_line_break()
-@writer.send_flowing_data("Vaskulitis und Sehstörungen berichtet. ")
+@writer.send_flowing_data("Vaskulitis und SehstÃ¶rungen berichtet. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -10833,7 +10834,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Überdosierung")
+@writer.send_flowing_data("Ãœberdosierung")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -11076,11 +11077,11 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Sedation kann Symptom einer Überdosierung sein. Im Fall einer massiven Überdosierung soll eine ")
+@writer.send_flowing_data("Sedation kann Symptom einer Ãœberdosierung sein. Im Fall einer massiven Ãœberdosierung soll eine ")
 @writer.send_line_break()
-@writer.send_flowing_data("Magenspülung durchgeführt werden, zusammen mit den üblichen unterstützenden Massnahmen. Ein ")
+@writer.send_flowing_data("MagenspÃ¼lung durchgefÃ¼hrt werden, zusammen mit den Ã¼blichen unterstÃ¼tzenden Massnahmen. Ein ")
 @writer.send_line_break()
-@writer.send_flowing_data("spezifisches Antidot steht jedoch nicht zur Verfügung. ")
+@writer.send_flowing_data("spezifisches Antidot steht jedoch nicht zur VerfÃ¼gung. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -12549,7 +12550,7 @@ EOS
 @writer.send_flowing_data("Cetirizin hemmt die histaminvermittelte allergische Reaktion vom Soforttyp und reduziert die ")
 @writer.send_line_break()
 @writer.send_flowing_data("Zellmigration und Freisetzung von Mediatoren bei der A")
-@writer.send_flowing_data("llergie vom verzögerten Typ. In Tierversuchen ")
+@writer.send_flowing_data("llergie vom verzÃ¶gerten Typ. In Tierversuchen ")
 @writer.send_line_break()
 @writer.send_flowing_data("erwies sich Cetirizin als wenig toxisch. Mut")
 @writer.send_flowing_data("agene, teratogene und kanzer")
@@ -13048,21 +13049,21 @@ EOS
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("In kontrollierten klinischen Studien konnte mit einer Dosis von 10 mg bzw. 5 mg Cetirizin täglich eine ")
+@writer.send_flowing_data("In kontrollierten klinischen Studien konnte mit einer Dosis von 10 mg bzw. 5 mg Cetirizin tÃ¤glich eine ")
 @writer.send_line_break()
 @writer.send_flowing_data("statistisch signifikante Wirkung bei")
 @writer.send_flowing_data(" Heuschnupfen, chronisch allergischer Rhinitis und chronischer ")
 @writer.send_line_break()
-@writer.send_flowing_data("Urtikaria gezeigt werden. Cetirizin verfügt somit über eine lange Wirkdauer. Eine einmalige ")
+@writer.send_flowing_data("Urtikaria gezeigt werden. Cetirizin verfÃ¼gt somit Ã¼ber eine lange Wirkdauer. Eine einmalige ")
 @writer.send_line_break()
-@writer.send_flowing_data("Darreichung täglich genügt, um die Symptome ")
-@writer.send_flowing_data("allergischer Reaktionen während 24 Stunden zu ")
+@writer.send_flowing_data("Darreichung tÃ¤glich genÃ¼gt, um die Symptome ")
+@writer.send_flowing_data("allergischer Reaktionen wÃ¤hrend 24 Stunden zu ")
 @writer.send_line_break()
 @writer.send_flowing_data("kontrollieren. Bei Kindern von 6-12 Jahren mit saisonal")
 @writer.send_flowing_data("er Rhinitis und allergischer Konjunktivitis ist ")
 @writer.send_line_break()
-@writer.send_flowing_data("auch die zweimal tägliche Applikation einer halben ")
-@writer.send_flowing_data("Filmtablette möglich. In Histamin-Hautstudien ")
+@writer.send_flowing_data("auch die zweimal tÃ¤gliche Applikation einer halben ")
+@writer.send_flowing_data("Filmtablette mÃ¶glich. In Histamin-Hautstudien ")
 @writer.send_line_break()
 @writer.send_flowing_data("setzte die Wirkung mit 10 mg Cetirizin nach 1 Stunde ein, erreichte ein Maximum nach der 2. bis zur ")
 @writer.send_line_break()
@@ -13074,7 +13075,7 @@ EOS
 @writer.send_line_break()
 @writer.send_flowing_data("Dosen eine nur schwache Wirkung auf das ZNS gezeigt. Psychometrische Parameter wurden in der ")
 @writer.send_line_break()
-@writer.send_flowing_data("Regel nicht verändert und das Ausmass der Änderung bei jenen Parametern, die einen statistisch ")
+@writer.send_flowing_data("Regel nicht verÃ¤ndert und das Ausmass der Ã„nderung bei jenen Parametern, die einen statistisch ")
 @writer.send_line_break()
 @writer.send_flowing_data("signifikanten Unterschied im Vergleich zu Plazebo aufwiesen, war klein. ")
 font = YAML.load <<-EOS
@@ -14299,13 +14300,13 @@ target_encoding: latin1
 EOS
 @writer.new_font(font)
 @writer.send_flowing_data("Das pharmakokinetische Profil von Cetirizin verh")
-@writer.send_flowing_data("ält sich bei Kindern und Erwachsenen qualitativ ")
+@writer.send_flowing_data("Ã¤lt sich bei Kindern und Erwachsenen qualitativ ")
 @writer.send_line_break()
-@writer.send_flowing_data("ähnlich. ")
+@writer.send_flowing_data("Ã¤hnlich. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Die Verabreichung von 5 mg Cetirizin bei Kindern führ")
-@writer.send_flowing_data("t zur gleichen Wirkstoffkonzentration im Körper ")
+@writer.send_flowing_data("Die Verabreichung von 5 mg Cetirizin bei Kindern fÃ¼hr")
+@writer.send_flowing_data("t zur gleichen Wirkstoffkonzentration im KÃ¶rper ")
 @writer.send_line_break()
 @writer.send_flowing_data("wie eine 10-mg-Dosis bei Erwachsenen. ")
 @writer.send_line_break()
@@ -14813,7 +14814,7 @@ EOS
 @writer.send_paragraph()
 @writer.send_flowing_data("Das Verteilungsvolumen nach 10 mg Gabe liegt beim Erwachsenen bei 35 Liter und die Plasma-")
 @writer.send_line_break()
-@writer.send_flowing_data("Proteinbindung beträgt 93%. Bei Kindern beträgt da")
+@writer.send_flowing_data("Proteinbindung betrÃ¤gt 93%. Bei Kindern betrÃ¤gt da")
 @writer.send_flowing_data("s Verteilungsvolumen nach 5-mg-Gabe etwa 17 ")
 @writer.send_line_break()
 @writer.send_flowing_data("Liter. ")
@@ -15612,26 +15613,26 @@ src: "238 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data(") beträgt bei ")
+@writer.send_flowing_data(") betrÃ¤gt bei ")
 @writer.send_line_break()
-@writer.send_flowing_data("½")
+@writer.send_flowing_data("áº„")
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("Erwachsenen ca. 10 Stunden und bei Kindern von ")
 @writer.send_flowing_data("6-12 Jahren ca. 6 Stunden. Bei Erwachsenen ")
 @writer.send_line_break()
 @writer.send_flowing_data("werden 60% und bei Kindern von 6-12 Jahren ")
-@writer.send_flowing_data("70% der oralen Dosis unverändert im Urin ")
+@writer.send_flowing_data("70% der oralen Dosis unverÃ¤ndert im Urin ")
 @writer.send_line_break()
 @writer.send_flowing_data("ausgeschieden. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Mehrfachdosen verändern die pharmakokinetischen Parameter nicht. ")
+@writer.send_flowing_data("Mehrfachdosen verÃ¤ndern die pharmakokinetischen Parameter nicht. ")
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Nach Therapieende fällt der Plasmaspiegel von Cetirizin rasch unter die Nachweisgrenze ab. Allergie-")
+@writer.send_flowing_data("Nach Therapieende fÃ¤llt der Plasmaspiegel von Cetirizin rasch unter die Nachweisgrenze ab. Allergie-")
 @writer.send_line_break()
-@writer.send_flowing_data("Tests sind somit nach 3 Tagen wieder möglich. ")
+@writer.send_flowing_data("Tests sind somit nach 3 Tagen wieder mÃ¶glich. ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -16117,22 +16118,22 @@ EOS
 @writer.send_line_break()
 @writer.send_paragraph()
 @writer.send_flowing_data("Bei Patienten mit Niereninsuffizienz nimmt die ")
-@writer.send_flowing_data("«area under the plasma curve» (AUC) zu, die ")
+@writer.send_flowing_data("á¸‹area under the plasma curveá¹  (AUC) zu, die ")
 @writer.send_line_break()
-@writer.send_flowing_data("Halbwertszeit der Elimination wird verlängert und die renale und totale Clearance nehmen ab. Cetirizin ")
+@writer.send_flowing_data("Halbwertszeit der Elimination wird verlÃ¤ngert und die renale und totale Clearance nehmen ab. Cetirizin ")
 @writer.send_line_break()
-@writer.send_flowing_data("ist nur geringfügig dialysierbar. Bei Patienten mit ei")
-@writer.send_flowing_data("ngeschränkter Leberfunktion wird die Halbwertszeit ")
+@writer.send_flowing_data("ist nur geringfÃ¼gig dialysierbar. Bei Patienten mit ei")
+@writer.send_flowing_data("ngeschrÃ¤nkter Leberfunktion wird die Halbwertszeit ")
 @writer.send_line_break()
-@writer.send_flowing_data("der Elimination verlängert und die extrarenale ")
+@writer.send_flowing_data("der Elimination verlÃ¤ngert und die extrarenale ")
 @writer.send_flowing_data("Clearance, die etwa 30% der totalen Clearance ")
 @writer.send_line_break()
-@writer.send_flowing_data("ausmacht, verringert. Bei Patienten mit eingeschrän")
+@writer.send_flowing_data("ausmacht, verringert. Bei Patienten mit eingeschrÃ¤n")
 @writer.send_flowing_data("kter Leberfunktion und einer gleichzeitigen ")
 @writer.send_line_break()
 @writer.send_flowing_data("Niereninsuffizienz nimmt sowohl die Nierenclearance als auch die extrarenale Clearance ab (siehe ")
 @writer.send_line_break()
-@writer.send_flowing_data("«Spezielle Dosierungsanweisungen»). ")
+@writer.send_flowing_data("á¸‹Spezielle Dosierungsanweisungená¹ ). ")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -16374,7 +16375,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Präklinische Daten")
+@writer.send_flowing_data("PrÃ¤klinische Daten")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -17341,7 +17342,7 @@ EOS
 @writer.new_font(font)
 @writer.send_line_break()
 @writer.send_paragraph()
-@writer.send_flowing_data("Inkompatibilitäten")
+@writer.send_flowing_data("InkompatibilitÃ¤ten")
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -18328,7 +18329,7 @@ EOS
 @writer.send_flowing_data("ttel darf nur bi")
 @writer.send_flowing_data("s zu dem auf ")
 @writer.send_flowing_data("dem B")
-@writer.send_flowing_data("ehälter mit «EXP.» b")
+@writer.send_flowing_data("ehÃ¤lter mit á¸‹EXP.á¹  b")
 @writer.send_flowing_data("e")
 @writer.send_flowing_data("zei")
 @writer.send_flowing_data("c")
@@ -18834,11 +18835,11 @@ EOS
 @writer.send_flowing_data("s Arzneimi")
 @writer.send_flowing_data("ttel bei Raum")
 @writer.send_flowing_data("temperatur (1")
-@writer.send_flowing_data("5-25 °")
+@writer.send_flowing_data("5-25 á¸ž")
 @writer.send_flowing_data("C")
 @writer.send_flowing_data(") und ")
 @writer.send_flowing_data("vor Licht ge")
-@writer.send_flowing_data("schüt")
+@writer.send_flowing_data("schÃ¼t")
 @writer.send_flowing_data("zt aufbe")
 @writer.send_flowing_data("wah")
 @writer.send_flowing_data("r")
@@ -20586,7 +20587,7 @@ EOS
 @writer.send_flowing_data(" w")
 @writer.send_flowing_data("u")
 @writer.send_flowing_data("rde b")
-@writer.send_flowing_data("ehö")
+@writer.send_flowing_data("ehÃ¶")
 @writer.send_flowing_data("rd")
 @writer.send_flowing_data("lic")
 @writer.send_flowing_data("h ")
@@ -20697,7 +20698,7 @@ EOS
 @writer.send_flowing_data("ch")
 @writer.send_flowing_data("t v")
 @writer.send_flowing_data("e")
-@writer.send_flowing_data("röff")
+@writer.send_flowing_data("rÃ¶ff")
 @writer.send_flowing_data("en")
 @writer.send_flowing_data("tli")
 @writer.send_flowing_data("c")

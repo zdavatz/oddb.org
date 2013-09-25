@@ -3,7 +3,8 @@
 # ODDB::TestDosingPlugin -- oddb.org -- 26.06.2012 -- yasaka@ywesee.com
 
 require 'pathname'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
@@ -24,7 +25,7 @@ module ODDB
 end
 
 module ODDB
-  class TestDosingPlugin < Test::Unit::TestCase
+  class TestDosingPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = FlexMock.new 'app'

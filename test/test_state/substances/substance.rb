@@ -14,7 +14,8 @@ module ODDB
     class Search < View::PublicTemplate; end
   end
 end
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/substances/substance'
 require 'state/admin/root'
 require 'model/substance'
@@ -23,7 +24,7 @@ require 'flexmock'
 module ODDB
 	module State
 		module Substances
-class TestSubstanceState < Test::Unit::TestCase
+class TestSubstanceState <Minitest::Test
   include FlexMock::TestCase
 	def setup
     @session = flexmock('session')

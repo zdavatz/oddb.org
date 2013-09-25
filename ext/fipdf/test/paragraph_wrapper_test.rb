@@ -4,7 +4,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'paragraph_wrapper'
 require 'model/text'
 
@@ -13,7 +14,7 @@ module ODDB
 		class ParagraphWrapper < SimpleDelegator 
 			attr_accessor :wrapper_class, :writer
 		end
-		class TestParagraphWrapper < Test::Unit::TestCase
+		class TestParagraphWrapper <Minitest::Test
 			class StubFormat
 				attr_accessor :height, :font, :differences, :size, :justification, :spacing_before, :font_height, :line_count
 				def get_height(*args)

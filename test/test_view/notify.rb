@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/resulttemplate'
 require 'view/notify'
@@ -15,7 +16,7 @@ require 'model/package'
 module ODDB
   module View
 
-class TestNotifyComposite < Test::Unit::TestCase
+class TestNotifyComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -56,7 +57,7 @@ class TestNotifyComposite < Test::Unit::TestCase
   end
 end
 
-class TestNotifyInnerComposite < Test::Unit::TestCase
+class TestNotifyInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     generate_challenge = flexmock('generate_challenge', 
@@ -85,7 +86,7 @@ class TestNotifyInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestNotifyMail < Test::Unit::TestCase
+class TestNotifyMail <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 

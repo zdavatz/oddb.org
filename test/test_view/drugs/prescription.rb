@@ -5,62 +5,63 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/prescription'
 
 module ODDB
   module View
     module Drugs
-class TestPrescriptionInnerForm < Test::Unit::TestCase
+class TestPrescriptionInnerForm <Minitest::Test
   include FlexMock::TestCase
   def test_init
     # pending
   end
 end
 
-class TestPrescriptionDrugsHeader < Test::Unit::TestCase
+class TestPrescriptionDrugsHeader <Minitest::Test
   include FlexMock::TestCase
   def test_init
     # pending
   end
 end
-class TestPrescriptionDrugSearchForm < Test::Unit::TestCase
+class TestPrescriptionDrugSearchForm <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionForm < Test::Unit::TestCase
+class TestPrescriptionForm <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionComposite < Test::Unit::TestCase
+class TestPrescriptionComposite <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionPrintInnerComposite < Test::Unit::TestCase
+class TestPrescriptionPrintInnerComposite <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionPrintComposite < Test::Unit::TestCase
+class TestPrescriptionPrintComposite <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescription < Test::Unit::TestCase
+class TestPrescription <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionPrint < Test::Unit::TestCase
+class TestPrescriptionPrint <Minitest::Test
   def test_init
     # pending
   end
 end
-class TestPrescriptionCsv < Test::Unit::TestCase
+class TestPrescriptionCsv <Minitest::Test
   def test_init
     # pending
   end

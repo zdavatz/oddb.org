@@ -5,14 +5,15 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/user/powerlink'
 
 module ODDB
 	module View
 		module User
-class TestPowerLink < Test::Unit::TestCase
+class TestPowerLink <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		def lookandfeel

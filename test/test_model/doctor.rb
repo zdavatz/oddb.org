@@ -6,7 +6,8 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/doctor'
 require 'flexmock'
 
@@ -14,7 +15,7 @@ module ODDB
   class Doctor
     public :adjust_types
   end
-	class TestDoctor < Test::Unit::TestCase
+	class TestDoctor <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@doctor = Doctor.new

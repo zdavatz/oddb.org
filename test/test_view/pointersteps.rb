@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/company'
 require 'model/analysis/group'
@@ -105,7 +106,7 @@ module ODDB
 			end
 		end
 
-		class TestPointerSteps < Test::Unit::TestCase
+		class TestPointerSteps <Minitest::Test
       include FlexMock::TestCase
 			def setup 
 				@model = StubPointerStepsModel.new
@@ -228,9 +229,8 @@ module ODDB
           m.should_receive(:is_a?).with(ODDB::LimitationText)
           m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
         end
-        assert_nothing_raised do
-          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
-        end
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        refute_nil(steps)
       end
       def test_init__pointervalue_symbol
         flexmock(@model) do |m|
@@ -238,9 +238,8 @@ module ODDB
           m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
           m.should_receive(:pointer_descr).and_return(:name)
         end
-        assert_nothing_raised do
-          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
-        end
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        refute_nil(steps)
       end
 
 		end

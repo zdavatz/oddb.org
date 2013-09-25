@@ -14,7 +14,8 @@ module ODDB
     end
   end
 end
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/powerlinkuser'
 require 'state/companies/fipi_overview'
@@ -31,7 +32,7 @@ class StubPowerLinkUser
   end
 end
 
-class TestPowerLinkUser < Test::Unit::TestCase
+class TestPowerLinkUser <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

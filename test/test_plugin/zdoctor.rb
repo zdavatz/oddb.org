@@ -6,7 +6,8 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'plugin/doctors'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'flexmock/test_unit'
 
@@ -16,7 +17,7 @@ module ODDB
       attr_reader :empty_id
       PARSER = FlexMock.new("PARSER") 
     end
-		class TestDoctorPlugin < Test::Unit::TestCase
+		class TestDoctorPlugin <Minitest::Test
       include FlexMock::TestCase
 			def setup
         @config = flexmock('config', :config => 'config')
@@ -208,9 +209,7 @@ module ODDB
 					}
 				}
 				result = nil
-				assert_nothing_raised {
-					result = @plugin.prepare_addresses(input)
-				}
+				result = @plugin.prepare_addresses(input)
 				assert_instance_of(Array, result)
 				assert_equal(1, result.size)
 				addr = result.first
@@ -254,9 +253,7 @@ module ODDB
 					]
 				}
 				result = nil
-				assert_nothing_raised {
-					result = @plugin.prepare_addresses(input)
-				}
+				result = @plugin.prepare_addresses(input)
 				assert_instance_of(Array, result)
 				assert_equal(2, result.size)
 				assert_equal(:praxis, result.first.type)

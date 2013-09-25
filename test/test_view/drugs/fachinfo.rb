@@ -5,14 +5,15 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'stub/cgi'
 require 'view/drugs/fachinfo'
 require 'view/drugs/ddd'
 require 'model/text'
 
-class TestFiChapterChooserLink < Test::Unit::TestCase
+class TestFiChapterChooserLink <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -60,7 +61,7 @@ class TestFiChapterChooserLink < Test::Unit::TestCase
   end
 end
 
-class TestFiChapterChooser < Test::Unit::TestCase
+class TestFiChapterChooser <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel', 
@@ -104,7 +105,7 @@ class TestFiChapterChooser < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoInnerComposite < Test::Unit::TestCase
+class TestFachinfoInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def test_init
     lookandfeel = flexmock('lookandfeel', :lookup     => 'lookup')
@@ -116,7 +117,7 @@ class TestFachinfoInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoPreviewComposite < Test::Unit::TestCase
+class TestFachinfoPreviewComposite <Minitest::Test
   include FlexMock::TestCase
   def test_fachinfo_name
     lookandfeel = flexmock('lookandfeel', :lookup     => 'lookup')
@@ -130,7 +131,7 @@ class TestFachinfoPreviewComposite < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoComposite < Test::Unit::TestCase
+class TestFachinfoComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     skip("Don't know how to setup it")
@@ -194,7 +195,7 @@ class TestFachinfoComposite < Test::Unit::TestCase
   end
 end 
 
-class TestEditFiChapterChooser < Test::Unit::TestCase
+class TestEditFiChapterChooser <Minitest::Test
   include FlexMock::TestCase
   def test_display_names
     photos  = flexmock('photos', :has_photo? => false)
@@ -229,7 +230,7 @@ class TestEditFiChapterChooser < Test::Unit::TestCase
   end
 end
 
-class TestRootFachinfoComposite < Test::Unit::TestCase
+class TestRootFachinfoComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @table = Text::Table.new

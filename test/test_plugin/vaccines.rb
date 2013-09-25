@@ -5,7 +5,8 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'rubygems'
 require 'flexmock'
 require 'plugin/vaccines'
@@ -28,7 +29,7 @@ module ODDB
 	class VaccinePlugin
 		MEDDATA_SERVER = MeddataDelegator.new
 	end
-	class TestVaccinePlugin < Test::Unit::TestCase
+	class TestVaccinePlugin <Minitest::Test
 		def setup
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)

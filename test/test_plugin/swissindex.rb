@@ -6,14 +6,15 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'ext/swissindex/src/swissindex'
 require 'plugin/swissindex'
 require 'fileutils'
 
 module ODDB
-  class TestLogging < Test::Unit::TestCase
+  class TestLogging <Minitest::Test
     include FlexMock::TestCase
     def setup
       ODDB::SwissindexPlugin::Logging.flag = true
@@ -89,7 +90,7 @@ module ODDB
     SWISSINDEX_PHARMA_SERVER = StubDRbObject.new
   end
 
-  class TestSwissindexPharmaPlugin < Test::Unit::TestCase
+  class TestSwissindexPharmaPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @update = flexmock('update', :barcode => 'barcode')
@@ -313,7 +314,7 @@ REPORT
     SWISSINDEX_NONPHARMA_SERVER = StubDRbObject.new
   end
 
-  class TestSwissindexNonpharmaPlugin < Test::Unit::TestCase
+  class TestSwissindexNonpharmaPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock('app', :update => 'update')

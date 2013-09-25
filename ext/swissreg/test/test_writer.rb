@@ -4,12 +4,13 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'writer'
 
 module ODDB
 	module Swissreg
-		class TestWriter < Test::Unit::TestCase
+		class TestWriter <Minitest::Test
 			def setup
 				@writer = DetailWriter.new
 				@formatter = ODDB::HtmlFormatter.new(@writer)

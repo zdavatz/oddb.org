@@ -4,11 +4,17 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('../..', File.dirname(__FILE__))
 
+# gem 'minitest'
+# require 'minitest/autorun'
+# Here we don't use minitest, as with minitest wron numbers of calls are not correctly handled
+# I should probably file a bug against it!
 require 'test/unit'
 require 'fileutils'
 require 'flexmock'
 require 'plugin/text_info'
 require 'model/text'
+require 'model/atcclass'
+require 'model/registration'
 
 module ODDB
 	class FachinfoDocument
@@ -16,6 +22,12 @@ module ODDB
 			1
 		end
 	end
+  module SequenceObserver
+    def initialize
+    end
+    def select_one(param)
+    end
+  end
 
   class TextInfoPlugin < Plugin
     attr_accessor :parser, :iksless, :session_failures, :current_search,
@@ -24,8 +36,100 @@ module ODDB
       @packages = { '32917' => 'Zyloric®'} 
     end    
   end
+
+  class TestTextInfoPluginAipsMetaData <Test::Unit::TestCase
+    include FlexMock::TestCase
+    unless defined?(@@datadir)
+      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
+      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
+    end
+    
+    Test_Iksnr = '62630'
+    Test_Name  = 'Xeljanz'
+    Test_Atc   = 'L04AA29'
+    def setup
+      flexmock(ODDB::SequenceObserver) do 
+        |klass|
+        klass.should_receive(:set_oid).and_return('oid')
+        klass.should_receive(:new).and_return('new')
+        klass.should_receive(:initialize).and_return('initialize')
+      end
+      flexstub(ODDB::Persistence) do |klass|
+        klass.should_receive(:set_oid).and_return('oid')
+      end
+      FileUtils.mkdir_p @@vardir
+      ODDB.config.data_dir = @@vardir
+      ODDB.config.log_dir = @@vardir
+      @opts = {
+        :target   => [:fi],
+        :reparse  => false,
+        :iksnrs   => [Test_Iksnr],
+        :companies => [],
+        :download => false,
+      }
+      @dest = File.join(@@vardir, 'xml', 'AipsDownload_latest.xml')
+      FileUtils.makedirs(File.dirname(@dest))
+      FileUtils.cp(File.join(@@datadir, 'AipsDownload_xeljanz.xml'), @dest)
+      @sequence = flexmock('sequence', :creator => 'creator')
+      @pointer = flexmock('pointer', :+ => @sequence)
+      @company = flexmock('company',
+                          :pointer => @pointer)
+      @registration = flexmock('registration',
+                          :pointer => @pointer)
+      @registration2 = flexmock('registration2')
+      @registrations = []
+      @app = flexmock('application', 
+                      :update => @registration, 
+                      :delete => 'delete',
+                      :registrations => [@registration, @registration2])
+      @app.should_receive(:textinfo_swissmedicinfo_index)
+      @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
+      @fi_path_de = File.join(@@vardir, "html/fachinfo/de/#{Test_Name}_swissmedicinfo.html")
+
+      @fi_path_fr = File.join(@@vardir, "html/fachinfo/fr/#{Test_Name}_swissmedicinfo.html")    
+      @plugin = TextInfoPlugin.new(@app, @opts)
+      agent = @plugin.init_agent
+      @plugin.parser = @parser
+    end
+    
+    def teardown
+#      FileUtils.rm_rf(@@vardir)
+      super
+    end
+
+    def test_import_new_registration_from_swissmedicinfo_xml
+      reg = flexmock('registration', :new => 'new')
+      reg.should_receive(:fachinfo)
+      ptr = Persistence::Pointer.new([:registration, Test_Iksnr])
+      fi = flexmock 'fachinfo'
+      flags = {:de => :up_to_date, :fr => :up_to_date}
+      @parser.should_receive(:parse_fachinfo_html)
+
+      newReg = ODDB::Registration.new(Test_Iksnr)
+      atc    = ODDB::AtcClass.new(Test_Atc)
+      @app.should_receive(:registration).with(Test_Iksnr).once.and_return(nil)
+      @app.should_receive(:registration).with(Test_Iksnr).times(1).and_return(newReg)
+      @app.should_receive(:registration).once.with("32917").and_return("32917")
+#      @app.should_receive(:create_registration).once.with(Test_Iksnr).and_return(newReg)
+      @app.should_receive(:company_by_name).and_return(@company)
+      @company.should_receive(:pointer).and_return('pointerx')
+#      @app.should_receive(:atc_class).with(Test_Atc).once.and_return(nil)
+      @app.should_receive(:unique_atc_class).with(Test_Atc).once.and_return(nil)
+      # @app.should_receive(:create_atc_class).with(Test_Atc).once.and_return(atc)
+      @app.should_receive(:atc_classes).times(3).and_return({Test_Atc => atc})
+      assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo and add a new registration')
+      meta = TextInfoPlugin::get_iksnrs_meta_info
+      refute_nil(meta)
+      assert_equal(2, meta.size, 'we must extract 2 meta info from 2 medicalInformation')
+      expected =  TextInfoPlugin::SwissmedicMetaInfo.new(Test_Iksnr, Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum")
+      assert_equal(expected, meta[Test_Iksnr], 'Meta information about Test_Iksnr must be correct')
+      # @app.should_receive(:registration).with('08537')
+      assert_equal(2, @app.registrations.size)
+#      assert_equal("Tofacitinibums", @app.atc_classes[Test_Atc].id)
+    end
+  end
   
-  class TestTextInfoPlugin < Test::Unit::TestCase
+  class TestTextInfoPlugin <Test::Unit::TestCase
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -43,7 +147,7 @@ module ODDB
       FileUtils.mkdir_p @@vardir
       ODDB.config.data_dir = @@vardir
       ODDB.config.log_dir = @@vardir
-      $opts = {
+      @opts = {
         :target   => [:fi],
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
@@ -51,7 +155,9 @@ module ODDB
         :download => false,
         :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
       }
-      @app = flexmock('application', :update => 'updated', :delete => 'delete') # , :registration => [])
+      @app = flexmock('application', 
+                      :update => 'updated', 
+                      :delete => 'delete') # , :registration => [])
       @app.should_receive(:textinfo_swissmedicinfo_index)
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
       pi_path_de = File.join(@@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
@@ -60,7 +166,7 @@ module ODDB
       pi_fr = PatinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
-      @plugin = TextInfoPlugin.new(@app, $opts)
+      @plugin = TextInfoPlugin.new(@app, @opts)
       agent = @plugin.init_agent
       @plugin.parser = @parser
     end # Fuer Problem mit fachinfo italic
@@ -148,7 +254,7 @@ module ODDB
       @parser.should_receive(:parse_fachinfo_html).once
       @parser.should_receive(:parse_patinfo_html).never
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      assert(@plugin.import_swissmedicinfo($opts), 'must be able to run import_swissmedicinfo')
+      assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
     end
 
     def test_import_passion
@@ -179,8 +285,8 @@ module ODDB
         end
       end.new).first
     end
-  end
-  class TestTextInfoPluginChecks < Test::Unit::TestCase
+  end  if false
+  class TestTextInfoPluginChecks <Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
@@ -188,7 +294,7 @@ module ODDB
       FileUtils.mkdir_p @@vardir
       ODDB.config.data_dir = @@vardir
       ODDB.config.log_dir = @@vardir
-      $opts = {
+      @opts = {
         :target   => [:fi],
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
@@ -196,7 +302,11 @@ module ODDB
         :download => false,
         :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
       }
-      @app = flexmock('application', :update => 'updated', :delete => 'delete', :registrations => [])
+      @app = flexmock('application', :update => 'updated',
+                      :delete => 'delete', 
+                      :registrations => [],
+                      :registration => @registration,
+                     )
       @app.should_receive(:registration).with(1, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return 0
       @app.should_receive(:textinfo_swissmedicinfo_index)
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
@@ -206,7 +316,7 @@ module ODDB
       pi_fr = PatinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
-      @plugin = TextInfoPlugin.new(@app, $opts)
+      @plugin = TextInfoPlugin.new(@app, @opts)
       agent = @plugin.init_agent
       @plugin.parser = @parser
     end # Fuer Problem mit fachinfo italic
@@ -215,9 +325,9 @@ module ODDB
       FileUtils.rm_r @@vardir
       super # to clean up FlexMock
     end    
-  end
+  end  if false
         
-  class TestTextInfoPlugin_iksnr < Test::Unit::TestCase
+  class TestTextInfoPlugin_iksnr <Test::Unit::TestCase
     include FlexMock::TestCase
     
     def test_get_iksnr_comprimes
@@ -253,5 +363,5 @@ module ODDB
       assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
     end
    
-  end
+  end if false
 end

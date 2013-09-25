@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/all_zones'
 
@@ -26,7 +27,7 @@ class StubAllZones < StubSuper
   end
 end
 
-class TestAllZones < Test::Unit::TestCase
+class TestAllZones <Minitest::Test
   include FlexMock::TestCase
   def setup
     @previous = flexmock('previous')

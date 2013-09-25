@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/logfile'
 
 module ODDB
@@ -14,7 +15,7 @@ module ODDB
 	end
 end
 
-class TestLogFile < Test::Unit::TestCase
+class TestLogFile <Minitest::Test
 	def test_filename
 		expected = File.expand_path('../data/log/foo/2003/08.log',
 			File.dirname(__FILE__))

@@ -5,10 +5,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/ean13'
 
-class TestEan < Test::Unit::TestCase
+class TestEan <Minitest::Test
 	def test_new_unchecked
 		result = ODDB::Ean13.new_unchecked(" 768190061901 ")
 		expected ="7681900619016"

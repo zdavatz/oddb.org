@@ -6,7 +6,8 @@
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'view/admin/fachinfoconfirm'
 require 'stub/cgi'
 require 'flexmock'
@@ -20,7 +21,7 @@ module ODDB
 		end
 	end
 end
-class TestFachinfoConfirmForm < Test::Unit::TestCase
+class TestFachinfoConfirmForm <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_writer :error, :warning

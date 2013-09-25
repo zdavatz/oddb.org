@@ -6,7 +6,8 @@ require 'simplecov'
 SimpleCov.start
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 $: << File.expand_path(File.dirname(__FILE__))
 
 # TODO: avoid skipping this stuff

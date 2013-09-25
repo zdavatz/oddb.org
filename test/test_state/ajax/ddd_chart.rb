@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'sbsm/state'
 require 'state/ajax/ddd_chart'
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Ajax
 
-class TestDDDChart < Test::Unit::TestCase
+class TestDDDChart <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

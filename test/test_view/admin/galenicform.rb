@@ -6,7 +6,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/admin/galenicform'
@@ -29,7 +30,7 @@ module ODDB
   module View
     module Admin
 
-class TestGalenicGroupSelect < Test::Unit::TestCase
+class TestGalenicGroupSelect <Minitest::Test
 	class StubGalenicGroup
 		include ODDB::Persistence
 		def initialize(description)
@@ -97,7 +98,7 @@ end
 	end
 end	
 
-class TestGalenicFormForm < Test::Unit::TestCase
+class TestGalenicFormForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -121,7 +122,7 @@ class TestGalenicFormForm < Test::Unit::TestCase
   end
 end
 
-class TestGalenicFormComposite < Test::Unit::TestCase
+class TestGalenicFormComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

@@ -6,13 +6,14 @@
 #$: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'drb/drb'
 require 'plugin/xls_export'
 
 module ODDB
-  class TestXlsExportPlugin < Test::Unit::TestCase
+  class TestXlsExportPlugin <Minitest::Test
     include FlexMock::TestCase
     def stderr_null
       require 'tempfile'
@@ -71,7 +72,7 @@ module ODDB
   class XlsExportPlugin < Plugin
     @@today = Date.new(2011,2,3)
   end
-  class TestXlsExportPlugin < Test::Unit::TestCase
+  class TestXlsExportPlugin <Minitest::Test
     include FlexMock::TestCase
     def test_export_patents
       patent = flexmock('patent', :expiry_date => Date.new(2011,2,4))

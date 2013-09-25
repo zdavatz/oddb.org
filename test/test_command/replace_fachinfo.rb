@@ -6,12 +6,13 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 #require 'state/global'
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'command/replace_fachinfo'
 
 module ODDB 
-  class TestReplaceFachinfoCommand < Test::Unit::TestCase
+  class TestReplaceFachinfoCommand <Minitest::Test
     include FlexMock::TestCase
     def setup
       @fachinfo = flexmock('fachinfo', 

@@ -9,7 +9,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/package'
 require 'flexmock'
 
@@ -84,7 +85,7 @@ class StubPackageSequence
     '12345'
   end
 end
-class TestPackage < Test::Unit::TestCase
+class TestPackage <Minitest::Test
   include FlexMock::TestCase
   def setup
     @package = ODDB::Package.new('12')
@@ -92,7 +93,7 @@ class TestPackage < Test::Unit::TestCase
   end
   def test_initialize
     assert_equal('012', @package.ikscd)
-    assert_not_nil(@package.oid)
+    refute_nil(@package.oid)
   end
   def test_active
     assert_equal(true, @package.active?)

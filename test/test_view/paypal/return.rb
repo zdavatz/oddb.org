@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/paypal/return'
 
@@ -21,7 +22,7 @@ module ODDB
         URI = StubURI.new
       end
 
-class TestReturnDownloads < Test::Unit::TestCase
+class TestReturnDownloads <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -57,7 +58,7 @@ class TestReturnDownloads < Test::Unit::TestCase
   end
 end
 
-class TestReturnComposite < Test::Unit::TestCase
+class TestReturnComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -105,7 +106,7 @@ class TestReturnComposite < Test::Unit::TestCase
   end
 end
 
-class TestReturn < Test::Unit::TestCase
+class TestReturn <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 

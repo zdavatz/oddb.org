@@ -5,12 +5,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/notification_logger'
 require 'flexmock'
 
 module ODDB
-	class TestNotificationLogger < Test::Unit::TestCase
+	class TestNotificationLogger <Minitest::Test
 		def setup
 			@log = NotificationLogger.new
 			@app = FlexMock.new

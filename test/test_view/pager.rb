@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/pager'
 require 'stub/cgi'
@@ -17,7 +18,7 @@ module ODDB
 			public :page_link
 		end
 
-		class TestPager	< Test::Unit::TestCase
+		class TestPager	<Minitest::Test
       include FlexMock::TestCase
 			class StubSession
 				attr_accessor :page, :event, :dictionary
@@ -69,11 +70,8 @@ module ODDB
 				assert_equal("1", result)
 			end
 			def test_to_html
-				assert_nothing_raised {
-					@view.to_html(CGI.new)
-				}
 				result = @view.to_html(CGI.new)
-				assert_not_nil(result.index('<TD class="pager">0</TD>'), "Page-Number without link did not have css-class")
+				refute_nil(result.index('<TD class="pager">0</TD>'), "Page-Number without link did not have css-class")
 				assert_nil(result.index('<TD class="pager-bg">'), "The pager should not have alternate bg-classes")
 			end
       def test_compose_header

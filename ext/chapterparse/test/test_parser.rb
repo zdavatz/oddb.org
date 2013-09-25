@@ -5,7 +5,8 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'chaptparser'
 
 module ODDB
@@ -13,7 +14,7 @@ module ODDB
 		class Parser 
 			attr_reader :nofill
 		end
-		class TestParserGecko < Test::Unit::TestCase
+		class TestParserGecko <Minitest::Test
 			class Formatter < NullFormatter
 				attr_accessor :font_stack
 				def initialize(*args)
@@ -121,7 +122,7 @@ module ODDB
 				assert_equal([], @formatter.font_stack)
 			end
 		end
-		class TestParserIE < Test::Unit::TestCase
+		class TestParserIE <Minitest::Test
 			class Formatter < NullFormatter
 				attr_accessor :font_stack
 				def initialize(*args)
@@ -207,7 +208,7 @@ module ODDB
 				EOS
 			end
 		end
-		class TestParserCopyPasteOpenOffice < Test::Unit::TestCase
+		class TestParserCopyPasteOpenOffice <Minitest::Test
 			class Formatter < NullFormatter
 				attr_accessor :font_stack
 				def initialize(*args)

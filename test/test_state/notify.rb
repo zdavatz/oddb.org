@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/notify'
 require 'cgi'
@@ -16,7 +17,7 @@ require 'model/package'
 module ODDB 
 	module State
 
-class TestNotification < Test::Unit::TestCase
+class TestNotification <Minitest::Test
   include FlexMock::TestCase
   def test_empty
     @notification = ODDB::State::Notify::Notification.new
@@ -35,7 +36,7 @@ class StubNotify
   end
 end
 
-class TestNotify < Test::Unit::TestCase
+class TestNotify <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

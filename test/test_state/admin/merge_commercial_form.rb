@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/merge_commercial_form'
 require 'model/commercial_form'
@@ -16,7 +17,7 @@ module ODDB
   module State
     module Admin
 
-class TestMergeCommercialForm < Test::Unit::TestCase
+class TestMergeCommercialForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app', :merge_commercial_forms => 'merge_commercial_forms')

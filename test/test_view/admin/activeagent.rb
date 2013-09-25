@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/additional_information'
 require 'view/admin/activeagent'
@@ -13,7 +14,7 @@ module ODDB
   module View
     module Admin
 
-class TestActiveAgentInnerComposite < Test::Unit::TestCase
+class TestActiveAgentInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -33,7 +34,7 @@ class TestActiveAgentInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestActiveAgentForm < Test::Unit::TestCase
+class TestActiveAgentForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -55,7 +56,7 @@ class TestActiveAgentForm < Test::Unit::TestCase
   end
 end
 
-class TestActiveAgentComposite < Test::Unit::TestCase
+class TestActiveAgentComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app       = flexmock('app')
@@ -88,7 +89,7 @@ class RootActiveAgentComposite < ODDB::View::Admin::ActiveAgentComposite
     end
   end
 end
-class TestRootActiveAgentComposite < Test::Unit::TestCase
+class TestRootActiveAgentComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app       = flexmock('app')

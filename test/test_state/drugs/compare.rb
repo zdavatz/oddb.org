@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/drugs/compare'
 require 'view/http_404'
@@ -13,7 +14,7 @@ module ODDB
 	module State
 		module Drugs
 
-class TestPackageFacade < Test::Unit::TestCase
+class TestPackageFacade <Minitest::Test
   include FlexMock::TestCase
   def setup
     @original = flexmock('original')
@@ -80,7 +81,7 @@ class TestPackageFacade < Test::Unit::TestCase
 
 end
 
-class TestComparison < Test::Unit::TestCase
+class TestComparison <Minitest::Test
   include FlexMock::TestCase
   def setup
     @package      = flexmock('package')
@@ -111,7 +112,7 @@ class TestComparison < Test::Unit::TestCase
   end
 end
 
-class TestCompare < Test::Unit::TestCase
+class TestCompare <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

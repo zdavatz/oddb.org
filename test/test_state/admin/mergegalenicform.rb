@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'command/merge'
 require 'define_empty_class'
 require 'htmlgrid/select'
@@ -44,7 +45,7 @@ class StubMGFStateModel
 	end
 end
 
-class TestMergeGalenicFormState < Test::Unit::TestCase
+class TestMergeGalenicFormState <Minitest::Test
 	def setup
 		@session = StubMGFStateSession.new
 		@model = StubMGFStateModel.new('Filmtabletten')

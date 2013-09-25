@@ -4,13 +4,14 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'meddparser'
 
 module ODDB
   module MedData
-    class TestFormatter < Test::Unit::TestCase
+    class TestFormatter <Minitest::Test
       include FlexMock::TestCase
       def setup
         @writer    = flexmock('writer')
@@ -22,7 +23,7 @@ module ODDB
         assert_equal('next_cell', @formatter.push_tablecell({}))
       end
     end
-    class TestResultWriter < Test::Unit::TestCase
+    class TestResultWriter <Minitest::Test
       include FlexMock::TestCase
       def setup
         @writer = ODDB::MedData::ResultWriter.new
@@ -56,7 +57,7 @@ module ODDB
         assert_equal('send_cdata', @writer.send_flowing_data('data'))
       end
     end
-    class TestDetailWriter < Test::Unit::TestCase
+    class TestDetailWriter <Minitest::Test
       include FlexMock::TestCase
       def setup
         @writer = ODDB::MedData::DetailWriter.new

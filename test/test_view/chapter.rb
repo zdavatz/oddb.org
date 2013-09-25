@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'view/chapter'
 require 'stub/cgi'
 require 'model/text'
@@ -14,7 +15,7 @@ require 'flexmock'
 
 module ODDB
 	module View
-		class TestChapter < Test::Unit::TestCase
+		class TestChapter <Minitest::Test
 			def setup 
 				@lookandfeel = FlexMock.new 'lookandfeel'
 				@lookandfeel.should_receive(:section_style).and_return { 'section_style' }
@@ -79,7 +80,7 @@ module ODDB
 			end
 		end
 
-    class TestChapter2 < Test::Unit::TestCase
+    class TestChapter2 <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel')
@@ -269,7 +270,7 @@ module ODDB
       end
     end
 
-    class TestChapterEditor < Test::Unit::TestCase
+    class TestChapterEditor <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf      = flexmock('lookandfeel', 
@@ -291,7 +292,7 @@ module ODDB
       end
     end
 
-    class TestEditChapterForm < Test::Unit::TestCase
+    class TestEditChapterForm <Minitest::Test
       include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel', 
@@ -331,7 +332,7 @@ module ODDB
       end
     end
     
-    class TestEditChapterTableToHtml < Test::Unit::TestCase
+    class TestEditChapterTableToHtml <Minitest::Test
       include FlexMock::TestCase
       def test_table_to_html
         @lookandfeel = FlexMock.new 'lookandfeel'

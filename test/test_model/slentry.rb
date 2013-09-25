@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/slentry'
 require 'model/text'
 require 'date'
@@ -15,7 +16,7 @@ module ODDB
   class SlEntry
     public :adjust_types
   end
-  class TestSlEntry < Test::Unit::TestCase
+  class TestSlEntry <Minitest::Test
     def setup
       @sl_entry = ODDB::SlEntry.new
     end

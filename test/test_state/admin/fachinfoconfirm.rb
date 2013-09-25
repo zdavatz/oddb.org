@@ -6,7 +6,8 @@
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/fachinfoconfirm'
 require 'state/global'
@@ -20,7 +21,7 @@ class FachinfoConfirm < State::Admin::Global
 	attr_reader :valid_iksnrs
 end
 
-class TestFachinfoConfirmState < Test::Unit::TestCase
+class TestFachinfoConfirmState <Minitest::Test
   include FlexMock::TestCase
 	class StubApp
 		attr_reader :update_pointers, :update_values
@@ -252,7 +253,7 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 	end
 end
 
-class TestFachinfoConfirm < Test::Unit::TestCase
+class TestFachinfoConfirm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @registration = flexmock('registration', :iksnr  => 'iksnr')

@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/registration_observer'
 require 'odba'
@@ -15,7 +16,7 @@ module ODDB
     include RegistrationObserver
   end
 
-  class TestRegistrationObserver < Test::Unit::TestCase
+  class TestRegistrationObserver <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, 

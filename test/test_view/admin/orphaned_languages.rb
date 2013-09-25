@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/admin/orphaned_fachinfo_assign'
@@ -15,7 +16,7 @@ module ODDB
   module View
     module Admin
 
-class TestOrphanedLanguagesList < Test::Unit::TestCase
+class TestOrphanedLanguagesList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -58,7 +59,7 @@ class StubOrphanedLanguages
     @lookandfeel = session.lookandfeel
   end
 end
-class TestOrphanedLanguages < Test::Unit::TestCase
+class TestOrphanedLanguages <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

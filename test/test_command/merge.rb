@@ -5,12 +5,13 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'command/merge'
 
 module ODDB 
-  class TestMergeCommand < Test::Unit::TestCase
+  class TestMergeCommand <Minitest::Test
     include FlexMock::TestCase
     def setup
       target = flexmock('target', 

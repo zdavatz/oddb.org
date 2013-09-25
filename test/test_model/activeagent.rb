@@ -7,7 +7,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/activeagent'
 require 'flexmock'
 
@@ -69,7 +70,7 @@ class StubActiveAgentSequence
 	attr_accessor :pointer
 end
 
-class TestActiveAgent < Test::Unit::TestCase
+class TestActiveAgent <Minitest::Test
   include FlexMock::TestCase
 	def setup
 		@substance_name = 'ACIDUM ACETYLSALICYLICUM'
@@ -99,9 +100,7 @@ class TestActiveAgent < Test::Unit::TestCase
 		other.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		other.init(@app)
 		assert_equal(other, @agent)
-		assert_nothing_raised {
-			@agent == nil
-		}
+		@agent == nil
 	end
 	def test_substance_writer
 		sequence = StubActiveAgentSequence.new
@@ -224,9 +223,7 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
   def test_adjust_types__error
     res = nil
-    assert_nothing_raised do
-      res = @agent.adjust_types :dose => []
-    end
+    res = @agent.adjust_types :dose => []
     assert_equal({}, res)
   end
 	def test_compare1

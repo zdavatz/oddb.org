@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/sequences'
 require 'view/resultfoot'
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Drugs
 
-class TestVaccinesComposite < Test::Unit::TestCase
+class TestVaccinesComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     component  = flexmock('component')

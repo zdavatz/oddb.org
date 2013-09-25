@@ -7,7 +7,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/persistence'
 require 'date'
 require 'stub/odba'
@@ -140,7 +141,7 @@ module ODDB
 		end
 	end
 
-	class TestPersistence < Test::Unit::TestCase
+	class TestPersistence <Minitest::Test
 		def setup
 			GC.start
 			StubPersistenceDiffable.reset_oid
@@ -206,7 +207,7 @@ module ODDB
 			assert_equal(nil, @obj.zap)
 		end
 	end
-	class TestPersistencePointer < Test::Unit::TestCase
+	class TestPersistencePointer <Minitest::Test
 		def setup
 			ODBA.storage = ODBA::StorageStub.new
 			ODBA.cache = ODBA::CacheStub.new
@@ -230,9 +231,7 @@ module ODDB
 			pointer.append('12345')
 			assert_equal(@pointer, pointer)
 			pointer = ODDB::Persistence::Pointer.new
-			assert_nothing_raised {
-				pointer.append('12345')
-			}
+      pointer.append('12345')
 		end
 		def test_equal
 			pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
@@ -272,7 +271,7 @@ module ODDB
 		def test_fail_resolve3
 			app = StubPointerApp2.new
 			@pointer.directions[1] = [:bar]
-			assert_nothing_raised { @pointer.resolve(app) }
+			@pointer.resolve(app)
 			assert_nil(@pointer.resolve(app))
 		end
 		def test_issue_create1
@@ -384,9 +383,7 @@ module ODDB
 			assert_equal(creator, @pointer.creator)
 		end
 		def test_marshal_dump
-			assert_nothing_raised {
-				Marshal.dump(@pointer)
-			}
+      Marshal.dump(@pointer)
 		end
 		def test_hash_key
 			hash = {}
@@ -409,7 +406,7 @@ module ODDB
       assert_equal(pointer, Persistence::Pointer.from_yus_privilege(src))
     end
 	end
-	class TestPersistenceCreateItem < Test::Unit::TestCase
+	class TestPersistenceCreateItem <Minitest::Test
 		def setup
 			@pointer = ODDB::Persistence::Pointer.new([:fap, "fap"])
 			@item = ODDB::Persistence::CreateItem.new(@pointer)
@@ -451,7 +448,7 @@ module ODDB
 		end
 		def test_respond_to_anything
 			message = :undefinded_method
-			assert_nothing_raised { @item.send(message) }
+			@item.send(message)
 			assert_equal(nil, @item.send(message))
 		end
 	end
@@ -459,7 +456,7 @@ end
 
 module ODDB
   module Persistence
-    class TestPointer < Test::Unit::TestCase
+    class TestPointer <Minitest::Test
       include FlexMock::TestCase
       def test_to_csv
         pointer = ODDB::Persistence::Pointer.new(['key', 'value'])

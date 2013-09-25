@@ -5,13 +5,14 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/admin/entity'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/pass'
 
-class TestYusPrivileges < Test::Unit::TestCase
+class TestYusPrivileges <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -65,7 +66,7 @@ class TestYusPrivileges < Test::Unit::TestCase
   end
 end
 
-class TestYusGroups < Test::Unit::TestCase
+class TestYusGroups <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -102,7 +103,7 @@ class TestYusGroups < Test::Unit::TestCase
   end
 end
 
-class TestEntityForm < Test::Unit::TestCase
+class TestEntityForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 

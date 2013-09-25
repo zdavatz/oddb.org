@@ -80,14 +80,15 @@ gem "webrobots"
 gem "ydocx"
 gem "ydim"
 gem "yus" 
+gem 'simplecov'
+
+gem 'minitest'
 
 group :development, :test do
   gem 'hoe'
   gem 'hoe-travis'
   gem 'racc'
-  gem "minitest"
   gem 'travis-lint'
-  gem 'simplecov'
   gem 'pry'
   gem 'pry-debugger'
 end

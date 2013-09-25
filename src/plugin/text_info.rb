@@ -38,6 +38,7 @@ module ODDB
       @up_to_date_pis = 0
       @iksless = Hash.new{|h,k| h[k] = [] }
       @unknown_iksnrs = {}
+      @new_iksnrs = {}
       @failures = []
       @download_errors = []
       @companies = []
@@ -326,11 +327,15 @@ module ODDB
         end
       end
       unknown_size = @unknown_iksnrs.size
+      new_size     = @new_iksnrs.size
       @wrong_meta_tags ||= []
       @nonconforming_content ||= []
       @nonconforming_content = @nonconforming_content.uniq.sort
+      create_iksnr = @new_iksnrs.collect { |iksnr, name|
+        "  ISKNR #{iksnr}: #{name} "
+      }.join("\n")
       unknown = @unknown_iksnrs.collect { |iksnr, name|
-        "#{name} (#{iksnr})"
+        "  ISKNR #{iksnr}: #{name} "
       }.join("\n")
       case @target
       when :both
@@ -345,6 +350,7 @@ module ODDB
           @companies.join("\n"), nil,
           "Unknown Iks-Numbers: #{unknown_size}",
           unknown, nil,
+          "Create Iks-Numbers: #{new_size}", create_iksnr, nil,
           "Fachinfos without iksnrs: #{@iksless[:fi].size}",
           @iksless[:fi].join("\n"), nil,
           #"Patinfos without iksnrs: #{@iksless[:pi].size}",
@@ -370,6 +376,7 @@ module ODDB
           "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts", nil,
           "Checked #{@companies.size} companies",
           @companies.join("\n"), nil,
+          "Create Iks-Numbers: #{new_size}", create_iksnr, nil,
           "Unknown Iks-Numbers: #{unknown_size}",
           unknown, nil,
           "Fachinfos without iksnrs: #{@iksless[:fi].size}",
@@ -394,6 +401,7 @@ module ODDB
           "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
           "Checked #{@companies.size} companies",
           @companies.join("\n"), nil,
+          "Create Iks-Numbers: #{new_size}", create_iksnr, nil,
           "Unknown Iks-Numbers: #{unknown_size}",
           unknown, nil,
           #"Patinfo without iksnrs: #{@iksless[:pi].size}",
@@ -540,22 +548,121 @@ module ODDB
       end
     end
     
-    def get_pis_and_fis
-      @pis_to_iksnrs = {}
-      @fis_to_iksnrs = {}
-      @doc.xpath(".//medicalInformation/authNrs", 'lang' => 'de').each{
-        |x|
-        ids = TextInfoPlugin::get_iksnrs_from_string(x.text.to_s)
-        ids.each { |id| 
-                  typ = x.parent.attribute('type').text
-                  if typ.eql?('fi') 
-                    @fis_to_iksnrs[id] ? @fis_to_iksnrs[id]  += ids : @fis_to_iksnrs[id] = ids
+    SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :atcCode, :title, :authHolder, :substances)
+    def TextInfoPlugin::get_iksnrs_meta_info
+      @@iksnrs_meta_info
+    end
+
+    def create_registration(info)
+      puts_sync "create_registration info #{info.inspect}"
+      # should probably be similar to method update_registration in src/plugin/swissmedic.rb
+      reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
+      args = { 
+        :ith_swissmedic      => nil,
+        :production_science  => nil,
+        :vaccine             => nil,
+        :registration_date   => nil,
+        :expiration_date     => nil,
+        :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
+        :inactive_date       => nil,
+        :export_flag         => nil,
+      }
+      
+      company_args = { :name => info.authHolder, :business_area => 'ba_pharma' }
+      company = nil
+      if(company = @app.company_by_name(info.authHolder, 0.8))
+        puts_sync "create_registration set company '#{info.authHolder}'"
+        @app.update company.pointer, args
+      else
+        puts_sync "create_registration created company #{info.authHolder}"
+        company_ptr = Persistence::Pointer.new(:company).creator
+        company = @app.update company_ptr, company_args
+      end
+      args.store :company, company.pointer
+      
+      registration = @app.update reg_ptr, args, :swissmedic_text_info
+      
+      # create dummy sequence 00 TODO: remove this sequence when Packungen.xls contains this iksnr
+      # seq_ptr = Persistence::Pointer.new([:sequence, 0]).creator
+      seq_ptr = (registration.pointer + [:sequence, 0]).creator
+      unless seq_ptr
+         puts_sync "Failed to create"
+         exit 2
+      end
+      seq_args = { 
+        :composition_text => nil,
+        :name_base        => info.title,
+        :name_descr       => nil,
+        :dose             => nil,
+        :sequence_date    => nil,
+        :export_flag      => nil,
+      }
+      if info.atcCode and atc = @app.unique_atc_class(info.atcCode)
+        puts_sync "create_registration found atc #{info.atcCode}"
+        seq_args.store :atc_class, atc.code
+      else
+        puts_sync "create_registration created atc #{info.atcCode}"
+        seq_args.store :atc_class, info.atcCode
+      end
+      res = @app.update seq_ptr, seq_args, :swissmedic_text_info
+      
+      puts_sync "create_registration #{info.iksnr} #{reg_ptr.inspect}"      
+      if @app.atc_classes and info.atcCode and @app.atc_classes[info.atcCode]
+        puts_sync "Check 1 atcCode #{@app.atc_classes[info.atcCode].id}"
+      else
+        puts_sync "Check 1 atcCode not found"
+      end
+#      puts_sync "Check 2 registration substance_names #{@app.registration(info.iksnr).substance_names}"
+      if reg = @app.registration(info.iksnr) and not defined?(MiniTest)
+        puts_sync "Check 3 registration company #{reg.company}"
+        puts_sync "Check 4 registration iksnr #{reg.iksnr}"
+        puts_sync "Check 5 registration name_base #{reg.name_base}"
+      end
+      @new_iksnrs[info.iksnr] = info.title
+    end    
+
+    def add_all_iksnr(info, typ, all_numbers)
+      ids = TextInfoPlugin::get_iksnrs_from_string(all_numbers)
+      ids.each { |id|
+                info.iksnr = id
+                @@iksnrs_meta_info[id] = info.clone
+                unless @app.registration(id)
+                  create_registration(info) 
+                end
+                if typ.eql?('fi')
+                  @fis_to_iksnrs[id] ? @fis_to_iksnrs[id]  += ids : @fis_to_iksnrs[id] = ids
                 elsif typ.eql?('pi') 
                     @pis_to_iksnrs[id] ? @pis_to_iksnrs[id]  += ids : @pis_to_iksnrs[id] = ids
                 else
                   puts_sync "anhandled type #{x.text} at #{x.text}"
                 end
-                } if ids
+              } if ids
+    end
+    
+    def get_pis_and_fis
+      @pis_to_iksnrs = {}
+      @fis_to_iksnrs = {}
+      @doc.xpath(".//medicalInformation", 'lang' => 'de').each{
+        |x|
+        info = SwissmedicMetaInfo.new
+        all_numbers = ''
+        x.children.each {
+                         |child|
+                        case child.name.to_s
+                          when /atcCode/i
+                            info.atcCode = child.text.to_s.split(' ')[0]
+                          when /authNrs/i
+                            all_numbers  = child.text.to_s
+                          when /title/i
+                            info.title = child.text.to_s
+                          when /authHolder/i
+                            info.authHolder = child.text.to_s
+                          when /substances/i
+                            info.substances = child.text.to_s
+                        end
+                     }
+        add_all_iksnr(info,  x.attribute('type').text, all_numbers)
       }
       @pis_to_iksnrs.each{ |key, value| @pis_to_iksnrs[key] = value.sort.uniq }
       @fis_to_iksnrs.each{ |key, value| @fis_to_iksnrs[key] = value.sort.uniq }
@@ -1020,15 +1127,14 @@ module ODDB
             end
             date = (date ? " - #{date}" : '')
             nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : '')
+            msg  = "  #{state.to_s.upcase} #{nrs}: #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}#{nrs}"
             unless iksnrs.empty?
               next if name.nil? or name.empty?
               next if !infos.empty? and strange?(infos[lang])
-              @updated <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}#{nrs}"
+              @skipped << msg
             else
               next if name.nil? or name.empty?
-              @skipped <<
-                "  #{state.to_s.upcase} : #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}"
+              @updated << msg
             end
           end
         end
@@ -1227,6 +1333,7 @@ module ODDB
       true # an import should return true or you will never send a report
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
+      @@iksnrs_meta_info = {}
       puts_sync "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)

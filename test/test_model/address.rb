@@ -5,12 +5,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/address'
 
 module ODDB
-	class TestAddress < Test::Unit::TestCase
+	class TestAddress <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@address = ODDB::Address.new
@@ -147,7 +148,7 @@ module ODDB
       assert_equal(1, @address <=> address)
     end
 	end
-  class TestAddress2 < Test::Unit::TestCase
+  class TestAddress2 <Minitest::Test
     include FlexMock::TestCase
     def setup
       @address = ODDB::Address2.new
@@ -216,7 +217,7 @@ module ODDB
   class StubAddressObserver
     include AddressObserver
   end
-  class TestAddressObserver < Test::Unit::TestCase
+  class TestAddressObserver <Minitest::Test
     include FlexMock::TestCase
     def setup
       @observer = ODDB::StubAddressObserver.new
@@ -245,7 +246,7 @@ module ODDB
       assert_equal('location', @observer.ydim_location)
     end
   end
-  class TestAddressSuggestion < Test::Unit::TestCase
+  class TestAddressSuggestion <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)

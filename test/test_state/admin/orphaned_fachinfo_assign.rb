@@ -15,7 +15,8 @@ module ODDB
 end
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'state/admin/orphaned_fachinfo_assign'
@@ -25,7 +26,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestOrphanedFachinfoFacade < Test::Unit::TestCase
+class TestOrphanedFachinfoFacade <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app    = flexmock('app')
@@ -41,7 +42,7 @@ class TestOrphanedFachinfoFacade < Test::Unit::TestCase
   end
 end
 
-class TestOrphanedFachinfoAssign < Test::Unit::TestCase
+class TestOrphanedFachinfoAssign <Minitest::Test
   include FlexMock::TestCase
   def setup
     sequence = flexmock('sequence', :registration => 'registration')

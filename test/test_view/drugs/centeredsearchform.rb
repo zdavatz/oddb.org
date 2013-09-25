@@ -5,14 +5,15 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
 #require 'model/migel/product'
 
 
-class TestCenteredSearchComposite < Test::Unit::TestCase
+class TestCenteredSearchComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -156,7 +157,7 @@ class TestCenteredSearchComposite < Test::Unit::TestCase
   end
 end
 
-class TestRssFeedbackList < Test::Unit::TestCase
+class TestRssFeedbackList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -192,7 +193,7 @@ class TestRssFeedbackList < Test::Unit::TestCase
   end
 end
 
-class TestRssFeedbacks < Test::Unit::TestCase
+class TestRssFeedbacks <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',
@@ -214,7 +215,7 @@ class TestRssFeedbacks < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoNewsList < Test::Unit::TestCase
+class TestFachinfoNewsList <Minitest::Test
   include FlexMock::TestCase
   def test_name
     lookandfeel = flexmock('lookandfeel', 
@@ -238,7 +239,7 @@ class TestFachinfoNewsList < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoNews < Test::Unit::TestCase
+class TestFachinfoNews <Minitest::Test
   include FlexMock::TestCase
   def test_title
     lookandfeel = flexmock('lookandfeel', 
@@ -267,7 +268,7 @@ class TestFachinfoNews < Test::Unit::TestCase
   end
 end
 
-class TestSLPriceNews < Test::Unit::TestCase
+class TestSLPriceNews <Minitest::Test
   include FlexMock::TestCase
   def test_title
     lookandfeel = flexmock('lookandfeel', 
@@ -287,7 +288,7 @@ class TestSLPriceNews < Test::Unit::TestCase
   end
 end
 
-class TestGoogleAdSenseComposite < Test::Unit::TestCase
+class TestGoogleAdSenseComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',

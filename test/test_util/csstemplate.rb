@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/csstemplate'
 
 module ODDB
@@ -30,7 +31,7 @@ module ODDB
 	end
 end
 
-class TestCssTemplate < Test::Unit::TestCase
+class TestCssTemplate <Minitest::Test
 	TEST_CSS_DIRECTORY = File.expand_path('../data/css/foo', File.dirname(__FILE__))
 	def setup
 		@foo	=	{

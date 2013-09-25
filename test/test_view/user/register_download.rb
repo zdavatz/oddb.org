@@ -5,7 +5,8 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/list'
 require 'htmlgrid/pass'
@@ -26,7 +27,7 @@ module ODDB
   module View
     module User
 
-class TestRegisterDownloadForm < Test::Unit::TestCase
+class TestRegisterDownloadForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -70,7 +71,7 @@ class TestRegisterDownloadForm < Test::Unit::TestCase
   end
 end
 
-class TestRegisterDownloadComposite < Test::Unit::TestCase
+class TestRegisterDownloadComposite <Minitest::Test
   include FlexMock::TestCase
   def test_register_download_form
     @lnf       = flexmock('lookandfeel', 

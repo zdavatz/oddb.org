@@ -8,7 +8,8 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'chaptparser'
 require 'ext/chapterparse/src/writer'
 
@@ -17,7 +18,7 @@ module ODDB
 		class Parser
 			attr_reader :nofill
 		end
-		class TestParserIntegrate < Test::Unit::TestCase
+		class TestParserIntegrate <Minitest::Test
 			def setup
 				@writer = ChapterParse::Writer.new
 				@formatter = HtmlFormatter.new(@writer)

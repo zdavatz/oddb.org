@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 #TestFachinfoWriter -- oddb -- 02.02.2004 -- mwalder@ywesee.com
+# encoding: utf-8
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fachinfo_writer'
 require 'model/text'
 require 'date'
@@ -136,7 +138,7 @@ module ODDB
 			end
 		end
 	end
-  class TestFachinfoWriter < Test::Unit::TestCase
+  class TestFachinfoWriter <Minitest::Test
     class StubFachinfoDocument	
       attr_accessor :chapters, :company_name, :name, :generic_type, :substance_names, :first_chapter
       def initialize
@@ -330,7 +332,7 @@ BT 40.000 813.798 Td /F1 7.0 Tf 0 Tr (Ein Medikament) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ein Medikament', 5, 0)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
 =begin
     def test_write_fachinfo
@@ -412,11 +414,11 @@ BT 40.000 813.798 Td /F1 7.0 Tf 0 Tr (Ein Medikament) Tj ET<
       EOS
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_drug_name_link
       @writer.fi_new_page
-      @writer.write_drug_name("FooBaar®")
+      @writer.write_drug_name("FooBaarÂ®")
       #@writer.save_pdf
       expected = <<-EOS
     /URI (http://www.oddb.org/de/gcc/search/search_query/Foohallo)<
@@ -432,7 +434,7 @@ BT 40.000 813.798 Td /F1 7.0 Tf 0 Tr (Ein Medikament) Tj ET<
       EOS
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_flic_name_even_page
       @writer.fi_page_number = 2
@@ -444,7 +446,7 @@ BT 40.000 813.798 Td /F1 7.0 Tf 0 Tr (Ein Medikament) Tj ET<
       EOS
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
 =end
     def test_write_flic_name_one_page
@@ -592,7 +594,7 @@ BT 40.000 813.798 Td /F4 7.0 Tf 0 Tr (Kein Preformatted) Tj ET<
       #       expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_paragraph_strip_1_letter
       @writer.fi_new_page
@@ -609,7 +611,7 @@ BT 40.000 813.798 Td /F4 7.0 Tf 0 Tr (nerfiges - am anfang) Tj ET<
       #       expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_paragraph__preformatted
       @writer.fi_new_page
@@ -627,7 +629,7 @@ BT 40.000 816.298 Td /F2 5.3 Tf 0 Tr (Preformatted) Tj ET<
       #       expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_section__preformatted
       @writer.fi_new_page
@@ -653,7 +655,7 @@ BT 40.000 794.115 Td /F4 7.0 Tf 0 Tr (Paragraph 3) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Subheading', 1, 2)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_section__newline_subheading
       @writer.fi_new_page
@@ -676,30 +678,30 @@ BT 40.000 796.114 Td /F4 7.0 Tf 0 Tr (Noch ein Paragraph) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Subheading', 1, 2)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_section__inline_subheading
       section = @chapter.next_section
       section.subheading = "Subheading ohne Newline"
       paragraph = section.next_paragraph
-      paragraph << "Fliesstext mit hoffentlich Umbruchgemässer Länge" 
+      paragraph << "Fliesstext mit hoffentlich UmbruchgemÃ¤sser LÃ¤nge" 
       paragraph2 = section.next_paragraph
-      paragraph2 << "Ein zweiter Paragraph, so fürs Gemüt"
+      paragraph2 << "Ein zweiter Paragraph, so fÃ¼rs GemÃ¼t"
       s_wrapper = ODDB::FiPDF::SectionWrapper.new(section)
       @writer.fi_new_page
       @writer.write_section(s_wrapper)
       #@writer.save_pdf
       expected = <<-EOS
 BT 40.000 813.798 Td 3.016 Tw /F5 7.0 Tf 0 Tr (Subheading ohne Newline ) Tj /F4 7.0 Tf 0 Tr (Fliesstext mit hoffentlich) Tj ET<
-BT 40.000 805.706 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Umbruchgemässer Länge) Tj ET<
-BT 40.000 796.614 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Ein zweiter Paragraph, so fürs Gemüt) Tj ET<
+BT 40.000 805.706 Td 0.000 Tw /F4 7.0 Tf 0 Tr (UmbruchgemÃ¤sser LÃ¤nge) Tj ET<
+BT 40.000 796.614 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Ein zweiter Paragraph, so fÃ¼rs GemÃ¼t) Tj ET<
       EOS
       # NOTE: to avoid confusion about end-of-line whitespace, both
       #       expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Subheading', 1, 2)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_change_column_count
       @writer.page_type_standard
@@ -753,7 +755,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Penicilin', 0, 4)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_widow_combination
       @writer.page_type_standard
@@ -787,7 +789,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'WIRKSTOFF', 0, 8)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_combination
       @writer.page_type_standard
@@ -827,7 +829,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Penicilin', 0, 12)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_tuple
       @writer.set_page_element_type(:page_type_substance_title)
@@ -856,7 +858,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ponstan', 1, 1)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_tuple__company_on_2_lines
       @writer.set_page_element_type(:page_type_substance_index)
@@ -886,7 +888,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ponstan', 1, 2)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
 =end
     def test_add_destination
@@ -900,7 +902,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       #       expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_tuple_to_paragraph
       tuple = ["Ponstan", "Ywesee", 1, :generic, "2"]
@@ -944,7 +946,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ponstan', 1, 1)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
 =end
     def test_write_page_numbers
@@ -963,7 +965,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       expected.each { |line| 
         message = "Expected: \n#{line}\nin:\n#{output}"
-        assert_not_nil(output.index(line), message)
+        refute_nil(output.index(line), message)
       }
     end
 =begin
@@ -982,7 +984,7 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
       #@writer.save_pdf
       expected = <<-EOS
   %PDF-1.3
-  %âãÏÓ
+  %Ã¢Ã£ÃÃ“
 
   1 0 obj
   << /Type /Catalog
@@ -1426,14 +1428,14 @@ BT 151.945 793.646 Td /F5 5.5 Tf 0 Tr (Ywesee) Tj ET<
     end
     def test_write_drug_name_link
       @writer.fi_new_page
-      @writer.write_drug_name("<b>Foohallo®</b>")
+      @writer.write_drug_name("<b>FoohalloÂ®</b>")
       #@writer.save_pdf
       expected = <<-EOS
 /URI (http://www.oddb.org/de/gcc/search/search_query/Foohallo)<
   EOS
       output = @writer.render.gsub("\n", "<\n")
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_drug_name
       @writer.fi_new_page
@@ -1468,7 +1470,7 @@ BT 40.000 765.210 Td /F4 10.0 Tf 0 Tr (Dunnosan) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ponstan', 3, 15)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_draw_background
       fachinfo = StubFachinfoDocument.new
@@ -1503,7 +1505,7 @@ BT 40.000 704.726 Td 0.000 Tw /F4 7.0 Tf 0 Tr (dogsThe quick brown fox jumped ov
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Ywesee', 4, 12)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_generic_color
       map = ODDB::FiPDF::FachinfoWriter::COLOR_BG
@@ -1541,7 +1543,7 @@ BT 223.427 797.614 Td 0.280 Tw /F4 7.0 Tf 0 Tr (Foo, Baar und Test  sind keine z
 BT 223.427 789.522 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baar und Test  sind keine zugelassenen Heilmittel) Tj ET<
       EOF
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_orphan_paragraph_text_subheading
       text = "Foo, Baar und Test  sind keine zugelassenen Heilmittel " *4
@@ -1571,7 +1573,7 @@ BT 223.427 813.798 Td 0.280 Tw /F4 7.0 Tf 0 Tr (zugelassenen Heilmittel Foo, Baa
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'subheading', 0, 10)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_orphan_paragraph_text_subheading_newline
       text = "Foo, Baar und Test  sind keine zugelassenen Heilmittel " *4
@@ -1597,7 +1599,7 @@ BT 223.427 789.022 Td 0.280 Tw /F4 7.0 Tf 0 Tr (Foo, Baar und Test  sind keine z
 BT 223.427 780.930 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baar und Test  sind keine zugelassenen Heilmittel) Tj ET<
       EOF
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_chapter
       chapter = ODDB::Text::Chapter.new
@@ -1620,7 +1622,7 @@ BT 40.000 801.206 Td /F4 7.0 Tf 0 Tr (Foo, Baar und Test  sind keine zugelassene
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Verbot', 0, 2)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_orphan_chapter_text
       chapter = ODDB::Text::Chapter.new
@@ -1653,7 +1655,7 @@ BT 223.427 772.838 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Heilmittel) Tj ET<
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'Drogen', 1, 4)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_orphan_chapter_text_subheading_newline
       chapter = ODDB::Text::Chapter.new
@@ -1684,7 +1686,7 @@ BT 223.427 771.338 Td 0.598 Tw /F4 7.0 Tf 0 Tr (HeilmittelFoo, Baar und Test  si
 BT 223.427 763.246 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Heilmittel) Tj ET<
       EOF
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     #Preformatted test kann verbessert werden
    def test_preformatted_text
@@ -1692,13 +1694,13 @@ BT 223.427 763.246 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Heilmittel) Tj ET<
 ----------------------------------------------------
         pro Tag      250 mg                         
 ----------------------------------------------------
- 1/2    3× 5 ml      -         2(-3)×tgl. 1 à 125 mg
- 1-3    3× 7,5 ml    -             3×tgl. 1 à 125 mg
- 3-6    3×10 ml      -             4×tgl. 1 à 125 mg
- 6-9    3×15 ml      -         1(-2)×tgl. 1 à 500 mg
- 9-12   3×20 ml      2(-3)×                         
-                     tgl. 1        2×tgl. 1 à 500 mg
-12-14   3×25 ml      3×tgl. 1      3×tgl. 1 à 500 mg
+ 1/2    3á¹ª 5 ml      -         2(-3)á¹ªtgl. 1 Ã  125 mg
+ 1-3    3á¹ª 7,5 ml    -             3á¹ªtgl. 1 Ã  125 mg
+ 3-6    3á¹ª10 ml      -             4á¹ªtgl. 1 Ã  125 mg
+ 6-9    3á¹ª15 ml      -         1(-2)á¹ªtgl. 1 Ã  500 mg
+ 9-12   3á¹ª20 ml      2(-3)á¹ª                         
+                     tgl. 1        2á¹ªtgl. 1 Ã  500 mg
+12-14   3á¹ª25 ml      3á¹ªtgl. 1      3á¹ªtgl. 1 Ã  500 mg
 ----------------------------------------------------
       EOS
       paragraph = ODDB::Text::Paragraph.new
@@ -1720,17 +1722,17 @@ q<
 218.427 20.000 183.427 801.890 re f<
 1 w<
 Q<
-BT 223.427 816.298 Td /F2 5.3 Tf 0 Tr ( 1/2    3× 5 ml      -         2\\(-3\\)×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 810.707 Td /F2 5.3 Tf 0 Tr ( 1-3    3× 7,5 ml    -             3×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 805.115 Td /F2 5.3 Tf 0 Tr ( 3-6    3×10 ml      -             4×tgl. 1 à 125 mg) Tj ET<
-BT 223.427 799.524 Td /F2 5.3 Tf 0 Tr ( 6-9    3×15 ml      -         1\\(-2\\)×tgl. 1 à 500 mg) Tj ET<
+BT 223.427 816.298 Td /F2 5.3 Tf 0 Tr ( 1/2    3á¹ª 5 ml      -         2\\(-3\\)á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 810.707 Td /F2 5.3 Tf 0 Tr ( 1-3    3á¹ª 7,5 ml    -             3á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 805.115 Td /F2 5.3 Tf 0 Tr ( 3-6    3á¹ª10 ml      -             4á¹ªtgl. 1 Ã  125 mg) Tj ET<
+BT 223.427 799.524 Td /F2 5.3 Tf 0 Tr ( 6-9    3á¹ª15 ml      -         1\\(-2\\)á¹ªtgl. 1 Ã  500 mg) Tj ET<
       EOF
       # NOTE: to avoid confusion about end-of-line whitespace, both
       #  expected and output have added "<"-signs at EOL
       output = @writer.render.gsub("\n", "<\n")
       result = extract_result_lines(output, 'pro Tag', 2, 8)
       message = "Expected: \n#{expected}\nin:\n#{result}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_widow_paragraph
       chapter = ODDB::Text::Chapter.new
@@ -1757,7 +1759,7 @@ BT 223.427 805.706 Td 2.708 Tw /F4 7.0 Tf 0 Tr (Baaar und Test sind keine zugela
 BT 223.427 797.614 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Baaar und Test sind keine zugelassenen Heilmittel) Tj ET<
       EOF
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_widow_text_by_site_change
       chapter = ODDB::Text::Chapter.new
@@ -1786,7 +1788,7 @@ BT 223.427 797.114 Td 0.042 Tw /F4 7.0 Tf 0 Tr (Foo, Baaar und Test sind keine z
 BT 223.427 789.022 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baaar und Test sind keine zugelassenen Heilmittel) Tj ET<
       EOF
       message = "Expected: \n#{expected}\nin:\n#{output}"
-      assert_not_nil(output.index(expected), message)
+      refute_nil(output.index(expected), message)
     end
     def test_write_alphabet__A
       @writer.flic_name = "appelbergen"
@@ -1801,7 +1803,7 @@ BT 223.427 789.022 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baaar und Test sind keine z
       output = @writer.render.gsub("\n", "<\n")
       expected.each { |line|
         message = "Expected: \n#{line}\nin:\n#{output}"
-        assert_not_nil(output.index(line), message)
+        refute_nil(output.index(line), message)
       }
     end
     def test_write_alphabet__AB
@@ -1821,7 +1823,7 @@ BT 223.427 789.022 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baaar und Test sind keine z
       output = @writer.render.gsub("\n", "<\n")
       expected.each { |line|
         message = "Expected: \n#{line}\nin:\n#{output}"
-        assert_not_nil(output.index(line), message)
+        refute_nil(output.index(line), message)
       }
     end
     def test_write_alphabet__Z_other
@@ -1841,7 +1843,7 @@ BT 223.427 789.022 Td 0.000 Tw /F4 7.0 Tf 0 Tr (Foo, Baaar und Test sind keine z
       output = @writer.render.gsub("\n", "<\n")
       expected.each { |line|
         message = "Expected: \n#{line}\nin:\n#{output}"
-        assert_not_nil(output.index(line), message)
+        refute_nil(output.index(line), message)
       }
     end
     def test_anchor_name

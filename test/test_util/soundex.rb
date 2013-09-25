@@ -4,11 +4,12 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/soundex'
 
 module ODDB
-	class TestSoundex < Test::Unit::TestCase
+	class TestSoundex <Minitest::Test
 		def test_prepare
 			assert_equal('essigsaeure', Text::Soundex.prepare('essigsäure'))
 			input = "ä á à â æ ã Ä Á À Â Æ Ã"
@@ -37,7 +38,7 @@ module ODDB
 			assert_equal(expected, Text::Soundex.prepare(input))
 		end
 		def test_soundex
-			assert_not_nil(Text::Soundex.soundex('essigsäure'))
+			refute_nil(Text::Soundex.soundex('essigsäure'))
 		end
 	end
 end

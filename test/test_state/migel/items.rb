@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/page_facade'
 require 'state/migel/items'
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Migel
 
-class TestItems < Test::Unit::TestCase
+class TestItems <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -65,9 +66,7 @@ class TestItems < Test::Unit::TestCase
     flexmock(@state).should_receive(:umlaut_filter).and_raise(RuntimeError)
     item1 = flexmock('item1', :article_name => 'article_name1')
     item2 = flexmock('item2', :article_name => 'article_name2')
-    assert_nothing_raised do
-      assert_equal(0, @state.compare_entries(item1, item2))
-    end
+    assert_equal(0, @state.compare_entries(item1, item2))
   end
   def test_sort
     sortby   = [:article_name]

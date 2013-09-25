@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/ydim'
 require 'iconv'
@@ -24,7 +25,7 @@ module ODDB
   end
 end
 
-class TestDebitorFacade < Test::Unit::TestCase
+class TestDebitorFacade <Minitest::Test
   include FlexMock::TestCase
   
   # must setup a dummy id_dsa before running setup the first time
@@ -93,7 +94,7 @@ class TestDebitorFacade < Test::Unit::TestCase
 end
 
 module ODDB
-  class TestYdimPlugin < Test::Unit::TestCase
+  class TestYdimPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @facade = flexmock('facade')

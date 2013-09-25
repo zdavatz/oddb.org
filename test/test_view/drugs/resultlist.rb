@@ -6,7 +6,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/resultlist'
 require 'view/drugs/rootresultlist'
@@ -125,7 +126,7 @@ end
 class RootUser
 end
 
-class TestResultList < Test::Unit::TestCase
+class TestResultList <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_accessor :pages
@@ -277,7 +278,7 @@ end
 	end
 end
 
-class TestAtcHeader < Test::Unit::TestCase
+class TestAtcHeader <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel', 

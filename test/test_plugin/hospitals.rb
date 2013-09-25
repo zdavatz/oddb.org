@@ -7,13 +7,14 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'plugin/hospitals'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 
 module ODDB
 	module MedData
 
-class TestHospitalPlugin < Test::Unit::TestCase
+class TestHospitalPlugin <Minitest::Test
   include FlexMock::TestCase
   def setup 
     @app = FlexMock.new("app")
@@ -113,7 +114,7 @@ class TestHospitalPlugin < Test::Unit::TestCase
     flexmock(@meddata) do |m|
       m.should_receive(:search).and_raise(StandardError)
     end
-    assert_raise(StandardError) do 
+    assert_raises(StandardError) do 
       stdout_null do 
         @plugin.update
       end
@@ -126,7 +127,7 @@ class TestHospitalPlugin < Test::Unit::TestCase
     flexmock(@meddata) do |m|
       m.should_receive(:search).and_raise(MedData::OverflowError)
     end
-    assert_raise(StandardError) do 
+    assert_raises(StandardError) do 
       stdout_null do 
         @plugin.update
       end

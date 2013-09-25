@@ -6,12 +6,13 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/comarketing'
 
 module ODDB
-	class TestCoMarketingPlugin < Test::Unit::TestCase
+	class TestCoMarketingPlugin <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@app = flexmock('app')

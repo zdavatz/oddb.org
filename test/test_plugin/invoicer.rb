@@ -5,7 +5,8 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/invoicer'
 require 'util/persistence'
@@ -14,7 +15,7 @@ require 'plugin/ydim'
 require 'util/log'
 require 'util/today'
 
-class TestInvoicer < Test::Unit::TestCase
+class TestInvoicer <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app      = flexmock('app')

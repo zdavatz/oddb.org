@@ -6,12 +6,13 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/feedback'
 
 module ODDB
-	class TestFeedback < Test::Unit::TestCase
+	class TestFeedback <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@feedback = Feedback.new

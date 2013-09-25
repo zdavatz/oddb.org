@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/cyp450connection'
 
@@ -17,7 +18,7 @@ module ODDB
   class CyP450SubstrateConnection < CyP450Connection
     attr_accessor :cyp450
   end
-  class TestAbstractLink < Test::Unit::TestCase
+  class TestAbstractLink <Minitest::Test
     def setup
       @link = ODDB::Interaction::AbstractLink.new
     end
@@ -30,18 +31,18 @@ module ODDB
       other = ODDB::Interaction::AbstractLink.new
       assert_equal other, @link
       @link.href = 'http://ch.oddb.org/'
-      assert_not_equal other, @link
+      assert other != @link
       other.href = 'http://ch.oddb.org/'
       assert_equal other, @link
       other.href = 'http://de.oddb.org/'
-      assert_not_equal other, @link
+      assert  other != @link
     end
     def test_hash
       @link.href = 'http://ch.oddb.org/'
       assert_equal 'http://ch.oddb.org/'.hash, @link.hash
     end
   end
-  class TestCyP450Connection < Test::Unit::TestCase
+  class TestCyP450Connection <Minitest::Test
     include FlexMock::TestCase
     def setup
       @connection = ODDB::CyP450Connection.new
@@ -64,7 +65,7 @@ module ODDB
       assert_equal 'cyp-id', @connection.cyp_id
     end
   end
-  class TestCyP450SubstrateConnection < Test::Unit::TestCase
+  class TestCyP450SubstrateConnection <Minitest::Test
     include FlexMock::TestCase
     def setup
       @connection = ODDB::CyP450SubstrateConnection.new('cyp_id')
@@ -98,7 +99,7 @@ module ODDB
       assert_equal([ 'int_connection' ], result)
     end
   end
-  class TestCyP450InteractionConnection < Test::Unit::TestCase
+  class TestCyP450InteractionConnection <Minitest::Test
     include FlexMock::TestCase
     def setup
       @connection = ODDB::CyP450InteractionConnection.new('substance name')
