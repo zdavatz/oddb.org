@@ -51,14 +51,15 @@ class Session < HttpSession
 		:product	=>	'www.medwin.ch',
 		:refdata	=>	'www.refdata.ch',
 	}
-	attr_accessor :http_path, :form_keys, :detail_key
+	attr_accessor :http_path, :form_keys, :detail_key, :sleeps_in_seconds # usually 1, but 0.01 while running Tests
 	def initialize(search_type=:partner, server=SERVERS[search_type])
 		@http_path = HTTP_PATHS[search_type]
 		@form_keys = FORM_KEYS[search_type]
 		@detail_key = DETAIL_KEYS[search_type]
+    @sleeps_in_seconds = Module.constants.index(:MiniTest) ? 0.01 : 1
 		super(server)
-    resp = get '/'
-    sleep(2) # for Timeout::Error
+    resp = get '/'    
+    sleep(2*@sleeps_in_seconds) # for Timeout::Error
     resp = get @http_path
 		handle_resp!(resp)
   rescue Timeout::Error => err
@@ -73,7 +74,7 @@ class Session < HttpSession
 		rescue Errno::ECONNRESET
 			if(tries > 0)
 				tries -= 1
-				sleep(3 - tries)
+				sleep(3*@sleeps_in_seconds - tries*@sleeps_in_seconds)
 				retry
 			else
 				raise
@@ -109,7 +110,7 @@ class Session < HttpSession
     retries ||= 3
     if retries > 0
       retries -= 1
-      sleep 60 # wait a minute for the network to recover
+      sleep 60*@sleeps_in_seconds # wait a minute for the network to recover
       retry
     else
       raise
@@ -122,7 +123,7 @@ class Session < HttpSession
       retries ||= 3
       if retries > 0
         retries -= 1
-        sleep 600 # wait 10 minutes for the server to recover
+        sleep 600*@sleeps_in_seconds # wait 10 minutes for the server to recover
         retry
       else
         raise
