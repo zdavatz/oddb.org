@@ -211,9 +211,11 @@ module ODDB
         text = ''
         @contents.map do |content|
           text << content.text if content.is_a? Paragraph
+          text << content      if content.is_a? String
         end
         text
       end
+      alias_method :to_s, :text
       def preformatted?
         false
       end
