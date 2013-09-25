@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/admin'
 
@@ -20,7 +21,7 @@ class StubAdmin
   end
 end
 
-class TestAdmin < Test::Unit::TestCase
+class TestAdmin <Minitest::Test
   include FlexMock::TestCase
   def setup
     @session = flexmock('session')

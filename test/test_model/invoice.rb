@@ -6,12 +6,13 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/invoice'
 
 module ODDB
-	class TestInvoice < Test::Unit::TestCase
+	class TestInvoice <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@invoice = ODDB::Invoice.new
@@ -114,7 +115,7 @@ module ODDB
       assert_equal 15, @invoice.vat
     end
 	end
-	class TestInvoiceItem < Test::Unit::TestCase
+	class TestInvoiceItem <Minitest::Test
 		def setup
 			@item = InvoiceItem.new
 		end
@@ -151,7 +152,7 @@ module ODDB
 		end
     def test_dup
       dupl = @item.dup
-      assert_not_equal @item.data.object_id, dupl.data.object_id
+      assert @item.data.object_id != dupl.data.object_id
     end
     def test_expiry_time
       now = Time.now

@@ -5,7 +5,8 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/user/fipi_offer_confirm'
 
@@ -13,7 +14,7 @@ module ODDB
   module View
     module User
 
-class TestFiPiCalculations < Test::Unit::TestCase
+class TestFiPiCalculations <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -43,7 +44,7 @@ class TestFiPiCalculations < Test::Unit::TestCase
   end
 end
 
-class TestFiPiOfferConfirmComposite < Test::Unit::TestCase
+class TestFiPiOfferConfirmComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

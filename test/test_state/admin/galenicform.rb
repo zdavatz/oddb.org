@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/galenicform'
 require 'util/language'
@@ -14,7 +15,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestGalenicForm2 < Test::Unit::TestCase
+class TestGalenicForm2 <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
@@ -50,7 +51,7 @@ class TestGalenicForm2 < Test::Unit::TestCase
 
 end
 
-class	TestGalenicForm < Test::Unit::TestCase
+class	TestGalenicForm <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input

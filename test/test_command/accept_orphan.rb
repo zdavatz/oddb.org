@@ -7,12 +7,13 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'command/accept_orphan'
 
 module ODDB 
-  class TestAcceptOrphan < Test::Unit::TestCase
+  class TestAcceptOrphan <Minitest::Test
     include FlexMock::TestCase
     def setup
       old_info = flexmock('old_info', 

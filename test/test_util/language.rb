@@ -6,7 +6,8 @@
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/language'
 require 'odba'
@@ -22,7 +23,7 @@ class Language
 	end
 end
 
-class TestLanguage < Test::Unit::TestCase
+class TestLanguage <Minitest::Test
 	def setup
 		Language.reset_oid
 		@obj = Language.new
@@ -86,8 +87,8 @@ class TestLanguage < Test::Unit::TestCase
 	end
 	def test_method_missing
 		@obj.descriptions.store("de","eine Beschreibung")
-		assert_nothing_raised { @obj.de }
-		assert_nothing_raised { @obj.description('de') }
+		@obj.de
+		@obj.description('de')
 		assert_equal('eine Beschreibung', @obj.de)
 		assert_equal('eine Beschreibung', @obj.description('de'))
 	end
@@ -115,7 +116,7 @@ class TestLanguage < Test::Unit::TestCase
 		assert_equal(expected, @obj.pointer)
 	end
 end
-class TestDescriptions < Test::Unit::TestCase
+class TestDescriptions <Minitest::Test
 	def setup
 		@desc = ODDB::SimpleLanguage::Descriptions.new
 		@desc['foo'] = 'bar'
@@ -130,7 +131,7 @@ module ODDB
     include ODDB::SimpleLanguage
   end
 
-  class TestDescriptions < Test::Unit::TestCase
+  class TestDescriptions <Minitest::Test
     include FlexMock::TestCase
     def setup
       @descriptions = ODDB::SimpleLanguage::Descriptions.new
@@ -140,7 +141,7 @@ module ODDB
     end
   end
 
-  class TestSimpleLanguage < Test::Unit::TestCase
+  class TestSimpleLanguage <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)
@@ -150,7 +151,7 @@ module ODDB
       assert_equal(false, @simplelanguage.match(/pattern/)) 
     end
     def test_method_missing
-      assert_raise(NoMethodError) do 
+      assert_raises(NoMethodError) do 
         @simplelanguage.nomethod
       end
     end
@@ -170,7 +171,7 @@ module ODDB
   class StubLanguage
     include ODDB::Language
   end
-  class TestLanguage < Test::Unit::TestCase
+  class TestLanguage <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)

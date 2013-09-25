@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/confirm'
 
@@ -14,7 +15,7 @@ module ODDB
   end
   module View
   Copyright::ODDB_VERSION = 'version'
-class TestConfirmComposite < Test::Unit::TestCase
+class TestConfirmComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -27,7 +28,7 @@ class TestConfirmComposite < Test::Unit::TestCase
   end
 end
 
-class TestConfirm < Test::Unit::TestCase
+class TestConfirm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @zones    = flexmock('zones',

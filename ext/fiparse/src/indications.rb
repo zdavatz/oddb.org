@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # FiParse::MiniFi -- oddb.org -- 23.04.2007 -- hwyss@ywesee.com
 
-require 'rpdf2txt/parser'  unless defined?(Test::Unit)
+require 'rpdf2txt/parser'  unless defined?(Minitest)
 require 'model/text'
 require 'facet/integer/even'
 
@@ -49,5 +49,5 @@ module ODDB
         [handler.indications, handler.news]
       end
     end
-  end  unless defined?(Test::Unit)
+  end  unless defined?(Minitest)
 end

@@ -5,13 +5,14 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/select'
 require 'view/admin/package'
 require 'htmlgrid/textarea'
 
-class TestCompositionSelect < Test::Unit::TestCase
+class TestCompositionSelect <Minitest::Test
   include FlexMock::TestCase
   def setup
     @session = flexmock('session')
@@ -36,7 +37,7 @@ class TestCompositionSelect < Test::Unit::TestCase
   end
 end
 
-class TestParts < Test::Unit::TestCase
+class TestParts <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',
@@ -73,7 +74,7 @@ class TestParts < Test::Unit::TestCase
   end
 end
 
-class TestPackageForm < Test::Unit::TestCase
+class TestPackageForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -114,7 +115,7 @@ class TestPackageForm < Test::Unit::TestCase
   end
 end
 
-class TestPackageComposite < Test::Unit::TestCase
+class TestPackageComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -148,7 +149,7 @@ class TestPackageComposite < Test::Unit::TestCase
   end
 end
 
-class TestRootPackageComposite < Test::Unit::TestCase
+class TestRootPackageComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',
@@ -209,7 +210,7 @@ class TestRootPackageComposite < Test::Unit::TestCase
   end
 end
 
-class TestDeductiblePackageComposite < Test::Unit::TestCase
+class TestDeductiblePackageComposite <Minitest::Test
   include FlexMock::TestCase
   def test_source
     @lookandfeel = flexmock('lookandfeel', 

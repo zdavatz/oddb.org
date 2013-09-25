@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/migel/limitationtext'
 
@@ -13,7 +14,7 @@ module ODDB
     Copyright::ODDB_VERSION = 'version'
     module Migel
 
-class TestLimitationTextInnerComposite < Test::Unit::TestCase
+class TestLimitationTextInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
@@ -39,7 +40,7 @@ class TestLimitationTextInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestLimitationTextComposite < Test::Unit::TestCase
+class TestLimitationTextComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
@@ -63,7 +64,7 @@ class TestLimitationTextComposite < Test::Unit::TestCase
   end
 end
 
-class TestLimitationText < Test::Unit::TestCase
+class TestLimitationText <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

@@ -6,7 +6,8 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 #require 'state/global'
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/drugs/package'
 
@@ -14,7 +15,7 @@ module ODDB
   module State
     module Drugs
 
-class TestPackage < Test::Unit::TestCase
+class TestPackage <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

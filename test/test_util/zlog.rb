@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/log'
 require 'stub/odba'
 require 'flexmock'
@@ -36,7 +37,7 @@ User-Agent: ODDB Updater\r
 			'hwyss@ywesee.com',
 		]
 	end
-	class TestLog < Test::Unit::TestCase
+	class TestLog <Minitest::Test
     include FlexMock::TestCase
 		class StubSmtp
 			def sendmail(*args)
@@ -121,9 +122,7 @@ second lengthy report.\r)
 				:files =>	{ file =>	'application/vnd.ms-excel' },
 			}
 			@log.update_values(hash)
-			assert_nothing_raised {
-				@log.notify
-			}
+			@log.notify
 		end
 	end
 end

@@ -5,7 +5,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/swissmedicjournal'
 
@@ -13,7 +14,7 @@ class Object
   @@today = Date.today
 end
 module ODDB
-  class TestSmjPlugin < Test::Unit::TestCase
+  class TestSmjPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       sequence = flexmock('sequence', :pointer => 'pointer')

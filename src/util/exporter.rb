@@ -31,7 +31,7 @@ module ODDB
 		end
   private
     def logExport(msg)
-      return if defined?(Test::Unit)
+      return if defined?(Minitest)
       now = Time.now
       $stdout.puts("#{now}: #{msg}"); $stdout.flush
       LogFile.append('oddb/debug', ' ' + msg, now)

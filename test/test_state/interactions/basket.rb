@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/interactions/basket'
 
@@ -12,7 +13,7 @@ module ODDB
 	module State
 		module Interactions
 
-class TestObservedInteraction < Test::Unit::TestCase
+class TestObservedInteraction <Minitest::Test
   include FlexMock::TestCase
   def setup
     fachinfo = flexmock('fachinfo', :hash => 'hash')
@@ -28,7 +29,7 @@ class TestObservedInteraction < Test::Unit::TestCase
   end
 end
 
-class TestCheck < Test::Unit::TestCase
+class TestCheck <Minitest::Test
   include FlexMock::TestCase
   def setup
     cyp450s    = {}
@@ -91,7 +92,7 @@ class TestCheck < Test::Unit::TestCase
   end
 end
 
-class TestBasekt < Test::Unit::TestCase
+class TestBasekt <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', :lookup => 'lookup')

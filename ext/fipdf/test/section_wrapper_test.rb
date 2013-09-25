@@ -4,7 +4,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'section_wrapper'
 require 'model/text'
 
@@ -13,7 +14,7 @@ module ODDB
 		class SectionWrapper < SimpleDelegator 
 			attr_writer :wrapper_class
 		end
-		class TestSectionWrapper < Test::Unit::TestCase
+		class TestSectionWrapper <Minitest::Test
 			class StubParagraphWrapper < SimpleDelegator
 			end
 			class StubSection

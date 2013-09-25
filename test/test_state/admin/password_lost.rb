@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/password_lost'
 require 'state/admin/confirm'
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Admin
 
-class TestPasswordLost < Test::Unit::TestCase
+class TestPasswordLost <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 

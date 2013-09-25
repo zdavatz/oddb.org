@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/admin/registration'
@@ -62,7 +63,7 @@ module TestSetup
   end
 end
 
-class TestRegistrationSequences < Test::Unit::TestCase
+class TestRegistrationSequences <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -89,7 +90,7 @@ class TestRegistrationSequences < Test::Unit::TestCase
     assert_kind_of(ODDB::View::PointerLink, @list.seqnr(@model, @session))
   end
 end
-class TestRootRegistrationSequences < Test::Unit::TestCase
+class TestRootRegistrationSequences <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -103,7 +104,7 @@ class TestRootRegistrationSequences < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoLanguageSelect < Test::Unit::TestCase
+class TestFachinfoLanguageSelect <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -120,7 +121,7 @@ class TestFachinfoLanguageSelect < Test::Unit::TestCase
   end
 end
 
-class TestRegistrationInnerComposite < Test::Unit::TestCase
+class TestRegistrationInnerComposite <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -137,7 +138,7 @@ class TestRegistrationInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestRegistrationForm < Test::Unit::TestCase
+class TestRegistrationForm <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -217,7 +218,7 @@ class TestRegistrationForm < Test::Unit::TestCase
   end
 end
 
-class TestResellerRegistrationForm < Test::Unit::TestCase
+class TestResellerRegistrationForm <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
@@ -247,7 +248,7 @@ class TestResellerRegistrationForm < Test::Unit::TestCase
   end
 end
 
-class TestRegistrationComposite < Test::Unit::TestCase
+class TestRegistrationComposite <Minitest::Test
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup

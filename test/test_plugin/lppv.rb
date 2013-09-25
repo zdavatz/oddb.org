@@ -6,13 +6,14 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src/", File.dirname(__FILE__))
 
-require "test/unit"
+gem 'minitest'
+require 'minitest/autorun'
 require "plugin/lppv"
 require "net/http"
 require 'flexmock'
 
 module ODDB
-	class TestLppvWriter < Test::Unit::TestCase
+	class TestLppvWriter <Minitest::Test
 		def setup
 			@writer = LppvWriter.new
 			@formatter = HtmlFormatter.new(@writer)
@@ -33,7 +34,7 @@ module ODDB
 			assert_equal(expected, @writer.prices)
 		end
 	end
-	class TestLppvPlugin < Test::Unit::TestCase
+	class TestLppvPlugin <Minitest::Test
     include FlexMock::TestCase
 		def setup
 			@app = FlexMock.new('app')
@@ -187,7 +188,7 @@ module ODDB
                          :price_public => 'price_public',
                          :sl_entry     => 'sl_entry',
                         )
-      assert_nothing_raised { @plugin.update_package(package, data) }
+      @plugin.update_package(package, data)
     end
     def test_update_package__sl_entry
       data    = {'pharmacode' => 'price_dat'}
@@ -199,7 +200,7 @@ module ODDB
                          :price_public => 'price_public',
                          :sl_entry     => 'sl_entry',
                         )
-      assert_nothing_raised { @plugin.update_package(package, data) }
+      @plugin.update_package(package, data)
     end
     def test_update_packages
       package = flexmock('package', 
@@ -214,7 +215,7 @@ module ODDB
         a.should_receive(:each_package).and_yield(package)
       end
       data = {'pharmacode' => 'price_dat'}
-      assert_nothing_raised { @plugin.update_packages(data) }
+      @plugin.update_packages(data)
     end
     def test_get_prices
       char = 'A'

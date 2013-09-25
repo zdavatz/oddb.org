@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/oddbdat_export'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'date'
 
@@ -25,7 +26,7 @@ module ODDB
       EXPORT_SERVER = StubDRbObject.new
       @@today = Date.new(2011,2,3)
     end
-    class TestOddbDatExport < Test::Unit::TestCase
+    class TestOddbDatExport <Minitest::Test
       include FlexMock::TestCase
       def setup
         @app = flexmock('app') do |ap|

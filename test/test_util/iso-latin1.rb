@@ -4,14 +4,15 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'util/iso-latin1'
 
 module ODDB
   module Util
 
-class TestIsoLatin1 < Test::Unit::TestCase
+class TestIsoLatin1 <Minitest::Test
   include FlexMock::TestCase
   def setup
     @str = 'TESTFÄLLE'

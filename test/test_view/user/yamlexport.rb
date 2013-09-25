@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/user/yamlexport'
 
@@ -18,7 +19,7 @@ class StubYamlExportInnerComposite < ODDB::View::User::YamlExportInnerComposite
     'link_with_filesize'
   end
 end
-class TestYamlExportInnerComposite < Test::Unit::TestCase
+class TestYamlExportInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')

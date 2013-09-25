@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/compare'
 require 'htmlgrid/select'
@@ -18,7 +19,7 @@ module ODDB
     end
     module Drugs
 
-class TestCompareList < Test::Unit::TestCase
+class TestCompareList <Minitest::Test
   include FlexMock::TestCase
   def setup
     comparison_sorter = Proc.new{}
@@ -65,7 +66,7 @@ class TestCompareList < Test::Unit::TestCase
   end
 end
 
-class TestCompare < Test::Unit::TestCase
+class TestCompare <Minitest::Test
   include FlexMock::TestCase
   def setup
     components = {[1, 2] => :active_agents}
@@ -178,7 +179,7 @@ class TestCompare < Test::Unit::TestCase
   end
 end
 
-class TestEmptyCompareComposite < Test::Unit::TestCase
+class TestEmptyCompareComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

@@ -4,14 +4,15 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/analysis/position'
 
 module ODDB
   module Analysis
 
-class TestPosition < Test::Unit::TestCase
+class TestPosition <Minitest::Test
   include FlexMock::TestCase
   def setup
     @position = ODDB::Analysis::Position.new('poscd')

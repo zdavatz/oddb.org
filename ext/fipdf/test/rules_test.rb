@@ -4,7 +4,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fachinfo_writer'
 require 'rules.rb'
 require 'model/text'
@@ -15,7 +16,7 @@ module ODDB
 		class Rule
 		end
 	end
-	class TestFachinfoRule < Test::Unit::TestCase
+	class TestFachinfoRule <Minitest::Test
 		def setup
 			@fachinfo_rule = ODDB::FiPDF::FachinfoRule.new(:Fachinfo_rule)
 		end
@@ -39,7 +40,7 @@ module ODDB
 			assert_equal(false, @fachinfo_rule.fulfilled?)
 		end
 	end
-	class TestOrphanRule < Test::Unit::TestCase
+	class TestOrphanRule <Minitest::Test
 		def setup
 			@orphan_rule = ODDB::FiPDF::OrphanRule.new(:orphan_rule)
 		end
@@ -77,7 +78,7 @@ module ODDB
 			assert_equal(false, @orphan_rule.fulfilled?)
 		end
 	end
-	class TestWidowRule < Test::Unit::TestCase
+	class TestWidowRule <Minitest::Test
 		def setup
 			@widow_rule = ODDB::FiPDF::WidowRule.new(:widow_rule)
 		end

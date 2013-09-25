@@ -3,12 +3,13 @@
 
 $: << File.expand_path("../src/", File.dirname(__FILE__))
 
-require "test/unit"
+gem 'minitest'
+require 'minitest/autorun'
 require "substance_index"
 
 module ODDB
 	module FiPDF
-		class TestSubstanceIndex < Test::Unit::TestCase
+		class TestSubstanceIndex <Minitest::Test
 			def setup
 				@index = SubstanceIndex.new
 			end

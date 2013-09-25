@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/component'
 require 'htmlgrid/composite'
@@ -13,7 +14,7 @@ require 'view/google_ad_sense'
 module ODDB
   module View
 
-class TestGoogleAdSense < Test::Unit::TestCase
+class TestGoogleAdSense <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
@@ -33,7 +34,7 @@ class GoogleAdSenseComposite < HtmlGrid::Composite
   CONTENT = HtmlGrid::Component
 end
 
-class TestGoogleAdSenseComposite < Test::Unit::TestCase
+class TestGoogleAdSenseComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

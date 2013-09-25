@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/wait_for_fachinfo'
 
@@ -12,7 +13,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestModel < Test::Unit::TestCase
+class TestModel <Minitest::Test
   include FlexMock::TestCase
   def setup
     @model = ODDB::State::Admin::WaitForFachinfo::Model.new
@@ -26,7 +27,7 @@ class TestModel < Test::Unit::TestCase
   end
 end
 
-class TestWaitForFachinfo < Test::Unit::TestCase
+class TestWaitForFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

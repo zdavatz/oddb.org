@@ -6,7 +6,8 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("..", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/select'
@@ -23,7 +24,7 @@ module ODDB
   module State
     module Drugs
 
-class TestRegisterDownload < Test::Unit::TestCase
+class TestRegisterDownload <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -58,7 +59,7 @@ class TestRegisterDownload < Test::Unit::TestCase
   end
 end
 
-class TestRegisterInvoicedDownload < Test::Unit::TestCase
+class TestRegisterInvoicedDownload <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app', 

@@ -4,14 +4,15 @@
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'swissindex'
 
 module ODDB
 	module Swissindex
 
-		class TestSwissindex < Test::Unit::TestCase
+		class TestSwissindex <Minitest::Test
       include FlexMock::TestCase
 			def test_session
         ODDB::Swissindex.session do |pharma|
@@ -20,7 +21,7 @@ module ODDB
 			end
 		end # SwissindexTest
 
-    class TestSwissindexNonpharma < Test::Unit::TestCase
+    class TestSwissindexNonpharma <Minitest::Test
       include FlexMock::TestCase
       def setup
         @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
@@ -69,6 +70,7 @@ module ODDB
         require 'tempfile'
         $stdout = Tempfile.open('stderr')
         yield
+      ensure
         $stdout.close
         $stdout = STDERR
       end
@@ -306,7 +308,7 @@ module ODDB
       end
     end # TestSwinssindexNonpharma
 
-    class TestSwissindexPharma < Test::Unit::TestCase
+    class TestSwissindexPharma <Minitest::Test
       include FlexMock::TestCase
       def setup
         @pharma = ODDB::Swissindex::SwissindexPharma.new

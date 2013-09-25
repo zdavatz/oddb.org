@@ -5,7 +5,8 @@
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/user/mailinglist'
 require 'sbsm/validator'
@@ -15,7 +16,7 @@ module ODDB
   module State
     module User
 
-class TestMailingList < Test::Unit::TestCase
+class TestMailingList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @smtp    = flexmock('smtp', :sendmail => 'sendmail')

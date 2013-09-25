@@ -4,14 +4,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/navigation'
 
 module ODDB
   module View
 
-class TestNavigation < Test::Unit::TestCase
+class TestNavigation <Minitest::Test
   include FlexMock::TestCase
   def setup
     @navigation = flexmock('navigation',
@@ -39,7 +40,7 @@ class TestNavigation < Test::Unit::TestCase
   end
 end
 
-class TestZoneNavigation < Test::Unit::TestCase
+class TestZoneNavigation <Minitest::Test
   include FlexMock::TestCase
   def test_build_navigation
     @zone_navigation = flexmock('zone_navigation',
@@ -77,7 +78,7 @@ class TestZoneNavigation < Test::Unit::TestCase
   end
 end
 
-class TestCountryNavigation < Test::Unit::TestCase
+class TestCountryNavigation <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'model/text'
 require 'flexmock'
 
@@ -16,7 +17,7 @@ module ODDB
       attr_reader :formats
     end
   end
-  class TestImageLink < Test::Unit::TestCase
+  class TestImageLink <Minitest::Test
     def setup
       @link = ODDB::Text::ImageLink.new
     end
@@ -45,32 +46,26 @@ module ODDB
       assert_equal '(image)', @link.to_s
     end
   end
-  class TestFormat < Test::Unit::TestCase
+  class TestFormat <Minitest::Test
     def setup
       @format = ODDB::Text::Format.new
     end
     def test_initialize
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(0..-1, @format.range)
     end
     def test_start_writer
       @format.start = 3
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(3..-1, @format.range)
     end
     def test_end_writer
       @format.end = 7
-      assert_nothing_raised {
-        @format.range
-      }
+      @format.range
       assert_equal(0..7, @format.range)
     end
   end
-  class TestParagraph < Test::Unit::TestCase
+  class TestParagraph <Minitest::Test
     def setup
       @paragraph = ODDB::Text::Paragraph.new
     end
@@ -281,7 +276,7 @@ Row1 |  Cell1  |  Cell2
       assert_equal 'foo bar', @paragraph.strip
     end
   end
-  class	TestSection < Test::Unit::TestCase
+  class	TestSection <Minitest::Test
     def setup
       @section = ODDB::Text::Section.new
     end
@@ -352,10 +347,10 @@ AnOthEr pArAgrAph
       assert_equal par1.object_id, par2.object_id
       par1 << 'foo'
       par3 = @section.next_paragraph
-      assert_not_equal par1.object_id, par3.object_id
+      assert par1.object_id != par3.object_id
     end
   end
-  class TestChapter < Test::Unit::TestCase
+  class TestChapter <Minitest::Test
     def setup
       @chapter = ODDB::Text::Chapter.new
     end
@@ -420,7 +415,7 @@ pArAgrAph
       section.subheading = 'foo'
       section2 = @chapter.next_section
       assert_equal(2, @chapter.sections.size)
-      assert_not_equal(section, section2)
+      assert(section != section2)
     end
     def test_paragraphs
       expected = []
@@ -470,7 +465,7 @@ Schöne Welt!
       assert_equal(expected.strip, @chapter.to_s)
     end
   end
-  class TestDocument < Test::Unit::TestCase
+  class TestDocument <Minitest::Test
     def setup
       @document = ODDB::Text::Document.new
     end
@@ -484,7 +479,7 @@ Schöne Welt!
       assert_equal('barbaz', @document.en)
     end
   end
-  class TestTable < Test::Unit::TestCase
+  class TestTable <Minitest::Test
     def setup
       @table = Text::Table.new
     end
@@ -533,7 +528,7 @@ foo
       assert_equal [5, 12], @table.column_widths
     end
     def test_current_cell
-      assert_nothing_raised do @table.current_cell end
+      @table.current_cell
       assert_nil @table.current_cell
       @table.next_row!
       assert_nil @table.current_cell
@@ -543,7 +538,7 @@ foo
       assert_equal cell2, @table.current_cell
     end
     def test_current_row
-      assert_nothing_raised do @table.current_row end
+      @table.current_row
       assert_nil @table.current_row
       row1 = @table.next_row!
       assert_equal row1, @table.current_row

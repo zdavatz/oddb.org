@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/sequence_observer'
 require 'util/persistence'
@@ -15,7 +16,7 @@ module ODDB
   class StubSequenceObserver < StubSuper
     include SequenceObserver
   end
-  class TestSequenceObserver < Test::Unit::TestCase
+  class TestSequenceObserver <Minitest::Test
     include FlexMock::TestCase
     def setup
       @observer = ODDB::StubSequenceObserver.new

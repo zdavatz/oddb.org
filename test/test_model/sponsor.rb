@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/sponsor'
 
@@ -15,7 +16,7 @@ module ODDB
     attr_writer :logo_filename
     public :adjust_types
   end
-  class TestSponsor < Test::Unit::TestCase
+  class TestSponsor <Minitest::Test
     include FlexMock::TestCase
     class StubApp
       def company_by_name(name)
@@ -72,11 +73,11 @@ module ODDB
         :company				=>	nil,
         :sponsor_until	=>	nil,
       }
-      assert_nothing_raised { @sponsor.adjust_types(values, @app) }
+      @sponsor.adjust_types(values, @app)
     end
     def test_company_name_robust
       assert_nil(@sponsor.company)
-      assert_nothing_raised { @sponsor.company_name }
+      @sponsor.company_name
     end
     def test_represents
       comp = flexmock 'company'

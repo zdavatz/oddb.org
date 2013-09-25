@@ -5,13 +5,14 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'plugin/who'
 
 module ODDB
   class WhoPlugin < Plugin
-    class TestCodeHandler < Test::Unit::TestCase
+    class TestCodeHandler <Minitest::Test
       include FlexMock::TestCase
       def setup
         @handler = ODDB::WhoPlugin::CodeHandler.new
@@ -26,7 +27,7 @@ module ODDB
     end
   end
 
-  class TestWhoPlugin < Test::Unit::TestCase
+  class TestWhoPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)

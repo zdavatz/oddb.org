@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/hospitals/hospitallist'
@@ -13,7 +14,7 @@ module ODDB
 	module View
     module Hospitals
 
-class TestHospitalList < Test::Unit::TestCase
+class TestHospitalList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -58,7 +59,7 @@ class TestHospitalList < Test::Unit::TestCase
     assert_equal('lookup', @list.narcotics(@model))
   end
 end
-class TestHospitalsComposite < Test::Unit::TestCase
+class TestHospitalsComposite <Minitest::Test
   include FlexMock::TestCase
   def test_hospital_list
     @lnf       = flexmock('lookandfeel', 
@@ -100,7 +101,7 @@ class TestHospitalsComposite < Test::Unit::TestCase
     assert_kind_of(ODDB::View::Hospitals::HospitalList, @composite.hospital_list([@model], @session))
   end
 end
-class TestEmptyResultForm < Test::Unit::TestCase
+class TestEmptyResultForm <Minitest::Test
   include FlexMock::TestCase
   def test_title_none_found
     @lnf     = flexmock('lookandfeel', 

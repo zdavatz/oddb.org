@@ -7,7 +7,8 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'define_empty_class'
 require 'htmlgrid/select'
 require 'state/user/download_export'
@@ -15,7 +16,7 @@ require 'state/user/download_export'
 module ODDB
 	module State
 		module User
-class TestDownloadExport < Test::Unit::TestCase
+class TestDownloadExport <Minitest::Test
 	def test_price
 		assert_equal(600, DownloadExport.price('oddb.yaml.gz'))
 		assert_equal(600, DownloadExport.price('oddb.yaml.zip'))

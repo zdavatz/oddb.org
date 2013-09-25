@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/substances/substance'
 
@@ -12,7 +13,7 @@ module ODDB
 	module View
     module Substances
 
-class TestSubstrates < Test::Unit::TestCase
+class TestSubstrates <Minitest::Test
   include FlexMock::TestCase
   def test_substrates
     @lnf     = flexmock('lookandfeel', 
@@ -29,7 +30,7 @@ class TestSubstrates < Test::Unit::TestCase
   end
 end
 
-class TestActiveFormForm < Test::Unit::TestCase
+class TestActiveFormForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -57,7 +58,7 @@ class TestActiveFormForm < Test::Unit::TestCase
   end
 end
 
-class TestDescriptionForm < Test::Unit::TestCase
+class TestDescriptionForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -81,7 +82,7 @@ class TestDescriptionForm < Test::Unit::TestCase
   end
 end
 
-class TestConnectionKeys < Test::Unit::TestCase
+class TestConnectionKeys <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -101,7 +102,7 @@ class TestConnectionKeys < Test::Unit::TestCase
   end
 end
 
-class TestOuterComposite < Test::Unit::TestCase
+class TestOuterComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf        = flexmock('lookandfeel', 

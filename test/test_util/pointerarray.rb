@@ -5,10 +5,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'util/pointerarray'
 
-class TestArray < Test::Unit::TestCase
+class TestArray <Minitest::Test
 	def setup
 		@values = %w{a b c d e}
 		@pointer = 'Pointer'

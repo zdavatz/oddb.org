@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/narcotics'
 
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Drugs
 
-class TestNarcoticList < Test::Unit::TestCase
+class TestNarcoticList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -51,7 +52,7 @@ class TestNarcoticList < Test::Unit::TestCase
   end
 end
 
-class TestNarcoticsComposite < Test::Unit::TestCase
+class TestNarcoticsComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

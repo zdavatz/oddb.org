@@ -5,7 +5,8 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/errormessage'
@@ -14,7 +15,7 @@ require 'view/privatetemplate'
 require 'view/admin/address_suggestion'
 require 'htmlgrid/textarea'
 
-class TestAddressSuggestionForm < Test::Unit::TestCase
+class TestAddressSuggestionForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -36,7 +37,7 @@ class TestAddressSuggestionForm < Test::Unit::TestCase
   end
 end
 
-class TestAddressSuggestionInnerComposite < Test::Unit::TestCase
+class TestAddressSuggestionInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def test_message
     @lnf       = flexmock('lookandfeel', 
@@ -53,7 +54,7 @@ class TestAddressSuggestionInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestActiveAddress < Test::Unit::TestCase
+class TestActiveAddress <Minitest::Test
   include FlexMock::TestCase
   def test_parent_class
     @lnf       = flexmock('lookandfeel', 
@@ -80,7 +81,7 @@ class TestActiveAddress < Test::Unit::TestCase
   end
 end
 
-class TestAddressSuggestionComposite < Test::Unit::TestCase
+class TestAddressSuggestionComposite <Minitest::Test
   include FlexMock::TestCase
   def test_address
     @lnf       = flexmock('lookandfeel', 

@@ -4,12 +4,13 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'indications'
 
 module ODDB
   module FiParse
-    class TestIndicationsHandler < Test::Unit::TestCase
+    class TestIndicationsHandler <Minitest::Test
       def setup
         @writer = Indications::Handler.new
       end

@@ -6,7 +6,8 @@
 #$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/interactions/basket'
 
@@ -14,7 +15,7 @@ module ODDB
 module View
 module Interactions
 
-class TestCyP450List < Test::Unit::TestCase
+class TestCyP450List <Minitest::Test
   include FlexMock::TestCase
   def test_to_html
     @container = flexmock('container', :list_index => 'list_index')
@@ -55,7 +56,7 @@ class TestCyP450List < Test::Unit::TestCase
   end
 end # CyP450List
 
-class TestFiList < Test::Unit::TestCase
+class TestFiList <Minitest::Test
   include FlexMock::TestCase
   def test_to_html
     lookandfeel  = flexmock('lookandfeel', 
@@ -92,7 +93,7 @@ class TestFiList < Test::Unit::TestCase
   end
 end # TestFiList
 
-class TestBasketSubstrates < Test::Unit::TestCase
+class TestBasketSubstrates <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -145,7 +146,7 @@ class TestBasketSubstrates < Test::Unit::TestCase
   end
 end # TestBasketSubstrates
 
-class TestBasketForm < Test::Unit::TestCase
+class TestBasketForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 

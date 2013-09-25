@@ -7,7 +7,8 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/odba'
 require 'util/persistence'
 require 'stub/oddbdat_export'
@@ -21,7 +22,7 @@ require 'tempfile'
 require 'util/log'
 
 module ODDB
-  class SwissmedicPluginTest < Test::Unit::TestCase
+  class SwissmedicPluginTest <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock 'app'
@@ -166,9 +167,7 @@ module ODDB
     end
     def test_update_registration__ignore_vet
       row = @workbook.worksheet(0).row(7)
-      assert_nothing_raised {
-        @plugin.update_registration(row)
-      }
+      @plugin.update_registration(row)
     end
     def test_update_registration__phyto
       row = @workbook.worksheet(0).row(4)
@@ -317,8 +316,9 @@ module ODDB
       require 'tempfile'
       $stdout = Tempfile.open('stdout')
       yield
+    ensure
       $stdout.close
-      $stdout = STDERR
+      $stdout = STDOUT
     end
     def test_update_registration__error
       registration = flexmock('registration', :pointer => 'pointer')
@@ -988,9 +988,7 @@ module ODDB
       reg = flexmock 'registration'
       reg.should_receive(:package).and_return pac
       @app.should_receive(:registration).and_return reg
-      assert_nothing_raised {
-        @plugin.to_s
-      }
+      @plugin.to_s
       result = @plugin.diff(@data, @older)
       assert_equal <<-EOS.strip, @plugin.to_s
 + 10999: Osanit, homöopathische Kügelchen
@@ -1053,6 +1051,8 @@ module ODDB
       $stdout = File.open(tempfile.path, "w")
       assert_equal(nil, @plugin.fix_registrations)
       tempfile.close
+    ensure
+      $stdout.close
       $stdout = STDOUT
     end
     def test_fix_sequences
@@ -1080,8 +1080,10 @@ module ODDB
       end
       tempfile = Tempfile.new('tempfile')
       $stdout = File.open(tempfile.path, "w")
-      assert_equal(nil, @plugin.fix_sequences)
+      assert_equal(nil, @plugin.fix_sequences)     
       tempfile.close
+    ensure
+      $stdout.close
       $stdout = STDOUT
     end
     def test_pointer
@@ -1428,6 +1430,8 @@ module ODDB
       $stdout = File.open(tempfile.path, "w")
       assert_equal(nil, @plugin.fix_compositions)
       tempfile.close
+    ensure
+      $stdout.close
       $stdout = STDOUT
     end
     def test_fix_packages
@@ -1457,6 +1461,8 @@ module ODDB
       $stdout = File.open(tempfile.path, "w")
       assert_equal(nil, @plugin.fix_packages)
       tempfile.close
+    ensure
+      $stdout.close
       $stdout = STDOUT
     end
     def test_update

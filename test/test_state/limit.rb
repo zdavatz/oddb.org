@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/limit'
 
@@ -18,7 +19,7 @@ class StubLimit
     @session = session
   end
 end
-class TestLimit < Test::Unit::TestCase
+class TestLimit <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

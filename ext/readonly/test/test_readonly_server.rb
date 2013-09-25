@@ -5,7 +5,8 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'readonly_server'
 require 'model/atcclass'
@@ -15,7 +16,7 @@ require 'util/exporter'
 
 module ODDB
   Currency = 'test'
-  class TestReadonlyServer < Test::Unit::TestCase
+  class TestReadonlyServer <Minitest::Test
     include FlexMock::TestCase
     def setup
       @serv = ReadonlyServer.new 

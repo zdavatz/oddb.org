@@ -5,11 +5,12 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/csv_result'
 
-class TestCsvResult < Test::Unit::TestCase
+class TestCsvResult <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', :lookup => 'lookup')
@@ -36,7 +37,7 @@ class TestCsvResult < Test::Unit::TestCase
                         :sl_entry => sl_entry,
                         :barcode  => 'barcode'
                        )
-    assert_raise(RuntimeError) do 
+    assert_raises(RuntimeError) do 
       @result.bsv_dossier(package)
     end
   end
@@ -52,7 +53,7 @@ class TestCsvResult < Test::Unit::TestCase
   end
   def test_c_type__error
     package = flexmock('package', :complementary_type => 'ctype')
-    assert_raise(NoMethodError) do 
+    assert_raises(NoMethodError) do 
       @result.c_type(package)
     end
   end

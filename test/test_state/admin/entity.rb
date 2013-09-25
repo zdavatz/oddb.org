@@ -5,7 +5,8 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/entity'
 
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Admin
 
-class TestEntity < Test::Unit::TestCase
+class TestEntity <Minitest::Test
   include FlexMock::TestCase
   def setup
     @yus_user = flexmock('yus_user', :yus_name => 'yus_name')

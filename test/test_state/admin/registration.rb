@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/registration'
 require 'util/log'
@@ -24,7 +25,7 @@ module ODDB
   module State
     module Admin
 
-class TestRegistration < Test::Unit::TestCase
+class TestRegistration <Minitest::Test
   include FlexMock::TestCase
   def setup 
     @pointer = flexmock('pointer', :+ => @pointer)
@@ -301,7 +302,7 @@ class TestRegistration < Test::Unit::TestCase
   end
 end
 
-class TestCompanyRegistration < Test::Unit::TestCase
+class TestCompanyRegistration <Minitest::Test
   include FlexMock::TestCase
   def setup
     @pointer = flexmock('pointer', :+ => @pointer)
@@ -375,7 +376,7 @@ class TestCompanyRegistration < Test::Unit::TestCase
   end
 end
 
-class TestResellerRegistration < Test::Unit::TestCase
+class TestResellerRegistration <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

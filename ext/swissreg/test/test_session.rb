@@ -4,12 +4,13 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'session'
 
 module ODDB
 	module Swissreg
-		class TestSession < Test::Unit::TestCase
+		class TestSession <Minitest::Test
 			def setup
 				@session = Session.new
 			end

@@ -6,7 +6,8 @@
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/admin/login'
 require 'state/global'
 require 'util/language'
@@ -38,7 +39,7 @@ class StubLoginMethods
   end
 end
 
-class TestLoginMethods < Test::Unit::TestCase
+class TestLoginMethods <Minitest::Test
   include FlexMock::TestCase
   def setup
     @session      = flexmock('session')
@@ -108,7 +109,7 @@ class TestLoginMethods < Test::Unit::TestCase
   end
 end
 
-class TestTransparentLogin < Test::Unit::TestCase
+class TestTransparentLogin <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -140,7 +141,7 @@ class TestTransparentLogin < Test::Unit::TestCase
   end
 end
 
-class TestTransparentLoginState < Test::Unit::TestCase
+class TestTransparentLoginState <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		def app

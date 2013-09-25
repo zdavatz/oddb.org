@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/user/export'
 require 'htmlgrid/composite'
@@ -19,7 +20,7 @@ class StubFachinfoPDFDownloadInnerComposite < FachinfoPDFDownloadInnerComposite
     'link_with_filesize'
   end
 end
-class TestFachinfoPDFDownloadInnerComposite < Test::Unit::TestCase
+class TestFachinfoPDFDownloadInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

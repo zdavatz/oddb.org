@@ -8,7 +8,8 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
@@ -23,7 +24,7 @@ module ODDB
 end
 
 module ODDB
-  class TestListener < Test::Unit::TestCase
+  class TestListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       app = flexmock('app')
@@ -74,7 +75,7 @@ module ODDB
     end
   end
 
-  class TestGenericsListener < Test::Unit::TestCase
+  class TestGenericsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock('app')
@@ -134,7 +135,7 @@ module ODDB
     end
   end
   
-  class TestItCodesListener < Test::Unit::TestCase
+  class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock('app')
@@ -218,7 +219,7 @@ module ODDB
   end
   end
 
-  class TestPreparationsListener < Test::Unit::TestCase
+  class TestPreparationsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
       @package = flexmock('package') do |pac|
@@ -390,7 +391,7 @@ module ODDB
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval('@pac_data = pac_data')
-      assert_raise(RuntimeError) do 
+      assert_raises(RuntimeError) do 
         @listener.tag_start('Pack', 'attr')
       end
     end
@@ -651,13 +652,13 @@ module ODDB
       end
       known_packages = {pointer => 'data'}
       @listener.instance_eval('@known_packages = known_packages')
-      assert_raise(RuntimeError) do 
+      assert_raises(RuntimeError) do 
         @listener.tag_end('Preparations')
       end
     end
   end
 
-  class TestBsvXmlPlugin2 < Test::Unit::TestCase
+  class TestBsvXmlPlugin2 <Minitest::Test
     include FlexMock::TestCase
     def setup
       flexstub(LogFile) do |log|
@@ -727,7 +728,7 @@ module ODDB
           m.should_receive(:get).and_return(target_file)
         end)
       end
-      assert_raise(Errno::ENOENT) do
+      assert_raises(Errno::ENOENT) do
         @plugin.download_file('target_url', 'save_dir', 'file_name') 
       end
     end
@@ -743,7 +744,7 @@ module ODDB
       flexstub(@plugin) do |p|
         p.should_receive(:sleep)
       end
-      assert_raise(Errno::ENOENT) do 
+      assert_raises(Errno::ENOENT) do 
         @plugin.download_file('target_url', 'save_dir', 'file_name')
       end
     end
@@ -919,7 +920,7 @@ module ODDB
   end
   class Package < PackageCommon
   end
-  class TestBsvXmlPlugin < Test::Unit::TestCase
+  class TestBsvXmlPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
@@ -1613,15 +1614,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
 
       # Downloading tests
       result = nil
-      assert_nothing_raised do
-        result = @plugin.download_file(target_url, save_dir, file_name)
-      end
+      result = @plugin.download_file(target_url, save_dir, file_name)
       assert_equal save_file, result
 
       # Not-downloading tests
-      assert_nothing_raised do
-        result = @plugin.download_file(target_url, save_dir, file_name)
-      end
+      result = @plugin.download_file(target_url, save_dir, file_name)
       assert_equal nil, result
 
       # Check files

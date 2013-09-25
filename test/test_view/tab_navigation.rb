@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'view/tab_navigation'
 require 'view/navigationlink'
@@ -12,7 +13,7 @@ require 'view/navigationlink'
 module ODDB
   module View
 
-class TestTabNavigation < Test::Unit::TestCase
+class TestTabNavigation <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/assign_deprived_sequence'
 require 'state/admin/patinfo_preview'
@@ -13,7 +14,7 @@ module ODDB
 	module State
 		module Admin
 
-class TestDeprivedSequenceFacade < Test::Unit::TestCase
+class TestDeprivedSequenceFacade <Minitest::Test
   include FlexMock::TestCase
   def setup
     registration = flexmock('registration')
@@ -51,7 +52,7 @@ class TestDeprivedSequenceFacade < Test::Unit::TestCase
   end
 end
 
-class TestAssignDeprivedSequence < Test::Unit::TestCase
+class TestAssignDeprivedSequence <Minitest::Test
   include FlexMock::TestCase
   def setup
     @sequence = flexmock('sequence')

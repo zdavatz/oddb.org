@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/analysis/group'
 require 'model/company'
@@ -24,7 +25,7 @@ class StubPrivateTemplate < ODDB::View::PrivateTemplate
   CONTENT = 'content'
 end
 
-class TestPrivateTemplate < Test::Unit::TestCase
+class TestPrivateTemplate <Minitest::Test
   include FlexMock::TestCase
   def stderr_null
     require 'tempfile'

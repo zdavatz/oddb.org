@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/mergeindication'
 require 'state/admin/indication'
@@ -13,7 +14,7 @@ module ODDB
   module State
     module Admin
 
-class TestMergeIndication < Test::Unit::TestCase
+class TestMergeIndication <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app', 

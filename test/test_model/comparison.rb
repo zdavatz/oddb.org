@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/drugs/compare'
 require 'model/dose'
 
@@ -44,7 +45,7 @@ end
 module ODDB
 	module State
 		module Drugs
-class TestComparison < Test::Unit::TestCase
+class TestComparison <Minitest::Test
 	def setup
 		@original = StubComparisonPackage.new(ODDB::Dose.new(10, 'Tabletten'), 1000)
 		@pack1 = StubComparisonPackage.new(ODDB::Dose.new(20, 'Tabletten'), 1000)
@@ -81,7 +82,7 @@ class TestComparison < Test::Unit::TestCase
 		assert_equal(true, comp.empty?)
 	end
 end
-class TestPackageFacade < Test::Unit::TestCase
+class TestPackageFacade <Minitest::Test
 	def setup
 		pack1 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), nil)
 		pack2 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), 374)
@@ -90,7 +91,8 @@ class TestPackageFacade < Test::Unit::TestCase
 		@pack2 = Compare::Comparison::PackageFacade.new(pack2, original)
 	end
 	def test_comparable
-		assert_nothing_raised { @pack1 <=> @pack2 }
+		@pack1 <=> @pack2
+    assert(@pack1 != @pack2)
 	end
 end
 		end

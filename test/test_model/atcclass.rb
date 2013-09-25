@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'stub/odba'
 require 'model/atcclass'
@@ -17,7 +18,7 @@ module ODDB
 	end
 end
 
-class TestAtcClass < Test::Unit::TestCase
+class TestAtcClass <Minitest::Test
   include FlexMock::TestCase
 	class StubSequence
 		attr_accessor :substances
@@ -192,7 +193,7 @@ class TestAtcClass < Test::Unit::TestCase
     assert_equal 'Description (N02BA01)', @atc_class.pointer_descr
   end
 end
-class TestDDD < Test::Unit::TestCase
+class TestDDD <Minitest::Test
 	def test_equals1
 		ddd = ODDB::AtcClass::DDD.new('O')
 		ddd.dose = ODDB::Dose.new(1, 'g')

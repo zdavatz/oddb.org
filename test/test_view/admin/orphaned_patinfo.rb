@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/admin/orphaned_patinfo_assign'
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Admin
 
-class TestOrphanedPatinfoListInnerComposite < Test::Unit::TestCase
+class TestOrphanedPatinfoListInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
@@ -35,7 +36,7 @@ class TestOrphanedPatinfoListInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestOrphanedPatinfoComposite < Test::Unit::TestCase
+class TestOrphanedPatinfoComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 

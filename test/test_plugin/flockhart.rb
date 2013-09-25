@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'plugin/flockhart'
 require 'util/html_parser'
 
@@ -32,7 +33,7 @@ module ODDB
 	end
 end
 
-class TestFlockhartWriter < Test::Unit::TestCase
+class TestFlockhartWriter <Minitest::Test
 	def setup
 		@writer = ODDB::Interaction::FlockhartWriter.new 
 		@writer2 = ODDB::Interaction::FlockhartWriter.new 
@@ -208,7 +209,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		assert_equal(expected, result)
 	end
 end
-class TestTableLinksWriter < Test::Unit::TestCase
+class TestTableLinksWriter <Minitest::Test
 	def setup
 		@writer = ODDB::Interaction::TableLinksWriter.new 
 		formatter = ODDB::HtmlFormatter.new(@writer)
@@ -224,7 +225,7 @@ class TestTableLinksWriter < Test::Unit::TestCase
 		assert_equal(expected, @writer.links.sort)
 	end
 end
-class TestFlockhartPlugin < Test::Unit::TestCase
+class TestFlockhartPlugin <Minitest::Test
 	class StubApp
 		def initialize
 		end

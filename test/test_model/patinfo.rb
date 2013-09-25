@@ -8,7 +8,8 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/patinfo'
 
@@ -18,7 +19,7 @@ module ODDB
 	end
 end
 
-class TestPatinfo < Test::Unit::TestCase
+class TestPatinfo <Minitest::Test
   include FlexMock::TestCase
 	class StubSequence
 		include ODDB::Persistence
@@ -60,7 +61,7 @@ class TestPatinfo < Test::Unit::TestCase
     assert_equal(@patinfo, @patinfo.odba_store)
   end
 end
-class TestPatinfoDocument < Test::Unit::TestCase
+class TestPatinfoDocument <Minitest::Test
 	def test_to_s1
 		doc = ODDB::PatinfoDocument.new
 		doc.name = "name"

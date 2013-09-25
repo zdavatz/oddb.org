@@ -16,7 +16,8 @@ module ODDB
   end
 end
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/drugs/fachinfo'
 
@@ -24,7 +25,7 @@ module ODDB
 	module State
 		module Drugs
 
-class TestFachinfo < Test::Unit::TestCase
+class TestFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -46,7 +47,7 @@ class TestFachinfo < Test::Unit::TestCase
   end
 end
 
-class TestFachinfoPrint < Test::Unit::TestCase
+class TestFachinfoPrint <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -61,7 +62,7 @@ class TestFachinfoPrint < Test::Unit::TestCase
   end
 end
 
-class TestRootFachinfo < Test::Unit::TestCase
+class TestRootFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
@@ -119,7 +120,7 @@ class TestRootFachinfo < Test::Unit::TestCase
   end
 end
 
-class TestCompanyFachinfo < Test::Unit::TestCase
+class TestCompanyFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

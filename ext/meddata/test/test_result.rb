@@ -4,11 +4,12 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
 require 'result'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 
 module ODDB
 	module MedData
-		class ResultTest < Test::Unit::TestCase
+		class ResultTest <Minitest::Test
 			def test_initialize
 				result = Result.new('bar', 'baz')
 				assert_equal('bar', result.values)

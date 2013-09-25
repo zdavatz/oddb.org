@@ -4,7 +4,7 @@
 # ODDB::Fachinfo -- oddb.org -- 26.10.2004 -- mwalder@ywesee.com rwaltert@ywesee.com
 
 require	'fachinfo_writer'
-require 'rpdf2txt/parser' unless defined?(Test::Unit)
+require 'rpdf2txt/parser' unless defined?(Minitest)
 require 'fileutils'
 
 module ODDB
@@ -231,4 +231,4 @@ module ODDB
 			end
 		end
 	end
-end unless defined?(Test::Unit)
+end unless defined?(Minitest)

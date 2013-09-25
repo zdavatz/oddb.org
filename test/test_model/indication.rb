@@ -6,7 +6,8 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'model/indication'
 
@@ -14,7 +15,7 @@ module ODDB
   class Indication
     attr_reader :registrations
   end
-  class TestIndication < Test::Unit::TestCase
+  class TestIndication <Minitest::Test
     include FlexMock::TestCase
     class StubRegistration
     end

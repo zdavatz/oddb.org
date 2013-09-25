@@ -5,7 +5,8 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/select'
 require 'htmlgrid/labeltext'
@@ -18,7 +19,7 @@ require 'state/user/global'
 require 'state/user/download_export'
 
 
-class TestDownloadExportInnerComposite < Test::Unit::TestCase
+class TestDownloadExportInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
@@ -39,7 +40,7 @@ class TestDownloadExportInnerComposite < Test::Unit::TestCase
   end
 end
 
-class TestDownloadExportComposite < Test::Unit::TestCase
+class TestDownloadExportComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|

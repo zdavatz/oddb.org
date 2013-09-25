@@ -5,7 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/patinfo_stats'
 
@@ -13,7 +14,7 @@ require 'state/admin/patinfo_stats'
 module ODDB
 	module State
 		module Admin
-      class TestInvoiceItemFacade < Test::Unit::TestCase
+      class TestInvoiceItemFacade <Minitest::Test
         include FlexMock::TestCase
         def test_initialize
           invoice_item = flexmock('invoice_item') do |item|
@@ -23,7 +24,7 @@ module ODDB
           assert_equal('time', facade.time)
         end
       end
-      class TestSequenceFacade < Test::Unit::TestCase
+      class TestSequenceFacade <Minitest::Test
         include FlexMock::TestCase
         def setup
           sequence = flexmock('sequence') do |seq|
@@ -51,7 +52,7 @@ module ODDB
           assert_equal('time', @facade.newest_date)
         end
       end
-      class TestCompanyFacade < Test::Unit::TestCase
+      class TestCompanyFacade <Minitest::Test
         include FlexMock::TestCase
         def setup
           @company = flexmock('company') do |comp|
@@ -134,7 +135,7 @@ module ODDB
             ses.should_receive(:user_input).and_return(pointer)
           end
       end
-      class TestPatinfoStatsCommon < Test::Unit::TestCase
+      class TestPatinfoStatsCommon <Minitest::Test
         include FlexMock::TestCase
         include ODDB::State::Admin
         def test_init
@@ -144,7 +145,7 @@ module ODDB
           assert_equal([@company_facade], @patinfo_stats.model)
         end
       end
-      class TestPatinfoStatsCompanyUser < Test::Unit::TestCase
+      class TestPatinfoStatsCompanyUser <Minitest::Test
         include FlexMock::TestCase
         include ODDB::State::Admin
         def test_init
@@ -154,7 +155,7 @@ module ODDB
           assert_equal([@company_facade], @patinfo_stats.init)
         end
       end
-      class TestPatinfoStats < Test::Unit::TestCase
+      class TestPatinfoStats <Minitest::Test
         include FlexMock::TestCase
         include ODDB::State::Admin
         def test_symbol

@@ -6,7 +6,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'state/companies/company'
 require 'state/global'
 require 'flexmock'
@@ -14,7 +15,7 @@ require 'flexmock'
 module ODDB 
 	module State
 		module Companies
-class TestRootCompanyState < Test::Unit::TestCase
+class TestRootCompanyState <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_writer :user_input
@@ -93,7 +94,7 @@ class TestRootCompanyState < Test::Unit::TestCase
 		assert_nil(@app.input) 
 	end
 end
-class TestUserCompanyState < Test::Unit::TestCase
+class TestUserCompanyState <Minitest::Test
   include FlexMock::TestCase
 	class StubSession
 		attr_writer :user_input, :user_equiv
@@ -214,7 +215,7 @@ class TestUserCompanyState < Test::Unit::TestCase
 	end
 end
 
-class TestCompany < Test::Unit::TestCase
+class TestCompany <Minitest::Test
   include FlexMock::TestCase
   def test_snapback_event
     @session = flexmock('session')
@@ -224,7 +225,7 @@ class TestCompany < Test::Unit::TestCase
   end
 end
 
-class TestUserCompany < Test::Unit::TestCase
+class TestUserCompany <Minitest::Test
   include FlexMock::TestCase
   def setup
     @app     = flexmock('app')

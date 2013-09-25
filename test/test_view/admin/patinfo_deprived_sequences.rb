@@ -4,7 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/admin/patinfo_deprived_sequences'
@@ -14,7 +15,7 @@ module ODDB
   module View
     module Admin
 
-class TestPatinfoDeprivedSequencesList < Test::Unit::TestCase
+class TestPatinfoDeprivedSequencesList <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
@@ -43,7 +44,7 @@ class TestPatinfoDeprivedSequencesList < Test::Unit::TestCase
   end
 end
 
-class TestShadowPatternForm < Test::Unit::TestCase
+class TestShadowPatternForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
