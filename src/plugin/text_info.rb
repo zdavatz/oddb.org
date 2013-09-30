@@ -87,7 +87,7 @@ module ODDB
     def puts_sync(msg)
       puts Time.now.to_s + ': ' + msg; $stdout.flush
     end
-    Package = Struct.new("Package", :iksnr, :seqnr, :name_base)  
+    IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)  
     def read_packages # adapted from swissmedic.rb
       latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xls'
       @packages = {}
@@ -98,7 +98,7 @@ module ODDB
           iksnr = row[0].to_s
           seqnr = row[1].to_i.to_s
           name_base = row[2]
-          @packages[iksnr] = Package.new(iksnr, seqnr, name_base)
+          @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
         end
       end
     end
@@ -554,8 +554,10 @@ module ODDB
     end
 
     def create_registration(info)
-      puts_sync "create_registration info #{info.inspect}"
-      # should probably be similar to method update_registration in src/plugin/swissmedic.rb
+      iksnr = info.iksnr
+      puts_sync "create_registration info #{info.inspect} include? #{@app.registrations.include?(iksnr)}"
+      # return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
+      # similar to method update_registration in src/plugin/swissmedic.rb
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,
@@ -572,19 +574,16 @@ module ODDB
       company_args = { :name => info.authHolder, :business_area => 'ba_pharma' }
       company = nil
       if(company = @app.company_by_name(info.authHolder, 0.8))
-        puts_sync "create_registration set company '#{info.authHolder}'"
         @app.update company.pointer, args
       else
-        puts_sync "create_registration created company #{info.authHolder}"
         company_ptr = Persistence::Pointer.new(:company).creator
         company = @app.update company_ptr, company_args
       end
       args.store :company, company.pointer
       
       registration = @app.update reg_ptr, args, :swissmedic_text_info
-      
-      # create dummy sequence 00 TODO: remove this sequence when Packungen.xls contains this iksnr
-      # seq_ptr = Persistence::Pointer.new([:sequence, 0]).creator
+      res = @app.registrations.store(iksnr, registration)
+     
       seq_ptr = (registration.pointer + [:sequence, 0]).creator
       unless seq_ptr
          puts_sync "Failed to create"
@@ -599,26 +598,15 @@ module ODDB
         :export_flag      => nil,
       }
       if info.atcCode and atc = @app.unique_atc_class(info.atcCode)
-        puts_sync "create_registration found atc #{info.atcCode}"
         seq_args.store :atc_class, atc.code
       else
-        puts_sync "create_registration created atc #{info.atcCode}"
         seq_args.store :atc_class, info.atcCode
       end
       res = @app.update seq_ptr, seq_args, :swissmedic_text_info
       
-      puts_sync "create_registration #{info.iksnr} #{reg_ptr.inspect}"      
-      if @app.atc_classes and info.atcCode and @app.atc_classes[info.atcCode]
-        puts_sync "Check 1 atcCode #{@app.atc_classes[info.atcCode].id}"
-      else
-        puts_sync "Check 1 atcCode not found"
-      end
-#      puts_sync "Check 2 registration substance_names #{@app.registration(info.iksnr).substance_names}"
-      if reg = @app.registration(info.iksnr) and not defined?(MiniTest)
-        puts_sync "Check 3 registration company #{reg.company}"
-        puts_sync "Check 4 registration iksnr #{reg.iksnr}"
-        puts_sync "Check 5 registration name_base #{reg.name_base}"
-      end
+      sequence = registration.sequence('00')
+      package  = sequence.create_package('000')
+      res = @app.update(sequence.pointer, {:packages => sequence.packages}, :swissmedic_text_info)      
       @new_iksnrs[info.iksnr] = info.title
     end    
 
@@ -636,7 +624,7 @@ module ODDB
                 elsif typ.eql?('pi') 
                     @pis_to_iksnrs[id] ? @pis_to_iksnrs[id]  += ids : @pis_to_iksnrs[id] = ids
                 else
-                  puts_sync "anhandled type #{x.text} at #{x.text}"
+                  puts_sync "unhandled type #{x.text} at #{x.text}"
                 end
               } if ids
     end

@@ -112,14 +112,15 @@ module ODDB
 			end
       def compositions(model, session=@session)
         link = HtmlGrid::Link.new(:show, model, session, self)
-        smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
-        if smart_link_format.include?('reg')
-          link.href = @lookandfeel._event_url(:show, smart_link_format)
-        else 
-          old_link_format = {:pointer => model.pointer}
-          link.href = @lookandfeel._event_url(:show, old_link_format)
+        if model.pointer
+          smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+          if smart_link_format.include?('reg')
+            link.href = @lookandfeel._event_url(:show, smart_link_format)
+          else 
+            old_link_format = {:pointer => model.pointer}
+            link.href = @lookandfeel._event_url(:show, old_link_format)
+          end
         end
-
         lang = @session.language
         comps = []
         if !model.compositions.empty?
