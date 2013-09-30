@@ -394,6 +394,7 @@ module ODDB
             old_link_format = {'pointer' => patinfo.pointer}
             href = @lookandfeel._event_url(:resolve, old_link_format)
           end
+          return nil unless model and klass
           link = klass.new(:square_patinfo, model, @session, self)
           link.href = href
           link.set_attribute('title', @lookandfeel.lookup(:patinfo))
