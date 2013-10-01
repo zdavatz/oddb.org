@@ -293,7 +293,8 @@ class TextinfoHpricot
       @image_index ||= 0
       @image_index += 1
       src,_ = child[:src].split(',')
-      if src =~ /^data:image\/(jp[e]?g|gif|png|x-wmf);base64$/
+      # next regexp must be in sync with src/plugin/text_info.rb
+      if src =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64($|,)/
         ptr.target.style = child[:style]
         ext       = $1
         name_base = File.basename(@name.to_s.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
