@@ -553,9 +553,15 @@ module ODDB
       @@iksnrs_meta_info
     end
 
-    def create_dummy_package_if_necessary(iksnr)
+    def create_dummy_package_if_necessary(iksnr, registration = nil)
       # similar to update_package in src/plugin/swissmedic.rb
-      registration = @app.registration(iksnr)
+      unless registration
+        registration = @app.registration(iksnr)
+        if registration == nil or registration.packages == nil
+          puts_sync "Could not find a registration for #{iksnr} #{registration.inspect}"
+          return
+        end
+      end
       return if registration.packages.size > 0    
       sequence = registration.sequence('00')
       info = @@iksnrs_meta_info[iksnr]
@@ -584,6 +590,7 @@ module ODDB
       # return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
       return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
       # similar to method update_registration in src/plugin/swissmedic.rb
+      logCheckActivity("create_registration #{info.inspect}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,
@@ -627,7 +634,7 @@ module ODDB
         seq_args.store :atc_class, info.atcCode
       end
       res = @app.update seq_ptr, seq_args, :swissmedic_text_info      
-      create_dummy_package_if_necessary(iksnr)
+      create_dummy_package_if_necessary(iksnr, registration)
       @new_iksnrs[info.iksnr] = info.title
     end    
 
@@ -1125,7 +1132,6 @@ module ODDB
         names.each_pair do |lang, infos|
           infos[typ].each do |name, date|
             iksnrs,infos = parse_and_update({lang => name}, type)
-            puts_sync "import_info: #{keys} names #{names} iksnrs #{iksnrs}"
             delete_patinfo iksnrs, lang if infos.empty? and type.eql?('patinfo') and iksnrs.size > 0
 
             # report
@@ -1188,7 +1194,8 @@ module ODDB
         FileUtils.makedirs(File.dirname(name))
         @checkLog = File.open(name, 'w+') 
       end
-      @checkLog.puts(msg)
+      @checkLog.puts("#{Time.now}: #{msg}")
+      @checkLog.flush
     end
     
     # Error reasons 
@@ -1330,7 +1337,6 @@ module ODDB
       # set correct options to force a reparse (reimport)
       @options[:reparse] = true
       @options[:download] = false
-      import_swissmedicinfo_by_iksnrs(@iksnrs_to_import, :both)
       logCheckActivity "update_swissmedicno_fi_pi finished"
       true # an update/import should return true or you will never send a report
     end
@@ -1343,17 +1349,19 @@ module ODDB
       index.each_pair do |state, names|
         import_info(keys, names, state)
       end
+      logCheckActivity "import_swissmedicinfo_by_index @new_iksnrs #{@new_iksnrs.inspect} "
+      import_swissmedicinfo_by_iksnrs(@new_iksnrs.keys, target)
       @doc = nil
       true # an import should return true or you will never send a report
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
-      puts_sync "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
+      logCheckActivity "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
-        puts_sync "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
+        logCheckActivity "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
         create_dummy_package_if_necessary(iksnr)
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
