@@ -70,16 +70,18 @@ module ODDB
       @dest = File.join(@@vardir, 'xml', 'AipsDownload_latest.xml')
       FileUtils.makedirs(File.dirname(@dest))
       FileUtils.cp(File.join(@@datadir, 'AipsDownload_xeljanz.xml'), @dest)
+      @package  = flexmock('package')
       @sequence = flexmock('sequence',
                            :packages => ['packages'],
                            :pointer => 'pointer',
                            :creator => 'creator')
-      @sequence.should_receive(:create_package)
+      @sequence.should_receive(:create_package).and_return(@package)
       @pointer = flexmock('pointer', :+ => @sequence)
       @company = flexmock('company',
                           :pointer => @pointer)
       @registration = flexmock('registration1',
                                :pointer => @pointer,
+                               :packages => [@package],
                                :store => 'store')
       @registration.should_receive(:sequence).and_return(@sequence)
       @registrations = flexmock('registrations')
@@ -117,9 +119,8 @@ module ODDB
       flags = {:de => :up_to_date, :fr => :up_to_date}
       @parser.should_receive(:parse_fachinfo_html)
 
-      newReg = ODDB::Registration.new(Test_Iksnr)
       atc    = ODDB::AtcClass.new(Test_Atc)
-      @app.should_receive(:registration).with(Test_Iksnr).times(1).and_return(newReg)
+      @app.should_receive(:registration).with(Test_Iksnr).times(2).and_return(@registration)
       @app.should_receive(:registration).once.with("32917").and_return("32917")
       @app.should_receive(:company_by_name).and_return(@company)
       @company.should_receive(:pointer).and_return('pointer')

@@ -553,10 +553,36 @@ module ODDB
       @@iksnrs_meta_info
     end
 
+    def create_dummy_package_if_necessary(iksnr)
+      # similar to update_package in src/plugin/swissmedic.rb
+      registration = @app.registration(iksnr)
+      return if registration.packages.size > 0    
+      sequence = registration.sequence('00')
+      info = @@iksnrs_meta_info[iksnr]
+      return unless info
+      seq_args = { 
+        :composition_text => nil,
+        :name_base        => info.title,
+        :name_descr       => nil,
+        :dose             => nil,
+        :sequence_date    => nil,
+        :export_flag      => nil,
+      }
+      if info.atcCode and atc = @app.unique_atc_class(info.atcCode)
+        seq_args.store :atc_class, atc.code
+      else
+        seq_args.store :atc_class, info.atcCode
+      end
+      package  = sequence.create_package('000')
+      part = package.create_part
+      seq_args.store :packages, sequence.packages
+      res = @app.update(sequence.pointer, seq_args, :swissmedic_text_info)      
+    end
+    
     def create_registration(info)
       iksnr = info.iksnr
-      puts_sync "create_registration info #{info.inspect} include? #{@app.registrations.include?(iksnr)}"
       # return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
+      return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
       # similar to method update_registration in src/plugin/swissmedic.rb
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
@@ -582,8 +608,6 @@ module ODDB
       args.store :company, company.pointer
       
       registration = @app.update reg_ptr, args, :swissmedic_text_info
-      res = @app.registrations.store(iksnr, registration)
-     
       seq_ptr = (registration.pointer + [:sequence, 0]).creator
       unless seq_ptr
          puts_sync "Failed to create"
@@ -602,11 +626,8 @@ module ODDB
       else
         seq_args.store :atc_class, info.atcCode
       end
-      res = @app.update seq_ptr, seq_args, :swissmedic_text_info
-      
-      sequence = registration.sequence('00')
-      package  = sequence.create_package('000')
-      res = @app.update(sequence.pointer, {:packages => sequence.packages}, :swissmedic_text_info)      
+      res = @app.update seq_ptr, seq_args, :swissmedic_text_info      
+      create_dummy_package_if_necessary(iksnr)
       @new_iksnrs[info.iksnr] = info.title
     end    
 
@@ -615,6 +636,9 @@ module ODDB
       ids = TextInfoPlugin::get_iksnrs_from_string(all_numbers)
       ids.each { |id|
                 info.iksnr = id
+                # Entries for FI (which contain the atcCode came always before the PI entries which do not have the atcCode
+                # Therefore we just get the values from the first match in the AipsDownload_latest.xml
+                return if @@iksnrs_meta_info[id] 
                 @@iksnrs_meta_info[id] = info.clone
                 unless @app.registration(id)
                   create_registration(info) 
@@ -1330,6 +1354,7 @@ module ODDB
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
         puts_sync "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
+        create_dummy_package_if_necessary(iksnr)
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
