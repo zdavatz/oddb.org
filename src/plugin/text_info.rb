@@ -1012,12 +1012,13 @@ module ODDB
           FileUtils.mkdir_p(dir)
           images.each_with_index do |img, i|
             type,src = img.attributes['src'].to_s.split(',')
-            if type =~ /^data:image\/(jp[e]?g|gif|png|x-wmf);base64$/
+            # next regexp must be in sync with ext/fiparse/src/textinfo_hpricot.rb
+            unless type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
+              @nonconforming_content << "#{iksnrs}: '#{@title}' with non conforming #{type} element x"
+            end
+            if type =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64$/
               file = File.join(dir, "#{i + 1}.#{$1}")
               File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)) }
-              if /x-wmf/.match(type)
-                @nonconforming_content << "#{iksnrs}: '#{@title}' with non conforming #{type} element"
-              end
             end
           end
         end
