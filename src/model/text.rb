@@ -44,9 +44,12 @@ module ODDB
 			def bold?
 				@values.include?(:bold)
 			end
-			def italic?
-				@values.include?(:italic)
-			end
+      def italic?
+        @values.include?(:italic)
+      end
+      def link?
+        @values.include?(:link)
+      end
       def subscript?
         @values.include?(:subscript)
       end
@@ -89,6 +92,12 @@ module ODDB
       def length
         @text.length
       end
+      def add_link(link)
+        elems = URI.split(link)
+        augment_format(:link)
+        self << link
+        reduce_format(:link)
+      end
 			def match(pattern)
         pattern_s = pattern.to_s
         pattern_s.force_encoding('utf-8')
@@ -112,7 +121,7 @@ module ODDB
 				format = Text::Format.new(*format_args)
 				format.end = (text_length - 1)
 				@formats.unshift(format)
-				@raw_txt = text + (@raw_txt || @text)
+				@raw_txt = "#{text}#{(@raw_txt || @text)}"
 				@text = @raw_txt.strip
 			end
 			def reduce_format(*args)
