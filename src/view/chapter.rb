@@ -47,15 +47,23 @@ module ODDB
             tag = :sub
             style << 'line-height: 0em'
           end
+          if format.link?
+            tag = :a
+            puts "Paragraph with format link #{paragraph.text}"
+          end
+                               
           escape_method = (format.symbol?) ? :escape_symbols : :escape
           str = self.send(escape_method, txt[format.range]) 
           if(style.empty? && tag == :span)
             res << str.force_encoding('utf-8')
+          elsif tag == :a
+            attrs.store 'href', str.strip
+            res << context.send(tag, attrs) { str }              
           else
             attrs.store('style', style.join(' '))
             res << context.send(tag, attrs) { 
               str
-            }
+            }                               
           end
         }
         if(paragraph.preformatted?)
