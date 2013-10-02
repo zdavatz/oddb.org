@@ -171,7 +171,7 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-#    puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect} fixe #{has_fixed_font?(child, ptr)}"
+    # puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect} fixed_font #{has_fixed_font?(child, ptr)}"
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
@@ -324,7 +324,19 @@ class TextinfoHpricot
       # p ptr.target.class
       # ptr.target = ptr.section.next_paragraph
     # end
-    ptr.target << text(child) unless child.parent.name.eql?('tbody') or child.parent.name.eql?('table')
+    return if child.parent.name.eql?('tbody') or child.parent.name.eql?('table')
+    string = text(child)
+    m = URI.regexp.match(string)
+    if m and m[0].downcase.index('http')
+      link = m[0].sub(/\/\)$/, '/')
+      first = string.index(link)
+      last  = string.index(link)+link.length-1
+      ptr.target << (string[0..(first-1)]) if first > 0
+      ptr.target.add_link(link)
+      ptr.target << string[(last+1)..-1] if (last+1) < string.length
+    else
+      ptr.target << string
+    end
   end
   def preformatted(target)
     target.respond_to?(:preformatted?) && target.preformatted?
