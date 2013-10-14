@@ -49,7 +49,6 @@ module ODDB
           end
           if format.link?
             tag = :a
-            puts "Paragraph with format link #{paragraph.text}"
           end
                                
           escape_method = (format.symbol?) ? :escape_symbols : :escape

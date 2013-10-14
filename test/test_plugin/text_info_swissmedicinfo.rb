@@ -78,7 +78,7 @@ module ODDB
       @sequence.should_receive(:create_package).and_return(@package)
       @pointer = flexmock('pointer', :+ => @sequence)
       @company = flexmock('company',
-                          :pointer => @pointer)
+                          :pointer => 'pointer')
       @registration = flexmock('registration1',
                                :pointer => @pointer,
                                :packages => [@package],
@@ -120,8 +120,8 @@ module ODDB
       @parser.should_receive(:parse_fachinfo_html)
 
       atc    = ODDB::AtcClass.new(Test_Atc)
-      @app.should_receive(:registration).with(Test_Iksnr).times(2).and_return(@registration)
-      @app.should_receive(:registration).once.with("32917").and_return("32917")
+      @app.should_receive(:registration).with(Test_Iksnr).times(3).and_return(@registration)
+      #@app.should_receive(:registration).once.with("32917").and_return("32917")
       @app.should_receive(:company_by_name).and_return(@company)
       @company.should_receive(:pointer).and_return('pointer')
       assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo and add a new registration')
@@ -162,8 +162,22 @@ module ODDB
         :download => false,
         :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
       }
+      @sequence = flexmock('sequence',
+                           :packages => ['packages'],
+                           :pointer => 'pointer',
+                           :creator => 'creator')
+      seq_ptr = flexmock('seq_ptr',
+                          :pointer => 'seq_ptr.pointer')
+      @pointer = flexmock('pointer',
+                          :pointer => seq_ptr,
+                          :packages => ['packages'])
+      @sequence = flexmock('sequence',
+                           :creator => @sequence)
+      seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
       @app = flexmock('application', 
-                      :update => 'updated', 
+                      :pointer => @pointer, 
+                      :update => @pointer,
+                      :unique_atc_class => nil,
                       :delete => 'delete') # , :registration => [])
       @app.should_receive(:textinfo_swissmedicinfo_index)
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
@@ -247,16 +261,26 @@ module ODDB
       reg.should_receive(:fachinfo)
       ptr = Persistence::Pointer.new([:registration, '32917'])
       reg.should_receive(:pointer).and_return ptr
-      seq = flexmock('sequence', :patinfo= => 'patinfo', :odba_isolated_store => 'odba_isolated_store')
+      part = flexmock('part')
+      package = flexmock('package', :create_part => part)
+      seq = flexmock('sequence',
+                     :patinfo= => 'patinfo',
+                     :odba_isolated_store => 'odba_isolated_store',
+                     :create_package => package,
+                     :packages => [package],
+                     )
       seq.should_receive(:patinfo)
-      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
+      seq.should_receive(:pointer).and_return ptr
       reg.should_receive(:each_sequence).and_return do |block| block.call seq end
       reg.should_receive(:sequences).and_return({'01' => seq})
+      reg.should_receive(:sequence).and_return(seq)
+      reg.should_receive(:packages).and_return([])
       @app.should_receive(:registration).with('32917').and_return reg
       fi = flexmock 'fachinfo'
       fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
       pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
+      pp pi
       flags = {:de => :up_to_date, :fr => :up_to_date}
       @parser.should_receive(:parse_fachinfo_html).once
       @parser.should_receive(:parse_patinfo_html).never
@@ -274,6 +298,11 @@ module ODDB
       lang = 'fr'
       path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{stripped}\")]"
       fr = setup_fachinfo_document 'Numéro d’autorisation', '45928 (Swissmedic).'
+      @registrations = flexmock('registrations')
+      @app.should_receive(:registration).and_return(@registration)
+      @company = flexmock('company',
+                          :pointer => 'pointer')
+      @app.should_receive(:company_by_name).and_return(@company)
       fi_path_fr = File.join(@@datadir, 'passion.fr.xml')
       @doc = @plugin.swissmedicinfo_xml(fi_path_fr)
       match = @doc.xpath(path, Class.new do
@@ -292,7 +321,7 @@ module ODDB
         end
       end.new).first
     end
-  end  if false
+  end
   class TestTextInfoPluginChecks <Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
@@ -309,7 +338,7 @@ module ODDB
         :download => false,
         :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
       }
-      @app = flexmock('application', :update => 'updated',
+      @app = flexmock('application', :update => @pointer,
                       :delete => 'delete', 
                       :registrations => [],
                       :registration => @registration,
@@ -332,11 +361,10 @@ module ODDB
       FileUtils.rm_r @@vardir
       super # to clean up FlexMock
     end    
-  end  if false
+  end
         
   class TestTextInfoPlugin_iksnr <Test::Unit::TestCase
     include FlexMock::TestCase
-    
     def test_get_iksnr_comprimes
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
       assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
@@ -370,5 +398,5 @@ module ODDB
       assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
     end
    
-  end if false
+  end
 end
