@@ -293,7 +293,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       expected.store :fr, path
       assert File.exist?(path)
       assert_equal expected, paths
-      assert_equal({}, flags)
+      assert_equal({:fr => :up_to_date, :de => :up_to_date}, flags)
       paths, flags = @plugin.download_info :fachinfo, 'Aclasta',
                                            agent, form, eventtarget
       ## existing identical files are flagged as up-to-date
@@ -767,9 +767,12 @@ EOS
   end
   
   class TestExtractMatchedName <Minitest::Test
+    include FlexMock::TestCase
     
     def setup
       file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
+      @app = flexmock 'application'
+      @app.should_receive(:registration).and_return ['registration']
       @plugin = TextInfoPlugin.new @app
       @plugin.swissmedicinfo_xml(file)
     end
