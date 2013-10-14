@@ -38,6 +38,26 @@ module ODDB
 				EOS
 				assert_equal(expected.strip, result)
 			end
+
+      def test_emit_http_links
+        vorher  = 'vorher: '
+        nachher = ' und nachher'
+        link = 'http://www.nzz.ch'
+        par1 = Text::Paragraph.new
+        par1 << vorher
+        par1.add_link(link)
+        par1 << nachher
+        result = @view.paragraphs(CGI.new, [par1])
+        expected = <<-EOS
+    <SPAN style="padding-bottom: 4px; white-space: normal; line-height: 1.4em;">vorher:<A href="http://www.nzz.ch"> http://www.nzz.ch</A> und nachher</SPAN><BR>
+        EOS
+        assert_equal(expected.strip, result)
+        assert(result.index(nachher.strip), "Must have '#{nachher}' in HTML")
+        assert(result.index(vorher.strip), "Must have '#{vorher}' in HTML")
+        assert(result.index(nachher), "Must have '#{nachher}' in HTML")
+        skip("Exepected should have a space bevor und nachhher, .eg.'> und nachher'")
+        assert(result.index(vorher), "Must have '#{vorher}' in HTML")
+      end
 			def test_escaped_heading
 				chapter = Text::Chapter.new
 				chapter.heading = "F?r Zwerge > 1.5 m"
@@ -79,7 +99,6 @@ module ODDB
 				assert_equal(expected.strip, result)
 			end
 		end
-
     class TestChapter2 <Minitest::Test
       include FlexMock::TestCase
       def setup
@@ -110,6 +129,7 @@ module ODDB
           c.should_receive(:br).and_return('br')
         end
         format  = flexmock('format', 
+                           :link?        => false,
                            :italic?      => nil,
                            :bold?        => nil,
                            :superscript? => nil,
@@ -135,6 +155,7 @@ module ODDB
                             )
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => nil,
                              :subscript?   => nil,
@@ -156,6 +177,7 @@ module ODDB
                             )
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => nil,
                              :subscript?   => nil,
@@ -166,8 +188,10 @@ module ODDB
                              :text    => 'text',
                              :formats => [format],
                              :preformatted? => nil,
-                             :is_a?   => true
                             )
+        flexmock(paragraph) do |p|
+          p.should_receive(:is_a?).with(Text::ImageLink).once.and_return(true)
+        end
         assert_equal('p', @chapter.paragraphs(context, [paragraph]))
       end
       def test_paragraphs__text_table
@@ -178,6 +202,7 @@ module ODDB
                             )
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => nil,
                              :subscript?   => nil,
@@ -198,6 +223,7 @@ module ODDB
       def test_formats
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => nil,
                              :subscript?   => nil,
@@ -218,6 +244,7 @@ module ODDB
       def test_formats__superscript
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => true,
                              :subscript?   => nil,
@@ -241,6 +268,7 @@ module ODDB
         flexmock(@lnf, :section_style => 'section_style')
         format    = flexmock('format',
                              :italic?      => nil,
+                             :link?        => false,
                              :bold?        => nil,
                              :superscript? => true,
                              :subscript?   => nil,
