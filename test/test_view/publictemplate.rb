@@ -83,7 +83,7 @@ class TestPublicTemplate <Minitest::Test
       c.should_receive(:script).and_return('script')
       c.should_receive(:style).and_return('style')
     end
-    expected = 'scriptscriptscriptscriptstylescript'
+    expected = 'scriptscriptscriptstylestyle'
     assert_equal(expected, @template.dynamic_html_headers(context))
   end
   def test_dynamic_html_headers__not_enabled
@@ -122,14 +122,14 @@ class TestPublicTemplate <Minitest::Test
   end
   def test_topfoot__just_medical_structure
     flexmock(@lnf, :enabled? => true)
-    assert_kind_of(HtmlGrid::Div, @template.topfoot(@model, @session))
+    assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
   end
   def test_topfoot__oekk_structure
     flexmock(@lnf) do |l|
       l.should_receive(:enabled?).with(:just_medical_structure, false).and_return(false)
       l.should_receive(:enabled?).with(:oekk_structure, false).and_return(true)
     end
-    assert_kind_of(ODDB::View::Custom::OekkHead, @template.topfoot(@model, @session))
+    assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
   end
 end
 

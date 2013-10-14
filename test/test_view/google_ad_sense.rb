@@ -60,10 +60,13 @@ class TestGoogleAdSenseComposite <Minitest::Test
   end
   def test_ad_sense
     sponsor = flexmock('sponsor', :valid? => false)
-    flexmock(@session, :sponsor => sponsor)
-    flexmock(@lnf, :enabled? => true)
     user = flexmock('user', :valid? => false)
-    flexmock(@session, :user => user)
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup   => 'lookup',
+                          :enabled? => true
+                         )
+    @session   = flexmock('session', :lookandfeel => @lnf,  :sponsor => sponsor, :user => user)
+    @composite = ODDB::View::GoogleAdSenseComposite.new(@model, @session)
     assert_kind_of(ODDB::View::GoogleAdSense, @composite.ad_sense(@model, @session))
   end
 end

@@ -95,8 +95,14 @@ class TestCurrencyNavigationLink <Minitest::Test
     assert_equal('_event_url', @link.init)
   end
   def test_init__else
-    flexmock(@session, :request_path => 'aaa/bbb/ccc/ddd/currency/eee')
     expected = "aaa/bbb/ccc/ddd/currency/name"
+    @session = flexmock('session', 
+                        :lookandfeel  => @lnf,
+                        :currency     => 'currency',
+                        :request_path => expected,
+                       )
+    @model   = flexmock('model')
+    @link    = ODDB::View::CurrencyNavigationLink.new('name', @model, @session)
     assert_equal(expected, @link.init)
   end
 

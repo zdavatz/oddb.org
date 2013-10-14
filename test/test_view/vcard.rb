@@ -17,8 +17,8 @@ class TestVCard <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', :lookandfeel => @lnf)
-    @fax       = flexmock('fax', :inject =>'inject')
-    @fon       = flexmock('fon', :inject =>'inject')
+    @fax       = flexmock('fax', :inject =>'inject', :to_s => 'fax')
+    @fon       = flexmock('fon', :inject =>'inject', :to_s => 'fon')
     address = flexmock('addresses', 
                        :fon    =>  [@fon],
                        :fax    =>  [@fax],
