@@ -154,8 +154,9 @@ class TestGalenicFormComposite <Minitest::Test
                             :active_agents => [active_agent]
                            )
     atc_class    = flexmock('atc_class', :code => 'code')
-    sequence = flexmock('sequence', 
-                        :pointer => 'pointer',
+    pointer    = flexmock('pointer', :to_csv => 'pointer.to_csv')
+    sequence = flexmock('sequence',
+                        :pointer => pointer,
                         :seqnr   => 'seqnr',
                         :compositions => [composition],
                         :atc_class    => atc_class,

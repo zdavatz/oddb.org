@@ -26,17 +26,17 @@ class TestAssignFachinfoForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :allowed?    => nil
-                       )
+                       ).by_default
     @registration = flexmock('registration', 
                             :fachinfo_active? => nil,
                             :has_fachinfo?    => nil
-                           )
+                           ).by_default
     @model   = flexmock('model', 
                         :empty? => nil,
                         :registration => @registration,
                         :fachinfo_active? => nil,
                         :has_fachinfo?    => nil
-                       )
+                       ).by_default
     flexmock(@model) do |model|
       model.should_receive(:each_with_index).and_yield(@model, 0)
     end

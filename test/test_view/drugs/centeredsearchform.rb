@@ -10,30 +10,47 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
-#require 'model/migel/product'
+require 'view/resulttemplate'
+require 'htmlgrid/labeltext'
+require 'view/migel/product'
+require 'remote/migel/model_super'
+require 'remote/migel/model/product'
 
+module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
+  module Migel
+    class Product
+    end
+  end
+end
 
 class TestCenteredSearchComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lookandfeel = flexmock('lookandfeel', 
-                            :enabled?   => nil,
+    @lookandfeel = flexmock('lookandfeel',                             
                             :disabled?  => nil,
                             :lookup     => 'lookup',
                             :attributes => {},
                             :_event_url => '_event_url',
-                            :zones      => 'zones',
-                            :zones      => 'zones',
+                            :zones      => ['zones'],
+                            :zones      => ['zones'],
                             :base_url   => 'base_url',
-                            :zone_navigation => 'zone_navigation',
-                            :direct_event    => 'direct_event'
-                           )
-    @app       = flexmock('app')
+                            :zone_navigation => ['zone_navigation'],
+                            :direct_event    => 'direct_event',
+                           ).by_default
+    @lookandfeel.should_receive(:enabled?).by_default
+    @app       = flexmock('app', :narcotics => 'narcotics')
     @session   = flexmock('session', 
                           :app         => @app,
                           :lookandfeel => @lookandfeel,
                           :zone        => 'zone',
-                          :persistent_user_input => 'persistent_user_input'
+                          :persistent_user_input => 'persistent_user_input',
+                          :flavor => 'flavor',
+                          :search_form => 'search_form',
+                          :get_cookie_input => 'get_cookie_input',
+                          :event => 'event',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::Drugs::CenteredSearchComposite.new(@model, @session)
@@ -44,9 +61,9 @@ class TestCenteredSearchComposite <Minitest::Test
   end
   def test_init__just_medical_structure
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false).and_return(true)
-      l.should_receive(:enabled?).once.with(:language_switcher)
-      l.should_receive(:enabled?).once.with(:search_reset)
+      l.should_receive(:enabled?).never.with(:search_reset)
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
     end
     expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
@@ -54,9 +71,10 @@ class TestCenteredSearchComposite <Minitest::Test
   end
   def test_init__oekk_structure
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false).and_return(true)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
-      l.should_receive(:enabled?).once.with(:search_reset)
+      l.should_receive(:enabled?).never.with(:search_reset)
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
       l.should_receive(:enabled?).once.with(:popup_links, false)
     end
@@ -65,19 +83,19 @@ class TestCenteredSearchComposite <Minitest::Test
     assert_equal(expected, @composite.init)
   end
   def test_init__atupri_web
-    flexmock(@lookandfeel) do |l|
-      l.should_receive(:enabled?).once.with(:atupri_web, false).and_return(true)
-      l.should_receive(:enabled?).once.with(:just_medical_structure, false)
-      l.should_receive(:enabled?).once.with(:oekk_structure, false)
-      l.should_receive(:enabled?).once.with(:search_reset)
-      l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
-    end
+    @lookandfeel.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
+    @lookandfeel.should_receive(:enabled?).once.with(:atupri_web, false).and_return(true)
+    @lookandfeel.should_receive(:enabled?).once.with(:just_medical_structure, false)
+    @lookandfeel.should_receive(:enabled?).once.with(:oekk_structure, false)
+    @lookandfeel.should_receive(:enabled?).never.with(:search_reset)
+    @lookandfeel.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
     flexmock(@app, :recent_registration_count => 'recent_registration_count')
     expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_init__data_counts
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
       l.should_receive(:enabled?).once.with(:atupri_web, false)
@@ -88,7 +106,7 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:limitation_texts)
       l.should_receive(:enabled?).once.with(:screencast)
       l.should_receive(:enabled?).once.with(:language_switcher)
-      l.should_receive(:enabled?).once.with(:search_reset)
+      l.should_receive(:enabled?).never.with(:search_reset)
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
       l.should_receive(:enabled?).twice.with(:popup_links, false)
       l.should_receive(:enabled?).once.with(:atc_chooser)
@@ -104,11 +122,12 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 11]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 13]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_init__facebook_fan
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
       l.should_receive(:enabled?).once.with(:atupri_web, false)
@@ -119,7 +138,7 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:limitation_texts)
       l.should_receive(:enabled?).once.with(:screencast)
       l.should_receive(:enabled?).once.with(:language_switcher)
-      l.should_receive(:enabled?).once.with(:search_reset)
+      l.should_receive(:enabled?).never.with(:search_reset)
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
       l.should_receive(:enabled?).twice.with(:popup_links, false)
       l.should_receive(:enabled?).once.with(:atc_chooser)
@@ -135,7 +154,7 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 11]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 13]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_create_link
@@ -157,7 +176,8 @@ class TestCenteredSearchComposite <Minitest::Test
   end
 end
 
-class TestRssFeedbackList <Minitest::Test
+#class TestRssFeedbackList <Minitest::Test
+class TestRssFeedbackList   <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
@@ -187,7 +207,7 @@ class TestRssFeedbackList <Minitest::Test
     flexmock(@item, 
              :name => 'name',
              :size => 'size',
-             :odba_instance => ODDB::Migel::Product.new('code')
+             :odba_instance => ODDB::Migel::Product.new
             )
     assert_kind_of(HtmlGrid::Link, @composite.heading(@model))
   end
@@ -297,19 +317,23 @@ class TestGoogleAdSenseComposite <Minitest::Test
                             :lookup       => 'lookup',
                             :attributes   => {},
                             :_event_url   => '_event_url',
-                            :zones        => 'zones',
+                            :zones        => ['zones'],
                             :base_url     => 'base_url',
-                            :zone_navigation => 'zone_navigation',
+                            :zone_navigation => ['zone_navigation'],
                             :direct_event => 'direct_event'
-                           )
+                           ).by_default
     @app       = flexmock('app')
     @session   = flexmock('session', 
                           :lookandfeel => @lookandfeel,
                           :app         => @app,
                           :persistent_user_input => 'persistent_user_input',
-                          :zone        => 'zone'
-                         )
-    @model     = flexmock('model')
+                          :zone        => 'zone',
+                          :flavor      => 'flavor',
+                          :search_form => 'search_form',
+                          :get_cookie_input => 'get_cookie_input',
+                          :event => 'event',
+                         ).by_default
+    @model     = flexmock('model').by_default
     @composite = ODDB::View::Drugs::GoogleAdSenseComposite.new(@model, @session)
   end
   def test_rss_feeds_left
@@ -318,6 +342,9 @@ class TestGoogleAdSenseComposite <Minitest::Test
              :rss_updates => 'rss_updates'
             )
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:recall_rss).and_return(false)
+      l.should_receive(:enabled?).once.with(:hpc_rss).and_return(false)
+      l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
       l.should_receive(:enabled?).once.with(:fachinfo_rss).and_return(true)
       l.should_receive(:resource)
       l.should_receive(:resource_global)
@@ -347,6 +374,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
   end
   def test_rss_feeds_right
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
       l.should_receive(:enabled?).once.with(:feedback_rss).and_return(true)
       l.should_receive(:resource)
       l.should_receive(:resource_global)

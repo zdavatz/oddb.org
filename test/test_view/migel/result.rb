@@ -23,10 +23,16 @@ class TestList <Minitest::Test
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
-                        :migel_list_components => {[0,0] => 'component'}
+                        :migel_list_components => {[0,0] => 'component'},
+                        :language => 'language',
                        )
-    @session = flexmock('session', :lookandfeel => @lnf)
-    @model   = flexmock('model')
+    @session = flexmock('session', :lookandfeel => @lnf,
+                        :language => 'language').by_default
+    @model   = flexmock('model',
+                        :force_encoding => 'force_encoding',
+                        :product_text => 'product_text').by_default
+    @model.should_receive(:is_a?).with(String).and_return(true)
+    @model.should_receive(:is_a?).and_return(false)
     @list    = ODDB::View::Migel::List.new([@model], @session)
   end
   def test_init
@@ -108,16 +114,22 @@ class TestResultList <Minitest::Test
                         :limitation_text => limitation_text,
                         :migel_code      => 'migel_code',
                         :pointer         => 'pointer',
-                        :language        => 'language'
+                        :language        => 'language',
+                        :force_encoding => 'force_encoding',
                        )
+    group.should_receive(:is_a?).with(String).and_return(true)
+    group.should_receive(:is_a?).and_return(false)
     @model   = flexmock('model', 
                         :group           => group,
                         :migel_code      => 'migel_code',
                         :pointer         => 'pointer',
                         :language        => 'language',
                         :products        => ['product'],
-                        :limitation_text => limitation_text
-                       )
+                        :limitation_text => limitation_text,
+                        :force_encoding => 'force_encoding',
+                       ).by_default
+    @model.should_receive(:is_a?).with(String).and_return(true)
+    @model.should_receive(:is_a?).and_return(false)
     @list    = ODDB::View::Migel::ResultList.new([@model], @session)
   end
   def test_compose_list
@@ -138,7 +150,8 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Migel::EmptyResultForm.new(@model, @session)

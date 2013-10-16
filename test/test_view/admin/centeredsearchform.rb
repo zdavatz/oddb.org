@@ -25,10 +25,10 @@ class TestCenteredSearchComposite <Minitest::Test
                           :lookup     => 'lookup',
                           :attributes => {},
                           :enabled?   => nil,
-                          :zones      => 'zones',
+                          :zones      => ['zones'],
                           :base_url   => 'base_url',
                           :_event_url => '_event_url',
-                          :zone_navigation => 'zone_navigation',
+                          :zone_navigation => ['zone_navigation'],
                           :direct_event => 'direct_event'
                          )
     @session   = flexmock('session', 

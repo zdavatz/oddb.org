@@ -22,19 +22,24 @@ class TestResultList <Minitest::Test
                         :event_url  => 'event_url',
                         :_event_url => '_event_url'
                        )
-    @sequence = flexmock('sequence', :active_package_count => 0)
+    @sequence = flexmock('sequence', :active_package_count => 0).by_default
     @model   = flexmock('model', 
                         :language  => 'language',
                         :oid       => 'oid',
                         :sequences => [@sequence]
                        )
+    atc_class = flexmock('atc_class', :code => 'code')
+    search_oddb = flexmock('search_oddb', :atc_classes => [atc_class])
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :language    => 'language',
                         :interaction_basket      => [@model],
                         :interaction_basket_ids  => 'interaction_basket_ids',
-                        :interaction_basket_link => 'interaction_basket_link'
-                       )
+                        :interaction_basket_link => 'interaction_basket_link',
+                        :interaction_basket_atc_codes => [ 'interaction_basket_atc_codes' ],
+                        :persistent_user_input => 'persistent_user_input',
+                        :search_oddb => search_oddb,
+                       ).by_default
     @list    = ODDB::View::Interactions::ResultList.new([@model], @session)
   end
   def test_interaction_basket_status

@@ -43,8 +43,9 @@ class TestOrphanedPatinfoSequences <Minitest::Test
                             :galenic_form  => galenic_form,
                             :active_agents => [active_agent]
                            )
+    pointer    = flexmock('pointer', :to_csv => 'pointer.to_csv')
     @model   = flexmock('model', 
-                        :pointer => 'pointer',
+                        :pointer => pointer,
                         :seqnr   => 'seqnr',
                         :compositions => [composition],
                         :has_patinfo? => nil,
@@ -88,8 +89,9 @@ class TestOrphanedPatinfoAssignComposite <Minitest::Test
                             :galenic_form => galenic_form,
                             :active_agents => [active_agent]
                            )
+    pointer    = flexmock('pointer', :to_csv => 'pointer.to_csv')
     sequence   = flexmock('sequence', 
-                          :pointer => 'pointer',
+                          :pointer => pointer,
                           :seqnr   => 'seqnr',
                           :compositions => [composition],
                           :has_patinfo? => nil,

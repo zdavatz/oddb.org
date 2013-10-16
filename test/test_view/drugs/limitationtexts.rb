@@ -9,7 +9,9 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/resultfoot'
 require 'view/drugs/limitationtexts'
-
+require 'model/sequence'
+require 'model/package'
+require 'model/analysis/group'
 
 module ODDB
   module View
@@ -21,7 +23,7 @@ class TestLimitationTextList <Minitest::Test
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
-                        :_event_url => '_event_url'
+                        :_event_url => '_event_url',
                        )
     state    = flexmock('state', 
                         :interval  => 'interval',
@@ -54,7 +56,8 @@ class TestLimitationTextsComposite <Minitest::Test
                           :enabled?   => nil,
                           :disabled?  => nil,
                           :base_url   => 'base_url',
-                          :explain_result_components => {[0,0] => :explain_limitation_text}
+                          :explain_result_components => {[0,0] => :explain_limitation_text},
+                          :navigation => ['navigation'],
                          )
     state      = flexmock('state', 
                           :interval  => 'interval',
@@ -64,7 +67,8 @@ class TestLimitationTextsComposite <Minitest::Test
                           :lookandfeel => @lnf,
                           :state       => state,
                           :limitation_text_count => 0,
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :event       => 'event',
                          )
     limitation_text = flexmock('limitation_text', :pointer => 'pointer')
     @model     = flexmock('model', 

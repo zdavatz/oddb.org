@@ -30,7 +30,7 @@ class TestPassThru <Minitest::Test
   end
   def test_passthru__else
     flexmock(@session, :user_input => 'www.xxx.zzz')
-    assert_equal('http://www.xxx.zzz', @view.passthru)
+    assert_equal('https://www.xxx.zzz', @view.passthru)
   end
   def test_http_headers
     expected = {"Location" => "https://www.xxx.zzz"}

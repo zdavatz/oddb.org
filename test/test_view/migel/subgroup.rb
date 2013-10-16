@@ -12,6 +12,9 @@ require 'view/migel/subgroup'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     Copyright::ODDB_VERSION = 'version'
     module Migel
 
@@ -40,7 +43,7 @@ class TestProductList <Minitest::Test
                         :method     => method,
                         :product_text => product_text,
                         :items      => 'items'
-                       )
+                       ).by_default
     @view    = ODDB::View::Migel::ProductList.new([@model], @session)
   end
   def test_description
@@ -128,10 +131,10 @@ class TestSubgroup <Minitest::Test
                           :enabled?    => nil,
                           :attributes  => {},
                           :resource    => 'resource',
-                          :zones       => 'zones',
+                          :zones       => ['zones'],
                           :disabled?   => nil,
                           :direct_event => 'direct_event',
-                          :zone_navigation => 'zone_navigation',
+                          :zone_navigation => ['zone_navigation'],
                           :navigation  => 'navigation',
                           :base_url    => 'base_url'
                          )
@@ -149,7 +152,8 @@ class TestSubgroup <Minitest::Test
                           :user        => user,
                           :sponsor     => sponsor,
                           :state       => state,
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :flavor      => 'flavor',
                          )
     group      = flexmock('group', 
                           :pointer     => 'pointer',
@@ -171,6 +175,7 @@ class TestSubgroup <Minitest::Test
                           :products    => {'key' => product},
                           :limitation_text => limitation_text
                          )
+    skip("Niklaus is not sure, whether ODDB::View::Migel::PointerSteps is correct")
     @view = ODDB::View::Migel::Subgroup.new(@model, @session)
   end
   def test_backtracking

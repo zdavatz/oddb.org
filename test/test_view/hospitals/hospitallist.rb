@@ -9,6 +9,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/labeltext'
 require 'view/hospitals/hospitallist'
+require 'model/company'
 
 module ODDB
 	module View
@@ -30,7 +31,7 @@ class TestHospitalList <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :event       => 'event',
-                        :state       => state
+                        :state       => state,
                        )
     method   = flexmock('method', :arity => 0)
     address  = flexmock('address', 
@@ -78,7 +79,8 @@ class TestHospitalsComposite <Minitest::Test
                           :lookandfeel => @lnf,
                           :zone        => 'zone',
                           :event       => 'event',
-                          :state       => state
+                          :state       => state,
+                          :event       => 'event',
                          )
     method     = flexmock('method', :arity => 0)
     address    = flexmock('address', 
@@ -114,7 +116,8 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Hospitals::EmptyResultForm.new(@model, @session)

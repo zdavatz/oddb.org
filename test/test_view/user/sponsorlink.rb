@@ -24,7 +24,7 @@ class TestSponsorLink <Minitest::Test
                         :lookandfeel => @lnf,
                         :language    => 'language'
                        )
-    @model   = flexmock('model', :url => 'url')
+    @model   = flexmock('model', :url => 'url').by_default
     @link    = ODDB::View::User::SponsorLink.new(@model, @session)
   end
   def test_sponsorlink

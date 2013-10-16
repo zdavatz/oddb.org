@@ -11,6 +11,9 @@ require 'view/interactions/centeredsearchform'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     module Interactions
 
 class TestCenteredSearchComposite <Minitest::Test
@@ -26,15 +29,18 @@ class TestCenteredSearchComposite <Minitest::Test
                           :enabled?   => nil,
                           :_event_url => '_event_url',
                           :disabled?  => nil,
-                          :zones      => 'zones',
+                          :zones      => ['zones'],
                           :base_url   => 'base_url',
                           :direct_event    => 'direct_event',
-                          :zone_navigation => 'zone_navigation'
+                          :zone_navigation => ['zone_navigation'],
                          )
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :app  => @app,
-                          :zone => 'zone'
+                          :zone => 'zone',
+                          :search_form => 'search_form',
+                          :flavor => 'flavor',
+                          :event => 'event',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::Interactions::CenteredSearchComposite.new(@model, @session)

@@ -12,6 +12,16 @@ require 'view/drugs/package'
 require 'htmlgrid/span'
 require 'model/index_therapeuticus'
 require 'sbsm/validator'
+require 'model/galenicgroup'
+require 'model/analysis/group'
+require 'model/package'
+require 'state/drugs/compare'
+
+module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
+end
 
 class TestCompositionList <Minitest::Test
   include FlexMock::TestCase
@@ -44,7 +54,7 @@ class TestCompositionList <Minitest::Test
                             :measure         => 'measure',
                             :commercial_form => commercial_form,
                             :composition     => composition,
-                            :active_agents   => [active_agent]
+                            :active_agents   => [active_agent],
                            )
     @list        = ODDB::View::Drugs::CompositionList.new([@model], @session)
     result       = @list.composition(@model)
@@ -98,7 +108,8 @@ class TestPackageInnerComposite <Minitest::Test
                           :price_exfactory     => 'price_exfactory',
                           :deductible          => 'deductible',
                           :price_public        => 'price_public',
-                          :pointer             => @pointer
+                          :pointer             => @pointer,
+                          :sl_generic_type     => 'sl_generic_type',
                          )
     ith        = flexmock('ith', :language => 'language')
     flexmock(ODDB::IndexTherapeuticus, :find_by_code => ith)
@@ -126,11 +137,11 @@ class TestPackageInnerComposite <Minitest::Test
   end
   def test_init__patinfos
     flexmock(@lookandfeel) do |l|
-      l.should_receive(:enabled?).once.with(:feedback).and_return(false)
-      l.should_receive(:enabled?).once.with(:fachinfos).and_return(false)
-      l.should_receive(:enabled?).once.with(:patinfos).and_return(true)
-      l.should_receive(:enabled?).at_least.once.with(:popup_links, false)
-      l.should_receive(:enabled?).once.with(:ddd_chart)
+      l.should_receive(:enabled?).never.with(:feedback).and_return(false)
+      l.should_receive(:enabled?).never.with(:fachinfos).and_return(false)
+      l.should_receive(:enabled?).never.with(:patinfos).and_return(true)
+      l.should_receive(:enabled?).never.with(:popup_links, false)
+      l.should_receive(:enabled?).never.with(:ddd_chart)
     end
     flexmock(@model, :has_patinfo? => nil)
     flexmock(@composite, :hash_insert_row => 'hash_insert_row')
@@ -164,7 +175,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                             :disabled?  => nil,
                             :attributes => {},
                             :_event_url => '_event_url'
-                           )
+                           ).by_default
     atc_class  = flexmock('atc_class', 
                           :description => 'description',
                           :code        => 'code',
@@ -201,6 +212,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :active_agents   => [@active_agent],
                           :commercial_form => @commercial_form
                          )
+    sequence   = flexmock('sequence', :division => 'division')
     @model     = flexmock('model', 
                           :name      => 'name',
                           :size      => 'size',
@@ -212,14 +224,16 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :ikskey    => 'ikskey',
                           :pointer   => 'pointer',
                           :parts     => [part],
-                          :swissmedic_source   => 'swissmedic_source',
+                          :swissmedic_source   => {'swissmedic_source' => 'x'},
                           :deductible          => 'deductible',
                           :price_exfactory     => 'price_exfactory',
                           :price_public        => 'price_public',
                           :ith_swissmedic      => 'ith_swissmedic',
                           :production_science  => 'production_science',
                           :parallel_import     => 'parallel_import',
-                          :index_therapeuticus => 'index_therapeuticus'
+                          :index_therapeuticus => 'index_therapeuticus',
+                          :sequence            => sequence,
+                          :sl_generic_type     => 'sl_generic_type',
                          )
     ith        = flexmock('ith', :language => 'language')
     flexmock(ODDB::IndexTherapeuticus, :find_by_code => ith)
@@ -233,6 +247,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_share).and_return(false)
       l.should_receive(:resource).and_return('resource')
+      l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
       l.should_receive(:enabled?).at_least.once.with(:patinfos)
@@ -248,6 +263,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
   end
   def test_init__facebook_share
     flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(false)
       l.should_receive(:enabled?).once.with(:facebook_share).and_return(true)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
@@ -272,7 +288,7 @@ class TestPackage <Minitest::Test
                            :attributes   => {},
                            :resource     => 'resource',
                            :lookup       => 'lookup',
-                           :zones        => 'zones',
+                           :zones        => ['zones'],
                            :disabled?    => nil,
                            :direct_event => 'direct_event',
                            :_event_url   => '_event_url',
@@ -280,9 +296,9 @@ class TestPackage <Minitest::Test
                            :languages    => 'languages',
                            :currencies   => 'currencies',
                            :base_url     => 'base_url',
-                           :navigation   => 'navigation',
+                           :navigation   => ['navigation'],
                            :resource_localized => 'resource_localized',
-                           :zone_navigation    => 'zone_navigation'
+                           :zone_navigation    => ['zone_navigation'],
                           )
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
@@ -313,7 +329,10 @@ class TestPackage <Minitest::Test
                          :language     => 'language',
                          :zone         => 'zone',
                          :get_currency_rate     => 1.0,
-                         :persistent_user_input => 'persistent_user_input'
+                         :persistent_user_input => 'persistent_user_input',
+                         :flavor       => 'flavor',
+                         :event           => 'event',
+                         :get_cookie_input => 'get_cookie_input',
                          )
     commercial_form = flexmock('commercial_form', :language => 'language')
     composition = flexmock('composition', :label => 'label')
@@ -334,6 +353,7 @@ class TestPackage <Minitest::Test
                          :commercial_form => commercial_form
                         )
     indication = flexmock('indication', :language => 'language')
+    sequence   = flexmock('sequence', :division => 'division')
     @model    = flexmock('model', 
                          :name       => 'name',
                          :size       => 'size',
@@ -346,7 +366,7 @@ class TestPackage <Minitest::Test
                          :pointer    => 'pointer',
                          :indication => indication,
                          :ikskey     => 'ikskey',
-                         :swissmedic_source   => 'swissmedic_source',
+                         :swissmedic_source   => {'swissmedic_source' => 'x'},
                          :deductible          => 'deductible',
                          :price_exfactory     => 'price_exfactory',
                          :price_public        => 'price_public',
@@ -354,7 +374,9 @@ class TestPackage <Minitest::Test
                          :production_science  => 'production_science',
                          :parallel_import     => 'parallel_import',
                          :commercial_forms    => [commercial_form],
-                         :index_therapeuticus => 'index_therapeuticus'
+                         :index_therapeuticus => 'index_therapeuticus',
+                         :sequence        => sequence,
+                         :sl_generic_type => 'sl_generic_type',
                         )
     ith        = flexmock('ith', :language => 'language')
     flexmock(ODDB::IndexTherapeuticus, :find_by_code => ith)

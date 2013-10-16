@@ -73,7 +73,8 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Doctors::EmptyResultForm.new(@model, @session)

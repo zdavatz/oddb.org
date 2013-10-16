@@ -10,6 +10,9 @@ require 'flexmock'
 require 'view/paypal/return'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     class Copyright < HtmlGrid::Composite
       ODDB_VERSION = 'oddb_version'
@@ -40,7 +43,7 @@ class TestReturnDownloads <Minitest::Test
                         :email    => 'email',
                         :oid      => 'oid',
                         :text     => 'text'
-                       )
+                       ).by_default
     @list    = ODDB::View::PayPal::ReturnDownloads.new([@model], @session)
   end
   def test_additional_download_link
@@ -114,20 +117,21 @@ class TestReturn <Minitest::Test
                          :enabled?   => nil,
                          :attributes => {},
                          :resource   => 'resource',
-                         :zones      => 'zones',
+                         :zones      => ['zones'],
                          :event_url  => 'event_url',
                          :disabled?  => nil,
                          :_event_url => '_event_url',
-                         :navigation => 'navigation',
+                         :navigation => ['navigation'],
                          :direct_event     => 'direct_event',
-                         :zone_navigation  => 'zone_navigation'
+                         :zone_navigation  => ['zone_navigation'],
                         )
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
     @session  = flexmock('session', 
                          :lookandfeel => @lnf,
                          :user        => user,
-                         :sponsor     => sponsor
+                         :sponsor     => sponsor,
+                         :flavor      => 'flavor',
                         )
     @model    = flexmock('model', :payment_received? => nil)
     @template = ODDB::View::PayPal::Return.new(@model, @session)

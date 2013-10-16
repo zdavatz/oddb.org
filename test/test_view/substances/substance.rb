@@ -7,6 +7,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
+require 'model/company'
 require 'view/substances/substance'
 
 module ODDB
@@ -126,7 +127,7 @@ class TestOuterComposite <Minitest::Test
     @model      = flexmock('model', 
                             :name      => 'name',
                             :synonyms  => [],
-                            :connection_keys       => 'connection_keys',
+                            :connection_keys       => ['connection_keys'],
                             :substrate_connections => connections,
                             :pointer   => 'pointer',
                             :sequences => [sequence],

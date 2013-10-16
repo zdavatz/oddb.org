@@ -42,7 +42,7 @@ class TestSubHeader <Minitest::Test
                         :state => state,
                         :event => 'event',
                         :cookie_set_or_get => 'cookie_set_or_get'
-                       )
+                       ).by_default
     multilingual = flexmock('multilingual', :language => 'language')
     @model   = flexmock('model', 
                         :price => 'price',

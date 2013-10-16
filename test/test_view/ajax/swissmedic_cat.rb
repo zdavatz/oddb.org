@@ -29,7 +29,7 @@ class TestSwissmedicCat <Minitest::Test
     @parent    = flexmock('parent', 
                           :certificate_number => 'certificate_number',
                           :expiry_date => Time.local(2011,2,3)
-                         )
+                         ).by_default
     @model     = flexmock('model', 
                           :ikscat   => 'ikscat',
                           :sl_entry => sl_entry,

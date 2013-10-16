@@ -110,7 +110,7 @@ class TestBasketSubstrates <Minitest::Test
                           :language            => 'language',
                           :has_effective_form? => nil,
                           :effective_form      => 'effective_form'
-                         )
+                         ).by_default
     link       = flexmock('link', 
                           :href   => 'href',
                           :empty? => nil,
@@ -128,7 +128,8 @@ class TestBasketSubstrates <Minitest::Test
                           :cyp450s    => cyp450s,
                           :inducers   => ['inducers'],
                           :inhibitors => ['inhibitor'],
-                          :observed   => 'observed'
+                          :observed   => 'observed',
+                          :atc_codes  => 'atc_codes',
                          )
     @list      = BasketSubstrates.new([@model], @session)
   end
@@ -136,13 +137,13 @@ class TestBasketSubstrates <Minitest::Test
     assert_kind_of(HtmlGrid::RichText, @list.cyp450s(@model, @session))
   end
   def test_substance
-    effective_form = flexmock('effective_form', :language => 'language')
+    effective_form = flexmock('effective_form', :language => 'lang_de')
     flexmock(@substance, 
              :has_effective_form? => true,
              :effective_form      => effective_form,
              :is_effective_form?  => nil
             )
-    assert_equal('language (language)', @list.substance(@model))
+    assert_equal('lang_de (language)', @list.substance(@model))
   end
 end # TestBasketSubstrates
 
@@ -188,7 +189,8 @@ class TestBasketForm <Minitest::Test
                          :cyp450s    => cyp450s,
                          :inducers   => [inducer],
                          :inhibitors => [inhibitor],
-                         :observed   => 'observed'
+                         :observed   => 'observed',
+                         :atc_codes  => 'atc_codes',
                         )
     @form     = BasketForm.new([@model], @session)
   end

@@ -11,8 +11,14 @@ require 'flexmock'
 require 'view/drugs/compare'
 require 'htmlgrid/select'
 require 'sbsm/validator'
+require 'model/galenicgroup'
+require 'model/analysis/group'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
+
   module View
     class Copyright < HtmlGrid::Composite
       ODDB_VERSION = 'oddb_version'
@@ -75,17 +81,17 @@ class TestCompare <Minitest::Test
                         :attributes   => {},
                         :resource     => 'resource',
                         :lookup       => 'lookup',
-                        :zones        => 'zones',
+                        :zones        => ['zones'],
                         :disabled?    => nil,
                         :direct_event => 'direct_event',
                         :_event_url   => '_event_url',
                         :compare_list_components => components,
                         :comparison_sorter => Proc.new{},
                         :explain_result_components => {[0,0] => :explain_cas},
-                        :zone_navigation => 'zone_navigation',
-                        :navigation   => 'navigation',
+                        :zone_navigation => ['zone_navigation'],
+                        :navigation   => ['navigation'],
                         :base_url     => 'base_url'
-                       )
+                       ).by_default
     user     = flexmock('user', :valid? => nil)
     sponsor  = flexmock('sponsor', :valid? => nil)
     snapback_model = flexmock('snapback_model', :pointer => 'pointer')
@@ -101,7 +107,9 @@ class TestCompare <Minitest::Test
                         :allowed?    => nil,
                         :event       => 'event',
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :flavor      => 'flavor',
+                        :get_cookie_input => 'get_cookie_input',
                        )
     comparable = flexmock('comparable', 
                           :generic_type  => 'generic_type',

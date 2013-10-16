@@ -11,7 +11,9 @@ require 'view/htmlgrid/composite'
 require 'view/rss/package'
 require 'htmlgrid/span'
 require 'model/index_therapeuticus'
+require 'model/package'
 require 'sbsm/validator'
+require 'state/drugs/compare'
 
 module ODDB
   module View
@@ -64,6 +66,10 @@ class TestPackage <Minitest::Test
                           :price_public => price_public,
                           :name => 'name',
                           :size => 'size',
+                          :iksnr => 'iksnr',
+                          :ikscd => 'ikscd',
+                          :sl_generic_type => 'sl_generic_type',
+                          :seqnr => 'seqnr',
                           :pointer   => 'pointer',
                           :narcotic? => nil,
                           :ddd_price => 'ddd_price',
@@ -86,7 +92,33 @@ class TestPackage <Minitest::Test
     cache = flexmock('cache', :retrieve_from_index => [retrieve_from_index])
     flexmock(ODBA, :cache => cache)
     context = flexmock('context', :html => 'html')
-    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"\n  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n  <channel>\n    <title>lookup</title>\n    <link>_event_url</link>\n    <description>lookup</description>\n    <language>language</language>\n    <image>\n      <url>resource</url>\n      <title>lookup</title>\n      <link>_event_url</link>\n    </image>\n    <item>\n      <title>lookup: name, size, price_public, +1.0%</title>\n      <link>_event_url</link>\n      <description>html</description>\n      <author>ODDB.org</author>\n      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>\n      <guid isPermaLink=\"true\">_event_url</guid>\n    </item>\n  </channel>\n</rss>"
+    expected = %(<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>lookup</title>
+    <link>_event_url</link>
+    <description>lookup</description>
+    <language>language</language>
+    <image>
+      <url>resource</url>
+      <title>lookup</title>
+      <link>_event_url</link>
+    </image>
+    <item>
+      <title>lookup: name, size, price_public, +1.0%</title>
+      <link>_event_url</link>
+      <description>html</description>
+      <author>ODDB.org</author>
+      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>
+      <guid isPermaLink="true">_event_url</guid>
+      <dc:date>2011-02-03T00:00:00+01:00</dc:date>
+    </item>
+  </channel>
+</rss>)
     assert_equal(expected, @component.to_html(context))
   end
 end

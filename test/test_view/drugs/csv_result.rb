@@ -13,8 +13,8 @@ require 'view/drugs/csv_result'
 class TestCsvResult <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lookandfeel = flexmock('lookandfeel', :lookup => 'lookup')
-    @session     = flexmock('session', :lookandfeel => @lookandfeel)
+    @lookandfeel = flexmock('lookandfeel', :lookup => 'lookup').by_default
+    @session     = flexmock('session', :lookandfeel => @lookandfeel).by_default
     @model       = flexmock('model')
     @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
   end
@@ -44,7 +44,7 @@ class TestCsvResult <Minitest::Test
   def test_casrn
     narcotic = flexmock('narcotic', :casrn => 'casrn')
     package  = flexmock('package', :narcotics => [narcotic])
-    assert_equal('casrn', @result.casrn(package))
+    assert_equal('', @result.casrn(package)) # see commit 86be7fd34fbc29d7c6fc591297487730d9bfdfc0 from 20.01.12 by Masa
   end
   def test_c_type
     package = flexmock('package', :complementary_type => 'anthroposophy')
@@ -155,7 +155,7 @@ class TestCsvResult <Minitest::Test
   end
   def test_limitation_text
     flexmock(@lookandfeel, :language => 'language')
-    text     = flexmock('text', :language => "aaa\nbbb\nccc\n")
+    text     = flexmock('text', :language => "aaa\nbbb\nccc\n", :respond_to? => true)
     sl_entry = flexmock('sl_entry', :limitation_text => text)
     package  = flexmock('package', :sl_entry => sl_entry)
     expected = "aaa|bbb|ccc|"
@@ -252,7 +252,8 @@ class TestCsvResult <Minitest::Test
     flexmock(@lookandfeel, :language => 'language')
     package = flexmock('package',
                    :ikskey           => 'ikskey',
-                   :key1             => 'key1'
+                   :key1             => 'key1',
+                   :key2             => 'key2',
                       )
     atc = flexmock('atc', 
                    :code              => 'code',
@@ -262,8 +263,9 @@ class TestCsvResult <Minitest::Test
     flexmock(@model) do |m|
       m.should_receive(:each).and_yield(atc)
     end
-    expected = "lookup;lookup\n#MGrp;code;description\nkey1;key2"
+    expected = ["lookup;lookup\n","#MGrp;code;description\n","key1;key2\n"]
     flexmock(@result, :key2 => 'key2') 
+    @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
     keys = ['key1', 'key2']
     assert_equal(expected, @result.to_csv(keys))
   end
@@ -317,8 +319,12 @@ class TestCsvResult <Minitest::Test
     flexmock(@model) do |m|
       m.should_receive(:each).and_yield(atc)
     end
-    expected = "lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup\n#MGrp;code;description\n#Medi;barcode;name_base;desciption;most_precise_dose;count language à measure;qty;format_price;format_price;company_name;ikscat;lookup;format_date;casrn;dose;ddd_price"
+    expected = ["lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup\n", 
+                "#MGrp;code;description\n", 
+                "#Medi;barcode;name_base;desciption;most_precise_dose;count language à measure;qty;format_price;format_price;company_name;ikscat;lookup;format_date;\"\";dose;ddd_price\n"
+               ]
     assert_equal(expected, @result.to_html('context'))
+    
   end
   def test_to_csv_file
     flexmock(@lookandfeel, 

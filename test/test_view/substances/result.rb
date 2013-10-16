@@ -61,6 +61,7 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
+                        :event       => 'event',
                         :persistent_user_input => 'persistent_user_input'
                        )
     @model   = flexmock('model')

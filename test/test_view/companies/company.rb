@@ -10,6 +10,14 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/companies/company'
 
+module ODDB
+  module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
+  end
+end
+
 class TestUnknownCompanyInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
@@ -195,7 +203,7 @@ class TestRootPharmaCompanyComposite <Minitest::Test
       m.should_receive(:pointer)
       m.should_receive(:inactive_registrations)
       m.should_receive(:inactive_packages)
-      m.should_receive(:business_area)
+      m.should_receive(:business_area).by_default
     end
     @composite = ODDB::View::Companies::RootPharmaCompanyComposite.new(@model, @session)
   end
@@ -264,10 +272,11 @@ class TestRootCompany <Minitest::Test
       s.should_receive(:error?)
       s.should_receive(:info?)
       s.should_receive(:event)
+      s.should_receive(:flavor)
       s.should_receive(:zone)
     end
     @model = flexmock('model') do |m|
-      m.should_receive(:business_area)
+      m.should_receive(:business_area).by_default
       m.should_receive(:address)
       m.should_receive(:logo_filename)
     end
@@ -283,7 +292,9 @@ class TestRootCompany <Minitest::Test
   def test_other_html_headers
     flexmock(@lookandfeel, :resource_global => 'resource_global')
     context = flexmock('context') do |c|
-      c.should_receive(:script).and_return('script')
+      c.should_receive(:script).once.and_return('script')
+      c.should_receive(:script).and_return('')
+      c.should_receive(:style).and_return('')
     end
     assert_equal('script', @company.other_html_headers(context))
   end

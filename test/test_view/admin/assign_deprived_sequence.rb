@@ -30,7 +30,7 @@ class TestAssignDeprivedSequenceForm <Minitest::Test
                         :language    => 'language',
                         :warning?    => nil,
                         :error?      => nil
-                       )
+                       ).by_default
     @pointer  = flexmock('pointer', :to_csv => 'to_csv')
     flexmock(@pointer, :+ => @pointer)
     galenic_form = flexmock('galenic_form', :language => 'language')
@@ -51,7 +51,7 @@ class TestAssignDeprivedSequenceForm <Minitest::Test
                         :compositions => [composition],
                         :atc_class    => atc_class,
                         :has_patinfo? => nil
-                       )
+                       ).by_default
     @model   = flexmock('model', 
                         :empty? => nil,
                         :sequence => @sequence

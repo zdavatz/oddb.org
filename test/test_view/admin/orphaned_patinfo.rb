@@ -48,7 +48,7 @@ class TestOrphanedPatinfoComposite <Minitest::Test
     @session   = flexmock('session', :lookandfeel => @lnf)
     @model     = flexmock('model', 
                           :reason   => 'reason',
-                          :meanings => 'meanings'
+                          :meanings => ['meanings'],
                          )
     @composite = ODDB::View::Admin::OrphanedPatinfoComposite.new(@model, @session)
   end

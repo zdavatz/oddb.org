@@ -31,7 +31,7 @@ class TestVaccinesComposite <Minitest::Test
                           :explain_result_components => {[0,0 ] => component}
                          )
     state      = flexmock('state', 
-                          :pages => 'pages',
+                          :pages => ['pages'],
                           :page  => 'page',
                           :range => 'range',
                           :interval  => 'interval',
