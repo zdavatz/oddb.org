@@ -35,7 +35,8 @@ class TestFeedbacksComposite <Minitest::Test
                           :warning?    => nil,
                           :error?      => nil,
                           :info?       => nil,
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :event       => 'event',
                          )
     current_feedback = flexmock('current_feedback', 
                                 :show_email => 'show_email',
@@ -51,7 +52,7 @@ class TestFeedbacksComposite <Minitest::Test
                           :current_feedback => current_feedback,
                           :feedback_count   => 0,
                           :feedback_list    => [current_feedback]
-                         )
+                         ).by_default
     @composite = ODDB::View::Migel::FeedbacksComposite.new(@model, @session)
   end
   def test_current_feedback

@@ -28,7 +28,7 @@ class TestRegisterDownload <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
-    @user    = flexmock('user', :creditable? => nil)
+    @user    = flexmock('user', :creditable? => nil).by_default
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :user_input  => nil,

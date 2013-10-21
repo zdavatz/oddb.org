@@ -35,7 +35,8 @@ class TestFeedbacksComposite <Minitest::Test
                           :warning?    => nil,
                           :error?      => nil,
                           :info?       => nil,
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :event       => 'event',
                          )
     current_feedback = flexmock('current_feedback', 
                                 :show_email => 'show_email',

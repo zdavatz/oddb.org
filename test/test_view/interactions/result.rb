@@ -26,6 +26,8 @@ class TestResultForm <Minitest::Test
                         :base_url   => 'base_url'
                        )
     state    = flexmock('state', :object_count => 1)
+    atc_class = flexmock('atc_classes', :code => 'code')
+    search_oddb = flexmock('search_oddb', :atc_classes => [atc_class])
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
@@ -33,13 +35,16 @@ class TestResultForm <Minitest::Test
                         :language    => 'language',
                         :interaction_basket    => [],
                         :interaction_basket_ids => 'interaction_basket_ids',
-                        :persistent_user_input => 'persistent_user_input'
+                        :interaction_basket_atc_codes => ['interaction_basket_atc_codes'],
+                        :search_oddb => search_oddb,
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     sequence = flexmock('sequence', :active_package_count => 0)
     @model   = flexmock('model', 
                         :language  => 'language',
                         :oid       => 'oid',
-                        :sequences => [sequence]
+                        :sequences => [sequence],
                        )
     @form    = ODDB::View::Interactions::ResultForm.new([@model], @session)
   end
@@ -65,7 +70,9 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event => 'event',
+                        :interaction_basket_atc_codes => ['interaction_basket_atc_codes'],
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Interactions::EmptyResultForm.new(@model, @session)

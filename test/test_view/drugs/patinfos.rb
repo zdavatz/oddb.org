@@ -52,7 +52,8 @@ class TestPatinfosComposite <Minitest::Test
                           :enabled?   => nil,
                           :disabled?  => nil,
                           :base_url   => 'base_url',
-                          :explain_result_components => {[0,0] => 'value'}
+                          :explain_result_components => {[0,0] => 'value'},
+                          :navigation => ['navigation'],
                          )
     state      = flexmock('state', 
                           :interval  => 'interval',
@@ -62,7 +63,8 @@ class TestPatinfosComposite <Minitest::Test
                           :lookandfeel   => @lnf,
                           :patinfo_count => 0,
                           :state => state,
-                          :zone  => 'zone'
+                          :zone  => 'zone',
+                          :event => 'event',
                          )
     @model     = flexmock('model', 
                           :generic_type => 'generic_type',

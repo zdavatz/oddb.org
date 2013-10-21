@@ -27,7 +27,7 @@ class TestRootHospital <Minitest::Test
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => {}
-                       )
+                       ).by_default
     address = flexmock('address', 
                        :type=  => nil,
                        :title= => nil,

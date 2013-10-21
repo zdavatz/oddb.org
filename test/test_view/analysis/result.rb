@@ -9,6 +9,8 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/resulttemplate'
 require 'view/analysis/result'
+require 'model/package'
+require 'model/sequence'
 
 module ODDB
   module View
@@ -29,12 +31,14 @@ class TestList <Minitest::Test
                         :language    => 'language'
                        )
     list_title = flexmock('list_title', :language => 'language')
+    limitation_text  = flexmock('limitation_text', :pointer => 'pointer')
     @model   = flexmock('model', 
                         :list_title => list_title,
                         :pointer    => 'pointer',
                         :language   => 'language',
                         :code       => 'code',
-                        :localized_name => 'localized_name'
+                        :localized_name => 'localized_name',
+                        :limitation_text => limitation_text,
                        )
     @list    = ODDB::View::Analysis::List.new([@model], @session)
   end
@@ -68,7 +72,8 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Analysis::EmptyResultForm.new(@model, @session)

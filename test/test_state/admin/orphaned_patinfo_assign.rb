@@ -38,7 +38,7 @@ class TestOrphanedPatinfoAssign <Minitest::Test
   include FlexMock::TestCase
   def setup
     @sequence = flexmock('sequence')
-    @app      = flexmock('app', :search_sequences => [@sequence])
+    @app      = flexmock('app', :search_sequences => [@sequence]).by_default
     @lnf      = flexmock('lookandfeel', :lookup => 'lookup')
     @session  = flexmock('session', 
                           :lookandfeel => @lnf,

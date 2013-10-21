@@ -107,7 +107,7 @@ class TestRootActiveAgentComposite <Minitest::Test
                          )
     parent     = flexmock('parent', :name => 'name')
     active_agent = flexmock('active_agent')
-    package    = flexmock('package', :swissmedic_source => 'swissmedic_source')
+    package    = flexmock('package', :swissmedic_source => {'swissmedic_source' => 'x'})
     sequence   = flexmock('sequence', 
                           :active_agents => [active_agent],
                           :packages      => {'key' => package}

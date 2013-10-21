@@ -29,7 +29,7 @@ class TestAddressSuggestionForm <Minitest::Test
                         :warning?    => nil,
                         :error?      => nil
                        )
-    @model   = flexmock('model')
+    @model   = flexmock('model', :fon => ['fon'], :fax => ['fax'])
     @form    = ODDB::View::Admin::AddressSuggestionForm.new(@model, @session)
   end
   def test_init
@@ -111,7 +111,7 @@ class TestAddressSuggestionComposite <Minitest::Test
                           :error?      => nil,
                           :state       => state
                          )
-    @model     = flexmock('model', :message => 'message')
+    @model     = flexmock('model', :message => 'message', :fon => ['fon'], :fax => ['fax'])
     @composite = ODDB::View::Admin::AddressSuggestionComposite.new(@model, @session)
     assert_kind_of(ODDB::View::Admin::ActiveAddress, @composite.address(@model))
   end

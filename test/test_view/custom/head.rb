@@ -19,7 +19,7 @@ class TestOekkHead <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
-                          :languages  => 'languages',
+                          :languages  => ['languages'],
                           :enabled?   => nil,
                           :attributes => {},
                           :language   => 'language',
@@ -81,7 +81,7 @@ class TestHead <Minitest::Test
     @lnf     = flexmock('lookandfeel', 
                         :lookup   => 'lookup',
                         :enabled? => nil
-                       )
+                       ).by_default
     @session = flexmock('session', :lookandfeel => @lnf)
     @model   = flexmock('model')
     @head    = ODDB::View::Custom::StubHead.new(@model, @session)

@@ -39,7 +39,7 @@ class TestSuggestAddress <Minitest::Test
                         :persistent_user_input => 'persistent_user_input',
                         :set_cookie_input => 'set_cookie_input',
                         :search_doctor => doctor
-                       )
+                       ).by_default
     parent   = flexmock('parent', :fullname => 'fullname')
     @model   = flexmock('model', 
                         :pointer => 'pointer',

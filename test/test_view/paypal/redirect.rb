@@ -32,7 +32,7 @@ class TestRedirect <Minitest::Test
                           :address    => 'address',
                           :city       => 'city',
                           :plz        => 'plz'
-                         )
+                         ).by_default
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :user => @user

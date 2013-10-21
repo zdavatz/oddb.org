@@ -11,8 +11,13 @@ require 'flexmock'
 require 'view/drugs/compare'
 require 'view/drugs/ddd_price'
 require 'htmlgrid/select'
+require 'model/galenicgroup'
+require 'model/analysis/group'
 
 module ODDB
+  class Session
+    DEFAULT_FLAVOR = 'gcc'
+  end
   module View
     class Copyright < HtmlGrid::Composite
       ODDB_VERSION = 'oddb_version'
@@ -153,11 +158,11 @@ class TestDDDPrice <Minitest::Test
                          :attributes => {},
                          :resource   => 'resource',
                          :lookup     => 'lookup',
-                         :zones      => 'zones',
+                         :zones      => ['zones'],
                          :direct_event => 'direct_event',
                          :_event_url => '_event_url',
-                         :zone_navigation => 'zone_navigation',
-                         :navigation => 'navigation',
+                         :zone_navigation => ['zone_navigation'],
+                         :navigation => ['navigation'],
                          :base_url   => 'base_url'
                         )
     user      = flexmock('user', :valid? => nil)
@@ -178,7 +183,10 @@ class TestDDDPrice <Minitest::Test
                          :get_currency_rate => 1.0,
                          :zone        => 'zone',
                          :persistent_user_input => 'persistent_user_input',
-                         :language    => 'language'
+                         :language    => 'language',
+                         :flavor      => 'flavor',
+                         :event       => 'event',
+                         :get_cookie_input => 'get_cookie_input',
                         )
     fact      = flexmock('fact', :factor => 'factor')
     dose      = flexmock('dose', 

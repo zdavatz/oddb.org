@@ -24,6 +24,7 @@ class TestDownloadExportInnerComposite <Minitest::Test
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:_event_url).and_return('_event_url')
       l.should_receive(:attributes).and_return({})
       l.should_receive(:resource_global).and_return('http://ywesee.com')
       l.should_receive(:format_price).and_return('format_price')
@@ -45,6 +46,7 @@ class TestDownloadExportComposite <Minitest::Test
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:_event_url).and_return('_event_url')
       l.should_receive(:attributes).and_return({})
       l.should_receive(:resource_global).and_return('http://ywesee.com')
       l.should_receive(:language)

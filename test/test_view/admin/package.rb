@@ -9,8 +9,11 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'htmlgrid/select'
-require 'view/admin/package'
 require 'htmlgrid/textarea'
+require 'htmlgrid/span'
+require 'htmlgrid/labeltext'
+require 'view/additional_information'
+require 'view/admin/package'
 
 class TestCompositionSelect <Minitest::Test
   include FlexMock::TestCase
@@ -94,10 +97,20 @@ class TestPackageForm <Minitest::Test
                         :generic_group_factor => 2.5,
                         :ikskey => 'ikskey'
                       )
+    company = flexmock('company', :invoiceable? => 'invoiceable?')
     @model   = flexmock('model', 
                         :out_of_trade => 'out_of_trade',
                         :generic_group_factor => 1,
                         :sl_entry => sl_entry,
+                        :package_patinfo? => false,
+                        :deductible => 'deductible',
+                        :company => company,
+                        :seqnr => 'seqnr',
+                        :ikscd => 'ikscd',
+                        :iksnr => 'iksnr',
+                        :ikscat => 'ikscat',
+                        :lppv => 'lppv',
+                        :sl_generic_type => 'sl_generic_type',
                         :generic_group_comparables => [package]
                        )
     @form = ODDB::View::Admin::PackageForm.new(@model, @session)
@@ -144,7 +157,7 @@ class TestPackageComposite <Minitest::Test
     assert_equal(expected, @composite.package_name(@model, @session))
   end
   def test_source
-    flexmock(@model, :swissmedic_source => 'swissmedic_source')
+    flexmock(@model, :swissmedic_source => { 'swissmedic_source' => 'x'})
     assert_kind_of(HtmlGrid::Value, @composite.source(@model, @session))
   end
 end
@@ -182,6 +195,7 @@ class TestRootPackageComposite <Minitest::Test
                         :measure => 'measure',
                         :commercial_form => 'commercial_form'
                        )
+    company = flexmock('company', :invoiceable? => 'invoiceable?')
     @model   = flexmock('model',
                         :parent       => parent,
                         :size         => 'size',
@@ -191,10 +205,19 @@ class TestRootPackageComposite <Minitest::Test
                         :pointer      => 'pointer',
                         :generic_group_factor => 1,
                         :generic_group_comparables => [package],
-                        :swissmedic_source => 'swissmedic_source',
+                        :swissmedic_source => { 'swissmedic_source' => 'x'},
                         :iksnr        => 'iksnr',
                         :seqnr        => 'seqnr',
-                        :ikscd        => 'ikscd'
+                        :ikscd        => 'ikscd',
+                        :package_patinfo? => false,
+                        :deductible => 'deductible',
+                        :company => company,
+                        :seqnr => 'seqnr',
+                        :ikscd => 'ikscd',
+                        :iksnr => 'iksnr',
+                        :ikscat => 'ikscat',
+                        :lppv => 'lppv',
+                        :sl_generic_type => 'sl_generic_type',
                        )
     flexmock(state, :model => @model)
     @composite = ODDB::View::Admin::RootPackageComposite.new(@model, @session)

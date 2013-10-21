@@ -28,16 +28,16 @@ class TestDDDPrice <Minitest::Test
     @session = flexmock('session', 
                         :app => @app,
                         :lookandfeel => @lnf,
-                        :user_input  => pointer
-                       )
+                        :user_input  => {'x' => pointer },
+                       ).by_default
     @state   = ODDB::State::Drugs::DDDPrice.new(@session, @model)
   end
   def test_init
-    assert_equal(@model, @state.init)
+    assert_equal(ODDB::View::Drugs::EmptyResult, @state.init)
   end
   def test_init__nil
-    flexmock(@session, :user_input => nil)
-    assert_nil(@state.init)
+    flexmock(@session, :user_input => {})
+    assert_equal(ODDB::View::Drugs::EmptyResult, @state.init)
   end
 end
 

@@ -52,7 +52,10 @@ class TestEmptyResultComposite <Minitest::Test
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :zone        => 'zone',
-                          :persistent_user_input => 'persistent_user_input'
+                          :persistent_user_input => 'persistent_user_input',
+                          :flavor      => 'flavor',
+                          :event       => 'event',
+                          :get_cookie_input  => 'get_cookie_input',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::Drugs::EmptyResultComposite.new(@model, @session)
@@ -73,13 +76,16 @@ class TestResultComposite <Minitest::Test
                           :attributes => {},
                           :result_list_components => {[1, 2] => :explain_patinfo},
                           :navigation => [],
-                          :explain_result_components => {[1,2] => :explain_patinfo}
+                          :explain_result_components => {[1,2] => :explain_patinfo},
                          )
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :allowed?    => nil,
                           :persistent_user_input => 'persistent_user_input',
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :flavor      => 'flavor',
+                          :event       => 'event',
+                          :get_cookie_input  => 'get_cookie_input',
                          )
     @model     = flexmock([], 
                           :package_count => 'package_count'

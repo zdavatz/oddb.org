@@ -26,7 +26,7 @@ class TestIndication <Minitest::Test
     @model   = flexmock('model', 
                         :registrations => [registration],
                         :pointer => 'pointer'
-                       )
+                       ).by_default
     @state   = ODDB::State::Admin::Indication.new(@session, @model)
     flexmock(@state, :indications => ['indication'])
   end

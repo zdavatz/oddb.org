@@ -84,9 +84,10 @@ class TestCommercialFormComposite <Minitest::Test
                           :measure => 'measure',
                           :commercial_form => commercial_form
                          )
+    pointer    = flexmock('pointer', :to_csv => 'pointer.to_csv')
     package    = flexmock('package', 
+                          :pointer => pointer,
                           :ikscd   => 'ikscd',
-                          :pointer => 'pointer',
                           :barcode => 'barcode',
                           :descr   => 'descr',
                           :parts   => [part],

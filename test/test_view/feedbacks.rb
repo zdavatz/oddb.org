@@ -163,6 +163,7 @@ class TestFeedbackPager <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
+                          :event_url => 'event_url',
                           :attributes => {}
                          )
     @session   = flexmock('session', :lookandfeel => @lnf)
@@ -181,19 +182,22 @@ class TestFeedbackPager <Minitest::Test
     assert_kind_of(HtmlGrid::Link, @composite.create_link('text_key', 'href'))
   end
   def test_fb_navigation_prev
-    flexmock(@lnf, :event_url => 'event_url')
-    flexmock(@model, 
-             :has_prev?  => true,
-             :prev_index => 'prev_index'
-            )
+    @model     = flexmock('model', 
+                          :has_prev? => true,
+                          :prev_index => 'prev_index',
+                          :index     => 123,
+                          :feedback_count => 'feedback_count',
+                          :has_next? => nil
+                         )
     assert_kind_of(HtmlGrid::Link, @composite.fb_navigation_prev(@model))
   end
   def test_fb_navigation_next
-    flexmock(@lnf, :event_url => 'event_url')
-    flexmock(@model, 
-             :has_next?  => true,
-             :next_index => 'next_index'
-            )
+    @model     = flexmock('model', 
+                          :has_next? => true,
+                          :next_index => 'next_index',
+                          :index     => 123,
+                          :feedback_count => 'feedback_count',
+                         )
     assert_kind_of(HtmlGrid::Link, @composite.fb_navigation_next(@model))
   end
 end

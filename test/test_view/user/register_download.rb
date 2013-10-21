@@ -60,7 +60,7 @@ class TestRegisterDownloadForm <Minitest::Test
     flexmock(@session, 
              :state      => 'state',
              :zone       => 'zone',
-             :user_input => 'user_input'
+             :user_input => ['user_input'],
             )
     flexmock(@lnf, 
              :flavor => 'flavor',
@@ -86,6 +86,7 @@ class TestRegisterDownloadComposite <Minitest::Test
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :zone        => 'zone',
+                          :get_cookie_input => 'get_cookie_input',
                           :persistent_user_input => 'persistent_user_input',
                           :logged_in?  => true,
                           :event       => 'event',

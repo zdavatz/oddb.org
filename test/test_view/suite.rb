@@ -5,13 +5,12 @@
 
 gem 'minitest'
 require 'minitest/autorun'
+require 'find'
 
-$: << File.expand_path(File.dirname(__FILE__))
+$: << here = File.expand_path(File.dirname(__FILE__))
 
-Dir.open(File.dirname(__FILE__)) do |dir|
-  dir.sort.each { |file|
-    if /.*\.rb$/o.match(file)&&file!='suite.rb'
-      require file 
-    end
-  }
-end
+Find.find(here) { |file|
+  if file.match(/\.rb$/) && !file.match(/suite\.rb/)
+    require file
+  end
+}

@@ -20,7 +20,7 @@ class TestMergeIndication <Minitest::Test
     @app     = flexmock('app', 
                         :indication_by_text => 'target',
                         :merge_indications  => 'merge_indications'
-                       )
+                       ).by_default
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
                         :app => @app,

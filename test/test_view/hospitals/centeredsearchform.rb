@@ -23,16 +23,17 @@ class TestCenteredSearchComposite <Minitest::Test
                           :enabled?   => nil,
                           :_event_url => '_event_url',
                           :disabled?  => nil,
-                          :zones      => 'zones',
+                          :zones      => ['zones'],
                           :base_url   => 'base_url',
-                          :zone_navigation => 'zone_navigation',
+                          :zone_navigation => ['zone_navigation'],
                           :direct_event => 'direct_event'
                          )
     @session   = flexmock('session', 
                           :app => @app,
                           :lookandfeel => @lnf,
                           :hospital_count => 0,
-                          :zone => 'zone'
+                          :zone => 'zone',
+                          :event => 'event',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::Hospitals::CenteredSearchComposite.new(@model, @session)

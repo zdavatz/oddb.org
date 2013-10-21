@@ -31,8 +31,8 @@ class TestAssignPatinfoForm <Minitest::Test
                         :state       => state,
                         :language    => 'language',
                         :warning?    => nil,
-                        :error?      => nil
-                       )
+                        :error?      => nil,
+                       ).by_default
     galenic_form = flexmock('galenic_form', :language => 'language')
     substance    = flexmock('substance', :language => 'language')
     active_agent = flexmock('active_agent', 
@@ -43,20 +43,22 @@ class TestAssignPatinfoForm <Minitest::Test
                             :galenic_form  => galenic_form,
                             :active_agents => [active_agent]
                            )
-    atc_class    = flexmock('atc_class', :code => 'code')   
+    atc_class    = flexmock('atc_class', :code => 'code') 
+    pointer  = flexmock('pointer', :to_csv => 'to_csv')
     sequence = flexmock('sequence', 
                         :pdf_patinfo  => 'pdf_patinfo',
-                        :pointer      => 'pointer',
+                        :pointer      => pointer,
                         :seqnr        => 'seqnr',
                         :compositions => [composition],
                         :atc_class    => atc_class,
-                        :has_patinfo? => nil
+                        :has_patinfo? => nil,
+                        :iksnr        => 'iksnr',
                        )
     @model   = flexmock('model', 
                         :empty?   => nil,
                         :sequence => sequence,
                         :pointer  => 'pointer'
-                       )
+                       ).by_default
     flexmock(@model).should_receive(:each_with_index).and_yield(sequence, 0)
     @form    = ODDB::View::Admin::AssignPatinfoForm.new(@model, @session)
   end
@@ -100,7 +102,8 @@ class TestAssignPatinfoComposite <Minitest::Test
                           :state       => state,
                           :language    => 'language',
                           :warning?    => nil,
-                          :error?      => nil
+                          :error?      => nil,
+                          :event        => 'event',
                          )
     galenic_form = flexmock('galenic_form', :language => 'language')
     substance    = flexmock('substance', :language => 'language')
@@ -113,13 +116,15 @@ class TestAssignPatinfoComposite <Minitest::Test
                             :active_agents => [active_agent]
                            )
     atc_class  = flexmock('atc_class', :code => 'code')
+    pointer  = flexmock('pointer', :to_csv => 'to_csv')
     sequence   = flexmock('sequence', 
                           :pdf_patinfo  => 'pdf_patinfo',
-                          :pointer      => 'pointer',
+                          :pointer      => pointer,
                           :seqnr        => 'seqnr',
                           :compositions => [composition],
                           :atc_class    => atc_class,
-                          :has_patinfo? => nil
+                          :has_patinfo? => nil,
+                          :iksnr        => 'iksnr',
                          )
     @model     = flexmock('model', 
                           :name_base => 'name_base',

@@ -12,6 +12,9 @@ require 'view/admin/wait_for_fachinfo'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     module Admin
 
 class TestStatusBar <Minitest::Test
@@ -48,7 +51,8 @@ class TestWaitForFachinfo <Minitest::Test
                         :lookandfeel => @lnf,
                         :user    => user,
                         :sponsor => sponsor,
-                        :state   => state
+                        :state   => state,
+                        :flavor  => 'flavor',
                        )
     @model   = flexmock('model')
     @view    = ODDB::View::Admin::WaitForFachinfo.new(@model, @session)

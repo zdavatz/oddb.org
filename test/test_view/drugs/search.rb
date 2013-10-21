@@ -12,6 +12,9 @@ require 'view/drugs/search'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     Copyright::ODDB_VERSION = 'version'
     module Drugs
 
@@ -26,11 +29,12 @@ class TestSearch <Minitest::Test
                         :resource   => 'resource',
                         :disabled?  => nil,
                         :_event_url => '_event_url',
-                        :zones      => 'zones',
+                        :zones      => ['zones'],
                         :base_url   => 'base_url',
-                        :navigation => 'navigation',
-                        :zone_navigation => 'zone_navigation',
-                        :direct_event    => 'direct_event'
+                        :navigation => ['navigation'],
+                        :zone_navigation => ['zone_navigation'],
+                        :direct_event    => 'direct_event',
+                        :resource_global => 'resource_global',
                        )
     user     = flexmock('user', :valid? => nil)
     @session = flexmock('session', 
@@ -40,13 +44,18 @@ class TestSearch <Minitest::Test
                         :zone    => 'zone',
                         :lookandfeel => @lnf,
                         :valid_values => ['channel'],
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :flavor       => 'flavor',
+                        :search_form  => 'search_form',
+                        :get_cookie_input => 'get_cookie_input',
+                        :event            => 'event',
                        )
     @model   = flexmock('model')
     @view    = ODDB::View::Drugs::Search.new(@model, @session)
   end
   def test_other_html_headers
-    assert_equal('', @view.other_html_headers('context'))
+    context = flexmock('context', :style  => '', :script =>  '')
+    assert_equal('', @view.other_html_headers(context))
   end
   def test_other_html_headers__enabled
     flexmock(@lnf, 
@@ -58,7 +67,7 @@ class TestSearch <Minitest::Test
                        :style  => 'style',
                        :link   => 'link'
                       )
-    expected = 'scriptscriptscriptscriptstylescriptlink'
+    expected = 'scriptscriptscriptstylestyle'
     assert_equal(expected, @view.other_html_headers(context))
   end
 end

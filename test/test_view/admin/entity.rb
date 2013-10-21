@@ -82,7 +82,7 @@ class TestYusGroups <Minitest::Test
     @model     = flexmock('model', 
                            :name         => 'name',
                            :affiliations => []
-                          )
+                          ).by_default
     @container = flexmock('container', :model => @model)
     @list      = ODDB::View::Admin::YusGroups.new(@model, @session, @container)
   end
@@ -126,7 +126,7 @@ class TestEntityForm <Minitest::Test
                          :valid_values => ['value'],
                          :warning?     => nil,
                          :error?       => nil
-                        )
+                        ).by_default
     @model    = flexmock('model', :name => 'name')
     @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
   end

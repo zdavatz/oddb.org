@@ -180,6 +180,6 @@ class TestDose <Minitest::Test
     wanted = @dose.want 'cl'
     assert_instance_of ODDB::Dose, wanted
     assert_equal 'cl', wanted.unit
-    assert_equal 0.17, wanted.qty
+    assert_in_delta(0.17, wanted.qty, 0.01)
   end
 end

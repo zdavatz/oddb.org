@@ -10,6 +10,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'view/companies/companylist'
 require 'flexmock'
+require 'model/company'
 
 module ODDB
 	module View
@@ -94,7 +95,8 @@ class TestEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',                      
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Companies::EmptyResultForm.new(@model, @session)
@@ -115,7 +117,8 @@ class TestRootEmptyResultForm <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :event       => 'event',
                        )
     @model   = flexmock('model')
     @form    = ODDB::View::Companies::RootEmptyResultForm.new(@model, @session)

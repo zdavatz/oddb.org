@@ -8,10 +8,13 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'view/user/plugin'
-
+require 'view/logo'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     Copyright::ODDB_VERSION = 'oddb_version'
     module User
 
@@ -57,11 +60,11 @@ class TestPlugin <Minitest::Test
                           :language   => 'language',
                           :enabled?   => nil,
                           :resource   => 'resource',
-                          :zones      => 'zones',
+                          :zones      => ['zones'],
                           :disabled?  => nil,
                           :_event_url => '_event_url',
-                          :navigation => 'navigation',
-                          :zone_navigation => 'zone_navigation',
+                          :navigation => ['navigation'],
+                          :zone_navigation => ['zone_navigation'],
                           :resource_global => 'resource_global',
                           :direct_event    => 'direct_event'
                          )
@@ -70,9 +73,11 @@ class TestPlugin <Minitest::Test
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
                           :user        => user,
-                          :sponsor     => sponsor
+                          :sponsor     => sponsor,
+                          :flavor      => 'flavor',
                          )
     @model     = flexmock('model')
+#    skip("Leads to ODDB::View::PopupLogo::Session ODDB::View::PopupLogo::Session")
     @plugin = ODDB::View::User::Plugin.new(@model, @session)
   end
   def test_html_head

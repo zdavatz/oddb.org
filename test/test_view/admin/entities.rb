@@ -9,9 +9,16 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'view/admin/entities'
+require 'model/company'
+require 'model/galenicgroup'
+require 'model/doctor'
+require 'model/analysis/group'
 
 module ODDB
   module View
+    class Session
+      DEFAULT_FLAVOR = 'gcc'
+    end
     Copyright::ODDB_VERSION = 'version'
     module Admin
 
@@ -23,14 +30,14 @@ class TestEntities <Minitest::Test
                         :enabled?   => nil,
                         :attributes => {},
                         :resource   => 'resource',
-                        :zones      => 'zones',
+                        :zones      => ['zones'],
                         :disabled?  => nil,
                         :direct_event => 'direct_event',
                         :_event_url   => '_event_url',
                         :event_url    => 'event_url',
                         :base_url     => 'base_url',
-                        :navigation   => 'navigation',
-                        :zone_navigation => 'zone_navigation'
+                        :navigation   => ['navigation'],
+                        :zone_navigation => ['zone_navigation'],
                        )
     user     = flexmock('user', :valid? => nil)
     sponsor  = flexmock('sponsor', :valid? => nil)
@@ -51,6 +58,7 @@ class TestEntities <Minitest::Test
                         :user     => user,
                         :sponsor  => sponsor,
                         :state    => state,
+                        :flavor   => 'flavor',
                         :allowed? => nil,
                         :event    => 'event',
                         :zone     => 'zone'

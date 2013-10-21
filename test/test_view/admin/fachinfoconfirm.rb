@@ -66,9 +66,9 @@ class TestFachinfoConfirmForm <Minitest::Test
 		@form.compose_footer([0,0])
 		html = @form.to_html(CGI.new)
 		expected = [
-			'<FORM ACCEPT-CHARSET="ISO-8859-1" NAME="stdform" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
-			'<INPUT name="back" onClick="document.location.href=\'back\';" type="button" value="lookup">',
-			'<INPUT name="update" type="submit" value="lookup">',
+			'<FORM NAME="stdform" METHOD="POST" ACCEPT-CHARSET="UTF-8" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
+			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=\'back\';">',
+			'<INPUT value="lookup" type="submit" name="update">',
 		]
 		expected.each { |line| 
 			assert(html.index(line), "missing: #{line}\nin:\n#{html}")
@@ -81,12 +81,12 @@ class TestFachinfoConfirmForm <Minitest::Test
 		@form.compose_footer([0,0])
 		html = @form.to_html(CGI.new)
 		expected = [
-			'<FORM ACCEPT-CHARSET="ISO-8859-1" NAME="stdform" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
-			'<INPUT name="back" onClick="document.location.href=\'back\';" type="button" value="lookup">',
+			'<FORM NAME="stdform" METHOD="POST" ACCEPT-CHARSET="UTF-8" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
+			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=\'back\';">',
 		]
 		expected.each { |line| 
 			assert(html.index(line), "missing: #{line}\nin:\n#{html}")
-		}
+		}    
 		line = '<INPUT name="update" type="submit" value="lookup">'
 		assert_nil(html.index(line), "found: #{line}\nin:\n#{html}\n...but it should not be there!")
 	end
