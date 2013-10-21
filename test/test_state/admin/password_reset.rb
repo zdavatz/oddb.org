@@ -22,7 +22,7 @@ class TestPasswordReset <Minitest::Test
                         :user_input  => {:set_pass_1 => 'set_pass', :set_pass_2 => 'set_pass'},
                         :yus_reset_password => 'yus_reset_password',
                         :valid_input => {}
-                       )
+                       ).by_default
     @model   = flexmock('model', 
                         :email  => 'email',
                         :token  => 'token',

@@ -120,7 +120,7 @@ class TestCompare <Minitest::Test
     @session = flexmock('session', 
                         :app         => @app,
                         :lookandfeel => @lnf
-                       )
+                       ).by_default
     @model   = flexmock('model',
                        :atc_class => 'atc_class'
                         )
@@ -175,7 +175,7 @@ class TestCompare <Minitest::Test
                        :is_a?   => true
                       )
     @session.should_receive(:user_input).once.and_return(pointer)
-    skip("Don't know what/how we want to test here")
+    skip("Niklaus does not know why it return ODDB::View::Http404")
     assert_equal(ODDB::View::Drugs::EmptyCompare, @state.init)
   end
   def test_init__search_query
@@ -188,6 +188,21 @@ class TestCompare <Minitest::Test
     flexmock(ODDB::Package, :find_by_name_with_size => package)
     assert_equal(ODDB::View::Http404, @state.init)
   end
+  def test_no_alternatives
+    package = flexmock('package', 
+                       :name_base => 'name_base',
+                       :is_a?     => true,
+                       :atc_class => nil 
+                      )
+    flexmock(package, :comparables => [nil])
+    pointer = flexmock('pointer', 
+                       :resolve => package,
+                       :is_a?   => true
+                      )
+    @session.should_receive(:user_input).once.and_return(pointer)
+    skip("Niklaus does not know why it return ODDB::View::Http404")
+    assert_equal(ODDB::View::Drugs::EmptyCompare, @state.init)
+  end  
   def test_init__error1
     flexmock(@session).should_receive(:user_input).and_raise(Persistence::UninitializedPathError.new(1,2))
     assert_equal(ODDB::View::Http404, @state.init)

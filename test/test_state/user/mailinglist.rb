@@ -19,7 +19,7 @@ module ODDB
 class TestMailingList <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @smtp    = flexmock('smtp', :sendmail => 'sendmail')
+    @smtp    = flexmock('smtp', :sendmail => 'sendmail').by_default
     flexmock(Net::SMTP).should_receive(:start).and_yield(@smtp)
     config   = flexmock('config', 
                         :smtp_server => 'smtp_server',

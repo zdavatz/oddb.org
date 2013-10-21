@@ -30,7 +30,7 @@ end
 class TestSetPass <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app', :update => 'update')
+    @app     = flexmock('app', :update => 'update').by_default
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
                         :app => @app,

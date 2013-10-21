@@ -22,7 +22,7 @@ class TestAlphabetical <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :language => 'language'
-                       )
+                       ).by_default
     @model   = flexmock('model')
     @state   = ODDB::State::Migel::Alphabetical.new(@session, @model)
   end

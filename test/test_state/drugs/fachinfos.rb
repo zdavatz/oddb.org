@@ -24,7 +24,7 @@ class TestFachinfos <Minitest::Test
                         :lookandfeel => @lnf,
                         :language    => 'language',
                         :fachinfos_by_name => [@fachinfo]
-                       )
+                       ).by_default
     @model   = flexmock('model')
     @state   = ODDB::State::Drugs::Fachinfos.new(@session, @model)
   end

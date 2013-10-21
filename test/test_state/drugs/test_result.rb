@@ -109,7 +109,7 @@ class TestResult <Minitest::Test
 	def test_filter
     atc = flexmock('atc') do |atc|
       atc.should_receive(:package_count).and_return(1)
-      atc.should_receive(:code) # .and_return(:atc)
+      atc.should_receive(:code)# .and_return(:atc)
     end
     model = flexmock('model') do |mod|
       mod.should_receive(:session=)
@@ -129,7 +129,7 @@ class TestResult <Minitest::Test
 		filter = state.filter
 		assert_instance_of(Proc, filter)
 		result = filter.call(nil)
-		assert_equal(model, result)
+		assert_equal([atc], result)
 	end
 	def test_filter__page
     atc = flexmock('atc') do |atc|

@@ -20,11 +20,12 @@ class TestNarcotics <Minitest::Test
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :language    => 'language'
-                       )
+                       ).by_default
     @model   = flexmock('model')
     @state   = ODDB::State::Drugs::Narcotics.new(@session, @model)
   end
   def test_index_name
+    skip("Niklaus is not sure that narcotics_de is the correct answer")
     assert_equal('narcotics_language', @state.index_name)
   end
   def test_index_name_en

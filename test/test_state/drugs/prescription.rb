@@ -46,6 +46,7 @@ class TestPrescription <Minitest::Test
     # clear input
     @session.user_input = {}
     @session.persistent_user_input = {}
+    super
   end
   def test_init
     fake_drug = {'1234567890123' => 'Fake Package'}

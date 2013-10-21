@@ -28,7 +28,7 @@ class TestDDDPrice <Minitest::Test
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => pointer
-                       )
+                       ).by_default
     @state   = ODDB::State::Ajax::DDDPrice.new(@session, @model)
   end
   def test_init

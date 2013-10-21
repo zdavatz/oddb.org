@@ -25,9 +25,9 @@ class TestSelectSubstance <Minitest::Test
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => pointer
-                       )
+                       ).by_default
     source   = flexmock('source', :pointer => 'pointer')
-    @model   = flexmock('model', :source => source)
+    @model   = flexmock('model', :source => source).by_default
     @state   = ODDB::State::Substances::SelectSubstance.new(@session, @model)
   end
   def test_merge
