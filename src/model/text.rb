@@ -373,6 +373,7 @@ module ODDB
         result = ''
         left, right = nil
         hyph = opts[:hyphenator]
+        return str if /\d+%$/.match(str)
         str.split("\n").each do |line|
           res = ''
           words = line.split(' ')

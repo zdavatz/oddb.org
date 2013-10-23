@@ -881,7 +881,6 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
      end
      
     end
-    
     CourierStyle = '<PRE style="font-family: Courier New, monospace; font-size: 12px;">'
     
     class TestFachinfoHpricot_49456_Clexane_De <Minitest::Test
@@ -999,5 +998,148 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
      end
      
     end
+
+    class TestFachinfoHpricot_57435_Baraclude_De <Minitest::Test
+      
+      Styles_Baraclude = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:12pt;font-weight:bold;color:#000000;}.s3{font-family:Arial;font-size:9.6pt;}.s4{line-height:150%;}.s5{font-size:11pt;line-height:150%;margin-right:-0.1pt;}.s6{font-family:Arial;font-size:11pt;font-weight:bold;color:#000000;}.s7{line-height:150%;margin-right:-0.1pt;}.s8{font-family:Arial;font-size:11pt;font-style:italic;color:#000000;}.s9{font-family:Arial;font-size:11pt;color:#000000;}.s10{font-size:11pt;line-height:150%;}.s11{font-family:Arial;font-size:11pt;text-decoration:underline;color:#000000;}.s12{font-size:8pt;}.s13{font-family:Arial;font-size:11pt;font-weight:bold;}.s14{font-family:Arial;font-size:11pt;}.s15{font-family:Symbol;}.s16{text-indent:-14.2pt;line-height:150%;margin-right:-0.1pt;margin-left:14.2pt;}.s17{text-indent:-21.25pt;line-height:150%;margin-right:-0.1pt;margin-left:35.45pt;}.s18{font-family:Arial;font-size:11pt;font-style:italic;}.s19{text-indent:0pt;line-height:150%;margin-right:-0.1pt;margin-left:0pt;}.s20{font-family:Arial;line-height:150%;margin-right:-0.1pt;}.s21{font-family:Arial;line-height:150%;}.s22{font-family:Arial;font-size:8pt;}.s23{height:19.25pt;}.s24{font-family:Arial;font-size:9pt;font-weight:bold;color:#000000;}.s25{text-align:center;}.s26{margin-left:5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s27{text-align:center;margin-right:-0.1pt;}.s28{height:61.25pt;}.s29{font-family:Arial;font-size:9pt;}.s30{height:21pt;}.s31{font-family:Arial;font-size:9pt;color:#000000;}.s32{height:34.8pt;}.s33{height:35.3pt;}.s34{height:35.15pt;}.s35{height:34.6pt;}.s36{margin-left:0.0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s37{text-indent:-14.2pt;margin-left:14.2pt;}.s38{font-family:Arial;font-size:8.8pt;color:#000000;}.s39{font-family:Arial;font-size:11pt;text-decoration:underline;}.s40{text-indent:-7.05pt;line-height:150%;margin-right:-0.1pt;margin-left:22.95pt;}.s41{margin-left:5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}.s42{line-height:150%;margin-right:-0.1pt;margin-left:8.75pt;}.s43{line-height:150%;margin-left:8.75pt;}.s44{line-height:150%;margin-right:-12.5pt;margin-left:8.75pt;}.s45{font-family:Arial;line-height:150%;margin-right:-0.1pt;margin-left:8.75pt;}.s46{line-height:150%;margin-right:-0.1pt;margin-left:12.6pt;}.s47{line-height:150%;margin-right:-0.1pt;margin-left:1.55pt;}.s48{font-family:Arial;font-size:8.8pt;}.s49{font-family:Arial;font-size:10pt;}.s50{line-height:150%;margin-right:-0.1pt;margin-left:18pt;}.s51{line-height:150%;margin-right:-0.1pt;margin-left:15.9pt;}.s52{text-indent:-7.1pt;line-height:150%;margin-right:-0.1pt;margin-left:15.85pt;}.s53{font-family:Arial;line-height:150%;margin-left:12.45pt;}.s54{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}.s55{line-height:150%;margin-right:-0.1pt;margin-left:-5.4pt;}.s56{margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s57{font-family:Arial;}.s58{height:19.8pt;}.s59{font-family:Arial;font-size:9pt;font-weight:bold;}.s60{margin-left:12.45pt;}.s61{margin-left:12.5pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s62{height:14.4pt;}.s63{font-family:Arial;font-size:9pt;line-height:150%;margin-right:-0.1pt;margin-left:70.9pt;}.s64{font-family:Arial;font-size:7.2pt;}.s65{text-align:center;margin-left:11.05pt;}.s66{height:13.2pt;}.s67{margin-left:11.05pt;}.s68{height:17.7pt;}.s69{margin-left:12.6pt;}.s70{height:17.85pt;}.s71{height:17.35pt;}.s72{height:18.35pt;}.s73{margin-left:7.1pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s74{font-family:Arial;font-size:9pt;color:#0000ff;}.s75{margin-left:7.1pt;}.s76{font-family:Arial;font-size:11pt;color:#ff0000;}.s77{line-height:150%;text-align:left;margin-right:-0.1pt;margin-left:0pt;}.s78{font-family:Arial;font-size:11pt;line-height:150%;text-align:left;margin-right:-0.1pt;margin-left:0pt;}.s79{line-height:150%;text-align:left;margin-left:0pt;}.s80{height:21.75pt;}.s81{font-family:Arial;font-size:9pt;margin-right:-0.1pt;}.s82{margin-left:12.5pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:1.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:1.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:1.5pt;border-left-color:#000000;border-left-style:solid;}.s83{height:16.3pt;}.s84{height:30.15pt;}.s85{margin-left:12.5pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:1.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:1.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:1.5pt;border-left-color:#000000;border-left-style:solid;}.s86{height:20.2pt;}.s87{height:34.5pt;}.s88{margin-left:12.5pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:1pt;border-top-color:#000000;border-top-style:solid;border-right-width:1.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:1.5pt;border-left-color:#000000;border-left-style:solid;}.s89{height:34.35pt;}.s90{height:20.15pt;}.s91{margin-right:-0.1pt;}.s92{height:33.25pt;}.s93{height:34.25pt;}.s94{height:20.55pt;}.s95{height:20.85pt;}.s96{height:17.55pt;}.s97{margin-left:12.5pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:1pt;border-top-color:#000000;border-top-style:solid;border-right-width:1.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:1.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:1.5pt;border-left-color:#000000;border-left-style:solid;}.s98{font-size:9pt;}.s99{text-indent:-14.2pt;margin-left:21.3pt;}.s100{text-indent:-7.1pt;margin-left:14.2pt;}.s101{height:17pt;}.s102{height:34.55pt;}.s103{height:19.45pt;}.s104{height:19.75pt;}.s105{height:20.5pt;}.s106{height:20.65pt;}.s107{height:18.85pt;}.s108{height:34.1pt;}.s109{height:20.4pt;}.s110{height:20.05pt;}.s111{height:19.55pt;}.s112{font-family:Arial;font-size:11pt;color:#0000ff;}.s113{height:46.5pt;}.s114{font-size:9pt;margin-right:-0.1pt;}.s115{height:20.35pt;}.s116{height:49.3pt;}.s117{margin-left:0pt;}.s118{height:35.1pt;}.s119{height:34.95pt;}.s120{height:49.1pt;}.s121{height:85.55pt;}.s122{font-family:Arial;font-style:normal;font-weight:normal;text-align:left;margin-left:-14.15pt;width:-14.15pt;position:absolute;}.s123{margin-left:15.85pt;}.s124{margin-right:-0.1pt;margin-left:14.2pt;}.s125{text-indent:-7.1pt;margin-right:-0.1pt;margin-left:21.3pt;}.s126{text-indent:-7.1pt;margin-right:-7.2pt;margin-left:21.3pt;}.s127{font-family:Arial;line-height:150%;text-align:left;margin-right:-0.1pt;margin-left:0pt;}.s128{font-family:Arial;font-size:10pt;line-height:150%;margin-right:-0.1pt;}.s129{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:none;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:none;border-left-width:0.5pt;border-left-color:#000000;border-left-style:none;}.s130{line-height:150%;text-align:center;}.s131{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:none;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:none;}.s132{height:75.85pt;}.s133{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:none;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:none;}.s134{text-align:left;margin-right:-0.1pt;margin-left:1.7pt;}.s135{margin-right:-0.1pt;margin-left:1.7pt;}.s136{font-size:9pt;margin-right:-0.1pt;margin-left:1.7pt;}.s137{margin-left:0pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s138{text-align:left;}.s139{height:34.7pt;}.s140{height:30.5pt;}.s141{font-family:Arial;font-size:11pt;line-height:150%;text-align:left;margin-left:0pt;}.s142{font-family:Arial;font-size:8pt;line-height:150%;text-align:left;margin-right:-0.1pt;margin-left:0pt;}'
+      MedicInfoName = 'Baraclude®'
+      HtmlName      = 'data/html/de/fi_57435_Baraclude.html'
+      
+      def setup
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))    
+        @@writer = FachinfoHpricot.new
+        
+        open(@@path) { |fh| 
+          @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Baraclude)
+        }
+        yaml_name = File.basename(HtmlName.sub('.html','.yaml'))
+        File.open(yaml_name, 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+      end
+      
+      def test_fachinfo2
+        assert_instance_of(FachinfoDocument2001, @@fachinfo)
+      end
+      
+      def test_name2
+        assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Baraclude&reg;
+      end
+      
+      def test_unwanted_effects
+        assert_equal("Unerwünschte Wirkungen", @@fachinfo.unwanted_effects.heading)
+        expected = %(Unerwünschte Wirkungen
+Die Beurteilung der unerwünschten Wirkungen von Entecavir beruht auf vier klinischen Studien, in denen 1720 Patienten mit chronischer Hepatitis-B-Infektion im Doppelblindverfahren bis zu 107 Wochen lang mit Entecavir 0,5 mg täglich (n = 679), Entecavir 1 mg täglich (n = 183) oder Lamivudin (n = 858) behandelt wurden. In diesen Studien waren die Sicherheitsprofile von Entecavir und Lamivudin vergleichbar.
+Häufigste unerwünschte Wirkungen beliebigen Schweregrades mit zumindest möglicher Verbindung zur Entecavir-Therapie waren Kopfschmerzen (9%), Müdigkeit (6%), Schwindel (4%) und Übelkeit (3%).
+Erfahrungen bei nukleosidnaiven Patienten (HBeAg-positiv und -negativ)
+Die Patienten erhielten in einer doppelblinden Anordnung Entecavir 0,5 mg täglich (n = 679) oder Lamivudin 100 mg täglich (n = 668) während einer medianen Dauer von 53 Wochen.
+Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
+----------------------------------------------------------------------------------------------
+Psychiatrische Störungen:                    häufig: Schlaflosigkeit                            
+----------------------------------------------------------------------------------------------
+Störungen des Nervensystems:                 häufig: Kopfschmerzen, Schwindel, Schläfrigkeit    
+----------------------------------------------------------------------------------------------
+Gastrointestinale Störungen:                 häufig: Übelkeit, Durchfall, Dyspepsie, Erbrechen  
+----------------------------------------------------------------------------------------------
+Allgemeine Störungen und lokale Reaktionen:  häufig: Müdigkeit                                  
+----------------------------------------------------------------------------------------------
+Folgende Abweichungen von Laborwerten wurden bei nukleosidnaiven Patienten unter Entecavir-Therapie beobachtet:
+-----------------------------------------------------------------------------------
+Abweichung des Laborwerts                                  Prozentzahl an Patienten  
+-----------------------------------------------------------------------------------
+ALT >2x Initialwert und >10x ULN                           2%                        
+-----------------------------------------------------------------------------------
+ALT >3x Initialwert                                        5%                        
+-----------------------------------------------------------------------------------
+ALT >2x Initialwert und TBILI >2x Initialwert und >2x ULN  <1%                       
+-----------------------------------------------------------------------------------
+Albumin <2,5 g/dl                                          <1%                       
+-----------------------------------------------------------------------------------
+Amylase >3x Initialwert                                    2%                        
+-----------------------------------------------------------------------------------
+Lipase >3x Initialwert                                     11%                       
+-----------------------------------------------------------------------------------
+Plättchenzahl <50'000/mm3                                  <1%                       
+-----------------------------------------------------------------------------------
+TBILI = Gesamtbilirubin              ULN = Obergrenze der Normwerte
+Behandlungsdauer länger als 48 Wochen: Eine fortgesetzte Behandlung mit Entecavir über eine mediane Dauer von 96 Wochen offenbarte keine neuen Zeichen hinsichtlich der Sicherheit.
+Erfahrungen bei lamiduvinrefraktären Patienten
+Lamivudinrefraktäre Patienten erhielten in einer doppelblinden Anordnung entweder Entecavir 1 mg täglich (n = 183) für eine mediane Dauer von 69 Wochen oder Lamivudin  100 mg täglich (n = 190) für eine mediane Dauer von 52 Wochen.
+Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
+------------------------------------------------------------------------------------------------------------------
+Psychiatrische Störungen:                            häufig: Schlaflosigkeit                                        
+------------------------------------------------------------------------------------------------------------------
+Störungen des Nervensystems:                         sehr häufig: Kopfschmerzen häufig: Schwindel, Schläfrigkeit    
+------------------------------------------------------------------------------------------------------------------
+Gastrointestinale Störungen:                         häufig: Erbrechen, Durchfall, Übelkeit, Dyspepsie              
+------------------------------------------------------------------------------------------------------------------
+Allgemeine Störungen und lokale Reaktionen:          häufig: Müdigkeit                                              
+------------------------------------------------------------------------------------------------------------------
+Folgende Abweichungen von Laborwerten wurden bei lamivudinrefraktären Patienten unter Entecavir-Therapie beobachtet:
+---------------------------------------------
+Abweichung    Prozentzahl an Patienten      
+des                                         
+Laborwerts                                  
+---------------------------------------------
+              ALT >2x Initialwert und >10x  2% 
+              ULN                              
+---------------------------------------------
+              ALT >3x Initialwert           4% 
+---------------------------------------------
+              ALT >2x Initialwert und       <1%
+              TBILI >2x Initialwert und        
+              >2x ULN                          
+---------------------------------------------
+              Amylase >3x Initialwert       2% 
+---------------------------------------------
+              Lipase >3x Initialwert        18%
+---------------------------------------------
+              Plättchenzahl <50'000/mm3     <1%
+---------------------------------------------
+TBILI = Gesamtbilirubin       ULN = Obergrenze der Normwerte
+Behandlungsdauer länger als 48 Wochen: Eine fortgesetzte Behandlung mit Entecavir über eine mediane Dauer von 96 Wochen offenbarte keine neuen Zeichen hinsichtlich der Sicherheit.
+Exazerbationen während der Behandlung
+In Studien mit nukleosidnaiven Patienten traten während der Behandlung bei 2% der mit Entecavir behandelten Patienten, verglichen mit 4% der mit Lamivudin behandelten Patienten, erhöhte ALT-Werte (>10x ULN und >2x Ausgangswert) auf. In Studien mit Lamivudinrefraktären Patienten traten während der Behandlung bei 2% der mit Entecavir behandelten Patienten, verglichen mit 11% der mit Lamivudin behandelten Patienten, erhöhte ALT-Werte (>10x ULN und >2x Ausgangswert) auf.
+Bei mit Baraclude behandelten Patienten traten ALT-Erhöhungen nach einer medianen Dauer von 4 - 5 Wochen auf, gingen im Allgemeinen bei Weiterbehandlung wieder zurück und wurden in einem Grossteil der Fälle mit einer ³2 log10/ml Viruslastreduktion assoziiert, welche einer ALT-Erhöhung vorausging bzw. gleichzeitig mit dieser auftrat. Eine periodische Kontrolle der Leberfunktion während der Behandlung ist empfehlenswert.
+Exazerbationen nach Therapie-Ende
+Akute Hepatitisexazerbationen wurden berichtet bei Patienten nach Beendigung der Anti-HBV-Therapie, unter anderem auch nach Beendigung einer Entecavir-Therapie (siehe Abschnitt «Warnhinweise und Vorsichtsmassnahmen»).
+Die Häufigkeiten von Verschlimmerung der Hepatitis oder eines Aufflammens der ALT (definiert als ALT >10x ULN und 2x Referenzlevel des Patienten) in den klinischen Studien mit Baraclude während der Nachbeobachtungsphase sind in der folgenden Tabelle wiedergegeben:
+------------------------------------------------------------------------
+Exazerbation der Hepatitis   
+in der Nachbehandlungsphase  
+in drei klinischen Studien   
+------------------------------------------------------------------------
+                             Patienten mit einer            
+                             ALT-Erhöhung >10x ULN und >2x  
+                             Referenz1                      
+------------------------------------------------------------------------
+                             Baraclude                      Lamivudin     
+------------------------------------------------------------------------
+Nukleosidnaiv                28/476 (6%)                    38/392 (10%)  
+------------------------------------------------------------------------
+HBeAg-positiv                4/174 (2%)                     9/129 (7%)    
+------------------------------------------------------------------------
+HBeAg-negativ                24/302 (8%)                    29/263 (11%)  
+------------------------------------------------------------------------
+Lamivudinrefraktär           6/52 (12%)                     0/16          
+------------------------------------------------------------------------
+1  Referenz ist das Minimum des Initialwertes oder die letzte Messung am Schluss der Dosierung.
+Erfahrungen bei Patienten mit gleichzeitiger HIV-Infektion
+Bei Patienten mit gleichzeitiger HIV/HBV-Infektion unter einer HAART (Highly Active Anti-Retroviral Therapy) mit Lamivudin konnte bei Patienten, welche Baraclude erhielten, im Vergleich zu den Patienten, welche Placebo erhielten, kein Anstieg der unerwünschten Wirkungen beobachtet werden (siehe «Warnhinweise und Vorsichtsmassnahmen»).
+Geschlecht und Alter
+Sicherheitsprofil von Entecavir: Es wurden keine Unterschiede hinsichtlich Geschlecht (~25% Frauen in den klinischen Studien) oder Alter (~5% der Patienten >65 Jahre) festgestellt.
+Postmarketing
+Zusätzlich zu den in den klinischen Studien beobachteten erwähnten unerwünschten Wirkungen wurde im Postmarketing über folgende unerwünschte Wirkungen berichtet (Inzidenz unbekannt): Rash, anaphylaktoide Reaktionen, Alopezie, erhöhte Transaminasen.
+Ausserdem wurde über Laktatazidose berichtet, oft im Zusammenhang mit einer hepatischen Dekompensation, anderen schweren medizinischen Begleitfaktoren oder in Kombination mit weiteren verabreichten Arzneimitteln. Patienten mit dekompensierter Zirrhose haben möglicherweise ein höheres Risiko für eine Laktatazidose.
+Patienten mit dekompensierter Lebererkrankung
+Das Sicherheitsprofil von Entecavir bei Patienten mit dekompensierter Lebererkrankung wurde in einer randomisierten offenen Vergleichsstudie evaluiert. In dieser Studie (048) erhielten die Patienten eine Behandlung mit Entecavir 1 mg täglich (n = 102) oder Adefovir Dipivoxil 10 mg täglich (n = 89). Bei Patienten unter Entecavir-Therapie wurden als weitere unerwünschte Wirkungen bis zu Woche 48  eine  Abnahme  der  Bicarbonat-Werte im  Blut (2%) sowie Nierenversagen (<1%) beobachtet. Die kumulative Mortalitätsrate während der Studie betrug 23% (23/102), und die Todesursachen waren im Allgemeinen leberassoziiert, wie bei dieser Population zu erwarten war. Die kumulative Rate hepatozellulärer Karzinome während der Studie betrug 12% (12/102). Schwerwiegende unerwünschte Ereignisse waren im Allgemeinen leberassoziiert, mit einer kumulativen Häufigkeit von 69% während der Studie. Patienten mit einem hohen CTP-Score zu Studienbeginn (baseline) hatten ein höheres Risiko für ein schwerwiegendes unerwünschtes Ereignis (siehe Abschnitt «Warnhinweise und Vorsichtsmassnahmen»).
+Veränderte Laborwerte: Bis zu Woche 48 hatten keine der Patienten mit dekompensierter Lebererkrankung unter Entecavir-Therapie eine ALT-Erhöhung sowohl >10x ULN wie auch >2x gegenüber dem Ausgangswert. 1% der Patienten hatte eine ALT-Erhöhung >2x gegenüber dem Ausgangswert, in Kombination mit einer Erhöhung des Gesamtbilirubins  >2x ULN und >2x gegenüber dem Ausgangswert. Albuminwerte <2,5 g/dl wurden bei 30% der Patienten beobachtet, Lipasewerte >3x gegenüber dem Ausgangswert bei 10% und Thrombozyten <50‘000/mm3 bei 20%.)
+        assert_equal(expected, @@fachinfo.unwanted_effects.to_s) 
+      end
+      
+      def test_iksnrs
+        assert_equal(["57435", "57436"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
+        assert_equal("Zulassungsnummer\n57'435, 57’436 (Swissmedic)", @@fachinfo.iksnrs.to_s)
+     end 
+    end    
   end 
 end
