@@ -3,6 +3,9 @@
 # ODDB::SwissmedicPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
+# TODO: ngngng. fix_compositions ould probably be removed, as I did not find any reference
+# TODO: ngngng. fix_sequences ould probably be removed, as I did not find any reference
+# TODO: ngngng. fix_packages ould probably be removed, as I did not find any reference
 
 require 'fileutils'
 require 'mechanize'
@@ -35,6 +38,7 @@ module ODDB
       @skipped_packages = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
+      @empty_compositions = []
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       if(target)
@@ -198,11 +202,11 @@ module ODDB
         }
       end
     end
+    # TODO: ngngng. fix_packages ould probably be removed, as I did not find any reference
     def fix_packages(opts={})
-      opts = {:skip => 3}.update opts
       row = nil
-      tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(opts[:skip]) { |row|
+      handle = SwissmedicDiff.new      
+      handle.each_valid_row(Spreadsheet.open(@latest)) { |row|
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row) if reg
         if seq
@@ -218,11 +222,11 @@ module ODDB
       puts err.message
       puts err.backtrace[0,10]
     end
+    # TODO: ngngng. fix_compositions ould probably be removed, as I did not find any reference
     def fix_compositions(opts={})
-      opts = {:skip => 3}.update opts
       row = nil
-      tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(opts[:skip]) { |row|
+      handle = SwissmedicDiff.new      
+      handle.each_valid_row(Spreadsheet.open(@latest)) { |row|
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row) if reg
         if seq
@@ -240,17 +244,18 @@ module ODDB
     def fix_registrations(opts={})
       row = nil
       tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(3) { |row|
+      tbook.worksheet(0).each(rows_to_skip(tbook)) { |row|
         update_registration(row, opts) if row
       }
     rescue SystemStackError => err
       puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end
+    # TODO: ngngng. fix_sequences ould probably be removed, as I did not find any reference
     def fix_sequences(opts={})
       row = nil
       tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(3) { |row|
+      tbook.worksheet(0).each(rows_to_skip(tbook)) { |row|
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row) if reg
       }
@@ -298,8 +303,8 @@ module ODDB
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
-        workbook.worksheet(0).each(3) do |row|
-          iksnr = row[iksnr_idx]
+        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
+          iksnr = "%05i" % row[iksnr_idx].to_i
           seqnr = row[seqnr_idx]
           export = row[export_flag_idx]
           if export =~ /E/
@@ -323,8 +328,8 @@ module ODDB
       Spreadsheet.open(latest_name) do |workbook|
         iksnr_idx = indices[:iksnr]
         seqnr_idx = indices[:seqnr]
-        workbook.worksheet(0).each(3) do |row|
-          iksnr = row[iksnr_idx]
+        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
+          iksnr = "%05i" % row[iksnr_idx].to_i
           seqnr = row[seqnr_idx]
           @active_registrations_praeparateliste[iksnr] = true
         end
@@ -342,8 +347,8 @@ module ODDB
         iksnr_idx = indices[:iksnr]
         seqnr_idx = indices[:seqnr]
         export_flag_idx = indices[:export_flag]
-        workbook.worksheet(0).each(3) do |row|
-          iksnr = row[iksnr_idx]
+        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
+          iksnr = "%05i" % row[iksnr_idx].to_i
           seqnr = row[seqnr_idx]
           export = row[export_flag_idx]
           if export =~ /E/
@@ -416,6 +421,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Skipped Packages: #{@skipped_packages.length}",
         "Total time to update: #{"%.2f" % @update_time} [m]",
         "Total Sequences without ATC-Class: #{atcless.size}",
+        "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         atcless,
       ]
       unless @skipped_packages.empty? # no expiration date
@@ -429,6 +435,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         lines << "There is no Gültigkeits-datum (column 'J') of the following"
         lines << "Swissmedic Registration (Company, Product, Numbers):"
         lines << "[" + skipped.join(',') + "]"
+      end
+      if @empty_compositions.size > 0
+        lines << ""
+        lines << "Folgende Sequenzen haben keinen Eintrag in der Kolonne 'P':"
+        @empty_compositions.each{ |content| lines << "  " + content if content}
       end
       lines.flatten.join("\n")
     end
@@ -540,12 +551,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         seq.compositions
       elsif(namestr = cell(row, column(:substances)))
         res = []
-        names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| 
-          capitalize(name) }.uniq
-        substances = names.collect { |name|
-          update_substance(name)
-        }
-        composition_text = cell(row, column(:composition)).gsub(/\r\n?/u, "\n")
+        names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
+        substances = names.collect { |name| update_substance(name) }
+        cell_content = cell(row, column(:composition))
+        $stdout.puts("update_compositions: iksnr #{row[0]} seq #{seq} opts #{opts} cell_content #{cell_content}");
+        unless cell_content
+                          @empty_compositions << "iksnr #{cell(row, column(:iksnr))} seq #{seq}"
+                          return []
+                          end
+                        composition_text = cell_content.gsub(/\r\n?/u, "\n")
         numbers = [ "A|I", "B|II", "C|III", "D|IV", "E|V", "F|VI" ]
         current = numbers.shift
         labels = []
