@@ -37,7 +37,7 @@ module ODDB
 		# 'Plugin's subclasses
 		RECIPIENTS = []
 		attr_reader :change_flags, :month
-		def initialize(app)
+		def initialize(app, params=nil)
 			@app = app
 			@change_flags = {}
 		end

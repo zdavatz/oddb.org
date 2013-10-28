@@ -277,10 +277,12 @@ module ODDB
                            :import_company, [companies]
     end
     def update_company_textinfos2 *companies
+      saved_options = @options  
       @options = {:reparse => true}
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo2 '#{companies.join(', ')}'",
                            :import_company2, [companies]
+      @options = saved_options
     end
     def update_teilbarkeit(path)
       update_notify_simple DivisibilityPlugin,
@@ -412,6 +414,7 @@ module ODDB
 			update_immediate(SwissregPlugin, 'Patents', :update_news)
 		end
     def update_textinfos *iksnrs
+      @options = {}
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo '#{iksnrs.join(', ')}'",
                            :import_fulltext, [iksnrs]
