@@ -553,7 +553,7 @@ module ODDB
       @@iksnrs_meta_info
     end
 
-    def create_dummy_package_if_necessary(iksnr, registration = nil)
+    def create_sequence_and_package_if_necessary(iksnr, registration = nil)
       # similar to update_package in src/plugin/swissmedic.rb
       unless registration
         registration = @app.registration(iksnr)
@@ -562,7 +562,9 @@ module ODDB
           return
         end
       end
-      return if registration.packages.size > 0    
+      return if registration.export_flag or registration.inactive? or registration.expiration_date > Date.today
+      return if registration.packages.size > 0 or registration.sequences.size > 0
+      sequence = registration.create_sequence('00')
       sequence = registration.sequence('00')
       info = @@iksnrs_meta_info[iksnr]
       return unless info
@@ -634,7 +636,7 @@ module ODDB
         seq_args.store :atc_class, info.atcCode
       end
       res = @app.update seq_ptr, seq_args, :swissmedic_text_info      
-      create_dummy_package_if_necessary(iksnr, registration)
+      create_sequence_and_package_if_necessary(iksnr, registration)
       @new_iksnrs[info.iksnr] = info.title
     end    
 
@@ -1362,7 +1364,7 @@ module ODDB
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
         logCheckActivity "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
-        create_dummy_package_if_necessary(iksnr)
+        create_sequence_and_package_if_necessary(iksnr)
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
