@@ -71,7 +71,7 @@ module ODDB
       check_infos(name, "Registration") do |no_descr|
         _fachinfos.each do |fachinfo|
           no_descr.keys.each do |language|
-            unless fachinfo.descriptions[language]
+            unless fachinfo.descriptions and fachinfo.descriptions[language]
               note = no_description(fachinfo)
               no_descr[language].push(note) if note
             end
@@ -84,7 +84,8 @@ module ODDB
       check_infos(name, "Registration") do |no_descr|
         @app.fachinfos.values.each do |fachinfo|
           no_descr.keys.each do |language|
-            unless fachinfo.descriptions[language]
+            next if fachinfo.iksnrs.size == 0 # ignore invalid fachinfos
+            unless fachinfo.descriptions and fachinfo.descriptions[language]
               note = no_description(fachinfo)
               no_descr[language].push(note) if note
             end
