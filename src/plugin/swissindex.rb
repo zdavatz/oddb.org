@@ -172,11 +172,13 @@ module ODDB
       # Process 1
       activated = []
       @out_of_trade_false_list.each do |pack|
+        next unless pack and pack.pointer
         activated << @app.update(pack.pointer, {:out_of_trade => false, :refdata_override => false}, :refdata)
       end
       # Process 3
       inactivated = []
       @out_of_trade_true_list.each do |pack|
+        next unless pack and pack.pointer
         inactivated << @app.update(pack.pointer, {:out_of_trade => true}, :refdata)
       end
       # for debug
@@ -223,7 +225,7 @@ module ODDB
       lines.push "Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb," 
       lines.push "if so the package becomes in trade (false)"
       @out_of_trade_false_list.each do |pack|
-        lines.push sprintf("%13i: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
+        lines.push sprintf("%13s: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
       end
       lines.push nil
 
@@ -231,7 +233,7 @@ module ODDB
       lines.push "If there is no eancode in swissindex and the package is in trade in ch.oddb,"
       lines.push "then the package becomes out of trade (true) in ch.oddb"
       @out_of_trade_true_list.each do |pack|
-        lines.push sprintf("%13i: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
+        lines.push sprintf("%13s: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
       end
       lines.push nil
 
@@ -239,14 +241,14 @@ module ODDB
       lines.push "If the package does not have a pharmacode and there is a pharmacode found in swissindex,"
       lines.push "then put the pharmacode into ch.oddb"
       @update_pharmacode_list.each do |pack, pharmacode|
-        lines.push sprintf("%13i: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
+        lines.push sprintf("%13s: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
       end
       lines.push nil
 
       lines.push "Deleted pharmacode: #{@delete_pharmacode_list.size} packages"
       lines.push "If there is no eancode in swissindex then delete the according pharmacode in ch.oddb"
       @delete_pharmacode_list.each do |pack, pharmacode|
-        lines.push sprintf("%13i: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
+        lines.push sprintf("%13s: http://ch.oddb.org/de/gcc/drug/reg/%s/seq/%s/pack/%s", pack.barcode, pack.iksnr, pack.seqnr, pack.ikscd)
       end
       lines.join("\n")
     end
