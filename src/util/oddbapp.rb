@@ -120,10 +120,11 @@ class OddbPrevalence
 		}
 	end
 	def update(pointer, values, origin=nil)
-		#puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
+		$stdout.puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
 		@last_update = Time.now()
 		item = nil
 		failsafe(ODDB::Persistence::UninitializedPathError, nil) {
+      next unless pointer
 			item = pointer.issue_update(self, values, origin)
 			updated(item) unless(item.nil?)
 		}
