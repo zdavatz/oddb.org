@@ -1,0 +1,45 @@
+#!/usr/local/bin/ruby
+# We need this job in October 2013 as Swissmedic had changed the format of Packungen.xls
+# This produced 112 registrations of the form 'xxx.0'
+# This job will probably never be used again and should be remove before 2099
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+require 'pp'
+require 'util/job'
+require 'util/updater'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      begin
+        all_iksnrs  = []
+        if ARGV.size > 0 and iksnr = ARGV.first
+          puts "\niksnr == #{iksnr}\n\n"
+          all_iksnrs = [iksnr] if iksnr.length > 0
+        end
+        if all_iksnrs.size == 0
+          puts "#{Time.now}: Looking for iksnr"; $stdout.flush
+          all_regs = system.registrations
+          all_regs.each {|iksnr, reg| all_iksnrs << iksnr if /[^0-9]+/.match(iksnr) }
+          puts all_iksnrs; $stdout.flush
+        end
+        all_iksnrs.sort.each{ 
+          |iksnr|
+          $stdout.puts "Deleting registration #{iksnr.inspect}"; $stdout.flush
+          reg = system.registration(iksnr)
+          next unless reg
+          reg.each_package{|pack| system.delete pack.pointer}; 
+          system.update reg.pointer, :packages => []
+          reg.each_sequence{|seq| system.delete seq.pointer};
+          system.delete reg.fachinfo.pointer if reg.fachinfo and reg.fachinfo.iksnrs.eql?([iksnr])
+          system.update reg.pointer, :sequences => {} 
+          system.delete_registration(iksnr)
+        }
+      rescue => err
+        puts "in rescue error was #{err}"; $stdout.flush
+        puts caller.join("\n")
+      end
+    end
+  end
+end
