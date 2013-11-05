@@ -562,7 +562,7 @@ module ODDB
           return
         end
       end
-      return if registration.export_flag or registration.inactive? or registration.expiration_date > Date.today
+      return if registration.export_flag or registration.inactive? or (registration.expiration_date and registration.expiration_date > Date.today)
       return if registration.packages.size > 0 or registration.sequences.size > 0
       sequence = registration.create_sequence('00')
       sequence = registration.sequence('00')
