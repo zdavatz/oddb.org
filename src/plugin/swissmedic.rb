@@ -15,6 +15,7 @@ require 'pp'
 require 'util/persistence'
 require 'util/today'
 require 'swissmedic-diff'
+require 'util/logfile'
 
 module ODDB
   class SwissmedicPlugin < Plugin
@@ -40,7 +41,19 @@ module ODDB
       @update_time = 0 # minute
       @empty_compositions = []
     end
+    def debug_msg(msg)
+      # $stdout.puts Time.now.to_s + ': ' + msg
+      if not defined?(@checkLog) or not @checkLog
+        name = LogFile.filename(File.basename(__FILE__), Time.now)
+        FileUtils.makedirs(File.dirname(name))
+        @checkLog = File.open(name, 'a+') 
+        $stdout.puts "Opened #{name}"
+      end
+      @checkLog.puts("#{Time.now}: #{msg}")
+      @checkLog.flush
+    end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
+      debug_msg "#{Time.now} #{__FILE__} update target #{target.inspect}"
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
@@ -49,6 +62,8 @@ module ODDB
         diff target, @latest, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date!
+        debug_msg "Found #{@diff.news.size} news, #{@diff.updates.size} updates and #{@diff.replacements.size} replacements"
+        debug_msg "first news: #{@diff.news.first.inspect}"
         update_registrations @diff.news + @diff.updates, @diff.replacements
         set_all_export_flag_false
         update_export_sequences @export_sequences
@@ -131,6 +146,8 @@ module ODDB
     end
     def deactivate(deactivations)
       deactivations.each { |row|
+        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
+        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: deactivate iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
@@ -140,6 +157,8 @@ module ODDB
     end
     def delete(deletions)
       deletions.each { |row|
+        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
+        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: delete iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
         ptr = pointer(row)
         @app.delete ptr if ptr
       }
@@ -398,7 +417,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       Persistence::Pointer.new(*path)
     end
     def pointer_from_row(row)
-      iksnr = cell(row, column(:iksnr))
+      iksnr = "%05i" % cell(row, column(:iksnr)).to_i
       seqnr = (str = cell(row, column(:seqnr))) ? "%02i" % str.to_i : nil
       pacnr = cell(row, column(:ikscd))
       pointer [iksnr, seqnr, pacnr].compact
@@ -429,7 +448,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         @skipped_packages.each do |row|
           skipped << "\"#{cell(row, column(:company))}, " \
                      "#{cell(row, column(:name_base))}, " \
-                     "#{cell(row, column(:iksnr))}\""
+                     "#{"%05i" % cell(row, column(:iksnr)).to_i}\""
         end
         lines << ""
         lines << "There is no Gültigkeits-datum (column 'J') of the following"
@@ -461,7 +480,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
-        && (reg = @app.registration(cell(row, column(:iksnr)))) \
+        && (reg = @app.registration("%05i" % cell(row, column(:iksnr)).to_i)) \
         && (package = reg.package(cell(row, column(:ikscd))))
         flags = flags.select { |flag|
           origin = package.data_origin(flag)
@@ -554,9 +573,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
         substances = names.collect { |name| update_substance(name) }
         cell_content = cell(row, column(:composition))
-        $stdout.puts("update_compositions: iksnr #{row[0]} seq #{seq} opts #{opts} cell_content #{cell_content}");
+        debug_msg("update_compositions: iksnr #{row[0]} #{seq.seqnr} seq #{seq} opts #{opts} cell_content #{cell_content}")
         unless cell_content
-                          @empty_compositions << "iksnr #{cell(row, column(:iksnr))} seq #{seq}"
+                          @empty_compositions << "iksnr #{"%05i" % cell(row, column(:iksnr)).to_i} seq #{seq}"
                           return []
                           end
                         composition_text = cell_content.gsub(/\r\n?/u, "\n")
@@ -684,6 +703,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_package(reg, seq, row, replacements={},
                        opts={:create_only => false})
       cd = cell(row, column(:ikscd))
+      unless seq.pointer
+        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_package problem '#{row[0]}' cd #{cd} sequence with pointer"
+        return
+      end
       pidx = cell(row, COLUMNS.size).to_i
       if(cd.to_i > 0)
         args = {
@@ -714,6 +737,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         args = {
           :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
         }
+        if package.sequence and package.sequence.seqnr != seq.seqnr
+          debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_package iksnr '#{row[0]}' cd #{cd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
+        end
         if(comform = @app.commercial_form_by_name(cell(row, column(:unit))))
           args.store :commercial_form, comform.pointer
         end
@@ -730,7 +756,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       opts[:date] ||= first_day
       group = cell(row, column(:production_science))
       if(group != 'Tierarzneimittel')
-        iksnr = cell(row, column(:iksnr))
+        iksnr = "%05i" % cell(row, column(:iksnr)).to_i
         return if (filter = opts[:iksnr]) && iksnr != filter
         return if (filter = opts[:iksnrs]) && !filter.include?(iksnr)
         science = cell(row, column(:production_science))
@@ -790,6 +816,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       opts = { :create_only => !File.exist?(@latest),
                :date        => @@today, }
       rows.each { |row|
+        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
+        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_registrations iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
         if seq
@@ -802,7 +830,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       }
     end
     def update_sequence(registration, row, opts={:create_only => false})
+      # remove sequence '00'/package '000' which might have been created when importing via AipsDownload.xml
       seqnr = "%02i" % cell(row, column(:seqnr)).to_i
+      if registration.sequence('00')
+        ptr = registration.sequence('00').pointer
+        if ptr
+          debug_msg"#{__FILE__}: #{__LINE__} #{Time.now}: delete sequence('00') seqnr #{seqnr} ptr #{ptr}"
+          registration.sequence('00').delete_package('000')
+          registration.delete_sequence('00')
+        end
+      end
       ptr = if(sequence = registration.sequence(seqnr))
               return sequence if opts[:create_only]
               sequence.pointer
@@ -848,7 +885,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       if(indication = update_indication(cell(row, column(:indication_sequence))))
         args.store :indication, indication.pointer
       end
-      @app.update ptr, args, :swissmedic
+      res = @app.update ptr, args, :swissmedic
+      debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'}"
+      res
     end
     def update_substance(name)
       name.strip!
