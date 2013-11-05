@@ -330,7 +330,7 @@ class Package < PrivateTemplate
   def meta_tags(context)
     base = @model.name_base
     size = comparable_size(@model)
-    fullname = u sprintf("%s, %s", base, size)
+    fullname = sprintf("%s, %s", base, size)
     res = super << context.meta('name' => 'title', 'content' => fullname)
     if ind = @model.indication
       res << context.meta('name' => 'description',

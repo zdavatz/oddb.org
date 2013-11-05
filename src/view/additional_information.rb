@@ -446,7 +446,7 @@ module ODDB
           url = @lookandfeel._event_url(:show, {:pointer => model.pointer})
         end
         size = comparable_size(model)
-        status = u sprintf("%s, %s", base, size)
+        status = sprintf("%s, %s", base, size)
         tweet = "http://twitter.com/home?status=#{status} - "
         if ind = model.indication
           tweet << ind.send(@session.language) << " - "
