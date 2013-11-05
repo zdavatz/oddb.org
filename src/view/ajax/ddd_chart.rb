@@ -254,7 +254,7 @@ class DDDChart < HtmlGrid::Component
         base = pac.name_base
         size = comparable_size(pac)
         size.gsub!(/&agrave;/,'à')
-        fullname = u sprintf("%s, %s", base, size)
+        fullname = sprintf("%s, %s", base, size)
         name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
         label = sprintf "%s: CHF %4.2f", name, ddd_price
         pac_factor = (pac.generic_group_factor || 1).to_f / my_factor

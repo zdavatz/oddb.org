@@ -558,11 +558,11 @@ module ODDB
       unless registration
         registration = @app.registration(iksnr)
         if registration == nil or registration.packages == nil
-          puts_sync "Could not find a registration for #{iksnr} #{registration.inspect}"
+          logCheckActivity "Could not find a registration for #{iksnr} #{registration.inspect}"
           return
         end
       end
-      return if registration.export_flag or registration.inactive? or registration.expiration_date > Date.today
+      return if registration.export_flag or registration.inactive? or (registration.expiration_date and registration.expiration_date > Date.today)
       return if registration.packages.size > 0 or registration.sequences.size > 0
       sequence = registration.create_sequence('00')
       sequence = registration.sequence('00')
@@ -1194,7 +1194,7 @@ module ODDB
         name = LogFile.filename('check_swissmedicno_fi_pi', Time.now)
         puts_sync "Opening #{name}"
         FileUtils.makedirs(File.dirname(name))
-        @checkLog = File.open(name, 'w+') 
+        @checkLog = File.open(name, 'a+') 
       end
       @checkLog.puts("#{Time.now}: #{msg}")
       @checkLog.flush
@@ -1327,7 +1327,7 @@ module ODDB
     end
   
     def update_swissmedicno_fi_pi(options = {})
-      logCheckActivity "update_swissmedicno_fi_pi #{options} \n#{Time.now}"
+      logCheckActivity "update_swissmedicno_fi_pi #{options}"
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do

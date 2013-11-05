@@ -67,10 +67,11 @@ module ODDB
       assert_equal(1, @indication.registration_count)
     end
     def test_search_text
-      @indication.update_values 'de' => 'Deutsch', 'fr' => 'Françaix'
+      @indication.update_values 'de' => 'Deutsch', 'fr' => 'Français'
       assert_equal 'Deutsch', @indication.search_text(:de)
-      assert_equal 'Francaix', @indication.search_text(:fr)
-      assert_equal 'Deutsch Francaix', @indication.search_text
+      assert_equal 'Francais', @indication.search_text(:fr)
+      assert_equal 'Deutsch Francais', @indication.search_text
+      assert_equal 'Deutsch', @indication.to_s
     end
     def test_merge
       reg1 = flexmock 'reg1'
@@ -90,12 +91,12 @@ module ODDB
         assert true
       end
       other = Indication.new
-      other.update_values 'de' => 'Deutsch', 'fr' => 'Françaix',
+      other.update_values 'de' => 'Deutsch', 'fr' => 'Français',
                           :synonyms => ['Synonyms']
       other.registrations.push reg1, reg2
       other.sequences.push seq1, seq2
       @indication.merge other
-      assert_equal ['Synonyms', 'Deutsch', 'Françaix'], @indication.synonyms
+      assert_equal ['Synonyms', 'Deutsch', 'Français'], @indication.synonyms
     end
   end
 end
