@@ -302,7 +302,7 @@ module ODDB
         end
       else
         puts
-        puts 'opiton: none (all fachinfo)'
+        puts 'option: none (all fachinfo)'
         safe_export 'fachinfo.yaml' do
           exporter.export_fachinfos
         end
