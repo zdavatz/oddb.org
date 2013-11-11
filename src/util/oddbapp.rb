@@ -1304,7 +1304,7 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
-        doit = if(name)
+        doit = if(name and name.length > 0)
                  name.match(index_definition.index_name)
                elsif(block)
                  block.call(index_definition)
