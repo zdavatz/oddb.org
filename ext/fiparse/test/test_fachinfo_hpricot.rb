@@ -1033,15 +1033,15 @@ Häufigste unerwünschte Wirkungen beliebigen Schweregrades mit zumindest mögli
 Erfahrungen bei nukleosidnaiven Patienten (HBeAg-positiv und -negativ)
 Die Patienten erhielten in einer doppelblinden Anordnung Entecavir 0,5 mg täglich (n = 679) oder Lamivudin 100 mg täglich (n = 668) während einer medianen Dauer von 53 Wochen.
 Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
-----------------------------------------------------------------------------------------------
-Psychiatrische Störungen:                    häufig: Schlaflosigkeit                            
-----------------------------------------------------------------------------------------------
-Störungen des Nervensystems:                 häufig: Kopfschmerzen, Schwindel, Schläfrigkeit    
-----------------------------------------------------------------------------------------------
-Gastrointestinale Störungen:                 häufig: Übelkeit, Durchfall, Dyspepsie, Erbrechen  
-----------------------------------------------------------------------------------------------
-Allgemeine Störungen und lokale Reaktionen:  häufig: Müdigkeit                                  
-----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+Psychiatrische Störungen:                    häufig: Schlaflosigkeit                                
+--------------------------------------------------------------------------------------------------
+Störungen des Nervensystems:                 häufig: span> Kopfschmerzen, Schwindel, Schläfrigkeit  
+--------------------------------------------------------------------------------------------------
+Gastrointestinale Störungen:                 häufig: Übelkeit, Durchfall, Dyspepsie, Erbrechen      
+--------------------------------------------------------------------------------------------------
+Allgemeine Störungen und lokale Reaktionen:  häufig: Müdigkeit                                      
+--------------------------------------------------------------------------------------------------
 Folgende Abweichungen von Laborwerten wurden bei nukleosidnaiven Patienten unter Entecavir-Therapie beobachtet:
 -----------------------------------------------------------------------------------
 Abweichung des Laborwerts                                  Prozentzahl an Patienten  

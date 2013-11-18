@@ -394,6 +394,42 @@ module ODDB
         assert(result.index('cell2</SPAN>'))
         assert(result.index('Zwerge &gt; 1.5 m'))
       end
+      def test_table_with_paragraphs_in_cell_to_html
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @lookandfeel.should_receive(:subheading).and_return { 'subheading' }
+        session = FlexMock.new 'session'
+        session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        session.should_receive(:user_input)
+        assert(session.respond_to?(:lookandfeel))
+        
+        @view = View::Chapter.new(:name, @model, session)
+        chapter = Text::Chapter.new
+        chapter.heading = "TestTable"
+        section = chapter.next_section
+        section.next_paragraph
+        section.subheading = "Tabelle"
+        table = Text::Table.new
+        table.next_row!
+        cell1 = table.next_multi_cell!
+        cell1.next_paragraph
+        cell1 << 'first'
+        cell1.next_paragraph
+        cell1 << ''
+        cell1.next_paragraph
+        cell1 << ''
+        cell1.next_paragraph
+        cell1 << 'second'
+        section.paragraphs << table
+        @view.value = chapter
+        result = @view.to_html(CGI.new)
+        assert(result.index(/<h3>TestTable<\/H3>/i), 'must contain TestTable as H3')
+        refute_nil(result.index('>Tabelle<'), 'must contain Tabelle as element')
+        refute_nil(result.index(/second<br>/i), 'second must be followed by line break')
+        refute_nil(result.index(/first<br>/i), 'first must be followed by line break')
+        assert_nil(result.index(/<span [^>]*><\/span>/i), 'it may not contain an empty span')
+        assert_nil(result.index(/<p [^>]*><\/p>/i), 'it may not contain an empty paragraph')
+      end      
     end
 
 	end
