@@ -23,7 +23,8 @@ module ODDB
       def formats(context, paragraph)
         res = ''
         if paragraph.is_a? String
-          return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph }
+          return '' if paragraph.empty? or paragraph.eql?(' ')
+          return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph + "<br>" }
         end
         txt = paragraph.text.encode("UTF-8")
         paragraph.formats.each { |format|
