@@ -24,6 +24,39 @@ module ODDB
 		end
 	end
   module FiParse
+    class TestFachinfoHpricot_breaks_in_table <Minitest::Test
+      def test_more_line_breaks_in_table
+        html = %(
+    <table>
+    <tbody>
+    <tr>
+    <td class="s12">
+    <p class="s18">&nbsp;</p>
+    <p class="s17"><span class="s13"><span>0.19 &ndash; 50 **</span></span></p>
+    <p class="s17"><span class="s13"><span>&lt; </span></span><span class="s13"><span>0.19 - </span></span><span class="s13"><span>&ge; 125 </span></span><span class="s13"><span>**</span></span></p>
+    <div class="s11"></div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+        )    
+        writer = FachinfoHpricot.new
+        code, chapter = writer.chapter(Hpricot(html).at("table"))
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @lookandfeel.should_receive(:subheading).and_return { 'subheading' }
+        session = FlexMock.new 'session'
+        session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        session.should_receive(:user_input)
+        assert(session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, @model, session)
+        @view.value = chapter
+        # File.open("#{Dir.pwd}/chapter.yaml", 'w+') { |fi| fi.puts @view.to_yaml }
+        result = @view.to_html(CGI.new)
+        assert_equal(3, result.scan(/<p>/i).size, "Should find exactly 19 <P> tags in this table")
+        # assert_equal(1, result.scan(/&nbsp;/i).size, "Should find exactly 1 non breaking space in this table")
+      end
+    end    
 class TestFachinfoHpricot <Minitest::Test
   def setup
     @writer = FachinfoHpricot.new
@@ -1065,15 +1098,15 @@ Behandlungsdauer länger als 48 Wochen: Eine fortgesetzte Behandlung mit Entecav
 Erfahrungen bei lamiduvinrefraktären Patienten
 Lamivudinrefraktäre Patienten erhielten in einer doppelblinden Anordnung entweder Entecavir 1 mg täglich (n = 183) für eine mediane Dauer von 69 Wochen oder Lamivudin  100 mg täglich (n = 190) für eine mediane Dauer von 52 Wochen.
 Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
-------------------------------------------------------------------------------------------------------------------
-Psychiatrische Störungen:                            häufig: Schlaflosigkeit                                        
-------------------------------------------------------------------------------------------------------------------
-Störungen des Nervensystems:                         sehr häufig: Kopfschmerzen häufig: Schwindel, Schläfrigkeit    
-------------------------------------------------------------------------------------------------------------------
-Gastrointestinale Störungen:                         häufig: Erbrechen, Durchfall, Übelkeit, Dyspepsie              
-------------------------------------------------------------------------------------------------------------------
-Allgemeine Störungen und lokale Reaktionen:          häufig: Müdigkeit                                              
-------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+Psychiatrische Störungen:                         häufig: Schlaflosigkeit                                     
+------------------------------------------------------------------------------------------------------------
+Störungen des Nervensystems:                      sehr häufig: Kopfschmerzenhäufig: Schwindel, Schläfrigkeit  
+------------------------------------------------------------------------------------------------------------
+Gastrointestinale Störungen:                      häufig: Erbrechen, Durchfall, Übelkeit, Dyspepsie           
+------------------------------------------------------------------------------------------------------------
+Allgemeine Störungen und lokale Reaktionen:       häufig: Müdigkeit                                           
+------------------------------------------------------------------------------------------------------------
 Folgende Abweichungen von Laborwerten wurden bei lamivudinrefraktären Patienten unter Entecavir-Therapie beobachtet:
 ---------------------------------------------
 Abweichung    Prozentzahl an Patienten      
@@ -1140,6 +1173,6 @@ Veränderte Laborwerte: Bis zu Woche 48 hatten keine der Patienten mit dekompens
         assert_equal(["57435", "57436"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
         assert_equal("Zulassungsnummer\n57'435, 57’436 (Swissmedic)", @@fachinfo.iksnrs.to_s)
      end 
-    end    
+    end
   end 
 end

@@ -171,12 +171,12 @@ class TextinfoHpricot
     text
   end
   def handle_element(child, ptr, isParagraph=false)
-    # puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect} fixed_font #{has_fixed_font?(child, ptr)}"
+    # puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}: #{child.to_s[0..30]}"
     case child
     when Hpricot::Text
       if ptr.target.is_a? Text::Table
         # ignore text "\r\n        " in between tag.
-      else
+      elsif not child.to_s.eql?("\n")
         ptr.section ||= ptr.chapter.next_section
         ptr.target  ||= ptr.section.next_paragraph
         handle_text(ptr, child)
@@ -343,7 +343,7 @@ class TextinfoHpricot
   end
   def preformatted_text(elem)
     str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub("\n", "").gsub(/(&nbsp;|\302\240)/u, ' '))
+    target_encoding(str.gsub("\n", "").gsub(/(\302\240)/u, ' ').gsub(/&nbsp;&nbsp;/, '&nbsp;'))
   end
   def simple_chapter(elem_or_str)
     if(elem_or_str)
@@ -395,7 +395,7 @@ class TextinfoHpricot
   def text(elem)
     return '' unless elem
     str = elem.inner_text || elem.to_s
-    res = target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').gsub(/[■]/u, '').gsub(' ', ' '))
+    res = target_encoding(str.gsub(/(\s)+/u, ' ').gsub(/[■]/u, '').gsub(' ', ' ').gsub(/&nbsp;&nbsp;/, '&nbsp;'))
     res
   end
 end

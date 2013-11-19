@@ -23,8 +23,8 @@ module ODDB
       def formats(context, paragraph)
         res = ''
         if paragraph.is_a? String
-          return '' if paragraph.empty? or paragraph.eql?(' ')
-          return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph + "<br>" }
+          return '&nbsp;'  if paragraph.eql?(' ')
+          return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph }
         end
         txt = paragraph.text.encode("UTF-8")
         paragraph.formats.each { |format|
@@ -127,17 +127,30 @@ module ODDB
           } 
         }.join
       end
-      def paragraphs(context, paragraphs)
+      def paragraphs(context, paragraphs, emit_p = false)
         attr = { 'style' => self.class::PAR_STYLE }
+        emit_p ? res = "\n<p>" : res = ''
+        first = true
         paragraphs.collect { |paragraph|
           if(paragraph.is_a? Text::ImageLink)
-            context.p(attr) { context.img(paragraph.attributes) }
+            res += context.p(attr) { context.img(paragraph.attributes) }
           elsif(paragraph.is_a? Text::Table)
-            table(context, paragraph)
+            res += table(context, paragraph)
+          elsif(paragraph.is_a? Text::Paragraph)
+            add = formats(context, paragraph)
+            add = '' unless add
+            if not emit_p or first 
+              res += add
+            else
+              res += '</p>' + add + "<p>"
+            end
+            first = false
           else
-            formats(context, paragraph)
+            res += formats(context, paragraph)
           end
-        }.join
+          res += "\n"
+        }
+        emit_p ? res + "</p>" : res
       end
       def table(context, table)
         context.table('class' => "chapter") {
@@ -146,7 +159,7 @@ module ODDB
               row.collect { |cell|
                 if cell.is_a? Text::MultiCell
                   context.td('colspan' => cell.col_span, 'rowspan' => cell.row_span) {
-                    paragraphs(context, cell.contents)
+                    paragraphs(context, cell.contents, true)
                   }
                 else
                   context.td('colspan' => cell.col_span, 'rowspan' => cell.row_span) {
