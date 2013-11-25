@@ -60,7 +60,7 @@ module ODDB
       ODDB.search_term(self.send(language).to_s)
     end
 		def to_s
-      if !descriptions.respond_to?(:empty) or descriptions.empty?
+      if !descriptions.respond_to?(:empty?) or descriptions.empty?
         ''
       else
         descriptions.first.to_s
