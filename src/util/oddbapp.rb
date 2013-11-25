@@ -1394,7 +1394,8 @@ module ODDB
 		CLEANING_INTERVAL = 5*60
 		EXPORT_HOUR = 2
 		UPDATE_HOUR = 9
-    MEMORY_LIMIT = 20480
+    MEMORY_LIMIT = 10240 # 10 GB
+    MEMORY_LIMIT_CRAWLER = 1450 # 1,4 GB
 		RUN_CLEANER = true
 		RUN_UPDATER = false
 		SESSION = Session
@@ -1991,7 +1992,7 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
-            # Shutdown if more than 100 threads are created, probably because of spiders
+            # Shutdown if more than 200 threads are created, probably because of spiders
             if threads > 200
               exit
             end
@@ -1999,7 +2000,10 @@ module ODDB
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
             if mbytes > MEMORY_LIMIT
-              puts "Footprint exceeds #{MEMORY_LIMIT}MB. Exiting."
+              puts "Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
+              Thread.main.raise SystemExit
+            elsif /crawler/i.match(status) and mbytes > MEMORY_LIMIT_CRAWLER
+              puts "Footprint exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
               Thread.main.raise SystemExit
             end
             lastsessions = sessions
