@@ -44,6 +44,16 @@ module ODDB
       assert_equal :de, item.language
       assert_equal [item], @fachinfo.change_log
     end
+    def test_add_indication
+      item = @fachinfo.add_change_log_item 'test@email.ch', :indications, :de
+      item = @fachinfo.change_log[0]
+      assert_instance_of ODDB::Fachinfo::ChangeLogItem, item
+      assert_equal 'test@email.ch', item.email
+      assert_equal :indications, item.chapter
+      assert_equal :de, item.language
+      assert_equal [item], @fachinfo.change_log
+      assert_equal 1, @indications.size
+    end
     def test_atc_class
       reg1 = flexmock :atc_classes => ['first atc', 'second atc']
       reg2 = flexmock :atc_classes => ['third atc']

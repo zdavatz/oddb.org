@@ -3,7 +3,8 @@
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'flexmock'
 require 'meddata/src/session'
 
@@ -19,7 +20,7 @@ end
 
 module ODDB
   module MedData
-    class TestSession <Test::Unit::TestCase
+    class TestSession <Minitest::Test
       include FlexMock::TestCase
       def setup
         @response = flexmock('response') do |r|
@@ -160,7 +161,7 @@ module ODDB
       end
     end
     
-    class TestSessionException <Test::Unit::TestCase
+    class TestSessionException <Minitest::Test
       include FlexMock::TestCase
       
       def stdout_null
