@@ -25,13 +25,13 @@ class TestPatinfoStatsCompanyList <Minitest::Test
                         :lookandfeel => @lnf,
                         :event => 'event'
                        )
-    item     = flexmock('item', :time => Time.local(2011,2,3))
+    item     = flexmock('item', :time => Time.utc(2011,2,3))
     sequence = flexmock('sequence', 
                         :pointer => 'pointer',
                         :invoice_items => [item]
                        )
     @model   = flexmock('model', 
-                        :time    => Time.local(2011,2,3),
+                        :time    => Time.utc(2011,2,3),
                         :pointer => 'pointer',
                         :slate_sequences => [sequence],
                         :ean13   => 'ean13'

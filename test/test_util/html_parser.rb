@@ -98,9 +98,25 @@ class TestHtmlParser <Minitest::Test
 	end
 	def test_start_td
 		html = '<td>'
-		@parser.feed(html)
-		assert_equal(:push_tablecell, @formatter.called)
+    @parser.feed(html)
+    assert_equal(:push_tablecell, @formatter.called)
 	end
+  def test_complex_td
+    html = %(
+<td class="s12">
+<p class="s4"><span class="s13"><span>MHK-Werte (mg/l); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></p>
+<p class="s14"><span class="s13"><span>*MHK</span></span><span class="s13"><span> </span></span><span class="s13"><span>90 (mg/l) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></p>
+<p class="s14"><span class="s13"><span>**Durchschnittswerte &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oder Bandbreite &nbsp;&nbsp;&nbsp;&nbsp;</span></span></p>
+<div class="s11"></div>
+</td>
+)
+    res = @parser.feed(html)
+    pp res
+    pp __LINE__
+    pp @formatter
+    assert_equal(:push_tablecell, @formatter.called)
+    
+  end
 	def test_end_td
 		html = '<td>foo</td>'
 		@parser.feed(html)

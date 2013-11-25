@@ -88,8 +88,7 @@ class TestHayesWriter <Minitest::Test
 		html = File.read([target, table].join("/"))
 		parser.feed(html)
 		cytochromes = writer.extract_data
-		#assert_equal(13, cytochromes.size)
-		assert_equal(11, cytochromes.size)
+		assert_equal(12, cytochromes.size)
 		result = cytochromes["2C19"].inhibitors.size
 		assert_equal(19, result)
 		result = cytochromes["2C19"].inducers.size
@@ -294,7 +293,7 @@ class TestHayesWriter <Minitest::Test
 		html = File.read([target, table].join("/"))
 		parser.feed(html)
 		writer.parse_substances
-		assert_equal(5, writer.cytochromes.size)
+		assert_equal(6, writer.cytochromes.size)
 		result = writer.cytochromes["1A6"].inducers.first
 		expected = ODDB::Interaction::InducerConnection
 		assert_equal(expected, result.class)

@@ -460,9 +460,9 @@ class TestRegistration <Minitest::Test
   def test_update_values
     assert_nil(@registration.registration_date)
     values = {
-      :registration_date	=>	'12.04.2002',
-      :company						=>	'Bayer (Schweiz) AG',
-      :generic_type				=>	:generic,
+      :registration_date  =>  '12.04.2002',
+      :company            =>  'Bayer (Schweiz) AG',
+      :generic_type       =>  :generic,
     }
     app = StubRegistrationApp.new
     @registration.update_values(@registration.diff(values, app))
@@ -474,5 +474,63 @@ class TestRegistration <Minitest::Test
     values[:company] = 'Jansen Cilag AG'
     @registration.update_values(@registration.diff(values, app))
     assert_equal([], company.registrations)
+  end
+  
+  def test_move_package_sequence
+    pointer = flexmock('pointer', :+ => 'pointer')
+    @registration.pointer = flexmock('reg.pointer', :+ => pointer)
+    assert_nil @registration.package('001')
+    seq1 = @registration.sequences.store '01', ODDB::Sequence.new('01')
+    seq2 = @registration.sequences.store '02', ODDB::Sequence.new('02')
+    pack_001 = seq1.create_package('001')
+    pack_002 = seq1.create_package('002')
+    
+    # Check situation before move
+    assert_equal(ODDB::Package, @registration.package('001').class)
+    assert_equal(pack_001, @registration.package('001'))
+    assert_equal(2, @registration.sequence('01').packages.size)
+    assert_equal(0, @registration.sequence('02').packages.size)
+    
+    # To correctly display the changed sequences, fix_pointers must be called
+    seq_001 = flexmock(seq1, 'sequence')
+    seq_001.should_receive(:fix_pointers).times(1).and_return(true)
+    seq_002 = flexmock(seq2, 'sequence')
+    seq_002.should_receive(:fix_pointers).times(1).and_return(true)
+    
+    @registration.move_package('001', '01', '02')
+    
+    # Check situation after move
+    assert_equal(1, @registration.sequence('01').packages.size)
+    assert_equal(1, @registration.sequence('02').packages.size)
+    assert_equal(ODDB::Package, @registration.sequence('02').packages.first[1].class)
+    assert_equal(pack_001, @registration.sequence('02').package('001'))
+    assert_equal(pack_001, @registration.package('001'))
+    assert_equal('02', @registration.package('001').sequence.seqnr)
+
+  end if false
+
+  def test_move_package_sequence_leaving_sequence_with_no_package
+    assert_nil @registration.package('001')
+    pointer = flexmock('pointer', :+ => 'pointer')
+    @registration.pointer = flexmock('reg.pointer', :+ => pointer)
+    seq1 = @registration.sequences.store '01', ODDB::Sequence.new('01')
+    seq2 = @registration.sequences.store '02', ODDB::Sequence.new('02')
+    pack_001 = seq1.create_package('001')
+    
+    # Check situation before move
+    assert_equal(ODDB::Package, @registration.package('001').class)
+    assert_equal(pack_001, @registration.package('001'))
+    assert_equal(1, @registration.sequence('01').packages.size)
+    assert_equal(0, @registration.sequence('02').packages.size)
+    
+    @registration.move_package('001', '01', '02')
+    
+    # Check situation after move. Sequence '01' may not exist any longer
+    assert_equal(1, @registration.sequence('02').packages.size)
+    assert_equal(ODDB::Package, @registration.sequence('02').packages.first[1].class)
+    assert_equal(pack_001, @registration.sequence('02').package('001'))
+    assert_equal(pack_001, @registration.package('001'))
+    assert_equal('02', @registration.package('001').sequence.seqnr)
+    assert_equal(0, @registration.sequence('01').packages.size)
   end
 end

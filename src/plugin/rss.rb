@@ -33,7 +33,7 @@ module ODDB
       }
     end
     def download(uri, agent=nil)
-      LogFile.append('oddb/debug', " getin RssPlugin#download", Time.now)
+      LogFile.append('oddb/debug', " getin RssPlugin#download", Time.now.utc)
       unless agent
         agent = Mechanize.new
         agent.user_agent_alias = "Linux Firefox"

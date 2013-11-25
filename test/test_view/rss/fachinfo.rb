@@ -90,7 +90,6 @@ class TestFachinfo <Minitest::Test
     assert_equal(expected, @component.to_html(context))
   end
 end
-
     end # Interactions
   end # View
 end # ODDB
