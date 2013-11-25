@@ -74,7 +74,7 @@ module Notify
 			mail = RMail::Message.new
       header = mail.header
       header.add('Content-Type', 'multipart/alternative')
-      header.add('Date', Time.now.rfc822)
+      header.add('Date', Time.now.utc.rfc822)
       from = header.from = config.mail_from
       to = header.to = recipients
 			header.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
