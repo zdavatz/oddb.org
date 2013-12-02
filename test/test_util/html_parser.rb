@@ -111,10 +111,7 @@ class TestHtmlParser <Minitest::Test
 </td>
 )
     res = @parser.feed(html)
-    pp res
-    pp __LINE__
-    pp @formatter
-    assert_equal(:push_tablecell, @formatter.called)
+    assert_equal(:pop_tablecell, @formatter.called)
     
   end
 	def test_end_td

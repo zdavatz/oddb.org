@@ -11,6 +11,8 @@ require 'flexmock'
 require 'util/ipn'
 require 'util/session'
 require 'tempfile'
+require 'tmail'
+require 'stub/config'
 
 module ODDB
   module Util

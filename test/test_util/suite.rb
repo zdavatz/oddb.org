@@ -11,12 +11,14 @@ require 'minitest/autorun'
 $: << File.expand_path(File.dirname(__FILE__))
 
 # TODO: avoid skipping this stuff
-puts "skipping ipn oddbapp session updater"
+# we must run oddbapp and oddbapp_2 separately because we run into a 
+# internal limit of minitest.
+puts "skipping ipn oddbapp"
 
 Dir.open(File.dirname(__FILE__)) do |dir|
   dir.sort.each do |file|
     if /.*\.rb$/o.match(file)&&file!='suite.rb'
-      if /ipn|oddbapp|session|update/.match(file)
+      if /oddbapp/.match(file)
           puts "Skipping file #{file}"
           next
       end

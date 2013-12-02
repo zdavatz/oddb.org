@@ -254,7 +254,7 @@ module ODDB
         end
       end
 		end
-		def package_count
+		def package_count 
 			@packages.length
 		end
     def patinfo_active?
