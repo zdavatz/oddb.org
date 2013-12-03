@@ -22,14 +22,15 @@ module ODDB
     end
         
     def update(csv_file_path = nil)
+      $stdout.puts  "#{Time.now}: csv_file_path is #{csv_file_path}" ; $stdout.flush
       unless csv_file_path and File.exist?(csv_file_path)
         csv_file_path = CSV_FILE
         target = Mechanize.new.get(CSV_ORIGIN_URL)
         target.save_as csv_file_path
-        # $stdout.puts  "EphaInteractionPlugin.update: #{File.expand_path(csv_file_path)} ?  #{File.exists?(csv_file_path)}"
+        $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: #{File.expand_path(csv_file_path)} ?  #{File.exists?(csv_file_path)}"
       end
       if File.exist?(csv_file_path)
-        # $stdout.puts "deleting #{@app.epha_interactions.size} epha_interactions class #{@app.epha_interactions.class}"; $stdout.flush
+        $stdout.puts "#{Time.now}: deleting #{@app.epha_interactions.size} epha_interactions class #{@app.epha_interactions.class}"; $stdout.flush
         @app.delete_all_epha_interactions
         @lineno = 0
         first_line = nil
@@ -56,9 +57,13 @@ module ODDB
           epha_interaction.severity = elements[8]
         end
         # $stdout.puts  "#{Time.now} read #{@lineno} lines. Storing the results"; $stdout.flush
-        @app.epha_interactions.each{|item| item.odba_store }
-        @app.epha_interactions.odba_store unless defined?(MiniTest) # Niklaus does not know howto mock easily this command
+        $stdout.puts "#{Time.now}: Calling @app.odba_store"; $stdout.flush
         @app.odba_store
+        $stdout.puts "#{Time.now}: Calling @app.epha_interactions.odba_store"; $stdout.flush
+        @app.epha_interactions.odba_store unless defined?(MiniTest)
+        $stdout.puts "#{Time.now}: Calling @app.epha_interactions.each"; $stdout.flush
+        @app.epha_interactions.each{|item| item.odba_store}
+        FileUtils.mv(csv_file_path, csv_file_path.sub(/\.csv$/, '-latest.csv'), :verbose => true)
       end
     end
   end
