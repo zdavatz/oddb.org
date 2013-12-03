@@ -54,8 +54,7 @@ GEM
       travis-lint (~> 1.2)
     hpricot (0.8.6)
     htmlentities (4.3.1)
-    htmlgrid (1.0.7)
-      ruby-ole (>= 1.0)
+    htmlgrid (1.0.6)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httpi (0.9.7)
@@ -192,7 +191,7 @@ DEPENDENCIES
   hoe-travis
   hpricot
   htmlentities
-  htmlgrid
+  htmlgrid (= 1.0.6)
   httpi
   i18n
   innate

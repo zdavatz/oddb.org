@@ -19,7 +19,7 @@ gem "flickraw"
 gem "gruff"
 gem "gyoku"
 gem "hpricot"
-gem "htmlgrid"
+gem "htmlgrid", '1.0.6'
 gem "htmlentities"
 gem "httpi"
 gem "i18n"
