@@ -76,6 +76,9 @@ group :development, :test do
   gem 'hoe-travis'
   gem 'racc'
   gem 'travis-lint'
+end
+
+group :debugger do
   gem 'pry'
   gem 'pry-debugger'
 end
