@@ -12,6 +12,7 @@ require 'plugin/doctors'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
+require 'plugin/epha_interactions'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -328,6 +329,9 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                            "Patienteninfo '#{companies.join(', ')}'",
                            :import_company, [companies, nil, :pi]
+    end
+    def update_epha_interactions
+      update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
     end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')

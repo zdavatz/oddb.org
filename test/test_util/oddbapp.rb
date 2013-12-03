@@ -11,6 +11,7 @@ require 'syck'
 require 'yaml'
 YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
+require 'stub/config'
 gem 'minitest'
 require 'minitest/autorun'
 require 'stub/oddbapp'
@@ -19,6 +20,7 @@ require 'util/persistence'
 require 'model/substance'
 require 'model/atcclass'
 require 'model/orphan'
+require 'model/epha_interaction'
 require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
@@ -75,126 +77,6 @@ end
 
 class TestOddbApp <Minitest::Test
   include FlexMock::TestCase
-	class StubCompany
-		attr_accessor	:oid
-		def initialize
-			@registrations = []
-			@cl_status = false
-			super
-		end
-	end
-	class StubSession
-		def user_input(*keys)
-			{
-				:email	=>	'test@oddb.org',
-				:pass	=>	Digest::MD5::hexdigest('test'),
-			}
-		end
-	end
-	class StubSession2
-		def user_input(*keys)
-			{}
-		end
-	end
-	class StubSequence
-		attr_reader :name_base, :name_descr, :atc_class
-		def initialize(name_base, atc_class)
-			@name_base = name_base
-			@atc_class = atc_class
-		end
-		def name
-			@name_base
-		end
-	end
-	class StubAtcClass
-		attr_reader :code
-		def initialize(halb)
-			@code = halb
-		end
-	end
-	class StubAtcClassFactory
-		class << self
-			def atc(code)
-				(@atc ||= {}).fetch(code) {
-					@atc.store(code, StubAtcClass.new(code))
-				}
-			end
-		end
-	end
-	class StubRegistration
-		attr_reader :iksnr, :block_result
-		def initialize(key=nil)
-			@iksnr = key
-		end
-		def active_package_count
-			3
-		end
-		def replace(registration)
-		end
-		def sequences
-			{
-				:foo	=>	StubSequence.new('blah', StubAtcClassFactory.atc('1')),
-				:bar	=>	StubSequence.new('blahdiblah', StubAtcClassFactory.atc('2')),
-				:rob	=>	StubSequence.new('frohbus', nil),
-			}
-		end
-		def atcless_sequences
-			[
-				StubSequence.new('no_atc', nil)
-			]
-		end
-		def each_package(&block)
-			@block_result = block.call(@iksnr)
-		end
-	end
-	class StubGalenicForm
-		include ODDB::Language
-		attr_reader :name
-		def initialize(name)
-			self.update_values({ 'de' => name })
-			@name = name
-		end
-	end
-	class StubGalenicGroup
-		attr_writer :galenic_form
-		attr_reader :block_result
-		def each_galenic_form(&block)
-			@block_result = block.call(@galenic_form)
-		end
-		def empty?
-			@galenic_form.nil?
-		end
-		def get_galenic_form(description)
-			@galenic_form
-		end
-	end
-	class StubSubstance
-		attr_reader :name
-		def initialize(name, similar)
-			@name = name
-			@similar = similar
-		end
-		def <=>(other)
-			@name.downcase <=> other.name.downcase
-		end
-	end
-	class StubRegistration2
-		attr_accessor :sequences, :pointer, :descriptions
-		def initialize
-			@descriptions = {}
-		end
-		def indication
-			self
-		end
-	end
-	class StubIndication
-		include ODDB::Language
-		def initialize
-			@registrations = []
-			super
-		end
-	end
-
 	def setup
 #    @drb = flexmock(DRb::DRbObject, :new => server)
 		ODDB::GalenicGroup.reset_oids
@@ -394,6 +276,9 @@ class TestOddbApp <Minitest::Test
   def test_analysis_count
     assert_equal(0, @app.analysis_count)
   end
+  def test_epha_interaction_count
+    assert_equal(0, @app.epha_interaction_count)
+  end
   def test_hospital_count
     assert_equal(0, @app.hospital_count)
   end
@@ -523,6 +408,12 @@ class TestOddbApp <Minitest::Test
       klass.should_receive(:new).and_return(command)
     end
     assert_equal(nil, @app.merge_substances(source, target))
+  end
+  def test_delete_all_epha_interactions
+    @app.create_epha_interaction('atc_code_self', 'atc_code_other')
+    assert_equal(1,  @app.epha_interactions.size)
+    @app.delete_all_epha_interactions
+    assert_equal(0,  @app.epha_interactions.size)
   end
   def test_delete_fachinfo
     @app.fachinfos = {'oid' => 'fachinfo'}
@@ -707,6 +598,9 @@ class TestOddbApp <Minitest::Test
   end
   def test_hospital
     assert_equal(nil, @app.hospital('ean13'))
+  end
+  def test_get_epha_interaction
+    assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
   def test_each_atc_class
     assert_equal(Enumerator, @app.each_atc_class.class)
@@ -990,6 +884,9 @@ class TestOddbApp <Minitest::Test
     expected.search_type = :substance
     #assert_equal(expected, @app.search_exact_substance('query'))
     assert(same?(expected, @app.search_exact_substance('query')))
+  end
+  def test_search_epha_interactions
+    assert_equal([], @app.search_epha_interactions('key'))
   end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))

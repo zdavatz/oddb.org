@@ -960,6 +960,15 @@ class TestOddbApp <Minitest::Test
     end
     assert_equal(form, @app.create_commercial_form)
   end
+  def test_create_epha_interaction
+    epha_interaction = flexmock('epha_interaction') do |epha|
+      epha.should_receive(:oid)
+    end
+    flexmock(ODDB::EphaInteraction) do |epha|
+      epha.should_receive(:new).and_return(epha_interaction)
+    end
+    assert_equal(epha_interaction, @app.create_epha_interaction('atc_code_self', 'atc_code_other'))
+  end
   def test_create_hospital
     hospital = flexmock('hospital') do |hos|
       hos.should_receive(:oid)

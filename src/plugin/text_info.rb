@@ -1389,6 +1389,7 @@ module ODDB
     def import_swissmedicinfo(target=:both)
       target = @options[:target] if @options[:target]
       threads = []
+      require 'pry'; binding.pry
       if @options[:download] != false
         threads << Thread.new do
           download_swissmedicinfo_xml
