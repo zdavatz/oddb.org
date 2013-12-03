@@ -454,7 +454,7 @@ module ODDB
         logclass.should_receive(:new).times(1).and_return(@log)
       end
       flexmock(File).should_receive(:read)
-      flexmock(LogFile).should_receive(:filename).once.with('key', @today)
+      flexmock(LogFile).should_receive(:filename).once.with('key', any)
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_stats__after_8th
