@@ -17,9 +17,15 @@ GEM
     archive-tarsimple (1.1.1)
     bigdecimal (1.2.3)
     builder (3.2.2)
+    childprocess (0.3.9)
+      ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.0)
     columnize (0.3.6)
+    commonwatir (4.0.0)
     dalli (2.6.4)
+    data_magic (0.16.1)
+      faker (>= 1.1.2)
+      yml_reader (>= 0.2)
     dbd-pg (0.3.9)
       dbi (>= 0.4.0)
       pg
@@ -38,7 +44,10 @@ GEM
     domain_name (0.5.15)
       unf (>= 0.0.5, < 1.0.0)
     facets (1.8.54)
+    faker (1.2.0)
+      i18n (~> 0.5)
     fastthread (1.0.7)
+    ffi (1.9.3)
     flexmock (1.3.2)
     flickraw (0.9.7)
     gd2 (1.1.1)
@@ -93,6 +102,12 @@ GEM
     ntlm-http (0.1.1)
     odba (1.1.0)
     oddb2tdat (1.1.2)
+    page-object (0.9.1)
+      page_navigation (>= 0.8)
+      selenium-webdriver (>= 2.33.0)
+      watir-webdriver (>= 0.6.4)
+    page_navigation (0.9)
+      data_magic (>= 0.14)
     parseexcel (0.5.2)
     paypal (2.0.0)
       money (> 0.0.0)
@@ -140,6 +155,11 @@ GEM
       nori (~> 1.0)
       wasabi (~> 2.0)
     sbsm (1.2.3)
+    selenium-webdriver (2.33.0)
+      childprocess (>= 0.2.5)
+      multi_json (~> 1.0)
+      rubyzip
+      websocket (~> 1.0.4)
     serialport (1.3.0)
     simplecov (0.8.2)
       docile (~> 1.1.0)
@@ -163,9 +183,16 @@ GEM
     unf_ext (0.0.6)
     wasabi (2.3.0)
       nokogiri (>= 1.4.0)
+    watir (5.0.0)
+      commonwatir (~> 4)
+      watir-webdriver
+    watir-webdriver (0.6.4)
+      selenium-webdriver (>= 2.18.0)
     webrobots (0.1.1)
+    websocket (1.0.7)
     ydim (1.0.0)
     ydocx (1.2.3)
+    yml_reader (0.2)
     yus (1.0.1)
 
 PLATFORMS
@@ -209,6 +236,7 @@ DEPENDENCIES
   nokogiri
   odba
   oddb2tdat
+  page-object
   parseexcel
   paypal
   pg
@@ -226,6 +254,7 @@ DEPENDENCIES
   rmail
   rockit
   rpdf2txt
+  rspec
   ruby-ole
   rubyzip (= 0.9.9)
   savon (= 0.9.7)
@@ -238,6 +267,8 @@ DEPENDENCIES
   treetop
   turing
   wasabi
+  watir
+  watir-webdriver
   webrobots
   ydim
   ydocx
