@@ -39,7 +39,7 @@ class TestPatinfoStatsCompanyList <Minitest::Test
     @view    = ODDB::View::Admin::PatinfoStatsCompanyList.new([@model], @session)
   end
   def test_date
-    assert_equal('Thursday 03.02.2011 &nbsp;&nbsp;-&nbsp;&nbsp;00.00 Uhr CET', @view.date(@model, @session))
+    assert_equal('Thursday 03.02.2011 &nbsp;&nbsp;-&nbsp;&nbsp;00.00 Uhr UTC', @view.date(@model, @session))
   end
 end
 
