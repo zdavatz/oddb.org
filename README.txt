@@ -23,6 +23,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
   * bundle install
   * rake test
   * look at the index.html in the coverage directory
+  
+* There are some Selenium/Watir based GUI integration tests. For details on how to use them have
+  a look at tests_watir.textile
 
 == LOCAL DOCUMENTATION:
 
@@ -37,6 +40,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 * Zeno R.R. Davatz
 * Masaomi Hatakeyama
+* Yasuhiro Asaka 
+* Niklaus Giger
 * Hanney Wyss (up to Version 1.0)
 
 == FRENCH TRANSLATION HELP
