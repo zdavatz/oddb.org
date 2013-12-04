@@ -12,14 +12,14 @@ describe "ch.oddb.org" do
   end
   
   before :each do
-    @browser.goto HomeUrl
+    @browser.goto OddbUrl
   end
   
   after :each do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
     # sleep 
-    @browser.goto HomeUrl
+    @browser.goto OddbUrl
   end
   
   it "should contain oddb.org" do
