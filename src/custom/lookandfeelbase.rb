@@ -1454,7 +1454,7 @@ Zeno Davatz
 				:shadow										=>	'ausblenden',
 				:shadow_pattern						=>	'Regexp Ausblenden',
 				:show_email								=>  'E-Mail anzeigen',
-				:show_interaction					=>	'Wechselwirkungen anzeigen',
+				:show_interaction					=>	'Wechselwirkungen auf epha.ch anzeigen (3D)',
 				:show_legend              =>  'Legende einblenden',
 				:size											=>	'Packungsgrösse',
 				:sl_count_text						=>	'Limitationstexte',

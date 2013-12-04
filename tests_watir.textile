@@ -1,0 +1,46 @@
+h1. Watir/Selenium GUI tests for Oddb.org
+
+These GUI-tests allow you to check whether a complete oddb.org installation with the database, yus-daemon, etc
+is working correctly.
+
+It also uses some common names to test whether the different searches work, e.g. we assume that we can find
+a medicament named Aspirin.
+
+To use it, check the following requirements
+* you have the necessary gems installed, eg. by calling @bundle install@
+** watir-webdriver
+** watir
+** rspec
+* You have changed HomeURL in spec/spec_helper.rb to point to the site you want to test
+
+Then you can run a single test by calling @bundle exec rspec spec/smoke_test.rb@
+
+h2. Creating new tests interactively
+
+Here is a irb sample, which demonstrates the main points.
+
+bq. require Dir.pwd + '/spec/spec_helper.rb'
+HomeUrl = "oddb-ci2.dyndns.org"
+@browser = Watir::Browser.new
+# should open firefox, the default watir browser
+@browser.goto HomeUrl
+# Now it should show the home page of the your test site
+page = OddMain.new(HomeUrl, true)
+puts @browser.selects[0].text
+# should ouput Preisvergleich <..>
+@browser.buttons[1].click # goes to the paypal site
+@browser.back # to back
+@browser.select(:name => /search_type/).select('Interaktion') 
+
+h3. Recording
+
+Firefox has a "TestWise-Recorder":https://addons.mozilla.org/de/firefox/addon/testwise-recorder/ which allows you to record a session and create watir scripts.
+
+
+h2. Further reading
+
+"Watir.com":http://watir.com/documentation/ provides a lot of good documentation, eg.
+* "Cheat-Sheet":https://github.com/watir/watir/wiki/Cheat-Sheet
+* "Watir in 5 minutes":https://github.com/watir/watirbook/blob/master/main/watir-in-five-minutes.md
+* "Summary API":https://github.com/watir/watir/wiki/HTML-Elements-Supported-by-Watir
+* "FAQ":https://github.com/watir/watir/wiki/FAQ

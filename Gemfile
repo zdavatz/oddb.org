@@ -78,6 +78,13 @@ group :development, :test do
   gem 'travis-lint'
 end
 
+group :test do
+  gem 'rspec'
+  gem 'watir'
+  gem 'watir-webdriver'
+  gem 'page-object'
+end
+
 group :debugger do
   gem 'pry'
   gem 'pry-debugger'
