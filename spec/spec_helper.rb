@@ -15,6 +15,16 @@ browsers2test ||= [ ENV['ODDB_BROWSER'] ]
 browsers2test ||= [ :firefox ] # could be any combination of :ie, :firefox, :chrome
 Browser2test = browsers2test
 
+def waitForOddbToBeReady(browser = Browser2test, url = OddbUrl, maxWait = 30)
+  0.upto(maxWait).each{
+    |idx|
+    browser.goto OddbUrl
+    break unless /Es tut uns leid/.match(browser.text)
+    puts "Waiting #{idx} of max #{maxWait} for #{url} to be ready"
+    sleep 1
+  }
+end
+
 def createScreenshot(browser, added=nil)
   if browser.url.index('?')
     name = File.join(ImageDest, File.basename(browser.url.split('?')[0]))
