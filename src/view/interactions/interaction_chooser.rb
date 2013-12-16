@@ -17,21 +17,45 @@ require 'view/chapter'
 module ODDB
   module View
     module Interactions
+    # see http://matrix.epha.ch/#/56751,61537,39053,59256
+    Ratings = {  'A' => 'Keine Massnahmen erforderlich',
+                  'B' => 'Vorsichtsmassnahmen empfohlen',
+                  'C' => 'Regelmässige Überwachung',
+                  'D' => 'Kombination vermeiden',
+                  'X' => 'Kontraindiziert',
+                }
+    Colors =  {  'A' => 'green',
+                  'B' => 'yellow',
+                  'C' => 'orange',
+                  'D' => 'red',
+                  'X' => 'firebrick',
+                }
 class InteractionChooserDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
   COMPONENTS = {
     [0,0] => :fachinfo,
     [1,0] => :drug,
     [2,0] => :delete,
+    [3,0] => :atc_code,
+    [4,0] => :epha_interaction,
   }
   CSS_MAP = {
     [0,0] => 'small',
-    [1,0] => 'list',
+    [1,0] => 'interaction-drug',
     [2,0] => 'small',
+    [3,0] => 'interaction-atc',
+    [4,0] => 'interaction-info',
   }
   def init
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
+    @atc_codes = []
+    if @drugs and !@drugs.empty?
+      @drugs.values.each do |pac|
+        $stdout.puts "init adding pac  #{pac.atc_class.code}"
+        @atc_codes << pac.atc_class.code
+      end
+    end
     super
   end
   def fachinfo(model, session=@session)
@@ -42,7 +66,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
   end
   def drug(model, session=@session)
     div = HtmlGrid::Div.new(model, @session, self)
-    div.set_attribute('class', 'drug')
+    div.set_attribute('class', 'interaction-drug')
     div.value = []
     if model
       div.value << model.name_with_size
@@ -59,6 +83,74 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
         div.value << company
       end
     end
+    div
+  end
+  def atc_code(model, session=@session)
+    div = HtmlGrid::Div.new(model, @session, self)
+    div.set_attribute('class', 'interaction-atc')
+    div.value = []
+    div.value << model.atc_class.code  + ': ' + model.atc_class.name
+    div
+  end
+  def my_get_epha_interaction(atc_code_self, atc_code_other)
+    @session.app.epha_interactions.each { |aInteraction|
+      return aInteraction if  aInteraction.atc_code_self.to_s == atc_code_self.to_s and aInteraction.atc_code_other.to_s == atc_code_other.to_s
+    }
+    nil
+  end  
+  def get_interactions(atc_codes, my_atc_code)
+    results = []
+    idx=atc_codes.index(my_atc_code)
+    atc_codes[0..idx].combination(2).to_a.each {
+      |combination|
+      next unless combination.index(my_atc_code)
+      [ @session.app.get_epha_interaction(combination[0], combination[1]),
+        @session.app.get_epha_interaction(combination[1], combination[0]),       
+       ].each{ 
+              |interaction|
+        next unless interaction
+        header = ''
+        header += interaction.atc_code_self  + ': ' + interaction.atc_name + ' => '
+        header += interaction.atc_code_other + ': ' + interaction.name_other
+        header += ' ' + interaction.info
+        text = ''
+        text += interaction.severity + ': ' + Ratings[interaction.severity]
+        text += '<br>' + interaction.action
+        text += '<br>' + interaction.measures + '<br>'
+             
+        results << { :header => header,
+                     :severity => interaction.severity,
+                  :color => Colors[interaction.severity],
+                  :text => text
+                  }
+      }
+    }
+    $stdout.puts results.inspect
+    results
+  end
+  def epha_interaction(model, session=@session)
+    div = HtmlGrid::Div.new(model, @session, self)
+    # the first element cannot have an interaction
+    return div if @atc_codes.index(model.atc_class.code) == 0
+    div.set_attribute('class', 'interaction-info')
+    div.value = []
+    list = HtmlGrid::Div.new(model, @session, self)
+    list.value = []
+    get_interactions(@atc_codes, model.atc_class.code).each {
+      |interaction|
+      headerDiv = HtmlGrid::Div.new(model, @session, self)
+      headerDiv.value = []
+      headerDiv.value << interaction[:header]
+      list.value << headerDiv
+    
+      infoDiv = HtmlGrid::Div.new(model, @session, self)
+      infoDiv.value = []
+      infoDiv.value << interaction[:text]
+      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless interaction[:severity].eql?('A')
+      list.value << infoDiv
+                                                            
+    }
+    div.value << list
     div
   end
   def delete(model, session=@session)
@@ -201,9 +293,9 @@ class InteractionChooser < View::PrivateTemplate
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
-    link = HtmlGrid::Link.new(:home_interactions, model, @session, self)
+    link = HtmlGrid::Link.new(:home_interaction, model, @session, self)
     link.css_class = "list"
-    link.href  = @lookandfeel._event_url(:home_interactions, [])
+    link.href  = @lookandfeel._event_url(:home_interaction, [])
     link.value = @lookandfeel.lookup(:home)
     fields << link
     fields << '&nbsp;-&nbsp;'

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 require 'spec_helper'
+require 'pp'
 # require Dir.pwd + '/spec/spec_helper.rb'
 @workThread = nil
 
@@ -9,6 +10,7 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     @browser = Watir::Browser.new
+    waitForOddbToBeReady(@browser, OddbUrl)
   end
   
   before :each do
@@ -22,11 +24,53 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
   
-  it "should show interactions between Aspirin and Marcoumar" do
+  it "should show interactions between epha example in instant view" do
+    @browser.link(:text, "Einstellungen").click
+    puts  @browser.radio(:id, 'plus').inspect
+    @browser.radio(:id, 'plus').set
+    @browser.button(:value,"Speichern").click
+    sleep 1
+    @browser.goto OddbUrl
+    medis = ['Losartan',
+              'Metoprolol',
+              'Nolvadex',
+              'Paroxetin',
+             ]
     @browser.link(:text=>'Interaktionen').click
     @browser.url.should match ('/de/gcc/home_interactions/')
-    # @browser.link(:text=>'Instant').click
+    @browser.link(:text=>'Instant').click
+    id = 'interaction_searchbar'
+    medis.each{
+               |medi|
+              chooser = @browser.text_field(:id, id)
+              0.upto(10).each{ |idx|
+                              chooser.set(medi) 
+                              sleep idx*1
+                              chooser.send_keys(:down)
+                              sleep idx*0.1
+                              chooser.send_keys(:enter)
+                              sleep idx*0.1
+                              value = chooser.value
+                              break unless /#{medi}/.match(value)
+                              sleep 1
+                             }
+              chooser.set(chooser.value + "\n")
+              createScreenshot(@browser, "_#{medi}_#{__LINE__}")
+              id = 'interaction_chooser_searchbar'
+              }
+    sleep 1
+    createScreenshot(@browser, "_interactions_#{__LINE__}")
+    medis.each{
+               |medi|
+    @browser.text.should match /#{medi}/
+               }            
+  end
+  it "should show interactions between Aspirin and Marcoumar in old format" do
+    @browser.link(:text=>'Interaktionen').click
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.link(:text=>'Instant').click
     @browser.button(:value,"Suchen").click
+    @browser.url.should match ('/de/gcc/interaction_chooser/')
     @browser.text_field(:id, "searchbar").set("Aspirin")
     @browser.button(:value,"Suchen").click
     @browser.text.should match /Ascorbinsäure/
@@ -48,7 +92,9 @@ describe "ch.oddb.org" do
     # @browser.text "Quelle: Swissmedic\nVersion: 30.10.2013\nÜbersicht\nAlle löschen"
     # @browser.text.should match 'Marcoumar'
     # @browser.text.should match 'Aspirin'
-  end
+  end if false
+
+  
   after :all do
     @browser.close
   end
