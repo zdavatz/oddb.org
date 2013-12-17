@@ -66,6 +66,7 @@ class InteractionChooser < State::Interactions::Global
     }
     self
   end
+  
   def show_interaction
     atc_codes = []
     iksnrs    = []
