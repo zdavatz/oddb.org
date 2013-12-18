@@ -25,11 +25,6 @@ describe "ch.oddb.org" do
   end
   
   it "should show interactions between epha example in instant view" do
-    @browser.link(:text, "Einstellungen").click
-    puts  @browser.radio(:id, 'plus').inspect
-    @browser.radio(:id, 'plus').set
-    @browser.button(:value,"Speichern").click
-    sleep 1
     @browser.goto OddbUrl
     medis = ['Losartan',
               'Metoprolol',
@@ -38,7 +33,6 @@ describe "ch.oddb.org" do
              ]
     @browser.link(:text=>'Interaktionen').click
     @browser.url.should match ('/de/gcc/home_interactions/')
-    @browser.link(:text=>'Instant').click
     id = 'interaction_searchbar'
     medis.each{
                |medi|

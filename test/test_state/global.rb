@@ -214,12 +214,6 @@ end
         end
         assert_equal('export_csv.checkout', @state.checkout)
       end
-      def test_clear_interaction_basket
-        flexmock(@session) do |ses|
-          ses.should_receive(:clear_interaction_basket)
-        end
-        assert_kind_of(State::Interactions::EmptyBasket, @state.clear_interaction_basket)
-      end
       def test_creditable?
         flexmock(@session.user) do |usr|
           usr.should_receive(:creditable?).and_return('creditable?')
@@ -416,18 +410,6 @@ end
       def test_home_navigation
         expected = [State::Global::HOME_STATE]
         assert_equal(expected, @state.home_navigation)
-      end
-      def test_interaction_basket__empty
-        flexmock(@session) do |s|
-          s.should_receive(:interaction_basket).and_return([])
-        end
-        assert_kind_of(State::Interactions::EmptyBasket, @state.interaction_basket)
-      end
-      def test_interaction_basket__not_empty
-        flexmock(@session) do |s|
-          s.should_receive(:interaction_basket).and_return(['basket'])
-        end
-        assert_kind_of(State::Interactions::Basket, @state.interaction_basket)
       end
       def test_limited?
         assert_equal(false, @state.limited?)
@@ -717,10 +699,6 @@ end
       def test_search__companies
         setup_search('companies')
         assert_kind_of(State::Companies::CompanyResult, @state.search)
-      end
-      def test_search__interactions
-        setup_search('interactions')
-        assert_kind_of(State::Interactions::Result, @state.search)
       end
       def test_search__substances
         setup_search('substances')

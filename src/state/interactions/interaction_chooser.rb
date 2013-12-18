@@ -17,6 +17,7 @@ class InteractionChooser < State::Interactions::Global
   VIEW = View::Interactions::InteractionChooser
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
+    $stdout.puts "State::Interactions::InteractionChooser init for #{@session.user_input(:search_query).inspect}"
     if @session.event.to_sym == self.class::DIRECT_EVENT
       @session.set_persistent_user_input(:drugs, {})
     end
