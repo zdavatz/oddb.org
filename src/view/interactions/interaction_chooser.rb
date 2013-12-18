@@ -170,13 +170,14 @@ class InteractionChooserDrug < HtmlGrid::Composite
       headerDiv.value = []
       headerDiv.value << interaction[:header]
       headerDiv.set_attribute('class', 'interaction-header')
+      headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       list.value << headerDiv
     
       infoDiv = HtmlGrid::Div.new(model, @session, self)
       infoDiv.value = []
       infoDiv.value << interaction[:text]
-      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       list.value << infoDiv
+      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
                                                             
     }
     div.value << list
@@ -187,10 +188,10 @@ end
 class InteractionChooserDrugList < HtmlGrid::List
  attr_reader :model, :value
   COMPONENTS = {
-    [0,0] =>  :info_drug,
+#    [0,0] =>  :info_drug,
   } 
   CSS_MAP = {
-    [0,0] =>  'css.info',
+#    [0,0] =>  'css.info',
   }
   CSS_CLASS = 'composite'
   SORT_HEADER = false

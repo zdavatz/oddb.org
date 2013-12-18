@@ -589,7 +589,7 @@ td.interaction-atc {
 }
 div.interaction-header {
   font-weight     : bold;
-  text-align      : middle;
+  text-align      : left;
   text-decoration : none;
 }
 tr.interaction-info { 
