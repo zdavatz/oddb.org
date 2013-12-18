@@ -582,17 +582,19 @@ td.interaction-substance {
 td.interaction-drug { 
   margin-top      : 0px;
   list-style-type : circle;
-  width           : 25%;
 }
 td.interaction-atc { 
   margin-top      : 0px;
   list-style-type : circle;
-  width           : 7%;
 }
-td.interaction-info { 
+div.interaction-header {
+  font-weight     : bold;
+  text-align      : middle;
+  text-decoration : none;
+}
+tr.interaction-info { 
   margin-top      : 0px;
   list-style-type : circle;
-  width           : 60%;
 }
 
 td.sum {
