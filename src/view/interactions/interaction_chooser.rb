@@ -24,12 +24,53 @@ module ODDB
                   'D' => 'Kombination vermeiden',
                   'X' => 'Kontraindiziert',
                 }
-    Colors =  {  'A' => 'green',
+    Colors =  {  'A' => 'white',
                   'B' => 'yellow',
                   'C' => 'orange',
                   'D' => 'red',
                   'X' => 'firebrick',
                 }
+    def self.calculate_atc_codes(drugs)
+      atc_codes = []
+      if drugs and !drugs.empty?
+        drugs.each{ |ean, drug|
+          atc_codes << drug.atc_class.code
+        }
+      end
+      @@atc_codes = atc_codes
+    end
+    def self.atc_codes(session)
+      @@atc_codes
+    end
+    def self.get_interactions(my_atc_code, session, atc_codes=@@atc_codes)
+      results = []
+      idx=atc_codes.index(my_atc_code)
+      atc_codes[0..idx].combination(2).to_a.each {
+        |combination|
+        next unless combination.index(my_atc_code)
+        [ session.app.get_epha_interaction(combination[0], combination[1]),
+          session.app.get_epha_interaction(combination[1], combination[0]),       
+        ].each{ 
+                |interaction|
+          next unless interaction
+          header = ''
+          header += interaction.atc_code_self  + ': ' + interaction.atc_name + ' => '
+          header += interaction.atc_code_other + ': ' + interaction.name_other
+          header += ' ' + interaction.info
+          text = ''
+          text += interaction.severity + ': ' + Ratings[interaction.severity]
+          text += '<br>' + interaction.action
+          text += '<br>' + interaction.measures + '<br>'
+              
+          results << { :header => header,
+                      :severity => interaction.severity,
+                    :color => Colors[interaction.severity],
+                    :text => text
+                    }
+        }
+      }
+      results.uniq
+    end    
 class InteractionChooserDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
   COMPONENTS = {
@@ -37,25 +78,14 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     [1,0] => :drug,
     [2,0] => :delete,
     [3,0] => :atc_code,
-    [4,0] => :epha_interaction,
   }
   CSS_MAP = {
     [0,0] => 'small',
     [1,0] => 'interaction-drug',
     [2,0] => 'small',
     [3,0] => 'interaction-atc',
-    [4,0] => 'interaction-info',
   }
   def init
-    @drugs = @session.persistent_user_input(:drugs)
-    @index = (@drugs ? @drugs.length : 0).to_s
-    @atc_codes = []
-    if @drugs and !@drugs.empty?
-      @drugs.values.each do |pac|
-        $stdout.puts "init adding pac  #{pac.atc_class.code}"
-        @atc_codes << pac.atc_class.code
-      end
-    end
     super
   end
   def fachinfo(model, session=@session)
@@ -92,70 +122,9 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     div.value << model.atc_class.code  + ': ' + model.atc_class.name
     div
   end
-  def my_get_epha_interaction(atc_code_self, atc_code_other)
-    @session.app.epha_interactions.each { |aInteraction|
-      return aInteraction if  aInteraction.atc_code_self.to_s == atc_code_self.to_s and aInteraction.atc_code_other.to_s == atc_code_other.to_s
-    }
-    nil
-  end  
-  def get_interactions(atc_codes, my_atc_code)
-    results = []
-    idx=atc_codes.index(my_atc_code)
-    atc_codes[0..idx].combination(2).to_a.each {
-      |combination|
-      next unless combination.index(my_atc_code)
-      [ @session.app.get_epha_interaction(combination[0], combination[1]),
-        @session.app.get_epha_interaction(combination[1], combination[0]),       
-       ].each{ 
-              |interaction|
-        next unless interaction
-        header = ''
-        header += interaction.atc_code_self  + ': ' + interaction.atc_name + ' => '
-        header += interaction.atc_code_other + ': ' + interaction.name_other
-        header += ' ' + interaction.info
-        text = ''
-        text += interaction.severity + ': ' + Ratings[interaction.severity]
-        text += '<br>' + interaction.action
-        text += '<br>' + interaction.measures + '<br>'
-             
-        results << { :header => header,
-                     :severity => interaction.severity,
-                  :color => Colors[interaction.severity],
-                  :text => text
-                  }
-      }
-    }
-    $stdout.puts results.inspect
-    results
-  end
-  def epha_interaction(model, session=@session)
-    div = HtmlGrid::Div.new(model, @session, self)
-    # the first element cannot have an interaction
-    return div if @atc_codes.index(model.atc_class.code) == 0
-    div.set_attribute('class', 'interaction-info')
-    div.value = []
-    list = HtmlGrid::Div.new(model, @session, self)
-    list.value = []
-    get_interactions(@atc_codes, model.atc_class.code).each {
-      |interaction|
-      headerDiv = HtmlGrid::Div.new(model, @session, self)
-      headerDiv.value = []
-      headerDiv.value << interaction[:header]
-      list.value << headerDiv
-    
-      infoDiv = HtmlGrid::Div.new(model, @session, self)
-      infoDiv.value = []
-      infoDiv.value << interaction[:text]
-      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless interaction[:severity].eql?('A')
-      list.value << infoDiv
-                                                            
-    }
-    div.value << list
-    div
-  end
+  
   def delete(model, session=@session)
-    if @container.is_a? InteractionChooserDrug and # hide at search result
-       (@drugs and @drugs.length >= 1)
+    if @container.is_a? ODDB::View::Interactions::InteractionChooserDrug
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
@@ -166,21 +135,74 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     end
   end
 end
+
 class InteractionChooserDrug < HtmlGrid::Composite
-  COMPONENTS = {}
+  COMPONENTS = {
+    }
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   def init
+    @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
-      components.store([0,0], :drug)
+      components.store([0,0], :header_info)
       css_map.store([0,0], 'subheading')
+      if @drugs and !@drugs.empty?
+        components.store([0, 1], :text_info)
+      end
       @attributes.store('id', 'drugs_' + @model.barcode)
     end
     super
   end
-  def drug(model, session)
+  def header_info(model, session=@session)
     View::Interactions::InteractionChooserDrugHeader.new(model, session, self)
   end
+  def text_info(model, session=@session)
+    div = HtmlGrid::Div.new(model, @session, self)
+    # the first element cannot have an interaction
+    return div if ODDB::View::Interactions.atc_codes(@session).index(model.atc_class.code) == 0
+    div.set_attribute('class', 'interaction-info')
+    div.value = []
+    list = HtmlGrid::Div.new(model, @session, self)
+    list.value = []
+    ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
+      |interaction|
+      headerDiv = HtmlGrid::Div.new(model, @session, self)
+      headerDiv.value = []
+      headerDiv.value << interaction[:header]
+      headerDiv.set_attribute('class', 'interaction-header')
+      headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      list.value << headerDiv
+    
+      infoDiv = HtmlGrid::Div.new(model, @session, self)
+      infoDiv.value = []
+      infoDiv.value << interaction[:text]
+      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      list.value << infoDiv
+                                                            
+    }
+    div.value << list
+    div
+  end  
+end
+
+class InteractionChooserDrugList < HtmlGrid::List
+ attr_reader :model, :value
+  COMPONENTS = {} 
+  CSS_MAP = {}
+  CSS_CLASS = 'composite'
+  SORT_HEADER = false
+  def initialize(model, session=@session, arg_self=nil)    
+    @drugs = session.persistent_user_input(:drugs)
+    super # must come first or it will overwrite @value
+    @value = []
+    ODDB::View::Interactions.calculate_atc_codes(@drugs)
+    if @drugs and !@drugs.empty?
+      @drugs.each{ |ean, drug|
+        @value << InteractionChooserDrug.new(drug, @session, self)
+      }
+    end
+  end
+  
 end
 class InteractionChooserDrugDiv < HtmlGrid::Div
   def init
@@ -188,9 +210,7 @@ class InteractionChooserDrugDiv < HtmlGrid::Div
     @value = []
     @drugs = @session.persistent_user_input(:drugs)
     if @drugs and !@drugs.empty?
-      @drugs.values.each do |pac|
-        @value << InteractionChooserDrug.new(pac, @session, self)
-      end
+      @value << InteractionChooserDrugList.new(@drugs, @session, self)
     end
   end
   def to_html(context)
@@ -207,6 +227,7 @@ class InteractionChooserDrugDiv < HtmlGrid::Div
     super
   end
 end
+
 class InteractionChooserInnerForm < HtmlGrid::Composite
   attr_reader :index_name
   FORM_METHOD = 'POST'
