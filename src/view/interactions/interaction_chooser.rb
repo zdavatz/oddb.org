@@ -176,8 +176,8 @@ class InteractionChooserDrug < HtmlGrid::Composite
       infoDiv = HtmlGrid::Div.new(model, @session, self)
       infoDiv.value = []
       infoDiv.value << interaction[:text]
-      list.value << infoDiv
       infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      list.value << infoDiv
                                                             
     }
     div.value << list
@@ -187,12 +187,8 @@ end
 
 class InteractionChooserDrugList < HtmlGrid::List
  attr_reader :model, :value
-  COMPONENTS = {
-#    [0,0] =>  :info_drug,
-  } 
-  CSS_MAP = {
-#    [0,0] =>  'css.info',
-  }
+  COMPONENTS = {} 
+  CSS_MAP = {}
   CSS_CLASS = 'composite'
   SORT_HEADER = false
   def initialize(model, session=@session, arg_self=nil)    
