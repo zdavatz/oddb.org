@@ -33,7 +33,7 @@ module ODDB
       }
     end
     def download(uri, agent=nil)
-      LogFile.append('oddb/debug', " getin RssPlugin#download", Time.now.utc)
+      LogFile.append('oddb/debug', " getin RssPlugin#download #{uri}", Time.now.utc)
       unless agent
         agent = Mechanize.new
         agent.user_agent_alias = "Linux Firefox"
@@ -69,30 +69,23 @@ module ODDB
     def extract_swissmedic_entry_from(category, page, host, count=false)
       page.links.map do |link|
         entry = {}
-        if href = link.href and
-           href.match(/\/00091\/#{category}\/(\d{5})/) and $1 != '01459' # "Archiv Chargenrückrufe"
-          if pub = link.node.next and
-             pub.text.match(/(\d{2}\.\d{2}\.\d{4})/)
-            date = $1
-            # count entries of current issue
-            if count
-              if date =~ /^(\d{2})\.(#{("%02d" % @@today.month)})\.(#{@@today.year})/o
-                @current_issue_count += 1
-                @new_entry_count     += 1 if Date.new($3.to_i, $2.to_i, $1.to_i) >= @app.rss_updates[@name].first
-              end
-            end
-            entry_page = link.click
-            if container = entry_page.at("div[@id='webInnerContentSmall']") and
-               content   = container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div")
-              if h1 = container.xpath(".//h1[@id='contentStart']")
-                title = h1.text
-              end
-              entry[:title]       = title || ''
-              entry[:date]        = Date.parse(date).to_s
-              entry[:description] = compose_description(content)
-              entry[:link]        = host + href
+        if href = link.href and href.match(/\/00135\/#{category}\/(\d{5})/) and $1 != '01711' # "Archiv Chargenrückrufe"
+          title = ''
+          container = Nokogiri::HTML(open(host + href))
+          if h1 = container.xpath(".//h1[@id='contentStart']")
+            title = h1.text
+          end
+          date = Date.parse(/\d\d\.\d\d.\d\d\d\d/.match(container.text)[0]).to_s
+          if count
+            if date =~ /^(\d{2})\.(#{("%02d" % @@today.month)})\.(#{@@today.year})/o
+              @current_issue_count += 1
+              @new_entry_count     += 1 if Date.new($3.to_i, $2.to_i, $1.to_i) >= @app.rss_updates[@name].first
             end
           end
+          entry[:title]       = title || ''
+          entry[:date]        = date
+          entry[:description] = compose_description(container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div"))
+          entry[:link]        = host + href
         end
         if entry.empty?
           nil
@@ -103,21 +96,22 @@ module ODDB
     end
     def swissmedic_entries_of(type)
       entries = Hash.new{|h,k| h[k] = [] }
-      host = "http://www.swissmedic.ch"
+      host = "https://www.swissmedic.ch"
       per_page = 5
       swissmedic_categories = {
-        :recall => '00118',
-        :hpc    => '00092',
+        :recall => '00166',
+        :hpc    => '00157',
       }
       category = swissmedic_categories[type]
       return entries unless category
       LookandfeelBase::DICTIONARIES.each_key do |lang|
         @lang = lang # current_lang
         count = (lang == 'de' ? true : false)
-        base_uri   = host + "/marktueberwachung/00091/#{category}/index.html?lang=#{lang}" # &start=0
+        base_uri   = host + "/marktueberwachung/00135/#{category}/index.html?lang=#{lang}" # &start=0
         first_page = download(base_uri)
-        if last_uri = first_page.link_with(:text => /»/).href and
-           last_uri.match(/&start=([\d]*)/)
+        last_uri = first_page.link_with(:text => /1/)
+        # TODO: this loop does not work! only the first 10 entries are fetched
+        if last_uri and last_uri.href # and last_uri.match(/&start=([\d]*)/)
           entries[lang] += extract_swissmedic_entry_from(category, first_page, host, count)
           (per_page..$1.to_i).step(per_page).to_a.each do |idx|
             if page = download("#{base_uri}&start=#{idx}")
