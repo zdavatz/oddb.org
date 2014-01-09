@@ -89,7 +89,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.0)
     mini_portile (0.5.2)
-    minitest (5.0.8)
+    minitest (5.2.1)
     money (6.0.0)
       i18n (~> 0.6.4)
     multi_json (1.8.2)
@@ -145,6 +145,7 @@ GEM
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.14.4)
     ruby-ole (1.2.11.7)
+    rubyXL (1.2.10)
     rubyzip (0.9.9)
     savon (0.9.7)
       akami (~> 1.0)
@@ -256,6 +257,7 @@ DEPENDENCIES
   rpdf2txt
   rspec
   ruby-ole
+  rubyXL
   rubyzip (= 0.9.9)
   savon (= 0.9.7)
   sbsm

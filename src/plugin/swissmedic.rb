@@ -14,6 +14,7 @@ require 'plugin/plugin'
 require 'pp'
 require 'util/persistence'
 require 'util/today'
+require 'rubyXL'
 require 'swissmedic-diff'
 require 'util/logfile'
 
@@ -28,10 +29,10 @@ module ODDB
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
-      @index_url = 'http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de'
-      @archive = File.join archive, 'xls'
+      @index_url = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00230/index.html?lang=de'
+      @archive = File.join archive, 'xlsx'
       FileUtils.mkdir_p @archive
-      @latest = File.join @archive, 'Packungen-latest.xls'
+      @latest = File.join @archive, 'Packungen-latest.xlsx'
       @known_export_registrations = 0
       @known_export_sequences = 0
       @export_registrations = {}
@@ -59,6 +60,7 @@ module ODDB
         initialize_export_registrations agent
 #        keep_active_registrations_praeparateliste
 #        keep_active_registrations_praeparateliste_with_export_flag_true
+        debug_msg "calling diff #{target} #{@latest}"
         diff target, @latest, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date!
@@ -70,10 +72,10 @@ module ODDB
         update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
-        # check the case in which there is a sequence or registration in Praeparateliste.xls 
-        # but there is NO sequence or registration in Packungen.xls
-        #recheck_deletions @diff.sequence_deletions # Do not consider Preaparateliste_mit_WS.xls when setting the "deaktiviert am" date.
-        #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xls when setting the "deaktiviert am" date.
+        # check the case in which there is a sequence or registration in Praeparateliste.xlsx 
+        # but there is NO sequence or registration in Packungen.xlsx
+        #recheck_deletions @diff.sequence_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
+        #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
@@ -134,7 +136,7 @@ module ODDB
     def recheck_deletions(deletions)
       key_list = []
       deletions.each do |key|
-        # check if there is the sequence/registration in the Praeparateliste-latest.xls
+        # check if there is the sequence/registration in the Praeparateliste-latest.xlsx
         # if there is, do not deactivate the sequence/registration 
         if @active_registrations_praeparateliste[key[0]]
           key_list << key
@@ -288,10 +290,10 @@ module ODDB
         ptrn = keyword.gsub /[^A-Za-z]/u, '.'
         /#{ptrn}/iu.match link.attributes['title']
       end
-      link = links.first or raise "could not identify url to #{keyword}.xls"
+      link = links.first or raise "could not identify url to #{keyword}.xlsx"
       file = agent.get(link.href)
       download = file.body
-      latest_name = File.join @archive, "#{keyword}-latest.xls"
+      latest_name = File.join @archive, "#{keyword}-latest.xlsx"
       latest = ''
       if(File.exist? latest_name)
         latest = File.read latest_name
@@ -299,17 +301,18 @@ module ODDB
       if(download[-1] != ?\n)
         download << "\n"
       end
-      target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xls")
+      target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
         target
       end
     end
     def initialize_export_registrations(agent)
-      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
+      debug_msg "target #{target} latest_name is #{latest_name}"
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
@@ -318,11 +321,11 @@ module ODDB
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      Spreadsheet.open(latest_name) do |workbook|
+      RubyXL::Parser.parse(File.expand_path(latest_name)) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
-        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
+        workbook.worksheet[0].each(rows_to_skip(workbook)) do |row|
           iksnr = "%05i" % row[iksnr_idx].to_i
           seqnr = row[seqnr_idx]
           export = row[export_flag_idx]
@@ -339,7 +342,7 @@ module ODDB
       @export_registrations
     end
     def keep_active_registrations_praeparateliste
-      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       indices = {
         :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
         :seqnr => PREPARATIONS_COLUMNS.index(:seqnr)
@@ -356,7 +359,7 @@ module ODDB
       @active_registrations_praeparateliste
     end
     def keep_active_registrations_praeparateliste_with_export_flag_true
-      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       indices = {
         :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
         :seqnr => PREPARATIONS_COLUMNS.index(:seqnr),
