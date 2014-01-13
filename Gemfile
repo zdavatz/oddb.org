@@ -57,6 +57,9 @@ gem 'rubyzip', '0.9.9' # we cannot use version 1.0.0 as it does not contain zip/
 gem "savon", '0.9.7'
 gem "sbsm"
 gem "spreadsheet"
+gem 'rubyXL'
+# gem "spreadsheet", :git => '/opt/src/spreadsheet'
+
 gem "swissmedic-diff"
 gem "tmail"
 gem "treetop"

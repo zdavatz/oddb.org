@@ -67,6 +67,7 @@ module ODDB
       description
     end
     def extract_swissmedic_entry_from(category, page, host, count=false)
+      return nil unless page and page.links
       page.links.map do |link|
         entry = {}
         if href = link.href and href.match(/\/00135\/#{category}\/(\d{5})/) and $1 != '01711' # "Archiv Chargenrückrufe"
@@ -75,7 +76,8 @@ module ODDB
           if h1 = container.xpath(".//h1[@id='contentStart']")
             title = h1.text
           end
-          date = Date.parse(/\d\d\.\d\d.\d\d\d\d/.match(container.text)[0]).to_s
+          return nil unless container and date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
+          date = Date.parse(date_field.to_s).to_s
           if count
             if date =~ /^(\d{2})\.(#{("%02d" % @@today.month)})\.(#{@@today.year})/o
               @current_issue_count += 1
@@ -112,7 +114,8 @@ module ODDB
         last_uri = first_page.link_with(:text => /1/)
         # TODO: this loop does not work! only the first 10 entries are fetched
         if last_uri and last_uri.href # and last_uri.match(/&start=([\d]*)/)
-          entries[lang] += extract_swissmedic_entry_from(category, first_page, host, count)
+          result = extract_swissmedic_entry_from(category, first_page, host, count)
+          entries[lang] += result if result
           (per_page..$1.to_i).step(per_page).to_a.each do |idx|
             if page = download("#{base_uri}&start=#{idx}")
               entries[lang] += extract_swissmedic_entry_from(category, page, host, count)
