@@ -170,8 +170,7 @@ GEM
     slop (3.4.7)
     spreadsheet (0.9.6)
       ruby-ole (>= 1.0)
-    swissmedic-diff (0.1.4)
-    tmail (1.2.7.1)
+    swissmedic-diff (0.1.6)
     travis-lint (1.7.0)
       hashr (~> 0.0.22)
     treetop (1.4.15)
@@ -264,7 +263,6 @@ DEPENDENCIES
   simplecov
   spreadsheet
   swissmedic-diff
-  tmail
   travis-lint
   treetop
   turing
