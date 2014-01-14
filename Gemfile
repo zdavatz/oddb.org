@@ -58,10 +58,9 @@ gem "savon", '0.9.7'
 gem "sbsm"
 gem "spreadsheet"
 gem 'rubyXL'
-# gem "spreadsheet", :git => '/opt/src/spreadsheet'
 
 gem "swissmedic-diff"
-gem "tmail"
+# gem "tmail"
 gem "treetop"
 gem "turing"
 gem "wasabi"
