@@ -219,6 +219,7 @@ module ODDB
 			:interaction_basket,
       :interaction_chooser,
 			:interaction_detail,
+      :interaction_search,
 			:interactions,
 			:legal_note,
       :limitation_analysis,
