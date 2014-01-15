@@ -14,7 +14,7 @@ require 'tempfile'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-		SOURCE_URI = 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
+		SOURCE_URI = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00239/index.html?lang=de'
 		def find(iksnr)
       @app.registration(iksnr)
 		end
@@ -104,7 +104,7 @@ module ODDB
       link = page.links.find do |node|
         /Excel-Version/iu.match node.attributes['title']
       end or raise "unable to identify url for Co-Marketing-data"
-      url = "http://www.swissmedic.ch/#{link.attributes['href']}"
+      url = "https://www.swissmedic.ch/#{link.attributes['href']}"
 			@pairs = get_pairs(url)
 			@pairs.each { |pair|
 				update_pair(*pair)

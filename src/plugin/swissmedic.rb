@@ -3,9 +3,6 @@
 # ODDB::SwissmedicPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
-# TODO: ngngng. fix_compositions ould probably be removed, as I did not find any reference
-# TODO: ngngng. fix_sequences ould probably be removed, as I did not find any reference
-# TODO: ngngng. fix_packages ould probably be removed, as I did not find any reference
 
 require 'fileutils'
 require 'mechanize'
@@ -14,7 +11,6 @@ require 'plugin/plugin'
 require 'pp'
 require 'util/persistence'
 require 'util/today'
-require 'rubyXL'
 require 'swissmedic-diff'
 require 'util/logfile'
 
@@ -30,9 +26,10 @@ module ODDB
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
       @index_url = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00230/index.html?lang=de'
-      @archive = File.join archive, 'xlsx'
+      @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xlsx'
+      @latest_preparations = File.join @archive, "Präparateliste-latest.xlsx"      
       @known_export_registrations = 0
       @known_export_sequences = 0
       @export_registrations = {}
@@ -43,7 +40,7 @@ module ODDB
       @empty_compositions = []
     end
     def debug_msg(msg)
-      # $stdout.puts Time.now.to_s + ': ' + msg
+      # $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
       if not defined?(@checkLog) or not @checkLog
         name = LogFile.filename(File.basename(__FILE__), Time.now)
         FileUtils.makedirs(File.dirname(name))
@@ -54,18 +51,21 @@ module ODDB
       @checkLog.flush
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
-      debug_msg "#{Time.now} #{__FILE__} update target #{target.inspect}"
+      debug_msg "#{__FILE__}: #{__LINE__} update target #{target.inspect} latest #{@latest.inspect}"
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
-#        keep_active_registrations_praeparateliste
-#        keep_active_registrations_praeparateliste_with_export_flag_true
-        debug_msg "calling diff #{target} #{@latest}"
-        diff target, @latest, [:atc_class, :sequence_date]
+        if File.exists?(@latest.sub('.xlsx', '.xls'))
+          debug_msg "#{__FILE__}: #{__LINE__} calling diff #{target} #{@latest}"
+          diff target, @latest.sub('.xlsx', '.xls'), [:atc_class, :sequence_date]
+        else
+          diff target, @latest, [:atc_class, :sequence_date]
+        end
         # check diff from stored data about date-fields of Registration
         check_date!
-        debug_msg "Found #{@diff.news.size} news, #{@diff.updates.size} updates and #{@diff.replacements.size} replacements"
-        debug_msg "first news: #{@diff.news.first.inspect}"
+        debug_msg "#{__FILE__}: #{__LINE__} Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
+        debug_msg "#{__FILE__}: #{__LINE__} changes: #{@diff.changes.inspect}"
+        # debug_msg "#{__FILE__}: #{__LINE__} first news: #{@diff.news.first.inspect}"
         update_registrations @diff.news + @diff.updates, @diff.replacements
         set_all_export_flag_false
         update_export_sequences @export_sequences
@@ -80,7 +80,7 @@ module ODDB
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0)
-        FileUtils.cp target, @latest
+        FileUtils.cp target, @latest, :verbose => true
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)| 
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
@@ -131,7 +131,7 @@ module ODDB
       end
     end
     def date_cell(row, idx)
-      row.at(idx) && row.date(idx)
+      Spreadsheet.date_cell(row, idx)
     end
     def recheck_deletions(deletions)
       key_list = []
@@ -149,7 +149,7 @@ module ODDB
     def deactivate(deactivations)
       deactivations.each { |row|
         seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: deactivate iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
+        debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
@@ -160,8 +160,9 @@ module ODDB
     def delete(deletions)
       deletions.each { |row|
         seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: delete iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
+        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
         ptr = pointer(row)
+        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr '#{row[0]}' ptr #{ptr.inspect} row #{row.inspect}"
         @app.delete ptr if ptr
       }
     end
@@ -223,68 +224,7 @@ module ODDB
         }
       end
     end
-    # TODO: ngngng. fix_packages ould probably be removed, as I did not find any reference
-    def fix_packages(opts={})
-      row = nil
-      handle = SwissmedicDiff.new      
-      handle.each_valid_row(Spreadsheet.open(@latest)) { |row|
-        reg = update_registration(row, opts) if row
-        seq = update_sequence(reg, row) if reg
-        if seq
-          comps = update_compositions(seq, row)
-          comps.each_with_index do |comp, idx|
-            update_galenic_form(seq, comp, row, opts)
-          end
-        end
-        update_package(reg, seq, row, {}, opts) if reg
-      }
-    rescue StandardError => err
-      puts "#{err.class} when fixing #{source_row(row).pretty_inspect if row}"
-      puts err.message
-      puts err.backtrace[0,10]
-    end
-    # TODO: ngngng. fix_compositions ould probably be removed, as I did not find any reference
-    def fix_compositions(opts={})
-      row = nil
-      handle = SwissmedicDiff.new      
-      handle.each_valid_row(Spreadsheet.open(@latest)) { |row|
-        reg = update_registration(row, opts) if row
-        seq = update_sequence(reg, row) if reg
-        if seq
-          comps = update_compositions(seq, row)
-          comps.each_with_index do |comp, idx|
-            update_galenic_form(seq, comp, row, opts)
-          end
-        end
-      }
-    rescue StandardError => err
-      puts "#{err.class} when fixing #{source_row(row).pretty_inspect if row}"
-      puts err.message
-      puts err.backtrace[0,10]
-    end
-    def fix_registrations(opts={})
-      row = nil
-      tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(rows_to_skip(tbook)) { |row|
-        update_registration(row, opts) if row
-      }
-    rescue SystemStackError => err
-      puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
-      puts err.backtrace[-100..-1]
-    end
-    # TODO: ngngng. fix_sequences ould probably be removed, as I did not find any reference
-    def fix_sequences(opts={})
-      row = nil
-      tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(rows_to_skip(tbook)) { |row|
-        reg = update_registration(row, opts) if row
-        seq = update_sequence(reg, row) if reg
-      }
-    rescue SystemStackError => err
-      puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
-      puts err.backtrace[-100..-1]
-    end
-    def get_latest_file(agent, keyword='Packungen')
+    def get_latest_file(agent, keyword='Packungen', extension = '.xlsx')
       page = agent.get @index_url
       links = page.links.select do |link|
         ptrn = keyword.gsub /[^A-Za-z]/u, '.'
@@ -293,7 +233,13 @@ module ODDB
       link = links.first or raise "could not identify url to #{keyword}.xlsx"
       file = agent.get(link.href)
       download = file.body
-      latest_name = File.join @archive, "#{keyword}-latest.xlsx"
+      latest_name = File.join @archive, "#{keyword}-latest"+extension
+      if extension == '.xlsx'
+        latest_xls = latest_name.sub('.xlsx', '.xls')
+        if File.exist?(latest_xls)
+          latest_name = latest_xls 
+        end
+      end
       latest = ''
       if(File.exist? latest_name)
         latest = File.read latest_name
@@ -304,15 +250,13 @@ module ODDB
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        target
+         target
       end
     end
     def initialize_export_registrations(agent)
-      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      if target = get_latest_file(agent, 'Präparateliste')
-        FileUtils.cp target, latest_name
+      if target = get_latest_file(agent, 'Präparateliste', '.xlsx')
+        FileUtils.cp target, @latest_preparations, :verbose => true
       end
-      debug_msg "target #{target} latest_name is #{latest_name}"
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
@@ -321,11 +265,11 @@ module ODDB
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      RubyXL::Parser.parse(File.expand_path(latest_name)) do |workbook|
+      Spreadsheet.open(@latest_preparations) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
-        workbook.worksheet[0].each(rows_to_skip(workbook)) do |row|
+        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
           iksnr = "%05i" % row[iksnr_idx].to_i
           seqnr = row[seqnr_idx]
           export = row[export_flag_idx]
@@ -341,45 +285,6 @@ module ODDB
       end
       @export_registrations
     end
-    def keep_active_registrations_praeparateliste
-      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      indices = {
-        :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
-        :seqnr => PREPARATIONS_COLUMNS.index(:seqnr)
-      }
-      Spreadsheet.open(latest_name) do |workbook|
-        iksnr_idx = indices[:iksnr]
-        seqnr_idx = indices[:seqnr]
-        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
-          iksnr = "%05i" % row[iksnr_idx].to_i
-          seqnr = row[seqnr_idx]
-          @active_registrations_praeparateliste[iksnr] = true
-        end
-      end
-      @active_registrations_praeparateliste
-    end
-    def keep_active_registrations_praeparateliste_with_export_flag_true
-      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      indices = {
-        :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
-        :seqnr => PREPARATIONS_COLUMNS.index(:seqnr),
-        :export_flag => PREPARATIONS_COLUMNS.index(:export_flag),
-      }
-      Spreadsheet.open(latest_name) do |workbook|
-        iksnr_idx = indices[:iksnr]
-        seqnr_idx = indices[:seqnr]
-        export_flag_idx = indices[:export_flag]
-        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
-          iksnr = "%05i" % row[iksnr_idx].to_i
-          seqnr = row[seqnr_idx]
-          export = row[export_flag_idx]
-          if export =~ /E/
-            @active_registrations_praeparateliste[iksnr] = true
-          end
-        end
-      end
-      @active_registrations_praeparateliste
-    end
     def mail_notifications
       salutations = {}
       flags = {}
@@ -388,7 +293,8 @@ module ODDB
         companies = all_flags.inject({}) { |memo, (pointer, flgs)|
           if((reg = pointer.resolve(@app)) && (cmp = reg.company) \
              && (email = cmp.swissmedic_email))
-            salutations.store(email, cmp.swissmedic_salutation)
+
+                                         salutations.store(email, cmp.swissmedic_salutation)
             flags.store(pointer, flgs)
             (memo[email] ||= []).push(reg)
           end
@@ -576,7 +482,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
         substances = names.collect { |name| update_substance(name) }
         cell_content = cell(row, column(:composition))
-        debug_msg("update_compositions: iksnr #{row[0]} #{seq.seqnr} seq #{seq} opts #{opts} cell_content #{cell_content}")
+        iksnr = cell(row, column(:iksnr)).to_i
+        debug_msg("update_compositions: row[0] #{row[0]} iksnr #{iksnr} #{seq.seqnr} seq #{seq} opts #{opts} cell_content #{cell_content}")
         unless cell_content
                           @empty_compositions << "iksnr #{"%05i" % cell(row, column(:iksnr)).to_i} seq #{seq}"
                           return []
@@ -707,7 +614,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                        opts={:create_only => false})
       cd = cell(row, column(:ikscd))
       unless seq.pointer
-        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_package problem '#{row[0]}' cd #{cd} sequence with pointer"
+        debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[0]}' cd #{cd} sequence with pointer"
         return
       end
       pidx = cell(row, COLUMNS.size).to_i
@@ -741,7 +648,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
         }
         if package.sequence and package.sequence.seqnr != seq.seqnr
-          debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_package iksnr '#{row[0]}' cd #{cd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
+          debug_msg "#{__FILE__}: #{__LINE__}: update_package iksnr '#{row[0]}' cd #{cd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
         if(comform = @app.commercial_form_by_name(cell(row, column(:unit))))
           args.store :commercial_form, comform.pointer
@@ -820,7 +727,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                :date        => @@today, }
       rows.each { |row|
         seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: update_registrations iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
+        next if row[0].to_s.eql?('00000')
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
         if seq
@@ -838,7 +745,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       if registration.sequence('00')
         ptr = registration.sequence('00').pointer
         if ptr
-          debug_msg"#{__FILE__}: #{__LINE__} #{Time.now}: delete sequence('00') seqnr #{seqnr} ptr #{ptr}"
+          debug_msg"#{__FILE__}: #{__LINE__}: delete sequence('00') seqnr #{seqnr} ptr #{ptr}"
           registration.sequence('00').delete_package('000')
           registration.delete_sequence('00')
         end
@@ -889,7 +796,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         args.store :indication, indication.pointer
       end
       res = @app.update ptr, args, :swissmedic
-      debug_msg "#{__FILE__}: #{__LINE__} #{Time.now}: res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'}"
+      debug_msg "#{__FILE__}: #{__LINE__}: res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'}"
       res
     end
     def update_substance(name)
