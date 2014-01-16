@@ -623,6 +623,11 @@ module ODDB
           State::Drugs::Prescription.new(@session, pack)
         end
       end
+
+      def interaction_search
+        State::Interactions::InteractionChooser.new(@session, nil)
+      end
+      
       def migel_search
         @session.set_cookie_input(:resultview, '')
         sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
