@@ -1,0 +1,4 @@
+#!/bin/bash -v
+cd `dirname $0`
+bundle install
+bundle exec ruby ../jobs/mail_index_therapeuticus_csv  >/dev/null 2>&1
