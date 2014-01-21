@@ -1,4 +1,0 @@
-#!/bin/bash -v
-cd `dirname $0`
-bundle install
-bundle exec ruby ../jobs/import_daily >/dev/null 2>&1
