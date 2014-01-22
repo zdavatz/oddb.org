@@ -17,7 +17,8 @@ require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
 require 'util/logfile'
-require 'spreadsheet'
+require 'rubyXL'
+
 module ODDB
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
@@ -85,22 +86,21 @@ module ODDB
     end
 
     def puts_sync(msg)
-      puts Time.now.to_s + ': ' + msg; $stdout.flush
+      $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
     end
     IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)  
     def read_packages # adapted from swissmedic.rb
-      latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xls'
+      latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx'
       @packages = {}
-      Spreadsheet.open(latest_name) do |workbook|
-        workbook.worksheet(0).each(3) do |row|
-          # row(6) 'G' is Heilmittelcode
-          next if /Tierarzneimittel/i.match(row[6].to_s) # ODDB.org is only for humans, not animals
-          iksnr = row[0].to_s
-          seqnr = row[1].to_i.to_s
-          name_base = row[2]
-          @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
-        end
+      RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
+        next unless row[0] and row[1] and row[2] and row[6]
+        next if /Tierarzneimittel/i.match(row[6].value.to_s) # ODDB.org is only for humans, not animals
+        iksnr = "%05i" % row[0].value.to_i
+        seqnr = "%03i" % row[1].value.to_i
+        name_base = row[2].value.to_s
+        @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
+      logCheckActivity "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
     end
     def parse_fachinfo(path, styles=nil)
       @parser.parse_fachinfo_html(path, @format, @title, styles)
@@ -1201,11 +1201,11 @@ module ODDB
     end
     
     # Error reasons 
-    Flagged_as_inactive               = "oddb.registration('Zulassungsnummer').inactive? but has Zulassungsnummer in Packungen.xls"
+    Flagged_as_inactive               = "oddb.registration('Zulassungsnummer').inactive? but has Zulassungsnummer in Packungen.xlsx"
     Reg_without_base_name             = 'oddb.registration has no method name_base'
-    Mismatch_name_2_xls               = 'oddb.registration.name_base differs from Sequenzname in Packungen.xls'
-    Iksnr_only_oddb                   = 'oddb.registration.iksnr has no Zulassungsnummer in Packungen.xls'
-    Iksnr_only_packages               = "Zulassungsnummer from Packungen.xls is not in oddb.registrations('Zulassungsnummer')"
+    Mismatch_name_2_xls               = 'oddb.registration.name_base differs from Sequenzname in Packungen.xlsx'
+    Iksnr_only_oddb                   = 'oddb.registration.iksnr has no Zulassungsnummer in Packungen.xlsx'
+    Iksnr_only_packages               = "Zulassungsnummer from Packungen.xlsx is not in oddb.registrations('Zulassungsnummer')"
     FI_iksnrs_mismatched_to_aips_xml  = 'oddb.registration.fachinfo.iksnrs do not match authNrs from AipsDownload_latest.xml'
     PI_iksnrs_mismatched_to_aips_xml  = "oddb.registration('iksnr').sequences['0x'].patinfo.descriptions['de'].iksnrs.to_s does not match entity authNrs from AipsDownload_latest.xml"
     Mismatch_reg_name_to_fi_name      = 'oddb.registration.name_base differs from oddb.registration.fachinfo.name_base'
@@ -1221,7 +1221,6 @@ module ODDB
     end
 
     def check_swissmedicno_fi_pi(options = {}, patinfo_must_be_deleted = false)
-      logCheckActivity "check_swissmedicno_fi_pi #{options} \n#{Time.now}"
       logCheckActivity "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
       swissmedicinfo_xml
       read_packages      
