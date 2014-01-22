@@ -161,7 +161,7 @@ module ODDB
       items.each { |item| 
         ptr = item.item_pointer
         if(seq = pointer_resolved(ptr))
-          ## correct the item's stored name (it may have changed in Packungen.xls)
+          ## correct the item's stored name (it may have changed in Packungen.xlsx)
           (item.data ||= {})[:name] = seq.name if seq.respond_to?(:name)
           (companies[seq.company.odba_instance] ||= []).push(item)
         end
