@@ -29,7 +29,6 @@ module ODDB
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xlsx'
-      @latest_preparations = File.join @archive, "Präparateliste-latest.xlsx"      
       @known_export_registrations = 0
       @known_export_sequences = 0
       @export_registrations = {}
@@ -51,12 +50,11 @@ module ODDB
       @checkLog.flush
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
-      debug_msg "#{__FILE__}: #{__LINE__} update target #{target.inspect} latest #{@latest.inspect}"
+      debug_msg "#{__FILE__}: #{__LINE__} update target #{target}  #{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes"
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
         if File.exists?(@latest.sub('.xlsx', '.xls'))
-          debug_msg "#{__FILE__}: #{__LINE__} calling diff #{target} #{@latest}"
           diff target, @latest.sub('.xlsx', '.xls'), [:atc_class, :sequence_date]
         else
           diff target, @latest, [:atc_class, :sequence_date]
@@ -250,12 +248,18 @@ module ODDB
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-         target
+        debug_msg "#{__FILE__}: #{__LINE__} updated #{target} now #{File.size(target)} bytes"
+        target
+      else
+        debug_msg "#{__FILE__}: #{__LINE__} skip copy as #{latest_name} is #{File.size(latest_name)} bytes"
+        target       
       end
     end
     def initialize_export_registrations(agent)
-      if target = get_latest_file(agent, 'Präparateliste', '.xlsx')
-        FileUtils.cp target, @latest_preparations, :verbose => true
+      latest_name = File.join @archive, "Präparateliste-latest.xlsx"
+      if target = get_latest_file(agent, 'Präparateliste')
+        debug_msg("cp #{target} #{latest_name}")
+        FileUtils.cp target, latest_name
       end
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
@@ -265,7 +269,7 @@ module ODDB
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      Spreadsheet.open(@latest_preparations) do |workbook|
+      Spreadsheet.open(latest_name) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
