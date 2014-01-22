@@ -50,7 +50,9 @@ module ODDB
       @checkLog.flush
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
-      debug_msg "#{__FILE__}: #{__LINE__} update target #{target}  #{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes"
+      msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
+      msg += "#{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes" if target
+      debug_msg(msg)
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
@@ -259,8 +261,8 @@ module ODDB
         debug_msg "#{__FILE__}: #{__LINE__} updated download.size is #{download.size}. #{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}"
         target
       else
-        debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning false"
-        false       
+        debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest"
+        latest_name
       end
     end
     def initialize_export_registrations(agent)
