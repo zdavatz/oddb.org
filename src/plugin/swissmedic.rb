@@ -41,7 +41,7 @@ module ODDB
     def debug_msg(msg)
       # $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
       if not defined?(@checkLog) or not @checkLog
-        name = LogFile.filename(File.basename(__FILE__), Time.now)
+        name = LogFile.filename('oddb/debug/'+File.basename(__FILE__), Time.now)
         FileUtils.makedirs(File.dirname(name))
         @checkLog = File.open(name, 'a+') 
         $stdout.puts "Opened #{name}"
@@ -92,7 +92,8 @@ module ODDB
           memo
         }
       else
-        debug_msg "#{__FILE__}: #{__LINE__} update skipped as target is #{target.inspect}"
+        debug_msg "#{__FILE__}: #{__LINE__} update return false as target is #{target.inspect}"
+        false
       end
     end
     # check diff from overwritten stored-objects by admin
@@ -262,7 +263,7 @@ module ODDB
         target
       else
         debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest"
-        latest_name
+        nil
       end
     end
     def initialize_export_registrations(agent)
