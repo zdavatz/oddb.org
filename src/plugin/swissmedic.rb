@@ -50,7 +50,9 @@ module ODDB
       @checkLog.flush
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
-      debug_msg "#{__FILE__}: #{__LINE__} update target #{target}  #{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes"
+      msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
+      msg += "#{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes" if target
+      debug_msg(msg)
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
@@ -78,11 +80,19 @@ module ODDB
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0)
-        FileUtils.cp target, @latest, :verbose => true
+        if FileUtils.compare_file(target, @latest)
+          debug_msg "#{__FILE__}: #{__LINE__} rm_f #{target} after #{@update_time} minutes"
+          FileUtils.rm_f(target, :verbose => true)
+        else
+          debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{@latest} after #{@update_time} minutes"
+          FileUtils.cp target, @latest, :verbose => true
+        end
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)| 
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
+      else
+        debug_msg "#{__FILE__}: #{__LINE__} update skipped as target is #{target.inspect}"
       end
     end
     # check diff from overwritten stored-objects by admin
@@ -248,19 +258,16 @@ module ODDB
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        debug_msg "#{__FILE__}: #{__LINE__} updated #{target} now #{File.size(target)} bytes"
+        debug_msg "#{__FILE__}: #{__LINE__} updated download.size is #{download.size}. #{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}"
         target
       else
-        debug_msg "#{__FILE__}: #{__LINE__} skip copy as #{latest_name} is #{File.size(latest_name)} bytes"
-        target       
+        debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest"
+        latest_name
       end
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      if target = get_latest_file(agent, 'Präparateliste')
-        debug_msg("cp #{target} #{latest_name}")
-        FileUtils.cp target, latest_name
-      end
+      target = get_latest_file(agent, 'Präparateliste')
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
