@@ -41,7 +41,7 @@ module ODDB
     def debug_msg(msg)
       # $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
       if not defined?(@checkLog) or not @checkLog
-        name = LogFile.filename('oddb/debug/'+File.basename(__FILE__), Time.now)
+        name = LogFile.filename('oddb/debug/', Time.now)
         FileUtils.makedirs(File.dirname(name))
         @checkLog = File.open(name, 'a+') 
         $stdout.puts "Opened #{name}"
