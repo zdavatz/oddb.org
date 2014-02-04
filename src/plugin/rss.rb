@@ -33,7 +33,7 @@ module ODDB
       }
     end
     def download(uri, agent=nil)
-      LogFile.append('oddb/debug', " getin RssPlugin#download #{uri}", Time.now.utc)
+      LogFile.append('oddb/debug', " getting RssPlugin#download #{uri}", Time.now.utc)
       unless agent
         agent = Mechanize.new
         agent.user_agent_alias = "Linux Firefox"
@@ -70,22 +70,31 @@ module ODDB
       return nil unless page and page.links
       page.links.map do |link|
         entry = {}
-        if href = link.href and href.match(/\/00135\/#{category}\/(\d{5})/) and $1 != '01711' # "Archiv Chargenrückrufe"
+        href = link.href
+        return unless href
+        md = href.match(/\/00135\/#{category}\/(\d{5})/)
+        if md and md[1] != '00363' and md[1] != '01711' # "Archiv HPC" and "Archiv Chargenrückrufe"
           title = ''
           container = Nokogiri::HTML(open(host + href))
           if h1 = container.xpath(".//h1[@id='contentStart']")
             title = h1.text
           end
-          return nil unless container and date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
-          date = Date.parse(date_field.to_s).to_s
+          return nil unless container
+          date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
+          return nil unless date_field
+          date = Date.parse(date_field.to_s)
           if count
-            if date =~ /^(\d{2})\.(#{("%02d" % @@today.month)})\.(#{@@today.year})/o
+            if date.year == @@today.year and date.month ==  @@today.month
+              LogFile.append('oddb/debug', " rss adding current issue: #{date.to_s} #{title}", Time.now.utc)
               @current_issue_count += 1
-              @new_entry_count     += 1 if Date.new($3.to_i, $2.to_i, $1.to_i) >= @app.rss_updates[@name].first
+            end
+            if date >= @app.rss_updates[@name].first
+              @new_entry_count     += 1
+              LogFile.append('oddb/debug', " rss adding new entry: #{date.to_s} #{title}", Time.now.utc)
             end
           end
           entry[:title]       = title || ''
-          entry[:date]        = date
+          entry[:date]        = date.to_s
           entry[:description] = compose_description(container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div"))
           entry[:link]        = host + href
         end
