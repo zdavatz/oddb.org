@@ -290,7 +290,8 @@ class PackageForm < HtmlGrid::Composite
     end
   end
   def patinfo_upload(model, session=@session)
-    if(model.company.invoiceable?)
+		return unless model.company 
+    if (model.company.invoiceable?)
       HtmlGrid::InputFile.new(:patinfo_upload, model, @session, self)
     else
       PointerLink.new(:e_company_not_invoiceable, model.company, @session, self)
