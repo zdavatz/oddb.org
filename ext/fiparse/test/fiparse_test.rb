@@ -9,12 +9,7 @@ require 'minitest/autorun'
 require 'fiparse'
 
 class TestFiParse <Minitest::Test
-	def test_parse_fachinfo_doc
-		filename = File.expand_path('data/doc/fi_df_t2.doc', 
-			File.dirname(__FILE__))
-		fis = ODDB::FiParse.parse_fachinfo_doc(File.read(filename))
-		assert_equal(2, fis.size)
-		assert_instance_of(ODDB::FachinfoDocument, fis.first)
-		assert_instance_of(ODDB::FachinfoDocument, fis.last)
+	def test_parse_fachinfo_docx
+		puts "Missing tests for fiparse"
 	end
 end
