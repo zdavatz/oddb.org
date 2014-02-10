@@ -34,7 +34,8 @@ module ODDB
       atc_codes = []
       if drugs and !drugs.empty?
         drugs.each{ |ean, drug|
-          atc_codes << drug.atc_class.code
+          atc_codes << drug.atc_class.code if drug and drug.atc_class
+          atc_codes << ean
         }
       end
       @@atc_codes = atc_codes
@@ -44,6 +45,7 @@ module ODDB
     end
     def self.get_interactions(my_atc_code, session, atc_codes=@@atc_codes)
       results = []
+      $stdout.puts "View::Interactions: get_interactions atc_codes #{my_atc_code}"
       idx=atc_codes.index(my_atc_code)
       atc_codes[0..idx].combination(2).to_a.each {
         |combination|
@@ -119,7 +121,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     div = HtmlGrid::Div.new(model, @session, self)
     div.set_attribute('class', 'interaction-atc')
     div.value = []
-    div.value << model.atc_class.code  + ': ' + model.atc_class.name
+    div.value << model.atc_class.code  + ': ' + model.atc_class.name if model.atc_class
     div
   end
   
@@ -142,6 +144,8 @@ class InteractionChooserDrug < HtmlGrid::Composite
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   def init
+    ean13 = @session.user_input(:search_query)
+    path = @session.request_path
     @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
       components.store([0,0], :header_info)
@@ -151,6 +155,19 @@ class InteractionChooserDrug < HtmlGrid::Composite
       end
       @attributes.store('id', 'drugs_' + @model.barcode)
     end
+    self.onsubmit = <<-JS
+function get_to(url) {
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url);
+  document.body.appendChild(form);
+  form.submit();
+}
+var url = searchbar.baseURI + 'home_interactions/' + ean13;
+window.location = url;
+get_to(href);
+return false;
+    JS
     super
   end
   def header_info(model, session=@session)
@@ -159,6 +176,7 @@ class InteractionChooserDrug < HtmlGrid::Composite
   def text_info(model, session=@session)
     div = HtmlGrid::Div.new(model, @session, self)
     # the first element cannot have an interaction
+    return div unless model.atc_class
     return div if ODDB::View::Interactions.atc_codes(@session).index(model.atc_class.code) == 0
     div.set_attribute('class', 'interaction-info')
     div.value = []
@@ -314,9 +332,9 @@ class InteractionChooser < View::PrivateTemplate
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
-    link = HtmlGrid::Link.new(:home_interaction, model, @session, self)
+    link = HtmlGrid::Link.new(:home_interactions, model, @session, self)
     link.css_class = "list"
-    link.href  = @lookandfeel._event_url(:home_interaction, [])
+    link.href  = @lookandfeel._event_url(:home_interactions, [])
     link.value = @lookandfeel.lookup(:home)
     fields << link
     fields << '&nbsp;-&nbsp;'
