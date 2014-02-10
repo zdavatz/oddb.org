@@ -11,7 +11,6 @@ require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
 require 'fachinfo_pdf'
-require 'fachinfo_doc'
 require 'indications'
 require 'minifi'
 require 'fachinfo_hpricot'
@@ -180,20 +179,6 @@ module ODDB
     def FiParse.extract_minifi(path)
       MiniFi.extract(path)
     end
-		def parse_fachinfo_doc(path)
-			parser = Rwv2.create_parser(path)
-			handler = FachinfoTextHandler.new
-			parser.set_text_handler(handler)
-      parser.set_table_handler(handler.table_handler)
-			parser.parse
-      if(handler.writers.empty?)
-        ## Product-Name was not written large enough - retry with whatever was 
-        #  the largest fontsize
-        handler.cutoff_fontsize = handler.max_fontsize
-        parser.parse
-      end
-			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
-		end
     def parse_fachinfo_docx(path, iksnr, lang='de')
       doc = YDocx::Document.open(path, {
         :iksnr => iksnr,
@@ -234,7 +219,6 @@ module ODDB
       # swissmedicinfo
 		end
     module_function :storage=
-    module_function :parse_fachinfo_doc
     module_function :parse_fachinfo_docx
     module_function :parse_fachinfo_html
     module_function :parse_fachinfo_pdf  unless defined?(Minitest)
