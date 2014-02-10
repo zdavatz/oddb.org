@@ -11,9 +11,6 @@ require 'view/rss/price_cut'
 require 'view/rss/price_rise'
 require 'view/rss/sl_introduction'
 require 'view/rss/swissmedic'
-require 'openssl'
-# I_KNOW_THAT_OPENSSL_VERIFY_PEER_EQUALS_VERIFY_NONE_IS_WRONG = nil
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 module ODDB
   class RssPlugin < Plugin
