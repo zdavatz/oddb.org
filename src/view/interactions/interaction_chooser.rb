@@ -13,6 +13,7 @@ require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
 require 'view/chapter'
+# Test it with de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
 
 module ODDB
   module View
@@ -32,12 +33,14 @@ module ODDB
                 }
     def self.calculate_atc_codes(drugs)
       atc_codes = []
+      ean13s    = []
       if drugs and !drugs.empty?
         drugs.each{ |ean, drug|
           atc_codes << drug.atc_class.code if drug and drug.atc_class
-          atc_codes << ean
+          ean13s << ean
         }
       end
+      @@ean13s    = ean13s
       @@atc_codes = atc_codes
     end
     def self.atc_codes(session)
@@ -45,16 +48,15 @@ module ODDB
     end
     def self.get_interactions(my_atc_code, session, atc_codes=@@atc_codes)
       results = []
-      $stdout.puts "View::Interactions: get_interactions atc_codes #{my_atc_code}"
       idx=atc_codes.index(my_atc_code)
-      atc_codes[0..idx].combination(2).to_a.each {
+      atc_codes[0..-1].combination(2).to_a.each {
         |combination|
-        next unless combination.index(my_atc_code)
         [ session.app.get_epha_interaction(combination[0], combination[1]),
-          session.app.get_epha_interaction(combination[1], combination[0]),       
+          session.app.get_epha_interaction(combination[1], combination[0]),
         ].each{ 
                 |interaction|
           next unless interaction
+          next unless interaction.atc_code_self.eql?(my_atc_code)
           header = ''
           header += interaction.atc_code_self  + ': ' + interaction.atc_name + ' => '
           header += interaction.atc_code_other + ': ' + interaction.name_other
@@ -71,7 +73,7 @@ module ODDB
                     }
         }
       }
-      results.uniq
+      results.uniq.sort_by { |item| item[:severity] + item[:header]  }.reverse
     end    
 class InteractionChooserDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
