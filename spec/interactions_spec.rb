@@ -1,132 +1,196 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# kate: space-indent on; indent-width 2; mixedindent off; indent-mode ruby;
 require 'spec_helper'
 require 'pp'
-# require Dir.pwd + '/spec/spec_helper.rb'
+
 @workThread = nil
+for_running_in_irb = %(
+require 'watir'; require 'pp'
+homeUrl ||= "oddb-ci2.dyndns.org"
+OddbUrl = homeUrl
+@browser = Watir::Browser.new
+@browser.goto OddbUrl
+@browser.link(:text=>'Interaktionen').click
+id = 'home_interactions'
+medi = 'Losartan'
+chooser = @browser.text_field(:id, id)
+)
+
+DrugDescription = Struct.new(:name, :iksnr, :ean13, :atc_code, :wirkstoff)
+MephaExamples = [
+  DrugDescription.new('Losartan', 	'58392', '7680583920013', 'C09CA01', 'Losartan'),
+  DrugDescription.new('Metoprolol', '59131', '7680591310011', 'C07AB02', 'metoprololi tartras'),
+  DrugDescription.new('Nolvadex', 	'39053', '7680390530399', 'L02BA01', 'Tamoxifen'),
+  DrugDescription.new('Paroxetin',	'58643', '7680586430014', 'N06AB05', 'paroxetinum' ),
+]
+
+MephaInteractions = [ # given drugs defined above
+  /C09CA01: Losartan => C07AB02: Metoprolol Verstärkte Blutdrucksenkung\nB:/,
+  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung\nB:/,
+  /C09CA01: Losartan => L02BA01: Tamoxifen Keine bekannte Interaktion\nA:/,
+  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion.\nB:/,
+  /N06AB05: Paroxetin => C07AB02: Metoprolol Erhöhte Metoprololspiegel\nC:/,
+  /N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen\nX:/,
+]
+SearchBar = 'interaction_chooser_searchbar'
+
+Inderal   = 'Inderal 10 mg'
+Ponstan   = 'Ponstan 125 mg'
+Viagra    = 'Viagra 100 mg'
+Marcoumar = 'Marcoumar'
+Aspirin   = 'Aspirin Cardio 100'
+# http://oddb-ci2.dyndns.org/de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
+OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
+OrderOfInteractions = [
+  /#{Inderal}.+ - /,
+  /#{Ponstan}.+ - /, # M01AG01
+  /M01AG01: Mefenaminsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/,
+  /#{Viagra}.+ - /,  # G04BE03
+  /G04BE03: Sildenafil => B01AC06: Acetylsalicylsäure Keine Interaktion./,
+  /#{Marcoumar}.+ - /, # B01AA04
+  /B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/,
+  /B01AA04: Phenprocoumon => B01AC06: Acetylsalicylsäure Erhöhtes Blutungsrisiko/,
+  /#{Aspirin}.+ - /, # B01AC06
+  /B01AC06: Acetylsalicylsäure => M01AG01: Mefenaminsäure Erhöhtes GIT-Blutungsrisiko/,
+  /B01AC06: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/,
+  /B01AC06: Acetylsalicylsäure => G04BE03: Sildenafil Keine Interaktion/,
+  ]
 
 describe "ch.oddb.org" do
  
+  def add_one_drug_by(name)
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    chooser = @browser.text_field(:id, SearchBar)
+    0.upto(10).each{ |idx|
+                    chooser.set(name)
+                    sleep idx*0.1
+                    chooser.send_keys(:down)
+                    sleep idx*0.1
+                    chooser.send_keys(:enter)
+                    sleep idx*0.1
+                    value = chooser.value
+                    break unless /#{name}/.match(value)
+                    sleep 0.5
+                    }
+    chooser.set(chooser.value + "\n")
+    createScreenshot(@browser, "_#{name}_#{__LINE__}")
+  end
+
+  def check_url_with_epha_example_interaction(url)
+    puts "check_url_with_epha_example_interaction #{url}" if $VERBOSE
+    @browser.goto url
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    inhalt = @browser.text
+    MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
+    @browser.link(:name => 'delete').click
+  end    
+
   before :all do
     @idx = 0
     @browser = Watir::Browser.new
     waitForOddbToBeReady(@browser, OddbUrl)
   end
-  
+
   before :each do
     @browser.goto OddbUrl
   end
-  
+
   after :each do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
-    # sleep 
+    # sleep
     @browser.goto OddbUrl
   end
   
-  it "should show interactions between epha example in instant view" do
-    @browser.goto OddbUrl
-    medis = ['Losartan',
-              'Metoprolol',
-              'Nolvadex',
-              'Paroxetin',
-             ]
-    @browser.link(:text=>'Interaktionen').click
+  it "should show interactions in the correct order just below the triggering drug" do
+# OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
+# OrderOfInteractions [
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    @browser.goto url
     @browser.url.should match ('/de/gcc/home_interactions/')
-    id = 'interaction_searchbar'
-    medis.each{
-               |medi|
-              chooser = @browser.text_field(:id, id)
-              0.upto(10).each{ |idx|
-                              chooser.set(medi) 
-                              sleep idx*1
-                              chooser.send_keys(:down)
-                              sleep idx*0.1
-                              chooser.send_keys(:enter)
-                              sleep idx*0.1
-                              value = chooser.value
-                              break unless /#{medi}/.match(value)
-                              sleep 1
-                             }
-              chooser.set(chooser.value + "\n")
-              createScreenshot(@browser, "_#{medi}_#{__LINE__}")
-              id = 'interaction_chooser_searchbar'
-              }
-    sleep 1
-    createScreenshot(@browser, "_interactions_#{__LINE__}")
-    medis.each{
-               |medi|
-    @browser.text.should match /#{medi}/
-               }            
+    OrderExample.each{ |name| add_one_drug_by(name) }
+    inhalt = @browser.text
+    puts "URL ist #{url}"
+    pp inhalt
+    lastPos = -1
+    OrderExample.each{ |name| inhalt.index(name).should_not be nil }
+    OrderOfInteractions.each{ |pattern| pattern.match(inhalt).should_not be nil }
+    OrderOfInteractions.each{
+      |pattern|
+          puts "Checking #{pattern}"
+          m = pattern.match(inhalt)
+          puts "Failed checking #{pattern}" unless m
+          m.should_not be nil
+          actPos = inhalt.index(m[0])
+          puts "actPos is #{actPos} >=? lastPos #{lastPos}"
+          actPos.should be > lastPos
+          lastPos = actPos
+          
+        }
+    @browser.link(:name => 'delete').click
   end
-  it "should show interactions between Aspirin and Marcoumar in old format" do
-    @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match ('/de/gcc/home_interactions/')
-    @browser.link(:text=>'Instant').click
-    @browser.button(:value,"Suchen").click
-    @browser.url.should match ('/de/gcc/interaction_chooser/')
-    @browser.text_field(:id, "searchbar").set("Aspirin")
-    @browser.button(:value,"Suchen").click
-    @browser.text.should match /Ascorbinsäure/
-    @browser.text.should match "Ascorbinsäure"
-    @browser.text.should match  "Pseudoephedrin Hydrochlorid"
-    @browser.text.should match  /Medikament.e. in der ODDB anzeigen/
-    @browser.link(:text, "Acetylsalicylsäure").click
-    @browser.text_field(:id, "searchbar").set("Marcoumar")
-    @browser.button(:value,"Suchen").click
-    @browser.link(:text, "Phenprocoumon").click
-    @browser.button(:value,"Interaktionen Epha.ch").click
-    @browser.text.should match /B01AA04 .Phenprocoumonum./
-    @browser.text.should match 'Erhöhtes Blutungsrisiko'
-    @browser.link(:text,"Erhöhtes Blutungsrisiko").click
-    @browser.back
-    @browser.back
-    @browser.button(:value,"Interaktionen Epha.ch in 3D").click
-    # cannot match HTML. e-g Übersicht
-    # @browser.text "Quelle: Swissmedic\nVersion: 30.10.2013\nÜbersicht\nAlle löschen"
-    # @browser.text.should match 'Marcoumar'
-    # @browser.text.should match 'Aspirin'
-  end if false
+  
+  it "should show interactions having given iksnr,ean13,atc_code,iksnr" do
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url += MephaExamples[0].iksnr + ','
+    url += MephaExamples[1].ean13 + ','
+    url += MephaExamples[2].atc_code + ','
+    url += MephaExamples[3].iksnr
+    check_url_with_epha_example_interaction(url)
+  end
 
-  
+  it "should show interactions having given atc_codes" do
+    atc_codes = MephaExamples.collect{ |x| x.atc_code}
+    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{atc_codes.join(',')}")
+  end
+
+  it "should show interactions having given ean13s" do
+    ean13s = MephaExamples.collect{ |x| x.ean13}
+    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{ean13s.join(',')}")
+  end
+
+  it "should show interactions having given iksnrs" do
+    iksnrs = MephaExamples.collect{ |x| x.iksnr}
+    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{iksnrs.join(',')}")
+  end
+
+  it "should show interactions for epha example medicaments added manually" do
+    @browser.goto OddbUrl
+    @browser.link(:text=>'Interaktionen').click
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    MephaExamples.each{ |medi| add_one_drug_by(medi.name) }
+    inhalt = @browser.text
+    MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
+  end
+
+  it "after delete all drugs a new search must be possible" do
+    test_medi = 'Losartan'
+    @browser.goto OddbUrl
+    @browser.link(:text=>'Interaktionen').click
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    add_one_drug_by(test_medi)
+    @browser.text.should match (test_medi)
+    @browser.link(:name => 'delete').click
+    @browser.text.should_not match (test_medi)
+    add_one_drug_by(test_medi)
+    @browser.text.should match (test_medi)
+  end
+
+  it "after adding a single medicament there should be no ',' in the URL" do
+    test_medi = 'Losartan'
+    @browser.goto OddbUrl
+    @browser.link(:text=>'Interaktionen').click
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
+    @browser.text.should_not match (test_medi)
+    add_one_drug_by(test_medi)
+    @browser.text.should match (test_medi)
+    @browser.url.should_not match ('/,')
+  end
+
   after :all do
     @browser.close
   end
  
 end
-x = %(
-1. Suchen Sie nach Medikamentennamen oder Wirkstoff.
-2. Auf "Medikamentennamen" klicken -> Medikament wird in den Interaktionskorb gelegt.
-3. Auf "Interaktionskorb" klicken.
-Ascorbinsäure N02BA01        
-Phenprocoumon B01AA04 2A6, 2C8, 2C9, 3A4 und 3A5-7 
-
-http://ch.oddb.org/de/gcc/interaction_basket/substance_ids/3683,6254/atc_code/N02BA01,N02BA01,N02BA01,B01AA04
-
-Substanz  ATC-Klassierung Substrat von  wird angeregt durch wird gehemmt durch  empirisch
-Ascorbinsäure N02BA01        
-Phenprocoumon B01AA04 2A6, 2C8, 2C9, 3A4 und 3A5-7       
-starke Hemmung : verursacht einen > 5-fachen Anstieg von Plasma-AUC-Werten oder eine Clearance-Verminderung von mehr als 80%.
-moderate Hemmung : verursacht einen > 2-fachen Anstieg von Plasma-AUC-Werten oder eine Clearance-Verminderung von 50-80%.
-schwache Hemmung : verursacht einen > 1.25-fachen Anstieg von Plasma-AUC-Werten oder eine Clearance-Verminderung von 20-50%.
-
-Epha ->
-Active  Passive Information Rating
-N02BA01 (Acidum Ascorbicum) B01AA04 (Phenprocoumonum) Erhöhtes Blutungsrisiko C
-B01AA04 (Phenprocoumonum) N02BA01 (Acidum A
-Interaktion Detail
-Mechanism Acetylsalicylsäure hemmt die Thrombozytenaggregation und wirkt damit ebenfalls antikoagulatorisch.
-Effect  Durch die additive Wirkung beider Substanzen nimmt das Blutungsrisiko zu.
-Clinic  Trotz des erhöhten Blutungsrisikos wird die Kombination von oralen Antikoagulantien mit Acetylsäure 100-300mg täglich in bestimmten kardiovaskulären Situationen bewusst eingesetzt. Dabei sollte der Patient klinisch auf ein erhöhtes Blutungsrisiko, insbesondere auf Symptome einer gastrointestinalen Blutung monitorisiert werden. Analgetische Dosierungen von Acetylsalicylsäure sollten nicht mit oralen Antikoagulantien kombiniert werden. INR engmaschig kontrollieren.
-References   
-Author  Journal Year  Titel
-Kastrati A  J Intern Med  2008  Aspirin and clopidogrel with or without phenprocoumon after drug eluting coronary stent placement in patients on chronic oral anticoagulation.
-Loew D  Am Heart J  1980  Bleeding during acetylsalicylic acid and anticoagulant therapy in patients with reduced platelet reactivity after aortic valve replacement.
-Petersen P  Arch Intern Med 1999  Bleeding during warfarin and aspirin therapy in patients with atrial fibrillation: the AFASAK 2 study. Atrial Fibrillation Aspirin and Anticoagulation.
-Schaff HV Am J Cardiol  1983  Trial of combined warfarin plus dipyridamole or aspirin therapy in prosthetic heart valve replacement: danger of aspirin compared with dipyridamo
-
-Epha-3 ->
-http://matrix.epha.ch/#N02BA01,B01AA04 Zeigt nichts an, da nicht IKSNR
-
- )
-)
