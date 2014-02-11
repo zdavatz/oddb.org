@@ -624,7 +624,7 @@ module ODDB
         end
       end
 
-      def interaction_search
+      def home_interactions
         State::Interactions::InteractionChooser.new(@session, nil)
       end
       

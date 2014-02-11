@@ -22,6 +22,7 @@ module ODDB
   end
   class TestRssPlugin <Minitest::Test
     include FlexMock::TestCase
+		Section = '00135'
     def setup
       @current = flexmock('current', :valid_from => Time.local(2011,2,3))
       @package = flexmock('package', 
@@ -99,14 +100,15 @@ REPORT
       host = 'http://www.example.com'
       assert_empty(@plugin.extract_swissmedic_entry_from('00000', page, host))
       assert_empty(@plugin.extract_swissmedic_entry_from('00018', page, host))
-      assert_empty(@plugin.extract_swissmedic_entry_from('00092', page, host))
+      assert_empty(@plugin.extract_swissmedic_entry_from('00158', page, host))
     end
     def test_extract_swissmedic_entry_from__with_recall
-      category = '00118'
+      category = '00166'
       today = (Date.today - 1).strftime('%d.%m.%Y')
-      host = 'http://www.example.com'
+      host = 'https://www.example.com'
       link = flexmock('Link')
-      link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
+      link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
+			link.should_receive(:open)
       date = flexmock('Date')
       node = flexmock('Node')
       date.should_receive(:text).and_return(today)
@@ -131,17 +133,17 @@ REPORT
           :date        => Date.parse(today).to_s,
           :title       => 'Recall Title',
           :description => "Recall Description",
-          :link        => "http://www.example.com/recall/00091/00118/00000/index.html",
+          :link        => "https://www.example.com/recall/#{Section}/00166/00000/index.html",
         }],
         @plugin.extract_swissmedic_entry_from(category, page, host)
       )
     end
     def test_extract_swissmedic_entry_from__with_hpc
-      category = '00092'
+      category = '00157'
       today = (Date.today - 1).strftime('%d.%m.%Y')
       host = 'http://www.example.com'
       link = flexmock('Link')
-      link.should_receive(:href).and_return("/recall/00091/#{category}/00000/index.html")
+      link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
       date = flexmock('Date')
       node = flexmock('Node')
       date.should_receive(:text).and_return(today)
@@ -166,7 +168,7 @@ REPORT
           :date        => Date.parse(today).to_s,
           :title       => 'HPC Title',
           :description => "HPC Description",
-          :link        => 'http://www.example.com/recall/00091/00092/00000/index.html',
+          :link        => "http://www.example.com/recall/#{Section}/#{category}/00000/index.html",
         }],
         @plugin.extract_swissmedic_entry_from(category, page, host)
       )
@@ -191,7 +193,7 @@ REPORT
       entries = @plugin.swissmedic_entries_of(:recall)
       assert_equal(['de', 'fr', 'en'], entries.keys)
       assert_equal('Recall Title',     entries['de'].first[:title])
-      assert_equal(3,                  entries['de'].length)
+      assert_equal(1,                  entries['de'].length)
     end
     def test_swissmedic_entries_of__with_hpc
       link = flexmock('Link')
@@ -210,7 +212,7 @@ REPORT
       entries = @plugin.swissmedic_entries_of(:hpc)
       assert_equal(['de', 'fr', 'en'], entries.keys)
       assert_equal('HPC Title',        entries['de'].first[:title])
-      assert_equal(5,                  entries['de'].length)
+      assert_equal(1,                  entries['de'].length)
     end
     def test_generate_flavored_rss__with_recall
       expected = ['just-medical']
@@ -229,7 +231,7 @@ REPORT
     def test_update_swissmedic_feed__with_recall
       flexmock(@app) do |app|
         app.should_receive(:rss_updates).and_return({})
-        app.should_receive(:odba_isolated_store).times(2)
+        app.should_receive(:odba_isolated_store).times(1)
       end
       flexmock(@plugin) do |plug|
         plug.should_receive(:update_rss_feeds)
@@ -240,7 +242,7 @@ REPORT
     def test_update_swissmedic_feed__with_hpc
       flexmock(@app) do |app|
         app.should_receive(:rss_updates).and_return({})
-        app.should_receive(:odba_isolated_store).times(2)
+        app.should_receive(:odba_isolated_store).times(1)
       end
       flexmock(@plugin) do |plug|
         plug.should_receive(:update_rss_feeds)
@@ -267,7 +269,7 @@ REPORT
     def test_update_price_feeds__previous_nil
       flexmock(@package) do |p|
         p.should_receive(:price_public).with_no_args.and_return(@current)
-        p.should_receive(:price_public).with(1).once.and_return(nil)
+        # p.should_receive(:price_public).with(1).once.and_return(nil)
       end
       flexmock(@current, :authority => :sl)
       flexmock(@app).should_receive(:each_package).and_yield(@package)
@@ -287,7 +289,7 @@ REPORT
       previous = flexmock('previous')
       flexmock(@package) do |p|
         p.should_receive(:price_public).with_no_args.and_return(@current)
-        p.should_receive(:price_public).with(1).once.and_return(previous)
+#        p.should_receive(:price_public).with(1).once.and_return(previous)
       end
       flexmock(previous, :> => false)
       flexmock(@current, :> => true)

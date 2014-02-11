@@ -8,49 +8,74 @@ require 'view/interactions/interaction_chooser'
 module ODDB
   module State
     module Interactions
+
 class InteractionChooserDrug < Global
   VIEW = View::Interactions::InteractionChooserDrugDiv
   VOLATILE = true
 end
+
 class InteractionChooser < State::Interactions::Global
   DIRECT_EVENT = :interaction_chooser
   VIEW = View::Interactions::InteractionChooser
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
-  def init
-    $stdout.puts "State::Interactions::InteractionChooser init for #{@session.user_input(:search_query).inspect} and request_path #{@session.request_path.inspect}"
-    # http://oddb-ci2.dyndns.org/de/gcc/interaction_search/atc/C07AA05,N02BA01
+
+  def handle_drug_changes(drugs, msg)
     path = @session.request_path
-    search_code = path.split('interaction_search/')[1]
+    @session.set_persistent_user_input(:drugs, drugs)
+    uri = @session.lookandfeel._event_url(:home_interactions, [])
+    first = true
+    drugs.each{|ean, pack|
+               if first
+                 first = false
+                 uri += pack.barcode
+               else
+                  uri += ",#{pack.barcode}"
+               end
+               }
+  end
+  
+  def init
+    ean13 = @session.user_input(:search_query)
+    path = @session.request_path
+    search_code = path.split('home_interactions/')[1]
+    drugs = {}
     if search_code
-      kind      = search_code.split('/')[0]
-      item_list = search_code.split('/')[1]
-      # we must pass ean => atc_class
-      # e.g View::Interactions::InteractionChooserDrug: init drugs {"7680390530474"=>#<ODBA::Stub:69870079982500#217943 @odba_class=ODDB::Package @odba_container=69870079965880#95795>, "7680583920112"=>#<ODBA::Stub:69870119413280#22181461 @odba_class=ODDB::Package @odba_container=69870118491780#10801316>}
-      # bin/admin: search_by_atc("N02BA01").first.packages.first.barcode
-      drugs = {}
-      item_list.split(',').each {
+      items = search_code.split(',')
+      # new approach unified
+      # http://oddb-ci2.dyndns.org/de/gcc/home_interactions/51795,C07AA05,7680583920112
+      # Beispiel von Mepha. Losartan, Teva, Novaldex und Paroxetin
+      #  http://matrix.epha.ch/#/56751,61537,39053,59256
+      #  http://oddb-ci2.dyndns.org/de/gcc/home_interactions/56751,61537,39053,59256
+      items.each{
         |item|
-        $stdout.puts "search_code item #{item.inspect} with #{@session.app.atc_class(item).inspect}"
-        next unless atc = @session.app.atc_class(item)
-        $stdout.puts "search_code item #{atc.packages.first.inspect} with #{atc.packages.first.barcode.inspect}"
-        next unless atc.packages.first and atc.packages.first.barcode
-        drugs[atc.packages.first.barcode] = atc.packages.first 
+        if item.kind_of?(String) and item.length == 5 # it is an iksrn
+          registration = @session.app.registration(item)
+          pack = registration.packages.first
+          next unless pack
+          drugs[pack.barcode] = pack
+        elsif item.kind_of?(String) and item.length == 7 # it is an ATC code
+          next unless atc = @session.app.atc_class(item)
+          next unless atc.packages.first and atc.packages.first.barcode
+          drugs[atc.packages.first.barcode] = atc.packages.first
+        elsif item.kind_of?(String) and item.length == 13 # it is an barcode/ean13
+          next unless item
+          pack = package_for(item)
+          next unless pack
+          drugs[item] = pack
+        end
       }
-      $stdout.puts "search_code kind #{kind.inspect} with items #{item_list.inspect} => drugs #{drugs.inspect}"
-      @session.set_persistent_user_input(:drugs, drugs)
+      handle_drug_changes(drugs, 'init')
     else
       if @session.event.to_sym == self.class::DIRECT_EVENT
-        @session.set_persistent_user_input(:drugs, {})
+        handle_drug_changes({}, 'init DIRECT_EVENT')
       end
       # from centeredsearchform
       if ean13 = @session.user_input(:search_query)
         check_model
         unless error?
-          pack = package_for(ean13.to_s)
           drugs = @session.persistent_user_input(:drugs) || {}
-          drugs[ean13] = pack unless drugs.has_key?(ean13)
-          $stdout.puts "State::Interactions::InteractionChooser init set_persistent_user_input #{drugs.inspect}}"
-          @session.set_persistent_user_input(:drugs, drugs)
+          drugs[ean13] = package_for(ean13)
+          handle_drug_changes(drugs, 'init: added ean13')
         end
       end
     end
@@ -60,10 +85,10 @@ class InteractionChooser < State::Interactions::Global
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s and
-         pack  = package_for(ean13)
+        pack  = package_for(ean13)
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs[ean13] = pack unless drugs.has_key?(ean13)
-        @session.set_persistent_user_input(:drugs, drugs)
+        handle_drug_changes(drugs, 'ajax_add_drug')
       end
     end
     InteractionChooserDrug.new(@session, @model)
@@ -74,14 +99,14 @@ class InteractionChooser < State::Interactions::Global
       if ean13 = @session.user_input(:ean).to_s
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs.delete(ean13)
-        @session.set_persistent_user_input(:drugs, drugs)
+        handle_drug_changes(drugs, 'ajax_delete_drug')
       end
     end
     InteractionChooserDrug.new(@session, @model)
   end
   def delete_all
     unless error?
-      @session.set_persistent_user_input(:drugs, {})
+      handle_drug_changes({}, 'delete_all')
       @model = []
     end
     self.http_headers = {

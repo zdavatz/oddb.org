@@ -82,8 +82,14 @@ function selectXhrRequest() {
   var searchbar = dojo.byId('#{id}');
   if(!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     #{progressbar}
-    xhrGet(searchbar.value);
+    var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
+    var path = searchbar.baseURI;
     searchbar.value = '';
+    var found = path.match(/home_interactions/);
+    if(found && ean13) {
+      var url = path + ',' + ean13;
+      window.location = url;
+    }
   }
 }
 require(['dojo/ready'], function(ready) {
@@ -149,13 +155,21 @@ function get_to(url) {
   document.body.appendChild(form);
   form.submit();
 }
+
 if (#{@name}.value!='#{val}') {
 #{timer}
   var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
-  if (this.search_type) {
-    href += '/search_type/' + this.search_type.value#{param};
+  if (this.id == 'interaction_chooser_searchbar') {
+    var url = searchbar.baseURI;
+    url += '/home_interactions/' + this.value
+    // get_to(href);
+    window.location = url
+  } else {
+    if (this.search_type) {
+      href += '/search_type/' + this.search_type.value#{param};
+    }
+    get_to(href);
   }
-  get_to(href);
 };
 return false;
     JS
@@ -233,7 +247,7 @@ require(['dojo/ready'], function(ready) {
     html << super(context)
   end
 end
-class InteractionSearchBar < AutocompleteSearchBar # home_interaction
+class InteractionSearchBar < AutocompleteSearchBar # home_interactions
   def init
     @searchbar_id = 'interaction_searchbar'
     @label_attr   = 'drug'

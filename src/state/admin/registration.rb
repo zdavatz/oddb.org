@@ -91,9 +91,7 @@ module FachinfoMethods
 		begin
 			# establish connection to fachinfo_parser
 			parser = DRbObject.new(nil, FIPARSE_URI)
-      if type == :doc
-        result = parser.send("parse_fachinfo_doc", file)
-      elsif type == :docx
+			if type == :docx
         language = @session.user_input(:language_select)
         result = parser.send("parse_fachinfo_docx", file, @model.iksnr, language.downcase)
       else

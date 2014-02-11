@@ -95,7 +95,7 @@ module ODDB
 					warn(sprintf("redirecting to: %s", path))
 					get(path)
 				else
-					raise("could not connect to #{@http_server}: #{resp}")
+					raise("could not connect to #{@http_server} #{path}: #{resp}")
 				end
 			rescue Errno::ECONNRESET, EOFError
 				if(retries > 0)
