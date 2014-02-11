@@ -87,7 +87,7 @@ function selectXhrRequest() {
     searchbar.value = '';
     var found = path.match(/home_interactions/);
     if(found && ean13) {
-      var url = path + ',' + ean13;
+      var url = (path + ',' + ean13).replace('/,', '/');
       window.location = url;
     }
   }
