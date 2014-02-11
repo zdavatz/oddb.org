@@ -7,7 +7,7 @@ require 'fileutils'
 require 'pp'
 
 homeUrl ||= ENV['ODDB_URL']
-homeUrl ||= "oddb-ci2.dyndns.org"
+homeUrl ||= "172.25.1.75"
 OddbUrl = homeUrl
 ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)

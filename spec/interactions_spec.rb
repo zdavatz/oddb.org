@@ -3,7 +3,7 @@
 # kate: space-indent on; indent-width 2; mixedindent off; indent-mode ruby;
 require 'spec_helper'
 require 'pp'
-# require Dir.pwd + '/spec/spec_helper.rb'
+
 @workThread = nil
 for_running_in_irb = %(
 require 'watir'; require 'pp'
@@ -24,6 +24,7 @@ MephaExamples = [
   DrugDescription.new('Nolvadex', 	'39053', '7680390530399', 'L02BA01', 'Tamoxifen'),
   DrugDescription.new('Paroxetin',	'58643', '7680586430014', 'N06AB05', 'paroxetinum' ),
 ]
+
 MephaInteractions = [ # given drugs defined above
   /C09CA01: Losartan => C07AB02: Metoprolol Verstärkte Blutdrucksenkung\nB:/,
   /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung\nB:/,
@@ -34,6 +35,28 @@ MephaInteractions = [ # given drugs defined above
 ]
 SearchBar = 'interaction_chooser_searchbar'
 
+Inderal   = 'Inderal 10 mg'
+Ponstan   = 'Ponstan 125 mg'
+Viagra    = 'Viagra 100 mg'
+Marcoumar = 'Marcoumar'
+Aspirin   = 'Aspirin Cardio 100'
+# http://oddb-ci2.dyndns.org/de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
+OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
+OrderOfInteractions = [
+  /#{Inderal}.+ - /,
+  /#{Ponstan}.+ - /, # M01AG01
+  /M01AG01: Mefenaminsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/,
+  /#{Viagra}.+ - /,  # G04BE03
+  /G04BE03: Sildenafil => B01AC06: Acetylsalicylsäure Keine Interaktion./,
+  /#{Marcoumar}.+ - /, # B01AA04
+  /B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/,
+  /B01AA04: Phenprocoumon => B01AC06: Acetylsalicylsäure Erhöhtes Blutungsrisiko/,
+  /#{Aspirin}.+ - /, # B01AC06
+  /B01AC06: Acetylsalicylsäure => M01AG01: Mefenaminsäure Erhöhtes GIT-Blutungsrisiko/,
+  /B01AC06: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/,
+  /B01AC06: Acetylsalicylsäure => G04BE03: Sildenafil Keine Interaktion/,
+  ]
+
 describe "ch.oddb.org" do
  
   def add_one_drug_by(name)
@@ -41,14 +64,14 @@ describe "ch.oddb.org" do
     chooser = @browser.text_field(:id, SearchBar)
     0.upto(10).each{ |idx|
                     chooser.set(name)
-                    sleep idx*1
+                    sleep idx*0.1
                     chooser.send_keys(:down)
                     sleep idx*0.1
                     chooser.send_keys(:enter)
                     sleep idx*0.1
                     value = chooser.value
                     break unless /#{name}/.match(value)
-                    sleep 1
+                    sleep 0.5
                     }
     chooser.set(chooser.value + "\n")
     createScreenshot(@browser, "_#{name}_#{__LINE__}")
@@ -79,7 +102,35 @@ describe "ch.oddb.org" do
     # sleep
     @browser.goto OddbUrl
   end
-
+  
+  it "should show interactions in the correct order just below the triggering drug" do
+# OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
+# OrderOfInteractions [
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    @browser.goto url
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    OrderExample.each{ |name| add_one_drug_by(name) }
+    inhalt = @browser.text
+    puts "URL ist #{url}"
+    pp inhalt
+    lastPos = -1
+    OrderExample.each{ |name| inhalt.index(name).should_not be nil }
+    OrderOfInteractions.each{ |pattern| pattern.match(inhalt).should_not be nil }
+    OrderOfInteractions.each{
+      |pattern|
+          puts "Checking #{pattern}"
+          m = pattern.match(inhalt)
+          puts "Failed checking #{pattern}" unless m
+          m.should_not be nil
+          actPos = inhalt.index(m[0])
+          puts "actPos is #{actPos} >=? lastPos #{lastPos}"
+          actPos.should be > lastPos
+          lastPos = actPos
+          
+        }
+    @browser.link(:name => 'delete').click
+  end
+  
   it "should show interactions having given iksnr,ean13,atc_code,iksnr" do
     url = "#{OddbUrl}/de/gcc/home_interactions/"
     url += MephaExamples[0].iksnr + ','
@@ -108,26 +159,7 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
     @browser.url.should match ('/de/gcc/home_interactions/')
-    MephaExamples.each{
-                |medi|
-              chooser = @browser.text_field(:id, SearchBar)
-              0.upto(10).each{ |idx|
-                              chooser.set(medi.name)
-                              sleep idx*1
-                              chooser.send_keys(:down)
-                              sleep idx*0.1
-                              chooser.send_keys(:enter)
-                              sleep idx*0.1
-                              value = chooser.value
-                              break unless /#{medi.name}/.match(value)
-                              sleep 1
-                              }
-              chooser.set(chooser.value + "\n")
-              createScreenshot(@browser, "_#{medi.name}_#{__LINE__}")
-              @browser.url.should_not match ('/,')
-              }
-    sleep 1
-    createScreenshot(@browser, "_interactions_#{__LINE__}")
+    MephaExamples.each{ |medi| add_one_drug_by(medi.name) }
     inhalt = @browser.text
     MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
   end
@@ -156,7 +188,6 @@ describe "ch.oddb.org" do
     @browser.text.should match (test_medi)
     @browser.url.should_not match ('/,')
   end
-
 
   after :all do
     @browser.close
