@@ -111,7 +111,7 @@ class InteractionChooser < State::Interactions::Global
     end
     self.http_headers = {
       'Status'   => '303 See Other',
-      'Location' => @session.lookandfeel._event_url(:interaction_chooser, [])
+      'Location' => @session.lookandfeel._event_url(:home_interactions, [])
     }
     self
   end
