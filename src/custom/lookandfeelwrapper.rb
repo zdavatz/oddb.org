@@ -329,7 +329,7 @@ module ODDB
 			},
 		}
 		RESOURCES = { 
-			:external_css	=>	'http://www.atupri.ch/misc/new.generika.css',
+			:external_css	=>	'http://www.atupri.ch/fileadmin/user_upload/dokumente/atupri/informationen/generikaliste/new.generika.css',
 		}
 		HTML_ATTRIBUTES = { }
     def compare_list_components
