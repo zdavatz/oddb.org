@@ -290,7 +290,6 @@ class InteractionChooserForm < View::Form
     [0,0,1] => :epha_public_domain,
     [0,1]   => View::Interactions::InteractionChooserDrugDiv,
     [0,2]   => View::Interactions::InteractionChooserInnerForm,
-    [0,4]   => :buttons,
   }
   CSS_MAP = {
     [0,0] => 'th bold',
@@ -301,9 +300,6 @@ class InteractionChooserForm < View::Form
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
-  def buttons(model, session)
-    post_event_button(:show_interaction)
-  end
   private
   def init
     super

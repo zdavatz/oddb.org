@@ -233,9 +233,7 @@ class BasketForm < View::Form
     [1,1,0] => :search_query,
     [1,1,1] => :submit,
     [0,2]   => View::Interactions::BasketSubstrates,
-    [0,3,0] => :clear_interaction_basket,
-    [0,3,1] => :interaction_list,
-    [0,3,2] => :epha_3d_link,
+    [0,3] => :clear_interaction_basket,
     [0,4]   => ExplainResult,
   }
 	CSS_CLASS = 'composite'
@@ -255,27 +253,6 @@ class BasketForm < View::Form
 		[0,3,1]	=>	'list bg',
 		[0,4]	=>	'explain',
 	}
-  def epha_3d_link(model, session)
-    atc_codes = []
-    model.each do |check|
-      atc_codes << check.atc_codes.gsub(/[^A-Z0-9,]/, '') if check.atc_codes
-    end
-    unless atc_codes.empty?
-      button = HtmlGrid::Button.new(:interactions_epha_3d_link, model, session, self)
-      url = 'http://matrix.epha.ch/'
-      arg = atc_codes.join(',')
-      script = "document.location.href='#{url}##{arg}';"
-      button.set_attribute('onclick', script)
-      button
-    end
-  end
-  def interaction_list(model, session)
-    button = HtmlGrid::Button.new(:interactions_button, @model, @session, self)
-    url = @lookandfeel._event_url(:interactions, {})
-    script = "document.location.href='#{url}';"
-    button.set_attribute("onclick", script)
-    button
-  end
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count
 		@lookandfeel.lookup(:interaction_basket_count, count)
