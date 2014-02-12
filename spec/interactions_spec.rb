@@ -18,6 +18,8 @@ chooser = @browser.text_field(:id, id)
 )
 
 DrugDescription = Struct.new(:name, :iksnr, :ean13, :atc_code, :wirkstoff)
+# http://oddb-ci2.dyndns.org/de/gcc/home_interactions/7680583920013,7680591310011,7680390530399,7680586430014
+# http://matrix.epha.ch/#/58392,59131,39053,58643
 MephaExamples = [
   DrugDescription.new('Losartan', 	'58392', '7680583920013', 'C09CA01', 'Losartan'),
   DrugDescription.new('Metoprolol', '59131', '7680591310011', 'C07AB02', 'metoprololi tartras'),
@@ -26,12 +28,10 @@ MephaExamples = [
 ]
 
 MephaInteractions = [ # given drugs defined above
-  /C09CA01: Losartan => C07AB02: Metoprolol Verstärkte Blutdrucksenkung\nB:/,
-  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung\nB:/,
-  /C09CA01: Losartan => L02BA01: Tamoxifen Keine bekannte Interaktion\nA:/,
-  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion.\nB:/,
-  /N06AB05: Paroxetin => C07AB02: Metoprolol Erhöhte Metoprololspiegel\nC:/,
-  /N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen\nX:/,
+  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung/,
+  /N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen/,
+  /N06AB05: Paroxetin => C07AB02: Metoprolol Erhöhte Metoprololspiegel/,
+  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion/,
 ]
 SearchBar = 'interaction_chooser_searchbar'
 
@@ -103,6 +103,13 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
   
+  it "should should not contain Wechselwirkungen" do
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    @browser.goto url
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.text.should_not match /Wechselwirkungen/
+  end
+
   it "should show interactions in the correct order just below the triggering drug" do
 # OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
 # OrderOfInteractions [
@@ -111,19 +118,14 @@ describe "ch.oddb.org" do
     @browser.url.should match ('/de/gcc/home_interactions/')
     OrderExample.each{ |name| add_one_drug_by(name) }
     inhalt = @browser.text
-    puts "URL ist #{url}"
-    pp inhalt
     lastPos = -1
     OrderExample.each{ |name| inhalt.index(name).should_not be nil }
     OrderOfInteractions.each{ |pattern| pattern.match(inhalt).should_not be nil }
     OrderOfInteractions.each{
       |pattern|
-          puts "Checking #{pattern}"
           m = pattern.match(inhalt)
-          puts "Failed checking #{pattern}" unless m
           m.should_not be nil
           actPos = inhalt.index(m[0])
-          puts "actPos is #{actPos} >=? lastPos #{lastPos}"
           actPos.should be > lastPos
           lastPos = actPos
           
@@ -139,7 +141,7 @@ describe "ch.oddb.org" do
     url += MephaExamples[3].iksnr
     check_url_with_epha_example_interaction(url)
   end
-
+  
   it "should show interactions having given atc_codes" do
     atc_codes = MephaExamples.collect{ |x| x.atc_code}
     check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{atc_codes.join(',')}")
