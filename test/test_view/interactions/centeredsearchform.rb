@@ -21,7 +21,8 @@ class TestCenteredSearchComposite <Minitest::Test
   def setup
     @app       = flexmock('app', 
                           :package_count   => 0,
-                          :substance_count => 0
+                          :substance_count => 0,
+		                      :registrations   => [],
                          )
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -41,6 +42,7 @@ class TestCenteredSearchComposite <Minitest::Test
                           :search_form => 'search_form',
                           :flavor => 'flavor',
                           :event => 'event',
+		                      :persistent_user_input => [],
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::Interactions::CenteredSearchComposite.new(@model, @session)

@@ -58,6 +58,7 @@ describe "ch.oddb.org" do
   end
   
   it "should trigger the limitation after maximal 5 queries" do
+    waitForOddbToBeReady(@browser, OddbUrl)
     names = [ 'Aspirin', 'inderal', 'Sintrom', 'Incivo', 'Certican', 'Glucose']
     res = false
     saved = @idx

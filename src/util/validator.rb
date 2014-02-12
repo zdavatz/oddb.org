@@ -288,7 +288,6 @@ module ODDB
 			:shadow_pattern,
       :shorten_path,
 			:show,
-			:show_interaction,
 			:sl_entry,
 			:sort,
 			:sponsor,
