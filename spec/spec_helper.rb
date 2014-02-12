@@ -16,13 +16,20 @@ browsers2test ||= [ :firefox ] # could be any combination of :ie, :firefox, :chr
 Browser2test = browsers2test
 
 def waitForOddbToBeReady(browser = Browser2test, url = OddbUrl, maxWait = 30)
+  startTime = Time.now
   0.upto(maxWait).each{
     |idx|
     browser.goto OddbUrl
     break unless /Es tut uns leid/.match(browser.text)
-    puts "Waiting #{idx} of max #{maxWait} for #{url} to be ready"
+    if idx == 0
+      $stdout.write "Waiting max #{maxWait} seconds for #{url} to be ready"; $stdout.flush
+    else
+      $stdout.write('.'); $stdout.flush
+    end
     sleep 1
   }
+  endTime = Time.now
+  puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready" if (endTime - startTime).round > 2
 end
 
 def createScreenshot(browser, added=nil)

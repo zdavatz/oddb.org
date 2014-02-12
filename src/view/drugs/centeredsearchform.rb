@@ -189,9 +189,11 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,9,1]	=>	:download_ebook,
 				[0,10]	=>	:download_app,
 				[0,11]	=>	:download_amiko,
-				[0,12]	=>	:generic_definition,
-				[0,13]	=>	:legal_note,
-				[0,14]	=>	:paypal,
+				[0,12]	=>	:download_amiko_os_x,
+				[0,13]	=>	:download_amiko_win,
+				[0,14]	=>	:generic_definition,
+				[0,16]	=>	:legal_note,
+				[0,17]	=>	:paypal,
 			})
       if @lookandfeel.enabled?(:facebook_fan, false)
         components.update [0,14] => :facebook_fan, [0,15] => :paypal
