@@ -19,14 +19,10 @@ h2. Creating new tests interactively
 Here is a irb sample, which demonstrates the main points.
 
 bq. require Dir.pwd + '/spec/spec_helper.rb'
-HomeUrl = "oddb-ci2.dyndns.org"
-@browser = Watir::Browser.new
-# should open firefox, the default watir browser
-@browser.goto HomeUrl
-# Now it should show the home page of the your test site
-page = OddMain.new(HomeUrl, true)
-puts @browser.selects[0].text
-# should ouput Preisvergleich <..>
+@browser = Watir::Browser.new # should open firefox, the default watir browser
+@browser.goto OddbUrl # Now it should show the home page of the your test site
+page = OddMain.new(OddbUrl, true)
+puts @browser.selects[0].text # should ouput Preisvergleich <..>
 @browser.buttons[1].click # goes to the paypal site
 @browser.back # to back
 @browser.select(:name => /search_type/).select('Interaktion') 
