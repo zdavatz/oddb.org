@@ -31,7 +31,7 @@ module ODDB
                   'D' => 'red',
                   'X' => 'firebrick',
                 }
-    def self.calculate_atc_codes(drugs)
+  def self.calculate_atc_codes(drugs)
       atc_codes = []
       ean13s    = []
       if drugs and !drugs.empty?
@@ -286,7 +286,8 @@ end
 class InteractionChooserForm < View::Form
   include HtmlGrid::InfoMessage
   COMPONENTS = {
-    [0,0]   => 'interaction_chooser_description',
+    [0,0,0] => :interaction_chooser_description,
+    [0,0,1] => :epha_public_domain,
     [0,1]   => View::Interactions::InteractionChooserDrugDiv,
     [0,2]   => View::Interactions::InteractionChooserInnerForm,
     [0,4]   => :buttons,
@@ -311,6 +312,12 @@ class InteractionChooserForm < View::Form
       'id'     => 'interaction_chooser_form',
       'target' => '_blank',
     })
+  end
+  def epha_public_domain(model, session=@session)
+    link = HtmlGrid::Link.new(:epha_public_domain, model, session, self)
+    link.css_class = 'navigation'		
+    link.href = "http://epha.ch/de/community"
+    link
   end
 end
 class InteractionChooserComposite < HtmlGrid::Composite
