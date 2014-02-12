@@ -192,16 +192,18 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,12]	=>	:download_amiko_os_x,
 				[0,13]	=>	:download_amiko_win,
 				[0,14]	=>	:generic_definition,
-				[0,16]	=>	:legal_note,
-				[0,17]	=>	:paypal,
+				[0,15]	=>	:legal_note,
+				[0,16]	=>	:paypal,
 			})
       if @lookandfeel.enabled?(:facebook_fan, false)
         components.update [0,14] => :facebook_fan, [0,15] => :paypal
-        css_map.store([0,4,1,12], 'list center')
+        css_map.store([0,4,1,15], 'list center')
       else
         css_map.store([0,4,1,11], 'list center')
+        css_map.store([0,4,1,12], 'list center')
+        css_map.store([0,4,1,13], 'list center')
       end
-      component_css_map.store([0,13], 'legal-note')
+      component_css_map.store([0,16], 'legal-note')
 		else
 			components.update({
 				[0,5,0]	=>	'database_last_updated_txt',
