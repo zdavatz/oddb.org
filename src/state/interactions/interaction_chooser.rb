@@ -116,28 +116,6 @@ class InteractionChooser < State::Interactions::Global
     self
   end
   
-  def show_interaction
-    atc_codes = []
-    iksnrs    = []
-    if drugs = @session.persistent_user_input(:drugs)      
-      drugs.values.each do |drug|
-        iksnrs << drug.iksnr
-        atc_codes << drug.atc_class.code.gsub(/[^A-Z0-9]/, '')
-      end
-    end
-    unless atc_codes.empty?
-      # http://matrix.epha.ch/#/56751,61537,39053,59256
-      url = 'http://matrix.epha.ch/'
-      arg = iksnrs.join(',')
-      location = "#{url}##{arg}"
-      # redirect
-      self.http_headers = {
-        'Status'   => '303 See Other',
-        'Location' => location
-      }
-    end
-    self
-  end
   private
   def check_model
     ean13 = @session.user_input(:ean) ||

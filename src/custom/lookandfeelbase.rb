@@ -959,8 +959,6 @@ Zeno Davatz
 				:interaction_count1	      =>	'&nbsp;Interaktionen',
 				:interaction_basket				=>	'Interaktionskorb',
 				:interactions							=>	'Interaktionen',
-				:interactions_button			=>	'Interaktionen Epha.ch',
-        :interactions_epha_3d_link => 'Interaktionen Epha.ch in 3D',
 				:interaction_detail				=>	'Interaktion Detail',
 				:introduction_date				=>	'Datum SL-Eintrag',
 				:invalid_user_welcome			=>	'Zeitdauer überschritten',
