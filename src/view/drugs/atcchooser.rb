@@ -52,7 +52,7 @@ module AtcLink
       link.target = '_blank'
       link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:pharmacokinetic_title))
-      link.href = "http://kinetics.epha.ch"
+      link.href = "http://kinetik.epha.ch"
       link
     end
   end
