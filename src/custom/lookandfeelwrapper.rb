@@ -157,6 +157,7 @@ module ODDB
       :feedback,
       :feedback_rss,
       :google_adsense,
+      :generic_definition,
       :limitation_texts,
       :logo,
       :minifi_rss,
@@ -1262,6 +1263,9 @@ module ODDB
         'height'	=>	'166',
       },
     }
+    ENABLED = [
+      :generic_definition,
+    ]
     DICTIONARIES = {
       'de'  =>  {
         :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen', 
@@ -1294,6 +1298,9 @@ module ODDB
         'height'	=>	'166',
       },
     }
+    ENABLED = [
+      :generic_definition,
+    ]
     DICTIONARIES = {
       'de'  =>  {
         :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen', 
@@ -1326,6 +1333,9 @@ module ODDB
         'height'	=>	'106',
       },
     }
+    ENABLED = [
+      :generic_definition,
+    ]
     DICTIONARIES = {
       'de'  =>  {
         :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen', 

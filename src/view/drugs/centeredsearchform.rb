@@ -191,19 +191,25 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,11]	=>	:download_amiko,
 				[0,12]	=>	:download_amiko_os_x,
 				[0,13]	=>	:download_amiko_win,
-				[0,14]	=>	:generic_definition,
-				[0,15]	=>	:legal_note,
-				[0,16]	=>	:paypal,
 			})
+      pos_legal = 14
+      css_map.store([0,4,1,11], 'list center')
+      css_map.store([0,4,1,12], 'list center')
+      css_map.store([0,4,1,13], 'list center')
+      if @lookandfeel.is_a?(ODDB::LookandfeelGenerika)
+        pos_legal += 1
+        components.update [0,pos_legal-1] => :generic_definition
+        css_map.store([0,4,1,pos_legal-1], 'list center')
+      end        
       if @lookandfeel.enabled?(:facebook_fan, false)
-        components.update [0,14] => :facebook_fan, [0,16] => :paypal
-        css_map.store([0,4,1,14], 'list center')
+        pos_legal += 1
+        components.update [0,pos_legal-1] => :facebook_fan
+        css_map.store([0,4,1,pos_legal-1], 'list center')
       else
-        css_map.store([0,4,1,11], 'list center')
-        css_map.store([0,4,1,12], 'list center')
-        css_map.store([0,4,1,13], 'list center')
       end
-      component_css_map.store([0,15], 'legal-note')
+      components.update [0,pos_legal] => :legal_note
+      component_css_map.store([0, pos_legal], 'legal-note')
+      components.update [0,pos_legal + 1] => :paypal
 		else
 			components.update({
 				[0,5,0]	=>	'database_last_updated_txt',
