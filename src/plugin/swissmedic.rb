@@ -51,7 +51,8 @@ module ODDB
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
-      msg += "#{File.size(target)} bytes. Latest #{@latest} #{File.size(@latest)} bytes" if target
+      msg += "#{File.size(target)} bytes. " if target
+      msg += "Latest #{@latest} #{File.size(@latest)} bytes" if target and File.exists?(@latest)
       debug_msg(msg)
       if(target)
         start_time = Time.new
@@ -259,7 +260,9 @@ module ODDB
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        debug_msg "#{__FILE__}: #{__LINE__} updated download.size is #{download.size}. #{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}"
+        msg = "#{__FILE__}: #{__LINE__} updated download.size is #{download.size}."
+        msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
+        debug_msg(msg)
         target
       else
         debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest"
