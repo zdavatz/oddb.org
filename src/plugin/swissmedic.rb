@@ -268,7 +268,10 @@ module ODDB
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      target = get_latest_file(agent, 'Präparateliste')
+      if target = get_latest_file(agent, 'Präparateliste')
+        debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{latest_name}"
+        FileUtils.cp target, latest_name
+      end
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
