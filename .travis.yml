@@ -11,5 +11,3 @@ notifications:
   email:
     recipients:
       - ngiger@ywesee.com
-      - zdavatz@ywesee.com
-    
