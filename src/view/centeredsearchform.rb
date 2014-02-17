@@ -190,6 +190,12 @@ module ODDB
         link.href = @lookandfeel.lookup(:download_amiko_link)
         link
       end
+      def download_amiko_iOS(model, session)
+        link = HtmlGrid::Link.new(:download_amiko_iOS, model, session, self)
+        link.set_attribute('class', 'list')
+        link.href = @lookandfeel.lookup(:download_amiko_iOS_link)
+        link
+      end
       def download_amiko_os_x(model, session)
         link = HtmlGrid::Link.new(:download_amiko_os_x, model, session, self)
         link.set_attribute('class', 'list')
