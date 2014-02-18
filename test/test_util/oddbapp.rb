@@ -21,11 +21,11 @@ require 'model/substance'
 require 'model/atcclass'
 require 'model/orphan'
 require 'model/epha_interaction'
+require 'model/medical_product'
 require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
-
 module DRb
   class DRbObject
     def respond_to?(msg_id, *args)
@@ -75,7 +75,7 @@ module ODDB
 	end
 end
 
-class TestOddbApp <Minitest::Test
+class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase
 	def setup
 #    @drb = flexmock(DRb::DRbObject, :new => server)
@@ -138,15 +138,6 @@ class TestOddbApp <Minitest::Test
       nar.should_receive(:new).and_return(narcotic)
     end
     assert_equal(narcotic, @app.create_narcotic)
-  end
-  def test_create_slate_name
-    slate = flexmock('slate') do |sla|
-      sla.should_receive(:oid)
-    end
-    flexmock(ODDB::Slate) do |sla|
-      sla.should_receive(:new).and_return(slate)
-    end
-    assert_equal(slate, @app.create_slate(name))
   end
   def test_create_sponsor_flavor
     sponsor = flexmock('sponsor') do |spo|
@@ -278,6 +269,9 @@ class TestOddbApp <Minitest::Test
   end
   def test_epha_interaction_count
     assert_equal(0, @app.epha_interaction_count)
+  end
+  def test_medical_product_count
+    assert_equal(0, @app.medical_product_count)
   end
   def test_hospital_count
     assert_equal(0, @app.hospital_count)
@@ -602,6 +596,9 @@ class TestOddbApp <Minitest::Test
   def test_get_epha_interaction
     assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
+  def test_get_medical_product
+    assert_equal(nil, @app.get_medical_product('no_such_medical'))
+  end
   def test_each_atc_class
     assert_equal(Enumerator, @app.each_atc_class.class)
     res = []
@@ -887,6 +884,9 @@ class TestOddbApp <Minitest::Test
   end
   def test_search_epha_interactions
     assert_equal([], @app.search_epha_interactions('key'))
+  end
+  def test_search_medical_products
+    assert_equal([], @app.search_medical_products('key'))
   end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))

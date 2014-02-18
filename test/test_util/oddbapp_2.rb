@@ -72,7 +72,7 @@ module ODDB
 	end
 end
 
-class TestOddbApp <Minitest::Test
+class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase
 	class StubCompany
 		attr_accessor	:oid
@@ -968,6 +968,18 @@ class TestOddbApp <Minitest::Test
       epha.should_receive(:new).and_return(epha_interaction)
     end
     assert_equal(epha_interaction, @app.create_epha_interaction('atc_code_self', 'atc_code_other'))
+  end
+  def test_create_medical_product
+    productName = 'dummy_medical'
+    medical_product = flexmock('medical_product') do |product|
+      product.should_receive(:oid)
+      product.should_receive(:name=).once.with(productName)
+      product.should_receive(:name).and_return(productName)
+    end
+    flexmock(ODDB::MedicalProduct) do |product|
+      product.should_receive(:new).and_return(medical_product)
+    end
+    assert_equal(medical_product, @app.create_medical_product(productName))
   end
   def test_create_hospital
     hospital = flexmock('hospital') do |hos|
