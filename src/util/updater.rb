@@ -17,6 +17,7 @@ require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
 require 'plugin/medwin'
+require 'plugin/medical_products'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/rss'
@@ -332,6 +333,11 @@ module ODDB
     end
     def update_epha_interactions
       update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
+    end
+    def update_medical_products(opts)
+    puts "update_medical_products with #{opts.inspect}"
+      @options = opts
+      update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
     end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')

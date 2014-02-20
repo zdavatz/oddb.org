@@ -81,7 +81,7 @@ module ODDB
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0)
-        if FileUtils.compare_file(target, @latest)
+        if File.exists?(target) and File.exists?(@latest) and FileUtils.compare_file(target, @latest)
           debug_msg "#{__FILE__}: #{__LINE__} rm_f #{target} after #{@update_time} minutes"
           FileUtils.rm_f(target, :verbose => true)
         else
