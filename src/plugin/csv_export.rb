@@ -14,7 +14,7 @@ module ODDB
     MIGEL_EXPORT_DIR = File.expand_path('../../../migel/data/csv', File.dirname(__FILE__))
     ODDB_RECIPIENTS          = [ "paul.wiederkehr@pharmasuisse.org" ]
     ODDB_RECIPIENTS_DAT      = [ "andre.dubied@gmail.com" ]
-    ODDB_RECIPIENTS_EXTENDED = [ "ouwerkerk@bluewin.ch", "carolrong8@gmail.com", "tim.suter13@gmail.com" ]
+    ODDB_RECIPIENTS_EXTENDED = [ "ouwerkerk@bluewin.ch", "tim.suter13@gmail.com" ]
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
 				pos.code }.collect { |pos| pos.odba_id }
