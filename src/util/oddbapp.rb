@@ -52,7 +52,7 @@ class OddbPrevalence
   attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
     :companies, :divisions, :doctors, :epha_interactions, :experiences, :fachinfos, 
     :galenic_groups, :hospitals, :invoices, :last_medication_update, :last_update,
-    :minifis, :notification_logger, :orphaned_fachinfos, :medical_products,
+    :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
@@ -74,7 +74,6 @@ class OddbPrevalence
     @divisions ||= {}
 		@doctors ||= {}
     @epha_interactions ||= []
-    @medical_products ||= []
     @experiences ||= {}
 		@fachinfos ||= {}
     @feedbacks ||= {}
@@ -365,14 +364,6 @@ class OddbPrevalence
     @epha_interactions << epha_interaction
     epha_interaction
   end
-  def create_medical_product(name)
-    medical_product = ODDB::MedicalProduct.new
-    medical_product.name = name
-    @medical_products ||= []
-    @medical_products << medical_product
-    puts "medical_product #{medical_product.inspect}"
-    medical_product
-  end
   def create_hospital(ean13)
     hospital = ODDB::Hospital.new(ean13)
     @hospitals.store(ean13, hospital)
@@ -637,18 +628,6 @@ class OddbPrevalence
   end
   def epha_interaction_count
     @epha_interactions.size
-  end
-  def get_medical_product(name)
-    @medical_products.each { |product|
-      return product if  product.name == atc_code_self
-    }
-    nil
-  end
-  def medical_product(oid)
-    @medical_products[oid.to_i]
-  end
-  def medical_product_count
-    @medical_products.size
   end
   def hospital(ean13)
     @hospitals[ean13]
@@ -966,7 +945,7 @@ class OddbPrevalence
 		end
 		# indication
 		if(atcs.empty?)
-			atcs = search_by_indication(key)
+			atcs = search_by_indication(key, lang)
 			result.search_type = :indication
 		end
 		# sequence
@@ -1124,9 +1103,6 @@ class OddbPrevalence
   end
   def search_epha_interactions(key)
     ODBA.cache.retrieve_from_index("epha_interaction_index", key)
-  end
-  def search_medical_products(key)
-    ODBA.cache.retrieve_from_index("medical_product_index", key)
   end
   def search_hospitals(key)
     ODBA.cache.retrieve_from_index("hospital_index", key)

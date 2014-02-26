@@ -21,7 +21,6 @@ require 'model/substance'
 require 'model/atcclass'
 require 'model/orphan'
 require 'model/epha_interaction'
-require 'model/medical_product'
 require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
@@ -269,9 +268,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
   def test_epha_interaction_count
     assert_equal(0, @app.epha_interaction_count)
-  end
-  def test_medical_product_count
-    assert_equal(0, @app.medical_product_count)
   end
   def test_hospital_count
     assert_equal(0, @app.hospital_count)
@@ -596,9 +592,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_get_epha_interaction
     assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
-  def test_get_medical_product
-    assert_equal(nil, @app.get_medical_product('no_such_medical'))
-  end
   def test_each_atc_class
     assert_equal(Enumerator, @app.each_atc_class.class)
     res = []
@@ -884,9 +877,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
   def test_search_epha_interactions
     assert_equal([], @app.search_epha_interactions('key'))
-  end
-  def test_search_medical_products
-    assert_equal([], @app.search_medical_products('key'))
   end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))
