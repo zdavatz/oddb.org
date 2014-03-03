@@ -1,7 +1,7 @@
 .bundle
 .rbenv-version
 .ruby-version
-
+.lock*
 data/csv/
 data/downloads/
 data/html/
