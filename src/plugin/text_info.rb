@@ -20,6 +20,7 @@ require 'util/logfile'
 require 'rubyXL'
 
 module ODDB
+  SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :atcCode, :title, :authHolder, :substances)
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
     CharsNotAllowedInBasename = /[^A-z0-9,\s\-]/
@@ -100,7 +101,7 @@ module ODDB
         name_base = row[2].value.to_s
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
-      logCheckActivity "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
+      LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
     end
     def parse_fachinfo(path, styles=nil)
       @parser.parse_fachinfo_html(path, @format, @title, styles)
@@ -111,7 +112,8 @@ module ODDB
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
-    def replace(new_ti, container, type) # description
+    def TextInfoPlugin::replace_textinfo(app, new_ti, container, type) # description
+      return unless type.is_a?(Symbol)
       old_ti = container.send(type)
       if old_ti
         # support update with only a de/fr description
@@ -121,19 +123,18 @@ module ODDB
             old_ti.descriptions.odba_isolated_store
           end
         end
-        @app.update(old_ti.pointer, {:descriptions => old_ti.descriptions})
+        app.update(old_ti.pointer, {:descriptions => old_ti.descriptions})
       else
-        @app.update(container.pointer, {type => new_ti.pointer})
+        app.update(container.pointer, {type => new_ti.pointer})
       end
     end
-    def store_fachinfo reg, languages
-      @updated_fis += 1
+    def TextInfoPlugin::store_fachinfo(app, reg, languages)
       existing = reg.fachinfo
       ptr = Persistence::Pointer.new(:fachinfo).creator
       if existing
         ptr = existing.pointer
       end
-      @app.update ptr, languages
+      app.update ptr, languages
     end
     def store_orphaned iksnr, info, point=:orphaned_fachinfo
       if info
@@ -176,8 +177,9 @@ module ODDB
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
               puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
-              fachinfo ||= store_fachinfo(reg, fis)
-              replace fachinfo, reg, :fachinfo
+              fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
+              TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
+              @updated_fis += 1
             end
           else
             puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
@@ -251,7 +253,7 @@ module ODDB
                   @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
                   seq.odba_isolated_store
                 end
-                replace patinfo, seq, :patinfo
+                TextInfoPlugin::replace_textinfo(@app, patinfo, seq, :patinfo)
                 @corrected_pis << patinfo.pointer.to_s
               end
             else
@@ -548,25 +550,25 @@ module ODDB
       end
     end
     
-    SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :atcCode, :title, :authHolder, :substances)
     def TextInfoPlugin::get_iksnrs_meta_info
       @@iksnrs_meta_info
     end
 
-    def create_sequence_and_package_if_necessary(iksnr, registration = nil)
+    def TextInfoPlugin::create_sequence_and_package_if_necessary(app, info, registration = nil,  seqNr ='00', packNr = '000')
+      iksnr = info.iksnr
       # similar to update_package in src/plugin/swissmedic.rb
       unless registration
-        registration = @app.registration(iksnr)
+        registration = app.registration(iksnr)
         if registration == nil or registration.packages == nil
-          logCheckActivity "Could not find a registration for #{iksnr} #{registration.inspect}"
+          LogFile.debug "Could not find a registration for #{iksnr} #{registration.inspect}"
           return
         end
       end
       return if registration.export_flag or registration.inactive? or (registration.expiration_date and registration.expiration_date > Date.today)
-      return if registration.packages.size > 0 or registration.sequences.size > 0
-      sequence = registration.create_sequence('00')
-      sequence = registration.sequence('00')
-      info = @@iksnrs_meta_info[iksnr]
+      return if registration.package(packNr) and registration.sequence(seqNr)
+      LogFile.debug "Found registration for #{iksnr}: #{registration.inspect}"
+      sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
+      LogFile.debug "sequence for #{iksnr} is #{sequence.inspect}"
       return unless info
       seq_args = { 
         :composition_text => nil,
@@ -576,23 +578,22 @@ module ODDB
         :sequence_date    => nil,
         :export_flag      => nil,
       }
-      if info.atcCode and atc = @app.unique_atc_class(info.atcCode)
+      if info.atcCode and atc = app.unique_atc_class(info.atcCode)
         seq_args.store :atc_class, atc.code
       else
         seq_args.store :atc_class, info.atcCode
       end
-      package  = sequence.create_package('000')
+      package  = sequence.create_package(packNr)
       part = package.create_part
       seq_args.store :packages, sequence.packages
-      res = @app.update(sequence.pointer, seq_args, :swissmedic_text_info)      
+      registration.odba_store
+      res = app.update(sequence.pointer, seq_args, :swissmedic_text_info)
     end
     
-    def create_registration(info)
+    def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
       iksnr = info.iksnr
-      # return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
-      return if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
       # similar to method update_registration in src/plugin/swissmedic.rb
-      logCheckActivity("create_registration #{info.inspect}")
+      # LogFile.debug("create_registration #{info.inspect}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,
@@ -608,19 +609,19 @@ module ODDB
       
       company_args = { :name => info.authHolder, :business_area => 'ba_pharma' }
       company = nil
-      if(company = @app.company_by_name(info.authHolder, 0.8))
-        @app.update company.pointer, args
+      if(company = app.company_by_name(info.authHolder, 0.8))
+        app.update company.pointer, args, :text_plugin_create_company
       else
         company_ptr = Persistence::Pointer.new(:company).creator
-        company = @app.update company_ptr, company_args
+        company = app.update company_ptr, company_args
       end
       args.store :company, company.pointer
       
-      registration = @app.update reg_ptr, args, :swissmedic_text_info
+      registration = app.update reg_ptr, args, :text_plugin_create_registration
       seq_ptr = (registration.pointer + [:sequence, 0]).creator
       unless seq_ptr
-         puts_sync "Failed to create"
-         exit 2
+         LogFile.debug("Failed to create")
+         raise "Failed to create #{iksnr} seq #{seqNr}"
       end
       seq_args = { 
         :composition_text => nil,
@@ -630,14 +631,14 @@ module ODDB
         :sequence_date    => nil,
         :export_flag      => nil,
       }
-      if info.atcCode and atc = @app.unique_atc_class(info.atcCode)
+      if info.atcCode and atc = app.unique_atc_class(info.atcCode)
         seq_args.store :atc_class, atc.code
       else
         seq_args.store :atc_class, info.atcCode
       end
-      res = @app.update seq_ptr, seq_args, :swissmedic_text_info      
-      create_sequence_and_package_if_necessary(iksnr, registration)
-      @new_iksnrs[info.iksnr] = info.title
+      res = app.update seq_ptr, seq_args, :text_plugin
+      TextInfoPlugin::create_sequence_and_package_if_necessary(app, info, registration, seqNr, packNr)
+      registration
     end    
 
     def add_all_iksnr(info, typ, all_numbers)
@@ -650,8 +651,11 @@ module ODDB
                 return if @@iksnrs_meta_info[id] 
                 @@iksnrs_meta_info[id] = info.clone
                 unless @app.registration(id)
-                  create_registration(info) 
-                end
+                  if not @options[:iksnrs].nil? and not @options[:iksnrs].empty? and not @options[:iksnrs].index(info.iksnr)
+                    TextInfoPlugin::create_registration(@app, info)
+                  end
+                  @new_iksnrs[info.iksnr] = info.title
+               end
                 if typ.eql?('fi')
                   @fis_to_iksnrs[id] ? @fis_to_iksnrs[id]  += ids : @fis_to_iksnrs[id] = ids
                 elsif typ.eql?('pi') 
@@ -1188,18 +1192,6 @@ module ODDB
       @doc
     end
     
-    def logCheckActivity(msg)
-      puts_sync msg
-      if not defined?(@checkLog) or not @checkLog
-        name = LogFile.filename('check_swissmedicno_fi_pi', Time.now)
-        puts_sync "Opening #{name}"
-        FileUtils.makedirs(File.dirname(name))
-        @checkLog = File.open(name, 'a+') 
-      end
-      @checkLog.puts("#{Time.now}: #{msg}")
-      @checkLog.flush
-    end
-    
     # Error reasons 
     Flagged_as_inactive               = "oddb.registration('Zulassungsnummer').inactive? but has Zulassungsnummer in Packungen.xlsx"
     Reg_without_base_name             = 'oddb.registration has no method name_base'
@@ -1217,11 +1209,11 @@ module ODDB
       if added_info then added_info.class == Array ? info += added_info : info << added_info end
       @inconsistencies << info
       @iksnrs_to_import << iksnr unless suppress_re_import
-      logCheckActivity "check_swissmedicno_fi_pi #{info}"
+      LogFile.debug "check_swissmedicno_fi_pi #{info}"
     end
 
     def check_swissmedicno_fi_pi(options = {}, patinfo_must_be_deleted = false)
-      logCheckActivity "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
+      LogFile.debug "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
       swissmedicinfo_xml
       read_packages      
       @error_reasons = {
@@ -1311,22 +1303,22 @@ module ODDB
               
               if hasDefect and patinfo_must_be_deleted
                 @nrDeletes << seq.patinfo.pointer.to_s
-                logCheckActivity "delete_patinfo_pointer #{@nrDeletes.size}: #{iksnr_2_check} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
+                LogFile.debug "delete_patinfo_pointer #{@nrDeletes.size}: #{iksnr_2_check} #{reg.name_base} #{seq.seqnr} #{seq.patinfo.name_base} #{seq.patinfo.pointer}"
                 @app.delete(seq.patinfo.pointer)
                 @app.update(seq.pointer, :patinfo => nil)
                 seq.odba_isolated_store
               end
           } 
       }
-      logCheckActivity "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
-      logCheckActivity "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
+      LogFile.debug "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
+      LogFile.debug "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
       @iksnrs_to_import = @iksnrs_to_import.sort.uniq
       @packages = nil # free some memory if we want to import
       true # an update/import should return true or you will never send a report
     end
   
     def update_swissmedicno_fi_pi(options = {})
-      logCheckActivity "update_swissmedicno_fi_pi #{options}"
+      LogFile.debug "update_swissmedicno_fi_pi #{options}"
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do
@@ -1338,7 +1330,7 @@ module ODDB
       # set correct options to force a reparse (reimport)
       @options[:reparse] = true
       @options[:download] = false
-      logCheckActivity "update_swissmedicno_fi_pi finished"
+      LogFile.debug "update_swissmedicno_fi_pi finished"
       true # an update/import should return true or you will never send a report
     end
 
@@ -1350,20 +1342,20 @@ module ODDB
       index.each_pair do |state, names|
         import_info(keys, names, state)
       end
-      logCheckActivity "import_swissmedicinfo_by_index @new_iksnrs #{@new_iksnrs.inspect} "
+      LogFile.debug "import_swissmedicinfo_by_index @new_iksnrs #{@new_iksnrs.inspect} "
       import_swissmedicinfo_by_iksnrs(@new_iksnrs.keys, target)
       @doc = nil
       true # an import should return true or you will never send a report
     end
     def import_swissmedicinfo_by_iksnrs(iksnrs, target)
-      logCheckActivity "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
+      LogFile.debug "import_swissmedicinfo_by_iksnrs #{iksnrs.inspect} target #{target}"
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
-        logCheckActivity "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
-        create_sequence_and_package_if_necessary(iksnr)
+        LogFile.debug "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
+        TextInfoPlugin::create_sequence_and_package_if_necessary(@app, @@iksnrs_meta_info[iksnr])
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]

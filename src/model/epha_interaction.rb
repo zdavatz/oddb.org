@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-2
 require 'util/persistence'
 require 'util/searchterms'
 require 'util/language'

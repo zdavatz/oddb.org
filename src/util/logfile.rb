@@ -31,8 +31,20 @@ module ODDB
 				''
 			end
 		end
+    def debug(msg)
+      msg = "#{caller[0]}: #{msg}"
+      $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+      if not defined?(@@debugLog) or not @@debugLog
+        name = LogFile.filename('oddb/debug', Time.now)
+        FileUtils.makedirs(File.dirname(name))
+        @@debugLog = File.open(name, 'a+')
+      end
+      @@debugLog.puts("#{Time.now}: #{msg}")
+      @@debugLog.flush
+    end
 		module_function :append
 		module_function :filename
 		module_function :read
+    module_function :debug
 	end
 end
