@@ -16,9 +16,18 @@ require 'model/registration'
 
 module ODDB
 	class FachinfoDocument
+    attr_accessor :pointer
 		def odba_id
 			1
 		end
+    def initialize(name=nil)
+      @export_flag = true
+      @pointer = FlexMock.new(Persistence::Pointer)
+#      @pointer.should_receive(:descriptions).and_return(@descriptions)
+      @pointer.should_receive(:pointer).and_return(@pointer)
+      @pointer.should_receive(:creator).and_return([])
+      @pointer.should_receive(:+).and_return(@pointer)
+    end
 	end
   module SequenceObserver
     def initialize
@@ -153,15 +162,19 @@ module ODDB
       def update(pointer, values, reason = nil)
         @pointer = pointer
         @values = values
+                   require 'pry'; binding.pry if reason and reason.to_s.match(/text_info/i)
         return @company_mock if reason and reason.to_s.match('company')
-        if reason and reason.to_s.match('registration')
+        if reason.to_s.match(/registration/)
           if @registrations.size == 0
             stub = StubRegistration.new('dummy')
             @registrations << stub
           else stub = @registrations.first
           end
           return stub
+        elsif reason and reason.to_s.eql?('text_info')
+           return FachinfoDocument.new
         end
+        return FachinfoDocument.new
         @pointer_mock
       end
       def log_group(key)

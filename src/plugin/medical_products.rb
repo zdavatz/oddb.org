@@ -18,7 +18,7 @@
   class MedicalProductPlugin < Plugin
     @@errors = []
     @@products = []
-    def initialize(app,  opts = {:files => ['*.docx'], :lang => 'de'})
+    def initialize(app,  opts = {:files => ['*.docx']})
       super(app)
       @options = opts
       @@errors = []
@@ -33,11 +33,8 @@
     end
 
     def update
-      @options[:lang] = 'de' unless @options[:lang]
-      lang = @options[:lang].to_s
       data_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', defined?(Minitest) ? 'test' : '.', 'data', 'medical_products'))
-      pp data_dir
-      LogFile.debug "file #{@options[:files]} lang #{lang} #{lang.class} YDocx #{YDocx::VERSION}"
+      LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
       @options[:files].each{
         |param|
         files = (Dir.glob(param) + Dir.glob(File.join(data_dir, param))).collect{ |file| File.expand_path(file) }.uniq
@@ -48,15 +45,17 @@
             reg = nil
             LogFile.debug "file is #{file}"
             writer = ODDB::FiParse::TextinfoPseudoFachinfo.new
-            fachinfo = nil
-            open(file) { |fh| fachinfo = writer.extract(fh)}
-            fachinfo.iksnrs.each{
+            pseudo_fi_text = nil
+            open(file) { |fh| pseudo_fi_text = writer.extract(fh)}
+            return false unless pseudo_fi_text.lang
+            pseudo_fi_text.iksnrs.each{
                         |ean|
                           number = ean[2..2+6] # 7 digits
                           packNr = ean[9..11] # 3 digits
-                          info = SwissmedicMetaInfo.new(number, nil, fachinfo.name, fachinfo.distributor, nil)
+                          authHolder = pseudo_fi_text.distributor.paragraphs.first.strip.match(/^[^,\n]+/)[0]
+                          info = SwissmedicMetaInfo.new(number, nil, pseudo_fi_text.name, authHolder, nil)
                           reg = TextInfoPlugin::create_registration(@app, info, '00', packNr)
-                          @@products << "#{lang} #{number} #{packNr}: #{fachinfo.name}"
+                          @@products << "#{pseudo_fi_text.lang} #{number} #{packNr}: #{pseudo_fi_text.name}"
                           if parts[ean] 
                             package = reg.sequence('00').package(packNr)
                             pInfo = parts[ean]
@@ -69,8 +68,10 @@
                 @app.registrations.odba_store
                 registration = @app.registration(number)
             end
+            fachinfo = nil
+            fachinfo ||= TextInfoPlugin::store_fachinfo(@app, registration, {pseudo_fi_text.lang => pseudo_fi_text})
             TextInfoPlugin::replace_textinfo(@app, fachinfo, registration, :fachinfo)
-            fachinfo.iksnrs.each{
+            pseudo_fi_text.iksnrs.each{
                         |ean|
                           number = ean[2..2+6] # 7 digits
                           packNr = ean[9..11] # 3 digits
@@ -78,14 +79,11 @@
                             package = registration.sequence('00').package(packNr)
                             oldParts = package.parts
                             pInfo = parts[ean]
-                            # in plugin/swissmedic.rb
-                            # :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
                             pSize = "#{pInfo[0]} #{pInfo[1]} #{pInfo[2]}"
                             newPart = nil
                             if oldParts == nil or oldParts.size == 0
                               newPart = package.create_part
                             elsif oldParts.size != 1
-#                               msg = "Found #{oldParts.size} parts. Problem in database with #{lang} #{number} #{packNr}: #{fachinfo.name}"
                               @@errors << msg
                               LogFile.debug "#{msg}"
                               next
