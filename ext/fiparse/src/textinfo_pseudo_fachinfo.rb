@@ -11,7 +11,6 @@ module ODDB
     LOCALIZED_CHAPTER_EXPRESSION = {
       :de => {
         :composition          => /^Zusammensetzung|Wirkstoffe|Hilsstoffe/u, # 2
-#        :indications          => /^Indikationen(\s+|\s*(\/|und)\s*)Anwendungsmöglichkeiten$/u, # 4
         :usage                => /^Dosierung\s*(\/|und)\s*Anwendung/u, # 5
         :contra_indications   => /^Kontraindikationen($|\s*\(\s*absolute\s+Kontraindikationen\s*\)$)/u, # 6
         :restrictions         => /^Warnhinweise\s+und\s+Vorsichtsmassnahmen($|\s*\/\s*(relative\s+Kontraindikationen|Warnhinweise\s*und\s*Vorsichtsmassnahmen)$)/u, # 7
@@ -27,15 +26,13 @@ module ODDB
       },
       :fr => {
         :composition         => /^Composition$/u, # 2
-#        :indications         => /^Indications/u, # 4
-        :usage               => /^Posologiei/u, # 5
+        :usage               => /^Posologie\/Mode d’emploi/u, # 5
         :contra_indications  => /^Contre\-indications/iu, # 6
         :restrictions        => /^Mises/u, # 7
         :interactions        => /^Interactions/u, # 8
         :unwanted_effects    => /^Effets/u, # 11
         :effects             => /^Propriétés/iu, # 13
         :other_advice        => /^Remarques/u, # 16
-        :iksnrs              => /^Numéro\s+dautorisation$/u, # 17
         :packages            => /^Présentation/iu, # 18
         :registration_owner  => /^Titulaire\s+de\s+lautorisation$/u, # 19
         :date                => /^Mise à jour/iu, # 20
@@ -52,12 +49,14 @@ module ODDB
     def extract(docx_file)
       LogFile.debug("extract #{docx_file.path} #{File.exists?(docx_file)}")
       return false unless File.exists?(docx_file)
-      doc = YDocx::Document.open(docx_file, {:format => :plain})
       xml_file = docx_file.path.sub('.docx', '.xml')
-      doc.to_xml(xml_file)
-      doc = Nokogiri::XML(open(xml_file))
+      cmd = "docx2xml #{docx_file.path} --format plain "
+      res = system(cmd)
+      cmd = "xmllint --format --output #{xml_file} #{xml_file}"
+      res = system(cmd)
       lang = nil
-      doc.xpath("//chapters/chapter/heading").each {
+      doc = Nokogiri::XML(open(xml_file))
+      doc.xpath("//paragraph/bold/italic").each {
         |heading|
           LANGUAGES.each {|try_lang| LOCALIZED_CHAPTER_EXPRESSION[try_lang].each {
                           |chapter, expression|
@@ -73,26 +72,24 @@ module ODDB
       LogFile.debug("lang #{lang.inspect}")
       return nil unless lang
       allChapters = {}
-#      require 'pry'; binding.pry
-      doc.xpath("//heading").each {
-        |chapter|      
-          LOCALIZED_CHAPTER_EXPRESSION[lang].each {
-            |name, expression|
-                                                 if name.match(/interaction/i)
-                                                             #  require 'pry'; binding.pry
-                                                              end
-            if chapter.text.match(LOCALIZED_CHAPTER_EXPRESSION[lang][name])
+      txtChapter = nil
+      chapterName = nil
+      doc.xpath("//paragraph").each {
+        |paragraph|
+          short = paragraph.text.gsub("\n", "").strip
+          if paragraph.xpath("//bold/italic") and paragraph.children.size > 1
+            found = LOCALIZED_CHAPTER_EXPRESSION[lang].find_all{ |key, value| key if short.match(value) }
+            if found.size == 1
+              allChapters[chapterName] = txtChapter if txtChapter
+              chapterName = found[0][0]
               txtChapter = Text::Chapter.new
-              txtChapter.heading = name.to_s.strip
-              doc.xpath("//chapters/chapter[contains(heading, '#{chapter.text}')]/paragraph").each{
-                |para|
-                  inhalt=para.text
-                  txtChapter.next_section.next_paragraph << inhalt
-                  allChapters[name] = txtChapter
-              }
+              txtChapter.heading = short
             end
-        }
+          end 
+          inhalt = paragraph.text.gsub("\n", "").strip
+          txtChapter.next_section.next_paragraph << paragraph.text if txtChapter and txtChapter.heading != inhalt
       }
+      allChapters[chapterName] = txtChapter if txtChapter
       info =  self.to_textinfo(allChapters)
       info.iksnrs = []
       info.packages.paragraphs.each{ |pack| m=pack.match(/\d{13}/); info.iksnrs << m[0] if m  } if info.packages
