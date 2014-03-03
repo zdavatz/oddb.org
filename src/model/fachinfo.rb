@@ -242,6 +242,25 @@ module ODDB
 			:date,
 		]
 	end
+	class PseudoFachinfoDocument < FachinfoDocument
+		attr_accessor :contra_indications, :distributor
+		CHAPTERS = [
+			:composition,
+			:indications,
+			:usage,
+			:contra_indications,
+			:restrictions,
+			:interactions,
+			:unwanted_effects,
+			:effects,
+			:other_advice,
+			:iksnrs,
+			:packages,
+			:fabrication,
+			:distributor,
+			:date,
+		]
+	end
   class FachinfoLink
     attr_accessor :name, :url, :created
     def initialize

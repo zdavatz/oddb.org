@@ -37,7 +37,7 @@
         'registration_owner'   => /^Zulassungsinhaberin($|\s*\(\s*Firma\s+und\s+Sitz\s+gemäss\s*Handelsregisterauszug\s*\))/u, # 19
         'date'                 => /^Stand\s+der\s+Information$/iu, # 20
         'fabrication'          => /^Herstellerin/u,
-        'company'              => /^Vertriebsfirma/u,
+        'distributor'              => /^Vertriebsfirma/u,
         },
         'fr' => {
           'name'                => /^Nom$/u, # 1
@@ -61,7 +61,7 @@
           'registration_owner'  => /^Titulaire\s+de\s+l'autorisation$/u, # 19
           'date'                => /^Mise à jour/iu, # 20
           'fabrication'         => /^Fabricant$/u,
-          'company'             => /^Distributeur/u,
+          'distributor'             => /^Distributeur/u,
         }
       }
     
@@ -129,15 +129,15 @@
               LogFile.debug "#{msg}"
               next
             end
-            company = chapters['company']
-            idx = company.index(/,|\n/)
-            company = company[0..idx-1]
+            distributor = chapters['distributor']
+            idx = distributor.index(/,|\n/)
+            distributor = distributor[0..idx-1]
             reg = nil
             ean13s.each{
                         |ean|
                           number = ean[2..2+6] # 7 digits
                           packNr = ean[9..11] # 3 digits
-                          info = SwissmedicMetaInfo.new(number, nil, name, company, nil)
+                          info = SwissmedicMetaInfo.new(number, nil, name, distributor, nil)
                           reg = TextInfoPlugin::create_registration(@app, info, '00', packNr)
                           @@products << "#{lang} #{number} #{packNr}: #{name}"
                           if parts[ean] 
