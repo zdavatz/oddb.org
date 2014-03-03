@@ -31,6 +31,7 @@ module ODDB
         @@writer = TextinfoPseudoFachinfo.new
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
+        assert_equal('Sinovial® HighVisc 1,6%' , @@fachinfo.name)
         assert_equal(2, @@fachinfo.composition.paragraphs.size)
         assert_equal('Zusammensetzung', @@fachinfo.composition.heading.to_s)
         assert_equal('1 vorgefüllte 2,25 ml-Einweg-Fertigspritze aus Glas enthält: 32 mg Hyaluronsäure-Natriumsalz in 2 ml gepufferter physiologischer Lösung.', @@fachinfo.composition.paragraphs.first.to_s)
@@ -44,6 +45,7 @@ module ODDB
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
         assert(@@fachinfo.date)
+        assert_equal('Sinovial® HighVisc 1,6%' , @@fachinfo.name)
         assert_equal( @@fachinfo.date.paragraphs.first.to_s, 'Avril 2010.')
         ODDB::PseudoFachinfoDocument::CHAPTERS.each {
           |chapter|
@@ -59,6 +61,7 @@ module ODDB
         @@writer = TextinfoPseudoFachinfo.new
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
+        assert_equal('Sinovial® HighVisc 1,6%' , @@fachinfo.name)
         assert_equal( @@fachinfo.date.paragraphs.first.to_s, 'April 2010.')
         ODDB::PseudoFachinfoDocument::CHAPTERS.each {
           |chapter|

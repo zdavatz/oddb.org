@@ -7,6 +7,7 @@ require 'util/logfile'
 module ODDB
   module FiParse
   class TextinfoPseudoFachinfo
+    attr_accessor :name
     LANGUAGES = [:de, :fr]
     LOCALIZED_CHAPTER_EXPRESSION = {
       :de => {
@@ -93,7 +94,8 @@ module ODDB
       info =  self.to_textinfo(allChapters)
       info.iksnrs = []
       info.packages.paragraphs.each{ |pack| m=pack.match(/\d{13}/); info.iksnrs << m[0] if m  } if info.packages
-      info 
+      info.name =  doc.xpath("//paragraph").first.text.gsub("\n",'').gsub(/\s+/,' ').gsub(' ®','®').strip
+      info
       end
     end
   private

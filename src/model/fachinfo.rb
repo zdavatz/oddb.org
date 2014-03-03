@@ -243,10 +243,9 @@ module ODDB
 		]
 	end
 	class PseudoFachinfoDocument < FachinfoDocument
-		attr_accessor :contra_indications, :distributor
+		attr_accessor :contra_indications, :distributor, :name
 		CHAPTERS = [
 			:composition,
-#			:indications,
 			:usage,
 			:contra_indications,
 			:restrictions,
