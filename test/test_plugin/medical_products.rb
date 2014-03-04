@@ -12,27 +12,20 @@ require 'flexmock'
 require 'plugin/medical_products'
 require 'model/text'
 require 'model/atcclass'
+require 'model/fachinfo'
+require 'model/commercial_form'
 require 'model/registration'
 
 module ODDB
-	class FachinfoDocument
-    attr_accessor :pointer
-		def odba_id
-			1
-		end
-    def initialize(name=nil)
-      @export_flag = true
-      @pointer = FlexMock.new(Persistence::Pointer)
-#      @pointer.should_receive(:descriptions).and_return(@descriptions)
-      @pointer.should_receive(:pointer).and_return(@pointer)
-      @pointer.should_receive(:creator).and_return([])
-      @pointer.should_receive(:+).and_return(@pointer)
-    end
-	end
   module SequenceObserver
     def initialize
     end
     def select_one(param)
+    end
+  end
+  class PseudoFachinfoDocument
+    def descriptions
+      { :de => FlexMock.new('descriptions') }
     end
   end
     class StubLog
@@ -41,68 +34,23 @@ module ODDB
       def notify(arg=nil)
       end
     end
-    class StubRegistration
-      attr_accessor :company_name
-      attr_accessor :generic_type
-      attr_accessor :substance_names
-      attr_accessor :packages
-      attr_accessor :sequences
-      attr_accessor :pointer
-      attr_accessor :odba_store
-      attr_accessor :name_base
-      attr_accessor :sequence
-      attr_accessor :export_flag
-      def initialize(name)
-        @name_base = name
-        @packages = []
-        @sequences = []
-        @export_flag = true
+    class StubPackage
+      attr_accessor :commercial_forms
+      def initialize
+        puts "StubPackage addin CommercialForm"
+        @commercial_mock = FlexMock.new(ODDB::CommercialForm)
+        @commercial_forms = [@commercial_mock]
+      end
+    end
+    class ODDB::Registration
+     def initialize(iksnr)
         @pointer = FlexMock.new(Persistence::Pointer)
         @pointer.should_receive(:descriptions).and_return(@descriptions)
         @pointer.should_receive(:pointer).and_return(@pointer)
         @pointer.should_receive(:creator).and_return([])
         @pointer.should_receive(:+).and_return(@pointer)
-      end
-      def sequence(seqNr)
-        @part_mock = FlexMock.new(ODDB::Part)
-        @part_mock.should_receive(:size=)
-        @part_mock.should_receive(:size).and_return('size of part')
-        @part_mock.should_receive(:pointer).and_return(@pointer)
-        @part_mock.should_receive(:odba_store)
-        @package_mock = FlexMock.new(ODDB::Package)
-        @package_mock.should_receive(:create_part).and_return(@part_mock)
-        @package_mock.should_receive(:part).and_return(@part_mock)
-        @package_mock.should_receive(:parts).and_return([@part_mock])
-        @package_mock.should_receive(:pointer).and_return(@pointer)
-        @package_mock.should_receive(:fix_pointers)
-        @package_mock.should_receive(:odba_store)
-        @package_mock.should_receive(:oid).and_return('1')
-        @sequence = FlexMock.new(ODDB::Sequence)
-        @sequence.should_receive(:create_package).and_return(@package_mock)
-        @sequence.should_receive(:package).and_return(@package_mock)
-        @sequence.should_receive(:packages).and_return([@package_mock])
-        @sequence.should_receive(:pointer).and_return(Persistence::Pointer.new([:sequence, '32917', '00']))
-        @sequence.should_receive(:fix_pointers)
-        @sequence
-      end
-      def create_sequence(seqNr)
-        @sequence = FlexMock.new(ODDB::Sequence)
-        @sequence.should_receive(:create_package).and_return(@package)
-        @sequence.should_receive(:package).and_return(@package)
-        @sequence.should_receive(:packages).and_return([@package])
-        @sequence.should_receive(:pointer).and_return(Persistence::Pointer.new([:sequence, '32917', '00']))
-        @sequence.should_receive(:fix_pointers)
-        @sequence
-      end
-      def odba_store
-      end
-      def fachinfo
-        @fachinfo_mock = FlexMock.new(ODDB::Fachinfo)
-        @fachinfo_mock.should_receive(:indication=)
-        @fachinfo_mock.should_receive(:pointer).and_return(@pointer)
-        @fachinfo_mock.should_receive(:descriptions).and_return(@descriptions_mock)
-        @fachinfo_mock.should_receive(:pointer).and_return(@pointer)
-        @fachinfo_mock
+      @iksnr = iksnr
+      @sequences = {}
       end
     end
     class StubApp
@@ -118,19 +66,27 @@ module ODDB
         epha_mock = FlexMock.new(@epha_interactions)
         epha_mock = FlexMock.new(@epha_interactions)
         epha_mock.should_receive(:odba_store)
-        @descriptions_mock = FlexMock.new('descriptions')
         product_mock = FlexMock.new(@registrations)
         product_mock.should_receive(:odba_store)
         @pointer_mock = FlexMock.new(Persistence::Pointer)
+        @descriptions_mock = FlexMock.new('descriptions')
         @pointer_mock.should_receive(:descriptions).and_return(@descriptions_mock)
         @pointer_mock.should_receive(:pointer).and_return(@pointer_mock)
         @pointer_mock.should_receive(:notify).and_return([])
         @pointer_mock.should_receive(:+).and_return(@pointer_mock)
       end
+      def commercial_form_by_name(name)
+        if name.match(/Fertigspritze/i)
+          @commercial_mock = FlexMock.new(ODDB::CommercialForm)
+          @commercial_mock.should_receive(:pointer).and_return(@pointer_mock)
+          return @commercial_mock
+        else
+          return nil
+        end
+      end
       def create_registration(name)
         @registration_stub = StubRegistration.new(name)
         @registrations << @registration_stub
-        puts "StubApp create_registration #{name} now #{@registrations.size} @registrations"
         @registration_stub
       end
       def company_by_name(name, matchValue)
@@ -143,7 +99,7 @@ module ODDB
         @sequence_mock
       end
       def create_fachinfo
-        @fachinfo_mock
+        @fachinfo
       end
       def odba_store
       end
@@ -162,19 +118,22 @@ module ODDB
       def update(pointer, values, reason = nil)
         @pointer = pointer
         @values = values
-                   require 'pry'; binding.pry if reason and reason.to_s.match(/text_info/i)
+        if reason and reason.to_s.match('medical_product')
+          registrations.first.sequences.first[1].packages.first[1].parts << @commercial_mock
+          return @commercial_mock
+        end
         return @company_mock if reason and reason.to_s.match('company')
         if reason.to_s.match(/registration/)
           if @registrations.size == 0
-            stub = StubRegistration.new('dummy')
+            stub = Registration.new('dummy')
             @registrations << stub
           else stub = @registrations.first
           end
           return stub
         elsif reason and reason.to_s.eql?('text_info')
-           return FachinfoDocument.new
+           return PseudoFachinfoDocument.new
         end
-        return FachinfoDocument.new
+        return PseudoFachinfoDocument.new
         @pointer_mock
       end
       def log_group(key)
@@ -223,7 +182,6 @@ module ODDB
       FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
     end
-    
     def test_update_medical_product_with_absolute_path
       fileName = File.join(@@datadir, 'Sinovial_DE.docx')
       assert(File.exists?(fileName), "File #{fileName} must exist")
@@ -231,6 +189,9 @@ module ODDB
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
       assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_DE.docx')
+      assert(@app.registrations.first.packages, 'packages must be available')
+      skip('Niklaus does not want to waste time to mock correctly this situation')
+      assert_equal('Fertigspritze', @app.registrations.first.packages.first.commercial_forms.first)
     end
     def test_update_medical_product_with_lang_and_relative
       fileName = 'Sinovial_DE.docx'
@@ -250,6 +211,9 @@ module ODDB
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
       assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_FR.docx')
+      assert(@app.registrations.first.packages, 'packages must be available')
+      assert_equal(2, @app.registrations.first.packages.size, 'we must have exactly two packages')
+      assert_equal(nil, @app.registrations.first.packages.first.commercial_forms.first)
     end
   end
 end 
