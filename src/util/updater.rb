@@ -335,7 +335,6 @@ module ODDB
       update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
     end
     def update_medical_products(opts)
-    puts "update_medical_products with #{opts.inspect}"
       @options = opts
       update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
     end

@@ -11,15 +11,10 @@ require 'util/updater'
 module ODDB
   module Util
     opts = {
-      :lang  => :de,
       :files => [],
     }
     ARGV.each do |arg|
-      if arg =~ /^fr$/i
-        opts[:lang] = :fr
-      else
-        opts[:files] << arg if arg.size > 0
-      end
+      opts[:files] << arg if arg.size > 0
     end
     opts[:files] = ["*.docx"] if opts[:files].size == 0
     puts "\nopts == #{opts.inspect}\n\n"

@@ -41,7 +41,7 @@ module ODDB
 		end
 		alias :recipients :incomplete_pointers
 	end
-	class TestUpdater <MiniTest::Unit::TestCase
+	class TestUpdater <Minitest::Test
     include FlexMock::TestCase
 		class StubLog
 			include ODDB::Persistence
@@ -52,15 +52,12 @@ module ODDB
 		class StubApp
       attr_writer :log_group
 			attr_reader :pointer, :values, :model
-			attr_accessor :last_date, :epha_interactions, :medical_products
+			attr_accessor :last_date, :epha_interactions
 			def initialize
 				@model = StubLog.new
         @epha_interactions = []
-        @medical_products = []
         epha_mock = FlexMock.new(@epha_interactions)
         epha_mock.should_receive(:odba_store)
-        product_mock = FlexMock.new(@medical_products)
-        product_mock.should_receive(:odba_store)
 			end
       def odba_store
       end
@@ -71,14 +68,6 @@ module ODDB
         @epha_interactions << mock
         mock.should_receive(:odba_store)
         epha_interaction
-      end
-      def create_medical_product(name)
-        medical_product = ODDB::MedicalProduct.new
-        mock = FlexMock.new(medical_product)
-        @medical_products ||= []
-        @medical_products << mock
-        mock.should_receive(:odba_store)
-        medical_product
       end
       def delete_all_epha_interactions
       end
@@ -381,13 +370,14 @@ module ODDB
       end
     end
     def test_update_epha_interactions_from_csv_file
-      csv_file =  File.expand_path('../data/csv/epha_interactions_de_utf8-latest.csv', File.dirname(__FILE__))
+      csv_file =  File.expand_path('../data/csv/epha_interactions_de_utf8.csv', File.dirname(__FILE__))
       @plugin = ODDB::EphaInteractionPlugin.new(@app)
       res = @plugin.update(csv_file)
-      assert(@app.epha_interactions.size > 0, 'We have lines in epha-CSV')
+      assert_equal(1, @app.epha_interactions.size, 'We have 1 line in epha-CSV')
       assert_equal('<FlexMock:N06AB06;Sertralin;M03BX02;Tizanidin;Keine Interaktion;Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.;Keine Interaktion.;Die Kombination aus Sertralin und Tizanidi>',
                    @app.epha_interactions.first.inspect)
     end
+    
     def test_update_simple  # update_simple is a private method
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:update)
@@ -580,23 +570,5 @@ module ODDB
         assert_equal('notify', @updater.run)
       end
     end
-    def test_update_medical_product_with_absolute_path
-      options = {:files => [ File.expand_path('../data/medical_products/de/Sinovial_DE.docx', File.dirname(__FILE__))],  :lang => 'de' }
-      @plugin = ODDB::MedicalProductPlugin.new(@app)
-      res = @plugin.update(options)
-      assert_equal(1, @app.medical_products.size, 'We have 1 medical_product in Sinovial_DE.docx')
-    end
-    def test_update_medical_product_with_lang_and_relative
-      options = {:files => [ 'Sinovial_DE.docx']}
-      @plugin = ODDB::MedicalProductPlugin.new(@app)
-      res = @plugin.update(options)
-      assert_equal(1, @app.medical_products.size, 'We have 1 medical_product in Sinovial_DE.docx')
-    end
-    def test_update_medical_product_with_relative_wildcard
-      options = {:files => [ '*.docx']}
-      @plugin = ODDB::MedicalProductPlugin.new(@app)
-      res = @plugin.update(options)
-      assert_equal(1, @app.medical_products.size, 'We have 1 medical_product in Sinovial_DE.docx')
-    end 
   end
 end

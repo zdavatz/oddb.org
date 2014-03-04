@@ -21,7 +21,7 @@ module ODDB
                   :current_eventtarget
   end
   
-  class TestTextInfoPluginMethods <Minitest::Test
+  class TestTextInfoPluginMethods<MiniTest::Unit::TestCase
     x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
     y = %(
 data/html/fachinfo/de/Bisoprolol_Axapharm_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62111 (Swissmedic)</span></span><span class="s8"><span>.</span></span></p>
@@ -35,7 +35,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
 )
   end
   
-  class TestTextInfoPlugin <Minitest::Test
+  class TestTextInfoPlugin <MiniTest::Unit::TestCase
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     include FlexMock::TestCase
@@ -767,7 +767,7 @@ EOS
     end
   end
   
-  class TestExtractMatchedName <Minitest::Test
+  class TestExtractMatchedName <MiniTest::Unit::TestCase
     include FlexMock::TestCase
     
     def setup

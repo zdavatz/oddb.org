@@ -93,7 +93,11 @@ module ODDB
                           :pointer => 'pointer')
       @registration = flexmock('registration1',
                                :pointer => @pointer,
+                               :export_flag => false,
+                               :inactive? => false,
+                               :expiration_date => false,
                                :packages => [@package],
+                               :package => @package,
                                :store => 'store')
       @registration.should_receive(:sequence).and_return(@sequence)
       @registrations = flexmock('registrations')
@@ -123,9 +127,12 @@ module ODDB
     end
 
     def test_import_new_registration_xeljanz_from_swissmedicinfo_xml
-      reg = flexmock('registration', 
+      reg = flexmock('registration2', 
                      :new => 'new',
                      :store => 'store',
+                               :export_flag => false,
+                               :inactive? => false,
+                               :expiration_date => false,
                      )
       reg.should_receive(:fachinfo).with(Test_Iksnr).and_return(reg)
       ptr = Persistence::Pointer.new([:registration, Test_Iksnr])
@@ -141,14 +148,14 @@ module ODDB
       meta = TextInfoPlugin::get_iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
-      expected =  TextInfoPlugin::SwissmedicMetaInfo.new(Test_Iksnr, Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum")
+      expected =  SwissmedicMetaInfo.new(Test_Iksnr, Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum")
       assert_equal(expected, meta[Test_Iksnr], 'Meta information about Test_Iksnr must be correct')
       assert_equal(2, @app.registrations.size)
     end
     
     # Here we used to much memory
     def test_import_57435_baraclude_from_swissmedicinfo_xml
-      reg = flexmock('registration', 
+      reg = flexmock('registration3', 
                      :new => 'new',
                      :store => 'store',
                      )
@@ -165,7 +172,7 @@ module ODDB
       meta = TextInfoPlugin::get_iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
-      expected =  TextInfoPlugin::SwissmedicMetaInfo.new(Test_57435_Iksnr, Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance)
+      expected =  SwissmedicMetaInfo.new(Test_57435_Iksnr, Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance)
       assert_equal(expected, meta[Test_57435_Iksnr], 'Meta information about Test_57435_Iksnr must be correct')
       assert_equal(2, @app.registrations.size)
     end
@@ -228,7 +235,7 @@ module ODDB
     end # Fuer Problem mit fachinfo italic
     
     def teardown
-      FileUtils.rm_r @@vardir
+      FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
     end
     
@@ -292,7 +299,15 @@ module ODDB
     end
     
     def test_import_swissmedicinfo_xml
-      reg = flexmock 'registration'
+      reg = flexmock('registration4',
+                     :new => 'new',
+                     :store => 'store',
+                               :export_flag => false,
+                               :inactive? => false,
+                               :package => :package,
+                               :expiration_date => false,
+                     )
+                     
       reg.should_receive(:fachinfo)
       ptr = Persistence::Pointer.new([:registration, '32917'])
       reg.should_receive(:pointer).and_return ptr
@@ -433,5 +448,5 @@ module ODDB
       assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
     end
    
-  end if false
+  end
 end 

@@ -559,7 +559,7 @@ module ODDB
 		end
 		alias :pack :ikscd
 		def iksnr(value)
-			swissmedic_id(:iksnr, value, 4..5)
+			swissmedic_id(:iksnr, value, 4..7)
 		end
     alias :swissmedicnr :iksnr
     alias :reg :iksnr

@@ -51,6 +51,9 @@ module ODBA
     def reset_id
       @id = nil
     end
+    def restore_collection(hash)
+      hash
+    end
 	end
 	def ODBA.transaction
 		yield
