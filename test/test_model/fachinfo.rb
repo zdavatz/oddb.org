@@ -52,6 +52,7 @@ module ODDB
       assert_equal :indications, item.chapter
       assert_equal :de, item.language
       assert_equal [item], @fachinfo.change_log
+      assert @indications, 'add_change_log_item should add @indications'
       assert_equal 1, @indications.size
     end
     def test_atc_class
@@ -86,6 +87,28 @@ module ODDB
         chapters << chap	
       }
       assert_equal(3, chapters.size)
+    end
+    def test_each_chapter_pseudo_fachinfo
+      fachinfo = ODDB::PseudoFachinfoDocument.new
+      fachinfo.composition = ODDB::Text::Chapter.new
+      fachinfo.indications = ODDB::Text::Chapter.new
+      fachinfo.usage = ODDB::Text::Chapter.new
+      fachinfo.contra_indications = ODDB::Text::Chapter.new
+      fachinfo.restrictions = ODDB::Text::Chapter.new
+      fachinfo.interactions = ODDB::Text::Chapter.new
+      fachinfo.unwanted_effects = ODDB::Text::Chapter.new
+      fachinfo.effects = ODDB::Text::Chapter.new
+      fachinfo.other_advice = ODDB::Text::Chapter.new
+      fachinfo.iksnrs = ODDB::Text::Chapter.new
+      fachinfo.packages = ODDB::Text::Chapter.new
+      fachinfo.fabrication = ODDB::Text::Chapter.new
+      fachinfo.distributor = ODDB::Text::Chapter.new
+      fachinfo.date = ODDB::Text::Chapter.new
+      chapters = []
+      fachinfo.each_chapter { |chap|
+        chapters << chap
+      }
+      assert_equal(14, chapters.size)
     end
     def test_company
       reg = flexmock :company => 'company'
