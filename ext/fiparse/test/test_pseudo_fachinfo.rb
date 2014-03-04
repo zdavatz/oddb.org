@@ -19,11 +19,6 @@ require 'stub/cgi'
 require 'flexmock'
 
 module ODDB
-  class FachinfoDocument
-    def odba_id
-      1
-    end
-    end
   module FiParse
     class TestPseudoFachinfoDocument <Minitest::Test
       def test_fachinfo_simple
@@ -38,6 +33,10 @@ module ODDB
         assert_equal('Der Inhalt der Spritzen ist steril und pyrogenfrei.', @@fachinfo.composition.paragraphs[1].to_s)
         assert_equal('Stand der Information', @@fachinfo.date.heading.to_s)
         assert_equal('April 2010.', @@fachinfo.date.paragraphs.first.to_s)
+        yaml =  @@fachinfo.to_yaml
+        File.open(@@path.sub('.docx','.yaml'), 'w+') { |fi| fi.puts yaml }
+        assert_equal(2, yaml.scan(/\sheading:/).size, 'Must find exactly 2 headings')
+        assert_equal(2, yaml.scan(/\ssubheading:/).size, 'Must find exactly 2  subheading')
       end
       def test_fachinfo_sinovial_FR
         @@path = File.expand_path('data/docx/Sinovial_FR.docx', File.dirname(__FILE__))

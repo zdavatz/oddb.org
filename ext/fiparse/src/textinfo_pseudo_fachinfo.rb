@@ -74,7 +74,7 @@ module ODDB
       }
       return nil unless lang
       allChapters = {}
-      txtChapter = nil
+      ptr = nil
       chapterName = nil
       doc.xpath("//paragraph").each {
         |paragraph|
@@ -82,16 +82,25 @@ module ODDB
           if paragraph.xpath("//bold/italic") and paragraph.children.size > 1
             found = LOCALIZED_CHAPTER_EXPRESSION[lang].find_all{ |key, value| key if short.match(value) }
             if found.size == 1
-              allChapters[chapterName] = txtChapter if txtChapter
+              allChapters[chapterName] = ptr.chapter if ptr
               chapterName = found[0][0]
-              txtChapter = Text::Chapter.new
-              txtChapter.heading = short
+              ptr = OpenStruct.new
+              ptr.chapter = Text::Chapter.new
+              ptr.chapter.heading = short
             end
-          end 
-          inhalt = paragraph.text.gsub("\n", "").strip
-          txtChapter.next_section.next_paragraph << paragraph.text if txtChapter and txtChapter.heading != inhalt
+          end
+          if ptr
+            inhalt = paragraph.text.gsub("\n", "").strip
+            if ptr.chapter and ptr.chapter.heading != inhalt
+              if ptr.chapter.sections.size == 0
+                ptr.chapter.next_section.next_paragraph << paragraph.text
+              else
+                ptr.chapter.sections.last.next_paragraph << paragraph.text
+              end
+            end
+          end
       }
-      allChapters[chapterName] = txtChapter if txtChapter
+      allChapters[chapterName] = ptr.chapter if ptr.chapter
       info =  self.to_textinfo(allChapters)
       info.iksnrs = []
       info.packages.paragraphs.each{ |pack| m=pack.match(/\d{13}/); info.iksnrs << m[0] if m  } if info.packages
