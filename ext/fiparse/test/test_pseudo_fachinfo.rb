@@ -55,6 +55,7 @@ module ODDB
         }
         assert_equal(["7612291078458", "7612291078472"], @@fachinfo.iksnrs)
         assert_equal( 2, @@fachinfo.composition.paragraphs.size)
+        assert_equal('7612291078458, seringue prête 2 ml', @@fachinfo.packages.paragraphs.first.to_s)
       end
       def test_fachinfo_sinovial_DE
         @@path = File.expand_path('data/docx/Sinovial_DE.docx', File.dirname(__FILE__))
