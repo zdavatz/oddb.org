@@ -47,6 +47,7 @@ module ODDB
         assert(@@fachinfo.date)
         assert_equal('Sinovial® HighVisc 1,6%' , @@fachinfo.name)
         assert_equal( @@fachinfo.date.paragraphs.first.to_s, 'Avril 2010.')
+        assert_equal('Douleurs ou limitations de la mobilité dues à des affections dégénératives, post-traumatiques ou à des altérations de l’articulation.', @@fachinfo.indications.paragraphs.first.to_s)
         ODDB::PseudoFachinfoDocument::CHAPTERS.each {
           |chapter|
             next if chapter == :unwanted_effects
@@ -54,7 +55,7 @@ module ODDB
             eval cmd
         }
         assert_equal(["7612291078458", "7612291078472"], @@fachinfo.iksnrs)
-        assert_equal( 5, @@fachinfo.composition.paragraphs.size)
+        assert_equal( 2, @@fachinfo.composition.paragraphs.size)
       end
       def test_fachinfo_sinovial_DE
         @@path = File.expand_path('data/docx/Sinovial_DE.docx', File.dirname(__FILE__))
@@ -63,6 +64,7 @@ module ODDB
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
         assert_equal('Sinovial® HighVisc 1,6%' , @@fachinfo.name)
         assert_equal( @@fachinfo.date.paragraphs.first.to_s, 'April 2010.')
+        assert_equal('Schmerzen oder eingeschränkte Beweglichkeit bei degenerativen oder traumatisch bedingten Erkrankungen oder Gelenksveränderungen.', @@fachinfo.indications.paragraphs.first.to_s)
         ODDB::PseudoFachinfoDocument::CHAPTERS.each {
           |chapter|
             next if chapter == :unwanted_effects
@@ -70,7 +72,7 @@ module ODDB
             eval cmd
         }
         assert_equal(["7612291078458", "7612291078472"], @@fachinfo.iksnrs)
-        assert_equal( 5, @@fachinfo.composition.paragraphs.size)
+        assert_equal( 2, @@fachinfo.composition.paragraphs.size)
       end
     end
   end

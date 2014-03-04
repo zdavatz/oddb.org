@@ -246,6 +246,7 @@ module ODDB
 		attr_accessor :contra_indications, :distributor, :name, :lang
 		CHAPTERS = [
 			:composition,
+			:indications,
 			:usage,
 			:contra_indications,
 			:restrictions,

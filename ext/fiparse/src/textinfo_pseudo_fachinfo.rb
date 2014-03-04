@@ -12,6 +12,7 @@ module ODDB
     LOCALIZED_CHAPTER_EXPRESSION = {
       :de => {
         :composition          => /^Zusammensetzung|Wirkstoffe|Hilsstoffe/u, # 2
+        :indications          => /^Indikation(en)?\s*\/\s*Anwendungsm.glichkeit(en)?/,
         :usage                => /^Dosierung\s*(\/|und)\s*Anwendung/u, # 5
         :contra_indications   => /^Kontraindikationen($|\s*\(\s*absolute\s+Kontraindikationen\s*\)$)/u, # 6
         :restrictions         => /^Warnhinweise\s+und\s+Vorsichtsmassnahmen($|\s*\/\s*(relative\s+Kontraindikationen|Warnhinweise\s*und\s*Vorsichtsmassnahmen)$)/u, # 7
@@ -27,6 +28,7 @@ module ODDB
       },
       :fr => {
         :composition         => /^Composition$/u, # 2
+        :indications         => /^Indications\s*\/\s*[pP]ossibilit.s\s*d.emploi/,
         :usage               => /^Posologie\/Mode d’emploi/u, # 5
         :contra_indications  => /^Contre\-indications/iu, # 6
         :restrictions        => /^Mises/u, # 7
