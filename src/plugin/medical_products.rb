@@ -54,7 +54,7 @@
               full_info = paragraph.text.gsub("\n","").gsub(/\s+/, ' ').gsub(' ,',',')
               m = full_info.match(/^(\d{13})/);
               next unless m
-              ean = m[1]
+              ean = Ean13.new(m[1])
               number = ean[2..2+6] # 7 digits
               packNr = ean[9..11] # 3 digits
               m3 = full_info.match(/^(\d{13})[\s,][\d\s]*([^\d,]+)/);
