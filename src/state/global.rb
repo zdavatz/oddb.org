@@ -519,7 +519,7 @@ module ODDB
       def print
         if @session.user_input(:prescription) and
            ean13 = @session.user_input(:ean) and
-           pack = @session.app.package_by_ikskey(ean13.to_s[4,8])
+           pack = @session.app.package_by_ean13(ean13)
           State::Drugs::PrescriptionPrint.new(@session, pack)
         elsif @session.user_input(:pointer)
           self
@@ -619,7 +619,7 @@ module ODDB
 			end
       def rezept
         if ean13 = @session.user_input(:ean) and
-           pack  = @session.app.package_by_ikskey(ean13.to_s[4,8])
+           pack  = @session.app.package_by_ean13(ean13)
           State::Drugs::Prescription.new(@session, pack)
         end
       end

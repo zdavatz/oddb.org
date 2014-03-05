@@ -1110,4 +1110,16 @@ class TestOddbApp <MiniTest::Unit::TestCase
     end
     assert_equal('update', @app.set_all_export_flag_sequence(true))
   end
+  def test_package_by_ean13
+    registration_1234567 = flexmock('registration_1234567') do |reg|
+      reg.should_receive(:package).and_return('package_1234567')
+    end
+    registration_12345 = flexmock('registration_12345') do |reg|
+      reg.should_receive(:package).and_return('package_12345')
+    end
+    @app.registrations = {  '12345' => registration_12345,
+                          '1234567' => registration_1234567,}
+    assert_equal('package_12345',   @app.package_by_ean13('7680123456789'))
+    assert_equal('package_1234567', @app.package_by_ean13('7612345671230'))
+  end
 end

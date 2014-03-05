@@ -101,6 +101,10 @@ class OddbPrevalence
 		#recount()
 		rebuild_atc_chooser()
 	end
+  def retrieve_from_index(index_name, query, result = nil)
+    # $stdout.puts "#{caller[0]}: #{index_name} #{query}"; $stdout.flush
+    ODBA.cache.retrieve_from_index(index_name, query, result)
+  end
 	# prevalence-methods ################################
 	def create(pointer)
 		@last_update = Time.now()
@@ -206,7 +210,7 @@ class OddbPrevalence
 		}
 	end
 	def atcless_sequences
-		ODBA.cache.retrieve_from_index('atcless', 'true')
+		retrieve_from_index('atcless', 'true')
 	end
 	def atc_class(code)
 		@atc_classes[code]
@@ -703,8 +707,7 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		ODBA.cache.retrieve_from_index("fachinfo_name_#{lang}", 
-			name)
+		retrieve_from_index("fachinfo_name_#{lang}", name)
 	end
   def feedback(id)
     @feedbacks[id.to_i]
@@ -774,6 +777,21 @@ class OddbPrevalence
     ikskey = ikskey.to_s
     iksnr = "%05i" % ikskey[-8..-4].to_i
     ikscd = ikskey[-3..-1]
+    if reg = registration(iksnr)
+      reg.package ikscd
+    end
+  end
+  def package_by_ean13(ean13)
+    return false unless ean13.to_s.match(/^\d{13}/)
+    if ean13.to_s[2..3].eql?('80') # swissmedic-iksnrs
+      iksnr = ean13.to_s[4..8]
+      ikscd = ean13.to_s[9..11]
+      $stdout.puts "package_by_ean13          iksnr #{iksnr} ikscd #{ikscd}"
+    else # pseudo_fachinfo (introduced in march 2014)
+      iksnr = ean13.to_s[2..8]
+      ikscd = ean13.to_s[9..11]
+      $stdout.puts "package_by_ean13 pseudo_fachinfo #{iksnr} ikscd #{ikscd}"
+    end
     if reg = registration(iksnr)
       reg.package ikscd
     end
@@ -865,14 +883,14 @@ class OddbPrevalence
     if lang.to_s != 'fr'
 			lang = 'de'
 		end
-		ODBA.cache.retrieve_from_index("analysis_index_#{lang}", key)
+		retrieve_from_index("analysis_index_#{lang}", key)
 	end
 	def search_analysis_alphabetical(query, lang)
     if lang.to_s != 'fr'
 			lang = 'de'
 		end
 		index_name = "analysis_alphabetical_index_#{lang}"
-		ODBA.cache.retrieve_from_index(index_name, query)
+    retrieve_from_index(index_name, query)
 	end
   @@iks_or_ean = /(?:\d{4})?(\d{5})(?:\d{4})?/u
 	def search_oddb(query, lang)
@@ -987,18 +1005,18 @@ class OddbPrevalence
     result
 	end
 	def search_by_atc(key)
-		ODBA.cache.retrieve_from_index('atc_index', key.dup)
+		retrieve_from_index('atc_index', key.dup)
 	end
 	def search_by_company(key)
 		result = ODDB::SearchResult.new
     result.error_limit = RESULT_SIZE_LIMIT
-		atcs = ODBA.cache.retrieve_from_index('atc_index_company', key.dup, result)
+		atcs = retrieve_from_index('atc_index_company', key.dup, result)
 		filtered = atcs.collect { |atc|
 			atc.company_filter_search(key.dup)
 		}
 		filtered.flatten.compact.uniq
 	end
-  def search_by_indication(key)
+  def search_by_indication(key, lang=:de)
     pattern = key.gsub(/[^A-z0-9]/, '.')
     atcs = []
     indications.map do |indication|
@@ -1009,7 +1027,7 @@ class OddbPrevalence
     atcs.uniq
   end
 	def search_by_sequence(key, result=nil)
-		ODBA.cache.retrieve_from_index('sequence_index_atc', key.dup, result)
+		retrieve_from_index('sequence_index_atc', key.dup, result)
 	end
 	def search_by_interaction(key, lang)
 		result = ODDB::SearchResult.new
@@ -1017,8 +1035,7 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		sequences = ODBA.cache.retrieve_from_index("interactions_index_#{lang}", 
-                                               key, result)
+		sequences = retrieve_from_index("interactions_index_#{lang}", key, result)
     key = key.downcase
     sequences.reject! { |seq| 
       ODDB.search_terms(seq.search_terms, :downcase => true).include?(key) \
@@ -1029,22 +1046,21 @@ class OddbPrevalence
 		_search_exact_classified_result(sequences, :interaction, result)
 	end
 	def search_by_substance(key)
-		ODBA.cache.retrieve_from_index('substance_index_atc', key.dup)
+		retrieve_from_index('substance_index_atc', key.dup)
 	end
 	def search_by_unwanted_effect(key, lang)
 		result = ODDB::SearchResult.new
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		sequences = ODBA.cache.retrieve_from_index("unwanted_effects_index_#{lang}", 
-                                               key, result)
+		sequences = retrieve_from_index("unwanted_effects_index_#{lang}", key, result)
 		_search_exact_classified_result(sequences, :unwanted_effect, result)
 	end
 	def search_doctors(key)
-		ODBA.cache.retrieve_from_index("doctor_index", key)
+		retrieve_from_index("doctor_index", key)
 	end
 	def search_companies(key)
-		ODBA.cache.retrieve_from_index("company_index", key)
+		retrieve_from_index("company_index", key)
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
@@ -1064,13 +1080,13 @@ class OddbPrevalence
 			lang = "de"
 		end
 		index_name = "narcotics_#{lang}"
-		ODBA.cache.retrieve_from_index(index_name, query)
+		retrieve_from_index(index_name, query)
 	end
 	def search_patinfos(query)
-		ODBA.cache.retrieve_from_index('sequence_patinfos', query)
+		retrieve_from_index('sequence_patinfos', query)
 	end
 	def search_vaccines(query)
-		ODBA.cache.retrieve_from_index('sequence_vaccine', query)
+		retrieve_from_index('sequence_vaccine', query)
 	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
@@ -1102,16 +1118,16 @@ class OddbPrevalence
     result
   end
   def search_epha_interactions(key)
-    ODBA.cache.retrieve_from_index("epha_interaction_index", key)
+    retrieve_from_index("epha_interaction_index", key)
   end
   def search_hospitals(key)
-    ODBA.cache.retrieve_from_index("hospital_index", key)
+    retrieve_from_index("hospital_index", key)
   end
 	def search_indications(query)
-		ODBA.cache.retrieve_from_index("indication_index", query)
+		retrieve_from_index("indication_index", query)
 	end
 	def search_interactions(query)
-		result = ODBA.cache.retrieve_from_index("sequence_index_substance", query)
+		result = retrieve_from_index("sequence_index_substance", query)
 		if(subs = substance(query, false))
 			result.unshift(subs)
 		end
@@ -1122,13 +1138,13 @@ class OddbPrevalence
 	end
 	def search_sequences(query, chk_all_words=true)
 		index = (chk_all_words) ? 'sequence_index' : 'sequence_index_exact'
-		ODBA.cache.retrieve_from_index(index, query)
+		retrieve_from_index(index, query)
 	end
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new
 		result.exact = true
     key = ODDB.search_term(key)
-		ODBA.cache.retrieve_from_index("substance_index", key, result).find { |sub|
+		retrieve_from_index("substance_index", key, result).find { |sub|
       sub.same_as? key
     }
 	end
@@ -1228,7 +1244,7 @@ class OddbPrevalence
 		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/u)
 		soundex = ODDB::Text::Soundex.soundex(parts)
 		key = soundex.join(' ')
-		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
+		retrieve_from_index("substance_soundex_index", key)
 	end
   def sorted_fachinfos
     @sorted_fachinfos ||= @fachinfos.values.select { |fi| 

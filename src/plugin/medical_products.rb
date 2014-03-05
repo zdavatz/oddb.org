@@ -14,10 +14,13 @@
   require 'ydocx/templates/fachinfo'
   require 'textinfo_pseudo_fachinfo'
 
-  module ODDB
+module ODDB
   class MedicalProductPlugin < Plugin
     @@errors = []
     @@products = []
+    ATC_CLASS_CODE    = 'medical product'
+    ATC_CLASS_NAME_DE = 'Medizinprodukte ohne ATC-Klassierung'
+    SEQ_ZERO          = '00'
     def initialize(app,  opts = {:files => ['*.docx']})
       super(app)
       @options = opts
@@ -32,9 +35,21 @@
       msg
     end
 
+    def add_dummy_medical_product(atc_code = ATC_CLASS_CODE, lang = :de, name = ATC_CLASS_NAME_DE)
+      pointer = if atc = @app.atc_class(atc_code)
+          atc.pointer
+        else
+          Persistence::Pointer.new([:atc_class, atc_code]).creator
+        end
+      LogFile.debug ("Adding #{atc_code} #{lang} #{name}")
+      @app.update(pointer.creator, lang => name)
+    end
+    
     def update
       data_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', defined?(Minitest) ? 'test' : '.', 'data', 'docx'))
       LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
+      atc_code = @app.atc_class(atc_code) 
+      atc_code = add_dummy_medical_product unless atc_code
       @options[:files].each{
         |param|
         files = (Dir.glob(param) + Dir.glob(File.join(data_dir, param))).collect{ |file| File.expand_path(file) }.uniq
@@ -63,7 +78,7 @@
               parts[ean] = [m2[3].strip, m2[4].strip, m2[5].strip ] if m2
               authHolder = pseudo_fi_text.distributor.paragraphs.first.strip.match(/^[^,\n]+/)[0]
               info = SwissmedicMetaInfo.new(number, nil, pseudo_fi_text.name, authHolder, nil)
-              reg = TextInfoPlugin::create_registration(@app, info, '00', packNr)
+              reg = TextInfoPlugin::create_registration(@app, info, SEQ_ZERO, packNr)
               @@products << "#{pseudo_fi_text.lang} #{number} #{packNr}: #{pseudo_fi_text.name}"
               registration = @app.registration(number)
               unless registration
@@ -71,11 +86,16 @@
                   @app.registrations.odba_store
                   registration = @app.registration(number)
               end
+              sequence = registration.sequence(SEQ_ZERO)
+              unless unless sequence.atc_class
+                LogFile.debug "Adding atc #{atc_code.code} to #{registration.iksnr}"
+                res = @app.update(sequence.pointer,  {:atc_class => atc_code.code }, :medical_product)
+              end
               fachinfo = nil
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, registration, {pseudo_fi_text.lang => pseudo_fi_text})
               TextInfoPlugin::replace_textinfo(@app, fachinfo, registration, :fachinfo)
               if parts[ean]
-                package = registration.sequence('00').package(packNr)
+                package = registration.sequence(SEQ_ZERO).package(packNr)
                 oldParts = package.parts
                 pInfo = parts[ean]
                 pSize = "#{pInfo[0]} #{pInfo[1]} #{pInfo[2]}"
@@ -103,10 +123,11 @@
                 package.fix_pointers unless defined?(MiniTest)
                 @app.odba_isolated_store # Why doesn't @app.updated consider the Part class?
               end
+            end
             }
           end
         }
       }
-    end
-  end
+    end # update
+  end # MedicalProductPlugin
 end
