@@ -78,7 +78,7 @@ class Compare < State::Drugs::Global
       @package = nil
       self
     elsif ean13 = @session.user_input(:ean13)
-      @package = @session.app.package_by_ikskey(ean13.to_s[4,8])
+      @package = @session.app.package_by_ean13(ean13)
     elsif term = @session.user_input(:search_query)
       @package = ODDB::Package.find_by_name_with_size term
     end
