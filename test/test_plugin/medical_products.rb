@@ -75,6 +75,14 @@ module ODDB
         @pointer_mock.should_receive(:notify).and_return([])
         @pointer_mock.should_receive(:+).and_return(@pointer_mock)
       end
+      def atc_class(name)
+        @atc_name = name
+        @atc_class_mock = FlexMock.new(ODDB::AtcClass)
+        @atc_class_mock.should_receive(:pointer).and_return(@pointer_mock)
+        @atc_class_mock.should_receive(:pointer_descr).and_return(@atc_name)
+        @atc_class_mock.should_receive(:code).and_return(@atc_name)
+        return @atc_class_mock
+      end
       def commercial_form_by_name(name)
         if name.match(/Fertigspritze/i)
           @commercial_mock = FlexMock.new(ODDB::CommercialForm)
