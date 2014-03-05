@@ -215,5 +215,11 @@ module ODDB
       assert_equal(2, @app.registrations.first.packages.size, 'we must have exactly two packages')
       assert_equal(nil, @app.registrations.first.packages.first.commercial_forms.first)
     end
+    def test_update_invalid_ean
+      fileName = File.join('errors', 'invalid_ean13.docx')
+      options = {:files => [ fileName ],  :lang => 'de' }
+      @plugin = ODDB::MedicalProductPlugin.new(@app, options)
+      assert_raises(SBSM::InvalidDataError) {@plugin.update()}
+    end
   end
 end 
