@@ -93,7 +93,7 @@ module ODDB
         end
       end
       def create_registration(name)
-        @registration_stub = StubRegistration.new(name)
+        @registration_stub = ODDB::Registration.new(name)
         @registrations[name] = @registration_stub
         @registration_stub
       end
