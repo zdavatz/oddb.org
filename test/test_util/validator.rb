@@ -46,10 +46,12 @@ class TestOddbValidator <Minitest::Test
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:ikscd, '1a34').class)
 	end
 	def test_iksnr
+		assert_equal('00300', @validator.validate(:iksnr, '00300'))
 		assert_equal('12345', @validator.validate(:iksnr, '12345'))
+		assert_equal('1234567890', @validator.validate(:iksnr, '1234567890'))
 		assert_equal(nil, @validator.validate(:iksnr, nil))
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '123').class)
-		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '123456').class)
+		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '12345678901').class)
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '1a345').class)
 	end
 	def test_pointer1
