@@ -559,7 +559,12 @@ module ODDB
 		end
 		alias :pack :ikscd
 		def iksnr(value)
-			swissmedic_id(:iksnr, value, 4..7)
+      begin
+        res = swissmedic_id(:iksnr, value, 4..7)
+      rescue SBSM::InvalidDataError
+        return value if value.length == 10
+        raise SBSM::InvalidDataError.new("e_invalid_iksnr", :iksnr, value)
+      end
 		end
     alias :swissmedicnr :iksnr
     alias :reg :iksnr

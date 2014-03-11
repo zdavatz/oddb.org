@@ -160,7 +160,7 @@ module ODDB
     end
 		def barcode
 			if(key = ikskey)
-        if ikskey.to_s.size == 10
+      if ikskey.to_s.size == 10
           Ean13.new_unchecked('76'+key).to_s
         else
           Ean13.new_unchecked('7680'+key).to_s
@@ -394,7 +394,7 @@ module ODDB
 		end
 		def ikskey
 			if(nr = iksnr)
-				nr + @ikscd
+				iksnr.size == 10 ? nr : nr + @ikscd
 			end
 		end
 		def limitation

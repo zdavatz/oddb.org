@@ -60,7 +60,7 @@ module ODDB
       def initialize
         @model = StubLog.new
         @epha_interactions = []
-        @registrations = []
+        @registrations = {}
         @company_mock = FlexMock.new(ODDB::Company)
         @company_mock.should_receive(:pointer).and_return(@pointer)
         epha_mock = FlexMock.new(@epha_interactions)
@@ -93,15 +93,15 @@ module ODDB
         end
       end
       def create_registration(name)
-        @registration_stub = StubRegistration.new(name)
-        @registrations << @registration_stub
+        @registration_stub = ODDB::Registration.new(name)
+        @registrations[name] = @registration_stub
         @registration_stub
       end
       def company_by_name(name, matchValue)
         @registration_stub
       end
       def registration(number)
-        @registrations.first
+        @registrations[number.to_s]
       end
       def sequence(number)
         @sequence_mock
@@ -127,16 +127,13 @@ module ODDB
         @pointer = pointer
         @values = values
         if reason and reason.to_s.match('medical_product')
-          registrations.first.sequences.first[1].packages.first[1].parts << @commercial_mock
           return @commercial_mock
         end
         return @company_mock if reason and reason.to_s.match('company')
         if reason.to_s.match(/registration/)
-          if @registrations.size == 0
-            stub = Registration.new('dummy')
-            @registrations << stub
-          else stub = @registrations.first
-          end
+          number = pointer.to_yus_privilege.match(/\d+/)[0]
+          stub = Registration.new(number)
+          @registrations[number] = stub
           return stub
         elsif reason and reason.to_s.eql?('text_info')
            return PseudoFachinfoDocument.new
@@ -196,32 +193,33 @@ module ODDB
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_DE.docx')
-      assert(@app.registrations.first.packages, 'packages must be available')
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx')
       skip('Niklaus does not want to waste time to mock correctly this situation')
-      assert_equal('Fertigspritze', @app.registrations.first.packages.first.commercial_forms.first)
+      packages = @app.registrations.first[1].packages
+      assert_equal('Fertigspritze', packages.first.commercial_forms.first)
     end
     def test_update_medical_product_with_lang_and_relative
       fileName = 'Sinovial_DE.docx'
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_DE.docx')
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx')
     end
     def test_update_medical_product_with_relative_wildcard
       options = {:files => [ '*.docx']}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_DE.docx')
+      assert_equal(5, @app.registrations.size, 'We have 5 medical_products in Sinovial_DE.docx')
     end
     def test_update_medical_product_french
       options = {:files => [ '*.docx'], :lang => :fr}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(1, @app.registrations.size, 'We have 1 medical_product in Sinovial_FR.docx')
-      assert(@app.registrations.first.packages, 'packages must be available')
-      assert_equal(2, @app.registrations.first.packages.size, 'we must have exactly two packages')
-      assert_equal(nil, @app.registrations.first.packages.first.commercial_forms.first)
+      assert_equal(5, @app.registrations.size, 'We have 5 medical_product in Sinovial_FR.docx')
+			packages = @app.registrations.first[1].packages
+      assert(packages, 'packages must be available')
+      assert_equal(1, packages.size, 'we must have exactly two packages')
+      assert_equal(nil, packages.first.commercial_forms.first)
     end
     def test_update_invalid_ean
       fileName = File.join('errors', 'invalid_ean13.docx')

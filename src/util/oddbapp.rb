@@ -786,11 +786,9 @@ class OddbPrevalence
     if ean13.to_s[2..3].eql?('80') # swissmedic-iksnrs
       iksnr = ean13.to_s[4..8]
       ikscd = ean13.to_s[9..11]
-      $stdout.puts "package_by_ean13          iksnr #{iksnr} ikscd #{ikscd}"
     else # pseudo_fachinfo (introduced in march 2014)
-      iksnr = ean13.to_s[2..8]
+      iksnr = ean13.to_s[2..11]
       ikscd = ean13.to_s[9..11]
-      $stdout.puts "package_by_ean13 pseudo_fachinfo #{iksnr} ikscd #{ikscd}"
     end
     if reg = registration(iksnr)
       reg.package ikscd

@@ -566,9 +566,7 @@ module ODDB
       end
       return if registration.export_flag or registration.inactive? or (registration.expiration_date and registration.expiration_date > Date.today)
       return if registration.package(packNr) and registration.sequence(seqNr)
-      LogFile.debug "Found registration for #{iksnr}: #{registration.inspect}"
       sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
-      LogFile.debug "sequence for #{iksnr} is #{sequence.inspect}"
       return unless info
       seq_args = { 
         :composition_text => nil,
@@ -593,7 +591,7 @@ module ODDB
     def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
       iksnr = info.iksnr
       # similar to method update_registration in src/plugin/swissmedic.rb
-      # LogFile.debug("create_registration #{info.inspect}")
+      LogFile.debug("create_registration #{info.inspect} seqNr #{seqNr}/#{packNr}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,
