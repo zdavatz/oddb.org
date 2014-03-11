@@ -20,7 +20,6 @@ module ODDB
     @@products = []
     ATC_CLASS_CODE    = 'medical product'
     ATC_CLASS_NAME_DE = 'Medizinprodukte ohne ATC-Klassierung'
-    SEQ_ZERO          = '00'
     def initialize(app,  opts = {:files => ['*.docx']})
       super(app)
       @options = opts
@@ -70,15 +69,17 @@ module ODDB
               m = full_info.match(/^(\d{13})/);
               next unless m
               ean = Ean13.new(m[1])
-              number = ean[2..2+6] # 7 digits
+              number = ean[2..11] # 10 digits
+              seqNr  = ean[7..8]  # 2 digits
               packNr = ean[9..11] # 3 digits
+              LogFile.debug "Adding #{number} seq #{seqNr} pack #{packNr}"
               m3 = full_info.match(/^(\d{13})[\s,][\d\s]*([^\d,]+)/);
               commercial_localized = m3[2].strip
               m2 = paragraph.text.match(/(\d{13})($|\s|\W)(.+)(\d+)\s+(\w+)/)
               parts[ean] = [m2[3].strip, m2[4].strip, m2[5].strip ] if m2
               authHolder = pseudo_fi_text.distributor.paragraphs.first.strip.match(/^[^,\n]+/)[0]
               info = SwissmedicMetaInfo.new(number, nil, pseudo_fi_text.name, authHolder, nil)
-              reg = TextInfoPlugin::create_registration(@app, info, SEQ_ZERO, packNr)
+              reg = TextInfoPlugin::create_registration(@app, info, seqNr, packNr)
               @@products << "#{pseudo_fi_text.lang} #{number} #{packNr}: #{pseudo_fi_text.name}"
               registration = @app.registration(number)
               unless registration
@@ -86,16 +87,16 @@ module ODDB
                   @app.registrations.odba_store
                   registration = @app.registration(number)
               end
-              sequence = registration.sequence(SEQ_ZERO)
+              sequence = registration.sequence(seqNr)
               unless unless sequence.atc_class
-                LogFile.debug "Adding atc #{atc_code.code} to #{registration.iksnr}"
+                LogFile.debug "Adding atc #{atc_code.code} to #{registration.iksnr} seq #{seqNr} pack #{packNr}"
                 res = @app.update(sequence.pointer,  {:atc_class => atc_code.code }, :medical_product)
               end
               fachinfo = nil
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, registration, {pseudo_fi_text.lang => pseudo_fi_text})
               TextInfoPlugin::replace_textinfo(@app, fachinfo, registration, :fachinfo)
               if parts[ean]
-                package = registration.sequence(SEQ_ZERO).package(packNr)
+                package = registration.sequence(seqNr).package(packNr)
                 oldParts = package.parts
                 pInfo = parts[ean]
                 pSize = "#{pInfo[0]} #{pInfo[1]} #{pInfo[2]}"
