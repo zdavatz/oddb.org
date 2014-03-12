@@ -253,6 +253,11 @@ class PackageForm < HtmlGrid::Composite
 			link
 		end
 	end
+  def ikscat(model, session=@session)
+    input = HtmlGrid::Textarea.new(:ikscat, model, @session, self)
+    input.label = true
+    input
+  end
   def generic_group(model, session=@session)
     input = HtmlGrid::Textarea.new(:generic_group, model, @session, self)
     my_factor = (model.generic_group_factor || 1).to_f
