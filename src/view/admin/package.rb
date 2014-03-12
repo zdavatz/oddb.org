@@ -254,7 +254,7 @@ class PackageForm < HtmlGrid::Composite
 		end
 	end
   def ikscat(model, session=@session)
-    input = HtmlGrid::Textarea.new(:ikscat, model, @session, self)
+    input = HtmlGrid::InputText.new(:ikscat, model, @session, self)
     input.label = true
     input
   end
