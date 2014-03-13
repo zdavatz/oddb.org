@@ -11,7 +11,11 @@ class ApiSearch < State::Drugs::Global
   def init
     @model = []
     if ean = @session.user_input(:ean)
-      package = @session.app.package_by_ean13(ean13)
+      if ean.to_s.match(/^7680/)
+        package = @session.app.package_by_ikskey(ean.to_s[4,8])
+      else
+        package = @session.app.package_by_ean13(ean13)
+      end
       if package.is_a?(ODDB::Package)
         @model = {
           'reg'    => package.iksnr,
