@@ -26,8 +26,8 @@ describe "ch.oddb.org" do
   
 LinkDefinition = Struct.new(:language, :name, :url)
 Links2Test = [
-  LinkDefinition.new(:de, "AmiKo: Fachinfo App für Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
-  LinkDefinition.new(:fr, "CoMed: les RCP en appli Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.fr&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
+  LinkDefinition.new(:de, "AmiKo für Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
+  LinkDefinition.new(:fr, "CoMed pour Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.fr&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
   LinkDefinition.new(:de, "AmiKo für OS X",                  'https://itunes.apple.com/us/app/amiko/id708142753?mt=12'),
   LinkDefinition.new(:fr, "CoMed pour OS X",                 'https://itunes.apple.com/us/app/comed/id710472327&mt=12'),
   LinkDefinition.new(:de, "AmiKo für Windows",               'http://pillbox.oddb.org/amikodesk_setup_32bit.exe'),

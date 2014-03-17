@@ -78,19 +78,18 @@ describe "ch.oddb.org" do
   
   it "should have a link to the english language versions" do
     @browser.link(:text=>'English').click
-    sleep(1) # or should I use something like b.wait_until {b.text.include? /Search for your favorite drug fast and easy/ }
     @browser.text.should match /Search for your favorite drug fast and easy/
   end
-  
+
   it "should have a link to the french language versions" do
-    @browser.link(:text=>'Français').click
-    sleep(1)
+    @browser.goto OddbUrl
+    @browser.link(:text=>/Français|French/i).click
     @browser.text.should match /Comparez simplement et rapidement les prix des médicaments/
   end
 
   it "should have a link to the german language versions" do
-    @browser.link(:text=>'Deutsch').click
-    sleep(1)
+    @browser.goto OddbUrl
+    @browser.link(:text=>/Deutsch|German/).click
     @browser.text.should match /Vergleichen Sie einfach und schnell Medikamentenpreise./
   end
 
