@@ -24,20 +24,24 @@ class Prescription < State::Drugs::Global
   VIEW = View::Drugs::Prescription
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
-    if @session.event.to_sym == self.class::DIRECT_EVENT and
-       drugs = @session.persistent_user_input(:drugs) # init
+    if @session.event.to_sym == self.class::DIRECT_EVENT
       @session.set_persistent_user_input(:drugs, {})
+      if ean13 = @session.persistent_user_input(:ean)
+        ean13.split(',').uniq.each{
+          |ean|
+          ajax_add_drug(ean)
+        }
+      end
     end
     super
   end
   def export_csv
     PrescriptionCsvExport.new(@session, @model)
   end
-  def ajax_add_drug
-    check_model
+  def ajax_add_drug(ean13 = @session.user_input(:ean))
+    check_model(ean13)
     unless error?
-      if ean13 = @session.user_input(:ean).to_s and
-         pack  = package_for(ean13)
+      if ean13 and pack = package_for(ean13)
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs[ean13] = pack unless drugs.has_key?(ean13)
         @session.set_persistent_user_input(:drugs, drugs)
@@ -45,10 +49,10 @@ class Prescription < State::Drugs::Global
     end
     AjaxDrug.new(@session, @model)
   end
-  def ajax_delete_drug
-    check_model
+  def ajax_delete_drug(ean13 = @session.user_input(:ean))
+    check_model(ean13)
     unless error?
-      if ean13 = @session.user_input(:ean).to_s
+      if ean13
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs.delete(ean13)
         @session.set_persistent_user_input(:drugs, drugs)
@@ -57,8 +61,7 @@ class Prescription < State::Drugs::Global
     AjaxEmpty.new(@session, @model)
   end
   private
-  def check_model
-    ean13 = @session.user_input(:ean)
+  def check_model(ean13 = @session.user_input(:ean))
     unless ean13 and ean13.match(@@ean13_form)
       @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
     end

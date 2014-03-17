@@ -84,11 +84,13 @@ function selectXhrRequest() {
     #{progressbar}
     var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
     var path = searchbar.baseURI;
+    xhrGet(searchbar.value);
     searchbar.value = '';
     var found = path.match(/home_interactions/);
     if(found && ean13) {
       var url = (path + ',' + ean13).replace('/,', '/');
       window.location = url;
+      get_to(url);
     }
   }
 }
@@ -149,27 +151,20 @@ class SearchBar < HtmlGrid::InputText
     param = @lookandfeel.disabled?(:best_result) ? nil : " + '#best_result'"
     self.onsubmit = <<-JS
 function get_to(url) {
+  // console.log('get_to: ' + url);
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", url);
   document.body.appendChild(form);
   form.submit();
 }
-
 if (#{@name}.value!='#{val}') {
 #{timer}
   var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
-  if (this.id == 'interaction_chooser_searchbar') {
-    var url = searchbar.baseURI;
-    url += '/home_interactions/' + this.value
-    // get_to(href);
-    window.location = url
-  } else {
-    if (this.search_type) {
-      href += '/search_type/' + this.search_type.value#{param};
-    }
-    get_to(href);
+  if (this.search_type) {
+    href += '/search_type/' + this.search_type.value#{param};
   }
+  get_to(href);
 };
 return false;
     JS
