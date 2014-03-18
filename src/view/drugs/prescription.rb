@@ -15,6 +15,7 @@ require 'htmlgrid/inputradio'
 require 'htmlgrid/component'
 require 'view/drugs/privatetemplate'
 require 'view/drugs/centeredsearchform'
+require 'view/interactions/interaction_chooser'
 require 'view/additional_information'
 require 'view/searchbar'
 require 'view/printtemplate'
@@ -451,20 +452,6 @@ class PrescriptionForm < View::Form
     buttons << '&nbsp;'
     buttons << post_event_button(:export_csv)
     buttons << '&nbsp;'
-    button = HtmlGrid::Button.new(:prescription_link_to_epha, model, session, self)
-    js = <<-JS
-    var link   = 'http://matrix.epha.ch/';
-    var param  = '';
-    var codes  = getElementsByName('atc_code');
-    var values = [];
-    var i = 0;
-    var c = codes.length;
-    for (; i < c; i++) { values.push(codes[i].value); }
-    if (values.length != 0) { param += '#' + values.join(); }
-    window.open(link + param);
-    JS
-    button.set_attribute("onclick", js)
-    buttons << button
     buttons
   end
   private
