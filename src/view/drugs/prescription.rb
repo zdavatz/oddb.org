@@ -44,58 +44,55 @@ end
 
 class PrescriptionDrugInnerForm < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0] => :interactions_heading,
-    [0,1] => :interactions,
-    [0,2] => 'prescription_quantity_morning',
-    [1,2] => :prescription_quantity_morning,
-    [2,2] => 'prescription_quantity_noon',
-    [3,2] => :prescription_quantity_noon,
-    [4,2] => 'prescription_quantity_evening',
-    [5,2] => :prescription_quantity_evening,
-    [6,2] => 'prescription_quantity_night',
-    [7,2] => :prescription_quantity_night,
-    [8,2] => '&nbsp;&nbsp;',
-    [9,2] => :prescription_method_fields,
-    [0,2] => :prescription_timing_fields,
-    [3,2] => :prescription_term_fields,
-    [9,2] => :prescription_comment,
-    [0,5] => :atc_code,
+    [0,0] => :interactions,
+    [0,1] => 'prescription_quantity_morning',
+    [1,1] => :prescription_quantity_morning,
+    [2,1] => 'prescription_quantity_noon',
+    [3,1] => :prescription_quantity_noon,
+    [4,1] => 'prescription_quantity_evening',
+    [5,1] => :prescription_quantity_evening,
+    [6,1] => 'prescription_quantity_night',
+    [7,1] => :prescription_quantity_night,
+    [8,1] => '&nbsp;&nbsp;',
+    [9,1] => :prescription_method_fields,
+    [0,1] => :prescription_timing_fields,
+    [3,1] => :prescription_term_fields,
+    [9,1] => :prescription_comment,
+    [0,4] => :atc_code,
   }
   CSS_MAP = {
     [0,0] => 'div',
-    [0,1] => 'div',
-    [0,2] => 'list bold',
-    [1,2] => 'list',
-    [2,2] => 'list bold',
-    [3,2] => 'list',
-    [4,2] => 'list bold',
-    [5,2] => 'list',
-    [6,2] => 'list bold',
-    [7,2] => 'list',
-    [9,2] => 'list',
-    [0,2] => 'list top',
-    [3,2] => 'list top',
-    [9,2] => 'list top',
+    [0,1] => 'list bold',
+    [1,1] => 'list',
+    [2,1] => 'list bold',
+    [3,1] => 'list',
+    [4,1] => 'list bold',
+    [5,1] => 'list',
+    [6,1] => 'list bold',
+    [7,1] => 'list',
+    [9,1] => 'list',
+    [0,1] => 'list top',
+    [3,1] => 'list top',
+    [9,1] => 'list top',
   }
   COMPONENT_CSS_MAP = {
-    [9,2] => 'wide',
+    [9,1] => 'wide',
   }
   COLSPAN_MAP = {
-    [0,0] => 11,
-    [0,1] => 11,
-    [9,2] => 2,
-    [0,2] => 3,
-    [3,2] => 5,
-    [9,2] => 5,
+    [0,0] => 15,
+    [9,1] => 2,
+    [0,1] => 3,
+    [3,1] => 5,
+    [9,1] => 5,
   }
   LABELS = false
   def init
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
     super
-    @grid.add_attribute('rowspan', 2, *[0,2])
-    @grid.add_attribute('rowspan', 2, *[3,2])
-    @grid.add_attribute('rowspan', 2, *[9,2])
+    @grid.add_attribute('rowspan', 2, *[0,1])
+    @grid.add_attribute('rowspan', 2, *[3,1])
+    @grid.add_attribute('rowspan', 2, *[9,1])
   end
   def self.define_quantity_method(key)
     name = "prescription_quantity_#{key}"
@@ -269,10 +266,6 @@ repetition.disabled = true;
       select.set_attribute(attr_key.to_s, attr_value)
     end
     select
-  end
-  def interactions_heading(model, session)
-    text = HtmlGrid::LabelText.new(:interactions, @model, @session, self)
-    text
   end
   def interactions(model, session)
     View::Drugs::PrescriptionInteractionDrugDiv.new(model, session, self)
