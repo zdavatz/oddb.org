@@ -77,6 +77,14 @@ function initMatches() {
     if(searchbar.value == '') { searchbar.value = '#{val}'; }
   });
 }
+function get_to(url) {
+  // console.log('get_to: ' + url);
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url);
+  document.body.appendChild(form);
+  form.submit();
+}
 function selectXhrRequest() {
   var popup = dojo.byId('#{target}_searchbar_popup');
   var searchbar = dojo.byId('#{id}');
@@ -86,7 +94,7 @@ function selectXhrRequest() {
     var path = searchbar.baseURI;
     xhrGet(searchbar.value);
     searchbar.value = '';
-    var found = path.match(/home_interactions/);
+    var found = path.match(/home_interactions|rezept/);
     if(found && ean13) {
       var url = (path + ',' + ean13).replace('/,', '/');
       window.location = url;
@@ -164,6 +172,7 @@ if (#{@name}.value!='#{val}') {
   if (this.search_type) {
     href += '/search_type/' + this.search_type.value#{param};
   }
+  // console.log('SearchBar: get_to: ' + href);
   get_to(href);
 };
 return false;

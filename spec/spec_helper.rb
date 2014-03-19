@@ -15,6 +15,19 @@ browsers2test ||= [ ENV['ODDB_BROWSER'] ]
 browsers2test ||= [ :firefox ] # could be any combination of :ie, :firefox, :chrome
 Browser2test = browsers2test
 
+RegExpTwoMedis = /\/\d{13},\d{13}$/
+RegExpOneMedi  = /\/\d{13}$/
+TwoMedis = [ 'Nolvadex', 'Losartan' ]
+
+def login(user = 'ngiger@ywesee.com', password='ng1234')
+  @browser.goto OddbUrl
+  return unless  @browser.link(:text=>'Anmeldung').exists?
+  @browser.link(:text=>'Anmeldung').click
+  @browser.text_field(:name, 'email').set(user)
+  @browser.text_field(:name, 'pass').set(password)
+  @browser.button(:value,"Anmelden").click
+end
+
 def waitForOddbToBeReady(browser = Browser2test, url = OddbUrl, maxWait = 30)
   startTime = Time.now
   0.upto(maxWait).each{
@@ -29,6 +42,7 @@ def waitForOddbToBeReady(browser = Browser2test, url = OddbUrl, maxWait = 30)
     sleep 1
   }
   endTime = Time.now
+  @browser.link(:text=>'Plus').click if @browser.link(:text=>'Plus').exists?
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready" if (endTime - startTime).round > 2
 end
 

@@ -9,6 +9,7 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     @browser = Watir::Browser.new
+    waitForOddbToBeReady(@browser, OddbUrl)
   end
   
   before :each do
