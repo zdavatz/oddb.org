@@ -33,7 +33,6 @@ MephaInteractions = [ # given drugs defined above
   /N06AB05: Paroxetin => C07AB02: Metoprolol Erhöhte Metoprololspiegel/,
   /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion/,
 ]
-SearchBar = 'interaction_chooser_searchbar'
 
 Inderal   = 'Inderal 10 mg'
 Ponstan   = 'Ponstan 125 mg'
@@ -59,9 +58,9 @@ OrderOfInteractions = [
 
 describe "ch.oddb.org" do
  
-  def add_one_drug_by(name)
+  def add_one_drug_to_interactions(name)
     @browser.url.should match ('/de/gcc/home_interactions/')
-    chooser = @browser.text_field(:id, SearchBar)
+    chooser = @browser.text_field(:id, 'interaction_chooser_searchbar')
     0.upto(10).each{ |idx|
                     chooser.set(name)
                     sleep idx*0.1
@@ -94,6 +93,7 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
+    login
   end
 
   after :each do
@@ -101,6 +101,61 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, '_'+@idx.to_s)
     # sleep
     @browser.goto OddbUrl
+  end
+
+  it "should show be able to use the delete_all" do
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    @browser.goto url
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    add_one_drug_to_interactions(TwoMedis.first)
+    add_one_drug_to_interactions(TwoMedis.last)
+    url = @browser.url
+    url.match(RegExpTwoMedis).should_not be nil
+    inhalt = @browser.text
+    inhalt.match(/#{TwoMedis.first}/i).should_not be nil
+    inhalt.match(/#{TwoMedis.last}/i).should_not be nil
+    @browser.link(:text => /Alle löschen/i).click
+    sleep(0.5)
+    url = @browser.url
+    inhalt = @browser.text
+    url.match(RegExpOneMedi).should be nil
+    url.match(RegExpTwoMedis).should be nil
+    inhalt.match(/#{TwoMedis.first}/i).should be nil
+    inhalt.match(/#{TwoMedis.last}/i).should be nil
+  end
+
+  it "should show the correct url after deleting a medicament" do
+    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    @browser.goto url
+    @browser.url.should match ('/de/gcc/home_interactions/')
+    add_one_drug_to_interactions(TwoMedis.first)
+    url = @browser.url
+    url.match(RegExpTwoMedis).should be nil
+    url.match(RegExpOneMedi).should_not be nil
+    add_one_drug_to_interactions(TwoMedis.last)
+    url = @browser.url
+    url.match(RegExpTwoMedis).should_not be nil
+    url.match(RegExpOneMedi).should be nil
+    inhalt = @browser.text
+    TwoMedis.each{ |name|
+                inhalt.match(/#{name}/i).should_not be nil
+              }
+    @browser.link(:title => /Löschen/i).click
+    sleep(0.5)
+    url = @browser.url
+    inhalt = @browser.text
+    inhalt.match(/#{TwoMedis.first}/i).should be nil
+    inhalt.match(/#{TwoMedis.last}/i).should_not be nil
+    url.match(RegExpTwoMedis).should be nil
+    url.match(RegExpOneMedi).should_not be nil
+    @browser.link(:title => /Löschen/i).click
+    sleep(0.5)
+    url = @browser.url
+    inhalt = @browser.text
+    url.match(RegExpOneMedi).should be nil
+    url.match(RegExpTwoMedis).should be nil
+    inhalt.match(/#{TwoMedis.first}/i).should be nil
+    inhalt.match(/#{TwoMedis.last}/i).should be nil
   end
   
   it "should should not contain Wechselwirkungen" do
@@ -116,7 +171,7 @@ describe "ch.oddb.org" do
     url = "#{OddbUrl}/de/gcc/home_interactions/"
     @browser.goto url
     @browser.url.should match ('/de/gcc/home_interactions/')
-    OrderExample.each{ |name| add_one_drug_by(name) }
+    OrderExample.each{ |name| add_one_drug_to_interactions(name) }
     inhalt = @browser.text
     lastPos = -1
     OrderExample.each{ |name| inhalt.index(name).should_not be nil }
@@ -161,7 +216,7 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
     @browser.url.should match ('/de/gcc/home_interactions/')
-    MephaExamples.each{ |medi| add_one_drug_by(medi.name) }
+    MephaExamples.each{ |medi| add_one_drug_to_interactions(medi.name) }
     inhalt = @browser.text
     MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
   end
@@ -171,11 +226,11 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
     @browser.url.should match ('/de/gcc/home_interactions/')
-    add_one_drug_by(test_medi)
+    add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
     @browser.link(:name => 'delete').click
     @browser.text.should_not match (test_medi)
-    add_one_drug_by(test_medi)
+    add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
   end
 
@@ -186,7 +241,7 @@ describe "ch.oddb.org" do
     @browser.url.should match ('/de/gcc/home_interactions/')
     @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
     @browser.text.should_not match (test_medi)
-    add_one_drug_by(test_medi)
+    add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
     @browser.url.should_not match ('/,')
   end
