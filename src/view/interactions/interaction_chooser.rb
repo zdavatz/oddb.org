@@ -311,7 +311,7 @@ class InteractionChooserForm < View::Form
   private
   def init
     super
-    self.onload = "document.getElementById('interaction_searchbar').focus();"
+    self.onload = "if (document.getElementById('interaction_searchbar') != null) document.getElementById('interaction_searchbar').focus();"
     @form_properties.update({
       'id'     => 'interaction_chooser_form',
       'target' => '_blank',

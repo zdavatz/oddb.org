@@ -36,7 +36,7 @@ class InteractionChooser < State::Interactions::Global
   
   def init
     ean13 = @session.user_input(:search_query)
-    path = @session.request_path
+    path = @session.request_path.sub(/(\?|)$/, '')
     search_code = path.split('home_interactions/')[1]
     drugs = {}
     if search_code
