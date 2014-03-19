@@ -11,15 +11,16 @@ homeUrl ||= "172.25.1.75"
 OddbUrl = homeUrl
 ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
-browsers2test ||= [ ENV['ODDB_BROWSER'] ]
-browsers2test ||= [ :firefox ] # could be any combination of :ie, :firefox, :chrome
-Browser2test = browsers2test
 
-RegExpTwoMedis = /\/\d{13},\d{13}$/
-RegExpOneMedi  = /\/\d{13}$/
+browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
+browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
+Browser2test = browsers2test
+RegExpTwoMedis = /\/\d{13},\d{13}(\?|)$/
+RegExpOneMedi  = /\/\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 
 def login(user = 'ngiger@ywesee.com', password='ng1234')
+  @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
   return unless  @browser.link(:text=>'Anmeldung').exists?
   @browser.link(:text=>'Anmeldung').click
@@ -28,7 +29,11 @@ def login(user = 'ngiger@ywesee.com', password='ng1234')
   @browser.button(:value,"Anmelden").click
 end
 
-def waitForOddbToBeReady(browser = Browser2test, url = OddbUrl, maxWait = 30)
+def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
+  unless browser
+    browser = Watir::Browser.new(Browser2test[0]) 
+    @browser = browser
+  end
   startTime = Time.now
   0.upto(maxWait).each{
     |idx|
