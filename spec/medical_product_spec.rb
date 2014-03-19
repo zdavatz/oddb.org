@@ -9,7 +9,6 @@ describe "ch.oddb.org" do
   RegExpSubstance = /Substanz\s+Stärke\s+(.+)\s+Galenische Form\s*(\w+)/m
   before :all do
     @idx = 0
-    @browser = Watir::Browser.new
     waitForOddbToBeReady(@browser, OddbUrl)
     login
   end

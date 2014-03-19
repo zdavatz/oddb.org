@@ -9,7 +9,7 @@ for_running_in_irb = %(
 require 'watir'; require 'pp'
 homeUrl ||= "oddb-ci2.dyndns.org"
 OddbUrl = homeUrl
-@browser = Watir::Browser.new
+@browser = Watir::Browser.new(:chrome)
 @browser.goto OddbUrl
 @browser.link(:text=>'Interaktionen').click
 id = 'home_interactions'
@@ -61,6 +61,7 @@ describe "ch.oddb.org" do
   def add_one_drug_to_interactions(name)
     @browser.url.should match ('/de/gcc/home_interactions/')
     chooser = @browser.text_field(:id, 'interaction_chooser_searchbar')
+    value = nil
     0.upto(10).each{ |idx|
                     chooser.set(name)
                     sleep idx*0.1
@@ -72,7 +73,9 @@ describe "ch.oddb.org" do
                     break unless /#{name}/.match(value)
                     sleep 0.5
                     }
-    chooser.set(chooser.value + "\n")
+    # require 'pry'; binding.pry
+    chooser.set(value + "\n")
+    sleep(1)
     createScreenshot(@browser, "_#{name}_#{__LINE__}")
   end
 
@@ -87,7 +90,6 @@ describe "ch.oddb.org" do
 
   before :all do
     @idx = 0
-    @browser = Watir::Browser.new
     waitForOddbToBeReady(@browser, OddbUrl)
   end
 
@@ -102,7 +104,6 @@ describe "ch.oddb.org" do
     # sleep
     @browser.goto OddbUrl
   end
-
   it "should show be able to use the delete_all" do
     url = "#{OddbUrl}/de/gcc/home_interactions/"
     @browser.goto url
@@ -233,7 +234,6 @@ describe "ch.oddb.org" do
     add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
   end
-
   it "after adding a single medicament there should be no ',' in the URL" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl

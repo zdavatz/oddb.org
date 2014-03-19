@@ -39,7 +39,7 @@ class Prescription < State::Drugs::Global
   end
   def init
     ean13 = @session.user_input(:search_query)
-    path = @session.request_path
+    path = @session.request_path.sub(/(\?|)$/, '')
     uri = @session.lookandfeel._event_url(:rezept, [])
     search_code = path.split('rezept/ean/')[1]
     drugs = {}
