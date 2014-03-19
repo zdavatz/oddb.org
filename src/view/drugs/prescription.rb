@@ -25,33 +25,54 @@ require 'view/form'
 module ODDB
   module View
     module Drugs
+class PrescriptionInteractionDrugDiv < HtmlGrid::Div
+  def init
+    super
+    @value = []
+    @drugs = @session.persistent_user_input(:drugs)
+    if @drugs and !@drugs.empty?
+      @value << View::Interactions::InteractionChooserDrug.new(@model, @session, self)
+    end
+  end
+  def to_html(context)
+    div = HtmlGrid::Div.new(@model, @session, self)
+    div.set_attribute('id', 'drugs')
+    @value << div
+    super
+  end
+end
+
 class PrescriptionDrugInnerForm < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0] => 'prescription_quantity_morning',
-    [1,0] => :prescription_quantity_morning,
-    [2,0] => 'prescription_quantity_noon',
-    [3,0] => :prescription_quantity_noon,
-    [4,0] => 'prescription_quantity_evening',
-    [5,0] => :prescription_quantity_evening,
-    [6,0] => 'prescription_quantity_night',
-    [7,0] => :prescription_quantity_night,
-    [8,0] => '&nbsp;&nbsp;',
-    [9,0] => :prescription_method_fields,
+    [0,0] => :interactions_heading,
+    [0,1] => :interactions,
+    [0,2] => 'prescription_quantity_morning',
+    [1,2] => :prescription_quantity_morning,
+    [2,2] => 'prescription_quantity_noon',
+    [3,2] => :prescription_quantity_noon,
+    [4,2] => 'prescription_quantity_evening',
+    [5,2] => :prescription_quantity_evening,
+    [6,2] => 'prescription_quantity_night',
+    [7,2] => :prescription_quantity_night,
+    [8,2] => '&nbsp;&nbsp;',
+    [9,2] => :prescription_method_fields,
     [0,2] => :prescription_timing_fields,
     [3,2] => :prescription_term_fields,
     [9,2] => :prescription_comment,
-    [0,3] => :atc_code,
+    [0,5] => :atc_code,
   }
   CSS_MAP = {
-    [0,0] => 'list bold',
-    [1,0] => 'list',
-    [2,0] => 'list bold',
-    [3,0] => 'list',
-    [4,0] => 'list bold',
-    [5,0] => 'list',
-    [6,0] => 'list bold',
-    [7,0] => 'list',
-    [9,0] => 'list',
+    [0,0] => 'div',
+    [0,1] => 'div',
+    [0,2] => 'list bold',
+    [1,2] => 'list',
+    [2,2] => 'list bold',
+    [3,2] => 'list',
+    [4,2] => 'list bold',
+    [5,2] => 'list',
+    [6,2] => 'list bold',
+    [7,2] => 'list',
+    [9,2] => 'list',
     [0,2] => 'list top',
     [3,2] => 'list top',
     [9,2] => 'list top',
@@ -60,7 +81,9 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [9,2] => 'wide',
   }
   COLSPAN_MAP = {
-    [9,0] => 2,
+    [0,0] => 11,
+    [0,1] => 11,
+    [9,2] => 2,
     [0,2] => 3,
     [3,2] => 5,
     [9,2] => 5,
@@ -200,7 +223,7 @@ repetition.disabled = true;
     # this is needed by js for external link to modules.epha.ch
     hidden = HtmlGrid::Input.new(:atc_code, model, session, self)
     hidden.set_attribute('type', 'hidden')
-    if model.atc_class and code = model.atc_class.code
+    if model and model.atc_class and code = model.atc_class.code
       hidden.value = code
     end
     hidden
@@ -247,6 +270,13 @@ repetition.disabled = true;
     end
     select
   end
+  def interactions_heading(model, session)
+    text = HtmlGrid::LabelText.new(:interactions, @model, @session, self)
+    text
+  end
+  def interactions(model, session)
+    View::Drugs::PrescriptionInteractionDrugDiv.new(model, session, self)
+  end
 end
 class PrescriptionDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
@@ -262,7 +292,11 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
   }
   def init
     @drugs = @session.persistent_user_input(:drugs)
-    @index = (@drugs ? @drugs.length : 0).to_s
+    if @model and @model.barcode and @model.barcode.length == 13
+      @index = @drugs.keys.index(@model.barcode)
+    else
+      @index = 0
+    end
     super
   end
   def fachinfo(model, session=@session)
@@ -294,8 +328,8 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
       args = [:ean, model.barcode] if model
-      url = @session.lookandfeel.event_url(:ajax_delete_drug, args)
-      link.onclick = "replace_element('drugs_#{model.barcode}', '#{url}');"
+      url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '')
+      link.onclick = "window.top.location.replace('#{url}');"
       link
     end
   end
@@ -322,10 +356,14 @@ class PrescriptionDrug < HtmlGrid::Composite
   CSS_CLASS = 'composite'
   def init
     @drugs = @session.persistent_user_input(:drugs)
-    if @drugs and !@drugs.empty?
-      @model = @drugs.values.pop
+    index = -1
+    if @model and @drugs and !@drugs.empty?
+      index = @drugs.keys.index(@model.barcode)
     end
-    @attributes.store('id', 'drugs_' + @model.barcode)
+    if @drugs and !@drugs.empty?
+      @model = @drugs.values[index]
+    end
+    @attributes.store('id', 'drugs_' + @model.barcode) if @attributes and @model
     super
   end
   def drug(model, session)
@@ -337,8 +375,17 @@ class PrescriptionDrug < HtmlGrid::Composite
 end
 class PrescriptionDrugDiv < HtmlGrid::Div
   def init
-    super
-    @value = PrescriptionDrug.new(@model, @session, self)
+    @drugs = @session.persistent_user_input(:drugs)
+    super # must come first or it will overwrite @value
+    @value = []
+    ODDB::View::Interactions.calculate_atc_codes(@drugs)
+    if @drugs and !@drugs.empty?
+      @drugs.each{ |ean, drug|
+        @value << PrescriptionDrug.new(drug, @session, self)
+      }
+    end
+# was    super
+# was    @value = PrescriptionDrug.new(@model, @session, self)
   end
   def to_html(context)
     html = super
@@ -442,7 +489,7 @@ class PrescriptionForm < View::Form
   def hidden_fields(context)
     hidden = super
     # main drug
-    hidden << context.hidden('ean', @model.barcode)
+    hidden << context.hidden('ean', @model.barcode) if @model
     hidden << context.hidden('prescription', true)
     hidden
   end
@@ -509,7 +556,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   DEFAULT_CLASS = HtmlGrid::Value
   def init
     @drugs = @session.persistent_user_input(:drugs) || {}
-    if !@drugs.empty? and index = @drugs.keys.index(@model.barcode)
+    if !@drugs.empty? and @model and index = @drugs.keys.index(@model.barcode)
       index += 1 # main model
     else
       index = 0

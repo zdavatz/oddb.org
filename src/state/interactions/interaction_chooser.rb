@@ -66,18 +66,7 @@ class InteractionChooser < State::Interactions::Global
       }
       handle_drug_changes(drugs, 'init')
     else
-      if @session.event.to_sym == self.class::DIRECT_EVENT
-        handle_drug_changes({}, 'init DIRECT_EVENT')
-      end
-      # from centeredsearchform
-      if ean13 = @session.user_input(:search_query)
-        check_model
-        unless error?
-          drugs = @session.persistent_user_input(:drugs) || {}
-          drugs[ean13] = package_for(ean13)
-          handle_drug_changes(drugs, 'init: added ean13')
-        end
-      end
+      @session.set_persistent_user_input(:drugs, {})
     end
     super
   end
@@ -88,7 +77,7 @@ class InteractionChooser < State::Interactions::Global
         pack  = package_for(ean13)
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs[ean13] = pack unless drugs.has_key?(ean13)
-        handle_drug_changes(drugs, 'ajax_add_drug')
+        return handle_drug_changes(drugs, 'ajax_add_drug')
       end
     end
     InteractionChooserDrug.new(@session, @model)
@@ -99,7 +88,7 @@ class InteractionChooser < State::Interactions::Global
       if ean13 = @session.user_input(:ean).to_s
         drugs = @session.persistent_user_input(:drugs) || {}
         drugs.delete(ean13)
-        handle_drug_changes(drugs, 'ajax_delete_drug')
+        return handle_drug_changes(drugs, 'ajax_delete_drug')
       end
     end
     InteractionChooserDrug.new(@session, @model)

@@ -618,10 +618,7 @@ module ODDB
 				end
 			end
       def rezept
-        if ean13 = @session.user_input(:ean) and
-          pack  = @session.app.package_by_ean13(ean13)
-          State::Drugs::Prescription.new(@session, pack)
-        end
+        State::Drugs::Prescription.new(@session, nil)
       end
 
       def home_interactions

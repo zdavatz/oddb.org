@@ -132,26 +132,34 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
-      args = [:ean, model.barcode] if model
-      url = @session.lookandfeel.event_url(:ajax_delete_drug, args)
-      link.onclick = "replace_element('drugs_#{model.barcode}', '#{url}');"
-      link
+      if model
+        args = [:ean, model.barcode] if model
+        url = @session.request_path.sub(model.barcode.to_s, '').sub('/,', '/').sub(/,$/, '')
+        if @session.persistent_user_input(:drugs).size == 0
+          ODDB::View::Interactions.calculate_atc_codes({})
+        end
+        link.onclick = "window.top.location.replace('#{url}');"
+        link
+      end
     end
   end
 end
 
 class InteractionChooserDrug < HtmlGrid::Composite
-  COMPONENTS = {
-    }
+  COMPONENTS = {}
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   def init
+    # When being called from rezept we should not display the heading
+    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
     @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
-      components.store([0,0], :header_info)
-      css_map.store([0,0], 'subheading')
+      unless @hide_interaction_headers
+        components.store([0,0], :header_info)
+        css_map.store([0,0], 'subheading')
+      end
       if @drugs and !@drugs.empty?
         components.store([0, 1], :text_info)
       end
@@ -167,7 +175,8 @@ function get_to(url) {
 }
 var url = searchbar.baseURI + 'home_interactions/' + ean13;
 window.location = url;
-get_to(href);
+// console.log('InteractionChooserDrug: get_to: ' + url);
+get_to(url);
 return false;
     JS
     super
@@ -197,8 +206,7 @@ return false;
       infoDiv.value = []
       infoDiv.value << interaction[:text]
       infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
-      list.value << infoDiv
-                                                            
+      list.value << infoDiv                                                            
     }
     div.value << list
     div
@@ -211,7 +219,7 @@ class InteractionChooserDrugList < HtmlGrid::List
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   SORT_HEADER = false
-  def initialize(model, session=@session, arg_self=nil)    
+  def initialize(model, session=@session, arg_self=nil)
     @drugs = session.persistent_user_input(:drugs)
     super # must come first or it will overwrite @value
     @value = []
