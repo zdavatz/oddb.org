@@ -317,7 +317,7 @@ class RssFeedbackList < HtmlGrid::DivList
                    when ODDB::Package
                      @lookandfeel.lookup(:feedback_rss_title,
                                          parent.name, parent.size)
-                   when ODDB::Migel::Product
+                   when defined?(ODDB::Migel::Product) && ODDB::Migel::Product
                      parent.name
                    end
       link
