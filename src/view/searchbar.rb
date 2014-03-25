@@ -10,6 +10,19 @@ require 'htmlgrid/inputtext'
 
 module ODDB
   module View
+  GET_TO_JS = %(
+function get_to(url) {
+  var url2 = url.replace(/(\\d{13})[/,]+(\\d{13})/, '$1,$2').replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
+  console.log('#{__LINE__}:get_to: ' + url2 + ' act: ' + window.location.href);
+  if (window.location.href ==  url2) { return; }
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url2);
+  document.body.appendChild(form);
+  form.submit();
+}
+)
+
 module SearchBarMethods
   def search_type(model, session=@session)
     select = HtmlGrid::Select.new(:search_type, model, @session, self)
@@ -43,18 +56,27 @@ module InstantSearchBarMethods
   def xhr_request_init(keyword)
     target = keyword.intern
     id  = "#{target}_searchbar"
-    url = @session.lookandfeel.event_url(:ajax_add_drug)
+    drugs = @session.persistent_user_input(:drugs)
+    drugs = drugs.keys if drugs
+    ean13 = @session.persistent_user_input(:ean)
+    base_url = @lookandfeel.base_url
+    splitted = @session.request_path.split(/#{base_url}\/(home_interactions|rezept\/ean)\/*/)
+    url = @lookandfeel._event_url(target == 'prescription' ? 'rezept/ean' : 'home_interactions', [])
+    url += drugs.join(',') if drugs
     val = @session.lookandfeel.lookup(:add_drug)
     progressbar = ""
     if @container.respond_to?(:progress_bar)
       progressbar = "setTimeout('show_progressbar(\'#{id}\')', 10);"
     end
     @container.additional_javascripts.push <<-EOS
+#{GET_TO_JS}
 function xhrGet(arg) {
   var ean13 = (arg.match(/^(\\d{13})$/)||[])[1];
   if(ean13) {
     var id = 'drugs';
-    var url = '#{url}/ean/' + ean13;
+    var url = '#{url}';
+    if (url.match(/rezept\\/$/)) { url = url + 'ean/'; }
+    if (url.match(/(\\d{13})$/))  url = url + ',' + ean13; else url = url + '/' + ean13;
     replace_element(id, url)
   }
 }
@@ -77,28 +99,19 @@ function initMatches() {
     if(searchbar.value == '') { searchbar.value = '#{val}'; }
   });
 }
-function get_to(url) {
-  // console.log('get_to: ' + url);
-  var form = document.createElement("form");
-  form.setAttribute("method", "GET");
-  form.setAttribute("action", url);
-  document.body.appendChild(form);
-  form.submit();
-}
 function selectXhrRequest() {
   var popup = dojo.byId('#{target}_searchbar_popup');
   var searchbar = dojo.byId('#{id}');
-  if(!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+  if(popup && !popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     #{progressbar}
     var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
     var path = searchbar.baseURI;
     xhrGet(searchbar.value);
     searchbar.value = '';
-    var found = path.match(/home_interactions|rezept/);
+    var found = path.match(/home_interactions|rezept\\/ean/);
     if(found && ean13) {
-      var url = (path + ',' + ean13).replace('/,', '/');
-      window.location = url;
-      get_to(url);
+			if (path.match(/(home_interactions|rezept\\/ean)$/)) (path = path + '/');
+      get_to(path + ',' + ean13);
     }
   }
 }
@@ -158,21 +171,14 @@ class SearchBar < HtmlGrid::InputText
     # because location stops gif animation.
     param = @lookandfeel.disabled?(:best_result) ? nil : " + '#best_result'"
     self.onsubmit = <<-JS
-function get_to(url) {
-  // console.log('get_to: ' + url);
-  var form = document.createElement("form");
-  form.setAttribute("method", "GET");
-  form.setAttribute("action", url);
-  document.body.appendChild(form);
-  form.submit();
-}
+#{GET_TO_JS}
 if (#{@name}.value!='#{val}') {
 #{timer}
   var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
   if (this.search_type) {
     href += '/search_type/' + this.search_type.value#{param};
   }
-  // console.log('SearchBar: get_to: ' + href);
+  console.log('SearchBar: get_to: ' + href);
   get_to(href);
 };
 return false;
@@ -215,7 +221,7 @@ function initMatches() {
 function selectSubmit() {
   var popup = dojo.byId('#{id}_popup');
   var searchbar = dojo.byId('#{id}');
-  if (!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+  if (popup && popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     #{progressbar}
     searchbar.form.submit();
   }

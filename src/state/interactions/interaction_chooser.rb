@@ -37,10 +37,10 @@ class InteractionChooser < State::Interactions::Global
   def init
     ean13 = @session.user_input(:search_query)
     path = @session.request_path.sub(/(\?|)$/, '')
-    search_code = path.split('home_interactions/')[1]
+    search_code = path.split('/home_interactions')[1]
     drugs = {}
     if search_code
-      items = search_code.split(',')
+      items = search_code.sub(/^\//,'').split(',')
       # new approach unified
       # http://oddb-ci2.dyndns.org/de/gcc/home_interactions/51795,C07AA05,7680583920112
       # Beispiel von Mepha. Losartan, Teva, Novaldex und Paroxetin

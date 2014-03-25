@@ -85,7 +85,10 @@ module ODDB
 				#'text-align'	=>	'center',
 			}
 			def init
-				self.onload = "document.getElementById('searchbar').focus();"
+				self.onload = %(require(["dojo/domReady!"], function(){
+  document.getElementById('searchbar').focus();
+});
+)
 				super
 			end
 			def search_help(model, session)

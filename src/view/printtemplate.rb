@@ -26,7 +26,10 @@ module ODDB
 				[0,1]		=>	:content,
 			}
 			def init
-				@attributes['onload'] = 'window.print();'
+				@attributes['onload'] = %(require(["dojo/domReady!"], function(){
+						'window.print();'
+});
+)
 				super
 			end
 			def head(model, session=@session)
