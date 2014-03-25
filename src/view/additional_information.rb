@@ -380,7 +380,7 @@ module ODDB
         end
       end
       def patinfo(model, session=@session)
-        if(model.has_patinfo?)
+        if(model.respond_to?(:has_patinfo?) and model.has_patinfo?)
           href = nil
           klass = nil
           if(pdf_patinfo = model.pdf_patinfo and !pdf_patinfo.empty?)
