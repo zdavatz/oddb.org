@@ -1,7 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'watir-webdriver'
+if RUBY_PLATFORM.match(/mingw/)
+  require 'watir'
+  browsers2test = [ :ie ]
+else
+  browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
+  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
+  require 'watir-webdriver'
+end
+require 'page-object'
+require 'fileutils'
 require 'page-object'
 require 'fileutils'
 require 'pp'
@@ -12,8 +21,6 @@ OddbUrl = homeUrl
 ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
 
-browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
-browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
 Browser2test = browsers2test
 RegExpTwoMedis = /\/\d{13},\d{13}(\?|)$/
 RegExpOneMedi  = /\/\d{13}(\?|)$/
@@ -29,9 +36,16 @@ def login(user = 'ngiger@ywesee.com', password='ng1234')
   @browser.button(:value,"Anmelden").click
 end
 
+def logout
+  @browser = Watir::Browser.new(browsers2test[0]) unless @browser
+  @browser.goto OddbUrl
+  return unless  @browser.link(:text=>'Abmeldung').exists?
+  @browser.link(:text=>'Abmeldung').click
+end
+
 def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   unless browser
-    browser = Watir::Browser.new(Browser2test[0]) 
+    browser = Watir::Browser.new(Browser2test[0])
     @browser = browser
   end
   startTime = Time.now

@@ -30,7 +30,7 @@ module ODDB
 				names.each { |name|
 					define_method(name) { 
 						if(@sequence && @sequence.respond_to?(:registration) && (reg = @sequence.registration))
-							reg.send(name)
+							reg.send(name) if reg.respond_to?(name)
 						end
 					}
 				}
