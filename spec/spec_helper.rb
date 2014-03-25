@@ -29,6 +29,13 @@ def login(user = 'ngiger@ywesee.com', password='ng1234')
   @browser.button(:value,"Anmelden").click
 end
 
+def logout
+  @browser = Watir::Browser.new(browsers2test[0]) unless @browser
+  @browser.goto OddbUrl
+  return unless  @browser.link(:text=>'Abmeldung').exists?
+  @browser.link(:text=>'Abmeldung').click
+end
+
 def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   unless browser
     browser = Watir::Browser.new(Browser2test[0]) 

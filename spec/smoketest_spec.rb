@@ -59,13 +59,15 @@ describe "ch.oddb.org" do
   
   it "should trigger the limitation after maximal 5 queries" do
     waitForOddbToBeReady(@browser, OddbUrl)
+		logout
     names = [ 'Aspirin', 'inderal', 'Sintrom', 'Incivo', 'Certican', 'Glucose']
     res = false
     saved = @idx
     names.each { 
       |name|
         @idx += 1
-        @browser.text_field(:name, "search_query").set("inderal")
+				waitForOddbToBeReady(@browser, OddbUrl)
+        @browser.text_field(:name, "search_query").set(name)
         @browser.button(:name, "search").click
         createScreenshot(@browser, '_'+@idx.to_s)
         if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
