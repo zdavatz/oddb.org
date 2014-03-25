@@ -9,12 +9,12 @@ group :development, :test do
   gem 'hoe'
   gem 'hoe-travis'
   gem 'minitest'
-  gem 'racc'
   gem 'simplecov'
   gem 'travis-lint'
 end
 
 group :test do
+
   gem 'rspec'
   gem 'watir'
   gem 'watir-webdriver'
