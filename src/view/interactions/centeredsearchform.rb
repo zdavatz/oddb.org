@@ -22,7 +22,10 @@ class CenteredInstantSearchForm < CenteredSearchForm
   def init
     @additional_javascripts = []
     super
-    self.onload = "document.getElementById('interaction_searchbar').focus();"
+    self.onload = %(require(["dojo/domReady!"], function(){
+  document.getElementById('interaction_searchbar').focus();
+});
+)
     @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
     components.store([0,1,0], nil)
     components.store([0,1,1], nil)

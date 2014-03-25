@@ -138,7 +138,10 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
         if @session.persistent_user_input(:drugs).size == 0
           ODDB::View::Interactions.calculate_atc_codes({})
         end
-        link.onclick = "window.top.location.replace('#{url}');"
+        link.onclick = %(
+        console.log ("Going to new url #{url} in interaction_chooser");
+        window.location.href = '#{url}';
+        )
         link
       end
     end
@@ -311,7 +314,10 @@ class InteractionChooserForm < View::Form
   private
   def init
     super
-    self.onload = "if (document.getElementById('interaction_searchbar') != null) document.getElementById('interaction_searchbar').focus();"
+    self.onload = %(require(["dojo/domReady!"], function(){
+     if (document.getElementById('interaction_searchbar') != null) document.getElementById('interaction_searchbar').focus();
+});
+)
     @form_properties.update({
       'id'     => 'interaction_chooser_form',
       'target' => '_blank',

@@ -143,7 +143,10 @@ class FachinfoSearchDrugSearchForm < HtmlGrid::Composite
   }
   def init
     super
-    self.onload = "document.getElementById('searchbar').focus();"
+    self.onload = %(require(["dojo/domReady!"], function(){
+  document.getElementById('searchbar').focus();
+});
+)
     @index_name = 'oddb_package_name_with_size_company_name_ean13_fi'
     @additional_javascripts = []
   end
