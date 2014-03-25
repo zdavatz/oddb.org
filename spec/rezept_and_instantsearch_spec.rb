@@ -43,9 +43,35 @@ describe "ch.oddb.org" do
   after :all do
     @browser.close
   end
+  
+  it "should with four medicaments" do
+    medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    1.upto(3) { |idx|
+        add_one_drug_to_rezept(medis[idx])
+        url1 = @browser.url
+        sleep(0.5)
+        inhalt = @browser.text
+        inhalt.match(/#{medis[idx]}/i).should_not be nil
+    }
+    0.upto(3){ |idx|
+      @browser.link(:title => /Löschen/i).click
+      sleep(0.5)
+    }
+    url2 = @browser.url
+    inhalt = @browser.text
+    0.upto(3){
+      |idx|
+      inhalt.match(/#{medis[idx]}/i).should be nil
+    }
+    url2.match(RegExpTwoMedis).should be nil
+    url2.match(RegExpOneMedi).should be nil
+  end
 
   it "should show the correct url after deleting a medicament" do
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
     @browser.goto OddbUrl
     startTime = Time.now
     @browser.select_list(:name, "search_type").select("Markenname")
@@ -104,5 +130,4 @@ describe "ch.oddb.org" do
     inhalt.match(/Zusammensetzung/i).should_not be nil
     inhalt.match(/Filmtabletten/i).should_not be nil
   end
-  
 end
