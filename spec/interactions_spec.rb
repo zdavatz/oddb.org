@@ -94,7 +94,7 @@ describe "ch.oddb.org" do
     inhalt = @browser.text
     MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
     @browser.link(:name => 'delete').click
-  end    
+  end
 
   before :all do
     @idx = 0
@@ -112,6 +112,46 @@ describe "ch.oddb.org" do
     # sleep
     @browser.goto OddbUrl
   end
+
+  it "should show both interaction direction for marcoumar and ponstan" do
+     found_using = %(
+grep M01AG01 interactions_de_utf8.csv | grep B01AA04
+"B01AA04";"Phenprocoumon";"M01AG01";"Mefenaminsäure";"Erhöhtes Blutungsrisiko";"Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung. Zusätzlich verdrängt Mefenaminsäure Antikoagulantien des Coumarintyps aus der Eiweissbindung.";"Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.";"Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen und Blutgerinnungsparameter engmaschig monitorisieren. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide.";"D"
+"M01AG01";"Mefenaminsäure";"B01AA04";"Phenprocoumon";"Erhöhtes Blutungsrisiko";"Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung. Zusätzlich verdrängt Mefenaminsäure Antikoagulantien des Coumarintyps aus der Eiweissbindung.";"Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.";"Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen und Blutgerinnungsparameter engmaschig monitorisieren. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide.";"D"
+)
+    medis = [ 'Ponstan', 'Marcoumar']
+    url = "#{OddbUrl}/de/gcc/home_interactions"
+    @browser.goto url
+    medis.each { | medi| add_one_drug_to_interactions(medi) }
+    inhalt = @browser.text
+    inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/i)
+    inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/i)
+  end if false
+
+  drugs_to_ean = { 'Aspirin' => '7680576730049', 'Ponstan' => '7680353520153', 'Marcoumar' => '7680193950301' }
+  orders_to_test = [
+    [ 'Ponstan', 'Marcoumar', 'Aspirin'],
+    [ 'Ponstan', 'Aspirin', 'Marcoumar'],
+    [ 'Marcoumar', 'Ponstan', 'Aspirin'],
+    [ 'Marcoumar', 'Aspirin', 'Ponstan'],
+    [ 'Aspirin', 'Ponstan', 'Marcoumar'],
+    [ 'Aspirin', 'Marcoumar', 'Ponstan'],
+    ]
+  orders_to_test.each { |medis|
+    it "should show all interactions for #{medis[0]} #{medis[0]} #{medis[0]}" do
+      url = "#{OddbUrl}/de/gcc/home_interactions/"
+      medis.each { | medi| url += drugs_to_ean[medi] + ',' }
+      url = url.sub(/,$/,'')
+      @browser.goto url
+      inhalt = @browser.text
+      inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/i)
+      inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure Erhöhtes Blutungsrisiko/i)
+      inhalt.should match(/N02BA01: Acetylsalicylsäure => M01AG01: Mefenaminsäure Erhöhtes GIT-Blutungsrisiko/i)
+      inhalt.should match(/N02BA01: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/)
+      inhalt.should match(/B01AA04: Phenprocoumon => N02BA01: Acetylsalicylsäure Erhöhtes Blutungsrisiko/)
+    end
+  }
+
   it "should show work without a trailing slash after home_interactions" do
     url = "#{OddbUrl}/de/gcc/home_interactions"
     @browser.goto url
