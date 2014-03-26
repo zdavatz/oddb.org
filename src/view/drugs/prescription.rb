@@ -34,12 +34,6 @@ class PrescriptionInteractionDrugDiv < HtmlGrid::Div
       @value << View::Interactions::InteractionChooserDrug.new(@model, @session, self)
     end
   end
-  def to_html(context)
-    div = HtmlGrid::Div.new(@model, @session, self)
-    div.set_attribute('id', 'drugs')
-    @value << div
-    super
-  end
 end
 
 class PrescriptionDrugInnerForm < HtmlGrid::Composite
@@ -79,7 +73,7 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [9,1] => 'wide',
   }
   COLSPAN_MAP = {
-    [0,0] => 15,
+    [0,0] => 14,
     [9,1] => 2,
     [0,1] => 3,
     [3,1] => 5,

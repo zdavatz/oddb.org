@@ -159,12 +159,14 @@ class InteractionChooserDrug < HtmlGrid::Composite
     path = @session.request_path
     @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
+      nextRow = 0
       unless @hide_interaction_headers
         components.store([0,0], :header_info)
         css_map.store([0,0], 'subheading')
+        nextRow += 1
       end
       if @drugs and !@drugs.empty?
-        components.store([0, 1], :text_info)
+        components.store([0, nextRow], :text_info)
       end
       @attributes.store('id', 'drugs_' + @model.barcode)
     end
@@ -190,7 +192,6 @@ return false;
   def text_info(model, session=@session)
     return nil unless model.atc_class
     list = HtmlGrid::Div.new(model, @session, self)
-    list.set_attribute('class', 'interaction-info')
     list.value = []
     ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
       |interaction|
