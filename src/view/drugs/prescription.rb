@@ -867,8 +867,10 @@ class PrescriptionCsv < HtmlGrid::Component
     COMPONENTS.collect do |key|
       value = if(self.respond_to?(key))
         self.send(key, pack)
-      else
+      elsif pack
         pack.send(key)
+      else
+        ""
       end.to_s
       value.empty? ? nil : value
     end
