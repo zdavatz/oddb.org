@@ -104,15 +104,18 @@ function selectXhrRequest() {
   var searchbar = dojo.byId('#{id}');
   if(popup && !popup.style.overflowX.match(/auto/) && searchbar.value != '') {
     #{progressbar}
-    var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
-    var path = searchbar.baseURI;
-    xhrGet(searchbar.value);
-    searchbar.value = '';
-    var found = path.match(/home_interactions|rezept\\/ean/);
-    if(found && ean13) {
-			if (path.match(/(home_interactions|rezept\\/ean)$/)) (path = path + '/');
-      get_to(path + ',' + ean13);
-    }
+    if (searchbar && searchbar.value && window.location.href)
+    {
+      var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
+      var path = window.location.href;
+      xhrGet(searchbar.value);
+      searchbar.value = '';
+      var found = path.match(/home_interactions|rezept\\/ean/);
+      if(found && ean13) {
+        if (path.match(/(home_interactions|rezept\\/ean)$/)) (path = path + '/');
+        get_to(path + ',' + ean13);
+      }
+    } else console.log("selectXhrRequest cannot find enough information");
   }
 }
 require(['dojo/ready'], function(ready) {
