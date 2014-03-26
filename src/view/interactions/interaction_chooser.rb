@@ -188,13 +188,9 @@ return false;
     View::Interactions::InteractionChooserDrugHeader.new(model, session, self)
   end
   def text_info(model, session=@session)
-    div = HtmlGrid::Div.new(model, @session, self)
-    # the first element cannot have an interaction
-    return div unless model.atc_class
-    return div if ODDB::View::Interactions.atc_codes(@session).index(model.atc_class.code) == 0
-    div.set_attribute('class', 'interaction-info')
-    div.value = []
+    return nil unless model.atc_class
     list = HtmlGrid::Div.new(model, @session, self)
+    list.set_attribute('class', 'interaction-info')
     list.value = []
     ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
       |interaction|
@@ -211,8 +207,7 @@ return false;
       infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       list.value << infoDiv                                                            
     }
-    div.value << list
-    div
+    list
   end  
 end
 
