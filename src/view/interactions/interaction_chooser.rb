@@ -240,19 +240,6 @@ class InteractionChooserDrugDiv < HtmlGrid::Div
       @value << InteractionChooserDrugList.new(@drugs, @session, self)
     end
   end
-  def to_html(context)
-    div = HtmlGrid::Div.new(@model, @session, self)
-    if @drugs and !@drugs.empty?
-      delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
-      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
-      delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
-      delete_all_link.css_class = 'list'
-      div.value = delete_all_link
-    end
-    div.set_attribute('id', 'drugs')
-    @value << div
-    super
-  end
 end
 
 class InteractionChooserInnerForm < HtmlGrid::Composite
@@ -297,13 +284,14 @@ class InteractionChooserForm < View::Form
     [0,0,1] => :epha_public_domain,
     [0,1]   => View::Interactions::InteractionChooserDrugDiv,
     [0,2]   => View::Interactions::InteractionChooserInnerForm,
-  }
+    [0,3]   => :delete_all,
+    }
   CSS_MAP = {
     [0,0] => 'th bold',
     [0,1] => '', # none
-    [0,2] => 'list',
-    [0,4] => 'inner-button',
-  }
+    [0,2] => 'inner-button',
+    [0,3] => 'inner-button',
+    }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
@@ -324,6 +312,18 @@ class InteractionChooserForm < View::Form
     link.css_class = 'navigation'		
     link.href = "https://github.com/epha/matrix"
     link
+  end
+  def delete_all(model, session=@session)
+    @drugs = @session.persistent_user_input(:drugs)
+    if @drugs and !@drugs.empty?
+      delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
+      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
+      delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
+      delete_all_link.css_class = 'list'
+    else
+      return nil
+    end
+    delete_all_link
   end
 end
 class InteractionChooserComposite < HtmlGrid::Composite
