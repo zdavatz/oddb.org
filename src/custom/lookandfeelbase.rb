@@ -960,7 +960,7 @@ Zeno Davatz
 				:interaction_basket_explain	=>	'Below Links go to "The free archive of life sciences journals": ',
         :interaction_chooser        =>  'Interaktionen Suchen',
         :interaction_chooser_delete_all   => 'Alle löschen',
-        :interaction_chooser_description  => 'Interaktionen zur Verfügung gestellt durch Public Domain Daten von ',
+        :interaction_chooser_description  => 'Werden keine Interaktionen angezeigt, sind z.Z. keine Interaktionen bekannt. Interaktionen zur Verfügung gestellt durch Public Domain Daten von ',
         :epha_public_domain               => 'EPha.ch',
 				:interaction_count0	      =>	'Im Interaktionskorb befinden sich&nbsp;',
 				:interaction_count1	      =>	'&nbsp;Interaktionen',
