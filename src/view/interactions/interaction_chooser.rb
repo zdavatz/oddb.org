@@ -5,6 +5,7 @@
 require 'csv'
 require 'cgi'
 require 'htmlentities'
+require 'htmlgrid/infomessage'
 require 'view/drugs/privatetemplate'
 require 'view/drugs/centeredsearchform'
 require 'view/additional_information'
@@ -277,6 +278,75 @@ class InteractionChooserInnerForm < HtmlGrid::Composite
     javascripts(context).to_s << super
   end
 end
+
+class ExplainInteractionCodes < HtmlGrid::List
+  COMPONENTS = {
+    [0,0] =>  :interaction_codes,
+    }
+  CSS_MAP = {
+    [0,0] =>  'composite',
+  }
+  CSS_CLASS = 'composite'
+  LEGACY_INTERFACE = false
+  DEFAULT_HEAD_CLASS = 'none'
+  OMIT_HEADER = true
+  def init
+    @entity = @model
+    @model = Ratings.keys
+    super
+    self.set_attribute('id', 'interaction_codes')
+    self.set_attribute('style', 'display: none;')
+  end
+
+  def interaction_codes(model)
+    txt = HtmlGrid::Div.new(model, @session, self)
+    txt.value =  model + ': ' + Ratings[model]
+    txt.set_attribute('style', "background-color: #{Colors[model]};")
+    txt
+  end
+
+end
+class InteractionLegend < HtmlGrid::Composite
+  COMPONENTS = {
+    [0,0] => :toogle_switch,
+    [0,1] => View::Interactions::ExplainInteractionCodes,
+  }
+  CSS_MAP = {
+    [0,0] => 'composite',
+    [0,1] => 'composite',
+  }
+  COLSPAN_MAP = {
+    [0,0] => 12,
+    [0,1] => 12,
+  }
+  CSS_CLASS = 'composite'
+  private
+  def init
+    super
+  end
+
+  def toogle_switch(model, session=@session)
+    span = HtmlGrid::Span.new(model, @session, self)
+    span.value = @lookandfeel.lookup(:show_legend)
+    span.css_class = 'link'
+    span.set_attribute('id', 'toggle_switch')
+    span.onclick = <<JS
+(function () {
+  var span    = document.getElementById('toggle_switch');
+  var legends = document.getElementById('interaction_codes');
+  var applyStyle = 'none';
+  if (span.innerHTML != '#{@lookandfeel.lookup(:show_legend)}') {
+    span.innerHTML        = '#{@lookandfeel.lookup(:show_legend)}';
+  } else {
+    applyStyle = 'block';
+    span.innerHTML        = '#{@lookandfeel.lookup(:hide_legend)}';
+  }
+  if (legends != null) legends.style.display = applyStyle;
+  })();
+JS
+    span
+  end
+end
 class InteractionChooserForm < View::Form
   include HtmlGrid::InfoMessage
   COMPONENTS = {
@@ -285,7 +355,7 @@ class InteractionChooserForm < View::Form
     [0,1]   => View::Interactions::InteractionChooserDrugDiv,
     [0,2]   => View::Interactions::InteractionChooserInnerForm,
     [0,3]   => :delete_all,
-    }
+  }
   CSS_MAP = {
     [0,0] => 'th bold',
     [0,1] => '', # none
@@ -330,13 +400,16 @@ class InteractionChooserComposite < HtmlGrid::Composite
   include AdditionalInformation
   COMPONENTS = {
     [0,0] => View::Interactions::InteractionChooserForm,
-  }
+    [0,1] => View::Interactions::InteractionLegend,
+    }
   COMPONENT_CSS_MAP = {
     [0,0] => 'composite',
+    [0,1] => 'composite',
   }
   COLSPAN_MAP = {
     [0,0] => 12,
-  }
+    [0,1] => 12,
+    }
   CSS_CLASS = 'composite'
 end
 class InteractionChooser < View::PrivateTemplate
@@ -344,6 +417,9 @@ class InteractionChooser < View::PrivateTemplate
   SNAPBACK_EVENT = :home
   JAVASCRIPTS = ['admin']
   SEARCH_HEAD = 'nbsp'
+  def init
+    super
+  end
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
