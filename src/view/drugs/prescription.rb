@@ -83,6 +83,9 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
   def init
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
+    if @model and @drugs and !@drugs.empty?
+      @index = @drugs.keys.index(@model.barcode).to_s
+    end
     super
     @grid.add_attribute('rowspan', 2, *[0,1])
     @grid.add_attribute('rowspan', 2, *[3,1])
@@ -134,9 +137,9 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     fields << '&nbsp;'
     fields << label_for(:prescription_method_as_necessary)
     fields << '&nbsp;&nbsp;'
-    fields << checkbox_for(:prescription_method_regulaly)
+    fields << checkbox_for(:prescription_method_regularly)
     fields << '&nbsp;'
-    fields << label_for(:prescription_method_regulaly)
+    fields << label_for(:prescription_method_regularly)
     fields
   end
   def prescription_term_fields(model, session)

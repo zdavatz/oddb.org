@@ -56,8 +56,40 @@ describe "ch.oddb.org" do
     @browser.close
   end
 
+  Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
+  it "should allow a prescription for several months and repetions" do
+    medis = Four_Medis
+    nr_medis = 0
+    medis.each {
+      |medi|
+      if nr_medis == 0
+        @browser.select_list(:name, "search_type").select("Markenname")
+        @browser.text_field(:name, "search_query").set(medis.first)
+        @browser.button(:name, "search").click
+        @browser.link(:href, /rezept/).click
+      else
+        add_one_drug_to_rezept(medi)
+      end
+      nr_medis += 1
+    inhalt = @browser.text
+    0.upto(nr_medis-1).each{
+                            |id|
+                           inhalt.should match(/#{medis[id]}/i)                           
+                         @browser.radio(:id, "prescription_timing_with_meal_#{id}").set
+        @browser.radio(:id, "prescription_timing_before_meal_#{id}").set
+        @browser.radio(:id, "prescription_timing_with_meal_#{id}").set
+        @browser.radio(:id, "prescription_timing_after_meal_#{id}").set
+        @browser.radio(:id, "prescription_term_repetition_#{id}").set
+        @browser.select_list(:id, "repetition_#{id}").select("2")
+        @browser.radio(:id, "prescription_term_per_month_#{id}").set
+        @browser.select_list(:id, "per_month_#{id}").select("6")
+        @browser.textarea(:name, "prescription_comment[#{id}]").set("Bemerkung #{id} zu #{medi}")
+      }
+    }
+  end
+
   it "should with four medicaments" do
-    medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
+    medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(medis.first)
     @browser.button(:name, "search").click
