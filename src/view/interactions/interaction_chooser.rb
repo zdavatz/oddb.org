@@ -312,8 +312,8 @@ class InteractionLegend < HtmlGrid::Composite
     [0,1] => View::Interactions::ExplainInteractionCodes,
   }
   CSS_MAP = {
-    [0,0] => 'composite',
-    [0,1] => 'composite',
+    [0,0] => 'explain right',
+    [0,1] => 'explain left',
   }
   COLSPAN_MAP = {
     [0,0] => 12,
