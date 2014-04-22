@@ -1,0 +1,1072 @@
+@import "/resources/dojo/dijit/themes/tundra/tundra.css";
+/* Top-Level */
+body {
+  font-family      : Arial, Helvetica, sans-serif;
+  font-size        : 11px;
+  border           : 0px dotted;
+  background-color : white;
+  margin           : 8px;
+}
+label {
+  font-weight : bold;
+}
+ul {
+  margin          : 0px;
+  padding-left    : 14px;
+  list-style-type : disc;
+}
+ol {
+  margin  : 0px;
+  padding : 0px 0px 0px 20px;
+}
+ol li {
+  margin : 5px 0px;
+}
+
+/* ErrorPage */
+body.appdown h1 {
+  font-family : Arial, Helvetica, sans-serif;
+  font-size   : 11px;
+  color       : black;
+  background  : #69c;
+}
+body.appdown h1, body.appdown p {
+  padding : 4px;
+}
+
+/* Fachinfo */
+h3 {
+  font-family   : Arial, Helvetica, sans-serif;
+  font-size     : 12px;
+  margin-bottom : 2px;
+}
+p {
+  padding : 0px;
+}
+pre {
+  font-style  : normal;
+  font-family : Courier New, Courier, monospace;
+  font-size   : 12px;
+  margin-top  : 0px;
+  text-align  : left;
+  white-space : pre;
+}
+table.chapter {
+  border          : 1px solid #999;
+  margin          : 4px;
+  border-collapse : collapse;
+}
+table.chapter td {
+  border         : 1px solid #999;
+  vertical-align : top;
+  padding        : 4px 6px;
+}
+span.link {
+  color: #69c;
+}
+a {
+  text-decoration : none;
+}
+a img {
+  border : 0px;
+}
+/* standard-result-classes */
+a.generic:hover, a.original:hover, a.unknown:hover {
+  color : blue;
+}
+a.generic:active, a.original:active, a.unknown:active {
+  color : #f5e84d;
+}
+/* other result-classes */
+a.small {
+  color     : #69c;
+  font-size : 11px;
+}
+a.small:hover {
+  color : red;
+}
+a.feedback, span.feedback,
+a.feedback:link, a.feedback:visited {
+  color            : black;
+  background-color : #ffbc6f;
+}
+span.google_search,
+a.google_search, 
+a.google_search:link, a.google_search:visited {
+  color            : white;
+  background-color : #184fca;
+}
+td.spaced a.twitter {
+  padding-left : 0px;
+}
+td.spaced a.twitter img{
+  padding-bottom : 2px;
+}
+a.twitter {
+  padding : 2px;
+}
+a.twitter img {
+  vertical-align : bottom;
+}
+td.bg a.feedback {
+  background : #ffbc22;
+}
+a.infos {
+  color      : black;
+  background : #FFF88F;
+}
+
+/* atc-chooser-classes */
+td.atcchooser1 {
+  padding : 8px 4px 1px 4px;
+}
+td.atcchooser2 {
+  padding : 6px 4px 1px 4px;
+}
+td.atcchooser3 {
+  padding : 4px 4px 1px 4px;
+}
+td.atcchooser4 {
+  padding : 2px 4px 1px 4px;
+}
+td.atcchooser5 {
+  padding : 1px 4px 1px 4px;
+}
+a.atcchooser1 {
+  font-weight : bold;
+}
+a.atcchooser1, a.atcchooser2,
+a.atcchooser3, a.atcchooser4,
+a.atcchooser5 {
+  color: black;
+}
+a.atcchooser2:hover, a.atcchooser2:hover,
+a.atcchooser3:hover, a.atcchooser4:hover,
+a.atcchooser5:hover {
+  color : #2ba476;
+}
+a.atclink2, a.atclink3, 
+a.atclink4, a.atclink5 {
+  color : #2ba476;
+}
+a.atclink2:hover, a.atclink3:hover, 
+a.atclink4:hover, a.atclink5:hover {
+  color : #2ba476;
+}
+a.atcchooser2, a.atclink2 {
+  margin-left : 26px;
+}
+a.atcchooser3, a.atclink3 {
+  margin-left : 46px;
+}
+a.atcchooser4, a.atclink4 {
+  margin-left : 66px;
+}
+a.atcchooser5, a.atclink5 {
+  margin-left : 86px;
+}
+a.welcome {
+  padding       : 0px;
+  padding-right : 0px;
+  color         : #69c;
+}
+a.welcome:hover, a.text:hover {
+  color : red;
+}
+a.text {
+  color : #69c;
+}
+
+/* standard-list-classes */
+a.list, a.list:hover, a.list:link:hover, a.list:visited:hover {
+  color : red;
+}
+td.center a.list {
+  white-space : nowrap;
+}
+a.list:link, a.list:visited {
+  color : #69c;
+}
+a.list:active {
+  color : black;
+}
+td.subheading, th.subheading {
+  background      : #cdf;
+  color           : #333;
+  font-weight     : normal;
+  padding         : 4px;
+  text-decoration : none;
+}
+a.subheading {
+  padding     : 0px;
+  color       : #333;
+  white-space : nowrap;
+}
+td.subheading a.bold {
+  padding : 4px;
+}
+a.subheading:link, a.subheading:visited {
+  color : blue;
+}
+table.navigation a.subheading:visited,
+table.navigation a.subheading:link {
+  color : black;
+}
+a.subheading:link:hover, a.subheading:visited:hover,
+table.navigation a.subheading,
+table.navigation a.subheading:link:hover,
+table.navigation a.subheading:visited:hover {
+  color : red;
+}
+a.subheading:active, table.navigation a.subheading:active {
+  color : silver;
+}
+
+/* navigation-classes */
+a.navigation{
+  color       : white;
+  background  : #69c;
+  font-weight : normal;
+}
+a.navigation:link, a.navigation:visited {
+  color : black;
+}
+a.navigation:hover {
+  color : white;
+}
+a.navigation:active {
+  color : red;
+}
+a.tabnavigation
+{
+  background  : #cdf;
+  font-weight : bold;
+  font-size   : 13px;
+}
+a.tabnavigation:link, a.tabnavigation:visited {
+  color : blue;
+}
+a.tabnavigation, a.tabnavigation:hover {
+  color : black;
+}
+a.tabnavigation:active {
+  color : black;
+}
+/*pager-class*/
+a.pager:link, a.pager:visit,  a.fbpager:hover {
+  color : blue;
+}
+a.pager:hover {
+  color : red;
+}
+a.pager:active {
+  color : #f5e84d;
+}
+a.fbpager {
+  color : white;
+}
+/* explain-classes */
+td.explain a.original, td.explain a.generic {
+  font-weight : bold;
+}
+a.legal-note:link, a.legal-note:visited {
+  color : #69c;
+}
+a.legal-note:hover {
+  color : red;
+}
+a.legal-note:active {
+  color : #f5e84d;
+}
+/* tab-classes */
+a.chapter-tab {
+  background : #cdf;
+  color      : red;
+}
+a.chapter-tab:link, a.chapter-tab:visited {
+  background : #cdf;
+  color      : blue;
+}
+/* misc */
+a.powerlink {
+  color           : blue;
+  text-decoration : underline;
+}
+a.powerlink:hover {
+  color : red;
+}
+a.powerlink:active {
+  color : #f5e84d;
+}
+a.create-infos {
+  color       : black;
+  border      : 1px solid #ffbc6f;
+  font-weight : bold;
+}
+a.patent {
+  font-weight      : bold;
+  color            : white;
+  background-color : #C00;
+}
+a.create-infos:hover {
+  background : #FFF88F;
+}
+/*table class*/
+table {
+  border : 0px solid red;
+  margin : 0px;
+}
+table.right {
+  float : right;
+}
+table.tabnavigation {
+  background      : #cdf;
+  color           : black;
+  text-decoration : none;
+  border-right    : 0px;
+  border-bottom   : 0px;
+  border-left     : 1px solid #69c;
+  border-top      : 1px solid #69c;
+}
+table.tabnavigation td {
+  padding : 4px 2px;
+}
+table.tabnavigation td:first-child {
+  padding : 4px 2px 4px 5px;
+}
+table.tabnavigation td:last-child {
+  padding : 4px 5px 4px 2px;
+}
+table.navigation-foot {
+  background : #69c;
+  color      : black;
+  width      : 100%;
+  padding    : 3px;
+}
+table.explain {
+  background : #cdf;
+  color      : #333;
+  text-align : left;
+  width      : 100%;
+  font-size  : 11px;
+}
+table.legal-note {
+  width      : 100%;
+  text-align : right;
+}
+table.interaction-basket td {
+  padding-top    : 4px;
+  padding-left   : 4px;
+  padding-bottom : 4px;
+  vertical-align : baseline;
+}
+table.wait {
+  cell-spacing : 20px;
+}
+table.invoice {
+  width  : 300px;
+  border : 1px solid #cdf;
+}
+table.border, table.border td {
+  border : 1px solid green;
+}
+table.composite {
+  width : 100%;
+}
+/*td class*/
+td {
+  border  : 0px dashed green;
+  padding : 0px;
+}
+tr td.list a.important {
+  font-size: 14px;
+}
+td.bg a.infos, td.atc a.infos, td.migel-group a.infos,
+span.limitation, span.narc, span.fachinfo, span.patinfo, span.minifi  {
+  background : #FFF455;
+}
+/*td standard-result-classes */
+td.generic, a.generic {
+  color : #2ba476;
+}
+td.original, a.original {
+  color : red;
+}
+td.vaccine, a.vaccine {
+  color : #a52a2a;
+}
+td.unknown, a.unknown {
+  color : #333;
+}
+td.bold, a.bold, span.bold {
+  font-weight : bold;
+}
+td.italic, a.italic, span.italic {
+  font-style : italic;
+}
+/* other result-classes */
+td.atc {
+  background : #cdf;
+  color      : #333;
+}
+td.seq {
+  background : #dbffc3;
+  color      : #333;
+}
+td.indent {
+  padding-left : 15px;
+}
+tr td.big {
+  font-size   : 14px;
+  font-weight : bold;
+}
+td.small {
+  width     : 20px;
+  font-size : 11px;
+}
+td.edit, td.edit a {
+  color     : black;
+  font-size : 11px;
+}
+td.result-found {
+  padding-left : 4px;
+  padding-top  : 4px;
+  font-weight  : bold;
+}
+td.pubprice {
+  font-weight   : bold;
+  padding-right : 10px;
+  text-align    : right;
+}
+td.logo {
+  vertical-align : top;
+  position       : relative;
+  padding        : 4px;
+  padding-top    : 12px;
+}
+td.section-title {
+  font-weight : bold;
+  padding-top : 8px;
+}
+td.welcome {
+  text-align      : right;
+  vertical-align  : bottom;
+  text-decoration : none;
+}
+
+/* validation-classes */
+td.error {
+  background  : #f9e7f3;
+  color       : red;
+  font-weight : bold;
+  padding     : 8px;
+}
+td.list {
+  padding : 4px;
+}
+td.title {
+  font-weight : bold;
+}
+td.navigation {
+  background      : #69c;
+  color           : black;
+  text-decoration : none;
+  padding         : 4px;
+  font-size       : 11px;
+}
+td.right table.tabnavigation {
+  margin-bottom : 4px;
+  float         : right;
+  border-right  : 1px solid #69c;
+  border-bottom : 1px solid #69c;
+  border-left   : 0px;
+  border-top    : 0px;
+}
+td.pager-head {
+  padding-right : 12px;
+}
+td.pager {
+  font-weight   : bold;
+  padding-left  : 6px;
+  padding-right : 6px;
+}
+td.search {
+  text-align : right;
+  padding    : 0px;
+}
+td.searchbar {
+  text-align : left;
+  padding    : 2px 0px;
+}
+td.center {
+  text-align : center;
+}
+td.center table {
+  margin : auto;
+}
+td.ddd-chart {
+  padding : 12px 0px 0px 0px;
+}
+td.donate {
+  text-align : center;
+}
+td.button {
+  padding-bottom : 5px;
+}
+td.inner-button {
+  padding : 5px 0 5px 5px;
+  margin  : 5px;
+}
+td.selection {
+  padding : 5px 0;
+  margin  : 5px;
+}
+td.explain {
+  padding        : 4px;
+  background     : #cdf;
+  color          : #333;
+  vertical-align : bottom;
+}
+td.legal-note{
+  font-size      : 8pt;
+  text-align     : center;
+  padding        : 4px;
+  padding-bottom : 10px;
+}
+/* error_classes */
+label.error {
+  color : red;
+}
+td.info {
+  padding-bottom : 4px;
+  padding-top    : 4px;
+  color          : green;
+}
+td.processingerror {
+  padding : 4px;
+  color   : red;
+}
+td.warning {
+  padding-bottom : 4px;
+  padding-top    : 4px;
+  color          : #ff6600;
+}
+/* tab-classes */
+td.chapter-tab {
+  background   : #cdf;
+  border-style : solid;
+  border-color : black;
+  border-width : 0px 0px 1px 0px;
+  padding      : 4px;
+}
+/* print-classes */
+div.big { 
+  padding-top : 12px;
+  font-weight : bold;
+  font-size   : 26px;
+}
+/* new style of formatting */
+/* use multiple classes to style! */
+td.interaction-connection { 
+  margin-top      : 0px;
+  list-style-type : circle;
+  width           : 20%;
+}
+td.bg {
+  background : #ecffe6;
+}
+td.interaction-substance {
+  font-size : 14px;
+  width     : 20%;
+}
+td.interaction-drug { 
+  margin-top      : 0px;
+  list-style-type : circle;
+}
+td.interaction-atc { 
+  margin-top      : 0px;
+  list-style-type : circle;
+}
+div.interaction-header {
+  font-weight     : bold;
+  text-align      : left;
+  text-decoration : none;
+}
+tr.interaction-info { 
+  margin-top      : 0px;
+  list-style-type : circle;
+}
+
+td.sum {
+  border-color : black;
+  border-style : solid;
+  border-width : 0px 0px 1px 0px;
+}
+td.total {
+  border-color : black;
+  border-style : double;
+  border-width : 0px 0px 3px 0px;
+}
+td.top {
+  vertical-align : top;
+}
+td.experience {
+  width : 750px;
+}
+td.address-width {
+  width : 180px;
+}
+td.border-top {
+  border-top : 2.5px solid #69c;
+}
+td.border-left {
+  float       : right;
+  border-left : 1.5px solid #69c;
+  width       : 400px;
+}
+td.radio {
+  vertical-align : top;
+  width          : 5px;
+  height         : 12px;
+  max-width      : 5px;
+}
+td.list span.square, td.list a.square {
+  padding   : 2px 4px;
+  font-size : 11px;
+}
+td.infos, td.infos span.square, td.infos a.square {
+  padding   : 0px 1px;
+  font-size : 11px;
+}
+td.infos {
+  height : auto;
+}
+td.wait {
+  width            : 25px;
+  height           : 25px;
+  border           : 1px solid #69c;
+  background-color : #e9f7f3;
+}
+td.bg-red {
+  background-color : #FF0000;
+}
+td.confirm {
+  padding     : 6px;
+  background  : #ecffe6;
+  font-size   : 14px;
+  font-weight : bold;
+}
+td.migel-group {
+  background : #8be;
+  color      : black;
+}
+td.next-step {
+  padding : 4px;
+  border  : 2px dotted red;
+  width   : auto;
+}
+td.active-item {
+  padding-top : 15px;
+  opacity     : .75;
+  filter      : alpha(opacity=75);
+}
+td.right table {
+  float : right;
+}
+td.date-chooser {
+  border-bottom : 1px solid #69c;
+}
+td.tab {
+  background-color : #cdf;
+  border-top       : 2px solid #8be;
+}
+td.nowrap {
+  white-space : nowrap;
+}
+span.square, a.square {
+  text-align  : center;
+  font-weight : bold;
+}
+span.vaccine, a.vaccine {
+  color            : white;
+  background-color : #a52a2a;
+}
+span.anthroposophy {
+  color            : white;
+  background-color : #ff00ff;
+}
+ span.comarketing, a.comarketing {
+  font-weight      : bold;
+  color            : white;
+  background-color : #f61;
+}
+span.complementary, a.complementary {
+  color            : white;
+  background-color : #dd1cff;
+}
+span.homeopathy, a.homeopathy {
+  color            : white;
+  background-color : #9900ff;
+}
+span.parallel_import, a.parallel_import {
+  color            : white;
+  background-color : #0A0;
+}
+span.phytotherapy, a.phytotherapy {
+  color            : white;
+  background-color : #60f;
+}
+span.deductible_g, span.deductible_o {
+  font-weight     : bold;
+  text-align      : center;
+  text-decoration : none;
+  padding         : 2px 2px 2px 4px;
+}
+span.deductible_o {
+  color            : black;
+  background-color : #ffc455;
+}
+span.deductible_g {
+  color            : black;
+  background-color : #fff455;
+}
+div.square {
+  max-width      : 20px;
+  height         : 20px;
+  text-align     : center;
+  vertical-align : middle;
+  font-size      : 16px;
+}
+div.plus {
+  background-color : #cf9;
+}
+div.minus {
+  background-color : #ffbc6f;
+}
+div.just-medical {
+  background      : #69c;
+  color           : black;
+  font-weight     : bold;
+  padding         : 4px;
+  text-align      : left;
+  text-decoration : none;
+}
+div.drug {
+  height  : 20px;
+  padding : 2px;
+}
+div.long-text {
+  max-width : 400px;
+}
+/* input-classes */
+input, select {
+  font-family : Arial, Helvetica, sans-serif;
+  font-size   : 11px;
+}
+input.button {
+  background  : none;
+  color       : black;
+  font-size   : 10px;
+  font-family : Arial, Helvetica, sans-serif;
+}
+input.medium {
+  width : 100px;
+}
+input.standard {
+  width : 200px;
+}
+input.search {
+  width   : 160px;
+  padding : 0px;
+} 
+td.center input.search {
+  width  : 260px;
+  margin : 7px;
+}
+input.xl {
+  width : 350px;
+}
+input.xxl {
+  width : 400px;
+}
+input.small {
+  width : 40px;
+}
+input.mailinglist {
+  width       : 250px;
+  padding     : 0px;
+  margin      : 7px;
+  margin-left : 0px;
+}
+/*th class*/
+th {
+  background  : #69c;
+  color       : black;
+  font-weight : bold;
+  padding     : 4px;
+  text-align  : left;
+}
+/* pointersteps-classes */
+th.th-pointersteps {
+  background      : white;
+  color           : black;
+  font-weight     : bold;
+  text-align      : left;
+  text-decoration : none;
+}
+th, td.th {
+  background      : #69c;
+  color           : black;
+  font-weight     : bold;
+  padding         : 4px;
+  text-decoration : none;
+}
+th a, td.th a, th a:visited, td.th a:visited {
+  color : black;
+}
+a.th:hover {
+  color : white;
+}
+a.th:active {
+  color : red;
+}
+a.th-pointersteps {
+  background : white;
+  color      : black;
+  text-align : left;
+}
+/* layout-classes */
+.sponsor {
+  font-size : 11px;
+  color     : silver;
+}
+.logo {
+  border : 0px dotted red;
+}
+.personal {
+  font-weight : bold;
+  font-size   : 11px;
+  margin-top  : 40px;
+  color       : black;
+}
+.right {
+  text-align : right;
+}
+tr.expired td, td.expired { 
+  filter           : alpha(opacity=65);
+  -moz-opacity     : 0.65;
+  opacity          : 0.65;
+  background-color : #CCC;
+}
+tr.disabled {
+  opacity : .75;
+  filter  : alpha(opacity=75);
+}
+textarea {
+  width       : 400px;
+  height      : 100px;
+  font-family : Arial, Helvetica, sans-serif;
+}
+textarea.huge {
+  width       : 800px;
+  height      : 100px;
+  font-family : Arial, Helvetica, sans-serif;
+}
+textarea.wide {
+  width       : 750px;
+  height      : 100px;
+  font-family : Arial, Helvetica, sans-serif;
+}
+textarea.big {
+  width       : 650px;
+  height      : 200px;
+  font-family : Arial, Helvetica, sans-serif;
+  font-size   : 11px;
+}
+textarea.standard {
+  width       : 200px;
+  height      : 60px;
+  font-family : Arial, Helvetica, sans-serif;
+  font-size   : 11px;
+}
+form {
+  margin : 0px;
+}
+form.search {
+  vertical-align : bottom;
+  padding        : 0px;
+  margin         : 0px;
+}
+span.iconContainer span.insertsymbol {
+  background-image : url(/resources/javascript/dojo/sigma.gif);
+}
+td.sidebar {
+  width : 20%;
+}
+td.sidebar div {
+  padding          : 2px;
+  background-color : #ddffdd;
+}
+div.heading {
+  font-weight    : bold;
+  padding-bottom : 6px;
+}
+div.heading img {
+  float : right;
+}
+div.thumbnail,
+div.small {
+  float      : left;
+  display    : inline;
+  margin     : 5px 5px 0 5px;
+  text-align : center;
+}
+div.thumbnail div {
+  height        : 100px;
+  width         : 100px;
+  margin-bottom : 3px;
+  text-align    : center;
+}
+div.small div {
+  width         : 240px;
+  margin-bottom : 3px;
+  text-align    : center;
+}
+span.highlight {
+  background-color : yellow;
+}
+span.auc-factor-5 {
+  border           : 1px solid #F00;
+  background-color : #FBB;
+}
+span.auc-factor-2 {
+  border           : 1px solid #FA0;
+  background-color : #FDB;
+}
+span.auc-factor-175 {
+  border           : 1px solid #FF0;
+  background-color : #FFB;
+}
+span.auc-factor-125 {
+  border           : 1px solid #0F0;
+  background-color : #BFB;
+}
+span.breadcrumb-1 {
+  font-size : 12px;
+}
+span.breadcrumb-2 {
+  font-size : 14px;
+}
+span.breadcrumb-3 {
+  font-size : 16px;
+}
+span.breadcrumb {
+  margin-left  : 6px;
+  margin-right : 6px;
+}
+td.breadcrumbs {
+  vertical-align : bottom;
+  padding        : 4px;
+}
+
+/* from de.oddb.org */
+a.ajax {
+  cursor : pointer;
+}
+a.create {
+  color            : #000;
+  cursor           : pointer;
+  background-color : #AFA;
+  border           : 1px solid #0F0;
+}
+a.delete {
+  color            : #000;
+  cursor           : pointer;
+  background-color : #FAA;
+  border           : 1px solid #F00;
+}
+a.delete.square {
+  padding : 1px 5px;
+  margin  : 1px;
+}
+a.create.square {
+  padding : 1px 4px;
+  margin  : 1px;
+}
+div#composition-list div {
+  padding      : 4px;
+  margin-right : 8px;
+  float        : left;
+}
+div#composition-list div.galenic-form {
+  padding    : 4px 8px 4px 0px;
+  font-style : italic;
+  float      : none;
+}
+div#composition-list label {
+  padding-right : 4px; 
+}
+div#compositions {
+  overflow : auto;
+}
+div#composition-list th, div#composition-list label {
+  font-weight      : bold;
+  background-color : transparent;
+  color            : black;
+}
+div#composition-list a.ajax {
+  font-style : italic;
+}
+div#composition-list td, div#composition-list th {
+  padding : 4px 8px 4px 0px;
+}
+a.footnote {
+  font-weight : normal;
+}
+form#prescription_form label,
+form#fachinfo_search_form label {
+  font-weight : normal;
+}
+
+.dijitTooltipContainer {
+  background-color : white;
+  border           : 1px solid #69c;
+  font-size        : 11px;
+  padding          : 4px;
+  white-space      : nowrap;
+}
+div#widget_searchbar,
+div#widget_prescription_searchbar,
+div#widget_fachinfo_search_searchbar,
+div#widget_interaction_searchbar,
+div#widget_interaction_chooser_searchbar {
+  padding : 2px;
+  border  : 1px solid ButtonShadow;
+  width   : 260px;
+}
+div#widget_prescription_searchbar,
+div#widget_fachinfo_search_searchbar,
+div#widget_interaction_searchbar,
+div#widget_interaction_chooser_searchbar {
+  width : 400px;
+}
+#searchbar_popup,
+#prescription_searchbar_popup,
+#fachinfo_search_searchbar_popup,
+#interaction_searchbar_popup,
+#interaction_chooser_searchbar_popup {
+  border : 1px solid ButtonShadow;
+}
+#searchbar_popup .dijitMenuItemHover,
+#searchbar_popup .dijitMenuItemSelected,
+#prescription_searchbar_popup    .dijitMenuItemHover,
+#prescription_searchbar_popup    .dijitMenuItemSelected,
+#fachinfo_search_searchbar_popup .dijitMenuItemHover,
+#fachinfo_search_searchbar_popup .dijitMenuItemSelected,
+#interaction_searchbar_popup .dijitMenuItemHover,
+#interaction_searchbar_popup .dijitMenuItemSelected,
+#interaction_chooser_searchbar_popup .dijitMenuItemHover,
+#interaction_chooser_searchbar_popup .dijitMenuItemSelected {
+  background-color : #cdf;
+  color            : black;
+}
