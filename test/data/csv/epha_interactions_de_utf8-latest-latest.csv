@@ -1,2 +1,2 @@
 ATC1;Name1;ATC2;Name2;Info;Mechanismus;Effekt;Massnahmen;Grad
-"N06AB06";"Sertralin";"M03BX02";"Tizanidin";"Keine Interaktion";"Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.";"Keine Interaktion.";"Die Kombination aus Sertralin und Tizanidin hat kein bekanntes Interaktionspotential.";"A"
+N06AB06;Sertralin;M03BX02;Tizanidin;Keine Interaktion;Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.;Keine Interaktion.;Die Kombination aus Sertralin und Tizanidin hat kein bekanntes Interaktionspotential.;A

@@ -12,7 +12,7 @@ require 'model/epha_interaction'
 module ODDB
   class EphaInteractionPlugin < Plugin
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
-    CSV_ORIGIN_URL  = 'http://community.epha.ch/interactions_de_utf8.csv'
+    CSV_ORIGIN_URL  = 'https://download.epha.ch/cleaned/matrix.csv'
     
     def initialize(app)
       super
@@ -63,7 +63,7 @@ module ODDB
         @app.epha_interactions.odba_store unless defined?(MiniTest)
         $stdout.puts "#{Time.now}: Calling @app.epha_interactions.each"; $stdout.flush
         @app.epha_interactions.each{|item| item.odba_store}
-        FileUtils.mv(csv_file_path, csv_file_path.sub(/\.csv$/, '-latest.csv'), :verbose => true)
+        FileUtils.mv(csv_file_path, csv_file_path.sub(/\.csv$/, '-latest.csv'), :verbose => true) unless defined?(MiniTest)
       end
     end
   end
