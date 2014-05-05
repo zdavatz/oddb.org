@@ -25,13 +25,16 @@ module ODDB
                   'C' => 'Regelmässige Überwachung',
                   'D' => 'Kombination vermeiden',
                   'X' => 'Kontraindiziert',
-                }
-    Colors =  {  'A' => 'white',
-                  'B' => 'yellow',
-                  'C' => 'orange',
-                  'D' => 'red',
-                  'X' => 'firebrick',
-                }
+                  '0' => 'Keine Interaktionen bekannt',
+              }
+    # using the same color like https://raw.githubusercontent.com/zdavatz/AmiKo-Windows/master/css/interactions_css.css
+    Colors =  {  'A' => '#caff70',
+                 'B' => '#ffec8b',
+                 'C' => '#ffb90f',
+                 'D' => '#ff82ab',
+                 'X' => '#ff6a6a',
+                 '0' => '#dddddd',
+                 }
   def self.calculate_atc_codes(drugs)
       atc_codes = []
       ean13s    = []
