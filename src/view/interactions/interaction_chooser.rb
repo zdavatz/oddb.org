@@ -25,7 +25,6 @@ module ODDB
                   'C' => 'Regelmässige Überwachung',
                   'D' => 'Kombination vermeiden',
                   'X' => 'Kontraindiziert',
-                  '0' => 'Keine Interaktionen bekannt',
               }
     # using the same color like https://raw.githubusercontent.com/zdavatz/AmiKo-Windows/master/css/interactions_css.css
     Colors =  {  'A' => '#caff70',
@@ -33,7 +32,6 @@ module ODDB
                  'C' => '#ffb90f',
                  'D' => '#ff82ab',
                  'X' => '#ff6a6a',
-                 '0' => '#dddddd',
                  }
   def self.calculate_atc_codes(drugs)
       atc_codes = []
