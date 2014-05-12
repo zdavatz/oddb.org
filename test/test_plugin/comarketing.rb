@@ -12,6 +12,65 @@ require 'flexmock'
 require 'plugin/comarketing'
 
 module ODDB
+  class TestCoMarketingPluginWithFile <Minitest::Test
+    include FlexMock::TestCase
+    TestIksnr = '40414' #  1 Pur-Rutin, Filmtabletten  55817 1 Venutabs, Filmtabletten
+    def setup
+      @@today = Date.new(2014,5,1)
+      @app = flexmock('app')
+      @reg = FlexMock.new 'registration'
+      @reg.should_receive(:comarketing_with).and_return @reg
+      @reg.should_receive(:comarketing_with).and_return @reg
+      @app.should_receive(:registration).and_return 
+      @app.should_receive(:registrations).and_return Hash.new( TestIksnr => @reg)
+      @app.should_receive(:delete).by_default
+      @app.should_receive(:find).and_return(TestIksnr)
+      @app.should_receive(:iksnr).and_return(TestIksnr)
+      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      # CoMarketing_small_010514.xlsx
+      @latest = File.join @archive, 'xlsx', 'CoMarketing-latest.xlsx'
+      @target = File.join @archive, 'xlsx',
+                          @@today.strftime('CoMarketing-%Y.%m.%d.xlsx')
+      @plugin = CoMarketingPlugin.new @app, @archive
+      @data = File.expand_path '../data/xls/CoMarketing.xlsx',
+                               File.dirname(__FILE__)
+      @older = File.expand_path '../data/xls/CoMarketing.older.xlsx',
+                                File.dirname(__FILE__)
+      @initial = File.expand_path '../data/xls/CoMarketing.initial.xlsx',
+                                  File.dirname(__FILE__)
+    end
+    def test_report_with_test_file
+      #      flexmock(@app, :registration => find_result)
+      result = @plugin.find(TestIksnr)
+      @agent    = FlexMock.new 'agent'
+      @got      = FlexMock.new 'got'
+      @links    = FlexMock.new 'links'
+      @agent.should_receive(:get).and_return @got
+      @got.should_receive(:links).and_return @links
+      @find    = FlexMock.new 'find'
+      @links.should_receive(:find).and_return @find
+      @attributes    = FlexMock.new 'attributes '
+      @find.should_receive(:attributes).and_return @attributes
+      @attributes.should_receive("[]").and_return File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xls', 'CoMarketing_small_010514.xlsx'))
+      @plugin.update(@agent)
+      assert_nil(result)
+      @app.flexmock_verify
+      expected = %(Found                  2 Co-Marketing-Pairs
+of which               0 were found in the Database
+New Connections:       0
+Deleted Connections:   0
+
+The following          2 Original/Comarketing-Pairs were not found in the Database:
+40414
+ -> 55817
+
+45454
+ -> 36130
+
+)
+      assert_equal(expected, @plugin.report)
+    end
+  end
 	class TestCoMarketingPlugin <Minitest::Test
     include FlexMock::TestCase
 		def setup

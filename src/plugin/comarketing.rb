@@ -8,7 +8,7 @@ require 'util/oddbconfig'
 require 'util/searchterms'
 require 'mechanize'
 require 'drb'
-require 'spreadsheet'
+require 'rubyXL'
 require 'open-uri'
 require 'tempfile'
 
@@ -78,18 +78,17 @@ module ODDB
 				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
     def get_pairs(url)
-      tempfile = Tempfile.new('comarketing.xls')
+      tempfile = Tempfile.new('comarketing.xlsx')
       open(url) do |input|
           tempfile.print input.read
       end
-
-      workbook = Spreadsheet.open(tempfile.path)
       pairs = []
-      workbook.worksheet(0).each do |row|
-        if row[0].to_i > 0
-          original_iksnr = "%05d" % row[0].to_i.to_s
-          comarket_iksnr = "%05d" % row[3].to_i.to_s
-          pairs <<  [original_iksnr, comarket_iksnr]
+      workbook = RubyXL::Parser.parse(tempfile.path)
+      workbook[0].each do |row|
+        if row[0] and row[0].value.to_i > 0
+          original_iksnr = "%05d" % row[0].value.to_i.to_s
+          comarket_iksnr = "%05d" % row[3].value.to_i.to_s
+					pairs <<  [original_iksnr, comarket_iksnr]
         end
       end
       tempfile.close
@@ -104,7 +103,8 @@ module ODDB
       link = page.links.find do |node|
         /Excel-Version/iu.match node.attributes['title']
       end or raise "unable to identify url for Co-Marketing-data"
-      url = "https://www.swissmedic.ch/#{link.attributes['href']}"
+      url = link.attributes['href']
+      url = "https://www.swissmedic.ch/#{link.attributes['href']}" unless File.exists?(url) # for unit testing
 			@pairs = get_pairs(url)
 			@pairs.each { |pair|
 				update_pair(*pair)
