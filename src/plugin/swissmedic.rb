@@ -351,7 +351,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def report
       atcless = @app.atcless_sequences.collect { |sequence|
-        resolve_link(sequence.pointer)	
+        defined?(resolve_link) ? resolve_link(sequence.pointer) : "Unable to resolve_link sequence: #{sequence.to_s}"
       }.sort
       lines = [
         "ODDB::SwissmedicPlugin - Report #{@@today.strftime('%d.%m.%Y')}",
