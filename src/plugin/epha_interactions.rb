@@ -35,16 +35,16 @@ module ODDB
         @lineno = 0
         first_line = nil
         File.readlines(csv_file_path).each do |line|
-          unless first_line
-            first_line = line
-            # $stdout.puts "first: "+ first_line
-            next
-          end
           @lineno += 1
           # $stdout.puts  "#{Time.now} #{@lineno}: #{line}"; $stdout.flush
-          elements = line.chomp.split(';')
+          next if /ATC1.*Name1.*ATC2.*Name2/.match(line)
+          begin
+            elements = CSV.parse_line(line)
+          rescue CSV::MalformedCSVError
+            $stdout.puts "CSV::MalformedCSVError in line #{@lineno}: #{line}"
+            next
+          end
           values = Hash.new
-          elements.each{ |elem| elem.gsub!(/^"|"$/,'') }
           epha_interaction = @app.create_epha_interaction(elements[0], elements[2])
           epha_interaction.atc_code_self = elements[0]
           epha_interaction.atc_name = elements[1]
@@ -56,7 +56,6 @@ module ODDB
           epha_interaction.measures = elements[7]
           epha_interaction.severity = elements[8]
         end
-        # $stdout.puts  "#{Time.now} read #{@lineno} lines. Storing the results"; $stdout.flush
         $stdout.puts "#{Time.now}: Calling @app.odba_store"; $stdout.flush
         @app.odba_store
         $stdout.puts "#{Time.now}: Calling @app.epha_interactions.odba_store"; $stdout.flush

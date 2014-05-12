@@ -11,6 +11,7 @@ require 'flexmock'
 require 'util/updater'
 require 'stub/odba'
 require 'date'
+
 module ODDB
   module Doctors
     class DoctorPlugin; end
@@ -41,7 +42,7 @@ module ODDB
 		end
 		alias :recipients :incomplete_pointers
 	end
-	class TestUpdater <Minitest::Test
+  class TestUpdater < Minitest::Test
     include FlexMock::TestCase
 		class StubLog
 			include ODDB::Persistence
@@ -49,24 +50,28 @@ module ODDB
 			def notify(arg=nil)
 			end
 		end
-		class StubApp
+    class StubEphaInteractions
+      attr_accessor :atc_code_self, :atc_code_other # these two items are our unique index. They may not be changed
+      attr_accessor :atc_name, :name_other, :info, :action, :effect, :measures, :severity
+      def odba_store
+      end
+    end
+    class StubApp
       attr_writer :log_group
 			attr_reader :pointer, :values, :model
-			attr_accessor :last_date, :epha_interactions
-			def initialize
+      attr_accessor :last_date, :epha_interactions
+      def initialize
 				@model = StubLog.new
         @epha_interactions = []
-        epha_mock = FlexMock.new(@epha_interactions)
+        epha_mock = FlexMock.new(epha_interactions)
         epha_mock.should_receive(:odba_store)
 			end
       def odba_store
       end
       def create_epha_interaction(atc_code_self, atc_code_other)
-        epha_interaction = ODDB::EphaInteraction.new
-        mock = FlexMock.new(epha_interaction)
+        epha_interaction = StubEphaInteractions.new
         @epha_interactions ||= []
-        @epha_interactions << mock
-        mock.should_receive(:odba_store)
+        @epha_interactions << epha_interaction
         epha_interaction
       end
       def delete_all_epha_interactions
@@ -374,8 +379,10 @@ module ODDB
       @plugin = ODDB::EphaInteractionPlugin.new(@app)
       res = @plugin.update(csv_file)
       assert_equal(1, @app.epha_interactions.size, 'We have 1 line in epha-CSV')
-      assert_equal('<FlexMock:N06AB06;Sertralin;M03BX02;Tizanidin;Keine Interaktion;Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.;Keine Interaktion.;Die Kombination aus Sertralin und Tizanidi>',
-                   @app.epha_interactions.first.inspect)
+      assert_equal('N06AB06', @app.epha_interactions.first.atc_code_self )
+      assert_equal('M03BX02', @app.epha_interactions.first.atc_code_other )
+      assert_equal('Keine Interaktion.', @app.epha_interactions.first.effect )
+      assert_equal('A', @app.epha_interactions.first.severity )
     end
     
     def test_update_simple  # update_simple is a private method
