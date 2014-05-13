@@ -40,7 +40,7 @@ GEM
     fastthread (1.0.7)
     ffi (1.9.3)
     flexmock (1.3.3)
-    flickraw (0.9.7)
+    flickraw (0.9.8)
     gruff (0.5.1)
       rmagick
     gyoku (1.1.1)
@@ -187,7 +187,7 @@ DEPENDENCIES
   facets (= 1.8.54)
   fastthread (= 1.0.7)
   flexmock
-  flickraw (= 0.9.7)
+  flickraw (= 0.9.8)
   gruff (= 0.5.1)
   hoe
   hoe-travis
