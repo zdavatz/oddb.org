@@ -72,7 +72,7 @@ module ODDB
         update_export_sequences @export_sequences
         update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
-        delete @diff.package_deletions
+        delete(@diff.package_deletions, true)
         # check the case in which there is a sequence or registration in Praeparateliste.xlsx 
         # but there is NO sequence or registration in Packungen.xlsx
         #recheck_deletions @diff.sequence_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
@@ -167,13 +167,26 @@ module ODDB
         end
       }
     end
-    def delete(deletions)
-      deletions.each { |row|
-        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
+    def delete(deletions, is_package_deletion = false)
+      debug_msg "#{__FILE__}: #{__LINE__}: delete #{deletions.size} items"
+      deletions.each {
+        |row|
+        iksnr  = row[0]
+        seqnr  = "%02i" % cell(row, column(:seqnr)).to_i
+        packnr = row[10]
+        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
         ptr = pointer(row)
-        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr '#{row[0]}' ptr #{ptr.inspect} row #{row.inspect}"
-        @app.delete ptr if ptr
+        next unless ptr
+        unless is_package_deletion
+          @app.delete ptr
+        else
+          object = @app.resolve(ptr)
+          debug_msg "#{__FILE__}: #{__LINE__}: delete object #{object.inspect}"
+          next unless object
+          @app.delete ptr if object.is_a?(ODDB::Package) and
+            @app.registration(iksnr).sequence(seqnr) and
+            @app.registration(iksnr).sequence(seqnr).packages.keys.index(packnr)
+        end
       }
     end
     def describe(diff, iksnr)
@@ -399,6 +412,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           "http://#{SERVER_NAME}/de/gcc/show/reg/#{pac.iksnr}/seq/#{pac.seqnr}/pack/#{pac.ikscd}"
         end
       else
+        return "no pointer for nil " unless ptr
         ptr = pointer_from_row(ptr)
         "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
       end
