@@ -102,7 +102,6 @@ module ODDB
 			@app = StubApp.new
 			@updater = ODDB::Updater.new(@app)
 			@group = @app.log_group = StubLogGroup.new
-
       flexstub(Log) do |klass|
         klass.should_receive(:new).and_return(flexmock('log') do |obj|
           obj.should_receive(:report=)
@@ -171,8 +170,8 @@ module ODDB
           obj.should_receive(:export_competition_xls).and_return(plugin)
           obj.should_receive(:export_swissdrug_xls).and_return(plugin)
           obj.should_receive(:export_generics_xls)
-          obj.should_receive(:export_oddb2tdat)
-          obj.should_receive(:export_oddb2tdat_with_migel)
+          obj.should_receive(:export_oddb2tdat).never
+          obj.should_receive(:export_oddb2tdat_with_migel).never
           obj.should_receive(:mail_swissmedic_notifications)\
             .and_return('mail_swissmedic_notifications')
         end)
@@ -557,7 +556,6 @@ module ODDB
       setup_update_swissmedic_followers
       expected = 'mail_swissmedic_notifications'  # the return value of 
                                                   # Exporter#mail_swissmedic_notifications
-      skip("Niklaus thinks we should mock here the update_swissmedic_followers")
       assert_equal(expected, @updater.update_swissmedic_followers)
     end
     def test_run

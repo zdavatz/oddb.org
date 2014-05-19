@@ -264,8 +264,9 @@ module ODDB
       update_price_feeds
       export_oddb_csv
       export_oddb2_csv
-      export_oddb2tdat
-      export_oddb2tdat_with_migel
+      # oddb2tdat no more needed as defined by Zeno on May 19, 2014
+      # export_oddb2tdat
+      # export_oddb2tdat_with_migel
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
