@@ -7,9 +7,8 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-#gem 'minitest'
-#require 'minitest/autorun'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'stub/odba'
 require 'util/persistence'
 require 'stub/oddbdat_export'
@@ -21,10 +20,10 @@ require 'flexmock'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
+require 'util/oddbconfig'
 
 module ODDB
-#  class SwissmedicPluginTest <Minitest::Test
-  class SwissmedicPluginTest <Test::Unit::TestCase
+  class SwissmedicPluginTest < MiniTest::Unit::TestCase
     include FlexMock::TestCase
     def setup
       @app = flexmock 'app'
@@ -1150,7 +1149,7 @@ module ODDB
       assert_equal(expected, @plugin.pointer_from_row(row))
     end
     def test_resolve_link__with_pointer
-      expected = "http://ch.oddb.org/de/gcc/show/reg/12345/seq/01/pack/001"
+      expected = "http://#{SERVER_NAME}/de/gcc/show/reg/12345/seq/01/pack/001"
       pointer = Persistence::Pointer.new([:registration, '12345'], ['sequence', '01'], ['package', '001'])
       package = flexmock('pack') do |pac|
         pac.should_receive(:iksnr).and_return('12345')
@@ -1166,7 +1165,7 @@ module ODDB
       assert_equal(expected, @plugin.resolve_link(pointer))
     end
     def test_resolve_link__with_row
-      expected = "http://ch.oddb.org/de/gcc/resolve/pointer/:!registration,12345!sequence,01!package,001."
+      expected = "http://#{SERVER_NAME}/de/gcc/resolve/pointer/:!registration,12345!sequence,01!package,001."
       row = ['12345', '01', '', '', '', '', '', '', '', '', '001']
       assert_equal(expected, @plugin.resolve_link(row))
     end

@@ -14,6 +14,7 @@ require 'uri'
 module ODDB
   class TestSwissregPlugin <Minitest::Test
     include FlexMock::TestCase
+
     def stderr_null
       require 'tempfile'
       $stderr = Tempfile.open('stderr')
@@ -82,6 +83,6 @@ module ODDB
       replace_constant('ODDB::SwissregPlugin::SWISSREG_SERVER', server) do
         assert_equal({pointer => 'value'}, @plugin.update_news)
       end
-    end
+    end    
   end
 end # ODDB

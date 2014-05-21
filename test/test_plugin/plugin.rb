@@ -63,12 +63,12 @@ module ODDB
                        :pointer   => 'pointer',
                        :name_base => 'name_base'
                       )
-      expected = "name_base:                                        http://ch.oddb.org/de/gcc/resolve/pointer/pointer "
+      expected = "name_base:                                        http://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
       assert_equal(expected, @plugin.resolve_link(model))
     end
     def test_resolve_link__else
       model = flexmock('model', :pointer => 'pointer')
-      expected = "http://ch.oddb.org/de/gcc/resolve/pointer/pointer "
+      expected = "http://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
       assert_equal(expected, @plugin.resolve_link(model))
     end
     def test_resolve_link__error

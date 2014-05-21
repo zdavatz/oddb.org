@@ -4,6 +4,7 @@
 # ODDB::FachinfoInvoicer -- oddb.org -- 28.04.2006 -- hwyss@ywesee.com
 
 require 'plugin/info_invoicer'
+require 'util/oddbconfig'
 
 module ODDB
   class FachinfoInvoicer < InfoInvoicer
@@ -46,7 +47,7 @@ module ODDB
         report << company_name << "\n"
         fachinfos.sort_by { |fi| fi.name_base }.each { |fi|
           if reg = fi.registrations.first
-            report << sprintf("%s:\n  http://ch.oddb.org/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr) 
+            report << sprintf("%s:\n  http://#{SERVER_NAME}/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr)
           end
         }
         report << "\n"

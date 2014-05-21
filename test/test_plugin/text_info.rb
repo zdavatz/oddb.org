@@ -7,6 +7,8 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'fileutils'
 require 'flexmock'
+require 'test/unit'
+require 'flexmock/test_unit'
 require 'plugin/text_info'
 require 'model/text'
 
@@ -21,7 +23,7 @@ module ODDB
                   :current_eventtarget
   end
   
-  class TestTextInfoPluginMethods<MiniTest::Unit::TestCase
+  class TestTextInfoPluginMethods<Test::Unit::TestCase
     x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
     y = %(
 data/html/fachinfo/de/Bisoprolol_Axapharm_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62111 (Swissmedic)</span></span><span class="s8"><span>.</span></span></p>
@@ -35,7 +37,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
 )
   end
   
-  class TestTextInfoPlugin <MiniTest::Unit::TestCase
+  class TestTextInfoPlugin <Test::Unit::TestCase
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     include FlexMock::TestCase
@@ -187,7 +189,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       ]
       agent = setup_mechanize mapping
       page = nil
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
+#      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
       @plugin.import_company ['novartis'], agent, :both
@@ -317,10 +319,6 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :documed, "", nil).and_return pi_de
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :documed, "", nil).and_return pi_fr
 
       reg = flexmock 'registration'
       reg.should_receive(:fachinfo)
@@ -396,8 +394,6 @@ EOS
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de).and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr).and_return pi_fr
 
@@ -465,10 +461,6 @@ EOS
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
       pi_de = PatinfoDocument.new
       pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).and_return fr
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :documed, "", nil).and_return pi_de
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :documed, "", nil).and_return pi_fr
 
       @app.should_receive(:registration).with('57363')
       @app.should_receive(:update).and_return do |pointer, data|
@@ -501,8 +493,6 @@ EOS
       pi_path_de = File.join(@@datadir, 'Aclasta.pi.de.html')
       pi_path_fr = File.join(@@datadir, 'Aclasta.pi.fr.html')
       pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de, :documed, "", nil).times(1).and_return de
-      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr, :documed, "", nil).times(1).and_return fr
 
       reg = flexmock 'registration'
       reg.should_receive(:fachinfo)
@@ -767,14 +757,15 @@ EOS
     end
   end
   
-  class TestExtractMatchedName <MiniTest::Unit::TestCase
+  class TestExtractMatchedName <Test::Unit::TestCase
     include FlexMock::TestCase
     
     def setup
       file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       @app = flexmock 'application'
       @app.should_receive(:registration).and_return ['registration']
-      @plugin = TextInfoPlugin.new @app
+      @app.should_receive(:registrationxx).and_return ['registration']
+                                                     @plugin = TextInfoPlugin.new @app
       @plugin.swissmedicinfo_xml(file)
     end
     

@@ -124,7 +124,7 @@ class TestMedwinCompanyPlugin <Minitest::Test
 		result = @app.pointers.first
 		assert_equal('comp1', result)
     skip("niklaus did not debug next assertion")
-    # got ["ecosol ag - [1234567891111] - http://ch.oddb.org/de/gcc/company/ean/1234567891111 "]
+    # got ["ecosol ag - [1234567891111] - http://#{SERVER_NAME}/de/gcc/company/ean/1234567891111 "]
 		assert_equal(['ecosol ag'], @plugin.updated)
 	end
   def test_update_company_data__phone_fax

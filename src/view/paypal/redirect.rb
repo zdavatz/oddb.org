@@ -3,6 +3,7 @@
 # View::PayPal::Redirect -- ODDB -- 20.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
+require 'util/oddbconfig'
 
 module ODDB
 	module View
@@ -14,7 +15,7 @@ class Redirect < HtmlGrid::Component
       txt = item.text
       case txt
       when 'unlimited access'
-        'Unlimited Access to ch.oddb.org for %i days' % item.quantity
+        "Unlimited Access to #{SERVER_NAME} for %i days" % item.quantity
       else
         txt
       end
@@ -24,7 +25,7 @@ class Redirect < HtmlGrid::Component
 		url = 'https://' << PAYPAL_SERVER << '/cgi-bin/webscr?' \
 			<< "business=#{PAYPAL_RECEIVER}&" \
 			<< "item_name=#{names}&item_number=#{invoice}&" \
-			<< "invoice=#{invoice}&custom=ch.oddb.org&" \
+			<< "invoice=#{invoice}&custom=#{SERVER_NAME}&" \
 			<< "amount=#{sprintf('%3.2f', model.total_brutto)}&" \
 			<< 'no_shipping=1&no_note=1&currency_code=EUR&' \
 			<< "return=#{ret_url}&" \

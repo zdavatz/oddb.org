@@ -161,21 +161,21 @@ Deleted pharmacode: 1 packages
 Updated in trade     (out_of_trade:false): 1 packages
 Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
 if so the package becomes in trade (false)
-        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+        12345: http://#{SERVER_NAME}/de/gcc/drug/reg/00001/seq/01/pack/001
 
 Updated out of trade (out_of_trade:true) : 1 packages
 If there is no eancode in swissindex and the package is in trade in ch.oddb,
 then the package becomes out of trade (true) in ch.oddb
-        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+        12345: http://#{SERVER_NAME}/de/gcc/drug/reg/00001/seq/01/pack/001
 
 Updated pharmacode: 1 packages
 If the package does not have a pharmacode and there is a pharmacode found in swissindex,
 then put the pharmacode into ch.oddb
-        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+        12345: http://#{SERVER_NAME}/de/gcc/drug/reg/00001/seq/01/pack/001
 
 Deleted pharmacode: 1 packages
 If there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-        12345: http://ch.oddb.org/de/gcc/drug/reg/00001/seq/01/pack/001
+        12345: http://#{SERVER_NAME}/de/gcc/drug/reg/00001/seq/01/pack/001
 REPORT
       assert_equal(expected.chomp, @plugin.report)
     end

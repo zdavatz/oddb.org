@@ -46,12 +46,12 @@ class TestRedirect <Minitest::Test
     @component = ODDB::View::PayPal::Redirect.new(@model, @session)
   end
   def test_http_headers 
-    expected = {"Location" => "https://server/cgi-bin/webscr?business=receiver&item_name=text&item_number=oid&invoice=oid&custom=ch.oddb.org&amount=123.00&no_shipping=1&no_note=1&currency_code=EUR&return=_event_url&cancel_return=base_url&image_url=https://www.generika.cc/images/oddb_paypal.jpg&email=email&first_name=name_first&last_name=name_last&address1=address&city=city&zip=plz&redirect_cmd=_xclick&cmd=_ext-enter"}
+    expected = {"Location" => "https://server/cgi-bin/webscr?business=receiver&item_name=text&item_number=oid&invoice=oid&custom=#{SERVER_NAME}&amount=123.00&no_shipping=1&no_note=1&currency_code=EUR&return=_event_url&cancel_return=base_url&image_url=https://www.generika.cc/images/oddb_paypal.jpg&email=email&first_name=name_first&last_name=name_last&address1=address&city=city&zip=plz&redirect_cmd=_xclick&cmd=_ext-enter"}
     assert_equal(expected, @component.http_headers)
   end
   def test_http_headers__not_yususer
     flexmock(@user, :is_a? => nil)
-    expected = {"Location" => "https://server/cgi-bin/webscr?business=receiver&item_name=text&item_number=oid&invoice=oid&custom=ch.oddb.org&amount=123.00&no_shipping=1&no_note=1&currency_code=EUR&return=_event_url&cancel_return=base_url&image_url=https://www.generika.cc/images/oddb_paypal.jpg&cmd=_xclick"}
+    expected = {"Location" => "https://server/cgi-bin/webscr?business=receiver&item_name=text&item_number=oid&invoice=oid&custom=#{SERVER_NAME}&amount=123.00&no_shipping=1&no_note=1&currency_code=EUR&return=_event_url&cancel_return=base_url&image_url=https://www.generika.cc/images/oddb_paypal.jpg&cmd=_xclick"}
     assert_equal(expected, @component.http_headers)
   end
   def test_to_html

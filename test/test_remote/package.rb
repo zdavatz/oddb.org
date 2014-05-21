@@ -5,8 +5,8 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
-require 'minitest/autorun'
-require 'flexmock'
+require 'test/unit'
+require 'flexmock/test_unit'
 require 'remote/package'
 
 module ODDB

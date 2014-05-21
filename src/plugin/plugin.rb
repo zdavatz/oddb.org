@@ -5,9 +5,7 @@
 
 require 'util/http'
 require 'ostruct'
-#require 'util/session'
 require 'custom/lookandfeelbase'
-#require 'ftools'
 require 'fileutils'
 
 module ODDB
@@ -68,7 +66,7 @@ module ODDB
 			else
 				''
 			end
-			str << 'http://ch.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
+			str << "http://#{SERVER_NAME}/de/gcc/resolve/pointer/" << CGI.escape(pointer.to_s) << ' '
 		rescue StandardError
 			"Error creating Link for #{pointer.inspect}"
 		end

@@ -32,7 +32,7 @@ module ODDB
         end
       end
       def export(odba_ids, nil_data)
-        url_base = "http://ch.oddb.org/de/gcc/resolve/pointer/"
+        url_base = "http://#{SERVER_NAME}/de/gcc/resolve/pointer/"
         odba_ids.each { |id|
           reg = ODBA.cache.fetch(id)
           pat = reg.patent

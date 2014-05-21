@@ -138,7 +138,7 @@ sicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch
         EOS
 			]
       @probable_errors_oddb.each { |pack|
-        lines.push sprintf("%07i: http://ch.oddb.org/de/gcc/resolve/pointer/%s",
+        lines.push sprintf("%07i: http://#{SERVER_NAME}/de/gcc/resolve/pointer/%s",
                            pack.pharmacode, pack.pointer)
       }
 			lines.push nil
@@ -148,7 +148,7 @@ In den folgenden Fällen ist die Swissmedic-Packungsnummer von Medwin.ch
 ziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.
       EOS
       @probable_errors_medwin.each { |pack|
-        lines.push sprintf("%07i: http://ch.oddb.org/de/gcc/resolve/pointer/%s",
+        lines.push sprintf("%07i: http://#{SERVER_NAME}/de/gcc/resolve/pointer/%s",
                            pack.pharmacode, pack.pointer)
       }
 			lines.push nil

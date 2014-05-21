@@ -10,6 +10,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'model/cyp450connection'
+require 'util/oddbconfig'
 
 module ODDB
   class CyP450Connection
@@ -19,27 +20,28 @@ module ODDB
     attr_accessor :cyp450
   end
   class TestAbstractLink <Minitest::Test
+    SERVER_URL = "http://#{SERVER_NAME}/"
     def setup
       @link = ODDB::Interaction::AbstractLink.new
     end
     def test_empty
       assert_equal true, @link.empty?
-      @link.href = 'http://ch.oddb.org/'
+      @link.href = SERVER_URL
       assert_equal false, @link.empty?
     end
     def test_eql
       other = ODDB::Interaction::AbstractLink.new
       assert_equal other, @link
-      @link.href = 'http://ch.oddb.org/'
+      @link.href = SERVER_URL
       assert other != @link
-      other.href = 'http://ch.oddb.org/'
+      other.href = SERVER_URL
       assert_equal other, @link
       other.href = 'http://de.oddb.org/'
       assert  other != @link
     end
     def test_hash
-      @link.href = 'http://ch.oddb.org/'
-      assert_equal 'http://ch.oddb.org/'.hash, @link.hash
+      @link.href = SERVER_URL
+      assert_equal SERVER_URL.hash, @link.hash
     end
   end
   class TestCyP450Connection <Minitest::Test
