@@ -19,7 +19,6 @@ module ODDB
       @notfound = []
     end
 		def get_detail(url)
-      $stdout.puts "SwissregPlugin.update_registrations #{iksnr}"
 			uri = URI.parse(url)
 			SWISSREG_SERVER.detail(uri.request_uri)
 		end
@@ -56,14 +55,10 @@ module ODDB
       end
     end
     def update_registrations(iksnr)
-      $stdout.puts "SwissregPlugin.update_registrations #{iksnr}"
       patents = SWISSREG_SERVER.search(iksnr)
-      $stdout.puts "SwissregPlugin.update_registrations #{iksnr} patents #{patents.inspect} empty? #{patents.empty?}"
       unless patents.empty?
         patents.each do |data|
           # if found in swissreg.ch
-          $stdout.puts "SwissregPlugin.update_registrations data #{data.inspect} "
-          $stdout.puts "SwissregPlugin.update_registrations patents #{patents.inspect} empty? #{patents.empty?}"
           @patents += 1
           if(iksnrs = data[:iksnrs])
             @iksnrs.push(data)

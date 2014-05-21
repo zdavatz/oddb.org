@@ -73,7 +73,6 @@ module ODDB
       end
     public
       def Swissreg.search(iksnr) # search patent(s) for a given iksnr
-        $stdout.puts "Swissreg: search iksnr #{iksnr}"
         Swissreg.init_swissreg
         data = [
           ["autoScroll", "0,0"],
@@ -105,21 +104,29 @@ module ODDB
         response = form.submit
         @session.writeResponse(@agent, "#{LogDir}/first_results.html")
         @session.checkErrors(@agent.page.body)
-        @session.extract_result_links(@agent.page)
+        links = @session.extract_result_links(@agent.page)
+        details = []
+        links.each{ |link|
+                    details << Swissreg.get_detail(link)
+                  }
+
+        $stdout.puts "Swissreg: search #{iksnr} returns #{details} "
+        details
       end
 
       def Swissreg.get_detail(url)
+        full_url = url.index(Base_uri) ? url : Base_uri + url
         Swissreg.init_swissreg
-        response = @agent.get(Base_uri + url)
+        response = @agent.get(full_url)
         writer = DetailWriter.new
         formatter = ODDB::HtmlFormatter.new(writer)
         parser = ODDB::HtmlParser.new(formatter)
         parser.feed(response.body)
-        writer.extract_data
+        res = writer.extract_data
+        res
       rescue Timeout::Error
         {}
       end
-
       def extract_result_links(response)
         if response.is_a?(String)
           body = Mechanize::Page.new(nil,{'content-type'=>'text/html'},response,nil, Mechanize.new)
