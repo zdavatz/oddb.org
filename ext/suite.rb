@@ -9,7 +9,10 @@ require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'test'
 
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
-# IsolatedTests run_tests(["#{current_dir}/export/test/test_oddbdat.rb"])
+# test_generics_xls and test_oddbdat have a mismatch about syck to_yaml
+require "#{current_dir}/export/test/test_generics_xls.rb"
+
+#IsolatedTests::run_tests(["#{current_dir}/export/test/test_oddbdat.rb"])
 
 require "#{current_dir}/swissreg/test/test_swissreg.rb"
 
@@ -28,6 +31,3 @@ require "#{current_dir}/swissindex/test/test_swissindex.rb"
 require "#{current_dir}/chapterparse/test/test_writer.rb"
 require "#{current_dir}/chapterparse/test/test_parser.rb"
 require "#{current_dir}/chapterparse/test/test_integrate.rb"
-
-
-

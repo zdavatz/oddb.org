@@ -28,7 +28,7 @@ module ODDB
                 :base_patent             => "CH644840",
                 :iksnrs                  => ["46574"],
                 :expiry_date             => Date.new(2000, 8, 17),
-#                 :deletion_date           => Date.new(2000, 8, 17)
+                :deletion_date           => Date.new(2000, 8, 17)
         }
         @detail_for_54642   = '/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=C00463756/01'
         @expected_for_54642 = {

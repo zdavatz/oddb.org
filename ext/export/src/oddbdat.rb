@@ -140,10 +140,12 @@ module ODDB
               while(text.size > 220)
                 pos = text.rindex(' ', 220)
                 if(pos.nil?)
-                  pos = text.rindex('<P>', 220)-1
+                  pos = text.rindex('<P>', 220)-1 if text.rindex('<P>', 220)
                 end
-                txt = text.slice!(0..pos)
-                lines << MCMLine.new(pharmacode, line, lang, txt)
+                if pos
+                  txt = text.slice!(0..pos)
+                  lines << MCMLine.new(pharmacode, line, lang, txt)
+                end
                 line = line.next
               end
               lines << MCMLine.new(pharmacode, line, lang, text)
@@ -154,6 +156,7 @@ module ODDB
         end
 			end
 			def format_line(chapter)
+				return unless chapter
 				string = String.new        
 				unless ((head = chapter.heading).empty?)
 					string << '<BI>' << head.to_s << '<E><P>'
@@ -164,12 +167,14 @@ module ODDB
 						string << '<I>' << subhead.to_s << '<E>'
 					end if sec.subheading
 					sec.paragraphs.each { |par|
-            if par.eql?(ODDB::Text::ImageLink)
-              string << "<IMG src='http://#{SERVER_NAME}#{par.src}'/>"
-            elsif par.is_a?(ODDB::Text::Table)
-              string << '<N>' << par.to_s << '<E>'
-            else
-              text = par.text
+						if par.eql?(ODDB::Text::ImageLink) or par.eql?('imagelink')
+							string << "<IMG src='http://#{SERVER_NAME}#{par.src}'/>"
+						elsif par.is_a?(ODDB::Text::Table)
+							string << '<N>' << par.to_s << '<E>'
+						elsif par.formats and par.formats.eql?(ODDB::Text::ImageLink)
+							string << "<IMG src='http://#{SERVER_NAME}#{par.formats.src}'/>"
+						else
+							text = par.text
 							par.formats.each { |format|
 								start_tag = ""
 								end_tag = ""

@@ -855,14 +855,12 @@ class="
       
       def test_interactions
         assert_equal('Interaktionen', @@fachinfo.interactions.heading)
-        foundInYaml = %(
-          - (1
-          - ! ','
+        foundInYaml = %(          - (1
+          - ","
           - 10, 1
-          - ! ','
-          - 93)
-          )
-        assert(@@fachinfo.to_yaml.index(/- \(1\s*- ! ','\s*- 10, 1\s*- ! ','\s*- 93\)/m), 'format of number in table (Isentress: Omeprazole, Einzeldosis) should be 1,10, 1,93)')
+          - ","
+          - 93))
+        assert(@@fachinfo.to_yaml.index(foundInYaml), 'format of number in table (Isentress: Omeprazole, Einzeldosis) should be 1,10, 1,93)')
       end
       
       def test_galenic_form

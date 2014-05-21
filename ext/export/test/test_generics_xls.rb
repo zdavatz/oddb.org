@@ -48,13 +48,26 @@ module ODDB
           pack.should_receive(:registration_date).and_return(Date.new(2010,12,31))
           pack.should_receive(:"registration.pointer").and_return(123)
           pack.should_receive(:pointer).and_return(123)
-          pack.should_receive(:comparables).and_return([@pac])
           pack.should_receive(:"registration.generic?").and_return(true)
           pack.should_receive(:public?).and_return(true)
         end
 
         @generics_xls = GenericXls.new(".")
       end
+      def redefine_ODBA(package)
+        # This is a trick code, a little bit different from the flexstub in setup method
+        # That is why I can re-define the ODBA stub.
+        flexstub(ODBA) do |odba|
+          odba.should_receive(:cache).and_return(flexmock{|cache|
+           cache.should_receive(:fetch_named).and_return(flexmock{|app|
+             app.should_receive(:log_group).with(:swissmedic_journal).and_return(@loggroup_swiss)
+             app.should_receive(:log_group).with(:bsv_sl).and_return(@loggroup_bsv)
+             app.should_receive(:each_package).and_yield(package)
+           })
+          })
+        end
+      end
+      if true
       def test__remarks1
         pac = flexstub(Package) do |pack|
           pack.should_receive(:"registration.pointer").and_return(999)
@@ -86,12 +99,27 @@ module ODDB
         assert_equal(expect,  @generics_xls.format_original(@pac))
       end
       def test_format_generic
-        pac = flexstub(@pac) do |pack|
+        @pac = flexmock('Package') do |pack|
+          pack.should_receive(:basename).and_return("basename")
+          pack.should_receive(:dose).and_return("dose")
+          pack.should_receive(:comparable_size).and_return(111)
+          pack.should_receive(:barcode).and_return("222")
+          pack.should_receive(:pharmacode).and_return(333)
+          pack.should_receive(:name).and_return("name")
+          pack.should_receive(:price_exfactory).and_return(444.444)
+          pack.should_receive(:price_public).and_return(555.555)
+          pack.should_receive(:company_name).and_return("company_name")
+          pack.should_receive(:ikscat).and_return(666)
           pack.should_receive(:sl_entry).and_return(nil)
+          pack.should_receive(:registration_date).and_return(Date.new(2010,12,31))
+          pack.should_receive(:"registration.pointer").and_return(123)
+          pack.should_receive(:pointer).and_return(123)
+          pack.should_receive(:"registration.generic?").and_return(true)
+          pack.should_receive(:public?).and_return(true)
         end
         expect = ["222", "333", "name", "dose", "111", "444.44", "555.55", "company_name",
                   "666", "", "31.12.2010"]
-        assert_equal(expect,  @generics_xls.format_generic(pac))
+        assert_equal(expect,  @generics_xls.format_generic(@pac))
       end
       def test_format_row
         expect = ["basename", "basename dose/111", "222", "333", "name", "dose", "111",
@@ -142,23 +170,10 @@ module ODDB
         assert_equal(2, generics_xls.export_comparable(@pac, @pac))
  
       end
-      def redefine_ODBA(package)
-        # This is a trick code, a little bit different from the flexstub in setup method
-        # That is why I can re-define the ODBA stub.
-        flexstub(ODBA) do |odba|
-          odba.should_receive(:cache).and_return(flexmock{|cache|
-           cache.should_receive(:fetch_named).and_return(flexmock{|app|
-             app.should_receive(:log_group).with(:swissmedic_journal).and_return(@loggroup_swiss)
-             app.should_receive(:log_group).with(:bsv_sl).and_return(@loggroup_bsv)
-             app.should_receive(:each_package).and_yield(package)
-           })
-          })
-        end
-      end
       def test_export_generics__case_no_output
         # Note:
         # if the return value of comparables is not empty (point.1), or
-        # if the return value of registration.generics? is not false (ture) (point.2),
+        # if the return value of registration.generics? is not false (true) (point.2),
         # then you have to define the other method in the flexstub(Package),
         # since export_comparables or export_generic will be called.
         registration = flexmock('registration')
@@ -172,7 +187,7 @@ module ODDB
         redefine_ODBA(pac)
 
         generics_xls = GenericXls.new(".")
-        assert_equal(2, generics_xls.export_generics)
+        assert_equal(3, generics_xls.export_generics)
       end
       def test_export_generics__case_warning
         pac = flexstub(@pac) do |pack|
@@ -195,6 +210,7 @@ module ODDB
           generics_xls.export_generics
         end
       end
+    end
       def test_export_generics__case_export
         pac = flexstub(@pac) do |pack|
           pack.should_receive(:"registration.active?").and_return(true)
