@@ -11,8 +11,9 @@ require 'flexmock'
 require 'util/ipn'
 require 'util/session'
 require 'tempfile'
-require 'tmail'
+require 'mail'
 require 'stub/config'
+require 'stub/mail'
 
 module ODDB
   module Util
@@ -25,19 +26,6 @@ class TestIpn <Minitest::Test
     assert_kind_of(ODDB::LookandfeelBase, ODDB::Util::Ipn.lookandfeel_stub)
   end
   def test_send_notification
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    tmail = flexmock('tmail') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-    end
-    flexmock(TMail::Mail, :new => tmail)
     invoice = flexmock('invoice', :yus_name => 'yus_name')
     config = flexmock('config', 
                       :smtp_server   => nil,
@@ -45,7 +33,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -55,48 +44,11 @@ class TestIpn <Minitest::Test
     end
     assert_equal('sendmail', result)
   end
-  def test_send_notification__error
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    tmail = flexmock('tmail') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-    end
-    flexmock(TMail::Mail, :new => tmail)
-    invoice = flexmock('invoice', :yus_name => 'yus_name')
-    $stdout = Tempfile.new('tempfile')
-    result  = ODDB::Util::Ipn.send_notification(invoice) do
-      'send_notification'
-    end
-    assert_equal(nil, result)
-    $stdout = STDOUT
-  end
   def test_send_notification__nil
     invoice = flexmock('invoice', :yus_name => nil)
     assert_equal(nil, ODDB::Util::Ipn.send_notification(invoice){})
   end
   def test_send_poweruser_notification
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=).and_return('body')
-    end
-    flexmock(TMail::Mail, :new => outgoing)
     item    = flexmock('item', :duration => 1)
     invoice = flexmock('invoice', 
                        :yus_name     => 'yus_name',
@@ -108,7 +60,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -121,7 +74,7 @@ class TestIpn <Minitest::Test
   end
   def test_send_download_seller_notification
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
 
@@ -145,7 +98,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
 
 =begin
@@ -184,7 +138,7 @@ class TestIpn <Minitest::Test
   end
   def test_send_download_notification
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -196,8 +150,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=)
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
@@ -218,7 +173,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -231,7 +187,7 @@ class TestIpn <Minitest::Test
   end
   def test_send_download_notification__protocol
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -243,8 +199,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=)
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
@@ -265,7 +222,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -279,7 +237,7 @@ class TestIpn <Minitest::Test
   end
   def test_process_invoice__poweruser
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -291,8 +249,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=).and_return('body')
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
 
     system  = flexmock('system', 
                        :yus_set_preference => nil,
@@ -326,7 +285,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -342,7 +302,7 @@ class TestIpn <Minitest::Test
   end
   def test_process_invoice__download
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -354,8 +314,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=).and_return('body')
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
 
     system  = flexmock('system', 
                        :yus_set_preference => nil,
@@ -389,7 +350,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -405,7 +367,7 @@ class TestIpn <Minitest::Test
   end
   def test_process
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -417,8 +379,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=).and_return('body')
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
 
     item    = flexmock('item', 
                        :quantity    => 1,
@@ -449,7 +412,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -474,7 +438,7 @@ class TestIpn <Minitest::Test
   end
   def test_process__complete_false
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |s|
+    flexmock(Mail::SMTP) do |s|
       s.should_receive(:start).and_yield(smtp)
     end
     outgoing = flexmock('outgoing') do |m|
@@ -486,8 +450,9 @@ class TestIpn <Minitest::Test
       m.should_receive(:encoded)
       m.should_receive(:subject=)
       m.should_receive(:body=).and_return('body')
+      m.should_receive(:deliver)
     end
-    flexmock(TMail::Mail, :new => outgoing)
+    flexmock(Mail, :new => outgoing)
 
     item    = flexmock('item', 
                        :quantity    => 1,
@@ -519,7 +484,8 @@ class TestIpn <Minitest::Test
                       :smtp_domain   => nil,
                       :smtp_user     => nil,
                       :smtp_pass     => nil,
-                      :smtp_authtype => nil
+                      :smtp_auth => nil,
+											:testenvironment1 => 'testenvironment1',
                      )
     flexmock(ODDB::Util::Ipn) do |i|
       i.should_receive(:config).and_return(config)
@@ -581,8 +547,7 @@ class TestIpn <Minitest::Test
     $oddb = oddb_bak
   end
 end
-
     end # Ipn
-  end # Util
+  end # Util	
 end # ODDB
 

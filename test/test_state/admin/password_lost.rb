@@ -9,6 +9,8 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/password_lost'
 require 'state/admin/confirm'
+$: << File.expand_path("../..", File.dirname(__FILE__))
+require 'stub/mail'
 
 module ODDB
   module State
@@ -27,9 +29,9 @@ class TestPasswordLost <Minitest::Test
                         :yus_grant   => 'yus_grant'
                        ).by_default
     @model   = flexmock('model')
-    @state   = ODDB::State::Admin::PasswordLost.new(@session, @model)
-    
-    config = flexmock('config', 
+    @state   = ODDB::State::Admin::PasswordLost.new(@session, @model)    
+    config = flexmock('config',
+                     :testenvironment1 => 'testenvironment1',
                       :mail_from   => 'mail_from',
                       :mail_to     => ['mail_to'],
                       :smtp_server => 'smtp_server',
@@ -37,11 +39,12 @@ class TestPasswordLost <Minitest::Test
                       :smtp_domain => 'smtp_domain',
                       :smtp_user   => 'smtp_user',
                       :smtp_pass   => 'smtp_pass',
-                      :smtp_authtype => 'smtp_authtype'
+                      :smtp_auth   => 'smtp_auth'
                      )
     flexmock(ODDB, :config => config)
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP).should_receive(:start).and_yield(smtp)
+    mail = flexmock('mail',
+		                :deliver => 'deliver')
+		
   end
   def test_notify_user
     time = flexmock('time', :strftime => 'strftime')

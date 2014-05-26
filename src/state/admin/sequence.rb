@@ -15,8 +15,7 @@ require 'state/admin/assign_patinfo'
 require 'state/admin/assign_division'
 require 'state/admin/patinfo_pdf'
 require 'fileutils'
-require 'util/smtp_tls'
-require 'mail'
+require 'util/mail'
 
 module ODDB
 	module State
@@ -267,39 +266,23 @@ class AjaxCompositions < Global
   VIEW = View::Admin::RootCompositions
 end
 class Sequence < State::Admin::Global
-	RECIPIENTS = []
 	VIEW = View::Admin::RootSequence
+	RECIPIENTS = []
 	include SequenceMethods
 	def atc_request
 		if((company = @model.company) && (addr = company.regulatory_email))
 			lookandfeel = @session.lookandfeel
-      config = ODDB.config
-			mail = Mail.new
-      mail.content_type('text/plain; charset=UTF-8')
-      if File.exist?(ODDB.config.testenvironment1)
-        mail.to = ODDB::State::Admin::Sequence::RECIPIENTS
-      else
-			  mail.to = [addr]
-      end
-			mail.from = config.mail_from
-			mail.subject = "#{@model.name_base} #{@model.iksnr}"
-			mail.date = Time.now
-			mail.body = [
+			body = [
 				lookandfeel.lookup(:atc_request_email),
 				lookandfeel.lookup(:name) + ": " + @model.name_base,
 				lookandfeel.lookup(:registration) + ": " + @model.iksnr,
 				lookandfeel.lookup(:package) + ": " \
 					+ @model.packages.keys.join(","),
 				lookandfeel._event_url(:drug, [:reg, @model.iksnr, :seq, @model.seqnr]),
-				nil, 
+				nil,
 				lookandfeel.lookup(:thanks_for_cooperation),
 			].join("\n")
-			mail['User-Agent'] = 'ODDB Download'
-		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-				smtp.sendmail(mail.encoded, config.smtp_user, [addr] + RECIPIENTS)
-			}
+			Util.send_mail([addr], "#{@model.name_base} #{@model.iksnr}", body)
 			@model.atc_request_time = Time.now
 			@model.odba_isolated_store
 		end

@@ -4,8 +4,7 @@
 
 require 'state/global_predefine'
 require 'view/admin/password_lost'
-require 'rmail'
-require 'util/smtp_tls'
+require 'util/mail'
 
 module ODDB
 	module State
@@ -27,25 +26,16 @@ class PasswordLost < State::Global
     @errors.store(:email, create_error('e_unknown_user', :email, email))
 		self
 	end
-	def notify_user(email, token, time)
+	def notify_user(recipient, token, time)
 		lnf = @session.lookandfeel
     config = ODDB.config
-		mail = RMail::Message.new
-		header = mail.header
-		recipient = header.to = email
-		header.from = config.mail_from
-		header.subject = lnf.lookup(:password_lost_subject)
 		url = lnf._event_url(:password_reset, {:token => token, :email => recipient})
-		mail.body = lnf.lookup(:password_lost_body, recipient, url, 
-			time.strftime(lnf.lookup(:time_format_long)))
 		recipients = [recipient] + config.mail_to
-		Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                    config.smtp_user, config.smtp_pass,
-                    config.smtp_authtype) { |smtp|
-			recipients.each { |recipient|
-				smtp.sendmail(mail.to_s, config.smtp_user, recipient)
-			}
-		}
+		Util.send_mail(recipients,
+									 lnf.lookup(:password_lost_subject),
+		               lnf.lookup(:password_lost_body, recipient, url,
+		                          time.strftime(lnf.lookup(:time_format_long)))
+		              )
 		recipients
 	end
 end

@@ -5,8 +5,7 @@
 
 require 'view/suggest_address'
 require 'state/suggest_address_confirm'
-require 'util/smtp_tls'
-require 'mail'
+require 'util/mail'
 
 module ODDB
 	module State
@@ -62,24 +61,11 @@ module ODDB
 				end
 			end
 			def send_notification(suggestion)
-				from = suggestion.email_suggestion 
-        config = ODDB.config
-				mail = Mail.new
-        mail.content_type('text/plain; charset=UTF-8')
-				mail.from = from #'suggest_address@oddb.org'
-				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
-				mail.date = Time.now
-				mail.body = [
-					@url,
-				].join("\n")
-        Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                        config.smtp_user, config.smtp_pass,
-                        config.smtp_authtype) { |smtp|
-					RECIPIENTS.each { |rec|
-						mail.to = [rec]
-						smtp.sendmail(mail.encoded, from, rec) 
-					}
-				}
+				Util.send_mail(RECIPIENTS,
+				              "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}",
+				              [ @url, ].join("\n"),
+				              suggestion.email_suggestion
+				             )
 			end
 		end
 	end

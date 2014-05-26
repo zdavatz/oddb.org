@@ -5,8 +5,7 @@
 
 require 'state/global_predefine'
 require 'view/user/mailinglist'
-require 'mail'
-require 'util/smtp_tls'
+require 'util/mail'
 
 module ODDB
 	module State
@@ -31,21 +30,7 @@ class MailingList < State::User::Global
 		self 
 	end
 	def send_email(subscriber, recipient, info_message)
-		mail = Mail.new
-		mail.from = subscriber 
-		mail.to = recipient
-		mail.date = Time.now
-		begin
-      config = ODDB.config
-		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-				smtp.sendmail(mail.encoded, subscriber, recipient)
-			}
-			@infos.push(info_message)
-		rescue
-			@errors.store(:mailinglist_email, create_error('e_subscriber_mail_notsent', :mailinglist_email, subscriber))
-		end
+		Util.send_mail(recipient, "Unknown subject for MailingList?", info_message, subscriber)
 	end
 end
 		end

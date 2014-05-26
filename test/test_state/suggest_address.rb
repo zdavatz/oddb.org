@@ -10,6 +10,8 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'state/suggest_address'
+$: << File.expand_path("..", File.dirname(__FILE__))
+require 'stub/mail'
 
 module ODDB 
 	module State
@@ -21,6 +23,18 @@ class TestSuggestAddress <Minitest::Test
     flexmock(Net::SMTP) do |net|
       net.should_receive(:start).and_yield(smtp)
     end
+    config = flexmock('config',
+                     :testenvironment1 => 'testenvironment1',
+                      :mail_from   => 'mail_from',
+                      :mail_to     => ['mail_to'],
+                      :smtp_server => 'smtp_server',
+                      :smtp_port   => 'smtp_port',
+                      :smtp_domain => 'smtp_domain',
+                      :smtp_user   => 'smtp_user',
+                      :smtp_pass   => 'smtp_pass',
+                      :smtp_auth   => 'smtp_auth'
+                     )
+    flexmock(ODDB, :config => config)
     @update  = flexmock('update', 
                         :email_suggestion => 'email_suggestion',
                         :fullname => 'fullname',

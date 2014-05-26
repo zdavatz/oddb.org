@@ -3,8 +3,8 @@
 # ODDB::State::Notify -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Notify -- oddb.org -- 28.06.2007 -- hwyss@ywesee.com
 
-require 'rmail'
-require 'util/smtp_tls'
+require 'mail'
+require 'util/mail'
 
 module ODDB
 	module State
@@ -70,41 +70,18 @@ module Notify
     recipients = model.notify_recipient
 		if(model.name && model.notify_sender && recipients.is_a?(Array) \
 				&& !recipients.empty?)
-      config = ODDB.config
-			mail = RMail::Message.new
-      header = mail.header
-      header.add('Content-Type', 'multipart/alternative')
-      header.add('Date', Time.now.utc.rfc822)
-      from = header.from = config.mail_from
-      to = header.to = recipients
-			header.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
-      header.add('Reply-To', @model.notify_sender)
-      header.add('Mime-Version', '1.0')
-
-      text = RMail::Message.new
-      header = text.header
-      header.add('Content-Type', 'text/plain', nil, 'charset' => 'UTF-8')
-      text.body = [
+      body = [
 				breakline(@model.notify_message, 75),
 				"\n",
-				@session.lookandfeel._event_url(:show, 
+				@session.lookandfeel._event_url(:show,
 					{:pointer => CGI.escape(model.item.pointer.to_s)}),
 			].join("\n")
-      mail.add_part text
-
-      htmlpart = RMail::Message.new
-      header = htmlpart.header
-      header.add('Content-Type', 'text/html', nil, 'charset' => 'UTF-8')
-      header.add('Content-Transfer-Encoding', 'quoted-printable')
-      html = ODDB::View::NotifyMail.new(@model, @session).to_html(@session.cgi)
-      htmlpart.body = [html].pack('M')
-      mail.add_part htmlpart
-
-		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-				smtp.sendmail(mail.to_s, config.smtp_user, recipients)
-			}
+			Util.send_mail(recipients,
+											"#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}",
+											body,
+											nil, # don't override from
+											{ 'text/html; charset=UTF-8' => ODDB::View::NotifyMail.new(@model, @session).to_html(@session.cgi) }
+										)
 			logger = @session.notification_logger
 			key = [
 				self.class.const_get(:ITEM_TYPE),

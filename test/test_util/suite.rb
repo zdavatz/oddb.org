@@ -11,9 +11,6 @@ require 'minitest/autorun'
 $: << File.expand_path(File.dirname(__FILE__))
 
 # TODO: avoid skipping this stuff
-# we must run oddbapp and oddbapp_2 separately because we run into a 
-# internal limit of minitest.
-puts "skipping ipn oddbapp"
 
 Dir.open(File.dirname(__FILE__)) do |dir|
   dir.sort.each do |file|
@@ -22,8 +19,15 @@ Dir.open(File.dirname(__FILE__)) do |dir|
           puts "Skipping file #{file}"
           next
       end
-      require file 
+      require file
     end
   end
 end
 
+$: << File.expand_path(File.dirname(__FILE__))
+require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'suite.rb')
+current_dir = (File.expand_path(File.dirname(__FILE__)))
+# we must run oddbapp and oddbapp_2 separately because we run into a
+# internal limit of minitest.
+# IsolatedTests::run_tests(["#{current_dir}/oddbapp.rb"])
+# IsolatedTests::run_tests(["#{current_dir}/oddbapp2.rb"])

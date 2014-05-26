@@ -10,7 +10,8 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'state/user/mailinglist'
 require 'sbsm/validator'
-
+$: << File.expand_path("../..", File.dirname(__FILE__))
+require 'stub/mail'
 
 module ODDB
   module State
@@ -19,15 +20,14 @@ module ODDB
 class TestMailingList <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @smtp    = flexmock('smtp', :sendmail => 'sendmail').by_default
-    flexmock(Net::SMTP).should_receive(:start).and_yield(@smtp)
-    config   = flexmock('config', 
+    config   = flexmock('config',
+                        :testenvironment1 => 'testenvironment1',
                         :smtp_server => 'smtp_server',
                         :smtp_port   => 'smtp_port',
                         :smtp_domain => 'smtp_domain',
                         :smtp_user   => 'smtp_user',
                         :smtp_pass   => 'smtp_pass',
-                        :smtp_authtype => 'smtp_authtype'
+                        :smtp_auth   => 'smtp_auth'
                        )
     flexmock(ODDB, :config => config)
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -39,7 +39,6 @@ class TestMailingList <Minitest::Test
     assert_equal(['info_message'], @state.send_email('subscriber', 'recipient', 'info_message'))
   end
   def test_send_email__error
-    flexmock(@smtp).should_receive(:sendmail).and_raise(StandardError)
     assert_kind_of(SBSM::ProcessingError, @state.send_email('subscriber', 'recipient', 'info_message'))
   end
   def test_update__subscribe

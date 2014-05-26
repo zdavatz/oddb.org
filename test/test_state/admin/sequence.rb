@@ -10,6 +10,9 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/sequence'
 require 'state/global'
+$: << File.expand_path("../..", File.dirname(__FILE__))
+require 'stub/config'
+require 'stub/mail'
 
 class TestResellerSequence <Minitest::Test  
   include FlexMock::TestCase

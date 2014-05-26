@@ -23,6 +23,11 @@ module Net
 end
 module ODDB
 
+  # removes the Content-ID which is different for each run from the mail
+  def ODDB::removeContentId(mail)
+    mail.sub(/\s*Content-ID:[^\r]*/, "")
+  end
+
   ContentHeader = %(Content-Type: text/plain;\r
  charset=UTF-8\r
 Content-Transfer-Encoding: 7bit\r
@@ -79,6 +84,7 @@ User-Agent: ODDB Updater\r
       report = %(From: update@oddb.org\r
 To: hwyss@ywesee.com\r
 Subject: ch.ODDB.org Report - 08/1975\r
+Mime-Version: 1.0\r
 #{ContentHeader}
 first lengthy report.\r)
 			expected = [
@@ -87,7 +93,7 @@ first lengthy report.\r)
 				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent
-			result[0][0] = result[0][0].split("\n")[1..-1].join("\n")
+			result[0][0] = ODDB::removeContentId(result[0][0]).split("\n")[1..-1].join("\n")
 			assert_equal([expected], result)
 		end
 		def test_notify_date_str
@@ -101,6 +107,7 @@ first lengthy report.\r)
 			@log.notify('Subject')
 
       report = %(From: update@oddb.org\r\nTo: hwyss@ywesee.com\r\nSubject: ch.ODDB.org Report - Subject - Today\r
+Mime-Version: 1.0\r
 #{ContentHeader}
 second lengthy report.\r)
 
@@ -110,7 +117,7 @@ second lengthy report.\r)
 				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent
-			result[0][0] = result[0][0].split("\n")[1..-1].join("\n")
+			result[0][0] = ODDB::removeContentId(result[0][0]).split("\n")[1..-1].join("\n")
 			assert_equal([expected], result)
 		end
 		def test_notify_file

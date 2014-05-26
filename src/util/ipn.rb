@@ -4,8 +4,7 @@
 # ODDB::State::PayPal::Ipn -- oddb.org -- 19.04.2005 -- hwyss@ywesee.com
 
 require 'plugin/ydim'
-require 'util/smtp_tls'
-require 'mail'
+require 'util/mail'
 
 module ODDB
   module Util
@@ -96,11 +95,6 @@ module Ipn
       config = ODDB.config
       lookandfeel = lookandfeel_stub
       recipient = PAYPAL_RECEIVER
-      outgoing = Mail.new
-      outgoing.content_type('text/plain; charset=UTF-8')
-      outgoing.to = [recipient]
-      outgoing.from = config.mail_from
-      outgoing.subject = lookandfeel.lookup(:download_mail_subject)
       salut = lookandfeel.lookup(yus(name, :salutation))
       company = yus(name, :company_name)
       business = lookandfeel.lookup(yus(name, :business_area))
@@ -117,15 +111,8 @@ module Ipn
       ].compact
       body.push(nil)
       body.push(format_invoice(invoice, lookandfeel))
-      outgoing.body = body.join("\n")
-      outgoing.date = Time.now
-      outgoing['User-Agent'] = 'ODDB Download'
-      recipients = [recipient] + RECIPIENTS
-      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-        smtp.sendmail(outgoing.encoded, config.smtp_user, recipients)
-      }
+			recipients = [recipient] + RECIPIENTS
+      Util.send_mail(recipients, lookandfeel.lookup(:download_mail_subject), body.join("\n"));
     end
   rescue StandardError => e
     puts e.class
@@ -134,6 +121,7 @@ module Ipn
   end
   def Ipn.send_poweruser_notification(invoice)
     send_notification(invoice) { |outgoing, recipient, lookandfeel|
+		                             return unless lookandfeel
       outgoing.subject = lookandfeel.lookup(:poweruser_mail_subject)
       salut = lookandfeel.lookup(yus(recipient, :salutation))
       item = invoice.item_by_text('unlimited access')
@@ -152,23 +140,8 @@ module Ipn
   end
   def Ipn.send_notification(invoice, &block)
     if(recipient = invoice.yus_name)
-      lookandfeel = lookandfeel_stub
-      outgoing = Mail.new
-      outgoing.content_type('text/plain; charset=UTF-8')
-      outgoing.to = [recipient]
-      outgoing.from = MAIL_FROM
-      outgoing.date = Time.now
-      outgoing['User-Agent'] = 'ODDB Paypal-IPN'
-
-      block.call(outgoing, recipient, lookandfeel) 
-
-      recipients = ([recipient] + RECIPIENTS).uniq
-      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-        smtp.sendmail(outgoing.encoded, config.smtp_user, recipients)
-      }
-    end
+			Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block)
+		end
   rescue StandardError => e
     puts e.class
     puts e.message

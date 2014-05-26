@@ -126,7 +126,7 @@ class TestOddbValidator <Minitest::Test
       r.should_receive(:empty?).and_return(false)
       r.should_receive(:all?).and_return(false)
     end
-    flexmock(RMail::Address) do |r|
+    flexmock(Mail::Address) do |r|
       r.should_receive(:parse).and_return(result)
     end
     assert_raises(SBSM::InvalidDataError) do 

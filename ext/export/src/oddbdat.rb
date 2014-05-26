@@ -171,9 +171,11 @@ module ODDB
 							string << "<IMG src='http://#{SERVER_NAME}#{par.src}'/>"
 						elsif par.is_a?(ODDB::Text::Table)
 							string << '<N>' << par.to_s << '<E>'
-						elsif par.formats and par.formats.eql?(ODDB::Text::ImageLink)
+						elsif defined?(par.formats) and par.formats and par.formats.eql?(ODDB::Text::ImageLink)
 							string << "<IMG src='http://#{SERVER_NAME}#{par.formats.src}'/>"
-						else
+            elsif not defined?(par.formats)
+              next
+            else
 							text = par.text
 							par.formats.each { |format|
 								start_tag = ""

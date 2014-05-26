@@ -99,7 +99,7 @@ class TestNotify <Minitest::Test
                       :smtp_domain   => 'smtp_domain',
                       :smtp_user     => 'smtp_user',
                       :smtp_pass     => 'smtp_pass',
-                      :smtp_authtype => 'smtp_authtype'
+                      :smtp_auth     => 'smtp_auth'
                      )
     flexmock(ODDB, :config => config)
     skip("Somebody moved Migel around without updating the corresponding test, here")
@@ -107,9 +107,6 @@ class TestNotify <Minitest::Test
   end
   def test_notify__candidate
     smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |n|
-      n.should_receive(:start).and_yield(smtp)
-    end
     @notify.instance_eval do 
       @errors = {}
     end
@@ -157,12 +154,11 @@ class TestNotify <Minitest::Test
                       :smtp_pass     => 'smtp_pass',
                       :smtp_authtype => 'smtp_authtype'
                      )
-    skip("Somebody moved Migel around without updating the corresponding test, here")
     flexmock(ODDB, :config => config)
+    skip("Somebody moved Migel around without updating the corresponding test, here")
     assert_kind_of(ODDB::State::StubNotify, @notify.notify_send)
   end
   def test_notify_send__error
-    flexmock(Net::SMTP, :start => 'net_smtp_start')
     flexmock(@notify, 
              :user_input   => {},
              :create_error => 'create_error',

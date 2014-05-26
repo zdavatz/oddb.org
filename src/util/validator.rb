@@ -528,12 +528,11 @@ module ODDB
     alias :ean :ean13
     def emails(value)
       return if(value.empty?)
-      parsed = RMail::Address.parse(value)
-      if(parsed.empty?)
+      parsed = Mail::Address.new(value.to_s)
+			return [parsed.to_s] if parsed.to_s and parsed.domain
+      if(parsed.nil?)
         raise SBSM::InvalidDataError.new(:e_invalid_email_address, :email, value)
-      elsif(parsed.all? { |addr| addr.domain })
-        parsed.collect { |addr| addr.address }
-      else
+			else
         raise SBSM::InvalidDataError.new(:e_domainless_email_address, :email, value)
       end
     end
@@ -569,7 +568,7 @@ module ODDB
     alias :swissmedicnr :iksnr
     alias :reg :iksnr
     def notify_recipient(value)
-      RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
+      [Mail::Address.new(value.to_s).to_s]
     end
 		def search_query(value)
 			begin
