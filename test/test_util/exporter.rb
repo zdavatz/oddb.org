@@ -149,7 +149,6 @@ module ODDB
         exp.should_receive(:mail_feedback_stats).once.with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
         exp.should_receive(:export_yaml).once.with_no_args
-        exp.should_receive(:export_oddbdat).once.with_no_args
         exp.should_receive(:export_csv).once.with_no_args
         exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args

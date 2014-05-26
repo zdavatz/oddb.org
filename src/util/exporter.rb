@@ -64,7 +64,6 @@ module ODDB
         mail_download_stats
         mail_feedback_stats
         export_yaml
-        export_oddbdat
         #mail_notification_stats
       }
       export_sl_pcodes
