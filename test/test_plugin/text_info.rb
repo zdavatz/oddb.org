@@ -7,7 +7,6 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'fileutils'
 require 'flexmock'
-require 'test/unit'
 require 'flexmock/test_unit'
 require 'plugin/text_info'
 require 'model/text'
@@ -23,7 +22,7 @@ module ODDB
                   :current_eventtarget
   end
   
-  class TestTextInfoPluginMethods<Test::Unit::TestCase
+  class TestTextInfoPluginMethods<MiniTest::Test
     x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
     y = %(
 data/html/fachinfo/de/Bisoprolol_Axapharm_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62111 (Swissmedic)</span></span><span class="s8"><span>.</span></span></p>
@@ -37,7 +36,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
 )
   end
   
-  class TestTextInfoPlugin <Test::Unit::TestCase
+  class TestTextInfoPlugin <MiniTest::Test
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     include FlexMock::TestCase
@@ -757,7 +756,7 @@ EOS
     end
   end
   
-  class TestExtractMatchedName <Test::Unit::TestCase
+  class TestExtractMatchedName <MiniTest::Test
     include FlexMock::TestCase
     
     def setup

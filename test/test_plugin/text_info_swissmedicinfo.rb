@@ -4,9 +4,8 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('../..', File.dirname(__FILE__))
 
-#gem 'minitest'
-#require 'minitest/autorun'
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'fileutils'
 require 'flexmock'
 require 'plugin/text_info'
@@ -35,7 +34,7 @@ module ODDB
     end    
   end
 
-  class TestTextInfoPluginAipsMetaData <Test::Unit::TestCase
+  class TestTextInfoPluginAipsMetaData <MiniTest::Test
     include FlexMock::TestCase
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
@@ -178,7 +177,7 @@ module ODDB
     end
   end
   
-  class TestTextInfoPlugin <Test::Unit::TestCase
+  class TestTextInfoPlugin <MiniTest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -372,7 +371,7 @@ module ODDB
       end.new).first
     end
   end
-  class TestTextInfoPluginChecks <Test::Unit::TestCase
+  class TestTextInfoPluginChecks <MiniTest::Test
     include FlexMock::TestCase
     def setup
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
@@ -413,7 +412,7 @@ module ODDB
     end    
   end
         
-  class TestTextInfoPlugin_iksnr <Test::Unit::TestCase
+  class TestTextInfoPlugin_iksnr <MiniTest::Test
     include FlexMock::TestCase
     def test_get_iksnr_comprimes
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
