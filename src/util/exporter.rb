@@ -17,6 +17,7 @@ require 'plugin/swissmedic'
 require 'util/log'
 require 'util/logfile'
 require 'util/schedule'
+require 'util/mail'
 
 module ODDB
 	class Exporter
@@ -341,13 +342,12 @@ module ODDB
       end
 		end
 		def mail_notification_stats
-			file = @app.notification_logger.create_csv(@app)
-			headers = {
+			attachment = {
 				:filename => 'notifications.csv',
-				:mime_type => 'text/csv',
-				:subject => 'Täglicher CSV-Export der Notifications', 
+        :mime_type => 'text/csv',
+        :content => @app.notification_logger.create_csv(@app),
 			}
-			Log.new(@@today).notify_attachment(file, headers)
+      Util.send_mail_with_attachments('Täglicher CSV-Export der Notifications', '', [attachment])
 		end
 		def mail_patinfo_invoices
       safe_export 'Mail Patinfo-Invoices' do

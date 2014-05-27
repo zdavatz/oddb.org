@@ -35,6 +35,7 @@ module IsolatedTests
         okay = false unless res
     }
     puts "Overall result is #{okay}"
+		exit 2 unless okay
     okay
   end
 

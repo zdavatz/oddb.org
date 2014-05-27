@@ -3,7 +3,7 @@ module ODDB
   class ConfigStub
     attr_reader :mail_from, :smtp_authtype,
         :smtp_server, :smtp_domain, :smtp_port, :smtp_user, :smtp_pass, :smtp_auth,
-        :testenvironment1
+        :testenvironment1, :mail_to
     def app_user_agent
       'app_user_agent'
     end

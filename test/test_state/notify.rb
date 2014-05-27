@@ -54,10 +54,6 @@ class TestNotify <Minitest::Test
     assert_equal(expected, @notify.breakline('aaa bbb ccc', 5))
   end
   def test_notify
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |n|
-      n.should_receive(:start).and_yield(smtp)
-    end
     @notify.instance_eval do 
       @errors = {}
       @passed_turing_test = true
@@ -92,21 +88,10 @@ class TestNotify <Minitest::Test
              :cgi => cgi,
              :notification_logger => logger
             )
-    config = flexmock('config', 
-                      :mail_from     => 'mail_from',
-                      :smtp_server   => 'smtp_server',
-                      :smtp_port     => 'smtp_port',
-                      :smtp_domain   => 'smtp_domain',
-                      :smtp_user     => 'smtp_user',
-                      :smtp_pass     => 'smtp_pass',
-                      :smtp_auth     => 'smtp_auth'
-                     )
-    flexmock(ODDB, :config => config)
     skip("Somebody moved Migel around without updating the corresponding test, here")
     assert_kind_of(ODDB::State::StubNotify, @notify.notify_send)
   end
   def test_notify__candidate
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
     @notify.instance_eval do 
       @errors = {}
     end
@@ -145,16 +130,6 @@ class TestNotify <Minitest::Test
              :cgi => cgi,
              :notification_logger => logger
             )
-    config = flexmock('config', 
-                      :mail_from     => 'mail_from',
-                      :smtp_server   => 'smtp_server',
-                      :smtp_port     => 'smtp_port',
-                      :smtp_domain   => 'smtp_domain',
-                      :smtp_user     => 'smtp_user',
-                      :smtp_pass     => 'smtp_pass',
-                      :smtp_authtype => 'smtp_authtype'
-                     )
-    flexmock(ODDB, :config => config)
     skip("Somebody moved Migel around without updating the corresponding test, here")
     assert_kind_of(ODDB::State::StubNotify, @notify.notify_send)
   end

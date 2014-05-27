@@ -56,8 +56,10 @@ end
 Rake::Task[:test].overwrite do
   puts "Instead of calling Rake::Test we call test/suite.rb"
   cov = File.expand_path(File.join(File.dirname(__FILE__), 'coverage'))
-  FileUtils.rm_rf(cov, :verbose => true)                         
-  exit(1) unless system(File.join(File.dirname(__FILE__), 'test', 'suite.rb'))
+  FileUtils.rm_rf(cov, :verbose => true)
+	res = system(File.join(File.dirname(__FILE__), 'test', 'suite.rb'))
+	puts "Calling from rake test/suite.rb returned #{res.inspect}"
+  exit(4) unless res
 end
 
 task :test => :quanty

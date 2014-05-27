@@ -9,8 +9,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/password_lost'
 require 'state/admin/confirm'
-$: << File.expand_path("../..", File.dirname(__FILE__))
-require 'stub/mail'
+require 'util/mail'
 
 module ODDB
   module State
@@ -19,6 +18,8 @@ module ODDB
 class TestPasswordLost <Minitest::Test
   include FlexMock::TestCase
   def setup
+    Util.configure_mail :test
+    Util.clear_sent_mails
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :_event_url => '_event_url'
@@ -30,25 +31,10 @@ class TestPasswordLost <Minitest::Test
                        ).by_default
     @model   = flexmock('model')
     @state   = ODDB::State::Admin::PasswordLost.new(@session, @model)    
-    config = flexmock('config',
-                     :testenvironment1 => 'testenvironment1',
-                      :mail_from   => 'mail_from',
-                      :mail_to     => ['mail_to'],
-                      :smtp_server => 'smtp_server',
-                      :smtp_port   => 'smtp_port',
-                      :smtp_domain => 'smtp_domain',
-                      :smtp_user   => 'smtp_user',
-                      :smtp_pass   => 'smtp_pass',
-                      :smtp_auth   => 'smtp_auth'
-                     )
-    flexmock(ODDB, :config => config)
-    mail = flexmock('mail',
-		                :deliver => 'deliver')
-		
   end
   def test_notify_user
     time = flexmock('time', :strftime => 'strftime')
-    assert_equal(["email", "mail_to"], @state.notify_user('email', 'token', time))
+    assert_equal(["email", ODDB.config.mail_to].flatten, @state.notify_user('email', 'token', time))
   end
   def test_password_request
     flexmock(@session, :user_input => {:email => 'email'})
@@ -56,7 +42,6 @@ class TestPasswordLost <Minitest::Test
   end
   def test_password_request__error
     flexmock(@session).should_receive(:yus_grant).and_raise(Yus::UnknownEntityError)    
-    skip("Niklaus does not know why this test passes when run via the suite") unless __FILE__.eql?($0)
     assert_equal(@state, @state.password_request)
   end
 end

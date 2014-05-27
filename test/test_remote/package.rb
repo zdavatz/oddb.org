@@ -5,7 +5,7 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
-require 'test/unit'
+require 'minitest/autorun'
 require 'flexmock/test_unit'
 require 'remote/package'
 

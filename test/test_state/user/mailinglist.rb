@@ -11,7 +11,6 @@ require 'flexmock'
 require 'state/user/mailinglist'
 require 'sbsm/validator'
 $: << File.expand_path("../..", File.dirname(__FILE__))
-require 'stub/mail'
 
 module ODDB
   module State
@@ -20,25 +19,20 @@ module ODDB
 class TestMailingList <Minitest::Test
   include FlexMock::TestCase
   def setup
-    config   = flexmock('config',
-                        :testenvironment1 => 'testenvironment1',
-                        :smtp_server => 'smtp_server',
-                        :smtp_port   => 'smtp_port',
-                        :smtp_domain => 'smtp_domain',
-                        :smtp_user   => 'smtp_user',
-                        :smtp_pass   => 'smtp_pass',
-                        :smtp_auth   => 'smtp_auth'
-                       )
-    flexmock(ODDB, :config => config)
+		Util.configure_mail :test
+		Util.clear_sent_mails
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)
     @model   = flexmock('model')
     @state   = ODDB::State::User::MailingList.new(@session, @model)
   end
   def test_send_email
-    assert_equal(['info_message'], @state.send_email('subscriber', 'recipient', 'info_message'))
+    assert(@state.send_email('subscriber', 'recipient', 'info_message'))
+		assert_equal(1, Util.sent_mails.size)
+		assert_equal('info_message', Util.sent_mails.first.body.to_s)
   end
   def test_send_email__error
+		skip "Don't know how to generate a SBSM::ProcessingError. But this should better be part of the paypal unit test"
     assert_kind_of(SBSM::ProcessingError, @state.send_email('subscriber', 'recipient', 'info_message'))
   end
   def test_update__subscribe

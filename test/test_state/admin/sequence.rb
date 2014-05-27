@@ -10,9 +10,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'state/admin/sequence'
 require 'state/global'
-$: << File.expand_path("../..", File.dirname(__FILE__))
-require 'stub/config'
-require 'stub/mail'
+require 'util/mail'
 
 class TestResellerSequence <Minitest::Test  
   include FlexMock::TestCase
@@ -697,6 +695,8 @@ class TestSequence <Minitest::Test
     assert_equal(nil, @sequence.instance_eval('store_slate'))
   end
   def test_atc_request
+    ODDB::Util.configure_mail :test
+    ODDB::Util.clear_sent_mails
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')
       l.should_receive(:_event_url)
@@ -715,12 +715,6 @@ class TestSequence <Minitest::Test
       m.should_receive(:pointer).and_return('pointer')
       m.should_receive(:atc_request_time=)
       m.should_receive(:odba_isolated_store)
-    end
-    smtp = flexmock('smpt') do |s|
-      s.should_receive(:sendmail)
-    end
-    flexmock(Net::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
     end
     assert_equal(@sequence, @sequence.atc_request)
   end

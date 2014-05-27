@@ -54,7 +54,8 @@ module Ipn
   end
   def Ipn.send_download_notification(invoice)
     send_notification(invoice) { |outgoing, recipient, lookandfeel|
-      outgoing.subject = lookandfeel.lookup(:download_mail_subject)
+      lookandfeel = lookandfeel_stub
+      subject = lookandfeel.lookup(:download_mail_subject)
       urls = invoice.items.values.collect { |item|
         data = {
           :email      =>  recipient,
@@ -87,12 +88,11 @@ module Ipn
         lookandfeel.lookup(:download_mail_feedback),
         format_invoice(invoice, lookandfeel),
       ]
-      outgoing.body = parts.join("\n\n")
+      body = parts.join("\n\n")
     }
   end
   def Ipn.send_download_seller_notification(invoice)
     if(name = invoice.yus_name)
-      config = ODDB.config
       lookandfeel = lookandfeel_stub
       recipient = PAYPAL_RECEIVER
       salut = lookandfeel.lookup(yus(name, :salutation))
@@ -120,9 +120,10 @@ module Ipn
     puts e.backtrace
   end
   def Ipn.send_poweruser_notification(invoice)
-    send_notification(invoice) { |outgoing, recipient, lookandfeel|
-		                             return unless lookandfeel
-      outgoing.subject = lookandfeel.lookup(:poweruser_mail_subject)
+    send_notification(invoice) {
+      |outgoing, recipient, lookandfeel|
+      lookandfeel ||= lookandfeel_stub
+      lookandfeel.lookup(:poweruser_mail_subject)
       salut = lookandfeel.lookup(yus(recipient, :salutation))
       item = invoice.item_by_text('unlimited access')
       dkey = "poweruser_duration_#{item.duration.to_i}"
@@ -135,12 +136,15 @@ module Ipn
           lookandfeel._event_url(:login_form)),
         lookandfeel.lookup(:poweruser_regulatory),
       ]
-      outgoing.body = parts.join("\n\n")
+#      require 'pry'; binding.pry
+      Util.send_mail([recipient], lookandfeel.lookup(:poweruser_mail_subject), parts.join("\n\n"))
     }
   end
   def Ipn.send_notification(invoice, &block)
     if(recipient = invoice.yus_name)
-			Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block)
+#    def Util.send_mail(recipients, mail_subject, mail_body, override_from = nil, parts = {})
+
+      Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block ? block.call : "")
 		end
   rescue StandardError => e
     puts e.class

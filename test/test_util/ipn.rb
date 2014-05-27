@@ -13,7 +13,6 @@ require 'util/session'
 require 'tempfile'
 require 'mail'
 require 'stub/config'
-require 'stub/mail'
 
 module ODDB
   module Util
@@ -21,28 +20,33 @@ module ODDB
 
 class TestIpn <Minitest::Test
   include FlexMock::TestCase
+  YUS_NAME ='yus_name'
+  MAIL_FROM = [ ODDB::Util::EmailTestAddressFrom ]
+  SUBJECT_DOWNLOAD = 'Datendownload von ODDB.org'
+  ADMIN_TO = ["zdavatz@ywesee.com", "zdavatz@ywesee.com", "mhatakeyama@ywesee.com"]
+  SUBJECT_POWERUSER = "Power-User bei ODDB.org"
+  def setup
+    Util.configure_mail :test
+    Util.clear_sent_mails
+  end
 
+  def check_sent_one_mail(subject, nrMsg = 1, to = [YUS_NAME])
+    puts "check_sent_one_mail #{subject}"
+    mails_sent = Util.sent_mails
+    assert_equal(nrMsg, mails_sent.size)
+    mail = mails_sent.first
+    assert_equal(to, mail.to)
+    assert_equal(subject,mail.subject)
+    assert_equal(MAIL_FROM, mail.from)
+    puts "check_sent_one_mail #{subject} passed"
+  end
   def test_lookandfeel_stub
     assert_kind_of(ODDB::LookandfeelBase, ODDB::Util::Ipn.lookandfeel_stub)
   end
   def test_send_notification
-    invoice = flexmock('invoice', :yus_name => 'yus_name')
-    config = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-    result  = ODDB::Util::Ipn.send_notification(invoice) do
-      'send_notification'
-    end
-    assert_equal('sendmail', result)
+    invoice = flexmock('invoice', :yus_name => YUS_NAME)
+    result  = ODDB::Util::Ipn.send_notification(invoice)
+    check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
   def test_send_notification__nil
     invoice = flexmock('invoice', :yus_name => nil)
@@ -51,33 +55,16 @@ class TestIpn <Minitest::Test
   def test_send_poweruser_notification
     item    = flexmock('item', :duration => 1)
     invoice = flexmock('invoice', 
-                       :yus_name     => 'yus_name',
+                       :yus_name     => YUS_NAME,
                        :item_by_text => item
                       )
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal('sendmail', ODDB::Util::Ipn.send_poweruser_notification(invoice))
+    ODDB::Util::Ipn.send_poweruser_notification(invoice)
     $oddb    = oddb_bak
+    check_sent_one_mail(SUBJECT_POWERUSER, 1, MAIL_FROM)
   end
   def test_send_download_seller_notification
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-
     item     = flexmock('itema',
                         :quantity    => 1,
                         :text        => 'text',
@@ -85,36 +72,17 @@ class TestIpn <Minitest::Test
                        )
  
     invoice  = flexmock('invoice', 
-                        :yus_name     => 'yus_name',
+                        :yus_name     => YUS_NAME,
                         :items        => {'key' => item},
                         :total_netto  => 2.345, 
                         :vat          => 6.789,
                         :total_brutto => 3.456
                        )
-    config  = flexmock('config', 
-                      :mail_from     => nil,
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-
-=begin
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-=end
-    flexmock(ODDB) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal('sendmail', ODDB::Util::Ipn.send_download_seller_notification(invoice))
+    ODDB::Util::Ipn.send_download_seller_notification(invoice)
     $oddb    = oddb_bak
+    check_sent_one_mail(SUBJECT_DOWNLOAD, 1 ,ADMIN_TO)
   end
   def test_send_download_seller_notification__nil
     invoice  = flexmock('invoice') do |i|
@@ -127,6 +95,7 @@ class TestIpn <Minitest::Test
     assert_equal(nil, ODDB::Util::Ipn.send_download_seller_notification(invoice))
     $oddb    = oddb_bak
     $stdout  = STDOUT
+    assert_equal(0, Util.sent_mails.size)
   end
   def test_send_download_seller_notification__error
     invoice  = flexmock('invoice', :yus_name => nil)
@@ -135,124 +104,52 @@ class TestIpn <Minitest::Test
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     assert_equal(nil, ODDB::Util::Ipn.send_download_seller_notification(invoice))
     $oddb    = oddb_bak
+    assert_equal(0, Util.sent_mails.size)
   end
+
   def test_send_download_notification
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=)
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
                            :total_netto => 2.345
                           )
     invoice = flexmock('invoice', 
-                       :yus_name     => 'yus_name',
+                       :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
                        :total_netto  => 2.345, 
                        :vat          => 6.789,
                        :total_brutto => 3.456
                       )
-
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal('sendmail', ODDB::Util::Ipn.send_download_notification(invoice))
+    ODDB::Util::Ipn.send_download_notification(invoice)
     $oddb    = oddb_bak
+    check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
+	
   def test_send_download_notification__protocol
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=)
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
                            :total_netto => 2.345
                           )
     invoice = flexmock('invoice', 
-                       :yus_name     => 'yus_name',
+                       :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
                        :total_netto  => 2.345, 
                        :vat          => 6.789,
-                       :total_brutto => 3.456
+                       :total_brutto => 3.456,
                       )
-
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
-    flexmock(DOWNLOAD_PROTOCOLS, :find => 'protocol')
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal('sendmail', ODDB::Util::Ipn.send_download_notification(invoice))
+    result = ODDB::Util::Ipn.send_download_notification(invoice)
     $oddb    = oddb_bak
+    assert(result)
+    check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
-  def test_process_invoice__poweruser
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=).and_return('body')
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
-
+	def test_process_invoice__poweruser
     system  = flexmock('system', 
                        :yus_set_preference => nil,
                        :yus_grant          => nil
@@ -267,7 +164,7 @@ class TestIpn <Minitest::Test
                       )
     invoice = flexmock('invoice', 
                        :payment_received! => nil,
-                       :yus_name          => 'yus_name',
+                       :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
@@ -279,18 +176,6 @@ class TestIpn <Minitest::Test
                        :oid               => 'oid'
 
                       )
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
     flexmock(ODDB::YdimPlugin).new_instances do |y|
       y.should_receive(:inject)
     end
@@ -301,23 +186,6 @@ class TestIpn <Minitest::Test
     $oddb    = oddb_bak
   end
   def test_process_invoice__download
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=).and_return('body')
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
-
     system  = flexmock('system', 
                        :yus_set_preference => nil,
                        :yus_grant          => nil
@@ -332,7 +200,7 @@ class TestIpn <Minitest::Test
                       )
     invoice = flexmock('invoice', 
                        :payment_received! => nil,
-                       :yus_name          => 'yus_name',
+                       :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
@@ -344,18 +212,6 @@ class TestIpn <Minitest::Test
                        :oid               => 'oid'
 
                       )
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
     flexmock(ODDB::YdimPlugin).new_instances do |y|
       y.should_receive(:inject)
     end
@@ -364,25 +220,9 @@ class TestIpn <Minitest::Test
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     assert_equal([:download], ODDB::Util::Ipn.process_invoice(invoice, system))
     $oddb    = oddb_bak
+    check_sent_one_mail(SUBJECT_DOWNLOAD, 2)
   end
   def test_process
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=).and_return('body')
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
-
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
@@ -393,7 +233,7 @@ class TestIpn <Minitest::Test
                       )
     invoice = flexmock('invoice', 
                        :payment_received! => nil,
-                       :yus_name          => 'yus_name',
+                       :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
@@ -406,18 +246,6 @@ class TestIpn <Minitest::Test
                        :odba_store        => nil
 
                       )
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
     flexmock(ODDB::YdimPlugin).new_instances do |y|
       y.should_receive(:inject)
     end
@@ -433,27 +261,11 @@ class TestIpn <Minitest::Test
                            )
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal(invoice, ODDB::Util::Ipn.process(notification, system))
+    result = ODDB::Util::Ipn.process(notification, system)
     $oddb    = oddb_bak
+    puts "result is #{result.inspect}"
   end
   def test_process__complete_false
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Mail::SMTP) do |s|
-      s.should_receive(:start).and_yield(smtp)
-    end
-    outgoing = flexmock('outgoing') do |m|
-      m.should_receive(:set_content_type)
-      m.should_receive(:to=)
-      m.should_receive(:from=)
-      m.should_receive(:date=)
-      m.should_receive(:[]=)
-      m.should_receive(:encoded)
-      m.should_receive(:subject=)
-      m.should_receive(:body=).and_return('body')
-      m.should_receive(:deliver)
-    end
-    flexmock(Mail, :new => outgoing)
-
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
@@ -464,7 +276,7 @@ class TestIpn <Minitest::Test
                       )
     invoice = flexmock('invoice', 
                        :payment_received! => nil,
-                       :yus_name          => 'yus_name',
+                       :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
@@ -478,18 +290,6 @@ class TestIpn <Minitest::Test
                        :ipn=              => nil
 
                       )
-    config  = flexmock('config', 
-                      :smtp_server   => nil,
-                      :smtp_port     => nil,
-                      :smtp_domain   => nil,
-                      :smtp_user     => nil,
-                      :smtp_pass     => nil,
-                      :smtp_auth => nil,
-											:testenvironment1 => 'testenvironment1',
-                     )
-    flexmock(ODDB::Util::Ipn) do |i|
-      i.should_receive(:config).and_return(config)
-    end
     flexmock(ODDB::YdimPlugin).new_instances do |y|
       y.should_receive(:inject)
     end

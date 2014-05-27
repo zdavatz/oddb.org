@@ -6,7 +6,7 @@ require 'util/persistence'
 require 'config'
 require 'cgi'
 require 'date'
-require 'mail'
+require 'util/mail'
 
 module ODDB
 	class Log
@@ -30,104 +30,30 @@ module ODDB
 			@parts = []
 			@recipients = []
 		end
-		def notify(subject = nil, reply_to = nil)
-      LogFile.append('oddb/debug', " getin Log.notify (SL-Update)", Time.now) if subject =~ /SL-Update/
-
+		def notify(subject = nil)
+      LogFile.append('oddb/debug', " start outgoing process", Time.now)
 			subj = [
 				'ch.ODDB.org Report', 
 				subject, 
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
-
-			text = text_part(@report)
-
-			parts = @parts.nil? ? [] : @parts.dup
-      LogFile.append('oddb/debug', " @files=" + @files.inspect.to_s, Time.now)
-			unless(@files.nil?)
-				@files.each { |path, (mime, iconv)|
-					begin
-            content = File.read(path)
-            if iconv
-              content = Iconv.new(iconv, 'UTF-8').iconv content
-            end
-						parts.push([mime, File.basename(path), content])
-					#rescue Errno::ENOENT
-					rescue Errno::ENOENT => e
-            LogFile.append('oddb/debug', " " + e.inspect.to_s + "\n" + e.backtrace.inspect.to_s, Time.now)
-					end
-				}
-			end
-      LogFile.append('oddb/debug', " start outgoing process", Time.now)
-			outgoing = if(parts.empty?)
-				text
-			else
-				multipart = Mail.new
-				multipart.parts << text
-				parts.each { |mime, name, content|
-          multipart.attachments[name] = {:mime_type => mime, :content => content}
-				}
-				multipart
-			end
-			
-			outgoing.from = @mail_from || self::class::MAIL_FROM
-      if reply_to
-        outgoing.reply_to = reply_to
+      attachments = []
+      @files.each { |path, (mime, iconv)|
+        begin
+          content = File.read(path)
+          if iconv
+            content = Iconv.new(iconv, 'UTF-8').iconv content
+          end
+          attachments << { :filename => File.basename(path), :mime_type => mime, :content => content }
+        rescue Errno::ENOENT => e
+          LogFile.append('oddb/debug', " " + e.inspect.to_s + "\n" + e.backtrace.inspect.to_s, Time.now)
+        end
+      }
+      if attachments.size > 0
+        Util.send_mail_with_attachments(subj, @report, attachments)
+      else
+        Util.send_mail(@recipients, subj, @report, @mail_from || self::class::MAIL_FROM)
       end
-      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " self::class::MAIL_TO=" + self::class::MAIL_TO.to_s, Time.now)
-      LogFile.append('oddb/debug', " self::class=" + self::class.to_s, Time.now)
-			outgoing.subject = subj
-			outgoing.date = Time.now
-			outgoing['User-Agent'] = 'ODDB Updater'
-
-      LogFile.append('oddb/debug', " before send_mail(outgoing)", Time.now)
-			send_mail(outgoing)
-		end
-		def notify_attachment(attachment, headers)
-			multipart = Mail.new
-			subject = headers[:subject]
-			multipart.parts << text_part(subject)
-			mime = (headers[:mime_type] || 'text/plain')
-      multipart.attachments[headers[:filename]] = {:mime_type => mime, :content => attachment}
-      # This is also fine. but the full file path is necessary
-      #multipart.add_file('/home/masa/work/test.xls')
-			multipart.from = @mail_from || self::class::MAIL_FROM
-			multipart.to = @recipients
-			multipart.subject = subject
-			multipart.date = Time.now
-			
-			send_mail(multipart)
-		end
-		def text_part(body)
-			text = Mail::Part.new
-      text.body = body
-			text
-		end
-		def send_mail(multipart)
-      LogFile.append('oddb/debug', " getin send_mail", Time.now)
-      config = ODDB.config
-      LogFile.append('oddb/debug', " config.mail_to=" + config.mail_to.inspect.to_s, Time.now)
-      @recipients = config.mail_to.uniq if config.mail_to and config.mail_to.size > 0        
-      @recipients = self::class::MAIL_TO.uniq if not @recipients or @recipients.size == 0
-      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_server=" + config.smtp_server.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_port=" + config.smtp_port.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_domain=" + config.smtp_domain.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_user=" + config.smtp_user.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_pass=" + config.smtp_pass.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " config.smtp_authtype=" + config.smtp_authtype.inspect.to_s, Time.now)
-      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
-                      config.smtp_user, config.smtp_pass,
-                      config.smtp_authtype) { |smtp|
-      LogFile.append('oddb/debug', " getin Net::SMTP", Time.now)
-        
-				@recipients.each { |recipient|
-          LogFile.append('oddb/debug', " recipient=" + recipient.to_s, Time.now)
-					multipart.to = [recipient]
-					smtp.sendmail(multipart.encoded, 
-												@mail_from || config.smtp_user, recipient)
-				}
-			}
 		end
 	end
 end

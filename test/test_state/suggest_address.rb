@@ -10,8 +10,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'state/suggest_address'
-$: << File.expand_path("..", File.dirname(__FILE__))
-require 'stub/mail'
+require 'util/mail'
 
 module ODDB 
 	module State
@@ -19,22 +18,8 @@ module ODDB
 class TestSuggestAddress <Minitest::Test
   include FlexMock::TestCase
   def setup
-    smtp = flexmock('smtp', :sendmail => 'sendmail')
-    flexmock(Net::SMTP) do |net|
-      net.should_receive(:start).and_yield(smtp)
-    end
-    config = flexmock('config',
-                     :testenvironment1 => 'testenvironment1',
-                      :mail_from   => 'mail_from',
-                      :mail_to     => ['mail_to'],
-                      :smtp_server => 'smtp_server',
-                      :smtp_port   => 'smtp_port',
-                      :smtp_domain => 'smtp_domain',
-                      :smtp_user   => 'smtp_user',
-                      :smtp_pass   => 'smtp_pass',
-                      :smtp_auth   => 'smtp_auth'
-                     )
-    flexmock(ODDB, :config => config)
+    Util.configure_mail :test
+    Util.clear_sent_mails
     @update  = flexmock('update', 
                         :email_suggestion => 'email_suggestion',
                         :fullname => 'fullname',
@@ -65,6 +50,12 @@ class TestSuggestAddress <Minitest::Test
   def test_address_send
     flexmock(@session, :user_input => {:name => 'name', :email => 'email'})
     assert_kind_of(ODDB::State::AddressConfirm, @state.address_send)
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal('lookup fullname', mails_sent.first.subject)
+      assert_equal('_event_url', mails_sent.first.body.to_s)
+      assert_equal(['email_suggestion'], mails_sent.first.from)
+      assert_equal(["zdavatz@ywesee.com", "mhatakeyama@ywesee.com"], mails_sent.first.to)
   end
   def test_save_suggestion
     flexmock(@session, :user_input => {:message => 'message', :name => 'name', :email => 'email'})
