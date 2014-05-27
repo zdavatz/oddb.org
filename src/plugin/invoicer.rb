@@ -6,6 +6,7 @@
 require 'date'
 require 'plugin/plugin'
 require 'plugin/ydim'
+require 'util/today'
 require 'util/oddbconfig'
 
 module ODDB

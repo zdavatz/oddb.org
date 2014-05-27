@@ -47,7 +47,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(pointer, :resolve => sequence)
     item     = flexmock('item', 
                         :type         => :annual_fee,
-                        :item_pointer => pointer
+                        :item_pointer => pointer,
                        )
     invoice  = flexmock('invoice', :items => {'key' => item})
     flexmock(@app, :invoices => {'key' => invoice})
@@ -97,14 +97,14 @@ class TestInfoInvoicer <Minitest::Test
     assert_equal([item], @invoicer.adjust_overlap_fee(Date.new(2010,2,3), [item]))
   end
   def test_slate_items
-    item  = flexmock('item', :time => 'time')
+    item  = flexmock('item', :time => @@today)
     slate = flexmock('slate', :items => {'key' => item})
     flexmock(@app, :slate => slate)
     assert_equal([item], @invoicer.slate_items)
   end
   def test_annual_items
     item  = flexmock('item', 
-                     :time => 'time',
+                     :time => @@today,
                      :type => :annual_fee
                     )
     slate = flexmock('slate', :items => {'key' => item})
@@ -119,7 +119,7 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_all_items
     item  = flexmock('item', 
-                     :time => 'time',
+                     :time => @@today,
                      :type => :annual_fee
                     )
     slate = flexmock('slate', :items => {'key' => item})
@@ -141,7 +141,7 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_filter_paid__annual_fee
     item = flexmock('item', 
-                    :time     => 'time',
+                    :time     => @@today,
                     :expired? => false,
                     :type     => :annual_fee
                    )
@@ -154,7 +154,7 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_filter_paid__processing
     item = flexmock('item', 
-                    :time     => 'time',
+                    :time     => @@today,
                     :expired? => false,
                     :type     => :processing
                    )
@@ -175,7 +175,7 @@ class TestInfoInvoicer <Minitest::Test
     item     = flexmock('item', 
                         :item_pointer => pointer,
                         :data         => {},
-                        :time         => 'time',
+                        :time         => @@today,
                         :type         => nil
                        )
     invoice  = flexmock('invoice', :items => {'key' => item})
@@ -188,7 +188,7 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_recent_items
     item  = flexmock('item', 
-                     :time => 'time',
+                     :time => @@today,
                      :type => :annual_fee
                     )
     slate = flexmock('slate', :items => {'key1' => item, 'key2' => item})
@@ -274,7 +274,7 @@ class TestInfoInvoicer <Minitest::Test
     active_infos = flexmock('active_infos', :delete => 'delete')
     pointer  = flexmock('pointer')
     item     = flexmock('item',
-                        :time         => 'time',
+                        :time         => @@today,
                         :type         => :annual_fee,
                         :expired?     => false,
                         :item_pointer => pointer
