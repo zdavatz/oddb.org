@@ -13,7 +13,6 @@ module ODDB
   GET_TO_JS = %(
 function get_to(url) {
   var url2 = url.replace(/(\\d{13})[/,]+(\\d{13})/, '$1,$2').replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
-  console.log('#{__LINE__}:get_to: ' + url2 + ' act: ' + window.location.href);
   if (window.location.href ==  url2) { return; }
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
@@ -181,7 +180,6 @@ if (#{@name}.value!='#{val}') {
   if (this.search_type) {
     href += '/search_type/' + this.search_type.value#{param};
   }
-  console.log('SearchBar: get_to: ' + href);
   get_to(href);
 };
 return false;
