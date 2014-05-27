@@ -11,6 +11,7 @@ require 'flexmock'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
 require 'view/resulttemplate'
+require 'custom/lookandfeelwrapper.rb'
 require 'htmlgrid/labeltext'
 require 'view/migel/product'
 require 'remote/migel/model_super'
@@ -122,7 +123,7 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 13]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 15]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_init__facebook_fan
@@ -154,7 +155,7 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 13]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 16]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_create_link

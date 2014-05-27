@@ -33,14 +33,17 @@ module ODDB
         @inputtext = ODDB::View::SearchBar.new('name', @model, @session, @container)
       end
       def test_init
-        expected = <<-SCRIPT
+        expected = %(
 function get_to(url) {
+  var url2 = url.replace(/(\\d{13})[/,]+(\\d{13})/, '$1,$2').replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
+  if (window.location.href ==  url2) { return; }
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
-  form.setAttribute("action", url);
+  form.setAttribute("action", url2);
   document.body.appendChild(form);
   form.submit();
 }
+
 if (name.value!='lookup') {
 
   var href = '_event_url' + encodeURIComponent(name.value.replace(/\\//, '%2F'));
@@ -50,7 +53,7 @@ if (name.value!='lookup') {
   get_to(href);
 };
 return false;
-        SCRIPT
+)
         assert_equal(expected, @inputtext.init)
       end
     end
@@ -103,9 +106,11 @@ return false;
     class TestPrescriptionSearchBar <Minitest::Test
       include FlexMock::TestCase
       def setup
+				@persistent_user_input = flexmock('persistent_user_input', :keys => [])
         @container = flexmock('container', :additional_javascripts => [])
         @lnf       = flexmock('lookandfeel',
                               :lookup     => 'lookup',
+				                      :base_url   => 'base_url',
                               :attributes => {},
                               :event_url  => 'event_url',
                               :_event_url => '_event_url',
@@ -113,7 +118,8 @@ return false;
         @session   = flexmock('session',
                               :flavor                => 'gcc',
                               :lookandfeel           => @lnf,
-                              :persistent_user_input => 'persistent_user_input',
+				                      :request_path          => 'request_path',
+                              :persistent_user_input => {'key' => 'value'},
                               :event                 => ''
                              )
         @model     = flexmock('model')
