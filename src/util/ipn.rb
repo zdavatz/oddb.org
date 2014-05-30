@@ -136,14 +136,10 @@ module Ipn
           lookandfeel._event_url(:login_form)),
         lookandfeel.lookup(:poweruser_regulatory),
       ]
-#      require 'pry'; binding.pry
-      Util.send_mail([recipient], lookandfeel.lookup(:poweruser_mail_subject), parts.join("\n\n"))
     }
   end
   def Ipn.send_notification(invoice, &block)
     if(recipient = invoice.yus_name)
-#    def Util.send_mail(recipients, mail_subject, mail_body, override_from = nil, parts = {})
-
       Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block ? block.call : "")
 		end
   rescue StandardError => e

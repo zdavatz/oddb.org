@@ -31,14 +31,13 @@ class TestIpn <Minitest::Test
   end
 
   def check_sent_one_mail(subject, nrMsg = 1, to = [YUS_NAME])
-    puts "check_sent_one_mail #{subject}"
+    puts "check_sent_one_mail #{subject}" if $VERBOSE
     mails_sent = Util.sent_mails
     assert_equal(nrMsg, mails_sent.size)
     mail = mails_sent.first
     assert_equal(to, mail.to)
     assert_equal(subject,mail.subject)
     assert_equal(MAIL_FROM, mail.from)
-    puts "check_sent_one_mail #{subject} passed"
   end
   def test_lookandfeel_stub
     assert_kind_of(ODDB::LookandfeelBase, ODDB::Util::Ipn.lookandfeel_stub)
@@ -54,7 +53,7 @@ class TestIpn <Minitest::Test
   end
   def test_send_poweruser_notification
     item    = flexmock('item', :duration => 1)
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :yus_name     => YUS_NAME,
                        :item_by_text => item
                       )
@@ -62,7 +61,7 @@ class TestIpn <Minitest::Test
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     ODDB::Util::Ipn.send_poweruser_notification(invoice)
     $oddb    = oddb_bak
-    check_sent_one_mail(SUBJECT_POWERUSER, 1, MAIL_FROM)
+    check_sent_one_mail(SUBJECT_DOWNLOAD, 1, [YUS_NAME])
   end
   def test_send_download_seller_notification
     item     = flexmock('itema',
@@ -263,7 +262,7 @@ class TestIpn <Minitest::Test
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     result = ODDB::Util::Ipn.process(notification, system)
     $oddb    = oddb_bak
-    puts "result is #{result.inspect}"
+    assert_equal(invoice, result)
   end
   def test_process__complete_false
     item    = flexmock('item', 
