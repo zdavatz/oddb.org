@@ -5,29 +5,28 @@
 
 gem 'minitest'
 require 'minitest/autorun'
-require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'test','suite.rb')
-
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
-# test_generics_xls and test_oddbdat have a mismatch about syck to_yaml
-require "#{current_dir}/export/test/test_generics_xls.rb"
-
-#IsolatedTests::run_tests(["#{current_dir}/export/test/test_oddbdat.rb"])
-
-require "#{current_dir}/swissreg/test/test_swissreg.rb"
-
-require "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb"
-require "#{current_dir}/fiparse/test/test_fachinfo_hpricot.rb"
-require "#{current_dir}/meddata/test/test_session.rb"
-require "#{current_dir}/meddata/test/test_result.rb"
-require "#{current_dir}/meddata/test/test_meddata.rb"
-require "#{current_dir}/meddata/test/test_ean_factory.rb"
-require "#{current_dir}/meddata/test/test_meddparser.rb"
-require "#{current_dir}/fiparse/test/test_fachinfo_writer.rb"
-require "#{current_dir}/fiparse/test/test_fiwriter.rb"
-require "#{current_dir}/export/test/test_csv_exporter.rb"
-require "#{current_dir}/readonly/test/test_readonly_server.rb"
-require "#{current_dir}/swissindex/test/test_swissindex.rb"
-require "#{current_dir}/chapterparse/test/test_writer.rb"
-require "#{current_dir}/chapterparse/test/test_parser.rb"
-require "#{current_dir}/chapterparse/test/test_integrate.rb"
+tests2run = [ # we run only a very limited set of tests here
+  "#{current_dir}/export/test/test_generics_xls.rb",
+  "#{current_dir}/swissreg/test/test_swissreg.rb",
+  "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb",
+  "#{current_dir}/fiparse/test/test_fachinfo_hpricot.rb",
+  "#{current_dir}/meddata/test/test_session.rb",
+  "#{current_dir}/meddata/test/test_result.rb",
+  "#{current_dir}/meddata/test/test_meddata.rb",
+  "#{current_dir}/meddata/test/test_ean_factory.rb",
+  "#{current_dir}/meddata/test/test_meddparser.rb",
+  "#{current_dir}/fiparse/test/test_fachinfo_writer.rb",
+  "#{current_dir}/fiparse/test/test_fiwriter.rb",
+  "#{current_dir}/export/test/test_csv_exporter.rb",
+  "#{current_dir}/readonly/test/test_readonly_server.rb",
+  "#{current_dir}/swissindex/test/test_swissindex.rb",
+  "#{current_dir}/chapterparse/test/test_writer.rb",
+  "#{current_dir}/chapterparse/test/test_parser.rb",
+  "#{current_dir}/chapterparse/test/test_integrate.rb",
+]
+require File.expand_path(File.join(File.join(File.dirname(__FILE__), '..', 'test', 'helpers.rb')))
+runner = OddbTestRunner.new(File.dirname(__FILE__))
+runner.run_normal_tests(tests2run)
+runner.show_results_and_exit

@@ -7,31 +7,20 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'pp'
 $: << File.expand_path(File.dirname(__FILE__))
-require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'suite.rb')
 
-# Some unit tests of ODDB work fine when called as individual files, but fail miserably
-# when all other unit tests are included. 
-# To work aroung this bug, we run some files separately 
 buggy = [
-  'invoicer.rb',
+  'bsv_xml.rb',
   'flockhart.rb',
+  'hayes.rb',
+  'invoicer.rb',
+  'medical_products.rb',
   'swissmedic.rb',
   'text_info.rb',
   'text_info_swissmedicinfo',
 ]
-mustBeRunSeparately = []
-buggy.each{ |x| mustBeRunSeparately << File.expand_path(File.join(File.dirname(__FILE__), x)) }
-IsolatedTests.run_tests(mustBeRunSeparately)
 
-Dir.open(File.dirname(__FILE__)) do |dir|
-  dir.sort.each do |file|
-    if /.*\.rb$/o.match(file)&&file!='suite.rb'
-      if buggy.index(file)
-          puts "mustBeRunSeparately #{file}" # if $VERBOSE
-          next
-      end
-        puts "require file #{file}" # if $VERBOSE
-        require file 
-    end
-  end
-end
+require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
+runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
+runner.run_isolated_tests
+runner.run_normal_tests
+runner.show_results_and_exit

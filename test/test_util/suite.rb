@@ -10,24 +10,13 @@ gem 'minitest'
 require 'minitest/autorun'
 $: << File.expand_path(File.dirname(__FILE__))
 
-# TODO: avoid skipping this stuff
+buggy = [
+  'oddbapp.rb',
+  'oddbapp_2.rb',
+]
 
-Dir.open(File.dirname(__FILE__)) do |dir|
-  dir.sort.each do |file|
-    if /.*\.rb$/o.match(file)&&file!='suite.rb'
-      if /oddbapp/.match(file)
-          puts "Skipping file #{file}"
-          next
-      end
-      require file
-    end
-  end
-end
-
-$: << File.expand_path(File.dirname(__FILE__))
-require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'suite.rb')
-current_dir = (File.expand_path(File.dirname(__FILE__)))
-# we must run oddbapp and oddbapp_2 separately because we run into a
-# internal limit of minitest.
-# IsolatedTests::run_tests(["#{current_dir}/oddbapp.rb"])
-# IsolatedTests::run_tests(["#{current_dir}/oddbapp2.rb"])
+require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
+runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
+runner.run_isolated_tests
+runner.run_normal_tests
+runner.show_results_and_exit

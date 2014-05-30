@@ -9,9 +9,9 @@ gem 'minitest'
 require 'minitest/autorun'
 
 $: << here = File.expand_path(File.dirname(__FILE__))
-
-Find.find(here) { |file|
-	if file.match(/\.rb$/) && !file.match(/suite\.rb/)
-    require file
-	end
-}
+buggy =  []
+require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
+runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
+runner.run_isolated_tests
+runner.run_normal_tests
+runner.show_results_and_exit
