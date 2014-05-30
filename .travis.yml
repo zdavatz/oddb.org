@@ -2,11 +2,10 @@ language: ruby
 bundler_args: --without debugger
 rvm:
   - 1.9.3
-script: 
+script:
   - rake quanty
-  - bundle exec ruby test/suite.rb 2>&1 | tee suite.log
+  - bundle exec ruby test/suite.rb
   - rake docs
-  - grep assertions, suite.log
 notifications:
   email:
     recipients:
