@@ -50,6 +50,7 @@ module ODDB
     # can be overriden by calling Util.configure_mail(:test)
     # return default_from address
     def Util.configure_mail(deliver_using = :oddb_yml)
+      LogFile.append('oddb/debug', "Util.configure_mail deliver_using #{deliver_using}")
       return if @mail_configured == deliver_using
       @mail_configured = deliver_using
       if deliver_using == :test
@@ -74,13 +75,16 @@ module ODDB
             }
           end
         end
-        system("logger '#{__FILE__}: Configured email using #{@cfg.class}'")
       end
+      msg = "#{__FILE__}: Configured email using #{@cfg['smtp_server'].inspect} #{@cfg['smtp_port'].inspect} #{@cfg['smtp_user'].inspect}"
+      LogFile.append('oddb/debug', msg)
+      system("logger '#{msg}'")
       @mail_configured
     end
 
     # Parts must be of form content_type => body, e.g. 'text/html; charset=UTF-8' => '<h1>This is HTML</h1>'
     def Util.send_mail(list_and_recipients, mail_subject, mail_body, override_from = nil, parts = {})
+      LogFile.append('oddb/debug', "Util.send_mail list_and_recipients #{list_and_recipients}")
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
       mail.from    override_from ? override_from : @cfg['mail_from']
@@ -91,6 +95,7 @@ module ODDB
     end
 
     def Util.send_mail_with_attachments(list_and_recipients, subject, body, attachments)
+      LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}")
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
       mail.from = @cfg['mail_from']
@@ -143,9 +148,9 @@ module ODDB
     def Util.log_and_deliver_mail(mail)
       Util.configure_mail unless @mail_configured
       mail.from << @cfg.mail_from unless mail.from.size > 0
-      LogFile.append('oddb/debug', " mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
+      LogFile.append('oddb/debug', "Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
       res = mail.deliver
-      msg = "#{__FILE__}: send_mail to #{mail.to} #{mail.subject} res #{res.inspect}"
+      msg = "Util.log_and_deliver_mail to #{mail.to} #{mail.subject} res #{res.inspect}"
       LogFile.append('oddb/debug', msg)
       system("logger '#{msg}'")
       res

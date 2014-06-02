@@ -1,0 +1,60 @@
+---
+smtp_server: smtp.gmail.com
+smtp_domain: ywesee.com
+smtp_user:  ngiger@ywesee.com
+smtp_pass:  N9baA4uuNP4r
+smtp_port: 587
+mail_from: from_test_ywesee@ywesee.com
+mail_to:
+  - to_test_ywesee@ywesee.com.com
+
+mailling_list_ids:
+    # you find them via  grep -ir RECIPIENTS src/ ext/*/src
+    # remark src/plugin/doctors.rb does not have any recipient
+  - atc_request
+  - generica # receives subscribe/unsubcribes
+  - generics_xls    # ext/export/src/generics_xls.rb
+  - generics_xls    # ext/export/src/generics_xls.rb
+  - ipn             # src/util/ipn.rb
+  - log             # was src/util/log.rb
+  - oddb
+  - oddb_bsv
+  - oddb_bsv_info
+  - oddb_dat
+  - oddb_dat_extended
+  - oddb_xls
+  - ouwerker        # src/plugin/swissmedicjournal.rb and src/plugin/ouwerkerk.rb
+  - password_lost
+  - test
+
+mail_recipients:
+  - :email: ywesee_test@ywesee.com
+    :lists:
+      - atc_request
+      - generica
+      - generics_xls
+      - generics_xls
+      - ipn
+      - log
+      - oddb
+      - oddb_bsv
+      - oddb_bsv_info
+      - oddb_dat
+      - oddb_dat_extended
+      - oddb_xls
+      - ouwerker
+      - password_lost
+      - test
+
+  - :email: customer@company.com
+    :anrede: Dear Mrs. Smith
+    :lists:
+      - oddb
+      - oddb2csv
+      - oddb_bsv
+      - oddb_bsv_info
+      
+  - :email: customer2@another_company.com
+    :anrede: Dear Mr. Jones
+    :lists:
+      - oddb2csv

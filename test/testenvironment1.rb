@@ -19,7 +19,6 @@ puts
 module ODDB
   {
     :SERVER_NAME     => DEVELOPER_HOST,
-    :SMTP_SERVER     => 'localhost',
     :PAYPAL_SERVER   => 'www.sandbox.paypal.com',
     :PAYPAL_RECEIVER => DEVELOPER_MAIL,
   }.each_pair do |const, value|

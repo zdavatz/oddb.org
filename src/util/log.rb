@@ -26,12 +26,12 @@ module ODDB
 			@recipients = []
 		end
 		def notify(subject = nil)
-      LogFile.append('oddb/debug', " start outgoing process", Time.now)
 			subj = [
 				'ch.ODDB.org Report', 
 				subject, 
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
+      LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients} ", Time.now)
       attachments = []
       @files.each { |path, (mime, iconv)|
         begin
@@ -49,6 +49,7 @@ module ODDB
       else
         Util.send_mail(@recipients, subj, @report, ODDB::Util.mail_from)
       end
+      LogFile.append('oddb/debug', "log notify #{subject}: sent mail", Time.now)
 		end
 	end
 end
