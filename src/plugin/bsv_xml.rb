@@ -634,17 +634,17 @@ module ODDB
     end
     def update
 
-      LogFile.append('oddb/debug', " getin BsvXmlPlugin.update", Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: getting BsvXmlPlugin.update", Time.now)
 
       target_url = ODDB.config.url_bag_sl_zip
       save_dir = File.join ARCHIVE_PATH, 'xml'
       file_name = "XMLPublications.zip"
 
-      LogFile.append('oddb/debug', " target_url = " + target_url.to_s, Time.now)
-      LogFile.append('oddb/debug', " save_dir   = " + save_dir.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: target_url = " + target_url.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: save_dir   = " + save_dir.to_s, Time.now)
 
       path = download_file(target_url, save_dir, file_name)
-      LogFile.append('oddb/debug', " path = " + path.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: path = " + path.inspect.to_s, Time.now)
       #if(path = download_file(target_url, save_dir, file_name))
       if(path)
         _update path
@@ -653,7 +653,7 @@ module ODDB
     end
     def _update path=@latest
       Zip::ZipFile.foreach(path) do |entry|
-        LogFile.append('oddb/debug', " entry.name = " + entry.name.to_s, Time.now)
+        LogFile.append('oddb/debug', " bsv_xml: entry.name = " + entry.name.to_s, Time.now)
         case entry.name
         when /(\w+)(-\d+)?.xml$/u
           updater = $~[1].gsub(/[A-Z]/u) do |match| "_" << match.downcase end
@@ -664,7 +664,7 @@ module ODDB
       end
     end
     def download_file(target_url, save_dir, file_name)
-      LogFile.append('oddb/debug', " getin download_file", Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: getting download_file", Time.now)
 
       FileUtils.mkdir_p save_dir   # if there is it already, do nothing
     
@@ -674,25 +674,23 @@ module ODDB
       latest_file = File.join save_dir,
                Date.today.strftime(file_name.gsub(/\./,"-latest."))
 
-      LogFile.append('oddb/debug', " save_file   = " + save_file.to_s, Time.now)
-      LogFile.append('oddb/debug', " latest_file = " + latest_file.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: save_file   = " + save_file.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: latest_file = " + latest_file.to_s, Time.now)
     
       # FileUtils.compare_file cannot compare tempfile
       target_file.save_as save_file
 
-      LogFile.append('oddb/debug', " File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " bsv_xml: File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
       if(File.exists?(latest_file))
-        LogFile.append('oddb/debug', " FileUtils.compare_file(#{save_file}, #{latest_file}) = " + FileUtils.compare_file(save_file, latest_file).inspect.to_s, Time.now)
+        LogFile.append('oddb/debug', " bsv_xml: FileUtils.compare_file(#{save_file} #{File.size(save_file)} bytes with #{latest_file} #{File.size(latest_file)} bytes) = " + FileUtils.compare_file(save_file, latest_file).inspect.to_s, Time.now)
       end
 
       # check and compare the latest file and save
       if(File.exists?(latest_file) && FileUtils.compare_file(save_file, latest_file))
-        if File.exists? save_file
-          File.unlink save_file
-        end
+        FileUtils.rm_f(save_file, :verbose => true)
         return nil
       else
-        FileUtils.cp(save_file, latest_file)
+        FileUtils.cp(save_file, latest_file, :verbose => true)
         return save_file
       end
     rescue EOFError
@@ -823,7 +821,7 @@ Packungen ohne Pharmacode: #{pcdless.size}
 
       parts.each do |part|
         save_attached_files(part[1], part[2])
-        LogFile.append('oddb/debug', " attached file #{part[1]} is saved", Time.now)
+        LogFile.append('oddb/debug', " bsv_xml: attached file #{part[1]} is saved", Time.now)
       end
       info.update(:parts => parts, :report => body)
       info
@@ -886,7 +884,7 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
         ].join("\n")
         file_name = name.gsub(/[\s()\/-]/u, '_') << '.txt'
         save_attached_files(file_name, report)
-        LogFile.append('oddb/debug', " attached file #{file_name} is saved", Time.now)
+        LogFile.append('oddb/debug', " bsv_xml: attached file #{file_name} is saved", Time.now)
         ['text/plain', file_name, report]
       end
       info.update(:parts => parts, :report => body)
