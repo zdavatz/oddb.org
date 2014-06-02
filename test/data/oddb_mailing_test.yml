@@ -20,6 +20,7 @@ mailling_list_ids:
   - oddb
   - oddb_bsv
   - oddb_bsv_info
+  - oddb_csv
   - oddb_dat
   - oddb_dat_extended
   - oddb_xls
@@ -39,6 +40,7 @@ mail_recipients:
       - oddb
       - oddb_bsv
       - oddb_bsv_info
+      - oddb_csv
       - oddb_dat
       - oddb_dat_extended
       - oddb_xls
@@ -50,11 +52,11 @@ mail_recipients:
     :anrede: Dear Mrs. Smith
     :lists:
       - oddb
-      - oddb2csv
+      - oddb_csv
       - oddb_bsv
       - oddb_bsv_info
       
   - :email: customer2@another_company.com
     :anrede: Dear Mr. Jones
     :lists:
-      - oddb2csv
+      - oddb_csv

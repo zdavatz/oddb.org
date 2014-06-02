@@ -35,7 +35,8 @@ module ODDB
     end
 
     def Util.get_mailing_list_receivers(list_id)
-      return [] unless @cfg[MailingListIds] and @cfg[MailingListIds].index(list_id)
+      Util.configure_mail unless @mail_configured
+      return [] unless @cfg and @cfg[MailingListIds] and @cfg[MailingListIds].index(list_id)
       receivers = []
       @cfg[MailingRecipients].each { |recipient| receivers << recipient[:email] if recipient[:lists].index(list_id) }
       receivers.sort
@@ -52,7 +53,6 @@ module ODDB
     # can be overriden by calling Util.configure_mail(:test)
     # return default_from address
     def Util.configure_mail(deliver_using = :oddb_yml)
-      LogFile.append('oddb/debug', "Util.configure_mail deliver_using #{deliver_using}")
       return if @mail_configured == deliver_using
       @mail_configured = deliver_using
       if deliver_using == :test
@@ -79,14 +79,13 @@ module ODDB
         end
       end
       msg = "#{__FILE__}: Configured email using #{@cfg['smtp_server'].inspect} #{@cfg['smtp_port'].inspect} #{@cfg['smtp_user'].inspect}"
-      LogFile.append('oddb/debug', msg)
-      system("logger '#{msg}'")
+      Util.debug_msg(msg)
       @mail_configured
     end
 
     # Parts must be of form content_type => body, e.g. 'text/html; charset=UTF-8' => '<h1>This is HTML</h1>'
     def Util.send_mail(list_and_recipients, mail_subject, mail_body, override_from = nil, parts = {})
-      LogFile.append('oddb/debug', "Util.send_mail list_and_recipients #{list_and_recipients}")
+      LogFile.append('oddb/debug', "Util.send_mail list_and_recipients #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
       mail.from    override_from ? override_from : @cfg['mail_from']
@@ -94,10 +93,14 @@ module ODDB
       mail.subject mail_subject
       mail.body    mail_body
       log_and_deliver_mail(mail)
+    rescue => e
+      msg = "Util.send_mail rescue: error is #{e.inspect}"
+      Util.debug_msg(msg)
+      raise e
     end
 
     def Util.send_mail_with_attachments(list_and_recipients, subject, body, attachments)
-      LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}")
+      LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
       mail.from = @cfg['mail_from']
@@ -111,6 +114,10 @@ module ODDB
                                                 }
       }
       log_and_deliver_mail(mail)
+    rescue => e
+      msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect}"
+      Util.debug_msg(msg)
+      raise e
     end
 
     # Utility methods for checking mails in  unit-tests
@@ -126,7 +133,7 @@ module ODDB
     def Util.check_and_get_all_recipients(list_and_recipients)
       Util.configure_mail unless @mail_configured
       recipients = []
-      if list_and_recipients.is_a?(Array)
+      if list_and_recipients and list_and_recipients.is_a?(Array)
         foundList = false
         list_and_recipients.each{
           |id|
@@ -150,12 +157,14 @@ module ODDB
     def Util.log_and_deliver_mail(mail)
       Util.configure_mail unless @mail_configured
       mail.from << @cfg.mail_from unless mail.from.size > 0
-      LogFile.append('oddb/debug', "Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
-      res = mail.deliver
-      msg = "Util.log_and_deliver_mail to #{mail.to} #{mail.subject} res #{res.inspect}"
-      LogFile.append('oddb/debug', msg)
+      Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
+      mail.deliver
+    end
+
+    def Util.debug_msg(msg)
+      LogFile.append('oddb/debug', ' ' + msg, Time.now)
       system("logger '#{msg}'")
-      res
+      $stderr.puts msg unless defined?(MiniTest)
     end
   end
 end

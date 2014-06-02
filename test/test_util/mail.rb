@@ -26,14 +26,14 @@ module ODDB
       assert_equal([],                                                                                       Util.get_mailing_list_receivers('non_existent_id'))
       assert_equal(['ywesee_test@ywesee.com'],                                                               Util.get_mailing_list_receivers('test'))
       assert_equal(['ywesee_test@ywesee.com', 'customer@company.com'].sort,                                  Util.get_mailing_list_receivers('oddb'))
-      assert_equal(['customer@company.com', 'ywesee_test@ywesee.com', 'customer2@another_company.com'].sort, Util.get_mailing_list_receivers('oddb2csv'))
+      assert_equal(['customer@company.com', 'ywesee_test@ywesee.com', 'customer2@another_company.com'].sort, Util.get_mailing_list_receivers('oddb_csv'))
       Util.use_mailing_list_configuration('dummy.txt')
       assert_operator(ODDB::Util::MailingTestConfiguration, :!=, Util.mailing_configuration_file)
     end
 
-    def test_send_to_mailing_list_oddb2csv
-      res = Util.send_mail('oddb2csv', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
-      assert(res, "sending of mail to #{'oddb2csv'} must succeed")
+    def test_send_to_mailing_list_oddb_csv
+      res = Util.send_mail('oddb_csv', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+      assert(res, "sending of mail to #{'oddb_csv'} must succeed")
       mails_sent = Util.sent_mails
       assert_equal(1, mails_sent.size)
       assert(mails_sent.first.to.index('customer2@another_company.com'))
@@ -42,7 +42,7 @@ module ODDB
     end
     def test_mailing_anrede
       # setup is set tot test
-      assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede('oddb2csv'))
+      assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede('oddb_csv'))
     end
 
     def test_send_to_mailing_list_test_and_another_receiver # same use case as ipn
@@ -131,6 +131,10 @@ module ODDB
         skip "Cannot test sending an email if not admin list is defined"
       end
       res = Util.send_mail('admin', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+    end
+
+    def test_send_raises_an_exception
+      assert_raises(RuntimeError) { Util.send_mail(['test', 'somebody@test.org'], "Test Mail from #{__FILE__}", "Test run at #{Time.now}") }
     end
   end
 end
