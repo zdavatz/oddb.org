@@ -23,7 +23,7 @@ mailling_list_ids:
   - oddb_dat
   - oddb_dat_extended
   - oddb_xls
-  - ouwerker        # src/plugin/swissmedicjournal.rb and src/plugin/ouwerkerk.rb
+  - ouwerkerk       # src/plugin/swissmedicjournal.rb and src/plugin/ouwerkerkk.rb
   - password_lost
   - test
 
@@ -42,7 +42,7 @@ mail_recipients:
       - oddb_dat
       - oddb_dat_extended
       - oddb_xls
-      - ouwerker
+      - ouwerkerk
       - password_lost
       - test
 
