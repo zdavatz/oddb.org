@@ -209,13 +209,13 @@ module ODDB
       options = {:files => [ '*.docx']}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(5, @app.registrations.size, 'We have 5 medical_products in Sinovial_DE.docx')
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx')
     end
     def test_update_medical_product_french
       options = {:files => [ '*.docx'], :lang => :fr}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      assert_equal(5, @app.registrations.size, 'We have 5 medical_product in Sinovial_FR.docx')
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_product in Sinovial_FR.docx')
 			packages = @app.registrations.first[1].packages
       assert(packages, 'packages must be available')
       assert_equal(1, packages.size, 'we must have exactly two packages')
