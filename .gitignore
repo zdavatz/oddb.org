@@ -16,6 +16,7 @@ data/pdf/
 doc/resources/images/
 doc/resources/fachinfo/
 doc/resources/**/*.css
+doc/resources/*/**/*.css
 doc/resources/dojo-release-*
 doc/resources/dojo*
 doc/resources/hirslanden/
