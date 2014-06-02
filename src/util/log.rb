@@ -16,22 +16,23 @@ module ODDB
 		attr_accessor :report, :pointers, :recipients, :change_flags, 
 			:files, :parts, :date_str
 		attr_reader :date
-    LOG_RECIPIENTS = 'log'
+    LOG_RECIPIENTS =  [ 'log' ]
 		def initialize(date)
 			@date = date
 			@report = ''
 			@pointers = []
 			@files = {}
 			@parts = []
-			@recipients = []
+			@recipients = LOG_RECIPIENTS
 		end
 		def notify(subject = nil)
+      @recipients  = LOG_RECIPIENTS if @recipients.size == 0
 			subj = [
 				'ch.ODDB.org Report', 
 				subject, 
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
-      LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients} ", Time.now)
+      LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients.inspect} ", Time.now)
       attachments = []
       @files.each { |path, (mime, iconv)|
         begin

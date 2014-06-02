@@ -24,17 +24,26 @@ module ODDB
       Util.clear_sent_mails
       @log = ODDB::Log.new(Date.new(1975,8,21))
     end
+    def test_notify_defaults
+      @log.notify
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal([LOG_RECEIVER], mails_sent.first.to) # as defined in test/data/oddb_mailing_test.yml
+      assert_equal([TEST_SENDER], mails_sent.first.from)
+      assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
+      assert_equal('', mails_sent.first.body.to_s)
+    end
     def test_notify
       hash = {
-        :recipients	=>	['log'],
-        :pointers => ['aPointer'],
-        :report =>	"first lengthy report.\n"
+        :recipients => ['log'],
+        :pointers =>   ['aPointer'],
+        :report =>     "first lengthy report.\n"
       }
       @log.update_values(hash)
       @log.notify
 
       mails_sent = Util.sent_mails
-      assert_equal(1, mails_sent.size)      
+      assert_equal(1, mails_sent.size)
       assert_equal([LOG_RECEIVER], mails_sent.first.to) # as defined in test/data/oddb_mailing_test.yml
       assert_equal([TEST_SENDER], mails_sent.first.from)
       assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
@@ -42,10 +51,10 @@ module ODDB
     end
     def test_notify_date_str
       hash = {
-        :recipients	=>	['log'],
-        :pointers => ['aPointer'],
-        :report =>	"second lengthy report.\n",
-        :date_str =>	'Today',
+        :recipients => ['log'],
+        :pointers =>   ['aPointer'],
+        :report =>     "second lengthy report.\n",
+        :date_str =>   'Today',
       }
       @log.update_values(hash)
       @log.notify('Subject')
@@ -61,10 +70,10 @@ module ODDB
       file = File.expand_path('../data/txt/log.txt', File.dirname(__FILE__))
       File.open(file, 'w+') { |f| f.puts "Dummy content" }
       hash = {
-        :recipients	=>	['log'],
-        :pointers => ['aPointer'],
-        :report =>	"a lengthy report.\n",
-        :files =>	{ file =>	'application/vnd.ms-excel' },
+        :recipients => ['log'],
+        :pointers =>   ['aPointer'],
+        :report =>     "a lengthy report.\n",
+        :files =>      { file =>	'application/vnd.ms-excel' },
       }
       @log.update_values(hash)
       @log.notify
