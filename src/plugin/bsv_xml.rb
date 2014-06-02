@@ -17,12 +17,12 @@ require 'util/persistence'
 require 'util/today'
 require 'zip/zip'
 require 'plugin/swissindex'
+require 'util/mail'
 
 module ODDB
   class BsvXmlPlugin < Plugin
-    RECIPIENTS = [ 'paul.wiederkehr@pharmasuisse.org' ]
-    BSV_RECIPIENTS = [ 'andrea.frey@bag.admin.ch',
-      'gertrud.fonatsch@bsv.admin.ch', 'sl-errors-schweiz@googlegroups.com' ]
+    RECIPIENTS     = ['oddb_bsv']
+    BSV_RECIPIENTS = ['oddb_bsv_info']
     class Listener
       include REXML::StreamListener
       FORMATS = {
@@ -830,8 +830,7 @@ Packungen ohne Pharmacode: #{pcdless.size}
     end
     def log_info_bsv
       body = report_bsv << "\n\n"
-      info = { :recipients => recipients.concat(BSV_RECIPIENTS),
-               :mail_from => SMTP_FROM }
+      info = { :recipients => recipients.concat(BSV_RECIPIENTS)}
       parts = [
         [ :conflicted_registrations,
           'SMeX/SL-Differences (Registrations) %d.%m.%Y',
@@ -910,8 +909,7 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
         @preparations_listener.send(key).size
       end
       sprintf <<-EOS, *numbers
-Sehr geehrte Frau Frey
-Sehr geehrte Frau Fonatsch
+#{Util.get_mailing_list_anrede(BSV_RECIPIENTS).join("\n")}
 
 Am #{@@today.strftime('%d.%m.%Y')} haben wir Ihren aktuellen SL-Export (XML)
 wieder überprüft. Dabei ist uns folgendes aufgefallen:

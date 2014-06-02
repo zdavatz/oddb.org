@@ -13,11 +13,3 @@ puts
 puts "DEVELOPER_MAIL = #{DEVELOPER_MAIL}"
 puts
 
-module ODDB
-  module OdbaExporter
-   class GenericXls
-     remove_const :RECIPIENTS
-     RECIPIENTS = [ DEVELOPER_MAIL ]
-   end
-  end
-end

@@ -6,12 +6,11 @@
 # yusd and meddatad is needed to run.
 $: << File.dirname(__FILE__)
 require 'helpers'
-
 dir = File.expand_path(File.dirname(__FILE__))
 
 suites =  []
-suites << "../ext/suite.rb"
 suites << "test_state/suite.rb"
+suites << "../ext/suite.rb"
 suites << "test_view/suite.rb"
 suites << "test_command/suite.rb"
 suites << "test_remote/suite.rb"

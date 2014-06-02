@@ -591,7 +591,7 @@ module ODDB
     def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
       iksnr = info.iksnr
       # similar to method update_registration in src/plugin/swissmedic.rb
-      LogFile.debug("create_registration #{info.inspect} seqNr #{seqNr}/#{packNr}")
+#      LogFile.debug("create_registration #{info.inspect} seqNr #{seqNr}/#{packNr}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,

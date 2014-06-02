@@ -34,7 +34,7 @@ class TestPasswordLost <Minitest::Test
   end
   def test_notify_user
     time = flexmock('time', :strftime => 'strftime')
-    assert_equal(["email", ODDB.config.mail_to].flatten, @state.notify_user('email', 'token', time))
+    assert_equal(["email", 'password_lost'].flatten, @state.notify_user('email', 'token', time))
   end
   def test_password_request
     flexmock(@session, :user_input => {:email => 'email'})

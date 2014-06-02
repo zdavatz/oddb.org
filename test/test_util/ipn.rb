@@ -20,17 +20,18 @@ module ODDB
 
 class TestIpn <Minitest::Test
   include FlexMock::TestCase
-  YUS_NAME ='yus_name'
-  MAIL_FROM = [ ODDB::Util::EmailTestAddressFrom ]
+  YUS_NAME ='ipn'
+  YUS_RECEIVER = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
+  MAIL_FROM = [ 'from_test_ywesee@ywesee.com'  ]
   SUBJECT_DOWNLOAD = 'Datendownload von ODDB.org'
-  ADMIN_TO = ["zdavatz@ywesee.com", "zdavatz@ywesee.com", "mhatakeyama@ywesee.com"]
+  ADMIN_TO = [PAYPAL_RECEIVER, "ywesee_test@ywesee.com"].sort  # as defined in test/data/oddb_mailing_test.yml
   SUBJECT_POWERUSER = "Power-User bei ODDB.org"
   def setup
     Util.configure_mail :test
     Util.clear_sent_mails
   end
 
-  def check_sent_one_mail(subject, nrMsg = 1, to = [YUS_NAME])
+  def check_sent_one_mail(subject, nrMsg = 1, to = [YUS_RECEIVER])
     puts "check_sent_one_mail #{subject}" if $VERBOSE
     mails_sent = Util.sent_mails
     assert_equal(nrMsg, mails_sent.size)
@@ -61,7 +62,7 @@ class TestIpn <Minitest::Test
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     ODDB::Util::Ipn.send_poweruser_notification(invoice)
     $oddb    = oddb_bak
-    check_sent_one_mail(SUBJECT_DOWNLOAD, 1, [YUS_NAME])
+    check_sent_one_mail(SUBJECT_DOWNLOAD, 1, [YUS_RECEIVER])
   end
   def test_send_download_seller_notification
     item     = flexmock('itema',
@@ -126,7 +127,6 @@ class TestIpn <Minitest::Test
     $oddb    = oddb_bak
     check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
-	
   def test_send_download_notification__protocol
     item    = flexmock('item', 
                            :quantity    => 1,

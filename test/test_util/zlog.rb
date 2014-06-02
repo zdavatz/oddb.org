@@ -17,6 +17,8 @@ module ODDB
 
    class TestLog <Minitest::Test
     include FlexMock::TestCase
+    TEST_SENDER   = 'from_test_ywesee@ywesee.com'
+    LOG_RECEIVER  = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
     def setup
       Util.configure_mail :test
       Util.clear_sent_mails
@@ -24,7 +26,7 @@ module ODDB
     end
     def test_notify
       hash = {
-        :recipients	=>	['hwyss@ywesee.com'],
+        :recipients	=>	['log'],
         :pointers => ['aPointer'],
         :report =>	"first lengthy report.\n"
       }
@@ -32,15 +34,15 @@ module ODDB
       @log.notify
 
       mails_sent = Util.sent_mails
-      assert_equal(1, mails_sent.size)
-      assert_equal(['hwyss@ywesee.com'], mails_sent.first.to)
-      assert_equal([ODDB::Log::MAIL_FROM], mails_sent.first.from)
+      assert_equal(1, mails_sent.size)      
+      assert_equal([LOG_RECEIVER], mails_sent.first.to) # as defined in test/data/oddb_mailing_test.yml
+      assert_equal([TEST_SENDER], mails_sent.first.from)
       assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
       assert_equal(hash[:report], mails_sent.first.body.to_s)
     end
     def test_notify_date_str
       hash = {
-        :recipients	=>	['hwyss@ywesee.com'],
+        :recipients	=>	['log'],
         :pointers => ['aPointer'],
         :report =>	"second lengthy report.\n",
         :date_str =>	'Today',
@@ -50,8 +52,8 @@ module ODDB
 
       mails_sent = Util.sent_mails
       assert_equal(1, mails_sent.size)
-      assert_equal(['hwyss@ywesee.com'], mails_sent.first.to)
-      assert_equal([ODDB::Log::MAIL_FROM], mails_sent.first.from)
+      assert_equal([LOG_RECEIVER], mails_sent.first.to)
+      assert_equal([TEST_SENDER], mails_sent.first.from)
       assert_equal('ch.ODDB.org Report - Subject - Today', mails_sent.first.subject)
       assert_equal(hash[:report], mails_sent.first.body.to_s)
     end
@@ -59,7 +61,7 @@ module ODDB
       file = File.expand_path('../data/txt/log.txt', File.dirname(__FILE__))
       File.open(file, 'w+') { |f| f.puts "Dummy content" }
       hash = {
-        :recipients	=>	['hwyss@ywesee.com'],
+        :recipients	=>	['log'],
         :pointers => ['aPointer'],
         :report =>	"a lengthy report.\n",
         :files =>	{ file =>	'application/vnd.ms-excel' },
@@ -68,8 +70,8 @@ module ODDB
       @log.notify
       mails_sent = Util.sent_mails
       assert_equal(1, mails_sent.size)
-      assert_equal(ODDB.config.mail_to, mails_sent.first.to)
-      assert_equal([ODDB::Util::EmailTestAddressFrom], mails_sent.first.from)
+      assert_equal([TEST_SENDER], mails_sent.first.from)
+      assert_equal([LOG_RECEIVER], mails_sent.first.to)
       assert_equal(hash[:report], mails_sent.first.body.to_s)
       assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
     end

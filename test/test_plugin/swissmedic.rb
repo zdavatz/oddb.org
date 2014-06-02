@@ -23,7 +23,7 @@ require 'util/log'
 require 'util/oddbconfig'
 
 module ODDB
-  class SwissmedicPluginTest < MiniTest::Unit::TestCase
+  class SwissmedicPluginTest < Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock 'app'

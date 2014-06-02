@@ -11,10 +11,6 @@ require 'util/oddbconfig'
 
 module ODDB
 	class Invoicer < Plugin
-		RECIPIENTS = [ 
-			'mhatakeyama@ywesee.com', 
-			'zdavatz@ywesee.com' 
-		]
 		def create_invoice(email, items, ydim_id)
 			pointer = Persistence::Pointer.new(:invoice)
 			values = {
@@ -59,6 +55,7 @@ module ODDB
 				"Backtrace:",
 				e.backtrace.join("\n"),
 			].join("\n")
+			log.recipients += [ 'ipn' ]
 			#log.notify("Error Invoice: #{subject}")
 			log.notify("Error Invoice: ")
       nil

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Fachinfo -- oddb -- 26.10.2003 -- mwalder@ywesee.com rwaltert@ywesee.com
-# encoding : utf-8
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

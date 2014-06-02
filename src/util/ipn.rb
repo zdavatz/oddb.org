@@ -9,7 +9,6 @@ require 'util/mail'
 module ODDB
   module Util
 module Ipn
-  RECIPIENTS = [ 'zdavatz@ywesee.com', 'mhatakeyama@ywesee.com', ]
   def Ipn.lookandfeel_stub
     session = Plugin::SessionStub.new($oddb)
     session.language = 'de'
@@ -111,7 +110,7 @@ module Ipn
       ].compact
       body.push(nil)
       body.push(format_invoice(invoice, lookandfeel))
-			recipients = [recipient] + RECIPIENTS
+			recipients = [recipient, 'ipn']
       Util.send_mail(recipients, lookandfeel.lookup(:download_mail_subject), body.join("\n"));
     end
   rescue StandardError => e

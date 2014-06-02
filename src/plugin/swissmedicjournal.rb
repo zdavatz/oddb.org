@@ -8,9 +8,7 @@ require 'mechanize'
 
 module ODDB
 	class SwissmedicJournalPlugin < Plugin
-		RECIPIENTS = [
-			'matthijs.ouwerkerk@just-medical.com',
-		]
+    RECIPIENTS = [ 'ouwerker' ]
 		def report
 			atcless = @app.atcless_sequences.collect { |sequence|
 				resolve_link(sequence.pointer)	

@@ -267,7 +267,6 @@ class AjaxCompositions < Global
 end
 class Sequence < State::Admin::Global
 	VIEW = View::Admin::RootSequence
-	RECIPIENTS = []
 	include SequenceMethods
 	def atc_request
 		if((company = @model.company) && (addr = company.regulatory_email))
@@ -282,7 +281,7 @@ class Sequence < State::Admin::Global
 				nil,
 				lookandfeel.lookup(:thanks_for_cooperation),
 			].join("\n")
-			Util.send_mail([addr], "#{@model.name_base} #{@model.iksnr}", body)
+			Util.send_mail([addr, 'atc_request'], "#{@model.name_base} #{@model.iksnr}", body)
 			@model.atc_request_time = Time.now
 			@model.odba_isolated_store
 		end

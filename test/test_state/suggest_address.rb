@@ -55,7 +55,7 @@ class TestSuggestAddress <Minitest::Test
       assert_equal('lookup fullname', mails_sent.first.subject)
       assert_equal('_event_url', mails_sent.first.body.to_s)
       assert_equal(['email_suggestion'], mails_sent.first.from)
-      assert_equal(["zdavatz@ywesee.com", "mhatakeyama@ywesee.com"], mails_sent.first.to)
+      assert_equal(["ywesee_test@ywesee.com"], mails_sent.first.to)
   end
   def test_save_suggestion
     flexmock(@session, :user_input => {:message => 'message', :name => 'name', :email => 'email'})

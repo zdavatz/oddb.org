@@ -12,9 +12,7 @@ require 'util/today'
 module ODDB
   Spreadsheet.client_encoding = 'UTF-8'
 	class OuwerkerkPlugin < Plugin
-		RECIPIENTS = [
-			'matthijs.ouwerkerk@just-medical.com', 'carolrong8@gmail.com',
-		]
+    RECIPIENTS = [ 'ouwerker' ]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
 			:sl_entry_delete	=>	2,

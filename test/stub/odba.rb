@@ -51,6 +51,8 @@ module ODBA
     def reset_id
       @id = nil
     end
+    def restore
+    end
     def restore_collection(hash)
       hash
     end

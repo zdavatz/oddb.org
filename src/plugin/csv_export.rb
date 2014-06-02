@@ -12,9 +12,9 @@ module ODDB
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     MIGEL_EXPORT_DIR = File.expand_path('../../../migel/data/csv', File.dirname(__FILE__))
-    ODDB_RECIPIENTS          = [ "paul.wiederkehr@pharmasuisse.org" ]
-    ODDB_RECIPIENTS_DAT      = [ "andre.dubied@gmail.com" ]
-    ODDB_RECIPIENTS_EXTENDED = [ "ouwerkerk@bluewin.ch", "Tim.Suter@just-medical.com" ]
+    ODDB_RECIPIENTS          = ['oddb']
+    ODDB_RECIPIENTS_DAT      = ['oddb_dat']
+    ODDB_RECIPIENTS_EXTENDED = ['oddb_dat_extended']
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
 				pos.code }.collect { |pos| pos.odba_id }

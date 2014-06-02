@@ -15,10 +15,10 @@ class MailingList < State::User::Global
 	DIRECT_EVENT = :mailinglist
 	def update
 		if(@session.user_input(:subscribe))
-			recipient = 'news-subscribe@generika.cc'
+			recipient =  'news-subscribe@generika.cc'
 			info_message = :i_subscriber_mail_sent
 		elsif(@session.user_input(:unsubscribe))
-			recipient = 'news-unsubscribe@generika.cc'
+			recipient =  'news-unsubscribe@generika.cc'
 			info_message = :i_unsubscriber_mail_sent
 		end
 		email = @session.user_input(:email)
@@ -30,7 +30,7 @@ class MailingList < State::User::Global
 		self 
 	end
 	def send_email(subscriber, recipient, info_message)
-		Util.send_mail(recipient, "Unknown subject for MailingList?", info_message, subscriber)
+		Util.send_mail([recipient, 'generica' ], "Unknown subject for MailingList?", info_message, subscriber)
 	end
 end
 		end

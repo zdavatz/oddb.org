@@ -347,7 +347,7 @@ module ODDB
         :mime_type => 'text/csv',
         :content => @app.notification_logger.create_csv(@app),
 			}
-      Util.send_mail_with_attachments('Täglicher CSV-Export der Notifications', '', [attachment])
+      Util.send_mail_with_attachments(@recipients, 'Täglicher CSV-Export der Notifications', '', [attachment])
 		end
 		def mail_patinfo_invoices
       safe_export 'Mail Patinfo-Invoices' do

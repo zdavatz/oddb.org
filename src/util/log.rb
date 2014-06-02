@@ -10,18 +10,13 @@ require 'util/mail'
 
 module ODDB
 	class Log
-		MAIL_FROM = 'update@oddb.org'
-		MAIL_TO = [
-			'zdavatz@ywesee.com',
-			'yasaka@ywesee.com',
-		]
 		include Persistence
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
 			'@files']
 		attr_accessor :report, :pointers, :recipients, :change_flags, 
-			:files, :parts, :date_str, :mail_from, :mail_to
+			:files, :parts, :date_str
 		attr_reader :date
-
+    LOG_RECIPIENTS = 'log'
 		def initialize(date)
 			@date = date
 			@report = ''
@@ -50,9 +45,9 @@ module ODDB
         end
       }
       if attachments.size > 0
-        Util.send_mail_with_attachments(subj, @report, attachments)
+        Util.send_mail_with_attachments(@recipients, subj, @report, attachments)
       else
-        Util.send_mail(@recipients, subj, @report, @mail_from || self::class::MAIL_FROM)
+        Util.send_mail(@recipients, subj, @report, ODDB::Util.mail_from)
       end
 		end
 	end

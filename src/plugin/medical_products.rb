@@ -46,7 +46,7 @@ module ODDB
     
     def update
       data_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', defined?(Minitest) ? 'test' : '.', 'data', 'docx'))
-      LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
+#      LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
       atc_code = @app.atc_class(atc_code) 
       atc_code = add_dummy_medical_product unless atc_code
       @options[:files].each{
@@ -58,7 +58,7 @@ module ODDB
             parts = {}
             reg = nil
             packages = []
-            LogFile.debug "file is #{file}"
+#            LogFile.debug "file is #{file}"
             writer = ODDB::FiParse::TextinfoPseudoFachinfo.new
             pseudo_fi_text = nil
             open(file) { |fh| pseudo_fi_text = writer.extract(fh)}
@@ -72,14 +72,14 @@ module ODDB
               packages << packInfo
             }
             packages.each{ |packInfo|
-              LogFile.debug "Will TextInfoPlugin::create_registration #{pseudo_fi_text.name} #{packInfo.inspect}"
+#              LogFile.debug "Will TextInfoPlugin::create_registration #{pseudo_fi_text.name} #{packInfo.inspect}"
               registration = @app.registration(packInfo.iksnr)
               authHolder = pseudo_fi_text.distributor.paragraphs.first.strip.match(/^[^,\n]+/)[0]
               info = SwissmedicMetaInfo.new(packInfo.iksnr, nil, pseudo_fi_text.name, authHolder, nil)
               @@products << "#{pseudo_fi_text.lang} #{packInfo.iksnr} #{packInfo.ikscat} #{packInfo.ikscd}: #{pseudo_fi_text.name}"
               TextInfoPlugin::create_registration(@app, info, packInfo.ikscat, packInfo.ikscd)
               registration = @app.registration(packInfo.iksnr)
-              registration.each_sequence { |seq| LogFile.debug "#{seq.iksnr} has seq #{seq.seqnr} #{seq.pointer.inspect}" }
+              # registration.each_sequence { |seq| LogFile.debug "#{seq.iksnr} has seq #{seq.seqnr} #{seq.pointer.inspect}" }
               sequence = registration.sequence(packInfo.ikscat)
               @app.update(sequence.pointer, {:name_base => pseudo_fi_text.name}, :medical_product)
               unless sequence.atc_class
@@ -113,7 +113,7 @@ module ODDB
    private
     def report_error(msg)
       @@errors << msg
-      LogFile.debug msg
+      # LogFile.debug msg
     end
 
     def extract_package_info(paragraph)

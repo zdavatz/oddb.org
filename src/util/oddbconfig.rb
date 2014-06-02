@@ -11,10 +11,6 @@ $USING_STRSCAN = true
 
 module ODDB
 	SERVER_NAME = 'ch.oddb.org'
-	SMTP_SERVER = 'mail.ywesee.com'
-	MAIL_FROM = '"Zeno R.R. Davatz" <zdavatz@ywesee.com>'
-	MAIL_TO = ['hwyss@ywesee.com']
-	SMTP_FROM = 'zdavatz@ywesee.com'
 	SERVER_URI = "druby://localhost:10000"
 	SERVER_URI_FOR_CRAWLER = "druby://localhost:10001"
 	SERVER_URI_FOR_GOOGLE_CRAWLER = "druby://localhost:10008"
@@ -163,14 +159,4 @@ module ODDB
 	}
 	VAT_RATE = 8.0
   RSS_PATH = File.join(PROJECT_ROOT, 'data', 'rss')
-end
-
-module ODBA
-	class Cache
-		MAIL_FROM = 'odba@oddb.org'
-		MAIL_RECIPIENTS = [
-			"hwyss@ywesee.com",
-		]
-		SMTP_SERVER = ::ODDB::SMTP_SERVER
-	end
 end

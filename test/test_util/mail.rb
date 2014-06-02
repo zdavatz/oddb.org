@@ -7,6 +7,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'config'
 require 'util/mail'
+require 'pp'
 
 # tries to send and receive a real mail using the Test user of etc/oddb.yaml
 module ODDB
@@ -19,6 +20,49 @@ module ODDB
       Util.clear_sent_mails
     end
 
+    def test_mailing_configuration
+      # setup is set tot test
+      assert_equal(ODDB::Util::MailingTestConfiguration, Util.mailing_configuration_file)
+      assert_equal([],                                                                                       Util.get_mailing_list_receivers('non_existent_id'))
+      assert_equal(['ywesee_test@ywesee.com'],                                                               Util.get_mailing_list_receivers('test'))
+      assert_equal(['ywesee_test@ywesee.com', 'customer@company.com'].sort,                                  Util.get_mailing_list_receivers('oddb'))
+      assert_equal(['customer@company.com', 'ywesee_test@ywesee.com', 'customer2@another_company.com'].sort, Util.get_mailing_list_receivers('oddb2csv'))
+      Util.use_mailing_list_configuration('dummy.txt')
+      assert_operator(ODDB::Util::MailingTestConfiguration, :!=, Util.mailing_configuration_file)
+    end
+
+    def test_send_to_mailing_list_oddb2csv
+      res = Util.send_mail('oddb2csv', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+      assert(res, "sending of mail to #{'oddb2csv'} must succeed")
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert(mails_sent.first.to.index('customer2@another_company.com'))
+      assert(mails_sent.first.to.index('customer@company.com'))
+      assert(mails_sent.first.to.index('ywesee_test@ywesee.com'))
+    end
+    def test_mailing_anrede
+      # setup is set tot test
+      assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede('oddb2csv'))
+    end
+
+    def test_send_to_mailing_list_test_and_another_receiver # same use case as ipn
+      res = Util.send_mail(['test', 'somebody@test.org'], "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+      assert(res, "sending of mail to test and another receiver must succeed")
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal(2, mails_sent.first.to.size)
+      assert(mails_sent.first.to.index('somebody@test.org'))
+      assert(mails_sent.first.to.index('ywesee_test@ywesee.com'))
+    end
+
+    def test_send_to_mailing_list_test
+      res = Util.send_mail('test', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+      assert(res, "sending of mail to #{'test'} must succeed")
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal(['ywesee_test@ywesee.com'], mails_sent[0].to)
+    end
+    
     def test_send_and_check_receiving_test_mail
       mails_sent = Util.sent_mails
       assert_equal(0, mails_sent.size)
@@ -47,12 +91,12 @@ module ODDB
       assert_equal(0, mails_sent.size)
     end
   end
-
   class TestSendRealMail <Minitest::Test
     def setup
       Util.configure_mail :oddb_yml
       # No Util.clear_sent_mails here, as this would throw away my e-mails!
       @config = ODDB.config
+      assert_operator(ODDB::Util::MailingTestConfiguration, :!=, Util.mailing_configuration_file)
     end
 
     def receive_mail
@@ -82,17 +126,11 @@ module ODDB
       puts "get_newest_email #{emails.inspect}"
     end
 
-    def test_send_and_receive_an_email
-      return
-      if Dir.glob(@config.config).size == 0
-        skip "Cannot test sending/receiving e-email without a config file from #{@config.config}"
-        return
+    def test_send_an_email
+      if Util.get_mailing_list_receivers('admin')
+        skip "Cannot test sending an email if not admin list is defined"
       end
-      skip "As I only receive old e-mail of 2013"
-      get_newest_email
-      res = Util.send_mail(@config.mail_to, "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
-      assert(res, "sending of mail to #{@config.mail_to} must succeed")
-      get_newest_email
+      res = Util.send_mail('admin', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
     end
   end
 end

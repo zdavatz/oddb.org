@@ -11,7 +11,6 @@ require 'spreadsheet/excel'
 module ODDB
 	module OdbaExporter
 		class GenericXls
- 			RECIPIENTS = [ 'mhatakeyama@ywesee.com', 'zdavatz@ywesee.com' ]
 			FLAGS = {
 				:address					=> 'neue Herstelleradresse',
 				:comment					=> 'neue Bemerkung',
@@ -121,7 +120,7 @@ module ODDB
 					"Backtrace:",
 					caller(0).join("\n"),
 				  ].join("\n")
-				  log.recipients = RECIPIENTS.dup
+				  log.recipients = 'generics_xls'
 				  log.notify("Warning: Nil basename packages")
 
                   # Remove the packages that basename is nil

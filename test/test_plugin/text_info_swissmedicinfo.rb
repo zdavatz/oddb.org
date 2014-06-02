@@ -70,7 +70,6 @@ module ODDB
         |klass|
         klass.should_receive(:set_oid).and_return('oid')
         klass.should_receive(:new).and_return('new')
-        klass.should_receive(:initialize).and_return('initialize')
       end
       flexstub(ODDB::Persistence) do |klass|
         klass.should_receive(:set_oid).and_return('oid')
@@ -119,9 +118,6 @@ module ODDB
     end
     
     def teardown
-#      FileUtils.rm_rf(@@vardir)
-      puts @@vardir
-      system("ls -lrt #{@@vardir}")
       super
     end
 
@@ -329,7 +325,6 @@ module ODDB
       fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
       pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
-      pp pi
       flags = {:de => :up_to_date, :fr => :up_to_date}
       @parser.should_receive(:parse_fachinfo_html).once
       @parser.should_receive(:parse_patinfo_html).never

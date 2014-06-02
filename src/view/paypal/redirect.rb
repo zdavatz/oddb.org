@@ -4,6 +4,7 @@
 
 require 'htmlgrid/component'
 require 'util/oddbconfig'
+require 'config'
 
 module ODDB
 	module View

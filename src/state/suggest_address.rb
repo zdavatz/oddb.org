@@ -11,7 +11,6 @@ module ODDB
 	module State
 		class SuggestAddress < State::Global
 			VIEW = View::SuggestAddress
-			RECIPIENTS = [ 'zdavatz@ywesee.com', 'mhatakeyama@ywesee.com' ]
 			def address_send
 				if(sugg = save_suggestion)
 					send_notification(sugg)
@@ -61,7 +60,7 @@ module ODDB
 				end
 			end
 			def send_notification(suggestion)
-				Util.send_mail(RECIPIENTS,
+				Util.send_mail('suggest_address',
 				              "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}",
 				              [ @url, ].join("\n"),
 				              suggestion.email_suggestion

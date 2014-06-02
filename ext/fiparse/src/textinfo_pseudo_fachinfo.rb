@@ -50,7 +50,7 @@ module ODDB
       fi
     end
     def extract(docx_file)
-      LogFile.debug("extract #{docx_file.path} #{File.exists?(docx_file)}")
+#      LogFile.debug("extract #{docx_file.path} #{File.exists?(docx_file)}")
       return false unless File.exists?(docx_file)
       xml_file = docx_file.path.sub('.docx', '.xml')
       cmd = "docx2xml #{docx_file.path} --format plain "

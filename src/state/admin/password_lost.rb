@@ -28,9 +28,8 @@ class PasswordLost < State::Global
 	end
 	def notify_user(recipient, token, time)
 		lnf = @session.lookandfeel
-    config = ODDB.config
 		url = lnf._event_url(:password_reset, {:token => token, :email => recipient})
-		recipients = [recipient] + config.mail_to
+		recipients = [recipient, 'password_lost']
 		Util.send_mail(recipients,
 									 lnf.lookup(:password_lost_subject),
 		               lnf.lookup(:password_lost_body, recipient, url,

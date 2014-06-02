@@ -820,6 +820,8 @@ module ODDB
       # assert_equal('', log_info)
     end
     def test_log_info_bsv
+      Util.configure_mail :test
+      Util.clear_sent_mails
       preparations_listener = flexmock('preparations_listener') do |p|
         p.should_receive(:conflicted_registrations).and_return([])
         p.should_receive(:missing_ikscodes).and_return([])
@@ -832,9 +834,9 @@ module ODDB
       end
       @plugin.instance_eval('@preparations_listener = preparations_listener')
       log_info_bsv = @plugin.log_info_bsv
-      expected = ["mail_from", "parts", "recipients", "report"]
+      expected = ["parts", "recipients", "report"]
       assert_equal(expected, log_info_bsv.keys.map{|k| k.to_s}.sort)
-      assert_equal("zdavatz@ywesee.com", log_info_bsv[:mail_from])
+      assert_equal(["oddb_bsv", "oddb_bsv_info"], log_info_bsv[:recipients])
       #assert_equal('', log_info_bsv)
     end
     def test_report_bsv
