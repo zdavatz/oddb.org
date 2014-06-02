@@ -8,7 +8,7 @@ mail_from: from_test_ywesee@ywesee.com
 mail_to:
   - to_test_ywesee@ywesee.com.com
 
-mailling_list_ids:
+mailing_list_ids:
     # you find them via  grep -ir RECIPIENTS src/ ext/*/src
     # remark src/plugin/doctors.rb does not have any recipient
   - atc_request

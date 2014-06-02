@@ -11,7 +11,7 @@ module ODDB
     # see also the file test/data/oddb_mailing_test.yml
     MailingTestConfiguration     = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'test', 'data', 'oddb_mailing_test.yml'))
     MailingDefaultConfiguration  = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'etc', 'oddb.yml'))
-    MailingListIds               = 'mailling_list_ids'
+    MailingListIds               = 'mailing_list_ids'
     MailingRecipients            = 'mail_recipients'
     @mail_configured             = false
     @mailing_list_configuration  = MailingTestConfiguration
@@ -94,7 +94,7 @@ module ODDB
       mail.body    mail_body
       log_and_deliver_mail(mail)
     rescue => e
-      msg = "Util.send_mail rescue: error is #{e.inspect}"
+      msg = "Util.send_mail rescue: error is #{e.inspect} recipients #{recipients.inspect} #{caller[0..10].inspect}"
       Util.debug_msg(msg)
       raise e
     end
@@ -115,7 +115,7 @@ module ODDB
       }
       log_and_deliver_mail(mail)
     rescue => e
-      msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect}"
+      msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect} #{caller[0..10].inspect}"
       Util.debug_msg(msg)
       raise e
     end
@@ -163,7 +163,7 @@ module ODDB
 
     def Util.debug_msg(msg)
       LogFile.append('oddb/debug', ' ' + msg, Time.now)
-      system("logger '#{msg}'")
+      system("logger '#{msg.gsub(/['\n]/, '"')}'")
       $stderr.puts msg unless defined?(MiniTest)
     end
   end
