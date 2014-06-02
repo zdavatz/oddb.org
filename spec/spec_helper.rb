@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+require 'simplecov'
+SimpleCov.start
 
 if RUBY_PLATFORM.match(/mingw/)
   require 'watir'

@@ -3,12 +3,6 @@
 # RecursiveSuite -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # RecursiveSuite -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 # OneDirSuite -- oddb -- 20.10.2003 -- mhuggler@ywesee.com
-
-require 'find'
-gem 'minitest'
-require 'minitest/autorun'
-
-$: << here = File.expand_path(File.dirname(__FILE__))
 buggy =  []
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
 runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)

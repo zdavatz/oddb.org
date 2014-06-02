@@ -2,9 +2,6 @@
 # encoding: utf-8
 # suite.rb -- oddb.org/ext -- 09.04.2012 -- yasaka@ywesee.com
 # suite.rb -- oddb.org/ext -- 23.06.2011 -- mhatakeyama@ywesee.com 
-
-gem 'minitest'
-require 'minitest/autorun'
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
 tests2run = [ # we run only a very limited set of tests here

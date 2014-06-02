@@ -3,9 +3,6 @@
 # suite.rb -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # suite.rb -- oddb.org -- 29.03.2011 -- mhatakeyama@ywesee.com 
 
-require 'find'
-gem 'minitest'
-require 'minitest/autorun'
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
 
 buggy = [

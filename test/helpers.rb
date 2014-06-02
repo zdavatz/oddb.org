@@ -6,6 +6,11 @@
 # when all other unit tests are included.
 # To work aroung this bug, we run some files separately
 
+require 'simplecov'; # configuration is done in file .simplcov
+group = File.basename(File.dirname(File.expand_path($0)))
+SimpleCov.command_name group
+SimpleCov.start
+
 class OddbTestRunner
   DryRun = false
 
@@ -28,8 +33,8 @@ class OddbTestRunner
       base = File.basename(path).sub('.rb', '')
       group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
       group_name += ':'+base unless base.eql?('suite')
-      # cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 5; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
-      cmd = "#{rubyExe} -e\"require '#{path}'\""
+      cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      # cmd = "#{rubyExe} -e\"require '#{path}'\""
       if DryRun
         puts "would exec #{cmd}"
       else

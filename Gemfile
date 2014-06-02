@@ -55,7 +55,7 @@ group :development, :test do
   gem 'hoe-travis'
   gem 'minitest', '>=5.0'
   gem 'racc'
-  gem 'simplecov'
+  gem 'simplecov', '~> 0.7.1'
   gem 'travis-lint'
 end
 

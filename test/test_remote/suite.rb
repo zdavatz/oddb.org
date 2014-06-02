@@ -3,10 +3,6 @@
 # suite.rb -- oddb -- 01.07.2011 -- yasaka@ywesee.com
 # suite.rb -- oddb -- 01.07.2011 -- mhatakeyama@ywesee.com 
 
-require 'find'
-gem 'minitest'
-require 'minitest/autorun'
-
 $: << here = File.expand_path(File.dirname(__FILE__))
 
 buggy =  []

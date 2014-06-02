@@ -2,7 +2,6 @@
 require 'simplecov'
 SimpleCov.merge_timeout(3600) # 1hr
 SimpleCov.use_merging true
-# SimpleCov.command_name "test:oddb_#{ARGV.inspect}"
 puts "Reading #{File.expand_path(__FILE__)} merge #{SimpleCov.use_merging.inspect}"
 SimpleCov.start do
   add_group "src", "src"
@@ -10,4 +9,5 @@ SimpleCov.start do
   add_filter "/test/"
 end
 
-SimpleCov.refuse_coverage_drop
+SimpleCov.maximum_coverage_drop 99
+SimpleCov.minimum_coverage 10

@@ -3,14 +3,10 @@
 # OneDirSuite -- oddb -- 08.02.2011 -- yasaka@ywesee.com
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
-gem 'minitest'
-require 'minitest/autorun'
-require 'pp'
 $: << File.expand_path(File.dirname(__FILE__))
 
 buggy = [
   'bsv_xml.rb',
-  'flockhart.rb',
   'hayes.rb',
   'invoicer.rb',
   'medical_products.rb',
