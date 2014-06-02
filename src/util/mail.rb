@@ -25,10 +25,12 @@ module ODDB
     end
 
     def Util.mail_from
+      Util.configure_mail unless @mail_configured
       @cfg['mail_from']
     end
 
     def Util.mail_to
+      Util.configure_mail unless @mail_configured
       @cfg['mail_to']
     end
 
