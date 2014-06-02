@@ -43,7 +43,7 @@ module ODDB
     end
     def Util.get_mailing_list_anrede(list_id)
       Util.configure_mail unless @mail_configured
-      return [] unless @cfg[MailingListIds] and @cfg[MailingListIds].index(list_id)
+      return [] unless @cfg and @cfg[MailingListIds] and @cfg[MailingListIds].index(list_id)
       anreden = []
       @cfg[MailingRecipients].each { |recipient| anreden << recipient[:anrede] if recipient[:lists].index(list_id) and recipient[:anrede]}
       anreden.sort
@@ -78,7 +78,7 @@ module ODDB
           end
         end
       end
-      msg = "#{__FILE__}: Configured email using #{@cfg['smtp_server'].inspect} #{@cfg['smtp_port'].inspect} #{@cfg['smtp_user'].inspect}"
+      msg = "#{__FILE__}: Configured email using #{@cfg ? @cfg['smtp_server'].inspect : 'nil' } #{@cfg ? @cfg['smtp_port'].inspect : ''} #{@cfg ? @cfg['smtp_user'].inspect : ''}"
       Util.debug_msg(msg)
       @mail_configured
     end
