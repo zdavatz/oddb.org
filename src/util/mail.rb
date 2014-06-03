@@ -43,9 +43,12 @@ module ODDB
     end
     def Util.get_mailing_list_anrede(list_id)
       Util.configure_mail unless @mail_configured
-      return [] unless @cfg and @cfg[MailingListIds] and @cfg[MailingListIds].index(list_id)
+      return [] unless @cfg and @cfg[MailingListIds]    
       anreden = []
-      @cfg[MailingRecipients].each { |recipient| anreden << recipient[:anrede] if recipient[:lists].index(list_id) and recipient[:anrede]}
+      lists = list_id.is_a?(Array) ? list_id : [list_id]
+      lists.each{ |list_name|
+        @cfg[MailingRecipients].each { |recipient| anreden << recipient[:anrede] if recipient[:lists].index(list_name) and recipient[:anrede]}
+      }
       anreden.sort
     end
 

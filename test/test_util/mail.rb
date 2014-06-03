@@ -44,6 +44,7 @@ module ODDB
     def test_mailing_anrede
       # setup is set tot test
       assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede('oddb_csv'))
+      assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede(['oddb_csv']))
     end
 
     def test_send_to_mailing_list_test_and_another_receiver # same use case as ipn

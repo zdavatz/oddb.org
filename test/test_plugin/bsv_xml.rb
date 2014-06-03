@@ -837,6 +837,8 @@ module ODDB
       expected = ["parts", "recipients", "report"]
       assert_equal(expected, log_info_bsv.keys.map{|k| k.to_s}.sort)
       assert_equal(["oddb_bsv", "oddb_bsv_info"], log_info_bsv[:recipients])
+      assert(log_info_bsv[:report].index('Dear Mr. Jones'), 'The report must contain a valid anrede for Mr. Jones   (see test/data/oddb_mailing_test.yml)')
+      assert(log_info_bsv[:report].index('Dear Mrs. Smith'), 'The report must contain a valid anrede for Mrs. Smith (see test/data/oddb_mailing_test.yml)')
       #assert_equal('', log_info_bsv)
     end
     def test_report_bsv

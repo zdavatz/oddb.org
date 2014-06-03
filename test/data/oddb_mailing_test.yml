@@ -62,3 +62,4 @@ mail_recipients:
     :anrede: Dear Mr. Jones
     :lists:
       - oddb_csv
+      - oddb_bsv_info
