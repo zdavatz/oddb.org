@@ -31,6 +31,7 @@ module ODDB
     'text_info_max_retry' => 5,
     'text_info_newssource'=> nil,
     'mail_from'           => '"ODDB-Mails" <mail@oddb.org>',
+    'invoice_from'        => '"ODDB-Invoices" <cfo@oddb.org>',
     'mail_to'             => [],
     'testenvironment1'    => '',
     'testenvironment2'    => '',

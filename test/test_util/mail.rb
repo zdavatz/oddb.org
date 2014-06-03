@@ -51,6 +51,7 @@ module ODDB
       mails_sent = Util.sent_mails
       assert_equal(1, mails_sent.size)
       assert_equal(2, mails_sent.first.to.size)
+      assert_equal([Util.mail_from], mails_sent.first.from)
       assert(mails_sent.first.to.index('somebody@test.org'))
       assert(mails_sent.first.to.index('ywesee_test@ywesee.com'))
     end

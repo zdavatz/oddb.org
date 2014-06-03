@@ -88,7 +88,7 @@ module ODDB
       LogFile.append('oddb/debug', "Util.send_mail list_and_recipients #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
-      mail.from    override_from ? override_from : @cfg['mail_from']
+      mail.from    override_from ? override_from : Util.mail_from
       mail.to      recipients
       mail.subject mail_subject
       mail.body    mail_body
@@ -99,11 +99,11 @@ module ODDB
       raise e
     end
 
-    def Util.send_mail_with_attachments(list_and_recipients, subject, body, attachments)
+    def Util.send_mail_with_attachments(list_and_recipients, subject, body, attachments, override_from = nil)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
-      mail.from = @cfg['mail_from']
+      mail.from    override_from ? override_from : Util.mail_from
       mail.to      recipients
       mail.subject = subject
       mail.body = body

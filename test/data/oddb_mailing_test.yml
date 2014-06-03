@@ -1,10 +1,11 @@
 ---
 smtp_server: smtp.gmail.com
 smtp_domain: ywesee.com
-smtp_user:  ngiger@ywesee.com
-smtp_pass:  N9baA4uuNP4r
+smtp_user:  admin@ywesee.com
+smtp_pass:  not_so_secret
 smtp_port: 587
-mail_from: from_test_ywesee@ywesee.com
+invoice_from: invoice_from_cfo@oddb.org
+mail_from:    default_mail_from@ywesee.com
 mail_to:
   - to_test_ywesee@ywesee.com.com
 

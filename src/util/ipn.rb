@@ -111,7 +111,7 @@ module Ipn
       body.push(nil)
       body.push(format_invoice(invoice, lookandfeel))
 			recipients = [recipient, 'ipn']
-      Util.send_mail(recipients, lookandfeel.lookup(:download_mail_subject), body.join("\n"));
+      Util.send_mail(recipients, lookandfeel.lookup(:download_mail_subject), body.join("\n"), ODDB.config.invoice_from);
     end
   rescue StandardError => e
     puts e.class
@@ -139,7 +139,7 @@ module Ipn
   end
   def Ipn.send_notification(invoice, &block)
     if(recipient = invoice.yus_name)
-      Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block ? block.call : "")
+      Util.send_mail([recipient], lookandfeel_stub.lookup(:download_mail_subject), block ? block.call : "", ODDB.config.invoice_from)
 		end
   rescue StandardError => e
     puts e.class

@@ -22,7 +22,7 @@ class TestIpn <Minitest::Test
   include FlexMock::TestCase
   YUS_NAME ='ipn'
   YUS_RECEIVER = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
-  MAIL_FROM = [ 'from_test_ywesee@ywesee.com'  ]
+  MAIL_FROM = [ 'invoice_from'  ]
   SUBJECT_DOWNLOAD = 'Datendownload von ODDB.org'
   ADMIN_TO = [PAYPAL_RECEIVER, "ywesee_test@ywesee.com"].sort  # as defined in test/data/oddb_mailing_test.yml
   SUBJECT_POWERUSER = "Power-User bei ODDB.org"

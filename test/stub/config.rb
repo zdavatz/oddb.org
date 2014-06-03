@@ -7,6 +7,9 @@ module ODDB
     def app_user_agent
       'app_user_agent'
     end
+    def invoice_from
+      'invoice_from'
+    end
   end
   def ODDB.config
     ConfigStub.new
