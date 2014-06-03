@@ -32,6 +32,7 @@ module ODDB
     'text_info_newssource'=> nil,
     'mail_from'           => '"ODDB-Mails" <mail@oddb.org>',
     'invoice_from'        => '"ODDB-Invoices" <cfo@oddb.org>',
+    'reply_to'            => 'reply_to@oddb.org',
     'mail_to'             => [],
     'testenvironment1'    => '',
     'testenvironment2'    => '',

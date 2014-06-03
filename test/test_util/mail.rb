@@ -15,6 +15,7 @@ module ODDB
     # see https://github.com/mikel/mail section Using Mail with Testing or Spec'ing Libraries
     # this is a how other users can check whether an action, e.g. running an exporter will actually send an email
     # part of it is implemented in the stub/mail function
+    ReplyTo = ['default_reply_to@ywesee.com']
     def setup
       Util.configure_mail :test
       Util.clear_sent_mails
@@ -52,6 +53,7 @@ module ODDB
       assert_equal(1, mails_sent.size)
       assert_equal(2, mails_sent.first.to.size)
       assert_equal([Util.mail_from], mails_sent.first.from)
+      assert_equal(ReplyTo, mails_sent.first.reply_to)
       assert(mails_sent.first.to.index('somebody@test.org'))
       assert(mails_sent.first.to.index('ywesee_test@ywesee.com'))
     end
@@ -62,6 +64,7 @@ module ODDB
       mails_sent = Util.sent_mails
       assert_equal(1, mails_sent.size)
       assert_equal(['ywesee_test@ywesee.com'], mails_sent[0].to)
+      assert_equal(ReplyTo, mails_sent.first.reply_to)
     end
     
     def test_send_and_check_receiving_test_mail

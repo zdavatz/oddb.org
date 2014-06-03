@@ -10,6 +10,9 @@ module ODDB
     def invoice_from
       'invoice_from'
     end
+    def reply_to
+      'reply_to'
+    end
   end
   def ODDB.config
     ConfigStub.new

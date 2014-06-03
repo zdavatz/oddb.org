@@ -8,6 +8,7 @@ invoice_from: invoice_from_cfo@oddb.org
 mail_from:    default_mail_from@ywesee.com
 mail_to:
   - to_test_ywesee@ywesee.com.com
+reply_to:     default_reply_to@ywesee.com
 
 mailing_list_ids:
     # you find them via  grep -ir RECIPIENTS src/ ext/*/src

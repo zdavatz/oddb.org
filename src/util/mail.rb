@@ -157,6 +157,7 @@ module ODDB
     def Util.log_and_deliver_mail(mail)
       Util.configure_mail unless @mail_configured
       mail.from << @cfg.mail_from unless mail.from.size > 0
+      mail.reply_to = @cfg['reply_to']
       Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
       mail.deliver
     end
