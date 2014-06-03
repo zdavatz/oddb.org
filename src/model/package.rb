@@ -190,7 +190,7 @@ module ODDB
       end
     end
 		def company_name
-			(cmp = company) && cmp.name
+			company.name if company
 		end
     def compositions
       @parts.inject([]) { |comps, part| comps.push part.composition }.compact

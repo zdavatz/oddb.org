@@ -251,11 +251,15 @@ class TextinfoHpricot
           handle_all_children(child, ptr)
           ptr.target = ptr.table
         else
-          ## the new format uses td-borders as "row-separators"
-          ptr.target << preformatted_text(child)
-          if child.classes.include?('rowSepBelow')
-            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
-            ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
+          unless ptr.target
+            $stdout.puts "ptr.target is nil for child #{child} and ptr #{ptr.inspect}"
+          else
+            ## the new format uses td-borders as "row-separators"
+            ptr.target << preformatted_text(child)
+            if child.classes.include?('rowSepBelow')
+              ptr.tablewidth ||= ptr.target.to_s.split("\n").collect{ |line| line.length }.max
+              ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
+            end
           end
         end
       when 'div'
