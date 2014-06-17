@@ -756,4 +756,31 @@ EOS
     end
   end
   
+  class TestExtractMatchedName <MiniTest::Test
+    include FlexMock::TestCase
+    
+    def setup
+      file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
+      @app = flexmock 'application'
+      @app.should_receive(:registration).and_return ['registration']
+      @app.should_receive(:registrationxx).and_return ['registration']
+                                                     @plugin = TextInfoPlugin.new @app
+      @plugin.swissmedicinfo_xml(file)
+    end
+    
+    def test_Erbiumcitrat_de
+      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+    end
+    def test_Erbiumcitrat_fr
+      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+    end
+    def test_53662_pi_de
+      assert_equal('3TC®', @plugin.extract_matched_name('53662', :fi, 'de'))
+    end
+    def test_53663_pi_de
+      assert_equal('3TC®', @plugin.extract_matched_name('53663', :fi, 'de'))
+    end
+    
+  end
+
 end
