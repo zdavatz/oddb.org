@@ -39,7 +39,7 @@ gem 'rubyzip', '0.9.9'
 gem 'wasabi', '2.3.0'
 gem 'savon', '0.9.7'
 gem 'sbsm',  '1.2.5'
-gem 'sax-machine'
+gem 'sax-machine', '0.1.0'
 gem 'spreadsheet', '0.9.7'
 gem 'swissmedic-diff', '0.1.7'
 # gem 'tmail' # wo wird das noch angezogen?
