@@ -241,7 +241,7 @@ class TextinfoHpricot
           ptr.target = ptr.table
         else
           handle_all_children(child, ptr)
-          ptr.target << "\n"
+          ptr.target << "\n" if ptr.target
         end
       when 'td', 'th'
         if ptr.table
@@ -251,9 +251,7 @@ class TextinfoHpricot
           handle_all_children(child, ptr)
           ptr.target = ptr.table
         else
-          unless ptr.target
-            $stdout.puts "ptr.target is nil for child #{child} and ptr #{ptr.inspect}"
-          else
+          if ptr.target
             ## the new format uses td-borders as "row-separators"
             ptr.target << preformatted_text(child)
             if child.classes.include?('rowSepBelow')
