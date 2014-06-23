@@ -10,6 +10,24 @@ require 'odba'
 class Hash
   alias :index :key 
 end
+#another monkey patch for CSV
+class CSV
+	puts "Attention: monkey-patching CSV::Cell"
+  # deprecated
+  class Cell < String
+		@@first = false
+    def initialize(data = "", is_null = false)
+			unless @@first
+				$stderr.puts "Attention: monkey-patching CSV::Cell used by #{caller.join('\n')}"
+				@@first = true
+			end
+      super(is_null ? "" : data)
+    end
+    def data
+      to_s
+    end
+  end
+end
 
 module ODBA
 	class Stub
