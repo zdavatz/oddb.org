@@ -1,5 +1,11 @@
 source "http://rubygems.org"
 # ruby "1.9.3" # don't specify a ruby version as I want to be able to test via travis using several versions
+if /^2/.match(RUBY_VERSION)
+  gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
+  gem 'syck'
+else
+  gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
+end
 
 gem 'activesupport' # , '4.0.2'
 gem 'archive-tarsimple', '1.1.1'

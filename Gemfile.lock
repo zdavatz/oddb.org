@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/ngiger/ruby-dbi
+  revision: 3b9421fb94f43438962ebc998d36dd94e1881ded
+  specs:
+    dbi (0.4.6)
+      deprecated (= 2.0.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -24,8 +31,6 @@ GEM
     dbd-pg (0.3.9)
       dbi (>= 0.4.0)
       pg
-    dbi (0.4.5)
-      deprecated (= 2.0.1)
     debugger (1.6.7)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -186,6 +191,7 @@ DEPENDENCIES
   bigdecimal (= 1.2.5)
   builder (= 3.2.2)
   dbd-pg (= 0.3.9)
+  dbi!
   deprecated (= 2.0.1)
   facets (= 1.8.54)
   fastthread (= 1.0.7)
