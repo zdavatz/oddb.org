@@ -378,6 +378,7 @@ module ODDB
           res = ''
           words = line.split(' ')
           while word = words.shift
+            return result.strip if words.size == 0
             rlen = res.length
             if rlen + word.length > width
               if hyph

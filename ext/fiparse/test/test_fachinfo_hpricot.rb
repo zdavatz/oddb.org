@@ -24,6 +24,9 @@ module ODDB
 		end
 	end
   module FiParse
+		HTML_PREFIX = '<HTML><meta charset="utf-8"/><BODY>'
+		HTML_POSTFIX = '</HTML></BODY>'
+		if true
     class TestFachinfoHpricot_breaks_in_table <Minitest::Test
       def test_more_line_breaks_in_table
         html = %(
@@ -53,8 +56,10 @@ module ODDB
         @view.value = chapter
         # File.open("#{Dir.pwd}/chapter.yaml", 'w+') { |fi| fi.puts @view.to_yaml }
         result = @view.to_html(CGI.new)
-        assert_equal(3, result.scan(/<p>/i).size, "Should find exactly 19 <P> tags in this table")
-        # assert_equal(1, result.scan(/&nbsp;/i).size, "Should find exactly 1 non breaking space in this table")
+        nrPTags = 1
+        assert_equal(nrPTags, result.scan(/<p>/i).size, "Should find exactly #{nrPTags} <P> tags in this table")
+        nrNonBreakingSpaces = 3
+        assert_equal(3, result.scan(/&nbsp;/i).size, "Should find exactly #{nrNonBreakingSpaces} non breaking space in this table")
       end
     end    
 class TestFachinfoHpricot <Minitest::Test
@@ -289,13 +294,15 @@ end
 </table>    
         HTML
         code, chapter = writer.chapter(Hpricot(html).at("table"))
-        assert_equal(1, chapter.to_yaml.scan('Atazanavir').size, 'table should contain Atazanavir')
-        assert_equal(1, chapter.to_yaml.scan('(1,30; 2,92)').size, 'table should contain (1,30; 2,92)')
-        assert_equal(1, chapter.to_yaml.scan('Darunavir/Ritonavir').size, 'table should contain Darunavir/Ritonavir')
-        assert_equal(1, chapter.to_yaml.scan('16-12').size, 'table should contain 16-12')
+        soll = 2
+        nrPTags = 22
+        assert_equal(soll, chapter.to_yaml.scan('Atazanavir').size, 'table should contain Atazanavir')
+        assert_equal(soll, chapter.to_yaml.scan('(1,30; 2,92)').size, 'table should contain (1,30; 2,92)')
+        assert_equal(soll, chapter.to_yaml.scan('Darunavir/Ritonavir').size, 'table should contain Darunavir/Ritonavir')
+        assert_equal(soll, chapter.to_yaml.scan('16-12').size, 'table should contain 16-12')
         
         assert_instance_of(ODDB::Text::Chapter, chapter )
-        assert_equal(27, chapter.to_yaml.scan('ruby/object:ODDB::Text::Paragraph').size, 'table should contain exactly 16 paragraphs')
+        assert_equal(nrPTags, chapter.to_yaml.scan('ruby/object:ODDB::Text::Paragraph').size, "table should contain exactly #{nrPTags} paragraphs")
       end
       
       def test_isentress_tabelle_2_single_cell
@@ -646,10 +653,12 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     end    
     
     def test_italic_absent
-      File.open("fi_62111.yaml", 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       # puts "#{__LINE__}: found #{@fachinfo.to_yaml.scan(/- :italic/).size} occurrences of italic in yaml"
+      File.open("fi_62111.yaml", 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+      assert_equal(0, @@fachinfo.to_yaml.scan(/span>/).size, "YAML aaa file may not contain a 'span>'")
       occurrences = @@fachinfo.to_yaml.scan(/- :italic/).size
-      assert(occurrences == 79, "Find exactly 79 occurrences of italic in yaml")
+      nrItalics = 78
+      assert_equal(nrItalics, occurrences, "Find exactly #{nrItalics} occurrences of italic in yaml")
     end
 
     def test_some_more_swissmedic
@@ -665,8 +674,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_62580_novartis_seebris.de.html',  File.dirname(__FILE__))     
       @@writer = FachinfoHpricot.new
-      open(@@path) { |fh| 
-        
+      open(@@path) { |fh|         
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName)
       }
     end
@@ -904,12 +912,13 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
                       /(1,30; 2,92)/,  # a table data
                       /Einfluss von Raltegravir auf die Pharmakokinetik anderer Arzneimittel/, # after the table                      
                     ]
-        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts(ODDB::FiParse::HTML_PREFIX); x.write(result); x.puts(ODDB::FiParse::HTML_POSTFIX);}
 
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
         }
-        assert_equal(19, result.scan(/<br>/i).size, "Should find exactly 19 <BR> tags for the complex table")
+        nrBrTags = 106
+        assert_equal(nrBrTags, result.scan(/<br>/i).size, "Should find exactly #{nrBrTags} <BR> tags for the complex table")
      end
      
     end
@@ -966,7 +975,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
                      />Wirkstoff-  Äquivalent    Galenische      Wirkstoff \n/,
                      /#{CourierStyle}Wirkstoff-  Äquivalent    Galenische      Wirkstoff \n/,
                     ]
-        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts(ODDB::FiParse::HTML_PREFIX); x.write(result); x.puts(ODDB::FiParse::HTML_POSTFIX);}
 
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
@@ -1021,7 +1030,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
             />Alter   Suspension   Kapseln   Suppositorien zu/,
             /#{CourierStyle}Alter   Suspension   Kapseln   Suppositorien zu/,
                     ]
-        File.open(File.basename(HtmlName), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts(ODDB::FiParse::HTML_PREFIX); x.write(result); x.puts(ODDB::FiParse::HTML_POSTFIX);}
 
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
@@ -1030,6 +1039,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
      end
      
     end
+end
 
     class TestFachinfoHpricot_57435_Baraclude_De <Minitest::Test
       
@@ -1045,133 +1055,95 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         open(@@path) { |fh| 
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Baraclude)
         }
-        yaml_name = File.basename(HtmlName.sub('.html','.yaml'))
-        File.open(yaml_name, 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       end
       
       def test_fachinfo2
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
-      end
+      end if true
       
       def test_name2
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Baraclude&reg;
-      end
+      end if true
       
       def test_unwanted_effects
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @session = FlexMock.new '@session'
+        @session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        @session.should_receive(:user_input)
+        assert(@session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, nil, @session)
+        @view.value = @@fachinfo.unwanted_effects
+        result = @view.to_html(CGI.new)
         assert_equal("Unerwünschte Wirkungen", @@fachinfo.unwanted_effects.heading)
-        expected = %(Unerwünschte Wirkungen
-Die Beurteilung der unerwünschten Wirkungen von Entecavir beruht auf vier klinischen Studien, in denen 1720 Patienten mit chronischer Hepatitis-B-Infektion im Doppelblindverfahren bis zu 107 Wochen lang mit Entecavir 0,5 mg täglich (n = 679), Entecavir 1 mg täglich (n = 183) oder Lamivudin (n = 858) behandelt wurden. In diesen Studien waren die Sicherheitsprofile von Entecavir und Lamivudin vergleichbar.
-Häufigste unerwünschte Wirkungen beliebigen Schweregrades mit zumindest möglicher Verbindung zur Entecavir-Therapie waren Kopfschmerzen (9%), Müdigkeit (6%), Schwindel (4%) und Übelkeit (3%).
-Erfahrungen bei nukleosidnaiven Patienten (HBeAg-positiv und -negativ)
-Die Patienten erhielten in einer doppelblinden Anordnung Entecavir 0,5 mg täglich (n = 679) oder Lamivudin 100 mg täglich (n = 668) während einer medianen Dauer von 53 Wochen.
-Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
---------------------------------------------------------------------------------------------------
-Psychiatrische Störungen:                    häufig: Schlaflosigkeit                                
---------------------------------------------------------------------------------------------------
-Störungen des Nervensystems:                 häufig: span> Kopfschmerzen, Schwindel, Schläfrigkeit  
---------------------------------------------------------------------------------------------------
-Gastrointestinale Störungen:                 häufig: Übelkeit, Durchfall, Dyspepsie, Erbrechen      
---------------------------------------------------------------------------------------------------
-Allgemeine Störungen und lokale Reaktionen:  häufig: Müdigkeit                                      
---------------------------------------------------------------------------------------------------
-Folgende Abweichungen von Laborwerten wurden bei nukleosidnaiven Patienten unter Entecavir-Therapie beobachtet:
------------------------------------------------------------------------------------
-Abweichung des Laborwerts                                  Prozentzahl an Patienten  
------------------------------------------------------------------------------------
-ALT >2x Initialwert und >10x ULN                           2%                        
------------------------------------------------------------------------------------
-ALT >3x Initialwert                                        5%                        
------------------------------------------------------------------------------------
-ALT >2x Initialwert und TBILI >2x Initialwert und >2x ULN  <1%                       
------------------------------------------------------------------------------------
-Albumin <2,5 g/dl                                          <1%                       
------------------------------------------------------------------------------------
-Amylase >3x Initialwert                                    2%                        
------------------------------------------------------------------------------------
-Lipase >3x Initialwert                                     11%                       
------------------------------------------------------------------------------------
-Plättchenzahl <50'000/mm3                                  <1%                       
------------------------------------------------------------------------------------
-TBILI = Gesamtbilirubin              ULN = Obergrenze der Normwerte
-Behandlungsdauer länger als 48 Wochen: Eine fortgesetzte Behandlung mit Entecavir über eine mediane Dauer von 96 Wochen offenbarte keine neuen Zeichen hinsichtlich der Sicherheit.
-Erfahrungen bei lamiduvinrefraktären Patienten
-Lamivudinrefraktäre Patienten erhielten in einer doppelblinden Anordnung entweder Entecavir 1 mg täglich (n = 183) für eine mediane Dauer von 69 Wochen oder Lamivudin  100 mg täglich (n = 190) für eine mediane Dauer von 52 Wochen.
-Unerwünschte Wirkungen, als zumindest möglicherweise mit der Entecavir-Therapie verbunden beurteilt, sind nach Organsystemen aufgelistet.
-------------------------------------------------------------------------------------------------------------
-Psychiatrische Störungen:                         häufig: Schlaflosigkeit                                     
-------------------------------------------------------------------------------------------------------------
-Störungen des Nervensystems:                      sehr häufig: Kopfschmerzenhäufig: Schwindel, Schläfrigkeit  
-------------------------------------------------------------------------------------------------------------
-Gastrointestinale Störungen:                      häufig: Erbrechen, Durchfall, Übelkeit, Dyspepsie           
-------------------------------------------------------------------------------------------------------------
-Allgemeine Störungen und lokale Reaktionen:       häufig: Müdigkeit                                           
-------------------------------------------------------------------------------------------------------------
-Folgende Abweichungen von Laborwerten wurden bei lamivudinrefraktären Patienten unter Entecavir-Therapie beobachtet:
----------------------------------------------
-Abweichung    Prozentzahl an Patienten      
-des                                         
-Laborwerts                                  
----------------------------------------------
-              ALT >2x Initialwert und >10x  2% 
-              ULN                              
----------------------------------------------
-              ALT >3x Initialwert           4% 
----------------------------------------------
-              ALT >2x Initialwert und       <1%
-              TBILI >2x Initialwert und        
-              >2x ULN                          
----------------------------------------------
-              Amylase >3x Initialwert       2% 
----------------------------------------------
-              Lipase >3x Initialwert        18%
----------------------------------------------
-              Plättchenzahl <50'000/mm3     <1%
----------------------------------------------
-TBILI = Gesamtbilirubin       ULN = Obergrenze der Normwerte
-Behandlungsdauer länger als 48 Wochen: Eine fortgesetzte Behandlung mit Entecavir über eine mediane Dauer von 96 Wochen offenbarte keine neuen Zeichen hinsichtlich der Sicherheit.
-Exazerbationen während der Behandlung
-In Studien mit nukleosidnaiven Patienten traten während der Behandlung bei 2% der mit Entecavir behandelten Patienten, verglichen mit 4% der mit Lamivudin behandelten Patienten, erhöhte ALT-Werte (>10x ULN und >2x Ausgangswert) auf. In Studien mit Lamivudinrefraktären Patienten traten während der Behandlung bei 2% der mit Entecavir behandelten Patienten, verglichen mit 11% der mit Lamivudin behandelten Patienten, erhöhte ALT-Werte (>10x ULN und >2x Ausgangswert) auf.
-Bei mit Baraclude behandelten Patienten traten ALT-Erhöhungen nach einer medianen Dauer von 4 - 5 Wochen auf, gingen im Allgemeinen bei Weiterbehandlung wieder zurück und wurden in einem Grossteil der Fälle mit einer ³2 log10/ml Viruslastreduktion assoziiert, welche einer ALT-Erhöhung vorausging bzw. gleichzeitig mit dieser auftrat. Eine periodische Kontrolle der Leberfunktion während der Behandlung ist empfehlenswert.
-Exazerbationen nach Therapie-Ende
-Akute Hepatitisexazerbationen wurden berichtet bei Patienten nach Beendigung der Anti-HBV-Therapie, unter anderem auch nach Beendigung einer Entecavir-Therapie (siehe Abschnitt «Warnhinweise und Vorsichtsmassnahmen»).
-Die Häufigkeiten von Verschlimmerung der Hepatitis oder eines Aufflammens der ALT (definiert als ALT >10x ULN und 2x Referenzlevel des Patienten) in den klinischen Studien mit Baraclude während der Nachbeobachtungsphase sind in der folgenden Tabelle wiedergegeben:
-------------------------------------------------------------------------
-Exazerbation der Hepatitis   
-in der Nachbehandlungsphase  
-in drei klinischen Studien   
-------------------------------------------------------------------------
-                             Patienten mit einer            
-                             ALT-Erhöhung >10x ULN und >2x  
-                             Referenz1                      
-------------------------------------------------------------------------
-                             Baraclude                      Lamivudin     
-------------------------------------------------------------------------
-Nukleosidnaiv                28/476 (6%)                    38/392 (10%)  
-------------------------------------------------------------------------
-HBeAg-positiv                4/174 (2%)                     9/129 (7%)    
-------------------------------------------------------------------------
-HBeAg-negativ                24/302 (8%)                    29/263 (11%)  
-------------------------------------------------------------------------
-Lamivudinrefraktär           6/52 (12%)                     0/16          
-------------------------------------------------------------------------
-1  Referenz ist das Minimum des Initialwertes oder die letzte Messung am Schluss der Dosierung.
-Erfahrungen bei Patienten mit gleichzeitiger HIV-Infektion
-Bei Patienten mit gleichzeitiger HIV/HBV-Infektion unter einer HAART (Highly Active Anti-Retroviral Therapy) mit Lamivudin konnte bei Patienten, welche Baraclude erhielten, im Vergleich zu den Patienten, welche Placebo erhielten, kein Anstieg der unerwünschten Wirkungen beobachtet werden (siehe «Warnhinweise und Vorsichtsmassnahmen»).
-Geschlecht und Alter
-Sicherheitsprofil von Entecavir: Es wurden keine Unterschiede hinsichtlich Geschlecht (~25% Frauen in den klinischen Studien) oder Alter (~5% der Patienten >65 Jahre) festgestellt.
-Postmarketing
-Zusätzlich zu den in den klinischen Studien beobachteten erwähnten unerwünschten Wirkungen wurde im Postmarketing über folgende unerwünschte Wirkungen berichtet (Inzidenz unbekannt): Rash, anaphylaktoide Reaktionen, Alopezie, erhöhte Transaminasen.
-Ausserdem wurde über Laktatazidose berichtet, oft im Zusammenhang mit einer hepatischen Dekompensation, anderen schweren medizinischen Begleitfaktoren oder in Kombination mit weiteren verabreichten Arzneimitteln. Patienten mit dekompensierter Zirrhose haben möglicherweise ein höheres Risiko für eine Laktatazidose.
-Patienten mit dekompensierter Lebererkrankung
-Das Sicherheitsprofil von Entecavir bei Patienten mit dekompensierter Lebererkrankung wurde in einer randomisierten offenen Vergleichsstudie evaluiert. In dieser Studie (048) erhielten die Patienten eine Behandlung mit Entecavir 1 mg täglich (n = 102) oder Adefovir Dipivoxil 10 mg täglich (n = 89). Bei Patienten unter Entecavir-Therapie wurden als weitere unerwünschte Wirkungen bis zu Woche 48  eine  Abnahme  der  Bicarbonat-Werte im  Blut (2%) sowie Nierenversagen (<1%) beobachtet. Die kumulative Mortalitätsrate während der Studie betrug 23% (23/102), und die Todesursachen waren im Allgemeinen leberassoziiert, wie bei dieser Population zu erwarten war. Die kumulative Rate hepatozellulärer Karzinome während der Studie betrug 12% (12/102). Schwerwiegende unerwünschte Ereignisse waren im Allgemeinen leberassoziiert, mit einer kumulativen Häufigkeit von 69% während der Studie. Patienten mit einem hohen CTP-Score zu Studienbeginn (baseline) hatten ein höheres Risiko für ein schwerwiegendes unerwünschtes Ereignis (siehe Abschnitt «Warnhinweise und Vorsichtsmassnahmen»).
-Veränderte Laborwerte: Bis zu Woche 48 hatten keine der Patienten mit dekompensierter Lebererkrankung unter Entecavir-Therapie eine ALT-Erhöhung sowohl >10x ULN wie auch >2x gegenüber dem Ausgangswert. 1% der Patienten hatte eine ALT-Erhöhung >2x gegenüber dem Ausgangswert, in Kombination mit einer Erhöhung des Gesamtbilirubins  >2x ULN und >2x gegenüber dem Ausgangswert. Albuminwerte <2,5 g/dl wurden bei 30% der Patienten beobachtet, Lipasewerte >3x gegenüber dem Ausgangswert bei 10% und Thrombozyten <50‘000/mm3 bei 20%.)
-        assert_equal(expected, @@fachinfo.unwanted_effects.to_s) 
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts(ODDB::FiParse::HTML_PREFIX); x.write(result); x.puts(ODDB::FiParse::HTML_POSTFIX);}
+        File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+        expected = [ /Psychiatrische Störungen:/,
+                     /häufig: Schlaflosigkeit/,
+                     /Veränderte Laborwerte: Bis zu Woche 48 hatten keine der Patienten mit dekompensierter Lebererkrankung unter Entecavir-Therapie eine ALT-Erhöhung sowohl &gt;10x ULN wie auch &gt;2x gegenüber dem Ausgangswert. 1% der Patienten hatte eine ALT-Erhöhung &gt;2x gegenüber dem Ausgangswert, in Kombination mit einer Erhöhung des Gesamtbilirubins  &gt;2x ULN und &gt;2x gegenüber dem Ausgangswert. Albuminwerte &lt;2,5 g\/dl wurden bei 30% der Patienten beobachtet, Lipasewerte &gt;3x gegenüber dem Ausgangswert bei 10% und Thrombozyten &lt;50‘000\/mm3 bei 20%./,
+                     ]
+        expected.each { |pattern|
+          assert(pattern.match(result), "Missing pattern:\n#{pattern}")
+        }
+        assert_equal(0, @@fachinfo.to_yaml.scan(/span>/).size, "YAML file may not contain a 'span>'")
       end
       
       def test_iksnrs
         assert_equal(["57435", "57436"], TextInfoPlugin::get_iksnrs_from_string(@@fachinfo.iksnrs.to_s))
         assert_equal("Zulassungsnummer\n57'435, 57’436 (Swissmedic)", @@fachinfo.iksnrs.to_s)
-     end 
+     end  if true
     end
-  end 
+  end
+	if true
+    class TestFachinfoHpricot_54842_CoAprovel_De <Minitest::Test
+
+      StylesCoAprovel = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:6pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:6pt;}.s8{font-family:Arial;font-size:11pt;font-style:italic;}.s9{font-family:Arial;font-size:11pt;}.s10{font-family:Symbol;font-style:normal;font-weight:normal;text-align:left;margin-left:-18pt;width:-18pt;position:absolute;}.s11{line-height:115%;text-align:justify;margin-top:6pt;margin-left:36pt;}.s12{font-family:Arial;font-size:8.8pt;}.s13{height:6pt;}.s14{margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-right-width:0.5pt;border-right-color:#000000;border-right-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;border-left-width:0.5pt;border-left-color:#000000;border-left-style:solid;}.s15{line-height:115%;text-align:left;}.s16{margin-top:6pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}'
+      MedicInfoName = 'CoAprovel® 150/12,5; 300/12,5; 300/25'
+      HtmlName      = 'data/html/de/fi_54842_CoAprovel.html'
+
+      def setup
+        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
+        @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     
+        @@writer = ODDB::FiParse::FachinfoHpricot.new        
+        open(@@path) { |fh| 
+          @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesCoAprovel)
+        }
+        File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
+      end
+
+      def test_fachinfo2
+        assert_instance_of(FachinfoDocument2001, @@fachinfo)
+      end
+
+      def test_name2
+        assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html CoAprovel&reg;
+      end
+
+      def test_galenic_form
+        assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
+      end
+
+     def test_all_to_html
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @session = FlexMock.new '@session'
+        @session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        @session.should_receive(:user_input)
+        assert(@session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, nil, @session)
+        @view.value = @@fachinfo.unwanted_effects
+        result = @view.to_html(CGI.new)
+        expected = [ /Placebo<BR>n = 236/,
+                     /Irbesartan\/HCTZ<BR>n = 898/,
+                     /Statistisch signifikanter Unterschied zwischen Irbesartan\/HCTZ- und Placebogruppe./,
+                     /Häufigkeit 0,5%-&lt;1%:/,
+                     ]
+        File.open(File.basename(HtmlName), 'w+') { |x| x.puts(ODDB::FiParse::HTML_PREFIX); x.write(result); x.puts(ODDB::FiParse::HTML_POSTFIX);}
+        expected.each { |pattern|
+          assert(pattern.match(result), "Missing pattern:\n#{pattern}")
+        }
+        # assert_equal(1, result.scan(/<br>/i).size, "Should find exactly 1 <BR> tags for the table")
+     end
+				      end
+    end
 end
