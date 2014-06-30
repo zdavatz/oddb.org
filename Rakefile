@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'hoe'
 require 'fileutils'
+require 'rake/clean'
 
 ## To run 'rake git:manifest' you will need the 'hoe-git' gem.
 
@@ -63,5 +64,6 @@ Rake::Task[:test].overwrite do
 end
 
 task :test => :quanty
-
+CLEAN.include('*.yaml')
+CLEAN.include('*.html')
 # vim: syntax=ruby

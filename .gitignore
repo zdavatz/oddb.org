@@ -42,3 +42,4 @@ doc/sl_errors
 rdoc/
 documentation/
 test/var
+coverage
