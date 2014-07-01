@@ -33,7 +33,7 @@ task :quanty do
     Dir.chdir(File.join(File.dirname(__FILE__), 'data/quanty'))
     exit 2 unless system('ruby extconf.rb')
     src='parse.y'
-    dst='lib/quanty/parse.rb'
+    dst=parse_rb_name
     tmp='lib/quanty/parse.backup'
     FileUtils.rm_f(dst)
     FileUtils.makedirs(File.dirname(dst))
