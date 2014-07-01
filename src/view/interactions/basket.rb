@@ -81,10 +81,6 @@ class CyP450List < HtmlGrid::Component
       links.delete_if { |lnk| lnk.empty? }
       unless(links.empty?)
         text << '<br>'
-        fspan = HtmlGrid::Span.new(@model, @session, self)
-        fspan.value = @lookandfeel.lookup(:flockhart_link)
-        fspan.css_class = 'italic'
-        text << fspan
         links.each { |link|
           alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
           alink.href = link.href
@@ -171,10 +167,6 @@ class BasketSubstrates < HtmlGrid::List
       links.delete_if { |lnk| lnk.empty? }
       unless(links.empty?)
         text << '<br>'
-        fspan = HtmlGrid::Span.new(@model, @session, self)
-        fspan.value = @lookandfeel.lookup(:flockhart_link)
-        fspan.css_class = 'italic'
-        text << fspan
         links.each { |link|
           if(href = link.href)
             alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)

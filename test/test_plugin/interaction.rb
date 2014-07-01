@@ -23,8 +23,8 @@ end
 module ODDB
 	module Interaction
 		class InteractionPlugin
-			attr_accessor :hayes, :flockhart
-			attr_accessor :hayes_conn_not_found, :flock_conn_not_found
+			attr_accessor :hayes
+			attr_accessor :hayes_conn_not_found
 			attr_accessor :updated_substances, :update_reports
 			REFETCH_PAGES = false
 		end
@@ -80,16 +80,6 @@ class TestInteractionPlugin <Minitest::Test
   end
   def teardown
   end
-  def test_flock_conn_name
-    flock_conn = flexmock('flock_conn', :name => 'acetaminophen=')
-    result = @plugin.flock_conn_name(flock_conn)
-    assert_equal("acetaminophen", result)
-  end
-  def test_flock_conn_name2
-    flock_conn = flexmock('flock_conn', :name => 'acetaminophen (in part)')
-    result = @plugin.flock_conn_name(flock_conn)
-    assert_equal("acetaminophen", result)
-  end
   def test_parse_hayes
     interaction = flexmock('interaction')
     cytochrome = flexmock('cytochrome')
@@ -107,29 +97,19 @@ class TestInteractionPlugin <Minitest::Test
     assert_equal(expected, @plugin.parse_hayes(@mock_plugin))
   end
   def test_report
-    @plugin.flock_conn_not_found = 3 
     @plugin.hayes_conn_not_found = 2 
     @plugin.hayes = { 
       'foo' =>	'foobar',
       'bar'	=>	'foobar',
     }
-    @plugin.flockhart = { 
-      'foobar'	=>	'foobar',
-      'barfoo'	=>	'foobar',
-    }
     result = @plugin.report.split("\n").sort
     expected = [
       "found hayes cytochromes: 2",
       "bar, foo",
-      "found flock cytochromes: 2",
-      "barfoo, foobar",
-      "There are no matching hayes connections for 2 flockhart connections",
-      "There are no matching flockhart connections for 3 hayes connections",
     ]
     assert_equal(expected.sort, result)
   end
   def test_report2
-    @plugin.flock_conn_not_found = 3 
     @plugin.hayes_conn_not_found = 2 
     @plugin.update_reports = {
       :cyp450_created			=>	[ 'cyp450', 'cyp450_2' ],
@@ -145,18 +125,10 @@ class TestInteractionPlugin <Minitest::Test
       'foo' =>	'foobar',
       'bar'	=>	'foobar',
     }
-    @plugin.flockhart = { 
-      'foobar'	=>	'foobar',
-      'barfoo'	=>	'foobar',
-    }
     result = @plugin.report.split("\n").sort
     expected = [
       "found hayes cytochromes: 2",
       "bar, foo",
-      "found flock cytochromes: 2",
-      "barfoo, foobar",
-      "There are no matching hayes connections for 2 flockhart connections",
-      "There are no matching flockhart connections for 3 hayes connections",
       ODDB::Interaction::InteractionPlugin::UPDATE_MESSAGES[:cyp450_created],
       "cyp450", "cyp450_2", 
       ODDB::Interaction::InteractionPlugin::UPDATE_MESSAGES[:substance_created],
@@ -371,7 +343,6 @@ class TestInteractionPlugin <Minitest::Test
   end
   def test_update
     # for parse_hayes
-    # for parse_flockhart
     interaction = flexmock('interaction')
     cytochrome = flexmock('cytochrome')
     connection = flexmock('connection')
@@ -411,8 +382,6 @@ class TestInteractionPlugin <Minitest::Test
                      :parse_table         => {'cyt_id' => cytochrome},
                      :parse_detail_pages  => {'cyt_id' => cytochrome}
                      )
-    flexmock(ODDB::Interaction::FlockhartPlugin, :new => plugin)
-
     #for update_db
     pointer    = flexmock('pointer', :creator => nil)
     flexmock(pointer, :+ => pointer)
@@ -438,153 +407,11 @@ class TestInteractionPlugin <Minitest::Test
     expected = {substance => [connection]}
     assert_equal(expected, @plugin.update)
   end
-  def test_flock_conn_name__equal
-    flock_conn = flexmock('flock_conn', :name => 'name=')
-    assert_equal('name', @plugin.flock_conn_name(flock_conn))
-  end
-  def test_flock_conn_name__else
-    flock_conn = flexmock('flock_conn', :name => 'name')
-    assert_equal('name', @plugin.flock_conn_name(flock_conn))
-  end
   def test_format_connection_key
     flexmock(ODDB::Interaction::InteractionPlugin::Substance) do |s|
       s.should_receive(:format_connection_key).and_return('key')
     end
     assert_equal('key', @plugin.format_connection_key('key'))
-  end
-  def test_merge_data
-    substance = flexmock('substance', :same_as? => true)
-    flexmock(@app, :substance => substance)
-    substrate = flexmock('substrate', 
-                         :name        => 'name',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil,
-                         :links       => []
-                        )
-    cyt = flexmock('cyt', 
-                   :substrates     => [substrate],
-                   :add_connection => nil,
-                   :inhibitors     => [substrate],
-                   :inducers       => [substrate]
-                  )
-    hayes     = {'cyt_id' => cyt}
-    flockhart = {'cyt_id' => cyt}
-    expected  = {'cyt_id' => cyt}
-    assert_equal(expected, @plugin.merge_data(hayes, flockhart))
-  end
-  def test_merge_data__same_as_false
-    substance = flexmock('substance', :same_as? => false)
-    flexmock(@app, :substance => substance)
-    substrate = flexmock('substrate', 
-                         :name        => 'name',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil,
-                         :links       => []
-                        )
-    cyt = flexmock('cyt', 
-                   :substrates     => [substrate],
-                   :add_connection => nil,
-                   :inhibitors     => [substrate],
-                   :inducers       => [substrate]
-                  )
-    hayes     = {'cyt_id' => cyt}
-    flockhart = {'cyt_id' => cyt}
-    expected  = {'cyt_id' => cyt}
-    assert_equal(expected, @plugin.merge_data(hayes, flockhart))
-  end
-
-  def test_merge_data__flockhart_else
-    substance = flexmock('substance', :same_as? => true)
-    flexmock(@app, :substance => substance)
-    substrate = flexmock('substrate', 
-                         :name        => 'name',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil,
-                         :links       => []
-                        )
-    cyt = flexmock('cyt', 
-                   :substrates     => [substrate],
-                   :add_connection => nil,
-                   :inhibitors     => [substrate],
-                   :inducers       => [substrate]
-                  )
-    hayes     = {'cyt_id' => cyt}
-    flockhart = {}
-    expected  = {'cyt_id' => cyt}
-    assert_equal(expected, @plugin.merge_data(hayes, flockhart))
-  end
-  def test_parse_flockhart
-    substrate1 = flexmock('substrate1', 
-                         :name        => 'name1',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil
-                        )
-    substrate2 = flexmock('substrate2', 
-                         :name        => 'name2',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil
-                        )
-    cyt = flexmock('cyt', 
-                   :substrates => [substrate1],
-                   :inhibitors     => [substrate1],
-                   :inducers       => [substrate2]
-                  )
-    plugin = flexmock('plugin',
-                     :parse_table         => {'cyt_id' => cyt},
-                     :parse_detail_pages  => {'cyt_id' => cyt}
-                     )
-    expected  = {'cyt_id' => cyt}
-    assert_equal(expected, @plugin.parse_flockhart(plugin))
-  end
-  def test_parse_flockhart__else
-    substrate1 = flexmock('substrate1', 
-                         :name        => 'name1',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil
-                        )
-    substrate2 = flexmock('substrate2', 
-                         :name        => 'name2',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil
-                        )
-    substrate3 = flexmock('substrate3', 
-                         :name        => 'name3',
-                         :auc_factor  => nil,
-                         :auc_factor= => nil,
-                         :category    => nil,
-                         :category=   => nil
-                        )
-    cyt1 = flexmock('cyt', 
-                   :substrates => [substrate1],
-                   :inhibitors     => [substrate1],
-                   :inducers       => [substrate2]
-                  )
-    cyt2 = flexmock('cyt', 
-                   :substrates => [substrate3],
-                   :inhibitors     => [substrate3],
-                   :inducers       => [substrate3]
-                  )
-
-    plugin = flexmock('plugin',
-                     :parse_table         => {'cyt_id' => cyt2},
-                     :parse_detail_pages  => {'cyt_id' => cyt1}
-                     )
-    expected  = {'cyt_id' => cyt1}
-    assert_equal(expected, @plugin.parse_flockhart(plugin))
   end
 
   def test_update_oddb_tidy_up
@@ -596,48 +423,6 @@ class TestInteractionPlugin <Minitest::Test
     @plugin.instance_eval('@updated_substances = updated_substances')
     expected = updated_substances
     assert_equal(expected, @plugin.update_oddb_tidy_up)
-  end
-end
-
-class TestFlockhartPlugin <Minitest::Test
-  include FlexMock::TestCase
-  def setup
-    @app = flexmock 'app'
-    @plugin = ODDB::Interaction::FlockhartPlugin.new @app, false
-  end
-  def setup_mechanize mapping=[]
-    agent = flexmock Mechanize.new
-    mapping.each do |page, method, url, formname, page2|
-      path = File.join @datadir, page
-      page = setup_page url, path, agent
-      if formname
-        form = flexmock page.form(formname)
-        action = form.action
-        page = flexmock page
-        page.should_receive(:form).with(formname).and_return(form)
-        path2 = File.join @datadir, page2
-        page2 = setup_page action, path2, agent
-        form.should_receive(:submit).and_return page2
-      end
-      agent.should_receive(method).with(url).and_return(page)
-    end
-    agent
-  end
-  def setup_page url, path, agent
-    response = {'content-type' => 'text/html'}
-    Mechanize::Page.new(URI.parse(url), response,
-                        File.read(path), 200, agent)
-  end
-  def test_parse_detail
-    path = File.expand_path('../data/html/interaction/flockhart/3A457.htm',
-                            File.dirname(__FILE__))         
-    page = setup_page 'url', path, setup_mechanize  
-    skip "Don't know how to handle NoMethodError: undefined method `parse_detail_page' for <FlexMock:plugin>:FlexMock"
-    assert_instance_of ODDB::Interaction::Cytochrome, cytochrome
-    assert_equal 86, cytochrome.substrates.size
-    assert_equal 31, cytochrome.inhibitors.size
-    names = cytochrome.inhibitors.collect do |substr| substr.name end
-    assert_equal 14, cytochrome.inducers.size
   end
 end
 

@@ -3,7 +3,6 @@
 # Plugin -- oddb -- 23.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/plugin'
-require 'plugin/flockhart'
 require 'plugin/hayes'
 require 'util/html_parser'
 require 'model/text'
@@ -89,7 +88,6 @@ module ODDB
 			]
 =begin
 			ERROR_MESSAGES = {
-			:no_flock_conn => "There's no matching Flockhart connection for:",
 			:no_hayes_conn => "There's no matching Hayes connection for:",
 			}
 =end
@@ -106,13 +104,10 @@ module ODDB
 			def initialize(app)
 				@app = app
 				@hayes = {}
-				@flockhart = {}
 				@updated_substances = {}
-				@flock_conn_not_found = 0
 				@hayes_conn_not_found = 0
 =begin
 				@merging_errors = {
-					:no_flock_conn	=> [], 
 					:no_hayes_conn => [],
 				}
 =end
@@ -127,58 +122,8 @@ module ODDB
 					:substrates_deleted	=>	[],
 				}
 			end
-			def flock_conn_name(flock_conn)
-				name = flock_conn.name
-				case name 
-				when /=/u
-					name.split("=").first
-				when /in part/u
-					name.split(" ").first
-				else
-					name
-				end
-			end
 			def format_connection_key(key)
 				Substance.format_connection_key(key)
-			end
-			def merge_data(hayes, flockhart)
-				flock_conn_arr = nil
-				hayes.each { |hayes_cyt_id, hayes_cyt|
-					CONNECTION_TYPES.each { |type|
-						if(flock_cyt = flockhart[hayes_cyt_id])
-							flock_conn_arr = flock_cyt.send(type)
-						else
-							flock_conn_arr = []
-						end
-						hayes_conn_arr = hayes_cyt.send(type)
-						hayes_conn_arr.each { |hayes_conn|
-							found_conn = false
-							flock_conn_found = []
-							flock_conn_arr.each { |flock_conn|
-								# if it's covered by hayes we only want 
-								# flockhart's links, auc_factor and category
-								if(similar_name?(hayes_conn.name, flock_conn_name(flock_conn)))
-									found_conn = true
-                  hayes_conn.auc_factor = flock_conn.auc_factor
-									hayes_conn.category = flock_conn.category
-									hayes_conn.links.concat(flock_conn.links)
-									flock_conn_found.push(flock_conn)
-								end
-							}
-							unless(found_conn)
-								@flock_conn_not_found += 1
-							end
-							flock_conn_arr -= flock_conn_found
-						}
-            flock_conn_arr.each { |flock_conn|
-							hayes_cyt.add_connection(flock_conn)
-            }
-						if(flock_conn_arr)
-							@hayes_conn_not_found += flock_conn_arr.size
-						end
-					}
-				}
-				hayes
 			end
 			def parse_hayes(plugin)
 				if(REFETCH_PAGES)
@@ -199,33 +144,6 @@ module ODDB
 				}
 				substr_hsh
 			end
-			def parse_flockhart(plugin)
-				table_hsh = plugin.parse_table 
-				cytochromes = plugin.parse_detail_pages 
-				cytochromes.each { |cyt_id, cyt|
-          if(cyt1 = table_hsh[cyt_id])
-            CONNECTION_TYPES.each { |type|
-              if(conns1 = cyt1.send(type))
-                conns = cyt.send(type)
-                lookup = conns.inject({}) { |memo, conn|
-                  memo.store(conn.name.downcase, conn)
-                  memo
-                }
-                conns1.each { |conn|
-                  if(other = lookup[conn.name.downcase])
-                    other.category = conn.category
-                    other.auc_factor = conn.auc_factor
-                  else
-                    lookup.store(conn.name.downcase, conn)
-                    conns.push(conn)
-                  end
-                }
-              end
-            }
-          end
-				}
-				cytochromes	
-			end
 			def report
 				updates = []
 				@update_reports.each { |key, value|
@@ -238,22 +156,10 @@ module ODDB
 				@hayes.each { |key, value|
 					hayes_cyts.push(key)
 				}
-				flockhart_cyts = []
-				@flockhart.each { |key, value|
-					flockhart_cyts.push(key)
-				}
 				lines = [
 					"found hayes cytochromes: #{@hayes.size}",
 				] + [
 					hayes_cyts.sort.join(", ")
-				] + [
-					"found flock cytochromes: #{@flockhart.size}",
-				] + [
-					flockhart_cyts.sort.join(", ")
-				] + [
-					"There are no matching hayes connections for #{@hayes_conn_not_found} flockhart connections"
-				] + [
-					"There are no matching flockhart connections for #{@flock_conn_not_found} hayes connections"
 				]+ updates
 				lines.join("\n")
 			end
@@ -262,9 +168,7 @@ module ODDB
 			end
 			def update
 				@hayes = parse_hayes(HayesPlugin.new(@app))
-				@flockhart = parse_flockhart(FlockhartPlugin.new(@app, REFETCH_PAGES))
-        merged = merge_data(@hayes, @flockhart)
-				update_oddb(merged)
+				update_oddb(@hayes)
 			end
 			def update_oddb(cytochrome_hsh)
 				cytochrome_hsh.each { |cyt_id, cyt|
