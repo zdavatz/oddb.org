@@ -315,11 +315,10 @@ class TextinfoHpricot
     end
   end
   def handle_text(ptr, child)
-    # handling a situation found only in Baraclude® IKSNR 57'435/436
-    if child.to_s.match(/^span>/)
-      return
-    end
+    begin
     return if child.parent.name.eql?('tbody') or child.parent.name.eql?('table')
+    # handling a situation found only in Baraclude® IKSNR 57'435/436
+    return if child.to_s.match(/^span>/)
     string = text(child)
     m = URI.regexp.match(string)
     if m and m[0].downcase.index('http')
@@ -331,6 +330,11 @@ class TextinfoHpricot
       ptr.target << string[(last+1)..-1] if (last+1) < string.length
     else
       ptr.target << string
+    end
+    rescue ArgumentError => e
+      $stdout.puts "rescue exception #{e} for #{child.inspect}"
+      $stdout.puts "  ptr.target #{ptr.target}"
+      $stdout.puts "  caller #{caller.join("\n")}"
     end
   end
   def preformatted(target)
