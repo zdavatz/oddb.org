@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 gem 'minitest'

@@ -3,14 +3,13 @@
 # ODDB::TextInfoPlugin -- oddb.org -- 22.05.2013 -- yasaka@ywesee.com
 # ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
-
 require 'date'
 require 'drb'
 require 'mechanize'
 require 'fileutils'
 require 'config'
 require 'thread'
-require 'zip/zip'
+require 'zip'
 require 'nokogiri'
 require 'plugin/plugin'
 require 'model/fachinfo'
@@ -974,7 +973,7 @@ module ODDB
         response.save_as(tmp)
         FileUtils.mv(tmp, zip)
         xml = ''
-        Zip::ZipFile.foreach(zip) do |entry|
+        Zip::File.foreach(zip) do |entry|
           if entry.name =~ /^AipsDownload_/iu
             entry.get_input_stream { |io| xml = io.read }
           end

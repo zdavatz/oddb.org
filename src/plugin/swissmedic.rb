@@ -439,7 +439,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                 when :registration_date, :expiry_date, :sequence_date
                   date_cell(row, idx)
                 when :seqnr
-                  sprintf "%02i", row.at(idx).to_i
+                  sprintf "%02i", row[idx].to_i
                 else
                   cell(row, idx)
                 end
@@ -459,7 +459,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                }u
       if(match = ptrn.match(part.sub(/\.$/, '')))
         idx = opts[:composition].to_i
-        comp = seq.compositions.at(idx)
+        comp = seq.compositions[idx]
         comp ||= @app.create(seq.pointer + :composition)
         @app.update(comp.pointer, {:source => part, :label => opts[:label]},
                     :swissmedic)
@@ -565,7 +565,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         end
         max = compositions.size - offset
         seq.compositions.size.downto(max) do |idx|
-          if comp = seq.compositions.at(idx)
+          if comp = seq.compositions[idx]
             @app.delete comp.pointer
           end
         end

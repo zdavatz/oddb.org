@@ -150,7 +150,7 @@ module YDocx
     end
     def read(file)
       @path = Pathname.new file
-      @zip = Zip::ZipFile.open(@path.realpath)
+      @zip = Zip::File.open(@path.realpath)
       doc = @zip.find_entry('word/document.xml').get_input_stream
       rel = @zip.find_entry('word/_rels/document.xml.rels').get_input_stream
       @parser = Parser.new(doc, rel) do |parser|

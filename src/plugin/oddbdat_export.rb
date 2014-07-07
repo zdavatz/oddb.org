@@ -11,7 +11,7 @@ require 'custom/lookandfeelbase'
 require 'date'
 require 'iconv'
 require 'archive/tarsimple'
-require 'zip/zip'
+require 'zip'
 require 'fileutils'
 
 module ODDB

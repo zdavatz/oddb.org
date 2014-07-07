@@ -15,7 +15,7 @@ require 'rexml/document'
 require 'rexml/streamlistener'
 require 'util/persistence'
 require 'util/today'
-require 'zip/zip'
+require 'zip'
 require 'plugin/swissindex'
 require 'util/mail'
 
@@ -652,7 +652,7 @@ module ODDB
       path
     end
     def _update path=@latest
-      Zip::ZipFile.foreach(path) do |entry|
+      Zip::File.foreach(path) do |entry|
         LogFile.append('oddb/debug', " bsv_xml: entry.name = " + entry.name.to_s, Time.now)
         case entry.name
         when /(\w+)(-\d+)?.xml$/u

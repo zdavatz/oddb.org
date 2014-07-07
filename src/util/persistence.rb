@@ -118,7 +118,7 @@ module ODDB
             arg = if arg.respond_to?(:to_s)
                     arg.to_s[0,10]
                   end
-            raise TypeError.new("'#{arg.to_s}'(#{arg_class}) should be #{klasses.join(' or ')}")
+            raise TypeError.new("Accessor #{accessor.to_s} '#{arg.to_s}'(#{arg_class}) should be #{klasses.join(' or ')}")
           end
         end
       end

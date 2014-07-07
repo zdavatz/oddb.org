@@ -7,7 +7,7 @@
 require 'fileutils'
 require 'tempfile'
 require 'archive/tarsimple'
-require 'zip/zip'
+require 'zip'
 require 'models'
 require 'model/analysis/group'
 require 'oddb_yaml'

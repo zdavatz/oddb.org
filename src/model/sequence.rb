@@ -43,7 +43,7 @@ module ODDB
       :pdf_patinfo        => "String",
       :atc_request_time   => "Time",
       :deactivate_patinfo => ["NilClass","Date"],
-      :sequence_date      => ["NilClass","Date"],
+      :sequence_date      => ["NilClass","Date", "DateTime"],
       :activate_patinfo   => ["NilClass","Date"],
       :composition_text   => "String",
       :dose               => ["NilClass","ODDB::Dose"],

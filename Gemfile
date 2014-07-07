@@ -40,18 +40,16 @@ gem 'rclconf', '1.0.0'
 gem 'rdoc', '4.1.1'
 gem 'rmagick', '2.13.2'
 gem 'rpdf2txt', '0.8.4'
-gem 'rubyXL', '1.2.10'
-gem 'rubyzip', '0.9.9'
+gem 'rubyXL', '3.1.2'
+gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'wasabi', '2.3.0'
 gem 'savon', '0.9.7'
-gem 'sbsm',  '1.2.5'
+gem 'sbsm',  '1.2.6', :git => 'https://github.com/ngiger/sbsm.git'
 gem 'spreadsheet', '0.9.7'
 gem 'swissmedic-diff', '0.1.7'
-# gem 'tmail' # wo wird das noch angezogen?
 gem 'webrobots', '0.1.1'
 gem 'ydim', '1.0.0'
-# gem 'ydocx', '1.2.3'
-gem 'ydocx' #, :path => './ydocx'
+gem 'ydocx', '1.2.4'
 gem 'yus', '1.0.1'
 
 group :development, :test do
@@ -67,6 +65,7 @@ end
 
 group :test do
   gem 'rspec'
+  gem 'minitest-should_syntax'
   gem 'watir'
   gem 'watir-webdriver'
   gem 'page-object'
