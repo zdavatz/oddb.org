@@ -270,6 +270,7 @@ module ODDB
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
+      update_epha_interactions
     end
     def update_comarketing
       update_immediate(CoMarketingPlugin, 'Co-Marketing')
@@ -409,6 +410,7 @@ module ODDB
 			# update_trade_status # replaced by swissINDEX
       update_package_trade_status_by_swissindex
       update_comarketing
+      update_epha_interactions      
 			update_swissreg_news
       update_lppv
       update_medwin_companies
