@@ -25,54 +25,6 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
-module DRb
-  class DRbObject
-    def respond_to?(msg_id, *args)
-      case msg_id
-      when :_dump
-        true
-      when :marshal_dump
-        false
-      else
-        true
-    #                                method_missing(:respond_to?, msg_id)
-      end
-    end
-  end
-end
-
-module ODDB
-  module Admin
-    class Subsystem; end
-  end
-  class PowerUser; end
-  class CompanyUser; end
-	class RootUser
-		def initialize
-			@oid = 0
-			@unique_email = 'test@oddb.org'
-			@pass_hash = Digest::MD5::hexdigest('test')
-			@pointer = Pointer.new([:user, 0])
-		end
-	end
-	class Registration
-		attr_writer :sequences
-	end
-	class Sequence
-		attr_accessor :packages
-	end
-	module Persistence
-		class Pointer
-			public :directions
-		end
-	end
-	class GalenicGroup
-		attr_accessor :galenic_forms
-		def GalenicGroup::reset_oids
-			@oid = 0
-		end
-	end
-end
 
 class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase

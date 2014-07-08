@@ -9,8 +9,10 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
+require 'minitest/unit'
 require 'stub/odba'
-require 'util/persistence'
+require 'stub/oddbapp'
+  require 'util/persistence'
 require 'stub/oddbdat_export'
 require 'plugin/swissmedic'
 require 'model/registration'
@@ -22,13 +24,18 @@ require 'tempfile'
 require 'util/log'
 require 'util/oddbconfig'
 
+class FlexMock::TestUnitFrameworkAdapter
+    attr_accessor :assertions
+end
+
 module ODDB
   class SwissmedicPluginTest < Minitest::Test
     include FlexMock::TestCase
     def setup
       @app = flexmock 'app'
-      @app.should_receive(:delete).by_default
       @archive = File.expand_path('../var', File.dirname(__FILE__))
+      FileUtils.rm_rf(@archive)
+      FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xls'
       @target = File.join @archive, 'xls',
                           @@today.strftime('Packungen-%Y.%m.%d.xls')
@@ -40,31 +47,30 @@ module ODDB
       @initial = File.expand_path '../data/xls/Packungen.initial.xls',
                                   File.dirname(__FILE__)
       @workbook = Spreadsheet.open(@data)
-      @rows = flexmock('rowsxxx') do |r|
-        r.should_receive(:each).and_yield('row')
-      end
     end
     def teardown
-      File.delete(@latest) if File.exist?(@latest)
-      File.delete(@target) if File.exist?(@target)
       super # to clean up FlexMock
     end
     def setup_index_page
-			link = flexmock('link', :href => 'href')
-			links = flexmock('links', :select => [link])
+      link = flexmock('link', :href => 'href')
+      links = flexmock('links', :select => [link])
       page = flexmock('page', :links => links)
-      agent = flexmock 'agent'
       index = flexmock 'index'
       link1 = OpenStruct.new :attributes => {'title' => 'Packungen'},
                              :href => 'url'
       link2 = OpenStruct.new :attributes => {'title' => 'Something'},
                              :href => 'other'
-      index.should_receive(:links).and_return [link1, link2]
-      url = "http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de"
-      agent.should_receive(:get).with(url).and_return(index)
-      agent.should_receive(:get).with('url').and_return(page)
+      link3 = OpenStruct.new :attributes => {'title' => 'Präparateliste'},
+                             :href => 'url'
+      index.should_receive(:links).and_return [link1, link2, link3]
+      index.should_receive(:body).and_return(IO.read(@data))
+      agent = flexmock(Mechanize.new)
+      agent.should_receive(:user_agent_alias=).and_return(true)
+      agent.should_receive(:get).and_return(index)
+      uri = 'http://www.example.com'
       [agent, page]
     end
+
     def test_new_format_of_october_2013
       oldRowToCompare = 339
       puts "Old info"
@@ -1486,6 +1492,74 @@ module ODDB
       row = []
       sequence = flexmock('sequence', :active_agents => [])
       assert_equal([], @plugin.update_compositions(sequence, row))
+    end
+  end
+  # Tests for using with xlsx files
+  class SwissmedicPluginTestXLSX < Minitest::Test
+    include FlexMock::TestCase
+
+    def setup
+      # @app = flexmock 'app'
+      # @drb = flexmock(DRb::DRbObject, :new => server)
+      ODDB::GalenicGroup.reset_oids
+      ODBA.storage.reset_id
+      dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
+      @app = ODDB::App.new
+      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      FileUtils.rm_rf(@archive)
+      FileUtils.mkdir_p(@archive)
+      @latest = File.join @archive, 'xlsx', 'Packungen-latest.xlsx'
+      @plugin = SwissmedicPlugin.new @app, @archive
+      @data = File.expand_path '../data/xlsx/Packungen_2014_small.xlsx',
+                               File.dirname(__FILE__)
+      @older = File.expand_path '../data/xlsx/Packungen_2014_01.xlsx',
+                                File.dirname(__FILE__)
+      @target = File.join @archive, 'xls',
+                          @@today.strftime('Packungen-%Y.%m.%d.xlsx')
+      @initial = File.expand_path '../data/xlsx/Packungen.initial.xlsx',
+                                  File.dirname(__FILE__)
+      @workbook = Spreadsheet.open(@data)
+      File.delete(@latest) if @latest and File.exist?(@latest)
+      File.delete(@target) if @target and File.exist?(@target)
+    end
+    def teardown
+      super # to clean up FlexMock
+    end
+    def setup_index_page
+      link = flexmock('link', :href => 'href')
+      links = flexmock('links', :select => [link])
+      page = flexmock('page', :links => links)
+      index = flexmock 'index'
+      link1 = OpenStruct.new :attributes => {'title' => 'Packungen'},
+                             :href => 'url'
+      link2 = OpenStruct.new :attributes => {'title' => 'Something'},
+                             :href => 'other'
+      link3 = OpenStruct.new :attributes => {'title' => 'Präparateliste'},
+                             :href => 'url'
+      index.should_receive(:links).and_return [link1, link2, link3]
+      index.should_receive(:body).and_return(IO.read(@data))
+      agent = flexmock(Mechanize.new)
+      agent.should_receive(:user_agent_alias=).and_return(true)
+      agent.should_receive(:get).and_return(index)
+      uri = 'http://www.example.com'
+      [agent, page]
+    end
+    def test_diff_2014_july_to_i_problem
+      assert !File.exist?(@latest), "A previous test did not clean up #@latest"
+      assert !File.exist?(@target), "A previous test did not clean up #@target"
+      agent, page = setup_index_page
+      # Use first the last month and compare it to a non existing lates
+      newest  = @data.clone
+      @adata = @older.clone
+      assert_equal(0, @app.registrations.size)
+      @plugin.update(agent)
+      assert File.exist?(@target), "#@target was not saved"
+      assert_equal(5, @app.registrations.size)
+      @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
+      assert_equal(5, @app.sequences.size)
+      assert_equal(9, @app.packages.size)
+      @adata = newest.clone
+      @plugin.update(agent)
     end
   end
 end

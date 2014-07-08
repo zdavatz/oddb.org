@@ -169,7 +169,7 @@ GEM
     slop (3.5.0)
     spreadsheet (0.9.7)
       ruby-ole (>= 1.0)
-    swissmedic-diff (0.1.7)
+    swissmedic-diff (0.1.8)
     thread_safe (0.3.4)
     travis-lint (1.8.0)
       hashr (~> 0.0.22)
@@ -191,7 +191,7 @@ GEM
     webrobots (0.1.1)
     websocket (1.0.7)
     ydim (1.0.0)
-    ydocx (1.2.4)
+    ydocx (1.2.5)
     yml_reader (0.3)
     yus (1.0.1)
 
@@ -250,12 +250,12 @@ DEPENDENCIES
   sbsm (= 1.2.6)!
   simplecov (~> 0.7.1)
   spreadsheet (= 0.9.7)
-  swissmedic-diff (= 0.1.7)
+  swissmedic-diff (= 0.1.8)
   travis-lint
   wasabi (= 2.3.0)
   watir
   watir-webdriver
   webrobots (= 0.1.1)
   ydim (= 1.0.0)
-  ydocx (= 1.2.4)
+  ydocx (= 1.2.5)
   yus (= 1.0.1)

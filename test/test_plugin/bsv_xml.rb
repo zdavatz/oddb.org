@@ -675,7 +675,7 @@ module ODDB
       entry = flexmock('entry') do |e|
         e.should_receive(:name).and_return('AbCdef-123.xml')
       end
-      flexstub(Zip::ZipFile) do |z|
+      flexstub(Zip::File) do |z|
         z.should_receive(:foreach).and_yield(entry)
       end
       flexstub(@plugin) do |p|
@@ -690,7 +690,7 @@ module ODDB
       entry = flexmock('entry') do |e|
         e.should_receive(:name).and_return('Publications.xls')
       end
-      flexstub(Zip::ZipFile) do |z|
+      flexstub(Zip::File) do |z|
         z.should_receive(:foreach).and_yield(entry)
       end
       assert_equal(nil, @plugin._update('path'))
@@ -1637,7 +1637,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).times(38).and_return do |ptr, data|
         updates.push data
       end
-      zip = Zip::ZipFile.open(@zip)
+      zip = Zip::File.open(@zip)
       zip.find_entry('ItCodes.xml').get_input_stream do |io|
         @plugin.update_it_codes io
       end

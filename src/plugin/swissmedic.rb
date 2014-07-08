@@ -14,6 +14,15 @@ require 'util/today'
 require 'swissmedic-diff'
 require 'util/logfile'
 
+# Some monkey patching needed to avoid an error
+module RubyXL
+  class Row < OOXMLObject
+    def first
+       cells[0]
+    end 
+  end
+end
+  
 module ODDB
   class SwissmedicPlugin < Plugin
     PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :export_flag,
@@ -39,7 +48,7 @@ module ODDB
       @empty_compositions = []
     end
     def debug_msg(msg)
-      # $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+      if defined?(MiniTest) then $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush; return end
       if not defined?(@checkLog) or not @checkLog
         name = LogFile.filename('oddb/debug/', Time.now)
         FileUtils.makedirs(File.dirname(name))
@@ -64,6 +73,11 @@ module ODDB
         end
         # check diff from stored data about date-fields of Registration
         check_date!
+        if @latest and File.exists?(@latest)
+          debug_msg "#{__FILE__}: #{__LINE__} Compared #{target} #{File.size(target)} bytes with #{@latest} #{File.size(@latest)} bytes"
+        else
+          debug_msg "#{__FILE__}: #{__LINE__} No @latest #{@latest} exists"
+        end
         debug_msg "#{__FILE__}: #{__LINE__} Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
         debug_msg "#{__FILE__}: #{__LINE__} changes: #{@diff.changes.inspect}"
         # debug_msg "#{__FILE__}: #{__LINE__} first news: #{@diff.news.first.inspect}"
@@ -80,7 +94,7 @@ module ODDB
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
-        @update_time = (end_time / 60.0)
+        @update_time = (end_time / 60.0).to_i
         if File.exists?(target) and File.exists?(@latest) and FileUtils.compare_file(target, @latest)
           debug_msg "#{__FILE__}: #{__LINE__} rm_f #{target} after #{@update_time} minutes"
           FileUtils.rm_f(target, :verbose => true)
@@ -256,6 +270,7 @@ module ODDB
       link = links.first or raise "could not identify url to #{keyword}.xlsx"
       file = agent.get(link.href)
       download = file.body
+      
       latest_name = File.join @archive, "#{keyword}-latest"+extension
       if extension == '.xlsx'
         latest_xls = latest_name.sub('.xlsx', '.xls')
@@ -273,7 +288,7 @@ module ODDB
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        msg = "#{__FILE__}: #{__LINE__} updated download.size is #{download.size}."
+        msg = "#{__FILE__}: #{__LINE__} updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
         debug_msg(msg)
         target
@@ -418,7 +433,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
-    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
+    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])                          
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
         && (reg = @app.registration("%05i" % cell(row, column(:iksnr)).to_i)) \
