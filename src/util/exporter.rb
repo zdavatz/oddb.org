@@ -65,6 +65,7 @@ module ODDB
         mail_download_stats
         mail_feedback_stats
         export_yaml
+        export_galenic
         #mail_notification_stats
       }
       export_sl_pcodes
@@ -260,6 +261,15 @@ module ODDB
       plug = XlsExportPlugin.new(@app)
       plug.export_patents
       plug
+    end
+    def export_galenic
+      exporter = YamlExporter.new(@app)
+      safe_export 'galenic_forms.yaml' do
+        exporter.export_galenic_forms
+      end
+      safe_export 'galenic_groups.yaml' do
+        exporter.export_galenic_groups
+      end
     end
 		def export_yaml
 			exporter = YamlExporter.new(@app)
