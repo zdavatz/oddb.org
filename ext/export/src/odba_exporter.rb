@@ -49,7 +49,7 @@ end
 			gz_name = tmp_name + '.gz'
 			zip_name = tmp_name + '.zip'
 			gzwriter = 	Zlib::GzipWriter.open(gz_name)
-			zipwriter = Zip::ZipOutputStream.open(zip_name)
+			zipwriter = Zip::OutputStream.open(zip_name)
 			zipwriter.put_next_entry(name)
 			File.open(name, "r") { |fh|
 				fh.each { |line|
@@ -77,7 +77,7 @@ end
 
 			zip_name = tmp_name + '.zip'
 			File.delete(zip_name) if(File.exist?(zip_name))
-			Zip::ZipOutputStream.open(zip_name) { |zos|
+			Zip::OutputStream.open(zip_name) { |zos|
 				files.each { |fname|
 					zos.put_next_entry(fname)
 					zos.puts File.read(fname)
