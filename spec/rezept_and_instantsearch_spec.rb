@@ -3,6 +3,8 @@
 # kate: space-indent on; indent-width 2; mixedindent off; indent-mode ruby;
 require 'spec_helper'
 require 'pp'
+require 'tmpdir'
+require "selenium-webdriver"
 
 describe "ch.oddb.org" do
  
@@ -47,13 +49,13 @@ describe "ch.oddb.org" do
 
   after :each do
     @idx += 1
-    createScreenshot(@browser, '_'+@idx.to_s)
+    createScreenshot(@browser, '_'+@idx.to_s) if @browser
     # sleep
     @browser.goto OddbUrl
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
@@ -167,17 +169,7 @@ describe "ch.oddb.org" do
                       next
                      end
                     }
-    @browser.send_keys("\n") # this is different to add_one_drug_to_rezept
-    @browser.send_keys("\n") # this is different to add_one_drug_to_rezept
-    idx = 0
-    while idx < 10
-      inhalt = @browser.text
-      break if inhalt.match(/Preisvergleich für/i)
-      sleep(1)
-      idx += 1
-      puts "Resending cr"
-      @browser.send_keys("\n") # this is different to add_one_drug_to_rezept
-    end
+    @browser.send_keys("\n")
     url = @browser.url
     inhalt = @browser.text
     inhalt.should match(/Preisvergleich für/i)

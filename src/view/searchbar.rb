@@ -222,8 +222,7 @@ function initMatches() {
 function selectSubmit() {
   var popup = dojo.byId('#{id}_popup');
   var searchbar = dojo.byId('#{id}');
-  if (popup && popup.style.overflowX.match(/auto/) && searchbar.value != '') {
-    #{progressbar}
+  if (popup && (popup.style.overflowX.match(/auto/) || popup.style.overflowX.match(/hidden/)) && searchbar.value != '') {
     searchbar.form.submit();
   }
 }
