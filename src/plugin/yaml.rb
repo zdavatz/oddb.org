@@ -27,11 +27,13 @@ module ODDB
     end
     def export_galenic_forms(name='galenic_forms.yaml')
       forms =  []
-      @app.each_galenic_form{|form| forms << form}
+      @app.each_galenic_form.sort.map { |key,value| forms << value} 
       export_array(name, forms.values)
     end
     def export_galenic_groups(name='galenic_groups.yaml')
-      export_array(name, @app.galenic_groups.values)
+      groups = []
+      @app.galenic_groups.sort.map { |key,value| groups << value }
+      export_array(name, groups)
     end
     def check_infos(name, group, &block)
       # Check missing data of fachinfo/patinfo data
