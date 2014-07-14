@@ -58,38 +58,18 @@ describe "ch.oddb.org" do
     @browser.close if @browser
   end
 
-  Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
-  it "should allow a prescription for several months and repetions" do
-    medis = Four_Medis
-    nr_medis = 0
-    medis.each {
-      |medi|
-      if nr_medis == 0
-        @browser.select_list(:name, "search_type").select("Markenname")
-        @browser.text_field(:name, "search_query").set(medis.first)
-        @browser.button(:name, "search").click
-        @browser.link(:href, /rezept/).click
-      else
-        add_one_drug_to_rezept(medi)
-      end
-      nr_medis += 1
+  it "should show the interaction between different drugs" do
+    @browser.goto OddbUrl+'/de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680'
     inhalt = @browser.text
-    0.upto(nr_medis-1).each{
-                            |id|
-                           inhalt.should match(/#{medis[id]}/i)                           
-                         @browser.radio(:id, "prescription_timing_with_meal_#{id}").set
-        @browser.radio(:id, "prescription_timing_before_meal_#{id}").set
-        @browser.radio(:id, "prescription_timing_with_meal_#{id}").set
-        @browser.radio(:id, "prescription_timing_after_meal_#{id}").set
-        @browser.radio(:id, "prescription_term_repetition_#{id}").set
-        @browser.select_list(:id, "repetition_#{id}").select("2")
-        @browser.radio(:id, "prescription_term_per_month_#{id}").set
-        @browser.select_list(:id, "per_month_#{id}").select("6")
-        @browser.textarea(:name, "prescription_comment[#{id}]").set("Bemerkung #{id} zu #{medi}")
-      }
-    }
+    inhalt.should match(/M01AG01: Mefenaminsäure => B01AA04: Phenprocoumon Erhöhtes .*Blutungsrisiko/i) 
+    inhalt.should match(/D: Kombination vermeiden/i) 
+    inhalt.should match(/B01AA04: Phenprocoumon => B01AC06: Acetylsalicylsäure Erhöhtes .*Blutungsrisiko/i) 
+    inhalt.should match(/C: Regelmässige Überwachung/i) 
+    inhalt.should match(/B01AC06: Acetylsalicylsäure => G04BE03: Sildenafil Keine Interaktion./i) 
+    inhalt.should match(/A: Keine Massnahmen erforderlich/i) 
   end
 
+  Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   it "should with four medicaments" do
     medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")
@@ -143,7 +123,7 @@ describe "ch.oddb.org" do
     endTime = Time.now
     diff = endTime - startTime
     if ARGV.size > 0 and File.basename(ARGV[0]).eql?(File.basename(__FILE__))
-      $stdout.puts "Test with two medicaments took #{diff.to_i} seconds. #{diff}"
+      $stdout.puts "Test with two medicaments took #{diff.to_i} seconds. #{diff}" if $VERBOSE
     end
   end
 
