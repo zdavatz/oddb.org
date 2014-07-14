@@ -517,15 +517,10 @@ module ODDB
 				end
 			end
       def print
-        ean13 = nil
-        pack = nil
-        ean13 = @session.user_input(:ean) if @session.user_input(:prescription)
-        pack = @session.app.package_by_ean13(ean13) if @session.user_input(:prescription) and ean13
-        $stdout.puts "state.global.print prescription #{@session.user_input(:prescription).inspect} ean13 #{ean13.inspect} pack #{pack.inspect} "
-        if @session.user_input(:prescription) and
-           ean13 = @session.user_input(:ean) and
-           pack = @session.app.package_by_ean13(ean13)
-          State::Drugs::PrescriptionPrint.new(@session, pack)
+        state = self.search
+        drugs = @session.persistent_user_input(:drugs)
+        if drugs # and state.is_a?(State::Drugs::Result)
+          State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)
           self
         elsif iksnr = @session.user_input(:reg) and

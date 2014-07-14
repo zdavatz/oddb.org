@@ -241,8 +241,6 @@ class PrescriptionDrugDiv < HtmlGrid::Div
         @value << PrescriptionDrug.new(drug, @session, self)
       }
     end
-# was    super
-# was    @value = PrescriptionDrug.new(@model, @session, self)
   end
   def to_html(context)
     html = super
@@ -322,6 +320,7 @@ class PrescriptionForm < View::Form
     fields << '&nbsp;&nbsp;&nbsp;'
     %w[first_name family_name birth_day].each do |attr|
       key = "prescription_#{attr}".to_sym
+			value = @lookandfeel.lookup(key)
       fields << @lookandfeel.lookup(key)
       fields << '&nbsp;'
       input = HtmlGrid::InputText.new(key, model, session, self)
@@ -415,6 +414,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   def name(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
     span.value = ''
+    return span unless model
     span.value << model.name_with_size
     if price = model.price_public
       span.value << '&nbsp;-&nbsp;'
@@ -428,8 +428,8 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     span
   end
   def comment_value(model, session=@session)
-    if texts = session.user_input(:prescription_comment) and
-       comment_text = texts[@index]
+    texts = session.user_input(:prescription_comment)
+    if texts and comment_text = texts[@index]
       text = HtmlGrid::Value.new(:prescription_comment, model, session, self)
       text.value = comment_text
       text
@@ -466,20 +466,25 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   end
   def prescription_for(model, session=@session)
     fields = []
-    fields << HtmlGrid::LabelText.new(:prescription_for, model, session, self)
+    fields << @lookandfeel.lookup(:prescription_for)
+    fields << '&nbsp;&nbsp;&nbsp;'
     %w[first_name family_name birth_day].each do |attr|
       key = "prescription_#{attr}".to_sym
+      value = @lookandfeel.lookup(key)
+      fields << value
+      fields << '&nbsp;'
       span = HtmlGrid::Span.new(model, session, self)
       span.set_attribute('class', 'bold')
       span.value = @session.user_input(key)
       fields << span
-      fields << '&nbsp;'
+      fields << '&nbsp;&nbsp;'
     end
     span = HtmlGrid::Span.new(model, session, self)
     type = (@session.user_input(:prescription_sex) == '1' ? 'w' : 'm')
     span.value = @lookandfeel.lookup("prescription_sex_#{type}".to_sym)
     span.set_attribute('class', 'bold')
     fields << span
+    fields
   end
   def prescription_title(model, session=@session)
     "#{@lookandfeel.lookup(:date)}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
@@ -528,10 +533,19 @@ class Prescription < View::PrivateTemplate
 end
 class PrescriptionPrint < View::PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
+  def init
+    @drugs = @session.persistent_user_input(:drugs)
+    @index = (@drugs ? @drugs.length : 0).to_s
+    if @model and @drugs and !@drugs.empty?
+      @index = @drugs.keys.index(@model.barcode).to_s
+    end
+    super
+  end
   def head(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
+    drugs = @session.persistent_user_input(:drugs)
     span.value = @lookandfeel.lookup(:print_of) +
-      @lookandfeel._event_url(:rezept, [:ean, model.barcode])
+      @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
     span
   end
 end
@@ -552,6 +566,7 @@ class PrescriptionCsv < HtmlGrid::Component
       prescription_for << user_input(attr)
     end
     name = @lookandfeel.lookup(:prescription).dup + '_'
+    name ||= '_'
     unless prescription_for.empty?
       name << prescription_for.join('_').gsub(/[\s]+/u, '_')
     else

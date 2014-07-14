@@ -7,6 +7,7 @@ require 'tmpdir'
 require "selenium-webdriver"
 
 describe "ch.oddb.org" do
+  Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
  
   def add_one_drug_to_rezept(name)
     chooser = @browser.text_field(:id, 'prescription_searchbar')
@@ -57,19 +58,54 @@ describe "ch.oddb.org" do
   after :all do
     @browser.close if @browser
   end
-
-  it "should show the interaction between different drugs" do
-    @browser.goto OddbUrl+'/de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680'
+  it "should be possible to print a presciption" do
+    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
+    # require 'pry'; binding.pry
+    @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
+    @browser.text_field(:name => 'prescription_first_name').set 'Max'
+    @browser.text_field(:name => 'prescription_family_name').set 'Müller'
+    @browser.text_field(:name => 'prescription_birth_day').set '01.01.1990'
+    @browser.textarea(:name => 'prescription_comment[0]').set 'Kommentar zu Merfen'
+    @browser.textarea(:name => 'prescription_comment[1]').set 'Kommentar zu Nolvadex'
+    oldWindowsSize = @browser.windows
+    @browser.button(:name, "print").click
+    @browser.windows.last.use if @browser.windows.size != oldWindowsSize   
     inhalt = @browser.text
-    inhalt.should match(/M01AG01: Mefenaminsäure => B01AA04: Phenprocoumon Erhöhtes .*Blutungsrisiko/i) 
-    inhalt.should match(/D: Kombination vermeiden/i) 
-    inhalt.should match(/B01AA04: Phenprocoumon => B01AC06: Acetylsalicylsäure Erhöhtes .*Blutungsrisiko/i) 
-    inhalt.should match(/C: Regelmässige Überwachung/i) 
-    inhalt.should match(/B01AC06: Acetylsalicylsäure => G04BE03: Sildenafil Keine Interaktion./i) 
-    inhalt.should match(/A: Keine Massnahmen erforderlich/i) 
+    inhalt.should     match(/Ausdruck/i)
+    ['Ausdruck',
+     'Stempel, Unterschrift',
+     'Max', 'Müller',
+     '01.01.1990', 'Merfen', 'Nolvadex', 
+     '7680516820922', '7680390530474',
+     'Kommentar zu Merfen',
+     'Kommentar zu Nolvadex',
+     / m$/, # männlich
+    ].each do 
+      |name|
+      puts puts
+      inhalt.should match(name)
+    end
   end
 
-  Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
+  it "should show the interaction between different drugs" do
+    medis = Four_Medis
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    1.upto(3) { |idx|
+        add_one_drug_to_rezept(medis[idx])
+        url1 = @browser.url
+    }
+    inhalt = @browser.text
+    inhalt.should match(/C09CA01: Losartan => L02BA01: Tamoxifen Keine bekannte Interaktion/i) 
+    inhalt.should match(/A: Keine Massnahmen erforderlich/i) 
+    inhalt.should match(/N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen/i) 
+    inhalt.should match(/X: Kontraindiziert/i) 
+    inhalt.should match(/N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion./i) 
+    inhalt.should match(/B: Vorsichtsmassnahmen empfohlen/i) 
+  end
+
   it "should with four medicaments" do
     medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")
