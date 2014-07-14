@@ -86,7 +86,6 @@ describe "ch.oddb.org" do
       inhalt.should match(name)
     end
   end
-
   it "should show the interaction between different drugs" do
     medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")

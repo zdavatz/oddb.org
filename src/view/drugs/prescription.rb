@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::View::Drugs::Prescription -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
-
+# before commit 83d798fb133f10008dd95f2b73ebc3e11c118b16 of 2014-10-14 we had a view which 
+# allowed entering a lot of details (before, during, after meals, repetitions, etc)
+# Test it with http://oddb-ci2.dyndns.org/de/gcc/rezept/ean/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
 require 'csv'
 require 'cgi'
 require 'htmlentities'
@@ -36,102 +38,6 @@ class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   end
 end
 
-class PrescriptionDrugInnerForm < HtmlGrid::Composite
-  COMPONENTS = {
-    [0,0] => :interactions,
-    [8,1] => '&nbsp;&nbsp;',
-    [9,1] => :prescription_comment,
-    [0,4] => :atc_code,
-  }
-  CSS_MAP = {
-    [0,0] => 'div',
-    [9,1] => 'list',
-    [9,1] => 'list top',
-  }
-  COMPONENT_CSS_MAP = {
-    [9,1] => 'wide',
-  }
-  COLSPAN_MAP = {
-    [0,0] => 14,
-    [9,1] => 2,
-    [0,1] => 3,
-    [9,1] => 5,
-  }
-  LABELS = false
-  def init
-    @drugs = @session.persistent_user_input(:drugs)
-    @index = (@drugs ? @drugs.length : 0).to_s
-    if @model and @drugs and !@drugs.empty?
-      @index = @drugs.keys.index(@model.barcode).to_s
-    end
-    super
-    @grid.add_attribute('rowspan', 2, *[0,1])
-    @grid.add_attribute('rowspan', 2, *[9,1])
-  end
-  def prescription_comment(model, session)
-   name = "prescription_comment[#{@index}]".intern
-   textarea = HtmlGrid::Textarea.new(name, model, @session, self)
-   value = @lookandfeel.lookup(:prescription_comment)
-   textarea.set_attribute('onFocus', "if (this.value == '#{value}') { value = '' };")
-   textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
-   textarea.value = value
-   textarea
-  end
-  def atc_code(model,session)
-    # this is needed by js for external link to modules.epha.ch
-    hidden = HtmlGrid::Input.new(:atc_code, model, session, self)
-    hidden.set_attribute('type', 'hidden')
-    if model and model.atc_class and code = model.atc_class.code
-      hidden.value = code
-    end
-    hidden
-  end
-  private
-  # handle index
-  def label_for(key)
-    text = HtmlGrid::LabelText.new(key, @model, @session, self)
-    label = HtmlGrid::Label.new(text, @session)
-    name = (key.to_s + '_' + @index)
-    label.instance_eval{ @attributes['for'] = name } # overwrite for
-    label
-  end
-  def checkbox_for(key, attrs={}) # no hidden
-    name = (key.to_s + "[#{@index}]")
-    checkbox = HtmlGrid::InputCheckbox.new(name, @model, @session, self)
-    checkbox.set_attribute('id', key.to_s + '_' + @index)
-    attrs.each_pair do |attr_key, attr_value|
-      checkbox.set_attribute(attr_key, attr_value)
-    end
-    checkbox
-  end
-  def radio_for(key, value=0, attrs={})
-    name  = (key.to_s + "[#{@index}]").intern
-    radio = HtmlGrid::InputRadio.new(name, @model, @session, self)
-    radio.value = value.to_s
-    attrs.each_pair do |attr_key, attr_value|
-      if attr_key == 'id'
-        attr_value = (attr_value + '_' + @index)
-      end
-      radio.set_attribute(attr_key.to_s, attr_value)
-    end
-    radio
-  end
-  def select_for(key, values, attrs={})
-    name  = (key.to_s + "[#{@index}]").intern
-    select = HtmlGrid::Select.new(name, @model, @session, self)
-    select.valid_values = values
-    attrs.each_pair do |attr_key, attr_value|
-      if attr_key == 'id'
-        attr_value = (attr_value + '_' + @index)
-      end
-      select.set_attribute(attr_key.to_s, attr_value)
-    end
-    select
-  end
-  def interactions(model, session)
-    View::Drugs::PrescriptionInteractionDrugDiv.new(model, session, self)
-  end
-end
 class PrescriptionDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
   COMPONENTS = {
@@ -204,30 +110,60 @@ end
 class PrescriptionDrug < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => :drug,
-    [0,1] => :inner_form,
+#    [0,1] => :inner_form,
+		[0,1] => :interactions,
+    [0,2] => :prescription_comment,
+		[0,4] => :atc_code,
   }
   CSS_MAP = {
     [0,0] => 'subheading',
     [0,1] => 'list',
+    [0,2] => 'list top',
   }
+  COMPONENT_CSS_MAP = {
+    [0,2] => 'wide',
+  }
+  COLSPAN_MAP = {
+    [0,2] => 5,
+  }
+	
   CSS_CLASS = 'composite'
   def init
     @drugs = @session.persistent_user_input(:drugs)
-    index = -1
+    @index = -1
     if @model and @drugs and !@drugs.empty?
-      index = @drugs.keys.index(@model.barcode)
+      @index = @drugs.keys.index(@model.barcode)
     end
     if @drugs and !@drugs.empty?
-      @model = @drugs.values[index]
+      @model = @drugs.values[@index]
     end
     @attributes.store('id', 'drugs_' + @model.barcode) if @attributes and @model
     super
   end
+  def interactions(model, session)
+    View::Drugs::PrescriptionInteractionDrugDiv.new(model, session, self)
+  end
+
+  def atc_code(model,session)
+    # this is needed by js for external link to modules.epha.ch
+    hidden = HtmlGrid::Input.new(:atc_code, model, session, self)
+    hidden.set_attribute('type', 'hidden')
+    if model and model.atc_class and code = model.atc_class.code
+      hidden.value = code
+    end
+    hidden
+  end
   def drug(model, session)
     View::Drugs::PrescriptionDrugHeader.new(model, session, self)
   end
-  def inner_form(model, session)
-    View::Drugs::PrescriptionDrugInnerForm.new(model, session, self)
+  def prescription_comment(model, session)
+   name = "prescription_comment[#{@index}]".intern
+   textarea = HtmlGrid::Textarea.new(name, model, @session, self)
+   value = @lookandfeel.lookup(:prescription_comment)
+   textarea.set_attribute('onFocus', "if (this.value == '#{value}') { value = '' };")
+   textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
+   textarea.value = value
+   textarea
   end
 end
 class PrescriptionDrugDiv < HtmlGrid::Div
@@ -402,13 +338,13 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
   def init
+    @index = -1
     @drugs = @session.persistent_user_input(:drugs) || {}
-    if !@drugs.empty? and @model and index = @drugs.keys.index(@model.barcode)
-      index += 1 # main model
+    if !@drugs.empty? and @model and @index = @drugs.keys.index(@model.barcode)
+      @index += 1 # main model
     else
-      index = 0
+      @index = 0
     end
-    @index = index.to_s
     super
   end
   def name(model, session=@session)
@@ -429,7 +365,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   end
   def comment_value(model, session=@session)
     texts = session.user_input(:prescription_comment)
-    if texts and comment_text = texts[@index]
+    if texts and comment_text = texts[(@index.to_i - 1).to_s]
       text = HtmlGrid::Value.new(:prescription_comment, model, session, self)
       text.value = comment_text
       text
@@ -439,7 +375,6 @@ end
 class PrescriptionPrintComposite < HtmlGrid::DivComposite
   include PrintComposite
   include View::AdditionalInformation
-  INNER_COMPOSITE = View::Drugs::PrescriptionPrintInnerComposite
   PRINT_TYPE = ""
   COMPONENTS = {
     [0,0] => :print_type,
@@ -490,14 +425,9 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     "#{@lookandfeel.lookup(:date)}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
   end
   def document(model, session=@session)
-    if @drugs
-      packages = @drugs.values.unshift(model)
-    else
-      packages = [model]
-    end
     fields = []
-    packages.each do |pack|
-      composite = self::class::INNER_COMPOSITE.new(pack, session, self)
+    @drugs.each do |key, pack|
+      composite = View::Drugs::PrescriptionPrintInnerComposite.new(pack, session, self)
       fields << composite
     end
     fields
