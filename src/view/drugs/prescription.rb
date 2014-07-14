@@ -39,34 +39,13 @@ end
 class PrescriptionDrugInnerForm < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => :interactions,
-    [0,1] => 'prescription_quantity_morning',
-    [1,1] => :prescription_quantity_morning,
-    [2,1] => 'prescription_quantity_noon',
-    [3,1] => :prescription_quantity_noon,
-    [4,1] => 'prescription_quantity_evening',
-    [5,1] => :prescription_quantity_evening,
-    [6,1] => 'prescription_quantity_night',
-    [7,1] => :prescription_quantity_night,
     [8,1] => '&nbsp;&nbsp;',
-    [9,1] => :prescription_method_fields,
-    [0,1] => :prescription_timing_fields,
-    [3,1] => :prescription_term_fields,
     [9,1] => :prescription_comment,
     [0,4] => :atc_code,
   }
   CSS_MAP = {
     [0,0] => 'div',
-    [0,1] => 'list bold',
-    [1,1] => 'list',
-    [2,1] => 'list bold',
-    [3,1] => 'list',
-    [4,1] => 'list bold',
-    [5,1] => 'list',
-    [6,1] => 'list bold',
-    [7,1] => 'list',
     [9,1] => 'list',
-    [0,1] => 'list top',
-    [3,1] => 'list top',
     [9,1] => 'list top',
   }
   COMPONENT_CSS_MAP = {
@@ -76,7 +55,6 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     [0,0] => 14,
     [9,1] => 2,
     [0,1] => 3,
-    [3,1] => 5,
     [9,1] => 5,
   }
   LABELS = false
@@ -88,121 +66,7 @@ class PrescriptionDrugInnerForm < HtmlGrid::Composite
     end
     super
     @grid.add_attribute('rowspan', 2, *[0,1])
-    @grid.add_attribute('rowspan', 2, *[3,1])
     @grid.add_attribute('rowspan', 2, *[9,1])
-  end
-  def self.define_quantity_method(key)
-    name = "prescription_quantity_#{key}"
-    define_method(name) do |model, session|
-      input = HtmlGrid::InputText.new(name + "[#{@index}]", model, session, self)
-      input.set_attribute('size', 3)
-      input.set_attribute('onFocus', "if (this.value == '0') { value = '' };")
-      input.set_attribute('onBlur',  "if (this.value == '') { value = '0' };")
-      input.label = false
-      input.value = '0'
-      input
-    end
-  end
-  %w[morning noon evening night].each do |key|
-    define_quantity_method(key)
-  end
-  def prescription_timing_fields(model, session)
-    fields = []
-    attrs = {
-      'checked' => true,
-      'id'      => 'prescription_timing_before_meal'
-    }
-    fields << radio_for(:prescription_timing, 1, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_timing_before_meal)
-    fields << '<br/>'
-    attrs = {
-      'id' => 'prescription_timing_with_meal'
-    }
-    fields << radio_for(:prescription_timing, 2, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_timing_with_meal)
-    fields << '<br/>'
-    attrs = {
-      'id' => 'prescription_timing_after_meal'
-    }
-    fields << radio_for(:prescription_timing, 3, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_timing_after_meal)
-    fields
-  end
-  def prescription_method_fields(model, session)
-    fields = []
-    fields << checkbox_for(:prescription_method_as_necessary)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_method_as_necessary)
-    fields << '&nbsp;&nbsp;'
-    fields << checkbox_for(:prescription_method_regularly)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_method_regularly)
-    fields
-  end
-  def prescription_term_fields(model, session)
-    fields = []
-    js = <<-JS
-var month      = document.getElementById('per_month_#{@index}')
-var repetition = document.getElementById('repetition_#{@index}')
-month.value    = '1';
-month.disabled = true;
-repetition.value    = '1';
-repetition.disabled = true;
-    JS
-    attrs = {
-      'checked' => true,
-      'onClick' => js,
-      'id'      => 'prescription_term_once',
-    }
-    fields << radio_for(:prescription_term, 1, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_term_once)
-    fields << '<br/>'
-    js = <<-JS
-var month      = document.getElementById('per_month_#{@index}')
-var repetition = document.getElementById('repetition_#{@index}')
-month.value    = '1';
-month.disabled = true;
-repetition.disabled = false;
-    JS
-    attrs = {
-      'onClick' => js,
-      'id'      => 'prescription_term_repetition'
-    }
-    fields << radio_for(:prescription_term, 2, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_term_repetition)
-    fields << '&nbsp;'
-    attrs = {
-      'disabled' => 'disabled',
-      'id'       => 'repetition'
-    }
-    fields << select_for(:prescription_repetition, (1..12).to_a, attrs)
-    fields << '<br/>'
-    js = <<-JS
-var month      = document.getElementById('per_month_#{@index}')
-var repetition = document.getElementById('repetition_#{@index}')
-month.disabled = false;
-repetition.value    = '1';
-repetition.disabled = true;
-    JS
-    attrs = {
-      'onClick' => js,
-      'id'      => 'prescription_term_per_month'
-    }
-    fields << radio_for(:prescription_term, 3, attrs)
-    fields << '&nbsp;'
-    fields << label_for(:prescription_term_per_month)
-    fields << '&nbsp;'
-    attrs = {
-      'disabled' => 'disabled',
-      'id'       => 'per_month'
-    }
-    fields << select_for(:prescription_per_month, (1..12).to_a, attrs)
-    fields
   end
   def prescription_comment(model, session)
    name = "prescription_comment[#{@index}]".intern
@@ -523,28 +387,16 @@ end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1] => :name,
-    [0,2] => :quantity_value,
-    [0,3] => :timing_value,
-    [0,4] => :method_value,
-    [0,5] => :term_value,
     [0,7] => 'prescription_comment',
     [0,9] => :comment_value,
   }
   CSS_MAP = {
     [0,1] => 'print bold',
-    [0,2] => 'print',
-    [0,3] => 'print',
-    [0,4] => 'print top',
-    [0,5] => 'print',
     [0,7] => 'print bold',
     [0,9] => 'print',
   }
   COLSPAN_MAP = {
     [0,1] => 5,
-    [0,2] => 5,
-    [0,3] => 5,
-    [0,4] => 5,
-    [0,5] => 5,
     [0,7] => 5,
     [0,9] => 5,
   }
@@ -574,80 +426,6 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     end
     span.set_attribute('class', 'bold')
     span
-  end
-  def quantity_value(model, session=@session)
-    fields = []
-    [:morning, :noon, :evening, :night].each do |at_time|
-      key = "prescription_quantity_#{at_time.to_s}".to_sym
-      if quantities = session.user_input(key) and quantity = quantities[@index] and
-         quantity =~ /^[0-9]+$/ and !quantity.to_i.zero?
-        fields << '<br/>' if fields.empty?
-        fields << HtmlGrid::LabelText.new(key, model, session, self)
-        text = HtmlGrid::Value.new(:prescription_quantity, model, session, self)
-        text.value = quantity
-        fields << '&nbsp;'
-        fields << text
-        fields << '<br/>'
-      end
-    end
-    fields << '<br/>' unless fields.empty?
-    fields
-  end
-  def timing_value(model, session=@session)
-    timings = session.user_input(:prescription_timing)
-    name = case timings[@index]
-    when '1'; :prescription_timing_before_meal;
-    when '2'; :prescription_timing_with_meal;
-    when '3'; :prescription_timing_after_meal;
-    end
-    if name
-      text = HtmlGrid::Value.new(name, model, session, self)
-      text.value = @lookandfeel.lookup(name)
-      text
-    end
-  end
-  def method_value(model, session=@session)
-    fields = []
-    [:as_necessary, :regulaly].each do |method|
-      key = "prescription_method_#{method.to_s}".to_sym
-      if methods = session.user_input(key) and name = methods[@index]
-        text = HtmlGrid::Value.new(name, model, session, self)
-        text.value = @lookandfeel.lookup(key)
-        fields << '<br/>' if fields.empty?
-        fields << text
-        fields << '<br/>'
-      end
-    end
-    fields << '<br/>' unless fields.empty?
-    fields
-  end
-  def term_value(model, session=@session)
-    fields = []
-    terms = session.user_input(:prescription_term)
-    name = case terms[@index]
-    when '1'; :prescription_term_once;
-    when '2'; :prescription_term_repetition;
-    when '3'; :prescription_term_per_month;
-    end
-    if name
-      text = HtmlGrid::Value.new(name, model, session, self)
-      text.value = @lookandfeel.lookup(name)
-      fields << text
-      if name.to_s =~ /repetition/ and repetitions = @session.user_input(:prescription_repetition) and
-         repetition = repetitions[@index]
-        text = HtmlGrid::Value.new(:prescription_repetition, model, session, self)
-        text.value = repetition
-        fields << '&nbsp;'
-        fields << text
-      elsif name.to_s =~ /month/ and months = @session.user_input(:prescription_per_month) and
-            month = months[@index]
-        text = HtmlGrid::Value.new(:prescription_per_month, model, session, self)
-        text.value = month
-        fields << '&nbsp;'
-        fields << text
-      end
-      fields
-    end
   end
   def comment_value(model, session=@session)
     if texts = session.user_input(:prescription_comment) and
@@ -800,13 +578,6 @@ class PrescriptionCsv < HtmlGrid::Component
       @index = index.to_s
       @lines << extract(pack)
       insert_blank
-      quantity_value.each{ |qv| @lines << qv }
-      insert_blank
-      @lines << timing_value
-      insert_blank
-      method_value.each{ |mv| @lines << mv }
-      insert_blank
-      @lines << term_value
       if comment = comment_value
         insert_blank
         @lines << comment
@@ -877,58 +648,6 @@ class PrescriptionCsv < HtmlGrid::Component
       end.to_s
       value.empty? ? nil : value
     end
-  end
-  def quantity_value
-    _value = []
-    [:morning, :noon, :evening, :night].each do |at_time|
-      key = "quantity_#{at_time}"
-      if quantity = user_input(key) and
-         quantity =~ /^[0-9]+$/ and
-         !quantity.to_i.zero?
-        text = lookup(key) + ' '
-        text << quantity.to_s
-        _value << [text]
-      end
-    end
-    _value
-  end
-  def timing_value
-    key = case user_input(:timing)
-    when '1'; :timing_before_meal;
-    when '2'; :timing_with_meal;
-    when '3'; :timing_after_meal;
-    end
-    key ? [lookup(key)] : []
-  end
-  def method_value # checkbox
-    _value = []
-    [:as_necessary, :regulaly].each do |method|
-      key = "method_#{method}"
-      if user_input(key)
-        _value << [lookup(key)]
-      end
-    end
-    _value
-  end
-  def term_value
-    _value = []
-    key = case user_input(:term)
-    when '1'; :term_once;
-    when '2'; :term_repetition;
-    when '3'; :term_per_month;
-    end
-    if key
-      text = lookup(key)
-      if key.to_s =~ /repetition/ and repetition = user_input(:repetition)
-        text << ' '
-        text << repetition
-      elsif key.to_s =~ /month/ and month = user_input(:per_month)
-        text << ' '
-        text << month
-      end
-      _value = [text]
-    end
-    _value
   end
   def comment_value
     comment = user_input(:comment)
