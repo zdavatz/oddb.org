@@ -58,6 +58,20 @@ describe "ch.oddb.org" do
   after :all do
     @browser.close if @browser
   end
+
+  it "should not loose existing comment after adding a new prescription" do
+    medis = Four_Medis
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    firstComment =  "Kommentar zu #{medis[0]}"
+    @browser.textarea(:name => 'prescription_comment[0]').set firstComment
+    @browser.text.should match(firstComment)
+    add_one_drug_to_rezept(medis[1])
+    @browser.text.should match(firstComment)
+  end
+
   it "should be possible to print a presciption" do
     @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
     # require 'pry'; binding.pry
