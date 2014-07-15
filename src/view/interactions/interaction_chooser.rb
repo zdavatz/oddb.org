@@ -95,6 +95,9 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     super
   end
   def fachinfo(model, session=@session)
+    if @session.persistent_user_input(:printing)
+      return
+    end
     if fi = super(model, session, 'square bold infos')
       fi.set_attribute('target', '_blank')
       fi
@@ -130,6 +133,8 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
   end
   
   def delete(model, session=@session)
+    @printing_active  = @session.persistent_user_input(:printing)
+    return if @session.persistent_user_input(:printing)
     if @container.is_a? ODDB::View::Interactions::InteractionChooserDrug
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
@@ -141,6 +146,12 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
           ODDB::View::Interactions.calculate_atc_codes({})
         end
         link.onclick = %(
+        var element = document.getElementById('prescription_comment[0]');
+        // innerText for IE, textContent for other browsers
+        var text = element.innerText || element.textContent;
+        // element.innerHTML = text;
+        console.log ("Text of prescription_comment[0] "+ text);
+        window.sessionStorage.setItem('comment', text);
         console.log ("Going to new url #{url} in interaction_chooser");
         window.location.href = '#{url}';
         )
@@ -156,15 +167,17 @@ class InteractionChooserDrug < HtmlGrid::Composite
   CSS_CLASS = 'composite'
   def init
     # When being called from rezept we should not display the heading
-    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil
+    @printing_active  = @session.persistent_user_input(:printing)
+    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil or @printing_active
+    @interactions = ODDB::View::Interactions.get_interactions(model.atc_class.code, @session)
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
     @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
       nextRow = 0
-      unless @hide_interaction_headers
+      if not @hide_interaction_headers and @interactions.size > 0
         components.store([0,0], :header_info)
-        css_map.store([0,0], 'subheading')
+        css_map.store([0,0], 'subheading') unless @printing_active
         nextRow += 1
       end
       if @drugs and !@drugs.empty?
@@ -189,7 +202,15 @@ return false;
     super
   end
   def header_info(model, session=@session)
-    View::Interactions::InteractionChooserDrugHeader.new(model, session, self)
+    if @session.persistent_user_input(:printing)
+      return unless @interactions.size > 0
+      span = HtmlGrid::Span.new(model, session, self)
+      span.value = @lookandfeel.lookup(:interactions)
+      span.set_attribute('class', 'print bold')
+      span 
+    else
+      View::Interactions::InteractionChooserDrugHeader.new(model, session, self)
+    end
   end
   def text_info(model, session=@session)
     return nil unless model.atc_class
@@ -200,16 +221,19 @@ return false;
       headerDiv = HtmlGrid::Div.new(model, @session, self)
       headerDiv.value = []
       headerDiv.value << interaction[:header]
-      headerDiv.set_attribute('class', 'interaction-header')
-      headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      unless @session.persistent_user_input(:printing)
+        headerDiv.set_attribute('class', 'interaction-header')
+        headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      end
       list.value << headerDiv
     
       infoDiv = HtmlGrid::Div.new(model, @session, self)
       infoDiv.value = []
       infoDiv.value << interaction[:text]
-      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}")
+      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless @session.persistent_user_input(:printing)
       list.value << infoDiv                                                            
     }
+    list.css_class = 'print' if @session.persistent_user_input(:printing)
     list
   end  
 end

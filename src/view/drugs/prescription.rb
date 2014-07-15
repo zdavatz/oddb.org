@@ -27,6 +27,81 @@ require 'view/form'
 module ODDB
   module View
     module Drugs
+      JS_RESTORE_PRESCRIPTION_COMMENTS = %(
+  for (index = 0; index < 99; ++index) {
+    var field_id = 'prescription_comment_' + index;
+    var saved_value =  sessionStorage.getItem(field_id, '');
+    var x=document.getElementById(field_id);
+    console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+    if (x != null) {
+      if (saved_value != null && saved_value != 'null') {
+        x.value = saved_value; 
+      }
+      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+    } else { break; }
+  } 
+)      
+      
+      JS_RESTORE_PRESCRIPTION_PATIENT_INFO = %(
+  document.getElementById('searchbar').focus();
+    var fields = [ 'prescription_first_name',
+     'prescription_family_name',
+      'prescription_birth_day',
+  ]
+  for (index = 0; index < fields.length; ++index) {
+    var field_id = fields[index];
+    var saved_value =  sessionStorage.getItem(field_id, '');
+    var x=document.getElementById(field_id);
+    if (x != null) {
+      if (saved_value != null && saved_value != 'null') {
+        x.value = saved_value; 
+      }
+//      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+    }
+  } 
+      )
+      JS_RESTORE_PRESCRIPTION_SEX = %(
+  var field_id = 'prescription_sex';
+  var saved_value =  sessionStorage.getItem(field_id, '');
+//  console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
+  if (saved_value == '1') {
+    document.getElementById('prescription_sex_1').checked = true;
+    document.getElementById('prescription_sex_2').checked = false;
+  } else {
+    document.getElementById('prescription_sex_1').checked = false;
+    document.getElementById('prescription_sex_2').checked = true;
+  }
+)      
+      
+      def Drugs.saveFieldValueForLaterUse(field, field_id, default_value)
+        if field.is_a?(HtmlGrid::InputRadio)
+          field.set_attribute('onClick', "
+                                  var new_value = sessionStorage.getItem('#{field_id}');
+                                  sessionStorage.setItem('#{field_id}', '#{default_value}');
+                                  console.log ('#{field_id}.onClick is '+ '#{default_value}');
+                                ")
+          field_id = field_id.to_s  + '_' + default_value.to_s
+        else
+        field.set_attribute('onFocus', "
+                                var new_value = sessionStorage.getItem('#{field_id}')
+                                console.log ('prescription_comment.onfocus of #{field_id} is '+ this.value + ' and new_value ' + new_value); 
+                                if (this.value == '#{default_value}' && new_value == '#{default_value}) { this.value = '' ;
+                                  console.log ('#{field_id}.onfocus2 empty: ');
+                              } else {
+                                  console.log ('#{field_id}.onfocus2 set to: '+ this.value);
+                              }
+                              ")
+        field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}' 
+                              } else {
+                                sessionStorage.setItem('#{field_id}', this.value);
+                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to #{default_value}  is '+ sessionStorage.getItem('#{field_id}'));  
+                              }
+                              ")
+        end
+        field.set_attribute('id', field_id)
+        field.value = default_value unless field.value
+      end
+      
 class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   def init
     super
@@ -88,9 +163,20 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
       args = [:ean, model.barcode] if model
-      url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '')
+      url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
       link.onclick = %(
-      console.log ("Going to new url #{url} in prescription");
+      console.log ("Delete index #{@index}: going to new url #{url} in prescription");
+      for (index = #{@index}; index < 99; ++index) {
+        var cur_id  = 'prescription_comment_' + index;
+        var next_id = 'prescription_comment_' + (index+1);
+        var next_value =  sessionStorage.getItem(next_id, '');
+        if (next_value != '' && next_value != 'null' && next_value != null) {
+          sessionStorage.setItem(cur_id, next_value);
+          console.log ('PrescriptionDrugHeader.delete nextvalue ' + cur_id + ': set value : ' + next_value);
+        } else {
+          sessionStorage. removeItem(cur_id);
+        }
+      }           
       window.top.location.replace('#{url}');
       )
       link
@@ -153,13 +239,10 @@ class PrescriptionDrug < HtmlGrid::Composite
     View::Drugs::PrescriptionDrugHeader.new(model, session, self)
   end
   def prescription_comment(model, session)
-   name = "prescription_comment[#{@index}]".intern
-   textarea = HtmlGrid::Textarea.new(name, model, @session, self)
-   value = @lookandfeel.lookup(:prescription_comment)
-   textarea.set_attribute('onFocus', "if (this.value == '#{value}') { value = '' };")
-   textarea.set_attribute('onBlur',  "if (this.value == '') { value = '#{value}' };")
-   textarea.value = value
-   textarea
+    name = "prescription_comment_#{@index}".intern
+    textarea = HtmlGrid::Textarea.new(name.intern, model, @session, self)
+    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:prescription_comment))
+    textarea
   end
 end
 class PrescriptionDrugDiv < HtmlGrid::Div
@@ -258,12 +341,14 @@ class PrescriptionForm < View::Form
       input = HtmlGrid::InputText.new(key, model, session, self)
       input.set_attribute('size', 13)
       input.label = false
+      Drugs.saveFieldValueForLaterUse(input, key, '')
       fields << input
       fields << '&nbsp;&nbsp;'
     end
     fields << @lookandfeel.lookup(:prescription_sex)
     fields << '&nbsp;'
     radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
+    Drugs.saveFieldValueForLaterUse(radio, :prescription_sex, 1)
     radio.value = '1'
     radio.set_attribute('checked', true)
     fields << radio
@@ -271,6 +356,7 @@ class PrescriptionForm < View::Form
     fields << @lookandfeel.lookup(:prescription_sex_w)
     fields << '&nbsp;'
     radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
+    Drugs.saveFieldValueForLaterUse(radio, :prescription_sex, 2)
     radio.value = '2'
     fields << radio
     fields << '&nbsp;'
@@ -299,6 +385,12 @@ class PrescriptionForm < View::Form
       'id'     => 'prescription_form',
       'target' => '_blank'
     })
+    self.onload = %(require(["dojo/domReady!"], function(){  
+      #{Drugs::JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
+      #{Drugs::JS_RESTORE_PRESCRIPTION_SEX}
+      #{Drugs::JS_RESTORE_PRESCRIPTION_COMMENTS}
+});
+)
   end
 end
 class PrescriptionComposite < HtmlGrid::Composite
@@ -318,26 +410,40 @@ end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1] => :name,
-    [0,2] => 'prescription_comment',
-    [0,3] => :comment_value,
+    [0,2] => :interactions,
+    [0,3] => :prescription_comment,
+    [0,4] => :comment_value,
   }
   CSS_MAP = {
     [0,1] => 'print bold',
-    [0,2] => 'print bold',
-    [0,3] => 'print',
+    [0,3] => 'print bold',
+    [0,4] => 'print',
   }
   CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
   def init
+    @drugs = @session.persistent_user_input(:drugs)
     @index = -1
-    @drugs = @session.persistent_user_input(:drugs) || {}
-    if !@drugs.empty? and @model and @index = @drugs.keys.index(@model.barcode)
-      @index += 1 # main model
-    else
-      @index = 0
+    if @model and @drugs and !@drugs.empty?
+      @index = @drugs.keys.index(@model.barcode)
+    end
+    if @drugs and !@drugs.empty?
+      @model = @drugs.values[@index]
+    end
+    @texts = @session.user_input(:prescription_comment)
+    @texts ||= {}
+    @comment_header = @lookandfeel.lookup(:prescription_comment)
+    @comment_text = @texts[(@index.to_i).to_s]
+    if @comment_text == @comment_header
+      components.delete([0,3])
+      components.delete([0,4])
     end
     super
   end
+  def interactions(model, session)
+    View::Drugs::PrescriptionInteractionDrugDiv.new(model, session, self)
+  end
+
   def name(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
     span.value = ''
@@ -354,13 +460,16 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     span.set_attribute('class', 'bold')
     span
   end
+  def prescription_comment(model, session=@session)
+    span = HtmlGrid::Span.new(model, session, self)
+    span.value = @comment_header    
+  end
   def comment_value(model, session=@session)
-    texts = session.user_input(:prescription_comment)
-    if texts and comment_text = texts[(@index.to_i - 1).to_s]
-      text = HtmlGrid::Value.new(:prescription_comment, model, session, self)
-      text.value = comment_text
-      text
-    end
+    field_id = "prescription_comment_#{@index}"
+    text = HtmlGrid::Value.new(:prescription_comment, model, session, self)
+    text.value = @comment_text
+    text.set_attribute('id', field_id)
+    text
   end
 end
 class PrescriptionPrintComposite < HtmlGrid::DivComposite
@@ -368,27 +477,42 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   include View::AdditionalInformation
   PRINT_TYPE = ""
   COMPONENTS = {
-    [0,0] => :print_type,
-    [0,1] => '&nbsp;',
-    [0,2] => :prescription_for,
-    [0,3] => '&nbsp;',
-    [0,4] => :prescription_title,
-    [0,5] => :document,
-    [0,6] => '&nbsp;',
-    [0,7] => 'prescription_signature',
+    [0,0] =>  :epha_public_domain,
+    [0,1] => :print_type,
+    [0,2] => '&nbsp;',
+    [0,3] => :prescription_for,
+    [0,4] => '&nbsp;',
+    [0,5] => :prescription_title,
+    [0,6] => :document,
+    [0,7] => '&nbsp;',
+    [0,8] => 'prescription_signature',
   }
   CSS_MAP = {
     0 => 'print-type',
-    1 => 'print',
+    1 => 'print-type',
     2 => 'print',
     3 => 'print',
     4 => 'print',
     5 => 'print',
-    7 => 'print bold',
+    6 => 'print',
+    7 => 'print',
+    8 => 'print bold',
   }
   def init
+    @session.set_persistent_user_input(:printing, true)
     @drugs = @session.persistent_user_input(:drugs)
     super
+self.onload = %(require(["dojo/domReady!"], function(){ 
+      #{JS_RESTORE_PRESCRIPTION_COMMENTS}
+  });
+  )
+  
+  end
+  def epha_public_domain(model, session=@session)
+    desc = @lookandfeel.lookup(:interaction_chooser_description) + ' ' + @lookandfeel.lookup(:epha_public_domain)
+    span = HtmlGrid::Span.new(model, session, self)
+    span.value = desc
+    span 
   end
   def prescription_for(model, session=@session)
     fields = []
@@ -428,6 +552,10 @@ class Prescription < View::PrivateTemplate
   CONTENT = View::Drugs::PrescriptionComposite
   SNAPBACK_EVENT = :result
   JAVASCRIPTS = ['admin']
+  def init
+    @session.set_persistent_user_input(:printing, nil)
+    super
+  end
   def backtracking(model, session=@session)
     fields = []
     fields << @lookandfeel.lookup(:th_pointer_descr)
@@ -455,6 +583,7 @@ end
 class PrescriptionPrint < View::PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
   def init
+    @session.set_persistent_user_input(:printing, true)
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
     if @model and @drugs and !@drugs.empty?
