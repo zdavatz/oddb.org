@@ -123,10 +123,6 @@ class PrescriptionDrug < HtmlGrid::Composite
   COMPONENT_CSS_MAP = {
     [0,2] => 'wide',
   }
-  COLSPAN_MAP = {
-    [0,2] => 5,
-  }
-	
   CSS_CLASS = 'composite'
   def init
     @drugs = @session.persistent_user_input(:drugs)
@@ -322,18 +318,13 @@ end
 class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1] => :name,
-    [0,7] => 'prescription_comment',
-    [0,9] => :comment_value,
+    [0,2] => 'prescription_comment',
+    [0,3] => :comment_value,
   }
   CSS_MAP = {
     [0,1] => 'print bold',
-    [0,7] => 'print bold',
-    [0,9] => 'print',
-  }
-  COLSPAN_MAP = {
-    [0,1] => 5,
-    [0,7] => 5,
-    [0,9] => 5,
+    [0,2] => 'print bold',
+    [0,3] => 'print',
   }
   CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
