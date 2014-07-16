@@ -83,15 +83,11 @@ module ODDB
           field_id = field_id.to_s  + '_' + default_value.to_s
         else
         field.set_attribute('onFocus', "
-                                var new_value = sessionStorage.getItem('#{field_id}')
-                                console.log ('prescription_comment.onfocus of #{field_id} is '+ this.value + ' and new_value ' + new_value); 
-                                if (this.value == '#{default_value}' && new_value == '#{default_value}) { this.value = '' ;
-                                  console.log ('#{field_id}.onfocus2 empty: ');
-                              } else {
-                                  console.log ('#{field_id}.onfocus2 set to: '+ this.value);
-                              }
+                                var new_value = sessionStorage.getItem('#{field_id}');
+                                console.log ('onFocus new_value: ' + new_value);
+                                if (this.value == '#{default_value}') { this.value = '' ; }
                               ")
-        field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}' 
+        field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
                               } else {
                                 sessionStorage.setItem('#{field_id}', this.value);
                                 console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to #{default_value}  is '+ sessionStorage.getItem('#{field_id}'));  
@@ -164,8 +160,8 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link.css_class = 'delete square'
       args = [:ean, model.barcode] if model
       url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
-      link.onclick = %(
-      console.log ("Delete index #{@index}: going to new url #{url} in prescription");
+      link.onclick = "
+      console.log ('Delete index #{@index}: going to new url #{url} in prescription');
       for (index = #{@index}; index < 99; ++index) {
         var cur_id  = 'prescription_comment_' + index;
         var next_id = 'prescription_comment_' + (index+1);
@@ -178,7 +174,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
         }
       }           
       window.top.location.replace('#{url}');
-      )
+      "
       link
     end
   end
