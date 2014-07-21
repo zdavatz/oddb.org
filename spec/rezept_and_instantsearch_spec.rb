@@ -59,55 +59,87 @@ describe "ch.oddb.org" do
     @browser.close if @browser
   end
 
-  it "should not loose existing comment after adding a new prescription" do
-    medis = Four_Medis
-    @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set(medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
-    firstComment =  "Kommentar zu #{medis[0]}"
-    @browser.textarea(:name => 'prescription_comment[0]').set firstComment
-    @browser.text.should match(firstComment)
-    add_one_drug_to_rezept(medis[1])
-    @browser.text.should match(firstComment)
+  FirstName = 'Max'
+  FamilyName = 'Müller'
+  Birthday = '01.01.1990'
+  def setGeneralInfo(nrMedis=0)
+#     require 'pry'; binding.pry
+    @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
+    @browser.text_field(:name => 'prescription_first_name').set FirstName
+    @browser.text_field(:name => 'prescription_family_name').set FamilyName
+    @browser.text_field(:name => 'prescription_birth_day').set Birthday
+    0.upto(nrMedis-1) {
+      |idx|
+      comment = "Kommentar zu #{Four_Medis[idx]}"
+      @browser.textarea(:name => "prescription_comment_#{idx}").set comment
+    }
+  end
+  def checkGeneralInfo(nrMedis=0, checkText = false)
+    if checkText
+      inhalt = @browser.text
+      [FirstName, FamilyName, Birthday, " m\n"].each {
+        |what|
+        puts "Checking #{what} found #{inhalt.index(what)}" unless inhalt.index(what)
+        inhalt.index(what).class.should_not == NilClass
+      }
+      0.upto(nrMedis-1) {
+        |idx|
+          comment = "Kommentar zu #{Four_Medis[idx]}"
+          puts "Looking for #{comment}: res is #{inhalt.index(comment).inspect}"  unless inhalt.index(comment)
+          inhalt.index(comment).class.should_not == NilClass
+      }
+    else
+      @browser.text_field(:name => 'prescription_first_name').value.should == FirstName
+      @browser.text_field(:name => 'prescription_family_name').value.should == FamilyName
+      @browser.text_field(:name => 'prescription_birth_day').value.should == Birthday
+      @browser.radio(:name => "prescription_sex").value.should_not be nil
+
+      0.upto(nrMedis-1) {
+        |idx|
+          comment = "Kommentar zu #{Four_Medis[idx]}"
+          @browser.text_field(:name => "prescription_comment_#{idx}").value.should == comment
+      }
+    end
   end
 
+  it "should not loose existing comment after adding a new prescription" do
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    setGeneralInfo(1)
+    checkGeneralInfo(1)
+    add_one_drug_to_rezept(Four_Medis[1])
+    sleep 1
+    checkGeneralInfo(1)
+  end
   it "should be possible to print a presciption" do
     @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
-    # require 'pry'; binding.pry
-    @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
-    @browser.text_field(:name => 'prescription_first_name').set 'Max'
-    @browser.text_field(:name => 'prescription_family_name').set 'Müller'
-    @browser.text_field(:name => 'prescription_birth_day').set '01.01.1990'
-    @browser.textarea(:name => 'prescription_comment[0]').set 'Kommentar zu Merfen'
-    @browser.textarea(:name => 'prescription_comment[1]').set 'Kommentar zu Nolvadex'
+    setGeneralInfo(2)
     oldWindowsSize = @browser.windows
     @browser.button(:name, "print").click
     @browser.windows.last.use if @browser.windows.size != oldWindowsSize   
     inhalt = @browser.text
+    checkGeneralInfo(2, true)
     inhalt.should     match(/Ausdruck/i)
     ['Ausdruck',
      'Stempel, Unterschrift',
-     'Max', 'Müller',
-     '01.01.1990', 'Merfen', 'Nolvadex', 
+     'Merfen', 'Nolvadex',
      '7680516820922', '7680390530474',
-     'Kommentar zu Merfen',
-     'Kommentar zu Nolvadex',
      / m$/, # männlich
     ].each do 
       |name|
-      puts puts
       inhalt.should match(name)
     end
   end
+
   it "should show the interaction between different drugs" do
-    medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set(medis.first)
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
     @browser.link(:href, /rezept/).click
     1.upto(3) { |idx|
-        add_one_drug_to_rezept(medis[idx])
+        add_one_drug_to_rezept(Four_Medis[idx])
         url1 = @browser.url
     }
     inhalt = @browser.text

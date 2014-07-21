@@ -51,10 +51,14 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
     @browser = browser
   end
   startTime = Time.now
+  @seconds = -1
   0.upto(maxWait).each{
     |idx|
     browser.goto OddbUrl
-    break unless /Es tut uns leid/.match(browser.text)
+    unless /Es tut uns leid/.match(browser.text)
+      @seconds = idx
+      break
+    end
     if idx == 0
       $stdout.write "Waiting max #{maxWait} seconds for #{url} to be ready"; $stdout.flush
     else
@@ -64,7 +68,7 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   }
   endTime = Time.now
   @browser.link(:text=>'Plus').click if @browser.link(:text=>'Plus').exists?
-  puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready" if (endTime - startTime).round > 2
+  puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 end
 
 def createScreenshot(browser, added=nil)
