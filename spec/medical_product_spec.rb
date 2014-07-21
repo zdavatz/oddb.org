@@ -6,7 +6,7 @@ require 'pp'
 
 describe "ch.oddb.org" do
 
-  RegExpSubstance = /Substanz\s+Stärke\s+(.+)\s+Galenische Form\s*(\w+)/m
+  RegExpSubstance = /Substanz\s+Stärke(\s+.+\s+|\s+)Galenische Form\s*(\w+)/m
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
@@ -24,13 +24,13 @@ describe "ch.oddb.org" do
   end
 
   it "should work as show/reg for sinovial" do
-    url = "http://#{OddbUrl}/de/gcc/show/reg/1229109224/seq/09/pack/224"
+    url = "#{OddbUrl}/de/gcc/show/reg/1229109224/seq/09/pack/224"
     @browser.goto url
     @browser.text.should match RegExpSubstance
   end
   
   it "should work as show/reg for viagra" do
-    url = "http://#{OddbUrl}/de/gcc/show/reg/62949/seq/01/pack/001"
+    url = "#{OddbUrl}/de/gcc/show/reg/62949/seq/01/pack/001"
     @browser.goto url
     @browser.text.should match RegExpSubstance
   end
