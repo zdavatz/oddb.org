@@ -146,12 +146,17 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
           ODDB::View::Interactions.calculate_atc_codes({})
         end
         link.onclick = %(
-        var element = document.getElementById('prescription_comment[0]');
+        var element = document.getElementById('prescription_comment_0');
         // innerText for IE, textContent for other browsers
-        var text = element.innerText || element.textContent;
-        // element.innerHTML = text;
-        console.log ("Text of prescription_comment[0] "+ text);
-        window.sessionStorage.setItem('comment', text);
+        if (element != null) {
+          var text = element.innerText || element.textContent;
+          // element.innerHTML = text;
+          console.log ("Text of prescription_comment_0 "+ text);
+          window.sessionStorage.setItem('comment', text);
+        } else {
+            console.log ("element is null. No text of prescription_comment_0");
+           window.sessionStorage.removeItem('comment');
+        }
         console.log ("Going to new url #{url} in interaction_chooser");
         window.location.href = '#{url}';
         )
@@ -175,7 +180,7 @@ class InteractionChooserDrug < HtmlGrid::Composite
     @drugs = @session.persistent_user_input(:drugs)
     if @model.is_a? ODDB::Package
       nextRow = 0
-      if not @hide_interaction_headers and @interactions.size > 0
+      unless @hide_interaction_headers
         components.store([0,0], :header_info)
         css_map.store([0,0], 'subheading') unless @printing_active
         nextRow += 1

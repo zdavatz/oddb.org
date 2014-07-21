@@ -618,12 +618,12 @@ module ODDB
 				end
 			end
       def rezept
-        @session.set_persistent_user_input(:printing, nil)    
+        @session.set_persistent_user_input(:printing, false)
         State::Drugs::Prescription.new(@session, nil)
       end
 
       def home_interactions
-        @session.set_persistent_user_input(:printing, nil)    
+        @session.set_persistent_user_input(:printing, false)
         State::Interactions::InteractionChooser.new(@session, nil)
       end
       

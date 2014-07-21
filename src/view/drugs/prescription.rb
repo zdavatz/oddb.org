@@ -395,15 +395,11 @@ class PrescriptionForm < View::Form
 #      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
       delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
       delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
-      if false
     delete_all_link.set_attribute('onclick', "
       require(['dojo/domReady!'], function(){
       #{JS_CLEAR_SESSION_STORAGE}
     });
 ")
-      else
-        delete_all_link.onclick(JS_CLEAR_SESSION_STORAGE)
-      end
       delete_all_link.css_class = 'list'
     else
       return nil
