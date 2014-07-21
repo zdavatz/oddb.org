@@ -27,7 +27,18 @@ require 'view/form'
 module ODDB
   module View
     module Drugs
-      JS_RESTORE_PRESCRIPTION_COMMENTS = %(
+      JS_CLEAR_SESSION_STORAGE = '
+        console.log ("PrescriptionForm url clearing sessionStorage for url: " + this.baseURI);
+        for (index = 0; index < 99; ++index) {
+          sessionStorage. removeItem("prescription_comment_" + index);
+        }
+        sessionStorage.removeItem("prescription_sex");
+        sessionStorage.removeItem("prescription_first_name");
+        sessionStorage.removeItem("prescription_family_name");
+        sessionStorage.removeItem("prescription_birth_day");
+'
+
+      JS_RESTORE_PRESCRIPTION_COMMENTS = "
   for (index = 0; index < 99; ++index) {
     var field_id = 'prescription_comment_' + index;
     var saved_value =  sessionStorage.getItem(field_id, '');
@@ -35,15 +46,14 @@ module ODDB
     console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value);
     if (x != null) {
       if (saved_value != null && saved_value != 'null') {
-        x.value = saved_value; 
+        x.value = saved_value;
       }
       console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
     } else { break; }
-  } 
-)      
-      
-      JS_RESTORE_PRESCRIPTION_PATIENT_INFO = %(
-  document.getElementById('searchbar').focus();
+  }
+"
+
+      JS_RESTORE_PRESCRIPTION_PATIENT_INFO = "
     var fields = [ 'prescription_first_name',
      'prescription_family_name',
       'prescription_birth_day',
@@ -54,13 +64,13 @@ module ODDB
     var x=document.getElementById(field_id);
     if (x != null) {
       if (saved_value != null && saved_value != 'null') {
-        x.value = saved_value; 
+        x.value = saved_value;
       }
 //      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
     }
-  } 
-      )
-      JS_RESTORE_PRESCRIPTION_SEX = %(
+  }
+"
+      JS_RESTORE_PRESCRIPTION_SEX = "
   var field_id = 'prescription_sex';
   var saved_value =  sessionStorage.getItem(field_id, '');
 //  console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
@@ -71,8 +81,8 @@ module ODDB
     document.getElementById('prescription_sex_1').checked = false;
     document.getElementById('prescription_sex_2').checked = true;
   }
-)      
-      
+"
+
       def Drugs.saveFieldValueForLaterUse(field, field_id, default_value)
         if field.is_a?(HtmlGrid::InputRadio)
           field.set_attribute('onClick', "
@@ -83,21 +93,20 @@ module ODDB
           field_id = field_id.to_s  + '_' + default_value.to_s
         else
         field.set_attribute('onFocus', "
-                                var new_value = sessionStorage.getItem('#{field_id}');
+                               var new_value = sessionStorage.getItem('#{field_id}');
                                 console.log ('onFocus new_value: ' + new_value);
                                 if (this.value == '#{default_value}') { this.value = '' ; }
                               ")
         field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
                               } else {
                                 sessionStorage.setItem('#{field_id}', this.value);
-                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to #{default_value}  is '+ sessionStorage.getItem('#{field_id}'));  
+                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to #{default_value}  is '+ sessionStorage.getItem('#{field_id}'));
                               }
                               ")
         end
         field.set_attribute('id', field_id)
         field.value = default_value unless field.value
       end
-      
 class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   def init
     super
@@ -172,7 +181,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
         } else {
           sessionStorage. removeItem(cur_id);
         }
-      }           
+      }
       window.top.location.replace('#{url}');
       "
       link
@@ -303,7 +312,8 @@ class PrescriptionForm < View::Form
     [0,1]  => View::Drugs::PrescriptionDrugDiv,
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
     [0,3]  => 'prescription_signature',
-    [0,13] => :buttons,
+    [0,13,0] => :buttons,
+    [0,13,1] => :delete_all,
     [0,14] => 'prescription_notes',
   }
   CSS_MAP = {
@@ -311,7 +321,8 @@ class PrescriptionForm < View::Form
     [0,1]  => '', # none
     [0,2]  => 'list',
     [0,3]  => 'list bold',
-    [0,13] => 'button',
+    [0,13,0] => 'button',
+    [0,13,1] => 'button',
     [0,14] => 'list bold',
   }
   COLSPAN_MAP = {
@@ -319,8 +330,9 @@ class PrescriptionForm < View::Form
     [0,1]  => 3,
     [0,2]  => 3,
     [0,3]  => 3,
-    [0,13] => 3,
-    [0,14] => 3,
+    [0,13,0] => 3,
+    [0,13,1] => 3,
+    [0,15] => 3,
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
@@ -362,7 +374,7 @@ class PrescriptionForm < View::Form
   def hidden_fields(context)
     hidden = super
     # main drug
-    hidden << context.hidden('ean', @model.barcode) if @model
+    hidden << context.hidden('ean', @model.barcode) if @model and @model.respond_to?(:barcode)
     hidden << context.hidden('prescription', true)
     hidden
   end
@@ -374,6 +386,30 @@ class PrescriptionForm < View::Form
     buttons << '&nbsp;'
     buttons
   end
+  def delete_all(model, session=@session)
+    @drugs = @session.persistent_user_input(:drugs)
+    $stdout.puts "delete_all: lookup #{@lookandfeel.lookup(:interaction_chooser_delete_all)} and #{@drugs}"
+    # if @drugs and !@drugs.empty?
+    if true
+      delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
+#      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
+      delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
+      delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
+      if false
+    delete_all_link.set_attribute('onclick', "
+      require(['dojo/domReady!'], function(){
+      #{JS_CLEAR_SESSION_STORAGE}
+    });
+")
+      else
+        delete_all_link.onclick(JS_CLEAR_SESSION_STORAGE)
+      end
+      delete_all_link.css_class = 'list'
+    else
+      return nil
+    end
+    delete_all_link
+  end
   private
   def init
     super
@@ -381,12 +417,14 @@ class PrescriptionForm < View::Form
       'id'     => 'prescription_form',
       'target' => '_blank'
     })
-    self.onload = %(require(["dojo/domReady!"], function(){  
-      #{Drugs::JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
-      #{Drugs::JS_RESTORE_PRESCRIPTION_SEX}
-      #{Drugs::JS_RESTORE_PRESCRIPTION_COMMENTS}
-});
-)
+    self.onload = "
+      require(['dojo/domReady!'], function(){
+      #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
+      #{JS_RESTORE_PRESCRIPTION_SEX}
+      #{JS_RESTORE_PRESCRIPTION_COMMENTS}
+      document.getElementById('searchbar').focus();
+    });
+"
   end
 end
 class PrescriptionComposite < HtmlGrid::Composite
@@ -458,7 +496,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   end
   def prescription_comment(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
-    span.value = @comment_header    
+    span.value = @comment_header
   end
   def comment_value(model, session=@session)
     field_id = "prescription_comment_#{@index}"
@@ -502,13 +540,13 @@ self.onload = %(require(["dojo/domReady!"], function(){
       #{JS_RESTORE_PRESCRIPTION_COMMENTS}
   });
   )
-  
+
   end
   def epha_public_domain(model, session=@session)
     desc = @lookandfeel.lookup(:interaction_chooser_description) + ' ' + @lookandfeel.lookup(:epha_public_domain)
     span = HtmlGrid::Span.new(model, session, self)
     span.value = desc
-    span 
+    span
   end
   def prescription_for(model, session=@session)
     fields = []
