@@ -28,7 +28,7 @@ module ODDB
   module View
     module Drugs
       JS_CLEAR_SESSION_STORAGE = '
-        console.log ("PrescriptionForm url clearing sessionStorage for url: " + this.baseURI);
+        console.log ("Clearing sessionStorage for url: " + this.baseURI);
         for (index = 0; index < 99; ++index) {
           sessionStorage. removeItem("prescription_comment_" + index);
         }
@@ -37,21 +37,6 @@ module ODDB
         sessionStorage.removeItem("prescription_family_name");
         sessionStorage.removeItem("prescription_birth_day");
 '
-
-      JS_RESTORE_PRESCRIPTION_COMMENTS = "
-  for (index = 0; index < 99; ++index) {
-    var field_id = 'prescription_comment_' + index;
-    var saved_value =  sessionStorage.getItem(field_id, '');
-    var x=document.getElementById(field_id);
-    console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-    if (x != null) {
-      if (saved_value != null && saved_value != 'null') {
-        x.value = saved_value;
-      }
-      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-    } else { break; }
-  }
-"
 
       JS_RESTORE_PRESCRIPTION_PATIENT_INFO = "
     var fields = [ 'prescription_first_name',
@@ -63,17 +48,19 @@ module ODDB
     var saved_value =  sessionStorage.getItem(field_id, '');
     var x=document.getElementById(field_id);
     if (x != null) {
+      console.log('x className is '+x.className);
       if (saved_value != null && saved_value != 'null') {
         x.value = saved_value;
+        x.innerHTML = saved_value;
       }
-//      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
     }
   }
 "
       JS_RESTORE_PRESCRIPTION_SEX = "
   var field_id = 'prescription_sex';
   var saved_value =  sessionStorage.getItem(field_id, '');
-//  console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
+  console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
   if (saved_value == '1') {
     document.getElementById('prescription_sex_1').checked = true;
     document.getElementById('prescription_sex_2').checked = false;
@@ -203,7 +190,7 @@ class PrescriptionDrug < HtmlGrid::Composite
     [0,0] => :drug,
 #    [0,1] => :inner_form,
 		[0,1] => :interactions,
-    [0,2] => :prescription_comment,
+    [0,2] => :comment_header,
 		[0,4] => :atc_code,
   }
   CSS_MAP = {
@@ -243,10 +230,10 @@ class PrescriptionDrug < HtmlGrid::Composite
   def drug(model, session)
     View::Drugs::PrescriptionDrugHeader.new(model, session, self)
   end
-  def prescription_comment(model, session)
+  def comment_header(model, session)
     name = "prescription_comment_#{@index}".intern
     textarea = HtmlGrid::Textarea.new(name.intern, model, @session, self)
-    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:prescription_comment))
+    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:comment_header))
     textarea
   end
 end
@@ -380,7 +367,17 @@ class PrescriptionForm < View::Form
   end
   def buttons(model, session)
     buttons = []
-    buttons << post_event_button(:print)
+    print = post_event_button(:print)
+    drugs = @session.persistent_user_input(:drugs)
+    new_url = @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
+    print.onclick = "
+      console.log ('post_event_button of print _event_url');
+      // : '+ window.location.href + ' -> #{new_url}
+      window.location.href = '#{new_url}';
+      window.top.location.replace('#{new_url}');
+    "
+
+    buttons << print
     buttons << '&nbsp;'
     buttons << post_event_button(:export_csv)
     buttons << '&nbsp;'
@@ -388,22 +385,20 @@ class PrescriptionForm < View::Form
   end
   def delete_all(model, session=@session)
     @drugs = @session.persistent_user_input(:drugs)
-    $stdout.puts "delete_all: lookup #{@lookandfeel.lookup(:interaction_chooser_delete_all)} and #{@drugs}"
-    # if @drugs and !@drugs.empty?
-    if true
-      delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
-#      delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
-      delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
-      delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
+    delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
+    delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
+    delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
     delete_all_link.set_attribute('onclick', "
       require(['dojo/domReady!'], function(){
-      #{JS_CLEAR_SESSION_STORAGE}
+      try {
+        #{JS_CLEAR_SESSION_STORAGE}
+      }
+      catch(err) {
+        console.log('delete_all: catched error: ' + err);
+      }
     });
 ")
-      delete_all_link.css_class = 'list'
-    else
-      return nil
-    end
+    delete_all_link.css_class = 'list'
     delete_all_link
   end
   private
@@ -415,9 +410,39 @@ class PrescriptionForm < View::Form
     })
     self.onload = "
       require(['dojo/domReady!'], function(){
-      #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
-      #{JS_RESTORE_PRESCRIPTION_SEX}
-      #{JS_RESTORE_PRESCRIPTION_COMMENTS}
+      console.log('PrescriptionForm.init onload');
+      try {
+        #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
+        #{JS_RESTORE_PRESCRIPTION_SEX}
+        for (index = 0; index < 99; ++index) {
+          var field_id = 'prescription_comment_' + index;
+          var saved_value =  sessionStorage.getItem(field_id, '');
+          var x=document.getElementById(field_id);
+          var header=document.getElementById('prescription_header_' + index);
+          console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value + ' header ' + header);
+          if (x != null) {
+            console.log('x className is '+x.className);
+            if (saved_value != null && saved_value != 'null') {
+              x.value = saved_value;
+              x.innerHTML = saved_value;
+              if (header != null) {
+                header.value = '#{@lookandfeel.lookup(:comment_header)}';
+                header.innerHTML = '#{@lookandfeel.lookup(:comment_header)}';
+              }
+            } else {
+              if (header != null) {
+                header.value = '';
+                header.innerHTML = '';
+              }
+              
+            }
+            console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+          } else { break; }
+        }
+      }
+      catch(err) {
+        console.log('PrescriptionForm.init: catched error: ' + err);
+      }
       document.getElementById('searchbar').focus();
     });
 "
@@ -441,7 +466,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1] => :name,
     [0,2] => :interactions,
-    [0,3] => :prescription_comment,
+    [0,3] => :comment_header,
     [0,4] => :comment_value,
   }
   CSS_MAP = {
@@ -460,14 +485,8 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     if @drugs and !@drugs.empty?
       @model = @drugs.values[@index]
     end
-    @texts = @session.user_input(:prescription_comment)
-    @texts ||= {}
-    @comment_header = @lookandfeel.lookup(:prescription_comment)
-    @comment_text = @texts[(@index.to_i).to_s]
-    if @comment_text == @comment_header
-      components.delete([0,3])
-      components.delete([0,4])
-    end
+    @comment_header = @lookandfeel.lookup(:comment_header)
+    @attributes.store('id', 'print_drugs_' + @model.barcode) if @attributes and @model
     super
   end
   def interactions(model, session)
@@ -490,16 +509,18 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     span.set_attribute('class', 'bold')
     span
   end
-  def prescription_comment(model, session=@session)
+  def comment_header(model, session=@session)
+    field_id = "prescription_header_#{@index}"
     span = HtmlGrid::Span.new(model, session, self)
+    span.set_attribute('id', field_id)
     span.value = @comment_header
+    span
   end
   def comment_value(model, session=@session)
     field_id = "prescription_comment_#{@index}"
-    text = HtmlGrid::Value.new(:prescription_comment, model, session, self)
-    text.value = @comment_text
-    text.set_attribute('id', field_id)
-    text
+    span = HtmlGrid::Span.new(model, session, self)
+    span.set_attribute('id', field_id)
+    span
   end
 end
 class PrescriptionPrintComposite < HtmlGrid::DivComposite
@@ -533,7 +554,35 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     @drugs = @session.persistent_user_input(:drugs)
     super
 self.onload = %(require(["dojo/domReady!"], function(){ 
-      #{JS_RESTORE_PRESCRIPTION_COMMENTS}
+      console.log('PrescriptionPrintComposite.init onload');
+      try {
+        for (index = 0; index < 99; ++index) {
+          var field_id = 'prescription_comment_' + index;
+          var saved_value =  sessionStorage.getItem(field_id, '');
+          var x=document.getElementById(field_id);
+          console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+          if (x != null) {
+            console.log('x className is '+x.className);
+            if (saved_value != null && saved_value != 'null') {
+              x.value = saved_value;
+              x.innerHTML = saved_value;
+            }
+            console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+          } else { break; }
+        }
+        #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
+  var field_id = 'prescription_sex';
+  var saved_value =  sessionStorage.getItem(field_id, '');
+  console.log ('PrescriptionForm.onload ' + field_id + ':' + document.getElementById(field_id) + ': saved_value ' + saved_value);
+  if (saved_value == '1') {
+    document.getElementById(field_id).innerHTML = 'w';
+  } else {
+    document.getElementById(field_id).innerHTML = 'm';
+  }
+      }
+      catch(err) {
+        console.log('PrescriptionPrintComposite.init: catched error: ' + err);
+      }
   });
   )
 
@@ -551,17 +600,17 @@ self.onload = %(require(["dojo/domReady!"], function(){
     %w[first_name family_name birth_day].each do |attr|
       key = "prescription_#{attr}".to_sym
       value = @lookandfeel.lookup(key)
-      fields << value
+      fields << @lookandfeel.lookup(key)
       fields << '&nbsp;'
       span = HtmlGrid::Span.new(model, session, self)
       span.set_attribute('class', 'bold')
-      span.value = @session.user_input(key)
+      span.set_attribute('id', key)
       fields << span
       fields << '&nbsp;&nbsp;'
     end
     span = HtmlGrid::Span.new(model, session, self)
     type = (@session.user_input(:prescription_sex) == '1' ? 'w' : 'm')
-    span.value = @lookandfeel.lookup("prescription_sex_#{type}".to_sym)
+    span.set_attribute('id', :prescription_sex)
     span.set_attribute('class', 'bold')
     fields << span
     fields
@@ -610,7 +659,7 @@ class Prescription < View::PrivateTemplate
     fields
   end
 end
-class PrescriptionPrint < View::PrintTemplate
+class PrescriptionPrint < View:: PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
   def init
     @session.set_persistent_user_input(:printing, true)

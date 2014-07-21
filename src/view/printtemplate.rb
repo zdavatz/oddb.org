@@ -20,7 +20,7 @@ module ODDB
 				print(model, session, :print_edit)
 			end
 		end
-		class PrintTemplate < HtmlGrid::DivTemplate
+		class PrintTemplate < View::PublicTemplate
 			COMPONENTS = {
 				[0,0]		=>	:head,
 				[0,1]		=>	:content,
