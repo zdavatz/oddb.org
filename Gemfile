@@ -1,9 +1,10 @@
 source "http://rubygems.org"
-# ruby "1.9.3" # don't specify a ruby version as I want to be able to test via travis using several versions
 if /^2/.match(RUBY_VERSION)
+  ruby '2.1.2'
   gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
   gem 'syck'
 else
+  ruby "1.9.3"
   gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
 end
 
@@ -40,6 +41,7 @@ gem 'rclconf', '1.0.0'
 gem 'rdoc', '4.1.1'
 gem 'rmagick', '2.13.2'
 gem 'rpdf2txt', '0.8.4'
+gem 'rqrcode', '0.4.2'
 gem 'rubyXL', '3.1.2'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'wasabi', '2.3.0'
@@ -72,6 +74,5 @@ group :test do
 end
 
 group :debugger do
-  gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-byebug'
 end
