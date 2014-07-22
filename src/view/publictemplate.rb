@@ -4,10 +4,10 @@
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/template'
-require 'view/logohead'
 require 'view/navigationfoot'
 require 'sbsm/time'
 require 'view/custom/head'
+require 'view/logohead'
 require 'view/htmlgrid/component'
 
 DOJO_VERSION = "1.7.2"

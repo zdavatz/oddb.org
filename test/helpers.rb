@@ -46,7 +46,6 @@ class OddbTestRunner
   end
 
   def run_normal_tests(tests2Run = Dir.glob(File.join(@rootDir, '**', '*.rb')))
-    return
     tests2Run.each do
       |file|
         next if File.basename(file).eql?('suite.rb')

@@ -121,6 +121,7 @@ class PiChapterChooser < HtmlGrid::Composite
 		if model.send(@session.language).is_a?(ODDB::PatinfoDocument)
 			link = HtmlGrid::Link.new(key, model, session, self)
 			link.set_attribute('title', @lookandfeel.lookup(:print_title))
+			link.set_attribute('target', '_blank')
 			args = [
 				:reg, model.sequences.first.registration.iksnr,
 				:seq, model.sequences.first.seqnr,

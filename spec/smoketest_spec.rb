@@ -14,14 +14,14 @@ describe "ch.oddb.org" do
   before :each do
     @browser.goto OddbUrl
   end
-  
+
   after :each do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
     # sleep 
     @browser.goto OddbUrl
   end
-  
+
   it "should contain oddb.org" do
     @browser.text.should match /oddb.org/
     @browser.title.should match /oddb.org/i
@@ -44,7 +44,7 @@ describe "ch.oddb.org" do
     @browser.text.should match /Aspirin Cardio 100/
     @browser.text.should match /Aspirin Cardio 300/
   end
-  
+
   it "should have a link to the extended search" do
     @browser.link(:text => /erweitert/).click
     @browser.url.should match /gcc\/fachinfo_search/
@@ -93,6 +93,29 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     @browser.link(:text=>/Deutsch|German/).click
     @browser.text.should match /Vergleichen Sie einfach und schnell Medikamentenpreise./
+  end
+
+  it "should open print patinfo in a new window" do
+    login
+    @browser.goto OddbUrl + '/de/gcc/patinfo/reg/51795/seq/01'
+    windowSize = @browser.windows.size
+    @browser.link(:text, 'Drucken').click
+    @browser.windows.size.should ==windowSize + 1
+    @browser.windows.last.use
+    @browser.text.should match /^Ausdruck.*Patienteninformation/im
+    @browser.windows.last.close
+  end
+
+  it "should open print fachinfo in a new window" do
+    login
+    @browser.goto OddbUrl + '/de/gcc/fachinfo/reg/51795'
+    windowSize = @browser.windows.size
+    @browser.windows.last.use
+    @browser.link(:text, /Drucken/i).click
+    @browser.windows.size.should ==windowSize + 1
+    @browser.windows.last.use
+    @browser.text.should match /^Ausdruck.*Fachinformation/im
+    @browser.windows.last.close
   end
 
   after :all do

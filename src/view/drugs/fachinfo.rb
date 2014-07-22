@@ -138,6 +138,7 @@ class FiChapterChooser < HtmlGrid::Composite
   def print(model, session=@session, key=:print)
     link = HtmlGrid::Link.new(key, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:print_title))
+    link.set_attribute('target', '_blank')
     args = {
       :fachinfo  => model.registrations.first.iksnr,
     }

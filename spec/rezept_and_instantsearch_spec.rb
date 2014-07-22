@@ -67,13 +67,20 @@ describe "ch.oddb.org" do
   FamilyName = 'Müller'
   Birthday = '01.01.1990'
   def setGeneralInfo(nrMedis=0)
+    # we often must send tabs or running the test a first time will fail if you have just restarted oddb.org
     @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
+    @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_first_name').set FirstName
+    @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_family_name').set FamilyName
+    @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_birth_day').set Birthday
+    @browser.send_keys :tab
     0.upto(nrMedis-1) {
       |idx|
       @browser.textarea(:name => "prescription_comment_#{idx}").set genComment(Four_Medis[idx])
+      @browser.send_keys :tab
+      @browser.textarea(:name => "prescription_comment_#{idx}").value.should eql genComment(Four_Medis[idx])
     }
   end
   def checkGeneralInfo(nrMedis=0)
@@ -110,6 +117,48 @@ describe "ch.oddb.org" do
     end
   end
 
+  it "should be possible to print a presciption" do
+    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
+    setGeneralInfo(2)
+    oldWindowsSize = @browser.windows.size
+    @browser.button(:name, "print").click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    inhalt = @browser.text
+    checkGeneralInfo(2)
+    inhalt.should     match(/Ausdruck/i)
+    ['Ausdruck',
+     'Stempel, Unterschrift',
+     'Merfen', 'Nolvadex',
+     '7680516820922', '7680390530474',
+     / m$/, # männlich
+    ].each do
+      |name|
+      inhalt.should match(name)
+    end
+    inhalt.should match /Bemerkungen/
+  end
+
+  it "should not contain remarks or interaction header only when present" do
+    # goto Asprin, Inderal, Marcouma
+    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
+    add_one_drug_to_rezept('Aspirin')
+    add_one_drug_to_rezept('Inderal')
+    add_one_drug_to_rezept('Marcoumar')
+
+    # add two remarks
+    setGeneralInfo(2)
+    oldWindowsSize = @browser.windows.size
+    @browser.button(:name, "print").click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    inhalt = @browser.text
+    checkGeneralInfo(2)
+    inhalt.scan(/\nBemerkungen\n/).size.should == 2
+    inhalt.scan(/\nBemerkungen\n/).size.should == 2
+    inhalt.scan(/\nInteraktionen\n/).size.should == 2
+  end
+
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -117,16 +166,17 @@ describe "ch.oddb.org" do
     @browser.link(:href, /rezept/).click
     setGeneralInfo(1)
     @browser.element(:text, 'FI').click
-    oldWindowsSize = @browser.windows
+    oldWindowsSize = @browser.windows.size
     @browser.link(:text, /FI/).click
-    @browser.windows.last.use if @browser.windows.size != oldWindowsSize
-    oldWindowsSize = @browser.windows
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    oldWindowsSize = @browser.windows.size
     @browser.link(:text, /Drucken/i).click
-    @browser.windows.last.use if @browser.windows.size != oldWindowsSize
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
     @browser.url.should_not match /^rezept/i
     @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
   end
-
   it "should enable to go back after printing a prescription" do
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
@@ -149,25 +199,6 @@ describe "ch.oddb.org" do
     checkGeneralInfo(1)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(1)
-  end
-  it "should be possible to print a presciption" do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
-    setGeneralInfo(2)
-    oldWindowsSize = @browser.windows
-    @browser.button(:name, "print").click
-    @browser.windows.last.use if @browser.windows.size != oldWindowsSize   
-    inhalt = @browser.text
-    checkGeneralInfo(2)
-    inhalt.should     match(/Ausdruck/i)
-    ['Ausdruck',
-     'Stempel, Unterschrift',
-     'Merfen', 'Nolvadex',
-     '7680516820922', '7680390530474',
-     / m$/, # männlich
-    ].each do 
-      |name|
-      inhalt.should match(name)
-    end
   end
   it "should show the interaction between different drugs" do
     @browser.select_list(:name, "search_type").select("Markenname")

@@ -85,9 +85,11 @@ module ODDB
                                 if (this.value == '#{default_value}') { this.value = '' ; }
                               ")
         field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
+                                  console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to  #{default_value} and removeItem');
+                                  sessionStorage.removeItem('#{field_id}');
                               } else {
                                 sessionStorage.setItem('#{field_id}', this.value);
-                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to #{default_value}  is '+ sessionStorage.getItem('#{field_id}'));
+                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to  is '+ this.value);
                               }
                               ")
         end
@@ -188,9 +190,8 @@ end
 class PrescriptionDrug < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => :drug,
-#    [0,1] => :inner_form,
 		[0,1] => :interactions,
-    [0,2] => :comment_header,
+    [0,2] => :prescription_comment,
 		[0,4] => :atc_code,
   }
   CSS_MAP = {
@@ -230,10 +231,10 @@ class PrescriptionDrug < HtmlGrid::Composite
   def drug(model, session)
     View::Drugs::PrescriptionDrugHeader.new(model, session, self)
   end
-  def comment_header(model, session)
+  def prescription_comment(model, session)
     name = "prescription_comment_#{@index}".intern
     textarea = HtmlGrid::Textarea.new(name.intern, model, @session, self)
-    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:comment_header))
+    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:prescription_comment))
     textarea
   end
 end
@@ -371,10 +372,9 @@ class PrescriptionForm < View::Form
     drugs = @session.persistent_user_input(:drugs)
     new_url = @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
     print.onclick = "
-      console.log ('post_event_button of print _event_url');
+      console.log ('post_event_button of print _event_url calling  window.open #{new_url}');
       // : '+ window.location.href + ' -> #{new_url}
-      window.location.href = '#{new_url}';
-      window.top.location.replace('#{new_url}');
+      window.open('#{new_url}');
     "
 
     buttons << print
@@ -426,11 +426,13 @@ class PrescriptionForm < View::Form
               x.value = saved_value;
               x.innerHTML = saved_value;
               if (header != null) {
-                header.value = '#{@lookandfeel.lookup(:comment_header)}';
-                header.innerHTML = '#{@lookandfeel.lookup(:comment_header)}';
+                console.log ('PrescriptionForm.onload setting prescription_comment #{@lookandfeel.lookup(:prescription_comment)}');
+                header.value = '#{@lookandfeel.lookup(:prescription_comment)}';
+                header.innerHTML = '#{@lookandfeel.lookup(:prescription_comment)}';
               }
             } else {
               if (header != null) {
+                console.log ('PrescriptionForm.onload clearing prescription_comment');
                 header.value = '';
                 header.innerHTML = '';
               }
@@ -466,7 +468,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,1] => :name,
     [0,2] => :interactions,
-    [0,3] => :comment_header,
+    [0,3] => :prescription_comment,
     [0,4] => :comment_value,
   }
   CSS_MAP = {
@@ -485,7 +487,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     if @drugs and !@drugs.empty?
       @model = @drugs.values[@index]
     end
-    @comment_header = @lookandfeel.lookup(:comment_header)
+    @prescription_comment = @lookandfeel.lookup(:prescription_comment)
     @attributes.store('id', 'print_drugs_' + @model.barcode) if @attributes and @model
     super
   end
@@ -509,11 +511,11 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     span.set_attribute('class', 'bold')
     span
   end
-  def comment_header(model, session=@session)
+  def prescription_comment(model, session=@session)
     field_id = "prescription_header_#{@index}"
     span = HtmlGrid::Span.new(model, session, self)
     span.set_attribute('id', field_id)
-    span.value = @comment_header
+    span.value = @prescription_comment
     span
   end
   def comment_value(model, session=@session)
@@ -559,15 +561,26 @@ self.onload = %(require(["dojo/domReady!"], function(){
           var field_id = 'prescription_comment_' + index;
           var saved_value =  sessionStorage.getItem(field_id, '');
           var x=document.getElementById(field_id);
-          console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+          var header=document.getElementById('prescription_header_' + index);
+          console.log ('PrescriptionPrintComposite.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value + ' header ' + header);
           if (x != null) {
             console.log('x className is '+x.className);
             if (saved_value != null && saved_value != 'null') {
               x.value = saved_value;
               x.innerHTML = saved_value;
+              if (header != null) {
+                console.log ('PrescriptionPrintComposite.onload setting prescription_comment #{@lookandfeel.lookup(:prescription_comment)}');
+                header.value = '#{@lookandfeel.lookup(:prescription_comment)}';
+                header.innerHTML = '#{@lookandfeel.lookup(:prescription_comment)}';
+              }
+            } else {
+              if (header != null) {
+                console.log ('PrescriptionPrintComposite.onload clearing prescription_comment');
+                header.value = '';
+                header.innerHTML = '';
+              }
             }
-            console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-          } else { break; }
+          }
         }
         #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
   var field_id = 'prescription_sex';

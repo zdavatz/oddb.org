@@ -211,6 +211,7 @@ return false;
       return unless @interactions.size > 0
       span = HtmlGrid::Span.new(model, session, self)
       span.value = @lookandfeel.lookup(:interactions)
+      span.set_attribute('id', 'InteractionChooserDrug.header_info')
       span.set_attribute('class', 'print bold')
       span 
     else
@@ -218,15 +219,23 @@ return false;
     end
   end
   def text_info(model, session=@session)
+    @printing_active  = @session.request_path.index("/print/rezept/") != nil
     return nil unless model.atc_class
     list = HtmlGrid::Div.new(model, @session, self)
     list.value = []
+    if @printing_active and @interactions.size > 0
+      span = HtmlGrid::Span.new(model, session, self)
+      span.value = @lookandfeel.lookup(:interactions)
+      span.set_attribute('id', 'InteractionChooserDrug.text_info')
+      span.set_attribute('class', 'print bold')
+      list.value << span
+    end
     ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
       |interaction|
       headerDiv = HtmlGrid::Div.new(model, @session, self)
       headerDiv.value = []
       headerDiv.value << interaction[:header]
-      if @printing_active
+      unless @printing_active
         headerDiv.set_attribute('class', 'interaction-header')
         headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       end
