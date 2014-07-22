@@ -550,7 +550,6 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     8 => 'print bold',
   }
   def init
-    @session.set_persistent_user_input(:printing, true)
     @drugs = @session.persistent_user_input(:drugs)
     super
 self.onload = %(require(["dojo/domReady!"], function(){ 
@@ -632,7 +631,6 @@ class Prescription < View::PrivateTemplate
   SNAPBACK_EVENT = :result
   JAVASCRIPTS = ['admin']
   def init
-    @session.set_persistent_user_input(:printing, nil)
     super
   end
   def backtracking(model, session=@session)
@@ -662,7 +660,6 @@ end
 class PrescriptionPrint < View:: PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
   def init
-    @session.set_persistent_user_input(:printing, true)
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
     if @model and @drugs and !@drugs.empty?

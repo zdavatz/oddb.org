@@ -92,10 +92,11 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     [3,0] => 'interaction-atc',
   }
   def init
+    @printing_active  = @session.request_path.index("/print/rezept/") != nil
     super
   end
   def fachinfo(model, session=@session)
-    if @session.persistent_user_input(:printing)
+    if @printing_active
       return
     end
     if fi = super(model, session, 'square bold infos')
@@ -133,8 +134,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
   end
   
   def delete(model, session=@session)
-    @printing_active  = @session.persistent_user_input(:printing)
-    return if @session.persistent_user_input(:printing)
+    return if @printing_active
     if @container.is_a? ODDB::View::Interactions::InteractionChooserDrug
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
@@ -172,8 +172,8 @@ class InteractionChooserDrug < HtmlGrid::Composite
   CSS_CLASS = 'composite'
   def init
     # When being called from rezept we should not display the heading
-    @printing_active  = @session.persistent_user_input(:printing)
-    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil or @printing_active
+    @printing_active  = @session.request_path.index("/print/rezept/") != nil
+    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil
     @interactions = ODDB::View::Interactions.get_interactions(model.atc_class.code, @session)
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
@@ -207,7 +207,7 @@ return false;
     super
   end
   def header_info(model, session=@session)
-    if @session.persistent_user_input(:printing)
+    if @printing_active
       return unless @interactions.size > 0
       span = HtmlGrid::Span.new(model, session, self)
       span.value = @lookandfeel.lookup(:interactions)
@@ -226,7 +226,7 @@ return false;
       headerDiv = HtmlGrid::Div.new(model, @session, self)
       headerDiv.value = []
       headerDiv.value << interaction[:header]
-      unless @session.persistent_user_input(:printing)
+      if @printing_active
         headerDiv.set_attribute('class', 'interaction-header')
         headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       end
@@ -235,10 +235,10 @@ return false;
       infoDiv = HtmlGrid::Div.new(model, @session, self)
       infoDiv.value = []
       infoDiv.value << interaction[:text]
-      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless @session.persistent_user_input(:printing)
+      infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless @printing_active
       list.value << infoDiv                                                            
     }
-    list.css_class = 'print' if @session.persistent_user_input(:printing)
+    list.css_class = 'print' if @printing_active
     list
   end  
 end

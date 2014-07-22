@@ -519,7 +519,7 @@ module ODDB
       def print
         state = self.search
         drugs = @session.persistent_user_input(:drugs)
-        if drugs # and state.is_a?(State::Drugs::Result)
+        if @session.request_path.index("/print/rezept/")
           State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)
           self
@@ -618,12 +618,10 @@ module ODDB
 				end
 			end
       def rezept
-        @session.set_persistent_user_input(:printing, false)
         State::Drugs::Prescription.new(@session, nil)
       end
 
       def home_interactions
-        @session.set_persistent_user_input(:printing, false)
         State::Interactions::InteractionChooser.new(@session, nil)
       end
       
