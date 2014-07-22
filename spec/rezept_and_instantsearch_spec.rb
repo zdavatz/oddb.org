@@ -41,6 +41,7 @@ describe "ch.oddb.org" do
   end
 
   before :each do
+    @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
     @browser.goto OddbUrl
     if @browser.link(:text=>'Plus').exists?
       puts "Going from instant to plus"
@@ -59,34 +60,42 @@ describe "ch.oddb.org" do
     @browser.close if @browser
   end
 
+  def genComment(unique)
+    "Kommentar #{@timestamp} #{unique}"
+  end
   FirstName = 'Max'
   FamilyName = 'Müller'
   Birthday = '01.01.1990'
   def setGeneralInfo(nrMedis=0)
-#     require 'pry'; binding.pry
     @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
     @browser.text_field(:name => 'prescription_first_name').set FirstName
     @browser.text_field(:name => 'prescription_family_name').set FamilyName
     @browser.text_field(:name => 'prescription_birth_day').set Birthday
     0.upto(nrMedis-1) {
       |idx|
-      comment = "Kommentar zu #{Four_Medis[idx]}"
-      @browser.textarea(:name => "prescription_comment_#{idx}").set comment
+      @browser.textarea(:name => "prescription_comment_#{idx}").set genComment(Four_Medis[idx])
     }
   end
-  def checkGeneralInfo(nrMedis=0, checkText = false)
-    if checkText
+  def checkGeneralInfo(nrMedis=0)
+    if @browser.url.index('/print/rezept/')
       inhalt = @browser.text
       [FirstName, FamilyName, Birthday, " m\n"].each {
         |what|
-        puts "Checking #{what} found at #{inhalt.index(what).inspect}" unless inhalt.index(what)
+        unless inhalt.index(what)
+          puts "Could not find #{what} in #{inhalt}"
+          # require 'pry'; binding.pry
+        end
         inhalt.index(what).class.should_not == NilClass
       }
       0.upto(nrMedis-1) {
         |idx|
-          comment = "Kommentar zu #{Four_Medis[idx]}"
-          puts "Looking for #{comment}: res is #{inhalt.index(comment).inspect}"  unless inhalt.index(comment)
-          inhalt.index(comment).class.should_not == NilClass
+          comment = genComment(Four_Medis[idx])
+          span_value = @browser.element(:id => "prescription_comment_#{idx}").value
+          unless span_value == comment
+            puts "span_value #{span_value} !=  #{comment} in element with id prescription_comment_#{idx}"
+            # require 'pry'; binding.pry
+          end
+          span_value.should eql comment
       }
     else
       @browser.text_field(:name => 'prescription_first_name').value.should == FirstName
@@ -96,8 +105,7 @@ describe "ch.oddb.org" do
 
       0.upto(nrMedis-1) {
         |idx|
-          comment = "Kommentar zu #{Four_Medis[idx]}"
-          @browser.text_field(:name => "prescription_comment_#{idx}").value.should == comment
+          @browser.text_field(:name => "prescription_comment_#{idx}").value.should == genComment(Four_Medis[idx])
       }
     end
   end
@@ -116,7 +124,7 @@ describe "ch.oddb.org" do
     @browser.link(:text, /Drucken/i).click
     @browser.windows.last.use if @browser.windows.size != oldWindowsSize
     @browser.url.should_not match /^rezept/i
-    @browser.text.should_not match /^Ausdruck/i
+    @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
   end
 
   it "should enable to go back after printing a prescription" do
@@ -149,7 +157,7 @@ describe "ch.oddb.org" do
     @browser.button(:name, "print").click
     @browser.windows.last.use if @browser.windows.size != oldWindowsSize   
     inhalt = @browser.text
-    checkGeneralInfo(2, true)
+    checkGeneralInfo(2)
     inhalt.should     match(/Ausdruck/i)
     ['Ausdruck',
      'Stempel, Unterschrift',
