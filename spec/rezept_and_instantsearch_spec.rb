@@ -79,7 +79,7 @@ describe "ch.oddb.org" do
       inhalt = @browser.text
       [FirstName, FamilyName, Birthday, " m\n"].each {
         |what|
-        puts "Checking #{what} found #{inhalt.index(what)}" unless inhalt.index(what)
+        puts "Checking #{what} found at #{inhalt.index(what).inspect}" unless inhalt.index(what)
         inhalt.index(what).class.should_not == NilClass
       }
       0.upto(nrMedis-1) {
@@ -102,6 +102,36 @@ describe "ch.oddb.org" do
     end
   end
 
+  it "should print the fachinfo when opening the fachinfo from a prescription" do
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    setGeneralInfo(1)
+    @browser.element(:text, 'FI').click
+    oldWindowsSize = @browser.windows
+    @browser.link(:text, /FI/).click
+    @browser.windows.last.use if @browser.windows.size != oldWindowsSize
+    oldWindowsSize = @browser.windows
+    @browser.link(:text, /Drucken/i).click
+    @browser.windows.last.use if @browser.windows.size != oldWindowsSize
+    @browser.url.should_not match /^rezept/i
+    @browser.text.should_not match /^Ausdruck/i
+  end
+
+  it "should enable to go back after printing a prescription" do
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    setGeneralInfo(1)
+    add_one_drug_to_rezept(Four_Medis[1])
+    add_one_drug_to_rezept(Four_Medis[2])
+    1.upto(4).each { |j|  @browser.back }
+    @browser.url.chomp('/').should == OddbUrl
+  end
+
   it "should not loose existing comment after adding a new prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -110,7 +140,6 @@ describe "ch.oddb.org" do
     setGeneralInfo(1)
     checkGeneralInfo(1)
     add_one_drug_to_rezept(Four_Medis[1])
-    sleep 1
     checkGeneralInfo(1)
   end
   it "should be possible to print a presciption" do
@@ -132,7 +161,6 @@ describe "ch.oddb.org" do
       inhalt.should match(name)
     end
   end
-
   it "should show the interaction between different drugs" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
