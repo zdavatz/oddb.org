@@ -473,7 +473,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   }
   CSS_MAP = {
     [0,1] => 'print bold',
-    [0,3] => 'print bold',
+    [0,3] => 'print bold italic',
     [0,4] => 'print',
   }
   CSS_CLASS = 'compose'

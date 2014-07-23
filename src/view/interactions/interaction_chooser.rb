@@ -227,7 +227,7 @@ return false;
       span = HtmlGrid::Span.new(model, session, self)
       span.value = @lookandfeel.lookup(:interactions)
       span.set_attribute('id', 'InteractionChooserDrug.text_info')
-      span.set_attribute('class', 'print bold')
+      span.set_attribute('class', 'print bold italic')
       list.value << span
     end
     ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
