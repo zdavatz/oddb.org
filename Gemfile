@@ -41,7 +41,6 @@ gem 'rclconf', '1.0.0'
 gem 'rdoc', '4.1.1'
 gem 'rmagick', '2.13.2'
 gem 'rpdf2txt', '0.8.4'
-gem 'rqrcode', '0.4.2'
 gem 'rubyXL', '3.1.2'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'wasabi', '2.3.0'
@@ -74,5 +73,9 @@ group :test do
 end
 
 group :debugger do
+if /^2/.match(RUBY_VERSION)
   gem 'pry-byebug'
+else
+  gem 'pry-debugger'
+end
 end
