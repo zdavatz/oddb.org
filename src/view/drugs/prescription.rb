@@ -27,49 +27,6 @@ require 'view/form'
 module ODDB
   module View
     module Drugs
-      JS_CLEAR_SESSION_STORAGE = '
-        console.log ("Clearing sessionStorage for url: " + this.baseURI);
-        for (index = 0; index < 99; ++index) {
-          sessionStorage. removeItem("prescription_comment_" + index);
-        }
-        sessionStorage.removeItem("prescription_sex");
-        sessionStorage.removeItem("prescription_first_name");
-        sessionStorage.removeItem("prescription_family_name");
-        sessionStorage.removeItem("prescription_birth_day");
-'
-
-      JS_RESTORE_PRESCRIPTION_PATIENT_INFO = "
-    var fields = [ 'prescription_first_name',
-     'prescription_family_name',
-      'prescription_birth_day',
-  ]
-  for (index = 0; index < fields.length; ++index) {
-    var field_id = fields[index];
-    var saved_value =  sessionStorage.getItem(field_id, '');
-    var x=document.getElementById(field_id);
-    if (x != null) {
-      console.log('x className is '+x.className);
-      if (saved_value != null && saved_value != 'null') {
-        x.value = saved_value;
-        x.innerHTML = saved_value;
-      }
-      console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-    }
-  }
-"
-      JS_RESTORE_PRESCRIPTION_SEX = "
-  var field_id = 'prescription_sex';
-  var saved_value =  sessionStorage.getItem(field_id, '');
-  console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
-  if (saved_value == '1') {
-    document.getElementById('prescription_sex_1').checked = true;
-    document.getElementById('prescription_sex_2').checked = false;
-  } else {
-    document.getElementById('prescription_sex_1').checked = false;
-    document.getElementById('prescription_sex_2').checked = true;
-  }
-"
-
       def Drugs.saveFieldValueForLaterUse(field, field_id, default_value)
         if field.is_a?(HtmlGrid::InputRadio)
           field.set_attribute('onClick', "
@@ -389,14 +346,9 @@ class PrescriptionForm < View::Form
     delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
     delete_all_link.set_attribute('onclick', "
-      require(['dojo/domReady!'], function(){
-      try {
-        #{JS_CLEAR_SESSION_STORAGE}
-      }
-      catch(err) {
-        console.log('delete_all: catched error: ' + err);
-      }
-    });
+require(['dojo/domReady!'], function(){
+  js_clear_session_storage();
+});
 ")
     delete_all_link.css_class = 'list'
     delete_all_link
@@ -409,44 +361,9 @@ class PrescriptionForm < View::Form
       'target' => '_blank'
     })
     self.onload = "
-      require(['dojo/domReady!'], function(){
-      console.log('PrescriptionForm.init onload');
-      try {
-        #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
-        #{JS_RESTORE_PRESCRIPTION_SEX}
-        for (index = 0; index < 99; ++index) {
-          var field_id = 'prescription_comment_' + index;
-          var saved_value =  sessionStorage.getItem(field_id, '');
-          var x=document.getElementById(field_id);
-          var header=document.getElementById('prescription_header_' + index);
-          console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value + ' header ' + header);
-          if (x != null) {
-            console.log('x className is '+x.className);
-            if (saved_value != null && saved_value != 'null') {
-              x.value = saved_value;
-              x.innerHTML = saved_value;
-              if (header != null) {
-                console.log ('PrescriptionForm.onload setting prescription_comment #{@lookandfeel.lookup(:prescription_comment)}');
-                header.value = '#{@lookandfeel.lookup(:prescription_comment)}';
-                header.innerHTML = '#{@lookandfeel.lookup(:prescription_comment)}';
-              }
-            } else {
-              if (header != null) {
-                console.log ('PrescriptionForm.onload clearing prescription_comment');
-                header.value = '';
-                header.innerHTML = '';
-              }
-              
-            }
-            console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-          } else { break; }
-        }
-      }
-      catch(err) {
-        console.log('PrescriptionForm.init: catched error: ' + err);
-      }
-      document.getElementById('searchbar').focus();
-    });
+  require(['dojo/domReady!'], function(){
+    prescription_form_init(#{@lookandfeel.lookup(:prescription_comment)});
+});
 "
   end
 end
@@ -554,47 +471,8 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   def init
     @drugs = @session.persistent_user_input(:drugs)
     super
-self.onload = %(require(["dojo/domReady!"], function(){ 
-      console.log('PrescriptionPrintComposite.init onload');
-      try {
-        for (index = 0; index < 99; ++index) {
-          var field_id = 'prescription_comment_' + index;
-          var saved_value =  sessionStorage.getItem(field_id, '');
-          var x=document.getElementById(field_id);
-          var header=document.getElementById('prescription_header_' + index);
-          console.log ('PrescriptionPrintComposite.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value + ' header ' + header);
-          if (x != null) {
-            console.log('x className is '+x.className);
-            if (saved_value != null && saved_value != 'null') {
-              x.value = saved_value;
-              x.innerHTML = saved_value;
-              if (header != null) {
-                console.log ('PrescriptionPrintComposite.onload setting prescription_comment #{@lookandfeel.lookup(:prescription_comment)}');
-                header.value = '#{@lookandfeel.lookup(:prescription_comment)}';
-                header.innerHTML = '#{@lookandfeel.lookup(:prescription_comment)}';
-              }
-            } else {
-              if (header != null) {
-                console.log ('PrescriptionPrintComposite.onload clearing prescription_comment');
-                header.value = '';
-                header.innerHTML = '';
-              }
-            }
-          }
-        }
-        #{JS_RESTORE_PRESCRIPTION_PATIENT_INFO}
-  var field_id = 'prescription_sex';
-  var saved_value =  sessionStorage.getItem(field_id, '');
-  console.log ('PrescriptionForm.onload ' + field_id + ':' + document.getElementById(field_id) + ': saved_value ' + saved_value);
-  if (saved_value == '1') {
-    document.getElementById(field_id).innerHTML = 'w';
-  } else {
-    document.getElementById(field_id).innerHTML = 'm';
-  }
-      }
-      catch(err) {
-        console.log('PrescriptionPrintComposite.init: catched error: ' + err);
-      }
+self.onload = %(require(["dojo/domReady!"], function(){
+  print_composite_init('#{@lookandfeel.lookup(:prescription_comment)}');
   });
   )
 
@@ -642,7 +520,7 @@ end
 class Prescription < View::PrivateTemplate
   CONTENT = View::Drugs::PrescriptionComposite
   SNAPBACK_EVENT = :result
-  JAVASCRIPTS = ['admin']
+  JAVASCRIPTS = ['admin', 'prescription']
   def init
     super
   end
@@ -672,6 +550,7 @@ class Prescription < View::PrivateTemplate
 end
 class PrescriptionPrint < View:: PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
+  JAVASCRIPTS = ['prescription']
   def init
     @drugs = @session.persistent_user_input(:drugs)
     @index = (@drugs ? @drugs.length : 0).to_s
