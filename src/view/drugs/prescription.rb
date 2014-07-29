@@ -362,7 +362,7 @@ require(['dojo/domReady!'], function(){
     })
     self.onload = "
   require(['dojo/domReady!'], function(){
-    prescription_form_init(#{@lookandfeel.lookup(:prescription_comment)});
+    prescription_form_init('#{@lookandfeel.lookup(:prescription_comment)}');
 });
 "
   end
@@ -447,7 +447,8 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
   include View::AdditionalInformation
   PRINT_TYPE = ""
   COMPONENTS = {
-    [0,0] =>  :epha_public_domain,
+    [0,0,0] =>  :epha_public_domain,
+    [0,0,1] =>  :qr_code_image,
     [0,1] => :print_type,
     [0,2] => '&nbsp;',
     [0,3] => :prescription_for,
@@ -468,11 +469,14 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     7 => 'print',
     8 => 'print bold',
   }
-  def init
+  def init    
     @drugs = @session.persistent_user_input(:drugs)
     super
 self.onload = %(require(["dojo/domReady!"], function(){
+  console.log('PrescriptionPrintComposite.onload print_composite_init #{@lookandfeel.lookup(:prescription_comment)}');
   print_composite_init('#{@lookandfeel.lookup(:prescription_comment)}');
+  console.log('PrescriptionPrintComposite.onload add_prescription_qr_code');
+  add_prescription_qr_code('qr_code_text', 'qr_code_image');
   });
   )
 
@@ -481,7 +485,23 @@ self.onload = %(require(["dojo/domReady!"], function(){
     desc = @lookandfeel.lookup(:interaction_chooser_description) + ' ' + @lookandfeel.lookup(:epha_public_domain)
     span = HtmlGrid::Span.new(model, session, self)
     span.value = desc
+    span.set_attribute('rowspan', '15')
     span
+  end
+  def qr_code_image(model, session=@session)
+    fields = []
+    txt = HtmlGrid::Div.new(model, session, self)
+    txt.set_attribute('id', 'qr_code_text')
+    txt.value = "Ein Beispiel"
+    txt
+    fields << txt
+    image = HtmlGrid::Div.new(model, session, self)
+    image.set_attribute('id', 'qr_code_image')
+    image.set_attribute('colspan', '15')
+    image.set_attribute('style', "width:30%;")
+    image
+    fields << image
+    fields
   end
   def prescription_for(model, session=@session)
     fields = []
@@ -517,6 +537,25 @@ self.onload = %(require(["dojo/domReady!"], function(){
     fields
   end
 end
+class PrescriptionPrint < View:: PrintTemplate
+  CONTENT = View::Drugs::PrescriptionPrintComposite
+  JAVASCRIPTS = ['qrcode', 'prescription']
+  def init
+    @drugs = @session.persistent_user_input(:drugs)
+    @index = (@drugs ? @drugs.length : 0).to_s
+    if @model and @drugs and !@drugs.empty?
+      @index = @drugs.keys.index(@model.barcode).to_s
+    end
+    super
+  end
+  def head(model, session=@session)
+    span = HtmlGrid::Span.new(model, session, self)
+    drugs = @session.persistent_user_input(:drugs)
+    span.value = @lookandfeel.lookup(:print_of) +
+      @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
+    span
+  end
+end
 class Prescription < View::PrivateTemplate
   CONTENT = View::Drugs::PrescriptionComposite
   SNAPBACK_EVENT = :result
@@ -546,25 +585,6 @@ class Prescription < View::PrivateTemplate
     span.set_attribute('class', 'bold')
     fields << span
     fields
-  end
-end
-class PrescriptionPrint < View:: PrintTemplate
-  CONTENT = View::Drugs::PrescriptionPrintComposite
-  JAVASCRIPTS = ['prescription']
-  def init
-    @drugs = @session.persistent_user_input(:drugs)
-    @index = (@drugs ? @drugs.length : 0).to_s
-    if @model and @drugs and !@drugs.empty?
-      @index = @drugs.keys.index(@model.barcode).to_s
-    end
-    super
-  end
-  def head(model, session=@session)
-    span = HtmlGrid::Span.new(model, session, self)
-    drugs = @session.persistent_user_input(:drugs)
-    span.value = @lookandfeel.lookup(:print_of) +
-      @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
-    span
   end
 end
 class PrescriptionCsv < HtmlGrid::Component
