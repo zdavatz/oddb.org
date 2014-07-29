@@ -32,21 +32,17 @@ module ODDB
           field.set_attribute('onClick', "
                                   var new_value = sessionStorage.getItem('#{field_id}');
                                   sessionStorage.setItem('#{field_id}', '#{default_value}');
-                                  console.log ('#{field_id}.onClick is '+ '#{default_value}');
                                 ")
           field_id = field_id.to_s  + '_' + default_value.to_s
         else
         field.set_attribute('onFocus', "
                                var new_value = sessionStorage.getItem('#{field_id}');
-                                console.log ('onFocus new_value: ' + new_value);
                                 if (this.value == '#{default_value}') { this.value = '' ; }
                               ")
         field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
-                                  console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to  #{default_value} and removeItem');
                                   sessionStorage.removeItem('#{field_id}');
                               } else {
                                 sessionStorage.setItem('#{field_id}', this.value);
-                                console.log ('#{field_id}.onblur2 of sessionStorage #{field_id} to  is '+ this.value);
                               }
                               ")
         end
@@ -116,14 +112,12 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       args = [:ean, model.barcode] if model
       url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
       link.onclick = "
-      console.log ('Delete index #{@index}: going to new url #{url} in prescription');
       for (index = #{@index}; index < 99; ++index) {
         var cur_id  = 'prescription_comment_' + index;
         var next_id = 'prescription_comment_' + (index+1);
         var next_value =  sessionStorage.getItem(next_id, '');
         if (next_value != '' && next_value != 'null' && next_value != null) {
           sessionStorage.setItem(cur_id, next_value);
-          console.log ('PrescriptionDrugHeader.delete nextvalue ' + cur_id + ': set value : ' + next_value);
         } else {
           sessionStorage. removeItem(cur_id);
         }
@@ -328,11 +322,7 @@ class PrescriptionForm < View::Form
     print = post_event_button(:print)
     drugs = @session.persistent_user_input(:drugs)
     new_url = @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
-    print.onclick = "
-      console.log ('post_event_button of print _event_url calling  window.open #{new_url}');
-      // : '+ window.location.href + ' -> #{new_url}
-      window.open('#{new_url}');
-    "
+    print.onclick = "window.open('#{new_url}');"
 
     buttons << print
     buttons << '&nbsp;'
@@ -387,6 +377,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     [0,2] => :interactions,
     [0,3] => :prescription_comment,
     [0,4] => :comment_value,
+    [0,5] => :ean13,
   }
   CSS_MAP = {
     [0,1] => 'print bold',
@@ -441,41 +432,49 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
     span.set_attribute('id', field_id)
     span
   end
+  def ean13(model, session=@session)
+    span = HtmlGrid::Span.new(model, session, self)
+    span.set_attribute('id', "prescription_ean13_#{@index}")
+    span.set_attribute('style', "display:none")
+    span.value =  @model.barcode if @model and @model.respond_to?(:barcode)
+    span
+  end
 end
 class PrescriptionPrintComposite < HtmlGrid::DivComposite
   include PrintComposite
   include View::AdditionalInformation
   PRINT_TYPE = ""
   COMPONENTS = {
-    [0,0,0] =>  :epha_public_domain,
-    [0,0,1] =>  :qr_code_image,
-    [0,1] => :print_type,
-    [0,2] => '&nbsp;',
-    [0,3] => :prescription_for,
+    [0,0] => :epha_public_domain,
+    [0,1] => '&nbsp;',
+    [0,2] => :qr_code_image,
+    [0,3] => :print_type,
     [0,4] => '&nbsp;',
-    [0,5] => :prescription_title,
-    [0,6] => :document,
-    [0,7] => '&nbsp;',
-    [0,8] => 'prescription_signature',
+    [0,5] => :prescription_for,
+    [0,6] => '&nbsp;',
+    [0,7] => :prescription_title,
+    [0,8] => :document,
+    [0,9] => '&nbsp;',
+    [0,10] => 'prescription_signature',
   }
   CSS_MAP = {
-    0 => 'print-type',
-    1 => 'print-type',
-    2 => 'print',
-    3 => 'print',
-    4 => 'print',
-    5 => 'print',
-    6 => 'print',
-    7 => 'print',
-    8 => 'print bold',
+    [0,0] => 'print-type',
+    [0,1] => 'print',
+    [0,2] => 'print',
+    [0,3] => 'print-type',
+    [0,4] => 'print',
+    [0,5] => 'print',
+    [0,6] => 'print',
+    [0,7] => 'print',
+    [0,8] => 'print',
+    [0,9] => 'print',
+    [0,10] => 'print-big',
   }
-  def init    
+  def init
     @drugs = @session.persistent_user_input(:drugs)
     super
 self.onload = %(require(["dojo/domReady!"], function(){
-  console.log('PrescriptionPrintComposite.onload print_composite_init #{@lookandfeel.lookup(:prescription_comment)}');
   print_composite_init('#{@lookandfeel.lookup(:prescription_comment)}');
-  console.log('PrescriptionPrintComposite.onload add_prescription_qr_code');
   add_prescription_qr_code('qr_code_text', 'qr_code_image');
   });
   )
@@ -493,12 +492,12 @@ self.onload = %(require(["dojo/domReady!"], function(){
     txt = HtmlGrid::Div.new(model, session, self)
     txt.set_attribute('id', 'qr_code_text')
     txt.value = "Ein Beispiel"
+    txt.set_attribute('style', "italic width:100%;")
     txt
     fields << txt
     image = HtmlGrid::Div.new(model, session, self)
     image.set_attribute('id', 'qr_code_image')
     image.set_attribute('colspan', '15')
-    image.set_attribute('style', "width:30%;")
     image
     fields << image
     fields

@@ -21,7 +21,7 @@ function create_qrcode_example() {
 }
 
 function create_example_prescription(){
-      var prescription = rescription( '4dd33f59-1fbb-4fc9-96f1-488e7175d761');
+      var prescription = prescription( '4dd33f59-1fbb-4fc9-96f1-488e7175d761');
       prescription.SW_ORIGIN_ID             = 'TriaMed'
       prescription.SW_VERSION_ID            = '3.9.3.0'
       prescription.doctor_glin              = '7601000092786'
@@ -35,5 +35,6 @@ function create_example_prescription(){
       prescription.patient_insurance_glin   = '7601003000382'
       return prescription   
 }
+// console.log(create_qrcode_example().qr_string());
 console.log('No tests run until DOH added');
 

@@ -1,73 +1,4 @@
-
-function       add_prescription_qr_code(text_id, element_id) {
-  console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
-  try {
-    var qrcode = new QRCode(element_id);
-
-    function makeCode (text_id) {    
-      var elText = document.getElementById(text_id);
-        console.log('makeCode elText '+elText );
-        console.log('makeCode elText.value ' + elText.value );
-
-      var inhalt = 'Noch kein Inhalt';
-      if (elText == null || !elText.value) {
-        console.log('makeCode impossible for element '+element_id + ' no text found for ' + text_id);
-        elText.value = inhalt;
-      } else {
-        inhalt = elText.value;      
-      }
-      qrcode.makeCode(inhalt);
-    }
-
-    makeCode(text_id);
-    console.log('Sucess with add_prescription_qr_code for element '+element_id);
-  }
-  catch(err) {
-    console.log('prescription_form_init: catched error: ' + err);
-  }
-}
-
-function       prescription_form_init(comment_id) {
-  console.log('prescription_form_init onload');
-  try {
-    js_restore_prescription_patient_info();
-    js_restore_prescription_sex();
-    for (index = 0; index < 99; ++index) {
-      var field_id = 'prescription_comment_' + index;
-      var saved_value =  sessionStorage.getItem(field_id, '');
-      var x=document.getElementById(field_id);
-      var header=document.getElementById('prescription_header_' + index);
-      console.log ('PrescriptionForm.onload ?? ' + field_id +': set value : ' + x + ' -> ' + saved_value + ' header ' + header);
-      if (x != null) {
-        console.log('x className is '+x.className);
-        if (saved_value != null && saved_value != 'null') {
-          x.value = saved_value;
-          x.innerHTML = saved_value;
-          if (header != null) {
-            console.log ('PrescriptionForm.onload setting prescription_comment '+ comment_id);
-            header.value = comment_id;
-            header.innerHTML = comment_id;
-          }
-        } else {
-          if (header != null) {
-            console.log ('PrescriptionForm.onload clearing prescription_comment');
-            header.value = '';
-            header.innerHTML = '';
-          }
-          
-        }
-        console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
-      } else { break; }
-    }
-  }
-  catch(err) {
-    console.log('prescription_form_init: catched error: ' + err);
-  }
-  document.getElementById('searchbar').focus();
-}
-
 function print_composite_init(comment_id) {
-  console.log('print_composite_init starting');
   try {
     for (index = 0; index < 99; ++index) {
       var field_id = 'prescription_comment_' + index;
@@ -80,13 +11,13 @@ function print_composite_init(comment_id) {
           x.value = saved_value;
           x.innerHTML = saved_value;
           if (header != null) {
-            console.log ('PrescriptionPrintComposite.onload setting prescription_comment '+comment_id);
+            // console.log ('PrescriptionPrintComposite.onload setting prescription_comment '+comment_id);
             header.value = comment_id;
             header.innerHTML = comment_id;
           }
         } else {
           if (header != null) {
-            console.log ('PrescriptionPrintComposite.onload clearing prescription_comment');
+            // console.log ('PrescriptionPrintComposite.onload clearing prescription_comment');
             header.value = '';
             header.innerHTML = '';
           }
@@ -108,11 +39,104 @@ function print_composite_init(comment_id) {
   }
 }
 
+function getToday() {
+  var currentDate = new Date()
+  var day = currentDate.getDate()
+  var month = currentDate.getMonth() + 1
+  var year = currentDate.getFullYear()
+  return year + month +  day;
+}
+
+function create_prescription_from_dom() {
+  var prescription = new Prescription(guid());
+  prescription.doctor_glin              = 'doctor-ean13'
+  prescription.doctor_zsr               = 'ZSR?'
+  prescription.patient_id               = 'PatID?'
+  prescription.date_issued              = getToday()
+  prescription.patient_family_name      = document.getElementById('prescription_family_name').value
+  prescription.patient_first_name       = document.getElementById('prescription_first_name').value
+  prescription.patient_zip_code         = 'PLZ?'
+  prescription.patient_birthday         = document.getElementById('prescription_birth_day').value
+  prescription.patient_insurance_glin   = 'Vers.Nummer'
+    
+  for (index = 0; index < 99; ++index) {
+    var id = document.getElementById('prescription_comment_' + index);
+    if (id == null) { break; }    
+    var comment_id = 'prescription_comment_' + index;
+    var ean13_id   = 'prescription_ean13_' + index;
+    var comment = document.getElementById(comment_id);
+    if (comment != null) {
+      var prescription_dom =  document.getElementById(ean13_id);
+      if (prescription_dom != null) {
+        var ean13 = prescription_dom.innerHTML; // value is undefined
+        // console.log('create_prescription_from_dom add ' + index + ' ean13 ' + ean13);
+        var item = new PrescriptionItem(ean13)
+        item.extended_posology = comment.innerHTML;
+        prescription.add_item(item);
+      }
+    }
+  }
+  return prescription;
+}
+
+function add_prescription_qr_code(text_id, element_id) {
+//  console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
+  try {
+    var qrcode = new QRCode(element_id);
+
+    function makeCode () {
+      var inhalt =   create_prescription_from_dom().qr_string();
+      document.getElementById(text_id).innerHTML = inhalt;
+      qrcode.makeCode(inhalt);
+    }
+
+    makeCode();
+  }
+  catch(err) {
+    console.log('prescription_form_init: catched error: ' + err);
+  }
+}
+
+function prescription_form_init(comment_id) {
+  try {
+    js_restore_prescription_patient_info();
+    js_restore_prescription_sex();
+    for (index = 0; index < 99; ++index) {
+      var field_id = 'prescription_comment_' + index;
+      var saved_value =  sessionStorage.getItem(field_id, '');
+      var x=document.getElementById(field_id);
+      var header=document.getElementById('prescription_header_' + index);
+      if (x != null) {
+        if (saved_value != null && saved_value != 'null') {
+          x.value = saved_value;
+          x.innerHTML = saved_value;
+          if (header != null) {
+            // console.log ('PrescriptionForm.onload setting prescription_comment '+ comment_id);
+            header.value = comment_id;
+            header.innerHTML = comment_id;
+          }
+        } else {
+          if (header != null) {
+            // console.log ('PrescriptionForm.onload clearing prescription_comment');
+            header.value = '';
+            header.innerHTML = '';
+          }
+          
+        }
+        // console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+      } else { break; }
+    }
+  }
+  catch(err) {
+    console.log('prescription_form_init: catched error: ' + err);
+  }
+  document.getElementById('searchbar').focus();
+}
+
 function js_clear_session_storage() {
-  console.log ("Clearing sessionStorage for url: " + this.baseURI);
   try {
     for (index = 0; index < 99; ++index) {
-      sessionStorage. removeItem("prescription_comment_" + index);
+      sessionStorage.removeItem("prescription_comment_" + index);
     }
     sessionStorage.removeItem("prescription_sex");
     sessionStorage.removeItem("prescription_first_name");
@@ -134,12 +158,11 @@ function js_restore_prescription_patient_info() {
       var saved_value =  sessionStorage.getItem(field_id, '');
       var x=document.getElementById(field_id);
       if (x != null) {
-        console.log('x className is '+x.className);
         if (saved_value != null && saved_value != 'null') {
           x.value = saved_value;
           x.innerHTML = saved_value;
         }
-        console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
+        // console.log ('PrescriptionForm.onload ' + field_id +': set value : ' + x + ' -> ' + saved_value);
       }
     }
   }
@@ -151,7 +174,6 @@ function js_restore_prescription_sex() {
   try {
     var field_id = 'prescription_sex';
     var saved_value =  sessionStorage.getItem(field_id, '');
-    console.log ('PrescriptionForm.onload ' + field_id +': saved_value' + saved_value);
     if (saved_value == '1') {
       document.getElementById('prescription_sex_1').checked = true;
       document.getElementById('prescription_sex_2').checked = false;
@@ -167,14 +189,14 @@ function js_restore_prescription_sex() {
 
 function delete_ean_of_index(url, index) {
   try {
-    console.log ('Delete index ' + index + ': going to new url ' + url + ' in prescription');
+    // console.log ('Delete index ' + index + ': going to new url ' + url + ' in prescription');
     for (idx = index; idx < 99; ++idx) {
       var cur_id  = 'prescription_comment_' + idx;
       var next_id = 'prescription_comment_' + (idx+1);
       var next_value =  sessionStorage.getItem(next_id, '');
       if (next_value != '' && next_value != 'null' && next_value != null) {
         sessionStorage.setItem(cur_id, next_value);
-        console.log ('PrescriptionDrugHeader.delete nextvalue ' + cur_id + ': set value : ' + next_value);
+        // console.log ('PrescriptionDrugHeader.delete nextvalue ' + cur_id + ': set value : ' + next_value);
       } else {
         sessionStorage. removeItem(cur_id);
       }
