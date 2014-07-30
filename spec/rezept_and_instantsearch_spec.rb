@@ -11,7 +11,14 @@ describe "ch.oddb.org" do
  
   def add_one_drug_to_rezept(name)
     chooser = @browser.text_field(:id, 'prescription_searchbar')
-    0.upto(10).each{ |idx|
+    unless chooser and chooser.present?
+      puts "could not find textfield prescription_searchbar"
+      require 'pry'; binding.pry
+      raise  "could not find textfield prescription_searchbar"
+    else
+      puts chooser.inspect
+    end
+    0.upto(30).each{ |idx|
                       begin
                         chooser.set(name)
                         sleep idx*0.1
