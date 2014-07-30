@@ -51,3 +51,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 == LICENSE:
 
 * GPLv2.1
+* Licensed under the MIT license from http://www.opensource.org/licenses/mit-license.php:
+** doc/resources/javascript/qrcode.js
+
+== Trademarks
+The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED. see http://www.denso-wave.com/qrcode/faqpatent-e.html

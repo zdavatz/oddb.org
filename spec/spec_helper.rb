@@ -73,9 +73,9 @@ end
 
 def createScreenshot(browser, added=nil)
   if browser.url.index('?')
-    name = File.join(ImageDest, File.basename(browser.url.split('?')[0]))
+    name = File.join(ImageDest, File.basename(browser.url.split('?')[0]).gsub(/\W/, '_'))
   else
-    name = File.join(ImageDest, browser.url.split('/')[-1])
+    name = File.join(ImageDest, browser.url.split('/')[-1].gsub(/\W/, '_'))
   end
   name = "#{name}#{added}.png"
   browser.screenshot.save (name)

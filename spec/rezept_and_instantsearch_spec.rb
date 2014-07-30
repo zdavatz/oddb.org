@@ -11,7 +11,14 @@ describe "ch.oddb.org" do
  
   def add_one_drug_to_rezept(name)
     chooser = @browser.text_field(:id, 'prescription_searchbar')
-    0.upto(10).each{ |idx|
+    unless chooser and chooser.present?
+      puts "could not find textfield prescription_searchbar"
+      require 'pry'; binding.pry
+      raise  "could not find textfield prescription_searchbar"
+    else
+      puts chooser.inspect
+    end
+    0.upto(30).each{ |idx|
                       begin
                         chooser.set(name)
                         sleep idx*0.1
@@ -35,29 +42,28 @@ describe "ch.oddb.org" do
   end
   
   before :all do
-    @idx = 0
+    $prescription_test_id = 1
     waitForOddbToBeReady(@browser, OddbUrl)
     login
   end
 
   before :each do
     @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+    # puts "before #{$prescription_test_id} with #{@browser.windows.size} windows"
+    while @browser.windows.size > 1
+      @browser.windows.first.use
+      @browser.windows.last.close if @browser.windows.last
+    end
     @browser.goto OddbUrl
     if @browser.link(:text=>'Plus').exists?
       puts "Going from instant to plus"
-    @browser.link(:text=>'Plus').click
+      @browser.link(:text=>'Plus').click
     end
   end
 
   after :each do
-    @idx += 1
-    createScreenshot(@browser, '_'+@idx.to_s) if @browser
-    # sleep
-    @browser.goto OddbUrl
-  end
-
-  after :all do
-    @browser.close if @browser
+    createScreenshot(@browser, '_'+$prescription_test_id.to_s) if @browser
+    $prescription_test_id += 1
   end
 
   def genComment(unique)
@@ -86,9 +92,10 @@ describe "ch.oddb.org" do
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
       inhalt = @browser.text
+      inhalt.should_not match /Error generating QRCode/i
       [FirstName, FamilyName, Birthday, " m\n"].each {
         |what|
-        unless inhalt.index(what)
+        if inhalt.index(what).class == NilClass
           puts "Could not find #{what} in #{inhalt}"
           # require 'pry'; binding.pry
         end
@@ -117,30 +124,64 @@ describe "ch.oddb.org" do
     end
   end
 
-  it "should be possible to print a presciption" do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516820922,7680390530474')
-    setGeneralInfo(2)
+  def showElapsedTime(startTime, comment = caller[0])
+    duration = (Time.now - startTime).to_i
+    puts "#{comment} took #{duration} seconds"
+  end
+
+  def waitForPrintInfo(maxSeconds = 120)
+    startTime = Time.now
+    while @browser.text.size < 100
+      # puts "Slept already for #{(Time.now - startTime).to_i} seconds. size is #{@browser.text.size}"
+      sleep(1)
+      break if Time.now - startTime > maxSeconds
+    end
+    # puts "waitForPrintInfo finished after #{(Time.now - startTime).to_i} seconds. size is #{@browser.text.size}"
+    sleep(1)
+  end
+
+  it "should print the fachinfo when opening the fachinfo from a prescription" do
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    setGeneralInfo(1)
+    @browser.element(:text, 'FI').click
+    oldWindowsSize = @browser.windows.size
+    @browser.link(:text, /FI/).click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    oldWindowsSize = @browser.windows.size
+    @browser.link(:text, /Drucken/i).click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    @browser.url.should_not match /^rezept/i
+    @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
+  end
+
+  it 'should not throw a an error with a problematic combination of drugs' do
+    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516801112,7680576730063?')
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
+    waitForPrintInfo
     inhalt = @browser.text
-    checkGeneralInfo(2)
+    inhalt.should_not match /Error generating QRCode/i
+    inhalt.should_not match /Bemerkungen/
     inhalt.should     match(/Ausdruck/i)
     ['Ausdruck',
      'Stempel, Unterschrift',
-     'Merfen', 'Nolvadex',
-     '7680516820922', '7680390530474',
+     'Merfen', 'Aspirin',
+     '7680516801112', '7680576730063?',
      / m$/, # männlich
     ].each do
       |name|
       inhalt.should match(name)
     end
-    inhalt.should match /Bemerkungen/
   end
 
-  it "should not contain remarks or interaction header only when present" do
-    # goto Asprin, Inderal, Marcouma
+  it "should contain remarks or interaction header only when present" do
     @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
     add_one_drug_to_rezept('Aspirin')
     add_one_drug_to_rezept('Inderal')
@@ -152,6 +193,7 @@ describe "ch.oddb.org" do
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
+    waitForPrintInfo
     inhalt = @browser.text
     checkGeneralInfo(2)
     inhalt.scan(/\nBemerkungen\n/).size.should == 2
@@ -177,6 +219,7 @@ describe "ch.oddb.org" do
     @browser.url.should_not match /^rezept/i
     @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
   end
+
   it "should enable to go back after printing a prescription" do
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
@@ -191,6 +234,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not loose existing comment after adding a new prescription" do
+    @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
@@ -200,7 +244,9 @@ describe "ch.oddb.org" do
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(1)
   end
+
   it "should show the interaction between different drugs" do
+    @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
@@ -304,5 +350,37 @@ describe "ch.oddb.org" do
     inhalt.should match(/#{medi}/i)
     inhalt.should match(/Zusammensetzung/i)
     inhalt.should match(/Filmtabletten/i)
+  end
+
+  # this tests takes (at the moment) over 2,5 minutes
+  it "should be possible to print a presciption with 10 drugs" do
+    startTime = Time.now
+    nrDrugs = 10
+    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
+    add_one_drug_to_rezept('Aspirin')
+    add_one_drug_to_rezept('Inderal')
+    add_one_drug_to_rezept('Marcoumar')
+    add_one_drug_to_rezept('Ponstan')
+    add_one_drug_to_rezept('Merfen')
+    add_one_drug_to_rezept('Actem')
+    add_one_drug_to_rezept('Dostinex')
+    add_one_drug_to_rezept('Yondelis')
+    add_one_drug_to_rezept('Bactrim')
+    add_one_drug_to_rezept('Badesalz')
+
+    # add two remarks
+    setGeneralInfo(nrDrugs)
+    showElapsedTime(startTime, "Generating a prescription with #{nrDrugs}")
+    startTime = Time.now
+    oldWindowsSize = @browser.windows.size
+    @browser.button(:name, "print").click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    waitForPrintInfo
+    showElapsedTime(startTime, "Printing a prescription with  #{nrDrugs} drugs")
+    inhalt = @browser.text.clone
+    checkGeneralInfo(nrDrugs)
+    inhalt.scan(/\nBemerkungen\n/).size.should == nrDrugs
+    inhalt.scan(/\nInteraktionen\n/).size.should == nrDrugs
   end
 end
