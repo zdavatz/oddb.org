@@ -14,7 +14,7 @@ module ODDB
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
     CSV_ORIGIN_URL  = 'https://download.epha.ch/cleaned/matrix.csv'
     
-    def initialize(app)
+    def initialize(app, options = nil)
       super
     end
     def report
