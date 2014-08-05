@@ -3,9 +3,9 @@
 # OneDirSuite -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path(File.dirname(__FILE__))
-
 buggy = [
+  'ipn.rb',
+  'session.rb',
   'oddbapp.rb',
   'oddbapp_2.rb',
 ]

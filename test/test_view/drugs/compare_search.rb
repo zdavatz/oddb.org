@@ -62,7 +62,7 @@ class TestCompareSearchForm <Minitest::Test
 function selectSubmit() {
   var popup = dojo.byId('searchbar_popup');
   var searchbar = dojo.byId('searchbar');
-  if (popup && popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+  if (popup && (popup.style.overflowX.match(/auto/) || popup.style.overflowX.match(/hidden/)) && searchbar.value != '') {
     setTimeout('show_progressbar(\\'widget_searchbar\\')', 10);
     searchbar.form.submit();
   }

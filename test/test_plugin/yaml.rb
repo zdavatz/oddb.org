@@ -80,13 +80,6 @@ module ODDB
         assert_equal('export_yaml', @plugin.export_galenic_groups)
       end
     end
-    def test_export_interactions
-      epha_interaction = flexmock('epha_interaction', :atc_code_self => 'atc_code_self')
-      flexmock(@app, :epha_interactions => [epha_interaction])
-      replace_constant('ODDB::YamlExporter::EXPORT_SERVER', @server) do
-        assert_equal('export_yaml', @plugin.export_interactions)
-      end
-    end
     def test_check_infos__valid_fachinfo
       fachinfo = flexmock('fachinfo',
                           :descriptions => {'de' => 'description', 'fr' => 'description'},
