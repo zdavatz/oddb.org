@@ -20,63 +20,9 @@ class InteractionsHeader < HtmlGrid::Composite
 		[0,0]	=>	'atc',
 	}
 end
-class InteractionsSubstrates < HtmlGrid::List
-  attr_reader :list_index
-	BACKGROUND_SUFFIX = ' bg'
-	COMPONENTS = {
-		[0,0]		=>	:active,
-		[1,0]		=>	:passive,
-		[2,0]		=>	:info,
-		[3,0]		=>	:rating,
-	}
-	CSS_MAP = {
-		[0,0]		=>	'list',
-		[1,0]		=>	'list',
-		[2,0]		=>	'list',
-		[3,0]		=>	'list',
-	}
-	CSS_HEAD_MAP = {
-		[0,0]	=>	'th',
-		[1,0]	=>	'th',
-		[2,0]	=>	'th',
-		[3,0]	=>	'th',
-	}
-	CSS_CLASS = 'composite interaction-basket'
-	DEFAULT_CLASS = HtmlGrid::Value
-#	SORT_DEFAULT = :substance
-	SUBHEADER = View::Interactions::InteractionsHeader
-  LEGACY_INTERFACE = false
-  def active(model, session=@session)
-    if model.is_a?(Hash)
-      model[:active] + " (" + model[:substance_active] + ")"
-    end
-  end
-  def passive(model, session=@session)
-    if model.is_a?(Hash)
-      model[:passive] + " (" + model[:substance_passive] + ")"
-    end
-  end
-  def info(model, session=@session)
-    if model.is_a?(Hash)
-      link = HtmlGrid::Link.new(:info, model, session, self) 
-      args = {:atc_code => model[:active] + ',' + model[:passive]}
-      link.href = @lookandfeel._event_url(:interaction_detail, args) do |args|
-        args.map!{|arg| CGI.unescape(arg)}
-      end
-      link.value = model[:info]
-      link
-    end
-  end
-  def rating(model, session=@session)
-    if model.is_a?(Hash)
-      model[:rating]
-    end
-  end
-end
 class InteractionsForm < View::Form
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
-		[0,2]	=>	2,
 	}
 	COMPONENTS = {
 		[0,0]		=>	:interactions_count,
@@ -85,7 +31,6 @@ class InteractionsForm < View::Form
 		[0,1,2]	=>  'back_to_interactions',
 		[1,1,0]	=>	:search_query,
 		[1,1,1]	=>	:submit,
-		[0,2]		=>	View::Interactions::InteractionsSubstrates,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search

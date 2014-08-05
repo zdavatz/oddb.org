@@ -12,24 +12,6 @@ require 'util/pointerarray'
 module ODDB
 	module View
 		module Substances 
-module SubstrateList
-	COMPONENTS = {
-		[0,0]	=>	:substrates,
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0,1]	=>	'list',
-	}	
-	DEFAULT_CLASS = HtmlGrid::Value
-	DEFAULT_HEAD_CLASS = 'subheading'
-	SORT_HEADER = false
-	def substrates(model, session)
-		txt = HtmlGrid::Text.new(:substrates, model, session, self)
-		txt.label = false 
-		txt.value = model.cyp_id 
-		txt
-	end
-end
 module SequencesList
 	COMPONENTS = {
 		[0,0]	=>	:name_base,
@@ -92,9 +74,6 @@ class ActiveFormForm < View::Form
 		submit(model) #unless model.is_effective_form?
 	end
 end
-class Substrates < HtmlGrid::List
-	include View::Substances::SubstrateList
-end
 class Sequences < HtmlGrid::List
 	include View::Substances::SequencesList
 end
@@ -148,9 +127,7 @@ class OuterComposite < HtmlGrid::Composite
 		[0,0]	=>	:substance_name,
 		[0,1]	=>	View::Substances::DescriptionForm,
 		[1,1]	=>	View::Substances::AdminComposite,
-		[0,4]	=>	:connection_keys,
-		[0,5]	=>	:substrate_connections,
-		[0,6]	=>	:sequences,
+		[0,4]	=>	:sequences,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
@@ -160,25 +137,10 @@ class OuterComposite < HtmlGrid::Composite
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
 		[0,4]	=>	2,
-		[0,5]	=>	2,
-		[0,6]	=>	2,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
-	def connection_keys(model, session)
-		conn_keys = model.connection_keys
-		unless(conn_keys.empty?)
-			View::Substances::ConnectionKeys.new(conn_keys, session, self)
-		end
-	end
 	def substance_name(model, session)
 		model.name
-	end
-	def substrate_connections(model, session)
-		unless(model.substrate_connections.nil?)
-			connections = model.substrate_connections.values
-			values = PointerArray.new(connections, model.pointer)
-			View::Substances::Substrates.new(values, session, self)
-		end
 	end
 	def sequences(model, session)
 		sequences = model.sequences

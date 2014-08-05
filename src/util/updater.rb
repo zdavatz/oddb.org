@@ -14,7 +14,6 @@ require 'plugin/drugbank'
 require 'plugin/divisibility'
 require 'plugin/epha_interactions'
 require 'plugin/hospitals'
-require 'plugin/interaction'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/medical_products'
@@ -269,8 +268,8 @@ module ODDB
       # export_oddb2tdat_with_migel
       export_ouwerkerk
       export_generics_xls
-      export_competition_xlss
       update_epha_interactions
+      export_competition_xlss
     end
     def update_comarketing
       update_immediate(CoMarketingPlugin, 'Co-Marketing')

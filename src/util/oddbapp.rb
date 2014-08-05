@@ -70,7 +70,6 @@ class OddbPrevalence
 		@commercial_forms ||= {}
 		@companies ||= {}
 		@currency_rates ||= {}
-		@cyp450s ||= {}
     @divisions ||= {}
 		@doctors ||= {}
     @epha_interactions ||= []
@@ -326,12 +325,6 @@ class OddbPrevalence
 			inj
 		}
 	end
-	def cyp450(id)
-		@cyp450s[id]
-	end
-	def cyp450s
-		@cyp450s.values
-	end
 	def create_analysis_group(groupcd)
 		group = ODDB::Analysis::Group.new(groupcd)
 		@analysis_groups.store(groupcd, group)
@@ -372,10 +365,6 @@ class OddbPrevalence
     hospital = ODDB::Hospital.new(ean13)
     @hospitals.store(ean13, hospital)
   end
-	def create_cyp450(cyp_id)
-		cyp450 = ODDB::CyP450.new(cyp_id)
-		@cyp450s.store(cyp_id, cyp450)
-	end
 	def create_fachinfo
 		fachinfo = ODDB::Fachinfo.new
 		@fachinfos.store(fachinfo.oid, fachinfo)
@@ -510,12 +499,6 @@ class OddbPrevalence
 			@atc_classes.odba_isolated_store
 		end
 		atc
-	end
-	def delete_cyp450(cyp_id)
-		if(cyp = @cyp450s.delete(cyp_id))
-			@cyp450s.odba_isolated_store
-			cyp
-		end
 	end
 	def delete_commercial_form(oid)
 		if(form = @commercial_forms.delete(oid))

@@ -17,7 +17,7 @@ module ODDB
 
    class TestLog <Minitest::Test
     include FlexMock::TestCase
-    TEST_SENDER   = 'from_test_ywesee@ywesee.com'
+    TEST_SENDER   = 'default_mail_from@ywesee.com'
     LOG_RECEIVER  = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
     def setup
       Util.configure_mail :test

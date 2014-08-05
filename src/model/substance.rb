@@ -8,26 +8,19 @@ require 'util/levenshtein_distance'
 require 'util/language'
 require 'util/soundex'
 require 'model/sequence_observer'
-require 'model/cyp450connection'
 
 module ODDB
 	class Substance
 		include Persistence
 		include SequenceObserver
-		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
     attr_reader :chemical_forms, :effective_form, :sequences
-      :substrate_connections
 		attr_accessor :swissmedic_code, :casrn
 		include Comparable
 		include Language
-		def Substance.format_connection_key(key)
-			key.to_s.downcase.gsub(/[^a-z0-9]/u, '')
-		end
 		def initialize
 			super()
 			@sequences = []
-			@substrate_connections = {}
-			@connection_keys = []
       @chemical_forms = []
 		end
     def add_chemical_form(form)
@@ -54,8 +47,6 @@ module ODDB
           values[key] = newval
 				else
 					case key
-					when :connection_keys
-						values[key] = [ value ].flatten
 					when :effective_form
 						values[key] = value.resolve(app)
 					end
@@ -68,31 +59,7 @@ module ODDB
 		end
     def checkout
       @sequences.odba_delete
-      @substrate_connections.values.each { |conn| conn.odba_delete }
-      @substrate_connections.odba_delete
     end
-		def connection_keys
-			@connection_keys || self.update_connection_keys
-		end
-		def connection_keys=(keys)
-			@connection_keys += keys
-			self.connection_keys
-		end
-		def	create_cyp450substrate(cyp_id)
-			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)
-      conn.substance = self
-			@substrate_connections.store(conn.cyp_id, conn)
-			conn
-		end
-		def cyp450substrate(cyp_id)
-      @substrate_connections[cyp_id]
-		end
-		def delete_cyp450substrate(cyp_id)
-			if(cyp = @substrate_connections.delete(cyp_id))
-				@substrate_connections.odba_isolated_store
-				cyp
-			end
-		end
     def effective_form=(form)
       if(@effective_form.respond_to?(:remove_chemical_form))
         @effective_form.remove_chemical_form(self)
@@ -103,47 +70,11 @@ module ODDB
       @effective_form = form
     end
 		def empty?
-			@sequences.empty? && @substrate_connections.empty? && !is_effective_form?
-		end
-		def format_connection_key(key)
-			Substance.format_connection_key(key)
-		end
-		def has_connection_key?(test_key)
-			key = format_connection_key(test_key)
-			!key.empty? && self.connection_keys.include?(key)
+			@sequences.empty? && !is_effective_form?
 		end
 		def has_effective_form?
 			!@effective_form.nil?
 		end
-		def interaction_connections(others)
-      connections = {}
-      @substrate_connections.each { |cyp450_id, subs_connection|
-        others.each { |substance|
-          interactions = subs_connection.interactions_with(substance)
-          if(int_conn = connections[cyp450_id])
-            int_conn.concat(interactions)
-          else
-            connections.store(cyp450_id, interactions)
-          end
-        }
-      }
-      connections
-		end
-		def interactions_with(other)
-			interactions = _interactions_with(other) 
-			if(has_effective_form? && !is_effective_form?)
-				interactions += @effective_form.interactions_with(other)
-			end
-      if(other.has_effective_form? && !other.is_effective_form?)
-				interactions += interactions_with(other.effective_form)
-      end
-			interactions.uniq
-		end
-    def _interactions_with(other)
-      @substrate_connections.values.collect { |conn|
-        conn.interactions_with(other)
-      }.flatten
-    end
 		def is_effective_form?
 			@effective_form == self
 		end
@@ -165,17 +96,6 @@ module ODDB
           end
         end
 			}
-      ocons = other.substrate_connections
-			ocons.dup.each { |key, substr_conn|
-				unless(cyp450substrate(substr_conn.cyp_id))
-					substr_conn.pointer = self.pointer + substr_conn.pointer.last_step
-					substrate_connections.store(substr_conn.cyp_id, substr_conn)
-					substr_conn.odba_isolated_store
-          ocons.delete(key)
-				end
-			}
-			substrate_connections.odba_isolated_store
-      ocons.odba_isolated_store
 			other.descriptions.dup.each { |key, value|
 				unless(self.descriptions.has_key?(key))
 					self.descriptions.update_values( { key => value } )
@@ -184,7 +104,6 @@ module ODDB
 			# long format, because each of these methods are overridden
 			self.synonyms = self.synonyms + other.synonyms \
 				+ other.descriptions.values - self.descriptions.values
-			self.connection_keys = self.connection_keys + other.connection_keys
 			self
 		end
 		def name
@@ -218,9 +137,6 @@ module ODDB
     def _names
       self.descriptions.values + self.synonyms
     end
-		def primary_connection_key
-			@primary_connection_key ||= format_connection_key(self.name)
-		end
     def remove_chemical_form(form)
       if(@chemical_forms.delete(form))
         @chemical_forms.odba_isolated_store
@@ -231,7 +147,7 @@ module ODDB
 			teststr = ODDB.search_term(substance.to_s.downcase)
 			_search_keys.any? { |desc|
 				desc.downcase == teststr
-			} || (connection_keys.include?(format_connection_key(teststr)))
+			} 
 		end
 		def search_keys
 			keys = self._search_keys
@@ -245,7 +161,7 @@ module ODDB
 			ODDB.search_terms(keys).uniq
 		end
 		def _search_keys
-			keys = self.descriptions.values + self.connection_keys \
+			keys = self.descriptions.values  \
 				+ self.synonyms
 			keys.push(name).collect { |key| ODDB.search_term(key) }
 		end
@@ -260,9 +176,6 @@ module ODDB
 			}
 			keys.compact.uniq
 		end
-		def substrate_connections
-			@substrate_connections ||= {}
-		end
 		def to_i
 			oid
 		end
@@ -270,20 +183,12 @@ module ODDB
 			name
 		end
 		def unique_compare?(other)
-			other_keys = other.connection_keys + other._search_keys
-			own_keys = self.connection_keys + self.search_keys
+			other_keys = other._search_keys
+			own_keys = self.search_keys
 			!(other_keys & own_keys).empty? # intersection
-		end
-		def update_connection_keys
-			keys = (@connection_keys || []) + self.descriptions.values \
-				+ self.synonyms  + [self.name]
-			@connection_keys = keys.collect { |key|
-					format_connection_key(key)
-			}.delete_if { |key| key.empty? }.uniq.sort
 		end
 		def update_values(values, origin=nil)
 			super
-			update_connection_keys
 		end
 		def <=>(other)
 			to_s.downcase <=> other.to_s.downcase

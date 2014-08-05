@@ -55,7 +55,7 @@ OrderOfInteractions = [
   /B01AC06: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes .*Blutungsrisiko/,
   /B01AC06: Acetylsalicylsäure => G04BE03: Sildenafil Keine Interaktion/,
   ]
-BlutungsRisiko = 'Erhöhtes GIT-Blutungsrisiko'
+BlutungsRisiko = 'Erhöhtes.*Blutungsrisiko'
 
 describe "ch.oddb.org" do
  
@@ -114,11 +114,11 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
-  it "should show both interaction direction for marcoumar and ponstan" do
+    it "should show both interaction direction for marcoumar and ponstan" do
      found_using = %(
-grep M01AG01 interactions_de_utf8.csv | grep B01AA04
-"B01AA04";"Phenprocoumon";"M01AG01";"Mefenaminsäure";"#{BlutungsRisiko}";"Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung. Zusätzlich verdrängt Mefenaminsäure Antikoagulantien des Coumarintyps aus der Eiweissbindung.";"Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.";"Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen und Blutgerinnungsparameter engmaschig monitorisieren. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide.";"D"
-"M01AG01";"Mefenaminsäure";"B01AA04";"Phenprocoumon";"#{BlutungsRisiko}";"Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung. Zusätzlich verdrängt Mefenaminsäure Antikoagulantien des Coumarintyps aus der Eiweissbindung.";"Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.";"Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen und Blutgerinnungsparameter engmaschig monitorisieren. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide.";"D"
+grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
+"M01AG01","Mefenaminsäure","B01AA04","Phenprocoumon","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"                           
+"B01AA04","Phenprocoumon","M01AG01","Mefenaminsäure","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"                           
 )
     medis = [ 'Ponstan', 'Marcoumar']
     url = "#{OddbUrl}/de/gcc/home_interactions"

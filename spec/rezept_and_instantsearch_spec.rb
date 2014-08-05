@@ -13,7 +13,7 @@ describe "ch.oddb.org" do
     chooser = @browser.text_field(:id, 'prescription_searchbar')
     unless chooser and chooser.present?
       puts "could not find textfield prescription_searchbar"
-      require 'pry'; binding.pry
+      # require 'pry'; binding.pry
       raise  "could not find textfield prescription_searchbar"
     else
       puts chooser.inspect

@@ -152,7 +152,7 @@ module ODDB
         recipients = Util.get_mailing_list_receivers(list_and_recipients)
         foundList = recipients.size > 0
       end
-      raise "At least one recipient must be a list #{list_and_recipients}" unless foundList
+      raise "At least one recipient must be a list #{list_and_recipients.inspect}" unless foundList
       raise "No recipients defined for list_and_recipients #{list_and_recipients}" unless recipients.size > 0
       recipients.sort
     end

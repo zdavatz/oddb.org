@@ -219,7 +219,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new(:substance)
 		descr = {
 			'en'			=>	'first_name',
-			:connection_keys	=>	['connection_key'],
 		}
 		subs = @app.update(pointer.creator, descr)
 		values = {
@@ -228,8 +227,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('En_name', subs.en)
-		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort,
-			subs.connection_keys.sort)
 		assert_equal('De_name', subs.de)
     skip("Niklaus has no time to debug next assertion")
 		assert_equal(subs, @app.substances)
@@ -326,109 +323,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		@app.delete_doctor(doctor2.oid)
 		expected2 = {doctor3.oid => doctor3}
 		assert_equal(expected2, @app.doctors)
-	end
-	def test_create_cyp450
-		@app.cyp450s.clear
-		cyp450 = '1A2'
-		assert_nil(@app.cyp450(cyp450))
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		created = @app.create(pointer)
-		assert_equal(1, @app.cyp450s.size)
-		assert_equal(ODDB::CyP450, created.class)
-		result = @app.cyp450(cyp450)
-		assert_equal(ODDB::CyP450, result.class)
-	end
-	def test_delete_cyp450
-		@app.cyp450s.clear
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		created = @app.create(pointer)
-		assert_equal(1, @app.cyp450s.size)
-		@app.delete(pointer)
-		assert_equal(0, @app.cyp450s.size)
-	end
-	def test_cyp450
-		@app.cyp450s.clear
-		cyp450 = '1A2'
-		assert_nil(@app.cyp450(cyp450))
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		created = @app.create(pointer)
-		result = @app.cyp450(cyp450)
-		assert_equal(created, result)
-	end
-	def test_create_cyp450inhibitor
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		cyp450 = @app.create(pointer)
-		pointer += ['cyp450inhibitor', 'foo_name']
-		inh = @app.create(pointer)
-		values = {
-			:links		=>	'foo-links',
-			:category	=>	'bar-category',
-		}
-		@app.update(inh.pointer, values)
-		assert_equal('foo-links', inh.links)
-		assert_equal('bar-category', inh.category)
-		assert_equal('foo_name', inh.substance_name)
-		assert_equal(1, cyp450.inhibitors.size)
-		assert_equal(['foo_name'], cyp450.inhibitors.keys)
-	end
-	def test_delete_cyp450inhibitor
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		cyp450 = @app.create(pointer)
-		pointer += ['cyp450inhibitor', 'foo_name']
-		inh = @app.create(pointer)
-		assert_equal(1, cyp450.inhibitors.size)
-		@app.delete(pointer)
-		assert_equal(0, cyp450.inhibitors.size)
-	end
-	def test_create_cyp450inducer
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		cyp450 = @app.create(pointer)
-		pointer += ['cyp450inducer', 'foo_name']
-		inh = @app.create(pointer)
-		values = {
-			:links		=>	'foo-links',
-			:category	=>	'bar-category',
-		}
-		@app.update(inh.pointer, values)
-		assert_equal('foo-links', inh.links)
-		assert_equal('bar-category', inh.category)
-		assert_equal('foo_name', inh.substance_name)
-		assert_equal(1, cyp450.inducers.size)
-		assert_equal(['foo_name'], cyp450.inducers.keys)
-	end
-	def test_delete_cyp450inducer
-		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
-		cyp450 = @app.create(pointer)
-		pointer += ['cyp450inducer', 'foo_name']
-		inh = @app.create(pointer)
-		assert_equal(1, cyp450.inducers.size)
-		@app.delete(pointer)
-		assert_equal(0, cyp450.inducers.size)
-	end
-	def test_create_cyp450substrate
-		pointer = ODDB::Persistence::Pointer.new('substance')
-		substance = @app.create(pointer)
-                substance.descriptions['lt'] = 'subst_name'
-		pointer += [ :cyp450substrate, "cyp_id" ]
-		inh = @app.create(pointer)
-		values = {
-			:links		=>	['foo-links'],
-			:category	=>	'bar-category',
-		}
-		@app.update(inh.pointer, values)
-		assert_equal(['foo-links'], inh.links)
-		assert_equal('bar-category', inh.category)
-		assert_equal(1, substance.substrate_connections.size)
-	end
-	def test_delete_cyp450substrate
-		pointer = ODDB::Persistence::Pointer.new('substance')
-		substance = @app.create(pointer)
-                substance.descriptions['lt'] = 'subst_name'
-		pointer += [ :cyp450substrate, "cyp_id" ]
-		substr = @app.create(pointer)
-		assert_equal(1, substance.substrate_connections.size)
-		@app.delete(substr.pointer)
-		assert_equal(0, substance.substrate_connections.size)
 	end
 	def test_delete_galenic_group
 		group = StubGalenicGroup.new
@@ -529,22 +423,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		substance = ODDB::Substance.new
 		@app.substances = {substance.oid => substance}
 		assert_equal(substance, @app.substance(substance.oid) )
-	end
-	def test_substance_by_connection_key
-		substance = FlexMock.new('substance')
-		@app.substances = { 'connection key' =>	substance }
-		substance.should_receive(:has_connection_key?).with('valid key')\
-                .times(1).and_return {
-			true
-		}
-		result = @app.substance_by_connection_key('valid key')
-		assert_equal(substance, result)
-		substance.should_receive(:has_connection_key?).with('invalid key')\
-                .times(1).and_return {
-			false
-		}
-		result = @app.substance_by_connection_key('invalid key')
-		assert_equal(nil, result)
 	end
 	def test_each_package
 		reg1 = StubRegistration.new(1)

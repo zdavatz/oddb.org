@@ -34,14 +34,6 @@ class Substance < State::Substances::Global
 			self
 		end
 	end
-	def delete_connection_key
-		if(key = @session.user_input(:connection_key))
-			keys = @model.connection_keys
-			keys.delete(key)
-			@session.app.update(@model.pointer, keys, unique_email)
-		end
-		self
-	end
 	def duplicate?(string)
 		!(string.to_s.empty? \
 			|| [nil, @model].include?(@session.app.substance(string)))

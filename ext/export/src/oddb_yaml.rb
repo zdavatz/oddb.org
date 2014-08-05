@@ -191,45 +191,6 @@ module ODDB
       '@galenic_form', '@active_agents'
     ]
   end
-  class CyP450
-    include OddbYaml
-    EXPORT_PROPERTIES = [
-      '@cyp_id',
-    ]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('inhibitors', self.inhibitors.values)
-					map.add('inducers', self.inducers.values)
-				}
-			}
-		end
- end
-  class CyP450Connection
-    include OddbYaml
-  end
-  class CyP450SubstrateConnection
-    EXPORT_PROPERTIES = [
-      '@oid',
-      '@cyp450',
-      '@category',
-      '@links',
-      '@substance',
-    ]
-  end
-  class CyP450InteractionConnection
-    EXPORT_PROPERTIES = [
-      '@oid',
-      #'@cyp450', # some parsers don't like circular references
-      '@category',
-      '@links',
-      '@substance',
-      '@auc_factor',
-    ]
- end
 	class Doctor
 		include OddbYaml
 		EXPORT_PROPERTIES = [

@@ -104,9 +104,6 @@ module ODDB
       end
       export_array(name, @app.fachinfos.values)
     end
-    def export_interactions(name='interactions.yaml')
-      export_array(name, @app.substances.inject([]) { |memo, sub| memo.concat sub.substrate_connections.values })
-    end
 		def export_obj(name, obj)
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end

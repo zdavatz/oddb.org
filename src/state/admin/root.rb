@@ -207,7 +207,6 @@ module Root
 		pointer = Persistence::Pointer.new(:substance)
 		item = Persistence::CreateItem.new(pointer)
 		item.carry(:synonyms, [])
-		item.carry(:connection_keys, [])
 		State::Substances::Substance.new(@session, item)
 	end
   def new_user

@@ -15,7 +15,7 @@ require 'flexmock'
 
 module ODDB
   class Substance
-    attr_writer :sequences, :substrate_connections
+    attr_writer :sequences
   end
   class TestSubstance <Minitest::Test
     include FlexMock::TestCase
@@ -81,40 +81,11 @@ module ODDB
                                 flexmock(:atc_class => 'Atc-Class 1')
       assert_equal ['Atc-Class 1', 'Atc-Class 2'], @substance.atc_classes
     end
-    def test_checkout
-      conn = flexmock 'substrate'
-      conn.should_receive(:odba_delete).times(1).and_return do assert true end
-      @substance.substrate_connections.store 'key', conn
-      @substance.checkout
-    end
     def test_compare #test_<=>
       assert_equal(0, @substance <=> "ACIDUM ACETYLSALICYLICUM")
       assert_equal(-1, @substance <=> "BCIDUM ACETYLSALICYLICUM")
       assert_equal(+1, @substance <=> "AbIDUM ACETYLSALICYLICUM")
       assert_equal(0, @substance <=> @substance)
-    end
-    def test_create_cyp450substrate
-      @substance.create_cyp450substrate('cyp_id')
-      result = @substance.substrate_connections.keys
-      assert_equal(['cyp_id'], result)
-    end
-    def test_cyp450substrate
-      @substance.substrate_connections = {
-        'id'			=>	'subs',
-        'cyp_id'	=>	'substance'
-      }
-      result = @substance.cyp450substrate('cyp_id')
-      assert_equal('substance', result)
-    end
-    def test_delete_cyp450substrate
-      @substance.substrate_connections = {
-        'id'			=>	'subs',
-        'cyp_id'	=>	'substance'
-      }
-      result = @substance.substrate_connections
-      assert_equal(2, result.size)
-      @substance.delete_cyp450substrate('cyp_id')
-      assert_equal(1, result.size)
     end
     def test_effective_form_writer
       form = flexmock 'effective_form'
@@ -143,89 +114,6 @@ module ODDB
       substance.descriptions.store('lt', 'ACIDUM ACETYLSALICYLICUM')
       assert_equal(@substance, substance)
     end
-    def test_format_connection_key
-      fmt = @substance.format_connection_key('(+)-alfa-Tocopheroli Acetas')
-      assert_equal('alfatocopheroliacetas', fmt)
-      fmt = @substance.format_connection_key('1-(4-Tolyl)-Ethylis Nicotinas')
-      assert_equal('14tolylethylisnicotinas', fmt)
-    end
-    def test_has_connection_key
-      assert_equal false, @substance.has_connection_key?('a Substance')
-      @substance.connection_keys.push 'asubstance'
-      assert_equal true, @substance.has_connection_key?('a Substance')
-    end
-    def test_interaction_connections
-      result = @substance.interaction_connections([])		
-      assert_equal({}, result)
-    end
-    def test_interaction_connections2
-      subst_conn1 = FlexMock.new('subst_conn1')
-      subst_conn2 = FlexMock.new('subst_conn2')
-      substance1 = FlexMock.new('substance1')
-      substance2 = FlexMock.new('substance2')
-      interaction1 = FlexMock.new('interaction1')
-      interaction2 = FlexMock.new('interaction2')
-      interaction3 = FlexMock.new('interaction3')
-      substances = [ substance1, substance2 ]
-      @substance.substrate_connections = {
-        'cyp450_id1'	=>	subst_conn1,
-        'cyp450_id2'	=>	subst_conn2,
-      }
-      subst_conn1.should_receive(:interactions_with).with(substance1)\
-        .times(1).and_return {
-        assert true
-        []
-      }
-      subst_conn1.should_receive(:interactions_with).with(substance2)\
-        .times(1).and_return {
-        assert true
-        []
-      }
-      subst_conn2.should_receive(:interactions_with).with(substance1)\
-        .times(1).and_return {
-        assert true
-        [ interaction1 ]	
-      }
-      subst_conn2.should_receive(:interactions_with).with(substance2)\
-        .times(1).and_return {
-        assert true
-        [ interaction2, interaction3 ]
-      }
-      result = @substance.interaction_connections(substances)		
-      expected = {
-        "cyp450_id1"	=>	[],
-        "cyp450_id2"	=>	[ interaction1, interaction2, interaction3 ]
-      }
-      assert_equal(expected, result)
-    end
-    def test_interactions_with
-      other = flexmock 'other', :has_effective_form? => false
-      conn = flexmock 'connection'
-      conn.should_receive(:interactions_with).with(other).times(1)\
-        .and_return do assert true; ['interaction'] end
-      @substance.substrate_connections.store 'conn-key', conn
-      assert_equal ['interaction'], @substance.interactions_with(other)
-      effective = flexmock 'effective_form', :has_effective_form? => true,
-                                             :is_effective_form? => true
-      effective.should_receive(:interactions_with).with(other).times(1)\
-        .and_return do assert true ; ['effective interaction'] end
-      @substance.effective_form = effective
-      assert_equal ['interaction', 'effective interaction'],
-                   @substance.interactions_with(other)
-      third = flexmock 'third', :has_effective_form? => true,
-                                :is_effective_form? => false,
-                                :effective_form => effective
-      conn.should_receive(:interactions_with).with(third).times(1)\
-        .and_return do assert true; ['third interaction'] end
-      conn.should_receive(:interactions_with).with(effective).times(1)\
-        .and_return do assert true; ['fifth interaction'] end
-      effective.should_receive(:interactions_with).with(third).times(1)\
-        .and_return do assert true ; ['fourth interaction'] end
-      effective.should_receive(:interactions_with).with(effective).times(1)\
-        .and_return do assert true ; [] end
-      assert_equal ['third interaction', 'fourth interaction', 'fifth interaction'],
-                   @substance.interactions_with(third)
-    end
     def test_merge
       @substance.pointer = ["!substance,12"]
       @substance.sequences = []
@@ -238,7 +126,6 @@ module ODDB
       sequence.should_receive(:compositions).and_return [composition, comp2, comp3]
       aagent = FlexMock.new('aagent') 
       other = FlexMock.new('other')
-      connection = FlexMock.new('connection')
       pointer = FlexMock.new('pointer')
       other.should_receive(:sequences).and_return { [ sequence ] }
       other.should_receive(:swissmedic_code).times(1).and_return 'smc'
@@ -254,17 +141,7 @@ module ODDB
         assert_equal(@substance, param)
       }
       aagent.should_receive(:odba_isolated_store).and_return { }
-      other.should_receive(:substrate_connections).and_return {
-        { 'conn_key'	=>	connection }
-      }
-      connection.should_receive(:cyp_id).and_return { 'cyp_id' }
-      connection.should_receive(:pointer).and_return	{ pointer }
       pointer.should_receive(:last_step).and_return { ['!pointer,last.'] }
-      connection.should_receive(:pointer=).and_return { |param|
-        assert_equal(["!substance,12", "!pointer,last."], param)
-      }
-      connection.should_receive(:cyp_id).and_return { 'cyp_id' }
-      connection.should_receive(:odba_isolated_store).and_return	{ }
       other.should_receive(:descriptions).and_return {
         { 'key'	=> 'value' }
       }
@@ -272,7 +149,6 @@ module ODDB
       other.should_receive(:descriptions).and_return {
         { 'key'	=> 'value' }
       }
-      other.should_receive(:connection_keys).and_return { ['connectionkey'] }
       other.should_receive(:remove_sequence).with(sequence).times(1).and_return do
         assert true
       end
@@ -294,9 +170,6 @@ module ODDB
       @substance.instance_variable_set '@effective_form', effective
       assert_equal ['Acidum Acetylsalicylicum', 'Other Names'], @substance.names
     end
-    def test_primary_connection_key
-      assert_equal 'acidumacetylsalicylicum', @substance.primary_connection_key
-    end
     def test_remove_chemical_form
       form = flexmock 'chemical form'
       @substance.chemical_forms.push form
@@ -314,13 +187,11 @@ module ODDB
     end
     def test_same_as
       substance = ODDB::Substance.new
-      substance.connection_keys = ['acidummefenanicum']
       substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
       assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
       assert_equal(false, substance.same_as?('Acetylsalicylsaure'))
       substance.descriptions.store('de', "Acetylsalicylsaure")
       assert_equal(true, substance.same_as?('Acetylsalicylsaure'))
-      assert_equal(true, substance.same_as?('Acidum Mefenanicum'))
     end
     def test_search_keys
       assert_equal ['Acidum Acetylsalicylicum'], @substance.search_keys
@@ -333,22 +204,8 @@ module ODDB
       ]
       assert_equal(expected, @substance.soundex_keys)
     end
-    def test_substrate_connections
-      assert_equal({}, @substance.substrate_connections)
-    end
     def test_to_i
       assert_equal @substance.oid, @substance.to_i
-    end
-    def test_unique_compare
-      other = flexmock :connection_keys => ['Acidum Acetylsalicylicum'],
-                       :_search_keys => []
-      assert_equal true, @substance.unique_compare?(other)
-      other = flexmock :connection_keys => ['Acidum Acetylsalicylicum'],
-                       :_search_keys => ['Another Key']
-      assert_equal true, @substance.unique_compare?(other)
-      other = flexmock :connection_keys => ['Acidum Mefenamicum'],
-                       :_search_keys => ['Another Key']
-      assert_equal false, @substance.unique_compare?(other)
     end
   end
 end

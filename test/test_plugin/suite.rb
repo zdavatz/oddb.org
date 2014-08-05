@@ -7,7 +7,6 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 buggy = [
   'bsv_xml.rb',
-  'hayes.rb',
   'invoicer.rb',
   'medical_products.rb',
   'swissmedic.rb',

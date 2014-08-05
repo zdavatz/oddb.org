@@ -149,7 +149,7 @@ module ODDB
       SECURE_COMMANDS = [
 				:active_agent, :address, :address_suggestion, :atc_class,
         :analysis_group, :commercial_form, :company, :doctor, :hospital,
-        :cyp450, :fachinfo, :feedback, :galenic_form, :galenic_group,
+        :fachinfo, :feedback, :galenic_form, :galenic_group,
         :generic_group, :indication, :invoice,
         :address_suggestion, :migel_group, :subgroup, :product,
         :narcotic, :narcotics, :orphaned_fachinfo, :orphaned_patinfo,

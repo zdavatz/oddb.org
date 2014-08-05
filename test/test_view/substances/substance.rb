@@ -14,23 +14,6 @@ module ODDB
 	module View
     module Substances
 
-class TestSubstrates <Minitest::Test
-  include FlexMock::TestCase
-  def test_substrates
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :attributes => {}
-                       )
-    @session = flexmock('session', 
-                        :event => 'event',
-                        :lookandfeel => @lnf
-                       )
-    @model   = flexmock('model', :cyp_id => 'cyp_id')
-    @list    = ODDB::View::Substances::Substrates.new([@model], @session)
-    assert_kind_of(HtmlGrid::Text, @list.substrates(@model, @session))
-  end
-end
-
 class TestActiveFormForm <Minitest::Test
   include FlexMock::TestCase
   def setup
@@ -100,44 +83,6 @@ class TestConnectionKeys <Minitest::Test
   end
   def test_connection_key
     assert_equal(@model.to_s, @list.connection_key(@model))
-  end
-end
-
-class TestOuterComposite <Minitest::Test
-  include FlexMock::TestCase
-  def setup
-    @lnf        = flexmock('lookandfeel', 
-                            :languages  => ['de', 'fe'],
-                            :attributes => {},
-                            :base_url   => 'base_url',
-                            :lookup     => 'lookup',
-                            :event_url  => 'event_url',
-                            :_event_url => '_event_url'
-                           )
-    @session    = flexmock('session', 
-                            :lookandfeel => @lnf,
-                            :error       => 'error',
-                            :warning?    => nil,
-                            :error?      => nil,
-                            :event       => 'event'
-                           )
-    connection  = flexmock('connection', :cyp_id => 'cyp_id')
-    connections = {'key' => connection}
-    sequence    = flexmock('sequence', :pointer => 'pointer')
-    @model      = flexmock('model', 
-                            :name      => 'name',
-                            :synonyms  => [],
-                            :connection_keys       => ['connection_keys'],
-                            :substrate_connections => connections,
-                            :pointer   => 'pointer',
-                            :sequences => [sequence],
-                            :is_effective_form?  => nil,
-                            :has_effective_form? => nil
-                           )
-    @composite  = ODDB::View::Substances::OuterComposite.new(@model, @session)
-  end
-  def test_connection_keys
-    assert_kind_of(ODDB::View::Substances::ConnectionKeys, @composite.connection_keys(@model, @session))
   end
 end
 

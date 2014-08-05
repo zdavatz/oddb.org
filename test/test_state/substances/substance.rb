@@ -168,19 +168,6 @@ class TestSubstanceState <Minitest::Test
     flexmock(@state, :unique_email => 'unique_email')
     assert_equal(@state, @state.assign)
   end
-  def test_delete_connection_key
-    app       = flexmock('app', :update => 'update')
-    flexmock(@session, 
-             :user_input => 'key',
-             :app        => app
-            )
-    flexmock(@model, 
-             :connection_keys => ['key'], 
-             :pointer => 'pointer'
-            )
-    flexmock(@state, :unique_email => 'unique_email')
-    assert_equal(@state, @state.delete_connection_key)
-  end
 end
 		end
 	end

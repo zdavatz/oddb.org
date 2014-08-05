@@ -279,9 +279,6 @@ module ODDB
       safe_export 'atc.yaml' do
         exporter.export_atc_classes
       end
-      safe_export 'interactions.yaml' do
-        exporter.export_interactions
-      end
       safe_export 'price_history.yaml' do
         exporter.export_prices
       end
