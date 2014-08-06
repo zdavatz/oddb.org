@@ -109,6 +109,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link = HtmlGrid::Link.new(:minus, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
+      link.set_attribute('id', "delete_#{@index}") # to allow correct deleting in watir tests
       args = [:ean, model.barcode] if model
       url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
       link.onclick = "

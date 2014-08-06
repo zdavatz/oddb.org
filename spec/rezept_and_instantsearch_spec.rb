@@ -10,13 +10,19 @@ describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
  
   def add_one_drug_to_rezept(name)
+    idx = -2
     chooser = @browser.text_field(:id, 'prescription_searchbar')
+    0.upto(5).each{ 
+      |idx|
+      break if chooser and chooser.present?
+      sleep 1
+      chooser = @browser.text_field(:id, 'prescription_searchbar')
+    }
     unless chooser and chooser.present?
-      puts "could not find textfield prescription_searchbar"
+      msg = "idx #{idx} could not find textfield prescription_searchbar in #{@browser.url}"
+      puts msg
       # require 'pry'; binding.pry
-      raise  "could not find textfield prescription_searchbar"
-    else
-      puts chooser.inspect
+      raise msg
     end
     0.upto(30).each{ |idx|
                       begin
@@ -106,7 +112,7 @@ describe "ch.oddb.org" do
           comment = genComment(Four_Medis[idx])
           span_value = @browser.element(:id => "prescription_comment_#{idx}").value
           unless span_value == comment
-            puts "span_value #{span_value} !=  #{comment} in element with id prescription_comment_#{idx}"
+            puts "span_value #{span_value} !=  #{comment} in element with id prescription_comment_#{idx}. nrMedis was #{nrMedis}"
             # require 'pry'; binding.pry
           end
           span_value.should eql comment
@@ -139,7 +145,7 @@ describe "ch.oddb.org" do
     # puts "waitForPrintInfo finished after #{(Time.now - startTime).to_i} seconds. size is #{@browser.text.size}"
     sleep(1)
   end
-
+if false
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -278,7 +284,7 @@ describe "ch.oddb.org" do
         inhalt.should match(/#{medis[idx]}/i)
     }
     0.upto(3){ |idx|
-      @browser.link(:title => /Löschen/i).click
+      @browser.link(:id => /delete_0/i).click
       sleep(0.5)
     }
     url2 = @browser.url
@@ -306,7 +312,7 @@ describe "ch.oddb.org" do
                 inhalt.should match(/#{name}/i)
               }
     url1.match(RegExpTwoMedis).should_not be nil
-    @browser.link(:title => /Löschen/i).click
+    @browser.link(:id => /delete_0/i).click
     sleep(0.5)
     url2 = @browser.url
     inhalt = @browser.text
@@ -351,25 +357,23 @@ describe "ch.oddb.org" do
     inhalt.should match(/Zusammensetzung/i)
     inhalt.should match(/Filmtabletten/i)
   end
-
+end
   # this tests takes (at the moment) over 2,5 minutes
   it "should be possible to print a presciption with 10 drugs" do
     startTime = Time.now
     nrDrugs = 10
+    nrRemarks = 2
     @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
-    add_one_drug_to_rezept('Aspirin')
-    add_one_drug_to_rezept('Inderal')
-    add_one_drug_to_rezept('Marcoumar')
-    add_one_drug_to_rezept('Ponstan')
-    add_one_drug_to_rezept('Merfen')
-    add_one_drug_to_rezept('Actem')
+    Four_Medis.each{ |medi| add_one_drug_to_rezept(medi) }
+    # add two remarks
+    setGeneralInfo(nrRemarks)
+    add_one_drug_to_rezept('Pulmex')
+    add_one_drug_to_rezept('Actemra')
     add_one_drug_to_rezept('Dostinex')
     add_one_drug_to_rezept('Yondelis')
     add_one_drug_to_rezept('Bactrim')
     add_one_drug_to_rezept('Badesalz')
 
-    # add two remarks
-    setGeneralInfo(nrDrugs)
     showElapsedTime(startTime, "Generating a prescription with #{nrDrugs}")
     startTime = Time.now
     oldWindowsSize = @browser.windows.size
@@ -379,8 +383,8 @@ describe "ch.oddb.org" do
     waitForPrintInfo
     showElapsedTime(startTime, "Printing a prescription with  #{nrDrugs} drugs")
     inhalt = @browser.text.clone
-    checkGeneralInfo(nrDrugs)
-    inhalt.scan(/\nBemerkungen\n/).size.should == nrDrugs
-    inhalt.scan(/\nInteraktionen\n/).size.should == nrDrugs
+    checkGeneralInfo(nrRemarks)
+    inhalt.scan(/\nBemerkungen\n/).size.should == nrRemarks
+    inhalt.scan(/\nInteraktionen\n/).size.should == 2
   end
 end
