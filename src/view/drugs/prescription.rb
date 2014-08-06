@@ -412,7 +412,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
       span.value << '&nbsp;-&nbsp;'
       span.value << price.to_s
     end
-    if company = model.company_name
+    if model.respond_to?(:company_name) and company = model.company_name
       span.value << '&nbsp;-&nbsp;'
       span.value << company
     end
@@ -532,7 +532,7 @@ self.onload = %(require(["dojo/domReady!"], function(){
     @drugs.each do |key, pack|
       composite = View::Drugs::PrescriptionPrintInnerComposite.new(pack, session, self)
       fields << composite
-    end
+    end if @drugs
     fields
   end
 end
@@ -551,7 +551,7 @@ class PrescriptionPrint < View:: PrintTemplate
     span = HtmlGrid::Span.new(model, session, self)
     drugs = @session.persistent_user_input(:drugs)
     span.value = @lookandfeel.lookup(:print_of) +
-      @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
+      @lookandfeel._event_url(:print, [:rezept, :ean, drugs  ? drugs.keys : [] ].flatten)
     span
   end
 end
