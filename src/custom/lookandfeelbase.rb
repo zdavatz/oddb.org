@@ -1810,7 +1810,7 @@ Zeno Davatz
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Bitte schreiben Sie an:',
 				:ywesee										=>	'ywesee',
-
+				:zsr											=>  'zsr',
 			},
 			'fr'			=>		{
 				:'|unknown'								=>	'autres',
@@ -3076,6 +3076,7 @@ Zeno Davatz
 				:welcome									=>  'Bienvenue',
 				:welcome0									=>  'Bienvenue ',
 				:welcome1									=>  '!',
+				:zsr											=>  'zsr',
 			},
 			'en'			=>		{
 				:'|unknown'								=>	'others',
@@ -4391,6 +4392,7 @@ Zeno Davatz
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Please write to',
 				:ywesee										=>	'ywesee',
+				:zsr											=>  'zsr',
 			},
 		}	
 		HTML_ATTRIBUTES = {

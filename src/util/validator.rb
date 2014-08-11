@@ -307,6 +307,7 @@ module ODDB
 			:vcard,
 			:wait,
 			:ywesee_contact,
+			:zsr,
 		]
 		FILES = [
 			:logo_file,
