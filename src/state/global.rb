@@ -518,7 +518,6 @@ module ODDB
 			end
       def print
         state = self.search
-        drugs = @session.persistent_user_input(:drugs)
         if @session.request_path.index("/print/rezept/")
           State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)

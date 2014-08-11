@@ -22,7 +22,8 @@ module ODDB
       @app = flexmock('app',
                       :unknown_user     => @unknown_user,
                       :sorted_fachinfos => [],
-                      :sorted_feedbacks => [])
+                      :sorted_feedbacks => [],
+                      :package_by_ean13 => 'package',)
       @validator = flexmock('validator',
                             :reset_errors => 'reset_errors',
                             :validate     => 'validate')
@@ -195,6 +196,32 @@ module ODDB
       # This is a testcase for a class method
       assert_equal({}, ODDB::Session.reset_query_limit)
       assert_equal(nil, ODDB::Session.reset_query_limit('ip'))
+    end
+    ThreePackages = { '7680576730049' => 'package',
+                     '7680193950301' => 'package',
+                     '7680353520153' => 'package'}
+    UrlForThreePackages = '7680576730049,7680193950301,7680353520153'
+    def test_drugsFromUrl_for_home_interaction
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/home_interactions/#{UrlForThreePackages}'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
+    end
+    def test_drugsFromUrl_for_rezept
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/rezept/ean/#{UrlForThreePackages}'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
+    end
+    def test_drugsFromUrl_for_rezept_print
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
+      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}?'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
+    end
+    def test_drugsFromUrl_for_rezept_print_with_slashes
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages.gsub(',','/')}'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
     end
   end
 end # ODDB

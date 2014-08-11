@@ -20,6 +20,7 @@ class InteractionChooser < State::Interactions::Global
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
 
   def handle_drug_changes(drugs, msg)
+    $stdout.puts "handle_drug_changes #{drugs}"
     path = @session.request_path
     @session.set_persistent_user_input(:drugs, drugs)
     uri = @session.lookandfeel._event_url(:home_interactions, [])
@@ -71,11 +72,12 @@ class InteractionChooser < State::Interactions::Global
     super
   end
   def ajax_add_drug
+    $stdout.puts "InteractionChooser.ajax_add_drug #{@session.user_input(:ean)}"
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s and
         pack  = package_for(ean13)
-        drugs = @session.persistent_user_input(:drugs) || {}
+        drugs = @session.drugsFromUrl
         drugs[ean13] = pack unless drugs.has_key?(ean13)
         return handle_drug_changes(drugs, 'ajax_add_drug')
       end
@@ -83,10 +85,11 @@ class InteractionChooser < State::Interactions::Global
     InteractionChooserDrug.new(@session, @model)
   end
   def ajax_delete_drug
+    $stdout.puts "InteractionChooser.ajax_delete_drug #{@session.user_input(:ean)}"
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s
-        drugs = @session.persistent_user_input(:drugs) || {}
+        drugs = @session.drugsFromUrl
         drugs.delete(ean13)
         return handle_drug_changes(drugs, 'ajax_delete_drug')
       end
@@ -94,6 +97,7 @@ class InteractionChooser < State::Interactions::Global
     InteractionChooserDrug.new(@session, @model)
   end
   def delete_all
+    $stdout.puts "InteractionChooser.delete_all #{@session.user_input(:ean)} request_path #{@session.request_path}"
     unless error?
       handle_drug_changes({}, 'delete_all')
       @model = []

@@ -23,46 +23,16 @@ class Prescription < State::Drugs::Global
   DIRECT_EVENT = :rezept
   VIEW = View::Drugs::Prescription
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
-  def handle_drug_changes(drugs, msg)
-    path = @session.request_path
-    @session.set_persistent_user_input(:drugs, drugs)
-    uri = @session.lookandfeel._event_url(:rezept, [])
-    first = true
-    drugs.each{|ean, pack|
-               if first
-                 first = false
-                 uri += pack.barcode
-               else
-                  uri += ",#{pack.barcode}"
-               end
-               }
-  end
   def init
+    @drugs = @session.drugsFromUrl
     ean13 = @session.user_input(:search_query)
-    path = @session.request_path.sub(/(\?|)$/, '')
-    uri = @session.lookandfeel._event_url(:rezept, [])
-    search_code = path.split('rezept/ean/')[1]
-    drugs = {}
-    if search_code
-      items = search_code.split(',')
-      items.each{
-        |item|
-        if item.kind_of?(String) and item.length == 13
-          next unless item
-          pack = package_for(item)
-          next unless pack
-          drugs[item] = pack
-        end
-      }
-      handle_drug_changes(drugs, 'init')
-    else
-      @session.set_persistent_user_input(:drugs, {})
-    end
+    @drugs[ean13] = package_for(ean13) if ean13 
+    $stdout.puts "Prescription:init url are #{@drugs} ean13 #{ean13.inspect}"
     super
   end
   def delete_all
+    $stdout.puts "Prescription:delete_all request_path is #{@session.request_path} -> #{@session.request_path.split('/ean/')[0]} or #{@session.lookandfeel._event_url(:home_interactions, [])}"
     unless error?
-      handle_drug_changes({}, 'delete_all')
       @model = []
     end
     self.http_headers = {
@@ -75,24 +45,21 @@ class Prescription < State::Drugs::Global
     PrescriptionCsvExport.new(@session, @model)
   end
   def ajax_add_drug(ean13 = @session.user_input(:ean))
+    $stdout.puts "Prescription.ajax_add_drug #{ean13}"
     check_model(ean13)
     unless error?
-      if ean13 and pack = package_for(ean13)
-        drugs = @session.persistent_user_input(:drugs) || {}
-        drugs[ean13] = pack unless drugs.has_key?(ean13)
-        handle_drug_changes(drugs, 'ajax_add_drug')
-      end
+      @drugs[ean13] = package_for(ean13) if ean13 
     end
     AjaxDrug.new(@session, @model)
   end
   
   def ajax_delete_drug(ean13 = @session.user_input(:ean))
+    $stdout.puts "Prescription.ajax_delete_drug #{ean13}"
     check_model
     unless error?
       if ean13 and pack = package_for(ean13)
-        drugs = @session.persistent_user_input(:drugs) || {}
-        drugs.delete(ean13)
-        return handle_drug_changes(drugs, 'ajax_delete_drug')
+        @drugs.delete(ean13)
+        return
       end
     end
     AjaxEmpty.new(@session, @model)

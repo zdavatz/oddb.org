@@ -8,7 +8,8 @@ require "selenium-webdriver"
 
 describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
- 
+  QrCodeError = /Error generating QRCode/i
+
   def add_one_drug_to_rezept(name)
     idx = -2
     chooser = @browser.text_field(:id, 'prescription_searchbar')
@@ -98,7 +99,7 @@ describe "ch.oddb.org" do
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
       inhalt = @browser.text
-      inhalt.should_not match /Error generating QRCode/i
+      inhalt.should_not match QrCodeError
       [FirstName, FamilyName, Birthday, " m\n"].each {
         |what|
         if inhalt.index(what).class == NilClass
@@ -145,7 +146,7 @@ describe "ch.oddb.org" do
     # puts "waitForPrintInfo finished after #{(Time.now - startTime).to_i} seconds. size is #{@browser.text.size}"
     sleep(1)
   end
-if false
+
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -173,7 +174,7 @@ if false
     @browser.windows.last.use
     waitForPrintInfo
     inhalt = @browser.text
-    inhalt.should_not match /Error generating QRCode/i
+    inhalt.should_not match QrCodeError
     inhalt.should_not match /Bemerkungen/
     inhalt.should     match(/Ausdruck/i)
     ['Ausdruck',
@@ -357,7 +358,7 @@ if false
     inhalt.should match(/Zusammensetzung/i)
     inhalt.should match(/Filmtabletten/i)
   end
-end
+
   # this tests takes (at the moment) over 2,5 minutes
   it "should be possible to print a presciption with 10 drugs" do
     startTime = Time.now
@@ -383,8 +384,9 @@ end
     waitForPrintInfo
     showElapsedTime(startTime, "Printing a prescription with  #{nrDrugs} drugs")
     inhalt = @browser.text.clone
-    checkGeneralInfo(nrRemarks)
+    inhalt.should_not match QrCodeError
     inhalt.scan(/\nBemerkungen\n/).size.should == nrRemarks
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
+    checkGeneralInfo(nrRemarks)
   end
 end
