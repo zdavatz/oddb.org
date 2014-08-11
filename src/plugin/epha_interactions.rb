@@ -36,6 +36,8 @@ module ODDB
         first_line = nil
         File.readlines(csv_file_path).each do |line|
           @lineno += 1
+          line = line.force_encoding('utf-8')
+
           # $stdout.puts  "#{Time.now} #{@lineno}: #{line}"; $stdout.flush
           next if /ATC1.*Name1.*ATC2.*Name2/.match(line)
           begin

@@ -996,11 +996,13 @@ Attachments:
     end
     def update_it_codes io
       listener = ItCodesListener.new @app
-      REXML::Document.parse_stream io, listener
+      as_utf_8 = io.read.force_encoding('utf-8')
+      REXML::Document.parse_stream as_utf_8, listener
     end
     def update_preparations io, opts={}
       @preparations_listener = PreparationsListener.new @app, opts
-      REXML::Document.parse_stream io, @preparations_listener
+      as_utf_8 = io.read.force_encoding('utf-8')
+      REXML::Document.parse_stream as_utf_8, @preparations_listener
       @change_flags = @preparations_listener.change_flags
     end
   end
