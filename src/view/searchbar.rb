@@ -58,7 +58,6 @@ module InstantSearchBarMethods
     drugs = @session.drugsFromUrl
     drugs = drugs.keys if drugs
     ean13 = @session.persistent_user_input(:ean)
-    $stdout.puts "InstantSearchBarMethods #{@session.request_path}: #{drugs} ean13 #{ean13}"
     base_url = @lookandfeel.base_url
     splitted = @session.request_path.split(/#{base_url}\/(home_interactions|rezept\/ean)\/*/)
     url = @lookandfeel._event_url(target == 'prescription' ? 'rezept/ean' : 'home_interactions', [])

@@ -223,5 +223,16 @@ module ODDB
       @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages.gsub(',','/')}'")
       assert_equal(ThreePackages, @session.drugsFromUrl)
     end
+    ZsrAndEAN = "/de/gcc/print/rezept/zsr_J039019/ean/#{UrlForThreePackages.gsub(',','/')}"
+    def test_zsrFromUrl
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
+      assert_equal('J039019', @session.zsrFromUrl)
+    end
+    def test_drugsFromUrl_for_rezept_print_with_zsr
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
+      assert_equal(ThreePackages, @session.drugsFromUrl)
+    end
   end
 end # ODDB

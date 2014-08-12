@@ -230,18 +230,23 @@ module ODDB
 		def sponsor
 			@app.sponsor(flavor)
 		end
+    ZsrAndEAN_Regexp = /(\/zsr_.+|)\/(ean|home_interactions)\/+([^\\?].+)/
     def drugsFromUrl
-      m = /\/(ean|home_interactions)\/+([^\\?].+)/.match(request_path)
+      m = ZsrAndEAN_Regexp.match(request_path)
       return {} unless m
-      ean13s = m[2].split(/[,?\/]/)
+      ean13s = m[3].split(/[,?\/]/)
       drugs = {}
       ean13s.each {
         |ean13|
         pack = @app.package_by_ean13(ean13)
         drugs[ean13] = pack if pack
       }
-      # $stdout.puts "drugsFromUrl for #{request_path} returns #{drugs}"
       drugs
+    end
+    def zsrFromUrl
+      m = ZsrAndEAN_Regexp.match(request_path)
+      return nil unless m and m[1].index('/zsr_')
+      return m[1].split('_').last
     end
   end
 end

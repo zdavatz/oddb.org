@@ -4,6 +4,9 @@
 # before commit 83d798fb133f10008dd95f2b73ebc3e11c118b16 of 2014-10-14 we had a view which 
 # allowed entering a lot of details (before, during, after meals, repetitions, etc)
 # Test it with http://oddb-ci2.dyndns.org/de/gcc/rezept/ean/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
+#
+# The javascript function (js_<x>) are found under doc/resources/javascript/prescription.js
+
 require 'csv'
 require 'cgi'
 require 'htmlentities'
@@ -23,6 +26,7 @@ require 'view/searchbar'
 require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
+require 'util/zsr'
 
 module ODDB
   module View
@@ -49,6 +53,58 @@ module ODDB
         field.set_attribute('id', field_id)
         field.value = default_value unless field.value
       end
+class ZsrDetails < HtmlGrid::Composite
+  COMPONENTS = {
+    [0,0] => :details,
+  }
+  CSS_CLASS = 'composite'
+  def init
+    @zsr_id = @session.zsrFromUrl
+    @zsr_info = ZSR.info(@zsr_id) if @zsr_id
+    super
+  end
+  def details(model, session=@session)
+    return unless @zsr_info and @zsr_info.size > 0
+    isPrinting = @session.request_path.index('/print')
+    prefixes = {'phone' => :phone, 'fax' => :fax_label}
+    fields = []
+    %w[title first_name last_name street pobox zip city phone fax].each do |field|
+      key = "prescription_#{field}".to_sym
+      span = HtmlGrid::Span.new(model, session, self)
+      field_value = eval("@zsr_info[:#{field}]")
+      next unless field_value
+      span.value = field_value + '&nbsp;'
+      if prefixes.keys.index(field) and not isPrinting
+        txt = HtmlGrid::Span.new(model, session, self)
+        txt.value =  @lookandfeel.lookup(prefixes[field]) + '&nbsp;'
+        txt.set_attribute('class', 'bold')
+        fields << txt
+      end
+      fields << span
+      fields << "<br>" if %w[gln_id last_name pobox city phone].index(field)
+    end
+    if isPrinting
+      span_zsr_id = HtmlGrid::Span.new(@model, @session, self)
+      span_zsr_id.value = @session.zsrFromUrl
+      span_zsr_id.set_attribute('type', 'hidden')
+      span_zsr_id.set_attribute('id', :prescription_zsr_id)
+      fields <<  '<BR>ZSR&nbsp;'
+      fields << span_zsr_id
+
+      gln_id = @zsr_id ? @zsr_info[:gln_id] : nil
+      span_gln_id = HtmlGrid::Span.new(@model, @session, self)
+      span_gln_id.value = gln_id
+      span_gln_id.set_attribute('id', :prescription_gln_id)
+      Drugs.saveFieldValueForLaterUse(span_gln_id, :prescription_gln_id, '')
+      span_gln_id.set_attribute('type', 'hidden')
+      fields <<  '<BR>EAN&nbsp;'
+      fields << span_gln_id
+      $stdout.puts "Did set span_zsr_id.value = #{ @session.zsrFromUrl} and span_gln_id.value = #{gln_id}"
+    end
+    fields
+  end 
+end
+
 class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   def init
     super
@@ -112,19 +168,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link.set_attribute('id', "delete_#{@index}") # to allow correct deleting in watir tests
       args = [:ean, model.barcode] if model
       url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
-      link.onclick = "
-      for (index = #{@index}; index < 99; ++index) {
-        var cur_id  = 'prescription_comment_' + index;
-        var next_id = 'prescription_comment_' + (index+1);
-        var next_value =  sessionStorage.getItem(next_id, '');
-        if (next_value != '' && next_value != 'null' && next_value != null) {
-          sessionStorage.setItem(cur_id, next_value);
-        } else {
-          sessionStorage. removeItem(cur_id);
-        }
-      }
-      window.top.location.replace('#{url}');
-      "
+      link.onclick = "require(['dojo/domReady!'], function(){ js_delete_ean_of_index('#{url}', #{@index} ); });"
       link
     end
   end
@@ -223,10 +267,7 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
   }
   def init
     super
-    self.onload = %(require(["dojo/domReady!"], function(){
-  document.getElementById('searchbar').focus();
-});
-)
+    self.onload = %(require(["dojo/domReady!"], function(){ document.getElementById('searchbar').focus(); });)
     @index_name = 'oddb_package_name_with_size_company_name_and_ean13'
     @additional_javascripts = []
   end
@@ -252,6 +293,8 @@ class PrescriptionForm < View::Form
     [0,1]  => View::Drugs::PrescriptionDrugDiv,
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
     [0,3]  => 'prescription_signature',
+    [0,4]  => :prescription_zsr_id,
+    [0,5]  => View::Drugs::ZsrDetails,
     [0,13,0] => :buttons,
     [0,13,1] => :delete_all,
     [0,14] => 'prescription_notes',
@@ -261,6 +304,8 @@ class PrescriptionForm < View::Form
     [0,1]  => '', # none
     [0,2]  => 'list',
     [0,3]  => 'list bold',
+    [0,4]  => 'list bold',
+    [0,5]  => 'list',
     [0,13,0] => 'button',
     [0,13,1] => 'button',
     [0,14] => 'list bold',
@@ -270,6 +315,8 @@ class PrescriptionForm < View::Form
     [0,1]  => 3,
     [0,2]  => 3,
     [0,3]  => 3,
+    [0,4]  => 3,
+    [0,5]  => 3,
     [0,13,0] => 3,
     [0,13,1] => 3,
     [0,15] => 3,
@@ -318,11 +365,30 @@ class PrescriptionForm < View::Form
     hidden << context.hidden('prescription', true)
     hidden
   end
+  def prescription_zsr_id(model, session)
+    fields = []
+    fields << @lookandfeel.lookup(:zsr_id) + '&nbsp;'
+    input = HtmlGrid::InputText.new(:prescription_zsr_id, model, session, self)
+    input.set_attribute('size', 13)
+    input.label = false
+    zsr_id = @session.zsrFromUrl
+    input.value = zsr_id
+    Drugs.saveFieldValueForLaterUse(input, :prescription_zsr_id, '')
+    js =  "require(['dojo/domReady!'], function(){ js_goto_url_with_zsr('#{@session.request_path}', '#{zsr_id}');});"
+    input.onclick = js
+    input.set_attribute('onBlur', js)
+    input.set_attribute('onchange', js)
+    fields << input
+    fields
+  end  
   def buttons(model, session)
     buttons = []
     print = post_event_button(:print)
     drugs = @session.drugsFromUrl
-    new_url = @lookandfeel._event_url(:print, [:rezept, :ean, drugs.keys].flatten)
+    zsr_id = @session.zsrFromUrl
+    elements = zsr_id ? [ :rezept, ('zsr_'+zsr_id).to_sym ] : [ :rezept]
+    elements += [:ean, drugs.keys].flatten
+    new_url = @lookandfeel._event_url(:print, elements)
     print.onclick = "window.open('#{new_url}');"
 
     buttons << print
@@ -336,11 +402,7 @@ class PrescriptionForm < View::Form
     delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
     delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
-    delete_all_link.set_attribute('onclick', "
-require(['dojo/domReady!'], function(){
-  js_clear_session_storage();
-});
-")
+    delete_all_link.onclick = "require(['dojo/domReady!'], function(){ js_clear_session_storage();});"
     delete_all_link.css_class = 'list'
     delete_all_link
   end
@@ -390,11 +452,9 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   def init
     @drugs = @session.drugsFromUrl
     @index = nil
-    # /de/gcc/print/rezept/ean/7680516801112/7680576730063
     if @model and @drugs and !@drugs.empty?
       @index = @drugs.keys.index(@model.barcode)
     end
-    $stdout.puts "PrescriptionPrintInnerComposite #{@session.request_path} #{@drugs} index #{@index.inspect}" 
     if @index and @drugs and !@drugs.empty?
       @model = @drugs.values[@index]
     end
@@ -459,6 +519,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,8] => :document,
     [0,9] => '&nbsp;',
     [0,10] => 'prescription_signature',
+    [0,11]  => View::Drugs::ZsrDetails,
   }
   CSS_MAP = {
     [0,0] => 'print-type',
@@ -472,6 +533,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,8] => 'print',
     [0,9] => 'print',
     [0,10] => 'print-big',
+    [0,10] => 'print',
   }
   def init
     @drugs = @session.drugsFromUrl

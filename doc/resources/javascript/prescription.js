@@ -72,15 +72,21 @@ function getValueOfDomElement(element_id) {
 function create_prescription_from_dom() {
   var prescription = new Prescription(guid());
   prescription.date_issued              = getToday()
-  prescription.doctor_zsr               = getValueOfDomElement('prescription_zsr')
-  prescription.doctor_glin              = 'doctor-ean13' // TODO: Add more info via SOAP from ZSR
+  prescription.doctor_zsr               = getValueOfDomElement('prescription_zsr_id')
+  prescription.doctor_gln_in            = getValueOfDomElement('prescription_gln_id')
   prescription.patient_id               = getValueOfDomElement('prescription_patient_id')
   prescription.patient_family_name      = getValueOfDomElement('prescription_family_name')
   prescription.patient_first_name       = getValueOfDomElement('prescription_first_name')
   prescription.patient_zip_code         = getValueOfDomElement('prescription_patient_plz')
   prescription.patient_birthday         = getValueOfDomElement('prescription_birth_day')
   prescription.patient_insurance_glin   = getValueOfDomElement('prescription_patient_insurance_glin')
-    
+  if ( /\d\d\.\d\d\.\d\d\d\d/.test(prescription.patient_birthday) )
+  { // 31.12.1990
+    var new_birthday = prescription.patient_birthday.substring(6)+
+      prescription.patient_birthday.substring(3,5) +
+      prescription.patient_birthday.substring(0,2);
+    prescription.patient_birthday = new_birthday;
+  }
   for (index = 0; index < 99; ++index) {
     var comment_id = 'prescription_comment_' + index;
     var comment = document.getElementById(comment_id);
@@ -95,7 +101,7 @@ function create_prescription_from_dom() {
 }
 
 function add_prescription_qr_code(text_id, element_id) {
-//  console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
+  // console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
   try {
     function makeCode () {
       var inhalt =  create_prescription_from_dom().qr_string();
@@ -104,8 +110,6 @@ function add_prescription_qr_code(text_id, element_id) {
           text: inhalt,
           correctLevel : QRCode.CorrectLevel.H
       });
-
-//      qrcode.makeCode(inhalt);
     }
 
     makeCode();
@@ -170,6 +174,7 @@ function js_restore_prescription_patient_info() {
     var fields = [ 'prescription_first_name',
      'prescription_family_name',
       'prescription_birth_day',
+      'prescription_zsr_id',
   ]
   try {
     for (index = 0; index < fields.length; ++index) {
@@ -206,7 +211,24 @@ function js_restore_prescription_sex() {
   }
 }
 
-function delete_ean_of_index(url, index) {
+function js_goto_url_with_zsr(url, old_zsr) {
+  try {
+    var zsr_id = getValueOfDomElement('prescription_zsr_id').replace(' ', '').replace('.','')
+    if (zsr_id == '') { return ''; }
+    var saved_value =  sessionStorage.getItem('prescription_zsr_id', '');
+    var new_url = url;
+    if (old_zsr != '') { new_url = url.replace('/zsr_'+old_zsr, ''); }
+    new_url = new_url.replace('rezept', 'rezept/zsr_'+zsr_id)
+    if (url != new_url) {
+      window.top.location.replace(new_url );
+    }
+  }
+  catch(err) {
+    console.log('js_goto_url_with_zsr: catched error: ' + err);
+  }
+}
+
+function js_delete_ean_of_index(url, index) {
   try {
     // console.log ('Delete index ' + index + ': going to new url ' + url + ' in prescription');
     for (idx = index; idx < 99; ++idx) {
@@ -223,7 +245,7 @@ function delete_ean_of_index(url, index) {
     window.top.location.replace(url);
   }
   catch(err) {
-    console.log('delete_ean_of_index: catched error: ' + err);
+    console.log('js_delete_ean_of_index: catched error: ' + err);
   }
 }
 
@@ -263,7 +285,7 @@ function Prescription(guid) {
   this.SW_VERSION_ID           = '1.0';
   this.guid = guid;
   this.items = [];
-  this.doctor_glin = '';           // aka ean13
+  this.doctor_gln_in = '';           // aka ean13
   this.doctor_zsr = '';            // ZSR des ausstellenden Arztes
   this.patient_id = '';            // Versichertenkartennummer des Patienten (VEKA)
   this.date_issued = '';           // Datum der Rezeptausstellung
@@ -277,7 +299,7 @@ function Prescription(guid) {
   this.qr_string = function() { 
     var s = this.URL_FORMAT_DESCRIPTION+'|'+this.FORMAT_VERSION+'|' +
     this.guid + '|' + this.SW_ORIGIN_ID+ '|'+this.SW_VERSION_ID+'|' +
-    this.doctor_glin+'|' + this.doctor_zsr+'|' + this.patient_id+'|' + this.date_issued+'|' + 
+    this.doctor_gln_in+'|' + this.doctor_zsr+'|' + this.patient_id+'|' + this.date_issued+'|' +
     this.patient_family_name+'|' + this.patient_first_name+'|'+
     this.patient_zip_code+'|' + this.patient_birthday+'|' + this.patient_insurance_glin+';'
     for (var j = 0; j < this.items.length; j++) {

@@ -522,6 +522,7 @@ module ODDB
       def print
         state = self.search
         if @session.request_path.index("/print/rezept/")
+          $stdout.puts "Printing prescription #{@session.request_path}"
           State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)
           self

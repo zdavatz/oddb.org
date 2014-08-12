@@ -9,7 +9,6 @@ require 'minitest/autorun'
 require 'util/zsr'
 
 module ODDB
-  TestZSR =  'J039019'
   class TestZsr <Minitest::Test
     def checkAnswer(info)
       assert_equal("7601000159199", info[:gln_id])

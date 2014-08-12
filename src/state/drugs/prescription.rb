@@ -27,7 +27,6 @@ class Prescription < State::Drugs::Global
     @drugs = @session.drugsFromUrl
     ean13 = @session.user_input(:search_query)
     @drugs[ean13] = package_for(ean13) if ean13 
-    $stdout.puts "Prescription:init url are #{@drugs} ean13 #{ean13.inspect}"
     super
   end
   def delete_all

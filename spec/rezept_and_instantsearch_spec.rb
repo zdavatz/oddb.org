@@ -78,7 +78,7 @@ describe "ch.oddb.org" do
   end
   FirstName = 'Max'
   FamilyName = 'Müller'
-  Birthday = '01.01.1990'
+  Birthday = '31.12.1990'
   def setGeneralInfo(nrMedis=0)
     # we often must send tabs or running the test a first time will fail if you have just restarted oddb.org
     @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
@@ -95,6 +95,10 @@ describe "ch.oddb.org" do
       @browser.send_keys :tab
       @browser.textarea(:name => "prescription_comment_#{idx}").value.should eql genComment(Four_Medis[idx])
     }
+  end
+  def set_zsr_of_doctor(zsr_id)
+    @browser.text_field(:name => 'prescription_zsr_id').set zsr_id
+    @browser.send_keys :tab
   end
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
@@ -147,12 +151,44 @@ describe "ch.oddb.org" do
     sleep(1)
   end
 
+  it "should print correclty a prescription with comments, personal information, doctor info and a drug" do
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis.first)
+    @browser.button(:name, "search").click
+    @browser.link(:href, /rezept/).click
+    @browser.link(:id => /delete/i).click
+    add_one_drug_to_rezept(Four_Medis[0])
+    setGeneralInfo(1)
+    set_zsr_of_doctor('J 0390.19')
+    @browser.url.should match /zsr.J039019/
+    @browser.text.should match /Davatz/
+    set_zsr_of_doctor('P006309')
+    @browser.url.should match /zsr.P006309/
+    @browser.text.should match /Dr. med. Werner Meier/
+    oldWindowsSize = @browser.windows.size
+    @browser.button(:name, "print").click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    waitForPrintInfo
+    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match /ZSR P006309/i
+    @browser.text.should match /EAN 7601000223449/i
+    @browser.text.index('http://2dmedication.org/').should > 0
+    @browser.text.index(';7680583920112|').should > 0 # EAN_ID of drug
+    @browser.text.index('|7601000223449|').should > 0 # GLN_ID of Dr. Meier
+    @browser.text.index('|P006309|').should > 0 # ZSR aka Konkordatsnummter des Arztes
+    @browser.text.index("|#{FirstName}|").should > 0
+    @browser.text.index("|#{FamilyName}|").should > 0
+    @browser.text.index("|19901231|").should > 0 # Must of format YYYYMMDD
+  end
+
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
     @browser.link(:href, /rezept/).click
-    setGeneralInfo(1)
+    setGeneralInfo(1) 
     @browser.element(:text, 'FI').click
     oldWindowsSize = @browser.windows.size
     @browser.link(:text, /FI/).click
