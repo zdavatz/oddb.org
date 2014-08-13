@@ -91,7 +91,6 @@ class InteractionChooser < State::Interactions::Global
     InteractionChooserDrug.new(@session, @model)
   end
   def delete_all
-    $stdout.puts "InteractionChooser.delete_all #{@session.user_input(:ean)} request_path #{@session.request_path}"
     unless error?
       handle_drug_changes({}, 'delete_all')
       @model = []

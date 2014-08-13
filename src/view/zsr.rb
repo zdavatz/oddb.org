@@ -42,8 +42,7 @@ module ODDB
       def init
         @zsr_id = @session.zsr_id
         @zsr_info = ZSR.info(@zsr_id) if @zsr_id
-        $stdout.puts "ZsrDetails zsr_id is #{@zsr_id} with #{@zsr_info}"
-         super
+        super
       end
       def details(model, session=@session)
         return unless @zsr_info and @zsr_info.size > 0
@@ -81,7 +80,6 @@ module ODDB
           span_gln_id.set_attribute('type', 'hidden')
           fields <<  '<BR>EAN&nbsp;'
           fields << span_gln_id
-          $stdout.puts "Did set span_zsr_id.value = #{ @session.zsr_id} and span_gln_id.value = #{gln_id}"
         end
         fields
       end 

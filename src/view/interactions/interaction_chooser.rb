@@ -406,7 +406,6 @@ class InteractionChooserForm < View::Form
   LABELS = true
   private
   def init
-    $stdout.puts "InteractionChooserForm.init #{@session.request_path}"
     super
     self.onload = %(require(["dojo/domReady!"], function(){
      if (document.getElementById('interaction_searchbar') != null) document.getElementById('interaction_searchbar').focus();
@@ -424,7 +423,6 @@ class InteractionChooserForm < View::Form
     link
   end
   def delete_all(model, session=@session)
-    $stdout.puts "InteractionChooserForm.delete_all #{@session.request_path}"
     @drugs = @session.choosen_drugs
     if @drugs and !@drugs.empty?
       delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)

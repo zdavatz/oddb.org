@@ -132,7 +132,7 @@ class PrescriptionDrug < HtmlGrid::Composite
     if @model and @drugs and !@drugs.empty?
       @index = @drugs.keys.index(@model.barcode)
     end
-    if @drugs and !@drugs.empty?
+    if @index and @drugs and !@drugs.empty?
       @model = @drugs.values[@index]
     end
     @attributes.store('id', 'drugs_' + @model.barcode) if @attributes and @model

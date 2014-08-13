@@ -35,7 +35,6 @@ class PreferencesForm < View::Form
   def styles(model, session=@session)
     fields = []
     chosen = session.get_cookie_input(:style)
-    $stdout.puts "get_cookie_input style is #{chosen}"
     unless chosen
       chosen = 'default'
     end
@@ -85,7 +84,6 @@ class PreferencesForm < View::Form
   def search_types(model, session=@session)
     fields = []
     chosen = session.get_cookie_input(:search_type)
-    $stdout.puts "search_types search_type #{chosen.inspect}"
     unless chosen
       chosen = 'st_oddb'
     end
@@ -117,7 +115,6 @@ class PreferencesForm < View::Form
     fields << @lookandfeel.lookup(:zsr_id) + '&nbsp;'
     input = HtmlGrid::InputText.new(:zsr_id, model, session, self)
     zsr_id = session.get_cookie_input(:zsr_id)
-    $stdout.puts "get_cookie_input zsr_id is #{zsr_id}"    
     input.value = zsr_id
     ODDB::View::Helpers.saveFieldValueForLaterUse(input, :zsr_id, '')
     js =  "require(['dojo/domReady!'], function(){ js_save_zsr_id();});"
