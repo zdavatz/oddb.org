@@ -2,11 +2,13 @@
 # encoding: utf-8
 # ODDB::View::TestZsr -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
+require 'stub/cgi'
 require 'view/zsr'
 
 module ODDB
@@ -23,12 +25,12 @@ module ODDB
 														:lookandfeel => @lnf,
 														:zone => 'zone',
 														:user_input => 'user_input',
-														:request_path => 'dummy.oddb.org/de/gcc/zsr/J039019',
+														:request_path => 'dummy.oddb.org/de/gcc/preferences',
+                            :zsr_id => nil,
 													)
-				@view    = ODDB::View::Zsr.new(@model, @session)
-				result = @view.to_html('context')
-				assert(result.index('"last_name":"Davatz"'))
-				assert(result.index('"title":"Dr. med."'))
+				@view    = ODDB::View::ZsrDetails.new(@model, @session)
+				result = @view.to_html(CGI.new)
+				assert(result.index('composite'), "HTML should contain a composite")
 			end
 		end
 	end # View

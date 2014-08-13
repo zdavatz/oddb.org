@@ -4,7 +4,6 @@
 # ODDB::View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
-require 'view/logo'
 require 'view/sponsorlogo'
 require 'view/google_ad_sense'
 require 'view/personal.rb'
@@ -12,6 +11,7 @@ require 'view/tab_navigation'
 require 'view/searchbar'
 require 'htmlgrid/link'
 require 'view/language_chooser'
+require 'view/logo'
 
 module ODDB
 	module View

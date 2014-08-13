@@ -2,7 +2,6 @@
 # encoding: utf-8
 # View::PublicTemplate -- oddb -- 15.01.2013 -- yasaka@ywesee.com
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
-
 require 'htmlgrid/template'
 require 'view/navigationfoot'
 require 'sbsm/time'

@@ -568,7 +568,7 @@ module ODDB
 							price_mth = 'price'
 							duration_mth = 'duration'
 							if(months == '12')
-								price_mth = 'subscription_' << price_mth
+# 								price_mth = 'subscription_' << price_mth
 								duration_mth = 'subscription_' << duration_mth
 							end
 							klass = State::User::DownloadExport

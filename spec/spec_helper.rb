@@ -28,13 +28,18 @@ RegExpTwoMedis = /\/\d{13},\d{13}(\?|)$/
 RegExpOneMedi  = /\/\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 
-def login(user = 'ngiger@ywesee.com', password='ng1234')
+def login(user = 'ngiger@ywesee.com', password='ng1234', remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
   return unless  @browser.link(:text=>'Anmeldung').exists?
   @browser.link(:text=>'Anmeldung').click
   @browser.text_field(:name, 'email').set(user)
   @browser.text_field(:name, 'pass').set(password)
+  if remember_me
+    @browser.checkbox(:name, "remember_me").set
+  else
+    @browser.checkbox(:name, "remember_me").clear
+  end
   @browser.button(:value,"Anmelden").click
 end
 

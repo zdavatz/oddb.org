@@ -475,6 +475,7 @@ module ODDB
 			:unsubscribe,
 			:url,
 			:urls,
+      :zsr_id,
 		]
 		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]

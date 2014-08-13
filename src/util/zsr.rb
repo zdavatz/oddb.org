@@ -10,6 +10,8 @@ module ODDB
 	module ZSR
     ZSRService = 'https://www.pharmedsolutions.ch/ZSRService/wsdl'
 		def ZSR.info(zsr_id)
+      $stdout.puts "ZSR.info for #{zsr_id.inspect}"
+      return {} unless zsr_id and zsr_id.length > 6
       Savon.configure do |config|
         config.log       = false # disable logging
         config.log_level = :error # changing the log level

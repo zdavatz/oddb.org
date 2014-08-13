@@ -5,6 +5,7 @@
 # ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/component'
+require 'view/logohead'
 
 module ODDB
 	module View

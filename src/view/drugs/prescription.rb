@@ -26,85 +26,12 @@ require 'view/searchbar'
 require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
+require 'view/zsr'
 require 'util/zsr'
 
 module ODDB
   module View
     module Drugs
-      def Drugs.saveFieldValueForLaterUse(field, field_id, default_value)
-        if field.is_a?(HtmlGrid::InputRadio)
-          field.set_attribute('onClick', "
-                                  var new_value = sessionStorage.getItem('#{field_id}');
-                                  sessionStorage.setItem('#{field_id}', '#{default_value}');
-                                ")
-          field_id = field_id.to_s  + '_' + default_value.to_s
-        else
-        field.set_attribute('onFocus', "
-                               var new_value = sessionStorage.getItem('#{field_id}');
-                                if (this.value == '#{default_value}') { this.value = '' ; }
-                              ")
-        field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
-                                  sessionStorage.removeItem('#{field_id}');
-                              } else {
-                                sessionStorage.setItem('#{field_id}', this.value);
-                              }
-                              ")
-        end
-        field.set_attribute('id', field_id)
-        field.value = default_value unless field.value
-      end
-class ZsrDetails < HtmlGrid::Composite
-  COMPONENTS = {
-    [0,0] => :details,
-  }
-  CSS_CLASS = 'composite'
-  def init
-    @zsr_id = @session.zsrFromUrl
-    @zsr_info = ZSR.info(@zsr_id) if @zsr_id
-    super
-  end
-  def details(model, session=@session)
-    return unless @zsr_info and @zsr_info.size > 0
-    isPrinting = @session.request_path.index('/print')
-    prefixes = {'phone' => :phone, 'fax' => :fax_label}
-    fields = []
-    %w[title first_name last_name street pobox zip city phone fax].each do |field|
-      key = "prescription_#{field}".to_sym
-      span = HtmlGrid::Span.new(model, session, self)
-      field_value = eval("@zsr_info[:#{field}]")
-      next unless field_value
-      span.value = field_value + '&nbsp;'
-      if prefixes.keys.index(field) and not isPrinting
-        txt = HtmlGrid::Span.new(model, session, self)
-        txt.value =  @lookandfeel.lookup(prefixes[field]) + '&nbsp;'
-        txt.set_attribute('class', 'bold')
-        fields << txt
-      end
-      fields << span
-      fields << "<br>" if %w[gln_id last_name pobox city phone].index(field)
-    end
-    if isPrinting
-      span_zsr_id = HtmlGrid::Span.new(@model, @session, self)
-      span_zsr_id.value = @session.zsrFromUrl
-      span_zsr_id.set_attribute('type', 'hidden')
-      span_zsr_id.set_attribute('id', :prescription_zsr_id)
-      fields <<  '<BR>ZSR&nbsp;'
-      fields << span_zsr_id
-
-      gln_id = @zsr_id ? @zsr_info[:gln_id] : nil
-      span_gln_id = HtmlGrid::Span.new(@model, @session, self)
-      span_gln_id.value = gln_id
-      span_gln_id.set_attribute('id', :prescription_gln_id)
-      Drugs.saveFieldValueForLaterUse(span_gln_id, :prescription_gln_id, '')
-      span_gln_id.set_attribute('type', 'hidden')
-      fields <<  '<BR>EAN&nbsp;'
-      fields << span_gln_id
-      $stdout.puts "Did set span_zsr_id.value = #{ @session.zsrFromUrl} and span_gln_id.value = #{gln_id}"
-    end
-    fields
-  end 
-end
-
 class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   def init
     super
@@ -230,7 +157,7 @@ class PrescriptionDrug < HtmlGrid::Composite
   def prescription_comment(model, session)
     name = "prescription_comment_#{@index}".intern
     textarea = HtmlGrid::Textarea.new(name.intern, model, @session, self)
-    Drugs.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:prescription_comment))
+    Helpers.saveFieldValueForLaterUse(textarea, name, @lookandfeel.lookup(:prescription_comment))
     textarea
   end
 end
@@ -294,7 +221,7 @@ class PrescriptionForm < View::Form
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
     [0,3]  => 'prescription_signature',
     [0,4]  => :prescription_zsr_id,
-    [0,5]  => View::Drugs::ZsrDetails,
+    [0,5]  => View::ZsrDetails,
     [0,13,0] => :buttons,
     [0,13,1] => :delete_all,
     [0,14] => 'prescription_notes',
@@ -336,14 +263,14 @@ class PrescriptionForm < View::Form
       input = HtmlGrid::InputText.new(key, model, session, self)
       input.set_attribute('size', 13)
       input.label = false
-      Drugs.saveFieldValueForLaterUse(input, key, '')
+      Helpers.saveFieldValueForLaterUse(input, key, '')
       fields << input
       fields << '&nbsp;&nbsp;'
     end
     fields << @lookandfeel.lookup(:prescription_sex)
     fields << '&nbsp;'
     radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
-    Drugs.saveFieldValueForLaterUse(radio, :prescription_sex, 1)
+    Helpers.saveFieldValueForLaterUse(radio, :prescription_sex, 1)
     radio.value = '1'
     radio.set_attribute('checked', true)
     fields << radio
@@ -351,7 +278,7 @@ class PrescriptionForm < View::Form
     fields << @lookandfeel.lookup(:prescription_sex_w)
     fields << '&nbsp;'
     radio = HtmlGrid::InputRadio.new(:prescription_sex, model, session, self)
-    Drugs.saveFieldValueForLaterUse(radio, :prescription_sex, 2)
+    Helpers.saveFieldValueForLaterUse(radio, :prescription_sex, 2)
     radio.value = '2'
     fields << radio
     fields << '&nbsp;'
@@ -371,9 +298,9 @@ class PrescriptionForm < View::Form
     input = HtmlGrid::InputText.new(:prescription_zsr_id, model, session, self)
     input.set_attribute('size', 13)
     input.label = false
-    zsr_id = @session.zsrFromUrl
+    zsr_id = @session.zsr_id
     input.value = zsr_id
-    Drugs.saveFieldValueForLaterUse(input, :prescription_zsr_id, '')
+    Helpers.saveFieldValueForLaterUse(input, :prescription_zsr_id, '')
     js =  "require(['dojo/domReady!'], function(){ js_goto_url_with_zsr('#{@session.request_path}', '#{zsr_id}');});"
     input.onclick = js
     input.set_attribute('onBlur', js)
@@ -385,7 +312,7 @@ class PrescriptionForm < View::Form
     buttons = []
     print = post_event_button(:print)
     drugs = @session.drugsFromUrl
-    zsr_id = @session.zsrFromUrl
+    zsr_id = @session.zsr_id
     elements = zsr_id ? [ :rezept, ('zsr_'+zsr_id).to_sym ] : [ :rezept]
     elements += [:ean, drugs.keys].flatten
     new_url = @lookandfeel._event_url(:print, elements)
@@ -520,7 +447,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,9] => '&nbsp;',
     [0,10] => 'prescription_signature',
     [0,11] => '<BR><BR>', # two empty lines for the signature
-    [0,12]  => View::Drugs::ZsrDetails,
+    [0,12]  => View::ZsrDetails,
   }
   CSS_MAP = {
     [0,0] => 'print-type',

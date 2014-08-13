@@ -151,7 +151,7 @@ describe "ch.oddb.org" do
     sleep(1)
   end
 
-  it "should print correclty a prescription with comments, personal information, doctor info and a drug" do
+  it "should print a correct prescription with comments, personal information, doctor info and a drug" do
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)

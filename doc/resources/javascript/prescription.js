@@ -228,6 +228,17 @@ function js_goto_url_with_zsr(url, old_zsr) {
   }
 }
 
+function js_save_zsr_id() {
+  var zsr_id = getValueOfDomElement('zsr_id').replace(' ', '').replace('.','');
+  console.log('js_save_zsr_id: ' + zsr_id);
+  sessionStorage.setItem('prescription_zsr_id', zsr_id);
+}
+
+function js_get_zsr_id() {
+  var zsr_id = sessionStorage.getItem('prescription_zsr_id', '');
+  console.log('js_get_zsr_id: ' + zsr_id);
+}
+
 function js_delete_ean_of_index(url, index) {
   try {
     // console.log ('Delete index ' + index + ': going to new url ' + url + ' in prescription');
