@@ -17,16 +17,18 @@ module ODDB
                                 ")
           field_id = field_id.to_s  + '_' + default_value.to_s
         else
+          js_snippet_change = "if (this.value == '' || this.value == '#{default_value}')
+                                {     sessionStorage.removeItem('#{field_id}');
+                                } else { sessionStorage.setItem('#{field_id}', this.value);
+                                }
+                                console.log('#{field_id} changed to ' + this.value);
+                                "
           field.set_attribute('onFocus', "
                                 var new_value = sessionStorage.getItem('#{field_id}');
                                   if (this.value == '#{default_value}') { this.value = '' ; }
                                 ")
-          field.set_attribute('onBlur',  "if (this.value == '') { value = '#{default_value}';
-                                    sessionStorage.removeItem('#{field_id}');
-                                } else {
-                                  sessionStorage.setItem('#{field_id}', this.value);
-                                }
-                                ")
+          field.set_attribute('onBlur',   js_snippet_change)
+          field.set_attribute('onChange', js_snippet_change)
         end
         field.set_attribute('id', field_id)
         field.value = default_value unless field.value

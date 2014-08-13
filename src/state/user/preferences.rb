@@ -24,6 +24,7 @@ class Preferences < State::Global
       end
     end
     if zsr_id = @session.user_input(:zsr_id)
+      zsr_id = zsr_id.gsub(/[ \.]/, '')
       $stdout.puts "set ZSR_ID to #{zsr_id}"
       @session.set_cookie_input(:zsr_id, zsr_id)
       @session.set_persistent_user_input(:zsr_id, zsr_id)

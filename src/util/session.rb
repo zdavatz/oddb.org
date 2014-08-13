@@ -246,7 +246,7 @@ module ODDB
     def zsr_id
       id = cookie_set_or_get(:zsr_id) || @persistent_user_input[:zsr_id]
       $stdout.puts "cookie_set_or_get #{id} from cookie #{cookie_set_or_get(:zsr_id)} or user_input #{@persistent_user_input[:zsr_id]}"
-      @persistent_user_input[:zsr_id] = id
+      @persistent_user_input[:zsr_id] = id ? id.gsub(/[ \.]/, '') : id
       m = ZsrAndEAN_Regexp.match(request_path)
       $stdout.puts "zsr from request_path is  #{m.inspect}"
       return id unless m and m[1].index('/zsr_')

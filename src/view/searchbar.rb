@@ -56,12 +56,16 @@ module InstantSearchBarMethods
     target = keyword.intern
     id  = "#{target}_searchbar"
     drugs = @session.drugsFromUrl
-    drugs = drugs.keys if drugs
+    drugs = drugs.keys.join(',') if drugs
     ean13 = @session.persistent_user_input(:ean)
-    base_url = @lookandfeel.base_url
-    splitted = @session.request_path.split(/#{base_url}\/(home_interactions|rezept\/ean)\/*/)
-    url = @lookandfeel._event_url(target == 'prescription' ? 'rezept/ean' : 'home_interactions', [])
-    url += drugs.join(',') if drugs
+    $stdout.puts "InstantSearchBarMethods prescription request_path #{@session.request_path} are #{drugs}"
+    if /prescription/i.match(target.to_s)
+      url = @lookandfeel._event_url(:rezept , [:ean, drugs  ? drugs: [] ].flatten)
+      $stdout.puts "InstantSearchBarMethods prescription url #{url}"
+    else
+      url = @lookandfeel._event_url(:home_interactions, [drugs ? drugs : [] ].flatten)
+      $stdout.puts "InstantSearchBarMethods xx url #{url}"
+    end
     val = @session.lookandfeel.lookup(:add_drug)
     progressbar = ""
     if @container.respond_to?(:progress_bar)

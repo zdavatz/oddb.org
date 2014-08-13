@@ -20,8 +20,9 @@ class InteractionChooser < State::Interactions::Global
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
 
   def handle_drug_changes(drugs, msg)
-    $stdout.puts "handle_drug_changes #{drugs}"
     path = @session.request_path
+    $stdout.puts "state.handle_drug_changes #{msg}: #{drugs} from #{path}"
+    $stdout.puts caller.join("\n")
     @session.set_persistent_user_input(:drugs, drugs)
     uri = @session.lookandfeel._event_url(:home_interactions, [])
     first = true
@@ -38,6 +39,8 @@ class InteractionChooser < State::Interactions::Global
   def init
     ean13 = @session.user_input(:search_query)
     path = @session.request_path.sub(/(\?|)$/, '')
+    $stdout.puts "InteractionChooser init ean13 #{ean13}: path: #{path}"
+    return unless path.index('/home_interactions')
     search_code = path.split('/home_interactions')[1]
     drugs = {}
     if search_code
@@ -67,6 +70,7 @@ class InteractionChooser < State::Interactions::Global
       }
       handle_drug_changes(drugs, 'init')
     else
+      $stdout.puts "InteractionChooser init set_persistent_user_input(:drugs, {})"
       @session.set_persistent_user_input(:drugs, {})
     end
     super

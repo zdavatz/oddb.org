@@ -30,13 +30,13 @@ class Prescription < State::Drugs::Global
     super
   end
   def delete_all
-    $stdout.puts "Prescription:delete_all request_path is #{@session.request_path} -> #{@session.request_path.split('/ean/')[0]} or #{@session.lookandfeel._event_url(:home_interactions, [])}"
+    $stdout.puts "Prescription:delete_all request_path is #{@session.request_path}"
     unless error?
       @model = []
     end
     self.http_headers = {
       'Status'   => '303 See Other',
-      'Location' => @session.lookandfeel._event_url(:home_interactions, [])
+      'Location' => @session.lookandfeel._event_url(:rezept, [])
     }
     self
   end

@@ -213,12 +213,12 @@ function js_restore_prescription_sex() {
 
 function js_goto_url_with_zsr(url, old_zsr) {
   try {
-    var zsr_id = getValueOfDomElement('prescription_zsr_id').replace(' ', '').replace('.','')
+    var zsr_id = getValueOfDomElement('prescription_zsr_id');
     if (zsr_id == '') { return ''; }
     var saved_value =  sessionStorage.getItem('prescription_zsr_id', '');
     var new_url = url;
     if (old_zsr != '') { new_url = url.replace('/zsr_'+old_zsr, ''); }
-    new_url = new_url.replace('rezept', 'rezept/zsr_'+zsr_id)
+    new_url = new_url.replace('rezept', 'rezept/zsr_'+zsr_id.replace(' ', '').replace('.',''))
     if (url != new_url) {
       window.top.location.replace(new_url );
     }
