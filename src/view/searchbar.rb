@@ -55,16 +55,13 @@ module InstantSearchBarMethods
   def xhr_request_init(keyword)
     target = keyword.intern
     id  = "#{target}_searchbar"
-    drugs = @session.drugsFromUrl
+    drugs = @session.choosen_drugs
     drugs = drugs.keys.join(',') if drugs
     ean13 = @session.persistent_user_input(:ean)
-    $stdout.puts "InstantSearchBarMethods prescription request_path #{@session.request_path} are #{drugs}"
     if /prescription/i.match(target.to_s)
       url = @lookandfeel._event_url(:rezept , [:ean, drugs  ? drugs: [] ].flatten)
-      $stdout.puts "InstantSearchBarMethods prescription url #{url}"
     else
       url = @lookandfeel._event_url(:home_interactions, [drugs ? drugs : [] ].flatten)
-      $stdout.puts "InstantSearchBarMethods xx url #{url}"
     end
     val = @session.lookandfeel.lookup(:add_drug)
     progressbar = ""

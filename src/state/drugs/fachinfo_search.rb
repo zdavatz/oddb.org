@@ -69,13 +69,12 @@ class FachinfoSearch < State::Drugs::Global
     end
   end
   def match_term
-    puts "fachinfo_search.match_term #{@session.request_path} drugsFromUrl: #{@session.drugsFromUrl}"
     hits = []
-    if @session.drugsFromUrl
+    if @session.choosen_drugs
       chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
       term    = @session.user_input(:fachinfo_search_term)
       is_full = (@session.user_input(:fachinfo_search_full_text) == "1")
-      drugsFromUrl.each do |ean13, pac|
+      choosen_drugs.each do |ean13, pac|
         $stdout.puts "match_term #{ean13} #{pac}"
         doc = pac.fachinfo.description(@session.language)
         if doc.respond_to?(chapter)

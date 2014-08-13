@@ -201,27 +201,27 @@ module ODDB
                      '7680193950301' => 'package',
                      '7680353520153' => 'package'}
     UrlForThreePackages = '7680576730049,7680193950301,7680353520153'
-    def test_drugsFromUrl_for_home_interaction
+    def test_choosen_drugs_for_home_interaction
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/home_interactions/#{UrlForThreePackages}'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_drugsFromUrl_for_rezept
+    def test_choosen_drugs_for_rezept
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/rezept/ean/#{UrlForThreePackages}'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_drugsFromUrl_for_rezept_print
+    def test_choosen_drugs_for_rezept_print
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
       @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}?'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_drugsFromUrl_for_rezept_print_with_slashes
+    def test_choosen_drugs_for_rezept_print_with_slashes
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages.gsub(',','/')}'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
     end
     ZsrAndEAN = "/de/gcc/print/rezept/zsr_J039019/ean/#{UrlForThreePackages.gsub(',','/')}"
     def test_zsr_id
@@ -229,10 +229,37 @@ module ODDB
       @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
       assert_equal('J039019', @session.zsr_id)
     end
-    def test_drugsFromUrl_for_rezept_print_with_zsr
+    def test_choosen_drugs_for_rezept_print_with_zsr
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
-      assert_equal(ThreePackages, @session.drugsFromUrl)
+      assert_equal(ThreePackages, @session.choosen_drugs)
+    end
+    def test_choosen_drugs_for_interactions_with_atc_and_iksnr
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/home_interactions/58392,7680591310011,L02BA01,58643'")
+      expected = {"58392"=>"package",
+                  "7680591310011"=>"package", 
+                  "L02BA01"=>"package",
+                  "58643"=>"package",}
+      assert_equal(expected, @session.choosen_drugs)
+    end
+    def test_choosen_drugs_for_interactions_plus_persistent
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/home_interactions/58392,7680591310011,L02BA01,58643'")
+      drugs = {'7680591310012' => 'package_drugs'}
+      @session.set_persistent_user_input(:drugs, drugs)
+      expected = {"58392"=>"package",
+                  "7680591310011"=>"package", 
+                  "L02BA01"=>"package",
+                  "58643"=>"package",
+                  "7680591310012"=>"package_drugs",}
+      assert_equal(expected, @session.choosen_drugs)
+    end
+    def test_choosen_drugs_nothing_found
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/home_interactions'")
+      @session.set_persistent_user_input(:drugs, nil)
+      assert_equal({}, @session.choosen_drugs)
     end
   end
 end # ODDB

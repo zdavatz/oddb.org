@@ -36,7 +36,7 @@ class PrescriptionInteractionDrugDiv < HtmlGrid::Div
   def init
     super
     @value = []
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @drugs and !@drugs.empty?
       @value << View::Interactions::InteractionChooserDrug.new(@model, @session, self)
     end
@@ -56,7 +56,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
     [2,0] => 'small',
   }
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @model and @model.barcode and @model.barcode.length == 13
       @index = @drugs.keys.index(@model.barcode)
     else
@@ -127,7 +127,7 @@ class PrescriptionDrug < HtmlGrid::Composite
   }
   CSS_CLASS = 'composite'
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     @index = -1
     if @model and @drugs and !@drugs.empty?
       @index = @drugs.keys.index(@model.barcode)
@@ -163,7 +163,7 @@ class PrescriptionDrug < HtmlGrid::Composite
 end
 class PrescriptionDrugDiv < HtmlGrid::Div
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     super # must come first or it will overwrite @value
     @value = []
     ODDB::View::Interactions.calculate_atc_codes(@drugs)
@@ -311,7 +311,7 @@ class PrescriptionForm < View::Form
   def buttons(model, session)
     buttons = []
     print = post_event_button(:print)
-    drugs = @session.drugsFromUrl
+    drugs = @session.choosen_drugs
     zsr_id = @session.zsr_id
     elements = zsr_id ? [ :rezept, ('zsr_'+zsr_id).to_sym ] : [ :rezept]
     elements += [:ean, drugs.keys].flatten
@@ -325,7 +325,7 @@ class PrescriptionForm < View::Form
     buttons
   end
   def delete_all(model, session=@session)
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
     delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
@@ -377,7 +377,7 @@ class PrescriptionPrintInnerComposite < HtmlGrid::Composite
   CSS_CLASS = 'compose'
   DEFAULT_CLASS = HtmlGrid::Value
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     @index = nil
     if @model and @drugs and !@drugs.empty?
       @index = @drugs.keys.index(@model.barcode)
@@ -465,7 +465,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,12] => 'print',
   }
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     super
 self.onload = %(require(["dojo/domReady!"], function(){
   print_composite_init('#{@lookandfeel.lookup(:prescription_comment)}');
@@ -534,7 +534,7 @@ class PrescriptionPrint < View:: PrintTemplate
   CONTENT = View::Drugs::PrescriptionPrintComposite
   JAVASCRIPTS = ['qrcode', 'prescription']
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     @index = (@drugs ? @drugs.length : 0).to_s
     if @model and @drugs and !@drugs.empty?
       @index = @drugs.keys.index(@model.barcode).to_s
@@ -543,7 +543,7 @@ class PrescriptionPrint < View:: PrintTemplate
   end
   def head(model, session=@session)
     span = HtmlGrid::Span.new(model, session, self)
-    drugs = @session.drugsFromUrl
+    drugs = @session.choosen_drugs
     span.value = @lookandfeel.lookup(:print_of) +
       @lookandfeel._event_url(:print, [:rezept, :ean, drugs  ? drugs.keys : [] ].flatten)
     span
@@ -614,7 +614,7 @@ class PrescriptionCsv < HtmlGrid::Component
     insert_blank
     @lines << date
     insert_blank
-    if drugs = @session.drugsFromUrl
+    if drugs = @session.choosen_drugs
       @packages = drugs.values.unshift(model)
     else
       @packages = [model]

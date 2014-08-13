@@ -142,7 +142,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
       if model
         args = [:ean, model.barcode] if model
         url = @session.request_path.sub(model.barcode.to_s, '').sub('/,', '/').sub(/,$/, '')
-        if @session.drugsFromUrl.size == 0
+        if @session.choosen_drugs.size == 0
           ODDB::View::Interactions.calculate_atc_codes({})
         end
         link.onclick = %(
@@ -177,7 +177,7 @@ class InteractionChooserDrug < HtmlGrid::Composite
     @interactions = ODDB::View::Interactions.get_interactions(model.atc_class.code, @session)
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @model.is_a? ODDB::Package
       nextRow = 0
       unless @hide_interaction_headers
@@ -259,7 +259,7 @@ class InteractionChooserDrugList < HtmlGrid::List
   CSS_CLASS = 'composite'
   SORT_HEADER = false
   def initialize(model, session=@session, arg_self=nil)
-    @drugs = session.drugsFromUrl
+    @drugs = session.choosen_drugs
     super # must come first or it will overwrite @value
     @value = []
     ODDB::View::Interactions.calculate_atc_codes(@drugs)
@@ -275,7 +275,7 @@ class InteractionChooserDrugDiv < HtmlGrid::Div
   def init
     super
     @value = []
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @drugs and !@drugs.empty?
       @value << InteractionChooserDrugList.new(@drugs, @session, self)
     end
@@ -425,7 +425,7 @@ class InteractionChooserForm < View::Form
   end
   def delete_all(model, session=@session)
     $stdout.puts "InteractionChooserForm.delete_all #{@session.request_path}"
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @drugs and !@drugs.empty?
       delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
       delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])

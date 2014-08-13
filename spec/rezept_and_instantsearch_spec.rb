@@ -84,8 +84,7 @@ describe "ch.oddb.org" do
     @browser.radio(:name => "prescription_sex", :value => "2").click # Set M for männlich
     @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_first_name').set FirstName
-    @browser.send_keys :tab
-    require 'pry'; binding.pry
+      # require 'pry'; binding.pry
     @browser.text_field(:name => 'prescription_family_name').set FamilyName
     @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_birth_day').set Birthday
@@ -100,6 +99,8 @@ describe "ch.oddb.org" do
   def set_zsr_of_doctor(zsr_id)
     @browser.text_field(:name => 'prescription_zsr_id').set zsr_id
     @browser.send_keys :tab
+    @browser.text_field(:name => 'prescription_zsr_id').click
+    sleep(1)
   end
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
@@ -162,10 +163,8 @@ describe "ch.oddb.org" do
     add_one_drug_to_rezept(Four_Medis[0])
     setGeneralInfo(1)
     set_zsr_of_doctor('J 0390.19')
-    @browser.url.should match /zsr.J039019/
-    @browser.text.should match /Davatz/
+    @browser.text.should match /Dr. med. Ursula Davatz/
     set_zsr_of_doctor('P006309')
-    @browser.url.should match /zsr.P006309/
     @browser.text.should match /Dr. med. Werner Meier/
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
@@ -183,7 +182,6 @@ describe "ch.oddb.org" do
     @browser.text.index("|#{FamilyName}|").should > 0
     @browser.text.index("|19901231|").should > 0 # Must of format YYYYMMDD
   end
-if false
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -426,5 +424,4 @@ if false
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
     checkGeneralInfo(nrRemarks)
   end
-end
 end

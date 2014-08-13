@@ -19,27 +19,18 @@ class InteractionChooser < State::Interactions::Global
   VIEW = View::Interactions::InteractionChooser
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
 
-  def handle_drug_changes(drugs, msg)
+  def  handle_drug_changes(drugs, msg)
     path = @session.request_path
-    $stdout.puts "state.handle_drug_changes #{msg}: #{drugs} from #{path}"
-    $stdout.puts caller.join("\n")
     @session.set_persistent_user_input(:drugs, drugs)
-    uri = @session.lookandfeel._event_url(:home_interactions, [])
     first = true
-    drugs.each{|ean, pack|
-               if first
-                 first = false
-                 uri += pack.barcode
-               else
-                  uri += ",#{pack.barcode}"
-               end
-               }
+    eans = []
+    drugs.each{|ean, pack| eans << pack.barcode }
+    @session.lookandfeel._event_url(:home_interactions, [eans])
   end
   
   def init
     ean13 = @session.user_input(:search_query)
     path = @session.request_path.sub(/(\?|)$/, '')
-    $stdout.puts "InteractionChooser init ean13 #{ean13}: path: #{path}"
     return unless path.index('/home_interactions')
     search_code = path.split('/home_interactions')[1]
     drugs = {}
@@ -70,8 +61,7 @@ class InteractionChooser < State::Interactions::Global
       }
       handle_drug_changes(drugs, 'init')
     else
-      $stdout.puts "InteractionChooser init set_persistent_user_input(:drugs, {})"
-      @session.set_persistent_user_input(:drugs, {})
+      @session.lookandfeel._event_url(:home_interactions, [])
     end
     super
   end
@@ -81,7 +71,7 @@ class InteractionChooser < State::Interactions::Global
     unless error?
       if ean13 = @session.user_input(:ean).to_s and
         pack  = package_for(ean13)
-        drugs = @session.drugsFromUrl
+        drugs = @session.choosen_drugs
         drugs[ean13] = pack unless drugs.has_key?(ean13)
         return handle_drug_changes(drugs, 'ajax_add_drug')
       end
@@ -93,7 +83,7 @@ class InteractionChooser < State::Interactions::Global
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s
-        drugs = @session.drugsFromUrl
+        drugs = @session.choosen_drugs
         drugs.delete(ean13)
         return handle_drug_changes(drugs, 'ajax_delete_drug')
       end

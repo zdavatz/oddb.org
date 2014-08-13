@@ -24,7 +24,7 @@ class Prescription < State::Drugs::Global
   VIEW = View::Drugs::Prescription
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     ean13 = @session.user_input(:search_query)
     @drugs[ean13] = package_for(ean13) if ean13 
     super

@@ -231,24 +231,24 @@ module ODDB
 			@app.sponsor(flavor)
 		end
     ZsrAndEAN_Regexp = /(\/zsr_.+|)\/(ean|home_interactions)\/+([^\\?].+)/
-    def drugsFromUrl
+    def choosen_drugs
+      persistent = persistent_user_input(:drugs)
       m = ZsrAndEAN_Regexp.match(request_path)
-      return {} unless m
-      ean13s = m[3].split(/[,?\/]/)
+      return {} unless m or persistent
+      ean13s = m ? m[3].split(/[,?\/]/) : []
       drugs = {}
       ean13s.each {
         |ean13|
         pack = @app.package_by_ean13(ean13)
         drugs[ean13] = pack if pack
       }
+      drugs.merge!(persistent) if persistent
       drugs
     end
     def zsr_id
       id = cookie_set_or_get(:zsr_id) || @persistent_user_input[:zsr_id]
-      $stdout.puts "cookie_set_or_get #{id} from cookie #{cookie_set_or_get(:zsr_id)} or user_input #{@persistent_user_input[:zsr_id]}"
       @persistent_user_input[:zsr_id] = id ? id.gsub(/[ \.]/, '') : id
       m = ZsrAndEAN_Regexp.match(request_path)
-      $stdout.puts "zsr from request_path is  #{m.inspect}"
       return id unless m and m[1].index('/zsr_')
       return m[1].split('_').last
     end

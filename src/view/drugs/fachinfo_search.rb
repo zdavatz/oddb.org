@@ -29,7 +29,7 @@ class FachinfoSearchDrugHeader < HtmlGrid::Composite
     [2,0] => 'small',
   }
   def init
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     @index = (@drugs ? @drugs.length : 0).to_s
     super
   end
@@ -99,7 +99,7 @@ class FachinfoSearchDrugDiv < HtmlGrid::Div
   def init
     super
     @value = []
-    @drugs = @session.drugsFromUrl
+    @drugs = @session.choosen_drugs
     if @drugs and !@drugs.empty?
       @drugs.values.each do |pac|
         @value << FachinfoSearchDrug.new(pac, @session, self)
@@ -242,7 +242,7 @@ class FachinfoSearchTermHitList < HtmlGrid::List
   BACKGROUND_SUFFIX = ''
   LEGACY_INTERFACE = false
   def drug(model, session=@session)
-    drugs = @session.drugsFromUrl
+    drugs = @session.choosen_drugs
     if pac = drugs[model[:ean13]]
       FachinfoSearchDrugHeader.new(pac, session, self)
     end
@@ -344,7 +344,7 @@ class FachinfoSearchCsv < HtmlGrid::Component
         'Search Match',
       ],
     ]
-    drugs = @session.drugsFromUrl
+    drugs = @session.choosen_drugs
     @model.each do |model|
       if pac = drugs[model[:ean13]]
         if model[:text].is_a? FachinfoDocument
