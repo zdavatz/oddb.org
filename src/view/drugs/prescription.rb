@@ -519,7 +519,8 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,8] => :document,
     [0,9] => '&nbsp;',
     [0,10] => 'prescription_signature',
-    [0,11]  => View::Drugs::ZsrDetails,
+    [0,11] => '<BR><BR>', # two empty lines for the signature
+    [0,12]  => View::Drugs::ZsrDetails,
   }
   CSS_MAP = {
     [0,0] => 'print-type',
@@ -533,7 +534,8 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,8] => 'print',
     [0,9] => 'print',
     [0,10] => 'print-big',
-    [0,10] => 'print',
+    [0,11] => 'print',
+    [0,12] => 'print',
   }
   def init
     @drugs = @session.drugsFromUrl
