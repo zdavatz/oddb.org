@@ -101,11 +101,11 @@ function create_prescription_from_dom() {
 }
 
 function add_prescription_qr_code(text_id, element_id) {
-  // console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
+  console.log('add_prescription_qr_code for element '+element_id + ' from text_id ' + text_id);
   try {
     function makeCode () {
       var inhalt =  create_prescription_from_dom().qr_string();
-      document.getElementById(text_id).innerHTML = inhalt;
+      if (text_id != undefined && text_id != null) { document.getElementById(text_id).innerHTML = inhalt; }
       var qrcode = new QRCode(element_id, {
           text: inhalt,
           correctLevel : QRCode.CorrectLevel.H
@@ -116,7 +116,7 @@ function add_prescription_qr_code(text_id, element_id) {
   }
   catch(err) {
     console.log('add_prescription_qr_code: catched error: ' + err);
-    document.getElementById(element_id).innerHTML = 'Error generating QRCode: ' + err;
+    document.getElementById(element_id).innerHTML = 'add_prescription_qr_code: ' + err;
   }
 }
 

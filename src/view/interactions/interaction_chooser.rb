@@ -33,6 +33,8 @@ module ODDB
                  'D' => '#ff82ab',
                  'X' => '#ff6a6a',
                  }
+    @@atc_codes ||=[]
+    
   def self.calculate_atc_codes(drugs)
       atc_codes = []
       ean13s    = []

@@ -219,9 +219,9 @@ class PrescriptionForm < View::Form
     [0,0]  => :prescription_for,
     [0,1]  => View::Drugs::PrescriptionDrugDiv,
     [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
-    [0,3]  => 'prescription_signature',
-    [0,4]  => :prescription_zsr_id,
-    [0,5]  => View::ZsrDetails,
+    [0,3]  => :prescription_zsr_id,
+    [0,4]  => View::ZsrDetails,
+    [0,5]  => 'prescription_signature',
     [0,13,0] => :buttons,
     [0,13,1] => :delete_all,
     [0,14] => 'prescription_notes',
@@ -230,9 +230,9 @@ class PrescriptionForm < View::Form
     [0,0]  => 'th bold',
     [0,1]  => '', # none
     [0,2]  => 'list',
-    [0,3]  => 'list bold',
-    [0,4]  => 'list bold',
-    [0,5]  => 'list',
+    [0,2]  => 'list bold',
+    [0,4]  => 'list',
+    [0,5]  => 'list bold',
     [0,13,0] => 'button',
     [0,13,1] => 'button',
     [0,14] => 'list bold',
@@ -445,9 +445,9 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,7] => :prescription_title,
     [0,8] => :document,
     [0,9] => '&nbsp;',
-    [0,10] => 'prescription_signature',
-    [0,11] => '<BR><BR>', # two empty lines for the signature
-    [0,12]  => View::ZsrDetails,
+    [0,10] => '<BR><BR>', # two empty lines for the signature
+    [0,11]  => View::ZsrDetails,
+    [0,12] => 'prescription_signature',
   }
   CSS_MAP = {
     [0,0] => 'print-type',
@@ -460,16 +460,16 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,7] => 'print',
     [0,8] => 'print',
     [0,9] => 'print',
-    [0,10] => 'print-big',
+    [0,10] => 'print',
     [0,11] => 'print',
-    [0,12] => 'print',
+    [0,12] => 'print-big',
   }
   def init
     @drugs = @session.choosen_drugs
     super
 self.onload = %(require(["dojo/domReady!"], function(){
   print_composite_init('#{@lookandfeel.lookup(:prescription_comment)}');
-  add_prescription_qr_code('qr_code_text', 'qr_code_image');
+  add_prescription_qr_code(null, 'qr_code_image');
   });
   )
 
@@ -482,19 +482,10 @@ self.onload = %(require(["dojo/domReady!"], function(){
     span
   end
   def qr_code_image(model, session=@session)
-    fields = []
-    txt = HtmlGrid::Div.new(model, session, self)
-    txt.set_attribute('id', 'qr_code_text')
-    txt.value = "Ein Beispiel"
-    txt.set_attribute('style', "italic width:100%;")
-    txt
-    fields << txt
     image = HtmlGrid::Div.new(model, session, self)
     image.set_attribute('id', 'qr_code_image')
     image.set_attribute('colspan', '15')
     image
-    fields << image
-    fields
   end
   def prescription_for(model, session=@session)
     fields = []
