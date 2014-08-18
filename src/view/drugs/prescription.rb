@@ -231,6 +231,7 @@ class PrescriptionForm < View::Form
     [0,1]  => '', # none
     [0,2]  => 'list',
     [0,2]  => 'list bold',
+    [0,3]  => 'list bold',
     [0,4]  => 'list',
     [0,5]  => 'list bold',
     [0,13,0] => 'button',
@@ -294,9 +295,12 @@ class PrescriptionForm < View::Form
   end
   def prescription_zsr_id(model, session)
     fields = []
-    fields << @lookandfeel.lookup(:zsr_id) + '&nbsp;'
+    fields << '&nbsp;'
+    fields << @lookandfeel.lookup(:zsr_id)
+    fields << '&nbsp;'
     input = HtmlGrid::InputText.new(:prescription_zsr_id, model, session, self)
-    input.set_attribute('size', 13)
+    input.set_attribute('size', 10)
+    input.set_attribute('class', 'list')
     input.label = false
     zsr_id = @session.zsr_id
     input.value = zsr_id
