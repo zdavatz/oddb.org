@@ -261,5 +261,53 @@ module ODDB
       @session.set_persistent_user_input(:drugs, nil)
       assert_equal({}, @session.choosen_drugs)
     end
+    def test_create_search_url_without_zsr_id
+      {
+        'create_search_url(:home_interactions, nil)' => 'http://www.oddb.org/de/gcc/home_interactions',
+        'create_search_url(:rezept)'                      => 'http://www.oddb.org/de/gcc/rezept',
+        'create_search_url()'                             => 'http://www.oddb.org/de/gcc/rezept',
+        'create_search_url(:home_interactions, [7680576730049,7680193950301] )' =>
+            'http://www.oddb.org/de/gcc/home_interactions/7680576730049/7680193950301'
+        }.each {
+          |cmd, url|
+        @session = ODDB::Session.new('key', @app, @validator)
+        res = @session.instance_eval(cmd)
+        assert_equal(url,res)
+      }
+    end
+    def test_create_search_url_with_zsr_id
+      {
+        'create_search_url(:rezept)' =>
+          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
+        'create_search_url(:rezept)' =>
+          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
+        'create_search_url(:rezept, ["7680495260320"] )' =>
+          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680495260320',
+        'create_search_url(:rezept, [7680516801112,7680576730063] )' =>
+            'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
+        }.each {
+          |cmd, url|
+        @session = ODDB::Session.new('key', @app, @validator)
+        @session.set_persistent_user_input(:zsr_id, 'P123456')
+        res = @session.instance_eval(cmd)
+        assert_equal(url,res)
+      }
+    end
+    def test_create_search_url_with_choosen_drugs
+      {
+        'create_search_url(:rezept)' =>
+          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
+        }.each {
+          |cmd, url|
+        drugs = {'7680516801112' => 'package_drugs',
+                 7680576730063 => 'drug 7680576730063'
+                 }
+        @session = ODDB::Session.new('key', @app, @validator)
+        @session.set_persistent_user_input(:zsr_id, 'P123456')
+        @session.set_persistent_user_input(:drugs, drugs)
+        res = @session.instance_eval(cmd)
+        assert_equal(url,res)
+      }
+    end
   end
 end # ODDB

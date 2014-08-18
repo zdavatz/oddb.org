@@ -301,8 +301,10 @@ class PrescriptionForm < View::Form
     zsr_id = @session.zsr_id
     input.value = zsr_id
     Helpers.saveFieldValueForLaterUse(input, :prescription_zsr_id, '')
-    js =  "require(['dojo/domReady!'], function(){ js_goto_url_with_zsr('#{@session.request_path}', '#{zsr_id}');});"
+    url = @session.create_search_url(:rezept)
+    js =  "require(['dojo/domReady!'], function(){ js_goto_url_with_zsr('#{url}');});"
     input.onclick = js
+    input.set_attribute('onload', js)
     input.set_attribute('onBlur', js)
     input.set_attribute('onchange', js)
     fields << input
@@ -340,8 +342,11 @@ class PrescriptionForm < View::Form
       'id'     => 'prescription_form',
       'target' => '_blank'
     })
-    self.onload = "
+  url = @session.create_search_url(:rezept)
+  self.onload = "
   require(['dojo/domReady!'], function(){
+    console.log('prescription_form_init.onload url: #{url} href ' + window.location.href + ' top ' + window.top.location.href);
+    js_goto_url_with_zsr('#{url}');
     prescription_form_init('#{@lookandfeel.lookup(:prescription_comment)}');
 });
 "
