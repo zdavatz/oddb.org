@@ -299,14 +299,14 @@ class PrescriptionForm < View::Form
     delete_all_link
   end
   private 
-  FIRST_IDX  = [0,4]
-  SECOND_IDX = [0,5]
   def init
+    first_idx  = [0,6]
+    second_idx = [0,8]
     @components = {
       [0,0]  => :prescription_for,
       [0,1]  => View::Drugs::PrescriptionDrugDiv,
       [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
-      [0,3]  => :prescription_zsr_id,
+      [0,4]  => :prescription_zsr_id,
       [0,13,0] => :buttons,
       [0,13,1] => :delete_all,
       [0,14] => 'prescription_notes',
@@ -315,7 +315,7 @@ class PrescriptionForm < View::Form
       [0,0]  => 'th bold',
       [0,1]  => '',
       [0,2]  => '',
-      [0,3]  => 'bold',
+      [0,4]  => 'bold',
       [0,13,0] => 'button',
       [0,13,1] => 'button',
       [0,14] => 'bold',
@@ -324,22 +324,22 @@ class PrescriptionForm < View::Form
       [0,0]  => 3,
       [0,1]  => 3,
       [0,2]  => 3,
-      [0,3]  => 3,
+      [0,4]  => 3,
       [0,13,0] => 3,
       [0,13,1] => 3,
       [0,15] => 3,
     }
     if @session.zsr_id
-      @components[FIRST_IDX]  = View::ZsrDetails
-      @components[SECOND_IDX]=   'prescription_signature'
-      @css_map[FIRST_IDX]     = ''
-      @css_map[SECOND_IDX]   = 'bold'
-      @colspan_map[FIRST_IDX] = 3
-      @colspan_map[SECOND_IDX] = 3
+      @components[first_idx]  = View::ZsrDetails
+      @components[second_idx]=   'prescription_signature'
+      @css_map[first_idx]     = ''
+      @css_map[second_idx]   = 'bold'
+      @colspan_map[first_idx] = 3
+      @colspan_map[second_idx] = 3
     else
-      @components[FIRST_IDX]  =  'prescription_signature'
-      @css_map[FIRST_IDX]     = 'bold'
-      @colspan_map[FIRST_IDX] = 3
+      @components[first_idx]  =  'prescription_signature'
+      @css_map[first_idx]     = 'bold'
+      @colspan_map[first_idx] = 3
     end
     super
     @form_properties.update({
