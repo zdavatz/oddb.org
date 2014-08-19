@@ -52,7 +52,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
   }
   CSS_MAP = {
     [0,0] => 'small',
-    [1,0] => 'list',
+    [1,0] => '',
     [2,0] => 'small',
   }
   def init
@@ -72,17 +72,16 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
   end
   def drug(model, session=@session)
     div = HtmlGrid::Div.new(model, @session, self)
-    div.set_attribute('class', 'drug')
     div.value = []
     if model
-      div.value << model.name_with_size
+      div.value << '&nbsp;' + model.name_with_size
       if price = model.price_public
         div.value << '&nbsp;-&nbsp;'
         div.value << price.to_s
       end
       if company = model.company_name
         div.value << '&nbsp;-&nbsp;'
-        div.value << company
+        div.value << company +  '&nbsp;'
       end
     end
     div
@@ -120,7 +119,7 @@ class PrescriptionDrug < HtmlGrid::Composite
   CSS_MAP = {
     [0,0] => 'subheading',
     [0,1] => 'list',
-    [0,2] => 'list top',
+    [0,2] => 'top',
   }
   COMPONENT_CSS_MAP = {
     [0,2] => 'wide',
@@ -188,9 +187,6 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
   }
   SYMBOL_MAP = {
     :searchbar => View::PrescriptionDrugSearchBar,
-  }
-  CSS_MAP = {
-    [0,0] => 'list',
   }
   def init
     super
@@ -265,7 +261,6 @@ class PrescriptionForm < View::Form
     fields << '&nbsp;'
     input = HtmlGrid::InputText.new(:prescription_zsr_id, model, session, self)
     input.set_attribute('size', 10)
-    input.set_attribute('class', 'list')
     input.label = false
     zsr_id = @session.zsr_id
     input.value = zsr_id
@@ -301,14 +296,12 @@ class PrescriptionForm < View::Form
     delete_all_link.href  = @lookandfeel._event_url(:prescription, [:ean] )
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
     delete_all_link.onclick = "require(['dojo/domReady!'], function(){ js_clear_session_storage();});"
-    delete_all_link.css_class = 'list'
     delete_all_link
   end
   private 
   FIRST_IDX  = [0,4]
   SECOND_IDX = [0,5]
   def init
-    puts "init zsr_id #{@session.zsr_id}"
     @components = {
       [0,0]  => :prescription_for,
       [0,1]  => View::Drugs::PrescriptionDrugDiv,
@@ -321,11 +314,11 @@ class PrescriptionForm < View::Form
     @css_map = {
       [0,0]  => 'th bold',
       [0,1]  => '',
-      [0,2]  => 'list',
-      [0,3]  => 'list bold',
+      [0,2]  => '',
+      [0,3]  => 'bold',
       [0,13,0] => 'button',
       [0,13,1] => 'button',
-      [0,14] => 'list bold',
+      [0,14] => 'bold',
     }
     @colspan_map = {
       [0,0]  => 3,
@@ -339,13 +332,13 @@ class PrescriptionForm < View::Form
     if @session.zsr_id
       @components[FIRST_IDX]  = View::ZsrDetails
       @components[SECOND_IDX]=   'prescription_signature'
-      @css_map[FIRST_IDX]     = 'list'
-      @css_map[SECOND_IDX]   = 'list bold'
+      @css_map[FIRST_IDX]     = ''
+      @css_map[SECOND_IDX]   = 'bold'
       @colspan_map[FIRST_IDX] = 3
       @colspan_map[SECOND_IDX] = 3
     else
       @components[FIRST_IDX]  =  'prescription_signature'
-      @css_map[FIRST_IDX]     = 'list bold'
+      @css_map[FIRST_IDX]     = 'bold'
       @colspan_map[FIRST_IDX] = 3
     end
     super
