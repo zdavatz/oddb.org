@@ -38,7 +38,7 @@ module ODDB
       COMPONENTS = {
         [0,0] => :details,
       }
-      CSS_CLASS = 'composite'
+      CSS_CLASS = 'list composite'
       def init
         @zsr_id = @session.zsr_id
         @zsr_info = ZSR.info(@zsr_id) if @zsr_id

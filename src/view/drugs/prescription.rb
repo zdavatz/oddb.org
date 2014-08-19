@@ -190,7 +190,7 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
     :searchbar => View::PrescriptionDrugSearchBar,
   }
   CSS_MAP = {
-    [0,0] => 'searchbar',
+    [0,0] => 'list',
   }
   def init
     super
@@ -215,40 +215,6 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
 end
 class PrescriptionForm < View::Form
   include HtmlGrid::InfoMessage
-  COMPONENTS = {
-    [0,0]  => :prescription_for,
-    [0,1]  => View::Drugs::PrescriptionDrugDiv,
-    [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
-    [0,3]  => :prescription_zsr_id,
-    [0,4]  => View::ZsrDetails,
-    [0,5]  => 'prescription_signature',
-    [0,13,0] => :buttons,
-    [0,13,1] => :delete_all,
-    [0,14] => 'prescription_notes',
-  }
-  CSS_MAP = {
-    [0,0]  => 'th bold',
-    [0,1]  => '', # none
-    [0,2]  => 'list',
-    [0,2]  => 'list bold',
-    [0,3]  => 'list bold',
-    [0,4]  => 'list',
-    [0,5]  => 'list bold',
-    [0,13,0] => 'button',
-    [0,13,1] => 'button',
-    [0,14] => 'list bold',
-  }
-  COLSPAN_MAP = {
-    [0,0]  => 3,
-    [0,1]  => 3,
-    [0,2]  => 3,
-    [0,3]  => 3,
-    [0,4]  => 3,
-    [0,5]  => 3,
-    [0,13,0] => 3,
-    [0,13,1] => 3,
-    [0,15] => 3,
-  }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
@@ -295,7 +261,6 @@ class PrescriptionForm < View::Form
   end
   def prescription_zsr_id(model, session)
     fields = []
-    fields << '&nbsp;'
     fields << @lookandfeel.lookup(:zsr_id)
     fields << '&nbsp;'
     input = HtmlGrid::InputText.new(:prescription_zsr_id, model, session, self)
@@ -339,8 +304,50 @@ class PrescriptionForm < View::Form
     delete_all_link.css_class = 'list'
     delete_all_link
   end
-  private
+  private 
+  FIRST_IDX  = [0,4]
+  SECOND_IDX = [0,5]
   def init
+    puts "init zsr_id #{@session.zsr_id}"
+    @components = {
+      [0,0]  => :prescription_for,
+      [0,1]  => View::Drugs::PrescriptionDrugDiv,
+      [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
+      [0,3]  => :prescription_zsr_id,
+      [0,13,0] => :buttons,
+      [0,13,1] => :delete_all,
+      [0,14] => 'prescription_notes',
+    }
+    @css_map = {
+      [0,0]  => 'th bold',
+      [0,1]  => '',
+      [0,2]  => 'list',
+      [0,3]  => 'list bold',
+      [0,13,0] => 'button',
+      [0,13,1] => 'button',
+      [0,14] => 'list bold',
+    }
+    @colspan_map = {
+      [0,0]  => 3,
+      [0,1]  => 3,
+      [0,2]  => 3,
+      [0,3]  => 3,
+      [0,13,0] => 3,
+      [0,13,1] => 3,
+      [0,15] => 3,
+    }
+    if @session.zsr_id
+      @components[FIRST_IDX]  = View::ZsrDetails
+      @components[SECOND_IDX]=   'prescription_signature'
+      @css_map[FIRST_IDX]     = 'list'
+      @css_map[SECOND_IDX]   = 'list bold'
+      @colspan_map[FIRST_IDX] = 3
+      @colspan_map[SECOND_IDX] = 3
+    else
+      @components[FIRST_IDX]  =  'prescription_signature'
+      @css_map[FIRST_IDX]     = 'list bold'
+      @colspan_map[FIRST_IDX] = 3
+    end
     super
     @form_properties.update({
       'id'     => 'prescription_form',
@@ -455,7 +462,7 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,8] => :document,
     [0,9] => '&nbsp;',
     [0,10] => '<BR><BR>', # two empty lines for the signature
-    [0,11]  => View::ZsrDetails,
+    [0,11] => View::ZsrDetails,
     [0,12] => 'prescription_signature',
   }
   CSS_MAP = {
