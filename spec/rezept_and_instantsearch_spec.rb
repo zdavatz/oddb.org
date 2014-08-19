@@ -46,6 +46,8 @@ describe "ch.oddb.org" do
                     }
     chooser.set(chooser.value + "\n")
     createScreenshot(@browser, "_#{name}_#{__LINE__}")
+    puts "\nFailed to add_one_drug_to_prescription #{name}:  #{@browser.url}" unless @browser.text.match(/#{name}/i)
+    @browser.text.should match(/#{name}/i)
   end
   
   before :all do
@@ -73,6 +75,15 @@ describe "ch.oddb.org" do
     $prescription_test_id += 1
   end
 
+  def getTextFieldInAsafeWay(field_name)
+    elem = @browser.element(:id, field_name)
+    unless elem and elem.present?
+      createScreenshot(@browser, "_no_#{field_name}_#{__LINE__}")
+      sleep 10
+      exit 3
+    end
+    @browser.textarea(:name => field_name)
+  end
   def genComment(unique)
     "Kommentar #{@timestamp} #{unique}"
   end
@@ -91,9 +102,10 @@ describe "ch.oddb.org" do
     @browser.send_keys :tab
     0.upto(nrMedis-1) {
       |idx|
-      @browser.textarea(:name => "prescription_comment_#{idx}").set genComment(Four_Medis[idx])
+      field_name = "prescription_comment_#{idx}"
+      getTextFieldInAsafeWay(field_name).set genComment(Four_Medis[idx])
       @browser.send_keys :tab
-      @browser.textarea(:name => "prescription_comment_#{idx}").value.should eql genComment(Four_Medis[idx])
+      getTextFieldInAsafeWay(field_name).value.should eql genComment(Four_Medis[idx])
     }
   end
   def set_zsr_of_doctor(zsr_id)
@@ -116,10 +128,11 @@ describe "ch.oddb.org" do
       }
       0.upto(nrMedis-1) {
         |idx|
+          field_name = "prescription_comment_#{idx}"
           comment = genComment(Four_Medis[idx])
-          span_value = @browser.element(:id => "prescription_comment_#{idx}").value
+          span_value = getTextFieldInAsafeWay(field_name).value
           unless span_value == comment
-            puts "span_value #{span_value} !=  #{comment} in element with id prescription_comment_#{idx}. nrMedis was #{nrMedis}"
+            puts "span_value #{span_value} !=  #{comment} in element with id #{field_name}. nrMedis was #{nrMedis}"
             # require 'pry'; binding.pry
           end
           span_value.should eql comment
@@ -132,7 +145,7 @@ describe "ch.oddb.org" do
 
       0.upto(nrMedis-1) {
         |idx|
-          @browser.text_field(:name => "prescription_comment_#{idx}").value.should == genComment(Four_Medis[idx])
+          getTextFieldInAsafeWay("prescription_comment_#{idx}").value.should == genComment(Four_Medis[idx])
       }
     end
   end
@@ -176,6 +189,28 @@ describe "ch.oddb.org" do
     checkGeneralInfo(nrMedisToCheck)
   end
 
+  it "after a delete_all it must be possible to add drugs" do
+    nrMedisToCheck = 1
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(Four_Medis[0])
+    @browser.button(:name, "search").click
+    @browser.link(:href, /prescription/).click
+    set_zsr_of_doctor('P006309')
+    setGeneralInfo(nrMedisToCheck)
+    add_one_drug_to_prescription(Four_Medis[1])
+    checkGeneralInfo(nrMedisToCheck+1)
+    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.link(:id => /delete/i).click
+    @browser.text.should_not match /Dr. med. Werner Meier/
+    set_zsr_of_doctor('P006309')
+    @browser.text.should match /Dr. med. Werner Meier/
+    checkGeneralInfo(0)
+    add_one_drug_to_prescription(Four_Medis[0])
+    checkGeneralInfo(nrMedisToCheck)
+    @browser.text.should match /Dr. med. Werner Meier/
+  end
+
   it "should print a correct prescription with comments, personal information, doctor info and a drug" do
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
@@ -198,7 +233,6 @@ describe "ch.oddb.org" do
     @browser.text.should match /ZSR P006309/i
     @browser.text.should match /EAN 7601000223449/i
   end
-
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
