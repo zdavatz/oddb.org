@@ -206,30 +206,30 @@ module ODDB
       @session.instance_eval("@request_path = '/de/gcc/home_interactions/#{UrlForThreePackages}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_choosen_drugs_for_rezept
+    def test_choosen_drugs_for_prescription
       @session = ODDB::Session.new('key', @app, @validator)
-      @session.instance_eval("@request_path = '/de/gcc/rezept/ean/#{UrlForThreePackages}'")
+      @session.instance_eval("@request_path = '/de/gcc/prescription/ean/#{UrlForThreePackages}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_choosen_drugs_for_rezept_print
+    def test_choosen_drugs_for_prescription_print
       @session = ODDB::Session.new('key', @app, @validator)
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}'")
+      @session.instance_eval("@request_path = '/de/gcc/print/prescription/ean/#{UrlForThreePackages}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}?'")
+      @session.instance_eval("@request_path = '/de/gcc/print/prescription/ean/#{UrlForThreePackages}?'")
       assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_choosen_drugs_for_rezept_print_with_slashes
+    def test_choosen_drugs_for_prescription_print_with_slashes
       @session = ODDB::Session.new('key', @app, @validator)
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages.gsub(',','/')}'")
+      @session.instance_eval("@request_path = '/de/gcc/print/prescription/ean/#{UrlForThreePackages.gsub(',','/')}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    ZsrAndEAN = "/de/gcc/print/rezept/zsr_J039019/ean/#{UrlForThreePackages.gsub(',','/')}"
+    ZsrAndEAN = "/de/gcc/print/prescription/zsr_J039019/ean/#{UrlForThreePackages.gsub(',','/')}"
     def test_zsr_id
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
       assert_equal('J039019', @session.zsr_id)
     end
-    def test_choosen_drugs_for_rezept_print_with_zsr
+    def test_choosen_drugs_for_prescription_print_with_zsr
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
@@ -264,8 +264,8 @@ module ODDB
     def test_create_search_url_without_zsr_id
       {
         'create_search_url(:home_interactions, nil)' => 'http://www.oddb.org/de/gcc/home_interactions',
-        'create_search_url(:rezept)'                      => 'http://www.oddb.org/de/gcc/rezept',
-        'create_search_url()'                             => 'http://www.oddb.org/de/gcc/rezept',
+        'create_search_url(:prescription)'                      => 'http://www.oddb.org/de/gcc/prescription',
+        'create_search_url()'                             => 'http://www.oddb.org/de/gcc/prescription',
         'create_search_url(:home_interactions, [7680576730049,7680193950301] )' =>
             'http://www.oddb.org/de/gcc/home_interactions/7680576730049/7680193950301'
         }.each {
@@ -277,14 +277,14 @@ module ODDB
     end
     def test_create_search_url_with_zsr_id
       {
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
-        'create_search_url(:rezept, ["7680495260320"] )' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680495260320',
-        'create_search_url(:rezept, [7680516801112,7680576730063] )' =>
-            'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
+        'create_search_url(:prescription)' =>
+          'http://www.oddb.org/de/gcc/prescription/zsr_P123456',
+        'create_search_url(:prescription)' =>
+          'http://www.oddb.org/de/gcc/prescription/zsr_P123456',
+        'create_search_url(:prescription, ["7680495260320"] )' =>
+          'http://www.oddb.org/de/gcc/prescription/zsr_P123456/ean/7680495260320',
+        'create_search_url(:prescription, [7680516801112,7680576730063] )' =>
+            'http://www.oddb.org/de/gcc/prescription/zsr_P123456/ean/7680516801112/7680576730063',
         }.each {
           |cmd, url|
         @session = ODDB::Session.new('key', @app, @validator)
@@ -295,8 +295,8 @@ module ODDB
     end
     def test_create_search_url_with_choosen_drugs
       {
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
+        'create_search_url(:prescription)' =>
+          'http://www.oddb.org/de/gcc/prescription/zsr_P123456/ean/7680516801112/7680576730063',
         }.each {
           |cmd, url|
         drugs = {'7680516801112' => 'package_drugs',

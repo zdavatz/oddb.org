@@ -10,7 +10,7 @@ describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
 
-  def add_one_drug_to_rezept(name)
+  def add_one_drug_to_prescription(name)
     idx = -2
     chooser = @browser.text_field(:id, 'prescription_searchbar')
     0.upto(5).each{ 
@@ -103,7 +103,7 @@ describe "ch.oddb.org" do
     sleep(1)
   end
   def checkGeneralInfo(nrMedis=0)
-    if @browser.url.index('/print/rezept/')
+    if @browser.url.index('/print/prescription/')
       inhalt = @browser.text
       inhalt.should_not match QrCodeError
       [FirstName, FamilyName, Birthday, " m\n"].each {
@@ -159,10 +159,10 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis[0])
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     set_zsr_of_doctor('P006309')
     setGeneralInfo(nrMedisToCheck)
-    add_one_drug_to_rezept(Four_Medis[1])
+    add_one_drug_to_prescription(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck+1)
     @browser.text.should match /Dr. med. Werner Meier/
     oldWindowsSize = @browser.windows.size
@@ -181,9 +181,9 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     @browser.link(:id => /delete/i).click
-    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_prescription(Four_Medis[0])
     setGeneralInfo(1)
     set_zsr_of_doctor('J 0390.19')
     @browser.text.should match /Dr. med. Ursula Davatz/
@@ -203,7 +203,7 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     setGeneralInfo(1) 
     @browser.element(:text, 'FI').click
     oldWindowsSize = @browser.windows.size
@@ -214,12 +214,12 @@ describe "ch.oddb.org" do
     @browser.link(:text, /Drucken/i).click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
-    @browser.url.should_not match /^rezept/i
+    @browser.url.should_not match /^prescription/i
     @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
   end
 
   it 'should not throw a an error with a problematic combination of drugs' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516801112,7680576730063?')
+    @browser.goto(OddbUrl + '/de/gcc/prescription/ean/7680516801112,7680576730063?')
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
@@ -241,10 +241,10 @@ describe "ch.oddb.org" do
   end
 
   it "should contain remarks or interaction header only when present" do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
-    add_one_drug_to_rezept('Aspirin')
-    add_one_drug_to_rezept('Inderal')
-    add_one_drug_to_rezept('Marcoumar')
+    @browser.goto(OddbUrl + '/de/gcc/prescription/ean/')
+    add_one_drug_to_prescription('Aspirin')
+    add_one_drug_to_prescription('Inderal')
+    add_one_drug_to_prescription('Marcoumar')
 
     # add two remarks
     setGeneralInfo(2)
@@ -264,7 +264,7 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     setGeneralInfo(1)
     @browser.element(:text, 'FI').click
     oldWindowsSize = @browser.windows.size
@@ -275,7 +275,7 @@ describe "ch.oddb.org" do
     @browser.link(:text, /Drucken/i).click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
-    @browser.url.should_not match /^rezept/i
+    @browser.url.should_not match /^prescription/i
     @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
   end
 
@@ -284,10 +284,10 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     setGeneralInfo(1)
-    add_one_drug_to_rezept(Four_Medis[1])
-    add_one_drug_to_rezept(Four_Medis[2])
+    add_one_drug_to_prescription(Four_Medis[1])
+    add_one_drug_to_prescription(Four_Medis[2])
     1.upto(4).each { |j|  @browser.back }
     @browser.url.chomp('/').should == OddbUrl
   end
@@ -297,10 +297,10 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     setGeneralInfo(1)
     checkGeneralInfo(1)
-    add_one_drug_to_rezept(Four_Medis[1])
+    add_one_drug_to_prescription(Four_Medis[1])
     checkGeneralInfo(1)
   end
 
@@ -309,9 +309,9 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     1.upto(3) { |idx|
-        add_one_drug_to_rezept(Four_Medis[idx])
+        add_one_drug_to_prescription(Four_Medis[idx])
         url1 = @browser.url
     }
     inhalt = @browser.text
@@ -328,9 +328,9 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(medis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    @browser.link(:href, /prescription/).click
     1.upto(3) { |idx|
-        add_one_drug_to_rezept(medis[idx])
+        add_one_drug_to_prescription(medis[idx])
         url1 = @browser.url
         sleep(0.5)
         inhalt = @browser.text
@@ -356,8 +356,8 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(TwoMedis.first)
     @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
-    add_one_drug_to_rezept(TwoMedis.last)
+    @browser.link(:href, /prescription/).click
+    add_one_drug_to_prescription(TwoMedis.last)
     url1 = @browser.url
     sleep(0.5)
     inhalt = @browser.text
@@ -416,16 +416,16 @@ describe "ch.oddb.org" do
     startTime = Time.now
     nrDrugs = 10
     nrRemarks = 2
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
-    Four_Medis.each{ |medi| add_one_drug_to_rezept(medi) }
+    @browser.goto(OddbUrl + '/de/gcc/prescription/ean/')
+    Four_Medis.each{ |medi| add_one_drug_to_prescription(medi) }
     # add two remarks
     setGeneralInfo(nrRemarks)
-    add_one_drug_to_rezept('Pulmex')
-    add_one_drug_to_rezept('Actemra')
-    add_one_drug_to_rezept('Dostinex')
-    add_one_drug_to_rezept('Yondelis')
-    add_one_drug_to_rezept('Bactrim')
-    add_one_drug_to_rezept('Badesalz')
+    add_one_drug_to_prescription('Pulmex')
+    add_one_drug_to_prescription('Actemra')
+    add_one_drug_to_prescription('Dostinex')
+    add_one_drug_to_prescription('Yondelis')
+    add_one_drug_to_prescription('Bactrim')
+    add_one_drug_to_prescription('Badesalz')
 
     showElapsedTime(startTime, "Generating a prescription with #{nrDrugs}")
     startTime = Time.now

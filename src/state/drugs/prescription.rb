@@ -20,7 +20,7 @@ class PrescriptionCsvExport < State::Drugs::Global
   VIEW = View::Drugs::PrescriptionCsv
 end
 class Prescription < State::Drugs::Global
-  DIRECT_EVENT = :rezept
+  DIRECT_EVENT = :prescription
   VIEW = View::Drugs::Prescription
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
@@ -36,7 +36,7 @@ class Prescription < State::Drugs::Global
     end
     self.http_headers = {
       'Status'   => '303 See Other',
-      'Location' => @session.lookandfeel._event_url(:rezept, [])
+      'Location' => @session.lookandfeel._event_url(:prescription, [])
     }
     self
   end

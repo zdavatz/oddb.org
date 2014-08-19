@@ -59,7 +59,7 @@ module InstantSearchBarMethods
     drugs = drugs.keys.join(',') if drugs
     ean13 = @session.persistent_user_input(:ean)
     if /prescription/i.match(target.to_s)
-      url = @lookandfeel._event_url(:rezept , [:ean, drugs  ? drugs: [] ].flatten)
+      url = @lookandfeel._event_url(:prescription , [:ean, drugs  ? drugs: [] ].flatten)
     else
       url = @lookandfeel._event_url(:home_interactions, [drugs ? drugs : [] ].flatten)
     end
@@ -75,7 +75,7 @@ function xhrGet(arg) {
   if(ean13) {
     var id = 'drugs';
     var url = '#{url}';
-    if (url.match(/rezept\\/$/)) { url = url + 'ean/'; }
+    if (url.match(/prescription\\/$/)) { url = url + 'ean/'; }
     if (url.match(/(\\d{13})$/))  url = url + ',' + ean13; else url = url + '/' + ean13;
     replace_element(id, url)
   }
@@ -110,9 +110,9 @@ function selectXhrRequest() {
       var path = window.location.href;
       xhrGet(searchbar.value);
       searchbar.value = '';
-      var found = path.match(/home_interactions|rezept\\/ean/);
+      var found = path.match(/home_interactions|prescription\\/ean/);
       if(found && ean13) {
-        if (path.match(/(home_interactions|rezept\\/ean)$/)) (path = path + '/');
+        if (path.match(/(home_interactions|prescription\\/ean)$/)) (path = path + '/');
         get_to(path + ',' + ean13);
       }
     } else console.log("selectXhrRequest cannot find enough information");

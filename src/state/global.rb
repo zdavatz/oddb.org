@@ -207,7 +207,7 @@ module ODDB
           :paypal_thanks          => State::User::PayPalThanks,
           :price_history          => State::Drugs::PriceHistory,
           :recent_registrations   => State::Drugs::RecentRegs,
-          :rezept                 => State::Drugs::Prescription,
+          :prescription           => State::Drugs::Prescription,
           :sequences              => State::Drugs::Sequences,
           :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,
@@ -232,7 +232,7 @@ module ODDB
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
-          [ :rezept ]                                                         => State::Drugs::Prescription,
+          [ :prescription ]                                                   => State::Drugs::Prescription,
           [ :zsr ]                                                            => State::Zsr,
         }	
         READONLY_STATES = RESOLVE_STATES.dup.update({
@@ -243,7 +243,7 @@ module ODDB
         PRINT_STATES = {
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
           [ :patinfo ]                            => State::Drugs::PatinfoPrint,
-          [ :rezept ]                             => State::Drugs::PrescriptionPrint,
+          [ :prescription ]                       => State::Drugs::PrescriptionPrint,
         }
         REVERSE_MAP = {}
         VIEW = View::Search
@@ -521,7 +521,7 @@ module ODDB
 			end
       def print
         state = self.search
-        if @session.request_path.index("/print/rezept/")
+        if @session.request_path.index("/print/prescription/")
           State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)
           self
@@ -619,7 +619,7 @@ module ODDB
 					end
 				end
 			end
-      def rezept
+      def prescription
         State::Drugs::Prescription.new(@session, nil)
       end
 

@@ -94,7 +94,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     [3,0] => 'interaction-atc',
   }
   def init
-    @printing_active  = @session.request_path.index("/print/rezept/") != nil
+    @printing_active  = @session.request_path.index("/print/prescription/") != nil
     super
   end
   def fachinfo(model, session=@session)
@@ -173,9 +173,9 @@ class InteractionChooserDrug < HtmlGrid::Composite
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   def init
-    # When being called from rezept we should not display the heading
-    @printing_active  = @session.request_path.index("/print/rezept/") != nil
-    @hide_interaction_headers = @session.request_path.match(/rezept/) != nil
+    # When being called from prescription we should not display the heading
+    @printing_active  = @session.request_path.index("/print/prescription/") != nil
+    @hide_interaction_headers = @session.request_path.match(/prescription/) != nil
     @interactions = ODDB::View::Interactions.get_interactions(model.atc_class.code, @session)
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
@@ -221,7 +221,7 @@ return false;
     end
   end
   def text_info(model, session=@session)
-    @printing_active  = @session.request_path.index("/print/rezept/") != nil
+    @printing_active  = @session.request_path.index("/print/prescription/") != nil
     return nil unless model.atc_class
     list = HtmlGrid::Div.new(model, @session, self)
     list.value = []

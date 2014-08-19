@@ -276,7 +276,7 @@ module ODDB
 			:recent_registrations,
 			:resolve,
 			:result,
-      :rezept, # prescription
+      :prescription,
       :rss,
 			:search,
 			:search_registrations,

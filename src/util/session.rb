@@ -252,7 +252,7 @@ module ODDB
       return id unless m and m[1].index('/zsr_')
       return m[1].split('_').last.gsub(/\/|%2F/, '')
     end
-    def create_search_url(prefix=:rezept, drugs=choosen_drugs)
+    def create_search_url(prefix=:prescription, drugs=choosen_drugs)
       drugs = drugs.keys if drugs.is_a?(Hash)
       lookandfeel._event_url(prefix, [zsr_id ? "zsr_#{zsr_id}" : [] , (drugs and prefix != :home_interactions and drugs.size > 0) ? :ean : [], drugs].flatten).sub(/\/+$/, '')
     end
