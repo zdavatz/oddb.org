@@ -61,6 +61,12 @@ describe "ch.oddb.org" do
  
   def add_one_drug_to_interactions(name)
     @browser.url.should match ('/de/gcc/home_interactions')
+    elem = @browser.element(:id, 'interaction_chooser_searchbar')
+    unless elem and elem.present?
+      createScreenshot(@browser, "_no_searchbar_#{name}_#{__LINE__}")
+      sleep 10
+      exit 3
+    end
     chooser = @browser.text_field(:id, 'interaction_chooser_searchbar')
     value = nil
     0.upto(10).each{ |idx|
