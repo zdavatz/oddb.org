@@ -10,6 +10,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/searchbar'
 require 'htmlgrid/select'
+require 'util/session'
 
 module ODDB
   module View
@@ -115,13 +116,17 @@ return false;
                               :event_url  => 'event_url',
                               :_event_url => '_event_url',
                              )
-        @session   = flexmock('session',
-                              :flavor                => 'gcc',
-                              :lookandfeel           => @lnf,
-				                      :request_path          => 'request_path',
-                              :persistent_user_input => {'key' => 'value'},
-                              :event                 => ''
-                             )
+        @unknown_user = flexmock('unknown_user',
+                                 :valid? => false)
+        @app = flexmock('app',
+                        :unknown_user     => @unknown_user,
+                        :sorted_fachinfos => [],
+                        :sorted_feedbacks => [],
+                        :package_by_ean13 => 'package',)
+        @validator = flexmock('validator',
+                              :reset_errors => 'reset_errors',
+                              :validate     => 'validate')
+        @session = ODDB::Session.new('key', @app, @validator)
         @model     = flexmock('model')
         @inputtext = ODDB::View::PrescriptionDrugSearchBar.new('name', @model, @session, @container)
       end

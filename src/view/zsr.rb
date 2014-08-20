@@ -33,7 +33,7 @@ module ODDB
         field.set_attribute('id', field_id)
         field.value = default_value unless field.value
       end
-    end
+    end 
     class ZsrDetails < HtmlGrid::Composite
       COMPONENTS = {
         [0,0] => :details,

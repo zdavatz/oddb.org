@@ -12,14 +12,26 @@ module ODDB
   module View
   GET_TO_JS = %(
 function get_to(url) {
-  var url2 = url.replace(/(\\d{13})[/,]+(\\d{13})/, '$1,$2').replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
-  if (window.location.href ==  url2) { return; }
+  var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
+  console.log('get_to window.top.location.replace url '+ url + '\\n url2 ' + url2);
+  if (window.location.href == url2 || window.top.location.href == url2) { return; }
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", url2);
   document.body.appendChild(form);
   form.submit();
 }
+
+function get_to_via_top(url) {
+  url = url.replace('//', '/')
+  if (window.location.href == url || window.top.location.href == url) {
+    console.log('searchbar.get_to href nothing to do');
+    return;
+  }
+  console.log('get_to window.top.location.replace url '+ url);
+  window.top.location.replace(url);
+}
+
 )
 
 module SearchBarMethods
@@ -38,6 +50,7 @@ module SearchBarMethods
 var query = this.form.#{name}.value;
 if (query != "#{val}" && query != "") {
   #{progressbar}
+  console.log('query.submit #{val} query is: '+query);
   this.form.submit();
 }
     JS
@@ -55,13 +68,10 @@ module InstantSearchBarMethods
   def xhr_request_init(keyword)
     target = keyword.intern
     id  = "#{target}_searchbar"
-    drugs = @session.choosen_drugs
-    drugs = drugs.keys.join(',') if drugs
-    ean13 = @session.persistent_user_input(:ean)
     if /prescription/i.match(target.to_s)
-      url = @lookandfeel._event_url(:prescription , [:ean, drugs  ? drugs: [] ].flatten)
+      url = @session.create_search_url(:prescription)
     else
-      url = @lookandfeel._event_url(:home_interactions, [drugs ? drugs : [] ].flatten)
+      url = @session.create_search_url(:home_interactions)
     end
     val = @session.lookandfeel.lookup(:add_drug)
     progressbar = ""
@@ -71,13 +81,20 @@ module InstantSearchBarMethods
     @container.additional_javascripts.push <<-EOS
 #{GET_TO_JS}
 function xhrGet(arg) {
-  var ean13 = (arg.match(/^(\\d{13})$/)||[])[1];
+  var new_url = '#{url}';
+  var ean13 = arg.match(/(^\\d{13})/);
+  console.log('xhrGet arg '+ arg + ' ean13 ' + ean13 + ' for new_url ' + new_url);
   if(ean13) {
+    ean13 = ean13[0];
     var id = 'drugs';
-    var url = '#{url}';
-    if (url.match(/prescription\\/$/)) { url = url + 'ean/'; }
-    if (url.match(/(\\d{13})$/))  url = url + ',' + ean13; else url = url + '/' + ean13;
-    replace_element(id, url)
+    if (new_url.match(/\\/(prescription|prescription|zsr_[A-Z]\\d+)$/)) 
+    {
+      new_url = new_url + '/ean/' + ean13; 
+    } else {
+      new_url = new_url + ',' + ean13;
+    }
+    console.log('xhrGet call replace_element id '+ id + ' new_url '+new_url);
+    replace_element(id, new_url)
   }
 }
 function initMatches() {
@@ -99,6 +116,7 @@ function initMatches() {
     if(searchbar.value == '') { searchbar.value = '#{val}'; }
   });
 }
+
 function selectXhrRequest() {
   var popup = dojo.byId('#{target}_searchbar_popup');
   var searchbar = dojo.byId('#{id}');
@@ -106,16 +124,36 @@ function selectXhrRequest() {
     #{progressbar}
     if (searchbar && searchbar.value && window.location.href)
     {
+      console.log('selectXhrRequest: window.location.href ' + window.location.href + ' searchbar: ' + searchbar.value);
       var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
       var path = window.location.href;
-      xhrGet(searchbar.value);
-      searchbar.value = '';
-      var found = path.match(/home_interactions|prescription\\/ean/);
-      if(found && ean13) {
-        if (path.match(/(home_interactions|prescription\\/ean)$/)) (path = path + '/');
-        get_to(path + ',' + ean13);
+      if (path.match(/home_interactions/)) {
+        if (path.match(/\\/$/)) {
+          path = path + ean13;
+        } else if (path.match(/home_interactions$/)) {
+          path = path +  '/' + ean13;
+        } else {
+          path = path +  ',' + ean13;
+        }
+        get_to(path.replace('?/','/') );
+      } else if (path.match(/prescription/))
+      {
+        if (path.match(/ean/) == null) {
+          if (path.match(/\\/$/)) {
+            path = path +  'ean/' + ean13;
+          } else {
+            path = path +  '/ean/' + ean13;
+        }
+        } else { 
+           path = path + ',' + ean13;
+        }
+        searchbar.value = '';
+        get_to(path.replace('?/','/'));
+      } else { // neiter home_interactions nor prescription
+        xhrGet(searchbar.value);
+        searchbar.value = '';
       }
-    } else console.log("selectXhrRequest cannot find enough information");
+    } else console.log('selectXhrRequest cannot find enough information');
   }
 }
 require(['dojo/ready'], function(ready) {
@@ -178,6 +216,7 @@ class SearchBar < HtmlGrid::InputText
 if (#{@name}.value!='#{val}') {
 #{timer}
   var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
+  console.log('SearchBar.submit ' + href);
   if (this.search_type) {
     href += '/search_type/' + this.search_type.value#{param};
   }

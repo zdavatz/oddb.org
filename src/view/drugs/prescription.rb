@@ -74,14 +74,16 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
     div = HtmlGrid::Div.new(model, @session, self)
     div.value = []
     if model
-      div.value << '&nbsp;' + model.name_with_size
+      div.value << '&nbsp;'
+      div.value <<  model.name_with_size
       if price = model.price_public
         div.value << '&nbsp;-&nbsp;'
         div.value << price.to_s
       end
       if company = model.company_name
         div.value << '&nbsp;-&nbsp;'
-        div.value << company +  '&nbsp;'
+        div.value << company
+        div.value << '&nbsp;'
       end
     end
     div
@@ -346,10 +348,10 @@ class PrescriptionForm < View::Form
       'id'     => 'prescription_form',
       'target' => '_blank'
     })
-  url = @session.create_search_url(:prescription)
+    url = @session.create_search_url(:prescription)
   self.onload = "
   require(['dojo/domReady!'], function(){
-    console.log('prescription_form_init.onload url: #{url} href ' + window.location.href + ' top ' + window.top.location.href);
+    console.log('prescription_form_init.onload\\n url: #{url}\\nhref ' + window.location.href + '\\n top ' + window.top.location.href);
     js_goto_url_with_zsr('#{url}');
     prescription_form_init('#{@lookandfeel.lookup(:prescription_comment)}');
 });
@@ -588,6 +590,7 @@ class PrescriptionCsv < HtmlGrid::Component
     :company_name,
   ]
   def init
+    $stdout.puts "PrescriptionCsv"
     super
     @coder = HTMLEntities.new
   end
@@ -595,6 +598,7 @@ class PrescriptionCsv < HtmlGrid::Component
     prescription_for = []
     %w[first_name family_name birth_day].each do |attr|
       prescription_for << user_input(attr)
+      $stdout.puts "http_headers has #{attr} with user_input(attr) #{user_input(attr)}"
     end
     name = @lookandfeel.lookup(:prescription).dup + '_'
     name ||= '_'
@@ -614,13 +618,10 @@ class PrescriptionCsv < HtmlGrid::Component
     insert_blank
     @lines << date
     insert_blank
-    if drugs = @session.choosen_drugs
-      @packages = drugs.values.unshift(model)
-    else
-      @packages = [model]
-    end
+    drugs = @session.choosen_drugs
+    $stdout.puts "to_csv #{@session.request_path} drugs are #{drugs}"
     # by packages
-    @packages.each_with_index do |pack, index|
+    drugs.each do |pack, index|
       @index = index.to_s
       @lines << extract(pack)
       insert_blank

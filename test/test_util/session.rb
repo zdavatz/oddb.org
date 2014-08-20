@@ -255,6 +255,18 @@ module ODDB
                   "7680591310012"=>"package_drugs",}
       assert_equal(expected, @session.choosen_drugs)
     end
+    def test_handle_gracefully_malformed_url_1
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = 'de/gcc/prescription/zsr_J039019/zsr_/ean/7680591310011'")
+      assert_equal({'7680591310011' => 'package'}, @session.choosen_drugs)
+      assert_equal('J039019', @session.zsr_id)
+    end
+    def test_handle_gracefully_malformed_url_2
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = 'de/gcc/prescription/zsr_J039019%2f'")
+      assert_equal({}, @session.choosen_drugs)
+      assert_equal('J039019', @session.zsr_id)
+    end
     def test_choosen_drugs_nothing_found
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/home_interactions'")
@@ -304,7 +316,7 @@ module ODDB
                  }
         @session = ODDB::Session.new('key', @app, @validator)
         @session.set_persistent_user_input(:zsr_id, 'P123456')
-        @session.set_persistent_user_input(:drugs, drugs)
+        @session.set_persistent_user_input(:drugs, drugs) 
         res = @session.instance_eval(cmd)
         assert_equal(url,res)
       }

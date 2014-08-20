@@ -246,11 +246,16 @@ module ODDB
       drugs
     end
     def zsr_id
+      verified_id = nil
       id = cookie_set_or_get(:zsr_id) || @persistent_user_input[:zsr_id]
-      @persistent_user_input[:zsr_id] = id ? id.gsub(/[ \.]/, '') : id
-      m = ZsrAndEAN_Regexp.match(request_path)
-      return id unless m and m[1].index('/zsr_')
-      return m[1].split('_').last.gsub(/\/|%2F/, '')
+      if m = /\/zsr_([a-z][\d]+|)/i.match((request_path))
+        verified_id = m[1] if m[1].length == 7
+      end
+      if not verified_id and m = /([a-z][\d]+)/i.match(id)
+        verified_id =  m[1] if m[1].length == 7
+      end
+      @persistent_user_input[:zsr_id] = verified_id
+      verified_id
     end
     def create_search_url(prefix=:prescription, drugs=choosen_drugs)
       drugs = drugs.keys if drugs.is_a?(Hash)

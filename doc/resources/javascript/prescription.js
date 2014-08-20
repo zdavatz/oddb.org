@@ -211,16 +211,45 @@ function js_restore_prescription_sex() {
   }
 }
 
-function js_goto_url_with_zsr(url, old_zsr) {
+function get_to(url) {
+  console.log('prescription.get_to href ' + window.location.href + ' top ' + window.top.location.href );
+  if (window.location.href == url || window.top.location.href == url) {
+    console.log('prescription.get_to href nothing to do');
+    return;
+  }
+  var form = document.createElement("form");
+  form.setAttribute("method", "GET");
+  form.setAttribute("action", url);
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function validate_zsr_id(zsr_id) {
+  var id = zsr_id.replace(/[ .]/g,'');
+  if (id.length != 7)
+    return false;
+  else 
+    return id;  
+}
+function js_goto_url_with_zsr(url) {
   try {
-    var zsr_id = getValueOfDomElement('prescription_zsr_id');
-    if (zsr_id == '') { return ''; }
-    var saved_value =  sessionStorage.getItem('prescription_zsr_id', '');
-    var new_url = url;
-    if (old_zsr != '') { new_url = url.replace(/zsr_([A-Z]\d+(\/|))/, ''); }
-    new_url = new_url.replace('prescription', 'prescription/zsr_'+zsr_id.replace(' ', '').replace('.',''))
-    if (url != new_url) {
-      window.top.location.replace(new_url );
+    var zsr_id = js_get_zsr_id();
+    if (zsr_id) {
+      var actual = window.location.href.replace(/\/\?/,'');
+      var saved_value =  sessionStorage.getItem('prescription_zsr_id', '');
+      var url2 =   url.replace(/zsr_([A-Z]\d+(\/|))/, '');
+      url2 = url2.replace('prescription', 'prescription/zsr_'+zsr_id).replace(/ \./, '');
+      var new_url = url2.replace(/\/$/,'')
+      if (actual != new_url && actual != new_url + '?' ) {
+        console.log('js_goto_url_with_zsr: replace url ' + actual + ' new_url ' + new_url);
+        get_to(new_url); // this is not defined here!
+        // window.top.location.replace(new_url);
+      } else {
+        console.log('js_goto_url_with_zsr: url ' + actual + ' == new_url ' + new_url);
+      }
+    } else {
+      console.log('js_goto_url_with_zsr: no zsr_id ');
+      return '';       
     }
   }
   catch(err) {
@@ -229,14 +258,17 @@ function js_goto_url_with_zsr(url, old_zsr) {
 }
 
 function js_save_zsr_id() {
-  var zsr_id = getValueOfDomElement('zsr_id').replace(' ', '').replace('.','');
-  console.log('js_save_zsr_id: ' + zsr_id);
-  sessionStorage.setItem('prescription_zsr_id', zsr_id);
+  var zsr_id = getValueOfDomElement('zsr_id');
+  if (zsr_id = validate_zsr_id(zsr_id)) {
+    console.log('js_save_zsr_id: ' + zsr_id);
+    sessionStorage.setItem('prescription_zsr_id', zsr_id);
+  }
 }
 
 function js_get_zsr_id() {
-  var zsr_id = sessionStorage.getItem('prescription_zsr_id', '');
+  var zsr_id =  validate_zsr_id(sessionStorage.getItem('prescription_zsr_id', ''));
   console.log('js_get_zsr_id: ' + zsr_id);
+  return zsr_id;
 }
 
 function js_delete_ean_of_index(url, index) {
@@ -253,7 +285,9 @@ function js_delete_ean_of_index(url, index) {
         sessionStorage. removeItem(cur_id);
       }
     }
-    window.top.location.replace(url);
+    console.log ('js_delete_ean_of_index index ' + url);
+    get_to(url);
+    // window.top.location.replace(url);
   }
   catch(err) {
     console.log('js_delete_ean_of_index: catched error: ' + err);
