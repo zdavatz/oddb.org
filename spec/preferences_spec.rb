@@ -9,13 +9,10 @@ describe "ch.oddb.org" do
     login
   end
 
-  before :each do
+  after :all do
+    @browser.close
   end
 
-  def set_zsr_of_doctor(zsr_id)
-    @browser.text_field(:name => 'zsr_id').set zsr_id
-    @browser.send_keys :enter
-  end
   it "should save zsr in preferences" do
     @browser.link(:name=>'preferences').click
     @browser.text.should match /Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert./
@@ -24,7 +21,7 @@ describe "ch.oddb.org" do
     @browser.radio(:id, "st_substance").set
     @browser.button(:value,"Speichern").click
     @browser.text.should match /ZSR/i
-    set_zsr_of_doctor('J 0390.19')
+    set_zsr_of_doctor('J 0390.19', 'Davatz', 'zsr_id')
     @browser.text.should match /Davatz/
 
     # logout and verify that the cookies help to persist

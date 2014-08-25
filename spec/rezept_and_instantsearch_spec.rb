@@ -6,9 +6,6 @@ require 'pp'
 require 'tmpdir'
 require "selenium-webdriver"
 
-BreakIntoPry = true
-require 'pry' if BreakIntoPry
-
 describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
@@ -52,7 +49,7 @@ describe "ch.oddb.org" do
                     }
     chooser.set(chooser.value + "\n")
     createScreenshot(@browser, "_#{name}_#{__LINE__}")
-    puts "\nFailed to add_one_drug_to_prescription #{name}:  #{@browser.url}" unless @browser.text.match(/#{name}/i)
+    puts "\nFailed to add_one_drug_to_rezept #{name}:  #{@browser.url}" unless @browser.text.match(/#{name}/i)
     unless /#{name}/i.match(@browser.text)
 #      binding.pry if BreakIntoPry
     end
@@ -82,6 +79,10 @@ describe "ch.oddb.org" do
   after :each do
     createScreenshot(@browser, '_'+$prescription_test_id.to_s) if @browser
     $prescription_test_id += 1
+  end
+
+  after :all do
+    @browser.close
   end
 
   def getTextFieldInAsafeWay(field_name)
@@ -121,20 +122,15 @@ describe "ch.oddb.org" do
       getTextFieldInAsafeWay(field_name).value.should eql genComment(Four_Medis[idx])
     }
   end
-  def set_zsr_of_doctor(zsr_id)
+
+  def set_zsr_of_doctor(zsr_id, name =nil)
     @browser.text_field(:name => 'prescription_zsr_id').set zsr_id
     @browser.send_keys :tab
     @browser.text_field(:name => 'prescription_zsr_id').click
     sleep(1)
     corrected = zsr_id.gsub(/[ \.]/, '');
-    puts "zsr_id #{zsr_id} corrected #{corrected}"
-    return
-    unless /#{corrected}/.match( @browser.url)
-          binding.pry if BreakIntoPry
-    end
-
-    @browser.url.should match /#{corrected}/
   end
+
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
       inhalt = @browser.text
@@ -190,17 +186,28 @@ describe "ch.oddb.org" do
     sleep(1)
   end
 
-if true
+  def clickDeleteAll
+    @browser.element(:text,  "Alle löschen").click
+  end
+
+  def clickSearch
+    @browser.button(:name, "search").click
+  end
+
+  def clickRezeptErstellen
+    @browser.link(:href, /rezept/).click
+  end
+
   it "should possible to add first medicament by trademark search, then using instant" do
     nrMedisToCheck = 1
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis[0])
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
-    set_zsr_of_doctor('P006309')
+    clickSearch
+    clickRezeptErstellen
+    set_zsr_of_doctor('P006309', 'Meier')
     setGeneralInfo(nrMedisToCheck)
-    add_one_drug_to_prescription(Four_Medis[1])
+    add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck)
     @browser.text.should match /Dr. med. Werner Meier/
     oldWindowsSize = @browser.windows.size
@@ -213,21 +220,22 @@ if true
     @browser.text.should match /EAN 7601000223449/i
     checkGeneralInfo(nrMedisToCheck)
   end
+
   it "after a delete_all it must be possible to add drugs" do
     nrMedisToCheck = 1
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis[0])
-    @browser.button(:name, "search").click
-    @browser.link(:href, /prescription/).click
-    set_zsr_of_doctor('P006309')
+    clickSearch
+    clickRezeptErstellen
+    set_zsr_of_doctor('P006309', 'Meier')
     setGeneralInfo(nrMedisToCheck)
-    add_one_drug_to_prescription(Four_Medis[1])
+    add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck )
     @browser.text.should match /Dr. med. Werner Meier/
     @browser.link(:id => /delete/i).click
     checkGeneralInfo(0)
-    add_one_drug_to_prescription(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[0])
     checkGeneralInfo(0)
     @browser.text.should match /Dr. med. Werner Meier/
   end
@@ -236,14 +244,16 @@ if true
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     @browser.link(:id => /delete/i).click
     add_one_drug_to_rezept(Four_Medis[0])
     setGeneralInfo(1)
-    set_zsr_of_doctor('J 0390.19')
+    set_zsr_of_doctor('J 0390.19', 'Davatz')
+    oldText = @browser.text
+    res = oldText.match(/Dr. med. Ursula Davatz/)
     @browser.text.should match /Dr. med. Ursula Davatz/
-    set_zsr_of_doctor('P006309')
+    set_zsr_of_doctor('P006309', 'Meier')
     @browser.text.should match /Dr. med. Werner Meier/
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
@@ -257,10 +267,8 @@ if true
 
   it 'should not throw a an error with a problematic combination of drugs' do
     @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516801112,7680576730063?')
-    @browser.button(:name, "delete").click # clean comments
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516801112,7680576730063?')
     oldWindowsSize = @browser.windows.size
-    @browser.button(:name, "delete").click
+    clickDeleteAll
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
@@ -303,8 +311,8 @@ if true
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     setGeneralInfo(1)
     @browser.element(:text, 'FI').click
     oldWindowsSize = @browser.windows.size
@@ -323,8 +331,8 @@ if true
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     setGeneralInfo(1)
     add_one_drug_to_rezept(Four_Medis[1])
     add_one_drug_to_rezept(Four_Medis[2])
@@ -336,8 +344,8 @@ if true
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     setGeneralInfo(1)
     checkGeneralInfo(1)
     add_one_drug_to_rezept(Four_Medis[1])
@@ -348,8 +356,8 @@ if true
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     1.upto(3) { |idx|
         add_one_drug_to_rezept(Four_Medis[idx])
         url1 = @browser.url
@@ -367,8 +375,8 @@ if true
     medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(medis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     1.upto(3) { |idx|
         add_one_drug_to_rezept(medis[idx])
         url1 = @browser.url
@@ -395,8 +403,8 @@ if true
     startTime = Time.now
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(TwoMedis.first)
-    @browser.button(:name, "search").click
-    @browser.link(:href, /rezept/).click
+    clickSearch
+    clickRezeptErstellen
     add_one_drug_to_rezept(TwoMedis.last)
     url1 = @browser.url
     sleep(0.5)
@@ -412,7 +420,7 @@ if true
     inhalt.should_not match(/#{TwoMedis.first}/i) # was deleted
     inhalt.should     match(/#{TwoMedis.last}/i)
     url2.match(RegExpTwoMedis).should be nil
-    url2.match(RegExpOneMedi).should be nil
+    url2.match(RegExpOneMedi).should_not be nil
     endTime = Time.now
     diff = endTime - startTime
     if ARGV.size > 0 and File.basename(ARGV[0]).eql?(File.basename(__FILE__))
@@ -482,5 +490,4 @@ if true
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
     checkGeneralInfo(nrRemarks)
   end
-end
 end

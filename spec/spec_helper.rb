@@ -3,6 +3,9 @@
 require 'simplecov'
 SimpleCov.start
 
+BreakIntoPry = true
+require 'pry' if BreakIntoPry
+
 if RUBY_PLATFORM.match(/mingw/)
   require 'watir'
   browsers2test = [ :ie ]
@@ -24,7 +27,7 @@ ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
 
 Browser2test = browsers2test
-RegExpTwoMedis = /\/\d{13},\d{13}(\?|)$/
+RegExpTwoMedis = /\/\d{13}[,\/]\d{13}(\?|)$/
 RegExpOneMedi  = /\/\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 
@@ -85,5 +88,23 @@ def createScreenshot(browser, added=nil)
   name = "#{name}#{added}.png"
   browser.screenshot.save (name)
   puts "createScreenshot: #{name} done" if $VERBOSE
+end
+
+def set_zsr_of_doctor(zsr_id, name = 'Davatz', field_name = 'prescription_zsr_id')
+  corrected = zsr_id.gsub(/[ \.]/, '');
+  zsr_field = @browser.text_field(:name => field_name)
+  zsr_field.set zsr_id
+  zsr_field.send_keys :enter
+  startTime = Time.now
+  while (Time.now - startTime) < 30
+    fieldOkay =  zsr_field.value == corrected
+    foundName = @browser.text.index(name)
+    if (fieldOkay or zsr_field.value == zsr_id) and foundName
+      break
+    end
+    # $stderr.puts "val #{zsr_field.value} #{Time.now - startTime} cond #{fieldOkay} foundName #{foundName.inspect}"
+    zsr_field.send_keys :enter if fieldOkay
+    sleep(1)
+  end
 end
 
