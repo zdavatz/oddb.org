@@ -251,21 +251,22 @@ module ODDB
     end
     def test_result_list_components
       expected = {
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
+        [0,0]   =>  :limitation_text,
+        [1,0]   =>  :prescription,
+				[2,0]		=>  :fachinfo,
+				[3,0]		=>	:patinfo,
+				[4,0]		=>	:narcotic,
+				[5,0]		=>	:complementary_type,
+				[6,0,0]	=>	'result_item_start',
+				[6,0,1]	=>	:name_base,
+				[6,0,2]	=>	'result_item_end',
+				[7,0]		=>	:galenic_form,
+				[8,0]		=>	:most_precise_dose,
+				[9,0]		=>	:comparable_size,
+				[10,0]		=>	:price_exfactory,
+				[11,0]	=>	:price_public,
+				[12,0]	=>	:deductible,
+				[13,0]	=>	:substances,
 			}
 
       assert_equal(expected, @look.result_list_components)
@@ -286,16 +287,16 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-        [0, 0] => :fachinfo,
-        [1, 0] => :patinfo,
-        [2, 0] => :name_base,
-        [3, 0] => :company_name,
-        [4, 0] => :comparable_size,
-        [5, 0] => :compositions,
-        [6, 0] => :price_public,
-        [7, 0] => :price_difference,
-        [8, 0] => :deductible,
-        [9, 0] => :ikscat
+        [0, 0] => :prescription,
+        [2, 0] => :fachinfo,
+        [3, 0] => :patinfo,
+        [4, 0] => :company_name,
+        [5, 0] => :comparable_size,
+        [6, 0] => :compositions,
+        [7, 0] => :price_public,
+        [8, 0] => :price_difference,
+        [9, 0] => :deductible,
+        [10, 0] => :ikscat
       }
       assert_equal(expected, @look.compare_list_components)
     end
