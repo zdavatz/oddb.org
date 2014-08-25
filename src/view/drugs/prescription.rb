@@ -303,7 +303,7 @@ class PrescriptionForm < View::Form
   private 
   def init
     first_idx  = [0,6]
-    second_idx = [0,8]
+    second_idx = [0,10]
     @components = {
       [0,0]  => :prescription_for,
       [0,1]  => View::Drugs::PrescriptionDrugDiv,
@@ -332,11 +332,11 @@ class PrescriptionForm < View::Form
       [0,15] => 3,
     }
     if @session.zsr_id
-      @components[first_idx]  = View::ZsrDetails
-      @components[second_idx]=   'prescription_signature'
-      @css_map[first_idx]     = ''
-      @css_map[second_idx]   = 'bold'
-      @colspan_map[first_idx] = 3
+      @components[first_idx]   = 'prescription_signature'
+      @components[second_idx ] = View::ZsrDetails
+      @css_map[first_idx]      = 'bold'
+      @css_map[second_idx]     = ''
+      @colspan_map[first_idx]  = 3
       @colspan_map[second_idx] = 3
     else
       @components[first_idx]  =  'prescription_signature'
@@ -456,9 +456,9 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,7] => :prescription_title,
     [0,8] => :document,
     [0,9] => '&nbsp;',
-    [0,10] => '<BR><BR>', # two empty lines for the signature
-    [0,11] => View::ZsrDetails,
-    [0,12] => 'prescription_signature',
+    [0,10] => :prescription_signature,
+    [0,11] => '<BR><BR><BR><BR>', # four empty lines for the signature
+    [0,12] => View::ZsrDetails,
   }
   CSS_MAP = {
     [0,0] => 'print-type',
@@ -470,10 +470,10 @@ class PrescriptionPrintComposite < HtmlGrid::DivComposite
     [0,6] => 'print',
     [0,7] => 'print',
     [0,8] => 'print',
-    [0,9] => 'print',
-    [0,10] => 'print',
+    [0,1] => 'print',
+    [0,10] => 'bold',
     [0,11] => 'print',
-    [0,12] => 'print-big',
+    [0,12] => 'print',
   }
   def init
     @drugs = @session.choosen_drugs
@@ -519,6 +519,12 @@ self.onload = %(require(["dojo/domReady!"], function(){
     span.set_attribute('class', 'bold')
     fields << span
     fields
+  end
+  def prescription_signature(model, session=@session)
+    span = HtmlGrid::Span.new(model, session=@session)
+    span.value = @lookandfeel.lookup(:prescription_signature)
+    span.set_attribute('class', 'bold')
+    span
   end
   def prescription_title(model, session=@session)
     "#{@lookandfeel.lookup(:date)}:&nbsp;#{Date.today.strftime("%d.%m.%Y")}"
