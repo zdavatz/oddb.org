@@ -288,6 +288,8 @@ class PrescriptionForm < View::Form
 
     buttons << print
     buttons << '&nbsp;'
+    @drugs = @session.choosen_drugs
+    @session.set_persistent_user_input(:export_drugs, @drugs)
     buttons << post_event_button(:export_csv)
     buttons << '&nbsp;'
     buttons
@@ -596,7 +598,6 @@ class PrescriptionCsv < HtmlGrid::Component
     :company_name,
   ]
   def init
-    $stdout.puts "PrescriptionCsv"
     super
     @coder = HTMLEntities.new
   end
@@ -604,7 +605,6 @@ class PrescriptionCsv < HtmlGrid::Component
     prescription_for = []
     %w[first_name family_name birth_day].each do |attr|
       prescription_for << user_input(attr)
-      $stdout.puts "http_headers has #{attr} with user_input(attr) #{user_input(attr)}"
     end
     name = @lookandfeel.lookup(:prescription).dup + '_'
     name ||= '_'
@@ -624,18 +624,17 @@ class PrescriptionCsv < HtmlGrid::Component
     insert_blank
     @lines << date
     insert_blank
-    drugs = @session.choosen_drugs
-    $stdout.puts "to_csv #{@session.request_path} drugs are #{drugs}"
-    # by packages
-    drugs.each do |pack, index|
-      @index = index.to_s
-      @lines << extract(pack)
+    drugs = @session.persistent_user_input(:export_drugs)
+    @index = 0
+    drugs.each do |ean13, package|
+      @lines << extract(package)
       insert_blank
       if comment = comment_value
         insert_blank
         @lines << comment
       end
       insert_blank
+      @index += 1
     end
     @lines.pop
     csv = ''
