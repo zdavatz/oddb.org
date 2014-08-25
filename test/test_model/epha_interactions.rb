@@ -45,4 +45,4 @@ module ODDB
       assert_equal expected, @epha_interaction.search_text
     end
   end
-end
+end if false

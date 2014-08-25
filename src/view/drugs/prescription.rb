@@ -167,7 +167,6 @@ class PrescriptionDrugDiv < HtmlGrid::Div
     @drugs = @session.choosen_drugs
     super # must come first or it will overwrite @value
     @value = []
-    ODDB::View::Interactions.calculate_atc_codes(@drugs)
     if @drugs and !@drugs.empty?
       @drugs.each{ |ean, drug|
         @value << PrescriptionDrug.new(drug, @session, self)

@@ -19,66 +19,6 @@ require 'view/chapter'
 module ODDB
   module View
     module Interactions
-    # see http://matrix.epha.ch/#/56751,61537,39053,59256
-    Ratings = {  'A' => 'Keine Massnahmen erforderlich',
-                  'B' => 'Vorsichtsmassnahmen empfohlen',
-                  'C' => 'Regelmässige Überwachung',
-                  'D' => 'Kombination vermeiden',
-                  'X' => 'Kontraindiziert',
-              }
-    # using the same color like https://raw.githubusercontent.com/zdavatz/AmiKo-Windows/master/css/interactions_css.css
-    Colors =  {  'A' => '#caff70',
-                 'B' => '#ffec8b',
-                 'C' => '#ffb90f',
-                 'D' => '#ff82ab',
-                 'X' => '#ff6a6a',
-                 }
-    @@atc_codes ||=[]
-    
-  def self.calculate_atc_codes(drugs)
-      atc_codes = []
-      ean13s    = []
-      if drugs and !drugs.empty?
-        drugs.each{ |ean, drug|
-          atc_codes << drug.atc_class.code if drug and drug.atc_class
-          ean13s << ean
-        }
-      end
-      @@ean13s    = ean13s
-      @@atc_codes = atc_codes
-    end
-    def self.atc_codes(session)
-      @@atc_codes
-    end
-    def self.get_interactions(my_atc_code, session, atc_codes=@@atc_codes)
-      results = []
-      idx=atc_codes.index(my_atc_code)
-      atc_codes[0..-1].combination(2).to_a.each {
-        |combination|
-        [ session.app.get_epha_interaction(combination[0], combination[1]),
-          session.app.get_epha_interaction(combination[1], combination[0]),
-        ].each{ 
-                |interaction|
-          next unless interaction
-          next unless interaction.atc_code_self.eql?(my_atc_code)
-          header = ''
-          header += interaction.atc_code_self  + ': ' + interaction.atc_name + ' => '
-          header += interaction.atc_code_other + ': ' + interaction.name_other
-          header += ' ' + interaction.info
-          text = ''
-          text += interaction.severity + ': ' + Ratings[interaction.severity]
-          text += '<br>' + interaction.action
-          text += '<br>' + interaction.measures + '<br>'
-              
-          results << { :header => header,
-                      :severity => interaction.severity,
-                    :color => Colors[interaction.severity],
-                    :text => text
-                    }
-        }
-      }
-      results.uniq.sort_by { |item| item[:severity] + item[:header]  }.reverse
-    end    
 class InteractionChooserDrugHeader < HtmlGrid::Composite
   include View::AdditionalInformation
   COMPONENTS = {
@@ -176,10 +116,10 @@ class InteractionChooserDrug < HtmlGrid::Composite
     # When being called from rezept we should not display the heading
     @printing_active  = @session.request_path.index("/print/rezept/") != nil
     @hide_interaction_headers = @session.request_path.match(/rezept/) != nil
-    @interactions = ODDB::View::Interactions.get_interactions(model.atc_class.code, @session)
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
     @drugs = @session.choosen_drugs
+    @interactions = ODDB::EphaInteractions.get_interactions(model.atc_class.code, @drugs)
     if @model.is_a? ODDB::Package
       nextRow = 0
       unless @hide_interaction_headers
@@ -235,7 +175,7 @@ return false;
       span.set_attribute('class', 'print bold italic')
       list.value << span
     end
-    ODDB::View::Interactions.get_interactions(model.atc_class.code, @session).each {
+    ODDB::EphaInteractions.get_interactions(model.atc_class.code, @session.choosen_drugs).each {
       |interaction|
       headerDiv = HtmlGrid::Div.new(model, @session, self)
       headerDiv.value = []
@@ -267,7 +207,6 @@ class InteractionChooserDrugList < HtmlGrid::List
     @drugs = session.choosen_drugs
     super # must come first or it will overwrite @value
     @value = []
-    ODDB::View::Interactions.calculate_atc_codes(@drugs)
     if @drugs and !@drugs.empty?
       @drugs.each{ |ean, drug|
         @value << InteractionChooserDrug.new(drug, @session, self)
@@ -336,7 +275,7 @@ class ExplainInteractionCodes < HtmlGrid::List
   OMIT_HEADER = true
   def init
     @entity = @model
-    @model = Ratings.keys
+    @model = ODDB::EphaInteractions::Ratings.keys
     super
     self.set_attribute('id', 'interaction_codes')
     self.set_attribute('style', 'display: none;')
@@ -344,8 +283,8 @@ class ExplainInteractionCodes < HtmlGrid::List
 
   def interaction_codes(model)
     txt = HtmlGrid::Div.new(model, @session, self)
-    txt.value =  model + ': ' + Ratings[model]
-    txt.set_attribute('style', "background-color: #{Colors[model]};")
+    txt.value =  model + ': ' + ODDB::EphaInteractions::Ratings[model]
+    txt.set_attribute('style', "background-color: #{ODDB::EphaInteractions::Colors[model]};")
     txt
   end
 

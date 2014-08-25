@@ -113,14 +113,6 @@ module ODDB
       end
       def odba_isolated_store
       end
-      def create_epha_interaction(atc_code_self, atc_code_other)
-        epha_interaction = ODDB::EphaInteraction.new
-        mock = FlexMock.new(epha_interaction)
-        @epha_interactions ||= []
-        @epha_interactions << mock
-        mock.should_receive(:odba_store)
-        epha_interaction
-      end
       def delete_all_epha_interactions
       end
       def update(pointer, values, reason = nil)

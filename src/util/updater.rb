@@ -12,7 +12,6 @@ require 'plugin/doctors'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
-require 'plugin/epha_interactions'
 require 'plugin/hospitals'
 require 'plugin/lppv'
 require 'plugin/medwin'
@@ -268,7 +267,6 @@ module ODDB
       # export_oddb2tdat_with_migel
       export_ouwerkerk
       export_generics_xls
-      update_epha_interactions
       export_competition_xlss
     end
     def update_comarketing
@@ -331,9 +329,6 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                            "Patienteninfo '#{companies.join(', ')}'",
                            :import_company, [companies, nil, :pi]
-    end
-    def update_epha_interactions
-      update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
     end
     def update_medical_products(opts)
       @options = opts
@@ -409,7 +404,6 @@ module ODDB
 			# update_trade_status # replaced by swissINDEX
       update_package_trade_status_by_swissindex
       update_comarketing
-      update_epha_interactions      
 			update_swissreg_news
       update_lppv
       update_medwin_companies

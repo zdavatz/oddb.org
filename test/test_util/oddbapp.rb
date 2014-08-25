@@ -72,6 +72,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		ODBA.storage = nil
     super
 	end
+  if false
   def test_create_minifi
     minifi = flexmock('minifi') do |mfi|
       mfi.should_receive(:oid)
@@ -218,9 +219,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_analysis_count
     assert_equal(0, @app.analysis_count)
   end
-  def test_epha_interaction_count
-    assert_equal(0, @app.epha_interaction_count)
-  end
   def test_hospital_count
     assert_equal(0, @app.hospital_count)
   end
@@ -350,12 +348,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
       klass.should_receive(:new).and_return(command)
     end
     assert_equal(nil, @app.merge_substances(source, target))
-  end
-  def test_delete_all_epha_interactions
-    @app.create_epha_interaction('atc_code_self', 'atc_code_other')
-    assert_equal(1,  @app.epha_interactions.size)
-    @app.delete_all_epha_interactions
-    assert_equal(0,  @app.epha_interactions.size)
   end
   def test_delete_fachinfo
     @app.fachinfos = {'oid' => 'fachinfo'}
@@ -540,9 +532,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
   def test_hospital
     assert_equal(nil, @app.hospital('ean13'))
-  end
-  def test_get_epha_interaction
-    assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
   def test_each_atc_class
     assert_equal(Enumerator, @app.each_atc_class.class)
@@ -827,9 +816,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
     #assert_equal(expected, @app.search_exact_substance('query'))
     assert(same?(expected, @app.search_exact_substance('query')))
   end
-  def test_search_epha_interactions
-    assert_equal([], @app.search_epha_interactions('key'))
-  end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))
   end
@@ -1063,15 +1049,49 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal('update', @app.set_all_export_flag_sequence(true))
   end
   def test_package_by_ean13
-    registration_1234567890 = flexmock('registration_1234567890') do |reg|
+    drug_2 = flexmock('drug_2') do |reg|
       reg.should_receive(:package).and_return('package_1234567890')
     end
-    registration_12345 = flexmock('registration_12345') do |reg|
+    drug_1 = flexmock('drug_1') do |reg|
       reg.should_receive(:package).and_return('package_12345')
     end
-    @app.registrations = {  '12345' => registration_12345,
-                          '1234567890' => registration_1234567890,}
+    @app.registrations = {  '12345' => drug_1,
+                          '1234567890' => drug_2,}
     assert_equal('package_12345',   @app.package_by_ean13('7680123456789'))
     assert_equal('package_1234567890', @app.package_by_ean13('7612345678900'))
   end
+end
+  def test_epha_interaction_count
+    assert(@app.epha_interaction_count > 1000)
+  end
+
+  def test_get_epha_interaction
+    assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
+  end
+  
+  def test_epha_interaction
+    code_0 = ODDB::EphaInteractions.get.first[0][0]
+    code_1 = ODDB::EphaInteractions.get.first[0][1]
+    atc_class_0 = flexmock('atc_class_0') do |reg|
+      reg.should_receive(:code).and_return(code_0)
+    end
+    atc_class_1 = flexmock('atc_class_1') do |reg|
+      reg.should_receive(:code).and_return(code_1)
+    end
+
+    drug_0 = flexmock('drug_0') do |reg|
+      reg.should_receive(:package).and_return('pack_drug_0')
+      reg.should_receive(:atc_class).and_return(atc_class_0)
+    end
+    drug_1 = flexmock('drug_1') do |reg|
+      reg.should_receive(:package).and_return('pack_drug_1')
+      reg.should_receive(:atc_class).and_return(atc_class_1)
+    end
+    @app.registrations = {  '1111' => drug_0, '2222' => drug_1,}
+    drugs              = {  '1111' => drug_0, '2222' => drug_1,}      
+    res_0 = ODDB::EphaInteractions.get_interactions(code_1, drugs)
+    assert_equal(1, res_0.size)
+    assert(@app.get_epha_interaction(code_0, code_1))
+  end
+
 end
