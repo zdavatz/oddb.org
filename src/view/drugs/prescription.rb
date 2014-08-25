@@ -3,7 +3,7 @@
 # ODDB::View::Drugs::Prescription -- oddb.org -- 28.08.2012 -- yasaka@ywesee.com
 # before commit 83d798fb133f10008dd95f2b73ebc3e11c118b16 of 2014-10-14 we had a view which 
 # allowed entering a lot of details (before, during, after meals, repetitions, etc)
-# Test it with http://oddb-ci2.dyndns.org/de/gcc/prescription/ean/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
+# Test it with http://oddb-ci2.dyndns.org/de/gcc/rezept/ean/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
 #
 # The javascript function (js_<x>) are found under doc/resources/javascript/prescription.js
 
@@ -267,7 +267,7 @@ class PrescriptionForm < View::Form
     zsr_id = @session.zsr_id
     input.value = zsr_id
     Helpers.saveFieldValueForLaterUse(input, :prescription_zsr_id, '')
-    url = @session.create_search_url(:prescription)
+    url = @session.create_search_url(:rezept)
     js =  "require(['dojo/domReady!'], function(){ js_goto_url_with_zsr('#{url}');});"
     input.onclick = js
     input.set_attribute('onload', js)
@@ -281,7 +281,7 @@ class PrescriptionForm < View::Form
     print = post_event_button(:print)
     drugs = @session.choosen_drugs
     zsr_id = @session.zsr_id
-    elements = zsr_id ? [ :prescription, ('zsr_'+zsr_id).to_sym ] : [ :prescription]
+    elements = zsr_id ? [ :rezept, ('zsr_'+zsr_id).to_sym ] : [ :rezept]
     elements += [:ean, drugs.keys].flatten
     new_url = @lookandfeel._event_url(:print, elements)
     print.onclick = "window.open('#{new_url}');"
@@ -295,7 +295,7 @@ class PrescriptionForm < View::Form
   def delete_all(model, session=@session)
     @drugs = @session.choosen_drugs
     delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
-    delete_all_link.href  = @lookandfeel._event_url(:prescription, [:ean] )
+    delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
     delete_all_link.onclick = "require(['dojo/domReady!'], function(){ js_clear_session_storage();});"
     delete_all_link
@@ -348,7 +348,7 @@ class PrescriptionForm < View::Form
       'id'     => 'prescription_form',
       'target' => '_blank'
     })
-    url = @session.create_search_url(:prescription)
+    url = @session.create_search_url(:rezept)
   self.onload = "
   require(['dojo/domReady!'], function(){
     console.log('prescription_form_init.onload\\n url: #{url}\\nhref ' + window.location.href + '\\n top ' + window.top.location.href);
@@ -547,7 +547,7 @@ class PrescriptionPrint < View:: PrintTemplate
     span = HtmlGrid::Span.new(model, session, self)
     drugs = @session.choosen_drugs
     span.value = @lookandfeel.lookup(:print_of) +
-      @lookandfeel._event_url(:print, [:prescription, :ean, drugs  ? drugs.keys : [] ].flatten)
+      @lookandfeel._event_url(:print, [:rezept, :ean, drugs  ? drugs.keys : [] ].flatten)
     span
   end
 end

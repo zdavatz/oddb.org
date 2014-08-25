@@ -257,7 +257,7 @@ module ODDB
       @persistent_user_input[:zsr_id] = verified_id
       verified_id
     end
-    def create_search_url(prefix=:prescription, drugs=choosen_drugs)
+    def create_search_url(prefix=:rezept, drugs=choosen_drugs)
       drugs = drugs.keys if drugs.is_a?(Hash)
       lookandfeel._event_url(prefix, [zsr_id ? "zsr_#{zsr_id}" : [] , (drugs and prefix != :home_interactions and drugs.size > 0) ? :ean : [], drugs].flatten).sub(/\/+$/, '')
     end

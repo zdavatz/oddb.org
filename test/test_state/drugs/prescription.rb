@@ -36,7 +36,7 @@ class TestPrescription <Minitest::Test
   include FlexMock::TestCase
   def setup
     @session = StubPrescriptionSession.new
-    @session.event = :prescription
+    @session.event = :rezept
     package      = flexmock('package', :class => Package)
     @session.app = flexmock('app', :package_by_ikskey => package)
     @model = flexmock('model', :pointer => 'pointer')

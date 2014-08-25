@@ -238,7 +238,7 @@ function js_goto_url_with_zsr(url) {
       var actual = window.location.href.replace(/\/\?/,'');
       var saved_value =  sessionStorage.getItem('prescription_zsr_id', '');
       var url2 =   url.replace(/zsr_([A-Z]\d+(\/|))/, '');
-      url2 = url2.replace('prescription', 'prescription/zsr_'+zsr_id).replace(/ \./, '');
+      url2 = url2.replace('rezept', 'rezept/zsr_'+zsr_id).replace(/ \./, '');
       var new_url = url2.replace(/\/$/,'')
       if (actual != new_url && actual != new_url + '?' ) {
         console.log('js_goto_url_with_zsr: replace url ' + actual + ' new_url ' + new_url);

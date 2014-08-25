@@ -158,6 +158,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
       inhalt.should match(/B01AA04: Phenprocoumon => N02BA01: Acetylsalicylsäure Erhöhtes Blutungsrisiko/)
     end
   }
+
   it "should show work without a trailing slash after home_interactions" do
     url = "#{OddbUrl}/de/gcc/home_interactions"
     @browser.goto url
@@ -302,6 +303,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     @browser.text.should match (test_medi)
     @browser.url.should_not match ('/,')
   end
+
   after :all do
     @browser.close
   end

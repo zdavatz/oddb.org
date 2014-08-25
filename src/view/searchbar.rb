@@ -69,7 +69,7 @@ module InstantSearchBarMethods
     target = keyword.intern
     id  = "#{target}_searchbar"
     if /prescription/i.match(target.to_s)
-      url = @session.create_search_url(:prescription)
+      url = @session.create_search_url(:rezept)
     else
       url = @session.create_search_url(:home_interactions)
     end
@@ -87,7 +87,7 @@ function xhrGet(arg) {
   if(ean13) {
     ean13 = ean13[0];
     var id = 'drugs';
-    if (new_url.match(/\\/(prescription|prescription|zsr_[A-Z]\\d+)$/)) 
+    if (new_url.match(/\\/(prescription|rezept|zsr_[A-Z]\\d+)$/)) 
     {
       new_url = new_url + '/ean/' + ean13; 
     } else {
@@ -136,7 +136,7 @@ function selectXhrRequest() {
           path = path +  ',' + ean13;
         }
         get_to(path.replace('?/','/') );
-      } else if (path.match(/prescription/))
+      } else if (path.match(/rezept/))
       {
         if (path.match(/ean/) == null) {
           if (path.match(/\\/$/)) {
@@ -149,7 +149,7 @@ function selectXhrRequest() {
         }
         searchbar.value = '';
         get_to(path.replace('?/','/'));
-      } else { // neiter home_interactions nor prescription
+      } else { // neiter home_interactions nor rezept
         xhrGet(searchbar.value);
         searchbar.value = '';
       }
