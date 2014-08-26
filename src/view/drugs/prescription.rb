@@ -120,7 +120,7 @@ class PrescriptionDrug < HtmlGrid::Composite
   }
   CSS_MAP = {
     [0,0] => 'subheading',
-    [0,1] => 'list',
+    [0,1] => '',
     [0,2] => 'top',
   }
   COMPONENT_CSS_MAP = {
@@ -185,6 +185,9 @@ class PrescriptionDrugSearchForm < HtmlGrid::Composite # see View::Drugs::Center
   FORM_METHOD = 'POST'
   COMPONENTS = {
     [0,0] => :searchbar,
+  }
+  CSS_MAP = {
+    [0,1] => 'tr',
   }
   SYMBOL_MAP = {
     :searchbar => View::PrescriptionDrugSearchBar,
@@ -308,28 +311,28 @@ class PrescriptionForm < View::Form
     @components = {
       [0,0]  => :prescription_for,
       [0,1]  => View::Drugs::PrescriptionDrugDiv,
-      [0,2]  => View::Drugs::PrescriptionDrugSearchForm,
-      [0,4]  => :prescription_zsr_id,
-      [0,13,0] => :buttons,
-      [0,13,1] => :delete_all,
-      [0,14] => 'prescription_notes',
+      [0,3]  => View::Drugs::PrescriptionDrugSearchForm,
+      [0,5]  => :prescription_zsr_id,
+      [0,14,0] => :buttons,
+      [0,14,1] => :delete_all,
+      [0,15] => 'prescription_notes',
     }
     @css_map = {
       [0,0]  => 'th bold',
       [0,1]  => '',
-      [0,2]  => '',
-      [0,4]  => 'bold',
-      [0,13,0] => 'button',
-      [0,13,1] => 'button',
-      [0,14] => 'bold',
+      [0,3]  => '',
+      [0,5]  => 'bold',
+      [0,14,0] => 'button',
+      [0,14,1] => 'button',
+      [0,15] => 'bold',
     }
     @colspan_map = {
       [0,0]  => 3,
       [0,1]  => 3,
-      [0,2]  => 3,
-      [0,4]  => 3,
-      [0,13,0] => 3,
-      [0,13,1] => 3,
+      [0,3]  => 3,
+      [0,5]  => 3,
+      [0,14,0] => 3,
+      [0,14,1] => 3,
       [0,15] => 3,
     }
     if @session.zsr_id
