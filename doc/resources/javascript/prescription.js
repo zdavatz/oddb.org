@@ -157,6 +157,7 @@ function prescription_form_init(comment_id) {
 }
 
 function js_clear_session_storage() {
+  console.log('js_clear_session_storage');
   try {
     for (index = 0; index < 99; ++index) {
       sessionStorage.removeItem("prescription_comment_" + index);
@@ -225,6 +226,7 @@ function get_to(url) {
 }
 
 function validate_zsr_id(zsr_id) {
+  if (zsr_id == null || zsr_id == undefined) { return false; }
   var id = zsr_id.replace(/[ .]/g,'');
   if (id.length != 7)
     return false;
@@ -242,6 +244,10 @@ function js_goto_url_with_zsr(url) {
       var new_url = url2.replace(/\/$/,'')
       if (actual != new_url && actual != new_url + '?' ) {
         console.log('js_goto_url_with_zsr: replace url ' + actual + ' new_url ' + new_url);
+        // Does it contain an ean13 or is it an interaction which may contain an iksnr or atcode
+        if ( ! new_url.match(/\d{13}|home_interactions/) ) {
+          js_clear_session_storage();
+        }
         get_to(new_url); // this is not defined here!
         // window.top.location.replace(new_url);
       } else {

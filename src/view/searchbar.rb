@@ -12,7 +12,7 @@ module ODDB
   module View
   GET_TO_JS = %(
 function get_to(url) {
-  var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
+  var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',').replace('ean,', 'ean/').replace(/\\?$/, '');
   console.log('get_to window.top.location.replace url '+ url + '\\n url2 ' + url2);
   if (window.location.href == url2 || window.top.location.href == url2) { return; }
   var form = document.createElement("form");
@@ -70,6 +70,8 @@ module InstantSearchBarMethods
     id  = "#{target}_searchbar"
     if /prescription/i.match(target.to_s)
       url = @session.create_search_url(:rezept)
+    elsif
+      url = @session.create_search_url(:fachinfo_search)
     else
       url = @session.create_search_url(:home_interactions)
     end
@@ -136,7 +138,7 @@ function selectXhrRequest() {
           path = path +  ',' + ean13;
         }
         get_to(path.replace('?/','/') );
-      } else if (path.match(/rezept/))
+      } else if (path.match(/fachinfo_search|rezept/))
       {
         if (path.match(/ean/) == null) {
           if (path.match(/\\/$/)) {
@@ -149,7 +151,7 @@ function selectXhrRequest() {
         }
         searchbar.value = '';
         get_to(path.replace('?/','/'));
-      } else { // neiter home_interactions nor rezept
+      } else { // neiter home_interactions, fachinfo_search nor rezept
         xhrGet(searchbar.value);
         searchbar.value = '';
       }

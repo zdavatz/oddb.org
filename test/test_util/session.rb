@@ -321,5 +321,31 @@ module ODDB
         assert_equal(url,res)
       }
     end
+    def test_create_search_url_no_zsr_idwith_choosen_drugs
+      {
+        'create_search_url(:rezept)' =>
+          'http://www.oddb.org/de/gcc/rezept/ean/7680516801112',
+        }.each {
+          |cmd, url|
+        drugs = {'7680516801112' => 'package_drugs'}
+        @session = ODDB::Session.new('key', @app, @validator)
+        @session.set_persistent_user_input(:zsr_id, nil)
+        @session.set_persistent_user_input(:drugs, drugs)
+        res = @session.instance_eval(cmd)
+        assert_equal(url, res)
+      }
+    end
+    def test_create_fachinfo_earch_url_with_choosen_drugs
+      {
+        'create_search_url(:fachinfo_search)' => 'http://www.oddb.org/de/gcc/fachinfo_search/ean/7680516801112',
+        }.each {
+          |cmd, url|
+        drugs = {'7680516801112' => 'package_drugs'}
+        @session = ODDB::Session.new('key', @app, @validator)
+        @session.set_persistent_user_input(:drugs, drugs)
+        res = @session.instance_eval(cmd)
+        assert_equal(url,res)
+      }
+    end
   end
 end # ODDB

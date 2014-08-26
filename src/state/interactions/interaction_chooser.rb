@@ -21,9 +21,9 @@ class InteractionChooser < State::Interactions::Global
 
   def  handle_drug_changes(drugs, msg)
     path = @session.request_path
-    @session.set_persistent_user_input(:drugs, drugs)
     first = true
     eans = []
+    @session.set_persistent_user_input(:drugs, drugs)
     drugs.each{|ean, pack| eans << pack.barcode }
     @session.lookandfeel._event_url(:home_interactions, [eans])
   end

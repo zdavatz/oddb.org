@@ -9,6 +9,7 @@ require "selenium-webdriver"
 describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
+  DrMeier     = /Dr. med. Werner Meier/
 
   def add_one_drug_to_rezept(name)
     idx = -2
@@ -198,6 +199,85 @@ describe "ch.oddb.org" do
     @browser.link(:href, /rezept/).click
   end
 
+  it 'should be possible to add drugs after delete_all when neither ZSR nor comment given' do
+    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    # @browser.text.should_not match DrMeier
+    nrMedisToCheck = 0
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+    oldWindowsSize = @browser.windows.size
+    clickDeleteAll
+    @browser.text.should_not match Four_Medis[0]
+    @browser.text.should_not match Four_Medis[1]
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+  end
+
+  it 'should be possible to add drugs after delete_all when ZSR is given but no comment' do
+    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    @browser.text.should_not match DrMeier
+    nrMedisToCheck = 0
+    set_zsr_of_doctor('P006309', 'Meier')
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+    oldWindowsSize = @browser.windows.size
+    clickDeleteAll
+    @browser.text.should_not match Four_Medis[0]
+    @browser.text.should_not match Four_Medis[1]
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+    @browser.text.should match DrMeier
+  end
+
+  it 'should be possible to add drugs after delete_all when no ZSR is given but a comment' do
+    @browser.goto(OddbUrl + '/de/gcc/rezept')
+#    @browser.text.should_not match DrMeier
+    nrMedisToCheck = 0
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+    setGeneralInfo(nrMedisToCheck)
+    checkGeneralInfo(nrMedisToCheck)
+    oldWindowsSize = @browser.windows.size
+    clickDeleteAll
+    @browser.text.should_not match Four_Medis[0]
+    @browser.text.should_not match Four_Medis[1]
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+  end
+
+  it 'should be possible to add drugs after delete_all when ZSR and comment given' do
+    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    nrMedisToCheck = 1
+#    @browser.text.should_not match DrMeier
+    add_one_drug_to_rezept(Four_Medis[0])
+    add_one_drug_to_rezept(Four_Medis[1])
+    set_zsr_of_doctor('P006309', 'Meier')
+    setGeneralInfo(nrMedisToCheck)
+    checkGeneralInfo(nrMedisToCheck)
+    oldWindowsSize = @browser.windows.size
+    clickDeleteAll
+    @browser.text.should_not match Four_Medis[0]
+    @browser.text.should_not match Four_Medis[1]
+    add_one_drug_to_rezept(Four_Medis[0])
+    setGeneralInfo(nrMedisToCheck)
+    add_one_drug_to_rezept(Four_Medis[1])
+    checkGeneralInfo(nrMedisToCheck)
+    @browser.text.should match Four_Medis[0]
+    @browser.text.should match Four_Medis[1]
+  end
+
   it "should possible to add first medicament by trademark search, then using instant" do
     nrMedisToCheck = 1
     @browser.goto OddbUrl
@@ -209,13 +289,13 @@ describe "ch.oddb.org" do
     setGeneralInfo(nrMedisToCheck)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck)
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
     @browser.text.should match /ZSR P006309/i
     @browser.text.should match /EAN 7601000223449/i
     checkGeneralInfo(nrMedisToCheck)
@@ -232,12 +312,12 @@ describe "ch.oddb.org" do
     setGeneralInfo(nrMedisToCheck)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck )
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
     @browser.link(:id => /delete/i).click
     checkGeneralInfo(0)
     add_one_drug_to_rezept(Four_Medis[0])
     checkGeneralInfo(0)
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
   end
 
   it "should print a correct prescription with comments, personal information, doctor info and a drug" do
@@ -254,13 +334,13 @@ describe "ch.oddb.org" do
     res = oldText.match(/Dr. med. Ursula Davatz/)
     @browser.text.should match /Dr. med. Ursula Davatz/
     set_zsr_of_doctor('P006309', 'Meier')
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
-    @browser.text.should match /Dr. med. Werner Meier/
+    @browser.text.should match DrMeier
     @browser.text.should match /ZSR P006309/i
     @browser.text.should match /EAN 7601000223449/i
   end
