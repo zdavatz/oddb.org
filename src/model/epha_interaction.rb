@@ -35,7 +35,7 @@ module ODDB
         target.save_as @csv_file_path
         $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: #{File.expand_path(@csv_file_path)} ?  #{File.exists?(@csv_file_path)}"
       end
-      if File.exist?(@csv_file_path)
+      if File.exists?(@csv_file_path)
         @lineno = 0
         first_line = nil
         File.readlines(@csv_file_path).each do |line|
@@ -61,6 +61,7 @@ module ODDB
           EphaInteractions.get[ [epha_interaction.atc_code_self, epha_interaction.atc_code_other  ]] = epha_interaction
         end
         $stdout.puts "#{Time.now}: Added #{EphaInteractions.get.size} interaction from #{@csv_file_path}"; $stdout.flush
+        return unless File.exists?(@csv_file_path)
         FileUtils.mv(@csv_file_path, @csv_file_path.sub(/\.csv$/, '-latest.csv'), :verbose => true) unless defined?(MiniTest)
       end
     end
