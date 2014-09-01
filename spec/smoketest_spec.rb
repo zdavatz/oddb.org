@@ -118,6 +118,22 @@ describe "ch.oddb.org" do
     @browser.windows.last.close
   end
 
+  DownloadDir = File.join(Dir.home, 'Downloads')
+  GlobAllDownloads = File.join(DownloadDir, '*')
+  it "should download the example download" do
+    test_medi = 'Aspirin'
+    puts GlobAllDownloads
+    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    @browser.goto OddbUrl
+    @browser.text_field(:name, "search_query").set(test_medi)
+    @browser.button(:name, "search").click
+    @browser.link(:text, "Beispiel-Download").click
+    @browser.button(:value,"Resultat als CSV Downloaden").click
+    filesAfterDownload =  Dir.glob(GlobAllDownloads)
+    diffFiles = (filesAfterDownload - filesBeforeDownload)
+      diffFiles.size.should == 1
+  end
+
   after :all do
     @browser.close
   end
