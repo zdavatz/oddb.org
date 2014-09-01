@@ -118,11 +118,26 @@ describe "ch.oddb.org" do
     @browser.windows.last.close
   end
 
-  DownloadDir = File.join(Dir.home, 'Downloads')
-  GlobAllDownloads = File.join(DownloadDir, '*')
-  it "should download the example download" do
+  it "should download the results of a search" do
     test_medi = 'Aspirin'
     puts GlobAllDownloads
+    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    @browser.goto OddbUrl
+    login
+    @browser.text_field(:name, "search_query").set(test_medi)
+    @browser.button(:name, "search").click
+    @browser.button(:value,"Resultat als CSV Downloaden").click
+    #// require 'pry'; binding.pry
+    @browser.button(:name => 'proceed_payment').click
+    @browser.button(:name => 'checkout_invoice').click
+    @browser.url.should_not match  /errors/
+    filesAfterDownload =  Dir.glob(GlobAllDownloads)
+    diffFiles = (filesAfterDownload - filesBeforeDownload)
+    diffFiles.size.should == 1
+  end
+
+  it "should download the example" do
+    test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.goto OddbUrl
     @browser.text_field(:name, "search_query").set(test_medi)
@@ -131,8 +146,21 @@ describe "ch.oddb.org" do
     @browser.button(:value,"Resultat als CSV Downloaden").click
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
-      diffFiles.size.should == 1
+    diffFiles.size.should == 1
+    text = IO.read(diffFiles[0])
+    text.should match /EAN-Code/
+    text.should match /Inderal/
+    IO.readlines(diffFiles[0]).size.should > 5
   end
+
+  it "should be possible to subscribe to the mailing list via Services" do
+    @browser.link(:name, 'user').click
+    @browser.text.should match /Mailing-Liste/
+    @browser.link(:name, 'mailinglist').click
+    @browser.text_field(:name, 'email').value = 'ngiger@ywesee.com'
+    @browser.button(:name, 'subscribe').click
+    @browser.button(:name, 'unsubscribe').click
+  end if false # Zeno remarked on 2014-09-01 that I should not test the mailing list
 
   after :all do
     @browser.close

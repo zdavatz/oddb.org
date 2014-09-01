@@ -5,6 +5,17 @@ SimpleCov.start
 
 BreakIntoPry = true
 require 'pry' if BreakIntoPry
+for_running_in_irb = %(
+require 'watir'; require 'pp'
+homeUrl ||= "oddb-ci2.dyndns.org"
+OddbUrl = homeUrl
+@browser = Watir::Browser.new(:chrome)
+@browser.goto OddbUrl
+@browser.link(:text=>'Interaktionen').click
+id = 'home_interactions'
+medi = 'Losartan'
+chooser = @browser.text_field(:id, id)
+)
 
 if RUBY_PLATFORM.match(/mingw/)
   require 'watir'
@@ -30,6 +41,8 @@ Browser2test = browsers2test
 RegExpTwoMedis = /\/\d{13}[,\/]\d{13}(\?|)$/
 RegExpOneMedi  = /\/\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
+DownloadDir = File.join(Dir.home, 'Downloads')
+GlobAllDownloads = File.join(DownloadDir, '*')
 
 def login(user = 'ngiger@ywesee.com', password='ng1234', remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
