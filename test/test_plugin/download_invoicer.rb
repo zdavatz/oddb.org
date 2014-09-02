@@ -75,34 +75,34 @@ module ODDB
 		end
     def test_filter_paid
       invoice_item = flexmock('invoice_item', 
-                      :time => Time.local(2011,2,3).to_s,
+                      :time => Time.local(2011,2,3),
                       :type => :csv_export
                      )
       invoice = flexmock('invoice', :items => {'key' => invoice_item})
       flexmock(@app, :invoices => {'key' => invoice})
-      item = flexmock('item', :time => Time.local(2011,3,3).to_s)
+      item = flexmock('item', :time => Time.local(2011,3,3))
       assert_equal([item], @plugin.filter_paid([item]))
     end
     def test_filter_paid__empty
       invoice_item = flexmock('invoice_item', 
-                      :time => Time.local(2011,2,3).to_s,
+                      :time => Time.local(2011,2,3),
                       :type => :csv_export
                      )
       invoice = flexmock('invoice', :items => {'key' => invoice_item})
       flexmock(@app, :invoices => {'key' => invoice})
-      item = flexmock('item', :time => Time.local(2011,2,3).to_s)
+      item = flexmock('item', :time => Time.local(2011,2,3))
       assert_equal([], @plugin.filter_paid([item]))
     end
 
     def test_run
       invoice_item = flexmock('invoice_item', 
-                      :time => Time.local(2011,2,3).to_s,
+                      :time => Time.local(2011,2,3),
                       :type => :csv_export
                      )
       invoice = flexmock('invoice', :items => {'key' => invoice_item})
       flexmock(@app, :invoices => {'key' => invoice})
       item  = flexmock('item', 
-                       :time => Time.local(2011,3,3).to_s,
+                       :time => Time.local(2011,3,3),
                        :yus_name => 'yus_name'
                       )
       slate = flexmock('slate', :items => {'key' => item})

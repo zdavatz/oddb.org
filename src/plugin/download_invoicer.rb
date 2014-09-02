@@ -34,7 +34,7 @@ module ODDB
 			times = []
 			@app.invoices.each_value { |invoice|
 				invoice.items.each_value { |item|
-					if(item.type == :csv_export && range.include?(item.time))
+					if(item.type == :csv_export && range.cover?(item.time))
 						times.push(item.time)
 					end
 				}
