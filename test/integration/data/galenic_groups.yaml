@@ -1,0 +1,259 @@
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: unbekannt
+  en: unbekannt
+  fr: unbekannt
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 2
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Tabletten
+  en: Tablets
+  fr: "Comprim\xC3\xA9s"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 3
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Injektion/Infusion
+  en: Injection/Infusion
+  fr: Injection/Infusion
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 4
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Salben
+  en: Ointments
+  fr: Onguents
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 5
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Augenmittel
+  en: Ophtalmics
+  fr: "Pr\xC3\xA9parations oculaires"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 6
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Inhalation
+  en: Inhalation
+  fr: Inhalation
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 7
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "L\xC3\xB6sbar zur Einnahme"
+  en: Soluble for ingestion
+  fr: Soluble pour ingestion
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 8
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Badezusatz
+  en: Bath additives
+  fr: Bains
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 9
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Essbare
+  en: Edibles
+  fr: "Denr\xC3\xA9es"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 10
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Lutschtabletten
+  en: Lozenges
+  fr: "Comprim\xC3\xA9s \xC3\xA0 succer"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 11
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "Trinkfl\xC3\xBCssigkeiten"
+  en: Drinkable liquids
+  fr: Liquides buvables
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 12
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "Zubeh\xC3\xB6r"
+  en: Other
+  fr: Autres
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 13
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Nasenmittel
+  en: Nasal products
+  fr: "Rem\xC3\xA8des nasales"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 14
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Retard-Tabletten
+  en: Delayed release tablets
+  fr: "Comprim\xC3\xA9s retards"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 15
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Vaginal-Produkte
+  en: Vaginal products
+  fr: Produits Vaginaux
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 16
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Pflaster/Transdermale Systeme
+  en: Patches/Transdermal Systems
+  fr: "Pansements/Syst\xC3\xA8mes transdermales"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 17
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Suppositorien
+  en: Suppositories
+  fr: Suppositoires
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 714576
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Klebstoff
+  en: Adhesive
+  fr: Gluten
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 754487
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Dialyse
+  en: Dialysis
+  fr: Dialyse
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 754720
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Kaugummi
+  en: Chewing Gum
+  fr: Chewing Gum
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 890150
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Brausetabletten
+  en: Solutabs
+  fr: "Comprim\xC3\xA9s Effervescents"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 890432
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Tropfen
+  en: Drops
+  fr: Gouttes
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 890480
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Gastrointenstinales Therapiesystem
+  en: Gastro-Intestinal Therapeutic System
+  fr: "Syst\xC3\xA8me Therapeutique Gastro-Intestinale"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1470567
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Subkutane Implantate
+  en: Hypodermic Implants
+  fr: Implants hypodermiques
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1470796
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Klistiere
+  en: Enemas
+  fr: Lavements
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1471897
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "L\xC3\xB6sbar zur Injektion/Infusion"
+  en: Soluble for injection/infusion
+  fr: Soluble pour injection/infusion
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1471899
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Seifen und Shampoos
+  en: Soaps and Shampoos
+  fr: Savons et Shampoos
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1472699
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Buccal-/Dentalprodukte
+  en: Buccal/dental products
+  fr: Produits buccodentaires
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1472713
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Spray/Puder
+  en: Spray/Powder
+  fr: Spray/Poudre
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1472742
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "Trinkfl\xC3\xBCssigkeiten Retard"
+  en: Delayed release drinkable liquids
+  fr: Liquides buvables retard
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1472921
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Rektal-Produkte
+  en: Rectal Products
+  fr: Produits Rectaux
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1478018
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Tinkturen/Desinfektion
+  en: Tinctures/Disinfection
+  fr: "Teintures/D\xC3\xA9sinfection"
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 1479254
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Tests
+  en: Tests
+  fr: Tests
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 7830083
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "L\xC3\xB6sbar zur Einnahme Retard"
+  en: Delayed releas soluble for ingestion
+  fr: Soluble pour ingestion retard
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 9672801
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: "L\xC3\xB6sungsmittel"
+  en: Solvent
+  fr: Solvant
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 9672817
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Tupfer/Gaze
+  en: Swab/Gauze
+  fr: Compresse/Gaze
+
+--- !oddb.org,2003/ODDB::GalenicGroup 
+oid: 27522045
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  de: Flaschen
+  en: Bottles
+  fr: Bouteilles
+
