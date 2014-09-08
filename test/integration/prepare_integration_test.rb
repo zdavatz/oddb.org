@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require File.expand_path(File.join(File.dirname(__FILE__), 'common.rb'))
+content = IO.readlines(DbDefinition)
+
 FilesToInstall.each {
   |file, destDir|
   if File.exists?(file)
@@ -9,19 +11,21 @@ FilesToInstall.each {
   end
 }
 
-FilesToBackup.each {
-  |file|
-    next unless File.exists?(file)
+require File.expand_path(File.join(File.dirname(__FILE__), 'common.rb'))
+ProductionDirs.each {
+   |dir|
+    file = File.join(TopDir, dir)
     backup = backupName(file)
-    if File.exists?(backup) and FileUtils.compare_file(file, backup)
-      puts "nothing to do for #{file} -> #{backup}"
+    if  File.exists?(backup)
+      puts "Sorry backup #{backup} already exists. Skipping!!"
+      exit 2
     else
-      FileUtils.cp(file, backup, :verbose => true, :preserve => true)
+      FileUtils.mv(file, backup, :verbose => true)
     end
-}
+  }
 
-content = IO.readlines(DbDefinition)
 storageRegExp = /^ODBA.storage.dbi/
+FileUtils.makedirs(File.dirname(DbDefinition), :verbose => true)
 File.open(DbDefinition, 'w+') { 
   |f|
   content.each{

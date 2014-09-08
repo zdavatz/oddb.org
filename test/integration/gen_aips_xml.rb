@@ -2,8 +2,7 @@
 require 'nokogiri'
 require File.expand_path(File.join(File.dirname(__FILE__), 'common.rb'))
 
-topDir = File.expand_path(File.join(__FILE__, '..', '..', '..', '..'))
-aipsDownload = File.join(topDir, 'data', 'xml', 'AipsDownload_latest.xml')
+aipsDownload = File.join(TopDir, 'data', 'xml', 'AipsDownload_latest.xml')
 unless File.exists?(aipsDownload)
   puts "Could not find #{aipsDownload}"
   exit 2 
@@ -28,7 +27,7 @@ puts "Using #{aipsDownload} #{(File.size(aipsDownload)/1024).round} KBytes"
                 }                                        
                 x.remove if to_delete
 }
-ausgabe = File.join(topDir, 'test', 'data', 'integration', 'AipsDownload_latest.xml')
+ausgabe = File.join(TopDir, 'test', 'integration', 'data', 'AipsDownload_latest.xml')
 content = @doc.to_xml.split("\n")
 file = File.open(ausgabe, 'w')
 content.each{ |line| file.puts line unless /^\s*$/.match(line.chomp) }
