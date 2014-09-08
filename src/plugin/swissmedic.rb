@@ -775,6 +775,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       rows.each { |row|
         seqnr = "%02i" % cell(row, column(:seqnr)).to_i
         next if row[0].to_s.eql?('00000')
+        GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
         if seq
@@ -784,6 +785,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           end
         end
         update_package(reg, seq, row, replacements, opts) if reg
+        GC.enable
       }
     end
     def update_sequence(registration, row, opts={:create_only => false})
