@@ -897,7 +897,7 @@ module ODDB
       flexmock(REXML::Document) do |xml|
         xml.should_receive(:parse_stream).and_return('parse_stream')
       end
-      assert_equal('parse_stream', @plugin.update_it_codes('io'))
+      assert_equal('parse_stream', @plugin.update_it_codes(StringIO.new('io')))
     end
     def test_update_preparations
       flexmock(REXML::Document) do |xml|
@@ -909,7 +909,7 @@ module ODDB
       flexmock(ODDB::BsvXmlPlugin::PreparationsListener) do |klass|
         klass.should_receive(:new).and_return(preparations_listener)
       end
-      assert_equal('change_flags', @plugin.update_preparations('io'))
+      assert_equal('change_flags', @plugin.update_preparations(StringIO.new('io')))
     end
   end
 
