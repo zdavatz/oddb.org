@@ -29,6 +29,7 @@ mailing_list_ids:
   - ouwerkerk       # src/plugin/swissmedicjournal.rb and src/plugin/ouwerkerkk.rb
   - password_lost
   - test
+  - test_no_anrede
 
 mail_recipients:
   - :email: ywesee_test@ywesee.com
@@ -63,3 +64,7 @@ mail_recipients:
     :lists:
       - oddb_csv
       - oddb_bsv_info
+
+  - :email: no_anrede@another_company.com
+    :lists:
+      - test_no_anrede

@@ -42,7 +42,8 @@ cmds = [
     "sudo svc -d #{ServiceDir}/ch.oddb*",
     "sudo -u postgres dropdb #{DBTestName}",
     "sudo -u postgres createdb -E UTF8 -T template0 #{DBTestName}",
-    "sudo -u apache psql oddb.org.ruby21x -f #{CreateDictonaryScript}",
+    "sudo -u apache test/integration/loaddb_from_yaml  #{DBTestName}",
+    "sudo -u apache psql #{DBTestName} -f #{CreateDictonaryScript}",
     "sudo -u apache jobs/rebuild_indices",
     "sudo svc -u #{ServiceDir}/ch.oddb*"
 ]
