@@ -361,7 +361,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           }
           mail = Log.new(month)
           mail.report = report
-          mail.recipients = [email]
+          mail.recipients = [email, 'swissmedic']
           mail.notify("Good Änderungen gemäss Swissmedic")
         }
       end
