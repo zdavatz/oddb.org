@@ -176,7 +176,7 @@ module ODDB
       include ChapterMethods
       def to_html(context)
         html = ''
-        GC.disable
+        already_disable = GC.disable
         if @value
           if(@value.respond_to?(:heading) and !@value.heading.empty?)
             html << heading(context)
@@ -192,7 +192,7 @@ module ODDB
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
           end
         end
-        GC.enable
+        GC.enable unless already_disable
         html
       end
     end

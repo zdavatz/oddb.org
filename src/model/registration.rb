@@ -88,11 +88,11 @@ module ODDB
 		end
 		def atc_classes
       if @sequences
-        GC.disable
+        already_disabled = GC.disable
         classes = @sequences.values.collect { |seq|
           seq.atc_class if seq.respond_to?(:atc_class)
         }.compact.uniq
-        GC.enable
+        GC.enable unless already_disabled
         classes
       end
 		end
@@ -230,9 +230,12 @@ module ODDB
 			}
 		end
     def packages
-      @sequences.values.inject([]) { |memo, seq|
+      already_disabled = GC.disable
+      res = @sequences.values.inject([]) { |memo, seq|
         memo.concat(seq.packages.values)
       }
+      GC.enable unless already_disabled
+      res
     end
 		def patent_protected?
 			@patent && @patent.protected?

@@ -312,6 +312,7 @@ module ODDB
         raise
       end
       def tag_end name
+        already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         case name
         when 'Pack'
           if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
@@ -625,6 +626,8 @@ module ODDB
       rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
         raise
+      ensure
+        GC.enable unless already_disabled                
       end
     end
     attr_reader :preparations_listener
