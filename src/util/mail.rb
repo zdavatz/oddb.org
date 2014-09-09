@@ -47,7 +47,7 @@ module ODDB
       anreden = []
       lists = list_id.is_a?(Array) ? list_id : [list_id]
       lists.each{ |list_name|
-        @cfg[MailingRecipients].each { |recipient| anreden << recipient[:anrede] if recipient[:lists].index(list_name) and recipient[:anrede]}
+        @cfg[MailingRecipients].each { |recipient| anreden << recipient[:anrede] if recipient[:lists] and recipient[:lists].index(list_name) and recipient[:anrede]}
       }
       anreden.sort
     end

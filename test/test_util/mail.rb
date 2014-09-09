@@ -47,6 +47,16 @@ module ODDB
       assert_equal(['Dear Mrs. Smith', 'Dear Mr. Jones'].sort, Util.get_mailing_list_anrede(['oddb_csv']))
     end
 
+    def test_mailing_anrede_is_nil
+      # setup is set tot test
+      assert_equal([], Util.get_mailing_list_anrede('test_no_anrede'))
+      res = Util.send_mail(['test_no_anrede'], "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
+      assert(res, "sending of mail to #{'test_no_anrede'} must succeed")
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal(mails_sent.first.to, ['no_anrede@another_company.com'])
+    end
+
     def test_send_to_mailing_list_test_and_another_receiver # same use case as ipn
       res = Util.send_mail(['test', 'somebody@test.org'], "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
       assert(res, "sending of mail to test and another receiver must succeed")
