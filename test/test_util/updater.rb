@@ -373,17 +373,6 @@ module ODDB
         klass.should_receive(:new).and_return(plugin)
       end
     end
-    def test_update_epha_interactions_from_csv_file
-      csv_file =  File.expand_path('../data/csv/epha_interactions_de_utf8.csv', File.dirname(__FILE__))
-      @plugin = ODDB::EphaInteractionPlugin.new(@app)
-      res = @plugin.update(csv_file)
-      assert_equal(1, @app.epha_interactions.size, 'We have 1 line in epha-CSV')
-      assert_equal('N06AB06', @app.epha_interactions.first.atc_code_self )
-      assert_equal('M03BX02', @app.epha_interactions.first.atc_code_other )
-      assert_equal('Keine Interaktion.', @app.epha_interactions.first.effect )
-      assert_equal('A', @app.epha_interactions.first.severity )
-    end
-    
     def test_update_simple  # update_simple is a private method
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:update)
