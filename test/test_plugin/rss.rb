@@ -8,6 +8,7 @@ require 'pathname'
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
+require 'stringio'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
 $: << root.join('test').join('test_plugin')
@@ -108,36 +109,30 @@ REPORT
       host = 'https://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
-			link.should_receive(:open)
-      date = flexmock('Date')
-      node = flexmock('Node')
-      date.should_receive(:text).and_return(today)
-      node.should_receive(:next).and_return(date)
-      link.should_receive(:node).and_return(node)
-      title = flexmock('Title')
-      title.should_receive(:text).and_return('Recall Title')
-      container = flexmock('Container')
-      container.should_receive(:xpath).with(".//h1[@id='contentStart']").and_return(title)
-      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return('Content')
-      page = flexmock('NextPage')
-      page.should_receive(:at).with("div[@id='webInnerContentSmall']").and_return(container)
-      link.should_receive(:click).and_return(page)
       page = flexmock('Page')
       page.should_receive(:links).and_return([link])
-      # dependent
       flexmock(@plugin) do |plug|
-        plug.should_receive(:compose_description).with('Content').and_return('Recall Description')
+fake_html = %(
+<!DOCTYPE html>
+<body class="webBody">
+  <time>#{today}</time>
+  <h1 class="webTitle" id="contentStart">Recall Title</h1>
+  <div id="sprungmarke10_0" class="contentFlex flexTinymce">
+    <div class="webText flexTinymceDiv">Recall Description</div>
+  </div>
+</body>
+)
+        plug.should_receive(:open).with("https://www.example.com/recall/00135/00166/00000/index.html").and_return(StringIO.new(fake_html))
       end
-      skip "Niklaus gets OpenSSL::SSL::SSLError: hostname does not match the server certificat for . Why does mocking not work anymore?"
-      assert_equal(
+      res = @plugin.extract_swissmedic_entry_from(category, page, host)
+      expected =
         [{
-          :date        => Date.parse(today).to_s,
           :title       => 'Recall Title',
+          :date        => Date.parse(today).to_s,
           :description => "Recall Description",
-          :link        => "https://www.example.com/recall/#{Section}/00166/00000/index.html",
-        }],
-        @plugin.extract_swissmedic_entry_from(category, page, host)
-      )
+          :link        => "https://www.example.com/recall/#{Section}/#{category}/00000/index.html",
+        }]
+      assert_equal(expected, res)
     end
     def test_extract_swissmedic_entry_from__with_hpc
       category = '00157'
@@ -145,35 +140,29 @@ REPORT
       host = 'http://www.example.com'
       link = flexmock('Link')
       link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
-      date = flexmock('Date')
-      node = flexmock('Node')
-      date.should_receive(:text).and_return(today)
-      node.should_receive(:next).and_return(date)
-      link.should_receive(:node).and_return(node)
-      title = flexmock('Title')
-      title.should_receive(:text).and_return('HPC Title')
-      container = flexmock('Container')
-      container.should_receive(:xpath).with(".//h1[@id='contentStart']").and_return(title)
-      container.should_receive(:xpath).with(".//div[starts-with(@id, 'sprungmarke')]/div").and_return('Content')
-      page = flexmock('NextPage')
-      page.should_receive(:at).with("div[@id='webInnerContentSmall']").and_return(container)
-      link.should_receive(:click).and_return(page)
       page = flexmock('Page')
       page.should_receive(:links).and_return([link])
-      # dependent
       flexmock(@plugin) do |plug|
-        plug.should_receive(:compose_description).with('Content').and_return('HPC Description')
+fake_html = %(
+<!DOCTYPE html>
+<body class="webBody">
+  <time>#{today}</time>
+  <h1 class="webTitle" id="contentStart">HPC Title</h1>
+  <div id="sprungmarke12_31">
+    <div class="webText flexTinymceDiv">HPC Description</div>
+  </div>
+</body>
+)
+        plug.should_receive(:open).with("http://www.example.com/recall/#{Section}/#{category}/00000/index.html").and_return(StringIO.new(fake_html))
       end
-      skip "Niklaus gets OpenURI::HTTPError: 404 Not Found. Why does mocking not work anymore?"
-      assert_equal(
-        [{
+      res = @plugin.extract_swissmedic_entry_from(category, page, host)
+      expected = [{
           :date        => Date.parse(today).to_s,
           :title       => 'HPC Title',
           :description => "HPC Description",
           :link        => "http://www.example.com/recall/#{Section}/#{category}/00000/index.html",
-        }],
-        @plugin.extract_swissmedic_entry_from(category, page, host)
-      )
+        }]
+      assert_equal(expected, res)
     end
     def test_swissmedic_entries_of__with_unknown_type
       assert_empty(@plugin.swissmedic_entries_of(:invalid_type))
