@@ -45,6 +45,11 @@ module ODDB
           LogFile.append('oddb/debug', " " + e.inspect.to_s + "\n" + e.backtrace.inspect.to_s, Time.now)
         end
       }
+      @parts.each{
+        |part|
+          LogFile.append('oddb/debug', " part " + part.inspect.to_s, Time.now)
+          attachments << { :filename => File.basename(part[1]), :mime_type => part[0], :content => part[2] }
+      }
       if attachments.size > 0
         Util.send_mail_with_attachments(@recipients, subj, @report, attachments)
       else

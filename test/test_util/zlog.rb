@@ -73,7 +73,7 @@ module ODDB
         :recipients => ['log'],
         :pointers =>   ['aPointer'],
         :report =>     "a lengthy report.\n",
-        :files =>      { file =>	'application/vnd.ms-excel' },
+        :files =>      { file => 'application/vnd.ms-excel' },
       }
       @log.update_values(hash)
       @log.notify
@@ -83,6 +83,29 @@ module ODDB
       assert_equal([LOG_RECEIVER], mails_sent.first.to)
       assert_equal(hash[:report], mails_sent.first.body.to_s)
       assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
+    end
+    def test_notify_parts
+      file = File.expand_path('../data/txt/log.txt', File.dirname(__FILE__))
+      File.open(file, 'w+') { |f| f.puts "Dummy content" }
+      hash = {
+        :recipients => ['log'],
+        :pointers =>   ['aPointer'],
+        :report =>     "a lengthy report.\n",
+        :parts  =>     [["text/plain",
+                         "SMeX_SL_Differences__Registrations__10.09.2014.txt",
+                          "SMeX/SL-Differences (Registrations) 10.09.2014  0
+SL hat anderen 5-Stelligen Swissmedic-Code als SMeX
+"]]
+      }
+      @log.update_values(hash)
+      @log.notify
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert_equal([TEST_SENDER], mails_sent.first.from)
+      assert_equal([LOG_RECEIVER], mails_sent.first.to)
+      assert_equal(hash[:report], mails_sent.first.body.to_s)
+      assert_equal('ch.ODDB.org Report - 08/1975', mails_sent.first.subject)
+      assert_equal(1, mails_sent.first.attachments.size)
     end
   end
 end
