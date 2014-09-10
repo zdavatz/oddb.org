@@ -158,6 +158,7 @@ module ODDB
     def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
       begin
         puts_sync "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
+        return unless iksnrs_from_xml
         if iksnrs_from_xml.empty?
           @iksless[:fi].push name
         end
@@ -215,6 +216,7 @@ module ODDB
         puts_sync "update_patinfo #{name} iksnrs_from_xml #{iksnrs_from_xml} empty #{pis.empty?}"
         @corrected_pis ||= []
         patinfo = nil
+        return unless iksnrs_from_xml
         iksnrs_from_xml.each do |iksnr|
           reg = @app.registration(iksnr)
           unless reg
