@@ -47,7 +47,7 @@ Links2Test = [
       @browser.link(:text=>link.name).exists?.should be true
       @browser.link(:text=>link.name).href.should == link.url
     }
-  end
+  end unless ['just-medical'].index(Flavor)
 
   after :all do
     @browser.close

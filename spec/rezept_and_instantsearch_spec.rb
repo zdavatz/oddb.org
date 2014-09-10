@@ -10,8 +10,12 @@ describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
   DrMeier     = /Dr. med. Werner Meier/
+  def rezeptUrl
+    "#{OddbUrl}/de/#{Flavor}/rezept"
+  end
 
   def add_one_drug_to_rezept(name)
+    @browser.url.should match(/#{OddbUrl}/i)
     idx = -2
     chooser = @browser.text_field(:id, 'prescription_searchbar')
     0.upto(5).each{ 
@@ -103,6 +107,7 @@ describe "ch.oddb.org" do
   FamilyName = 'Müller'
   Birthday = '31.12.1990'
   def setGeneralInfo(nrMedis=0)
+    @browser.url.should match(/#{OddbUrl}/i)
     # we often must send tabs or running the test a first time will fail if you have just restarted oddb.org
     unless @browser.radio(:name => "prescription_sex").present?
       binding.pry if BreakIntoPry
@@ -199,8 +204,33 @@ describe "ch.oddb.org" do
     @browser.link(:href, /rezept/).click
   end
 
+  pending 'should not throw a an error with a problematic combination of drugs' do
+    puts "Pending fix for https://github.com/davidshimjs/qrcodejs/issues/26"
+    # see https://github.com/davidshimjs/qrcodejs/issues/26
+    @browser.goto("#{OddbUrl}/de/#{Flavor}/rezept/ean/7680516801112,7680576730063?")
+    oldWindowsSize = @browser.windows.size
+    clickDeleteAll
+    @browser.button(:name, "print").click
+    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    @browser.windows.last.use
+    waitForPrintInfo
+    inhalt = @browser.text
+    inhalt.should_not match QrCodeError
+    inhalt.should_not match /Bemerkungen/
+    inhalt.should     match(/Ausdruck/i)
+    ['Ausdruck',
+     'Stempel, Unterschrift',
+     'Merfen', 'Aspirin',
+     '7680516801112', '7680576730063?',
+     / m$/, # männlich
+    ].each do
+      |name|
+      inhalt.should match(name)
+    end
+  end
+
   it 'should be possible to add drugs after delete_all when neither ZSR nor comment given' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    @browser.goto(rezeptUrl)
     # @browser.text.should_not match DrMeier
     nrMedisToCheck = 0
     add_one_drug_to_rezept(Four_Medis[0])
@@ -218,7 +248,7 @@ describe "ch.oddb.org" do
   end
 
   it 'should be possible to add drugs after delete_all when ZSR is given but no comment' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    @browser.goto(rezeptUrl)
     @browser.text.should_not match DrMeier
     nrMedisToCheck = 0
     set_zsr_of_doctor('P006309', 'Meier')
@@ -238,7 +268,7 @@ describe "ch.oddb.org" do
   end
 
   it 'should be possible to add drugs after delete_all when no ZSR is given but a comment' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    @browser.goto(rezeptUrl)
 #    @browser.text.should_not match DrMeier
     nrMedisToCheck = 0
     add_one_drug_to_rezept(Four_Medis[0])
@@ -258,7 +288,7 @@ describe "ch.oddb.org" do
   end
 
   it 'should be possible to add drugs after delete_all when ZSR and comment given' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept')
+    @browser.goto(rezeptUrl)
     nrMedisToCheck = 1
 #    @browser.text.should_not match DrMeier
     add_one_drug_to_rezept(Four_Medis[0])
@@ -345,31 +375,8 @@ describe "ch.oddb.org" do
     @browser.text.should match /EAN 7601000223449/i
   end
 
-  it 'should not throw a an error with a problematic combination of drugs' do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/7680516801112,7680576730063?')
-    oldWindowsSize = @browser.windows.size
-    clickDeleteAll
-    @browser.button(:name, "print").click
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
-    @browser.windows.last.use
-    waitForPrintInfo
-    inhalt = @browser.text
-    inhalt.should_not match QrCodeError
-    inhalt.should_not match /Bemerkungen/
-    inhalt.should     match(/Ausdruck/i)
-    ['Ausdruck',
-     'Stempel, Unterschrift',
-     'Merfen', 'Aspirin',
-     '7680516801112', '7680576730063?',
-     / m$/, # männlich
-    ].each do
-      |name|
-      inhalt.should match(name)
-    end
-  end
-
   it "should contain remarks or interaction header only when present" do
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
+    @browser.goto("#{OddbUrl}/de/#{Flavor}/rezept/ean")
     add_one_drug_to_rezept('Aspirin')
     add_one_drug_to_rezept('Inderal')
     add_one_drug_to_rezept('Marcoumar')
@@ -544,7 +551,7 @@ describe "ch.oddb.org" do
     startTime = Time.now
     nrDrugs = 10
     nrRemarks = 2
-    @browser.goto(OddbUrl + '/de/gcc/rezept/ean/')
+    @browser.goto(rezeptUrl)
     Four_Medis.each{ |medi| add_one_drug_to_rezept(medi) }
     # add two remarks
     setGeneralInfo(nrRemarks)

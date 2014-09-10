@@ -5,17 +5,6 @@ require 'spec_helper'
 require 'pp'
 
 @workThread = nil
-for_running_in_irb = %(
-require 'watir'; require 'pp'
-homeUrl ||= "oddb-ci2.dyndns.org"
-OddbUrl = homeUrl
-@browser = Watir::Browser.new(:chrome)
-@browser.goto OddbUrl
-@browser.link(:text=>'Interaktionen').click
-id = 'home_interactions'
-medi = 'Losartan'
-chooser = @browser.text_field(:id, id)
-)
 
 DrugDescription = Struct.new(:name, :iksnr, :ean13, :atc_code, :wirkstoff)
 # http://oddb-ci2.dyndns.org/de/gcc/home_interactions/7680583920013,7680591310011,7680390530399,7680586430014
@@ -59,8 +48,12 @@ BlutungsRisiko = 'Erhöhtes.*Blutungsrisiko'
 
 describe "ch.oddb.org" do
  
+  def interactionsUrl
+    "#{OddbUrl}/de/#{Flavor}/home_interactions"
+  end
+
   def add_one_drug_to_interactions(name)
-    @browser.url.should match ('/de/gcc/home_interactions')
+    @browser.url.should match(interactionsUrl)
     elem = @browser.element(:id, 'interaction_chooser_searchbar')
     unless elem and elem.present?
       createScreenshot(@browser, "_no_searchbar_#{name}_#{__LINE__}")
@@ -97,7 +90,7 @@ describe "ch.oddb.org" do
   def check_url_with_epha_example_interaction(url)
     puts "check_url_with_epha_example_interaction #{url}" if $VERBOSE
     @browser.goto url
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match (interactionsUrl)
     inhalt = @browser.text
     MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
     @browser.link(:name => 'delete').click
@@ -127,7 +120,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
 "B01AA04","Phenprocoumon","M01AG01","Mefenaminsäure","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"                           
 )
     medis = [ 'Ponstan', 'Marcoumar']
-    url = "#{OddbUrl}/de/gcc/home_interactions"
+    url = interactionsUrl
     @browser.goto url
     medis.each { | medi| add_one_drug_to_interactions(medi) }
     inhalt = @browser.text
@@ -146,7 +139,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     ]
   orders_to_test.each { |medis|
     it "should show all interactions for #{medis[0]} #{medis[1]} #{medis[2]}" do
-      url = "#{OddbUrl}/de/gcc/home_interactions/"
+      url = interactionsUrl + '/'
       medis.each { | medi| url += drugs_to_ean[medi] + ',' }
       url = url.sub(/,$/,'')
       @browser.goto url
@@ -160,14 +153,14 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   }
 
   it "should show work without a trailing slash after home_interactions" do
-    url = "#{OddbUrl}/de/gcc/home_interactions"
+    url = interactionsUrl
     @browser.goto url
     add_one_drug_to_interactions(TwoMedis.first)
   end
   it "should show be able to use the delete_all" do
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url = interactionsUrl
     @browser.goto url
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(url)
     add_one_drug_to_interactions(TwoMedis.first)
     add_one_drug_to_interactions(TwoMedis.last)
     url = @browser.url
@@ -185,9 +178,9 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     inhalt.should_not match(/#{TwoMedis.last}/i)
   end
   it "should show the correct url after deleting a medicament" do
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url = interactionsUrl
     @browser.goto url
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(url)
     add_one_drug_to_interactions(TwoMedis.first)
     url = @browser.url
     url.match(RegExpTwoMedis).should be nil
@@ -218,18 +211,18 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     inhalt.should_not match(/#{TwoMedis.last}/i)
   end
   it "should should not contain Wechselwirkungen" do
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url = interactionsUrl
     @browser.goto url
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(url)
     @browser.text.should_not match /Wechselwirkungen/
   end
 
   it "should show interactions in the correct order just below the triggering drug" do
 # OrderExample = [ Inderal, Ponstan, Viagra, Marcoumar, Aspirin, ]
 # OrderOfInteractions [
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url = interactionsUrl
     @browser.goto url
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(url)
     OrderExample.each{ |name| add_one_drug_to_interactions(name) }
     inhalt = @browser.text
     lastPos = -1
@@ -248,7 +241,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   end
   
   it "should show interactions having given iksnr,ean13,atc_code,iksnr" do
-    url = "#{OddbUrl}/de/gcc/home_interactions/"
+    url = interactionsUrl + '/'
     url += MephaExamples[0].iksnr + ','
     url += MephaExamples[1].ean13 + ','
     url += MephaExamples[2].atc_code + ','
@@ -258,51 +251,52 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   
   it "should show interactions having given atc_codes" do
     atc_codes = MephaExamples.collect{ |x| x.atc_code}
-    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{atc_codes.join(',')}")
+    check_url_with_epha_example_interaction("#{interactionsUrl}/#{atc_codes.join(',')}")
   end
 
   it "should show interactions having given ean13s" do
     ean13s = MephaExamples.collect{ |x| x.ean13}
-    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{ean13s.join(',')}")
+    check_url_with_epha_example_interaction("#{interactionsUrl}/#{ean13s.join(',')}")
   end
 
   it "should show interactions having given iksnrs" do
     iksnrs = MephaExamples.collect{ |x| x.iksnr}
-    check_url_with_epha_example_interaction("#{OddbUrl}/de/gcc/home_interactions/#{iksnrs.join(',')}")
+    check_url_with_epha_example_interaction("#{interactionsUrl}/#{iksnrs.join(',')}")
   end
 
   it "should show interactions for epha example medicaments added manually" do
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(interactionsUrl)
     MephaExamples.each{ |medi| add_one_drug_to_interactions(medi.name) }
     inhalt = @browser.text
     MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "after delete all drugs a new search must be possible" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(interactionsUrl)
     add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
     @browser.link(:name => 'delete').click
     @browser.text.should_not match (test_medi)
     add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
-  end
+  end unless ['just-medical'].index(Flavor)
+
   it "after adding a single medicament there should be no ',' in the URL" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match ('/de/gcc/home_interactions/')
+    @browser.url.should match(interactionsUrl)
     @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
     @browser.text.should_not match (test_medi)
     add_one_drug_to_interactions(test_medi)
     @browser.text.should match (test_medi)
     @browser.url.should_not match ('/,')
-  end
+  end unless ['just-medical'].index(Flavor)
 
   after :all do
     @browser.close

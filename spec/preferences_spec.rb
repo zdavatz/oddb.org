@@ -51,6 +51,6 @@ describe "ch.oddb.org" do
     @browser.radio(:id, "instant").checked?.should == false
     @browser.radio(:id, "st_substance").checked?.should == false
 
-  end
+  end unless ['just-medical'].index(Flavor)
 end
 

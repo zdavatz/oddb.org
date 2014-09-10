@@ -87,7 +87,7 @@ describe "ch.oddb.org" do
     @browser.url.should match /search_query/
     @browser.url.should match /Aspirin/
     @browser.text.scan(/aspirin/i).count.should > 10 # was 17 in august 2014
-  end if false
+  end unless ['just-medical'].index(Flavor)
 
   # http://oddb-ci2.dyndns.org/de/gcc/fachinfo/reg/58868
   it "should show the chapter Dos./Anw for Kopfschmerzen and show 58868 Actemra :" do
@@ -111,7 +111,7 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Schönbucher"
     @browser.button(:name, 'search').click
     @browser.text.should match /Schönbucher Peter/
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Abacavir via Wirkstoffe" do
     @browser.link(:name, 'substances').click
@@ -121,7 +121,7 @@ describe "ch.oddb.org" do
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Deutsche Bezeichnung/
     @browser.text.should match /Abacavir/
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find the Kantonsspital Glarus via Spital" do
     @browser.link(:name, 'hospitals').click
@@ -131,7 +131,7 @@ describe "ch.oddb.org" do
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Abteilung/
     @browser.text.should match /Kantonsspital Glarus/
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Krücke via MiGeL" do
     @browser.link(:name, 'migel').click
@@ -141,7 +141,7 @@ describe "ch.oddb.org" do
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Beschreibung/
     @browser.text.should match /Krücken/
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Novartis via Zulassungsinhaber" do
     @browser.link(:name, 'companies').click
@@ -151,7 +151,7 @@ describe "ch.oddb.org" do
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Aktuelle Einträge/
     @browser.text.should match /Novartis Pharma Schweiz AG/
-  end
+  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Akute myeloische Leukämie via analysen" do
     @browser.link(:name,'analysis').click
@@ -160,7 +160,7 @@ describe "ch.oddb.org" do
     # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Akute myeloische Leukämie/
-  end
+  end unless ['just-medical'].index(Flavor)
 
 if false
   pending "should work with the notify searchbar" do
