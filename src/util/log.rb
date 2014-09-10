@@ -53,7 +53,7 @@ module ODDB
       if attachments.size > 0
         Util.send_mail_with_attachments(@recipients, subj, @report, attachments)
       else
-        Util.send_mail(@recipients, subj, @report, ODDB::Util.mail_from)
+        Util.send_mail(@recipients, subj, @report)
       end
       LogFile.append('oddb/debug', "log notify #{subject}: sent mail", Time.now)
 		end

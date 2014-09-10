@@ -87,7 +87,7 @@ module ODDB
     end
 
     # Parts must be of form content_type => body, e.g. 'text/html; charset=UTF-8' => '<h1>This is HTML</h1>'
-    def Util.send_mail(list_and_recipients, mail_subject, mail_body, override_from = nil, parts = {})
+    def Util.send_mail(list_and_recipients, mail_subject, mail_body, override_from = nil)
       LogFile.append('oddb/debug', "Util.send_mail list_and_recipients #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
@@ -102,14 +102,14 @@ module ODDB
       raise e
     end
 
-    def Util.send_mail_with_attachments(list_and_recipients, subject, body, attachments, override_from = nil)
+    def Util.send_mail_with_attachments(list_and_recipients, mail_subject, mail_body, attachments, override_from = nil)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
       recipients = Util.check_and_get_all_recipients(list_and_recipients)
       mail = Mail.new
       mail.from    override_from ? override_from : Util.mail_from
       mail.to      recipients
-      mail.subject = subject
-      mail.body = body
+      mail.subject mail_subject
+      mail.body    mail_body
       attachments.each { |attachment|
         mail.attachments[attachment[:filename]] = {
                                                   :mime_type => attachment[:mime_type],
