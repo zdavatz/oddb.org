@@ -200,6 +200,7 @@ class ResultList < HtmlGrid::List
     :compositions       => 'th',
     :ddd_price          => 'th right',
     :deductible         => 'th right',
+    :prescription       => 'th',
     :fachinfo           => 'th',
     :feedback           => 'th right',
     :galenic_form       => 'th',

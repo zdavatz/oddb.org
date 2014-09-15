@@ -77,7 +77,7 @@ module ODDB
       assert_equal(['ywesee_test@ywesee.com'], mails_sent[0].to)
       assert_equal(ReplyTo, mails_sent.first.reply_to)
     end
-    
+
     def test_send_and_check_receiving_test_mail
       mails_sent = Util.sent_mails
       assert_equal(0, mails_sent.size)
@@ -146,10 +146,6 @@ module ODDB
         skip "Cannot test sending an email if not admin list is defined"
       end
       res = Util.send_mail('admin', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
-    end
-
-    def test_send_raises_an_exception
-      assert_raises(RuntimeError) { Util.send_mail(['test', 'somebody@test.org'], "Test Mail from #{__FILE__}", "Test run at #{Time.now}") }
     end
   end
 end

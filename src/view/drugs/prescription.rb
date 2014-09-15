@@ -96,6 +96,7 @@ class PrescriptionDrugHeader < HtmlGrid::Composite
       link.set_attribute('id', "delete_#{@index}") # to allow correct deleting in watir tests
       args = [:ean, model.barcode] if model
       url = @session.request_path.sub(/(,|)#{model.barcode.to_s}/, '').sub(/\?$/, '')
+      link.href  = url
       link.onclick = "require(['dojo/domReady!'], function(){ js_delete_ean_of_index('#{url}', #{@index} ); });"
       link
     end
@@ -299,7 +300,7 @@ class PrescriptionForm < View::Form
   def delete_all(model, session=@session)
     @drugs = @session.choosen_drugs
     delete_all_link = HtmlGrid::Link.new(:delete, @model, @session, self)
-    delete_all_link.href  = @lookandfeel._event_url(:rezept, [:ean] )
+    delete_all_link.href  = @lookandfeel._event_url(:delete_all, [])
     delete_all_link.value = @lookandfeel.lookup(:interaction_chooser_delete_all)
     delete_all_link.onclick = "require(['dojo/domReady!'], function(){ js_clear_session_storage();});"
     delete_all_link

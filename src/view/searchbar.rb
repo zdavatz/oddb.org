@@ -25,10 +25,10 @@ function get_to(url) {
 function get_to_via_top(url) {
   url = url.replace('//', '/')
   if (window.location.href == url || window.top.location.href == url) {
-    console.log('searchbar.get_to href nothing to do');
+    console.log('searchbar.get_to_via_top href nothing to do');
     return;
   }
-  console.log('get_to window.top.location.replace url '+ url);
+  console.log('get_to_via_top url '+ url);
   window.top.location.replace(url);
 }
 
@@ -69,14 +69,15 @@ module InstantSearchBarMethods
     target = keyword.intern
     id  = "#{target}_searchbar"
     if /prescription/i.match(target.to_s)
-      url = @session.create_search_url(:rezept)
+      @session.set_persistent_user_input(:drugs, {})
+      @session.set_persistent_user_input(:ean, nil)
+      url  = @session.request_path.gsub('/,','/')
     elsif
-      url = @session.create_search_url(:fachinfo_search)
+      url = @session.create_search_url(:fachinfo_search, [:ean, @session.persistent_user_input(:drugs) ? @session.persistent_user_input(:drugs).keys : [] ].flatten )
     else
       url = @session.create_search_url(:home_interactions)
     end
     val = @session.lookandfeel.lookup(:add_drug)
-    progressbar = ""
     if @container.respond_to?(:progress_bar)
       progressbar = "setTimeout('show_progressbar(\'#{id}\')', 10);"
     end
@@ -89,7 +90,7 @@ function xhrGet(arg) {
   if(ean13) {
     ean13 = ean13[0];
     var id = 'drugs';
-    if (new_url.match(/\\/(prescription|rezept|zsr_[A-Z]\\d+)$/)) 
+    if (new_url.match(/\\/(prescription|fachinfo_search|rezept|zsr_[A-Z]\\d+)$/))
     {
       new_url = new_url + '/ean/' + ean13; 
     } else {
@@ -151,7 +152,7 @@ function selectXhrRequest() {
         }
         searchbar.value = '';
         get_to(path.replace('?/','/'));
-      } else { // neiter home_interactions, fachinfo_search nor rezept
+      } else { // neither home_interactions, fachinfo_search nor rezept
         xhrGet(searchbar.value);
         searchbar.value = '';
       }
@@ -181,12 +182,26 @@ require(['dojo/ready'], function(ready) {
     if @container.respond_to?(:index_name) && (index = @container.index_name)
       args.push :index_name, index
     end
-    target = @session.lookandfeel._event_url(:ajax_matches, args)
-    html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
-                       'jsId'           => 'search_matches',
-                       'idAttribute'    => 'drug',
-                       'target'         => target
-    html << super(context)
+    @session.set_persistent_user_input(:drugs, @session.choosen_drugs)
+    if @session.request_path.match(/fachinfo_search/)
+      if false and @session.choosen_drugs.size > 0
+        target = @session.lookandfeel._event_url(:fachinfo_search, [:ean, @session.choosen_drugs.keys, :ajax_matches, args ].flatten)
+      else
+        target = @session.lookandfeel._event_url(:ajax_matches, args)
+      end
+      html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
+                        'jsId'           => 'search_matches',
+                        'idAttribute'    => 'drug',
+                        'target'         => target
+      html << super(context)
+    else
+      target = @session.lookandfeel._event_url(:ajax_matches, args)
+      html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
+                        'jsId'           => 'search_matches',
+                        'idAttribute'    => 'drug',
+                        'target'         => target
+      html << super(context)
+    end
   end
 end
 class SearchBar < HtmlGrid::InputText
@@ -234,12 +249,7 @@ class AutocompleteSearchBar < HtmlGrid::InputText
     @searchbar_id ||= 'searchbar'
     @label_attr   ||= ''
     id  = @searchbar_id
-    if @session.flavor == 'just-medical' and
-       @session.zone == :interactions
-      val = @lookandfeel.lookup(:search_query_interactions)
-    else
-      val = @lookandfeel.lookup(@name)
-    end
+    val = @lookandfeel.lookup(@name)
     progressbar = ""
     if @container.respond_to?(:progress_bar)
       progressbar = "setTimeout('show_progressbar(\\'widget_searchbar\\')', 10);"

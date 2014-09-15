@@ -394,7 +394,6 @@ describe "ch.oddb.org" do
     inhalt.scan(/\nBemerkungen\n/).size.should == 2
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
   end
-
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
@@ -457,7 +456,6 @@ describe "ch.oddb.org" do
     inhalt.should match(/N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion./i) 
     inhalt.should match(/B: Vorsichtsmassnahmen empfohlen/i) 
   end
-
   it "should with four medicaments" do
     medis = Four_Medis
     @browser.select_list(:name, "search_type").select("Markenname")

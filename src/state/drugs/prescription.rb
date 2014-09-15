@@ -25,12 +25,13 @@ class Prescription < State::Drugs::Global
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
     @drugs = @session.choosen_drugs
+    @session.set_persistent_user_input(:drugs, {})
     ean13 = @session.user_input(:search_query)
     @drugs[ean13] = package_for(ean13) if ean13 
     super
   end
   def delete_all
-    $stdout.puts "Prescription:delete_all request_path is #{@session.request_path}"
+    @session.set_persistent_user_input(:drugs, {})
     unless error?
       @model = []
     end
@@ -44,7 +45,6 @@ class Prescription < State::Drugs::Global
     PrescriptionCsvExport.new(@session, @model)
   end
   def ajax_add_drug(ean13 = @session.user_input(:ean))
-    $stdout.puts "Prescription.ajax_add_drug #{ean13}"
     check_model(ean13)
     unless error?
       @drugs[ean13] = package_for(ean13) if ean13 
@@ -53,7 +53,6 @@ class Prescription < State::Drugs::Global
   end
   
   def ajax_delete_drug(ean13 = @session.user_input(:ean))
-    $stdout.puts "Prescription.ajax_delete_drug #{ean13}"
     check_model
     unless error?
       if ean13 and pack = package_for(ean13)

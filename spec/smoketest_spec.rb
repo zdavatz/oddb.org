@@ -23,7 +23,9 @@ describe "ch.oddb.org" do
   end
 
   it "should contain Open Drug Database" do
-    @browser.text.should match    OddbUrl      unless ['just-medical'].index(Flavor)
+    waitForOddbToBeReady(@browser, OddbUrl)
+    puts OddbUrl
+    @browser.url.should match    OddbUrl      unless ['just-medical'].index(Flavor)
     @browser.title.should match /Open Drug Database/i
   end
 
@@ -123,8 +125,8 @@ describe "ch.oddb.org" do
   end
 
   it "should download the results of a search" do
+    login
     test_medi = 'Aspirin'
-    puts GlobAllDownloads
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.goto OddbUrl
     login
@@ -169,5 +171,4 @@ describe "ch.oddb.org" do
   after :all do
     @browser.close
   end
- 
 end

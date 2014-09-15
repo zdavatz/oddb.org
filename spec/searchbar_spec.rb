@@ -45,7 +45,7 @@ describe "ch.oddb.org" do
                       end
                     }
     chooser.set(chooser.value + "\n")
-    puts "chooser set to #{chooser.value}"
+    # puts "chooser value #{chooser.value} text  #{chooser.text}"
     createScreenshot(@browser, "_#{search_text}_#{__LINE__}")
   end
   
@@ -67,7 +67,6 @@ describe "ch.oddb.org" do
 
   def enter_fachinfo_search
     if @browser.link(:name=>'fachinfo_search').exists?
-      puts "Going to search FI erweitert"
       @browser.link(:name=>'fachinfo_search').click
     end
   end
@@ -76,6 +75,71 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, '_'+$prescription_test_id.to_s) if @browser
     $prescription_test_id += 1
   end
+
+  chapters = {
+    'Unerw.Wirkungen' => 'Kopfschmerzen',
+    'Dos./Anw.' => 'Kinder',
+    'Interakt.' => 'Tocilizumab',
+  }
+     
+
+  chapters.each{ |chapter_name, text|
+    it "should should work (58868 Actemra) with #{chapter_name} and #{text}" do
+      enter_fachinfo_search
+      enter_search_to_field_by_name('Actemra', 'searchbar');
+
+      @browser.select_list(:name, "fachinfo_search_type").select(chapter_name)
+      @browser.checkbox(:name,'fachinfo_search_full_text').set
+      @browser.text_field(:name => 'fachinfo_search_term').set(text)
+      @browser.text_field(:name => 'fachinfo_search_term').send_keys :tab
+      @browser.button(:id => 'fi_search').click
+      @browser.text.should match text
+      @browser.text.should match /Actemra/
+    end
+  }
+
+  it "should should be possible to add and delete several drugs:" do
+    enter_fachinfo_search
+    @browser.text.should_not match /Actemra/
+    @browser.text.should_not match /Aspirin/
+    enter_search_to_field_by_name('Actemra', 'searchbar');
+    enter_search_to_field_by_name('Aspirin', 'searchbar');
+    @browser.text.should match /Actemra/
+    @browser.text.should match /Aspirin/
+    @browser.element(:id => /minus_Actemra/i).click
+    @browser.text.should_not match /Actemra/
+    @browser.text.should match /Aspirin/
+    @browser.element(:id => /minus_Aspirin/i).click
+    @browser.text.should_not match /Actemra/
+    @browser.text.should_not match /Aspirin/
+    # @browser.url.should match /fachinfo_search\/$/
+  end
+
+  it "should should be possible to delete all drugs:" do
+    enter_fachinfo_search
+    @browser.text.should_not match /Actemra/
+    @browser.text.should_not match /Aspirin/
+    enter_search_to_field_by_name('Actemra', 'searchbar');
+    enter_search_to_field_by_name('Aspirin', 'searchbar');
+    enter_search_to_field_by_name('Ponstan', 'searchbar');
+    @browser.text.should match /Actemra/
+    @browser.text.should match /Aspirin/
+    @browser.text.should match /Ponstan/
+    @browser.element(:name => 'delete').click
+    @browser.text.should_not match /Actemra/
+    @browser.text.should_not match /Aspirin/
+    @browser.text.should_not match /Ponstan/
+    @browser.url.should match /fachinfo_search\/$/
+  end
+
+  it "should be possible to find Akute myeloische Leukämie via analysen" do
+    @browser.link(:name,'analysis').click
+    @browser.text_field(:name, "search_query").value = "Leukämie"
+    @browser.button(:name => 'search').click
+    # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
+    @browser.text.should_not match LeeresResult
+    @browser.text.should match /Akute myeloische Leukämie/
+  end unless ['just-medical'].index(Flavor)
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
@@ -88,23 +152,6 @@ describe "ch.oddb.org" do
     @browser.url.should match /Aspirin/
     @browser.text.scan(/aspirin/i).count.should > 10 # was 17 in august 2014
   end unless ['just-medical'].index(Flavor)
-
-  # http://oddb-ci2.dyndns.org/de/gcc/fachinfo/reg/58868
-  it "should show the chapter Dos./Anw for Kopfschmerzen and show 58868 Actemra :" do
-    enter_fachinfo_search
-    enter_search_to_field_by_name('Actemra', 'searchbar');
-
-    @browser.select_list(:name, "fachinfo_search_type").select(/Unerw.Wirk/i)
-    @browser.checkbox(:name,'fachinfo_search_full_text').set
-    @browser.text_field(:name => 'fachinfo_search_term').set('Kopfschmerzen')
-    @browser.text_field(:name => 'fachinfo_search_term').send_keys :tab
-    # require 'pry'; binding.pry
-    sleep 0.1
-    @browser.button(:value,"Suchen").click
-    sleep(5)
-    @browser.text.should match /Kopfschmerzen/
-    @browser.text.should match /Actemra/
-  end
 
   it "should be possible to find Dr. Peter Schönbucher via doctors " do
     @browser.link(:name, "doctors").click
@@ -153,21 +200,7 @@ describe "ch.oddb.org" do
     @browser.text.should match /Novartis Pharma Schweiz AG/
   end unless ['just-medical'].index(Flavor)
 
-  it "should be possible to find Akute myeloische Leukämie via analysen" do
-    @browser.link(:name,'analysis').click
-    @browser.text_field(:name, "search_query").value = "Leukämie"
-    @browser.button(:name, 'search').click
-    # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Akute myeloische Leukämie/
-  end unless ['just-medical'].index(Flavor)
-
-if false
   pending "should work with the notify searchbar" do
-    false.should == true
-  end
-
-  pending "should work with the migel/feedbacks searchbar" do
     false.should == true
   end
 
@@ -206,5 +239,4 @@ if false
   pending "should work with the substances/result searchbar" do
     false.should == true
   end
-end
 end

@@ -66,7 +66,6 @@ class InteractionChooser < State::Interactions::Global
     super
   end
   def ajax_add_drug
-    $stdout.puts "InteractionChooser.ajax_add_drug #{@session.user_input(:ean)}"
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s and
@@ -79,7 +78,6 @@ class InteractionChooser < State::Interactions::Global
     InteractionChooserDrug.new(@session, @model)
   end
   def ajax_delete_drug
-    $stdout.puts "InteractionChooser.ajax_delete_drug #{@session.user_input(:ean)}"
     check_model
     unless error?
       if ean13 = @session.user_input(:ean).to_s

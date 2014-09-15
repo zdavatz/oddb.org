@@ -3,7 +3,7 @@
 require 'simplecov'
 SimpleCov.start
 
-BreakIntoPry = true
+BreakIntoPry = false
 require 'pry' if BreakIntoPry
 for_running_in_irb = %(
 require 'watir'; require 'pp'
@@ -39,8 +39,8 @@ ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
 
 Browser2test = browsers2test
-RegExpTwoMedis = /\/\d{13}[,\/]\d{13}(\?|)$/
-RegExpOneMedi  = /\/\d{13}(\?|)$/
+RegExpTwoMedis = /\/,?\d{13}[,\/]\d{13}(\?|)$/
+RegExpOneMedi  = /\/,?\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 DownloadDir = File.join(Dir.home, 'Downloads')
 GlobAllDownloads = File.join(DownloadDir, '*')

@@ -19,21 +19,25 @@ class FachinfoSearch < State::Drugs::Global
   VIEW = View::Drugs::FachinfoSearch
   @@ean13_form = /^(7680)(\d{5})(\d{3})(\d)$/u
   def init
-    $stdout.puts "FachinfoSearch #{@session.event.to_sym == self.class::DIRECT_EVENT} drugs #{@session.persistent_user_input(:drugs)}"
+    @drugs = @session.persistent_user_input(:drugs)
     super
   end
   def ajax_add_drug
-    $stdout.puts "FachinfoSearch.ajax_add_drug #{@session.user_input(:ean)}"
     check_model
     FachinfoSearchDrug.new(@session, @model)
   end
   def ajax_delete_drug
-    $stdout.puts "FachinfoSearch.ajax_delete_drug #{@session.user_input(:ean)}"
+    ean13 = @session.user_input(:ean)
+    drugs = @session.choosen_drugs
+    drugs.delete(ean13)
+    @session.set_persistent_user_input(:drugs, drugs)
+    @session.set_persistent_user_input(:ean, nil)
+    @session.request_path.sub!(/#{ean13},?/, '') # remove drug from request_path
     check_model
     FachinfoSearchDrug.new(@session, @model)
   end
   def delete_all
-    $stdout.puts "FachinfoSearch.delete_all request_path #{@session.request_path}"
+    @session.set_persistent_user_input(:drugs, {})
     unless error?
       @model = []
     end
@@ -70,12 +74,12 @@ class FachinfoSearch < State::Drugs::Global
   end
   def match_term
     hits = []
-    if @session.choosen_drugs
+    @drugs = @session.persistent_user_input(:drugs)
+    if @drugs
       chapter = @session.user_input(:fachinfo_search_type).to_s.gsub(/^fi_/, '').intern
       term    = @session.user_input(:fachinfo_search_term)
       is_full = (@session.user_input(:fachinfo_search_full_text) == "1")
-      @session.choosen_drugs.each do |ean13, pac|
-        $stdout.puts "match_term #{ean13} #{pac}"
+      @drugs.each do |ean13, pac|
         doc = pac.fachinfo.description(@session.language)
         if doc.respond_to?(chapter)
           desc = doc.send(chapter).to_s

@@ -13,6 +13,7 @@ class Init < State::Drugs::Global
 	VIEW = View::Drugs::Search
 	DIRECT_EVENT = :home_drugs
   def init
+    @session.set_persistent_user_input(:drugs, {})
     super
     @model = OpenStruct.new
     fachinfos = @session.app.sorted_fachinfos

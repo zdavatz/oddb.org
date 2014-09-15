@@ -73,6 +73,8 @@ class FachinfoSearchDrugHeader < HtmlGrid::Composite
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
       args = [:ean, model.barcode] if model
+      # set unique id for watir tests
+      link.set_attribute('id', "minus_#{model.name_base}") if model
       url = @session.lookandfeel.event_url(:ajax_delete_drug, args)
       link.onclick = "replace_element('drugs_#{model.barcode}', '#{url}');"
       link
@@ -208,8 +210,11 @@ class FachinfoSearchForm < View::Form
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
   def buttons(model, session)
+    # set attribute id to a unique ID for watir tests
+    search_button = post_event_button(:search)
+    search_button.set_attribute('id', 'fi_search')
     [
-      post_event_button(:search),
+      search_button,
       '&nbsp;',
       '&nbsp;',
       post_event_button(:export_csv),
@@ -252,14 +257,14 @@ class FachinfoSearchTermHitList < HtmlGrid::List
     div.set_attribute('class', 'text')
     div.label = false
     text = model[:text]
-    if text.is_a? FachinfoDocument and
+    if (text.is_a?(FachinfoDocument) or text.is_a?(FachinfoDocument2001)) and
        type = @session.user_input(:fachinfo_search_type)
       # full chapter
       chapter = type.gsub(/^fi_/, '').intern
       div.value = View::Chapter.new(chapter, text, @session, self)
     else
       term = @session.user_input(:fachinfo_search_term)
-      text.gsub!(/#{term}/i, "<span class='highlight'>%s</span>" % term)
+      text.gsub!(/#{term.to_s}/i, "<span class='highlight'>%s</span>" % term.to_s) if term
       div.value = text
     end
     div
