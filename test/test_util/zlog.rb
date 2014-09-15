@@ -107,7 +107,7 @@ SL hat anderen 5-Stelligen Swissmedic-Code als SMeX
       assert_equal(mail_body, mails_sent.first.body.to_s)
       assert_equal(SUBJECT, mails_sent.first.subject)
       assert_equal(1, mails_sent.first.attachments.size)
-      assert_equal(part_content, mails_sent.first.attachments.first.body.decoded)      
+      assert_equal(part_content, mails_sent.first.attachments.first.body.decoded)
     end
   end
 end
