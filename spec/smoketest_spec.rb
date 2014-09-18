@@ -124,24 +124,6 @@ describe "ch.oddb.org" do
     @browser.windows.last.close
   end
 
-  it "should download the results of a search" do
-    login
-    test_medi = 'Aspirin'
-    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.goto OddbUrl
-    login
-    @browser.text_field(:name, "search_query").set(test_medi)
-    @browser.button(:name, "search").click
-    @browser.button(:value,"Resultat als CSV Downloaden").click
-    #// require 'pry'; binding.pry
-    @browser.button(:name => 'proceed_payment').click
-    @browser.button(:name => 'checkout_invoice').click
-    @browser.url.should_not match  /errors/
-    filesAfterDownload =  Dir.glob(GlobAllDownloads)
-    diffFiles = (filesAfterDownload - filesBeforeDownload)
-    diffFiles.size.should == 1
-  end unless ['just-medical'].index(Flavor)
-
   it "should download the example" do
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
@@ -167,6 +149,39 @@ describe "ch.oddb.org" do
     @browser.button(:name, 'subscribe').click
     @browser.button(:name, 'unsubscribe').click
   end if false # Zeno remarked on 2014-09-01 that I should not test the mailing list
+
+  it "should be possible to request a new password" do
+    @browser.goto OddbUrl
+    @browser.link(:text=>'Abmelden').click if @browser.link(:text=>'Abmelden').exists?
+    @browser.link(:text=>'Anmeldung').click
+    @browser.link(:name=>'password_lost').click
+    @browser.text_field(:name, 'email').value = 'ngiger@ywesee.com'
+    @browser.button(:name, 'password_request').click
+    url = @browser.url
+    text = @browser.text
+    url.should_not match /error/i
+    text.should match /Bestätigung/
+    text.should match /Vielen Dank. Sie erhalten in Kürze ein E-Mail mit weiteren Anweisungen./
+  end
+
+  it "should download the results of a search" do
+    login
+    test_medi = 'Aspirin'
+    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    @browser.goto OddbUrl
+    login
+    @browser.text_field(:name, "search_query").set(test_medi)
+    @browser.button(:name, "search").click
+    @browser.button(:value,"Resultat als CSV Downloaden").click
+    # require 'pry'; binding.pry
+    @browser.button(:name => 'proceed_payment').click
+    @browser.button(:name => 'checkout_invoice').click
+    @browser.url.should_not match  /errors/
+    filesAfterDownload =  Dir.glob(GlobAllDownloads)
+    diffFiles = (filesAfterDownload - filesBeforeDownload)
+    diffFiles.size.should == 1
+  end unless ['just-medical'].index(Flavor)
+
 
   after :all do
     @browser.close
