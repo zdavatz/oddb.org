@@ -82,7 +82,21 @@ describe "ch.oddb.org" do
     'Interakt.' => 'Tocilizumab',
   }
      
+  it "should be possible to find 125Dihydroxycholecalciferol via analysen" do
+    search_term = '125Dihydroxycholecalciferol'
+    @browser.link(:name,'analysis').click
+    @browser.text_field(:name, "search_query").value = search_term
+    @browser.button(:name => 'search').click
+    # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
+    # analysis_positions.first.search_text(:de)
+    # -> 125Dihydroxycholecalciferol 1000 100000
+    # http://ch.oddb.org/de/gcc/search/zone/analysis/search_query/125Dihydroxycholecalciferol works
 
+    @browser.text.should_not match LeeresResult
+    @browser.text.should match /#{search_term}/
+  end unless ['just-medical'].index(Flavor)
+
+if false
   chapters.each{ |chapter_name, text|
     it "should should work (58868 Actemra) with #{chapter_name} and #{text}" do
       enter_fachinfo_search
@@ -131,15 +145,6 @@ describe "ch.oddb.org" do
     @browser.text.should_not match /Ponstan/
     @browser.url.should match /fachinfo_search\/$/
   end
-
-  it "should be possible to find Akute myeloische Leukämie via analysen" do
-    @browser.link(:name,'analysis').click
-    @browser.text_field(:name, "search_query").value = "Leukämie"
-    @browser.button(:name => 'search').click
-    # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Akute myeloische Leukämie/
-  end unless ['just-medical'].index(Flavor)
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
@@ -239,4 +244,5 @@ describe "ch.oddb.org" do
   pending "should work with the substances/result searchbar" do
     false.should == true
   end
+end
 end

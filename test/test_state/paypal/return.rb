@@ -18,7 +18,7 @@ class TestReturn <Minitest::Test
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)
-    item     = flexmock('item')
+    item     = flexmock('item', {:type => 'type',} )
     @model   = flexmock('model', 
                         :items => {'key' => item},
                         :yus_name => 'yus_name',

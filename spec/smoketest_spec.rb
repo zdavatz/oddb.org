@@ -67,8 +67,7 @@ describe "ch.oddb.org" do
     saved = @idx
     names.each { 
       |name|
-        @idx += 1
-				waitForOddbToBeReady(@browser, OddbUrl)
+        waitForOddbToBeReady(@browser, OddbUrl)
         @browser.text_field(:name, "search_query").set(name)
         @browser.button(:name, "search").click
         createScreenshot(@browser, '_'+@idx.to_s)
@@ -76,6 +75,7 @@ describe "ch.oddb.org" do
           res = true
           break
         end
+        @idx += 1
     }
     (@idx -saved).should <= 5
   end unless ['just-medical'].index(Flavor)

@@ -48,7 +48,7 @@ GlobAllDownloads = File.join(DownloadDir, '*')
 def login(user = 'ngiger@ywesee.com', password='ng1234', remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
-  return unless  @browser.link(:text=>'Anmeldung').exists?
+  return true unless  @browser.link(:text=>'Anmeldung').exists?
   @browser.link(:text=>'Anmeldung').click
   @browser.text_field(:name, 'email').set(user)
   @browser.text_field(:name, 'pass').set(password)
@@ -57,7 +57,17 @@ def login(user = 'ngiger@ywesee.com', password='ng1234', remember_me=false)
   else
     @browser.checkbox(:name, "remember_me").clear
   end
-  @browser.button(:value,"Anmelden").click
+  @browser.button(:name,"login").click
+  if  @browser.button(:name,"login").exists?
+    @browser.goto(OddbUrl)
+    return false
+  else
+    return true
+  end
+end
+
+def get_session_timestamp
+  @@timestamp ||= Time.now.strftime('%Y%m%d_%H%M%S')
 end
 
 def logout

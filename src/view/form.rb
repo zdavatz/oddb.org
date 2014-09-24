@@ -5,6 +5,7 @@
 require 'htmlgrid/form'
 require 'htmlgrid/formlist'
 require 'htmlgrid/inputtext'
+require 'util/today'
 
 module ODDB 
 	module View

@@ -8,6 +8,7 @@
 
 # Rockit redefines some StringScanner stuff, unless this is set
 $USING_STRSCAN = true
+require 'config'
 
 module ODDB
 	SERVER_NAME = 'ch.oddb.org'
@@ -27,8 +28,9 @@ module ODDB
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
   IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
-	PAYPAL_SERVER = 'www.paypal.com'
-	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
+	PAYPAL_SERVER   = ODDB.config.paypal_server
+	PAYPAL_RECEIVER = ODDB.config.paypal_receiver
+  
 	ENCODING = 'UTF-8'
 	## Prices and Durations
   DOWNLOAD_EXPORT_PRICES = {

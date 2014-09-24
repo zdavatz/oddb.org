@@ -39,6 +39,8 @@ module ODDB
     'flickr_api_key'       => '',
     'flickr_shared_secret' => '',
     'app_user_agent'       => '', # as Regexp
+    'paypal_server'        => 'www.paypal.com',     # or www.sandbox.paypal.com
+    'paypal_receiver'      => 'zdavatz@ywesee.com', # or test_paypal@ywesee.com 
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)

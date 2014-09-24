@@ -25,6 +25,14 @@ class Return < State::Global
 				wrap = ItemWrapper.new(item)
 				wrap.email = invoice.yus_name
 				wrap.oid = invoice.oid
+				if item.type == :poweruser
+					@session.yus_grant(invoice.yus_name, 'login', 'org.oddb.PowerUser', item.expiry_time)
+					@session.yus_grant(invoice.yus_name, 'view', 'org.oddb', item.expiry_time)
+					@model.payment_received!
+					reconsider_permissions(@session.user, self)
+				elsif item.type == :csv_export
+					# Not sure what do do here! @session.yus_grant(invoice.yus_name, :download, item.text, item.expiry_time)
+				end
 				wrap
 			}
 		end
