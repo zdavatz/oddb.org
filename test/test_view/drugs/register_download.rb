@@ -46,7 +46,7 @@ class TestRegisterDownloadForm <Minitest::Test
   end
   def test_init
     flexmock(@session, :error? => true)
-    skip("Niklaus does not know whether 0 or processingerror is correct")
+    # skip("Niklaus does not know whether 0 or processingerror is correct")
     assert_equal('processingerror', @form.init)
   end
   def test_hidden_fields

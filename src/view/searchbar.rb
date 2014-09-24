@@ -22,16 +22,6 @@ function get_to(url) {
   form.submit();
 }
 
-function get_to_via_top(url) {
-  url = url.replace('//', '/')
-  if (window.location.href == url || window.top.location.href == url) {
-    console.log('searchbar.get_to_via_top href nothing to do');
-    return;
-  }
-  console.log('get_to_via_top url '+ url);
-  window.top.location.replace(url);
-}
-
 )
 
 module SearchBarMethods
@@ -71,7 +61,7 @@ module InstantSearchBarMethods
     if /prescription/i.match(target.to_s)
       @session.set_persistent_user_input(:drugs, {})
       @session.set_persistent_user_input(:ean, nil)
-      url  = @session.request_path.gsub('/,','/')
+      url  = @session.request_path.gsub('/,','/') if @session.request_path
     elsif
       url = @session.create_search_url(:fachinfo_search, [:ean, @session.persistent_user_input(:drugs) ? @session.persistent_user_input(:drugs).keys : [] ].flatten )
     else
@@ -183,7 +173,7 @@ require(['dojo/ready'], function(ready) {
       args.push :index_name, index
     end
     @session.set_persistent_user_input(:drugs, @session.choosen_drugs)
-    if @session.request_path.match(/fachinfo_search/)
+    if @session.request_path and @session.request_path.match(/fachinfo_search/)
       if false and @session.choosen_drugs.size > 0
         target = @session.lookandfeel._event_url(:fachinfo_search, [:ean, @session.choosen_drugs.keys, :ajax_matches, args ].flatten)
       else
@@ -233,7 +223,6 @@ class SearchBar < HtmlGrid::InputText
 if (#{@name}.value!='#{val}') {
 #{timer}
   var href = '#{submit}' + encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));
-  console.log('SearchBar.submit ' + href);
   if (this.search_type) {
     href += '/search_type/' + this.search_type.value#{param};
   }

@@ -1926,11 +1926,12 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :name_base          => "Ponstan",
         :name_descr         => "Filmtabs 500 mg ",
         :swissmedic_no5_bag => "39271",
-        :swissmedic_no8_bag => "39271028",
-        :pharmacode_bag     => "703279",
-        :generic_type       => :original,
         :deductible         => :deductible_g,
+        :generic_type       => :original,
         :atc_class          => "M01AG01",
+        :pharmacode_bag     => "703279",
+        :swissmedic_no8_bag => "39271028",
+        :swissmedic_no5_oddb=>"39271"
       } ]
       assert_equal expected, listener.unknown_packages
       expected = []
@@ -2077,6 +2078,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       session.should_receive(:search).and_return ['meddata-result']
       session.should_receive(:detail).and_return opts
     end
-  end if false
+  end
 end
 

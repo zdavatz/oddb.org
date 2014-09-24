@@ -36,14 +36,16 @@ module ODDB
       def test_init
         expected = %(
 function get_to(url) {
-  var url2 = url.replace(/(\\d{13})[/,]+(\\d{13})/, '$1,$2').replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',');
-  if (window.location.href ==  url2) { return; }
+  var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',').replace('ean,', 'ean/').replace(/\\?$/, '');
+  console.log('get_to window.top.location.replace url '+ url + '\\n url2 ' + url2);
+  if (window.location.href == url2 || window.top.location.href == url2) { return; }
   var form = document.createElement("form");
   form.setAttribute("method", "GET");
   form.setAttribute("action", url2);
   document.body.appendChild(form);
   form.submit();
 }
+
 
 if (name.value!='lookup') {
 

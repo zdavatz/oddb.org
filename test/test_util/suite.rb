@@ -5,6 +5,8 @@
 
 buggy = [
   'ipn.rb',
+  'persistence.rb',
+  'config.rb',
   'session.rb',
   'oddbapp.rb',
   'oddbapp_2.rb',

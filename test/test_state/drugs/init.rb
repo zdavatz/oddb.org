@@ -29,7 +29,8 @@ class TestInit <Minitest::Test
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
-                        :app => @app
+                        :app => @app,
+		                    :set_persistent_user_input => 'set_persistent_user_input',
                        )
     @model   = flexmock('model')
     @state   = ODDB::State::Drugs::Init.new(@session, @model)

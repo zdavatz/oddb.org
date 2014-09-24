@@ -59,10 +59,10 @@ class TestCenteredSearchForm <Minitest::Test
     @form    = CenteredSearchForm.new(@model, @session)
   end
   def test_init
-    expected ={"NAME"=>"stdform", "onSubmit"=>"function get_to(url) {\n  var form = document.createElement(\"form\");\n  form.setAttribute(\"method\", \"GET\");\n  form.setAttribute(\"action\", url);\n  document.body.appendChild(form);\n  form.submit();\n}\nif (search_query.value!='lookup') {\n\n  var href = '_event_url' + encodeURIComponent(search_query.value.replace(/\\//, '%2F'));\n  if (this.search_type) {\n    href += '/search_type/' + this.search_type.value + '#best_result';\n  }\n  get_to(href);\n};\nreturn false;\n", "METHOD"=>"POST", "ACTION"=>"base_url",
+			expected ={"NAME"=>"stdform", "onSubmit"=>"function get_to(url) {\n  var form = document.createElement(\"form\");\n  form.setAttribute(\"method\", \"GET\");\n  form.setAttribute(\"action\", url);\n  document.body.appendChild(form);\n  form.submit();\n}\nif (search_query.value!='lookup') {\n\n  var href = '_event_url' + encodeURIComponent(search_query.value.replace(/\\//, '%2F'));\n  if (this.search_type) {\n    href += '/search_type/' + this.search_type.value + '#best_result';\n  }\n  get_to(href);\n};\nreturn false;\n", "METHOD"=>"POST", "ACTION"=>"base_url",
                "ACCEPT-CHARSET"=>"#<Encoding:UTF-8>"
                }
-    skip("Don't know how to match Encoding:UTF-8")
+puts expected			
     assert_equal(expected, @form.init)
   end
   def test_search_help
