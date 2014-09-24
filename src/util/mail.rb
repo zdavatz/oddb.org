@@ -93,8 +93,8 @@ module ODDB
       mail = Mail.new
       mail.from    override_from ? override_from : Util.mail_from
       mail.to      recipients
-      mail.subject mail_subject.force_encoding("utf-8")
-      mail.body    mail_body.force_encoding("utf-8")
+      mail.subject mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
+      mail.body    mail_body.  respond_to?(:force_encoding)  ?  mail_body.   force_encoding("utf-8") : mail_body
       log_and_deliver_mail(mail)
     rescue => e
       msg = "Util.send_mail rescue: error is #{e.inspect} recipients #{recipients.inspect} #{caller[0..10].join("\n")}"
