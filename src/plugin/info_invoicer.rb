@@ -6,16 +6,24 @@
 require 'plugin/invoicer'
 require 'model/sequence'
 require 'util/today'
+require 'util/logfile'
 
 module ODDB
   class InfoInvoicer < Invoicer
+    def logInvoice(msg)
+      now = Time.now
+      return if defined?(Minitest)
+      $stdout.puts("#{now}: #{msg}"); $stdout.flush
+      LogFile.append('oddb/debug', ' ' + msg, now)
+      system("logger #{__FILE__}: #{msg}")
+    end
     attr_accessor :invoice_number
     def run(day = @@today)
       send_daily_invoices(day - 1)
       send_annual_invoices(day)
     end
     def active_companies
-      active_companies = []
+      result = []
       invoices = @app.invoices.values.collect { |inv| inv.dup if inv }
       invoices.each { |inv|
         items = inv.items.values.dup
@@ -23,12 +31,12 @@ module ODDB
           if(item.type == :annual_fee && (ptr = item.item_pointer) \
             && (seq = pointer_resolved(ptr)) && seq.is_a?(parent_item_class) \
             && (company = seq.company))
-            active_companies.push(company.odba_instance)
+            result.push(company.odba_instance)
           end
         }
       }
-      active_companies.uniq!
-      active_companies
+      result.uniq!
+      result
     end
     def adjust_annual_fee(company, items)
       if(date = company.invoice_date(@infotype))
@@ -224,6 +232,7 @@ module ODDB
       items += html_items(day)
       time = Time.local(day.year + 1, day.month, day.day) + 1
       payable_items = filter_paid(items, time)
+      logInvoice "patinfo_invoices annual #{payable_items.size}/#{items.size} payable_items/items" if payable_items.size > 0
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         ## if autoinvoice is disabled, but a preferred invoice_date is set, 
@@ -279,6 +288,7 @@ module ODDB
     def send_daily_invoices(day, company_name=nil, invoice_date=day)
       items = recent_items(day)
       payable_items = filter_paid(items, day)
+      logInvoice "patinfo_invoices daily #{payable_items.size}/#{items.size} payable_items/items" if payable_items.size > 0
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         if(!company.invoice_disabled?(@infotype) \
