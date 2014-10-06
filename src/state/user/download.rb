@@ -18,10 +18,6 @@ class Download < State::User::Global
   def init
     # if the file is a bespoke export, query and stype should be set
     query = stype = nil
-    unless @model.data[:search_query] and @model.data[:search_type]
-      @default_view = View::Search
-      return View::Search
-    end
     if(@model.respond_to?(:data) && @model.data.is_a?(Hash))
       query = ODDB.search_term(@model.data[:search_query].to_s)
       stype = @model.data[:search_type]
