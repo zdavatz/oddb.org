@@ -3,6 +3,12 @@
 require 'simplecov'
 SimpleCov.start
 
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+end
+
 BreakIntoPry = false
 require 'pry' if BreakIntoPry
 for_running_in_irb = %(
@@ -132,3 +138,10 @@ def set_zsr_of_doctor(zsr_id, name = 'Davatz', field_name = 'prescription_zsr_id
   end
 end
 
+def run_bin_admin(cmd)
+  ENV['RUBYOPT']=nil
+  # puts "running bin/admin #{cmd}"
+  bin_admin = "/usr/local/bin/ruby /var/www/oddb.org/bin/admin"
+  full_cmd = "/bin/echo \"#{cmd}\" | #{bin_admin}"
+  return `#{full_cmd}`
+end
