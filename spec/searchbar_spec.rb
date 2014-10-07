@@ -96,7 +96,6 @@ describe "ch.oddb.org" do
     @browser.text.should match /#{search_term}/
   end unless ['just-medical'].index(Flavor)
 
-if false
   chapters.each{ |chapter_name, text|
     it "should should work (58868 Actemra) with #{chapter_name} and #{text}" do
       enter_fachinfo_search
@@ -244,5 +243,4 @@ if false
   pending "should work with the substances/result searchbar" do
     false.should == true
   end
-end
 end

@@ -27,6 +27,22 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
+  it "should download the results of a search to Marcoumar" do
+    @browser.goto OddbUrl
+    login
+    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    @browser.text_field(:name, "search_query").set('Marcoumar')
+    @browser.button(:name, "search").click
+    @browser.button(:value,"Resultat als CSV Downloaden").click
+    # require 'pry'; binding.pry
+    @browser.button(:name => 'proceed_payment').click
+    @browser.button(:name => 'checkout_invoice').click
+    @browser.url.should_not match  /errors/
+    filesAfterDownload =  Dir.glob(GlobAllDownloads)
+    diffFiles = (filesAfterDownload - filesBeforeDownload)
+    diffFiles.size.should == 1
+  end unless ['just-medical'].index(Flavor)
+
   it "should be possible to run a bin/admin command" do
     cmd = 'registrations.size'
     res = run_bin_admin(cmd)

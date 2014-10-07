@@ -263,7 +263,7 @@ class TestCsvResult <Minitest::Test
     flexmock(@model) do |m|
       m.should_receive(:each).and_yield(atc)
     end
-    expected = ["lookup;lookup\n","#MGrp;code;description\n","key1;key2\n"]
+    expected = "lookup;lookup\n#MGrp;code;description\nkey1;key2\n"
     flexmock(@result, :key2 => 'key2') 
     @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
     keys = ['key1', 'key2']
@@ -319,10 +319,9 @@ class TestCsvResult <Minitest::Test
     flexmock(@model) do |m|
       m.should_receive(:each).and_yield(atc)
     end
-    expected = ["lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup\n", 
-                "#MGrp;code;description\n", 
+    expected = "lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup;lookup\n"+
+                "#MGrp;code;description\n"+
                 "#Medi;barcode;name_base;desciption;most_precise_dose;count language à measure;qty;format_price;format_price;company_name;ikscat;lookup;format_date;\"\";dose;ddd_price\n"
-               ]
     assert_equal(expected, @result.to_html('context'))
     
   end

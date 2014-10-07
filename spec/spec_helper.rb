@@ -49,9 +49,11 @@ RegExpTwoMedis = /\/,?\d{13}[,\/]\d{13}(\?|)$/
 RegExpOneMedi  = /\/,?\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 DownloadDir = File.join(Dir.home, 'Downloads')
-GlobAllDownloads = File.join(DownloadDir, '*')
-
-def login(user = 'ngiger@ywesee.com', password='ng1234', remember_me=false)
+GlobAllDownloads  = File.join(DownloadDir, '*')
+AdminUser         = 'ngiger@ywesee.com'
+AdminPassword     = 'ng1234'
+    
+def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
   return true unless  @browser.link(:text=>'Anmeldung').exists?

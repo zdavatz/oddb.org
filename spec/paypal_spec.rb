@@ -89,7 +89,6 @@ describe "ch.oddb.org" do
   end
 
   def paypal_common(customer, complete = CompleteCheckout)
-    puts customer
     login_button = @browser.button(:name => /login_button/i)
     if login_button and login_button.exists?
       login_button.click
@@ -106,7 +105,7 @@ describe "ch.oddb.org" do
       if complete == CancelCheckoutLater
         @browser.button(:name,"cancel_return").click
       else
-        puts "PayPal: Jetzt zahlen"
+        puts "PayPal: Jetzt zahlen. Must accept first #{@browser.button(:id => /accept.x/).exists?}"
         if @browser.button(:id => /accept.x/).exists?
           @browser.button(:id => /accept.x/).click
         else
@@ -154,6 +153,67 @@ describe "ch.oddb.org" do
     sleep 5
   end
 
+  it "should be possible to download Zulassungsinhaber Desitin as admin user" do
+    logout
+    login(AdminUser, AdminPassword)
+    if false
+      @browser.link(:text, "Admin").click
+      @browser.link(:text, "Benutzer").click
+      @browser.link(:text, AdminUser).click
+      @browser.checkbox(:name, "yus_privileges[login|org.oddb.AdminUser]").value.should == "1"
+      @browser.goto OddbUrl
+    end
+    @browser.select_list(:name, "search_type").select("Zulassungsinhaber")
+    @browser.text_field(:id, "searchbar").set("Desitin")
+    @browser.button(:name,"search").click
+    @browser.button(:name,"export_csv").click
+    @browser.select_list(:name, "payment_method").select("Rechnung")
+    @browser.button(:name, "proceed_payment").click
+    # require 'pry'; binding.pry
+    @browser.button(:name, "checkout_invoice").click
+    @browser.url.should_not match  /errors/
+    @browser.url.should_not match /appdown/
+  end
+  
+  it "should be possible to checkout doctors.csv via paypal" do
+    new_customer_email = "#{@act_id}@ywesee.com"
+    customer = { :email => new_customer_email,  :pwd => '44443333',
+                    :family_name => 'Demo',
+                    :first_name => 'Fritz' }
+    waitForOddbToBeReady(@browser, OddbUrl)
+		logout
+		@browser.link(:name, "user").click
+		@browser.link(:name, "download_export").click
+    @browser.select_list(:name, "compression").select("TAR/GZ")
+#		@browser.link(:name, "directlink_doctors_csv").click # 1900
+		@browser.link(:name, "directlink_oddb_csv").click # 500
+    init_paypal_checkout(customer)
+    @browser.select_list(:name, "business_area").select("Medi-Information")
+		@browser.text_field(:name, "address").set 'Adresse'
+		@browser.text_field(:name, "plz").set 'plz'
+		@browser.text_field(:name, "city").set 'city'
+		@browser.text_field(:name, "phone").set 'phone'
+    puts "email #{new_customer_email}: URL before preceeding to paypal was #{@browser.url}"
+#    @browser.select_list(:name, "business_area").select("Medi-Information")
+    @browser.button(:name => /checkout/).click
+    paypal_common(@customer_1)
+		#     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+ 
+    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+    @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    # URL after merchant_return_link was https://www.sandbox.paypal.com/de/cgi-bin/webscr?cmd=_flow&SESSION=xwxvkiuqJo1V36Q7No2y16kyUItNDJUsujicACfPjckq_tCsEIpiPUXxeXK&dispatch=50a222a57771920b6a3d7b606239e4d529b525e0b7e69bf0224adecfb0124e9b61f737ba21b08198cf7658296ddbf66bbd0b039a3775ce6f
+
+		## http://oddb-ci2.dyndns.org/de/gcc/download/email/20140924-170352%40ywesee.com/invoice/32264413/filename/doctors.csv.zip
+    #  http://oddb-ci2.dyndns.org/de/gcc/download/email/20140929-105511%40ywesee.com/invoice/32356661/filename/oddb.csv.zip
+    # display is empty
+    link = @browser.link(:name => 'download')
+    puts link.href
+    require 'pry'; binding.pry
+    link.click
+    @browser.url.should_not match  /errors/
+    @browser.url.should_not match /appdown/
+  end
+
   it "should be checkout via paypal a poweruser" do
     select_poweruser(OneDay)
     new_customer_email = "#{@act_id}@ywesee.com"
@@ -179,7 +239,7 @@ describe "ch.oddb.org" do
         search_for_medi(name)
         @browser.text.should_not match /Abfragebeschränkung auf 5 Abfragen pro Tag/
     }
-  end unless ['just-medical'].index(Flavor)
+  end
 
   it "should return a correct link to a CSV file if the payment is okay" do
     @browser.goto OddbUrl
@@ -204,7 +264,7 @@ describe "ch.oddb.org" do
     @browser.url.should_not match /appdown/
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
-  end unless ['just-medical'].index(Flavor)
+  end
 
   it "should not download a CSV file if the payment was not accepted" do
     @browser.goto OddbUrl
@@ -218,7 +278,7 @@ describe "ch.oddb.org" do
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
     diffFiles.size.should == 0
-  end unless ['just-medical'].index(Flavor)
+  end
 
   it "should be possible to cancel a paypal before login" do
     waitForOddbToBeReady(@browser, OddbUrl)
@@ -230,7 +290,7 @@ describe "ch.oddb.org" do
     puts "URL after #{@browser.url} OddbUrl"
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     @browser.url.index(OddbUrl).should_not be nil
-  end unless ['just-medical'].index(Flavor)
+  end
 
   it "should be possible to cancel a paypal after login but before paying" do
     waitForOddbToBeReady(@browser, OddbUrl)
@@ -242,9 +302,9 @@ describe "ch.oddb.org" do
     puts "URL after #{@browser.url} OddbUrl"
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     @browser.url.index(OddbUrl).should_not be nil
-  end unless ['just-medical'].index(Flavor)
+  end
 
   after :all do
     @browser.close
   end
-end
+end unless ['just-medical'].index(Flavor) 

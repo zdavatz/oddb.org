@@ -362,7 +362,7 @@ class CsvResult < HtmlGrid::Component
     end
     header
   end
-  def to_csv(keys, symbol=:active_packages, encoding=nil, target=:atc_class)
+  def to_csv(keys, symbol=:active_packages, encoding='utf-8', target=:atc_class)
     result = []
     eans   = {}
     index  = 0
@@ -457,15 +457,16 @@ class CsvResult < HtmlGrid::Component
         }
       }
     end
-    result.compact.collect { |line|
+    res =result.compact.collect { |line|
       if encoding
         CSV.generate_line(line, {:col_sep => ';'}).encode(encoding, :invalid => :replace, :undef => :replace, :replace => '')
       else
         CSV.generate_line(line, {:col_sep => ';'})
       end
     }
+    res.join('')
   end
-	def to_csv_file(keys, path, symbol=:active_packages, encoding=nil, target=:atc_class)
+	def to_csv_file(keys, path, symbol=:active_packages, encoding='utf-8', target=:atc_class)
 		File.open(path, 'w') do |fh|
       fh.puts to_csv(keys, symbol, encoding, target)
     end
