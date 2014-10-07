@@ -137,7 +137,7 @@ credit org.oddb.download
   [ 'th_affiliations', 'th_name_first', 'th_name_last', 'th_email'].each {
     |link_name|
       it "should be possible to sort users by #{link_name.sub('th_','')}" do
-        skip # does not work (september 2014)
+        pending # does not work (september 2014)
         @browser.goto OddbUrl
         login
         @browser.link(:text=>'Admin').click

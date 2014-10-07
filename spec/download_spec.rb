@@ -50,6 +50,34 @@ describe "ch.oddb.org" do
     res.should match(/-\> \d+/)
   end
 
+  it "should be possible to download Zulassungsinhaber Desitin as admin user" do
+    logout
+    login(AdminUser, AdminPassword)
+    if false
+      @browser.link(:text, "Admin").click
+      @browser.link(:text, "Benutzer").click
+      @browser.link(:text, AdminUser).click
+      @browser.checkbox(:name, "yus_privileges[login|org.oddb.AdminUser]").value.should == "1"
+      @browser.goto OddbUrl
+    end
+    @browser.select_list(:name, "search_type").select("Zulassungsinhaber")
+    @browser.text_field(:id, "searchbar").set("Desitin")
+    @browser.button(:name,"search").click
+    @browser.button(:name,"export_csv").click
+    @browser.select_list(:name, "payment_method").select("Rechnung")
+    @browser.button(:name, "proceed_payment").click
+    link = @browser.button(:name, "checkout_invoice")
+    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    link.click
+    @browser.url.should_not match /errors/
+    @browser.url.should_not match /appdown/
+    filesAfterDownload =  Dir.glob(GlobAllDownloads)
+    diffFiles = (filesAfterDownload - filesBeforeDownload)
+    diffFiles.size.should == 1
+    inhalt = IO.read(diffFiles.first)
+    inhalt.should match /Desitin/i
+  end
+
   it "should be possible to run grant_download oddb2.csv" do
     price = 17
     cmd = "grant_download '#{ViewerUser}', 'oddb2.csv', #{price}"
