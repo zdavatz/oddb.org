@@ -28,14 +28,19 @@ class Return < State::Global
 				if item.type == :poweruser
 					@session.yus_grant(invoice.yus_name, 'login', 'org.oddb.PowerUser', item.expiry_time)
 					@session.yus_grant(invoice.yus_name, 'view', 'org.oddb', item.expiry_time)
-					@model.payment_received!
-					reconsider_permissions(@session.user, self)
+					@session.yus_set_preference(invoice.yus_name, 'poweruser_duration', invoice.max_duration)
+				elsif item.type == :download
+					@session.yus_grant(invoice.yus_name, 'download', item.text, item.expiry_time)
 				elsif item.type == :csv_export
-					# Not sure what do do here! @session.yus_grant(invoice.yus_name, :download, item.text, item.expiry_time)
+					@session.yus_grant(invoice.yus_name, 'download', item.text, item.expiry_time)
+				else
+					$stdout.puts "State::PayPal::Return unhandled type #{item.type}"
 				end
 				wrap
 			}
 		end
+		@model.payment_received!
+		reconsider_permissions(@session.user, self)
 		super
 	end
 	def back
