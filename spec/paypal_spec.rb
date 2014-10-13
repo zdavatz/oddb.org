@@ -157,7 +157,7 @@ describe "ch.oddb.org" do
     sleep 5
   end
 
-  it "should be possible to checkout doctors.csv via paypal" do
+  it "should be possible to checkout oddb.csv via paypal" do
     new_customer_email = "#{@act_id}@ywesee.com"
     customer = { :email => new_customer_email,  :pwd => Password_Dummy,
                     :family_name => 'Demo',
@@ -180,12 +180,13 @@ describe "ch.oddb.org" do
     paypal_common(@customer_1)
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    createScreenshot(@browser, 'paypal_oddb_csv')
     link = @browser.link(:name => 'download')
     link.exists?.should be true
     link.click
     @browser.url.should_not match  /errors/
     @browser.url.should_not match /appdown/
-  end
+  end if false
 
   it "should be checkout via paypal a poweruser" do
     select_poweruser(OneDay)
@@ -199,13 +200,14 @@ describe "ch.oddb.org" do
     @browser.button(:name => 'checkout').click
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     paypal_common(@customer_1)
-    unlimited = @browser.link(:text => /unlimited/)
-    puts "PayPal: Payment okay? #{unlimited.exists?}  #{unlimited.exists? ? unlimited.href : 'no href'}"
-    unlimited.exists?.should be true
-    link_url = unlimited.href.clone
-    @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    forward_to_home = @browser.link(:name => 'forward_to_home')
+
+    puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"
+    forward_to_home.exists?.should be true
+    createScreenshot(@browser, 'paypal_poweruser')
     @browser.url.should_not match /appdown/
-    @browser.goto OddbUrl
+    forward_to_home.click
+    @browser.url.should match OddbUrl
     saved = @idx
     # ensure that login a new power user works and that he can visit as many drugs as he wants
     logout
@@ -215,8 +217,6 @@ describe "ch.oddb.org" do
         search_for_medi(name)
         @browser.text.should_not match /Abfragebeschränkung auf 5 Abfragen pro Tag/
     }
-    pending "Visiting the unlimited access link leads to an appdown.html error"
-    @browser.goto unlimited_url
   end
 
   it "should return a correct link to a CSV file if the payment is okay" do
@@ -234,6 +234,7 @@ describe "ch.oddb.org" do
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
     @browser.url.should_not match  /errors/
     @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    createScreenshot(@browser, 'paypal_csv_okay')
     link = @browser.link(:name => 'download')
     link.exists?.should be true
     link.click
@@ -269,6 +270,7 @@ describe "ch.oddb.org" do
     @browser.button(:name => 'checkout_paypal').click
     paypal_common(@customer_1, CancelCheckoutEarly)
     puts "URL after #{@browser.url} OddbUrl"
+    createScreenshot(@browser, 'paypal_csv_payment_cancelled')
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     @browser.url.index(OddbUrl).should_not be nil
   end
@@ -287,4 +289,4 @@ describe "ch.oddb.org" do
   after :all do
     @browser.close
   end
-end unless ['just-medical'].index(Flavor) 
+end unless ['just-medical'].index(Flavor)

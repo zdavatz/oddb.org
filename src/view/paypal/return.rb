@@ -85,12 +85,19 @@ class ReturnComposite < HtmlGrid::Composite
         if protocol = DOWNLOAD_PROTOCOLS.find do |prt| %r{#{prt}}.match(txt) end
           suffix = 'p'
         end
-				components.update({
-					[0,0,0]	=>	'paypal_success',
-					[0,1] 	=>	"paypal_msg_success_#{suffix}",
-					[0,2] 	=>	:download_links,
-					[0,3] 	=>	:back,
-				})
+        if @model.items.first.type.to_s == 'poweruser'
+          components.update({
+            [0,1]   =>  @lookandfeel.lookup(:paypal_msg_success_power) + @model.items.first.expiry_time.strftime('%Y.%m.%d %H:%M'),
+            [0,2]   =>  :forward_to_home,
+          })
+        else
+          components.update({
+            [0,0,0]	=>	'paypal_success',
+            [0,1] 	=>	"paypal_msg_success_#{suffix}",
+            [0,2] 	=>	:download_links,
+            [0,3] 	=>	:back,
+          })
+        end
 			else
 				components.update({
 					[0,0,0]	=>	'paypal_unconfirmed',
@@ -100,6 +107,11 @@ class ReturnComposite < HtmlGrid::Composite
 			end
 		end
 		super
+	end
+	def forward_to_home(model)
+		link_home = HtmlGrid::Link.new(:forward_to_home, model, @session, self)
+		link_home.href = @lookandfeel._event_url(:home)
+		link_home
 	end
 	def back(model)
 		button = super

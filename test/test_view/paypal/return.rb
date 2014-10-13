@@ -74,7 +74,8 @@ class TestReturnComposite <Minitest::Test
                         :text     => 'text',
                         :expired? => nil,
                         :email    => 'email',
-                        :oid      => 'oid'
+                        :oid      => 'oid',
+                        :type => :poweruser,
                        )
     @model   = flexmock('model', 
                         :payment_received? => nil,
@@ -133,7 +134,10 @@ class TestReturn <Minitest::Test
                          :sponsor     => sponsor,
                          :flavor      => 'flavor',
                         )
-    @model    = flexmock('model', :payment_received? => nil)
+    @item    = flexmock('item',
+                        :type         => :poweruser,
+                       )
+    @model    = flexmock('model', :payment_received? => nil, :items => [@item]  )
     @template = ODDB::View::PayPal::Return.new(@model, @session)
   end
   def test_http_headers
