@@ -203,6 +203,7 @@ module ODDB
 			end
       run_on_monthday(1) {
         update_interactions
+        update_analysis
       }
 		end
     def run_random

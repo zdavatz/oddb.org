@@ -76,26 +76,26 @@ describe "ch.oddb.org" do
     $prescription_test_id += 1
   end
 
+  { '125Dihydroxycholecalciferol 1000' => '1,25-Dihydroxycholecalciferol',
+    '125'                              => '125',
+    '125'                              => '1,25-Dihydroxycholecalciferol',
+    '125Dihydroxycholecalciferol'      => '1,25-Dihydroxycholecalciferol',
+  }.each {
+    |searchterm, searchtext|
+    it "should be possible to find #{searchtext} when searching via #{searchterm} in analysen" do
+      @browser.link(:name,'analysis').click
+      @browser.text_field(:name, "search_query").value = searchterm
+      @browser.button(:name => 'search').click
+      @browser.text.should_not match LeeresResult
+      @browser.text.should match /#{searchtext}/
+    end
+  }  unless ['just-medical'].index(Flavor)
+
   chapters = {
     'Unerw.Wirkungen' => 'Kopfschmerzen',
     'Dos./Anw.' => 'Kinder',
     'Interakt.' => 'Tocilizumab',
   }
-     
-  it "should be possible to find 125Dihydroxycholecalciferol via analysen" do
-    search_term = '125Dihydroxycholecalciferol'
-    @browser.link(:name,'analysis').click
-    @browser.text_field(:name, "search_query").value = search_term
-    @browser.button(:name => 'search').click
-    # Currently fails. You wee in oddbd HINWEIS:  Textsucheanfrage enthält nur Stoppwörter oder enthält keine Lexeme, ignoriert
-    # analysis_positions.first.search_text(:de)
-    # -> 125Dihydroxycholecalciferol 1000 100000
-    # http://ch.oddb.org/de/gcc/search/zone/analysis/search_query/125Dihydroxycholecalciferol works
-
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /#{search_term}/
-  end unless ['just-medical'].index(Flavor)
-
   chapters.each{ |chapter_name, text|
     it "should should work (58868 Actemra) with #{chapter_name} and #{text}" do
       enter_fachinfo_search
@@ -242,5 +242,9 @@ describe "ch.oddb.org" do
 
   pending "should work with the substances/result searchbar" do
     false.should == true
+  end
+
+  after :all do
+    @browser.close
   end
 end
