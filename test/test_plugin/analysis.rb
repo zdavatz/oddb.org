@@ -7,11 +7,12 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
-require 'rubygems'
+require 'minitest/unit'
 require 'flexmock'
+require 'stub/odba'
+require 'stub/oddbapp'
 require 'mechanize'
 require 'plugin/analysis'
-require 'stub/odba'
 
 module ODBA
   def ODBA.transaction(&block)
@@ -31,7 +32,7 @@ module ODDB
   class AnalysisPlugin
     @@today = Today
   end
-  class TestAnalysisPlugin <Minitest::Test
+  class TestAnalysisPluginDownload <Minitest::Test
     @@today = Today
     include FlexMock::TestCase
     def setup
@@ -62,6 +63,37 @@ module ODDB
     def test_update
       assert_equal('recount', @plugin.update)
       assert(File.exists?(@download_file))
+    end
+  end
+
+  class TestAnalysisPluginWithoutDownload <Minitest::Test
+    @@today = Today
+    Download_file = File.expand_path(File.join(__FILE__, '../../data/xlsx/analysis_de_2014.10.14_small.xlsx')) 
+    include FlexMock::TestCase
+    def setup
+      ODDB::GalenicGroup.reset_oids
+      ODBA.storage.reset_id
+      @app = ODDB::App.new
+      @plugin = AnalysisPlugin.new(@app)
+      def @plugin.get_latest_file(lang = 'de')
+        Download_file
+      end
+      @latest_file = File.expand_path(File.join(__FILE__, "../../../data/xls/analysis_fr_latest.xlsx")) 
+      FileUtils.rm(@latest_file, :verbose => false)   if File.exists?(@latest_file)
+    end
+    def test_update
+      @plugin.update
+      assert(File.exists?(Download_file))
+      assert_equal(4, @app.analysis_groups.size)
+      assert_equal('1000', @app.analysis_groups.first[1].groupcd)
+      assert_equal('1,25-Dihydroxycholecalciferol', @app.analysis_groups.first[1].positions.first[1].description)
+      assert_equal('C', @app.analysis_groups.first[1].positions.first[1].lab_areas)
+      assert_equal(85, @app.analysis_groups.first[1].positions.first[1].taxpoints)
+      assert_equal('Alkalische Phosphatase-Isoenzyme mittels elektrophoretischer Differenzierung', @app.analysis_groups['1030'].positions.first[1].description)
+      assert_equal('Alpha-1-Antitrypsin',  @app.analysis_groups['1032'].positions.first[1].description)
+      assert_equal('in Stoffwechsellaboratorien der Universitätskliniken',
+                   @app.analysis_groups['1007'].positions.first[1].limitation_text.to_s)
+      
     end
   end
 end
