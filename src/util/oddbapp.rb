@@ -203,8 +203,11 @@ class OddbPrevalence
 		@analysis_groups[grpcd]
 	end
 	def analysis_positions
-		@analysis_groups.values.inject([]) { |memo, group| 
-			memo.concat(group.positions.values)
+		@analysis_groups ||= {}
+		@analysis_groups.values.inject([]) { |memo, group|
+			if group and group.positions
+				memo.concat(group.positions.values)
+			end
 		}
 	end
 	def atcless_sequences

@@ -327,23 +327,29 @@ module ODDB
       setup_bsv_xml_plugin
       assert_equal('update', @updater.update_bsv)
     end
-    def test_update_analysis
-      flexstub(AnalysisPlugin) do |klass|
-        klass.should_receive(:new).and_return(flexmock('ana') do |obj|
-          obj.should_receive(:update).and_return('update')
-        end)
+    def test_update_analysis_sending_log
+      plugin = flexmock('analysis') do |analysis|
+          analysis.should_receive(:log_info).and_return(@recipients)
+          analysis.should_receive(:update).and_return('update')
       end
-      assert_equal('update', @updater.update_analysis)
+      stub = flexstub(AnalysisPlugin) do |klass|
+        klass.should_receive(:new).and_return(plugin)
+        klass.should_receive(:update).and_return('update')
+      end
+      @updater = flexmock(ODDB::Updater.new(@app))
+      @updater.update_analysis
+      assert_spy_called(plugin, {:times => 1}, :update)
+      assert_spy_called(plugin, {:times => 1}, :log_info)
     end
     def test_update_immediate   # update_immediate is a private method
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:update)
-        plg.should_receive(:log_info).and_return({})
       end
       klass = flexmock('klass') do |klass|
         klass.should_receive(:new).and_return(plugin)
       end
       assert_equal('notify', @updater.instance_eval("update_immediate(klass, 'subject')"))
+      assert_spy_called plugin, {:times => 1}, :log_info
     end
     def test_update_immediate__error
       klass = flexmock('klass') do |klass|

@@ -51,6 +51,7 @@ module ODDB
       @app = FlexMock.new 'app'
       @app.should_receive(:delete_all_analysis_group).and_return true
       @app.should_receive(:analysis_group).and_return(@analysis_group)
+      @app.should_receive(:analysis_groups).and_return([@analysis_group])
       @app.should_receive(:create)
       @app.should_receive(:update)
       @app.should_receive(:recount).and_return('recount')
@@ -76,7 +77,7 @@ module ODDB
       @app = ODDB::App.new
       @plugin = AnalysisPlugin.new(@app)
       def @plugin.get_latest_file(lang = 'de')
-        Download_file
+        return true, Download_file
       end
       @latest_file = File.expand_path(File.join(__FILE__, "../../../data/xls/analysis_fr_latest.xlsx")) 
       FileUtils.rm(@latest_file, :verbose => false)   if File.exists?(@latest_file)

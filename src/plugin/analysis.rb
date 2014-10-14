@@ -25,26 +25,35 @@ module ODDB
       :limitation_text      => 4, # E
       :lab_areas            => 5, # F
     }
+    def save_for_log(msg)
+      LogFile.append('oddb/debug', " AnalysisPlugin #{msg}", Time.now)
+      withTimeStamp = "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}"
+      # $stderr.puts withTimeStamp
+      @@logInfo << withTimeStamp
+    end
     def initialize(app)
+      @@logInfo = []
       @archive = File.join ARCHIVE_PATH, 'xls'
       FileUtils.mkdir_p @archive
-      LogFile.append('oddb/debug', " AnalysisPlugin @archive #{@archive} ", Time.now)
+      save_for_log "@archive #{@archive}"
       super
     end
     def update
-      LogFile.append('oddb/debug', " AnalysisPlugin update deleting all_analysis_group", Time.now)
-      @app.delete_all_analysis_group
-      if target = get_latest_file('de')
-        res = update_group_position(target, 'de')
+      needs_update_fr, target_fr = get_latest_file('fr')
+      needs_update_de, target_de = get_latest_file('de')
+      if needs_update_de or needs_update_fr or @app.analysis_groups.size == 0
+        save_for_log "deleting all_analysis_group (#{@app.analysis_groups.size} groups)"
+        ODBA.transaction {
+          @app.delete_all_analysis_group
+          update_group_position(target_de, 'de')
+          update_group_position(target_fr, 'fr')
+        }
       end
-      if target = get_latest_file('fr')
-        res = update_group_position(target, 'fr')
-      end
-      LogFile.append('oddb/debug', " AnalysisPlugin update finished", Time.now)
-      res 
+      save_for_log "update finished with #{@app.analysis_groups.size} groups and #{@app.analysis_positions.size} positions"
+      @app.recount
     end
     def update_group_position(path, lang)
-      LogFile.append('oddb/debug', " AnalysisPlugin update_group_position #{lang} #{path}", Time.now)
+      save_for_log " update_group_position #{lang} #{path}"
       parse_xls(path).each { |position|
         group = update_group(position)
         if(position[:analysis_revision] == 'S')
@@ -53,7 +62,6 @@ module ODDB
           position = update_position(group, position, lang)
         end
       }
-      @app.recount
     end
     def get_latest_file(lang = 'de')
       agent = Mechanize.new
@@ -73,15 +81,16 @@ module ODDB
       download = file.body
       latest = File.join @archive, "analysis_#{lang}_latest.xlsx"
       target = File.join @archive, @@today.strftime("analysis_#{lang}_%Y.%m.%d.xlsx")
+      needs_update = true
       if(!File.exist?(latest) or download.size != File.size(latest))
         File.open(latest, 'w+') { |f| f.write download }
         File.open(target, 'w+') { |f| f.write download }
-        LogFile.append('oddb/debug', " AnalysisPlugin saved get_latest_file as #{target} and #{latest}", Time.now)
-        target
+        save_for_log "saved get_latest_file as #{target} and #{latest}"
       else
-        LogFile.append('oddb/debug', " AnalysisPlugin not saving get_latest_file #{target} ", Time.now)
-        nil # not new file
+        save_for_log "latest_file #{target} is uptodate"
+        needs_update = false
       end
+      return needs_update,latest
     end
     def parse_xls(path)
       workbook = RubyXL::Parser.parse(path)
@@ -90,9 +99,6 @@ module ODDB
       workbook[0].each do |row|
         rows += 1
         if rows > 1
-          unless row[COL[:group_position_code]]
-            LogFile.append('oddb/debug', " AnalysisPlugin parse_xls skip row #{rows} chapter #{row[COL[:chapter]]}:", Time.now)
-          end
           groupcd, poscd = row[COL[:group_position_code]].value.to_s.split('.')
           poscd ||= '00'
           chapter            = row[COL[:chapter]]           ? row[COL[:chapter]].value            : nil
@@ -141,6 +147,13 @@ module ODDB
         @app.update(pos.pointer, {:limitation_text => lim}, :anaylsis)
       end
       pos
+    end
+
+    # send a log mail after running the import
+    def log_info
+      info = super
+      info.update(:parts => {}, :report => @@logInfo.join("\n"))
+      info
     end
   end
 end

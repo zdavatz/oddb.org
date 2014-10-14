@@ -209,14 +209,17 @@ module ODDB
     def run_random
       # no task
     end
-		def update_analysis
-			klass = AnalysisPlugin
-			subj = 'Analysis'
-			wrap_update(klass, subj) {
-				plug = klass.new(@app)
-				plug.update
-			}
-		end
+    def update_analysis
+      klass = AnalysisPlugin
+      subj = 'Analysis'
+      wrap_update(klass, subj) {
+        plug = klass.new(@app)
+        plug.update
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
     def update_atc_dosing_link
       update_notify_simple(DosingPlugin, 'ATC Class (dosing.de)', :update_ni_id)
     end
@@ -518,7 +521,7 @@ module ODDB
         else
 				  plug = klass.new(@app)
         end
-				if(plug.send(update_method, *args))
+				if (plug.send(update_method, *args))
 					log = Log.new(@@today)
 					log.update_values(log_info(plug))
 					log.notify(subj)
