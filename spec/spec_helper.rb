@@ -28,7 +28,8 @@ if RUBY_PLATFORM.match(/mingw/)
   browsers2test = [ :ie ]
 else
   browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
-  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
+  browsers2test = [ :firefox ]
+#  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
   require 'watir-webdriver'
 end
 require 'page-object'
