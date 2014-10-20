@@ -887,11 +887,7 @@ module ODDB
               _names << [tds[i.first].text, tds[i.last].text]
             end
           end
-          names[typ.downcase.intern] =
-            _names.sort_by do |name, date|
-              Date.strptime(date, "%d.%m.%Y")
-            end.reverse!
-        end
+          names[typ.downcase.intern] = _names.sort.reverse end
         index[lang.downcase.intern] = names
       end
       index
@@ -1003,6 +999,7 @@ module ODDB
           found_node ? [found_node] : []
         end
       end.new).first
+      return nil, nil,nil,nil unless match
       if match
         content = match.parent.at('./content')
         styles  = match.parent.at('./style').text

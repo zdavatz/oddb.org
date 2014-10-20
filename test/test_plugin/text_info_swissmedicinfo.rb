@@ -233,52 +233,6 @@ module ODDB
       FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
     end
-    
-    def setup_mechanize mapping=[]
-      agent = flexmock Mechanize.new
-      @pages = Hash.new(0)
-      @actions = {}
-      mapping.each do |page, method, url, formname, page2|
-        path = File.join @@datadir, page
-        page = setup_page url, path, agent
-        if formname
-          form = flexmock page.form(formname)
-          action = form.action
-          page = flexmock page
-          page.should_receive(:form).with(formname).and_return(form)
-          path2 = File.join @@datadir, page2
-          page2 = setup_page action, path2, agent
-          agent.should_receive(:submit).and_return page2
-        end
-        case method
-        when :get, :post
-          agent.should_receive(method).with(url).and_return do |*args|
-            @pages[[method, url, *args]] += 1
-            page
-          end
-        when :submit
-          @actions[url] = page
-          agent.should_receive(method).and_return do |form, *args|
-            action = form.action
-            @pages[[method, action, *args]] += 1
-            @actions[action]
-          end
-        else
-          agent.should_receive(method).and_return do |*args|
-            @pages[[method, *args]] += 1
-            page
-          end
-        end
-      end
-      agent
-    end
-    
-    def setup_page url, path, agent
-      response = {'content-type' => 'text/html'}
-      Mechanize::Page.new(URI.parse(url), response,
-                          File.read(path), 200, agent)
-    end
-    
     def setup_fachinfo_document heading, text
       fi = FachinfoDocument.new
       fi.iksnrs = Text::Chapter.new
@@ -287,12 +241,6 @@ module ODDB
       fi
     end
 
-    def test_init_agent
-      agent = @plugin.init_agent
-      assert_instance_of Mechanize, agent
-      assert /Mozilla/.match(agent.user_agent)
-    end
-    
     def test_import_swissmedicinfo_xml
       reg = flexmock('registration4',
                      :new => 'new',
@@ -330,6 +278,78 @@ module ODDB
       @parser.should_receive(:parse_patinfo_html).never
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
       assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
+    end
+
+    def test_import_swissmedicinfo_no_iksnr
+      reg = flexmock('registration4',
+                     :new => 'new',
+                     :store => 'store',
+                               :export_flag => false,
+                               :inactive? => false,
+                               :package => :package,
+                               :expiration_date => false,
+                     )
+                     
+      reg.should_receive(:fachinfo)
+      ptr = Persistence::Pointer.new([:registration, '32917'])
+      reg.should_receive(:pointer).and_return ptr
+      part = flexmock('part')
+      package = flexmock('package', :create_part => part)
+      seq = flexmock('sequence',
+                     :patinfo= => 'patinfo',
+                     :odba_isolated_store => 'odba_isolated_store',
+                     :create_package => package,
+                     :packages => [package],
+                     )
+      seq.should_receive(:patinfo)
+      seq.should_receive(:pointer).and_return ptr
+      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
+      reg.should_receive(:sequences).and_return({'01' => seq})
+      reg.should_receive(:sequence).and_return(seq)
+      reg.should_receive(:packages).and_return([])
+      @app.should_receive(:registration).with('32917').and_return reg
+      fi = flexmock 'fachinfo'
+      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
+      pi = flexmock 'patinfo'
+      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
+      flags = {:de => :up_to_date, :fr => :up_to_date}
+      # only german fachinfo is present
+      @parser.should_receive(:parse_fachinfo_html).once
+      @parser.should_receive(:parse_patinfo_html).never
+      opts = {:iksnrs   => [], :xml_file => File.join(@@datadir, 'AipsDownload.xml')}
+      @plugin = TextInfoPlugin.new(@app, opts)
+      agent = @plugin.init_agent
+      base =  File.expand_path(File.join(__FILE__, '../../../test/data/html/swissmedic/'))
+      mappings = { "http://www.swissmedicinfo.ch/Accept.aspx\?ReturnUrl=\%2f" => File.join(base, 'accept.html'),
+                   "http://www.swissmedicinfo.ch/?Lang=DE" => File.join(base, 'lang.html'),
+                   "http://www.swissmedicinfo.ch/?Lang=FR" => File.join(base, 'lang.html'),
+                  }
+      @plugin.parser = @parser
+      def @plugin.download_swissmedicinfo_xml
+        @dest = File.join(@@vardir, 'xml', 'AipsDownload_latest.xml')
+        FileUtils.makedirs(File.dirname(@dest))
+        FileUtils.cp(File.join(@@datadir, 'AipsDownload_xeljanz.xml'), @dest)
+        File.join(@dest, 'AipsDownload_xeljanz.xml')
+      end
+      def @plugin.textinfo_swissmedicinfo_index
+        index = {:new=>{:de=> {:fi=>[["Zyloric®", "Jan 2014"],],
+                               :pi=>[["Zyloric®", "Jan 2014"], ],},
+                        :fr=>{:fi=>[["Zyloric®", "janv. 2014"],],
+                              :pi=>[["Zyloric®", "janv. 2014"],],
+                              },
+                        },
+                 :change=>{:de=> {:fi=>[["Zyloric®", "Jan 2014"],],
+                               :pi=>[["Zyloric®", "Jan 2014"], ],},
+                        :fr=>{:fi=>[["Zyloric®", "janv. 2014"],],
+                              :pi=>[["Zyloric®", "janv. 2014"],],
+                              },
+                        },
+                }
+        index
+      end
+      @app.should_receive(:sorted_fachinfos).and_return([])
+      @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
+      assert(@plugin.import_swissmedicinfo(), 'must be able to run import_swissmedicinfo')
     end
 
     def test_import_passion

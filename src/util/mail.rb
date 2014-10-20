@@ -97,7 +97,7 @@ module ODDB
       mail.body    mail_body.  respond_to?(:force_encoding)  ?  mail_body.   force_encoding("utf-8") : mail_body
       log_and_deliver_mail(mail)
     rescue => e
-      msg = "Util.send_mail rescue: error is #{e.inspect} recipients #{recipients.inspect} #{caller[0..10].join("\n")}"
+      msg = "Util.send_mail rescue: error is #{e.inspect} recipients #{recipients.inspect} #{caller.join("\n")}"
       msg += "\n#{mail_subject}"
       msg += "\n#{mail_body.to_s[0..160]}"
       Util.debug_msg(msg)
