@@ -607,6 +607,14 @@ class OddbPrevalence
   def hospital_count
     @hospitals.size
   end
+  def doctor_by_gln(gln)
+    @doctors.values.each { |doctor|
+      if(doctor.ean13 == gln)
+        return doctor
+      end
+    }
+    nil
+  end
 	def doctor_count
 		@doctor_count ||= @doctors.size
 	end

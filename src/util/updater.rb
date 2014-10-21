@@ -9,6 +9,7 @@ require 'plugin/analysis'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
+require 'plugin/medreg_doctor'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
@@ -225,6 +226,18 @@ module ODDB
     end
     def update_atc_drugbank_link
       update_notify_simple(DrugbankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
+    end
+    def update_medreg_doctors(opts = nil)
+      LogFile.append('oddb/debug', " update update_medreg_doctors opts #{opts.inspect}", Time.now)
+      klass = ODDB::Doctors::MedregDoctorPlugin
+      subj = 'doctors (Medreg)'
+      wrap_update(klass, subj) {
+        plug = klass.new(@app, opts)
+        plug.update
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
     end
 		def update_bsv
 
