@@ -247,6 +247,14 @@ class OddbPrevalence
 	def company(oid)
 		@companies[oid.to_i]
 	end
+  def company_by_gln(gln)
+    @companies.values.each { |company|
+      if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
+        return company
+      end
+    }
+    nil
+  end
   def company_by_name(name, ngram_cutoff=nil)
     _company_by_name(name, ngram_cutoff) \
       || _company_by_name(name, ngram_cutoff, /\s*(ag|gmbh|sa)\b/i)
