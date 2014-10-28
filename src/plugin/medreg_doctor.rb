@@ -9,21 +9,23 @@ require 'model/address'
 require 'util/oddbconfig'
 require 'util/persistence'
 require 'util/logfile'
+require 'util/resilient_loop'
 require 'rubyXL'
 require 'mechanize'
 require 'logger'
 require 'cgi'
-require 'watir'
 require 'psych' if RUBY_VERSION.match(/^1\.9/)
 require "yaml"
+require 'timeout'
 
 module ODDB
   module Doctors
-    Personen_XLSX = File.expand_path(File.join(__FILE__, '../../../data/xls/Personen_latest.xlsx'))
-    Personen_YAML  = File.expand_path(File.join(__FILE__, "../../../data/txt/doctors_#{Time.now.strftime('%Y.%m.%d')}.yaml"))
-    MedRegURL     = 'https://www.medreg.admin.ch/MedReg/PersonenSuche.aspx'
-    # MedRegURL     = 'http://www.medregom.admin.ch/'
-    DoctorInfo = Struct.new("DoctorInfo", 
+    Mechanize_Log         = File.join(ODDB::LogFile::LOG_ROOT, File.basename(__FILE__).sub('.rb', '.log'))
+    Personen_XLSX         = File.expand_path(File.join(__FILE__, '../../../data/xls/Personen_latest.xlsx'))
+    Personen_YAML         = File.expand_path(File.join(__FILE__, "../../../data/txt/doctors_#{Time.now.strftime('%Y.%m.%d')}.yaml"))
+    MedRegOmURL           = 'http://www.medregom.admin.ch/'
+    MedRegPerson_XLS_URL  = "https://www.medregbm.admin.ch/Publikation/CreateExcelListMedizinalPersons"
+    DoctorInfo = Struct.new("DoctorInfo",
                             :gln,
                             :exam,
                             :address,
@@ -37,7 +39,6 @@ module ODDB
                             :remark_sell_drugs,
                            )
 #    GLN Person  Name  Vorname PLZ Ort Bewilligungskanton  Land  Diplom  BTM Berechtigung  Bewilligung Selbstdispensation  Bemerkung Selbstdispensation
-
     COL = {
       :gln                    => 0, # A
       :family_name            => 1, # B
@@ -54,49 +55,47 @@ module ODDB
     class MedregDoctorPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}"; $stdout.flush
+        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}" unless defined?(MiniTest); $stdout.flush
         LogFile.append('oddb/debug', " MedregDoctorPlugin #{msg}", Time.now)
       end
 
       def save_for_log(msg)
         LogFile.append('oddb/debug', " MedregDoctorPlugin #{msg}", Time.now)
-        withTimeStamp = "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}"
+        withTimeStamp = "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}" unless defined?(MiniTest)
         # $stderr.puts withTimeStamp
         @@logInfo << withTimeStamp
       end
       def initialize(app=nil, glns_to_import = [])
-        @glns_to_import = glns_to_import
+        @glns_to_import = glns_to_import.clone
+        @glns_to_import.delete_if {|item| item.size == 0}
         @info_to_gln    = {}
         @@logInfo       = []
         FileUtils.rm_f(Personen_YAML) if File.exists?(Personen_YAML)
         @yaml_file      = File.open(Personen_YAML, 'w+')
         super
         @doctors_created = 0
+        @doctors_updated = 0
         @doctors_skipped = 0
         @doctors_deleted = 0
         @archive = File.join ARCHIVE_PATH, 'xls'
-        @@all_doctors    = []
-        setup_default_browser
+        @@all_doctors    = {}
+        setup_default_agent unless setup_default_agent
       end
       def update
+        saved = @glns_to_import.clone
         needs_update,latest = get_latest_file
         return unless needs_update
-        save_for_log "parse_xls #{latest}"
+        save_for_log "parse_xls #{latest} specified GLN glns #{saved.inspect}"
         parse_xls(latest)
         @info_to_gln.keys
-        get_detail_info
-        return @doctors_created, @doctors_deleted, @doctors_skipped
+        get_detail_to_glns(saved.size > 0 ? saved : @glns_to_import)
+        return @doctors_created, @doctors_updated, @doctors_deleted, @doctors_skipped
       ensure
-        File.open(Personen_YAML, 'w+') {|f| f.write(@@all_doctors.to_yaml) }        
+        File.open(Personen_YAML, 'w+') {|f| f.write(@@all_doctors.to_yaml) }       
+        save_for_log "Saved #{@@all_doctors.size} doctors in #{Personen_YAML}"
       end
-      def setup_default_browser
-        unless @browser
-          @browser = Watir::Browser.new(:chrome)
-        end
-        at_exit { @browser.close if @browser }
-      end
+
       def setup_default_agent
-          
         unless @agent
           @agent = Mechanize.new
           @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
@@ -106,144 +105,141 @@ module ODDB
           @agent.redirection_limit   = 55
           @agent.follow_meta_refresh = true
           @agent.ignore_bad_chunking = true
+          @agent.log = Logger.new    Mechanize_Log
         end
         @agent
       end
-          require 'pry'; 
-      def get_detail_info
-        if false # search via https://www.medreg.admin.ch/MedReg/Summary.aspx?IdPerson
-          setup_default_agent
-          # other idea would be to iteratate over all IdPerson
-          # https://www.medreg.admin.ch/MedReg/Summary.aspx?IdPerson=20822
-          @agent.log = Logger.new('tst.log')
-          # https://www.medreg.admin.ch/MedReg/Summary.aspx?IdPerson=210
-          personen = @agent.get('https://www.medreg.admin.ch/MedReg/PersonenSuche.aspx')
-          ids = 200.upto(220).each { |id|
-            info = @info_to_gln[id.to_s]
-            $stderr.puts "get_detail_info for #{id} is  #{info}"
-            url = "https://www.medreg.admin.ch/MedReg/Summary.aspx?IdPerson=#{id}"
-            begin
-              home = @agent.get(url)
-            rescue => e
+      def get_detail_to_glns(glns)
+        log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]}"
+        idx = 0
+        r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
+        glns.each { |gln|
+          next if r_loop.must_skip?(gln)
+          r_loop.try_run(gln) do
+            if @@all_doctors[gln.to_s] 
+              log "ERROR: Skip search GLN #{gln} (#{idx}/#{glns.size}) as already found"
               next
             end
-            File.open("tst_#{ids}.html", 'w+') { |f| f.write home.body }
-            doc = Nokogiri::HTML(home.body)
-          # FireXPath #ctl00_ContentPlaceHolder2_Label4 <span id="ctl00_ContentPlaceHolder2_Label4" class="InputLabel">Berufe (Diplome), Erteilungsland</span>
-            diplome = doc.xpath("//table[@id='ctl00_ContentPlaceHolder2_gridviewDiplomDaten']").text
-            diplome.split(/[,\r]/)
-            stammdaten = doc.xpath("//table[@id='ctl00_ContentPlaceHolder2_GridView_Stammdaten']").text.gsub(/[\n\t]/,'').split(/\r/)
-            log diplome.split(/[,\r]/)
-            log stammdaten
-          } 
-        else
-          regexp = /^Merkliste \n(.*)\nBundesamt für Gesundheit \(BAG\)\nRechtliche Grundlagen/m
-          regexpAdressen = /^Adresse\(n\)\n(.*)\nBundesamt für Gesundheit \(BAG\)\nRechtliche Grundlagen/m
-          setup_default_browser
-          ids = @info_to_gln.keys
-          $stderr.puts "ids to search are #{ids}"
-          ids.each {
-            |id|
-              info = @info_to_gln[id.to_s]
-              $stderr.puts "id to search is #{id} #{info}"
-              # http://www.medregom.admin.ch/de/Suche/Detail/?gln=7601000813282&vorname=Dora+Carmela&name=ABANTO+PAYER
-              url = "http://www.medregom.admin.ch/de/Suche/Detail/?gln=#{id}&vorname=#{info[:first_name].gsub(/ /, '+')}&name=#{info[:family_name].gsub(/ /, '+')}"
-              @browser.goto(url)
-      # => "Bundesverwaltung admin.ch\nEidgenössisches Departement des Innern EDI\nBundesamt für Gesundheit BAG\nStartseite\nDeutsch | Français | Italiano\nVersion: 1.4.2.36\nMedizinalberuferegister\nSuchen nach\nBeruf\nÄrztin/Arzt(0)\nChiropraktorin/Chiropraktor(0)\nZahnärztin/Zahnarzt(1)\nApothekerin/Apotheker(0)\nTierärztin/Tierarzt(0)\n  Name\nVorname\nStrasse\nPlz\nKanton\nAlle Kantone\nAargau\nAppenzell Ausserrhoden\nAppenzell Innerrhoden\nBasel-Land\nBasel-Stadt\nBern\nFreiburg\nGenf\nGlarus\nGraubünden\nJura\nLuzern\nNeuenburg\nNidwalden\nObwalden\nSchaffhausen\nSchwyz\nSolothurn\nSt. Gallen\nTessin\nThurgau\nUri\nWaadt\nWallis\nZug\nZürich\nGln\n        Weitere Sucheinschränkungen\nEgal \nSpezialisierung / Fachtitel\n\n\nWeiterbildungen\n\n\nTrefferliste\nMerkliste \nDora Carmela ABANTO PAYER\n\n\nABANTO PAYER, Dora Carmela (F)\n  Nationalität: Schweiz (CH)\nGLN: 7601000813282 \nBahnhofstrasse 41\n5000 Aarau\nKartendaten\nNutzungsbedingungen\nFehler bei Google Maps melden\nKarte\nZahnärztin/Zahnarzt\nBeruf Jahr Land\nZahnärztin/Zahnarzt 2004 Schweiz\nWeiterbildungstitel \nKeine Angaben vorhanden\nWeitere Qualifikationen (privatrechtliche Weiterbildung)\nKeine Angaben vorhanden\nBerufsausübungsbewilligung \nBewilligung erteilt für Kanton(e): Aargau  (2012) , Genf  (2004)\nDirektabgabe von Arzneimitteln gemäss kant. Bestimmungen (Selbstdispensation) \nkeine Selbstdispensation\nBezug von Betäubungsmitteln \nBerechtigung erteilt für Kanton(e): Aargau, Genf\nAdresse(n)\nBewilligungskanton: Aargau\nA. zahnarztzentrum.ch\nBahnhofstrasse 41\n5000 Aarau\nTelefon: 062 832 32 01\nFax: 062 832 32 01\nBewilligungskanton: Genf\nB. CABINET DENTAIRE VRBICA VESELIN\nAvenue du Bois-De-La-Chapelle 99\n1213 Onex\nTelefon: 022.793.29.60\nFax: 022.793.29.63\nBundesamt für Gesundheit (BAG)\nRechtliche Grundlagen"
-              unless @browser.text.match(regexp)
-                log "No Detail found"
-                @doctors_skipped += 1
-                next
-              end
-          infos = []
-          nrWaits = 0
-          while infos.size <= 1 && nrWaits < 10
-            detail = @browser.text.match(regexp)[1].clone
-            infos = detail.split("\n")
-            log "#{Time.now}: Found #{infos.size} infos for #{info}"
-            break if infos.size > 1
-            sleep(1)
-            nrWaits += 1
+            idx += 1
+            log "Searching for company with GLN #{gln} (#{idx}/#{glns.size})"
+            info = @info_to_gln[gln.to_s]
+            url = MedRegOmURL +  "de/Suche/Detail/?gln=#{gln}&vorname=#{info[:first_name].gsub(/ /, '+')}&name=#{info[:family_name].gsub(/ /, '+')}"
+            page_1 = @agent.get(url)
+            data_2 = [
+              ['Name', info[:family_name]],
+              ['Vorname', info[:first_name]],
+              ['Gln', gln.to_s],
+              ['AutomatischeSuche', 'True'],
+              ]
+            page_2 = @agent.post(MedRegOmURL + 'Suche/GetSearchCount', data_2)
+
+            data_3 = [
+              ['currentpage', '1'],
+              ['pagesize', '10'],
+              ['sortfield', ''],
+              ['sortorder', 'Ascending'],
+              ['pageraction', ''],
+              ['filter', ''],
+              ]
+            page_3 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_3)
+            data_4 = [
+              ['Name', info[:family_name]],
+              ['Vorname', info[:first_name]],
+              ['Gln', gln.to_s],
+              ['AutomatischeSuche', 'True'],
+              ['currentpage', '1'],
+              ['pagesize', '10'],
+              ['sortfield', ''],
+              ['sortorder', 'Ascending'],
+              ['pageraction', ''],
+              ['filter', ''],
+              ]
+            page_4 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_4)
+            regExp = /id"\:(\d\d+)/i
+            unless page_4.body.match(regExp)
+              File.open(File.join(ODDB::LogFile::LOG_ROOT, 'page_4.body'), 'w+') { |f| f.write page_4.body }
+              log "ERROR: Could not find an gln #{gln}"
+              next
+            end
+            medregId = page_4.body.match(regExp)[1]
+            page_5 = @agent.get(MedRegOmURL + "de/Detail/Detail?pid=#{medregId}")
+            File.open(File.join(ODDB::LogFile::LOG_ROOT, 'page_5.html'), 'w+') { |f| f.write page_5.content }
+            doc = Nokogiri::HTML(page_5.content)
+            unless doc.xpath("//tr") and doc.xpath("//tr").size > 3
+              log "ERROR: Could not find a table with info for #{gln}"
+              next
+            end
+            doctor = Hash.new
+            doctor[:ean13] =  gln.to_s.clone
+            doctor[:name] =  info.family_name
+            doctor[:firstname] =  info.first_name
+            idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
+            idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
+            idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
+            doctor[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'')
+            specialities = []
+            (idx_titel+1).upto(idx_privat-1).each{
+              |j|
+                line = doc.xpath("//tr")[j].text ; 
+                unless line.match(/Keine Angaben vorhanden/)
+                  specialities << line.match(/(.*)\s+(\d+)\s+(\w+)/)[1..3].join(',').gsub("\r","")
+                end
+              }
+            doctor[:specialities] = specialities
+            addresses = get_detail_info(info, doc)
+            next if addresses.size == 0
+            doctor[:addresses] = addresses
+            log doctor
+            store_doctor(doctor)
+            @@all_doctors[gln.to_s] = doctor
           end
-          if infos.size <= 1 or infos.index("Die Suche ergab keine Treffer.")
-            log "#{Time.now}: Unable to find #{id}  via #{info} and url #{url}"
-            @doctors_skipped += 1
-            next
-          end
-          binding.pry if infos.size == 10
-          doctor = Hash.new
-          doctor[:ean13] =  id.to_s.clone
-          doctor[:name] =  infos[3].split(', ')[0].clone
-          doctor[:firstname] =  infos[3].split(', ')[1].split(' (')[0].clone
-          
-          idx = infos.index('Beruf Jahr Land')
-          doctor[:exam] =  infos[idx+1].split(' ')[1].clone
-          idx = infos.index('Berufsausübungsbewilligung ')
-          
-          idx=infos.index('Weiterbildungstitel ')
-          idx2=infos.index('Weitere Qualifikationen (privatrechtliche Weiterbildung)')
-          specialities = infos[idx+1..idx2-1].join(", ")          
-          doctor[:specialities] = specialities unless specialities.match(/Keine Angaben vorhanden/)
-          # Selbstdispensation = infos.index("Direktabgabe von Arzneimitteln gemäss kant. Bestimmungen (Selbstdispensation) ") != nil
-          # idx = infos.index("Bezug von Betäubungsmitteln ")
-          # may_dispense_drugs = infos[idx+1].match(/Berechtigung erteilt für Kanton/) != nil
-          # doctor[:email]
-          # :language,
-          # :praxis,
-          # :title,
-          # :salutation, # könnte via https://www.medreg.admin.ch/MedReg/Summary.aspx?IdPerson=4633 gefunden werden
-          idx = infos.index("Adresse(n)")
-          regexpAdressen = /^Adresse\(n\)\n(.*)\nBundesamt für Gesundheit \(BAG\)\nRechtliche Grundlagen/m
-          addresses = get_addresses_from_medregob(@browser.text.match(regexpAdressen)[1])
-                           
-#          text = "Bewilligungskanton: Aargau\nA. zahnarztzentrum.ch\nBahnhofstrasse 41\n5000 Aarau\nTelefon: 062 832 32 01\nFax: 062 832 32 01\nBewilligungskanton: Genf\nB. CABINET DENTAIRE VRBICA VESELIN\nAvenue du Bois-De-La-Chapelle 99\n1213 Onex\nTelefon: 022.793.29.60\nFax: 022.793.29.63"
-#          addresses = get_addresses_from_medregob(text)
-          log addresses
-          log doctor
-          doctor[:addresses] = addresses
-          store_doctor(doctor, nil)
-          @@all_doctors << doctor
-          }
+        }
+        r_loop.finished
+      end
+      def get_detail_info(info, doc)
+        text = doc.xpath('//div').text
+        m = text.match(/Nationalität:\s*([Ö\w+])[^:]+:\s+(\d+)/) # Special case Österreich
+        unless m and m[2] == info[:gln].to_s
+          File.open(File.join(ODDB::LogFile::LOG_ROOT, 'doc_div.txt'), 'w+') { |f| f.write text }
+          log "ERROR: Id in text does not match #{info[:gln]} match was #{m.inspect}"
+          return []
         end
-      end
-      def get_addresses_from_medregob(addressText)
-#        splitted = addressText.split('Bewilligungskanton: ')[1..-1]
-        splitted = addressText.split(/Bewilligungskanton: |^[A-Z]\. /)[1..-1]
         addresses = []
-        canton    = nil
-                           splitted.each{ |a_adress|
-                                          lines = a_adress.split("\n")
-                                        if lines.size == 1
-                                          canton = lines.first
-                                          next
-                                        end
-                                        address = Hash.new
-                                        address[:canton] = canton
-                                        address[:lines] = []
-                                        lines[1].sub!(/^[A-Z]\. /, '')
-                                        lines[1..-1].each { |line|
-                                                  if /^Telefon: /.match(line)
-                                                   address[:fon] = line.split('Telefon: ')[1]
-                                                   next
-                                                  elsif /^Fax: /.match(line)
-                                                   address[:fax] = line.split('Fax: ')[1]
-                                                   next
-                                                  else
-                                                   address[:lines] << line
-                                                  end
-                                                   }
-                                        addresses << address
-                                        }
-                           addresses
+        nrAdresses = doc.xpath('//ol/li/div').size
+        0.upto(nrAdresses-1).each {
+          |idx|
+          lines = []
+          doc.xpath('//ol/li/div')[idx].children.each{ |x| lines << x.text }
+          address = Hash.new
+          address[:lines] = []
+          address[:canton] = info.authority
+          lines[1].sub!(/^[A-Z]\. /, '')
+          lines[1..-1].each { |line|
+                    if /^Telefon: /.match(line)
+                      address[:fon] = line.split('Telefon: ')[1]
+                      next
+                    elsif /^Fax: /.match(line)
+                      address[:fax] = line.split('Fax: ')[1]
+                      next
+                    else
+                      address[:lines] << line if line.length > 0
+                    end
+                      }
+          addresses << address                                 
+        }
+        addresses
       end
-      def get_latest_file        
+      def get_latest_file       
         agent = Mechanize.new
-        url = "https://www.medregbm.admin.ch/Publikation/CreateExcelListMedizinalPersons"
         latest = File.join @archive, "doctors_latest.xlsx"
         target = File.join @archive, Time.now.strftime("doctors_%Y.%m.%d.xlsx")
-        file = agent.get(url)
-        download = file.body
         needs_update = true
+        if File.exist?(target) and not File.exist?(latest)
+          FileUtils.cp(target, latest, {:verbose => true})
+          return needs_update,latest
+        end
+        file = agent.get(MedRegPerson_XLS_URL)
+        download = file.body
         if(!File.exist?(latest) or download.size != File.size(latest))
           File.open(latest, 'w+') { |f| f.write download }
           File.open(target, 'w+') { |f| f.write download }
@@ -257,56 +253,23 @@ module ODDB
       def report
         report = "Doctors update \n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
-        report << "New doctors: " << @doctors_created.to_s << "\n"
-        report << "Deleted doctors: " << @doctors_deleted.to_s << "\n"
+        report << "New doctors: "       << @doctors_created.to_s << "\n"
+        report << "Updated doctors: "   << @doctors_updated.to_s << "\n"
+        report << "Deleted doctors: "   << @doctors_deleted.to_s << "\n"
         report
       end
-      def merge_addresses(addrs)
-        merged = []
-        addrs.each { |addr|
-          if(equal = merged.select { |other|
-            addr[:lines] == other[:lines]
-          }.first)
-            merge_address(equal, addr, :fon)
-            merge_address(equal, addr, :fax)
-          else
-            merge_address(addr, addr, :fax)
-            merge_address(addr, addr, :fon)
-            merged.push(addr)
-          end
-        }
-        merged
-      end
-      def merge_address(target, source, sym)
-        target[sym] = [target[sym], source[sym]].flatten
-        target[sym].delete('')
-        target[sym].uniq!
-      end
-      def prepare_addresses(hash)
-        if(addrs = hash[:addresses])
-          tmp_addrs = (addrs.is_a?(Array)) ? addrs : [addrs]
-          merge_addresses(tmp_addrs).collect { |values|
-            addr = Address.new
-            values.each { |key, val| 
-              meth = "#{key}="
-              if(addr.respond_to?(meth))
-                addr.send(meth, val)
-              end
-            }
-            addr
-          }
-        else
-          []
-        end
-      end
-      def store_doctor(hash, addresses)
+      def store_doctor(hash)
+        action = nil
         pointer = nil
-        if(doc = @app.doctor_by_gln(:ch, hash[:ean13]))
+        if(doc = @app.doctor_by_gln(hash[:ean13]))
           pointer = doc.pointer
+          @doctors_updated += 1
+          action = 'update'
         else
           @doctors_created += 1
           ptr = Persistence::Pointer.new(:doctor)
           pointer = ptr.creator
+          action = 'create'
         end
         extract = [
           :ean13,
@@ -326,17 +289,19 @@ module ODDB
             case key
             when :praxis
               value = (value == 'Ja')
-            when :specialities 
+            when :specialities
               if(value.is_a?(String))
                 value = [value]
-              end	
+              elsif(value.is_a?(Array))
+                value = value
+              end
             end
             doc_hash.store(key, value)
           end
-          
+         
         }
-#        doc_hash.store(:addresses, prepare_addresses(addresses))
         @app.update(pointer, doc_hash)
+        log "store_doctor #{hash[:ean13]} #{action} in database"
       end
       def parse_xls(path)
         log "parsing #{path}"

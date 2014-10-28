@@ -8,6 +8,7 @@ require 'model/address'
 require 'util/oddbconfig'
 require 'util/persistence'
 require 'util/logfile'
+require 'util/resilient_loop'
 require 'rubyXL'
 require 'mechanize'
 require 'logger'
@@ -89,7 +90,7 @@ module ODDB
         save_for_log "parse_xls #{latest} specified GLN ids #{saved.inspect}"
         parse_xls(latest)
         @info_to_gln.keys
-        get_detail_info(saved.size > 0 ? saved : @glns_to_import)
+        get_detail_to_glns(saved.size > 0 ? saved : @glns_to_import)
         return @companies_created, @companies_deleted, @companies_skipped
       ensure
         File.open(Companies_YAML, 'w+') {|f| f.write(@@all_companies.to_yaml) }
@@ -109,10 +110,13 @@ module ODDB
         end
         @agent
       end
-      def get_detail_info(glns)
+      def get_detail_to_glns(glns)
         idx = 0
+        r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
         glns.each { |gln|
-                    idx += 1
+          next if r_loop.must_skip?(gln)
+          r_loop.try_run(gln) do
+            idx += 1
             log "Searching for company with GLN #{gln} (#{idx}/#{glns.size})"
             page_1 = @agent.get(BetriebeURL)
             hash = [
@@ -154,7 +158,9 @@ module ODDB
             update_address(company)
             store_company(company)
             @@all_companies << company
+          end          
         }
+        r_loop.finished
       end
       def get_latest_file        
         agent = Mechanize.new

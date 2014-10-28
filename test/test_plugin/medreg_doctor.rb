@@ -24,6 +24,7 @@ class TestDoctorPlugin <Minitest::Test
   def test_update_7601000813282
     doctor = flexmock('doctor', :pointer => 'pointer')
     flexmock(@app, 
+             :doctors => [doctor],
              :doctor_by_gln => nil,
              :doctor_by_origin => doctor,
              :update           => 'update'
@@ -33,30 +34,28 @@ class TestDoctorPlugin <Minitest::Test
              :pointer   => 'pointer'
             )
     @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
-    flexmock(@plugin, :get_latest=> Test_Personen_XLSX)
+    flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
     flexmock(@plugin, :get_doctor_data => {})
     flexmock(@plugin, :puts => nil)
+    assert(File.exists?(Test_Personen_XLSX))
     startTime = Time.now
     csv_file = ODDB::Doctors::Personen_YAML 
     FileUtils.rm_f(csv_file) if File.exists?(csv_file)
-    created, deleted, skipped = @plugin.update
+    created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
-    $stdout.puts "result: created #{created} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
+    # $stdout.puts "result: created #{created} updated #{updated} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
     assert_equal(0, deleted)
-    assert_equal(1, skipped)
-    assert_equal(8, created)
+    assert_equal(0, skipped)
+    assert_equal(1, created)
+    assert_equal(0, updated)
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
-  end if false
-  def test_get_latest_file
-    @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
-    res = @plugin.get_latest_file
-    puts "res ist #{res.inspect}"
+    expected = "Doctors update \n\nNumber of doctors: 1\nNew doctors: 1\nUpdated doctors: 0\nDeleted doctors: 0\n"
+    assert_equal(expected, @plugin.report)
   end
-  
-if false
-  def test_update
+  def test_update_some_glns
     doctor = flexmock('doctor', :pointer => 'pointer')
     flexmock(@app, 
+             :doctor_by_gln => nil,
              :doctor_by_origin => doctor,
              :update           => 'update'
             )
@@ -64,34 +63,29 @@ if false
              :empty_ids => nil,
              :pointer   => 'pointer'
             )
+    @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282, 7601000254207, 7601000186874, 7601000201522, 7601000295958, 
+                                                           7601000157638, 7601000268969, 7601000019080, 7601000239730 ])
+
+    flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
     flexmock(@plugin, :get_doctor_data => {})
     flexmock(@plugin, :puts => nil)
-    res = @plugin.update
-    $stdout.puts "res was #{res.inspect}"
-    assert_equal(27, res)
+    assert(File.exists?(Test_Personen_XLSX))
+    startTime = Time.now
+    csv_file = ODDB::Doctors::Personen_YAML 
+    FileUtils.rm_f(csv_file) if File.exists?(csv_file)
+    created, updated, deleted, skipped = @plugin.update
+    diffTime = (Time.now - startTime).to_i
+    # $stdout.puts "result: created #{created} updated #{updated} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
+    assert_equal(0, deleted)
+    assert_equal(0, skipped)
+    assert_equal(0, updated)
+    assert_equal(8, created)
+    assert(File.exists?(csv_file), "file #{csv_file} must be created")
   end
-  def test_store_doctor
-    skip 'test_store_doctor'
-  end
-  def test_delete_doctor
-    skip 'test_delete_doctor'
- end
-  def test_report
-    flexmock(@app, :"doctors.size" => 'doctors.size')
-    expected = "Doctors update \n\nNumber of doctors: doctors.size\nNew doctors: 0\nDeleted doctors: 0\n"
-    assert_equal(expected, @plugin.report)
-  end
-  def test_get_doctor_data
-    skip "get_doctor_data"
-  end
-  def test_fix_doctors
-    skip "fix_doctor"
-  end
-  def test_fix_doctors__runtime_error
-    skip "fix_doctors__runtime_error"
-  end
-  def test_fix_duplicate_eans
-    skip "fix_duplicate_eans"
-  end
-end
+
+  def test_get_latest_file
+    @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
+    needs_update, latest = @plugin.get_latest_file
+    # puts "needs_update ist #{needs_update.inspect} latest #{latest}"
+  end  
 end

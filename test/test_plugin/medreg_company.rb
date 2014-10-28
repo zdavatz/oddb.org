@@ -86,7 +86,6 @@ end
   def test_get_latest_file
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     res = @plugin.get_latest_file
-    puts "res ist #{res.inspect}"
     assert(res[0], 'needs_update must be true')
     assert(res[1].match(/latest/), 'filename must match latest')
     assert(File.exists?(res[1]), 'companies_latest.xls must exist')
