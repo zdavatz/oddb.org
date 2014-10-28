@@ -838,29 +838,6 @@ class OddbPrevalence
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
-	def refactor_addresses
-		# 3 Iterationen 
-		puts "refactoring doctors"
-		$stdout.flush
-	  @doctors.each_value { |doc| 
-			doc.refactor_addresses 
-			doc.odba_store
-		}
-		puts "refactoring hospitals"
-		$stdout.flush
-	  @hospitals.each_value { |spi| 
-			spi.refactor_addresses 
-			spi.odba_store
-		}
-		puts "refactoring companies"
-		$stdout.flush
-	  @companies.each_value { |comp| 
-			comp.refactor_addresses 
-			comp.odba_store
-		}
-		puts "finished refactoring addresses"
-		$stdout.flush
-	end
 	def search_analysis(key, lang)
     if lang.to_s != 'fr'
 			lang = 'de'

@@ -20,7 +20,7 @@ require "yaml"
 module ODDB
   module Companies
     BetriebeURL         = 'https://www.medregbm.admin.ch/Betrieb/Search'
-    BetriebeEXLS_URL    = "https://www.medregbm.admin.ch/Publikation/CreateExcelListBetriebs"
+    BetriebeXLS_URL     = "https://www.medregbm.admin.ch/Publikation/CreateExcelListBetriebs"
     RegExpBetriebDetail = /\/Betrieb\/Details\//
     Companies_XLSX      = File.expand_path(File.join(__FILE__, '../../../data/xls/companies_latest.xlsx'))
     Companies_curr      = File.expand_path(File.join(__FILE__, "../../../data/xls/companies_#{Time.now.strftime('%Y.%m.%d')}.xlsx"))
@@ -58,14 +58,13 @@ module ODDB
       RECIPIENTS = []
       def log(msg)
         $stdout.puts    "#{Time.now}:  MedregCompanyPlugin #{msg}" unless defined?(Minitest)
+        $stdout.flush
         LogFile.append('oddb/debug', " MedregCompanyPlugin #{msg}", Time.now)
       end
 
       def save_for_log(msg)
-        $stdout.puts    "#{Time.now}:  MedregCompanyPlugin #{msg}"  unless defined?(MiniTest)
-        LogFile.append('oddb/debug', " MedregCompanyPlugin #{msg}", Time.now)
+        log(msg)
         withTimeStamp = "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}"
-        # $stderr.puts withTimeStamp
         @@logInfo << withTimeStamp
       end
       def initialize(app=nil, glns_to_import = [])
@@ -77,6 +76,7 @@ module ODDB
         @yaml_file      = File.open(Companies_YAML, 'w+')
         super
         @companies_created = 0
+        @companies_updated = 0
         @companies_skipped = 0
         @companies_deleted = 0
         @archive = File.join ARCHIVE_PATH, 'xls'
@@ -91,30 +91,31 @@ module ODDB
         parse_xls(latest)
         @info_to_gln.keys
         get_detail_to_glns(saved.size > 0 ? saved : @glns_to_import)
-        return @companies_created, @companies_deleted, @companies_skipped
+        return @companies_created, @companies_updated, @companies_deleted, @companies_skipped
       ensure
         File.open(Companies_YAML, 'w+') {|f| f.write(@@all_companies.to_yaml) }
         save_for_log "Saved #{@@all_companies.size} companies in #{Companies_YAML}"
       end
       def setup_default_agent
-          
-        unless @agent
-          @agent = Mechanize.new
-          @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
-          @agent.redirect_ok         = :all
-          @agent.follow_meta_refresh_self = true
-          @agent.follow_meta_refresh = :everwhere
-          @agent.redirection_limit   = 55
-          @agent.follow_meta_refresh = true
-          @agent.ignore_bad_chunking = true
-        end
+        @agent = Mechanize.new
+        @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
+        @agent.redirect_ok         = :all
+        @agent.follow_meta_refresh_self = true
+        @agent.follow_meta_refresh = :everwhere
+        @agent.redirection_limit   = 55
+        @agent.follow_meta_refresh = true
+        @agent.ignore_bad_chunking = true
         @agent
       end
       def get_detail_to_glns(glns)
+        log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
         idx = 0
         r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
         glns.each { |gln|
-          next if r_loop.must_skip?(gln)
+          if r_loop.must_skip?(gln)
+            log "Skipping #{gln}. Waiting for #{r_loop.state_id.inspect}"
+            next
+          end
           r_loop.try_run(gln) do
             idx += 1
             log "Searching for company with GLN #{gln} (#{idx}/#{glns.size})"
@@ -166,9 +167,14 @@ module ODDB
         agent = Mechanize.new
         latest = Companies_XLSX
         target = Companies_curr
-        file = agent.get(BetriebeEXLS_URL)
-        download = file.body
         needs_update = true
+        save_for_log "get_latest_file target #{target} #{File.exist?(target)} and #{latest} #{File.exist?(latest)}"
+        if File.exist?(target) and not File.exist?(latest)
+          FileUtils.cp(target, latest, {:verbose => true})
+          return needs_update,latest
+        end
+        file = agent.get(BetriebeXLS_URL)
+        download = file.body
         if(!File.exist?(latest) or download.size != File.size(latest))
           File.open(latest, 'w+') { |f| f.write download }
           File.open(target, 'w+') { |f| f.write download }
@@ -183,6 +189,7 @@ module ODDB
         report = "Companies update \n\n"
         report << "Number of companies: " << @app.companies.size.to_s << "\n"
         report << "New companies: "       << @companies_created.to_s << "\n"
+        report << "Updated companies: "   << @companies_updated.to_s << "\n"
         report << "Deleted companies: "   << @companies_deleted.to_s << "\n"
         report
       end
@@ -202,18 +209,23 @@ module ODDB
         pointer = nil
         if(doc = @app.company_by_gln(data[:ean13]))
           pointer = doc.pointer
+          @companies_updated += 1
+          action = 'create'
         else
           @companies_created += 1
           ptr = Persistence::Pointer.new(:company)
           pointer = ptr.creator
+          action = 'update'
         end
         update_hash = {}
         update_hash[:ean13]     = data[:ean13]
         update_hash[:name]      = data[:name_1]
         update_hash[:addresses] = data[:addresses]
         @app.update(pointer, update_hash, :medreg)
+        log "store_company #{data[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.companies.size} companies. hash #{update_hash}"
       end
       def parse_xls(path)
+        log "parsing #{path}"
         workbook = RubyXL::Parser.parse(path)
         positions = []
         rows = 0

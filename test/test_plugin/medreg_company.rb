@@ -24,23 +24,24 @@ class TestCompanyPlugin <Minitest::Test
   include FlexMock::TestCase
   Test_Companies_XLSX = File.expand_path(File.join(__FILE__, '../../data/xlsx/companies_20141014.xlsx'))
   def setup
-    @config = flexmock('config')
-    @app    = flexmock('app', :config => @config)
-    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
-    flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
-  end
-if false
-  def test_update_7601002026444
-    company = flexmock('company', :pointer => 'pointer')
-    flexmock(@app, 
-             :company_by_gln => nil,
-             :company_by_origin => company,
-             :update           => 'update'
-            )
-    flexmock(@config, 
+    @config  = flexmock('config',
              :empty_ids => nil,
              :pointer   => 'pointer'
             )
+    @config  = flexmock('config')
+    @company = flexmock('company', :pointer => 'pointer')
+    @app     = flexmock('appX',
+              :config => @config,
+              :companies => [@company],          
+              :company_by_gln => nil,
+              :company_by_origin => @company,
+              :update           => 'update'
+            )
+    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
+    flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
+  end
+
+  def test_update_7601002026444
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app, [7601002026444])
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
     flexmock(@plugin, :get_company_data => {})
@@ -48,25 +49,17 @@ if false
     startTime = Time.now
     csv_file = ODDB::Companies::Companies_YAML 
     FileUtils.rm_f(csv_file) if File.exists?(csv_file)
-    created, deleted, skipped = @plugin.update
+    created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
     # $stdout.puts "result: created #{created} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
     assert_equal(1, created)
+    assert_equal(0, updated)
     assert_equal(0, deleted)
     assert_equal(0, skipped)
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
   end
+
   def test_update_all
-    company = flexmock('company', :pointer => 'pointer')
-    flexmock(@app, 
-             :company_by_gln => nil,
-             :company_by_origin => company,
-             :update           => 'update'
-            )
-    flexmock(@config, 
-             :empty_ids => nil,
-             :pointer   => 'pointer'
-            )
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
     flexmock(@plugin, :get_company_data => {})
@@ -74,15 +67,16 @@ if false
     startTime = Time.now
     csv_file = ODDB::Companies::Companies_YAML 
     FileUtils.rm_f(csv_file) if File.exists?(csv_file)
-    created, deleted, skipped = @plugin.update
+    created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
     # $stdout.puts "result: created #{created} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
     assert_equal(3, created)
+    assert_equal(0, updated)
     assert_equal(0, deleted)
     assert_equal(1, skipped)
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
   end
-end
+
   def test_get_latest_file
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     res = @plugin.get_latest_file

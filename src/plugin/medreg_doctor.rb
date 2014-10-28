@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Doctors -- oddb -- 21.09.2004 -- jlang@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -55,14 +54,14 @@ module ODDB
     class MedregDoctorPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}" unless defined?(MiniTest); $stdout.flush
+        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}" unless defined?(MiniTest)
+        $stdout.flush
         LogFile.append('oddb/debug', " MedregDoctorPlugin #{msg}", Time.now)
       end
 
       def save_for_log(msg)
-        LogFile.append('oddb/debug', " MedregDoctorPlugin #{msg}", Time.now)
+        log(msg)
         withTimeStamp = "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}: #{msg}" unless defined?(MiniTest)
-        # $stderr.puts withTimeStamp
         @@logInfo << withTimeStamp
       end
       def initialize(app=nil, glns_to_import = [])
@@ -96,112 +95,152 @@ module ODDB
       end
 
       def setup_default_agent
-        unless @agent
-          @agent = Mechanize.new
-          @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
-          @agent.redirect_ok         = :all
-          @agent.follow_meta_refresh_self = true
-          @agent.follow_meta_refresh = :everwhere
-          @agent.redirection_limit   = 55
-          @agent.follow_meta_refresh = true
-          @agent.ignore_bad_chunking = true
-          @agent.log = Logger.new    Mechanize_Log
-        end
+        @agent = Mechanize.new
+        @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
+        @agent.redirect_ok         = :all
+        @agent.follow_meta_refresh_self = true
+        @agent.follow_meta_refresh = :everwhere
+        @agent.redirection_limit   = 55
+        @agent.follow_meta_refresh = true
+        @agent.ignore_bad_chunking = true
+        @agent.log = Logger.new    Mechanize_Log
         @agent
       end
-      def get_detail_to_glns(glns)
-        log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]}"
-        idx = 0
-        r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
-        glns.each { |gln|
-          next if r_loop.must_skip?(gln)
-          r_loop.try_run(gln) do
-            if @@all_doctors[gln.to_s] 
-              log "ERROR: Skip search GLN #{gln} (#{idx}/#{glns.size}) as already found"
-              next
-            end
-            idx += 1
-            log "Searching for company with GLN #{gln} (#{idx}/#{glns.size})"
-            info = @info_to_gln[gln.to_s]
-            url = MedRegOmURL +  "de/Suche/Detail/?gln=#{gln}&vorname=#{info[:first_name].gsub(/ /, '+')}&name=#{info[:family_name].gsub(/ /, '+')}"
-            page_1 = @agent.get(url)
-            data_2 = [
-              ['Name', info[:family_name]],
-              ['Vorname', info[:first_name]],
-              ['Gln', gln.to_s],
-              ['AutomatischeSuche', 'True'],
-              ]
-            page_2 = @agent.post(MedRegOmURL + 'Suche/GetSearchCount', data_2)
 
-            data_3 = [
-              ['currentpage', '1'],
-              ['pagesize', '10'],
-              ['sortfield', ''],
-              ['sortorder', 'Ascending'],
-              ['pageraction', ''],
-              ['filter', ''],
-              ]
-            page_3 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_3)
-            data_4 = [
-              ['Name', info[:family_name]],
-              ['Vorname', info[:first_name]],
-              ['Gln', gln.to_s],
-              ['AutomatischeSuche', 'True'],
-              ['currentpage', '1'],
-              ['pagesize', '10'],
-              ['sortfield', ''],
-              ['sortorder', 'Ascending'],
-              ['pageraction', ''],
-              ['filter', ''],
-              ]
-            page_4 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_4)
-            regExp = /id"\:(\d\d+)/i
-            unless page_4.body.match(regExp)
-              File.open(File.join(ODDB::LogFile::LOG_ROOT, 'page_4.body'), 'w+') { |f| f.write page_4.body }
-              log "ERROR: Could not find an gln #{gln}"
-              next
+      def parse_details(doc, gln, info)
+        unless doc.xpath("//tr") and doc.xpath("//tr").size > 3
+          log "ERROR: Could not find a table with info for #{gln}"
+          return nil
+        end
+        doc_hash = Hash.new
+        doc_hash[:ean13] =  gln.to_s.clone
+        doc_hash[:name] =  info.family_name
+        doc_hash[:firstname] =  info.first_name
+        idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
+        idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
+        idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
+        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'')
+        specialities = []
+        (idx_titel+1).upto(idx_privat-1).each{
+          |j|
+            line = doc.xpath("//tr")[j].text ; 
+            unless line.match(/Keine Angaben vorhanden/)
+              specialities << line.match(/(.*)\s+(\d+)\s+(\w+)/)[1..3].join(',').gsub("\r","").strip
             end
-            medregId = page_4.body.match(regExp)[1]
-            page_5 = @agent.get(MedRegOmURL + "de/Detail/Detail?pid=#{medregId}")
-            File.open(File.join(ODDB::LogFile::LOG_ROOT, 'page_5.html'), 'w+') { |f| f.write page_5.content }
-            doc = Nokogiri::HTML(page_5.content)
-            unless doc.xpath("//tr") and doc.xpath("//tr").size > 3
-              log "ERROR: Could not find a table with info for #{gln}"
-              next
+          }
+        doc_hash[:specialities] = specialities
+        experiences = []
+        (idx_privat+1).upto(99).each{
+          |j|
+            next unless doc.xpath("//tr")[j]
+            line = doc.xpath("//tr")[j].text ; 
+            unless line.match(/Keine Angaben vorhanden/)
+              if m = line.match(/(.*)\s+(\d+)\s+(\w+)/)
+                experiences << m[1..3].join(',').gsub("\r","").strip
+              else
+                log "GLN: #{gln.to_s} no match for line #{line}"
+              end
             end
-            doctor = Hash.new
-            doctor[:ean13] =  gln.to_s.clone
-            doctor[:name] =  info.family_name
-            doctor[:firstname] =  info.first_name
-            idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
-            idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
-            idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
-            doctor[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'')
-            specialities = []
-            (idx_titel+1).upto(idx_privat-1).each{
-              |j|
-                line = doc.xpath("//tr")[j].text ; 
-                unless line.match(/Keine Angaben vorhanden/)
-                  specialities << line.match(/(.*)\s+(\d+)\s+(\w+)/)[1..3].join(',').gsub("\r","")
-                end
-              }
-            doctor[:specialities] = specialities
-            addresses = get_detail_info(info, doc)
-            next if addresses.size == 0
-            doctor[:addresses] = addresses
-            log doctor
-            store_doctor(doctor)
-            @@all_doctors[gln.to_s] = doctor
+          }
+        doc_hash[:experiences] = experiences
+        addresses = get_detail_info(info, doc)
+        doc_hash[:addresses] = addresses
+        doc_hash
+      end
+
+      def get_one_doctor(r_loop, gln)
+        r_loop.try_run(gln, 120) do # increase timeout from default of 10 seconds. Measured 46 seconds for the first gln
+          if @@all_doctors[gln.to_s]
+            log "ERROR: Skip search GLN #{gln} as already found"
+            next
+          end
+          info = @info_to_gln[gln.to_s]
+          unless info
+            log "ERROR: could not find info for GLN #{gln}"
+            require 'pry'; binding.pry
+            next
+          end
+          url = MedRegOmURL +  "de/Suche/Detail/?gln=#{gln}&vorname=#{info.first_name.gsub(/ /, '+')}&name=#{info.family_name.gsub(/ /, '+')}"
+          page_1 = @agent.get(url)
+          data_2 = [
+            ['Name', info.family_name],
+            ['Vorname', info.first_name],
+            ['Gln', gln.to_s],
+            ['AutomatischeSuche', 'True'],
+            ]
+          page_2 = @agent.post(MedRegOmURL + 'Suche/GetSearchCount', data_2)
+
+          data_3 = [
+            ['currentpage', '1'],
+            ['pagesize', '10'],
+            ['sortfield', ''],
+            ['sortorder', 'Ascending'],
+            ['pageraction', ''],
+            ['filter', ''],
+            ]
+          page_3 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_3)
+          data_4 = [
+            ['Name', info.family_name],
+            ['Vorname', info.first_name],
+            ['Gln', gln.to_s],
+            ['AutomatischeSuche', 'True'],
+            ['currentpage', '1'],
+            ['pagesize', '10'],
+            ['sortfield', ''],
+            ['sortorder', 'Ascending'],
+            ['pageraction', ''],
+            ['filter', ''],
+            ]
+          page_4 = @agent.post(MedRegOmURL + 'Suche/GetSearchData', data_4)
+          regExp = /id"\:(\d\d+)/i
+          unless page_4.body.match(regExp)
+            File.open(File.join(ODDB::LogFile::LOG_ROOT, 'page_4.body'), 'w+') { |f| f.write page_4.body }
+            log "ERROR: Could not find an gln #{gln}"
+            next
+          end
+          medregId = page_4.body.match(regExp)[1]
+          page_5 = @agent.get(MedRegOmURL + "de/Detail/Detail?pid=#{medregId}")
+          File.open(File.join(ODDB::LogFile::LOG_ROOT, "#{gln}.html"), 'w+') { |f| f.write page_5.content }
+          doc_hash = parse_details( Nokogiri::HTML(page_5.content), gln, info)
+          log doc_hash
+          store_doctor(doc_hash)
+          @@all_doctors[gln.to_s] = doc_hash
+        end
+      end
+      def get_detail_to_glns(glns)
+        @idx = 0
+        r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
+        log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
+        glns.each { |gln|
+          if r_loop.must_skip?(gln.to_s)
+            # log "Skipping #{gln.inspect}. Waiting for #{r_loop.state_id.inspect}"
+            next
+          end
+          @idx += 1
+          nr_retries = 0
+          while nr_retries < 3
+            begin
+              log "Searching for doctor with GLN #{gln}. (#{@idx}/#{glns.size}).#{nr_retries > 0 ? ' nr_retries is ' + nr_retries.to_s : ''}"
+              get_one_doctor(r_loop, gln)
+              break
+            rescue Mechanize::ResponseCodeError
+              nr_retries += 1
+              log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_retries #{nr_retries}"
+            end
           end
         }
         r_loop.finished
+      ensure
+        log "Start saving @app.doctors.odba_store"
+        @app.doctors.odba_store
+        log "Finished @app.doctors.odba_store"
       end
       def get_detail_info(info, doc)
         text = doc.xpath('//div').text
         m = text.match(/Nationalität:\s*([Ö\w+])[^:]+:\s+(\d+)/) # Special case Österreich
-        unless m and m[2] == info[:gln].to_s
+        unless m and m[2] == info.gln.to_s
           File.open(File.join(ODDB::LogFile::LOG_ROOT, 'doc_div.txt'), 'w+') { |f| f.write text }
-          log "ERROR: Id in text does not match #{info[:gln]} match was #{m.inspect}"
+          log "ERROR: Id in text does not match #{info.gln  } match was #{m.inspect}"
           return []
         end
         addresses = []
@@ -210,19 +249,20 @@ module ODDB
           |idx|
           lines = []
           doc.xpath('//ol/li/div')[idx].children.each{ |x| lines << x.text }
-          address = Hash.new
-          address[:lines] = []
-          address[:canton] = info.authority
+          address = Address2.new
+          address.type = 'at_praxis'
+          address.additional_lines = []
+          address.canton = info.authority
           lines[1].sub!(/^[A-Z]\. /, '')
           lines[1..-1].each { |line|
                     if /^Telefon: /.match(line)
-                      address[:fon] = line.split('Telefon: ')[1]
+                      address.fon = line.split('Telefon: ')[1]
                       next
                     elsif /^Fax: /.match(line)
-                      address[:fax] = line.split('Fax: ')[1]
+                      address.fax = line.split('Fax: ')[1]
                       next
                     else
-                      address[:lines] << line if line.length > 0
+                      address.additional_lines << line if line.length > 0
                     end
                       }
           addresses << address                                 
@@ -234,6 +274,7 @@ module ODDB
         latest = File.join @archive, "doctors_latest.xlsx"
         target = File.join @archive, Time.now.strftime("doctors_%Y.%m.%d.xlsx")
         needs_update = true
+        save_for_log "get_latest_file target #{target} #{File.exist?(target)} and #{latest} #{File.exist?(latest)}"
         if File.exist?(target) and not File.exist?(latest)
           FileUtils.cp(target, latest, {:verbose => true})
           return needs_update,latest
@@ -261,13 +302,13 @@ module ODDB
       def store_doctor(hash)
         action = nil
         pointer = nil
-        if(doc = @app.doctor_by_gln(hash[:ean13]))
-          pointer = doc.pointer
+        if(doctor = @app.doctor_by_gln(hash[:ean13]))
+          pointer = doctor.pointer
           @doctors_updated += 1
           action = 'update'
         else
           @doctors_created += 1
-          ptr = Persistence::Pointer.new(:doctor)
+          ptr     = Persistence::Pointer.new(:doctor)
           pointer = ptr.creator
           action = 'create'
         end
@@ -282,6 +323,7 @@ module ODDB
           :salutation,
           :specialities,
           :title,
+          :addresses,
         ]
         doc_hash = {}
         extract.each { |key|
@@ -301,7 +343,7 @@ module ODDB
          
         }
         @app.update(pointer, doc_hash)
-        log "store_doctor #{hash[:ean13]} #{action} in database"
+        log "store_doctor #{hash[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.doctors.size} doctors. hash #{doc_hash}"
       end
       def parse_xls(path)
         log "parsing #{path}"

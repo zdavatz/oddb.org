@@ -46,7 +46,7 @@ module ODDB
     def must_skip?(id)
       return false unless @state_id
       if id 
-        clear_state if id == @state_id
+        clear_state if id.to_s.eql?(@state_id.to_s)
         @nr_skipped += 1        
         return true
       else
