@@ -78,6 +78,8 @@ class TestCompanyPlugin <Minitest::Test
   end
 
   def test_get_latest_file
+    current  = File.expand_path(File.join(__FILE__, "../../../data/xls/companies_#{Time.now.strftime('%Y.%m.%d')}.xlsx"))
+    FileUtils.rm_f(current) if File.exists?(current)
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     res = @plugin.get_latest_file
     assert(res[0], 'needs_update must be true')

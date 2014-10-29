@@ -26,7 +26,7 @@ module ODDB
     Companies_curr      = File.expand_path(File.join(__FILE__, "../../../data/xls/companies_#{Time.now.strftime('%Y.%m.%d')}.xlsx"))
     Companies_YAML      = File.expand_path(File.join(__FILE__, "../../../data/txt/companies_#{Time.now.strftime('%Y.%m.%d')}.yaml"))
     # MedRegURL     = 'http://www.medregom.admin.ch/'
-    CompanyInfo = Struct.new("CompanyInfo", 
+    CompanyInfo = Struct.new("CompanyInfo",
                             :gln,
                             :exam,
                             :address,
@@ -107,63 +107,83 @@ module ODDB
         @agent.ignore_bad_chunking = true
         @agent
       end
+      def parse_details(doc, gln)
+        left = doc.at('div[class="colLeft"]').text
+        right = doc.at('div[class="colRight"]').text
+        infos = []
+        infos = left.split(/\r\n\s*/)
+        unless infos[2].eql?(gln.to_s)
+          log "Mismatch between searched gln #{gln} and details #{infos[2]}"
+          return nil
+        end
+        company = Hash.new
+        company[:ean13] =  gln.to_s.clone
+        company[:name] =  infos[4]
+        idx_plz     = infos.index("PLZ \\ Ort")
+        idx_canton  = infos.index('Bewilligungskanton')
+        address = [infos[6..idx_plz-1].join(' ')]
+        company[:plz] = infos[idx_plz+1]
+        company[:location] = infos[idx_plz+2]
+        idx_typ  = infos.index('Betriebstyp')
+        typ      = infos[idx_typ+1]
+        company[:address] = address
+        company[:typ] = typ
+        update_address(company)
+        log company
+        company
+      end
+      Search_failure = 'search_took_to_long'
       def get_detail_to_glns(glns)
-        log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
-        idx = 0
         r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
+        failure = 'Die Personensuche dauerte zu lange'
+        idx = 0
+        max_retries = 60
+        log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
         glns.each { |gln|
+          idx += 1
           if r_loop.must_skip?(gln)
             log "Skipping #{gln}. Waiting for #{r_loop.state_id.inspect}"
             next
           end
-          r_loop.try_run(gln) do
-            idx += 1
-            log "Searching for company with GLN #{gln} (#{idx}/#{glns.size})"
-            page_1 = @agent.get(BetriebeURL)
-            hash = [
-          ['Betriebsname', ''],
-          ['Plz', ''],
-          ['Ort', ''],
-          ['GlnBetrieb', gln.to_s],
-          ['BetriebsCodeId', '0'],
-          ['KantonsCodeId', '0'],
-              ]
-              res_2 = @agent.post(BetriebeURL, hash)
-              unless res_2.link(:href => RegExpBetriebDetail)
-                log "could not find gln #{gln}"
-                @companies_skipped += 1
-                next
+          nr_retries = 0
+          success = false
+          while nr_retries < max_retries  and not success
+            begin
+              r_loop.try_run(gln, 5 ) do
+                log "Searching for company with GLN #{gln} (#{idx}/#{glns.size}).#{nr_retries > 0 ? ' nr_retries ' + nr_retries.to_s : ''}"
+                page_1 = @agent.get(BetriebeURL)
+                raise Search_failure if page_1.content.match(failure)
+                hash = [
+              ['Betriebsname', ''],
+              ['Plz', ''],
+              ['Ort', ''],
+              ['GlnBetrieb', gln.to_s],
+              ['BetriebsCodeId', '0'],
+              ['KantonsCodeId', '0'],
+                ]
+                res_2 = @agent.post(BetriebeURL, hash)
+                if res_2.link(:href => RegExpBetriebDetail)
+                  page_3 = res_2.link(:href => RegExpBetriebDetail).click
+                  raise Search_failure if page_3.content.match(failure)
+                  company = parse_details(page_3, gln)
+                  store_company(company)
+                  @@all_companies << company
+                else
+                  log "could not find gln #{gln}"
+                  @companies_skipped += 1
+                end
+                success = true
               end
-              res_3 = res_2.link(:href => RegExpBetriebDetail).click
-              left = res_3.at('div[class="colLeft"]').text
-              right = res_3.at('div[class="colRight"]').text
-            infos = []
-            infos = left.split(/\r\n\s*/)
-            unless infos[2].eql?(gln.to_s)
-              log "Mismatch between searched gln #{gln} and details #{infos[2]}"
-              return nil
+            rescue => e
+              log "rescue #{e} will retry #{max_retries - nr_retries} times"
+              nr_retries += 1
+              sleep 60
             end
-            company = Hash.new
-            company[:ean13] =  gln.to_s.clone
-            company[:name] =  infos[4]
-            idx_plz     = infos.index("PLZ \\ Ort")
-            idx_canton  = infos.index('Bewilligungskanton')
-            address = [infos[6..idx_plz-1].join(' ')]
-            company[:plz] = infos[idx_plz+1]
-            company[:location] = infos[idx_plz+2]
-            idx_typ  = infos.index('Betriebstyp')
-            typ      = infos[idx_typ+1]
-            company[:address] = address
-            company[:typ] = typ
-            log company
-            update_address(company)
-            store_company(company)
-            @@all_companies << company
-          end          
+          end
         }
         r_loop.finished
       end
-      def get_latest_file        
+      def get_latest_file
         agent = Mechanize.new
         latest = Companies_XLSX
         target = Companies_curr
