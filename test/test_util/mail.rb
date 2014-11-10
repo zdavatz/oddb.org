@@ -115,6 +115,23 @@ module ODDB
       mails_sent = Util.sent_mails
       assert_equal(0, mails_sent.size)
     end
+    def test_send_to_mailing_with_attachement
+      attachment = {
+        :filename => 'notifications.csv',
+        :mime_type => 'text/csv',
+        :content => 'example_content',
+      }
+      res  = Util.send_mail_with_attachments('oddb_csv', 'Täglicher CSV-Export der Notifications', 'mail_body', [attachment])
+      assert(res, "sending of mail to #{'test'} must succeed")
+      mails_sent = Util.sent_mails
+      assert_equal(1, mails_sent.size)
+      assert(mails_sent.first.to.index('customer2@another_company.com'))
+      assert_equal('mail_body', mails_sent.first.body.to_s)
+      assert_equal(1, mails_sent.first.attachments.size)
+      assert_equal('notifications.csv', mails_sent.first.attachments.first.filename)
+      assert_equal('text/csv', mails_sent.first.attachments.first.mime_type)
+      assert_equal('example_content', mails_sent.first.attachments.first.body.decoded)
+    end
   end
   class TestSendRealMail <Minitest::Test
     def setup
