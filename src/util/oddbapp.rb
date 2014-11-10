@@ -617,7 +617,7 @@ class OddbPrevalence
   end
   def doctor_by_gln(gln)
     @doctors.values.each { |doctor|
-      if(doctor.ean13 == gln)
+      if(doctor && doctor.respond_to?(:ean13) && doctor.ean13.to_s == gln.to_s)
         return doctor
       end
     }
