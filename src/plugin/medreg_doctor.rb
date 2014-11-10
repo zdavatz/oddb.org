@@ -90,7 +90,7 @@ module ODDB
         get_detail_to_glns(saved.size > 0 ? saved : @glns_to_import)
         return @doctors_created, @doctors_updated, @doctors_deleted, @doctors_skipped
       ensure
-        File.open(Personen_YAML, 'w+') {|f| f.write(@@all_doctors.to_yaml) }       
+        File.open(Personen_YAML, 'w+') {|f| f.write(@@all_doctors.to_yaml) }
         save_for_log "Saved #{@@all_doctors.size} doctors in #{Personen_YAML}"
       end
 
@@ -123,7 +123,7 @@ module ODDB
         specialities = []
         (idx_titel+1).upto(idx_privat-1).each{
           |j|
-            line = doc.xpath("//tr")[j].text ; 
+            line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
               specialities << line.match(/(.*)\s+(\d+)\s+(\w+)/)[1..3].join(',').gsub("\r","").strip
             end
@@ -133,7 +133,7 @@ module ODDB
         (idx_privat+1).upto(99).each{
           |j|
             next unless doc.xpath("//tr")[j]
-            line = doc.xpath("//tr")[j].text ; 
+            line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
               if m = line.match(/(.*)\s+(\d+)\s+(\w+)/)
                 experiences << m[1..3].join(',').gsub("\r","").strip
@@ -226,8 +226,10 @@ module ODDB
             rescue Mechanize::ResponseCodeError
               nr_retries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_retries #{nr_retries}"
+              sleep(10 * 60) # wait 10 minutes till medreg server is back again
             end
           end
+          raise "Max retries #{nr_retries} for #{gln.to_s} reached. Aborting import"
         }
         r_loop.finished
       ensure
@@ -265,11 +267,11 @@ module ODDB
                       address.additional_lines << line if line.length > 0
                     end
                       }
-          addresses << address                                 
+          addresses << address
         }
         addresses
       end
-      def get_latest_file       
+      def get_latest_file
         agent = Mechanize.new
         latest = File.join @archive, "doctors_latest.xlsx"
         target = File.join @archive, Time.now.strftime("doctors_%Y.%m.%d.xlsx")
@@ -340,7 +342,7 @@ module ODDB
             end
             doc_hash.store(key, value)
           end
-         
+
         }
         @app.update(pointer, doc_hash)
         log "store_doctor #{hash[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.doctors.size} doctors. hash #{doc_hash}"
