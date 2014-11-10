@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestUpdater -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::TestUpdater -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -133,7 +133,7 @@ module ODDB
 			@updater.update_bsv
 			assert_nil(@app.last_date)
 		end
-    
+
     def test_recipients
       expected = @updater.class::RECIPIENTS
       assert_equal(expected, @updater.recipients)
@@ -235,7 +235,7 @@ module ODDB
     end
     def test_export_patents_xls
       setup_xls_export_plugin
-      assert_equal('notify', @updater.export_patents_xls) 
+      assert_equal('notify', @updater.export_patents_xls)
     end
     def test_export_ouwerkerk
       setup_exporter
@@ -304,13 +304,13 @@ module ODDB
       setup_log_notify_bsv
       @recipients[:change_flags] = {'ptr' => []}
       plugin = @plugin
-      assert_equal('notify', @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+      assert_equal(["oddb_bsv_info"], @updater.instance_eval('log_notify_bsv(plugin, "date")'))
     end
     def test_log_notify_bsv__else_change_flags
       setup_log_notify_bsv
       @recipients[:change_flags] = {}
       plugin = @plugin
-      assert_equal('notify', @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+      assert_equal(["oddb_bsv_info"], @updater.instance_eval('log_notify_bsv(plugin, "date")'))
     end
     def setup_bsv_xml_plugin
       bsv = flexmock('bsv') do |bsv|
@@ -549,7 +549,7 @@ module ODDB
     end
     def test_update_swissmedic_followers
       setup_update_swissmedic_followers
-      expected = 'mail_swissmedic_notifications'  # the return value of 
+      expected = 'mail_swissmedic_notifications'  # the return value of
                                                   # Exporter#mail_swissmedic_notifications
       assert_equal(expected, @updater.update_swissmedic_followers)
     end
