@@ -43,7 +43,7 @@ module ODDB
     end
     def Util.get_mailing_list_anrede(list_id)
       Util.configure_mail unless @mail_configured
-      return [] unless @cfg and @cfg[MailingListIds]    
+      return [] unless @cfg and @cfg[MailingListIds]
       anreden = []
       lists = list_id.is_a?(Array) ? list_id : [list_id]
       lists.each{ |list_name|
@@ -106,19 +106,17 @@ module ODDB
 
     def Util.send_mail_with_attachments(list_and_recipients, mail_subject, mail_body, attachments, override_from = nil)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
-      recipients = Util.check_and_get_all_recipients(list_and_recipients)
-      mail = Mail.new
-      mail.from    override_from ? override_from : Util.mail_from
-      mail.to      recipients
-      mail.subject mail_subject
-      mail.body    mail_body
-      attachments.each { |attachment|
-        mail.attachments[attachment[:filename]] = {
-                                                  :mime_type => attachment[:mime_type],
-                                                  :content   => attachment[:content],
-                                                }
-      }
-      log_and_deliver_mail(mail)
+      Mail.deliver do
+        from     override_from ? override_from : Util.mail_from
+        to       Util.check_and_get_all_recipients(list_and_recipients)
+        subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
+        body     mail_body
+        attachments.each {
+          |attachment|
+          add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
+        }
+      end
+
     rescue => e
       msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect} #{caller[0..10].inspect}"
       Util.debug_msg(msg)
@@ -158,13 +156,14 @@ module ODDB
       raise "No recipients defined for list_and_recipients #{list_and_recipients}" unless recipients.size > 0
       recipients.sort
     end
-    
+
     def Util.log_and_deliver_mail(mail)
       Util.configure_mail unless @mail_configured
       mail.from << @cfg.mail_from unless mail.from.size > 0
       mail.reply_to = @cfg['reply_to']
-      Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.inspect}")
-      mail.deliver
+      Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
+      res = mail.deliver
+      res
     end
 
     def Util.debug_msg(msg)

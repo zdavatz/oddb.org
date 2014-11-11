@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Log -- oddb -- 23.05.2003 -- hwyss@ywesee.com 
+# Log -- oddb -- 23.05.2003 -- hwyss@ywesee.com
 
 require 'util/persistence'
 require 'config'
@@ -13,7 +13,7 @@ module ODDB
 		include Persistence
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
 			'@files']
-		attr_accessor :report, :pointers, :recipients, :change_flags, 
+		attr_accessor :report, :pointers, :recipients, :change_flags,
 			:files, :parts, :date_str
 		attr_reader :date
     LOG_RECIPIENTS =  [ 'log' ]
@@ -28,11 +28,11 @@ module ODDB
 		def notify(subject = nil)
       @recipients  = LOG_RECIPIENTS if @recipients.size == 0
 			subj = [
-				'ch.ODDB.org Report', 
-				subject, 
+				'ch.ODDB.org Report',
+				subject,
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
-      LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients.inspect} ", Time.now)
+      LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients.inspect}. Must attach #{@files.size} files and #{@parts.size} parts. ", Time.now)
       attachments = []
       @files.each { |path, (mime, iconv)|
         begin
@@ -47,7 +47,7 @@ module ODDB
       }
       @parts.each{
         |part|
-          LogFile.append('oddb/debug', " part " + part.inspect.to_s, Time.now)
+          LogFile.append('oddb/debug', " part mime #{part[0]} #{part[2].size} bytes #{part.inspect[0..80]}...", Time.now)
           attachments << { :filename => File.basename(part[1]), :mime_type => part[0], :content => part[2] }
       }
       if attachments.size > 0
@@ -56,6 +56,7 @@ module ODDB
         Util.send_mail(@recipients, subj, @report)
       end
       LogFile.append('oddb/debug', "log notify #{subject}: sent mail", Time.now)
+      @recipients
 		end
 	end
 end

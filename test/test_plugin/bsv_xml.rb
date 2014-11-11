@@ -134,7 +134,7 @@ module ODDB
       assert_equal(nil, @listener.instance_eval('@html'))
     end
   end
-  
+
   class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
     def setup
@@ -354,7 +354,7 @@ module ODDB
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         assert_equal('56789012', @listener.load_ikskey('pharmacode'))
       end
     end
@@ -366,14 +366,14 @@ module ODDB
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @listener.load_ikskey('pcode')
       end
     end
     def test_tag_start__pack
       # Memo
       # This method is too long.
-      # It should be divided into small methods 
+      # It should be divided into small methods
       @listener.instance_eval('@pac_data = {}')
       @listener.instance_eval('@report_data = {}')
       @listener.instance_eval('@data = {}')
@@ -391,14 +391,14 @@ module ODDB
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval('@pac_data = pac_data')
-      assert_raises(RuntimeError) do 
+      assert_raises(RuntimeError) do
         @listener.tag_start('Pack', 'attr')
       end
     end
     def test_tag_end__pack
       # Memo
       # This method is too long.
-      # It should be divided into small methods 
+      # It should be divided into small methods
       sequence = flexmock('sequence') do |seq|
         seq.should_receive(:pointer)
       end
@@ -652,7 +652,7 @@ module ODDB
       end
       known_packages = {pointer => 'data'}
       @listener.instance_eval('@known_packages = known_packages')
-      assert_raises(RuntimeError) do 
+      assert_raises(RuntimeError) do
         @listener.tag_end('Preparations')
       end
     end
@@ -729,7 +729,7 @@ module ODDB
         end)
       end
       assert_raises(Errno::ENOENT) do
-        @plugin.download_file('target_url', 'save_dir', 'file_name') 
+        @plugin.download_file('target_url', 'save_dir', 'file_name')
       end
     end
     def test_download_file__error
@@ -744,7 +744,7 @@ module ODDB
       flexstub(@plugin) do |p|
         p.should_receive(:sleep)
       end
-      assert_raises(Errno::ENOENT) do 
+      assert_raises(Errno::ENOENT) do
         @plugin.download_file('target_url', 'save_dir', 'file_name')
       end
     end
@@ -817,12 +817,27 @@ module ODDB
       # it is too big data.
       # if you want to see the actual return value of log_info method,
       # just run below:
-      # assert_equal('', log_info)
+      assert(/^Updated SL-Entries\s+0$/.match(log_info[:report]), 'Updated SL-Entries')
+      assert(/Duplicate Registrations in SL/.match(log_info[:report]), 'Duplicate Registrations in SL')
     end
-    def test_log_info_bsv
+
+    def wrap_update(klass, subj, &block)
+      begin
+        $stdout.puts "\ncalling wrap_update for #{klass.to_s}"
+        block.call
+      rescue Exception => e #RuntimeError, StandardError => e
+        notify_error(klass, subj, e)
+        raise
+      end
+    rescue StandardError
+      nil
+    end
+
+    def test_wrap_update_bsv
       Util.configure_mail :test
       Util.clear_sent_mails
       preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:created_sl_entries).and_return(['created_sl_entries'])
         p.should_receive(:conflicted_registrations).and_return([])
         p.should_receive(:missing_ikscodes).and_return([])
         p.should_receive(:missing_ikscodes_oot).and_return([])
@@ -833,14 +848,58 @@ module ODDB
         p.should_receive(:duplicate_iksnrs).and_return([])
       end
       @plugin.instance_eval('@preparations_listener = preparations_listener')
-      log_info_bsv = @plugin.log_info_bsv
-      expected = ["parts", "recipients", "report"]
-      assert_equal(expected, log_info_bsv.keys.map{|k| k.to_s}.sort)
-      assert_equal(["oddb_bsv", "oddb_bsv_info"], log_info_bsv[:recipients])
-      assert(log_info_bsv[:report].index('Dear Mr. Jones'), 'The report must contain a valid anrede for Mr. Jones   (see test/data/oddb_mailing_test.yml)')
-      assert(log_info_bsv[:report].index('Dear Mrs. Smith'), 'The report must contain a valid anrede for Mrs. Smith (see test/data/oddb_mailing_test.yml)')
+      klass = BsvXmlPlugin
+      subj = 'SL-Update (XML)'
+      plug = klass.new(@app)
+      plug = @plugin
 
-      assert_equal(8, log_info_bsv[:parts].size, 'Must have 8 attachements (aka parts)')
+      return_value_plug_update = nil
+#      require 'pry'; binding.pry
+      result = {:error => -1}
+      wrap_update(klass, subj) {
+        return_value_plug_update = plug.update
+      if true
+        $stderr.puts "#{__FILE}.#{__LINE__}: return_value_bsvXmlPlugin.update  = '#{return_value_plug_update.inspect}'"
+        LogFile.append('oddb/debug', " return_value_bsvXmlPlugin.update = " + return_value_plug_update.inspect.to_s, Time.now)
+        assert(return_value_plug_update != nil, "return_value_plug_update: may not be nil")
+      end
+        $stderr.puts "#{__FILE}.#{__LINE__}: calling log_notify_bsv"
+        result =  log_notify_bsv(plug, this_month, subj)
+        $stderr.puts "#{__FILE}.#{__LINE__}: after log_notify_bsv #{result.class}"
+      }
+      $stderr.puts "after log_notify_bsv result #{result.inspect}"
+      expected = {"report" => 'x', "parts" => 'y', "recipients" => 'z'}
+      assert(result, "result of log_notify_bsv may not be nil" )
+      assert_equal(expected.keys, result.keys.map{|k| k.to_s}.sort)
+      assert_equal(["oddb_bsv", "oddb_bsv_info"], result[:recipients])
+      assert(result[:report].index('Dear Mr. Jones'), 'The report must contain a valid anrede for Mr. Jones   (see test/data/oddb_mailing_test.yml)')
+      assert(result[:report].index('Dear Mrs. Smith'), 'The report must contain a valid anrede for Mrs. Smith (see test/data/oddb_mailing_test.yml)')
+      assert_equal(8, result[:parts].size, 'Must have 8 attachements (aka parts)')
+    end
+
+    def test_result
+      Util.configure_mail :test
+      Util.clear_sent_mails
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:created_sl_entries).and_return(['created_sl_entries'])
+        p.should_receive(:conflicted_registrations).and_return([])
+        p.should_receive(:missing_ikscodes).and_return([])
+        p.should_receive(:missing_ikscodes_oot).and_return([])
+        p.should_receive(:unknown_packages).and_return([])
+        p.should_receive(:unknown_registrations).and_return([])
+        p.should_receive(:unknown_packages_oot).and_return([{:test => 'data'}])
+        p.should_receive(:missing_pharmacodes).and_return([])
+        p.should_receive(:duplicate_iksnrs).and_return([])
+      end
+      @plugin.instance_eval('@preparations_listener = preparations_listener')
+      result = @plugin.log_info_bsv
+      expected = ["report", "parts", "recipients"]
+      assert_equal(expected.sort, result.keys.map{|k| k.to_s}.sort)
+      assert_equal(["oddb_bsv", "oddb_bsv_info"], result[:recipients])
+      assert(result[:report].index('Dear Mr. Jones'), 'The report must contain a valid anrede for Mr. Jones   (see test/data/oddb_mailing_test.yml)')
+      assert(result[:report].index('Dear Mrs. Smith'), 'The report must contain a valid anrede for Mrs. Smith (see test/data/oddb_mailing_test.yml)')
+
+      assert_equal(8, result[:parts].size, 'Must have 8 attachements (aka parts)')
     end
     def test_report_bsv
       preparations_listener = flexmock('preparations_listener') do |p|
@@ -1588,10 +1647,10 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
 
       online_file = @zip
       temp_file = File.join save_dir, 'temp.zip'
-      save_file = File.join save_dir, 
+      save_file = File.join save_dir,
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
       latest_file = File.join save_dir, 'XMLPublications-latest.zip'
-      
+
       # Preparing mock objects
       flexstub(Tempfile).should_receive(:new).and_return do
         flexmock do |tempfile|
@@ -1600,7 +1659,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
           tempfile.should_receive(:path).and_return(temp_file)
         end
       end
- 
+
       fileobj = flexmock do |obj|
         obj.should_receive(:save_as).with(temp_file).and_return do
           FileUtils.cp online_file, temp_file   # instead of downloading
@@ -1643,9 +1702,9 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         @plugin.update_it_codes io
       end
       expected = {
-        :de => "NERVENSYSTEM", 
+        :de => "NERVENSYSTEM",
         :fr => "SYSTEME NERVEUX",
-        :it => "SYSTEME NERVEUX", 
+        :it => "SYSTEME NERVEUX",
       }
       ith = updates.at(0)
       assert_equal expected, ith
@@ -1714,7 +1773,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1736,7 +1795,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1755,9 +1814,9 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     end
     def test_update_preparation__conflicted_registration
       reg = setup_registration :iksnr => '39271'
-      package = setup_package :pharmacode => "703279", :registration => reg, 
-                              :steps => %w{39271 02 028}, 
-                              :price_public => Util::Money.new(17.65), 
+      package = setup_package :pharmacode => "703279", :registration => reg,
+                              :steps => %w{39271 02 028},
+                              :price_public => Util::Money.new(17.65),
                               :price_exfactory => Util::Money.new(11.22)
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return package
@@ -1779,7 +1838,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       pef.origin = "http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (10.05.2010)"
       ppb = Util::Money.new(7.5)
       ppb.origin = "http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (10.05.2010)"
-      data = { 
+      data = {
         :price_exfactory => pef,
         :sl_generic_type => :original,
         :deductible      => :deductible_g,
@@ -1789,7 +1848,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       }
       expected_updates.store ptr, data
       ptr += :sl_entry
-      data = { 
+      data = {
         :bsv_dossier       => "12495",
         :valid_until       => Date.new(9999,12,31),
         :status            => "0",
@@ -1846,7 +1905,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -1882,7 +1941,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       ptr += [:package, '028']
       pac = flexmock 'package'
       pac.should_receive(:sl_entry).and_return nil
-      data = { 
+      data = {
         :ikscat          => 'B',
         :price_exfactory => Util::Money.new(2.9),
         :sl_generic_type => :original,
@@ -1914,7 +1973,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal({}, expected_updates)
@@ -1939,8 +1998,8 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     end
     def test_update_preparation__conflicted_package
       package = setup_package :pharmacode => "987654",
-                              :steps => %w{39271 02 028}, 
-                              :price_public => Util::Money.new(17.65), 
+                              :steps => %w{39271 02 028},
+                              :price_public => Util::Money.new(17.65),
                               :price_exfactory => Util::Money.new(11.22)
       reg = setup_registration :iksnr => '39271', :package => package
       reg.should_receive(:packages).and_return []
@@ -1963,7 +2022,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -1990,9 +2049,9 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg = setup_registration :iksnr => '39271'
       reg.should_receive(:packages).and_return []
       reg.should_receive(:keep_generic_type).and_return(false)
-      package = setup_package :pharmacode => "703279", :registration => reg, 
-                              :steps => %w{39271 02 028}, 
-                              :price_public => Util::Money.new(17.65), 
+      package = setup_package :pharmacode => "703279", :registration => reg,
+                              :steps => %w{39271 02 028},
+                              :price_public => Util::Money.new(17.65),
                               :price_exfactory => Util::Money.new(11.22)
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return package
@@ -2008,7 +2067,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       ptr += [:sequence, '02']
       expected_updates.store ptr, { :atc_class => 'M01AG01' }
       pac_pointer = ptr += [:package, '028']
-      data = { 
+      data = {
         :price_exfactory => Util::Money.new(2.9),
         :sl_generic_type => :original,
         :deductible      => :deductible_g,
@@ -2018,7 +2077,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       }
       expected_updates.store ptr, data
       ptr += :sl_entry
-      data = { 
+      data = {
         :bsv_dossier       => "12495",
         :valid_until       => Date.new(9999,12,31),
         :status            => "0",
@@ -2048,7 +2107,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         iksnr, seqnr, pacnr = steps
         ptr = Persistence::Pointer.new [:registration, iksnr], [:sequence, seqnr]
         sequence.should_receive(:pointer).and_return(ptr)
-        pack.should_receive(:pointer).and_return(ptr + [:package, pacnr])  
+        pack.should_receive(:pointer).and_return(ptr + [:package, pacnr])
         if reg = opts[:registration]
           reg.should_receive(:sequence).with(seqnr).and_return(sequence)
           reg.should_receive(:package).with(pacnr).and_return(pack)
