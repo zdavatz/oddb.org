@@ -236,7 +236,7 @@ module ODDB
               log "Searching for doctor with GLN #{gln}. (at #{@idx} of #{glns.size-@doctors_skipped} to import of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
               get_one_doctor(r_loop, gln)
               break
-            rescue Mechanize::ResponseCodeError
+            rescue Mechanize::ResponseCodeError, Timeout::Error
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
@@ -309,7 +309,7 @@ module ODDB
       def report
         report = "Doctors update \n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
-        report << "Skippped doctors: #{@doctors_skipped}. #{@skip_to_doctor ? 'Waited for ' + @skip_to_doctor.to_s : ''}" << "\n"
+        report << "Skipped doctors: #{@doctors_skipped}#{@skip_to_doctor ? '. Waited for ' + @skip_to_doctor.to_s : ''}" << "\n"
         report << "New doctors: "       << @doctors_created.to_s << "\n"
         report << "Updated doctors: "   << @doctors_updated.to_s << "\n"
         report << "Deleted doctors: "   << @doctors_deleted.to_s << "\n"

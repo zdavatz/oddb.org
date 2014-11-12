@@ -73,7 +73,7 @@ class TestDoctorPlugin <Minitest::Test
       assert_equal(1, created)
       assert_equal(0, updated)
       assert(File.exists?(csv_file), "file #{csv_file} must be created")
-      expected = "Doctors update \n\nNumber of doctors: 1\nNew doctors: 1\nUpdated doctors: 0\nDeleted doctors: 0\n"
+      expected = "Doctors update \n\nNumber of doctors: 1\nSkipped doctors: 0\nNew doctors: 1\nUpdated doctors: 0\nDeleted doctors: 0\n"
       assert_equal(expected, @plugin.report)
     }
   end
