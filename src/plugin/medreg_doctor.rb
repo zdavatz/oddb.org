@@ -76,6 +76,7 @@ module ODDB
         @doctors_updated = 0
         @doctors_skipped = 0
         @doctors_deleted = 0
+        @skip_to_doctor  = nil
         @archive = File.join ARCHIVE_PATH, 'xls'
         @@all_doctors    = {}
         setup_default_agent unless setup_default_agent
@@ -220,17 +221,19 @@ module ODDB
         max_retries = 100
         @idx = 0
         r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
+        @skip_to_doctor ||= r_loop.state_id
         log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
         glns.each { |gln|
           if r_loop.must_skip?(gln.to_s)
             # log "Skipping #{gln.inspect}. Waiting for #{r_loop.state_id.inspect}"
+            @doctors_skipped += 1
             next
           end
           @idx += 1
           nr_tries = 0
           while nr_tries < max_retries
             begin
-              log "Searching for doctor with GLN #{gln}. (#{@idx}/#{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
+              log "Searching for doctor with GLN #{gln}. (at #{@idx} of #{glns.size-@doctors_skipped} to import of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
               get_one_doctor(r_loop, gln)
               break
             rescue Mechanize::ResponseCodeError
@@ -306,6 +309,7 @@ module ODDB
       def report
         report = "Doctors update \n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
+        report << "Skippped doctors: #{@doctors_skipped}. #{@skip_to_doctor ? 'Waited for ' + @skip_to_doctor.to_s : ''}" << "\n"
         report << "New doctors: "       << @doctors_created.to_s << "\n"
         report << "Updated doctors: "   << @doctors_updated.to_s << "\n"
         report << "Deleted doctors: "   << @doctors_deleted.to_s << "\n"
