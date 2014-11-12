@@ -20,8 +20,8 @@ require 'timeout'
 module ODDB
   module Doctors
     Mechanize_Log         = File.join(ODDB::LogFile::LOG_ROOT, File.basename(__FILE__).sub('.rb', '.log'))
-    Personen_XLSX         = File.expand_path(File.join(__FILE__, '../../../data/xls/Personen_latest.xlsx'))
-    Personen_YAML         = File.expand_path(File.join(__FILE__, "../../../data/txt/doctors_#{Time.now.strftime('%Y.%m.%d')}.yaml"))
+    Personen_Candidates   = File.expand_path(File.join(__FILE__, '../../../data/xls/Personen_20*.xlsx'))
+    Personen_YAML         = File.expand_path(File.join(__FILE__, "../../../data/txt/doctors_#{Time.now.strftime('%Y.%m.%d-%H%M')}.yaml"))
     MedRegOmURL           = 'http://www.medregom.admin.ch/'
     MedRegPerson_XLS_URL  = "https://www.medregbm.admin.ch/Publikation/CreateExcelListMedizinalPersons"
     DoctorInfo = Struct.new("DoctorInfo",
@@ -94,7 +94,6 @@ module ODDB
         File.open(Personen_YAML, 'w+') {|f| f.write(@@all_doctors.to_yaml) }
         save_for_log "Saved #{@@all_doctors.size} doctors in #{Personen_YAML}"
       end
-
       def setup_default_agent
         @agent = Mechanize.new
         @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.1.0'
@@ -294,16 +293,31 @@ module ODDB
           FileUtils.cp(target, latest, {:verbose => true})
           return needs_update,latest
         end
-        file = agent.get(MedRegPerson_XLS_URL)
-        download = file.body
-        if(!File.exist?(latest) or download.size != File.size(latest))
-          File.open(latest, 'w+') { |f| f.write download }
-          File.open(target, 'w+') { |f| f.write download }
+        @download = nil
+        begin
+          file = agent.get(MedRegPerson_XLS_URL)
+          @download = file.body
+        rescue Net::HTTP::Persistent::Error, Timeout::Error => e
+          log "Catched error #{e}"
+          search_name = File.join @archive, Time.now.strftime("doctors_%Y*.xlsx")
+          candidates = Dir.glob(search_name)
+          if candidates.size == 0
+            save_for_log "getting file from MedRegPerson_XLS_URL failed. Could not find any prior downloads via #{search_name}"
+            raise e
+          end
+          best = candidates.max_by {|f| File.mtime(f)}
+          save_for_log "getting file from MedRegPerson_XLS_URL failed. Using #{best} #{File.mtime(best)} #{File.size(best)} bytes"
+          @download = IO.read(best)
+        end
+        if(!File.exist?(latest) or @download.size != File.size(latest))
+          File.open(latest, 'w+') { |f| f.write @download }
+          File.open(target, 'w+') { |f| f.write @download }
           save_for_log "saved get_latest_file (#{file.body.size} bytes) as #{target} and #{latest}"
         else
           save_for_log "latest_file #{target} #{file.body.size} bytes is uptodate"
           needs_update = false
         end
+        @download = nil # release it
         return needs_update,latest
       end
       def report
