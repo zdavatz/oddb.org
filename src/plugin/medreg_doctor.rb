@@ -112,6 +112,7 @@ module ODDB
           log "ERROR: Could not find a table with info for #{gln}"
           return nil
         end
+        match_qualification_with_austria = /(.*)\s+(\d+)\s+([Ö\w]+)/
         doc_hash = Hash.new
         doc_hash[:ean13] =  gln.to_s.clone
         doc_hash[:name] =  info.family_name
@@ -125,7 +126,14 @@ module ODDB
           |j|
             line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
-              specialities << line.match(/(.*)\s+(\d+)\s+(\w+)/)[1..3].join(',').gsub("\r","").strip
+              line = line.gsub("\r\n", '')
+              m = line.match(match_qualification_with_austria)
+              if m
+                specialities << m[1..3].join(',').gsub("\r","").strip
+              else
+                log "PROBLEM: could not find speciality for GLN #{gln} in line '#{line}'"
+                require 'pry'; binding.pry
+              end
             end
           }
         doc_hash[:specialities] = specialities
@@ -135,7 +143,7 @@ module ODDB
             next unless doc.xpath("//tr")[j]
             line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
-              if m = line.match(/(.*)\s+(\d+)\s+(\w+)/)
+              if m = line.match(match_qualification_with_austria)
                 experiences << m[1..3].join(',').gsub("\r","").strip
               else
                 log "GLN: #{gln.to_s} no match for line #{line}"
@@ -149,7 +157,8 @@ module ODDB
       end
 
       def get_one_doctor(r_loop, gln)
-        r_loop.try_run(gln, 120) do # increase timeout from default of 10 seconds. Measured 46 seconds for the first gln
+        maxSeconds = defined?(Minitest) ? 3600 : 120
+        r_loop.try_run(gln, maxSeconds) do # increase timeout from default of 10 seconds. Measured 46 seconds for the first gln
           if @@all_doctors[gln.to_s]
             log "ERROR: Skip search GLN #{gln} as already found"
             next
@@ -277,7 +286,7 @@ module ODDB
         latest = File.join @archive, "doctors_latest.xlsx"
         target = File.join @archive, Time.now.strftime("doctors_%Y.%m.%d.xlsx")
         needs_update = true
-        save_for_log "get_latest_file target #{target} #{File.exist?(target)} and #{latest} #{File.exist?(latest)}"
+        save_for_log "get_latest_file target #{target} #{File.exist?(target)} and #{latest} #{File.exist?(latest)} from URL #{MedRegPerson_XLS_URL}"
         if File.exist?(target) and not File.exist?(latest)
           FileUtils.cp(target, latest, {:verbose => true})
           return needs_update,latest

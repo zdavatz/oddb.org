@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # TestDoctorPlugin -- oddb.org -- 11.05.2012 -- yasaka@ywesee.com
-# TestDoctorPlugin -- oddb.org -- 23.03.2011 -- mhatakeyama@ywesee.com 
+# TestDoctorPlugin -- oddb.org -- 23.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -79,15 +79,16 @@ class TestDoctorPlugin <Minitest::Test
   end
 
   def test_update_some_glns
-    @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282, 7601000254207, 7601000186874, 7601000201522, 7601000295958, 
-                                                           7601000010735, 7601000268969, 7601000019080, 7601000239730 ])
+    glns_ids_to_search = [7601000078261, 7601000813282, 7601000254207, 7601000186874, 7601000201522, 7601000295958,
+                          7601000010735, 7601000268969, 7601000019080, 7601000239730 ]
+    @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, glns_ids_to_search)
 
     flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
     flexmock(@plugin, :get_doctor_data => {})
     flexmock(@plugin, :puts => nil)
     assert(File.exists?(Test_Personen_XLSX))
     startTime = Time.now
-    csv_file = ODDB::Doctors::Personen_YAML 
+    csv_file = ODDB::Doctors::Personen_YAML
     FileUtils.rm_f(csv_file) if File.exists?(csv_file)
     created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
@@ -95,7 +96,7 @@ class TestDoctorPlugin <Minitest::Test
     assert_equal(0, deleted)
     assert_equal(0, skipped)
     assert_equal(0, updated)
-    assert_equal(8, created)
+    assert_equal(glns_ids_to_search.size - 1 , created) # we have one gln_id mentioned twice
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
   end
 
