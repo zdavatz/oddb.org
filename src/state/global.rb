@@ -58,6 +58,7 @@ require 'state/doctors/init'
 require 'state/hospitals/init'
 require 'state/doctors/doctorlist'
 require 'state/hospitals/hospitallist'
+require 'state/hc_providers/init'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/interaction_chooser'
@@ -182,6 +183,7 @@ module ODDB
           :home_analysis          => State::Analysis::Init,
           :home_companies         => State::Companies::Init,
           :home_doctors           => State::Doctors::Init,
+          :home_hc_providers      => State::HC_providers::Init,
           :home_hospitals         => State::Hospitals::Init,
           :home_drugs             => State::Drugs::Init,
           :home_interactions      => State::Interactions::Init,
@@ -212,7 +214,7 @@ module ODDB
           :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,
           :zsr                    => State::Zsr,
-        }	
+        }
         HOME_STATE = State::Drugs::Init
         LIMITED = false
         RESOLVE_STATES = {
@@ -234,11 +236,11 @@ module ODDB
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
           [ :rezept ]                                                         => State::Drugs::Prescription,
           [ :zsr ]                                                            => State::Zsr,
-        }	
+        }
         READONLY_STATES = RESOLVE_STATES.dup.update({
           [ :registration ]                       => State::Drugs::Registration,
           [ :registration, :sequence, ]           => State::Drugs::Sequence,
-          [ :registration, :sequence, :package ]  => State::Drugs::Package, 
+          [ :registration, :sequence, :package ]  => State::Drugs::Package,
         })
         PRINT_STATES = {
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
@@ -273,7 +275,7 @@ module ODDB
 				self
 			end
 			def allowed?(test = @model)
-				if(test.is_a?(Persistence::CreateItem)) 
+				if(test.is_a?(Persistence::CreateItem))
 					test = test.parent(@session.app)
 				end
 				@session.allowed?('edit', test)
@@ -374,7 +376,7 @@ module ODDB
 			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
-					@viral_module = mod 
+					@viral_module = mod
 				end
 				super
 			end
@@ -538,9 +540,9 @@ module ODDB
       end
 			def proceed_download
 				keys = [:download, :months, :compression]
-				input = user_input(keys, keys) 
+				input = user_input(keys, keys)
 				items = []
-				dir = File.expand_path('../../data/downloads', 
+				dir = File.expand_path('../../data/downloads',
 					File.dirname(__FILE__))
 				compression = input[:compression]
 				if(files = input[:download])
@@ -578,7 +580,7 @@ module ODDB
 					}
 				end
 				if(items.empty?)
-					@errors.store(:download, create_error('e_no_download_selected', 
+					@errors.store(:download, create_error('e_no_download_selected',
 						:download, nil))
 				end
 				if(error?)
@@ -587,7 +589,7 @@ module ODDB
 					pointer = Persistence::Pointer.new(:invoice)
 					invoice = Persistence::CreateItem.new(pointer)
 					invoice.carry(:items, items)
-          # experimental Implementation of Invoiced Download. 
+          # experimental Implementation of Invoiced Download.
           # Does not work yet, because an Invoice-Id is needed for downloading,
           # but no invoice is created until the next run of DownloadInvoicer
           #if(creditable?('org.oddb.download'))
@@ -626,7 +628,7 @@ module ODDB
       def home_interactions
         State::Interactions::InteractionChooser.new(@session, nil)
       end
-      
+
       def migel_search
         @session.set_cookie_input(:resultview, '')
         sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
@@ -643,7 +645,7 @@ module ODDB
           ODDB::State::Migel::Group.new(@session, group)
         elsif migel_code = @session.user_input(:migel_limitation) and limitation_text = @session.app.search_migel_limitation(migel_code)
           ODDB::State::Migel::LimitationText.new(@session, limitation_text)
-        else 
+        else
           self
         end
       end
@@ -676,7 +678,7 @@ module ODDB
         end
       end
       def analysis
-        if group_cd = @session.user_input(:group) and group = @session.app.analysis_group(group_cd) 
+        if group_cd = @session.user_input(:group) and group = @session.app.analysis_group(group_cd)
           if position = group.position(@session.user_input(:position))
             State::Analysis::Position.new(@session, position)
           else
@@ -731,7 +733,7 @@ module ODDB
 					self
         else
           iksnr = @session.user_input(:reg)
-          seqnr = @session.user_input(:seq) 
+          seqnr = @session.user_input(:seq)
           ikscd = @session.user_input(:pack)
           @session.set_persistent_user_input(:reg, iksnr) if iksnr
           @session.set_persistent_user_input(:seq, seqnr) if seqnr
@@ -791,6 +793,9 @@ module ODDB
 					  query = ODDB.search_term(query)
           end
 					case zone
+					when :hc_providers
+						result = @session.search_hc_providers(query)
+						State::HC_providers::HC_providerResult.new(@session, result)
 					when :hospitals
 						result = @session.search_hospitals(query)
 						State::Hospitals::HospitalResult.new(@session, result)
@@ -832,7 +837,7 @@ module ODDB
 						State::Analysis::Result.new(@session, result)
 					else
 						query = query.to_s.downcase.gsub(/\s+/u, ' ')
-						stype = @session.user_input(:search_type) 
+						stype = @session.user_input(:search_type)
 						_search_drugs_state(query, stype)
 					end
 				else
@@ -954,7 +959,7 @@ module ODDB
       def address_suggestion
         if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first)) \
           or (ean = @session.user_input(:hospital) and hospital = @session.search_hospital(ean))
-          if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid) 
+          if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
             State::Admin::TransparentLogin.new(@session, model)
           end
         end
@@ -1042,7 +1047,7 @@ module ODDB
 						1
 					elsif (bval.nil?)
 						-1
-					else 
+					else
 						aval <=> bval
 					end
           if !res
@@ -1060,9 +1065,9 @@ module ODDB
 					sortvalue = sortvalue.intern
 				end
 				if(@sortby.first == sortvalue)
-					@sort_reverse = !@sort_reverse 
+					@sort_reverse = !@sort_reverse
 				else
-					@sort_reverse = self.class::REVERSE_MAP[sortvalue] 
+					@sort_reverse = self.class::REVERSE_MAP[sortvalue]
 				end
 				@sortby.delete_if { |sortby| sortby == sortvalue }
 				@sortby.unshift(sortvalue)

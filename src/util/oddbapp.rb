@@ -50,7 +50,7 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
   attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
-    :companies, :divisions, :doctors, :experiences, :fachinfos, 
+    :companies, :divisions, :doctors, :experiences, :fachinfos,
     :galenic_groups, :hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
@@ -230,7 +230,7 @@ class OddbPrevalence
 				if((ptr = invoice.user_pointer) \
 					&& (user = ptr.resolve(self)) \
 					&& user.respond_to?(:remove_invoice))
-					user.remove_invoice(invoice)	
+					user.remove_invoice(invoice)
 				end
 =end
 				delete(invoice.pointer)
@@ -247,6 +247,19 @@ class OddbPrevalence
 	def company(oid)
 		@companies[oid.to_i]
 	end
+  def hc_provide_by_gln(gln)
+    @companies.values.each { |company|
+      if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
+        return company
+      end
+    }
+    @doctors.values.each { |doctor|
+      if(doctor && doctor.respond_to?(:ean13) && doctor.ean13.to_s == gln.to_s)
+        return doctor
+      end
+    }
+    nil
+  end
   def company_by_gln(gln)
     @companies.values.each { |company|
       if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
@@ -305,7 +318,7 @@ class OddbPrevalence
 		}
 	end
 	def count_limitation_texts
-		@registrations.values.inject(0) { |inj,reg|			
+		@registrations.values.inject(0) { |inj,reg|
 			inj + reg.limitation_text_count
 		}
 	end
@@ -323,7 +336,7 @@ class OddbPrevalence
 			log.change_flags.select { |ptr, flags|
 				flags.include?(:new)
 			}.size
-		else 
+		else
 			0
 		end
 	end
@@ -375,7 +388,7 @@ class OddbPrevalence
 	end
   def create_feedback
     feedback = ODDB::Feedback.new
-    @feedbacks.store(feedback.oid, feedback) 
+    @feedbacks.store(feedback.oid, feedback)
   end
 	def create_galenic_group
 		galenic_group = ODDB::GalenicGroup.new
@@ -399,7 +412,7 @@ class OddbPrevalence
 	end
 	def create_address_suggestion
 		address = ODDB::AddressSuggestion.new
-		@address_suggestions.store(address.oid, address) 
+		@address_suggestions.store(address.oid, address)
 	end
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
@@ -688,7 +701,7 @@ class OddbPrevalence
 		@fachinfos.size
 	end
 	def fachinfos_by_name(name, lang)
-		if(lang.to_s != "fr") 
+		if(lang.to_s != "fr")
 			lang = "de"
 		end
 		retrieve_from_index("fachinfo_name_#{lang}", name)
@@ -782,7 +795,7 @@ class OddbPrevalence
 		@package_count ||= count_packages()
 	end
   def packages
-    @registrations.inject([]) { |pacs, (iksnr,reg)| 
+    @registrations.inject([]) { |pacs, (iksnr,reg)|
       pacs.concat(reg.packages)
     }
   end
@@ -797,7 +810,7 @@ class OddbPrevalence
 	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.sort.each { |key, atc| 
+		@atc_classes.sort.each { |key, atc|
 			chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 		@atc_chooser = chooser
@@ -991,12 +1004,12 @@ class OddbPrevalence
 	def search_by_interaction(key, lang)
 		result = ODDB::SearchResult.new
     result.error_limit = RESULT_SIZE_LIMIT
-		if(lang.to_s != "fr") 
+		if(lang.to_s != "fr")
 			lang = "de"
 		end
 		sequences = retrieve_from_index("interactions_index_#{lang}", key, result)
     key = key.downcase
-    sequences.reject! { |seq| 
+    sequences.reject! { |seq|
       ODDB.search_terms(seq.search_terms, :downcase => true).include?(key) \
         || seq.substances.any? { |sub|
         sub.search_keys.any? { |skey| skey.downcase.include?(key) }
@@ -1009,7 +1022,7 @@ class OddbPrevalence
 	end
 	def search_by_unwanted_effect(key, lang)
 		result = ODDB::SearchResult.new
-		if(lang.to_s != "fr") 
+		if(lang.to_s != "fr")
 			lang = "de"
 		end
 		sequences = retrieve_from_index("unwanted_effects_index_#{lang}", key, result)
@@ -1035,7 +1048,7 @@ class OddbPrevalence
     result
   end
 	def search_narcotics(query, lang)
-		if(lang.to_s != "fr") 
+		if(lang.to_s != "fr")
 			lang = "de"
 		end
 		index_name = "narcotics_#{lang}"
@@ -1076,6 +1089,16 @@ class OddbPrevalence
     result.atc_classes = atc_classes.values
     result
   end
+
+  def search_hc_providers(key)
+    result = search_hospitals(key)
+		$stdout.puts "search_hc_providers hospitals return #{result}"
+		result ||= search_doctors(key)
+		$stdout.puts "search_hc_providers doctors return #{doctors}"
+		result ||= search_companies(key)
+		$stdout.puts "search_hc_providers companies return #{companies}"
+		result
+  end
   def search_hospitals(key)
     retrieve_from_index("hospital_index", key)
   end
@@ -1112,7 +1135,7 @@ class OddbPrevalence
 		end
 	end
 	def sequences
-		@registrations.values.inject([]) { |seq, reg| 
+		@registrations.values.inject([]) { |seq, reg|
 			seq.concat(reg.sequences.values)
 		}
 	end
@@ -1122,7 +1145,7 @@ class OddbPrevalence
 	def slate(name)
 		@slates[name]
 	end
-  def rebuild_slates(name=:patinfo, type=:annual_fee) 
+  def rebuild_slates(name=:patinfo, type=:annual_fee)
     case name
     when :patinfo
       slate(name).items.values.select{|i| i.type == type}.each do |item|
@@ -1203,15 +1226,15 @@ class OddbPrevalence
 		retrieve_from_index("substance_soundex_index", key)
 	end
   def sorted_fachinfos
-    @sorted_fachinfos ||= @fachinfos.values.select { |fi| 
+    @sorted_fachinfos ||= @fachinfos.values.select { |fi|
       fi.revision }.sort_by { |fi| fi.revision }.reverse
   end
   def sorted_feedbacks
     @sorted_feedbacks ||= @feedbacks.values.sort_by { |fb| fb.time }.reverse
   end
   def sorted_minifis
-    @sorted_minifis ||= @minifis.values.sort_by { |minifi| 
-      [ -minifi.publication_date.year, 
+    @sorted_minifis ||= @minifis.values.sort_by { |minifi|
+      [ -minifi.publication_date.year,
         -minifi.publication_date.month, minifi.name] }
   end
   def sorted_patented_registrations
@@ -1277,7 +1300,7 @@ class OddbPrevalence
 	end
 	def unique_atc_class(substance)
 	 atc_array = search_by_substance(substance)
-=begin ## this is much too unstable, completely wrong assignment is 
+=begin ## this is much too unstable, completely wrong assignment is
        ## probable!
 	 if(atc_array.size > 1)
 		 atc_array = atc_array.select { |atc|
@@ -1298,7 +1321,7 @@ class OddbPrevalence
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
-			path = File.expand_path("../../etc/index_definitions.yaml", 
+			path = File.expand_path("../../etc/index_definitions.yaml",
 				File.dirname(__FILE__))
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
@@ -1320,12 +1343,12 @@ class OddbPrevalence
 					end
 					puts "creating: #{index_definition.index_name}"
 					ODBA.cache.create_index(index_definition, ODDB)
-					begin 
+					begin
 						puts "filling: #{index_definition.index_name}"
 						puts index_definition.init_source
 						source = instance_eval(index_definition.init_source)
 						puts "source.size: #{source.size}"
-						ODBA.cache.fill_index(index_definition.index_name, 
+						ODBA.cache.fill_index(index_definition.index_name,
 							source)
 					rescue StandardError => e
 						puts e.class
@@ -1444,7 +1467,7 @@ module ODDB
 			@system.execute_command(CreateCommand.new(pointer))
 		end
     def create_commercial_forms
-      @system.each_package { |pac| 
+      @system.each_package { |pac|
         if(comform = pac.comform)
           possibilities = [
             comform.strip,
@@ -1458,7 +1481,7 @@ module ODDB
             end
           }
           if(cform.nil?)
-            args = { :de => possibilities.first, 
+            args = { :de => possibilities.first,
               :synonyms => possibilities[1..-1] }
             possibilities.each { |possibility|
               if(form = @system.galenic_form(possibility))
@@ -1662,7 +1685,7 @@ module ODDB
 		def _assign_effective_forms(arg=nil)
 			result = nil
 			last = nil
-			@system.substances.select { |subs| 
+			@system.substances.select { |subs|
 				!subs.has_effective_form? && (arg.nil? || arg.to_s < subs.to_s)
 			}.sort_by { |subs| subs.name }.each { |subs|
 				puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
@@ -1678,9 +1701,9 @@ module ODDB
 				result = nil
 				while(result.nil?)
 					possibles = [
-						"d(elete)", 
-						"S(elf)", 
-						"n(othing)", 
+						"d(elete)",
+						"S(elf)",
+						"n(othing)",
 						"other_name",
 					]
 					if(suggest)
@@ -1706,8 +1729,8 @@ module ODDB
 					when 'S'
 						result = subs
 					when 'd'
-						subs.sequences.each { |seq| 
-							seq.delete_active_agent(subs) 
+						subs.sequences.each { |seq|
+							seq.delete_active_agent(subs)
 							seq.active_agents.odba_isolated_store
 						}
 						subs.odba_delete
@@ -1837,8 +1860,8 @@ module ODDB
       when Array
         # already migrated, ignore
       when Hash
-        new = fbs.values.select { |fb| 
-          fb.is_a?(Feedback) 
+        new = fbs.values.select { |fb|
+          fb.is_a?(Feedback)
         }.sort_by { |fb| fb.time }.reverse
         fbs.odba_delete
         new.odba_store
@@ -2015,7 +2038,7 @@ module ODDB
             path = File.expand_path('../../doc/resources/downloads/' + status,
                                     File.dirname(__FILE__))
             lines = File.readlines(path)[0,100] rescue []
-            lines.unshift sprintf(format, alarm, 
+            lines.unshift sprintf(format, alarm,
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
                                   sessions, threads, mbytes, gc)
             File.open(path, 'w') { |fh|
@@ -2095,7 +2118,7 @@ module ODDB
 	end
 end
 
-begin 
+begin
  	require ODDB.config.testenvironment1
 rescue LoadError
 end

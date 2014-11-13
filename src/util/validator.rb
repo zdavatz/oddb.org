@@ -2,7 +2,7 @@
 # encoding: utf-8
 # ODDB::Validator -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
-# ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
+# ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com
 
 require 'sbsm/validator'
 require 'model/ean13'
@@ -93,41 +93,41 @@ module ODDB
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],
       :resultview   =>  ['atc', 'pages'],
-      :route_of_administration => [nil, 'roa_O', 'roa_P', 'roa_N', 'roa_SL', 
+      :route_of_administration => [nil, 'roa_O', 'roa_P', 'roa_N', 'roa_SL',
                          'roa_TD', 'roa_R', 'roa_V'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
 			:search_form  =>  ['plus', 'instant', 'normal'],
       :style        =>  ['default', 'blue', 'red', 'olive', 'purple'],
-      :yus_privileges => [ 
-        'edit|yus.entities', 
-        'grant|login', 
-        'grant|view', 
-        'grant|create', 
-        'grant|edit', 
-        'grant|credit', 
+      :yus_privileges => [
+        'edit|yus.entities',
+        'grant|login',
+        'grant|view',
+        'grant|create',
+        'grant|edit',
+        'grant|credit',
         'set_password',
-        'login|org.oddb.RootUser', 
-        'login|org.oddb.AdminUser', 
-        'login|org.oddb.PowerUser', 
-        'login|org.oddb.CompanyUser', 
-        'login|org.oddb.PowerLinkUser', 
-        #'view|org.oddb', 
-        'edit|org.oddb.drugs', 
+        'login|org.oddb.RootUser',
+        'login|org.oddb.AdminUser',
+        'login|org.oddb.PowerUser',
+        'login|org.oddb.CompanyUser',
+        'login|org.oddb.PowerLinkUser',
+        #'view|org.oddb',
+        'edit|org.oddb.drugs',
         'edit|org.oddb.powerlinks',
         'create|org.oddb.registration',
         'create|org.oddb.task.background',
-        'edit|org.oddb.model.!company.*', 
-        'edit|org.oddb.model.!sponsor.*', 
-        'edit|org.oddb.model.!indication.*', 
-        'edit|org.oddb.model.!galenic_group.*', 
-        'edit|org.oddb.model.!address.*', 
+        'edit|org.oddb.model.!company.*',
+        'edit|org.oddb.model.!sponsor.*',
+        'edit|org.oddb.model.!indication.*',
+        'edit|org.oddb.model.!galenic_group.*',
+        'edit|org.oddb.model.!address.*',
         'edit|org.oddb.model.!atc_class.*',
-        'invoice|org.oddb.processing', 
-        'view|org.oddb.patinfo_stats', 
-        'view|org.oddb.patinfo_stats.associated', 
-        'credit|org.oddb.download', 
+        'invoice|org.oddb.processing',
+        'view|org.oddb.patinfo_stats',
+        'view|org.oddb.patinfo_stats.associated',
+        'credit|org.oddb.download',
       ],
-		}	
+		}
 		EVENTS = [
 			:accept,
 			:add_to_interaction_basket,
@@ -208,6 +208,7 @@ module ODDB
 			:home_doctors,
 			:home_drugs,
 			:home_hospitals,
+			:home_hc_providers,
       :home_interactions,
 			:home_migel,
 			:home_substances,
@@ -477,7 +478,7 @@ module ODDB
 			:urls,
       :zsr_id,
 		]
-		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
+		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user,
 			:hospitals, :substances, :companies]
 		@@latin1 = Iconv.new('ISO-8859-1', 'UTF-8')
 		@@utf8 = Iconv.new('UTF-8', 'ISO-8859-1')
@@ -577,7 +578,7 @@ module ODDB
 		end
 		def set_pass_1(value)
 			if(value.to_s.size < 4)
-				raise SBSM::InvalidDataError.new("e_missing_password", 
+				raise SBSM::InvalidDataError.new("e_missing_password",
 					:set_pass_1, value)
 			end
 			pass(value)
@@ -613,7 +614,7 @@ module ODDB
       if(@@yus.match(value.to_s))
         value
       elsif(!value.empty?)
-				raise SBSM::InvalidDataError.new("e_invalid_yus_association", 
+				raise SBSM::InvalidDataError.new("e_invalid_yus_association",
                                          :yus_association, value)
       end
     end

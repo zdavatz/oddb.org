@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # State::GlobalPredefine -- oddb -- 08.03.2011 -- mhatakeyama@ywesee.com
-# State::GlobalPredefine -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
+# State::GlobalPredefine -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'sbsm/state'
 
@@ -12,7 +12,7 @@ module ODDB
       class Global < State::Global; end
     end
     module Limit; end
-    module Admin 
+    module Admin
       class Global < State::Global; end
       module Root; end
       module Admin; end
@@ -24,17 +24,20 @@ module ODDB
     module Companies
       class Global < State::Global; end
     end
+    module HC_providers
+      class Global < State::Global; end
+    end
     module Drugs
       class Global < State::Global; end
       class Init < State::Drugs::Global; end
     end
-    module Interactions 
+    module Interactions
       class Global < State::Global; end
     end
-    module Substances 
+    module Substances
       class Global < State::Global; end
     end
-    module User 
+    module User
       class Global < State::Global; end
     end
     module Doctors
@@ -44,7 +47,7 @@ module ODDB
       class Global < State::Global; end
     end
     module Migel
-      class Global < State::Global; end 
+      class Global < State::Global; end
     end
   end
 end

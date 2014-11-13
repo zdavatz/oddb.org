@@ -119,7 +119,7 @@ module ODDB
 		ENABLED = [
 			:atc_chooser,
 			:data_counts,
-			:drugs, 
+			:drugs,
 			:export_csv,
 			:faq_link,
 			:help_link,
@@ -182,19 +182,19 @@ module ODDB
     ]
 		DICTIONARIES = {
 			'de'	=>	{
-				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!', 
+				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!',
 				:home_welcome							=>  "Willkommen bei generika.cc, dem<br>aktuellsten Medikamenten-Portal der Schweiz.",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Willkommen bei Generika.cc',
 			},
 			'fr'	=>	{
-				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!', 
+				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!',
 				:home_welcome							=>  "Bienvenue sur generika.cc,<br>le portail des g&eacute;n&eacute;riques de la Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
 			},
 			'en'	=>	{
-				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!', 
+				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!',
 				:home_welcome							=>  "Welcome to generika.cc<br>the open drug database of Switzerland.",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Welcome to Generika.cc',
@@ -240,7 +240,7 @@ module ODDB
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
     ENABLED = [
       :ajax,
-      :doctors 
+      :doctors
     ]
 		DICTIONARIES = {
 			'de'	=>	{
@@ -329,7 +329,7 @@ module ODDB
 				:price_compare						=>	'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
 			},
 		}
-		RESOURCES = { 
+		RESOURCES = {
 			:external_css	=>	'http://www.atupri.ch/fileadmin/user_upload/dokumente/atupri/informationen/generikaliste/new.generika.css',
 		}
 		HTML_ATTRIBUTES = { }
@@ -343,10 +343,10 @@ module ODDB
         [5,0]  => :comparable_size,
         [6,0]  => :compositions,
         [7,0]  => :price_public,
-        [8,0]  => :price_difference, 
+        [8,0]  => :price_difference,
         [9,0]  => :deductible,
         [10,0] => :ikscat,
-      }  
+      }
     end
 		def explain_result_components
 			{
@@ -417,7 +417,7 @@ module ODDB
 		ENABLED = [
 			:atc_chooser,
 			:data_counts,
-			:drugs, 
+			:drugs,
 			:export_csv,
 			:external_css,
 			:faq_link,
@@ -432,7 +432,7 @@ module ODDB
 			:logout,
 		]
 		DICTIONARIES = { }
-		RESOURCES = { 
+		RESOURCES = {
       :external_css	=>	'http://www.carenaschweiz.ch/css/oddb.css',
     }
 		HTML_ATTRIBUTES = { }
@@ -471,12 +471,12 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-Enzyklopädie',
-				:atc_chooser								=>	'ATC-Codes', 
+				:atc_chooser								=>	'ATC-Codes',
 				:data_declaration						=>	'Datenherkunft',
 				:fipi_overview_explain      =>	'Stand der Publikation der Fach- und Patienteninformationen unter www.med-drugs.ch',
 				:home_drugs									=>	'Medikamente',
 				:legal_note									=>	'Rechtliche Hinweise',
-				:meddrugs_update						=>	'med-drugs update', 
+				:meddrugs_update						=>	'med-drugs update',
 				:migel											=>	'Medizinprodukte (MiGeL)',
 				:migel_alphabetical					=>	'Medizinprodukte (MiGeL) A-Z',
         :price_compare              =>  "Für Preisvergleich auf Medikamentnamen klicken.",
@@ -485,12 +485,12 @@ module ODDB
 			},
 			'fr'	=>	{
 				:all_drugs_pricecomparison	=>	'Encyclopédie des médicaments commercialisés en Suisse',
-				:atc_chooser								=>	'ATC-Codes', 
+				:atc_chooser								=>	'ATC-Codes',
 				:data_declaration						=>	'Source des dates',
 				:fipi_overview_explain      =>	'Publications IPro et IPat sous www.just-medical.ch',
 				:home_drugs									=>	'Médicaments',
 				:legal_note									=>	'Notice légale',
-				:meddrugs_update						=>	'med-drugs update', 
+				:meddrugs_update						=>	'med-drugs update',
 				:migel											=>	'Dispositifs médicaux (MiGeL)',
 				:migel_alphabetical					=>	'Dispositifs médicaux (MiGeL) A-Z',
         :price_compare              =>  "Pour comparaison de prix cliquer sur nom du médicament",
@@ -499,12 +499,12 @@ module ODDB
 			},
 			'en'	=>	{
 				:all_drugs_pricecomparison	=>	'Complete Swiss encyclopaedia of drugs',
-				:atc_chooser								=>	'ATC-Codes', 
+				:atc_chooser								=>	'ATC-Codes',
 				:data_declaration						=>	'Source of data',
 				:fipi_overview_explain      =>	'Publications of DI and CI on www.just-medical.ch',
 				:home_drugs									=>	'Drugs',
 				:legal_note									=>	'Legal Disclaimer',
-				:meddrugs_update						=>	'med-drugs update', 
+				:meddrugs_update						=>	'med-drugs update',
 				:migel											=>	'Medical devices (MiGeL)',
 				:migel_alphabetical					=>	'Medical devices (MiGeL) A-Z',
         :price_compare              =>  "Click name of drug for price-comparison",
@@ -607,7 +607,7 @@ module ODDB
 		ENABLED = [
 			:atc_chooser,
 			:data_counts,
-			:drugs, 
+			:drugs,
 			:export_csv,
 			:external_css,
 			:faq_link,
@@ -622,7 +622,7 @@ module ODDB
 			:logout,
 		]
 		DICTIONARIES = { }
-		RESOURCES = { 
+		RESOURCES = {
       :external_css	=>	'http://www.konsuminfo.ch/support/css/oddb.css',
     }
 		HTML_ATTRIBUTES = { }
@@ -641,8 +641,8 @@ module ODDB
 		}
 		def enabled?(event, default=true)
 			case event.to_sym
-			when :query_limit, :google_adsense, :doctors, :interactions, :migel, 
-				:user , :hospitals, :companies, :analysis
+			when :query_limit, :google_adsense, :doctors, :interactions, :migel,
+				:user , :hospitals, :companies, :analysis, :hc_providers
 				false
 			else
 				@component.enabled?(event, default)
@@ -768,7 +768,7 @@ module ODDB
 			:home_drugs,
       :home_interactions,
       :home_migel,
-      :interactions, 
+      :interactions,
       :download_export,
       :legal_note_vertical,
       :limitation_texts,
@@ -776,7 +776,7 @@ module ODDB
       :logo,
 			:logout,
       :migel,
-      :patinfos, 
+      :patinfos,
       :preferences,
       :price_history,
       :query_limit,
@@ -908,7 +908,7 @@ module ODDB
         [7,0] => :ddd_price,
         [8,0] => :price_difference,
         [9,0] => :deductible,
-      }  
+      }
     end
 		PH_END = Date.new(2010,4,10)
 		def enabled?(event, default=false)
@@ -1035,10 +1035,10 @@ module ODDB
         [3,0] => :comparable_size,
         [4,0] => :compositions,
         [5,0] => :price_public,
-        [6,0] => :ddd_price, 
-        [7,0] => :price_difference, 
-        [8,0] => :deductible, 
-      }  
+        [6,0] => :ddd_price,
+        [7,0] => :price_difference,
+        [8,0] => :deductible,
+      }
     end
 		PH_END = Date.new(2010,4,10)
 		def enabled?(event, default=false)
@@ -1154,10 +1154,10 @@ module ODDB
         [5,0]  => :comparable_size,
         [6,0]  => :compositions,
         [7,0]  => :price_public,
-        [8,0]  => :price_difference, 
-        [9,0]  => :ddd_price, 
+        [8,0]  => :price_difference,
+        [9,0]  => :ddd_price,
         [10,0] => :ikscat,
-      }  
+      }
     end
 		def explain_result_components
 			{
@@ -1271,21 +1271,21 @@ module ODDB
     ]
     DICTIONARIES = {
       'de'  =>  {
-        :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen', 
+        :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen',
         :home_welcome       =>  "Willkommen bei anthroposophika.ch, dem<br>Portal für anthroposophische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei anthroposophika.ch',
         :generic_definition =>  'Was ist ein anthroposophisches Arzneimittel?',
         :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=anthroposophische+Arzneimittel&spell=1',
       },
       'fr'  =>  {
-        :html_title         =>  'anthroposophika.ch - tous les médicaments anthroposophiques Arzneimittel sur le marché suisse', 
+        :html_title         =>  'anthroposophika.ch - tous les médicaments anthroposophiques Arzneimittel sur le marché suisse',
         :home_welcome       =>  "Bienvenue sur anthroposophika.ch,<br>le portail des médicaments anthroposophiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur anthroposophika.ch',
         :generic_definition =>  'Qu\'est qu\'n médicament anthroposophique?',
         :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=médicament+anthroposophique&spell=1',
       },
       'en'  =>  {
-        :html_title         =>  'anthroposophika.ch - all anthroposophical health-care products in the swiss market', 
+        :html_title         =>  'anthroposophika.ch - all anthroposophical health-care products in the swiss market',
         :home_welcome       =>  "Welcome to anthroposophika.ch,<br>the database of anthroposophical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to anthroposophika.ch',
         :generic_definition =>  'What is anthroposophical medicine?',
@@ -1306,21 +1306,21 @@ module ODDB
     ]
     DICTIONARIES = {
       'de'  =>  {
-        :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen', 
+        :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen',
         :home_welcome       =>  "Willkommen bei homöopathika.ch, dem<br>Portal für homöopathische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei homöopathika.ch',
         :generic_definition =>  'Was ist ein homöopathisches Arzneimittel?',
         :generic_definition_url => 'http://de.wikipedia.org/wiki/Hom%C3%B6opathisches_Arzneimittel',
       },
       'fr'  =>  {
-        :html_title         =>  'homöopathika.ch - tous les médicaments homéopathiques Arzneimittel sur le marché suisse', 
+        :html_title         =>  'homöopathika.ch - tous les médicaments homéopathiques Arzneimittel sur le marché suisse',
         :home_welcome       =>  "Bienvenue sur homöopathika.ch,<br>le portail des médicaments homéopathiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur homöopathika.ch',
         :generic_definition =>  'Qu\'est qu\'n médicament homéopathique?',
         :generic_definition_url => 'http://fr.wikipedia.org/wiki/Hom%C3%A9opathie',
       },
       'en'  =>  {
-        :html_title         =>  'homöopathika.ch - all homeopathical health-care products in the swiss market', 
+        :html_title         =>  'homöopathika.ch - all homeopathical health-care products in the swiss market',
         :home_welcome       =>  "Welcome to homöopathika.ch,<br>the database of homeopathical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to homöopathika.ch',
         :generic_definition =>  'What is anthroposophical medicine?',
@@ -1341,14 +1341,14 @@ module ODDB
     ]
     DICTIONARIES = {
       'de'  =>  {
-        :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen', 
+        :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen',
         :home_welcome       =>  "Willkommen bei phyto-pharma.ch, dem<br>Portal für phyto-therapeutische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei phyto-pharma.ch',
         :generic_definition =>  'Was ist ein Phytopharmakon?',
         :generic_definition_url => 'http://de.wikipedia.org/wiki/Phytopharmakon',
       },
       'fr'  =>  {
-        :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse', 
+        :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse',
         :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des médicaments phyto-therapeutiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur phyto-pharma.ch',
         :generic_definition =>  'Was ist ein Phytopharmakon?',
@@ -1356,7 +1356,7 @@ module ODDB
         :generic_definition_url => 'http://fr.wikipedia.org/wiki/Phytopharmacie',
       },
       'en'  =>  {
-        :html_title         =>  'phyto-pharma.ch - all phyto-therapeutical health-care products in the swiss market', 
+        :html_title         =>  'phyto-pharma.ch - all phyto-therapeutical health-care products in the swiss market',
         :home_welcome       =>  "Welcome to phyto-pharma.ch,<br>the database of phyto-therapeutical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to phyto-pharma.ch',
         :generic_definition =>  'What is phyto-therapeutical medicine?',

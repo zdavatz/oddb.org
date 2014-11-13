@@ -72,7 +72,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		ODBA.storage = nil
     super
 	end
-  if false
   def test_create_minifi
     minifi = flexmock('minifi') do |mfi|
       mfi.should_receive(:oid)
@@ -537,7 +536,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal(Enumerator, @app.each_atc_class.class)
     res = []
     @app.each_atc_class.each{ |x| res << x }
-    assert_equal( [], res)                             
+    assert_equal( [], res)
   end
   def test_each_migel_product
     subgroup = flexmock('subgroup') do |grp|
@@ -739,7 +738,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert(same?(expected, @app.search_exact_indication('query')))
   end
   def test_search_migel_alphabetical
-    migelid = flexmock('migelid', 
+    migelid = flexmock('migelid',
                        :send => 'migelid search result',
                        :search_by_migel_code => 'search_by_migel_code'
                       )
@@ -816,6 +815,9 @@ class TestOddbApp <MiniTest::Unit::TestCase
     #assert_equal(expected, @app.search_exact_substance('query'))
     assert(same?(expected, @app.search_exact_substance('query')))
   end
+  def test_search_hc_providers
+    assert_equal([], @app.search_hc_providers('key'))
+  end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))
   end
@@ -848,7 +850,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_sorted_minifis
     assert_equal([], @app.sorted_minifis)
   end
-  def test_run_random_updater 
+  def test_run_random_updater
     # this test-case is meaningless at the moment
     flexstub(ODDB::Updater) do |klass|
       klass.should_receive(:new).and_return(flexmock('updater') do |up|
@@ -930,16 +932,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
       ptr.should_receive(:resolve).and_return('resolve')
     end
     assert_equal('resolve', @app.resolve(pointer))
-  end
-  def test_refactor_addresses
-    company = hospital = doctor = flexmock('mock') do |mock|
-      mock.should_receive(:refactor_addresses)
-      mock.should_receive(:odba_store)
-    end
-    @app.doctors   = {'key' => doctor}
-    @app.hospitals = {'key' => hospital}
-    @app.companies = {'key' => company}
-    assert_equal($stdout.flush, @app.refactor_addresses)
   end
   def test_commercial_form
     @app.commercial_forms = {123 => 'commercial_form'}
@@ -1060,7 +1052,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal('package_12345',   @app.package_by_ean13('7680123456789'))
     assert_equal('package_1234567890', @app.package_by_ean13('7612345678900'))
   end
-end
+
   def test_epha_interaction_count
     assert(@app.epha_interaction_count > 1000)
   end
@@ -1068,7 +1060,7 @@ end
   def test_get_epha_interaction
     assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
-  
+
   def test_epha_interaction
     code_0 = ODDB::EphaInteractions.get.first[0][0]
     code_1 = ODDB::EphaInteractions.get.first[0][1]
@@ -1088,7 +1080,7 @@ end
       reg.should_receive(:atc_class).and_return(atc_class_1)
     end
     @app.registrations = {  '1111' => drug_0, '2222' => drug_1,}
-    drugs              = {  '1111' => drug_0, '2222' => drug_1,}      
+    drugs              = {  '1111' => drug_0, '2222' => drug_1,}
     res_0 = ODDB::EphaInteractions.get_interactions(code_1, drugs)
     assert_equal(1, res_0.size)
     assert(@app.get_epha_interaction(code_0, code_1))
