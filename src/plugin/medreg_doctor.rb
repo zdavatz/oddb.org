@@ -239,7 +239,11 @@ module ODDB
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
-            end
+		rescue StandardError => e
+              nr_tries += 1
+              log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries} error was e #{e}"
+              sleep(10 * 60) # wait 10 minutes till medreg server is back again
+		end
           end
           raise "Max retries #{nr_tries} for #{gln.to_s} reached. Aborting import" if nr_tries == max_retries
         }
