@@ -14,7 +14,8 @@ module ODDB
 	class TestHC_provider <Minitest::Test
     include FlexMock::TestCase
 		SampleHC_Type = 'doctor'
-		Sample_Key    = '12543'
+    Sample_Key    = '12543'
+    Sample_Name   = 'Dr. Max Mustermann'
 		def setup
 			@hc_provider = HC_provider.new(Sample_Key)
 		end
@@ -25,23 +26,21 @@ module ODDB
     def test_pointer_descr
       @hc_provider.name = 'HC_provider'
       @hc_provider.hc_type = SampleHC_Type
-      assert_equal "HC_provider #{SampleHC_Type}", @hc_provider.pointer_descr
+      assert_equal "#{Sample_Key} HC_provider #{SampleHC_Type}", @hc_provider.pointer_descr
     end
     def test_search_terms
-      @hc_provider.name = 'A Name'
+      @hc_provider.name = Sample_Name
       @hc_provider.hc_type = SampleHC_Type
       @hc_provider.email = 'hc_provider@test.ch'
-#      @hc_provider.addresses.replace [ flexmock(:search_terms => ['Address', 'Terms'])]
-      expected = [
-        "A Name", SampleHC_Type, "hcprovidertestch"
-      ]
+      @hc_provider.addresses.replace [ flexmock(:search_terms => ['Address', 'Terms'])]
+      expected = [ Sample_Key, Sample_Name.sub('.', ''), "hcprovidertestch", 'Address', 'Terms' ]
       assert_equal expected, @hc_provider.search_terms
     end
     def test_search_text
-      @hc_provider.name = 'A Name'
+      @hc_provider.name = Sample_Name
       @hc_provider.hc_type = SampleHC_Type
       @hc_provider.email = 'hc_provider@test.ch'
-      expected = "A Name #{SampleHC_Type} hcprovidertestch"
+      expected = "#{Sample_Key} #{Sample_Name.sub('.', '')} hcprovidertestch"
       assert_equal expected, @hc_provider.search_text
     end
 	end

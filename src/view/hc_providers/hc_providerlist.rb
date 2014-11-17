@@ -82,11 +82,16 @@ class HC_providerList < HtmlGrid::List
 		link
 	end
 	def narcotics(model)
-		if(model.narcotics == "Keine Betäubungsmittelbewilligung")
-			@lookandfeel.lookup(:false)
-		else
-			@lookandfeel.lookup(:true)
-		end
+    if model.respond_to?(:narcotics)
+      if(model.narcotics == "Keine Betäubungsmittelbewilligung")
+        @lookandfeel.lookup(:false)
+      else
+        @lookandfeel.lookup(:true)
+      end
+    else
+      # TODO:
+      @lookandfeel.lookup(:false)
+    end
 	end
 	def map(model)
 		if(addr = model.addresses.first)

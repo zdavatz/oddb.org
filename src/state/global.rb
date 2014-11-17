@@ -59,6 +59,7 @@ require 'state/hospitals/init'
 require 'state/doctors/doctorlist'
 require 'state/hospitals/hospitallist'
 require 'state/hc_providers/init'
+require 'state/hc_providers/hc_providerlist'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/interaction_chooser'
@@ -191,6 +192,7 @@ module ODDB
           :home_substances        => State::Substances::Init,
           :home_user              => State::User::Init,
           :hospitallist           => State::Hospitals::HospitalList,
+          :hc_providerlist        => State::HC_providers::HC_providerList,
           :interaction_chooser    => State::Interactions::InteractionChooser,
           :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
@@ -223,6 +225,7 @@ module ODDB
           [ :company ]                                                        => State::Companies::Company,
           [ :doctor ]                                                         => State::Doctors::Doctor,
           [ :hospital ]                                                       => State::Hospitals::Hospital,
+          [ :hc_provider ]                                                    => State::HC_providers::HC_provider,
           [ :fachinfo ]                                                       => State::Drugs::Fachinfo,
           [ :foto ]                                                           => State::Drugs::Photo,
           [ :registration, :sequence, :package, :sl_entry, :limitation_text ] => State::Drugs::LimitationText,
@@ -357,6 +360,15 @@ module ODDB
 					State::PayPal::Return.new(@session, invoice)
 				end
 			end
+      def hc_provider
+        if ean = @session.user_input(:ean) and model = @session.app.hc_provider(ean)
+          State::HC_providers::HC_provider.new(@session, model)
+        end
+      end
+      def hc_providerlist
+        model = @session.hc_providers.values
+        State::HC_providers::HC_providerList.new(@session, model)
+      end
       def hospital
         if ean = @session.user_input(:ean) and model = @session.app.hospital(ean)
           State::Hospitals::Hospital.new(@session, model)
@@ -1022,7 +1034,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-			[ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
+			[ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hc_providers, :hospitals, :companies]
 			end
 			def zone_navigation
 				self::class::ZONE_NAVIGATION

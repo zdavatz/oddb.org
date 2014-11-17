@@ -207,13 +207,14 @@ module ODDB
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
+      :home_hc_providers,
 			:home_hospitals,
-			:home_hc_providers,
       :home_interactions,
 			:home_migel,
 			:home_substances,
 			:home_user,
-			:hospital,
+      :hc_provider,
+      :hospital,
 			:hospitallist,
 			:indication,
 			:indications,
@@ -419,6 +420,7 @@ module ODDB
       :group,
 			:heading,
       :highlight,
+      :hc_provider,
 			:hospital,
       :index_name,
 			:index_therapeuticus,
@@ -479,7 +481,7 @@ module ODDB
       :zsr_id,
 		]
 		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user,
-			:hospitals, :substances, :companies]
+			:hc_providers, :hospitals, :substances, :companies]
 		@@latin1 = Iconv.new('ISO-8859-1', 'UTF-8')
 		@@utf8 = Iconv.new('UTF-8', 'ISO-8859-1')
 		def code(value)

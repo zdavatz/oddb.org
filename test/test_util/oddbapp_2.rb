@@ -26,7 +26,7 @@ require 'util/oddbapp'
 
 class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase
-
+  TEST_EAN13 = '7601123456789'
 	def setup
 		ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
@@ -245,7 +245,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		assert_equal(company, @app.company(oid))
 	end
 	def test_doctor
-		doctor = ODDB::Company.new
+		doctor = ODDB::Doctor.new
 		@app.doctors = {doctor.oid => doctor}
 		oid = @app.doctors.keys.first
 		assert_equal(doctor, @app.doctor(oid))
@@ -331,7 +331,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		}
 		group.galenic_form = StubGalenicForm.new('Tabletten')
 		assert_equal(false, group.empty?)
-		assert_raises(RuntimeError) { @app.delete_galenic_group('12345') }
+    assert_raises(RuntimeError) { @app.delete_galenic_group('12345') }
 		group.galenic_form = nil
 		@app.delete_galenic_group('12345')
 	end
@@ -678,7 +678,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexmock(ODDB::Hospital) do |hos|
       hos.should_receive(:new).and_return(hospital)
     end
-    assert_equal(hospital, @app.create_hospital(0))
+    assert_equal(hospital, @app.create_hospital(TEST_EAN13))
+    assert_raises(RuntimeError) { @app.create_hospital(0) }
   end
   def test_create_fachinfo
     fachinfo = flexmock('fachinfo') do |fi|
@@ -717,4 +718,40 @@ class TestOddbApp <MiniTest::Unit::TestCase
     end
     assert_equal(address_suggestion, @app.create_address_suggestion)
   end
+  def test_doctor_by_gln
+    gln = TEST_EAN13
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = gln
+    @app.doctors = {doctor.oid => doctor}
+    assert_equal(doctor, @app.doctor_by_gln(gln))
+  end
+  def test_hospital_by_gln
+    gln = TEST_EAN13
+    hospital = @app.create_hospital(gln)
+    assert_equal(hospital, @app.hospital_by_gln(gln))
+    assert_equal(hospital.ean13, gln)
+  end
+  def test_company_by_gln
+    gln = TEST_EAN13
+    company = ODDB::Company.new
+    company.ean13 = gln
+    @app.companies = {company.oid => company}
+    assert_equal(company, @app.company_by_gln(gln))
+  end
+  def test_hc_provider_by_gln
+    gln = TEST_EAN13
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = gln
+    @app.doctors = {doctor.oid => doctor}
+    assert_equal(doctor, @app.hc_provider_by_gln(gln))
+  end
+  def test_search_hc_providers_by_gln
+    gln = TEST_EAN13
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = gln
+    @app.doctors = {doctor.oid => doctor}
+    assert_equal([], @app.search_hc_providers('0'))
+    assert_equal([doctor], @app.search_hc_providers(TEST_EAN13))
+  end
+
 end

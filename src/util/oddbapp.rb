@@ -57,6 +57,7 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups, :shorten_paths
+  VALID_EAN13 = /^\d{13}/
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -78,7 +79,7 @@ class OddbPrevalence
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
-		@hospitals ||= {}
+    @hospitals ||= {}
 		@indications ||= {}
     @indices_therapeutici ||= {}
 		@invoices ||= {}
@@ -247,12 +248,23 @@ class OddbPrevalence
 	def company(oid)
 		@companies[oid.to_i]
 	end
-  def hc_provide_by_gln(gln)
+  def hc_provider_by_gln(gln)
+    return nil unless  gln.to_s.match(VALID_EAN13)
+    info = company_by_gln(gln)
+    info ||= doctor_by_gln(gln)
+    info
+  end
+  def company_by_gln(gln)
+    return nil unless  gln.to_s.match(VALID_EAN13)
     @companies.values.each { |company|
       if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
         return company
       end
     }
+    nil
+  end
+  def doctor_by_gln(gln)
+    return nil unless  gln.to_s.match(VALID_EAN13)
     @doctors.values.each { |doctor|
       if(doctor && doctor.respond_to?(:ean13) && doctor.ean13.to_s == gln.to_s)
         return doctor
@@ -260,13 +272,9 @@ class OddbPrevalence
     }
     nil
   end
-  def company_by_gln(gln)
-    @companies.values.each { |company|
-      if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
-        return company
-      end
-    }
-    nil
+  def hospital_by_gln(gln)
+    return nil unless  gln.to_s.match(VALID_EAN13)
+    hospital(gln)
   end
   def company_by_name(name, ngram_cutoff=nil)
     _company_by_name(name, ngram_cutoff) \
@@ -379,6 +387,7 @@ class OddbPrevalence
     @experiences.store(experience.oid, experience)
   end
   def create_hospital(ean13)
+    raise "ean13 #{ean13.to_s[0..80]} not valid" unless  ean13.to_s.match(VALID_EAN13)
     hospital = ODDB::Hospital.new(ean13)
     @hospitals.store(ean13, hospital)
   end
@@ -622,19 +631,18 @@ class OddbPrevalence
   def epha_interaction_count
     ODDB::EphaInteractions.get.size
   end
+  def hc_provider(ean13)
+    hc_provider_by_gln(ean13)
+  end
+  def hc_provider_count
+    doctor_count + hospital_count + company_count
+  end
   def hospital(ean13)
+    return nil unless ean13.to_s.match(VALID_EAN13)
     @hospitals[ean13]
   end
   def hospital_count
     @hospitals.size
-  end
-  def doctor_by_gln(gln)
-    @doctors.values.each { |doctor|
-      if(doctor && doctor.respond_to?(:ean13) && doctor.ean13.to_s == gln.to_s)
-        return doctor
-      end
-    }
-    nil
   end
 	def doctor_count
 		@doctor_count ||= @doctors.size
@@ -779,7 +787,7 @@ class OddbPrevalence
     end
   end
   def package_by_ean13(ean13)
-    return false unless ean13.to_s.match(/^\d{13}/)
+    return false unless ean13.to_s.match(VALID_EAN13)
     if ean13.to_s[2..3].eql?('80') # swissmedic-iksnrs
       iksnr = ean13.to_s[4..8]
       ikscd = ean13.to_s[9..11]
@@ -1091,13 +1099,15 @@ class OddbPrevalence
   end
 
   def search_hc_providers(key)
-    result = search_hospitals(key)
-		$stdout.puts "search_hc_providers hospitals return #{result}"
-		result ||= search_doctors(key)
-		$stdout.puts "search_hc_providers doctors return #{doctors}"
-		result ||= search_companies(key)
-		$stdout.puts "search_hc_providers companies return #{companies}"
-		result
+    result = [ hc_provider_by_gln(key)] if key.to_s.match(VALID_EAN13)
+    $stdout.puts "#{Time.now}: search_hc_providers by gln #{key} return #{result.to_s[0..250]}"; $stdout.puts
+    result ||= search_hospitals(key)
+    $stdout.puts "#{Time.now}: search_hc_providers hospitals return #{result.to_s[0..250]}"; $stdout.puts
+    result ||= search_doctors(key)
+    $stdout.puts "#{Time.now}: search_hc_providers doctors return #{result.to_s[0..250]}"; $stdout.puts
+    result ||= search_companies(key)
+    $stdout.puts "#{Time.now}: search_hc_providers companies return #{result.to_s[0..250]}"; $stdout.puts
+    result
   end
   def search_hospitals(key)
     retrieve_from_index("hospital_index", key)
