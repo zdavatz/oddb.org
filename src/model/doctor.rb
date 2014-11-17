@@ -16,16 +16,18 @@ module ODDB
 			'@addresses', '@capabilities', '@specialities', '@ean13',
 		]
 		attr_accessor :capabilities, :title, :name, :firstname,
-			:email, :exam, :language, :specialities, 
+			:email, :exam, :language, :specialities,
 			:praxis, :member, :salutation,
 			:origin_db, :origin_id, :addresses, :ean13,
       :dummy_id,
-      :experiences
+      :experiences,
+      # fields via import of http://www.medregom.admin.ch/
+      :may_dispense_narcotics, :may_sell_drugs, :remark_sell_drugs
     alias :name_first :firstname
     alias :name_first= :firstname=
     alias :correspondence :language
     alias :correspondence= :language=
-			
+
     def initialize
       @addresses = []
       @experiences = []
@@ -42,12 +44,12 @@ module ODDB
 			[@title, @firstname, @name].compact.join(' ')
 		end
 		def praxis_address
-			@addresses.find { |addr| 
+			@addresses.find { |addr|
 				addr.type == 'at_praxis'
 		  }
 		end
-		def praxis_addresses	
-			@addresses.select { |addr| 
+		def praxis_addresses
+			@addresses.select { |addr|
 				addr.type == 'at_praxis'
 		  }
 		end
@@ -56,19 +58,19 @@ module ODDB
 		end
 		def search_terms
 			ODDB.search_terms([
-				@name, @firstname,  
+				@name, @firstname,
 				@email,
 				@specialities,
 				@ean13,
-			] + @addresses.collect { |addr| 
-				addr.search_terms 
+			] + @addresses.collect { |addr|
+				addr.search_terms
 			})
 		end
 		def search_text
 			search_terms.join(' ')
 		end
-		def work_addresses	
-			@addresses.select { |addr| 
+		def work_addresses
+			@addresses.select { |addr|
 				addr.type == 'at_work'
 		  }
 		end

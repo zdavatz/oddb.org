@@ -14,6 +14,8 @@ require 'plugin/medreg_doctor'
 require 'tempfile'
 require 'ostruct'
 
+Minitest::Test.i_suck_and_my_tests_are_order_dependent!()
+
 class TestDoctorPlugin <Minitest::Test
   include FlexMock::TestCase
   Test_Personen_XLSX = File.expand_path(File.join(__FILE__, '../../data/xlsx/Personen_20141014.xlsx'))
@@ -36,6 +38,49 @@ class TestDoctorPlugin <Minitest::Test
     7601000010735 => OpenStruct.new(:family_name => 'Cevey',        :first_name => 'Philippe Marc', :authority  => 'Waadt'),
     7601000813282 => OpenStruct.new(:family_name => 'ABANTO PAYER', :first_name => 'Dora Carmela',  :authority  => 'Waadt'),
   }
+
+  # Anita Hensel 7601000972620
+  def test_aaa_zuest # name starts with aaa we want this test to be run as first
+    {  7601000254207 => OpenStruct.new(:family_name => 'Züst', :first_name => 'Peter', :authority  => 'Glarus')}.each do
+      |gln, info|
+      @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [gln])
+      flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
+      flexmock(@plugin, :get_doctor_data => {})
+      assert(File.exists?(Test_Personen_XLSX))
+      startTime = Time.now
+      csv_file = ODDB::Doctors::Personen_YAML
+      FileUtils.rm_f(csv_file) if File.exists?(csv_file)
+      created, updated, deleted, skipped = @plugin.update
+      diffTime = (Time.now - startTime).to_i
+      assert_equal(0, deleted)
+      assert_equal(0, skipped)
+      assert_equal(1, created)
+      assert_equal(0, updated)
+      assert_equal(1, ODDB::Doctors::MedregDoctorPlugin.all_doctors.size)
+      zuest = ODDB::Doctors::MedregDoctorPlugin.all_doctors.first[1] # a hash
+      assert_equal(true, zuest[:may_dispense_narcotics])
+      assert_equal(true, zuest[:may_sell_drugs])
+      assert_equal(nil, zuest[:remark_sell_drugs])
+      assert_equal(1992, zuest[:exam])
+      assert_equal('Züst', zuest[:name])
+      assert_equal('Peter', zuest[:firstname])
+      assert_equal([["Allgemeine Innere Medizin",2003,"Schweiz"]], zuest[:specialities])
+      [ ["Sportmedizin",2004,"Schweiz"],
+        ["Praxislabor",2002,"Schweiz"],
+        ["Sachkunde für dosisintensives Röntgen",2004,"Schweiz"],
+      ].each {
+        |cap|
+          assert(zuest[:capabilities].index(cap), "Muss Erfahrung #{cap} fuer Züst finden")
+      }
+      addresses = zuest[:addresses]
+      assert_equal(1, addresses.size)
+      first_address = addresses.first
+      assert_equal(1, first_address.fon.size)
+      assert_equal('055 6122353', first_address.fon.first)
+#      require 'pry'; binding.pry
+    end
+  end
+
   def test_parse
     SomeTestCases.each{
       |gln, info|
@@ -60,14 +105,12 @@ class TestDoctorPlugin <Minitest::Test
       @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [gln])
       flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
       flexmock(@plugin, :get_doctor_data => {})
-      flexmock(@plugin, :puts => nil)
       assert(File.exists?(Test_Personen_XLSX))
       startTime = Time.now
       csv_file = ODDB::Doctors::Personen_YAML
       FileUtils.rm_f(csv_file) if File.exists?(csv_file)
       created, updated, deleted, skipped = @plugin.update
       diffTime = (Time.now - startTime).to_i
-      # $stdout.puts "result: #{gln} created #{created} updated #{updated} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
       assert_equal(0, deleted)
       assert_equal(0, skipped)
       assert_equal(1, created)
@@ -85,14 +128,12 @@ class TestDoctorPlugin <Minitest::Test
 
     flexmock(@plugin, :get_latest_file => [ true, Test_Personen_XLSX ] )
     flexmock(@plugin, :get_doctor_data => {})
-    flexmock(@plugin, :puts => nil)
     assert(File.exists?(Test_Personen_XLSX))
     startTime = Time.now
     csv_file = ODDB::Doctors::Personen_YAML
     FileUtils.rm_f(csv_file) if File.exists?(csv_file)
     created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
-    # $stdout.puts "result: created #{created} updated #{updated} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
     assert_equal(0, deleted)
     assert_equal(0, skipped)
     assert_equal(0, updated)
@@ -100,9 +141,8 @@ class TestDoctorPlugin <Minitest::Test
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
   end
 
-  def test_get_latest_file
+  def test_zzz_get_latest_file # name starts with zzz we want this test to be run as last one (takes longest)
     @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
     needs_update, latest = @plugin.get_latest_file
-    # puts "needs_update ist #{needs_update.inspect} latest #{latest}"
-  end
+  end if false
 end

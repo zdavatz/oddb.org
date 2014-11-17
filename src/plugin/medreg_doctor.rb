@@ -54,7 +54,7 @@ module ODDB
     class MedregDoctorPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}" unless defined?(MiniTest)
+        $stdout.puts "#{Time.now}:  MedregDoctorPlugin #{msg}" # unless defined?(MiniTest)
         $stdout.flush
         LogFile.append('oddb/debug', " MedregDoctorPlugin #{msg}", Time.now)
       end
@@ -112,45 +112,37 @@ module ODDB
           log "ERROR: Could not find a table with info for #{gln}"
           return nil
         end
-        match_qualification_with_austria = /(.*)\s+(\d+)\s+([Ö\w]+)/
         doc_hash = Hash.new
-        doc_hash[:ean13] =  gln.to_s.clone
-        doc_hash[:name] =  info.family_name
-        doc_hash[:firstname] =  info.first_name
+        doc_hash[:ean13]                  = gln.to_s.clone
+        doc_hash[:name]                   = info.family_name
+        doc_hash[:firstname]              = info.first_name
+        doc_hash[:may_dispense_narcotics] = (info.may_dispense_narcotics && info.may_dispense_narcotics.match(/ja/i)) ? true : false
+        doc_hash[:may_sell_drugs]         = (info.may_sell_drugs && info.may_sell_drugs.match(/ja/i)) ? true : false
+        doc_hash[:remark_sell_drugs]      = info.remark_sell_drugs
         idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
         idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
         idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
-        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'')
+        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'').to_i
         specialities = []
         (idx_titel+1).upto(idx_privat-1).each{
           |j|
             line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
               line = line.gsub("\r\n", '')
-              m = line.match(match_qualification_with_austria)
-              if m
-                specialities << m[1..3].join(',').gsub("\r","").strip
-              else
-                log "PROBLEM: could not find speciality for GLN #{gln} in line '#{line}'"
-                require 'pry'; binding.pry
-              end
+              specialities << string_to_qualification(line, gln)
             end
           }
         doc_hash[:specialities] = specialities
-        experiences = []
+        capabilities = []
         (idx_privat+1).upto(99).each{
           |j|
             next unless doc.xpath("//tr")[j]
             line = doc.xpath("//tr")[j].text ;
             unless line.match(/Keine Angaben vorhanden/)
-              if m = line.match(match_qualification_with_austria)
-                experiences << m[1..3].join(',').gsub("\r","").strip
-              else
-                log "GLN: #{gln.to_s} no match for line #{line}"
-              end
+              capabilities << string_to_qualification(line, gln)
             end
           }
-        doc_hash[:experiences] = experiences
+        doc_hash[:capabilities] = capabilities
         addresses = get_detail_info(info, doc)
         doc_hash[:addresses] = addresses
         doc_hash
@@ -235,11 +227,13 @@ module ODDB
               log "Searching for doctor with GLN #{gln}. (at #{@idx} of #{glns.size-@doctors_skipped} to import of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
               get_one_doctor(r_loop, gln)
               break
-            rescue Mechanize::ResponseCodeError, Timeout::Error
+            rescue Mechanize::ResponseCodeError, Timeout::Error => e
+                  raise e if defined?(MiniTest)
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
 		rescue StandardError => e
+                  raise e if defined?(MiniTest)
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries} error was e #{e}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
@@ -268,16 +262,18 @@ module ODDB
           lines = []
           doc.xpath('//ol/li/div')[idx].children.each{ |x| lines << x.text }
           address = Address2.new
+          address.fon = []
+          address.fax = []
           address.type = 'at_praxis'
           address.additional_lines = []
           address.canton = info.authority
           lines[1].sub!(/^[A-Z]\. /, '')
           lines[1..-1].each { |line|
                     if /^Telefon: /.match(line)
-                      address.fon = line.split('Telefon: ')[1]
+                      address.fon << line.split('Telefon: ')[1].gsub(/\-/, ' ')
                       next
                     elsif /^Fax: /.match(line)
-                      address.fax = line.split('Fax: ')[1]
+                      address.fax << line.split('Fax: ')[1].gsub(/\-/, ' ')
                       next
                     else
                       address.additional_lines << line if line.length > 0
@@ -356,8 +352,12 @@ module ODDB
           :praxis,
           :salutation,
           :specialities,
+          :capabilities,
           :title,
           :addresses,
+          :may_dispense_narcotics,
+          :may_sell_drugs,
+          :remark_sell_drugs,
         ]
         doc_hash = {}
         extract.each { |key|
@@ -398,6 +398,26 @@ module ODDB
           end
         end
         @glns_to_import = @info_to_gln.keys.sort.uniq
+      end
+
+      # just for debugging when running unit tests
+      def MedregDoctorPlugin.all_doctors
+        @@all_doctors
+      end
+  private
+      Match_qualification_with_austria = /(.*)\s+(\d+)\s+([Ö\w]+)/
+      def string_to_qualification(line, gln)
+        return nil if line.match(/Weiterbildungstitel|Weitere Qualifikationen|Beruf.*Jahr.*Land/im)
+        m = line.match(Match_qualification_with_austria)
+        if m
+          infos = m[1..3].join(',').gsub("\r","").gsub(/\s\s+/, ' ').strip.split(/ ,|,/)
+          infos[1] = infos[1].to_i # transform year into an integer
+          return infos
+        else
+          log "PROBLEM: could not find speciality for GLN #{gln} in line '#{line}'"
+#          require 'pry'; binding.pry
+        end
+        nil
       end
     end
   end
