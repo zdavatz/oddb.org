@@ -12,7 +12,7 @@ module AddressMap
 	def map(address)
 		link = HtmlGrid::Link.new(:map, address, @session, self)
 		link.href = [
-			'http://map.search.ch', 
+			'http://map.search.ch',
 			mapsearch_format(address.plz, address.city),
 			mapsearch_format(address.street, address.number),
 		].join('/')
@@ -21,7 +21,7 @@ module AddressMap
 	end
 	def mapsearch_format(*args)
 		args.compact.join('-').gsub(/\s+/u, '-')
-	end		
+	end
 end
 module VCardMethods
 	def vcard(model)
@@ -35,8 +35,8 @@ end
 class SuggestedAddress < HtmlGrid::Composite
 	include AddressMap
 	COMPONENTS = {
-		[1,0]	=>	:address_message,	
-		[1,1]	=>	:message,	
+		[1,0]	=>	:address_message,
+		[1,1]	=>	:message,
 	}
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
@@ -51,7 +51,7 @@ class SuggestedAddress < HtmlGrid::Composite
 		:nbsp						=>	HtmlGrid::Text,
 		:phone_label		=>	HtmlGrid::Text,
 		:work_header		=>	HtmlGrid::LabelText,
-	}	
+	}
 	CSS_MAP = {
 		[1,0]	=>	'list',
 		[1,1]	=>	'top',
@@ -96,11 +96,11 @@ class SuggestedAddress < HtmlGrid::Composite
 			})
 			ypos += 2
 		end
-		css_map.store([0,ystart,1,ypos],	
+		css_map.store([0,ystart,1,ypos],
 			'top address-width list')
 	end
 	def correct(model)
-		button = HtmlGrid::Button.new(:correct, 
+		button = HtmlGrid::Button.new(:correct,
 			model, @session, self)
     args = if ean = @session.user_input(:ean) and hospital = @session.search_hospital(ean) \
              and address = hospital.addresses.index(model)
@@ -109,7 +109,7 @@ class SuggestedAddress < HtmlGrid::Composite
         :address, address,
         :zone, @session.zone,
       ]
-    elsif ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first 
+    elsif ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first
       if address = doctor.addresses.index(model)
         [
           :doctor, ean,
@@ -144,15 +144,23 @@ class SuggestedAddress < HtmlGrid::Composite
       }
     end
 		url = @lookandfeel._event_url(:suggest_address, args)
-		button.set_attribute('onclick', 
+		button.set_attribute('onclick',
 			"document.location.href='#{url}'")
 		button
 	end
 	def fax(model)
-		model.fax.join('<br>')
+    if model.fax.is_a?(String)
+      model.fax
+    else
+      model.fax.join('<br>')
+    end
 	end
 	def fons(model)
-		model.fon.join('<br>')
+    if model.fon.is_a?(String)
+      model.fon
+    else
+      model.fon.join('<br>')
+    end
 	end
 	def lines(model)
 		model.lines.join('<br>')
