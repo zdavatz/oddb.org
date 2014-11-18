@@ -1034,7 +1034,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-			[ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hc_providers, :hospitals, :companies]
+			[ :analysis, :hc_providers, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
 			end
 			def zone_navigation
 				self::class::ZONE_NAVIGATION

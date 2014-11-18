@@ -64,10 +64,11 @@ class TestDoctorPlugin <Minitest::Test
       assert_equal(1992, zuest[:exam])
       assert_equal('Züst', zuest[:name])
       assert_equal('Peter', zuest[:firstname])
-      assert_equal([["Allgemeine Innere Medizin",2003,"Schweiz"]], zuest[:specialities])
-      [ ["Sportmedizin",2004,"Schweiz"],
-        ["Praxislabor",2002,"Schweiz"],
-        ["Sachkunde für dosisintensives Röntgen",2004,"Schweiz"],
+      assert_equal(["Allgemeine Innere Medizin, 2003, Schweiz"], zuest[:specialities])
+      assert_equal(3, zuest[:capabilities].size)
+      [ "Sportmedizin, 2004, Schweiz",
+        "Praxislabor, 2002, Schweiz",
+        "Sachkunde für dosisintensives Röntgen, 2004, Schweiz",
       ].each {
         |cap|
           assert(zuest[:capabilities].index(cap), "Muss Erfahrung #{cap} fuer Züst finden")
@@ -76,11 +77,19 @@ class TestDoctorPlugin <Minitest::Test
       assert_equal(1, addresses.size)
       first_address = addresses.first
       assert_equal(1, first_address.fon.size)
+      assert_equal(['Bahnhofstr. 3'], first_address.additional_lines)
+      assert_equal('8753 Mollis', first_address.location)
+      assert_equal('at_praxis', first_address.type)
       assert_equal('055 6122353', first_address.fon.first)
+      assert_equal('Praxis Dr. med. Peter Züst', first_address.name)
+      assert_equal('8753', first_address.plz)
+      assert_equal('Mollis', first_address.city)
+      assert_equal('Bahnhofstr.', first_address.street)
+      assert_equal('3', first_address.number)
 #      require 'pry'; binding.pry
     end
   end
-
+if false
   def test_parse
     SomeTestCases.each{
       |gln, info|
@@ -145,4 +154,5 @@ class TestDoctorPlugin <Minitest::Test
     @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
     needs_update, latest = @plugin.get_latest_file
   end if false
+end
 end

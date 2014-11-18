@@ -1100,14 +1100,14 @@ class OddbPrevalence
 
   def search_hc_providers(key)
     result = [ hc_provider_by_gln(key)] if key.to_s.match(VALID_EAN13)
-    $stdout.puts "#{Time.now}: search_hc_providers by gln #{key} return #{result.to_s[0..250]}"; $stdout.puts
-    result ||= search_hospitals(key)
-    $stdout.puts "#{Time.now}: search_hc_providers hospitals return #{result.to_s[0..250]}"; $stdout.puts
-    result ||= search_doctors(key)
-    $stdout.puts "#{Time.now}: search_hc_providers doctors return #{result.to_s[0..250]}"; $stdout.puts
-    result ||= search_companies(key)
-    $stdout.puts "#{Time.now}: search_hc_providers companies return #{result.to_s[0..250]}"; $stdout.puts
-    result
+    return result if result and result.size > 0
+    matching_companies = search_companies(key)
+    $stdout.puts "#{Time.now}: search_hc_providers companies return #{matching_companies.to_s[0..250]}"; $stdout.puts
+    matching_doctors = search_doctors(key)
+    $stdout.puts "#{Time.now}: search_hc_providers doctors return #{matching_doctors.to_s[0..250]}"; $stdout.puts
+    matching_hospitals = search_hospitals(key)
+    $stdout.puts "#{Time.now}: search_hc_providers hospitals return #{matching_hospitals.to_s[0..250]}"; $stdout.puts
+    matching_companies  + matching_doctors + matching_hospitals
   end
   def search_hospitals(key)
     retrieve_from_index("hospital_index", key)

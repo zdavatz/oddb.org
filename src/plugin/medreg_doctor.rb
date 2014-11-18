@@ -20,6 +20,7 @@ require 'timeout'
 module ODDB
   module Doctors
     Mechanize_Log         = File.join(ODDB::LogFile::LOG_ROOT, File.basename(__FILE__).sub('.rb', '.log'))
+    DebugImport           = false
     Personen_Candidates   = File.expand_path(File.join(__FILE__, '../../../data/xls/Personen_20*.xlsx'))
     Personen_YAML         = File.expand_path(File.join(__FILE__, "../../../data/txt/doctors_#{Time.now.strftime('%Y.%m.%d-%H%M')}.yaml"))
     MedRegOmURL           = 'http://www.medregom.admin.ch/'
@@ -122,7 +123,7 @@ module ODDB
         idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
         idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
         idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
-        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.split("\r\n")[1].gsub(/\s/,'').to_i
+        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.strip.split(/\r\n|\n/)[1].to_i
         specialities = []
         (idx_titel+1).upto(idx_privat-1).each{
           |j|
@@ -158,7 +159,7 @@ module ODDB
           info = @info_to_gln[gln.to_s]
           unless info
             log "ERROR: could not find info for GLN #{gln}"
-            require 'pry'; binding.pry
+            # require 'pry'; binding.pry
             next
           end
           url = MedRegOmURL +  "de/Suche/Detail/?gln=#{gln}&vorname=#{info.first_name.gsub(/ /, '+')}&name=#{info.family_name.gsub(/ /, '+')}"
@@ -201,9 +202,8 @@ module ODDB
           end
           medregId = page_4.body.match(regExp)[1]
           page_5 = @agent.get(MedRegOmURL + "de/Detail/Detail?pid=#{medregId}")
-          File.open(File.join(ODDB::LogFile::LOG_ROOT, "#{gln}.html"), 'w+') { |f| f.write page_5.content }
+          File.open(File.join(ODDB::LogFile::LOG_ROOT, "#{gln}.html"), 'w+') { |f| f.write page_5.content } if DebugImport
           doc_hash = parse_details( Nokogiri::HTML(page_5.content), gln, info)
-          log doc_hash
           store_doctor(doc_hash)
           @@all_doctors[gln.to_s] = doc_hash
         end
@@ -213,18 +213,23 @@ module ODDB
         @idx = 0
         r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
         @skip_to_doctor ||= r_loop.state_id
-        log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
+        log "get_detail_to_glns #{glns.size}. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}" if DebugImport
         glns.each { |gln|
           if r_loop.must_skip?(gln.to_s)
-            # log "Skipping #{gln.inspect}. Waiting for #{r_loop.state_id.inspect}"
+            log "Skipping #{gln.inspect}. Waiting for #{r_loop.state_id.inspect}" if DebugImport
             @doctors_skipped += 1
             next
+          end
+          if (@doctors_created + @doctors_updated) % 100 == 99
+            log "Start saving @app.doctors.odba_store after #{@doctors_created} created #{@doctors_updated} updated"
+            @app.doctors.odba_store
+            log "Finished @app.doctors.odba_store"
           end
           @idx += 1
           nr_tries = 0
           while nr_tries < max_retries
             begin
-              log "Searching for doctor with GLN #{gln}. (at #{@idx} of #{glns.size-@doctors_skipped} to import of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
+              log "Searching for doctor with GLN #{gln}. Skipped #{@doctors_skipped}, created #{@doctors_created} updated #{@doctors_updated} of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
               get_one_doctor(r_loop, gln)
               break
             rescue Mechanize::ResponseCodeError, Timeout::Error => e
@@ -232,12 +237,12 @@ module ODDB
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
-		rescue StandardError => e
+            rescue StandardError => e
                   raise e if defined?(MiniTest)
               nr_tries += 1
               log "rescue Mechanize::ResponseCodeError #{gln.inspect}. nr_tries #{nr_tries} error was e #{e}"
               sleep(10 * 60) # wait 10 minutes till medreg server is back again
-		end
+            end
           end
           raise "Max retries #{nr_tries} for #{gln.to_s} reached. Aborting import" if nr_tries == max_retries
         }
@@ -267,6 +272,7 @@ module ODDB
           address.type = 'at_praxis'
           address.additional_lines = []
           address.canton = info.authority
+          address.name = lines[0]
           lines[1].sub!(/^[A-Z]\. /, '')
           lines[1..-1].each { |line|
                     if /^Telefon: /.match(line)
@@ -276,7 +282,12 @@ module ODDB
                       address.fax << line.split('Fax: ')[1].gsub(/\-/, ' ')
                       next
                     else
-                      address.additional_lines << line if line.length > 0
+                      next if line.length == 0
+                      if m = line.match(/(|\w\w[-\. ])(\d{4})\s+(\S+)/)
+                        address.location = line
+                      else
+                        address.additional_lines << line
+                      end
                     end
                       }
           addresses << address
@@ -312,9 +323,9 @@ module ODDB
         if(!File.exist?(latest) or @download.size != File.size(latest))
           File.open(latest, 'w+') { |f| f.write @download }
           File.open(target, 'w+') { |f| f.write @download }
-          save_for_log "saved get_latest_file (#{file.body.size} bytes) as #{target} and #{latest}"
+          save_for_log "saved get_latest_file (#{@download ? @download.size : '0'} bytes) as #{target} and #{latest}"
         else
-          save_for_log "latest_file #{target} #{file.body.size} bytes is uptodate"
+          save_for_log "latest_file #{target} #{File.size(target)} bytes is uptodate"
           needs_update = false
         end
         @download = nil # release it
@@ -330,6 +341,7 @@ module ODDB
         report
       end
       def store_doctor(hash)
+        return unless hash
         action = nil
         pointer = nil
         if(doctor = @app.doctor_by_gln(hash[:ean13]))
@@ -365,7 +377,7 @@ module ODDB
             case key
             when :praxis
               value = (value == 'Ja')
-            when :specialities
+            when :specialities, :capabilities
               if(value.is_a?(String))
                 value = [value]
               elsif(value.is_a?(Array))
@@ -377,7 +389,15 @@ module ODDB
 
         }
         @app.update(pointer, doc_hash)
-        log "store_doctor #{hash[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.doctors.size} doctors. hash #{doc_hash}"
+        doc_copy = @app.doctor_by_gln(hash[:ean13])
+        return unless doc_copy
+        # doc_copy.exam = hash[:exam]
+        # I don't understand exactly why updating the capabilities and specialities fails
+        # but this workaround works
+        doc_copy.capabilities = hash[:capabilities]
+        doc_copy.specialities = hash[:specialities]
+        doc_copy.odba_isolated_store
+
       end
       def parse_xls(path)
         log "parsing #{path}"
@@ -411,11 +431,10 @@ module ODDB
         m = line.match(Match_qualification_with_austria)
         if m
           infos = m[1..3].join(',').gsub("\r","").gsub(/\s\s+/, ' ').strip.split(/ ,|,/)
-          infos[1] = infos[1].to_i # transform year into an integer
-          return infos
+          # infos[1] = infos[1].to_i # transform year into an integer
+          return infos.join(', ')
         else
           log "PROBLEM: could not find speciality for GLN #{gln} in line '#{line}'"
-#          require 'pry'; binding.pry
         end
         nil
       end

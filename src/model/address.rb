@@ -8,7 +8,7 @@ require 'util/searchterms'
 require 'util/persistence'
 
 module ODDB
-	class Address 
+	class Address
 		attr_accessor :lines, :fon, :fax,
 			:plz, :city, :type
     def initialize
@@ -27,7 +27,7 @@ module ODDB
 				!/(Prof(\.|ess))|(dr\.\s*med)|(Docteur)/iu.match(line)
 			}
 		end
-		def number 
+		def number
 			if(match = /[0-9][^,]*/u.match(self.lines[-2]))
 				match.to_s.strip
 			end
@@ -59,7 +59,7 @@ module ODDB
 		alias :address_type :type
 		alias :pointer_descr :name
 		alias :contact :name
-		def initialize 
+		def initialize
 			super
 			@additional_lines = []
 			@fon = []
@@ -106,9 +106,11 @@ module ODDB
 				@location
 			end
 		end
-		def number 
+		def number
 			if(match = /[0-9][^\s,]*/u.match(@address.to_s))
 				match.to_s.strip
+      elsif @additional_lines[-1]
+        @additional_lines[-1].split(/\s/)[-1]
 			end
 		end
 		def plz
@@ -117,12 +119,14 @@ module ODDB
 			end
 		end
 		def search_terms
-			ODDB.search_terms([self.lines_without_title, @fon, @fax, 
+			ODDB.search_terms([self.lines_without_title, @fon, @fax,
 				self.city, self.plz])
 		end
 		def street
 			if(match = /[^0-9,]+/u.match(@address.to_s))
 				match.to_s.strip
+      elsif @additional_lines[-1]
+        @additional_lines[0].split(/\s/)[0]
 			end
 		end
 		def ydim_lines
@@ -153,12 +157,12 @@ module ODDB
 		end
 		def ydim_location(pos=0)
 			address_item(:location, pos)
-    end 
+    end
 	end
 	class AddressSuggestion < Address2
 		include Persistence
 		ODBA_SERIALIZABLE = ['@additional_lines', '@fax', '@fon']
-		attr_accessor :address_pointer, :message, 
+		attr_accessor :address_pointer, :message,
 			:email_suggestion, :email, :time, :fullname,
       :address_instance, :url, :parent
 		alias :pointer_descr :fullname

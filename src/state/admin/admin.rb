@@ -28,7 +28,7 @@ module Admin
 			:sequence, :package ]				=>	State::Admin::Package,
 		[ :registration, :sequence,
 			:package, :sl_entry ]				=>	State::Admin::SlEntry,
-	}	
+	}
 	def limited?
 		false
 	end
@@ -44,7 +44,7 @@ module Admin
 		State::Admin::Registration.new(@session, item)
 	end
 	def zones
-		[:analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
+		[:analysis, :hc_providers, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
 	end
 end
 		end

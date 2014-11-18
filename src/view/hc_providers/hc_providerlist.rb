@@ -76,13 +76,29 @@ class HC_providerList < HtmlGrid::List
 		end
 	end
 	def name(model)
-		link = View::PointerLink.new(:name, model, @session, self)
+    link = View::PointerLink.new(:name, model, @session, self)
+    new_href = nil
+    if model.is_a?(ODDB::Company)
+      new_href = @lookandfeel._event_url(:company, {:ean => model.ean13})
+    elsif model.is_a?(ODDB::Doctor)
+      new_href = @lookandfeel._event_url(:doctor, {:ean => model.ean13})
+    elsif  model.is_a?(ODDB::Hospital)
+      new_href = @lookandfeel._event_url(:hospital, {:ean => model.ean13})
+    else
+      return nil
+    end
 		link.set_attribute('title', "EAN: #{model.ean13}")
-    link.href = @lookandfeel._event_url(:hc_provider, {:ean => model.ean13})
+    link.href = new_href
 		link
 	end
 	def narcotics(model)
-    if model.respond_to?(:narcotics)
+    if model.respond_to?(:may_dispense_narcotics)
+			if(model.may_dispense_narcotics)
+				@lookandfeel.lookup(:true)
+			else
+				@lookandfeel.lookup(:false)
+			end
+    elsif model.respond_to?(:narcotics)
       if(model.narcotics == "Keine Betäubungsmittelbewilligung")
         @lookandfeel.lookup(:false)
       else
@@ -100,7 +116,22 @@ class HC_providerList < HtmlGrid::List
 	end
   def vcard(model)
     link = View::PointerLink.new(:vcard, model, @session, self)
-    link.href = @lookandfeel._event_url(:vcard, {:hc_provider => model.ean13})
+    ean_or_oid = if ean = model.ean13 and ean.to_s.strip != ""
+                   ean
+                 else
+                   model.oid
+                 end
+    new_href = nil
+    if model.is_a?(ODDB::Company)
+      new_href = @lookandfeel._event_url(:vcard, {:company => ean_or_oid})
+    elsif model.is_a?(ODDB::Doctor)
+      new_href = @lookandfeel._event_url(:vcard, {:doctor => ean_or_oid})
+    elsif  model.is_a?(ODDB::Hospital)
+      new_href = @lookandfeel._event_url(:vcard, {:hospital => ean_or_oid})
+    else
+      return nil
+    end
+    link.href = new_href
     link
   end
 end
@@ -119,7 +150,7 @@ class HC_providersComposite < Form
 		:search_query		=>	View::SearchBar,
 	}
 	def hc_provider_list(model, session)
-		HC_providerList.new(model, session, self)
+    HC_providerList.new(model, session, self)
 	end
 end
 class HC_providers < View::PublicTemplate

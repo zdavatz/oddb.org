@@ -20,7 +20,7 @@ module ODDB
 class TestDoctorInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :_event_url => '_event_url',
@@ -35,12 +35,15 @@ class TestDoctorInnerComposite <Minitest::Test
                           :street => 'street',
                           :number => 'number',
                           )
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :specialities => ['speciality'],
                           :capabilities => ['capability'],
                           :addresses => [address],
                           :pointer => 'pointer',
                           :ean13 => 'ean13',
+                          :may_dispense_narcotics => 'may_dispense_narcotics',
+                          :may_sell_drugs => 'may_sell_drugs',
+                          :remark_sell_drugs => 'remark_sell_drugs',
                          )
     @composite = ODDB::View::Doctors::DoctorInnerComposite.new(@model, @session)
   end
@@ -52,12 +55,12 @@ end
 class TestDoctorForm <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :base_url   => 'base_url'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :error       => 'error',
                         :warning?    => nil,
@@ -74,7 +77,7 @@ end
 class TestDoctorComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :_event_url  => '_event_url',
@@ -82,7 +85,7 @@ class TestDoctorComposite <Minitest::Test
                          )
     hospital   = flexmock('hospital', :addresses => ['address'])
     doctor     = flexmock('doctor', :addresses => ['address'])
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :user_input  => 'user_input',
                           :search_hospital => hospital,
@@ -92,7 +95,7 @@ class TestDoctorComposite <Minitest::Test
                           :error? => false,
                           :warning? => false,
                          )
-    @address    = flexmock('address', 
+    @address    = flexmock('address',
                           :fon    => ['fon'],
                           :fax    => ['fax'],
                           :plz    => 'plz',
@@ -102,13 +105,16 @@ class TestDoctorComposite <Minitest::Test
                           :lines => ['line']
                          )
     experiences = flexmock('experiences', :hidden => true)
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :specialities => ['speciality'],
                           :capabilities => ['capability'],
                           :addresses    => [@address],
                           :pointer      => 'pointer',
                           :ean13        => 'ean13',
                           :experiences  => [experiences],
+                          :may_dispense_narcotics => 'may_dispense_narcotics',
+                          :may_sell_drugs => 'may_sell_drugs',
+                          :remark_sell_drugs => 'remark_sell_drugs',
                          ).by_default
     @composite = ODDB::View::Doctors::DoctorComposite.new(@model, @session)
   end
@@ -117,7 +123,7 @@ class TestDoctorComposite <Minitest::Test
     assert_kind_of(ODDB::View::Doctors::Addresses, @composite.addresses(@model))
   end
   def test_addresses__empty
-    flexmock(@model, 
+    flexmock(@model,
              :addresses => [@address],
              :pointer   => []
             )

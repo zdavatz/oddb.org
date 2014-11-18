@@ -19,6 +19,7 @@ require "yaml"
 
 module ODDB
   module Companies
+    DebugImport         = false
     BetriebeURL         = 'https://www.medregbm.admin.ch/Betrieb/Search'
     BetriebeXLS_URL     = "https://www.medregbm.admin.ch/Publikation/CreateExcelListBetriebs"
     RegExpBetriebDetail = /\/Betrieb\/Details\//
@@ -138,19 +139,24 @@ module ODDB
         failure = 'Die Personensuche dauerte zu lange'
         idx = 0
         max_retries = 60
-        log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}"
+        log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}" if DebugImport
         glns.each { |gln|
           idx += 1
           if r_loop.must_skip?(gln)
-            log "Skipping #{gln}. Waiting for #{r_loop.state_id.inspect}"
+            log "Skipping #{gln}. Waiting for #{r_loop.state_id.inspect}" if DebugImport
             next
           end
-          nr_retries = 0
+          if (@companies_created + @companies_updated) % 100 == 99
+            log "Start saving @app.companies.odba_store after #{@companies_created} created #{@companies_updated} updated"
+            @app.companies.odba_store
+            log "Finished @app.companies.odba_store" if DebugImport
+          end
+          nr_tries = 0
           success = false
-          while nr_retries < max_retries  and not success
+          while nr_tries < max_retries  and not success
             begin
               r_loop.try_run(gln, 5 ) do
-                log "Searching for company with GLN #{gln} (#{idx}/#{glns.size}).#{nr_retries > 0 ? ' nr_retries ' + nr_retries.to_s : ''}"
+                log "Searching for company with GLN #{gln}. Skipped #{@companies_skipped}, created #{@companies_created} updated #{@companies_updated} of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
                 page_1 = @agent.get(BetriebeURL)
                 raise Search_failure if page_1.content.match(failure)
                 hash = [
@@ -175,13 +181,17 @@ module ODDB
                 success = true
               end
             rescue => e
-              log "rescue #{e} will retry #{max_retries - nr_retries} times"
-              nr_retries += 1
+              log "rescue #{e} will retry #{max_retries - nr_tries} times"
+              nr_tries += 1
               sleep 60
             end
           end
         }
         r_loop.finished
+      ensure
+        log "Start saving @app.companies.odba_store"
+        @app.companies.odba_store
+        log "Finished @app.companies.odba_store"
       end
       def get_latest_file
         agent = Mechanize.new
@@ -243,6 +253,8 @@ module ODDB
         update_hash[:addresses] = data[:addresses]
         @app.update(pointer, update_hash, :medreg)
         log "store_company #{data[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.companies.size} companies. hash #{update_hash}"
+        doc_copy = @app.company_by_gln(data[:ean13])
+        log "store_company #{data[:ean13]} #{action} doc_copy is #{doc_copy}"
       end
       def parse_xls(path)
         log "parsing #{path}"

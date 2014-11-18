@@ -480,8 +480,8 @@ module ODDB
 			:urls,
       :zsr_id,
 		]
-		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user,
-			:hc_providers, :hospitals, :substances, :companies]
+		ZONES = [:admin, :analysis, :hc_providers, :doctors, :interactions, :drugs, :migel, :user,
+		 :hospitals, :substances, :companies]
 		@@latin1 = Iconv.new('ISO-8859-1', 'UTF-8')
 		@@utf8 = Iconv.new('UTF-8', 'ISO-8859-1')
 		def code(value)

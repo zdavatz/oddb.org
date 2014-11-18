@@ -23,10 +23,10 @@ require 'view/sponsorlogo'
 
 module ODDB
 	module View
-		module Doctors 
+		module Doctors
 class Addresses < HtmlGrid::List
 	COMPONENTS = {
-		[0,0]	=>	Address, 
+		[0,0]	=>	Address,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'top',
@@ -81,8 +81,16 @@ class DoctorInnerComposite < HtmlGrid::Composite
     [0,7,0] => :email_header_doctor,
     [0,7,1] => :nbsp,
     [0,7,2] => :email,
-    [0,8]   => :addresses,
-    [0,9]   => :vcard,
+    [0,8,0] => :may_dispense_narcotics_header,
+    [0,8,1] => :nbsp,
+    [0,8,2] => :may_dispense_narcotics,
+    [0,9,0] => :may_sell_drugs_header,
+    [0,9,1] => :nbsp,
+    [0,9,2] => :may_sell_drugs,
+    [0,9,3] => :nbsp,
+    [0,9,4] => :remark_sell_drugs,
+    [0,10]  => :addresses,
+    [0,11]  => :vcard,
   }
   SYMBOL_MAP = {
     :address_email       => HtmlGrid::MailLink,
@@ -96,22 +104,52 @@ class DoctorInnerComposite < HtmlGrid::Composite
     :phone_label         => HtmlGrid::Text,
     :fax_label           => HtmlGrid::Text,
     :specialities_header => HtmlGrid::LabelText,
+    :may_sell_drugs_header => HtmlGrid::LabelText,
+    :may_dispense_narcotics_header => HtmlGrid::LabelText,
     :url                 => HtmlGrid::HttpLink,
     :url_header          => HtmlGrid::LabelText,
     :work_header         => HtmlGrid::LabelText,
   }
   CSS_MAP = {
     [0,0,4,8] => 'list',
+    [0,8] => 'list',
+    [0,9] => 'list',
   }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
+  def flatten_cap(list)
+    result = []
+    list.each { |item| result << item.gsub(/(\["|"\])/, '') if item }
+    result.join('<br>')
+  end
 	def specialities(model)
 		spc = model.specialities
-		spc.join('<br>') unless spc.nil?
+    flatten_cap(spc) unless spc.nil?
 	end
 	def capabilities(model)
 		spc = model.capabilities
-		spc.join('<br>') unless spc.nil?
+    flatten_cap(spc) unless spc.nil?
+	end
+	def may_sell_drugs(model)
+		if(model.may_sell_drugs)
+			@lookandfeel.lookup(:true)
+		else
+			@lookandfeel.lookup(:false)
+		end
+	end
+	def may_sell_drugs(model)
+		if(model.may_sell_drugs)
+			@lookandfeel.lookup(:true)
+		else
+			@lookandfeel.lookup(:false)
+		end
+	end
+	def may_dispense_narcotics(model)
+		if(model.may_dispense_narcotics)
+			@lookandfeel.lookup(:true)
+		else
+			@lookandfeel.lookup(:false)
+		end
 	end
   def addresses(model)
     addrs = model.addresses

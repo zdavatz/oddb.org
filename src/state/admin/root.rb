@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com 
-# ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com
 
 require 'state/admin/galenicgroups'
 require 'state/admin/indications'
@@ -58,7 +58,7 @@ class Indication < Global; end
 module Root
 	include State::Admin::User
   EVENT_MAP = {
-    :users            =>  State::Admin::Entities, 
+    :users            =>  State::Admin::Entities,
   }
 	RESOLVE_STATES = {
 		[ :address_suggestion ]				=>	State::Admin::AddressSuggestion,
@@ -85,7 +85,7 @@ module Root
 			:package, :sl_entry ]				=>	State::Admin::SlEntry,
 		[ :indication ]								=>	State::Admin::Indication,
 		[ :substance ]								=>	State::Substances::Substance,
-	}	
+	}
 	def addresses
 		model = @session.app.address_suggestions.values
 		State::Admin::Addresses.new(@session, model)
@@ -93,7 +93,7 @@ module Root
   def address_suggestion
     if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first)) \
       or (ean = @session.user_input(:hospital) and hospital = @session.search_hospital(ean))
-      if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid) 
+      if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
         State::Admin::AddressSuggestion.new(@session, model)
       end
     end
@@ -104,7 +104,7 @@ module Root
     end
   end
   def commercial_forms
-    State::Admin::CommercialForms.new(@session, 
+    State::Admin::CommercialForms.new(@session,
                                       ODDB::CommercialForm.odba_extent)
   end
   def company
@@ -124,7 +124,7 @@ module Root
     end
   end
 	def effective_substances
-		model = @session.substances.select { |sub| 
+		model = @session.substances.select { |sub|
 			sub.is_effective_form?
 		}
 		State::Substances::EffectiveSubstances.new(@session, model)
@@ -232,12 +232,12 @@ module Root
 	def	orphaned_fachinfos
 		model = @session.app.orphaned_fachinfos.values
 		State::Admin::OrphanedFachinfos.new(@session, model)
-	end	
+	end
 	def orphaned_patinfos
 		model = @session.app.orphaned_patinfos.values
 		State::Admin::OrphanedPatinfos.new(@session, model)
 	end
-	def patinfo_deprived_sequences	
+	def patinfo_deprived_sequences
 		model = []
 		@session.app.registrations.each_value { |reg|
 			sequences = reg.sequences.values
@@ -285,7 +285,7 @@ module Root
     State::Admin::Entity.new(@session, user)
   end
 	def zones
-		[:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
+		[:admin, :analysis, :hc_providers, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
 	end
 end
 		end
