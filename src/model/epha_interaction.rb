@@ -30,6 +30,8 @@ module ODDB
     CSV_ORIGIN_URL  = 'https://download.epha.ch/cleaned/matrix.csv'
     def EphaInteractions.read_csv
       @csv_file_path = CSV_FILE
+      latest = @csv_file_path.sub(/\.csv$/, '-latest.csv')
+      return if File.exist?(latest) and ((Time.now-File.mtime("/etc/hosts"))/3600).round < 24 # less than 24 hours old
       unless CSV_FILE and File.exist?(CSV_FILE)
         target = Mechanize.new.get(CSV_ORIGIN_URL)
         target.save_as @csv_file_path
@@ -62,7 +64,7 @@ module ODDB
         end
         $stdout.puts "#{Time.now}: Added #{EphaInteractions.get.size} interaction from #{@csv_file_path}"; $stdout.flush
         return unless File.exists?(@csv_file_path)
-        FileUtils.mv(@csv_file_path, @csv_file_path.sub(/\.csv$/, '-latest.csv'), :verbose => true) unless defined?(MiniTest)
+        FileUtils.mv(@csv_file_path, latest, :verbose => true) unless defined?(MiniTest)
       end
     end
 
@@ -87,7 +89,7 @@ module ODDB
         |combination|
         [ EphaInteractions.get_epha_interaction(combination[0], combination[1]),
           EphaInteractions.get_epha_interaction(combination[1], combination[0]),
-        ].each{ 
+        ].each{
                 |interaction|
           next unless interaction
           next unless interaction.atc_code_self.eql?(my_atc_code)
@@ -99,7 +101,7 @@ module ODDB
           text += interaction.severity + ': ' + Ratings[interaction.severity]
           text += '<br>' + interaction.action
           text += '<br>' + interaction.measures + '<br>'
-              
+
           results << { :header => header,
                       :severity => interaction.severity,
                     :color => Colors[interaction.severity],
@@ -108,7 +110,7 @@ module ODDB
         }
       }
       results.uniq.sort_by { |item| item[:severity] + item[:header]  }.reverse
-    end    
+    end
   end
   class EphaInteraction
     # Based on information contained in http://community.epha.ch/interactions_de_utf8.csv
@@ -117,7 +119,7 @@ module ODDB
     attr_accessor :atc_code_self, :atc_code_other # these two items are our unique index. They may not be changed
     attr_accessor :atc_name, :name_other, :info, :action, :effect, :measures, :severity
     EphaInteractions.read_csv if EphaInteractions.get.size == 0
-    
+
     def initialize
     end
 
@@ -128,7 +130,7 @@ module ODDB
       terms = [
         @atc_code_self, @atc_name,
         @atc_code_other, @name_other,
-        @info ,@action, @effect, 
+        @info ,@action, @effect,
         @measures, @severity
       ]
       ODDB.search_terms(terms)
