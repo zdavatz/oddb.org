@@ -5,6 +5,7 @@
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com
 
 require 'sbsm/validator'
+require 'model/ba_type'
 require 'model/ean13'
 require 'iconv'
 require 'cgi'
@@ -59,8 +60,7 @@ module ODDB
 		ENUMS = {
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
 				'at_private'],
-			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_insurance',
-				'ba_doctor', 'ba_health', 'ba_info' ],
+			:business_area=>	ODDB::BA_type,
 			:canton				=>	[nil, 'AG', 'AI', 'AR', 'BE',
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',

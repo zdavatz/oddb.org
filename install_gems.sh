@@ -32,6 +32,8 @@ gem install rclconf --version=1.0.0
 gem install rdoc --version=4.1.1
 gem install rmagick --version=2.13.2
 gem install rmail --version=1.0.0
+gem install ruby-ole --version=1.2.11.7
+
 gem install rpdf2txt --version=0.8.4
 gem install rubyXL --version=3.1.2
 gem install rubyzip --version=1.1.6

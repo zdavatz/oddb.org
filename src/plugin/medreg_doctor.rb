@@ -220,11 +220,6 @@ module ODDB
             @doctors_skipped += 1
             next
           end
-          if (@doctors_created + @doctors_updated) % 100 == 99
-            log "Start saving @app.doctors.odba_store after #{@doctors_created} created #{@doctors_updated} updated"
-            @app.doctors.odba_store
-            log "Finished @app.doctors.odba_store"
-          end
           @idx += 1
           nr_tries = 0
           while nr_tries < max_retries
@@ -245,6 +240,11 @@ module ODDB
             end
           end
           raise "Max retries #{nr_tries} for #{gln.to_s} reached. Aborting import" if nr_tries == max_retries
+          if (@doctors_created + @doctors_updated) % 100 == 99
+            log "Start saving @app.doctors.odba_store #{gln} after #{@doctors_created} created #{@doctors_updated} updated"
+            @app.doctors.odba_store
+            log "Finished @app.doctors.odba_store"
+          end
         }
         r_loop.finished
       ensure

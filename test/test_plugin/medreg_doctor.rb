@@ -76,6 +76,7 @@ class TestDoctorPlugin <Minitest::Test
       addresses = zuest[:addresses]
       assert_equal(1, addresses.size)
       first_address = addresses.first
+       assert_equal(ODDB::Address2, first_address.class)
       assert_equal(1, first_address.fon.size)
       assert_equal(['Bahnhofstr. 3'], first_address.additional_lines)
       assert_equal('8753 Mollis', first_address.location)

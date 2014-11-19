@@ -380,7 +380,7 @@ class OddbPrevalence
 	def create_doctor
 		doctor = ODDB::Doctor.new
 		@doctors ||= {}
-		@doctors.store(doctor.oid, doctor)
+    @doctors.store(doctor.oid, doctor)
 	end
   def create_experience
     experience = ODDB::Experience.new

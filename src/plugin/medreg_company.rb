@@ -19,7 +19,7 @@ require "yaml"
 
 module ODDB
   module Companies
-    DebugImport         = false
+    DebugImport         = defined?(MiniTest)
     BetriebeURL         = 'https://www.medregbm.admin.ch/Betrieb/Search'
     BetriebeXLS_URL     = "https://www.medregbm.admin.ch/Publikation/CreateExcelListBetriebs"
     RegExpBetriebDetail = /\/Betrieb\/Details\//
@@ -58,7 +58,7 @@ module ODDB
     class MedregCompanyPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts    "#{Time.now}:  MedregCompanyPlugin #{msg}" unless defined?(Minitest)
+        $stdout.puts    "#{Time.now}:  MedregCompanyPlugin #{msg}" # unless defined?(Minitest)
         $stdout.flush
         LogFile.append('oddb/debug', " MedregCompanyPlugin #{msg}", Time.now)
       end
@@ -122,7 +122,7 @@ module ODDB
         company[:name] =  infos[4]
         idx_plz     = infos.index("PLZ \\ Ort")
         idx_canton  = infos.index('Bewilligungskanton')
-        address = [infos[6..idx_plz-1].join(' ')]
+        address = infos[6..idx_plz-1].join(' ')
         company[:plz] = infos[idx_plz+1]
         company[:location] = infos[idx_plz+2]
         idx_typ  = infos.index('Betriebstyp')
@@ -145,11 +145,6 @@ module ODDB
           if r_loop.must_skip?(gln)
             log "Skipping #{gln}. Waiting for #{r_loop.state_id.inspect}" if DebugImport
             next
-          end
-          if (@companies_created + @companies_updated) % 100 == 99
-            log "Start saving @app.companies.odba_store after #{@companies_created} created #{@companies_updated} updated"
-            @app.companies.odba_store
-            log "Finished @app.companies.odba_store" if DebugImport
           end
           nr_tries = 0
           success = false
@@ -180,10 +175,16 @@ module ODDB
                 end
                 success = true
               end
-            rescue => e
+            rescue Timeout => e
+              nr_tries += max_retries  if defined?(MiniTest)
               log "rescue #{e} will retry #{max_retries - nr_tries} times"
               nr_tries += 1
-              sleep 60
+              sleep defined?(MiniTest) ? 0.01 : 60
+            end
+            if (@companies_created + @companies_updated) % 100 == 99
+              log "Start saving @app.companies.odba_store #{gln} after #{@companies_created} created #{@companies_updated} updated"
+              @app.companies.odba_store
+              log "Finished @app.companies.odba_store" if DebugImport
             end
           end
         }
@@ -225,7 +226,9 @@ module ODDB
       end
       def update_address(data)
         addr = Address2.new
+        addr.name    =  data[:name  ]
         addr.address =  data[:address]
+        addr.additional_lines = [data[:address] ]
         addr.location = [data[:plz], data[:location]].compact.join(' ')
         if(fon = data[:phone])
           addr.fon = [fon]
@@ -240,21 +243,35 @@ module ODDB
         if(doc = @app.company_by_gln(data[:ean13]))
           pointer = doc.pointer
           @companies_updated += 1
-          action = 'create'
+          action = 'update'
         else
           @companies_created += 1
-          ptr = Persistence::Pointer.new(:company)
-          pointer = ptr.creator
-          action = 'update'
+          doc = @app.create_company
+          log "  created #{doc} #{doc.pointer}"
+          pointer = doc.pointer
+          action = 'create'
         end
         update_hash = {}
         update_hash[:ean13]     = data[:ean13]
         update_hash[:name]      = data[:name_1]
-        update_hash[:addresses] = data[:addresses]
+        ba_type = nil
+        case  data[:type]
+          when /öffentliche Apotheke/i
+            ba_type = ODDB::BA_type::BA_public_pharmacy
+          when /Spitalapotheke/i
+            ba_type = ODDB::BA_type::BA_hospital_pharmacy
+          when /wissenschaftliches Institut/i
+            ba_type = ODDB::BA_type::BA_research_institute
+          else
+        end
+        update_hash[:business_area]  = ba_type
+        update_hash[:addresses]      =  data[:addresses]
         @app.update(pointer, update_hash, :medreg)
-        log "store_company #{data[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.companies.size} companies. hash #{update_hash}"
-        doc_copy = @app.company_by_gln(data[:ean13])
-        log "store_company #{data[:ean13]} #{action} doc_copy is #{doc_copy}"
+        log "store_company directly #{data[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.companies.size} companies. hash #{update_hash}"
+        return
+        company_copy = @app.company_by_gln(data[:ean13])
+        company_copy.odba_isolated_store
+        log "store_company copy oid #{company_copy.oid} #{company_copy.business_area} #{company_copy.inspect} "
       end
       def parse_xls(path)
         log "parsing #{path}"
@@ -275,6 +292,9 @@ module ODDB
           end
         end
         @glns_to_import = @info_to_gln.keys.sort.uniq
+      end
+      def MedregCompanyPlugin.all_companies
+        @@all_companies
       end
     end
   end

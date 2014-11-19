@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # TestCompany -- oddb -- 28.03.2011 -- mhatakeyama@ywesee.com
-# TestCompany -- oddb -- 28.02.2003 -- hwyss@ywesee.com 
+# TestCompany -- oddb -- 28.02.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -223,7 +223,7 @@ class TestCompany <Minitest::Test
   def test_merge
     reg1 = flexmock :odba_isolated_store => :ignore
     reg2 = flexmock :odba_isolated_store => :ignore
-    other = ODDB::Company.new 
+    other = ODDB::Company.new
     other.registrations.push reg1, reg2
     reg1.should_receive(:company=).with(@company).times(1).and_return do
       other.registrations.delete reg1
@@ -294,7 +294,7 @@ class TestCompany <Minitest::Test
     addr.address = 'Street, Number'
     addr.location = '1234 City'
     expected = [
-      'Company', 'Name', 'Company', 'CompanyName', 'Company Name', 
+      'Company', 'Name', 'Company', 'CompanyName', 'Company Name',
        "7681123456789", "Street Number", "1234 City", "City", "1234"
     ]
     assert_equal expected, @company.search_terms
@@ -317,7 +317,7 @@ class TestCompany <Minitest::Test
 		assert_equal('Intellectual Capital', @company.business_area)
 		assert_equal('hwyss at ywesee.com', @company.contact)
 		assert_equal([reg], @company.registrations)
-	end		
+	end
 	def test_adjust_types
 		values = {
 			:name						=>	'ywesee.com',
@@ -363,5 +363,17 @@ class TestCompany <Minitest::Test
     expected = Date.new(2011,2,28)
     assert_equal(expected, @company.instance_eval('_yearly_repetition(date)'))
     @company.instance_eval('@@today = today_bak')
+  end
+  def test_is_pharmacy
+    @company.business_area = 'invalid'
+    assert_equal(false, @company.is_pharmacy?)
+    @company.business_area =nil
+    assert_equal(false, @company.is_pharmacy?)
+    @company.business_area = ODDB::BA_type::BA_public_pharmacy
+    assert_equal(true, @company.is_pharmacy?)
+    @company.business_area = ODDB::BA_type::BA_hospital_pharmacy
+    assert_equal(true, @company.is_pharmacy?)
+    @company.business_area = ODDB::BA_type::BA_research_institute
+    assert_equal(false, @company.is_pharmacy?)
   end
 end

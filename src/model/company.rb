@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Company -- oddb -- 28.02.2003 -- hwyss@ywesee.com 
+# Company -- oddb -- 28.02.2003 -- hwyss@ywesee.com
 
 require 'util/persistence'
 require 'util/today'
 require 'model/registration_observer'
 require 'model/address'
 require 'model/user'
+require 'model/ba_type'
 
 module ODDB
 	class Company
@@ -14,12 +15,12 @@ module ODDB
 		include RegistrationObserver
 		include UserObserver
 		include AddressObserver
-		ODBA_SERIALIZABLE = ['@addresses', '@invoice_dates', '@disabled_invoices', 
+		ODBA_SERIALIZABLE = ['@addresses', '@invoice_dates', '@disabled_invoices',
                          '@prices', '@users']
     attr_accessor :address_email, :business_area, :business_unit, :cl_status,
       :competition_email, :complementary_type, :contact, :deductible_display,
       :disable_patinfo, :ean13, :generic_type,
-      :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name, 
+      :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name,
       :powerlink, :regulatory_email, :swissmedic_email, :swissmedic_salutation,
       :url, :ydim_id, :limit_invoice_duration, :force_new_ydim_debitor
     attr_reader :invoice_dates, :disabled_invoices
@@ -35,7 +36,15 @@ module ODDB
       @disabled_invoices = {}
       @prices = {}
 			super
-		end	
+		end
+		def is_pharmacy?
+			case @business_area
+				when BA_type::BA_public_pharmacy, BA_type::	BA_hospital_pharmacy
+					return true
+				else
+					false
+				end
+		end
 		def init(app)
 			@pointer.append(@oid)
 		end
@@ -74,7 +83,7 @@ module ODDB
     ## to be invoiceable, the company needs to have a complete address:
 		def invoiceable?
 			addr = address(0)
-			![ @name, @contact, addr.address, addr.plz, 
+			![ @name, @contact, addr.address, addr.plz,
 				addr.city, invoice_email, addr.fon ].any? { |datum| datum.nil? }
 		end
     def invoice_date(key)
@@ -162,9 +171,9 @@ module ODDB
 		def search_terms
 			terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
 			terms += [
-				@name, @ean13, 
+				@name, @ean13,
 			]
-			@addresses.each { |addr| 
+			@addresses.each { |addr|
 				terms += addr.search_terms
 			}
 			ODDB.search_terms(terms)
@@ -186,7 +195,7 @@ module ODDB
 					if(val.is_a? String)
 						input[key] = val.intern
 					end
-				when :price_lookandfeel, :price_lookandfeel_member, 
+				when :price_lookandfeel, :price_lookandfeel_member,
 					:price_index, :price_index_package
 					input[key] = (val.to_f * 100) unless(val.nil?)
 				end
