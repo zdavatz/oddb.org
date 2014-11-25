@@ -5,7 +5,7 @@ require 'spec_helper'
 require 'pp'
 
 describe "ch.oddb.org" do
- 
+
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
@@ -32,7 +32,7 @@ describe "ch.oddb.org" do
   end
 
   def session_uniq_email
-     "#{get_session_timestamp}@ywesee.com"     
+     "#{get_session_timestamp}@ywesee.com"
   end
 
     possible_rights_are = %(
@@ -80,7 +80,7 @@ credit org.oddb.download
     @browser.link(:text => /#{email}/).exists?.should == true
     @browser.goto OddbUrl
   end
-  
+
   def upload_pat_info(original)
     File.exists?(original).should be true
     @browser.select_list(:name, "search_type").select("Swissmedic-# (5-stellig)")
@@ -95,12 +95,7 @@ credit org.oddb.download
     @browser.file_field(:name =>  "patinfo_upload").set(original)
     @browser.button(:name,"update").click
     @browser.link(:text, "PI").exists?.should be true
-    nrWindowsBeforeDownload = @browser.windows.size
-    filesBeforeDownload =  Dir.glob(GlobAllDownloads)    
-    @browser.link(:text, "PI").click
-    @browser.windows.last.close if @browser.windows.size > nrWindowsBeforeDownload
-    filesAfterDownload =  Dir.glob(GlobAllDownloads)
-    diffFiles = (filesAfterDownload - filesBeforeDownload)
+    diffFiles = check_download(@browser.link(:text, "PI"))
     diffFiles.size.should == 1
     FileUtils.compare_file(original, diffFiles.first).should be true
   end
@@ -122,8 +117,8 @@ credit org.oddb.download
   # we do this for two files to be ensure that the upload really was done
   originals =  [ File.expand_path(File.join(__FILE__, '../../test/data/dummy_patinfo.pdf')),
     File.expand_path(File.join(__FILE__, '../../test/data/dummy_patinfo_2.pdf'))
-  ]                 
-  originals.each { |original| 
+  ]
+  originals.each { |original|
            it "should be possible to upload #{File.basename(original)} to a given package" do
              FileUtils.compare_file(originals[0], originals[1]).should_not be true
              upload_pat_info(original)

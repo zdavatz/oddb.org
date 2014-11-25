@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-require 'simplecov'
-SimpleCov.start
+# require 'simplecov'
+# SimpleCov.start
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
@@ -53,12 +53,13 @@ DownloadDir = File.join(Dir.home, 'Downloads')
 GlobAllDownloads  = File.join(DownloadDir, '*')
 AdminUser         = 'ngiger@ywesee.com'
 AdminPassword     = 'ng1234'
-    
+
 def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
   return true unless  @browser.link(:text=>'Anmeldung').exists?
   @browser.link(:text=>'Anmeldung').click
+  sleep 0.5 unless @browser.text_field(:name, 'email').exists?
   @browser.text_field(:name, 'email').set(user)
   @browser.text_field(:name, 'pass').set(password)
   if remember_me
@@ -147,4 +148,15 @@ def run_bin_admin(cmd)
   bin_admin = "/usr/local/bin/ruby /var/www/oddb.org/bin/admin"
   full_cmd = "/bin/echo \"#{cmd}\" | #{bin_admin}"
   return `#{full_cmd}`
+end
+
+# returns downloaded_files
+def check_download(element_to_click)
+  nrWindowsBeforeDownload = @browser.windows.size
+  filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+  element_to_click.click
+  @browser.windows.last.close if @browser.windows.size > nrWindowsBeforeDownload
+  sleep 1 if Dir.glob(GlobAllDownloads).size == filesBeforeDownload.size
+  filesAfterDownload =  Dir.glob(GlobAllDownloads)
+  diffFiles = filesAfterDownload - filesBeforeDownload
 end
