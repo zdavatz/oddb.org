@@ -207,13 +207,13 @@ module ODDB
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
-      :home_hc_providers,
+      :home_pharmacies,
 			:home_hospitals,
       :home_interactions,
 			:home_migel,
 			:home_substances,
 			:home_user,
-      :hc_provider,
+      :pharmacy,
       :hospital,
 			:hospitallist,
 			:indication,
@@ -420,7 +420,7 @@ module ODDB
       :group,
 			:heading,
       :highlight,
-      :hc_provider,
+      :pharmacy,
 			:hospital,
       :index_name,
 			:index_therapeuticus,
@@ -480,7 +480,7 @@ module ODDB
 			:urls,
       :zsr_id,
 		]
-		ZONES = [:admin, :analysis, :hc_providers, :doctors, :interactions, :drugs, :migel, :user,
+		ZONES = [:admin, :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user,
 		 :hospitals, :substances, :companies]
 		@@latin1 = Iconv.new('ISO-8859-1', 'UTF-8')
 		@@utf8 = Iconv.new('UTF-8', 'ISO-8859-1')

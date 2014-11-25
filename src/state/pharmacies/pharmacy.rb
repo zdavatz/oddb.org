@@ -4,28 +4,28 @@
 # ODDB::State::Companies::Company -- oddb.org -- 11.02.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'state/global_predefine'
-require 'view/hc_providers/hc_provider'
-require 'model/hc_provider'
+require 'view/pharmacies/pharmacy'
+require 'model/pharmacy'
 
 module ODDB
 	module State
-		module HC_providers
-class HC_provider < State::HC_providers::Global
-	VIEW = ODDB::View::HC_providers::HC_provider
+		module Pharmacies
+class Pharmacy < State::Pharmacies::Global
+	VIEW = ODDB::View::Pharmacies::Pharmacy
 	LIMITED = true
 end
-class RootHC_provider < HC_provider
+class RootPharmacy < Pharmacy
 	def init
 		super
 		if(allowed?)
-			@default_view = ODDB::View::HC_providers::RootHC_provider
+			@default_view = ODDB::View::Pharmacies::RootPharmacy
 		end
 	end
 	def set_pass
 		if(allowed?)
 			do_update
 			unless(error?)
-				State::HC_providers::SetPass.new(@session, user_or_creator)
+				State::Pharmacies::SetPass.new(@session, user_or_creator)
 			end
 		end
 	end

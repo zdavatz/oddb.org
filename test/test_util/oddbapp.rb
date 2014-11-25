@@ -218,8 +218,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_analysis_count
     assert_equal(0, @app.analysis_count)
   end
-  def test_hc_provider_count
-    assert_equal(0, @app.hc_provider_count)
+  def test_pharmacy_count
+    assert_equal(0, @app.pharmacy_count)
   end
   def test_hospital_count
     assert_equal(0, @app.hospital_count)
@@ -532,8 +532,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_currencies
     assert_equal([], @app.currencies)
   end
-  def test_hc_provider
-    assert_equal(nil, @app.hc_provider('ean13'))
+  def test_pharmacy
+    assert_equal(nil, @app.pharmacy('ean13'))
   end
   def test_hospital
     assert_equal(nil, @app.hospital('ean13'))
@@ -821,8 +821,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
     #assert_equal(expected, @app.search_exact_substance('query'))
     assert(same?(expected, @app.search_exact_substance('query')))
   end
-  def test_search_hc_providers
-    assert_equal([], @app.search_hc_providers('key'))
+  def test_search_pharmacies
+    assert_equal([], @app.search_pharmacies('key'))
   end
   def test_search_hospitals
     assert_equal([], @app.search_hospitals('key'))

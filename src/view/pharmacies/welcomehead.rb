@@ -8,13 +8,13 @@ require 'view/logo'
 
 module ODDB
 	module View
-		module HC_providers
-class WelcomeHeadHC_providers < View::WelcomeHead
+		module Pharmacies
+class WelcomeHeadPharmacies < View::WelcomeHead
 	COMPONENTS = {
 		[0,0]		=>	View::Logo,
 		[1,0,0]	=>	:sponsor,
 		[1,0,1]	=>	"break",
-		[1,0,2]	=>	"home_welcome_hc_providers",
+		[1,0,2]	=>	"home_welcome_pharmacies",
 	}
 	end
 		end

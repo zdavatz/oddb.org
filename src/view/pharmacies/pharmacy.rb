@@ -21,8 +21,8 @@ require 'view/admin/address_suggestion'
 
 module ODDB
 	module View
-		module HC_providers
-class HC_providerInnerComposite < HtmlGrid::Composite
+		module Pharmacies
+class PharmacyInnerComposite < HtmlGrid::Composite
 	include VCardMethods
 	include AddressMap
 	COMPONENTS = {
@@ -65,11 +65,11 @@ class HC_providerInnerComposite < HtmlGrid::Composite
 	end
   def vcard(model)
     link = View::PointerLink.new(:vcard, model, @session, self)
-    link.href = @lookandfeel._event_url(:vcard, {:hc_provider => model.ean13})
+    link.href = @lookandfeel._event_url(:vcard, {:pharmacy => model.ean13})
     link
   end
 end
-class HC_providerForm < HtmlGrid::Form
+class PharmacyForm < HtmlGrid::Form
 	include View::Admin::AddressFormMethods
 	COMPONENTS = {
 		[0,0]	=>	:ean13,
@@ -138,7 +138,7 @@ class HC_providerForm < HtmlGrid::Form
 		button
 	end
 end
-class HC_providerComposite < HtmlGrid::Composite
+class PharmacyComposite < HtmlGrid::Composite
 	include VCardMethods
 	COMPONENTS = {
 		[0,0,0]	=>	:title,
@@ -146,7 +146,7 @@ class HC_providerComposite < HtmlGrid::Composite
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,
 		[0,0,4]	=>	:name,
-		[0,1]		=> HC_providerInnerComposite,
+		[0,1]		=> PharmacyInnerComposite,
 		#[0,3]		=>	:vcard,
 	}
 	SYMBOL_MAP = {
@@ -160,22 +160,22 @@ class HC_providerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 end
-class RootHC_providerComposite < HC_providerComposite
+class RootPharmacyComposite < PharmacyComposite
 	COMPONENTS = {
 		[0,0,0]	=>	:title,
 		[0,0,1]	=>	:nbsp,
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,
 		[0,0,4]	=>	:name,
-		[0,1]		=> HC_providerForm,
+		[0,1]		=> PharmacyForm,
 	}
 end
-class HC_provider < PrivateTemplate
-	CONTENT = View::HC_providers::HC_providerComposite
+class Pharmacy < PrivateTemplate
+	CONTENT = View::Pharmacies::PharmacyComposite
 	SNAPBACK_EVENT = :result
 end
-class RootHC_provider < HC_provider
-	CONTENT = View::HC_providers::RootHC_providerComposite
+class RootPharmacy < Pharmacy
+	CONTENT = View::Pharmacies::RootPharmacyComposite
 end
 		end
 	end

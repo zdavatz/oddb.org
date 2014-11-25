@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# HC_providers -- oddb -- 15.02.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'util/persistence'
 require 'model/address'
 require 'model/user'
+require 'model/ba_type'
 
 module ODDB
-  class HC_provider
+  class Pharmacy
     include AddressObserver
     include UserObserver
-    attr_accessor :name, :hc_type,
+    attr_accessor :name, :business_area,
       :addresses, :email, :ydim_id
     attr_reader :ean13
     alias :fullname :name
@@ -33,7 +33,7 @@ module ODDB
       search_terms.join(' ')
     end
     def pointer_descr
-      [@ean13, @name, @hc_type].compact.join(' ')
+      [@ean13, @name, @business_area].compact.join(' ')
     end
   end
 end

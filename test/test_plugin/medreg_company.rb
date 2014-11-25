@@ -30,7 +30,14 @@ class TestCompanyPlugin <Minitest::Test
              :pointer   => 'pointer'
             )
     @config  = flexmock('config')
-    @company = flexmock('company', :pointer => 'pointer')
+    @company = flexmock('company', :pointer => 'pointer',
+                        :ean13= => 'ean13',
+                        :name= => 'name',
+                        :addresses= => 'addresses',
+                        :business_area= => 'business_area',
+                        :odba_isolated_store => 'odba_isolated_store',
+                        :oid => 'oid',
+                       )
     @app     = flexmock('appX',
               :config => @config,
               :create_company => @company,
@@ -61,14 +68,13 @@ class TestCompanyPlugin <Minitest::Test
     assert_equal(1, ODDB::Companies::MedregCompanyPlugin.all_companies.size)
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
     linden = ODDB::Companies::MedregCompanyPlugin.all_companies.first
-		pp linden
     addresses = linden[:addresses]
     assert_equal(1, addresses.size)
     first_address = addresses.first
     assert_equal(ODDB::Address2, first_address.class)
     assert_equal(nil, first_address.fon)
     assert_equal('5102 Rupperswil', first_address.location)
-    assert_equal('öffentliche Apotheke', linden[:typ])
+    assert_equal('öffentliche Apotheke', linden[:ba_type])
     assert_equal('5102', first_address.plz)
     assert_equal('Rupperswil', first_address.city)
     assert_equal('4', first_address.number)
@@ -76,9 +82,7 @@ class TestCompanyPlugin <Minitest::Test
     assert_equal(['Mitteldorf 4'], first_address.additional_lines)
     assert_equal('AB Lindenapotheke AG', first_address.name)
 #	7601001396371	AB Lindenapotheke AG		Mitteldorf	4	5102	Rupperswil	Aargau	Schweiz	öffentliche Apotheke	6011 Verzeichnis a/b/c BetmVV-EDI
-
-
-	end
+  end
   def test_update_all
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])

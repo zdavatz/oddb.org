@@ -15,8 +15,8 @@ require 'view/address'
 
 module ODDB
 	module View
-		module HC_providers
-class HC_providerList < HtmlGrid::List
+		module Pharmacies
+class PharmacyList < HtmlGrid::List
 	include AlphaHeader
 	include UmlautSort
 	include AddressMap
@@ -54,7 +54,7 @@ class HC_providerList < HtmlGrid::List
 		[7,0] =>	'th',
 	}
 	LOOKANDFEEL_MAP = {
-		:name						=>	:hc_provider_name,
+		:name						=>	:pharmacy_name,
 		:canton					=>	:canton,
 	}
 	SORT_DEFAULT = :name
@@ -135,12 +135,12 @@ class HC_providerList < HtmlGrid::List
     link
   end
 end
-class HC_providersComposite < Form
+class PharmaciesComposite < Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
-		[0,1]		=>	:hc_provider_list,
+		[0,1]		=>	:pharmacy_list,
 	}
 	CSS_MAP = {
 		[0,0]	=> 'right',
@@ -149,12 +149,12 @@ class HC_providersComposite < Form
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,
 	}
-	def hc_provider_list(model, session)
-    HC_providerList.new(model, session, self)
+	def pharmacy_list(model, session)
+    PharmacyList.new(model, session, self)
 	end
 end
-class HC_providers < View::PublicTemplate
-	CONTENT = View::HC_providers::HC_providersComposite
+class Pharmacies < View::PublicTemplate
+	CONTENT = View::Pharmacies::PharmaciesComposite
 end
 class EmptyResultForm < HtmlGrid::Form
 	COMPONENTS = {
@@ -162,7 +162,7 @@ class EmptyResultForm < HtmlGrid::Form
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:title_none_found,
 		[0,2]		=>	'e_empty_result',
-		[0,3]		=>	'explain_search_hc_provider',
+		[0,3]		=>	'explain_search_pharmacy',
 	}
 	CSS_MAP = {
 		[0,0]			=>	'search',
@@ -181,7 +181,7 @@ class EmptyResultForm < HtmlGrid::Form
 	end
 end
 class EmptyResult < View::PublicTemplate
-	CONTENT = View::HC_providers::EmptyResultForm
+	CONTENT = View::Pharmacies::EmptyResultForm
 end
 		end
 	end

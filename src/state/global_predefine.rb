@@ -24,7 +24,7 @@ module ODDB
     module Companies
       class Global < State::Global; end
     end
-    module HC_providers
+    module Pharmacies
       class Global < State::Global; end
     end
     module Drugs

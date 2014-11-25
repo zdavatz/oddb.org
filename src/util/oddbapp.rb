@@ -248,7 +248,7 @@ class OddbPrevalence
 	def company(oid)
 		@companies[oid.to_i]
 	end
-  def hc_provider_by_gln(gln)
+  def pharmacy_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
     info = company_by_gln(gln)
     info ||= doctor_by_gln(gln)
@@ -372,6 +372,7 @@ class OddbPrevalence
 	def create_company
 		company = ODDB::Company.new
 		@companies.store(company.oid, company)
+    company
 	end
   def create_division
     div = ODDB::Division.new
@@ -631,10 +632,10 @@ class OddbPrevalence
   def epha_interaction_count
     ODDB::EphaInteractions.get.size
   end
-  def hc_provider(ean13)
-    hc_provider_by_gln(ean13)
+  def pharmacy(ean13)
+    pharmacy_by_gln(ean13)
   end
-  def hc_provider_count
+  def pharmacy_count
     doctor_count + hospital_count + company_count
   end
   def hospital(ean13)
@@ -1098,16 +1099,11 @@ class OddbPrevalence
     result
   end
 
-  def search_hc_providers(key)
-    result = [ hc_provider_by_gln(key)] if key.to_s.match(VALID_EAN13)
+  def search_pharmacies(key)
+    result = [ pharmacy_by_gln(key)] if key.to_s.match(VALID_EAN13)
     return result if result and result.size > 0
     matching_companies = search_companies(key)
-    $stdout.puts "#{Time.now}: search_hc_providers companies return #{matching_companies.to_s[0..250]}"; $stdout.puts
-    matching_doctors = search_doctors(key)
-    $stdout.puts "#{Time.now}: search_hc_providers doctors return #{matching_doctors.to_s[0..250]}"; $stdout.puts
-    matching_hospitals = search_hospitals(key)
-    $stdout.puts "#{Time.now}: search_hc_providers hospitals return #{matching_hospitals.to_s[0..250]}"; $stdout.puts
-    matching_companies  + matching_doctors + matching_hospitals
+    matching_companies
   end
   def search_hospitals(key)
     retrieve_from_index("hospital_index", key)

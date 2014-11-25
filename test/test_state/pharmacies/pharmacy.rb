@@ -9,14 +9,14 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'view/welcomehead'
-require 'state/hc_providers/setpass'
-require 'state/hc_providers/hc_provider'
+require 'state/pharmacies/setpass'
+require 'state/pharmacies/pharmacy'
 
 module ODDB
   module State
-    module HC_providers
+    module Pharmacies
 
-class TestRootHC_provider <Minitest::Test
+class TestRootPharmacy <Minitest::Test
   include FlexMock::TestCase
   def setup
     @update  = flexmock('update', :user => 'user')
@@ -42,14 +42,14 @@ class TestRootHC_provider <Minitest::Test
                         :address => address,
                         :pointer => 'pointer'
                        )
-    @state   = ODDB::State::HC_providers::RootHC_provider.new(@session, @model)
+    @state   = ODDB::State::Pharmacies::RootPharmacy.new(@session, @model)
     flexmock(@state,
              :allowed?     => true,
              :unique_email => 'unique_email'
             )
   end
   def test_init
-    assert_equal(ODDB::View::HC_providers::RootHC_provider, @state.init)
+    assert_equal(ODDB::View::Pharmacies::RootPharmacy, @state.init)
   end
   def test_user_or_creator
     flexmock(@model, :user => nil)
@@ -65,12 +65,12 @@ class TestRootHC_provider <Minitest::Test
   end
   def test_set_pass
     flexmock(@session, :user_input => {:name => 'name'})
-    assert_kind_of(ODDB::State::HC_providers::SetPass, @state.set_pass)
+    assert_kind_of(ODDB::State::Pharmacies::SetPass, @state.set_pass)
   end
 end
 
 
-    end # HC_providers
+    end # Pharmacies
   end # State
 end # ODDB
 

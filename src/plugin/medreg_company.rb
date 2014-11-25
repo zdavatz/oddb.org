@@ -5,6 +5,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'plugin/plugin'
 require 'model/address'
+require 'model/ba_type'
 require 'util/oddbconfig'
 require 'util/persistence'
 require 'util/logfile'
@@ -108,9 +109,9 @@ module ODDB
         @agent.ignore_bad_chunking = true
         @agent
       end
-      def parse_details(doc, gln)
-        left = doc.at('div[class="colLeft"]').text
-        right = doc.at('div[class="colRight"]').text
+      def parse_details(company, gln)
+        left = company.at('div[class="colLeft"]').text
+        right = company.at('div[class="colRight"]').text
         infos = []
         infos = left.split(/\r\n\s*/)
         unless infos[2].eql?(gln.to_s)
@@ -125,10 +126,10 @@ module ODDB
         address = infos[6..idx_plz-1].join(' ')
         company[:plz] = infos[idx_plz+1]
         company[:location] = infos[idx_plz+2]
-        idx_typ  = infos.index('Betriebstyp')
-        typ      = infos[idx_typ+1]
+        idx_typ = infos.index('Betriebstyp')
+        ba_type = infos[idx_typ+1]
         company[:address] = address
-        company[:typ] = typ
+        company[:ba_type] = ba_type
         update_address(company)
         log company
         company
@@ -240,38 +241,44 @@ module ODDB
       end
       def store_company(data)
         pointer = nil
-        if(doc = @app.company_by_gln(data[:ean13]))
-          pointer = doc.pointer
+        if(company = @app.company_by_gln(data[:ean13]))
+          pointer = company.pointer
           @companies_updated += 1
           action = 'update'
         else
           @companies_created += 1
-          doc = @app.create_company
-          log "  created #{doc} #{doc.pointer}"
-          pointer = doc.pointer
+          if true
+            company = @app.create_company
+            pointer = company.pointer
+          else
+            ptr     = Persistence::Pointer.new(:company)
+            pointer = ptr.creator
+          end
+          log "  created #{company} #{company.pointer}"
           action = 'create'
         end
         update_hash = {}
         update_hash[:ean13]     = data[:ean13]
-        update_hash[:name]      = data[:name_1]
+        update_hash[:name]      = data[:name]
         ba_type = nil
-        case  data[:type]
-          when /öffentliche Apotheke/i
+        case  data[:ba_type]
+          when /ffentliche Apotheke/i
             ba_type = ODDB::BA_type::BA_public_pharmacy
           when /Spitalapotheke/i
             ba_type = ODDB::BA_type::BA_hospital_pharmacy
           when /wissenschaftliches Institut/i
             ba_type = ODDB::BA_type::BA_research_institute
           else
+            ba_type = 'unknown'
         end
-        update_hash[:business_area]  = ba_type
-        update_hash[:addresses]      =  data[:addresses]
-        @app.update(pointer, update_hash, :medreg)
-        log "store_company directly #{data[:ean13]} #{action} in database. pointer #{pointer.inspect}. Have now #{@app.companies.size} companies. hash #{update_hash}"
-        return
+        company.ean13         = data[:ean13]
+        company.name          = data[:name]
+        company.business_area = ba_type
+        company.addresses     = data[:addresses]
+        company.odba_isolated_store
+        @app.companies.odba_store
+        log "store_company updated #{data[:ean13]} oid #{company.oid}  #{action} in database. pointer #{pointer.inspect} ba_type #{ba_type}. Have now #{@app.companies.size} companies."
         company_copy = @app.company_by_gln(data[:ean13])
-        company_copy.odba_isolated_store
-        log "store_company copy oid #{company_copy.oid} #{company_copy.business_area} #{company_copy.inspect} "
       end
       def parse_xls(path)
         log "parsing #{path}"

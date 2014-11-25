@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::HC_providers::Limit -- oddb -- 31.10.2005 -- hwyss@ywesee.com
+# State::Pharmacies::Limit -- oddb -- 31.10.2005 -- hwyss@ywesee.com
 
 require 'state/limit'
 
 module ODDB
 	module State
-		module HC_providers
+		module Pharmacies
 class Limit < Global
 	include State::Limit
 end

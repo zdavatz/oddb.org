@@ -738,20 +738,20 @@ class TestOddbApp <MiniTest::Unit::TestCase
     @app.companies = {company.oid => company}
     assert_equal(company, @app.company_by_gln(gln))
   end
-  def test_hc_provider_by_gln
+  def test_pharmacy_by_gln
     gln = TEST_EAN13
     doctor = ODDB::Doctor.new
     doctor.ean13 = gln
     @app.doctors = {doctor.oid => doctor}
-    assert_equal(doctor, @app.hc_provider_by_gln(gln))
+    assert_equal(doctor, @app.pharmacy_by_gln(gln))
   end
-  def test_search_hc_providers_by_gln
+  def test_search_pharmacies_by_gln
     gln = TEST_EAN13
     doctor = ODDB::Doctor.new
     doctor.ean13 = gln
     @app.doctors = {doctor.oid => doctor}
-    assert_equal([], @app.search_hc_providers('0'))
-    assert_equal([doctor], @app.search_hc_providers(TEST_EAN13))
+    assert_equal([], @app.search_pharmacies('0'))
+    assert_equal([doctor], @app.search_pharmacies(TEST_EAN13))
   end
 
 end

@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::HC_providers::TestHC_provider -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Pharmacies::TestPharmacy -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
-require 'view/hc_providers/hc_provider'
+require 'view/pharmacies/pharmacy'
 require 'htmlgrid/textarea'
 require 'model/company'
 
 module ODDB
 	module View
-    module HC_providers
+    module Pharmacies
 
-class TestHC_providerInnerComposite <Minitest::Test
+class TestPharmacyInnerComposite <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel',
@@ -39,7 +39,7 @@ class TestHC_providerInnerComposite <Minitest::Test
                           :pointer   => 'pointer',
                           :ean13     => 'ean13'
                          )
-    @composite = ODDB::View::HC_providers::HC_providerInnerComposite.new(@model, @session)
+    @composite = ODDB::View::Pharmacies::PharmacyInnerComposite.new(@model, @session)
   end
   def test_mapsearch_format
     args = ['1','2','3']
@@ -51,7 +51,7 @@ class TestHC_providerInnerComposite <Minitest::Test
   end
 end
 
-class TestHC_providerForm <Minitest::Test
+class TestPharmacyForm <Minitest::Test
   include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel',
@@ -76,13 +76,13 @@ class TestHC_providerForm <Minitest::Test
                         :type   => 'type'
                        )
     @model   = flexmock('model', :address => @address )
-    @form    = ODDB::View::HC_providers::HC_providerForm.new(@model, @session)
+    @form    = ODDB::View::Pharmacies::PharmacyForm.new(@model, @session)
   end
   def test_additional_lines
     assert_kind_of(HtmlGrid::Textarea, @form.additional_lines(@model))
   end
 end
 
-    end # HC_providers
+    end # Pharmacies
 	end # View
 end # ODDB

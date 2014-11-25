@@ -2,12 +2,12 @@
 # encoding: utf-8
 
 require 'state/setpass'
-require 'state/hc_providers/global'
+require 'state/pharmacies/global'
 
 module ODDB
 	module State
-		module HC_providers
-class SetPass < State::HC_providers::Global
+		module Pharmacies
+class SetPass < State::Pharmacies::Global
 	include State::SetPass
 end
 		end

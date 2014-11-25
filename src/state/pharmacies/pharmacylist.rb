@@ -1,24 +1,24 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::HC_providers::HC_providerList -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
-# ODDB::State::HC_providers::HC_providerList -- oddb.org -- 09.03.2005 -- jlang@ywesee.com
+# ODDB::State::Pharmacies::PharmacyList -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Pharmacies::PharmacyList -- oddb.org -- 09.03.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
-require 'state/hc_providers/hc_provider'
-require 'view/hc_providers/hc_providerlist'
-require 'model/hc_provider'
+require 'state/pharmacies/pharmacy'
+require 'view/pharmacies/pharmacylist'
+require 'model/pharmacy'
 require 'model/user'
 require 'util/interval'
 require 'sbsm/user'
 
 module ODDB
 	module State
-		module HC_providers
-class HC_providerList < State::HC_providers::Global
+		module Pharmacies
+class PharmacyList < State::Pharmacies::Global
 	include Interval
 	attr_reader :range
-	DIRECT_EVENT = :hc_providerlist
-	VIEW = View::HC_providers::HC_providers
+	DIRECT_EVENT = :pharmacylist
+	VIEW = View::Pharmacies::Pharmacies
 	LIMITED = true
   RANGE_PATTERNS = {
     'a-d'			=>	'a-dÅÆÄÁÂÀÃĄǍĂĀȦḂÇĈČĆĊḐĐÐĎḊåæäáâàãąǎăāȧḃçĉčćċḑđðďḋ',
@@ -40,11 +40,11 @@ class HC_providerList < State::HC_providers::Global
 		:name
 	end
 end
-class HC_providerResult < HC_providerList
+class PharmacyResult < PharmacyList
 	DIRECT_EVENT = :result
 	def init
 		if(@model.empty?)
-			@default_view = ODDB::View::HC_providers::EmptyResult
+			@default_view = ODDB::View::Pharmacies::EmptyResult
 		else
 			super
 		end
