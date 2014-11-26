@@ -1041,7 +1041,14 @@ class OddbPrevalence
 		retrieve_from_index("doctor_index", key)
 	end
 	def search_companies(key)
-		retrieve_from_index("company_index", key)
+    companies = retrieve_from_index("company_index", key)
+    matching_companies = companies.find_all{
+      |item|
+        not item.is_pharmacy? and
+        item.business_area != ODDB::BA_type::BA_research_institute
+        item.business_area != ODDB::BA_type::BA_cantonal_authority
+    }
+    matching_companies
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
@@ -1101,8 +1108,16 @@ class OddbPrevalence
 
   def search_pharmacies(key)
     result = [ pharmacy_by_gln(key)] if key.to_s.match(VALID_EAN13)
-    return result if result and result.size > 0
-    matching_companies = search_companies(key)
+    return result if result and result.size > 0 and result.first.is_pharmacy?
+    companies = retrieve_from_index("company_index", key)
+    matching_companies = companies.find_all{|item| item.is_pharmacy? }
+    matching_companies
+  end
+  def search_registration_holder(key)
+    result = [ company_by_gln(key)] if key.to_s.match(VALID_EAN13)
+    return result if result and result.size > 0 and result.first.business_area == ODDB::BA_type::BA_pharma
+    companies = retrieve_from_index("company_index", key)
+    matching_companies = companies.find_all{|item| item.business_area == ODDB::BA_type::BA_pharma }
     matching_companies
   end
   def search_hospitals(key)

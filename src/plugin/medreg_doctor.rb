@@ -27,7 +27,7 @@ module ODDB
     MedRegPerson_XLS_URL  = "https://www.medregbm.admin.ch/Publikation/CreateExcelListMedizinalPersons"
     DoctorInfo = Struct.new("DoctorInfo",
                             :gln,
-                            :exam,
+#                            :exam,
                             :address,
                             :family_name,
                             :first_name,
@@ -123,7 +123,8 @@ module ODDB
         idx_beruf  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Beruf\r\n/)               then idx_beruf  = j; break; end }
         idx_titel  = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weiterbildungstitel/)     then idx_titel  = j; break; end }
         idx_privat = nil; 0.upto(doc.xpath("//tr").size) { |j| if doc.xpath("//tr")[j].text.match(/^\s*Weitere Qualifikationen/) then idx_privat = j; break; end }
-        doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.strip.split(/\r\n|\n/)[1].to_i
+        # doc_hash[:exam] =  doc.xpath("//tr")[idx_beruf+1].text.strip.split(/\r\n|\n/)[1].to_i
+        # Jahr des Staatsexamen wird nicht angezeigt!!
         specialities = []
         (idx_titel+1).upto(idx_privat-1).each{
           |j|
@@ -356,7 +357,7 @@ module ODDB
         end
         extract = [
           :ean13,
-          :exam,
+#          :exam,
           :email,
           :firstname,
           :language,

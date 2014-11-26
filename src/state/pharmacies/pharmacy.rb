@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Companies::Company -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
-# ODDB::State::Companies::Company -- oddb.org -- 11.02.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'state/global_predefine'
 require 'view/pharmacies/pharmacy'
@@ -37,7 +35,7 @@ class RootPharmacy < Pharmacy
 	end
 	private
 	def do_update
-		keys = [:name, :business_unit, :address_type, :title, :contact, 
+		keys = [:name, :business_unit, :address_type, :title, :contact,
 			:additional_lines, :address, :location, :canton, :fon, :fax]
 		mandatory = [:name, :ean13]
 		input = user_input(keys, mandatory)
@@ -59,7 +57,7 @@ class RootPharmacy < Pharmacy
 		mdl = @model.user
 		if(mdl.nil?)
 			ptr = Persistence::Pointer.new([:admin])
-			mdl = Persistence::CreateItem.new(ptr) 
+			mdl = Persistence::CreateItem.new(ptr)
 			mdl.carry(:model, @model)
 		end
 		mdl

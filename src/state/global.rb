@@ -815,7 +815,7 @@ module ODDB
 						result = @session.search_doctors(query)
 						State::Doctors::DoctorResult.new(@session, result)
 					when :companies
-						result = @session.search_companies(query)
+						result = @session.search_registration_holder(query)
 						State::Companies::CompanyResult.new(@session, result)
 					when :interactions
 						result = @session.search_interactions(query)

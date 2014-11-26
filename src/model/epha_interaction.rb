@@ -31,7 +31,10 @@ module ODDB
     def EphaInteractions.read_csv
       @csv_file_path = CSV_FILE
       latest = @csv_file_path.sub(/\.csv$/, '-latest.csv')
-      return if File.exist?(latest) and ((Time.now-File.mtime("/etc/hosts"))/3600).round < 24 # less than 24 hours old
+      if File.exist?(latest) and ((Time.now-File.mtime(latest))/3600).round < 24 # less than 24 hours old
+        $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: skip as latest #{latest} #{File.exist?(latest)} is only #{((Time.now-File.mtime(latest))/3600).round} hours old"
+        return
+      end
       unless CSV_FILE and File.exist?(CSV_FILE)
         target = Mechanize.new.get(CSV_ORIGIN_URL)
         target.save_as @csv_file_path

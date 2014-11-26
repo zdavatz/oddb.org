@@ -26,19 +26,15 @@ class PharmacyInnerComposite < HtmlGrid::Composite
 	include VCardMethods
 	include AddressMap
 	COMPONENTS = {
-		[0,0,0]	=>	:business_unit_header,
-		[0,0,1]	=>	:nbsp,
-		[0,0,2]	=>	:business_unit,
 		[0,1,0]	=>	:ean13_header,
 		[0,1,1]	=>	:nbsp,
 		[0,1,2]	=>	:ean13,
 		[0,2]			=>	:address_header,
 		[0,3]			=>	:address,
-		#[0,12]		=>	:map,
-		[0,4]		=>	:vcard,
+		# [0,12]		=>	:map,
+		# [0,4]		=>	:vcard,
 	}
 	SYMBOL_MAP = {
-		:business_unit_header	=>	HtmlGrid::LabelText,
 		:address_header	=>	HtmlGrid::LabelText,
 		:ean13_header		=>	HtmlGrid::LabelText,
 		:fons_header		=>	HtmlGrid::LabelText,
@@ -47,8 +43,9 @@ class PharmacyInnerComposite < HtmlGrid::Composite
 		:url						=>	HtmlGrid::HttpLink,
 	}
 	CSS_MAP = {
-		[0,0,1,3] => 'list',
-		[0,4,1,2] => 'list',
+    [0,1] => 'list',
+    [0,2] => 'list',
+    [0,4,1,2] => 'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
@@ -74,7 +71,6 @@ class PharmacyForm < HtmlGrid::Form
 	COMPONENTS = {
 		[0,0]	=>	:ean13,
 		[0,1]	=>	:name,
-		[0,2]	=>	:business_unit,
 		[0,3]	=>	:address_type,
 		[0,4]	=>	:title,
 		[0,5]	=>	:contact,

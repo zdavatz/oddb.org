@@ -747,11 +747,25 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
   def test_search_pharmacies_by_gln
     gln = TEST_EAN13
-    doctor = ODDB::Doctor.new
-    doctor.ean13 = gln
-    @app.doctors = {doctor.oid => doctor}
+    company = ODDB::Company.new
+    company.ean13 = gln
+    company.business_area = ODDB::BA_type::BA_public_pharmacy
+    @app.companies = {company.oid => company}
     assert_equal([], @app.search_pharmacies('0'))
-    assert_equal([doctor], @app.search_pharmacies(TEST_EAN13))
+    assert_equal(company, @app.company_by_gln(TEST_EAN13))
+    assert_equal(1, @app.search_pharmacies(TEST_EAN13).size)
+    assert_equal(0, @app.search_registration_holder(TEST_EAN13).size)
   end
-
+  def test_search_registration_holder
+    gln = TEST_EAN13
+    company = ODDB::Company.new
+    company.ean13 = gln
+    company.business_area = ODDB::BA_type::BA_pharma
+    @app.companies = {company.oid => company}
+    assert_equal([], @app.search_pharmacies('0'))
+    assert_equal([], @app.search_companies('0'))
+    assert_equal([company], @app.search_registration_holder(TEST_EAN13))
+    assert_equal(company, @app.company_by_gln(TEST_EAN13))
+    assert_equal(0, @app.search_pharmacies(TEST_EAN13).size)
+  end
 end

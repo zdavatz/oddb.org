@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Pharmacies::Vcard -- oddb -- 09.03.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'htmlgrid/component'
 require 'view/vcard'

@@ -109,9 +109,10 @@ module ODDB
         @agent.ignore_bad_chunking = true
         @agent
       end
-      def parse_details(company, gln)
-        left = company.at('div[class="colLeft"]').text
-        right = company.at('div[class="colRight"]').text
+      def parse_details(html, gln)
+        left = html.at('div[class="colLeft"]').text
+        right = html.at('div[class="colRight"]').text
+        btm = html.at('div[class="twoColSpan"]').text
         infos = []
         infos = left.split(/\r\n\s*/)
         unless infos[2].eql?(gln.to_s)
@@ -130,6 +131,7 @@ module ODDB
         ba_type = infos[idx_typ+1]
         company[:address] = address
         company[:ba_type] = ba_type
+        company[:narcotics] = btm.split(/\r\n\s*/)[-1]
         update_address(company)
         log company
         company
@@ -151,7 +153,7 @@ module ODDB
           success = false
           while nr_tries < max_retries  and not success
             begin
-              r_loop.try_run(gln, 5 ) do
+              r_loop.try_run(gln, defined?(Minitest) ? 500 : 5 ) do
                 log "Searching for company with GLN #{gln}. Skipped #{@companies_skipped}, created #{@companies_created} updated #{@companies_updated} of #{glns.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
                 page_1 = @agent.get(BetriebeURL)
                 raise Search_failure if page_1.content.match(failure)
@@ -229,7 +231,7 @@ module ODDB
         addr = Address2.new
         addr.name    =  data[:name  ]
         addr.address =  data[:address]
-        addr.additional_lines = [data[:address] ]
+        # addr.additional_lines = [data[:address] ]
         addr.location = [data[:plz], data[:location]].compact.join(' ')
         if(fon = data[:phone])
           addr.fon = [fon]
@@ -247,21 +249,15 @@ module ODDB
           action = 'update'
         else
           @companies_created += 1
-          if true
-            company = @app.create_company
-            pointer = company.pointer
-          else
-            ptr     = Persistence::Pointer.new(:company)
-            pointer = ptr.creator
-          end
+          company = @app.create_company
+          pointer = company.pointer
           log "  created #{company} #{company.pointer}"
           action = 'create'
         end
-        update_hash = {}
-        update_hash[:ean13]     = data[:ean13]
-        update_hash[:name]      = data[:name]
         ba_type = nil
         case  data[:ba_type]
+          when /kantonale Beh/i
+            ba_type = ODDB::BA_type::BA_cantonal_authority
           when /ffentliche Apotheke/i
             ba_type = ODDB::BA_type::BA_public_pharmacy
           when /Spitalapotheke/i
@@ -274,8 +270,9 @@ module ODDB
         company.ean13         = data[:ean13]
         company.name          = data[:name]
         company.business_area = ba_type
+        company.narcotics     = data[:narcotics]
         company.addresses     = data[:addresses]
-        company.odba_isolated_store
+        company.odba_store
         @app.companies.odba_store
         log "store_company updated #{data[:ean13]} oid #{company.oid}  #{action} in database. pointer #{pointer.inspect} ba_type #{ba_type}. Have now #{@app.companies.size} companies."
         company_copy = @app.company_by_gln(data[:ean13])

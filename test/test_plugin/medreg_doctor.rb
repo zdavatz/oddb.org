@@ -61,7 +61,7 @@ class TestDoctorPlugin <Minitest::Test
       assert_equal(true, zuest[:may_dispense_narcotics])
       assert_equal(true, zuest[:may_sell_drugs])
       assert_equal(nil, zuest[:remark_sell_drugs])
-      assert_equal(1992, zuest[:exam])
+      assert_equal(nil, zuest[:exam])
       assert_equal('Züst', zuest[:name])
       assert_equal('Peter', zuest[:firstname])
       assert_equal(["Allgemeine Innere Medizin, 2003, Schweiz"], zuest[:specialities])

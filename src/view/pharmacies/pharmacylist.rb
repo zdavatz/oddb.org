@@ -23,13 +23,13 @@ class PharmacyList < HtmlGrid::List
 	include VCardMethods
 	COMPONENTS = {
 		[0,0]	=>	:name,
-		[1,0]	=>	:business_unit,
+		[1,0]	=>	:business_area,
 		[2,0]	=>	:city,
 		[3,0]	=>	:plz,
 		[4,0]	=>	:canton,
 		[5,0]	=>	:narcotics,
 		[6,0]	=>	:map,
-		[7,0]	=>	:vcard,
+#		[7,0]	=>	:vcard,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
@@ -55,12 +55,18 @@ class PharmacyList < HtmlGrid::List
 	}
 	LOOKANDFEEL_MAP = {
 		:name						=>	:pharmacy_name,
+    :business_area  =>  :company_business_area,
 		:canton					=>	:canton,
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false
 	LEGACY_INTERFACE = false
-	def plz(model)
+  def business_area(model, session=@session)
+    if((area = model.business_area) && !area.empty?)
+      @lookandfeel.lookup(area)
+    end
+  end
+  def plz(model)
 		if(addr = model.addresses.first)
 			addr.plz
 		end
@@ -78,27 +84,13 @@ class PharmacyList < HtmlGrid::List
 	def name(model)
     link = View::PointerLink.new(:name, model, @session, self)
     new_href = nil
-    if model.is_a?(ODDB::Company)
-      new_href = @lookandfeel._event_url(:company, {:ean => model.ean13})
-    elsif model.is_a?(ODDB::Doctor)
-      new_href = @lookandfeel._event_url(:doctor, {:ean => model.ean13})
-    elsif  model.is_a?(ODDB::Hospital)
-      new_href = @lookandfeel._event_url(:hospital, {:ean => model.ean13})
-    else
-      return nil
-    end
+    new_href = @lookandfeel._event_url(:pharmacy, {:ean => model.ean13})
 		link.set_attribute('title', "EAN: #{model.ean13}")
     link.href = new_href
 		link
 	end
 	def narcotics(model)
-    if model.respond_to?(:may_dispense_narcotics)
-			if(model.may_dispense_narcotics)
-				@lookandfeel.lookup(:true)
-			else
-				@lookandfeel.lookup(:false)
-			end
-    elsif model.respond_to?(:narcotics)
+    if model.respond_to?(:narcotics)
       if(model.narcotics == "Keine Betäubungsmittelbewilligung")
         @lookandfeel.lookup(:false)
       else
@@ -122,15 +114,7 @@ class PharmacyList < HtmlGrid::List
                    model.oid
                  end
     new_href = nil
-    if model.is_a?(ODDB::Company)
-      new_href = @lookandfeel._event_url(:vcard, {:company => ean_or_oid})
-    elsif model.is_a?(ODDB::Doctor)
-      new_href = @lookandfeel._event_url(:vcard, {:doctor => ean_or_oid})
-    elsif  model.is_a?(ODDB::Hospital)
-      new_href = @lookandfeel._event_url(:vcard, {:hospital => ean_or_oid})
-    else
-      return nil
-    end
+    new_href = @lookandfeel._event_url(:vcard, {:pharmacy => ean_or_oid})
     link.href = new_href
     link
   end

@@ -23,7 +23,7 @@ module ODDB
       (addr = @addresses.first) && addr.name
     end
     def search_terms
-      terms = [ @ean13, @name, @hc_typ, @email ]
+      terms = [ @ean13, @name, @email ]
       @addresses.each { |addr|
         terms += addr.search_terms
       }

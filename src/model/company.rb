@@ -22,7 +22,8 @@ module ODDB
       :disable_patinfo, :ean13, :generic_type,
       :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name,
       :powerlink, :regulatory_email, :swissmedic_email, :swissmedic_salutation,
-      :url, :ydim_id, :limit_invoice_duration, :force_new_ydim_debitor
+      :url, :ydim_id, :limit_invoice_duration, :force_new_ydim_debitor,
+      :narcotics
     attr_reader :invoice_dates, :disabled_invoices
 		alias :fullname :name
 		alias :power_link= :powerlink=
@@ -191,7 +192,7 @@ module ODDB
 					if(val.to_s.empty?)
 						input[key] = nil
 					end
-				when :generic_type, :complementary_type
+				when :generic_type, :complementary_type, :business_area
 					if(val.is_a? String)
 						input[key] = val.intern
 					end

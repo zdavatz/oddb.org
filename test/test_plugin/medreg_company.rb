@@ -37,6 +37,8 @@ class TestCompanyPlugin <Minitest::Test
                         :business_area= => 'business_area',
                         :odba_isolated_store => 'odba_isolated_store',
                         :oid => 'oid',
+                        :narcotics= => 'narcotics',
+                        :odba_store => 'odba_store',
                        )
     @app     = flexmock('appX',
               :config => @config,
@@ -44,7 +46,7 @@ class TestCompanyPlugin <Minitest::Test
               :companies => [@company],
               :company_by_gln => nil,
               :company_by_origin => @company,
-              :update           => 'update'
+              :update           => 'update',
             )
     @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
@@ -79,8 +81,10 @@ class TestCompanyPlugin <Minitest::Test
     assert_equal('Rupperswil', first_address.city)
     assert_equal('4', first_address.number)
     assert_equal('Mitteldorf', first_address.street)
-    assert_equal(['Mitteldorf 4'], first_address.additional_lines)
+    assert_equal(nil, first_address.additional_lines)
     assert_equal('AB Lindenapotheke AG', first_address.name)
+    inhalt = IO.read(csv_file)
+    assert(inhalt.index('6011 Verzeichnis a/b/c BetmVV-EDI') > 0, 'must find btm')
 #	7601001396371	AB Lindenapotheke AG		Mitteldorf	4	5102	Rupperswil	Aargau	Schweiz	öffentliche Apotheke	6011 Verzeichnis a/b/c BetmVV-EDI
   end
   def test_update_all

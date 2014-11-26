@@ -43,5 +43,11 @@ module ODDB
       expected = "#{Sample_Key} #{Sample_Name.sub('.', '')} pharmacytestch"
       assert_equal expected, @pharmacy.search_text
     end
-	end
+    def test_collect_ba_type
+      ary = Array.new    #=> []
+      ary << ODDB::BA_type::BA_hospital
+      assert(ODDB::BA_types.collect)
+      assert(ODDB::BA_type.collect)
+    end
+  end
 end
