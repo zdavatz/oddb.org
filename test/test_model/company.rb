@@ -337,7 +337,7 @@ class TestCompany <Minitest::Test
 			:name						=>	'ywesee.com',
 			:cl_status			=>	true,
 			:url						=>	'www.ywesee.com',
-			:business_area	=>	'Intellectual Capital',
+			:business_area	=>	'Intellectual Capital'.to_sym,
 			:contact				=>	'hwyss at ywesee.com',
 			:address				=>	'Winterthurerstrasse',
 			:plz						=>	'8000',
@@ -345,7 +345,7 @@ class TestCompany <Minitest::Test
 			:location				=>	'Zuerich',
       :generic_type   =>  :original,
       :complementary_type => :homeopathy,
-      :price_lookandfeel => 1200,
+      :price_lookandfeel => 1200.0,
 		}
 		assert_equal(expected, @company.adjust_types(values))
 	end

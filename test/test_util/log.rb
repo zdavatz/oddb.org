@@ -98,7 +98,7 @@ module ODDB
 
       second = mail.attachments.last
       assert_equal('test_file',       second.filename)
-      assert_equal('text/csv',        second.mime_type)
+      assert_equal('text/plain',      second.mime_type)
       assert_equal('example_content', second.body.decoded)
     end
 
@@ -116,7 +116,7 @@ module ODDB
       mail = mails_sent.first
       assert(mail.subject.match(/#{TEST_SUBJECT_2}/), "Subject must match #{TEST_SUBJECT_2}")
       assert(mail.to.index(TEST_RECEIVER))
-      assert_equal(test_body, mail.body.to_s)
+      assert_equal(test_body, mail.parts.first.decoded)
       assert_equal(2, mail.attachments.size)
     end
   end

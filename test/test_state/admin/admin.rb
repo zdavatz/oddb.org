@@ -32,14 +32,14 @@ class TestAdmin <Minitest::Test
     assert_equal(false, @admin.limited?)
   end
   def test_new_registration
-    flexmock(@model, 
+    flexmock(@model,
              :is_a? => true,
              :name  => 'name'
             )
     assert_kind_of(ODDB::State::Admin::Registration, @admin.new_registration)
   end
   def test_zones
-    expected = [:analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
+    expected = [:analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
     assert_equal(expected, @admin.zones)
   end
 end

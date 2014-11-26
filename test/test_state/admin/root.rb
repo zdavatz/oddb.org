@@ -43,7 +43,7 @@ end
 		end
 
 		module Admin
-class TestRootState <Minitest::Test 
+class TestRootState <Minitest::Test
 	class StubSession
 		attr_accessor :user_input
 		def user_input(*keys)
@@ -126,11 +126,11 @@ class TestODDBStateAdminRoot <Minitest::Test
   end
   def setup
     company      = flexmock('company')
-    registration = flexmock('registration', 
+    registration = flexmock('registration',
                             :name_base => 'name_base',
                             :company   => company
                            )
-    @app     = flexmock('app', 
+    @app     = flexmock('app',
                         :address_suggestions => {'key' => 'value'},
                         :registration => registration
                        )
@@ -177,7 +177,7 @@ class TestODDBStateAdminRoot <Minitest::Test
   def test_new_fachinfo
     flexmock(@session, :language => 'language')
     flexmock(ODBA.cache, :next_id => 123)
-    registration = flexmock('registration', 
+    registration = flexmock('registration',
                             :name_base => 'name_base',
                             :company   => 'company'
                            )
@@ -199,7 +199,7 @@ class TestODDBStateAdminRoot <Minitest::Test
     assert_kind_of(ODDB::State::Admin::Indication, @state.new_indication)
   end
   def test_new_registration
-    flexmock(@model, 
+    flexmock(@model,
              :is_a? => true,
              :name  => 'name'
             )
@@ -215,7 +215,7 @@ class TestODDBStateAdminRoot <Minitest::Test
     flexmock(ODBA.cache, :next_id => 123)
     odba_instance = ODDB::Company.new
     pointer = flexmock('pointer', :to_yus_privilege => 'to_yus_priviledge')
-    flexmock(@model, 
+    flexmock(@model,
              :odba_instance => odba_instance,
              :pointer       => pointer,
              :contact_email => 'contact_email',
@@ -231,10 +231,10 @@ class TestODDBStateAdminRoot <Minitest::Test
     flexmock(@app, :orphaned_patinfos => {'key' => 'value'})
     assert_kind_of(ODDB::State::Admin::OrphanedPatinfos, @state.orphaned_patinfos)
   end
-  def test_patinfo_deprived_sequences 
+  def test_patinfo_deprived_sequences
     galenic_group = flexmock('galenic_group', :de => 'Infxxx')
     galenic_form  = flexmock('galenic_form', :galenic_group => galenic_group)
-    sequence      = flexmock('sequence', 
+    sequence      = flexmock('sequence',
                              :patinfo_shadow => nil,
                              :"patinfo.nil?" => true,
                              :active?        => true,
@@ -260,14 +260,14 @@ class TestODDBStateAdminRoot <Minitest::Test
     assert_kind_of(ODDB::State::Substances::Substances, @state.substances)
   end
   def test_user
-    flexmock(@session, 
+    flexmock(@session,
              :user_input         => 'name',
              :"user.find_entity" => 'user'
             )
     assert_kind_of(ODDB::State::Admin::Entity, @state.user)
   end
   def test_zones
-    expected = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
+    expected = [:admin, :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
     assert_equal(expected, @state.zones)
   end
 end

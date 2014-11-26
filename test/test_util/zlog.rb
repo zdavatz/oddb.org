@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestLog -- oddb -- 26.05.2003 -- hwyss@ywesee.com 
+# TestLog -- oddb -- 26.05.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -82,7 +82,7 @@ module ODDB
       assert_equal(1, mails_sent.size)
       assert_equal([TEST_SENDER], mails_sent.first.from)
       assert_equal([LOG_RECEIVER], mails_sent.first.to)
-      assert_equal(hash[:report], mails_sent.first.body.to_s)
+      assert_equal(hash[:report], mails_sent.first.parts.first.decoded)
       assert_equal(SUBJECT, mails_sent.first.subject)
     end
     def test_notify_parts
@@ -104,7 +104,7 @@ SL hat anderen 5-Stelligen Swissmedic-Code als SMeX
       assert_equal(1, mails_sent.size)
       assert_equal([TEST_SENDER], mails_sent.first.from)
       assert_equal([LOG_RECEIVER], mails_sent.first.to)
-      assert_equal(mail_body, mails_sent.first.body.to_s)
+      assert_equal(mail_body, mails_sent.first.parts.first.decoded)
       assert_equal(SUBJECT, mails_sent.first.subject)
       assert_equal(1, mails_sent.first.attachments.size)
       assert_equal(part_content, mails_sent.first.attachments.first.body.decoded)

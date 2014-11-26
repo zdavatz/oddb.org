@@ -8,6 +8,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
+require 'view/logohead'
 require 'view/logo'
 
 module ODDB
@@ -16,13 +17,13 @@ module ODDB
   end
 
   module View
-    
+
     class PopupLogo
     end
 class TestPopupLogo <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => true,
@@ -56,14 +57,14 @@ class TestPopupLogo <Minitest::Test
   end
 
   def test_logo_src
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :enabled? => true,
              :resource_localized => 'resource_localized'
             )
     assert_equal('resource_localized', @component.logo_src('key'))
   end
   def test_zone_logo_src
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :enabled? => true,
              :resource_localized => 'resource_localized'
             )
@@ -76,7 +77,7 @@ end
 class TestLogo <Minitest::Test
   include FlexMock::TestCase
     def test_to_html
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => nil,
@@ -93,7 +94,7 @@ class TestLogo <Minitest::Test
     assert_equal('&nbsp;', @logo.to_html(context))
   end
   def test_to_html__enabled
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => true,

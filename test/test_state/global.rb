@@ -102,7 +102,7 @@ end
 			class StubGalenicForm
 				include Language
 			end
-      
+
  			def setup
         @lnf = flexmock('lookandfeel', :zones => [:analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies], :flavor => nil).by_default
         @session = StubSession.new(@lnf)
@@ -114,8 +114,8 @@ end
 			end
 			def test_resolve1
 				@company = StubCompany.new
-				@session.app.companies = { 
-					4	=>	@company, 
+				@session.app.companies = {
+					4	=>	@company,
 				}
         pointer = flexmock('pointer') do |ptr|
           ptr.should_receive(:is_a?).and_return(true)
@@ -123,10 +123,10 @@ end
           ptr.should_receive(:skeleton).and_return([:company])
         end
         flexstub(@session) do |s|
-          s.should_receive(:user_input).once.with(:pointer).and_return(pointer) 
-          s.should_receive(:user_input).once.with(:reg).and_return(nil) 
-          s.should_receive(:user_input).once.with(:seq).and_return(nil) 
-          s.should_receive(:user_input).once.with(:pack).and_return(nil) 
+          s.should_receive(:user_input).once.with(:pointer).and_return(pointer)
+          s.should_receive(:user_input).once.with(:reg).and_return(nil)
+          s.should_receive(:user_input).once.with(:seq).and_return(nil)
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
         end
 				newstate = @state.resolve
         skip("Niklaus did not have time to debug this assert")
@@ -140,7 +140,7 @@ end
           ptr.should_receive(:skeleton).and_return([:fachinfo])
         end
         flexstub(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer) 
+          s.should_receive(:user_input).and_return(pointer)
         end
 
         skip("Niklaus did not have time to debug this assert")
@@ -149,7 +149,7 @@ end
 			end
 			def test_user_input1
 				@session.user_input = {
-					:good => 'foo', 
+					:good => 'foo',
 					:bad => SBSM::InvalidDataError.new('e_invalid_bad', :bad, 'bar')
 				}
 				result = @state.user_input([:good, :bad])
@@ -160,7 +160,7 @@ end
 			end
 			def test_user_input2
 				@session.user_input = {
-					:good => 'foo', 
+					:good => 'foo',
 					:bad => SBSM::InvalidDataError.new('e_invalid_bad', :bad, 'bar')
 				}
 				@state.model = Persistence::CreateItem.new()
@@ -427,7 +427,7 @@ end
         expected = [State::Admin::Login, State::User::YweseeContact]
         assert_equal(expected, @state.user_navigation)
       end
-      
+
       def test_navigation
         expected = [:help_link, :faq_link,
                     ODDB::State::Admin::Login,
@@ -567,7 +567,7 @@ end
                                 :package  => package,
                                 :pointer  => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -592,7 +592,7 @@ end
                                 :package  => package,
                                 :pointer  => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -617,7 +617,7 @@ end
                                 :package  => package,
                                 :pointer  => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -669,6 +669,7 @@ end
           s.should_receive(:zone).and_return(zone.to_sym)
           s.should_receive(:persistent_user_input).and_return(query)
           s.should_receive("search_#{zone}".to_sym)
+          s.should_receive(:search_registration_holder)
         end
         flexmock(ODDB) do |o|
           #o.should_receive(:search_term).and_return('query')
@@ -734,7 +735,7 @@ end
         assert_kind_of(State::Migel::Items, @state.search)
       end
       def test_migel_search__items
-        product = flexmock('product', 
+        product = flexmock('product',
                            :items => {'key' => 'item'},
                            :price => 'price',
                            :qty   => 'qty',
@@ -1012,11 +1013,11 @@ end
           ptr.should_receive(:resolve).and_return('model')
         end
         package      = flexmock('package', :pointer => pointer)
-        sequence     = flexmock('sequence', 
+        sequence     = flexmock('sequence',
                                 :package => package,
                                 :pointer => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -1040,11 +1041,11 @@ end
           ptr.should_receive(:resolve).and_return('model')
         end
         package      = flexmock('package', :pointer => pointer)
-        sequence     = flexmock('sequence', 
+        sequence     = flexmock('sequence',
                                 :package => package,
                                 :pointer => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -1068,11 +1069,11 @@ end
           ptr.should_receive(:resolve).and_return('model')
         end
         package      = flexmock('package', :pointer => pointer)
-        sequence     = flexmock('sequence', 
+        sequence     = flexmock('sequence',
                                 :package => package,
                                 :pointer => pointer
                                )
-        registration = flexmock('registration', 
+        registration = flexmock('registration',
                                 :sequence => sequence,
                                 :pointer  => pointer
                                )
@@ -1166,7 +1167,7 @@ end
         assert_kind_of(State::User::YweseeContact, @state.ywesee_contact)
       end
       def test_zones
-        expected = [ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
+        expected = [ :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies ]
         assert_equal(expected, @state.zones)
       end
       def test_zone_navigation
