@@ -304,13 +304,13 @@ module ODDB
       setup_log_notify_bsv
       @recipients[:change_flags] = {'ptr' => []}
       plugin = @plugin
-      assert_equal(["oddb_bsv_info"], @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+      assert_equal("notify", @updater.instance_eval('log_notify_bsv(plugin, "date")'))
     end
     def test_log_notify_bsv__else_change_flags
       setup_log_notify_bsv
       @recipients[:change_flags] = {}
       plugin = @plugin
-      assert_equal(["oddb_bsv_info"], @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+      assert_equal("notify", @updater.instance_eval('log_notify_bsv(plugin, "date")'))
     end
     def setup_bsv_xml_plugin
       bsv = flexmock('bsv') do |bsv|

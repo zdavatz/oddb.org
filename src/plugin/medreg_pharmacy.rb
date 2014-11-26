@@ -56,12 +56,12 @@ module ODDB
       :company_type         => 9, # J
       :drug_permit          => 10, # K
     }
-    class MedregCompanyPlugin < Plugin
+    class MedregPharmacyPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts    "#{Time.now}:  MedregCompanyPlugin #{msg}" # unless defined?(Minitest)
+        $stdout.puts    "#{Time.now}:  MedregPharmacyPlugin #{msg}" # unless defined?(Minitest)
         $stdout.flush
-        LogFile.append('oddb/debug', " MedregCompanyPlugin #{msg}", Time.now)
+        LogFile.append('oddb/debug', " MedregPharmacyPlugin #{msg}", Time.now)
       end
 
       def save_for_log(msg)
@@ -297,7 +297,7 @@ module ODDB
         end
         @glns_to_import = @info_to_gln.keys.sort.uniq
       end
-      def MedregCompanyPlugin.all_companies
+      def MedregPharmacyPlugin.all_companies
         @@all_companies
       end
     end

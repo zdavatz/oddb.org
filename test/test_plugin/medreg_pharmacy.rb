@@ -10,7 +10,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'stub/odba'
-require 'plugin/medreg_company'
+require 'plugin/medreg_pharmacy'
 require 'tempfile'
 
 # stub Address2
@@ -48,12 +48,12 @@ class TestCompanyPlugin <Minitest::Test
               :company_by_origin => @company,
               :update           => 'update',
             )
-    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
+    @plugin = ODDB::Companies::MedregPharmacyPlugin.new(@app)
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
   end
 
   def test_update_7601002026444
-    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app, [7601001396371])
+    @plugin = ODDB::Companies::MedregPharmacyPlugin.new(@app, [7601001396371])
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
     flexmock(@plugin, :get_company_data => {})
     flexmock(@plugin, :puts => nil)
@@ -67,9 +67,9 @@ class TestCompanyPlugin <Minitest::Test
     assert_equal(0, updated)
     assert_equal(0, deleted)
     assert_equal(0, skipped)
-    assert_equal(1, ODDB::Companies::MedregCompanyPlugin.all_companies.size)
+    assert_equal(1, ODDB::Companies::MedregPharmacyPlugin.all_companies.size)
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
-    linden = ODDB::Companies::MedregCompanyPlugin.all_companies.first
+    linden = ODDB::Companies::MedregPharmacyPlugin.all_companies.first
     addresses = linden[:addresses]
     assert_equal(1, addresses.size)
     first_address = addresses.first
@@ -88,7 +88,7 @@ class TestCompanyPlugin <Minitest::Test
 #	7601001396371	AB Lindenapotheke AG		Mitteldorf	4	5102	Rupperswil	Aargau	Schweiz	öffentliche Apotheke	6011 Verzeichnis a/b/c BetmVV-EDI
   end
   def test_update_all
-    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
+    @plugin = ODDB::Companies::MedregPharmacyPlugin.new(@app)
     flexmock(@plugin, :get_latest_file => [true, Test_Companies_XLSX])
     flexmock(@plugin, :get_company_data => {})
     flexmock(@plugin, :puts => nil)
@@ -108,7 +108,7 @@ class TestCompanyPlugin <Minitest::Test
   def test_get_latest_file
     current  = File.expand_path(File.join(__FILE__, "../../../data/xls/companies_#{Time.now.strftime('%Y.%m.%d')}.xlsx"))
     FileUtils.rm_f(current) if File.exists?(current)
-    @plugin = ODDB::Companies::MedregCompanyPlugin.new(@app)
+    @plugin = ODDB::Companies::MedregPharmacyPlugin.new(@app)
     res = @plugin.get_latest_file
     assert(res[0], 'needs_update must be true')
     assert(res[1].match(/latest/), 'filename must match latest')

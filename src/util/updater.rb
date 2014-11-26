@@ -9,7 +9,7 @@ require 'plugin/analysis'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
-require 'plugin/medreg_company'
+require 'plugin/medreg_pharmacy'
 require 'plugin/medreg_doctor'
 require 'plugin/dosing'
 require 'plugin/drugbank'
@@ -242,7 +242,7 @@ module ODDB
     end
     def update_medreg_companies(opts = nil)
       LogFile.append('oddb/debug', " update update_medreg_companies opts #{opts.inspect}", Time.now)
-      klass = ODDB::Companies::MedregCompanyPlugin
+      klass = ODDB::Companies::MedregPharmacyPlugin
       subj = 'companies (Medreg)'
       wrap_update(klass, subj) {
         plug = klass.new(@app, opts)
