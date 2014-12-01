@@ -14,7 +14,7 @@ module ODDB
     include FlexMock::TestCase
     ATC_CODE_1 = 'N06AB06'
     ATC_CODE_2 = 'G03AA13'
-    
+
     def setup
       @epha_interaction = EphaInteraction.new
       @epha_interaction.atc_code_self = ATC_CODE_1
@@ -45,4 +45,4 @@ module ODDB
       assert_equal expected, @epha_interaction.search_text
     end
   end
-end if false
+end

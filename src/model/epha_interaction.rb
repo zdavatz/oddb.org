@@ -33,17 +33,17 @@ module ODDB
       latest = @csv_file_path.sub(/\.csv$/, '-latest.csv')
       if File.exist?(latest) and ((Time.now-File.mtime(latest))/3600).round < 24 # less than 24 hours old
         $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: skip as latest #{latest} #{File.exist?(latest)} is only #{((Time.now-File.mtime(latest))/3600).round} hours old"
-        return
-      end
-      unless CSV_FILE and File.exist?(CSV_FILE)
+      else
+        FileUtils.rm_f(@csv_file_path, :verbose => true)
         target = Mechanize.new.get(CSV_ORIGIN_URL)
         target.save_as @csv_file_path
         $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: #{File.expand_path(@csv_file_path)} ?  #{File.exists?(@csv_file_path)}"
+        FileUtils.cp(@csv_file_path,  latest, :preserve => true, :verbose => true) unless defined?(MiniTest)
       end
-      if File.exists?(@csv_file_path)
+      if File.exists?(latest)
         @lineno = 0
         first_line = nil
-        File.readlines(@csv_file_path).each do |line|
+        File.readlines(latest).each do |line|
           @lineno += 1
           line = line.force_encoding('utf-8')
           next if /ATC1.*Name1.*ATC2.*Name2/.match(line)
@@ -65,9 +65,7 @@ module ODDB
           epha_interaction.severity = elements[8]
           EphaInteractions.get[ [epha_interaction.atc_code_self, epha_interaction.atc_code_other  ]] = epha_interaction
         end
-        $stdout.puts "#{Time.now}: Added #{EphaInteractions.get.size} interaction from #{@csv_file_path}"; $stdout.flush
-        return unless File.exists?(@csv_file_path)
-        FileUtils.mv(@csv_file_path, latest, :verbose => true) unless defined?(MiniTest)
+        $stdout.puts "#{Time.now}: Added #{EphaInteractions.get.size} interaction from #{latest}"; $stdout.flush
       end
     end
 
