@@ -57,6 +57,7 @@ AdminPassword     = 'ng1234'
 def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
+  sleep 0.5
   sleep 0.5 unless @browser.link(:name =>'login_form').exists?
   return true unless  @browser.link(:text=>'Anmeldung').exists?
   @browser.link(:text=>'Anmeldung').click
