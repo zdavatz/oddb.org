@@ -141,7 +141,7 @@ module ODDB
         r_loop = ResilientLoop.new(File.basename(__FILE__, '.rb'))
         failure = 'Die Personensuche dauerte zu lange'
         idx = 0
-        max_retries = 60
+        max_retries = 3
         log "get_detail_to_glns for #{glns.size} glns. first 10 are #{glns[0..9]} state_id is #{r_loop.state_id.inspect}" if DebugImport
         glns.each { |gln|
           idx += 1

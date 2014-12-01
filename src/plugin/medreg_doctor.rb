@@ -104,7 +104,7 @@ module ODDB
         @agent.redirection_limit   = 55
         @agent.follow_meta_refresh = true
         @agent.ignore_bad_chunking = true
-        @agent.log = Logger.new    Mechanize_Log
+        if defined?(MiniTest) then @agent.log = Logger.new    Mechanize_Log end
         @agent
       end
 
