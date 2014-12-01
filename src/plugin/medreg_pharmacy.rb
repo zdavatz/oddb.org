@@ -14,7 +14,6 @@ require 'rubyXL'
 require 'mechanize'
 require 'logger'
 require 'cgi'
-require 'watir'
 require 'psych' if RUBY_VERSION.match(/^1\.9/)
 require "yaml"
 
