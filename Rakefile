@@ -28,7 +28,9 @@ end
 desc 'Build quanty'
 task :quanty do
   parse_rb_name = File.join(File.dirname(__FILE__), 'src/util/quanty/parse.rb')
-  unless File.exists?(parse_rb_name)
+  quanty_rb_name = File.join(File.dirname(__FILE__), 'src/util/quanty.rb')
+  unless File.exists?(parse_rb_name) and File.exists?(quanty_rb_name)
+    puts "Rebuilding #{parse_rb_name } and #{quanty_rb_name}"
     FileUtils.makedirs(File.join(File.dirname(__FILE__), 'data/pdf'))
     Dir.chdir(File.join(File.dirname(__FILE__), 'data/quanty'))
     exit 2 unless system('ruby extconf.rb')
@@ -46,8 +48,10 @@ task :quanty do
     aus.close
     exit 2 unless system("make")
     exit 2 unless system("make install")
+  else
+    puts "Files #{parse_rb_name}  and #{quanty_rb_name} already present"
   end
-end 
+end
 
 Rake::Task[:docs].overwrite do
   FileUtils.rm_rf('documentation', :verbose => true)

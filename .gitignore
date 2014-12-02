@@ -31,10 +31,6 @@ doc/resources/downloads/status_google_crawler
 etc/db_connection.rb
 etc/oddb.yml
 log/
-src/util/quanty.rb
-src/util/quanty/fact.rb
-src/util/quanty/main.rb
-src/util/quanty/parse.rb
 svc
 doc/resources/sponsor/
 doc/resources/patinfo/

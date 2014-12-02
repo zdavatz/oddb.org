@@ -332,6 +332,7 @@ module ODDB
               update_conflict = false
             end
             if update_conflict
+              require 'pry'; binding.pry
               @report.store :pharmacode_oddb, @pack.pharmacode
               if seq = @pack.sequence
                 @app.update seq.pointer, @seq_data, :bag
@@ -412,9 +413,9 @@ module ODDB
                 else
                   @created_limitation_texts += 1
                 end
-                # In order to refresh limitation text old objects in ODBA cache 
-                # before updating. Otherwise, the link between sl_entry and 
-                # limitation_text may not produced even if there are both objects 
+                # In order to refresh limitation text old objects in ODBA cache
+                # before updating. Otherwise, the link between sl_entry and
+                # limitation_text may not produced even if there are both objects
                 # in ODBA cache.
                 begin
                   if sl_entry.limitation_text || txt_ptr.resolve(@app)
@@ -489,7 +490,7 @@ module ODDB
         when 'OrgGenCode'
           gtype = GENERIC_TYPES[@text]
           unless (registration = @app.registration(@iksnr) and registration.keep_generic_type)
-            @reg_data.store(:generic_type, (gtype || :unknown)) 
+            @reg_data.store(:generic_type, (gtype || :unknown))
           end
           @pac_data.store :sl_generic_type, gtype
         when 'FlagSB20'
@@ -627,7 +628,7 @@ module ODDB
         e.message << "\n@report: " << @report.inspect
         raise
       ensure
-        GC.enable unless already_disabled                
+        GC.enable unless already_disabled
       end
     end
     attr_reader :preparations_listener
@@ -670,7 +671,7 @@ module ODDB
       LogFile.append('oddb/debug', " bsv_xml: getting download_file", Time.now)
 
       FileUtils.mkdir_p save_dir   # if there is it already, do nothing
-    
+
       target_file = Mechanize.new.get(target_url)
       save_file = File.join save_dir,
                Date.today.strftime(file_name.gsub(/\./,"-%Y.%m.%d."))
@@ -679,7 +680,7 @@ module ODDB
 
       LogFile.append('oddb/debug', " bsv_xml: save_file   = " + save_file.to_s, Time.now)
       LogFile.append('oddb/debug', " bsv_xml: latest_file = " + latest_file.to_s, Time.now)
-    
+
       # FileUtils.compare_file cannot compare tempfile
       target_file.save_as save_file
 
@@ -807,7 +808,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       error_file = File.join(sl_errors_dir, 'bag_xml_swissindex_pharmacode_error.log')
       if File.exist?(error_file)
         report = File.read(error_file)
-        parts.push ['text/plain', @@today.strftime('Error_Packages_%d.%m.%Y.txt'), report] 
+        parts.push ['text/plain', @@today.strftime('Error_Packages_%d.%m.%Y.txt'), report]
       end
       ## Add some general statistics to the body
       packages = @app.packages
