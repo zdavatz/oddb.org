@@ -399,7 +399,11 @@ module ODDB
       # Memo
       # This method is too long.
       # It should be divided into small methods
+      atc_class = flexmock('atc_class') do |atc_class|
+        atc_class.should_receive(:code).and_return('code')
+      end
       sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:atc_class).and_return(atc_class)
         seq.should_receive(:pointer)
       end
       package = flexmock('package') do |pac|
@@ -2097,8 +2101,12 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       assert_equal [], listener.unknown_registrations
     end
     def setup_package opts={}
-      pack = flexmock opts
-      sequence = flexmock opts
+      pack = flexmock('package_1', opts)
+      atc_class = flexmock('atc_class_1') do |atc_class|
+        atc_class.should_receive(:code).and_return('code')
+      end
+      sequence = flexmock('sequence_1', opts)
+      sequence.should_receive(:atc_class).and_return(atc_class)
       if steps = opts[:steps]
         iksnr, seqnr, pacnr = steps
         ptr = Persistence::Pointer.new [:registration, iksnr], [:sequence, seqnr]
@@ -2115,7 +2123,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       pack
     end
     def setup_registration opts={}
-      reg = flexmock opts
+      reg = flexmock('registration', opts)
       ptr = Persistence::Pointer.new([:registration, opts[:iksnr]])
       reg.should_receive(:pointer).and_return ptr
       reg.should_receive(:package).and_return do |ikscd|

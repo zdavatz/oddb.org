@@ -313,6 +313,7 @@ module ODDB
       end
       def tag_end name
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
+        @seq_data ||= {}
         case name
         when 'Pack'
           if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
@@ -334,7 +335,16 @@ module ODDB
             if update_conflict
               @report.store :pharmacode_oddb, @pack.pharmacode
               if seq = @pack.sequence
-                @app.update seq.pointer, @seq_data, :bag
+                @seq_data.delete(:atc_class) if seq.atc_class and seq.atc_class.code.to_s == @seq_data[:atc_class]
+                if @seq_data.size > 0
+                  if seq.respond_to?(:pointer)
+                    @app.update seq.pointer, @seq_data, :bag
+                  else
+                    msg = "SKIPPPING update_conflict #{@pack.pharmacode} #{@ikscd} seq is #{seq.inspect} pointer? #{seq.respond_to?(:pointer)} @seq_data is #{@seq_data.inspect}"
+                    $stdout.puts msg; $stdout.flush
+                    LogFile.append('oddb/debug', " bsv_xml: "+ msg, Time.now)
+                  end
+                end
               end
               pold = @pack.price_public
               pnew = @data[:price_public]
