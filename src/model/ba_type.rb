@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # Business area for companies
+require 'set'
 require 'sbsm/validator'
 
 module ODDB
