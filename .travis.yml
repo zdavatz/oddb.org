@@ -5,7 +5,6 @@ rvm:
 script:
   - bundle exec rake quanty
   - bundle exec ruby test/suite.rb
-  - rake docs
 notifications:
   email:
     recipients:
