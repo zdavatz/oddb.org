@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # View::WelcomeHead -- oddb -- 13.07.2012 -- yasaka@ywesee.com
-# View::WelcomeHead -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
+# View::WelcomeHead -- oddb -- 22.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/text'
 require 'htmlgrid/link'
 #require 'htmlgrid/flash'
+require 'view/logohead'
 require 'view/sponsorhead'
 
 module ODDB
@@ -27,7 +28,7 @@ module ODDB
 				[1,0,2]	=>	:home_welcome,
 				[1,0,3]	=>	:welcome,
 			}
-			def banner(model, session=@session) 
+			def banner(model, session=@session)
 				if(@lookandfeel.enabled?(:epatents)) #, false))
 					%q{<A HREF="http://petition.eurolinux.org"><img src="http://aful.org/images/patent_banner.gif" alt="Petition against e-patents"></A><BR>}
 				elsif(@lookandfeel.enabled?(:banner))
