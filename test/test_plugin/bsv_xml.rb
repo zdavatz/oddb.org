@@ -419,7 +419,7 @@ module ODDB
       flexmock(@app) do |app|
         app.should_receive(:update)
       end
-      assert_equal(nil, @listener.tag_end('Pack'))
+      assert_equal(nil, @listener.tag_end('Pack'))  # TODO:
     end
     def test_tag_end__preparation
       @listener.instance_eval('@deferred_packages = []')
@@ -853,7 +853,6 @@ module ODDB
       plug = @plugin
 
       return_value_plug_update = nil
-#      require 'pry'; binding.pry
       result = {:error => -1}
       wrap_update(klass, subj) {
         return_value_plug_update = plug.update
@@ -1858,7 +1857,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data, ptr.to_s
       end
-      @plugin.update_preparations StringIO.new(@conflicted_src)
+      @plugin.update_preparations StringIO.new(@conflicted_src) # TODO:
       assert_equal({}, expected_updates)
       assert_equal({pac_pointer => [:price_cut]}, @plugin.change_flags)
       listener = @plugin.preparations_listener
@@ -2087,7 +2086,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
-      @plugin.update_preparations StringIO.new(@src)
+      @plugin.update_preparations StringIO.new(@src) # TODO:
       assert_equal({}, expected_updates)
       assert_equal({pac_pointer => [:price_cut]}, @plugin.change_flags)
       listener = @plugin.preparations_listener

@@ -18,6 +18,7 @@ Minitest::Test.i_suck_and_my_tests_are_order_dependent!()
 
 class TestDoctorPlugin <Minitest::Test
   include FlexMock::TestCase
+  RunTestTakingLong = false
   Test_Personen_XLSX = File.expand_path(File.join(__FILE__, '../../data/xlsx/Personen_20141014.xlsx'))
   def setup
     @config = flexmock('config')
@@ -87,10 +88,8 @@ class TestDoctorPlugin <Minitest::Test
       assert_equal('Mollis', first_address.city)
       assert_equal('Bahnhofstr.', first_address.street)
       assert_equal('3', first_address.number)
-#      require 'pry'; binding.pry
     end
   end
-if false
   def test_parse
     SomeTestCases.each{
       |gln, info|
@@ -149,11 +148,10 @@ if false
     assert_equal(0, updated)
     assert_equal(glns_ids_to_search.size - 1 , created) # we have one gln_id mentioned twice
     assert(File.exists?(csv_file), "file #{csv_file} must be created")
-  end
+  end if RunTestTakingLong
 
   def test_zzz_get_latest_file # name starts with zzz we want this test to be run as last one (takes longest)
     @plugin = ODDB::Doctors::MedregDoctorPlugin.new(@app, [7601000813282])
     needs_update, latest = @plugin.get_latest_file
-  end if false
-end
+  end if RunTestTakingLong
 end

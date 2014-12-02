@@ -45,7 +45,6 @@ private
     xml_doc  = Nokogiri::XML(xml.gsub(':', '_')) # work around a bug of nokogiri that cannot handle xpath like tel:phone
     if xml_doc.css('entry').size > 5
       puts "Is this okay? Found #{xml_doc.css('entry').size} entries."
-      # binding.pry if
       return nil
     end
     item =xml_doc.css('entry').first

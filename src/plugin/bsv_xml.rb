@@ -332,7 +332,6 @@ module ODDB
               update_conflict = false
             end
             if update_conflict
-              require 'pry'; binding.pry
               @report.store :pharmacode_oddb, @pack.pharmacode
               if seq = @pack.sequence
                 @app.update seq.pointer, @seq_data, :bag

@@ -160,7 +160,6 @@ module ODDB
           info = @info_to_gln[gln.to_s]
           unless info
             log "ERROR: could not find info for GLN #{gln}"
-            # require 'pry'; binding.pry
             next
           end
           url = MedRegOmURL +  "de/Suche/Detail/?gln=#{gln}&vorname=#{info.first_name.gsub(/ /, '+')}&name=#{info.family_name.gsub(/ /, '+')}"
