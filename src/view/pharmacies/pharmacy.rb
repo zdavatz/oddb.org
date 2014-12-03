@@ -26,17 +26,25 @@ class PharmacyInnerComposite < HtmlGrid::Composite
 	include VCardMethods
 	include AddressMap
 	COMPONENTS = {
-		[0,1,0]	=>	:ean13_header,
-		[0,1,1]	=>	:nbsp,
-		[0,1,2]	=>	:ean13,
-		[0,2]			=>	:address_header,
-		[0,3]			=>	:address,
+    [0,1,0] =>  :ean13_header,
+    [0,1,1] =>  :nbsp,
+    [0,1,2] =>  :ean13,
+    [0,2,0] =>  :business_area_header,
+    [0,2,1] =>  :nbsp,
+    [0,2,2] =>  :business_area,
+    [0,3,0] =>  :narcotics_header,
+    [0,3,1] =>  :nbsp,
+    [0,3,2] =>  :narcotics,
+    [0,4]   =>  :address_header,
+    [0,5]   =>  :address,
 		# [0,12]		=>	:map,
 		# [0,4]		=>	:vcard,
 	}
 	SYMBOL_MAP = {
 		:address_header	=>	HtmlGrid::LabelText,
-		:ean13_header		=>	HtmlGrid::LabelText,
+    :ean13_header   =>  HtmlGrid::LabelText,
+    :business_area_header   =>  HtmlGrid::LabelText,
+    :narcotics_header   =>  HtmlGrid::LabelText,
 		:fons_header		=>	HtmlGrid::LabelText,
 		:fax_header			=>	HtmlGrid::LabelText,
 		:nbsp						=>	HtmlGrid::Text,
@@ -45,10 +53,24 @@ class PharmacyInnerComposite < HtmlGrid::Composite
 	CSS_MAP = {
     [0,1] => 'list',
     [0,2] => 'list',
-    [0,4,1,2] => 'list',
+    [0,3] => 'list',
+    [0,4] => 'list',
+    [0,5] => 'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
+  def business_area(model, session=@session)
+    if((area = model.business_area) && !area.empty?)
+      @lookandfeel.lookup(area)
+    end
+  end
+  def narcotics(model)
+    if model.respond_to?(:narcotics)
+      model.narcotics
+    else
+      @lookandfeel.lookup(:false)
+    end
+  end
 	def mapsearch_format(*args)
 		args.compact.join('-').gsub(/\s+/u, '-')
 	end

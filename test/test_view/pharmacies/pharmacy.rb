@@ -23,7 +23,9 @@ class TestPharmacyInnerComposite <Minitest::Test
                           :attributes => {},
                           :_event_url => '_event_url'
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @session   = flexmock('session', :lookandfeel => @lnf,
+                          :user_input => 'user_input',
+                          :pharmacy_by_gln => 'pharmacy_by_gln')
     @address   = flexmock('address',
                           :fon    => ['fon'],
                           :fax    => ['fax'],
@@ -36,6 +38,8 @@ class TestPharmacyInnerComposite <Minitest::Test
                          )
     @model     = flexmock('model',
                           :addresses => [@address],
+                          :business_area => 'business_area',
+                          :narcotics => 'narcotics',
                           :pointer   => 'pointer',
                           :ean13     => 'ean13'
                          )

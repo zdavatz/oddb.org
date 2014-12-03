@@ -176,7 +176,8 @@ class Address < SuggestedAddress
 	COMPONENTS = {}
 	def init_components
 		super
-		if(@model.respond_to?(:pointer))
+    return if ean = @session.user_input(:ean) and pharmacy = @session.pharmacy_by_gln(ean)
+		if (@model.respond_to?(:pointer))
 			ypos = components.size
 			components.store([0,ypos], :correct)
 			css_map.store([0,ypos], 'top address-width list')
