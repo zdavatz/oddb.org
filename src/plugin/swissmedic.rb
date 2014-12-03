@@ -19,10 +19,10 @@ module RubyXL
   class Row < OOXMLObject
     def first
        cells[0]
-    end 
+    end
   end
 end
-  
+
 module ODDB
   class SwissmedicPlugin < Plugin
     PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :export_flag,
@@ -52,7 +52,7 @@ module ODDB
       if not defined?(@checkLog) or not @checkLog
         name = LogFile.filename('oddb/debug/', Time.now)
         FileUtils.makedirs(File.dirname(name))
-        @checkLog = File.open(name, 'a+') 
+        @checkLog = File.open(name, 'a+')
         $stdout.puts "Opened #{name}"
       end
       @checkLog.puts("#{Time.now}: #{msg}")
@@ -60,17 +60,13 @@ module ODDB
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
-      msg += "#{File.size(target)} bytes. " if target
+      msg += " #{File.size(target)} bytes. " if target
       msg += "Latest #{@latest} #{File.size(@latest)} bytes" if target and File.exists?(@latest)
       debug_msg(msg)
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
-        if File.exists?(@latest.sub('.xlsx', '.xls'))
-          diff target, @latest.sub('.xlsx', '.xls'), [:atc_class, :sequence_date]
-        else
-          diff target, @latest, [:atc_class, :sequence_date]
-        end
+        diff target, @latest, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date!
         if @latest and File.exists?(@latest)
@@ -87,7 +83,7 @@ module ODDB
         update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete(@diff.package_deletions, true)
-        # check the case in which there is a sequence or registration in Praeparateliste.xlsx 
+        # check the case in which there is a sequence or registration in Praeparateliste.xlsx
         # but there is NO sequence or registration in Packungen.xlsx
         #recheck_deletions @diff.sequence_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
         #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
@@ -102,7 +98,7 @@ module ODDB
           debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{@latest} after #{@update_time} minutes"
           FileUtils.cp target, @latest, :verbose => true
         end
-        @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)| 
+        @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)|
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
@@ -161,7 +157,7 @@ module ODDB
       key_list = []
       deletions.each do |key|
         # check if there is the sequence/registration in the Praeparateliste-latest.xlsx
-        # if there is, do not deactivate the sequence/registration 
+        # if there is, do not deactivate the sequence/registration
         if @active_registrations_praeparateliste[key[0]]
           key_list << key
         end
@@ -219,7 +215,7 @@ module ODDB
         sprintf "%s (%s)", txt, pairs.join(',')
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
-        sprintf "%s (%s)", txt, 
+        sprintf "%s (%s)", txt,
                 date_cell(row, column(flag)).strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
@@ -238,7 +234,7 @@ module ODDB
       else
         latest = nil
         @app.registrations.each { |iksnr, reg|
-          row = [ iksnr, nil, nil, reg.company_name, 
+          row = [ iksnr, nil, nil, reg.company_name,
                   reg.ith_swissmedic || reg.index_therapeuticus,
                   reg.production_science, reg.registration_date,
                   reg.expiration_date ]
@@ -254,7 +250,7 @@ module ODDB
                   prow.push pacnr
                   prow[COLUMNS.size] = idx
                   known_pacs.store([iksnr, pacnr, idx], prow)
-                } 
+                }
               }
             }
           end
@@ -262,6 +258,11 @@ module ODDB
       end
     end
     def get_latest_file(agent, keyword='Packungen', extension = '.xlsx')
+      target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
+      if File.exist?(target)
+        debug_msg "#{__FILE__}: #{__LINE__} skip writing #{target} as it already exists and is #{File.size(target)} bytes."
+        return target
+      end
       page = agent.get @index_url
       links = page.links.select do |link|
         ptrn = keyword.gsub /[^A-Za-z]/u, '.'
@@ -270,12 +271,12 @@ module ODDB
       link = links.first or raise "could not identify url to #{keyword}.xlsx"
       file = agent.get(link.href)
       download = file.body
-      
+
       latest_name = File.join @archive, "#{keyword}-latest"+extension
       if extension == '.xlsx'
         latest_xls = latest_name.sub('.xlsx', '.xls')
         if File.exist?(latest_xls)
-          latest_name = latest_xls 
+          latest_name = latest_xls
         end
       end
       latest = ''
@@ -285,7 +286,6 @@ module ODDB
       if(download[-1] != ?\n)
         download << "\n"
       end
-      target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
         msg = "#{__FILE__}: #{__LINE__} updated download.size is #{download.size} -> #{target} #{File.size(target)}"
@@ -301,7 +301,7 @@ module ODDB
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       if target = get_latest_file(agent, 'Präparateliste')
         debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{latest_name}"
-        FileUtils.cp target, latest_name
+        FileUtils.cp target, latest_name, :verbose => true
       end
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
@@ -356,7 +356,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           EOS
           registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
             report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
-                              resolve_link(reg.pointer), 
+                              resolve_link(reg.pointer),
                               format_flags(flags[reg.pointer]))
           }
           mail = Log.new(month)
@@ -433,7 +433,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
-    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])                          
+    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
         && (reg = @app.registration("%05i" % cell(row, column(:iksnr)).to_i)) \
@@ -602,7 +602,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def update_export_registrations export_registrations
       export_registrations.delete_if do |iksnr, data|
-        if reg = @app.registration(iksnr) 
+        if reg = @app.registration(iksnr)
           # if all the export_flags of sequence are true,
           # then the export_flag of registration is set to true
           if reg.sequences.values.map{|seq| seq.export_flag ? true : false}.uniq == [true]
@@ -639,7 +639,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       name.strip! if name
 
       unless(gf = @app.galenic_form(name))
-        ptr = Persistence::Pointer.new([:galenic_group, 1], 
+        ptr = Persistence::Pointer.new([:galenic_group, 1],
                                        [:galenic_form]).creator
 
         @app.update(ptr, {lang => name}, :swissmedic)
@@ -734,7 +734,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                   else
                     nil
                   end
-        args = { 
+        args = {
           :ith_swissmedic      => cell(row, column(:index_therapeuticus)),
           :production_science  => science,
           :vaccine             => vaccine,
@@ -814,14 +814,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         base << ', ' << parts.shift
       end
       descr = unless parts.empty?
-                parts.join(', ') 
+                parts.join(', ')
               else
                 nil
               end
       if ctext = cell(row, column(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
-      args = { 
+      args = {
         :composition_text => ctext,
         :name_base        => base,
         :name_descr       => descr,
@@ -840,12 +840,19 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         elsif(code = cell(row, column(:atc_class)))
           args.store :atc_class, code
         end
+      else
+        atc_code_swissmedic = cell(row, column(:atc_class))
+        atc_code_sequence   = sequence.atc_class.code
+        debug_msg "#{__FILE__}: #{__LINE__}: update_sequence #{registration.iksnr} atc_code_swissmedic #{atc_code_swissmedic} atc_code_sequence #{atc_code_sequence} equal #{(atc_code_swissmedic == atc_code_sequence).inspect}"
+        unless atc_code_swissmedic == atc_code_sequence
+          args.store :atc_class, @app.atc_class(atc_code_swissmedic)
+        end
       end
       if(indication = update_indication(cell(row, column(:indication_sequence))))
         args.store :indication, indication.pointer
       end
       res = @app.update ptr, args, :swissmedic
-      debug_msg "#{__FILE__}: #{__LINE__}: res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'}"
+      debug_msg "#{__FILE__}: #{__LINE__}: res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'} args #{args}"
       res
     end
     def update_substance(name)
@@ -853,7 +860,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       unless name.empty?
         substance = @app.substance(name)
         if(substance.nil?)
-          substance = @app.update(Persistence::Pointer.new(:substance).creator, 
+          substance = @app.update(Persistence::Pointer.new(:substance).creator,
                                   {:lt => name}, :swissmedic)
         end
         substance
@@ -867,7 +874,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       ## if we deactivate a registration, we need to keep its sequences
       #  so we have a name to report.
       _sanity_check_deletions(diff.sequence_deletions, table)
-      ## we could delete remaining packages, but for now we'll keep them 
+      ## we could delete remaining packages, but for now we'll keep them
       #  as the last active state.
       _sanity_check_deletions(diff.package_deletions, table)
     end

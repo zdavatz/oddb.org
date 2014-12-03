@@ -335,7 +335,6 @@ module ODDB
             if update_conflict
               @report.store :pharmacode_oddb, @pack.pharmacode
               if seq = @pack.sequence
-                @seq_data.delete(:atc_class) if seq.atc_class and seq.atc_class.code.to_s == @seq_data[:atc_class]
                 if @seq_data.size > 0
                   if seq.respond_to?(:pointer)
                     @app.update seq.pointer, @seq_data, :bag
@@ -447,7 +446,6 @@ module ODDB
             @atc_code, @deferred_packages, @substances = nil
         when 'AtcCode'
           @atc_code = @text
-          @seq_data.store :atc_class, @text
         when 'SwissmedicNo5'
           @iksnr = "%05i" % @text.to_i
           @report_data.store :swissmedic_no5_bag, @iksnr
