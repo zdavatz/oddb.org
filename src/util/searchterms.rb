@@ -88,7 +88,7 @@ module ODDB
       if(opts[:downcase])
         term = term.downcase
       end
-      term.force_encoding('UTF-8')
+      term.force_encoding('UTF-8') unless term.frozen?
 			parts = term.split(/[\/-]/u)
 			if(parts.size > 1)
         terms.push(ODDB.search_term(parts.first))
