@@ -35,6 +35,7 @@ module ODDB
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
       @index_url = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00230/index.html?lang=de'
+      debug_msg("SwissmedicPlugin @index_url #{@index_url}")
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xlsx'
@@ -58,6 +59,40 @@ module ODDB
       @checkLog.puts("#{Time.now}: #{msg}")
       @checkLog.flush
     end
+    def update_atc_codes(latest_name)
+      idx = 0
+      return unless latest_name.match(/Packungen/i)
+      debug_msg("update_atc_codes starting with #{latest_name}")
+      workbook = Spreadsheet.open(latest_name)
+      workbook.worksheet(0).each do |row|
+        next unless row.cells[0] and row.cells[0].respond_to?(:to_i)
+        iksnr = "%05i" % row.cells[0].to_i
+        seqnr = row.cells[1]
+        atc_code_swissmedic = cell(row, column(:atc_class))
+        unless atc_code_swissmedic and atc_code_swissmedic.length == 7
+          debug_msg "#{__FILE__}: #{__LINE__}: skipping update for reg #{iksnr}/#{seqnr} atc_code_swissmedic '#{atc_code_swissmedic}' not of length 7" if $VERBOSE
+          next
+        end
+        registration = @app.registration(iksnr)
+        unless registration
+          debug_msg "#{__FILE__}: #{__LINE__}: skipping update_atc_codes #{iksnr} no registration found" if $VERBOSE
+        else
+          sequence = registration.sequence(seqnr)
+          if(sequence.nil? || sequence.atc_class.nil?)
+            debug_msg "#{__FILE__}: #{__LINE__}: skipping update_atc_codes #{iksnr} atc_code_swissmedic #{atc_code_swissmedic}"
+          else
+            atc_code_sequence   = sequence.atc_class.code
+            unless atc_code_swissmedic == atc_code_sequence
+              idx += 1
+              debug_msg "#{__FILE__}: #{__LINE__}: atc_code update nr #{idx} for iksnr #{iksnr}/#{seqnr} atc_code_swissmedic #{atc_code_swissmedic} atc_code_sequence #{atc_code_sequence} odba_isolated_store"
+              sequence.atc_class=@app.atc_class(atc_code_swissmedic)
+              sequence.odba_isolated_store
+            end
+          end
+        end
+      end
+      debug_msg("update_atc_codes Done with #{latest_name}")
+    end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target
@@ -65,6 +100,7 @@ module ODDB
       debug_msg(msg)
       if(target)
         start_time = Time.new
+
         initialize_export_registrations agent
         diff target, @latest, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
@@ -89,6 +125,8 @@ module ODDB
         #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
+        debug_msg "#{__FILE__}: #{__LINE__} update_atc_codes #{target}"
+        update_atc_codes(target)
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
         if File.exists?(target) and File.exists?(@latest) and FileUtils.compare_file(target, @latest)
@@ -839,13 +877,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           args.store :atc_class, atc.code
         elsif(code = cell(row, column(:atc_class)))
           args.store :atc_class, code
-        end
-      else
-        atc_code_swissmedic = cell(row, column(:atc_class))
-        atc_code_sequence   = sequence.atc_class.code
-        debug_msg "#{__FILE__}: #{__LINE__}: update_sequence #{registration.iksnr} atc_code_swissmedic #{atc_code_swissmedic} atc_code_sequence #{atc_code_sequence} equal #{(atc_code_swissmedic == atc_code_sequence).inspect}"
-        unless atc_code_swissmedic == atc_code_sequence
-          args.store :atc_class, @app.atc_class(atc_code_swissmedic)
         end
       end
       if(indication = update_indication(cell(row, column(:indication_sequence))))
