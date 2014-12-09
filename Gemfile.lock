@@ -144,7 +144,7 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-support (3.0.2)
     ruby-ole (1.2.11.7)
-    rubyXL (3.1.2)
+    rubyXL (3.3.1)
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
     rubyzip (1.1.6)
@@ -243,7 +243,7 @@ DEPENDENCIES
   rmagick (= 2.13.2)
   rpdf2txt (= 0.8.4)
   rspec
-  rubyXL (= 3.1.2)
+  rubyXL (= 3.3.1)
   rubyzip (>= 1.1.6)
   savon (= 0.9.7)
   sbsm (= 1.2.6)!

@@ -35,7 +35,7 @@ gem install rmail --version=1.0.0
 gem install ruby-ole --version=1.2.11.7
 
 gem install rpdf2txt --version=0.8.4
-gem install rubyXL --version=3.1.2
+gem install rubyXL --version=3.3.1
 gem install rubyzip --version=1.1.6
 # wasabi must be installed before savon or it installing savon will fail
 gem install wasabi --version=2.3.0
