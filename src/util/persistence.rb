@@ -276,7 +276,8 @@ module ODDB
           diff = obj.diff(values, hook)
           unless diff.empty?
             obj.update_values(diff, origin)
-            obj.odba_store
+            $stdout.puts "self #{obj.inspect} is PGresult" if obj.is_a?(PGresult)
+            obj.odba_store unless obj.is_a?(PGresult)
           end
 				end
 				obj
