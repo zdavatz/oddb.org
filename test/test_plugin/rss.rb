@@ -119,7 +119,7 @@ REPORT
         plug.should_receive(:update_rss_feeds)
         plug.should_receive(:swissmedic_entries_of).with(:recall).and_return(['entry'])
       end
-      assert_equal(nil, @plugin.update_swissmedic_feed(:recall))
+      assert_equal(['entry'], @plugin.update_swissmedic_feed(:recall))
     end
     def test_update_swissmedic_feed__with_hpc
       flexmock(@app) do |app|
@@ -130,7 +130,7 @@ REPORT
         plug.should_receive(:update_rss_feeds)
         plug.should_receive(:swissmedic_entries_of).with(:hpc).and_return(['entry'])
       end
-      assert_equal(nil, @plugin.update_swissmedic_feed(:hpc))
+      assert_equal(['entry'], @plugin.update_swissmedic_feed(:hpc))
     end
     def test_update_recall_feed
       flexmock(@plugin) do |plug|
@@ -187,23 +187,22 @@ REPORT
 
       }
     def setup_marktueberwachung
-      @index_file     = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/markt_überwachung.html')
+      @index_hpc     = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/markt_überwachung.html')
       teaser_1_file   = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/teaserFlex_1.html')
       flexmock(@plugin) do |plug|
+        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00166/01954/index.html?lang=de').and_return(IO.read(Market[:recall][1]))
+        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00166/02524/index.html?lang=de').and_return(IO.read(Market[:recall][1]))
         plug.should_receive(:open).with(Market[:recall][0]).and_return(IO.read(Market[:recall][1]))
+        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00157/02519/index.html?lang=de').and_return(IO.read(Market[:hpc][1]))
+        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00157/00363/index.html?lang=de').and_return(IO.read(Market[:hpc][1]))
         plug.should_receive(:open).with(Market[:hpc][0])   .and_return(IO.read(Market[:hpc][1]))
+        plug.should_receive(:update_rss_feeds).and_return('update_rss_feeds')
       end
       @app.should_receive(:rss_updates).and_return({})
+      @app.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
 
-      mechanize = flexmock("mechanize")
-      index = Mechanize.new().get('file://'+@index_file)
-      teaser_1 = Mechanize.new().get('file://'+teaser_1_file)
-
-      mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=de').and_return(index)
-      mechanize.should_receive(:get).with('https://www.swissmedic.ch//recall/00135/00157/00000/index.html').and_return(@recall)
-      mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_1)
-      mechanize.should_receive(:get).and_return("nothing defined")
-      @plugin.agent= mechanize
+      @mechanize = flexmock("mechanize")
+      @plugin.agent= @mechanize
     end
     def test_recall_example
       setup_marktueberwachung
@@ -217,11 +216,35 @@ REPORT
     end
     def test_swissmedic_entries_of__with_hpc
       setup_marktueberwachung
-      skip 'Takes too much time to test the whole loop'
-      entries = @plugin.swissmedic_entries_of(:hpc)
+      index_hpc = Mechanize.new().get('file://'+@index_hpc)
+      @teaser_hpc  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/hpc_teaser.html')
+      teaser_hpc = Mechanize.new().get('file://'+@teaser_hpc)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=de').and_return(index_hpc)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=fr').and_return(index_hpc)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=en').and_return(index_hpc)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_hpc)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=10&teaserFlex=1').and_return(nil)
+      entries = @plugin.update_hpc_feed
       assert_equal(['de', 'fr', 'en'], entries.keys)
-      assert_equal('HPC Title',        entries['de'].first[:title])
-      assert_equal(1,                  entries['de'].length)
+      assert_equal('DHPC Invirase® (Saquinavir)',        entries['de'].first[:title])
+      assert_equal(1, entries['de'].length)
+    end
+
+    def test_swissmedic_entries_of__with_recall
+      setup_marktueberwachung
+      @index_recall  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_index.html')
+      index_recall  = Mechanize.new().get('file://'+@index_recall)
+      @teaser_recall  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_teaser.html')
+      teaser_recall = Mechanize.new().get('file://'+@teaser_recall)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=de').and_return(index_recall)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=fr').and_return(index_recall)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=en').and_return(index_recall)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_recall)
+      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=10&teaserFlex=1').and_return(nil)
+      entries = @plugin.update_recall_feed
+      assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal('Chargenrückruf / Donepezil-Mepha 5 mg / 10 mg, Lactab',        entries['de'].first[:title])
+      assert_equal(1, entries['de'].length)
     end
   end
 end

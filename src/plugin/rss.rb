@@ -18,6 +18,7 @@ module ODDB
     def initialize(app)
       super
       @report = {}
+      @downloaded_urls = {}
     end
     def report
       lines = []
@@ -69,6 +70,8 @@ module ODDB
       description
     end
     def detail_info(url, count=false)
+      return nil if @downloaded_urls[url] # the same url may appear in various files
+      @downloaded_urls[url] = true
       @current_issue_count  ||= 0 # for unit test
       @new_entry_count      ||= 0
       entry = {}
@@ -121,14 +124,19 @@ module ODDB
           else
             url = host+'/'+step_url.href
             step_page = download(url)
+            idx = 0
+            break unless step_page
             step_page.links.compact.each{
               |link|
-              next unless link and link.href and link.href.match(/00135\/#{category}\/\d{5}\//)
+              idx += 1
+              regexp = /\/00135\/#{category}\/\d{5}\//
+              next unless link and link.href and link.href.match(regexp)
               detail_url = host + '/' + link.href
               result = detail_info(detail_url, count)
-              entries[lang] << result if result
-            } if step_page
+              entries[lang] << result if result and not entries[lang].index{ |x| x[:title] == result[:title] and   x[:date] == result[:date] }
+            }
           end
+          entries[lang]
         end
       end
       entries
@@ -158,7 +166,7 @@ module ODDB
       @current_issue_count  = 0 # only de
       @new_entry_count      = 0
       entries = swissmedic_entries_of(type)
-      LogFile.append('oddb/debug', " update_swissmedic_feed #{type} name #{@name}: #{entries.size} entries", Time.now.utc)
+      LogFile.append('oddb/debug', " update_swissmedic_feed #{type} name #{@name}: #{entries['de'] ? entries['de'].size : 0 } german entries", Time.now.utc)
       unless entries.empty?
         previous_update = @app.rss_updates[@name]
         update_rss_feeds(@name, entries, View::Rss::Swissmedic)
@@ -177,6 +185,7 @@ module ODDB
           }
         end
       end
+      entries
     end
     def update_recall_feed
       update_swissmedic_feed(:recall)
