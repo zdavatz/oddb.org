@@ -32,8 +32,10 @@ module ODDB
         [-time.year, -time.month, -time.day, pac]
       }
     end
-    def download(uri, agent=nil)
-      LogFile.append('oddb/debug', " getting RssPlugin#download #{uri}", Time.now.utc)
+    def agent=(agent) # made agent writable for running unit tests
+      @agent = agent
+    end
+    def download(uri, agent = @agent)
       unless agent
         agent = Mechanize.new
         agent.user_agent_alias = "Linux Firefox"
@@ -66,44 +68,33 @@ module ODDB
       end
       description
     end
-    def extract_swissmedic_entry_from(category, page, host, count=false)
-      return nil unless page and page.links
-      page.links.map do |link|
-        entry = {}
-        href = link.href
-        return unless href
-        md = href.match(/\/00135\/#{category}\/(\d{5})/)
-        if md and md[1] != '00363' and md[1] != '01711' # "Archiv HPC" and "Archiv Chargenrückrufe"
-          title = ''
-          container = Nokogiri::HTML(open(host + href))
-          if h1 = container.xpath(".//h1[@id='contentStart']")
-            title = h1.text
-          end
-          return nil unless container
-          date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
-          return nil unless date_field
-          date = Date.parse(date_field.to_s)
-          if count
-            if date.year == @@today.year and date.month ==  @@today.month
-              LogFile.append('oddb/debug', " rss adding current issue: #{date.to_s} #{title}", Time.now.utc)
-              @current_issue_count += 1
-            end
-            if date >= @app.rss_updates[@name].first
-              @new_entry_count     += 1
-              LogFile.append('oddb/debug', " rss adding new entry: #{date.to_s} #{title}", Time.now.utc)
-            end
-          end
-          entry[:title]       = title || ''
-          entry[:date]        = date.to_s
-          entry[:description] = compose_description(container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div"))
-          entry[:link]        = host + href
+    def detail_info(url, count=false)
+      @current_issue_count  ||= 0 # for unit test
+      @new_entry_count      ||= 0
+      entry = {}
+      container = Nokogiri::HTML(open(url))
+      if h1 = container.xpath(".//h1[@id='contentStart']")
+        title = h1.text
+      end
+      return nil unless container
+      date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
+      return nil unless date_field
+      date = Date.parse(date_field.to_s)
+      if count
+        if date.year == @@today.year and date.month ==  @@today.month
+          # LogFile.append('oddb/debug', " rss adding current issue: #{date.to_s} #{title}", Time.now.utc)
+          @current_issue_count += 1
         end
-        if entry.empty?
-          nil
-        else
-          entry
+        if @app.rss_updates[@name] and date >= @app.rss_updates[@name].first
+          @new_entry_count     += 1
+          LogFile.append('oddb/debug', " rss adding new entry: #{date.to_s} #{title}", Time.now.utc)
         end
-      end.compact
+      end
+      entry[:title]       = title || ''
+      entry[:date]        = date.to_s
+      entry[:description] = compose_description(container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div"))
+      entry[:link]        = url
+      entry
     end
     def swissmedic_entries_of(type)
       entries = Hash.new{|h,k| h[k] = [] }
@@ -120,15 +111,23 @@ module ODDB
         count = (lang == 'de' ? true : false)
         base_uri   = host + "/marktueberwachung/00135/#{category}/index.html?lang=#{lang}" # &start=0
         first_page = download(base_uri)
-        last_uri = first_page.link_with(:text => /1/)
-        # TODO: this loop does not work! only the first 10 entries are fetched
-        if last_uri and last_uri.href # and last_uri.match(/&start=([\d]*)/)
-          result = extract_swissmedic_entry_from(category, first_page, host, count)
-          entries[lang] += result if result
-          (per_page..$1.to_i).step(per_page).to_a.each do |idx|
-            if page = download("#{base_uri}&start=#{idx}")
-              entries[lang] += extract_swissmedic_entry_from(category, page, host, count)
-            end
+        step_nr = 1
+        while true
+          break unless first_page
+          step_url = first_page.link_with(:text => step_nr.to_s)
+          step_nr += 1
+          unless step_url and step_url.href # and step_url.match(/&start=([\d]*)/)
+            break
+          else
+            url = host+'/'+step_url.href
+            step_page = download(url)
+            step_page.links.compact.each{
+              |link|
+              next unless link and link.href and link.href.match(/00135\/#{category}\/\d{5}\//)
+              detail_url = host + '/' + link.href
+              result = detail_info(detail_url, count)
+              entries[lang] << result if result
+            } if step_page
           end
         end
       end
@@ -159,6 +158,7 @@ module ODDB
       @current_issue_count  = 0 # only de
       @new_entry_count      = 0
       entries = swissmedic_entries_of(type)
+      LogFile.append('oddb/debug', " update_swissmedic_feed #{type} name #{@name}: #{entries.size} entries", Time.now.utc)
       unless entries.empty?
         previous_update = @app.rss_updates[@name]
         update_rss_feeds(@name, entries, View::Rss::Swissmedic)

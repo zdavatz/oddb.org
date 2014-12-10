@@ -23,7 +23,7 @@ module ODDB
   end
   class TestRssPlugin <Minitest::Test
     include FlexMock::TestCase
-		Section = '00135'
+    Section = '00135'
     def setup
       @current = flexmock('current', :valid_from => Time.local(2011,2,3))
       @package = flexmock('package', 
@@ -93,117 +93,8 @@ REPORT
         @plugin.compose_description(content)
       )
     end
-    def test_extract_swissmedic_entry_from__with_no_match
-      link = flexmock('Link')
-      link.should_receive(:href).and_return('/../invalid.html')
-      page = flexmock('Page')
-      page.should_receive(:links).and_return([link])
-      host = 'http://www.example.com'
-      assert_empty(@plugin.extract_swissmedic_entry_from('00000', page, host))
-      assert_empty(@plugin.extract_swissmedic_entry_from('00018', page, host))
-      assert_empty(@plugin.extract_swissmedic_entry_from('00158', page, host))
-    end
-    def test_extract_swissmedic_entry_from__with_recall
-      category = '00166'
-      today = (Date.today - 1).strftime('%d.%m.%Y')
-      host = 'https://www.example.com'
-      link = flexmock('Link')
-      link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
-      page = flexmock('Page')
-      page.should_receive(:links).and_return([link])
-      flexmock(@plugin) do |plug|
-fake_html = %(
-<!DOCTYPE html>
-<body class="webBody">
-  <time>#{today}</time>
-  <h1 class="webTitle" id="contentStart">Recall Title</h1>
-  <div id="sprungmarke10_0" class="contentFlex flexTinymce">
-    <div class="webText flexTinymceDiv">Recall Description</div>
-  </div>
-</body>
-)
-        plug.should_receive(:open).with("https://www.example.com/recall/00135/00166/00000/index.html").and_return(StringIO.new(fake_html))
-      end
-      res = @plugin.extract_swissmedic_entry_from(category, page, host)
-      expected =
-        [{
-          :title       => 'Recall Title',
-          :date        => Date.parse(today).to_s,
-          :description => "Recall Description",
-          :link        => "https://www.example.com/recall/#{Section}/#{category}/00000/index.html",
-        }]
-      assert_equal(expected, res)
-    end
-    def test_extract_swissmedic_entry_from__with_hpc
-      category = '00157'
-      today = (Date.today - 1).strftime('%d.%m.%Y')
-      host = 'http://www.example.com'
-      link = flexmock('Link')
-      link.should_receive(:href).and_return("/recall/#{Section}/#{category}/00000/index.html")
-      page = flexmock('Page')
-      page.should_receive(:links).and_return([link])
-      flexmock(@plugin) do |plug|
-fake_html = %(
-<!DOCTYPE html>
-<body class="webBody">
-  <time>#{today}</time>
-  <h1 class="webTitle" id="contentStart">HPC Title</h1>
-  <div id="sprungmarke12_31">
-    <div class="webText flexTinymceDiv">HPC Description</div>
-  </div>
-</body>
-)
-        plug.should_receive(:open).with("http://www.example.com/recall/#{Section}/#{category}/00000/index.html").and_return(StringIO.new(fake_html))
-      end
-      res = @plugin.extract_swissmedic_entry_from(category, page, host)
-      expected = [{
-          :date        => Date.parse(today).to_s,
-          :title       => 'HPC Title',
-          :description => "HPC Description",
-          :link        => "http://www.example.com/recall/#{Section}/#{category}/00000/index.html",
-        }]
-      assert_equal(expected, res)
-    end
     def test_swissmedic_entries_of__with_unknown_type
       assert_empty(@plugin.swissmedic_entries_of(:invalid_type))
-    end
-    def test_swissmedic_entries_of__with_recall
-      link = flexmock('Link')
-      link.should_receive(:href).and_return("index.html&start=10")
-      page = flexmock('Page')
-      page.should_receive(:link_with).and_return(link)
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:download).and_return(page)
-        plug.should_receive(:extract_swissmedic_entry_from).and_return([{
-          :date        => '01.11.2012',
-          :title       => 'Recall Title',
-          :description => 'Recall Description',
-          :link        => 'http://www.example.com',
-        }])
-      end
-      entries = @plugin.swissmedic_entries_of(:recall)
-      assert_equal(['de', 'fr', 'en'], entries.keys)
-      assert_equal('Recall Title',     entries['de'].first[:title])
-      assert_equal(1,                  entries['de'].length)
-    end
-    def test_swissmedic_entries_of__with_hpc
-      link = flexmock('Link')
-      link.should_receive(:href).and_return("index.html&start=20")
-      page = flexmock('Page')
-      page.should_receive(:link_with).and_return(link)
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:download).and_return(page)
-        plug.should_receive(:extract_swissmedic_entry_from).and_return([{
-          :date        => '01.11.2012',
-          :title       => 'HPC Title',
-          :description => 'HPC Description',
-          :link        => 'http://www.example.com',
-        }])
-      end
-      entries = @plugin.swissmedic_entries_of(:hpc)
-      assert_equal(['de', 'fr', 'en'], entries.keys)
-      assert_equal('HPC Title',        entries['de'].first[:title])
-      assert_equal(1,                  entries['de'].length)
     end
     def test_generate_flavored_rss__with_recall
       expected = ['just-medical']
@@ -286,6 +177,51 @@ fake_html = %(
       flexmock(@current, :> => true)
       flexmock(@plugin, :update_rss_feeds => 'update_rss_feeds')
       assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
+    end
+    Market  = { :recall =>
+                  ['https://www.swissmedic.ch/marktueberwachung/00135/00166/02524/index.html?lang=de',
+                    File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_example.html')],
+                :hpc =>
+                  ['https://www.swissmedic.ch/marktueberwachung/00135/00157/02519/index.html?lang=de',
+                    File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/hpc_example.html')],
+
+      }
+    def setup_marktueberwachung
+      @index_file     = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/markt_überwachung.html')
+      teaser_1_file   = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/teaserFlex_1.html')
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:open).with(Market[:recall][0]).and_return(IO.read(Market[:recall][1]))
+        plug.should_receive(:open).with(Market[:hpc][0])   .and_return(IO.read(Market[:hpc][1]))
+      end
+      @app.should_receive(:rss_updates).and_return({})
+
+      mechanize = flexmock("mechanize")
+      index = Mechanize.new().get('file://'+@index_file)
+      teaser_1 = Mechanize.new().get('file://'+teaser_1_file)
+
+      mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=de').and_return(index)
+      mechanize.should_receive(:get).with('https://www.swissmedic.ch//recall/00135/00157/00000/index.html').and_return(@recall)
+      mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_1)
+      mechanize.should_receive(:get).and_return("nothing defined")
+      @plugin.agent= mechanize
+    end
+    def test_recall_example
+      setup_marktueberwachung
+      result = @plugin.detail_info('https://www.swissmedic.ch/marktueberwachung/00135/00166/02524/index.html?lang=de', true)
+      assert_equal('Chargenrückruf / Donepezil-Mepha 5 mg / 10 mg, Lactab', result[:title])
+    end
+    def test_hpc_example
+      setup_marktueberwachung
+      result = @plugin.detail_info('https://www.swissmedic.ch/marktueberwachung/00135/00157/02519/index.html?lang=de', true)
+      assert_equal('DHPC Invirase® (Saquinavir)', result[:title])
+    end
+    def test_swissmedic_entries_of__with_hpc
+      setup_marktueberwachung
+      skip 'Takes too much time to test the whole loop'
+      entries = @plugin.swissmedic_entries_of(:hpc)
+      assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal('HPC Title',        entries['de'].first[:title])
+      assert_equal(1,                  entries['de'].length)
     end
   end
 end
