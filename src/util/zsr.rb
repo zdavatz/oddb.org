@@ -19,7 +19,7 @@ module ODDB
         wsdl.document = ZSRService
       end
       response = client.request :getInformationParameters do
-          soap.xml = %(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        soap.xml = %(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
 xmlns:tns="https://www.pharmedsolutions.ch/ZSRService"
 xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -34,6 +34,8 @@ xmlns:mns1="https://www.pharmedsolutions.ch/ZSRService">
 )
       end
       response.to_hash[:information]
+    rescue => e
+      return {}
 		end
 	end
 end
