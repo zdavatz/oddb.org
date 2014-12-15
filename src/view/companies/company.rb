@@ -25,6 +25,7 @@ require 'view/form'
 require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/sponsorlogo'
+require 'view/privatetemplate'
 
 module ODDB
 	module View

@@ -25,7 +25,8 @@ module ODDB
                              :lookandfeel => @lnf,
                              :error       => 'error',
                              :warning?    => nil,
-                             :error?      => nil
+                             :error?      => nil,
+                             :user_input  => 'user_input',
                             )
         @parent    = flexmock('parent')
         @fax       = flexmock('fax', :join =>'join')
@@ -61,7 +62,8 @@ module ODDB
                               :lookandfeel => @lnf,
                               :error       => 'error',
                               :warning?    => nil,
-                              :error?      => nil
+                              :user_input  => 'user_input',
+                              :error?      => nil,
                              )
         @parent    = flexmock('parent', :fullname => 'fullname')
         flexmock(@parent, :resolve => @parent)

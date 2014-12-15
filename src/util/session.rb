@@ -202,7 +202,11 @@ module ODDB
     end
     def search_hospital(ean)
       @persistent_user_input[:ean] ||= ean
-      @app.hospital(ean)
+      @app.hospital_by_gln(ean)
+    end
+    def search_pharmacy(ean)
+      @persistent_user_input[:ean] ||= ean
+      @app.pharmacy_by_gln(ean)
     end
 		def search_interactions(query)
 			@persistent_user_input[:search_query] ||= query
@@ -223,6 +227,14 @@ module ODDB
     def search_doctors(ean)
       @persistent_user_input[:ean] ||= ean
       @app.search_doctors(ean)
+    end
+    def search_hospitals(ean)
+      @persistent_user_input[:ean] ||= ean
+      @app.search_hospitals(ean)
+    end
+    def search_pharmacies(ean)
+      @persistent_user_input[:ean] ||= ean
+      @app.search_pharmacies(ean)
     end
 		def set_persistent_user_input(key, val)
 			@persistent_user_input.store(key, val)

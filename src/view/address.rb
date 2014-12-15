@@ -100,49 +100,39 @@ class SuggestedAddress < HtmlGrid::Composite
 			'top address-width list')
 	end
 	def correct(model)
-		button = HtmlGrid::Button.new(:correct,
-			model, @session, self)
-    args = if ean = @session.user_input(:ean) and hospital = @session.search_hospital(ean) \
-             and address = hospital.addresses.index(model)
-      [
-        :hospital, ean,
-        :address, address,
-        :zone, @session.zone,
-      ]
-    elsif ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first
-      if address = doctor.addresses.index(model)
-        [
-          :doctor, ean,
+		button = HtmlGrid::Button.new(:correct, model, @session, self)
+    args = nil
+    address = nil
+    [:doctor, :hospital, :pharmacy].each do
+      |kind|
+        cmd = "ean = @session.user_input(:ean) and #{kind}s = @session.search_#{kind}s(ean) and #{kind} = #{kind}s.first ".gsub('ys', 'ies')
+        $stdout.puts "checking kind #{kind} cmd #{cmd} args #{args.inspect}"
+        next if args
+        res = eval(cmd)
+        if res
+          cmd2 = %(
+      if address = #{kind}.addresses.index(model)
+        $stdout.puts "address #{kind} #{address.inspect}"
+        args = [
+          :#{kind}, ean,
           :address, address,
           :zone, @session.zone,
         ]
       else
-        [
-          :doctor, ean,
-          :address, doctor.addresses.length,
+        args = [
+          :#{kind}, ean,
+          :address, #{kind}.addresses.length,
           :zone, @session.zone,
         ]
       end
-    elsif doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid)
-      if address = doctor.addresses.index(model)
-        [
-          :doctor, doctor_oid,
-          :address, address,
-          :zone, @session.zone,
-        ]
-      else
-        [
-          :doctor, doctor_oid,
-          :address, doctor.addresses.length,
-          :zone, @session.zone,
-        ]
+)
+        res = eval(cmd + "\n" + cmd2)
       end
-    else
-      {
+    end
+    args ||=  {
         :pointer  =>  model.pointer,
         :zone     =>  @session.zone,
       }
-    end
 		url = @lookandfeel._event_url(:suggest_address, args)
 		button.set_attribute('onclick',
 			"document.location.href='#{url}'")
@@ -176,7 +166,6 @@ class Address < SuggestedAddress
 	COMPONENTS = {}
 	def init_components
 		super
-    return if ean = @session.user_input(:ean) and pharmacy = @session.pharmacy_by_gln(ean)
 		if (@model.respond_to?(:pointer))
 			ypos = components.size
 			components.store([0,ypos], :correct)

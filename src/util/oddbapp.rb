@@ -250,9 +250,7 @@ class OddbPrevalence
 	end
   def pharmacy_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
-    info = company_by_gln(gln)
-    info ||= doctor_by_gln(gln)
-    info
+    company_by_gln(gln)
   end
   def company_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
@@ -1038,9 +1036,12 @@ class OddbPrevalence
 		_search_exact_classified_result(sequences, :unwanted_effect, result)
 	end
 	def search_doctors(key)
+    return [ doctor_by_gln(key)] if key.to_s.match(VALID_EAN13)
 		retrieve_from_index("doctor_index", key)
 	end
 	def search_companies(key)
+    result =  [ company_by_gln(key)] if key.to_s.match(VALID_EAN13)
+    return result if result and (result.size > 0 and not result.first.is_pharmacy?)
     companies = retrieve_from_index("company_index", key)
     matching_companies = companies.find_all{
       |item|

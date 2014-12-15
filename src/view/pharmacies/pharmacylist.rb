@@ -5,13 +5,11 @@ require 'htmlgrid/link'
 require 'htmlgrid/urllink'
 require 'htmlgrid/list'
 require 'util/umlautsort'
-require 'view/pointervalue'
-require 'view/descriptionvalue'
-require 'view/form'
-require 'view/resultcolors'
 require 'view/publictemplate'
 require 'view/alphaheader'
-require 'view/address'
+require 'view/searchbar'
+require 'view/pharmacies/pharmacy'
+require 'view/form'
 
 module ODDB
 	module View

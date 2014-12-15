@@ -12,6 +12,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'stub/config'
 require 'util/session'
+# require 'stub/oddbapp'
 
 module ODDB
   class TestSession <Minitest::Test
@@ -23,7 +24,12 @@ module ODDB
                       :unknown_user     => @unknown_user,
                       :sorted_fachinfos => [],
                       :sorted_feedbacks => [],
-                      :package_by_ean13 => 'package',)
+                      :package_by_ean13 => 'package',
+#                      :search_company   => nil,
+#                      :search_pharmacy   => nil,
+#                      :search_hospital   => nil,
+                      )
+      # @app = ODDB::App.new
       @validator = flexmock('validator',
                             :reset_errors => 'reset_errors',
                             :validate     => 'validate')
@@ -158,6 +164,48 @@ module ODDB
     def test_migel_alphabetical
       flexmock(@app, :search_migel_alphabetical => 'search_migel_alphabetical')
       assert_equal('search_migel_alphabetical', @session.migel_alphabetical('range'))
+    end
+    Valid_EAN13 = '7601001380028'
+    def test_search_doctor_invalid_ean
+      @app.should_receive(:search_doctors).once.and_return( ['search_doctors'])
+      @app.should_receive(:doctor).with('key').once.and_return([])
+      assert_equal([], @session.search_doctor('key'))
+      assert_equal(['search_doctors'], @session.search_doctors('key'))
+    end
+    def test_search_doctor_valid_ean
+      @app.should_receive(:search_doctors).once.and_return( ['search_doctors'])
+      @app.should_receive(:doctor).once.and_return(['doctor'])
+      assert_equal(['doctor'], @session.search_doctor(Valid_EAN13))
+      assert_equal(['search_doctors'], @session.search_doctors(Valid_EAN13))
+    end
+    def test_search_pharmacy_valid_ean
+      @app.should_receive(:pharmacy_by_gln).with(Valid_EAN13).once.and_return(Valid_EAN13)
+      assert_equal(Valid_EAN13, @session.search_pharmacy(Valid_EAN13))
+    end
+    def test_search_company_valid_ean
+      @app.should_receive(:search_company).once.with(Valid_EAN13).and_return(Valid_EAN13)
+      assert_equal(Valid_EAN13, @session.search_company(Valid_EAN13))
+    end
+    def test_search_hospital_valid_ean
+      @app.should_receive(:hospital_by_gln).with(Valid_EAN13).once.and_return(Valid_EAN13)
+      assert_equal(Valid_EAN13, @session.search_hospital(Valid_EAN13))
+    end
+    def test_search_pharmacy
+      @app.should_receive(:search_pharmacies).once.and_return( ['search_pharmacies'])
+      @app.should_receive(:pharmacy_by_gln).with('key').once.and_return(nil)
+      assert_equal(nil  , @session.search_pharmacy('key'))
+      assert_equal(['search_pharmacies'], @session.search_pharmacies('key'))
+    end
+    def test_search_companies
+      @app.should_receive(:search_company).once.and_return('key')
+      @app.should_receive(:search_companies).once.and_return( ['search_companies'])
+      assert_equal('key', @session.search_company('key'))
+      assert_equal(['search_companies'], @session.search_companies('key'))
+    end
+    def test_search_hospital
+      @app.should_receive(:hospital_by_gln).with('key').once.and_return(nil)
+      @app.should_receive(:search_hospitals).never
+      assert_equal(nil, @session.search_hospital('key'))
     end
     def test_navigation
       expected = [

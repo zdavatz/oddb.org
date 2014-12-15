@@ -52,6 +52,7 @@ class SuggestAddressForm < View::Form
 		:message => :address_message
 	}
 	def init
+    $stdout.puts "SuggestAddressForm for #{model.inspect} hospital #{@session.user_input(:hospital)} ean #{@session.user_input(:ean)}"
     unless @model.name
       if ean = @session.user_input(:hospital) and hospital = @session.app.hospital(ean)
         @model.name = hospital.name
@@ -78,7 +79,8 @@ class SuggestAddressForm < View::Form
 		area
 	end
 	def address_message(model)
-		input = HtmlGrid::Textarea.new(:message, 
+    $stdout.puts "SuggestAddressForm address_message #{model.inspect}"
+		input = HtmlGrid::Textarea.new(:message,
 			model, @session, self)
 		input.set_attribute('wrap', true)
 		js = "if(this.value.length > 500) { (this.value = this.value.substr(0,500))}" 
@@ -88,6 +90,7 @@ class SuggestAddressForm < View::Form
 		input
 	end
 	def email_suggestion(model)
+    return unless model and model.pointer and model.pointer.parent
 		parent = model.pointer.parent.resolve(@session)
 		input = HtmlGrid::InputText.new(:email_suggestion, 
 			model, @session, self)
@@ -110,6 +113,7 @@ class SuggestAddressComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def fullname(model)
+    return unless model and model.pointer and model.pointer.parent
 		if(parent = model.pointer.parent.resolve(@session))
 			parent.fullname
 		end

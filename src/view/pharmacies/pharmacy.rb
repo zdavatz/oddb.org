@@ -7,17 +7,18 @@ require 'htmlgrid/select'
 require 'htmlgrid/text'
 require 'htmlgrid/urllink'
 require 'htmlgrid/value'
+require 'view/privatetemplate'
 require 'htmlgrid/inputfile'
 require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
 require	'htmlgrid/form'
 require 'view/descriptionform'
 require 'view/form'
-require 'view/pointervalue'
-require 'view/privatetemplate'
-require 'view/sponsorlogo'
+require 'view/captcha'
 require 'view/address'
 require 'view/admin/address_suggestion'
+require 'view/pointervalue'
+require 'view/sponsorlogo'
 
 module ODDB
 	module View
@@ -75,7 +76,7 @@ class PharmacyInnerComposite < HtmlGrid::Composite
 		args.compact.join('-').gsub(/\s+/u, '-')
 	end
 	def address(model)
-		Address.new(model.addresses.first, @session, self)
+      Address.new(model.addresses.first, @session, self)
 	end
 	def location(model)
 		if(addr = model.addresses.first)

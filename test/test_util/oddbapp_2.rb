@@ -740,10 +740,9 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
   def test_pharmacy_by_gln
     gln = TEST_EAN13
-    doctor = ODDB::Doctor.new
-    doctor.ean13 = gln
-    @app.doctors = {doctor.oid => doctor}
-    assert_equal(doctor, @app.pharmacy_by_gln(gln))
+    pharmacy = ODDB::Pharmacy.new(gln)
+    @app.companies = {TEST_EAN13 => pharmacy}
+    assert_equal(pharmacy, @app.pharmacy_by_gln(gln))
   end
   def test_search_pharmacies_by_gln
     gln = TEST_EAN13

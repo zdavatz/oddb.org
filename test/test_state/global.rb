@@ -34,7 +34,10 @@ end
 		class TestGlobal <Minitest::Test
       include FlexMock::TestCase
       class StubSession
-				attr_accessor :user_input, :request_path, :lookandfeel, :flavor
+				attr_accessor :user_input, :request_path, :lookandfeel, :flavor, :doctors
+        def search_doctor(oid)
+          doctors.first
+        end
         def initialize(lookandfeel)
           @lookandfeel = lookandfeel
         end
@@ -1109,22 +1112,13 @@ end
         end
         assert_kind_of(State::User::SponsorLink, @state.sponsorlink)
       end
-      def test_suggest_address
-        parent = flexmock('parent') do |par|
-          par.should_receive(:fullname)
-        end
-        pointer = flexmock('pointer') do |ptr|
-          ptr.should_receive(:resolve)
-          ptr.should_receive(:parent).and_return(parent)
-        end
-        flexmock(parent) do |par|
-          par.should_receive(:resolve).and_return(parent)
-        end
-        input = {:pointer => pointer}
-        flexmock(@state) do |s|
-          s.should_receive(:user_input).and_return(input)
-        end
-        skip("Niklaus did not have time to debug this assert")
+      def test_suggest_address_unknown
+        assert_kind_of(NilClass, @state.suggest_address)
+      end
+      def test_suggest_address_doctor
+        @session.user_input = { :doctor => 'doctor'}
+        @session.doctors = [ flexmock('search_doctor') ]
+        @session.doctors.first.should_receive(:address).and_return('address')
         assert_kind_of(State::SuggestAddress, @state.suggest_address)
       end
       def test_switch

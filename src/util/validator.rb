@@ -60,7 +60,7 @@ module ODDB
 		ENUMS = {
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
 				'at_private'],
-			:business_area=>	ODDB::BA_type,
+      :business_area => ODDB::BA_types,
 			:canton				=>	[nil, 'AG', 'AI', 'AR', 'BE',
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',

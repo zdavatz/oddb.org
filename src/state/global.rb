@@ -957,7 +957,11 @@ module ODDB
         hospital = if ean = @session.user_input(:hospital)
                      @session.search_hospital(ean)
                    end
+        pharmacy = if ean2 = @session.user_input(:pharmacy)
+                     @session.search_pharmacy(ean2)
+                   end
         if (doctor and addr = doctor.address(@session.user_input(:address))) \
+          or(pharmacy and addr = pharmacy.address(@session.user_input(:address))) \
           or (hospital and addr = hospital.address(@session.user_input(:address)))
           SuggestAddress.new(@session, addr)
         elsif doctor # create a new address
@@ -965,11 +969,22 @@ module ODDB
           addr.name = doctor.fullname
           addr.pointer = doctor.pointer + [:address, @session.user_input(:address)]
           SuggestAddress.new(@session, addr)
-        #elsif hospital # TODO create a new address for a hospital
+        elsif pharmacy
+          addr = Address2.new
+          addr.name = pharmacy.fullname
+          addr.pointer = pharmacy.pointer + [:address, @session.user_input(:address)]
+          SuggestAddress.new(@session, addr)
+        elsif hospital
+          addr = Address2.new
+          addr.name = hospital.fullname
+          addr.pointer = hospital.pointer + [:address, @session.user_input(:address)]
+          SuggestAddress.new(@session, addr)
+        else
         end
 			end
       def address_suggestion
         if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first)) \
+          or (ean2 = @session.user_input(:pharmacy) and pharmacy = @session.search_pharmacy(ean2)) \
           or (ean = @session.user_input(:hospital) and hospital = @session.search_hospital(ean))
           if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
             State::Admin::TransparentLogin.new(@session, model)

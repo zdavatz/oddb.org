@@ -4,6 +4,11 @@
 # ODBAStub -- ODDB -- 16.09.2004 -- hwyss@ywesee.com
 
 require 'odba'
+module PG
+  class PG::Result
+  end
+end
+PGresult = PG::Result
 
 module ODBA
 	class CacheStub
