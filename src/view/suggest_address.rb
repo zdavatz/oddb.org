@@ -52,10 +52,15 @@ class SuggestAddressForm < View::Form
 		:message => :address_message
 	}
 	def init
-    $stdout.puts "SuggestAddressForm for #{model.inspect} hospital #{@session.user_input(:hospital)} ean #{@session.user_input(:ean)}"
+    if m = @session.request_path.match(/\/(\d{13})\//)
+      @session.set_persistent_user_input(:ean, m[1])
+    end
     unless @model.name
       if ean = @session.user_input(:hospital) and hospital = @session.app.hospital(ean)
         @model.name = hospital.name
+      end
+      if ean = @session.user_input(:pharmacy) and pharmacy = @session.app.pharmacy(ean)
+        @model.name = pharmacy.name
       end
     end
 		super
@@ -79,7 +84,6 @@ class SuggestAddressForm < View::Form
 		area
 	end
 	def address_message(model)
-    $stdout.puts "SuggestAddressForm address_message #{model.inspect}"
 		input = HtmlGrid::Textarea.new(:message,
 			model, @session, self)
 		input.set_attribute('wrap', true)
@@ -90,14 +94,14 @@ class SuggestAddressForm < View::Form
 		input
 	end
 	def email_suggestion(model)
-    return unless model and model.pointer and model.pointer.parent
-		parent = model.pointer.parent.resolve(@session)
-		input = HtmlGrid::InputText.new(:email_suggestion, 
-			model, @session, self)
-		if(parent.respond_to?(:email))
-			input.value = parent.email
-		end
-		input
+    parent = @session.get_address_parent
+    return unless parent
+    input = HtmlGrid::InputText.new(:email_suggestion,
+      model, @session, self)
+    if(parent.respond_to?(:email))
+      input.value = parent.email
+    end
+    input
 	end
 end
 class SuggestAddressComposite < HtmlGrid::Composite
@@ -113,10 +117,8 @@ class SuggestAddressComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def fullname(model)
-    return unless model and model.pointer and model.pointer.parent
-		if(parent = model.pointer.parent.resolve(@session))
-			parent.fullname
-		end
+    parent = @session.get_address_parent
+		parent.fullname if parent
 	end
 end
 class SuggestAddress < PrivateTemplate

@@ -91,8 +91,16 @@ module Root
 		State::Admin::Addresses.new(@session, model)
 	end
   def address_suggestion
-    if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first)) \
-      or (ean = @session.user_input(:hospital) and hospital = @session.search_hospital(ean))
+    ean = nil
+    ean2 = nil
+    ean_or_oid = nil
+    oid =  @session.user_input(:oid)
+    ean_from_url = @session.request_path.match(/\/(\d{13})\//)
+    ean_from_url = ean_from_url[1] if ean_from_url
+    model = @session.app.address_suggestion(oid)
+    return State::Admin::AddressSuggestion.new(@session, model) if @session.search_pharmacy(ean_from_url) and model
+    return State::Admin::AddressSuggestion.new(@session, model) if @session.search_hospital(ean_from_url) and model
+    if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first))
       if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
         State::Admin::AddressSuggestion.new(@session, model)
       end

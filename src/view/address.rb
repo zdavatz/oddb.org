@@ -106,13 +106,11 @@ class SuggestedAddress < HtmlGrid::Composite
     [:doctor, :hospital, :pharmacy].each do
       |kind|
         cmd = "ean = @session.user_input(:ean) and #{kind}s = @session.search_#{kind}s(ean) and #{kind} = #{kind}s.first ".gsub('ys', 'ies')
-        $stdout.puts "checking kind #{kind} cmd #{cmd} args #{args.inspect}"
         next if args
         res = eval(cmd)
         if res
           cmd2 = %(
       if address = #{kind}.addresses.index(model)
-        $stdout.puts "address #{kind} #{address.inspect}"
         args = [
           :#{kind}, ean,
           :address, address,

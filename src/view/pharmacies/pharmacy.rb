@@ -6,8 +6,8 @@ require 'htmlgrid/labeltext'
 require 'htmlgrid/select'
 require 'htmlgrid/text'
 require 'htmlgrid/urllink'
-require 'htmlgrid/value'
 require 'view/privatetemplate'
+require 'htmlgrid/value'
 require 'htmlgrid/inputfile'
 require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
@@ -122,9 +122,9 @@ class PharmacyForm < HtmlGrid::Form
 	def additional_lines(model)
 		super(model.address(0))
 	end
-	def address(model)
-		address_input(:address, model)
-	end
+  def address(model)
+    Address.new(model.addresses.first, @session, self)
+  end
 	def address_input(symbol, model)
 		HtmlGrid::InputText.new(symbol, model.address(0), @session, self)
 	end

@@ -110,7 +110,7 @@ class ActiveAddress < View::SuggestedAddress
 	YPOS = 1
 	LEGACY_INTERFACE = false
 	def parent_class(model)
-		parent = model.pointer.parent.resolve(@session)
+    parent = @session.get_address_parent
 		@lookandfeel.lookup(parent.class)
 	end
 end

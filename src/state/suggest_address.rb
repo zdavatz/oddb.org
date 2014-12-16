@@ -35,28 +35,29 @@ module ODDB
 				input.store(:type, input.delete(:address_type))
 				input.store(:address_pointer, @model.pointer)
 				input.store(:address_instance, @model)
-        @parent = if ean_or_oid = @session.persistent_user_input(:oid) and parent = (@session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) 
-                   parent
-                 elsif ean = @session.persistent_user_input(:ean) and parent = @session.search_hospital(ean)
-                   parent
-                 else
-                   @model.parent(@session)
-                 end
+        @parent = @session.get_address_parent
         input.store(:parent, @parent)
 				input.store(:fullname, @parent.fullname)
-				input.store(:time, Time.now)
+        input.store(:time, Time.now)
 				unless error?
 					@session.set_cookie_input(:email, input[:email])
 					addr_sugg = @session.app.update(pointer.creator, input, unique_email)
+          name = 'unknown'
           @url = if @parent.is_a?(ODDB::Doctor)
+                  name = 'Doctor'
                   @session.lookandfeel._event_url(:address_suggestion, [:doctor, (@parent.ean13 || @parent.oid), :oid, addr_sugg.oid])
+                elsif @parent.is_a?(ODDB::Company)
+                  name = 'Company or pharmacy '+ @parent.is_pharmacy?.to_s
+                  @session.lookandfeel._event_url(:address_suggestion, [ @parent.is_pharmacy? ? :pharmacy : :company, @parent.ean13, :oid, addr_sugg.oid])
                 elsif @parent.is_a?(ODDB::Hospital)
+                  name = 'Hospital'
                   @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, addr_sugg.oid])
                 else
                   @session.lookandfeel._event_url(:resolve, {:pointer => addr_sugg.pointer})
                 end
           input.store(:url, @url)
-					@session.app.update(pointer, input, unique_email)
+					result = @session.app.update(pointer, input, unique_email)
+          result
 				end
 			end
 			def send_notification(suggestion)

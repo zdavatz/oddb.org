@@ -61,9 +61,8 @@ class TestActiveAddress <Minitest::Test
                           :lookup     => 'lookup',
                           :attributes => {}
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @session   = flexmock('session', :lookandfeel => @lnf, :get_address_parent => 'get_address_parent',)
     parent     = flexmock('parent', :resolve => 'resolve')
-    pointer    = flexmock('pointer', :parent => parent)
     @model     = flexmock('model', 
                           :fon     => ['fon'],
                           :fax     => ['fax'],
@@ -72,7 +71,7 @@ class TestActiveAddress <Minitest::Test
                           :street  => 'street',
                           :number  => 'number',
                           :lines   => ['line'],
-                          :pointer => pointer,
+                          :parent  => 'parent',
                           :type    => 'type'
                          )
 
@@ -90,7 +89,6 @@ class TestAddressSuggestionComposite <Minitest::Test
                           :base_url   => 'base_url'
                          )
     parent     = flexmock('parent', :resolve => 'resolve')
-    pointer    = flexmock('pointer', :parent => parent)
 
     active_address = flexmock('active_address', 
                               :fon     => ['fon'],
@@ -100,7 +98,7 @@ class TestAddressSuggestionComposite <Minitest::Test
                               :street  => 'street',
                               :number  => 'number', 
                               :lines   => ['line'],
-                              :pointer => pointer,
+                              :parent  => 'parent',
                               :type    => 'type'
                              )
     state      = flexmock('state', :active_address => active_address)
@@ -109,6 +107,7 @@ class TestAddressSuggestionComposite <Minitest::Test
                           :error       => 'error',
                           :warning?    => nil,
                           :error?      => nil,
+                          :get_address_parent => 'get_address_parent',
                           :state       => state
                          )
     @model     = flexmock('model', :message => 'message', :fon => ['fon'], :fax => ['fax'])

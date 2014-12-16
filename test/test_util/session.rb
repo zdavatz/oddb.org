@@ -395,5 +395,40 @@ module ODDB
         assert_equal(url,res)
       }
     end
+    def test_get_address_parent_pharmacy
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/rezept/pharmacy/7601001380028/oid/27'")
+      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
+      res = @session.get_address_parent
+      assert_equal('7601001380028',res)
+    end
+    def test_get_address_parent_hospital
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/rezept/hospital/7601001380028/oid/27'")
+      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
+      res = @session.get_address_parent
+      assert_equal('7601001380028',res)
+    end
+    def test_get_address_parent_doctor
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/rezept/doctor/7601001380028/oid/27'")
+      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
+      res = @session.get_address_parent
+      assert_equal('7601001380028',res)
+    end
+    def test_get_address_parent_no_parent_in_url
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/'")
+      res = @session.get_address_parent
+      assert_equal(nil, res)
+    end
+    def test_get_address_parent_via_persistent_input
+      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
+      @session = ODDB::Session.new('key', @app, @validator)
+      @session.instance_eval("@request_path = '/de/gcc/'")
+      @session.set_persistent_user_input(:ean, '7601001380028')
+      res = @session.get_address_parent
+      assert_equal('7601001380028', res)
+    end
   end
 end # ODDB

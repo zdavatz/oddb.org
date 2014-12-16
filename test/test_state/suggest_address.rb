@@ -23,7 +23,8 @@ class TestSuggestAddress <Minitest::Test
     @update  = flexmock('update', 
                         :email_suggestion => 'email_suggestion',
                         :fullname => 'fullname',
-                        :pointer  => 'pointer'
+                        :pointer  => 'pointer',
+                        :oid  => 'oid',
                        )
     @app     = flexmock('app', :update => @update)
     @lnf     = flexmock('lookandfeel', 
@@ -31,13 +32,16 @@ class TestSuggestAddress <Minitest::Test
                         :_event_url => '_event_url'
                        )
     doctor   = flexmock('doctor', :fullname => 'fullname')
-    @session = flexmock('session', 
+    hospital   = flexmock('hospital', :oid => 'oid', :fullname => 'fullname')
+    @session = flexmock('session',
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => {},
                         :persistent_user_input => 'persistent_user_input',
+                        :request_path => 'request_path',
+                        :search_hospital => hospital,
                         :set_cookie_input => 'set_cookie_input',
-                        :search_doctor => doctor
+#                        :search_doctor => doctor
                        ).by_default
     parent   = flexmock('parent', :fullname => 'fullname')
     @model   = flexmock('model', 

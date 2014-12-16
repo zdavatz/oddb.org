@@ -73,6 +73,7 @@ class TestSuggestedAddress <Minitest::Test
              :search_hospital => hospital,
              :search_doctors  => [doctor],
              :persistent_user_input => 'persistent_user_input',
+             :request_path => 'request_path',
              :search_doctor   => doctor
             )
     flexmock(@model, :pointer => 'pointer')
@@ -97,6 +98,7 @@ class TestAddress <Minitest::Test
                         :search_hospital => hospital,
                         :search_doctors  => [doctor],
                         :search_doctor   => doctor,
+                        :request_path => 'request_path',
                         :persistent_user_input => 'persistent_user_input'
                        )
     @model   = flexmock('model', 

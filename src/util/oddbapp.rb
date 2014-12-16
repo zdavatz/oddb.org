@@ -250,7 +250,7 @@ class OddbPrevalence
 	end
   def pharmacy_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
-    company_by_gln(gln)
+    company_by_gln(gln.to_s)
   end
   def company_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
@@ -272,7 +272,7 @@ class OddbPrevalence
   end
   def hospital_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
-    hospital(gln)
+    hospital(gln.to_s)
   end
   def company_by_name(name, ngram_cutoff=nil)
     _company_by_name(name, ngram_cutoff) \

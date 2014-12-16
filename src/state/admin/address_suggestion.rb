@@ -18,22 +18,21 @@ class AddressSuggestion < Global
 	class AddressWrapper < SimpleDelegator
 		attr_accessor :email_suggestion
 	end
-	def init
-		if(addr = @model.address_instance or addr = @model.address_pointer.resolve(@session))
-			@active_address = AddressWrapper.new(addr)
-      @parent = if (ean_or_oid = @session.persistent_user_input(:ean) || @session.persistent_user_input(:oid)) \
-                  and (parent = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) 
-                    parent
-                elsif ean = @session.persistent_user_input(:ean) and  parent = @session.search_hospital(ean_or_oid)
-                  parent
-                else pointer = @model.address_pointer
-                  pointer.parent.resolve(@session)
-                end
-			select_zone(@parent)
-			@active_address.email_suggestion = @parent.email
-		end
-		super
-	end
+  def init
+    if addr = @model.address_instance
+      @active_address = AddressWrapper.new(addr)
+      @parent = @session.get_address_parent
+      unless @parent
+        pointer = @model.address_pointer
+        @parent = pointer.parent.resolve(@session)
+      end
+      select_zone(@parent)
+      @active_address.email_suggestion = @parent.email
+    else
+      @active_address = AddressWrapper.new(nil)
+    end
+    super
+  end
 	def accept
 		mandatory = [:name]
 		keys = [:additional_lines, :address, :location,

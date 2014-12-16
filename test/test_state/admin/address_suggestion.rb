@@ -33,12 +33,13 @@ class TestAddressSuggestion <Minitest::Test
                         :parent  => parent
                        )
     @app     = flexmock('app')
-    doctor   = flexmock('doctor', :email => 'email')
+    hospital   = flexmock('hospital', :email => 'email')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :app         => @app,
                         :persistent_user_input => {},
-                        :search_doctor => doctor
+                        :request_path => 'request_path',
+                        :search_hospital => hospital
                        )
     address_instance = flexmock('address_instance', :replace_with => 'replace_with')
     @model   = flexmock('model', 

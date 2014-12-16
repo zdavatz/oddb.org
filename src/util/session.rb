@@ -273,5 +273,20 @@ module ODDB
       drugs = drugs.keys if drugs.is_a?(Hash)
       lookandfeel._event_url(prefix, [zsr_id ? "zsr_#{zsr_id}" : [] , (drugs and prefix != :home_interactions and drugs.size > 0) ? :ean : [], drugs].flatten).sub(/\/+$/, '')
     end
+    def get_address_parent
+      ean_from_url = request_path.match(/\/(\d{13})/)
+      ean_from_url = ean_from_url[1] if ean_from_url
+      ean_from_url ||= @persistent_user_input[:ean]
+      parent = nil
+      if parent = search_hospital(ean_from_url)
+        parent
+      elsif parent =  search_pharmacy(ean_from_url)
+        parent
+      elsif (ean_or_oid = persistent_user_input(:ean) || persistent_user_input(:oid)) \
+        and (parent = search_doctor(ean_or_oid) || search_doctors(ean_or_oid).first)
+          parent
+      end if ean_from_url
+      parent
+    end
   end
 end
