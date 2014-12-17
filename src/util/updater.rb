@@ -229,11 +229,11 @@ module ODDB
       update_notify_simple(DrugbankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
     end
     def update_medreg_doctors(opts = nil)
-      LogFile.append('oddb/debug', " update update_medreg_doctors opts #{opts.inspect}", Time.now)
+      LogFile.append('oddb/debug', " update update_medreg_doctors", Time.now)
       klass = ODDB::Doctors::MedregDoctorPlugin
       subj = 'doctors (Medreg)'
       wrap_update(klass, subj) {
-        plug = klass.new(@app, opts)
+        plug = klass.new(@app)
         plug.update
         log = Log.new(@@today)
         log.update_values(log_info(plug))
