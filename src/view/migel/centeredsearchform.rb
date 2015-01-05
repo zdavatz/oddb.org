@@ -37,7 +37,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,2]		=>	'migel_search_explain', 
 			}
 			@css_map = { [0,0,1,3] => 'center' }
-		elsif(@lookandfeel.enabled?(:atupri_web, false))
+		elsif(@lookandfeel.enabled?(:evidentia, false))
 			@components = {
 				[0,0]		=>	View::CenteredSearchForm,
 				[0,1]		=>	'migel_search_explain', 

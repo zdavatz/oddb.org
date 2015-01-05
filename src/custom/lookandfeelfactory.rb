@@ -11,14 +11,11 @@ module ODDB
 	class LookandfeelFactory < SBSM::LookandfeelFactory
 		BASE = LookandfeelBase
 		WRAPPERS = {
-			'atupri'=>	[
+			'evidentia'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelStandardResult,
-				LookandfeelAtupri, 
-			],
-			'atupri-web'=>	[
-				LookandfeelAtupriWeb, 
+				LookandfeelEvidentia,
 			],
 			'carenaschweiz'=>	[
 				LookandfeelLanguages,

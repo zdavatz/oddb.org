@@ -155,7 +155,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3]		=>	:generic_definition,
 				[0,4]	  =>	:legal_note,
 			}
-		elsif(@lookandfeel.enabled?(:atupri_web, false))
+		elsif(@lookandfeel.enabled?(:evidentia, false))
 			@components = {
 				[0,0]	  =>	:search_form,
 				[0,1]	  =>	'search_explain', 
@@ -373,6 +373,7 @@ class FachinfoNews < RssPreview
   end
 end
 class SLPriceNews < RssPreview
+  @@today ||= Date.today
   COMPONENTS = {
     [0,0] => :rss_image,
     [1,0] => :title,

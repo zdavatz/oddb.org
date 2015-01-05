@@ -83,9 +83,9 @@ class TestCenteredSearchComposite <Minitest::Test
     expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
-  def test_init__atupri_web
+  def test_init__evidentia
     @lookandfeel.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
-    @lookandfeel.should_receive(:enabled?).once.with(:atupri_web, false).and_return(true)
+    @lookandfeel.should_receive(:enabled?).once.with(:evidentia, false).and_return(true)
     @lookandfeel.should_receive(:enabled?).once.with(:just_medical_structure, false)
     @lookandfeel.should_receive(:enabled?).once.with(:oekk_structure, false)
     @lookandfeel.should_receive(:enabled?).never.with(:search_reset)
@@ -99,7 +99,7 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
-      l.should_receive(:enabled?).once.with(:atupri_web, false)
+      l.should_receive(:enabled?).once.with(:evidentia, false)
       l.should_receive(:enabled?).once.with(:data_counts).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_fan, false)
       l.should_receive(:enabled?).once.with(:fachinfos)
@@ -131,7 +131,7 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
-      l.should_receive(:enabled?).once.with(:atupri_web, false)
+      l.should_receive(:enabled?).once.with(:evidentia, false)
       l.should_receive(:enabled?).once.with(:data_counts).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_fan, false).and_return(true)
       l.should_receive(:enabled?).once.with(:fachinfos)
@@ -301,7 +301,7 @@ class TestSLPriceNews <Minitest::Test
                           )
     session = flexmock('session',
                        :rss_updates => 'rss_updates',
-                       :lookandfeel => lookandfeel
+                       :lookandfeel => lookandfeel,
                       )
     model = flexmock('model')
     news = ODDB::View::Drugs::SLPriceNews.new([model], session)
@@ -340,7 +340,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
   def test_rss_feeds_left
     flexmock(@session, 
              :language    => 'language',
-             :rss_updates => 'rss_updates'
+             :rss_updates => 'rss_updates',
             )
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:recall_rss).and_return(false)

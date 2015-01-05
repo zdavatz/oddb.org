@@ -50,10 +50,10 @@ class TestCenteredSearchComposite <Minitest::Test
     flexmock(@lnf, :enabled? => true)
     assert_equal({}, @composite.init)
   end
-  def test_init__atupri_web
+  def test_init__evidentia
     flexmock(@lnf) do |lnf|
       lnf.should_receive(:enabled?).with(:just_medical_structure, false).once.and_return(false)
-      lnf.should_receive(:enabled?).with(:atupri_web, false).once.and_return(true)
+      lnf.should_receive(:enabled?).with(:evidentia, false).once.and_return(true)
       lnf.should_receive(:enabled?).with(:search_reset)
       lnf.should_receive(:enabled?).with(:custom_tab_navigation, false)
     end

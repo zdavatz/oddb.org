@@ -9,7 +9,7 @@ module ODDB
     RESOURCE_PATH = "../../doc/resources/"
     TEMPLATE = File.expand_path('../../data/css/template.css', File.dirname(__FILE__))
     FLAVORS = {
-      :atupri => {
+      :evidentia => {
         :bg                         => '#d5e4f1',
         :bg_bright                  => '#ACD0F0',
         :bg_medium                  => '#6699CC',

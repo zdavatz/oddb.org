@@ -164,7 +164,7 @@ module ODDB
     end
   end
 
-  class TestLookandfeelAtupriWeb <Minitest::Test
+  class TestLookandfeelEvidentia <Minitest::Test
     include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
@@ -174,7 +174,7 @@ module ODDB
       component = flexmock('component') do |c|
         c.should_receive(:session).and_return(@session)
       end
-      @look = LookandfeelAtupriWeb.new(component)
+      @look = LookandfeelEvidentia.new(component)
     end
     def test_compare_list_components
       expected = {
