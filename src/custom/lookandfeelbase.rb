@@ -15,6 +15,9 @@ module ODDB
 	class Doctor; end
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
+    def google_analytics_token
+      "UA-115196-1"
+    end
     @@turing_files = {}
     @@turings = {}
     CAPTCHA_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'captchas')

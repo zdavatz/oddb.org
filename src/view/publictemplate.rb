@@ -87,7 +87,7 @@ require(['dojo/ready'], function(ready) {
     setTimeout(
       require(['dojox/analytics/Urchin'], function(analytics) {
         var tracker = new dojox.analytics.Urchin({
-          acct: "UA-115196-1"
+          acct: '#{@lookandfeel.google_analytics_token}'
         })
       }),
       100

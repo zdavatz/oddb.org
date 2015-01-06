@@ -10,6 +10,9 @@ require 'util/money'
 
 module SBSM
   class LookandfeelWrapper < Lookandfeel
+    def google_analytics_token
+      "UA-115196-1"
+    end
     RESULT_FILTER = nil
     def format_price(price, currency=nil)
       unless(price.is_a?(ODDB::Util::Money))
@@ -267,10 +270,14 @@ module ODDB
     end
 	end
 	class LookandfeelEvidentia < SBSM::LookandfeelWrapper
+    def google_analytics_token
+      'UA-22215261-1'
+    end
 		ENABLED = [
       :ajax,
       :evidentia,
       :custom_navigation,
+      :google_analytics,
       :drugs,
       :external_css,
       :fachinfos,
@@ -284,7 +291,7 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei <a href="http://evidentia.oddb.org/">evidentia</a> und oddb.org',
+				:home_welcome	=>	'Willkommen bei <a href="http://www.evidentia.ch/">evidentia</a> und oddb.org',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
         :DOCTYPE                  =>  ' <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 transitional//EN">',
         :explain_complementary    =>  '&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
@@ -293,14 +300,14 @@ module ODDB
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
 			},
 			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur <a href="http://evidentia.oddb.org/">evidentia</a> et oddb.org',
+				:home_welcome	=>	'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
         :explain_complementary    =>  '&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
         :explain_original         =>  'bleu&nbsp;=&nbsp;original',
         :explain_unknown          =>  'gris&nbsp;=&nbsp;pas classes',
         :price_compare            =>  'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
 			},
 			'en'	=>	{
-				:home_welcome	=>	'Welcome to <a href="http://evidentia.oddb.org/">evidentia</a> and oddb.org',
+				:home_welcome	=>	'Welcome to <a href="http://www.evidentia.ch/">evidentia</a> and oddb.org',
 			},
 		}
 		RESOURCES = {

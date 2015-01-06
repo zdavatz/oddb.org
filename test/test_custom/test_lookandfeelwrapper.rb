@@ -54,6 +54,26 @@ module SBSM
 end
 
 module ODDB
+  class TestLookandfeelEvidentia <Minitest::Test
+    include FlexMock::TestCase
+    def create_env
+      @session = flexmock('session') do |s|
+        s.should_receive(:flavor)
+        s.should_receive(:language)
+      end
+      @component = LookandfeelBase.new(@session)
+    end
+    def test_google_analytics_token_evidentia
+      create_env
+      @lookandfeel = LookandfeelEvidentia.new(@component)
+      assert_equal('UA-22215261-1', @lookandfeel.google_analytics_token)
+    end
+    def test_google_analytics_token_desitin
+      create_env
+      @lookandfeel = LookandfeelDesitin.new(@component)
+      assert_equal('UA-115196-1', @lookandfeel.google_analytics_token)
+    end
+  end
   class TestLookandfeelStandardResult <Minitest::Test
     include FlexMock::TestCase
     def setup
