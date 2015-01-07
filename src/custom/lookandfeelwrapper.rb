@@ -276,7 +276,9 @@ module ODDB
     ENABLED = [
       :ajax,
       :evidentia,
+      :just_medical_structure,
       :custom_navigation,
+      :custom_tab_navigation,
       :google_analytics,
       :drugs,
       :external_css,
@@ -284,7 +286,6 @@ module ODDB
       :logout,
       :popup_links,
       :sequences,
-      :logo,
     ]
     DISABLED = [
       :atc_ddd,
@@ -321,9 +322,6 @@ module ODDB
     RESOURCES = {
       :external_css => 'http://www.just-medical.com/css/new.oddb.css',
     }
-    def zones(filter=false)
-      [ :drugs ]
-    end
     def compare_list_components
       {
         [2,0]  => :name_base,
@@ -358,29 +356,36 @@ module ODDB
         [1,9]  => 'explain_slg',
       }
     end
+    def navigation
+      [ :meddrugs_update, :legal_note, :data_declaration ] + zone_navigation + [ :home ]
+    end
     def result_list_components
       {
         [0,0]   => :limitation_text,
-        [1,0]   => :narcotic,
-        [2,0]   => :complementary_type,
-        [3,0,0] => 'result_item_start',
-        [3,0,1] => :name_base,
-        [3,0,2] => 'result_item_end',
-        [4,0]   => :galenic_form,
-        [5,0]   => :most_precise_dose,
-        [6,0]   => :comparable_size,
-        [7,0]   => :price_public,
-        [8,0]   => :deductible,
-        [9,0]   => :substances,
-        [10,0]  => :company_name,
-        [11,0]  => :ikscat,
+        [1,0]   => :fachinfo,
+        [2,0]   => :narcotic,
+        [3,0]   => :complementary_type,
+        [4,0,0] => 'result_item_start',
+        [4,0,1] => :name_base,
+        [4,0,2] => 'result_item_end',
+        [5,0]   => :galenic_form,
+        [6,0]   => :most_precise_dose,
+        [7,0]   => :comparable_size,
+        [8,0]   => :price_public,
+        [9,0]   => :deductible,
+        [10,0]  => :substances,
+        [11,0]  => :company_name,
+        [12,0]  => :ikscat,
       }
-    end
-    def navigation
-      [ :legal_note ] + zone_navigation + [ :home ]
     end
     def search_type_selection
       ['st_oddb']
+    end
+    def zones
+      [
+        :analysis, :interactions,
+        State::Drugs::Init, State::Drugs::AtcChooser, State::Drugs::Sequences
+      ]
     end
     def zone_navigation
       case @session.zone
