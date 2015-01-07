@@ -269,65 +269,63 @@ module ODDB
       [ :doctors, :drugs ]
     end
 	end
-	class LookandfeelEvidentia < SBSM::LookandfeelWrapper
+  class LookandfeelEvidentia < SBSM::LookandfeelWrapper
     def google_analytics_token
       'UA-22215261-1'
     end
-		ENABLED = [
+    ENABLED = [
       :ajax,
       :evidentia,
       :custom_navigation,
       :google_analytics,
       :drugs,
       :external_css,
-      :fachinfos,
       :help_link,
       :logout,
-      :migel,
       :popup_links,
       :sequences,
-      :ajax,
-			:logo,
-		]
-		DICTIONARIES = {
-			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei <a href="http://www.evidentia.ch/">evidentia</a> und oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
+      :logo,
+    ]
+    DISABLED = [
+      :atc_ddd,
+      :atc_drugbank_link,
+      :atc_dosing_link,
+      :atc_division_link,
+      :atc_pharmacokinetic_link,
+      :legal_note,
+      :navigation,
+      :price_request,
+      :search_result_head_navigation,
+    ]
+    DICTIONARIES = {
+      'de'  =>  {
+        :home_welcome  =>  'Willkommen bei <a href="http://www.evidentia.ch/">evidentia</a> und oddb.org',
+        :mailinglist_title  =>  'Mailinglist - Generika.cc',
         :DOCTYPE                  =>  ' <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 transitional//EN">',
         :explain_complementary    =>  '&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
         :explain_original         =>  'Blau&nbsp;=&nbsp;Original',
         :explain_unknown          =>  'Grau&nbsp;=&nbsp;Nicht&nbsp;klassifiziert',
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
-			},
-			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
+      },
+      'fr'  =>  {
+        :home_welcome  =>  'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
         :explain_complementary    =>  '&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
         :explain_original         =>  'bleu&nbsp;=&nbsp;original',
         :explain_unknown          =>  'gris&nbsp;=&nbsp;pas classes',
         :price_compare            =>  'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
-			},
-			'en'	=>	{
-				:home_welcome	=>	'Welcome to <a href="http://www.evidentia.ch/">evidentia</a> and oddb.org',
-			},
-		}
-		RESOURCES = {
-			:logo	=>	'logo.gif',
-#			:external_css	=>	'http://evidentia.oddb.org/misc/intranet.generika.css',
-      :external_css =>  'http://evidentia.oddb.org/fileadmin/user_upload/dokumente/evidentia/informationen/generikaliste/new.generika.css',
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'200',
-				'height'	=>	'50',
-			},
-		}
+      },
+      'en'  =>  {
+        :home_welcome  =>  'Welcome to <a href="http://www.evidentia.ch/">evidentia</a> and oddb.org',
+      },
+    }
+    RESOURCES = {
+      :external_css => 'http://www.just-medical.com/css/new.oddb.css',
+    }
     def zones(filter=false)
       [ :drugs ]
     end
     def compare_list_components
       {
-        [0,0]  => :fachinfo,
-        [1,0]  => :patinfo,
         [2,0]  => :name_base,
         [3,0]  => :company_name,
         [4,0]  => :most_precise_dose,
@@ -339,71 +337,60 @@ module ODDB
         [10,0] => :ikscat,
       }
     end
-		def explain_result_components
-			{
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	:explain_vaccine,
-				[0,4]	=>	'explain_unknown',
-				[0,6]	=>	:explain_limitation,
-				[0,7]	=>	:explain_fachinfo,
-				[0,8]	=>	:explain_patinfo,
-				[0,9]	=>	:explain_narc,
-				[1,0]	=>	:explain_anthroposophy,
-				[1,1]	=>	:explain_homeopathy,
-				[1,2] =>	:explain_phytotherapy,
-				[1,3]	=>	:explain_parallel_import,
-				[1,4]	=>	'explain_efp',
-				[1,5]	=>	'explain_pbp',
-				[1,6]	=>	:explain_deductible,
-				[1,7]	=>	'explain_sl',
-				[1,8]	=>	'explain_slo',
-				[1,9]	=>	'explain_slg',
-			}
-		end
-    def migel_list_components
+    def explain_result_components
       {
-        [0,0] => :limitation_text,
-        [1,0] => :migel_code,
-        [2,0] => :product_description,
-        [3,0] => :date,
-        [4,0] => :price,
-        [5,0] => :qty_unit,
+        [0,0]  => :explain_original,
+        [0,1]  => :explain_generic,
+        [0,2]  => :explain_complementary,
+        [0,3]  => :explain_vaccine,
+        [0,4]  => 'explain_unknown',
+        [0,6]  => :explain_limitation,
+        [0,9]  => :explain_narc,
+        [1,0]  => :explain_anthroposophy,
+        [1,1]  => :explain_homeopathy,
+        [1,2]  => :explain_phytotherapy,
+        [1,3]  => :explain_parallel_import,
+        [1,4]  => 'explain_efp',
+        [1,5]  => 'explain_pbp',
+        [1,6]  => :explain_deductible,
+        [1,7]  => 'explain_sl',
+        [1,8]  => 'explain_slo',
+        [1,9]  => 'explain_slg',
       }
     end
-		def navigation
-			[ :legal_note ] + zone_navigation + [ :home ]
-		end
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-        [1,0]   => :prescription,
-				[2,0]		=>  :fachinfo,
-				[3,0]		=>	:patinfo,
-				[4,0]		=>	:narcotic,
-				[5,0]		=>	:complementary_type,
-				[6,0,0]	=>	'result_item_start',
-				[6,0,1]	=>	:name_base,
-				[6,0,2]	=>	'result_item_end',
-				[7,0]		=>	:galenic_form,
-				[8,0]		=>	:most_precise_dose,
-				[9,0]		=>	:comparable_size,
-				[10,0]		=>	:price_exfactory,
-				[11,0]	=>	:price_public,
-				[12,0]	=>	:deductible,
-				[13,0]	=>	:substances,
-			}
-		end
+    def result_list_components
+      {
+        [0,0]   => :limitation_text,
+        [1,0]   => :narcotic,
+        [2,0]   => :complementary_type,
+        [3,0,0] => 'result_item_start',
+        [3,0,1] => :name_base,
+        [3,0,2] => 'result_item_end',
+        [4,0]   => :galenic_form,
+        [5,0]   => :most_precise_dose,
+        [6,0]   => :comparable_size,
+        [7,0]   => :price_public,
+        [8,0]   => :deductible,
+        [9,0]   => :substances,
+        [10,0]  => :company_name,
+        [11,0]  => :ikscat,
+      }
+    end
+    def navigation
+      [ :legal_note ] + zone_navigation + [ :home ]
+    end
+    def search_type_selection
+      ['st_oddb']
+    end
     def zone_navigation
       case @session.zone
-      when :migel
-        [:migel_alphabetical]
+      when :analysis
+        [:analysis_alphabetical]
       else
-        [:sequences]
+        []
       end
     end
-	end
+  end
 	class LookandfeelCarenaSchweiz < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
