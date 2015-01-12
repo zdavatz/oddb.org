@@ -30,6 +30,11 @@ module SearchBarMethods
     if(@lookandfeel.respond_to?(:search_type_selection))
       select.valid_values = @lookandfeel.search_type_selection
     end
+    # Avoid displaying a select pull down if only one value is offered
+    if select.valid_values.size == 1
+      @session.set_persistent_user_input(:search_type, select.valid_values.first)
+      return
+    end
     name = 'search_query' # name of input field
     val  = @session.lookandfeel.lookup(name)
     progressbar = ''
