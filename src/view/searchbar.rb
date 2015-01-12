@@ -31,7 +31,7 @@ module SearchBarMethods
       select.valid_values = @lookandfeel.search_type_selection
     end
     # Avoid displaying a select pull down if only one value is offered
-    if select.valid_values.size == 1
+    if select.valid_values and select.valid_values.size == 1
       @session.set_persistent_user_input(:search_type, select.valid_values.first)
       return
     end
