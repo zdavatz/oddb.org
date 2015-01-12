@@ -165,7 +165,7 @@ class ResultComposite < HtmlGrid::Composite
     ExplainResult.new(model, @session, self, comps)
   end
 	def export_csv(model, session=@session)
-		if(@lookandfeel.enabled?(:export_csv))
+		if @lookandfeel.enabled?(:export_csv) and not @session.flavor == 'evidentia'
 			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
