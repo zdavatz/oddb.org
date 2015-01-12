@@ -17,11 +17,6 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelEvidentia,
 			],
-			'carenaschweiz'=>	[
-				LookandfeelLanguages,
-				LookandfeelStandardResult,
-				LookandfeelCarenaSchweiz, 
-			],
       'desitin' => [
         LookandfeelDesitin,
       ],
@@ -34,30 +29,12 @@ module ODDB
 				LookandfeelLanguages,
 				LookandfeelJustMedical, 
 			],
-			'konsuminfo'=>	[
-				LookandfeelLanguages,
-				LookandfeelStandardResult,
-				LookandfeelKonsumInfo, 
-			],
       'mobile'	=>	[
         LookandfeelLanguages,
         LookandfeelMobile,
       ],
-			'mymedi'=>	[
-				LookandfeelMyMedi, 
-			],
-			'mymigel'=>	[
-				LookandfeelMyMigel, 
-			],
 			'oekk'	=>	[
 				LookandfeelOekk,
-			],
-			'provita'			=>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelButtons, 
-				LookandfeelStandardResult,
-				LookandfeelProvita, 
 			],
 			'santesuisse' =>	[
 				LookandfeelLanguages,
