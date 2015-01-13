@@ -85,8 +85,9 @@ end
 def logout
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
-  return unless  @browser.link(:text=>'Abmeldung').exists?
-  @browser.link(:text=>'Abmeldung').click
+  logout_btn = @browser.link(:name=>'logout')
+  return unless  logout_btn.exists?
+  logout_btn.click
 end
 
 def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
