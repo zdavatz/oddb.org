@@ -245,8 +245,9 @@ class OddbPrevalence
   def commercial_form_by_name(name)
     ODDB::CommercialForm.find_by_name(name)
   end
-	def company(oid)
-		@companies[oid.to_i]
+  def company(ean13_or_oid)
+    return company_by_gln(ean13_or_oid) if ean13_or_oid.to_s.match(VALID_EAN13)
+    @companies[ean13_or_oid.to_i]
 	end
   def pharmacy_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
@@ -255,7 +256,8 @@ class OddbPrevalence
   def company_by_gln(gln)
     return nil unless  gln.to_s.match(VALID_EAN13)
     @companies.values.each { |company|
-      if company && company.respond_to?(:ean13) && company.ean13.to_s == gln.to_s
+      if company && company.respond_to?(:ean13) &&
+                           company.ean13.to_s == gln.to_s
         return company
       end
     }

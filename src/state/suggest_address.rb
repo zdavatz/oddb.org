@@ -46,12 +46,12 @@ module ODDB
           @url = if @parent.is_a?(ODDB::Doctor)
                   name = 'Doctor'
                   @session.lookandfeel._event_url(:address_suggestion, [:doctor, (@parent.ean13 || @parent.oid), :oid, addr_sugg.oid])
-                elsif @parent.is_a?(ODDB::Company)
-                  name = 'Company or pharmacy '+ @parent.is_pharmacy?.to_s
-                  @session.lookandfeel._event_url(:address_suggestion, [ @parent.is_pharmacy? ? :pharmacy : :company, @parent.ean13, :oid, addr_sugg.oid])
                 elsif @parent.is_a?(ODDB::Hospital)
                   name = 'Hospital'
                   @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, addr_sugg.oid])
+                elsif @parent.is_a?(ODDB::Company)
+                  name = (@parent.is_pharmacy? ? :pharmacy : :company).to_s
+                  @session.lookandfeel._event_url(:address_suggestion, [ @parent.is_pharmacy? ? :pharmacy : :company, @parent.ean13, :oid, addr_sugg.oid])
                 else
                   @session.lookandfeel._event_url(:resolve, {:pointer => addr_sugg.pointer})
                 end

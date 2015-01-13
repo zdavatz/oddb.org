@@ -61,17 +61,16 @@ module ODDB
                               :attributes => {},
                               :base_url   => 'base_url'
                              )
-        @session   = flexmock('session', 
+        @parent    = flexmock('parent', :fullname => 'fullname')
+        @session   = flexmock('session',
                               :lookandfeel => @lnf,
                               :error       => 'error',
                               :warning?    => nil,
                               :user_input  => 'user_input',
-                              :get_address_parent => 'get_address_parent',
                               :request_path => 'request_path',
-                              :get_address_parent => 'get_address_parent',
+                              :get_address_parent => @parent,
                               :error?      => nil,
                              )
-        @parent    = flexmock('parent', :fullname => 'fullname')
         flexmock(@parent, :resolve => @parent)
         pointer    = flexmock('pointer', :parent => @parent)
         @fax       = flexmock('fax', :join =>'join')

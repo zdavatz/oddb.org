@@ -68,13 +68,17 @@ describe "ch.oddb.org" do
   AddressCorrections = Struct.new(:name, :url_display, :url_correct, :url_from_received_mail)
   to_check = [
     # TODO: How can we ensure that we have valid EAN and OID?
-    # TODO: make it work for companies, too. Eg. adapt session.rb, OddbUrl + '/de/gcc/company/ean/7601001352940',
+      AddressCorrections.new('company',
+                              OddbUrl + '/de/gcc/company/ean/7601001001121',
+                              OddbUrl + '/de/gcc/suggest_address/company/7601001001121/address/0/zone/companies',
+                              OddbUrl + '/de/gcc/address_suggestion/company/7601001001121/oid/32401513',
+                              ),
       AddressCorrections.new('doctor',
                               OddbUrl + '/de/gcc/doctor/ean/7601000254344',
                               OddbUrl + '/de/gcc/suggest_address/doctor/7601000254344/address/0/zone/doctors',
                               OddbUrl + '/de/gcc/address_suggestion/doctor/7601000254344/oid/32401513',
                              ),
-    AddressCorrections.new('hospital',
+      AddressCorrections.new('hospital',
                             OddbUrl + '/de/gcc/hospital/ean/7601002002592',
                             OddbUrl + '/de/gcc/suggest_address/hospital/7601002002592/address/0/zone/hospitals',
                             OddbUrl + '/de/gcc/address_suggestion/hospital/7601002002592/oid/32401511',
@@ -85,8 +89,6 @@ describe "ch.oddb.org" do
                             OddbUrl + '/de/gcc/address_suggestion/pharmacy/7601001380028/oid/32401536',
                             ),
     ]
-
-
   to_check.each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do

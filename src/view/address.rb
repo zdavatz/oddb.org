@@ -103,7 +103,7 @@ class SuggestedAddress < HtmlGrid::Composite
 		button = HtmlGrid::Button.new(:correct, model, @session, self)
     args = nil
     address = nil
-    [:doctor, :hospital, :pharmacy].each do
+    [:doctor, :hospital, :pharmacy, :company].each do
       |kind|
         cmd = "ean = @session.user_input(:ean) and #{kind}s = @session.search_#{kind}s(ean) and #{kind} = #{kind}s.first ".gsub('ys', 'ies')
         next if args

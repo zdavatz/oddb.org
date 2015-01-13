@@ -958,11 +958,15 @@ module ODDB
                      @session.search_hospital(ean)
                    end
         pharmacy = if ean2 = @session.user_input(:pharmacy)
-                     @session.search_pharmacy(ean2)
+                     @session.pharmacy_by_gln(ean2)
+                   end
+        company = if ean3 = @session.user_input(:company)
+                     @session.search_registration_holder(ean3).first
                    end
         if (doctor and addr = doctor.address(@session.user_input(:address))) \
           or(pharmacy and addr = pharmacy.address(@session.user_input(:address))) \
-          or (hospital and addr = hospital.address(@session.user_input(:address)))
+          or (hospital and addr = hospital.address(@session.user_input(:address))) \
+          or (company and addr = company.address(@session.user_input(:address)))
           SuggestAddress.new(@session, addr)
         elsif doctor # create a new address
           addr = Address2.new
@@ -979,7 +983,13 @@ module ODDB
           addr.name = hospital.fullname
           addr.pointer = hospital.pointer + [:address, @session.user_input(:address)]
           SuggestAddress.new(@session, addr)
+        elsif company
+          addr = Address2.new
+          addr.name = company.fullname
+          addr.pointer = company.pointer + [:address, @session.user_input(:address)]
+          SuggestAddress.new(@session, addr)
         else
+           $stdout.puts "globa suggest_address FAILED"
         end
 			end
       def address_suggestion

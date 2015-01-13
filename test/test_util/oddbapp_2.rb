@@ -250,6 +250,15 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		oid = @app.doctors.keys.first
 		assert_equal(doctor, @app.doctor(oid))
 	end
+  def test_company_by_ean13
+    gln = TEST_EAN13
+    company = ODDB::Company.new
+    company.ean13 = gln
+    company.business_area = ODDB::BA_type::BA_public_pharmacy
+    @app.companies = {company.oid => company}
+    assert_equal(company, @app.company_by_gln(gln))
+    assert_equal(company, @app.company(TEST_EAN13))
+  end
 	def test_company_by_name1
 		company1 = ODDB::Company.new
 		company2 = ODDB::Company.new

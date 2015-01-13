@@ -62,6 +62,12 @@ class SuggestAddressForm < View::Form
       if ean = @session.user_input(:pharmacy) and pharmacy = @session.app.pharmacy(ean)
         @model.name = pharmacy.name
       end
+      if ean = @session.user_input(:company) and company = @session.app.company(ean)
+        @model.name = company.name
+      end
+      if ean = @session.user_input(:doctor) and doctor = @session.app.doctor(ean)
+        @model.name = doctor.name
+      end
     end
 		super
 		error_message
