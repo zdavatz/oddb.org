@@ -492,7 +492,7 @@ end
 class AjaxCompanyComposite < CompanyComposite
 	CSS_ID = 'company-content'
 	def AjaxCompanyComposite.select_company_form(company)
-		case company.business_area
+		case company.business_area.to_s
 			#when nil 
 			#AjaxUnknownCompanyForm
 		when 'ba_pharma'
@@ -514,7 +514,7 @@ class AjaxCompanyComposite < CompanyComposite
       users = @session.user.entities.select { |entity|
         entity.get_preference('association', YUS_DOMAIN) == model.odba_id
       }
-	    model = View::Admin::Entities.wrap_all(users)
+      model = View::Admin::Entities.wrap_all(users)
     rescue Yus::NotPrivilegedError
       model = []
     end
@@ -590,7 +590,7 @@ end
 class RootCompany < View::PrivateTemplate
 	SNAPBACK_EVENT = :home_companies
 	def RootCompany.select_company_content(company)
-		case company.business_area
+		case company.business_area.to_s
 		when 'ba_pharma'
 			RootPharmaCompanyComposite
 		else 

@@ -268,7 +268,7 @@ module ODDB
         end
         company.ean13         = data[:ean13]
         company.name          = data[:name]
-        company.business_area = ba_type
+        company.business_area = ba_type.to_s
         company.narcotics     = data[:narcotics]
         company.addresses     = data[:addresses]
         company.odba_store
