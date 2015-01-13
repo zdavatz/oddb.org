@@ -3,9 +3,11 @@
 # ODDB::TestAddress -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com 
 # ODDB::TestAddress -- oddb.org -- 24.02.2003 -- jlang@ywesee.com, usenguel@ywesee.com 
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
+require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock'
 require 'model/address'

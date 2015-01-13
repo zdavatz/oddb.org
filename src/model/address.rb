@@ -68,8 +68,8 @@ module ODDB
 		def city
       #@location.force_encoding('utf-8')
       @location
-			if(match = @@city_pattern.match(@location.to_s))
-				 match.to_s.strip
+			if(m = @@city_pattern.match(@location.to_s))
+				 m.to_s.strip.sub(/^\W+/, '') # remove leading non word characters
 			end
 		end
 		def replace_with(other)
@@ -91,13 +91,15 @@ module ODDB
 			lines
 		end
 		def lines_without_title
-			([
+			lines = ([
 				@name,
 			] + @additional_lines +
 			[
 				@address,
 				location_canton,
 		  ]).delete_if { |line| line.to_s.empty? }
+      lines.each{|line| line.strip!}
+      lines
 		end
 		def location_canton
 			if(@canton && @location)

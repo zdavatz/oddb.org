@@ -299,6 +299,19 @@ class TestCompany <Minitest::Test
     ]
     assert_equal expected, @company.search_terms
   end
+  def test_search_terms_with_space
+    @company.name = 'Company-Name'
+    @company.ean13 = '7681123456789'
+    addr = @company.address(0)
+    addr.address = 'Street , Number  '
+    addr.location = '1234 City  '
+    expected = [
+      'Company', 'Name', 'Company', 'CompanyName', 'Company Name',
+       "7681123456789", "Street Number", "1234 City", "City", "1234"
+    ]
+    puts "@company.search_terms #{@company.search_terms.inspect}"
+    assert_equal expected, @company.search_terms
+  end
 	def test_update_values
 		values = {
 			:name						=>	'ywesee.com',

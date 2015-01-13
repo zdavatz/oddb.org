@@ -7,6 +7,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
+require 'stub/odba'
 require 'minitest/autorun'
 require 'model/address'
 
@@ -141,7 +142,7 @@ module ODDB
     def test_search_terms
       @address.title = 'Herrn Dr. med.'
       @address.name = 'Werner Blaumacher'
-      @address.additional_lines = [ 'Arztpraxis', 
+      @address.additional_lines = [ 'Arztpraxis',
       'Praxisgemeinschaft Steinfels' ]
       @address.address = 'Burgweg 28'
       @address.location = '8706 Meilen'
@@ -156,10 +157,28 @@ module ODDB
       ]
       assert_equal(expected, @address.search_terms)
     end
+    def test_search_terms_with_spaces_in_address_lines
+      @address.title = 'Herrn Dr. med.'
+      @address.name = 'Werner Blaumacher'
+      @address.additional_lines = [ ' Arztpraxis ',
+      ' Praxisgemeinschaft Steinfels ' ]
+      @address.address = ' Burgweg 28 '
+      @address.location = ' 8706  Meilen '
+      expected = [
+        'Werner Blaumacher',
+        'Arztpraxis',
+        'Praxisgemeinschaft Steinfels',
+        'Burgweg 28',
+        '8706 Meilen',
+        'Meilen',
+        '8706',
+      ]
+      assert_equal(expected, @address.search_terms)
+    end
     def test_ydim_lines
       @address.title = 'Herrn Dr. med.'
       @address.name = 'Werner Blaumacher'
-      @address.additional_lines = [ 'Arztpraxis', 
+      @address.additional_lines = [ 'Arztpraxis',
       'Praxisgemeinschaft Steinfels' ]
       @address.address = 'Burgweg 28'
       @address.location = '8706 Meilen'
@@ -169,6 +188,14 @@ module ODDB
         'Praxisgemeinschaft Steinfels',
       ]
       assert_equal(expected, @address.ydim_lines)
+    end
+    def test_plz_from_location
+      @address.location = '4051  Basel '
+      assert_equal('4051', @address.plz)
+    end
+    def test_city_from_location
+      @address.location = '4051  Basel '
+      assert_equal('Basel', @address.city)
     end
     def test_compare
       @address.title = 'Herrn Dr. med.'
