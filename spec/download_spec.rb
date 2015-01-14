@@ -9,8 +9,6 @@ require "selenium-webdriver"
 LeeresResult =  /hat ein leeres Resultat/
 
 describe "ch.oddb.org" do
-  ViewerUser     = 'niklaus.giger@hispeed.ch'
-  ViewerPassword = 'ng1234'
 
   before :all do
     waitForOddbToBeReady(@browser, OddbUrl)

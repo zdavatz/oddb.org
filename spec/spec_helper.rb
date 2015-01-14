@@ -53,6 +53,8 @@ DownloadDir = File.join(Dir.home, 'Downloads')
 GlobAllDownloads  = File.join(DownloadDir, '*')
 AdminUser         = 'ngiger@ywesee.com'
 AdminPassword     = 'ng1234'
+ViewerUser        = 'info@desitin.ch'
+ViewerPassword    = 'desitin'
 
 def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser

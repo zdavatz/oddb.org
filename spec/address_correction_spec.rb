@@ -92,16 +92,27 @@ describe "ch.oddb.org" do
   to_check.each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do
+      login(ViewerUser,  ViewerPassword)
       @browser.goto correction.url_display
       sleep(1) unless @browser.button(:name, "correct").exist?
+      unless @browser.button(:name, "correct").exist?
+        # require 'pry'; binding.pry
+        skip "Login failed. Please check your setup"
+      end
       @browser.button(:name, "correct").click
       @browser.url.should == correction.url_correct
       @browser.text_field(:name, "email").set("ngiger@ywesee.com")
       @browser.textarea(:name, "message").set("Testbemerkung")
       @browser.textarea(:name, "additional_lines").set("Neue Addresszeile")
       @browser.button(:value,"Vorschlag senden").click
+      sleep(1)
       @browser.text.should_not match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       @browser.text.should match /Vielen Dank, Ihr Vorschlag wurde versendet./
+    end
+  }  unless ['just-medical'].index(Flavor)
+  to_check.each {
+    |correction|
+    it "should be possible to visit the correction for #{correction.name}" do
       login
       @browser.goto correction.url_from_received_mail
       @browser.button(:name => 'accept').exist?.should == true
@@ -109,6 +120,10 @@ describe "ch.oddb.org" do
       @browser.text.should match /E-Mail für Rückfragen/
     end
   }  unless ['just-medical'].index(Flavor)
+
+  after :each do
+    logout
+  end
 
   after :all do
     @browser.close
