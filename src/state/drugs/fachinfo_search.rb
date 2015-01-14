@@ -80,6 +80,10 @@ class FachinfoSearch < State::Drugs::Global
       term    = @session.user_input(:fachinfo_search_term)
       is_full = (@session.user_input(:fachinfo_search_full_text) == "1")
       @drugs.each do |ean13, pac|
+        unless pac.fachinfo
+          $stdout.puts "Missing fachinfo for ean13 #{ean13} in pac #{pac}"
+          next
+        end
         doc = pac.fachinfo.description(@session.language)
         if doc.respond_to?(chapter)
           desc = doc.send(chapter).to_s
