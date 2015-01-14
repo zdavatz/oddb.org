@@ -168,7 +168,6 @@ module ODDB
           :analysis_alphabetical  => State::Analysis::Alphabetical,
           :data                   => State::User::DownloadItem,
           :preferences            => State::User::Preferences,
-          :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
           :ddd                    => State::Drugs::DDD,
@@ -191,8 +190,6 @@ module ODDB
           :home_migel             => State::Migel::Init,
           :home_substances        => State::Substances::Init,
           :home_user              => State::User::Init,
-          :hospitallist           => State::Hospitals::HospitalList,
-          :pharmacylist        => State::Pharmacies::PharmacyList,
           :interaction_chooser    => State::Interactions::InteractionChooser,
           :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
@@ -366,8 +363,12 @@ module ODDB
         end
       end
       def pharmacylist
-        model = @session.pharmacies.values
+        model = @session.app.pharmacies.values
         State::Pharmacies::PharmacyList.new(@session, model)
+      end
+      def companylist
+        model = @session.app.registration_holders.values
+        State::Companies::CompanyList.new(@session, model)
       end
       def hospital
         if ean = @session.user_input(:ean) and model = @session.app.hospital(ean)
@@ -375,7 +376,7 @@ module ODDB
         end
       end
 			def hospitallist
-				model = @session.hospitals.values
+				model = @session.app.hospitals.values
 				State::Hospitals::HospitalList.new(@session, model)
 			end
 			def export_csv

@@ -267,6 +267,7 @@ module ODDB
 			:paypal_ipn,
 			:paypal_return,
 			:paypal_thanks,
+      :pharmacylist,
 			:plugin,
 			:powerlink,
 			:preview,

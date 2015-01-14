@@ -1109,6 +1109,14 @@ class OddbPrevalence
     result
   end
 
+  def pharmacies
+    companies.select{|key, item| item.is_pharmacy? }
+  end
+
+  def registration_holders
+    companies.select{|key, item| item.business_area.to_s == ODDB::BA_type::BA_pharma.to_s }
+  end
+
   def search_pharmacies(key)
     result = [ pharmacy_by_gln(key)] if key.to_s.match(VALID_EAN13)
     return result if result and result.size > 0 and result.first.is_pharmacy?

@@ -76,11 +76,16 @@ end
         end
 			end
 			class StubApp
-				attr_accessor :companies, :galenic_groups, :fachinfos
+				attr_accessor :companies, :pharmacies, :hospitals, :galenic_groups, :fachinfos
 				attr_accessor :state_transp_called
+        def registration_holders
+          ['registration_holder']
+        end
 				def initialize
 					@state_transp_called = false
-					@companies ||= {}
+          @companies ||= {}
+          @hospitals ||= {}
+          @pharmacies ||= {}
 				end
 				def company(oid)
 					@companies[oid.to_i]
@@ -240,11 +245,23 @@ end
         end
         assert_equal('request_path', @state.direct_request_path)
       end
+      def test_companylist
+        flexmock(@session) do |s|
+          s.should_receive(:registration_holders).and_return(['registration_holder'])
+        end
+        assert_kind_of(State::Companies::CompanyList, @state.companylist)
+      end
       def test_doctorlist
         flexmock(@session) do |s|
           s.should_receive(:doctors).and_return({'key' => 'model'})
         end
         assert_kind_of(State::Doctors::DoctorList, @state.doctorlist)
+      end
+      def test_pharmacylist
+        flexmock(@session) do |s|
+          s.should_receive(:pharmacies).and_return({'key' => 'model'})
+        end
+        assert_kind_of(State::Pharmacies::PharmacyList, @state.pharmacylist)
       end
       def test_download__init
         flexmock(@session) do |s|
