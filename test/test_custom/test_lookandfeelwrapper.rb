@@ -198,67 +198,62 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-        [0,0]  => :fachinfo,
-        [1,0]  => :patinfo,
-        [2,0]  => :name_base,
-        [3,0]  => :company_name,
-        [4,0]  => :most_precise_dose,
-        [5,0]  => :comparable_size,
-        [6,0]  => :compositions,
-        [7,0]  => :price_public,
-        [8,0]  => :price_difference,
-        [9,0]  => :deductible,
-        [10,0] => :ikscat,
+        [2, 0]=>:name_base,
+        [3, 0]=>:company_name,
+        [4, 0]=>:most_precise_dose,
+        [5, 0]=>:comparable_size,
+        [6, 0]=>:compositions,
+        [7, 0]=>:price_exfactory,
+        [8, 0]=>:price_public,
+        [9, 0]=>:price_difference,
+        [10, 0]=>:ikscat
       }
       assert_equal(expected, @look.compare_list_components)
     end
     def test_explain_result_components
       expected = {
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	:explain_vaccine,
-				[0,4]	=>	'explain_unknown',
-				[0,6]	=>	:explain_limitation,
-				[0,7]	=>	:explain_fachinfo,
-				[0,8]	=>	:explain_patinfo,
-				[0,9]	=>	:explain_narc,
-				[1,0]	=>	:explain_anthroposophy,
-				[1,1]	=>	:explain_homeopathy,
-				[1,2] =>	:explain_phytotherapy,
-				[1,3]	=>	:explain_parallel_import,
-				[1,4]	=>	'explain_efp',
-				[1,5]	=>	'explain_pbp',
-				[1,6]	=>	:explain_deductible,
-				[1,7]	=>	'explain_sl',
-				[1,8]	=>	'explain_slo',
-				[1,9]	=>	'explain_slg',
-			}
+      [0, 0]=>:explain_original,
+      [0, 1]=>:explain_generic,
+        [0, 2]=>:explain_comarketing,
+        [0, 3]=>:explain_vaccine,
+        [0, 4]=>:explain_complementary,
+        [0, 5]=>"explain_unknown",
+        [0, 6]=>"explain_expired",
+        [0, 7]=>:explain_cas,
+        [1, 0]=>:explain_limitation,
+        [1, 1]=>:explain_fachinfo,
+        [1, 2]=>:explain_patinfo,
+        [1, 3]=>:explain_narc,
+        [1, 4]=>:explain_anthroposophy,
+        [1, 5]=>:explain_homeopathy,
+        [1, 6]=>:explain_phytotherapy,
+        [1, 7]=>:explain_parallel_import,
+        [2, 0]=>"explain_pbp",
+        [2, 1]=>:explain_deductible,
+        [2, 2]=>"explain_sl",
+        [2, 3]=>"explain_slo",
+        [2, 4]=>"explain_slg",
+        [2, 5]=>:explain_feedback,
+        [2, 6]=>:explain_lppv,
+        [2, 7]=>:explain_google_search
+      }
       assert_equal(expected, @look.explain_result_components)
     end
     def test_migel_list_components
-      expected = {
-        [0,0] =>	:limitation_text,
-        [1,0] =>	:migel_code,
-        [2,0]	=>	:product_description,
-        [3,0] =>  :date,
-        [4,0] =>  :price,
-        [5,0]	=>	:qty_unit,
-      }
-      assert_equal(expected, @look.migel_list_components)
+      assert_equal(nil, defined?(@look.migel_list_components))
     end
     def test_zone_navigation__migel
       flexstub(@session) do |s|
         s.should_receive(:zone).and_return(:migel)
       end
-      expected = [:migel_alphabetical]
+      expected = []
       assert_equal(expected, @look.zone_navigation)
     end
     def test_zone_navigation__sequences
       flexstub(@session) do |s|
         s.should_receive(:zone).and_return(:else)
       end
-      expected = [:sequences]
+      expected = []
       assert_equal(expected, @look.zone_navigation)
     end
 
@@ -266,29 +261,28 @@ module ODDB
       flexstub(@session) do |s|
         s.should_receive(:zone)
       end
-      expected = [:legal_note, :sequences, :home]
+      expected = [:meddrugs_update, :legal_note, :data_declaration, :home]
       assert_equal(expected, @look.navigation)
     end
     def test_result_list_components
       expected = {
-        [0,0]   =>  :limitation_text,
-        [1,0]   =>  :prescription,
-				[2,0]		=>  :fachinfo,
-				[3,0]		=>	:patinfo,
-				[4,0]		=>	:narcotic,
-				[5,0]		=>	:complementary_type,
-				[6,0,0]	=>	'result_item_start',
-				[6,0,1]	=>	:name_base,
-				[6,0,2]	=>	'result_item_end',
-				[7,0]		=>	:galenic_form,
-				[8,0]		=>	:most_precise_dose,
-				[9,0]		=>	:comparable_size,
-				[10,0]		=>	:price_exfactory,
-				[11,0]	=>	:price_public,
-				[12,0]	=>	:deductible,
-				[13,0]	=>	:substances,
-			}
-
+        [0, 0]=>:limitation_text,
+        [1, 0]=>:fachinfo,
+        [2, 0]=>:narcotic,
+        [3, 0]=>:complementary_type,
+        [4, 0, 0]=>"result_item_start",
+        [4, 0, 1]=>:name_base,
+        [4, 0, 2]=>"result_item_end",
+        [5, 0]=>:galenic_form,
+        [6, 0]=>:most_precise_dose,
+        [7, 0]=>:comparable_size,
+        [8, 0]=>:price_exfactory,
+        [9, 0]=>:price_public,
+        [10, 0]=>:deductible,
+        [11, 0]=>:substances,
+        [12, 0]=>:company_name,
+        [13, 0]=>:ikscat
+      }
       assert_equal(expected, @look.result_list_components)
     end
   end
@@ -559,97 +553,6 @@ module ODDB
       }
      assert_equal(expected, @look.explain_result_components)
    end
-  end
-
-  class TestLookandfeelMyMedi <Minitest::Test
-    include FlexMock::TestCase
-    def setup
-      @session = flexmock('session') do |s|
-        s.should_receive(:flavor)
-        s.should_receive(:language)
-     end
-     @component = flexmock('component') do |c|
-        c.should_receive(:session).and_return(@session)
-     end
-     @look = LookandfeelMyMedi.new(@component)
-    end
-    def test_compare_list_components
-      expected = {
-        [0,0] => :patinfo,
-        [1,0] => :name_base,
-        [2,0] => :company_name,
-        [3,0] => :most_precise_dose,
-        [4,0] => :comparable_size,
-        [5,0] => :compositions,
-        [6,0] => :price_public,
-        [7,0] => :ddd_price,
-        [8,0] => :price_difference,
-        [9,0] => :deductible,
-      }
-      assert_equal(expected, @look.compare_list_components)
-    end
-    def test_explain_result_components
-      expected = {
-        [0, 1] => :explain_original,
-        [0, 2] => :explain_generic,
-        [0, 3] => "explain_expired",
-        [0, 4] => "explain_pbp",
-        [0, 5] => :explain_deductible,
-        [0, 6] => :explain_ddd_price,
-        [1, 1] => :explain_patinfo,
-        [1, 2] => :explain_limitation,
-        [1, 3] => :explain_complementary,
-        [1, 4] => "explain_sl",
-        [1, 5] => "explain_slo",
-        [1, 6] => "explain_slg",
-        [1, 7] => :explain_lppv,
-        [2, 1] => "explain_mail_order_price_title",
-        [2, 2] => :explain_mail_order_price_compare,
-        [2, 3] => :explain_mail_order_price_discount,
-        [2, 4] => :explain_mail_order_price_normal
-      }
-      assert_equal(expected, @look.explain_result_components)
-    end
-    def test_result_list_components
-      expected = {
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>	:patinfo,
-				[2,0,0]	=>	'result_item_start',
-				[2,0,1]	=>	:name_base,
-				[2,0,2]	=>	'result_item_end',
-				[3,0]		=>	:deductible,
-				[4,0]		=>	:galenic_form,
-				[5,0]		=>	:most_precise_dose,
-				[6,0]		=>	:comparable_size,
-				[7,0]		=>	:price_public,
-				[8,0]		=>	:ddd_price,
-				[9,0]		=>	'nbsp',
-				[10,0]	=>	:mail_order_price,
-				[11,0]	=>	:ikscat,
-			}
-      assert_equal(expected, @look.result_list_components)
-    end
-    def test_search_type_selection
-      expected =  ['st_oddb', 'st_sequence', 'st_substance', 'st_company', 'st_indication']
-      assert_equal(expected, @look.search_type_selection)
-    end
-    def test_section_style
-      expected = 'font-size: 16px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
-      assert_equal(expected, @look.section_style)
-    end
-    def test_sequence_list_components
-      expected = {
-        [0,0]	=>	:iksnr,
-        [1,0]	=>	:patinfo,
-        [2,0]	=>	:name_base,
-        [3,0]	=>	:compositions,
-      }
-      assert_equal(expected, @look.sequence_list_components)
-    end
-    def test_zones
-      expected = [ ]
-      assert_equal(expected, @look.zones)
-    end
   end
 
   class TestLookandfeelSwissMedInfo <Minitest::Test

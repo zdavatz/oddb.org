@@ -107,6 +107,9 @@ class PackageInnerComposite < HtmlGrid::Composite
         [3,12] => :narcotic
       )
     end
+    $stdout.puts "src/view/drugs/package.rb feedback #{@lookandfeel.enabled?(:feedback).inspect}"
+    $stdout.puts "src/view/drugs/package.rb fachinfos #{@lookandfeel.enabled?(:fachinfos).inspect}"
+    $stdout.puts "src/view/drugs/package.rb patinfos #{@lookandfeel.enabled?(:patinfos).inspect}"
     if(@lookandfeel.enabled?(:feedback))
       components.update(
         [0,11] => :feedback_label,

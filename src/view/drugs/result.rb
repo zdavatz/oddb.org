@@ -162,6 +162,7 @@ class ResultComposite < HtmlGrid::Composite
       [0,1]	=>	:explain_generic,
       [0,2]	=>	'explain_unknown',
     }
+    $stdout.puts "explain_colors #{comps}"
     ExplainResult.new(model, @session, self, comps)
   end
 	def export_csv(model, session=@session)
