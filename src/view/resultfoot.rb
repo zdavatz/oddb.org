@@ -191,18 +191,19 @@ module ODDB
       }
       CSS_CLASS = 'composite'
       def init
-        if legal_note?
+        unless @lookandfeel.disabled?(:show_caption)
           if @lookandfeel.enabled?(:legal_note_vertical, false)
-            {
-              [0,0] => :toggle_switch,
-              [0,2] => :legal_note
-            }
+              elements = {
+                [0,0] => :toggle_switch,
+                [0,2] => :legal_note
+              }
           else
-            {
+            elements = {
               [1,0] => :toggle_switch,
               [1,1] => :legal_note
             }
-          end.each_pair do |coordinates, element|
+          end
+          elements.each_pair do |coordinates, element|
             components.store(coordinates, element)
             css_map.store(coordinates, 'explain right')
           end
@@ -235,14 +236,14 @@ module ODDB
 (function () {
 var span    = document.getElementById('toggle_switch');
 var legends = document.getElementById('explain_result');
-var note    = document.getElementById('legal_note');
-if (note.style.display != 'none') {
+#{legal_note? ? "var note    = document.getElementById('legal_note');" : ''}
+if (legends.style.display != 'none') {
   legends.style.display = 'none';
-  note.style.display    = 'none';
+  #{legal_note? ? "note.style.display    = 'none'; " : ''}
   span.innerHTML        = '#{@lookandfeel.lookup(:show_legend)}';
 } else {
   legends.style.display = 'block';
-  note.style.display    = 'block';
+  #{legal_note? ? "note.style.display    = 'block';" : ''}
   span.innerHTML        = '#{@lookandfeel.lookup(:hide_legend)}';
 }
 })();
@@ -250,7 +251,6 @@ JS
         span
       end
       def legal_note?
-        @lookandfeel.navigation.include?(:legal_note) or
         !@lookandfeel.disabled?(:legal_note)
       end
     end

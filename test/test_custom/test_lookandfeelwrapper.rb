@@ -261,9 +261,18 @@ module ODDB
       flexstub(@session) do |s|
         s.should_receive(:zone)
       end
-      expected = [:meddrugs_update, :legal_note, :data_declaration, :home]
+      expected = [:meddrugs_update, :data_declaration, :home]
       assert_equal(expected, @look.navigation)
     end
+
+    def test_enabled
+      flexstub(@session) do |s|
+        s.should_receive(:zone)
+      end
+      # assert_equal(false, @look.enabled?(:feedback))
+      # assert_equal(true,  @look.enabled?(:external_css))
+    end
+
     def test_result_list_components
       expected = {
         [0, 0]=>:limitation_text,

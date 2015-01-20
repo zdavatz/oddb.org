@@ -373,7 +373,7 @@ module ODDB
       }
     end
     def navigation
-      [ :meddrugs_update, :legal_note, :data_declaration ] + zone_navigation + [ :home ]
+      [ :meddrugs_update, :data_declaration ] + zone_navigation + [ :home ]
     end
     def result_list_components
       {
