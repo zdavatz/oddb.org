@@ -283,6 +283,7 @@ module ODDB
       :explain_ddd_price_url,
       :explain_deductible_url,
       :explain_generic_url,
+      :explain_narc_url,
       :explain_lppv_url,
       :explain_original_url,
       :explain_vaccine_url,

@@ -137,7 +137,7 @@ module ODDB
         explain_link(model, :lppv)
       end
       def explain_narc(model, session=@session)
-        [square(:narc), @lookandfeel.lookup(:explain_narc) ]
+        explain_square_link(model, :narc, @lookandfeel.lookup(:explain_narc_url))
       end
       def explain_link(model, key)
         unless ( @lookandfeel.disabled?(:explain_link) or  @lookandfeel.disabled?("explain_#{key}_url"))
