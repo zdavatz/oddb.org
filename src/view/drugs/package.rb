@@ -107,7 +107,7 @@ class PackageInnerComposite < HtmlGrid::Composite
         [3,12] => :narcotic
       )
     end
-    if(@lookandfeel.enabled?(:feedback))
+    if @lookandfeel.enabled?(:feedback) and not @lookandfeel.disabled?(:feedback)
       components.update(
         [0,11] => :feedback_label,
         [1,11] => :feedback,

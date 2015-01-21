@@ -212,8 +212,8 @@ module ODDB
     end
     def test_explain_result_components
       expected = {
-      [0, 0]=>:explain_original,
-      [0, 1]=>:explain_generic,
+        [0, 0]=>:explain_original,
+        [0, 1]=>:explain_generic,
         [0, 2]=>:explain_comarketing,
         [0, 3]=>:explain_vaccine,
         [0, 4]=>:explain_complementary,
@@ -222,20 +222,18 @@ module ODDB
         [0, 7]=>:explain_cas,
         [1, 0]=>:explain_limitation,
         [1, 1]=>:explain_fachinfo,
-        [1, 2]=>:explain_patinfo,
-        [1, 3]=>:explain_narc,
-        [1, 4]=>:explain_anthroposophy,
-        [1, 5]=>:explain_homeopathy,
-        [1, 6]=>:explain_phytotherapy,
-        [1, 7]=>:explain_parallel_import,
-        [2, 0]=>"explain_pbp",
-        [2, 1]=>:explain_deductible,
-        [2, 2]=>"explain_sl",
-        [2, 3]=>"explain_slo",
+        [1, 2]=>:explain_narc,
+        [1, 3]=>:explain_anthroposophy,
+        [1, 4]=>:explain_homeopathy,
+        [1, 5]=>:explain_phytotherapy,
+        [1, 6]=>:explain_parallel_import,
+        [2, 0]=>"explain_efp",
+        [2, 1]=>"explain_pbp",
+        [2, 2]=>:explain_deductible,
+        [2, 3]=>"explain_sl",
         [2, 4]=>"explain_slg",
-        [2, 5]=>:explain_feedback,
-        [2, 6]=>:explain_lppv,
-        [2, 7]=>:explain_google_search
+        [2, 5]=>"explain_slo",
+        [2, 6]=>:explain_lppv
       }
       assert_equal(expected, @look.explain_result_components)
     end

@@ -30,6 +30,7 @@ module ODDB
         :explain_homeopathy      => 'infos',
         :explain_parallel_import => 'infos',
         :explain_fachinfo        => 'infos',
+        'explain_ebp'            => 'infos',
         'explain_pbp'            => 'infos',
         :explain_patinfo         => 'infos',
         'explain_mail_order_price_title'   => 'bold',
