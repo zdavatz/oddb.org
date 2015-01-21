@@ -321,11 +321,15 @@ module ODDB
       end
 			def narcotic(model, session=@session)
 				if(model.bm_flag)
-          link = HtmlGrid::Link.new(:square_narc, model, @session, self)
-          link.href = @lookandfeel.lookup(:explain_narc_url)
-          link.css_class = 'square infos'
-          link.set_attribute('title', @lookandfeel.lookup(:narcotic))
-          link
+          unless @lookandfeel.disabled?(:explain_narc_url)
+            link = HtmlGrid::Link.new(:square_narc, model, @session, self)
+            link.href = @lookandfeel.lookup(:explain_narc_url)
+            link.css_class = 'square infos'
+            link.set_attribute('title', @lookandfeel.lookup(:narcotic))
+            link
+          else
+            link = HtmlGrid::SimpleLabel.new(:square_narc, model, @session, self)
+          end
 				elsif(model.vaccine)
 					square(:vaccine)
 				#elsif(model.export_flag)
