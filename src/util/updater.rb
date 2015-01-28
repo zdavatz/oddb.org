@@ -207,6 +207,10 @@ module ODDB
         update_interactions
         update_analysis
       }
+      run_on_monthday(20) {
+        update_whocc
+      }
+
     end
     def run_random
       # no task
