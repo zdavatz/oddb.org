@@ -164,7 +164,7 @@ module ODDB
     def report
       [
         sprintf("Imported %3i ATC-Codes", @count),
-        sprintf("Updated  %3i English descriptions", @created),
+        sprintf("Created  %3i English descriptions", @created),
         sprintf("Updated  %3i Guidelines", @guidelines),
         sprintf("Updated  %3i DDD-Guidelines", @ddd_guidelines),
       ].join("\n")
