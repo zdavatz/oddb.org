@@ -78,10 +78,20 @@ module ODDB
           debug_msg "#{__FILE__}: #{__LINE__}: skipping update_atc_codes #{iksnr} no registration found" if $VERBOSE
         else
           sequence = registration.sequence(seqnr)
-          if(sequence.nil? || sequence.atc_class.nil?)
-            debug_msg "#{__FILE__}: #{__LINE__}: skipping update_atc_codes #{iksnr} atc_code_swissmedic #{atc_code_swissmedic}"
+          debug_msg "#{__FILE__}: #{__LINE__}: update_atc_codes #{iksnr} seqnr #{seqnr} -> #{sequence.inspect} atc_code_swissmedic #{atc_code_swissmedic}"
+          if sequence == nil
+            debug_msg "#{__FILE__}: #{__LINE__}: update_atc_code must add sequence #{seqnr} for iksnr #{iksnr} atc is #{atc_code_swissmedic} call update_sequence"
+            update_sequence(registration, row)
+          elsif atc_code_swissmedic == nil
+            debug_msg "#{__FILE__}: #{__LINE__}: skipping update_atc_codes #{iksnr} seqnr #{seqnr} atc_code_swissmedic #{atc_code_swissmedic} nil seq? #{sequence.nil?.inspect}"
+          elsif sequence.atc_class == nil
+            debug_msg "#{__FILE__}: #{__LINE__}: update_atc_code iksnr #{iksnr} seqnr #{seqnr} sequence.atc_class is nil. setting it to #{atc_code_swissmedic}"
+            idx += 1
+            sequence.atc_class=@app.atc_class(atc_code_swissmedic)
+            sequence.odba_isolated_store
           else
             atc_code_sequence   = sequence.atc_class.code
+            debug_msg "#{__FILE__}: #{__LINE__}: update_atc_code iksnr #{iksnr} seqnr #{seqnr} atc_code_sequence #{atc_code_sequence.inspect}"
             unless atc_code_swissmedic == atc_code_sequence
               idx += 1
               debug_msg "#{__FILE__}: #{__LINE__}: atc_code update nr #{idx} for iksnr #{iksnr}/#{seqnr} atc_code_swissmedic #{atc_code_swissmedic} atc_code_sequence #{atc_code_sequence} odba_isolated_store"
