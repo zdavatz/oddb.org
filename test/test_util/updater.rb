@@ -284,6 +284,10 @@ module ODDB
         assert_equal(expected, @updater.logfile_stats)
       end
     end
+    def test_update_atc_class
+      setup_update_notify_simple(Atc_lessPlugin, :import)
+      assert_equal('notify', @updater.update_atc_less)
+    end
     def setup_log_notify_bsv
       log = flexmock('log') do |log|
         log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})

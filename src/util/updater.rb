@@ -6,6 +6,7 @@
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
 require 'plugin/analysis'
+require 'plugin/atc_less'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
@@ -434,8 +435,11 @@ module ODDB
       }
       return return_value_plug_update
     end
+    def update_atc_less
+      update_immediate(Atc_lessPlugin, 'ATC-less', :update_atc_codes)
+    end
     def update_swissmedic_followers
-      # update_trade_status # replaced by swissINDEX
+      update_atc_less
       update_package_trade_status_by_swissindex
       update_comarketing
       update_swissreg_news
