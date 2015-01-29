@@ -355,7 +355,6 @@ module ODDB
         [0,4] =>  :explain_complementary,
         [0,5] =>  'explain_unknown',
         [0,6] =>  'explain_expired', # Pendente Zulassungsverlängerung
-        [0,7] =>  :explain_cas,
 
         [1,0] =>  :explain_limitation,
         [1,1] =>  :explain_fachinfo,
