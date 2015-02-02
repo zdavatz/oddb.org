@@ -7,6 +7,8 @@ require 'rubygems'
 require 'savon'
 require 'mechanize'
 require 'drb'
+require 'config'
+
 
 module ODDB
   module Swissindex
@@ -78,7 +80,7 @@ class SwissindexNonpharma < RequestHandler
   include Archiver
   def initialize
     super
-    @base_url = 'https://prod.ws.e-mediat.net/wv_getMigel/wv_getMigel.aspx?Lang=DE&Query='
+    @base_url = ODDB.config.migel_base_url
   end
   def download_all(lang = 'DE')
     client = Savon::Client.new do | wsdl, http |

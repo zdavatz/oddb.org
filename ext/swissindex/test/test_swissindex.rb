@@ -3,6 +3,7 @@
 # ODDB::Swissindex::SwissindexPharma -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
@@ -12,7 +13,21 @@ require 'swissindex'
 module ODDB
 	module Swissindex
 
-		class TestSwissindex <Minitest::Test
+    class TestSwissindexNonpharmaFromUrl <Minitest::Test
+      include FlexMock::TestCase
+      def setup
+        @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
+      end
+      def test_search_item
+        nonpharma = {:item => {'key' => 'item'}}
+        pharmacode = '6134345'
+        result = @nonpharma.search_item(pharmacode)
+        assert_equal(pharmacode, result[:phar])
+        assert(nil != result[:dscr])
+        end
+    end
+
+    class TestSwissindex <Minitest::Test
       include FlexMock::TestCase
 			def test_session
         ODDB::Swissindex.session do |pharma|
