@@ -37,10 +37,12 @@ module ODDB
       @missing_sequences = []
       @atc_code_was_nil  = []
       @atc_code_corrected = []
-      @nr_correct_atc_codes = 0
+      @nr_atc_code_from_swissmedic = 0
+      @nr_atc_code_from_swissindex = 0
       @obsolete = []
       @swissindex_to_atc_code = {}
       @no_such_atc_code_in_database = []
+      @atc_code_longer_from_swissindex = []
     end
     def debug_msg(msg)
       return
@@ -99,7 +101,7 @@ module ODDB
       row_nr = 0
       workbook.worksheets[0].each do |row|
         row_nr += 1
-        next unless row.cells[0] and row.cells[0].value and row.cells[0].value.to_i > 0
+        next unless row and row.cells[0] and row.cells[0].value and row.cells[0].value.to_i > 0
         iksnr               = "%05i" % row.cells[0].value.to_i
         seqnr               = "%02d" % row.cells[1].value.to_i
         atc_code_swissmedic = row.cells[5] ? row.cells[5].value : nil
@@ -130,20 +132,33 @@ module ODDB
             sequence.atc_class=@app.atc_class(good_atc_code)
             sequence.odba_isolated_store
           else
-            atc_code_in_db = @app.atc_class(good_atc_code)
+            atc_code_sequence = sequence.atc_class.code
+            atc_code_in_db    = @app.atc_class(good_atc_code)
             unless atc_code_in_db
               @no_such_atc_code_in_database << "#{saved_reg_seq} ATC #{good_atc_code}"
               debug_msg "#{__FILE__}: #{__LINE__}: atc_code update iksnr #{iksnr}/#{seqnr}. No such ATC-code #{good_atc_code} in database"
               next
             end
-            atc_code_sequence   = sequence.atc_class.code
-            if good_atc_code == atc_code_sequence
-              debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} good_atc_code #{good_atc_code} correct"
-              @nr_correct_atc_codes += 1
-            else
+            if atc_code_swissindex and atc_code_swissmedic and atc_code_swissmedic.length < atc_code_swissindex.length and @app.atc_class(atc_code_swissindex)
+              if atc_code_sequence == atc_code_swissindex
+                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissindex}"
+                @nr_atc_code_from_swissindex += 1
+              else
+                @atc_code_longer_from_swissindex<< "#{saved_reg_seq} #{atc_code_sequence} -> #{atc_code_swissindex}"
+                debug_msg "#{__FILE__}: #{__LINE__}: longer atc_code  from swissindex  #{atc_code_swissindex} for  #{atc_code_sequence} for iksnr #{iksnr}/#{seqnr}"
+                sequence.atc_class=@app.atc_class(atc_code_swissindex)
+                sequence.odba_isolated_store
+              end
+            elsif atc_code_sequence == atc_code_swissindex
+                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissindex}"
+                @nr_atc_code_from_swissindex += 1
+            elsif atc_code_sequence == atc_code_swissmedic
+              debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissmedic}"
+              @nr_atc_code_from_swissmedic += 1
+            elsif atc_code_sequence != good_atc_code
               @atc_code_corrected << "#{saved_reg_seq} #{atc_code_sequence} -> #{good_atc_code}"
               idx += 1
-              debug_msg "#{__FILE__}: #{__LINE__}: atc_code update nr #{idx} for iksnr #{iksnr}/#{seqnr} #{atc_code_sequence} -> #{good_atc_code}"
+              debug_msg "#{__FILE__}: #{__LINE__}: update atc_code nr #{idx} for iksnr #{iksnr}/#{seqnr} #{atc_code_sequence} -> #{good_atc_code}"
               sequence.atc_class=@app.atc_class(good_atc_code)
               sequence.odba_isolated_store
             end
@@ -179,7 +194,8 @@ module ODDB
       lines = [
         "ODDB::Atc_lessPlugin - Report #{@@today.strftime('%d.%m.%Y')}",
         "Total time to update: #{"%.2f" % @update_time} [m]",
-        "Total number of sequences with a correct ATC-code: #{@nr_correct_atc_codes}",
+        "Total number of sequences with ATC-codes from swissmedic: #{@nr_atc_code_from_swissmedic}",
+        "Total number of sequences with ATC-codes from swissindex: #{@nr_atc_code_from_swissindex}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
@@ -211,6 +227,12 @@ module ODDB
         lines << "All ATC codes present in database"
       else
         lines << "#{@no_such_atc_code_in_database.size} ATC codes absent in database#{join_string}#{@no_such_atc_code_in_database.join(join_string)}"
+      end
+
+      if @atc_code_longer_from_swissindex.size == 0
+        lines << "All ATC codes from swissmedic are as long as those from swissindex"
+      else
+        lines << "#{@atc_code_longer_from_swissindex.size} ATC code taken from swissindex where they are longer#{join_string}#{@atc_code_longer_from_swissindex.join(join_string)}"
       end
 
       if @obsolete.size == 0

@@ -33,9 +33,37 @@
           <GLN>7601001392571</GLN>
         </COMP>
       </ITEM>
+      <ITEM DT="2014-10-17T00:00:00">
+        <GTIN>7680547080173</GTIN>
+        <PHAR>2065274</PHAR>
+        <STATUS>A</STATUS>
+        <STDATE>1999-02-16T00:00:00</STDATE>
+        <LANG>DE</LANG>
+        <DSCR>ACTIVELLE Filmtabl</DSCR>
+        <ADDSCR>28 Stk</ADDSCR>
+        <ATC>G03FA01</ATC>
+        <COMP>
+          <NAME>Novo Nordisk Pharma AG</NAME>
+          <GLN>7601001001190</GLN>
+        </COMP>
+      </ITEM>
+      <ITEM DT="2014-10-17T00:00:00">
+        <GTIN>7680547080183</GTIN>
+        <PHAR>2065274</PHAR>
+        <STATUS>A</STATUS>
+        <STDATE>1999-02-16T00:00:00</STDATE>
+        <LANG>DE</LANG>
+        <DSCR>ACTIVELLE Filmtabl</DSCR>
+        <ADDSCR>28 Stk</ADDSCR>
+        <ATC>G03FA01</ATC>
+        <COMP>
+          <NAME>Novo Nordisk Pharma AG</NAME>
+          <GLN>7601001001190</GLN>
+        </COMP>
+      </ITEM>
        <RESULT>
         <OK_ERROR>OK</OK_ERROR>
-        <NBR_RECORD>2</NBR_RECORD>
+        <NBR_RECORD>4</NBR_RECORD>
       </RESULT>
     </PHARMA>
   </soap:Body>
