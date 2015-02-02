@@ -91,6 +91,7 @@ No obsolete sequence '00' found"
       @app.should_receive(:atc_class).with('J06AA').and_return(atc_J06AA)
       @app.should_receive(:atc_class).with('V07AB').and_return(atc_V07AB)
       @app.should_receive(:atc_class).with('V07').and_return(nil)
+      @app.should_receive(:rebuild_indices).once.with('atcless')
       @app.should_receive(:registrations).and_return(
         {'00279' =>  reg_00279, }
       )

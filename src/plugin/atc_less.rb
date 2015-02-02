@@ -165,6 +165,9 @@ module ODDB
           end
       }
       # debug_msg "#{__FILE__}: #{__LINE__}: Removed #{@obsolete} obsolete sequences '00'"
+      debug_msg "#{__FILE__}: #{__LINE__}: start rebuild_indices atcless"
+      @app.rebuild_indices('atcless')
+      debug_msg "#{__FILE__}: #{__LINE__}: finished rebuild_indices atcless"
       end_time = Time.now - start_time
       @update_time = (end_time / 60.0).to_i
       debug_msg("update_atc_codes Done with #{@packungen_xlsx}")
