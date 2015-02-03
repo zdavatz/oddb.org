@@ -17,6 +17,7 @@ class WelcomeHeadDoctors < View::WelcomeHead
 		[1,0,0]	=>	:sponsor,
 		[1,0,1]	=>	"break",
 		[1,0,2]	=>	"home_welcome_doctors",
+    [1,0,3] =>  :welcome,
 	}
 	end
 		end
