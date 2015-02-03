@@ -27,8 +27,8 @@ module ODDB
     end
     def export_galenic_forms(name='galenic_forms.yaml')
       forms =  []
-      @app.each_galenic_form.sort.map { |key,value| forms << value} 
-      export_array(name, forms.values)
+      @app.each_galenic_form { |x| forms << x }
+      export_array(name, forms)
     end
     def export_galenic_groups(name='galenic_groups.yaml')
       groups = []
