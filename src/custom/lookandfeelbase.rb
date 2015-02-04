@@ -1406,7 +1406,7 @@ Zeno Davatz
 				:register_download				=>	'Download-Registrierung',
 				:registration_count				=>	'Anzahl Registrationen',
 				:registration_date				=>	'Registrierungsdatum',
-				:registration_holder			=>	'Zulassungsinhaber5',
+				:registration_holder			=>	'Zulassungsinhaber',
 				:registration_subject			=>	'Neue Registration',
 				:registration							=>	'Registration',
 				:regulatory_email					=>	'Regulatory-E-Mail',
