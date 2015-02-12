@@ -307,7 +307,7 @@ module ODDB
         :deductible_title1        =>  ' Selbstbehalt.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
         :explain_complementary    =>  '&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
-        :refdata                  =>  'Laut RefData nicht gelistet',
+        :refdata                  =>  'In RefData nicht gelistet',
       },
       'fr'  =>  {
         :home_welcome  =>  'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
