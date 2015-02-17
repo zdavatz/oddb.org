@@ -864,6 +864,8 @@ module ODDB
 			alias :result :search
 			def _search_drugs(query, stype)
 				case stype
+        when 'st_combined'
+          @session.search_combined(query, @session.language)
 				when 'st_sequence'
 					@session.search_exact_sequence(query)
 				when 'st_substance'

@@ -399,7 +399,7 @@ module ODDB
       }
     end
     def search_type_selection
-      ['st_oddb']
+      ['st_combined']
     end
     def zones
       [

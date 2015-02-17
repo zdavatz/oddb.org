@@ -811,14 +811,19 @@ class TestOddbApp <MiniTest::Unit::TestCase
     expected = ODDB::SearchResult.new
     expected.atc_classes = []
     expected.search_type = :sequence
-    #assert_equal(expected, @app.search_exact_sequence('query'))
     assert(same?(expected, @app.search_exact_sequence('query')))
+  end
+  def test_search_combined
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :combined
+    result = @app.search_combined('query', 'lang')
+    assert(same?(expected, result), "Result #{result.inspect} should match #{expected.inspect}" )
   end
   def test_search_exact_substance
     expected = ODDB::SearchResult.new
     expected.atc_classes = []
     expected.search_type = :substance
-    #assert_equal(expected, @app.search_exact_substance('query'))
     assert(same?(expected, @app.search_exact_substance('query')))
   end
   def test_search_pharmacies

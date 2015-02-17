@@ -244,6 +244,18 @@ describe "ch.oddb.org" do
     false.should == true
   end
 
+  it "should be possible to find Budenofalk and Budesonid Sandoz via combined search" do
+    @browser.link(:name, 'drugs').click
+    @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
+    @browser.text_field(:name, "search_query").value = "Budesonid"
+    @browser.button(:name, 'search').click
+    text = @browser.text.clone
+    text.should_not match LeeresResult
+    text.should match('Budesonid Sandoz') # by price
+    text.should match('Budenofalk')       # by component
+  end unless ['just-medical'].index(Flavor)
+
+
   after :all do
     @browser.close
   end

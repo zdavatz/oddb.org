@@ -1083,6 +1083,17 @@ class OddbPrevalence
 		sequences = search_sequences(query)
 		_search_exact_classified_result(sequences, :sequence)
 	end
+  def search_combined(query, lang)
+    result = search_oddb(query, lang)
+    result_substances = search_exact_substance(query)
+    result_substances.atc_classes.each{
+      |atc|
+      result.atc_classes << atc unless result.atc_classes.index(atc)
+    }
+    result.search_type = :combined
+    result
+  end
+
 	def search_exact_substance(query)
 		sequences = ODBA.cache.\
 			retrieve_from_index('substance_index_sequence', query)
