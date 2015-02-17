@@ -78,10 +78,9 @@ module ODDB
 			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
 			:deductible_m	=>	[nil, 'deductible_g', 'deductible_o'],
       :search_type => [
-        'st_oddb', 'st_sequence', 'st_substance',
+        'st_oddb', 'st_combined', 'st_sequence', 'st_substance',
         'st_company', 'st_indication', 'st_interaction',
         'st_unwanted_effect', 'st_registration', 'st_pharmacode',
-        'st_combined'
       ],
       :fachinfo_search_type => [
         'fi_usage', 'fi_interactions', 'fi_unwanted_effects'
