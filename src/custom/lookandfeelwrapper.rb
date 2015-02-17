@@ -294,7 +294,7 @@ module ODDB
     ]
     DICTIONARIES = {
       'de'  =>  {
-        :home_welcome  =>  'Willkommen bei <a href="http://www.evidentia.ch/">evidentia</a> und oddb.org',
+        :html_title                =>  'evidentia - Wissen und Werkzeuge für Ärzte',
         :explain_comarketing_url   =>  false,
         :explain_complementary_url =>  false,
         :explain_ddd_price_url     =>  false,
@@ -310,7 +310,8 @@ module ODDB
         :refdata                  =>  'In RefData nicht gelistet',
       },
       'fr'  =>  {
-        :home_welcome  =>  'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
+        :html_title                =>  'evidentia - savoir et outils pour médecins',
+        :home_welcome              =>  'Bienvenu sur <a href="http://www.evidentia.ch/">evidentia</a> et oddb.org',
         :explain_comarketing_url   =>  false,
         :explain_complementary_url =>  false,
         :explain_ddd_price_url     =>  false,
@@ -326,7 +327,8 @@ module ODDB
         :refdata                  =>  'Ne figurant pas dans RefData',
       },
       'en'  =>  {
-        :home_welcome  =>  'Welcome to <a href="http://www.evidentia.ch/">evidentia</a> and oddb.org',
+        :html_title               =>  'evidentia - know-how and tools for doctors',
+        :home_welcome             =>  'Welcome to <a href="http://www.evidentia.ch/">evidentia</a> and oddb.org',
       },
     }
     RESOURCES = {
