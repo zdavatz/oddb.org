@@ -1086,10 +1086,16 @@ class OddbPrevalence
   def search_combined(query, lang)
     result = search_oddb(query, lang)
     result_substances = search_exact_substance(query)
-    result_substances.atc_classes.each{
+    result_substances.atc_classes.each do
       |atc|
-      result.atc_classes << atc unless result.atc_classes.index(atc)
-    }
+      add_it = true
+      result.atc_classes.each do
+        |item|
+        add_it = false if item.code == atc.code
+        break unless add_it
+      end
+      result.atc_classes << atc if add_it
+    end
     result.search_type = :combined
     result
   end
