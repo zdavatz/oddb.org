@@ -282,7 +282,10 @@ class ResultList < HtmlGrid::List
 		link
 	end
 	def compose_list(model=@model, offset=[0,0])
-    if(model.respond_to?(:overflow?) && model.overflow?)
+    valid_search_types = []
+    valid_search_types = @lookandfeel.search_type_selection if(@lookandfeel.respond_to?(:search_type_selection))
+    if(model.respond_to?(:overflow?) && model.overflow?) &&
+        (@lookandfeel.enabled?(:explain_atc) or valid_search_types.size > 1)
       x, y, = offset
       half = full_colspan / 2
       @grid.add(explain_atc(model), x, y)
