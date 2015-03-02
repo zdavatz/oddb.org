@@ -275,6 +275,7 @@ module ODDB
       :atc_division_link,
       :atc_pharmacokinetic_link,
       :legal_note,
+      :explain_atc,
       :explain_link,
       :explain_comarketing_url,
       :explain_complementary_url,

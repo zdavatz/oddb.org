@@ -329,6 +329,7 @@ class ResultList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
   def explain_atc(model)
+    return nil unless @lookandfeel.enabled?(:explain_atc)
     link = HtmlGrid::Link.new(:explain_atc, model, @session, self)
     link.href = @lookandfeel.lookup(:explain_atc_url)
     link.css_class = 'list bold'
