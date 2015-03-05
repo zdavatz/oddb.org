@@ -27,7 +27,7 @@ module ODDB
       @@epha_interactions
     end
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
-    CSV_ORIGIN_URL  = 'https://download.epha.ch/cleaned/matrix.csv'
+    CSV_ORIGIN_URL  = 'https://download.epha.ch/data/matrix/matrix.csv'
     def EphaInteractions.read_csv
       @csv_file_path = CSV_FILE
       latest = @csv_file_path.sub(/\.csv$/, '-latest.csv')
