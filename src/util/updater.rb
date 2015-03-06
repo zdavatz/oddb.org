@@ -15,6 +15,7 @@ require 'plugin/medreg_doctor'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
+require 'plugin/epha_interactions'
 require 'plugin/hospitals'
 require 'plugin/lppv'
 require 'plugin/medwin'
@@ -368,6 +369,9 @@ module ODDB
     def update_medical_products(opts)
       @options = opts
       update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
+    end
+    def update_epha_interactions
+      update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
     end
     def update_hospitals
       update_simple(HospitalPlugin, 'Hospitals')
