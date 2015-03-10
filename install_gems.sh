@@ -30,7 +30,7 @@ gem install paypal --version=2.0.0
 gem install pg --version=0.17.1
 gem install rclconf --version=1.0.0
 gem install rdoc --version=4.1.1
-gem install rmagick --version=2.13.2
+gem install rmagick --version=2.13.4
 gem install rmail --version=1.0.0
 gem install ruby-ole --version=1.2.11.7
 
@@ -40,6 +40,7 @@ gem install rubyzip --version=1.1.6
 # wasabi must be installed before savon or it installing savon will fail
 gem install wasabi --version=2.3.0
 gem install savon --version=0.9.7
+gem install sax-machine --version=1.3.0
 gem install sbsm --version=1.2.3
 gem install spreadsheet --version=0.9.7
 gem install swissmedic-diff --version=0.1.7
