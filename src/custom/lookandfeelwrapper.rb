@@ -333,7 +333,7 @@ module ODDB
       },
     }
     RESOURCES = {
-      :external_css => ' http://swiss.mailr.se/css/oddb.css',
+      :external_css => 'http://evidentia.ch/css/oddb.css',
     }
     def compare_list_components
       {
