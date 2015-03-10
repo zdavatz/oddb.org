@@ -119,7 +119,7 @@ class InteractionChooserDrug < HtmlGrid::Composite
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
     @drugs = @session.choosen_drugs
-    @interactions = ODDB::EphaInteractions.get_interactions(model.atc_class.code, @drugs)
+    @interactions = EphaInteractions.get_interactions(model.atc_class.code, @drugs)
     if @model.is_a? ODDB::Package
       nextRow = 0
       unless @hide_interaction_headers
@@ -175,7 +175,7 @@ return false;
       span.set_attribute('class', 'print bold italic')
       list.value << span
     end
-    ODDB::EphaInteractions.get_interactions(model.atc_class.code, @session.choosen_drugs).each {
+    EphaInteractions.get_interactions(model.atc_class.code, @session.choosen_drugs).each {
       |interaction|
       headerDiv = HtmlGrid::Div.new(model, @session, self)
       headerDiv.value = []

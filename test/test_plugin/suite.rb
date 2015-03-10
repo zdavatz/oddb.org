@@ -9,6 +9,7 @@ buggy = [
   'bsv_xml.rb',
   'invoicer.rb',
   'medical_products.rb',
+  'epha_interactions.rb',
   'swissmedic.rb',
   'text_info.rb',
   'text_info_swissmedicinfo',

@@ -68,7 +68,7 @@ describe "ch.oddb.org" do
     inhalt.should match "Zaunplatz 2"
     inhalt.should match "8750 Glarus"
     @browser.link(:text => /map.search/).click
-    @browser.url.should match /8750-glarus\/zaunplatz-2/
+    @browser.url.should match /8750-glarus\/zaunplatz-2/i
     @browser.back
   # go back to search result
     @browser.back

@@ -1065,7 +1065,9 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
 
   def test_epha_interaction_count
-    assert(@app.epha_interaction_count > 1000)
+    assert_equal(0, @app.epha_interaction_count)
+	@app.create_epha_interaction('atc_code_self', 'atc_code_other')
+    assert_equal(1, @app.epha_interaction_count)
   end
 
   def test_get_epha_interaction
@@ -1073,8 +1075,21 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
 
   def test_epha_interaction
-    code_0 = ODDB::EphaInteractions.get.first[0][0]
-    code_1 = ODDB::EphaInteractions.get.first[0][1]
+      @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
+      @@vardir = File.expand_path '../var', File.dirname(__FILE__)
+      assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
+      FileUtils.mkdir_p @@vardir
+      ODDB.config.data_dir = @@vardir
+      ODDB.config.log_dir = @@vardir
+      @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
+      @latest = @fileName.sub('.csv', '-latest.csv')
+      FileUtils.rm(@latest) if File.exists?(@latest)
+      @agent = flexmock(Mechanize.new)
+      @agent.should_receive(:get).and_return(IO.read(@fileName))
+      @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
+      assert(@plugin.update(@agent, @fileName))
+	code_0 = 'N06AB06'
+	code_1 = 'M03BX02'
     atc_class_0 = flexmock('atc_class_0') do |reg|
       reg.should_receive(:code).and_return(code_0)
     end
@@ -1092,9 +1107,10 @@ class TestOddbApp <MiniTest::Unit::TestCase
     end
     @app.registrations = {  '1111' => drug_0, '2222' => drug_1,}
     drugs              = {  '1111' => drug_0, '2222' => drug_1,}
-    res_0 = ODDB::EphaInteractions.get_interactions(code_1, drugs)
-    assert_equal(1, res_0.size)
-    assert(@app.get_epha_interaction(code_0, code_1))
+    res_1 = @app.get_epha_interaction(code_1, drugs)
+    assert_equal(nil, res_1)
+    res_2 = @app.get_epha_interaction(code_0, code_1)
+    assert_equal(ODDB::EphaInteraction, res_2.class)
   end
 
 end

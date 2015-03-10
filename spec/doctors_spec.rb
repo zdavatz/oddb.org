@@ -81,8 +81,8 @@ AerzteDefinitions = [
                  }
                            # Check map link
                               @browser.link(:text => /map.search/).click
-                              @browser.url.should match /bahnhofstr/
-                              @browser.url.should match /8753-mollis/
+                              @browser.url.should match /bahnhofstr/i
+                              @browser.url.should match /8753-mollis/i
                               @browser.back
                            # go back to search result
                               @browser.back

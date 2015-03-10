@@ -57,6 +57,7 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups, :shorten_paths
+  attr_accessor  :epha_interactions_hash,  :epha_interactions
   VALID_EAN13 = /^\d{13}/
 	def initialize
 		init
@@ -73,7 +74,10 @@ class OddbPrevalence
 		@currency_rates ||= {}
     @divisions ||= {}
 		@doctors ||= {}
-    @experiences ||= {}
+		@epha_interactions ||= []
+		@epha_interactions_hash ||= {}
+		ODDB::EphaInteractions.set(@epha_interactions_hash)
+		@experiences ||= {}
 		@fachinfos ||= {}
     @feedbacks ||= {}
 		@galenic_forms ||= []
@@ -387,6 +391,12 @@ class OddbPrevalence
     experience = ODDB::Experience.new
     @experiences.store(experience.oid, experience)
   end
+  def create_epha_interaction(atc_code_self, atc_code_other)
+    epha_interaction = ODDB::EphaInteraction.new
+    @epha_interactions_hash ||= {}
+    @epha_interactions_hash[ [atc_code_self, atc_code_other] ] = epha_interaction
+    epha_interaction
+  end
   def create_hospital(ean13)
     raise "ean13 #{ean13.to_s[0..80]} not valid" unless  ean13.to_s.match(VALID_EAN13)
     hospital = ODDB::Hospital.new(ean13)
@@ -494,6 +504,28 @@ class OddbPrevalence
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
+  def delete_all_epha_interactions
+	if @epha_interactions.is_a?(Array)
+		$stdout.puts "delete_all_epha_interactions for #{@epha_interactions.class} with #{@epha_interactions.size} items"
+		@epha_interactions.each do |item|
+			delete(item.pointer) if item and item.pointer
+		end
+		@epha_interactions.odba_isolated_store
+		@epha_interactions = {}
+		@epha_interactions.odba_isolated_store
+		self.odba_store
+	end
+	if  @epha_interactions_hash.is_a?(Hash)
+		$stdout.puts "delete_all_epha_interactions for @epha_interactions_hash #{@epha_interactions_hash.class} with #{@epha_interactions_hash.size} items"
+		@epha_interactions_hash.values.each do |item|
+			delete(item.pointer) if item and item.pointer
+		end
+		@epha_interactions_hash.odba_isolated_store
+		@epha_interactions_hash = {}
+		@epha_interactions_hash.odba_isolated_store
+		self.odba_store
+	end
+  end
   def delete_all_narcotics
     @narcotics.values.each do |narc|
       delete(narc.pointer)
@@ -627,10 +659,13 @@ class OddbPrevalence
     @experiences[oid.to_i]
   end
   def get_epha_interaction(atc_code_self, atc_code_other)
-    ODDB::EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
+    EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
+  end
+  def epha_interaction(oid)
+    @epha_interactions_hash[oid.to_i]
   end
   def epha_interaction_count
-    ODDB::EphaInteractions.get.size
+     @epha_interactions_hash.size
   end
   def pharmacy(ean13)
     pharmacy_by_gln(ean13)

@@ -26,49 +26,11 @@ module ODDB
     def EphaInteractions.get
       @@epha_interactions
     end
+    def EphaInteractions.set(interactions)
+      @@epha_interactions = interactions
+    end
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
     CSV_ORIGIN_URL  = 'https://download.epha.ch/data/matrix/matrix.csv'
-    def EphaInteractions.read_csv
-      @csv_file_path = CSV_FILE
-      latest = @csv_file_path.sub(/\.csv$/, '-latest.csv')
-      if File.exist?(latest) and ((Time.now-File.mtime(latest))/3600).round < 24 # less than 24 hours old
-        $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: skip as latest #{latest} #{File.exist?(latest)} is only #{((Time.now-File.mtime(latest))/3600).round} hours old"
-      else
-        FileUtils.rm_f(@csv_file_path, :verbose => true)
-        target = Mechanize.new.get(CSV_ORIGIN_URL)
-        target.save_as @csv_file_path
-        $stdout.puts  "#{Time.now}: EphaInteractionPlugin.update: #{File.expand_path(@csv_file_path)} ?  #{File.exists?(@csv_file_path)}"
-        FileUtils.cp(@csv_file_path,  latest, :preserve => true, :verbose => true) unless defined?(MiniTest)
-      end
-      if File.exists?(latest)
-        @lineno = 0
-        first_line = nil
-        File.readlines(latest).each do |line|
-          @lineno += 1
-          line = line.force_encoding('utf-8')
-          next if /ATC1.*Name1.*ATC2.*Name2/.match(line)
-          begin
-            elements = CSV.parse_line(line)
-          rescue CSV::MalformedCSVError
-            $stdout.puts "CSV::MalformedCSVError in line #{@lineno}: #{line}"
-            next
-          end
-          epha_interaction = EphaInteraction.new
-          epha_interaction.atc_code_self = elements[0]
-          epha_interaction.atc_name = elements[1]
-          epha_interaction.atc_code_other = elements[2]
-          epha_interaction.name_other = elements[3]
-          epha_interaction.info = elements[4]
-          epha_interaction.action = elements[5]
-          epha_interaction.effect = elements[6]
-          epha_interaction.measures = elements[7]
-          epha_interaction.severity = elements[8]
-          EphaInteractions.get[ [epha_interaction.atc_code_self, epha_interaction.atc_code_other  ]] = epha_interaction
-        end
-        $stdout.puts "#{Time.now}: Added #{EphaInteractions.get.size} interaction from #{latest}"; $stdout.flush
-      end
-    end
-
     def self.calculate_atc_codes(drugs)
       atc_codes = []
       if drugs and !drugs.empty?
@@ -79,7 +41,14 @@ module ODDB
       atc_codes
     end
     def EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
-      EphaInteractions.get[ [atc_code_self, atc_code_other] ]
+      result = nil
+      @@epha_interactions.each{ | key, value |
+                                if key[0].to_s.eql?(atc_code_self) and  key[1].to_s.eql?(atc_code_other)
+                                  result = value
+                                  break
+                                end
+                              }
+      result
     end
 
     def EphaInteractions.get_interactions(my_atc_code, drugs)
@@ -114,24 +83,27 @@ module ODDB
     end
   end
   class EphaInteraction
-    # Based on information contained in http://community.epha.ch/interactions_de_utf8.csv
+    include ODBA::Persistable
+    include Persistence
+     # Based on information contained in http://community.epha.ch/interactions_de_utf8.csv
     # ATC1  Name1 ATC2  Name2 Info  Mechanismus Effekt  Massnahmen  Grad
     # N06AB06 Sertralin M03BX02 Tizanidin Keine Interaktion Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.  Keine Interaktion.  Die Kombination aus Sertralin und Tizanidin hat kein bekanntes Interaktionspotential. A
     attr_accessor :atc_code_self, :atc_code_other # these two items are our unique index. They may not be changed
     attr_accessor :atc_name, :name_other, :info, :action, :effect, :measures, :severity
-    EphaInteractions.read_csv if EphaInteractions.get.size == 0
 
     def initialize
+		super
     end
 
     def init(app)
+		@pointer.append(@oid)
     end
 
     def search_terms
       terms = [
         @atc_code_self, @atc_name,
         @atc_code_other, @name_other,
-        @info ,@action, @effect,
+        @info, @action, @effect,
         @measures, @severity
       ]
       ODDB.search_terms(terms)

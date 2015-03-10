@@ -15,7 +15,7 @@ require 'plugin/medreg_doctor'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
-#require 'plugin/epha_interactions'
+require 'plugin/epha_interactions'
 require 'plugin/hospitals'
 require 'plugin/lppv'
 require 'plugin/medwin'
@@ -187,6 +187,7 @@ module ODDB
     end
     def run
       logfile_stats
+      update_epha_interactions
 
       # recall, hpc
       update_swissmedic_feeds
