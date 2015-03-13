@@ -6,6 +6,7 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 require 'plugin/plugin'
 require 'util/oddbconfig'
 require 'util/persistence'
+require 'util/latest'
 require 'drb'
 require 'model/epha_interaction'
 
@@ -35,25 +36,15 @@ module ODDB
     def update(agent=Mechanize.new, csv_file_path = ODDB::EphaInteractions::CSV_FILE)
       @@report = []
       latest = csv_file_path.sub(/\.csv$/, '-latest.csv')
-      if EphaInteractions.get.size > 0 and File.exist?(latest) and ((Time.now-File.mtime(latest))/3600).round < 24 # less than 24 hours old
-        msg = "EphaInteractionPlugin.update: skip #{EphaInteractions.get.size } items as latest #{latest} #{File.exist?(latest)} is only #{((Time.now-File.mtime(latest))/3600).round} hours old"
-        @@report << msg
-        debug_msg(msg)
-      else
-        FileUtils.rm_f(csv_file_path, :verbose => true)
-        target = agent.get(ODDB::EphaInteractions::CSV_ORIGIN_URL)
-		if target.is_a?(String)
-			File.open(csv_file_path, 'w+') { |file| file.write(target) }
-		else
-			target.save_as csv_file_path
-		end
-        FileUtils.cp(csv_file_path,  latest, :preserve => true, :verbose => true)
+      if Latest.get_latest_file(latest, ODDB::EphaInteractions::CSV_ORIGIN_URL, agent)
         msg = "EphaInteractionPlugin.update latest #{latest} #{File.exists?(latest)} via #{File.expand_path(csv_file_path)} from #{ODDB::EphaInteractions::CSV_ORIGIN_URL}"
         @@report << msg
         debug_msg(msg)
         @lineno = 0
         first_line = nil
         @app.delete_all_epha_interactions
+        debug_msg(msg)
+        counter = 0
         File.readlines(latest).each do |line|
           @lineno += 1
           line = line.force_encoding('utf-8')
@@ -66,6 +57,7 @@ module ODDB
           end
           next if elements.size == 0 # Eg. empty line at the end
           epha_interaction = @app.create_epha_interaction(elements[0], elements[2])
+          counter += 1
           epha_interaction.atc_code_self = elements[0]
           epha_interaction.atc_name = elements[1]
           epha_interaction.atc_code_other = elements[2]

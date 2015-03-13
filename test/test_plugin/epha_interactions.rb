@@ -177,28 +177,14 @@ module ODDB
       @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
       @agent = flexmock(Mechanize.new)
-      @agent.should_receive(:get).and_return(IO.read(@fileName))
+      @page  = flexmock('page')
+      @page.should_receive(:body).by_default.and_return(IO.read(@fileName))
+      @agent.should_receive(:get).and_return(@page)
     end
     
     def teardown
       FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
-    end
-    def test_update_epha_interactions_skip_update
-      @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
-      assert(File.exists?(@fileName), "File #{@fileName} must exist")
-      FileUtils.cp(@fileName, @latest, :verbose => true)
-      @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
-      @app.delete_all_epha_interactions
-      assert(@plugin.update(@agent, @fileName))
-      report = @plugin.report
-	  puts report
-      assert_equal(nil, report.match("EphaInteractionPlugin.update: skip"))
-      assert_equal(1, report.match(/Added \d+ interactions/).size)
-      assert(@plugin.update(@agent, @fileName))
-      report = @plugin.report
-      assert(report.match("EphaInteractionPlugin.update: skip"))
-      assert_equal(nil, report.match(/Added \d+ interactions/))
     end
 
     def test_update_epha_interactions_update

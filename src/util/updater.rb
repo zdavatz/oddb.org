@@ -372,7 +372,16 @@ module ODDB
       update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
     end
     def update_epha_interactions
-      update_notify_simple(EphaInteractionPlugin, 'Epha Interaktionen', :update)
+      subj = 'EPHA interactions'
+      wrap_update(EphaInteractionPlugin, subj) {
+        plug = EphaInteractionPlugin.new(@app)
+        plug.update
+        unless plug.report.empty?
+          log = Log.new(@@today)
+          log.update_values(log_info(plug))
+          log.notify(subj)
+        end
+      }
     end
     def update_hospitals
       update_simple(HospitalPlugin, 'Hospitals')

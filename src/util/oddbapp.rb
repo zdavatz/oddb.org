@@ -506,23 +506,23 @@ class OddbPrevalence
 	end
   def delete_all_epha_interactions
 	if @epha_interactions.is_a?(Array)
-		$stdout.puts "delete_all_epha_interactions for #{@epha_interactions.class} with #{@epha_interactions.size} items"
 		@epha_interactions.each do |item|
 			delete(item.pointer) if item and item.pointer
+            @epha_interactions.delete(item)
 		end
-		@epha_interactions.odba_isolated_store
+		@epha_interactions.odba_store
 		@epha_interactions = {}
-		@epha_interactions.odba_isolated_store
+		@epha_interactions.odba_store
 		self.odba_store
 	end
 	if  @epha_interactions_hash.is_a?(Hash)
-		$stdout.puts "delete_all_epha_interactions for @epha_interactions_hash #{@epha_interactions_hash.class} with #{@epha_interactions_hash.size} items"
 		@epha_interactions_hash.values.each do |item|
 			delete(item.pointer) if item and item.pointer
+            @epha_interactions.delete(item)
 		end
-		@epha_interactions_hash.odba_isolated_store
 		@epha_interactions_hash = {}
-		@epha_interactions_hash.odba_isolated_store
+		@epha_interactions_hash.odba_store
+        ODDB::EphaInteractions.set(@epha_interactions_hash)
 		self.odba_store
 	end
   end
