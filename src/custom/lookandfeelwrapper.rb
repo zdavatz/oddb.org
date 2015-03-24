@@ -250,7 +250,7 @@ module ODDB
 	end
   class LookandfeelEvidentia < SBSM::LookandfeelWrapper
     def google_analytics_token
-      'UA-22215261-1'
+      'UA-22215261-3'
     end
     ENABLED = [
       :ajax,
