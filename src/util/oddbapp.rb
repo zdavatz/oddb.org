@@ -1204,6 +1204,8 @@ class OddbPrevalence
 		retrieve_from_index(index, query)
 	end
 	def search_single_substance(key)
+        substance = substances.find{ |x| x != nil and x.to_s.eql?(key)}
+        return substance if substance
 		result = ODDB::SearchResult.new
 		result.exact = true
     key = ODDB.search_term(key)
@@ -1336,7 +1338,7 @@ class OddbPrevalence
 			substance
     elsif neurotic
 			@substances.values.find { |subs|
-				subs.same_as?(key)
+				subs and subs.same_as?(key)
 			}
 		end
 	end

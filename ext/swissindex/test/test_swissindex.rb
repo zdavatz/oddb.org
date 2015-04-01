@@ -9,7 +9,7 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'swissindex'
-
+require 'pry'
 module ODDB
 	module Swissindex
 
@@ -18,18 +18,25 @@ module ODDB
       def setup
         @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
       end
+      def test_download_all
+        binding.pry
+        result = @nonpharma.download_all
+        assert_equal(pharmacode, result[:phar])
+        assert(nil != result[:dscr])
+      end
       def test_search_item
+        binding.pry
         nonpharma = {:item => {'key' => 'item'}}
         pharmacode = '6134345'
         result = @nonpharma.search_item(pharmacode)
         assert_equal(pharmacode, result[:phar])
         assert(nil != result[:dscr])
-        end
+      end if false
     end
 
     class TestSwissindex <Minitest::Test
       include FlexMock::TestCase
-			def test_session
+        def test_session
         ODDB::Swissindex.session do |pharma|
           assert_kind_of(ODDB::Swissindex::SwissindexPharma, pharma)
         end
@@ -403,9 +410,8 @@ module ODDB
         stdout_null do 
           assert_nil(@pharma.search_item(pharmacode))
         end
-      end
-
+      end  if false
     end
-	end # Swissindex
+  end # Swissindex
 
 end # ODDB

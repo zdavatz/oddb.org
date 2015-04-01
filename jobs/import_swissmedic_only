@@ -10,8 +10,23 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
+     opts = {
+        :fix_galenic_form       => false,
+        :iksnrs                 => [],
+        :update_compositions    => false,
+      }
+      ARGV.each do |arg|
+        if arg =~ /fix_galenic_form/
+          opts[:fix_galenic_form] = true
+        elsif arg =~ /update_compositions/
+          opts[:update_compositions] = true
+        elsif arg =~ /^\d+$/
+          opts[:iksnrs] << arg.to_i if arg.size > 0
+        end
+      end
+      puts "opts == #{opts.inspect}\n"
       updater = Updater.new system
-      updater.update_swissmedic
+      updater.update_swissmedic(opts)
     end
   end
 end

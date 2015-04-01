@@ -154,6 +154,7 @@ module ODDB
 		end
     def delete_composition(oid)
       @compositions.delete_if { |comp| comp.oid == oid }
+      @compositions.odba_isolated_store
     end
 		def delete_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
