@@ -68,7 +68,7 @@ module ODDB
     def parse_swissindex_xml # See als extractor.rb in oddb2xml
       debug_msg "update_atc_codes: parse_swissindex_xml #{@swissindex_xml}"
       data = {}
-      result = PharmaEntry.parse(IO.read(@swissindex_xml).sub(Strip_For_Sax_Machine, ''), :lazy => true)
+      result = PharmaEntry.parse(IO.read(@swissindex_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
       items = result.PHARMA.ITEM
       items.each do |pac|
         if gtin = pac.GTIN
