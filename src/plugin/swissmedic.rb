@@ -583,7 +583,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       args[:substance]          = db_substance.oid               if (agent.substance.to_s.downcase != substance.name.downcase and agent.substance.oid != db_substance.oid)
       if substance.chemical_substance
         db_chemical = update_substance(substance.chemical_substance)
-        chemical_dose = Dose.new(substance.chemical_dose)
+        chemical_dose = Dose.new(substance.cdose)
         if agent.chemical_dose.to_s != chemical_dose.to_s
           debug_msg("#{__FILE__}:#{__LINE__} update_active_agent #{seq.iksnr}/#{seq.seqnr} chemical_dose #{db_chemical.oid} #{chemical_dose.to_s} == #{agent.chemical_dose.to_s} chemical_substance #{substance.chemical_substance.to_s.downcase} == #{agent.chemical_substance ? agent.chemical_substance.to_s : 'nil'}")
         end

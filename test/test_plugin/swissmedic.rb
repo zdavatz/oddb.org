@@ -1785,7 +1785,7 @@ module ODDB
       report = @plugin.report
       assert_equal(1, @plugin.updated_agents.size)
       assert_equal(0, @plugin.new_agents.size)
-      assert_equal(6, @plugin.checked_compositions.size)
+      assert_equal(31, @plugin.checked_compositions.size)
       assert_match(/Checked compositions: (\d+)/, report)
     end
   end
