@@ -20,8 +20,10 @@ module ODDB
 		def sort_result(packages, session)
 			begin
 				packages.sort_by { |package|
+					priorize_desitin = (session and session.lookandfeel.enabled?(:evidentia, false) and package.company and (/desitin/i.match(package.company.to_s) != nil))
 					[
 						package.expired? ? 1 : -1,
+						priorize_desitin ? 0 : 1,
 						generic_type_weight(package),
 						package.name_base.to_s,
 						package.galenic_forms.collect { |gf| galform_str(gf, session) },
@@ -52,7 +54,7 @@ module ODDB
 			end
 		end
 		def generic_type_weight(package)
-			case package.generic_type.to_sym
+			case package.generic_type ? package.generic_type.to_sym : nil
 			when :original
 				0
 			when :generic
