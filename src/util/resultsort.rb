@@ -52,7 +52,7 @@ module ODDB
 			end
 		end
 		def generic_type_weight(package)
-			case package.generic_type
+			case package.generic_type.to_sym
 			when :original
 				0
 			when :generic
