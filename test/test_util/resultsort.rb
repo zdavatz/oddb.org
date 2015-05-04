@@ -46,6 +46,7 @@ module ODDB
     def create_default_product_mock(product_name)
       package = flexmock('package')
       package.should_receive(:odba_instance).by_default.and_return(nil)
+      package.should_receive(:sl_generic_type).by_default.and_return(nil)
       package.should_receive(:generic_type).by_default.and_return(:original)
       package.should_receive(:expired? ).by_default.and_return(nil)
       package.should_receive(:name_base).by_default.and_return(product_name)
@@ -64,20 +65,24 @@ module ODDB
       @session.should_receive(:lookandfeel).by_default.and_return(@component)
       @galenic_form = flexmock('galenic_form')
       @galenic_form.should_receive(:odba_instance).by_default.and_return(nil)
-      @package = create_default_product_mock('product_1')
-      @sort    = ODDB::StubResultSort.new([@package])
+      @p111_original = create_default_product_mock('111_original')
+      @sort    = ODDB::StubResultSort.new([@p111_original])
     end
 
     def setup_more_products
-      @package2 = create_default_product_mock('product_2')
-      @package2.should_receive(:generic_type).and_return(:generic)
-      @package2.should_receive(:company).and_return('company_generic')
-      @package3 = create_default_product_mock('product_3')
-      @package3.should_receive(:generic_type).and_return(:generic)
-      @package3.should_receive(:company).and_return('desitin')
-      @package4 = create_default_product_mock('product_4')
-      @package4.should_receive(:name_base).and_return('product_4_orignal')
-      @sort    = ODDB::StubResultSort.new([@package, @package2, @package3, @package4])
+      @p133_generic = create_default_product_mock('133_generic')
+      @p133_generic.should_receive(:generic_type).and_return(:generic)
+      @p133_generic.should_receive(:company).and_return('company_generic')
+      @p333_generic_from_desitin = create_default_product_mock('333_generic_from_desitin')
+      @p333_generic_from_desitin.should_receive(:generic_type).and_return(:generic)
+      @p333_generic_from_desitin.should_receive(:company).and_return('desitin')
+      @p999_original = create_default_product_mock('999_original')
+      @sort    = ODDB::StubResultSort.new([@p111_original, @p133_generic, @p333_generic_from_desitin, @p999_original])
+
+      @p166_sl_original = create_default_product_mock('166_sl_original')
+      @p166_sl_original.should_receive(:generic_type).and_return(:unknown)
+      @p166_sl_original.should_receive(:sl_generic_type).and_return(:original)
+      @sort    = ODDB::StubResultSort.new([@p111_original, @p133_generic, @p333_generic_from_desitin, @p999_original, @p166_sl_original])
     end
     def test_galform_str__else
       @galenic_form.should_receive(:odba_instance).and_return('odba_instance')
@@ -94,53 +99,62 @@ module ODDB
       assert_equal('', @sort.galform_str(@galenic_form, @session))
     end
     def test_generic_type_weight__originel
-      assert_equal(0, @sort.generic_type_weight(@package))
+      assert_equal(0, @sort.generic_type_weight(@p111_original))
     end
     def test_generic_type_weight__generic
-      @package.should_receive(:generic_type).and_return('generic')
-      assert_equal(5, @sort.generic_type_weight(@package))
+      @p111_original.should_receive(:generic_type).and_return('generic')
+      assert_equal(5, @sort.generic_type_weight(@p111_original))
     end
     def test_generic_type_weight__comarketing
-      @package.should_receive(:generic_type).and_return('comarketing')
-      assert_equal(10, @sort.generic_type_weight(@package))
+      @p111_original.should_receive(:generic_type).and_return('comarketing')
+      assert_equal(10, @sort.generic_type_weight(@p111_original))
     end
     def test_generic_type_weight__complementary
-      @package.should_receive(:generic_type).and_return('complementary')
-      assert_equal(15, @sort.generic_type_weight(@package))
+      @p111_original.should_receive(:generic_type).and_return('complementary')
+      assert_equal(15, @sort.generic_type_weight(@p111_original))
     end
     def test_generic_type_weight__else
-      @package.should_receive(:generic_type).and_return('else')
-      assert_equal(20, @sort.generic_type_weight(@package))
+      @p111_original.should_receive(:generic_type).and_return('else')
+      assert_equal(20, @sort.generic_type_weight(@p111_original))
     end
     def test_sort_result
-      assert_equal([@package], @sort.sort_result([@package], @session))
+      assert_equal([@p111_original], @sort.sort_result([@p111_original], @session))
+    end
+    def test_sort_result_sl_generic_type_is_nil
+      @p111_original.should_receive(:generic_type).and_return(:unknown)
+      @p111_original.should_receive(:sl_generic_type).and_return(nil)
+      assert_equal([@p111_original], @sort.sort_result([@p111_original], @session))
     end
     def test_sort_result_default
       setup_more_products
-      expected_order = [@package, # original
-                        @package4, # original
-                        @package2, # alphabetically sorted
-                        @package3,
+      expected_order = [
+                        @p111_original, # original
+                        @p166_sl_original,
+                        @p999_original, # original
+                        @p133_generic, # alphabetically sorted
+                        @p333_generic_from_desitin,
                         ]
-      assert_equal(expected_order, @sort.sort_result([@package, @package2, @package3, @package4], @session))
-      assert_equal(expected_order, @sort.sort_result([@package, @package3, @package4, @package2], @session))
-      assert_equal(expected_order, @sort.sort_result([@package4, @package3, @package2, @package], @session))
+      assert_equal(expected_order, @sort.sort_result([@p111_original, @p133_generic, @p333_generic_from_desitin, @p999_original, @p166_sl_original], @session))
+      assert_equal(expected_order, @sort.sort_result([@p166_sl_original, @p111_original, @p333_generic_from_desitin, @p999_original, @p133_generic], @session))
+      assert_equal(expected_order, @sort.sort_result([@p999_original, @p333_generic_from_desitin, @p166_sl_original, @p133_generic, @p111_original], @session))
     end
-    def test_sort_result_evidentia
+    def test_sort_result_evidentia_sl_oriiginal_nil
       @session.should_receive(:flavor).and_return(@evidentia)
       @component = LookandfeelBase.new(@session)
       @evidentia = LookandfeelEvidentia.new(@component)
       @session.should_receive(:flavor).and_return(@evidentia)
       @session.should_receive(:lookandfeel).and_return(@evidentia)
       setup_more_products
-      expected_order = [@package3, # because it is from desitin
-                        @package, # original
-                        @package4, # original
-                        @package2, # alphabetically sorted
+      expected_order = [@p111_original, # original
+                        @p166_sl_original,
+                        @p333_generic_from_desitin, # because it is from desitin
+                        @p999_original, # original
+                        @p133_generic, # alphabetically sorted
                         ]
-      assert_equal(expected_order,  @sort.sort_result([@package, @package2, @package3, @package4], @session))
-#      assert_equal(expected_order, @sort.sort_result([@package, @package3, @package4, @package2], @session))
-#      assert_equal(expected_order, @sort.sort_result([@package4, @package3, @package2, @package], @session))
+      expected_order.each{ |item| assert_equal(FlexMock, item.class) }
+      assert_equal(expected_order, @sort.sort_result([@p111_original, @p133_generic, @p333_generic_from_desitin, @p999_original, @p166_sl_original], @session))
+      assert_equal(expected_order, @sort.sort_result([@p166_sl_original, @p111_original, @p333_generic_from_desitin, @p999_original, @p133_generic], @session))
+      assert_equal(expected_order, @sort.sort_result([@p999_original, @p333_generic_from_desitin, @p166_sl_original, @p133_generic, @p111_original], @session))
     end
     def stdout_null
       require 'tempfile'
@@ -150,11 +164,11 @@ module ODDB
       $stdout = STDERR
     end
     def test_sort_result__error
-      flexmock(@package) do |p|
+      flexmock(@p111_original) do |p|
         p.should_receive(:expired?).and_raise(StandardError)
       end
       stdout_null do
-        assert_equal([@package], @sort.sort_result([@package], @session))
+        assert_equal([@p111_original], @sort.sort_result([@p111_original], @session))
       end
     end
   end

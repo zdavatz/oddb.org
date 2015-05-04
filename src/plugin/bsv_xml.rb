@@ -140,7 +140,7 @@ module ODDB
     end
     class PreparationsListener < Listener
       MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
-      GENERIC_TYPES = { 'O' => :original, 'G' => :generic }
+      GENERIC_TYPES = { 'O' => :original, 'G' => :generic, 'K' => :complementary }
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_packages_oot, :conflicted_registrations,
                   :missing_ikscodes, :missing_ikscodes_oot,
