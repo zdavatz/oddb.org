@@ -59,6 +59,7 @@ module ODDB
     end
     def setup
       @session = flexmock('session', :language => 'language')
+      @session.should_receive(:user).by_default.and_return(nil)
       @session.should_receive(:flavor).and_return(@standard)
       @component = LookandfeelBase.new(@session)
       @standard = LookandfeelStandardResult.new(@component)
@@ -138,7 +139,7 @@ module ODDB
       assert_equal(expected_order, @sort.sort_result([@p166_sl_original, @p111_original, @p333_generic_from_desitin, @p999_original, @p133_generic], @session))
       assert_equal(expected_order, @sort.sort_result([@p999_original, @p333_generic_from_desitin, @p166_sl_original, @p133_generic, @p111_original], @session))
     end
-    def test_sort_result_evidentia_sl_oriiginal_nil
+    def test_sort_result_evidentia_sl_original_nil
       @session.should_receive(:flavor).and_return(@evidentia)
       @component = LookandfeelBase.new(@session)
       @evidentia = LookandfeelEvidentia.new(@component)
@@ -147,8 +148,8 @@ module ODDB
       setup_more_products
       expected_order = [@p111_original, # original
                         @p166_sl_original,
-                        @p333_generic_from_desitin, # because it is from desitin
                         @p999_original, # original
+                        @p333_generic_from_desitin, # because it is from desitin
                         @p133_generic, # alphabetically sorted
                         ]
       expected_order.each{ |item| assert_equal(FlexMock, item.class) }
@@ -170,6 +171,21 @@ module ODDB
       stdout_null do
         assert_equal([@p111_original], @sort.sort_result([@p111_original], @session))
       end
+    end
+    def test_sort_result_login_desiting
+      user = flexmock('user', :name => 'dummy@desitin.ch')
+      @session.should_receive(:user).and_return(user)
+      setup_more_products
+      expected_order = [@p111_original, # original
+                        @p166_sl_original,
+                        @p999_original, # original
+                        @p333_generic_from_desitin, # because it is from desitin
+                        @p133_generic, # alphabetically sorted
+                        ]
+      expected_order.each{ |item| assert_equal(FlexMock, item.class) }
+      assert_equal(expected_order, @sort.sort_result([@p111_original, @p133_generic, @p333_generic_from_desitin, @p999_original, @p166_sl_original], @session))
+      assert_equal(expected_order, @sort.sort_result([@p166_sl_original, @p111_original, @p333_generic_from_desitin, @p999_original, @p133_generic], @session))
+      assert_equal(expected_order, @sort.sort_result([@p999_original, @p333_generic_from_desitin, @p166_sl_original, @p133_generic, @p111_original], @session))
     end
   end
 end # ODDB

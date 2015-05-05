@@ -20,11 +20,17 @@ module ODDB
 		def sort_result(packages, session)
 			begin
 				packages.sort_by { |package|
-					priorize_desitin = (session and session.lookandfeel.enabled?(:evidentia, false) and package.company and (/desitin/i.match(package.company.to_s) != nil))
+					priorize_desitin = false
+					package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
+					priorize_desitin = true if package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
+					priorize_desitin = true if package_from_desitin and session and
+																			session.user and not session.user.is_a?(ODDB::UnknownUser) and
+																			/@desitin/i.match(session.user.name.to_s)
+					name_to_use = (priorize_desitin  && generic_type_weight(package) == 5)? ' '+package.name_base.to_s : package.name_base.to_s
 					[
 						package.expired? ? 1 : -1,
-						priorize_desitin ? 0 : generic_type_weight(package),
-						package.name_base.to_s,
+						generic_type_weight(package),
+						name_to_use,
 						package.galenic_forms.collect { |gf| galform_str(gf, session) },
 						dose_value(package.dose),
 						package.comparable_size,
