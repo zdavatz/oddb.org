@@ -79,7 +79,10 @@ class TestPharmacyForm <Minitest::Test
                         :number => 'number',
                         :type   => 'type'
                        )
-    @model   = flexmock('model', :address => @address )
+    @model   = flexmock('model',
+                        :address => @address,
+                        :addresses => [@address],
+                       )
     @form    = ODDB::View::Pharmacies::PharmacyForm.new(@model, @session)
   end
   def test_additional_lines

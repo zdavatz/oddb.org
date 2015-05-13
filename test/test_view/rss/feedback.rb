@@ -88,7 +88,33 @@ class TestFeedback <Minitest::Test
   end
   def test_to_html__package
     context = flexmock('context', :html => 'html')
-    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"\n  xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"\n  xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\"\n  xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\">\n  <channel>\n    <title>lookup</title>\n    <link>_event_url</link>\n    <description>lookup</description>\n    <language>language</language>\n    <image>\n      <url>resource</url>\n      <title>lookup</title>\n      <link>_event_url</link>\n    </image>\n    <item>\n      <title>lookup</title>\n      <link>_event_url</link>\n      <description>html</description>\n      <author>ODDB.org</author>\n      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>\n      <guid isPermaLink=\"true\">_event_url</guid>\n      <dc:date>2011-02-03T00:00:00+01:00</dc:date>\n    </item>\n  </channel>\n</rss>"
+    expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<rss version=\"2.0\"
+  xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
+  xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\"
+  xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\">
+  <channel>
+    <title>lookup</title>
+    <link>_event_url</link>
+    <description>lookup</description>
+    <language>language</language>
+    <image>
+      <url>resource</url>
+      <title>lookup</title>
+      <link>_event_url</link>
+    </image>
+    <item>
+      <title>lookup</title>
+      <link>_event_url</link>
+      <description>html</description>
+      <author>ODDB.org</author>
+      <pubDate>Wed, 02 Feb 2011 23:00:00 -0000</pubDate>
+      <guid isPermaLink=\"true\">_event_url</guid>
+      <dc:date>2011-02-02T23:00:00Z</dc:date>
+    </item>
+  </channel>
+</rss>"
     assert_equal(expected, @component.to_html(context))
   end
 end

@@ -30,6 +30,7 @@ class TestPackageMonth <Minitest::Test
                        :generic_type    => 'generic_type',
                        :galenic_forms   => [galenic_form],
                        :comparable_size => 'comparable_size',
+                       :company => 'company',
                        :expired?  => nil,
                        :name_base => 'name_base',
                        :dose      => 'dose'

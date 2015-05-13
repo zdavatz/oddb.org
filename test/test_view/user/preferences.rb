@@ -47,6 +47,7 @@ module ODDB
                             :resource_global => 'resource_global',
                             :resource => 'resource',
                             :base_url => 'http://dummy.oddb.org',
+                            :google_analytics_token => 'google_analytics_token',
                           )
         state      = flexmock('state', :zone => 'zone',
                               :direct_event => true)

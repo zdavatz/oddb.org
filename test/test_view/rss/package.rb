@@ -113,9 +113,9 @@ class TestPackage <Minitest::Test
       <link>_event_url</link>
       <description>html</description>
       <author>ODDB.org</author>
-      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>
+      <pubDate>Wed, 02 Feb 2011 23:00:00 -0000</pubDate>
       <guid isPermaLink="true">_event_url</guid>
-      <dc:date>2011-02-03T00:00:00+01:00</dc:date>
+      <dc:date>2011-02-02T23:00:00Z</dc:date>
     </item>
   </channel>
 </rss>)
