@@ -34,7 +34,7 @@ class TestFeedbackTemplate <Minitest::Test
                         )
     @model    = flexmock('model', 
                          :item  => @item,
-                         :time  => Time.local(2011,2,3),
+                         :time  => Time.utc(2011,2,3),
                          :email => 'email',
                          :name => 'name',
                          :message => 'message',

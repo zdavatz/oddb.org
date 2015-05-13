@@ -53,7 +53,7 @@ class TestFachinfo <Minitest::Test
                           :localized_name => 'localized_name',
                           :language => document,
                           :pointer  => 'pointer',
-                          :revision => Time.local(2011,2,3),
+                          :revision => Time.utc(2011,2,3),
                           :iksnrs   => ['iksnrs'],
                          )
     @component = ODDB::View::Rss::Fachinfo.new([@model], @session)
@@ -81,9 +81,9 @@ class TestFachinfo <Minitest::Test
       <link>_event_url</link>
       <description>html</description>
       <author>ODDB.org</author>
-      <pubDate>Wed, 02 Feb 2011 23:00:00 -0000</pubDate>
+      <pubDate>Thu, 03 Feb 2011 00:00:00 -0000</pubDate>
       <guid isPermaLink="true">_event_url</guid>
-      <dc:date>2011-02-02T23:00:00Z</dc:date>
+      <dc:date>2011-02-03T00:00:00Z</dc:date>
     </item>
   </channel>
 </rss>)

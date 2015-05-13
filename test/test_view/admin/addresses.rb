@@ -35,7 +35,7 @@ class TestAddressList <Minitest::Test
     @model   = flexmock('model', 
                         :url     => 'url',
                         :type    => 'type',
-                        :time    => Time.local(2011,2,3),
+                        :time    => Time.utc(2011,2,3),
                         :method  => method,
                         :pointer => 'pointer',
                         :resolve => 'resolve',

@@ -52,6 +52,7 @@ module ODDB
       @app.should_receive(:delete_all_analysis_group).and_return true
       @app.should_receive(:analysis_group).and_return(@analysis_group)
       @app.should_receive(:analysis_groups).and_return([@analysis_group])
+      @app.should_receive(:analysis_positions).and_return([])
       @app.should_receive(:create)
       @app.should_receive(:update)
       @app.should_receive(:recount).and_return('recount')

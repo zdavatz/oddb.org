@@ -178,7 +178,7 @@ class TestFachinfoComposite <Minitest::Test
             )
     flexmock(@model, 
              :change_log => [@model],
-             :time       => Time.local(2011,2,3) ,
+             :time       => Time.utc(2011,2,3) ,
              :chapter    => @chapter
             )
     flexmock(@session, 

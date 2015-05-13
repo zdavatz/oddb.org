@@ -208,7 +208,7 @@ class TestRegistrationForm <Minitest::Test
   end
   def test_patented_until
     patent = flexmock('patent') do |p|
-      p.should_receive(:expiry_date).and_return(Time.local(2011,2,3))
+      p.should_receive(:expiry_date).and_return(Time.utc(2011,2,3))
       p.should_receive(:pointer)
     end
     flexmock(@lookandfeel, :format_date => 'format_date')
