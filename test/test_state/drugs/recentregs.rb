@@ -30,10 +30,12 @@ class TestPackageMonth <Minitest::Test
                        :generic_type    => 'generic_type',
                        :galenic_forms   => [galenic_form],
                        :comparable_size => 'comparable_size',
-                       :company => 'company',
                        :expired?  => nil,
                        :name_base => 'name_base',
-                       :dose      => 'dose'
+                       :dose      => 'dose',
+                       :company => 'company',
+                       :out_of_trade => false,
+                       :sl_generic_type => :original,
                       )
     registration = flexmock('registration') do |reg|
       reg.should_receive(:each_package).and_yield(package)
@@ -69,7 +71,10 @@ class TestRecentRegs <Minitest::Test
                        :comparable_size => 'comparable_size',
                        :expired?  => nil,
                        :name_base => 'name_base',
-                       :dose      => 'dose'
+                       :dose      => 'dose',
+                       :company => 'company',
+                       :out_of_trade => false,
+                       :sl_generic_type => :original,
                       )
 
     @registration = flexmock('registration') do |reg|

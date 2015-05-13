@@ -66,7 +66,7 @@ module ODDB
     def test_google_analytics_token_evidentia
       create_env
       @lookandfeel = LookandfeelEvidentia.new(@component)
-      assert_equal('UA-22215261-1', @lookandfeel.google_analytics_token)
+      assert_equal('UA-22215261-3', @lookandfeel.google_analytics_token)
     end
     def test_google_analytics_token_desitin
       create_env
@@ -219,7 +219,6 @@ module ODDB
         [0, 4]=>:explain_complementary,
         [0, 5]=>"explain_unknown",
         [0, 6]=>"explain_expired",
-        [0, 7]=>:explain_cas,
         [1, 0]=>:explain_limitation,
         [1, 1]=>:explain_fachinfo,
         [1, 2]=>:explain_narc,
