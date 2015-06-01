@@ -41,7 +41,11 @@ module ODDB
 
   class TestResultSort <Minitest::Test
     include FlexMock::TestCase
-    def create_default_product_mock(product_name, out_of_trade = false, sl_generic_type = :original, generic_type = :original)
+    def create_default_product_mock(product_name, out_of_trade = false, sl_generic_type = :original, generic_type = :original, gal_forms = nil)
+      unless gal_forms
+        gal_forms = flexmock('gal_forms')
+        gal_forms.should_receive(:collect).by_default.and_return(['gal_def'])
+      end
       package = flexmock('package')
       package.should_receive(:odba_instance).by_default.and_return(nil)
       package.should_receive(:out_of_trade).by_default.and_return(out_of_trade)
@@ -50,7 +54,7 @@ module ODDB
       package.should_receive(:generic_type).by_default.and_return(generic_type)
       package.should_receive(:expired? ).by_default.and_return(nil)
       package.should_receive(:name_base).by_default.and_return(product_name)
-      package.should_receive(:galenic_forms).by_default.and_return([package])
+      package.should_receive(:galenic_forms).by_default.and_return(gal_forms)
       package.should_receive(:dose).by_default.and_return('dose')
       package.should_receive(:company).by_default.and_return('company_original')
       package.should_receive(:comparable_size).by_default.and_return('comparable_size')
@@ -71,14 +75,20 @@ module ODDB
     end
 
     def setup_more_products
-      @p001 = create_default_product_mock("p001", false, :generic, :generic) # Example_7680655530096
-      @p002 = create_default_product_mock("p002", false, :generic, nil) # Example_7680651880027
+      gal_a = flexmock('gal_a')
+      gal_a.should_receive(:collect).by_default.and_return(['gal_a'])
+      gal_z = flexmock('gal_z')
+      gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
+      @p001 = create_default_product_mock("p001", false, :generic, :generic, gal_z) # Example_7680655530096
+      @p002 = create_default_product_mock("p002", false, :generic, nil, gal_a) # Example_7680651880027
       @p003 = create_default_product_mock("p003", false, :original, :original) # Example_7680625700146
       @p004 = create_default_product_mock("p004", false, :original, nil) # Example_7680632000130
       @p005 = create_default_product_mock("p005", false, :unknown, :original) # Example_7680574890066
       @p006 = create_default_product_mock("p006", false, :unknown, nil) # Example_7680653310010
       @p007 = create_default_product_mock("p007", false, nil, :generic) # Example_7680626160017
       @p008 = create_default_product_mock("p008", false, nil, nil) # Example_7680656280013
+      @p009za = create_default_product_mock("p009za", nil, :generic, :generic, gal_a) # Example_7680656450041
+      @p009zz = create_default_product_mock("p009zz", nil, :generic, :generic, gal_z) # Example_7680656450041
       @p009 = create_default_product_mock("p009", nil, :generic, :generic) # Example_7680656450041
       @p010 = create_default_product_mock("p010", nil, :generic, nil) # Example_7680650500049
       @p011 = create_default_product_mock("p011", nil, :original, :original) # Example_7680560750527
@@ -89,8 +99,8 @@ module ODDB
       @p016 = create_default_product_mock("p016", true, :generic, nil) # Example_7680653080043
       @p017 = create_default_product_mock("p017", true, :original, :original) # Example_7680550900017
       @p018 = create_default_product_mock("p018", true, :original, nil) # Example_7680625700160
-      @p019 = create_default_product_mock("p019", true, :unknown, nil) # Example_7680651050062
-      @p020 = create_default_product_mock("p020", true, nil, nil) # Example_7680656080019
+      @p019 = create_default_product_mock("p019", true, :unknown, nil, gal_z) # Example_7680651050062
+      @p020 = create_default_product_mock("p020", true, nil, nil, gal_a) # Example_7680656080019
 
       @pacc_generic = create_default_product_mock('pacc_generic', false, :generic, :generic)
       @pacc_generic.should_receive(:company).and_return('company_generic')
@@ -111,80 +121,83 @@ module ODDB
       @sort   = ODDB::StubResultSort.new([])
       @order_2 = [@paaa_original, @pacc_generic, @pddd_sl_generic_nil_from_desitin,
                   @pccc_generic_from_desitin, @pzzz_original, @paff_sl_original,
-                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p010, @pccc_unknown_from_desitin,
-                  @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020,
+                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010, @pccc_unknown_from_desitin,
+                  @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020
                   ]
       @order_3 = [@paff_sl_original, @paaa_original, @pccc_generic_from_desitin, @pzzz_original,
                   @pacc_generic, @pddd_sl_generic_nil_from_desitin,
-                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p010, @pccc_unknown_from_desitin,
+                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010, @pccc_unknown_from_desitin,
                   @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020,
                   ]
       @order_4 = [@pzzz_original, @pccc_generic_from_desitin, @pddd_sl_generic_nil_from_desitin,
                   @paff_sl_original, @pacc_generic, @paaa_original, @pccc_unknown_from_desitin,
-                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p010,
+                  @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010,
                   @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020,
                   ]
       @expected_default_order = [
         @p003,
         @p004,
-        @p005,
         @p011,
         @p012,
         @paaa_original,
         @paff_sl_original,
         @pzzz_original,
-        @p001,
         @p002,
-        @p007,
+        @p009za,
         @p009,
         @p010,
         @pacc_generic,
         @pccc_generic_from_desitin,
-        @pddd_sl_generic_nil_from_desitin,
+        @p001,
+        @p009zz,
+        @p005,
         @p006,
+        @p007,
         @p008,
         @p013,
         @p014,
         @pccc_unknown_from_desitin,
+        @pddd_sl_generic_nil_from_desitin,
+        @p020,
         @p015,
         @p016,
         @p017,
         @p018,
         @p019,
-        @p020,
         ]
 
       @expected_order_desitin = [
         @p003,
         @p004,
-        @p005,
         @p011,
         @p012,
         @paaa_original,
         @paff_sl_original,
         @pzzz_original,
         @pccc_unknown_from_desitin,
-        @pccc_generic_from_desitin,
         @pddd_sl_generic_nil_from_desitin,
-        @p001,
         @p002,
-        @p007,
+        @p009za,
+        @pccc_generic_from_desitin,
         @p009,
         @p010,
         @pacc_generic,
+        @p001,
+        @p009zz,
+        @p005,
         @p006,
+        @p007,
         @p008,
         @p013,
         @p014,
+        @p020,
         @p015,
         @p016,
         @p017,
         @p018,
         @p019,
-        @p020,
         ]
     end
-
     def test_galform_str__else
       @galenic_form.should_receive(:odba_instance).and_return('odba_instance')
       @galenic_form.should_receive(:language).and_return('language')
@@ -271,7 +284,6 @@ module ODDB
       assert_equal(expected_order, @sort.sort_result(order_1.reverse, @session))
       assert_equal(expected_order, @sort.sort_result(order_2.reverse, @session))
     end
-
   end
 end # ODDB
 

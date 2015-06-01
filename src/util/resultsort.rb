@@ -45,8 +45,8 @@ module ODDB
           [
             package.expired? ? 1 : -1,
             @priority,
-            @name_to_use,
             package.galenic_forms.collect { |gf| galform_str(gf, session) },
+            @name_to_use,
             dose_value(package.dose),
             package.comparable_size,
           ]
@@ -57,7 +57,8 @@ module ODDB
             |package|
             id += 1
             classify_package(package, session)
-            puts "id #{id}: #{package.barcode} priorize #{@priorize_desitin} '#{package.name_base.to_s}' > #{@priority} #{@name_to_use.inspect} out_of_trade #{package.out_of_trade.inspect} type #{package.generic_type.inspect} sl #{package.sl_generic_type.inspect}"
+            gal_name = package.galenic_forms.collect { |gf| galform_str(gf, session) }
+            puts "id #{sprintf('%3d', id)}: #{package.barcode} expired? #{package.expired?.inspect[0..2]} out_of_trade #{package.out_of_trade.inspect[0..2]} priorize #{@priorize_desitin.to_s[0..3]} #{@priority} (#{package.generic_type.inspect[0..2]}/#{package.sl_generic_type.inspect[0..2]}) '#{package.name_base.to_s}' gal_name #{gal_name} name #{@name_to_use.inspect}"
           }
         end
         packages
@@ -90,7 +91,7 @@ private
     @priorize_desitin = true if @package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
     @priorize_desitin = true if @package_from_desitin and session and
                                 session.user and not session.user.is_a?(ODDB::UnknownUser) and
-                                /@desitin/i.match(session.user.name.to_s)
+                                /desitin/i.match(session.user.name.to_s)
     @priority = classified_group(package)
     @name_to_use = (@priorize_desitin ? ' '+package.name_base.clone.to_s : package.name_base.clone.to_s).sub(/\s+\d+.+/, '')
   end
@@ -101,13 +102,6 @@ private
         if package.sl_generic_type.eql?(:original)
           return IsOriginal
         elsif package.sl_generic_type.eql?(:generic)
-          return IsGenerikum
-        end
-      end
-      if package.generic_type
-        if package.generic_type.eql?(:original)
-          return IsOriginal
-        elsif package.generic_type.eql?(:generic)
           return IsGenerikum
         end
       end
