@@ -1075,21 +1075,21 @@ class TestOddbApp <MiniTest::Unit::TestCase
   end
 
   def test_epha_interaction
-      @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var', File.dirname(__FILE__)
-      assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
-      @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
-      @latest = @fileName.sub('.csv', '-latest.csv')
-      FileUtils.rm(@latest) if File.exists?(@latest)
-      @agent = flexmock(Mechanize.new)
-      @agent.should_receive(:get).and_return(IO.read(@fileName))
-      @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
-      assert(@plugin.update(@agent, @fileName))
-	code_0 = 'N06AB06'
-	code_1 = 'M03BX02'
+    @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
+    @@vardir = File.expand_path '../var', File.dirname(__FILE__)
+    assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
+    FileUtils.mkdir_p @@vardir
+    ODDB.config.data_dir = @@vardir
+    ODDB.config.log_dir = @@vardir
+    @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
+    @latest = @fileName.sub('.csv', '-latest.csv')
+    FileUtils.rm(@latest) if File.exists?(@latest)
+    @agent = flexmock(Mechanize.new)
+    @agent.should_receive(:get).and_return(IO.read(@fileName))
+    @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
+    assert(@plugin.update(@agent, @fileName))
+    code_0 = 'N06AB06'
+    code_1 = 'M03BX02'
     atc_class_0 = flexmock('atc_class_0') do |reg|
       reg.should_receive(:code).and_return(code_0)
     end

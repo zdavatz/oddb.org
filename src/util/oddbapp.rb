@@ -522,7 +522,7 @@ class OddbPrevalence
 		end
 		@epha_interactions_hash = {}
 		@epha_interactions_hash.odba_store
-        ODDB::EphaInteractions.set(@epha_interactions_hash)
+    EphaInteractions.set(@epha_interactions_hash)
 		self.odba_store
 	end
   end
@@ -659,7 +659,7 @@ class OddbPrevalence
     @experiences[oid.to_i]
   end
   def get_epha_interaction(atc_code_self, atc_code_other)
-    EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
+    ODDB::EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
   end
   def epha_interaction(oid)
     @epha_interactions_hash[oid.to_i]

@@ -6,6 +6,8 @@
 # when all other unit tests are included.
 # To work aroung this bug, we run some files separately
 
+ENV['TZ'] = 'UTC'
+
 require 'simplecov'; # configuration is done in file .simplcov
 group = File.basename(File.dirname(File.expand_path($0)))
 SimpleCov.command_name group
