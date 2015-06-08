@@ -25,6 +25,11 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
+begin
+  require 'pry'
+rescue
+  # ignore error when pry cannot be loaded (for Jenkins-CI)
+end
 
 class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase
@@ -1092,8 +1097,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
     @agent.should_receive(:get).and_return(IO.read(@fileName))
     @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
     assert(@plugin.update(@agent, @fileName))
-    code_0 = 'N06AB06'
-    code_1 = 'M03BX02'
+    code_0 = 'C09CA01'
+    code_1 = 'C07AB02'
     atc_class_0 = flexmock('atc_class_0') do |reg|
       reg.should_receive(:code).and_return(code_0)
     end
