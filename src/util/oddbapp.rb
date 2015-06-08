@@ -522,7 +522,7 @@ class OddbPrevalence
 		end
 		@epha_interactions_hash = {}
 		@epha_interactions_hash.odba_store
-    EphaInteractions.set(@epha_interactions_hash)
+    ODDB::EphaInteractions.set(@epha_interactions_hash)
 		self.odba_store
 	end
   end

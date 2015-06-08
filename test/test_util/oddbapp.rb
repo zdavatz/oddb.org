@@ -1066,12 +1066,16 @@ class TestOddbApp <MiniTest::Unit::TestCase
 
   def test_epha_interaction_count
     assert_equal(0, @app.epha_interaction_count)
-	@app.create_epha_interaction('atc_code_self', 'atc_code_other')
+    @app.create_epha_interaction('atc_code_self', 'atc_code_other')
     assert_equal(1, @app.epha_interaction_count)
   end
 
   def test_get_epha_interaction
     assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
+  end
+
+  def test_delete_all_epha_interactions
+    assert_equal(OddbPrevalence, @app.delete_all_epha_interactions.class)
   end
 
   def test_epha_interaction
