@@ -9,7 +9,6 @@ require 'mechanize'
 require 'drb'
 require 'config'
 
-
 module ODDB
   module Swissindex
     def Swissindex.session(type = SwissindexPharma)
@@ -32,11 +31,14 @@ module Archiver
 end
 
 class RequestHandler
-  def initialize
-    Savon.configure do |config|
-      config.log       = false # disable logging
-      config.log_level = :info # changing the log level
-    end
+  def initialize(wsdl_url = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL")
+    @client = Savon.client(
+      :wsdl => wsdl_url,
+      :log => false,
+      :log_level => :info,
+      :open_timeout => 1,
+      :read_timeout => 1,
+      )
     @items = []
   end
   def cleanup_items
@@ -78,27 +80,24 @@ class SwissindexNonpharma < RequestHandler
   URI = 'druby://localhost:50002'
   include DRb::DRbUndumped
   include Archiver
+  attr_accessor :client, :base_url
   def initialize
     super
     @base_url = ODDB.config.migel_base_url
   end
   def download_all(lang = 'DE')
-    client = Savon::Client.new do | wsdl, http |
-      http.auth.ssl.verify_mode = :none
-      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL"
-    end
+    @client.globals[:read_timeout]=120
     try_time = 3
     begin
+      soap =
+      '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+      response = @client.call(:download_all, :xml => soap)
       cleanup_items
-      response = client.request :download_all do
-        soap.xml =
-        '<?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
-          </soap:Body>
-        </soap:Envelope>'
-      end
       if response.success?
         if xml = response.to_xml
           archive_path = File.expand_path('../../../../migel/data', File.dirname(__FILE__))
@@ -151,21 +150,16 @@ class SwissindexNonpharma < RequestHandler
   end
   def search_item(pharmacode, lang = 'DE')
     lang.upcase!
-    client = Savon::Client.new do | wsdl, http |
-      http.auth.ssl.verify_mode = :none
-      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL"
-    end
     try_time = 3
     begin
-      response = client.request :get_by_pharmacode do
-        soap.xml = '<?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-              <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + pharmacode + '</pharmacode>
-              <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
-          </soap:Body>
-        </soap:Envelope>'
-      end
+      soap = '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+            <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + pharmacode + '</pharmacode>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+      response = @client.call(:get_by_pharmacode, :xml => soap)
       if nonpharma = response.to_hash[:nonpharma]
         nonpharma_item = if nonpharma[:item].is_a?(Array)
                            nonpharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
@@ -346,24 +340,24 @@ class SwissindexPharma < RequestHandler
   URI = 'druby://localhost:50001'
   include DRb::DRbUndumped
   include Archiver
+  def initialize
+   super("https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL")
+  end
+
   def download_all(lang = 'DE')
-    client = Savon::Client.new do | wsdl, http |
-      http.auth.ssl.verify_mode = :none
-      #wsdl.document = "https://swissindex.refdata.ch/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
-      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
-    end
+    @client.globals[:read_timeout]=120
+
     try_time = 3
     begin
       cleanup_items
-      response = client.request :download_all do
-        soap.xml =
-        '<?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang + '</lang>
-          </soap:Body>
-        </soap:Envelope>'
-      end
+      soap =
+      '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+      response = @client.call(:download_all, :xml => soap)
       if response.success?
         if xml = response.to_xml
           archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
@@ -418,32 +412,27 @@ class SwissindexPharma < RequestHandler
     end
   end
   def search_item(code, search_type = :get_by_gtin, lang = 'DE')
-    client = Savon::Client.new do | wsdl, http |
-      http.auth.ssl.verify_mode = :none
-      wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
-    end
     try_time = 3
     begin
-      response = client.request search_type do
-        soap.xml = if search_type == :get_by_gtin
-        '<?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
-            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-          </soap:Body>
-        </soap:Envelope>'
-                   elsif search_type == :get_by_pharmacode
-        '<?xml version="1.0" encoding="utf-8"?>
-        <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-          <soap:Body>
-            <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
-            <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-          </soap:Body>
-        </soap:Envelope>'
-                   end
+      soap = if search_type == :get_by_gtin
+      '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
+          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+              elsif search_type == :get_by_pharmacode
+      '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
+          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
       end
-      if pharma = response.to_hash[:pharma] 
+      response = @client.call(search_type, :xml => soap)
+      if pharma = response.to_hash[:pharma]
         # If there are some products those phamarcode is same, then the return value become an Array
         # We take one of them which has a higher Ean-Code
         pharma_item = if pharma[:item].is_a?(Array)
