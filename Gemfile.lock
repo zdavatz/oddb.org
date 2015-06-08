@@ -145,12 +145,12 @@ GEM
     rspec-mocks (3.0.2)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.2)
-    ruby-ole (1.2.11.7)
+    ruby-ole (1.2.11.8)
     rubyXL (3.3.1)
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
     rubyntlm (0.3.4)
-    rubyzip (1.1.6)
+    rubyzip (1.1.7)
     safe_yaml (0.9.7)
     savon (2.10.1)
       akami (~> 1.2)
@@ -174,7 +174,7 @@ GEM
     slop (3.6.0)
     spreadsheet (0.9.7)
       ruby-ole (>= 1.0)
-    swissmedic-diff (0.1.8)
+    swissmedic-diff (0.1.9)
     systemu (2.6.5)
     thread_safe (0.3.4)
     travis-lint (1.8.0)
@@ -259,7 +259,7 @@ DEPENDENCIES
   sbsm (= 1.2.6)!
   simplecov (~> 0.7.1)
   spreadsheet (= 0.9.7)
-  swissmedic-diff (= 0.1.8)
+  swissmedic-diff (= 0.1.9)
   travis-lint
   watir
   watir-webdriver
@@ -267,3 +267,6 @@ DEPENDENCIES
   ydim (= 1.0.0)
   ydocx (= 1.2.5)
   yus (= 1.0.1)
+
+BUNDLED WITH
+   1.10.3

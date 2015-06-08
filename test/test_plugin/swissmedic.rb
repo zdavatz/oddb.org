@@ -1563,10 +1563,10 @@ module ODDB
       assert_equal(0, @app.registrations.size)
       @plugin.update(agent)
       assert File.exist?(@target), "#@target was not saved"
-      assert_equal(5, @app.registrations.size)
+      assert_equal(6, @app.registrations.size)
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
-      assert_equal(5, @app.sequences.size)
-      assert_equal(9, @app.packages.size)
+      assert_equal(7, @app.sequences.size)
+      assert_equal(11, @app.packages.size)
       @adata = newest.clone
       @plugin.update(agent)
     end

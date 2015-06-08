@@ -44,6 +44,7 @@ module ODDB
       @export_registrations = {}
       @export_sequences = {}
       @skipped_packages = []
+      @iksnr_with_wrong_data = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
       @empty_compositions = []
@@ -400,6 +401,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         atcless,
       ]
+      unless @iksnr_with_wrong_data.empty?
+        lines << ""
+        lines << "The following errors were found when parsing Packungen.xlsx:"
+        lines << @iksnr_with_wrong_data.join("\n  ")
+      end
       unless @skipped_packages.empty? # no expiration date
         skipped = []
         @skipped_packages.each do |row|
@@ -786,7 +792,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
             update_galenic_form(seq, comp, row, opts)
           end
         end
-        update_package(reg, seq, row, replacements, opts) if reg
+        update_package(reg, seq, row, replacements, opts) if reg and seq
         GC.enable unless already_disabled
       }
     end
@@ -808,6 +814,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage
+      unless cell(row, column(:name_base))
+        msg = "Empty column C for #{cell(row, column(:iksnr))} #{cell(row, column(:seqnr))}"
+        debug_msg "#{__FILE__}: #{__LINE__}: #{msg}"
+        @iksnr_with_wrong_data << msg
+        return nil
+      end
       parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       base = parts.shift
       ## some names have dosage data before the galenic form
