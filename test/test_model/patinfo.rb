@@ -21,7 +21,7 @@ end
 
 class TestPatinfo <Minitest::Test
   include FlexMock::TestCase
-	class StubSequence
+	class StubSequence < ODBA::StorageStub
 		include ODDB::Persistence
 		def patinfo=(patinfo)
 			if(@patinfo.respond_to?(:remove_sequence))

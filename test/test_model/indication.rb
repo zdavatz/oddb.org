@@ -17,7 +17,7 @@ module ODDB
   end
   class TestIndication <Minitest::Test
     include FlexMock::TestCase
-    class StubRegistration
+    class StubRegistration < ODBA::StorageStub
     end
     def setup
       @indication = Indication.new
