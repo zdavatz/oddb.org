@@ -80,32 +80,27 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     [5,11]  => :datadesc_price_history_csv,
     [7,11]  => :example_price_history_csv,
     [11,11] => :directlink_price_history_csv,
-    [0,12]  => :oddb_with_migel_dat_export,
-    [3,12]  => :oddb_with_migel_dat_price,
-    [5,12]  => :datadesc_oddb_with_migel_dat,
-    [7,12]  => :example_oddb_with_migel_dat,
-    [11,12] => :directlink_oddb_with_migel_dat,
 
-    [0,14]  => 'export_added_value',
-    [0,15]  => :xls_generics,
-    [2,15]  => :radio_generics_xls_1,
-    [3,15]  => :radio_generics_xls_12,
-    [5,15]  => :datadesc_generics_xls,
-    [7,15]  => :example_generics_xls,
-    [11,15] => :directlink_generics_xls,
-    [0,16]  => :xls_patents,
-    [2,16]  => :radio_patents_xls,
-    [5,16]  => :datadesc_patents_xls,
-    [7,16]  => :example_patents_xls,
-    [11,16] => :directlink_patents_xls,
-    [0,17]  => :xls_swissdrug_update,
-    [2,17]  => :radio_swissdrug_update_xls_1,
-    [3,17]  => :radio_swissdrug_update_xls_12,
-    [5,17]  => :datadesc_swissdrug_update_xls,
-    [7,17]  => :example_swissdrug_update_xls,
-    [11,17] => :directlink_swissdrug_update_xls,
-    [0,18]  => :compression_label,
-    [0,19]  => :compression,
+    [0,13]  => 'export_added_value',
+    [0,14]  => :xls_generics,
+    [2,14]  => :radio_generics_xls_1,
+    [3,14]  => :radio_generics_xls_12,
+    [5,14]  => :datadesc_generics_xls,
+    [7,14]  => :example_generics_xls,
+    [11,14] => :directlink_generics_xls,
+    [0,15]  => :xls_patents,
+    [2,15]  => :radio_patents_xls,
+    [5,15]  => :datadesc_patents_xls,
+    [7,15]  => :example_patents_xls,
+    [11,15] => :directlink_patents_xls,
+    [0,16]  => :xls_swissdrug_update,
+    [2,16]  => :radio_swissdrug_update_xls_1,
+    [3,16]  => :radio_swissdrug_update_xls_12,
+    [5,16]  => :datadesc_swissdrug_update_xls,
+    [7,16]  => :example_swissdrug_update_xls,
+    [11,16] => :directlink_swissdrug_update_xls,
+    [0,17]  => :compression_label,
+    [0,18]  => :compression,
   }
   CSS_MAP = {
     [0,0,11]  => 'subheading',
@@ -122,21 +117,21 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     [0,10,11] => 'list',
     [0,11,11] => 'list bg',
     [0,12,11] => 'list',
-    [0,13,11] => 'list bg t13',
-    [0,14,11] => 'list sum t14',
-    [0,15,11] => 'list bg t15',
-    [0,16,11] => 'list t16',
-    [0,17,11] => 'list bg t17',
-    [0,18] => 'list t18',
-    [0,19] => 'list t19',
+    [0,13,11] => 'list bg sum',
+    [0,14,11] => 'list',
+    [0,15,11] => 'list bg',
+    [0,16,11] => 'list',
+    [0,17,11] => 'list bg',
+    [0,18] => 'list',
+    [0,19] => 'list',
 
   }
   COLSPAN_MAP = {
     [5,0]     => 3,
     [6,0]     => 3,
     [11,0]    => 2,
-    [0,1,14]  => 13,
-    [0,14,11] => 13,
+    [0,1,13]  => 13,
+    [0,13,11] => 13,
   }
   CSS_CLASS = 'component'
   SYMBOL_MAP = {
@@ -145,7 +140,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   %w(
     analysis.csv doctors.csv doctors.yaml index_therapeuticus
     oddb.csv migel.csv oddb2.csv oddb.yaml
-    price_history.yaml price_history.csv oddb.dat oddb_with_migel.dat
+    price_history.yaml price_history.csv oddb.dat
     generics.xls patents.xls swissdrug_update.xls
   ).each do |file|
     name = "directlink_#{file.gsub(/\./, '_')}".intern
