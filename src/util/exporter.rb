@@ -4,7 +4,6 @@
 # ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
-require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
@@ -174,51 +173,6 @@ module ODDB
 			plug = CsvExportPlugin.new(@app)
 			plug.export_migel
 		end
-    def report_dose_missing_list(list)
-      log = Log.new(@@today)
-      log.report = [
-        "Warning: Dose data (ODDB::Package.parts, Array of ODDB::Dose instances) is empty.",
-        "Message: export_oddbdat succeeded but the following package(s) do not have Dose data.",
-        "Package(s):",
-        list.collect do |list|
-          list[0].to_s + ", " + \
-          "http://#{SERVER_NAME}/de/gcc/show/reg/" + list[1].to_s + \
-          "/seq/" + list[2].to_s + "/pack/" + list[3].to_s + ".\n"
-        end
-      ].join("\n")
-      log.notify("Warning Export: oddbdat")
-    end
-		def export_oddbdat
-          dose_missing_list = []
-      safe_export 'oddbdat' do
-        exporter = OdbaExporter::OddbDatExport.new(@app)
-        dose_missing_list = exporter.export
-        
-        exporter.export_fachinfos
-
-        # here to raise warning if package.parts is empty
-        if !dose_missing_list.empty?
-          report_dose_missing_list(dose_missing_list)
-        end
-      end
-		end
-    def export_oddbdat_by_company_name(company_name)
-      subj = "oddbdat #{company_name}"
-      dose_missing_list = []
-      safe_export(subj) do
-        exporter = OdbaExporter::OddbDatExport.new(@app)
-        dose_missing_list = exporter.export_by_company_name(company_name)
-
-        log = Log.new(@@today)
-        log.update_values(exporter.log_info)
-        log.notify(subj)
-
-        # here to raise warning if package.parts is empty
-        if !dose_missing_list.empty?
-          report_dose_missing_list(dose_missing_list)
-        end
-      end
-    end
     def export_oddb2tdat(transfer_file=nil)
       subj = 'oddb2tdat'
       safe_export(subj) do
@@ -282,45 +236,12 @@ module ODDB
       safe_export 'price_history.yaml' do
         exporter.export_prices
       end
-			run_on_weekday(2) {
-        # ebooks need fachinfo_now.yaml
-        safe_export 'fachinfo_now.yaml' do
-          exporter.export_effective_fachinfos
-        end
-			}
-			run_on_weekday(3) {
-        safe_export 'patinfo.yaml' do
-          exporter.export_patinfos
-        end
-			}
 			run_on_weekday(4) {
         safe_export 'doctors.yaml' do
           exporter.export_doctors
         end
 			}
 		end
-    def export_fachinfo_yaml(option='')
-      exporter = YamlExporter.new(@app)
-      if option =~ /^now$/
-        puts
-        puts 'option: now  (active fachinfo only)'
-        safe_export 'fachinfo_now.yaml' do
-          exporter.export_effective_fachinfos
-        end
-      else
-        puts
-        puts 'option: none (all fachinfo)'
-        safe_export 'fachinfo.yaml' do
-          exporter.export_fachinfos
-        end
-      end
-    end
-    def export_patinfo_yaml
-      exporter = YamlExporter.new(@app)
-      safe_export 'patinfo.yaml' do
-        exporter.export_effective_patinfos
-      end
-    end
 		def mail_download_stats
       safe_export 'Mail Download-Statistics' do
         mail_stats('download')

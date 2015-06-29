@@ -166,7 +166,7 @@ module ODDB
       @current_issue_count  = 0 # only de
       @new_entry_count      = 0
       entries = swissmedic_entries_of(type)
-      LogFile.append('oddb/debug', " update_swissmedic_feed #{type} name #{@name}: #{entries['de'] ? entries['de'].size : 0 } german entries", Time.now.utc)
+      LogFile.append('oddb/debug', " update_swissmedic_feed #{type} name #{@name}: #{entries.size} entries", Time.now.utc)
       unless entries.empty?
         previous_update = @app.rss_updates[@name]
         update_rss_feeds(@name, entries, View::Rss::Swissmedic)

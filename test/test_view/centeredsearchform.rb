@@ -161,9 +161,6 @@ class TestCenteredSearchComposite <Minitest::Test
   def test_divider
     assert_kind_of(HtmlGrid::Span, @composite.divider(@model, @session))
   end
-  def test_download_ebook
-    assert_kind_of(HtmlGrid::Link, @composite.download_ebook(@model, @session))
-  end
   def test_download_export
     assert_kind_of(HtmlGrid::Link, @composite.download_export(@model, @session))
   end
@@ -197,9 +194,6 @@ class TestCenteredSearchComposite <Minitest::Test
     flexmock(@app, :narcotics => 'narcotics')
     # 9 is the length of the string narcotics
     assert_equal('9&nbsp;', @composite.narcotics_size(@model, @session))
-  end
-  def test_new_feature
-    assert_kind_of(HtmlGrid::Span, @composite.new_feature(@model, @session))
   end
   def test_recent_registrations
     flexmock(@app, :recent_registration_count => 'recent_registration_count')
