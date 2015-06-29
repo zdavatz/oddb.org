@@ -46,7 +46,6 @@ module ODDB
       # plugins
       # @plugins will be modifed depending on a test-case in each test method
       @plugin = flexmock('plugin')
-      flexmock(OdbaExporter::OddbDatExport).should_receive(:new).and_return(@plugin)
       flexmock(SwissmedicPlugin).should_receive(:new).and_return(@plugin)
       flexmock(XlsExportPlugin).should_receive(:new).and_return(@plugin)
       flexmock(CsvExportPlugin).should_receive(:new).and_return(@plugin)
@@ -58,50 +57,6 @@ module ODDB
       flexmock(PatinfoInvoicer).should_receive(:new).and_return(@plugin)
       flexmock(LogFile) do |logclass| logclass.should_receive(:filename).with(@jetzt, 'oddb/debug',).and_return('/tmp/logfile')  end
     end
-    def test_export_oddbdat__on_sunday
-      flexmock(@exporter, :today => Date.new(2011,1,2)) # Sunday
-      flexmock(Log) do |logclass|
-        # white box test: Log.new is never called
-        # if dose_missing_list is not empty or an error raises,
-        # Log.new will be called
-        logclass.should_receive(:new).times(0).and_return(@log)
-      end
-      flexmock(@plugin) do |exporter|
-        exporter.should_receive(:export_fachinfos).once.with_no_args
-        exporter.should_receive(:export).and_return([]) # this is the key point
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-
-      # the 'nil' means 'if' condition runs, otherwise it may indicate an error
-      assert_equal(nil, @exporter.export_oddbdat)
-    end
-    def test_export_oddbdat__on_monday
-      flexmock(@exporter, :today => Date.new(2011,1,3)) # Monday
-      flexmock(Log) do |logclass|
-        logclass.should_receive(:new).times(0).and_return(@log)
-      end
-      flexmock(@plugin) do |exporter|
-          exporter.should_receive(:export).and_return([]) # this is the key point
-          exporter.should_receive(:export_fachinfos).once.with_no_args
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-
-      assert_equal(nil, @exporter.export_oddbdat)
-    end
-    def test_export_oddbdat__dose_missing
-      flexmock(@exporter, :today => Date.new(2011,1,2)) # Sunday
-      flexmock(Log) do |logclass|
-        # white box test: Log.new is once called because of dose data missing
-        logclass.should_receive(:new).times(1).and_return(@log)
-      end      
-      flexmock(@plugin) do |exporter|
-        exporter.should_receive(:export).and_return(['dose_missing']) # this is the key point
-        exporter.should_receive(:export_fachinfos).once.with_no_args
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-
-      assert_equal(nil, @exporter.export_oddbdat)
-    end
     def test_run__on_1st_day
       # totally whilte box test
       flexmock(@exporter) do  |exp|
@@ -112,8 +67,6 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-#        exp.should_receive(:export_yaml).once.with_no_args # yaml only run on sunday
-#        exp.should_receive(:export_oddbdat).once.with_no_args # yaml only run on sunday
         exp.should_receive(:export_csv).once.with_no_args
         exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
@@ -131,8 +84,6 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-#        exp.should_receive(:export_yaml).once.with_no_args # yaml only run on sunday
-#        exp.should_receive(:export_oddbdat).once.with_no_args # yaml only run on sunday
         exp.should_receive(:export_csv).once.with_no_args
         exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args

@@ -5,7 +5,9 @@
 
 $: << File.expand_path(File.dirname(__FILE__))
 
-buggy = [
+must_be_run_separately = [
+  'doctors.rb',
+  'analysis.rb',
   'bsv_xml.rb',
   'invoicer.rb',
   'medical_products.rb',
@@ -16,7 +18,7 @@ buggy = [
 ]
 
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
-runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
+runner = OddbTestRunner.new(File.dirname(__FILE__), must_be_run_separately)
 runner.run_isolated_tests
 runner.run_normal_tests
 runner.show_results_and_exit

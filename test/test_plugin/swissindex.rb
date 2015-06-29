@@ -79,9 +79,6 @@ module ODDB
   end # TestLogging
 
   class StubDRbObject
-    def export_oddbdat(*args)
-      ['export_oddbdat']
-    end
     def compress_many(*args)
     end
   end
