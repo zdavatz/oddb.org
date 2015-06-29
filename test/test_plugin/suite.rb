@@ -4,6 +4,7 @@
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path(File.dirname(__FILE__))
+require 'stub/odba'
 
 must_be_run_separately = [
   'doctors.rb',
@@ -19,6 +20,6 @@ must_be_run_separately = [
 
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
 runner = OddbTestRunner.new(File.dirname(__FILE__), must_be_run_separately)
-runner.run_isolated_tests
 runner.run_normal_tests
+runner.run_isolated_tests
 runner.show_results_and_exit
