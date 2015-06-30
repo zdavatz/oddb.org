@@ -8,10 +8,13 @@
 
 ENV['TZ'] = 'UTC'
 
-require 'simplecov'; # configuration is done in file .simplcov
-group = File.basename(File.dirname(File.expand_path($0)))
-SimpleCov.command_name group
-SimpleCov.start
+USE_SIMPLECOV = false
+if USE_SIMPLECOV
+  require 'simplecov'; # configuration is done in file .simplcov
+  group = File.basename(File.dirname(File.expand_path($0)))
+  SimpleCov.command_name group
+  SimpleCov.start
+end
 
 class OddbTestRunner
   DryRun = false
@@ -35,8 +38,11 @@ class OddbTestRunner
       base = File.basename(path).sub('.rb', '')
       group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
       group_name += ':'+base unless base.eql?('suite')
-      cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
-      # cmd = "#{rubyExe} -e\"require '#{path}'\""
+      if USE_SIMPLECOV
+        cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      else
+        cmd = "#{rubyExe} -e\"require '#{path}'\""
+      end
       if DryRun
         puts "would exec #{cmd}"
       else
