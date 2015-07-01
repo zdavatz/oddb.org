@@ -31,18 +31,18 @@ module ODDB
       super app
       debug_msg "initialize update_atc_codes "
       @packungen_xlsx =  File.join archive, 'xls', 'Packungen-latest.xlsx'
-      @swissindex_xml =  File.join archive, 'xml', 'XMLSwissindexPharma-DE-latest.xml'
+      @refdata_xml =  File.join archive, 'xml', 'XMLRefdataPharma-latest.xml'
       @update_time = 0 # minute
       @missing_registrations = []
       @missing_sequences = []
       @atc_code_was_nil  = []
       @atc_code_corrected = []
       @nr_atc_code_from_swissmedic = 0
-      @nr_atc_code_from_swissindex = 0
+      @nr_atc_code_from_refdata = 0
       @obsolete = []
-      @swissindex_to_atc_code = {}
+      @refdata_to_atc_code = {}
       @no_such_atc_code_in_database = []
-      @atc_code_longer_from_swissindex = []
+      @atc_code_longer_from_refdata = []
     end
     def debug_msg(msg)
       return
@@ -64,27 +64,27 @@ module ODDB
         pharmacode
       end
     end
-    # method parse_swissindex_xml from gem oddb2xml lib/oddb2xml/extractor.rb
-    def parse_swissindex_xml # See als extractor.rb in oddb2xml
-      debug_msg "update_atc_codes: parse_swissindex_xml #{@swissindex_xml}"
+    # method parse_refdata_xml from gem oddb2xml lib/oddb2xml/extractor.rb
+    def parse_refdata_xml # See als extractor.rb in oddb2xml
+      debug_msg "update_atc_codes: parse_refdata_xml #{@refdata_xml}"
       data = {}
-      result = PharmaEntry.parse(IO.read(@swissindex_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
+      result = PharmaEntry.parse(IO.read(@refdata_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
       items = result.PHARMA.ITEM
       items.each do |pac|
         if gtin = pac.GTIN
           no8 = gtin[4..11]
           atc_code = pac.ATC ? pac.ATC.to_s : ''
-          # debug_msg  "update_atc_codes: parse_swissindex_xml gtin #{gtin} => #{no8} code #{atc_code}"
-          @swissindex_to_atc_code[no8] = atc_code
+          # debug_msg  "update_atc_codes: parse_refdata_xml gtin #{gtin} => #{no8} code #{atc_code}"
+          @refdata_to_atc_code[no8] = atc_code
         else
-          debug_msg "update_atc_codes: parse_swissindex_xml skip item #{item} as not gtin given"
+          debug_msg "update_atc_codes: parse_refdata_xml skip item #{item} as not gtin given"
         end
       end
     end
 
     def update_atc_codes
       debug_msg "update_atc_codes: Starting"
-      [ @packungen_xlsx, @swissindex_xml].each {
+      [ @packungen_xlsx, @refdata_xml].each {
         |file|
         unless File.exists?(file)
           msg  = "Could not find #{File.expand_path(file)}"
@@ -95,7 +95,7 @@ module ODDB
       }
       start_time = Time.new
       idx = 0
-      parse_swissindex_xml
+      parse_refdata_xml
       workbook = RubyXL::Parser.parse(@packungen_xlsx)
       saved_reg_seq = nil
       row_nr = 0
@@ -108,10 +108,10 @@ module ODDB
         reg_seq = "#{iksnr}/#{seqnr}"
         next if saved_reg_seq.eql?(reg_seq)
         no8 = sprintf('%05d',row.cells[0].value.to_i) + sprintf('%03d',row.cells[10].value.to_i)
-        atc_code_swissindex = @swissindex_to_atc_code[no8]
+        atc_code_refdata = @refdata_to_atc_code[no8]
         good_atc_code = atc_code_swissmedic
-        good_atc_code ||= atc_code_swissindex
-        debug_msg "#{__FILE__}: #{__LINE__}: row #{row_nr} reg #{iksnr}/#{seqnr} no8 #{no8} atc_code swissmedic #{atc_code_swissmedic} swissindex #{atc_code_swissindex} good #{good_atc_code}"
+        good_atc_code ||= atc_code_refdata
+        debug_msg "#{__FILE__}: #{__LINE__}: row #{row_nr} reg #{iksnr}/#{seqnr} no8 #{no8} atc_code swissmedic #{atc_code_swissmedic} refdata #{atc_code_refdata} good #{good_atc_code}"
         next unless good_atc_code
         saved_reg_seq = reg_seq.clone
         registration = @app.registration(iksnr)
@@ -139,21 +139,21 @@ module ODDB
               debug_msg "#{__FILE__}: #{__LINE__}: atc_code update iksnr #{iksnr}/#{seqnr}. No such ATC-code #{good_atc_code} in database"
               next
             end
-            if atc_code_swissindex and atc_code_swissmedic and atc_code_swissmedic.length < atc_code_swissindex.length and @app.atc_class(atc_code_swissindex)
-              if atc_code_sequence == atc_code_swissindex
-                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissindex}"
-                @nr_atc_code_from_swissindex += 1
+            if atc_code_refdata and atc_code_swissmedic and atc_code_swissmedic.length < atc_code_refdata.length and @app.atc_class(atc_code_refdata)
+              if atc_code_sequence == atc_code_refdata
+                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches refdata #{atc_code_refdata}"
+                @nr_atc_code_from_refdata += 1
               else
-                @atc_code_longer_from_swissindex<< "#{saved_reg_seq} #{atc_code_sequence} -> #{atc_code_swissindex}"
-                debug_msg "#{__FILE__}: #{__LINE__}: longer atc_code  from swissindex  #{atc_code_swissindex} for  #{atc_code_sequence} for iksnr #{iksnr}/#{seqnr}"
-                sequence.atc_class=@app.atc_class(atc_code_swissindex)
+                @atc_code_longer_from_refdata<< "#{saved_reg_seq} #{atc_code_sequence} -> #{atc_code_refdata}"
+                debug_msg "#{__FILE__}: #{__LINE__}: longer atc_code  from refdata  #{atc_code_refdata} for  #{atc_code_sequence} for iksnr #{iksnr}/#{seqnr}"
+                sequence.atc_class=@app.atc_class(atc_code_refdata)
                 sequence.odba_isolated_store
               end
-            elsif atc_code_sequence == atc_code_swissindex
-                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissindex}"
-                @nr_atc_code_from_swissindex += 1
+            elsif atc_code_sequence == atc_code_refdata
+                debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches refdata #{atc_code_refdata}"
+                @nr_atc_code_from_refdata += 1
             elsif atc_code_sequence == atc_code_swissmedic
-              debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches swissindex #{atc_code_swissmedic}"
+              debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches refdata #{atc_code_swissmedic}"
               @nr_atc_code_from_swissmedic += 1
             elsif atc_code_sequence != good_atc_code
               @atc_code_corrected << "#{saved_reg_seq} #{atc_code_sequence} -> #{good_atc_code}"
@@ -195,7 +195,7 @@ module ODDB
         "ODDB::Atc_lessPlugin - Report #{@@today.strftime('%d.%m.%Y')}",
         "Total time to update: #{"%.2f" % @update_time} [m]",
         "Total number of sequences with ATC-codes from swissmedic: #{@nr_atc_code_from_swissmedic}",
-        "Total number of sequences with ATC-codes from swissindex: #{@nr_atc_code_from_swissindex}",
+        "Total number of sequences with ATC-codes from refdata: #{@nr_atc_code_from_refdata}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
@@ -229,10 +229,10 @@ module ODDB
         lines << "#{@no_such_atc_code_in_database.size} ATC codes absent in database#{join_string}#{@no_such_atc_code_in_database.join(join_string)}"
       end
 
-      if @atc_code_longer_from_swissindex.size == 0
-        lines << "All ATC codes from swissmedic are as long as those from swissindex"
+      if @atc_code_longer_from_refdata.size == 0
+        lines << "All ATC codes from swissmedic are as long as those from refdata"
       else
-        lines << "#{@atc_code_longer_from_swissindex.size} ATC code taken from swissindex where they are longer#{join_string}#{@atc_code_longer_from_swissindex.join(join_string)}"
+        lines << "#{@atc_code_longer_from_refdata.size} ATC code taken from refdata where they are longer#{join_string}#{@atc_code_longer_from_refdata.join(join_string)}"
       end
 
       if @obsolete.size == 0

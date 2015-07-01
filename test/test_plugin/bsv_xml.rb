@@ -15,6 +15,8 @@ require 'plugin/bsv_xml'
 require 'flexmock'
 require 'util/logfile'
 require 'ext/swissindex/src/swissindex'
+require 'ext/refdata/src/refdata'
+require 'test_helpers'
 
 module ODDB
   class PackageCommon
@@ -27,6 +29,7 @@ module ODDB
   class TestListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::Listener.new(app)
     end
@@ -78,6 +81,7 @@ module ODDB
   class TestGenericsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::GenericsListener.new(@app)
     end
@@ -138,6 +142,7 @@ module ODDB
   class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::ItCodesListener.new(@app)
     end
@@ -222,6 +227,7 @@ module ODDB
   class TestPreparationsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @package = flexmock('package') do |pac|
         pac.should_receive(:public?).and_return(true)
         pac.should_receive(:sl_entry).and_return(true)
@@ -350,11 +356,11 @@ module ODDB
       end
     end
     def test_load_ikskey
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         assert_equal('56789012', @listener.load_ikskey('pharmacode'))
       end
     end
@@ -366,7 +372,7 @@ module ODDB
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @listener.load_ikskey('pcode')
       end
     end
@@ -665,6 +671,7 @@ module ODDB
   class TestBsvXmlPlugin2 <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       flexstub(LogFile) do |log|
         log.should_receive(:append)
       end
@@ -982,6 +989,7 @@ module ODDB
   class TestBsvXmlPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
       ODDB.config.url_bag_sl_zip = @url
       @archive = File.expand_path '../data', File.dirname(__FILE__)
@@ -1769,11 +1777,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                         times(1).and_return nil
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1791,11 +1799,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                         times(1).and_return nil
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1903,7 +1911,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -1966,11 +1974,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         exp, res = expected_updates.delete(ptr)
         res
       end
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal({}, expected_updates)
@@ -2014,11 +2022,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -2117,6 +2125,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       pack
     end
     def setup_registration opts={}
+      ODDB::TestHelpers.vcr_setup
       reg = flexmock('registration', opts)
       ptr = Persistence::Pointer.new([:registration, opts[:iksnr]])
       reg.should_receive(:pointer).and_return ptr
@@ -2126,6 +2135,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg
     end
     def setup_meddata_server opts={}
+      ODDB::TestHelpers.vcr_setup
       server = flexmock(BsvXmlPlugin::PreparationsListener::MEDDATA_SERVER)
       session = flexmock 'session'
       server.should_receive(:session).and_return do |type, block|

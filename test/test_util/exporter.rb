@@ -266,13 +266,13 @@ module ODDB
       flexmock(File) do |file|
         file.should_receive(:open).and_raise(StandardError)
       end
-      flexmock(Log) do |logclass|
+      flexmock(LogFile) do |logclass|
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       res = @exporter.export_sl_pcodes
-      skip("Niklaus does not know why under minitest it returns sleep instead of raising an error")
+      # skip("Niklaus does not know why under minitest it returns sleep instead of raising an error")
       assert_raises(StandardError) { @exporter.export_sl_pcodes }
     end
     def test_export_patents_xls

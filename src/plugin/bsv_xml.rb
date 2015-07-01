@@ -241,7 +241,7 @@ module ODDB
       end
       def load_ikskey pcode
         return if pcode.to_s.empty?
-        ODDB::SwissindexPharmaPlugin.new(@app).load_ikskey(pcode)
+        ODDB::RefdataPlugin.new(@app).load_ikskey(pcode)
       end
       def tag_start name, attrs
         case name

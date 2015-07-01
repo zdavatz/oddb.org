@@ -25,9 +25,10 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
+
 begin
   require 'pry'
-rescue
+rescue LoadError
   # ignore error when pry cannot be loaded (for Jenkins-CI)
 end
 

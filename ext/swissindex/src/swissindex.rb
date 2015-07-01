@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 02.10.2012 -- yasaka@ywesee.com
-# ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::Swissindex -- 02.10.2012 -- yasaka@ywesee.com
+# ODDB::Swissindex::Swissindex -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -10,10 +10,6 @@ require 'drb'
 require 'config'
 
 module ODDB
-  module Swissindex
-    def Swissindex.session(type = SwissindexPharma)
-      yield(type.new)
-    end
 
 module Archiver
   def historicize(filename, archive_path, content, lang = 'DE')
@@ -29,9 +25,10 @@ module Archiver
     FileUtils.cp(archive, latest)
   end
 end
-
+module Swissindex
 class RequestHandler
-  def initialize(wsdl_url = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL")
+  def initialize(wsdl_url = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL")
+    puts "RequestHandler wsdl_url #{wsdl_url}"
     @client = Savon.client(
       :wsdl => wsdl_url,
       :log => false,
@@ -76,7 +73,7 @@ class RequestHandler
   end
 end
 
-class SwissindexNonpharma < RequestHandler
+class SwissindexMigel < RequestHandler
   URI = 'druby://localhost:50002'
   include DRb::DRbUndumped
   include Archiver
@@ -84,103 +81,6 @@ class SwissindexNonpharma < RequestHandler
   def initialize
     super
     @base_url = ODDB.config.migel_base_url
-  end
-  def download_all(lang = 'DE')
-    @client.globals[:read_timeout]=120
-    try_time = 3
-    begin
-      soap =
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-      response = @client.call(:download_all, :xml => soap)
-      cleanup_items
-      if response.success?
-        if xml = response.to_xml
-          archive_path = File.expand_path('../../../../migel/data', File.dirname(__FILE__))
-          unless Dir.exist?(archive_path)
-            archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
-          end
-          historicize("XMLSwissindexNonPharma.xml", archive_path, xml, lang)
-          @items = response.to_hash[:nonpharma][:item]
-          return true
-        else
-          # received broken data or unexpected error
-          raise StandardError
-        end
-      else
-        # timeout or unexpected error
-        raise StandardError
-      end
-    rescue StandardError, Timeout::Error => err
-      if try_time > 0
-        sleep 10
-        try_time -= 1
-        retry
-      else
-        cleanup_items
-        return false
-      end
-    end
-  end
-  def check_item(pharmacode, lang = 'DE')
-    item = {}
-    @items.each do |i|
-      if i.has_key?(:phar) and
-         pharmacode == i[:phar]
-        item = i
-      end
-    end
-    case
-    when item.empty?
-      return nil
-    when item[:status] == "I"
-      return false
-    else
-      nonpharmaitem = if item.is_a? Array
-                        item.sort_by{|p| p[:gtin].to_i}.reverse.first
-                      elsif item.is_a? Hash
-                        item
-                      end
-      return nonpharmaitem
-    end
-  end
-  def search_item(pharmacode, lang = 'DE')
-    lang.upcase!
-    try_time = 3
-    begin
-      soap = '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-            <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + pharmacode + '</pharmacode>
-            <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-      response = @client.call(:get_by_pharmacode, :xml => soap)
-      if nonpharma = response.to_hash[:nonpharma]
-        nonpharma_item = if nonpharma[:item].is_a?(Array)
-                           nonpharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
-                         elsif nonpharma[:item].is_a?(Hash)
-                           nonpharma[:item]
-                         end
- 
-        return nonpharma_item
-      else
-        return nil
-      end
-
-    rescue StandardError, Timeout::Error => err
-      if try_time > 0
-        sleep 10
-        try_time -= 1
-        retry
-      else
-        return nil
-      end
-    end
   end
   def search_migel(pharmacode, lang = 'DE')
     agent = Mechanize.new
@@ -203,8 +103,9 @@ class SwissindexNonpharma < RequestHandler
       end
       line
     rescue StandardError, Timeout::Error => err
+      puts "search_migel #{pharmacode} failed err #{err}" if defined?(Minitest)
       if try_time > 0
-        sleep 10
+        sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new
         try_time -= 1
         retry
@@ -264,7 +165,7 @@ class SwissindexNonpharma < RequestHandler
       migel = {}
       agent.page.search('td').each_with_index do |td, i|
         text = td.inner_text.chomp.strip
-        if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/) 
+        if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/)
           migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = check_item(pharmacode, lang)
                          merge_swissindex_migel(swissindex_item, line)
                        else
@@ -274,7 +175,7 @@ class SwissindexNonpharma < RequestHandler
           line = []
           count = 0
         end
-        if count < 7 
+        if count < 7
           text = text.split(/\n/)[1] || text.split(/\n/)[0]
           text = text.gsub(/\302\240/, '').strip if text
           line << text
@@ -292,13 +193,49 @@ class SwissindexNonpharma < RequestHandler
       table.shift
       table
     rescue StandardError, Timeout::Error => err
+      puts "search_migel_table #{code} failed err #{err}" if defined?(Minitest)
       if try_time > 0
-        sleep 10
+        sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new
         try_time -= 1
         retry
       else
         return []
+      end
+    end
+  end
+  def search_item(pharmacode, lang = 'DE')
+    lang.upcase!
+    try_time = 3
+    begin
+      soap = '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+            <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + pharmacode + '</pharmacode>
+            <lang xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101">' + lang + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+      response = @client.call(:get_by_pharmacode, :xml => soap)
+      if nonpharma = response.to_hash[:nonpharma]
+        nonpharma_item = if nonpharma[:item].is_a?(Array)
+                          nonpharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
+                        elsif nonpharma[:item].is_a?(Hash)
+                          nonpharma[:item]
+                        end
+
+        return nonpharma_item
+      else
+        return nil
+      end
+
+    rescue StandardError, Timeout::Error => err
+      puts "search_item #{pharmacode} failed err #{err}" if defined?(Minitest)
+      if try_time > 0
+        sleep defined?(Minitest) ? 0.1 : 10
+        try_time -= 1
+        retry
+      else
+        return nil
       end
     end
   end
@@ -324,8 +261,9 @@ class SwissindexNonpharma < RequestHandler
       end
       return pos_num
     rescue StandardError, Timeout::Error => err
+      puts "search_migel_position_number #{pharmacode} failed err #{err}" if defined?(Minitest)
       if try_time > 0
-        sleep 10
+        sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new
         try_time -= 1
         retry
@@ -335,131 +273,5 @@ class SwissindexNonpharma < RequestHandler
     end
   end
 end
-
-class SwissindexPharma < RequestHandler
-  URI = 'druby://localhost:50001'
-  include DRb::DRbUndumped
-  include Archiver
-  def initialize
-   super("https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL")
-  end
-
-  def download_all(lang = 'DE')
-    @client.globals[:read_timeout]=120
-
-    try_time = 3
-    begin
-      cleanup_items
-      soap =
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-      response = @client.call(:download_all, :xml => soap)
-      if response.success?
-        if xml = response.to_xml
-          archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
-          historicize("XMLSwissindexPharma.xml",archive_path, xml, lang)
-          @items = response.to_hash[:pharma][:item]
-          return true
-        else
-          # received broken data or unexpected error
-          raise StandardError
-        end
-      else
-        # timeout or unexpected error
-        raise StandardError
-      end
-    rescue StandardError, Timeout::Error => err
-      if try_time > 0
-        sleep 10
-        try_time -= 1
-        retry
-      else
-        cleanup_items
-        options = {
-          :type  => :download_all.to_s,
-          :error => err
-        }
-        return logger('bag_xml_swissindex_pharmacode_download_all_error.log', options);
-      end
-    end
-  end
-  def check_item(code, check_type = :gtin, lang = 'DE')
-    item = {}
-    @items.each do |i|
-      if i.has_key?(check_type) and
-         code == i[check_type]
-        item = i
-      end
-    end
-    case
-    when item.empty?
-      return nil
-    when item[:status] == "I"
-      return false
-    else
-      # If there are some products those phamarcode is same, then the return value become an Array
-      # We take one of them which has a higher Ean-Code
-      pharmacode = if item.is_a? Array
-                     item.sort_by{|p| p[:gtin].to_i}.reverse.first[:phar]
-                   elsif item.is_a? Hash
-                     item[:phar]
-                   end
-      return pharmacode
-    end
-  end
-  def search_item(code, search_type = :get_by_gtin, lang = 'DE')
-    try_time = 3
-    begin
-      soap = if search_type == :get_by_gtin
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-              elsif search_type == :get_by_pharmacode
-      '<?xml version="1.0" encoding="utf-8"?>
-      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-          <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
-          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
-        </soap:Body>
-      </soap:Envelope>'
-      end
-      response = @client.call(search_type, :xml => soap)
-      if pharma = response.to_hash[:pharma]
-        # If there are some products those phamarcode is same, then the return value become an Array
-        # We take one of them which has a higher Ean-Code
-        pharma_item = if pharma[:item].is_a?(Array)
-                        pharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
-                      elsif pharma[:item].is_a?(Hash)
-                        pharma[:item]
-                      end
-        return pharma_item
-      else
-        # Pharmacode is not found in request result by ean(GTIN) code
-        return {}
-      end
-    rescue StandardError, Timeout::Error => err
-      if try_time > 0
-        sleep 10
-        try_time -= 1
-        retry
-      else
-        options = {
-          :type => search_type.to_s.gsub('gen_by_', ''),
-          :code => code
-        }
-        return logger('bag_xml_swissindex_pharmacode_error.log', options)
-      end
-    end
-  end
 end
-
-  end # Swissindex
 end # ODDB

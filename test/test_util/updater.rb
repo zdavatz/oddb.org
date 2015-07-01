@@ -11,6 +11,7 @@ require 'flexmock'
 require 'util/updater'
 require 'stub/odba'
 require 'date'
+require 'test_helpers'
 
 module ODDB
   module Doctors
@@ -19,7 +20,6 @@ module ODDB
   module Interaction
     class InteractionPlugin; end
   end
-  class MiGelPlugin; end
 	class StubUpdaterPlugin
 		attr_reader :month
 		def initialize(app)
@@ -99,6 +99,7 @@ module ODDB
 		end
 
 		def setup
+      ODDB::TestHelpers.vcr_setup
 			@app = StubApp.new
 			@updater = ODDB::Updater.new(@app)
 			@group = @app.log_group = StubLogGroup.new
@@ -458,16 +459,13 @@ module ODDB
       setup_update_immediate(MedwinPackagePlugin)
       assert_equal('notify', @updater.update_trade_status)
     end
+
+    def test_update_update_package_trade_status_by_refdata
+      assert_equal(nil, @updater.update_package_trade_status_by_refdata)
+    end
+
     def test_update_migel
-      skip("Niklaus does not know where MiGeLPlugin is defined")
-      flexstub(MiGeLPlugin) do |klass|
-        klass.should_receive(:new).and_return(flexmock('mig') do |obj|
-          obj.should_receive(:update)
-          obj.should_receive(:prune_old_revisions)
-        end)
-      end
-      expected = "MiGeL is now up to date"
-      assert_equal(expected, @updater.update_migel)
+      assert_equal(nil, @updater.migel_nonpharma('pharmacode_file'))
     end
     def setup_update_swissmedic
       flexstub(SwissmedicPlugin) do |klass|
@@ -565,14 +563,14 @@ module ODDB
         app.should_receive(:create).and_return(logs)
       end
       setup_logfile_stats do                      # for logfile_stats
-        skip("Niklaus thinks we should mock here the textinfo_fi")
+        setup_update_notify_simple(TextInfoPlugin, :import_swissmedicinfo)
         setup_update_swissmedic                   # for update_swissmedic
         setup_update_swissmedic_followers         # for update_swissmedic_followers
         setup_bsv_xml_plugin                      # for update_bsv
         setup_update_bsv_followers                # for update_bsv_followers
         setup_update_simple(ODDB::Interaction::InteractionPlugin) # for update_interactions
-        assert_equal('notify', @updater.run)
       end
+      assert_equal(nil, @updater.run)
     end
   end
 end

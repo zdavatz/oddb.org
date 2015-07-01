@@ -84,22 +84,6 @@ module ODDB
         $stdout.close
         $stdout = STDERR
       end
-      def test_search_item__error
-        response = flexmock('response', :to_hash => {:nonpharma => nil}) 
-        wsdl = flexmock('wsdl', :document= => nil)
-        client = flexmock('client') do |c|
-          c.should_receive(:request).and_raise(StandardError)
-        end
-        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
-        flexmock(@nonpharma, 
-                 :sleep => nil,
-                 :server => 'server'
-                )
-        pharmacode = '1234567'
-        stdout_null do 
-          assert_nil(@nonpharma.search_item(pharmacode))
-        end
-      end
       def test_search_migel
         td = flexmock('td', :inner_text => '1234567')
         flexmock(Mechanize).new_instances do |agent|
@@ -317,22 +301,8 @@ module ODDB
         }
         assert_equal(expected, @nonpharma.search_item_with_swissindex_migel(pharmacode))
       end
-    end # TestSwinssindexNonpharma
+    end # TestSwissindexMigel
 
-    class TestSwissindexPharma <Minitest::Test
-      include FlexMock::TestCase
-      def setup
-        @pharma = ODDB::Swissindex::SwissindexPharma.new
-        @ssl  = flexmock('http', :verify_mode= => nil)
-        @auth = flexmock('http', :ssl => @ssl)
-        @http = flexmock('http', :auth => @auth)
-      end
-
-      def test_search_item__nil
-        pharmacode = '6212708'
-        assert_equal(nil, ODDB::Swissindex::SwissindexPharma.new.search_item(pharmacode))
-      end
-    end
-	end # Swissindex
+  end # Swissindex
 
 end # ODDB

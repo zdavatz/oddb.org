@@ -73,12 +73,17 @@ class OddbTestRunner
 
   def show_results_and_exit
     okay = true
+    problems = []
     @@directories.each{
       |path,res|
         puts "#{path} returned #{res}"
-        okay = false unless res
+        unless res
+          okay = false
+          problems << path
+        end
     }
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
+    puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were #{problems.join(',')}"
     exit 2 unless okay
     okay
   end

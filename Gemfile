@@ -55,6 +55,8 @@ gem 'yus', '1.0.1'
 
 group :development, :test do
   gem "rake"
+  gem 'vcr'
+  gem 'webmock'
   gem 'flexmock'
   gem 'hoe'
   gem 'hoe-travis'
