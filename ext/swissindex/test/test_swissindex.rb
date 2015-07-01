@@ -42,10 +42,15 @@ module ODDB
 
     def test_search_item
       # this is an integration test and will query e-media-net.ch
-      pharmacode = '1756757'
-      result = @pharma.search_item(pharmacode)
-      assert_equal(pharmacode, result[:phar])
-      assert(nil != result[:dscr])
+      pharmacode = '5819012'
+      hostname = Socket.gethostbyname(Socket.gethostname).first
+      if /localhost/i.match(hostname)
+        skip '@pharma.search_item'
+      else
+        result = @pharma.search_item(pharmacode)
+        assert_equal(pharmacode, result[:phar])
+        assert(nil != result[:dscr])
+      end
     end
     def test_download_all
       puts "IntegrationTest: Download_all Pharma takes a few seconds"
