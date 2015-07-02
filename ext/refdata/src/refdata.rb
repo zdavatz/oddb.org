@@ -84,6 +84,7 @@ class RefdataArticle < RequestHandler
   end
 
   def download_all(type = 'Pharma')
+    $stdout.puts "RefdataArticle.download_all starting #{type}"
     @type = type
     @client.globals[:read_timeout] = 120
 
@@ -106,6 +107,7 @@ class RefdataArticle < RequestHandler
           archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
           historicize("XMLRefdata#{type}.xml",archive_path, xml)
           @items[@type] = response.to_hash[:article][:item]
+          $stdout.puts "RefdataArticle.download_all done #{type}"
           return true
         else
           # received broken data or unexpected error
@@ -116,7 +118,7 @@ class RefdataArticle < RequestHandler
         raise StandardError
       end
     rescue StandardError, Timeout::Error => err
-      puts "Download failed: #{err}"
+      $stdout.puts "Download failed: try_time #{try_time} #{err}"
       if try_time > 0
         sleep 10
         try_time -= 1
@@ -133,14 +135,14 @@ class RefdataArticle < RequestHandler
   end
   def check_item(code, check_type = :gtin)
     @type = 'Pharma'
-    download_all(@type) unless @items[@type]
+    download_all(@type) unless @items and @items[@type]
     item = {}
     @items[@type].each do |i|
       if i.has_key?(check_type) and
          code == i[check_type]
         item = i
       end
-    end
+    end if @items and @items[@type]
     case
     when item.empty?
       return nil
