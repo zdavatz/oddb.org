@@ -2,8 +2,8 @@
 # encoding: utf-8
 
 require 'rubygems'
-require 'savon'
 require 'mechanize'
+require 'savon'
 require 'drb'
 require 'config'
 
