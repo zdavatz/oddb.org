@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 require 'rubygems'
-require 'mechanize'
 require 'savon'
 require 'drb'
 require 'config'
@@ -12,6 +11,18 @@ module ODDB
     def Refdata.session(type = RefdataArticle)
       yield(type.new)
     end
+
+    def Refdata.check_net_ntlm_version
+      begin
+        require 'net/ntlm'
+        require 'net/ntlm/version' unless Net::NTLM.const_defined?(:VERSION)
+        unless Net::NTLM::VERSION::STRING >= '0.3.2'
+          raise ArgumentError, 'Invalid version of rubyntlm. Please use v0.3.2+.'
+        end
+      rescue LoadError
+      end
+    end
+  Refdata.check_net_ntlm_version
 
 module Archiver
   def historicize(filename, archive_path, content)
@@ -118,7 +129,11 @@ class RefdataArticle < RequestHandler
         raise StandardError
       end
     rescue StandardError, Timeout::Error => err
-      $stdout.puts "Download failed: try_time #{try_time} #{err}"
+      $stdout.puts "Download failed: try_time #{try_time} #{err}. from #{caller[0..5].join("\n")}"
+      if err.is_a?(ArgumentError)
+        binding.pry
+        raise err
+      end
       if try_time > 0
         sleep 10
         try_time -= 1
@@ -192,6 +207,9 @@ class RefdataArticle < RequestHandler
       end
     rescue StandardError, Timeout::Error => err
       puts "RefdataArticle.search_item(#{code}) failed: #{err}"
+      if err.is_a?(ArgumentError)
+        raise err
+      end
       if try_time > 0
         sleep 10
         try_time -= 1

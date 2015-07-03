@@ -3,7 +3,6 @@
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'mechanize'
 require 'drb/drb'
 require 'refdata'
 
