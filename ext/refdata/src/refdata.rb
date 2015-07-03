@@ -2,8 +2,11 @@
 # encoding: utf-8
 
 require 'rubygems'
-require 'savon'
 require 'drb'
+require 'rubyntlm'
+require 'net/ntlm'
+require 'net/ntlm/version'
+require 'savon'
 require 'config'
 
 module ODDB

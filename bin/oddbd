@@ -5,6 +5,10 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("..", File.dirname(__FILE__))
 
 require 'drb/drb'
+require 'rubyntlm'
+require 'net/ntlm'
+require 'net/ntlm/version'
+
 require 'util/currency'
 require 'util/oddbapp'
 require 'etc/db_connection'
