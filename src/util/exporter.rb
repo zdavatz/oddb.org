@@ -334,7 +334,7 @@ module ODDB
 			log = Log.new(date)
 			begin
 				log.report = File.read(LogFile.filename(key, date))
-			rescue Errno::ENOENT, StandardError => e
+			rescue StandardError => e
 				log.report = ([
 					"Nothing to Report.",
 					nil, 
