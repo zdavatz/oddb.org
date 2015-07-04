@@ -134,7 +134,6 @@ class RefdataArticle < RequestHandler
     rescue StandardError, Timeout::Error => err
       $stdout.puts "Download failed: try_time #{try_time} #{err}. from #{caller[0..5].join("\n")}"
       if err.is_a?(ArgumentError)
-        binding.pry
         raise err
       end
       if try_time > 0
