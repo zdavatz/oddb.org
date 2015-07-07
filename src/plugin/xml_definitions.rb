@@ -1,8 +1,9 @@
 # Definitions for the sax-machine parse to parse
 # Preparations.xml
-# Taken from gem oddb2xml lib/oddb2xml/xml_definitions.rb
 
 require 'sax-machine'
+
+Strip_For_Sax_Machine = '<?xml version="1.0" encoding="utf-8"?>'+"\n"
 
 class PriceElement
   include SAXMachine
@@ -211,18 +212,6 @@ class ItemContent
   element :COMP, :class => CompElement
 end
 
-class PharmaContent
-  include SAXMachine
-  attribute :CREATION_DATETIME
-  elements :ITEM, :class => ItemContent
-end
-
-class PharmaEntry
-  include SAXMachine
-  element :CREATION_DATETIME
-  element :PHARMA, :class => PharmaContent
-end
-
 class MedicalInformationContent
   include SAXMachine
   attribute :type
@@ -230,6 +219,8 @@ class MedicalInformationContent
   attribute :lang
   element :title
   element :authHolder
+  element :authNrs
+  element :authNrs
   element :style
   element :content
 end
@@ -249,3 +240,29 @@ class MedicalInformationsEntry
   element :medicalInformations, :class => MedicalInformationsContent
 end
 
+class SwissRegItemContentContent
+  include SAXMachine
+  attribute :DT
+  element :ATYPE
+  element :GTIN
+  element :PHAR
+  element :SWMC_AUTHNR
+  element :NAME_DE
+  element :NAME_FR
+  element :ADDSCR
+  element :ATC
+  element :AUTH_HOLDER_NAME
+  element :AUTH_HOLDER_GLN
+end
+
+class SwissRegArticleContent
+  include SAXMachine
+  attribute :CREATION_DATETIME
+  elements :ITEM, :class => SwissRegItemContentContent
+end
+
+class SwissRegArticleEntry
+  include SAXMachine
+  element :CREATION_DATETIME
+  element :ARTICLE, :class => SwissRegArticleContent
+end

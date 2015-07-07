@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Atc_lessPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
-# ODDB::Atc_lessPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
-# ODDB::Atc_lessPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
 require 'mechanize'
@@ -13,6 +10,7 @@ require 'util/today'
 require 'rubyXL'
 require 'spreadsheet'
 require 'util/logfile'
+require 'util/util'
 require 'plugin/xml_definitions'
 
 # Some monkey patching needed to avoid an error
@@ -42,6 +40,7 @@ module ODDB
       @obsolete = []
       @refdata_to_atc_code = {}
       @no_such_atc_code_in_database = []
+      @atc_codes_in_refdata = {}
       @atc_code_longer_from_refdata = []
     end
     def debug_msg(msg)
@@ -68,8 +67,8 @@ module ODDB
     def parse_refdata_xml # See als extractor.rb in oddb2xml
       debug_msg "update_atc_codes: parse_refdata_xml #{@refdata_xml}"
       data = {}
-      result = PharmaEntry.parse(IO.read(@refdata_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
-      items = result.PHARMA.ITEM
+      result = SwissRegArticleEntry.parse(IO.read(@refdata_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
+      items = result.ARTICLE.ITEM
       items.each do |pac|
         if gtin = pac.GTIN
           no8 = gtin[4..11]
@@ -99,15 +98,20 @@ module ODDB
       workbook = RubyXL::Parser.parse(@packungen_xlsx)
       saved_reg_seq = nil
       row_nr = 0
+      Util.check_column_indices(workbook.worksheets[0])
+      iksnr_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:iksnr)
+      seqnr_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:seqnr)
+      atc_col             = ODDB::Util::COLUMNS_JULY_2015.keys.index(:atc_class)
+      ikscd_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:ikscd)
       workbook.worksheets[0].each do |row|
         row_nr += 1
-        next unless row and row.cells[0] and row.cells[0].value and row.cells[0].value.to_i > 0
-        iksnr               = "%05i" % row.cells[0].value.to_i
-        seqnr               = "%02d" % row.cells[1].value.to_i
-        atc_code_swissmedic = row.cells[5] ? row.cells[5].value : nil
+        next unless row and row.cells[iksnr_col] and row.cells[iksnr_col].value and row.cells[iksnr_col].value.to_i > 0
+        iksnr               = "%05i" % row.cells[iksnr_col].value.to_i
+        seqnr               = "%02d" % row.cells[seqnr_col].value.to_i
+        atc_code_swissmedic = row.cells[atc_col] ? row.cells[atc_col].value : nil
         reg_seq = "#{iksnr}/#{seqnr}"
         next if saved_reg_seq.eql?(reg_seq)
-        no8 = sprintf('%05d',row.cells[0].value.to_i) + sprintf('%03d',row.cells[10].value.to_i)
+        no8 = sprintf('%05d',row.cells[iksnr_col].value.to_i) + sprintf('%03d',row.cells[ikscd_col].value.to_i)
         atc_code_refdata = @refdata_to_atc_code[no8]
         good_atc_code = atc_code_swissmedic
         good_atc_code ||= atc_code_refdata
@@ -139,6 +143,7 @@ module ODDB
               debug_msg "#{__FILE__}: #{__LINE__}: atc_code update iksnr #{iksnr}/#{seqnr}. No such ATC-code #{good_atc_code} in database"
               next
             end
+            @atc_codes_in_refdata["#{iksnr}/#{seqnr}"] = atc_code_refdata if atc_code_refdata
             if atc_code_refdata and atc_code_swissmedic and atc_code_swissmedic.length < atc_code_refdata.length and @app.atc_class(atc_code_refdata)
               if atc_code_sequence == atc_code_refdata
                 debug_msg "#{__FILE__}: #{__LINE__}: #{iksnr}/#{seqnr} #{atc_code_sequence} matches refdata #{atc_code_refdata}"
@@ -199,12 +204,6 @@ module ODDB
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
-      if @missing_registrations.empty? # no expiration date
-        lines << "Swissmedic: All registrations present"
-      else
-        lines << "Skipped #{@missing_registrations.size} registrations#{join_string}#{@missing_registrations.join(join_string)}"
-      end
-
       if @missing_sequences.empty? # no expiration date
         lines << "Swissmedic: All sequences present"
       else
@@ -229,6 +228,8 @@ module ODDB
         lines << "#{@no_such_atc_code_in_database.size} ATC codes absent in database#{join_string}#{@no_such_atc_code_in_database.join(join_string)}"
       end
 
+      lines << "Checked against #{@atc_codes_in_refdata.size} ATC-codes from RefData"
+
       if @atc_code_longer_from_refdata.size == 0
         lines << "All ATC codes from swissmedic are as long as those from refdata"
       else
@@ -240,6 +241,13 @@ module ODDB
       else
         lines << "Deleted #{@obsolete.size} sequences '00' in registrations#{join_string}#{@obsolete.join(join_string)}"
       end
+
+      if @missing_registrations.empty? # no expiration date
+        lines << "Swissmedic: All registrations present"
+      else
+        lines << "Skipped #{@missing_registrations.size} registrations#{join_string}#{@missing_registrations.join(' ')}"
+      end
+
       lines.flatten.join("\n")
     end
   end
