@@ -34,6 +34,7 @@ private
     def date_cell(row, idx)
       return nil unless row[idx]
       row_value = row[idx]
+      return nil unless row_value.value
       return row_value.value.to_date if row_value.is_a?(RubyXL::Cell)
       row_value
     end
