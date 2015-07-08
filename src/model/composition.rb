@@ -5,17 +5,23 @@
 
 require 'util/persistence'
 require 'model/activeagent'
+require 'model/substance'
 
 module ODDB
   class Composition
     include Persistence
     include Comparable
     attr_accessor :sequence, :source, :label
-    attr_reader :galenic_form, :active_agents
+    attr_reader :galenic_form, :active_agents, :excipiens
     def initialize
+      @excipiens = nil
       @active_agents = []
       @parts = []
       super
+    end
+    def add_excipiens(substance)
+      raise "can only add a substance as excipiens" unless substance.is_a?(ODDB::Substance)
+      @excipiens = substance
     end
     def init(app)
       @pointer.append(@oid)
@@ -31,11 +37,11 @@ module ODDB
       }
       @active_agents.odba_delete
     end
-    def create_active_agent(substance_name)
+    def create_active_agent(substance_name, is_active_agent = true)
       active = active_agent(substance_name)
       return active unless active.nil?
-      active = ActiveAgent.new(substance_name)
-      active.composition = self
+      active = ActiveAgent.new(substance_name, is_active_agent)
+      composition = self
       active.sequence = @sequence
       @active_agents.push(active)
       active
@@ -71,6 +77,7 @@ module ODDB
       if @galenic_form
         str = "%s: %s" % [@galenic_form, str]
       end
+      str = @label + ': ' + str if @label
       str
     end
     def *(factor)

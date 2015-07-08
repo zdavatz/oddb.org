@@ -2,13 +2,14 @@
 # encoding: utf-8
 # ODDB::TestComposition -- oddb.org -- 20.04.2011 -- mhatakeyama@ywesee.com
 
-#$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'model/composition'
+require 'stub/odba'
 
 module ODDB
   class TestComposition <Minitest::Test
@@ -16,6 +17,7 @@ module ODDB
     def setup
       flexmock(ODBA.cache, :next_id => 123)
       @composition = ODDB::Composition.new
+      @tst_name = 'substance_name'
     end
     def test_init
       pointer = flexmock('pointer', :append => 'append')
@@ -30,6 +32,11 @@ module ODDB
       @composition.instance_eval('@active_agents = [active_agent]')
       assert_equal(active_agent, @composition.active_agent('substance'))
     end
+    def test_active_agent__found_substance
+      active_agent = flexmock('active_agent', :same_as? => true, :is_active_agent => false)
+      @composition.instance_eval('@active_agents = [active_agent]')
+      assert_equal(active_agent, @composition.active_agent('substance'))
+    end
     def test_checkout
       active_agent  = flexmock('active_agent', 
                                :checkout    => 'checkout',
@@ -40,7 +47,14 @@ module ODDB
       assert_equal('odba_delete', @composition.checkout)
     end
     def test_create_active_agent
-      assert_kind_of(ODDB::ActiveAgent, @composition.create_active_agent('substance_name'))
+      result = @composition.create_active_agent('substance_name')
+      assert_kind_of(ODDB::ActiveAgent, result)
+      assert_equal(true, result.is_active_agent)
+    end
+    def test_create_substance
+      result = @composition.create_active_agent('substance_name', false)
+      assert_kind_of(ODDB::ActiveAgent, result)
+      assert_equal(false, result.is_active_agent)
     end
     def test_delete_active_agent
       active_agent = flexmock('active_agent', :same_as? => true)
@@ -128,6 +142,15 @@ module ODDB
       target = flexmock('target', :remove_sequence => 'remove_sequence')
       value  = flexmock('value', :add_sequence => 'add_sequence')
       assert_equal(value, @composition.instance_eval('replace_observer(target, value)'))
+    end
+    def test_active_more_info
+      tst = 'more_info'
+      active = @composition.create_active_agent('substance')
+      assert_equal(ODDB::ActiveAgent, active.class)
+      active.more_info = tst
+      assert_equal(tst, active.more_info)
+      active.more_info = nil
+      assert_equal(nil, active.more_info)
     end
 
   end
