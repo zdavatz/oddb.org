@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Body>
+    <ARTICLE xmlns="http://refdatabase.refdata.ch/Article_out" CREATION_DATETIME="2015-07-01T15:53:25.7583068+02:00">
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680324750190</GTIN>
+        <PHAR>0023722</PHAR>
+        <SWMC_AUTHNR>32475019</SWMC_AUTHNR>
+        <NAME_DE>LANSOYL Gel 225 g</NAME_DE>
+        <NAME_FR>LANSOYL gel 225 g</NAME_FR>
+        <ATC>A06AA01</ATC>
+        <AUTH_HOLDER_NAME>Actipharm SA</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001002012</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680458820202</GTIN>
+        <PHAR>1323751</PHAR>
+        <SWMC_AUTHNR>45882020</SWMC_AUTHNR>
+        <NAME_DE>MAGNESIUMCHLORID Braun 0.5 molar 10ml Amp 5 Stk</NAME_DE>
+        <NAME_FR>MAGNESIUM CHLORID Braun 0.5 molar 10ml amp 5 pce</NAME_FR>
+        <ATC>A12CC01</ATC>
+        <AUTH_HOLDER_NAME>B. Braun Medical AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7612449000003</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680540151009</GTIN>
+        <PHAR>2134986</PHAR>
+        <SWMC_AUTHNR>54015100</SWMC_AUTHNR>
+        <NAME_DE>NAROPIN Inj Lös 0.2 % 5 Polybag 100 ml</NAME_DE>
+        <NAME_FR>NAROPIN sol inj 0.2 % 5 polybag 100 ml</NAME_FR>
+        <ATC>N01BB09</ATC>
+        <AUTH_HOLDER_NAME>AstraZeneca AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001348622</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680353660163</GTIN>
+        <PHAR>0020273</PHAR>
+        <SWMC_AUTHNR>35366016</SWMC_AUTHNR>
+        <NAME_DE>KENDURAL Depottabl 30 Stk</NAME_DE>
+        <NAME_FR>KENDURAL cpr dépot 30 pce</NAME_FR>
+        <ATC>B03AE10</ATC>
+        <AUTH_HOLDER_NAME>Farmaceutica Teofarma Suisse SA (c/o Bernasconi Peter Gaggin</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001374539</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680316440115</GTIN>
+        <PHAR>0020244</PHAR>
+        <SWMC_AUTHNR>31644011</SWMC_AUTHNR>
+        <NAME_DE>FERRO-GRADUMET Depottabl 30 Stk</NAME_DE>
+        <NAME_FR>FERRO-GRADUMET cpr dépôt 30 pce</NAME_FR>
+        <ATC>B03AA07</ATC>
+        <AUTH_HOLDER_NAME>Farmaceutica Teofarma Suisse SA (c/o Bernasconi Peter Gaggin</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001374539</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680403330459</GTIN>
+        <PHAR>3603779</PHAR>
+        <SWMC_AUTHNR>40333045</SWMC_AUTHNR>
+        <NAME_DE>CARBADERM Creme Tb 300 ml</NAME_DE>
+        <NAME_FR>CARBADERM crème tb 300 ml</NAME_FR>
+        <ATC>D02AE01</ATC>
+        <AUTH_HOLDER_NAME>Gebro Pharma AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7612053000000</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680620690084</GTIN>
+        <PHAR>5819012</PHAR>
+        <SWMC_AUTHNR>62069008</SWMC_AUTHNR>
+        <NAME_DE>LEVETIRACETAM DESITIN Mini Filmtab 250 mg 30 Stk</NAME_DE>
+        <NAME_FR>LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce</NAME_FR>
+        <ATC>N03AX14</ATC>
+        <AUTH_HOLDER_NAME>Desitin Pharma GmbH</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001320451</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680284860144</GTIN>
+        <PHAR>0177804</PHAR>
+        <SWMC_AUTHNR>28486014</SWMC_AUTHNR>
+        <NAME_DE>ANCOPIR Inj Lös 5 Amp 2 ml</NAME_DE>
+        <NAME_FR>ANCOPIR sol inj 5 amp 2 ml</NAME_FR>
+        <ATC>A11DB</ATC>
+        <AUTH_HOLDER_NAME>Dr. Grossmann AG Pharmaca</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001029880</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680165980114</GTIN>
+        <PHAR>6364016</PHAR>
+        <SWMC_AUTHNR>16598011</SWMC_AUTHNR>
+        <NAME_DE>W TROPFEN liq 10 ml</NAME_DE>
+        <NAME_FR>W TROPFEN liq 10 ml</NAME_FR>
+        <ATC>D11AF</ATC>
+        <AUTH_HOLDER_NAME>Iromedica AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001002173</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680161050583</GTIN>
+        <PHAR>2731179</PHAR>
+        <SWMC_AUTHNR>16105058</SWMC_AUTHNR>
+        <NAME_DE>HIRUDOID Creme 3 mg/g 40 g</NAME_DE>
+        <NAME_FR>HIRUDOID crème 3 mg/g 40 g</NAME_FR>
+        <ATC>C05BA01</ATC>
+        <AUTH_HOLDER_NAME>Medinova AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001002258</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680556740075</GTIN>
+        <PHAR>2497134</PHAR>
+        <SWMC_AUTHNR>55674007</SWMC_AUTHNR>
+        <NAME_DE>CAVERJECT DC Trockensub 20 mcg Fertspr 2 Stk</NAME_DE>
+        <NAME_FR>CAVERJECT DC subst sèche 20 mcg ser prê 2 pce</NAME_FR>
+        <ATC>G04BE01</ATC>
+        <AUTH_HOLDER_NAME>Pfizer AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001010604</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680555580054</GTIN>
+        <PHAR>2465312</PHAR>
+        <SWMC_AUTHNR>55558005</SWMC_AUTHNR>
+        <NAME_DE>ZYVOXID Filmtabl 600 mg 10 Stk</NAME_DE>
+        <NAME_FR>ZYVOXID cpr pell 600 mg 10 pce</NAME_FR>
+        <ATC>J01XX08</ATC>
+        <AUTH_HOLDER_NAME>Pfizer AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001010604</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680446250592</GTIN>
+        <PHAR>0935914</PHAR>
+        <SWMC_AUTHNR>44625059</SWMC_AUTHNR>
+        <NAME_DE>ROCEPHIN 500 mg i.v. c Solv Durchstf 5 Stk</NAME_DE>
+        <NAME_FR>ROCEPHIN 500 mg i.v. c Solv flac 5 pce</NAME_FR>
+        <ATC>J01DD04</ATC>
+        <AUTH_HOLDER_NAME>Roche Pharma (Schweiz) AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001010208</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680536620137</GTIN>
+        <PHAR>1699947</PHAR>
+        <SWMC_AUTHNR>53662013</SWMC_AUTHNR>
+        <NAME_DE>3TC Filmtabl 150 mg 60 Stk</NAME_DE>
+        <NAME_FR>3TC cpr pell 150 mg 60 pce</NAME_FR>
+        <ATC>J05AF05</ATC>
+        <AUTH_HOLDER_NAME>ViiV Healthcare GmbH</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001392175</AUTH_HOLDER_GLN>
+      </ITEM>
+      <ITEM DT="2015-07-01T00:00:00">
+        <ATYPE>PHARMA</ATYPE>
+        <GTIN>7680300150105</GTIN>
+        <PHAR>0850684</PHAR>
+        <SWMC_AUTHNR>30015010</SWMC_AUTHNR>
+        <NAME_DE>LIDOCAIN Streuli 1% 20 mg/2ml 10 Amp 2 ml</NAME_DE>
+        <NAME_FR>LIDOCAIN Streuli 1% 20 mg/2ml 10 amp 2 ml</NAME_FR>
+        <ATC>N01BB02</ATC>
+        <AUTH_HOLDER_NAME>Streuli Pharma AG</AUTH_HOLDER_NAME>
+        <AUTH_HOLDER_GLN>7601001004214</AUTH_HOLDER_GLN>
+      </ITEM>
+      <RESULT>
+        <OK_ERROR>OK</OK_ERROR>
+        <NBR_RECORD>15373</NBR_RECORD>
+      </RESULT>
+    </ARTICLE>
+  </soap:Body>
+</soap:Envelope>

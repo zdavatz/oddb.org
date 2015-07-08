@@ -73,9 +73,13 @@ public
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       msg = "#{__FILE__}: #{__LINE__} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target and File.exists?(target)
-      msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
-      debug_msg(msg)
-      if(target)
+      msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes." if @latest_packungen and File.exists?(@latest_packungen)
+      unless target
+        msg += " update returns false"
+        debug_msg(msg)
+        return false
+      else
+        debug_msg(msg)
         msg =  "#{__FILE__}: #{__LINE__} Comparing #{target} "
         msg +=  File.exists?(target) ? "#{File.size(target)} bytes " : " absent" if target
         msg += " with #{@latest_packungen} "
@@ -120,9 +124,6 @@ public
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
-      else
-        debug_msg "#{__FILE__}: #{__LINE__} update return false as target is #{target.inspect}"
-        return false
       end
       @diff.changes if @diff
     end
@@ -328,7 +329,6 @@ public
         debug_msg "#{__FILE__}: #{__LINE__} cp #{target_name} #{latest_name}"
         FileUtils.cp target_name, latest_name, :verbose => true
       end
-      debug_msg "#{__FILE__}: #{__LINE__} #{target_name} #{File.size(target_name)}"
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)

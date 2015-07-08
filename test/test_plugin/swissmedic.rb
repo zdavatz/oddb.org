@@ -18,6 +18,7 @@ require 'flexmock'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
+require 'util/util'
 require 'util/oddbconfig'
 
 class FlexMock::TestUnitFrameworkAdapter
@@ -85,10 +86,11 @@ module ODDB
       agent, page = setup_index_page
       page.should_receive(:body).and_return(content)
       agent.should_receive(:get).and_return(page)
-      skip('niklaus has not time to debug this correctly')
       @plugin.get_latest_file(agent)
-      assert !File.exist?(@target), "#@target should not have been saved"
+      assert File.exist?(@latest), "#{@latest} should have been saved"
+      assert File.exist?(@target), "#{@target} should have been saved"
     end
+
     def test_get_latest_file__new
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
@@ -1269,12 +1271,7 @@ module ODDB
         app.should_receive(:update).and_return('update')
         app.should_receive(:unique_atc_class).and_return(atc_class)
       end
-      row = [0,1,"xxx ,(3mg), (4mg)",3,4,5,6,7,8,9,10,11,12,13,14]
-      flexmock(row) do |r|
-        r.should_receive(:date)
-        r.should_receive(:iksnr).and_return('iksnr')
-      end
-      assert_equal('update', @plugin.update_sequence(registration, row))
+      assert_equal('update', @plugin.update_sequence(registration, @workbook[0][6]))
     end
 
     def test_update_export_registrations

@@ -48,9 +48,10 @@ gem 'rubyXL', '3.3.1'
 gem "rubyntlm", '0.5.1'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'savon', '~>2.11.1'
-gem 'sbsm',  '1.2.6', :git => 'https://github.com/ngiger/sbsm.git'
+gem 'sbsm',  '1.2.3' # , :git => 'https://github.com/ngiger/sbsm.git'
 gem 'spreadsheet', '0.9.7'
-gem 'swissmedic-diff', '0.2.0'
+# gem 'swissmedic-diff', '0.2.1', :git => 'https://github.com/ngiger/swissmedic-diff.git'
+gem 'swissmedic-diff', '0.2.1'
 gem 'webrobots', '0.1.1'
 gem 'ydim', '1.0.0'
 gem 'ydocx', '1.2.5'
@@ -72,6 +73,8 @@ group :test do
   gem 'watir'
   gem 'watir-webdriver'
   gem 'page-object'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :debugger do
