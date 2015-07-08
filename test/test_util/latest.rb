@@ -12,7 +12,7 @@ require 'util/latest'
 
 module ODDB
   class Latest
-    @@today = Date.new(2015, 3 , 13)
+    @@today = Time.utc(2015,3,13)
   end
 
   DefaultContent = 'default content'
@@ -34,9 +34,9 @@ module ODDB
     end
 
     def test_first_download
-      puts 'test_first_download' if $VERBOSE
       assert_equal(false, File.exists?(@file_today))
       res = Latest.get_latest_file(@latest, @url, @agent)
+      puts "test_first_download #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
       assert_equal(true, File.exists?(@file_today))
       assert_equal(@latest, res)
     end
@@ -46,6 +46,7 @@ module ODDB
       File.open(@latest, 'w+') {|f| f.write(ChangedContent) }
       assert_equal(true, File.exists?(@latest))
       res = Latest.get_latest_file(@latest, @url, @agent)
+      puts "test_today_different_content_today_latest #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
       assert_equal(@latest, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))

@@ -12,7 +12,7 @@ module ODDB
 		attr_accessor :substance
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
-		attr_accessor :spagyric_dose, :spagyric_type, :composition
+		attr_accessor :spagyric_dose, :spagyric_type, :composition, :more_info, :is_active_agent
     class << self
       include AccessorCheckMethod
     end
@@ -26,13 +26,18 @@ module ODDB
       :sequence => 'ODDB::Sequence',
     }
     define_check_class_methods check_class_list
-		def initialize(substance_name)
+		def initialize(substance_name, is_active_agent = true)
 			super()
 			@substance_name = substance_name
+      @is_active_agent = is_active_agent
 		end
 		def init(app)
 			self.substance = app.substance(@substance_name)
 		end
+    def is_active_agent
+      return @is_active_agent unless @is_active_agent
+      true
+    end
 		def checkout
 			if(@substance.respond_to?(:remove_sequence))
 				@substance.remove_sequence(@sequence)

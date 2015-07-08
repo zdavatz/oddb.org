@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 11.03.2013 -- yasaka@ywesee.com
-# ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
-# ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
 require 'mechanize'
@@ -33,15 +30,25 @@ module ODDB
       :expiry_date, :substances, :composition, :indication_registration, :indication_sequence ]
     include SwissmedicDiff::Diff
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}u
+    SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
+private
+    def date_cell(row, idx)
+      return nil unless row[idx]
+      row_value = row[idx]
+      return nil unless row_value.value
+      return row_value.value.to_date if row_value.is_a?(RubyXL::Cell)
+      row_value
+    end
+public
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
       @index_url = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00230/index.html?lang=de'
       debug_msg("SwissmedicPlugin @index_url #{@index_url}")
-      init_stats
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
-      @latest = File.join @archive, 'Packungen-latest.xlsx'
+      init_stats
     end
+
     def init_stats
       @known_export_registrations = 0
       @known_export_sequences = 0
@@ -52,8 +59,10 @@ module ODDB
       @export_registrations = {}
       @export_sequences = {}
       @skipped_packages = []
+      @iksnr_with_wrong_data = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
+      @target_keys ||= {}
       @empty_compositions = []
     end
 
@@ -81,6 +90,10 @@ module ODDB
       end
       # debug_msg "#{__FILE__}:#{__LINE__} iksnr #{iksnr} mustcheck false opts #{opts}"
       return false
+    end
+
+    def set_target_keys(workbook)
+      @target_keys = get_column_indices(workbook).keys
     end
 
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
@@ -130,8 +143,16 @@ module ODDB
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
       elsif(target)
+        debug_msg(msg)
+        msg =  "#{__FILE__}: #{__LINE__} Comparing #{target} "
+        msg +=  File.exists?(target) ? "#{File.size(target)} bytes " : " absent" if target
+        msg += " with #{@latest_packungen} "
+        msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
+        debug_msg msg
+        start_time = Time.new
         initialize_export_registrations agent
-        diff target, @latest, [:atc_class, :sequence_date]
+        @target_keys = get_column_indices(Spreadsheet.open(target)).keys
+        result = diff target, @latest_packungen, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
         if @latest and File.exists?(@latest)
@@ -154,13 +175,14 @@ module ODDB
         #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
-        @update_time = ((Time.now - start_time) / 60.0).to_i
-        if File.exists?(target) and File.exists?(@latest) and FileUtils.compare_file(target, @latest)
-          debug_msg "#{__FILE__}:#{__LINE__} rm_f #{target} after #{@update_time} minutes"
+        end_time = Time.now - start_time
+        @update_time = (end_time / 60.0).to_i
+        if File.exists?(target) and File.exists?(@latest_packungen) and FileUtils.compare_file(target, @latest_packungen)
+          debug_msg "#{__FILE__}: #{__LINE__} rm_f #{target} after #{@update_time} minutes"
           FileUtils.rm_f(target, :verbose => true)
         else
-          debug_msg "#{__FILE__}:#{__LINE__} cp #{target} #{@latest} after #{@update_time} minutes"
-          FileUtils.cp target, @latest, :verbose => true
+          debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{@latest_packungen} after #{@update_time} minutes"
+          FileUtils.cp target, @latest_packungen, :verbose => true
         end
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)|
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
@@ -170,21 +192,27 @@ module ODDB
         debug_msg "#{__FILE__}:#{__LINE__} update return false as target is #{target.inspect}"
         false
       end
+      @diff.changes if @diff
     end
     # check diff from overwritten stored-objects by admin
     # about data-fields
     def check_date!
       @diff.newest_rows.values.each do |obj|
         obj.values.each do |row|
-          iksnr = row[0]
+          # File used is row.worksheet.workbook.root.filepath
+          iksnr = row[@target_keys.index(:iksnr)]
           if reg = @app.registration(iksnr.to_s)
             {
-              :registration_date => 7,
-              :expiration_date   => 9
+              :registration_date => @target_keys.index(:registration_date),
+              :expiration_date   =>   @target_keys.index(:expiry_date)
             }.each_pair do |field, i|
               # if future date given
-              if row[i].is_a?(Date) and
-                 (!reg.send(field).is_a?(Date) or row[i] > reg.send(field))
+              date = date_cell(row, i)
+              reg_value = reg.send(field)
+              if date and not reg_value
+                @diff.updates << row
+                next
+              elsif date and reg_value and reg_value.is_a?(Date) and date.start > reg_value.start
                 @diff.updates << row
               end
             end
@@ -214,9 +242,6 @@ module ODDB
         str.gsub(/\n\r|\r\n?/u, "\n").gsub(/[ \t]+/u, ' ')
       end
     end
-    def date_cell(row, idx)
-      Spreadsheet.date_cell(row, idx)
-    end
     def recheck_deletions(deletions)
       key_list = []
       deletions.each do |key|
@@ -232,8 +257,8 @@ module ODDB
     end
     def deactivate(deactivations)
       deactivations.each { |row|
-        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        debug_msg "#{__FILE__}:#{__LINE__} deactivate iksnr '#{row[0]}' seqnr #{seqnr} pack #{row[10]}"
+        seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{row[@target_keys.index(:iksnr)]}' seqnr #{seqnr} pack #{@target_keys.index(:ikscd)}"
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
@@ -245,10 +270,10 @@ module ODDB
       debug_msg "#{__FILE__}:#{__LINE__} delete #{deletions.size} items"
       deletions.each {
         |row|
-        iksnr  = row[0]
-        seqnr  = "%02i" % cell(row, column(:seqnr)).to_i
-        packnr = row[10]
-        debug_msg "#{__FILE__}:#{__LINE__} delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
+        iksnr  = row[@target_keys.index(:iksnr)]
+        seqnr  = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        packnr = row[@target_keys.index(:ikscd)]
+        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
         ptr = pointer(row)
         next unless ptr
         unless is_package_deletion
@@ -280,10 +305,10 @@ module ODDB
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt,
-                date_cell(row, column(flag)).strftime('%d.%m.%Y')
+                date_cell(row, @target_keys.index(flag)).strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
-        sprintf "%s (%s)", txt, cell(row, column(flag))
+        sprintf "%s (%s)", txt, cell(row, @target_keys.index(flag))
       end
     end
     def known_data(latest)
@@ -293,7 +318,7 @@ module ODDB
       data
     end
     def _known_data(latest, known_regs, known_seqs, known_pacs, newest_rows)
-      if(File.exist? latest)
+      if (latest and File.exist? latest)
         super
       else
         latest = nil
@@ -312,7 +337,7 @@ module ODDB
                 pac.parts.each_with_index { |part, idx|
                   prow = srow.dup
                   prow.push pacnr
-                  prow[COLUMNS.size] = idx
+                  prow[@target_keys.size] = idx
                   known_pacs.store([iksnr, pacnr, idx], prow)
                 }
               }
@@ -323,6 +348,10 @@ module ODDB
     end
     def get_latest_file(agent, keyword='Packungen', extension = '.xlsx')
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
+      latest_name = File.join @archive, "#{keyword}-latest"+extension
+      cmd = "@latest_#{keyword.downcase.gsub(/[^a-zA-Z]/, '_')} = '#{latest_name}'"
+      debug_msg "#{__FILE__}: #{__LINE__} cmd #{cmd}"
+      eval cmd
       if File.exist?(target)
         debug_msg "#{__FILE__}:#{__LINE__} skip writing #{target} as it already exists and is #{File.size(target)} bytes."
         return target
@@ -363,9 +392,9 @@ module ODDB
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      if target = get_latest_file(agent, 'Präparateliste')
-        debug_msg "#{__FILE__}:#{__LINE__} cp #{target} #{latest_name}"
-        FileUtils.cp target, latest_name, :verbose => true
+      if target_name = get_latest_file(agent, 'Präparateliste')
+        debug_msg "#{__FILE__}: #{__LINE__} cp #{target_name} #{latest_name}"
+        FileUtils.cp target_name, latest_name, :verbose => true
       end
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|
@@ -375,7 +404,7 @@ module ODDB
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      Spreadsheet.open(latest_name) do |workbook|
+      Spreadsheet.open(target_name) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
@@ -436,9 +465,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       Persistence::Pointer.new(*path)
     end
     def pointer_from_row(row)
-      iksnr = "%05i" % cell(row, column(:iksnr)).to_i
-      seqnr = (str = cell(row, column(:seqnr))) ? "%02i" % str.to_i : nil
-      pacnr = cell(row, column(:ikscd))
+      iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
+      seqnr = (str = cell(row, @target_keys.index(:seqnr))) ? "%02i" % str.to_i : nil
+      pacnr = "%03i" % cell(row, @target_keys.index(:ikscd)).to_i
       pointer [iksnr, seqnr, pacnr].compact
     end
     def report
@@ -477,14 +506,19 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
-        ]
+      ]
+                          end
+      unless @iksnr_with_wrong_data.empty?
+        lines << ""
+        lines << "The following errors were found when parsing Packungen.xlsx:"
+        lines << @iksnr_with_wrong_data.join("\n  ")
       end
       unless @skipped_packages.empty? # no expiration date
         skipped = []
         @skipped_packages.each do |row|
-          skipped << "\"#{cell(row, column(:company))}, " \
-                     "#{cell(row, column(:name_base))}, " \
-                     "#{"%05i" % cell(row, column(:iksnr)).to_i}\""
+          skipped << "\"#{cell(row, @target_keys.index(:company))}, " \
+                     "#{cell(row, @target_keys.index(:name_base))}, " \
+                     "#{"%05i" % cell(row, @target_keys.index(:iksnr)).to_i}\""
         end
         lines << ""
         lines << "There is no Gültigkeits-datum (column 'J') of the following"
@@ -514,11 +548,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
-    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
+    def rows_diff(row, other,ignore = [:atc_class, :sequence_date])
+      row_keys = @target_keys
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
-        && (reg = @app.registration("%05i" % cell(row, column(:iksnr)).to_i)) \
-        && (package = reg.package(cell(row, column(:ikscd))))
+        && (reg = @app.registration("%05i" % cell(row, row_keys.index(:iksnr)).to_i)) \
+        && (package = reg.package(cell(row, row_keys.index(:ikscd))))
         flags = flags.select { |flag|
           origin = package.data_origin(flag)
           origin ||= package.sequence.data_origin(flag)
@@ -530,12 +565,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def source_row(row)
       hsh = { :import_date => @@today }
-      COLUMNS.each_with_index { |key, idx|
+      @target_keys.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date, :sequence_date
-                  date_cell(row, idx)
+                   date_cell(row, @target_keys.index(key))
                 when :seqnr
                   sprintf "%02i", row[idx].to_i
+                when :iksnr
+                  sprintf "%05i", row[idx].to_i
+                when :ikscd
+                  sprintf "%03i", row[idx].to_i
                 else
                   cell(row, idx)
                 end
@@ -622,7 +661,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
 
     def update_company(row)
-      name = cell(row, column(:company))
+      name = cell(row, @target_keys.index(:company))
       ## an ngram-similarity of 0.8 seems to be a good choice here.
       #  0.7 confuses Arovet AG with Provet AG
       args = { :name => name, :business_area => 'ba_pharma' }
@@ -639,11 +678,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       if !@update_comps && opts[:create_only] && !seq.active_agents.empty?
         debug_msg("update_compositions create_only")
         seq.compositions
-      elsif(namestr = cell(row, column(:substances)))
-        iksnr = "%05i" %cell(row, column(:iksnr)).to_i
-        seqnr = "%02i" %cell(row, column(:seqnr)).to_i
-        cell_content = cell(row, column(:composition))
-        # debug_msg("update_compositions: row[0] #{row[0]} iksnr #{iksnr}/#{seqnr} seq #{seq} opts #{opts} cell_content #{cell_content}")
+      elsif(namestr = cell(row, @target_keys.index(:substances)))
+        res = []
+        cell_content = cell(row, @target_keys.index(:composition))
+        iksnr = cell(row, @target_keys.index(:iksnr)).to_i
+        seqnr = cell(row, @target_keys.index(:seqnr)).to_i
+        seqnr =  seq.seqnr
+        debug_msg("update_compositions: #{__LINE__} iksnr #{iksnr} #{seq.seqnr} seq #{seq} opts #{opts} composition #{cell_content}") # if $VERBOSE
+        names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
+        substances = names.collect { |name| update_substance(name) }
         unless cell_content
           @empty_compositions << "iksnr #{iksnr} seqnr #{seqnr}"
           return []
@@ -785,24 +828,24 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def update_package(reg, seq, row, replacements={},
                        opts={:create_only => false})
-      cd = cell(row, column(:ikscd))
+      ikscd = sprintf('%03i', cell(row, @target_keys.index(:ikscd)).to_i)
       unless seq.pointer
-        debug_msg "#{__FILE__}:#{__LINE__} update_package problem '#{row[0]}' cd #{cd} sequence with pointer"
+        debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[@target_keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer"
         return
       end
-      pidx = cell(row, COLUMNS.size).to_i
-      if(cd.to_i > 0)
+      pidx = cell(row, row.size).to_i
+      if(ikscd.to_i > 0)
         args = {
-          :ikscat            => cell(row, column(:ikscat)),
+          :ikscat            => cell(row, @target_keys.index(:ikscat)),
           :swissmedic_source => source_row(row),
         }
         package = nil
-        ptr = if(package = reg.package(cd))
+        ptr = if(package = reg.package(ikscd))
                 return package if opts[:create_only] && pidx == 0
                 package.pointer
               else
                 args.store :refdata_override, true
-                (seq.pointer + [:package, cd]).creator
+                (seq.pointer + [:package, ikscd]).creator
               end
         if((pacnr = replacements[row]) && (old = reg.package(pacnr)))
           args.update(:pharmacode => old.pharmacode,
@@ -818,12 +861,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           part = package.parts[pidx]
         end
         args = {
-          :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
+          :size => [cell(row, @target_keys.index(:size)), cell(row, @target_keys.index(:unit))].compact.join(' '),
         }
         if package.sequence and package.sequence.seqnr != seq.seqnr
-          debug_msg "#{__FILE__}:#{__LINE__} update_package iksnr '#{row[0]}' cd #{cd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
+          debug_msg "#{__FILE__}: #{__LINE__}: update_package iksnr '#{row[@target_keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
-        if(comform = @app.commercial_form_by_name(cell(row, column(:unit))))
+        if(comform = @app.commercial_form_by_name(cell(row, @target_keys.index(:unit))))
           args.store :commercial_form, comform.pointer
         end
         if !part.composition \
@@ -837,29 +880,29 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       first_day = Date.new(@@today.year, @@today.month, 1)
       opts = {:date => first_day, :create_only => false}.update(opts)
       opts[:date] ||= first_day
-      group = cell(row, column(:production_science))
+      group = cell(row, @target_keys.index(:production_science))
       if(group != 'Tierarzneimittel')
-        iksnr = "%05i" % cell(row, column(:iksnr)).to_i
-        science = cell(row, column(:production_science))
+        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
+        science = cell(row, @target_keys.index(:production_science))
         ptr = if(registration = @app.registration(iksnr))
                 return registration if opts[:create_only]
                 registration.pointer
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = date_cell(row, column(:expiry_date))
+        expiration = date_cell(row, @target_keys.index(:expiry_date))
         if expiration.nil?
           @skipped_packages << row
           return
         end
-        reg_date = date_cell(row, column(:registration_date))
+        reg_date = date_cell(row, @target_keys.index(:registration_date))
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
                     true
                   else
                     nil
                   end
         args = {
-          :ith_swissmedic      => cell(row, column(:index_therapeuticus)),
+          :ith_swissmedic      => cell(row, @target_keys.index(:index_therapeuticus)),
           :production_science  => science,
           :vaccine             => vaccine,
           :registration_date   => reg_date,
@@ -884,22 +927,22 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         if(company = update_company(row))
           args.store :company, company.pointer
         end
-        if(indication = update_indication(cell(row, column(:indication_registration))))
+        if(indication = update_indication(cell(row, @target_keys.index(:indication_registration))))
           args.store :indication, indication.pointer
         end
+
         @app.update ptr, args, :swissmedic
       end
     rescue SystemStackError => err
       puts "Stack-Error when importing: #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end
-    def update_registrations(rows, replacements,
-                             opts =  { :create_only => !File.exist?(@latest), :date => @@today, }
-                            )
+    def update_registrations(rows, replacements)
+      opts = { :create_only => @latest_packungen ? !File.exist?(@latest_packungen) : false,
+               :date        => @@today, }
       rows.each { |row|
-        iksnr  = cell(row, column(:iksnr)).to_i
-        seqnr = "%02i" % cell(row, column(:seqnr)).to_i
-        next if row[0].to_s.eql?('00000')
+        seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        next if row[@target_keys.index(:iksnr)].to_s.eql?('00000')
         to_consider =  mustcheck(iksnr, opts)
         next unless mustcheck(iksnr, opts)
         debug_msg"#{__FILE__}:#{__LINE__} update iksnr #{iksnr} seqnr #{seqnr} #{to_consider}"
@@ -909,16 +952,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         if seq
           comps = update_compositions(seq, row, opts)
           comps.each_with_index do |comp, idx|
-            update_galenic_form(seq, comp, row, opts)
+            update_galenic_form(seq, comp, opts)
           end
         end
-        update_package(reg, seq, row, replacements, opts) if reg
+        update_package(reg, seq, row, replacements, opts) if reg and seq
         GC.enable unless already_disabled
       }
     end
     def update_sequence(registration, row, opts={:create_only => false})
       # remove sequence '00'/package '000' which might have been created when importing via AipsDownload.xml
-      seqnr = "%02i" % cell(row, column(:seqnr)).to_i
+      seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
       if registration.sequence('00')
         ptr = registration.sequence('00').pointer
         if ptr
@@ -934,7 +977,13 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage
-      parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
+      unless cell(row, @target_keys.index(:name_base))
+        msg = "Empty column C for #{cell(row, @target_keys.index(:iksnr))} #{cell(row, @target_keys.index(:seqnr))}"
+        debug_msg "#{__FILE__}: #{__LINE__}: #{msg}"
+        @iksnr_with_wrong_data << msg
+        return nil
+      end
+      parts = cell(row, @target_keys.index(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       base = parts.shift
       ## some names have dosage data before the galenic form
       # ex. 'Ondansetron-Teva, 4mg, Filmtabletten'
@@ -946,38 +995,41 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               else
                 nil
               end
-      if ctext = cell(row, column(:composition))
+      if ctext = cell(row, @target_keys.index(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
+      sequence = registration.sequence(seqnr)
+
+      seq_date = date_cell(row, @target_keys.index(:sequence_date))
       args = {
         :composition_text => ctext,
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
-        :sequence_date    => date_cell(row, column(:sequence_date)),
+        :sequence_date    => seq_date,
         :export_flag      => nil,
       }
-      sequence = registration.sequence(seqnr)
       if(sequence.nil? || sequence.atc_class.nil?)
         if(!registration.atc_classes.nil? and
            atc = registration.atc_classes.first)
           args.store :atc_class, atc.code
-        elsif((key = cell(row, column(:substances))) && !key.include?(?,) \
+        elsif((key = cell(row, @target_keys.index(:substances))) && !key.include?(?,) \
              && (atc = @app.unique_atc_class(key)))
           args.store :atc_class, atc.code
-        elsif(code = cell(row, column(:atc_class)))
+        elsif(code = cell(row, @target_keys.index(:atc_class)))
           args.store :atc_class, code
         end
       end
-      if(indication = update_indication(cell(row, column(:indication_sequence))))
+      if(indication = update_indication(cell(row, @target_keys.index(:indication_sequence))))
         args.store :indication, indication.pointer
       end
       res = @app.update ptr, args, :swissmedic
-      debug_msg "#{__FILE__}:#{__LINE__} res #{res} == #{sequence}? seqnr #{sequence ? sequence.seqnr : 'nil'} args #{args}"
+      debug_msg "#{__FILE__}: #{__LINE__}: res #{res} == #{sequence}? #{registration.iksnr} seqnr #{sequence ? sequence.seqnr : 'nil'} args #{args}"
       res
     end
     def update_substance(name)
       name.strip!
+      debug_msg "#{__FILE__}: #{__LINE__}: update_substance #{name}"
       unless name.empty?
         substance = @app.substance(name)
         if(substance.nil?)
@@ -1000,7 +1052,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       _sanity_check_deletions(diff.package_deletions, table)
     end
     def _sanity_check_deletions(deletions, table)
-      deletions.compact.delete_if { |row| table[cell(row,column(:iksnr))] || cell(row,COLUMNS.size).to_i > 0 }
+      deletions.compact.delete_if {|row| table[cell(row,@target_keys.index(:iksnr))] || cell(row, row.size).to_i > 0 }
     end
     def _sort_by(sort, iksnr, flags)
       case sort
@@ -1021,3 +1073,4 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
   end
 end
+

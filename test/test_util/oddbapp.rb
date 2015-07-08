@@ -26,6 +26,12 @@ require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
 
+begin
+  require 'pry'
+rescue LoadError
+  # ignore error when pry cannot be loaded (for Jenkins-CI)
+end
+
 class TestOddbApp <MiniTest::Unit::TestCase
   include FlexMock::TestCase
 	def setup
@@ -1066,7 +1072,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
 
   def test_epha_interaction_count
     assert_equal(0, @app.epha_interaction_count)
-	@app.create_epha_interaction('atc_code_self', 'atc_code_other')
+    @app.create_epha_interaction('atc_code_self', 'atc_code_other')
     assert_equal(1, @app.epha_interaction_count)
   end
 
@@ -1074,22 +1080,26 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
 
+  def test_delete_all_epha_interactions
+    assert_equal(OddbPrevalence, @app.delete_all_epha_interactions.class)
+  end
+
   def test_epha_interaction
-      @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var', File.dirname(__FILE__)
-      assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
-      @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
-      @latest = @fileName.sub('.csv', '-latest.csv')
-      FileUtils.rm(@latest) if File.exists?(@latest)
-      @agent = flexmock(Mechanize.new)
-      @agent.should_receive(:get).and_return(IO.read(@fileName))
-      @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
-      assert(@plugin.update(@agent, @fileName))
-	code_0 = 'N06AB06'
-	code_1 = 'M03BX02'
+    @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
+    @@vardir = File.expand_path '../var', File.dirname(__FILE__)
+    assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
+    FileUtils.mkdir_p @@vardir
+    ODDB.config.data_dir = @@vardir
+    ODDB.config.log_dir = @@vardir
+    @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
+    @latest = @fileName.sub('.csv', '-latest.csv')
+    FileUtils.rm(@latest) if File.exists?(@latest)
+    @agent = flexmock(Mechanize.new)
+    @agent.should_receive(:get).and_return(IO.read(@fileName))
+    @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
+    assert(@plugin.update(@agent, @fileName))
+    code_0 = 'C09CA01'
+    code_1 = 'C07AB02'
     atc_class_0 = flexmock('atc_class_0') do |reg|
       reg.should_receive(:code).and_return(code_0)
     end

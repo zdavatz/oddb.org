@@ -44,7 +44,7 @@ class TestFeedbacksComposite <Minitest::Test
                                 :recommend  => 'recommend',
                                 :impression => 'impression',
                                 :helps      => 'helps',
-                                :time       => Time.local(2011,2,3),
+                                :time       => Time.utc(2011,2,3),
                                 :email      => 'email'
                                )
     @model     = flexmock('model', 

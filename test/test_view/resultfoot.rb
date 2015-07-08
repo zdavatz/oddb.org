@@ -125,7 +125,7 @@ module ODDB
       def test_explain_narc
         result = @composite.explain_narc(@model, @session)
         assert_equal(2, result.length)
-        assert_kind_of(HtmlGrid::Span, result[0])
+        assert_kind_of(HtmlGrid::Link, result[0])
         assert_equal('lookup', result[1])
       end
     end

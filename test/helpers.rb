@@ -6,10 +6,15 @@
 # when all other unit tests are included.
 # To work aroung this bug, we run some files separately
 
-require 'simplecov'; # configuration is done in file .simplcov
-group = File.basename(File.dirname(File.expand_path($0)))
-SimpleCov.command_name group
-SimpleCov.start
+ENV['TZ'] = 'UTC'
+
+USE_SIMPLECOV = false
+if USE_SIMPLECOV
+  require 'simplecov'; # configuration is done in file .simplcov
+  group = File.basename(File.dirname(File.expand_path($0)))
+  SimpleCov.command_name group
+  SimpleCov.start
+end
 
 class OddbTestRunner
   DryRun = false
@@ -33,8 +38,11 @@ class OddbTestRunner
       base = File.basename(path).sub('.rb', '')
       group_name = File.basename(File.dirname(path), '.rb').sub('test_','')
       group_name += ':'+base unless base.eql?('suite')
-      cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
-      # cmd = "#{rubyExe} -e\"require '#{path}'\""
+      if USE_SIMPLECOV
+        cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
+      else
+        cmd = "#{rubyExe} -e\"require '#{path}'\""
+      end
       if DryRun
         puts "would exec #{cmd}"
       else
@@ -65,12 +73,17 @@ class OddbTestRunner
 
   def show_results_and_exit
     okay = true
+    problems = []
     @@directories.each{
       |path,res|
         puts "#{path} returned #{res}"
-        okay = false unless res
+        unless res
+          okay = false
+          problems << path
+        end
     }
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
+    puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were #{problems.join(',')}"
     exit 2 unless okay
     okay
   end

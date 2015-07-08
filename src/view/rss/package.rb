@@ -57,7 +57,7 @@ class Package < HtmlGrid::Component
         url = @lookandfeel._event_url(:show, args)
         item.guid.content = item.link = url
         item.guid.isPermaLink = true
-        item.date = pcurrent.valid_from
+        item.date = pcurrent.valid_from.utc
 
         comp = PackageTemplate.new(package, @session, self)
         item.description = sanitize(comp.to_html(context))

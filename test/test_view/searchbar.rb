@@ -37,7 +37,7 @@ module ODDB
         expected = %(
 function get_to(url) {
   var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',').replace('ean,', 'ean/').replace(/\\?$/, '');
-  console.log('get_to window.top.location.replace url '+ url + '\\n url2 ' + url2);
+  console.log('get_to window.top.location.replace url '+ url + ' url2 ' + url2);
   if (window.location.href == url2 || window.top.location.href == url2) { return; }
   var form = document.createElement("form");
   form.setAttribute("method", "GET");

@@ -20,14 +20,6 @@ class TestDownloadExport <Minitest::Test
 	def test_price
 		assert_equal(600, DownloadExport.price('oddb.yaml.gz'))
 		assert_equal(600, DownloadExport.price('oddb.yaml.zip'))
-		assert_equal(1900, DownloadExport.price('fachinfo.yaml.gz'))
-		assert_equal(1900, DownloadExport.price('fachinfo.yaml.zip'))
-		assert_equal(1300, DownloadExport.price('patinfo.yaml.gz'))
-		assert_equal(1300, DownloadExport.price('patinfo.yaml.zip'))
-		assert_equal(700, DownloadExport.price('oddbdat.tar.gz'))
-		assert_equal(700, DownloadExport.price('oddbdat.zip'))
-		assert_equal(900, DownloadExport.price('s31x.gz'))
-		assert_equal(900, DownloadExport.price('s31x.zip'))
 	end
   def test_duration
     assert_equal(0, DownloadExport.duration('file'))

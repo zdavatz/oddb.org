@@ -43,7 +43,7 @@ class TestPackage <Minitest::Test
                           :persistent_user_input => 'persistent_user_input'
                          )
     price_public = flexmock('price_public', 
-                            :valid_from => Time.local(2011,2,3),
+                            :valid_from => Time.utc(2011,2,3),
                             :to_f => 1.0,
                             :to_i => 1,
                             :to_s => 'price_public'
@@ -113,9 +113,9 @@ class TestPackage <Minitest::Test
       <link>_event_url</link>
       <description>html</description>
       <author>ODDB.org</author>
-      <pubDate>Thu, 03 Feb 2011 00:00:00 +0100</pubDate>
+      <pubDate>Thu, 03 Feb 2011 00:00:00 -0000</pubDate>
       <guid isPermaLink="true">_event_url</guid>
-      <dc:date>2011-02-03T00:00:00+01:00</dc:date>
+      <dc:date>2011-02-03T00:00:00Z</dc:date>
     </item>
   </channel>
 </rss>)

@@ -59,11 +59,30 @@ class TestCenteredSearchForm <Minitest::Test
     @form    = CenteredSearchForm.new(@model, @session)
   end
   def test_init
-			expected ={"NAME"=>"stdform", "onSubmit"=>"function get_to(url) {\n  var form = document.createElement(\"form\");\n  form.setAttribute(\"method\", \"GET\");\n  form.setAttribute(\"action\", url);\n  document.body.appendChild(form);\n  form.submit();\n}\nif (search_query.value!='lookup') {\n\n  var href = '_event_url' + encodeURIComponent(search_query.value.replace(/\\//, '%2F'));\n  if (this.search_type) {\n    href += '/search_type/' + this.search_type.value + '#best_result';\n  }\n  get_to(href);\n};\nreturn false;\n", "METHOD"=>"POST", "ACTION"=>"base_url",
-               "ACCEPT-CHARSET"=>"#<Encoding:UTF-8>"
-               }
-puts expected			
-    assert_equal(expected, @form.init)
+    expected = "
+function get_to(url) {
+  var url2 = url.replace('/,','/').replace(/\\?$/,'').replace('\\?,', ',').replace('ean,', 'ean/').replace(/\\?$/, '');
+  console.log('get_to window.top.location.replace url '+ url + ' url2 ' + url2);
+  if (window.location.href == url2 || window.top.location.href == url2) { return; }
+  var form = document.createElement(\"form\");
+  form.setAttribute(\"method\", \"GET\");
+  form.setAttribute(\"action\", url2);
+  document.body.appendChild(form);
+  form.submit();
+}
+
+
+if (search_query.value!='lookup') {
+
+  var href = '_event_url' + encodeURIComponent(search_query.value.replace(/\\//, '%2F'));
+  if (this.search_type) {
+    href += '/search_type/' + this.search_type.value + '#best_result';
+  }
+  get_to(href);
+};
+return false;
+"
+    assert_equal(expected, @form.init['onSubmit'])
   end
   def test_search_help
     assert_kind_of(HtmlGrid::Button, @form.search_help(@model, @session))
@@ -142,9 +161,6 @@ class TestCenteredSearchComposite <Minitest::Test
   def test_divider
     assert_kind_of(HtmlGrid::Span, @composite.divider(@model, @session))
   end
-  def test_download_ebook
-    assert_kind_of(HtmlGrid::Link, @composite.download_ebook(@model, @session))
-  end
   def test_download_export
     assert_kind_of(HtmlGrid::Link, @composite.download_export(@model, @session))
   end
@@ -178,9 +194,6 @@ class TestCenteredSearchComposite <Minitest::Test
     flexmock(@app, :narcotics => 'narcotics')
     # 9 is the length of the string narcotics
     assert_equal('9&nbsp;', @composite.narcotics_size(@model, @session))
-  end
-  def test_new_feature
-    assert_kind_of(HtmlGrid::Span, @composite.new_feature(@model, @session))
   end
   def test_recent_registrations
     flexmock(@app, :recent_registration_count => 'recent_registration_count')

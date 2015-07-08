@@ -24,11 +24,11 @@ module ODDB
         return false
       else
         file = agent.get(download_url)
-        download = file.body
+        download = file.is_a?(String) ? file : file.body # if open-uri is used somewhere, download is String
         File.open(file_today, 'w+') { |f| f.write download }
         if(!File.exist?(latest) or download.size != File.size(latest))
           File.open(latest, 'w+') { |f| f.write download }
-          Latest.log "saved (#{file.body.size} bytes) as #{file_today} and #{latest}"
+          Latest.log "saved (#{download.size} bytes) as #{file_today} and #{latest}"
           return latest
         else
           Latest.log "copy file_today #{file_today} #{File.exist?(file_today)} to #{latest}"

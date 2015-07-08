@@ -47,9 +47,9 @@ class TestCompanyListState <Minitest::Test
 		end
 	end
 	class StubApp
-		attr_accessor :companies
+		attr_accessor :registration_holders
 		def initialize
-			@companies ||= {}
+      @registration_holders ||= {}
 		end
 	end
 	class StubPointer; end
@@ -70,7 +70,7 @@ class TestCompanyListState <Minitest::Test
 		@company3.name = 'Ött'
 		@company4.name = '3m'
 		@company5.name = 'Ütt'
-		@session.app.companies = {
+		@session.app.registration_holders = {
 			@company1.name	=>	@company1,
 			@company2.name	=>	@company2,
 			@company3.name	=>	@company3,
@@ -106,7 +106,7 @@ class TestCompanyListState <Minitest::Test
     end
 		@state = State::Companies::CompanyList.new(@session, @company)
 
-		@session.app.companies = {
+		@session.app.registration_holders = {
 			@company1.name	=>	@company1,
 			@company2.name	=>	@company2,
 			@company3.name	=>	@company3,
@@ -166,7 +166,9 @@ class TestCompanyList2 <Minitest::Test
   include FlexMock::TestCase
   def setup
     company  = flexmock('company', :listed? => nil)
-    @app     = flexmock('app', :companies => {'key' => company})
+    @app     = flexmock('app',
+                        :registration_holders => {'key' => company},
+                       )
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     user     = flexmock('user', :model => 'model')
     @session = flexmock('session', 

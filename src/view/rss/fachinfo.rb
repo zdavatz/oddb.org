@@ -60,7 +60,7 @@ class Fachinfo < HtmlGrid::Component
         args = {:reg => fachinfo.iksnrs.first}
         item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
         item.guid.isPermaLink = true
-        item.date = fachinfo.revision
+        item.date = fachinfo.revision.utc
 
         comp = FachinfoTemplate.new(fachinfo, @session, self)
 

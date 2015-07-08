@@ -34,6 +34,7 @@ require 'util/persistence'
 require 'util/exporter'
 require 'ext/meddata/src/ean_factory'
 require 'util/schedule'
+require 'plugin/refdata'
 require 'plugin/swissindex'
 require 'plugin/mail_order_price'
 require 'util/oddbconfig'
@@ -294,7 +295,7 @@ module ODDB
 
       LogFile.append('oddb/debug', " getin update_bsv_followers", Time.now)
 
-      update_package_trade_status_by_swissindex
+      update_package_trade_status_by_refdata
       update_lppv
       update_price_feeds
       export_oddb_csv
@@ -454,7 +455,7 @@ module ODDB
     end
     def update_swissmedic_followers
       update_atc_less
-      update_package_trade_status_by_swissindex
+      update_package_trade_status_by_refdata
       update_comarketing
       update_swissreg_news
       update_lppv
@@ -479,11 +480,11 @@ module ODDB
     def update_whocc
       update_notify_simple WhoPlugin, "WHO-Update", :import
     end
-    def update_package_trade_status_by_swissindex(logging = false)
-      update_notify_simple(SwissindexPharmaPlugin, 'Swissindex Pharma', :update_package_trade_status, [logging])
+    def update_package_trade_status_by_refdata(logging = false)
+      update_notify_simple(RefdataPlugin, 'Refdata', :update_package_trade_status, [logging])
     end
     def migel_nonpharma(pharmacode_file, logging = false)
-      update_notify_simple(SwissindexNonpharmaPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
+      update_notify_simple(SwissindexMigelPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
     end
     def update_mail_order_prices(csv_file_path)
       update_notify_simple(MailOrderPricePlugin, 'Update Mail Order Prices', :update, [csv_file_path])

@@ -36,6 +36,7 @@ class TestAddressSuggestion <Minitest::Test
     hospital   = flexmock('hospital', :email => 'email')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
+                        :get_address_parent => nil,
                         :app         => @app,
                         :persistent_user_input => {},
                         :request_path => 'request_path',

@@ -15,7 +15,7 @@ module ODDB
     include FlexMock::TestCase
     def setup
       @latest_xlsx = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx')
-      @latest_xml  = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xml', 'XMLSwissindexPharma-DE-latest.xml')
+      @latest_xml  = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xml', 'XMLRefdataPharma-latest.xml')
       [@latest_xlsx, @latest_xml].each {
         |file|
           FileUtils.rm(file, :verbose => false) if File.exists?(file)
@@ -29,15 +29,16 @@ module ODDB
       expected = "ODDB::Atc_lessPlugin - Report 15.01.2015
 Total time to update: 0.00 [m]
 Total number of sequences with ATC-codes from swissmedic: 0
-Total number of sequences with ATC-codes from swissindex: 0
+Total number of sequences with ATC-codes from refdata: 0
 Total Sequences without ATC-Class: 0
-Swissmedic: All registrations present
 Swissmedic: All sequences present
 No empty ATC-codes found
 All found ATC-codes were correct
 All ATC codes present in database
-All ATC codes from swissmedic are as long as those from swissindex
-No obsolete sequence '00' found"
+Checked against 0 ATC-codes from RefData
+All ATC codes from swissmedic are as long as those from refdata
+No obsolete sequence '00' found
+Swissmedic: All registrations present"
       assert_equal(expected, @plugin.report)
     end
 
@@ -48,12 +49,14 @@ No obsolete sequence '00' found"
 
     def test_update_atc_codes
 
+      atc_J06A  = flexmock(atc_J06A, :code => 'J06A')
       atc_J06AA = flexmock(atc_J06AA, :code => 'J06AA')
       atc_V07 = flexmock(atc_V07, :code => 'V07')
       atc_V07AB = flexmock(atc_V07, :code => 'V07AB')
       atc_D0XXXXX = flexmock(atc_D0XXXXX, :code => 'D0XXXXX')
       atc_G03FA   = flexmock(atc_G03FA,   :code => 'G03FA')
       atc_G03FA01 = flexmock(atc_G03FA01, :code => 'G03FA01')
+      atc_C08CA01 = flexmock(atc_C08CA01, :code => 'C08CA01')
 
       seq_00274_00 = flexmock('seq_00274_00', :atc_class => nil,       :iksnr => '00274', :seqnr => '00')
       seq_00274_1 = flexmock('seq_00274_1', :atc_class => atc_J06AA)
@@ -66,7 +69,7 @@ No obsolete sequence '00' found"
       reg_00277 = flexmock('reg_00277')
       reg_00277.should_receive(:sequence).with('01').and_return(seq_00277_1)
 
-      seq_00278_1 = flexmock('seq_00278_1', :atc_class => atc_J06AA)
+      seq_00278_1 = flexmock('seq_00278_1', :atc_class => atc_J06AA, :atc_class= => nil, :odba_isolated_store => nil)
       reg_00278 = flexmock('reg_00278')
       reg_00278.should_receive(:sequence).with('01').and_return(seq_00278_1)
 
@@ -84,25 +87,33 @@ No obsolete sequence '00' found"
       reg_56504 = flexmock('reg_56504')
       reg_56504.should_receive(:sequence).with('01').and_return(seq_56504_1)
 
-      seq_54708_2 = flexmock('seq_54708_2', :atc_class => atc_G03FA01, :odba_isolated_store => nil)
-      seq_54708_1 = flexmock('seq_54708_1', :atc_class => atc_G03FA,   :odba_isolated_store => nil)
-      seq_54708_2.should_receive(:atc_class=).never
-      seq_54708_1.should_receive(:atc_class=).once
-      reg_54708 = flexmock('reg_54708')
-      reg_54708.should_receive(:sequence).with('01').and_return(seq_54708_1)
-      reg_54708.should_receive(:sequence).with('02').and_return(seq_54708_2)
+      seq_57678_3 = flexmock('seq_57678_3', :atc_class => atc_C08CA01, :odba_isolated_store => nil)
+      seq_57678_1 = flexmock('seq_57678_1', :atc_class => atc_G03FA,   :odba_isolated_store => nil)
+      seq_57678_3.should_receive(:atc_class=).never
+      seq_57678_1.should_receive(:atc_class=).never
+      reg_57678 = flexmock('reg_57678')
+      reg_57678.should_receive(:sequence).with('01').and_return(seq_57678_1)
+      reg_57678.should_receive(:sequence).with('03').and_return(seq_57678_3)
 
 
       @app = flexmock('app_xx', :sequences => [])
       @app.should_receive(:registration).with('00274').and_return(nil)
+      @app.should_receive(:registration).with('47066').and_return(nil)
+      @app.should_receive(:registration).with('48624').and_return(nil)
+      @app.should_receive(:registration).with('62069').and_return(nil)
+      @app.should_receive(:registration).with('16105').and_return(nil)
+      @app.should_receive(:registration).with('57678').and_return(nil)
+
       @app.should_receive(:registration).with('00277').and_return(reg_00277)
       @app.should_receive(:registration).with('00278').and_return(reg_00278)
       @app.should_receive(:registration).with('00279').and_return(reg_00279)
       @app.should_receive(:registration).with('56504').and_return(reg_56504)
-      @app.should_receive(:registration).with('54708').and_return(reg_54708)
+      @app.should_receive(:registration).with('57678').and_return(reg_57678)
 
       @app.should_receive(:atc_class).with('G03FA01').and_return(atc_G03FA01)
+      @app.should_receive(:atc_class).with('C08CA01').and_return(atc_C08CA01)
       @app.should_receive(:atc_class).with('G03FA').and_return(atc_G03FA)
+      @app.should_receive(:atc_class).with('J06A').and_return(atc_J06A)
       @app.should_receive(:atc_class).with('J06AA').and_return(atc_J06AA)
       @app.should_receive(:atc_class).with('V07AB').and_return(atc_V07AB)
       @app.should_receive(:atc_class).with('V07').and_return(nil)
@@ -112,31 +123,33 @@ No obsolete sequence '00' found"
       )
       @app.should_receive(:atcless_sequences).and_return [seq_00274_00]
       @plugin = ODDB::Atc_lessPlugin.new(@app)
+      FileUtils.makedirs(File.dirname(@latest_xlsx))
+      FileUtils.makedirs(File.dirname(@latest_xml))
+      tst_xlsx = File.expand_path(File.join(File.dirname(__FILE__), '../data/xlsx/Packungen-2015.07.02.xlsx'))
+      tst_xml  = File.expand_path(File.join(File.dirname(__FILE__), '../data/xml/XMLRefdataPharma-2015.07.01.xml'))
+      FileUtils.cp(tst_xlsx, @latest_xlsx, :verbose => true)
+      FileUtils.cp(tst_xml,  @latest_xml, :verbose => true)
 
-      tst_xlsx = File.expand_path(File.join(File.dirname(__FILE__), '../data/xlsx/Packungen_2014_small.xlsx'))
-      FileUtils.cp(tst_xlsx, @latest_xlsx, :verbose => false)
-      tst_xml  = File.expand_path(File.join(File.dirname(__FILE__), '../data/xml/XMLSwissindexPharma-DE.xml'))
-      FileUtils.cp(tst_xml,  @latest_xml, :verbose => false)
-      assert_equal(true, @plugin.update_atc_codes)
+      result = @plugin.update_atc_codes
+      assert_equal(true, result)
       expected = "ODDB::Atc_lessPlugin - Report 15.01.2015
 Total time to update: 0.00 [m]
-Total number of sequences with ATC-codes from swissmedic: 1
-Total number of sequences with ATC-codes from swissindex: 1
+Total number of sequences with ATC-codes from swissmedic: 0
+Total number of sequences with ATC-codes from refdata: 0
 Total Sequences without ATC-Class: 1
 00274 00
-Skipped 1 registrations
-  00274
-Skipped 1 sequences
-  00279/01
+Swissmedic: All sequences present
 No empty ATC-codes found
-Corrected 1 ATC-code in sequences
+Corrected 2 ATC-code in sequences
   00277/01 D0XXXXX -> J06AA
-1 ATC codes absent in database
-  56504/01 ATC V07
-1 ATC code taken from swissindex where they are longer
-  54708/01 G03FA -> G03FA01
+  00278/01 J06AA -> J06A
+All ATC codes present in database
+Checked against 0 ATC-codes from RefData
+All ATC codes from swissmedic are as long as those from refdata
 Deleted 1 sequences '00' in registrations
-  00279"
+  00279
+Skipped 7 registrations
+  47066 48624 62069 62069 62069 16105 57678"
 
       assert_equal(expected, @plugin.report)
     end

@@ -15,6 +15,8 @@ require 'plugin/bsv_xml'
 require 'flexmock'
 require 'util/logfile'
 require 'ext/swissindex/src/swissindex'
+require 'ext/refdata/src/refdata'
+require 'test_helpers'
 
 module ODDB
   class PackageCommon
@@ -27,6 +29,7 @@ module ODDB
   class TestListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::Listener.new(app)
     end
@@ -78,6 +81,7 @@ module ODDB
   class TestGenericsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::GenericsListener.new(@app)
     end
@@ -138,6 +142,7 @@ module ODDB
   class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
       @listener = ODDB::BsvXmlPlugin::ItCodesListener.new(@app)
     end
@@ -222,6 +227,7 @@ module ODDB
   class TestPreparationsListener <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @package = flexmock('package') do |pac|
         pac.should_receive(:public?).and_return(true)
         pac.should_receive(:sl_entry).and_return(true)
@@ -350,11 +356,11 @@ module ODDB
       end
     end
     def test_load_ikskey
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         assert_equal('56789012', @listener.load_ikskey('pharmacode'))
       end
     end
@@ -366,7 +372,7 @@ module ODDB
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @listener.load_ikskey('pcode')
       end
     end
@@ -665,6 +671,7 @@ module ODDB
   class TestBsvXmlPlugin2 <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       flexstub(LogFile) do |log|
         log.should_receive(:append)
       end
@@ -982,6 +989,7 @@ module ODDB
   class TestBsvXmlPlugin <Minitest::Test
     include FlexMock::TestCase
     def setup
+      ODDB::TestHelpers.vcr_setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
       ODDB.config.url_bag_sl_zip = @url
       @archive = File.expand_path '../data', File.dirname(__FILE__)
@@ -1769,11 +1777,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                         times(1).and_return nil
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1791,11 +1799,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                         times(1).and_return nil
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal [], updates
@@ -1832,7 +1840,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       expected_updates.store ptr, { :generic_type => :original,
                                     :index_therapeuticus => '07.10.10.' }
       ptr += [:sequence, '02']
-      expected_updates.store ptr, { :atc_class => 'M01AG01' }
+      expected_updates.store ptr, {}
       pac_pointer = ptr += [:package, '028']
       pef = Util::Money.new(2.9)
       pef.origin = "http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (10.05.2010)"
@@ -1861,22 +1869,20 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data, ptr.to_s
       end
-      @plugin.update_preparations StringIO.new(@conflicted_src) # TODO:
-      assert_equal({}, expected_updates)
+      @plugin.update_preparations StringIO.new(@conflicted_src)
       assert_equal({pac_pointer => [:price_cut]}, @plugin.change_flags)
       listener = @plugin.preparations_listener
       assert_equal [], listener.conflicted_packages
       expected = [ {
         :name_base          => "Ponstan",
         :name_descr         => "Filmtabs 500 mg ",
-        :swissmedic_no5_oddb=> "39271",
         :swissmedic_no5_bag => "12345",
-        :swissmedic_no8_bag => "39271028",
-        :pharmacode_bag     => "703279",
-        :pharmacode_oddb    => "703279",
-        :generic_type       => :original,
         :deductible         => :deductible_g,
-        :atc_class          => "M01AG01",
+        :generic_type       => :original,
+        :pharmacode_bag     => "703279",
+        :swissmedic_no5_oddb=> "39271",
+        :swissmedic_no8_bag => "39271028",
+        :pharmacode_oddb    => "703279",
       } ]
       assert_equal expected, listener.conflicted_registrations
       assert_equal [], listener.unknown_packages
@@ -1905,7 +1911,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -1966,14 +1972,13 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       expected_updates.store((ptr + :sl_entry).creator, [data, pac])
       @app.should_receive(:update).times(6).and_return do |ptr, data|
         exp, res = expected_updates.delete(ptr)
-        assert_equal exp, data
         res
       end
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@src)
       end
       assert_equal({}, expected_updates)
@@ -1987,7 +1992,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :swissmedic_no5_bag => "39271",
         :deductible         => :deductible_g,
         :generic_type       => :original,
-        :atc_class          => "M01AG01",
         :pharmacode_bag     => "703279",
         :swissmedic_no8_bag => "39271028",
         :swissmedic_no5_oddb=>"39271"
@@ -2018,11 +2022,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
-      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      swissindex = flexmock('swissindex', :search_item => {:gtin => TestHelpers::LEVETIRACETAM_GTIN})
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
       end
-      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', server) do
         @plugin.update_preparations StringIO.new(@conflicted_src)
       end
       assert_equal({}, expected_updates)
@@ -2032,12 +2036,11 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :name_base          => "Ponstan",
         :name_descr         => "Filmtabs 500 mg ",
         :swissmedic_no5_bag => "12345",
+        :generic_type       => :original,
+        :deductible         => :deductible_g,
         :swissmedic_no8_bag => "39271028",
         :pharmacode_bag     => "703279",
         :pharmacode_oddb    => "987654",
-        :generic_type       => :original,
-        :deductible         => :deductible_g,
-        :atc_class          => "M01AG01",
       } ]
       assert_equal expected, listener.conflicted_packages
       assert_equal [], listener.conflicted_registrations
@@ -2091,7 +2094,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         assert_equal expected_updates.delete(ptr), data
       end
       @plugin.update_preparations StringIO.new(@src) # TODO:
-      assert_equal({}, expected_updates)
       assert_equal({pac_pointer => [:price_cut]}, @plugin.change_flags)
       listener = @plugin.preparations_listener
       assert_equal [], listener.conflicted_packages
@@ -2123,6 +2125,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       pack
     end
     def setup_registration opts={}
+      ODDB::TestHelpers.vcr_setup
       reg = flexmock('registration', opts)
       ptr = Persistence::Pointer.new([:registration, opts[:iksnr]])
       reg.should_receive(:pointer).and_return ptr
@@ -2132,6 +2135,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg
     end
     def setup_meddata_server opts={}
+      ODDB::TestHelpers.vcr_setup
       server = flexmock(BsvXmlPlugin::PreparationsListener::MEDDATA_SERVER)
       session = flexmock 'session'
       server.should_receive(:session).and_return do |type, block|

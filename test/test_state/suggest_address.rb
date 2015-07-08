@@ -33,6 +33,7 @@ class TestSuggestAddress <Minitest::Test
                        )
     doctor   = flexmock('doctor', :fullname => 'fullname')
     hospital   = flexmock('hospital', :oid => 'oid', :fullname => 'fullname')
+    @address = flexmock('address', :oid => 'oid', :fullname => 'fullname')
     @session = flexmock('session',
                         :app => @app,
                         :lookandfeel => @lnf,
@@ -41,7 +42,7 @@ class TestSuggestAddress <Minitest::Test
                         :request_path => 'request_path',
                         :search_hospital => hospital,
                         :set_cookie_input => 'set_cookie_input',
-#                        :search_doctor => doctor
+                        :get_address_parent => @address,
                        ).by_default
     parent   = flexmock('parent', :fullname => 'fullname')
     @model   = flexmock('model', 

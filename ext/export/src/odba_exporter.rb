@@ -12,7 +12,6 @@ require 'models'
 require 'model/analysis/group'
 require 'oddb_yaml'
 require 'csv_exporter'
-require 'oddbdat'
 require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
@@ -171,38 +170,6 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				}
 				nil
 			}
-		end
-		def OdbaExporter.export_oddbdat(odba_ids, dir, klasses)
-			FileUtils.mkdir_p(dir)
-			files = klasses.collect { |klass| 
-				table = klass.new
-				file = Tempfile.new(table.filename, dir)
-				[file, table]
-			}
-			if(odba_ids.nil?)
-				files.each { |file, table|
-					file.puts table.lines
-				}
-			else
-				odba_ids.each { |odba_id|
-					item = ODBA.cache.fetch(odba_id, nil)
-					files.each { |file, table|
-            if lines = table.lines(item)
-						  file.puts table.lines(item)
-            end
-					}
-					#ODBA.cache.clear
-				}
-			end
-			files.each { |file, table|
-				path = File.join(dir, table.filename)
-				FileUtils.mv(file.path, path)
-			}
-			files.collect { |file, table| table.filename }
-		ensure
-			if(files)
-				files.each { |file, table| file.close! }
-			end
 		end
     def OdbaExporter.export_patent_xls(odba_ids, dir, name)
       nil_data = []

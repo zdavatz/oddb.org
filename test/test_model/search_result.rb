@@ -42,7 +42,10 @@ module ODDB
                           :name_base       => 'package1',
                           :galenic_forms   => [],
                           :dose            => 'dose',
-                          :comparable_size => 1
+                          :company         => 'company',
+                          :out_of_trade    => false,
+                          :sl_generic_type => :original,
+                          :comparable_size => 1,
                          )
       package2 = flexmock('package2', 
                           :expired?        => nil,
@@ -50,7 +53,10 @@ module ODDB
                           :name_base       => 'package2',
                           :galenic_forms   => [],
                           :dose            => 'dose',
-                          :comparable_size => 1
+                          :company         => 'company',
+                          :out_of_trade    => false,
+                          :sl_generic_type => :original,
+                          :comparable_size => 1,
                          )
 
       active_packages = [package2, package1]
@@ -163,7 +169,11 @@ module ODDB
                            :galenic_forms   => [],
                            :dose            => 'dose',
                            :comparable_size => 1,
-                           :active_agents   => [active_agent]
+                           :active_agents   => [active_agent],
+                          :company         => 'company',
+                          :out_of_trade    => false,
+                          :comparable_size => 1,
+                          :sl_generic_type => :original,
                           )
       atc_class = flexmock('atc_class', 
                            :package_count => 1,

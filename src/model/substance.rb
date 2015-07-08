@@ -15,11 +15,12 @@ module ODDB
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
     attr_reader :chemical_forms, :effective_form, :sequences
-		attr_accessor :swissmedic_code, :casrn
+		attr_accessor :swissmedic_code, :casrn, :more_info
 		include Comparable
 		include Language
 		def initialize
 			super()
+      @more_info = nil
 			@sequences = []
       @chemical_forms = []
 		end

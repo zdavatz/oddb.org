@@ -191,7 +191,7 @@ module ODDB
       assert_equal(0, @plugin.import_code(@agent, 'A'))
     end
     def test_report
-      expected = "Imported   0 ATC-Codes\nUpdated    0 English descriptions\nUpdated    0 Guidelines\nUpdated    0 DDD-Guidelines"
+      expected = "Imported   0 ATC-Codes\nCreated    0 English descriptions\nUpdated    0 Guidelines\nUpdated    0 DDD-Guidelines"
       assert_equal(expected, @plugin.report)
     end
     def test_import
@@ -203,7 +203,7 @@ module ODDB
                     )
       flexmock(@app, :update => atc)
       flexmock(@app, :atc_class => atc)
-      expected = "Imported  30 ATC-Codes\nUpdated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines"
+      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines"
       assert_equal(expected, @plugin.import(@agent))
     end
   end

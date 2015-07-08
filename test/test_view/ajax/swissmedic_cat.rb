@@ -25,10 +25,10 @@ class TestSwissmedicCat <Minitest::Test
                           :result_list_components => {'key' => 'component'}
                          )
     @session   = flexmock('session', :lookandfeel => @lnf)
-    sl_entry   = flexmock('sl_entry', :introduction_date => Time.local(2011,2,3))
+    sl_entry   = flexmock('sl_entry', :introduction_date => Time.utc(2011,2,3))
     @parent    = flexmock('parent', 
                           :certificate_number => 'certificate_number',
-                          :expiry_date => Time.local(2011,2,3)
+                          :expiry_date => Time.utc(2011,2,3)
                          ).by_default
     @model     = flexmock('model', 
                           :ikscat   => 'ikscat',
@@ -37,10 +37,10 @@ class TestSwissmedicCat <Minitest::Test
                           :preview? => nil,
                           :patent   => @parent,
                           :sl_generic_type   => 'sl_generic_type',
-                          :registration_date => Time.local(2011,2,3),
-                          :sequence_date     => Time.local(2011,2,3),
-                          :revision_date     => Time.local(2011,2,3),
-                          :expiration_date   => Time.local(2011,2,3),
+                          :registration_date => Time.utc(2011,2,3),
+                          :sequence_date     => Time.utc(2011,2,3),
+                          :revision_date     => Time.utc(2011,2,3),
+                          :expiration_date   => Time.utc(2011,2,3),
                           :index_therapeuticus => 'index_therapeuticus',
                           :ith_swissmedic      => 'ith_swissmedic',
                           :production_science  => 'production_science'

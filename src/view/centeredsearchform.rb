@@ -175,12 +175,6 @@ module ODDB
 				span.set_attribute('style','color: black;')
 				span
 			end
-      def download_ebook(model, session)
-        link = HtmlGrid::Link.new(:download_ebook, model, session, self)
-        link.set_attribute('class', 'list')
-        link.href = @lookandfeel.lookup(:download_ebook_link)
-        link
-      end
       def download_app(model, session)
         link = HtmlGrid::Link.new(:download_app, model, session, self)
         link.set_attribute('class', 'list')
@@ -258,13 +252,6 @@ module ODDB
 			end
 			def narcotics_size(model, session)
         @session.app.narcotics.length.to_s << '&nbsp;'
-			end
-			def new_feature(model, session)
-				span = HtmlGrid::Span.new(model, session, self)
-				span.value = @lookandfeel.lookup(:new_feature)
-				span.set_attribute('style','color: red; margin: 5px; font-size: 8pt;')
-				#span.set_attribute('style','color: red; margin: 5px; font-size: 11pt;')
-				span
 			end
 			def recent_registrations(model, session)
 				link = HtmlGrid::Link.new(:new_registrations, model, session, self)

@@ -55,7 +55,7 @@ class TestReturnDownloads <Minitest::Test
   def test_download_link__expired
     flexmock(@model, 
              :expired?    => true,
-             :expiry_time => Time.local(2011,2.3)
+             :expiry_time => Time.utc(2011,2.3)
             )
     assert_equal('lookup', @list.download_link(@model))
   end

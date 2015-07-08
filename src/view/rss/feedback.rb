@@ -67,7 +67,7 @@ class Feedback < HtmlGrid::Component
           url = @lookandfeel._event_url(:feedbacks, :pointer => parent.pointer)
           item.guid.content = item.link = url
           item.guid.isPermaLink = true
-          item.date = feedback.time
+          item.date = feedback.time.utc
 
           comp = FeedbackTemplate.new(feedback, @session, self)
           item.description = sanitize(comp.to_html(context))

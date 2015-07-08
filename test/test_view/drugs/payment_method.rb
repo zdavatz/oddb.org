@@ -39,7 +39,7 @@ class TestPaymentMethodForm <Minitest::Test
   end
   def test_init__error
     flexmock(@session, :error? => true)
-    assert_equal('processingerror', @form.init)
+    assert_equal(0, @form.init)
   end
   def test_hidden_fields
     state = flexmock('state', 
