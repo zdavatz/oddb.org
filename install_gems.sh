@@ -33,6 +33,7 @@ gem install net-http-persistent --version=2.9.3
 gem install nokogiri --version=1.6.2.1
 gem install odba --version=1.1.0
 gem install oddb2tdat --version=1.1.2
+gem install parslet --version=1.7.0
 gem install paypal --version=2.0.0
 gem install pg --version=0.12.0
 gem install rclconf --version=1.0.0
