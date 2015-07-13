@@ -38,8 +38,8 @@ module ODDB
     ROW_AXOTIDE = 19
     IKSNR_WELEDA = "09232"
     EXPIRATION_DATE_ASPIRIN = Date.new(2017,5,9)
-    def setup
-      @app = flexmock 'app'
+    def setup_app(app = flexmock('app'))
+      @app = app
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
@@ -53,6 +53,9 @@ module ODDB
       @test_packages = File.expand_path '../data/xlsx/Packungen.xlsx', File.dirname(__FILE__)
       @workbook = Spreadsheet.open( @test_packages)
       @plugin.set_target_keys(@workbook)
+    end
+    def setup
+      setup_app
     end
     def teardown
       super # to clean up FlexMock
@@ -907,7 +910,6 @@ if RUN_ALL
       @app.should_receive(:registration).and_return reg
       @plugin.update_compositions(seq, row)
     end
-end
     def test_update_composition__chemical_form
       row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
       @seq = setup_simple_seq('08537', '01')
@@ -975,7 +977,6 @@ end
       @app.should_receive(:registration).and_return reg
       @plugin.update_compositions(@seq, row)
     end
-    if RUN_ALL
     def test_update_composition__delete
       row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
       seq = setup_simple_seq('08537', '01')
@@ -1508,6 +1509,33 @@ end
       assert_equal([], @plugin.update_compositions(sequence, row))
     end
     end
+    def test_plugin_update
+      @app = ODDB::App.new
+      setup_app(@app)
+      # Use first the last month and compare it to a non existing lates
+      FileUtils.rm(Dir.glob("#{File.dirname(@latest)}/*"), :verbose => true)
+      FileUtils.cp(@current, @target, :verbose => true, :preserve => true)
+      FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
+      agent, page = setup_index_page
+
+      newest  = @current.clone
+      @adata = @older.clone
+      reg = @app.create_registration('00279')
+      seq = reg.create_sequence('01')
+      seq.name_base = 'Colon Sérocytol, suppositoire'
+      seq.name_descr = 'name_descr'
+      seq.composition_text = 'composition_text'
+      seq.dose = nil
+      seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
+      seq.sequence_date = Date.new(2017,5,9)
+      seq.export_flag = false
+      seq.atc_class = ODDB::AtcClass.new('AB0')
+      seq.indication = 'indication'
+      seq.create_package('001')
+      seq.create_package('002')
+      result = @plugin.update({}, agent)
+      assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00279"=>[:delete]}, result)
+    end
   end
 
   # Tests for using with xlsx files
@@ -1552,6 +1580,7 @@ end
       uri = 'http://www.example.com'
       [agent, page]
     end
+
     def test_july_2015
       agent, page = setup_index_page
       # Use first the last month and compare it to a non existing lates
@@ -1564,11 +1593,13 @@ end
       @adata = @older.clone
       assert_equal(0, @app.registrations.size)
       reg = @app.create_registration('00278')
+      reg.pointer = Persistence::Pointer.new([:registration, '00278'])
       seq = reg.create_sequence('01')
       seq.name_base = 'Colon Sérocytol, suppositoire'
       seq.name_descr = 'name_descr'
       seq.composition_text = 'composition_text'
       seq.dose = nil
+      seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
       seq.sequence_date = Date.new(2017,5,9)
       seq.export_flag = false
       seq.atc_class = ODDB::AtcClass.new('AB0')
@@ -1581,7 +1612,8 @@ end
       seq.create_package('001')
       seq.create_package('002')
 
-      result = @plugin.update(agent)
+      result = @plugin.update({:update_compositions => true}, agent)
+      pp @app.registration('00279').sequences.first
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
       assert_equal(5, @app.registrations.size)
@@ -1589,7 +1621,7 @@ end
       assert_equal(13, @app.packages.size)
       assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00279"=>[:delete]}, result)
 
-      result_second_run = @plugin.update(agent)
+      result_second_run = @plugin.update({}, agent)
       assert_equal({}, result_second_run)
       assert_equal(5, @app.registrations.size)
       assert_equal(7, @app.sequences.size)

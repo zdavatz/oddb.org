@@ -119,6 +119,7 @@ module ODDB
 
     rescue => e
       msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect} #{caller[0..10].inspect}"
+      require 'pry'; binding.pry
       Util.debug_msg(msg)
       raise e
     end

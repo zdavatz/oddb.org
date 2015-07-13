@@ -82,8 +82,9 @@ end
 # some StubSequence
 
   class StubSequence
-    attr_reader :name_base, :name_descr, :atc_class
+    attr_reader :name_base, :name_descr, :atc_class, :pointer
     def initialize(name_base, atc_class)
+#      @pointer = Pointer.new([:sequence, 0])
       @name_base = name_base
       @atc_class = atc_class
     end
@@ -107,9 +108,10 @@ end
     end
   end
   class StubRegistration
-    attr_reader :iksnr, :block_result
-    def initialize(key=nil)
-      @iksnr = key
+    attr_reader :iksnr, :block_result, :pointer
+    def initialize(iksnr=nil)
+      @pointer = Pointer.new([:registration, iksnr])
+      @iksnr = iksnr
     end
     def active_package_count
       3
