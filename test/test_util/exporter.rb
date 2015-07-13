@@ -268,11 +268,8 @@ module ODDB
       end
       flexmock(LogFile) do |logclass|
         # white box test: Log.new is once called because of error
-        logclass.should_receive(:new).times(1).and_return(@log)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      res = @exporter.export_sl_pcodes
-      # skip("Niklaus does not know why under minitest it returns sleep instead of raising an error")
       assert_raises(StandardError) { @exporter.export_sl_pcodes }
     end
     def test_export_patents_xls
@@ -368,22 +365,6 @@ module ODDB
       flexmock(LogFile).should_receive(:filename).times(1).with('feedback', Date)
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       assert_equal(nil, @exporter.mail_feedback_stats)
-    end
-    def test_mail_notification_stats
-      flexmock(@app) do |app|
-        app.should_receive(:"notification_logger.create_csv").and_return('file')
-      end
-      flexmock(@log) do |log|
-        log.should_receive(:notify_attachment).with('file', Hash).and_return('notify_attachment')
-        log.should_receive(:append)
-      end
-      flexmock(Log) do |logclass|
-        # white box test: Log.new is once called
-        logclass.should_receive(:new).and_return(@log)
-        logclass.should_receive(:append)
-      end
-      skip "Niklaus does not know why we always get an error in Logfile.append"
-      assert_equal('notify_attachment', @exporter.mail_notification_stats)
     end
     def test_mail_patinfo_invoice
       flexmock(@plugin) do |plug|

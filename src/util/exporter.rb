@@ -65,7 +65,6 @@ module ODDB
         mail_feedback_stats
         export_yaml
         export_galenic
-        #mail_notification_stats
       }
       export_sl_pcodes
       #export_yaml
@@ -268,14 +267,6 @@ module ODDB
       safe_export 'Mail Feedback-Statistics' do
         mail_stats('feedback')
       end
-		end
-		def mail_notification_stats
-			attachment = {
-				:filename => 'notifications.csv',
-        :mime_type => 'text/csv',
-        :content => @app.notification_logger.create_csv(@app),
-			}
-      Util.send_mail_with_attachments(@recipients, 'Täglicher CSV-Export der Notifications', '', [attachment])
 		end
 		def mail_patinfo_invoices
       safe_export 'Mail Patinfo-Invoices' do
