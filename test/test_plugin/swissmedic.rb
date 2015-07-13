@@ -8,18 +8,20 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'stub/odba'
-require 'stub/oddbapp'
 require 'util/persistence'
 require 'plugin/swissmedic'
 require 'model/registration'
 require 'model/sequence'
 require 'model/package'
+require 'model/galenicgroup'
+require 'model/composition'
 require 'flexmock'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
 require 'util/util'
 require 'util/oddbconfig'
+require 'stub/oddbapp'
 
 class FlexMock::TestUnitFrameworkAdapter
     attr_accessor :assertions
@@ -111,12 +113,14 @@ module ODDB
     end
 
     def setup_active_agent(name='active-agent')
+      substance = flexmock(name)
+      substance.should_receive(:oid).and_return "#{name}-oid"
       act = flexmock name
       act.should_receive(:oid).and_return "#{name}-oid"
       act.should_receive(:pointer).and_return "#{name}-pointer"
       act.should_receive(:pointer=).and_return "#{name}-pointer"
       act.should_receive(:dose).and_return 'dose'
-      act.should_receive(:substance).and_return 'substance'
+      act.should_receive(:substance).and_return substance
       act.should_receive(:chemical_dose).and_return 'chemical_dose'
       act.should_receive(:chemical_substance).and_return 'chemical_substance'
       act
@@ -183,7 +187,7 @@ if RUN_ALL
         .with(name, 0.8).and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       reg = flexmock 'registration'
       reg.should_receive(:pointer).and_return(ptr)
@@ -220,7 +224,7 @@ if RUN_ALL
       company.should_receive(:pointer).and_return 'company-pointer'
       registration = flexmock 'registration'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       @app.should_receive(:registration).with('08537').and_return registration
       ptr = Persistence::Pointer.new([:registration, '08537'])
@@ -259,7 +263,7 @@ if RUN_ALL
         .with(name, 0.8).and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       registration = flexmock 'registration'
       @app.should_receive(:registration).with('08653').and_return registration
@@ -281,6 +285,7 @@ if RUN_ALL
         :indication          => 'indication-pointer',
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic).and_return {assert true }
+      @app.should_receive(:update).with_any_args
       @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
 
@@ -296,7 +301,7 @@ if RUN_ALL
         .with(name, 0.8).and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       registration = flexmock 'registration'
       @app.should_receive(:registration).with(IKSNR_WELEDA).and_return registration
@@ -321,7 +326,7 @@ if RUN_ALL
       @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
 
-    def test_update_registration__homoeo
+  def test_update_registration__homoeo
       row = @workbook.worksheet(0).row(ROW_OSANIT)
       indication_text = "Bei Zahnungsbeschwerden"
       assert_equal('Osanit Zahnen, homöopathische Globuli', row[NAME_OFFSET].value)
@@ -336,7 +341,7 @@ if RUN_ALL
         .with(name, 0.8).and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       registration = flexmock 'registration'
       @app.should_receive(:registration).with('10999').and_return registration
@@ -360,6 +365,7 @@ if RUN_ALL
         .times(1).and_return { assert true }
       @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
+
     def test_update_registration__aspirin
       row = @workbook.worksheet(0).row(ROW_ASPIRIN)
       assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
@@ -373,7 +379,7 @@ if RUN_ALL
         .with(name, 0.8).and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
       args = { :name => name, :business_area => 'ba_pharma' }
-      @app.should_receive(:update).with('company-pointer', args)\
+      @app.should_receive(:update).with('company-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; company }
       registration = flexmock 'registration'
       @app.should_receive(:registration).with('08537').and_return registration
@@ -685,35 +691,43 @@ if RUN_ALL
       }
       @plugin.update_package reg, seq, row
     end
+
     def test_update_composition__create
       row = @workbook.worksheet(0).row(ROW_ASPIRIN)
       assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
       seq = setup_simple_seq('08537', '01')
       @app.should_receive(:update)
-      @app.should_receive(:substance).with('Acidum Acetylsalicylicum')
+      active_agents_text = 'Acidum Acetylsalicylicum'
+      substance = flexmock('substance')
+      substance.should_receive(:oid).and_return('oid')
+      @app.should_receive(:substance).with(active_agents_text).and_return(substance)
       sptr = Persistence::Pointer.new([:substance]).creator
-      args = { :lt => 'Acidum Acetylsalicylicum' }
+      args = { :lt => active_agents_text }
       comp = flexmock 'composition'
-      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')
+      @app.should_receive(:substance).and_return substance
       comp.should_receive(:substances).and_return []
-      comp.should_receive(:odba_store).once
+#      comp.should_receive(:odba_store).once
       comp.should_receive(:active_agents).and_return []
+      comp.should_receive(:get_auxiliary_substance).and_return nil
+      comp.should_receive(:active_agent).and_return nil
       comp.should_receive(:label).and_return 'label'
       cptr = @ptr + [:composition, 'id']
-      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
+
+      aptr = cptr + [:active_agent, active_agents_text]
+      composition_text = "acidum acetylsalicylicum 500 mg, excipiens pro compresso."
       args1 = {
         :label  => nil,
-        :source => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
+        :source => composition_text,
       }
       args2 =  {
-        :substance => 'Acidum Acetylsalicylicum',
+        :substance => active_agents_text,
         :dose      => Dose.new(500.0, 'mg'),
       }
       comp.should_receive(:pointer).and_return(cptr)
       comp.should_receive(:oid).and_return 'oid'
+      comp.should_receive(:odba_store).and_return 'odba_store'
       comp.should_receive(:+).and_return 'plus'
-      act = setup_active_agent
-      comp.should_receive(:create_active_agent).and_return act
+      comp.should_receive(:create_active_agent).and_return setup_active_agent(active_agents_text)
       @app.should_receive(:create).once.with(@ptr + :composition).and_return comp
       @app.should_receive(:update).once.with(cptr, args1, :swissmedic) if false
       @app.should_receive(:update).once.with(aptr.creator, args2, :swissmedic) if false
@@ -725,7 +739,9 @@ if RUN_ALL
       $calls = []
       @app.should_receive(:update).and_return {|pointer, args, what| $calls << "#{__LINE__} #{pointer} args #{args} what #{what}" }
       seq.should_receive(:compositions).and_return []
-      @plugin.update_compositions(seq, row)
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      @app.should_receive(:update).with_any_args
+      result = @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
       puts "#{__LINE__} update got called with \n #{$calls.join("\n")}"
     end
 
@@ -749,9 +765,12 @@ if RUN_ALL
       cptr = ptr + [:composition, 'id']
       comp.should_receive(:pointer).and_return(cptr)
       @app.should_receive(:create).with(ptr + :composition).and_return comp
+      composition_text = "extractum ethanolicum liquidum ex berberidis fructus recens 10 mg et pruni spinosae fructus recens 10 mg et echinaceae purpureae planta tota recens 12 mg et bryoniae radix recens 0.1 mg, esculosidum 1.1 mg, dextrocamphora 0.12 mg, eucalypti aetheroleum 3.88 mg, menthae piperitae aetheroleum 3.88 mg, thymi aetheroleum 0.12 mg, adeps lanae (Schaf: Fell/Haare/Wolle), excipiens ad unguentum pro 1 g."
+      seq.should_receive(:composition_text).and_return composition_text
+      seq.should_receive(:iksnr).and_return 'iksnr'
       args = {
         :label  => nil,
-        :source => "extractum ethanolicum liquidum ex berberidis fructus recens 10 mg et pruni spinosae fructus recens 10 mg et echinaceae purpureae planta tota recens 12 mg et bryoniae radix recens 0.1 mg, esculosidum 1.1 mg, dextrocamphora 0.12 mg, eucalypti aetheroleum 3.88 mg, menthae piperitae aetheroleum 3.88 mg, thymi aetheroleum 0.12 mg, adeps lanae (Schaf: Fell/Haare/Wolle), excipiens ad unguentum pro 1 g."
+        :source => composition_text
       }
       @app.should_receive(:update).with(cptr, args, :swissmedic)\
         .times(9).and_return { assert true; comp }
@@ -776,7 +795,8 @@ if RUN_ALL
       }
       skip('Niklaus has no time to debug this')
       @app.should_receive(:update).with_any_args do |*args| puts "Got args #{args.inspect}";  'unexpected_update' end
-      result = @plugin.update_compositions(seq, row)
+      parsed_comps = ParseUtil.parse_compositions(composition_text, 'Berberidis Fructus Recens')
+      result = @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
       refute_equal('unexpected_update', result)
     end
 
@@ -796,14 +816,16 @@ if RUN_ALL
       comp.should_receive(:odba_store)
       comp.should_receive(:substances).and_return [sub]
       @app.should_receive(:create).with(@ptr + :composition).and_return comp
+      composition_text = "calcii carbonas hahnemanni C7 5 %, chamomilla recutita D5 22.5 %, magnesii phosphas C5 50 %, passiflora incarnata D5 22.5 %, xylitolum, excipiens ad globulos."
       args = {
         :label  => nil,
-        :source => "calcii carbonas hahnemanni C7 5 %, chamomilla recutita D5 22.5 %, magnesii phosphas C5 50 %, passiflora incarnata D5 22.5 %, xylitolum, excipiens ad globulos."
+        :source => composition_text
       }
+      active_agents_text = active_agents_text
       @app.should_receive(:update)
       @app.should_receive(:update).with(cptr, args, :swissmedic)\
         .times(4).and_return { assert true; comp } if false
-      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      aptr = cptr + [:active_agent, active_agents_text ]
       args =  [
         { :dose => Dose.new(5.0, '%'), :substance => 'Calcii Carbonas Hahnemanni C7' },
         { :dose => Dose.new(22.5, '%'), :substance => 'Chamomilla Recutita D5' },
@@ -821,47 +843,63 @@ if RUN_ALL
       comp.should_receive(:label).and_return 'label'
       comp.should_receive(:source).and_return 'source'
       @app.should_receive(:registration).and_return reg
-      @plugin.update_compositions(seq, row)
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      result = @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
+      assert_equal([comp, comp, comp, comp, comp], result)
     end
+
     def test_update_composition__focus_on_doses_qty_in_scale
       row = @workbook.worksheet(0).row(ROW_AXOTIDE)
       assert_equal('Axotide 100 ug, Diskus', row[NAME_OFFSET].value)
       seq = flexmock 'sequence'
+      composition_text = "fluticasoni-17 propionas 100 \302\265g, lactosum monohydricum q.s. ad pulverem pro 25 mg."
+      active_agents_text = 'Acidum Acetylsalicylicum'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:oid).and_return 'oid'
+      seq.should_receive(:iksnr).and_return 'iksnr'
       seq.should_receive(:seqnr).and_return 'seqnr'
       seq.should_receive(:active_agents).and_return []
+      seq.should_receive(:composition_text).and_return composition_text
       seq.should_receive(:compositions).and_return []
       sub = flexmock 'substance'
+      main_substance = 'Fluticasoni-17 Propionas'
+      sub.should_receive(:oid).and_return main_substance
       sub.should_receive(:pointer).and_return 'substance-pointer'
       @app.should_receive(:substance).and_return sub
       act = flexmock 'active-agent'
-      act.should_receive(:pointer).and_return 'active-agent-pointer'
+      act.should_receive(:pointer).and_return Persistence::Pointer.new([:active_agent, main_substance, false])
+      act.should_receive(:pointer).and_return Persistence::Pointer.new([:active_agent, 'Lactosum Monohydricum', false])
+      act.should_receive(:dose).and_return nil
+      act.should_receive(:substance).and_return sub
+      act.should_receive(:oid).and_return 'oid'
       comp = flexmock 'composition'
       comp.should_receive(:active_agent).and_return act
+      comp.should_receive(:odba_store).and_return 'odba_store'
       comp.should_receive(:active_agents).and_return []
+      comp.should_receive(:substances).and_return []
       cptr = ptr + [:composition, 'id']
       comp.should_receive(:pointer).and_return(cptr)
       @app.should_receive(:create).with(ptr + :composition).and_return comp
       args = {
         :label  => nil,
-        :source => "fluticasoni-17 propionas 100 \302\265g, lactosum monohydricum q.s. ad pulverem pro 25 mg.",
+        :source => composition_text,
       }
       @app.should_receive(:update).with(cptr, args, :swissmedic)\
-        .times(1).and_return { assert true; comp }
-      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
-      args =  [
-        { :dose => ["100", 'µg/25 mg'],
-          :substance => 'Fluticasoni-17 Propionas' },
+        .times(1).and_return { comp }
+      args_fluticasoni =  [
+        { :substance =>  main_substance},
+          :dose => Dose.new("4", 'µg/mg'),
+          :more_info  =>nil,
+          :is_active_agent  =>false,
       ]
-      @app.should_receive(:update)\
-        .with('active-agent-pointer', Hash, :swissmedic)\
-        .times(1).and_return { |ptr, data, key|
-          assert_equal args.shift, data
-      }
-      skip('Niklaus has no time to debug this')
-      @plugin.update_compositions(seq, row)
+      args_fluticasoni = {:substance=>"Fluticasoni-17 Propionas", :dose=>Quanty(4,'µg/mg'), :more_info=>nil, :is_active_agent=>false}
+      @app.should_receive(:update).with_any_args
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      result = @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
+      assert_equal([comp, comp], result)
     end
+
     def test_update_composition__update
       row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
       seq = setup_simple_seq('08537', '01')
@@ -881,18 +919,25 @@ if RUN_ALL
       agent.should_receive(:chemical_dose).and_return 'chemical_dose'
       agent.should_receive(:chemical_substance).and_return 'chemical_substance'
       comp.should_receive(:active_agents).and_return [agent]
-      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
+      composition_text   = "acidum acetylsalicylicum 500 mg, excipiens pro compresso."
+      active_agents_text = 'Acidum Acetylsalicylicum'
+      comp.should_receive(:active_agent).with(active_agents_text, ParseSubstance)\
         .and_return agent
       args = {
         :label  => nil,
-        :source => "acidum acetylsalicylicum 500 mg, excipiens pro compresso."
+        :source => composition_text,
       }
+      agent4, substance4 =  setup_simple_agent('excipiens')
+      @app.should_receive(:substance).with_any_args\
+        .and_return substance4
+      comp.should_receive(:active_agent).with_any_args\
+        .and_return agent4
       cptr = @ptr + [:composition, 'id']
       @app.should_receive(:update)
       @app.should_receive(:update).with(cptr, args, :swissmedic)\
         .times(1).and_return { assert true; comp } if false
       args =  {
-        :substance => 'Acidum Acetylsalicylicum',
+        :substance => active_agents_text,
         :dose      => Dose.new(500.0, 'mg'),
       }
       @app.should_receive(:update).with(aptr, args, :swissmedic)\
@@ -908,21 +953,26 @@ if RUN_ALL
       comp.should_receive(:pointer).and_return(cptr)
       @app.should_receive(:create).and_return(comp)
       @app.should_receive(:registration).and_return reg
-      @plugin.update_compositions(seq, row)
+      @app.should_receive(:update).with_any_args
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
     end
+
     def test_update_composition__chemical_form
       row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
       @seq = setup_simple_seq('08537', '01')
       string = 'composition-pointer'
       comp = flexmock 'composition'
       comp.should_receive(:sequence).and_return @seq
+      comp.should_receive(:odba_store).and_return 'odba_store'
       comp.should_receive(:pointer).and_return string
       comp.should_receive(:active_agents).and_return []
-      source = 'procainum 10 mg ut procaini hydrochloridum, phenazonum 50 mg, Antiox.: E 320, glycerolum q.s. ad solutionem pro 1 g.'
+      composition_text = 'procainum 10 mg ut procaini hydrochloridum, phenazonum 50 mg, Antiox.: E 320, glycerolum q.s. ad solutionem pro 1 g.'
       args = {
         :label  => nil,
-        :source => source,
+        :source => composition_text,
       }
+      active_agents_text = 'Procainum'
       agent1, substance1 =  setup_simple_agent('Procainum')
       @seq.should_receive(:compositions).and_return [comp]
       @app.should_receive(:update).with(string, args, :swissmedic)\
@@ -949,6 +999,11 @@ if RUN_ALL
         .and_return substance3
       comp.should_receive(:active_agent).with('E 320')\
         .and_return agent3
+      agent4, substance4 =  setup_simple_agent('excipiens')
+      @app.should_receive(:substance).with_any_args\
+        .and_return substance4
+      comp.should_receive(:active_agent).with_any_args\
+        .and_return agent4
       args1 =  {
         :substance          => 'Procainum',
         :dose               => Dose.new(10.0, 'mg/g'),
@@ -964,7 +1019,7 @@ if RUN_ALL
         :dose               => Dose.new("", ""),
       }
       @app.should_receive(:update)
-      args4 =  {:source=>source, :label=>nil}
+      args4 =  {:source=>composition_text, :label=>nil}
       reg = flexmock 'registration'
       reg.should_receive(:sequence).and_return @seq
       comp.should_receive(:oid).and_return 'oid'
@@ -972,10 +1027,12 @@ if RUN_ALL
       comp.should_receive(:pointer).and_return string
       comp.should_receive(:substances).and_return [agent1, agent2, agent3]
       comp.should_receive(:odba_store)
-      comp.should_receive(:source).and_return('source')
+      comp.should_receive(:source).and_return(composition_text)
       @app.should_receive(:create).and_return(comp)
       @app.should_receive(:registration).and_return reg
-      @plugin.update_compositions(@seq, row)
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      @app.should_receive(:update).with_any_args
+      @plugin.update_compositions(@seq, row, {}, composition_text, parsed_comps)
     end
     def test_update_composition__delete
       row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
@@ -983,19 +1040,21 @@ if RUN_ALL
 
       comp = flexmock 'composition'
       comp.should_receive(:pointer).and_return 'composition-pointer'
+      composition_text = "acidum acetylsalicylicum 500 mg, excipiens pro compresso."
+      active_agents_text = 'Acidum Acetylsalicylicum'
       args = {
         :label  => nil,
-        :source => "acidum acetylsalicylicum 500 mg, excipiens pro compresso."
+        :source => composition_text
       }
       @app.should_receive(:update).with('composition-pointer', args, :swissmedic)\
         .times(1).and_return { assert true; comp }if false
       seq.should_receive(:compositions).and_return [comp]
       substance = flexmock 'substance'
       substance.should_receive(:oid).and_return 'oid'
-      substance.should_receive(:same_as?).with('Acidum Acetylsalicylicum').and_return false
-      @app.should_receive(:substance).with('Acidum Acetylsalicylicum')\
+      substance.should_receive(:same_as?).with(active_agents_text).and_return false
+      @app.should_receive(:substance).with(active_agents_text)\
         .and_return substance
-      aptr = @ptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      aptr = @ptr + [:active_agent, active_agents_text]
       agent = flexmock 'active-agent'
       agent.should_receive(:pointer).and_return aptr
       agent.should_receive(:substance).and_return substance
@@ -1003,10 +1062,10 @@ if RUN_ALL
       agent.should_receive(:oid).and_return 'oid'
       agent.should_receive(:chemical_dose).and_return 'chemical_dose'
       comp.should_receive(:active_agents).and_return [agent]
-      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
+      comp.should_receive(:active_agent).with(active_agents_text)\
         .and_return agent
       args =  {
-        :substance => 'Acidum Acetylsalicylicum',
+        :substance => active_agents_text,
         :dose      => Dose.new(500.0, 'mg'),
       }
       @app.should_receive(:update).with(aptr, args, :swissmedic)\
@@ -1022,10 +1081,11 @@ if RUN_ALL
       comp.should_receive(:odba_store)# .once
       comp.should_receive(:sequence).and_return(seq)
       comp.should_receive(:source).and_return('source')
-      @app.should_receive(:delete).never
+      @app.should_receive(:delete).once
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:create).and_return(comp)
-      @plugin.update_compositions(seq, row)
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
     end
 
     def test_update_galenic_form__dont_update__descr
@@ -1079,6 +1139,7 @@ if RUN_ALL
       row = @workbook.worksheet(0).row(ROW_WELEDA)
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
+      seq.should_receive(:seqnr)
       comp = flexmock 'composition'
       comp.should_receive(:pointer).and_return 'composition-ptr'
       comp.should_receive(:galenic_form).and_return nil
@@ -1137,7 +1198,7 @@ if RUN_ALL
       reg = flexmock 'registration'
       reg.should_receive(:package).and_return pac
       @app.should_receive(:registration).and_return reg
-      result = @plugin.diff(@data, @older)
+      result = @plugin.diff(@current, @older)
       @plugin.to_s
       assert_equal <<-EOS.strip, @plugin.to_s
 + 16105: Hirudoid, Creme
@@ -1485,30 +1546,41 @@ if RUN_ALL
                :substance => 'substance',
                :delete    => 'delete'
               )
-      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,13, 'name', 'A)composition_text']
+      composition_text = 'A)composition_text'
+      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,13, 'name', composition_text]
       composition = flexmock('composition', :pointer => 'pointer')
       sequence = flexmock('sequence',
                           :seqnr => 'seqnr',
                           :active_agents => [],
                           :compositions  => [composition]
                          )
-      assert_equal([], @plugin.update_compositions(sequence, row))
+      @seq = setup_simple_seq('08537', '01')
+      parsed_comps = ParseUtil.parse_compositions(composition_text, nil)
+      result = @plugin.update_compositions(@seq, row, {}, composition_text, parsed_comps)
+      assert_equal([], result)
     end
     def test_update_compositions__create_only
       row = []
       active_agent = flexmock('active_agent')
+      active_agents_text = 'active_agent'
+      composition_text = 'compositions'
       sequence = flexmock('sequence',
                           :active_agents => [active_agent],
                           :compositions  => 'compositions'
                          )
-      assert_equal('compositions', @plugin.update_compositions(sequence, row, {:create_only => true}))
+      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+      result = @plugin.update_compositions(sequence, row, {:create_only => true}, nil, nil)
+      assert_equal([], result)
     end
     def test_update_compositions__else
       row = []
       sequence = flexmock('sequence', :active_agents => [])
-      assert_equal([], @plugin.update_compositions(sequence, row))
+      @seq = setup_simple_seq('08537', '01')
+      result = @plugin.update_compositions(@seq, row, {}, nil, [])
+      assert_equal([], result)
     end
     end
+
     def test_plugin_update
       @app = ODDB::App.new
       setup_app(@app)
@@ -1535,17 +1607,46 @@ if RUN_ALL
       seq.create_package('002')
       result = @plugin.update({}, agent)
       assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00279"=>[:delete]}, result)
-    end
+      result = @plugin.update({}, agent)
+      assert_equal({}, result)
+      result = @plugin.update({:update_compositions => true}, agent)
+      assert_equal({}, result)
+      carbomerum = @app.registration('48624').sequence('02').active_agents.first
+      assert_equal("Carbomerum 980", carbomerum.substance.name)
+      assert_equal(true, carbomerum.is_active_agent)
+      assert_equal(nil, carbomerum.more_info)
+
+      cetrimidum = @app.registration('48624').sequence('02').active_agents.last
+      assert_equal("Cetrimidum", cetrimidum.substance.name)
+      assert_equal(false, cetrimidum.is_active_agent)
+      assert_equal("conserv.", cetrimidum.more_info)
+
+      composition = @app.registration('48624').sequence('02').compositions.first
+      assert_equal(1, @app.registration('48624').sequence('02').compositions.size)
+      assert_equal(nil, composition.label)
+      assert_equal("carbomerum 980 2 mg, conserv.: cetrimidum, excipiens ad gelatum pro 1 g.", composition.source)
+      assert_equal("Augengel: Carbomerum 980 2 mg, Cetrimidum 0 ", composition.to_s)
+    end if false
   end
 
   # Tests for using with xlsx files
+  class StubSequence < Sequence
+    attr_accessor :name_base, :name_descr, :atc_class, :pointer, :dose, :sequence_date,
+        :export_flag, :indication
+    def initialize(name_base, atc_class)
+      @name_base = name_base
+      @atc_class = atc_class
+      @compositions = []
+      @packages = []
+    end
+  end
+
   class SwissmedicPluginTestXLSX < Minitest::Test
     include FlexMock::TestCase
 
     def setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
-      dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
       @app = ODDB::App.new
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
@@ -1589,15 +1690,24 @@ if RUN_ALL
       FileUtils.cp(@current, @target, :verbose => true, :preserve => true)
       FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
 
+ # OddbPrevalence::registration(00278,sequence,01)
       newest  = @current.clone
       @adata = @older.clone
       assert_equal(0, @app.registrations.size)
       reg = @app.create_registration('00278')
       reg.pointer = Persistence::Pointer.new([:registration, '00278'])
-      seq = reg.create_sequence('01')
+      if false
+        seq = StubSequence.new('01', 'AB0')
+        seq.create_composition
+        seq.compositions.first.source = 'composition_text'
+        seq.compositions.first.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'],[:composition])
+      else
+        seq = reg.create_sequence('01')
+        seq.composition_text = 'composition_text'
+      end
+      seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
       seq.name_base = 'Colon Sérocytol, suppositoire'
       seq.name_descr = 'name_descr'
-      seq.composition_text = 'composition_text'
       seq.dose = nil
       seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
       seq.sequence_date = Date.new(2017,5,9)
@@ -1613,7 +1723,6 @@ if RUN_ALL
       seq.create_package('002')
 
       result = @plugin.update({:update_compositions => true}, agent)
-      pp @app.registration('00279').sequences.first
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
       assert_equal(5, @app.registrations.size)
@@ -1627,5 +1736,5 @@ if RUN_ALL
       assert_equal(7, @app.sequences.size)
       assert_equal(13, @app.packages.size)
     end
-  end if RUN_ALL
+  end if RUN_ALL or true
 end

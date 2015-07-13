@@ -89,10 +89,6 @@ module ODDB
 			(val.empty?) ? nil : val
 		end
 		def parent(app)
-          unless @pointer.parent
-            $stdout.puts "No pointer in #{self.class} #{self.oid}"
-            return nil
-          end
 			@pointer.parent.resolve(app)
 		end
 		def pointer_descr

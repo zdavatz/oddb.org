@@ -20,7 +20,8 @@ module ODDB
       super
     end
     def add_excipiens(substance)
-      raise "can only add a substance as excipiens" unless substance.is_a?(ODDB::Substance)
+      raise "can only add a substance as excipiens" unless substance.is_a?(ODDB::Substance) or
+          (substance.is_a?(ODDB::ActiveAgent) and not substance.is_active_agent)
       @excipiens = substance
     end
     def init(app)
@@ -28,6 +29,9 @@ module ODDB
     end
     def active_agent(substance_or_oid, spag=nil)
       @active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
+    end
+    def get_auxiliary_substance(substance_or_oid, spag=nil)
+      @active_agents.find { |active| active.same_as?(substance_or_oid, spag) and not active.is_active_agent}
     end
     def checkout
       self.galenic_form = nil
@@ -44,6 +48,8 @@ module ODDB
       composition = self
       active.sequence = @sequence
       @active_agents.push(active)
+      @active_agents.odba_isolated_store
+      self.odba_store
       active
     end
     def delete_active_agent(substance)
