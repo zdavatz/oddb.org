@@ -31,6 +31,7 @@ class ActiveAgents < HtmlGrid::List
   COMPONENTS = {
     [0,0] => :substance,
     [1,0] => :dose,
+    [2,0] => :more_info,
   }
   DEFAULT_CLASS = HtmlGrid::Value
   EMPTY_LIST = true
@@ -41,24 +42,38 @@ class ActiveAgents < HtmlGrid::List
   LEGACY_INTERFACE = false
   LABELS = false
   CSS_HEAD_MAP = {
-    [1,0] => 'right',
+    [1,0] => 'right ActiveAgents-Head',
   }
   CSS_MAP = {
-    [0,0] => 'list',
-    [1,0] => 'list right',
+    [0,0] => 'list ActiveAgents',
+    [1,0] => 'list right ActiveAgents',
   }
+  def initialize(model, session, container = nil, is_active_agent = true)
+    @is_active_agent = is_active_agent
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: initialize is_active_agent #{is_active_agent} model #{model.class} session #{session.class} container is #{container.class}"
+    is_active_agent ? components.store([0,0], :substance) : components.store([0,0], :auxilliary)
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: components #{components}"
+    super(model, session, container)
+  end
+  def th_substance
+    value = @is_active_agent ?  @session.lookandfeel.lookup(:th_substances) : @session.lookandfeel.lookup(:th_auxilliary)
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: th_substance #{@is_active_agent} value #{value}"
+    value
+  end
   def compose_footer(offset)
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: compose_footer @is_active_agent #{@is_active_agent} offset #{offset}"
+    return nil if @is_active_agent
     _compose_footer offset
   end
   def _compose_footer(offset)
     comp = if act = @model.first
              act.parent(@session.app)
-           end
+         end
     input = galenic_form(comp)
     label = HtmlGrid::SimpleLabel.new(:galenic_form, input, @session, self)
     @grid.add [label, nil, input], *offset
-    @grid.add_style 'list', *offset
-    @grid.add_style 'list right', offset[0] + 1, offset[1]
+    @grid.add_style 'list ActiveAgents', *offset
+    @grid.add_style 'list right ActiveAgents', offset[0] + 1, offset[1]
     offset[1] += 1
     offset
   end
@@ -66,6 +81,8 @@ class ActiveAgents < HtmlGrid::List
     model.dose.to_s if model
   end
   def galenic_form(model)
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: galenic_form #{@is_active_agent}"
+    return nil if @is_active_agent
     element = HtmlGrid::Value.new(:galenic_form, model, @session, self)
     element.label = true
     if model && gf = model.galenic_form
@@ -73,9 +90,21 @@ class ActiveAgents < HtmlGrid::List
     end
     element
   end
+  def auxilliary(model)
+    $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: auxilliary #{model.substance}"
+    if model && sub = model.substance
+      sub.send(@session.language)
+    end
+  end
   def substance(model)
     if model && sub = model.substance
       sub.send(@session.language)
+    end
+  end
+  def more_info(model)
+    if model && info = model.more_info
+      $stdout.puts "View::Admin::ActiveAgents #{__LINE__}: more_info #{model.inspect} is #{info}"
+      info
     end
   end
 end
@@ -173,12 +202,31 @@ class RootActiveAgents < ActiveAgents
   end
 end
 class CompositionList < HtmlGrid::DivList
-  COMPONENTS = { [0,0] => :composition }
+  COMPONENTS = {
+    [0,0] => :excipiens,
+    [1,0] => :composition,
+    }
   LABELS = false
   OFFSET_STEP = [1,0]
   OMIT_HEADER = true
+  def initialize(model, session, container = nil)
+    $stdout.puts "View::Admin::CompositionList #{__LINE__}: excipiens initialize model #{model.class} session #{session.class} container is #{container.class}"
+    super(model, session, container)
+  end
+  def excipiens(model)
+    excipiens = model.excipiens
+    $stdout.puts "View::Admin::CompositionList #{__LINE__}: sequence excipiens #{excipiens}"
+    if excipiens
+      span = HtmlGrid::Span.new(excipiens, @session, self)
+      span.css_class = 'italic excipiens'
+      span.value = 'dummy'
+      [span, excipiens]
+    else
+      'no excipiens'
+    end
+  end
   def composition(model)
-    agents = ActiveAgents.new(model.active_agents, @session, self)
+    agents = ActiveAgents.new(model.active_agents.find_all{ |x| x.is_active_agent}, @session, self)
     if @model.size > 1
       span = HtmlGrid::Span.new(model, @session, self)
       span.css_class = 'italic'

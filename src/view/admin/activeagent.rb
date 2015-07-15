@@ -79,19 +79,30 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
 	COMPONENTS = {
 		[0,0]	=>	:agent_name,
 		[0,1]	=>	View::Admin::ActiveAgentForm,
-		[0,2]	=>	:active_agents,
-		[0,3]	=>	'th_source',
-		[0,4]	=>	:source,
+    [0,2] =>  :active_agents,
+    [0,3] =>  'th_auxilliary',
+    [0,4] =>  :auxilliary_substances,
+    [0,5] =>  'th_source',
+		[0,6]	=>	:source,
 	}
 	CSS_MAP = {
-		[0,0]	=>	'th',
-		[0,3]	=>	'subheading',
+		[0,0]	=>	'th agent_name',
+    [0,3] =>  'subheading th_auxilliary',
+    [0,5] =>  'subheading th_source',
 	}
-	def active_agents(model, session=@session)
-		RootSequenceAgents.new(model.sequence.active_agents, @session, self)
-	end
+  def initialize(model, session, is_active_agent = true)
+    @is_active_agent = is_active_agent
+    $stdout.puts "RootActiveAgentComposite.init @is_active_agent #{@is_active_agent}"
+    super(model, session)
+  end
+  def active_agents(model, session=@session)
+    agents = model.sequence.active_agents.find_all{|x| x.is_active_agent == @is_active_agent}
+    $stdout.puts "RootActiveAgentComposite active_agents @is_active_agent #{@is_active_agent} #{model.sequence.active_agents.size} agents #{agents.size}"
+    RootSequenceAgents.new(agents, @session, self)
+  end
   def source(model, session=@session)
     val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.css_class = 'RootActiveAgentComposite-source'
     val.value = sequence_source(model.sequence) if model
     val
   end
@@ -99,6 +110,10 @@ end
 class ActiveAgent < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::ActiveAgentComposite
 	SNAPBACK_EVENT = :result
+  def initialize(agents, session, is_active_agent = true)
+    $stdout.puts "RootActiveAgentComposite.init is_active_agent #{is_active_agent}"
+    super(agents, session, is_active_agent)
+  end
 end
 class RootActiveAgent < View::Admin::ActiveAgent
 	CONTENT = View::Admin::RootActiveAgentComposite

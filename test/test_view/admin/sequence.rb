@@ -95,6 +95,7 @@ class TestRootActiveAgents <Minitest::Test
     end
     active_agent = flexmock('active_agent') do |m|
       m.should_receive(:dose)
+      m.should_receive(:more_info)
       m.should_receive(:substance)
       m.should_receive(:parent)
     end
@@ -165,11 +166,17 @@ class TestCompositionList <Minitest::Test
       s.should_receive(:state)
     end
     active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:more_info)
+      a.should_receive(:is_active_agent).and_return true
       a.should_receive(:substance)
       a.should_receive(:dose)
       a.should_receive(:parent)
     end
+    excipiens = flexmock('excipiens') do |a|
+      a.should_receive(:substancexx)
+    end
     @model = flexmock('model') do |m|
+      m.should_receive(:excipiens).and_return(excipiens)
       m.should_receive(:active_agents).and_return([active_agent])
     end
     model = [@model]
@@ -209,7 +216,11 @@ class TestRootCompositionList <Minitest::Test
       a.should_receive(:dose)
       a.should_receive(:parent)
     end
+    excipiens = flexmock('excipiens') do |a|
+      a.should_receive(:substancexx)
+    end
     @model = flexmock('model') do |m|
+      m.should_receive(:excipiens).and_return(excipiens)
       m.should_receive(:active_agents).and_return([active_agent])
       m.should_receive(:iksnr).and_return('iksnr')
       m.should_receive(:seqnr).and_return('seqnr')
@@ -314,10 +325,9 @@ class TestSequenceInnerComposite <Minitest::Test
   end
   def test_atc_descr
     atc_class = flexmock('atc_class', :description => nil)
-    flexmock(@model, :atc_class => atc_class) 
+    flexmock(@model, :atc_class => atc_class)
     assert_kind_of(NilClass, @composite.atc_descr(@model, @session))
-    skip("HtmlGrid::Text does not work, is the mocking wrong?")
-    assert_kind_of(HtmlGrid::Text, @composite.atc_descr(@model, @session))
+    skip("HtmlGrid::Text does not work, is the mocking wrong?") {assert_kind_of(HtmlGrid::Text, @composite.atc_descr(@model, @session)) }
   end
   def test_atc_request
     flexmock(@model, :atc_request_time => Time.now - 60*60*24*3 - 100)
@@ -504,10 +514,16 @@ class TestSequenceComposite <Minitest::Test
     end
     active_agent = flexmock('active_agent') do |a|
       a.should_receive(:substance).and_return(substance)
+      a.should_receive(:is_active_agent).and_return true
+      a.should_receive(:more_info)
       a.should_receive(:dose)
       a.should_receive(:parent)
     end
+    excipiens = flexmock('excipiens') do |a|
+      a.should_receive(:substancexx)
+    end
     composition = flexmock('composition') do |c|
+      c.should_receive(:excipiens).and_return(excipiens)
       c.should_receive(:active_agents).and_return([active_agent])
     end
     commercial_form = flexmock('commercial_form')
@@ -580,8 +596,12 @@ class TestRootSequenceForm <Minitest::Test
       a.should_receive(:substance)
       a.should_receive(:parent)
     end
+    excipiens = flexmock('excipiens') do |a|
+      a.should_receive(:substancexx)
+    end
     composition = flexmock('composition') do |c|
       c.should_receive(:active_agents).and_return([active_agent])
+      c.should_receive(:excipiens).and_return(excipiens)
     end
     division = flexmock('division',
                         :divisable => 'divisable',
@@ -651,8 +671,12 @@ class TestResellerSequenceComposite <Minitest::Test
       a.should_receive(:dose)
       a.should_receive(:parent)
     end
+    excipiens = flexmock('excipiens') do |a|
+      a.should_receive(:substancexx)
+    end
     composition = flexmock('composition') do |c|
       c.should_receive(:active_agents).and_return([active_agent])
+      c.should_receive(:excipiens).and_return(excipiens)
     end
     commercial_form = flexmock('commercial_form')
     pointer = flexmock('pointer', :to_csv => 'pointer')

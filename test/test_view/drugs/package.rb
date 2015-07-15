@@ -27,11 +27,26 @@ class TestCompositionList <Minitest::Test
   include FlexMock::TestCase
   def test_composition
     commercial_form = flexmock('commercial_form', :language => 'language')
-    composition  = flexmock('composition', :label => 'label')
     substance    = flexmock('substance', :language => 'language')
     galenic_form = flexmock('galenic_form', :language => 'language')
     parent       = flexmock('parent', :galenic_form => galenic_form)
-    active_agent = flexmock('active_agent', 
+    excipiens    = flexmock('excipiens',
+                            :more_info => 'more_info',
+                            :oid       => 'oid',
+                            :is_active_agent => false,
+                            :dose      => 'dose',
+                            :substance => substance,
+                            :parent    => parent
+                            )
+    composition      = flexmock('composition',
+                                :label     => 'label',
+                                :oid       => 'oid',
+                                :excipiens => excipiens,
+                                )
+    active_agent = flexmock('active_agent',
+                            :more_info => 'more_info',
+                            :oid       => 'oid',
+                            :is_active_agent => true,
                             :substance => substance,
                             :dose      => 'dose',
                             :parent    => parent
@@ -49,6 +64,7 @@ class TestCompositionList <Minitest::Test
                             :state       => state
                            )
     @model       = flexmock('model', 
+                            :oid             => 'oid',
                             :multi           => 'multi',
                             :count           => 'count',
                             :measure         => 'measure',
@@ -198,13 +214,29 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     galenic_form     = flexmock('galenic_form', :language => 'language')
     parent           = flexmock('parent', :galenic_form => galenic_form)
     @active_agent    = flexmock('active_agent', 
+                                :is_active_agent => true,
+                                :oid => 'oid',
+                                :more_info => 'more_info',
                                 :substance => substance,
                                 :dose      => 'dose',
                                 :parent    => parent
                                )
     @commercial_form = flexmock('commercial_form', :language => 'language')
-    composition      = flexmock('composition', :label => 'label')
-    part       = flexmock('part', 
+    excipiens    = flexmock('excipiens',
+                            :more_info => 'more_info',
+                            :oid       => 'oid',
+                            :is_active_agent => false,
+                            :dose      => 'dose',
+                            :substance => substance,
+                            :parent    => parent
+                            )
+    composition      = flexmock('composition',
+                                :label     => 'label',
+                                :oid       => 'oid',
+                                :excipiens => excipiens,
+                                )
+    part       = flexmock('part',
+                          :oid             => 'oid',
                           :multi           => 'multi',
                           :count           => 'count',
                           :measure         => 'measure',
@@ -214,6 +246,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                          )
     sequence   = flexmock('sequence', :division => 'division')
     @model     = flexmock('model', 
+                          :oid       => 'oid',
                           :name      => 'name',
                           :size      => 'size',
                           :narcotic? => nil,
@@ -275,7 +308,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_compositions
-    composition  = flexmock('composition', :active_agents => [@active_agent])
+    composition  = flexmock('composition', :active_agents => [@active_agent], :excipiens => 'excipiens')
     flexmock(@model, :compositions => [composition])
     assert_kind_of(ODDB::View::Admin::Compositions, @composite.compositions(@model, @session))
   end
@@ -335,16 +368,28 @@ class TestPackage <Minitest::Test
                          :get_cookie_input => 'get_cookie_input',
                          )
     commercial_form = flexmock('commercial_form', :language => 'language')
-    composition = flexmock('composition', :label => 'label')
     substance = flexmock('substance', :language => 'language')
     galenic_form = flexmock('galenic_form', :language => 'language')
     parent = flexmock('parent', :galenic_form => galenic_form)
+    excipiens    = flexmock('excipiens',
+                            :more_info => 'more_info',
+                            :oid       => 'oid',
+                            :is_active_agent => false,
+                            :dose      => 'dose',
+                            :substance => substance,
+                            :parent    => parent
+                            )
+    composition = flexmock('composition', :label => 'label', :oid => 'oid', :excipiens => excipiens)
     active_agent = flexmock('active_agent', 
+                            :more_info => 'more_info',
+                            :oid => 'oid',
+                            :is_active_agent => true,
                             :substance => substance,
                             :dose      => 'dose',
                             :parent    => parent
                            )
     part      = flexmock('part', 
+                         :oid     => 'oid',
                          :multi   => 'multi',
                          :count   => 'count',
                          :measure => 'measure',

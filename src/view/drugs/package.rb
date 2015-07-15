@@ -16,19 +16,49 @@ module ODDB
 		module Drugs
 class CompositionList < HtmlGrid::DivList
   include PartSize
-  COMPONENTS = { [0,0] => :composition }
+  COMPONENTS = {
+    [0,0] => :composition,
+    [1,0] => :auxilliary,
+    [2,0] => :excipiens,
+  }
   LABELS = false
-  OFFSET_STEP = [1,0]
+  OFFSET_STEP = [1,0] # default is    OFFSET_STEP = [0,1]
   OMIT_HEADER = true
+  def initialize(model, session, container = nil)
+    $stdout.puts "Drugs::CompositionList #{__LINE__}: with #{model.class} caller #{caller[0..10].join("\n")}"
+    $stdout.puts "Drugs::CompositionList #{__LINE__}: components #{components}"
+    super(model, session)
+  end
+  def excipiens(model)
+    $stdout.puts "Drugs::CompositionList #{__LINE__}: composition #{model.class}: oid #{model.oid}"
+    if (comp = model.composition)
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.css_class = 'list CompositionList excipiens'
+      div.value = comp.excipiens.to_s
+      $stdout.puts  "Drugs::CompositionList #{__LINE__}: comp.excipiens #{comp.excipiens} value #{div.value}"
+      [ div ]
+    end
+  end
   def composition(model)
     div = HtmlGrid::Div.new(model, @session, self)
-    div.css_class = 'galenic-form'
+    div.css_class = 'galenic-form CompositionList composition'
+    all_agents = model.active_agents
+    agents = all_agents.find_all{|x| x.is_active_agent}
+    $stdout.puts "Drugs::CompositionList #{__LINE__}: composition #{model.class}: Have #{all_agents.size}  => #{all_agents.collect{ |x| [x.oid, x.is_active_agent]}}} agents. Displaying #{agents.size} => #{agents.collect{ |x| x.oid}}"
     size = part_size(model)
     if (comp = model.composition) && (label = comp.label)
       size = "#{label}) #{size}"
     end
     div.value = size
-    [ div, View::Admin::ActiveAgents.new(model.active_agents, @session, self)]
+    [ div, View::Admin::ActiveAgents.new(agents, @session, self, true)]
+  end
+  def auxilliary(model)
+    div = HtmlGrid::Div.new(model, @session, self)
+    div.css_class = 'galenic-form CompositionList auxilliary'
+    all_agents = model.active_agents
+    agents = all_agents.find_all{|x| x.is_active_agent == false}
+    $stdout.puts "Drugs::CompositionList #{__LINE__}: auxilliary: Have #{all_agents.size}  => #{all_agents.collect{ |x| [x.oid, x.is_active_agent]}}} agents. Displaying #{agents.size} => #{agents.collect{ |x| x.oid}}"
+    [ div, View::Admin::ActiveAgents.new(agents, @session, self, false)]
   end
 end
 class Parts < View::Admin::Compositions
