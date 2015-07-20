@@ -212,8 +212,6 @@ class CompositionList < HtmlGrid::DivList
       span.css_class = 'italic'
       span.value = 'dummy'
       [span, excipiens]
-    else
-      'no excipiens'
     end
   end
   def composition(model)
