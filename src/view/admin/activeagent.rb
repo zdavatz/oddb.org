@@ -92,17 +92,14 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
 	}
   def initialize(model, session, is_active_agent = true)
     @is_active_agent = is_active_agent
-    $stdout.puts "RootActiveAgentComposite.init @is_active_agent #{@is_active_agent}"
     super(model, session)
   end
   def active_agents(model, session=@session)
     agents = model.sequence.active_agents.find_all{|x| x.is_active_agent == @is_active_agent}
-    $stdout.puts "RootActiveAgentComposite active_agents @is_active_agent #{@is_active_agent} #{model.sequence.active_agents.size} agents #{agents.size}"
     RootSequenceAgents.new(agents, @session, self)
   end
   def source(model, session=@session)
     val = HtmlGrid::Value.new(:source, model, @session, self)
-    val.css_class = 'RootActiveAgentComposite-source'
     val.value = sequence_source(model.sequence) if model
     val
   end
@@ -111,7 +108,6 @@ class ActiveAgent < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::ActiveAgentComposite
 	SNAPBACK_EVENT = :result
   def initialize(agents, session, is_active_agent = true)
-    $stdout.puts "RootActiveAgentComposite.init is_active_agent #{is_active_agent}"
     super(agents, session, is_active_agent)
   end
 end

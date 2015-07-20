@@ -25,26 +25,21 @@ class CompositionList < HtmlGrid::DivList
   OFFSET_STEP = [1,0] # default is    OFFSET_STEP = [0,1]
   OMIT_HEADER = true
   def initialize(model, session, container = nil)
-    $stdout.puts "Drugs::CompositionList #{__LINE__}: with #{model.class} caller #{caller[0..10].join("\n")}"
-    $stdout.puts "Drugs::CompositionList #{__LINE__}: components #{components}"
     super(model, session)
   end
   def excipiens(model)
-    $stdout.puts "Drugs::CompositionList #{__LINE__}: composition #{model.class}: oid #{model.oid}"
     if (comp = model.composition)
       div = HtmlGrid::Div.new(model, @session, self)
-      div.css_class = 'list CompositionList excipiens'
+      div.css_class = 'list'
       div.value = comp.excipiens.to_s
-      $stdout.puts  "Drugs::CompositionList #{__LINE__}: comp.excipiens #{comp.excipiens} value #{div.value}"
       [ div ]
     end
   end
   def composition(model)
     div = HtmlGrid::Div.new(model, @session, self)
-    div.css_class = 'galenic-form CompositionList composition'
+    div.css_class = 'galenic-form'
     all_agents = model.active_agents
     agents = all_agents.find_all{|x| x.is_active_agent}
-    $stdout.puts "Drugs::CompositionList #{__LINE__}: composition #{model.class}: Have #{all_agents.size}  => #{all_agents.collect{ |x| [x.oid, x.is_active_agent]}}} agents. Displaying #{agents.size} => #{agents.collect{ |x| x.oid}}"
     size = part_size(model)
     if (comp = model.composition) && (label = comp.label)
       size = "#{label}) #{size}"
@@ -54,10 +49,9 @@ class CompositionList < HtmlGrid::DivList
   end
   def auxilliary(model)
     div = HtmlGrid::Div.new(model, @session, self)
-    div.css_class = 'galenic-form CompositionList auxilliary'
+    div.css_class = 'galenic-form'
     all_agents = model.active_agents
     agents = all_agents.find_all{|x| x.is_active_agent == false}
-    $stdout.puts "Drugs::CompositionList #{__LINE__}: auxilliary: Have #{all_agents.size}  => #{all_agents.collect{ |x| [x.oid, x.is_active_agent]}}} agents. Displaying #{agents.size} => #{agents.collect{ |x| x.oid}}"
     [ div, View::Admin::ActiveAgents.new(agents, @session, self, false)]
   end
 end
