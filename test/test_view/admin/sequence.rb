@@ -49,19 +49,9 @@ class TestActiveAgent <Minitest::Test
     offset = [0,0]
     assert_equal([0,1], @agents._compose_footer(offset))
   end
-  def test_compose_footer
-    offset = [0,0]
-    assert_equal([0,1], @agents.compose_footer(offset))
-  end
   def test_dose
     model = flexmock('model', :dose => 'dose')
     assert_equal('dose', @agents.dose(model))
-  end
-  def test_galenic_form
-    flexmock(@session, :language => 'language')
-    galenic_form = flexmock('galenic_form', :language => 'language')
-    model = flexmock('model', :galenic_form => galenic_form)
-    assert_kind_of(HtmlGrid::Value, @agents.galenic_form(model))
   end
   def test_substance
     flexmock(@session, :language => 'language')
@@ -235,13 +225,15 @@ class TestRootCompositionList <Minitest::Test
   def test_compose
     result = @agents.compose
     assert_equal(4, result.size)
-    assert_equal(1, result[0].size)
+    assert_equal(2, result[0].size)
     assert_equal(1, result[1].size)
-    assert_equal(1, result[2].size)
+    assert_equal(2, result[2].size)
     assert_equal(1, result[3].size)
-    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[0][0])
+    assert_kind_of(HtmlGrid::Span, result[0][0][0])
+    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[0][1])
     assert_kind_of(HtmlGrid::Link, result[1][0])
-    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[2][0])
+    assert_kind_of(HtmlGrid::Span, result[2][0][0])
+    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[2][1])
     assert_kind_of(HtmlGrid::Link, result[3][0])
   end
 end

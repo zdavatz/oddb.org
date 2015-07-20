@@ -26,7 +26,7 @@ class TestActiveAgentInnerComposite <Minitest::Test
                           :error       => 'error'
                          )
     substance  = flexmock('substance', :language => 'language')
-    @model     = flexmock('model', :substance => substance)
+    @model     = flexmock('model', :substance => substance, :dose => 'dose')
     @composite = ODDB::View::Admin::ActiveAgentInnerComposite.new(@model, @session)
   end
   def test_substance
@@ -74,7 +74,8 @@ class TestActiveAgentComposite <Minitest::Test
     @model     = flexmock('model', 
                           :parent        => parent,
                           :pointer_descr => 'pointer_descr',
-                          :substance     => substance
+                          :substance     => substance,
+                          :dose          => 'dose',
                          )
     @composite = ODDB::View::Admin::ActiveAgentComposite.new(@model, @session)
   end

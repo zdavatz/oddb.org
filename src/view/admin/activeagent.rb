@@ -25,9 +25,12 @@ class ActiveAgentInnerComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value	
 	LABELS = true
-	def substance(model, session)
-		model.substance.send(@lookandfeel.language)
-	end
+  def substance(model, session)
+    model.substance.send(@lookandfeel.language)
+  end
+  def dose(model, session)
+    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model
+  end
 end
 class ActiveAgentForm < View::Form
 	include HtmlGrid::ErrorMessage
@@ -59,6 +62,9 @@ class ActiveAgentForm < View::Form
 			post_event_button(:new_active_agent)
 		end
 	end
+  def dose(model, session)
+    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model
+  end
 end
 class ActiveAgentComposite < HtmlGrid::Composite
 	COMPONENTS = {

@@ -74,7 +74,7 @@ class ActiveAgents < HtmlGrid::List
     offset
   end
   def dose(model)
-    model.dose.to_s if model
+    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model
   end
   def galenic_form(model)
     return nil if @is_active_agent
