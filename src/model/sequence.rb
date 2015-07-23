@@ -366,12 +366,12 @@ module ODDB
 					values[key] = value.resolve(app)
 				else
 					case(key)
-					when :atc_class
-						values[key] = if(atc = app.atc_class(value))
-							atc
-						else
-							@atc_class
-						end
+          when :atc_class
+            values[key] = if(atc = app.atc_class(value))
+              atc
+            else
+              @atc_class
+            end
 					when :dose
 						values[key] = if(value.is_a? Dose)
 							value

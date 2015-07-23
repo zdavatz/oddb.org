@@ -23,11 +23,16 @@ require 'util/util'
 require 'util/oddbconfig'
 require 'stub/oddbapp'
 
+begin
+  require 'pry';
+rescue LoadError
+end
+
 class FlexMock::TestUnitFrameworkAdapter
     attr_accessor :assertions
 end
 
-RUN_ALL = true
+RUN_ALL = false
 module ODDB
    class SwissmedicPluginTest < Minitest::Test
     include FlexMock::TestCase
@@ -40,6 +45,8 @@ module ODDB
     ROW_AXOTIDE = 19
     IKSNR_WELEDA = "09232"
     EXPIRATION_DATE_ASPIRIN = Date.new(2017,5,9)
+    COMPOSITION_LABEL = 'aCompLabel'
+
     def setup_app(app = flexmock('app'))
       @app = app
       @archive = File.expand_path('../var', File.dirname(__FILE__))
@@ -85,6 +92,8 @@ module ODDB
 
     def setup_simple_seq(iksnr = '12345', seqnr='01')
       @ptr = Persistence::Pointer.new([:registration, iksnr], [:sequence, seqnr])
+      @composition = Composition.new
+      @composition.label = COMPOSITION_LABEL
       seq = flexmock 'sequence'
       seq.should_receive(:pointer).and_return @ptr
       seq.should_receive(:seqnr).and_return seqnr
@@ -94,6 +103,7 @@ module ODDB
       seq.should_receive(:composition_text=)
       seq.should_receive(:composition_text).and_return "composition_text #{iksnr} #{seqnr}"
       seq.should_receive(:delete_composition)
+      seq.should_receive(:create_composition).and_return(@composition)
       seq
     end
 
@@ -846,6 +856,7 @@ if RUN_ALL
       parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
       result = @plugin.update_compositions(seq, row, {}, composition_text, parsed_comps)
       assert_equal([comp, comp, comp, comp, comp], result)
+      # assert_equal("[aCompLabel, aCompLabel, aCompLabel, aCompLabel, aCompLabel]", result.to_s)
     end
 
     def test_update_composition__focus_on_doses_qty_in_scale
@@ -858,7 +869,7 @@ if RUN_ALL
       seq.should_receive(:pointer).and_return ptr
       seq.should_receive(:oid).and_return 'oid'
       seq.should_receive(:iksnr).and_return 'iksnr'
-      seq.should_receive(:seqnr).and_return 'seqnr'
+      seq.should_receive(:seqnr).and_return 1
       seq.should_receive(:active_agents).and_return []
       seq.should_receive(:composition_text).and_return composition_text
       seq.should_receive(:compositions).and_return []
@@ -880,6 +891,7 @@ if RUN_ALL
       comp.should_receive(:substances).and_return []
       cptr = ptr + [:composition, 'id']
       comp.should_receive(:pointer).and_return(cptr)
+      seq.should_receive(:create_composition).and_return []
       @app.should_receive(:create).with(ptr + :composition).and_return comp
       args = {
         :label  => nil,
@@ -1167,16 +1179,17 @@ if RUN_ALL
       reg.should_receive(:package).and_return pac
       @app.should_receive(:registration).and_return reg
       result = @plugin.diff(@current, @older)
-      assert_equal 9, result.news.size
+      assert_equal 10, result.news.size
       assert_equal "Viscotears Tropfgel, Augengel", result.news.first[2].value
       assert_equal 2, result.updates.size
       assert_equal "Colon Sérocytol, suppositoire", result.updates.first[2].value
-      assert_equal 5, result.changes.size
+      assert_equal 6, result.changes.size
       expected = {
         "00278"=>[:company, :atc_class],
         "48624"=>[:new],
         "62069"=>[:new],
         "16105"=>[:new],
+        "00488"=>[:new],
         "00279"=>[:delete]
       }
       assert_equal(expected, result.changes)
@@ -1201,6 +1214,7 @@ if RUN_ALL
       result = @plugin.diff(@current, @older)
       @plugin.to_s
       assert_equal <<-EOS.strip, @plugin.to_s
++ 00488: Hepatect CP, Infusionslösung
 + 16105: Hirudoid, Creme
 + 48624: Viscotears Tropfgel, Augengel
 + 62069: Levetiracetam Desitin 250 mg, Minipacks mit Mini-Filmtabletten
@@ -1210,6 +1224,7 @@ if RUN_ALL
       assert_equal <<-EOS.strip, @plugin.to_s(:name)
 > 00278: Colon Sérocytol, suppositoire; Zulassungsinhaber (Sérolab AG), ATC-Code (J06A)
 - 00279: Conjonctif Sérocytol, suppositoire
++ 00488: Hepatect CP, Infusionslösung
 + 16105: Hirudoid, Creme
 + 62069: Levetiracetam Desitin 250 mg, Minipacks mit Mini-Filmtabletten
 + 48624: Viscotears Tropfgel, Augengel
@@ -1217,6 +1232,7 @@ if RUN_ALL
       assert_equal <<-EOS.strip, @plugin.to_s(:registration)
 > 00278: Colon Sérocytol, suppositoire; Zulassungsinhaber (Sérolab AG), ATC-Code (J06A)
 - 00279: Conjonctif Sérocytol, suppositoire
++ 00488: Hepatect CP, Infusionslösung
 + 16105: Hirudoid, Creme
 + 48624: Viscotears Tropfgel, Augengel
 + 62069: Levetiracetam Desitin 250 mg, Minipacks mit Mini-Filmtabletten
@@ -1626,8 +1642,8 @@ if RUN_ALL
       assert_equal(nil, composition.label)
       assert_equal("carbomerum 980 2 mg, conserv.: cetrimidum, excipiens ad gelatum pro 1 g.", composition.source)
       assert_equal("Augengel: Carbomerum 980 2 mg, Cetrimidum 0 ", composition.to_s)
-    end if false
-  end
+    end
+  end if RUN_ALL
 
   # Tests for using with xlsx files
   class StubSequence < Sequence
@@ -1647,7 +1663,7 @@ if RUN_ALL
     def setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
-      @app = ODDB::App.new
+      @app = flexmock(ODDB::App.new)
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
@@ -1722,24 +1738,27 @@ if RUN_ALL
       seq.create_package('001')
       seq.create_package('002')
 
+      reg = @app.create_registration('00288')
+      seq = reg.create_sequence('02')
+      seq.create_package('001')
+      @app.should_receive(:delete).at_least.times(5)
+
       result = @plugin.update({:update_compositions => true}, agent)
+      assert_equal(3, @app.registrations.size)
+      assert_equal(3, @app.sequences.size)
+      assert_equal(5, @app.packages.size)
+      assert_equal(true, result)
+
+      result_second_run = @plugin.update({}, agent)
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
-      if true # skipping an error
-        assert_equal(2, @app.registrations.size)
-        puts "Don't know howto avoid error Could not create: :!00278,sequence,01!composition. "
-      else
-        assert_equal(5, @app.registrations.size)
-        assert_equal(7, @app.sequences.size)
-        assert_equal(13, @app.packages.size)
-        assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00279"=>[:delete]}, result)
+      assert_equal(7, @app.registrations.size)
+      assert_equal(9, @app.sequences.size)
+      assert_equal(15, @app.packages.size)
+      assert_equal(6, result_second_run.changes.size)
+      assert(result_second_run)
+      assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00488"=>[:new], "00279"=>[:delete]}, result_second_run.changes)
 
-        result_second_run = @plugin.update({}, agent)
-        assert_equal({}, result_second_run)
-        assert_equal(5, @app.registrations.size)
-        assert_equal(7, @app.sequences.size)
-        assert_equal(13, @app.packages.size)
-      end
     end
-  end if RUN_ALL
+  end
 end

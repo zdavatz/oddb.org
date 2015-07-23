@@ -34,9 +34,6 @@ module ODDB
       @substance.more_info = tstLabel
       assert_equal(tstLabel, @substance.more_info)
     end
-    def test_is_active_agent_true
-      assert_equal(false, @substance.is_active_agent)
-    end
     def test_add_chemical_form
       form1 = flexmock 'chemical form'
       @substance.add_chemical_form form1

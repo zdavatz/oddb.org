@@ -54,6 +54,7 @@ public
       @known_export_sequences = 0
       @checked_compositions = []
       @deleted_compositions = []
+      @new_compositions = {}
       @updated_agents = {}
       @new_agents = {}
       @export_registrations = {}
@@ -68,7 +69,7 @@ public
 
     # traces many details of changes. Use it for debugging purposes
     def trace_msg(msg)
-      debug_msg(msg) if false
+      $stdout.puts Time.now.to_s + ': ' + msg if false
     end
 
     def debug_msg(msg)
@@ -103,7 +104,7 @@ public
 
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       init_stats
-      @update_comps = true if opts and opts[:update_compositions]
+      @update_comps = (opts and opts[:update_compositions])
       msg = "#{__FILE__}:#{__LINE__} opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
@@ -132,14 +133,15 @@ public
             next if last_checked == to_be_checked
             last_checked = to_be_checked
             to_consider = mustcheck(iksnr, opts)
-            next unless to_consider
+            # next if not iksnr == 488 and not iksnr == 46489
+            # next unless to_consider
             # debug_msg"#{__FILE__}:#{__LINE__} update #{row_nr} iksnr #{iksnr} seqnr #{seqnr} #{to_consider}"
             already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
             reg = @app.registration("%05i" %iksnr)
             seq = reg.sequence("%02i" %seqnr) if reg
             update_all_sequence_info(row, reg, seq) if reg and seq
             GC.enable unless already_disabled
-            # debug_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr}"
+            trace_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
           end
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
@@ -193,7 +195,7 @@ public
         debug_msg "#{__FILE__}:#{__LINE__} update return false as target is #{target.inspect}"
         false
       end
-      debug_msg(msg = "#{__FILE__}:#{__LINE__} done. @update_comps was #{@update_comps} with #{@diff ? @diff.changes.size + ' changes ' : 'no change information'}")
+      debug_msg(msg = "#{__FILE__}:#{__LINE__} done. @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}")
       @update_comps ? true : @diff
     end
     # check diff from overwritten stored-objects by admin
@@ -484,6 +486,7 @@ public
       if @update_comps
         lines += [
                   "Checked compositions: #{@checked_compositions.size}",
+                  "New compositions: #{@new_compositions.size}",
                   "Deleted compositions: #{@deleted_compositions.size}",
                   "Updated agents: #{@updated_agents.size}",
                   "New agents: #{@new_agents.size}",
@@ -491,6 +494,8 @@ public
                   @deleted_compositions.join("\n"),
                   "\n\nUpdated agents were",
                   @updated_agents.keys.to_a.join("\n"),
+                  "\n\nNew compositions were",
+                  @new_compositions.keys.to_a.join("\n"),
                   "\n\nNew agents were",
                   @new_agents.keys.to_a.join("\n"),
                  ]
@@ -506,6 +511,10 @@ public
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
         "Skipped Packages: #{@skipped_packages.length}",
+        "Deleted compositions: #{@deleted_compositions.join("\n")}",
+        "Updated agents: #{@updated_agents.keys.to_a.join("\n")}",
+        "Updated compositions: #{@new_compositions.keys.to_a.join("\n")}",
+        "New agents: #{@new_agents.keys.to_.join("\n")}",
         "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
@@ -590,11 +599,11 @@ public
     # updateds the agent (aka substance) and the component in the database
     # returns ODBA objects [component, agent]
     def update_active_agent(seq, component_in_db, substance)
-      # debug_msg("#{__FILE__}:#{__LINE__} update_active_agent #{seq.iksnr}/#{seq.seqnr} #{seq.pointer} component_in_db.oid #{component_in_db.oid} label #{component_in_db.label.inspect} substance.name #{substance.name}")
       from = 'unknown'
       args = {}
       agent = nil
       update_substance(substance.name)
+
       ptr = if (agent = component_in_db.active_agent(substance.name))
         from = 'active_agent'
         agent.pointer
@@ -633,7 +642,7 @@ public
     def remove_active_agents_that_are_nil(composition)
                           iksnr = composition.sequence.iksnr
                           seqnr = composition.sequence.seqnr
-       oids2remove = composition.active_agents.find_all { |x| x.substance == nil}
+       oids2remove = composition.active_agents.find_all { |x| x.substance == nil} if composition.active_agents
        # debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} oid #{composition.oid} oids2remove #{oids2remove}")
        oids2remove.each{ |substance|
                         debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} #{composition.active_agents.size} active_agents. substance.oid #{substance.oid} substance.pointer #{substance.pointer}")
@@ -657,6 +666,13 @@ public
       end
     end
 
+    def create_composition_in_sequence(sequence)
+      sequence.fix_pointers # needed for make unit tests pass. Should not do any harm on the real database
+      component_in_db = @app.create(sequence.pointer + :composition)
+      debug_msg("#{__FILE__}:#{__LINE__} create_composition_in_sequence component_in_db.pointer #{component_in_db.pointer.inspect} size #{sequence.compositions.size}")
+      component_in_db
+    end
+
     def update_compositions(sequence, row, opts={:create_only => false}, composition_text, parsed_comps)
       comps = []
       if !@update_comps && opts[:create_only] && !sequence.active_agents.empty?
@@ -665,8 +681,18 @@ public
       elsif(namestr = cell(row, @target_keys.index(:substances)))
         res = []
         iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-        seqnr = sequence.seqnr
-        trace_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{sequence.seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
+        seqnr ="%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        if (sequence.seqnr != seqnr)
+          debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.seqnr.inspect} and #{seqnr.inspect}")
+          # require 'pry'; binding.pry
+          return
+        end
+        if (sequence.iksnr != iksnr)
+          debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.iksnr.inspect} and #{iksnr.inspect}")
+          # require 'pry'; binding.pry
+          return
+        end
+        trace_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
         names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
         substances = names.collect { |name| update_substance(name) }
         unless composition_text
@@ -692,40 +718,66 @@ public
             @deleted_compositions << msg
             sequence.delete_composition(comp.oid)
             sequence.odba_store
-            @app.delete comp.pointer
+            @app.delete comp.pointer if comp and comp.pointer
           end
         end
 
         # now update the sequence with all the parsed components
         parsed_comps.each_with_index do |parsed_comp, comp_idx|
           agents = []
+          msg = "iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx}"
+          debug_msg("#{__FILE__}:#{__LINE__} update_compositions #{msg} parsed_comp #{parsed_comp}")
+          @checked_compositions << msg
           component_in_db = nil
           parsed_comp.substances.each_with_index { |substance, parsed_idx|
-            sequence.compositions.each{|value| component_in_db = value if (value and value.source.eql?(parsed_comp.source)) }
-            unless component_in_db
-              component_in_db = @app.create(sequence.pointer + :composition)
-              # we do not use sequence.create_composition as it does not create a pointer to save into the database!
+            components_in_db = sequence.compositions.find_all{|value| component_in_db = value if (value and value.source.eql?(parsed_comp.source)) }
+            if components_in_db.size == 0
+              component_in_db = create_composition_in_sequence(sequence)
+              debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} created composition #{component_in_db.oid} source #{parsed_comp.source[0..50]}")
+            elsif components_in_db.size == 1 # normal case
+              component_in_db = components_in_db.first
+              debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} using #{component_in_db.oid} source #{parsed_comp.source[0..50]}")
+            else
+              component_in_db = components_in_db.first
+              components_in_db[2..-1].each{ |composition|
+                debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} deleting #{composition.oid} source #{parsed_comp.source[0..50]}")
+                sequence.compositions.delete composition
+                sequence.compositions.odba_store
+              }
             end
-            trace_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} component_in_db #{component_in_db.inspect} label #{parsed_comp.label.inspect}")
             next if defined?(MiniTest) and not component_in_db # for unknown reasons we we cannot create the pointer when running under MiniTest
-            @app.update(component_in_db.pointer, {
-                                                  :source => parsed_comp.source,
-                                                  :label => parsed_comp.label,
-                                                 },
-                        :swissmedic)
+            args = {
+                    :source => parsed_comp.source,
+                    :label => parsed_comp.label,
+                    :corresp => parsed_comp.corresp,
+                    }
+            @app.update(component_in_db.pointer, args, :swissmedic)
             updated_comp, updated_agent = update_active_agent(sequence, component_in_db, substance)
             agents.push updated_agent
             comps.push updated_comp
+            @new_compositions[ "#{iksnr}/#{seqnr} #{comp_idx}" ] = args
+            component_in_db.odba_store
+            sequence.odba_store
           }
-          unless (component_in_db == nil || (parsed_comps.size == 1 && component_in_db.substances.empty?))
+          if (component_in_db == nil)
+            component_in_db = create_composition_in_sequence(sequence)
+            args = {
+                    :source => parsed_comp.source,
+                    :label => parsed_comp.label,
+                    :corresp => parsed_comp.corresp,
+                    }
+            @app.update(component_in_db.pointer, args,:swissmedic)
+            @new_compositions[ "#{iksnr}/#{seqnr} #{comp_idx}" ] = args
+            component_in_db.odba_store
+            sequence.odba_store
+          elsif not (parsed_comps.size == 1 && component_in_db.substances.empty?)
             component_in_db.active_agents.dup.each_with_index { |act, atc_idx|
-              @checked_compositions << "iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx} act #{atc_idx} #{act}"
               unless agents.include?(act.odba_instance)
                 trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 component_in_db.delete_active_agent(act.substance)
               end if act and act.substance
             }
-            trace_msg("#{__FILE__}:#{__LINE__} update_compositions iksnr #{iksnr} seqnr #{seqnr} #{component_in_db.class} #{component_in_db.active_agents.size} active_agents replace by #{agents.size} agents #{component_in_db.active_agents.first.class} #{component_in_db.active_agents} by #{agents.first.class} #{agents}")
+            trace_msg("#{__FILE__}:#{__LINE__} update_compositions iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx} #{component_in_db.class} #{component_in_db.active_agents.size} active_agents replace by #{agents.size} agents #{component_in_db.active_agents.first.class} #{component_in_db.active_agents} by #{agents.first.class} #{agents}")
             component_in_db.active_agents.replace agents.compact
             component_in_db.odba_store
             sequence.odba_store
@@ -810,6 +862,18 @@ public
     end
     def update_package(reg, seq, row, replacements={},
                        opts={:create_only => false})
+      iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
+      seqnr ="%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+      if (seq.seqnr != seqnr)
+        debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{seq.seqnr.inspect}/#{seqnr.inspect}")
+        # require 'pry'; binding.pry
+        return
+      end
+      if (seq.iksnr != iksnr || reg.iksnr != iksnr)
+        debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{reg.iksnr.inspect}/#{seq.iksnr.inspect}#{iksnr.inspect}")
+        # require 'pry'; binding.pry
+        return
+      end
       ikscd = sprintf('%03i', cell(row, @target_keys.index(:ikscd)).to_i)
       unless seq.pointer
         debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[@target_keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer"
@@ -876,7 +940,7 @@ public
         expiration = date_cell(row, @target_keys.index(:expiry_date))
         if expiration.nil?
           @skipped_packages << row
-          return
+          return nil
         end
         reg_date = date_cell(row, @target_keys.index(:registration_date))
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
@@ -916,10 +980,12 @@ public
 
         trace_msg "#{__FILE__}:#{__LINE__} update_package #{iksnr} args  #{args}"
         @app.update ptr, args, :swissmedic
+        @app.registration(iksnr)
       end
     rescue SystemStackError => err
       puts "Stack-Error when importing: #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
+      nil
     end
     def update_excipiens_in_composition(seq, parsed_compositions)
       unless seq.is_a?(ODDB::Sequence)
@@ -938,14 +1004,17 @@ public
           if parsed_composition and parsed_composition.excipiens
             excipiens = ActiveAgent.new(parsed_composition.excipiens.name, false)
             substance = update_substance(parsed_composition.excipiens.name)
+            debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} substance #{substance.class} for #{parsed_composition.excipiens.name}")
+            # require 'pry'; binding.pry if substance and not substance.is_a?(ODDB::Substance)
             excipiens.substance = substance
             if parsed_composition.excipiens.qty or parsed_composition.excipiens.unit
               excipiens.dose = Dose.new(parsed_composition.excipiens.qty, parsed_composition.excipiens.unit)
             end
             excipiens.more_info = parsed_composition.excipiens.more_info
-            trace_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} update_excipiens_in_composition idx #{idx}: excipiens #{excipiens}")
-            excipiens.sequence = seq
             db_composition.add_excipiens(excipiens)
+            debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} update_excipiens_in_composition idx #{idx}: excipiens #{excipiens.inspect} from #{parsed_composition.excipiens}")
+            # args = {:excipiens => excipiens }
+            # res = @app.update db_composition, args, :swissmedic
             db_composition.odba_store
             seq.odba_store
           end
@@ -958,7 +1027,7 @@ public
       comps = update_compositions(seq, row, opts, composition_text, parsed_comps)
       comps.each_with_index do |comp, idx|
         update_galenic_form(seq, comp, opts)
-      end
+      end if comps
       update_package(reg, seq, row, replacements, opts) if replacements
       update_excipiens_in_composition(seq, parsed_comps)
     end

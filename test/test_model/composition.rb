@@ -15,7 +15,6 @@ module ODDB
   class TestComposition <Minitest::Test
     include FlexMock::TestCase
     def setup
-      flexmock(ODBA.cache, :next_id => 123)
       @composition = ODDB::Composition.new
       @tst_name = 'substance_name'
     end
@@ -153,5 +152,29 @@ module ODDB
       assert_equal(nil, active.more_info)
     end
 
+    def test_composition_corresp
+      tst = 'corresp_tst'
+      assert_equal('', @composition.to_s)
+      @composition.corresp = tst
+      assert_equal(tst, @composition.corresp)
+      assert_equal('', @composition.to_s)
+    end
+
+    def test_composition_label
+      tst = 'label_tst'
+      assert_equal('', @composition.to_s)
+      @composition.label = tst
+      assert_equal(tst, @composition.to_s)
+    end
+
+    def test_composition_label_corresp
+      tst_label = 'label_tst'
+      tst_corresp =  'corresp'
+      @composition.corresp = tst_corresp
+      assert_equal(tst_corresp, @composition.corresp)
+      @composition.label = tst_label
+      assert_equal(tst_label, @composition.label)
+      assert_equal(tst_label, @composition.to_s)
+    end
   end
 end

@@ -11,7 +11,7 @@ module ODDB
   class Composition
     include Persistence
     include Comparable
-    attr_accessor :sequence, :source, :label
+    attr_accessor :sequence, :source, :label, :corresp
     attr_reader :galenic_form, :active_agents, :excipiens
     def initialize
       @excipiens = nil
@@ -26,6 +26,12 @@ module ODDB
     end
     def init(app)
       @pointer.append(@oid)
+    end
+    # fix_pointers is needed to enable calling @app.create(sequence.pointer + :composition) in
+    # plugin/swissmedic.rb when running UnitTests
+    def fix_pointers
+      @pointer = @sequence.pointer + [:composition, @oid]
+      odba_store
     end
     def active_agent(substance_or_oid, spag=nil)
       @active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
@@ -83,7 +89,7 @@ module ODDB
       if @galenic_form
         str = "%s: %s" % [@galenic_form, str]
       end
-      str = @label + ': ' + str if @label
+      str = str.length > 0 ? @label + ': ' + str : @label if @label
       str
     end
     def *(factor)
