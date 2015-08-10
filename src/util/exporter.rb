@@ -324,7 +324,7 @@ module ODDB
 			end
 			log = Log.new(date)
 			begin
-				log.report = File.read(LogFile.filename(key, date))
+				log.report = File.read(LogFile.filename(key, date)) if File.exists?(LogFile.filename(key, date))
 			rescue StandardError => e
 				log.report = ([
 					"Nothing to Report.",
