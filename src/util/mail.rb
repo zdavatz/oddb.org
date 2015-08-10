@@ -169,7 +169,6 @@ module ODDB
 
     def Util.debug_msg(msg)
       LogFile.append('oddb/debug', ' ' + msg, Time.now)
-      system("logger '#{msg.gsub(/['\n]/, '"')}'")
       $stderr.puts msg unless defined?(MiniTest)
     end
   end
