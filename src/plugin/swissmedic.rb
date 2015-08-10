@@ -5,7 +5,6 @@ require 'fileutils'
 require 'mechanize'
 require 'ostruct'
 require 'plugin/plugin'
-require 'plugin/parslet_compositions'
 require 'pp'
 require 'util/persistence'
 require 'util/today'
@@ -103,6 +102,7 @@ public
     end
 
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
+      require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
       msg = "#{__FILE__}:#{__LINE__} opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
