@@ -110,7 +110,7 @@ end
   class StubRegistration
     attr_reader :iksnr, :block_result, :pointer
     def initialize(iksnr=nil)
-      @pointer = Pointer.new([:registration, iksnr])
+      @pointer = ODDB::Persistence::Pointer.new([:registration, iksnr])
       @iksnr = iksnr
     end
     def active_package_count

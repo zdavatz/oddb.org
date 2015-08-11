@@ -79,21 +79,35 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		assert_instance_of(ODDB::UnknownUser, @app.unknown_user)
 	end
 	def test_registration
-		reg = StubRegistration.new('12345')
+		reg = ODDB::Registration.new('12345')
 		@app.registrations = {'12345'=>reg}
 		assert_equal(reg, @app.registration('12345'))
 		assert_equal('12345', @app.registration('12345').iksnr)
 		assert_nil(@app.registration('54321'))
 	end
-	def test_create_registration
-		@app.registrations = {}
-		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
-		result = @app.create(pointer)
-		assert_equal(ODDB::Registration, result.class)
-		assert_equal(1, @app.registrations.size)
-		assert_equal(ODDB::Registration, @app.registrations['12345'].class)
-		assert_equal(pointer, @app.registrations['12345'].pointer)
-	end
+  def test_create_registration
+    @app.registrations = {}
+    pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
+    result = @app.create(pointer)
+    assert_equal(ODDB::Registration, result.class)
+    assert_equal(1, @app.registrations.size)
+    assert_equal(ODDB::Registration, @app.registrations['12345'].class)
+    assert_equal(pointer, @app.registrations['12345'].pointer)
+  end
+  def test_oddb_app_create_registration
+    reg_nr = '54321'
+    @app.registrations = {}
+    reg = @app.create_registration(reg_nr)
+    assert_equal(reg_nr, reg.iksnr)
+    assert_equal(reg_nr, @app.registration(reg_nr).iksnr)
+    pointer = ODDB::Persistence::Pointer.new(['registration', reg_nr])
+    assert_equal(pointer, @app.registrations[reg_nr].pointer)
+  end
+  def test_delete_registration
+    @app.registrations = {'oid' => 'registration'}
+    assert_equal('registration', @app.delete_registration('oid'))
+  end
+
 	def test_update_registration
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
 		@app.create(pointer)

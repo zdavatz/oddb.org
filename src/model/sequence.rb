@@ -149,8 +149,9 @@ module ODDB
 			unless @packages.include?(ikscd)
 				pkg = self::class::PACKAGE.new(ikscd)
 				pkg.sequence = self
-				@packages.store(ikscd, pkg) 
+				@packages.store(ikscd, pkg)
 			end
+      pkg
 		end
     def delete_composition(oid)
       @compositions.delete_if { |comp| comp.oid == oid }

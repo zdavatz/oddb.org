@@ -555,44 +555,10 @@ module ODDB
       @@iksnrs_meta_info
     end
 
-    def TextInfoPlugin::create_sequence_and_package_if_necessary(app, info, registration = nil,  seqNr ='00', packNr = '000')
-      iksnr = info.iksnr
-      # similar to update_package in src/plugin/swissmedic.rb
-      unless registration
-        registration = app.registration(iksnr)
-        if registration == nil or registration.packages == nil
-          LogFile.debug "Could not find a registration for #{iksnr} #{registration.inspect}"
-          return
-        end
-      end
-      return if registration.export_flag or registration.inactive? or (registration.expiration_date and registration.expiration_date > Date.today)
-      return if registration.package(packNr) and registration.sequence(seqNr)
-      sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
-      return unless info
-      seq_args = { 
-        :composition_text => nil,
-        :name_base        => info.title,
-        :name_descr       => nil,
-        :dose             => nil,
-        :sequence_date    => nil,
-        :export_flag      => nil,
-      }
-      if info.atcCode and atc = app.unique_atc_class(info.atcCode)
-        seq_args.store :atc_class, atc.code
-      else
-        seq_args.store :atc_class, info.atcCode
-      end
-      package  = sequence.create_package(packNr)
-      part = package.create_part
-      seq_args.store :packages, sequence.packages
-      registration.odba_store
-      res = app.update(sequence.pointer, seq_args, :swissmedic_text_info)
-    end
-    
     def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
       iksnr = info.iksnr
       # similar to method update_registration in src/plugin/swissmedic.rb
-#      LogFile.debug("create_registration #{info.inspect} seqNr #{seqNr}/#{packNr}")
+      LogFile.debug("create_registration #{iksnr}/#{seqNr}/#{packNr} #{info.title} company #{info.authHolder}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = { 
         :ith_swissmedic      => nil,
@@ -605,7 +571,7 @@ module ODDB
         :inactive_date       => nil,
         :export_flag         => nil,
       }
-      
+
       company_args = { :name => info.authHolder, :business_area => 'ba_pharma' }
       company = nil
       if(company = app.company_by_name(info.authHolder, 0.8))
@@ -615,9 +581,9 @@ module ODDB
         company = app.update company_ptr, company_args
       end
       args.store :company, company.pointer
-      
+
       registration = app.update reg_ptr, args, :text_plugin_create_registration
-      seq_ptr = (registration.pointer + [:sequence, 0]).creator
+      seq_ptr = (registration.pointer + [:sequence, seqNr]).creator
       unless seq_ptr
          LogFile.debug("Failed to create")
          raise "Failed to create #{iksnr} seq #{seqNr}"
@@ -636,9 +602,20 @@ module ODDB
         seq_args.store :atc_class, info.atcCode
       end
       res = app.update seq_ptr, seq_args, :text_plugin
-      TextInfoPlugin::create_sequence_and_package_if_necessary(app, info, registration, seqNr, packNr)
+      app.registrations[iksnr]=registration
+      app.registrations.odba_store
+      sequence = app.registration(iksnr).sequence(seqNr)
+      sequence.create_package(packNr)
+      package = sequence.package(packNr)
+      part = package.create_part
+      seq_args.store :packages, sequence.packages
+      LogFile.debug "Updating sequence #{iksnr} #{sequence.pointer}. seq_args #{seq_args}"
+      res = app.update(sequence.pointer, seq_args, :swissmedic_text_info)
+      registration.sequences[seqNr] = sequence
+      sequence.fix_pointers
+      registration.odba_store
       registration
-    end    
+    end
 
     def add_all_iksnr(info, typ, all_numbers)
       @@iksnrs_meta_info ||= {}
@@ -1029,7 +1006,7 @@ module ODDB
               return name
             end
       }
-      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s.upcase}"
+      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s}. aka '#{type[0].downcase + 'i'}'"
       return name
     end
     def extract_image(name, type, lang, dist, iksnrs)
@@ -1211,7 +1188,7 @@ module ODDB
     def check_swissmedicno_fi_pi(options = {}, patinfo_must_be_deleted = false)
       LogFile.debug "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
       swissmedicinfo_xml
-      read_packages      
+      read_packages
       @error_reasons = {
           Flagged_as_inactive               => 0,
           Reg_without_base_name             => 0,
@@ -1351,7 +1328,7 @@ module ODDB
       iksnrs.each do |iksnr|
         names = Hash.new{|h,k| h[k] = {} }
         LogFile.debug "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
-        TextInfoPlugin::create_sequence_and_package_if_necessary(@app, @@iksnrs_meta_info[iksnr])
+        TextInfoPlugin::create_registration(@app, @@iksnrs_meta_info[iksnr])
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]

@@ -463,13 +463,17 @@ class OddbPrevalence
 		user = ODDB::PowerUser.new
 		@users.store(user.oid, user)
 	end
-	def create_registration(iksnr)
-		unless @registrations.include?(iksnr)
-			reg = ODDB::Registration.new(iksnr)
-			@registrations.store(iksnr, reg)
-			reg
-		end
-	end
+  def create_registration(iksnr)
+    if reg = registration(iksnr)
+      return reg
+    end
+    reg = ODDB::Registration.new(iksnr)
+    reg.pointer = ODDB::Persistence::Pointer.new([:registration, iksnr])
+    @registrations.store(iksnr, reg)
+    reg.odba_store
+    @registrations.odba_store
+    reg
+  end
 	def create_slate(name)
 		slate = ODDB::Slate.new(name)
 		@slates.store(name, slate)
