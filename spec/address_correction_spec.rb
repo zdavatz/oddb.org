@@ -6,8 +6,6 @@ require 'pp'
 require 'tmpdir'
 require "selenium-webdriver"
 
-LeeresResult =  /hat ein leeres Resultat/
-
 describe "ch.oddb.org" do
 
   def enter_search_to_field_by_name(search_text, field_name)

@@ -48,10 +48,6 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
-  def small_delay
-    sleep(0.1)
-  end
-
    def check_paypal_setup
     error_msg = "File #{@oddb_yml} should exist and be correctly configured for sandbox.paypal.com"
     puts error_msg unless File.exists?(@oddb_yml)

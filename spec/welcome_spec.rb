@@ -6,9 +6,6 @@ require 'pp'
 require 'tmpdir'
 require "selenium-webdriver"
 
-LeeresResult =  /hat ein leeres Resultat/
-# OddbUrl = "http://ch.oddb.org"
-
 describe "ch.oddb.org" do
 
   before :all do

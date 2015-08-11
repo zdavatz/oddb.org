@@ -37,6 +37,7 @@ require 'fileutils'
 require 'page-object'
 require 'fileutils'
 require 'pp'
+require "watir-webdriver/wait"
 
 homeUrl ||= ENV['ODDB_URL']
 homeUrl ||= "http://oddb-ci2.dyndns.org"
@@ -55,6 +56,8 @@ AdminUser         = 'ngiger@ywesee.com'
 AdminPassword     = 'ng1234'
 ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
+LeeresResult      =  /hat ein leeres Resultat/
+
 
 def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
@@ -62,10 +65,9 @@ def login(user = AdminUser, password=AdminPassword, remember_me=false)
   sleep 0.5
   sleep 0.5 unless @browser.link(:name =>'login_form').exists?
   return true unless  @browser.link(:text=>'Anmeldung').exists?
-  @browser.link(:text=>'Anmeldung').click
-  sleep 0.5 unless @browser.text_field(:name, 'email').exists?
-  @browser.text_field(:name, 'email').set(user)
-  @browser.text_field(:name, 'pass').set(password)
+  @browser.link(:text=>'Anmeldung').when_present.click
+  @browser.text_field(:name, 'email').when_present.set(user)
+  @browser.text_field(:name, 'pass').when_present.set(password)
   if remember_me
     @browser.checkbox(:name, "remember_me").set
   else
@@ -102,7 +104,7 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   @seconds = -1
   0.upto(maxWait).each{
     |idx|
-    browser.goto OddbUrl
+    browser.goto OddbUrl; small_delay
     unless /Es tut uns leid/.match(browser.text)
       @seconds = idx
       break
@@ -120,7 +122,12 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 end
 
+def small_delay
+  sleep(0.1)
+end
+
 def createScreenshot(browser, added=nil)
+  small_delay
   if browser.url.index('?')
     name = File.join(ImageDest, File.basename(browser.url.split('?')[0]).gsub(/\W/, '_'))
   else

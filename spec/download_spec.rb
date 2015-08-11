@@ -6,8 +6,6 @@ require 'pp'
 require 'tmpdir'
 require "selenium-webdriver"
 
-LeeresResult =  /hat ein leeres Resultat/
-
 describe "ch.oddb.org" do
 
   before :all do

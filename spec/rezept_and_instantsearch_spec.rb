@@ -16,10 +16,6 @@ describe "ch.oddb.org" do
     "#{OddbUrl}/de/#{Flavor}/rezept"
   end
 
-  def small_delay
-    sleep(0.1)
-  end
-
   def add_one_drug_to_rezept(name)
     @browser.url.should match(/#{OddbUrl}/i)
     idx = -2
