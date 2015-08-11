@@ -10,6 +10,10 @@ LeeresResult =  /hat ein leeres Resultat/
 
 describe "ch.oddb.org" do
 
+  def small_delay
+    sleep(0.1)
+  end
+
   def enter_search_to_field_by_name(search_text, field_name)
     idx = -2
     chooser = @browser.text_field(:name,field_name)
@@ -67,7 +71,8 @@ describe "ch.oddb.org" do
 
   def enter_fachinfo_search
     if @browser.link(:name=>'fachinfo_search').exists?
-      @browser.link(:name=>'fachinfo_search').click
+      @browser.link(:name=>'fachinfo_search').click;  small_delay
+
     end
   end
   
@@ -83,9 +88,12 @@ describe "ch.oddb.org" do
   }.each {
     |searchterm, searchtext|
     it "should be possible to find #{searchtext} when searching via #{searchterm} in analysen" do
-      @browser.link(:name,'analysis').click
+      @browser.link(:name,'analysis').click;  small_delay
+
+      small_delay unless @browser.text_field(:name, "search_query").exists?
       @browser.text_field(:name, "search_query").value = searchterm
-      @browser.button(:name => 'search').click
+      @browser.button(:name => 'search').click;  small_delay
+
       @browser.text.should_not match LeeresResult
       @browser.text.should match /#{searchtext}/
     end
@@ -105,12 +113,12 @@ describe "ch.oddb.org" do
       @browser.checkbox(:name,'fachinfo_search_full_text').set
       @browser.text_field(:name => 'fachinfo_search_term').set(text)
       @browser.text_field(:name => 'fachinfo_search_term').send_keys :tab
-      @browser.button(:id => 'fi_search').click
+      @browser.button(:id => 'fi_search').click;  small_delay
+
       @browser.text.should match text
       @browser.text.should match /Actemra/
     end
   }
-
   it "should should be possible to add and delete several drugs:" do
     enter_fachinfo_search
     @browser.text.should_not match /Actemra/
@@ -119,10 +127,12 @@ describe "ch.oddb.org" do
     enter_search_to_field_by_name('Aspirin', 'searchbar');
     @browser.text.should match /Actemra/
     @browser.text.should match /Aspirin/
-    @browser.element(:id => /minus_Actemra/i).click
+    @browser.element(:id => /minus_Actemra/i).click;  small_delay
+
     @browser.text.should_not match /Actemra/
     @browser.text.should match /Aspirin/
-    @browser.element(:id => /minus_Aspirin/i).click
+    @browser.element(:id => /minus_Aspirin/i).click;  small_delay
+
     @browser.text.should_not match /Actemra/
     @browser.text.should_not match /Aspirin/
     # @browser.url.should match /fachinfo_search\/$/
@@ -138,7 +148,8 @@ describe "ch.oddb.org" do
     @browser.text.should match /Actemra/
     @browser.text.should match /Aspirin/
     @browser.text.should match /Ponstan/
-    @browser.element(:name => 'delete').click
+    @browser.element(:name => 'delete').click;  small_delay
+; small_delay
     @browser.text.should_not match /Actemra/
     @browser.text.should_not match /Aspirin/
     @browser.text.should_not match /Ponstan/
@@ -147,7 +158,8 @@ describe "ch.oddb.org" do
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
-    @browser.links.find{ |item| item.href.match(/fachinfo\/swissmedic/) != nil}.click
+    @browser.links.find{ |item| item.href.match(/fachinfo\/swissmedic/) != nil}.click;  small_delay
+
     @browser.text_field(:name => field_name).text.should == ""
     @browser.text_field(:name => field_name).value.should == "HIER Suchbegriff eingeben"
     @browser.text_field(:name => field_name).value = 'Aspirin'
@@ -158,47 +170,56 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Dr. Peter Schönbucher via doctors " do
-    @browser.link(:name, "doctors").click
+    @browser.link(:name, "doctors").click;  small_delay
+
     @browser.text_field(:name, "search_query").value = "Schönbucher"
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     @browser.text.should match /Schönbucher Peter/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Abacavir via Wirkstoffe" do
-    @browser.link(:name, 'substances').click
+    @browser.link(:name, 'substances').click;  small_delay
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(:name, "search_query").value = "Abacavirum"
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Deutsche Bezeichnung/
     @browser.text.should match /Abacavir/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find the Kantonsspital Glarus via Spital" do
-    @browser.link(:name, 'hospitals').click
+    @browser.link(:name, 'hospitals').click;  small_delay
+
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(:name, "search_query").value = "Glarus"    
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Abteilung/
     @browser.text.should match /Kantonsspital Glarus/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Krücke via MiGeL" do
-    @browser.link(:name, 'migel').click
+    @browser.link(:name, 'migel').click;  small_delay
+
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(:name, "search_query").value = "Krücke"    
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Beschreibung/
     @browser.text.should match /Krücken/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Novartis via Zulassungsinhaber" do
-    @browser.link(:name, 'companies').click
+    @browser.link(:name, 'companies').click;  small_delay
+
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(:name, "search_query").value = "Novartis"    
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     @browser.text.should_not match LeeresResult
     @browser.text.should match /Aktuelle Einträge/
     @browser.text.should match /Novartis Pharma Schweiz AG/
@@ -245,16 +266,17 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to find Budenofalk and Budesonid Sandoz via combined search" do
-    @browser.link(:name, 'drugs').click
+    @browser.link(:name, 'drugs').click;  small_delay
+
     @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(:name, "search_query").value = "Budesonid"
-    @browser.button(:name, 'search').click
+    @browser.button(:name, 'search').click;  small_delay
+
     text = @browser.text.clone
     text.should_not match LeeresResult
     text.should match('Budesonid Sandoz') # by price
     text.should match('Budenofalk')       # by component
   end unless ['just-medical'].index(Flavor)
-
 
   after :all do
     @browser.close

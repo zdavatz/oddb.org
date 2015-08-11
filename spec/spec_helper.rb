@@ -87,6 +87,7 @@ end
 def logout
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
+  sleep(0.1) unless @browser.link(:name=>'logout').exists?
   logout_btn = @browser.link(:name=>'logout')
   return unless  logout_btn.exists?
   logout_btn.click
@@ -114,6 +115,7 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
     sleep 1
   }
   endTime = Time.now
+  sleep(0.2)
   @browser.link(:text=>'Plus').click if @browser.link(:text=>'Plus').exists?
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 end

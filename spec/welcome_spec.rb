@@ -37,6 +37,7 @@ describe "ch.oddb.org" do
       @browser.text.should match (ViewerDescription)
       @browser.link(:name, zone).exists?.should == true
       @browser.link(:name, zone).click
+      sleep(0.1) unless @browser.link(:name, "logout").exists?
       @browser.link(:name, "logout").exists?.should == true
       @browser.text.should match (ViewerDescription)
     end

@@ -48,6 +48,10 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
+  def small_delay
+    sleep(0.1)
+  end
+
    def check_paypal_setup
     error_msg = "File #{@oddb_yml} should exist and be correctly configured for sandbox.paypal.com"
     puts error_msg unless File.exists?(@oddb_yml)
@@ -86,7 +90,7 @@ describe "ch.oddb.org" do
       end
     end
     @browser.text_field(:name, "search_query").set(test_medi)
-    @browser.button(:name, "search").click
+    @browser.button(:name, "search").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click
   end
 
@@ -127,7 +131,7 @@ describe "ch.oddb.org" do
   def search_for_medi(name)
     waitForOddbToBeReady(@browser, OddbUrl)
     @browser.text_field(:name, "search_query").set(name)
-    @browser.button(:name, "search").click
+    @browser.button(:name, "search").click; small_delay
   end
 
   def select_poweruser(duration = OneDay)
@@ -164,11 +168,11 @@ describe "ch.oddb.org" do
                     :first_name => 'Fritz' }
     waitForOddbToBeReady(@browser, OddbUrl)
 		logout
-		@browser.link(:name, "user").click
+		@browser.link(:name, "user").click; small_delay
     sleep(1) # is needed, don't know how to wait for link
-		@browser.link(:name, "download_export").click
+		@browser.link(:name, "download_export").click; small_delay; small_delay
     @browser.select_list(:name, "compression").select("TAR/GZ")
-		@browser.link(:name, "directlink_oddb_csv").click # 500
+		@browser.link(:name, "directlink_oddb_csv").click; small_delay # 500
     init_paypal_checkout(customer)
     @browser.select_list(:name, "business_area").select("Medi-Information")
 		@browser.text_field(:name, "address").set 'Adresse'
@@ -176,14 +180,14 @@ describe "ch.oddb.org" do
 		@browser.text_field(:name, "city").set 'city'
 		@browser.text_field(:name, "phone").set 'phone'
     puts "email #{new_customer_email}: URL before preceeding to paypal was #{@browser.url}"
-    @browser.button(:name => /checkout/).click
+    @browser.button(:name => /checkout/).click; small_delay
     paypal_common(@customer_1)
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_oddb_csv')
     link = @browser.link(:name => 'download')
     link.exists?.should be true
-    link.click
+    link.click; small_delay
     @browser.url.should_not match  /errors/
     @browser.url.should_not match /appdown/
   end if false
@@ -195,9 +199,9 @@ describe "ch.oddb.org" do
                     :family_name => 'Demo',
                     :first_name => 'Fritz' }
     puts "email #{new_customer_email}: URL before preceeding to paypal was #{@browser.url}"
-    @browser.button(:name, "proceed_poweruser").click
+    @browser.button(:name, "proceed_poweruser").click; small_delay
     init_paypal_checkout(customer)
-    @browser.button(:name => 'checkout').click
+    @browser.button(:name => 'checkout').click; small_delay
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     paypal_common(@customer_1)
     forward_to_home = @browser.link(:name => 'forward_to_home')
@@ -206,7 +210,7 @@ describe "ch.oddb.org" do
     forward_to_home.exists?.should be true
     createScreenshot(@browser, 'paypal_poweruser')
     @browser.url.should_not match /appdown/
-    forward_to_home.click
+    forward_to_home.click; small_delay
     @browser.url.should match OddbUrl
     saved = @idx
     # ensure that login a new power user works and that he can visit as many drugs as he wants
@@ -228,7 +232,7 @@ describe "ch.oddb.org" do
     puts "email #{new_customer_email}: URL before preceeding to paypal was #{@browser.url}"
     choose_medi_and_csv_display(nil)
     init_paypal_checkout(customer)
-    @browser.button(:name => /checkout/).click
+    @browser.button(:name => /checkout/).click; small_delay
     paypal_common(@customer_1)
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
@@ -237,7 +241,7 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, 'paypal_csv_okay')
     link = @browser.link(:name => 'download')
     link.exists?.should be true
-    link.click
+    link.click; small_delay
     @browser.url.should_not match /errors/
     @browser.url.should_not match /appdown/
     sleep(1) # it takes some time to download the file
@@ -252,7 +256,7 @@ describe "ch.oddb.org" do
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     choose_medi_and_csv_display(@customer_2)
     init_paypal_checkout(@customer_2)
-    @browser.button(:name => 'checkout_paypal').click
+    @browser.button(:name => 'checkout_paypal').click; small_delay
     paypal_common(@customer_2)
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
     @browser.url.should_not match  /errors/
@@ -267,7 +271,7 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     choose_medi_and_csv_display(@customer_1)
     init_paypal_checkout(@customer_1)
-    @browser.button(:name => 'checkout_paypal').click
+    @browser.button(:name => 'checkout_paypal').click; small_delay
     paypal_common(@customer_1, CancelCheckoutEarly)
     puts "URL after #{@browser.url} OddbUrl"
     createScreenshot(@browser, 'paypal_csv_payment_cancelled')
@@ -280,7 +284,7 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
     choose_medi_and_csv_display(@customer_1)
     init_paypal_checkout(@customer_1)
-    @browser.button(:name => 'checkout_paypal').click
+    @browser.button(:name => 'checkout_paypal').click; small_delay
     paypal_common(@customer_1, CancelCheckoutLater)
     puts "URL after #{@browser.url} OddbUrl"
     @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./

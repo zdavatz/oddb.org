@@ -37,7 +37,7 @@ describe "ch.oddb.org" do
       @browser.url.should == url
       @browser.link(:name, link_name).exist?.should == true
       @browser.link(:name, link_name).click
-      require 'pry'; binding.pry unless @browser.url.index(link_name)
+      # require 'pry'; binding.pry unless @browser.url.index(link_name)
       @browser.url.index(link_name).should_not == nil
       @browser.link(:name => 'range').exist?.should == true
     end

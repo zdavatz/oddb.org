@@ -10,8 +10,14 @@ describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
   DrMeier     = /Dr. med. Werner Meier/
+  AddToSpan   = "\t"
+
   def rezeptUrl
     "#{OddbUrl}/de/#{Flavor}/rezept"
+  end
+
+  def small_delay
+    sleep(0.1)
   end
 
   def add_one_drug_to_rezept(name)
@@ -125,15 +131,30 @@ describe "ch.oddb.org" do
       field_name = "prescription_comment_#{idx}"
       getTextFieldInAsafeWay(field_name).set genComment(Four_Medis[idx])
       @browser.send_keys :tab
-      getTextFieldInAsafeWay(field_name).value.should eql genComment(Four_Medis[idx])
+      getTextFieldInAsafeWay(field_name).value.should eql genComment(Four_Medis[idx]) + AddToSpan
     }
   end
 
-  def set_zsr_of_doctor(zsr_id, name =nil)
+  def set_zsr_of_doctor(zsr_id, name)
+    nrTries = 0
     @browser.text_field(:name => 'prescription_zsr_id').set zsr_id
-    @browser.send_keys :tab
-    @browser.text_field(:name => 'prescription_zsr_id').click
-    sleep(1)
+    while nrTries < 5 and not @browser.text.index(name)
+      small_delay
+      nrTries += 1
+      text = @browser.text_field(:name => 'prescription_zsr_id').value
+      @browser.send_keys :down
+      btext1 = @browser.text.clone
+      nrWaits = 0
+      while nrWaits < 100
+        nrWaits += 1
+        sleep(0.1)
+        break if @browser.text.index(name)
+      end
+      if @browser.text.index(name)
+          puts "Looks okay after #{nrTries} nrTries nrWaits #{nrWaits}. text is #{text} index #{@browser.text.index(name)}"
+          break
+      end
+    end
     corrected = zsr_id.gsub(/[ \.]/, '');
   end
 
@@ -158,12 +179,12 @@ describe "ch.oddb.org" do
             puts "span_value #{span_value} !=  #{comment} in element with id #{field_name}. nrMedis was #{nrMedis}"
             # binding.pry if BreakIntoPry
           end
-          span_value.should eql comment
+          span_value.should eql comment + AddToSpan
       }
     else
-      @browser.text_field(:name => 'prescription_first_name').value.should == FirstName
-      @browser.text_field(:name => 'prescription_family_name').value.should == FamilyName
-      @browser.text_field(:name => 'prescription_birth_day').value.should == Birthday
+      @browser.text_field(:name => 'prescription_first_name').value.index(FirstName).should == 0
+      @browser.text_field(:name => 'prescription_family_name').value.index(FamilyName).should == 0
+      @browser.text_field(:name => 'prescription_birth_day').value.index(Birthday).should == 0
       @browser.radio(:name => "prescription_sex").value.should_not be nil
 
       0.upto(nrMedis-1) {
@@ -171,7 +192,7 @@ describe "ch.oddb.org" do
       if getTextFieldInAsafeWay("prescription_comment_#{idx}").value != genComment(Four_Medis[idx])
           binding.pry if BreakIntoPry
       end
-          getTextFieldInAsafeWay("prescription_comment_#{idx}").value.should == genComment(Four_Medis[idx])
+          getTextFieldInAsafeWay("prescription_comment_#{idx}").value.index(genComment(Four_Medis[idx])).should == 0
       }
     end
   end
@@ -193,24 +214,25 @@ describe "ch.oddb.org" do
   end
 
   def clickDeleteAll
-    @browser.element(:text,  "Alle löschen").click
+    @browser.element(:text,  "Alle löschen").click; small_delay
   end
 
   def clickSearch
-    @browser.button(:name, "search").click
+    small_delay; @browser.button(:name, "search").click
   end
 
   def clickRezeptErstellen
-    @browser.link(:href, /rezept/).click
+    small_delay; @browser.link(:href, /rezept/).click; small_delay
   end
 
+if true
   pending 'should not throw a an error with a problematic combination of drugs' do
     puts "Pending fix for https://github.com/davidshimjs/qrcodejs/issues/26"
     # see https://github.com/davidshimjs/qrcodejs/issues/26
     @browser.goto("#{OddbUrl}/de/#{Flavor}/rezept/ean/7680516801112,7680576730063?")
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
-    @browser.button(:name, "print").click
+    @browser.button(:name, "print").click; small_delay
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
@@ -228,7 +250,6 @@ describe "ch.oddb.org" do
       inhalt.should match(name)
     end
   end
-
   it 'should be possible to add drugs after delete_all when neither ZSR nor comment given' do
     @browser.goto(rezeptUrl)
     # @browser.text.should_not match DrMeier
@@ -321,7 +342,8 @@ describe "ch.oddb.org" do
     checkGeneralInfo(nrMedisToCheck)
     @browser.text.should match DrMeier
     oldWindowsSize = @browser.windows.size
-    @browser.button(:name, "print").click
+    @browser.button(:name, "print").click;  small_delay
+
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
@@ -330,7 +352,7 @@ describe "ch.oddb.org" do
     @browser.text.should match /EAN 7601000223449/i
     checkGeneralInfo(nrMedisToCheck)
   end
-
+end
   it "after a delete_all it must be possible to add drugs" do
     nrMedisToCheck = 1
     @browser.goto OddbUrl
@@ -343,20 +365,20 @@ describe "ch.oddb.org" do
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck )
     @browser.text.should match DrMeier
-    @browser.link(:id => /delete/i).click
+    @browser.link(:id => /delete/i).click;  small_delay
     checkGeneralInfo(0)
     add_one_drug_to_rezept(Four_Medis[0])
     checkGeneralInfo(0)
     @browser.text.should match DrMeier
   end
-
+if true
   it "should print a correct prescription with comments, personal information, doctor info and a drug" do
     @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     clickSearch
     clickRezeptErstellen
-    @browser.link(:id => /delete/i).click
+    @browser.link(:id => /delete/i).click;  small_delay
     add_one_drug_to_rezept(Four_Medis[0])
     setGeneralInfo(1)
     set_zsr_of_doctor('J 0390.19', 'Davatz')
@@ -366,7 +388,7 @@ describe "ch.oddb.org" do
     set_zsr_of_doctor('P006309', 'Meier')
     @browser.text.should match DrMeier
     oldWindowsSize = @browser.windows.size
-    @browser.button(:name, "print").click
+    @browser.button(:name, "print").click;  small_delay
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
@@ -384,7 +406,7 @@ describe "ch.oddb.org" do
     # add two remarks
     setGeneralInfo(2)
     oldWindowsSize = @browser.windows.size
-    @browser.button(:name, "print").click
+    @browser.button(:name, "print").click;  small_delay
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
@@ -394,19 +416,20 @@ describe "ch.oddb.org" do
     inhalt.scan(/\nBemerkungen\n/).size.should == 2
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
   end
+
   it "should print the fachinfo when opening the fachinfo from a prescription" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set(Four_Medis.first)
     clickSearch
     clickRezeptErstellen
     setGeneralInfo(1)
-    @browser.element(:text, 'FI').click
+    @browser.element(:text, 'FI').click;  small_delay
     oldWindowsSize = @browser.windows.size
-    @browser.link(:text, /FI/).click
+    @browser.link(:text, /FI/).click; sleep(1)
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     oldWindowsSize = @browser.windows.size
-    @browser.link(:text, /Drucken/i).click
+    @browser.link(:text, /Drucken/i).click;  small_delay
     @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
     @browser.windows.last.use
     @browser.url.should_not match /^rezept/i
@@ -470,7 +493,7 @@ describe "ch.oddb.org" do
         inhalt.should match(/#{medis[idx]}/i)
     }
     0.upto(3){ |idx|
-      @browser.link(:id => /delete_0/i).click
+      @browser.link(:id => /delete_0/i).click;  small_delay
       sleep(0.5)
     }
     url2 = @browser.url
@@ -498,7 +521,7 @@ describe "ch.oddb.org" do
                 inhalt.should match(/#{name}/i)
               }
     url1.match(RegExpTwoMedis).should_not be nil
-    @browser.link(:id => /delete_0/i).click
+    @browser.link(:id => /delete_0/i).click;  small_delay
     sleep(0.5)
     url2 = @browser.url
     inhalt = @browser.text
@@ -575,4 +598,5 @@ describe "ch.oddb.org" do
     inhalt.scan(/\nInteraktionen\n/).size.should == 2
     checkGeneralInfo(nrRemarks)
   end
+end
 end
