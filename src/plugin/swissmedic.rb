@@ -1005,7 +1005,6 @@ public
             excipiens = ActiveAgent.new(parsed_composition.excipiens.name, false)
             substance = update_substance(parsed_composition.excipiens.name)
             debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} substance #{substance.class} for #{parsed_composition.excipiens.name}")
-            # require 'pry'; binding.pry if substance and not substance.is_a?(ODDB::Substance)
             excipiens.substance = substance
             if parsed_composition.excipiens.qty or parsed_composition.excipiens.unit
               excipiens.dose = Dose.new(parsed_composition.excipiens.qty, parsed_composition.excipiens.unit)
@@ -1013,8 +1012,6 @@ public
             excipiens.more_info = parsed_composition.excipiens.more_info
             db_composition.add_excipiens(excipiens)
             debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} update_excipiens_in_composition idx #{idx}: excipiens #{excipiens.inspect} from #{parsed_composition.excipiens}")
-            # args = {:excipiens => excipiens }
-            # res = @app.update db_composition, args, :swissmedic
             db_composition.odba_store
             seq.odba_store
           end
@@ -1127,10 +1124,7 @@ public
       trace_msg "#{__FILE__}: #{__LINE__}: update_substance #{name}"
       unless name.empty?
         substance = @app.substance(name)
-        if(substance.nil?)
-          substance = @app.update(Persistence::Pointer.new(:substance).creator, {:lt => name}, :swissmedic)
-        end
-        substance
+        substance ||= @app.create_substance(name)
       end
     end
     def sanity_check_deletions(diff)
