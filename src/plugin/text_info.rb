@@ -149,15 +149,15 @@ module ODDB
       @updated_pis +=1
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
-      puts_sync "store_patinfo existing #{existing[0..200]} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
       if existing
+        puts_sync "store_patinfo existing #{existing.to_s[0..200]} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
         ptr = existing.pointer
       end
       @app.update ptr, languages
     end
     def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
       begin
-        puts_sync "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
+        LogFile.debug "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
         return unless iksnrs_from_xml
         if iksnrs_from_xml.empty?
           @iksless[:fi].push name
@@ -176,13 +176,13 @@ module ODDB
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
-              puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
+              LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
               TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
               @updated_fis += 1
             end
           else
-            puts_sync "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
+            LogFile.debug "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, fis, :orphaned_fachinfo
             @unknown_iksnrs.store iksnr, name
           end
@@ -1050,6 +1050,7 @@ module ODDB
       return [iksnrs,infos] unless @doc
       iksnrs_from_xml = nil
       name  = ''
+      dist  = nil
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
@@ -1093,6 +1094,7 @@ module ODDB
           end
         end
       end
+      # LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist} i #{infos}"
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
