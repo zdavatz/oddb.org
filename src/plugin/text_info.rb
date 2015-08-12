@@ -149,7 +149,7 @@ module ODDB
       @updated_pis +=1
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
-      puts_sync "store_patinfo existing #{existing} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
+      puts_sync "store_patinfo existing #{existing[0..200]} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
       if existing
         ptr = existing.pointer
       end
@@ -1006,7 +1006,7 @@ module ODDB
               return name
             end
       }
-      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s}. aka '#{type[0].downcase + 'i'}'"
+      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s}."
       return name
     end
     def extract_image(name, type, lang, dist, iksnrs)

@@ -194,8 +194,8 @@ module ODDB
       update_swissmedic_feeds
 
       # textinfo
-      update_textinfo_swissmedicinfo({:target => :fi})
-      update_textinfo_swissmedicinfo({:target => :pi})
+      update_textinfo_swissmedicinfo({:target => :fi, :reparse => true})
+      update_textinfo_swissmedicinfo({:target => :pi, :reparse => true})
       #update_textinfo_news2
 
       if(update_swissmedic)
