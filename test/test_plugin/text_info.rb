@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 $: << File.expand_path('../../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
 
+require 'syck'
+require 'yaml'
+YAML::ENGINE.yamler = 'syck'
+require 'stub/odba'
 gem 'minitest'
 require 'minitest/autorun'
+require 'stub/oddbapp'
 require 'fileutils'
 require 'flexmock'
 require 'flexmock/test_unit'
@@ -20,7 +26,7 @@ module ODDB
     attr_accessor :parser, :iksless, :session_failures, :current_search,
                   :current_eventtarget
   end
-  
+
   class TestTextInfoPluginMethods<MiniTest::Test
     x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
     y = %(
@@ -50,7 +56,6 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       @parser = flexmock('parser (simulates ext/fiparse)', :parse_fachinfo_html => nil,)                         
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
-      
     end
     def teardown
       super
@@ -754,10 +759,10 @@ EOS
       assert_equal true, success
     end
   end
-  
+
   class TestExtractMatchedName <MiniTest::Test
     include FlexMock::TestCase
-    
+
     def setup
       file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       @app = flexmock 'application'
@@ -779,7 +784,55 @@ EOS
     def test_53663_pi_de
       assert_equal('3TC®', @plugin.extract_matched_name('53663', :fi, 'de'))
     end
-    
+
   end
 
+  class TestTextInfoPluginPackages <MiniTest::Test
+    include FlexMock::TestCase
+    def setup
+      super
+      ptr = Persistence::Pointer.new([:registration, '57363'])
+      @company = flexmock 'company'
+      @company.should_receive(:pointer).and_return ptr
+
+      @registration = flexmock 'registration'
+      @registration.should_receive(:pointer).and_return ptr
+      @registration.should_receive(:export_flag).and_return false
+      @registration.should_receive(:inactive?).and_return false
+      @registration.should_receive(:expiration_date).and_return Date.today+12
+
+      @atc_class = flexmock 'atc_class'
+      @atc_class.should_receive(:code).and_return 'atc_code'
+
+      @app = flexmock 'application'
+      @app.should_receive(:company_by_name).and_return(@company)
+
+      @app.should_receive(:unique_atc_class).and_return(@atc_class)
+      @app.should_receive(:update).with(Persistence::Pointer, Hash, Symbol).and_return('update_symbol').by_default
+      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin_create_company).and_return(@company)
+      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin_create_registration).and_return(@registration)
+      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin).and_return('text_plugin')
+    end
+    def teardown
+      super
+    end
+
+    def test_create
+      iksnr = '65432'
+      info = flexmock 'info'
+      info.should_receive(:iksnr).and_return(iksnr)
+      info.should_receive(:authHolder).and_return('authHolder')
+      info.should_receive(:title).and_return('drug_name')
+      info.should_receive(:atcCode).and_return('atcCode')
+      @app = ODDB::App.new
+      TextInfoPlugin::create_registration(@app, info)
+      assert_equal(iksnr, @app.registration(iksnr).iksnr)
+      assert_equal('authHolder', @app.registration(iksnr).company_name)
+      assert_equal('00', @app.registration(iksnr).sequences.values.first.seqnr)
+      assert_equal(Array, @app.registration(iksnr).packages.class)
+      assert_equal(1, @app.registration(iksnr).packages.size)
+      assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
+      assert_equal('drug_name', @app.registration(iksnr).name_base)
+    end
+  end
 end
