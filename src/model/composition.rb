@@ -58,8 +58,9 @@ module ODDB
       self.odba_store
       active
     end
-    def delete_active_agent(substance)
-      if(active = active_agent(substance))
+    def delete_active_agent(substance_or_oid, is_active_agent = true)
+      active = @active_agents.find { |active| active.same_as?(substance_or_oid, nil) and is_active_agent == active.is_active_agent}
+      if(active)
         @active_agents.delete(active)
         @active_agents.odba_isolated_store
         active

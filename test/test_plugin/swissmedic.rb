@@ -32,8 +32,8 @@ class FlexMock::TestUnitFrameworkAdapter
     attr_accessor :assertions
 end
 
-RUN_ALL = false
 module ODDB
+   RUN_ALL = false
    class SwissmedicPluginTest < Minitest::Test
     include FlexMock::TestCase
     NAME_OFFSET = 2
@@ -136,7 +136,6 @@ module ODDB
       act
     end
 
-if RUN_ALL
     def test_get_latest_file__identical
       content = 'Content of the xml'
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
@@ -473,6 +472,7 @@ if RUN_ALL
       assert_equal('update_with_expected_args', result)
     end
 
+if RUN_ALL
     def test_update_package__create
       row = @workbook.worksheet(0).row(ROW_ASPIRIN)
       assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
@@ -1642,8 +1642,8 @@ if RUN_ALL
       assert_equal(nil, composition.label)
       assert_equal("carbomerum 980 2 mg, conserv.: cetrimidum, excipiens ad gelatum pro 1 g.", composition.source)
       assert_equal("Augengel: Carbomerum 980 2 mg, Cetrimidum 0 ", composition.to_s)
-    end
-  end if RUN_ALL
+    end if RUN_ALL
+  end
 
   # Tests for using with xlsx files
   class StubSequence < Sequence
@@ -1741,7 +1741,7 @@ if RUN_ALL
       reg = @app.create_registration('00288')
       seq = reg.create_sequence('02')
       seq.create_package('001')
-      @app.should_receive(:delete).at_least.times(5)
+      @app.should_receive(:delete).never # Registrations don't get deleted, just out of date. And now substances nor active_agents should be deleted neither
 
       result = @plugin.update({:update_compositions => true}, agent)
       assert_equal(3, @app.registrations.size)
@@ -1749,6 +1749,7 @@ if RUN_ALL
       assert_equal(5, @app.packages.size)
       assert_equal(true, result)
 
+      puts "\nStarting second_run\n\n"
       result_second_run = @plugin.update({}, agent)
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
@@ -1758,7 +1759,36 @@ if RUN_ALL
       assert_equal(6, result_second_run.changes.size)
       assert(result_second_run)
       assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00488"=>[:new], "00279"=>[:delete]}, result_second_run.changes)
+      missing = {}
+      @app.registrations.each{
+        |id, reg|
+        reg.sequences.each{
+                         |seq_id, seq|
+                          seq.packages.each{
+                                            |pack_id, pack|
+                                           if pack.sequence and not pack.sequence.respond_to?(:odba_id)
+                                            missing["#{id}/#{seq_id}/#{pack_id}"] = pack
+                                           end
+                                           }
+                          }
+      }
+      assert_equal(0, missing.size)
+    end
 
+    def test_mustcheck
+      agent = flexmock(Mechanize.new)
+      assert_equal(true, @plugin.mustcheck('46111', {:iksnrs => ['46111']}))
+      assert_equal(true, @plugin.mustcheck('46112', {:iksnrs => ['46111', '46112']}))
+      assert_equal(true, @plugin.mustcheck('46112', {:update_compositions => true}))
+
+      assert_equal(false, @plugin.mustcheck('46112', {:iksnrs => ['46111']}))
+    end
+
+  end
+
+  class SwissmedicPluginRunALl < Minitest::Test
+    def test_run_all
+      assert_equal(true, RUN_ALL)
     end
   end
 end
