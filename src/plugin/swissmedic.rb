@@ -410,7 +410,7 @@ public
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      Spreadsheet.open(target_name) do |workbook|
+      Spreadsheet.open(latest_name) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
@@ -645,7 +645,7 @@ public
        oids2remove = composition.active_agents.find_all { |x| x.substance == nil} if composition.active_agents
        # debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} oid #{composition.oid} oids2remove #{oids2remove}")
        oids2remove.each{ |substance|
-                        debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} #{composition.active_agents.size} active_agents. substance.oid #{substance.oid} substance.pointer #{substance.pointer}")
+                        debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} #{composition.active_agents.size} active_agents. #{substance} substance.oid #{substance.oid} substance.pointer #{substance.pointer}")
                         @app.delete(substance.pointer) if substance.pointer
                         composition.delete_active_agent(substance.oid)
                         composition.odba_store
