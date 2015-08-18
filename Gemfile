@@ -1,6 +1,5 @@
 source "http://rubygems.org"
 if /^2/.match(RUBY_VERSION)
-  ruby '2.1.2'
   gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
   gem 'syck'
 else
