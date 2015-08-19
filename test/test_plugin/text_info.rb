@@ -834,5 +834,48 @@ EOS
       assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
       assert_equal('drug_name', @app.registration(iksnr).name_base)
     end
+
+    def test_update
+      iksnr = '65432'
+      info = flexmock 'info'
+      info.should_receive(:iksnr).and_return(iksnr)
+      info.should_receive(:authHolder).and_return('authHolder')
+      info.should_receive(:title).and_return('drug_name')
+      info.should_receive(:atcCode).and_return('atcCode')
+      @app = ODDB::App.new
+      puts __LINE__
+      plugin = TextInfoPlugin.new({:target => :fi})
+      puts __LINE__
+      plugin.send(:import_swissmedicinfo)
+      puts __LINE__
+      x = %(
+      update_textinfo_swissmedicinfo({:target => :fi})
+            update_notify_simple TextInfoPlugin,
+                            "Fach- und Patienteninfo Updates (swissmedicinfo.ch)",
+                            :import_swissmedicinfo
+                def update_notify_simple(klass, subj, update_method=:update, args=[])
+      wrap_update(klass, subj) {
+        if @options
+          plug = klass.new(@app, @options)
+        else
+          plug = klass.new(@app)
+        end
+        if (plug.send(update_method, *args))
+          log = Log.new(@@today)
+          log.update_values(log_info(plug))
+          log.notify(subj)
+        end
+      }
+    end
+)
+
+      assert_equal(iksnr, @app.registration(iksnr).iksnr)
+      assert_equal('authHolder', @app.registration(iksnr).company_name)
+      assert_equal('00', @app.registration(iksnr).sequences.values.first.seqnr)
+      assert_equal(Array, @app.registration(iksnr).packages.class)
+      assert_equal(1, @app.registration(iksnr).packages.size)
+      assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
+      assert_equal('drug_name', @app.registration(iksnr).name_base)
+    end if false
   end
 end

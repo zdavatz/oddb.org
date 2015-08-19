@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Sequence -- oddb.org -- 29.10.2012 -- yasaka@ywesee.com
-# ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
-# ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
+# as admin
+# http://oddb-ci2.dyndns.org/de/gcc/drug/reg/00277/seq/01 gives admin interface
+# http://oddb-ci2.dyndns.org/de/gcc/show/reg/00278/seq/01 displays info similar to non logged in user # hier fehlt noch corresp
+# http://oddb-ci2.dyndns.org/de/gcc/search/zone/drugs/search_query/00278/search_type/st_registration?#best_result excipiens. Hier kommt eine Zeile excipienscorresp
+# http://oddb-ci2.dyndns.org/de/gcc/show/reg/00615/seq/01 has corresp and excipien
 
 require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
@@ -33,6 +35,7 @@ class ActiveAgents < HtmlGrid::List
     [1,0] => :dose,
     [2,0] => :more_info,
   }
+  DEFAULT_HEAD_CLASS = 'subheading' + " #{__LINE__}"
   DEFAULT_CLASS = HtmlGrid::Value
   EMPTY_LIST = true
   OMIT_HEADER = false
@@ -41,56 +44,23 @@ class ActiveAgents < HtmlGrid::List
 	SORT_HEADER = false
   LEGACY_INTERFACE = false
   LABELS = false
-  CSS_HEAD_MAP = {
-    [1,0] => 'right',
-  }
-  CSS_MAP = {
-    [0,0] => 'list',
-    [1,0] => 'list right',
-  }
   def initialize(model, session, container = nil, is_active_agent = true)
     @is_active_agent = is_active_agent
     is_active_agent ? components.store([0,0], :substance) : components.store([0,0], :auxilliary)
+    components.delete([1,0]) unless model.find{ |x| x.dose && x.dose.qty != 0 }
+    components.delete([2,0]) unless model.find{ |x| x.more_info}
     super(model, session, container)
-  end
-  def th_substance
-    value = @is_active_agent ?  @session.lookandfeel.lookup(:th_substances) : @session.lookandfeel.lookup(:th_auxilliary)
-    value
-  end
-  def compose_footer(offset)
-    return nil if @is_active_agent
-    _compose_footer offset
-  end
-  def _compose_footer(offset)
-    comp = if act = @model.first
-             act.parent(@session.app)
-         end
-    input = galenic_form(comp)
-    label = HtmlGrid::SimpleLabel.new(:galenic_form, input, @session, self)
-    @grid.add [label, nil, input], *offset
-    @grid.add_style 'list', *offset
-    @grid.add_style 'list right', offset[0] + 1, offset[1]
-    offset[1] += 1
-    offset
+    @grid.set_attribute('cellspacing', '2')
   end
   def dose(model)
     model.dose.qty.eql?(0) ? nil : model.dose.to_s if model
   end
-  def galenic_form(model)
-    return nil if @is_active_agent
-    element = HtmlGrid::Value.new(:galenic_form, model, @session, self)
-    element.label = true
-    if model && gf = model.galenic_form
-      element.value = gf.send @session.language
-    end
-    element
-  end
-  def auxilliary(model)
+  def substance(model)
     if model && sub = model.substance
       sub.send(@session.language)
     end
   end
-  def substance(model)
+  def auxilliary(model)
     if model && sub = model.substance
       sub.send(@session.language)
     end
@@ -108,9 +78,9 @@ class RootActiveAgents < ActiveAgents
     [2,0,0] => :dose,
     [2,0,1] => :unsaved,
   }
-  COMPONENT_CSS_MAP = { [2,0] => 'short right' }
+  COMPONENT_CSS_MAP = { [2,0] => 'short right' + " #{__LINE__}" }
   CSS_HEAD_MAP = {
-    [2,0] => 'right',
+    [2,0] => 'right'+ " #{__LINE__}",
   }
   CSS_MAP = { }
   DEFAULT_CLASS = HtmlGrid::InputText
@@ -130,18 +100,7 @@ class RootActiveAgents < ActiveAgents
     link
   end
   def compose_footer(offset)
-    if(@model.empty? || @model.last)
-      @grid.add add(@model), *offset
-      offset[1] += 1
-      _compose_footer [offset[0].next, offset[1]]
-      offset[1] += 1
-      @grid.add delete_composition(@model), *offset
-      @grid.add_style 'right', *offset
-      @grid.set_colspan offset.at(0), offset.at(1)
-      offset[1] += 1
-    else
-      _compose_footer [offset[0].next, offset[1]]
-    end
+    super
   end
   def composition
     @container ? @container.list_index : @session.user_input(:composition)
@@ -194,39 +153,94 @@ class RootActiveAgents < ActiveAgents
     @lookandfeel.lookup(:unsaved) if model.nil?
   end
 end
-class CompositionList < HtmlGrid::DivList
+class CompositionList < HtmlGrid::Composite
+  include PartSize
   COMPONENTS = {
-    [0,0] => :excipiens,
-    [1,0] => :composition,
-    }
-  LABELS = false
-  OFFSET_STEP = [1,0]
-  OMIT_HEADER = true
-  def initialize(model, session, container = nil)
-    super(model, session, container)
+    [0,0] => :composition_label,
+    [0,1] => :galenic_form,
+    [0,2] => :excipiens,
+    [0,3] => :corresp,
+    [1,4] => :active_agents,
+    [1,5] => :auxilliary,
+  }
+  LABELS = true
+  DEFAULT_CLASS = HtmlGrid::Value
+  OMIT_HEADER = false
+  def init
+    if model.is_a?(ODDB::Composition)
+      components.delete([0,0]) unless model.label
+      components.delete([0,1]) unless model.galenic_form
+      components.delete([0,2]) unless model.excipiens
+      components.delete([0,3]) unless model.corresp
+      unless model.active_agents.find{|x| x.is_active_agent == true}
+        components.delete([1,4])
+      end
+      unless model.active_agents.find{|x| x.is_active_agent == false}
+        components.delete([1,5])
+      end
+    end
+    super
+    @grid.set_attribute('cellspacing', '2')
   end
-  def excipiens(model)
-    excipiens = model.excipiens
-    if excipiens
-      span = HtmlGrid::Span.new(excipiens, @session, self)
-      span.css_class = 'italic'
-      span.value = 'dummy'
-      [span, excipiens]
+  def header(context)
+    value = @lookandfeel.lookup(:th_parts)
+    value
+  end
+  def galenic_form(model, session=@session)
+    return nil unless model.is_a?(ODDB::Composition)
+    return nil unless model.galenic_form
+    element = HtmlGrid::Value.new(:galenic_form, model, @session, self)
+    element.label = true
+    if model && gf = model.galenic_form
+      element.value = gf.send @session.language
+    end
+    element
+  end
+  def composition_label(model, session=@session)
+    return nil unless model.is_a?(ODDB::Composition)
+    if (label = model.label)
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.css_class = 'left italic' + " #{__LINE__}"
+      div.value = model.label.to_s
+      div.label = true
+      div
     end
   end
-  def composition(model)
-    agents = ActiveAgents.new(model.active_agents.find_all{ |x| x.is_active_agent}, @session, self)
-    if @model.size > 1
-      span = HtmlGrid::Span.new(model, @session, self)
-      span.css_class = 'italic'
-      label = model.label || @list_index.to_i + 1
-      span.value = @lookandfeel.lookup(:part, label)
-      [span, agents]
-    else
-      agents
+  def source(model, session=@session)
+    return nil unless model.is_a?(ODDB::Composition)
+    if (source = model.source)
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.css_class = 'left italic' + " #{__LINE__}"
+      div.value = model.source.to_s
+      div
     end
+  end
+  def corresp(model, session=@session)
+    return nil unless model.is_a?(ODDB::Composition)
+    if model and model.corresp
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.css_class = 'left italic' + " #{__LINE__}"
+      div.value = model.corresp.to_s
+      div.label = true
+      div
+    end
+  end
+  def active_agents(model, session=@session)
+    all_agents = model.active_agents
+    agents = all_agents.find_all{|x| x.is_active_agent == true}
+    return nil unless agents.size > 0
+    elem = View::Admin::ActiveAgents.new(agents, @session, self, true)
+    elem
+  end
+  def auxilliary(model, session=@session)
+    all_agents = model.active_agents
+    agents = all_agents.find_all{|x| x.is_active_agent == false}
+    return nil unless agents.size > 0
+    elem = View::Admin::ActiveAgents.new(agents, @session, self, false)
+    elem
   end
 end
+
 class RootCompositionList < CompositionList
   attr_reader :list_index
   def add(model)
@@ -246,9 +260,16 @@ class RootCompositionList < CompositionList
     RootActiveAgents.new(model.active_agents, @session, self)
   end
 end
-class Compositions < HtmlGrid::DivComposite
+class Compositions < HtmlGrid::DivList
   COMPONENTS = { [0,0] => CompositionList }
-  CSS_ID = 'composition-list'
+  CSS_ID = 'composition-list' + " #{__LINE__}"
+  def init
+    super
+  end
+  def compositions(model)
+    res = View::Admin::CompositionList.new(model.sequence.compositions, @session, self)
+    res
+  end
 end
 class RootCompositions < Compositions
   COMPONENTS = { [0,0] => RootCompositionList }
@@ -464,7 +485,8 @@ class SequenceForm < HtmlGrid::Composite
 	include View::Admin::SequenceDisplay
 	include View::AdditionalInformation
   include FormMethods
-	COMPONENTS = {
+
+  COMPONENTS = {
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:seqnr,
 		[0,1]		=>	:name_base,
@@ -627,22 +649,21 @@ class ResellerSequenceForm < SequenceForm
 end
 class SequenceComposite < HtmlGrid::Composite
   include SwissmedicSource
-	#AGENTS = View::Admin::SequenceAgents
   COMPONENTS = {
     [0,0] => :sequence_name,
     [0,1] => View::Admin::SequenceInnerComposite,
     [0,2] => 'composition',
     [0,3] => :composition_text,
-    [0,4] => 'active_agents',
+    [0,4] => 'th_parts',
     [0,5] => :compositions,
     [0,6] => :sequence_packages
   }
   CSS_CLASS = 'composite'
   CSS_MAP = {
-    [0,0] => 'th',
-    [0,2] => 'subheading',
-    [0,3] => 'list',
-    [0,4] => 'subheading',
+    [0,0] => 'th' + " #{__LINE__}",
+    [0,2] => 'subheading' + " #{__LINE__}",
+    [0,3] => 'list' + " #{__LINE__}",
+    [0,4] => 'subheading' + " #{__LINE__}",
   }
 	PACKAGES = View::Admin::SequencePackages
   SYMBOL_MAP = {

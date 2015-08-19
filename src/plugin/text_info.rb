@@ -150,8 +150,10 @@ module ODDB
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       ptr = Persistence::Pointer.new(:patinfo).creator
       if existing
-        puts_sync "store_patinfo existing #{existing.to_s[0..200]} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
+        LogFile.debug "store_patinfo existing #{existing.to_s[0..200]} -> ptr #{ptr == nil} languages #{languages.keys} reg.iksnr #{reg.iksnr}"
         ptr = existing.pointer
+      else
+        LogFile.debug "store_patinfo none for reg.iksnr #{reg.iksnr}"
       end
       @app.update ptr, languages
     end
@@ -583,11 +585,6 @@ module ODDB
       args.store :company, company.pointer
 
       registration = app.update reg_ptr, args, :text_plugin_create_registration
-      seq_ptr = (registration.pointer + [:sequence, seqNr]).creator
-      unless seq_ptr
-         LogFile.debug("Failed to create")
-         raise "Failed to create #{iksnr} seq #{seqNr}"
-      end
       seq_args = { 
         :composition_text => nil,
         :name_base        => info.title,
@@ -601,10 +598,10 @@ module ODDB
       else
         seq_args.store :atc_class, info.atcCode
       end
-      res = app.update seq_ptr, seq_args, :text_plugin
+      sequence = app.update((registration.pointer + [:sequence, seqNr]).creator, seq_args, :text_plugin)
       app.registrations[iksnr]=registration
       app.registrations.odba_store
-      sequence = app.registration(iksnr).sequence(seqNr)
+      # pointer = reg_pointer + [:sequence, seq.seqnr]
       sequence.create_package(packNr)
       package = sequence.package(packNr)
       part = package.create_part
@@ -1051,6 +1048,7 @@ module ODDB
       iksnrs_from_xml = nil
       name  = ''
       dist  = nil
+      content = nil
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
@@ -1072,7 +1070,10 @@ module ODDB
           File.open(dist.sub('.html', '.styles'), 'w+') { |fh| fh.puts(styles) }
           content,html = nil,nil
           update = false
-          if !@options[:reparse] and File.exists?(dist)
+          if iksnrs_from_xml.size > 0 && type == 'fachinfo' and @app.registration(iksnrs_from_xml[0]) and not @app.registration(iksnrs_from_xml[0]).fachinfo
+            LogFile.debug "parse_and_update: must add fachinfo for #{iksnrs_from_xml}"
+            update = true
+          elsif !@options[:reparse] and File.exists?(dist)
             if File.size(dist) != File.size(temp)
               update = true
             else
@@ -1082,19 +1083,27 @@ module ODDB
           else
             update = true
           end
+          msg = "parse_#{type} reparse #{@options[:reparse]}dist #{dist} #{File.exists?(dist)} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            puts_sync "parse_and_update: calls parse_#{type} dist #{dist} iksnrs_from_xml #{iksnrs_from_xml.inspect} #{File.basename(dist)}, name #{name} #{lang} title #{title}"
+            LogFile.debug "parse_and_update: calls " + msg
             puts_sync "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
+            LogFile.debug "parse_and_update: no "  + msg
             File.unlink(temp)
           end
         end
       end
-      # LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist} i #{infos}"
+      LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist} i #{infos.inspect.to_s[0..400]}"
+#   import_daily_2015.08.11-fresh-debug.log:2015-08-13 09:07:36 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1094:in `block in parse_and_update': parse_and_update: no parse_fachinfo dist /var/www/oddb.org/data/html/fachinfo/de/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html iksnrs_from_xml ["65452"]
+#   import_daily_2015.08.11-fresh-debug.log:2015-08-13 09:07:36 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1099:in `parse_and_update': fachinfo empty? content true true iksnrs_from_xml ["65452"] dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html i {}
+#     update_textinfo_65452-fresh-debug.log:2015-08-13 09:24:06 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1089:in `block in parse_and_update': parse_and_update: calls parse_fachinfo dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
+#     update_textinfo_65452-fresh-debug.log:2015-08-13 09:23:55 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1099:in `parse_and_update': fachinfo empty? content true false iksnrs_from_xml ["65452"] dist /var/www/oddb.org/data/html/fachinfo/de/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html i {:de=>#<ODDB::FachinfoDocument2001:0x00000052881cb8 @amzv=nil, @contra_indications=Kontraindikationen
+# import_daily_2015.08.11-fresh-debug-2.log:2015-08-13 09:43:07 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1095:in `block in parse_and_update': parse_and_update: no parse_fachinfo reparse dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html true iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
+# import_daily_2015.08.11-fresh-debug-2.log:2015-08-13 09:40:20 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1095:in `block in parse_and_update': parse_and_update: no parse_fachinfo reparse dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html true iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
@@ -1102,6 +1111,7 @@ module ODDB
             _infos[lang] = infos[lang]
           end
         end
+        LogFile.debug "calling update_#{type} #{name}, #{iksnrs_from_xml}"
         self.send("update_#{type}", name, iksnrs_from_xml, _infos, {})
       end
       [iksnrs, infos]

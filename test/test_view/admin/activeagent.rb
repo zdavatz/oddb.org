@@ -25,8 +25,9 @@ class TestActiveAgentInnerComposite <Minitest::Test
                           :lookandfeel => @lnf,
                           :error       => 'error'
                          )
+    dose       = flexmock('dose', :qty => 'qty', :unit => 'unit')
     substance  = flexmock('substance', :language => 'language')
-    @model     = flexmock('model', :substance => substance, :dose => 'dose')
+    @model     = flexmock('model', :substance => substance, :dose => dose)
     @composite = ODDB::View::Admin::ActiveAgentInnerComposite.new(@model, @session)
   end
   def test_substance
@@ -71,11 +72,12 @@ class TestActiveAgentComposite <Minitest::Test
                          )
     parent     = flexmock('parent', :name => 'name')
     substance  = flexmock('substance', :language => 'language')
-    @model     = flexmock('model', 
+    dose       = flexmock('dose', :qty => 'qty', :unit => 'unit')
+    @model     = flexmock('model',
                           :parent        => parent,
                           :pointer_descr => 'pointer_descr',
                           :substance     => substance,
-                          :dose          => 'dose',
+                          :dose          => dose,
                          )
     @composite = ODDB::View::Admin::ActiveAgentComposite.new(@model, @session)
   end
@@ -113,10 +115,12 @@ class TestRootActiveAgentComposite <Minitest::Test
                           :active_agents => [active_agent],
                           :packages      => {'key' => package}
                          )
-    @model     = flexmock('model', 
+    dose       = flexmock('dose', :qty => 'qty', :unit => 'unit')
+    @model     = flexmock('model',
                           :parent        => parent,
                           :pointer_descr => 'pointer_descr',
-                          :sequence      => sequence
+                          :sequence      => sequence,
+                          :dose          => dose,
                          )
     @composite = ODDB::View::Admin::RootActiveAgentComposite.new(@model, @session)
   end

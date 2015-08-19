@@ -14,50 +14,6 @@ require 'htmlgrid/booleanvalue'
 module ODDB
 	module View
 		module Drugs
-class CompositionList < HtmlGrid::DivList
-  include PartSize
-  COMPONENTS = {
-    [0,0] => :composition,
-    [1,0] => :auxilliary,
-    [2,0] => :excipiens,
-  }
-  LABELS = false
-  OFFSET_STEP = [1,0] # default is    OFFSET_STEP = [0,1]
-  OMIT_HEADER = true
-  def initialize(model, session, container = nil)
-    super(model, session)
-  end
-  def excipiens(model)
-    if (comp = model.composition)
-      div = HtmlGrid::Div.new(model, @session, self)
-      div.css_class = 'list'
-      div.value = comp.excipiens.to_s
-      [ div ]
-    end
-  end
-  def composition(model)
-    div = HtmlGrid::Div.new(model, @session, self)
-    div.css_class = 'galenic-form'
-    all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent}
-    size = part_size(model)
-    if (comp = model.composition) && (label = comp.label)
-      size = "#{label}) #{size}"
-    end
-    div.value = size
-    [ div, View::Admin::ActiveAgents.new(agents, @session, self, true)]
-  end
-  def auxilliary(model)
-    div = HtmlGrid::Div.new(model, @session, self)
-    div.css_class = 'galenic-form'
-    all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent == false}
-    [ div, View::Admin::ActiveAgents.new(agents, @session, self, false)]
-  end
-end
-class Parts < View::Admin::Compositions
-  COMPONENTS = { [0,0] => CompositionList }
-end
 class PackageInnerComposite < HtmlGrid::Composite
 	include DataFormat
 	include View::AdditionalInformation
@@ -286,7 +242,7 @@ class PackageComposite < HtmlGrid::Composite
     [0,2] => 'composition',
     [0,3] => :composition_text,
     [0,4] => 'th_parts',
-    [0,5] => :parts,
+    [0,5] => :compositions,
     [0,6] => 'th_source',
     [0,7] => :source,
   }
@@ -306,7 +262,7 @@ class PackageComposite < HtmlGrid::Composite
       components.store [0,4], 'division'
       components.store [0,5], :division
       components.store [0,6], 'th_part'
-      components.store [0,7], :parts
+      components.store [0,7], :compositions
       components.store [0,8], 'th_source'
       components.store [0,9], :source
       css_map.store [0,8], 'subheading'
@@ -325,7 +281,7 @@ class PackageComposite < HtmlGrid::Composite
     super
   end
   def compositions(model, session=@session)
-    View::Admin::Compositions.new(model.compositions, @session, self)
+    View::Admin::Compositions.new(model.sequence.compositions, @session, self)
   end
   def division(model, session)
     division = nil
