@@ -166,6 +166,9 @@ class CompositionList < HtmlGrid::Composite
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
   OMIT_HEADER = false
+  CSS_MAP = {
+    [0,3] => 'top',
+  }
   def init
     if model.is_a?(ODDB::Composition)
       components.delete([0,0]) unless model.label
