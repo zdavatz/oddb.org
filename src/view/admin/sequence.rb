@@ -227,14 +227,14 @@ class CompositionList < HtmlGrid::Composite
   end
   def active_agents(model, session=@session)
     all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent == true}
+    agents = all_agents.find_all{|x| x.is_active_agent == true}.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents, @session, self, true)
     elem
   end
   def auxilliary(model, session=@session)
     all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent == false}
+    agents = all_agents.find_all{|x| x.is_active_agent == false}.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents, @session, self, false)
     elem
