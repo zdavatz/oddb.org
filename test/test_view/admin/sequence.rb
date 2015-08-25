@@ -14,50 +14,6 @@ require 'htmlgrid/span'
 require 'model/sequence'
 require 'view/admin/registration'
 
-class TestActiveAgent <Minitest::Test
-  include FlexMock::TestCase
-  def setup
-    lookandfeel = flexmock('lookandfeel') do |l|
-      l.should_receive(:lookup)
-      l.should_receive(:attributes).and_return({})
-    end
-    @session = flexmock('session') do |s|
-      s.should_receive(:lookandfeel).and_return(lookandfeel)
-      s.should_receive(:app)
-      s.should_receive(:language).by_default
-      s.should_receive(:state)
-    end
-    compose = flexmock('compose') do |c|
-      c.should_receive(:galenic_form)
-    end
-    active_agent = flexmock('active_agent') do |m|
-      m.should_receive(:substance)
-      m.should_receive(:dose)
-      m.should_receive(:ikscd)
-      m.should_receive(:parent).and_return(compose)
-    end
-    substance = flexmock('substance', :language => 'language')
-    @model = flexmock('model',
-                      :empty? => false,
-                      :substance => substance,
-                      :each_with_index => active_agent,
-                      :first => active_agent,
-                      :size => 1,
-                     )
-    @agents = ODDB::View::Admin::ActiveAgents.new(@model, @session)
-  end
-  def test__compose_footer
-    offset = [0,0]
-    assert_equal([0,1], @agents._compose_footer(offset))
-  end
-  def test_substance
-    flexmock(@session, :language => 'language')
-    substance = flexmock('substance', :language => 'language')
-    model = flexmock('model', :substance => substance)
-    assert_equal('language', @agents.substance(model))
-  end
-end
-
 class TestRootActiveAgents <Minitest::Test
   include FlexMock::TestCase
   def setup
@@ -74,7 +30,6 @@ class TestRootActiveAgents <Minitest::Test
     state = flexmock('state') do |s|
       s.should_receive(:model).and_return(model)
     end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     @session = flexmock('session') do |s|
       s.should_receive(:lookandfeel).and_return(lookandfeel)
       s.should_receive(:user_input)
@@ -82,28 +37,17 @@ class TestRootActiveAgents <Minitest::Test
       s.should_receive(:app)
     end
     active_agent = flexmock('active_agent') do |m|
-      m.should_receive(:dose).and_return(dose)
+      m.should_receive(:dose)
       m.should_receive(:more_info)
       m.should_receive(:substance)
       m.should_receive(:parent)
     end
+    @dose = flexmock('dose', :qty => 'qty')
     @model = [active_agent]
     @agents = ODDB::View::Admin::RootActiveAgents.new(@model, @session)
   end
   def test_add
     assert_kind_of(HtmlGrid::Link, @agents.add('model'))
-  end
-  def test_compose_footer
-    offset = [0,0]
-    assert_equal(3, @agents.compose_footer(offset))
-  end
-  def test_compose_footer__else
-    flexmock(@model) do |m|
-      m.should_receive(:empty?).and_return(false)
-      m.should_receive(:last).and_return(false)
-    end
-    offset = [0,0]
-    assert_equal([1,1], @agents.compose_footer(offset))
   end
   def test_composition
     assert_equal(nil, @agents.composition)
@@ -118,8 +62,7 @@ class TestRootActiveAgents <Minitest::Test
     assert_kind_of(HtmlGrid::Link, @agents.delete_composition('model'))
   end
   def test_dose
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
-    model = flexmock('model', :dose => dose)
+    model = flexmock('model', :dose => @dose)
     assert_kind_of(HtmlGrid::InputText, @agents.dose(model))
   end
   def test_galenic_form
@@ -139,132 +82,6 @@ class TestRootActiveAgents <Minitest::Test
   end
   def test_unsaved
     assert_equal(nil, @agents.unsaved(nil))
-  end
-end
-
-class TestCompositionList <Minitest::Test
-  include FlexMock::TestCase
-  def setup
-    lookandfeel = flexmock('lookandfeel') do |l|
-      l.should_receive(:lookup)
-      l.should_receive(:attributes).and_return({})
-    end
-    @session = flexmock('session') do |s|
-      s.should_receive(:lookandfeel).and_return(lookandfeel)
-      s.should_receive(:app)
-      s.should_receive(:state)
-      s.should_receive(:error).and_return('error')
-      s.should_receive(:language).and_return(:de)
-      end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
-    substance = flexmock('substance') do |a|
-      a.should_receive(:dose).and_return(dose)
-      a.should_receive(:de).and_return('de')
-    end
-    active_agent = flexmock('active_agent') do |a|
-      a.should_receive(:more_info)
-      a.should_receive(:is_active_agent).and_return true
-      a.should_receive(:substance).and_return(substance)
-      a.should_receive(:dose).and_return(dose)
-      a.should_receive(:parent)
-    end
-    excipiens = flexmock('excipiens') do |a|
-      a.should_receive(:substance)
-    end
-    @model = flexmock('model') do |m|
-      m.should_receive(:excipiens).by_default.and_return(excipiens)
-      m.should_receive(:corresp).by_default
-      m.should_receive(:label).by_default.and_return('label')
-      m.should_receive(:active_agents).and_return([active_agent])
-    end
-    model = [@model]
-    @agents = ODDB::View::Admin::CompositionList.new(model, @session)
-  end
-  def test_composition
-    assert_kind_of(ODDB::View::Admin::ActiveAgents, @agents.composition(@model))
-  end
-  def test_composition__model_size
-    model = @model
-    @agents.instance_eval('@model = [model, model]')
-    flexmock(@model) do |m|
-      m.should_receive(:label)
-    end
-    result = @agents.composition(@model)
-    assert_kind_of(HtmlGrid::Span, result[0])
-    assert_kind_of(ODDB::View::Admin::ActiveAgents, result[1])
-  end
-  def test_composition__model_corresp
-    model = @model
-    @agents.instance_eval('@model = [model, model]')
-    flexmock(@model) do |m|
-      m.should_receive(:label).once.and_return('label')
-      m.should_receive(:corresp).at_least.once.and_return('corresp')
-    end
-    result = @agents.composition(@model)
-    assert_kind_of(HtmlGrid::Span, result[0])
-    assert_kind_of(HtmlGrid::Span, result[1])
-    assert_kind_of(ODDB::View::Admin::ActiveAgents, result[2])
-  end
-end
-
-class TestRootCompositionList <Minitest::Test
-  include FlexMock::TestCase
-  def setup
-    lookandfeel = flexmock('lookandfeel') do |l|
-      l.should_receive(:lookup)
-      l.should_receive(:attributes).and_return({})
-      l.should_receive(:event_url)
-    end
-    state = flexmock('state') 
-    @session = flexmock('session') do |s|
-      s.should_receive(:lookandfeel).and_return(lookandfeel)
-      s.should_receive(:app)
-      s.should_receive(:language).and_return(:de)
-      s.should_receive(:error).and_return('error')
-      s.should_receive(:state).and_return(state)
-    end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
-    substance = flexmock('substance', :language => 'language', :de => 'de', :dose => dose)
-    active_agent = flexmock('active_agent') do |a|
-      a.should_receive(:substance).and_return(substance)
-      a.should_receive(:dose).and_return(dose)
-      a.should_receive(:is_active_agent).and_return(true)
-      a.should_receive(:parent)
-    end
-    excipiens = flexmock('excipiens') do |a|
-      a.should_receive(:substancexx)
-      # a.should_receive(:corresp)
-    end
-    @model = flexmock('model') do |m|
-      m.should_receive(:corresp)
-      m.should_receive(:excipiens).and_return(excipiens)
-      m.should_receive(:active_agents).and_return([active_agent])
-      m.should_receive(:iksnr).and_return('iksnr')
-      m.should_receive(:seqnr).and_return('seqnr')
-    end
-    flexmock(state, :model => @model)
-    model = [@model]
-    @agents = ODDB::View::Admin::RootCompositionList.new(model, @session)
-  end
-  def test_add
-    assert_kind_of(HtmlGrid::Link, @agents.add('model'))
-  end
-  def test_compose
-    result = @agents.compose
-    assert_equal(4, result.size)
-    assert_equal(2, result[0].size)
-    assert_equal(1, result[1].size)
-    assert_equal(2, result[2].size)
-    assert_equal(1, result[3].size)
-    assert_kind_of(HtmlGrid::Span, result[0][0])
-    assert_kind_of(HtmlGrid::Link, result[1][0])
-    assert_kind_of(HtmlGrid::Span, result[2][0])
-    assert_kind_of(HtmlGrid::Link, result[3][0])
-
-    skip("niklaus")
-    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[0][1])
-    assert_kind_of(HtmlGrid::Span, result[2][0][0])
-    assert_kind_of(ODDB::View::Admin::RootActiveAgents, result[2][1])
   end
 end
 
@@ -346,10 +163,9 @@ class TestSequenceInnerComposite <Minitest::Test
     assert_kind_of(HtmlGrid::Value, @composite.atc_class(@model, @session))
   end
   def test_atc_descr
-    atc_class = flexmock('atc_class', :description => nil)
+    atc_class = flexmock('atc_class', :description => 'desc')
     flexmock(@model, :atc_class => atc_class)
     assert_kind_of(NilClass, @composite.atc_descr(@model, @session))
-    skip("HtmlGrid::Text does not work, is the mocking wrong?") {assert_kind_of(HtmlGrid::Text, @composite.atc_descr(@model, @session)) }
   end
   def test_atc_request
     flexmock(@model, :atc_request_time => Time.now - 60*60*24*3 - 100)
@@ -534,24 +350,27 @@ class TestSequenceComposite <Minitest::Test
     substance = flexmock('substance') do |s|
       s.should_receive(:language).and_return('language')
     end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     active_agent = flexmock('active_agent') do |a|
       a.should_receive(:substance).and_return(substance)
       a.should_receive(:is_active_agent).and_return true
       a.should_receive(:more_info)
-      a.should_receive(:dose).and_return(dose)
+      a.should_receive(:dose)
       a.should_receive(:parent)
     end
     excipiens = flexmock('excipiens') do |a|
       a.should_receive(:substancexx)
-      a.should_receive(:corresp)
+    end
+    galenic_form = flexmock('galenic_form') do |g|
+      g.should_receive(:language).and_return('language')
     end
     composition = flexmock('composition') do |c|
-      c.should_receive(:excipiens).and_return(excipiens)
-      c.should_receive(:galenic_form)
+      c.should_receive(:galenic_form).and_return(galenic_form)
       c.should_receive(:corresp).and_return('corresp')
+      c.should_receive(:source).and_return('source')
       c.should_receive(:label).and_return('label')
+      c.should_receive(:excipiens).and_return(excipiens)
       c.should_receive(:active_agents).and_return([active_agent])
+      c.should_receive(:inactive_agents).and_return([])
     end
     commercial_form = flexmock('commercial_form')
     pointer = flexmock('pointer', :to_csv => 'pointer')
@@ -615,27 +434,26 @@ class TestRootSequenceForm <Minitest::Test
       s.should_receive(:warning?)
       s.should_receive(:error?)
       s.should_receive(:info?)
+      s.should_receive(:language).and_return('language')
       s.should_receive(:state).and_return(state)
       s.should_receive(:app)
     end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
-    active_agent = flexmock('active_agent') do |a|
-      a.should_receive(:dose).and_return(dose)
+    agent = flexmock('agent') do |a|
+      a.should_receive(:dose)
       a.should_receive(:substance)
       a.should_receive(:more_info)
       a.should_receive(:parent)
-      a.should_receive(:is_active_agent).and_return(true)
     end
-    excipiens = flexmock('excipiens') do |a|
-      a.should_receive(:substancexx)
-      a.should_receive(:corresp)
-    end
+    excipiens = flexmock('excipiens')
+    galenic_form = flexmock('galenic_form', :language => 'language')
     composition = flexmock('composition') do |c|
-      c.should_receive(:active_agents).and_return([active_agent])
       c.should_receive(:excipiens).and_return(excipiens)
+      c.should_receive(:galenic_form).and_return(galenic_form)
       c.should_receive(:label).and_return('label')
-      c.should_receive(:galenic_form).and_return(nil)
-      c.should_receive(:corresp)
+      c.should_receive(:corresp).and_return('corresp')
+      c.should_receive(:inactive_agents).and_return([agent])
+      c.should_receive(:active_agents).and_return([agent])
+      c.should_receive(:excipiens).and_return(excipiens)
     end
     division = flexmock('division',
                         :divisable => 'divisable',
@@ -700,27 +518,23 @@ class TestResellerSequenceComposite <Minitest::Test
     substance = flexmock('substance') do |s|
       s.should_receive(:language).and_return('language')
     end
-    dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     active_agent = flexmock('active_agent') do |a|
       a.should_receive(:substance).and_return(substance)
-      a.should_receive(:dose).and_return(dose)
-      a.should_receive(:more_info).and_return('more_info')
+      a.should_receive(:dose)
+      a.should_receive(:more_info)
       a.should_receive(:parent)
-      a.should_receive(:is_active_agent).and_return(true)
     end
     excipiens = flexmock('excipiens') do |a|
       a.should_receive(:substancexx)
-      a.should_receive(:corresp)
     end
-    galenic_form = flexmock('galenic_form') do |g|
-      g.should_receive(:language).and_return('galenic_form-language')
-    end
+    galenic_form = flexmock('galenic_form', :language => 'language')
     composition = flexmock('composition') do |c|
       c.should_receive(:active_agents).and_return([active_agent])
+      c.should_receive(:inactive_agents).and_return([])
       c.should_receive(:excipiens).and_return(excipiens)
       c.should_receive(:galenic_form).and_return(galenic_form)
-      c.should_receive(:corresp)
-      c.should_receive(:label)
+      c.should_receive(:label).and_return('label')
+      c.should_receive(:corresp).and_return('corresp')
     end
     commercial_form = flexmock('commercial_form')
     pointer = flexmock('pointer', :to_csv => 'pointer')

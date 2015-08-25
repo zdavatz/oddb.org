@@ -60,11 +60,6 @@ class ActiveAgents < HtmlGrid::List
       sub.send(@session.language)
     end
   end
-  def inactive_agents(model)
-    if model && sub = model.substance
-      sub.send(@session.language)
-    end
-  end
   def more_info(model)
     if model && info = model.more_info
       info

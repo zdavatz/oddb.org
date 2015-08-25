@@ -790,4 +790,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal(company, @app.company_by_gln(TEST_EAN13))
     assert_equal(0, @app.search_pharmacies(TEST_EAN13).size)
   end
+  def test_cleanup_active_agents_in_compositions
+    @app.cleanup_active_agents_in_compositions
+  end
 end

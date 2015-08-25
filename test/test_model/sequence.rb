@@ -635,7 +635,7 @@ class TestSequence <Minitest::Test
     active_agent1.substance = "Subst1"
     active_agent2.substance = "Subst2"
     comp = ODDB::Composition.new
-    comp.agents.push active_agent1, active_agent2
+    comp.active_agents.push active_agent1, active_agent2
     @seq.compositions.push comp
     expected = ["Subst1", "Subst2"]
     assert_equal(expected, @seq.active_agents.collect{|x| x.substance})
@@ -647,7 +647,7 @@ class TestSequence <Minitest::Test
     active_agent1.substance = "Subst1"
     active_agent2.substance = "Subst2"
     comp = ODDB::Composition.new
-    comp.agents.push active_agent1, active_agent2
+    comp.active_agents.push active_agent1, active_agent2
     @seq.compositions.push comp
     expected = ["Subst1", "Subst2"]
     assert_equal(expected, @seq.active_agents.collect{|x| x.substance})
@@ -660,7 +660,8 @@ class TestSequence <Minitest::Test
     active_agent2.substance = "Subst2"
     active_agent2.is_active_agent = false
     comp = ODDB::Composition.new
-    comp.agents.push active_agent1, active_agent2
+    comp.active_agents.push active_agent1
+    comp.inactive_agents.push active_agent2
     @seq.compositions.push comp
     assert_equal(["Subst1"], @seq.active_agents.collect{|x| x.substance})
     assert_equal(["Subst2"], @seq.inactive_agents.collect{|x| x.substance})

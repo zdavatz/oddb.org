@@ -179,7 +179,9 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                                 :oid       => 'oid',
                                 :excipiens => excipiens,
                                 :active_agents   => [@active_agent],
-                                :corresp   => 'corresp',
+                                :corresp => 'corresp',
+                                :galenic_form => galenic_form,
+                                :inactive_agents => [],
                                 )
     part       = flexmock('part',
                           :oid             => 'oid',
@@ -337,12 +339,15 @@ class TestPackage <Minitest::Test
                             :dose      => dose,
                             :parent    => parent
                            )
+    galenic_form     = flexmock('galenic_form', :language => 'language')
     composition = flexmock('composition',
                            :label => 'label',
                            :oid => 'oid',
                            :excipiens => excipiens,
                            :corresp => 'corresp',
+                           :galenic_form => galenic_form,
                            :active_agents => [active_agent],
+                           :inactive_agents => [],
                            )
     part      = flexmock('part',
                          :oid     => 'oid',

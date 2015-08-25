@@ -27,8 +27,9 @@ module ODDB
       :sequence => 'ODDB::Sequence',
     }
     define_check_class_methods check_class_list
-		def initialize(substance_name, is_active_agent = true)
+		def initialize(substance_name)
 			super()
+      @is_active_agent = nil
 			@substance_name = substance_name
       @is_active_agent = is_active_agent
 		end
@@ -48,6 +49,7 @@ module ODDB
       return true if substance_or_oid.respond_to?(:to_i) && substance_or_oid.to_i == substance_or_oid
       return true if substance_or_oid.respond_to?(:substance_name)  && substance_or_oid == @substance_name
       return true if @substance != nil && @substance.same_as?(substance_or_oid)
+      return true if @substance_name != nil && @substance_name.is_a?(String) && @substance_name.eql?(substance_or_oid)
       return false
 		end
     def to_a
@@ -112,20 +114,35 @@ module ODDB
 			values
 		end
 	end
-	class ActiveAgent < ActiveAgentCommon
-		ODBA_PREFETCH = true
-		def substance=(substance)
+  class ActiveAgent < ActiveAgentCommon
+    ODBA_PREFETCH = true
+    def initialize(substance_name)
+      super(substance_name)
+      @is_active_agent = true
+    end
+    def substance=(substance)
       super(substance)
-			unless(substance.nil? || @substance == substance)
-				if(@substance.respond_to?(:remove_sequence))
-					@substance.remove_sequence(@sequence)
-				end
-				@substance = substance
+      unless(substance.nil? || @substance == substance)
+        if(@substance.respond_to?(:remove_sequence))
+          @substance.remove_sequence(@sequence)
+        end
+        @substance = substance
         if substance
           substance.add_sequence @sequence
         end
-			end
-			@substance
-		end
-	end
+      end
+      @substance
+    end
+  end
+  class InactiveAgent < ActiveAgentCommon
+    ODBA_PREFETCH = true
+    def initialize(substance_name)
+      super(substance_name)
+      @is_active_agent = false
+    end
+    def substance=(substance)
+      super(substance)
+      @substance
+    end
+  end
 end

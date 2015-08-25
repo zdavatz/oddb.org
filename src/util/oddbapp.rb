@@ -2205,6 +2205,19 @@ module ODDB
       @migel_count ||= MIGEL_SERVER.migelids.length
     end
 
+    def cleanup_active_agents_in_compositions
+      nr_active_agents = 0; nr_inactive_agents=0;
+      sequences.each{
+        |seq|
+      seq.compositions.each{
+                            |comp|
+                           nr_active_agents += comp.active_agents.size if comp.active_agents
+                           nr_inactive_agents += comp.inactive_agents.size if comp.inactive_agents
+                           } if seq.compositions
+      }
+      puts "Updated #{sequences.size} sequences. Found #{nr_inactive_agents} inactive and #{nr_active_agents} active agents"
+    end
+
 	end
 end
 

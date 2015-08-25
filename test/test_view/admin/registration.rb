@@ -152,6 +152,7 @@ class TestRegistrationForm <Minitest::Test
       u.should_receive(:allowed?).by_default
     end
     flexmock(@session) do |s|
+      s.should_receive(:error).and_return('error')
       s.should_receive(:user).and_return(@user)
     end
     patent = flexmock('patent') do |p|
