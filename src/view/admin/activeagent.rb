@@ -37,7 +37,6 @@ class ActiveAgentForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:substance,
 		[2,0]		=>	:dose,
-		[4,0]		=>	:spagyric_dose,
 		[0,1]		=>	:chemical_substance,
 		[2,1]		=>	:chemical_dose,
 		[0,2]		=>	:equivalent_substance,

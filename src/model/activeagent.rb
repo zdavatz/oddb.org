@@ -12,7 +12,7 @@ module ODDB
 		attr_accessor :substance
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
-		attr_accessor :spagyric_dose, :spagyric_type, :composition, :more_info, :is_active_agent
+		attr_accessor :composition, :more_info, :is_active_agent
     class << self
       include AccessorCheckMethod
     end
@@ -43,10 +43,9 @@ module ODDB
 				@substance.remove_sequence(@sequence)
 			end
 		end
-		def same_as?(substance_or_oid, spag=nil)
+		def same_as?(substance_or_oid)
 			oid == substance_or_oid.to_i \
-				||(!@substance.nil? && @substance.same_as?(substance_or_oid) \
-					 && @spagyric_dose == spag)
+				||(!@substance.nil? && @substance.same_as?(substance_or_oid))
 		end
     def to_a
       [@substance, @dose]

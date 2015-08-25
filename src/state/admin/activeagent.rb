@@ -42,7 +42,7 @@ module ActiveAgentMethods
 	end
 	def update
 		keys = [:substance, :dose, :chemical_substance, :chemical_dose,
-			:spagyric_dose, :equivalent_substance, :equivalent_dose]
+			:equivalent_substance, :equivalent_dose]
 		input = user_input(keys, [:substance])
 		newstate = self
 		unless (error?)

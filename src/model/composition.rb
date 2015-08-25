@@ -33,11 +33,11 @@ module ODDB
       @pointer = @sequence.pointer + [:composition, @oid]
       odba_store
     end
-    def active_agent(substance_or_oid, spag=nil)
-      @active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
+    def active_agent(substance_or_oid)
+      @active_agents.find { |active| active.same_as?(substance_or_oid) }
     end
-    def get_auxiliary_substance(substance_or_oid, spag=nil)
-      @active_agents.find { |active| active.same_as?(substance_or_oid, spag) and not active.is_active_agent}
+    def get_auxiliary_substance(substance_or_oid)
+      @active_agents.find { |active| active.same_as?(substance_or_oid) and not active.is_active_agent}
     end
     def checkout
       self.galenic_form = nil

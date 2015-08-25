@@ -463,8 +463,6 @@ module ODDB
       :reverse,
 			:size,
 			:sortvalue,
-			:spagyric_dose,
-			:spagyric_type,
       :specialities,
 			:subscribe,
 			:substance,
