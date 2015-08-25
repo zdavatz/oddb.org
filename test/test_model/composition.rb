@@ -56,7 +56,7 @@ module ODDB
       assert_equal(false, result.is_active_agent)
     end
     def test_delete_active_agent
-      active_agent = flexmock('active_agent', :same_as? => true)
+      active_agent = flexmock('active_agent', :same_as? => true, :is_active_agent => true)
       active_agents = flexmock([active_agent], :odba_isolated_store => 'odba_isolated_store')
       @composition.instance_eval('@active_agents = active_agents')
       assert_equal(active_agent, @composition.delete_active_agent('substance'))
