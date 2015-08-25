@@ -106,7 +106,10 @@ class TestSequence <Minitest::Test
     end
   end
   class StubActiveAgent
-    attr_accessor :substance
+    attr_accessor :substance, :is_active_agent
+    def initialize
+      @is_active_agent = true
+    end
   end
   def setup
     @active_registration = ODDB::Registration.new(1)
@@ -125,7 +128,7 @@ class TestSequence <Minitest::Test
     @seq.registration = flexmock :active? => true, :company => 'company',
                                  :may_violate_patent? => true
     seq = flexmock :patent_protected? => true, :company => 'other',
-                   :active_agents => []
+                   :agents => []
     @seq.atc_class = flexmock :sequences => [seq]
     assert_equal false, @seq.active?
   end
@@ -632,9 +635,11 @@ class TestSequence <Minitest::Test
     active_agent1.substance = "Subst1"
     active_agent2.substance = "Subst2"
     comp = ODDB::Composition.new
-    comp.active_agents.push active_agent1, active_agent2
+    comp.agents.push active_agent1, active_agent2
     @seq.compositions.push comp
-    assert_equal(["Subst1", "Subst2"], @seq.substances)
+    expected = ["Subst1", "Subst2"]
+    assert_equal(expected, @seq.active_agents.collect{|x| x.substance})
+    assert_equal(expected, @seq.substances)
   end
   def test_substance_names
     active_agent1 = StubActiveAgent.new
@@ -642,10 +647,23 @@ class TestSequence <Minitest::Test
     active_agent1.substance = "Subst1"
     active_agent2.substance = "Subst2"
     comp = ODDB::Composition.new
-    comp.active_agents.push active_agent1, active_agent2
+    comp.agents.push active_agent1, active_agent2
     @seq.compositions.push comp
     expected = ["Subst1", "Subst2"]
+    assert_equal(expected, @seq.active_agents.collect{|x| x.substance})
     assert_equal(expected, @seq.substance_names)
+  end
+  def test_inactive_agents
+    active_agent1 = StubActiveAgent.new
+    active_agent2 = StubActiveAgent.new
+    active_agent1.substance = "Subst1"
+    active_agent2.substance = "Subst2"
+    active_agent2.is_active_agent = false
+    comp = ODDB::Composition.new
+    comp.agents.push active_agent1, active_agent2
+    @seq.compositions.push comp
+    assert_equal(["Subst1"], @seq.active_agents.collect{|x| x.substance})
+    assert_equal(["Subst2"], @seq.inactive_agents.collect{|x| x.substance})
   end
   def test_search_terms
     expected = [
@@ -660,8 +678,8 @@ class TestSequence <Minitest::Test
   end
   def test_violates_patent
     act = flexmock :substance => 'Substance', :chemical_substance => nil
-    comp = flexmock :active_agents => [act]
-    seq = flexmock :active_agents => [act]
+    comp = flexmock :active_agents => [act], :agents => [act]
+    seq = flexmock  :active_agents => [act], :agents => [act]
     @seq.compositions.push comp
     assert_equal true, @seq._violates_patent?(seq)
     @seq.compositions.clear

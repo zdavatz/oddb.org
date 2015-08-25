@@ -17,6 +17,10 @@ module ODDB
     def setup
       @composition = ODDB::Composition.new
       @tst_name = 'substance_name'
+      flexmock(ODBA.cache,
+               :next_id => 123,
+               :store   => nil
+              )
     end
     def test_init
       pointer = flexmock('pointer', :append => 'append')
@@ -27,22 +31,27 @@ module ODDB
       assert_nil(@composition.active_agent('substance_or_oid'))
     end
     def test_active_agent__found
-      active_agent = flexmock('active_agent', :same_as? => true)
-      @composition.instance_eval('@active_agents = [active_agent]')
-      assert_equal(active_agent, @composition.active_agent('substance'))
+      agent = flexmock('agent', :same_as? => true)
+      @composition.instance_eval('@agents = [agent]')
+      assert_equal(agent, @composition.active_agent('substance'))
     end
     def test_active_agent__found_substance
-      active_agent = flexmock('active_agent', :same_as? => true, :is_active_agent => false)
-      @composition.instance_eval('@active_agents = [active_agent]')
-      assert_equal(active_agent, @composition.active_agent('substance'))
+      flexmock(ODBA.cache,
+               :next_id => 123,
+               :store   => nil
+              )
+      @composition.create_active_agent('substance')
+      result = @composition.active_agent('substance')
+      assert_kind_of(ODDB::ActiveAgent, @composition.active_agent('substance'))
     end
     def test_checkout
-      active_agent  = flexmock('active_agent', 
+      agent  = flexmock('agent',
                                :checkout    => 'checkout',
-                               :odba_delete => 'odba_delete'
+                               :odba_delete => 'odba_delete',
+                        :is_active_agent => true,
                               )
-      active_agents = flexmock([active_agent], :odba_delete => 'odba_delete')
-      @composition.instance_eval('@active_agents = active_agents')
+      agents = flexmock([agent], :odba_delete => 'odba_delete')
+      @composition.instance_eval('@agents = agents')
       assert_equal('odba_delete', @composition.checkout)
     end
     def test_create_active_agent
@@ -50,23 +59,32 @@ module ODDB
       assert_kind_of(ODDB::ActiveAgent, result)
       assert_equal(true, result.is_active_agent)
     end
-    def test_create_substance
+    def test_create_substance_true
+      result = @composition.create_active_agent('substance_name', true)
+      assert_kind_of(ODDB::ActiveAgent, result)
+      assert_equal(true, result.is_active_agent)
+    end
+    def test_create_substance_false
       result = @composition.create_active_agent('substance_name', false)
       assert_kind_of(ODDB::ActiveAgent, result)
       assert_equal(false, result.is_active_agent)
     end
     def test_delete_active_agent
-      active_agent = flexmock('active_agent', :same_as? => true, :is_active_agent => true)
-      active_agents = flexmock([active_agent], :odba_isolated_store => 'odba_isolated_store')
-      @composition.instance_eval('@active_agents = active_agents')
-      assert_equal(active_agent, @composition.delete_active_agent('substance'))
+      puts "test_delete_active_agent"
+      agent = @composition.create_active_agent('substance_name', true)
+      assert_kind_of(ODDB::ActiveAgent, agent)
+      assert_equal(1, @composition.agents.size)
+      result = @composition.delete_active_agent('substance_name')
+      assert_equal(0, @composition.agents.size)
+      assert_kind_of(ODDB::ActiveAgent, result)
     end
     def test_doses
-      active_agent = flexmock('active_agent', 
+      agent = flexmock('agent',
                               :same_as? => true,
-                              :dose     => 'dose'
+                              :dose     => 'dose',
+                              :is_active_agent  => true,
                              )
-      @composition.instance_eval('@active_agents = [active_agent]')
+      @composition.instance_eval('@agents = [agent]')
       assert_equal(['dose'], @composition.doses)
     end
     def test_galenic_group
@@ -80,30 +98,31 @@ module ODDB
       assert_equal('route_of_administration', @composition.route_of_administration)
     end
     def test_substances
-      active_agent = flexmock('active_agent', :substance => 'substance')
-      @composition.instance_eval('@active_agents = [active_agent]')
+      agent = flexmock('agent', :substance => 'substance', :is_active_agent =>true)
+      @composition.instance_eval('@agents = [agent]')
       assert_equal(['substance'], @composition.substances)
     end
     def test_to_s
-      active_agent = flexmock('active_agent', :to_s => 'active_agent')
-      @composition.instance_eval('@active_agents = [active_agent]')
+      agent = flexmock('agent', :to_s => 'agent')
+      @composition.instance_eval('@agents = [agent]')
       galenic_form = flexmock('galenic_form', :to_s => 'galenic_form')
       @composition.galenic_form = galenic_form
-      assert_equal('galenic_form: active_agent', @composition.to_s)
+      assert_equal('galenic_form: agent', @composition.to_s)
     end
     def test_multiply
-      active_agent = flexmock('active_agent', 
+      agent = flexmock('agent',
                               :dose  => 1,
                               :dose= => nil
                              )
-      @composition.instance_eval('@active_agents = [active_agent]')
+      @composition.instance_eval('@agents = [agent]')
       assert_kind_of(ODDB::Composition, @composition * 2)
     end
     def test_equal
       assert(@composition == @composition)
     end
     def test_comparison
-      @composition.instance_eval('@active_agents = ["active_agent"]')
+      agent = flexmock('agent', :same_as? => true, :is_active_agent => true)
+      @composition.instance_eval('@agents = [agent]')
       @composition.instance_eval('@galenic_form = "galenic_form"')
       assert_equal(0, @composition <=> @composition)
     end

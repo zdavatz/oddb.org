@@ -12,7 +12,7 @@ module ODDB
   module SizeParser
     UNIT = ODDB::Dose.new(1)
     def active_agents
-      @composition ? @composition.active_agents : []
+      sequence ? sequence.active_agents : []
     end
     def comparable_size
       ODDB::Dose.from_quanty(@comparable_size)

@@ -10,6 +10,8 @@ require 'util/today'
 require 'model/slentry'
 require 'model/ean13'
 require 'model/feedback_observer'
+require 'model/package'
+require 'model/sequence'
 require 'model/part'
 
 module ODDB
@@ -90,7 +92,7 @@ module ODDB
       :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?, :production_science, :renewal_flag,
       :renewal_flag_swissmedic
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
-      :fachinfo, :galenic_forms, :galenic_group, :longevity,
+      :fachinfo, :galenic_forms, :galenic_group, :longevity, :compositions,
       :iksnr, :indication, :name, :name_base, :patinfo,
       :registration, :route_of_administration, :sequence_date, :seqnr
     MailOrderPrice = Struct.new(:price, :url, :logo) # logo is empty (old struct)
@@ -192,9 +194,6 @@ module ODDB
 		def company_name
 			company.name if company
 		end
-    def compositions
-      @parts.inject([]) { |comps, part| comps.push part.composition }.compact
-    end
     def comparable?(bottom, top, pack)
       begin
         pack != self \

@@ -13,6 +13,7 @@ module ODDB
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
 		attr_accessor :composition, :more_info, :is_active_agent
+    attr_reader   :substance_name
     class << self
       include AccessorCheckMethod
     end
@@ -44,8 +45,10 @@ module ODDB
 			end
 		end
 		def same_as?(substance_or_oid)
-			oid == substance_or_oid.to_i \
-				||(!@substance.nil? && @substance.same_as?(substance_or_oid))
+      return true if substance_or_oid.respond_to?(:to_i) && substance_or_oid.to_i == substance_or_oid
+      return true if substance_or_oid.respond_to?(:substance_name)  && substance_or_oid == @substance_name
+      return true if @substance != nil && @substance.same_as?(substance_or_oid)
+      return false
 		end
     def to_a
       [@substance, @dose]

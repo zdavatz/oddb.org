@@ -8,6 +8,7 @@ require 'util/persistence'
 require 'model/package'
 require 'model/dose'
 require 'model/division'
+require 'model/package'
 require 'model/composition'
 
 module ODDB
@@ -96,6 +97,11 @@ module ODDB
         acts.concat comp.active_agents
       }
     end
+    def inactive_agents
+      @compositions.inject([]) { |acts, comp|
+        acts.concat comp.inactive_agents
+      }
+    end
 		def basename
       nb = @name_base.to_s[/^.[^0-9]+/u]
       nb.force_encoding('utf-8') if nb
@@ -147,7 +153,7 @@ module ODDB
 		def create_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
 			unless @packages.include?(ikscd)
-				pkg = self::class::PACKAGE.new(ikscd)
+				pkg = ODDB::Package.new(ikscd)
 				pkg.sequence = self
 				@packages.store(ikscd, pkg)
 			end
@@ -393,7 +399,6 @@ module ODDB
 		attr_accessor :patinfo_shadow
 		ACTIVE_AGENT = ActiveAgent
 		ODBA_PREFETCH = true
-		PACKAGE = Package
 		def atc_class=(atc_class)
       super(atc_class)
 			unless(atc_class.nil?)

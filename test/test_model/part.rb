@@ -14,7 +14,7 @@ module ODDB
   class TestPart <Minitest::Test
     include FlexMock::TestCase
     def setup
-      flexmock(ODBA.cache, :next_id => 123)
+      part = flexmock(ODBA.cache, :next_id => 123)
       @part = ODDB::Part.new
     end
     def test_active_agents

@@ -74,7 +74,7 @@ end
 class StubPackageSequence
   attr_accessor :dose, :basename
   attr_accessor :comparables
-  attr_accessor :active_packages, :registration
+  attr_accessor :active_packages, :registration, :composition
   def initialize
     @active_packages = []
   end
@@ -83,6 +83,9 @@ class StubPackageSequence
   end
   def iksnr
     '12345'
+  end
+  def compositions
+    [ 'comp1', 'comp2']
   end
 end
 class TestPackage <Minitest::Test
@@ -178,10 +181,7 @@ class TestPackage <Minitest::Test
     assert_equal 'Company Name', @package.company_name
   end
   def test_compositions
-    part1 = flexmock :composition => 'comp1'
-    part2 = flexmock :composition => 'comp2'
-    @package.parts.push part1, part2
-    assert_equal %w{comp1 comp2}, @package.compositions
+    assert_equal ['comp1', 'comp2'], @package.compositions
   end
   def test_comparable_size
     part1 = flexmock :comparable_size => ODDB::Dose.new(5, 'ml')
