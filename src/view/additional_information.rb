@@ -134,7 +134,7 @@ module ODDB
             part << galform.send(lang).to_s << ': '
           end
           if comp.active_agents.size > 1
-            part << @lookandfeel.lookup(:active_agents, model.active_agents.size)
+            part << @lookandfeel.lookup(:active_agents, comp.active_agents.size)
           else
             part << comp.active_agents.first.to_s
           end

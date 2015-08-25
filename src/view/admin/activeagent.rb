@@ -100,7 +100,7 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
     super(model, session)
   end
   def active_agents(model, session=@session)
-    agents = model.sequence.active_agents.find_all{|x| x.is_active_agent == @is_active_agent}
+    agents = model.sequence.active_agents
     RootSequenceAgents.new(agents, @session, self)
   end
   def source(model, session=@session)

@@ -35,7 +35,7 @@ class ActiveAgents < HtmlGrid::List
     [1,0] => :dose,
     [2,0] => :more_info,
   }
-  DEFAULT_HEAD_CLASS = 'subheading' + " #{__LINE__}"
+  DEFAULT_HEAD_CLASS = 'subheading'
   DEFAULT_CLASS = HtmlGrid::Value
   EMPTY_LIST = true
   OMIT_HEADER = false
@@ -46,21 +46,21 @@ class ActiveAgents < HtmlGrid::List
   LABELS = false
   def initialize(model, session, container = nil, is_active_agent = true)
     @is_active_agent = is_active_agent
-    is_active_agent ? components.store([0,0], :substance) : components.store([0,0], :auxilliary)
+    is_active_agent ? components.store([0,0], :substance) : components.store([0,0], :inactive_agents)
     components.delete([1,0]) unless model.find{ |x| x.dose && x.dose.qty != 0 }
     components.delete([2,0]) unless model.find{ |x| x.more_info}
     super(model, session, container)
     @grid.set_attribute('cellspacing', '2')
   end
   def dose(model)
-    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model
+    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model and model.dose
   end
   def substance(model)
     if model && sub = model.substance
       sub.send(@session.language)
     end
   end
-  def auxilliary(model)
+  def inactive_agents(model)
     if model && sub = model.substance
       sub.send(@session.language)
     end
@@ -78,9 +78,9 @@ class RootActiveAgents < ActiveAgents
     [2,0,0] => :dose,
     [2,0,1] => :unsaved,
   }
-  COMPONENT_CSS_MAP = { [2,0] => 'short right' + " #{__LINE__}" }
+  COMPONENT_CSS_MAP = { [2,0] => 'short right' }
   CSS_HEAD_MAP = {
-    [2,0] => 'right'+ " #{__LINE__}",
+    [2,0] => 'right',
   }
   CSS_MAP = { }
   DEFAULT_CLASS = HtmlGrid::InputText
@@ -161,7 +161,7 @@ class CompositionList < HtmlGrid::Composite
     [0,2] => :excipiens,
     [0,3] => :corresp,
     [1,4] => :active_agents,
-    [1,5] => :auxilliary,
+    [1,5] => :inactive_agents,
   }
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
@@ -170,17 +170,14 @@ class CompositionList < HtmlGrid::Composite
     [0,3] => 'top',
   }
   def init
-    if model.is_a?(ODDB::Composition)
-      components.delete([0,0]) unless model.label
-      components.delete([0,1]) unless model.galenic_form
-      components.delete([0,2]) unless model.excipiens
-      components.delete([0,3]) unless model.corresp
-      unless model.active_agents.find{|x| x.is_active_agent == true}
-        components.delete([1,4])
-      end
-      unless model.active_agents.find{|x| x.is_active_agent == false}
-        components.delete([1,5])
-      end
+    components.delete([0,1]) unless model.galenic_form
+    components.delete([0,2]) unless model.excipiens
+    components.delete([0,3]) unless model.corresp
+    unless model.active_agents.size > 0
+      components.delete([1,4])
+    end
+    unless model.inactive_agents.size > 0
+      components.delete([1,5])
     end
     super
     @grid.set_attribute('cellspacing', '2')
@@ -190,54 +187,27 @@ class CompositionList < HtmlGrid::Composite
     value
   end
   def galenic_form(model, session=@session)
-    return nil unless model.is_a?(ODDB::Composition)
     return nil unless model.galenic_form
-    element = HtmlGrid::Value.new(:galenic_form, model, @session, self)
-    element.label = true
-    if model && gf = model.galenic_form
-      element.value = gf.send @session.language
-    end
+    element = HtmlGrid::Value.new(:galenic_form, model.galenic_form, @session, self)
+    element.value = model.galenic_form.send @session.language
     element
   end
   def composition_label(model, session=@session)
-    return nil unless model.is_a?(ODDB::Composition)
-    if (label = model.label)
-      div = HtmlGrid::Div.new(model, @session, self)
-      div.css_class = 'left italic' + " #{__LINE__}"
-      div.value = model.label.to_s
-      div.label = true
-      div
-    end
-  end
-  def source(model, session=@session)
-    return nil unless model.is_a?(ODDB::Composition)
-    if (source = model.source)
-      div = HtmlGrid::Div.new(model, @session, self)
-      div.css_class = 'left italic' + " #{__LINE__}"
-      div.value = model.source.to_s
-      div
-    end
-  end
-  def corresp(model, session=@session)
-    return nil unless model.is_a?(ODDB::Composition)
-    if model and model.corresp
-      div = HtmlGrid::Div.new(model, @session, self)
-      div.css_class = 'left italic' + " #{__LINE__}"
-      div.value = model.corresp.to_s
-      div.label = true
-      div
-    end
+    return nil unless model.label
+    div = HtmlGrid::Div.new(model.label, @session, self)
+    div.css_class = 'left italic'
+    div.value = model.label.to_s
+    div.label = true
+    div
   end
   def active_agents(model, session=@session)
-    all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent == true}.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }
+    agents = model.active_agents
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents, @session, self, true)
     elem
   end
-  def auxilliary(model, session=@session)
-    all_agents = model.active_agents
-    agents = all_agents.find_all{|x| x.is_active_agent == false}.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }
+  def inactive_agents(model, session=@session)
+    agents = model.inactive_agents
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents, @session, self, false)
     elem
@@ -256,7 +226,7 @@ class RootCompositionList < CompositionList
   end
   def compose
     super
-    comp = @model.last
+    comp = @model
     @grid.push [add(@model)] if comp.nil? || !comp.active_agents.compact.empty?
   end
   def composition(model)
@@ -265,13 +235,8 @@ class RootCompositionList < CompositionList
 end
 class Compositions < HtmlGrid::DivList
   COMPONENTS = { [0,0] => CompositionList }
-  CSS_ID = 'composition-list' + " #{__LINE__}"
   def init
     super
-  end
-  def compositions(model)
-    res = View::Admin::CompositionList.new(model.sequence.compositions, @session, self)
-    res
   end
 end
 class RootCompositions < Compositions
@@ -663,10 +628,10 @@ class SequenceComposite < HtmlGrid::Composite
   }
   CSS_CLASS = 'composite'
   CSS_MAP = {
-    [0,0] => 'th' + " #{__LINE__}",
-    [0,2] => 'subheading' + " #{__LINE__}",
-    [0,3] => 'list' + " #{__LINE__}",
-    [0,4] => 'subheading' + " #{__LINE__}",
+    [0,0] => 'th',
+    [0,2] => 'subheading',
+    [0,3] => 'list',
+    [0,4] => 'subheading',
   }
 	PACKAGES = View::Admin::SequencePackages
   SYMBOL_MAP = {

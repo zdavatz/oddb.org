@@ -78,6 +78,7 @@ class CompareList < HtmlGrid::List
 		}
 	end
 	def active_agents(model, session)
+    $stdout.puts "compore active_agents #{model.class}"
 		model.active_agents.join(',<br>')
 	end
 	def compose_empty_list(offset)

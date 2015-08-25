@@ -273,6 +273,7 @@ class ResultList < HtmlGrid::List
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+    $stdout.puts "result_list active_agents #{model.class}"
 		if model.active_agents.size > 1
 			link.set_attribute('title', model.active_agents.join(', '))
 			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
