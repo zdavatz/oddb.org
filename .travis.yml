@@ -1,5 +1,6 @@
 language: ruby
 cache: bundler
+sudo: false
 bundler_args: --without debugger
 rvm:
   - 1.9.3
