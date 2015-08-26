@@ -1,6 +1,6 @@
 language: ruby
 cache: bundler
-sudo: false
+sudo: required
 bundler_args: --without debugger
 rvm:
   - 1.9.3
@@ -11,3 +11,6 @@ notifications:
   email:
     recipients:
       - ngiger@ywesee.com
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y nodejs
