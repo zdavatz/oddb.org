@@ -13,65 +13,10 @@ require 'swissindex'
 module ODDB
 	module Swissindex
 
-  class TestSwissindexNonpharmaFromUrl <Minitest::Test
-    include FlexMock::TestCase
-    def setup
-      @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
-    end
-
-    def test_search_item
-      # this is an integration test and will query e-media-net.ch
-      pharmacode = '6134345'
-      result = @nonpharma.search_item(pharmacode)
-      assert_equal(pharmacode, result[:phar])
-      assert(nil != result[:dscr])
-    end
-
-    def test_download_all
-      puts "IntegrationTest: Download_all NonPharma takes a few seconds"
-      result = @nonpharma.download_all
-      assert_equal(true, result)
-    end
-  end
-
-  class TestSwissindexPharmaFromUrl <Minitest::Test
-    include FlexMock::TestCase
-    def setup
-      @pharma = ODDB::Swissindex::SwissindexPharma.new
-    end
-
-    def test_search_item
-      # this is an integration test and will query e-media-net.ch
-      pharmacode = '5819012'
-      hostname = Socket.gethostbyname(Socket.gethostname).first
-      if /localhost/i.match(hostname)
-        skip '@pharma.search_item'
-      else
-        result = @pharma.search_item(pharmacode)
-        assert_equal(pharmacode, result[:phar])
-        assert(nil != result[:dscr])
-      end
-    end
-    def test_download_all
-      puts "IntegrationTest: Download_all Pharma takes a few seconds"
-      result = @pharma.download_all
-      assert_equal(true, result)
-    end
-  end
-
-  class TestSwissindex <Minitest::Test
-    include FlexMock::TestCase
-    def test_session
-      ODDB::Swissindex.session do |pharma|
-        assert_kind_of(ODDB::Swissindex::SwissindexPharma, pharma)
-      end
-    end
-  end # SwissindexTest
-
-    class TestSwissindexNonpharma <Minitest::Test
+    class TestSwissindexPlugin <Minitest::Test
       include FlexMock::TestCase
       def setup
-        @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
+        @nonpharma =ODDB::Swissindex::SwissindexMigel.new
         @ssl  = flexmock('http', :verify_mode= => nil)
         @auth = flexmock('http', :ssl => @ssl)
         @http = flexmock('http', :auth => @auth)
@@ -185,22 +130,7 @@ module ODDB
           agent.should_receive(:"page.search").and_return([td, td])
         end
         migel_code = '12.34.56.78.9'
-        expected = [
-          {:pharmacode=>"1234567",
-            :article_name=>nil,
-            :companyname=>nil,
-            :ppha=>nil,
-            :ppub=>nil,
-            :factor=>nil,
-            :pzr=>nil},
-          {:pharmacode=>"1234567",
-            :article_name=>nil,
-            :companyname=>nil,
-            :ppha=>nil,
-            :ppub=>nil,
-            :factor=>nil,
-            :pzr=>nil}
-        ]
+        expected = []
         assert_equal(expected, @nonpharma.search_migel_table(migel_code))
       end
       def test_search_migel_table__no_swissindex_item
@@ -211,16 +141,7 @@ module ODDB
           agent.should_receive(:"page.search").and_return([td])
         end
         migel_code = '12.34.56.78.9'
-        expected = [
-          {:ppub     => nil,
-           :factor   => nil,
-           :pzr      => nil, 
-           :ppha     => nil,
-           :article_name  => nil,
-           :companyname   => nil,
-           :pharmacode    => "1234567"},
-        ]
-        
+        expected = []
         assert_equal(expected, @nonpharma.search_migel_table(migel_code))
       end
       def test_search_migel_table__error

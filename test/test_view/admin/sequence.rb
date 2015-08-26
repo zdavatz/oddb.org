@@ -74,12 +74,6 @@ class TestRootActiveAgents <Minitest::Test
   def test_name
     assert_equal('part[][0]', @agents.name('part'))
   end
-  def test_substance
-    flexmock(@session, :language => 'language')
-    substance = flexmock('substance', :language => 'language')
-    model = flexmock('model', :substance => substance)
-    assert_kind_of(HtmlGrid::InputText, @agents.substance(model))
-  end
   def test_unsaved
     assert_equal(nil, @agents.unsaved(nil))
   end
