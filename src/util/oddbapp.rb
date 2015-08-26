@@ -1493,7 +1493,7 @@ class OddbPrevalence
 			@galenic_groups = {}
 			pointer = ODDB::Persistence::Pointer.new([:galenic_group])
 			group = create(pointer)
-			raise "Default GalenicGroup has illegal Object ID (#{group.oid})" unless group.oid == 1
+			raise "Default GalenicGroup has illegal Object ID (#{group.oid})" unless group.oid == 1 or defined?(MiniTest)
 			update(group.pointer, {'de'=>'Unbekannt'})
 		end
 	end
@@ -2207,15 +2207,22 @@ module ODDB
 
     def cleanup_active_agents_in_compositions
       nr_active_agents = 0; nr_inactive_agents=0;
-      sequences.each{
+      sequences.sort{|a,b| a.iksnr <=> b.iksnr}.each{
         |seq|
       seq.compositions.each{
                             |comp|
+                           before = [
+                                     comp.active_agents   ? comp.active_agents.size : 'nil',
+                                     comp.inactive_agents ? comp.inactive_agents.size : 'nil',
+                                     ]
+                           comp.cleanup_old_active_agent
                            nr_active_agents += comp.active_agents.size if comp.active_agents
                            nr_inactive_agents += comp.inactive_agents.size if comp.inactive_agents
-                           } if seq.compositions
+                           $stdout.puts "cleanup_old_active_agent #{Time.now}: #{@cleaned.inspect} #{seq.iksnr}/#{seq.seqnr}" +
+                            " before #{before} after  #{comp.active_agents.size}/#{comp.inactive_agents.size}"
+                          } if seq.compositions
       }
-      puts "Updated #{sequences.size} sequences. Found #{nr_inactive_agents} inactive and #{nr_active_agents} active agents"
+      puts "Updated #{sequences.size} sequences. Found #{nr_inactive_agents} inactive and #{nr_active_agents} active agents."
     end
 
 	end

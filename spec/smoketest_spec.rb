@@ -22,7 +22,84 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
+  def check_nutriflex_56091(text)
+    text.should match /Bezeichnung/i
+    text.should match /Galenische Form/i
+    text.should match /Excipiens/i
+    text.should match /Wirkstoff/i
+    text.should match /Isoleucin/i
+    text.should match /Hilfsstoff/i
+    text.should match /Citratsäure/i
+  end
+
+  it "admin should edit package info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02/pack/04"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    text = @browser.text.clone
+    check_nutriflex_56091(text)
+    text.should match /Patinfo aktivieren/i
+    text.should match /Braun Medical/i
+    text.should match /Nutriflex Lipid/i
+    @browser.url.should match OddbUrl
+  end
+
 if true
+  it "admin should edit sequence info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    text = @browser.text.clone
+    check_nutriflex_56091(text)
+    text.should match /Patinfo aktivieren/i
+    text.should match /Braun Medical/i
+    text.should match /Nutriflex Lipid/i
+    @browser.url.should match OddbUrl
+  end
+
+  it "admin should edit registration info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    text = @browser.text.clone
+    text.should match /Fachinfo-Upload/i
+    text.should match /Braun Medical/i
+    text.should match /Nutriflex Lipid/i
+    @browser.url.should match OddbUrl
+  end
+
+  it "should show a registration info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    text = @browser.text.clone
+    text.should match /Braun Medical/i
+    text.should match /Nutriflex Lipid/i
+    @browser.url.should match OddbUrl
+  end
+
+  it "should show a sequence info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    check_nutriflex_56091(@browser.text.clone)
+    @browser.url.should match OddbUrl
+  end
+
+  it "should show a package info" do
+    login
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02/pack/04"
+    windowSize = @browser.windows.size
+    @browser.url.should match OddbUrl
+    check_nutriflex_56091(@browser.text.clone)
+    @browser.url.should match OddbUrl
+  end
+
   it "should contain Open Drug Database" do
     waitForOddbToBeReady(@browser, OddbUrl)
     @browser.url.should match    OddbUrl      unless ['just-medical'].index(Flavor)
@@ -76,7 +153,7 @@ if true
         end
         @idx += 1
     }
-    (@idx -saved).should <= 5
+    (@idx -saved).should <= 6
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the english language versions" do

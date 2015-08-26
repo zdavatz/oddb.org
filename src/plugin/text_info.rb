@@ -598,7 +598,9 @@ module ODDB
       else
         seq_args.store :atc_class, info.atcCode
       end
-      sequence = app.update((registration.pointer + [:sequence, seqNr]).creator, seq_args, :text_plugin)
+      # sequence = app.update((registration.pointer + [:sequence, seqNr]).creator, seq_args, :text_plugin)
+      sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
+
       app.registrations[iksnr]=registration
       app.registrations.odba_store
       # pointer = reg_pointer + [:sequence, seq.seqnr]

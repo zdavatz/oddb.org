@@ -603,27 +603,39 @@ public
     # returns ODBA objects [component, agent]
     # similar to handle in bsv pugin
     def update_active_agent(seq, composition, parsed_substance)
+      active = parsed_substance.is_active_agent
       from = 'unknown'
       args = {}
       agent = nil
       substance = update_substance(parsed_substance.name)
 
       dose = ODDB::Dose.new(parsed_substance.qty, parsed_substance.unit)
-      debug_msg("#{__FILE__}:#{__LINE__} update_active_agent #{seq.iksnr}/#{seq.seqnr} dose #{dose}")
-      ptr = if (agent = composition.active_agent(parsed_substance.name))
-        from = 'active_agent'
-        agent.pointer
+      debug_msg("#{__FILE__}:#{__LINE__} update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose}")
+      if active
+        ptr = if (agent = composition.active_agent(parsed_substance.name))
+          from = 'active_agent'
+          agent.pointer
+        else
+          from = "creator active_agent"
+          ptr = composition.pointer + [:active_agent, parsed_substance.name]
+          agent = @app.update ptr.creator, :dose => dose, :substance => substance.oid
+          ptr
+        end
       else
-        from = "creator active_agent? #{parsed_substance.is_active_agent}"
-        ptr = composition.pointer + [:active_agent, parsed_substance.name]
-        agent = @app.update ptr.creator, :dose => dose,
-                                                 :substance => substance.oid
-        ptr
+        ptr = if (agent = composition.inactive_agent(parsed_substance.name))
+          from = 'inactive_agent'
+          agent.pointer
+        else
+          from = "creator inactive_agent"
+          ptr = composition.pointer + [:inactive_agent, parsed_substance.name]
+          agent = @app.update ptr.creator, :dose => dose, :substance => substance.oid
+          ptr
+        end
       end
       args[:substance]        = parsed_substance.name
       args[:dose]             = dose
       args[:more_info]        = parsed_substance.more_info
-      args[:is_active_agent]  = parsed_substance.is_active_agent
+      args[:is_active_agent]  = active
       if parsed_substance.chemical_substance
         chemical_dose = ODDB::Dose.new(parsed_substance.chemical_substance.qty, parsed_substance.chemical_substance.unit)
         args[:chemical_dose]      = chemical_dose
@@ -727,7 +739,8 @@ public
 
         # now update the sequence with all the parsed components
         parsed_comps.each_with_index do |parsed_comp, comp_idx|
-          agents = []
+          active_agents = []
+          inactive_agents = []
           msg = "iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx}"
           debug_msg("#{__FILE__}:#{__LINE__} update_compositions #{msg} parsed_comp #{parsed_comp}")
           @checked_compositions << msg
@@ -756,7 +769,10 @@ public
                     }
             @app.update(composition_in_db.pointer, args, :swissmedic)
             updated_agent = update_active_agent(sequence, composition_in_db, substance)
-            agents.push updated_agent
+            if substance.is_active_agent
+              active_agents.push updated_agent
+            else inactive_agents.push updated_agent
+            end
             comps.push composition_in_db
             @new_compositions[ "#{iksnr}/#{seqnr} #{comp_idx}" ] = args
             composition_in_db.odba_store
@@ -775,13 +791,19 @@ public
             sequence.odba_store
           elsif not (parsed_comps.size == 1 && composition_in_db.substances.empty?)
             composition_in_db.active_agents.dup.each_with_index { |act, atc_idx|
-              unless agents.include?(act.odba_instance)
-                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+              unless active_agents.include?(act.odba_instance)
+                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_active_agent(act.substance)
               end if act and act.substance
             }
-            trace_msg("#{__FILE__}:#{__LINE__} update_compositions iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx} #{composition_in_db.class} #{composition_in_db.active_agents.size} active_agents replace by #{agents.size} agents #{composition_in_db.active_agents.first.class} #{composition_in_db.active_agents} by #{agents.first.class} #{agents}")
-            composition_in_db.active_agents.replace agents.compact
+            composition_in_db.inactive_agents.dup.each_with_index { |act, atc_idx|
+              unless inactive_agents.include?(act.odba_instance)
+                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                composition_in_db.delete_inactive_agent(act.substance)
+              end if act and act.substance
+            }
+            composition_in_db.active_agents.replace active_agents.compact
+            composition_in_db.inactive_agents.replace inactive_agents.compact
             composition_in_db.odba_store
             sequence.odba_store
           end

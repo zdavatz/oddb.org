@@ -31,7 +31,7 @@ module ODDB
 		module Admin
 class ActiveAgents < HtmlGrid::List
   COMPONENTS = {
-    [0,0] => :substance,
+    [0,0] => :substances,
     [1,0] => :dose,
     [2,0] => :more_info,
   }
@@ -41,12 +41,10 @@ class ActiveAgents < HtmlGrid::List
   OMIT_HEADER = false
   STRIPED_BG = false
   SORT_DEFAULT = nil
-	SORT_HEADER = false
+  SORT_HEADER = false
   LEGACY_INTERFACE = false
   LABELS = false
-  def initialize(model, session, container = nil, is_active_agent = true)
-    @is_active_agent = is_active_agent
-    is_active_agent ? components.store([0,0], :substance) : components.store([0,0], :inactive_agents)
+  def initialize(model, session, container = nil)
     components.delete([1,0]) unless model.find{ |x| x.dose && x.dose.qty != 0 }
     components.delete([2,0]) unless model.find{ |x| x.more_info}
     super(model, session, container)
@@ -55,14 +53,39 @@ class ActiveAgents < HtmlGrid::List
   def dose(model)
     model.dose.qty.eql?(0) ? nil : model.dose.to_s if model and model.dose
   end
-  def substance(model)
+  def substances(model)
     if model && sub = model.substance
       sub.send(@session.language)
     end
   end
-  def more_info(model)
-    if model && info = model.more_info
-      info
+end
+class InactiveAgents < HtmlGrid::List
+  COMPONENTS = {
+    [0,0] => :inactive_agents,
+    [1,0] => :dose,
+    [2,0] => :more_info,
+  }
+  DEFAULT_HEAD_CLASS = 'subheading'
+  DEFAULT_CLASS = HtmlGrid::Value
+  EMPTY_LIST = true
+  OMIT_HEADER = false
+  STRIPED_BG = false
+  SORT_DEFAULT = nil
+  SORT_HEADER = false
+  LEGACY_INTERFACE = false
+  LABELS = false
+  def initialize(model, session, container = nil)
+    components.delete([1,0]) unless model.find{ |x| x.dose && x.dose.qty != 0 }
+    components.delete([2,0]) unless model.find{ |x| x.more_info}
+    super(model, session, container)
+    @grid.set_attribute('cellspacing', '2')
+  end
+  def dose(model)
+    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model and model.dose
+  end
+  def inactive_agents(model)
+    if model && sub = model.substance
+      sub.send(@session.language)
     end
   end
 end
@@ -165,13 +188,14 @@ class CompositionList < HtmlGrid::Composite
     [0,3] => 'top',
   }
   def init
+    model.cleanup_old_active_agent
     components.delete([0,1]) unless model.galenic_form
     components.delete([0,2]) unless model.excipiens
     components.delete([0,3]) unless model.corresp
-    unless model.active_agents.size > 0
+    if model.active_agents == nil or model.active_agents.size == 0
       components.delete([1,4])
     end
-    unless model.inactive_agents.size > 0
+    if model.inactive_agents == nil or model.inactive_agents.size == 0
       components.delete([1,5])
     end
     super
@@ -198,13 +222,13 @@ class CompositionList < HtmlGrid::Composite
   def active_agents(model, session=@session)
     agents = model.active_agents
     return nil unless agents.size > 0
-    elem = View::Admin::ActiveAgents.new(agents, @session, self, true)
+    elem = View::Admin::ActiveAgents.new(agents, @session, self)
     elem
   end
   def inactive_agents(model, session=@session)
     agents = model.inactive_agents
-    return nil unless agents.size > 0
-    elem = View::Admin::ActiveAgents.new(agents, @session, self, false)
+    return nil unless agents and agents.size > 0
+    elem = View::Admin::InactiveAgents.new(agents, @session, self)
     elem
   end
 end

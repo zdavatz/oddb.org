@@ -29,35 +29,26 @@ module ODDB
       @excipiens = substance
     end
     def init(app)
-      cleanup_old_active_agent
       @pointer.append(@oid)
     end
     # fix_pointers is needed to enable calling @app.create(sequence.pointer + :composition) in
     # plugin/swissmedic.rb when running UnitTests
     def fix_pointers
-      cleanup_old_active_agent
       @pointer = @sequence.pointer + [:composition, @oid]
       odba_store
     end
     def active_agents # aka Wirkstoffe
-      cleanup_old_active_agent
+
       @active_agents
     end
-    def inactive_agents # aka Hilfsstoffe
-      cleanup_old_active_agent
-      @inactive_agents
-    end
     def active_agent(substance_or_oid)
-      cleanup_old_active_agent
       @active_agents.find { |active| active.same_as?(substance_or_oid) }
     end
-    def get_inactive_agent(substance_or_oid)
-      cleanup_old_active_agent
+    def inactive_agent(substance_or_oid)
       @inactive_agents.find { |active| active.same_as?(substance_or_oid) }
     end
     def checkout
       self.galenic_form = nil
-      cleanup_old_active_agent
       @active_agents.dup.each { |act|
         act.checkout
         act.odba_delete
@@ -65,8 +56,7 @@ module ODDB
       @active_agents.odba_delete
     end
     def create_active_agent(substance_name)
-      cleanup_old_active_agent
-      active = @active_agents.find { |active| active.same_as?(substance_or_oid) }
+      active = @active_agents.find { |active| active.same_as?(substance_name) }
       return active unless active == nil
       active = ActiveAgent.new(substance_name)
       composition = self
@@ -77,7 +67,6 @@ module ODDB
       active
     end
     def delete_active_agent(substance_or_oid)
-      cleanup_old_active_agent
       active = @active_agents.find { |active| active.same_as?(substance_or_oid)}
       if(active)
         @active_agents.delete(active)
@@ -86,8 +75,7 @@ module ODDB
       end
     end
     def create_inactive_agent(substance_name)
-      cleanup_old_active_agent
-      active = @inactive_agents.find { |active| active.same_as?(substance_or_oid) }
+      active = @inactive_agents.find { |active| active.same_as?(substance_name) }
       return active unless active == nil
       active = InactiveAgent.new(substance_name)
       composition = self
@@ -98,7 +86,6 @@ module ODDB
       active
     end
     def delete_inactive_agent(substance_or_oid)
-      cleanup_old_active_agent
       active = @inactive_agents.find { |active| active.same_as?(substance_or_oid)}
       if(active)
         @inactive_agents.delete(active)
@@ -107,7 +94,7 @@ module ODDB
       end
     end
     def doses
-      active_agents.collect { |agent| agent.dose }
+      @active_agents.collect { |agent| agent.dose }
     end
     def galenic_form=(galform)
       @galenic_form = replace_observer(@galenic_form, galform)
@@ -126,7 +113,6 @@ module ODDB
       end
     end
     def to_s
-      cleanup_old_active_agent
       str = @active_agents.join(', ')
       if @galenic_form
         str = "%s: %s" % [@galenic_form, str]
@@ -164,19 +150,19 @@ module ODDB
         1
       end
     end
-		private
     def cleanup_old_active_agent
-      return unless @cleaned
+      return if @cleaned
       @active_agents ||= []
-      if @active_agents.size > 0 and @inactive_agents.size == 0
-        $stdout.puts "cleanup_old_active_agent #{Time.now}: #{sequence.iksnr}/#{sequence.seqnr} before #{@active_agents.size}/#{@inactive_agents.size}" if sequence
-        @inactive_agents = @active_agents.find_all{|agent| agent.is_active_agent == false }
-        @active_agents.delete_if{ |agent| agent.is_active_agent == false }
-        $stdout.puts "cleanup_old_active_agent #{Time.now}: #{sequence.iksnr}/#{sequence.seqnr} after  #{@active_agents.size}/#{@inactive_agents.size}" if sequence
-        self.odba_store
-      end
+      @inactive_agents ||= []
+      @inactive_agents += @active_agents.find_all{|agent| agent.is_active_agent == false }
+      @active_agents.delete_if{ |agent| agent.is_active_agent == false }
+      @inactive_agents.uniq! # remove duplicate if running twice
+      @active_agents.odba_isolated_store
+      @inactive_agents.odba_isolated_store
+      self.odba_isolated_store
       @cleaned = true
     end
+    private
     def adjust_types(values, app=nil)
       values = values.dup
       values.dup.each { |key, value|
