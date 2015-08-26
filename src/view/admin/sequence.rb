@@ -188,7 +188,6 @@ class CompositionList < HtmlGrid::Composite
     [0,3] => 'top',
   }
   def init
-    model.cleanup_old_active_agent
     components.delete([0,1]) unless model.galenic_form
     components.delete([0,2]) unless model.excipiens
     components.delete([0,3]) unless model.corresp

@@ -2222,6 +2222,7 @@ module ODDB
                             " before #{before} after  #{comp.active_agents.size}/#{comp.inactive_agents.size}"
                           } if seq.compositions
       }
+      self.odba_store # delegating or it will break all other accesses.
       puts "Updated #{sequences.size} sequences. Found #{nr_inactive_agents} inactive and #{nr_active_agents} active agents."
     end
 

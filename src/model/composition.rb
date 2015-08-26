@@ -157,9 +157,6 @@ module ODDB
       @inactive_agents += @active_agents.find_all{|agent| agent.is_active_agent == false }
       @active_agents.delete_if{ |agent| agent.is_active_agent == false }
       @inactive_agents.uniq! # remove duplicate if running twice
-      @active_agents.odba_isolated_store
-      @inactive_agents.odba_isolated_store
-      self.odba_isolated_store
       @cleaned = true
     end
     private
