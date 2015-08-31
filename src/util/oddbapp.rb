@@ -2100,7 +2100,7 @@ module ODDB
         loop {
           begin
             next if defined?(Minitest)
-            max_threads = 200
+            max_threads = 100
             max_sessions = 2000
             lasttime = time
             time = Time.now
