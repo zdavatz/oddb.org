@@ -2100,13 +2100,16 @@ module ODDB
         loop {
           begin
             next if defined?(Minitest)
+            max_threads = 200
+            max_sessions = 100
             lasttime = time
             time = Time.now
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
-            # Shutdown if more than 200 threads are created, probably because of spiders
-            if threads > 200
+            # Shutdown if more than #{max_threads} threads are created, probably because of spiders
+            if threads > max_threads
+              puts "With #{threads} threads we have more than #{max_threads} threads. Exiting"
               exit
             end
             lastbytes = bytes
@@ -2121,6 +2124,10 @@ module ODDB
             end
             lastsessions = sessions
             sessions = @sessions.size
+            if sessions > max_sessions
+              puts "With #{sessions} sessions we have more than #{max_sessions} sessions. Exiting"
+              exit
+            end
             gc = ''
             gc << 'S' if sessions < lastsessions
             gc << 'T' if threads < lastthreads
@@ -2220,6 +2227,7 @@ module ODDB
                            nr_inactive_agents += comp.inactive_agents.size if comp.inactive_agents
                            $stdout.puts "cleanup_old_active_agent #{Time.now}: #{@cleaned.inspect} #{seq.iksnr}/#{seq.seqnr}" +
                             " before #{before} after  #{comp.active_agents.size}/#{comp.inactive_agents.size}"
+                           $stdout.flush
                           } if seq.compositions
       }
       self.odba_store # delegating or it will break all other accesses.
