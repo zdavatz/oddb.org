@@ -133,13 +133,15 @@ module ODDB
           if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
             part << galform.send(lang).to_s << ': '
           end
-          if comp.active_agents.size > 1
-            part << @lookandfeel.lookup(:active_agents, comp.active_agents.size)
-          else
+          if comp.active_agents.size == 0
+           nil # dont't add a part
+          elsif comp.active_agents.size == 1
             part << comp.active_agents.first.to_s
+          else
+            part << @lookandfeel.lookup(:active_agents, comp.active_agents.size)
           end
         }
-        link.value = parts.join('<br/>')
+        link.value = parts.find_all{|x| x != nil}.join('<br/>')
         link
       end
 			def ddd_price(model, session=@session)
