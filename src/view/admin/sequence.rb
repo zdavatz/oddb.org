@@ -198,6 +198,7 @@ class CompositionList < HtmlGrid::Composite
       components.delete([1,5])
     end
     super
+    @grid.set_attribute('style', 'border-top: solid 6px transparent;') unless @container.list_index == 0
     @grid.set_attribute('cellspacing', '2')
   end
   def header(context)
@@ -252,6 +253,7 @@ class RootCompositionList < CompositionList
   end
 end
 class Compositions < HtmlGrid::DivList
+  attr_reader :list_index
   COMPONENTS = { [0,0] => CompositionList }
   def init
     super
