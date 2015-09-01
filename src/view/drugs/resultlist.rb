@@ -273,7 +273,6 @@ class ResultList < HtmlGrid::List
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
-    $stdout.puts "result_list active_agents #{model.class}"
 		if model.active_agents.size > 1
 			link.set_attribute('title', model.active_agents.join(', '))
 			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
@@ -387,12 +386,14 @@ class ResultList < HtmlGrid::List
     else
 		  link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
     end
-		if (model.active_agents.size > 1)
+    if (model.active_agents.size == 0)
+      return nil
+    elsif (model.active_agents.size == 1)
+      link.value = model.substances.first.to_s
+    else
 			#txt = HtmlGrid::Component.new(model, session, self)
 			link.set_attribute('title', model.active_agents.join(', '))
 			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
-		else
-			link.value = model.substances.first.to_s
 		end
 		link
 	end
