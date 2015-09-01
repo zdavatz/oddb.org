@@ -221,13 +221,13 @@ class CompositionList < HtmlGrid::Composite
   def active_agents(model, session=@session)
     agents = model.active_agents
     return nil unless agents.size > 0
-    elem = View::Admin::ActiveAgents.new(agents, @session, self)
+    elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
     elem
   end
   def inactive_agents(model, session=@session)
     agents = model.inactive_agents
-    return nil unless agents and agents.size > 0
-    elem = View::Admin::InactiveAgents.new(agents, @session, self)
+    return nil unless agents and agents.respond_to?(:size) and agents.size > 0
+    elem = View::Admin::InactiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
     elem
   end
 end
