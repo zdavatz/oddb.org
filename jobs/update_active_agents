@@ -1,0 +1,95 @@
+#!/usr/local/bin/ruby
+# We need this job in October 2013 as Swissmedic had changed the format of Packungen.xls
+# This produced 112 registrations of the form 'xxx.0'
+# This job will probably never be used again and should be remove before 2099
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+require 'util/job'
+require 'util/log'
+
+module ODDB
+  module Util
+    def self.cleanup_one_composition(comp)
+      seq = comp.sequence
+      before = [
+                comp.active_agents   ? comp.active_agents.size : '?',
+                comp.inactive_agents.class,
+                ]
+      begin
+        comp.cleanup_old_active_agent
+        comp.active_agents.odba_store
+        comp.inactive_agents.odba_store
+        comp.odba_store
+        @@nr_updates += 1
+      rescue PG::UnableToSend, DBI::ProgrammingError, NoMethodError => e
+        $stdout.puts "cleanup_one_composition: rescue #{e}"
+        $stdout.puts "#{Time.now}: cleanup_one_composition: skipped #{seq.iksnr}/#{seq.seqnr}"
+        return
+      end
+      @@nr_active_agents += comp.active_agents.size if comp.active_agents
+      nr_inactives_in_comp = (comp.inactive_agents && comp.inactive_agents.respond_to?(:size)) ? comp.inactive_agents.size : 0
+      @@nr_inactive_agents += nr_inactives_in_comp
+      $stdout.puts "#{Time.now}: cleanup_one_composition: #{@@nr_updates} #{seq.iksnr}/#{seq.seqnr} " +
+        " before #{before} after  #{comp.active_agents.size}/#{nr_inactives_in_comp}"
+    end
+
+    def self.cleanup_active_agents_in_compositions(sequences, first_iksnr)
+      first_iksnr = first_iksnr.to_i
+      subject = "Cleanup active agents in compostions"
+      log = Log.new(Date.today)
+      where = ''
+      begin
+        @@nr_active_agents = 0;
+        @@nr_inactive_agents=0;
+        @@nr_updates = 0
+        nr_skipped = 0
+        $stdout.puts "started cleanup_active_agents_in_compositions. first_iksnr #{first_iksnr.inspect}"
+        sequences.sort{|a,b| a.iksnr.to_i <=> b.iksnr.to_i}.each{
+          |seq|
+            where = "#{seq.iksnr}/#{seq.seqnr}"
+            if seq.iksnr.to_i < first_iksnr
+              nr_skipped += 1
+              next
+            end
+            seq.compositions.each{
+                              |comp|
+                              unless comp.sequence.registration.active?
+                                nr_skipped += 1
+                                next
+                              end
+                              if id = comp.oid
+                                begin
+                                  status = Timeout::timeout(60) {
+                                                                cleanup_one_composition(comp)
+                                                                }
+                                rescue Timeout::Error => e
+                                  $stdout.puts "#{Time.now}: #{id} Timeout::Error for (#{where})"
+                                  $stdout.puts e.inspect
+                                  next
+                                end
+                              end
+                            } if seq and seq.compositions
+        }
+        msg = "Updated #{@@nr_updates} of #{sequences.size} sequences. Skipped #{nr_skipped} sequences. Found #{@@nr_inactive_agents} inactive and #{@@nr_active_agents} active agents."
+        $stdout.puts msg
+        log.report += msg
+        log.notify(subject)
+        rescue => err
+          msg = ["in rescue error was #{err}"]
+          msg << "While cleaning #{where}"
+          msg += err.backtrace
+          puts msg
+          log.report += msg.join("\n")
+          log.notify(subject)
+        end
+    end
+
+    Job.run do |system|
+      $stdout.sync = true
+      first_iksnr = 0
+      first_iksnr = ARGV[0] if ARGV.size == 1
+      cleanup_active_agents_in_compositions(system.sequences, first_iksnr)
+    end
+  end
+end

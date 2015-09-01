@@ -151,11 +151,19 @@ module ODDB
       end
     end
     def cleanup_old_active_agent
-      return if @cleaned
+      if @inactive_agents and @inactive_agents.class != Array
+        $stdout.puts "cleanup_old_active_agent. Forcing inactive_agents from class #{@inactive_agents.class} => Array"
+        @inactive_agents = []
+      end
+      unless reg = sequence.registration.active?
+        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{reg.iksnr}"
+        return
+      end
       @active_agents ||= []
       @inactive_agents ||= []
-      @inactive_agents += @active_agents.find_all{|agent| agent.is_active_agent == false }
-      @active_agents.delete_if{ |agent| agent.is_active_agent == false }
+      @inactive_agents += @active_agents.find_all{|agent| agent and agent.respond_to?(:is_active_agent) and agent.is_active_agent == false }
+      @active_agents.delete_if{ |agent| agent == nil or (!agent.respond_to?(:is_active_agent)) or  agent.is_active_agent == false }
+      @active_agents.each{ |agent| agent.is_active_agent = true unless agent and agent.respond_to?(:is_active_agent) and agent.is_active_agent}
       @inactive_agents.uniq! # remove duplicate if running twice
       @cleaned = true
     end

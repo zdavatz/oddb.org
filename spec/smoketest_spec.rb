@@ -45,17 +45,17 @@ describe "ch.oddb.org" do
     @browser.url.should match OddbUrl
   end
 
-if true
   it "admin should edit sequence info" do
     login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02"
     windowSize = @browser.windows.size
     @browser.url.should match OddbUrl
     text = @browser.text.clone
-    check_nutriflex_56091(text)
     text.should match /Patinfo aktivieren/i
     text.should match /Braun Medical/i
     text.should match /Nutriflex Lipid/i
+    text.should match /Wirkstoffe.+Arginin.+Isoleucin/im # correct sort order
+    check_nutriflex_56091(text)
     @browser.url.should match OddbUrl
   end
 
@@ -263,7 +263,7 @@ if true
     diffFiles = (filesAfterDownload - filesBeforeDownload)
     diffFiles.size.should == 1
   end unless ['just-medical'].index(Flavor)
-end
+
   after :all do
     @browser.close
   end

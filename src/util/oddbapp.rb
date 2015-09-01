@@ -2211,30 +2211,7 @@ module ODDB
     def migel_count
       @migel_count ||= MIGEL_SERVER.migelids.length
     end
-
-    def cleanup_active_agents_in_compositions
-      nr_active_agents = 0; nr_inactive_agents=0;
-      sequences.sort{|a,b| a.iksnr <=> b.iksnr}.each{
-        |seq|
-      seq.compositions.each{
-                            |comp|
-                           before = [
-                                     comp.active_agents   ? comp.active_agents.size : 'nil',
-                                     comp.inactive_agents ? comp.inactive_agents.size : 'nil',
-                                     ]
-                           comp.cleanup_old_active_agent
-                           nr_active_agents += comp.active_agents.size if comp.active_agents
-                           nr_inactive_agents += comp.inactive_agents.size if comp.inactive_agents
-                           $stdout.puts "cleanup_old_active_agent #{Time.now}: #{@cleaned.inspect} #{seq.iksnr}/#{seq.seqnr}" +
-                            " before #{before} after  #{comp.active_agents.size}/#{comp.inactive_agents.size}"
-                           $stdout.flush
-                          } if seq.compositions
-      }
-      self.odba_store # delegating or it will break all other accesses.
-      puts "Updated #{sequences.size} sequences. Found #{nr_inactive_agents} inactive and #{nr_active_agents} active agents."
-    end
-
-	end
+  end
 end
 
 begin
