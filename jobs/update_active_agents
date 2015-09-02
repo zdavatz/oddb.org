@@ -24,6 +24,7 @@ module ODDB
         @@nr_updates += 1
       rescue PG::UnableToSend, DBI::ProgrammingError, NoMethodError => e
         $stdout.puts "cleanup_one_composition: rescue #{e}"
+        $stdout.puts "  at #{e.backtrace.join("\n")}"
         $stdout.puts "#{Time.now}: cleanup_one_composition: skipped #{seq.iksnr}/#{seq.seqnr}"
         return
       end
@@ -54,7 +55,7 @@ module ODDB
             end
             seq.compositions.each{
                               |comp|
-                              unless comp.sequence.registration.active?
+                              unless comp.sequence.registration.expiration_date  and comp.sequence.registration.expiration_date > Date.today
                                 nr_skipped += 1
                                 next
                               end

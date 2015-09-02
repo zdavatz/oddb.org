@@ -24,8 +24,8 @@ module ODDB
       super
     end
     def add_excipiens(substance)
-      raise "can only add a substance as excipiens" unless substance.is_a?(ODDB::Substance) or
-          (substance.is_a?(ODDB::ActiveAgent) and not substance.is_active_agent)
+      raise "can only add a substance as excipiens. Is #{substance.class}" unless substance.is_a?(ODDB::Substance) or
+          substance.is_a?(ODDB::InactiveAgent)
       @excipiens = substance
     end
     def init(app)
@@ -155,8 +155,8 @@ module ODDB
         $stdout.puts "cleanup_old_active_agent. Forcing inactive_agents from class #{@inactive_agents.class} => Array"
         @inactive_agents = []
       end
-      unless reg = sequence.registration.active?
-        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{reg.iksnr}"
+      unless sequence.registration.expiration_date  and sequence.registration.expiration_date > Date.today
+        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{reg.iksnr} expiration #{sequence.registration.expiration_date.inspect}"
         return
       end
       @active_agents ||= []
