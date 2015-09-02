@@ -801,7 +801,7 @@ public
                 trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_inactive_agent(act.substance)
               end if act and act.substance
-            }
+            } if composition_in_db.inactive_agents and composition_in_db.inactive_agents.is_a?(Array)
             composition_in_db.active_agents.replace active_agents.compact
             composition_in_db.inactive_agents.replace inactive_agents.compact
             composition_in_db.odba_store
