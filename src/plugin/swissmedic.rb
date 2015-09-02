@@ -803,7 +803,11 @@ public
               end if act and act.substance
             } if composition_in_db.inactive_agents and composition_in_db.inactive_agents.is_a?(Array)
             composition_in_db.active_agents.replace active_agents.compact
-            composition_in_db.inactive_agents.replace inactive_agents.compact
+            if composition_in_db.inactive_agents
+              composition_in_db.inactive_agents.replace inactive_agents.compact
+            else
+              composition_in_db.inactive_agents = inactive_agents.compact
+            end
             composition_in_db.odba_store
             sequence.odba_store
           end
