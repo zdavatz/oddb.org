@@ -184,10 +184,9 @@ class CompositionList < HtmlGrid::Composite
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
   OMIT_HEADER = false
-  CSS_MAP = {
-    [0,3] => 'top',
-  }
+  attr_reader :grid
   def init
+    components.delete([0,0]) unless model.label
     components.delete([0,1]) unless model.galenic_form
     components.delete([0,2]) unless model.excipiens
     components.delete([0,3]) unless model.corresp
@@ -198,7 +197,7 @@ class CompositionList < HtmlGrid::Composite
       components.delete([1,5])
     end
     super
-    @grid.set_attribute('style', 'border-top: solid 6px transparent;') unless @container.list_index == 0
+    @grid.set_attribute('style', 'border-top: solid 6px transparent;') unless @container and @container.list_index == 0
     @grid.set_attribute('cellspacing', '2')
   end
   def header(context)
