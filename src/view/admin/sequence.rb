@@ -173,29 +173,40 @@ class RootActiveAgents < ActiveAgents
 end
 class CompositionList < HtmlGrid::Composite
   include PartSize
-  COMPONENTS = {
-    [0,0] => :composition_label,
-    [0,1] => :galenic_form,
-    [0,2] => :excipiens,
-    [0,3] => :corresp,
-    [1,4] => :active_agents,
-    [1,5] => :inactive_agents,
-  }
   LABELS = true
   DEFAULT_CLASS = HtmlGrid::Value
   OMIT_HEADER = false
   attr_reader :grid
+  def reorganize_components
+    sub_index = 0
+    @components = {}
+    if model.label
+      @components[[0, sub_index]] = :composition_label
+      sub_index += 1
+    end
+    if model.galenic_form
+      @components[[0, sub_index]] = :galenic_form
+      sub_index += 1
+    end
+    if model.excipiens
+      @components[[0, sub_index]] = :excipiens
+      sub_index += 1
+    end
+    if model.corresp
+      @components[[0, sub_index]] = :corresp
+      sub_index += 1
+    end
+    index = (sub_index > 0) ? 1 : 0
+    if model.active_agents and model.active_agents.size > 0
+      @components[[index,sub_index]] = :active_agents
+      sub_index += 1
+    end
+    if model.inactive_agents and model.inactive_agents.size > 0
+      @components[[index,sub_index]] = :inactive_agents
+    end
+  end
   def init
-    components.delete([0,0]) unless model.label
-    components.delete([0,1]) unless model.galenic_form
-    components.delete([0,2]) unless model.excipiens
-    components.delete([0,3]) unless model.corresp
-    if model.active_agents == nil or model.active_agents.size == 0
-      components.delete([1,4])
-    end
-    if model.inactive_agents == nil or model.inactive_agents.size == 0
-      components.delete([1,5])
-    end
+    reorganize_components
     super
     @grid.set_attribute('style', 'border-top: solid 6px transparent;') unless @container and @container.list_index == 0
     @grid.set_attribute('cellspacing', '2')
@@ -213,7 +224,6 @@ class CompositionList < HtmlGrid::Composite
   def composition_label(model, session=@session)
     return nil unless model.label
     div = HtmlGrid::Div.new(model.label, @session, self)
-    div.css_class = 'left italic'
     div.value = model.label.to_s
     div.label = true
     div
@@ -222,12 +232,14 @@ class CompositionList < HtmlGrid::Composite
     agents = model.active_agents
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
+    elem.css_class = 'left italic'
     elem
   end
   def inactive_agents(model, session=@session)
     agents = model.inactive_agents
     return nil unless agents and agents.respond_to?(:size) and agents.size > 0
     elem = View::Admin::InactiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
+    elem.css_class = 'left italic'
     elem
   end
 end
@@ -662,14 +674,15 @@ class SequenceComposite < HtmlGrid::Composite
       components.store [0,7], :division
       components.store [0,8], :sequence_packages
       css_map.store [0,6], 'subheading'
-    end
+    end if false
     super
   end
   def compositions(model, session=@session)
     Compositions.new(model.compositions, @session, self)
   end
   def division(model, session)
-    View::Drugs::DivisionComposite.new(model.division, session, self)
+    # View::Drugs::DivisionComposite.new(model.division, session, self)
+    return nil
   end
 	def sequence_name(model, session)
 		[ 
@@ -699,8 +712,8 @@ class RootSequenceForm < HtmlGrid::Form
     [0,2] => :composition_text,
     [0,3] => 'active_agents',
     [0,4] => :compositions,
-    [0,5] => 'division',
-    [0,6] => :division,
+#    [0,5] => 'division',
+#    [0,6] => :division,
   }
   CSS_MAP = {
     [0,1] => 'subheading',
@@ -717,7 +730,8 @@ class RootSequenceForm < HtmlGrid::Form
     RootCompositions.new(model.compositions, @session, self)
   end
   def division(model, session=@session)
-    RootDivisionComposite.new(model.division, session, self)
+    return nil
+    # RootDivisionComposite.new(model.division, session, self)
   end
   def hidden_fields(context)
     super << context.hidden('patinfo', 'keep')
