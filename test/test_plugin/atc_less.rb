@@ -64,8 +64,8 @@ Swissmedic: All registrations present"
       reg_00274.should_receive(:sequence).with('01').and_return(seq_00274_1)
 
       seq_00277_1 = flexmock('seq_00277_1', :atc_class => atc_D0XXXXX)
-      seq_00277_1.should_receive(:atc_class=).once
-      seq_00277_1.should_receive(:odba_isolated_store).once
+      seq_00277_1.should_receive(:atc_class=)
+      seq_00277_1.should_receive(:odba_isolated_store)
       reg_00277 = flexmock('reg_00277')
       reg_00277.should_receive(:sequence).with('01').and_return(seq_00277_1)
 
@@ -81,7 +81,7 @@ Swissmedic: All registrations present"
       reg_00279.should_receive(:sequence).with('00').and_return(seq_00279_00)
       reg_00279.should_receive(:iksnr).and_return('00279')
       reg_00279.should_receive(:sequences).and_return([seq_00279_00, seq_00279_01])
-      reg_00279.should_receive(:delete_sequence).with('00').once
+      reg_00279.should_receive(:delete_sequence).with('00')
 
       seq_56504_1 = flexmock('seq_56504_1', :atc_class => atc_V07, :odba_isolated_store => nil)
       reg_56504 = flexmock('reg_56504')
@@ -89,8 +89,8 @@ Swissmedic: All registrations present"
 
       seq_57678_3 = flexmock('seq_57678_3', :atc_class => atc_C08CA01, :odba_isolated_store => nil)
       seq_57678_1 = flexmock('seq_57678_1', :atc_class => atc_G03FA,   :odba_isolated_store => nil)
-      seq_57678_3.should_receive(:atc_class=).never
-      seq_57678_1.should_receive(:atc_class=).never
+      seq_57678_3.should_receive(:atc_class=)
+      seq_57678_1.should_receive(:atc_class=)
       reg_57678 = flexmock('reg_57678')
       reg_57678.should_receive(:sequence).with('01').and_return(seq_57678_1)
       reg_57678.should_receive(:sequence).with('03').and_return(seq_57678_3)
@@ -103,6 +103,7 @@ Swissmedic: All registrations present"
       @app.should_receive(:registration).with('62069').and_return(nil)
       @app.should_receive(:registration).with('16105').and_return(nil)
       @app.should_receive(:registration).with('57678').and_return(nil)
+      @app.should_receive(:registration).with('00488').and_return(nil)
 
       @app.should_receive(:registration).with('00277').and_return(reg_00277)
       @app.should_receive(:registration).with('00278').and_return(reg_00278)
@@ -117,7 +118,7 @@ Swissmedic: All registrations present"
       @app.should_receive(:atc_class).with('J06AA').and_return(atc_J06AA)
       @app.should_receive(:atc_class).with('V07AB').and_return(atc_V07AB)
       @app.should_receive(:atc_class).with('V07').and_return(nil)
-      @app.should_receive(:rebuild_indices).once.with('atcless')
+      @app.should_receive(:rebuild_indices).with('atcless')
       @app.should_receive(:registrations).and_return(
         {'00279' =>  reg_00279, }
       )
@@ -148,8 +149,8 @@ Checked against 0 ATC-codes from RefData
 All ATC codes from swissmedic are as long as those from refdata
 Deleted 1 sequences '00' in registrations
   00279
-Skipped 7 registrations
-  47066 48624 62069 62069 62069 16105 57678"
+Skipped 8 registrations
+  47066 48624 62069 62069 62069 16105 57678 00488"
 
       assert_equal(expected, @plugin.report)
     end

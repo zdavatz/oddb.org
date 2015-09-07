@@ -62,7 +62,7 @@ public
       @iksnr_with_wrong_data = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
-      @target_keys ||= {}
+      @target_keys = Util::COLUMNS_JULY_2015
       @empty_compositions = []
     end
 
@@ -98,10 +98,6 @@ public
       return false
     end
 
-    def set_target_keys(workbook)
-      @target_keys = get_column_indices(workbook).keys
-    end
-
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
@@ -121,15 +117,14 @@ public
           debug_msg "#{__FILE__}:#{__LINE__} unable to open #{file2open}. Checked #{target} and #{@latest_packungen}"
         else
           debug_msg("file2open #{file2open} checked #{target} and #{@latest_packungen}")
-          @target_keys = get_column_indices(Spreadsheet.open(file2open)).keys
           Spreadsheet.open(file2open).worksheet(0).each() do
             |row|
             row_nr += 1
             next if row_nr <= 4
             break unless row
-            next if (cell(row, @target_keys.index(:production_science)) == 'Tierarzneimittel')
-            iksnr =  cell(row, @target_keys.index(:iksnr)).to_i
-            seqnr =  cell(row, @target_keys.index(:seqnr)).to_i
+            next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
+            iksnr =  cell(row, @target_keys.keys.index(:iksnr)).to_i
+            seqnr =  cell(row, @target_keys.keys.index(:seqnr)).to_i
             to_be_checked = [iksnr, seqnr]
             next if last_checked == to_be_checked
             last_checked = to_be_checked
@@ -154,7 +149,6 @@ public
         msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
         debug_msg msg
         start_time = Time.new
-        @target_keys = get_column_indices(Spreadsheet.open(target)).keys
         initialize_export_registrations agent
         result = diff target, @latest_packungen, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
@@ -205,11 +199,11 @@ public
       @diff.newest_rows.values.each do |obj|
         obj.values.each do |row|
           # File used is row.worksheet.workbook.root.filepath
-          iksnr = row[@target_keys.index(:iksnr)]
+          iksnr = row[@target_keys.keys.index(:iksnr)]
           if reg = @app.registration(iksnr.to_s)
             {
-              :registration_date => @target_keys.index(:registration_date),
-              :expiration_date   =>   @target_keys.index(:expiry_date)
+              :registration_date => @target_keys.keys.index(:registration_date),
+              :expiration_date   =>   @target_keys.keys.index(:expiry_date)
             }.each_pair do |field, i|
               # if future date given
               date = date_cell(row, i)
@@ -264,9 +258,9 @@ public
     end
     def deactivate(deactivations)
       deactivations.each { |row|
-        iksnr = row[@target_keys.index(:iksnr)]
-        seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{iksnr}' seqnr #{seqnr} pack #{@target_keys.index(:ikscd)}"
+        iksnr = row[@target_keys.keys.index(:iksnr)]
+        seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
+        debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{iksnr}' seqnr #{seqnr} pack #{@target_keys.keys.index(:ikscd)}"
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
@@ -278,9 +272,9 @@ public
       debug_msg "#{__FILE__}:#{__LINE__} delete #{deletions.size} items"
       deletions.each {
         |row|
-        iksnr  = row[@target_keys.index(:iksnr)]
-        seqnr  = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
-        packnr = row[@target_keys.index(:ikscd)]
+        iksnr  = row[@target_keys.keys.index(:iksnr)]
+        seqnr  = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
+        packnr = row[@target_keys.keys.index(:ikscd)]
         debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
         ptr = pointer(row)
         next unless ptr
@@ -313,10 +307,10 @@ public
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt,
-                date_cell(row, @target_keys.index(flag)).strftime('%d.%m.%Y')
+                date_cell(row, @target_keys.keys.index(flag)).strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
-        sprintf "%s (%s)", txt, cell(row, @target_keys.index(flag))
+        sprintf "%s (%s)", txt, cell(row, @target_keys.keys.index(flag))
       end
     end
     def known_data(latest)
@@ -473,9 +467,9 @@ public
       Persistence::Pointer.new(*path)
     end
     def pointer_from_row(row)
-      iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-      seqnr = (str = cell(row, @target_keys.index(:seqnr))) ? "%02i" % str.to_i : nil
-      pacnr = "%03i" % cell(row, @target_keys.index(:ikscd)).to_i
+      iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+      seqnr = (str = cell(row, @target_keys.keys.index(:seqnr))) ? "%02i" % str.to_i : nil
+      pacnr = "%03i" % cell(row, @target_keys.keys.index(:ikscd)).to_i
       pointer [iksnr, seqnr, pacnr].compact
     end
     def report
@@ -531,9 +525,9 @@ public
       unless @skipped_packages.empty? # no expiration date
         skipped = []
         @skipped_packages.each do |row|
-          skipped << "\"#{cell(row, @target_keys.index(:company))}, " \
-                     "#{cell(row, @target_keys.index(:name_base))}, " \
-                     "#{"%05i" % cell(row, @target_keys.index(:iksnr)).to_i}\""
+          skipped << "\"#{cell(row, @target_keys.keys.index(:company))}, " \
+                     "#{cell(row, @target_keys.keys.index(:name_base))}, " \
+                     "#{"%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i}\""
         end
         lines << ""
         lines << "There is no Gültigkeits-datum (column 'J') of the following"
@@ -584,7 +578,7 @@ public
       @target_keys.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date, :sequence_date
-                   date_cell(row, @target_keys.index(key))
+                   date_cell(row, @target_keys.keys.index(key))
                 when :seqnr
                   sprintf "%02i", row[idx].to_i
                 when :iksnr
@@ -671,7 +665,7 @@ public
     end
 
     def update_company(row)
-      name = cell(row, @target_keys.index(:company))
+      name = cell(row, @target_keys.keys.index(:company))
       ## an ngram-similarity of 0.8 seems to be a good choice here.
       #  0.7 confuses Arovet AG with Provet AG
       args = { :name => name, :business_area => 'ba_pharma' }
@@ -695,10 +689,10 @@ public
       if !@update_comps && opts[:create_only] && !sequence.active_agents.empty?
         trace_msg("#{__FILE__}:#{__LINE__} update_compositions create_only")
         sequence.compositions
-      elsif(namestr = cell(row, @target_keys.index(:substances)))
+      elsif(namestr = cell(row, @target_keys.keys.index(:substances)))
         res = []
-        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-        seqnr ="%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        seqnr ="%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         if (sequence.seqnr != seqnr)
           debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.seqnr.inspect} and #{seqnr.inspect}")
           return
@@ -891,8 +885,8 @@ public
     end
     def update_package(reg, seq, row, replacements={},
                        opts={:create_only => false})
-      iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-      seqnr ="%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+      iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+      seqnr ="%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
       if (seq.seqnr != seqnr)
         debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{seq.seqnr.inspect}/#{seqnr.inspect}")
         return
@@ -901,15 +895,15 @@ public
         debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{reg.iksnr.inspect}/#{seq.iksnr.inspect}#{iksnr.inspect}")
         return
       end
-      ikscd = sprintf('%03i', cell(row, @target_keys.index(:ikscd)).to_i)
+      ikscd = sprintf('%03i', cell(row, @target_keys.keys.index(:ikscd)).to_i)
       unless seq.pointer
-        debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[@target_keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer"
+        debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer"
         return
       end
       pidx = cell(row, row.size).to_i
       if(ikscd.to_i > 0)
         args = {
-          :ikscat            => cell(row, @target_keys.index(:ikscat)),
+          :ikscat            => cell(row, @target_keys.keys.index(:ikscat)),
           :swissmedic_source => source_row(row),
         }
         package = nil
@@ -935,12 +929,12 @@ public
           part = package.parts[pidx]
         end
         args = {
-          :size => [cell(row, @target_keys.index(:size)), cell(row, @target_keys.index(:unit))].compact.join(' '),
+          :size => [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' '),
         }
         if package.sequence and package.sequence.seqnr != seq.seqnr
-          debug_msg "#{__FILE__}: #{__LINE__}: update_package iksnr '#{row[@target_keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
+          debug_msg "#{__FILE__}: #{__LINE__}: update_package iksnr '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
-        if(comform = @app.commercial_form_by_name(cell(row, @target_keys.index(:unit))))
+        if(comform = @app.commercial_form_by_name(cell(row, @target_keys.keys.index(:unit))))
           args.store :commercial_form, comform.pointer
         end
         if !part.composition \
@@ -954,29 +948,29 @@ public
       first_day = Date.new(@@today.year, @@today.month, 1)
       opts = {:date => first_day, :create_only => false}.update(opts)
       opts[:date] ||= first_day
-      group = cell(row, @target_keys.index(:production_science))
+      group = cell(row, @target_keys.keys.index(:production_science))
       if(group != 'Tierarzneimittel')
-        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-        science = cell(row, @target_keys.index(:production_science))
+        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        science = cell(row, @target_keys.keys.index(:production_science))
         ptr = if(registration = @app.registration(iksnr))
                 return registration if opts[:create_only]
                 registration.pointer
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = date_cell(row, @target_keys.index(:expiry_date))
+        expiration = date_cell(row, @target_keys.keys.index(:expiry_date))
         if expiration.nil?
           @skipped_packages << row
           return nil
         end
-        reg_date = date_cell(row, @target_keys.index(:registration_date))
+        reg_date = date_cell(row, @target_keys.keys.index(:registration_date))
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
                     true
                   else
                     nil
                   end
         args = {
-          :ith_swissmedic      => cell(row, @target_keys.index(:index_therapeuticus)),
+          :ith_swissmedic      => cell(row, @target_keys.keys.index(:index_therapeuticus)),
           :production_science  => science,
           :vaccine             => vaccine,
           :registration_date   => reg_date,
@@ -1001,7 +995,7 @@ public
         if(company = update_company(row))
           args.store :company, company.pointer
         end
-        if(indication = update_indication(cell(row, @target_keys.index(:indication_registration))))
+        if(indication = update_indication(cell(row, @target_keys.keys.index(:indication_registration))))
           args.store :indication, indication.pointer
         end
 
@@ -1045,8 +1039,8 @@ public
       }
     end
     def update_all_sequence_info(row, reg, seq, opts=nil, replacements=nil)
-      composition_text   = cell(row, @target_keys.index(:composition))
-      active_agents_text = cell(row, @target_keys.index(:substances))
+      composition_text   = cell(row, @target_keys.keys.index(:composition))
+      active_agents_text = cell(row, @target_keys.keys.index(:substances))
       parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
       comps = update_compositions(seq, row, opts, composition_text, parsed_comps)
       comps.each_with_index do |comp, idx|
@@ -1060,8 +1054,8 @@ public
       opts ||= { :create_only => @latest_packungen ? !File.exist?(@latest_packungen) : false,
                :date        => @@today, }
       rows.each { |row|
-        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-        seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         next if iksnr.eql?('00000')
         to_consider =  mustcheck(iksnr, opts)
         next unless row
@@ -1080,7 +1074,7 @@ public
     end
     def update_sequence(registration, row, opts={:create_only => false})
       # remove sequence '00'/package '000' which might have been created when importing via AipsDownload.xml
-      seqnr = "%02i" % cell(row, @target_keys.index(:seqnr)).to_i
+      seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
       if registration.sequence('00')
         ptr = registration.sequence('00').pointer
         if ptr
@@ -1096,13 +1090,13 @@ public
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage
-      unless cell(row, @target_keys.index(:name_base))
-        msg = "Empty column C for #{cell(row, @target_keys.index(:iksnr))} #{cell(row, @target_keys.index(:seqnr))}"
+      unless cell(row, @target_keys.keys.index(:name_base))
+        msg = "Empty column C for #{cell(row, @target_keys.keys.index(:iksnr))} #{cell(row, @target_keys.keys.index(:seqnr))}"
         trace_msg("#{__FILE__}: #{__LINE__}: #{msg}")
         @iksnr_with_wrong_data << msg
         return nil
       end
-      parts = cell(row, @target_keys.index(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
+      parts = cell(row, @target_keys.keys.index(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       base = parts.shift
       ## some names have dosage data before the galenic form
       # ex. 'Ondansetron-Teva, 4mg, Filmtabletten'
@@ -1114,12 +1108,12 @@ public
               else
                 nil
               end
-      if ctext = cell(row, @target_keys.index(:composition))
+      if ctext = cell(row, @target_keys.keys.index(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
       sequence = registration.sequence(seqnr)
 
-      seq_date = date_cell(row, @target_keys.index(:sequence_date))
+      seq_date = date_cell(row, @target_keys.keys.index(:sequence_date))
       args = {
         :composition_text => ctext,
         :name_base        => base,
@@ -1132,14 +1126,14 @@ public
         if(!registration.atc_classes.nil? and
            atc = registration.atc_classes.first)
           args.store :atc_class, atc.code
-        elsif((key = cell(row, @target_keys.index(:substances))) && !key.include?(?,) \
+        elsif((key = cell(row, @target_keys.keys.index(:substances))) && !key.include?(?,) \
              && (atc = @app.unique_atc_class(key)))
           args.store :atc_class, atc.code
-        elsif(code = cell(row, @target_keys.index(:atc_class)))
+        elsif(code = cell(row, @target_keys.keys.index(:atc_class)))
           args.store :atc_class, code
         end
       end
-      if(indication = update_indication(cell(row, @target_keys.index(:indication_sequence))))
+      if(indication = update_indication(cell(row, @target_keys.keys.index(:indication_sequence))))
         args.store :indication, indication.pointer
       end
       res = @app.update ptr, args, :swissmedic
@@ -1170,7 +1164,7 @@ public
       _sanity_check_deletions(diff.package_deletions, table)
     end
     def _sanity_check_deletions(deletions, table)
-      deletions.compact.delete_if {|row| table[cell(row,@target_keys.index(:iksnr))] || cell(row, row.size).to_i > 0 }
+      deletions.compact.delete_if {|row| table[cell(row,@target_keys.keys.index(:iksnr))] || cell(row, row.size).to_i > 0 }
     end
     def _sort_by(sort, iksnr, flags)
       case sort
