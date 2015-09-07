@@ -203,8 +203,9 @@ module ODDB
     def delete_patinfo iksnr, language
       puts_sync "delete_patinfo iksnr #{iksnr} #{language}"
       return unless iksnr
-      if reg = @app.registration(iksnr)          
-          reg.each_sequence{
+      if reg = @app.registration(iksnr)
+
+        reg.each_sequence{
             |seq| 
                 next unless seq.patinfo and seq.patinfo.pointer;
                 puts_sync "delete_patinfo #{iksnr} pointer #{seq.patinfo.pointer}"
@@ -341,10 +342,10 @@ module ODDB
       @nonconforming_content ||= []
       @nonconforming_content = @nonconforming_content.uniq.sort
       create_iksnr = @new_iksnrs.collect { |iksnr, name|
-        "  ISKNR #{iksnr}: #{name} "
+        "  IKSNR #{iksnr}: #{name} "
       }.join("\n")
       unknown = @unknown_iksnrs.collect { |iksnr, name|
-        "  ISKNR #{iksnr}: #{name} "
+        "  IKSNR #{iksnr}: #{name} "
       }.join("\n")
       case @target
       when :both
@@ -684,7 +685,12 @@ module ODDB
           matches = [matches.first[1..-1] + matches.last]
         end
         _iksnr = ''
-        matches.map do |iksnr|
+        matches.each do |iksnr|
+          if iksnr.length == 5
+            iksnrs << iksnr
+            _iksnr = ''
+            next
+          end
           # support [nnnnn] and [n,n,n,n,n]
           _iksnr << iksnr.gsub(/[^0-9]/, '')
           if _iksnr.length == 5
@@ -695,7 +701,8 @@ module ODDB
       end
       iksnrs.sort.uniq
     rescue => e
-      puts_sync "get_iksnrs_from_string: string #{string} rescued from #{e}"
+      puts "get_iksnrs_from_string: string #{string} rescued from #{e}"
+      puts e.backtrace.join("\n")
       []
     end
     
@@ -1143,7 +1150,7 @@ module ODDB
               end
             end
             date = (date ? " - #{date}" : '')
-            nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : '')
+            nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : infos[lang] ? TextInfoPlugin::get_iksnrs_from_string(infos[lang].iksnrs.to_s) : '')
             msg  = "  #{state.to_s.upcase} #{nrs}: #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}#{nrs}"
             unless iksnrs.empty?
               next if name.nil? or name.empty?
@@ -1352,7 +1359,7 @@ module ODDB
             names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
           end
         end
-        import_info(keys, names, :isknr)
+        import_info(keys, names, :iksnr)
       end
       @doc = nil
       true # an import should return true or you will never send a report
