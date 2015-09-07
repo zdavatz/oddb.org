@@ -51,7 +51,6 @@ module ODDB
       FileUtils.rm(@latest) if File.exists?(@latest)
       @test_packages = File.expand_path '../data/xlsx/Packungen.xlsx', File.dirname(__FILE__)
       @workbook = Spreadsheet.open( @test_packages)
-      @plugin.set_target_keys(@workbook)
     end
     def teardown
       super # to clean up FlexMock

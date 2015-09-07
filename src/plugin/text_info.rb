@@ -55,6 +55,7 @@ module ODDB
       @skipped  = []
       @invalid  = []
       @notfound = []
+      @target_keys = Util::COLUMNS_JULY_2015
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -91,13 +92,17 @@ module ODDB
     IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)  
     def read_packages # adapted from swissmedic.rb
       latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx'
+      LogFile.debug "read_packages found latest_name #{latest_name}"
       @packages = {}
+      @veterinary_products = {}
       RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
-        next unless row[0] and row[1] and row[2] and row[6]
-        next if /Tierarzneimittel/i.match(row[6].value.to_s) # ODDB.org is only for humans, not animals
-        iksnr = "%05i" % row[0].value.to_i
-        seqnr = "%03i" % row[1].value.to_i
-        name_base = row[2].value.to_s
+        next unless cell(row, @target_keys.index(:iksnr)).to_i and
+            cell(row, @target_keys.index(:seqnr)).to_i and
+            cell(row, @target_keys.index(:production_science)).to_i
+        next if (cell(row, @target_keys.index(:production_science)) == 'Tierarzneimittel')
+        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
+        seqnr = "%03i" % cell(row, @target_keys.index(:seqnr)).to_i
+        name_base = cell(row, @target_keys.index(:name_base)).value.to_s
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
       LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
@@ -303,7 +308,6 @@ module ODDB
           return "Your database seems to be okay. No inconsistencies found. #{@inconsistencies.inspect}"
         else
           msg = "Problems in your database?\n\n"+
-                "Logfile saved as #{File.expand_path(@checkLog.path)}\n"+
                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n"+
                 "Summary: \n"
           headings = {}
@@ -600,7 +604,7 @@ module ODDB
       end
       # sequence = app.update((registration.pointer + [:sequence, seqNr]).creator, seq_args, :text_plugin)
       sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
-
+      sequence.name_base = info.title
       app.registrations[iksnr]=registration
       app.registrations.odba_store
       # pointer = reg_pointer + [:sequence, seq.seqnr]
@@ -1196,11 +1200,11 @@ module ODDB
       if added_info then added_info.class == Array ? info += added_info : info << added_info end
       @inconsistencies << info
       @iksnrs_to_import << iksnr unless suppress_re_import
-      LogFile.debug "check_swissmedicno_fi_pi #{info}"
+      LogFile.debug "check_swissmedicno_fi_pi #{[id, iksnr, name_base]}"
     end
 
     def check_swissmedicno_fi_pi(options = {}, patinfo_must_be_deleted = false)
-      LogFile.debug "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences"
+      LogFile.debug "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences. Options #{options}"
       swissmedicinfo_xml
       read_packages
       @error_reasons = {
