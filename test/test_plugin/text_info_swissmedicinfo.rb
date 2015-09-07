@@ -315,7 +315,7 @@ module ODDB
       super # to clean up FlexMock
     end    
   end
-        
+
   class TestTextInfoPlugin_iksnr <MiniTest::Test
     include FlexMock::TestCase
     def test_get_iksnr_comprimes
@@ -345,11 +345,15 @@ module ODDB
       assert_equal(['62105'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
       assert_equal('62105', TextInfoPlugin.find_iksnr_in_string(test_string, '62105'))
     end
-    
+
     def test_get_iksnr_temodal
       test_string = "54'577, 60’388 "
-      assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))       
+      assert_equal(["54577", '60388'], TextInfoPlugin::get_iksnrs_from_string(test_string))
     end
-   
+
+    def test_get_iksnr_Ringerlactat
+      test_string = "Zulassungsnummer\nRingerlactat B. Braun/Ringerlactat + Glucose 5% B. Braun: 38207 (Swissmedic).\nRingerlactat ohne K: 65724 (Swissmedic)."
+      assert_equal(["38207", '65724'], TextInfoPlugin::get_iksnrs_from_string(test_string))
+    end
   end
 end
