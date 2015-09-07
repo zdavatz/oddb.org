@@ -102,7 +102,7 @@ module ODDB
           photo.set_attribute('title', @lookandfeel.lookup(:photo_link_title))
           photo.css_class =('square infos')
           name_bases.concat([' ‐ ', photo])
-        end
+        end unless @lookandfeel.disabled?(:photo_link)
         if !@lookandfeel.disabled?(:atc_division_link) and
            (seq = model.sequence and div = seq.division and !div.empty?)
           div = HtmlGrid::Link.new(:division_link_short, model, @session, self)

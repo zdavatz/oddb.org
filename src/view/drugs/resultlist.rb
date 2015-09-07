@@ -385,7 +385,7 @@ class ResultList < HtmlGrid::List
 		  link.href = @lookandfeel._event_url(:show, [:reg, reg, :seq, seq, :pack, pac])
     else
 		  link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
-    end
+    end unless  @lookandfeel.disabled?(:substances_link)
     if (model.active_agents.size == 0)
       return nil
     elsif (model.active_agents.size == 1)

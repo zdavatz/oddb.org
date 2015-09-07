@@ -292,6 +292,8 @@ module ODDB
       :navigation,
       :price_request,
       :search_result_head_navigation,
+      :substances_link,
+      :photo_link,
     ]
     DICTIONARIES = {
       'de'  =>  {
@@ -381,22 +383,18 @@ module ODDB
     end
     def result_list_components
       {
-        [0,0]   => :limitation_text,
-        [1,0]   => :fachinfo,
-        [2,0]   => :narcotic,
-        [3,0]   => :complementary_type,
-        [4,0,0] => 'result_item_start',
-        [4,0,1] => :name_base,
-        [4,0,2] => 'result_item_end',
-        [5,0]   => :galenic_form,
-        [6,0]   => :most_precise_dose,
-        [7,0]   => :comparable_size,
-        [8,0]   => :price_exfactory,
-        [9,0]   => :price_public,
-        [10,0]  => :deductible,
-        [11,0]  => :substances,
-        [12,0]  => :company_name,
-        [13,0]  => :ikscat,
+        [0,0]   => :fachinfo,
+        [1,0,0] => :name_base,
+        [1,0,1] => 'result_item_end',
+        [2,0]   => :substances,
+        [3,0]   => :galenic_form,
+        [4,0]   => :most_precise_dose,
+        [5,0]   => :comparable_size,
+        [6,0]   => :price_exfactory,
+        [7,0]   => :price_public,
+        [8,0]   => :deductible,
+        [9,0]   => :company_name,
+        [10,0]  => :ikscat,
       }
     end
     def search_type_selection
