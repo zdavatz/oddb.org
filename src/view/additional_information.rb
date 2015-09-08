@@ -4,6 +4,7 @@
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
+require 'model/analysis/group'
 require 'view/drugs/atcchooser'
 require 'iconv'
 require 'plugin/comarketing'

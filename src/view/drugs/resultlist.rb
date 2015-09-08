@@ -388,7 +388,10 @@ class ResultList < HtmlGrid::List
     end unless  @lookandfeel.disabled?(:substances_link)
     if (model.active_agents.size == 0)
       return nil
-    elsif (model.active_agents.size == 1)
+    elsif @lookandfeel.enabled?(:display_3_active_agents) and model.active_agents.size <= 3
+      value = model.active_agents.collect{|x| x.to_s}.join('<br>')
+      link.value = value
+    elsif model.active_agents.size == 1
       link.value = model.substances.first.to_s
     else
 			#txt = HtmlGrid::Component.new(model, session, self)
