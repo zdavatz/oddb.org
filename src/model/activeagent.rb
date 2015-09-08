@@ -56,7 +56,7 @@ module ODDB
       [@substance, @dose]
     end
 		def to_s
-			to_a.compact.join(' ')
+			(to_a.find_all{ |x| x != nil}.size > 0) ? to_a.compact.join(' ') : @substance_name
 		end
 		alias :pointer_descr :to_s
 		def ==(other)
