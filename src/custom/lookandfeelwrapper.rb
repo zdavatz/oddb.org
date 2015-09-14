@@ -313,7 +313,9 @@ module ODDB
         :explain_complementary    =>  '&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
         :refdata                  =>  'In RefData nicht gelistet',
+        :square_limitation        =>  '&nbsp;-&nbsp;L',
         :th_fachinfo              =>  'Fach&shy;info',
+        :th_ikscat                =>  'Ka&shy;te&shy;go&shy;ri&shy;sie&shy;rung',
       },
       'fr'  =>  {
         :html_title                =>  'evidentia - savoir et outils pour médecins',
@@ -331,6 +333,7 @@ module ODDB
         :explain_unknown          =>  'noir&nbsp;=&nbsp;pas classes',
         :price_compare            =>  'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
         :refdata                  =>  'Ne figurant pas dans RefData',
+        :square_limitation        =>  '&nbsp;-&nbsp;L',
         :th_fachinfo              =>  'Infor&shy;mation pro&shy;fession&shy;nelle',
       },
       'en'  =>  {
@@ -359,27 +362,18 @@ module ODDB
       {
         [0,0] =>  :explain_original,
         [0,1] =>  :explain_generic,
-        [0,2] =>  :explain_comarketing,
-        [0,3] =>  :explain_vaccine,
-        [0,4] =>  :explain_complementary,
-        [0,5] =>  'explain_unknown',
-        [0,6] =>  'explain_expired', # Pendente Zulassungsverlängerung
+        [0,2] =>  'explain_unknown',
+        [0,3] =>  :explain_limitation,
 
-        [1,0] =>  :explain_limitation,
-        [1,1] =>  :explain_fachinfo,
-        [1,2] =>  :explain_narc,
-        [1,3] =>  :explain_anthroposophy,
-        [1,4] =>  :explain_homeopathy,
-        [1,5] =>  :explain_phytotherapy,
-        [1,6] =>  :explain_parallel_import,
+        [1,0] =>  :explain_fachinfo,
+        [1,1] =>  'explain_efp',
+        [1,2] =>  'explain_pbp',
+        [1,3] =>  :explain_deductible,
 
-        [2,0] =>  'explain_efp',
-        [2,1] =>  'explain_pbp',
-        [2,2] =>  :explain_deductible,
-        [2,3] =>  'explain_sl',
-        [2,4] =>  'explain_slg',
-        [2,5] =>  'explain_slo',
-        [2,6] =>  :explain_lppv
+        [2,0] =>  'explain_sl',
+        [2,1] =>  'explain_slg',
+        [2,2] =>  'explain_slo',
+        [2,3] =>  :explain_lppv
       }
     end
     def navigation
@@ -390,6 +384,7 @@ module ODDB
         [0,0]   => :fachinfo,
         [1,0,0] => :name_base,
         [1,0,1] => 'result_item_end',
+        [1,0,2] => :limitation_text,
         [2,0]   => :substances,
         [3,0]   => :galenic_form,
         [4,0]   => :most_precise_dose,
