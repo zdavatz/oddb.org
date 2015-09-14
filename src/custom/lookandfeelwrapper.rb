@@ -270,6 +270,7 @@ module ODDB
       :display_3_active_agents,
       :display_fachinfo_th,
       :prepend_limitation_text,
+      :show_legend_by_default,
     ]
     DISABLED = [
       :atc_ddd,

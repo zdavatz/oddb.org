@@ -233,7 +233,7 @@ module ODDB
         span.value = @lookandfeel.lookup(:show_legend)
         span.css_class = 'link'
         span.set_attribute('id', 'toggle_switch')
-        span.onclick = <<JS
+        script = <<JS
 (function () {
 var span    = document.getElementById('toggle_switch');
 var legends = document.getElementById('explain_result');
@@ -249,6 +249,9 @@ if (legends.style.display != 'none') {
 }
 })();
 JS
+
+        span.onclick = script
+        span.onload = script if @lookandfeel.enabled?(:show_legend_by_default)
         span
       end
       def legal_note?
