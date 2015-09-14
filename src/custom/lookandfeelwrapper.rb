@@ -269,6 +269,7 @@ module ODDB
       :sequences,
       :display_3_active_agents,
       :display_fachinfo_th,
+      :prepend_limitation_text,
     ]
     DISABLED = [
       :atc_ddd,
@@ -313,8 +314,8 @@ module ODDB
         :explain_complementary    =>  '&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
         :refdata                  =>  'In RefData nicht gelistet',
-        :square_limitation        =>  '&nbsp;-&nbsp;L',
         :th_fachinfo              =>  'Fach&shy;info',
+        :th_name_base             =>   'Präpara&shy;te&shy;/Preis&shy;ver&shy;gleich',
         :th_ikscat                =>  'Ka&shy;te&shy;go&shy;ri&shy;sie&shy;rung',
       },
       'fr'  =>  {
@@ -333,8 +334,8 @@ module ODDB
         :explain_unknown          =>  'noir&nbsp;=&nbsp;pas classes',
         :price_compare            =>  'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
         :refdata                  =>  'Ne figurant pas dans RefData',
-        :square_limitation        =>  '&nbsp;-&nbsp;L',
         :th_fachinfo              =>  'Infor&shy;mation pro&shy;fession&shy;nelle',
+        :th_name_base             =>  'Pré&shy;par&shy;at&shy;ion/Com&shy;pa&shy;rai&shy;son de prix',
       },
       'en'  =>  {
         :html_title               =>  'evidentia - know-how and tools for doctors',
