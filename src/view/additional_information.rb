@@ -302,7 +302,7 @@ module ODDB
         else
   				link.href = @lookandfeel._event_url(:resolve, {'pointer'=>CGI.escape(sltxt.pointer.to_s)})
         end
-				link.set_attribute('title', 
+				link.set_attribute('title',
 					@lookandfeel.lookup(:limitation_text))
 				#pos = components.index(:limitation_text)
 				link.css_class = "square infos"
