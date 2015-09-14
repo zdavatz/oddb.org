@@ -306,7 +306,7 @@ module ODDB
 					@lookandfeel.lookup(:limitation_text))
 				#pos = components.index(:limitation_text)
 				link.css_class = "square infos"
-				link
+        @lookandfeel.enabled?(:prepend_limitation_text) ? [ ' - ', link] : link
 			end
       def minifi(model, session=@session)
 				if(mfi = model.minifi)
