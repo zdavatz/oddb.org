@@ -381,6 +381,7 @@ class ResultList < HtmlGrid::List
   end
 	def substances(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
+    show_dose = @lookandfeel.disabled?(:show_substance_dose) ? false : true
     if reg = model.iksnr and seq = model.seqnr and pac = model.ikscd
 		  link.href = @lookandfeel._event_url(:show, [:reg, reg, :seq, seq, :pack, pac])
     else
@@ -389,10 +390,10 @@ class ResultList < HtmlGrid::List
     if (model.active_agents.size == 0)
       return nil
     elsif @lookandfeel.enabled?(:display_3_active_agents) and model.active_agents.size <= 3
-      value = model.active_agents.collect{|x| x.to_s}.join('<br>')
+      value = model.active_agents.collect{|x| show_dose ? x.to_s : x.substance.to_s }.join('<br>')
       link.value = value
     elsif model.active_agents.size == 1
-      link.value = model.substances.first.to_s
+      link.value = show_dose ? model.substances.first.to_s : model.substances.first.substance.to_s
     else
 			#txt = HtmlGrid::Component.new(model, session, self)
 			link.set_attribute('title', model.active_agents.join(', '))

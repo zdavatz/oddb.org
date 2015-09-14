@@ -297,6 +297,7 @@ module ODDB
       :search_result_head_navigation,
       :substances_link,
       :photo_link,
+      :show_substance_dose,
     ]
     DICTIONARIES = {
       'de'  =>  {
@@ -315,7 +316,7 @@ module ODDB
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
         :refdata                  =>  'In RefData nicht gelistet',
         :th_fachinfo              =>  'Fach&shy;info',
-        :th_name_base             =>   'Präpara&shy;te&shy;/Preis&shy;ver&shy;gleich',
+        :th_name_base             =>   'Präpara&shy;/Preis&shy;ver&shy;gleich',
         :th_ikscat                =>  'Ka&shy;te&shy;go&shy;ri&shy;sie&shy;rung',
       },
       'fr'  =>  {
