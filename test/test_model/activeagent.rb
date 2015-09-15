@@ -28,7 +28,7 @@ module ODDB
 	end
 end
 class StubActiveAgentSubstance
-	attr_reader :name, :sequence, :removed_sequence
+	attr_reader :name, :sequence, :removed_sequence, :substance_name
 	alias :to_s :name
 	def initialize(name)
 		@name = name
@@ -75,10 +75,10 @@ class TestActiveAgent <Minitest::Test
 	def setup
 		@substance_name = 'ACIDUM ACETYLSALICYLICUM'
 		@agent = ODDB::ActiveAgent.new(@substance_name)
-    @agent.substance = @substance
     @agent.dose = ODDB::Dose.new 100, 'mg'
 		@app = StubActiveAgentApp.new
     @substance = StubActiveAgentSubstance.new(@substance_name)
+    @agent.substance = @substance
 		@agent.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		@sequence = StubActiveAgentSequence.new
 		@sequence.pointer = ODDB::Persistence::Pointer.new(:sequence, 1)
@@ -286,6 +286,13 @@ class TestActiveAgent <Minitest::Test
   def test_to_s
     assert_equal 'ACIDUM ACETYLSALICYLICUM 100 mg', @agent.to_s
   end
+  def test_dont_show_0
+    agent = ODDB::ActiveAgent.new(@substance_name)
+    agent.substance = @substance
+    agent.dose = ODDB::Dose.new(0, 'mg')
+    assert_equal('ACIDUM ACETYLSALICYLICUM', agent.to_s)
+  end
   def test_update_values
+    skip 'Pending test_update_values'
   end
 end

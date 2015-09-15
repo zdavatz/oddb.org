@@ -4,6 +4,7 @@
 # ODDB::ActiveAgent -- oddb.org -- 22.04.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
+require 'model/substance'
 require 'model/dose'
 
 module ODDB
@@ -55,9 +56,11 @@ module ODDB
     def to_a
       [@substance, @dose]
     end
-		def to_s
-			(to_a.find_all{ |x| x != nil}.size > 0) ? to_a.compact.join(' ') : @substance_name
-		end
+    def to_s
+      s =   @substance ? @substance.to_s : @substance_name
+      s +=  (' ' + @dose.to_s) if @dose and @dose.to_g > 0
+      s
+    end
 		alias :pointer_descr :to_s
 		def ==(other)
 			other.is_a?(ActiveAgent) \
