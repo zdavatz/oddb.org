@@ -56,3 +56,5 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 == Trademarks
 The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED. see http://www.denso-wave.com/qrcode/faqpatent-e.html
+
+Join the chat at https://gitter.im/zdavatz/oddb.org
