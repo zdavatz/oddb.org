@@ -10,7 +10,11 @@ RSpec.configure do |config|
 end
 
 BreakIntoPry = false
-require 'pry' if BreakIntoPry
+begin
+  require 'pry'
+rescue LoadError
+  # ignore error for Travis-CI
+end
 for_running_in_irb = %(
 require 'watir'; require 'pp'
 homeUrl ||= "oddb-ci2.dyndns.org"
