@@ -71,6 +71,61 @@ describe "ch.oddb.org" do
     @browser.url.should match OddbUrl
   end
 
+  it "should display the correct color iscador U" do
+    login
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set('iscador U')
+    sleep(0.1)
+    @browser.button(:name, "search").click
+    @browser.element(:id => 'ikscat_1').wait_until_present
+    @browser.element(:id => 'ikscat_1').text.should eq 'A / SL'
+    @browser.link(:text => 'FI').exists?.should eq true
+    @browser.link(:text => 'PI').exists?.should eq true
+    @browser.td(:text => 'A').exists?.should eq true
+    @browser.td(:text => 'C').exists?.should eq false
+    @browser.link(:text => 'FB').exists?.should eq true
+    (@browser.link(:text => /Iscador/i).style 'background-color').should match /0, 0, 0, 0/
+    @browser.element(:id => 'ikscat_1').hover
+    res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
+    res.should eq true
+    @browser.text_field(:text => /Medikamentennamen/).exists?
+    res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
+    @browser.buttons.first.click # Don't know how to close it else
+    @browser.back
+  end
+
+  it "should display a limitation link for Sevikar" do
+    login
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set('Sevikar')
+    sleep(0.1)
+    @browser.button(:name, "search").click
+    @browser.element(:id => 'ikscat_1').wait_until_present
+    @browser.element(:id => 'ikscat_1').text.should eq 'B / SL'
+    @browser.link(:text => 'L').exists?.should eq true
+    @browser.link(:text => 'L').href.should match /limitation_text\/reg/
+    @browser.link(:text => 'FI').exists?.should eq true
+    @browser.link(:text => 'PI').exists?.should eq true
+    @browser.td(:text => 'A').exists?.should eq false
+    @browser.td(:text => 'C').exists?.should eq false
+#    @browser.link(:text => '10%').exists?.should eq true
+    @browser.link(:text => 'FB').exists?.should eq true
+  end
+
+  it "should display lamivudin with SO and SG in category (price comparision)" do
+    login
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Preisvergleich")
+    @browser.text_field(:name, "search_query").set('lamivudin')
+    sleep(0.1)
+    @browser.button(:name, "search").click
+    @browser.element(:id => 'ikscat_1').wait_until_present
+    @browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?.should eq true
+    @browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?.should eq true
+  end
+
   it "should show a registration info" do
     login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091"

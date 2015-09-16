@@ -262,7 +262,9 @@ module ODDB
 					catstr = @lookandfeel.lookup(:lppv)
 					text_elements.push(catstr)
 				end
-				if(gt = model.sl_generic_type)
+        # keep it sync with src/view/ajax/swissmedic_cat.rb!
+        # possible values are [nil, :generic, :original, :phytotherapy, :anthroposophy, :vaccine]
+        if (gt = model.sl_generic_type) and [:generic, :original].index(gt)
 					text_elements.push(@lookandfeel.lookup("sl_#{gt}_short"))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')

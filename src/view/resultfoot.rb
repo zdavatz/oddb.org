@@ -21,7 +21,6 @@ module ODDB
         'explain_expired'        => 'infos bold expired',
         :explain_cas             => 'infos',
         :explain_comarketing     => 'infos',
-        :explain_complementary   => 'infos',
         :explain_vaccine         => 'infos',
         :explain_ddd_price       => 'infos',
         :explain_deductible      => 'infos',
@@ -72,9 +71,6 @@ module ODDB
       end
       def explain_anthroposophy(model, session=@session)
         explain_square_link(model, :anthroposophy)
-      end
-      def explain_complementary(model, session=@session)
-        explain_square_link(model, :complementary, @lookandfeel.lookup(:explain_complementary_url))
       end
       def explain_fachinfo(model, session=@session)
         explain_square_link(model, :fachinfo)

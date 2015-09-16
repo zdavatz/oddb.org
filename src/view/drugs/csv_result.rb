@@ -36,7 +36,6 @@ class CsvResult < HtmlGrid::Component
     @counts = {
       'anthroposophy'            => 0,
       'bsv_dossiers'             => 0,
-      'complementary'            => 0,
       'deductible_g'             => 0,
       'deductible_o'             => 0,
       'expiration_date'          => 0,

@@ -43,7 +43,9 @@ class SwissmedicCat < HtmlGrid::Composite
 			end
 			y += 1
 		end
-		if(gt = @model.sl_generic_type)
+    # keep it sync with src/view/additional_information.rb:!
+    # possible values are [nil, :generic, :original, :phytotherapy, :anthroposophy, :vaccine]
+    if(gt = @model.sl_generic_type and [:generic, :original].index(gt))
 			@components.store([0,y], "sl_#{gt}_short")
 			@components.store([1,y], "sl_#{gt}")
 			y += 1
