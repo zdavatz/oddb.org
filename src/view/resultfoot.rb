@@ -251,7 +251,7 @@ if (legends.style.display != 'none') {
 JS
 
         span.onclick = script
-        span.onload = script if @lookandfeel.enabled?(:show_legend_by_default)
+        span.onload = script if @lookandfeel.enabled?(:show_legend_by_default, false)
         span
       end
       def legal_note?
