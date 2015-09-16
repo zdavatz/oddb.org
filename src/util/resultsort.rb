@@ -51,16 +51,6 @@ module ODDB
             package.comparable_size,
           ]
         }
-        if false # only for debug purposes
-          id = 0
-          packages.each{
-            |package|
-            id += 1
-            classify_package(package, session)
-            gal_name = package.galenic_forms.collect { |gf| galform_str(gf, session) }
-            puts "id #{sprintf('%3d', id)}: #{package.barcode} expired? #{package.expired?.inspect[0..2]} out_of_trade #{package.out_of_trade.inspect[0..2]} priorize #{@priorize_desitin.to_s[0..3]} #{@priority} (#{package.generic_type.inspect[0..2]}/#{package.sl_generic_type.inspect[0..2]}) '#{package.name_base.to_s}' gal_name #{gal_name} name #{@name_to_use.inspect}"
-          }
-        end
         packages
       rescue StandardError => e
         puts e.class
