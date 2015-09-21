@@ -59,7 +59,7 @@ gem 'yus', '1.0.0'
 
 group :development, :test do
   gem "rake"
-  gem 'flexmock'
+  gem 'flexmock','~> 1.3.0'
   gem 'hoe'
   gem 'hoe-travis'
   gem 'minitest', '>=5.0'
@@ -69,6 +69,7 @@ end
 
 group :test do
   gem 'rspec'
+  gem 'rspec-core'
   gem 'minitest-should_syntax'
   gem 'watir'
   gem 'watir-webdriver'

@@ -270,6 +270,16 @@ class ResultList < HtmlGrid::List
       link
     end
   end
+  def name_base(model, session=@session)
+    if @lookandfeel.enabled?(:link_trade_name_to_fachinfo, false)
+      link = _fachinfo(model)
+      link.value = model.name_base
+      link
+    else
+      model.name_base
+    end
+  end
+
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})

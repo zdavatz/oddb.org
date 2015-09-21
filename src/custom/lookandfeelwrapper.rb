@@ -262,6 +262,7 @@ module ODDB
       :external_css,
       :help_link,
       :legal_note_vertical,
+      :link_trade_name_to_fachinfo,
       :logout,
       :patinfos,
       :popup_links,
@@ -378,19 +379,18 @@ module ODDB
     end
     def result_list_components
       {
-        [0,0]   => :fachinfo,
-        [1,0,0] => :name_base,
-        [1,0,1] => 'result_item_end',
-        [1,0,2] => :limitation_text,
-        [2,0]   => :substances,
-        [3,0]   => :galenic_form,
-        [4,0]   => :most_precise_dose,
-        [5,0]   => :comparable_size,
-        [6,0]   => :price_exfactory,
-        [7,0]   => :price_public,
-        [8,0]   => :deductible,
-        [9,0]   => :company_name,
-        [10,0]  => :ikscat,
+        [0,0,0] => :name_base,
+        [0,0,1] => 'result_item_end',
+        [0,0,2] => :limitation_text,
+        [1,0]   => :substances,
+        [2,0]   => :galenic_form,
+        [3,0]   => :most_precise_dose,
+        [4,0]   => :comparable_size,
+        [5,0]   => :price_exfactory,
+        [6,0]   => :price_public,
+        [7,0]   => :deductible,
+        [8,0]   => :company_name,
+        [9,0]   => :ikscat,
       }
     end
     def search_type_selection
