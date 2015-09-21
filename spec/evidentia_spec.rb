@@ -37,31 +37,37 @@ describe "ch.oddb.org" do
 
   it "should not contain a column Fachinfo" do
     select_product_by_trademark(Lamivudin)
-    @text.index('Fachinfo')should eq nil
     fi = @browser.td(:class_name => /list /, :text => 'FI')
-    expect(fi).to eq nil
+    expect(fi.exist?).to eq false
   end
 
   it "should contain a link to the limiation in Sevikar HCT preparation" do
     select_product_by_trademark(Sevikar)
     link = @browser.link(:text => 'L')
     link.href.index('limitation_text').should > 0
-    /#{tradename}.*\n.*- L( |$)/.match(@text).class.should == MatchData
+    link.text.should eq 'L'
+    td = @browser.td(:class =>/^list/, :text => /#{Sevikar}.*- L/)
+    expect(td.exist?).to eq true
+    expect(td.link(:href => /fachinfo/).exist?).to eq true
+    expect(td.link(:href => /limitation_text/).exist?).to eq true
   end
 
   it "should contain a link to the price comparision in price public" do
     # http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/sevikar%20hct/search_type/st_sequence?#best_result
     select_product_by_trademark(Sevikar)
-    pubprice = @browser.link(:class_name => /pubprice/)
+    pubprice = @browser.td(:class_name => /pubprice/)
     pubprice.exist?.should eq true
+    pubprice.text.should match /^\d+\.\d+/
+    pubprice_link = @browser.link(:name => /compare/)
+    pubprice_link.title.should eq 'Preisvergleich'
   end
 
   it "should contain a link to the fachinfo for Lamivudin-Zidovudin" do
     select_product_by_trademark(Lamivudin)
-    prep = @browser.link(:text => Lamivudin)
-    expect(prep.exists?)
-    prep.href.index('ean').should > 0
-    prep.href.index('fachinfo').should > 0
+    link = @browser.link(:text => Lamivudin)
+    expect(link.exists?)
+    link.href.index('ean').should == nil
+    link.href.index('fachinfo').should > 0
   end
 
   it "should display a limitation link for #{Sevikar}" do
@@ -87,8 +93,9 @@ describe "ch.oddb.org" do
   it "should not contain a link to the drug inside the price comparision" do
     @browser.goto(Evidentia_URL + '/de/evidentia/compare/ean13/7680615190018')
     link = @browser.link(:text => /#{Sevikar}/)
-    binding.pry
-    expect(link.exist?).to eq false
+    expect(link.exist?).to eq true
+    link.href.index('fachinfo').should == nil
+    link.href.index('/compare/ean13/').should > 0
   end
 
   after :all do

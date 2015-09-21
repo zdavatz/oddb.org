@@ -84,8 +84,9 @@ describe "ch.oddb.org" do
     @browser.link(:text => 'PI').exists?.should eq true
     @browser.td(:text => 'A').exists?.should eq true
     @browser.td(:text => 'C').exists?.should eq false
-    @browser.link(:text => 'FB').exists?.should eq false
-    (@browser.link(:text => /Iscador/i).style 'background-color').should match /0, 0, 0, 0/
+    @browser.link(:text => 'FB').exists?.should eq true
+    td = @browser.td(:text => /Iscador/i)
+    td.style('background-color').should match /0, 0, 0, 0/
     @browser.element(:id => 'ikscat_1').hover
     res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
     res.should eq true
@@ -111,7 +112,7 @@ describe "ch.oddb.org" do
     @browser.td(:text => 'A').exists?.should eq false
     @browser.td(:text => 'C').exists?.should eq false
 #    @browser.link(:text => '10%').exists?.should eq true
-    @browser.link(:text => 'FB').exists?.should eq false
+    @browser.link(:text => 'FB').exists?.should eq true
   end
 
   it "should display lamivudin with SO and SG in category (price comparision)" do
