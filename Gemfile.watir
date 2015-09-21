@@ -1,7 +1,7 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 # ruby "1.9.3" # don't specify a ruby version as I want to be able to test via travis using several versions
 
-source "http://rubygems.org"
+gem 'diff-lcs'
 
 group :development, :test do
   gem "rake"
@@ -14,8 +14,8 @@ group :development, :test do
 end
 
 group :test do
-
   gem 'rspec'
+  gem 'rspec-core'
   gem 'watir'
   gem 'watir-webdriver'
   gem 'page-object'

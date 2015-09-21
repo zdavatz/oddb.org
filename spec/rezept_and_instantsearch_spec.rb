@@ -10,7 +10,7 @@ describe "ch.oddb.org" do
   Four_Medis = [ 'Losartan', 'Nolvadex', 'Paroxetin', 'Aspirin']
   QrCodeError = /Error generating QRCode/i
   DrMeier     = /Dr. med. Werner Meier/
-  AddToSpan   = "\t"
+  AddToSpan   = ""
 
   def rezeptUrl
     "#{OddbUrl}/de/#{Flavor}/rezept"
