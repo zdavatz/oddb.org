@@ -263,6 +263,7 @@ module ODDB
       :help_link,
       :legal_note_vertical,
       :link_trade_name_to_fachinfo,
+      :link_pubprice_to_price_comparison,
       :logout,
       :patinfos,
       :popup_links,

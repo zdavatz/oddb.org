@@ -280,6 +280,25 @@ class ResultList < HtmlGrid::List
     end
   end
 
+  def price_public(model, session=@session)
+    if @lookandfeel.enabled?(:link_pubprice_to_price_comparison, false)
+      link = HtmlGrid::Link.new(:compare, model, session, self)
+      args = [
+        :pointer, model.pointer, :search_type, @type, :search_query, @query,
+      ]
+      if (ean_code = model.barcode)
+        link.href = @lookandfeel._event_url(:compare) + "ean13/" + ean_code
+      else
+        link.href = @lookandfeel._event_url(:compare, args)
+      end
+      link.value = model.price_public
+      link.set_attribute('title', @lookandfeel.lookup(:compare))
+      link
+    else
+      model.price_public
+    end
+  end
+
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
