@@ -85,7 +85,8 @@ describe "ch.oddb.org" do
     @browser.td(:text => 'A').exists?.should eq true
     @browser.td(:text => 'C').exists?.should eq false
     @browser.link(:text => 'FB').exists?.should eq true
-    (@browser.link(:text => /Iscador/i).style 'background-color').should match /0, 0, 0, 0/
+    td = @browser.td(:text => /Iscador/i)
+    td.style('background-color').should match /0, 0, 0, 0/
     @browser.element(:id => 'ikscat_1').hover
     res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
     res.should eq true
@@ -309,7 +310,6 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
-    # require 'pry'; binding.pry
     @browser.button(:name => 'proceed_payment').click; small_delay
     @browser.button(:name => 'checkout_invoice').click; small_delay
     @browser.url.should_not match  /errors/
