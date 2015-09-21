@@ -121,7 +121,7 @@ module ODDB
             old_link_format = {:pointer => model.pointer}
             link.href = @lookandfeel._event_url(:show, old_link_format)
           end
-        end
+        end unless  @lookandfeel.disabled?(:substances_link)
         lang = @session.language
         comps = []
         if !model.compositions.empty?
