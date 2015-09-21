@@ -315,8 +315,8 @@ module ODDB
         :price_compare            =>  'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
         :refdata                  =>  'In RefData nicht gelistet',
         :th_fachinfo              =>  'Fach&shy;info',
-        :th_name_base             =>   'Präparat&shy;/Preis&shy;ver&shy;gleich',
         :th_ikscat                =>  'Ka&shy;te&shy;go&shy;ri&shy;sie&shy;rung',
+        :th_price_public          =>  'PP/&shy;Vergleich',
       },
       'fr'  =>  {
         :html_title                =>  'evidentia - savoir et outils pour médecins',
@@ -333,7 +333,7 @@ module ODDB
         :price_compare            =>  'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
         :refdata                  =>  'Ne figurant pas dans RefData',
         :th_fachinfo              =>  'Infor&shy;mation pro&shy;fession&shy;nelle',
-        :th_name_base             =>  'Pré&shy;par&shy;at&shy;ion/Com&shy;pa&shy;rai&shy;son de prix',
+        :th_price_public          =>  'PP/&shy;Comparaison',
       },
       'en'  =>  {
         :html_title               =>  'evidentia - know-how and tools for doctors',
