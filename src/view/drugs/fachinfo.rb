@@ -73,12 +73,18 @@ class FiChapterChooser < HtmlGrid::Composite
 	}
 	def init
 		xwidth = self::class::XWIDTH
+    @components = components
 		unless(@model.pointer.skeleton == [:create])
+    @components.delete_if{|key, value| value == :ddd } if @lookandfeel.disabled?(:fi_link_to_ddd)
 			if(@session.state.allowed?)
-				components.store([2,0], :print_edit)
-				components.store([xwidth-1,0], :changelog)
+				@components.store([2,0], :print_edit)
+				@components.store([xwidth-1,0], :changelog)
 			else
-				components.store([2,0], :print)
+        if @lookandfeel.disabled?(:fi_link_to_ddd)
+          @components.store([1,0], :print)
+        else
+          @components.store([2,0], :print)
+        end
 			end
 		end
 		document = @model.send(@session.language)
@@ -94,7 +100,7 @@ class FiChapterChooser < HtmlGrid::Composite
 				xoffset -= xwidth
 			end
 			pos = [xx + xoffset, yy]
-			components.store(pos, name)
+			@components.store(pos, name)
 			css_map.store(pos, 'chapter-tab')
 			component_css_map.store(pos, 'chapter-tab')
 			symbol_map.store(name, View::Drugs::FiChapterChooserLink)
