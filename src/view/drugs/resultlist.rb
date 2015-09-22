@@ -276,7 +276,7 @@ class ResultList < HtmlGrid::List
       link.value = model.name_base
       link
     else
-      model.name_base
+      super
     end
   end
 
