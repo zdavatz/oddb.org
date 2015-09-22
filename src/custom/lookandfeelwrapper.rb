@@ -364,15 +364,14 @@ module ODDB
         [0,2] =>  'explain_unknown',
         [0,3] =>  :explain_limitation,
 
-        [1,0] =>  :explain_fachinfo,
-        [1,1] =>  'explain_efp',
-        [1,2] =>  'explain_pbp',
-        [1,3] =>  :explain_deductible,
+        [1,0] =>  'explain_efp',
+        [1,1] =>  'explain_pbp',
+        [1,2] =>  :explain_deductible,
+        [1,3] =>  'explain_sl',
 
-        [2,0] =>  'explain_sl',
-        [2,1] =>  'explain_slg',
-        [2,2] =>  'explain_slo',
-        [2,3] =>  :explain_lppv
+        [2,0] =>  'explain_slg',
+        [2,1] =>  'explain_slo',
+        [2,2] =>  :explain_lppv
       }
     end
     def navigation
