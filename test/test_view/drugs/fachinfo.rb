@@ -65,6 +65,7 @@ class TestFiChapterChooser <Minitest::Test
   def setup
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
+                           :disabled?  => false,
                            :attributes => {},
                            :_event_url => '_event_url'
                           )
@@ -136,6 +137,7 @@ class TestFachinfoComposite <Minitest::Test
     attributes    = flexmock('attributes', :chapter => nil, :name => 'Namen')
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
+                           :disabled?  => false,
                            :attributes => {:chapter => nil, :name => 'Namen'},
                            :_event_url => '_event_url'
                           )
@@ -202,6 +204,7 @@ class TestEditFiChapterChooser <Minitest::Test
     photos  = flexmock('photos', :has_photo? => false)
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
+                           :disabled?  => false,
                            :attributes => {},
                            :_event_url => '_event_url'
                           )
@@ -246,6 +249,7 @@ class TestRootFachinfoComposite <Minitest::Test
                            :attributes => {},
                            :lookup     => @lookup,
                             :enabled? => false,
+                           :disabled?  => false,
                           :base_url   => 'base_url',
                            :_event_url => '_event_url'
                           )
