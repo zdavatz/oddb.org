@@ -104,6 +104,9 @@ describe "ch.oddb.org" do
     sleep(0.1)
     @browser.button(:name, "search").click
     @browser.element(:id => 'ikscat_1').wait_until_present
+    td = @browser.td(:class =>/^list/, :text => /^Sevikar/)
+    expect(td.exist?).to eq true
+    expect(td.links.size).to eq 1
     @browser.element(:id => 'ikscat_1').text.should eq 'B / SL'
     @browser.link(:text => 'L').exists?.should eq true
     @browser.link(:text => 'L').href.should match /limitation_text\/reg/
