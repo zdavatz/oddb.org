@@ -81,7 +81,7 @@ class FachinfoHpricot < TextinfoHpricot
       fi.registration_owner = @registration_owner
       fi.driving_ability    = @driving_ability
       fi.preclinic          = @preclinic
-      if m = /ATC[ -]Code:\s([A-Z][0-9 A-Z]{0,9})\s/.match(@effects.to_s)
+      if m = /ATC[ -]Code\s*:\s([A-Z][0-9 A-Z]{0,9})\s/.match(@effects.to_s)
         fi.atc_code = m[1].gsub(/\s/, '')
       end
       fi

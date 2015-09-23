@@ -106,7 +106,9 @@ class CsvResult < HtmlGrid::Component
     ''
 	end
   def c_type(pack)
-    if ctype = pack.complementary_type
+    if (ctype = pack.complementary_type) and ctype
+      puts "ngngng: Found ctype.to_s #{ctype.to_s}" unless @counts[ctype.to_s]
+      @counts[ctype.to_s] ||= 0
       @counts[ctype.to_s] += 1
       @lookandfeel.lookup("square_#{ctype}")
     end
