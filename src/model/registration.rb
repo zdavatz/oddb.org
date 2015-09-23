@@ -86,6 +86,12 @@ module ODDB
 				0
 			end
 		end
+    def atc_class
+      atc_classes.first
+    end
+    def atc_code
+      atc_classes.first.code if atc_classes.first
+    end
 		def atc_classes
       if @sequences
         already_disabled = GC.disable

@@ -169,7 +169,7 @@ module ODDB
 		attr_accessor :restrictions, :unwanted_effects
 		attr_accessor :interactions, :overdose, :other_advice
 		attr_accessor :date, :iksnrs, :reference, :packages
-		attr_accessor :delivery, :distribution, :fabrication
+		attr_accessor :delivery, :distribution, :fabrication, :atc_code
 		CHAPTERS = [
 			:galenic_form,
 			:composition,
