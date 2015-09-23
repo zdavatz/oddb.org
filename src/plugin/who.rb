@@ -43,6 +43,7 @@ module ODDB
       @created = 0
       @ddd_guidelines = 0
       @guidelines = 0
+      @repairs = []
     end
     def capitalize_all(str)
       ## benchmarked fastest against an append (<<) solution
@@ -59,10 +60,21 @@ module ODDB
       end
     end
     def import(agent=Mechanize.new)
+      # reset origin of whocc
+      @app.atc_classes.each{ |key, value| value.origin = nil if value.origin == :whocc }
+      # Fix atc_classes which point to wrong sequences
+      @app.atc_classes.each{
+        |key, value|
+        next unless value
+        msg = value.repair_needed?
+        @repairs << msg if msg
+      }
+      # run impot
       while(code = @codes.shift)
         @count += 1
         import_code(agent, code)
       end
+      @app.atc_classes.odba_store
       report
     end
     def import_atc(code, link)
@@ -73,7 +85,7 @@ module ODDB
                   @created += 1
                   Persistence::Pointer.new([:atc_class, code]).creator
                 end
-      @app.update pointer.creator, :en => name
+      @app.update pointer.creator, {:en => name, :origin => :whocc}
     end
     def import_code(agent, get_code)
       page = agent.get(@url + "?code=%s&showdescription=yes" % get_code)
@@ -94,6 +106,8 @@ module ODDB
           import_ddds atc, link.parent.parent
         end
       end
+    rescue SocketError => e
+      @repairs << "Unable to fetch #{get_code}"
     end
     def import_ddds(atc, row)
       code = nil
@@ -167,6 +181,8 @@ module ODDB
         sprintf("Created  %3i English descriptions", @created),
         sprintf("Updated  %3i Guidelines", @guidelines),
         sprintf("Updated  %3i DDD-Guidelines", @ddd_guidelines),
+        sprintf("Repaired %3i wrong sequences", @repairs.size),
+        @repairs.join("\n"),
       ].join("\n")
     end
   end

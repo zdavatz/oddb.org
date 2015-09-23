@@ -191,19 +191,38 @@ module ODDB
       assert_equal(0, @plugin.import_code(@agent, 'A'))
     end
     def test_report
-      expected = "Imported   0 ATC-Codes\nCreated    0 English descriptions\nUpdated    0 Guidelines\nUpdated    0 DDD-Guidelines"
+      expected = "Imported   0 ATC-Codes\nCreated    0 English descriptions\nUpdated    0 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
       assert_equal(expected, @plugin.report)
     end
     def test_import
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
-      atc = flexmock('atc', 
+      atc = flexmock('atc',
                      :guidelines => nil,
                      :pointer    => pointer
                     )
+      atc_hash = Hash.new
+      atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
       flexmock(@app, :update => atc)
-      flexmock(@app, :atc_class => atc)
-      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines"
+      flexmock(@app, :atc_class => atc, :atc_classes => atc_classes)
+      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      assert_equal(expected, @plugin.import(@agent))
+    end
+    def test_import_repairs
+      pointer = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      atc = flexmock('atc',
+                     :guidelines => nil,
+                     :pointer    => pointer
+                    )
+      skip 'How should we mock the sequences?'
+      atc_hash = Hash.new
+      atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
+      flexmock(@app, :update => atc)
+      sequence = flexmock('sequence')
+      atc_hash['A14'] = [sequence]
+      flexmock(@app, :atc_class => atc, :atc_classes => atc_classes)
+      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   1 wrong sequences\n"
       assert_equal(expected, @plugin.import(@agent))
     end
   end

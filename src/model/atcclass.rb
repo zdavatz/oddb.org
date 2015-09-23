@@ -18,15 +18,17 @@ module ODDB
 		include Language
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
-		attr_accessor :code, :ni_id, :db_id
+		attr_accessor :code, :ni_id, :db_id, :origin
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes
 		attr_writer :sequences, :descriptions
     check_class_list = {
       :code => "String",
+      :origin => "Symbol",
       :sequences => "Array",
       :descriptions => "ODDB::SimpleLanguage::Descriptions",
     }
+
     define_check_class_methods check_class_list
 		class DDD
 			include Persistence
@@ -64,6 +66,26 @@ module ODDB
         end
 			}
 		end
+    def repair_needed?
+      msg = "repair_needed? #{@code}: "
+      unless @sequences
+        return msg += "@sequences is nil for for #{self.inspect}"
+      end
+      found = false
+      oldSize = @sequences.size
+      @sequences.each{
+        |seq|
+      if seq.atc_class.code != @code
+        found = true
+        msg += "\n  Deleting #{seq.iksnr}/#{seq.seqnr} with #{seq.atc_class.code}"
+        @sequences.delete(seq)
+      end
+      }
+      return false unless found
+      @sequences.odba_store
+      msg += "\n  After odba_store having #{@sequences.size} sequences. Before we had #{oldSize} sequences."
+      return msg
+    end
 		def checkout
 			@sequences.dup.each { |seq| seq.atc_class = nil } 
 			@sequences.odba_delete
