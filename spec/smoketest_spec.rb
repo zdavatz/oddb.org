@@ -128,6 +128,18 @@ describe "ch.oddb.org" do
     @browser.element(:id => 'ikscat_1').wait_until_present
     @browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?.should eq true
     @browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?.should eq true
+
+    # Check link to price history for price publie
+    td = @browser.td(:class => /pubprice/)
+    td.exist?.should eq true
+    td.links.size.should eq 1
+    td.links.first.href.should match /\/price_history\//
+
+    # Check link to price history for ex factory price
+    td = @browser.td(:class => /list right/, :text => /\d+\.\d+/)
+    td.exist?.should eq true
+    td.links.size.should eq 1
+    td.links.first.href.should match /\/price_history\//
   end
 
   it "should show a registration info" do
