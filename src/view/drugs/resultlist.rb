@@ -295,7 +295,7 @@ class ResultList < HtmlGrid::List
       link.set_attribute('title', @lookandfeel.lookup(:compare))
       link
     else
-      model.price_public
+      super
     end
   end
 
