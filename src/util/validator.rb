@@ -58,6 +58,7 @@ module ODDB
       :valid_until,
 		]
 		ENUMS = {
+      :atc_origins =>[ nil, :whocc, :swissmedic, :refdata ],
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
 				'at_private'],
       :business_area => ODDB::BA_types,
