@@ -5,9 +5,8 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/test_unit'
 require 'view/dataformat'
 require 'htmlgrid/popuplink'
 require 'htmlgrid/value'
@@ -106,16 +105,50 @@ class TestDataFormat <Minitest::Test
              :good_result? => nil,
              :registration => registration,
              :descr        => 'descr',
-             :photo_link   => 'photo_link'
+             :photo_link   => 'photo_link',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
             )
     flexmock(@format, :resolve_suffix => 'resolve_suffix')
     result = @format.name_base(@model, @session)
-    skip("Why does resolve_suffix not work?")
     assert_equal(3, result.length)
     assert_kind_of(HtmlGrid::Link, result[0])
     assert_kind_of(String, result[1])
     assert_kind_of(HtmlGrid::Link, result[2])
   end
+
+  def test_name_link_to_fachinfo
+    flexmock(@session,
+             :persistent_user_input => 'persistent_user_input',
+             :language => 'language'
+            )
+    indication   = flexmock('indication', :language => 'language')
+    registration = flexmock('registration', :indication => indication)
+    flexmock(@model,
+             :pointer      => 'pointer',
+             :barcode      => 'barcode',
+             :name_base    => 'name_base',
+             :good_result? => nil,
+             :registration => registration,
+             :descr        => 'descr',
+             :photo_link   => 'photo_link',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
+            )
+    flexmock(@format, :resolve_suffix => 'resolve_suffix')
+    @lnf.should_receive(:lookup).with(:fachinfo).and_return('fachinfo')
+
+    result = @format.name_base(@model, @session)
+    assert_equal(3, result.length)
+    assert_kind_of(HtmlGrid::Link, result[0])
+    assert_kind_of(String, result[1])
+    assert_kind_of(HtmlGrid::Link, result[2])
+    skip "Dont't why we cannot set the attributes to fachinfo"
+    assert(/fachinfo/i.match(result[2].attributes['title']), 'title should match fachinfo')
+  end
+
   def test_name_base__no_barcode
     flexmock(@session, 
              :persistent_user_input => 'persistent_user_input',
@@ -130,11 +163,13 @@ class TestDataFormat <Minitest::Test
              :good_result? => nil,
              :registration => registration,
              :descr        => 'descr',
-             :photo_link   => 'photo_link'
+             :photo_link   => 'photo_link',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
             )
     flexmock(@format, :resolve_suffix => 'resolve_suffix')
     result = @format.name_base(@model, @session)
-    skip("Why does resolve_suffix not work?")
     assert_equal(3, result.length)
     assert_kind_of(HtmlGrid::Link, result[0])
     assert_kind_of(String, result[1])
@@ -142,7 +177,7 @@ class TestDataFormat <Minitest::Test
   end
   def test_name_base__good_result
     flexmock(@lnf, :disabled? => nil)
-    flexmock(@session, 
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input',
              :language => 'language'
             )
@@ -155,11 +190,13 @@ class TestDataFormat <Minitest::Test
              :good_result? => true,
              :registration => registration,
              :descr        => 'descr',
-             :photo_link   => 'photo_link'
+             :photo_link   => 'photo_link',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
             )
     flexmock(@format, :resolve_suffix => 'resolve_suffix')
     result = @format.name_base(@model, @session)
-    skip("Why does resolve_suffix not work?")
     assert_equal(3, result.length)
     assert_kind_of(HtmlGrid::Link, result[0])
     assert_kind_of(String, result[1])
@@ -179,11 +216,13 @@ class TestDataFormat <Minitest::Test
              :good_result? => nil,
              :registration => registration,
              :descr        => '',
-             :photo_link   => 'photo_link'
+             :photo_link   => 'photo_link',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
             )
     flexmock(@format, :resolve_suffix => 'resolve_suffix')
     result = @format.name_base(@model, @session)
-    skip("Why does resolve_suffix not work?")
     assert_equal(3, result.length)
     assert_kind_of(HtmlGrid::Link, result[0])
     assert_kind_of(String, result[1])
@@ -203,11 +242,15 @@ class TestDataFormat <Minitest::Test
              :good_result? => nil,
              :registration => registration,
              :descr        => 'descr',
-             :photo_link   => ''
+             :photo_link   => '',
+             :has_flickr_photo? => false,
+             :sequence     => nil,
+             :iksnr        => 'iksnr',
             )
     flexmock(@format, :resolve_suffix => 'resolve_suffix')
-    skip("Why is class string?")
-    assert_kind_of(HtmlGrid::Link, @format.name_base(@model, @session))
+    result = @format.name_base(@model, @session)
+    assert_equal(1, result.length)
+    assert_kind_of(HtmlGrid::Link, result[0])
   end
 
   def test_convert_price
@@ -290,16 +333,35 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::Span, @format.price_exfactory(@model, @session))
   end
   def test_price_public
-    flexmock(@model, :price_public => 1.23)
-    flexmock(@session, 
-             :get_currency_rate => 1.0,
-             :currency          => 'CHF'
-            )
-    flexmock(@lnf, 
-             :format_price => 'format_price',
-             :enabled?     => nil
-            )
+    flexmock(@model, :price_public => 1.23, :barcode => nil, :pointer => 'ptr')
+    @lnf     = flexmock('lookandfeel',
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :format_price => 'format_price',
+                        :enabled?     => nil,
+                        :disabled?  => false,
+                       :_event_url => '_event_url',
+                       )
+    @session = flexmock('session',
+                        :lookandfeel => @lnf,
+                        :get_currency_rate => 1.0,
+                        :currency          => 'CHF'
+                       )
+    @format  = ODDB::View::StubDataFormat.new(@model, @session)
     assert_kind_of(HtmlGrid::Span, @format.price_public(@model, @session))
+  end
+  def test_price_public_link_to_comparision
+    flexmock(@model, :price_public => 1.23, :barcode => nil, :pointer => 'ptr')
+    @lnf.should_receive(:format_price).and_return('format_price')
+    @lnf.should_receive(:enabled?).with(:price_history).and_return(false)
+    @lnf.should_receive(:enabled?).with(:link_pubprice_to_price_comparison, false).and_return(true)
+    @session = flexmock('session',
+                        :lookandfeel => @lnf,
+                        :get_currency_rate => 1.0,
+                        :currency          => 'CHF'
+                       )
+    @format  = ODDB::View::StubDataFormat.new(@model, @session)
+    assert_kind_of(HtmlGrid::Link, @format.price_public(@model, @session))
   end
 end
 

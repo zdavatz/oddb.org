@@ -115,6 +115,10 @@ module ODDB
           div.css_class = 'square infos'
           name_bases.concat([' - ', div])
         end
+        if @lookandfeel.enabled?(:link_trade_name_to_fachinfo, false)
+          link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
+          link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+        end
         name_bases
       rescue StandardError => e
         ''
@@ -125,9 +129,22 @@ module ODDB
 			def price_exfactory(model, session=@session)
 				formatted_price(:price_exfactory, model)
 			end
-			def price_public(model, session=@session)
-				formatted_price(:price_public, model)
-			end
+      def price_public(model, session=@session)
+        span = formatted_price(:price_public, model)
+        if @lookandfeel.enabled?(:link_pubprice_to_price_comparison, false)
+            price_span = HtmlGrid::Link.new(:compare, model, session, self)
+            if (ean_code = model.barcode)
+              price_span.href = @lookandfeel._event_url(:compare) + "ean13/" + ean_code
+            else
+              price_span.href = @lookandfeel._event_url(:compare, [:pointer, model.pointer, :search_type, @type, :search_query, @query,])
+            end
+            price_span.set_attribute('title', @lookandfeel.lookup(:compare))
+            price_span.value = span.respond_to?(:value) ? span.value : span
+            price_span.label = true
+            return price_span
+        end
+        span
+      end
 			private
 			def formatted_price(key, model)
         price_chf = model.respond_to?(key) ? model.send(key).to_i : 0
