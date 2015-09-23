@@ -62,6 +62,22 @@ describe "ch.oddb.org" do
     pubprice_link.title.should eq 'Preisvergleich'
   end
 
+  it "should contain a link to the FI for the drug when in price comparison" do
+    @browser.goto "#{Evidentia_URL}/de/evidentia/compare/ean13/7680615190018"
+
+    # name of preparation should link to the fachinfo
+    td = @browser.td(:class =>/^list/, :text => /^Sevikar/)
+    td.wait_until_present
+    td.links.size.should eq 1
+    td.links.first.href.should match /\/fachinfo\//
+
+    # pp should link to the new compare
+    td2 = @browser.td(:class =>/pubprice/)
+    td2.links.size.should eq 1
+    td2.links.first.href.should match /\/compare\//
+    td2.text.should match /\d+\.\d+/ # valid price
+  end
+
   it "should contain a link to the fachinfo for Lamivudin-Zidovudin" do
     select_product_by_trademark(Lamivudin)
     link = @browser.link(:text => Lamivudin)
@@ -88,14 +104,6 @@ describe "ch.oddb.org" do
     select_product_by_trademark('lamivudin')
     @browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?.should eq true
     @browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?.should eq true
-  end
-
-  it "should not contain a link to the drug inside the price comparision" do
-    @browser.goto(Evidentia_URL + '/de/evidentia/compare/ean13/7680615190018')
-    link = @browser.link(:text => /#{Sevikar}/)
-    expect(link.exist?).to eq true
-    link.href.index('fachinfo').should == nil
-    link.href.index('/compare/ean13/').should > 0
   end
 
   after :all do
