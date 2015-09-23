@@ -63,7 +63,7 @@ module ODDB
       @atc.ni_id
     end
 		def sequences
-			@atc.sequences
+			@atc.sequences.find_all{|sequence| sequence.active?}
 		end
 	end
 	class SearchResult
@@ -106,8 +106,10 @@ module ODDB
           when :interaction, :unwanted_effect
             @atc_sorted = atc_facades.sort_by { |atc| 
               count = atc.sequences.size
-              atc.sequences.inject(0) { |sum, seq|
-                sum + @relevance[seq.odba_id].to_f } / count
+              if count > 0
+                atc.sequences.inject(0) { |sum, seq|
+                  sum + @relevance[seq.odba_id].to_f } / count
+              end
             }
           else
             @atc_sorted = atc_facades.sort_by { |atc_class|
