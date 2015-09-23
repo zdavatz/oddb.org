@@ -89,8 +89,9 @@ module ODDB
       assert_equal('parent_code', @facade.parent_code)
     end
     def test_sequences
-      flexmock(@atc, :sequences => 'sequences')
-      assert_equal('sequences', @facade.sequences)
+      sequence = flexmock('sequence', :active? => true)
+      flexmock(@atc, :sequences => [sequence])
+      assert_equal([sequence], @facade.sequences)
     end
   end
 
@@ -186,7 +187,7 @@ module ODDB
       assert_kind_of(ODDB::AtcFacade, result[0])
     end
     def test_atc_sorted__relevance_not_empty
-      atc_class = flexmock('atc_class', 
+      atc_class = flexmock('atc_class',
                            :package_count => 1,
                            :active_packages => ['package']
                           )
@@ -196,11 +197,12 @@ module ODDB
       assert_equal(1, result.length)
       assert_kind_of(ODDB::AtcFacade, result[0])
     end
-    def test_atc_sorted__relevance_not_empty_interaction
-      atc_class = flexmock('atc_class', 
+    def test_atc_inactive_sequences
+      sequence = flexmock('sequence', :active? => false)
+      atc_class = flexmock('atc_class',
                            :package_count => 1,
                            :active_packages => ['package'],
-                           :sequences     => ['sequence']
+                           :sequences     => [sequence]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
       @result.instance_eval('@relevance = {"key" => "value"}')
@@ -208,6 +210,23 @@ module ODDB
       result = @result.atc_sorted
       assert_equal(1, result.length)
       assert_kind_of(ODDB::AtcFacade, result[0])
+      assert_equal(0, result[0].sequences.size)
+
+    end
+    def test_atc_sorted__relevance_not_empty_interaction
+      sequence = flexmock('sequence', :active? => true)
+      atc_class = flexmock('atc_class',
+                           :package_count => 1,
+                           :active_packages => ['package'],
+                           :sequences     => [sequence]
+                          )
+      @result.instance_eval('@atc_classes = [atc_class]')
+      @result.instance_eval('@relevance = {"key" => "value"}')
+      @result.instance_eval('@search_type = :interaction')
+      result = @result.atc_sorted
+      assert_equal(1, result.length)
+      assert_kind_of(ODDB::AtcFacade, result[0])
+      assert_equal(1, result[0].sequences.size)
     end
     def std_null
       require 'tempfile'
