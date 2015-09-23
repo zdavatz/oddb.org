@@ -139,7 +139,7 @@ module ODDB
               price_span.href = @lookandfeel._event_url(:compare, [:pointer, model.pointer, :search_type, @type, :search_query, @query,])
             end
             price_span.set_attribute('title', @lookandfeel.lookup(:compare))
-            price_span.value = span.value
+            price_span.value = span.respond_to?(:value) ? span.value : span
             price_span.label = true
             return price_span
         end
