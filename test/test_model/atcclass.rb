@@ -38,6 +38,9 @@ class TestAtcClass <Minitest::Test
 	def test_initialize
 		assert_equal('N02BA01', @atc_class.code)
 	end
+  def test_origin
+    assert_equal(nil, @atc_class.origin)
+  end
   def test_active_packages
     seq1 = flexmock 'sequence1'
     seq2 = flexmock 'sequence2'
