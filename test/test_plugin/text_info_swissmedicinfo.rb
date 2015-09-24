@@ -193,7 +193,7 @@ module ODDB
       fi = flexmock 'fachinfo'
       fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
-      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
+#      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
       flags = {:de => :up_to_date, :fr => :up_to_date}
       @parser.should_receive(:parse_fachinfo_html).once
       @parser.should_receive(:parse_patinfo_html).never
@@ -208,7 +208,7 @@ module ODDB
       pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
       flags = {:de => :up_to_date, :fr => :up_to_date}
       # only german fachinfo is present
-      @parser.should_receive(:parse_fachinfo_html).once
+      @parser.should_receive(:parse_fachinfo_html).at_least.once
       @parser.should_receive(:parse_patinfo_html).never
       opts = {:iksnrs   => [], :xml_file => File.join(@@datadir, 'AipsDownload.xml')}
       @plugin = TextInfoPlugin.new(@app, opts)

@@ -489,6 +489,11 @@ end
       assert_instance_of(FachinfoDocument2001, @@fachinfo)
     end 
     
+    def test_fachinfo_atc
+      assert_equal(nil, @@fachinfo.effects)
+      assert_equal(nil, @@fachinfo.atc_code)
+    end
+
     def test_name2
       assert_equal(Zyloric_Reg, @@fachinfo.name.to_s) # is okay as found this in html Zyloric&reg;
     end
@@ -537,6 +542,11 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       assert_instance_of(FachinfoDocument2001, @@fachinfo)
     end 
     
+    def test_fachinfo_atc
+      assert_equal('G04CB01', @@fachinfo.atc_code)
+    end
+
+
     def test_name2
       assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Streuli&reg;
     end
@@ -583,6 +593,11 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       assert_instance_of(FachinfoDocument2001, @@fachinfo)
     end 
     
+    def test_fachinfo_atc
+      assert_equal('S01ED51', @@fachinfo.atc_code)
+    end
+
+
     def test_name2
       assert_equal(MedicInfoName, @@fachinfo.name.to_s)
     end
@@ -682,7 +697,12 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     def test_name2
       assert_equal(MedicInfoName, @@fachinfo.name.to_s)
     end
-    
+
+    def test_fachinfo_atc
+      assert_equal('R03BB06', @@fachinfo.atc_code)
+    end
+
+
     def test_interactions
       assert_equal('Kontraindikationen', @@fachinfo.contra_indications.heading)
       assert(@@fachinfo.interactions.to_s.index('Die gleichzeitige Anwendung von Seebri Breezhaler mit Medikamenten zur Inhalation'))
@@ -853,6 +873,10 @@ class="
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end
       
+      def test_fachinfo_atc
+        assert_equal('J05AX08', @@fachinfo.atc_code)
+      end
+
       def test_name2
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Isentres&reg;
       end
@@ -945,6 +969,10 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end
       
+      def test_fachinfo_atc
+        assert_equal('B01AB05', @@fachinfo.atc_code)
+      end
+
       def test_name2
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Clexane&reg;
       end
@@ -1002,6 +1030,11 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       end
       
+      def test_fachinfo_atc
+        assert_equal(nil, @@fachinfo.effects)
+        assert_equal(nil, @@fachinfo.atc_code)
+      end
+
       def test_fachinfo2
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end
@@ -1061,6 +1094,10 @@ end
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end if true
       
+      def test_fachinfo_atc
+        assert_equal('J05AF10', @@fachinfo.atc_code)
+      end
+
       def test_name2
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Baraclude&reg;
       end if true
@@ -1121,6 +1158,10 @@ end
 
       def test_galenic_form
         assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
+      end
+
+      def test_fachinfo_atc
+        assert_equal('C09DA04', @@fachinfo.atc_code)
       end
 
      def test_all_to_html
