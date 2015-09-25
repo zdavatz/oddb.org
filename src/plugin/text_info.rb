@@ -55,6 +55,9 @@ module ODDB
       @skipped  = []
       @invalid  = []
       @notfound = []
+      @fi_without_atc_code = []
+      @fi_atc_code_different_in_registration = [],
+      @fi_atc_code_missmatch = [],
       @target_keys = Util::COLUMNS_JULY_2015
     end
     def save_info type, name, lang, page, flags={}
@@ -132,13 +135,13 @@ module ODDB
         app.update(container.pointer, {type => new_ti.pointer})
       end
     end
-    def TextInfoPlugin::store_fachinfo(app, reg, languages)
+    def TextInfoPlugin::store_fachinfo(app, reg, fis)
       existing = reg.fachinfo
       ptr = Persistence::Pointer.new(:fachinfo).creator
       if existing
         ptr = existing.pointer
       end
-      app.update ptr, languages
+      app.update ptr, fis
     end
     def store_orphaned iksnr, info, point=:orphaned_fachinfo
       if info
@@ -162,6 +165,53 @@ module ODDB
       end
       @app.update ptr, languages
     end
+
+    def ensure_correct_atc_code(app, registration, atcFromFI)
+      iksnr = registration.iksnr
+      unless atcFromFI
+        @fi_without_atc_code << iksnr
+        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI is nil"
+      end
+      atcFromXml = @@iksnrs_meta_info[iksnr].atcCode
+      atcFromRegistration = nil
+      atcFromRegistration = registration.sequences.values.first.atc_class.code if registration.sequences.values.first and registration.sequences.values.first.atc_class
+
+      if atcFromFI == atcFromXml and atcFromRegistration and atcFromFI == atcFromRegistration
+        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml} matched and found"
+        @fi_atc_code_different_in_registration << "#{iksnr} FI #{atcFromFI} registration #{atcFromRegistration}"
+        return # no need to change anything
+      end
+      if atcFromFI == atcFromXml and not atcFromRegistration
+        atc_class = app.atc_class(atcFromFI)
+        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI]))
+        registration.sequences.values.each{
+          |sequence|
+            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr}"
+            res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
+        }
+        return
+      end
+      if  atcFromFI == atcFromXml and atcFromFI != atcFromRegistration
+        # res = app.update(registration.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
+        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI and xml #{atcFromFI} differ from registration #{atcFromRegistration}. No action"
+        return
+      end
+      if atcFromFI != atcFromXml
+        @fi_atc_code_missmatch << "#{iksnr} FI-html: #{atcFromFI} xml: #{atcFromXml}"
+        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}). No action"
+        return
+        atc_class = app.atc_class(atcFromFI)
+        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI]))
+        registration.sequences.values.each{
+          |sequence|
+            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}"
+            res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
+        }
+        return
+      end
+      LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml}. What went wrong"
+    end
+
     def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
       begin
         LogFile.debug "update_fachinfo #{name} iksnr #{iksnrs_from_xml}"
@@ -183,9 +233,10 @@ module ODDB
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
-              LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags}"
+              LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{fis.values.first.atc_code}"
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
               TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
+              ensure_correct_atc_code(@app, reg, fis.values.first.atc_code)
               @updated_fis += 1
             end
           else
@@ -377,6 +428,9 @@ module ODDB
           @notfound.join("\n"),nil,
           "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
           "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
+          "#{@fi_without_atc_code.size} FIs without an ATC-code",      @fi_without_atc_code.join("\n"),
+          "#{@fi_atc_code_missmatch.size} FI in HTML != metadata",      @fi_atc_code_missmatch.join("\n"),
+          "#{@fi_atc_code_different_in_registration.size} FIs with ATC-code != registration",      @fi_atc_code_different_in_registration.join("\n"),
         ].join("\n")
       when :fi
         [
@@ -402,7 +456,10 @@ module ODDB
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
           "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
-          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
+          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),
+          "#{@fi_without_atc_code.size} FIs without an ATC-code",      @fi_without_atc_code.join("\n"),
+          "#{@fi_atc_code_missmatch.size} FI in HTML != metadata",      @fi_atc_code_missmatch.join("\n"),
+          "#{@fi_atc_code_different_in_registration.size} FIs with ATC-code != registration",      @fi_atc_code_different_in_registration.join("\n"),
         ].join("\n")
       when :pi
         [
@@ -427,7 +484,7 @@ module ODDB
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
           "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
-          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
+          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),
         ].join("\n")
       end
     end
@@ -598,11 +655,6 @@ module ODDB
         :sequence_date    => nil,
         :export_flag      => nil,
       }
-      if info.atcCode and atc = app.unique_atc_class(info.atcCode)
-        seq_args.store :atc_class, atc.code
-      else
-        seq_args.store :atc_class, info.atcCode
-      end
       # sequence = app.update((registration.pointer + [:sequence, seqNr]).creator, seq_args, :text_plugin)
       sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
       sequence.name_base = info.title
@@ -613,11 +665,12 @@ module ODDB
       package = sequence.package(packNr)
       part = package.create_part
       seq_args.store :packages, sequence.packages
-      LogFile.debug "Updating sequence #{iksnr} #{sequence.pointer}. seq_args #{seq_args}"
       res = app.update(sequence.pointer, seq_args, :swissmedic_text_info)
       registration.sequences[seqNr] = sequence
       sequence.fix_pointers
+      registration.sequences.odba_store
       registration.odba_store
+      LogFile.debug "Updating sequence #{iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args} registration.sequences #{registration.sequences}"
       registration
     end
 
@@ -1111,12 +1164,6 @@ module ODDB
         end
       end
       LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist} i #{infos.inspect.to_s[0..400]}"
-#   import_daily_2015.08.11-fresh-debug.log:2015-08-13 09:07:36 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1094:in `block in parse_and_update': parse_and_update: no parse_fachinfo dist /var/www/oddb.org/data/html/fachinfo/de/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html iksnrs_from_xml ["65452"]
-#   import_daily_2015.08.11-fresh-debug.log:2015-08-13 09:07:36 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1099:in `parse_and_update': fachinfo empty? content true true iksnrs_from_xml ["65452"] dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html i {}
-#     update_textinfo_65452-fresh-debug.log:2015-08-13 09:24:06 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1089:in `block in parse_and_update': parse_and_update: calls parse_fachinfo dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
-#     update_textinfo_65452-fresh-debug.log:2015-08-13 09:23:55 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1099:in `parse_and_update': fachinfo empty? content true false iksnrs_from_xml ["65452"] dist /var/www/oddb.org/data/html/fachinfo/de/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html i {:de=>#<ODDB::FachinfoDocument2001:0x00000052881cb8 @amzv=nil, @contra_indications=Kontraindikationen
-# import_daily_2015.08.11-fresh-debug-2.log:2015-08-13 09:43:07 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1095:in `block in parse_and_update': parse_and_update: no parse_fachinfo reparse dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html true iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
-# import_daily_2015.08.11-fresh-debug-2.log:2015-08-13 09:40:20 +0200: /var/www/oddb.org/src/plugin/text_info.rb:1095:in `block in parse_and_update': parse_and_update: no parse_fachinfo reparse dist /var/www/oddb.org/data/html/fachinfo/fr/Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html true iksnrs_from_xml ["65452"] Cefepim Labatec_ 1 g i_v__i_m__2 g i_v__swissmedicinfo.html, name Cefepim Labatec® 1 g i.v./i.m./2 g i.v. fr title Cefepim Labatec® 1 g i.v./i.m./2 g i.v.
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
@@ -1351,12 +1398,19 @@ module ODDB
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = swissmedicinfo_xml
       iksnrs.each do |iksnr|
+        iksnr = iksnr.strip
         names = Hash.new{|h,k| h[k] = {} }
+        if not @@iksnrs_meta_info[iksnr]
+          msg = "skip iksnr #{iksnr.inspect} #{names.inspect}. Not found among #{@@iksnrs_meta_info.size} entries"
+          @failures << msg
+          LogFile.debug "import_swissmedicinfo_by_iksnrs #{msg}"
+          next
+        end
         LogFile.debug "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
         TextInfoPlugin::create_registration(@app, @@iksnrs_meta_info[iksnr])
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
-            names[lang][typ] = [extract_matched_name(iksnr.strip, type, lang)]
+            names[lang][typ] = [extract_matched_name(iksnr, type, lang)]
           end
         end
         import_info(keys, names, :iksnr)

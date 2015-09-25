@@ -117,7 +117,10 @@ public
           debug_msg "#{__FILE__}:#{__LINE__} unable to open #{file2open}. Checked #{target} and #{@latest_packungen}"
         else
           debug_msg("file2open #{file2open} checked #{target} and #{@latest_packungen}")
-          Spreadsheet.open(file2open).worksheet(0).each() do
+          workbook = Spreadsheet.open(file2open)
+          Util.check_column_indices(workbook.worksheets[0])
+          @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+          workbook.worksheets[0].each() do
             |row|
             row_nr += 1
             next if row_nr <= 4
@@ -199,7 +202,8 @@ public
       @diff.newest_rows.values.each do |obj|
         obj.values.each do |row|
           # File used is row.worksheet.workbook.root.filepath
-          iksnr = row[@target_keys.keys.index(:iksnr)]
+          @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+          iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
           if reg = @app.registration(iksnr.to_s)
             {
               :registration_date => @target_keys.keys.index(:registration_date),
@@ -258,7 +262,7 @@ public
     end
     def deactivate(deactivations)
       deactivations.each { |row|
-        iksnr = row[@target_keys.keys.index(:iksnr)]
+        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{iksnr}' seqnr #{seqnr} pack #{@target_keys.keys.index(:ikscd)}"
         if row.length == 1 # only in the case of registration_deletions
@@ -272,8 +276,8 @@ public
       debug_msg "#{__FILE__}:#{__LINE__} delete #{deletions.size} items"
       deletions.each {
         |row|
-        iksnr  = row[@target_keys.keys.index(:iksnr)]
-        seqnr  = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
+        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         packnr = row[@target_keys.keys.index(:ikscd)]
         debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
         ptr = pointer(row)
@@ -412,7 +416,7 @@ public
         seqnr_idx = seq_indices.delete(:seqnr)
         export_flag_idx = seq_indices.delete(:export_flag)
         workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
-          iksnr = "%05i" % row[iksnr_idx].to_i
+          iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
           seqnr = row[seqnr_idx]
           export = row[export_flag_idx]
           if export =~ /E/
@@ -692,7 +696,7 @@ public
       elsif(namestr = cell(row, @target_keys.keys.index(:substances)))
         res = []
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
-        seqnr ="%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
+        seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         if (sequence.seqnr != seqnr)
           debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.seqnr.inspect} and #{seqnr.inspect}")
           return
