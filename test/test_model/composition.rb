@@ -44,6 +44,14 @@ module ODDB
       result = @composition.active_agent('substance')
       assert_kind_of(ODDB::ActiveAgent, @composition.active_agent('substance'))
     end
+    def test_active_agent__does_not_raise_no_method_error
+      @composition.instance_eval('@active_agents = nil')
+      assert_nil(@composition.active_agent('substance_or_oid'))
+    end
+    def test_inactive_agent__does_not_raise_no_method_error
+      @composition.instance_eval('@inactive_agents = nil')
+      assert_nil(@composition.inactive_agent('substance_or_oid'))
+    end
     def test_checkout
       agent  = flexmock('agent',
                                :checkout    => 'checkout',

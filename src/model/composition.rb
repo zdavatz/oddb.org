@@ -38,14 +38,16 @@ module ODDB
       odba_store
     end
     def active_agents # aka Wirkstoffe
-
-      @active_agents
+      @active_agents || []
+    end
+    def inactive_agents
+      @inactive_agents || []
     end
     def active_agent(substance_or_oid)
-      @active_agents.find { |active| active.same_as?(substance_or_oid) }
+      active_agents.find { |active| active.same_as?(substance_or_oid) }
     end
     def inactive_agent(substance_or_oid)
-      @inactive_agents.find { |active| active.same_as?(substance_or_oid) }
+      inactive_agents.find { |active| active.same_as?(substance_or_oid) }
     end
     def checkout
       self.galenic_form = nil
@@ -56,7 +58,7 @@ module ODDB
       @active_agents.odba_delete
     end
     def create_active_agent(substance_name)
-      active = @active_agents.find { |active| active.same_as?(substance_name) }
+      active = active_agent(substance_name)
       return active unless active == nil
       active = ActiveAgent.new(substance_name)
       composition = self
@@ -67,7 +69,7 @@ module ODDB
       active
     end
     def delete_active_agent(substance_or_oid)
-      active = @active_agents.find { |active| active.same_as?(substance_or_oid)}
+      active = active_agent(substance_or_oid)
       if(active)
         @active_agents.delete(active)
         @active_agents.odba_isolated_store
@@ -75,7 +77,7 @@ module ODDB
       end
     end
     def create_inactive_agent(substance_name)
-      active = @inactive_agents.find { |active| active.same_as?(substance_name) }
+      active = inactive_agent(substance_name)
       return active unless active == nil
       active = InactiveAgent.new(substance_name)
       composition = self
@@ -86,7 +88,7 @@ module ODDB
       active
     end
     def delete_inactive_agent(substance_or_oid)
-      active = @inactive_agents.find { |active| active.same_as?(substance_or_oid)}
+      active = inactive_agent(substance_or_oid)
       if(active)
         @inactive_agents.delete(active)
         @inactive_agents.odba_isolated_store
