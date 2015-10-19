@@ -35,6 +35,20 @@ describe "ch.oddb.org" do
     @text = @browser.text.clone
   end
 
+  it 'should list all SL products before the Non-SL' do
+    select_product_by_trademark('Levetiracetamum')
+    text = @browser.text.clone
+    text.gsub!('SL = Spezialitätenliste', '')
+    last_SL = (0 ... text.length).find_all { |i| /^. SL/.match text[i,text.length] }.last
+    last_SL_SG = (0 ... text.length).find_all { |i| /^. SL \/ SG/.match text[i,text.length] }.last
+    first_B = (0 ... text.length).find_all { |i| /^. B$/.match text[i,text.length] }.first
+    expect(last_SL.nil?).to eq false
+    expect(last_SL_SG.nil?).to eq false
+    expect(first_B.nil?).to eq false
+    expect(first_B).to be > last_SL
+    expect(first_B).to be > last_SL_SG
+  end
+
   it "should not contain a column Fachinfo" do
     select_product_by_trademark(Lamivudin)
     fi = @browser.td(:class_name => /list /, :text => 'FI')
