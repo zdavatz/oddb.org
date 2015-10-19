@@ -28,8 +28,8 @@ describe "ch.oddb.org" do
 
   it "should work with an exmple json from api.bls.gov" do
     @browser.goto("http://api.bls.gov/publicAPI/v1/timeseries/data/CFU0000008000")
-    @browser.text.should match /{"status":"REQUEST_SUCCEEDED","responseTime":/
-    @browser.text.should match /"Results":{ "series":/
+    expect(@browser.text).to match /{"status":"REQUEST_SUCCEEDED","responseTime":/
+    expect(@browser.text).to match /"Results":{ "series":/
   end
 
   it "should work with J039019" do
@@ -37,8 +37,8 @@ describe "ch.oddb.org" do
       |key, value|
       url = OddbUrl+ "/de/gcc/zsr/#{key}"
       @browser.goto url
-      @browser.url.should match /zsr\/#{key}/
-      @browser.text.should match /#{value}/i
+      expect(@browser.url).to match /zsr\/#{key}/
+      expect(@browser.text).to match /#{value}/i
     }
   end
 

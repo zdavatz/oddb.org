@@ -31,12 +31,12 @@ describe "ch.oddb.org" do
     |zone|
     it "should be possible to see the sponsored log-in in zone #{zone}" do
       # require 'pry'; binding.pry
-      @browser.text.should match (ViewerDescription)
-      @browser.link(:name, zone).exists?.should == true
+      expect(@browser.text).to match (ViewerDescription)
+      expect(@browser.link(:name, zone).exists?).to eq(true)
       @browser.link(:name, zone).click
       sleep(0.1) unless @browser.link(:name, "logout").exists?
-      @browser.link(:name, "logout").exists?.should == true
-      @browser.text.should match (ViewerDescription)
+      expect(@browser.link(:name, "logout").exists?).to eq(true)
+      expect(@browser.text).to match (ViewerDescription)
     end
   end
 

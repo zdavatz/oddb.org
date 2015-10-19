@@ -26,13 +26,13 @@ describe "ch.oddb.org" do
   it "should work as show/reg for sinovial" do
     url = "#{OddbUrl}/de/#{Flavor}/show/reg/1229109224/seq/09/pack/224"
     @browser.goto url
-    @browser.text.should match RegExpSubstance
+    expect(@browser.text).to match RegExpSubstance
   end
   
   it "should work as show/reg for viagra" do
     url = "#{OddbUrl}/de/#{Flavor}/show/reg/62949/seq/01/pack/001"
     @browser.goto url
-    @browser.text.should match RegExpSubstance
+    expect(@browser.text).to match RegExpSubstance
   end
 
   after :all do

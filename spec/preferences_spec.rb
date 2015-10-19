@@ -15,14 +15,14 @@ describe "ch.oddb.org" do
 
   it "should save zsr in preferences" do
     @browser.link(:name=>'preferences').click
-    @browser.text.should match /Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert./
+    expect(@browser.text).to match /Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert./
     @browser.radio(:id, "blue").set
     @browser.radio(:id, "instant").set
     @browser.radio(:id, "st_substance").set
     @browser.button(:value,"Speichern").click
-    @browser.text.should match /ZSR/i
+    expect(@browser.text).to match /ZSR/i
     set_zsr_of_doctor('J 0390.19', 'Davatz', 'zsr_id')
-    @browser.text.should match /Davatz/
+    expect(@browser.text).to match /Davatz/
 
     # logout and verify that the cookies help to persist
     logout
@@ -31,12 +31,12 @@ describe "ch.oddb.org" do
     waitForOddbToBeReady(@browser, OddbUrl)
     login
     @browser.link(:name=>'preferences').click
-    @browser.text.should match /Davatz/
-    @browser.radio(:id, "blue").checked?.should == true
+    expect(@browser.text).to match /Davatz/
+    expect(@browser.radio(:id, "blue").checked?).to eq(true)
     puts "plus should not be checked but is #{@browser.radio(:id, "plus").checked?}"
     puts "Instant should be checked but is #{@browser.radio(:id, "instant").checked?}"
 #    @browser.radio(:id, "instant").checked?.should == true
-    @browser.radio(:id, "st_substance").checked?.should == true
+    expect(@browser.radio(:id, "st_substance").checked?).to eq(true)
 
     # logout and verify that the clearing the cookies makes the ZSR lost
     logout
@@ -46,10 +46,10 @@ describe "ch.oddb.org" do
     waitForOddbToBeReady(@browser, OddbUrl)
     login
     @browser.link(:name=>'preferences').click
-    @browser.text.should_not match /Davatz/
-    @browser.radio(:id, "blue").checked?.should == false
-    @browser.radio(:id, "instant").checked?.should == false
-    @browser.radio(:id, "st_substance").checked?.should == false
+    expect(@browser.text).not_to match /Davatz/
+    expect(@browser.radio(:id, "blue").checked?).to eq(false)
+    expect(@browser.radio(:id, "instant").checked?).to eq(false)
+    expect(@browser.radio(:id, "st_substance").checked?).to eq(false)
 
   end unless ['just-medical'].index(Flavor)
 end

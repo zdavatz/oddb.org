@@ -88,8 +88,8 @@ describe "ch.oddb.org" do
       @browser.text_field(:name, "search_query").value = searchterm
       @browser.button(:name => 'search').click;  small_delay
 
-      @browser.text.should_not match LeeresResult
-      @browser.text.should match /#{searchtext}/
+      expect(@browser.text).not_to match LeeresResult
+      expect(@browser.text).to match /#{searchtext}/
     end
   }  unless ['just-medical'].index(Flavor)
 
@@ -109,58 +109,58 @@ describe "ch.oddb.org" do
       @browser.text_field(:name => 'fachinfo_search_term').send_keys :tab
       @browser.button(:id => 'fi_search').click;  small_delay
 
-      @browser.text.should match text
-      @browser.text.should match /Actemra/
+      expect(@browser.text).to match text
+      expect(@browser.text).to match /Actemra/
     end
   }
   it "should should be possible to add and delete several drugs:" do
     enter_fachinfo_search
-    @browser.text.should_not match /Actemra/
-    @browser.text.should_not match /Aspirin/
+    expect(@browser.text).not_to match /Actemra/
+    expect(@browser.text).not_to match /Aspirin/
     enter_search_to_field_by_name('Actemra', 'searchbar');
     enter_search_to_field_by_name('Aspirin', 'searchbar');
-    @browser.text.should match /Actemra/
-    @browser.text.should match /Aspirin/
+    expect(@browser.text).to match /Actemra/
+    expect(@browser.text).to match /Aspirin/
     @browser.element(:id => /minus_Actemra/i).click;  small_delay
 
-    @browser.text.should_not match /Actemra/
-    @browser.text.should match /Aspirin/
+    expect(@browser.text).not_to match /Actemra/
+    expect(@browser.text).to match /Aspirin/
     @browser.element(:id => /minus_Aspirin/i).click;  small_delay
 
-    @browser.text.should_not match /Actemra/
-    @browser.text.should_not match /Aspirin/
+    expect(@browser.text).not_to match /Actemra/
+    expect(@browser.text).not_to match /Aspirin/
     # @browser.url.should match /fachinfo_search\/$/
   end
 
   it "should should be possible to delete all drugs:" do
     enter_fachinfo_search
-    @browser.text.should_not match /Actemra/
-    @browser.text.should_not match /Aspirin/
+    expect(@browser.text).not_to match /Actemra/
+    expect(@browser.text).not_to match /Aspirin/
     enter_search_to_field_by_name('Actemra', 'searchbar');
     enter_search_to_field_by_name('Aspirin', 'searchbar');
     enter_search_to_field_by_name('Ponstan', 'searchbar');
-    @browser.text.should match /Actemra/
-    @browser.text.should match /Aspirin/
-    @browser.text.should match /Ponstan/
+    expect(@browser.text).to match /Actemra/
+    expect(@browser.text).to match /Aspirin/
+    expect(@browser.text).to match /Ponstan/
     @browser.element(:name => 'delete').click;  small_delay
 ; small_delay
-    @browser.text.should_not match /Actemra/
-    @browser.text.should_not match /Aspirin/
-    @browser.text.should_not match /Ponstan/
-    @browser.url.should match /fachinfo_search\/$/
+    expect(@browser.text).not_to match /Actemra/
+    expect(@browser.text).not_to match /Aspirin/
+    expect(@browser.text).not_to match /Ponstan/
+    expect(@browser.url).to match /fachinfo_search\/$/
   end
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
     @browser.links.find{ |item| item.href.match(/fachinfo\/swissmedic/) != nil}.click;  small_delay
 
-    @browser.text_field(:name => field_name).text.should == ""
-    @browser.text_field(:name => field_name).value.should == "HIER Suchbegriff eingeben"
+    expect(@browser.text_field(:name => field_name).text).to eq("")
+    expect(@browser.text_field(:name => field_name).value).to eq("HIER Suchbegriff eingeben")
     @browser.text_field(:name => field_name).value = 'Aspirin'
     @browser.text_field(:name => field_name).send_keys :enter
-    @browser.url.should match /search_query/
-    @browser.url.should match /Aspirin/
-    @browser.text.scan(/aspirin/i).count.should > 10 # was 17 in august 2014
+    expect(@browser.url).to match /search_query/
+    expect(@browser.url).to match /Aspirin/
+    expect(@browser.text.scan(/aspirin/i).count).to be > 10 # was 17 in august 2014
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Dr. Peter Schönbucher via doctors " do
@@ -169,7 +169,7 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Schönbucher"
     @browser.button(:name, 'search').click;  small_delay
 
-    @browser.text.should match /Schönbucher Peter/
+    expect(@browser.text).to match /Schönbucher Peter/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Abacavir via Wirkstoffe" do
@@ -178,9 +178,9 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Abacavirum"
     @browser.button(:name, 'search').click;  small_delay
 
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Deutsche Bezeichnung/
-    @browser.text.should match /Abacavir/
+    expect(@browser.text).not_to match LeeresResult
+    expect(@browser.text).to match /Deutsche Bezeichnung/
+    expect(@browser.text).to match /Abacavir/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find the Kantonsspital Glarus via Spital" do
@@ -190,9 +190,9 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Glarus"    
     @browser.button(:name, 'search').click;  small_delay
 
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Abteilung/
-    @browser.text.should match /Kantonsspital Glarus/
+    expect(@browser.text).not_to match LeeresResult
+    expect(@browser.text).to match /Abteilung/
+    expect(@browser.text).to match /Kantonsspital Glarus/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Krücke via MiGeL" do
@@ -202,9 +202,9 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Krücke"    
     @browser.button(:name, 'search').click;  small_delay
 
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Beschreibung/
-    @browser.text.should match /Krücken/
+    expect(@browser.text).not_to match LeeresResult
+    expect(@browser.text).to match /Beschreibung/
+    expect(@browser.text).to match /Krücken/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Novartis via Zulassungsinhaber" do
@@ -214,49 +214,49 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Novartis"    
     @browser.button(:name, 'search').click;  small_delay
 
-    @browser.text.should_not match LeeresResult
-    @browser.text.should match /Aktuelle Einträge/
-    @browser.text.should match /Novartis Pharma Schweiz AG/
+    expect(@browser.text).not_to match LeeresResult
+    expect(@browser.text).to match /Aktuelle Einträge/
+    expect(@browser.text).to match /Novartis Pharma Schweiz AG/
   end unless ['just-medical'].index(Flavor)
 
   pending "should work with the notify searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the notify_confirm searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/fachinfos searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/vaccines searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/limitationtexts searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/feedbacks searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/patinfos searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the  drugs/sequences searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the drugs/resultlimit searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   pending "should work with the substances/result searchbar" do
-    false.should == true
+    expect(false).to eq(true)
   end
 
   it "should be possible to find Budenofalk and Budesonid Sandoz via combined search" do
@@ -267,9 +267,9 @@ describe "ch.oddb.org" do
     @browser.button(:name, 'search').click;  small_delay
 
     text = @browser.text.clone
-    text.should_not match LeeresResult
-    text.should match('Budesonid Sandoz') # by price
-    text.should match('Budenofalk')       # by component
+    expect(text).not_to match LeeresResult
+    expect(text).to match('Budesonid Sandoz') # by price
+    expect(text).to match('Budenofalk')       # by component
   end unless ['just-medical'].index(Flavor)
 
   after :all do

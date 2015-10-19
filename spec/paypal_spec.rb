@@ -51,7 +51,7 @@ describe "ch.oddb.org" do
    def check_paypal_setup
     error_msg = "File #{@oddb_yml} should exist and be correctly configured for sandbox.paypal.com"
     puts error_msg unless File.exists?(@oddb_yml)
-    File.exists?(@oddb_yml).should == true
+    expect(File.exists?(@oddb_yml)).to eq(true)
     oddb_config = IO.read(@oddb_yml)
 
     cmd = "curl -s --insecure https://api-3t.sandbox.paypal.com/nvp -d  \"USER=#{@receiver[:user]}&PWD=#{@receiver[:pwd]}&SIGNATURE=#{@receiver[:signature]}&METHOD=SetExpressCheckout&VERSION=98&PAYMENTREQUEST_0_AMT=10&PAYMENTREQUEST_0_CURRENCYCODE=USD&PAYMENTREQUEST_0_PAYMENTACTION=SALE&cancelUrl=http://ch.oddb.org/cancel.html&returnUrl=http://ch.oddb.org/return.hml\""
@@ -59,11 +59,11 @@ describe "ch.oddb.org" do
     okay = /ACK=Success/.match(res) != nil
     puts res
     puts "Paypal connection is #{okay ? 'okay' : 'not working'}"
-    okay.should == true
+    expect(okay).to eq(true)
   end
 
   def create_user_and_login(username)
-    true.should == false
+    expect(true).to eq(false)
   end
 
   def init_paypal_checkout(customer)
@@ -144,7 +144,7 @@ describe "ch.oddb.org" do
         end
         @idx += 1
     }
-    (@idx -saved).should <= 5
+    expect(@idx -saved).to be <= 5
     search_for_medi(Six_Test_Drug_Names.first) # I want a medi with few packages
     sleep(1) # delay a little
     if duration == OneYear
@@ -178,14 +178,14 @@ describe "ch.oddb.org" do
     puts "email #{new_customer_email}: URL before preceeding to paypal was #{@browser.url}"
     @browser.button(:name => /checkout/).click; small_delay
     paypal_common(@customer_1)
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
-    @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+    expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_oddb_csv')
     link = @browser.link(:name => 'download')
-    link.exists?.should be true
+    expect(link.exists?).to be true
     link.click; small_delay
-    @browser.url.should_not match  /errors/
-    @browser.url.should_not match /appdown/
+    expect(@browser.url).not_to match  /errors/
+    expect(@browser.url).not_to match /appdown/
   end if false
 
   it "should be checkout via paypal a poweruser" do
@@ -198,16 +198,16 @@ describe "ch.oddb.org" do
     @browser.button(:name, "proceed_poweruser").click; small_delay
     init_paypal_checkout(customer)
     @browser.button(:name => 'checkout').click; small_delay
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
     paypal_common(@customer_1)
     forward_to_home = @browser.link(:name => 'forward_to_home')
 
     puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"
-    forward_to_home.exists?.should be true
+    expect(forward_to_home.exists?).to be true
     createScreenshot(@browser, 'paypal_poweruser')
-    @browser.url.should_not match /appdown/
+    expect(@browser.url).not_to match /appdown/
     forward_to_home.click; small_delay
-    @browser.url.should match OddbUrl
+    expect(@browser.url).to match OddbUrl
     saved = @idx
     # ensure that login a new power user works and that he can visit as many drugs as he wants
     logout
@@ -215,7 +215,7 @@ describe "ch.oddb.org" do
     Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
-        @browser.text.should_not match /Abfragebeschränkung auf 5 Abfragen pro Tag/
+        expect(@browser.text).not_to match /Abfragebeschränkung auf 5 Abfragen pro Tag/
     }
   end
 
@@ -231,20 +231,20 @@ describe "ch.oddb.org" do
     @browser.button(:name => /checkout/).click; small_delay
     paypal_common(@customer_1)
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
-    @browser.url.should_not match  /errors/
-    @browser.text.should match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
+    expect(@browser.url).not_to match  /errors/
+    expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_csv_okay')
     link = @browser.link(:name => 'download')
-    link.exists?.should be true
+    expect(link.exists?).to be true
     link.click; small_delay
-    @browser.url.should_not match /errors/
-    @browser.url.should_not match /appdown/
+    expect(@browser.url).not_to match /errors/
+    expect(@browser.url).not_to match /appdown/
     sleep(1) # it takes some time to download the file
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
-    diffFiles.size.should == 1
-    IO.read(diffFiles.first).should match /#{Six_Test_Drug_Names.first}/i
+    expect(diffFiles.size).to eq(1)
+    expect(IO.read(diffFiles.first)).to match /#{Six_Test_Drug_Names.first}/i
   end
 
   it "should not download a CSV file if the payment was not accepted" do
@@ -254,12 +254,12 @@ describe "ch.oddb.org" do
     init_paypal_checkout(@customer_2)
     @browser.button(:name => 'checkout_paypal').click; small_delay
     paypal_common(@customer_2)
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
-    @browser.url.should_not match  /errors/
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
+    expect(@browser.url).not_to match  /errors/
     sleep(1) # it takes some time to download the file
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
-    diffFiles.size.should == 0
+    expect(diffFiles.size).to eq(0)
   end
 
   it "should be possible to cancel a paypal before login" do
@@ -271,8 +271,8 @@ describe "ch.oddb.org" do
     paypal_common(@customer_1, CancelCheckoutEarly)
     puts "URL after #{@browser.url} OddbUrl"
     createScreenshot(@browser, 'paypal_csv_payment_cancelled')
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
-    @browser.url.index(OddbUrl).should_not be nil
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+    expect(@browser.url.index(OddbUrl)).not_to be nil
   end
 
   it "should be possible to cancel a paypal after login but before paying" do
@@ -283,8 +283,8 @@ describe "ch.oddb.org" do
     @browser.button(:name => 'checkout_paypal').click; small_delay
     paypal_common(@customer_1, CancelCheckoutLater)
     puts "URL after #{@browser.url} OddbUrl"
-    @browser.text.should_not match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
-    @browser.url.index(OddbUrl).should_not be nil
+    expect(@browser.text).not_to match /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden./
+    expect(@browser.url.index(OddbUrl)).not_to be nil
   end
   after :all do
     @browser.close
