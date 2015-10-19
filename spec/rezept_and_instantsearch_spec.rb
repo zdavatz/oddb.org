@@ -17,7 +17,7 @@ describe "ch.oddb.org" do
   end
 
   def add_one_drug_to_rezept(name)
-    @browser.url.should match(/#{OddbUrl}/i)
+    expect(@browser.url).to match(/#{OddbUrl}/i)
     idx = -2
     chooser = @browser.text_field(:id, 'prescription_searchbar')
     0.upto(5).each{ 
@@ -60,7 +60,7 @@ describe "ch.oddb.org" do
     unless /#{name}/i.match(@browser.text)
 #      binding.pry if BreakIntoPry
     end
-    @browser.text.should match(/#{name}/i)
+    expect(@browser.text).to match(/#{name}/i)
   end
   
   before :all do
@@ -109,7 +109,7 @@ describe "ch.oddb.org" do
   FamilyName = 'Müller'
   Birthday = '31.12.1990'
   def setGeneralInfo(nrMedis=0)
-    @browser.url.should match(/#{OddbUrl}/i)
+    expect(@browser.url).to match(/#{OddbUrl}/i)
     # we often must send tabs or running the test a first time will fail if you have just restarted oddb.org
     unless @browser.radio(:name => "prescription_sex").present?
       binding.pry if BreakIntoPry
@@ -127,7 +127,7 @@ describe "ch.oddb.org" do
       field_name = "prescription_comment_#{idx}"
       getTextFieldInAsafeWay(field_name).set genComment(Four_Medis[idx])
       @browser.send_keys :tab
-      getTextFieldInAsafeWay(field_name).value.should eql genComment(Four_Medis[idx]) + AddToSpan
+      expect(getTextFieldInAsafeWay(field_name).value).to eql genComment(Four_Medis[idx]) + AddToSpan
     }
   end
 
@@ -157,14 +157,14 @@ describe "ch.oddb.org" do
   def checkGeneralInfo(nrMedis=0)
     if @browser.url.index('/print/rezept/')
       inhalt = @browser.text
-      inhalt.should_not match QrCodeError
+      expect(inhalt).not_to match QrCodeError
       [FirstName, FamilyName, Birthday, " m\n"].each {
         |what|
         if inhalt.index(what).class == NilClass
           puts "Could not find #{what} in #{inhalt}"
           # binding.pry if BreakIntoPry
         end
-        inhalt.index(what).class.should_not == NilClass
+        expect(inhalt.index(what).class).not_to eq(NilClass)
       }
       0.upto(nrMedis-1) {
         |idx|
@@ -175,20 +175,20 @@ describe "ch.oddb.org" do
             puts "span_value #{span_value} !=  #{comment} in element with id #{field_name}. nrMedis was #{nrMedis}"
             # binding.pry if BreakIntoPry
           end
-          span_value.should eql comment + AddToSpan
+          expect(span_value).to eql comment + AddToSpan
       }
     else
-      @browser.text_field(:name => 'prescription_first_name').value.index(FirstName).should == 0
-      @browser.text_field(:name => 'prescription_family_name').value.index(FamilyName).should == 0
-      @browser.text_field(:name => 'prescription_birth_day').value.index(Birthday).should == 0
-      @browser.radio(:name => "prescription_sex").value.should_not be nil
+      expect(@browser.text_field(:name => 'prescription_first_name').value.index(FirstName)).to eq(0)
+      expect(@browser.text_field(:name => 'prescription_family_name').value.index(FamilyName)).to eq(0)
+      expect(@browser.text_field(:name => 'prescription_birth_day').value.index(Birthday)).to eq(0)
+      expect(@browser.radio(:name => "prescription_sex").value).not_to be nil
 
       0.upto(nrMedis-1) {
         |idx|
       if getTextFieldInAsafeWay("prescription_comment_#{idx}").value != genComment(Four_Medis[idx])
           binding.pry if BreakIntoPry
       end
-          getTextFieldInAsafeWay("prescription_comment_#{idx}").value.index(genComment(Four_Medis[idx])).should == 0
+          expect(getTextFieldInAsafeWay("prescription_comment_#{idx}").value.index(genComment(Four_Medis[idx]))).to eq(0)
       }
     end
   end
@@ -229,13 +229,13 @@ if true
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
     @browser.button(:name, "print").click; small_delay
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
     inhalt = @browser.text
-    inhalt.should_not match QrCodeError
-    inhalt.should_not match /Bemerkungen/
-    inhalt.should     match(/Ausdruck/i)
+    expect(inhalt).not_to match QrCodeError
+    expect(inhalt).not_to match /Bemerkungen/
+    expect(inhalt).to     match(/Ausdruck/i)
     ['Ausdruck',
      'Stempel, Unterschrift',
      'Merfen', 'Aspirin',
@@ -243,7 +243,7 @@ if true
      / m$/, # männlich
     ].each do
       |name|
-      inhalt.should match(name)
+      expect(inhalt).to match(name)
     end
   end
   it 'should be possible to add drugs after delete_all when neither ZSR nor comment given' do
@@ -252,36 +252,36 @@ if true
     nrMedisToCheck = 0
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
-    @browser.text.should_not match Four_Medis[0]
-    @browser.text.should_not match Four_Medis[1]
+    expect(@browser.text).not_to match Four_Medis[0]
+    expect(@browser.text).not_to match Four_Medis[1]
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
   end
 
   it 'should be possible to add drugs after delete_all when ZSR is given but no comment' do
     @browser.goto(rezeptUrl)
-    @browser.text.should_not match DrMeier
+    expect(@browser.text).not_to match DrMeier
     nrMedisToCheck = 0
     set_zsr_of_doctor('P006309', 'Meier')
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
-    @browser.text.should_not match Four_Medis[0]
-    @browser.text.should_not match Four_Medis[1]
+    expect(@browser.text).not_to match Four_Medis[0]
+    expect(@browser.text).not_to match Four_Medis[1]
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
-    @browser.text.should match DrMeier
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
+    expect(@browser.text).to match DrMeier
   end
 
   it 'should be possible to add drugs after delete_all when no ZSR is given but a comment' do
@@ -290,18 +290,18 @@ if true
     nrMedisToCheck = 0
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
     setGeneralInfo(nrMedisToCheck)
     checkGeneralInfo(nrMedisToCheck)
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
-    @browser.text.should_not match Four_Medis[0]
-    @browser.text.should_not match Four_Medis[1]
+    expect(@browser.text).not_to match Four_Medis[0]
+    expect(@browser.text).not_to match Four_Medis[1]
     add_one_drug_to_rezept(Four_Medis[0])
     add_one_drug_to_rezept(Four_Medis[1])
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
   end
 
   it 'should be possible to add drugs after delete_all when ZSR and comment given' do
@@ -315,14 +315,14 @@ if true
     checkGeneralInfo(nrMedisToCheck)
     oldWindowsSize = @browser.windows.size
     clickDeleteAll
-    @browser.text.should_not match Four_Medis[0]
-    @browser.text.should_not match Four_Medis[1]
+    expect(@browser.text).not_to match Four_Medis[0]
+    expect(@browser.text).not_to match Four_Medis[1]
     add_one_drug_to_rezept(Four_Medis[0])
     setGeneralInfo(nrMedisToCheck)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck)
-    @browser.text.should match Four_Medis[0]
-    @browser.text.should match Four_Medis[1]
+    expect(@browser.text).to match Four_Medis[0]
+    expect(@browser.text).to match Four_Medis[1]
   end
 
   it "should possible to add first medicament by trademark search, then using instant" do
@@ -336,16 +336,16 @@ if true
     setGeneralInfo(nrMedisToCheck)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck)
-    @browser.text.should match DrMeier
+    expect(@browser.text).to match DrMeier
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click;  small_delay
 
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
-    @browser.text.should match DrMeier
-    @browser.text.should match /ZSR P006309/i
-    @browser.text.should match /EAN 7601000223449/i
+    expect(@browser.text).to match DrMeier
+    expect(@browser.text).to match /ZSR P006309/i
+    expect(@browser.text).to match /EAN 7601000223449/i
     checkGeneralInfo(nrMedisToCheck)
   end
 end
@@ -360,12 +360,12 @@ end
     setGeneralInfo(nrMedisToCheck)
     add_one_drug_to_rezept(Four_Medis[1])
     checkGeneralInfo(nrMedisToCheck )
-    @browser.text.should match DrMeier
+    expect(@browser.text).to match DrMeier
     @browser.link(:id => /delete/i).click;  small_delay
     checkGeneralInfo(0)
     add_one_drug_to_rezept(Four_Medis[0])
     checkGeneralInfo(0)
-    @browser.text.should match DrMeier
+    expect(@browser.text).to match DrMeier
   end
 if true
   it "should print a correct prescription with comments, personal information, doctor info and a drug" do
@@ -380,17 +380,17 @@ if true
     set_zsr_of_doctor('J 0390.19', 'Davatz')
     oldText = @browser.text
     res = oldText.match(/Dr. med. Ursula Davatz/)
-    @browser.text.should match /Dr. med. Ursula Davatz/
+    expect(@browser.text).to match /Dr. med. Ursula Davatz/
     set_zsr_of_doctor('P006309', 'Meier')
-    @browser.text.should match DrMeier
+    expect(@browser.text).to match DrMeier
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click;  small_delay
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
-    @browser.text.should match DrMeier
-    @browser.text.should match /ZSR P006309/i
-    @browser.text.should match /EAN 7601000223449/i
+    expect(@browser.text).to match DrMeier
+    expect(@browser.text).to match /ZSR P006309/i
+    expect(@browser.text).to match /EAN 7601000223449/i
   end
 
   it "should contain remarks or interaction header only when present" do
@@ -403,14 +403,14 @@ if true
     setGeneralInfo(2)
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click;  small_delay
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
     inhalt = @browser.text
     checkGeneralInfo(2)
-    inhalt.scan(/\nBemerkungen\n/).size.should == 2
-    inhalt.scan(/\nBemerkungen\n/).size.should == 2
-    inhalt.scan(/\nInteraktionen\n/).size.should == 2
+    expect(inhalt.scan(/\nBemerkungen\n/).size).to eq(2)
+    expect(inhalt.scan(/\nBemerkungen\n/).size).to eq(2)
+    expect(inhalt.scan(/\nInteraktionen\n/).size).to eq(2)
   end
 
   it "should print the fachinfo when opening the fachinfo from a prescription" do
@@ -422,14 +422,14 @@ if true
     @browser.element(:text, 'FI').click;  small_delay
     oldWindowsSize = @browser.windows.size
     @browser.link(:text, /FI/).click; sleep(1)
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     oldWindowsSize = @browser.windows.size
     @browser.link(:text, /Drucken/i).click;  small_delay
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
-    @browser.url.should_not match /^rezept/i
-    @browser.text.should match /^Ausdruck[^\n]+\nFachinformation/
+    expect(@browser.url).not_to match /^rezept/i
+    expect(@browser.text).to match /^Ausdruck[^\n]+\nFachinformation/
   end
 
   it "should enable to go back after printing a prescription" do
@@ -442,7 +442,7 @@ if true
     add_one_drug_to_rezept(Four_Medis[1])
     add_one_drug_to_rezept(Four_Medis[2])
     1.upto(4).each { |j|  @browser.back }
-    @browser.url.chomp('/').should == OddbUrl
+    expect(@browser.url.chomp('/')).to eq(OddbUrl)
   end
 
   it "should not loose existing comment after adding a new prescription" do
@@ -468,12 +468,12 @@ if true
         url1 = @browser.url
     }
     inhalt = @browser.text
-    inhalt.should match(/C09CA01: Losartan => L02BA01: Tamoxifen Keine bekannte Interaktion/i) 
-    inhalt.should match(/A: Keine Massnahmen erforderlich/i) 
-    inhalt.should match(/N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen/i) 
-    inhalt.should match(/X: Kontraindiziert/i) 
-    inhalt.should match(/N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion./i) 
-    inhalt.should match(/B: Vorsichtsmassnahmen empfohlen/i) 
+    expect(inhalt).to match(/C09CA01: Losartan => L02BA01: Tamoxifen Keine bekannte Interaktion/i) 
+    expect(inhalt).to match(/A: Keine Massnahmen erforderlich/i) 
+    expect(inhalt).to match(/N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen/i) 
+    expect(inhalt).to match(/X: Kontraindiziert/i) 
+    expect(inhalt).to match(/N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion./i) 
+    expect(inhalt).to match(/B: Vorsichtsmassnahmen empfohlen/i) 
   end
   it "should with four medicaments" do
     medis = Four_Medis
@@ -486,7 +486,7 @@ if true
         url1 = @browser.url
         sleep(0.5)
         inhalt = @browser.text
-        inhalt.should match(/#{medis[idx]}/i)
+        expect(inhalt).to match(/#{medis[idx]}/i)
     }
     0.upto(3){ |idx|
       @browser.link(:id => /delete_0/i).click;  small_delay
@@ -496,10 +496,10 @@ if true
     inhalt = @browser.text
     0.upto(3){
       |idx|
-      inhalt.should_not match(/#{medis[idx]}/i)
+      expect(inhalt).not_to match(/#{medis[idx]}/i)
     }
-    url2.match(RegExpTwoMedis).should be nil
-    url2.match(RegExpOneMedi).should be nil
+    expect(url2.match(RegExpTwoMedis)).to be nil
+    expect(url2.match(RegExpOneMedi)).to be nil
   end
 
   it "should show the correct url after deleting a medicament" do
@@ -514,17 +514,17 @@ if true
     sleep(0.5)
     inhalt = @browser.text
     TwoMedis.each{ |name|
-                inhalt.should match(/#{name}/i)
+                expect(inhalt).to match(/#{name}/i)
               }
-    url1.match(RegExpTwoMedis).should_not be nil
+    expect(url1.match(RegExpTwoMedis)).not_to be nil
     @browser.link(:id => /delete_0/i).click;  small_delay
     sleep(0.5)
     url2 = @browser.url
     inhalt = @browser.text
-    inhalt.should_not match(/#{TwoMedis.first}/i) # was deleted
-    inhalt.should     match(/#{TwoMedis.last}/i)
-    url2.match(RegExpTwoMedis).should be nil
-    url2.match(RegExpOneMedi).should_not be nil
+    expect(inhalt).not_to match(/#{TwoMedis.first}/i) # was deleted
+    expect(inhalt).to     match(/#{TwoMedis.last}/i)
+    expect(url2.match(RegExpTwoMedis)).to be nil
+    expect(url2.match(RegExpOneMedi)).not_to be nil
     endTime = Time.now
     diff = endTime - startTime
     if ARGV.size > 0 and File.basename(ARGV[0]).eql?(File.basename(__FILE__))
@@ -557,10 +557,10 @@ if true
     @browser.send_keys("\n")
     url = @browser.url
     inhalt = @browser.text
-    inhalt.should match(/Preisvergleich für/i)
-    inhalt.should match(/#{medi}/i)
-    inhalt.should match(/Zusammensetzung/i)
-    inhalt.should match(/Filmtabletten/i)
+    expect(inhalt).to match(/Preisvergleich für/i)
+    expect(inhalt).to match(/#{medi}/i)
+    expect(inhalt).to match(/Zusammensetzung/i)
+    expect(inhalt).to match(/Filmtabletten/i)
   end
 
   # this tests takes (at the moment) over 2,5 minutes
@@ -583,15 +583,15 @@ if true
     startTime = Time.now
     oldWindowsSize = @browser.windows.size
     @browser.button(:name, "print").click
-    @browser.windows.size.should == oldWindowsSize + 1 # must open a new window
+    expect(@browser.windows.size).to eq(oldWindowsSize + 1) # must open a new window
     @browser.windows.last.use
     waitForPrintInfo
     showElapsedTime(startTime, "Printing a prescription with  #{nrDrugs} drugs")
     inhalt_alt = @browser.text.clone
     inhalt = @browser.text.clone
-    inhalt.should_not match QrCodeError
-    inhalt.scan(/\nBemerkungen\n/).size.should == nrRemarks
-    inhalt.scan(/\nInteraktionen\n/).size.should == 2
+    expect(inhalt).not_to match QrCodeError
+    expect(inhalt.scan(/\nBemerkungen\n/).size).to eq(nrRemarks)
+    expect(inhalt.scan(/\nInteraktionen\n/).size).to eq(2)
     checkGeneralInfo(nrRemarks)
   end
 end

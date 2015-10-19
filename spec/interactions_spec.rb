@@ -53,7 +53,7 @@ describe "ch.oddb.org" do
   end
 
   def add_one_drug_to_interactions(name)
-    @browser.url.should match(interactionsUrl)
+    expect(@browser.url).to match(interactionsUrl)
     elem = @browser.element(:id, 'interaction_chooser_searchbar')
     unless elem and elem.present?
       createScreenshot(@browser, "_no_searchbar_#{name}_#{__LINE__}")
@@ -90,9 +90,9 @@ describe "ch.oddb.org" do
   def check_url_with_epha_example_interaction(url)
     puts "check_url_with_epha_example_interaction #{url}" if $VERBOSE
     @browser.goto url
-    @browser.url.should match (interactionsUrl)
+    expect(@browser.url).to match (interactionsUrl)
     inhalt = @browser.text
-    MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
+    MephaInteractions.each{ |interaction| expect(inhalt).to match (interaction) }
     @browser.link(:name => 'delete').click
   end
 
@@ -124,8 +124,8 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     @browser.goto url
     medis.each { | medi| add_one_drug_to_interactions(medi) }
     inhalt = @browser.text
-    inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
-    inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
+    expect(inhalt).to match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
+    expect(inhalt).to match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
   end
 
   drugs_to_ean = { 'Aspirin' => '7680576730049', 'Ponstan' => '7680353520153', 'Marcoumar' => '7680193950301' }
@@ -144,11 +144,11 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
       url = url.sub(/,$/,'')
       @browser.goto url
       inhalt = @browser.text
-      inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
-      inhalt.should match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
-      inhalt.should match(/N02BA01: Acetylsalicylsäure => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
-      inhalt.should match(/N02BA01: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/)
-      inhalt.should match(/B01AA04: Phenprocoumon => N02BA01: Acetylsalicylsäure Erhöhtes Blutungsrisiko/)
+      expect(inhalt).to match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
+      expect(inhalt).to match(/B01AA04: Phenprocoumon => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
+      expect(inhalt).to match(/N02BA01: Acetylsalicylsäure => M01AG01: Mefenaminsäure #{BlutungsRisiko}/i)
+      expect(inhalt).to match(/N02BA01: Acetylsalicylsäure => B01AA04: Phenprocoumon Erhöhtes Blutungsrisiko/)
+      expect(inhalt).to match(/B01AA04: Phenprocoumon => N02BA01: Acetylsalicylsäure Erhöhtes Blutungsrisiko/)
     end
   }
 
@@ -160,61 +160,61 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "should show be able to use the delete_all" do
     url = interactionsUrl
     @browser.goto url
-    @browser.url.should match(url)
+    expect(@browser.url).to match(url)
     add_one_drug_to_interactions(TwoMedis.first)
     add_one_drug_to_interactions(TwoMedis.last)
     url = @browser.url
-    url.should match(RegExpTwoMedis)
+    expect(url).to match(RegExpTwoMedis)
     inhalt = @browser.text
-    inhalt.should match(/#{TwoMedis.first}/i)
-    inhalt.should match(/#{TwoMedis.last}/i)
+    expect(inhalt).to match(/#{TwoMedis.first}/i)
+    expect(inhalt).to match(/#{TwoMedis.last}/i)
     @browser.link(:text => /Alle löschen/i).click
     sleep(0.5)
     url = @browser.url
     inhalt = @browser.text
-    url.should_not match(RegExpOneMedi)
-    url.should_not match(RegExpTwoMedis)
-    inhalt.should_not match(/#{TwoMedis.first}/i)
-    inhalt.should_not match(/#{TwoMedis.last}/i)
+    expect(url).not_to match(RegExpOneMedi)
+    expect(url).not_to match(RegExpTwoMedis)
+    expect(inhalt).not_to match(/#{TwoMedis.first}/i)
+    expect(inhalt).not_to match(/#{TwoMedis.last}/i)
   end
   it "should show the correct url after deleting a medicament" do
     url = interactionsUrl
     @browser.goto url
-    @browser.url.should match(url)
+    expect(@browser.url).to match(url)
     add_one_drug_to_interactions(TwoMedis.first)
     url = @browser.url
-    url.match(RegExpTwoMedis).should be nil
-    url.match(RegExpOneMedi).should_not be nil
+    expect(url.match(RegExpTwoMedis)).to be nil
+    expect(url.match(RegExpOneMedi)).not_to be nil
     add_one_drug_to_interactions(TwoMedis.last)
     url = @browser.url
-    url.match(RegExpTwoMedis).should_not be nil
-    url.match(RegExpOneMedi).should be nil
+    expect(url.match(RegExpTwoMedis)).not_to be nil
+    expect(url.match(RegExpOneMedi)).to be nil
     inhalt = @browser.text
     TwoMedis.each{ |name|
-                inhalt.match(/#{name}/i).should_not be nil
+                expect(inhalt.match(/#{name}/i)).not_to be nil
               }
     @browser.link(:title => /Löschen/i).click
     sleep(2)
     url = @browser.url
     inhalt = @browser.text
-    inhalt.should match(/#{TwoMedis.last}/i)
-    inhalt.should_not match(/#{TwoMedis.first}/i)
-    url.should_not match(RegExpTwoMedis)
-    url.should match(RegExpOneMedi)
+    expect(inhalt).to match(/#{TwoMedis.last}/i)
+    expect(inhalt).not_to match(/#{TwoMedis.first}/i)
+    expect(url).not_to match(RegExpTwoMedis)
+    expect(url).to match(RegExpOneMedi)
     @browser.link(:title => /Löschen/i).click
     sleep(0.5)
     url = @browser.url
     inhalt = @browser.text
-    url.should_not match(RegExpOneMedi)
-    url.should_not match(RegExpTwoMedis)
-    inhalt.should_not match(/#{TwoMedis.first}/i)
-    inhalt.should_not match(/#{TwoMedis.last}/i)
+    expect(url).not_to match(RegExpOneMedi)
+    expect(url).not_to match(RegExpTwoMedis)
+    expect(inhalt).not_to match(/#{TwoMedis.first}/i)
+    expect(inhalt).not_to match(/#{TwoMedis.last}/i)
   end
   it "should should not contain Wechselwirkungen" do
     url = interactionsUrl
     @browser.goto url
-    @browser.url.should match(url)
-    @browser.text.should_not match /Wechselwirkungen/
+    expect(@browser.url).to match(url)
+    expect(@browser.text).not_to match /Wechselwirkungen/
   end
 
   it "should show interactions in the correct order just below the triggering drug" do
@@ -222,18 +222,18 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
 # OrderOfInteractions [
     url = interactionsUrl
     @browser.goto url
-    @browser.url.should match(url)
+    expect(@browser.url).to match(url)
     OrderExample.each{ |name| add_one_drug_to_interactions(name) }
     inhalt = @browser.text
     lastPos = -1
-    OrderExample.each{ |name| inhalt.index(name).should_not be nil }
-    OrderOfInteractions.each{ |pattern| pattern.match(inhalt).should_not be nil }
+    OrderExample.each{ |name| expect(inhalt.index(name)).not_to be nil }
+    OrderOfInteractions.each{ |pattern| expect(pattern.match(inhalt)).not_to be nil }
     OrderOfInteractions.each{
       |pattern|
           m = pattern.match(inhalt)
-          m.should_not be nil
+          expect(m).not_to be nil
           actPos = inhalt.index(m[0])
-          actPos.should be > lastPos
+          expect(actPos).to be > lastPos
           lastPos = actPos
           
         }
@@ -267,35 +267,35 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "should show interactions for epha example medicaments added manually" do
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match(interactionsUrl)
+    expect(@browser.url).to match(interactionsUrl)
     MephaExamples.each{ |medi| add_one_drug_to_interactions(medi.name) }
     inhalt = @browser.text
-    MephaInteractions.each{ |interaction| inhalt.should match (interaction) }
+    MephaInteractions.each{ |interaction| expect(inhalt).to match (interaction) }
   end unless ['just-medical'].index(Flavor)
 
   it "after delete all drugs a new search must be possible" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match(interactionsUrl)
+    expect(@browser.url).to match(interactionsUrl)
     add_one_drug_to_interactions(test_medi)
-    @browser.text.should match (test_medi)
+    expect(@browser.text).to match (test_medi)
     @browser.link(:name => 'delete').click
-    @browser.text.should_not match (test_medi)
+    expect(@browser.text).not_to match (test_medi)
     add_one_drug_to_interactions(test_medi)
-    @browser.text.should match (test_medi)
+    expect(@browser.text).to match (test_medi)
   end unless ['just-medical'].index(Flavor)
 
   it "after adding a single medicament there should be no ',' in the URL" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
     @browser.link(:text=>'Interaktionen').click
-    @browser.url.should match(interactionsUrl)
+    expect(@browser.url).to match(interactionsUrl)
     @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
-    @browser.text.should_not match (test_medi)
+    expect(@browser.text).not_to match (test_medi)
     add_one_drug_to_interactions(test_medi)
-    @browser.text.should match (test_medi)
-    @browser.url.should_not match ('/,')
+    expect(@browser.text).to match (test_medi)
+    expect(@browser.url).not_to match ('/,')
   end unless ['just-medical'].index(Flavor)
 
   after :all do

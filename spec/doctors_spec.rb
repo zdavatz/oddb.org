@@ -66,23 +66,23 @@ AerzteDefinitions = [
     enter_search_to_field_by_name('Mollis', 'search_query');
     AerzteDefinitions.each {
                          |arzt|
-                              @browser.text.should match arzt.name
+                              expect(@browser.text).to match arzt.name
                               @browser.link(:text =>arzt.name).click
                               # don't know why we need to wait here, but it works!
                               sleep 0.5 unless @browser.link(:text => /vCard/).exists?
                               nrFiles = check_download(@browser.link(:text => /vCard/))
-                              nrFiles.size.should == 1
-                              File.size(nrFiles.first).should >= 100
+                              expect(nrFiles.size).to eq(1)
+                              expect(File.size(nrFiles.first)).to be >= 100
 
                               inhalt = @browser.text
-                              inhalt.should match arzt.street
+                              expect(inhalt).to match arzt.street
       arzt.fields.each{ |key, value| # puts "key #{key} val #{value}";
-                   inhalt.should match /#{key}.#{value}/m
+                   expect(inhalt).to match /#{key}.#{value}/m
                  }
                            # Check map link
                               @browser.link(:text => /map.search/).click
-                              @browser.url.should match /bahnhofstr/i
-                              @browser.url.should match /8753-mollis/i
+                              expect(@browser.url).to match /bahnhofstr/i
+                              expect(@browser.url).to match /8753-mollis/i
                               @browser.back
                            # go back to search result
                               @browser.back

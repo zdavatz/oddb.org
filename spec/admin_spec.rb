@@ -77,12 +77,12 @@ credit org.oddb.download
     login
     @browser.link(:text=>'Admin').click
     @browser.link(:text=>'Benutzer').click
-    @browser.link(:text => /#{email}/).exists?.should == true
+    expect(@browser.link(:text => /#{email}/).exists?).to eq(true)
     @browser.goto OddbUrl
   end
 
   def upload_pat_info(original)
-    File.exists?(original).should be true
+    expect(File.exists?(original)).to be true
     @browser.select_list(:name, "search_type").select("Swissmedic-# (5-stellig)")
     @browser.text_field(:id, "searchbar").set("43788")
     @browser.button(:value,"Suchen").click
@@ -91,27 +91,27 @@ credit org.oddb.download
     if @browser.button(:name,"delete_patinfo").exists?
       @browser.button(:name,"delete_patinfo").click
     end
-    @browser.link(:text, "PI").exists?.should be false
+    expect(@browser.link(:text, "PI").exists?).to be false
     @browser.file_field(:name =>  "patinfo_upload").set(original)
     @browser.button(:name,"update").click
-    @browser.link(:text, "PI").exists?.should be true
+    expect(@browser.link(:text, "PI").exists?).to be true
     diffFiles = check_download(@browser.link(:text, "PI"))
-    diffFiles.size.should == 1
-    FileUtils.compare_file(original, diffFiles.first).should be true
+    expect(diffFiles.size).to eq(1)
+    expect(FileUtils.compare_file(original, diffFiles.first)).to be true
   end
 
   def check_sort(link_name)
-    @browser.link(:name => link_name).exists?.should be true
+    expect(@browser.link(:name => link_name).exists?).to be true
     @browser.link(:name => link_name).click
     text_before = @browser.text
-    text_before.should_not match /RangeError/i
-    text_before.size.should > 100
-    @browser.link(:name => link_name).exists?.should be true
+    expect(text_before).not_to match /RangeError/i
+    expect(text_before.size).to be > 100
+    expect(@browser.link(:name => link_name).exists?).to be true
     @browser.link(:name => link_name).click
     text_after = @browser.text
-    text_after.should_not match /RangeError/i
-    text_after.size.should > 100
-    text_after.should_not eql? text_before
+    expect(text_after).not_to match /RangeError/i
+    expect(text_after.size).to be > 100
+    expect(text_after).not_to eql? text_before
   end
 
   # we do this for two files to be ensure that the upload really was done
@@ -120,7 +120,7 @@ credit org.oddb.download
   ]
   originals.each { |original|
            it "should be possible to upload #{File.basename(original)} to a given package" do
-             FileUtils.compare_file(originals[0], originals[1]).should_not be true
+             expect(FileUtils.compare_file(originals[0], originals[1])).not_to be true
              upload_pat_info(original)
            end
          }

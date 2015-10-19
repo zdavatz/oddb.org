@@ -54,21 +54,21 @@ describe "ch.oddb.org" do
     login
     @browser.link(:name, 'pharmacies').click
     enter_search_to_field_by_name('Glarus', 'search_query');
-    @browser.text.should match Moor
-    @browser.text.should match 'Kantonsspital Glarus AG'
-    @browser.text.should match 'St. Fridolin Pharma AG'
+    expect(@browser.text).to match Moor
+    expect(@browser.text).to match 'Kantonsspital Glarus AG'
+    expect(@browser.text).to match 'St. Fridolin Pharma AG'
     @browser.link(:text =>Moor).click
     # don't know why we need to wait here, but it works!
     sleep 0.5 unless @browser.link(:text => /Lageplan/).exists?
     inhalt = @browser.text
-    inhalt.should match Moor
-    @browser.url.should match /pharmacy\/ean/
-    @browser.url.should match MoorEAN
-    inhalt.should match MoorEAN
-    inhalt.should match "Zaunplatz 2"
-    inhalt.should match "8750 Glarus"
+    expect(inhalt).to match Moor
+    expect(@browser.url).to match /pharmacy\/ean/
+    expect(@browser.url).to match MoorEAN
+    expect(inhalt).to match MoorEAN
+    expect(inhalt).to match "Zaunplatz 2"
+    expect(inhalt).to match "8750 Glarus"
     @browser.link(:text => /map.search/).click
-    @browser.url.should match /8750-glarus\/zaunplatz-2/i
+    expect(@browser.url).to match /8750-glarus\/zaunplatz-2/i
     @browser.back
   # go back to search result
     @browser.back

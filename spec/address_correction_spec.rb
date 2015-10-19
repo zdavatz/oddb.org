@@ -98,14 +98,14 @@ describe "ch.oddb.org" do
         skip "Login failed. Please check your setup"
       end
       @browser.button(:name, "correct").click
-      @browser.url.should == correction.url_correct
+      expect(@browser.url).to eq(correction.url_correct)
       @browser.text_field(:name, "email").set("ngiger@ywesee.com")
       @browser.textarea(:name, "message").set("Testbemerkung")
       @browser.textarea(:name, "additional_lines").set("Neue Addresszeile")
       @browser.button(:value,"Vorschlag senden").click
       sleep(1)
-      @browser.text.should_not match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
-      @browser.text.should match /Vielen Dank, Ihr Vorschlag wurde versendet./
+      expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
+      expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
     end
   }  unless ['just-medical'].index(Flavor)
   to_check.each {
@@ -113,9 +113,9 @@ describe "ch.oddb.org" do
     it "should be possible to visit the correction for #{correction.name}" do
       login
       @browser.goto correction.url_from_received_mail
-      @browser.button(:name => 'accept').exist?.should == true
-      @browser.text.should match /Momentan Aktive Adresse/
-      @browser.text.should match /E-Mail für Rückfragen/
+      expect(@browser.button(:name => 'accept').exist?).to eq(true)
+      expect(@browser.text).to match /Momentan Aktive Adresse/
+      expect(@browser.text).to match /E-Mail für Rückfragen/
     end
   }  unless ['just-medical'].index(Flavor)
 

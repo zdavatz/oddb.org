@@ -34,12 +34,12 @@ describe "ch.oddb.org" do
       login(ViewerUser,  ViewerPassword)
       url = OddbUrl + '/de/gcc/home_'+kind
       @browser.goto url
-      @browser.url.should == url
-      @browser.link(:name, link_name).exist?.should == true
+      expect(@browser.url).to eq(url)
+      expect(@browser.link(:name, link_name).exist?).to eq(true)
       @browser.link(:name, link_name).click
       # require 'pry'; binding.pry unless @browser.url.index(link_name)
-      @browser.url.index(link_name).should_not == nil
-      @browser.link(:name => 'range').exist?.should == true
+      expect(@browser.url.index(link_name)).not_to eq(nil)
+      expect(@browser.link(:name => 'range').exist?).to eq(true)
     end
   }
 
@@ -51,14 +51,14 @@ describe "ch.oddb.org" do
     nr_founds
   end
   def check_nr_companies(must_have_all)
-    @browser.link(:name, CompanyListName).exist?.should == true
+    expect(@browser.link(:name, CompanyListName).exist?).to eq(true)
     @browser.link(:name, CompanyListName).click
-    @browser.url.index(CompanyListName).should > 0
+    expect(@browser.url.index(CompanyListName)).to be > 0
     nr_founds = count_nr_companies_displayed
     if must_have_all
-      nr_founds.should > CompanyLimitListed
+      expect(nr_founds).to be > CompanyLimitListed
     else
-      nr_founds.should <= CompanyLimitListed
+      expect(nr_founds).to be <= CompanyLimitListed
     end
   end
 
@@ -73,9 +73,9 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl + '/de/gcc/home_companies'
     @browser.link(:name, CompanyListName).click
     link = @browser.link(:name, 'listed_companies')
-    link.exist?.should == true
+    expect(link.exist?).to eq(true)
     link.click
-    count_nr_companies_displayed.should <= CompanyLimitListed
+    expect(count_nr_companies_displayed).to be <= CompanyLimitListed
   end
 
   it "in home_companies we should see all companies when logged in as user" do

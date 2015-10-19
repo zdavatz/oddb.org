@@ -643,7 +643,6 @@ public
         @updated_agents.delete(agent)
       else
         msg = "#{from} ptr #{ptr.inspect} oid #{composition.oid} #{composition.active_agents.size} args #{args} parsed_substance #{parsed_substance}"
-        msg += "\nagent.oid #{agent.oid} substance.oid #{substance.oid} agent.substance '#{agent}' " if agent
         trace_msg("#{__FILE__}:#{__LINE__} update_active_agent update #{seq.iksnr}/#{seq.seqnr} #{msg}")
         if /creator/i.match(from)
           @new_agents["#{seq.iksnr}/#{seq.seqnr}"] = msg

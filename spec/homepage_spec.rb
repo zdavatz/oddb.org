@@ -37,15 +37,15 @@ Links2Test = [
     Links2Test.each{
       |link|
       next unless link.language.eql?(:de)
-      @browser.link(:text=>link.name).exists?.should be true
-      @browser.link(:text=>link.name).href.should == link.url
+      expect(@browser.link(:text=>link.name).exists?).to be true
+      expect(@browser.link(:text=>link.name).href).to eq(link.url)
     }
     @browser.link(:text=>'Français').click
     Links2Test.each{
       |link|
       next unless link.language.eql?(:fr)
-      @browser.link(:text=>link.name).exists?.should be true
-      @browser.link(:text=>link.name).href.should == link.url
+      expect(@browser.link(:text=>link.name).exists?).to be true
+      expect(@browser.link(:text=>link.name).href).to eq(link.url)
     }
   end unless ['just-medical'].index(Flavor)
 
