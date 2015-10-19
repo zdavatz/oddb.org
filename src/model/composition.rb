@@ -152,13 +152,16 @@ module ODDB
         1
       end
     end
+
+    # We do not call odba_store (needed to write the changes into to DB) here.
+    # Doing this would slow down the jobs/update_active_agents way too, much
     def cleanup_old_active_agent
       if @inactive_agents and @inactive_agents.class != Array
         $stdout.puts "cleanup_old_active_agent. Forcing inactive_agents from class #{@inactive_agents.class} => Array"
         @inactive_agents = []
       end
       unless sequence.registration.expiration_date  and sequence.registration.expiration_date > Date.today
-        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{reg.iksnr} expiration #{sequence.registration.expiration_date.inspect}"
+        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{sequence.iksnr} expiration #{sequence.registration.expiration_date.inspect}"
         return
       end
       @active_agents ||= []
