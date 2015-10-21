@@ -815,9 +815,6 @@ class OddbPrevalence
 	def orphaned_patinfo(oid)
 		@orphaned_patinfos[oid.to_i]
 	end
-  def package(pcode)
-    ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/u, ''))
-  end
   def package_by_ikskey(ikskey)
     ikskey = ikskey.to_s
     iksnr = "%05i" % ikskey[-8..-4].to_i

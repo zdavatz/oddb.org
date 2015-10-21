@@ -83,12 +83,6 @@ module ODDB
       end
       def tag_end name
         case name
-        when 'GenGroupOrg'
-          @pointer = Persistence::Pointer.new [:generic_group, @text]
-        when 'PharmacodeOrg'
-          @original = Package.find_by_pharmacode(@text)
-        when 'PharmacodeGen'
-          @generic = Package.find_by_pharmacode(@text)
         when 'OrgGen'
           if @pointer && @original && @generic
             group = @app.create @pointer
@@ -142,11 +136,11 @@ module ODDB
     class PreparationsListener < Listener
       MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
       GENERIC_TYPES = { 'O' => :original, 'G' => :generic}
-      attr_reader :change_flags, :conflicted_packages,
-                  :conflicted_packages_oot, :conflicted_registrations,
+      attr_reader :change_flags,
+                  :conflicted_registrations,
                   :missing_ikscodes, :missing_ikscodes_oot,
-                  :missing_pharmacodes, :unknown_packages,
-                  :unknown_packages_oot, :unknown_registrations,
+                  :unknown_packages, :unknown_registrations,
+                  :unknown_packages_oot,
                   :created_sl_entries, :deleted_sl_entries,
                   :updated_sl_entries, :created_limitation_texts,
                   :deleted_limitation_texts, :updated_limitation_texts,
@@ -159,20 +153,16 @@ module ODDB
             @known_packages.store pac.pointer, {
               :name_base           => pac.name_base,
               :atc_class           => (atc = pac.atc_class) && atc.code,
-              :pharmacode_oddb     => pac.pharmacode,
               :swissmedic_no5_oddb => pac.iksnr,
               :swissmedic_no8_oddb => pac.ikskey,
             }
           end
         end
         @completed_registrations = {}
-        @conflicted_packages = []
-        @conflicted_packages_oot = []
         @conflicted_registrations = []
         @duplicate_iksnrs = []
         @missing_ikscodes = []
         @missing_ikscodes_oot = []
-        @missing_pharmacodes = []
         @unknown_packages = []
         @unknown_packages_oot = []
         @unknown_registrations = []
@@ -213,9 +203,8 @@ module ODDB
         end
         seqs = registration.sequences.values
         sequence = seqs.find do |seq|
-          agents = seq.active_agents
-          subs.size == agents.size && subs.all? do |sub, dose|
-            agents.any? do |act| act.same_as?(sub) && act.dose == dose end
+          subs.size == seq.active_agents.size && subs.all? do |sub, dose|
+            seq.active_agents.any? do |act| act.same_as?(sub) && act.dose == dose end
           end
         end
         sequence ||= seqs.find do |seq| seq.active_agents.empty? end
@@ -248,37 +237,18 @@ module ODDB
         case name
         when 'Pack'
           @ikscd = nil
-          @pcode = attrs['Pharmacode'].to_s
           @data = @pac_data.dup
-          @report = @report_data.dup.update(@data).update(@reg_data).
-                                     update(@seq_data)
+          @report = @report_data.dup.update(@data).update(@reg_data).update(@seq_data)
           @report.delete(:sl_generic_type)
-          @report.store :pharmacode_bag, @pcode
-          @data.store :pharmacode, @pcode
-          if @pcode.empty?
-            @missing_pharmacodes.push @report
-          end
-          if !@pcode.empty? && @pack = Package.find_by_pharmacode(@pcode)
-            @out_of_trade = @pack.out_of_trade
-            @registration ||= @pack.registration
-            if @registration
-              @report.store :swissmedic_no5_oddb, @registration.iksnr
-              unless ['00000', @registration.iksnr].include?(@iksnr)
-                @conflicted_registrations.push @report
-              end
+          @out_of_trade = false
+          if @registration
+            @report.store :swissmedic_no5_oddb, @registration.iksnr
+            unless ['00000', @registration.iksnr].include?(@iksnr)
+              @conflicted_registrations.push @report
             end
-          elsif ikskey = load_ikskey(@pcode)
-            @iksnr = ikskey[0,5] if @iksnr == '00000'
-            @registration ||= @app.registration(ikskey[0,5])
-            @pack = @registration.package ikskey[5,3] if @registration
-            @refdata_registration = true
-          else
-            # package is out of trade
-            @out_of_trade = true
           end
           @sl_data = { :limitation_points => nil, :limitation => nil }
           @lim_data = {}
-          @conflict = false
         when 'Preparation'
           @descriptions = {}
           @reg_data = {}
@@ -290,7 +260,6 @@ module ODDB
           @report_data = {}
           @deferred_packages = []
           @substances = []
-          @refdata_registration = false
         when /(.+)Price/u
           @price_type = $~[1].downcase.to_sym
           @price = Util::Money.new(0, @price_type, 'CH')
@@ -326,49 +295,14 @@ module ODDB
               :lim_text => @lim_data,
               :size     => @size,
             })
-          #elsif @pack && !@conflict && !@duplicate_iksnr
           elsif @pack && !@duplicate_iksnr
-            ## check @conflict case (compare @pcode (bag pharmacode) and @pack.pharmacode (oddb pharmacode))
-            update_conflict = true
-            if @conflict and @pcode and @pack and @pcode.to_i < @pack.pharmacode.to_i
-              update_conflict = false
-            end
-            if update_conflict
-              @report.store :pharmacode_oddb, @pack.pharmacode
-              if seq = @pack.sequence
-                if @seq_data.size > 0
-                  if seq.respond_to?(:pointer)
-                    @app.update seq.pointer, @seq_data, :bag
-                  else
-                    msg = "SKIPPPING update_conflict #{@pack.pharmacode} #{@ikscd} seq is #{seq.inspect} pointer? #{seq.respond_to?(:pointer)} @seq_data is #{@seq_data.inspect}"
-                    $stdout.puts msg; $stdout.flush
-                    LogFile.append('oddb/debug', " bsv_xml: "+ msg, Time.now)
-                  end
-                end
-              end
-              pold = @pack.price_public
-              pnew = @data[:price_public]
-              unless pold && pnew
-                pold = @pack.price_exfactory
-                pnew = @data[:price_exfactory]
-              end
-              if pold && pnew
-                if pold > pnew
-                  flag_change @pack.pointer, :price_cut
-                elsif pold < pnew
-                  flag_change @pack.pointer, :price_rise
-                end
-              end
-
-              ## don't take the Swissmedic-Category unless it's missing in the DB
-              @data.delete :ikscat if @pack.ikscat
-              @app.update @pack.pointer, @data, :bag
-              @sl_entries.store @pack.pointer, @sl_data
-              @lim_texts.store @pack.pointer, @lim_data
-            end
+            ## don't take the Swissmedic-Category unless it's missing in the DB
+            @data.delete :ikscat if @pack.ikscat
+            @app.update @pack.pointer, @data, :bag
+            @sl_entries.store @pack.pointer, @sl_data
+            @lim_texts.store @pack.pointer, @lim_data
           end
-          @pcode, @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data,
-            @size = nil
+          @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size = nil
         when 'Preparation'
           if !@deferred_packages.empty? \
             && seq = identify_sequence(@registration, @name, @substances)
@@ -440,7 +374,7 @@ module ODDB
           end
           if @registration
             @app.update @registration.pointer, @reg_data, :bag
-          elsif @refdata_registration
+          else
             @unknown_registrations.push @report_data
           end
           @iksnr, @registration, @sl_entries, @lim_texts, @duplicate_iksnr,
@@ -474,23 +408,19 @@ module ODDB
           end
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
-          if @text.strip.empty?
-            if @out_of_trade
-              @missing_ikscodes_oot.push @report
-            else
-              @missing_ikscodes.push @report
-            end
-          end
           unless @registration
             @registration = @app.registration("%05i" % @text[0..-4].to_i)
           end
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
-            @pack ||= @registration.package @ikscd
-            if !@pcode.empty? && @pack && @pack.pharmacode \
-              && @pack.pharmacode != @pcode && @pack.pharmacode.to_i != 0
-              @report.store :pharmacode_oddb, @pack.pharmacode
-              @conflict = true
+            @pack ||= @app.package_by_ikskey(@text)
+            @out_of_trade = @pack.out_of_trade if @pack
+          end
+          if @text.strip.empty?
+            if @out_of_trade
+              @missing_ikscodes_oot.push @report
+            else
+              @missing_ikscodes.push @report
             end
           end
         when 'SwissmedicCategory'
@@ -529,6 +459,11 @@ module ODDB
             end
           end
         when 'StatusTypeCodeSl'
+          # When looking Preparations.xml we find
+          # <StatusTypeCodeSl>0</StatusTypeCodeSl>  <StatusTypeDescriptionSl>Initialzustand
+          # <StatusTypeCodeSl>2</StatusTypeCodeSl>  <StatusTypeDescriptionSl>Neuaufnahme
+          # <StatusTypeCodeSl>5</StatusTypeCodeSl>  <StatusTypeDescriptionSl>Ausserordentliche Preiserhöhung
+          # <StatusTypeCodeSl>8</StatusTypeCodeSl>  <StatusTypeDescriptionSl>Preissenkung
           if @sl_data
             @sl_data.store :status, @text
             active = false
@@ -553,16 +488,10 @@ module ODDB
               if @registration && @pack.nil?
                 @report.store :swissmedic_no5_oddb, @registration.iksnr
                 @unknown_packages.push @report
-              elsif @pack
-                if @conflict
-                  @conflicted_packages.push @report
-                end
               end
             elsif @registration && @pack.nil?
               @report.store :swissmedic_no5_oddb, @registration.iksnr
               @unknown_packages_oot.push @report
-            elsif @conflict
-              @conflicted_packages_oot.push @report
             end
           end
         when 'IntegrationDate'
@@ -691,7 +620,6 @@ module ODDB
 
       # FileUtils.compare_file cannot compare tempfile
       target_file.save_as save_file
-
       LogFile.append('oddb/debug', " bsv_xml: File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
       if(File.exists?(latest_file))
         LogFile.append('oddb/debug', " bsv_xml: FileUtils.compare_file(#{save_file} #{File.size(save_file)} bytes with #{latest_file} #{File.size(latest_file)} bytes) = " + FileUtils.compare_file(save_file, latest_file).inspect.to_s, Time.now)
@@ -750,18 +678,9 @@ Limitation (falls vorhanden) und weitere Packungs-Infos wurden ebenfalls
         [ :conflicted_registrations,
           'SMeX/SL-Differences (Registrations) %d.%m.%Y',
           'SL hat anderen 5-Stelligen Swissmedic-Code als SMeX' ],
-        [ :conflicted_packages,
-          'SMeX/SL-Differences (Packages) %d.%m.%Y',
-          'SL hat anderen 8-Stelligen Swissmedic-Code als SMeX' ],
-        [ :conflicted_packages_oot,
-          'Critical Pharmacodes BAG-XML %d.%m.%Y',
-          'SL hat anderen Pharmacode als MedWin' ],
         [ :missing_ikscodes,
           'Missing Swissmedic-Codes in SL %d.%m.%Y',
           'SL hat keinen 8-Stelligen Swissmedic-Code' ],
-        [ :missing_pharmacodes,
-          'Missing Pharmacodes in SL %d.%m.%Y',
-          'SL hat keinen Pharmacode' ],
         [ :missing_ikscodes_oot,
           'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y',
           <<-EOS
@@ -777,9 +696,6 @@ wir konnten auch keine Automatisierte Zuweisung vornehmen, wir wissen
 aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
           EOS
         ],
-        [ :unknown_registrations,
-          'Unknown Registrations in SL %d.%m.%Y',
-          'es gibt im SMeX keine Zeile mit diesem 5-stelligen Swissmedic-Code' ],
         [ :unknown_packages_oot,
           'Unknown Packages in SL (out of trade) %d.%m.%Y',
           <<-EOS
@@ -791,9 +707,6 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         values = @preparations_listener.send(collection).collect do |data|
           report_format data
         end.sort
-        if collection == :conflicted_packages && values.empty?
-          next
-        end
         name = @@today.strftime fmt
         header = report_format_header(name, values.size)
         body << header << "\n"
@@ -820,12 +733,10 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       end
       ## Add some general statistics to the body
       packages = @app.packages
-      pcdless = packages.select do |pac| pac.pharmacode.to_s.empty? end
-      oots, its = pcdless.partition do |pac| pac.out_of_trade end
+      oots, its = packages.partition do |pac| pac.out_of_trade end
       exps, rest = its.partition do |pac| pac.expired? end
       body << <<-EOP
 Packungen in der ODDB Total: #{packages.size}
-Packungen ohne Pharmacode: #{pcdless.size}
 - ausser Handel: #{oots.size}
 - inaktive Registration: #{exps.size}
 - noch nicht auf MedWin: #{rest.size}
@@ -842,9 +753,6 @@ Packungen ohne Pharmacode: #{pcdless.size}
       body = report_bsv << "\n\n"
       info = { :recipients => recipients.concat(BSV_RECIPIENTS)}
       parts = [
-        [ :conflicted_registrations,
-          'SMeX/SL-Differences (Registrations) %d.%m.%Y',
-          'SL hat anderen 5-Stelligen Swissmedic-Code als SMeX' ],
         [ :missing_ikscodes,
           'Missing Swissmedic-Codes in SL %d.%m.%Y',
            'SL hat keinen 8-Stelligen Swissmedic-Code' ],
@@ -873,9 +781,6 @@ es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
 in MedWin kein Resultat mit dem entsprechenden Pharmacode
           EOS
         ],
-        [ :missing_pharmacodes,
-          'Missing Pharmacodes in SL %d.%m.%Y',
-          'SL hat keinen Pharmacode' ],
         [ :duplicate_iksnrs,
           'Duplicate Registrations in SL %d.%m.%Y',
           <<-EOS
@@ -914,8 +819,8 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
     def report_bsv
       numbers = [
         :conflicted_registrations, :missing_ikscodes, :missing_ikscodes_oot,
-        :unknown_packages, :unknown_registrations, :unknown_packages_oot,
-        :missing_pharmacodes, :duplicate_iksnrs ].collect do |key|
+        :unknown_packages,  :unknown_registrations, :unknown_packages_oot,
+        :duplicate_iksnrs ].collect do |key|
         @preparations_listener.send(key).size
       end
       sprintf <<-EOS, *numbers
@@ -949,12 +854,7 @@ Swissmedic registriert.
 noch bei der Swissmedic registriert. Der Swissmedic Code sollte in der SL
 gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein.
 
-7. Bei %i Produkten fehlt der Pharmacode. Hier stellen wir uns die Frage,
-weshalb bei diesen Produkten der Pharmacode fehlt. Eigentlich dürften keine
-Pharmacodes fehlen, denn 99%% Prozent aller Apotheken, Spitäler, Heime etc.
-rechnen alle mit dem Pharmacode ab.
-
-8. %i 5-stellige Swissmedic-Nummern kommen im BAG-XML-Export doppelt vor.
+7. %i 5-stellige Swissmedic-Nummern kommen im BAG-XML-Export doppelt vor.
 Siehe auch Attachment: #{@@today.strftime('Duplicate_Registrations_in_SL_%d.%m.%Y.txt')}
 
 Um die obigen Beobachtungen kontrollieren zu können, speichern Sie bitte die
@@ -988,8 +888,6 @@ Attachments:
         :atc_class,
         :generic_type,
         :deductible,
-        :pharmacode_bag,
-        :pharmacode_oddb,
         :swissmedic_no5_oddb,
         :swissmedic_no8_oddb,
         :swissmedic_no5_bag,

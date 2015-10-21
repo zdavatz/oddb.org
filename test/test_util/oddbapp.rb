@@ -174,24 +174,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
     #assert_equal(expected, @app.search_oddb('12345', 'lang'))
     assert(same?(expected, @app.search_oddb('12345', 'lang')))
   end
-  def test_search_oddb__pharmacode
-    package = flexmock('package') do |pac|
-      pac.should_receive(:"sequence.seqnr")
-      pac.should_receive(:registration)
-      pac.should_receive(:ikscd)
-    end
-    flexstub(ODDB::Package) do |pac|
-      pac.should_receive(:find_by_pharmacode).and_return(package)
-    end
-    expected = ODDB::SearchResult.new
-    expected.atc_classes = ['atc']
-    expected.search_type=:pharmacode
-    expected.search_query = '123456'
-    expected.exact = true
-
-    #assert_equal(expected, @app.search_oddb('123456', 'lang'))
-    assert(same?(expected, @app.search_oddb('123456', 'lang')))
-  end
   def test_count_atc_ddd
     atc = flexmock('atc') do |atc|
       atc.should_receive(:has_ddd?).and_return(true)

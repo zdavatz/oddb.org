@@ -106,6 +106,8 @@ module ODDB
 
     def Util.send_mail_with_attachments(list_and_recipients, mail_subject, mail_body, attachments, override_from = nil)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
+      LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments subject #{mail_subject}", Time.now)
+      LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments body #{mail_body}", Time.now)
       Mail.deliver do
         from     override_from ? override_from : Util.mail_from
         to       Util.check_and_get_all_recipients(list_and_recipients)
