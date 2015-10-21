@@ -8,6 +8,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'util/resultsort'
 require 'model/dose'
+require 'model/slentry'
 require 'custom/lookandfeelwrapper'
 
 module ODDB
@@ -47,6 +48,11 @@ module ODDB
         gal_forms.should_receive(:collect).by_default.and_return(['gal_def'])
       end
       package = flexmock('package')
+      package.should_receive(:iksnr).by_default.and_return('61848')
+      package.should_receive(:sort_info).by_default.and_return('sort_info')
+      package.should_receive(:sort_info=).by_default
+      package.should_receive(:seqnr).by_default.and_return('88')
+      package.should_receive(:ikscd).by_default.and_return('999')
       package.should_receive(:odba_instance).by_default.and_return(nil)
       package.should_receive(:out_of_trade).by_default.and_return(out_of_trade)
       package.should_receive(:sl_generic_type).by_default.and_return(sl_generic_type)
@@ -59,6 +65,7 @@ module ODDB
       package.should_receive(:company).by_default.and_return('company_original')
       package.should_receive(:comparable_size).by_default.and_return('comparable_size')
       package.should_receive(:inspect).by_default.and_return(product_name)
+      package.should_receive(:sl_entry).by_default.and_return(nil)
       package
     end
     def setup
@@ -174,11 +181,11 @@ module ODDB
         @paaa_original,
         @paff_sl_original,
         @pzzz_original,
+        @pccc_generic_from_desitin,
         @pccc_unknown_from_desitin,
         @pddd_sl_generic_nil_from_desitin,
         @p002,
         @p009za,
-        @pccc_generic_from_desitin,
         @p009,
         @p010,
         @pacc_generic,
@@ -191,13 +198,50 @@ module ODDB
         @p013,
         @p014,
         @p020,
+        @p018,
         @p015,
         @p016,
         @p017,
-        @p018,
         @p019,
         ]
     end
+    def setup_evidentia
+      @session.should_receive(:flavor).and_return(@evidentia)
+      @component = LookandfeelBase.new(@session)
+      @evidentia = LookandfeelEvidentia.new(@component)
+      @session.should_receive(:flavor).and_return(@evidentia)
+      @session.should_receive(:lookandfeel).and_return(@evidentia)
+      setup_more_products
+      sl_entry_valid = flexmock('sl_entry_valid')
+      sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
+      sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
+      sl_entry_invalid = flexmock('sl_entry_invalid')
+      sl_entry_invalid.should_receive(:odba_instance).by_default.and_return(nil)
+      sl_entry_invalid.should_receive(:valid_until).by_default.and_return(Date.today - 1)
+      @p001.should_receive(:sl_entry).and_return(nil)
+      @p002.should_receive(:sl_entry).and_return(sl_entry_valid)
+      @p003.should_receive(:sl_entry).and_return(sl_entry_invalid)
+      @evidentia_products       = [@p001, @p002, @p003]
+      @expected_order_evidentia = [@p003, @p001, @p002]
+    end
+
+    def test_sort_result_evidentia_sl_before_non_sl
+      setup_evidentia
+      @expected_order_evidentia.each{ |item| assert_equal(FlexMock, item.class) }
+      res = @sort.sort_result(@evidentia_products, @session)
+      found_non_sl = false
+      res.each_with_index{
+        |item, idx|
+        if not found_non_sl and item.sl_entry and (item.sl_entry.valid_until > Date.today)
+          found_non_sl = idx
+        elsif found_non_sl
+          found_sl = false
+          found_sl = (item.sl_entry.valid_until > Date.today) if item.sl_entry
+          assert_equal(false, found_sl, "Non-SL #{found_non_sl} #{res[found_non_sl].name_base} must come before SL #{idx} #{res[idx].name_base}")
+        end
+      }
+    end
+
     def test_galform_str__else
       @galenic_form.should_receive(:odba_instance).and_return('odba_instance')
       @galenic_form.should_receive(:language).and_return('language')
@@ -226,18 +270,7 @@ module ODDB
       assert_equal(@expected_default_order, @sort.sort_result(@order_3, @session))
       assert_equal(@expected_default_order, @sort.sort_result(@order_4, @session))
     end
-    def test_sort_result_evidentia_sl_original_nil
-      @session.should_receive(:flavor).and_return(@evidentia)
-      @component = LookandfeelBase.new(@session)
-      @evidentia = LookandfeelEvidentia.new(@component)
-      @session.should_receive(:flavor).and_return(@evidentia)
-      @session.should_receive(:lookandfeel).and_return(@evidentia)
-      setup_more_products
-      @expected_order_desitin.each{ |item| assert_equal(FlexMock, item.class) }
-      assert_equal(@expected_order_desitin, @sort.sort_result(@order_2, @session))
-      assert_equal(@expected_order_desitin, @sort.sort_result(@order_3, @session))
-      assert_equal(@expected_order_desitin, @sort.sort_result(@order_4, @session))
-    end
+
     def stdout_null
       require 'tempfile'
       $stdout = Tempfile.open('stdout')
@@ -257,6 +290,9 @@ module ODDB
       user = flexmock('user', :name => 'dummy@desitin.ch')
       @session.should_receive(:user).and_return(user)
       setup_more_products
+      @sort.sort_result(@order_2, @session)
+      @p018.should_receive(:name_base).and_return('Levetiracetam Desitin 100 mg/mL')
+      @p019.should_receive(:name_base).and_return('Levetiracetam Desitin 100 mg/mL')
       @expected_order_desitin.each{ |item| assert_equal(FlexMock, item.class) }
       assert_equal(@expected_order_desitin, @sort.sort_result(@order_2, @session))
       assert_equal(@expected_order_desitin, @sort.sort_result(@order_3, @session))
