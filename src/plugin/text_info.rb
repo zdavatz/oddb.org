@@ -1163,7 +1163,7 @@ module ODDB
           end
         end
       end
-      LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist} i #{infos.inspect.to_s[0..400]}"
+      LogFile.debug "#{type} empty? content #{content == nil} #{infos.empty?} iksnrs_from_xml #{iksnrs_from_xml} dist #{dist}"
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
