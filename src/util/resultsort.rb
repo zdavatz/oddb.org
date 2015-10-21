@@ -32,25 +32,36 @@ module ODDB
     #
     # Bei Desitin (evidentia und Desitin Power-User Login) müssen die
     # Produkte unter 3 vor 2 kommen (siehe oben).
-
+    # def show_package(package)
+    #   puts "result_sort: #{package.class} #{package.iksnr}/#{package.seqnr}/#{package.ikscd} package.sl_generic_type #{package.sl_generic_type.inspect} classified #{classified_group(package)} #{package.sort_info}"
+    # end
     def sort_result(packages, session)
       begin
-        packages = packages.uniq.sort_by! { |package|
-          classify_package(package, session)
-          if @package_from_desitin and @priorize_desitin
-            if @priority == IsNotClassified
-              @priority = IsGenerikum - 0.1 # must come before IsGenerikum
-            end
+        packages.uniq!
+        packages.sort_by! { |package|
+          package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
+          priorize_desitin = false
+          priorize_desitin = true if package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
+          priorize_desitin = true if package_from_desitin and session and
+                                      session.user and not session.user.is_a?(ODDB::UnknownUser) and
+                                      /desitin/i.match(session.user.name.to_s)
+          name_to_use = (priorize_desitin ? ' '+package.name_base.clone.to_s : package.name_base.clone.to_s).sub(/\s+\d+.+/, '')
+          prio = classified_group(package)
+          if package_from_desitin and priorize_desitin
+            prio = IsGenerikum - 0.1 if prio >= IsGenerikum # must come before IsGenerikum # must come before IsGenerikum
           end
-          [
+          sort_info = [
             package.expired? ? 1 : -1,
-            @priority,
-            package.galenic_forms.collect { |gf| galform_str(gf, session) },
-            @name_to_use,
+            prio,
+            package.galenic_forms.collect { |gf| gf.galenic_group.to_s },
+            package.galenic_forms.collect { |gf| gf.to_s },
+            name_to_use,
             dose_value(package.dose),
             package.comparable_size,
           ]
+          sort_info
         }
+        # packages.each{ |package| show_package(package) }
         packages
       rescue StandardError => e
         puts e.class
@@ -75,28 +86,17 @@ module ODDB
       end
     end
 private
-  def classify_package(package, session)
-    @package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
-    @priorize_desitin = false
-    @priorize_desitin = true if @package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
-    @priorize_desitin = true if @package_from_desitin and session and
-                                session.user and not session.user.is_a?(ODDB::UnknownUser) and
-                                /desitin/i.match(session.user.name.to_s)
-    @priority = classified_group(package)
-    @name_to_use = (@priorize_desitin ? ' '+package.name_base.clone.to_s : package.name_base.clone.to_s).sub(/\s+\d+.+/, '')
-  end
-
-    def classified_group(package)
-      return IsNotRefDataListed if package.out_of_trade
-      if package.sl_generic_type
-        if package.sl_generic_type.eql?(:original)
-          return IsOriginal
-        elsif package.sl_generic_type.eql?(:generic)
-          return IsGenerikum
-        end
+  def classified_group(package)
+    return IsNotRefDataListed if package.out_of_trade
+    if package.sl_generic_type
+      if package.sl_generic_type.eql?(:original)
+        return IsOriginal
+      elsif package.sl_generic_type.eql?(:generic)
+        return IsGenerikum
       end
-      return IsNotClassified
-      # the following was madly inefficient!
+    end
+    return IsNotClassified
+    # the following was madly inefficient!
 =begin
     types = session.valid_values(:generic_type)
     index = types.index(package.generic_type.to_s).to_i
