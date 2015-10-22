@@ -15,53 +15,84 @@ module ODDB
     end
   end
   module ResultSort
-    IsOriginal = 1
-    IsGenerikum = 2
-    IsNotClassified = 3
-    IsNotRefDataListed = 4
+    IsOriginal          = 1     # always come first
+    IsSponsored         = 10
+    IsGenerikum         = 20
+    IsNotClassified     = 21
+    IsNotRefDataListed  = 23
 
-    # zeno defined the sort order on May 11 2015 as follow
-    # 1. Original (SL)
-    # 2. Generikum (SL)
-    # 3. Nicht klassifiziert (SL)
-    # 4. Bei Refdata nicht gelistet.
+    # zeno defined the sort order in mail of Oktobre 21, 2015
+    # Bei Evidentia kommen zuerst die Originale und dann die Produkte von Desitin wie folgt:
     #
-    # Innerhalb dieser Reihenfolge (Gruppe) ist wie folgt sortiert:
+    # 1. Infusionslösungen
+    # 2. Feste Formen
+    # 3. Orale Lösungen
     #
-    # Alphabetisch aufsteigend nach Galenik, Stärke, Packung.
+    # Innerhalb dieser Gruppen zuerst Produkte die SL sind, dann die Produkte, welche nicht SL sind.
     #
-    # Bei Desitin (evidentia und Desitin Power-User Login) müssen die
-    # Produkte unter 3 vor 2 kommen (siehe oben).
-    # def show_package(package)
-    #   puts "result_sort: #{package.class} #{package.iksnr}/#{package.seqnr}/#{package.ikscd} package.sl_generic_type #{package.sl_generic_type.inspect} classified #{classified_group(package)} #{package.sort_info}"
-    # end
+    # Danach kommen die Produkte wie folgt:
+    #
+    # 1. Infusionslösungen
+    # 2. Feste Formen
+    # 3. Orale Lösungen
+    #
+    # Innerhalb dieser Gruppen zuerst Produkte die SL sind, dann die Produkte, welche nicht SL sind.
+    #
+    # Es gibt zwei Gruppen:
+    #
+    # A: Refdata gelistet
+    # B: Refdata nicht gelistet
+    #
+    # dann
+    #
+    # A: Original
+    # B: Generikum
+    #
+    # [ Beim Sponsoring wie z.B. Desitin erscheinen die in Refdata nicht gelisteten Produkte innerhalb vom Desitin Block, wiederum zuunterst wie oben erwähnt. ]
+    #
+    # Innerhalb dieser Gruppen wird sortiert nach:
+    #
+    # 1. Infusionslösungen
+    # 2. Feste Formen
+    # 3. Orale Lösungen
+    #
+    # Innerhalb dieser Gruppen zuerst Produkte die SL sind, dann die Produkte, welche nicht SL sind.
+    #
+    # Innerhalb dieser Gruppen aufsteigend nach Packungsgrösse.
+    #
+    def show_package_sort_info(package, session)
+      name_to_use, prio = adjusted_name_and_prio(package, session)
+      puts "result_sort: #{package.class} #{package.iksnr}/#{package.seqnr}/#{package.ikscd} ["+
+          "#{package.expired? ? 1 : -1}," +
+          "#{package.out_of_trade    ? IsNotRefDataListed : 1}, " +
+          "#{prio}, " +
+          "#{classified_group(package)}, " +
+          "#{package.galenic_forms.collect { |gf| gf.galenic_group.to_s } }, " +
+          "#{package.galenic_forms.collect { |gf| gf.to_s } }, " +
+          "#{name_to_use}, #{dose_value(package.dose)}, #{package.comparable_size}"
+    end if false
+
     def sort_result(packages, session)
+      # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/001 sl_entry nil
+      # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/002 sl_entry.sl_generic_type = :generic
       begin
         packages.uniq!
         packages.sort_by! { |package|
-          package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
-          priorize_desitin = false
-          priorize_desitin = true if package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
-          priorize_desitin = true if package_from_desitin and session and
-                                      session.user and not session.user.is_a?(ODDB::UnknownUser) and
-                                      /desitin/i.match(session.user.name.to_s)
-          name_to_use = (priorize_desitin ? ' '+package.name_base.clone.to_s : package.name_base.clone.to_s).sub(/\s+\d+.+/, '')
-          prio = classified_group(package)
-          if package_from_desitin and priorize_desitin
-            prio = IsGenerikum - 0.1 if prio >= IsGenerikum # must come before IsGenerikum # must come before IsGenerikum
-          end
+          name_to_use, prio = adjusted_name_and_prio(package, session)
           sort_info = [
-            package.expired? ? 1 : -1,
+            package.expired?        ? 1 : -1,
+            package.out_of_trade    ? IsNotRefDataListed : 1,
             prio,
             package.galenic_forms.collect { |gf| gf.galenic_group.to_s },
             package.galenic_forms.collect { |gf| gf.to_s },
+            classified_group(package),
             name_to_use,
             dose_value(package.dose),
             package.comparable_size,
           ]
           sort_info
         }
-        # packages.each{ |package| show_package(package) }
+        # packages.each{ |package| show_package_sort_info(package, session) } # only for debugging
         packages
       rescue StandardError => e
         puts e.class
@@ -86,22 +117,39 @@ module ODDB
       end
     end
 private
-  def classified_group(package)
-    return IsNotRefDataListed if package.out_of_trade
-    if package.sl_generic_type
-      if package.sl_generic_type.eql?(:original)
-        return IsOriginal
-      elsif package.sl_generic_type.eql?(:generic)
-        return IsGenerikum
+    def adjusted_name_and_prio(package, session)
+      package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
+      is_desitin = false
+      is_desitin = true if package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
+      is_desitin = true if package_from_desitin and session and
+                                  session.user and not session.user.is_a?(ODDB::UnknownUser) and
+                                  /desitin/i.match(session.user.name.to_s)
+      if is_desitin
+        name_to_use = ' '+package.name_base.clone.to_s
+        prio = IsSponsored
+      else
+        name_to_use = package.name_base.clone.to_s.sub(/\s+\d+.+/, '')
+        prio = classified_group(package)
       end
+      return name_to_use, prio
     end
-    return IsNotClassified
+
+    def classified_group(package)
+      return IsNotRefDataListed if package.out_of_trade
+      if package.sl_generic_type
+        if package.sl_generic_type.eql?(:original)
+          return IsOriginal
+        elsif package.sl_generic_type.eql?(:generic)
+          return IsGenerikum
+        end
+      end
+      return IsNotClassified
+    end
     # the following was madly inefficient!
 =begin
     types = session.valid_values(:generic_type)
     index = types.index(package.generic_type.to_s).to_i
     10 - (index*2)
 =end
-    end
   end
 end

@@ -121,22 +121,31 @@ module ODDB
       @pccc_unknown_from_desitin = create_default_product_mock('pccc_unknown_from_desitin',false, :unknown, nil)
       @pccc_unknown_from_desitin.should_receive(:company).and_return('desitin')
 
-      @pddd_sl_generic_nil_from_desitin = create_default_product_mock('pddd_sl_generic_nil_from_desitin', false, nil, :generic)
+      gal_liquid = flexmock('gal_liquid')
+      gal_liquid.should_receive(:collect).and_return(['gal_liquid'])
+      #     def create_default_product_mock(product_name, out_of_trade = false, sl_generic_type = :original, generic_type = :original, gal_forms = nil)
+
+      @pddd_sl_generic_nil_from_desitin = create_default_product_mock('pddd_sl_generic_nil_from_desitin', false, :generic, nil, gal_liquid)
+      @pddd_sl_nil_from_desitin         = create_default_product_mock('pddd_sl_nil_from_desitin',         false, nil,      nil,  gal_liquid)
+
+      @pddd_sl_nil_from_desitin.should_receive(:company).and_return('desitin')
       @pddd_sl_generic_nil_from_desitin.should_receive(:company).and_return('desitin')
+      @pddd_sl_generic_nil_from_desitin.should_receive(:sl_entry).and_return(nil)
+
 
       @pzzz_original = create_default_product_mock('pzzz_original')
       @sort   = ODDB::StubResultSort.new([])
-      @order_2 = [@paaa_original, @pacc_generic, @pddd_sl_generic_nil_from_desitin,
+      @order_2 = [@paaa_original, @pacc_generic, @pddd_sl_generic_nil_from_desitin, @pddd_sl_nil_from_desitin,
                   @pccc_generic_from_desitin, @pzzz_original, @paff_sl_original,
                   @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010, @pccc_unknown_from_desitin,
                   @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020
                   ]
-      @order_3 = [@paff_sl_original, @paaa_original, @pccc_generic_from_desitin, @pzzz_original,
+      @order_3 = [@paff_sl_original, @paaa_original, @pccc_generic_from_desitin, @pzzz_original, @pddd_sl_nil_from_desitin,
                   @pacc_generic, @pddd_sl_generic_nil_from_desitin,
                   @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010, @pccc_unknown_from_desitin,
-                  @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020,
+                  @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020, @pddd_sl_nil_from_desitin,
                   ]
-      @order_4 = [@pzzz_original, @pccc_generic_from_desitin, @pddd_sl_generic_nil_from_desitin,
+      @order_4 = [@pzzz_original, @pccc_generic_from_desitin, @pddd_sl_generic_nil_from_desitin, @pddd_sl_nil_from_desitin,
                   @paff_sl_original, @pacc_generic, @paaa_original, @pccc_unknown_from_desitin,
                   @p001, @p002, @p003, @p004, @p005, @p006, @p007, @p008, @p009, @p009za, @p009zz, @p010,
                   @p011, @p012, @p013, @p014, @p015, @p016, @p017, @p018, @p019, @p020,
@@ -155,6 +164,7 @@ module ODDB
         @p010,
         @pacc_generic,
         @pccc_generic_from_desitin,
+        @pddd_sl_generic_nil_from_desitin,
         @p001,
         @p009zz,
         @p005,
@@ -164,7 +174,7 @@ module ODDB
         @p013,
         @p014,
         @pccc_unknown_from_desitin,
-        @pddd_sl_generic_nil_from_desitin,
+        @pddd_sl_nil_from_desitin,
         @p020,
         @p015,
         @p016,
@@ -184,6 +194,7 @@ module ODDB
         @pccc_generic_from_desitin,
         @pccc_unknown_from_desitin,
         @pddd_sl_generic_nil_from_desitin,
+        @pddd_sl_nil_from_desitin,
         @p002,
         @p009za,
         @p009,

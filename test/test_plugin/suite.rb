@@ -3,8 +3,6 @@
 # OneDirSuite -- oddb -- 08.02.2011 -- yasaka@ywesee.com
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path(File.dirname(__FILE__))
-
 must_be_run_separately = [
   'doctors.rb',
   'analysis.rb',
