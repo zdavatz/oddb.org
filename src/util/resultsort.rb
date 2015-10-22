@@ -70,7 +70,8 @@ module ODDB
           "#{package.galenic_forms.collect { |gf| gf.galenic_group.to_s } }, " +
           "#{package.galenic_forms.collect { |gf| gf.to_s } }, " +
           "#{name_to_use}, #{dose_value(package.dose)}, #{package.comparable_size}"
-    end
+    end if false
+
     def sort_result(packages, session)
       # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/001 sl_entry nil
       # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/002 sl_entry.sl_generic_type = :generic
@@ -91,7 +92,7 @@ module ODDB
           ]
           sort_info
         }
-        packages.each{ |package| show_package_sort_info(package, session) }
+        # packages.each{ |package| show_package_sort_info(package, session) } # only for debugging
         packages
       rescue StandardError => e
         puts e.class
