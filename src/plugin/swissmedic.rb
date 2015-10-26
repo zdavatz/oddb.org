@@ -22,7 +22,7 @@ end
 
 module ODDB
   class SwissmedicPlugin < Plugin
-    attr_reader :checked_compositions, :updated_agents, :new_agents
+    attr_reader :checked_compositions, :updated_agents, :new_agents, :known_sequences
     PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :export_flag,
       :index_therapeuticus, :atc_class, :production_science,
       :sequence_ikscat, :ikscat, :registration_date, :sequence_date,
@@ -64,6 +64,8 @@ public
       @update_time = 0 # minute
       @target_keys = Util::COLUMNS_JULY_2015
       @empty_compositions = []
+      @known_packages = []
+      @deletes_packages = []
     end
 
     # traces many details of changes. Use it for debugging purposes
@@ -98,6 +100,49 @@ public
       return false
     end
 
+    def store_found_packages(latest_xslx)
+      workbook = Spreadsheet.open(latest_xslx)
+      row_nr = 4
+      workbook.worksheets[0].each() do
+        |row|
+        row_nr += 1
+        break unless row
+        iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        seqnr   = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
+        packnr  = "%03i" % cell(row, @target_keys.keys.index(:ikscd)).to_i
+        @known_packages << [iksnr, seqnr, packnr]
+      end
+    end
+    def delete_not_found_packages
+      @known_packages = []
+      @deletes_packages = []
+      if @latest_packungen and File.exists?(@latest_packungen)
+        store_found_packages(@latest_packungen)
+        @known_packages.sort!.uniq!
+        debug_msg "deactivate_not_found_package #{@app.registrations.size} registrations and #{@known_packages.size}" +
+            " @known_packages from #{@known_packages.first} till #{@known_packages.last}"
+        @app.registrations.each{
+          |iksnr, reg|
+          debug_msg "deactivate_not_found_package check #{iksnr.inspect}. #{@deletes_packages.size} @deletes_packages"
+          next if iksnr.eql?('00000')
+          next if iksnr.to_s.size != 5
+          reg.active_packages.each{
+            |pack|
+            found = @known_packages.find{ |x|
+                                          x[0].eql?(pack.iksnr) and
+                                        x[1].eql?(pack.seqnr) and
+                                        x[2].eql?(pack.ikscd)
+                                        }
+            unless found
+              debug_msg "deactivate_not_found_package #{iksnr} #{pack.seqnr} #{pack.ikscd}"
+              pack.sequence.delete_package(pack.ikscd)
+              pack.sequence.odba_isolated_store
+              @deletes_packages << [pack.iksnr, pack.seqnr, pack.ikscd]
+            end                                }
+        } if @known_packages.size > 0
+        debug_msg "deactivate_not_found_package deactivated #{@deletes_packages.size} @deletes_packages"
+      end
+    end
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
@@ -189,6 +234,7 @@ public
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
+        delete_not_found_packages
       else
         debug_msg "#{__FILE__}:#{__LINE__} update return false as target is #{target.inspect}"
         false
@@ -519,6 +565,8 @@ public
         "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
+        "Deleted #{@deletes_packages.size} packages not in Packungen.xlsx",
+        @deletes_packages.collect{|x| x.join(' ')}.join("\n"),
       ]
                           end
       unless @iksnr_with_wrong_data.empty?
