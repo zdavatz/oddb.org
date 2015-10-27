@@ -134,8 +134,9 @@ class EntityForm < Form
       super
       error_message()
     rescue
-#      require 'pry'; binding.pry
-      $stdout.puts "Catched Encoding::CompatibilityError: #{model.class} #{model.oid} #{model.name}"; $stdout.sync
+      $stdout.puts "Catched Encoding::CompatibilityError: #{model.class} "+
+          "#{model.respond_to?(:oid) ? model.oid : 'no_oid'} " +
+          "#{model.respond_to?(:name) ? model.name : 'no_name'}"; $stdout.sync
       nil
     end
   end
