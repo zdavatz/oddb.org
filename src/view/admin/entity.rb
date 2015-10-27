@@ -130,8 +130,14 @@ class EntityForm < Form
   }
   preferences :name_first, :name_last, :address, :plz, :city
   def init
-    super
-    error_message()
+    begin
+      super
+      error_message()
+    rescue
+#      require 'pry'; binding.pry
+      $stdout.puts "Catched Encoding::CompatibilityError: #{model.class} #{model.oid} #{model.name}"; $stdout.sync
+      nil
+    end
   end
   def association(model)
     ass, priv = nil
@@ -156,6 +162,7 @@ class EntityForm < Form
     end
   end
   def salutation(model)
+    return nil unless model
     input = HtmlGrid::Select.new(:salutation, model, @session, self)
     input.selected = @session.yus_get_preference(model.name, :salutation)
     input

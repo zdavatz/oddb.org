@@ -351,6 +351,8 @@ module ODDB
 				seq.patent_protected? && seq.company != @registration.company \
           && _violates_patent?(seq)
 			}
+    rescue
+      false
 		end
     def _violates_patent?(seq)
       other = seq.active_agents

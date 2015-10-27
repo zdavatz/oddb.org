@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+# We ignore registration 00277, 47066, 57678 which
+# we used for testing the atc_less
+
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -98,6 +101,15 @@ module ODDB
                             }
       }
     end
+
+    def add_influvac
+      reg = @app.create_registration('00485')
+      seq = reg.create_sequence('26')
+      seq.create_package('007')
+      seq.create_package('008')
+
+    end
+
     def test_july_2015
       agent, page = setup_index_page
       # Use first the last month and compare it to a non existing lates
@@ -112,15 +124,8 @@ module ODDB
       assert_equal(0, @app.registrations.size)
       reg = @app.create_registration('00278')
       reg.pointer = Persistence::Pointer.new([:registration, '00278'])
-      if false
-        seq = StubSequence.new('01', 'AB0')
-        seq.create_composition
-        seq.compositions.first.source = 'composition_text'
-        seq.compositions.first.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'],[:composition])
-      else
-        seq = reg.create_sequence('01')
-        seq.composition_text = 'composition_text'
-      end
+      seq = reg.create_sequence('01')
+      seq.composition_text = 'composition_text'
       seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
       seq.name_base = 'Colon Sérocytol, suppositoire'
       seq.name_descr = 'name_descr'
@@ -150,15 +155,22 @@ module ODDB
       assert_equal(true, result)
       check_agents(@app.sequences)
 
+      add_influvac # this sequence must be delete
+      assert_equal('26', @app.registration('00485').sequence('26').seqnr)
+      assert_equal(2, @app.registration('00485').active_packages.size)
+      assert_equal(4, @app.registrations.size)
+      assert_equal(4, @app.sequences.size)
+      assert_equal(7, @app.packages.size)
+
       puts "\nStarting second_run\n\n"
       result_second_run = @plugin.update({}, agent)
+      puts @plugin.report
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
-      assert_equal(7, @app.registrations.size)
-      assert_equal(9, @app.sequences.size)
-      assert_equal(15, @app.packages.size)
-      assert_equal(6, result_second_run.changes.size)
       assert(result_second_run)
+
+      assert_equal(8, @app.registrations.size)
+
       assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00488"=>[:new], "00279"=>[:delete]}, result_second_run.changes)
       missing = {}
       @app.registrations.each{
@@ -175,6 +187,14 @@ module ODDB
       }
       assert_equal(0, missing.size)
       check_agents(@app.sequences)
+
+      # Check that influvac is expired
+      assert_equal('26', @app.registration('00485').sequence('26').seqnr)
+      assert_equal(0, @app.registration('00485').active_packages.size)
+      assert_equal(0, @app.registration('00485').packages.size)
+      assert_equal(10, @app.sequences.size)
+      assert_equal(14, @app.packages.size)
+      assert_equal(12, @app.active_packages.size)
     end
 
     def test_mustcheck
