@@ -7,10 +7,11 @@ require 'plugin/plugin'
 require 'model/text'
 require 'model/dose'
 require 'util/persistence'
+require 'open-uri'
 
 module ODDB
   class WhoPlugin < Plugin
-    attr_reader :codes
+    attr_reader :codes, :repairs
     class CodeHandler
       ATC_TOP_LEVEL = %w{A B C D G H J L M N P R S V}
       attr_reader :queue, :visited
@@ -37,7 +38,9 @@ module ODDB
     }
     def initialize *args
       super
-      @url = 'http://www.whocc.no/atc_ddd_index/'
+      @root_url = 'http://www.whocc.no/'
+      @ddd_url  = @root_url+ 'atc_ddd_index/'
+      @new_url  = @root_url+ 'atc/lists_of_new_atc_ddds_and_altera/new_atc/?order_by=1&d=DESC'
       @codes = CodeHandler.new
       @count = 0
       @created = 0
@@ -74,26 +77,46 @@ module ODDB
         @count += 1
         import_code(agent, code)
       end
+      import_new_codes(agent)
       @app.atc_classes.odba_store
       report
     end
-    def import_atc(code, link)
-      name = capitalize_all link.inner_text.to_s
+    def import_atc(code, name, origin = :whocc)
+      name = capitalize_all name
+      atc = @app.atc_class(code)
       pointer = if atc = @app.atc_class(code)
                   atc.pointer
                 else
                   @created += 1
                   Persistence::Pointer.new([:atc_class, code]).creator
                 end
-      @app.update pointer.creator, {:en => name, :origin => :whocc}
+      @app.update pointer.creator, {:en => name, :origin => origin}
+    end
+    def import_new_codes(agent)
+      page = Nokogiri::HTML(open(@new_url).read)
+      new_codes = {}
+      page.css('tr').each {
+        |tr|
+        next if tr.css('td').length != 4
+        new_codes[tr.css('td').first.content] =
+      [
+       tr.css('td')[1].content, # substance
+       tr.css('td')[2].content, # deadline
+       tr.css('td')[3].content.chomp, # year
+      ]
+      }
+      new_codes.each{ |atc, details|
+          atc_code = import_atc(atc, details[0], :whocc_new)
+          @codes.push(atc_code)
+      }
     end
     def import_code(agent, get_code)
-      page = agent.get(@url + "?code=%s&showdescription=yes" % get_code)
+      page = agent.get(@ddd_url + "?code=%s&showdescription=yes" % get_code)
       (page/"//b/a").each do |link|
         if(match = @@query_re.match(link.attributes['href']))
           code = match[1]
           if(code == get_code)
-            atc = import_atc(code, link)
+            atc = import_atc(code, link.inner_text.to_s)
             import_guidelines(atc, link)
           end
           @codes.push(code)
@@ -102,7 +125,7 @@ module ODDB
       (page/"//ul//a").each do |link|
         if(match = @@query_re.match(link.attributes['href']))
           code = match[1]
-          atc = import_atc(code, link)
+          atc = import_atc(code, link.inner_text.to_s)
           import_ddds atc, link.parent.parent
         end
       end

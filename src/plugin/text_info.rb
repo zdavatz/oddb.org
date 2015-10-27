@@ -182,12 +182,17 @@ module ODDB
         return # no need to change anything
       end
       if atcFromFI == atcFromXml and not atcFromRegistration
+        @fi_atc_code_different_in_registration << "#{iksnr} FI #{atcFromFI} registration #{atcFromRegistration}"
         atc_class = app.atc_class(atcFromFI)
         atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI]))
         registration.sequences.values.each{
           |sequence|
-            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr}"
+            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr} atc_class #{atc_class} #{atc_class.oid}"
             res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
+            atc_class.odba_store
+            sequence.atc_class = atc_class
+            sequence.odba_isolated_store
+            registration.odba_isolated_store
         }
         return
       end
@@ -196,16 +201,20 @@ module ODDB
         LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI and xml #{atcFromFI} differ from registration #{atcFromRegistration}. No action"
         return
       end
-      if atcFromFI != atcFromXml
+      if atcFromFI and atcFromXml and atcFromFI != atcFromXml
         @fi_atc_code_missmatch << "#{iksnr} FI-html: #{atcFromFI} xml: #{atcFromXml}"
         LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}). No action"
         return
-        atc_class = app.atc_class(atcFromFI)
-        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI]))
+      else
+        atc_code = atcFromFI
+        atc_code ||= atcFromXml
+        atc_class = app.atc_class(atc_code)
+        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atc_code]))
         registration.sequences.values.each{
           |sequence|
-            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}"
+            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atc_code #{atc_code} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}  atc_class #{atc_class} #{atc_class.oid}"
             res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
+            sequence.odba_store
         }
         return
       end
@@ -664,7 +673,6 @@ module ODDB
       sequence.create_package(packNr)
       package = sequence.package(packNr)
       part = package.create_part
-      seq_args.store :packages, sequence.packages
       res = app.update(sequence.pointer, seq_args, :swissmedic_text_info)
       registration.sequences[seqNr] = sequence
       sequence.fix_pointers

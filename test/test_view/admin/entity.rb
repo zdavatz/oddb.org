@@ -131,7 +131,6 @@ class TestEntityForm <Minitest::Test
                          :error?       => nil
                         ).by_default
     @model    = flexmock('model_entity',
-                         :oid  => 'oid',
                          :name => 'name')
     @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
   end
@@ -162,10 +161,10 @@ class TestEntityForm <Minitest::Test
   def test_error_message_non_utf
     $entity_raise_errror = true
     setup_work
+    @model    = flexmock('model_entity')
+    @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
     flexmock(@model, :is_a? => true)
-    flexmock(@session, :allowed? => true)
     assert_equal(nil, @form.set_pass(@model))
-    # assert_kind_of(HtmlGrid::Button, @form.set_pass(@model))
   end
 end
 

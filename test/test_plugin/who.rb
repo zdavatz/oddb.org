@@ -56,7 +56,7 @@ module ODDB
                :atc_class => atc_class,
                :update    => 'update'
               )
-      link = flexmock('link', :inner_text => 'inner_text')
+      link = flexmock('link', :inner_text => 'inner_text', :split => ['split'])
       assert_equal('update', @plugin.import_atc('code', link))
     end
     def test_import_atc__no_atc_class
@@ -64,7 +64,7 @@ module ODDB
                :atc_class => nil,
                :update    => 'update'
               )
-      link = flexmock('link', :inner_text => 'inner_text')
+      link = flexmock('link', :inner_text => 'inner_text', :split => ['split'])
       assert_equal('update', @plugin.import_atc('code', link))
     end
     def test_import_ddd_guidelines
@@ -201,29 +201,68 @@ module ODDB
                      :guidelines => nil,
                      :pointer    => pointer
                     )
-      atc_hash = Hash.new
-      atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
+      a_hash = Hash.new
+      atc_hash = flexmock(a_hash, 'my_atc_hash', :keys => a_hash.keys,
+                          :each => a_hash.each,
+                          :odba_store => 'odba_store',)
+      atc_classes = flexmock('atc_classes', :odba_store => 'odba_store',
+                             :keys => atc_hash.keys,
+                             :each => atc_hash.each,
+                             )
       flexmock(@app, :update => atc)
-      flexmock(@app, :atc_class => atc, :atc_classes => atc_classes)
+      flexmock(@app, :atc_class => atc, :atc_classes => atc_hash)
       expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
       assert_equal(expected, @plugin.import(@agent))
     end
     def test_import_repairs
+      @app    = flexmock('appxx')
+      @plugin = ODDB::WhoPlugin.new(@app)
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
       atc = flexmock('atc',
                      :guidelines => nil,
                      :pointer    => pointer
                     )
-      skip 'How should we mock the sequences?'
+      @a_hash = Hash.new
+      atc_hash = flexmock(@a_hash, 'my_atc_hash',
+                          :keys => @a_hash.keys,
+                          :each => @a_hash.each,
+                          :odba_store => 'odba_store',)
+      atc_hash.should_receive(:[]=).and_return { |key, value| @a_hash[key] = value; puts @a_hash.inspect }
+      atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
+      flexmock(@app, :update => atc)
+      atc_class = flexmock('atc_class', :repair_needed? => true,
+                          :odba_store => 'odba_store',
+                          :pointer => pointer)
+      atc_class14 = flexmock('atc_class14', :repair_needed? => true,
+                          :odba_store => 'odba_store',
+                          :pointer => pointer)
+      flexmock(@app, :atc_classes => atc_classes)
+      @app.should_receive(:atc_class).and_return { atc_class }
+      result = @plugin.import(@agent)
+      m = /Created\s+(\d+)\s+English/.match(result)
+      assert_equal(0, m[1].to_i)
+      assert_match('Imported  30 ATC-Codes', result)
+      assert_match("Updated    1 Guidelines\n", result)
+      skip "Don't know how to stub wron sequences"
+      assert_match("Repaired   1 wrong sequences\n", result)
+    end
+    def test_import_new_atc_code
+      pointer = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      atc = flexmock('atc',
+                     :guidelines => nil,
+                     :pointer    => pointer
+                    )
       atc_hash = Hash.new
       atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
       flexmock(@app, :update => atc)
-      sequence = flexmock('sequence')
-      atc_hash['A14'] = [sequence]
-      flexmock(@app, :atc_class => atc, :atc_classes => atc_classes)
-      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   1 wrong sequences\n"
-      assert_equal(expected, @plugin.import(@agent))
+      flexmock(@app, :atc_classes => atc_classes)
+      @app.should_receive(:atc_class).and_return {|arg| atc_hash[arg] }
+      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      result = @plugin.import(@agent)
+      m = /Created\s+(\d+)\s+English/.match(result)
+      assert(m[1].to_i > 0)
     end
   end
 end
