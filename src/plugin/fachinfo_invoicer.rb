@@ -23,23 +23,7 @@ module ODDB
       Registration
     end
     def run(day = @@today)
-      report_edited_fachinfos(day - 1)
       super
-    end
-    def report_edited_fachinfos(day1)
-      day2 = day1 + 1
-      time1 = Time.local(day1.year, day1.month, day1.day)
-      time2 = Time.local(day2.year, day2.month, day2.day)
-      range = (time1...time2)
-      modified = @app.fachinfos.values.select { |fi| 
-        fi.change_log.reverse.any? { |item|
-          #range.include?(item.time)
-          range.cover?(item.time)
-        }
-      }
-      modified.each { |fi|
-        (@companies[fi.company_name] ||= []).push(fi)
-      }
     end
     def report
       report = super

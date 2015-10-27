@@ -8,7 +8,6 @@ require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
-require 'view/changelog'
 require 'view/drugs/photo'
 require 'model/shorten_path'
 require 'ostruct'
@@ -78,7 +77,6 @@ class FiChapterChooser < HtmlGrid::Composite
     @components.delete_if{|key, value| value == :ddd } if @lookandfeel.disabled?(:fi_link_to_ddd)
 			if(@session.state.allowed?)
 				@components.store([2,0], :print_edit)
-				@components.store([xwidth-1,0], :changelog)
 			else
         if @lookandfeel.disabled?(:fi_link_to_ddd)
           @components.store([1,0], :print)
@@ -108,10 +106,6 @@ class FiChapterChooser < HtmlGrid::Composite
 		}
 		colspan_map.store(pos, xwidth - pos.at(0))
 		super
-	end
-	def changelog(model, session)
-		View::Drugs::FiChapterChooserLink.new(:changelog, 
-			model, session, self)
 	end
 	def ddd(model, session)
 		if(atc = model.atc_class)			
@@ -323,8 +317,6 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		chapter = session.user_input(:chapter)
 		if(chapter == 'ddd')
 			View::Drugs::DDDTree.new(model.atc_class, session, self)
-		elsif(chapter == 'changelog')
-		  View::ChangeLog.new(model.change_log, session, self)
 		elsif(chapter != nil)
 			chapter_view(chapter)
 		else
