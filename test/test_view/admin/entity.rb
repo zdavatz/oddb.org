@@ -79,7 +79,7 @@ class TestYusGroups <Minitest::Test
                           :event         => 'event',
                           :lookandfeel   => @lnf
                          )
-    @model     = flexmock('model', 
+    @model     = flexmock('model_yusl',
                            :name         => 'name',
                            :affiliations => []
                           ).by_default
@@ -106,6 +106,9 @@ end
 class TestEntityForm <Minitest::Test
   include FlexMock::TestCase
   def setup
+    setup_work
+  end
+  def setup_work
     @lnf      = flexmock('lookandfeel', 
                          :attributes => {},
                          :lookup     => 'lookup',
@@ -127,8 +130,13 @@ class TestEntityForm <Minitest::Test
                          :warning?     => nil,
                          :error?       => nil
                         ).by_default
-    @model    = flexmock('model', :name => 'name')
+    @model    = flexmock('model_entity',
+                         :oid  => 'oid',
+                         :name => 'name')
     @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
+  end
+  def teardown
+    $entity_raise_errror = false
   end
   def test_init
     assert_equal(nil, @form.init)
@@ -151,4 +159,21 @@ class TestEntityForm <Minitest::Test
     flexmock(@session, :allowed? => true)
     assert_kind_of(HtmlGrid::Button, @form.set_pass(@model))
   end
+  def test_error_message_non_utf
+    $entity_raise_errror = true
+    setup_work
+    flexmock(@model, :is_a? => true)
+    flexmock(@session, :allowed? => true)
+    assert_equal(nil, @form.set_pass(@model))
+    # assert_kind_of(HtmlGrid::Button, @form.set_pass(@model))
+  end
 end
+
+    module ODDB::View::Admin
+      class EntityForm
+        def error_message
+          raise(Encoding::CompatibilityError) if $entity_raise_errror
+        end
+      end
+    end
+
