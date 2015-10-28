@@ -173,13 +173,15 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Abacavir via Wirkstoffe" do
-    @browser.link(:name, 'substances').click;  small_delay
+    if  @browser.link(:name, 'substances').exists?
+      @browser.link(:name, 'substances').click;  small_delay
+    end
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(:name, "search_query").value = "Abacavirum"
-    @browser.button(:name, 'search').click;  small_delay
+    @browser.select_list(:name, "search_type").select("Inhaltsstoff")
 
     expect(@browser.text).not_to match LeeresResult
-    expect(@browser.text).to match /Deutsche Bezeichnung/
+    expect(@browser.text).to match /Deutsche Bezeichnung|Präparat/
     expect(@browser.text).to match /Abacavir/
   end unless ['just-medical'].index(Flavor)
 

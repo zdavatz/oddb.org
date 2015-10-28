@@ -6,7 +6,7 @@ require 'pp'
 
 describe "ch.oddb.org" do
 
-  RegExpSubstance = /Substanz\s+Stärke(\s+.+\s+|\s+)Galenische Form\s*(\w+)/m
+  RegExpSubstance = /Galenische Form\s*(\w+)[^\n]*\n+(Excipiens\s+([\w\s]+)\n+)*\s+Wirkstoffe\s+Stärke\n+(\w+)/m
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)

@@ -4,6 +4,7 @@
 # SimpleCov.start
 
 RSpec.configure do |config|
+  config.mock_with :flexmock
   config.expect_with :rspec do |c|
     c.syntax = [:should, :expect]
   end
@@ -15,6 +16,8 @@ begin
 rescue LoadError
   # ignore error for Travis-CI
 end
+$LOAD_PATH << File.join(File.dirname(File.dirname(__FILE__)), 'src')
+
 for_running_in_irb = %(
 require 'watir'; require 'pp'
 homeUrl ||= "oddb-ci2.dyndns.org"
