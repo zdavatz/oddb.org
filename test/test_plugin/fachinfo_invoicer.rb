@@ -45,24 +45,14 @@ module ODDB
       expected = "company_name\nname_base:\n  http://#{SERVER_NAME}/de/gcc/fachinfo/reg/iksnr\n\n"
       assert_equal(expected, @plugin.report)
     end
-    def test_report_edited_fachinfos
-      item     = flexmock('item', :time => Time.local(2011,2,3))
-      fachinfo = flexmock('fachinfo', 
-                          :change_log   => [item],
-                          :company_name => 'company_name'
-                         )
-      flexmock(@app, :fachinfos => {'key' => fachinfo}) 
-      assert_equal([fachinfo], @plugin.report_edited_fachinfos(Date.new(2011,2,3)))
-    end
     def test_run
-      item     = flexmock('item', 
+      item     = flexmock('item',
                           :time => Time.local(2011,2,3),
                           :type => :processing,
                           :expired? => false,
                           :item_pointer => 'item_pointer'
                          )
       fachinfo = flexmock('fachinfo', 
-                          :change_log   => [item],
                           :company_name => 'company_name'
                          )
       slate    = flexmock('slate', :items => {'key' => item})

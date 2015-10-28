@@ -174,21 +174,6 @@ class TestFachinfoComposite <Minitest::Test
     flexmock(@session, :user_input => 'ddd')
     assert_kind_of(ODDB::View::Drugs::DDDTree, @composite.document(@model, @session))
   end
-  def test_document__chapter_changelog
-    flexmock(@chapter, 
-             :to_s    => 'chapter'
-            )
-    flexmock(@model, 
-             :change_log => [@model],
-             :time       => Time.utc(2011,2,3) ,
-             :chapter    => @chapter
-            )
-    flexmock(@session, 
-             :user_input => 'changelog',
-             :event      => 'event'
-            )
-    assert_kind_of(ODDB::View::ChangeLog, @composite.document(@model, @session))
-  end
   def test_document__chapter_else
     assert_kind_of(ODDB::View::Chapter, @composite.document(@model, @session))
   end

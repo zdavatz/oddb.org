@@ -9,6 +9,8 @@ gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'model/registration'
+require 'model/text'
+require 'model/fachinfo'
 
 module ODDB
   class RegistrationCommon
@@ -475,5 +477,4 @@ class TestRegistration <Minitest::Test
     @registration.update_values(@registration.diff(values, app))
     assert_equal([], company.registrations)
   end
-  
 end
