@@ -84,7 +84,6 @@ class RootFachinfo < Fachinfo
         email = unique_email
         lang = @session.language
         pointer = @model.pointer + [name]
-        @model.add_change_log_item(email, name, lang)
         @session.app.update(pointer, links, email)
         @session.app.update(@model.pointer, {:links => links}, email)
       end
@@ -139,7 +138,6 @@ class RootFachinfo < Fachinfo
       doc = @fachinfo.send(lang)
       @fachinfo = @session.app.update(@fachinfo.pointer, {lang => doc}, email)
       @model = FachinfoWrapper.new(@fachinfo)
-      @model.add_change_log_item(email, 'created', lang)
       @session.app.update(registration.pointer,
                           {:fachinfo => @model.pointer}, email)
     end
@@ -159,7 +157,6 @@ class RootFachinfo < Fachinfo
       :heading  => input[:heading],
       :sections => writer.chapter.sections,
     }
-    @model.add_change_log_item(email, name, lang)
     @session.app.update(pointer, args, email)
     @session.app.update(doc_pointer, {}, email)
     @session.app.update(@model.pointer, {}, email)
@@ -184,7 +181,6 @@ class RootFachinfo < Fachinfo
           links << link
         end
       end
-      @model.add_change_log_item(email, name, lang)
       @session.app.update(pointer, links, email)
       @session.app.update(@model.pointer, {:links => links}, email)
     end

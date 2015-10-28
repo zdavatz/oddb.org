@@ -83,7 +83,6 @@ class TestRootFachinfo <Minitest::Test
                         :localized_name => 'localized_name',
                         :language       => 'language',
                         :registrations  => [registration],
-                        :add_change_log_item => 'add_change_log_item'
                        )
     flexmock(@app, :update => @model)
 
@@ -144,7 +143,6 @@ class TestCompanyFachinfo <Minitest::Test
                         :localized_name => 'localized_name',
                         :registrations  => [registration],
                         :language       => 'language',
-                        :add_change_log_item => 'add_change_log_item'
                        )
     flexmock(@app, :update => @model)
     @state = ODDB::State::Drugs::CompanyFachinfo.new(@session, @model)

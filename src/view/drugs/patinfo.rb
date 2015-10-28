@@ -66,7 +66,6 @@ class PiChapterChooser < HtmlGrid::Composite
 		unless(@model.pointer.skeleton == [:create])
 			if(@session.state.allowed?)
 				components.store([2,0], :print_edit)
-				components.store([xwidth-1,0], :changelog)
 			else
 				components.store([2,0], :print)
 			end

@@ -222,9 +222,6 @@ class TestFachinfoConfirmState <Minitest::Test
       model.should_receive(:registration).and_return(reg)
       model.should_receive(:mime_type)
     end
-    flexstub(fachinfo) do |fi|
-      fi.should_receive(:add_change_log_item)
-    end
     flexstub(@session) do |ses|
       ses.should_receive(:allowed?).and_return(true)
       ses.should_receive(:registration).and_return(reg)
@@ -296,7 +293,6 @@ class TestFachinfoConfirm <Minitest::Test
              :user         => 'user'
             )
     update = flexmock('update', 
-                      :add_change_log_item => 'add_change_log_item',
                       :pointer => 'pointer'
                      )
     flexmock(@app, 

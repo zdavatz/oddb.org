@@ -14,19 +14,20 @@ require 'model/registration_observer'
 module ODDB
 	class Fachinfo
 		class ChangeLogItem
-			attr_accessor :email, :time, :chapter, :language
+			attr_accessor :email, :time, :chapter, :language, :text
 		end
     attr_accessor :links
 		include Persistence
 		include Language
 		include RegistrationObserver
 		ODBA_SERIALIZABLE = ['@change_log']
-		def add_change_log_item(email, chapter, language)
+		def add_change_log_item(email, chapter, language, text = '')
 			item = ChangeLogItem.new
 			item.email = email
 			item.time = Time.now
 			item.chapter = chapter
-			item.language = language
+      item.language = language
+      item.text = text
 			self.change_log.push(item)
 			self.odba_store
 		end
@@ -214,6 +215,11 @@ module ODDB
       }
       chapter 
 		end
+    def text
+      string = ''
+      each_chapter{|chap| string << chap.to_s}
+      string
+    end
 	end
 	class FachinfoDocument2001 < FachinfoDocument
 		attr_accessor	:contra_indications, :pregnancy

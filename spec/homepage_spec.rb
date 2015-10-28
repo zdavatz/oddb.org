@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 require 'spec_helper'
+require 'custom/lookandfeelbase'
 
 @workThread = nil
 
@@ -24,24 +25,32 @@ describe "ch.oddb.org" do
   end
   
 LinkDefinition = Struct.new(:language, :name, :url)
-Links2Test = [
-  LinkDefinition.new(:de, "AmiKo für Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.de&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
-  LinkDefinition.new(:fr, "CoMed pour Android", 'https://play.google.com/store/apps/details?id=com.ywesee.amiko.fr&feature=search_result#?t=W251bGwsMSwyLDEsImNvbS55d2VzZWUuYW1pa28uZGUiXQ'),
-  LinkDefinition.new(:de, "AmiKo für OS X",                  'https://itunes.apple.com/us/app/amiko/id708142753?mt=12'),
-  LinkDefinition.new(:fr, "CoMed pour OS X",                 'https://itunes.apple.com/us/app/comed/id710472327&mt=12'),
-  LinkDefinition.new(:de, "AmiKo für Windows",               'http://pillbox.oddb.org/amikodesk_setup_32bit.exe'),
-  LinkDefinition.new(:fr, "CoMed pour Windows",              'http://pillbox.oddb.org/comeddesk_setup_32bit.exe'),
-]
   # We don't repeat here the tests that are in the smoketest!
   it "should have a link the various OS variant of AmiKo" do
-    Links2Test.each{
+      de = flexmock('session',
+                         :flavor => Flavor,
+                         :language => 'de')
+      lnf_de = ODDB::LookandfeelBase.new(de)
+      fr = flexmock('session',
+                         :flavor => Flavor,
+                         :language => 'fr')
+      lnf_fr = ODDB::LookandfeelBase.new(fr)
+    @links2Test = [
+      LinkDefinition.new(:de, "AmiKo für Android",  lnf_de.lookup(:download_amiko_link)),
+      LinkDefinition.new(:fr, "CoMed pour Android", lnf_fr.lookup(:download_amiko_link)),
+      LinkDefinition.new(:de, "AmiKo für OS X",     lnf_de.lookup(:download_amiko_os_x_link)),
+      LinkDefinition.new(:fr, "CoMed pour OS X",    lnf_fr.lookup(:download_amiko_os_x_link)),
+      LinkDefinition.new(:de, "AmiKo für Windows",  lnf_de.lookup(:download_amiko_win_link)),
+      LinkDefinition.new(:fr, "CoMed pour Windows", lnf_fr.lookup(:download_amiko_win_link)),
+    ]
+    @links2Test.each{
       |link|
       next unless link.language.eql?(:de)
       expect(@browser.link(:text=>link.name).exists?).to be true
       expect(@browser.link(:text=>link.name).href).to eq(link.url)
     }
     @browser.link(:text=>'Français').click
-    Links2Test.each{
+    @links2Test.each{
       |link|
       next unless link.language.eql?(:fr)
       expect(@browser.link(:text=>link.name).exists?).to be true

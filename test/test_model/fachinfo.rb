@@ -78,6 +78,7 @@ module ODDB
       }
       assert_equal(2, chapters.size)
     end
+
     def test_each_chapter2
       fachinfo = ODDB::FachinfoDocument2001.new
       fachinfo.amzv = ODDB::Text::Chapter.new
@@ -85,9 +86,32 @@ module ODDB
       fachinfo.effects = ODDB::Text::Chapter.new
       chapters = []
       fachinfo.each_chapter { |chap|
-        chapters << chap	
+        chapters << chap
       }
       assert_equal(3, chapters.size)
+    end
+    def test_fachinfo_text
+      fachinfo = ODDB::FachinfoDocument2001.new
+      fachinfo.composition = ODDB::Text::Chapter.new
+      fachinfo.composition.heading = 'Zusammensetzung'
+      paragraph = fachinfo.composition.next_section.next_paragraph
+      paragraph << 'Diaphin i.v.
+Wirkstoff: Diamorphin als Diamorphinhydrochlorid Monohydrat'
+      fachinfo.effects = ODDB::Text::Chapter.new
+      fachinfo.effects.heading = 'Eigenschaften/Wirkungen'
+      paragraph = fachinfo.effects.next_section.next_paragraph
+      paragraph << 'ATC-Code: L01XE31'
+
+      chapters = []
+      fachinfo.each_chapter { |chap|
+        chapters << chap
+      }
+      assert_equal(2, chapters.size)
+      expected = "Zusammensetzung
+Diaphin i.v.
+Wirkstoff: Diamorphin als Diamorphinhydrochlorid MonohydratEigenschaften/Wirkungen
+ATC-Code: L01XE31"
+      assert_equal(expected, fachinfo.text)
     end
     def test_each_chapter_pseudo_fachinfo
       fachinfo = ODDB::PseudoFachinfoDocument.new
