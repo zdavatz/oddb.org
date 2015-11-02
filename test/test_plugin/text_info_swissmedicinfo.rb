@@ -34,6 +34,26 @@ module ODDB
     end    
   end
 
+  class TestTextInfoChangeLogin <MiniTest::Test
+    include FlexMock::TestCase
+    def setup
+    end # Fuer Problem mit fachinfo italic
+
+    def teardown
+    end
+    def test_odba_store
+      old_text = "Some text\nLine 2\nLine 3"
+      new_text = "Some text\nLine 2 was changed\nLine 3"
+      txt_diff = Diffy::Diff.new(old_text, new_text)
+      result = Marshal.dump(txt_diff)
+      expected = "Line 2
+Line 3\x06;\bT:\r@string2I\"(Some text
+Line 2 was changed
+Line 3\x06;\bT"
+      assert(result.index(expected) > 0)
+    end
+  end
+
   class TestTextInfoPluginAipsMetaData <MiniTest::Test
     include FlexMock::TestCase
     unless defined?(@@datadir)

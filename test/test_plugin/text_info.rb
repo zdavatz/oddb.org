@@ -876,6 +876,6 @@ EOS
       assert_equal(1, @app.registration(iksnr).packages.size)
       assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
       assert_equal('drug_name', @app.registration(iksnr).name_base)
-    end if false
+    end
   end
 end

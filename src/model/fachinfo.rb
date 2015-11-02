@@ -10,27 +10,28 @@ require 'util/persistence'
 require 'util/language'
 require 'util/searchterms'
 require 'model/registration_observer'
+require 'diffy'
+require 'util/today'
 
 module ODDB
 	class Fachinfo
-		class ChangeLogItem
-			attr_accessor :email, :time, :chapter, :language, :text
-		end
-    attr_accessor :links
+    class ChangeLogItem
+      attr_accessor :email, :time, :chapter, :language
+    end
+     attr_accessor :links
 		include Persistence
 		include Language
 		include RegistrationObserver
-		ODBA_SERIALIZABLE = ['@change_log']
-		def add_change_log_item(email, chapter, language, text = '')
-			item = ChangeLogItem.new
-			item.email = email
-			item.time = Time.now
-			item.chapter = chapter
+    ODBA_SERIALIZABLE = ['@change_log']
+    def add_change_log_item(email, chapter, language)
+      item = ChangeLogItem.new
+      item.email = email
+      item.time = Time.now
+      item.chapter = chapter
       item.language = language
-      item.text = text
-			self.change_log.push(item)
-			self.odba_store
-		end
+      self.change_log.push(item)
+      self.odba_store
+    end
     def article_codes(expired=true)
       codes = []
       @registrations.collect { |reg|
@@ -64,9 +65,6 @@ module ODDB
 			if(reg = @registrations.first)
 				reg.atc_classes.first
 			end
-		end
-		def change_log
-			@change_log ||= []
 		end
 		def company
 			if(reg = @registrations.first)
@@ -165,6 +163,19 @@ module ODDB
   end
 	class FachinfoDocument
 		include Persistence
+    class ChangeLogItem
+      attr_accessor :time, :diff
+    end
+    def add_change_log_item(old_text, new_text)
+      item = ChangeLogItem.new
+      item.time = @@today
+      item.diff =  Diffy::Diff.new(old_text, new_text)
+      self.change_log.push(item)
+      self.odba_store
+    end
+    def change_log
+      @change_log ||= []
+    end
 		attr_accessor :name, :galenic_form, :composition
 		attr_accessor :effects, :kinetic, :indications, :usage
 		attr_accessor :restrictions, :unwanted_effects

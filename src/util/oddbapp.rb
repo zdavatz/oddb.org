@@ -2066,7 +2066,7 @@ module ODDB
         end
       when Float, Fixnum, TrueClass, FalseClass, NilClass,
         ODDB::Persistence::Pointer, Symbol, Time, Date, ODDB::Dose, Quanty,
-        ODDB::Util::Money, ODDB::Fachinfo::ChangeLogItem, ODDB::AtcNode,
+        ODDB::Util::Money, ODDB::FachinfoDocument::ChangeLogItem, ODDB::Fachinfo::ChangeLogItem, ODDB::AtcNode,
         DateTime, ODDB::NotificationLogger::LogEntry, ODDB::Text::Format,
         ODDB::YusStub, ODDB::Text::ImageLink
         # do nothing
