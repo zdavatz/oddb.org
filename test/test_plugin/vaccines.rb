@@ -30,6 +30,10 @@ module ODDB
 		MEDDATA_SERVER = MeddataDelegator.new
 	end
 	class TestVaccinePlugin <Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
 		def setup
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)

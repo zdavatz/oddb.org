@@ -204,4 +204,30 @@ class TestOddbValidator <Minitest::Test
       @validator.dose('hogehoge')
     end
   end
+  def test_diff_element
+    assert_equal("1", @validator.validate(:diff, "1"))
+  end
+  if false
+  def test_diff_fi
+    assert_equal(['51193'], @validator.diff('de/gcc/show/fachinfo/51193/diff'))
+  end
+  def test_diff_fi_and_date
+    assert_equal(['51193', '2015-10-27'], @validator.diff('de/gcc/show/fachinfo/51193/diff/2015-10-27'))
+  end
+  def test_diff_without_show_fachinfo
+    assert_raises(SBSM::InvalidDataError) do
+      @validator.diff('51193')
+    end
+  end
+  def test_diff__empty
+    assert_raises(SBSM::InvalidDataError) do
+      @validator.diff('')
+    end
+  end
+  def test_diff__error
+    assert_raises(SBSM::InvalidDataError) do
+      @validator.diff('12345')
+    end
+  end
+  end
 end

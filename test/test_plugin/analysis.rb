@@ -35,6 +35,10 @@ module ODDB
   class TestAnalysisPluginDownload <Minitest::Test
     @@today = Today
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       @pointer = FlexMock.new 'pointer'
       @pointer.should_receive(:+).and_return @pointer
@@ -72,6 +76,10 @@ module ODDB
     @@today = Today
     Download_file = File.expand_path(File.join(__FILE__, '../../data/xlsx/analysis_de_2014.10.14_small.xlsx')) 
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id

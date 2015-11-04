@@ -170,6 +170,7 @@ module ODDB
           :preferences            => State::User::Preferences,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
+          :diff             => State::Drugs::FachinfoDocumentChangelogs,
           :ddd                    => State::Drugs::DDD,
           :ddd_chart              => State::Ajax::DDDChart,
           :ddd_price              => State::Drugs::DDDPrice,
@@ -246,6 +247,9 @@ module ODDB
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
           [ :patinfo ]                            => State::Drugs::PatinfoPrint,
           [ :rezept ]                             => State::Drugs::PrescriptionPrint,
+        }
+        CHANGELOGS_STATES = {
+          [ :fachinfo ]                           => State::Drugs::FachinfoDocumentChangelogs
         }
         REVERSE_MAP = {}
         VIEW = View::Search
@@ -775,7 +779,7 @@ module ODDB
 				state_map = {
 					:standard	=>	self::class::RESOLVE_STATES,
 					:readonly	=>	self::class::READONLY_STATES,
-					:print		=>	self::class::PRINT_STATES,
+          :print    =>  self::class::PRINT_STATES,
 				}
 				type = :standard unless(state_map.include?(type))
 				state_map[type][pointer.skeleton]
@@ -912,7 +916,14 @@ module ODDB
         end
 			end
 			def show
-				if(@session.request_path == @request_path)
+        choosen = @session.choosen_fachinfo_diff
+        if choosen.size == 3
+          State::Drugs::FachinfoDocumentChangelogItem.new(@session, choosen[2])
+        elsif choosen.size == 2
+          State::Drugs::FachinfoDocumentChangelogs.new(@session, choosen[1])
+        elsif choosen.size == 1
+          State::Drugs::FachinfoDocumentChangelogs.new(@session, [])
+				elsif (@session.request_path == @request_path)
 					self
         else
           iksnr = @session.user_input(:reg)
@@ -992,7 +1003,7 @@ module ODDB
           addr.pointer = company.pointer + [:address, @session.user_input(:address)]
           SuggestAddress.new(@session, addr)
         else
-           $stdout.puts "globa suggest_address FAILED"
+           # $stdout.puts "global suggest_address FAILED"
         end
 			end
       def address_suggestion

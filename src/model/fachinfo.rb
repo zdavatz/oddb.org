@@ -15,13 +15,14 @@ require 'util/today'
 
 module ODDB
 	class Fachinfo
-    class ChangeLogItem
+    class ChangeLogItem # we cannot remove this class or loading the ODBA cache will fail!
       attr_accessor :email, :time, :chapter, :language
     end
-     attr_accessor :links
+      attr_accessor :links
 		include Persistence
 		include Language
 		include RegistrationObserver
+                include RegistrationObserver
     ODBA_SERIALIZABLE = ['@change_log']
     def add_change_log_item(email, chapter, language)
       item = ChangeLogItem.new
@@ -162,14 +163,25 @@ module ODDB
     end
   end
 	class FachinfoDocument
-		include Persistence
+    include Persistence
     class ChangeLogItem
+      include Persistence
       attr_accessor :time, :diff
+      def to_s
+        puts "ChangeLogItem: created #{time} diff: #{diff.to_s}"
+      end
     end
-    def add_change_log_item(old_text, new_text)
+    Fachinfo_diff_options= {:diff                           => "-U 3",
+                            :source                         => 'strings',
+                            :include_plus_and_minus_in_html => true,
+                            :include_diff_info              => false,
+                            :context                        => 0,
+                            :allow_empty_diff               => false,
+                            }
+    def add_change_log_item(old_text, new_text, date = @@today, options = Fachinfo_diff_options)
       item = ChangeLogItem.new
-      item.time = @@today
-      item.diff =  Diffy::Diff.new(old_text, new_text)
+      item.time = date
+      item.diff =  Diffy::Diff.new(old_text, new_text, options)
       self.change_log.push(item)
       self.odba_store
     end

@@ -132,9 +132,6 @@ module ODDB
         end
         app.update(old_ti.pointer, {:descriptions => old_ti.descriptions})
       else
-        require 'pry';
-        binding.pry if not container or not container.respond_to?(:pointer)
-        binding.pry if not new_ti or not new_ti.respond_to?(:pointer)
         app.update(container.pointer, {type => new_ti.pointer})
       end
     end
@@ -261,7 +258,6 @@ module ODDB
             ## identification of Pseudo-Fachinfos happens at download-time.
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
-            require 'pry'; binding.pry if fis.is_a?(ArgumentError)
             unless fi_flags[:pseudo] || fis.empty?
               LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{fis.values.first.atc_code}"
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)

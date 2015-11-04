@@ -56,6 +56,7 @@ module ODDB
       FileUtils.rm(@latest) if File.exists?(@latest)
     end
     def teardown
+      ODBA.storage = nil
       super # to clean up FlexMock
     end
     def setup_index_page

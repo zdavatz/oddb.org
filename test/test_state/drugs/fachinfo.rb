@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::TestFachinfo -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -13,6 +12,11 @@ module ODDB
       class Fachinfo < State::Drugs::Global; end
       class RootFachinfo < Fachinfo; end
     end
+    module Drugs
+      class FachinfoChangelogs < State::Drugs::Global
+        attr_reader :default_view
+      end
+    end
   end
 end
 
@@ -24,6 +28,24 @@ require 'state/drugs/fachinfo'
 module ODDB
 	module State
 		module Drugs
+
+class TestFachinfoChangelogs <Minitest::Test
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @session = flexmock('session', :lookandfeel => @lnf)
+    @model   = flexmock('model')
+    @state = ODDB::State::Drugs::FachinfoChangelogs.new(@session, @model)
+  end
+  def teardown
+    super
+  end
+  def test_init
+    flexmock(@state, :allowed? => true)
+    assert_equal(nil, @state.init)
+    assert_equal(nil, @state.default_view)
+  end
+end
 
 class TestFachinfo <Minitest::Test
   include FlexMock::TestCase

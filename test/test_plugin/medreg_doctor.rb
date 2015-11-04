@@ -21,6 +21,10 @@ Minitest::Test.i_suck_and_my_tests_are_order_dependent!()
 class TestDoctorPlugin <Minitest::Test
   include FlexMock::TestCase
   RunTestTakingLong = false
+  def teardown
+    ODBA.storage = nil
+    super # to clean up FlexMock
+  end
   def setup
     @config = flexmock('config')
     @doctor = ODDB::Doctor.new

@@ -9,6 +9,7 @@ require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
 require 'view/drugs/photo'
+require 'view/drugs/fachinfo_change_logs'
 require 'model/shorten_path'
 require 'ostruct'
 
@@ -17,102 +18,102 @@ module ODDB
 		module Drugs
 class Fachinfo2001; end
 class FiChapterChooserLink < HtmlGrid::Link
-	def init
-		@document = @model.send(@session.language)
-		if(@document.respond_to?(:amzv))
-			@value = @lookandfeel.lookup("fi_#{@name.to_s}_amzv")
-		end
-		@value ||= @lookandfeel.lookup("fi_" << @name.to_s)
-		@attributes['title'] = if(@document.respond_to?(@name) \
-			&& (chapter = @document.send(@name))) \
+       def init
+               @document = @model.send(@session.language)
+               if(@document.respond_to?(:amzv))
+                       @value = @lookandfeel.lookup("fi_#{@name.to_s}_amzv")
+               end
+               @value ||= @lookandfeel.lookup("fi_" << @name.to_s)
+               @attributes['title'] = if(@document.respond_to?(@name) \
+                       && (chapter = @document.send(@name))) \
       && chapter.respond_to?(:heading)
-			title = chapter.heading
-			if(title.empty? && (section = chapter.sections.first))
-				section.subheading
-			else
-				title
-			end
-		else
-			@lookandfeel.lookup(@name)
-		end
-		args = [
-			:reg, @model.registrations.first.iksnr,
-			:chapter, @name,
-		]
-		unless(@session.user_input(:chapter) == @name.to_s)
-			if(@model.pointer.skeleton == [:create])
-				self.href = @lookandfeel.event_url(:self, {:chapter => @name})
-			else
-				self.href = @lookandfeel._event_url(:fachinfo, args)
-			end
-		end
-	end
+                       title = chapter.heading
+                       if(title.empty? && (section = chapter.sections.first))
+                               section.subheading
+                       else
+                               title
+                       end
+               else
+                       @lookandfeel.lookup(@name)
+               end
+               args = [
+                       :reg, @model.registrations.first.iksnr,
+                       :chapter, @name,
+               ]
+               unless(@session.user_input(:chapter) == @name.to_s)
+                       if(@model.pointer.skeleton == [:create])
+                               self.href = @lookandfeel.event_url(:self, {:chapter => @name})
+                       else
+                               self.href = @lookandfeel._event_url(:fachinfo, args)
+                       end
+               end
+       end
 end
 class FiChapterChooser < HtmlGrid::Composite
-	include View::AdditionalInformation
-	include View::Print
-	XWIDTH = 8
-	COLSPAN_MAP = {
-		[2,0]	=>	XWIDTH - 3,
-	}
-	COMPONENTS = {
-		[0,0]	=>	:full_text,
-		[1,0]	=>	:ddd,
-		#[2,0]	=>	:print,
-	}
-	COMPONENT_CSS_MAP = {
-		[0,0,2]	=>	'chapter-tab',
-		[2,0]		=>	'chapter-tab bold',
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0,2]	=>	'chapter-tab',
-		[2,0]		=>	'chapter-tab bold',
-		[XWIDTH-1,0]		=>	'chapter-tab bold',
-	}
-	def init
-		xwidth = self::class::XWIDTH
-    @components = components
-		unless(@model.pointer.skeleton == [:create])
-    @components.delete_if{|key, value| value == :ddd } if @lookandfeel.disabled?(:fi_link_to_ddd)
-			if(@session.state.allowed?)
-				@components.store([2,0], :print_edit)
-			else
-        if @lookandfeel.disabled?(:fi_link_to_ddd)
-          @components.store([1,0], :print)
-        else
-          @components.store([2,0], :print)
-        end
-			end
-		end
-		document = @model.send(@session.language)
-		names = display_names(document)
-		xx = 0
-		yy = 0
-		xoffset = xwidth
-		pos = [0,0]
-		names.each { |name|
-			next if(name == :amzv)
-			if((xx % xwidth) == 0)
-				yy += 1
-				xoffset -= xwidth
-			end
-			pos = [xx + xoffset, yy]
-			@components.store(pos, name)
-			css_map.store(pos, 'chapter-tab')
-			component_css_map.store(pos, 'chapter-tab')
-			symbol_map.store(name, View::Drugs::FiChapterChooserLink)
-			xx += 1
-		}
-		colspan_map.store(pos, xwidth - pos.at(0))
-		super
-	end
-	def ddd(model, session)
-		if(atc = model.atc_class)			
-			View::Drugs::FiChapterChooserLink.new(:ddd, 
-				model, session, self)
-		end
-	end
+  include View::AdditionalInformation
+  include View::Print
+  # we calculate the components dynamically as three items are optional depending on differenct conditions
+  XWIDTH = 8
+  CSS_CLASS = 'composite'
+  def init
+    xwidth = self::class::XWIDTH
+    @components         = {}
+    @component_css_map  = {[0,0,2] => 'chapter-tab',
+                           }
+    @css_map            = {[0,0,2] => 'chapter-tab'}
+    @components.store([0,0], :full_text)
+    next_offset = 1
+    unless @lookandfeel.disabled?(:fi_link_to_ddd)
+      @components.store([next_offset, 0], :ddd)
+      next_offset += 1
+    end
+    document = @model.send(@session.language)
+    if document.change_log.size > 0
+      @components.store([next_offset, 0], :change_log)
+      @css_map.store(           [next_offset, 0], 'chapter-tab')
+      next_offset += 1
+    end
+    @components.store(        [next_offset, 0], :print)
+    colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
+    @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
+    @css_map.store(           [next_offset, 0], 'chapter-tab bold')
+    next_offset += 1
+    names = display_names(document)
+    xx = 0
+    yy = 0
+    xoffset = xwidth
+    pos = [0,0]
+    names.each { |name|
+      next if(name == :amzv)
+      if((xx % xwidth) == 0)
+        yy += 1
+        xoffset -= xwidth
+      end
+      pos = [xx + xoffset, yy]
+      @components.store(pos, name)
+      css_map.store(pos, 'chapter-tab')
+      component_css_map.store(pos, 'chapter-tab')
+      symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+      xx += 1
+    }
+    colspan_map.store(pos, xwidth - pos.at(0))
+    $stdout.puts "Bottom fi_link_to_ddd #{@model.iksnrs.first} #{ @lookandfeel.disabled?(:fi_link_to_ddd)} nr logs #{document.change_log.size} @colspan_map #{@colspan_map} comps #{@components}"
+    super
+  end
+  def change_log(model, session=@session, key=:change_log)
+    link = HtmlGrid::Link.new(key, model, session, self)
+    # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/51193/diff/2015-10-27
+    link.set_attribute('title', @lookandfeel.lookup(:change_log))
+    link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr, :diff] )
+    puts "change_log #{@lookandfeel.lookup(:change_log_title)} #{link.href}"
+    link
+  end
+  def ddd(model, session)
+    if(atc = model.atc_class)
+      View::Drugs::FiChapterChooserLink.new(:ddd,
+        model, session, self)
+    end
+  end
   def display_names(document)
     names = (document ? document.chapter_names : [])
     if @container.respond_to?(:photos) and !@container.photos.nil?
@@ -123,18 +124,18 @@ class FiChapterChooser < HtmlGrid::Composite
     end
     names
   end
-	def full_text(model, session)
-		if(@model.pointer.skeleton == [:create])
-			@lookandfeel.lookup(:fachinfo_all)
-		else
-			link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
-			link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
-			unless(@session.user_input(:chapter).nil?)
-				link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.registrations.first.iksnr})
-			end
-			link
-		end
-	end
+  def full_text(model, session)
+    if(@model.pointer.skeleton == [:create])
+      @lookandfeel.lookup(:fachinfo_all)
+    else
+      link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
+      link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
+      unless(@session.user_input(:chapter).nil?)
+        link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.registrations.first.iksnr})
+      end
+      link
+    end
+  end
   def print(model, session=@session, key=:print)
     link = HtmlGrid::Link.new(key, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:print_title))
@@ -191,31 +192,6 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
     end
   end
 end
-=begin
-class Fachinfo2001InnerComposite < FachinfoInnerComposite
-	CHAPTERS = [
-		:amzv,
-		:composition,
-		:galenic_form,
-		:indications,
-		:usage,
-		:contra_indications,
-		:restrictions,
-		:interactions,
-		:pregnancy,
-		:driving_ability,
-		:unwanted_effects,
-		:overdose,
-		:effects,
-		:kinetic,
-		:preclinic,
-		:other_advice,
-		:iksnrs,
-		:registration_owner,
-		:date,
-	]
-end
-=end
 class FachinfoPreviewComposite < HtmlGrid::Composite
 	COLSPAN_MAP = {
 		[0,1]	=> 2,
@@ -364,7 +340,6 @@ class EditFiChapterChooser < FiChapterChooser
 	end
 end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite
-	CHOOSER_CLASS = EditFiChapterChooser
 	def init
 		unless(@model.company.invoiceable?)
 			components.update({
@@ -383,17 +358,6 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
         super
       when 'links'
         View::EditLinkForm.new(@model.send(:links), @session, self)
-      when 'shorten_path'
-        # FIXME refactor in state
-        url = @lookandfeel._event_url(:fachinfo, {:reg => @model.registrations.first.iksnr})
-        base = @session.http_protocol + '://' + @session.server_name
-        fachinfo_path = url.gsub(/#{base}|\/chapter\/shorten_path\/*/o, '')
-        unless path = @session.app.shorten_paths.select {|path| path.origin_path == fachinfo_path}.first
-          path = ShortenPath.new('', fachinfo_path)
-        end
-        View::EditPathForm.new(path, @session, self)
-      else
-        View::EditChapterForm.new(chapter, @document, @session, self)
       end
     elsif(@model.pointer.skeleton == [:create])
       # don't show anything
@@ -409,8 +373,6 @@ class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
   JAVASCRIPTS = ['admin']
-	DOJO_REQUIRE = ['ywesee/widget/Editor']
-	DOJO_PARSE_WIDGETS = true
 end
 		end
 	end
