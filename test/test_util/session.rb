@@ -13,6 +13,7 @@ require 'flexmock'
 require 'stub/config'
 require 'util/session'
 # require 'stub/oddbapp'
+require 'stub/odba'
 
 module ODDB
   class TestSession <Minitest::Test
@@ -25,15 +26,15 @@ module ODDB
                       :sorted_fachinfos => [],
                       :sorted_feedbacks => [],
                       :package_by_ean13 => 'package',
-#                      :search_company   => nil,
-#                      :search_pharmacy   => nil,
-#                      :search_hospital   => nil,
                       )
       # @app = ODDB::App.new
       @validator = flexmock('validator',
                             :reset_errors => 'reset_errors',
                             :validate     => 'validate')
       @session = ODDB::Session.new('key', @app, @validator)
+    end
+    def teardown
+      ODBA.storage = nil
     end
     def test_login_token
       @session.set_cookie_input(:email, 'email')
@@ -429,6 +430,21 @@ module ODDB
       @session.set_persistent_user_input(:ean, '7601001380028')
       res = @session.get_address_parent
       assert_equal('7601001380028', res)
+    end
+    def test_change_log_fachfino
+      reg_nr = '51193'
+      @session = ODDB::Session.new('key', @app, @validator)
+      text_info = flexmock('text_info', ODDB::FachinfoDocument2001.new, :odba_store => nil)
+      fi = flexmock('fachinfo', ODDB::Fachinfo.new, :de => text_info)
+      reg = flexmock('registration', ODDB::Registration.new(reg_nr), :fachinfo => fi)
+      @app.should_receive(:registration).with(reg_nr).and_return(reg)
+      text_info.add_change_log_item('alt','neu')
+      @session.instance_eval("@request_path = '/de/gcc/show/fachinfo/#{reg_nr}/diff/#{@@today.to_s}'")
+      assert_equal(3, @session.choosen_fachinfo_diff.size)
+      assert_equal(reg_nr,        @session.choosen_fachinfo_diff[0].iksnr)
+      assert_equal(1,             @session.choosen_fachinfo_diff[1].size)
+      assert_equal(@@today.to_s,  @session.choosen_fachinfo_diff[1].last.time.to_s)
+      assert_equal(@@today.to_s,  @session.choosen_fachinfo_diff[2].time.to_s)
     end
   end
 end # ODDB

@@ -4,9 +4,13 @@
 # OneDirSuite -- oddb -- 08.02.2011 -- mhatakeyama@ywesee.com
 $: << File.expand_path(File.dirname(__FILE__))
 
-buggy =  ['searchbar.rb']
+run_isolated =  ['searchbar.rb',
+                 'navigationfoot.rb',
+                 'drugs/fachinfo.rb',
+                 'drugs/fachinfo_change_logs.rb',
+                ]
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
-runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
+runner = OddbTestRunner.new(File.dirname(__FILE__), run_isolated)
 runner.run_isolated_tests
 runner.run_normal_tests
 runner.show_results_and_exit

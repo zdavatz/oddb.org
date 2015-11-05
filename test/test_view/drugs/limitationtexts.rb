@@ -24,6 +24,7 @@ class TestLimitationTextList <Minitest::Test
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
+                        :enabled?   => false,
                        )
     state    = flexmock('state', 
                         :interval  => 'interval',

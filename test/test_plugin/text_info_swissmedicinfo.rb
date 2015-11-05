@@ -34,6 +34,29 @@ module ODDB
     end    
   end
 
+  class TestTextInfoChangeLogin <MiniTest::Test
+    include FlexMock::TestCase
+    def setup
+      super
+    end # Fuer Problem mit fachinfo italic
+
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+    def test_odba_store
+      old_text = "Some text\nLine 2\nLine 3"
+      new_text = "Some text\nLine 2 was changed\nLine 3"
+      txt_diff = Diffy::Diff.new(old_text, new_text)
+      result = Marshal.dump(txt_diff)
+      expected = "Line 2
+Line 3\x06;\bT:\r@string2I\"(Some text
+Line 2 was changed
+Line 3\x06;\bT"
+      assert(result.index(expected) > 0)
+    end
+  end
+
   class TestTextInfoPluginAipsMetaData <MiniTest::Test
     include FlexMock::TestCase
     unless defined?(@@datadir)
@@ -144,14 +167,18 @@ module ODDB
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     end
     include FlexMock::TestCase
-    
+
     def create(dateiname, content)
         FileUtils.makedirs(File.dirname(dateiname))
         ausgabe = File.open(dateiname, 'w+')
         ausgabe.write(content)
         ausgabe.close
     end
-    
+
+    def teardown
+      ODBA.storage = nil
+      super
+    end
     def setup
       FileUtils.mkdir_p @@vardir
       ODDB.config.data_dir = @@vardir
@@ -179,6 +206,7 @@ module ODDB
     
     def teardown
       FileUtils.rm_rf @@vardir
+      ODBA.storage = nil
       super # to clean up FlexMock
     end
     def setup_fachinfo_document heading, text
@@ -277,6 +305,11 @@ module ODDB
   end
   class TestTextInfoPluginChecks <MiniTest::Test
     include FlexMock::TestCase
+    def teardown
+      FileUtils.rm_rf @@vardir
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -309,11 +342,6 @@ module ODDB
       agent = @plugin.init_agent
       @plugin.parser = @parser
     end # Fuer Problem mit fachinfo italic
-    
-    def teardown
-      FileUtils.rm_r @@vardir
-      super # to clean up FlexMock
-    end    
   end
 
   class TestTextInfoPlugin_iksnr <MiniTest::Test

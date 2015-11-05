@@ -17,6 +17,9 @@ module ODDB
       def setup
         @handler = ODDB::WhoPlugin::CodeHandler.new
       end
+      def teardown
+        super
+      end
       def test_push
         expected = ["A", "B", "C", "D", "G", "H", "J", "L", "M", "N", "P", "R", "S", "V", "code"]
         assert_equal(expected, @handler.push('code'))
@@ -29,6 +32,9 @@ module ODDB
 
   class TestWhoPlugin <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      super
+    end
     def setup
       datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
       mechanize = Mechanize.new

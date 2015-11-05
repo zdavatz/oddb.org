@@ -26,6 +26,10 @@ end
 class TestCompanyPlugin <Minitest::Test
   include FlexMock::TestCase
   Test_Companies_XLSX = File.expand_path(File.join(__FILE__, '../../data/xlsx/companies_20141014.xlsx'))
+  def teardown
+    ODBA.storage = nil
+    super # to clean up FlexMock
+  end
   def setup
     @config  = flexmock('config',
              :empty_ids => nil,

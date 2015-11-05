@@ -28,6 +28,10 @@ end
 module ODDB
   class TestListener <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       app = flexmock('app')
@@ -80,6 +84,10 @@ module ODDB
 
   class TestGenericsListener <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
@@ -116,6 +124,10 @@ module ODDB
 
   class TestItCodesListener <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       @app = flexmock('app')
@@ -201,6 +213,10 @@ module ODDB
 
   class TestPreparationsListener <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       @package = flexmock('package') do |pac|
@@ -645,6 +661,10 @@ module ODDB
 
   class TestBsvXmlPlugin2 <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       flexstub(LogFile) do |log|
@@ -958,6 +978,10 @@ module ODDB
   end
   class TestBsvXmlPlugin <Minitest::Test
     include FlexMock::TestCase
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
     def setup
       ODDB::TestHelpers.vcr_setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'

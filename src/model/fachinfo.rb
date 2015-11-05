@@ -10,27 +10,29 @@ require 'util/persistence'
 require 'util/language'
 require 'util/searchterms'
 require 'model/registration_observer'
+require 'diffy'
+require 'util/today'
 
 module ODDB
 	class Fachinfo
-		class ChangeLogItem
-			attr_accessor :email, :time, :chapter, :language, :text
-		end
-    attr_accessor :links
+    class ChangeLogItem # we cannot remove this class or loading the ODBA cache will fail!
+      attr_accessor :email, :time, :chapter, :language
+    end
+      attr_accessor :links
 		include Persistence
 		include Language
 		include RegistrationObserver
-		ODBA_SERIALIZABLE = ['@change_log']
-		def add_change_log_item(email, chapter, language, text = '')
-			item = ChangeLogItem.new
-			item.email = email
-			item.time = Time.now
-			item.chapter = chapter
+                include RegistrationObserver
+    ODBA_SERIALIZABLE = ['@change_log']
+    def add_change_log_item(email, chapter, language)
+      item = ChangeLogItem.new
+      item.email = email
+      item.time = Time.now
+      item.chapter = chapter
       item.language = language
-      item.text = text
-			self.change_log.push(item)
-			self.odba_store
-		end
+      self.change_log.push(item)
+      self.odba_store
+    end
     def article_codes(expired=true)
       codes = []
       @registrations.collect { |reg|
@@ -64,9 +66,6 @@ module ODDB
 			if(reg = @registrations.first)
 				reg.atc_classes.first
 			end
-		end
-		def change_log
-			@change_log ||= []
 		end
 		def company
 			if(reg = @registrations.first)
@@ -164,7 +163,31 @@ module ODDB
     end
   end
 	class FachinfoDocument
-		include Persistence
+    include Persistence
+    class ChangeLogItem
+      include Persistence
+      attr_accessor :time, :diff
+      def to_s
+        puts "ChangeLogItem: created #{time} diff: #{diff.to_s}"
+      end
+    end
+    Fachinfo_diff_options= {:diff                           => "-U 3",
+                            :source                         => 'strings',
+                            :include_plus_and_minus_in_html => true,
+                            :include_diff_info              => false,
+                            :context                        => 0,
+                            :allow_empty_diff               => false,
+                            }
+    def add_change_log_item(old_text, new_text, date = @@today, options = Fachinfo_diff_options)
+      item = ChangeLogItem.new
+      item.time = date
+      item.diff =  Diffy::Diff.new(old_text, new_text, options)
+      self.change_log.push(item)
+      self.odba_store
+    end
+    def change_log
+      @change_log ||= []
+    end
 		attr_accessor :name, :galenic_form, :composition
 		attr_accessor :effects, :kinetic, :indications, :usage
 		attr_accessor :restrictions, :unwanted_effects

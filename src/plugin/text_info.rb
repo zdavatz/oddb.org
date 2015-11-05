@@ -135,13 +135,30 @@ module ODDB
         app.update(container.pointer, {type => new_ti.pointer})
       end
     end
+    def TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
+      $stdout.puts("add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text[-30..-1]} -> #{new_text[-30..-1]}")
+      text_item.add_change_log_item(old_text, new_text)
+      text_item.odba_isolated_store
+    end
     def TextInfoPlugin::store_fachinfo(app, reg, fis)
       existing = reg.fachinfo
+      $stdout.puts("store_fachinfo: #{reg.iksnr} existing  #{existing.class}")
       ptr = Persistence::Pointer.new(:fachinfo).creator
       if existing
+        old_text_de = existing.de.text
+        old_text_fr = existing.fr.text
         ptr = existing.pointer
       end
-      app.update ptr, fis
+      updated_fi = app.update ptr, fis
+      if existing
+        if old_text_de && old_text_de != (new_text = updated_fi.de.text)
+          TextInfoPlugin::add_change_log_item(updated_fi.de, old_text_de, new_text, 'de')
+        end
+        if old_text_fr && old_text_fr != (new_text = updated_fi.fr.text)
+          TextInfoPlugin::add_change_log_item(updated_fi.fr, old_text_fr, new_text, 'fr')
+        end
+      end
+      updated_fi
     end
     def store_orphaned iksnr, info, point=:orphaned_fachinfo
       if info
@@ -1175,6 +1192,7 @@ module ODDB
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
+          LogFile.debug "_infos #{lang} #{infos[lang]} #{infos[lang].class}"
           unless strange?(infos[lang])
             _infos[lang] = infos[lang]
           end
@@ -1414,8 +1432,8 @@ module ODDB
           LogFile.debug "import_swissmedicinfo_by_iksnrs #{msg}"
           next
         end
-        LogFile.debug "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect}"
-        TextInfoPlugin::create_registration(@app, @@iksnrs_meta_info[iksnr])
+        LogFile.debug "import_swissmedicinfo_by_iksnrs iksnr #{iksnr.inspect} #{names.inspect} #{@@iksnrs_meta_info[iksnr].inspect} found? #{@app.registration(iksnr).inspect}"
+        TextInfoPlugin::create_registration(@app, @@iksnrs_meta_info[iksnr]) unless @app.registration(iksnr)
         [:de, :fr].each do |lang|
           keys.each_pair do |typ, type|
             names[lang][typ] = [extract_matched_name(iksnr, type, lang)]

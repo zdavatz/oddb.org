@@ -21,6 +21,10 @@ module ODDB
 			#undef :type
 		end
     @@now = Time.now.round
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
 
 		def setup
 			@app = FlexMock.new

@@ -23,6 +23,7 @@ class TestList <Minitest::Test
                         :lookup     => 'lookup',
                         :attributes => {},
                         :event_url  => 'event_url',
+                        :enabled?   => false,
                         :_event_url => '_event_url'
                        )
     @session = flexmock('session', 

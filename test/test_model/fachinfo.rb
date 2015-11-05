@@ -26,35 +26,16 @@ module ODDB
       attr_accessor :company_name
       attr_accessor :generic_type
       attr_accessor :substance_names
+      attr_accessor :iksnr
     end
     def setup
       @fachinfo = ODDB::Fachinfo.new
+
     end
     def test_add_registration
       reg = StubRegistration.new
       @fachinfo.add_registration(reg)
       assert_equal([reg], @fachinfo.registrations)
-    end
-    def test_add_change_log_item
-      item, = @fachinfo.add_change_log_item 'test@email.ch', :indications, :de
-      item = @fachinfo.change_log[0]
-      assert_instance_of ODDB::Fachinfo::ChangeLogItem, item
-      assert_equal 'test@email.ch', item.email
-      assert_equal :indications, item.chapter
-      assert_equal :de, item.language
-      assert_equal [item], @fachinfo.change_log
-    end
-    def test_add_indication
-      item = @fachinfo.add_change_log_item 'test@email.ch', :indications, :de
-      item = @fachinfo.change_log[0]
-      assert_instance_of ODDB::Fachinfo::ChangeLogItem, item
-      assert_equal 'test@email.ch', item.email
-      assert_equal :indications, item.chapter
-      assert_equal :de, item.language
-      assert_equal [item], @fachinfo.change_log
-      skip "Must FIX!!! @indications"
-      assert @indications, 'add_change_log_item should add @indications'
-      assert_equal 1, @indications.size
     end
     def test_atc_class
       reg1 = flexmock :atc_classes => ['first atc', 'second atc']
@@ -200,11 +181,19 @@ ATC-Code: L01XE31"
     include FlexMock::TestCase
     def setup
       @doc = FachinfoDocument.new
+      @old_text = 'old text'
+      @new_text = 'new text'
+      @expected = "-old text
+\\ Kein Zeilenumbruch am Dateiende.
++new text
+\\ Kein Zeilenumbruch am Dateiende.
+"
+      Diffy::Diff.default_options = Diffy::Diff::ORIGINAL_DEFAULT_OPTIONS
     end
     def test_first_chapter
       ue = flexmock 'unwanted_effects'
       @doc.unwanted_effects = ue
-      skip("Niklaus has not time to fix this assert")
+      skip("Niklaus has no time to fix this assert")
       assert_equal ue, @doc.first_chapter
       us = flexmock 'usage'
       @doc.usage = us
@@ -214,6 +203,76 @@ ATC-Code: L01XE31"
       assert_equal gf, @doc.first_chapter
       @doc.composition = flexmock 'composition'
       assert_equal gf, @doc.first_chapter
+    end
+    def test_add_change_log_item
+      saved_language = ENV['LANGUAGE']
+      ENV['LANGUAGE'] = 'C'
+      item = @doc.add_change_log_item 'old text', 'new text'
+      item = @doc.change_log[0]
+      assert_instance_of ODDB::FachinfoDocument::ChangeLogItem, item
+      assert_equal [item], @doc.change_log
+      assert_equal @@today, item.time
+      assert_instance_of Diffy::Diff, item.diff
+      expected = "-old text
+\\ No newline at end of file
++new text
+\\ No newline at end of file
+"
+      assert_equal expected, item.diff.to_s
+    ensure
+      ENV['LANGUAGE'] = saved_language
+    end
+    def test_add_change_log_item_with_time
+      item = @doc.add_change_log_item 'old text', 'new text', @@one_year_ago
+      item = @doc.change_log[0]
+      assert_instance_of ODDB::FachinfoDocument::ChangeLogItem, item
+      assert_equal [item], @doc.change_log
+      assert_equal @@one_year_ago, item.time
+      assert_instance_of Diffy::Diff, item.diff
+      assert_equal(  ODDB::FachinfoDocument::Fachinfo_diff_options, item.diff.options)
+    end
+    def test_add_change_log_item_with_time_and_options
+      special_options =  { :context => 27,
+                           :include_plus_and_minus_in_html => true,
+                           :allow_empty_diff => false
+                           }
+      item = @doc.add_change_log_item 'old text', 'new text', @@one_year_ago, special_options
+      item = @doc.change_log[0]
+      assert_instance_of ODDB::FachinfoDocument::ChangeLogItem, item
+      assert_equal [item], @doc.change_log
+      assert_equal @@one_year_ago, item.time
+      assert_instance_of Diffy::Diff, item.diff
+      full_options =  Diffy::Diff.default_options
+      full_options.merge! special_options
+      assert_equal( full_options, item.diff.options)
+    end
+    def test_fachinfo_change_log_text
+      old_fi = ODDB::FachinfoDocument2001.new
+      old_fi.composition = ODDB::Text::Chapter.new
+      old_fi.composition.heading = 'Zusammensetzung'
+      old_paragraph = old_fi.composition.next_section.next_paragraph
+      old_paragraph << 'line 1
+line 2
+line 3
+line 4
+line 5
+'
+      @doc = ODDB::FachinfoDocument2001.new
+      @doc.composition = ODDB::Text::Chapter.new
+      @doc.composition.heading = 'Zusammensetzung'
+      changed_paragraph = @doc.composition.next_section.next_paragraph
+      changed_paragraph << 'line 1
+Changed line 2
+line 3
+line 4
+line 5
+'
+expected = "-line 2
++Changed line 2
+"
+      @doc.add_change_log_item(old_fi.text, @doc.text)
+      assert_equal(expected, @doc.change_log[0].diff.to_s)
+      assert_equal(@@today, @doc.change_log[0].time)
     end
   end
 end

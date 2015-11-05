@@ -9,6 +9,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
+require 'stub/session'
 require 'view/navigationfoot.rb'
 require 'custom/lookandfeelbase'
 require 'util/validator'
@@ -54,39 +55,18 @@ module ODDB
 				[StubFooState, StubBarState, StubBazState]
 			end
 		end
-			class StubSession
-				attr_accessor :lookandfeel, :app, :flavor, :language
-				def default_language
-					"de"
-				end
-        def disabled?
-          false
+      class StubApp
+        attr_accessor :last_update
+        def unknown_user
+          'unknown_user'
         end
-        def enabled?
-          true
-        end
-				def http_protocol
-					'http'
-				end
-				def server_name
-					'test.oddb.org'
-				end
-        def user_agent
-          'TEST'
-        end
-        def zone_navigation
-          [:foo]
-        end
-			end
-			class StubApp
-				attr_accessor :last_update
-			end
+      end
 
 			def setup
 				GalenicGroup.reset_oid
 				@app = StubApp.new
 				@app.last_update = Time.now
-				@session = StubSession.new
+				@session = StubSession.new('key', @app)
 				@session.flavor = 'gcc'
 				@session.language = 'de'
 				@session.app = @app

@@ -9,6 +9,7 @@ require 'model/ba_type'
 require 'model/ean13'
 require 'iconv'
 require 'cgi'
+require 'mail'
 
 module ODDB
 	class Validator < SBSM::Validator
@@ -163,6 +164,7 @@ module ODDB
 			:address_send,
 			:back,
 			:calculate_offer,
+      :diff,
 			:checkout,
 			:choice,
 			:clear_interaction_basket,
@@ -371,6 +373,7 @@ module ODDB
       :captcha,
 			:certificate_number,
 			:challenge,
+      :diff,
 			:chapter,
 			:chemical_substance,
 			:city,

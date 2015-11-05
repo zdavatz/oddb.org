@@ -74,9 +74,13 @@ end
         end
         def set_persistent_user_input(key, value)
         end
+        attr_writer :diff_info
+        def choosen_fachinfo_diff
+          return @diff_info || []
+        end
 			end
 			class StubApp
-				attr_accessor :companies, :pharmacies, :hospitals, :galenic_groups, :fachinfos
+				attr_accessor :companies, :pharmacies, :hospitals, :galenic_groups, :fachinfos, :registrations
 				attr_accessor :state_transp_called
         def registration_holders
           { '1' => 'registration_holder'}
@@ -93,9 +97,12 @@ end
 				def galenic_group(oid)
 					@galenic_groups[oid.to_i]
 				end
-				def fachinfo(oid)
-					@fachinfos[oid]
-				end
+        def fachinfo(oid)
+          @fachinfos[oid]
+        end
+        def registration(iksnr)
+          @registrations[iksnr]
+        end
         def package_by_ikskey(iksnr)
         end
 			end
@@ -138,23 +145,101 @@ end
         end
 				newstate = @state.resolve
         skip("Niklaus did not have time to debug this assert")
-				assert_instance_of(State::Companies::Company, newstate)
+        assert_instance_of(State::Companies::Company, newstate)
 			end
-			def test_aa_resolve__print1
-				@session.app.fachinfos = { 0	=>	:foo}
-        pointer = flexmock('pointer') do |ptr|
-          ptr.should_receive(:is_a?).and_return(true)
-          ptr.should_receive(:resolve).and_return('model')
-          ptr.should_receive(:skeleton).and_return([:fachinfo])
+      def setup_registration(iksnr, request_path)
+        reg = nil
+        if iksnr
+          text_info = flexmock('text_info', ODDB::FachinfoDocument.new, :change_log => [])
+          fi = flexmock('fachinfo', ODDB::Fachinfo.new)
+          fi.should_receive(:de).and_return(text_info)
+          reg = flexmock('registration')
+          reg.should_receive(:fachinfo).and_return(fi)
+          @session.app.registrations = { iksnr.to_s  =>  reg}
+        else
+          @session.app.registrations = {}
         end
         flexstub(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer)
+          s.should_receive(:persistent_user_input).and_return(nil)
+          s.should_receive(:zone).and_return(:drugs)
+          s.should_receive(:language).and_return('de')
+          s.should_receive(:request_path).and_return(request_path)
         end
+      end
 
-        skip("Niklaus did not have time to debug this assert")
-				newstate = @state.print
-				assert_instance_of(State::Drugs::FachinfoPrint, newstate)
-			end
+      def test_aa_resolve_changelog_item
+        setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff/#{@@today.to_s}")
+        @session.app.registration('54316').fachinfo.de.add_change_log_item("Old_Text", "new_text")
+        @session.diff_info = [ @session.app.registrations.values.first,
+                               @session.app.registrations.values.first.fachinfo.de.change_log,
+                               @session.app.registrations.values.first.fachinfo.de.change_log.first,
+                            ]
+        newstate = @state.show
+        assert_equal(3, @session.choosen_fachinfo_diff.size)
+        assert_instance_of(State::Drugs::FachinfoDocumentChangelogItem, newstate)
+      end
+      def test_aa_resolve_changelog_item_no_such_item
+        setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff/1")
+        @session.diff_info = [ @session.app.registrations.values.first,
+                               @session.app.registrations.values.first.fachinfo.de.change_log,
+                            ]
+        newstate = @state.show
+        puts @session.app.registration('54316').fachinfo.de.change_log[0].inspect
+        puts @session.app.registration('54316').fachinfo.de.change_log[1].inspect
+        assert_instance_of(NilClass, @session.app.registration('54316').fachinfo.de.change_log[1])
+        assert_instance_of(ODDB::State::Drugs::FachinfoDocumentChangelogs, newstate)
+      end
+      def test_aa_resolve_changelog_via_user_input
+        setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff")
+        @session.app.registration('54316').fachinfo.de.add_change_log_item("Old_Text", "new_text")
+        @session.diff_info = [ @session.app.registrations.values.first,
+                               @session.app.registrations.values.first.fachinfo.de.change_log,
+                            ]
+        newstate = @state.show
+        assert_instance_of(State::Drugs::FachinfoDocumentChangelogs, newstate)
+      end
+      def test_aa_resolve_changelog_no_registration
+        setup_registration(nil, "/de/gcc/show/fachinfo/54316/diff")
+        @session.diff_info = @session.app.registrations.values.first
+        newstate = @state.show
+        assert_instance_of(NilClass, @session.app.registration('54316'))
+        assert_instance_of(NilClass, newstate)
+      end
+      def test_aa_resolve_with_changelog
+        setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff")
+        @session.diff_info = [ @session.app.registrations.values.first,
+                               @session.app.registrations.values.first.fachinfo.de.change_log,
+                            ]
+        @session.app.registration('54316').fachinfo.de.add_change_log_item("Old_Text", "new_text")
+        newstate = @state.show
+        assert_instance_of(ODDB::State::Drugs::FachinfoDocumentChangelogs, newstate)
+      end
+      def test_aa_resolve_changelog_item_no_registration
+        setup_registration(nil, "/de/gcc/show/fachinfo/54316/diff/0")
+        newstate = @state.show
+        assert_instance_of(NilClass, @session.app.registration('54316'))
+        assert_instance_of(NilClass, newstate)
+      end
+      def test_aa_resolve__print1
+        fi = flexmock('fachinfo')
+        fi.should_receive(:fachinfo).and_return('fi_54316')
+        @session.app.registrations = { 54316  =>  fi}
+        query = flexmock('query') do |q|
+            q.should_receive(:is_a?).and_return(false)
+            q.should_receive(:force_encoding).and_return('force_encoding')
+        end
+        @lnf.should_receive(:has_result_filter?).and_return(false)
+        flexstub(@session) do |s|
+          s.should_receive(:user_input).with(:fachinfo).and_return(54316)
+          s.should_receive(:user_input).and_return(nil)
+          s.should_receive(:persistent_user_input).and_return(query)
+          s.should_receive(:zone).and_return(:drugs)
+          s.should_receive(:search_oddb).and_return('search_oddb')
+          s.should_receive(:request_path).and_return('/print/fachinfo/54316')
+        end
+        newstate = @state.print
+        assert_instance_of(State::Drugs::FachinfoPrint, newstate)
+      end
 			def test_user_input1
 				@session.user_input = {
 					:good => 'foo',
@@ -1208,7 +1293,6 @@ end
         flexmock(@session) do |s|
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
           s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
-#          s.should_receive(:user_input).once.with(:swissmedicnr).and_return('iksnr')
         end
         patinfo      = flexmock('patinfo', :descriptions => 'descriptions')
         sequence     = flexmock('sequence', :patinfo => patinfo)
@@ -1220,5 +1304,5 @@ end
         assert_kind_of(Http404, @state.patinfo)
       end
 		end
-	end
+  end
 end

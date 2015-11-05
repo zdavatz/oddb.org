@@ -200,58 +200,6 @@ module ODDB
       PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 1.5em'
       SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 1.5em'
     end
-    class ChapterEditor < HtmlGrid::Textarea
-      include ChapterMethods
-      def init
-        super
-        @attributes.update({
-          'data-dojo-type' => 'dijit.Editor',
-        })
-      end
-      def _to_html(context, value=@value)
-        if(value)
-          sections(context, value.sections)
-        end
-      end
-    end
-    class EditChapterForm < Form
-      COMPONENTS = {
-        [0,0]  =>  :heading,
-        [0,1,1]=>  :edit_chapter,
-        [1,2]  =>  :submit,
-      }
-      LABELS = true
-      LEGACY_INTERFACE = false
-      SYMBOL_MAP = { }
-      CSS_CLASS = 'composite tundra'
-      CSS_MAP = {
-        [0,0]  =>  'list',
-        [0,1]  =>  'list top',
-      }
-      COMPONENT_CSS_MAP = {
-        #[0,0,1]  =>  'standard',
-      }
-      def initialize(name, *args)
-        @name = name
-        super(*args)
-      end
-      def edit_chapter(model)
-        editor = ChapterEditor.new(:html_chapter, model, @session, self)
-        editor.value = model.send(@name)
-        editor.label = true
-        editor.css_id = "html-chapter"
-        self.onsubmit = "this.html_chapter.value = dijit.byId('html-chapter').getValue();"
-        editor
-      end
-      def heading(model)
-        HtmlGrid::InputText.new(:heading, model.send(@name), 
-          @session, self)
-      end
-      def hidden_fields(context)
-        chapter = {'name' => 'chapter', 'value' => @name}
-        super << context.hidden(chapter)
-      end
-    end
     class Links < HtmlGrid::List
       COMPONENTS = {
         [0,0] => :delete,
