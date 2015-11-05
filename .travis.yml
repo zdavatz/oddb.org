@@ -15,3 +15,6 @@ addons:
   apt:
     packages:
     - nodejs
+# some unit tests behave differently with other
+env:
+  - de_CH.UTF-8 LANGUAGE=de_CH

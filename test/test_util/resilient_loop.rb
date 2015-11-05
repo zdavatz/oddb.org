@@ -17,6 +17,7 @@ module ODDB
 
     def teardown
       @r_loop.finished
+      super
     end
 
     def test_full_loop_no_problem
