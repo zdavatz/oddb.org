@@ -49,7 +49,9 @@ module ODDB
         @session.language = 'de'
         @text_item = FachinfoDocument.new
         @text_item.name = 'name_of_fi'
-        @text_item.add_change_log_item("Old_first_Text", "new_text", @@two_years_ago)
+        @old_string = '1234_old'
+        @new_string = 'very_different'
+        @text_item.add_change_log_item(@old_string, @new_string, @@two_years_ago)
         old_long = "eins\nzwei\ndrei\nvier\n\nfünf\nsechs\n\sieben\nacht\nNeun\nZehn\n"
         @session.request_path = "de/gcc/show/fachinfo/51193/diff/#{@@one_year_ago.to_s}"
         new_long = "eins\nzwei\ndrei\nvier\n\nFünfte Zeile geändert\nZeile eingefügt\nsechs\n\sieben\nacht\nNeun\nZehn\n"
@@ -92,8 +94,8 @@ module ODDB
         # puts @result.split('<TD').join("\n")
         File.open("test_diff_single_item.html", 'w+') {|f| f.write @result.split('<TD').join("\n") } if DEBUG_HTML
         assert_match(@@two_years_ago.to_s, result)
-        assert_match('Old_first_Text', result)
-        assert_match('new_text', result)
+        assert_match(@old_string, result)
+        assert_match(@new_string, result)
       end
       def test_show_diff_changelog_with_two_items
         @text_item.add_change_log_item('alt', 'neu',

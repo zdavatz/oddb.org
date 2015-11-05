@@ -205,6 +205,8 @@ ATC-Code: L01XE31"
       assert_equal gf, @doc.first_chapter
     end
     def test_add_change_log_item
+      saved_language = ENV['LANGUAGE']
+      ENV['LANGUAGE'] = 'C'
       item = @doc.add_change_log_item 'old text', 'new text'
       item = @doc.change_log[0]
       assert_instance_of ODDB::FachinfoDocument::ChangeLogItem, item
@@ -212,11 +214,13 @@ ATC-Code: L01XE31"
       assert_equal @@today, item.time
       assert_instance_of Diffy::Diff, item.diff
       expected = "-old text
-\\ Kein Zeilenumbruch am Dateiende.
+\\ No newline at end of file
 +new text
-\\ Kein Zeilenumbruch am Dateiende.
+\\ No newline at end of file
 "
       assert_equal expected, item.diff.to_s
+    ensure
+      ENV['LANGUAGE'] = saved_language
     end
     def test_add_change_log_item_with_time
       item = @doc.add_change_log_item 'old text', 'new text', @@one_year_ago
