@@ -293,67 +293,6 @@ module ODDB
       end
     end
 
-    class TestChapterEditor <Minitest::Test
-      include FlexMock::TestCase
-      def setup
-        @lnf      = flexmock('lookandfeel', 
-                             :section_style => 'section_style',
-                             :attributes    => {}
-                            )
-        @session  = flexmock('session', :lookandfeel => @lnf)
-        @model    = flexmock('model')
-        @textarea = ODDB::View::ChapterEditor.new('name', @model, @session)
-      end
-      def test_init
-        expected = {"name"=>"name", "data-dojo-type"=>"dijit.Editor"}
-        assert_equal(expected, @textarea.init)
-      end
-      def test__to_html
-        value   = flexmock('value', :sections => ['section'])
-        context = flexmock('context', :p => 'p')
-        assert_equal('p', @textarea._to_html(context, value))
-      end
-    end
-
-    class TestEditChapterForm <Minitest::Test
-      include FlexMock::TestCase
-      def setup
-        @lnf     = flexmock('lookandfeel', 
-                            :lookup     => 'lookup',
-                            :attributes => {},
-                            :base_url   => 'base_url',
-                           )
-        @session = flexmock('session', 
-                            :lookandfeel => @lnf,
-                            :error       => 'error',
-                           )
-        @model   = flexmock('model',
-                            :name => 'name',
-                           )
-        @form    = ODDB::View::EditChapterForm.new('name', @model, @session)
-      end
-      def test_edit_chapter
-        assert_kind_of(ODDB::View::ChapterEditor, @form.edit_chapter(@model))
-      end
-      def test_hidden_fields
-        flexmock(@lnf, 
-                 :flavor   => 'flavor',
-                 :language => 'language'
-                )
-        flexmock(@session, 
-                 :state => 'state',
-                 :zone  => 'zone'
-                )
-        context  = flexmock('context', :hidden => 'hidden')
-        expected = "hiddenhiddenhiddenhiddenhiddenhidden"
-        assert_equal(expected, @form.hidden_fields(context))
-      end
-      def test_toolbar
-        flexmock(@lnf, :resource_global => 'resource_global')
-        skip("Don't know how to toolbar. is it really needed here?")
-        assert_kind_of(HtmlGrid::Div, @form.toolbar(@model))
-      end
-    end
     
     class TestEditChapterTableToHtml <Minitest::Test
       include FlexMock::TestCase

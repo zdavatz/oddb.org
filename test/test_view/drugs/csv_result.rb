@@ -51,12 +51,6 @@ class TestCsvResult <Minitest::Test
     assert_equal('lookup', @result.c_type(package))
     assert_equal(1, @result.instance_eval('@counts["anthroposophy"]'))
   end
-  def test_c_type__error
-    package = flexmock('package', :complementary_type => 'ctype')
-    assert_raises(NoMethodError) do 
-      @result.c_type(package)
-    end
-  end
   def test_ddd_dose
     ddd = flexmock('ddd', :dose => 'dose')
     flexmock(@model, :ddd => ddd)

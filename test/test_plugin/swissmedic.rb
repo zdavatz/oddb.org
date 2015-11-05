@@ -53,6 +53,7 @@ module ODDB
       @workbook = Spreadsheet.open( @test_packages)
     end
     def teardown
+      ODBA.storage = nil
       super # to clean up FlexMock
     end
 

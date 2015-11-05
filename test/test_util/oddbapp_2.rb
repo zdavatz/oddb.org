@@ -24,7 +24,7 @@ require 'util/language'
 require 'flexmock'
 require 'util/oddbapp'
 
-class TestOddbApp <MiniTest::Unit::TestCase
+class TestOddbApp2 <MiniTest::Unit::TestCase
   include FlexMock::TestCase
   TEST_EAN13 = '7601123456789'
 	def setup
@@ -789,8 +789,5 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal([company], @app.search_registration_holder(TEST_EAN13))
     assert_equal(company, @app.company_by_gln(TEST_EAN13))
     assert_equal(0, @app.search_pharmacies(TEST_EAN13).size)
-  end
-  def test_cleanup_active_agents_in_compositions
-    @app.cleanup_active_agents_in_compositions
   end
 end

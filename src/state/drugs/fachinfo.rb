@@ -29,7 +29,7 @@ class Fachinfo < State::Drugs::Global
 			@fachinfo.localized_name(@session.language))
 		@model.pointer_descr = descr
 	end
-	def allowed?
+	def allowed?(key = 'dummy')
 		@session.allowed?('edit', @fachinfo.registrations.first)
 	end
 end
@@ -38,14 +38,22 @@ class FachinfoPreview < State::Drugs::Global
 	VOLATILE = true
 end
 class FachinfoPrint < State::Drugs::Global
-	VIEW = View::Drugs::FachinfoPrint
-	VOLATILE = true
-	def init
-		if(allowed?)
-			@default_view = ODDB::View::Drugs::CompanyFachinfoPrint
-		end
-		super
-	end
+  VIEW = View::Drugs::FachinfoPrint
+  VOLATILE = true
+  def init
+    if(allowed?)
+      @default_view = ODDB::View::Drugs::CompanyFachinfoPrint
+    end
+    super
+  end
+end
+class FachinfoDocumentChangelogs < State::Drugs::Global
+  VIEW = View::Drugs::FachinfoDocumentChangelogs
+  VOLATILE = true
+end
+class FachinfoDocumentChangelogItem < State::Drugs::Global
+  VIEW = View::Drugs::FachinfoDocumentChangelogItem
+  VOLATILE = true
 end
 class AjaxLinks < Global
   VOLATILE = true

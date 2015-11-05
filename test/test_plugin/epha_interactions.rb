@@ -184,6 +184,7 @@ module ODDB
     
     def teardown
       FileUtils.rm_rf @@vardir
+      ODBA.storage = nil
       super # to clean up FlexMock
     end
 

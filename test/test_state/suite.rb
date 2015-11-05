@@ -7,6 +7,8 @@ require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpe
 
 buggy = [
   'admin/password_lost.rb',
+  'drugs/fachinfo.rb',
+  'global.rb',
 ]
 runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
 runner.run_isolated_tests

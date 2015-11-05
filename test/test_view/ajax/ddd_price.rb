@@ -114,7 +114,8 @@ class TestDDDPrice <Minitest::Test
                           :size      => 'size',
                           :ikskey    => 'ikskey',
                           :name_base => 'name_base',
-                          :price_public => 'price_public'
+                          :price_public => 'price_public',
+                          :barcode   => 'barcode',
                          )
     @composite = ODDB::View::Ajax::DDDPrice.new(@model, @session)
   end

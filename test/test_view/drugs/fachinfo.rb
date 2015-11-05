@@ -1,10 +1,10 @@
-#!/usr/bin/env ruby
+  #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::TestFachinfo -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
@@ -12,16 +12,32 @@ require 'stub/cgi'
 require 'view/drugs/fachinfo'
 require 'view/drugs/ddd'
 require 'model/text'
-
+require 'stub/cgi'
+module ODDB
+  module View
+    module Drugs
+      class FiChangelogLink < HtmlGrid::Link
+        attr_reader :grid
+      end
+      class FiChapterChooser <  HtmlGrid::Composite
+        attr_reader :grid
+      end
+    end
+  end
+end
 class TestFiChapterChooserLink <Minitest::Test
   include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
   def setup
     @lookandfeel = flexmock('lookandfeel', 
                             :lookup     => 'lookup',
                             :_event_url => '_event_url'
                            ).by_default
     @session = flexmock('session', 
-                        :language    => 'language',
+                        :language    => 'de',
                         :lookandfeel => @lookandfeel,
                         :user_input  => 'user_input'
                        )
@@ -34,7 +50,7 @@ class TestFiChapterChooserLink <Minitest::Test
     @pointer  = flexmock('pointer', :skeleton => 'skeleton').by_default
     registration = flexmock('registration', :iksnr => 'iksnr')
     @model   = flexmock('model', 
-                        :language => @document,
+                        :de => @document,
                         :pointer  => @pointer,
                         :registrations => [registration]
                        )
@@ -62,46 +78,64 @@ end
 
 class TestFiChapterChooser <Minitest::Test
   include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
   def setup
-    lookandfeel = flexmock('lookandfeel', 
-                           :lookup     => 'lookup',
+    @lookup      = flexmock('lookandfeel',
                            :disabled?  => false,
                            :attributes => {},
                            :_event_url => '_event_url'
                           )
-    @state     = flexmock('state', :allowed? => nil)
-    @session   = flexmock('session', 
+    @lookup.should_receive(:enabled?).and_return(true)
+    @state     = flexmock('state')
+    @lookup.should_receive(:lookup).by_default.and_return('lookup')
+    @state.should_receive(:allowed?).by_default.and_return(nil)
+    @session   = flexmock('session',
                           :state       => @state,
                           :language    => 'language',
-                          :lookandfeel => lookandfeel,
+                          :user_input    => nil,
+                          :user_agent    => 'Mozilla',
+                          :lookandfeel => @lookup,
                           :user_input  => 'user_input'
                          )
     @pointer   = flexmock('pointer', :skeleton => 'skeleton')
-    language   = flexmock('language', :chapter_names => [ 'chapter_names' ])
+    @language  = flexmock('language', :chapter_names => [ 'chapter_names' ], :change_log => [])
     atc_class  = flexmock('atc_class')
     registration = flexmock('registration', :iksnr => 'iksnr')
     @model     = flexmock('model', 
                           :pointer   => @pointer,
-                          :language  => language,
+                          :language  => @language,
                           :atc_class => atc_class,
+                          :iksnrs    => ['IKSNR'],
                           :registrations => [registration]
                          )
     @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
   end
   def test_init
     expected = {[2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
-    assert_equal(expected, @composite.init)
+    result = @composite.init
+    assert_equal(expected.keys.sort, result.keys.sort)
+    assert_equal(expected.values.sort, result.values.sort)
+    assert_equal(expected, result)
   end
   def test_init__status_allowed
-    flexmock(@state, :allowed? => true)
+    @state.should_receive(:allowed?).and_return(true)
     expected = {[2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
-    assert_equal(expected, @composite.init)
+    result = @composite.init
+    assert_equal(expected.keys.sort, result.keys.sort)
+    assert_equal(expected.values.sort, result.values.sort)
+    assert_equal(expected, result)
   end
   def test_full_text
     @pointer   = flexmock('pointer', :skeleton => [:create])
-    skip("Skipped as class does not match")
-    assert_equal(ODDB::View::Drugs::FiChapterChooser, @composite.full_text(@model, @session).class)
-    assert_equal('lookup', @composite.full_text(@model, @session))
+    assert_equal(HtmlGrid::Link, @composite.full_text(@model, @session).class)
+  end
+  def test_document_print
+    text = @composite.to_html(CGI.new)
+    assert_match(/name="print"/, text)
+    # assert_match(/Drucken/, text) # Don't know how to to mock this without spending time
   end
 end
 
@@ -133,10 +167,15 @@ end
 
 class TestFachinfoComposite <Minitest::Test
   include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
   def setup
     attributes    = flexmock('attributes', :chapter => nil, :name => 'Namen')
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
+                           :enabled?  => true,
                            :disabled?  => false,
                            :attributes => {:chapter => nil, :name => 'Namen'},
                            :_event_url => '_event_url'
@@ -147,15 +186,18 @@ class TestFachinfoComposite <Minitest::Test
                            :language    => 'language',
                            :state       => state,
                            :user_input  => 'user_input',
+                            :user_agent => 'Mozilla',
                            ).by_default
     language    = flexmock('language', 
                            :name          => 'name',
-                           :chapter_names => ['name'], :links => {}
+                           :chapter_names => ['name'],
+                           :links         => {},
+                           :change_log    => [],
                           )
     pointer     = flexmock('pointer', :skeleton => 'skeleton')
     @atc_clas   = flexmock('atc_class').by_default
     registration = flexmock('registration', :iksnr => 'iksnr')
-    @model      = flexmock('model',
+    @model      = flexmock('model', ODDB::Fachinfo.new,
                           :language  => language,
                           :pointer   => pointer,
                           :atc_class => @atc_class,
@@ -181,7 +223,7 @@ class TestFachinfoComposite <Minitest::Test
     flexmock(@session, :user_input => nil)
     assert_kind_of(ODDB::View::Drugs::FachinfoInnerComposite, @composite.document(@model, @session))
   end
-end 
+end
 
 class TestEditFiChapterChooser <Minitest::Test
   include FlexMock::TestCase
@@ -203,7 +245,10 @@ class TestEditFiChapterChooser <Minitest::Test
                          )
     pointer    = flexmock('pointer', :skeleton => 'skeleton')
     chapter    = flexmock('chapter')
-    language   = flexmock('language', :chapters => [chapter])
+    language   = flexmock('language',
+                          :chapters => [chapter],
+                          :change_log    => [],
+                          )
     atc_class  = flexmock('atc_class')
     registration = flexmock('registration', :iksnr => 'iksnr')
     @model     = flexmock('model', 
@@ -211,6 +256,7 @@ class TestEditFiChapterChooser <Minitest::Test
                           :language  => language,
                           :atc_class => atc_class,
                           :registrations => [registration],
+                          :iksnrs    => ['IKSNR'],
                          )
     @composite = ODDB::View::Drugs::EditFiChapterChooser.new(@model, @session)
     document   = flexmock('document', :chapters => 'chapters')
@@ -221,6 +267,10 @@ end
 
 class TestRootFachinfoComposite <Minitest::Test
   include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
   def setup
     @table = ODDB::Text::Table.new
     @table.next_row!
@@ -253,7 +303,9 @@ class TestRootFachinfoComposite <Minitest::Test
     chapter   = flexmock('chapter')
     language   = flexmock('language', 
                           :chapters => [chapter],
-                          :name => 'name'
+                          :chapter_names => [],
+                          :name => 'name',
+                          :change_log => [],
                          )
     @company   = flexmock('company', 
                           :invoiceable? => nil,
@@ -268,8 +320,9 @@ class TestRootFachinfoComposite <Minitest::Test
                           :company   => @company,
                           :language  => language,
                           :atc_class => atc_class,
-                           :links     => {},
-                           :has_photo?     => false,
+                          :links     => {},
+                          :has_photo?     => false,
+                          :iksnrs    => ['IKSNR'],
                           :registrations => [registration]
                          )
     @composite = ODDB::View::Drugs::RootFachinfoComposite.new(@model, @session)
@@ -302,3 +355,53 @@ class TestRootFachinfoComposite <Minitest::Test
     }
   end
 end
+class TestFI_ChangeLogs <Minitest::Test
+  include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
+  def setup
+    @lookup      = flexmock('lookandfeel',
+                          :disabled?  => false,
+                          :attributes => {},
+                          :_event_url => '_event_url'
+                          )
+    @lookup.should_receive(:enabled?).and_return(true)
+    @state     = flexmock('state')
+    @lookup.should_receive(:lookup).by_default.and_return('lookup')
+    @state.should_receive(:allowed?).by_default.and_return(nil)
+    @session   = flexmock('session',
+                          :state       => @state,
+                          :language    => 'language',
+                          :user_input    => nil,
+                          :user_agent    => 'Mozilla',
+                          :lookandfeel => @lookup,
+                          :user_input  => 'user_input'
+                        )
+    @pointer   = flexmock('pointer', :skeleton => 'skeleton')
+    @text_item = ODDB::FachinfoDocument.new
+    @text_item.add_change_log_item("Old_first_Text", "new_text")
+    @text_item.add_change_log_item("Old_second_Text", "new_second_text")
+    language   = flexmock('language', :chapter_names => [ 'chapter_names' ], :change_log => [@text_item.change_log])
+    atc_class  = flexmock('atc_class')
+    registration = flexmock('registration', :iksnr => 'iksnr')
+    @model     = flexmock('model',
+                          :pointer   => @pointer,
+                          :language  => language,
+                          :atc_class => atc_class,
+                          :iksnrs    => ['IKSNR'],
+                          :registrations => [registration]
+                        )
+    @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
+  end
+  def test_document_change_log
+    text = @composite.to_html(CGI.new)
+    assert_match(/name="change_log"/, text)
+  end
+  def test_document_change_log
+    text = @composite.to_html(CGI.new)
+    assert_match(/href/, text)
+  end
+end
+

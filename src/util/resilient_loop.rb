@@ -84,6 +84,7 @@ private
       end
     end
     def save_state(state)
+      FileUtils.mkdir_p File.dirname(@state_file)
       File.open(@state_file, 'w+') { |f| f.write(state)}
     end
     def clear_state
