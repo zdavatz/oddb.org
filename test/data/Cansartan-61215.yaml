@@ -1,0 +1,4045 @@
+--- !ruby/object:ODDB::FachinfoDocument2001 
+amzv: 
+atc_code: C09DA06
+composition: !ruby/object:ODDB::Text::Chapter 
+  heading: Zusammensetzung
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id001 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 11
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 10
+        start: 0
+        values: 
+        - :italic
+      - *id001
+      preformatted: false
+      raw_txt: 
+      text: "Wirkstoffe: Candesartanum cilexetilum, Hydrochlorothiazidum."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id002 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id002
+      preformatted: false
+      raw_txt: 
+      text: "Hilfsstoffe: Lactosum, Excipiens pro compresso."
+    subheading: ""
+contra_indications: !ruby/object:ODDB::Text::Chapter 
+  heading: Kontraindikationen
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id003 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id003
+      preformatted: false
+      raw_txt: 
+      text: "Bei Überempfindlichkeit auf die Wirkstoffe oder Sulfonamid-Derivate (Hydrochlorothiazid ist ein Sulfonamid-Derivat) oder einen der Hilfsstoffe sowie in der Schwangerschaft und Stillzeit ist Cansartan-Mepha Plus kontraindiziert."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id004 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id004
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan ist kontraindiziert bei Patienten mit hereditärem Angioödem oder bei denen sich unter einer früheren Behandlung mit einem ACE-Hemmer oder Angiotensin-II-Rezeptor-Antagonisten ein angioneurotisches Ödem entwickelt hat."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id005 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id005
+      preformatted: false
+      raw_txt: 
+      text: "Bei schweren Nierenfunktionsstörungen (d.h. Kreatinin-Clearance <30 ml/min/1.73 m\xC2\xB2 Körperoberfläche), schweren Leberfunktionsstörungen, Cholestase sowie bei Gicht darf Cansartan-Mepha Plus ebenfalls nicht eingenommen werden. Cansartan-Mepha Plus sollte auch nicht bei therapieresistenter Hypokaliämie, Hyponatriämie, Hyperkalzämie und Anurie eingenommen werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id006 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id006
+      preformatted: false
+      raw_txt: 
+      text: "Kombination von Cansartan-Mepha Plus mit Aliskiren bei Patienten mit Diabetes mellitus (Typ 1 und Typ 2) sowie bei Patienten mit eingeschränkter Nierenfunktion (GFR <60 ml/min/1.73 m2 (siehe Rubrik \xC2\xABInteraktionen\xC2\xBB)."
+    subheading: ""
+date: !ruby/object:ODDB::Text::Chapter 
+  heading: Stand der Information
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id007 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id007
+      preformatted: false
+      raw_txt: 
+      text: Juni 2015.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id008 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id008
+      preformatted: false
+      raw_txt: 
+      text: "Interne Versionsnummer: 9.3"
+    subheading: ""
+delivery: 
+distribution: 
+driving_ability: !ruby/object:ODDB::Text::Chapter 
+  heading: "Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen"
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id009 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id009
+      preformatted: false
+      raw_txt: 
+      text: "Es gibt keine Untersuchungen über die Auswirkung von Candesartan-Cilexetil/Hydrochlorothiazid bezüglich der Reaktionsfähigkeit im Strassenverkehr oder beim Bedienen von Maschinen. Die Patienten müssen darauf aufmerksam gemacht werden, dass bei der Behandlung häufig Schwindel oder Ermüdung auftreten können und daher beim Lenken von Fahrzeugen und Bedienen von Maschinen Vorsicht geboten ist."
+    subheading: ""
+effects: !ruby/object:ODDB::Text::Chapter 
+  heading: Eigenschaften/Wirkungen
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id010 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id010
+      preformatted: false
+      raw_txt: 
+      text: "ATC-Code: C09DA06"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id011 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 35
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 34
+        start: 0
+        values: 
+        - :italic
+      - *id011
+      preformatted: false
+      raw_txt: 
+      text: Wirkungsmechanismus/Pharmakodynamik
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id012 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id012
+      preformatted: false
+      raw_txt: 
+      text: "Angiotensin II ist das wichtigste vasoaktive Hormon des Renin-Angiotensin-Aldosteron-Systems und spielt eine signifikante Rolle in der Pathophysiologie der Hypertonie und anderen kardiovaskulären Krankheiten. Es spielt auch eine wichtige Rolle in der Pathogenese der Hypertrophie und von Endorganschäden. Die wichtigsten physiologischen Wirkungen von Angiotensin II, wie Vasokonstriktion, Aldosteronstimulation, Regulierung des Salz- und Wasser-Haushaltes und Stimulation des Zellwachstums, werden über Typ 1 Rezeptoren (AT1) ausgelöst."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id013 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id013
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan-Cilexetil ist ein Prodrug, welches zur oralen Einnahme geeignet ist. Es wird während der Absorption im Gastrointestinaltrakt durch Esterhydrolyse schnell in die aktive Substanz Candesartan umgewandelt. Candesartan ist ein Angiotensin-II-Rezeptor-Antagonist, selektiv für AT1-Rezeptoren und ohne agonistische Aktivität. Candesartan weist eine feste Bindung zum und eine langsame Dissoziation vom Rezeptor auf."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id014 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id014
+      preformatted: false
+      raw_txt: 
+      text: "Die antagonistische Wirkung des Angiotensin-II-(AT1)-Rezeptor resultiert in einem dosisabhängigen Anstieg des Renin-, Angiotensin-I- sowie Angiotensin-II-Plasmaspiegels. Die Aldosteron-Plasmakonzentration wird gesenkt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id015 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id015
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan hemmt ACE oder andere mit dem Gebrauch von ACE-Hemmern assoziierte Enzymsysteme nicht. Da keine Wirkung auf den Abbau von Kininen oder den Metabolismus von anderen Substanzen wie Substanz P vorhanden ist, ist es unwahrscheinlich, Angiotensin-II-Rezeptor-Antagonisten mit Husten in Verbindung zu bringen. Kontrollierte klinische Studien, die Candesartan-Cilexetil mit ACE-Hemmern vergleichen, zeigen, dass bei Patienten, die mit Candesartan-Cilexetil behandelt wurden, weniger häufig Husten beobachtet wird."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id016 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id016
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan bindet oder blockiert keine anderen Hormonrezeptoren oder Ionenkanäle, welche für die Herz-Kreislaufsteuerung von Bedeutung sind."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id017 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id017
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid hemmt die aktive Rückresorption von Natrium hauptsächlich in den distalen Tubuli und fördert die Ausscheidung von Natrium, Chlorid und Wasser. Die renale Ausscheidung von Kalium und Magnesium wird dosisabhängig erhöht, während Kalzium vermehrt rückresorbiert wird. Hydrochlorothiazid führt zu einer Verminderung des Plasmavolumens und der extrazellulären Flüssigkeit. Somit werden Herzauswurf und Blutdruck reduziert."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id018 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id018
+      preformatted: false
+      raw_txt: 
+      text: "Während der Langzeittherapie wirkt die Reduktion des peripheren Widerstandes mit zur Blutdrucksenkung."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id019 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id019
+      preformatted: false
+      raw_txt: 
+      text: Die beiden Wirkstoffe Candesartan und Hydrochlorothiazid haben eine additive antihypertensive Wirkung.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id020 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id020
+      preformatted: false
+      raw_txt: 
+      text: "Bei Hypertonie bewirkt Candesartan-Cilexetil/Hydrochlorothiazid dosisabhängig eine langanhaltende Reduktion des arteriellen Blutdruckes ohne reflexbedingte Erhöhung der Herzfrequenz. Es gibt keine Hinweise auf eine ernsthafte oder übertriebene First-dose-Hypotonie oder einen Rebound-Effekt nach Absetzen der Behandlung."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id021 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id021
+      preformatted: false
+      raw_txt: 
+      text: "Nach Verabreichung einer Einzeldosis von Candesartan-Cilexetil/Hydrochlorothiazid setzt die antihypertensive Wirkung im Allgemeinen innert 2 Stunden ein. Bei kontinuierlicher Behandlung wird die maximale Blutdrucksenkung innerhalb 4 Wochen erreicht und kann mit einer Langzeitbehandlung aufrechterhalten werden. Candesartan-Cilexetil/Hydrochlorothiazid bewirkt eine wirkungsvolle und sanfte Blutdrucksenkung während des gesamten 24-Stunden-Dosierungsintervalls, mit einem Trough/Peak-Verhältnis, welches eine einmal tägliche Verabreichung bestätigt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id022 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id022
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan-Cilexetil/Hydrochlorothiazid ist unabhängig von Alter und Geschlecht bei allen Patienten gleich wirksam."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id023 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id023
+      preformatted: false
+      raw_txt: 
+      text: "Die Behandlung mit Candesartan-Cilexetil/Hydrochlorothiazid zeigte in randomisierten Doppelblindstudien eine geringere Inzidenz von Nebenwirkungen. Insbesondere Husten trat weniger häufig auf im Vergleich mit Kombinationstherapien von ACE-Hemmern und Hydrochlorothiazid."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id024 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 0
+        values: 
+        - :italic
+      - *id024
+      preformatted: false
+      raw_txt: 
+      text: Klinische Wirksamkeit
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id025 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id025
+      preformatted: false
+      raw_txt: 
+      text: "In der SCOPE-Studie (Study on Cognition and Prognosis in the Elderly) wurden die Wirkungen einer antihypertensiven Behandlung mit Candesartan-Cilexetil auf die kardiovaskuläre Morbidität und Mortalität, die kognitive Funktion und die Lebensqualität an 4'937 älteren Patienten (Alter 70-89 Jahre) mit Hypertonie (systolischer Blutdruck 160-179 mmHg und/oder diastolischer Blutdruck 90-99 mmHg) untersucht."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id026 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id026
+      preformatted: false
+      raw_txt: 
+      text: "Die Tabelle zeigt die Studienergebnisse für den primären Endpunkt (schwere kardiovaskuläre Ereignisse) und deren Komponenten. Beide Behandlungsschemata führten zu einer wirkungsvollen Senkung des systolischen und des diastolischen Blutdrucks und waren im Allgemeinen gut verträglich. In beiden Studienarmen zeigte sich eine gute Aufrechterhaltung der kognitiven Funktion und der Lebensqualität."
+    subheading: ""
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Table 
+      rows: 
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - " "
+          row_span: 2
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 4
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id027 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id027
+            preformatted: false
+            raw_txt: Patientenzahl mit einem ersten Ereignis
+            text: Patientenzahl mit einem ersten Ereignis
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id028 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id028
+            preformatted: false
+            raw_txt: |-
+              Candesartan Cilexetil*
+              (N=2477)
+            text: |-
+              Candesartan Cilexetil*
+              (N=2477)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id029 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id029
+            preformatted: false
+            raw_txt: |-
+              Kontrollgruppe*
+              (N=2460)
+            text: |-
+              Kontrollgruppe*
+              (N=2460)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id030 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id030
+            preformatted: false
+            raw_txt: Relatives Risiko (95% CI)
+            text: Relatives Risiko (95% CI)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id031 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id031
+            preformatted: false
+            raw_txt: p-Wert
+            text: p-Wert
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id032 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id032
+            preformatted: false
+            raw_txt: "Schwere kardiovaskuläre Ereignisse"
+            text: "Schwere kardiovaskuläre Ereignisse"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id033 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id033
+            preformatted: false
+            raw_txt: "242"
+            text: "242"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id034 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id034
+            preformatted: false
+            raw_txt: "268"
+            text: "268"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id035 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id035
+            preformatted: false
+            raw_txt: |-
+              0.89
+              (0.75-1.06)
+            text: |-
+              0.89
+              (0.75-1.06)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id036 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id036
+            preformatted: false
+            raw_txt: "0.19"
+            text: "0.19"
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id037 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id037
+            preformatted: false
+            raw_txt: "kardiovaskuläre Mortalität"
+            text: "kardiovaskuläre Mortalität"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id038 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id038
+            preformatted: false
+            raw_txt: "145"
+            text: "145"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id039 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id039
+            preformatted: false
+            raw_txt: "152"
+            text: "152"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id040 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id040
+            preformatted: false
+            raw_txt: |-
+              0.95
+              (0.75-1.19)
+            text: |-
+              0.95
+              (0.75-1.19)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id041 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id041
+            preformatted: false
+            raw_txt: "0.63"
+            text: "0.63"
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id042 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id042
+            preformatted: false
+            raw_txt: "nicht tödliche Schlaganfälle"
+            text: "nicht tödliche Schlaganfälle"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id043 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id043
+            preformatted: false
+            raw_txt: "68"
+            text: "68"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id044 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id044
+            preformatted: false
+            raw_txt: "93"
+            text: "93"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id045 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id045
+            preformatted: false
+            raw_txt: |-
+              0.72
+              (0.53-0.99)
+            text: |-
+              0.72
+              (0.53-0.99)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id046 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id046
+            preformatted: false
+            raw_txt: "0.04"
+            text: "0.04"
+          row_span: 1
+      - - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id047 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id047
+            preformatted: false
+            raw_txt: "nicht tödliche Myokardinfarkte"
+            text: "nicht tödliche Myokardinfarkte"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id048 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id048
+            preformatted: false
+            raw_txt: "54"
+            text: "54"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id049 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id049
+            preformatted: false
+            raw_txt: "47"
+            text: "47"
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id050 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id050
+            preformatted: false
+            raw_txt: |-
+              1.14
+              (0.77-1.68)
+            text: |-
+              1.14
+              (0.77-1.68)
+          row_span: 1
+        - !ruby/object:ODDB::Text::MultiCell 
+          col_span: 1
+          contents: 
+          - !ruby/object:ODDB::Text::Paragraph 
+            format: &id051 !ruby/object:ODDB::Text::Format 
+              end: -1
+              start: 0
+              values: []
+
+            formats: 
+            - *id051
+            preformatted: false
+            raw_txt: "0.52"
+            text: "0.52"
+          row_span: 1
+    subheading: ""
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id052 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id052
+      preformatted: false
+      raw_txt: 
+      text: "* Jede vorherige antihypertensive Behandlung wurde vor der Randomisierung standardm-ssig auf Hydrochlorothiazid 12.5 mg einmal täglich eingestellt. Bei anhaltenden systolischen Blutdruckwerten \xE2\x89\xA5160 mmHg und/oder diastolischen Blutdruckwerten \xE2\x89\xA590 mmHg wurde zusätzlich zur doppelblinden Studienmedikation (Candesartan-Cilexetil 8-16 mg oder Placebo einmal täglich) eine weitere antihypertensive Therapie verabreicht. Diese Zusatzbehandlung erhielten 49% der Patienten der Candesartan-Cilexetil-Gruppe bzw. 66% der Patienten der Kontrollgruppe."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id053 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id053
+      preformatted: false
+      raw_txt: 
+      text: "In zwei randomisierten, doppelblinden, placebokontrollierten klinischen Studien mit 275 bzw. 1'524 Patienten führte die Kombination von Candesartan-Cilexetil/Hydrochlorothiazid zu signifikant stärkeren Blutdrucksenkungen als die jeweiligen Einzelkomponenten. In der Dosierungsstärke 32/25 mg wurde eine Blutdrucksenkung von 21/14 mmHg erreicht."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id054 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id054
+      preformatted: false
+      raw_txt: 
+      text: "In einer randomisierten, doppelblinden, klinischen Studie mit 1'975 Patienten, die unter einmal täglicher Gabe von 32 mg Candesartan-Cilexetil nicht optimal kontrolliert waren, führte die Zugabe von 12.5 mg oder 25 mg Hydrochlorothiazid zu zusätzlichen Blutdrucksenkungen. Die Kombination von Candesartan-Cilexetil/Hydrochlorothiazid in der Dosierungsstärke von 32/25 mg war signifikant wirksamer als diejenige von 32/12.5 mg; die mittleren Blutdrucksenkungen betrugen 16/10 mmHg bzw. 13/9 mmHg."
+    subheading: ""
+fabrication: 
+galenic_form: !ruby/object:ODDB::Text::Chapter 
+  heading: Galenische Form und Wirkstoffmenge pro Einheit
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id055 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 26
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 25
+        start: 0
+        values: 
+        - :italic
+      - *id055
+      preformatted: false
+      raw_txt: 
+      text: Tabletten (mit Bruchrille)
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id056 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id056
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette Cansartan-Mepha Plus 8/12.5 mg enthält 8 mg Candesartanum cilexetilum und 12,5 mg Hydrochlorothiazidum."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id057 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id057
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette Cansartan-Mepha Plus 16/12.5 mg enthält 16 mg Candesartanum cilexetilum und 12,5 mg Hydrochlorothiazidum."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id058 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id058
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette Cansartan-Mepha Plus 32/12.5 mg enthält 32 mg Candesartanum cilexetilum und 12,5 mg Hydrochlorothiazidum."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id059 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id059
+      preformatted: false
+      raw_txt: 
+      text: "1 Tablette Cansartan-Mepha Plus 32/25 mg enthält 32 mg Candesartanum cilexetilum und 25 mg Hydrochlorothiazidum."
+    subheading: ""
+iksnrs: !ruby/object:ODDB::Text::Chapter 
+  heading: Zulassungsnummer
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id060 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id060
+      preformatted: false
+      raw_txt: 
+      text: 61215 (Swissmedic).
+    subheading: ""
+indications: !ruby/object:ODDB::Text::Chapter 
+  heading: "Indikationen/Anwendungsmöglichkeiten"
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id061 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id061
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus ist indiziert zur Behandlung der essentiellen Hypertonie, wenn mittels Monotherapie ein nur ungenügender Effekt erzielt werden kann."
+    subheading: ""
+interactions: !ruby/object:ODDB::Text::Chapter 
+  heading: Interaktionen
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id062 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 0
+        values: 
+        - :italic
+      - *id062
+      preformatted: false
+      raw_txt: 
+      text: Candesartan-Cilexetil
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id063 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id063
+      preformatted: false
+      raw_txt: 
+      text: In-vitro Interaktionsstudien weisen darauf hin, dass CYP2C9 und CYP3A4 durch Candesartan nicht gehemmt werden.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id064 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id064
+      preformatted: false
+      raw_txt: 
+      text: "Basierend auf in-vitro Versuchsdaten werden in-vivo keine Interaktionen mit Arzneimitteln erwartet, deren Metabolismus von folgenden Cytochrom P450 Isoenzymen abhängig ist: CYP1A2, CYP2A6, CYP2C9, CYP2C19, CYP2D6, CYP2E1 oder CYP3A4."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id065 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id065
+      preformatted: false
+      raw_txt: 
+      text: Wirkstoffe, welche in pharmakokinetischen Studien mit Candesartan Cilexetil in der Klinik untersucht wurden, sind unter anderem Hydrochlorothiazid, Warfarin, Digoxin, orale Kontrazeptiva (z.B. Ethinylestradiol/Levonorgestrel), Glibenclamid, Nifedipin und Enalapril. Pharmakokinetische Interaktionen von klinischer Relevanz wurden in diesen Studien nicht festgestellt.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id066 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id066
+      preformatted: false
+      raw_txt: 
+      text: "Da die am Metabolismus von Acenocoumarol und Phenprocoumon beteiligten Enzyme zum grössten Teil unbekannt sind und die Interaktion mit Candesartan-Cilexetil nicht untersucht wurde, ist bei der gleichzeitigen Einnahme von Candesartan-Cilexetil mit den genannten Antikoagulantien Vorsicht geboten. Eine engmaschige Kontrolle der Gerinnung (Prothrombinzeit) ist zumindest zu Beginn der Behandlung, bei Therapieabbruch und bei Dosisänderungen unerlässlich."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id067 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id067
+      preformatted: false
+      raw_txt: 
+      text: "Bei gleichzeitiger Medikation von ACE-Hemmern und Lithium wird von einer reversiblen Erhöhung der Lithium-Konzentration im Serum mit toxischen Ereignissen berichtet. Eine ähnliche Wirkung könnte auch mit Angiotensin-II-Rezeptor-Antagonisten wie Cansartan-Mepha Plus auftreten. Deshalb muss die Lithiumkonzentration im Serum bei einer Begleitmedikation mit Cansartan-Mepha Plus sorgfältig überwacht werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id068 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id068
+      preformatted: false
+      raw_txt: 
+      text: "Bei gleichzeitiger Verabreichung von Angiotensin-II-Rezeptor-Antagonisten inklusive Cansartan-Mepha Plus zusammen mit nichtsteroidalen Antirheumatika (NSAR) inklusive selektiven COX-2 Inhibitoren, Acetylsalicylsäure oder anderen nicht selektiven NSAR kann eine Verminderung der Blutdrucksenkung auftreten. Die Kombination von ACE-Hemmern oder Angiotensin-II-Rezeptor-Antagonisten mit nichtsteroidalen NSAR kann zu einem erhöhten Risiko für die Verschlechterung der Nierenfunktion führen, bis hin zu akutem Nierenversagen. Insbesondere bei Patienten mit einer bestehenden Niereninsuffizienz können auch erhöhte Kaliumwerte im Serum auftreten. Die genannte Arzneimittelkombination besonders bei älteren Patienten sollte mit Vorsicht angewendet werden. Patienten sollen angemessen hydriert sein und die Nierenfunktion bei Beginn und während der Behandlung periodisch überwacht werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id069 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 62
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 13
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 61
+        start: 14
+        values: 
+        - :italic
+      - *id069
+      preformatted: false
+      raw_txt: 
+      text: Duale Blockade des Renin-Angiotensin-Aldosteron-Systems (RAAS)
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id070 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id070
+      preformatted: false
+      raw_txt: 
+      text: "Es gibt Belege dafür, dass die gleichzeitige Anwendung von ACE-Hemmern, Angiotensin-II-Rezeptor-Antagonisten oder Aliskiren das Risiko für Hypotonie, Hyperkaliämie und eine Abnahme der Nierenfunktion (einschliesslich eines akuten Nierenversagens) erhöht. Eine duale Blockade des RAAS durch die gleichzeitige Anwendung von ACE-Hemmern, Angiotensin-II-Rezeptor-Antagonisten oder Aliskiren wird deshalb nicht empfohlen. Wenn die Therapie mit einer dualen Blockade als absolut notwendig erachtet wird, sollte dies nur unter Aufsicht eines Spezialisten und unter Durchführung engmaschiger Kontrollen von Nierenfunktion, Elektrolytwerten und Blutdruck erfolgen. ACE-Hemmer und Angiotensin-II-Rezeptor-Antagonisten sollten bei Patienten mit diabetischer Nephropathie nicht gleichzeitig angewendet werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id071 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id071
+      preformatted: false
+      raw_txt: 
+      text: "Aus oben erwähnten Gründen wird die gleichzeitige Einnahme von Cansartan-Mepha Plus mit Aliskiren nicht empfohlen oder ist bei gewissen Patienten kontraindiziert (siehe \xC2\xABKontraindikationen\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id072 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id072
+      preformatted: false
+      raw_txt: 
+      text: "Die Bioverfügbarkeit von Candesartan wird durch die Nahrung nicht beeinflusst."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id073 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id073
+      preformatted: false
+      raw_txt: 
+      text: "Die blutdrucksenkende Wirkung von Cansartan-Mepha Plus kann durch andere gleichzeitig verabreichte Antihypertensiva verstärkt werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id074 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 18
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 17
+        start: 0
+        values: 
+        - :italic
+      - *id074
+      preformatted: false
+      raw_txt: 
+      text: Hydrochlorothiazid
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id075 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id075
+      preformatted: false
+      raw_txt: 
+      text: "Die folgenden Substanzen können bei gleichzeitiger Verabreichung zu Interaktionen führen:"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id076 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 32
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 31
+        start: 0
+        values: 
+        - :italic
+      - *id076
+      preformatted: false
+      raw_txt: 
+      text: "Alkohol, Barbiturate, Narkotika: Verstärkung der orthostatischen Hypotonie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id077 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 45
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 44
+        start: 0
+        values: 
+        - :italic
+      - *id077
+      preformatted: false
+      raw_txt: 
+      text: "Antidiabetika (orale Substanzen und Insulin): Dosisanpassung der antidiabetischen Medikation kann notwendig sein."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id078 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 23
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 22
+        start: 0
+        values: 
+        - :italic
+      - *id078
+      preformatted: false
+      raw_txt: 
+      text: "Andere Antihypertonika: Additiver Effekt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id079 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 20
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 19
+        start: 0
+        values: 
+        - :italic
+      - *id079
+      preformatted: false
+      raw_txt: 
+      text: "Digitalis-Glykoside: Eine durch Diuretika verursachte Hypokaliämie und Hypomagnesiämie macht anfällig für eine potentielle kardiotoxische Wirkung der Digitalis-Glykoside und Antiarrhythmika. Eine periodische Kontrolle des Kaliumspiegels wird empfohlen, wenn Cansartan-Mepha Plus mit diesen Substanzen gleichzeitig verabreicht wird."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id080 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 52
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 51
+        start: 0
+        values: 
+        - :italic
+      - *id080
+      preformatted: false
+      raw_txt: 
+      text: "Cholestyramin und Colestipol, Ionenaustauscherharze: Die Absorption von Hydrochlorothiazid wird durch Anionenaustauschharze verschlechtert. Einzeldosen von Cholestyramin bzw. Colestipol binden Hydrochlorothiazid und reduzieren die gastrointestinale Absorption um bis zu 85 bzw. 43%."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id081 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 22
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 21
+        start: 0
+        values: 
+        - :italic
+      - *id081
+      preformatted: false
+      raw_txt: 
+      text: "Kortikosteroide, ACTH: Verstärkung eines Elektrolytmangels, insbesondere Hypokaliämie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id082 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id082
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid kann Kaliumverluste verursachen. Dieser Effekt kann durch gleichzeitig verabreichte Substanzen verstärkt werden, die ebenfalls zu Kaliumverlusten und zu Hypokaliämie führen können (z.B. kaliumausschwemmende Diuretika, Laxantien, Amphotericin, Carbenoxolon, Salicylsäure-Derivate)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id083 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 0
+        values: 
+        - :italic
+      - *id083
+      preformatted: false
+      raw_txt: 
+      text: "Katecholamine (z.B. Adrenalin): Eine Reduktion der Wirkung von Vasopressoren ist möglich, was deren Anwendung aber nicht verbietet."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id084 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 60
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 59
+        start: 0
+        values: 
+        - :italic
+      - *id084
+      preformatted: false
+      raw_txt: 
+      text: "Nicht-depolarisierende Muskelrelaxantien (z.B. Tubocurarin): Verstärkte Wirkung der Muskelrelaxantien ist möglich."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id085 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 8
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 7
+        start: 0
+        values: 
+        - :italic
+      - *id085
+      preformatted: false
+      raw_txt: 
+      text: "Lithium: Reversible Anstiege der Serum-Lithium-Konzentration wurden bei gleichzeitiger Verabreichung von Lithium mit ACE-Hemmern oder Hydrochlorothiazid beobachtet. Obwohl diese Effekte unter der Anwendung von Candesartan-Cilexetil/Hydrochlorothiazid nicht festgestellt wurden, besteht die Möglichkeit eines Konzentrationsanstiegs von Lithium. Eine engmaschige Kontrolle des Lithium-Serumspiegels wird bei gleichzeitiger Behandlung empfohlen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id086 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 23
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 24
+        values: 
+        - :italic
+      - *id086
+      preformatted: false
+      raw_txt: 
+      text: "Nichtsteroidale Antirheumatika: Bei einigen Patienten kann die Verabreichung von nichtsteroidalen Antirheumatika die diuretische, natriuretische und antihypertensive Wirkung der Diuretika vermindern. Bei prädisponierten Patienten wurde in Einzelfällen eine Verschlechterung der Nierenfunktion beobachtet."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id087 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id087
+      preformatted: false
+      raw_txt: 
+      text: "Allopurinol: Erhöhung der Häufigkeit von Überempfindlichkeitsreaktionen auf Allopurinol."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id088 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 52
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 51
+        start: 0
+        values: 
+        - :italic
+      - *id088
+      preformatted: false
+      raw_txt: 
+      text: "Antineoplastika (z.B. Methotrexat, Cyclophosphamid): Verminderung der renalen Ausscheidung von Antineoplastika."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id089 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 10
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 9
+        start: 0
+        values: 
+        - :italic
+      - *id089
+      preformatted: false
+      raw_txt: 
+      text: "Amantadin: Erhöhung des Risikos unerwünschter Wirkungen von Amantadin."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id090 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 43
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 42
+        start: 0
+        values: 
+        - :italic
+      - *id090
+      preformatted: false
+      raw_txt: 
+      text: "Anticholinergika (z.B. Atropin, Biperiden): Erhöhung der Bioverfügbarkeit thiazidartiger Diuretika."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id091 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 10
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 9
+        start: 0
+        values: 
+        - :italic
+      - *id091
+      preformatted: false
+      raw_txt: 
+      text: "Vitamin D: Verstärkung des Anstiegs von Serumkalzium."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id092 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id092
+      preformatted: false
+      raw_txt: 
+      text: "Cyclosporin: Erhöhung des Risikos einer Hyperurikämie und gichtartiger Komplikationen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id093 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 13
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 12
+        start: 0
+        values: 
+        - :italic
+      - *id093
+      preformatted: false
+      raw_txt: 
+      text: "Kalziumsalze: Thiazidartige Diuretika können durch Erhöhung der tubulären Rückresorption von Kalzium zu einer Hyperkalzämie führen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id094 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 9
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 8
+        start: 0
+        values: 
+        - :italic
+      - *id094
+      preformatted: false
+      raw_txt: 
+      text: "Diazoxid: Verstärkung des hyperglykämischen Effekts von Diazoxid."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id095 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 50
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 49
+        start: 12
+        values: 
+        - :italic
+      - *id095
+      preformatted: false
+      raw_txt: 
+      text: Interaktionen mit Medikamenten/Laboruntersuchungen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id096 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id096
+      preformatted: false
+      raw_txt: 
+      text: "Aufgrund ihrer Wirkung auf den Kalziumstoffwechsel können Thiazide die Untersuchungsmethoden für die Nebenschilddrüsen beeinflussen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id097 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id097
+      preformatted: false
+      raw_txt: 
+      text: Es gibt keine klinisch signifikanten Interaktionen zwischen Hydrochlorothiazid und gleichzeitiger Nahrungsaufnahme.
+    subheading: ""
+kinetic: !ruby/object:ODDB::Text::Chapter 
+  heading: Pharmakokinetik
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id098 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id098
+      preformatted: false
+      raw_txt: 
+      text: Die gleichzeitige Verabreichung von Candesartan-Cilexetil und Hydrochlorothiazid hat keine klinisch signifikante Auswirkung auf die Pharmakokinetik der beiden Wirkstoffe.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id099 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id099
+      preformatted: false
+      raw_txt: 
+      text: Absorption und Distribution
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id100 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 0
+        values: 
+        - :italic
+      - *id100
+      preformatted: false
+      raw_txt: 
+      text: Candesartan-Cilexetil
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id101 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id101
+      preformatted: false
+      raw_txt: 
+      text: "Nach oraler Verabreichung wird Candesartan-Cilexetil in die aktive Substanz Candesartan umgewandelt. Die durchschnittliche absolute Bioverfügbarkeit von Candesartan beträgt nach oraler Gabe einer Lösung von Candesartan-Cilexetil ungefähr 40%. Die relative Bioverfügbarkeit einer Tablettenformulierung von Candesartan-Cilexetil verglichen mit der gleichen oralen Lösung - ist ungefähr 34% mit sehr geringer Variabilität. Die mittlere Peak-Serumkonzentration (Cmax) wird 3-4 Stunden nach Tabletteneinnahme erreicht. Die Candesartan-Serumkonzentration nimmt im therapeutischen Dosierungsbereich mit steigender Dosierung linear zu. In der Pharmakokinetik von Candesartan wurden keine geschlechtsabhängigen Unterschiede beobachtet. Die Fläche unter der Serumkonzentration versus Zeitkurve (AUC) von Candesartan wird nicht signifikant durch Nahrung beeinflusst."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id102 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id102
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan ist zu mehr als 99% an Plasmaproteine gebunden. Das Verteilungsvolumen beträgt 0,1 l/kg."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id103 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 18
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 17
+        start: 0
+        values: 
+        - :italic
+      - *id103
+      preformatted: false
+      raw_txt: 
+      text: Hydrochlorothiazid
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id104 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id104
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid wird im Gastrointestinaltrakt schnell absorbiert. Die absolute Bioverfügbarkeit beträgt ungefähr 70%."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id105 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id105
+      preformatted: false
+      raw_txt: 
+      text: "Gleichzeitige Nahrungsaufnahme kann die Absorptionsrate sowohl erhöhen als auch erniedrigen (um ca. 15%)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id106 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id106
+      preformatted: false
+      raw_txt: 
+      text: "Die Bioverfügbarkeit ist bei Patienten mit Herzinsuffizienz oder ausgeprägten Ödemen vermindert."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id107 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id107
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid ist zu etwa 60% an Plasmaproteine gebunden. Das Verteilungsvolumen beträgt ca. 0,8 l/kg."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id108 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 28
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 27
+        start: 0
+        values: 
+        - :italic
+      - *id108
+      preformatted: false
+      raw_txt: 
+      text: Metabolismus und Elimination
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id109 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 0
+        values: 
+        - :italic
+      - *id109
+      preformatted: false
+      raw_txt: 
+      text: Candesartan-Cilexetil
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id110 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id110
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan wird hauptsächlich unverändert via Urin und Galle ausgeschieden und nur in geringem Mass durch hepatische Metabolisierung (CYP2C9) eliminiert. Die terminale Halbwertszeit von Candesartan beträgt ungefähr 9 Stunden. Es gibt keine Kumulation nach mehrmaliger Verabreichung."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id111 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id111
+      preformatted: false
+      raw_txt: 
+      text: "Die Halbwertszeit von Candesartan (ca. 9 Stunden) bleibt bei gleichzeitiger Gabe von Hydrochlorothiazid unverändert. Es findet keine Kumulierung von Candesartan nach wiederholter Verabreichung des Kombinationspräparates im Vergleich zur Monotherapie statt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id112 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id112
+      preformatted: false
+      raw_txt: 
+      text: "Die totale Plasmaclearance von Candesartan beträgt ca. 0,37 ml/min/kg, mit einer renalen Clearance von ca. 0,19 ml/min/kg. Candesartan wird renal sowohl durch glomeruläre Filtration wie auch durch aktive tubuläre Sekretion eliminiert. Nach einer oralen Verabreichung von 14C-markiertem Candesartan-Cilexetil werden ungefähr 26% der Dosis im Urin als Candesartan und 7% als inaktiver Metabolit ausgeschieden. 56% der verabreichten Dosis werden in den Fäzes als Candesartan und 10% als inaktiver Metabolit gefunden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id113 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 18
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 17
+        start: 0
+        values: 
+        - :italic
+      - *id113
+      preformatted: false
+      raw_txt: 
+      text: Hydrochlorothiazid
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id114 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id114
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid wird nicht metabolisiert und wird unverändert praktisch vollständig durch glomeruläre Filtration und aktive tubuläre Sekretion ausgeschieden. Die terminale Halbwertszeit beträgt für Hydrochlorothiazid ca. 8 Stunden. Ungefähr 70% einer oral verabreichten Dosis wird im Urin innerhalb von 48 Stunden ausgeschieden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id115 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id115
+      preformatted: false
+      raw_txt: 
+      text: "Die Halbwertszeit von Hydrochlorothiazid (ca. 8 Stunden) bleibt bei gleichzeitiger Einnahme von Candesartan-Cilexetil unverändert. Im Vergleich mit der Monotherapie wurde keine Kumulierung von Hydrochlorothiazid nach wiederholter Verabreichung des Kombinationspräparates festgestellt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id116 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 35
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 34
+        start: 0
+        values: 
+        - :italic
+      - *id116
+      preformatted: false
+      raw_txt: 
+      text: Kinetik spezieller Patientengruppen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id117 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 0
+        values: 
+        - :italic
+      - *id117
+      preformatted: false
+      raw_txt: 
+      text: Candesartan-Cilexetil
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id118 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 16
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 15
+        start: 0
+        values: 
+        - :italic
+      - *id118
+      preformatted: false
+      raw_txt: 
+      text: "Ältere Patienten"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id119 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id119
+      preformatted: false
+      raw_txt: 
+      text: "Bei älteren Patienten (über 65jährig) sind im Vergleich zu jüngeren Patienten Cmax von Candesartan um 50% und AUC um 80% erhöht. Das Ansprechen des Blutdrucks und das Auftreten von unerwünschten Wirkungen nach einer Verabreichung von Candesartan-Cilexetil/Hydrochlorothiazid sind bei jüngeren und älteren Patienten vergleichbar (siehe unter \xC2\xABDosierung/Anwendung\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id120 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 32
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 31
+        start: 0
+        values: 
+        - :italic
+      - *id120
+      preformatted: false
+      raw_txt: 
+      text: Patienten mit Niereninsuffizienz
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id121 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id121
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit einer schwachen bis mässigen Nierenfunktionsstörung wurden bei wiederholter Gabe, verglichen mit denjenigen mit einer normalen Nierenfunktion, eine um 50% erhöhte Cmax und um 70% erhöhte AUC von Candesartan beobachtet. Die terminale Halbwertszeit war jedoch nicht erhöht."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id122 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id122
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit einer stark verminderten Nierenfunktion wurden eine um 50% erhöhte Cmax und eine um 110% erhöhte AUC beobachtet. Die terminale Halbwertszeit war bei diesen Patienten praktisch doppelt so hoch."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id123 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id123
+      preformatted: false
+      raw_txt: 
+      text: "Bei Hämodialysepatienten verhält sich die Pharmakokinetik vergleichbar wie bei Patienten mit stark eingeschränkter Nierenfunktion."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id124 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 0
+        values: 
+        - :italic
+      - *id124
+      preformatted: false
+      raw_txt: 
+      text: Patienten mit Leberinsuffizienz
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id125 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id125
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit einer leichten bis mässigen Leberfunktionsstörung (Child-Pugh Score 6-9) wurde im Mittel eine Erhöhung von Cmax um 64% und eine Erhöhung der AUC um 78% beobachtet."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id126 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id126
+      preformatted: false
+      raw_txt: 
+      text: "Die Erfahrung bei Patienten mit schweren Lebererkrankungen (Child-Pugh Score >9) und/oder Cholestase, welche mit Candesartan-Cilexetil behandelt wurden, ist limitiert (siehe \xC2\xABDosierung/Anwendung\xC2\xBB und \xC2\xABKontraindikationen\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id127 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 18
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 17
+        start: 0
+        values: 
+        - :italic
+      - *id127
+      preformatted: false
+      raw_txt: 
+      text: Hydrochlorothiazid
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id128 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id128
+      preformatted: false
+      raw_txt: 
+      text: "Die terminale Halbwertszeit von Hydrochlorothiazid ist bei Patienten mit Nierenfunktionsstörungen verlängert."
+    subheading: ""
+name: !ruby/object:ODDB::Text::Chapter 
+  heading: Cansartan-Mepha Plus Tabletten
+  sections: []
+
+other_advice: !ruby/object:ODDB::Text::Chapter 
+  heading: Sonstige Hinweise
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id129 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 11
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 10
+        start: 0
+        values: 
+        - :italic
+      - *id129
+      preformatted: false
+      raw_txt: 
+      text: Haltbarkeit
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id130 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id130
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus darf nur bis zu dem auf der Packung mit \xC2\xABEXP\xC2\xBB bezeichneten Datum verwendet werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id131 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id131
+      preformatted: false
+      raw_txt: 
+      text: Besondere Lagerungshinweise
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id132 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id132
+      preformatted: false
+      raw_txt: 
+      text: "In der Originalverpackung und bei Raumtemperatur (15-25 \xC2\xB0C) aufbewahren. Für Kinder unerreichbar aufbewahren."
+    subheading: ""
+overdose: !ruby/object:ODDB::Text::Chapter 
+  heading: "Überdosierung"
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id133 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 8
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 7
+        start: 0
+        values: 
+        - :italic
+      - *id133
+      preformatted: false
+      raw_txt: 
+      text: Symptome
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id134 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id134
+      preformatted: false
+      raw_txt: 
+      text: "Aufgrund pharmakologischer Überlegungen dürfte sich eine Überdosierung von Candesartan-Cilexetil als Hypotonie und Schwindel manifestieren. In Einzelfällen mit Candesartan-Cilexetil in Dosen bis zu 672 mg erholten sich die Patienten."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id135 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id135
+      preformatted: false
+      raw_txt: 
+      text: "Der wichtigste Befund einer Überdosierung von Hydrochlorothiazid ist ein akuter Verlust an Flüssigkeit und Elektrolyten. Symptome wie Schwindel, Hypotonie, Durst, Tachykardie, ventrikuläre Arrhythmien, Sedation, Bewusstseinsverlust und Muskelkrämpfe können auch beobachtet werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id136 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 10
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 9
+        start: 0
+        values: 
+        - :italic
+      - *id136
+      preformatted: false
+      raw_txt: 
+      text: Massnahmen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id137 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id137
+      preformatted: false
+      raw_txt: 
+      text: "Wenn eine Hypotonie auftritt, sollten eine symptomatische Behandlung veranlasst und die lebensnotwendigen Funktionen überwacht werden. Der Patient sollte in Rückenlage gebracht und die Beine sollten hochgelagert werden. Falls dies nicht ausreicht, sollte das Plasmavolumen mit einer Infusion, z.B. einer isotonischen Salzlösung, erhöht werden. Ein Sympathomimetikum kann verabreicht werden, wenn alle diese Massnahmen nicht ausreichen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id138 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id138
+      preformatted: false
+      raw_txt: 
+      text: "Candesartan kann durch Hämodialyse nicht ausgeschieden werden. Es ist nicht bekannt, in welchem Ausmass Hydrochlorothiazid durch Hämodialyse ausgeschieden wird."
+    subheading: ""
+packages: !ruby/object:ODDB::Text::Chapter 
+  heading: Packungen
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id139 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id139
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus 8/12.5 mg, Tabletten (mit Bruchrille): OP 28 und OP 98 (B)"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id140 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id140
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus 16/12.5 mg, Tabletten (mit Bruchrille): OP 28 und OP 98 (B)"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id141 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id141
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus 32/12.5 mg, Tabletten (mit Bruchrille): OP 28 und OP 98 (B)"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id142 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id142
+      preformatted: false
+      raw_txt: 
+      text: "Cansartan-Mepha Plus 32/25 mg, Tabletten (mit Bruchrille): OP 28 und OP 98 (B)"
+    subheading: ""
+preclinic: !ruby/object:ODDB::Text::Chapter 
+  heading: "Präklinische Daten"
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id143 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id143
+      preformatted: false
+      raw_txt: 
+      text: "Mit der Kombination Candesartan-Cilexetil/Hydrochlorothiazid sind keine neuen toxikologischen Erkenntnisse gegenüber denjenigen der Einzelkomponenten gefunden worden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id144 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 9
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 8
+        start: 0
+        values: 
+        - :italic
+      - *id144
+      preformatted: false
+      raw_txt: 
+      text: "Toxizität"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id145 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id145
+      preformatted: false
+      raw_txt: 
+      text: "In präklinischen Sicherheitsstudien zeigte Candesartan in hohen Dosen bei Mäusen, Ratten, Hunden und Affen Wirkungen auf die Nieren und auf das rote Blutbild. Candesartan führte zu einem Rückgang der von den roten Blutkörperchen abhängigen Parameter (Erythrozyten, Hämoglobin, Hämatokrit). Candesartan zeigte auch Auswirkungen auf die Nieren (Erneuerung, Erweiterung und Basophilie der Tubuli; erhöhte Plasmakonzentrationen von Harnstoff und Kreatinin). Dies könnte ein Sekundäreffekt der blutdrucksenkenden Wirkung sein, der zu Veränderungen der Nierendurchblutung führt. Das Hinzufügen von Hydrochlorothiazid potenziert die Nephrotoxizität von Candesartan. Darüber hinaus führte Candesartan zu Hyperplasie/Hypertrophie der juxtaglomerulären Zellen. Man nimmt an, dass diese Veränderungen auf die pharmakologische Wirkung von Candesartan zurückzuführen und nur von geringer klinischer Relevanz sind."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id146 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 22
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 21
+        start: 0
+        values: 
+        - :italic
+      - *id146
+      preformatted: false
+      raw_txt: 
+      text: "Reproduktionstoxizität"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id147 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id147
+      preformatted: false
+      raw_txt: 
+      text: "In Tierstudien mit Candesartan Cilexetil wurden spätfetale und neonatale Nierenschäden festgestellt. Es wird angenommen, dass der zugrundeliegende Mechanismus pharmakologisch über die Wirkungen auf das Renin-Angiotensin-Aldosteron-System vermittelt wird."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id148 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id148
+      preformatted: false
+      raw_txt: 
+      text: "Die Ergebnisse der fetalen Entwicklungsstudien in Ratten, Mäusen und Kaninchen wurden durch das Hinzufügen von Hydrochlorothiazid nicht signifikant beeinflusst (siehe \xC2\xABSchwangerschaft/Stillzeit\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id149 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 40
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 39
+        start: 0
+        values: 
+        - :italic
+      - *id149
+      preformatted: false
+      raw_txt: 
+      text: Mutagenes und tumorerzeugendes Potential
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id150 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id150
+      preformatted: false
+      raw_txt: 
+      text: "In sehr hohen Konzentrationen/Dosen zeigen sowohl Candesartan als auch Hydrochlorothiazid genotoxische Aktivität. Daten aus in-vitro- und in-vivo Genotoxizitäts-Untersuchungen weisen darauf hin, dass Candesartan und Hydrochlorothiazid unter klinischen Bedingungen kaum eine mutagene oder klastogene Aktivität ausüben."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id151 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id151
+      preformatted: false
+      raw_txt: 
+      text: Es gibt keine Hinweise, dass einer der beiden Wirkstoffe ein tumorerzeugendes Potential aufweist.
+    subheading: ""
+pregnancy: !ruby/object:ODDB::Text::Chapter 
+  heading: Schwangerschaft/Stillzeit
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id152 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id152
+      preformatted: false
+      raw_txt: 
+      text: "In der Schwangerschaft ist die Anwendung von Cansartan-Mepha Plus kontraindiziert (siehe \xC2\xABKontraindikationen\xC2\xBB). Patientinnen unter Cansartan-Mepha Plus-Behandlung müssen darauf hingewiesen werden, ehe sie eine Schwangerschaft erwägen, sodass mit dem behandelnden Arzt die angemessenen Optionen erörtert werden können. Wenn eine Schwangerschaft festgestellt wird, ist die Behandlung mit Cansartan-Mepha Plus sofort abzubrechen und gegebenenfalls eine alternative Therapie einzuleiten."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id153 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id153
+      preformatted: false
+      raw_txt: 
+      text: "Angiotensin-II-Rezeptor-Antagonisten induzieren beim Menschen bekanntermassen toxische Effekte beim Fetus (Nierenfunktionsbeeinträchtigung, Oligohydramnion, verzögerte Schädelossifikation) und beim Neugeborenen (Niereninsuffizienz, Hypotonie, Hyperkaliämie)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id154 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id154
+      preformatted: false
+      raw_txt: 
+      text: "Die Erfahrung mit Hydrochlorothiazid in der Schwangerschaft, insbesondere im ersten Trimester, ist begrenzt. Ebenso sind Daten aus Tierstudien nicht ausreichend vorhanden. Hydrochlorothiazid passiert die Plazenta. Aufgrund des pharmakologischen Wirkungsmechanismus von Hydrochlorothiazid ist bei Anwendung in der Schwangerschaft eine Beeinträchtigung der fetoplazentaren Durchblutung möglich, die beim Foetus bzw. beim Neugeborenen u.a. zu Ikterus, Elektrolytstörungen und Thrombozytopenie führen kann."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id155 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 9
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 8
+        start: 0
+        values: 
+        - :italic
+      - *id155
+      preformatted: false
+      raw_txt: 
+      text: Stillzeit
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id156 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id156
+      preformatted: false
+      raw_txt: 
+      text: "Es ist nicht bekannt, ob beim Menschen Candesartan in die Muttermilch ausgeschieden wird. Bei der Ratte jedoch wurde Candesartan in der Milch gefunden. Hydrochlorothiazid gelangt in die Muttermilch. Cansartan-Mepha Plus darf während der Stillzeit nicht verabreicht werden. Um potentielle unerwünschte Wirkungen auf das zu stillende Kind auszuschliessen, wird empfohlen abzustillen, falls eine Behandlung mit Cansartan-Mepha Plus essentiell ist (siehe \xC2\xABKontraindikationen\xC2\xBB)."
+    subheading: ""
+reference: 
+registration_owner: !ruby/object:ODDB::Text::Chapter 
+  heading: Zulassungsinhaberin
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id157 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id157
+      preformatted: false
+      raw_txt: 
+      text: Mepha Pharma AG, Basel.
+    subheading: ""
+restrictions: !ruby/object:ODDB::Text::Chapter 
+  heading: Warnhinweise und Vorsichtsmassnahmen
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id158 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 57
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 56
+        start: 0
+        values: 
+        - :italic
+      - *id158
+      preformatted: false
+      raw_txt: 
+      text: "\xC2\xABDuale Blockade\xC2\xBB des Renin-Angiotensin-Aldosteron-Systems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id159 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id159
+      preformatted: false
+      raw_txt: 
+      text: "Siehe \xC2\xABInteraktionen\xC2\xBB."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id160 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 37
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 36
+        start: 0
+        values: 
+        - :italic
+      - *id160
+      preformatted: false
+      raw_txt: 
+      text: Patienten mit Nierenarterien-Stenosen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id161 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id161
+      preformatted: false
+      raw_txt: 
+      text: "Andere das Renin-Angiotensin-System beeinflussende Medikamente wie ACE-Hemmer können bei Patienten mit einer bilateralen Nierenarterienstenose oder einer Stenose der Arterie einer Einzelniere die Blutharnstoff- und Serumkreatininwerte erhöhen. Dies könnte auch bei Angiotensin-II-Rezeptor-Antagonisten auftreten."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id162 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 26
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 25
+        start: 0
+        values: 
+        - :italic
+      - *id162
+      preformatted: false
+      raw_txt: 
+      text: "Intravaskuläre Hypovolämie"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id163 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id163
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit einer intravaskulären Hypovolämie und/oder Natriumverlusten kann eine symptomatische Hypotonie auftreten, wie sie für andere auf das Renin-Angiotensin-Aldosteron-System wirkende Arzneimittel bekannt ist. Aus diesem Grund sollte dieser Zustand vor Behandlungsbeginn mit Cansartan-Mepha Plus korrigiert werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id164 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 34
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 33
+        start: 0
+        values: 
+        - :italic
+      - *id164
+      preformatted: false
+      raw_txt: 
+      text: "Anästhesie und operative Eingriffe"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id165 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id165
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten, die mit Angiotensin-II-Rezeptor-Antagonisten behandelt werden, kann auf Grund einer Hemmung des Renin-Angiotensin-Systems während einer Anästhesie und operativen Eingriffen eine Hypotonie auftreten. Sehr selten kann die Hypotonie so schwerwiegend sein, dass die intravenöse Gabe von Flüssigkeit und/oder eines Vasopressors gerechtfertigt ist."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id166 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 18
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 17
+        start: 0
+        values: 
+        - :italic
+      - *id166
+      preformatted: false
+      raw_txt: 
+      text: Niereninsuffizienz
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id167 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id167
+      preformatted: false
+      raw_txt: 
+      text: "Bei prädisponierten Patienten, die mit Cansartan-Mepha Plus behandelt werden, sowie mit anderen Substanzen die das Renin-Angiotensin-Aldosteron-System hemmen, können Änderungen der Nierenfunktion auftreten (siehe \xC2\xABKontraindikationen\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id168 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id168
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit Niereninsuffizienz, welche mit Cansartan-Mepha Plus behandelt werden, wird eine periodische Überwachung des Kalium-, Kreatinin- und Harnsäurespiegels empfohlen. Bei der Patientengruppe mit schwerer Niereninsuffizienz ist ein Schleifendiuretikum den Thiaziden vorzuziehen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id169 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 21
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 18
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 20
+        start: 19
+        values: 
+        - :italic
+      - *id169
+      preformatted: false
+      raw_txt: 
+      text: Nierentransplantation
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id170 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id170
+      preformatted: false
+      raw_txt: 
+      text: "Es liegen beschränkte klinische Erfahrungen in der Anwendung von Candesartan-Cilexetil/Hydrochlorothiazid bei Patienten mit einer Nierentransplantation vor."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id171 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 78
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 77
+        start: 0
+        values: 
+        - :italic
+      - *id171
+      preformatted: false
+      raw_txt: 
+      text: Aorten- und Mitralklappen-Stenose oder obstruktive hypertrophe Kardiomyopathie
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id172 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id172
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten, die an einer hämodynamisch relevanten Aorten- oder Mitralklappen-Stenose oder an einer obstruktiven hypertrophen Kardiomyopathie leiden, ist, wie bei der Anwendung anderer Vasodilatatoren, besondere Vorsicht geboten."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id173 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 39
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 23
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 38
+        start: 24
+        values: 
+        - :italic
+      - *id173
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Elektrolytgleichgewichtes"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id174 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id174
+      preformatted: false
+      raw_txt: 
+      text: "Periodische Kontrollen der Serumelektrolyte sollten in angemessenen Intervallen durchgeführt werden. Thiazide, einschliesslich Hydrochlorothiazid, können das Flüssigkeits- oder Elektrolytgleichgewicht beeinflussen (Hyperkalzämie, Hypokaliämie, Hyponatriämie, Hypomagnesiämie, hypochlorämische Alkalose)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id175 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id175
+      preformatted: false
+      raw_txt: 
+      text: "Basierend auf den Erfahrungen mit anderen Arzneimitteln mit Auswirkung auf das Renin-Angiotensin-Aldosteron-System, können gleichzeitig verabreichte ACE-Hemmern, Aliskiren, kaliumsparende Diuretika, Kalium enthaltende Arzneimittel (zur Ergänzung oder Kaliumsalz-Substitution) oder andere Arzneimittel, die den Kaliumserumspiegel erhöhen können (z.B. Heparin), zu erhöhten Kaliumserumspiegeln führen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id176 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id176
+      preformatted: false
+      raw_txt: 
+      text: "Hydrochlorothiazid erhöht dosisabhängig die renale Kaliumausscheidung und kann so eine Hypokaliämie verursachen. Diese Wirkung von Hydrochlorothiazid scheint in Kombination mit Candesartan-Cilexetil eine geringere Bedeutung zu haben. Das Risiko einer Hypokaliämie kann bei Patienten mit Leberzirrhose, bei Patienten, die eine übermässige Diurese haben, bei Patienten mit einer unangemessenen oralen Aufnahme von Elektrolyten und bei gleichzeitiger Gabe von Steroiden oder adrenokortikotropem Hormon (ACTH) erhöht sein."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id177 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 36
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 35
+        start: 0
+        values: 
+        - :italic
+      - *id177
+      preformatted: false
+      raw_txt: 
+      text: Metabolische und endokrine Wirkungen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id178 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id178
+      preformatted: false
+      raw_txt: 
+      text: "Die Behandlung mit Thiazid-Diuretika kann die Glukosetoleranz verschlechtern. Eine Dosisanpassung von Antidiabetika, einschliesslich Insulin, kann erforderlich sein. Ein latenter Diabetes mellitus kann sich während einer Thiazid-Behandlung manifestieren. Eine Erhöhung der Cholesterol- und der Triglycerid-Werte wurde im Zusammenhang mit einer Thiaziddiuretika-Behandlung beobachtet. Bei den Hydrochlorothiazidmengen, die in Cansartan-Mepha Plus enthalten sind, wurden nur minimale solche Auswirkungen beobachtet."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id179 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id179
+      preformatted: false
+      raw_txt: 
+      text: "Eine ausgeprägte Hyperkalzämie kann ein Anzeichen eines versteckten Hyperparathyroidismus sein. Thiazide sollten vor der Durchführung von Nebenschilddrüsenfunktionstests abgesetzt werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id180 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id180
+      preformatted: false
+      raw_txt: 
+      text: "Thiazid-Diuretika erhöhen die Harnsäure-Konzentration im Serum und können einen Gichtanfall bei gefährdeten Patienten auslösen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id181 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 9
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 8
+        start: 0
+        values: 
+        - :italic
+      - *id181
+      preformatted: false
+      raw_txt: 
+      text: "Angioödem"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id182 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id182
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten, die mit Candesartan behandelt wurden, sind in sehr seltenen Fällen angioneurotische Ödeme des Gesichts, der Extremitäten, der Lippen, Zunge, Glottis und/oder des Larynx beobachtet worden. Cansartan-Mepha Plus sollte in diesen Fällen sofort abgesetzt und der Patient sorgfältig überwacht werden, bis die Schwellung verschwunden ist. Patienten, welche ein Angioödem ohne Zusammenhang mit einer antihypertensiven Therapie in der Anamnese aufweisen, könnten einem höheren Risiko ausgesetzt sein, dass durch die Therapie mit Candesartan-Cilexetil/Hydrochlorothiazid ein Angioödem ausgelöst würde (siehe \xC2\xABKontraindikationen\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id183 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 11
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 10
+        start: 0
+        values: 
+        - :italic
+      - *id183
+      preformatted: false
+      raw_txt: 
+      text: Allgemeines
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id184 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id184
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten, deren vaskulärer Tonus und die Nierenfunktion hauptsächlich von der Aktivität des Renin-Angiotensin-Aldosteron-Systems abhängig sind (z.B. Patienten mit schwerer dekompensierter Herzinsuffizienz oder Nierenerkrankungen, einschliesslich Nierenarterien-Stenose) können bei einer gleichzeitigen Behandlung mit anderen Arzneimitteln, die auf dieses System wirken, Veränderungen wie akute Hypotonie, Azotämie, Oligurie oder selten akute Niereninsuffizienz beobachtet werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id185 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id185
+      preformatted: false
+      raw_txt: 
+      text: "Wie bei allen Antihypertonika kann eine exzessive Blutdrucksenkung bei Patienten mit einer ischämischen Herzkrankheit oder arteriosklerotisch cerebro-vaskulären Erkrankungen zu einem Myokardinfarkt oder einem Schlaganfall führen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id186 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id186
+      preformatted: false
+      raw_txt: 
+      text: "Überempfindlichkeitsreaktionen auf Hydrochlorothiazid können bei Patienten mit oder ohne Allergie wie Bronchialasthma in der Anamnese auftreten; sie sind aber wahrscheinlicher bei Patienten mit einer solchen Anamnese."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id187 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id187
+      preformatted: false
+      raw_txt: 
+      text: "Über Exazerbation oder Aktivierung eines systemischen Lupus erythematodes wurde in Zusammenhang mit der Anwendung von Thiaziddiuretika berichtet."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id188 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id188
+      preformatted: false
+      raw_txt: 
+      text: "Dieses Arzneimittel enthält Laktose als Hilfsstoff; Patienten mit einer der seltenen hereditären Erkrankungen wie Galaktose-Intoleranz, Lapp Laktase Mangel oder Glukose-Galaktose Malabsorption sollten dieses Arzneimittel nicht einnehmen."
+    subheading: ""
+unwanted_effects: !ruby/object:ODDB::Text::Chapter 
+  heading: "Unerwünschte Wirkungen"
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id189 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id189
+      preformatted: false
+      raw_txt: 
+      text: "Kontrollierte klinische Studien haben gezeigt, dass Candesartan-Cilexetil/Hydrochlorothiazid in verschiedenen Dosen (Candesartan-Cilexetil bis zu 32 mg und Hydrochlorothiazid bis zu 25 mg) ein mit Placebo vergleichbares Nebenwirkungsprofil aufweist. Das Auftreten von unerwünschten Wirkungen hat keinen Zusammenhang mit Alter oder Geschlecht. Ein Absetzen der Behandlung infolge unerwünschter Wirkungen war bei Candesartan-Cilexetil/Hydrochlorothiazid (2,3-3,3%) und Placebo (2,7-4,3%) annähernd gleich."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id190 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id190
+      preformatted: false
+      raw_txt: 
+      text: "Bei einer zusammenfassenden Analyse von Daten aus klinischen Studien wurden unter Candesartan-Cilexetil/Hydrochlorothiazid folgende häufigen (>1/100, <1/10) unerwünschten Ereignisse mit einer um mindestens 1% höheren Inzidenz als unter Placebo gefunden:"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id191 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id191
+      preformatted: false
+      raw_txt: 
+      text: "Die Häufigkeiten der unerwünschten Wirkungen sind wie folgt definiert: Sehr häufig (\xE2\x89\xA51/10), häufig (<1/10, \xE2\x89\xA51/100), gelegentlich (<1/100, \xE2\x89\xA51/1000), selten (<1/1000, \xE2\x89\xA51/10'000), sehr selten (<1/10'000)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id192 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id192
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Nervensystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id193 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id193
+      preformatted: false
+      raw_txt: 
+      text: Schwindel.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id194 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 48
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 14
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 47
+        start: 15
+        values: 
+        - :italic
+      - *id194
+      preformatted: false
+      raw_txt: 
+      text: "Unerwünschte Wirkungen von Candesartan-Cilexetil"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id195 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 29
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 28
+        start: 0
+        values: 
+        - :italic
+      - *id195
+      preformatted: false
+      raw_txt: 
+      text: Infektionen und Infestationen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id196 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id196
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Atemwegsinfektionen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id197 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 35
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 34
+        start: 0
+        values: 
+        - :italic
+      - *id197
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Blut und Lymphsystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id198 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id198
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Leukopenie, Neutropenie, Agranulozytose."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id199 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 36
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 35
+        start: 0
+        values: 
+        - :italic
+      - *id199
+      preformatted: false
+      raw_txt: 
+      text: "Stoffwechsel und Ernährungsstörungen"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id200 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id200
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Hyperkaliämie, Hyponatriämie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id201 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id201
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Nervensystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id202 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id202
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Benommenheit/Schwindel, Kopfschmerzen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id203 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id203
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Schwindel."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id204 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 30
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 29
+        start: 0
+        values: 
+        - :italic
+      - *id204
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Gefässe"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id205 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id205
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Hypotonie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id206 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 36
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 35
+        start: 0
+        values: 
+        - :italic
+      - *id206
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Atmungsorgane"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id207 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id207
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Husten."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id208 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 29
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 28
+        start: 0
+        values: 
+        - :italic
+      - *id208
+      preformatted: false
+      raw_txt: 
+      text: Gastrointestinale Beschwerden
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id209 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 7
+        values: 
+        - :italic
+      - *id209
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Nausea."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id210 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 40
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 39
+        start: 0
+        values: 
+        - :italic
+      - *id210
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörung der Leber und der Galle"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id211 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id211
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: erhöhte Leberenzyme, abnorme Leberfunktion, Hepatitis."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id212 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id212
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Haut"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id213 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id213
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Angioödem, Rash, Urtikaria, Pruritus."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id214 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 41
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 40
+        start: 0
+        values: 
+        - :italic
+      - *id214
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen des Bewegungsapparates"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id215 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id215
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Rückenschmerzen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id216 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id216
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Arthralgie, Myalgie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id217 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 58
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 57
+        start: 0
+        values: 
+        - :italic
+      - *id217
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Nieren und der ableitenden Harnwege"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id218 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id218
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: Niereninsuffizienz, einschliesslich Nierenversagen bei empfindlichen Patienten (siehe \xC2\xABWarnhinweise und Vorsichtsmassnahmen\xC2\xBB)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id219 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 14
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 4
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 13
+        start: 5
+        values: 
+        - :italic
+      - *id219
+      preformatted: false
+      raw_txt: 
+      text: Untersuchungen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id220 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id220
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: erhöhte Spiegel von Kreatinin, Harnstoff und Kalium."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id221 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id221
+      preformatted: false
+      raw_txt: 
+      text: "Weitere unerwünschte Wirkungen, die während klinischen Studien beobachtet wurden, sind: Brustschmerzen, Albuminurie, Fieber, Parästhesie, Tachykardie, Palpitationen, erhöhte Kreatinphosphokinasewerte, Hyperglykämie, Hypertriglyceridämie, Hyperurikämie, Epistaxis, Ängstlichkeit, Depression, Dyspnoe, Hämaturie, Angina pectoris, Ödeme und Myokardinfarkt."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id222 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 92
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 72
+        start: 0
+        values: []
+
+      - !ruby/object:ODDB::Text::Format 
+        end: 91
+        start: 73
+        values: 
+        - :italic
+      - *id222
+      preformatted: false
+      raw_txt: 
+      text: "Die folgenden unerwünschten Wirkungen wurden unter einer Monotherapie mit Hydrochlorothiazid beschrieben (gewöhnlich mit Dosierungen von 25 mg oder höher):"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id223 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 36
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 1
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 35
+        start: 2
+        values: 
+        - :italic
+      - *id223
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Blut- und Lymphsystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id224 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id224
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Leukopenie, Neutropenie, Agranulozytose, Thrombozytopenie (manchmal mit Purpura), aplastische Anämie, Knochenmarkdepression, hämolytische Anämie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id225 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 26
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 25
+        start: 0
+        values: 
+        - :italic
+      - *id225
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Immunsystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id226 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id226
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Anaphylaktische Reaktionen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id227 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 36
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 3
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 35
+        start: 4
+        values: 
+        - :italic
+      - *id227
+      preformatted: false
+      raw_txt: 
+      text: "Stoffwechsel und Ernährungsstörungen"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id228 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id228
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Hyperglykämie, Hyperurikämie, Elektrolytstörungen (inklusive Hyponatriämie, Hypokaliämie, Hypomagnesiämie, Hyperkalzämie)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id229 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id229
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Verschlechterung einer diabetischen Stoffwechsellage."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id230 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 11
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 10
+        start: 0
+        values: 
+        - :italic
+      - *id230
+      preformatted: false
+      raw_txt: 
+      text: "Vereinzelt: Hypochlorämische Alkalose."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id231 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 24
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 23
+        start: 0
+        values: 
+        - :italic
+      - *id231
+      preformatted: false
+      raw_txt: 
+      text: "Psychiatrische Störungen"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id232 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id232
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Schlafstörungen, Depression, Unruhe."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id233 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id233
+      preformatted: false
+      raw_txt: 
+      text: "Störungen des Nervensystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id234 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id234
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Benommenheit, Schwindel."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id235 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id235
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Parästhesie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id236 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 11
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 10
+        start: 0
+        values: 
+        - :italic
+      - *id236
+      preformatted: false
+      raw_txt: 
+      text: Augenleiden
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id237 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id237
+      preformatted: false
+      raw_txt: 
+      text: "Selten: vorübergehende Sehstörungen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id238 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 12
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 11
+        start: 0
+        values: 
+        - :italic
+      - *id238
+      preformatted: false
+      raw_txt: 
+      text: "Sehr selten: akute Myopie, akutes Engwinkelglaukom."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id239 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 45
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 44
+        start: 0
+        values: 
+        - :italic
+      - *id239
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen des Herz-/Kreislaufsystems"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id240 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 13
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 12
+        start: 0
+        values: 
+        - :italic
+      - *id240
+      preformatted: false
+      raw_txt: 
+      text: "Gelegentlich: Orthostatische Hypotonie, die durch Alkohol, Anästhetika oder Sedative verstärkt werden kann."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id241 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id241
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Herzrhythmusstörungen, nekrotisierende Angiitis (Vaskulitis)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id242 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 34
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 25
+        start: 0
+        values: 
+        - :italic
+      - !ruby/object:ODDB::Text::Format 
+        end: 33
+        start: 26
+        values: 
+        - :italic
+      - *id242
+      preformatted: false
+      raw_txt: 
+      text: "Respiratorische Funktionsstörungen"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id243 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id243
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Respiratorische Beschwerden einschliesslich Pneumonitis und Lungenödem."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id244 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 29
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 28
+        start: 0
+        values: 
+        - :italic
+      - *id244
+      preformatted: false
+      raw_txt: 
+      text: Gastrointestinale Beschwerden
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id245 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 13
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 12
+        start: 0
+        values: 
+        - :italic
+      - *id245
+      preformatted: false
+      raw_txt: 
+      text: "Gelegentlich: Anorexie, Appetitlosigkeit, gastrointestinale Beschwerden (inklusive leichte Übelkeit, Erbrechen, Abdominalbeschwerden), Diarrhö, Verstopfung."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id246 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id246
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Pankreatitis."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id247 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 42
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 41
+        start: 0
+        values: 
+        - :italic
+      - *id247
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Leber und der Galle"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id248 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id248
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Gelbsucht (intrahepatische cholestatische Gelbsucht)."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id249 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 27
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 26
+        start: 0
+        values: 
+        - :italic
+      - *id249
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Haut"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id250 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 13
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 12
+        start: 0
+        values: 
+        - :italic
+      - *id250
+      preformatted: false
+      raw_txt: 
+      text: "Gelegentlich: Rash, Urticaria, Photosensibilisierung."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id251 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id251
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Toxisch epidermale Nekrolyse, systemischer Lupus-erythematodes, kutaner Lupus erythematodes."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id252 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 41
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 40
+        start: 0
+        values: 
+        - :italic
+      - *id252
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen des Bewegungsapparates"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id253 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id253
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Muskelspasmen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id254 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 54
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 53
+        start: 0
+        values: 
+        - :italic
+      - *id254
+      preformatted: false
+      raw_txt: 
+      text: "Funktionsstörungen der Nieren und ableitenden Harnwege"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id255 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id255
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Glykosurie."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id256 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id256
+      preformatted: false
+      raw_txt: 
+      text: "Selten: renale Dysfunktion, interstitielle Nephritis."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id257 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 20
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 19
+        start: 0
+        values: 
+        - :italic
+      - *id257
+      preformatted: false
+      raw_txt: 
+      text: "Allgemeine Störungen"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id258 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id258
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Schwäche."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id259 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id259
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Fieber, Kopfschmerzen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id260 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 14
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 13
+        start: 0
+        values: 
+        - :italic
+      - *id260
+      preformatted: false
+      raw_txt: 
+      text: Untersuchungen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id261 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id261
+      preformatted: false
+      raw_txt: 
+      text: "Häufig: Erhöhungen von Cholesterin und Triglyceriden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id262 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 7
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 6
+        start: 0
+        values: 
+        - :italic
+      - *id262
+      preformatted: false
+      raw_txt: 
+      text: "Selten: Erhöhungen von BUN und Serumkreatinin."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id263 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 10
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 9
+        start: 0
+        values: 
+        - :italic
+      - *id263
+      preformatted: false
+      raw_txt: 
+      text: Laborwerte
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id264 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id264
+      preformatted: false
+      raw_txt: 
+      text: "Ein Anstieg von Kreatinin, Harnstoff, Kalium, Harnsäure, Glukose und ALAT (GPT) und eine Abnahme von Natrium wurde beobachtet. Vereinzelt hat man eine geringfügige Abnahme des Hämoglobins und eine Erhöhung des ASAT (GOT) beobachtet."
+    subheading: ""
+usage: !ruby/object:ODDB::Text::Chapter 
+  heading: Dosierung/Anwendung
+  sections: 
+  - !ruby/object:ODDB::Text::Section 
+    paragraphs: 
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id265 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id265
+      preformatted: false
+      raw_txt: 
+      text: "Die empfohlene Dosis ist 1\xC3\x97 täglich 1 Tablette Cansartan-Mepha Plus 8/12.5 mg resp. 1 Tablette Cansartan-Mepha Plus 16/12.5 mg. Cansartan-Mepha Plus 32/12.5 mg oder 32/25 mg 1\xC3\x97 täglich kann bei Patienten verabreicht werden, bei denen eine optimale Blutdruckkontrolle mit den niedrigeren Dosierungsstärken nicht erreicht wird."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id266 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id266
+      preformatted: false
+      raw_txt: 
+      text: Die maximale antihypertensive Wirkung wird innert 4 Wochen nach Behandlungsbeginn erreicht.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id267 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id267
+      preformatted: false
+      raw_txt: 
+      text: Cansartan-Mepha Plus kann mit oder ohne Mahlzeiten eingenommen werden.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id268 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 0
+        values: 
+        - :italic
+      - *id268
+      preformatted: false
+      raw_txt: 
+      text: Spezielle Dosierungsanweisungen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id269 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 0
+        values: 
+        - :italic
+      - *id269
+      preformatted: false
+      raw_txt: 
+      text: "Anwendung bei älteren Patienten"
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id270 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id270
+      preformatted: false
+      raw_txt: 
+      text: "Bei älteren Patienten ist keine Dosisanpassung erforderlich."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id271 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 32
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 31
+        start: 0
+        values: 
+        - :italic
+      - *id271
+      preformatted: false
+      raw_txt: 
+      text: Anwendung bei Niereninsuffizienz
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id272 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id272
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit einer leichten bis mässigen Nierenfunktionsstörung (d.h. Kreatinin-Clearance 30-89 ml/min/1.73 m2 Körperoberfläche) wird eine Dosistitrierung empfohlen."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id273 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id273
+      preformatted: false
+      raw_txt: 
+      text: Bei Patienten mit Niereninsuffizienz sind Schleifendiuretika den Thiaziden vorzuziehen.
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id274 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id274
+      preformatted: false
+      raw_txt: 
+      text: "Patienten mit einer schweren Nierenfunktionsstörung (d.h. Kreatinin-Clearance <30 ml/min/1.73 m\xC2\xB2 Körperoberfläche) sollte Cansartan-Mepha Plus nicht verabreicht werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id275 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 31
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 30
+        start: 0
+        values: 
+        - :italic
+      - *id275
+      preformatted: false
+      raw_txt: 
+      text: Anwendung bei Leberinsuffizienz
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id276 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id276
+      preformatted: false
+      raw_txt: 
+      text: "Bei Patienten mit leichten bis mässigen chronischen Lebererkrankungen wird eine Dosistitrierung empfohlen. Patienten mit einer schweren Leberinsuffizienz und/oder Cholestase sollte Cansartan-Mepha Plus nicht verabreicht werden."
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id277 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 38
+        values: []
+
+      formats: 
+      - !ruby/object:ODDB::Text::Format 
+        end: 37
+        start: 0
+        values: 
+        - :italic
+      - *id277
+      preformatted: false
+      raw_txt: 
+      text: Anwendung bei Kindern und Jugendlichen
+    - !ruby/object:ODDB::Text::Paragraph 
+      format: &id278 !ruby/object:ODDB::Text::Format 
+        end: -1
+        start: 0
+        values: []
+
+      formats: 
+      - *id278
+      preformatted: false
+      raw_txt: 
+      text: "Die Sicherheit und Wirksamkeit von Cansartan-Mepha Plus bei Kindern und Jugendlichen (0-18 Jahre) wurden nicht geprüft."
+    subheading: ""

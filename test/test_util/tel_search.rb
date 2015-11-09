@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 gem 'minitest'
 require 'minitest/autorun'
 require 'util/tel_search'
+require 'open-uri'
 
 class TestTelSearch <Minitest::Test
   def test_niklaus_gigerwhich_has_no_fax_published

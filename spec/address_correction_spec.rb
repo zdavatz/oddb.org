@@ -69,22 +69,18 @@ describe "ch.oddb.org" do
       AddressCorrections.new('company',
                               OddbUrl + '/de/gcc/company/ean/7601001001121',
                               OddbUrl + '/de/gcc/suggest_address/company/7601001001121/address/0/zone/companies',
-                              OddbUrl + '/de/gcc/address_suggestion/company/7601001001121/oid/32401513',
                               ),
       AddressCorrections.new('doctor',
                               OddbUrl + '/de/gcc/doctor/ean/7601000254344',
                               OddbUrl + '/de/gcc/suggest_address/doctor/7601000254344/address/0/zone/doctors',
-                              OddbUrl + '/de/gcc/address_suggestion/doctor/7601000254344/oid/32401513',
                              ),
       AddressCorrections.new('hospital',
                             OddbUrl + '/de/gcc/hospital/ean/7601002002592',
                             OddbUrl + '/de/gcc/suggest_address/hospital/7601002002592/address/0/zone/hospitals',
-                            OddbUrl + '/de/gcc/address_suggestion/hospital/7601002002592/oid/32401511',
                             ),
       AddressCorrections.new('pharmacy',
                             OddbUrl + '/de/gcc/pharmacy/ean/7601001380028',
                             OddbUrl + '/de/gcc/suggest_address/pharmacy/7601001380028/address/0/zone/pharmacies',
-                            OddbUrl + '/de/gcc/address_suggestion/pharmacy/7601001380028/oid/32401536',
                             ),
     ]
   to_check.each {
@@ -94,7 +90,6 @@ describe "ch.oddb.org" do
       @browser.goto correction.url_display
       sleep(1) unless @browser.button(:name, "correct").exist?
       unless @browser.button(:name, "correct").exist?
-        # require 'pry'; binding.pry
         skip "Login failed. Please check your setup"
       end
       @browser.button(:name, "correct").click
@@ -103,21 +98,37 @@ describe "ch.oddb.org" do
       @browser.textarea(:name, "message").set("Testbemerkung")
       @browser.textarea(:name, "additional_lines").set("Neue Addresszeile")
       @browser.button(:value,"Vorschlag senden").click
-      sleep(1)
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
-    end
-  }  unless ['just-medical'].index(Flavor)
-  to_check.each {
-    |correction|
-    it "should be possible to visit the correction for #{correction.name}" do
-      login
-      @browser.goto correction.url_from_received_mail
+      ean13 = /\d{13}/.match correction.url_correct
+      skip "Could not find Oddb_log_file #{Oddb_log_file}" unless File.exists?(Oddb_log_file)
+      log_line = `grep #{ean13} #{Oddb_log_file} | tail -1`.chomp
+      url_from_received_mail = /http:[^\s]+/.match(log_line).to_s
+      puts "oddb_log_file #{Oddb_log_file} url_from_received_mail #{url_from_received_mail}"
+
+      # As a normal user I must not be view the change
+      expect(login(ViewerUser,  ViewerPassword)).to eq true
+      @browser.goto url_from_received_mail
+      sleep 0.1
+      text = @browser.text.to_s.clone
+      # puts "URL #{@browser.url} with :#{text}"
+      expect(text).not_to match /Momentan Aktive Adresse/
+
+      # As a admin user I must not be view the change
+      logout
+      expect(login(AdminUser, AdminPassword)).to eq true
+      @browser.goto url_from_received_mail
+      expect(@browser.url).to eq(url_from_received_mail)
+      sleep 1
+      text = @browser.text.clone
+      expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.button(:name => 'accept').exist?).to eq(true)
       expect(@browser.text).to match /Momentan Aktive Adresse/
       expect(@browser.text).to match /E-Mail für Rückfragen/
+      expect(@browser.url).to eq(url_from_received_mail)
     end
   }  unless ['just-medical'].index(Flavor)
+
 
   after :each do
     logout

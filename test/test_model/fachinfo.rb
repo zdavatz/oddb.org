@@ -12,6 +12,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'model/fachinfo'
 require 'model/text'
+require 'yaml'
 
 module ODDB
   class Fachinfo
@@ -90,8 +91,10 @@ Wirkstoff: Diamorphin als Diamorphinhydrochlorid Monohydrat'
       assert_equal(2, chapters.size)
       expected = "Zusammensetzung
 Diaphin i.v.
-Wirkstoff: Diamorphin als Diamorphinhydrochlorid MonohydratEigenschaften/Wirkungen
-ATC-Code: L01XE31"
+Wirkstoff: Diamorphin als Diamorphinhydrochlorid Monohydrat
+Eigenschaften/Wirkungen
+ATC-Code: L01XE31
+"
       assert_equal(expected, fachinfo.text)
     end
     def test_each_chapter_pseudo_fachinfo
@@ -273,6 +276,29 @@ expected = "-line 2
       @doc.add_change_log_item(old_fi.text, @doc.text)
       assert_equal(expected, @doc.change_log[0].diff.to_s)
       assert_equal(@@today, @doc.change_log[0].time)
+    end
+    def test_fachinfo_text_with_table
+      file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'Cansartan-61215.yaml'))
+      fi = YAML.load_file(file)
+      fi_text = fi.text
+      text_last_table_row = fi.effects.paragraphs[17].rows[5].to_s
+      text_chapter_17 = fi.effects.paragraphs[17].to_s
+      assert(/(\n|^)Zusammensetzung/.match(fi_text))
+      assert(/\nDosierung\/Anwendung/.match(fi_text))
+      assert(/\nGalenische Form und Wirkstoffmenge pro Einheit/.match(fi_text))
+      assert(/Patientenzahl/.match(text_chapter_17))
+      assert(/mit einem/.match(text_chapter_17))
+      assert(/Patientenzahl mit einem ersten Ereignis/.match(text_chapter_17))
+      assert(/Kontrollgruppe/.match(text_chapter_17))
+      assert(/Kontrollgruppe/.match(text_chapter_17))
+      assert(text_chapter_17.index('Candesartan Cilexetil* (N=2477) Kontrollgruppe* (N=2460) Relatives Risiko (95% CI)'))
+      assert(fi_text.index(/ ungen.{1,2}gender Effekt/) > 0, "Muss Umlaute korrekt darstellen")
+      assert(fi_text.index('Relatives Risiko (95% CI)') > 0, 'Muss Text in Tabelle finden')
+      assert(fi_text.index('kognitiven Funktion und der Lebensqualit') > 0, "Muss Text in Kapitel 'Klinische Wirksamkeit' von  Eigenschaften/Wirkungen finden")
+      assert(fi_text.index(' ungenügender Effekt') > 0, "Muss Umlaute korrekt darstellen")
+      assert(fi_text.index('Wirkungsmechanismus/Pharmakodynamik') > 0, "Muss Text in Eigenschaften/Wirkungen finden")
+      assert(fi_text.index('kognitiven Funktion und der Lebensqualitä') > 0, "Muss Text in Kapitel 'Klinische Wirksamkeit' von  Eigenschaften/Wirkungen finden")
+
     end
   end
 end
