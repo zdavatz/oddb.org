@@ -977,6 +977,14 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Clexane&reg;
       end
       
+      def test_driving_abilities_umlaut
+        File.open('test.yaml', 'w+') {|f| f.write @@fachinfo.to_yaml}
+        search_test = 'Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen'
+        assert_equal(search_test, @@fachinfo.driving_ability.heading)
+        assert(@@fachinfo.driving_ability.to_yaml.index(search_test))
+        assert(@@fachinfo.driving_ability.to_s.index(search_test))
+      end
+
       def test_fixed_font
         assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
         assert(@@fachinfo.galenic_form.to_yaml.index('Fertigspritze'))

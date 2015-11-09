@@ -240,7 +240,7 @@ module ODDB
 		end
     def text
       string = ''
-      each_chapter{|chap| string << chap.to_s}
+      each_chapter{|chap| string << chap.to_s + "\n" }
       string
     end
 	end
