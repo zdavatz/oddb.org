@@ -37,7 +37,6 @@ module ODDB
         :effects             => /^Propriétés/iu, # 13
         :other_advice        => /^Remarques/u, # 16
         :packages            => /^Présentation/iu, # 18
-        :registration_owner  => /^Titulaire\s+de\s+lautorisation$/u, # 19
         :date                => /^Mise à jour/iu, # 20
         :fabrication         => /^Fabricant$/u,
         :distributor         => /^Distributeur/u,

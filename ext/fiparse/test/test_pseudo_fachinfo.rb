@@ -75,7 +75,6 @@ module ODDB
         assert_equal( 2, @@fachinfo.composition.paragraphs.size)
         owner = 'IBSA Institut Biochimique SA, 6903 Lugano.'
         assert_equal( owner, @@fachinfo.distributor.paragraphs.first.text)
-        assert_equal( owner, @@fachinfo.registration_owner)
       end
     end
   end
