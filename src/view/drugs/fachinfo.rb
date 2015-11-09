@@ -97,7 +97,6 @@ class FiChapterChooser < HtmlGrid::Composite
       xx += 1
     }
     colspan_map.store(pos, xwidth - pos.at(0))
-    $stdout.puts "Bottom fi_link_to_ddd #{@model.iksnrs.first} #{ @lookandfeel.disabled?(:fi_link_to_ddd)} nr logs #{document.change_log.size} @colspan_map #{@colspan_map} comps #{@components}"
     super
   end
   def change_log(model, session=@session, key=:change_log)
@@ -105,7 +104,6 @@ class FiChapterChooser < HtmlGrid::Composite
     # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/51193/diff/2015-10-27
     link.set_attribute('title', @lookandfeel.lookup(:change_log))
     link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr, :diff] )
-    puts "change_log #{@lookandfeel.lookup(:change_log_title)} #{link.href}"
     link
   end
   def ddd(model, session)
