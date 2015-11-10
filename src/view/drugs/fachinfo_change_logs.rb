@@ -8,23 +8,27 @@ require 'htmlgrid/value'
 module ODDB
   module View
     module Drugs
-      class FachinfoDocumentChangelogItem < View::PublicTemplate
+      class FachinfoDocumentChangelogItemComposite < HtmlGrid::Composite
         LEGACY_INTERFACE = false
-        include View::AdditionalInformation
         COMPONENTS = {
-          [0,0] => :name,
-          [2,0] => :nr_chunks,
-          [3,0] => :th_time,
-          [4,0] => :time,
+          [0,0, 1] => 'th_change_log',
+          [0,0, 2] => '&nbsp',
+          [0,0, 3] => :name,
+          [0,0, 4] => '&nbsp',
+          [0,0, 5] => :nr_chunks,
+          [0,0, 6] => '&nbsp',
+          [0,0, 7] => 'th_nr_chunks',
+          [0,0, 8] => '&nbsp',
+          [0,0, 9] => 'th_change_log_time',
+          [0,0,10] => '&nbsp',
+          [0,0,11] => :time,
           [0,1] => :diff,
         }
         CSS_MAP = {
-          [0,0] =>  'name list',
-          [2,0] =>  'nr_chunks list',
-          [4,0] =>  'time list',
-          [0,1] =>  'diff',
+          [0,0] => 'th',
         }
         CSS_CLASS = 'composite '
+        COLSPAN_MAP = { [0,1] => 6 }
 
         DEFAULT_CLASS = HtmlGrid::Value
         def diff(model)
@@ -43,6 +47,11 @@ module ODDB
           model.time.to_s
         end
       end
+      class FachinfoDocumentChangelogItem < PrivateTemplate
+        CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
+        SNAPBACK_EVENT = :result
+      end
+
       class FachinfoDocumentChangelogListItem < HtmlGrid::Composite
         LEGACY_INTERFACE = false
         COMPONENTS = {
@@ -102,16 +111,14 @@ module ODDB
           super
         end
         def heading(model)
-          title = @session.lookandfeel.lookup(:name_list)
+          title = @session.lookandfeel.lookup(:th_change_log_heading)
           return title unless @session.choosen_fachinfo_diff[0]
           info  = @session.choosen_fachinfo_diff[0]
           "#{title} #{info.iksnr} #{info.name_base}"
         end
       end
-      class FachinfoDocumentChangelogs < View::PublicTemplate
-        CSS_CLASS = 'composite'
+      class FachinfoDocumentChangelogs < View::PrivateTemplate
         SNAPBACK_EVENT = :result
-        include View::AdditionalInformation
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
       end
       class EmptyResultForm < HtmlGrid::Form

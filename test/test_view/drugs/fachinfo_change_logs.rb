@@ -85,7 +85,7 @@ module ODDB
         @item.init
         result = @item.to_html(CGI.new)
         # puts @result.split('<TD').join("\n")
-        File.open("test_diff_single_item.html", 'w+') {|f| f.write @result.split('<TD').join("\n") } if DEBUG_HTML
+        File.open("test_diff_single_item.html", 'w+') {|f| f.write @result.split('<TD').join("\n") }if DEBUG_HTML
         assert_match(@@two_years_ago.to_s, result)
         assert_match(@old_string, result)
         assert_match(@new_string, result)
