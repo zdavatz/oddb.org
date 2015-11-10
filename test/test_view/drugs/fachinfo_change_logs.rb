@@ -55,7 +55,6 @@ module ODDB
         old_long = "eins\nzwei\ndrei\nvier\n\nfünf\nsechs\n\sieben\nacht\nNeun\nZehn\n"
         @session.request_path = "de/gcc/show/fachinfo/51193/diff/#{@@one_year_ago.to_s}"
         new_long = "eins\nzwei\ndrei\nvier\n\nFünfte Zeile geändert\nZeile eingefügt\nsechs\n\sieben\nacht\nNeun\nZehn\n"
-#        registration('51193').fachinfo.de.add_change_log_item($old_long, $new_long, { :context => 3, :include_plus_and_minus_in_html => true})
         @text_item.add_change_log_item(old_long, new_long,
                                        @@one_year_ago,
                                        { :context => 3, :include_plus_and_minus_in_html => true})
@@ -80,12 +79,6 @@ module ODDB
         assert_equal(3, @session.choosen_fachinfo_diff.size)
         @result = @list.to_html(CGI.new)
 
-      end
-      def test_time
-        assert_kind_of(String, @result)
-        assert_match(@@one_year_ago.to_s, @result)
-        assert_match(@@two_years_ago.to_s, @result)
-        assert_nil(/#{@@today}/.match(@result))
       end
       def test_diff_single_item
         @item   = ODDB::View::Drugs::FachinfoDocumentChangelogItem.new(@text_item.change_log[1], @session)

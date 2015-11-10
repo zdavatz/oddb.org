@@ -1099,6 +1099,7 @@ Zeno Davatz
 				:name_descr								=>	'Beschreibung',
 				:name_first								=>  'Vorname',
 				:name_last								=>  'Nachname',
+				:name_list								=>  'Liste der Änderungen (ab November 2015) an der Fachinformation zu ',
 				:name											=>  'Name',
 				:name_sender              =>  'Absender-Name',
 				:narcotic									=>	'Betäubungsmittel',
