@@ -170,7 +170,7 @@ module ODDB
           :preferences            => State::User::Preferences,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
-          :diff             => State::Drugs::FachinfoDocumentChangelogs,
+          :diff                   => State::Drugs::FachinfoDocumentChangelogs,
           :ddd                    => State::Drugs::DDD,
           :ddd_chart              => State::Ajax::DDDChart,
           :ddd_price              => State::Drugs::DDDPrice,
@@ -915,7 +915,7 @@ module ODDB
           state
         end
 			end
-			def show
+      def show
         choosen = @session.choosen_fachinfo_diff
         if choosen.size == 3
           State::Drugs::FachinfoDocumentChangelogItem.new(@session, choosen[2])
