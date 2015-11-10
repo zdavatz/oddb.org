@@ -224,7 +224,18 @@ module ODDB
         end
         text
       end
-      alias_method :to_s, :text
+      def to_s
+        text = ''
+        @contents.map do |content|
+          if content.is_a? Paragraph
+            text << content.text
+          else
+            text << content if content and content.to_s.length > 0
+          end
+        end
+        text.gsub("\n", ' ')
+      end
+
       def preformatted?
         false
       end
@@ -334,33 +345,13 @@ module ODDB
         true
       end
       def to_s opts={}
-        widths = column_widths
-        total_width = widths.inject do |a,b| a+b+2 end
-        if (width = opts[:width]) && width < total_width
-          factor = width.to_f / total_width
-          widths.collect! do |w| (w * factor).floor end
-          total_width = width
-        end
-        hr = '-' * total_width
-        @rows.collect { |row|
-          lines = []
-          parts = []
-          heights = []
-          idx = 0
-          chunks = row.collect { |cell| 
-            chunk = wrap(cell.to_s, widths[idx], opts).split("\n")
-            heights.push chunk.size
-            idx += 1
-            chunk 
-          }
-          height = heights.max
-          chunks.each_with_index { |chunk, x_idx|
-            height.times { |y_idx|
-              (lines[y_idx] ||= '') << chunk[y_idx].to_s.ljust(widths.at(x_idx) + 2)
-            }
-          }
-          lines.unshift hr
-        }.flatten.push(hr).join("\n")
+        string = ''
+        @rows.each { |row|
+                     next unless row and row.to_s and row.to_s.length > 0
+                     add = row.collect{|cell| cell.to_s}.join(' ').gsub("\n", '')
+                     string << add + "\n"
+                   }
+        string
       end
       def width
         @rows.collect { |row| row.length }.max  

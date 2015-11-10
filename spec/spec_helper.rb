@@ -30,6 +30,8 @@ medi = 'Losartan'
 chooser = @browser.text_field(:id, id)
 )
 
+Oddb_log_file ||= File.join("/var/www/oddb.org/log/oddb/debug/#{Date.today.year}/#{sprintf('%02d', Date.today.month)}.log")
+
 if RUBY_PLATFORM.match(/mingw/)
   require 'watir'
   browsers2test = [ :ie ]
@@ -75,12 +77,14 @@ def login(user = AdminUser, password=AdminPassword, remember_me=false)
   @browser.link(:text=>'Anmeldung').when_present.click
   @browser.text_field(:name, 'email').when_present.set(user)
   @browser.text_field(:name, 'pass').when_present.set(password)
+  # puts "Login with #{@browser.text_field(:name, 'email').value} and #{@browser.text_field(:name, 'pass').value}"
   if remember_me
     @browser.checkbox(:name, "remember_me").set
   else
     @browser.checkbox(:name, "remember_me").clear
   end
   @browser.button(:name,"login").click
+  sleep 1 unless @browser.button(:name,"logout").exists?
   if  @browser.button(:name,"login").exists?
     @browser.goto(OddbUrl)
     return false

@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Photo -- oddb.org -- 27.07.2012 -- yasaka@ywesee.com
-
 require 'htmlgrid/div'
 require 'htmlgrid/image'
 require 'htmlgrid/link'
@@ -10,76 +8,84 @@ require 'htmlgrid/value'
 module ODDB
   module View
     module Drugs
-      class FachinfoDocumentChangelogItem < View::PublicTemplate
-        include View::AdditionalInformation
+      class FachinfoDocumentChangelogItemComposite < HtmlGrid::Composite
+        LEGACY_INTERFACE = false
         COMPONENTS = {
-          [0,0] => :name,
-          [2,0] => :nr_chunks,
-          [3,0] => :th_time,
-          [4,0] => :time,
+          [0,0, 1] => 'th_change_log',
+          [0,0, 2] => '&nbsp',
+          [0,0, 3] => :name,
+          [0,0, 4] => '&nbsp',
+          [0,0, 5] => :nr_chunks,
+          [0,0, 6] => '&nbsp',
+          [0,0, 7] => 'th_nr_chunks',
+          [0,0, 8] => '&nbsp',
+          [0,0, 9] => 'th_change_log_time',
+          [0,0,10] => '&nbsp',
+          [0,0,11] => :time,
           [0,1] => :diff,
         }
         CSS_MAP = {
-          [0,0] =>  'name list',
-          [2,0] =>  'nr_chunks list',
-          [4,0] =>  'time list',
-          [0,1] =>  'diff',
+          [0,0] => 'th',
         }
-        CSS_CLASS = 'composite'
-        COLSPAN_MAP = { [0,1] => 5, }
+        CSS_CLASS = 'composite '
+        COLSPAN_MAP = { [0,1] => 6 }
 
         DEFAULT_CLASS = HtmlGrid::Value
-        def diff(model, session)
+        def diff(model)
           return model.diff.to_s(:html)
         end
-        def nr_chunks(model, session)
+        def nr_chunks(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
           j = 0; model.diff.each_chunk{|x| j+= 1}
           j
         end
-        def name(model, session)
+        def name(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
           @session.choosen_fachinfo_diff[0].name_base
         end
-        def time(model, session)
+        def time(model)
           model.time.to_s
         end
       end
-      class FachinfoDocumentChangelogList < HtmlGrid::List
-        EMPTY_LIST_KEY = :choose_fachinfo_range
+      class FachinfoDocumentChangelogItem < PrivateTemplate
+        CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
+        SNAPBACK_EVENT = :result
+      end
+
+      class FachinfoDocumentChangelogListItem < HtmlGrid::Composite
+        LEGACY_INTERFACE = false
         COMPONENTS = {
           [0,0] => :name,
-          [2,0] => :nr_chunks,
-          [4,0] => :time,
-          [6,0] => :change_log,
-        }
+          [1,0] => :nr_chunks,
+          [2,0] => :time,
+          }
         DEFAULT_CLASS = HtmlGrid::Value
         CSS_CLASS = 'composite'
-        CSS_MAP = {
-          [0,0] =>  'name list',
-          [2,0] =>  'nr_chunkslist',
-          [4,0] =>  'timelist',
-          [6,0] =>  'change_log',
-        }
-        SORT_DEFAULT = false
-        SORT_HEADER = false
-        def nr_chunks(model, session)
+        def nr_chunks(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
           j = 0; model.diff.each_chunk{|x| j+= 1}
           j
         end
-        def name(model, session)
+        def name(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
           @session.choosen_fachinfo_diff[0].name_base
         end
-        def time(model, session)
-          model.time.to_s
-        end
-        def change_log(model, session=@session, key=:change_log)
-          return nil unless @session.choosen_fachinfo_diff.size > 0
+      end
+      class FachinfoDocumentChangelogList < HtmlGrid::List
+        CSS_CLASS = 'composite'
+        OMIT_HEADER = true
+        COMPONENTS = {
+          [0,0] => :list_item,
+        }
+        DEFAULT_CLASS = HtmlGrid::Value
+        SORT_DEFAULT = false
+        SORT_HEADER = false
+        def list_item(model, session=@session, key=:change_log)
+          return unless model and @session.choosen_fachinfo_diff.size > 0
           link = HtmlGrid::Link.new(key, model, session, self)
           # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/51193/diff/2015-10-27
           link.set_attribute('title', @lookandfeel.lookup(:change_log))
+          link.value = FachinfoDocumentChangelogListItem.new(model, session, self)
           link.href = @lookandfeel._event_url(:show,
                                               [:fachinfo,
                                                @session.choosen_fachinfo_diff[0].iksnr,
@@ -90,30 +96,33 @@ module ODDB
         end
       end
       class FachinfoDocumentChangelogsComposite < HtmlGrid::Composite
+        LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
         COMPONENTS = {
-          [0,1]   =>  :change_log_list,
+          [0,0] => :heading,
+          [0,1] =>  FachinfoDocumentChangelogList,
         }
         CSS_MAP = {
-          [0,0] => 'change_log_list right',
+          [0,0] => 'th',
         }
-         def initialize(model, session, container)
+        def initialize(model, session, container)
           # latest changes must come first!
           model.sort!{|x,y| y.time.to_s <=> x.time.to_s}
           super
         end
-        def change_log_list(model, session)
-          FachinfoDocumentChangelogList.new(model, session, self)
+        def heading(model)
+          title = @session.lookandfeel.lookup(:th_change_log_heading)
+          return title unless @session.choosen_fachinfo_diff[0]
+          info  = @session.choosen_fachinfo_diff[0]
+          "#{title} #{info.iksnr} #{info.name_base}"
         end
       end
-      class FachinfoDocumentChangelogs < View::PublicTemplate
-        include View::AdditionalInformation
+      class FachinfoDocumentChangelogs < View::PrivateTemplate
+        SNAPBACK_EVENT = :result
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
-         def initialize(model, session)
-          super
-        end
       end
       class EmptyResultForm < HtmlGrid::Form
+        CSS_CLASS = 'composite'
         COMPONENTS = {
           [0,1]   =>  :title_none_found,
           [0,2]   =>  'e_empty_result',
@@ -122,9 +131,8 @@ module ODDB
           [0,0]     =>  'search',
           [0,1]     =>  'th',
         }
-        CSS_CLASS = 'composite'
         def title_none_found(model, session)
-          @lookandfeel.lookup(:title_none_found, 'xng')
+          @lookandfeel.lookup(:title_none_found)
         end
       end
     end

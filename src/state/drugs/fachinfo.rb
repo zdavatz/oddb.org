@@ -49,11 +49,12 @@ class FachinfoPrint < State::Drugs::Global
 end
 class FachinfoDocumentChangelogs < State::Drugs::Global
   VIEW = View::Drugs::FachinfoDocumentChangelogs
-  VOLATILE = true
+  LIMITED = false
+  FILTER_THRESHOLD = 10
 end
 class FachinfoDocumentChangelogItem < State::Drugs::Global
+  LIMITED = false
   VIEW = View::Drugs::FachinfoDocumentChangelogItem
-  VOLATILE = true
 end
 class AjaxLinks < Global
   VOLATILE = true
