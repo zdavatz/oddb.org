@@ -136,13 +136,14 @@ module ODDB
       end
     end
     def TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
-      $stdout.puts("add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text[-30..-1]} -> #{new_text[-30..-1]}")
+      msg = "add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text[-30..-1]} -> #{new_text[-30..-1]}"
+      LogFile.debug msg
+      $stdout.puts(msg); $stdout.sync
       text_item.add_change_log_item(old_text, new_text)
       text_item.odba_isolated_store
     end
     def TextInfoPlugin::store_fachinfo(app, reg, fis)
       existing = reg.fachinfo
-      $stdout.puts("store_fachinfo: #{reg.iksnr} existing  #{existing.class}")
       ptr = Persistence::Pointer.new(:fachinfo).creator
       if existing
         old_text_de = existing.de.text
@@ -1192,7 +1193,7 @@ module ODDB
       unless infos.empty?
         _infos = {}
         [:de, :fr].map do |lang|
-          LogFile.debug "_infos #{lang} #{infos[lang]} #{infos[lang].class}"
+          LogFile.debug "_infos #{lang} #{infos[lang].to_s[0..150] } #{infos[lang].class}"
           unless strange?(infos[lang])
             _infos[lang] = infos[lang]
           end

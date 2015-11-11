@@ -242,7 +242,8 @@ module ODDB
 		def sponsor
 			@app.sponsor(flavor)
 		end
-    DIFF_REGEXP = /show\/fachinfo\/(\d{5})\/diff(?:\/(\d{4}-\d{1,2}-\d{1,2}))*/
+    # we expect a european date in the format tt.dd.yyyy
+    DIFF_REGEXP = /show\/fachinfo\/(\d{5})\/diff(?:\/(\d{2}\.\d{1,2}\.\d{1,4}))*/
     def choosen_fachinfo_diff
       item = nil
       m = DIFF_REGEXP.match(request_path)
@@ -250,7 +251,7 @@ module ODDB
         reg = @app.registration(m[1])
         log = reg.fachinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
         if reg and m[2]
-          item = log.find{|item| item.time.to_s.eql?(m[2])}
+          item = log.find{|item| item.time.strftime('%d.%m.%Y').eql?(m[2])}
           return [reg, log, item].compact
         else
           return [reg, log]

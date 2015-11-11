@@ -8,27 +8,24 @@ require 'htmlgrid/value'
 module ODDB
   module View
     module Drugs
+      # --- display de/gcc/show/fachinfo/63171/diff/31.10.2015
       class FachinfoDocumentChangelogItemComposite < HtmlGrid::Composite
         LEGACY_INTERFACE = false
         COMPONENTS = {
-          [0,0, 1] => 'th_change_log',
-          [0,0, 2] => '&nbsp',
-          [0,0, 3] => :name,
-          [0,0, 4] => '&nbsp',
-          [0,0, 5] => :nr_chunks,
-          [0,0, 6] => '&nbsp',
-          [0,0, 7] => 'th_nr_chunks',
-          [0,0, 8] => '&nbsp',
-          [0,0, 9] => 'th_change_log_time',
-          [0,0,10] => '&nbsp',
-          [0,0,11] => :time,
+          [0,0, 0] => :nr_chunks,
+          [0,0, 1] => '&nbsp',
+          [0,0, 2] => 'th_change_log',
+          [0,0, 3] => '&nbsp',
+          [0,0, 4] => :name,
           [0,1] => :diff,
         }
         CSS_MAP = {
           [0,0] => 'th',
         }
-        CSS_CLASS = 'composite '
-        COLSPAN_MAP = { [0,1] => 6 }
+        CSS_CLASS = 'composite'
+        COLSPAN_MAP = { [0,0] => 9,
+                        [0,1] => 8,
+                      }
 
         DEFAULT_CLASS = HtmlGrid::Value
         def diff(model)
@@ -41,85 +38,77 @@ module ODDB
         end
         def name(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
-          @session.choosen_fachinfo_diff[0].name_base
+          @session.choosen_fachinfo_diff.first.name_base
         end
         def time(model)
-          model.time.to_s
+          model.time.strftime('%d.%m.%Y')
         end
       end
       class FachinfoDocumentChangelogItem < PrivateTemplate
         CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
-        SNAPBACK_EVENT = :result
+        SNAPBACK_EVENT = :change_log_item
       end
 
-      class FachinfoDocumentChangelogListItem < HtmlGrid::Composite
-        LEGACY_INTERFACE = false
-        COMPONENTS = {
-          [0,0] => :name,
-          [1,0] => :nr_chunks,
-          [2,0] => :time,
-          }
-        DEFAULT_CLASS = HtmlGrid::Value
-        CSS_CLASS = 'composite'
-        def nr_chunks(model)
-          return unless model and @session.choosen_fachinfo_diff.size > 0
-          j = 0; model.diff.each_chunk{|x| j+= 1}
-          j
-        end
-        def name(model)
-          return unless model and @session.choosen_fachinfo_diff.size > 0
-          @session.choosen_fachinfo_diff[0].name_base
-        end
-      end
+      # --- display de/gcc/show/fachinfo/63171/diff
       class FachinfoDocumentChangelogList < HtmlGrid::List
+        LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
-        OMIT_HEADER = true
         COMPONENTS = {
-          [0,0] => :list_item,
+          [0,0] => :trademark,
+          [1,0] => :nr_chunks,
+          [2,0] => :change_log_date,
         }
-        DEFAULT_CLASS = HtmlGrid::Value
         SORT_DEFAULT = false
         SORT_HEADER = false
-        def list_item(model, session=@session, key=:change_log)
+        def nr_chunks(model)
           return unless model and @session.choosen_fachinfo_diff.size > 0
-          link = HtmlGrid::Link.new(key, model, session, self)
-          # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/51193/diff/2015-10-27
-          link.set_attribute('title', @lookandfeel.lookup(:change_log))
-          link.value = FachinfoDocumentChangelogListItem.new(model, session, self)
-          link.href = @lookandfeel._event_url(:show,
-                                              [:fachinfo,
-                                               @session.choosen_fachinfo_diff[0].iksnr,
-                                               :diff,
-                                               model.time.to_s
-                                              ] )
+          nr = 0; model.diff.each_chunk{|x| nr+= 1}
+          link = HtmlGrid::Link.new(:change_log, model, @session, self)
+          link.href = get_link_href(model)
+          link.value = nr
           link
+        end
+        def change_log_date(model)
+          return unless model and @session.choosen_fachinfo_diff.size > 0
+          link = HtmlGrid::Link.new(:change_log, model, @session, self)
+          link.href = get_link_href(model)
+          link.value = model.time.strftime('%d.%m.%Y')
+          link
+        end
+        def trademark(model)
+          return unless model and @session.choosen_fachinfo_diff.size > 0
+          link = HtmlGrid::Link.new(:change_log, model, @session, self)
+          link.href = get_link_href(model)
+          link.value = @session.choosen_fachinfo_diff.first.name_base
+          link
+        end
+        def get_link_href(model)
+          @lookandfeel._event_url(:show,
+                                              [:fachinfo,
+                                               @session.choosen_fachinfo_diff.first.iksnr,
+                                               :diff,
+                                               model.time.strftime('%d.%m.%Y')
+                                              ] )
         end
       end
       class FachinfoDocumentChangelogsComposite < HtmlGrid::Composite
-        LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
         COMPONENTS = {
-          [0,0] => :heading,
-          [0,1] =>  FachinfoDocumentChangelogList,
-        }
-        CSS_MAP = {
-          [0,0] => 'th',
+          [0,0] =>  FachinfoDocumentChangelogList,
         }
         def initialize(model, session, container)
           # latest changes must come first!
           model.sort!{|x,y| y.time.to_s <=> x.time.to_s}
           super
         end
-        def heading(model)
-          title = @session.lookandfeel.lookup(:th_change_log_heading)
-          return title unless @session.choosen_fachinfo_diff[0]
-          info  = @session.choosen_fachinfo_diff[0]
-          "#{title} #{info.iksnr} #{info.name_base}"
-        end
       end
       class FachinfoDocumentChangelogs < View::PrivateTemplate
-        SNAPBACK_EVENT = :result
+        SNAPBACK_EVENT = :change_logs
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
+        def initialize(model, session, container=nil)
+          # latest changes must come first!
+          super
+        end
       end
       class EmptyResultForm < HtmlGrid::Form
         CSS_CLASS = 'composite'

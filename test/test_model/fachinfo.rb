@@ -183,6 +183,12 @@ ATC-Code: L01XE31
   class TestFachinfoDocument <Minitest::Test
     include FlexMock::TestCase
     def setup
+      fachinfo = ODDB::FachinfoDocument2001.new
+      fachinfo.composition = ODDB::Text::Chapter.new
+      fachinfo.composition.heading = 'Zusammensetzung'
+      paragraph = fachinfo.composition.next_section.next_paragraph
+      paragraph << 'Diaphin i.v.
+Wirkstoff: Diamorphin als Diamorphinhydrochlorid Monohydrat'
       @doc = FachinfoDocument.new
       @old_text = 'old text'
       @new_text = 'new text'
@@ -192,6 +198,26 @@ ATC-Code: L01XE31
 \\ Kein Zeilenumbruch am Dateiende.
 "
       Diffy::Diff.default_options = Diffy::Diff::ORIGINAL_DEFAULT_OPTIONS
+      @old_fi = ODDB::FachinfoDocument2001.new
+      @old_fi.composition = ODDB::Text::Chapter.new
+      @old_fi.composition.heading = 'Zusammensetzung'
+      @old_paragraph = @old_fi.composition.next_section.next_paragraph
+      @old_paragraph << 'line 1
+line 2
+line 3
+line 4
+line 5
+'
+      @new_doc = ODDB::FachinfoDocument2001.new
+      @new_doc.composition = ODDB::Text::Chapter.new
+      @new_doc.composition.heading = 'Zusammensetzung'
+      @changed_paragraph = @new_doc.composition.next_section.next_paragraph
+      @changed_paragraph << 'line 1
+Changed line 2
+line 3
+line 4
+line 5
+'
     end
     def test_first_chapter
       ue = flexmock 'unwanted_effects'
@@ -222,6 +248,7 @@ ATC-Code: L01XE31
 \\ No newline at end of file
 "
       assert_equal expected, item.diff.to_s
+      assert_equal @@today.to_s, item.time.to_s
     ensure
       ENV['LANGUAGE'] = saved_language
     end
@@ -250,32 +277,29 @@ ATC-Code: L01XE31
       assert_equal( full_options, item.diff.options)
     end
     def test_fachinfo_change_log_text
-      old_fi = ODDB::FachinfoDocument2001.new
-      old_fi.composition = ODDB::Text::Chapter.new
-      old_fi.composition.heading = 'Zusammensetzung'
-      old_paragraph = old_fi.composition.next_section.next_paragraph
-      old_paragraph << 'line 1
-line 2
-line 3
-line 4
-line 5
-'
-      @doc = ODDB::FachinfoDocument2001.new
-      @doc.composition = ODDB::Text::Chapter.new
-      @doc.composition.heading = 'Zusammensetzung'
-      changed_paragraph = @doc.composition.next_section.next_paragraph
-      changed_paragraph << 'line 1
-Changed line 2
-line 3
-line 4
-line 5
-'
+      new_text = @old_fi.text.sub('line 2', 'Changed line 2')
 expected = "-line 2
 +Changed line 2
 "
-      @doc.add_change_log_item(old_fi.text, @doc.text)
+      @doc.add_change_log_item(@old_fi.text, new_text)
       assert_equal(expected, @doc.change_log[0].diff.to_s)
       assert_equal(@@today, @doc.change_log[0].time)
+    end
+    def test_fachinfo_change_log_text_only_once
+      @doc.add_change_log_item(@old_fi.text, @doc.text)
+      assert_equal(1, @doc.change_log.size)
+      @doc.add_change_log_item(@old_fi.text, @doc.text)
+      assert_equal(1, @doc.change_log.size)
+    end
+    def test_fachinfo_change_log_text_only_once_if_emtpy
+      @doc.add_change_log_item(nil, @doc.text)
+      assert_equal(1, @doc.change_log.size)
+      @doc.add_change_log_item(nil, @doc.text)
+      assert_equal(1, @doc.change_log.size)
+      @doc.add_change_log_item(@old_fi.text, @doc.text)
+      assert_equal(2, @doc.change_log.size)
+      @doc.add_change_log_item(@doc.text, 'Neuer Text')
+      assert_equal(3, @doc.change_log.size)
     end
     def test_fachinfo_text_with_table
       file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'Cansartan-61215.yaml'))

@@ -48,11 +48,35 @@ class FachinfoPrint < State::Drugs::Global
   end
 end
 class FachinfoDocumentChangelogs < State::Drugs::Global
+  class FachinfoDocumentChangelogsWrapper < SimpleDelegator
+    attr_accessor :pointer_descr
+  end
+  def init
+    @fachinfoChangelog = @model
+    @model = FachinfoDocumentChangelogsWrapper.new(@fachinfoChangelog)
+    title = @session.lookandfeel.lookup(:th_change_log_heading)
+    iksnr = @session.choosen_fachinfo_diff.first.iksnr
+    name  = @session.choosen_fachinfo_diff.first.name_base
+    descr = "#{title}#{name} (#{@session.lookandfeel.lookup(:fi_iksnrs)} #{iksnr})"
+    @model.pointer_descr = descr
+  end
   VIEW = View::Drugs::FachinfoDocumentChangelogs
   LIMITED = false
   FILTER_THRESHOLD = 10
 end
 class FachinfoDocumentChangelogItem < State::Drugs::Global
+  class FachinfoDocumentChangelogItemWrapper < SimpleDelegator
+    attr_accessor :pointer_descr
+  end
+  def init
+    @fachinfoChangelog = @model
+    @model = FachinfoDocumentChangelogItemWrapper.new(@fachinfoChangelog)
+    # Diff vom 10.11.2015 (Swissmedic-Nr.65569)
+    title = @session.lookandfeel.lookup(:th_change_log_1)
+    iksnr = @session.choosen_fachinfo_diff.first.iksnr
+    descr = "#{title}#{@model.time.strftime('%d.%m.%Y')} (#{@session.lookandfeel.lookup(:fi_iksnrs)} #{iksnr})"
+    @model.pointer_descr = descr
+  end
   LIMITED = false
   VIEW = View::Drugs::FachinfoDocumentChangelogItem
 end
