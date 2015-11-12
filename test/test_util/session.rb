@@ -439,7 +439,7 @@ module ODDB
       reg = flexmock('registration', ODDB::Registration.new(reg_nr), :fachinfo => fi)
       @app.should_receive(:registration).with(reg_nr).and_return(reg)
       text_info.add_change_log_item('alt','neu')
-      @session.instance_eval("@request_path = '/de/gcc/show/fachinfo/#{reg_nr}/diff/#{@@today.to_s}'")
+      @session.instance_eval("@request_path = '/de/gcc/show/fachinfo/#{reg_nr}/diff/#{@@today.strftime('%d.%m.%Y')}'")
       assert_equal(3, @session.choosen_fachinfo_diff.size)
       assert_equal(reg_nr,        @session.choosen_fachinfo_diff[0].iksnr)
       assert_equal(1,             @session.choosen_fachinfo_diff[1].size)

@@ -164,11 +164,18 @@ module ODDB
   end
 	class FachinfoDocument
     include Persistence
+    def pointer_descr
+      'Fachinfo'
+    end
     class ChangeLogItem
       include Persistence
       attr_accessor :time, :diff
-      def to_s
-        puts "ChangeLogItem: created #{time} diff: #{diff.to_s}"
+      def <=>(anOther)
+        # [diff.to_s, time] <=> [anOther.diff.to_s, anOther.time]
+        diff.to_s <=> anOther.diff.to_s
+      end
+      def pointer_descr
+        time.strftime('%d.%m.%Y')
       end
     end
     Fachinfo_diff_options= {:diff                           => "-U 3",
@@ -179,9 +186,14 @@ module ODDB
                             :allow_empty_diff               => false,
                             }
     def add_change_log_item(old_text, new_text, date = @@today, options = Fachinfo_diff_options)
+      @change_log ||= []
       item = ChangeLogItem.new
       item.time = date
-      item.diff =  Diffy::Diff.new(old_text, new_text, options)
+      item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
+      if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
+        puts "FachinfoDocument::ChangeLogItem: Don't adding duplicates entry #{old_text ? old_text[0..150] : ''}"
+        return
+      end
       self.change_log.push(item)
       self.odba_store
     end
