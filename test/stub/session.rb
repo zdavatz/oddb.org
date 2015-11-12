@@ -9,7 +9,7 @@ module ODDB
     attr_accessor :last_update, :currency, :unknown_user, :sponsor, :registrations
   end
   class StubSession < SBSM::Session
-    attr_accessor :lookandfeel, :app, :flavor, :language, :request_path, :diff_info
+    attr_accessor :lookandfeel, :app, :flavor, :language, :request_path, :diff_info, :state
     def choosen_fachinfo_diff
       return @diff_info || []
     end
@@ -20,6 +20,9 @@ module ODDB
       false
     end
     def enabled?
+      true
+    end
+    def allowed?(param1, param2)
       true
     end
     def http_protocol
