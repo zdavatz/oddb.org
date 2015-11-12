@@ -142,6 +142,7 @@ module ODDB
         assert_match('Anzahl Änderungen', result_3_items, 'Must find Anzahl Änderungen in header')
         skip "Snapback does not yet work correctly"
         assert_match('pointer_descr', result_3_items, 'Must find pointer_descr')
+        assert_match("Diff vom #{@@one_year_ago.strftime('%d.%m.%Y')}", result_3_items, 'Must find Diff vom in snapback')
         assert_match('Liste der Änderungen an der Fachinformation zu Gracial (Swissmedic-Nr. 51193)', result_3_items, 'Must find correct heading')
         assert_match('<TD class="th-pointersteps">Änderung zu Fachinfo', result_3_items, 'Must find snapback for Änderung')
       end
