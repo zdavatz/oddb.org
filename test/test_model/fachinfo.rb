@@ -219,6 +219,25 @@ line 4
 line 5
 '
     end
+    def test_image_link
+      new_doc = ODDB::FachinfoDocument2001.new
+      new_doc.composition = ODDB::Text::Chapter.new
+      new_doc.composition.heading = 'Zusammensetzung'
+      para_1 = new_doc.composition.next_section
+      para_2 = para_1.next_paragraph
+      para_2 << 'a'
+      table = para_1.next_table
+      table << 'b'
+      multi = table.next_multi_cell!
+      multi << 'm'
+      image = multi.next_image
+      expected = "Zusammensetzung
+a
+b m(image)
+
+"
+      assert_equal(expected, new_doc.text)
+    end
     def test_first_chapter
       ue = flexmock 'unwanted_effects'
       @doc.unwanted_effects = ue
