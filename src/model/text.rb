@@ -219,8 +219,13 @@ module ODDB
       def text
         text = ''
         @contents.map do |content|
-          text << content.text if content.is_a? Paragraph
-          text << content      if content.is_a? String
+          if content.is_a? Paragraph
+            text << content.text
+          elsif content.is_a? String
+            text << content
+          else
+            text << content.to_s
+          end
         end
         text
       end
@@ -230,7 +235,7 @@ module ODDB
           if content.is_a? Paragraph
             text << content.text
           else
-            text << content if content and content.to_s.length > 0
+            text << content.to_s
           end
         end
         text.gsub("\n", ' ')

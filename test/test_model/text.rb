@@ -666,5 +666,16 @@ cell3  cell4
       @table << 'cell4'
       assert_equal 2, @table.width
     end
+    def test_multi_cell
+      @table.next_row!
+      cell1 = @table.next_cell!
+      @table << 'cell1'
+      cell2 = @table.next_multi_cell!
+      cell2 << 'cell2'
+      image = @table.next_image!
+      cell3 = @table.next_cell!
+      @table << 'cell3'
+      assert_equal "cell1 cell2 (image) cell3\n", @table.to_s
+    end
   end
 end
