@@ -310,6 +310,7 @@ module ODDB
         :explain_generic_url       =>  false,
         :explain_original_url      =>  false,
         :explain_vaccine_url       =>  false,
+        :explain_search            =>  'Sie können nach Originalpräparat, Generikum oder Wirkstoff suchen.<br>Die Suche erfolgt nach dem ATC-Code. ',
 
         :deductible_title0        =>  'Für dieses Produkt bezahlen Sie ',
         :deductible_title1        =>  ' Selbstbehalt.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
@@ -349,6 +350,7 @@ module ODDB
         :deductible_title0        =>  'Le quote-part pour ce produit est ',
         :deductible_title1        =>  '.<br>Faites attention à votre facture de la caisse maladie!',
         :explain_unknown          =>  'noir&nbsp;=&nbsp;pas classes',
+        :explain_search           =>  'Vous pouvez chercher des produit spécifiques génériques ou des principes actifs.<br>La recherche est basée sur le code ATC.',
         :fachinfo_all             =>  'Information professionnelle complète',
         :fi_composition           =>  'Composition',
         :fi_contra_indications    =>  'Contre-indication',
