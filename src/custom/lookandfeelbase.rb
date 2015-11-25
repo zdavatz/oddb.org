@@ -268,6 +268,7 @@ Zeno Davatz
 				:change_flag_14						=>	'Löschung der Registration',
 				:change_flags							=>	'Change-Flags',
         :th_trademark             =>  'Markenname',
+        :change_log_backtracking  =>  'Änderungen',
         :th_change_log            =>  'Änderungen an Fachinfo',
         :th_change_log_1          =>  'Diff vom ',
         :th_change_log_heading    =>  'Liste der Änderungen an der Fachinformation zu ',
