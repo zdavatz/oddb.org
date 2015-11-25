@@ -46,7 +46,40 @@ module ODDB
       end
       class FachinfoDocumentChangelogItem < PrivateTemplate
         CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
-        SNAPBACK_EVENT = :change_log_item
+        SNAPBACK_EVENT = :change_log
+        def backtracking(model, session=@session)
+          fields = []
+          fields << @lookandfeel.lookup(:th_pointer_descr)
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = "list"
+          link.href  = @lookandfeel._event_url(:home, [])
+          link.value = @lookandfeel.lookup(:home)
+          fields << link
+          fields << '&nbsp;-&nbsp;'
+
+          #  /fachinfo/reg/65453
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = "list"
+          link.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
+          link.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
+          fields << link
+
+          fields << '&nbsp;-&nbsp;'
+          #  /fachinfo/reg/65453
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = "list"
+          # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/65569/diff/10.11.2015
+          link.href  = @lookandfeel._event_url(:home, [:fachinfo, :reg, @session.choosen_fachinfo_diff.first.iksnr, :diff])
+          link.value = @lookandfeel.lookup(:change_log_backtracking)
+          fields << link
+
+          fields << '&nbsp;-&nbsp;'
+          span = HtmlGrid::Span.new(model, session, self)
+          span.value = model.time.strftime('%d.%m.%Y')
+          span.set_attribute('class', 'list')
+          fields << span
+          fields
+        end
       end
 
       # --- display de/gcc/show/fachinfo/63171/diff
@@ -103,11 +136,36 @@ module ODDB
         end
       end
       class FachinfoDocumentChangelogs < View::PrivateTemplate
-        SNAPBACK_EVENT = :change_logs
+        SNAPBACK_EVENT = :result
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
         def initialize(model, session, container=nil)
           # latest changes must come first!
           super
+        end
+        def backtracking(model, session=@session)
+          fields = []
+          fields << @lookandfeel.lookup(:th_pointer_descr)
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = "list"
+          link.href  = @lookandfeel._event_url(:home, [])
+          link.value = @lookandfeel.lookup(:home)
+          fields << link
+          return fields unless  @session.choosen_fachinfo_diff.first
+
+          fields << '&nbsp;-&nbsp;'
+          #  /fachinfo/reg/65453
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = "list"
+          link.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
+          link.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
+          fields << link
+
+          fields << '&nbsp;-&nbsp;'
+          span = HtmlGrid::Span.new(model, session, self)
+          span.value = @lookandfeel.lookup(:change_log_backtracking)
+          span.set_attribute('class', 'list')
+          fields << span
+          fields
         end
       end
       class EmptyResultForm < HtmlGrid::Form
