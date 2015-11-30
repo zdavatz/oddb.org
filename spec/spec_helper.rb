@@ -68,7 +68,7 @@ ViewerPassword    = 'desitin'
 LeeresResult      =  /hat ein leeres Resultat/
 
 
-def login(user = AdminUser, password=AdminPassword, remember_me=false)
+def login(user = ViewerUser, password=AdminPassword, remember_me=false)
   @browser = Watir::Browser.new(browsers2test[0]) unless @browser
   @browser.goto OddbUrl
   sleep 0.5

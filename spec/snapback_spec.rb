@@ -22,7 +22,6 @@ describe "ch.oddb.org snapback" do
   @browser.goto OddbUrl
  end
 
-
  SnapbackTestStep = Struct.new(:search_type, :search_value, :link_to_click, :expect_url, :expect_snapback_text, :next_step)
  TODO = true
  Search_URL=  TODO ? /search_query\/58392|de\/gcc$|home_drugs\/$/ : /search_query\/58392/
@@ -41,7 +40,7 @@ describe "ch.oddb.org snapback" do
  test_1_3 = SnapbackTestStep.new( nil, nil, Search_SnapBack, Search_URL, Search_Snap, test_1_4)
  test_1_2 = SnapbackTestStep.new( nil, nil, 'FI', FI_url, FI_Snap, test_1_3)
  FirstTest = SnapbackTestStep.new(/Swissmedic/, '58392', nil,  Search_URL, Search_Snap, test_1_2)
- Snapback_Registration = { '58392' => 'Losartan'}
+ Snapback_Registration = { '63184' => 'Celecoxib Helvepharm'}
  FI_Link = /\/fachinfo\/swissmedicnr\/(\d+)$/
  class SnapbackTestStep
   def to_s
@@ -68,14 +67,10 @@ describe "ch.oddb.org snapback" do
     @browser.text_field(:name, "search_query").value = current.search_value
     @browser.select_list(:name, "search_type").select(current.search_type)
    end
-   puts "Got URL #{@browser.url}"
+   puts "#{__LINE__}: Got URL #{@browser.url}"
    puts " Should #{current.expect_url}"
    expect(@browser.url).to match current.expect_url
-   steps = @browser.tds.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
-   text = steps.collect{ |y| y.text }.join(',').clone.gsub(/\s+/, ' ')
-   puts "Steps are #{text}"
-   puts "  should #{current.expect_snapback_text}"
-   expect(text).to match current.expect_snapback_text
+   check_pointer_steps(current.expect_snapback_text)
    # TODO: Use @browser.back and @browser.forward to test previous and next url
    prev_url = @browser.url.clone
    current = current.next_step
@@ -95,21 +90,38 @@ describe "ch.oddb.org snapback" do
  end
 
  it "should work following a search via IKSNR" do
+   iksnr = Snapback_Registration.keys.first
+   name = Snapback_Registration.values.first
   @browser.goto OddbUrl
   login
   if @browser.link(:name, 'drugs').exists?
    @browser.link(:name, 'drugs').click; small_delay
   end
-  @browser.text_field(:name, "search_query").value = Snapback_Registration.keys.first
   @browser.select_list(:name, "search_type").select(/Swissmedic/)
-  steps = @browser.tds.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
-  text = steps.collect{ |y| y.text }.join(',').clone
-  expect(text).to match /Sie befinden sich in - ,58392,01,001/
-  # After clicking on feedback I am an in http://oddb-ci2.dyndns.org/de/gcc/feedbacks/reg/58392/seq/01/pack/001
-  # But I find no "Sie befinden sich"
+  @browser.text_field(:name, "search_query").value = iksnr
+  @browser.text_field(:name, "search_query").send_keys :enter
+
+  check_pointer_steps(/Sie befinden sich in - ,#{iksnr}/)
+
   expect(@browser.text).not_to match LeeresResult
   expect(@browser.text).to match /Deutsche Bezeichnung|Präparat/
-  expect(@browser.text).to match /Abacavir/
+  expect(@browser.text).to match name
+  @browser.link(:name => 'square_fachinfo').click
+  check_pointer_steps(/Sie befinden sich in\s+-\s+,Fachinformation zu #{name}/)
+  @browser.link(:name => 'change_log').click
+  binding.pry
+  check_pointer_steps(/Sie befinden sich in\s+-\s+,Fachinformation zu #{name} - ,Änderungen/)
+  @browser.link(:name => 'change_log').click
+  binding.pry
+  check_pointer_steps(/Sie befinden sich in\s+-\s+,Fachinformation zu #{name} - ,Änderungen - ,\d{2}\.\d{2}\.\d{4}/)
+ end
+
+ def check_pointer_steps(expected)
+  steps = @browser.tds.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
+  text = steps.collect{ |y| y.text }.join(',').clone
+  puts "#{__LINE__}: Steps are #{text}"
+  puts "  should #{expected}"
+  expect(text).to match expected
  end
 
  after :all do

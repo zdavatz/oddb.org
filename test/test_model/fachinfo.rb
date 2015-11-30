@@ -343,5 +343,33 @@ expected = "-line 2
       assert(fi_text.index('kognitiven Funktion und der Lebensqualitä') > 0, "Muss Text in Kapitel 'Klinische Wirksamkeit' von  Eigenschaften/Wirkungen finden")
 
     end
+    def show_changes(old, new, options)
+      puts "\n\nSHOW CHANGES"
+      pp options
+      result = Diffy::Diff.new(old, new, options)
+      nr = 0
+      nr_additions = 0
+      nr_deletions = 0
+      result.each_chunk do |x|
+        puts "x #{nr} #{x}";
+        nr += 1
+        nr_additions += 1 if /^\+/.match x
+        nr_deletions += 1 if /^\-/.match x
+      end
+      puts "size  #{nr} chunks  #{nr_additions} nr_additions #{nr_deletions} nr_deletions"
+    end
+
+    def test_change_log_concor
+      old_file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'txt', 'concor.old'))
+      new_file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'txt', 'concor.new'))
+      old = IO.read(old_file)
+      new = IO.read(new_file)
+      options = ODDB::FachinfoDocument::Fachinfo_diff_options.clone
+      show_changes(old, new, options)
+      options[:context] = 1
+      show_changes(old, new, options)
+      require 'pry'; binding.pry
+      assert(1, diffs.size)
+    end
   end
 end

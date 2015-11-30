@@ -68,6 +68,8 @@ group :development, :test do
   gem 'travis-lint'
 end
 
+gem 'diff-lcs'
+
 group :test do
   gem 'rspec'
   gem 'rspec-core'
