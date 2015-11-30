@@ -274,6 +274,19 @@ describe "ch.oddb.org" do
     expect(text).to match('Budenofalk')       # by component
   end unless ['just-medical'].index(Flavor)
 
+  ['Interaktion', 'Markenname', 'Preisvergleich', 'Inhaltsstoff',
+    'Preisvergleich und Inhaltsstoff'].each do |search_type|
+    it "#{search_type} should display not found for Warfarin which is not registered in Switzerland " do
+        # @browser.goto OddbUrl
+        @browser.select_list(:name, "search_type").select(search_type)
+        @browser.text_field(:name, "search_query").value = "Warfarin"
+        @browser.button(:name, 'search').click;  small_delay
+        puts "Warfarin: URL ist #{@browser.url}"
+        text = @browser.text.clone
+        expect(text).to match LeeresResult
+      end
+  end
+
   after :all do
     @browser.close
   end
