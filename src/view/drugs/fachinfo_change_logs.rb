@@ -48,35 +48,35 @@ module ODDB
         CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
         SNAPBACK_EVENT = :change_log
         def backtracking(model, session=@session)
+          class_name = "th-pointersteps"
           fields = []
-          fields << @lookandfeel.lookup(:th_pointer_descr)
-          link = HtmlGrid::Link.new(:home, model, @session, self)
-          link.css_class = "list"
-          link.href  = @lookandfeel._event_url(:home, [])
-          link.value = @lookandfeel.lookup(:home)
-          fields << link
+          fields << HtmlGrid::LabelText.new(:th_pointer_descr, model, session, self)
+          link_home = HtmlGrid::Link.new(:home, model, @session, self)
+          link_home.css_class = class_name
+          link_home.href  = @lookandfeel._event_url(:home, [])
+          link_home.value = @lookandfeel.lookup(:home)
+          fields << link_home
           fields << '&nbsp;-&nbsp;'
 
           #  /fachinfo/reg/65453
-          link = HtmlGrid::Link.new(:home, model, @session, self)
-          link.css_class = "list"
-          link.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
-          link.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
-          fields << link
+          link_ref = HtmlGrid::Link.new(:home, model, @session, self)
+          link_ref.css_class = class_name
+          link_ref.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
+          link_ref.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
+          fields << link_ref
 
           fields << '&nbsp;-&nbsp;'
           #  /fachinfo/reg/65453
-          link = HtmlGrid::Link.new(:home, model, @session, self)
-          link.css_class = "list"
-          # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/65569/diff/10.11.2015
-          link.href  = @lookandfeel._event_url(:home, [:fachinfo, :reg, @session.choosen_fachinfo_diff.first.iksnr, :diff])
-          link.value = @lookandfeel.lookup(:change_log_backtracking)
-          fields << link
+          link_changes = HtmlGrid::Link.new(:home, model, @session, self)
+          link_changes.css_class = class_name
+          link_changes.href  = @lookandfeel._event_url(:home, [:fachinfo, @session.choosen_fachinfo_diff.first.iksnr, :diff])
+          link_changes.value = @lookandfeel.lookup(:change_log_backtracking)
+          fields << link_changes
 
           fields << '&nbsp;-&nbsp;'
           span = HtmlGrid::Span.new(model, session, self)
           span.value = model.time.strftime('%d.%m.%Y')
-          span.set_attribute('class', 'list')
+          span.set_attribute('class', class_name)
           fields << span
           fields
         end
@@ -143,27 +143,28 @@ module ODDB
           super
         end
         def backtracking(model, session=@session)
+          class_name = "th-pointersteps"
           fields = []
-          fields << @lookandfeel.lookup(:th_pointer_descr)
-          link = HtmlGrid::Link.new(:home, model, @session, self)
-          link.css_class = "list"
-          link.href  = @lookandfeel._event_url(:home, [])
-          link.value = @lookandfeel.lookup(:home)
-          fields << link
+          fields << HtmlGrid::LabelText.new(:th_pointer_descr, model, session, self)
+          link_home = HtmlGrid::Link.new(:home, model, @session, self)
+          link_home.css_class = class_name
+          link_home.href  = @lookandfeel._event_url(:home, [])
+          link_home.value = @lookandfeel.lookup(:home)
+          fields << link_home
           return fields unless  @session.choosen_fachinfo_diff.first
 
           fields << '&nbsp;-&nbsp;'
           #  /fachinfo/reg/65453
-          link = HtmlGrid::Link.new(:home, model, @session, self)
-          link.css_class = "list"
-          link.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
-          link.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
-          fields << link
+          link_fi = HtmlGrid::Link.new(:home, model, @session, self)
+          link_fi.css_class = class_name
+          link_fi.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_fachinfo_diff.first.iksnr ])
+          link_fi.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_fachinfo_diff.first.name_base
+          fields << link_fi
 
           fields << '&nbsp;-&nbsp;'
           span = HtmlGrid::Span.new(model, session, self)
           span.value = @lookandfeel.lookup(:change_log_backtracking)
-          span.set_attribute('class', 'list')
+          span.set_attribute('class', class_name)
           fields << span
           fields
         end
