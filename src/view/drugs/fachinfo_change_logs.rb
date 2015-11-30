@@ -69,7 +69,7 @@ module ODDB
           #  /fachinfo/reg/65453
           link_changes = HtmlGrid::Link.new(:home, model, @session, self)
           link_changes.css_class = class_name
-          link_changes.href  = @lookandfeel._event_url(:home, [:fachinfo, @session.choosen_fachinfo_diff.first.iksnr, :diff])
+          link_changes.href  = @lookandfeel._event_url(:show, [:fachinfo, @session.choosen_fachinfo_diff.first.iksnr, :diff])
           link_changes.value = @lookandfeel.lookup(:change_log_backtracking)
           fields << link_changes
 
@@ -116,12 +116,9 @@ module ODDB
           link
         end
         def get_link_href(model)
-          @lookandfeel._event_url(:show,
-                                              [:fachinfo,
-                                               @session.choosen_fachinfo_diff.first.iksnr,
-                                               :diff,
-                                               model.time.strftime('%d.%m.%Y')
-                                              ] )
+          @lookandfeel._event_url(:show,[ :fachinfo,  @session.choosen_fachinfo_diff.first.iksnr,
+                                          :diff, model.time.strftime('%d.%m.%Y')
+                                        ] )
         end
       end
       class FachinfoDocumentChangelogsComposite < HtmlGrid::Composite

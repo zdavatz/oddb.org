@@ -33,9 +33,10 @@ describe "ch.oddb.org snapback" do
   FI_url  = "de/gcc/fachinfo/reg/#{SNAP_IKSNR}"
   FI_Snap = /Sie befinden sich in - ,(Home|Suchresultat),Fachinformation zu #{SNAP_NAME}/
   Diff_URL = /\/show\/fachinfo\/#{SNAP_IKSNR}\/diff/
-
-  test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, /\d{2}.\d{2}.\d{4}/, "/show/fachinfo/#{SNAP_IKSNR}/diff", /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
-  test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen","/show/fachinfo/#{SNAP_IKSNR}/diff", "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
+  Date_Regexp = /\d{2}.\d{2}.\d{4}/
+  diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
+  test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, Date_Regexp,  diff_url, /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
+  test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",diff_url, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
   test_1_2 = SnapbackTestStep.new(__LINE__, nil, nil, 'FI', FI_url, FI_Snap, test_1_3)
   FirstTest = SnapbackTestStep.new(__LINE__,/Swissmedic/, SNAP_IKSNR.to_s, nil,  Search_URL, Search_Snap, test_1_2)
   FI_Link = /\/fachinfo\/swissmedicnr\/(\d+)$/
@@ -67,6 +68,20 @@ describe "ch.oddb.org snapback" do
     @browser.text_field(:name, "search_query").send_keys :enter
   end
 
+  it "should have a working link to Änderungen from the diff" do
+    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    link = @browser.link(:text => Date_Regexp)
+    expect(link.exist?).to be true
+    saved_url = @browser.url.to_s.clone
+    saved_text = @browser.text
+    link.click
+    link = @browser.link(:text => /Änderungen/)
+    expect(link.exist?).to be true
+    link.click
+    expect(@browser.url.to_s).to eql saved_url.to_s
+    expect(@browser.text[0..100]).to eql saved_text[0..100]
+    expect(@browser.text).to eql saved_text
+  end
   it "should allow going back, then forward" do
     current= FirstTest
     nr = 1
@@ -143,7 +158,6 @@ describe "ch.oddb.org snapback" do
       if current.link_to_click
         link = @browser.link(:text => current.link_to_click)
         puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
-        binding.pry unless link.exist?
         expect(link.exist?).to be true
         link.click
       elsif  current.search_value
@@ -191,7 +205,6 @@ describe "ch.oddb.org snapback" do
     steps = @browser.elements.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
     text = steps.collect{ |y| y.text }.join(',').clone
     puts "#{__LINE__}: #{Time.now} Pointersteps are #{text}\n should #{expected} are #{expected.match(text).inspect}"
-    binding.pry unless expected.match(text)
     expect(text).to match expected
   end
 
