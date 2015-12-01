@@ -32,15 +32,6 @@ chooser = @browser.text_field(:id, id)
 
 Oddb_log_file ||= File.join("/var/www/oddb.org/log/oddb/debug/#{Date.today.year}/#{sprintf('%02d', Date.today.month)}.log")
 
-if RUBY_PLATFORM.match(/mingw/)
-  require 'watir'
-  browsers2test = [ :ie ]
-else
-  browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
-#  browsers2test = [ :firefox ]
-  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
-  require 'watir-webdriver'
-end
 require 'page-object'
 require 'fileutils'
 require 'page-object'
@@ -55,11 +46,19 @@ Flavor    = OddbUrl.match(/just-medical/) ?  'just-medical' : 'gcc'
 ImageDest = File.join(Dir.pwd, 'images')
 FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
 
+if RUBY_PLATFORM.match(/mingw/)
+  require 'watir'
+  browsers2test = [ :ie ]
+else
+  browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
+  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
+  require 'watir-webdriver'
+end
 Browser2test = browsers2test
 RegExpTwoMedis = /\/,?\d{13}[,\/]\d{13}(\?|)$/
 RegExpOneMedi  = /\/,?\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
-DownloadDir = File.join(Dir.home, 'Downloads')
+DownloadDir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'downloads'))
 GlobAllDownloads  = File.join(DownloadDir, '*')
 AdminUser         = 'ngiger@ywesee.com'
 AdminPassword     = 'ng1234'
@@ -67,9 +66,38 @@ ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
 LeeresResult      =  /hat ein leeres Resultat/
 
+def setup_browser
+  return if @browser
+  FileUtils.makedirs(DownloadDir)
+  if Browser2test[0].to_s.eql?('firefox')
+    puts "Setting upd default profile for firefox"
+    profile = Selenium::WebDriver::Firefox::Profile.new
+    profile['browser.download.dir'] = DownloadDir
+    profile['browser.download.folderList'] = 2
+    profile['browser.helperApps.alwaysAsk.force'] = false
+    profile['browser.helperApps.neverAsk.saveToDisk'] = "application/zip;application/octet-stream;application/x-zip;application/x-zip-compressed;text/csv;test/semicolon-separated-values"
+
+    @browser = Watir::Browser.new :firefox, :profile => profile
+  elsif Browser2test[0].to_s.eql?('chrome')
+    puts "Setting upd default profile for chrome"
+    prefs = {
+      :download => {
+        :prompt_for_download => false,
+        :default_directory => DownloadDir
+      }
+    }
+    @browser = Watir::Browser.new :chrome, :prefs => prefs
+  elsif Browser2test[0].to_s.eql?('ie')
+    puts "Trying unknown browser type Internet Explorer"
+    @browser = Watir::Browser.new :ie
+  else
+    puts "Trying unknown browser type #{Browser2test[0]}"
+    @browser = Watir::Browser.new Browser2test[0]
+  end
+end
 
 def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
-  @browser = Watir::Browser.new(browsers2test[0]) unless @browser
+  setup_browser
   @browser.goto OddbUrl
   sleep 0.5
   sleep 0.5 unless @browser.link(:name =>'login_form').exists?
@@ -98,7 +126,7 @@ def get_session_timestamp
 end
 
 def logout
-  @browser = Watir::Browser.new(browsers2test[0]) unless @browser
+  setup_browser
   @browser.goto OddbUrl
   sleep(0.1) unless @browser.link(:name=>'logout').exists?
   logout_btn = @browser.link(:name=>'logout')
@@ -107,16 +135,13 @@ def logout
 end
 
 def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
-  unless browser
-    browser = Watir::Browser.new(Browser2test[0])
-    @browser = browser
-  end
+  setup_browser
   startTime = Time.now
   @seconds = -1
   0.upto(maxWait).each{
     |idx|
-    browser.goto OddbUrl; small_delay
-    unless /Es tut uns leid/.match(browser.text)
+   @browser.goto OddbUrl; small_delay
+    unless /Es tut uns leid/.match(@browser.text)
       @seconds = idx
       break
     end

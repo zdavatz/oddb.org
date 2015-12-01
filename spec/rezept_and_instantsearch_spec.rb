@@ -66,7 +66,6 @@ describe "ch.oddb.org" do
   before :all do
     $prescription_test_id = 1
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
   end
 
   before :each do
@@ -77,6 +76,7 @@ describe "ch.oddb.org" do
       @browser.windows.last.close if @browser.windows.last
     end
     @browser.goto OddbUrl
+    login
     if @browser.link(:text=>'Plus').exists?
       puts "Going from instant to plus"
       @browser.link(:text=>'Plus').click

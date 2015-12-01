@@ -9,7 +9,7 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
+    login(AdminUser, AdminPassword)
   end
 
   before :each do

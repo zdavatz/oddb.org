@@ -12,12 +12,12 @@ describe "ch.oddb.org" do
 
   after :each do
     logout
+    login(ViewerUser,  ViewerPassword)
   end
 
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
   end
 
   before :each do
@@ -31,7 +31,6 @@ describe "ch.oddb.org" do
   }.each {
     |kind, link_name|
     it "in home_#{kind} should be possible consult the corresponding list of #{kind}" do
-      login(ViewerUser,  ViewerPassword)
       url = OddbUrl + '/de/gcc/home_'+kind
       @browser.goto url
       expect(@browser.url).to eq(url)
@@ -63,13 +62,13 @@ describe "ch.oddb.org" do
   end
 
   it "in home_companies we should see all companies when logged in as admin" do
-    login
+    login(AdminUser, AdminPassword)
     @browser.goto OddbUrl + '/de/gcc/home_companies'
     check_nr_companies(true)
   end
 
   it "in home_companies we should have the link active_companies if logged in as admin" do
-    login
+    login(AdminUser, AdminPassword)
     @browser.goto OddbUrl + '/de/gcc/home_companies'
     @browser.link(:name, CompanyListName).click
     link = @browser.link(:name, 'listed_companies')
@@ -79,7 +78,6 @@ describe "ch.oddb.org" do
   end
 
   it "in home_companies we should see all companies when logged in as user" do
-    login(ViewerUser,  ViewerPassword)
     @browser.goto OddbUrl + '/de/gcc/home_companies'
     check_nr_companies(true)
   end
