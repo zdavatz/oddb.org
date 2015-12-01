@@ -11,8 +11,7 @@ module ODDB
   class TestResilientLoop < Minitest::Test
     TimeoutValue = 0.1
     def setup
-      @r_loop = ResilientLoop.new(LoopName)
-      assert(@r_loop, 'must be able to create a ResilientLoop')
+      @r_loop = nil
     end
 
     def teardown
@@ -21,8 +20,9 @@ module ODDB
     end
 
     def test_full_loop_no_problem
+      @r_loop = ResilientLoop.new(LoopName)
       assert_equal(nil, @r_loop.state_id)
-      result = []
+        result = []
       loop_entries = [0,1,2,3]
       loop_entries.each{
         |entry|
@@ -34,6 +34,7 @@ module ODDB
     end
 
     def test_full_loop_always_timeout
+      @r_loop = ResilientLoop.new(LoopName)
       assert_equal(nil, @r_loop.state_id)
       result = []
       loop_entries = [0,1,2,3]
@@ -50,6 +51,7 @@ module ODDB
     end
 
     def test_full_loop_recovers_from_first_timeout
+      @r_loop = ResilientLoop.new(LoopName)
       assert_equal(nil, @r_loop.state_id)
       result = []
       loop_entries = [0,1,2,3,4,5,6]
