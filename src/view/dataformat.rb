@@ -116,8 +116,13 @@ module ODDB
           name_bases.concat([' - ', div])
         end
         if @lookandfeel.enabled?(:link_trade_name_to_fachinfo, false)
-          link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
-          link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+          if model.fachinfo
+            link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
+            link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+          else
+            link.href =nil
+            link.value = breakline(model.name_base, 25)
+          end
         end
         name_bases
       rescue StandardError => e
