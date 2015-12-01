@@ -14,6 +14,7 @@ must_be_run_isolated = [
   'oddbapp_3.rb',
   'persistence.rb',
   'session.rb',
+  'tel_search.rb',
   'zsr.rb',
 ]
 

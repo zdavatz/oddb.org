@@ -346,7 +346,7 @@ class FachinfoNewsList < HtmlGrid::DivList
       link = HtmlGrid::Link.new(:name_base, model, @session, self)
       link.value = model.localized_name(@session.language)
       if regs = model.registrations and reg = regs.first and reg.iksnr
-        link.href = @lookandfeel._event_url :fachinfo, :swissmedicnr => model.registrations.first.iksnr
+        link.href = @lookandfeel._event_url :fachinfo, :reg => model.registrations.first.iksnr
       end
       link
     end

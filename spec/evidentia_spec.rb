@@ -45,6 +45,7 @@ describe "ch.oddb.org" do
     expect(last_SL.nil?).to eq false
     expect(last_SL_SG.nil?).to eq false
     expect(first_B.nil?).to eq false
+    # File.open('Levetiracetamum.text', 'w+'){|f| f.write text }
     expect(first_B).to be > last_SL
     expect(first_B).to be > last_SL_SG
   end

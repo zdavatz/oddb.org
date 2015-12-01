@@ -560,7 +560,6 @@ module ODDB
         raise SBSM::InvalidDataError.new("e_invalid_iksnr", :iksnr, value)
       end
 		end
-    alias :swissmedicnr :iksnr
     alias :reg :iksnr
     def notify_recipient(value)
       [Mail::Address.new(value.to_s).to_s]
