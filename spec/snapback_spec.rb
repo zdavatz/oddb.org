@@ -39,7 +39,7 @@ describe "ch.oddb.org snapback" do
   test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",diff_url, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
   test_1_2 = SnapbackTestStep.new(__LINE__, nil, nil, 'FI', FI_url, FI_Snap, test_1_3)
   FirstTest = SnapbackTestStep.new(__LINE__,/Swissmedic/, SNAP_IKSNR.to_s, nil,  Search_URL, Search_Snap, test_1_2)
-  FI_Link = /\/fachinfo\/swissmedicnr\/(\d+)$/
+  FI_Link = /\/fachinfo\/reg\/(\d+)$/
 
   nr_tests = 0
   current = FirstTest

@@ -398,7 +398,7 @@ module ODDB
 				super
 			end
       def fachinfo
-        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
+        if (iksnr = @session.user_input(:reg)) \
           && (reg = @session.app.registration(iksnr)) \
           && fachinfo = reg.fachinfo
           if @session.allowed?('edit', fachinfo)
@@ -411,7 +411,7 @@ module ODDB
         end
       end
       def patinfo
-        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
+        if (iksnr = @session.user_input(:reg)) \
           && (seqnr = @session.user_input(:seq)) \
           && (reg = @session.app.registration(iksnr)) \
           && (seq = reg.sequence(seqnr)) \
@@ -520,7 +520,7 @@ module ODDB
 				end
 			end
       def foto
-        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
+        if (iksnr = @session.user_input(:reg)) \
           && (seqnr = @session.user_input(:seq)) \
           && (ikscd = @session.user_input(:pack)) \
           && (reg = @session.app.registration(iksnr)) \
