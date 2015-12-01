@@ -8,7 +8,6 @@ tests2run = [ # we run only a very limited set of tests here
   "#{current_dir}/export/test/test_generics_xls.rb",
   "#{current_dir}/swissreg/test/test_swissreg.rb",
   "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb",
-  "#{current_dir}/fiparse/test/test_fachinfo_hpricot.rb",
   "#{current_dir}/meddata/test/test_session.rb",
   "#{current_dir}/meddata/test/test_result.rb",
   "#{current_dir}/meddata/test/test_meddata.rb",
@@ -23,7 +22,9 @@ tests2run = [ # we run only a very limited set of tests here
   "#{current_dir}/chapterparse/test/test_parser.rb",
   "#{current_dir}/chapterparse/test/test_integrate.rb",
 ]
+
 require File.expand_path(File.join(File.join(File.dirname(__FILE__), '..', 'test', 'helpers.rb')))
-runner = OddbTestRunner.new(File.dirname(__FILE__))
+runner = OddbTestRunner.new(File.dirname(__FILE__), [ 'fiparse/test/test_fachinfo_hpricot.rb'])
 runner.run_normal_tests(tests2run)
+runner.run_isolated_tests
 runner.show_results_and_exit
