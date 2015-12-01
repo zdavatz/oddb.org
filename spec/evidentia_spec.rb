@@ -55,6 +55,12 @@ describe "ch.oddb.org" do
     expect(fi.exist?).to eq false
   end
 
+  it "should not have a link to the fachinfo when there is no fachinfo (e.g. Cyramza)" do
+    @browser.goto "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/Cyramza?"
+    link = @browser.link(:href => /fachinfo/)
+    expect(link.exist?).to be false
+  end
+
   it "should contain a link to the limiation in Sevikar HCT preparation" do
     select_product_by_trademark(Sevikar)
     link = @browser.link(:text => 'L')
