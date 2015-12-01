@@ -39,10 +39,11 @@ class TestDataFormat <Minitest::Test
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
-                        :enabled?   => true,
                         :disabled?  => false,
                        :_event_url => '_event_url',
                        )
+    @lnf.should_receive(:enabled?).with(:link_trade_name_to_fachinfo, false).and_return(false)
+    @lnf.should_receive(:enabled?).and_return(true)
     @session = flexmock('session', :lookandfeel => @lnf)
     @model   = flexmock('model')
     @format  = ODDB::View::StubDataFormat.new(@model, @session)
