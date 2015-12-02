@@ -217,8 +217,10 @@ describe "ch.oddb.org" do
     @browser.button(:name, 'search').click;  small_delay
 
     expect(@browser.text).not_to match LeeresResult
-    expect(@browser.text).to match /Aktuelle Einträge/
-    expect(@browser.text).to match /Novartis Pharma Schweiz AG/
+    text = @browser.text.clone
+    # Aktuell Einträge come only when we are logged in as admin user
+    expect(text).to match /Zulassungs­inhaber Geschäftsfeld/
+    expect(text).to match /Novartis Pharma Schweiz AG/
   end unless ['just-medical'].index(Flavor)
 
   pending "should work with the notify searchbar" do
