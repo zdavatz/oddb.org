@@ -185,6 +185,24 @@ describe "ch.oddb.org" do
     expect(@browser.text).to match /Abacavir/
   end unless ['just-medical'].index(Flavor)
 
+  it "should return an empty list when entering a non existing name in the drugs-result search button" do
+    invalid = "THIS_NAME_SHOULD_NOT_BE_FOUND"
+    name = "Keppra"
+    @browser.text_field(:name, "search_query").value = name
+    @browser.select_list(:name, "search_type").select("Preisvergleich")
+    @browser.text_field(:name, "search_query").send_keys :return
+    expect(@browser.url).to match /#{name}/i
+    expect(@browser.text_field(:text, /#{name}/i).exist?).to eql true
+    expect(@browser.text).not_to match LeeresResult
+
+    expect(@browser.text).not_to match LeeresResult
+    @browser.text_field(:name, "search_query").value = invalid
+    @browser.text_field(:name, "search_query").send_keys :return
+    expect(@browser.url).to match(invalid)
+    expect(@browser.url).not_to match /#{name}/i
+    expect(@browser.text_field(:text, /#{name}/i).exist?).to eql false
+  end unless ['just-medical'].index(Flavor)
+
   it "should be possible to find the Kantonsspital Glarus via Spital" do
     @browser.link(:name, 'hospitals').click;  small_delay
 
@@ -213,7 +231,7 @@ describe "ch.oddb.org" do
     @browser.link(:name, 'companies').click;  small_delay
 
     # @browser.text.should_not match /substance_search_explain/
-    @browser.text_field(:name, "search_query").value = "Novartis"    
+    @browser.text_field(:name, "search_query").value = "Novartis"
     @browser.button(:name, 'search').click;  small_delay
 
     expect(@browser.text).not_to match LeeresResult

@@ -1,4 +1,4 @@
-# #!/usr/bin/env ruby
+#!/usr/bin/env ruby
 # encoding: utf-8
 # TestOddbApp -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # TestOddbApp -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
@@ -78,6 +78,12 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		ODBA.storage = nil
     super
 	end
+  def test_interactions_index_de
+      created = ODBA.cache.create_index('interactions_index_de', ODDB)
+      assert_equal(nil, created)
+      result = @app.retrieve_from_index('interactions_index_de', 'de')
+      assert_equal([],result)
+  end
   def test_create_minifi
     minifi = flexmock('minifi') do |mfi|
       mfi.should_receive(:oid)

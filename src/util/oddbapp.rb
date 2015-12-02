@@ -107,6 +107,8 @@ class OddbPrevalence
   def retrieve_from_index(index_name, query, result = nil)
     # $stdout.puts "#{caller[0]}: #{index_name} #{query}"; $stdout.flush
     ODBA.cache.retrieve_from_index(index_name, query, result)
+  rescue KeyError
+    result || []
   end
 	# prevalence-methods ################################
 	def create(pointer)
