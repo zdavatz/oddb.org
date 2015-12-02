@@ -12,6 +12,7 @@ PGresult = PG::Result
 
 module ODBA
 	class CacheStub
+		attr_writer :retrieve_from_index
 		def delete(anything)
 		end
     def ensure_index_deferred *args
@@ -38,8 +39,6 @@ module ODBA
       else
         []
       end
-    end
-    def create_index(index_definition, origin_module=Object)
     end
     def drop_index(index_name)
     end
