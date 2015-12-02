@@ -24,8 +24,6 @@ describe "ch.oddb.org" do
   end
 
   it "should download the results of a search to Marcoumar" do
-    @browser.goto OddbUrl
-    login
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text_field(:name, "search_query").set('Marcoumar')
     @browser.button(:name, "search").click
@@ -47,8 +45,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to download Zulassungsinhaber Desitin as admin user" do
-    logout
-    login(AdminUser, AdminPassword)
+    logout; login(AdminUser, AdminPassword)
     if false
       @browser.link(:text, "Admin").click
       @browser.link(:text, "Benutzer").click

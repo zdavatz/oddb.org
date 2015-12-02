@@ -13,13 +13,13 @@ describe "ch.oddb.org" do
   
   before :each do
     @browser.goto OddbUrl
+    login
   end
 
   after :each do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
-    # sleep 
-    @browser.goto OddbUrl
+    logout
   end
 
   def check_nutriflex_56091(text)
@@ -32,8 +32,18 @@ describe "ch.oddb.org" do
     expect(text).to match /Citratsäure/i
   end
 
+  describe "admin" do
+    before :all do
+    end
+    before :each do
+      @browser.goto OddbUrl
+      logout
+      login(AdminUser, AdminPassword)
+    end
+    after :all do
+      logout
+    end
   it "admin should edit package info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02/pack/04"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -46,7 +56,6 @@ describe "ch.oddb.org" do
   end
 
   it "admin should edit sequence info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -60,7 +69,6 @@ describe "ch.oddb.org" do
   end
 
   it "admin should edit registration info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -70,10 +78,8 @@ describe "ch.oddb.org" do
     expect(text).to match /Nutriflex Lipid/i
     expect(@browser.url).to match OddbUrl
   end
-
+  end
   it "should display the correct color iscador U" do
-    login
-    @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set('iscador U')
     sleep(0.1)
@@ -97,8 +103,6 @@ describe "ch.oddb.org" do
   end
 
   it "should display a limitation link for Sevikar" do
-    login
-    @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set('Sevikar')
     sleep(0.1)
@@ -119,8 +123,6 @@ describe "ch.oddb.org" do
   end
 
   it "should display lamivudin with SO and SG in category (price comparision)" do
-    login
-    @browser.goto OddbUrl
     @browser.select_list(:name, "search_type").select("Preisvergleich")
     @browser.text_field(:name, "search_query").set('lamivudin')
     sleep(0.1)
@@ -143,7 +145,6 @@ describe "ch.oddb.org" do
   end
 
   it "should show a registration info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -154,7 +155,6 @@ describe "ch.oddb.org" do
   end
 
   it "should show a sequence info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -163,7 +163,6 @@ describe "ch.oddb.org" do
   end
 
   it "should show a package info" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02/pack/04"
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -207,8 +206,7 @@ describe "ch.oddb.org" do
   end
 
   it "should trigger the limitation after maximal 5 queries" do
-    waitForOddbToBeReady(@browser, OddbUrl)
-		logout
+    logout
     names = [ 'Aspirin', 'inderal', 'Sintrom', 'Incivo', 'Certican', 'Glucose']
     res = false
     saved = @idx
@@ -235,19 +233,16 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the french language versions" do
-    @browser.goto OddbUrl
     @browser.link(:text=>/Français|French/i).when_present.click; small_delay
     expect(@browser.text).to match /Comparez simplement et rapidement les prix des médicaments/
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the german language versions" do
-    @browser.goto OddbUrl
     @browser.link(:text=>/Deutsch|German/).when_present.click; small_delay
     expect(@browser.text).to match /Vergleichen Sie einfach und schnell Medikamentenpreise./
   end unless ['just-medical'].index(Flavor)
 
   it "should open print patinfo in a new window" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/patinfo/reg/51795/seq/01"; small_delay
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
@@ -261,7 +256,6 @@ describe "ch.oddb.org" do
   end
 
   it "should open print fachinfo in a new window" do
-    login
     @browser.goto "#{OddbUrl}/de/#{Flavor}/fachinfo/reg/51795"; small_delay
     expect(@browser.url).to match OddbUrl
     windowSize = @browser.windows.size
@@ -278,7 +272,6 @@ describe "ch.oddb.org" do
   it "should download the example" do
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.goto OddbUrl
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
     @browser.link(:text, "Beispiel-Download").click; small_delay
@@ -302,7 +295,6 @@ describe "ch.oddb.org" do
   end if false # Zeno remarked on 2014-09-01 that I should not test the mailing list
 
   it "should be possible to request a new password" do
-    @browser.goto OddbUrl
     @browser.link(:text=>'Abmelden').click if @browser.link(:text=>'Abmelden').exists?
     small_delay
     @browser.link(:text=>'Anmeldung').when_present.click; small_delay
@@ -317,11 +309,8 @@ describe "ch.oddb.org" do
   end
 
   it "should download the results of a search" do
-    login
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.goto OddbUrl
-    login
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
