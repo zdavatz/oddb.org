@@ -323,6 +323,29 @@ describe "ch.oddb.org" do
     expect(diffFiles.size).to eq(1)
   end unless ['just-medical'].index(Flavor)
 
+  def check_search_with_type
+    query =  @browser.text_field(:name, "search_query")
+    expect(query.exists?).to eq true
+    search_type = @browser.select_list(:name, "search_type")
+    expect(search_type.exists?).to eq true
+  end
+
+  it "should display search and search_type for fachinfo diff of 28.11.2015" do
+    diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff/28.11.2015"
+    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    check_search_with_type
+  end
+
+  it "should display search and search_type for fachinfo diff" do
+    diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
+    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    check_search_with_type
+    link =  @browser.link(:name, "change_log")
+    expect(link.exists?).to eq true
+    link.click
+    check_search_with_type
+  end
+
   after :all do
     @browser.close
   end
