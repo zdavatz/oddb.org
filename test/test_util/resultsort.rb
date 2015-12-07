@@ -66,6 +66,9 @@ module ODDB
       package.should_receive(:comparable_size).by_default.and_return('comparable_size')
       package.should_receive(:inspect).by_default.and_return(product_name)
       package.should_receive(:sl_entry).by_default.and_return(nil)
+      sequence =  flexmock('sequence')
+      sequence.should_receive(:name).by_default.and_return(product_name)
+      package.should_receive(:sequence).by_default.and_return(sequence)
       package
     end
     def setup

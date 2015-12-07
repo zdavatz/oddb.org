@@ -13,6 +13,7 @@ must_be_run_isolated = [
   'oddbapp_2.rb',
   'oddbapp_3.rb',
   'persistence.rb',
+  'resilient_loop.rb',
   'session.rb',
   'tel_search.rb',
   'zsr.rb',

@@ -48,7 +48,7 @@ describe "ch.oddb.org snapback" do
     current = current.next_step
     break unless current
   end
-  puts "We have #{nr_tests} test steps"
+  # puts "We have #{nr_tests} test steps"
 
   class SnapbackTestStep
     def to_s
@@ -68,20 +68,44 @@ describe "ch.oddb.org snapback" do
     @browser.text_field(:name, "search_query").send_keys :enter
   end
 
+  def check_home_links
+    @browser.links.find_all{|x| x.text.eql? 'Home' }.each do |link|
+      home_pattern = /\/home|/
+      # puts "link #{link.text} #{link.href}"
+      # binding.pry unless link.exist?
+      # binding.pry unless home_pattern.match(link.href)
+      expect(link.exist?).to be true
+      expect(link.href).to match home_pattern
+    end
+  end
+
+  it "should always have the correct home link" do
+    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    check_home_links
+    link = @browser.link(:text => /Fachinformation zu/)
+    expect(link.exist?).to be true
+    link.click
+    check_home_links
+  end
+
   it "should have a working link to Änderungen from the diff" do
     @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    check_home_links
     link = @browser.link(:text => Date_Regexp)
     expect(link.exist?).to be true
     saved_url = @browser.url.to_s.clone
     saved_text = @browser.text
     link.click
+    check_home_links
     link = @browser.link(:text => /Änderungen/)
     expect(link.exist?).to be true
     link.click
+    check_home_links
     expect(@browser.url.to_s).to eql saved_url.to_s
     expect(@browser.text[0..100]).to eql saved_text[0..100]
     expect(@browser.text).to eql saved_text
   end
+
   it "should allow going back, then forward" do
     current= FirstTest
     nr = 1
@@ -91,12 +115,13 @@ describe "ch.oddb.org snapback" do
     current = current.next_step
     while current
       nr += 1
-      puts "\nRunning test step #{nr}\n  #{current.inspect}"
+      # puts "\nRunning test step #{nr}\n  #{current.inspect}"
       link = @browser.link(:text => current.link_to_click)
-      puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
+      # puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
       expect(link.exist?).to be true
       link.click
-      puts "#{nr}: #{__LINE__}: Got URL #{@browser.url} \n expecting #{current.expect_url}"
+      check_home_links
+      # puts "#{nr}: #{__LINE__}: Got URL #{@browser.url} \n expecting #{current.expect_url}"
       expect(@browser.url).to match current.expect_url
       if nr > 2 # TODO: Fix failure in nr == 2!!!
         saved_text = @browser.text
@@ -126,6 +151,7 @@ describe "ch.oddb.org snapback" do
         expect(link.exist?).to be true
         @prev_url = @browser.url.clone
         link.click
+        check_home_links
         current = current.next_step
       end
       home_link = @browser.link(:text => 'Home')
@@ -133,12 +159,14 @@ describe "ch.oddb.org snapback" do
       saved_text = @browser.text
       saved_url = @browser.url
       home_link.click
+      check_home_links
       if @browser.url.eql?(OddbUrl)
         expect(@browser.url).to eql? OddbUrl
       else
         expect(@browser.url).to match /\/home\/|\/home_drugs\//
       end
       @browser.back
+      check_home_links
       expect(@browser.url).to eql saved_url
       expect(@browser.text[0..100]).to eql saved_text[0..100] # fail with less verbose output
       expect(@browser.text).to eql saved_text
@@ -149,6 +177,7 @@ describe "ch.oddb.org snapback" do
     if @browser.link(:name, 'drugs').exists?
       @browser.link(:name, 'drugs').click; small_delay
     end
+    check_home_links
     nr = 0
     current= FirstTest
     prev_url = nil
@@ -177,7 +206,7 @@ describe "ch.oddb.org snapback" do
     link = @browser.link(:href => FI_Link)
     iksnr = FI_Link.match(link.href)[1]
     link.click
-
+    check_home_links
     steps = @browser.tds.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
     text = steps.collect{ |y| y.text }.join('').clone
     expect(text).to match /Sie befinden sich/
@@ -202,6 +231,7 @@ describe "ch.oddb.org snapback" do
   end
 
   def check_pointer_steps(expected, line = nil)
+    check_home_links
     steps = @browser.elements.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
     text = steps.collect{ |y| y.text }.join(',').clone
     puts "#{__LINE__}: #{Time.now} Pointersteps are #{text}\n should #{expected} are #{expected.match(text).inspect}"

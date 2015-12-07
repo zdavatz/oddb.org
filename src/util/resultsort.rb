@@ -15,14 +15,19 @@ module ODDB
     end
   end
   module ResultSort
-    IsOriginal          = 1     # always come first
+    IsMatchingTrademark = 1
+    IsOriginal          = 5     # always come first
     IsSponsored         = 10
     IsGenerikum         = 20
     IsNotClassified     = 21
     IsNotRefDataListed  = 23
 
     # zeno defined the sort order in mail of Oktobre 21, 2015
-    # Bei Evidentia kommen zuerst die Originale und dann die Produkte von Desitin wie folgt:
+    # Bei Evidentia müssen  E-Mail from November 27 2015
+    #
+    # Zuerst die Medikamente, welche den Markennamen enthalten, kommen.
+    #
+    # Dann kommmen bei Evidentia zuerst die Originale und dann die Produkte von Desitin wie folgt:
     #
     # 1. Infusionslösungen
     # 2. Feste Formen
@@ -75,10 +80,22 @@ module ODDB
     def sort_result(packages, session)
       # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/001 sl_entry nil
       # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/002 sl_entry.sl_generic_type = :generic
+      if @session
+        puts "Search is #{@session && @session.request_path}"
+        puts " search_type  #{@session.user_input(:search_type)} pers: #{@session.persistent_user_input(:search_type)}"
+        puts " search_query #{@session.user_input(:search_query)} pers: #{@session.persistent_user_input(:search_query)}"
+      end if false
+
+      m = @session && @session.request_path && /search_query\/([^\/?]*)/.match(@session.request_path)
+      trademark = false
+      if m
+        trademark = m[1]
+        trademark = false unless @session.app.search_by_sequence(trademark).size > 0
+      end
       begin
         packages.uniq!
         packages.sort_by! { |package|
-          name_to_use, prio = adjusted_name_and_prio(package, session)
+          name_to_use, prio = adjusted_name_and_prio(package, session, trademark)
           sort_info = [
             package.expired?        ? 1 : -1,
             package.out_of_trade    ? IsNotRefDataListed : 1,
@@ -117,7 +134,7 @@ module ODDB
       end
     end
 private
-    def adjusted_name_and_prio(package, session)
+    def adjusted_name_and_prio(package, session, trademark)
       package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
       is_desitin = false
       is_desitin = true if package_from_desitin and session and session.lookandfeel.enabled?(:evidentia, false)
@@ -131,6 +148,9 @@ private
         name_to_use = package.name_base.clone.to_s.sub(/\s+\d+.+/, '')
         prio = classified_group(package)
       end
+      res =  /#{trademark}/i.match(package.sequence.name)
+      # puts "adjusted_name_and_prio #{trademark} pack #{package.sequence.name} res #{res.inspect}"
+      prio = IsMatchingTrademark if session && session.lookandfeel && session.lookandfeel.enabled?(:evidentia, false) && res != nil
       return name_to_use, prio
     end
 

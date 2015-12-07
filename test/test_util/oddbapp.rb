@@ -78,12 +78,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		ODBA.storage = nil
     super
 	end
-  def test_interactions_index_de
-      created = ODBA.cache.create_index('interactions_index_de', ODDB)
-      assert_equal(nil, created)
-      result = @app.retrieve_from_index('interactions_index_de', 'de')
-      assert_equal([],result)
-  end
   def test_create_minifi
     minifi = flexmock('minifi') do |mfi|
       mfi.should_receive(:oid)

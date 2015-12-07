@@ -57,8 +57,6 @@ view org.oddb.patinfo_stats.associated
 credit org.oddb.download
 )
   def create_or_update_user(email = session_uniq_email, yus_rights= ['yus_privileges[login|org.oddb.CompanyUser]'])
-    @browser.goto OddbUrl
-    login
     @browser.link(:text=>'Admin').click
     @browser.link(:text=>'Benutzer').click
     @browser.button(:name => 'new_user').click
@@ -74,7 +72,6 @@ credit org.oddb.download
     yus_rights.each {|right| @browser.checkbox(:name => right).set }
     @browser.button(:name => 'update').click
     @browser.goto OddbUrl
-    login
     @browser.link(:text=>'Admin').click
     @browser.link(:text=>'Benutzer').click
     expect(@browser.link(:text => /#{email}/).exists?).to eq(true)
@@ -133,8 +130,6 @@ credit org.oddb.download
     |link_name|
       it "should be possible to sort users by #{link_name.sub('th_','')}" do
         pending # does not work (september 2014)
-        @browser.goto OddbUrl
-        login
         @browser.link(:text=>'Admin').click
         @browser.link(:text=>'Benutzer').click
         check_sort(link_name)
