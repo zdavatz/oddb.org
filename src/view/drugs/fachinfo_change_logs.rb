@@ -122,6 +122,7 @@ module ODDB
         end
       end
       class FachinfoDocumentChangelogsComposite < HtmlGrid::Composite
+        LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
         COMPONENTS = {
           [0,0] =>  FachinfoDocumentChangelogList,
@@ -133,11 +134,8 @@ module ODDB
         end
       end
       class FachinfoDocumentChangelogs < View::PrivateTemplate
+        SEARCH_HEAD = View::SelectSearchForm
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
-        def initialize(model, session, container=nil)
-          # latest changes must come first!
-          super
-        end
         def backtracking(model, session=@session)
           class_name = "th-pointersteps"
           fields = []

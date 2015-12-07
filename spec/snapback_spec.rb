@@ -25,8 +25,6 @@ describe "ch.oddb.org snapback" do
   end
 
   SnapbackTestStep = Struct.new(:line, :search_type, :search_value, :link_to_click, :expect_url, :expect_snapback_text, :next_step)
-  SNAP_IKSNR = 40501
-  SNAP_NAME = 'Lubex®'
   Search_URL=  /search_query\/#{SNAP_IKSNR}|de\/gcc$|home_drugs\/$|#{OddbUrl}\/$/
   Search_Snap = /Sie befinden sich in - ,Home,#{SNAP_IKSNR},\d{2},\d{3}/
   Search_SnapBack = /Suchresultat|Home/
