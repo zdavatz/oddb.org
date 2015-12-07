@@ -179,11 +179,7 @@ require(['dojo/ready'], function(ready) {
     end
     @session.set_persistent_user_input(:drugs, @session.choosen_drugs)
     if @session.request_path and @session.request_path.match(/fachinfo_search/)
-      if false and @session.choosen_drugs.size > 0
-        target = @session.lookandfeel._event_url(:fachinfo_search, [:ean, @session.choosen_drugs.keys, :ajax_matches, args ].flatten)
-      else
-        target = @session.lookandfeel._event_url(:ajax_matches, args)
-      end
+      target = @session.lookandfeel._event_url(:ajax_matches, args)
       html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
                         'jsId'           => 'search_matches',
                         'idAttribute'    => 'drug',
