@@ -49,7 +49,7 @@ describe "ch.oddb.org" do
       drugs.each_with_index{ |drug, index| first_B = index if /^.*#{gal_group}.* B$/im.match(drug)}; first_B
       last_SL_SG = -1
       drugs.each_with_index{ |drug, index| last_SL_SG = index if /^.*#{gal_group}.* SL \/ SG/im.match(drug)}; last_SL_SG
-      puts "#{@browser.url} #{gal_group}: #{drugs.size} drugs first_B is #{first_B} last_SL #{last_SL} last_SL_SG #{last_SL_SG}"
+      # puts "#{@browser.url} #{gal_group}: #{drugs.size} drugs first_B is #{first_B} last_SL #{last_SL} last_SL_SG #{last_SL_SG}"
       expect(last_SL).not_to eql -1
       expect(last_SL_SG).not_to eql -1
       expect(first_B).not_to eql -1

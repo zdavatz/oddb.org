@@ -63,7 +63,6 @@ class FachinfoDocumentChangelogs < State::Drugs::Global
   VIEW = View::Drugs::FachinfoDocumentChangelogs
   LIMITED = false
   FILTER_THRESHOLD = 10
-  SNAPBACK_EVENT = :home_drugs
 end
 class FachinfoDocumentChangelogItem < State::Drugs::Global
   class FachinfoDocumentChangelogItemWrapper < SimpleDelegator

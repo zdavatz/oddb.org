@@ -133,7 +133,6 @@ module ODDB
         end
       end
       class FachinfoDocumentChangelogs < View::PrivateTemplate
-        SNAPBACK_EVENT = :result
         CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
         def initialize(model, session, container=nil)
           # latest changes must come first!
