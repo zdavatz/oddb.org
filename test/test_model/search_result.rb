@@ -16,6 +16,8 @@ module ODDB
     def setup
       @result  = flexmock('result')
       @session = flexmock('session')
+      @session.should_receive(:request_path).and_return(nil)
+      @session.should_receive(:lookandfeel).and_return(nil)
       @atc     = flexmock('atc')
       @facade  = ODDB::AtcFacade.new(@atc, @session, @result)
     end
@@ -36,7 +38,8 @@ module ODDB
       assert_equal('odba_id', @facade.odba_id)
     end
     def test_packages
-      package1 = flexmock('package1', 
+      sequence = flexmock('sequence', :name => 'package')
+      package1 = flexmock('package1',
                           :expired?        => nil,
                           :generic_type    => :original,
                           :name_base       => 'package1',
@@ -44,6 +47,7 @@ module ODDB
                           :dose            => 'dose',
                           :company         => 'company',
                           :out_of_trade    => false,
+                          :sequence        => sequence,
                           :sl_generic_type => :original,
                           :comparable_size => 1,
                          )
@@ -55,6 +59,7 @@ module ODDB
                           :dose            => 'dose',
                           :company         => 'company',
                           :out_of_trade    => false,
+                          :sequence        => sequence,
                           :sl_generic_type => :original,
                           :comparable_size => 1,
                          )
@@ -163,7 +168,8 @@ module ODDB
     end
     def test_atc_sorted__search_type_substance
       active_agent = flexmock('active_agent', :same_as? => nil)
-      package   = flexmock('package', 
+      sequence = flexmock('sequence', :name => 'package')
+      package   = flexmock('package',
                            :expired?        => nil,
                            :generic_type    => :original,
                            :name_base       => 'name_base',
@@ -174,6 +180,7 @@ module ODDB
                           :company         => 'company',
                           :out_of_trade    => false,
                           :comparable_size => 1,
+                          :sequence        => sequence,
                           :sl_generic_type => :original,
                           )
       atc_class = flexmock('atc_class', 

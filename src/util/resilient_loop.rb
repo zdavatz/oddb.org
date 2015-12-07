@@ -36,6 +36,7 @@ module ODDB
     attr_writer :nr_retries
     
     def initialize(loopname, state_id = nil)
+      @mutex = Mutex.new
       @loopname   = loopname
       @state_id   = state_id
       @nr_skipped = 0
@@ -45,9 +46,9 @@ module ODDB
 
     def must_skip?(id)
       return false unless @state_id
-      if id 
+      if id
         clear_state if id.to_s.eql?(@state_id.to_s)
-        @nr_skipped += 1        
+        @nr_skipped += 1
         return true
       else
         return false
@@ -56,8 +57,11 @@ module ODDB
 
     def try_run(state, timeout_in_secs = 10, &block)
       idx = 0
-      while idx < @nr_retries
-        idx += 1
+      while true
+        @mutex.synchronize do
+          idx < @nr_retries
+          idx += 1
+        end
         begin
           status = timeout(timeout_in_secs) do
             block.call
@@ -84,12 +88,16 @@ private
       end
     end
     def save_state(state)
-      FileUtils.mkdir_p File.dirname(@state_file)
-      File.open(@state_file, 'w+') { |f| f.write(state)}
+      @mutex.synchronize do
+        FileUtils.mkdir_p File.dirname(@state_file)
+        File.open(@state_file, 'w+') { |f| f.write(state)}
+      end
     end
     def clear_state
-      @state_id = nil
-      FileUtils.rm_f(@state_file)
+      @mutex.synchronize do
+        @state_id = nil
+        FileUtils.rm_f(@state_file)
+      end
     end
   end
 end
