@@ -10,6 +10,7 @@ describe "ch.oddb.org" do
   HomeURL       = "#{Evidentia_URL}/de/gcc/home_drugs/"
   Lamivudin     = 'Lamivudin-Zidovudin-Mepha'
   Sevikar       = 'Sevikar HCT'
+  Duodopa       = 'Duodopa'
 
   before :all do
     @idx = 0
@@ -39,15 +40,22 @@ describe "ch.oddb.org" do
     select_product_by_trademark('Levetiracetamum')
     text = @browser.text.clone
     text.gsub!('SL = Spezialitätenliste', '')
-    last_SL = (0 ... text.length).find_all { |i| /^. SL/.match text[i,text.length] }.last
-    last_SL_SG = (0 ... text.length).find_all { |i| /^. SL \/ SG/.match text[i,text.length] }.last
-    first_B = (0 ... text.length).find_all { |i| /^. B$/.match text[i,text.length] }.first
-    expect(last_SL.nil?).to eq false
-    expect(last_SL_SG.nil?).to eq false
-    expect(first_B.nil?).to eq false
-    # File.open('Levetiracetamum.text', 'w+'){|f| f.write text }
-    expect(first_B).to be > last_SL
-    expect(first_B).to be > last_SL_SG
+    # File.open('Levetiracetamum.text', 'w+'){|f| f.write text } ; binding.pry
+    drugs = @browser.trs.find_all{|x| x.elements[1].title.eql?('Fachinformation') }.collect{|x| x.text.clone}
+    [ 'Tabletten', 'Flasche' ].each do |gal_group|
+      last_SL = -1
+      drugs.each_with_index{ |drug, index| last_SL = index if /^.*#{gal_group}.* SL/im.match(drug)}; last_SL
+      first_B = -1
+      drugs.each_with_index{ |drug, index| first_B = index if /^.*#{gal_group}.* B$/im.match(drug)}; first_B
+      last_SL_SG = -1
+      drugs.each_with_index{ |drug, index| last_SL_SG = index if /^.*#{gal_group}.* SL \/ SG/im.match(drug)}; last_SL_SG
+      puts "#{@browser.url} #{gal_group}: #{drugs.size} drugs first_B is #{first_B} last_SL #{last_SL} last_SL_SG #{last_SL_SG}"
+      expect(last_SL).not_to eql -1
+      expect(last_SL_SG).not_to eql -1
+      expect(first_B).not_to eql -1
+      expect(first_B).to be > last_SL
+      expect(first_B).to be > last_SL_SG
+    end
   end
 
   it "should not contain a column Fachinfo" do
@@ -125,6 +133,17 @@ describe "ch.oddb.org" do
     select_product_by_trademark('lamivudin')
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?).to eq true
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?).to eq true
+  end
+
+  # Inhaltstoffe, z.B. Carbidopa
+  it "should list trademark first e.g. Duodopa" do
+    select_product_by_trademark(Duodopa)
+    link = @browser.link(:text => Duodopa)
+    expect(link.exists?)
+    expect(link.href.index('ean')).to eq(nil)
+    expect(link.href.index('fachinfo')).to be > 0
+    text = @browser.text.clone
+    expect(/Präparate.*\n.*\n/.match(text)[0]).to match Duodopa
   end
 
   after :all do
