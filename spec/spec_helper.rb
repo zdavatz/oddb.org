@@ -65,6 +65,8 @@ AdminPassword     = 'ng1234'
 ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
 LeeresResult      =  /hat ein leeres Resultat/
+SNAP_IKSNR = 40501
+SNAP_NAME = 'Lubex®'
 
 def setup_browser
   return if @browser
