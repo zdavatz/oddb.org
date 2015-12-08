@@ -72,13 +72,20 @@ module ODDB
       package.should_receive(:sequence).by_default.and_return(sequence)
       package
     end
-    def setup
+
+    def setup_session
       @session = flexmock('session', :language => 'language')
       @session.should_receive(:user).by_default.and_return(nil)
       @session.should_receive(:flavor).and_return(@standard)
-      @component = LookandfeelBase.new(@session)
-      @standard = LookandfeelStandardResult.new(@component)
-      @session.should_receive(:lookandfeel).by_default.and_return(@component)
+      @session.should_receive(:request_path).by_default.and_return('/de/gcc/')
+      component = LookandfeelBase.new(@session)
+      gcc = LookandfeelStandardResult.new(component)
+      @session.should_receive(:flavor).by_default.and_return(gcc)
+      @session.should_receive(:lookandfeel).by_default.and_return(gcc)
+    end
+
+    def setup
+      setup_session
       @galenic_form = flexmock('galenic_form')
       @galenic_form.should_receive(:odba_instance).by_default.and_return(nil)
       @paaa_original = create_default_product_mock('paaa_original')
@@ -221,12 +228,9 @@ module ODDB
         ]
     end
     def setup_evidentia
-      @session.should_receive(:flavor).and_return(@evidentia)
+      setup_more_products
       @component = LookandfeelBase.new(@session)
       @evidentia = LookandfeelEvidentia.new(@component)
-      @session.should_receive(:flavor).and_return(@evidentia)
-      @session.should_receive(:lookandfeel).and_return(@evidentia)
-      setup_more_products
       sl_entry_valid = flexmock('sl_entry_valid')
       sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
       sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
@@ -256,7 +260,6 @@ module ODDB
         end
       }
     end
-
     def test_galform_str__else
       @galenic_form.should_receive(:odba_instance).and_return('odba_instance')
       @galenic_form.should_receive(:language).and_return('language')
@@ -279,10 +282,17 @@ module ODDB
       @paaa_original.should_receive(:sl_generic_type).and_return(nil)
       assert_equal([@paaa_original], @sort.sort_result([@paaa_original], @session))
     end
-    def test_sort_result_default
+    def test_sort_result_order_2
       setup_more_products
       assert_equal(@expected_default_order, @sort.sort_result(@order_2, @session))
+    end
+    def test_sort_result_order_3
+      setup_more_products
       assert_equal(@expected_default_order, @sort.sort_result(@order_3, @session))
+    end
+
+    def test_sort_result_order_4
+      setup_more_products
       assert_equal(@expected_default_order, @sort.sort_result(@order_4, @session))
     end
 
@@ -362,8 +372,10 @@ module ODDB
       @zzz = create_leve_product('ZZZ')
       @rivoleve.should_receive(:out_of_trade).and_return(true)
       @tm_products  = [@desitin, @actavis, @keppra, @rivoleve, @zzz]
-      @session.should_receive(:request_path).and_return(
-        "/de/evidentia/search/zone/drugs/search_query/#{URI.encode(url_with_name)}/search_type/st_combined")
+      if url_with_name
+        @session.should_receive(:request_path).and_return(
+          "/de/evidentia/search/zone/drugs/search_query/#{URI.encode(url_with_name)}/search_type/st_combined")
+      end
     end
 
     def test_sort_result_evidentia_default_levetiracetam
@@ -394,23 +406,33 @@ module ODDB
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
 
-    def test_sort_result_evidentia_levetiracetam_search_duodopa
+    def test_sort_case_insensitive
       aaa_name = 'AAAA'
-      setup_evidentia_trademark('Duodopa')
-      gal_z = flexmock('gal_z')
-      gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
-      duodopa = create_default_product_mock('Duodopa', false, :generic, :generic, gal_z)
-      duodopa.should_receive(:sl_entry).and_return(@sl_entry_valid)
-      aaa = create_default_product_mock(aaa_name, false, :generic, :generic, gal_z)
-      aaa.should_receive(:sl_entry).and_return(@sl_entry_valid)
-      products = [aaa, duodopa]
-      @sort    = ODDB::StubResultSort.new(products, @session)
-      res = @sort.sort_result(products, @session)
-      expected_names =  [
-        'Duodopa',
-        aaa_name,
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
+      aaa_first =  [ aaa_name, 'Duodopa' ]
+      aaa_last =  [ 'Duodopa', aaa_name ]
+
+      { aaa_name => aaa_first,
+        'aaa' => aaa_first,
+        'Duodopa' => aaa_last,
+        'DUODOPA' => aaa_last,
+        }.each do |name, expected_names|
+        setup_session
+        setup_evidentia_trademark(nil)
+        gal_z = flexmock('gal_z')
+        gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
+        aaa = create_default_product_mock(aaa_name, false, :generic, :generic, gal_z)
+        aaa.should_receive(:sl_entry).and_return(@sl_entry_valid)
+        duodopa = create_default_product_mock('Duodopa', false, :generic, :generic, gal_z)
+        duodopa.should_receive(:sl_entry).and_return(@sl_entry_valid)
+        products = [aaa, duodopa]
+        test_session = @session.clone
+        test_session.should_receive(:request_path).and_return(
+          "/de/evidentia/search/zone/drugs/search_query/#{name}/search_type/st_combined")
+        # puts "products #{products.collect {|x| x.name_base}} test_session #{test_session.request_path}"
+        @sort    = ODDB::StubResultSort.new(products, test_session)
+        res = @sort.sort_result(products, test_session)
+        assert_equal(expected_names, res.collect{|pack| pack.name_base})
+      end
     end
 
     def test_sort_result_evidentia_levetiracetam_search_Levetiracetam_Desitin
