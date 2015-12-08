@@ -210,14 +210,18 @@ module ODDB
       bottom = cs * 0.75
       top = cs * 1.25
       comparables = generic_group_comparables
-      @sequence.comparables.each { |seq|
-        comparables.concat seq.public_packages.select { |pack|
+      begin
+        @sequence.comparables.each { |seq|
+          comparables.concat seq.public_packages.select { |pack|
+            comparable?(bottom, top, pack)
+          }
+        }
+        comparables.concat @sequence.public_packages.select { |pack|
           comparable?(bottom, top, pack)
         }
-      }
-      comparables.concat @sequence.public_packages.select { |pack|
-        comparable?(bottom, top, pack)
-      }
+      rescue  => e
+        puts "comparables: Got error #{e} barcode #{barcode} #{name}"
+      end
       comparables.uniq
     end
     def comparable_size
