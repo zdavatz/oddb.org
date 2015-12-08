@@ -65,8 +65,8 @@ module ODDB
     #
     # Innerhalb dieser Gruppen aufsteigend nach Packungsgrösse.
     #
-    def show_package_sort_info(package, session)
-      name_to_use, prio = adjusted_name_and_prio(package, session)
+    def show_package_sort_info(package, session, trademark)
+      name_to_use, prio = adjusted_name_and_prio(package, session, trademark)
       puts "result_sort: #{package.class} #{package.iksnr}/#{package.seqnr}/#{package.ikscd} ["+
           "#{package.expired? ? 1 : -1}," +
           "#{package.out_of_trade    ? IsNotRefDataListed : 1}, " +
@@ -75,30 +75,19 @@ module ODDB
           "#{package.galenic_forms.collect { |gf| gf.galenic_group.to_s } }, " +
           "#{package.galenic_forms.collect { |gf| gf.to_s } }, " +
           "#{name_to_use}, #{dose_value(package.dose)}, #{package.comparable_size}"
-    end if false
+    end
 
     def sort_result(packages, session)
-      # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/001 sl_entry nil
-      # http://ch.oddb.org/de/gcc/show/reg/61848/seq/01/pack/002 sl_entry.sl_generic_type = :generic
-      if @session
-        puts "Search is #{@session && @session.request_path}"
-        puts " search_type  #{@session.user_input(:search_type)} pers: #{@session.persistent_user_input(:search_type)}"
-        puts " search_query #{@session.user_input(:search_query)} pers: #{@session.persistent_user_input(:search_query)}"
-      end if false
-
+      # puts "Resultsort #{__LINE__}: #{@session.request_path}" if @session
       m = @session && @session.request_path && /search_query\/([^\/?]*)/.match(@session.request_path)
       trademark = false
-      if m
-        trademark = m[1]
-        trademark = false unless @session.app.search_by_sequence(trademark).size > 0
-      end
+      trademark = URI.unescape(m[1]) if m
       begin
         packages.uniq!
         packages.sort_by! { |package|
           name_to_use, prio = adjusted_name_and_prio(package, session, trademark)
           sort_info = [
             package.expired?        ? 1 : -1,
-            package.out_of_trade    ? IsNotRefDataListed : 1,
             prio,
             package.galenic_forms.collect { |gf| gf.galenic_group.to_s },
             package.galenic_forms.collect { |gf| gf.to_s },
@@ -109,7 +98,7 @@ module ODDB
           ]
           sort_info
         }
-        # packages.each{ |package| show_package_sort_info(package, session) } # only for debugging
+        # packages.each{ |package| show_package_sort_info(package, session, trademark) } # only for debugging
         packages
       rescue StandardError => e
         puts e.class
@@ -141,6 +130,7 @@ private
       is_desitin = true if package_from_desitin and session and
                                   session.user and not session.user.is_a?(ODDB::UnknownUser) and
                                   /desitin/i.match(session.user.name.to_s)
+      prio = package.out_of_trade ? IsNotRefDataListed : 1
       if is_desitin
         name_to_use = ' '+package.name_base.clone.to_s
         prio = IsSponsored
@@ -148,9 +138,9 @@ private
         name_to_use = package.name_base.clone.to_s.sub(/\s+\d+.+/, '')
         prio = classified_group(package)
       end
-      res =  /#{trademark}/i.match(package.sequence.name)
-      # puts "adjusted_name_and_prio #{trademark} pack #{package.sequence.name} res #{res.inspect}"
-      prio = IsMatchingTrademark if session && session.lookandfeel && session.lookandfeel.enabled?(:evidentia, false) && res != nil
+      res = trademark && (trademark.eql?(package.name_base) || Dose.new(package.name_base.sub(trademark, '')).qty != 0)
+      prio = IsMatchingTrademark if session && session.lookandfeel && session.lookandfeel.enabled?(:evidentia, false) && res
+      # puts "adjusted_name_and_prio evidentia? #{session.lookandfeel.enabled?(:evidentia, false)} #{trademark}  res #{res.inspect} pack #{package.name_base} expired? #{package.expired?} out_of_trade #{package.out_of_trade} prio #{prio.inspect}"
       return name_to_use, prio
     end
 

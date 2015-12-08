@@ -11,6 +11,8 @@ describe "ch.oddb.org" do
   Lamivudin     = 'Lamivudin-Zidovudin-Mepha'
   Sevikar       = 'Sevikar HCT'
   Duodopa       = 'Duodopa'
+  Rivoleve      = 'Rivoleve'
+  LeveDesitin   = 'Levetiracetam Desitin'
 
   before :all do
     @idx = 0
@@ -27,21 +29,45 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, '_'+@idx.to_s)
   end
 
+  def create_url_for(query)
+    "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/st_combined"
+  end
+
   def select_product_by_trademark(name)
-    url = "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{name}?"
-    @browser.goto url
+    @browser.goto create_url_for(name)
     @browser.element(:id => 'ikscat_1').wait_until_present
     expect(@browser.url.index(Evidentia_URL)).to eq 0
     expect(@browser.url.index('/de/evidentia')).not_to eq 0
     @text = @browser.text.clone
   end
 
+  def get_drugs_as_arra_of_strings
+    @browser.trs.find_all{|x| x.elements[1].title.eql?('Fachinformation') }.collect{|x| x.text.clone}
+  end
+
+  # Reasoning: Levetiracetam is the active substance, not the trademark name
+  it "should list Keppra at the top when searching for Levetiracetam" do
+    select_product_by_trademark('Levetiracetam')
+    drugs = get_drugs_as_arra_of_strings
+    expect(drugs.first).to match /Keppra/i
+  end
+
+  it "should list #{LeveDesitin} at the top when searching for #{LeveDesitin}" do
+    select_product_by_trademark(LeveDesitin)
+    drugs = get_drugs_as_arra_of_strings
+    expect(drugs.first).to match /#{LeveDesitin}/i
+  end
+
+  it "should list #{Rivoleve} at the top" do
+    select_product_by_trademark(Rivoleve)
+    drugs = get_drugs_as_arra_of_strings
+    expect(drugs.first).to match /#{Rivoleve}/i
+  end
+
   it 'should list all SL products before the Non-SL' do
     select_product_by_trademark('Levetiracetamum')
-    text = @browser.text.clone
-    text.gsub!('SL = Spezialitätenliste', '')
     # File.open('Levetiracetamum.text', 'w+'){|f| f.write text } ; binding.pry
-    drugs = @browser.trs.find_all{|x| x.elements[1].title.eql?('Fachinformation') }.collect{|x| x.text.clone}
+    drugs = get_drugs_as_arra_of_strings
     [ 'Tabletten', 'Flasche' ].each do |gal_group|
       last_SL = -1
       drugs.each_with_index{ |drug, index| last_SL = index if /^.*#{gal_group}.* SL/im.match(drug)}; last_SL
@@ -65,7 +91,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not have a link to the fachinfo when there is no fachinfo (e.g. Cyramza)" do
-    @browser.goto "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/Cyramza?"
+    @browser.goto create_url_for('Cyramza')
     link = @browser.link(:href => /fachinfo/)
     expect(link.exist?).to be false
   end
