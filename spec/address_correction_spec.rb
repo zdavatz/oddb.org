@@ -112,7 +112,7 @@ describe "ch.oddb.org" do
       # puts "URL #{@browser.url} with :#{text}"
       expect(text).not_to match /Momentan Aktive Adresse/
 
-      # As a admin user I must not be view the change
+      # As a admin user I should be able view the change
       logout
       expect(login(AdminUser, AdminPassword)).to eq true
       @browser.goto url_from_received_mail
