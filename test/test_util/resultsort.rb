@@ -366,11 +366,14 @@ module ODDB
       gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
       @desitin = create_leve_product('Levetiracetam Desitin 1000 mg')
       @actavis = create_leve_product('Levetiracetam Actavis 1000 mg')
-      @keppra = create_leve_product('Keppra 1000 mg')
+      @keppra = create_leve_product('Keppra 250 mg')
+      @keppra2 = create_leve_product('Keppra 200 mg')
+      @keppra2.should_receive(:out_of_trade).and_return(true)
+      @keppra3 = create_default_product_mock('Keppra 210 mg', false, :generic, :generic, @gal_levetiracetam)
       @rivoleve = create_leve_product('Rivoleve 1000')
       @zzz = create_leve_product('ZZZ')
       @rivoleve.should_receive(:out_of_trade).and_return(true)
-      @tm_products  = [@desitin, @actavis, @keppra, @rivoleve, @zzz]
+      @tm_products  = [@desitin, @actavis, @keppra, @keppra2, @keppra3, @rivoleve, @zzz]
       if url_with_name
         @session.should_receive(:request_path).and_return(
           "/de/evidentia/search/zone/drugs/search_query/#{URI.encode(url_with_name)}/search_type/st_combined")
@@ -382,10 +385,12 @@ module ODDB
       @sort    = ODDB::StubResultSort.new(@tm_products)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
-        'Keppra 1000 mg',
+        'Keppra 210 mg',
+        'Keppra 250 mg',
         'Levetiracetam Actavis 1000 mg',
         'Levetiracetam Desitin 1000 mg',
         'ZZZ',
+        'Keppra 200 mg',
         'Rivoleve 1000',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
@@ -397,10 +402,12 @@ module ODDB
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Rivoleve 1000',
-        'Keppra 1000 mg',
+        'Keppra 210 mg',
+        'Keppra 250 mg',
         'Levetiracetam Actavis 1000 mg',
         'Levetiracetam Desitin 1000 mg',
         'ZZZ',
+        'Keppra 200 mg',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
@@ -440,13 +447,32 @@ module ODDB
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Levetiracetam Desitin 1000 mg',
-        'Keppra 1000 mg',
+        'Keppra 250 mg',
+        'Keppra 210 mg',
         'Levetiracetam Actavis 1000 mg',
+        'ZZZ',
+        'Keppra 200 mg',
+        'Rivoleve 1000',
+      ]
+      assert_equal(expected_names, res.collect{|pack| pack.name_base})
+    end
+
+    def test_sort_result_evidentia_default_Keppra
+      setup_evidentia_trademark('Keppra')
+      @sort    = ODDB::StubResultSort.new(@tm_products)
+      res = @sort.sort_result(@tm_products, @session)
+      expected_names =  [
+        'Keppra 250 mg', # has sl_entry and is not out_of_trade
+        'Keppra 210 mg', # has no sl_entry and should come
+        'Keppra 200 mg', # is out of trade and must come after the other Keppra
+        'Levetiracetam Actavis 1000 mg',
+        'Levetiracetam Desitin 1000 mg',
         'ZZZ',
         'Rivoleve 1000',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
+
 
   end
 end # ODDB
