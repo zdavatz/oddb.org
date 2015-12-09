@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 require 'spec_helper'
+require 'paypal_helper'
 
 @workThread = nil
 
 describe "ch.oddb.org" do
- 
+
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
@@ -226,8 +227,9 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the english language versions" do
-    @browser.link(:text=>'English').when_present.click
-    small_delay
+    english = @browser.link(:text=>'English')
+    english.wait_until_present
+    english.click
     @browser.button(:name, "search").wait_until_present
     expect(@browser.text).to match /Search for your favorite drug fast and easy/
   end unless ['just-medical'].index(Flavor)
@@ -314,10 +316,15 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
-    @browser.button(:name => 'proceed_payment').click; small_delay
-    @browser.button(:name => 'checkout_invoice').click; small_delay
+    @browser.text_field(:name => /name_last/i).value= "Mustermann"; small_delay
+    @browser.text_field(:name => /name_first/i).value= "Max"; small_delay
+    paypal_user = PaypalUser.new
+    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    expect(paypal_user.paypal_buy(@browser)).to eql true
     expect(@browser.url).not_to match  /errors/
-    sleep(1)
+    @browser.link(:name => 'download').wait_until_present
+    @browser.link(:name => 'download').click
+    sleep(1) # Downloading might take some time
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
     expect(diffFiles.size).to eq(1)

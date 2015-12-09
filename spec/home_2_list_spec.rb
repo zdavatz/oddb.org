@@ -10,14 +10,11 @@ describe "ch.oddb.org" do
     @browser.close
   end
 
-  after :each do
-    logout
-    login(ViewerUser,  ViewerPassword)
-  end
-
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
+    logout
+    login(ViewerUser,  ViewerPassword)
   end
 
   before :each do
@@ -30,15 +27,22 @@ describe "ch.oddb.org" do
     'pharmacies' => 'pharmacylist',
   }.each {
     |kind, link_name|
-    it "in home_#{kind} should be possible consult the corresponding list of #{kind}" do
+    context "in home_#{kind}" do
       url = OddbUrl + '/de/gcc/home_'+kind
-      @browser.goto url
-      expect(@browser.url).to eq(url)
-      expect(@browser.link(:name, link_name).exist?).to eq(true)
-      @browser.link(:name, link_name).click
-      # require 'pry'; binding.pry unless @browser.url.index(link_name)
-      expect(@browser.url.index(link_name)).not_to eq(nil)
-      expect(@browser.link(:name => 'range').exist?).to eq(true)
+
+      it "we should find the corresponding list of #{kind}" do
+        @browser.goto url
+        expect(@browser.url).to eq(url)
+        expect(@browser.link(:name, link_name).exist?).to eq(true)
+      end
+
+      it "we should find ranges in #{url}" do
+        @browser.goto url
+        expect(@browser.url).to eq(url)
+        expect(@browser.link(:name => link_name).exist?).to eq(true)
+        @browser.link(:name, link_name).click
+        expect(@browser.link(:name => 'range').exist?).to eq(true)
+      end unless kind == 'companies' # see below for special tests for companies
     end
   }
 
@@ -61,25 +65,33 @@ describe "ch.oddb.org" do
     end
   end
 
-  it "in home_companies we should see all companies when logged in as admin" do
-    login(AdminUser, AdminPassword)
-    @browser.goto OddbUrl + '/de/gcc/home_companies'
-    check_nr_companies(true)
-  end
-
-  it "in home_companies we should have the link active_companies if logged in as admin" do
-    login(AdminUser, AdminPassword)
-    @browser.goto OddbUrl + '/de/gcc/home_companies'
-    @browser.link(:name, CompanyListName).click
-    link = @browser.link(:name, 'listed_companies')
-    expect(link.exist?).to eq(true)
-    link.click
-    expect(count_nr_companies_displayed).to be <= CompanyLimitListed
-  end
-
   it "in home_companies we should see all companies when logged in as user" do
     @browser.goto OddbUrl + '/de/gcc/home_companies'
     check_nr_companies(true)
   end
 
+
+  context "admin" do
+    before :all do
+      @idx = 0
+      waitForOddbToBeReady(@browser, OddbUrl)
+      logout
+      login(AdminUser, AdminPassword)
+    end
+
+    it "in home_companies we should see all companies when logged in as admin" do
+      @browser.goto OddbUrl + '/de/gcc/home_companies'
+      check_nr_companies(true)
+    end
+
+    it "in home_companies we should have the link active_companies if logged in as admin" do
+      @browser.goto OddbUrl + '/de/gcc/home_companies'
+      @browser.link(:name, CompanyListName).click
+      link = @browser.link(:name, 'listed_companies')
+      expect(link.exist?).to eq(true)
+      link.click
+      expect(count_nr_companies_displayed).to be <= CompanyLimitListed
+    end
+
+  end
 end

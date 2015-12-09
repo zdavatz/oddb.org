@@ -65,18 +65,6 @@ module ODDB
     #
     # Innerhalb dieser Gruppen aufsteigend nach Packungsgrösse.
     #
-    def show_package_sort_info(package, a_session, trademark)
-      name_to_use, prio = adjusted_name_and_prio(package, a_session, trademark)
-      puts "result_sort: #{package.class} #{package.iksnr}/#{package.seqnr}/#{package.ikscd} ["+
-          "#{package.expired? ? 1 : -1}," +
-          "#{package.out_of_trade    ? IsNotRefDataListed : 1}, " +
-          "#{prio}, " +
-          "#{classified_group(package)}, " +
-          "#{package.galenic_forms.collect { |gf| gf.galenic_group.to_s } }, " +
-          "#{package.galenic_forms.collect { |gf| gf.to_s } }, " +
-          "#{name_to_use}, #{dose_value(package.dose)}, #{package.comparable_size}"
-    end
-
     def sort_result(packages, a_session)
       m = a_session && a_session.request_path && /search_query[\/=]([^\/=&]*)/.match(a_session.request_path)
       trademark = false
@@ -84,6 +72,7 @@ module ODDB
       # puts "Resultsort #{__LINE__}: tm #{trademark.inspect} from #{a_session.request_path}" if a_session
       begin
         packages.uniq!
+        # xxx = []
         packages.sort_by! { |package|
           name_to_use, prio = adjusted_name_and_prio(package, a_session, trademark)
           sort_info = [
@@ -96,9 +85,10 @@ module ODDB
             dose_value(package.dose),
             package.comparable_size,
           ]
+          # xxx << sort_info.clone
           sort_info
         }
-        # packages.each{ |package| show_package_sort_info(package, a_session, trademark) } # only for debugging
+        # xxx.each_with_index{|x, idx| puts "result_sort #{idx}: #{x.inspect}" } # for debugging
         packages
       rescue StandardError => e
         puts e.class
@@ -140,8 +130,12 @@ private
       end
       res = trademark && (trademark.downcase.eql?(package.name_base.downcase) ||
                           Dose.new(package.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
-      prio = IsMatchingTrademark if a_session && a_session.lookandfeel && res && /st_combined/.match(a_session.request_path)
-      # puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)} #{trademark}  res #{res.inspect} pack #{package.name_base} expired? #{package.expired?.inspect} out_of_trade #{package.out_of_trade.inspect} prio #{prio.inspect}"
+      if a_session && a_session.lookandfeel && res && /st_combined/.match(a_session.request_path)
+        prio = IsMatchingTrademark
+        prio += 1 if !package.sl_entry
+        prio += 2 if package.out_of_trade
+      end
+      # puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)} #{trademark} res #{res.inspect} pack #{package.name_base} expired? #{package.expired?.inspect} out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
       return name_to_use, prio
     end
     def classified_group(package)

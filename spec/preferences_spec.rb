@@ -6,7 +6,6 @@ require 'spec_helper'
 describe "ch.oddb.org" do
   before :all do
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
   end
 
   after :all do
@@ -14,22 +13,25 @@ describe "ch.oddb.org" do
   end
 
   it "should save zsr in preferences" do
+    alternate_url = "https://www.ruby-lang.org/de/"
+    login(AdminUser, AdminPassword)
     @browser.link(:name=>'preferences').click
     expect(@browser.text).to match /Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert./
     @browser.radio(:id, "blue").set
     @browser.radio(:id, "instant").set
     @browser.radio(:id, "st_substance").set
-    @browser.button(:value,"Speichern").click
+    @browser.button(:name => 'update').click
     expect(@browser.text).to match /ZSR/i
     set_zsr_of_doctor('J 0390.19', 'Davatz', 'zsr_id')
     expect(@browser.text).to match /Davatz/
 
     # logout and verify that the cookies help to persist
     logout
-    @browser.goto("www.google.com")
+    sleep(1)
+    @browser.goto(alternate_url)
     sleep(1)
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
+    login(AdminUser, AdminPassword)
     @browser.link(:name=>'preferences').click
     expect(@browser.text).to match /Davatz/
     expect(@browser.radio(:id, "blue").checked?).to eq(true)
@@ -40,11 +42,12 @@ describe "ch.oddb.org" do
 
     # logout and verify that the clearing the cookies makes the ZSR lost
     logout
+    sleep(1)
     @browser.cookies.clear
-    @browser.goto("www.google.com")
+    @browser.goto(alternate_url)
     sleep(1)
     waitForOddbToBeReady(@browser, OddbUrl)
-    login
+    login(AdminUser, AdminPassword)
     @browser.link(:name=>'preferences').click
     expect(@browser.text).not_to match /Davatz/
     expect(@browser.radio(:id, "blue").checked?).to eq(false)
