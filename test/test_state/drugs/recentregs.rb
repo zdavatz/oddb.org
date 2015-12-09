@@ -25,8 +25,8 @@ module ODDB
 class TestPackageMonth <Minitest::Test
   include FlexMock::TestCase
   def setup
-    galenic_form = flexmock('galenic_form', :language => 'language')
-    package = flexmock('package', 
+    galenic_form = flexmock('galenic_form', :language => 'language', :galenic_group => 'galenic_group')
+    package = flexmock('package',
                        :generic_type    => 'generic_type',
                        :galenic_forms   => [galenic_form],
                        :comparable_size => 'comparable_size',
@@ -40,7 +40,11 @@ class TestPackageMonth <Minitest::Test
     registration = flexmock('registration') do |reg|
       reg.should_receive(:each_package).and_yield(package)
     end
-    session = flexmock('session', :language => 'language')
+    session = flexmock('session',
+                       :language => 'language',
+                       :request_path => 'request_path',
+                       :lookandfeel => 'lookandfeel',
+                       )
     @month = ODDB::State::Drugs::RecentRegs::PackageMonth.new('date', [registration], session)
   end
   def test_package_count
@@ -61,11 +65,12 @@ class TestRecentRegs <Minitest::Test
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => nil,
-                        :language    => 'language'
+                        :language    => 'language',
+                        :request_path => 'request_path',
                        )
     @model   = flexmock('model')
-    galenic_form = flexmock('galenic_form', :language => 'language')
-    package  = flexmock('package', 
+    galenic_form = flexmock('galenic_form', :language => 'language', :galenic_group => 'galenic_group')
+    package  = flexmock('package',
                        :generic_type    => 'generic_type',
                        :galenic_forms   => [galenic_form],
                        :comparable_size => 'comparable_size',
