@@ -63,27 +63,23 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
-  AddressCorrections = Struct.new(:name, :url_display, :url_correct, :url_from_received_mail)
+  AddressCorrections = Struct.new(:name, :url_display, :url_correct)
   to_check = [
     # TODO: How can we ensure that we have valid EAN and OID?
       AddressCorrections.new('company',
                               OddbUrl + '/de/gcc/company/ean/7601001001121',
-                              OddbUrl + '/de/gcc/suggest_address/company/7601001001121/address/0/zone/companies',
                               ),
       AddressCorrections.new('doctor',
                               OddbUrl + '/de/gcc/doctor/ean/7601000254344',
-                              OddbUrl + '/de/gcc/suggest_address/doctor/7601000254344/address/0/zone/doctors',
                              ),
       AddressCorrections.new('hospital',
                             OddbUrl + '/de/gcc/hospital/ean/7601002002592',
-                            OddbUrl + '/de/gcc/suggest_address/hospital/7601002002592/address/0/zone/hospitals',
                             ),
       AddressCorrections.new('pharmacy',
                             OddbUrl + '/de/gcc/pharmacy/ean/7601001380028',
-                            OddbUrl + '/de/gcc/suggest_address/pharmacy/7601001380028/address/0/zone/pharmacies',
                             ),
     ]
-  to_check.each {
+  to_check[0..0].each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do
       login(ViewerUser,  ViewerPassword)
@@ -93,17 +89,19 @@ describe "ch.oddb.org" do
         skip "Login failed. Please check your setup"
       end
       @browser.button(:name, "correct").click
-      expect(@browser.url).to eq(correction.url_correct)
+      expect(@browser.url).to match /\/suggest_address\/.*\/address\//
       @browser.text_field(:name, "email").set("ngiger@ywesee.com")
       @browser.textarea(:name, "message").set("Testbemerkung")
       @browser.textarea(:name, "additional_lines").set("Neue Addresszeile")
       @browser.button(:value,"Vorschlag senden").click
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
-      ean13 = /\d{13}/.match correction.url_correct
+      ean13 = /\d{13}/.match(@browser.url)
       skip "Could not find Oddb_log_file #{Oddb_log_file}" unless File.exists?(Oddb_log_file)
-      log_line = `grep #{ean13} #{Oddb_log_file} | tail -1`.chomp
-      url_from_received_mail = /http:[^\s]+/.match(log_line).to_s
+      expect(File.exist?(Oddb_log_file)).to eql true
+      cmd = "tail -1 #{Oddb_log_file}"
+      log_line =  `#{cmd}`.split
+      url_from_received_mail = /http:[^\s]+/.match(log_line.last).to_s
       puts "oddb_log_file #{Oddb_log_file} url_from_received_mail #{url_from_received_mail}"
 
       # As a normal user I must not be view the change
@@ -114,7 +112,7 @@ describe "ch.oddb.org" do
       # puts "URL #{@browser.url} with :#{text}"
       expect(text).not_to match /Momentan Aktive Adresse/
 
-      # As a admin user I must not be view the change
+      # As a admin user I should be able view the change
       logout
       expect(login(AdminUser, AdminPassword)).to eq true
       @browser.goto url_from_received_mail
