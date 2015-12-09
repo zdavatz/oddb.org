@@ -35,9 +35,8 @@ module ODDB
 
   class StubResultSort
     include ODDB::ResultSort
-    def initialize(packages, session = nil)
+    def initialize(packages)
       @packages = packages
-      @session = session
     end
   end
 
@@ -380,7 +379,7 @@ module ODDB
 
     def test_sort_result_evidentia_default_levetiracetam
       setup_evidentia_trademark('Levetiracetam')
-      @sort    = ODDB::StubResultSort.new(@tm_products, @session)
+      @sort    = ODDB::StubResultSort.new(@tm_products)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Keppra 1000 mg',
@@ -394,7 +393,7 @@ module ODDB
 
     def test_sort_result_evidentia_levetiracetam_search_Rivoleve
       setup_evidentia_trademark('Rivoleve')
-      @sort    = ODDB::StubResultSort.new(@tm_products, @session)
+      @sort    = ODDB::StubResultSort.new(@tm_products)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Rivoleve 1000',
@@ -429,7 +428,7 @@ module ODDB
         test_session.should_receive(:request_path).and_return(
           "/de/evidentia/search/zone/drugs/search_query/#{name}/search_type/st_combined")
         # puts "products #{products.collect {|x| x.name_base}} test_session #{test_session.request_path}"
-        @sort    = ODDB::StubResultSort.new(products, test_session)
+        @sort    = ODDB::StubResultSort.new(products)
         res = @sort.sort_result(products, test_session)
         assert_equal(expected_names, res.collect{|pack| pack.name_base})
       end
@@ -437,7 +436,7 @@ module ODDB
 
     def test_sort_result_evidentia_levetiracetam_search_Levetiracetam_Desitin
       setup_evidentia_trademark('Levetiracetam Desitin')
-      @sort    = ODDB::StubResultSort.new(@tm_products, @session)
+      @sort    = ODDB::StubResultSort.new(@tm_products)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Levetiracetam Desitin 1000 mg',
