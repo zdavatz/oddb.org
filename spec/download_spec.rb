@@ -5,6 +5,7 @@ require 'spec_helper'
 require 'pp'
 require 'tmpdir'
 require "selenium-webdriver"
+require 'paypal_helper'
 
 describe "ch.oddb.org" do
 
@@ -28,9 +29,13 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").set('Marcoumar')
     @browser.button(:name, "search").click
     @browser.button(:value,"Resultat als CSV Downloaden").click
-    # require 'pry'; binding.pry
-    @browser.button(:name => 'proceed_payment').click
-    @browser.button(:name => 'checkout_invoice').click
+    paypal_user = PaypalUser.new
+    expect(paypal_user.init_paypal_checkout(@browser)).to eql true
+    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    expect(paypal_user.paypal_buy(@browser)).to eql true
+    @browser.link(:name => 'download').wait_until_present
+    @browser.link(:name => 'download').click
+    sleep(1) # Downloading takes some time
     expect(@browser.url).not_to match  /errors/
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
@@ -46,13 +51,6 @@ describe "ch.oddb.org" do
 
   it "should be possible to download Zulassungsinhaber Desitin as admin user" do
     logout; login(AdminUser, AdminPassword)
-    if false
-      @browser.link(:text, "Admin").click
-      @browser.link(:text, "Benutzer").click
-      @browser.link(:text, AdminUser).click
-      expect(@browser.checkbox(:name, "yus_privileges[login|org.oddb.AdminUser]").value).to eq("1")
-      @browser.goto OddbUrl
-    end
     @browser.select_list(:name, "search_type").select("Zulassungsinhaber")
     @browser.text_field(:id, "searchbar").set("Desitin")
     @browser.button(:name,"search").click
@@ -64,6 +62,7 @@ describe "ch.oddb.org" do
     link.click
     expect(@browser.url).not_to match /errors/
     expect(@browser.url).not_to match /appdown/
+    sleep(1) # Downloading takes some time
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
     expect(diffFiles.size).to eq(1)
@@ -78,9 +77,9 @@ describe "ch.oddb.org" do
     wrong_url = /(-> http:\/\/[\w.]+)(.+)/.match(res)
     expect(wrong_url).not_to be nil
     destination = "#{OddbUrl}/#{wrong_url[2]}"
-    FileUtils.rm(Dir.glob(File.join(DownloadDir, 'oddb2*.csv')), :verbose => false)
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.goto destination
+    sleep(1) # Downloading takes some time
     expect(@browser.url).not_to match /errors/
     expect(@browser.url).not_to match /appdown/
     filesAfterDownload =  Dir.glob(GlobAllDownloads)

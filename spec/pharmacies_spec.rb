@@ -68,7 +68,7 @@ describe "ch.oddb.org" do
     expect(inhalt).to match "Zaunplatz 2"
     expect(inhalt).to match "8750 Glarus"
     @browser.link(:text => /map.search/).click
-    expect(@browser.url).to match /8750-glarus\/zaunplatz-2/i
+    expect(@browser.url).to match /glarus.zaunplatz-2/i
     @browser.back
   # go back to search result
     @browser.back

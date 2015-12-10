@@ -82,7 +82,7 @@ AerzteDefinitions = [
                            # Check map link
                               @browser.link(:text => /map.search/).click
                               expect(@browser.url).to match /bahnhofstr/i
-                              expect(@browser.url).to match /8753-mollis/i
+                              expect(@browser.url).to match /mollis/i
                               @browser.back
                            # go back to search result
                               @browser.back

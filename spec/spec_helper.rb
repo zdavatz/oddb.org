@@ -81,7 +81,7 @@ def setup_browser
 
     @browser = Watir::Browser.new :firefox, :profile => profile
   elsif Browser2test[0].to_s.eql?('chrome')
-    puts "Setting upd default profile for chrome"
+    puts "Setting up a default profile for chrome"
     prefs = {
       :download => {
         :prompt_for_download => false,
