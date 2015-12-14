@@ -118,6 +118,7 @@ module ODDB
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
+      update_yearly_fachinfo_feeds
     end
     def TextInfoPlugin::replace_textinfo(app, new_ti, container, type) # description
       return unless type.is_a?(Symbol)

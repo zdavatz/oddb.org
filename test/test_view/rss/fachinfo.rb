@@ -9,7 +9,7 @@ require 'minitest/autorun'
 require 'flexmock'
 require 'view/rss/fachinfo'
 require 'model/fachinfo'
-
+require 'util/today'
 module ODDB
   module View
     module Rss
@@ -35,7 +35,8 @@ end
 class TestFachinfo <Minitest::Test
   include FlexMock::TestCase
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @year      = 2011
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :_event_url => '_event_url',
                           :resource   => 'resource',
@@ -53,14 +54,11 @@ class TestFachinfo <Minitest::Test
                           :localized_name => 'localized_name',
                           :language => document,
                           :pointer  => 'pointer',
-                          :revision => Time.utc(2011,2,3),
+                          :revision => Time.utc(@year,2,3),
                           :iksnrs   => ['iksnrs'],
                          )
     @component = ODDB::View::Rss::Fachinfo.new([@model], @session)
-  end
-  def test_to_html
-    context = flexmock('context', :html => 'html')
-    expected = %(<?xml version="1.0" encoding="UTF-8"?>
+    @expected_2011 = %(<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -81,13 +79,49 @@ class TestFachinfo <Minitest::Test
       <link>_event_url</link>
       <description>html</description>
       <author>ODDB.org</author>
-      <pubDate>Thu, 03 Feb 2011 00:00:00 -0000</pubDate>
+      <pubDate>Thu, 03 Feb #{@year} 00:00:00 -0000</pubDate>
       <guid isPermaLink="true">_event_url</guid>
-      <dc:date>2011-02-03T00:00:00Z</dc:date>
+      <dc:date>#{@year}-02-03T00:00:00Z</dc:date>
     </item>
   </channel>
 </rss>)
+  end
+  def test_to_html_after_last_year
+    @@today = Date.new(@year + 1,2,16)
+    context = flexmock('context', :html => 'html')
+    assert_equal(@expected_2011, @component.to_html(context))
+  end
+
+  def test_to_html_older_last_year
+    @@today = Date.new(2013,1,1)
+    context = flexmock('context', :html => 'html')
+expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<rss version=\"2.0\"
+  xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
+  xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
+  xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\"
+  xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\">
+  <channel>
+    <title>lookup</title>
+    <link>_event_url</link>
+    <description>lookup</description>
+    <language>language</language>
+    <image>
+      <url>resource</url>
+      <title>lookup</title>
+      <link>_event_url</link>
+    </image>
+  </channel>
+</rss>"
     assert_equal(expected, @component.to_html(context))
+  end
+
+  def test_to_html_year_2011
+    @@today = Date.new(2015,1,1)
+    context = flexmock('context', :html => 'html')
+    container = nil
+    @component = ODDB::View::Rss::Fachinfo.new([@model], @session, container, @year)
+    assert_equal(@expected_2011, @component.to_html(context))
   end
 end
     end # Interactions

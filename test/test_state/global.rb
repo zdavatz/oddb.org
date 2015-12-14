@@ -763,6 +763,22 @@ end
       def test_rss__nil
         assert_equal(nil, @state.rss)
       end
+      def test_fachinfo_rss
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('channel')
+          s.should_receive(:"lookandfeel.enabled?").and_return(true)
+          s.should_receive(:request_path).and_return('channel/feedback.rss')
+        end
+        assert_kind_of(State::Rss::PassThru, @state.rss)
+      end
+      def test_fachinfo_2006_rss
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('channel')
+          s.should_receive(:"lookandfeel.enabled?").and_return(true)
+          s.should_receive(:request_path).and_return('channel/feedback-2006.rss')
+        end
+        assert_kind_of(State::Rss::PassThru, @state.rss)
+      end
       def setup_search(zone)
         query = flexmock('query') do |q|
             q.should_receive(:is_a?).and_return(false)

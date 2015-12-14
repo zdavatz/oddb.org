@@ -93,6 +93,7 @@ require 'state/user/powerlink'
 require 'state/user/plugin'
 require 'state/user/init'
 require 'state/user/sponsorlink'
+require 'util/session'
 require 'util/umlautsort'
 require 'sbsm/state'
 
@@ -785,12 +786,15 @@ module ODDB
 				state_map[type][pointer.skeleton]
 			end
       def rss
-        if(channel = @session.user_input(:channel))
+        m = /fachinfo(?>-(\d{4})|).rss$/.match(@session.request_path.to_s) if @session and @session.request_path
+        channel = @session.user_input(:channel)
+        channel ||= m[0] if m
+        if channel
           key = channel.gsub('.', '_').to_sym
           if(@session.lookandfeel.enabled?(key))
-            if @session.flavor != Session::DEFAULT_FLAVOR
+            if @session.flavor != ODDB::Session::DEFAULT_FLAVOR
               channel = File.basename(channel, '.rss') + '-' + \
-                        @session.flavor + '.rss'
+                        (@session.flavor ? @session.flavor : '') + '.rss'
             end
             Rss::PassThru.new(@session, channel)
           else

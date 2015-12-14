@@ -207,6 +207,12 @@ class TestOddbValidator <Minitest::Test
   def test_diff_element
     assert_equal("1", @validator.validate(:diff, "1"))
   end
+  def test_channel_fachinfo_element
+    assert_equal("fachinfo.rss", @validator.validate(:channel, "fachinfo.rss"))
+  end
+  def test_channel_price_cut_element
+    assert_equal("price_cut.rss", @validator.validate(:channel, "price_cut.rss"))
+  end
   if false
   def test_diff_fi
     assert_equal(['51193'], @validator.diff('de/gcc/show/fachinfo/51193/diff'))

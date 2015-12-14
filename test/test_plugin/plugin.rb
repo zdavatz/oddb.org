@@ -78,7 +78,6 @@ module ODDB
       expected = "Error creating Link for nil"
       assert_equal(expected, @plugin.resolve_link(model))
     end
-=begin
     def test_update_rss_feeds
       view_instance = flexmock('view_instance', :to_html => 'to_html')
       view_klass = flexmock('view_klass', :new => view_instance)
@@ -101,7 +100,6 @@ module ODDB
       @plugin.instance_eval('@month = Time.local(2011,2)')
       assert_equal('odba_isolated_store', @plugin.update_rss_feeds('name', ['model'], view_klass))
     end
-=end
     def test_update_rss_feeds__model_empty
       assert_nil(@plugin.update_rss_feeds('name', [], 'view_klass'))
     end

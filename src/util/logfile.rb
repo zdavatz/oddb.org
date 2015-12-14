@@ -14,7 +14,7 @@ module ODDB
 			dir = File.dirname(file)
 			FileUtils.mkdir_p(dir)
 			timestr = time.strftime('%Y-%m-%d %H:%M:%S %Z')
-			File.open(file, 'a') { |fh| fh << [timestr, line, "\n"].join }
+			File.open(file, 'a') { |fh| fh << [timestr, line, "\n"].join if fh.respond_to?(:<<) }
 		end
 		def filename(key, time)
 			path = [
