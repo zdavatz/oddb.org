@@ -312,10 +312,10 @@ class ResultList < HtmlGrid::List
         model = @session.state.pages[page]
       end
     end
-      
+
     code = @session.persistent_user_input(:code)
     if model
-      model.each { |atc|
+      model.sort{|x,y| x.code <=> y.code}.each { |atc|
         compose_subheader(atc, offset)
         offset = resolve_offset(offset, self::class::OFFSET_STEP)
         if(show_packages? || code == atc.code)

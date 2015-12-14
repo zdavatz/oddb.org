@@ -45,6 +45,16 @@ describe "ch.oddb.org" do
     @browser.trs.find_all{|x| x.elements[1].title.eql?('Fachinformation') }.collect{|x| x.text.clone}
   end
 
+  it "should list C09DB02 before C09DX03 when looking for Sevikar" do
+    select_product_by_trademark('Sevikar')
+    drugs = get_drugs_as_arra_of_strings
+    text = @browser.text.clone
+    expected_order = [ 'C09DB02', 'C09DX03']
+    res = expected_order.collect{|x| text.index(x)}
+    expect(res.sort).to eql res
+  end
+
+
   # Reasoning: Levetiracetam is the active substance, not the trademark name
   it "should list Keppra at the top when searching for Levetiracetam" do
     select_product_by_trademark('Levetiracetam')
