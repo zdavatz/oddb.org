@@ -78,17 +78,18 @@ module ODDB
       expected = "Error creating Link for nil"
       assert_equal(expected, @plugin.resolve_link(model))
     end
-=begin
     def test_update_rss_feeds
       view_instance = flexmock('view_instance', :to_html => 'to_html')
-      view_klass = flexmock('view_klass', :new => view_instance)
+      view_klass = flexmock('view_klass')
+      # new method with 3 arguments as for hpc, price_cut, recall in update_rss_feeds
+      view_klass.should_receive(:new).with(any, any, any).and_return(view_instance)
       name = 'name'
       rss_updates = {'name' => name}
-      flexmock(@app, 
+      flexmock(@app,
                :rss_updates => rss_updates,
                :odba_isolated_store => 'odba_isolated_store'
               )
-      fh = flexmock('file_handler', 
+      fh = flexmock('file_handler',
                     :puts => nil,
                     :read => nil
                    )
@@ -101,7 +102,30 @@ module ODDB
       @plugin.instance_eval('@month = Time.local(2011,2)')
       assert_equal('odba_isolated_store', @plugin.update_rss_feeds('name', ['model'], view_klass))
     end
-=end
+    def test_update_rss_feeds_4_args
+      view_instance = flexmock('view_instance', :to_html => 'to_html')
+      view_klass = flexmock('view_klass')
+      # new method with 4 arguments as for fachinfo in update_rss_feeds
+      view_klass.should_receive(:new).with(any, any, any, any).and_return(view_instance)
+      name = 'name'
+      rss_updates = {'name' => name}
+      flexmock(@app,
+               :rss_updates => rss_updates,
+               :odba_isolated_store => 'odba_isolated_store'
+              )
+      fh = flexmock('file_handler',
+                    :puts => nil,
+                    :read => nil
+                   )
+      flexmock(File) do |file|
+        file.should_receive(:open).and_yield(fh)
+        file.should_receive(:mv)
+      end
+      flexmock(FileUtils, :mkdir_p => nil)
+      flexmock(CGI, :new => 'html4')
+      @plugin.instance_eval('@month = Time.local(2011,2)')
+      assert_equal('odba_isolated_store', @plugin.update_rss_feeds('name', ['model'], view_klass))
+    end
     def test_update_rss_feeds__model_empty
       assert_nil(@plugin.update_rss_feeds('name', [], 'view_klass'))
     end

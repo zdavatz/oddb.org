@@ -15,13 +15,11 @@ describe "ch.oddb.org" do
   before :each do
     Watir.default_timeout = @saved_timeout
     @browser.goto OddbUrl
+    Dir.glob(GlobAllDownloads).each{|f| FileUtils.rm(f)}
   end
 
   after :each do
     @idx += 1
-    createScreenshot(@browser, '_'+@idx.to_s)
-    # sleep 
-    @browser.goto OddbUrl
   end
 
   {
@@ -34,7 +32,6 @@ describe "ch.oddb.org" do
   }.each{
     |subject, test_string|
       it "should have a working RSS-feed #{subject}" do
-        @browser.goto OddbUrl
         expect(@browser.url).to match OddbUrl
         link = @browser.link(:href => /rss\/channel\/#{subject}/)
         debug = /fachinfo/i.match(subject) ? true : false
@@ -51,11 +48,40 @@ describe "ch.oddb.org" do
           expect(content).to match /#{test_string}/
           $stdout.puts "#{Time.now}: #{@browser.url} has is #{content.size} text.size long" if debug
         else
-          skip "We know that Chromium handles rss -feeds differently"
+          # chromium just downloads the rss feeds
+          filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+          @browser.goto(link.href)
+          sleep(2)
+          filesAfterDownload =  Dir.glob(GlobAllDownloads)
+          diff_files = filesAfterDownload - filesBeforeDownload
+          expect(diff_files.size).to eql 1
+          expect(File.basename(diff_files.first)).to eql subject + '.rss'
         end
         @browser.back
       end
     }
+    {
+      'fachinfo-2008'   => 'Neue und geänderte Fachinformtionen im Schweizer Gesundheitsmarkt',
+  }.each do
+    |subject, test_string|
+      it "should have a working #{subject}" do
+        filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+        url = OddbUrl + '/de/gcc/rss/channel/' + subject + '.rss'
+        @browser.goto url
+        if @browser.driver.browser.eql?(:firefox)
+          expect(@browser.url).to eql url
+          content = @browser.text.clone
+          expect(content).to match /#{test_string}/
+        else
+          # chromium just downloads the rss feeds
+          sleep(2)
+          filesAfterDownload =  Dir.glob(GlobAllDownloads)
+          diff_files = filesAfterDownload - filesBeforeDownload
+          expect(diff_files.size).to eql 1
+          expect(File.basename(diff_files.first)).to eql subject + '.rss'
+        end
+      end
+  end
 
   after :all do
     Watir.default_timeout = @saved_timeout

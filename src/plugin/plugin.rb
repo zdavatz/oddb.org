@@ -4,6 +4,8 @@
 # Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com
 
 require 'util/http'
+require 'util/logfile'
+require 'util/today'
 require 'ostruct'
 require 'custom/lookandfeelbase'
 require 'fileutils'
@@ -70,22 +72,26 @@ module ODDB
 		rescue StandardError
 			"Error creating Link for #{pointer.inspect}"
 		end
-    def update_rss_feeds(name, model, view_klass)
+    def update_yearly_fachinfo_feeds
+      @app.sorted_fachinfos.collect{|x| x.revision.utc.year}.sort.uniq.each do |year|
+        update_rss_feeds("fachinfo-#{year}.rss", @app.sorted_fachinfos, View::Rss::Fachinfo, year)
+      end
+    end
+    def update_rss_feeds(name, model, view_klass, args = nil)
       return if model.empty?
-      l10n_sessions { |stub|
-        view = view_klass.new(model, stub, nil)
+      l10n_sessions do |stub|
+        view = args ? view_klass.new(model, stub, nil, args) : view_klass.new(model, stub, nil)
         if view.respond_to?(:name=)
           view.name = name
         end
         path = File.join(RSS_PATH, stub.language, name)
-        tmp = File.join(RSS_PATH, stub.language, '.' << name)
+        tmp = File.join(RSS_PATH, stub.language, '.' + name)
         FileUtils.mkdir_p(File.dirname(path))
-        File.open(tmp, 'w') { |fh|
+        File.open(tmp, 'w+') { |fh|
           fh.puts view.to_html(CGI.new('html4'))
         }
-        #File.mv(tmp, path)
-        FileUtils.mv(tmp, path)
-      }
+        FileUtils.mv(tmp, path) if File.exists?(tmp)
+      end
       LogFile.append('oddb/debug', " update_rss_feeds #{@name}: month #{@month} today #{@@today} with #{model.size} entries", Time.now.utc)
       @app.rss_updates[name] = [@month || @@today, model.size]
       @app.odba_isolated_store
