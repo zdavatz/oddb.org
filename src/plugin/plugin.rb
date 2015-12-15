@@ -80,7 +80,7 @@ module ODDB
     def update_rss_feeds(name, model, view_klass, args = nil)
       return if model.empty?
       l10n_sessions do |stub|
-        view = view_klass.new(model, stub, nil, args)
+        view = args ? view_klass.new(model, stub, nil, args) : view_klass.new(model, stub, nil)
         if view.respond_to?(:name=)
           view.name = name
         end
