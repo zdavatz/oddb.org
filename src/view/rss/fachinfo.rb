@@ -16,10 +16,6 @@ class FachinfoItem < HtmlGrid::DivComposite
   DEFAULT_CLASS = View::Chapter
   def init
     @model = @model.send(@session.language)
-    @model.chapter_names.each_with_index { |name, idx|
-      components.store([0,idx], name)
-      break if(name == :indications || idx > 4)
-    }
     super
   end
 end
