@@ -28,7 +28,7 @@ class TestFachinfoItem <Minitest::Test
     @composite = ODDB::View::Rss::FachinfoItem.new(@model, @session)
   end
   def test_init
-    assert_equal([[[0, 0], "chapter_name"]], @composite.init)
+    assert_equal([], @composite.init)
   end
 end
 
