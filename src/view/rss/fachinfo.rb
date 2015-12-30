@@ -33,15 +33,25 @@ class Fachinfo < HtmlGrid::Component
   end
   def item_to_html(context, fachinfo, feed)
     language = @session.language
+    iksnrs = nil
+    begin
+      iksnrs = fachinfo.iksnrs
+    rescue   => e
+      puts "rss/fachinfo #{__LINE__}: rescue #{e.inspect} for rss/fachinfo #{__LINE__}: #{fachinfo.inspect}"
+      return ""
+    end
+    puts "rss/fachinfo #{__LINE__}: #{fachinfo.inspect} iksnrs #{iksnrs.inspect} language #{language}"
     document = fachinfo.send(language)
     return "" unless(document.is_a?(FachinfoDocument))
 
     item = feed.items.new_item
     item.author = "ODDB.org"
 
+    return "" unless fachinfo.respond_to?(:localized_name)
     name = item.title = sanitize(fachinfo.localized_name(language))
     return "" unless name
-    args = {:reg => fachinfo.iksnrs.first}
+    return "" unless iksnrs && iksnrs.is_a?(Array)
+    args = {:reg => iksnrs.first}
     item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
     item.guid.isPermaLink = true
     item.date = fachinfo.revision.utc
