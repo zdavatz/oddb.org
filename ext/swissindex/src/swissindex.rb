@@ -10,6 +10,12 @@ require 'drb'
 require 'config'
 
 module ODDB
+  module Swissindex
+    # This procedure is needed for the migel import!
+    def Swissindex.session(type = SwissindexPharma)
+      yield(type.new)
+    end
+  end
 
 module Archiver
   def historicize(filename, archive_path, content, lang = 'DE')
