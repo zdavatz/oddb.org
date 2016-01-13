@@ -36,38 +36,37 @@ class Fachinfo < HtmlGrid::Component
     iksnrs = nil
     begin
       iksnrs = fachinfo.iksnrs
-    rescue   => e
-      puts "rss/fachinfo #{__LINE__}: rescue #{e.inspect} for rss/fachinfo #{__LINE__}: #{fachinfo.inspect}"
+      document = fachinfo.send(language)
+      return "" unless(document.is_a?(FachinfoDocument))
+
+      item = feed.items.new_item
+      item.author = "ODDB.org"
+
+      return "" unless fachinfo.respond_to?(:localized_name)
+      name = item.title = sanitize(fachinfo.localized_name(language))
+      return "" unless name
+      return "" unless iksnrs && iksnrs.is_a?(Array)
+      args = {:reg => iksnrs.first}
+      item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
+      item.guid.isPermaLink = true
+      item.date = fachinfo.revision.utc
+
+      comp = FachinfoTemplate.new(fachinfo, @session, self)
+
+      ptrn = /#{Regexp.escape(name)}(®|\(TM\))?/u
+      link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
+      link.href = @lookandfeel._event_url(:search,
+                                          :search_type => 'st_sequence',
+                                          :search_query => name.gsub('/', '%2F'))
+      html = comp.to_html(context)
+      html.gsub!(%r{<pre\b.*?</pre>}imu) { |match| match.gsub(%r{\n}u, '<BR>') }
+      item.description = sanitize(html).gsub(ptrn) do |match|
+        link.value = match
+        link.to_html(context)
+      end
+    rescue NotImplementedError  => e
+      puts "rss/fachinfo #{__LINE__}: rescue #{e.inspect} for rss/fachinfo #{__LINE__}: #{fachinfo.inspect}: backtrace is: \n  #{e.backtrace[0..5].join("\n  ")}"
       return ""
-    end
-    puts "rss/fachinfo #{__LINE__}: #{fachinfo.inspect} iksnrs #{iksnrs.inspect} language #{language}"
-    document = fachinfo.send(language)
-    return "" unless(document.is_a?(FachinfoDocument))
-
-    item = feed.items.new_item
-    item.author = "ODDB.org"
-
-    return "" unless fachinfo.respond_to?(:localized_name)
-    name = item.title = sanitize(fachinfo.localized_name(language))
-    return "" unless name
-    return "" unless iksnrs && iksnrs.is_a?(Array)
-    args = {:reg => iksnrs.first}
-    item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
-    item.guid.isPermaLink = true
-    item.date = fachinfo.revision.utc
-
-    comp = FachinfoTemplate.new(fachinfo, @session, self)
-
-    ptrn = /#{Regexp.escape(name)}(®|\(TM\))?/u
-    link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
-    link.href = @lookandfeel._event_url(:search,
-                                        :search_type => 'st_sequence',
-                                        :search_query => name.gsub('/', '%2F'))
-    html = comp.to_html(context)
-    html.gsub!(%r{<pre\b.*?</pre>}imu) { |match| match.gsub(%r{\n}u, '<BR>') }
-    item.description = sanitize(html).gsub(ptrn) do |match|
-      link.value = match
-      link.to_html(context)
     end
   end
 

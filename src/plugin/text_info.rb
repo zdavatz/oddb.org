@@ -201,9 +201,12 @@ module ODDB
         return # no need to change anything
       end
       if atcFromFI == atcFromXml and not atcFromRegistration
+        return unless atcFromFI # in this case we cannot correct it!
         @fi_atc_code_different_in_registration << "#{iksnr} FI #{atcFromFI} registration #{atcFromRegistration}"
         atc_class = app.atc_class(atcFromFI)
-        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI]))
+        return if atc_class.is_a?(ArgumentError)
+        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI])) if atcFromFI
+        return if atc_class.is_a?(ArgumentError)
         registration.sequences.values.each{
           |sequence|
             LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr} atc_class #{atc_class} #{atc_class.oid}"
@@ -262,10 +265,12 @@ module ODDB
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
               LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{fis.values.first.atc_code}"
-              fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
-              TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
-              ensure_correct_atc_code(@app, reg, fis.values.first.atc_code)
-              @updated_fis += 1
+              unless iksnr.to_i != 0
+                fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
+                TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
+                ensure_correct_atc_code(@app, reg, fis.values.first.atc_code)
+                @updated_fis += 1
+              end
             end
           else
             LogFile.debug "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"

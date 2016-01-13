@@ -82,7 +82,7 @@ module ODDB
 				0
 			end
 		end
-    ## active_patinfo is used for invoicing. Returns path to a pdf file, iff it
+    ## active_patinfo is used for invoicing. Returns path to a pdf file, if it
     #  is displayed online.
     def active_patinfo
       active? && patinfo_active? && @pdf_patinfo
