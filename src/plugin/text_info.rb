@@ -265,7 +265,7 @@ module ODDB
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
               LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{fis.values.first.atc_code}"
-              unless iksnr.to_i != 0
+              unless iksnr.to_i == 0
                 fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
                 TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
                 ensure_correct_atc_code(@app, reg, fis.values.first.atc_code)
