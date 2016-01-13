@@ -1,4 +1,4 @@
-# #!/usr/bin/env ruby
+#!/usr/bin/env ruby
 # encoding: utf-8
 # TestOddbApp -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
 # TestOddbApp -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
@@ -228,6 +228,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
   def test__search_exact_classified_result
     sequence = flexmock('sequence') do |seq|
       seq.should_receive(:atc_class)
+      seq.should_receive(:active?).and_return(true)
     end
     expected = ODDB::SearchResult.new
     expected.atc_classes = ['atc']
