@@ -105,7 +105,7 @@ class OddbPrevalence
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
-    # $stdout.puts "#{caller[0]}: #{index_name} #{query}"; $stdout.flush
+    # $stdout.puts "#{caller[0]}: retrieve_from_index #{index_name} #{query}"; $stdout.flush
     ODBA.cache.retrieve_from_index(index_name, query, result)
   rescue KeyError
     result || []
@@ -1045,9 +1045,9 @@ class OddbPrevalence
     end
     atcs.uniq
   end
-	def search_by_sequence(key, result=nil)
-		retrieve_from_index('sequence_index_atc', key.dup, result)
-	end
+  def search_by_sequence(key, result=nil)
+    retrieve_from_index('sequence_index_atc', key.dup, result)
+  end
 	def search_by_interaction(key, lang)
 		result = ODDB::SearchResult.new
     result.error_limit = RESULT_SIZE_LIMIT
@@ -1056,17 +1056,17 @@ class OddbPrevalence
 		end
 		sequences = retrieve_from_index("interactions_index_#{lang}", key, result)
     key = key.downcase
-    sequences.reject! { |seq|
+    sequences.reject! do |seq|
       ODDB.search_terms(seq.search_terms, :downcase => true).include?(key) \
-        || seq.substances.any? { |sub|
+        || seq.substances.any? do |sub|
         sub.search_keys.any? { |skey| skey.downcase.include?(key) }
-      }
-    }
-		_search_exact_classified_result(sequences, :interaction, result)
+      end
+    end
+    _search_exact_classified_result(sequences, :interaction, result)
 	end
-	def search_by_substance(key)
-		retrieve_from_index('substance_index_atc', key.dup)
-	end
+  def search_by_substance(key)
+    retrieve_from_index('substance_index_atc', key.dup)
+  end
 	def search_by_unwanted_effect(key, lang)
 		result = ODDB::SearchResult.new
 		if(lang.to_s != "fr")
@@ -1138,16 +1138,17 @@ class OddbPrevalence
     result
   end
 
-	def search_exact_substance(query)
-		sequences = ODBA.cache.\
-			retrieve_from_index('substance_index_sequence', query)
-		_search_exact_classified_result(sequences, :substance)
-	end
+  def search_exact_substance(query)
+    sequences =  ODBA.cache.retrieve_from_index('substance_index_sequence', query).collect{|x| x if x.active?}.compact
+    _search_exact_classified_result(sequences, :substance)
+  end
+
   def _search_exact_classified_result(sequences, type=:unknown, result=nil)
     atc_classes = {}
-    sequences.each { |seq|
+    sequences.each do |seq|
+      next unless  seq.active?
       code = (atc = seq.atc_class) ? atc.code : 'n.n'
-      new_atc = atc_classes.fetch(code) {
+      new_atc = atc_classes.fetch(code) do
         atc_class = ODDB::AtcClass.new(code)
         unless(atc.nil?)
           atc_class.descriptions = atc.descriptions
@@ -1155,9 +1156,9 @@ class OddbPrevalence
           atc_class.ni_id = atc.ni_id
         end
         atc_classes.store(code, atc_class)
-      }
+      end
       new_atc.sequences.push(seq)
-    }
+    end
     result ||= ODDB::SearchResult.new
     result.search_type = type
     result.atc_classes = atc_classes.values
@@ -1223,6 +1224,9 @@ class OddbPrevalence
 			soundex_substances(query)
 		end
 	end
+  def active_sequences
+    sequences.find_all{|x| x.active? }
+  end
 	def sequences
 		@registrations.values.inject([]) { |seq, reg|
 			seq.concat(reg.sequences.values)

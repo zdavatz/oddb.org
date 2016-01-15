@@ -280,6 +280,31 @@ describe "ch.oddb.org" do
     expect(false).to eq(true)
   end
 
+  # Other ATC code for Adenosin like Andere Diagnostika (V04CX) and
+  # Lösungs- und Verdünnungsmittel, inkl. Spüllösungen (V07AB) come from no longer active
+  it "should show only ATC-Code for C01EB10 for Adenosin" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
+    @browser.text_field(:name, "search_query").value = "Adenosin"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).not_to match LeeresResult
+    expect(text).to match('C01EB10')
+    expect(text).not_to match('V04CX')
+    expect(text).not_to match('V07AB')
+  end unless ['just-medical'].index(Flavor)
+
+  it "should show no drugs for Iscover" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
+    @browser.text_field(:name, "search_query").value = "Iscover"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).to match LeeresResult
+  end unless ['just-medical'].index(Flavor)
+
   it "should be possible to find Budenofalk and Budesonid Sandoz via combined search" do
     @browser.link(:name, 'drugs').click;  small_delay
 
