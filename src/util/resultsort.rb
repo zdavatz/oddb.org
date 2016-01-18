@@ -21,6 +21,7 @@ module ODDB
     IsGenerikum         = 20
     IsNotClassified     = 21
     IsNotRefDataListed  = 23
+    DebugSort           = false
 
     # zeno defined the sort order in mail of Oktobre 21, 2015
     # Bei Evidentia müssen  E-Mail from November 27 2015
@@ -69,10 +70,10 @@ module ODDB
       m = a_session && a_session.request_path && /search_query[\/=]([^\/=&]*)/.match(a_session.request_path)
       trademark = false
       trademark = URI.unescape(m[1]) if m
-      # puts "Resultsort #{__LINE__}: tm #{trademark.inspect} from #{a_session.request_path}" if a_session
+      puts "Resultsort #{__LINE__}: tm #{trademark.inspect} from #{a_session.request_path}" if DebugSort && a_session
       begin
         packages.uniq!
-        # xxx = []
+        dbg_packs = [] if DebugSort
         packages.sort_by! { |package|
           name_to_use, prio = adjusted_name_and_prio(package, a_session, trademark)
           sort_info = [
@@ -85,10 +86,10 @@ module ODDB
             dose_value(package.dose),
             package.comparable_size,
           ]
-          # xxx << sort_info.clone
+          dbg_packs << sort_info.clone if DebugSort
           sort_info
         }
-        # xxx.each_with_index{|x, idx| puts "result_sort #{idx}: #{x.inspect}" } # for debugging
+        dbg_packs.each_with_index{|x, idx| puts "result_sort #{idx}: #{x.inspect}" } if DebugSort
         packages
       rescue StandardError => e
         puts e.class
@@ -132,10 +133,16 @@ private
                           Dose.new(package.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
       if a_session && a_session.lookandfeel && res && /st_combined/.match(a_session.request_path)
         prio = IsMatchingTrademark
-        prio += 1 if !package.sl_entry
-        prio += 2 if package.out_of_trade
+        prio += 1 unless package.sl_generic_type.eql?(:original)
+        prio += 2 if !package.sl_entry
+        prio += 4 if package.out_of_trade
       end
-      # puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)} #{trademark} res #{res.inspect} pack #{package.name_base} expired? #{package.expired?.inspect} out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
+      # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
+      if DebugSort
+        puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)}" +
+            " #{trademark} res #{res.inspect} pack #{package.iksnr}/#{package.seqnr} #{package.name_base} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
+            " out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
+      end
       return name_to_use, prio
     end
     def classified_group(package)

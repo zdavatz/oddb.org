@@ -295,6 +295,27 @@ describe "ch.oddb.org" do
     expect(text).not_to match('V07AB')
   end unless ['just-medical'].index(Flavor)
 
+
+  it "should show no drugs for Gentamycin in combined search" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
+    @browser.text_field(:name, "search_query").value = "Gentamycin"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).to match LeeresResult
+  end unless ['just-medical'].index(Flavor)
+
+  it "should show no drugs for Gentamycin in price search" do
+    @browser.link(:name, 'drugs').click;
+
+    @browser.select_list(:name, "search_type").select("Preisvergleich")
+    @browser.text_field(:name, "search_query").value = "Gentamycin"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).to match LeeresResult
+  end unless ['just-medical'].index(Flavor)
+
   it "should show no drugs for Iscover" do
     @browser.link(:name, 'drugs').click;  small_delay
 
