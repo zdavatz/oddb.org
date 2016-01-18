@@ -326,6 +326,26 @@ describe "ch.oddb.org" do
     expect(text).to match LeeresResult
   end unless ['just-medical'].index(Flavor)
 
+  it "should show no drugs for Fortex in combined search" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Preisvergleich und Inhaltsstoff")
+    @browser.text_field(:name, "search_query").value = "Fortex"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).to match LeeresResult
+  end unless ['just-medical'].index(Flavor)
+
+  it "should show no drugs for Fortex via unwanted effects search" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Unerwünschte Wirkung")
+    @browser.text_field(:name, "search_query").value = "Fortex"
+    @browser.button(:name, 'search').click;  small_delay
+    text = @browser.text.clone
+    expect(text).to match LeeresResult
+  end unless ['just-medical'].index(Flavor)
+
   it "should be possible to find Budenofalk and Budesonid Sandoz via combined search" do
     @browser.link(:name, 'drugs').click;  small_delay
 
@@ -355,6 +375,18 @@ describe "ch.oddb.org" do
         expect(text).to match LeeresResult
       end
   end
+
+  it "should search via pharmacode 6430210 without problem" do
+    @browser.link(:name, 'drugs').click;  small_delay
+
+    @browser.select_list(:name, "search_type").select("Pharmacode")
+    @browser.text_field(:name, "search_query").value = "6430210"
+    @browser.button(:name, 'search').click;  small_delay
+
+    text = @browser.text.clone
+    expect(text).not_to match LeeresResult
+    expect(text).to match('Oxycodon')
+  end unless ['just-medical'].index(Flavor)
 
   after :all do
     @browser.close
