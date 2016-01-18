@@ -925,7 +925,6 @@ class OddbPrevalence
 		# 6. substance
 		# 7. indication
 		# 8. sequence
-    # 9. unwanted effects
 		result = ODDB::SearchResult.new
 		result.exact = true
 		result.search_query = query
@@ -995,10 +994,6 @@ class OddbPrevalence
 			result.search_type = :sequence
 		end
 		result.atc_classes = atcs
-		# unwanted effects
-		if(result.atc_classes.empty?)
-			result = search_by_unwanted_effect(key, lang)
-		end
 		result
 	end
 	def search_btm(query='')
