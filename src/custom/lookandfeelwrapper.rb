@@ -327,7 +327,7 @@ module ODDB
         :fi_kinetic               =>  'Pharmakokinetik',
         :fi_other_advice          =>  'Sonstige Hinweise',
         :fi_overdose              =>  'Überdosierung',
-        :fi_preclinic             =>  'Präklinische',
+        :fi_preclinic             =>  'Präklinische Daten',
         :fi_registration_owner    =>  'Zulassungsinhaberin',
         :fi_restrictions_amzv     =>  'Warnhinweise',
         :fi_unwanted_effects      =>  'Unerwünschte Wirkungen',
