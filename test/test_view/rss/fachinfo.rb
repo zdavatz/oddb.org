@@ -46,13 +46,13 @@ class TestFachinfo <Minitest::Test
                           :lookandfeel => @lnf,
                           :language    => 'language'
                          )
-    document   = flexmock('document', 
+    @document   = flexmock('document',
                           :is_a? => true,
                           :chapter_names => ['chapter_name']
                          )
     @model     = flexmock('model', 
                           :localized_name => 'localized_name',
-                          :language => document,
+                          :language => @document,
                           :pointer  => 'pointer',
                           :revision => Time.utc(@year,2,3),
                           :iksnrs   => ['iksnrs'],
@@ -85,17 +85,7 @@ class TestFachinfo <Minitest::Test
     </item>
   </channel>
 </rss>)
-  end
-  def test_to_html_after_last_year
-    @@today = Date.new(@year + 1,2,16)
-    context = flexmock('context', :html => 'html')
-    assert_equal(@expected_2011, @component.to_html(context))
-  end
-
-  def test_to_html_older_last_year
-    @@today = Date.new(2013,1,1)
-    context = flexmock('context', :html => 'html')
-expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+@no_items = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <rss version=\"2.0\"
   xmlns:content=\"http://purl.org/rss/1.0/modules/content/\"
   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"
@@ -113,7 +103,17 @@ expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     </image>
   </channel>
 </rss>"
-    assert_equal(expected, @component.to_html(context))
+  end
+  def test_to_html_after_last_year
+    @@today = Date.new(@year + 1,2,16)
+    context = flexmock('context', :html => 'html')
+    assert_equal(@expected_2011, @component.to_html(context), 'should not item of last year (2011)')
+  end
+
+  def test_to_html_older_last_year
+    @@today = Date.new(2013,1,1)
+    context = flexmock('context', :html => 'html')
+    assert_equal(@no_items, @component.to_html(context), 'should not contain any items')
   end
 
   def test_to_html_year_2011
@@ -121,7 +121,25 @@ expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     context = flexmock('context', :html => 'html')
     container = nil
     @component = ODDB::View::Rss::Fachinfo.new([@model], @session, container, @year)
-    assert_equal(@expected_2011, @component.to_html(context))
+    assert_equal(@expected_2011, @component.to_html(context), 'should not item of 2011')
+  end
+
+  def test_to_html_raise_rrror
+    @@today = Date.new(2015,1,1)
+    container = nil
+    @model     = flexmock('model',
+                          :localized_name => 'localized_name',
+                          :language => @document,
+                          :pointer  => 'pointer',
+                          :revision => Time.utc(@year,2,3),
+                         )
+    @raised_no_method_error = false
+    @model.should_receive(:iksnrs).and_return { @raised_no_method_error = true ; raise(NoMethodError) }
+    @component = ODDB::View::Rss::Fachinfo.new([@model], @session, container, @year)
+    context = flexmock('context', :html => 'html')
+    res =  @component.to_html(context)
+    assert(res.is_a?(String), 'should not raise an error')
+    assert(@raised_no_method_error, 'must have catched NoMethodError')
   end
 end
     end # Interactions
