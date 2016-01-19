@@ -64,7 +64,7 @@ class Fachinfo < HtmlGrid::Component
         link.value = match
         link.to_html(context)
       end
-    rescue NotImplementedError  => e
+    rescue NoMethodError | NotImplementedError  => e
       puts "rss/fachinfo #{__LINE__}: rescue #{e.inspect} for rss/fachinfo #{__LINE__}: #{fachinfo.inspect}: backtrace is: \n  #{e.backtrace[0..5].join("\n  ")}"
       return ""
     end
