@@ -42,17 +42,23 @@ module ODDB
 
   class TestResultSort <Minitest::Test
     include FlexMock::TestCase
+    @@seqnr ||= 1
+    @@ikscd ||= 1
+    @@iksnr ||= 12345
     def create_default_product_mock(product_name, out_of_trade = false, sl_generic_type = :original, generic_type = :original, gal_forms = nil)
       unless gal_forms
         gal_forms = flexmock('gal_forms')
         gal_forms.should_receive(:collect).by_default.and_return(['gal_def'])
       end
+      @@iksnr += 1
+      @@ikscd += 1
+      @@seqnr += 1
       package = flexmock('package')
-      package.should_receive(:iksnr).by_default.and_return('61848')
+      package.should_receive(:iksnr).by_default.and_return(@@iksnr)
       package.should_receive(:sort_info).by_default.and_return('sort_info')
       package.should_receive(:sort_info=).by_default
-      package.should_receive(:seqnr).by_default.and_return('88')
-      package.should_receive(:ikscd).by_default.and_return('999')
+      package.should_receive(:seqnr).by_default.and_return(@@seqnr)
+      package.should_receive(:ikscd).by_default.and_return(@@ikscd)
       package.should_receive(:odba_instance).by_default.and_return(nil)
       package.should_receive(:out_of_trade).by_default.and_return(out_of_trade)
       package.should_receive(:sl_generic_type).by_default.and_return(sl_generic_type)
@@ -66,6 +72,7 @@ module ODDB
       package.should_receive(:comparable_size).by_default.and_return('comparable_size')
       package.should_receive(:inspect).by_default.and_return(product_name)
       package.should_receive(:sl_entry).by_default.and_return(nil)
+      package.should_receive(:name).by_default.and_return(product_name)
       sequence =  flexmock('sequence')
       sequence.should_receive(:name).by_default.and_return(product_name)
       package.should_receive(:sequence).by_default.and_return(sequence)
@@ -437,7 +444,7 @@ module ODDB
         # puts "products #{products.collect {|x| x.name_base}} test_session #{test_session.request_path}"
         @sort    = ODDB::StubResultSort.new(products)
         res = @sort.sort_result(products, test_session)
-        assert_equal(expected_names, res.collect{|pack| pack.name_base})
+        assert_equal(expected_names, res.collect{|pack| pack.name_base}, "name #{name} #{expected_names}")
       end
     end
 
@@ -456,7 +463,6 @@ module ODDB
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
-
     def test_sort_result_evidentia_default_Keppra
       setup_evidentia_trademark('Keppra')
       @sort    = ODDB::StubResultSort.new(@tm_products)
@@ -518,6 +524,51 @@ module ODDB
       res = @sort.sort_result(@avalox_products, @session)
       expected_iksnr = [55213, 58257]
       assert_equal(expected_iksnr, res.collect{|pack| pack.iksnr.to_i})
+    end
+
+    def setup_evidentia_torimat(lnf = nil)
+      def create_topo(lnf, value)
+        if lnf
+          @session.should_receive(:flavor).and_return(@evidentia)
+          @component = LookandfeelBase.new(@session)
+          @evidentia = LookandfeelEvidentia.new(@component)
+          @session.should_receive(:flavor).and_return(@evidentia)
+          @session.should_receive(:lookandfeel).and_return(@evidentia)
+        end
+        @gal_avalox = flexmock('gal_avalox')
+        @gal_avalox.should_receive(:collect).by_default.and_return(['gal_avalox'])
+        @sl_entry_valid = flexmock('sl_entry_valid')
+        @sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
+        @sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
+        gal_z = flexmock('gal_z')
+        gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
+        name = "Torimat Desitin #{value} mg"
+        product = create_default_product_mock(name, false, :original, :original, @gal_avalox)
+        product.should_receive(:sl_entry).and_return(@sl_entry_valid)
+        product.should_receive(:iksnr).and_return('53537')
+        product.should_receive(:expired?).and_return(false)
+        product.should_receive(:seqnr).and_return('01')
+        product.should_receive(:dose).and_return(Quanty.new(value, 'mg'))
+        product
+      end
+      @torimat_products  = [create_topo(lnf, 200), create_topo(lnf, 100),create_topo(lnf, 50), create_topo(lnf, 25)]
+      @torimat_expected =["Torimat Desitin 25 mg", "Torimat Desitin 50 mg", "Torimat Desitin 100 mg", "Torimat Desitin 200 mg"]
+
+    end
+
+    def test_dose_desitin_1
+      setup_evidentia_torimat(true)
+      @sort    = ODDB::StubResultSort.new(@avalox_products)
+      @session.should_receive(:request_path).and_return("/de/evidentia/search/zone/drugs/search_query/Torimat/search_type/st_combined")
+      res = @sort.sort_result(@torimat_products, @session)
+      assert_equal(@torimat_expected, res.collect{|pack| pack.name})
+    end
+    def test_dose_desitin_2
+      setup_evidentia_torimat(false)
+      @sort    = ODDB::StubResultSort.new(@avalox_products)
+      @session.should_receive(:request_path).and_return("/de/gcc/search/zone/drugs/search_query/Torimat/search_type/st_combined")
+      res = @sort.sort_result(@torimat_products, @session)
+      assert_equal(@torimat_expected, res.collect{|pack| pack.name})
     end
   end
 end # ODDB
