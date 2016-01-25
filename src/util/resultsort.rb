@@ -88,7 +88,7 @@ module ODDB
           ]
           sort_info
         end
-        packages.each_with_index{|x, idx| puts "packages.sorted #{idx}: #{x.iksnr} #{x.seqnr} #{x.ikscd} #{x.name}" } if DebugSort
+        packages.each_with_index{|x, idx| puts "packages.sorted #{idx}: #{x.iksnr}/#{x.seqnr}/#{x.ikscd} #{x.name} #{decode_package(x)}" } if DebugSort
         packages
       rescue StandardError => e
         puts e.class
@@ -119,24 +119,36 @@ private
         prio += 4 if package.out_of_trade
         prio
     end
+    def decode_package(package)
+      decoded = package.ikscat
+      decoded += package.sl_entry ? 'SL' : ''
+      if package.sl_generic_type
+        if package.sl_generic_type.eql?(:original)
+          decoded += ' / SO'
+        elsif package.sl_generic_type.eql?(:generic)
+          decoded += ' / SG'
+        end
+      end
+      decoded += ' OFT' if package.out_of_trade
+      decoded += ' exp' if package.expired?
+      decoded
+    end
     def adjusted_name_and_prio(package, a_session, trademark)
-      package_from_desitin = (package.company and /desitin/i.match(package.company.to_s) != nil)
-      is_desitin = false
-      is_desitin = true if package_from_desitin and a_session and a_session.lookandfeel.enabled?(:evidentia, false)
-      is_desitin = true if package_from_desitin and a_session and
-                                  a_session.user and not a_session.user.is_a?(ODDB::UnknownUser) and
-                                  /desitin/i.match(a_session.user.name.to_s)
+      package_from_desitin = package.company && /desitin/i.match(package.company.to_s)
+      is_desitin = package_from_desitin && (a_session && a_session.lookandfeel.enabled?(:evidentia, false)) ||
+            (package_from_desitin && a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) && /desitin/i.match(a_session.user.name.to_s))
+
       prio = package.out_of_trade ? IsNotRefDataListed : 1
       if is_desitin
-        name_to_use = ' ' + package.name_base
+        name_to_use = ' ' +  package.registration.name_base
         prio = IsSponsored
       else
-        name_to_use = package.name_base
+        name_to_use = package.registration.name_base
         prio = classified_group(package)
       end
-      name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.+/, '')
-      res = trademark && (trademark.downcase.eql?(package.name_base.downcase) ||
-                          Dose.new(package.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
+      name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.*/, '')
+      res = trademark && (trademark.downcase.eql?(package.registration.name_base.downcase) ||
+                          Dose.new(package.registration.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
       if a_session && a_session.lookandfeel && res && /st_combined/.match(a_session.request_path)
         prio = IsMatchingTrademark
         prio = add_generic_weight(prio, package)
@@ -144,7 +156,7 @@ private
       # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
       if DebugSort
         puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)}" +
-            " #{trademark} res #{res.inspect} pack #{package.iksnr}/#{package.seqnr} #{package.name_base} -> #{name_to_use} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
+            " #{trademark} res #{res.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
             " out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
       end
       return name_to_use, prio
