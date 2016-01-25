@@ -147,16 +147,17 @@ private
         prio = classified_group(package)
       end
       name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.*/, '')
-      res = trademark && (trademark.downcase.eql?(package.registration.name_base.downcase) ||
+      consider_trademark = a_session.lookandfeel.enabled?(:evidentia, false) && trademark &&
+                        (trademark.downcase.eql?(package.registration.name_base.downcase) ||
                           Dose.new(package.registration.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
-      if a_session && a_session.lookandfeel && res && /st_combined/.match(a_session.request_path)
+      if consider_trademark
         prio = IsMatchingTrademark
         prio = add_generic_weight(prio, package)
       end
       # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
       if DebugSort
         puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)}" +
-            " #{trademark} res #{res.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
+            " #{trademark} consider_trademark #{consider_trademark.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
             " out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
       end
       return name_to_use, prio

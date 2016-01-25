@@ -388,6 +388,39 @@ describe "ch.oddb.org" do
     expect(text).to match('Oxycodon')
   end unless ['just-medical'].index(Flavor)
 
+  def search_in_home(search_query, search_type='Preisvergleich')
+    @browser.goto(OddbUrl)
+    @browser.link(:name, 'drugs').click;  small_delay
+    @browser.select_list(:name, "search_type").select(search_type)
+    @browser.text_field(:name, "search_query").value = search_query
+    @browser.button(:name, 'search').click;  small_delay
+  end
+
+  def check_cellcept(text)
+    expect(text).not_to match LeeresResult
+    cellcept = text.scan(/cellcept|myfenax/i)
+    pp text
+    pp cellcept
+    puts @browser.url
+    binding.pry unless /cellcept/i.match(cellcept[-2])
+    expect(cellcept[-2]).to match /cellcept/i
+    expect(cellcept[-1]).to match /cellcept/i
+  end
+
+  it "should work all the time for Cellcept" do
+    search_in_home('Cellcept', /Preisvergleich und/)
+    check_cellcept(@browser.text.clone)
+    @browser.select_list(:name, "search_type").select(/Preisvergleich und/)
+    @browser.text_field(:name, "search_query").value="Axura\n"
+    small_delay
+
+    @browser.select_list(:name, "search_type").select(/Preisvergleich und/)
+    @browser.text_field(:name, "search_query").value="Cellcept\n"
+    small_delay
+    check_cellcept(@browser.text.clone)
+  end unless ['just-medical'].index(Flavor)
+
+
   after :all do
     @browser.close
   end
