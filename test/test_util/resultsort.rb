@@ -11,6 +11,9 @@ require 'model/dose'
 require 'model/slentry'
 require 'custom/lookandfeelwrapper'
 
+# The following drugs needed ajustments
+# Aricept, Axura, Gentamycin, Adenosin Iscover Fortex Budesonid
+
 module ODDB
   class StubResultStateSort
     include ODDB::ResultStateSort
@@ -59,6 +62,7 @@ module ODDB
       package.should_receive(:sort_info=).by_default
       package.should_receive(:seqnr).by_default.and_return(@@seqnr)
       package.should_receive(:ikscd).by_default.and_return(@@ikscd)
+      package.should_receive(:ikscat).by_default.and_return('D')
       package.should_receive(:odba_instance).by_default.and_return(nil)
       package.should_receive(:out_of_trade).by_default.and_return(out_of_trade)
       package.should_receive(:sl_generic_type).by_default.and_return(sl_generic_type)
@@ -75,7 +79,10 @@ module ODDB
       package.should_receive(:name).by_default.and_return(product_name)
       sequence =  flexmock('sequence')
       sequence.should_receive(:name).by_default.and_return(product_name)
-      package.should_receive(:sequence).by_default.and_return(sequence)
+      registration =  flexmock('registration')
+      registration.should_receive(:name).by_default.and_return(product_name)
+      registration.should_receive(:name_base).by_default.and_return(product_name)
+      package.should_receive(:registration).by_default.and_return(registration)
       package
     end
 
@@ -199,9 +206,7 @@ module ODDB
         @p018,
         @p019,
         ]
-
-      @expected_order_desitin = [
-        @p003,
+      @expected_order_desitin = [@p003,
         @p004,
         @p011,
         @p012,
@@ -226,12 +231,13 @@ module ODDB
         @p013,
         @p014,
         @p020,
-        @p018,
         @p015,
         @p016,
         @p017,
-        @p019,
-        ]
+        @p018,
+        @p019
+    ]
+
     end
     def setup_evidentia
       setup_more_products
@@ -356,7 +362,6 @@ module ODDB
       user = flexmock('user', :name => 'dummy@desitin.ch')
       @session.should_receive(:user).and_return(user)
       setup_more_products
-      @sort.sort_result(@order_2, @session)
       @p018.should_receive(:name_base).and_return('Levetiracetam Desitin 100 mg/mL')
       @p019.should_receive(:name_base).and_return('Levetiracetam Desitin 100 mg/mL')
       @expected_order_desitin.each{ |item| assert_equal(FlexMock, item.class) }
