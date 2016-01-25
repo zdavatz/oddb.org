@@ -15,20 +15,39 @@ module ODDB
     end
   end
   module ResultSort
-    IsMatchingTrademark = 1
-    IsOriginal          = 5     # always come first
-    IsSponsored         = 10
-    IsGenerikum         = 20
-    IsNotClassified     = 21
-    IsNotRefDataListed  = 23
+  private
+    IsCurrent           = 20
+    IsNotClassified     = 40
+    IsNotRefDataListed  = 60
+    IsOutOfTrade        = 80
     DebugSort           = false || ENV['ODDB_DEBUG_SORT']
-
+    def add_generic_weight(prio, package, consider_trademark=false)
+        prio += 1 unless package.sl_generic_type.eql?(:generic)
+        prio += 2 unless package.sl_generic_type.eql?(:original)
+        prio += 4 unless package.sl_entry
+        prio += 8 unless consider_trademark
+        prio
+    end
+  public
     # zeno defined the sort order in mail of Oktobre 21, 2015
     # Bei Evidentia müssen  E-Mail from November 27 2015
+    # redefined by Zeno on Januar 25 as following
+    # *Ausser Handel
+    # *Nicht mehr zugelassen
+
+    # ist stärker als rot, grün oder nicht klassifiziert, d.h. rote oder
+    # grüne die nicht bei Refdata gelistet sind oder bei Swissmedic nicht
+    # zugelassen sind, rutschen runter.
+
+    # Somit ist die Reihenfolge:
+
+    # Markenname rot
+    # Markenname grün
+    # schwarz
+    # ausser Handel gemäss Refdata
+    # Nicht mehr zugelassen gemäss Swissmedic
     #
-    # Zuerst die Medikamente, welche den Markennamen enthalten, kommen.
-    #
-    # Dann kommmen bei Evidentia zuerst die Originale und dann die Produkte von Desitin wie folgt:
+    # Innerhalb dieser Gruppen kommmen
     #
     # 1. Infusionslösungen
     # 2. Feste Formen
@@ -41,28 +60,6 @@ module ODDB
     # 1. Infusionslösungen
     # 2. Feste Formen
     # 3. Orale Lösungen
-    #
-    # Innerhalb dieser Gruppen zuerst Produkte die SL sind, dann die Produkte, welche nicht SL sind.
-    #
-    # Es gibt zwei Gruppen:
-    #
-    # A: Refdata gelistet
-    # B: Refdata nicht gelistet
-    #
-    # dann
-    #
-    # A: Original
-    # B: Generikum
-    #
-    # [ Beim Sponsoring wie z.B. Desitin erscheinen die in Refdata nicht gelisteten Produkte innerhalb vom Desitin Block, wiederum zuunterst wie oben erwähnt. ]
-    #
-    # Innerhalb dieser Gruppen wird sortiert nach:
-    #
-    # 1. Infusionslösungen
-    # 2. Feste Formen
-    # 3. Orale Lösungen
-    #
-    # Innerhalb dieser Gruppen zuerst Produkte die SL sind, dann die Produkte, welche nicht SL sind.
     #
     # Innerhalb dieser Gruppen aufsteigend nach Packungsgrösse.
     #
@@ -113,15 +110,9 @@ module ODDB
       end
     end
 private
-    def add_generic_weight(prio, package)
-        prio += 1 unless package.sl_generic_type.eql?(:original)
-        prio += 2 if !package.sl_entry
-        prio += 4 if package.out_of_trade
-        prio
-    end
     def decode_package(package)
       decoded = package.ikscat
-      decoded += package.sl_entry ? 'SL' : ''
+      decoded += package.sl_entry ? ' / SL' : ''
       if package.sl_generic_type
         if package.sl_generic_type.eql?(:original)
           decoded += ' / SO'
@@ -135,42 +126,40 @@ private
     end
     def adjusted_name_and_prio(package, a_session, trademark)
       package_from_desitin = package.company && /desitin/i.match(package.company.to_s)
-      is_desitin = package_from_desitin && (a_session && a_session.lookandfeel.enabled?(:evidentia, false)) ||
-            (package_from_desitin && a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) && /desitin/i.match(a_session.user.name.to_s))
-
-      prio = package.out_of_trade ? IsNotRefDataListed : 1
+      is_desitin = package_from_desitin &&
+          !package.out_of_trade &&
+          !package.expired? &&
+          ( a_session && a_session.lookandfeel.enabled?(:evidentia, false)) ||
+            (a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) &&
+             /desitin/i.match(a_session.user.name.to_s))
       if is_desitin
         name_to_use = ' ' +  package.registration.name_base
-        prio = IsSponsored
+        prio = classified_group(package)
       else
         name_to_use = package.registration.name_base
         prio = classified_group(package)
       end
       name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.*/, '')
-      consider_trademark = a_session.lookandfeel.enabled?(:evidentia, false) && trademark &&
-                        (trademark.downcase.eql?(package.registration.name_base.downcase) ||
-                          Dose.new(package.registration.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
-      if consider_trademark
-        prio = IsMatchingTrademark
-        prio = add_generic_weight(prio, package)
-      end
+      consider_trademark = a_session.lookandfeel.enabled?(:evidentia, false) &&
+          trademark &&
+          !package.out_of_trade &&
+          !package.expired? &&
+          (trademark.downcase.eql?(package.registration.name_base.downcase) ||
+           Dose.new(package.registration.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
+      prio = add_generic_weight(prio, package, consider_trademark)
       # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
       if DebugSort
         puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)}" +
-            " #{trademark} consider_trademark #{consider_trademark.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
-            " out_of_trade #{package.out_of_trade.inspect} #{package.sl_entry != nil} prio #{prio.inspect}"
+            " #{trademark} TM? #{consider_trademark.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
+            " out_of_trade #{package.out_of_trade.inspect} dose #{package.dose.inspect} #{package.sl_entry != nil} is_desitin #{is_desitin} prio #{prio.inspect}"
       end
       return name_to_use, prio
     end
     def classified_group(package)
-      return IsNotRefDataListed if package.out_of_trade
-      if package.sl_generic_type
-        if package.sl_generic_type.eql?(:original)
-          return IsOriginal
-        elsif package.sl_generic_type.eql?(:generic)
-          return IsGenerikum
-        end
-      end
+      return IsOutOfTrade if package.out_of_trade
+      return IsNotRefDataListed if package.expired?
+      return IsCurrent if package.sl_entry != nil
+      return IsCurrent unless package.out_of_trade # aka ref_data_listed
       return IsNotClassified
     end
     # the following was madly inefficient!
