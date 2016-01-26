@@ -427,10 +427,13 @@ module ODDB
     def preview?
       @preview_with_market_date && @market_date && @market_date > @@today
     end
-		def public?
+    def ref_data_listed? # aka not @out_of_trade
+      !@out_of_trade
+    end
+    def public?
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?)
-		end
+    end
     def size
       unless @parts.nil?
         @parts.collect { |part| part.size if part.respond_to?(:size)}.compact.join(' + ')
