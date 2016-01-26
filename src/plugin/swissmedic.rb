@@ -110,12 +110,14 @@ public
         iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr   = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         packnr  = "%03i" % cell(row, @target_keys.keys.index(:ikscd)).to_i
+        debug_msg "store_found_packages: #{[iksnr, seqnr, packnr]}"
         @known_packages << [iksnr, seqnr, packnr]
       end
     end
     def delete_not_found_packages
       @known_packages = []
       @deletes_packages = []
+      @missing_fis = []
       if @latest_packungen and File.exists?(@latest_packungen)
         store_found_packages(@latest_packungen)
         @known_packages.sort!.uniq!
@@ -126,6 +128,12 @@ public
           debug_msg "deactivate_not_found_package check #{iksnr.inspect}. #{@deletes_packages.size} @deletes_packages"
           next if iksnr.eql?('00000')
           next if iksnr.to_s.size != 5
+          unless reg.fachinfo
+            if @known_packages.find{|x| x[0].to_i == iksnr.to_i}
+              debug_msg "delete_not_found_packages: Missing fi for #{iksnr}"
+              @missing_fis << iksnr
+            end
+          end
           reg.active_packages.each{
             |pack|
             found = @known_packages.find{ |x|
