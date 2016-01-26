@@ -71,8 +71,12 @@ module ODDB
       package.should_receive(:expired? ).by_default.and_return(nil)
       package.should_receive(:name_base).by_default.and_return(product_name)
       package.should_receive(:galenic_forms).by_default.and_return(gal_forms)
-      package.should_receive(:dose).by_default.and_return('dose')
-      package.should_receive(:company).by_default.and_return('company_original')
+      package.should_receive(:dose).by_default.and_return(Quanty.new('1 mg'))
+      if /desitin/i.match(product_name)
+        package.should_receive(:company).and_return('desitin')
+      else
+        package.should_receive(:company).by_default.and_return('company_original')
+      end
       package.should_receive(:comparable_size).by_default.and_return('comparable_size')
       package.should_receive(:inspect).by_default.and_return(product_name)
       package.should_receive(:sl_entry).by_default.and_return(nil)
@@ -134,26 +138,19 @@ module ODDB
       @p020 = create_default_product_mock("p020", true, nil, nil, gal_a) # Example_7680656080019
 
       @pacc_generic = create_default_product_mock('pacc_generic', false, :generic, :generic)
-      @pacc_generic.should_receive(:company).and_return('company_generic')
 
       @paff_sl_original = create_default_product_mock('paff_sl_original')
       @paff_sl_original.should_receive(:sl_generic_type).and_return(:original)
 
       @pccc_generic_from_desitin = create_default_product_mock('pccc_generic_from_desitin',false, :generic, :generic)
-      @pccc_generic_from_desitin.should_receive(:company).and_return('desitin')
 
       @pccc_unknown_from_desitin = create_default_product_mock('pccc_unknown_from_desitin',false, :unknown, nil)
-      @pccc_unknown_from_desitin.should_receive(:company).and_return('desitin')
 
       gal_liquid = flexmock('gal_liquid')
       gal_liquid.should_receive(:collect).and_return(['gal_liquid'])
-      #     def create_default_product_mock(product_name, out_of_trade = false, sl_generic_type = :original, generic_type = :original, gal_forms = nil)
-
       @pddd_sl_generic_nil_from_desitin = create_default_product_mock('pddd_sl_generic_nil_from_desitin', false, :generic, nil, gal_liquid)
       @pddd_sl_nil_from_desitin         = create_default_product_mock('pddd_sl_nil_from_desitin',         false, nil,      nil,  gal_liquid)
 
-      @pddd_sl_nil_from_desitin.should_receive(:company).and_return('desitin')
-      @pddd_sl_generic_nil_from_desitin.should_receive(:company).and_return('desitin')
       @pddd_sl_generic_nil_from_desitin.should_receive(:sl_entry).and_return(nil)
 
 
@@ -199,29 +196,28 @@ module ODDB
         @p014,
         @pccc_unknown_from_desitin,
         @pddd_sl_nil_from_desitin,
-        @p020,
-        @p015,
-        @p016,
         @p017,
         @p018,
+        @p015,
+        @p016,
+        @p020,
         @p019,
         ]
-      @expected_order_desitin = [@p003,
+      @expected_order_desitin = [
+        @p003,
         @p004,
         @p011,
         @p012,
         @paaa_original,
         @paff_sl_original,
         @pzzz_original,
-        @pccc_generic_from_desitin,
-        @pccc_unknown_from_desitin,
-        @pddd_sl_generic_nil_from_desitin,
-        @pddd_sl_nil_from_desitin,
         @p002,
         @p009za,
         @p009,
         @p010,
         @pacc_generic,
+        @pccc_generic_from_desitin,
+        @pddd_sl_generic_nil_from_desitin,
         @p001,
         @p009zz,
         @p005,
@@ -230,11 +226,13 @@ module ODDB
         @p008,
         @p013,
         @p014,
-        @p020,
-        @p015,
-        @p016,
+        @pccc_unknown_from_desitin,
+        @pddd_sl_nil_from_desitin,
         @p017,
         @p018,
+        @p015,
+        @p016,
+        @p020,
         @p019
     ]
 
@@ -256,9 +254,14 @@ module ODDB
       @expected_order_evidentia = [@p003, @p001, @p002]
     end
 
-    def create_leve_product(name)
-      product = create_default_product_mock(name, false, :generic, :generic, @gal_levetiracetam)
+    def create_leve_product(name, is_original=false)
+      gen_or_original = is_original ? :original : :generic
+      product = create_default_product_mock(name, false, is_original ? :original : :generic, @gal_levetiracetam)
+      if m = name.match(/(\d+\s+mg)/)
+        product.should_receive(:dose).and_return(Quanty.new(m[0]))
+      end
       product.should_receive(:sl_entry).and_return(@sl_entry_valid)
+      # product.should_receive(:sl_generic_type).and_return(gen_or_original)
       product
     end
 
@@ -277,14 +280,17 @@ module ODDB
       gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
       @desitin = create_leve_product('Levetiracetam Desitin 1000 mg')
       @actavis = create_leve_product('Levetiracetam Actavis 1000 mg')
-      @keppra = create_leve_product('Keppra 250 mg')
-      @keppra2 = create_leve_product('Keppra 200 mg')
-      @keppra2.should_receive(:out_of_trade).and_return(true)
-      @keppra3 = create_default_product_mock('Keppra 210 mg', false, :generic, :generic, @gal_levetiracetam)
-      @rivoleve = create_leve_product('Rivoleve 1000')
+      @keppra250 = create_leve_product('Keppra 250 mg', true)
+      @keppra200 = create_leve_product('Keppra OutOfTrade 200 mg', true)
+      @keppra200.should_receive(:out_of_trade).and_return(true)
+      @keppra210 = create_default_product_mock('Keppra 210 mg', false, :original, :original, @gal_levetiracetam)
+      @keppra210.should_receive(:sl_entry).and_return(nil)
+      @rivoleve200 = create_leve_product('Rivoleve 200 mg')
+      @rivoleve500  = create_leve_product('Rivoleve 500 mg')
+      @rivoleve500.should_receive(:out_of_trade).and_return(true)
+
       @zzz = create_leve_product('ZZZ')
-      @rivoleve.should_receive(:out_of_trade).and_return(true)
-      @tm_products  = [@desitin, @actavis, @keppra, @keppra2, @keppra3, @rivoleve, @zzz]
+      @tm_products  = [@desitin, @actavis, @keppra250, @keppra200, @keppra210, @rivoleve200, @rivoleve500, @zzz]
       if url_with_name
         @session.should_receive(:request_path).and_return(
           "/de/evidentia/search/zone/drugs/search_query/#{URI.encode(url_with_name)}/search_type/st_combined")
@@ -395,15 +401,38 @@ module ODDB
     def test_sort_result_evidentia_default_levetiracetam
       setup_evidentia_trademark('Levetiracetam')
       @sort    = ODDB::StubResultSort.new(@tm_products)
+      assert_equal(true, @keppra200.out_of_trade)
+      assert_equal(false, @keppra210.out_of_trade)
+      assert_equal(false, @keppra250.out_of_trade)
+      assert_equal(:original, @keppra250.sl_generic_type)
+      assert_equal(:original, @keppra200.sl_generic_type)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
-        'Keppra 210 mg',
-        'Keppra 250 mg',
-        'Levetiracetam Actavis 1000 mg',
+        'Keppra 250 mg', # has sl_entry and is not out_of_trade
         'Levetiracetam Desitin 1000 mg',
+        'Levetiracetam Actavis 1000 mg',
+        'Rivoleve 200 mg',
         'ZZZ',
-        'Keppra 200 mg',
-        'Rivoleve 1000',
+        'Keppra 210 mg', # has no sl_entry and should come after ZZZ
+        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
+        'Rivoleve 500 mg',
+      ]
+      assert_equal(expected_names, res.collect{|pack| pack.name_base})
+    end
+
+    def test_sort_result_evidentia_default_levetiracetam_actavis
+      setup_evidentia_trademark('Levetiracetam Actavis')
+      @sort    = ODDB::StubResultSort.new(@tm_products)
+      res = @sort.sort_result(@tm_products, @session)
+      expected_names =  [
+        'Levetiracetam Actavis 1000 mg',
+        'Keppra 250 mg',
+        'Levetiracetam Desitin 1000 mg',
+        'Rivoleve 200 mg',
+        'ZZZ',
+        'Keppra 210 mg',
+        'Keppra OutOfTrade 200 mg',
+        'Rivoleve 500 mg',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
@@ -413,13 +442,14 @@ module ODDB
       @sort    = ODDB::StubResultSort.new(@tm_products)
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
-        'Rivoleve 1000',
-        'Keppra 210 mg',
+        'Rivoleve 200 mg',
         'Keppra 250 mg',
-        'Levetiracetam Actavis 1000 mg',
         'Levetiracetam Desitin 1000 mg',
+        'Levetiracetam Actavis 1000 mg',
         'ZZZ',
-        'Keppra 200 mg',
+        'Keppra 210 mg',
+        'Keppra OutOfTrade 200 mg',
+        'Rivoleve 500 mg', # also out of trade
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
@@ -460,11 +490,12 @@ module ODDB
       expected_names =  [
         'Levetiracetam Desitin 1000 mg',
         'Keppra 250 mg',
-        'Keppra 210 mg',
         'Levetiracetam Actavis 1000 mg',
+        'Rivoleve 200 mg',
         'ZZZ',
-        'Keppra 200 mg',
-        'Rivoleve 1000',
+        'Keppra 210 mg',
+        'Keppra OutOfTrade 200 mg',
+        'Rivoleve 500 mg',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end
@@ -474,12 +505,30 @@ module ODDB
       res = @sort.sort_result(@tm_products, @session)
       expected_names =  [
         'Keppra 250 mg', # has sl_entry and is not out_of_trade
-        'Keppra 210 mg', # has no sl_entry and should come
-        'Keppra 200 mg', # is out of trade and must come after the other Keppra
-        'Levetiracetam Actavis 1000 mg',
+        'Keppra 210 mg', # has no sl_entry and should come after Keppra 250 mg
         'Levetiracetam Desitin 1000 mg',
+        'Levetiracetam Actavis 1000 mg',
+        'Rivoleve 200 mg',
         'ZZZ',
-        'Rivoleve 1000',
+        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
+        'Rivoleve 500 mg',
+      ]
+      assert_equal(expected_names, res.collect{|pack| pack.name_base})
+    end
+
+    def test_sort_result_evidentia_default_Keppra_first_via_Levetiracetam
+      setup_evidentia_trademark('Levetiracetam')
+      @sort    = ODDB::StubResultSort.new(@tm_products)
+      res = @sort.sort_result(@tm_products, @session)
+      expected_names =  [
+        'Keppra 250 mg', # has sl_entry and is not out_of_trade
+        'Levetiracetam Desitin 1000 mg',
+        'Levetiracetam Actavis 1000 mg',
+        'Rivoleve 200 mg',
+        'ZZZ',
+        'Keppra 210 mg', # has no sl_entry and should come after ZZZ
+        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
+        'Rivoleve 500 mg',
       ]
       assert_equal(expected_names, res.collect{|pack| pack.name_base})
     end

@@ -16,8 +16,10 @@ module ODDB
     def setup
       @result  = flexmock('result')
       @session = flexmock('session')
+      @lnf = flexmock('lnf', :enabled? => false)
       @session.should_receive(:request_path).and_return(nil)
-      @session.should_receive(:lookandfeel).and_return(nil)
+      @session.should_receive(:lookandfeel).and_return(@lnf)
+      @session.should_receive(:user).and_return(nil)
       @atc     = flexmock('atc')
       @facade  = ODDB::AtcFacade.new(@atc, @session, @result)
     end
@@ -38,7 +40,7 @@ module ODDB
       assert_equal('odba_id', @facade.odba_id)
     end
     def test_packages
-      sequence = flexmock('sequence', :name => 'package')
+      sequence = flexmock('sequence', :name => 'sequence')
       package1 = flexmock('package1',
                           :expired?        => nil,
                           :generic_type    => :original,
@@ -50,6 +52,13 @@ module ODDB
                           :sequence        => sequence,
                           :sl_generic_type => :original,
                           :comparable_size => 1,
+                          :sl_entry        => nil,
+                          :registration    => flexmock('registration', :name_base => 'registration1'),
+                          :iksnr           => 'isknr',
+                          :seqnr           => 'isknr',
+                          :ikscd           => 'ikscd',
+                          :ikscat          => 'ikscat',
+                          :name            => 'name_package1',
                          )
       package2 = flexmock('package2', 
                           :expired?        => nil,
@@ -62,6 +71,13 @@ module ODDB
                           :sequence        => sequence,
                           :sl_generic_type => :original,
                           :comparable_size => 1,
+                          :sl_entry        => nil,
+                          :registration    => flexmock('registration', :name_base => 'registration2'),
+                          :iksnr           => 'isknr',
+                          :seqnr           => 'isknr',
+                          :ikscd           => 'ikscd',
+                          :ikscat          => 'ikscat',
+                          :name            => 'name_package2',
                          )
 
       active_packages = [package2, package1]
@@ -267,5 +283,5 @@ module ODDB
       end
     end
 
-  end
+  end if false
 end
