@@ -1,7 +1,7 @@
 #!/bin/bash
 spec_file=(${1//:/ })
 if [ -z $1 ]; then
-  log_file=rspec.log
+  log_file=rspec_`date +'%Y%m%d.%H%M%S'`.log
 else
   log_file=rspec_`basename -s .rb $spec_file`.log
 fi
