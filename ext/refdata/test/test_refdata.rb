@@ -51,8 +51,8 @@ module ODDB
 
     def test_check_item
       # this is an integration test and will query refdata.ch
-      pharmacode = @@refdata_article.check_item(TestHelpers::LEVETIRACETAM_GTIN.to_s, :gtin)
-      assert_equal(TestHelpers::LEVETIRACETAM_PHAR.to_s, pharmacode)
+      item = @@refdata_article.get_refdata_info(TestHelpers::LEVETIRACETAM_GTIN.to_s, :gtin)
+      assert_equal(TestHelpers::LEVETIRACETAM_GTIN.to_s, item[:gtin])
     end
 
     def test_search_item__error

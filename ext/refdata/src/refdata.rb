@@ -11,6 +11,14 @@ require 'config'
 
 module ODDB
   module Refdata
+    DebugRefdata = ENV['DEBUG_REFDATA']
+    # This procedure is needed for the migel import!
+    def Refdata.debug_msg(string)
+      return unless DebugRefdata
+       $stdout.puts "#{Time.now}: #{string}"
+       $stdout.flush
+    end
+
     def Refdata.session(type = RefdataArticle)
       yield(type.new)
     end
@@ -39,7 +47,7 @@ module Archiver
       f.puts content
     end
     FileUtils.cp(archive, latest)
-    puts "Archiver #{latest} #{File.size(latest)} bytes. archive #{archive}"
+    $stdout.puts "Archiver #{latest} #{File.size(latest)} bytes. archive #{archive}"
   end
 end
 
@@ -52,11 +60,7 @@ class RequestHandler
       :open_timeout => 1,
       :read_timeout => 1,
       )
-    @items = {}
   end
-  def cleanup_items
-    @items = {}
- end
   def logger(file, options={})
     project_root = File.expand_path('../../..', File.dirname(__FILE__))
     log_dir      = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
@@ -93,18 +97,25 @@ class RefdataArticle < RequestHandler
   URI = 'druby://localhost:50001'
   include DRb::DRbUndumped
   include Archiver
+  @@items ||= {}
+  @@time_download ||= {}
+  $stdout.sync = true
   def initialize
     super("http://refdatabase.refdata.ch/Service/Article.asmx?WSDL")
   end
 
   def download_all(type = 'Pharma')
-    $stdout.puts "RefdataArticle.download_all starting #{type}"
+    $stdout.puts "RefdataArticle.download_all starting #{type} @@items #{@@items.size}"
     @type = type
+    if @@items[type] && @@time_download[type] &&
+        ((diff = Time.now- @@time_download[type]).to_i < 24*60*60) # less than 24 hours
+      $stdout.puts "Skipping downloading #{type} #{diff} = #{Time.now} - #{@@time_download[type]}"
+      return
+    end
     @client.globals[:read_timeout] = 120
 
     try_time = 3
     begin
-      cleanup_items
         soap = %(<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://refdatabase.refdata.ch/Article_in" xmlns:ns2="http://refdatabase.refdata.ch/">
   <SOAP-ENV:Body>
@@ -120,8 +131,9 @@ class RefdataArticle < RequestHandler
         if xml = response.to_xml
           archive_path = File.expand_path('../../../data', File.dirname(__FILE__))
           historicize("XMLRefdata#{type}.xml",archive_path, xml)
-          @items[@type] = response.to_hash[:article][:item]
-          $stdout.puts "RefdataArticle.download_all done #{type}"
+          @@items[@type] = response.to_hash[:article][:item]
+          @@time_download[type] = Time.now
+          $stdout.puts "RefdataArticle.download_all done #{type} time #{@@time_download[type]}"
           return true
         else
           # received broken data or unexpected error
@@ -150,33 +162,28 @@ class RefdataArticle < RequestHandler
       end
     end
   end
-  def check_item(code, check_type = :gtin)
-    @type = 'Pharma'
-    download_all(@type) unless @items and @items[@type]
+  def get_refdata_info(code, key_type = :gtin, type = 'Pharma')
+    download_all(type) unless @@items and @@items[type]
+
+    Refdata.debug_msg "RefdataArticle.get_refdata_info1 code #{code} key_type #{key_type} type #{type}"
     item = {}
-    @items[@type].each do |i|
-      if i.has_key?(check_type) and
-         code == i[check_type]
-        item = i
-      end
-    end if @items and @items[@type]
+    item = @@items[type].find { |i| i.has_key?(key_type) and code == i[key_type] } if @@items and @@items[type]
+    Refdata.debug_msg "RefdataArticle.get_refdata_info2 item #{item}"
+    return  {} unless item
     case
     when item.empty?
-      return nil
+      Refdata.debug_msg "RefdataArticle.get_refdata_info done #{code} key_type #{key_type} empty returns {}"
+      return {}
     when item[:status] == "I"
-      return false
+      Refdata.debug_msg "RefdataArticle.get_refdata_info done #{code} key_type #{key_type} :status I returns {}"
+      return {}
     else
-      # If there are some products those phamarcode is same, then the return value become an Array
-      # We take one of them which has a higher Ean-Code
-      pharmacode = if item.is_a? Array
-                     item.sort_by{|p| p[:gtin].to_i}.reverse.first[:phar]
-                   elsif item.is_a? Hash
-                     item[:phar]
-                   end
-      return pharmacode
+      Refdata.debug_msg "RefdataArticle.get_refdata_info done #{code} key_type #{key_type} returns #{item.inspect}"
+      return item
     end
   end
   def search_item(code, type = 'Pharma')
+    $stdout.puts "RefdataArticle.search_item code #{code} type #{type}"
     @type = type
     try_time = 3
     is_gtin = code.to_s.length == 13
@@ -202,13 +209,15 @@ class RefdataArticle < RequestHandler
                       elsif pharma[:item].is_a?(Hash)
                         pharma[:item]
                       end
+        $stdout.puts "RefdataArticle.search_item code #{code} type #{type} returns #{pharma_item}"
         return pharma_item
       else
         # Pharmacode is not found in request result by ean(GTIN) code
+        $stdout.puts "RefdataArticle.search_item code #{code} type #{type} returns {}"
         return {}
       end
     rescue StandardError, Timeout::Error => err
-      puts "RefdataArticle.search_item(#{code}) failed: #{err}"
+      $stdout.puts "RefdataArticle.search_item(#{code}) failed: #{err}"
       if err.is_a?(ArgumentError)
         raise err
       end

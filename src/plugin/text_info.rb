@@ -1153,9 +1153,18 @@ module ODDB
         saved = iksnrs_from_xml
         content, styles, title, iksnrs_from_xml = extract_matched_content(name, type, lang)
         unless saved == nil or saved != iksnrs_from_xml
-          puts_sync "parse_and_update mismatch in #{iksnr} #{lang} saved #{saved} new #{iksnrs_from_xml}"
+          msg = "parse_and_update1: mismatch in #{iksnr} #{lang} saved #{saved} new #{iksnrs_from_xml}"
+        else
+          msg = "parse_and_update2: iksnrs_from_xml #{iksnrs_from_xml}"
         end
-        if content
+        msg += " content  #{content.to_s.size} size name #{name}"
+        LogFile.debug msg
+        puts_sync msg
+        unless content
+          msg = "parse_and_update3: No content found for name #{name}"
+          LogFile.debug msg
+          puts_sync msg
+        else
           html = Nokogiri::HTML(content.to_s).to_s
           @title  = name
           @format = detect_format(html)
@@ -1169,7 +1178,7 @@ module ODDB
           content,html = nil,nil
           update = false
           if iksnrs_from_xml.size > 0 && type == 'fachinfo' and @app.registration(iksnrs_from_xml[0]) and not @app.registration(iksnrs_from_xml[0]).fachinfo
-            LogFile.debug "parse_and_update: must add fachinfo for #{iksnrs_from_xml}"
+            LogFile.debug "parse_and_update4: must add fachinfo for #{iksnrs_from_xml}"
             update = true
           elsif !@options[:reparse] and File.exists?(dist)
             if File.size(dist) != File.size(temp)
@@ -1185,12 +1194,12 @@ module ODDB
           if update
             FileUtils.mv(temp, dist)
             extract_image(name, type, lang, dist, iksnrs_from_xml)
-            LogFile.debug "parse_and_update: calls " + msg
+            LogFile.debug "parse_and_update5: calls " + msg
             puts_sync "      Mismatch between title #{title} and name #{name}" unless name.eql?(title)
             infos[lang] = self.send("parse_#{type}", dist, styles)
             File.open(dist.sub('.html', '.yaml'), 'w+') { |fh| fh.puts(infos[lang].to_yaml) }
           else
-            LogFile.debug "parse_and_update: no "  + msg
+            LogFile.debug "parse_and_update6: no "  + msg
             File.unlink(temp)
           end
         end
@@ -1232,6 +1241,8 @@ module ODDB
             date = (date ? " - #{date}" : '')
             nrs  = (!iksnrs.empty? ? " - #{iksnrs.inspect}" : infos[lang] ? TextInfoPlugin::get_iksnrs_from_string(infos[lang].iksnrs.to_s) : '')
             msg  = "  #{state.to_s.upcase} #{nrs}: #{type.capitalize} - #{lang.to_s.upcase} - #{name}#{date}#{nrs}"
+            LogFile.debug "import_info msg #{msg}"
+            puts_sync "import_info msg #{msg}"
             unless iksnrs.empty?
               next if name.nil? or name.empty?
               next if !infos.empty? and strange?(infos[lang])

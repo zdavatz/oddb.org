@@ -6,6 +6,8 @@ require 'plugin/plugin'
 require 'util/persistence'
 require 'drb'
 require 'fileutils'
+dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+$LOAD_PATH << dir
 require 'ext/refdata/src/refdata'
 
 module ODDB
