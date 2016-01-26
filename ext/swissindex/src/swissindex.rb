@@ -8,11 +8,20 @@ require 'savon'
 require 'mechanize'
 require 'drb'
 require 'config'
+dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
+require 'plugin/refdata'
 
 module ODDB
   module Swissindex
+    DebugSwissindex = ENV['DEBUG_SWISSINDEX']
+    def Swissindex.debug_msg(string)
+      return unless DebugSwissindex
+       $stdout.puts "#{Time.now}: #{string}"
+       $stdout.flush
+    end
+
     # This procedure is needed for the migel import!
-    def Swissindex.session(type = SwissindexPharma)
+    def Swissindex.session(type = SwissindexMigel)
       yield(type.new)
     end
   end
@@ -34,7 +43,7 @@ end
 module Swissindex
 class RequestHandler
   def initialize(wsdl_url = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL")
-    puts "RequestHandler wsdl_url #{wsdl_url}"
+    Swissindex.debug_msg "RequestHandler wsdl_url #{wsdl_url}"
     @client = Savon.client(
       :wsdl => wsdl_url,
       :log => false,
@@ -83,33 +92,34 @@ class SwissindexMigel < RequestHandler
   URI = 'druby://localhost:50002'
   include DRb::DRbUndumped
   include Archiver
-  attr_accessor :client, :base_url
+  attr_accessor :client, :base_url, :refdataServer
+  REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
+  $stdout.sync = true
   def initialize
+    REFDATA_SERVER.session(ODDB::Refdata::RefdataArticle) do |refdata|
+      refdata.download_all('NonPharma')
+    end
     super
     @base_url = ODDB.config.migel_base_url
   end
+
+  def get_refdata_info(pharmacode, lang)
+    res = nil
+    REFDATA_SERVER.session(ODDB::Refdata::RefdataArticle) do |refdata|
+      res = refdata.get_refdata_info(pharmacode, :phar, 'NonPharma')
+    end
+    $stdout.puts "SwissindexMigel.get_refdata_info returns #{res.inspect} for pharmacode #{pharmacode} #{lang}"
+    res
+  end
+
   def search_migel(pharmacode, lang = 'DE')
+    Swissindex.debug_msg "SwissindexMigel search_migel pharmacode #{pharmacode}"
     agent = Mechanize.new
     try_time = 3
     begin
-      agent.get(@base_url.gsub(/DE/, lang) + 'Pharmacode=' + pharmacode)
-      count = 100
-      line = []
-      agent.page.search('td').each_with_index do |td, i|
-        text = td.inner_text.chomp.strip
-        if text.is_a?(String) && text.length == 7 && text == pharmacode
-          count = 0
-        end
-        if count < 7
-          text = text.split(/\n/)[1] || text.split(/\n/)[0]
-          text = text.gsub(/\302\240/, '').strip if text
-          line << text
-          count += 1
-        end
-      end
-      line
+      agent.get(ODDB.config.migel_base_url.gsub(/DE/, lang) + 'Pharmacode=' + pharmacode)
     rescue StandardError, Timeout::Error => err
-      puts "search_migel #{pharmacode} failed err #{err}" if defined?(Minitest)
+      Swissindex.debug_msg "search_migel pharmacode #{pharmacode} failed err #{err}"
       if try_time > 0
         sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new
@@ -119,10 +129,25 @@ class SwissindexMigel < RequestHandler
         return []
       end
     end
+    count = 100
+    line = []
+    agent.page.search('td').each_with_index do |td, i|
+      text = td.inner_text.chomp.strip
+      if text.is_a?(String) && text.length == 7 && text == pharmacode
+        count = 0
+      end
+      if count < 7
+        text = text.split(/\n/)[1] || text.split(/\n/)[0]
+        text = text.gsub(/\302\240/, '').strip if text
+        line << text
+        count += 1
+      end
+    end
+    line
   end
-  def merge_swissindex_migel(swissindex_item, migel_line)
+  def merge_swissindex_migel(refdata_item, migel_line)
     # Swissindex data
-    swissindex = swissindex_item.collect do |key, value|
+    swissindex = refdata_item.collect do |key, value|
       case key
       when :gtin
         [:ean_code, value]
@@ -158,11 +183,13 @@ class SwissindexMigel < RequestHandler
   # 'MiGelCode' is also available for query_key
   def search_migel_table(code, query_key = 'Pharmacode', lang = 'DE')
     # prod.ws.e-mediat.net use untrusted ssl cert
+    Swissindex.debug_msg "SwissindexMigel.search_migel_table #{code} query_key  #{query_key} lang #{lang}"
     agent = Mechanize.new { |a|
       a.ssl_version, a.verify_mode = 'SSLv3',
       OpenSSL::SSL::VERIFY_NONE
     }
     try_time = 3
+    pharmacode = nil
     begin
       agent.get(@base_url.gsub(/DE/,lang) + query_key + '=' + code)
       count = 100
@@ -172,8 +199,8 @@ class SwissindexMigel < RequestHandler
       agent.page.search('td').each_with_index do |td, i|
         text = td.inner_text.chomp.strip
         if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/)
-          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = check_item(pharmacode, lang)
-                         merge_swissindex_migel(swissindex_item, line)
+          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and refdata_item = get_refdata_info(pharmacode, lang)
+                         merge_swissindex_migel(refdata_item, line)
                        else
                          merge_swissindex_migel({}, line)
                        end
@@ -190,8 +217,8 @@ class SwissindexMigel < RequestHandler
       end
 
       # for the last line
-      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = check_item(pharmacode, lang)
-                     merge_swissindex_migel(swissindex_item, line)
+      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and refdata_item = get_refdata_info(pharmacode, lang)
+                     merge_swissindex_migel(refdata_item, line)
                    else
                      merge_swissindex_migel({}, line)
                    end
@@ -199,7 +226,7 @@ class SwissindexMigel < RequestHandler
       table.shift
       table
     rescue StandardError, Timeout::Error => err
-      puts "search_migel_table #{code} failed err #{err}" if defined?(Minitest)
+      $stdout.puts "search_migel_table #{code} for pharmacode #{pharmacode.inspect} failed err #{err}"
       if try_time > 0
         sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new
@@ -211,6 +238,7 @@ class SwissindexMigel < RequestHandler
     end
   end
   def search_item(pharmacode, lang = 'DE')
+    Swissindex.debug_msg  "SwissindexMigel search_item pharmacode #{pharmacode}"
     lang.upcase!
     try_time = 3
     begin
@@ -235,7 +263,7 @@ class SwissindexMigel < RequestHandler
       end
 
     rescue StandardError, Timeout::Error => err
-      puts "search_item #{pharmacode} failed err #{err}" if defined?(Minitest)
+      Swissindex.debug_msg  "search_item #{pharmacode} failed err #{err}" unless err.is_a?(Timeout::Error)
       if try_time > 0
         sleep defined?(Minitest) ? 0.1 : 10
         try_time -= 1
@@ -246,14 +274,16 @@ class SwissindexMigel < RequestHandler
     end
   end
   def search_item_with_swissindex_migel(pharmacode, lang = 'DE')
+   Swissindex.debug_msg "SwissindexMigel search_item_with_swissindex_migel pharmacode #{pharmacode}"
     migel_line = search_migel(pharmacode, lang)
-    if swissindex_item = search_item(pharmacode, lang)
-      merge_swissindex_migel(swissindex_item, migel_line)
+    if refdata_item = search_item(pharmacode, lang)
+      merge_swissindex_migel(refdata_item, migel_line)
     else
       merge_swissindex_migel({}, migel_line)
     end
   end
   def search_migel_position_number(pharmacode, lang = 'DE')
+    Swissindex.debug_msg "SwissindexMigel search_migel_position_number pharmacode #{pharmacode}"
     agent = Mechanize.new
     try_time = 3
     begin
@@ -267,7 +297,7 @@ class SwissindexMigel < RequestHandler
       end
       return pos_num
     rescue StandardError, Timeout::Error => err
-      puts "search_migel_position_number #{pharmacode} failed err #{err}" if defined?(Minitest)
+      Swissindex.debug_msg "search_migel_position_number #{pharmacode} failed err #{err}"
       if try_time > 0
         sleep defined?(Minitest) ? 0.1 : 10
         agent = Mechanize.new

@@ -71,7 +71,7 @@ describe "ch.oddb.org" do
   it "should list #{Rivoleve} at the top" do
     select_product_by_trademark(Rivoleve)
     drugs = get_drugs_as_arra_of_strings
-    expect(drugs.first).to match /#{Rivoleve}/i
+    expect(drugs[-2]).to match /#{Rivoleve}/i
   end
 
   it 'should list all SL products before the Non-SL' do
@@ -101,6 +101,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not have a link to the fachinfo when there is no fachinfo (e.g. Cyramza)" do
+    skip('Cyramza is now in Packungen xlsx')
     @browser.goto create_url_for('Cyramza')
     link = @browser.link(:href => /fachinfo/)
     expect(link.exist?).to be false
@@ -181,6 +182,44 @@ describe "ch.oddb.org" do
     text = @browser.text.clone
     expect(/Präparate.*\n.*\n/.match(text)[0]).to match Duodopa
   end
+
+  def check_cellcept(text)
+    expect(text).not_to match LeeresResult
+    cellcept = text.scan(/cellcept|myfenax/i)
+    expect(cellcept[-2]).to match /cellcept/i
+    expect(cellcept[-1]).to match /cellcept/i
+  end
+
+  def search_in_home(search_query, search_type='Preisvergleich')
+    @browser.goto(OddbUrl)
+    @browser.link(:name, 'drugs').click;  small_delay
+    @browser.select_list(:name, "search_type").select(search_type)
+    @browser.text_field(:name, "search_query").value = search_query
+    @browser.button(:name, 'search').click;  small_delay
+  end
+
+  it "should work all the time for Cellcept when evidenita LNF is not enabled" do
+    search_in_home('Cellcept', /Preisvergleich und/)
+    check_cellcept(@browser.text.clone)
+    @browser.select_list(:name, "search_type").select(/Preisvergleich und/)
+    @browser.text_field(:name, "search_query").value="Axura\n"
+    small_delay
+
+    @browser.select_list(:name, "search_type").select(/Preisvergleich und/)
+    @browser.text_field(:name, "search_query").value="Cellcept\n"
+    small_delay
+    check_cellcept(@browser.text.clone)
+  end unless ['just-medical'].index(Flavor)
+
+  it "should display Cellcept before other" do
+    select_product_by_trademark('Cellcept')
+    text = @browser.text.clone
+    cellcept = text.scan(/Cellcept|Myfenax/)
+    first = cellcept.index('Myfenax')
+    cellcept[first .. -1].each{ |x| expect(x).not_to match(/cellcept/) }
+  end
+
+
 
   after :all do
     @browser.close

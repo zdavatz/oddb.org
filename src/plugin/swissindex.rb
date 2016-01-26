@@ -70,6 +70,7 @@ module ODDB
   class SwissindexMigelPlugin < SwissindexPlugin
 		SWISSINDEX_MIGEL_SERVER = DRbObject.new(nil, ODDB::Swissindex::SwissindexMigel::URI)
     def migel_nonpharma(pharmacode_file, logging = false)
+      raise  "Swissindex migel_nonpharma #{pharmacode_file} exist #{File.exist?(pharmacode_file)}"  unless File.exist?(pharmacode_file)
       return nil unless File.exist?(pharmacode_file)
       Logging.flag = logging
       log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
@@ -94,7 +95,6 @@ module ODDB
       #
       open(@output_file, "w") do |f|
         f.print "position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n" 
-        
         count = 1
         pharmacode_list.each do |pharmacode|
           try_time = 0
@@ -172,6 +172,8 @@ module ODDB
       File.expand_path(@output_file)
     end
     def search_migel_table(migel_code)
+      $stdout.sync
+      $stdout.puts "SwissindexMigelPlugin.search_migel_table #{migel_code}"
       table =  []
       SWISSINDEX_MIGEL_SERVER.session(ODDB::Swissindex::SwissindexMigel) do |swissindex|
         table = swissindex.search_migel_table(migel_code, 'MiGelCode')
@@ -179,6 +181,7 @@ module ODDB
       table
     end
     def search_item(pharmacode)
+      $stdout.puts "SwissindexMigelPlugin.search_item #{migel_code}"
       item = {}
       SWISSINDEX_MIGEL_SERVER.session(ODDB::Swissindex::SwissindexMigel) do |swissindex|
         item = swissindex.search_item_with_swissindex_migel(pharmacode)
