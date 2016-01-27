@@ -388,6 +388,20 @@ describe "ch.oddb.org" do
     expect(text).to match('Oxycodon')
   end unless ['just-medical'].index(Flavor)
 
+  it "should set best_ressult when searching Rivoleve via search_type" do
+    @browser.link(:name, 'drugs').click;  small_delay
+    @browser.text_field(:name, "search_query").value = "Rivoleve"
+    if  @browser.select_list(:name, "search_type").value.eql?('st_oddb')
+      @browser.select_list(:name, "search_type").select(/Preisvergleich und/)
+    else
+      @browser.select_list(:name, "search_type").select("Preisvergleich")
+    end
+    text = @browser.text.clone
+    expect(text).not_to match LeeresResult
+    expect(text).to match('Rivoleve')
+    expect(@browser.url).to match /#best_result$/
+  end unless ['just-medical'].index(Flavor)
+
   after :all do
     @browser.close
   end
