@@ -34,7 +34,7 @@ module ODDB
 			self.packages.empty?
 		end
 		def has_ddd?
-			@atc.has_ddd?
+			!!@packages.find{|x| x.ddd}
 		end
     def overflow?
       @result.overflow?
