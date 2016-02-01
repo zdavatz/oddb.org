@@ -51,8 +51,11 @@ var query = this.form.#{name}.value;
 if (query != "#{val}" && query != "") {
   #{progressbar}
   var href = '#{submit}' + encodeURIComponent(#{name}.value.replace(/\\//, '%2F'));
-  href += '/search_type/' + this.value + '&#best_result';
-  if (href.toString().indexOf('#best_result') == -1) { href += '?#best_result'; }
+  href += '/search_type/' + this.value;
+  var price_or_combined  =  ( (this.value.indexOf('st_oddb')) > 0 || (this.value.indexOf('st_combined') ))
+  if ( (href.indexOf('#best_result') == -1) && price_or_combined != -1 ) {
+    href += '&#best_result';
+  }
   get_to(href);
 }
     JS
