@@ -72,7 +72,7 @@ class StubPackageGenericGroup
   end
 end
 class StubPackageSequence
-  attr_accessor :dose, :basename
+  attr_accessor :dose, :basename, :patinfo
   attr_accessor :comparables
   attr_accessor :active_packages, :registration, :composition
   def initialize
@@ -142,6 +142,20 @@ class TestPackage <Minitest::Test
   end
   def test_barcode
     assert_equal('7680123450123', @package.barcode)
+  end
+  def test_patinfo_via_sequence
+    seq = StubPackageSequence.new
+    seq.patinfo = 'pat_info_from_sequence'
+    @package.sequence = seq
+    assert_equal('pat_info_from_sequence', @package.patinfo)
+  end
+  def test_patinfo_self
+    seq = flexmock('sequence')
+    seq.should_receive.once(:patinfo).and_return('pat_info_from_sequence')
+    @package.sequence = seq
+    @package.patinfo = 'patinfo_self'
+    assert_equal('patinfo_self', @package.patinfo)
+    assert_equal(true, @package.has_patinfo?)
   end
   def test_checkout
     group = flexmock 'generic group'

@@ -397,7 +397,11 @@ module ODDB
             href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
           elsif (model.patinfo and seqnr = model.seqnr)
             klass = HtmlGrid::Link
-            smart_link_format = [:reg, model.iksnr, :seq, seqnr]
+            if model.is_a?(Package)
+              smart_link_format = [:reg, model.iksnr, :seq, seqnr, :pack, model.ikscd]
+            else
+              smart_link_format = [:reg, model.iksnr, :seq, seqnr]
+            end
             href = @lookandfeel._event_url(:patinfo, smart_link_format)
           elsif (patinfo = model.patinfo) # This is an old format URL for PI. Probably no need any more (but still available).
             klass = HtmlGrid::Link

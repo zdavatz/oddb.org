@@ -412,18 +412,18 @@ module ODDB
         end
       end
       def patinfo
-        if (iksnr = @session.user_input(:reg)) \
-          && (seqnr = @session.user_input(:seq)) \
+        iksnr = @session.user_input(:reg)
+        seqnr = @session.user_input(:seq)
+        ikscd = @session.user_input(:pack)
+        if iksnr && seqnr \
           && (reg = @session.app.registration(iksnr)) \
-          && (seq = reg.sequence(seqnr)) \
-          && (patinfo = seq.patinfo) \
-          && (!patinfo.descriptions.empty?)
-          State::Drugs::Patinfo.new(@session, patinfo)
-        else
-          Http404.new(@session, nil)
+          && (seq = reg.sequence(seqnr))
+          (ikscd && pack = seq.package(ikscd)) ? patinfo = pack.patinfo : patinfo = seq.patinfo
+          return State::Drugs::Patinfo.new(@session, patinfo) unless patinfo.descriptions.empty?
         end
+        Http404.new(@session, nil)
       end
-			def feedbacks
+      def feedbacks
         if @session.user_input(:pointer)
           self
         else
@@ -545,14 +545,21 @@ module ODDB
           State::Drugs::PrescriptionPrint.new(@session, nil)
         elsif @session.user_input(:pointer)
           self
-        elsif iksnr = @session.user_input(:reg) and
-              reg = @session.app.registration(iksnr) and
-              seq = reg.sequence(@session.user_input(:seq)) and
-              pi = seq.patinfo
+        elsif (pack_nr = @session.user_input(:pack)) &&
+              (iksnr = @session.user_input(:reg)) &&
+              (reg = @session.app.registration(iksnr)) &&
+              (seq = reg.sequence(@session.user_input(:seq))) &&
+              (pack = seq.package(pack_nr)) &&
+              (pi = pack.patinfo)
           State::Drugs::PatinfoPrint.new(@session, pi)
-        elsif iksnr = @session.user_input(:fachinfo) and
-              reg = @session.app.registration(iksnr) and
-              fi = reg.fachinfo
+        elsif (iksnr = @session.user_input(:reg)) &&
+              (reg = @session.app.registration(iksnr)) &&
+              (seq = reg.sequence(@session.user_input(:seq))) &&
+              (pi = seq.patinfo)
+          State::Drugs::PatinfoPrint.new(@session, pi)
+        elsif (iksnr = @session.user_input(:fachinfo)) &&
+              (reg = @session.app.registration(iksnr)) &&
+              (fi = reg.fachinfo)
           State::Drugs::FachinfoPrint.new(@session, fi)
         end
       end

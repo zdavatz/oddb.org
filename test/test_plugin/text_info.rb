@@ -771,9 +771,9 @@ EOS
     def setup
       file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       @app = flexmock 'application'
+      @app.should_receive(:get_refdata_info).and_return( {:get_refdata_info => nil})
       @app.should_receive(:registration).and_return ['registration']
-      @app.should_receive(:registrationxx).and_return ['registration']
-                                                     @plugin = TextInfoPlugin.new @app
+      @plugin = TextInfoPlugin.new @app
       @plugin.swissmedicinfo_xml(file)
     end
     
@@ -860,6 +860,7 @@ EOS
       assert_equal(1, @app.registration(iksnr).packages.size)
       assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
       assert_equal('drug_name', @app.registration(iksnr).name_base)
+      puts __LINE__
     end
   end
 end

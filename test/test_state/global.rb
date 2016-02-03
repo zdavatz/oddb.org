@@ -1305,13 +1305,27 @@ end
         end
         assert_equal([:sortvalue], @state.instance_eval('get_sortby!'))
       end
-      def test_patinfo
+      def test_patinfo_sequence
         flexmock(@session) do |s|
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
           s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
         end
         patinfo      = flexmock('patinfo', :descriptions => 'descriptions')
         sequence     = flexmock('sequence', :patinfo => patinfo)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
+        assert_kind_of(State::Drugs::Patinfo, @state.patinfo)
+      end
+      def test_patinfo_package
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return('packnr')
+        end
+        patinfo      = flexmock('patinfo', :descriptions => 'descriptions')
+        package      = flexmock('package', :patinfo => patinfo)
+        sequence     = flexmock('sequence', :patinfo => nil, :package => package)
         registration = flexmock('registration', :sequence => sequence)
         flexmock(@session.app, :registration => registration)
         assert_kind_of(State::Drugs::Patinfo, @state.patinfo)

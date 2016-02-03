@@ -53,7 +53,7 @@ module ODDB
       :generic_group_factor, :photo_link, :disable_photo_forwarding, :disable_ddd_price, :ddd_dose,
 			:sl_entry, :deductible_m, # for just-medical
       :bm_flag, :mail_order_prices,
-      :pdf_patinfo
+      :patinfo, :pdf_patinfo
     check_accessor_list = {
       :sequence => "ODDB::Sequence",
       :ikscat => "String",
@@ -81,6 +81,7 @@ module ODDB
       :deductible_m => "String",
       :bm_flag => ["TrueClass","NilClass","FalseClass"],
       :mail_order_prices => "Array",
+      :pat_info => "ODDB::Patinfo",
       :pdf_patinfo => "String",
     }
     define_check_class_methods check_accessor_list
@@ -93,13 +94,19 @@ module ODDB
       :renewal_flag_swissmedic
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :longevity, :compositions,
-      :iksnr, :indication, :name, :name_base, :patinfo,
+      :iksnr, :indication, :name, :name_base,
       :registration, :route_of_administration, :sequence_date, :seqnr
     MailOrderPrice = Struct.new(:price, :url, :logo) # logo is empty (old struct)
+    def patinfo # {sequence|package}
+      # Since February 2016 we suport different patinfo inside the sequence, this happens in over 100 cases
+      # eg. Tramal, IKSNR 43788
+      @patinfo || (self.sequence && self.sequence.patinfo)
+    end
     def pdf_patinfo # {sequence|package}
       @pdf_patinfo ? @pdf_patinfo : self.sequence.pdf_patinfo
     end
     def has_patinfo? # {sequence|package}
+      return true if @patinfo
       (self.sequence && self.sequence.has_patinfo?) ||
         package_patinfo?
     end
