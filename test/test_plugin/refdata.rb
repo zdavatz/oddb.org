@@ -181,8 +181,8 @@ REPORT
       item = {:phar => 'pharmacode'}
       swissindex = flexmock('swissindex')
       swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:check_item).and_return('00001')
-      swissindex.should_receive(:cleanup_items)
+      swissindex.should_receive(:get_refdata_info).and_return( {:atype=>"PHARMA", :gtin=>"7680437880869", :phar=>"00001"})
+      swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
                          :barcode      => 12345,
@@ -205,8 +205,8 @@ REPORT
       item = {:phar => 'pharmacode'}
       swissindex = flexmock('swissindex')
       swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:check_item).and_return('00001')
-      swissindex.should_receive(:cleanup_items)
+      swissindex.should_receive(:get_refdata_info).and_return( {:atype=>"PHARMA", :gtin=>"7680437880869", :phar=>"00001"})
+      swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
                          :barcode      => 12345,
@@ -229,14 +229,15 @@ REPORT
       item = {:phar => 'pharmacode'}
       swissindex = flexmock('swissindex')
       swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:check_item).and_return(false) # inactive
-      swissindex.should_receive(:cleanup_items)
+      swissindex.should_receive(:get_refdata_info).and_return( {}) # inactive
+      swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
                          :barcode      => 12345,
                          :pointer      => 'pointer',
                          :out_of_trade => false,
                          :pharmacode   => '00001',
+                         :sl_entry     => true,
                         )
       flexmock(@app) do |app|
         app.should_receive(:each_package).and_yield(package)
@@ -253,8 +254,8 @@ REPORT
       item = {:phar => 'pharmacode'}
       swissindex = flexmock('swissindex')
       swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:check_item).and_return(nil) # not found
-      swissindex.should_receive(:cleanup_items)
+      swissindex.should_receive(:get_refdata_info).and_return( {}) #  not found
+      swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
                          :barcode      => 12345,
@@ -278,8 +279,8 @@ REPORT
       item = {:phar => 'pharmacode'}
       swissindex = flexmock('swissindex')
       swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:check_item).and_return(nil) # not found
-      swissindex.should_receive(:cleanup_items)
+      swissindex.should_receive(:get_refdata_info).and_return( {}) #  not found
+      swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock('package',
                          :barcode      => 12345,

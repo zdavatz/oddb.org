@@ -153,7 +153,6 @@ class RefdataArticle < RequestHandler
         try_time -= 1
         retry
       else
-        cleanup_items
         options = {
           :type  => :download_all.to_s,
           :error => err

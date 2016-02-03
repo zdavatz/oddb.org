@@ -15,6 +15,7 @@ module ODDB
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
     class Logging
       @@flag = false
+      @@start_time = Time.now
       def Logging.flag=(bool)
         @@flag = bool
       end
@@ -24,7 +25,7 @@ module ODDB
       def Logging.start(file)
         if @@flag
           @@start_time = Time.now
-          FileUtils.mkdir_p(File.dirname(file))    
+          FileUtils.mkdir_p(File.dirname(file))
           log_file = File.open(file, 'w')
           log_file.print "# ", Time.now, "\n"
           yield(log_file) 
@@ -67,7 +68,7 @@ module ODDB
       end
     end
 
-    def update_package_trade_status(logging = false)
+    def update_package_trade_status(logging = !!ENV['LOG_REFDATA'])
       Logging.flag = logging
       log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
       log_file = File.join(log_dir, 'update_package_trade_status.log')
@@ -82,8 +83,9 @@ module ODDB
       count = 1
       start_time = Time.now
       @total_packages = @app.packages.length
-      REFDATA_SERVER.session do |swissindex|
-        @app.each_package do |pack|
+      @app.each_package do |pack|
+        item = {}
+        REFDATA_SERVER.session do |swissindex|
           # Process 1
           #   Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
           #   if so the package becomes in trade (false)
@@ -96,43 +98,43 @@ module ODDB
           #   then the package becomes out of trade (true) in ch.oddb
           # Process 4
           #   if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-          pharmacode = swissindex.check_item(pack.barcode.to_s, :gtin)
-          case pharmacode
-          when nil   # => not found in swissindex
-            # Process 3
-            unless pack.out_of_trade
-              @out_of_trade_true_list << pack
-            end
-            # process 4
-            if pharmacode = pack.pharmacode and !pack.sl_entry
-              @delete_pharmacode_list << [pack, pharmacode]
-            end
-          when false # => status "I" (inactive)
-            # Process 3
-            unless pack.out_of_trade
-              @out_of_trade_true_list << pack
-            end
-          else       # => found in swissindex
-            # Process 1
-            if pack.out_of_trade
-              @out_of_trade_false_list << pack
-            end
-            # process 2
-            if !pack.pharmacode or
-                pack.pharmacode != pharmacode
-              @update_pharmacode_list << [pack, pharmacode]
-            end
-          end
-          # for debug
-          Logging.append(log_file) do |log|
-            log.print @out_of_trade_false_list.length, ",", @update_pharmacode_list.length, ","
-            log.print @out_of_trade_true_list.length, ",", @delete_pharmacode_list.length, "\t"
-            log.print pack.barcode, "\t"
-          end
-          Logging.append_estimate_time(log_file, count, @total_packages)
-          count += 1
+          item = swissindex.get_refdata_info(pack.barcode.to_s, :gtin)
         end
-        swissindex.cleanup_items
+        pharmacode = item[:phar] ? item[:phar].to_i : nil
+        case pharmacode
+        when nil   # => not found in swissindex
+          # Process 3
+          unless pack.out_of_trade
+            @out_of_trade_true_list << pack
+          end
+          # process 4
+          if pharmacode = pack.pharmacode and !pack.sl_entry
+            @delete_pharmacode_list << [pack, pharmacode]
+          end
+        when false # => status "I" (inactive)
+          # Process 3
+          unless pack.out_of_trade
+            @out_of_trade_true_list << pack
+          end
+        else       # => found in swissindex
+          # Process 1
+          if pack.out_of_trade
+            @out_of_trade_false_list << pack
+          end
+          # process 2
+          if !pack.pharmacode or
+              pack.pharmacode.to_i != pharmacode
+            @update_pharmacode_list << [pack, pharmacode]
+          end
+        end
+        # for debug
+        Logging.append(log_file) do |log|
+          log.print @out_of_trade_false_list.length, ",", @update_pharmacode_list.length, ","
+          log.print @out_of_trade_true_list.length, ",", @delete_pharmacode_list.length, "\t"
+          log.print pack.barcode, "\t"
+        end
+        Logging.append_estimate_time(log_file, count, @total_packages)
+        count += 1
       end
       # for debug
       log_file = File.join(log_dir, 'update_package_trade_status_list.log')

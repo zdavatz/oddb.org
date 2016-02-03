@@ -1514,6 +1514,7 @@ module ODDB
 		VALIDATOR = Validator
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
+    REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 		attr_reader :cleaner, :updater
 		def initialize opts={}
       if opts.has_key?(:process)
@@ -2208,6 +2209,18 @@ module ODDB
     end
     def migel_count
       @migel_count ||= MIGEL_SERVER.migelids.length
+    end
+    def get_refdata_info(iksnr)
+      infos = {}
+      return infos unless registration(iksnr.to_s) and registration(iksnr.to_s).active_packages
+      infos[iksnr] = []
+      REFDATA_SERVER.session(ODDB::Refdata::RefdataArticle) do |swissindex|
+        gtins = registration(iksnr.to_s).active_packages.collect{|x| x.barcode}
+        gtins.each do |gtin|
+          infos[iksnr] << swissindex.search_item(gtin)
+        end
+      end
+      infos
     end
   end
 end
