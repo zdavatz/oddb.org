@@ -53,9 +53,6 @@ class RequestHandler
       )
     @items = []
   end
-  def cleanup_items
-    @items = []
-  end
   def logger(file, options={})
     project_root = File.expand_path('../../..', File.dirname(__FILE__))
     log_dir      = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
