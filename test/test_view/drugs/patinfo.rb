@@ -39,6 +39,7 @@ class TestPatinfoComposite <Minitest::Test
     state = flexmock('state', :allowed? => 'allowed?')
     @session   = flexmock('session', 
                           :lookandfeel => @lnf,
+                          :request_path    => 'request_path',
                           :language    => 'language',
                           :state       => state,
                           :user_input  => 'user_input',

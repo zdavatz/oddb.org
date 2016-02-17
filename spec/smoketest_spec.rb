@@ -257,6 +257,41 @@ describe "ch.oddb.org" do
     @browser.windows.last.close
   end
 
+  it "should open a sequence specific patinfo" do # 15219 Zymafluor
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/15219"; small_delay
+    expect(@browser.link(:text => 'PI').exist?).to eq true
+    @browser.link(:text => 'PI').click; small_delay
+    expect(@browser.url).to match /patinfo/i
+  end
+
+  it "should open a package specific patinfo" do # 43788 Tramal
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
+    expect(@browser.link(:text => 'PI').exist?).to eq true
+    @browser.link(:text => 'PI').click; small_delay
+    expect(@browser.url).to match /patinfo/i
+    expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
+  end
+
+  it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
+    expect(@browser.link(:text => 'PI').exist?).to eq true
+    @browser.link(:text => 'PI').click; small_delay
+    expect(@browser.url).to match /patinfo/i
+    text = @browser.text.clone
+    expect(text).to match /Was sind Tramal Tropfen Lösung zum Einnehmen und wann werden sie angewendet/
+    expect(text).not_to match /Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe/
+  end
+
+  it "should show correct Tramal Tropfen Lösung zum Einnehmen ohne Dosierpumpe(4788/01/086)" do
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"; small_delay
+    expect(@browser.link(:text => 'PI').exist?).to eq true
+    @browser.link(:text => 'PI').click; small_delay
+    expect(@browser.url).to match /patinfo/i
+    text = @browser.text.clone
+    expect(text).to match /Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe/
+    expect(text).not_to match /Was sind Tramal Tropfen Lösung zum Einnehmen und wann werden sie angewendet/
+  end
+
   it "should open print fachinfo in a new window" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/fachinfo/reg/51795"; small_delay
     expect(@browser.url).to match OddbUrl

@@ -12,7 +12,7 @@ require 'stub/odba'
 require 'stub/oddbapp'
 require 'stub/oddbapp'
 require 'plugin/text_info'
-
+RunAll = true
 module ODDB
 	class FachinfoDocument
 		def odba_id
@@ -74,15 +74,14 @@ Line 3\x06;\bT"
     Test_Name  = 'Xeljanz'
     Test_Atc   = 'L04AA29'
     
-    def run_import(iksnr)
-      @app.registrations = {}
-      opts ||= {
-        :target   => [:fi],
+    def run_import(iksnr, opts = {
+        :target   => :fi,
         :reparse  => false,
         :iksnrs   => [iksnr],
         :companies => [],
         :download => false,
-      }
+      })
+      @app.registrations = {}
       @plugin = TextInfoPlugin.new(@app, opts)
       agent = @plugin.init_agent
       @plugin.parser = @parser
@@ -115,6 +114,20 @@ Line 3\x06;\bT"
       super
     end
 
+
+    def test_import_nothing_imported_with_wrong_companies
+      @parser.should_receive(:parse_fachinfo_html)
+      @parser.should_receive(:parse_patinfo_html)
+
+      assert(run_import('88888', {:reparse => true, :target => :both, :download => false}), 'must be able to run import_swissmedicinfo and add a new registration')
+      res = @plugin.report
+      assert(/Stored 0 Fachinfos/.match(res))
+      assert(/Stored 0 Patinfos/.match(res))
+      assert(/Checked 0 companies/.match(res))
+      assert_nil(/:iksnr=>/.match(res))
+    end
+
+  if RunAll
     def test_import_new_registration_xeljanz_from_swissmedicinfo_xml
       reg = flexmock('registration2', 
                      :new => 'new',
@@ -134,13 +147,16 @@ Line 3\x06;\bT"
       meta = TextInfoPlugin::get_iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
-      expected =  SwissmedicMetaInfo.new(Test_Iksnr, Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum")
-      assert_equal(expected, meta[Test_Iksnr], 'Meta information about Test_Iksnr must be correct')
-      assert(@app.registrations.keys.index(Test_Iksnr))
+      entry = SwissmedicMetaInfo.new(Test_Iksnr, [Test_Iksnr], Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum", 'fi', 'de')
+      entry.xml_file = File.join(@@vardir, 'details', "#{Test_Iksnr}_fi_de.xml")
+      expected = [ entry ]
+      assert_equal(expected, meta[[Test_Iksnr, 'fi', 'de']], 'Meta information about Test_Iksnr must be correct')
+      assert(@app.registrations.keys.index(Test_Iksnr), 'must have created registration ' + Test_Iksnr.to_s )
     end
+  end
     # Here we used to much memory
     def test_import_57435_baraclude_from_swissmedicinfo_xml
-      reg = flexmock('registration3', 
+      reg = flexmock('registration3',
                      :new => 'new',
                      :store => 'store',
                      )
@@ -155,12 +171,15 @@ Line 3\x06;\bT"
       meta = TextInfoPlugin::get_iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
-      expected =  SwissmedicMetaInfo.new(Test_57435_Iksnr, Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance)
-      assert_equal(expected, meta[Test_57435_Iksnr], 'Meta information about Test_57435_Iksnr must be correct')
-      assert(@app.registrations.keys.index(Test_57435_Iksnr))
+      entry = SwissmedicMetaInfo.new(Test_57435_Iksnr, ["57435", "57436"], Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance, 'fi', 'de')
+      entry.xml_file = File.join(@@vardir, 'details', "#{Test_57435_Iksnr}_fi_de.xml")
+      expected =  [ entry]
+      assert_equal(expected, meta[ [Test_57435_Iksnr, 'fi', 'de']], 'Meta information about Test_57435_Iksnr must be correct')
+      assert(@app.registrations.keys.index(Test_57435_Iksnr), 'must have created registration ' + Test_57435_Iksnr )
     end
-  end
 
+  end
+if RunAll
   class TestTextInfoPlugin <MiniTest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
@@ -184,7 +203,7 @@ Line 3\x06;\bT"
       ODDB.config.data_dir = @@vardir
       ODDB.config.log_dir = @@vardir
       @opts = {
-        :target   => [:fi],
+        :target   => :fi,
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
         :companies => [],
@@ -219,14 +238,13 @@ Line 3\x06;\bT"
 
     def test_import_swissmedicinfo_xml
       fi = flexmock 'fachinfo'
-      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
+      fi.should_receive(:pointer).never.and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
-#      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
       flags = {:de => :up_to_date, :fr => :up_to_date}
-      @parser.should_receive(:parse_fachinfo_html).once
+      @parser.should_receive(:parse_fachinfo_html).at_least.once
       @parser.should_receive(:parse_patinfo_html).never
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
+      assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
     end
 
     def test_import_swissmedicinfo_no_iksnr
@@ -270,38 +288,9 @@ Line 3\x06;\bT"
         index
       end
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      assert(@plugin.import_swissmedicinfo(), 'must be able to run import_swissmedicinfo')
+      assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
     end
 
-    def test_import_passion
-      name = 'Capsules PASSIFLORE "Künzle"'
-      stripped = name # With this line we get the error 
-      # Nokogiri::XML::XPath::SyntaxError: Invalid expression: //medicalInformation[@type='pi' and @lang='fr']/title[match(., "Capsules PASSIFLORE "Künzle"")]
-      stripped = name.gsub('"','.')
-      title = 'Capsules PASSIFLORE "Künzle"'
-      type = 'pi'
-      lang = 'fr'
-      path  = "//medicalInformation[@type='#{type[0].downcase + 'i'}' and @lang='#{lang.to_s}']/title[match(., \"#{stripped}\")]"
-      fr = setup_fachinfo_document 'Numéro d’autorisation', '45928 (Swissmedic).'
-      @registrations = flexmock('registrations')
-      fi_path_fr = File.join(@@datadir, 'passion.fr.xml')
-      @doc = @plugin.swissmedicinfo_xml(fi_path_fr)
-      match = @doc.xpath(path, Class.new do
-        def match(node_set, name)
-          found_node = catch(:found) do
-            node_set.find_all do |node|
-              unknown_chars = /[^A-z0-9,\/\s\-]/
-              title = (node.text + '®').gsub(unknown_chars, '')
-              name  = name.gsub(unknown_chars, '')
-              throw :found, node if title == name
-              false
-            end
-            nil
-          end
-          found_node ? [found_node] : []
-        end
-      end.new).first
-    end
   end
   class TestTextInfoPluginChecks <MiniTest::Test
     include FlexMock::TestCase
@@ -317,7 +306,7 @@ Line 3\x06;\bT"
       ODDB.config.data_dir = @@vardir
       ODDB.config.log_dir = @@vardir
       @opts = {
-        :target   => [:fi],
+        :target   => :fi,
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
         :companies => [],
@@ -384,4 +373,145 @@ Line 3\x06;\bT"
       assert_equal(["38207", '65724'], TextInfoPlugin::get_iksnrs_from_string(test_string))
     end
   end
+  class TestTextInfoTramalPlugin <MiniTest::Test
+    Auth_15219 = "MEDA Pharma GmbH"
+    Aut_43788 = 'Grünenthal Pharma AG'
+
+    def stderr_null
+      require 'tempfile'
+      $stderr = Tempfile.open('stderr')
+      yield
+      $stderr.close
+      $stderr = STDERR
+    end
+    def replace_constant(constant, temp)
+      stderr_null do
+        keep = eval constant
+        eval "#{constant} = temp"
+        yield
+        eval "#{constant} = keep"
+      end
+    end
+    unless defined?(@@datadir)
+      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
+      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
+    end
+    include FlexMock::TestCase
+
+    def create(dateiname, content)
+        FileUtils.makedirs(File.dirname(dateiname))
+        ausgabe = File.open(dateiname, 'w+')
+        ausgabe.write(content)
+        ausgabe.close
+    end
+
+    def teardown
+      FileUtils.rm_rf @@vardir
+      ODBA.storage = nil
+      super
+    end
+    def setup
+      FileUtils.mkdir_p @@vardir
+      ODDB.config.data_dir = @@vardir
+      ODDB.config.log_dir = @@vardir
+      @opts = {
+        :target   => :pi,
+        :reparse  => true,
+        :iksnrs   => ['43788'],
+        :companies => [],
+        :download => false,
+        :xml_file => File.join(@@datadir, '43788.xml'),
+      }
+      @app = ODDB::App.new
+      @plugin = TextInfoPlugin.new(@app, @opts)
+      agent = @plugin.init_agent
+      File.open(ODDB::TextInfoPlugin::Override_file, 'w+') do |file|
+        file.puts  %(---
+7680437880197_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe.'
+7680437880197_pi_it: 'Tramal® gocce, soluzione orale con pompetta dosatrice'
+7680437880869_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe.'
+)
+      end
+      @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
+      @plugin.parser = @parser
+    end
+    def setup_texinfo_mock(type = :fachinfo)
+      textinfo = flexmock(type)
+      textinfo.should_receive(:iksnr).and_return('iksnr')
+      textinfo.should_receive(:iksnrs).and_return('iksnrs')
+      textinfo.should_receive(:pointer).and_return(Persistence::Pointer.new(type))
+      textinfo.should_receive(:text).and_return("text #{type}")
+      textinfo.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
+      textinfo
+    end
+    def setup_refdata_mock
+      @swissindex = flexmock('swissindex', :search_item => {:gtin => '7658123456789'})
+      @server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(@swissindex)
+      end
+    end
+
+    def test_import_patinfo_tramal_43788
+      @opts[:iksnrs] = ['43788', '15219']
+      @plugin = TextInfoPlugin.new(@app, @opts)
+      agent = @plugin.init_agent
+      @plugin.parser = @parser
+
+      @app.create_registration('15219')
+      info2 = { :iksnr => '15219', :title => 'Tramal, Tropfen' }
+      info2 = flexmock('info 15219')
+      info2.should_receive(:iksnr).and_return('15219')
+      info2.should_receive(:title).and_return('Zymafluor® ¼ mg + 1 mg')
+      info2.should_receive(:authHolder).and_return('authHolder')
+      TextInfoPlugin::create_registration(@app, info2, '01', '001')
+
+      # @app.create_registration('43788')
+      patinfo = setup_texinfo_mock(:patinfo)
+      @parser.should_receive(:parse_fachinfo_html).never
+      @parser.should_receive(:parse_patinfo_html).at_least.once.and_return(patinfo)
+      info = { :iksnr => '43788', :title => 'Tramal, Tropfen' }
+      info = flexmock('info')
+      info.should_receive(:iksnr).and_return('43788')
+      info.should_receive(:title).and_return('Tramal, Tropfen')
+      info.should_receive(:authHolder).and_return('authHolder')
+      TextInfoPlugin::create_registration(@app, info, '01', '019') # Ohne Dosierpumpe
+      TextInfoPlugin::create_registration(@app, info, '01', '086') # Mit Dosierpumpe
+      @app.registration('15219').company = Auth_15219
+      @app.registration('43788').company = Aut_43788
+
+      setup_refdata_mock
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
+        assert(@plugin.import_swissmedicinfo(:pi), 'must be able to run import_swissmedicinfo')
+      end
+      [ @plugin.problematic_fi_pi, @plugin.missing_override_file].each do |filename|
+        assert(File.exist?(filename))
+        assert(File.size(filename) > 100, "#{filename} must be longer than 100 chars, but is only #{File.size(filename)}")
+      end
+      @app.registration('15219').packages.size
+      @app.registration('15219').packages.values.find_all { |x| x.patinfo}
+      @app.registration('15219').sequences.values.find_all { |x| x.patinfo}
+    end
+
+    def test_import_fachinfo_tramal_43788
+      fachinfo = setup_texinfo_mock(:fachinfo)
+      @parser.should_receive(:parse_patinfo_html).never
+      @parser.should_receive(:parse_fachinfo_html).at_least.once.and_return { fachinfo }
+      info = { :iksnr => '43788', :title => 'Tramal, Tropfen' }
+      info = flexmock('info 43788')
+      info.should_receive(:iksnr).and_return('43788')
+      info.should_receive(:title).and_return('Tramal, Tropfen')
+      info.should_receive(:authHolder).and_return('authHolder')
+      TextInfoPlugin::create_registration(@app, info, '01', '019') # Ohne Dosierpumpe
+      TextInfoPlugin::create_registration(@app, info, '01', '086') # Mit Dosierpumpe
+      @app.registration('43788').company = Aut_43788
+
+      setup_refdata_mock
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
+        assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
+      end
+      assert(File.exist?(@plugin.problematic_fi_pi))
+      assert(File.size(@plugin.problematic_fi_pi) > 100)
+    end
+  end
 end
+  end
