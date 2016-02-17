@@ -11,6 +11,7 @@ module ODDB
 			super
 		end
 		def add_sequence(seq)
+      @sequences ||= [] # needed for some unit test
 			unless(@sequences.include?(seq))
 				@sequences.push(seq)
 				@sequences.odba_isolated_store
@@ -19,6 +20,7 @@ module ODDB
 			seq
 		end
 		def remove_sequence(seq)
+      @sequences ||= [] # needed for some unit test
 			## failsafe-code
 			@sequences.delete_if { |s| s.odba_instance.nil? }
 			##

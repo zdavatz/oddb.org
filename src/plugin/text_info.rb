@@ -177,7 +177,9 @@ module ODDB
         @fi_without_atc_code << iksnr
         LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI is nil"
       end
-      atcFromXml =  @@iksnrs_meta_info.find{|key, val| key[0] == iksnr && val.first.atcCode}
+      found = @@iksnrs_meta_info.find{|key, val| key[0] == iksnr && val.first.atcCode}
+      atcFromXml = nil
+      atcFromXml = found.flatten.find{ |x| x.is_a?(SwissmedicMetaInfo) }.atcCode if found
       atcFromRegistration = nil
       atcFromRegistration = registration.sequences.values.first.atc_class.code if registration.sequences.values.first and registration.sequences.values.first.atc_class
 
@@ -189,7 +191,8 @@ module ODDB
         return unless atcFromFI # in this case we cannot correct it!
         atc_class = app.atc_class(atcFromFI)
         return if atc_class.is_a?(ArgumentError)
-        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atcFromFI])) if atcFromFI
+        atc_class ||= app.create_atc_class(atcFromFI)
+        atc_class.pointer ||= Persistence::Pointer.new([:atc_class, atcFromFI])
         return if atc_class.is_a?(ArgumentError)
         registration.sequences.values.each{
           |sequence|
@@ -215,10 +218,10 @@ module ODDB
         atc_code = atcFromFI
         atc_code ||= atcFromXml
         atc_class = app.atc_class(atc_code)
-        atc_class ||=  app.create(Persistence::Pointer.new([:atc_class, atc_code]))
+        atc_class.pointer ||= Persistence::Pointer.new([:atc_class, atc_code])
         registration.sequences.values.each{
           |sequence|
-            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atc_code #{atc_code} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}  atc_class #{atc_class} #{atc_class.oid}"
+            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atc_code #{atc_code} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}  atc_class #{atc_class}"
             res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
             sequence.odba_store
         }
@@ -265,7 +268,7 @@ module ODDB
       LogFile.debug("store_patinfo_for_one_packages #{package.iksnr} #{lang} #{patinfo_lang.to_s[0..150]}")
       puts "store_patinfo_for_all_packages #{package.iksnr} #{lang} patinfo #{package.patinfo.to_s[0..150]}"
       package.patinfo = @app.create_patinfo unless package.patinfo
-      package.patinfo.pointer = Persistence::Pointer.new([:patinfo]) unless package.patinfo.pointer
+      package.patinfo.pointer ||= Persistence::Pointer.new([:patinfo])
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
       package.patinfo.odba_store
       package.odba_store
@@ -1384,7 +1387,7 @@ module ODDB
       if m =/<substances>([^<]+)</.match(chunk) then meta_info.substances = m[1] end
       if m =/<title>([^<]+)</.match(chunk) then meta_info.title = m[1] end
       if m =/<authNrs>([^<]+)</.match(chunk) then meta_info.authNrs = m[1].split(', ') end
-      if m =/<atcCode>([^<]+)</.match(chunk) then meta_info.atcCode = m[1].split(' ')[0] end
+      if m =/<atcCode>([^,\W<]*)/.match(chunk) then meta_info.atcCode = m[1].split(' ')[0] end
       info = "#{meta_info.iksnr}_#{meta_info.type}_#{meta_info.lang}"
       @@iksnr_lang_type[info] =  meta_info.title unless @@iksnr_lang_type[info]
       outfile = File.join(dir, info + '.xml')
@@ -1482,7 +1485,7 @@ module ODDB
       end
       content = nil # get rid of the 800MB file!
       @companies ||=  @options[:companies]
-      puts "created #{@@iksnrs_meta_info.size} @@iksnrs_meta_info"
+      puts "#{Time.now}: created #{@@iksnrs_meta_info.size} @@iksnrs_meta_info"
       create_missing_registrations
       report_problematic_names
     end
