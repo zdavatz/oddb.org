@@ -483,7 +483,7 @@ if RunAll
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
         assert(@plugin.import_swissmedicinfo(:pi), 'must be able to run import_swissmedicinfo')
       end
-      ['problematic_fi_pi.lst', 'missing_override.lst'].each do |filename|
+      [ @plugin.problematic_fi_pi, @plugin.missing_override_file].each do |filename|
         assert(File.exist?(filename))
         assert(File.size(filename) > 100, "#{filename} must be longer than 100 chars, but is only #{File.size(filename)}")
       end
@@ -509,9 +509,8 @@ if RunAll
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
         assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
       end
-      filename = 'problematic_fi_pi.lst'
-      assert(File.exist?(filename))
-      assert(File.size(filename) > 100)
+      assert(File.exist?(@plugin.problematic_fi_pi))
+      assert(File.size(@plugin.problematic_fi_pi) > 100)
     end
   end
 end

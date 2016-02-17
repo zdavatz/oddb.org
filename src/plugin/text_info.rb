@@ -23,10 +23,11 @@ module ODDB
 
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang, :informationUpdate, :refdata, :xml_file)
   class TextInfoPlugin < Plugin
-    attr_reader :updated_fis, :updated_pis
+    attr_reader :updated_fis, :updated_pis, :problematic_fi_pi, :missing_override_file
     Languages = [:de, :fr, :it]
     CharsNotAllowedInBasename = /[^A-z0-9,\s\-]/
     Override_file = File.join(Dir.pwd, 'etc',  defined?(Minitest) ? 'barcode_minitest.yml' : 'barcode_to_text_info.yml')
+    DEBUG_FI_PARSE = !!ENV['DEBUG_FI_PARSE']
     def initialize app, opts={}
       super(app)
         GC.start
@@ -53,6 +54,8 @@ module ODDB
       @nonconforming_content = []
       @wrong_meta_tags = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
+      @problematic_fi_pi = File.join ODDB.config.log_dir, 'problematic_fi_pi.lst'
+      @missing_override_file = File.join ODDB.config.log_dir, 'missing_override.lst'
       @title  = ''       # target fi/pi name
       @format = :swissmedicinfo
       @target = :both
@@ -1402,9 +1405,8 @@ module ODDB
     end
 
     def report_problematic_names
-      filename = 'problematic_fi_pi.lst'
-      puts "#{Time.now}: Creating #{filename}"
-      File.open('problematic_fi_pi.lst', 'w+') do |file|
+      puts "#{Time.now}: Creating #{@problematic_fi_pi}"
+      File.open(@problematic_fi_pi, 'w+') do |file|
         @@iksnrs_from_aips.sort.uniq.each { |iksnr| file.puts iksnr }
         @@iksnrs_from_aips.sort.uniq.each do|iksnr|
           @app.registration(iksnr).packages.each do |pack|
@@ -1423,8 +1425,7 @@ module ODDB
           puts "err #{err} in report_problematic_names"
         end
       end
-      puts "#{Time.now}: created #{filename}"
-      LogFile.debug "created #{filename}"
+      LogFile.debug "created #{@problematic_fi_pi}"
     end
 
     def parse_aips_download(target)
@@ -1455,15 +1456,15 @@ module ODDB
             @@iksnrs_meta_info[key].each do |info|
               unless info.authHolder.eql?(reg.company.to_s)
                 nrEntries = @@iksnrs_meta_info[key].find_all{ |x| x.authHolder.eql?(reg.company.to_s) }.size
-                puts "Mismatching authHolder #{iksnr} meta #{meta_info.authHolder} != db #{reg.company.to_s}. Has #{nrEntries}/#{@@iksnrs_meta_info[key].size} entries"
+                puts "Mismatching authHolder #{iksnr} meta #{meta_info.authHolder} != db #{reg.company.to_s}. Has #{nrEntries}/#{@@iksnrs_meta_info[key].size} entries" if DEBUG_FI_PARSE
                 if nrEntries >= 1
                   @@iksnrs_meta_info[key].delete_if{ |x| !x.authHolder.eql?(reg.company.to_s) }
                   @duplicate_entries.delete_if{ |x| x.index(key_string) == 0} if nrEntries == 1
-                  puts "Mismatching authHolder #{iksnr}. Has now #{@@iksnrs_meta_info[key].size} entries"
+                  puts "Mismatching authHolder #{iksnr}. Has now #{@@iksnrs_meta_info[key].size} entries" if DEBUG_FI_PARSE
                 else
-                  puts "Could not delete Mismatching authHolder #{iksnr}. Still #{@@iksnrs_meta_info[key].size} entries"
+                  puts "Could not delete Mismatching authHolder #{iksnr}. Still #{@@iksnrs_meta_info[key].size} entries" if DEBUG_FI_PARSE
                 end
-                puts "Mismatching authHolder #{iksnr}. Has #{@duplicate_entries.find_all{ |x| x.index(key_string) == 0}.size } @duplicate_entries"
+                puts "Mismatching authHolder #{iksnr}. Has #{@duplicate_entries.find_all{ |x| x.index(key_string) == 0}.size } @duplicate_entries" if DEBUG_FI_PARSE
               end if @@iksnrs_meta_info[key].size > 1
             end if reg
           end
@@ -1510,7 +1511,7 @@ module ODDB
         parse_patinfo(meta_info) if meta_info[:type] == 'pi' ||  meta_info[:type] == 'both'
         GC.enable unless already_disabled
       end
-      File.open('missing_override.lst', 'w+') {|f| f.puts  @@missing_override.join("\n")}
+      File.open(@missing_override_file, 'w+') {|f| f.puts  @@missing_override.join("\n")}
       if @options[:download] != false
         puts_sync "job is done. now postprocess works ..."
         postprocess
