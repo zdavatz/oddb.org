@@ -231,7 +231,7 @@ module ODDB
     end
 
     def update_fachinfo_lang(meta_info, fis, fi_flags = {})
-      LogFile.debug "update_fachinfo #{meta_info}"
+      LogFile.debug "update_fachinfo_lang #{meta_info}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:fi].push meta_info.title
         return
@@ -244,7 +244,7 @@ module ODDB
             #  but because we still want to extract the iksnrs, we just mark them
             #  and defer inaction until here:
             unless fi_flags[:pseudo] || fis.empty?
-              LogFile.debug  "update_fachinfo #{meta_info.title} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{meta_info.atcCode}"
+              LogFile.debug  "update_fachinfo_lang #{meta_info.title} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{meta_info.atcCode}"
               unless iksnr.to_i == 0
                 fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
                 TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
@@ -253,7 +253,7 @@ module ODDB
               end
             end
           else
-            LogFile.debug "update_fachinfo #{meta_info.title} iksnr #{iksnr} store_orphaned"
+            LogFile.debug "update_fachinfo_lang #{meta_info.title} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, fis, :orphaned_fachinfo
             @unknown_iksnrs.store iksnr, meta_info.title
           end
@@ -303,7 +303,7 @@ module ODDB
     end
 
     def update_patinfo_lang(meta_info, pis)
-      LogFile.debug "update_patinfo #{meta_info} #{pis.keys}"
+      LogFile.debug "update_patinfo_lang #{meta_info} #{pis.keys}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:pi].push meta_info.title
         return
@@ -321,7 +321,10 @@ module ODDB
             key = [ iksnr, meta_info.type, meta_info.lang ]
             return if @@iksnrs_meta_info[key].size == 0
             if  @@iksnrs_meta_info[key].size == 1 # Same PI for all packages
-              pis.each { |lang, patinfo_lang| store_patinfo_for_all_packages(iksnr, lang, patinfo_lang) }
+              pis.each do |lang, patinfo_lang|
+                msg = "#{iksnr} #{meta_info.lang}: #{meta_info.title}"
+                @updated_pis << "  #{msg}"
+              end
             else # more than 1 PI for iksnr found
               pis.each do|lang, patinfo_lang|
                 next unless lang.to_s.eql?(meta_info.lang)
@@ -351,7 +354,7 @@ module ODDB
               end
             end
           else
-            LogFile.debug "update_patinfo #{meta_info.title} iksnr #{iksnr} store_orphaned"
+            LogFile.debug "update_patinfo_lang #{meta_info.title} iksnr #{iksnr} store_orphaned"
             store_orphaned iksnr, pis, :orphaned_patinfo
             @unknown_iksnrs.store iksnr, meta_info.title
           end
@@ -359,47 +362,6 @@ module ODDB
           @failures.push err.message
           []
         end
-      end
-    end
-
-    def update_fachinfo name, iksnrs_from_xml, fis, fi_flags
-      begin
-        LogFile.debug "update_fachinfo #{name} iksnr #{iksnrs_from_xml} #{fis.keys}"
-        return unless iksnrs_from_xml
-        if iksnrs_from_xml.empty?
-          @iksless[:fi].push name
-        end
-        ## Now that we have identified the pertinent iksnrs_from_xml, we can remove
-        #  up-to-date fachinfos from the queue.
-        if fi_flags[:de] && fi_flags[:fr] && !@options[:reparse]
-          fis.clear
-          @up_to_date_fis += 1
-        end
-        fachinfo = nil
-        # assign infos.
-        iksnrs_from_xml.each do |iksnr|
-          if reg = @app.registration(iksnr)
-            ## identification of Pseudo-Fachinfos happens at download-time.
-            #  but because we still want to extract the iksnrs, we just mark them
-            #  and defer inaction until here:
-            unless fi_flags[:pseudo] || fis.empty?
-              LogFile.debug  "update_fachinfo #{name} iksnr #{iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{fis.values.first.atc_code}"
-              unless iksnr.to_i == 0
-                fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
-                TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
-                ensure_correct_atc_code(@app, reg, fis.values.first.atc_code)
-                @updated_fis += 1
-              end
-            end
-          else
-            LogFile.debug "update_fachinfo #{name} iksnr #{iksnr} store_orphaned"
-            store_orphaned iksnr, fis, :orphaned_fachinfo
-            @unknown_iksnrs.store iksnr, name
-          end
-        end
-      rescue RuntimeError => err
-        @failures.push err.message
-        []
       end
     end
 
@@ -418,76 +380,6 @@ module ODDB
           }
       else
         puts_sync "delete_patinfo nothing to do for #{iksnr} ??"
-      end
-    end
-    
-    # pis is a hash of language => html
-    def update_patinfo name, iksnrs_from_xml, pis, pi_flags
-      begin
-        puts_sync "update_patinfo #{name} iksnrs_from_xml #{iksnrs_from_xml} empty #{pis.empty?} keys #{pis.keys}"
-        patinfo = nil
-        return unless iksnrs_from_xml
-        iksnrs_from_xml.each do |iksnr|
-          reg = @app.registration(iksnr)
-          unless reg
-            puts_sync "No reg found for #{iksnr.inspect}"
-          else
-            unless pis.empty?
-              lang = pis.keys.first.to_s
-              name = pis.values.first.name
-              @updated_pis << "  #{iksnr} #{lang}: #{name}"
-
-              if patinfo and patinfo.pointer and @corrected_pis.index(patinfo.pointer.to_s)
-                puts_sync "Already updated #{patinfo.pointer }"
-              else
-                patinfo ||= store_patinfo(reg, pis)
-                puts_sync "update_patinfo.pointer #{iksnr} #{patinfo and patinfo.pointer ? patinfo.pointer : 'nil'}"
-              end
-              iksnrs_from_xml.each do |iksnr|
-                @iksnr_to_pi[iksnr] ||= []
-                @iksnr_to_pi[iksnr] << pis
-              end if iksnrs_from_xml.size > 0
-              refdata = @app.get_refdata_info(iksnr)
-              puts_sync("@iksnr_to_pi[iksnr] #{iksnr} has #{@iksnr_to_pi[iksnr].size} entries")
-              if @iksnr_to_pi[iksnr].size == 1
-                lang = pis.keys.first.to_s
-                puts "lang #{lang} name #{name} refdata #{refdata.values.first.collect{|x| [ x[:gtin], x[:name_fr], x[:name_de]] }}"
-                reg.each_sequence do |seq|
-                  # cut connection to pdf patinfo
-                  puts_sync "update_patinfo #{name} iksnr #{iksnr} seq  #{seq.seqnr} update"
-                  if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
-                    seq.pdf_patinfo = ''
-                    @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
-                    seq.odba_isolated_store
-                  end
-                  TextInfoPlugin::replace_textinfo(@app, patinfo, seq, :patinfo)
-                  @corrected_pis << patinfo.pointer.to_s
-                end
-              else
-                puts "lang #{lang} name #{name} refdata #{refdata.values.first.collect{|x| [ x[:gtin], x[:name_fr], x[:name_de]] }}"
-                reg.each_package do |pack|
-                  # cut connection to pdf patinfo
-                  puts_sync "update_patinfo #{name} iksnr #{iksnr} seq #{pack.seqnr} pack #{pack.ikscd} update"
-                  if !pack.pdf_patinfo.nil? and !pack.pdf_patinfo.empty?
-                    pack.pdf_patinfo = ''
-                    @app.update(pack.pointer, {:pdf_patinfo => ''}, :text_info)
-                    pack.odba_isolated_store
-                  end
-                  TextInfoPlugin::replace_textinfo(@app, patinfo, pack, :patinfo)
-                  @corrected_pis << patinfo.pointer.to_s
-                end
-              end
-            else
-              puts_sync "update_patinfo #{name} iksnr #{iksnr} store_orphaned"
-              store_orphaned iksnr, pis, :orphaned_patinfo
-              @unknown_iksnrs.store iksnr, name
-            end
-          end
-        end
-      rescue RuntimeError => err
-        @failures.push err.message
-        puts_sync "update_patinfo RuntimeError #{err.message}"
-        []
       end
     end
 
@@ -564,8 +456,6 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
-          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),          
           "#{@fi_without_atc_code.size} FIs without an ATC-code",      @fi_without_atc_code.join("\n"),
           "#{@fi_atc_code_missmatch.size} FI in HTML != metadata",     @fi_atc_code_missmatch.join("\n"),
         ].join("\n")
@@ -592,8 +482,6 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
-          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),
           "#{@fi_without_atc_code.size} FIs without an ATC-code",      @fi_without_atc_code.join("\n"),
           "#{@fi_atc_code_missmatch.size} FI in HTML != metadata",      @fi_atc_code_missmatch.join("\n"),
           "#{@fi_atc_code_different_in_registration.size} FIs with ATC-code != registration",      @fi_atc_code_different_in_registration.join("\n"),
@@ -620,12 +508,27 @@ module ODDB
           @skipped.join("\n"),
           @invalid.join("\n"),
           @notfound.join("\n"),nil,
-          "#{@nonconforming_content.size} non conforming contents: ",  @nonconforming_content.join("\n"),
-          "#{@wrong_meta_tags.size} wrong metatags: ",                 @wrong_meta_tags.join("\n"),
         ].join("\n")
       end
-      if @@missing_override.size > 0
-        res << "#{Override_file}: Missing overrides are\n"
+      res << ""
+      if @wrong_meta_tags.size == 0
+        res << "No wrong metatags found"
+      else
+         res << "#{@wrong_meta_tags.size} wrong metatags: "
+         res << @wrong_meta_tags.join("\n")
+      end
+      res << ""
+      if @nonconforming_content.size == 0
+        res << "All imported images had a supported format"
+      else
+        res << "#{@nonconforming_content.size} non conforming contents: "
+        res << @nonconforming_content.join("\n")
+      end
+      res << ""
+      if @@missing_override.size == 0
+        res << "No need to add anything to #{Override_file}"
+      else
+        res << "#{Override_file}: The #{@@missing_override.size} missing overrides are\n"
         res << @@missing_override.join("\n")
       end
       res
@@ -1440,7 +1343,7 @@ module ODDB
       FileUtils.rm_rf(dirname, verbose: true)
       FileUtils.makedirs(dirname, verbose: true)
       return unless File.exist?(@aips_xml)
-      content = IO.read(@aips_xml)
+      content = File.open(@aips_xml, "r:UTF-8", &:read)
       puts "#{Time.now}: read #{content.size} bytes"
       @to_parse = []
       content.split('</medicalInformation>').each do |chunk|
