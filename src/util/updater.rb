@@ -57,6 +57,8 @@ module ODDB
       :gcc			=>	'Exklusiv-Sponsoring ODDB.org',
     }
     def initialize(app)
+      ENV['LANG'] ||= "de_CH.UTF-8"
+      ENV['LANGUAGE'] ||= "de_CH.UTF-8"
       @app = app
       @smj_updated = false
     end
