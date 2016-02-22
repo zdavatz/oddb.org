@@ -470,10 +470,6 @@ if true
       setup_update_notify_simple(TextInfoPlugin, :import_company)
       assert_equal('notify', @updater.update_company_textinfos)
     end
-    def test_update_textinfo_news
-      setup_update_notify_simple(TextInfoPlugin, :import_news)
-      assert_equal('notify', @updater.update_textinfo_news)
-    end
     def test_update_textinfos
       setup_update_notify_simple(TextInfoPlugin, :import_fulltext)
       assert_equal('notify', @updater.update_textinfos)

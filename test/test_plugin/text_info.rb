@@ -23,8 +23,10 @@ module ODDB
 		end
 	end
   class TextInfoPlugin
-    attr_accessor :parser, :iksless, :session_failures, :current_search,
-                  :current_eventtarget
+    attr_accessor :parser
+    attr_reader :to_parse, :iksnrs_meta_info, :updated_fis, :updated_pis,
+        :corrected_pis, :corrected_fis, :up_to_date_fis, :up_to_date_pis,
+        :details_dir
   end
 
   class TestTextInfoPluginMethods<MiniTest::Test
@@ -53,7 +55,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       ODDB.config.log_dir = @@vardir
       ODDB.config.text_info_searchform = 'http://textinfo.ch/Search.aspx'
       ODDB.config.text_info_newssource = 'http://textinfo.ch/news.aspx'
-      @parser = flexmock('parser (simulates ext/fiparse)', :parse_fachinfo_html => nil,)                         
+      @parser = flexmock('parser (simulates ext/fiparse)', :parse_fachinfo_html => nil,)
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
     end
@@ -116,495 +118,10 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       assert_instance_of Mechanize, agent
       assert /Mozilla/.match(agent.user_agent)
     end
-    def test_init_searchform__not_configured
-      ODDB.config.text_info_searchform = nil
-      agent = setup_mechanize
-      assert_raises RuntimeError do
-        @plugin.init_searchform agent
-      end
-    end
-    def test_init_searchform__accept
-      mapping = [
-        [ 'AcceptForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-          'frmNutzungsbedingungen',
-          'SearchForm.html',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      page = @plugin.init_searchform agent
-      refute_nil page.form_with(:name => 'frmSearchForm')
-    end
-    def test_search_company
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-          'frmSearchForm',
-          'Companies.html',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      page = @plugin.search_company 'novartis', agent
-      refute_nil page.form_with(:name => 'frmResulthForm')
-      assert_equal 1, @pages.size
-    end
-    def test_import_companies
-      ## we return an empty result here, to contain testing the import_companies method
-      mapping = [
-        [ 'ResultEmpty.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      path = File.join @@datadir, 'Companies.html'
-      result = setup_page 'http://textinfo.ch/Search.aspx', path, agent
-      page = nil
-      @plugin.import_companies result, agent
-      ## we've touched only one page here, because we returned ResultEmpty.html
-      assert_equal 1, @pages.size
-    end
-    def test_import_company
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'Companies.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'ResultAlcaC.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-        [ 'Aclasta.de.html',
-          :submit,
-          'CompanyProdukte.aspx?lang=de',
-        ],
-        [ 'Aclasta.fr.html',
-          :get,
-          'CompanyProdukte.aspx?lang=fr',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-#      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      @plugin.import_company ['novartis'], agent, :both
-      assert_equal 5, @pages.size
-      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
-      #  the rest of the process is tested in test_update_product
-      assert_equal ['Alca-C®'], @plugin.iksless[:fi].uniq
-    end
-    def test_import_company__session_failure
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'Companies.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'ResultAlcaC.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-        [ 'SearchForm.html',
-          :submit,
-          'CompanyProdukte.aspx?lang=de',
-        ],
-        [ 'SearchForm.html',
-          :get,
-          'CompanyProdukte.aspx?lang=fr',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      @plugin.import_company ['novartis'], agent
-      assert_equal 5, @pages.size
-      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
-      #  the rest of the process is tested in test_update_product
-      assert_equal ['Alca-C®'], @plugin.iksless[:fi].uniq
-      assert_equal ['Alca-C®'], @plugin.iksless[:pi].uniq
-      assert_equal 8, @plugin.session_failures
-    end
-    def test_identify_eventtargets
-      agent = setup_mechanize
-      path = File.join @@datadir, 'Result.html'
-      page = setup_page 'http://textinfo.ch/Search.aspx', path, agent
-      targets = @plugin.identify_eventtargets page, /btnFachinformation/
-      assert_equal 77, targets.size
-      assert_equal "dtgFachinformationen$_ctl2$btnFachinformation", targets['Alca-C®']
-      assert_equal "dtgFachinformationen$_ctl78$btnFachinformation",
-                   targets['Zymafluor®']
-      targets = @plugin.identify_eventtargets page, /btnPatientenn?information/
-      assert_equal 79, targets.size
-      assert_equal "dtgPatienteninformationen$_ctl2$btnPatientenninformation",
-                   targets['Alca-C®']
-      assert_equal "dtgPatienteninformationen$_ctl80$btnPatientenninformation",
-                   targets['Zymafluor®']
-    end
-    def test_import_products
-      mapping = [
-        [ 'Aclasta.de.html',
-          :submit,
-          'http://textinfo.ch/MonographieTxt.aspx?lang=de&MonType=fi',
-        ],
-        [ 'Aclasta.fr.html',
-          :get,
-          'http://textinfo.ch/MonographieTxt.aspx?lang=fr&MonType=fi',
-        ]
-      ]
-      agent = setup_mechanize mapping
-      path = File.join @@datadir, 'ResultEmpty.html'
-      result = setup_page 'http://textinfo.ch/Search.aspx', path, agent
-      page = nil
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      @plugin.import_products result, agent
-    end
-    def test_download_info
-      mapping = [
-        [ 'Aclasta.de.html',
-          :submit,
-          'CompanyProdukte.aspx?lang=de',
-        ],
-        [ 'Companies.html',
-          :get,
-          'CompanyProdukte.aspx?lang=fr',
-        ]
-      ]
-      agent = setup_mechanize mapping
-      path = File.join @@datadir, 'Result.html'
-      page = setup_page 'http://textinfo.ch/CompanyProdukte.aspx?lang=de', path, agent
-      form = page.form_with :name => 'frmResultProdukte'
-      eventtarget = 'dtgFachinformationen$_ctl3$btnFachinformation'
-      paths, flags = @plugin.download_info :fachinfo, 'Aclasta',
-                                           agent, form, eventtarget
-      expected = {}
-      path = File.join @@vardir, 'html', 'fachinfo', 'de', 'Aclasta.html'
-      expected.store :de, path
-      assert File.exist?(path)
-      path = File.join @@vardir, 'html', 'fachinfo', 'fr', 'Aclasta.html'
-      expected.store :fr, path
-      assert File.exist?(path)
-      assert_equal expected, paths
-      skip("Niklaus does not know why we don't get consistent results for the flags")
-      assert_equal({:de=>:up_to_date, :fr=>:up_to_date}, flags)
-      paths, flags = @plugin.download_info :fachinfo, 'Aclasta',
-                                           agent, form, eventtarget
-      ## existing identical files are flagged as up-to-date
-      assert_equal expected, paths
-      assert_equal({:fr => :up_to_date, :de => :up_to_date}, flags)
-    end
     def test_extract_iksnrs
       de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
       fr = setup_fachinfo_document 'Numéro d’autorisation', '57364 (Swissmedic).'
       assert_equal %w{57363}, @plugin.extract_iksnrs(:de => de, :fr => fr).sort
-    end
-    def test_update_product__new_infos
-      de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
-      fr = setup_fachinfo_document 'Numéro d’autorisation', '57363 (Swissmedic).'
-      fi_path_de = File.join(@@datadir, 'Aclasta.de.html')
-      fi_path_fr = File.join(@@datadir, 'Aclasta.fr.html')
-      fi_paths = { :de => fi_path_de, :fr => fi_path_fr }
-      pi_path_de = File.join(@@datadir, 'Aclasta.pi.de.html')
-      pi_path_fr = File.join(@@datadir, 'Aclasta.pi.fr.html')
-      pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-      pi_de = PatinfoDocument.new
-      pi_fr = PatinfoDocument.new
-
-      reg = flexmock 'registration'
-      reg.should_receive(:fachinfo)
-      ptr = Persistence::Pointer.new([:registration, '57363'])
-      reg.should_receive(:pointer).and_return ptr
-      seq = flexmock 'sequence'
-      seq.should_receive(:patinfo)
-      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
-      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
-      reg.should_receive(:sequences).and_return({'01' => seq})
-      @app.should_receive(:registration).with('57363').and_return reg
-      fi = flexmock 'fachinfo'
-      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
-      pi = flexmock 'patinfo'
-      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
-      @app.should_receive(:update).and_return do |pointer, data|
-        case pointer.to_s
-        when ':!create,:!fachinfo..'
-          assert_equal({:de => de, :fr => fr}, data)
-          fi
-        when ':!create,:!patinfo..'
-          assert_equal({:de => pi_de, :fr => pi_fr}, data)
-          pi
-        when ':!registration,57363.'
-          assert_equal({:fachinfo => fi.pointer}, data)
-          reg
-        when ':!registration,57363!sequence,01.'
-          assert_equal({:patinfo => pi.pointer}, data)
-          seq
-        else
-          flunk "unhandled call to update(#{pointer})"
-        end
-      end
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      result = @plugin.update_product 'Aclasta', fi_paths, pi_paths
-      assert_equal <<-EOS, @plugin.report
-Searched for 
-Stored 1 Fachinfos
-Ignored 0 Pseudo-Fachinfos
-Ignored 0 up-to-date Fachinfo-Texts
-Stored 0 Patinfos
-Ignored 0 up-to-date Patinfo-Texts
-
-Checked 0 companies
-
-
-Unknown Iks-Numbers: 0
-
-
-Fachinfos without iksnrs: 0
-
-
-Session failures: 0
-
-Download errors: 0
-
-
-Parse Errors: 0
-
-
-
-
-EOS
-    end
-    def test_update_product__existing_infos
-      de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
-      fr = setup_fachinfo_document 'Numéro d’autorisation', '57363 (Swissmedic).'
-      fi_path_de = File.join(@@datadir, 'Aclasta.de.html')
-      fi_path_fr = File.join(@@datadir, 'Aclasta.fr.html')
-      fi_paths = { :de => fi_path_de, :fr => fi_path_fr }
-      pi_path_de = File.join(@@datadir, 'Aclasta.pi.de.html')
-      pi_path_fr = File.join(@@datadir, 'Aclasta.pi.fr.html')
-      pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-      pi_de = PatinfoDocument.new
-      pi_fr = PatinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_de).and_return pi_de
-      @parser.should_receive(:parse_patinfo_html).with(pi_path_fr).and_return pi_fr
-
-      fi = flexmock 'fachinfo'
-      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
-      fi.should_receive(:empty?).and_return(true)
-      pi = flexmock 'patinfo'
-      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
-      ## this is conceptually a bit of a leap, but it tests all the code: even though
-      #  pi is used to update the patinfo, I'm making it claim empty?, so that the
-      #  deletion-code is triggered
-      pi.should_receive(:empty?).and_return(true)
-      reg = flexmock 'registration'
-      reg.should_receive(:fachinfo).and_return fi
-      ptr = Persistence::Pointer.new([:registration, '57363'])
-      reg.should_receive(:pointer).and_return ptr
-      seq = flexmock 'sequence'
-      seq.should_receive(:patinfo).and_return pi
-      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
-      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
-      reg.should_receive(:sequences).and_return({'01' => seq})
-      @app.should_receive(:registration).with('57363').and_return reg
-      @app.should_receive(:update).and_return do |pointer, data|
-        case pointer.to_s
-        when ':!create,:!fachinfo..'
-          assert_equal({:de => de, :fr => fr}, data)
-          fi
-        ## existing patinfos are handled differently than fachinfos!
-        when ':!patinfo,1.'
-          assert_equal({:de => pi_de, :fr => pi_fr}, data)
-          pi
-        when ':!registration,57363.'
-          assert_equal({:fachinfo => fi.pointer}, data)
-          reg
-        when ':!registration,57363!sequence,01.'
-          assert_equal({:patinfo => pi.pointer}, data)
-          seq
-        else
-          flunk "unhandled call to update(#{pointer})"
-        end
-      end
-      @app.should_receive(:delete).and_return do |pointer, data|
-        case pointer.to_s
-        when ':!fachinfo,1.'
-          assert true
-          fi
-        when ':!patinfo,1.'
-          assert true
-          pi
-        else
-          flunk "unhandled call to delete(#{pointer})"
-        end
-      end
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      result = @plugin.update_product 'Aclasta', fi_paths, pi_paths
-    end
-    def test_update_product__orphaned_infos
-      de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
-      fr = setup_fachinfo_document 'Numéro d’autorisation', '57363 (Swissmedic).'
-      fi_path_de = File.join(@@datadir, 'Aclasta.de.html')
-      fi_path_fr = File.join(@@datadir, 'Aclasta.fr.html')
-      fi_paths = { :de => fi_path_de, :fr => fi_path_fr }
-      pi_path_de = File.join(@@datadir, 'Aclasta.pi.de.html')
-      pi_path_fr = File.join(@@datadir, 'Aclasta.pi.fr.html')
-      pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-      pi_de = PatinfoDocument.new
-      pi_fr = PatinfoDocument.new
-
-      @app.should_receive(:registration).with('57363')
-      @app.should_receive(:update).and_return do |pointer, data|
-        case pointer.to_s
-        when ":!create,:!orphaned_fachinfo.."
-          expected = {
-            :key => '57363',
-            :languages => { :de => de, :fr => fr },
-          }
-          assert_equal expected, data
-        when ":!create,:!orphaned_patinfo.."
-          expected = {
-            :key => '57363',
-            :languages => { :de => pi_de, :fr => pi_fr },
-          }
-          assert_equal expected, data
-        else
-          flunk "unhandled call to update(#{pointer})"
-        end
-      end
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      result = @plugin.update_product 'Aclasta', fi_paths, pi_paths
-    end
-    def test_update_product__up_to_date_infos
-      de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
-      fr = setup_fachinfo_document 'Numéro d’autorisation', '57363 (Swissmedic).'
-      fi_path_de = File.join(@@datadir, 'Aclasta.de.html')
-      fi_path_fr = File.join(@@datadir, 'Aclasta.fr.html')
-      fi_paths = { :de => fi_path_de, :fr => fi_path_fr }
-      pi_path_de = File.join(@@datadir, 'Aclasta.pi.de.html')
-      pi_path_fr = File.join(@@datadir, 'Aclasta.pi.fr.html')
-      pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
-
-      reg = flexmock 'registration'
-      reg.should_receive(:fachinfo)
-      ptr = Persistence::Pointer.new([:registration, '57363'])
-      reg.should_receive(:pointer).and_return ptr
-      seq = flexmock 'sequence'
-      seq.should_receive(:patinfo)
-      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
-      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
-      reg.should_receive(:sequences).and_return({'01' => seq})
-      @app.should_receive(:registration).with('57363').and_return reg
-      fi = flexmock 'fachinfo'
-      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
-      pi = flexmock 'patinfo'
-      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
-      flags = {:de => :up_to_date, :fr => :up_to_date}
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      result = @plugin.update_product 'Aclasta', fi_paths, pi_paths, flags, flags
-      assert true # no call to parse_patinfo or @app.update has been made
-    end
-    def test_detect_session_failure__failure
-      agent = setup_mechanize
-      path = File.join @@datadir, 'SearchForm.html'
-      page = setup_page 'CompanyProdukte.aspx?lang=de', path, agent
-      assert_equal true, @plugin.detect_session_failure(page)
-    end
-    def test_detect_session_failure__fine
-      agent = setup_mechanize
-      path = File.join @@datadir, 'Companies.html'
-      page = setup_page 'Search.aspx', path, agent
-      assert_equal false, @plugin.detect_session_failure(page)
-      path = File.join @@datadir, 'ResultEmpty.html'
-      page = setup_page 'Result.aspx?lang=de', path, agent
-      assert_equal false, @plugin.detect_session_failure(page)
-      path = File.join @@datadir, 'Result.html'
-      page = setup_page 'Result.aspx?lang=de', path, agent
-      assert_equal false, @plugin.detect_session_failure(page)
-      path = File.join @@datadir, 'Aclasta.de.html'
-      page = setup_page 'CompanyProdukte.aspx?lang=de', path, agent
-      assert_equal false, @plugin.detect_session_failure(page)
-    end
-    def test_rebuild_resultlist
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'Companies.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'ResultAlcaC.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      @plugin.current_search = [:search_company, 'Company Name']
-      @plugin.current_eventtarget = "dtgFachinformationen$_ctl2$btnFachinformation"
-      form = @plugin.rebuild_resultlist agent
-      assert_instance_of Mechanize::Form, form
-      assert_equal 'CompanyProdukte.aspx?lang=de', form.action
-    end
-    def test_search_fulltext
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-          'frmSearchForm',
-          'ResultFulltext.html',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      page = @plugin.search_fulltext '53537', agent
-      refute_nil page.form_with(:name => 'frmResulthForm')
-      assert_equal 1, @pages.size
-    end
-    def test_import_fulltext
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'ResultFulltext.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'Aclasta.de.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-        [ 'Aclasta.fr.html',
-          :get,
-          'Result.aspx?lang=fr',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      @plugin.import_fulltext ['53537'], agent
-      assert_equal 4, @pages.size
-      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
-      #  the rest of the process is tested in test_update_product
-      assert_equal ['Topamax®'], @plugin.iksless[:fi].uniq
     end
     def test_fachinfo_news__unconfigured
       agent = setup_mechanize
@@ -612,20 +129,6 @@ EOS
       assert_raises NoMethodError do
         @plugin.fachinfo_news agent
       end
-    end
-    def test_fachinfo_news
-      mapping = [
-        [ 'News.html',
-          :get,
-          ODDB.config.text_info_newssource,
-        ],
-      ]
-      agent = setup_mechanize mapping
-      news = nil
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      news = @plugin.fachinfo_news agent
-      assert_equal 7, news.size
-      assert_equal "Abilify\302\256", news.first
     end
     def test_true_news
       ## there are no news
@@ -676,191 +179,142 @@ EOS
       old_news = ["Amiodarone Winthrop\302\256/- Mite"]
       assert_equal news, @plugin.true_news(news, old_news)
     end
-    def test_search_product
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-          'frmSearchForm',
-          'ResultProduct.html',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      page = @plugin.search_product 'Trittico® retard', agent
-      refute_nil page.form_with(:name => 'frmResulthForm')
-      assert_equal 1, @pages.size
-    end
-    def test_import_name
-      mapping = [
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'ResultProduct.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'Aclasta.de.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-        [ 'Aclasta.fr.html',
-          :get,
-          'Result.aspx?lang=fr',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      page = nil
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      @plugin.import_fulltext ['Trittico® retard'], agent
-      assert_equal 4, @pages.size
-      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
-      #  the rest of the process is tested in test_update_product
-      assert_equal ['Trittico® retard'], @plugin.iksless[:pi].uniq
-    end
-    def test_import_news
-      logfile = File.join @@vardir, 'fachinfo.txt'
-      File.open logfile, 'w' do |fh|
-        fh.puts "8a7f708c-c738-4425-a9a5-5ad294f20be4 Aclasta\302\256"
-      end
-      mapping = [
-        [ 'News.html',
-          :get,
-          ODDB.config.text_info_newssource,
-        ],
-        [ 'SearchForm.html',
-          :get,
-          'http://textinfo.ch/Search.aspx',
-        ],
-        [ 'ResultProduct.html',
-          :submit,
-          'Search.aspx',
-        ],
-        [ 'Aclasta.de.html',
-          :submit,
-          'Result.aspx?lang=de',
-        ],
-        [ 'Aclasta.fr.html',
-          :get,
-          'Result.aspx?lang=fr',
-        ],
-      ]
-      agent = setup_mechanize mapping
-      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
-      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
-      @app.should_receive(:sorted_fachinfos).and_return []
-      success = @plugin.import_news agent
-      expected = "Abilify\302\256\nAbilify\302\256 Injektionsl\303\266sung\nAbseamed\302\256\nAceril\302\256- mite\nAcetaPhos\302\256 750 mg\nAcimethin\302\256\nAclasta\302\256"
-      skip("The whole test-suite should probably be removed, including test as we parse no swissmedicinfo_xml!")
-      assert_equal 5, @pages.size
-      assert_equal expected, File.read(logfile)
-      assert_equal true, success
-    end
   end
-
   class TestExtractMatchedName <MiniTest::Test
     include FlexMock::TestCase
+    Nr_FI_in_AIPS_test = 4
+    Nr_PI_in_AIPS_test = 1
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
     end
 
     def setup
-      file = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
+      @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       @app = flexmock 'application'
-      @app.should_receive(:get_refdata_info).and_return( {:get_refdata_info => nil})
-      @app.should_receive(:registration).and_return ['registration']
+      reg = flexmock 'registration'
+      reg.should_receive(:company).and_return('company')
+      lang_de = flexmock 'lang_de'
+      lang_de.should_receive(:de).and_return('fi_de')
+      lang_de.should_receive(:text).and_return('fi_text')
+      pointer = flexmock 'pointer'
+      descriptions = flexmock 'descriptions'
+      descriptions.should_receive(:[]).and_return('desc')
+      descriptions.should_receive(:[]=).and_return('desc')
+      descriptions.should_receive(:odba_isolated_store)
+
+      fachinfo = flexmock 'fachinfo'
+      fachinfo.should_receive(:de).and_return(lang_de)
+      fachinfo.should_receive(:fr).and_return(lang_de)
+      fachinfo.should_receive(:it).and_return(lang_de)
+      fachinfo.should_receive(:pointer).and_return(pointer)
+      fachinfo.should_receive(:descriptions).and_return(descriptions)
+
+
+      #@app.should_receive(:update).with({:de=>"fachinfo_html"}).and_return(fachinfo)
+      atc_class = flexmock 'atc_class'
+      atc_class.should_receive(:pointer).and_return(pointer)
+      @app.should_receive(:atc_class).and_return(atc_class)
+      @app.should_receive(:update).and_return(fachinfo)
+      reg.should_receive(:fachinfo).and_return(fachinfo)
+      reg.should_receive(:iksnr).and_return('iksnr')
+      reg.should_receive(:name_base).and_return('name_base')
+      reg.should_receive(:packages).and_return([])
+      reg.should_receive(:sequences).and_return({})
+      reg.should_receive(:odba_store)
+      @app.should_receive(:registration).and_return(reg)
+      @parser = flexmock('parser (simulates ext/fiparse)',
+                         :parse_fachinfo_html => 'fachinfo_html',
+                         :parse_patinfo_html => 'patinfo_html',
+                         )
       @plugin = TextInfoPlugin.new @app
-      @plugin.swissmedicinfo_xml(file)
+      FileUtils.rm_rf(@plugin.details_dir, :verbose => true)
+      @plugin.parser = @parser
+      @plugin.download_swissmedicinfo_xml(@aips_download)
+      @options = {:target => :both,
+                  :download => false,
+                  :xml_file => @aips_download,
+                  }
     end
-    
+if true
+    def test_check_swissmedicno_fi_pi # see also jobs/check_swissmedicno_fi_pi
+      @options = {:download => false, :xml_file => @aips_download} # specify an XML file to speed things up
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
+    end
+
+    def test_update_swissmedicno_fi_pi # see also jobs/update_swissmedicno_fi_pi
+      @options = {:download => false,  :reparse => true, :xml_file => @aips_download} # specify an XML file to speed things up
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
+    end
+
+    def test_53662_pi_de
+      @options[:iksnrs] = ['53662']
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
+    end
     def test_Erbiumcitrat_de
-      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+      @options[:iksnrs] = ['51704']
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.iksnrs_meta_info[["51704", 'fi', 'de']].first.title)
     end
     def test_Erbiumcitrat_fr
-      assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.extract_matched_name('51704', :fi, 'de'))
+      @options[:iksnrs] = ['51704']
+      @plugin.import_swissmedicinfo(@options)
+      assert_nil(@plugin.iksnrs_meta_info[["51704", 'fi', 'fr']])
     end
-    def test_53662_pi_de
-      assert_equal('3TC®', @plugin.extract_matched_name('53662', :fi, 'de'))
-    end
+
     def test_53663_pi_de
-      assert_equal('3TC®', @plugin.extract_matched_name('53663', :fi, 'de'))
+      @options[:iksnrs] = ['53662']
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
+      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
     end
 
+    def test_import_daily_fi
+      @options[:target] = :fi
+      @options[:newest] = true
+      @plugin.import_swissmedicinfo(@options)
+      assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size > 0, 'must find at least one find fachinfo')
+
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'must find patinfo')
+
+      assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
+      assert_equal(0, @plugin.updated_pis.size, 'nr updated pis must match')
+
+      assert_equal(0, @plugin.corrected_fis.size, 'corrected_fis must match')
+      assert_equal(0, @plugin.corrected_pis.size, 'corrected_pis must match')
+
+      assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+
+      @plugin = TextInfoPlugin.new @app
+      @plugin.parser = @parser
+      @plugin.download_swissmedicinfo_xml(@aips_download)
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
+    end
   end
+    def test_import_daily_pi
+      @options[:target] = :pi
+      @options[:newest] = true
+      @plugin.import_swissmedicinfo(@options)
+      assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
 
-  class TestTextInfoPluginPackages <MiniTest::Test
-    include FlexMock::TestCase
-    def setup
-      super
-      ptr = Persistence::Pointer.new([:registration, '57363'])
-      @company = flexmock 'company'
-      @company.should_receive(:pointer).and_return ptr
+      # puts @plugin.report;  require 'pry'; binding.pry
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.corrected_pis.size, 'nr corrected_pis must match')
 
-      @registration = flexmock 'registration'
-      @registration.should_receive(:pointer).and_return ptr
-      @registration.should_receive(:export_flag).and_return false
-      @registration.should_receive(:inactive?).and_return false
-      @registration.should_receive(:expiration_date).and_return Date.today+12
-
-      @atc_class = flexmock 'atc_class'
-      @atc_class.should_receive(:code).and_return 'atc_code'
-
-      @app = flexmock 'application'
-      @app.should_receive(:company_by_name).and_return(@company)
-
-      @app.should_receive(:unique_atc_class).and_return(@atc_class)
-      @app.should_receive(:update).with(Persistence::Pointer, Hash, Symbol).and_return('update_symbol').by_default
-      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin_create_company).and_return(@company)
-      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin_create_registration).and_return(@registration)
-      @app.should_receive(:update).with(Persistence::Pointer, Hash, :text_plugin).and_return('text_plugin')
-    end
-    def teardown
-      super
+      assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
+      assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
+      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
     end
 
-    def test_create
-      iksnr = '65432'
-      info = flexmock 'info'
-      info.should_receive(:iksnr).and_return(iksnr)
-      info.should_receive(:authHolder).and_return('authHolder')
-      info.should_receive(:title).and_return('drug_name')
-      info.should_receive(:atcCode).and_return('atcCode')
-      @app = ODDB::App.new
-      TextInfoPlugin::create_registration(@app, info)
-      assert_equal(iksnr, @app.registration(iksnr).iksnr)
-      assert_equal('authHolder', @app.registration(iksnr).company_name)
-      assert_equal('00', @app.registration(iksnr).sequences.values.first.seqnr)
-      assert_equal(Array, @app.registration(iksnr).packages.class)
-      assert_equal(1, @app.registration(iksnr).packages.size)
-      assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
-      assert_equal('drug_name', @app.registration(iksnr).name_base)
-    end
-
-    def test_update
-      iksnr = '65432'
-      skip 'Niklaus does not know howto mock a real update'
-      info = flexmock 'info'
-      info.should_receive(:iksnr).and_return(iksnr)
-      info.should_receive(:authHolder).and_return('authHolder')
-      info.should_receive(:title).and_return('drug_name')
-      info.should_receive(:atcCode).and_return('atcCode')
-      @app = ODDB::App.new
-      puts __LINE__
-      plugin = TextInfoPlugin.new({:target => :fi})
-      puts __LINE__
-      plugin.send(:import_swissmedicinfo)
-      assert_equal(iksnr, @app.registration(iksnr).iksnr)
-      assert_equal('authHolder', @app.registration(iksnr).company_name)
-      assert_equal('00', @app.registration(iksnr).sequences.values.first.seqnr)
-      assert_equal(Array, @app.registration(iksnr).packages.class)
-      assert_equal(1, @app.registration(iksnr).packages.size)
-      assert_equal('000', @app.registration(iksnr).packages.first.ikscd)
-      assert_equal('drug_name', @app.registration(iksnr).name_base)
-      puts __LINE__
-    end
   end
 end

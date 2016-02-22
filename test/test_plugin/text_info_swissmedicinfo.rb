@@ -27,8 +27,8 @@ module ODDB
   end
 
   class TextInfoPlugin < Plugin
-    attr_accessor :parser, :iksless, :session_failures, :current_search,
-                  :current_eventtarget
+    attr_accessor :parser
+    attr_reader  :updated, :iksnrs_meta_info, :details_dir
     def read_packages
       @packages = { '32917' => 'Zyloric®'} 
     end    
@@ -57,6 +57,7 @@ Line 3\x06;\bT"
     end
   end
 
+if RunAll
   class TestTextInfoPluginAipsMetaData <MiniTest::Test
     include FlexMock::TestCase
     unless defined?(@@datadir)
@@ -83,6 +84,7 @@ Line 3\x06;\bT"
       })
       @app.registrations = {}
       @plugin = TextInfoPlugin.new(@app, opts)
+      FileUtils.rm_rf(@plugin.details_dir)
       agent = @plugin.init_agent
       @plugin.parser = @parser
       @plugin.import_swissmedicinfo(opts)
@@ -127,7 +129,6 @@ Line 3\x06;\bT"
       assert_nil(/:iksnr=>/.match(res))
     end
 
-  if RunAll
     def test_import_new_registration_xeljanz_from_swissmedicinfo_xml
       reg = flexmock('registration2', 
                      :new => 'new',
@@ -144,16 +145,17 @@ Line 3\x06;\bT"
 
       atc    = ODDB::AtcClass.new(Test_Atc)
       assert(run_import(Test_Iksnr), 'must be able to run import_swissmedicinfo and add a new registration')
-      meta = TextInfoPlugin::get_iksnrs_meta_info
+      meta = @plugin.iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_Iksnr, [Test_Iksnr], Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum", 'fi', 'de')
       entry.xml_file = File.join(@@vardir, 'details', "#{Test_Iksnr}_fi_de.xml")
+      entry.same_content_as_xml_file = false
       expected = [ entry ]
       assert_equal(expected, meta[[Test_Iksnr, 'fi', 'de']], 'Meta information about Test_Iksnr must be correct')
       assert(@app.registrations.keys.index(Test_Iksnr), 'must have created registration ' + Test_Iksnr.to_s )
     end
-  end
+
     # Here we used to much memory
     def test_import_57435_baraclude_from_swissmedicinfo_xml
       reg = flexmock('registration3',
@@ -168,18 +170,19 @@ Line 3\x06;\bT"
 
       atc    = ODDB::AtcClass.new(Test_57435_Atc)
       assert(run_import(Test_57435_Iksnr), 'must be able to run import_swissmedicinfo and add a new registration')
-      meta = TextInfoPlugin::get_iksnrs_meta_info
+      meta = @plugin.iksnrs_meta_info
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_57435_Iksnr, ["57435", "57436"], Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance, 'fi', 'de')
       entry.xml_file = File.join(@@vardir, 'details', "#{Test_57435_Iksnr}_fi_de.xml")
+      entry.same_content_as_xml_file = false
       expected =  [ entry]
       assert_equal(expected, meta[ [Test_57435_Iksnr, 'fi', 'de']], 'Meta information about Test_57435_Iksnr must be correct')
       assert(@app.registrations.keys.index(Test_57435_Iksnr), 'must have created registration ' + Test_57435_Iksnr )
     end
 
   end
-if RunAll
+
   class TestTextInfoPlugin <MiniTest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
@@ -241,10 +244,11 @@ if RunAll
       fi.should_receive(:pointer).never.and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
       flags = {:de => :up_to_date, :fr => :up_to_date}
-      @parser.should_receive(:parse_fachinfo_html).at_least.once
+      @parser.should_receive(:parse_textinfo).at_least.once
+      @parser.should_receive(:parse_fachinfo_html).never
       @parser.should_receive(:parse_patinfo_html).never
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
+      assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
     end
 
     def test_import_swissmedicinfo_no_iksnr
@@ -288,7 +292,7 @@ if RunAll
         index
       end
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
-      assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
+      assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
     end
 
   end
@@ -373,6 +377,7 @@ if RunAll
       assert_equal(["38207", '65724'], TextInfoPlugin::get_iksnrs_from_string(test_string))
     end
   end
+end
   class TestTextInfoTramalPlugin <MiniTest::Test
     Auth_15219 = "MEDA Pharma GmbH"
     Aut_43788 = 'Grünenthal Pharma AG'
@@ -450,11 +455,17 @@ if RunAll
         serv.should_receive(:session).and_yield(@swissindex)
       end
     end
-
+if RunAll
     def test_import_patinfo_tramal_43788
       @opts[:iksnrs] = ['43788', '15219']
+      @opts[:target] = :pi
       @plugin = TextInfoPlugin.new(@app, @opts)
       agent = @plugin.init_agent
+      # @app.create_registration('43788')
+      patinfo = setup_texinfo_mock(:patinfo)
+      @parser.should_receive(:parse_fachinfo_html).never
+      @parser.should_receive(:parse_patinfo_html).at_least.once.and_return(patinfo)
+      @parser.should_receive(:parse_textinfo).at_least.once
       @plugin.parser = @parser
 
       @app.create_registration('15219')
@@ -465,10 +476,6 @@ if RunAll
       info2.should_receive(:authHolder).and_return('authHolder')
       TextInfoPlugin::create_registration(@app, info2, '01', '001')
 
-      # @app.create_registration('43788')
-      patinfo = setup_texinfo_mock(:patinfo)
-      @parser.should_receive(:parse_fachinfo_html).never
-      @parser.should_receive(:parse_patinfo_html).at_least.once.and_return(patinfo)
       info = { :iksnr => '43788', :title => 'Tramal, Tropfen' }
       info = flexmock('info')
       info.should_receive(:iksnr).and_return('43788')
@@ -481,11 +488,11 @@ if RunAll
 
       setup_refdata_mock
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
-        assert(@plugin.import_swissmedicinfo(:pi), 'must be able to run import_swissmedicinfo')
+        assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
       [ @plugin.problematic_fi_pi, @plugin.missing_override_file].each do |filename|
         assert(File.exist?(filename))
-        assert(File.size(filename) > 100, "#{filename} must be longer than 100 chars, but is only #{File.size(filename)}")
+        # assert(File.size(filename) > 100, "#{filename} must be longer than 100 chars, but is only #{File.size(filename)}")
       end
       @app.registration('15219').packages.size
       @app.registration('15219').packages.values.find_all { |x| x.patinfo}
@@ -507,11 +514,40 @@ if RunAll
 
       setup_refdata_mock
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
-        assert(@plugin.import_swissmedicinfo(:fi), 'must be able to run import_swissmedicinfo')
+        @opts[:target] = :fi
+        assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
       assert(File.exist?(@plugin.problematic_fi_pi))
       assert(File.size(@plugin.problematic_fi_pi) > 100)
     end
   end
-end
+    def test_import_newest_only
+      fachinfo = setup_texinfo_mock(:fachinfo)
+      @parser.should_receive(:parse_patinfo_html).never
+      @parser.should_receive(:parse_fachinfo_html).at_least.once.and_return { fachinfo }
+      info = { :iksnr => '43788', :title => 'Tramal, Tropfen' }
+      info = flexmock('info 43788')
+      info.should_receive(:iksnr).and_return('43788')
+      info.should_receive(:title).and_return('Tramal, Tropfen')
+      info.should_receive(:authHolder).and_return('authHolder')
+      TextInfoPlugin::create_registration(@app, info, '01', '019') # Ohne Dosierpumpe
+      TextInfoPlugin::create_registration(@app, info, '01', '086') # Mit Dosierpumpe
+      @app.registration('43788').company = Aut_43788
+
+      setup_refdata_mock
+      replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
+        @opts[:target] = :fi
+        @opts[:newest] = true
+        @opts[:parse] = false
+        assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
+      end
+      assert(File.exist?(@plugin.problematic_fi_pi))
+      assert(File.size(@plugin.problematic_fi_pi) > 100)
+      assert(@plugin.updated_fis.size > 4)
+      assert_equal(0, @plugin.updated_pis.size)
+      skip('updating FIs does not update updated')
+      assert(@plugin.updated.size > 4)
+
+    end
   end
+end
