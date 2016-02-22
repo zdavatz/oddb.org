@@ -30,7 +30,7 @@ module ODDB
     DEBUG_FI_PARSE = !!ENV['DEBUG_FI_PARSE']
     def initialize app, opts={}
       super(app)
-        GC.start
+      GC.start
       @options = opts
       @parser = DRb::DRbObject.new nil, FIPARSE_URI
       @dirs = {
@@ -1214,7 +1214,8 @@ module ODDB
     # return
     def extract_html(meta_info)
       return nil, nil unless meta_info.xml_file && File.exist?(meta_info.xml_file)
-      content = IO.read(meta_info.xml_file)
+      content = IO.read(meta_info.xml_file, :encoding => 'UTF-8')
+      # content = File.open(meta_info.xml_file, "r:UTF-8", &:read)
       html = /<content><!\[CDATA\[(.*)\]\]><\/content/mi.match(content)[1]
       html_name = meta_info.xml_file.sub('.xml', '.html')
       path = File.join(ODDB.config.data_dir, 'html', meta_info.type, meta_info.lang)
@@ -1230,7 +1231,6 @@ module ODDB
     end
 
     def parse_fachinfo(meta_info)
-      puts "parse_fachinfo #{meta_info}"
       res = extract_html(meta_info)
       html_name = res[0]
       styles = res[1]
@@ -1311,7 +1311,7 @@ module ODDB
     end
 
     def report_problematic_names
-      puts "#{Time.now}: Creating #{@problematic_fi_pi}"
+      LogFile.debug "#{Time.now}: Creating #{@problematic_fi_pi}"
       File.open(@problematic_fi_pi, 'w+') do |file|
         @@iksnrs_from_aips.sort.uniq.each { |iksnr| file.puts iksnr }
         @@iksnrs_from_aips.sort.uniq.each do|iksnr|
@@ -1335,7 +1335,7 @@ module ODDB
     end
 
     def parse_aips_download(target)
-      puts "parse_aips_download with target #{target}"
+      LogFile.debug "parse_aips_download with target #{target} @options #{@options}"
       @@iksnrs_from_aips = []
       @@iksnr_lang_type = {}
       @aips_xml = @options[:xml_file] if @options[:xml_file]
@@ -1343,8 +1343,9 @@ module ODDB
       FileUtils.rm_rf(dirname, verbose: true)
       FileUtils.makedirs(dirname, verbose: true)
       return unless File.exist?(@aips_xml)
-      content = File.open(@aips_xml, "r:UTF-8", &:read)
-      puts "#{Time.now}: read #{content.size} bytes"
+      content = IO.read(@aips_xml, :encoding => 'UTF-8')
+      # content = File.open(@aips_xml, "r:UTF-8", &:read)
+      LogFile.debug "#{Time.now}: read #{content.size} bytes"
       @to_parse = []
       content.split('</medicalInformation>').each do |chunk|
         meta_info = handle_chunk(chunk, dirname)
@@ -1393,32 +1394,31 @@ module ODDB
       report_problematic_names
     end
   public
-    def import_swissmedicinfo(target=@options[:target])
+    def import_swissmedicinfo(options=@options)
+      LogFile.debug "import_swissmedicinfo options #{options}"
       $stdout.sync = true
       @@specify_barcode_to_text_info = {}
       @@specify_barcode_to_text_info = YAML.load(File.read(Override_file)) if File.exist?(Override_file)
 
-      @options[:target] = target
-      @options[:target] ||= :both
+      options[:target] ||= :both
       threads = []
-      if @options[:download] != false
+      if options[:download] != false
         threads << Thread.new do
           download_swissmedicinfo_xml
         end
       end
       threads.map(&:join)
-      parse_aips_download(target)
+      parse_aips_download(options[:target])
       GC.start
       @to_parse.sort{|x,y| x.iksnr.to_i <=> y.iksnr.to_i}.each do |meta_info|
-        puts "Parsing #{meta_info}"
         GC.start
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
-        parse_fachinfo(meta_info) if meta_info[:type] == 'fi' ||  meta_info[:type] == 'both'
-        parse_patinfo(meta_info) if meta_info[:type] == 'pi' ||  meta_info[:type] == 'both'
+        parse_fachinfo(meta_info) if meta_info[:type] == 'fi'
+        parse_patinfo(meta_info) if meta_info[:type] == 'pi'
         GC.enable unless already_disabled
       end
       File.open(@missing_override_file, 'w+') {|f| f.puts  @@missing_override.join("\n")}
-      if @options[:download] != false
+      if options[:download] != false
         puts_sync "job is done. now postprocess works ..."
         postprocess
       end
