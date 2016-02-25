@@ -196,9 +196,8 @@ module ODDB
       update_swissmedic_feeds
 
       # textinfo
-      update_textinfo_swissmedicinfo({:target => :fi})
-      update_textinfo_swissmedicinfo({:target => :pi})
-      #update_textinfo_news2
+      update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
+      update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
 
       if(update_swissmedic)
         update_swissmedic_followers
@@ -329,17 +328,6 @@ module ODDB
       update_notify_simple DivisibilityPlugin,
                             "Teilbarkeit (CSV)",
                             :update_from_csv, [path]
-    end
-    def update_textinfo_news
-      update_notify_simple TextInfoPlugin,
-                            "Fach- und Patienteninfo News",
-                            :import_news
-    end
-    def update_textinfo_news2(opts=nil)
-      @options = opts
-      update_notify_simple TextInfoPlugin,
-                            "Fach- und Patienteninfo News",
-                            :import_news2
     end
     def update_textinfo_swissmedicinfo(opts=nil)
       @options = opts
