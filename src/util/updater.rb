@@ -209,7 +209,6 @@ module ODDB
         update_bsv_followers
       end
       run_on_monthday(1) {
-        update_interactions
         update_analysis
       }
       run_on_monthday(20) {
@@ -377,9 +376,7 @@ module ODDB
     def update_hospitals
       update_simple(HospitalPlugin, 'Hospitals')
     end
-    def update_interactions
-      update_simple(Interaction::InteractionPlugin, 'Interaktionen')
-    end
+
     def update_lppv
       update_immediate(LppvPlugin, 'Lppv prices')
     end
