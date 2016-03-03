@@ -190,19 +190,21 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
     end
 
     def setup
+      pointer = flexmock 'pointer'
       @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       @app = flexmock 'application'
       @reg = flexmock 'registration'
+      @reg.should_receive(:pointer).and_return(pointer).by_default
       @reg.should_receive(:odba_store).and_return(nil).by_default
       @reg.should_receive(:company).and_return('company')
       lang_de = flexmock 'lang_de'
       lang_de.should_receive(:de).and_return('fi_de')
       lang_de.should_receive(:text).and_return('fi_text')
-      pointer = flexmock 'pointer'
       @descriptions = flexmock 'descriptions'
       @descriptions.should_receive(:[]).and_return('desc')
       @descriptions.should_receive(:[]=).and_return('desc').by_default
       @descriptions.should_receive(:odba_isolated_store)
+      @descriptions = ODDB::SimpleLanguage::Descriptions.new
 
       @fachinfo = flexmock 'fachinfo'
       @fachinfo.should_receive(:de).and_return(lang_de)
@@ -287,6 +289,7 @@ if true
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
     end
+  end
 
     def test_import_daily_fi
       @options[:target] = :fi
@@ -299,15 +302,15 @@ if true
 
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'must find patinfo')
 
-      assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.updated_fis.size, 'nr updated fis must match')
       assert_equal(0, @plugin.updated_pis.size, 'nr updated pis must match')
 
       assert_equal(0, @plugin.corrected_fis.size, 'corrected_fis must match')
       assert_equal(0, @plugin.corrected_pis.size, 'corrected_pis must match')
 
       assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
-      nr_fis = 9 # we add all missing
-      assert_equal(nr_fis, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+      # nr_fis = 6 # we add all missing
+      assert_equal(3, @plugin.up_to_date_fis, 'up_to_date_fis must match')
 
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
@@ -316,7 +319,6 @@ if true
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
     end
-  end
     def test_import_daily_pi
       @options[:target] = :pi
       @options[:newest] = true
@@ -330,11 +332,9 @@ if true
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
 
-      # puts @plugin.report;  require 'pry'; binding.pry
-      nr_pis = 2
-      assert_equal(nr_pis , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(Nr_PI_in_AIPS_test , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
-      assert_equal(nr_pis , @plugin.corrected_pis.size, 'nr corrected_pis must match')
+      assert_equal(Nr_PI_in_AIPS_test , @plugin.corrected_pis.size, 'nr corrected_pis must match')
 
       assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
