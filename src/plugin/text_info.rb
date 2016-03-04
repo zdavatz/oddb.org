@@ -260,10 +260,10 @@ module ODDB
     end
 
    def store_patinfo_for_one_packages(package, lang, patinfo_lang)
-      LogFile.debug msg; puts msg
       package.patinfo = @app.create_patinfo unless package.patinfo
       package.patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
       msg = "store_patinfo_for_one_packages #{package.iksnr} #{lang} #{package.patinfo.oid} #{patinfo_lang.text.split("\n")[0..1]}"
+      LogFile.debug msg; puts msg
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
       package.patinfo.odba_store
       package.odba_store
