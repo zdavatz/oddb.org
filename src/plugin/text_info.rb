@@ -260,10 +260,10 @@ module ODDB
     end
 
    def store_patinfo_for_one_packages(package, lang, patinfo_lang)
-      LogFile.debug msg; puts msg
       package.patinfo = @app.create_patinfo unless package.patinfo
       package.patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
       msg = "store_patinfo_for_one_packages #{package.iksnr} #{lang} #{package.patinfo.oid} #{patinfo_lang.text.split("\n")[0..1]}"
+      LogFile.debug msg; puts msg
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
       package.patinfo.odba_store
       package.odba_store
@@ -1177,19 +1177,19 @@ module ODDB
       return unless Languages.index(meta_info.lang.to_sym)
       return if @options[:target] != :both && @options[:target] != type
       nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
-      res = extract_html(meta_info)
-      html_name = res[0]
-      is_same_html = res[2]
-      unless html_name
-        LogFile.debug "parse_textinfo #{type} #{__LINE__}: no html_name for #{meta_info}"
-        return
-      end
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
           LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type}  because reparse is demanded: #{@options[:reparse]} #{meta_info.authNrs}"
         else
           return
         end
+      end
+      res = extract_html(meta_info)
+      html_name = res[0]
+      is_same_html = res[2]
+      unless html_name
+        LogFile.debug "parse_textinfo #{type} #{__LINE__}: no html_name for #{meta_info}"
+        return
       end
       textinfo_fi = nil
       text_info = nil
