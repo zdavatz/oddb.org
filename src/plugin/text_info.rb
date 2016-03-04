@@ -262,7 +262,8 @@ module ODDB
    def store_patinfo_for_one_packages(package, lang, patinfo_lang)
       package.patinfo = @app.create_patinfo unless package.patinfo
       package.patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
-      msg = "store_patinfo_for_one_packages #{package.iksnr} #{lang} #{package.patinfo.oid} #{patinfo_lang.text.split("\n")[0..1]}"
+      # package.patinfo.pointer ||=  Persistence::Pointer.new(:patinfo, package.patinfo.oid)
+      msg = "store_patinfo_for_one_packages #{package.iksnr} #{lang} #{package.patinfo.oid} #{patinfo_lang.to_s.split("\n")[0..1]}"
       LogFile.debug msg; puts msg
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
       package.patinfo.odba_store
@@ -283,12 +284,14 @@ module ODDB
       if existing
         languages = existing.descriptions
         LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} existing oid #{existing.oid} #{languages[lang].to_s.split("\n")[0..1]}"
+        LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} new #{patinfo_lang.to_s.split("\n")[0..1]}"
         languages[lang] = patinfo_lang
         ptr = existing.pointer
         patinfo = @app.update ptr, languages
       else
         patinfo = @app.create_patinfo
         patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
+        # patinfo.pointer ||=  Persistence::Pointer.new(:patinfo, patinfo.oid)
         patinfo.descriptions # create descriptions by default
         patinfo.descriptions[lang] = patinfo_lang
         reg.sequences.values.first.patinfo = patinfo
@@ -1205,6 +1208,8 @@ module ODDB
         LogFile.debug "parse_textinfo #{__LINE__}: must create textinfo for #{meta_info.type} #{meta_info.lang} #{meta_info.iksnr} of #{meta_info.authNrs}"
       elsif !is_same_html
         LogFile.debug "parse_textinfo #{__LINE__} #{html_name} does is not the same: #{meta_info.authNrs}"
+      elsif @options[:reparse]
+        LogFile.debug "parse_textinfo #{__LINE__} reparse demanded via @options #{@options}"
       elsif found_matching_iksnr(meta_info.authNrs)
         if meta_info.same_content_as_xml_file
           type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
