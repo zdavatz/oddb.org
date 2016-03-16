@@ -210,8 +210,8 @@ public
         else
           LogFile.debug " No latest_packungen #{@latest_packungen} exists"
         end
-        LogFile.debug " @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
-        LogFile.debug " changes: #{@diff.changes.inspect}"
+        LogFile.debug " @update_comps #{@update_comps.to_s[0..300]}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
+        LogFile.debug " changes: #{@diff.changes.inspect.to_s[0..300]}"
         LogFile.debug " first news: #{@diff.news.first.inspect[0..250]}"
         update_registrations(@diff.news + @diff.updates, @diff.replacements, opts)
         set_all_export_flag_false
@@ -243,7 +243,7 @@ public
         LogFile.debug " update return false as file2open is #{file2open.inspect}"
         false
       end
-      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
+      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps.to_s[0..300]} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
       @update_comps ? true : @diff
     end
     # check diff from overwritten stored-objects by admin
@@ -966,7 +966,7 @@ public
         LogFile.debug("problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer")
         return
       end
-      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements}"
+      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements.to_s[0..300]}"
       pidx = cell(row, row.size).to_i
       if(ikscd.to_i > 0)
         args = {
@@ -1140,7 +1140,7 @@ public
         to_consider =  mustcheck(iksnr, opts)
         next unless row
         next unless mustcheck(iksnr, opts)
-        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts} replacements #{replacements}")
+        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts} replacements #{replacements.to_s[0..300]}")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
