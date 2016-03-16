@@ -49,6 +49,7 @@ public
     end
 
     def init_stats
+      @recreate_missing = []
       @known_export_registrations = 0
       @known_export_sequences = 0
       @checked_compositions = []
@@ -73,103 +74,98 @@ public
       $stdout.puts Time.now.to_s + ': ' + msg if false
     end
 
-    def debug_msg(msg)
-      if defined?(MiniTest) then $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush; return end
-      if not defined?(@checkLog) or not @checkLog
-        name = LogFile.filename('oddb/debug/', Time.now)
-        FileUtils.makedirs(File.dirname(name))
-        @checkLog = File.open(name, 'a+')
-        $stdout.puts "Opened #{name}"
-      end
-      @checkLog.puts("#{Time.now}: #{msg}")
-      @checkLog.flush
-    end
-
     def mustcheck(iksnr, opts = {})
       res = true
       idx = -999
       if opts[:update_compositions]
-        # debug_msg "#{__FILE__}:#{__LINE__} iksnr #{iksnr} mustcheck #{res} opts #{opts}"
+        # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts}"
         return res
       end
       if opts[:iksnrs] == nil or idx = opts[:iksnrs].index(iksnr)
-        # debug_msg "#{__FILE__}:#{__LINE__} iksnr #{iksnr} mustcheck #{res} opts #{opts} idx #{idx}"
+        # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts} idx #{idx}"
         return res
       end
-      # debug_msg "#{__FILE__}:#{__LINE__} iksnr #{iksnr} mustcheck false opts #{opts} idx #{idx}"
+      # LogFile.debug " iksnr #{iksnr} mustcheck false opts #{opts} idx #{idx}"
       return false
     end
 
     def store_found_packages(latest_xslx)
       workbook = Spreadsheet.open(latest_xslx)
-      row_nr = 4
-      workbook.worksheets[0].each() do
-        |row|
-        row_nr += 1
+      workbook.worksheets[0].each_with_index do
+        |row, index|
         break unless row
         iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        next if iksnr.to_i == 0
+        next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
         seqnr   = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         packnr  = "%03i" % cell(row, @target_keys.keys.index(:ikscd)).to_i
-        debug_msg "store_found_packages: #{[iksnr, seqnr, packnr]}"
-        @known_packages << [iksnr, seqnr, packnr]
+        key = [iksnr, seqnr, packnr]
+        reg = @app.registration(iksnr)
+        seq = reg.sequence(seqnr) if reg
+        unless reg && seq && seq.package(packnr)
+          LogFile.debug "store_found_packages: recreate_missing #{key}"
+          @recreate_missing << key
+          update_registrations([row], {}, nil)
+        end
+        @known_packages << key
       end
     end
-    def delete_not_found_packages
-      @known_packages = []
+
+    def verify_packages(file2open)
       @deletes_packages = []
       @missing_fis = []
-      if @latest_packungen and File.exists?(@latest_packungen)
-        store_found_packages(@latest_packungen)
+      if file2open and File.exists?(file2open)
+        store_found_packages(file2open)
         @known_packages.sort!.uniq!
-        debug_msg "deactivate_not_found_package #{@app.registrations.size} registrations and #{@known_packages.size}" +
+        LogFile.debug "verify_packages from #{file2open} #{@app.registrations.size} registrations and #{@known_packages.size}" +
             " @known_packages from #{@known_packages.first} till #{@known_packages.last}"
-        @app.registrations.each{
+        @app.registrations.each do
           |iksnr, reg|
-          debug_msg "deactivate_not_found_package check #{iksnr.inspect}. #{@deletes_packages.size} @deletes_packages"
+          # LogFile.debug "verify_packages check #{iksnr.inspect}. #{@deletes_packages.size} @deletes_packages"
           next if iksnr.eql?('00000')
           next if iksnr.to_s.size != 5
           unless reg.fachinfo
             if @known_packages.find{|x| x[0].to_i == iksnr.to_i}
-              debug_msg "delete_not_found_packages: Missing fi for #{iksnr}"
+              # LogFile.debug "verify_packages: Missing fi for #{iksnr}" # There are about 1200 occurrences of this, eg. Testlösung zur Allergiediagnose Teomed
               @missing_fis << iksnr
             end
           end
-          reg.active_packages.each{
+          reg.active_packages.each do
             |pack|
-            found = @known_packages.find{ |x|
-                                          x[0].eql?(pack.iksnr) and
-                                        x[1].eql?(pack.seqnr) and
-                                        x[2].eql?(pack.ikscd)
-                                        }
+            found = @known_packages.find { |x| x[0].to_i == pack.iksnr.to_i && x[1].to_i == pack.seqnr.to_i && x[2].to_i == pack.ikscd.to_i}
             unless found
-              debug_msg "deactivate_not_found_package #{iksnr} #{pack.seqnr} #{pack.ikscd}"
+              LogFile.debug "verify_packages delete #{iksnr} #{pack.seqnr} #{pack.ikscd}"
+              already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
               pack.sequence.delete_package(pack.ikscd)
               pack.sequence.odba_isolated_store
               @deletes_packages << [pack.iksnr, pack.seqnr, pack.ikscd]
-            end                                }
-        } if @known_packages.size > 0
-        debug_msg "deactivate_not_found_package deactivated #{@deletes_packages.size} @deletes_packages"
+              GC.enable unless already_disabled
+              return
+            end
+          end
+        end if @known_packages.size > 0
+        LogFile.debug "verify_packages deactivated #{@deletes_packages.size} @deletes_packages"
       end
     end
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
+      start_time = Time.new
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
       msg = "#{__FILE__}:#{__LINE__} opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
-      debug_msg(msg)
-      start_time = Time.new
+      LogFile.debug(msg)
+      file2open = target if target and File.exists?(target)
       if @update_comps
         opts[:fix_galenic_form] = true
         row_nr = 4
         last_checked = nil
-        file2open = target if target and File.exists?(target)
         file2open ||= @latest_packungen if @latest_packungen and File.exists?(@latest_packungen)
         unless file2open and File.exists?(file2open)
-          debug_msg "#{__FILE__}:#{__LINE__} unable to open #{file2open}. Checked #{target} and #{@latest_packungen}"
+          LogFile.debug " unable to open #{file2open}. Checked #{target} and #{@latest_packungen}"
         else
-          debug_msg("file2open #{file2open} checked #{target} and #{@latest_packungen}")
+          LogFile.debug("file2open #{file2open} checked #{target} and #{@latest_packungen}")
           workbook = Spreadsheet.open(file2open)
           Util.check_column_indices(workbook.worksheets[0])
           @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
@@ -187,7 +183,7 @@ public
             to_consider = mustcheck(iksnr, opts)
             # next if not iksnr == 488 and not iksnr == 46489
             # next unless to_consider
-            # debug_msg "#{__FILE__}:#{__LINE__} update #{row_nr} iksnr #{iksnr} seqnr #{seqnr} #{to_consider}"
+            # LogFile.debug " update #{row_nr} iksnr #{iksnr} seqnr #{seqnr} #{to_consider}"
             already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
             reg = @app.registration("%05i" %iksnr)
             seq = reg.sequence("%02i" %seqnr) if reg
@@ -197,27 +193,27 @@ public
           end
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
-      elsif(target)
-        debug_msg(msg)
-        msg =  "#{__FILE__}: #{__LINE__} Comparing #{target} "
-        msg +=  File.exists?(target) ? "#{File.size(target)} bytes " : " absent" if target
+      elsif(file2open)
+        LogFile.debug(msg)
+        msg =  "#{__FILE__}: #{__LINE__} Comparing #{file2open} "
+        msg +=  File.exists?(file2open) ? "#{File.size(file2open)} bytes " : " absent" if file2open
         msg += " with #{@latest_packungen} "
         msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
-        debug_msg msg
+        LogFile.debug(msg)
         start_time = Time.new
         initialize_export_registrations agent
-        result = diff target, @latest_packungen, [:atc_class, :sequence_date]
+        result = diff file2open, @latest_packungen, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
         if @latest_packungen and File.exists?(@latest_packungen)
-          debug_msg "#{__FILE__}:#{__LINE__} Compared #{target} #{File.size(target)} bytes with #{@latest_packungen} #{File.size(@latest_packungen)} bytes"
+          LogFile.debug " Compared #{file2open} #{File.size(file2open)} bytes with #{@latest_packungen} #{File.size(@latest_packungen)} bytes"
         else
-          debug_msg "#{__FILE__}:#{__LINE__} No latest_packungen #{@latest_packungen} exists"
+          LogFile.debug " No latest_packungen #{@latest_packungen} exists"
         end
-        debug_msg "#{__FILE__}:#{__LINE__} @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
-        debug_msg "#{__FILE__}:#{__LINE__} changes: #{@diff.changes.inspect}"
-        debug_msg "#{__FILE__}:#{__LINE__} first news: #{@diff.news.first.inspect[0..250]}"
-        update_registrations @diff.news + @diff.updates, @diff.replacements, opts
+        LogFile.debug " @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
+        LogFile.debug " changes: #{@diff.changes.inspect}"
+        LogFile.debug " first news: #{@diff.news.first.inspect[0..250]}"
+        update_registrations(@diff.news + @diff.updates, @diff.replacements, opts)
         set_all_export_flag_false
         update_export_sequences @export_sequences
         update_export_registrations @export_registrations
@@ -231,23 +227,23 @@ public
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
-        if File.exists?(target) and File.exists?(@latest_packungen) and FileUtils.compare_file(target, @latest_packungen)
-          debug_msg "#{__FILE__}: #{__LINE__} rm_f #{target} after #{@update_time} minutes"
-          FileUtils.rm_f(target, :verbose => true)
+        verify_packages(file2open)
+        if File.exists?(file2open) and File.exists?(@latest_packungen) and FileUtils.compare_file(file2open, @latest_packungen)
+          LogFile.debug " rm_f #{file2open} after #{@update_time} minutes"
+          FileUtils.rm_f(file2open, :verbose => true)
         else
-          debug_msg "#{__FILE__}: #{__LINE__} cp #{target} #{@latest_packungen} after #{@update_time} minutes"
-          FileUtils.cp target, @latest_packungen, :verbose => true
+          LogFile.debug " cp #{file2open} #{@latest_packungen} after #{@update_time} minutes"
+          FileUtils.cp file2open, @latest_packungen, :verbose => true
         end
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)|
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
-        delete_not_found_packages
       else
-        debug_msg "#{__FILE__}:#{__LINE__} update return false as target is #{target.inspect}"
+        LogFile.debug " update return false as file2open is #{file2open.inspect}"
         false
       end
-      debug_msg(msg = "#{__FILE__}:#{__LINE__} done. @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}")
+      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
       @update_comps ? true : @diff
     end
     # check diff from overwritten stored-objects by admin
@@ -279,19 +275,23 @@ public
       @diff.updates.uniq!
     end
     def set_all_export_flag_false
-      debug_msg "set_all_export_flag_false for #{@app.registrations.size} registrations"
+      LogFile.debug "set_all_export_flag_false for #{@app.registrations.size} registrations #{@known_export_registrations.size} known_export_registrations"
       @app.each_registration do |reg|
         # registration export_flag
-        @known_export_registrations += 1 if reg.export_flag
-        @app.update reg.pointer, {:export_flag => false}, :admin
+        if reg.export_flag
+          @known_export_registrations += 1
+          @app.update(reg.pointer, {:export_flag => false}, :admin)
+        end
         # sequence export_flag
         reg.sequences.values.each do |seq|
           next unless seq.is_a? ODDB::Sequence
-          @known_export_sequences += 1 if seq.export_flag
-          @app.update seq.pointer, {:export_flag => false}, :admin
+          if seq.export_flag
+            @known_export_sequences += 1
+            @app.update seq.pointer, {:export_flag => false}, :admin
+          end
         end
       end
-      debug_msg "set_all_export_flag_false done"
+      LogFile.debug "set_all_export_flag_false  #{@known_export_registrations.size} known_export_registrations #{@known_export_sequences.size} known_export_sequences done"
     end
     def capitalize(string)
       string.split(/\s+/u).collect { |word| word.capitalize }.join(' ')
@@ -318,7 +318,7 @@ public
       deactivations.each { |row|
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
-        debug_msg "#{__FILE__}: #{__LINE__}: deactivate iksnr '#{iksnr}' seqnr #{seqnr} pack #{@target_keys.keys.index(:ikscd)}"
+        LogFile.debug ": deactivate iksnr '#{iksnr}' seqnr #{seqnr} pack #{@target_keys.keys.index(:ikscd)}"
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
@@ -327,26 +327,27 @@ public
       }
     end
     def delete(deletions, is_package_deletion = false)
-      debug_msg "#{__FILE__}:#{__LINE__} delete #{deletions.size} items"
-      deletions.each {
-        |row|
-        iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
-        seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
-        packnr = row[@target_keys.keys.index(:ikscd)]
-        debug_msg "#{__FILE__}: #{__LINE__}: delete iksnr #{iksnr.inspect} seqnr #{seqnr} pack #{packnr.inspect}"
+      LogFile.debug " delete #{deletions.size} items"
+      deletions.each_with_index do
+        |row, index|
+        iksnr = "%05i" % row[0].to_i
+        seqnr = "%02i" % row[1].to_i
+        packnr = "%03i" % row[2].to_i
         ptr = pointer(row)
         next unless ptr
         unless is_package_deletion
           @app.delete ptr
         else
           object = @app.resolve(ptr)
-          debug_msg "#{__FILE__}:#{__LINE__} delete object #{object.inspect}"
           next unless object
-          @app.delete ptr if object.is_a?(ODDB::Package) and
-            @app.registration(iksnr).sequence(seqnr) and
+          if object.is_a?(ODDB::Package) &&
+            @app.registration(iksnr).sequence(seqnr) &&
             @app.registration(iksnr).sequence(seqnr).packages.keys.index(packnr)
+            LogFile.debug "(#{index} of #{deletions.size}) iksnr #{iksnr} seqnr #{seqnr} pack #{packnr} #{object.class}"
+            @app.delete ptr
+          end
         end
-      }
+      end
     end
     def describe(diff, iksnr)
       sprintf("%s: %s", iksnr, name(diff, iksnr))
@@ -382,39 +383,39 @@ public
         super
       else
         latest = nil
-        @app.registrations.each { |iksnr, reg|
+        @app.registrations.each do |iksnr, reg|
           row = [ iksnr, nil, nil, reg.company_name,
                   reg.ith_swissmedic || reg.index_therapeuticus,
                   reg.production_science, reg.registration_date,
                   reg.expiration_date ]
           unless reg.inactive? || reg.vaccine
             known_regs.store [iksnr], row
-            reg.sequences.each { |seqnr, seq|
+            reg.sequences.each do |seqnr, seq|
               srow = row.dup
               srow[1,2] = [seqnr, seq.name_base]
               known_seqs.store([iksnr, seqnr], srow)
-              seq.packages.each { |pacnr, pac|
-                pac.parts.each_with_index { |part, idx|
+              seq.packages.each do |pacnr, pac|
+                pac.parts.each_with_index do |part, idx|
                   prow = srow.dup
                   prow.push pacnr
                   prow[@target_keys.size] = idx
                   known_pacs.store([iksnr, pacnr, idx], prow)
-                }
-              }
-            }
+                end
+              end
+            end
           end
-        }
+        end
       end
     end
     def get_latest_file(agent, keyword='Packungen', extension = '.xlsx')
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       latest_name = File.join @archive, "#{keyword}-latest"+extension
       cmd = "@latest_#{keyword.downcase.gsub(/[^a-zA-Z]/, '_')} = '#{latest_name}'"
-      debug_msg "#{__FILE__}: #{__LINE__} cmd #{cmd}"
+      LogFile.debug " cmd #{cmd}"
       eval cmd
       latest_name = File.join @archive, "#{keyword}-latest"+extension
       if File.exist?(target) and File.exists?(latest_name) and File.size(target) == File.size(latest_name)
-        debug_msg "#{__FILE__}:#{__LINE__} skip writing #{target} as it already exists and is #{File.size(target)} bytes."
+        LogFile.debug " skip writing #{target} as it already exists and is #{File.size(target)} bytes."
         return target
       end
       page = agent.get @index_url
@@ -443,18 +444,18 @@ public
         File.open(target, 'w') { |fh| fh.puts(download) }
         msg = "#{__FILE__}:#{__LINE__} updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
-        debug_msg(msg)
+        LogFile.debug(msg)
         target
       else
         @latest_packungen = latest_name if keyword.downcase.eql?('packungen')
-        debug_msg "#{__FILE__}:#{__LINE__} skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest_name #{latest_name}"
+        LogFile.debug " skip writing #{target} as #{latest_name} is #{File.size(latest_name)} bytes. Returning latest_name #{latest_name}"
         nil
       end
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       if target_name = get_latest_file(agent, 'Präparateliste')
-        debug_msg "#{__FILE__}: #{__LINE__} cp #{target_name} #{latest_name}"
+        LogFile.debug " cp #{target_name} #{latest_name}"
         FileUtils.cp target_name, latest_name, :verbose => true
       end
       seq_indices = {}
@@ -465,24 +466,27 @@ public
       [ :iksnr ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
-      Spreadsheet.open(latest_name) do |workbook|
-        iksnr_idx = reg_indices.delete(:iksnr)
-        seqnr_idx = seq_indices.delete(:seqnr)
-        export_flag_idx = seq_indices.delete(:export_flag)
-        workbook.worksheet(0).each(rows_to_skip(workbook)) do |row|
-          iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
-          seqnr = row[seqnr_idx]
-          export = row[export_flag_idx]
-          if export =~ /E/
+      iksnr_idx = reg_indices.delete(:iksnr)
+      seqnr_idx = seq_indices.delete(:seqnr)
+      export_flag_idx = seq_indices.delete(:export_flag)
+      workbook = Spreadsheet.open(latest_name)
+      row_nr = 0
+      workbook.worksheets[0].each() do |row|
+        row_nr += 1
+        next if row_nr <= 4
+        iksnr = "%05i" % cell(row, iksnr_idx).to_i
+        seqnr = "%02i" % cell(row, seqnr_idx).to_i
+        export = row[export_flag_idx].value
+        if export =~ /E/
+          data = {}
+          @export_sequences[[iksnr, seqnr]] = data
+          unless @export_registrations[iksnr]
             data = {}
-            @export_sequences[[iksnr, seqnr]] = data
-            unless @export_registrations[iksnr]
-              data = {}
-              @export_registrations.store iksnr, data
-            end
+            @export_registrations.store iksnr, data
           end
         end
       end
+      LogFile.debug "initialize_export_registrations #{latest_name} contains #{@export_registrations.size} export_registrations and #{@export_sequences.size} export_sequences"
       @export_registrations
     end
     def mail_notifications
@@ -557,6 +561,9 @@ public
       else
         lines += [
         "Created Packages: #{@diff.news.size}",
+        "Re-Created missing Packages: #{@recreate_missing.size}",
+        "  " + @recreate_missing.collect{|x| x.join('/')}.join("\n  "),
+        "Known, good Packages: #{@known_packages.size - @recreate_missing.size}",
         "Updated Packages: #{@diff.updates.size}",
         "Deleted Packages: #{@diff.package_deletions.size} (#{@diff.replacements.size} Replaced)",
         "Deactivated Sequences: #{@diff.sequence_deletions.size}",
@@ -566,15 +573,15 @@ public
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
         "Skipped Packages: #{@skipped_packages.length}",
-        "Deleted compositions: #{@deleted_compositions.join("\n")}",
-        "Updated agents: #{@updated_agents.keys.to_a.join("\n")}",
-        "Updated compositions: #{@new_compositions.keys.to_a.join("\n")}",
-        "New agents: #{@new_agents.keys.to_a.join("\n")}",
+        "Deleted compositions: #{@deleted_compositions.size} \n  #{@deleted_compositions.join("\n  ")}",
+        "Updated agents: #{@updated_agents.size}\n  #{@updated_agents.keys.to_a.join("\n  ")}",
+        "Updated compositions: #{@new_compositions.size}\n  #{@new_compositions.keys.to_a.join("\n  ")}",
+        "New agents: #{@new_agents.size}\n  #{@new_agents.keys.to_a.join("\n  ")}",
         "Anzahl Sequenzen mit leerem Feld Zusammensetzung: #{@empty_compositions.size}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
         "Deleted #{@deletes_packages.size} packages not in Packungen.xlsx",
-        @deletes_packages.collect{|x| x.join(' ')}.join("\n"),
+        " " + @deletes_packages.collect{|x| x.join(' ')}.join("\n"),
       ]
                           end
       unless @iksnr_with_wrong_data.empty?
@@ -664,7 +671,7 @@ public
       substance = update_substance(parsed_substance.name)
 
       dose = ODDB::Dose.new(parsed_substance.qty, parsed_substance.unit)
-      debug_msg("#{__FILE__}:#{__LINE__} update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose}")
+      LogFile.debug("update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose}")
       if active
         ptr = if (agent = composition.active_agent(parsed_substance.name))
           from = 'active_agent'
@@ -715,11 +722,11 @@ public
                           seqnr = composition.sequence.seqnr
        oids2remove = composition.active_agents.find_all { |x| x.substance == nil} if composition.active_agents
        oids2remove.each{ |substance|
-                        debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} #{composition.active_agents.size} active_agents. #{substance} active? #{substance.is_active_agent} substance.oid #{substance.oid} substance.pointer #{substance.pointer}")
+                        LogFile.debug("remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} #{composition.active_agents.size} active_agents. #{substance} active? #{substance.is_active_agent} substance.oid #{substance.oid} substance.pointer #{substance.pointer}")
                         @app.delete(substance.pointer) if substance.pointer
                         composition.delete_active_agent(substance.oid, substance.is_active_agent)
                         composition.odba_store
-                        debug_msg("#{__FILE__}:#{__LINE__} remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} has now #{composition.active_agents.size} active_agents")
+                        LogFile.debug("remove_active_agents_that_are_nil #{iksnr}/#{seqnr} composition.oid #{composition.oid} has now #{composition.active_agents.size} active_agents")
                       }
     end
 
@@ -739,7 +746,7 @@ public
     def create_composition_in_sequence(sequence)
       sequence.fix_pointers # needed for make unit tests pass. Should not do any harm on the real database
       component_in_db = @app.create(sequence.pointer + :composition)
-      debug_msg("#{__FILE__}:#{__LINE__} create_composition_in_sequence component_in_db.pointer #{component_in_db.pointer.inspect} size #{sequence.compositions.size}")
+      LogFile.debug("create_composition_in_sequence component_in_db.pointer #{component_in_db.pointer.inspect} size #{sequence.compositions.size}")
       component_in_db
     end
 
@@ -753,11 +760,11 @@ public
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         if (sequence.seqnr != seqnr)
-          debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.seqnr.inspect} and #{seqnr.inspect}")
+          LogFile.debug("update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.seqnr.inspect} and #{seqnr.inspect}")
           return
         end
         if (sequence.iksnr != iksnr)
-          debug_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.iksnr.inspect} and #{iksnr.inspect}")
+          LogFile.debug("update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.iksnr.inspect} and #{iksnr.inspect}")
           return
         end
         trace_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
@@ -782,7 +789,7 @@ public
           found = parsed_comps.find{ |x| x.source.eql?(comp.source) }
           unless found
             msg = "iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx} comp.oid #{comp.oid}"
-            debug_msg("#{__FILE__}:#{__LINE__} delete_composition #{msg} comp.pointer #{comp.pointer}")
+            LogFile.debug("delete_composition #{msg} comp.pointer #{comp.pointer}")
             @deleted_compositions << msg
             sequence.delete_composition(comp.oid)
             sequence.odba_store
@@ -795,21 +802,21 @@ public
           active_agents = []
           inactive_agents = []
           msg = "iksnr #{iksnr} seqnr #{seqnr} comp_idx #{comp_idx}"
-          debug_msg("#{__FILE__}:#{__LINE__} update_compositions #{msg} parsed_comp #{parsed_comp}")
+          LogFile.debug("update_compositions #{msg} parsed_comp #{parsed_comp}")
           @checked_compositions << msg
           composition_in_db = nil
           parsed_comp.substances.each_with_index { |substance, parsed_idx|
             components_in_db = sequence.compositions.find_all{|value| composition_in_db = value if (value and value.source.eql?(parsed_comp.source)) }
             if components_in_db.size == 0
               composition_in_db = create_composition_in_sequence(sequence)
-              debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} created composition oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
+              LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} created composition oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
             elsif components_in_db.size == 1 # normal case
               composition_in_db = components_in_db.first
-              debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} using oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
+              LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} using oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
             else
               composition_in_db = components_in_db.first
               components_in_db[2..-1].each{ |composition|
-                debug_msg("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} deleting oid #{composition.oid} source #{parsed_comp.source[0..50]}")
+                LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} deleting oid #{composition.oid} source #{parsed_comp.source[0..50]}")
                 sequence.compositions.delete composition
                 sequence.compositions.odba_store
               }
@@ -899,7 +906,7 @@ public
       end
     end
     def update_galenic_form(seq, comp, row, opts={})
-      # debug_msg "#{__FILE__}:#{__LINE__} update_galenic_form #{seq.seqnr} gf #{comp.galenic_form} fix ? #{opts[:fix_galenic_form].inspect}"
+      # LogFile.debug " update_galenic_form #{seq.seqnr} gf #{comp.galenic_form} fix ? #{opts[:fix_galenic_form].inspect}"
       opts = {:create_only => false}.merge opts
       return if comp.galenic_form && !opts[:fix_galenic_form]
       if((german = seq.name_descr) && !german.empty?)
@@ -907,7 +914,7 @@ public
       elsif(match = GALFORM_P.match(comp.source.to_s))
         _update_galenic_form(comp, :lt, match[:galform].strip)
       else
-        debug_msg "#{__FILE__}:#{__LINE__} update_galenic_form don't know how to update the galenic form. #{seq.name_descr.inspect} or source #{comp.source.to_s}"
+        LogFile.debug " update_galenic_form don't know how to update the galenic form. #{seq.name_descr.inspect} or source #{comp.source.to_s}"
       end
     end
     def _update_galenic_form(comp, lang, name)
@@ -924,10 +931,10 @@ public
         ptr = Persistence::Pointer.new([:galenic_group, 1],
                                        [:galenic_form]).creator
 
-        debug_msg "#{__FILE__}:#{__LINE__} _update_galenic_form ptr #{ptr} name #{name}"
+        LogFile.debug " _update_galenic_form ptr #{ptr} name #{name}"
         @app.update(ptr, {lang => name}, :swissmedic)
       end
-      debug_msg "#{__FILE__}:#{__LINE__} _update_galenic_form comp.pointer #{comp.inspect} name #{name}"
+      LogFile.debug " _update_galenic_form comp.pointer #{comp.inspect} name #{name}"
       @app.update(comp.pointer, { :galenic_form => name }, :swissmedic)
     end
     def update_indication(name)
@@ -937,7 +944,7 @@ public
           indication
         else
           pointer = Persistence::Pointer.new(:indication)
-          debug_msg "#{__FILE__}:#{__LINE__} update_indication pointer #{pointer} name #{name}"
+          LogFile.debug " update_indication pointer #{pointer} name #{name}"
           @app.update(pointer.creator, {:de => name}, :swissmedic)
         end
       end
@@ -947,18 +954,19 @@ public
       iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
       seqnr ="%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
       if (seq.seqnr != seqnr)
-        debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{seq.seqnr.inspect}/#{seqnr.inspect}")
+        LogFile.debug("iksnr #{iksnr} #{seqnr} mismatch between #{seq.seqnr.inspect}/#{seqnr.inspect}")
         return
       end
       if (seq.iksnr != iksnr || reg.iksnr != iksnr)
-        debug_msg("#{__FILE__}:#{__LINE__} update_package: iksnr #{iksnr} #{seqnr} mismatch between #{reg.iksnr.inspect}/#{seq.iksnr.inspect}#{iksnr.inspect}")
+        LogFile.debug("iksnr #{iksnr} #{seqnr} mismatch between #{reg.iksnr.inspect}/#{seq.iksnr.inspect}#{iksnr.inspect}")
         return
       end
       ikscd = sprintf('%03i', cell(row, @target_keys.keys.index(:ikscd)).to_i)
       unless seq.pointer
-        debug_msg "#{__FILE__}: #{__LINE__}: update_package problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer"
+        LogFile.debug("problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer")
         return
       end
+      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements}"
       pidx = cell(row, row.size).to_i
       if(ikscd.to_i > 0)
         args = {
@@ -979,11 +987,12 @@ public
         end
         if package.nil? and ptr.is_a?(Persistence::Pointer)
           package = @app.create(ptr)
+          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package}"
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
           part = @app.create((ptr + [:part]).creator)
-          debug_msg "#{__FILE__}:#{__LINE__} update_package create part.oid #{part.oid} part.pointer #{part.pointer}"
+          LogFile.debug "create part.oid #{part.oid} part.pointer #{part.pointer}"
         else
           part = package.parts[pidx]
         end
@@ -991,7 +1000,7 @@ public
           :size => [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' '),
         }
         if package.sequence and package.sequence.seqnr != seq.seqnr
-          debug_msg "#{__FILE__}: #{__LINE__}: update_package iksnr '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
+          LogFile.debug "iksnr '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
         if(comform = @app.commercial_form_by_name(cell(row, @target_keys.keys.index(:unit))))
           args.store :commercial_form, comform.pointer
@@ -1000,7 +1009,14 @@ public
           && (comp = seq.compositions[pidx] || seq.compositions.last)
           args.store :composition, comp.pointer
         end
-        @app.update(part.pointer, args, :swissmedic)
+        res = @app.update(part.pointer, args, :swissmedic)
+        unless seq.packages[ikscd]
+          LogFile.debug "fix seq.packages #{iksnr}/#{seqnr}/#{ikscd}"
+          seq.packages.store(ikscd, package)
+          seq.packages.odba_store
+          seq.odba_store
+        end
+        res
       end
     end
     def update_registration(row, opts = {})
@@ -1058,9 +1074,14 @@ public
           args.store :indication, indication.pointer
         end
 
-        trace_msg "#{__FILE__}:#{__LINE__} update_package #{iksnr} args  #{args}"
-        @app.update ptr, args, :swissmedic
-        @app.registration(iksnr)
+        LogFile.debug("update_registration #{iksnr} args #{args}")
+        reg = @app.update ptr, args, :swissmedic
+        unless @app.registrations[iksnr]
+          LogFile.debug "update_registration fix registration #{iksnr}"
+          @app.registrations.store(iksnr, reg)
+          @app.registrations.odba_store
+        end
+        reg
       end
     rescue SystemStackError => err
       puts "Stack-Error when importing: #{source_row(row).pretty_inspect}"
@@ -1085,13 +1106,13 @@ public
             # excipiens = ActiveAgent.new(parsed_composition.excipiens.name, false)
             # substance = update_substance(parsed_composition.excipiens.name)
             excipiens = update_substance(parsed_composition.excipiens.name)
-            debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} excipiens #{excipiens.class} excipiens.oid #{excipiens ? excipiens.oid : 'nil'} for #{parsed_composition.excipiens.name}")
+            LogFile.debug("#{iksnr} #{seq.seqnr} excipiens #{excipiens.class} excipiens.oid #{excipiens ? excipiens.oid : 'nil'} for #{parsed_composition.excipiens.name}")
             if parsed_composition.excipiens.qty or parsed_composition.excipiens.unit
               # TODO::howto handle this ?excipiens.dose = Dose.new(parsed_composition.excipiens.qty, parsed_composition.excipiens.unit)
             end
             excipiens.more_info = parsed_composition.excipiens.more_info
             db_composition.add_excipiens(excipiens)
-            debug_msg("#{__FILE__}:#{__LINE__} #{iksnr} #{seq.seqnr} update_excipiens_in_composition idx #{idx}: excipiens #{excipiens.inspect} from #{parsed_composition.excipiens}")
+            LogFile.debug("#{iksnr} #{seq.seqnr} update_excipiens_in_composition idx #{idx}: excipiens #{excipiens.inspect} from #{parsed_composition.excipiens}")
             db_composition.odba_store
             seq.odba_store
           end
@@ -1112,24 +1133,27 @@ public
     def update_registrations(rows, replacements, opts=nil)
       opts ||= { :create_only => @latest_packungen ? !File.exist?(@latest_packungen) : false,
                :date        => @@today, }
-      rows.each { |row|
+      rows.each do |row|
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         next if iksnr.eql?('00000')
         to_consider =  mustcheck(iksnr, opts)
         next unless row
         next unless mustcheck(iksnr, opts)
-        debug_msg("#{__FILE__}:#{__LINE__} update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}")
+        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts} replacements #{replacements}")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
-        if reg
-          seq = update_sequence(reg, row, opts) if reg
-          if seq
-            update_all_sequence_info(row, reg, seq, opts, replacements)
-          end
+        seq = update_sequence(reg, row, opts) if reg
+        update_all_sequence_info(row, reg, seq, opts, replacements) if seq
+        unless reg.sequences[seqnr]
+          LogFile.debug "update_registration fix sequence #{iksnr}/#{seqnr}"
+          reg.sequences.store(seqnr, seq)
+          reg.sequences.odba_store
+          reg.odba_store
         end
         GC.enable unless already_disabled
-      }
+      end
+      true
     end
     def update_sequence(registration, row, opts={:create_only => false})
       # remove sequence '00'/package '000' which might have been created when importing via AipsDownload.xml
@@ -1170,7 +1194,6 @@ public
       if ctext = cell(row, @target_keys.keys.index(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
-      sequence = registration.sequence(seqnr)
 
       seq_date = date_cell(row, @target_keys.keys.index(:sequence_date))
       args = {
@@ -1181,6 +1204,7 @@ public
         :sequence_date    => seq_date,
         :export_flag      => nil,
       }
+      sequence = registration.sequence(seqnr)
       if(sequence.nil? || sequence.atc_class.nil?)
         if(!registration.atc_classes.nil? and
            atc = registration.atc_classes.first)

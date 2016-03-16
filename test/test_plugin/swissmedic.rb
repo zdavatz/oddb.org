@@ -26,6 +26,26 @@ class FlexMock::TestUnitFrameworkAdapter
 end
 
 module ODDB
+  class SwissmedicPlugin
+    attr_reader      :recreate_missing,
+      :known_export_registrations,
+      :known_export_sequences,
+      :checked_compositions,
+      :deleted_compositions,
+      :new_compositions,
+      :updated_agents,
+      :new_agents,
+      :export_registrations,
+      :export_sequences,
+      :skipped_packages,
+      :iksnr_with_wrong_data,
+      :active_registrations_praeparateliste,
+      :update_time,
+      :target_keys,
+      :empty_compositions,
+      :known_packages,
+      :deletes_packages
+  end
    class SwissmedicPluginTest < Minitest::Test
     include FlexMock::TestCase
     NAME_OFFSET = 2
@@ -38,7 +58,10 @@ module ODDB
     IKSNR_WELEDA = "09232"
     EXPIRATION_DATE_ASPIRIN = Date.new(2017,5,9)
     def setup
-      @app = flexmock 'app'
+      # @app = flexmock 'app'
+      ODDB::GalenicGroup.reset_oids
+      ODBA.storage.reset_id
+      @app = ODDB::App.new
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
@@ -49,7 +72,17 @@ module ODDB
       @latest   = File.join @archive, 'xls', 'Packungen-latest.xlsx'
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exists?(@latest)
+
       @test_packages = File.expand_path '../data/xlsx/Packungen.xlsx', File.dirname(__FILE__)
+      latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
+      FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
+
+
+      prep_from = File.expand_path('../data/xlsx/Präparateliste-latest.xlsx', File.dirname(__FILE__))
+      FileUtils.cp(prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
+                   :verbose => true, :preserve => true)
+      FileUtils.cp(prep_from, File.join(@archive, 'xls', 'Präparateliste-latest.xlsx'),
+                   :verbose => true, :preserve => true)
       @workbook = Spreadsheet.open( @test_packages)
     end
     def teardown
@@ -57,7 +90,7 @@ module ODDB
       super # to clean up FlexMock
     end
 
-    def setup_index_page
+    def setup_index_page(packungen_xlsx=@current)
       link = flexmock('link', :href => 'href')
       links = flexmock('links', :select => [link])
       page = flexmock('page', :links => links)
@@ -69,7 +102,7 @@ module ODDB
       link3 = OpenStruct.new :attributes => {'title' => 'Präparateliste'},
                              :href => 'url'
       index.should_receive(:links).and_return [link1, link2, link3]
-      index.should_receive(:body).and_return(IO.read(@current))
+      index.should_receive(:body).and_return(IO.read(packungen_xlsx))
       agent = flexmock(Mechanize.new)
       agent.should_receive(:user_agent_alias=).and_return(true)
       agent.should_receive(:get).and_return(index)
@@ -118,6 +151,7 @@ module ODDB
       act
     end
 
+if false
     def test_get_latest_file__identical
       content = 'Content of the xml'
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
@@ -609,6 +643,70 @@ module ODDB
       expected = {"email"=>[registration]}
       assert_equal(expected, @plugin.mail_notifications)
     end
+    end
+    def test_update_swissmedic
+      expected = []
+      company_ptr = Persistence::Pointer.new([:registration, '111'], [:sequence, '222'])
+      seq = flexmock 'sequence'
+      seq.should_receive(:pointer).and_return(company_ptr)
+      company = flexmock('company',
+                         :pointer => company_ptr
+                        )
+      pac = flexmock 'package'
+      pac.should_receive(:data_origin).and_return :swissmedic
+      seq = setup_simple_seq
+      seq.should_receive(:package).and_return(pac)
+      seq.should_receive(:atc_class).and_return nil
+      registration = flexmock('registration',
+                              :pointer => 'pointer',
+                              :ith_swissmedic => 'ith_swissmedic',
+                              :production_science => 'production_science',
+                              :registration_date => 'registration_date',
+                              :expiration_date => 'expiration_date',
+                              :inactive? => false,
+                              :vaccine => 'vaccine',
+                              :index_therapeuticus => 'index_therapeuticus',
+                              :iksnr => 'iksnr',
+                              :package => pac,
+                              :sequence => seq,
+                              :atc_classes => [],
+                              :company_name => company)
+      @app = flexmock(@app)
+      @app.should_receive(:resolve).and_return(nil)
+      newer = File.expand_path(File.join(@archive, '..', 'data', 'xlsx', 'Packungen-latest.xlsx'))
+      older = @current
+      FileUtils.cp(older,
+                   File.join(@archive, 'xls', 'Packungen-latest.xlsx'),
+                   :verbose => true, :preserve => true)
+      FileUtils.cp(older, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
+                   :verbose => true, :preserve => true)
+      agent, page = setup_index_page(older)
+      result =  @plugin.update({}, agent)
+      puts @plugin.report
+      assert_equal(4, @plugin.updated_agents.size)
+      assert_equal(15, @plugin.recreate_missing.size)
+      assert_equal(8, @plugin.known_export_registrations.size)
+      assert_equal(8, @plugin.known_export_sequences.size)
+      FileUtils.cp(newer, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
+                   :verbose => true, :preserve => true)
+      agent, page = setup_index_page(newer)
+      result =  @plugin.update({}, agent)
+      puts @plugin.report
+      assert_equal(2, @plugin.updated_agents.size)
+      assert_equal(0, @plugin.recreate_missing.size)
+      assert_equal(8, @plugin.known_export_registrations.size)
+      assert_equal(8, @plugin.known_export_sequences.size)
+      assert_kind_of(OpenStruct, result)
+    end
+    def test_update_swissmedic_only
+     opts = {
+        :fix_galenic_form       => false,
+        :iksnrs                 => [],
+        :update_compositions    => false,
+      }
+      expected = []
+      assert_equal(expected, @plugin.update(opts))
+    end if false
   end
 
 end
