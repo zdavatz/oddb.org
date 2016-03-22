@@ -200,7 +200,7 @@ module ODDB
       atc_class = flexmock('atc_class',
                            :code        => 123,
                            :description => 'description',
-                           :packages    => [package]
+                           :packages    => [package, nil]
                           )
       log_group = flexmock('log_group', :newest_date => Time.local(2011,2,3))
       flexmock(@app,
@@ -316,6 +316,73 @@ module ODDB
         assert_equal('cp', @plugin.export_drugs)
         assert_equal(1,    @plugin.instance_eval("@counts['galenic_forms']"))
         assert_equal(1,    @plugin.instance_eval("@counts['limitations']"))
+        assert_equal(0,    @plugin.instance_eval("@counts['originals']"))
+      end
+    end
+    def test_export_drugs_sl_entry_nil
+      flexmock(FileUtils,
+               :mkdir_p => nil,
+               :cp      => 'cp'
+              )
+      limitation_text = flexmock('limitation_text', :de => 'de')
+      galenic_form = flexmock('galenic_form', :description => 'description')
+      commercial_form = flexmock('commercial_form', :de => 'de')
+      part      = flexmock('part',
+                           :multi           => 'multi',
+                           :count           => 'count',
+                           :measure         => 'measure',
+                           :commercial_form => commercial_form
+                          )
+      comparable_size = flexmock('comparable_size', :qty => 'qty')
+      package   = flexmock('package',
+                           :ikskey => 123,
+                           :keys   => 'keys',
+                           :iksnr  => 123,
+                           :ikscd  => 123,
+                           :parts  => [part],
+                           :ikscat => 'ikscat',
+                           :lppv   => 'lppv',
+                           :barcode    => 'barcode',
+                           :sl_entry   => nil,
+                           :pharmacode => 'pharmacode',
+                           :name_base  => 'name_base',
+                           :deductible => :generics,
+                           :public?    => nil,
+                           :narcotic?  => nil,
+                           :vaccine    => 'vaccine',
+                           :galenic_forms     => [galenic_form],
+                           :most_precise_dose => 'most_precise_dose',
+                           :comparable_size   => comparable_size,
+                           :price_exfactory   => 'price_exfactory',
+                           :price_public      => 'price_public',
+                           :company_name      => 'company_name',
+                           :registration_date => Time.local(2011,2,3),
+                           :expiration_date   => Time.local(2011,2,3),
+                           :inactive_date     => Time.local(2011,2,3),
+                           :export_flag       => 'export_flag',
+                           :sl_generic_type   => 'sl_generic_type',
+                           :has_generic?      => nil,
+                           :ith_swissmedic    => 'ith_swissmedic',
+                           :complementary_type  => :generics,
+                           :index_therapeuticus => 'index_therapeuticus',
+                           :renewal_flag_swissmedic => 'renewal_flag_swissmedic'
+                          )
+      atc_class = flexmock('atc_class',
+                           :code        => 123,
+                           :description => 'description',
+                           :packages    => [package, nil]
+                          )
+      log_group = flexmock('log_group', :newest_date => Time.local(2011,2,3))
+      flexmock(@app,
+               :atc_classes => {'key' => atc_class},
+               :log_group   => log_group
+              )
+      export_server = flexmock('export_server', :compress => 'compress')
+      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
+        @plugin.instance_eval('@options = {}')
+        assert_equal('cp', @plugin.export_drugs)
+        assert_equal(1,    @plugin.instance_eval("@counts['galenic_forms']"))
+        assert_equal(0,    @plugin.instance_eval("@counts['limitations']"))
         assert_equal(0,    @plugin.instance_eval("@counts['originals']"))
       end
     end
