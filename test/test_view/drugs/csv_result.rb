@@ -33,13 +33,21 @@ class TestCsvResult <Minitest::Test
     sl_entry = flexmock('sl_entry') do |s|
       s.should_receive(:bsv_dossier).and_raise(StandardError)
     end
-    package  = flexmock('package', 
+    package  = flexmock('package',
                         :sl_entry => sl_entry,
                         :barcode  => 'barcode'
                        )
-    assert_raises(RuntimeError) do 
-      @result.bsv_dossier(package)
-    end
+    assert_equal('missing_sl_entry(.dossier) package ean code=barcode',  @result.bsv_dossier(package))
+  end
+  def test_bsv_dossier_sl_entry_nil
+    package  = flexmock('package',
+                        :sl_entry => nil,
+                        :barcode  => 'barcode'
+                       )
+    result = @result.bsv_dossier(package)
+    assert_equal(nil, result)
+    result = @result.bsv_dossier(nil)
+    assert_equal(nil, result)
   end
   def test_casrn
     narcotic = flexmock('narcotic', :casrn => 'casrn')
@@ -134,6 +142,16 @@ class TestCsvResult <Minitest::Test
     package  = flexmock('package', :sl_entry => sl_entry)
     assert_equal('format_date', @result.introduction_date(package))
   end
+  def test_introduction_date_error
+    flexmock(@lookandfeel, :format_date => 'format_date')
+    sl_entry = flexmock('sl_entry')
+    sl_entry = flexmock('sl_entry') do |s|
+      s.should_receive(:introduction_date).and_raise(StandardError)
+    end
+    package  = flexmock('package', :sl_entry => sl_entry, :barcode => 'barcode')
+    assert_equal('missing_sl_entry(.dossier) package ean code=barcode',  @result.bsv_dossier(package))
+  end
+
   def test_limitation
     sl_entry = flexmock('sl_entry', :limitation => 'limitation')
     package  = flexmock('package', :sl_entry => sl_entry)
@@ -249,7 +267,7 @@ class TestCsvResult <Minitest::Test
                    :key1             => 'key1',
                    :key2             => 'key2',
                       )
-    atc = flexmock('atc', 
+    atc = flexmock('atc',
                    :code              => 'code',
                    :active_packages   => [package],
                    :description       => 'description'
@@ -258,7 +276,28 @@ class TestCsvResult <Minitest::Test
       m.should_receive(:each).and_yield(atc)
     end
     expected = "lookup;lookup\n#MGrp;code;description\nkey1;key2\n"
-    flexmock(@result, :key2 => 'key2') 
+    flexmock(@result, :key2 => 'key2')
+    @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
+    keys = ['key1', 'key2']
+    assert_equal(expected, @result.to_csv(keys))
+  end
+  def test_to_csv_error
+    flexmock(@lookandfeel, :language => 'language')
+    package = flexmock('package',
+                   :ikskey           => 'ikskey',
+                   :barcode          => 'barcode',
+                   :key1             => 'key1',
+                      )
+    package.should_receive(:key2).and_raise(StandardError)
+    atc = flexmock('atc',
+                   :code              => 'code',
+                   :active_packages   => [package],
+                   :description       => 'description'
+                  )
+    flexmock(@model) do |m|
+      m.should_receive(:each).and_yield(atc)
+    end
+    expected = "lookup;lookup\n#MGrp;code;description\nerror collecting  for ean code=barcode\n"
     @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
     keys = ['key1', 'key2']
     assert_equal(expected, @result.to_csv(keys))
@@ -305,7 +344,7 @@ class TestCsvResult <Minitest::Test
                    :comparable_size   => comparable_size,
                    :ddd               => ddd
                       )
-    atc = flexmock('atc', 
+    atc = flexmock('atc',
                    :code              => 'code',
                    :active_packages   => [package],
                    :description       => 'description'

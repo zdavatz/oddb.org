@@ -87,19 +87,19 @@ class CsvResult < HtmlGrid::Component
 		@lookandfeel.lookup(key)
 	end
 	def bsv_dossier(pack)
-		if(sl = pack.sl_entry)
+		if(pack && sl = pack.sl_entry)
       # Report package EAN code when an error happens with export_oddb_csv
       # Refer to: http://dev.ywesee.com/wiki.php/Masa/20110302-testcases-oddbOrg#DebugCsv
       begin
-      dossier = sl.bsv_dossier
+        dossier = sl.bsv_dossier
+        if dossier
+          @bsv_dossiers.store dossier, true
+          @counts['bsv_dossiers'] = @bsv_dossiers.size
+        end
+        dossier
       rescue => e
-        raise e.message + " package ean code=" + pack.barcode.to_s
+        return 'missing_sl_entry(.dossier) package ean code=' + pack.barcode.to_s
       end
-      if dossier
-        @bsv_dossiers.store dossier, true
-        @counts['bsv_dossiers'] = @bsv_dossiers.size
-      end
-      dossier
 		end
 	end
 	def casrn(pack)
@@ -107,7 +107,6 @@ class CsvResult < HtmlGrid::Component
 	end
   def c_type(pack)
     if (ctype = pack.complementary_type) and ctype
-      puts "ngngng: Found ctype.to_s #{ctype.to_s}" unless @counts[ctype.to_s]
       @counts[ctype.to_s] ||= 0
       @counts[ctype.to_s] += 1
       @lookandfeel.lookup("square_#{ctype}")
@@ -207,37 +206,55 @@ class CsvResult < HtmlGrid::Component
 		formatted_date(pack, :inactive_date)
 	end
 	def introduction_date(pack)
-		if((sl = pack.sl_entry) && (date = sl.introduction_date))
-			@lookandfeel.format_date(date)
+		if (sl = pack.sl_entry)
+      begin
+        date = sl.introduction_date
+        @lookandfeel.format_date(date)
+      rescue => e
+        return 'missing sl_entry package ean code=' + pack.barcode.to_s
+      end
 		end
 	end
 	def limitation(pack)
 		if(sl = pack.sl_entry)
-      lim = sl.limitation
-      if lim
-        @counts['limitations'] += 1
-        boolean(lim)
+      begin
+        lim = sl.limitation
+        if lim
+          @counts['limitations'] += 1
+          boolean(lim)
+        end
+      rescue => e
+        return 'missing sl_entry(.limitation) package ean code=' + pack.barcode.to_s
       end
 		end
 	end
 	def limitation_points(pack)
 		if(sl = pack.sl_entry)
-      points = sl.limitation_points.to_i
-      if points > 0
-        if sl.limitation_text
-          @counts['limitation_both'] += 1
+      begin
+        points = sl.limitation_points.to_i
+        if points > 0
+          if sl.limitation_text
+            @counts['limitation_both'] += 1
+          end
+          @counts['limitation_points'] += 1
+          points
         end
-        @counts['limitation_points'] += 1
-        points
+      rescue => e
+        return 'missing sl_entry(.limitation_points) package ean code=' + pack.barcode.to_s
       end
 		end
 	end
 	def limitation_text(pack)
-		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
-      if txt.respond_to?(@lookandfeel.language) and lim_txt = txt.send(@lookandfeel.language).to_s
-        @counts['limitation_texts'] += 1
-        lim_txt.force_encoding('utf-8')
-        lim_txt.gsub(/\n/u, '|')
+		if (sl = pack.sl_entry)
+      begin
+        txt = sl.limitation_text
+        if txt.respond_to?(@lookandfeel.language) and lim_txt = txt.send(@lookandfeel.language).to_s
+          @counts['limitation_texts'] += 1
+          lim_txt.force_encoding('utf-8')
+          lim_txt.gsub(/\n/u, '|')
+        end
+      rescue => e
+        return 'missing sl_entry(.limitation_text) package ean code=' + pack.barcode.to_s
       end
 		end
 	end
@@ -421,17 +438,18 @@ class CsvResult < HtmlGrid::Component
         index += 1
       }
       @total = index - 1
-    else # atc_class(default)
+    when :atc_class
       result.push(header(keys))
       index += 1
-      @model.each { |atc|
+      @model.each do |atc|
         result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
         index += 1
         ean = {}
         # Rule:
         # For the CSV Exporter only export the Product with the longer ATC-Code.
         # We export the product with the ATC-Code that has more digits
-        atc.send(symbol).each { |pack|
+        atc.send(symbol).each do |pack|
+          next unless pack
           if(eans[pack.ikskey].nil?)
             eans[pack.ikskey] = {:cnt => 0}
           end
@@ -446,17 +464,24 @@ class CsvResult < HtmlGrid::Component
           end
           eans[pack.ikskey][:atc] = atc_code
           eans[pack.ikskey][:idx] = index
-          line = keys.collect { |key|
-            if(self.respond_to?(key))
-              self.send(key, pack)
-            else
-              pack.send(key)
+          key = nil
+          begin
+            line = keys.collect do |key|
+              if(self.respond_to?(key))
+                self.send(key, pack)
+              else
+                pack.send(key)
+              end
             end
-          }
-          result.push(line)
+            result.push(line)
+          rescue => e
+            result.push ["error collecting #{key} for ean code=" + pack.barcode.to_s]
+          end
           index += 1
-        }
-      }
+        end
+      end
+    else
+      puts "unexpected target #{target}"
     end
     res =result.compact.collect { |line|
       if encoding
