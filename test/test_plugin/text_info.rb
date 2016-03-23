@@ -15,9 +15,9 @@ require 'flexmock'
 require 'flexmock/test_unit'
 require 'plugin/text_info'
 require 'model/text'
-
 module ODDB
-	class FachinfoDocument
+  RUN_ALL = false
+  class FachinfoDocument
 		def odba_id
 			1
 		end
@@ -29,20 +29,6 @@ module ODDB
         :details_dir
   end
 
-  class TestTextInfoPluginMethods<MiniTest::Test
-    x = %(<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>)
-    y = %(
-data/html/fachinfo/de/Bisoprolol_Axapharm_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62111 (Swissmedic)</span></span><span class="s8"><span>.</span></span></p>
-data/html/fachinfo/de/Diclo_Acino_retard_rektale_Kapseln__Film__Retardtabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62'728, 62'731, 62'730, 62’729 (</span></span><span class="s8"><span>Swissmedic</span></span><span class="s8"><span>)</span></span></p>
-data/html/fachinfo/de/Finasterid_Mepha__5_swissmedicinfo.html:    <p class="noSpacing">58107 (Swissmedic).</p>
-data/html/fachinfo/de/Finasterid_Streuli__5_swissmedicinfo.html:<p class="s4"><span class="s8"><span>58</span></span><span class="s8"><span>’</span></span><span class="s8"><span>106 </span></span><span class="s8"><span>(Swissmedic)</span></span></p>
-data/html/fachinfo/de/Olanpax__Filmtabletten_Schmelztabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>Filmtabletten: </span></span><span class="s8"><span>62</span></span><span class="s8"><span>‘</span></span><span class="s8"><span>223</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
-data/html/fachinfo/de/Olanpax__Filmtabletten_Schmelztabletten_swissmedicinfo.html:<p class="s4"><span class="s8"><span>Schmelztabletten: </span></span><span class="s8"><span>62</span></span><span class="s8"><span>‘</span></span><span class="s8"><span>224</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
-data/html/fachinfo/de/Xalos_Duo_swissmedicinfo.html:<p class="s4"><span class="s8"><span>62’439</span></span><span class="s8"><span> (Swissmedic).</span></span></p>
-data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8"><span>32917</span></span><span class="s8"><span> </span></span><span class="s8"><span>(</span></span><span class="s8"><span>Swissmedic)</span></span><span class="s8"><span> </span></span></p>
-)
-  end
-  
   class TestTextInfoPlugin <MiniTest::Test
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -179,7 +165,8 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       old_news = ["Amiodarone Winthrop\302\256/- Mite"]
       assert_equal news, @plugin.true_news(news, old_news)
     end
-  end
+  end if RUN_ALL
+
   class TestExtractMatchedName <MiniTest::Test
     include FlexMock::TestCase
     Nr_FI_in_AIPS_test = 4
@@ -192,11 +179,15 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
     def setup
       pointer = flexmock 'pointer'
       @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
+      latest_from = File.expand_path('../data/xlsx/Packungen-latest.xlsx', File.dirname(__FILE__))
+      latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
+      FileUtils.cp(latest_from, latest_to, :verbose => true, :preserve => true)
       @app = flexmock 'application'
       @reg = flexmock 'registration'
       @reg.should_receive(:pointer).and_return(pointer).by_default
       @reg.should_receive(:odba_store).and_return(nil).by_default
       @reg.should_receive(:company).and_return('company')
+      @reg.should_receive(:inactive?).and_return(false)
       lang_de = flexmock 'lang_de'
       lang_de.should_receive(:de).and_return('fi_de')
       lang_de.should_receive(:text).and_return('fi_text')
@@ -213,6 +204,8 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       @fachinfo.should_receive(:pointer).and_return(pointer)
       @fachinfo.should_receive(:descriptions).and_return(@descriptions)
       @fachinfo.should_receive(:odba_store)
+      @fachinfo.should_receive(:iksnrs).and_return(['56079'])
+      @fachinfo.should_receive(:name_base).and_return('name_base')
 
       @app.should_receive(:create_patinfo).and_return(Patinfo.new)
 
@@ -226,17 +219,22 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
       @sequence.should_receive(:patinfo).and_return(nil).by_default
       @sequence.should_receive(:patinfo=).and_return(nil).by_default
       @sequence.should_receive(:odba_store)
+      @package = flexmock('package')
+      @sequence.should_receive(:package).and_return(@package)
 
       atc_class = flexmock 'atc_class'
       atc_class.should_receive(:pointer).and_return(pointer)
       @app.should_receive(:atc_class).and_return(atc_class)
       @app.should_receive(:update).and_return(@fachinfo)
       @reg.should_receive(:fachinfo).and_return(@fachinfo)
-      @reg.should_receive(:iksnr).and_return('iksnr')
+      @reg.should_receive(:iksnr).and_return('56079')
       @reg.should_receive(:name_base).and_return('name_base')
       @reg.should_receive(:packages).and_return([])
       @app.should_receive(:registration).and_return(@reg)
+      @app.should_receive(:registrations).and_return({'x' => @reg})
+      @app.should_receive(:sequences).and_return([@sequence])
       @reg.should_receive(:sequences).and_return({'01' => @sequence})
+      @reg.should_receive(:sequence).and_return(@sequence)
       @parser = flexmock('parser (simulates ext/fiparse)',
                          :parse_fachinfo_html => 'fachinfo_html',
                          :parse_patinfo_html => 'patinfo_html',
@@ -252,13 +250,7 @@ data/html/fachinfo/de/Zyloric__swissmedicinfo.html:<p class="s5"><span class="s8
                   :xml_file => @aips_download,
                   }
     end
-if true
-    def test_check_swissmedicno_fi_pi # see also jobs/check_swissmedicno_fi_pi
-      @options = {:download => false, :xml_file => @aips_download} # specify an XML file to speed things up
-      @plugin.import_swissmedicinfo(@options)
-      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
-    end
-
+if RUN_ALL
     def test_update_swissmedicno_fi_pi # see also jobs/update_swissmedicno_fi_pi
       @reg.should_receive(:odba_store).at_least.once
       @options = {:download => false,  :reparse => true, :xml_file => @aips_download} # specify an XML file to speed things up
@@ -289,7 +281,6 @@ if true
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
     end
-  end
 
     def test_import_daily_fi
       @options[:target] = :fi
@@ -332,6 +323,25 @@ if true
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
 
+      assert_equal(Nr_PI_in_AIPS_test , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
+      assert_equal(Nr_PI_in_AIPS_test , @plugin.corrected_pis.size, 'nr corrected_pis must match')
+
+      assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
+      assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
+      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+    end
+  end
+    def test_import_daily_packungen
+      @options[:target] = :pi
+      @options[:newest] = true
+      # Add tests that patinfo gets updated
+      @plugin.import_swissmedicinfo(@options)
+      assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
+
+      puts @plugin.report
       assert_equal(Nr_PI_in_AIPS_test , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
       assert_equal(Nr_PI_in_AIPS_test , @plugin.corrected_pis.size, 'nr corrected_pis must match')
