@@ -459,6 +459,7 @@ class OddbPrevalence
 	end
 	def create_patinfo
 		patinfo = ODDB::Patinfo.new
+    patinfo.pointer = ODDB::Persistence::Pointer.new([:patinfo, patinfo.oid])
 		@patinfos.store(patinfo.oid, patinfo)
 	end
 	def create_poweruser
