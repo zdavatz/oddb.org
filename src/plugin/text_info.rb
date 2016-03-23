@@ -138,23 +138,36 @@ module ODDB
     end
 
     def TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
-      # msg = "add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text.split("\n")[0..2]} -> #{new_text.split("\n")[0..2]}"
-      # LogFile.debug msg; puts msg
+      msg = "add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text.split("\n")[0..2]} -> #{new_text.split("\n")[0..2]}"
+      LogFile.debug msg
       text_item.add_change_log_item(old_text, new_text)
       text_item.odba_store
     end
 
     def TextInfoPlugin::store_fachinfo(app, reg, fis)
-      LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys}"
       existing = reg.fachinfo
-      ptr = Persistence::Pointer.new(:fachinfo).creator
       if existing
-        existing.descriptions[fis.keys.first] = fis.values.first
-        existing.odba_store
-        app.update existing.pointer, fis
-        reg.fachinfo
+        lang = fis.keys.first
+        updated_fi = app.update existing.pointer, fis
+        if existing
+          old_text = eval("existing.#{lang}.text")
+          if old_text
+            text_item = eval("updated_fi.#{lang}")
+            new_text = text_item.text
+            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)}"
+            unless old_text.eql?(new_text)
+              TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
+            end
+          else
+            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
+          end
+        end
+        updated_fi.odba_store
+        updated_fi
       else
-        updated_fi = app.update ptr, fis
+        fachinfo = app.create_fachinfo
+        LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} create_fachinfo #{fachinfo.pointer}"
+        updated_fi = app.update fachinfo.pointer, fis
       end
     end
     def store_orphaned iksnr, info, point=:orphaned_fachinfo
@@ -1208,7 +1221,7 @@ module ODDB
       text_info = nil
       reg = nil
       reg = @app.registration(meta_info.iksnr)
-      if reg.sequences.size == 0 # Workaround for Ebixa problem
+      if reg == nil || reg.sequences.size == 0 # Workaround for Ebixa problem
         LogFile.debug "parse_textinfo #{__LINE__}: skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found"
         return
       end

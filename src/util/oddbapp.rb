@@ -406,6 +406,7 @@ class OddbPrevalence
   end
 	def create_fachinfo
 		fachinfo = ODDB::Fachinfo.new
+    fachinfo.pointer = ODDB::Persistence::Pointer.new([:fachinfo, fachinfo.oid])
 		@fachinfos.store(fachinfo.oid, fachinfo)
 	end
   def create_feedback
