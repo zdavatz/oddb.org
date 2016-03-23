@@ -158,7 +158,7 @@ module ODDB
       files = []
       @file_path = File.join EXPORT_DIR, 'idx_th.csv'
       files.push EXPORT_SERVER.export_idx_th_csv(ids, EXPORT_DIR, 'idx_th.csv')
-      ids = @app.packages.sort_by { |pac| pac.ikskey }.collect { |pac| 
+      ids = @app.packages.compact.sort_by { |pac| pac.ikskey.to_s }.collect { |pac|
         pac.odba_id }
       files.push EXPORT_SERVER.export_ean13_idx_th_csv(ids, EXPORT_DIR, 
                                                        'ean13_idx_th.csv')
