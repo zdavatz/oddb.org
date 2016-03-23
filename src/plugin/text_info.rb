@@ -261,9 +261,7 @@ module ODDB
 
    def store_patinfo_for_one_packages(package, lang, patinfo_lang)
       package.patinfo = @app.create_patinfo unless package.patinfo
-      package.patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
-      # package.patinfo.pointer ||=  Persistence::Pointer.new(:patinfo, package.patinfo.oid)
-      msg = "store_patinfo_for_one_packages #{package.iksnr} #{lang} #{package.patinfo.oid} #{patinfo_lang.to_s.split("\n")[0..1]}"
+      msg = "#{package.pointer} #{lang} #{package.patinfo.oid} #{package.patinfo.pointer} #{patinfo_lang.to_s.split("\n")[0..1]}"
       LogFile.debug msg; puts msg
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
       package.patinfo.odba_store
@@ -288,17 +286,16 @@ module ODDB
         languages[lang] = patinfo_lang
         ptr = existing.pointer
         patinfo = @app.update ptr, languages
+        patinfo.odba_store
       else
         patinfo = @app.create_patinfo
-        patinfo.pointer ||= Persistence::Pointer.new(:patinfo).creator
-        # patinfo.pointer ||=  Persistence::Pointer.new(:patinfo, patinfo.oid)
         patinfo.descriptions # create descriptions by default
         patinfo.descriptions[lang] = patinfo_lang
         reg.sequences.values.first.patinfo = patinfo
         patinfo.odba_store
         reg.sequences.values.first.odba_store
         reg.odba_store
-        LogFile.debug "store_patinfo none for reg.iksnr #{reg.iksnr} new oid #{patinfo.oid} #{ patinfo_lang.to_s.split("\n")[0..2]}"
+        LogFile.debug "store_patinfo #{patinfo.pointer} none for reg.iksnr #{reg.iksnr} new oid #{patinfo.oid} #{ patinfo_lang.to_s.split("\n")[0..2]}"
       end
       reg.each_sequence do |seq|
         if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
@@ -321,7 +318,7 @@ module ODDB
       end
       # return unless @options[:reparse] && @options[:newest]
       if pis.size != 1 || !pis.values.first
-        puts "We expect pis.size to be 1 and valid, but it is #{pis}"
+        LogFile.debug "We expect pis.size to be 1 and valid, but it is #{pis}"
         return
         exit 3
       end
@@ -344,14 +341,27 @@ module ODDB
                 barcode_override = "#{package.barcode}_#{meta_info.type}_#{lang}"
                 name = @specify_barcode_to_text_info[barcode_override]
                 if meta_info.title.eql?(name)
-                  puts "Updated as matched via #{barcode_override} -> #{name} #{package.instance_eval('@patinfo')}"
-                  store_patinfo_for_one_packages(package, lang, patinfo_lang)
+                  current_name = nil
+                  current_name ||= eval("package.patinfo.#{lang}.name if package.patinfo.#{lang}") if package.patinfo
+                  if current_name == nil || patinfo_lang.name.eql?(current_name)
+                    LogFile.debug "#{package.pointer}: Updated as matched via #{barcode_override} -> #{name} #{package.instance_eval('@patinfo')}"
+                    store_patinfo_for_one_packages(package, lang, patinfo_lang)
+                  else # must save other langues which may be correct
+                    old_ti = package.patinfo
+                    package.patinfo = @app.create_patinfo
+                    Languages.each do |old_lang|
+                      next if old_lang.eql?(lang)
+                      eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
+                    end
+                    LogFile.debug "#{package.pointer}: Created new #{current_name} as matched via #{barcode_override} -> #{name} #{package.patinfo.oid}"
+                    store_patinfo_for_one_packages(package, lang, patinfo_lang)
+                  end
                   @corrected_pis << msg
                   @updated_pis << "  #{msg}"
                 elsif name
-                  puts "Skipped: #{msg} != #{meta_info.title}"
+                  LogFile.debug "Skipped: #{msg} as #{meta_info.title} != #{name}"
                 else
-                  puts "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
+                  LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
                   @missing_override << "#{barcode_override}: '#{meta_info.title}' # != override #{name}"
                 end
               end
