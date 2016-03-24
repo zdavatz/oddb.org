@@ -30,8 +30,9 @@ module ODDB
     attr_accessor :parser
     attr_reader  :updated, :iksnrs_meta_info, :details_dir
     def read_packages
-      @packages = { '32917' => 'Zyloric®'} 
-    end    
+      @packages = []
+      @packages << IKS_Package.new('32917', '01', '001', 'Zyloric®')
+    end
   end
 
   class TestTextInfoChangeLogin <MiniTest::Test
@@ -244,8 +245,8 @@ if RunAll
       fi.should_receive(:pointer).never.and_return Persistence::Pointer.new([:fachinfo,1])
       pi = flexmock 'patinfo'
       flags = {:de => :up_to_date, :fr => :up_to_date}
-      @parser.should_receive(:parse_textinfo).at_least.once
-      @parser.should_receive(:parse_fachinfo_html).never
+      @parser.should_receive(:parse_textinfo).never
+      @parser.should_receive(:parse_fachinfo_html).at_least.once
       @parser.should_receive(:parse_patinfo_html).never
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
       assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
@@ -464,8 +465,8 @@ if RunAll
       # @app.create_registration('43788')
       patinfo = setup_texinfo_mock(:patinfo)
       @parser.should_receive(:parse_fachinfo_html).never
-      @parser.should_receive(:parse_patinfo_html).at_least.once.and_return(patinfo)
-      @parser.should_receive(:parse_textinfo).at_least.once
+      @parser.should_receive(:parse_patinfo_html).and_return(patinfo).at_least.once
+      @parser.should_receive(:parse_textinfo).never
       @plugin.parser = @parser
 
       @app.create_registration('15219')

@@ -108,22 +108,28 @@ module ODDB
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments subject #{mail_subject}", Time.now)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments body #{mail_body}", Time.now)
-      Mail.deliver do
-        from     override_from ? override_from : Util.mail_from
-        to       Util.check_and_get_all_recipients(list_and_recipients)
-        subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
-        body     mail_body
-        attachments.each {
-          |attachment|
-          add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
-        }
+      # try sending the mail several times
+      1.upto(3).each do |idx|
+        begin
+          Mail.deliver do
+            from     override_from ? override_from : Util.mail_from
+            to       Util.check_and_get_all_recipients(list_and_recipients)
+            subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
+            body     mail_body
+            attachments.each do
+              |attachment|
+              add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
+            end
+          end
+          LogFile.append('oddb/debug', "Returning after #{idx} tries")
+          return true
+        rescue => e
+          msg = "Util.send_mail_with_attachments rescue: idx is #{idx} error is #{e.inspect} #{caller[0..10].inspect}"
+          Util.debug_msg(msg)
+          sleep(1)
+        end
       end
-
-    rescue => e
-      msg = "Util.send_mail_with_attachments rescue: error is #{e.inspect} #{caller[0..10].inspect}"
-      # require 'pry'; binding.pry
-      Util.debug_msg(msg)
-      raise e
+      raise "Util.send_mail_with_attachments Unable to send after #{idx} tries. error is #{e.inspect} #{caller[0..10].inspect}"
     end
 
     # Utility methods for checking mails in  unit-tests
