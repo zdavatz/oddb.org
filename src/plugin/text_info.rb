@@ -148,21 +148,18 @@ module ODDB
       existing = reg.fachinfo
       if existing
         lang = fis.keys.first
-        updated_fi = app.update existing.pointer, fis
-        if existing
-          old_text = eval("existing.#{lang}.text")
-          if old_text
-            text_item = eval("updated_fi.#{lang}")
-            new_text = text_item.text
-            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)}"
-            unless old_text.eql?(new_text)
-              TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
-            end
-          else
-            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
+        old_text = eval("existing.#{lang}.text")
+        updated_fi = app.update reg.fachinfo.pointer, fis
+        if old_text
+          text_item = eval("updated_fi.#{lang}")
+          new_text = text_item.text
+          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)}"
+          unless old_text.eql?(new_text)
+            TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
           end
+        else
+          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
         end
-        updated_fi.odba_store
         updated_fi
       else
         fachinfo = app.create_fachinfo
