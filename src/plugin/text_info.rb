@@ -1315,7 +1315,11 @@ module ODDB
         @iksnrs_from_aips.sort.uniq.each { |iksnr| file.puts iksnr }
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
           @app.registration(iksnr).packages.each do |pack|
-            file.puts "#{iksnr} #{pack.barcode} #{pack.name}"
+            if pack.is_a?(ODDB::Package)
+              file.puts "#{iksnr} #{pack.barcode} #{pack.name}"
+            else
+              file.puts "# not a pack for #{iksnr} #{pack.inspect}"
+            end
           end if @app.registration(iksnr)
         end
         @duplicate_entries.sort.uniq.each { |duplicate| file.puts duplicate }
