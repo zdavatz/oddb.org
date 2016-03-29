@@ -1310,10 +1310,10 @@ module ODDB
     end
 
     def report_problematic_names
-      LogFile.debug "#{Time.now}: Creating #{@problematic_fi_pi}"
+      LogFile.debug "#{Time.now}: Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
       File.open(@problematic_fi_pi, 'w+') do |file|
-        @iksnrs_from_aips.sort.uniq.each { |iksnr| file.puts iksnr }
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
+          file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"
           @app.registration(iksnr).packages.each do |pack|
             if pack.is_a?(ODDB::Package)
               file.puts "#{iksnr} #{pack.barcode} #{pack.name}"
@@ -1321,18 +1321,9 @@ module ODDB
               file.puts "# not a pack for #{iksnr} #{pack.inspect}"
             end
           end if @app.registration(iksnr)
-        end
+        end if @duplicate_entries.size > 0
+        file.puts "# Start of @duplicate_entries"
         @duplicate_entries.sort.uniq.each { |duplicate| file.puts duplicate }
-        file.sync = true
-        begin
-          @iksnrs_from_aips.sort.uniq.each do |iksnr|
-            next if iksnr.to_i == 0
-            # puts "#{Time.now}: getting refdatainfo for #{iksnr}"
-            # file.puts @app.get_refdata_info(iksnr)
-          end
-        rescue DRb::DRbConnError => err
-          puts "err #{err} in report_problematic_names"
-        end
       end
       LogFile.debug "created #{@problematic_fi_pi}"
     end
