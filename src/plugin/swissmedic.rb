@@ -107,6 +107,12 @@ public
           @recreate_missing << key
           update_registrations([row], {}, nil)
         end
+        pack = seq.package(packnr) if reg && seq && seq.package(packnr)
+        if pack && !pack.sequence # eg. we have a missing Ebixa package in database
+          LogFile.debug "store_found_packages: fix missing sequence in #{key}"
+          pack.sequence = seq
+          pack.odba_store
+        end
         @known_packages << key
       end
     end
@@ -744,8 +750,8 @@ public
     end
 
     def create_composition_in_sequence(sequence)
+      component_in_db = sequence.create_composition
       sequence.fix_pointers # needed for make unit tests pass. Should not do any harm on the real database
-      component_in_db = @app.create(sequence.pointer + :composition)
       LogFile.debug("create_composition_in_sequence component_in_db.pointer #{component_in_db.pointer.inspect} size #{sequence.compositions.size}")
       component_in_db
     end
@@ -986,12 +992,15 @@ public
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
         if package.nil? and ptr.is_a?(Persistence::Pointer)
-          package = @app.create(ptr)
-          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package}"
+          package = seq.create_package(ikscd)
+          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
+          seq.packages[ikscd] = package
+          seq.fix_pointers
+          seq.odba_store
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
-          part = @app.create((ptr + [:part]).creator)
+          part = package.create_part
           LogFile.debug "create part.oid #{part.oid} part.pointer #{part.pointer}"
         else
           part = package.parts[pidx]

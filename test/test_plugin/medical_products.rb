@@ -109,6 +109,7 @@ module ODDB
         @sequence_mock
       end
       def create_fachinfo
+        @fachinfo ||= Fachinfo.new
         @fachinfo
       end
       def odba_store
