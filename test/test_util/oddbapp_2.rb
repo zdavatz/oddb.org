@@ -707,6 +707,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
   def test_create_fachinfo
     fachinfo = flexmock('fachinfo') do |fi|
       fi.should_receive(:oid)
+      fi.should_receive(:pointer=).and_return('pointer=')
     end
     flexmock(ODDB::Fachinfo) do |fi|
       fi.should_receive(:new).and_return(fachinfo)

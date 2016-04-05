@@ -34,6 +34,7 @@ module ODDB
 			self.packages.empty?
 		end
 		def has_ddd?
+      @packages ||= @atc.active_packages
 			!!@packages.find{|x| x.ddd}
 		end
     def overflow?
@@ -43,7 +44,7 @@ module ODDB
 			@atc.pointer
 		end
 		def packages
-			@packages ||= @atc.active_packages
+      @packages ||= @atc.active_packages
 			unless(@packages_sorted)
 				@packages = sort_result(@packages, @session)
 				@packages_sorted = true
