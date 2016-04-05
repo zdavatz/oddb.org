@@ -90,7 +90,9 @@ module ODDB
       assert(@facade.empty?)
     end
     def test_has_ddd?
-      flexmock(@atc, :has_ddd? => true)
+      package = flexmock('package', :ddd => 'ddd')
+      flexmock(@atc, :active_packages => [package])
+      @facade  = ODDB::AtcFacade.new(@atc, @session, @result)
       assert(@facade.has_ddd?)
     end
     def test_overflow?
