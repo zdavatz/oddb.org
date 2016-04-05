@@ -153,6 +153,22 @@ public
         LogFile.debug "verify_packages deactivated #{@deletes_packages.size} @deletes_packages"
       end
     end
+
+    def trace_memory_useage
+      while @@do_tracing
+        bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+        mbytes = bytes / (2**20)
+        LogFile.debug("Using #{mbytes} MB of memory")
+        startTime = Time.now
+        # Check done every second
+        0.upto(60) do |idx|
+          sleep(1)
+          next if (Time.now-startTime).to_i > 60 # report time every 60 seconds,regardless of CPU useage
+          break unless @@do_tracing
+        end
+      end
+    end
+
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       start_time = Time.new
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
@@ -163,7 +179,14 @@ public
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
       LogFile.debug(msg)
       file2open = target if target and File.exists?(target)
+      threads = []
+      threads << Thread.new do
+        @@do_tracing = true
+        threads.last.priority = threads.last.priority + 1
+        trace_memory_useage
+      end
       if @update_comps
+      @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
         row_nr = 4
         last_checked = nil
@@ -250,6 +273,8 @@ public
         false
       end
       LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps.to_s[0..300]} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
+      @@do_tracing = false
+      threads.map(&:join)
       @update_comps ? true : @diff
     end
     # check diff from overwritten stored-objects by admin
@@ -757,6 +782,7 @@ public
     end
 
     def update_compositions(sequence, row, opts={:create_only => false}, composition_text, parsed_comps)
+      GC.start
       comps = []
       if !@update_comps && opts[:create_only] && !sequence.active_agents.empty?
         trace_msg("#{__FILE__}:#{__LINE__} update_compositions create_only")
@@ -1029,6 +1055,7 @@ public
       end
     end
     def update_registration(row, opts = {})
+      GC.start
       first_day = Date.new(@@today.year, @@today.month, 1)
       opts = {:date => first_day, :create_only => false}.update(opts)
       opts[:date] ||= first_day
