@@ -30,8 +30,9 @@ module ODDB
     attr_accessor :parser
     attr_reader  :updated, :iksnrs_meta_info, :details_dir
     def read_packages
-      @packages = []
-      @packages << IKS_Package.new('32917', '01', '001', 'Zyloric®')
+      @packages = {}
+      @packages['32917'] = IKS_Package.new('32917', '01', '001')
+      @packages['43788'] = IKS_Package.new('43788', '01', '019')
     end
   end
 
@@ -544,10 +545,11 @@ if RunAll
       end
       assert(File.exist?(@plugin.problematic_fi_pi))
       assert(File.size(@plugin.problematic_fi_pi) > 100)
-      assert(@plugin.updated_fis.size > 4)
-      assert_equal(0, @plugin.updated_pis.size)
-      skip('updating FIs does not update updated')
-      assert(@plugin.updated.size > 4)
+      nr_fis = 8
+      nr_pis = 0
+      assert_equal(nr_fis, @plugin.updated_fis.size)
+      assert_equal(nr_pis, @plugin.updated_pis.size)
+      assert(nr_fis + nr_pis, @plugin.updated.size)
 
     end
   end
