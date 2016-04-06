@@ -155,13 +155,18 @@ public
     end
 
     def trace_memory_useage
+      max_mbytes = 16 * 1024
       while @@do_tracing
         bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
         mbytes = bytes / (2**20)
-        LogFile.debug("Using #{mbytes} MB of memory")
+        LogFile.debug("Using #{mbytes} MB of memory. Limit is #{max_mbytes}")
         startTime = Time.now
         # Check done every second
         0.upto(60) do |idx|
+          if mbytes > max_mbytes # Exit process if more than 16 GB are used to avoid bringing the server down"
+            LogFile.debug("Aborting as using #{mbytes} MB of memory > than limit of #{max_mbytes}")
+            Thread.main.raise SystemExit
+          end
           sleep(1)
           next if (Time.now-startTime).to_i > 60 # report time every 60 seconds,regardless of CPU useage
           break unless @@do_tracing
