@@ -1202,7 +1202,7 @@ module ODDB
       return unless Languages.index(meta_info.lang.to_sym)
       return if @options[:target] != :both && @options[:target] != type
       if type == :pi && !@packages[meta_info[:iksnr]]
-        LogFile.debug "parse_textinfo #{__LINE__}: skip #{meta_info[:type]} as #{meta_info.iksnr} #{meta_info.title} not found in Packungen.xlsx"
+        LogFile.debug "skip #{meta_info[:type]} as #{meta_info.iksnr} #{meta_info.title} not found in Packungen.xlsx"
         return
       end
       nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
@@ -1225,13 +1225,13 @@ module ODDB
       reg = nil
       reg = @app.registration(meta_info.iksnr)
       if reg == nil || reg.sequences.size == 0 # Workaround for Ebixa problem
-        LogFile.debug "parse_textinfo #{__LINE__}: skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found"
+        LogFile.debug "skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found"
         return
       end
       text_info = get_textinfo(meta_info,  meta_info.iksnr)
 
       if !text_info || !text_info.descriptions.keys.index(meta_info.lang)
-        LogFile.debug "parse_textinfo #{__LINE__}: must create textinfo for #{meta_info.type} #{meta_info.lang} #{meta_info.iksnr} of #{meta_info.authNrs}"
+        LogFile.debug "must create textinfo for #{meta_info.type} #{meta_info.lang} #{meta_info.iksnr} of #{meta_info.authNrs}"
       elsif !is_same_html
         LogFile.debug "parse_textinfo #{__LINE__} #{html_name} does is not the same: #{meta_info.authNrs}"
       elsif @options[:reparse]
