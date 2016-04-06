@@ -147,7 +147,7 @@ module ODDB
       reg = @app.create_registration('00288')
       seq = reg.create_sequence('02')
       seq.create_package('001')
-      @app.should_receive(:delete).never # Registrations don't get deleted, just out of date. And now substances nor active_agents should be deleted neither
+      @app.should_receive(:delete).twice
 
       result = @plugin.update({:update_compositions => true}, agent)
       assert_equal(3, @app.registrations.size)
@@ -170,7 +170,7 @@ module ODDB
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
       assert(result_second_run)
 
-      assert_equal(8, @app.registrations.size)
+      assert_equal(10, @app.registrations.size)
 
       assert_equal({"00278"=>[:company], "48624"=>[:new], "62069"=>[:new], "16105"=>[:new], "00488"=>[:new], "00279"=>[:delete]}, result_second_run.changes)
       missing = {}
@@ -191,11 +191,11 @@ module ODDB
 
       # Check that influvac is expired
       assert_equal('26', @app.registration('00485').sequence('26').seqnr)
-      assert_equal(0, @app.registration('00485').active_packages.size)
-      assert_equal(0, @app.registration('00485').packages.size)
-      assert_equal(10, @app.sequences.size)
-      assert_equal(14, @app.packages.size)
-      assert_equal(12, @app.active_packages.size)
+      assert_equal(2, @app.registration('00485').active_packages.size)
+      assert_equal(2, @app.registration('00485').packages.size)
+      assert_equal(12, @app.sequences.size)
+      assert_equal(19, @app.packages.size)
+      assert_equal(17, @app.active_packages.size)
     end
 
     def test_mustcheck

@@ -71,7 +71,8 @@ public
 
     # traces many details of changes. Use it for debugging purposes
     def trace_msg(msg)
-      $stdout.puts Time.now.to_s + ': ' + msg if false
+      return
+      $stdout.puts "#{Time.now.to_s } #{File.basename(caller[0])}: #{msg}"
     end
 
     def mustcheck(iksnr, opts = {})
@@ -106,6 +107,12 @@ public
           LogFile.debug "store_found_packages: recreate_missing #{key}"
           @recreate_missing << key
           update_registrations([row], {}, nil)
+        end
+        pack = seq.package(packnr) if reg && seq && seq.package(packnr)
+        if pack && !pack.sequence # eg. we have a missing Ebixa package in database
+          LogFile.debug "store_found_packages: fix missing sequence in #{key}"
+          pack.sequence = seq
+          pack.odba_store
         end
         @known_packages << key
       end
@@ -147,19 +154,47 @@ public
         LogFile.debug "verify_packages deactivated #{@deletes_packages.size} @deletes_packages"
       end
     end
+
+    def trace_memory_useage
+      max_mbytes = 16 * 1024
+      while @@do_tracing
+        bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+        mbytes = bytes / (2**20)
+        LogFile.debug("Using #{mbytes} MB of memory. Limit is #{max_mbytes}")
+        startTime = Time.now
+        # Check done every second
+        0.upto(60) do |idx|
+          if mbytes > max_mbytes # Exit process if more than 16 GB are used to avoid bringing the server down"
+            LogFile.debug("Aborting as using #{mbytes} MB of memory > than limit of #{max_mbytes}")
+            Thread.main.raise SystemExit
+          end
+          sleep(1)
+          next if (Time.now-startTime).to_i > 60 # report time every 60 seconds,regardless of CPU useage
+          break unless @@do_tracing
+        end
+      end
+    end
+
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       start_time = Time.new
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
-      msg = "#{__FILE__}:#{__LINE__} opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
+      msg = "opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
       LogFile.debug(msg)
       file2open = target if target and File.exists?(target)
+      threads = []
+      threads << Thread.new do
+        @@do_tracing = true
+        threads.last.priority = threads.last.priority + 1
+        trace_memory_useage
+      end
+      row_nr = 4
       if @update_comps
+      @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
-        row_nr = 4
         last_checked = nil
         file2open ||= @latest_packungen if @latest_packungen and File.exists?(@latest_packungen)
         unless file2open and File.exists?(file2open)
@@ -189,7 +224,7 @@ public
             seq = reg.sequence("%02i" %seqnr) if reg
             update_all_sequence_info(row, reg, seq) if reg and seq
             GC.enable unless already_disabled
-            trace_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+            trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
           end
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
@@ -210,8 +245,8 @@ public
         else
           LogFile.debug " No latest_packungen #{@latest_packungen} exists"
         end
-        LogFile.debug " @update_comps #{@update_comps.to_s[0..300]}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
-        LogFile.debug " changes: #{@diff.changes.inspect.to_s[0..300]}"
+        LogFile.debug " @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
+        LogFile.debug " changes: #{@diff.changes.size}"
         LogFile.debug " first news: #{@diff.news.first.inspect[0..250]}"
         update_registrations(@diff.news + @diff.updates, @diff.replacements, opts)
         set_all_export_flag_false
@@ -239,11 +274,44 @@ public
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
+      elsif opts[:check]
+        workbook = Spreadsheet.open(@latest_packungen)
+        Util.check_column_indices(workbook.worksheets[0])
+        @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+        workbook.worksheets[0].each() do
+          |row|
+          row_nr += 1
+          next if row_nr <= 4
+          break unless row
+          next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
+          iksnr =  cell(row, @target_keys.keys.index(:iksnr)).to_i
+          seqnr =  cell(row, @target_keys.keys.index(:seqnr)).to_i
+          ikscd =  cell(row, @target_keys.keys.index(:ikscd)).to_i
+          already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
+          reg = @app.registration("%05i" %iksnr)
+          seq = reg.sequence("%02i" %seqnr) if reg
+          pack = seq.package("%03i" %ikscd) if seq
+          if iksnr != 0 && !pack
+            LogFile.debug("Unable to find pack for #{iksnr}/#{seqnr}/#{ikscd}")
+            if reg and seq
+              update_package(reg, seq, row)
+              seq.packages.odba_store
+              seq.odba_store
+            end
+          end
+          GC.enable unless already_disabled
+          trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+        end
+        @update_time = ((Time.now - start_time) / 60.0).to_i
+        LogFile.debug "update check done"
+        true
       else
-        LogFile.debug " update return false as file2open is #{file2open.inspect}"
+        LogFile.debug("file2open #{file2open} nothing to do for opts #{opts}")
         false
       end
-      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps.to_s[0..300]} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
+      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
+      @@do_tracing = false
+      threads.map(&:join)
       @update_comps ? true : @diff
     end
     # check diff from overwritten stored-objects by admin
@@ -442,7 +510,7 @@ public
       end
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        msg = "#{__FILE__}:#{__LINE__} updated download.size is #{download.size} -> #{target} #{File.size(target)}"
+        msg = "updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
         LogFile.debug(msg)
         target
@@ -706,7 +774,7 @@ public
         @updated_agents.delete(agent)
       else
         msg = "#{from} ptr #{ptr.inspect} oid #{composition.oid} #{composition.active_agents.size} args #{args} parsed_substance #{parsed_substance}"
-        trace_msg("#{__FILE__}:#{__LINE__} update_active_agent update #{seq.iksnr}/#{seq.seqnr} #{msg}")
+        trace_msg("update_active_agent update #{seq.iksnr}/#{seq.seqnr} #{msg}")
         if /creator/i.match(from)
           @new_agents["#{seq.iksnr}/#{seq.seqnr}"] = msg
         else
@@ -744,16 +812,17 @@ public
     end
 
     def create_composition_in_sequence(sequence)
+      component_in_db = sequence.create_composition
       sequence.fix_pointers # needed for make unit tests pass. Should not do any harm on the real database
-      component_in_db = @app.create(sequence.pointer + :composition)
       LogFile.debug("create_composition_in_sequence component_in_db.pointer #{component_in_db.pointer.inspect} size #{sequence.compositions.size}")
       component_in_db
     end
 
     def update_compositions(sequence, row, opts={:create_only => false}, composition_text, parsed_comps)
+      GC.start
       comps = []
       if !@update_comps && opts[:create_only] && !sequence.active_agents.empty?
-        trace_msg("#{__FILE__}:#{__LINE__} update_compositions create_only")
+        trace_msg("update_compositions create_only")
         sequence.compositions
       elsif(namestr = cell(row, @target_keys.keys.index(:substances)))
         res = []
@@ -767,7 +836,7 @@ public
           LogFile.debug("update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.iksnr.inspect} and #{iksnr.inspect}")
           return
         end
-        trace_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
+        trace_msg("update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
         names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
         substances = names.collect { |name| update_substance(name) }
         unless composition_text
@@ -776,7 +845,7 @@ public
         end
         if sequence.composition_text != composition_text
           msg = "iksnr #{iksnr} seqnr #{seqnr} composition_text #{sequence.composition_text} -> #{composition_text}"
-          trace_msg("#{__FILE__}:#{__LINE__} #{msg}")
+          trace_msg("#{msg}")
           sequence.composition_text = composition_text
           sequence.odba_store
         end
@@ -836,6 +905,7 @@ public
             comps.push composition_in_db
             @new_compositions[ "#{iksnr}/#{seqnr} #{comp_idx}" ] = args
             composition_in_db.odba_store
+            sequence.compositions.odba_store
             sequence.odba_store
           }
           if (composition_in_db == nil)
@@ -852,13 +922,13 @@ public
           elsif not (parsed_comps.size == 1 && composition_in_db.substances.empty?)
             composition_in_db.active_agents.dup.each_with_index { |act, atc_idx|
               unless active_agents.include?(act.odba_instance)
-                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_active_agent(act.substance)
               end if act and act.substance
             }
             composition_in_db.inactive_agents.dup.each_with_index { |act, atc_idx|
               unless inactive_agents.include?(act.odba_instance)
-                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_inactive_agent(act.substance)
               end if act and act.substance
             } if composition_in_db.inactive_agents and composition_in_db.inactive_agents.is_a?(Array)
@@ -966,7 +1036,7 @@ public
         LogFile.debug("problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer")
         return
       end
-      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements.to_s[0..300]}"
+      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements.size} replacements"
       pidx = cell(row, row.size).to_i
       if(ikscd.to_i > 0)
         args = {
@@ -986,19 +1056,24 @@ public
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
         if package.nil? and ptr.is_a?(Persistence::Pointer)
-          package = @app.create(ptr)
-          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package}"
+          package = seq.create_package(ikscd)
+          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
+          seq.packages[ikscd] = package
+          seq.fix_pointers
+          seq.packages.odba_store
+          seq.odba_store
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
-          part = @app.create((ptr + [:part]).creator)
+          part = package.create_part
+          package.parts[pidx] = part
+          package.parts.odba_store
+          package.odba_store
           LogFile.debug "create part.oid #{part.oid} part.pointer #{part.pointer}"
         else
           part = package.parts[pidx]
         end
-        args = {
-          :size => [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' '),
-        }
+        part.size =  [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' ')
         if package.sequence and package.sequence.seqnr != seq.seqnr
           LogFile.debug "iksnr '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
@@ -1016,10 +1091,12 @@ public
           seq.packages.odba_store
           seq.odba_store
         end
+        part.odba_store
         res
       end
     end
     def update_registration(row, opts = {})
+      GC.start
       first_day = Date.new(@@today.year, @@today.month, 1)
       opts = {:date => first_day, :create_only => false}.update(opts)
       opts[:date] ||= first_day
@@ -1090,12 +1167,12 @@ public
     end
     def update_excipiens_in_composition(seq, parsed_compositions)
       unless seq.is_a?(ODDB::Sequence)
-        trace_msg("#{__FILE__}:#{__LINE__} skip update_excipiens_in_composition as #{seq.class} is not a ODDB::Sequence")
+        trace_msg("skip update_excipiens_in_composition as #{seq.class} is not a ODDB::Sequence")
         return
       end
       unless seq.iksnr
-        trace_msg("#{__FILE__}:#{__LINE__} skip update_excipiens_in_composition seq.iknsr is false")
-        trace_msg("#{__FILE__}:#{__LINE__} #{seq.inspect}")
+        trace_msg("skip update_excipiens_in_composition seq.iknsr is false")
+        trace_msg("#{seq.inspect}")
         return
       end
       iksnr = "%05i" % seq.iksnr.to_i
@@ -1140,7 +1217,7 @@ public
         to_consider =  mustcheck(iksnr, opts)
         next unless row
         next unless mustcheck(iksnr, opts)
-        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts} replacements #{replacements.to_s[0..300]}")
+        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
@@ -1161,7 +1238,7 @@ public
       if registration.sequence('00')
         ptr = registration.sequence('00').pointer
         if ptr
-          trace_msg("#{__FILE__}:#{__LINE__} delete sequence('00') seqnr #{seqnr} ptr #{ptr}")
+          trace_msg("delete sequence('00') seqnr #{seqnr} ptr #{ptr}")
           registration.sequence('00').delete_package('000')
           registration.delete_sequence('00')
         end

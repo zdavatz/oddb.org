@@ -4,6 +4,7 @@
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../../..", File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
@@ -11,7 +12,6 @@ require 'flexmock'
 require 'state/admin/registration'
 require 'util/log'
 require 'model/registration'
-#require 'src/state/admin/wait_for_fachinfo'
 
 module ODDB
   module State
@@ -68,22 +68,6 @@ class TestRegistration <Minitest::Test
       s.should_receive(:user_input).once.with(:fachinfo_upload).and_return(fi_file)
     end
     assert_kind_of(ODDB::State::Admin::WaitForFachinfo, @reg.instance_eval('get_fachinfo')) 
-  end
-  def test_get_fachinfo__textinfo_update
-    # This is a testcase of a private method
-    flexmock(ODDB::TextInfoPlugin).new_instances do |t|
-      t.should_receive(:import_fulltext)
-    end
-    flexmock(ODDB::Log).new_instances do |l|
-      l.should_receive(:update_values)
-      l.should_receive(:notify).and_return('notify')
-    end
-    flexmock(@model, :iksnr => 'iksnr')
-    flexmock(@session) do |s|
-      s.should_receive(:user_input).once.with(:language_select)
-      s.should_receive(:user_input).once.with(:textinfo_update).and_return('text_info_update')
-    end
-    assert_kind_of(ODDB::State::Admin::Registration, @reg.instance_eval(('get_fachinfo')))
   end
   def test_get_fachinfo__updated_textinfo
     # This is a testcase of a private method

@@ -14,6 +14,7 @@ module ODDB
         :fix_galenic_form       => false,
         :iksnrs                 => [],
         :update_compositions    => false,
+        :check                  => true,
       }
       ARGV.each do |arg|
         if arg =~ /fix_galenic_form/

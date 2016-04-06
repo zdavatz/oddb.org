@@ -41,10 +41,9 @@ module SearchBarMethods
     if self.respond_to?(:progress_bar)
       progressbar = "setTimeout('show_progressbar(\\'searchbar\\')', 10);"
     end
-    submit = @lookandfeel._event_url(@container.event, ['search', 'zone', @session.zone, name, ''])
+    submit = @lookandfeel._event_url(@container.event, ['search', 'zone', @session.zone, name, '']) if @container
     param = @lookandfeel.disabled?(:best_result) ? nil : " + '#best_result'"
     script = <<-JS
-    console.log('#{__LINE__}:')
 var query = this.form.#{name}.value;
   console.log('#{__LINE__}: query.submit #{val} query is: '+query);
 #{GET_TO_JS}
@@ -230,7 +229,6 @@ class SearchBar < HtmlGrid::InputText
     # because location stops gif animation.
     param = @lookandfeel.disabled?(:best_result) ? nil : " + '#best_result'"
     self.onsubmit = <<-JS
-console.log('#{__LINE__}: SearchBar.onsubmit this.search_type.value ' + this.search_type.value);
 #{GET_TO_JS}
 if (#{@name}.value!='#{val}') {
 #{timer}
