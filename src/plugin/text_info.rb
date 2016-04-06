@@ -17,7 +17,6 @@ require 'model/patinfo'
 require 'view/rss/fachinfo'
 require 'util/logfile'
 require 'rubyXL'
-require 'ext/refdata/src/refdata'
 
 module ODDB
 
@@ -99,14 +98,15 @@ module ODDB
       LogFile.debug "read_packages found latest_name #{latest_name}"
       @packages = {}
       @veterinary_products = {}
+      @target_keys = Util::COLUMNS_JULY_2015
       RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
-        next unless cell(row, @target_keys.index(:iksnr)).to_i and
-            cell(row, @target_keys.index(:seqnr)).to_i and
-            cell(row, @target_keys.index(:production_science)).to_i
-        next if (cell(row, @target_keys.index(:production_science)) == 'Tierarzneimittel')
-        iksnr = "%05i" % cell(row, @target_keys.index(:iksnr)).to_i
-        seqnr = "%03i" % cell(row, @target_keys.index(:seqnr)).to_i
-        name_base = cell(row, @target_keys.index(:name_base)).value.to_s
+        next unless row[@target_keys.keys.index(:iksnr)].to_i and
+            row[@target_keys.keys.index(:seqnr)].to_i and
+            row[@target_keys.keys.index(:production_science)].to_i
+        next if (row[@target_keys.keys.index(:production_science)] == 'Tierarzneimittel')
+        iksnr = "%05i" % row[@target_keys.keys.index(:iksnr)].to_i
+        seqnr = "%03i" % row[@target_keys.keys.index(:seqnr)].to_i
+        name_base = row[@target_keys.keys.index(:name_base)].value.to_s
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
       LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
@@ -563,7 +563,7 @@ module ODDB
       if @missing_override.size == 0
         res << "\nNo need to add anything to #{Override_file}"
       else
-        res << "#{Override_file}: The #{@missing_override.size} missing overrides are\n"
+        res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.join("\n")
       end
       res
@@ -1192,6 +1192,8 @@ module ODDB
         info = reg.fachinfo if reg
       else
         info = reg.packages.collect{|x| x.patinfo if x.respond_to?(:patinfo)  }.compact.first
+        # consider case where all packages have the same patinfo
+        info ||= reg.sequences.values.collect{|x| x.patinfo if x.respond_to?(:patinfo)  }.compact.first
       end
     end
 
@@ -1199,6 +1201,10 @@ module ODDB
       type = meta_info[:type].to_sym
       return unless Languages.index(meta_info.lang.to_sym)
       return if @options[:target] != :both && @options[:target] != type
+      if type == :pi && !@packages[meta_info[:iksnr]]
+        LogFile.debug "parse_textinfo #{__LINE__}: skip #{meta_info[:type]} as #{meta_info.iksnr} #{meta_info.title} not found in Packungen.xlsx"
+        return
+      end
       nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
@@ -1236,7 +1242,7 @@ module ODDB
           return
         end
       elsif meta_info.same_content_as_xml_file
-        LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} same_content_as_xml_file #{meta_info.authNrs}"
+        LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} same_content_as_xml_file #{meta_info.authNrs}" if false # default casse
         type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
         return
       end
@@ -1312,6 +1318,7 @@ module ODDB
     def report_problematic_names
       LogFile.debug "#{Time.now}: Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
       File.open(@problematic_fi_pi, 'w+') do |file|
+        file.write("# resolve these problems and add them to #{@missing_override_file}")
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
           file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"
           @app.registration(iksnr).packages.each do |pack|
@@ -1416,7 +1423,7 @@ module ODDB
       $stdout.sync = true
       @specify_barcode_to_text_info = {}
       @specify_barcode_to_text_info = YAML.load(File.read(Override_file)) if File.exist?(Override_file)
-
+      read_packages
       @options[:target] ||= :both
       threads = []
       if @options[:download] != false
