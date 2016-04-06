@@ -71,7 +71,8 @@ public
 
     # traces many details of changes. Use it for debugging purposes
     def trace_msg(msg)
-      $stdout.puts Time.now.to_s + ': ' + msg if false
+      return
+      $stdout.puts "#{Time.now.to_s } #{File.basename(caller[0])}: #{msg}"
     end
 
     def mustcheck(iksnr, opts = {})
@@ -223,7 +224,7 @@ public
             seq = reg.sequence("%02i" %seqnr) if reg
             update_all_sequence_info(row, reg, seq) if reg and seq
             GC.enable unless already_disabled
-            trace_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+            trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
           end
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
@@ -299,7 +300,7 @@ public
             end
           end
           GC.enable unless already_disabled
-          trace_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+          trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
         end
         @update_time = ((Time.now - start_time) / 60.0).to_i
         LogFile.debug "update check done"
@@ -509,7 +510,7 @@ public
       end
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
-        msg = "#{__FILE__}:#{__LINE__} updated download.size is #{download.size} -> #{target} #{File.size(target)}"
+        msg = "updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
         LogFile.debug(msg)
         target
@@ -773,7 +774,7 @@ public
         @updated_agents.delete(agent)
       else
         msg = "#{from} ptr #{ptr.inspect} oid #{composition.oid} #{composition.active_agents.size} args #{args} parsed_substance #{parsed_substance}"
-        trace_msg("#{__FILE__}:#{__LINE__} update_active_agent update #{seq.iksnr}/#{seq.seqnr} #{msg}")
+        trace_msg("update_active_agent update #{seq.iksnr}/#{seq.seqnr} #{msg}")
         if /creator/i.match(from)
           @new_agents["#{seq.iksnr}/#{seq.seqnr}"] = msg
         else
@@ -821,7 +822,7 @@ public
       GC.start
       comps = []
       if !@update_comps && opts[:create_only] && !sequence.active_agents.empty?
-        trace_msg("#{__FILE__}:#{__LINE__} update_compositions create_only")
+        trace_msg("update_compositions create_only")
         sequence.compositions
       elsif(namestr = cell(row, @target_keys.keys.index(:substances)))
         res = []
@@ -835,7 +836,7 @@ public
           LogFile.debug("update_compositions: iksnr #{iksnr} #{seqnr} mismatch between #{sequence.iksnr.inspect} and #{iksnr.inspect}")
           return
         end
-        trace_msg("#{__FILE__}:#{__LINE__} update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
+        trace_msg("update_compositions: iksnr #{iksnr} #{sequence.seqnr}/#{seqnr} sequence #{sequence} opts #{opts}") # if $VERBOSE
         names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| capitalize(name) }.uniq
         substances = names.collect { |name| update_substance(name) }
         unless composition_text
@@ -844,7 +845,7 @@ public
         end
         if sequence.composition_text != composition_text
           msg = "iksnr #{iksnr} seqnr #{seqnr} composition_text #{sequence.composition_text} -> #{composition_text}"
-          trace_msg("#{__FILE__}:#{__LINE__} #{msg}")
+          trace_msg("#{msg}")
           sequence.composition_text = composition_text
           sequence.odba_store
         end
@@ -921,13 +922,13 @@ public
           elsif not (parsed_comps.size == 1 && composition_in_db.substances.empty?)
             composition_in_db.active_agents.dup.each_with_index { |act, atc_idx|
               unless active_agents.include?(act.odba_instance)
-                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_active_agent(act.substance)
               end if act and act.substance
             }
             composition_in_db.inactive_agents.dup.each_with_index { |act, atc_idx|
               unless inactive_agents.include?(act.odba_instance)
-                trace_msg("#{__FILE__}:#{__LINE__} update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_inactive_agent(act.substance)
               end if act and act.substance
             } if composition_in_db.inactive_agents and composition_in_db.inactive_agents.is_a?(Array)
@@ -1166,12 +1167,12 @@ public
     end
     def update_excipiens_in_composition(seq, parsed_compositions)
       unless seq.is_a?(ODDB::Sequence)
-        trace_msg("#{__FILE__}:#{__LINE__} skip update_excipiens_in_composition as #{seq.class} is not a ODDB::Sequence")
+        trace_msg("skip update_excipiens_in_composition as #{seq.class} is not a ODDB::Sequence")
         return
       end
       unless seq.iksnr
-        trace_msg("#{__FILE__}:#{__LINE__} skip update_excipiens_in_composition seq.iknsr is false")
-        trace_msg("#{__FILE__}:#{__LINE__} #{seq.inspect}")
+        trace_msg("skip update_excipiens_in_composition seq.iknsr is false")
+        trace_msg("#{seq.inspect}")
         return
       end
       iksnr = "%05i" % seq.iksnr.to_i
@@ -1237,7 +1238,7 @@ public
       if registration.sequence('00')
         ptr = registration.sequence('00').pointer
         if ptr
-          trace_msg("#{__FILE__}:#{__LINE__} delete sequence('00') seqnr #{seqnr} ptr #{ptr}")
+          trace_msg("delete sequence('00') seqnr #{seqnr} ptr #{ptr}")
           registration.sequence('00').delete_package('000')
           registration.delete_sequence('00')
         end
