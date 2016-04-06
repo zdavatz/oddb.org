@@ -179,7 +179,7 @@ public
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
-      msg = "#{__FILE__}:#{__LINE__} opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
+      msg = "opts #{opts} @update_comps #{@update_comps} update target #{target.inspect}"
       msg += " #{File.size(target)} bytes. " if target
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
       LogFile.debug(msg)
@@ -190,10 +190,10 @@ public
         threads.last.priority = threads.last.priority + 1
         trace_memory_useage
       end
+      row_nr = 4
       if @update_comps
       @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
-        row_nr = 4
         last_checked = nil
         file2open ||= @latest_packungen if @latest_packungen and File.exists?(@latest_packungen)
         unless file2open and File.exists?(file2open)
@@ -244,8 +244,8 @@ public
         else
           LogFile.debug " No latest_packungen #{@latest_packungen} exists"
         end
-        LogFile.debug " @update_comps #{@update_comps.to_s[0..300]}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
-        LogFile.debug " changes: #{@diff.changes.inspect.to_s[0..300]}"
+        LogFile.debug " @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
+        LogFile.debug " changes: #{@diff.changes.size}"
         LogFile.debug " first news: #{@diff.news.first.inspect[0..250]}"
         update_registrations(@diff.news + @diff.updates, @diff.replacements, opts)
         set_all_export_flag_false
@@ -273,11 +273,42 @@ public
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
+      elsif opts[:check]
+        workbook = Spreadsheet.open(@latest_packungen)
+        Util.check_column_indices(workbook.worksheets[0])
+        @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+        workbook.worksheets[0].each() do
+          |row|
+          row_nr += 1
+          next if row_nr <= 4
+          break unless row
+          next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
+          iksnr =  cell(row, @target_keys.keys.index(:iksnr)).to_i
+          seqnr =  cell(row, @target_keys.keys.index(:seqnr)).to_i
+          ikscd =  cell(row, @target_keys.keys.index(:ikscd)).to_i
+          already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
+          reg = @app.registration("%05i" %iksnr)
+          seq = reg.sequence("%02i" %seqnr) if reg
+          pack = seq.package("%03i" %ikscd) if seq
+          if iksnr != 0 && !pack
+            LogFile.debug("Unable to find pack for #{iksnr}/#{seqnr}/#{ikscd}")
+            if reg and seq
+              update_package(reg, seq, row)
+              seq.packages.odba_store
+              seq.odba_store
+            end
+          end
+          GC.enable unless already_disabled
+          trace_msg"#{__FILE__}:#{__LINE__} update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+        end
+        @update_time = ((Time.now - start_time) / 60.0).to_i
+        LogFile.debug "update check done"
+        true
       else
-        LogFile.debug " update return false as file2open is #{file2open.inspect}"
+        LogFile.debug("file2open #{file2open} nothing to do for opts #{opts}")
         false
       end
-      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps.to_s[0..300]} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
+      LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
       @@do_tracing = false
       threads.map(&:join)
       @update_comps ? true : @diff
@@ -873,6 +904,7 @@ public
             comps.push composition_in_db
             @new_compositions[ "#{iksnr}/#{seqnr} #{comp_idx}" ] = args
             composition_in_db.odba_store
+            sequence.compositions.odba_store
             sequence.odba_store
           }
           if (composition_in_db == nil)
@@ -1003,7 +1035,7 @@ public
         LogFile.debug("problem '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} sequence with pointer")
         return
       end
-      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements.to_s[0..300]}"
+      LogFile.debug "#{iksnr}/#{seqnr}/#{ikscd} #{replacements.size} replacements"
       pidx = cell(row, row.size).to_i
       if(ikscd.to_i > 0)
         args = {
@@ -1027,18 +1059,20 @@ public
           LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
           seq.packages[ikscd] = package
           seq.fix_pointers
+          seq.packages.odba_store
           seq.odba_store
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
           part = package.create_part
+          package.parts[pidx] = part
+          package.parts.odba_store
+          package.odba_store
           LogFile.debug "create part.oid #{part.oid} part.pointer #{part.pointer}"
         else
           part = package.parts[pidx]
         end
-        args = {
-          :size => [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' '),
-        }
+        part.size =  [cell(row, @target_keys.keys.index(:size)), cell(row, @target_keys.keys.index(:unit))].compact.join(' ')
         if package.sequence and package.sequence.seqnr != seq.seqnr
           LogFile.debug "iksnr '#{row[@target_keys.keys.index(:iksnr)]}' ikscd #{ikscd} should correct seqnr #{package.sequence.seqnr} -> #{seq.seqnr}?"
         end
@@ -1056,6 +1090,7 @@ public
           seq.packages.odba_store
           seq.odba_store
         end
+        part.odba_store
         res
       end
     end
@@ -1181,7 +1216,7 @@ public
         to_consider =  mustcheck(iksnr, opts)
         next unless row
         next unless mustcheck(iksnr, opts)
-        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts} replacements #{replacements.to_s[0..300]}")
+        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
