@@ -125,7 +125,7 @@ if RunAll
 
       assert(run_import('88888', {:reparse => true, :target => :both, :download => false}), 'must be able to run import_swissmedicinfo and add a new registration')
       res = @plugin.report
-      assert(/Stored 0 Fachinfos/.match(res))
+      assert(/Stored 4 Fachinfos/.match(res))
       assert(/Stored 0 Patinfos/.match(res))
       assert(/Checked 0 companies/.match(res))
       assert_nil(/:iksnr=>/.match(res))
