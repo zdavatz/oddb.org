@@ -606,7 +606,11 @@ module ODDB
       sequence.fix_pointers
       registration.sequences.odba_store
       registration.odba_store
-      LogFile.debug "create_sequence #{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args} registration.sequences #{registration.sequences}"
+      # Niklaus does not know why we have to duplicate the code here. But it ensures that newly added fis
+      # are found after an import_daily
+      registration.sequences.values.first.name_base = title;
+      registration.sequences.values.first.odba_store;
+      LogFile.debug "create_sequence #{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences}"
     end
 
     def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
@@ -1187,7 +1191,8 @@ module ODDB
     def get_textinfo(meta_info, iksnr)
       reg = @app.registration(iksnr)
       # Workaround for 55829 Ebixa
-      TextInfoPlugin::create_sequence(@app, reg, meta_info.title) if reg.sequences == nil || reg.sequences.size == 0
+      TextInfoPlugin::create_registration(@app, meta_info) unless reg && reg.sequences && reg.sequences.size > 0
+      reg = @app.registration(iksnr)
       if meta_info.type == 'fi'
         info = reg.fachinfo if reg
       else
@@ -1225,9 +1230,14 @@ module ODDB
       reg = nil
       reg = @app.registration(meta_info.iksnr)
       if reg == nil || reg.sequences.size == 0 # Workaround for Ebixa problem
-        LogFile.debug "skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found"
-        return
-      end
+        if type == :fi
+          LogFile.debug "must create #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
+          TextInfoPlugin::create_registration(@app, meta_info)
+        else
+          LogFile.debug "skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
+          return
+        end
+      end if type != :fi # we will create a registration in this case later
       text_info = get_textinfo(meta_info,  meta_info.iksnr)
 
       if !text_info || !text_info.descriptions.keys.index(meta_info.lang)
