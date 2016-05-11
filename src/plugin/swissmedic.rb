@@ -1056,12 +1056,14 @@ public
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
         if package.nil? and ptr.is_a?(Persistence::Pointer)
-          package = seq.create_package(ikscd)
-          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
-          seq.packages[ikscd] = package
-          seq.fix_pointers
-          seq.packages.odba_store
-          seq.odba_store
+            package = @app.update(ptr, args, :swissmedic)
+        elsif package.nil?
+            package = seq.create_package(ikscd)
+            LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
+            seq.packages[ikscd] = package
+            seq.fix_pointers
+            seq.packages.odba_store
+            seq.odba_store
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
@@ -1210,14 +1212,15 @@ public
     def update_registrations(rows, replacements, opts=nil)
       opts ||= { :create_only => @latest_packungen ? !File.exist?(@latest_packungen) : false,
                :date        => @@today, }
-      rows.each do |row|
+      nr_rows = rows.size
+      rows.each_with_index do |row, idx|
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         seqnr = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         next if iksnr.eql?('00000')
         to_consider =  mustcheck(iksnr, opts)
         next unless row
         next unless mustcheck(iksnr, opts)
-        LogFile.debug("update iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
+        LogFile.debug("update #{idx}/#{nr_rows} iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
