@@ -192,7 +192,7 @@ module ODDB
     def fix_pointers
       @pointer = @registration.pointer + [:sequence, @seqnr]
       @packages.each_value { |package|
-        package.fix_pointers
+        package.fix_pointers if package
       }
       @compositions.each { |comp|
         comp.fix_pointers

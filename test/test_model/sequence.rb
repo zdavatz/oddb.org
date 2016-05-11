@@ -421,6 +421,22 @@ class TestSequence <Minitest::Test
     @seq.compositions.push comp1
     @seq.fix_pointers
   end
+  def test_fix_pointers_nil_package
+    reg = flexmock :pointer => ODDB::Persistence::Pointer.new([:registration, '12345'])
+    @seq.registration = reg
+    pac1 = flexmock 'package'
+    pac1.should_receive(:fix_pointers).times(1).and_return do
+      assert true
+    end
+    @seq.packages.store '003', pac1
+    @seq.packages.store '004', nil
+    comp1 = flexmock 'composition'
+    comp1.should_receive(:fix_pointers).times(1).and_return do
+      assert true
+    end
+    @seq.compositions.push comp1
+    @seq.fix_pointers
+  end
   def test_galenic_group
     comp1 = flexmock :galenic_group => 'group1'
     comp2 = flexmock :galenic_group => nil
