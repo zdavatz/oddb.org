@@ -1056,12 +1056,14 @@ public
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
         if package.nil? and ptr.is_a?(Persistence::Pointer)
-          package = seq.create_package(ikscd)
-          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
-          seq.packages[ikscd] = package
-          seq.fix_pointers
-          seq.packages.odba_store
-          seq.odba_store
+            package = @app.update(ptr, args, :swissmedic)
+        elsif package.nil?
+            package = seq.create_package(ikscd)
+            LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
+            seq.packages[ikscd] = package
+            seq.fix_pointers
+            seq.packages.odba_store
+            seq.odba_store
         end
         @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
