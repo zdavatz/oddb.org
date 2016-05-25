@@ -156,7 +156,7 @@ class FiChapterChooser < HtmlGrid::Composite
       }
     else
       xx = 0
-      yy = 0
+      yy = 1
       names.each { |name|
         if (xx >= xwidth)
           yy += 1
