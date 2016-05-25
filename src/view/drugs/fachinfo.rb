@@ -17,37 +17,49 @@ module ODDB
 	module View
 		module Drugs
 class Fachinfo2001; end
+class FiChapterChooserImage < HtmlGrid::Image
+  def init
+    @document = @model.send(@session.language)
+    unless(@session.user_input(:chapter) == @name.to_s)
+      unless @model.pointer.skeleton == [:create]
+        lnf =  @lookandfeel.lookup(@name)
+        self.set_attribute('src', 'http://'+ @session.server_name + '/resources/' +lnf)
+      end
+    end
+  end
+end
+
 class FiChapterChooserLink < HtmlGrid::Link
-       def init
-               @document = @model.send(@session.language)
-               if(@document.respond_to?(:amzv))
-                       @value = @lookandfeel.lookup("fi_#{@name.to_s}_amzv")
-               end
-               @value ||= @lookandfeel.lookup("fi_" << @name.to_s)
-               @attributes['title'] = if(@document.respond_to?(@name) \
-                       && (chapter = @document.send(@name))) \
-      && chapter.respond_to?(:heading)
-                       title = chapter.heading
-                       if(title.empty? && (section = chapter.sections.first))
-                               section.subheading
-                       else
-                               title
-                       end
-               else
-                       @lookandfeel.lookup(@name)
-               end
-               args = [
-                       :reg, @model.registrations.first.iksnr,
-                       :chapter, @name,
-               ]
-               unless(@session.user_input(:chapter) == @name.to_s)
-                       if(@model.pointer.skeleton == [:create])
-                               self.href = @lookandfeel.event_url(:self, {:chapter => @name})
-                       else
-                               self.href = @lookandfeel._event_url(:fachinfo, args)
-                       end
-               end
-       end
+  def init
+    @document = @model.send(@session.language)
+    if(@document.respond_to?(:amzv))
+      @value = @lookandfeel.lookup("fi_#{@name.to_s}_amzv")
+    end
+    @value ||= @lookandfeel.lookup("fi_" << @name.to_s)
+    @attributes['title'] = if(@document.respond_to?(@name) \
+                              && (chapter = @document.send(@name))) \
+                              && chapter.respond_to?(:heading)
+      title = chapter.heading
+      if(title.empty? && (section = chapter.sections.first))
+        section.subheading
+      else
+        title
+      end
+    else
+      @lookandfeel.lookup(@name)
+    end
+    args = [
+      :reg, @model.registrations.first.iksnr,
+      :chapter, @name,
+    ]
+    unless(@session.user_input(:chapter) == @name.to_s)
+      if(@model.pointer.skeleton == [:create])
+        self.href = @lookandfeel.event_url(:self, {:chapter => @name})
+      else
+        self.href = @lookandfeel._event_url(:fachinfo, args)
+      end
+    end
+  end
 end
 class FiChapterChooser < HtmlGrid::Composite
   include View::AdditionalInformation
@@ -56,7 +68,11 @@ class FiChapterChooser < HtmlGrid::Composite
   XWIDTH = 8
   CSS_CLASS = 'composite'
   def init
-    xwidth = self::class::XWIDTH
+    if @lookandfeel.enabled?(:evidentia, false)
+      xwidth = 4
+    else
+      xwidth = self::class::XWIDTH
+    end
     @components         = {}
     @component_css_map  = {[0,0,2] => 'chapter-tab',
                            }
@@ -78,25 +94,83 @@ class FiChapterChooser < HtmlGrid::Composite
     @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     next_offset += 1
-    names = display_names(document)
-    xx = 0
-    yy = 0
-    xoffset = xwidth
-    pos = [0,0]
-    names.each { |name|
-      next if(name == :amzv)
-      if((xx % xwidth) == 0)
+    names = display_names(document) - [:amzv]
+    pos = [0, 0]
+    if @lookandfeel.enabled?(:evidentia, false)
+      right_offset = xwidth / 2
+      pos = [0, 1]
+      @components.store(pos, 'fachinfo_clinic_info')
+      css_map.store(pos, 'fi-title')
+      component_css_map.store(pos, 'fi-title')
+      colspan_map.store(pos, xwidth / 2)
+      pos = [right_offset, 1]
+      @components.store(pos, 'fachinfo_extra_info')
+      css_map.store(pos, 'fi-title')
+      component_css_map.store(pos, 'fi-title')
+      colspan_map.store(pos, xwidth / 2)
+      clinical_names = names &[ :indications, :usage, :contra_indications, :restrictions,
+                                :interactions, :pregnancy, :driving_ability, :unwanted_effects,
+                                :overdose, :packages, :photo,
+                              ]
+      extra_names = names & [:composition, :galenic_form, :effects, :kinetic, :preclinic, :other_advice,
+                             :iksnrs, :registration_owner, :date]
+
+      # Fill left half with clinical_names, order is top-down, then left-to right
+      # always only 2 columns
+      xx = 0
+      yy = 2
+      clinical_names.each { |name|
+        if (yy >= 2 + (clinical_names.size/2) )
+          yy = 2
+          xx = 1
+        end
+        pos = [xx, yy]
+        image_name = "fachinfo_#{name.to_s}_icon".to_sym
+        lnf = @lookandfeel.lookup(image_name)
+        @components.store([xx, yy, 0], image_name)
+        @components.store([xx, yy, 1], name)
+        css_map.store(pos, 'chapter-tab')
+        component_css_map.store(pos, 'chapter-tab')
+        symbol_map.store(image_name, View::Drugs::FiChapterChooserImage)
+        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
         yy += 1
-        xoffset -= xwidth
-      end
-      pos = [xx + xoffset, yy]
-      @components.store(pos, name)
-      css_map.store(pos, 'chapter-tab')
-      component_css_map.store(pos, 'chapter-tab')
-      symbol_map.store(name, View::Drugs::FiChapterChooserLink)
-      xx += 1
-    }
-    colspan_map.store(pos, xwidth - pos.at(0))
+      }
+      # Fill right half with extra_names
+      xx = right_offset
+      yy = 2
+      extra_names.each { |name|
+        if (yy >= 2 + (clinical_names.size/2) )
+          yy = 2
+          xx = right_offset + 1
+        end
+        pos = [xx, yy]
+        image_name = "fachinfo_#{name.to_s}_icon".to_sym
+        lnf = @lookandfeel.lookup(image_name)
+        @components.store([xx, yy, 0], image_name)
+        @components.store([xx, yy, 1], name)
+        css_map.store(pos, 'chapter-tab')
+        component_css_map.store(pos, 'chapter-tab')
+        symbol_map.store(image_name, View::Drugs::FiChapterChooserImage)
+        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+        yy += 1
+      }
+    else
+      xx = 0
+      yy = 0
+      names.each { |name|
+        if (xx >= xwidth)
+          yy += 1
+          xx = 0
+        end
+        pos = [xx, yy]
+        @components.store(pos, name)
+        css_map.store(pos, 'chapter-tab')
+        component_css_map.store(pos, 'chapter-tab')
+        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+        xx += 1
+      }
+      colspan_map.store(pos, xwidth - pos.at(0))
+    end
     super
   end
   def change_log(model, session=@session, key=:change_log)
@@ -122,19 +196,31 @@ class FiChapterChooser < HtmlGrid::Composite
     end
     names
   end
+  def get_image(name, model=@model, session=@session)
+    if @lookandfeel.enabled?(:evidentia, false) && (lnf =  @lookandfeel.lookup(name))
+      img = HtmlGrid::Image.new(name, model, session, self)
+      img.set_attribute('src', 'http://'+ session.server_name + '/resources/' +lnf)
+    else
+      img = nil
+    end
+    img
+  end
   def full_text(model, session)
+    img = nil
     if(@model.pointer.skeleton == [:create])
       @lookandfeel.lookup(:fachinfo_all)
     else
+      img = get_image(:fachinfo_all_icon)
       link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
       unless(@session.user_input(:chapter).nil?)
         link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.registrations.first.iksnr})
       end
-      link
+      [ img, link].compact
     end
   end
   def print(model, session=@session, key=:print)
+    img = get_image(:fachinfo_print_icon)
     link = HtmlGrid::Link.new(key, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:print_title))
     link.set_attribute('target', '_blank')
@@ -142,7 +228,7 @@ class FiChapterChooser < HtmlGrid::Composite
       :fachinfo  => model.registrations.first.iksnr,
     }
     link.href = @lookandfeel._event_url(:print, args)
-    link
+    [ img, link].compact
   end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite

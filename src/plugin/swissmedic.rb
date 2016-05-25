@@ -1223,9 +1223,11 @@ public
         LogFile.debug("update #{idx}/#{nr_rows} iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
+        LogFile.debug("update #{idx}/#{nr_rows} iksnr #{iksnr} seqnr #{seqnr} reg #{reg} from app #{@app.registration(iksnr)}")
+        reg ||= @app.registration(iksnr)
         seq = update_sequence(reg, row, opts) if reg
         update_all_sequence_info(row, reg, seq, opts, replacements) if seq
-        unless reg.sequences[seqnr]
+        if !reg && !reg.sequences[seqnr]
           LogFile.debug "update_registration fix sequence #{iksnr}/#{seqnr}"
           reg.sequences.store(seqnr, seq)
           reg.sequences.odba_store
