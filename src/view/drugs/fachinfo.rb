@@ -175,15 +175,18 @@ class FiChapterChooser < HtmlGrid::Composite
   end
   def change_log(model, session=@session, key=:change_log)
     link = HtmlGrid::Link.new(key, model, session, self)
-    # http://oddb-ci2.dyndns.org/de/gcc/show/fachinfo/51193/diff/2015-10-27
     link.set_attribute('title', @lookandfeel.lookup(:change_log))
     link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr, :diff] )
-    link
+    if @lookandfeel.enabled?(:evidentia, false)
+      img = get_image(:fachinfo_all_icon)
+      return [img, link]
+    else
+      return link
+    end
   end
   def ddd(model, session)
     if(atc = model.atc_class)
-      View::Drugs::FiChapterChooserLink.new(:ddd,
-        model, session, self)
+      View::Drugs::FiChapterChooserLink.new(:ddd, model, session, self)
     end
   end
   def display_names(document)
