@@ -129,7 +129,7 @@ module YDocx
   end
   class Document
     def init
-      @directory = 'fachinfo' # in doc/resources
+      @directory = 'fi' # in doc/resources
       @references = []
       #prepare_reference
     end
@@ -142,7 +142,7 @@ module YDocx
       @files
     end
     private
-    def optional_copy(source_path) # copy to resources/images/fachinfo/:lang
+    def optional_copy(source_path) # copy to resources/images/fi/:lang
       file = File.basename source_path
       image_path = File.join ODDB::PROJECT_ROOT, 'doc', 'resources', 'images', @directory
       image_file = File.join image_path, @options[:lang], file

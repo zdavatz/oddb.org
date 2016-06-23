@@ -190,8 +190,10 @@ class TextinfoHpricot
         ptr.target << "\n"
       when 'p'
         if ptr.table
-          if ptr.target.is_a?(Text::MultiCell)
-            ptr.target.next_paragraph unless ptr.table
+          if ptr.target.is_a?(ODDB::Text::Paragraph)
+            ptr.target << "\n"
+          elsif !ptr.target.is_a?(Text::MultiCell)
+            ptr.target.next_paragraph
           end
         else
           ptr.section ||= ptr.chapter.next_section
@@ -303,7 +305,7 @@ class TextinfoHpricot
                                 gsub(/\?px=[0-9]*$/, '').strip)
       lang = (file_name[0].upcase == 'F' ? 'fr' : 'de') unless file_name.empty?
     end
-    type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fachinfo' : 'patinfo')
+    type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fi' : 'pi')
     dir = File.join('/', 'resources', 'images', type, lang)
     ptr.target.src = File.join(dir, file_name)
   end
