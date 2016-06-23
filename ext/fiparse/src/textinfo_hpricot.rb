@@ -303,7 +303,7 @@ class TextinfoHpricot
                                 gsub(/\?px=[0-9]*$/, '').strip)
       lang = (file_name[0].upcase == 'F' ? 'fr' : 'de') unless file_name.empty?
     end
-    type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fachinfo' : 'patinfo')
+    type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fi' : 'pi')
     dir = File.join('/', 'resources', 'images', type, lang)
     ptr.target.src = File.join(dir, file_name)
   end

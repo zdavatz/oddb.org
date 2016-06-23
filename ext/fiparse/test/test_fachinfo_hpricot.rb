@@ -12,6 +12,7 @@ $: << File.expand_path('../../..', File.dirname(__FILE__))
 
 gem 'minitest'
 require 'minitest/autorun'
+require 'plugin/refdata'
 require 'fachinfo_hpricot'
 require 'fiparse'
 require 'plugin/text_info'
@@ -60,9 +61,9 @@ module ODDB
         nrPTags = 1
         assert_equal(nrPTags, result.scan(/<p>/i).size, "Should find exactly #{nrPTags} <P> tags in this table")
         nrNonBreakingSpaces = 3
-        assert_equal(3, result.scan(/&nbsp;/i).size, "Should find exactly #{nrNonBreakingSpaces} non breaking space in this table")
+        assert_equal(nrNonBreakingSpaces, result.scan(/&nbsp;/i).size, "Should find exactly #{nrNonBreakingSpaces} non breaking space in this table")
       end
-    end    
+    end
 class TestFachinfoHpricot <Minitest::Test
   def setup
     @writer = FachinfoHpricot.new
@@ -724,12 +725,12 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
       assert(@@fachinfo.galenic_form.to_s.index('Firmenlogo'))
       assert(@@fachinfo.effects.to_s.index('(image)'), 'Wirkungen muss Bild enthalten')
       assert(@@fachinfo.galenic_form.to_s.index('(image)'), 'galenic_form must have an image')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/5.png'), 'Must have image nr 5')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/4.png'), 'Must have image nr 4')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/3.png'), 'Must have image nr 3')
+      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/5.png'), 'Must have image nr 5')
+      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/4.png'), 'Must have image nr 4')
+      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/3.png'), 'Must have image nr 3')
 
       assert(@@fachinfo.galenic_form.to_s.index('(image)'), 'Zusamensetzung muss Bild enthalten')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fachinfo/de/_Seebri_Breezhaler_files/1.x-wmf'), 'Must have image nr 1')
+      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/1.x-wmf'), 'Must have image nr 1')
     end
 
     def test_iksnrs
@@ -1023,11 +1024,11 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
     end
 
     class TestFachinfoHpricot_30785_Ponstan_De <Minitest::Test
-      
+
       StylesPonstan = 'p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:18pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:8pt;}.s8{font-family:Arial;font-size:11pt;font-style:italic;}.s9{font-family:Arial;font-size:11pt;}.s10{line-height:115%;text-align:justify;margin-top:2pt;}.s11{line-height:115%;text-align:justify;margin-top:6pt;}.s12{font-family:Courier New;font-size:11pt;}.s13{line-height:115%;text-align:left;}.s14{height:6pt;}.s15{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;}.s16{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;}.s17{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s18{font-family:Courier;margin-top:2pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}'
       MedicInfoName = 'Ponstan® Filmtabletten/Tropfen 10 mg/ml, 20 mg/mlPonstan MELTZ® Schmelztabletten'
       HtmlName      = 'data/html/de/fi_30785_ponstan.html'
-      
+
       def setup
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))     

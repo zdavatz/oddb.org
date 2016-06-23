@@ -890,7 +890,7 @@ module ODDB
           dir = File.join(resource_dir, name_base + '_files')
           FileUtils.mkdir_p(dir)
           images.each_with_index do |img, i|
-            type,src = img.attributes['src'].to_s.split(',')
+            type, src = img.attributes['src'].to_s.split(',')
             # next regexp must be in sync with ext/fiparse/src/textinfo_hpricot.rb
             unless type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
               @nonconforming_content << "#{iksnrs}: '#{@title}' with non conforming #{type} element x"
