@@ -28,8 +28,37 @@ module ODDB
   module FiParse
 		HTML_PREFIX = '<HTML><meta charset="utf-8"/><BODY>'
 		HTML_POSTFIX = '</HTML></BODY>'
-		if true
+if true
     class TestFachinfoHpricot_breaks_in_table <Minitest::Test
+      def test_table_cell_with_paragraph
+        # problem with Xadago
+        html = %(
+    <table>
+    <tbody>
+    <tr>
+    <td class="s19" rowspan="7"><p><span class="s18"
+    ><span>Bronchopneumonie</span></span><span class="s18"><span>,</span></span></p><p><span class="s18"><span>Furunkel,</span></span></p><p><span class="s18"><span>Nasopharyngitis</span></span>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+        )
+        writer = FachinfoHpricot.new
+        code, chapter = writer.chapter(Hpricot(html).at("table"))
+        @lookandfeel = FlexMock.new 'lookandfeel'
+        @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+        @lookandfeel.should_receive(:subheading).and_return { 'subheading' }
+        session = FlexMock.new 'session'
+        session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        session.should_receive(:user_input)
+        assert(session.respond_to?(:lookandfeel))
+        @view = View::Chapter.new(:name, @model, session)
+        @view.value = chapter
+        # File.open("#{Dir.pwd}/chapter.yaml", 'w+') { |fi| fi.puts @view.to_yaml }
+        result = @view.to_html(CGI.new)
+        nrBlanks = 2
+        assert_equal(nrBlanks, result.scan(/,<BR>/i).size, "Should find exactly #{nrBlanks} <BR> in this table")
+      end
       def test_more_line_breaks_in_table
         html = %(
     <table>
@@ -943,7 +972,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
         }
-        nrBrTags = 106
+        nrBrTags = 135
         assert_equal(nrBrTags, result.scan(/<br>/i).size, "Should find exactly #{nrBrTags} <BR> tags for the complex table")
      end
      
@@ -1082,7 +1111,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
      end
      
     end
-end
+
 
     class TestFachinfoHpricot_57435_Baraclude_De <Minitest::Test
       
@@ -1197,4 +1226,5 @@ end
      end
 				      end
     end
+end
 end

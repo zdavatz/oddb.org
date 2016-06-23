@@ -190,8 +190,10 @@ class TextinfoHpricot
         ptr.target << "\n"
       when 'p'
         if ptr.table
-          if ptr.target.is_a?(Text::MultiCell)
-            ptr.target.next_paragraph unless ptr.table
+          if ptr.target.is_a?(ODDB::Text::Paragraph)
+            ptr.target << "\n"
+          elsif !ptr.target.is_a?(Text::MultiCell)
+            ptr.target.next_paragraph
           end
         else
           ptr.section ||= ptr.chapter.next_section
