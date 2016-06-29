@@ -303,6 +303,7 @@ module ODDB
     ]
     DICTIONARIES = {
       'de'  =>  {
+        :change_log               =>  'Textänderungen',
         :deductible_title0        =>  'Für dieses Produkt bezahlen Sie ',
         :deductible_title1        =>  ' Selbstbehalt.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
         :explain_comarketing_url   =>  false,
