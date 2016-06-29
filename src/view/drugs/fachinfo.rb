@@ -23,7 +23,7 @@ class FiChapterChooserImage < HtmlGrid::Image
     unless(@session.user_input(:chapter) == @name.to_s)
       unless @model.pointer.skeleton == [:create]
         lnf =  @lookandfeel.lookup(@name)
-        self.set_attribute('src', 'http://'+ @session.server_name + '/resources/' +lnf)
+        self.set_attribute('src', 'http://'+ @session.server_name + '/resources/' + lnf)
       end
     end
   end
@@ -108,12 +108,27 @@ class FiChapterChooser < HtmlGrid::Composite
       css_map.store(pos, 'fi-title')
       component_css_map.store(pos, 'fi-title')
       colspan_map.store(pos, xwidth / 2)
-      clinical_names = names &[ :indications, :usage, :contra_indications, :restrictions,
-                                :interactions, :pregnancy, :driving_ability, :unwanted_effects,
-                                :overdose, :packages, :photo,
-                              ]
-      extra_names = names & [:composition, :galenic_form, :effects, :kinetic, :preclinic, :other_advice,
-                             :iksnrs, :registration_owner, :date]
+      clinical_names = [:indications,
+                        :usage,
+                        :contra_indications,
+                        :unwanted_effects,
+                        :restrictions,
+                        :interactions,
+                        :pregnancy,
+                        :driving_ability,
+                        :overdose,
+                        :packages,
+                        :photo,
+                        ] & names
+      extra_names = [ :composition,
+                      :galenic_form,
+                      :effects,
+                      :kinetic,
+                      :preclinic,
+                      :other_advice,
+                      :iksnrs,
+                      :registration_owner,
+                      :date] & names
 
       # Fill left half with clinical_names, order is top-down, then left-to right
       # always only 2 columns
@@ -178,7 +193,7 @@ class FiChapterChooser < HtmlGrid::Composite
     link.set_attribute('title', @lookandfeel.lookup(:change_log))
     link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr, :diff] )
     if @lookandfeel.enabled?(:evidentia, false)
-      img = get_image(:fachinfo_all_icon)
+      img = get_image("fachinfo_#{key.to_s}_icon".to_sym)
       return [img, link]
     else
       return link

@@ -1,11 +1,10 @@
-  #!/usr/bin/env ruby
+#!/usr/bin/env ruby
 # encoding: utf-8
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
 require 'minitest/autorun'
 require 'flexmock'
 require 'stub/cgi'
@@ -85,6 +84,8 @@ class TestFiChapterChooser <Minitest::Test
   def setup
     @lookup      = flexmock('lookandfeel',
                            :disabled?  => false,
+                           :resource  => nil,
+                           :enabled? => false,
                            :attributes => {},
                            :_event_url => '_event_url'
                           )
@@ -130,7 +131,7 @@ class TestFiChapterChooser <Minitest::Test
   end
   def test_full_text
     @pointer   = flexmock('pointer', :skeleton => [:create])
-    assert_equal(HtmlGrid::Link, @composite.full_text(@model, @session).class)
+    assert_equal(HtmlGrid::Link, @composite.full_text(@model, @session).first.class)
   end
   def test_document_print
     text = @composite.to_html(CGI.new)
@@ -175,7 +176,8 @@ class TestFachinfoComposite <Minitest::Test
     attributes    = flexmock('attributes', :chapter => nil, :name => 'Namen')
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
-                           :enabled?  => true,
+                           :resource  => nil,
+                           :enabled? => false,
                            :disabled?  => false,
                            :attributes => {:chapter => nil, :name => 'Namen'},
                            :_event_url => '_event_url'
@@ -232,6 +234,8 @@ class TestEditFiChapterChooser <Minitest::Test
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
                            :disabled?  => false,
+                           :resource  => nil,
+                           :enabled? => false,
                            :attributes => {},
                            :_event_url => '_event_url'
                           )
@@ -364,6 +368,8 @@ class TestFI_ChangeLogs <Minitest::Test
   def setup
     @lookup      = flexmock('lookandfeel',
                           :disabled?  => false,
+                          :resource  => nil,
+                          :enabled? => false,
                           :attributes => {},
                           :_event_url => '_event_url'
                           )
