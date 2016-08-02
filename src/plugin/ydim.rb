@@ -3,8 +3,11 @@
 # YdimPlugin -- oddb -- 27.01.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
+begin
 require 'ydim/config'
 require 'ydim/client'
+rescue LoadError # happens while running test/test_util/updater.rb
+end
 require 'openssl'
 require 'iconv'
 

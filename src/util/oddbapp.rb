@@ -37,6 +37,7 @@ require 'util/config'
 require 'fileutils'
 require 'yus/session'
 require 'model/analysis/group'
+require 'model/evidentia_search_link'
 
 require 'remote/migel/model'
 
@@ -57,7 +58,7 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups, :shorten_paths
-  attr_accessor  :epha_interactions_hash,  :epha_interactions
+  attr_accessor  :epha_interactions_hash,  :epha_interactions, :evidentia_search_links_hash
   VALID_EAN13 = /^\d{13}/
 	def initialize
 		init
@@ -76,7 +77,9 @@ class OddbPrevalence
 		@doctors ||= {}
 		@epha_interactions ||= []
 		@epha_interactions_hash ||= {}
-		ODDB::EphaInteractions.set(@epha_interactions_hash)
+    ODDB::EphaInteractions.set(@epha_interactions_hash)
+    @evidentia_search_links_hash ||= {}
+    ODDB::EvidentiaSearchLink.set(@evidentia_search_links_hash)
 		@experiences ||= {}
 		@fachinfos ||= {}
     @feedbacks ||= {}
@@ -100,7 +103,7 @@ class OddbPrevalence
     @shorten_paths ||= []
 		@slates ||= {}
 		@sponsors ||= {}
-		@substances ||= {}
+    @substances ||= {}
 		#recount()
 		rebuild_atc_chooser()
 	end
@@ -141,7 +144,7 @@ class OddbPrevalence
 		item
 	end
 	def clean_odba_stubs
-		_clean_odba_stubs_hash(@substances)
+    _clean_odba_stubs_hash(@substances)
 		@substances.each_value { |sub| _clean_odba_stubs_array(sub.sequences) }
 		_clean_odba_stubs_hash(@atc_classes)
 		@atc_classes.each_value { |atc| _clean_odba_stubs_array(atc.sequences) }
@@ -153,6 +156,7 @@ class OddbPrevalence
 				_clean_odba_stubs_array(seq.active_agents)
 			}
 		}
+    _clean_odba_stubs_hash(@evidentia_search_links_hash)
 	end
 	def _clean_odba_stubs_hash(hash)
 		if(hash.values.any? { |val| val.odba_instance.nil? })
@@ -399,6 +403,12 @@ class OddbPrevalence
     @epha_interactions_hash[ [atc_code_self, atc_code_other] ] = epha_interaction
     epha_interaction
   end
+  def create_evidentia_search_link(gtin, link, trademark)
+    evidentia_search_link = ODDB::EvidentiaSearchLink.new(gtin, link, trademark)
+    @evidentia_search_links_hash_hash ||= {}
+    @evidentia_search_links_hash_hash.store(gtin, evidentia_search_link)
+    evidentia_search_link
+  end
   def create_hospital(ean13)
     raise "ean13 #{ean13.to_s[0..80]} not valid" unless  ean13.to_s.match(VALID_EAN13)
     hospital = ODDB::Hospital.new(ean13)
@@ -533,6 +543,12 @@ class OddbPrevalence
     ODDB::EphaInteractions.set(@epha_interactions_hash)
 		self.odba_store
 	end
+  end
+  def delete_all_evidentia_search_links
+    @evidentia_search_links_hash = {}
+    @evidentia_search_links_hash.odba_store
+    ODDB::EvidentiaSearchLink.set(@evidentia_search_links_hash)
+    self.odba_store
   end
   def delete_all_narcotics
     @narcotics.values.each do |narc|
@@ -1335,7 +1351,10 @@ class OddbPrevalence
 	def sponsor(flavor)
 		@sponsors[flavor.to_s]
 	end
-	def substance(key, neurotic=false)
+  def evidentia_search_link(key)
+     ODDB::EvidentiaSearchLink.get_info(key)
+  end
+  def substance(key, neurotic=false)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
 		elsif(substance = search_single_substance(key))

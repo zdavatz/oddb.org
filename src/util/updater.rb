@@ -16,6 +16,7 @@ require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
 require 'plugin/epha_interactions'
+require 'plugin/evidentia_search_links'
 require 'plugin/hospitals'
 require 'plugin/lppv'
 require 'plugin/medwin'
@@ -372,6 +373,9 @@ module ODDB
           log.notify(subj)
         end
       }
+    end
+    def update_evidentia_fi_search_links
+      update_simple(EvidentiaSearchLinksPlugin, 'Evidentia_FI_search_links')
     end
     def update_hospitals
       update_simple(HospitalPlugin, 'Hospitals')
