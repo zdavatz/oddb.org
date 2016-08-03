@@ -447,6 +447,7 @@ module ODDB
         [0,0,0] => :name_base,
         [0,0,1] => 'result_item_end',
         [0,0,2] => :limitation_text,
+        [0,0,3] => :product_overview_link,
         [1,0]   => :substances,
         [2,0]   => :galenic_form,
         [3,0]   => :most_precise_dose,
