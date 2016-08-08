@@ -335,6 +335,10 @@ if true
     def test_wrap_update__error
       assert_equal(nil, @updater.instance_eval("wrap_update('klass', 'subject'){raise}"))
     end
+    def test_import_evidentia_fi_search_links
+      setup_update_simple(EvidentiaSearchLinksPlugin)
+      assert_equal('notify', @updater.update_evidentia_fi_search_links)
+    end
     def test_export_competition_xls
       setup_export_competition_xls
       assert_equal('path', @updater.export_competition_xls(@company))
@@ -493,10 +497,6 @@ if true
     def test_update_hospitals
       setup_update_simple(HospitalPlugin)
       assert_equal('notify', @updater.update_hospitals)
-    end
-    def test_update_interactions
-      setup_update_simple(ODDB::Interaction::InteractionPlugin)
-      assert_equal('notify', @updater.update_interactions)
     end
     def test_update_lppv
       setup_update_immediate(LppvPlugin)

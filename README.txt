@@ -1,6 +1,6 @@
 = oddb.org
 
-* http://scm.ywesee.com/?p=oddb.org/.git;a=summary
+* https://github.com/zdavatz/oddb.org
 * http://choddb.rubyforge.org/
 
 == DESCRIPTION:

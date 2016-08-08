@@ -12,6 +12,7 @@ require 'view/drugs/photo'
 require 'view/drugs/fachinfo_change_logs'
 require 'model/shorten_path'
 require 'ostruct'
+require 'plugin/evidentia_search_links'
 
 module ODDB
 	module View
@@ -90,10 +91,17 @@ class FiChapterChooser < HtmlGrid::Composite
       next_offset += 1
     end
     @components.store(        [next_offset, 0], :print)
-    colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
+    colspan_map.store(        [next_offset, 0], XWIDTH - next_offset) unless @lookandfeel.enabled?(:evidentia, false)
     @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     next_offset += 1
+    if @lookandfeel.enabled?(:evidentia, false)
+      @components.store(        [next_offset, 0], :product_overview_link)
+      colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
+      @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
+      @css_map.store(           [next_offset, 0], 'chapter-tab bold')
+      next_offset += 1
+    end
     names = display_names(document) - [:amzv]
     pos = [0, 0]
     if @lookandfeel.enabled?(:evidentia, false)
@@ -246,6 +254,21 @@ class FiChapterChooser < HtmlGrid::Composite
       :fachinfo  => model.registrations.first.iksnr,
     }
     link.href = @lookandfeel._event_url(:print, args)
+    [ img, link].compact
+  end
+  def product_overview_link(model, session=@session)
+    return unless @lookandfeel.enabled?(:evidentia, false)
+    package = nil
+    if model.respond_to?(:registrations) # Fachinfo
+      model.registrations.each do |reg|
+        package ||= reg.packages.find{|x| EvidentiaSearchLink.get_info(x.barcode)}
+      end
+    end
+    return unless package
+    return unless (info = EvidentiaSearchLink.get_info(package.barcode))
+    link = HtmlGrid::Link.new(:fi_product_overview_link, model, session, self)
+    link.href = info.link
+    img = get_image(:fachinfo_product_overview_link_icon)
     [ img, link].compact
   end
 end
