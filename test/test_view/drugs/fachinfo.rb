@@ -24,6 +24,7 @@ module ODDB
     end
   end
 end
+
 class TestFiChapterChooserLink <Minitest::Test
   include FlexMock::TestCase
   def teardown
@@ -411,3 +412,58 @@ class TestFI_ChangeLogs <Minitest::Test
   end
 end
 
+class TestEvidentiaFiChapterChooser <Minitest::Test
+  include FlexMock::TestCase
+  def teardown
+    ODBA.storage = nil
+    super
+  end
+  def setup
+    @lookup      = flexmock('lookandfeel',
+                           :disabled?  => false,
+                           :resource  => nil,
+                           :attributes => {},
+                           :_event_url => '_event_url'
+                          )
+    @lookup.should_receive(:lookup).by_default.and_return('lookup')
+    @lookup.should_receive(:enabled?).by_default.and_return(false)
+    @lookup.should_receive(:enabled?).with(:evidentia, false).and_return(true)
+    @lookup.should_receive(:enabled?).with(:ajax).and_return(true)
+#    @lookup.should_receive(:lookup).with(:print_title).and_return('Drucken').at_least.once
+#    @lookup.should_receive(:lookup).with(:fachinfo_all_icon).and_return('fachinfo_all_icon').at_least.once
+#    @lookup.should_receive(:lookup).with(:fachinfo_all_title).and_return('fachinfo_all_title').at_least.once
+
+    @state     = flexmock('state')
+    @state.should_receive(:allowed?).by_default.and_return(nil)
+    @session   = flexmock('session',
+                          :state       => @state,
+                          :language    => 'language',
+                          :user_input    => nil,
+                          :server_name    => 'server_name',
+                          :user_agent    => 'Mozilla',
+                          :lookandfeel => @lookup,
+                          :user_input  => 'user_input'
+                         )
+    @pointer   = flexmock('pointer', :skeleton => 'skeleton')
+    @language  = flexmock('language', :chapter_names => [ 'chapter_names' ], :change_log => [])
+    atc_class  = flexmock('atc_class')
+    package = flexmock('package', :barcode => 'barcode')
+    registration = flexmock('registration', :iksnr => 'iksnr', :packages => [package])
+    @model     = flexmock('model',
+                          :pointer   => @pointer,
+                          :language  => @language,
+                          :atc_class => atc_class,
+                          :iksnrs    => ['IKSNR'],
+                          :iksnr     => 'IKSNR',
+                          :packages => [package],
+                          :registrations => [registration]
+                         )
+    @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
+  end
+  def test_document_print
+    text = @composite.to_html(CGI.new)
+    assert_match(/name="print"/, text)
+    skip("Don't how to test for Drucken")
+    assert_match(/Drucken/, text) # Don't know how to to mock this without spending time
+  end
+end
