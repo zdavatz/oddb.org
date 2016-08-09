@@ -282,6 +282,7 @@ module ODDB
           img = HtmlGrid::Image.new('name', model, session, self)
           img.set_attribute('src', 'http://'+ session.server_name + '/resources/evidentia/evidentia_16x16.png')
           link.css_class = "product_overview_link"
+          link.set_attribute('title', @lookandfeel.lookup(:product_overview_link))
           link.value = img
           link
         end
