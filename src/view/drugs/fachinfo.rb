@@ -269,6 +269,7 @@ class FiChapterChooser < HtmlGrid::Composite
     link = HtmlGrid::Link.new(:fi_product_overview_link, model, session, self)
     link.href = info.link
     link.set_attribute('title', @lookandfeel.lookup(:product_overview_link))
+    link.set_attribute('target', '_blank')
     img = get_image(:fachinfo_product_overview_link_icon)
     [ img, link].compact
   end
