@@ -12,6 +12,7 @@ require 'drb'
 
 module ODDB
   class EvidentiaSearchLinksPlugin < Plugin
+    CSV_ORIGIN_URL = 'http://www.evidentia.beatsteinegger.com/evidentia_fi_link.csv'
     @@report = []
     def initialize(app, options = nil)
       super
@@ -20,16 +21,18 @@ module ODDB
       @@report.join("\n")
     end
 
-    def update
+    def update(agent = Mechanize.new)
       @@report = []
       csv_file = File.expand_path('../../data/csv/evidentia_fi_link.csv', File.dirname(__FILE__))
-      if File.exist?(csv_file)
-        @@report << EvidentiaSearchLink.import_csv_file(csv_file)
+      latest = csv_file.sub(/\.csv$/, '-latest.csv')
+      result = Latest.get_latest_file(latest, ODDB::EvidentiaSearchLinksPlugin::CSV_ORIGIN_URL, agent)
+      if result.is_a?(String)
+        @@report << EvidentiaSearchLink.import_csv_file(latest)
+        @app.evidentia_search_links_hash = EvidentiaSearchLink.get
+        @app.odba_store
       else
-        @@report << "File #{csv_file} does not exist"
+        @@report << "Skip loading #{csv_file} as it is uptodate!"
       end
-      @app.evidentia_search_links_hash = EvidentiaSearchLink.get
-      @app.odba_store
       true
     end
   end

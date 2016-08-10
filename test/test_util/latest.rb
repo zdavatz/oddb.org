@@ -26,6 +26,7 @@ module ODDB
       FileUtils.makedirs(@archive)
       @latest = File.join(@archive, 'tst-latest.txt')
       @file_today = File.join(@archive, 'tst-2015.03.13.txt')
+      @file_yesterday = File.join(@archive, 'tst-2015.03.12.txt')
       @url = 'http://www.example.com'
       @page  = flexmock('page')
       @page.should_receive(:body).by_default.and_return(DefaultContent)
@@ -74,6 +75,32 @@ module ODDB
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
       assert_equal(DefaultContent.size, File.size(@latest))
+    end
+
+    def test_today_same_latest_yesterday
+      puts 'test_today_different_content_new_content'  if $VERBOSE
+      File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
+      File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
+      File.open(@file_yesterday, 'w+') {|f| f.write(DefaultContent) }
+      res = Latest.get_latest_file(@latest, @url, @agent)
+      assert_equal(false, res)
+      assert_equal(true, File.exists?(@file_today))
+      assert_equal(true, File.exists?(@latest))
+      assert_equal(DefaultContent.size, File.size(@latest))
+      assert_equal(false, File.exists?(@file_yesterday))
+    end
+
+    def test_today_different_yesterday
+      puts 'test_today_different_content_new_content'  if $VERBOSE
+      File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
+      File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
+      File.open(@file_yesterday, 'w+') {|f| f.write('different') }
+      res = Latest.get_latest_file(@latest, @url, @agent)
+      assert_equal(false, res)
+      assert_equal(true, File.exists?(@file_today))
+      assert_equal(true, File.exists?(@latest))
+      assert_equal(DefaultContent.size, File.size(@latest))
+      assert_equal(true, File.exists?(@file_yesterday))
     end
 
     def test_no_file_today
