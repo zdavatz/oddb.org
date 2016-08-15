@@ -71,7 +71,7 @@ module ODDB
       @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
       assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
       report = @plugin.report
-      assert_match(/skip/i, report, 'Must skip importing CSV file')
+      assert(report.empty?, 'Must skip importing CSV file and return an empty report')
       assert_equal(true, File.exist?(@latest), "#{@latest} must exist")
     end
     def test_skip_update_twice_in_one_day_must_skip
@@ -82,7 +82,7 @@ module ODDB
       assert(report1.match(/Added 19 search_links/), 'report must match links')
       assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
       report2 = @plugin.report
-      assert_match(/skip/i, report2, 'Must skip importing CSV file')
+      assert(report2.empty?, 'Must skip importing CSV file and return an empty report')
       assert_equal(true, File.exist?(@latest), "#{@latest} must exist")
     end
   end

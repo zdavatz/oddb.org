@@ -191,6 +191,7 @@ module ODDB
     end
     def run
       logfile_stats
+      update_evidentia_fi_search_links
       update_epha_interactions
 
       # recall, hpc
@@ -363,19 +364,10 @@ module ODDB
       update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
     end
     def update_epha_interactions
-      subj = 'EPHA interactions'
-      wrap_update(EphaInteractionPlugin, subj) {
-        plug = EphaInteractionPlugin.new(@app)
-        plug.update
-        unless plug.report.empty?
-          log = Log.new(@@today)
-          log.update_values(log_info(plug))
-          log.notify(subj)
-        end
-      }
+      update_immediate_with_error_report(EphaInteractionPlugin, 'EPHA interactions')
     end
     def update_evidentia_fi_search_links
-      update_simple(EvidentiaSearchLinksPlugin, 'Evidentia_FI_search_links')
+      update_immediate_with_error_report(EvidentiaSearchLinksPlugin, 'Evidentia_FI_search_links')
     end
     def update_hospitals
       update_simple(HospitalPlugin, 'Hospitals')
@@ -395,28 +387,10 @@ module ODDB
       update_hpc_feed(month)
     end
     def update_recall_feed(month = @@today)
-      subj = 'recall.rss'
-      wrap_update(RssPlugin, subj) {
-        plug = RssPlugin.new(@app)
-        plug.update_recall_feed
-        unless plug.report.empty?
-          log = Log.new(@@today)
-          log.update_values(log_info(plug))
-          log.notify(subj)
-        end
-      }
+      update_immediate_with_error_report(RssPlugin, 'recall.rss', :update_recall_feed)
     end
     def update_hpc_feed(month = @@today)
-      subj = 'hpc.rss'
-      wrap_update(RssPlugin, subj) {
-        plug = RssPlugin.new(@app)
-        plug.update_hpc_feed
-        unless plug.report.empty?
-          log = Log.new(@@today)
-          log.update_values(log_info(plug))
-          log.notify(subj)
-        end
-      }
+      update_immediate_with_error_report(RssPlugin, 'hpc.rss', :update_hpc_feed)
     end
     def update_trade_status
       update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
@@ -546,6 +520,7 @@ module ODDB
       nil
     end
     def update_immediate(klass, subj, update_method=:update)
+      LogFile.append('oddb/debug', "update_immediate #{subj}", Time.now)
       plug = klass.new(@app)
       plug.send(update_method)
       log = Log.new(@@today)
@@ -554,7 +529,22 @@ module ODDB
     rescue StandardError => e #RuntimeError, StandardError => e
       notify_error(klass, subj, e)
     end
+    def update_immediate_with_error_report(klass, subj, update_method=:update)
+      LogFile.append('oddb/debug', "update_immediate_with_error_report #{subj}", Time.now)
+      plug = klass.new(@app)
+      plug.send(update_method)
+      log = Log.new(@@today)
+      log.update_values(log_info(plug))
+        unless plug.report.empty?
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      end
+   rescue StandardError => e #RuntimeError, StandardError => e
+      notify_error(klass, subj, e)
+    end
     def update_notify_simple(klass, subj, update_method=:update, args=[])
+      LogFile.append('oddb/debug', "update_notify_simple #{subj}", Time.now)
       wrap_update(klass, subj) {
         if @options
           plug = klass.new(@app, @options)

@@ -30,8 +30,6 @@ module ODDB
         @@report << EvidentiaSearchLink.import_csv_file(latest)
         @app.evidentia_search_links_hash = EvidentiaSearchLink.get
         @app.odba_store
-      else
-        @@report << "Skip loading #{csv_file} as it is uptodate!"
       end
       true
     end
