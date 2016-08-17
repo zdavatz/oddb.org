@@ -1,20 +1,28 @@
-GTIN/EAN;Link;Markenname
-7680657820010;http://evidentia.ch/pneumologie/medical-fact-sheets/Esbriet;Esbriet®
-7680626440034;http://evidentia.ch/neurologie/medical-fact-sheets/Sativex;Sativex®
-7680618480024;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690084;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690091;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690107;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690114;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690121;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690138;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680620690145;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680626160017;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680626160024;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540013;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540020;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540037;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540044;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540051;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540068;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
-7680651540075;http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin;Levetiracetam Desitin® 
+GTIN/EAN,Link,Markenname
+7680657820010,http://evidentia.ch/pneumologie/medical-fact-sheets/Esbriet,Esbriet®
+7680626440034,http://evidentia.ch/neurologie/medical-fact-sheets/Sativex,Sativex®
+7680626440010,http://evidentia.ch/neurologie/medical-fact-sheets/Sativex,Sativex®
+7680618480024,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690084,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690091,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690107,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690114,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690121,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690138,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680620690145,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680626160017,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680626160024,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540013,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540020,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540037,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540044,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540051,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540068,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680651540075,http://evidentia.ch/neurologie/medical-fact-sheets/Levetiracetam-Desitin,Levetiracetam Desitin®
+7680576240012,http://evidentia.ch/pneumologie/medical-fact-sheets/Duodopa,Duodopa®
+7680652420017,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®
+7680652420024,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®
+7680652400019,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®
+7680652400026,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®
+7680652420031,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®
+7680652400033,http://evidentia.ch/neurologie/medical-fact-sheets/plegridy_0,PLEGRIDY®

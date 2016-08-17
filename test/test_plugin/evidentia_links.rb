@@ -30,6 +30,8 @@ module ODDB
   end
   class TestEvidentiaSearchLinksPlugin < Minitest::Test
     include FlexMock::TestCase
+    SearchLinkRE = /Added \d+ search_links/i
+    NrSearchLinks = 27
   def setup
       @app = flexmock('stub_app', StubApp.new)
       @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
@@ -57,11 +59,11 @@ module ODDB
       @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
       assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
       report = @plugin.report
-      assert(report.match(/Added 19 search_links/), 'report must match links')
+      assert(report.match(SearchLinkRE), 'report must match links')
       assert_equal('7680657820010 http://evidentia.ch/pneumologie/medical-fact-sheets/Esbriet Esbriet®',
                    EvidentiaSearchLink.get_info('7680657820010').to_s)
-      assert_equal(19, EvidentiaSearchLink.get.size)
-      assert_equal(19, @app.evidentia_search_links_hash.size)
+      assert_equal(NrSearchLinks, EvidentiaSearchLink.get.size)
+      assert_equal(NrSearchLinks, @app.evidentia_search_links_hash.size)
       assert_equal(true, File.exist?(@latest), "#{@latest} must exist")
     end
 
@@ -79,7 +81,7 @@ module ODDB
       @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
       assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
       report1 = @plugin.report
-      assert(report1.match(/Added 19 search_links/), 'report must match links')
+      assert(report1.match(SearchLinkRE), 'report must match links')
       assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
       report2 = @plugin.report
       assert(report2.empty?, 'Must skip importing CSV file and return an empty report')
