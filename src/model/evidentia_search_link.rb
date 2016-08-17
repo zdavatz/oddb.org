@@ -53,19 +53,18 @@ module ODDB
       File.readlines(file_name).each do |line|
         @lineno += 1
         line = line.force_encoding('utf-8')
-        # GTIN/EAN,Link,Markenname
-        next if /GTIN\/EAN.Link/i.match(line) # skip first line
+        # GTIN/EAN;Link;Markenname
+        next if /GTIN\/EAN;Link/i.match(line) # skip first line
         begin
-          elements = CSV.parse_line(line.strip, :col_sep => ',')
+          elements = CSV.parse_line(line.strip, :col_sep => ';')
         rescue CSV::MalformedCSVError
           msg << "CSV::MalformedCSVError in line #{@lineno}: #{line}"
           next
         end
         next if elements.size < 3 # Eg. empty line at the end
-        counter += 1
         search_link = ODDB::EvidentiaSearchLink.new(elements[0], elements[1], elements[2])
+        counter += 1
       end
-      raise "No search links found in #{file_name}" if EvidentiaSearchLink.get.size == 0
       msg = "#{Time.now} Added #{EvidentiaSearchLink.get.size} search_links from #{file_name}"
       EvidentiaSearchLink.debug_msg(msg)
       msg
