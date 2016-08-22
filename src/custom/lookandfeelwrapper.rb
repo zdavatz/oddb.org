@@ -713,9 +713,7 @@ module ODDB
       },
     }
     DISABLED = [ :best_result, :explain_link ]
-    RESOURCES = {
-      :external_css	=>	'http://www.oekk.ch/_css/oddb.css',
-    }
+    RESOURCES = { }
     HTML_ATTRIBUTES = { }
     def compare_list_components
       {

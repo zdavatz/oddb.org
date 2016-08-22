@@ -1,4 +1,3 @@
-@import "/resources/diff.css";
 /* ----------- ÖKK specified tags ----------------- */
 table.oekk-head, td.oekk-head {
 	width: 100%;
@@ -14,8 +13,8 @@ table.oekk-head img {
 }
 table.oekk-head table {
 	position: absolute;
-	right: 133px;
-	top: 94px;
+	right: 22px;
+	top: 98px;
 	z-index: 2;
 }
 table.oekk-head a {
@@ -29,27 +28,31 @@ table.composite {
 }
 div.oekk-department {
 	height: 18px;
-	background-color: #C00;
+	background-color: #FFFFFF;
 	padding: 54px 2px 2px 10px;
-	color: white;
+	font-family:Arial,Helvetica,sans-serif;
+	color: #96171b;
 	font-size: 15px;
-	font-weight: bold;
+	font-weight: normal;
+	text-transform:uppercase;
 }
 div.oekk-title {
 	height: 15px;
-	border: 1px solid #C00;
-	padding: 2px 2px 2px 10px;
-	background-color: #C00;
-	color: yellow;
+	border-bottom: 1px solid #888888;
+	padding: 2px 2px 4px 10px;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family:Arial,Helvetica,sans-serif;
 	font-weight: bold;
+	font-size: 13px;
 	margin-bottom: 25px;
 }
 /* ----------- ÖKK specified tags ----------------- */
 
 /* Top-Level */
 body {
-	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size : 12px; 
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 11px; 
 	border : 0px dotted;
 	background-color: white; 
 	margin: 0px;
@@ -100,13 +103,14 @@ pre {
 
 a {
 	text-decoration: none;
+	color : #e90000;
 }	
 a img {
 	border : 0px;
 }
 /* standard-result-classes */
 a.generic:hover, a.original:hover, a.unknown:hover {
-	color : blue;
+	color : #595959;
 }
 a.generic:active, a.original:active, a.unknown:active {
 	color : #f5e84d;
@@ -120,19 +124,19 @@ a.small:hover {
 	color : #0066cc; /* #2ba476; */
 }
 a.feedback, span.feedback, a.feedback:link, a.feedback:visited {
-	color: black;
-	background-color : #ffbc6f;
+	color: #ffffff;
+	background-color : #8d9e47;
 }
 a.google_search, span.google_search, a.google_search:link, a.google_search:visited {
 	color: white;
-	background-color : #184fca;
+	background-color : #96b9dd;
 }
 td.bg a.feedback {
-	background : #ffbc22;
+	background : #8d9e47;
 }
 a.infos {
-	color : black;
-	background : #FFF88F;
+	color : #FFFFFF;
+	background : #396481;
 }
 
 /* atc-chooser-classes */
@@ -201,13 +205,13 @@ a.list, a.list:hover {
 	color: #0066cc; /* #2ba476; */
 }
 a.list:link, a.list:visited {
-	color : blue;
+	color : #888888;
 }
 a.list:active {
 	color : black;
 }
 td.subheading, th.subheading {
-	background : #f0f0f0; /* #ccff99; */
+	background : #f6f6f6; /* #ccff99; */
 	color : black;
 	font-weight : normal;
 	padding : 4px;
@@ -221,7 +225,7 @@ td.subheading a.bold {
 	padding : 4px;
 }
 a.subheading:link, a.subheading:visited {
-	color : blue;
+	color : #e90000;
 }
 a.subheading:hover {
 	color : red;
@@ -233,7 +237,7 @@ a.subheading:active {
 /* navigation-classes */
 a.navigation{
 	color : yellow;
-  background : #0066cc; /* #2ba476; */
+  	background : #96171b; /* #2ba476; */
 	font-weight: normal;
 }
 a.navigation:link, a.navigation:visited {
@@ -247,15 +251,15 @@ a.navigation:active {
 }
 a.tabnavigation
 {
-	background : #0066cc; /* #ccff99; */
+	background : #f1e1e2; /* #ccff99; */
 	font-weight: bold;
 	font-size: 13px;
 }
 a.tabnavigation:link, a.tabnavigation:visited {
-	color : yellow;
+	color : #595959;
 }
 a.tabnavigation, a.tabnavigation:hover {
-	color : white;
+	color : red;
 }
 a.tabnavigation:active {
 	color : white;
@@ -278,10 +282,10 @@ td.explain a.original, td.explain a.generic{
 	font-weight: bold;
 }
 a.legal-note:link, a.legal-note:visited {
-	color: blue;
+	color: #e90000;
 }
 a.legal-note:hover {
-	color: #0066cc; /* #2ba476; */
+	color: #595959; /* #2ba476; */
 }
 a.legal-note:active {
 	color : #f5e84d;
@@ -328,10 +332,10 @@ table.right {
 	float: right;
 }
 table.tabnavigation {
-	background : #0066cc; /* #ccff99; */
+	background : #f1e1e2; /* #ccff99; */
 	color : white;
 	text-decoration : none;
-	border: 5px solid #0066cc; /* #2ba476; */
+	border: 5px solid #f1e1e2; /* #2ba476; */
 }
 table.tabnavigation td {
 	padding: 4px 2px;
@@ -387,14 +391,14 @@ tr td.list a.important {
 	font-size: 14px;
 }
 td.bg a.infos, td.atc a.infos, span.limitation, span.narc, span.fachinfo, span.patinfo  {
-	background : #FFF455;
+	background : #396481;
 }
 /*td standard-result-classes */
 td.generic, a.generic {
-	color : #0066cc; /* #2ba476; */
+	color : #1e699c; /* #2ba476; */
 }
 td.original, a.original {
-	color : red;
+	color : #96171b;
 }
 td.vaccine, a.vaccine {
 	color : #a52a2a;
@@ -406,7 +410,7 @@ td.bold, a.bold, span.bold {
 	font-weight: bold;
 }
 td.italic, a.italic, span.italic {
-	font-style : italic;
+	/* font-style : italic; */
 }
 /* other result-classes */
 td.atc {
@@ -421,7 +425,7 @@ td.indent {
 	padding-left : 15px;
 }
 tr td.big {
-	font-size : 14px;
+	font-size : 13px;
 	font-weight : bold;
 }
 td.small {
@@ -435,13 +439,22 @@ td.edit, td.edit a {
 td.result-found {
 	padding-left : 4px; 
 	padding-top : 4px; 
+	font-family : Arial,Helvetica,sans-serif;
 	font-weight : bold;
+	font-size : 11px;
+}
+
+td.result-found A {
+	color:#e90000;
+}
+
 }
 td.pubprice {
 	font-weight : bold;
 	padding-right : 10px;
 	text-align : right;
 }
+
 td.logo {
 	vertical-align : top;
 	position : relative;
@@ -472,7 +485,7 @@ td.title {
 	font-weight : bold;
 }
 td.navigation {
-	background : #0066cc; /* #2ba476; */
+	background : #96171b; /* #2ba476; */
 	color : white;
 	text-decoration : none;
 	padding : 4px;
@@ -481,6 +494,12 @@ td.right table.tabnavigation {
 	margin-bottom : 4px;
 	float :right;
 }
+
+td.right a {
+	color:#E90000;
+}
+
+
 td.pager-head {
 	padding-right : 12px;
 }
@@ -598,6 +617,7 @@ td.list span.square, td.list a.square {
 td.infos span.square, td.infos a.square {
 	padding: 0px 1px;
 	font-size: 11px;
+	color:#FFFFFF;
 }
 td.wait {
 	width: 25px;
@@ -643,6 +663,9 @@ td.tab {
 }
 td.nowrap {
 	white-space: nowrap;
+}
+td.price-compare {
+	color: red;
 }
 span.square, a.square {
 	text-align: center;
@@ -773,17 +796,19 @@ th.th-pointersteps {
 	text-decoration : none;
 }
 th, td.th {
-	background : #0066cc; /* #2ba476; */
+	background : #f1e1e2; /* #2ba476; */
 	color : white;
 	font-weight : bold;
 	padding : 4px;
 	text-decoration : none;
 }
 th a, td.th a, th a:visited, td.th a:visited {
-	color : white;
+	color : #96171b;
+	font-weight:normal;
+	text-transform:uppercase;
 }
 a.th:hover {
-	color : yellow;
+	color : black;
 }
 a.th:active {
 	color : red;
@@ -838,4 +863,8 @@ form.search {
 	vertical-align: bottom;
 	padding: 0px;
 	margin: 0px;
+}
+INPUT, SELECT {
+	margin-left:10px;
+	margin-bottom:10px;
 }
