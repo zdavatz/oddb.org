@@ -674,7 +674,6 @@ module ODDB
       :atc_chooser,
       :drugs,
       :export_csv,
-      :external_css,
       :faq_link,
       :help_link,
       :home,
@@ -713,7 +712,6 @@ module ODDB
       },
     }
     DISABLED = [ :best_result, :explain_link ]
-    RESOURCES = { }
     HTML_ATTRIBUTES = { }
     def compare_list_components
       {
