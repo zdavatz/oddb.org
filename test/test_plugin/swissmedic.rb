@@ -75,6 +75,7 @@ module ODDB
 
       @test_packages = File.expand_path '../data/xlsx/Packungen.xlsx', File.dirname(__FILE__)
       latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
+      FileUtils.makedirs(File.dirname(latest_to))
       FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
 
 

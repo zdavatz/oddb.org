@@ -157,7 +157,7 @@ public
 
     def trace_memory_useage
       max_mbytes = 16 * 1024
-      while @@do_tracing
+      while $swissmedic_do_tracing
         bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
         mbytes = bytes / (2**20)
         LogFile.debug("Using #{mbytes} MB of memory. Limit is #{max_mbytes}")
@@ -170,7 +170,7 @@ public
           end
           sleep(1)
           next if (Time.now-startTime).to_i > 60 # report time every 60 seconds,regardless of CPU useage
-          break unless @@do_tracing
+          break unless $swissmedic_do_tracing
         end
       end
     end
@@ -187,7 +187,7 @@ public
       file2open = target if target and File.exists?(target)
       threads = []
       threads << Thread.new do
-        @@do_tracing = true
+        $swissmedic_do_tracing = true
         threads.last.priority = threads.last.priority + 1
         trace_memory_useage
       end
@@ -310,9 +310,21 @@ public
         false
       end
       LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
-      @@do_tracing = false
+      LogFile.debug " done0. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      $swissmedic_do_tracing = false
+      LogFile.debug " done1. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
       threads.map(&:join)
+      LogFile.debug " done2. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+
+      sleep(1.1)
+      LogFile.debug " done3. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      threads.map(&:join)
+      LogFile.debug " done4. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+
       @update_comps ? true : @diff
+    ensure
+      LogFile.debug " done5 ensure. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      $swissmedic_do_tracing = false
     end
     # check diff from overwritten stored-objects by admin
     # about data-fields
