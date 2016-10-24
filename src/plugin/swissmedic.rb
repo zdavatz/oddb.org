@@ -160,7 +160,7 @@ public
       while $swissmedic_do_tracing
         bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
         mbytes = bytes / (2**20)
-        LogFile.debug("Using #{mbytes} MB of memory. Limit is #{max_mbytes}")
+        LogFile.debug("Using #{mbytes} MB of memory. Limit is #{max_mbytes}. Swissmedic_do_tracing #{$swissmedic_do_tracing.inspect}")
         startTime = Time.now
         # Check done every second
         0.upto(60) do |idx|
@@ -176,6 +176,7 @@ public
     end
 
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
+      $swissmedic_do_tracing = true
       start_time = Time.new
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
@@ -187,7 +188,6 @@ public
       file2open = target if target and File.exists?(target)
       threads = []
       threads << Thread.new do
-        $swissmedic_do_tracing = true
         threads.last.priority = threads.last.priority + 1
         trace_memory_useage
       end
@@ -310,20 +310,20 @@ public
         false
       end
       LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
-      LogFile.debug " done0. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done0. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       $swissmedic_do_tracing = false
-      LogFile.debug " done1. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done1. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       threads.map(&:join)
-      LogFile.debug " done2. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done2. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
 
       sleep(1.1)
-      LogFile.debug " done3. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done3. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       threads.map(&:join)
-      LogFile.debug " done4. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done4. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
 
       @update_comps ? true : @diff
     ensure
-      LogFile.debug " done5 ensure. $swissmedic_do_tracing is #{$swissmedic_do_tracing}. Having #{threads.size} threads"
+      LogFile.debug " done5 ensure. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       $swissmedic_do_tracing = false
     end
     # check diff from overwritten stored-objects by admin
