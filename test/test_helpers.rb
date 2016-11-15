@@ -84,7 +84,19 @@ module ODDB
       VCR.eject_cassette
       VCR.configure do |c|
         c.hook_into :webmock
+        c.preserve_exact_body_bytes do |http_message|
+          http_message.body.encoding.name == 'ASCII-8BIT' ||
+          !http_message.body.valid_encoding?
+        end
         c.cassette_library_dir = File.expand_path("#{Dir.pwd}/fixtures/vcr_cassettes")
+        c.before_record(:lppv) do |i|
+          if /LPPV_D/.match(i.request.uri)
+            dummy = File.join(WorkDir, 'test', 'data', 'lppv', 'LPPV_D.xlsx')
+            i.response.body = IO.read(dummy)
+            i.response.headers['Content-Length'] = i.response.body.size
+            puts "#{Time.now}: #{__LINE__}: URI was #{i.request.uri} replacing by #{dummy}"
+          end
+        end
         c.before_record(:Refdata_Article) do |i|
           if /zurrose/i.match(i.request.uri)
             puts "#{Time.now}: #{__LINE__}: URI was #{i.request.uri}"

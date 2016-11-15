@@ -8,7 +8,7 @@ else
 end
 
 gem 'activesupport', '3.1.0'
-gem 'archive-tarsimple', '1.1.1'
+#gem 'archive-tarsimple', '1.1.1'
 gem 'bigdecimal', '1.1.0'
 gem 'builder', '3.2.2'
 gem 'dbd-pg', '0.3.9'

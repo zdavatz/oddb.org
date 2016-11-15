@@ -9,73 +9,82 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 require "plugin/plugin"
 require 'model/package'
 require "util/html_parser"
-require "net/http"
+require 'open-uri'
+require 'nokogiri'
+require 'rubyXL'
 
 module ODDB 
-	class LppvWriter < NullWriter
-		def initialize
-			super
-			@tables = []
-		end
-		def new_tablehandler(table)
-			if(table)
-				@tables.push(table) unless(@tables.include?(table))
-			end
-			@table = table
-		end
-    def eans
-      eans = []
-      pcode_style = /[0-9]{6,8}/u
-      ean_style = /[0-9]{13}/u
-      @tables.at(1).each_row { |row|
-        if(pcode_style.match(row.cdata(3)) \
-           && ean_style.match(row.cdata(5)))
-          eans << row.cdata(5).to_i.to_s
-        end
-      }
-      eans
-    end
-		def send_flowing_data(data)
-			if(@table)
-				@table.send_cdata(data)	
-			end
-		end
-	end
 	class LppvPlugin < Plugin
-		LPPV_HOST = 'www.lppa.ch'
-		LPPV_PATH = '/index/%s.htm'
-		attr_reader :updated_packages
+    # Taken from http://www.lppv.ch/20160530/wp-content/download/LPPA_D.xlsx
+    # PhCode  GTIN  Artikelname IT  Bezeichnung muteDate  muteTyp
+    # Mutetyp
+    # Standardmässig drin seit MuteDatum        0
+    # neu seit letzten Update                   1
+    # gelöscht seit letzten update              2
+    # Ausser Handel seit (innerhalb 365 Tage)   9
+    COL = {
+      :PhCode      => 0, # A
+      :GTIN        => 1, # B
+      :Artikelname => 2, # C
+      :IT          => 3, # D
+      :Bezeichnung => 4, # E
+      :muteDate    => 5, # F
+      :muteTyp     => 6, # G
+    }
+		LPPV_HOST = 'www.lppv.ch'
+    # some readers to ease testing
+		attr_reader :updated_packages, :packages_with_sl_entry, :not_updated
 		def initialize(app)
 			super
 			@updated_packages = []
 			@packages_with_sl_entry = []
-			@not_updated_chars = []
+			@not_updated = []
 		end
-    def update(range = 'A'..'Z')
+    def update
       @eans = []
-      Net::HTTP.new(LPPV_HOST).start { |http|
-        range.each { |char|
-          eans = get_eans(char, http)
-          @eans << eans
-        }
-      }
+      doc = Nokogiri::HTML(open("http://#{LPPV_HOST}/"))
+      links = Hash[doc.xpath('//a[@href]').map {|link| [link.text.strip, link["href"]]}]
+      link = links.values.find{|x| /LPPV_D/.match(x) }
+      @download_to = File.join ARCHIVE_PATH, File.basename(link)
+      File.open(@download_to, 'w+') { |f| f.write open(link).read }
+      workbook = RubyXL::Parser.parse(@download_to)
+      positions = []
+      rows = 0
+      workbook[0].each do |row|
+        rows += 1
+        if rows == 1
+          # verify and catch error if the format changes without warning
+          COL.each do |key, value|
+            actual_name = row[value].value.to_s
+            raise "Unexpected column name #{actual_name} does not match exepect #{key.to_s}" unless actual_name.eql?(key.to_s)
+          end
+        else
+          break unless  row[COL[:GTIN]]
+          pharmacode = row[COL[:PhCode]].value.to_s
+          gtin = row[COL[:GTIN]].value.to_s
+          name = row[COL[:Artikelname]].value.to_s
+          it = row[COL[:IT]].value.to_s
+          desc = row[COL[:Bezeichnung]].value.to_s
+          muteDate = row[COL[:muteDate]].value.to_s
+          muteTyp = row[COL[:muteTyp]].value.to_s
+          # puts "read #{pharmacode} #{gtin} #{name}"
+          if gtin.to_i > 0
+            @eans << gtin
+          else
+            if pharmacode.length > 0
+              @eans << pharmacode
+            else
+              @not_updated << "#{pharmacode} neither GTIN nor pharmacoe #{name} #{desc}"
+            end
+          end
+        end
+      end
+      # puts "Read #{rows} rows from #{link}. Found #{@not_updated.size} without a GTIN"
       update_packages(@eans.dup.flatten)
     end
-    def get_eans(char, http)
-      writer = LppvWriter.new
-      path = sprintf(LPPV_PATH, char)
-      response = http.get(path)
-      formatter = HtmlFormatter.new(writer)
-      parser = HtmlParser.new(formatter)
-      parser.feed(response.body)
-      if writer.eans.empty?
-        @not_updated_chars.push(char)
-      end
-      origin = "http://#{LPPV_HOST}#{path}"
-      writer.eans
-    end
     def update_package(package, data)
-      if(ean = data.delete(package.barcode))
+      # puts "Checking pharma #{package.pharmacode} GTIN #{package.barcode}: #{package.pharmacode} #{package.name}"
+      if(ean = (data.delete(package.barcode) || data.delete(package.pharmacode)))
         if(package.sl_entry && package.price_public)
           @packages_with_sl_entry.push(package)
         else
@@ -85,18 +94,21 @@ module ODDB
         @app.update(package.pointer, {:lppv => false}, :lppv)
       end
     end
-		def update_packages(data)
-			@app.each_package { |package| 
-				update_package(package, data)
-			}
-		end
+    def update_packages(data)
+      @app.each_package do |package|
+        update_package(package, data)
+      end
+    end
     def report
       lines = [
-        "Updated Packages (lppv flag true): #{@updated_packages.size}",
+        "Updated Packages (lppv flag true): #{@updated_packages.size} details:",
+        @updated_packages.join("\n"),
         nil,
         "Packages with SL-Entry: #{@packages_with_sl_entry.size}",
         nil,
-        "Not updated were: #{@not_updated_chars.join(', ')}",
+        "Not updated were: #{@not_updated.size} details:",
+        nil,
+        @not_updated.join("\n"),
       ]
       lines.flatten.join("\n")
     end
@@ -106,7 +118,7 @@ module ODDB
           :lppv => true
         }
         @app.update(package.pointer, args, :lppv)
-        @updated_packages.push(package)
+        @updated_packages.push("#{package.barcode} pharma #{package.pharmacode} #{package.name}")
       end
     end
 	end

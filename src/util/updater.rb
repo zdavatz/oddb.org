@@ -374,7 +374,7 @@ module ODDB
     end
 
     def update_lppv
-      update_immediate(LppvPlugin, 'Lppv prices')
+      update_immediate(LppvPlugin, 'Lppv')
     end
     def update_medwin_companies
       update_simple(MedwinCompanyPlugin, 'Medwin-Companies')
