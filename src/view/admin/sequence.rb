@@ -51,7 +51,16 @@ class ActiveAgents < HtmlGrid::List
     @grid.set_attribute('cellspacing', '2')
   end
   def dose(model)
-    model.dose.qty.eql?(0) ? nil : model.dose.to_s if model and model.dose
+    if model and model.dose
+      return nil if model.dose.qty.eql?(0)
+      s = model.dose.to_s
+      if model.chemical_substance
+        s += @lookandfeel.lookup(:corresp)
+        s += model.chemical_substance.send(@session.language)
+        s += ' ' + model.chemical_dose.to_s
+      end
+      s
+    end
   end
   def substances(model)
     if model && sub = model.substance
@@ -229,7 +238,7 @@ class CompositionList < HtmlGrid::Composite
     div
   end
   def active_agents(model, session=@session)
-    agents = model.active_agents
+    agents = model.active_agents.find_all{|x| x.is_active_agent }
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
     elem.css_class = 'left italic'

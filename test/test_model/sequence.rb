@@ -679,6 +679,8 @@ class TestSequence <Minitest::Test
     comp.active_agents.push active_agent1
     comp.inactive_agents.push active_agent2
     @seq.compositions.push comp
+    assert_equal(true, active_agent1.is_active_agent)
+    assert_equal(false, active_agent2.is_active_agent)
     assert_equal(["Subst1"], @seq.active_agents.collect{|x| x.substance})
     assert_equal(["Subst2"], @seq.inactive_agents.collect{|x| x.substance})
   end

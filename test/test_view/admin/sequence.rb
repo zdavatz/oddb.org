@@ -37,6 +37,8 @@ class TestRootActiveAgents <Minitest::Test
       s.should_receive(:app)
     end
     active_agent = flexmock('active_agent') do |m|
+      m.should_receive(:is_active_agent).and_return(true)
+      m.should_receive(:chemical_substance).and_return('chemical_substance')
       m.should_receive(:dose)
       m.should_receive(:more_info)
       m.should_receive(:substance)
@@ -62,7 +64,7 @@ class TestRootActiveAgents <Minitest::Test
     assert_kind_of(HtmlGrid::Link, @agents.delete_composition('model'))
   end
   def test_dose
-    model = flexmock('model', :dose => @dose)
+    model = flexmock('model', :dose => @dose, :chemical_substance => nil)
     assert_kind_of(HtmlGrid::InputText, @agents.dose(model))
   end
   def test_galenic_form
@@ -433,6 +435,7 @@ class TestRootSequenceForm <Minitest::Test
       s.should_receive(:app)
     end
     agent = flexmock('agent') do |a|
+      a.should_receive(:is_active_agent).and_return(true)
       a.should_receive(:dose)
       a.should_receive(:substance)
       a.should_receive(:more_info)
@@ -513,6 +516,7 @@ class TestResellerSequenceComposite <Minitest::Test
       s.should_receive(:language).and_return('language')
     end
     active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:is_active_agent).and_return(true)
       a.should_receive(:substance).and_return(substance)
       a.should_receive(:dose)
       a.should_receive(:more_info)

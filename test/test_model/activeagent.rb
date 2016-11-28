@@ -29,6 +29,7 @@ module ODDB
 end
 class StubActiveAgentSubstance
 	attr_reader :name, :sequence, :removed_sequence, :substance_name
+  attr_accessor :chemical_substance, :chemical_dose
 	alias :to_s :name
 	def initialize(name)
 		@name = name
@@ -86,9 +87,14 @@ class TestActiveAgent <Minitest::Test
 		@agent.init(@app)
 	end
 	def test_init
-		assert_equal(@substance, @agent.substance)
-    skip("niklaus has no time to debug this assert")
-		assert_equal(@sequence, @agent.substance.sequence)
+    name = 'Perindoprilum Tosylatum'
+    active_agent = ODDB::ActiveAgent.new(name)
+    assert_equal(true, active_agent.is_active_agent)
+    assert_equal('', active_agent.substance.to_s)
+    active_agent.init(@app)
+    assert_equal(name, active_agent.to_s)
+    assert_equal(nil, active_agent.sequence)
+    assert_equal(true, active_agent.is_active_agent)
 	end
 	def test_equal
 		other = ODDB::ActiveAgent.new(@substance_name)
@@ -156,7 +162,7 @@ class TestActiveAgent <Minitest::Test
 		assert_equal(expected, @agent.adjust_types(input, app))
 	end
 	def test_adjust_types_chemical
-		app = StubActiveAgentApp.new
+    app = StubActiveAgentApp.new
 		subst = StubActiveAgentSubstance.new('ACIDUM MEFENAMICUM')
 		dose = ODDB::Dose.new(10, 'mg')
 		input = {
@@ -293,6 +299,10 @@ class TestActiveAgent <Minitest::Test
     assert_equal('ACIDUM ACETYLSALICYLICUM', agent.to_s)
   end
   def test_update_values
-    skip 'Pending test_update_values'
+    agent = ODDB::ActiveAgent.new(@substance_name)
+    assert_equal '', agent.dose.to_s
+    dose = ODDB::Dose.new(5, 'mg')
+    agent.update_values('dose' =>dose)
+    assert_equal '5 mg', agent.dose.to_s
   end
 end
