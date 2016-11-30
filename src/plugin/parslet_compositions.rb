@@ -68,18 +68,21 @@ module ParseUtil
     active_agents = active_agents_string ? active_agents_string.downcase.split(/,\s+/) : []
     comps = []
     lines = composition_text.gsub(/\r\n?/u, "\n").split(/\n/u)
-    lines.select {
+    lines.select do
       |line|
       composition =  ParseComposition.from_string(line)
       if composition.is_a?(ParseComposition)
-        composition.substances.each {
+        composition.substances.each do
           |substance_item|
           substance_item.is_active_agent = (active_agents.find {|x| x.downcase.eql?(substance_item.name.downcase) } != nil)
           substance_item.is_active_agent = true if substance_item.chemical_substance and active_agents.find {|x| x.downcase.eql?(substance_item.chemical_substance.name.downcase) }
-         }
+          # next line is an ugly hack for 24 entries with names containing commas between brackets, eg.
+          # globulina equina (immunisé avec coeur, tissu pulmonaire, reins de porcins)
+          substance_item.is_active_agent = true if /globulina equina/.match(substance_item.name.downcase)
+         end
         comps << composition
       end
-    }
+    end
     comps << ParseComposition.new(composition_text.split(/,|:|\(/)[0]) if comps.size == 0
     comps
   end
