@@ -95,8 +95,7 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
     [0,3] =>  'subheading th_auxilliary',
     [0,5] =>  'subheading th_source',
 	}
-  def initialize(model, session, is_active_agent = true)
-    @is_active_agent = is_active_agent
+  def initialize(model, session)
     super(model, session)
   end
   def active_agents(model, session=@session)
@@ -112,8 +111,8 @@ end
 class ActiveAgent < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::ActiveAgentComposite
 	SNAPBACK_EVENT = :result
-  def initialize(agents, session, is_active_agent = true)
-    super(agents, session, is_active_agent)
+  def initialize(agents, session)
+    super(agents, session)
   end
 end
 class RootActiveAgent < View::Admin::ActiveAgent

@@ -86,16 +86,22 @@ class TestActiveAgent <Minitest::Test
 		@agent.sequence = @sequence
 		@agent.init(@app)
 	end
-	def test_init
+  def test_init_is_active_agent
     name = 'Perindoprilum Tosylatum'
     active_agent = ODDB::ActiveAgent.new(name)
+    assert_equal(TrueClass, active_agent.is_active_agent.class)
     assert_equal(true, active_agent.is_active_agent)
     assert_equal('', active_agent.substance.to_s)
     active_agent.init(@app)
     assert_equal(name, active_agent.to_s)
     assert_equal(nil, active_agent.sequence)
     assert_equal(true, active_agent.is_active_agent)
-	end
+  end
+  def test_init_is_comon_agent
+    name = 'Perindopril'
+    active_agent = ODDB::ActiveAgentCommon.new(name)
+    assert_equal(false, active_agent.is_active_agent)
+  end
 	def test_equal
 		other = ODDB::ActiveAgent.new(@substance_name)
     other.substance = @substance
@@ -305,4 +311,34 @@ class TestActiveAgent <Minitest::Test
     agent.update_values('dose' =>dose)
     assert_equal '5 mg', agent.dose.to_s
   end
+  def test_change_is_active_agent
+    agent = ODDB::ActiveAgent.new(@substance_name)
+    assert_raises NoMethodError do
+      agent.is_active_agent = false
+    end
+    agent = ODDB::InactiveAgent.new(@substance_name)
+    assert_raises NoMethodError do
+      agent.is_active_agent = true
+    end
+  end
+  def set_is_active_agent element, value
+    class << element
+      attr_writer :is_active_agent
+    end
+    element.send("is_active_agent=", value)
+  end
+  def test_change_is_active_agent_when_modified
+    agent = ODDB::ActiveAgent.new(@substance_name)
+    set_is_active_agent(agent, true)
+    assert_equal(true, agent.is_active_agent)
+    set_is_active_agent(agent, false)
+    assert_equal(false, agent.is_active_agent)
+    inactive_agent = ODDB::InactiveAgent.new(@substance_name)
+    assert_equal(false, inactive_agent.active_agent?)
+    assert_equal(false, inactive_agent.is_active_agent)
+    set_is_active_agent(inactive_agent, true)
+    assert_equal(true, inactive_agent.is_active_agent)
+    assert_equal(false, inactive_agent.active_agent?)
+  end
 end
+

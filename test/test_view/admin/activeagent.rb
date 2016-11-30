@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::View::Admin::TestActiveAgent -- oddb.org -- 03.06.2011 -- mhatakeyama@ywesee.com
-
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 gem 'minitest'
+require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock'
+require 'model/activeagent'
 require 'view/additional_information'
 require 'view/admin/activeagent'
 
@@ -109,9 +111,11 @@ class TestRootActiveAgentComposite <Minitest::Test
                           :error?      => nil
                          )
     parent     = flexmock('parent', :name => 'name')
-    active_agent = flexmock('active_agent', :is_active_agent => false)
+    active_agent = ODDB::ActiveAgent.new('active_agent')
+    inactive_agent = ODDB::InactiveAgent.new('inactive_agent')
     package    = flexmock('package', :swissmedic_source => {'swissmedic_source' => 'x'})
     sequence   = flexmock('sequence', 
+                          :inactive_agents => [inactive_agent],
                           :active_agents => [active_agent],
                           :packages      => {'key' => package}
                          )

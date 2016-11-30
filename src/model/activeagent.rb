@@ -13,8 +13,9 @@ module ODDB
 		attr_accessor :substance
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
-		attr_accessor :composition, :more_info, :is_active_agent
-    attr_reader   :substance_name
+		attr_accessor :composition, :more_info
+    # is_active_agent is deprecated an replaced by active_agent?
+    attr_reader   :substance_name,  :is_active_agent
     class << self
       include AccessorCheckMethod
     end
@@ -30,16 +31,14 @@ module ODDB
     define_check_class_methods check_class_list
 		def initialize(substance_name)
 			super()
-      @is_active_agent = nil
 			@substance_name = substance_name
-      @is_active_agent = is_active_agent
+      @is_active_agent = self.is_a?(ActiveAgent)
 		end
 		def init(app)
 			self.substance = app.substance(@substance_name)
 		end
-    def is_active_agent
-      return @is_active_agent unless @is_active_agent
-      true
+    def active_agent?
+      self.is_a?(ActiveAgent)
     end
 		def checkout
 			if(@substance.respond_to?(:remove_sequence))
@@ -121,7 +120,6 @@ module ODDB
     ODBA_PREFETCH = true
     def initialize(substance_name)
       super(substance_name)
-      @is_active_agent = true
     end
     def substance=(substance)
       super(substance)
@@ -141,7 +139,6 @@ module ODDB
     ODBA_PREFETCH = true
     def initialize(substance_name)
       super(substance_name)
-      @is_active_agent = false
     end
     def substance=(substance)
       super(substance)

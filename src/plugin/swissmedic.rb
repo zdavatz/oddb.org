@@ -178,6 +178,7 @@ public
     def update(opts = {}, agent=Mechanize.new, target=get_latest_file(agent))
       $swissmedic_do_tracing = true
       start_time = Time.new
+      cleanup_active_agents_with_nil
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
@@ -310,20 +311,12 @@ public
         false
       end
       LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
-      LogFile.debug " done0. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       $swissmedic_do_tracing = false
-      LogFile.debug " done1. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       threads.map(&:join)
-      LogFile.debug " done2. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
-
       sleep(1.1)
-      LogFile.debug " done3. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       threads.map(&:join)
-      LogFile.debug " done4. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
-
       @update_comps ? true : @diff
     ensure
-      LogFile.debug " done5 ensure. $swissmedic_do_tracing is #{$swissmedic_do_tracing.inspect}. Having #{threads.size} threads"
       $swissmedic_do_tracing = false
     end
     # check diff from overwritten stored-objects by admin
@@ -1359,6 +1352,41 @@ public
                  end
         [weight, iksnr]
       end
+    end
+    def count_active_agents_with_nil_is_active
+      res = @app.active_sequences.collect{|s| s.compositions.collect{|c| c.active_agents.find_all {|x| x.is_active_agent == nil} }}
+      res.flatten.size
+    end
+    def cleanup_active_agents_with_nil(sequences = @app.active_sequences)
+      @@corrected = []
+      nr_seq = 0
+      sequences.each do |sequence|
+        nr_seq += 1
+        LogFile.debug "at #{sequence.iksnr}/#{sequence.seqnr}: #{nr_seq}" if nr_seq % 300 == 1
+        sequence.compositions.each do |composition|
+          to_correct = composition.active_agents.find_all {|x| x.is_active_agent == nil}
+          next if to_correct.size == 0
+          LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}:  #{composition.pointer}: Must correct is #{to_correct.size} agents. Has  #{composition.active_agents.size} active_agents"
+          to_correct.each do |wrong_agent|
+            @@corrected << wrong_agent.pointer
+            LogFile.debug "Deleting wrong_agent odba_isolated_store #{wrong_agent.pointer} is #{wrong_agent.oid} #{wrong_agent.to_s}"
+            # We must not delete the active_agent
+            # composition.active_agents -= [wrong_agent] # this did not work
+            # composition.active_agents = composition.active_agents - wrong_agent
+            composition.delete_active_agent(wrong_agent)
+            composition.odba_store
+          end
+          LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}: #{composition.pointer}: has now #{composition.active_agents.size} active_agents"
+        end
+      end
+      LogFile.debug "Corrected #{@@corrected.size} of #{@app.active_sequences.size} active_sequences. Deleted active_agents\n#{@@corrected.join("\n")}"
+      nr_nil = count_active_agents_with_nil_is_active
+      unless nr_nil == 0
+        LogFile.debug "Should have 0 and not #{count_active_agents_with_nil_is_active} active_agents with nil is_active_agent"
+      else
+        LogFile.debug "Everything seems to be okay count_active_agents_with_nil_is_active is 0"
+      end
+      @@corrected
     end
   end
 end

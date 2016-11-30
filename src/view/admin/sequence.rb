@@ -238,7 +238,7 @@ class CompositionList < HtmlGrid::Composite
     div
   end
   def active_agents(model, session=@session)
-    agents = model.active_agents.find_all{|x| x.is_active_agent }
+    agents = model.active_agents
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
     elem.css_class = 'left italic'

@@ -196,6 +196,8 @@ module ODDB
       assert_equal(12, @app.sequences.size)
       assert_equal(19, @app.packages.size)
       assert_equal(17, @app.active_packages.size)
+      res =  @app.active_sequences.collect{|s| s.compositions.collect {|c| c.active_agents.find_all{|a| a.is_active_agent == nil }}}
+      assert_equal(0, res.flatten.size)
     end
 
     def test_mustcheck
@@ -207,6 +209,33 @@ module ODDB
       assert_equal(false, @plugin.mustcheck('46112', {:iksnrs => ['46111']}))
     end
 
+  def set_is_active_agent element, value
+    class << element
+      attr_writer :is_active_agent
+    end
+    element.send("is_active_agent=", value)
   end
+  def test_cleanup_active_agents_all_nil
+    iksnr = '65432'
+    seqnr = '01'
+    packnr = '001'
+    reg = @app.create_registration(iksnr)
+    seq = reg.create_sequence(seqnr)
+    pack = seq.create_package(packnr)
+    comp = seq.create_composition
+    assert_equal([], comp.active_agents)
+    agent1 = comp.create_active_agent('agent1')
+    assert_equal(true, agent1.is_active_agent)
+    agent2 = comp.create_active_agent('agent2')
+    assert_equal(true, agent2.is_active_agent)
+    assert_equal([agent1, agent2], comp.active_agents)
+    inactive = comp.create_inactive_agent('inactive')
+    assert_equal(false, inactive.is_active_agent)
+    assert_equal([agent1, agent2], comp.active_agents)
+    set_is_active_agent(agent2, nil)
+    assert_equal(nil, agent2.is_active_agent)
+    res = @plugin.cleanup_active_agents_with_nil
+  end
+end
 
 end

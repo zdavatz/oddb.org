@@ -118,6 +118,12 @@ module ODDB
         .times(1).and_return do assert true; 'from fachinfo' end
       assert_equal 'from fachinfo', @user.allowed?('fachinfo', fachinfo)
 
+      agent = InactiveAgent.new 'inactive_substance'
+      agent.sequence = sequence
+      @session.should_receive(:allowed?).with('inactiveagent', comp_privilege)\
+        .times(1).and_return do assert true; 'from inactiveagent' end
+      assert_equal 'from inactiveagent', @user.allowed?('inactiveagent', agent)
+
       agent = ActiveAgent.new 'substance'
       agent.sequence = sequence
       @session.should_receive(:allowed?).with('activeagent', comp_privilege)\

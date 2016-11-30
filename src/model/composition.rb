@@ -40,7 +40,7 @@ module ODDB
     def active_agents # aka Wirkstoffe
       @active_agents || []
     end
-    def inactive_agents
+    def inactive_agents # aka Hilfsstoffe
       @inactive_agents || []
     end
     def active_agent(substance_or_oid)
@@ -58,15 +58,15 @@ module ODDB
       @active_agents.odba_delete
     end
     def create_active_agent(substance_name)
-      active = active_agent(substance_name)
-      return active unless active == nil
-      active = ActiveAgent.new(substance_name)
+      agent = active_agent(substance_name)
+      return agent if agent
+      agent = ActiveAgent.new(substance_name)
       composition = self
-      active.sequence = @sequence
-      @active_agents.push(active)
+      agent.sequence = @sequence
+      @active_agents.push(agent)
       @active_agents.odba_isolated_store
       self.odba_store
-      active
+      agent
     end
     def delete_active_agent(substance_or_oid)
       active = active_agent(substance_or_oid)
@@ -77,15 +77,15 @@ module ODDB
       end
     end
     def create_inactive_agent(substance_name)
-      active = inactive_agent(substance_name)
-      return active unless active == nil
-      active = InactiveAgent.new(substance_name)
+      agent = inactive_agent(substance_name)
+      return agent if agent
+      agent = InactiveAgent.new(substance_name)
       composition = self
-      active.sequence = @sequence
-      @inactive_agents.push(active)
+      agent.sequence = @sequence
+      @inactive_agents.push(agent)
       @inactive_agents.odba_isolated_store
       self.odba_store
-      active
+      agent
     end
     def delete_inactive_agent(substance_or_oid)
       active = inactive_agent(substance_or_oid)
@@ -153,25 +153,6 @@ module ODDB
       end
     end
 
-    # We do not call odba_store (needed to write the changes into to DB) here.
-    # Doing this would slow down the jobs/update_active_agents way too, much
-    def cleanup_old_active_agent
-      if @inactive_agents and @inactive_agents.class != Array
-        $stdout.puts "cleanup_old_active_agent. Forcing inactive_agents from class #{@inactive_agents.class} => Array"
-        @inactive_agents = []
-      end
-      unless sequence.registration.expiration_date  and sequence.registration.expiration_date > Date.today
-        $stdout.puts "cleanup_old_active_agent. Skipping inactive registration #{sequence.iksnr} expiration #{sequence.registration.expiration_date.inspect}"
-        return
-      end
-      @active_agents ||= []
-      @inactive_agents ||= []
-      @inactive_agents += @active_agents.find_all{|agent| agent and agent.respond_to?(:is_active_agent) and agent.is_active_agent == false }
-      @active_agents.delete_if{ |agent| agent == nil or (!agent.respond_to?(:is_active_agent)) or  agent.is_active_agent == false }
-      @active_agents.each{ |agent| agent.is_active_agent = true unless agent and agent.respond_to?(:is_active_agent) and agent.is_active_agent}
-      @inactive_agents.uniq! # remove duplicate if running twice
-      @cleaned = true
-    end
     private
     def adjust_types(values, app=nil)
       values = values.dup
@@ -201,6 +182,6 @@ module ODDB
       target = value
     end	
     protected
-    attr_writer :active_agents
+      attr_writer :active_agents
   end
 end

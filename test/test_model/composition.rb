@@ -76,9 +76,12 @@ module ODDB
       agent = @composition.create_active_agent('substance_name')
       assert_kind_of(ODDB::ActiveAgent, agent)
       assert_equal(1, @composition.active_agents.size)
+      agent2 = @composition.create_active_agent('agent2')
+      assert_equal(2, @composition.active_agents.size)
       result = @composition.delete_active_agent('substance_name')
-      assert_equal(0, @composition.active_agents.size)
       assert_kind_of(ODDB::ActiveAgent, result)
+      assert_equal([agent2], @composition.active_agents)
+      assert_equal(1, @composition.active_agents.size)
     end
     def test_delete_inactive_agent
       agent = @composition.create_inactive_agent('substance_name')

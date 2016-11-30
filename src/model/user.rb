@@ -64,7 +64,9 @@ module ODDB
     end
     def allowed?(action, key=nil)
  			result = case key.odba_instance
-			when ActiveAgentCommon
+			when ActiveAgent
+        allowed?(action, key.sequence)
+      when InactiveAgent
 				allowed?(action, key.sequence)
 			when Company
         allowed?(action, key.pointer.to_yus_privilege)
