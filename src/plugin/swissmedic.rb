@@ -769,7 +769,6 @@ public
       args[:substance]        = parsed_substance.name
       args[:dose]             = dose
       args[:more_info]        = parsed_substance.more_info
-      args[:is_active_agent]  = active
       if parsed_substance.chemical_substance
         chemical_dose = ODDB::Dose.new(parsed_substance.chemical_substance.qty, parsed_substance.chemical_substance.unit)
         args[:chemical_dose]      = chemical_dose
