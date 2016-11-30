@@ -225,7 +225,7 @@ public
             seq = reg.sequence("%02i" %seqnr) if reg
             update_all_sequence_info(row, reg, seq) if reg and seq
             GC.enable unless already_disabled
-            trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
+            trace_msg "update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
           end
           @update_time = ((Time.now - start_time) / 60.0).to_i
         end
@@ -744,25 +744,28 @@ public
       substance = update_substance(parsed_substance.name)
 
       dose = ODDB::Dose.new(parsed_substance.qty, parsed_substance.unit)
-      LogFile.debug("update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose}")
       if active
         ptr = if (agent = composition.active_agent(parsed_substance.name))
           from = 'active_agent'
+          LogFile.debug("update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose} agent.pointer #{agent.pointer}")
           agent.pointer
         else
           from = "creator active_agent"
           ptr = composition.pointer + [:active_agent, parsed_substance.name]
           agent = @app.update ptr.creator, :dose => dose, :substance => substance.oid
+          LogFile.debug("update_active_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose} #{ptr}")
           ptr
         end
       else
         ptr = if (agent = composition.inactive_agent(parsed_substance.name))
           from = 'inactive_agent'
+          LogFile.debug("update_inactive_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose} agent.pointer #{agent.pointer}")
           agent.pointer
         else
           from = "creator inactive_agent"
           ptr = composition.pointer + [:inactive_agent, parsed_substance.name]
           agent = @app.update ptr.creator, :dose => dose, :substance => substance.oid
+          LogFile.debug("update_inactive_agent #{seq.iksnr}/#{seq.seqnr} #{parsed_substance.name}  #{active} dose #{dose} #{ptr}")
           ptr
         end
       end
@@ -1363,19 +1366,38 @@ public
         nr_seq += 1
         LogFile.debug "at #{sequence.iksnr}/#{sequence.seqnr}: #{nr_seq}" if nr_seq % 300 == 1
         sequence.compositions.each do |composition|
-          to_correct = composition.active_agents.find_all {|x| x.is_active_agent == nil}
-          next if to_correct.size == 0
-          LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}:  #{composition.pointer}: Must correct is #{to_correct.size} agents. Has  #{composition.active_agents.size} active_agents"
-          to_correct.each do |wrong_agent|
-            @@corrected << wrong_agent.pointer
-            LogFile.debug "Deleting wrong_agent odba_isolated_store #{wrong_agent.pointer} is #{wrong_agent.oid} #{wrong_agent.to_s}"
-            # We must not delete the active_agent
-            # composition.active_agents -= [wrong_agent] # this did not work
-            # composition.active_agents = composition.active_agents - wrong_agent
-            composition.delete_active_agent(wrong_agent)
-            composition.odba_store
+
+          # Check for error in active_agents
+          wrong_active_agents = composition.active_agents.find_all do |x|
+            x.is_active_agent == nil ||  x.is_active_agent == false || x.is_a?(InactiveAgent)
           end
-          LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}: #{composition.pointer}: has now #{composition.active_agents.size} active_agents"
+          if wrong_active_agents.size > 0
+            LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}:  #{composition.pointer}: Must correct is #{wrong_active_agents.size} agents. Has  #{composition.active_agents.size} active_agents"
+            wrong_active_agents.each do |wrong_agent|
+              @@corrected << wrong_agent.pointer
+              LogFile.debug "Deleting wrong_active_agent odba_store #{wrong_agent.pointer} is #{wrong_agent.oid} #{wrong_agent.to_s}"
+              composition.delete_active_agent(wrong_agent)
+              wrong_agent.odba_delete
+              composition.odba_store
+            end
+            LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}: #{composition.pointer}: has now #{composition.active_agents.size} active_agents"
+          end
+
+          # Check for error in inactive_agents
+          wrong_inactive_agents = composition.inactive_agents.find_all do |x|
+            x.is_active_agent == nil ||  x.is_active_agent == true || x.is_a?(ActiveAgent)
+          end
+          if wrong_inactive_agents.size > 0
+            LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}:  #{composition.pointer}: Must correct is #{wrong_inactive_agents.size} agents. Has  #{composition.inactive_agents.size} inactive_agents"
+            wrong_inactive_agents.each do |wrong_agent|
+              @@corrected << wrong_agent.pointer
+              LogFile.debug "Deleting wrong_inactive_agent odba_store #{wrong_agent.pointer} is #{wrong_agent.oid} #{wrong_agent.to_s}"
+              composition.delete_inactive_agent(wrong_agent)
+              wrong_agent.odba_delete
+              composition.odba_store
+            end
+            LogFile.debug "#{sequence.iksnr}/#{sequence.seqnr}: #{composition.pointer}: has now #{composition.inactive_agents.size} inactive_agents"
+          end
         end
       end
       LogFile.debug "Corrected #{@@corrected.size} of #{@app.active_sequences.size} active_sequences. Deleted active_agents\n#{@@corrected.join("\n")}"
