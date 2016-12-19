@@ -166,7 +166,7 @@ public
     end
 
     def trace_memory_useage
-      max_mbytes = 2 * 1024 # Good default is 16 GB, afterwards the server slows down a lot
+      max_mbytes = 16 * 1024 # Good default is 16 GB, afterwards the server slows down a lot
       while $swissmedic_do_tracing
         bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
         mbytes = bytes / (2**20)
