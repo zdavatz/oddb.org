@@ -30,6 +30,12 @@ module ODDB
     include SwissmedicDiff::Diff
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}u
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
+    $swissmedic_memory_error = nil
+
+    def self.get_memory_error
+      $swissmedic_memory_error
+    end
+
 private
     def date_cell(row, idx)
       return nil unless row[idx]
@@ -46,6 +52,10 @@ public
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       init_stats
+    end
+
+    def self.get_memory_error
+      $swissmedic_memory_error
     end
 
     def init_stats
@@ -156,7 +166,7 @@ public
     end
 
     def trace_memory_useage
-      max_mbytes = 16 * 1024
+      max_mbytes = 2 * 1024 # Good default is 16 GB, afterwards the server slows down a lot
       while $swissmedic_do_tracing
         bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
         mbytes = bytes / (2**20)
@@ -164,8 +174,10 @@ public
         startTime = Time.now
         # Check done every second
         0.upto(60) do |idx|
-          if mbytes > max_mbytes # Exit process if more than 16 GB are used to avoid bringing the server down"
-            LogFile.debug("Aborting as using #{mbytes} MB of memory > than limit of #{max_mbytes}")
+          if mbytes > max_mbytes # Exit process if more than max_mbytes are used to avoid bringing the server down"
+            msg = "Aborting as using #{mbytes} MB of memory > than limit of #{max_mbytes}"
+            LogFile.debug(msg)
+            $swissmedic_memory_error = msg
             Thread.main.raise SystemExit
           end
           sleep(1)

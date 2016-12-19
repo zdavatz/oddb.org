@@ -499,13 +499,16 @@ module ODDB
     end
     def notify_error(klass, subj, error)
       log = Log.new(@@today)
+      mgs = nil
+      msg = "Out of memory: " + eval("#{klass}.get_memory_error  if #{klass}.respond_to?(:get_memory_error)")
       log.report = [
         "Plugin: #{klass}",
+        msg,
         "Error: #{error.class}",
         "Message: #{error.message}",
         "Backtrace:",
         error.backtrace.join("\n"),
-      ].join("\n")
+      ].compact.join("\n")
       log.recipients = RECIPIENTS.dup
       log.notify("Error: #{subj}")
     end
