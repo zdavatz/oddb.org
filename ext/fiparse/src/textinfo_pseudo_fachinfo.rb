@@ -24,7 +24,6 @@ module ODDB
         :date                 => /^Stand\s+der\s+Information$/iu, # 20
         :fabrication          => /^Herstellerin/u,
         :distributor          => /^Vertriebsfirma/u,
-        :date                 => /^Stand der Information/u,
       },
       :fr => {
         :composition         => /^Composition$/u, # 2
@@ -40,7 +39,6 @@ module ODDB
         :date                => /^Mise à jour/iu, # 20
         :fabrication         => /^Fabricant$/u,
         :distributor         => /^Distributeur/u,
-        :date                => /^Mise à jour de l’information/u,
       }
     }
     def to_textinfo(allChapters)

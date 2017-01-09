@@ -2,6 +2,7 @@
 # encoding: utf-8
 # suite.rb -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 buggy = [
+  'test_lookandfeelwrapper.rb'
 ]
 
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')

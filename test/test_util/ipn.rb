@@ -67,13 +67,13 @@ class TestIpn <Minitest::Test
     item     = flexmock('itema',
                         :quantity    => 1,
                         :text        => 'text',
-                        :total_netto => 2.345
+                        :total_netto => 2.35
                        )
  
     invoice  = flexmock('invoice', 
                         :yus_name     => YUS_NAME,
                         :items        => {'key' => item},
-                        :total_netto  => 2.345, 
+                        :total_netto  => 2.35,
                         :vat          => 6.789,
                         :total_brutto => 3.456
                        )
@@ -110,13 +110,13 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
-                           :total_netto => 2.345
+                           :total_netto => 2.35
                           )
     invoice = flexmock('invoice', 
                        :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
-                       :total_netto  => 2.345, 
+                       :total_netto  => 2.35,
                        :vat          => 6.789,
                        :total_brutto => 3.456
                       )
@@ -130,13 +130,13 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
-                           :total_netto => 2.345
+                           :total_netto => 2.35
                           )
     invoice = flexmock('invoice', 
                        :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
-                       :total_netto  => 2.345, 
+                       :total_netto  => 2.35,
                        :vat          => 6.789,
                        :total_brutto => 3.456,
                       )
@@ -155,7 +155,7 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
-                       :total_netto => 2.345,
+                       :total_netto => 2.35,
                        :type        => :poweruser,
                        :duration    => 1,
                        :expiry_time => nil
@@ -168,7 +168,7 @@ class TestIpn <Minitest::Test
                        :item_by_text      => item,
                        :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
-                       :total_netto       => 2.345, 
+                       :total_netto       => 2.35,
                        :vat               => 6.789,
                        :total_brutto      => 3.456,
                        :oid               => 'oid'
@@ -191,7 +191,7 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
-                       :total_netto => 2.345,
+                       :total_netto => 2.35,
                        :type        => :download,
                        :duration    => 1,
                        :expiry_time => nil
@@ -204,7 +204,7 @@ class TestIpn <Minitest::Test
                        :item_by_text      => item,
                        :ydim_id           => 'ydim_id',
                        :types             => [:download],
-                       :total_netto       => 2.345, 
+                       :total_netto       => 2.35,
                        :vat               => 6.789,
                        :total_brutto      => 3.456,
                        :oid               => 'oid'
@@ -224,7 +224,7 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
-                       :total_netto => 2.345,
+                       :total_netto => 2.35,
                        :type        => :poweruser,
                        :duration    => 1,
                        :expiry_time => nil
@@ -237,7 +237,7 @@ class TestIpn <Minitest::Test
                        :item_by_text      => item,
                        :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
-                       :total_netto       => 2.345, 
+                       :total_netto       => 2.35,
                        :vat               => 6.789,
                        :total_brutto      => 3.456,
                        :oid               => 'oid',
@@ -267,7 +267,7 @@ class TestIpn <Minitest::Test
     item    = flexmock('item', 
                        :quantity    => 1,
                        :text        => 'text',
-                       :total_netto => 2.345,
+                       :total_netto => 2.35,
                        :type        => :poweruser,
                        :duration    => 1,
                        :expiry_time => nil
@@ -280,7 +280,7 @@ class TestIpn <Minitest::Test
                        :item_by_text      => item,
                        :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
-                       :total_netto       => 2.345, 
+                       :total_netto       => 2.35,
                        :vat               => 6.789,
                        :total_brutto      => 3.456,
                        :oid               => 'oid',
@@ -312,11 +312,11 @@ class TestIpn <Minitest::Test
     item        = flexmock('item', 
                            :quantity    => 1,
                            :text        => 'text',
-                           :total_netto => 2.345
+                           :total_netto => 2.35
                           )
     invoice     = flexmock('invoice', 
                            :items        => {'key' => item},
-                           :total_netto  => 2.345, 
+                           :total_netto  => 2.35,
                            :vat          => 6.789,
                            :total_brutto => 3.456
                           )

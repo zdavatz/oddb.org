@@ -255,15 +255,16 @@ module ODDB
       expected = {[0, 0, 0]=>:name_base,
                   [0, 0, 1]=>"result_item_end",
                   [0, 0, 2]=>:limitation_text,
-                  [1, 0]=>:substances,
-                  [2, 0]=>:galenic_form,
-                  [3, 0]=>:most_precise_dose,
-                  [4, 0]=>:comparable_size,
-                  [5, 0]=>:price_exfactory,
-                  [6, 0]=>:price_public,
-                  [7, 0]=>:deductible,
-                  [8, 0]=>:company_name,
-                  [9, 0]=>:ikscat
+                  [1, 0]=> :product_overview_link,
+                  [2, 0]=>:substances,
+                  [3, 0]=>:galenic_form,
+                  [4, 0]=>:most_precise_dose,
+                  [5, 0]=>:comparable_size,
+                  [6, 0]=>:price_exfactory,
+                  [7, 0]=>:price_public,
+                  [8, 0]=>:deductible,
+                  [9, 0]=>:company_name,
+                  [10, 0]=>:ikscat
                  }
       assert_equal(expected, @look.result_list_components)
     end

@@ -82,9 +82,6 @@ module ODDB
           r.should_receive(:[]).with('Content-Type').and_return('charset=ascii')
           r.should_receive(:body).and_return('body')
         end
-        flexmock(Iconv).new_instances do |i|
-          i.should_receive(:iconv).and_raise(StandardError)
-        end
         assert_equal('body', @wrapper.body)
       end
     end

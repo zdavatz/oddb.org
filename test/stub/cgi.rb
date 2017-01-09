@@ -10,7 +10,6 @@ class CGI
   attr_accessor :params
   def initialize throwaway=nil
     extend Html4Tr
-    element_init()
     extend HtmlExtension
 		extend QueryExtension
     @params = {}

@@ -564,7 +564,6 @@ module ODDB
 		def search_query(value)
 			begin
         result = validate_string(value).gsub(/\*/u, '')
-        @@latin1.iconv(result)
 			end
 			if(result.length > 2)
 				result

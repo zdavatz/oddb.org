@@ -499,8 +499,8 @@ module ODDB
     end
     def notify_error(klass, subj, error)
       log = Log.new(@@today)
-      mgs = nil
-      msg = "Out of memory: " + eval("#{klass}.get_memory_error  if #{klass}.respond_to?(:get_memory_error)")
+      mem_error = klass.get_memory_error if klass.respond_to?(:get_memory_error)
+      msg ||= ' '
       log.report = [
         "Plugin: #{klass}",
         msg,

@@ -12,7 +12,7 @@ require 'state/page_facade'
 
 module ODDB 
 	module State
-		class TestPageFacade <Minitest::Test
+		class TestPageFacade < Minitest::Test
 			def setup
 				@page = State::PageFacade.new(7)
         @page.model = flexmock('model', :missing => 'missing')
@@ -43,7 +43,7 @@ module ODDB
       end
 		end
 
-    class TestOffsetPageFacade <Minitest::Test
+    class TestOffsetPageFacade < Minitest::Test
       def setup
         @facade  = ODDB::State::OffsetPageFacade.new(1)
         @facade.offset = 10
@@ -54,7 +54,7 @@ module ODDB
       end
     end
 
-    class StubSuper 
+    class StubSuper < Minitest::Test
       def init
         'super'
       end

@@ -159,6 +159,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                                 :is_active_agent => true,
                                 :oid => 'oid',
                                 :more_info => 'more_info',
+                                :chemical_substance => nil,
                                 :substance => substance,
                                 :dose      => dose,
                                 :parent    => parent
@@ -335,6 +336,7 @@ class TestPackage <Minitest::Test
                             :oid => 'oid',
                             :is_active_agent => true,
                             :substance => substance,
+                            :chemical_substance => nil,
                             :dose      => dose,
                             :parent    => parent
                            )
@@ -362,7 +364,8 @@ class TestPackage <Minitest::Test
                           :division => 'division',
                           :compositions => [composition],
                          )
-    @model    = flexmock('model', 
+    @model    = flexmock('model',                                 :chemical_substance => nil,
+
                          :name       => 'name',
                          :size       => 'size',
                          :narcotic?  => nil,

@@ -40,7 +40,7 @@ module ODDB
           pack.should_receive(:pharmacode).and_return(333)
           pack.should_receive(:name).and_return("name")
           pack.should_receive(:price_exfactory).and_return(444.444)
-          pack.should_receive(:price_public).and_return(555.555)
+          pack.should_receive(:price_public).and_return(555.55)
           pack.should_receive(:company_name).and_return("company_name")
           pack.should_receive(:ikscat).and_return(666)
           pack.should_receive(:sl_entry).and_return(777)
@@ -116,7 +116,7 @@ module ODDB
           pack.should_receive(:"registration.generic?").and_return(true)
           pack.should_receive(:public?).and_return(true)
         end
-        expect = ["222", "333", "name", "dose", "111", "444.44", "555.55", "company_name",
+        expect = ["222", "333", "name", "dose", "111", "444.44", "555.56", "company_name",
                   "666", "", "31.12.2010"]
         assert_equal(expect,  @generics_xls.format_generic(@pac))
       end

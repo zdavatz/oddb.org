@@ -384,7 +384,7 @@ module ODDB
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval('@pac_data = pac_data')
-      assert_raises(RuntimeError) do
+      assert_raises(StandardError) do
         @listener.tag_start('Pack', 'attr')
       end
     end
@@ -649,7 +649,7 @@ module ODDB
       end
       known_packages = {pointer => 'data'}
       @listener.instance_eval('@known_packages = known_packages')
-      assert_raises(RuntimeError) do
+      assert_raises(StandardError) do
         @listener.tag_end('Preparations')
       end
     end
@@ -1850,7 +1850,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :limitation        => nil,
       }
       expected_updates.store ptr.creator, data
-      @app.should_receive(:update).once.and_return do |ptr, data|
+      @app.should_receive(:update).at_least.once.and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data, ptr.to_s
       end
       @plugin.update_preparations StringIO.new(@conflicted_src)

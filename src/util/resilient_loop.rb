@@ -63,7 +63,7 @@ module ODDB
           idx += 1
         end
         begin
-          status = timeout(timeout_in_secs) do
+          status = Timeout.timeout(timeout_in_secs) do
             block.call
             save_state(state)
             return
