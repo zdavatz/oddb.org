@@ -6,7 +6,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
-require 'flexmock/test_unit'
+require 'flexmock/minitest'
 require 'view/dataformat'
 require 'htmlgrid/popuplink'
 require 'htmlgrid/value'

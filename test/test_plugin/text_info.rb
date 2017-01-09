@@ -4,15 +4,12 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'syck'
-require 'yaml'
-YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
 
 require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'fileutils'
 require 'flexmock/minitest'
-require 'flexmock/test_unit'
 require 'plugin/text_info'
 require 'model/text'
 module ODDB

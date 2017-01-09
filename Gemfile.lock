@@ -90,7 +90,9 @@ GEM
       mini_portile (~> 0.5.0)
     nori (2.6.0)
     ntlm-http (0.1.1)
-    odba (1.1.0)
+    odba (1.1.2)
+      ydbd-pg (>= 0.5.1)
+      ydbi (>= 0.5.1)
     oddb2tdat (1.1.2)
     page-object (1.2.0)
       page_navigation (>= 0.9)
@@ -193,6 +195,11 @@ GEM
       hashdiff
     webrobots (0.1.1)
     websocket (1.2.3)
+    ydbd-pg (0.5.3)
+      pg
+      ydbi (>= 0.5.0)
+    ydbi (0.5.3)
+      deprecated (= 2.0.1)
     ydim (1.0.0)
     ydocx (1.2.5)
     yml_reader (0.7)
@@ -233,7 +240,7 @@ DEPENDENCIES
   net-http-digest_auth (= 1.2)
   net-http-persistent (= 2.7)
   nokogiri (= 1.6.1)
-  odba (= 1.1.0)
+  odba (>= 1.1.2)
   oddb2tdat (= 1.1.2)
   page-object
   parslet (= 1.7.0)

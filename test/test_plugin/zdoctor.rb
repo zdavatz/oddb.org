@@ -9,7 +9,6 @@ require 'plugin/doctors'
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
-require 'flexmock/test_unit'
 
 module ODDB
 	module Doctors
