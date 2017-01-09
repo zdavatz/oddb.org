@@ -8,8 +8,6 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'syck'
-require 'yaml'
-YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
 require 'stub/config'
 

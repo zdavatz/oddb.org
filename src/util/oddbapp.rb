@@ -4,8 +4,7 @@
 # OddbApp -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
-require 'yaml'
-YAML::ENGINE.yamler = "syck"
+require 'syck'
 # next line to fix an error paypal-2.0.0/lib/notification.rb
 require 'active_support/core_ext/class/attribute_accessors'
 require 'odba'

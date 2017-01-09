@@ -4,8 +4,6 @@
 # OddbApp -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'syck'
-require 'yaml'
-YAML::ENGINE.yamler = "syck"
 require 'util/oddbapp'
 
 class OddbPrevalence
