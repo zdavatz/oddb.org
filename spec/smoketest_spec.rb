@@ -49,6 +49,7 @@ describe "ch.oddb.org" do
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
     text = @browser.text.clone
+    skip 'check_nutriflex_56091 only works with sequence, not with package'
     check_nutriflex_56091(text)
     expect(text).to match /Patinfo aktivieren/i
     expect(text).to match /Braun Medical/i
@@ -297,7 +298,9 @@ describe "ch.oddb.org" do
     expect(@browser.url).to match OddbUrl
     windowSize = @browser.windows.size
     @browser.windows.last.use
-    @browser.link(:text, /Drucken/i).click; small_delay
+    @browser.link(:text, /Drucken/i).wait_until_present
+    @browser.link(:text, /Drucken/i).click;
+    small_delay unless @browser.windows.size == windowSize + 1
     expect(@browser.windows.size).to eq(windowSize + 1)
     @browser.windows.last.use
     sleep(1)

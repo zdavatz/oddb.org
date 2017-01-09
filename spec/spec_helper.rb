@@ -74,12 +74,14 @@ def setup_browser
   if Browser2test[0].to_s.eql?('firefox')
     puts "Setting upd default profile for firefox"
     profile = Selenium::WebDriver::Firefox::Profile.new
+    # profile['capabilities.firefox_binary.dir'] = '/usr/bin/firefox-bin'
     profile['browser.download.dir'] = DownloadDir
     profile['browser.download.folderList'] = 2
     profile['browser.helperApps.alwaysAsk.force'] = false
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/zip;application/octet-stream;application/x-zip;application/x-zip-compressed;text/csv;test/semicolon-separated-values"
-
-    @browser = Watir::Browser.new :firefox, :profile => profile
+    Selenium::WebDriver::Firefox::Binary.path=  '/usr/bin/firefox-bin'
+    @browser = Selenium::WebDriver.for :firefox, :profile => profile
+    # @browser = Watir::Browser.new :firefox, :profile => profile
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
     prefs = {

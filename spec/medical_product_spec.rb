@@ -26,7 +26,7 @@ describe "ch.oddb.org" do
   it "should work as show/reg for sinovial" do
     url = "#{OddbUrl}/de/#{Flavor}/show/reg/1229109224/seq/09/pack/224"
     @browser.goto url
-    expect(@browser.text).to match RegExpSubstance
+    expect(@browser.text).to match /Galenische Form\s+Injektionslösung in Fertigspritze/
   end
   
   it "should work as show/reg for viagra" do

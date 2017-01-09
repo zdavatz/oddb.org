@@ -3,6 +3,7 @@
 # kate: space-indent on; indent-width 2; mixedindent off; indent-mode ruby;
 require 'spec_helper'
 require 'pp'
+require 'open-uri'
 
 describe "ch.oddb.org" do
 
@@ -80,6 +81,7 @@ credit org.oddb.download
 
   def upload_pat_info(original)
     expect(File.exists?(original)).to be true
+    FileUtils.cp(original, DownloadDir, :verbose => true)
     @browser.select_list(:name, "search_type").select("Swissmedic-# (5-stellig)")
     @browser.text_field(:id, "searchbar").set("43788")
     @browser.button(:value,"Suchen").click
@@ -89,12 +91,14 @@ credit org.oddb.download
       @browser.button(:name,"delete_patinfo").click
     end
     expect(@browser.link(:text, "PI").exists?).to be false
+    @browser.button(:name => 'delete_patinfo').click if @browser.button(:name => 'delete_patinfo').exist?
+    expect(@browser.button(:name => 'delete_patinfo').exist?).to eq false
     @browser.file_field(:name =>  "patinfo_upload").set(original)
     @browser.button(:name,"update").click
     expect(@browser.link(:text, "PI").exists?).to be true
-    diffFiles = check_download(@browser.link(:text, "PI"))
-    expect(diffFiles.size).to eq(1)
-    expect(FileUtils.compare_file(original, diffFiles.first)).to be true
+    new_content = open(@browser.link(:text, "PI").href, 'rb').read;
+    org_content = open(original, 'rb').read;
+    expect(org_content).to eq new_content
   end
 
   def check_sort(link_name)
