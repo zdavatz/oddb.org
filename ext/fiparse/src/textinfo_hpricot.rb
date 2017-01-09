@@ -5,7 +5,6 @@
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'
-require 'iconv'
 require 'ostruct'
 require 'util/oddbconfig'
 require 'util/hpricot'

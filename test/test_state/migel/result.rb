@@ -4,11 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-#require 'state/global'
-
-gem 'minitest'
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/resulttemplate'
 require 'state/migel/result'
 
@@ -17,7 +14,6 @@ module ODDB
     module Migel
 
 class TestSubgroupFacade <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @subgroup = flexmock('subgroup')
     @facade   = ODDB::State::Migel::Result::SubgroupFacade.new(@subgroup)
@@ -28,7 +24,6 @@ class TestSubgroupFacade <Minitest::Test
 end
 
 class TestResult <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', :lookup => 'lookup')
     @session  = flexmock('session', :lookandfeel => @lnf)

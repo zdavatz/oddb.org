@@ -12,11 +12,8 @@ require 'util/oddbconfig'
 require 'fachinfo_writer'
 require 'fachinfo_pdf'
 require 'indications'
-require 'minifi'
 require 'fachinfo_hpricot'
 require 'patinfo_hpricot'
-# rpdf2txt will be retired soon. As it produces error when loading I exclude it while running unit tests 
-require 'rpdf2txt/parser' unless defined?(Minitest)
 require 'ydocx/document'
 require 'ydocx/templates/fachinfo'
 
@@ -175,9 +172,6 @@ module ODDB
 		end
     def FiParse.extract_indications(path)
       Indications.extract(path)
-    end
-    def FiParse.extract_minifi(path)
-      MiniFi.extract(path)
     end
     def parse_fachinfo_docx(path, iksnr, lang='de')
       doc = YDocx::Document.open(path, {

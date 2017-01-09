@@ -7,7 +7,6 @@
 require 'htmlgrid/list'
 require 'htmlgrid/value'
 require 'htmlgrid/urllink'
-require 'iconv'
 require 'util/language'
 require 'view/additional_information'
 require 'view/dataformat'

@@ -6,7 +6,6 @@
 
 require 'model/analysis/group'
 require 'view/drugs/atcchooser'
-require 'iconv'
 require 'plugin/comarketing'
 
 module ODDB

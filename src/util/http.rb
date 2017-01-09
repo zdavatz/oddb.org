@@ -8,7 +8,6 @@ require 'cgi'
 require 'net/http'
 require 'uri'
 require 'delegate'
-require 'iconv'
 require 'fileutils'
 
 module ODDB
@@ -51,11 +50,9 @@ module ODDB
                else
                  body
                end
-        # encoding
         if charset.nil? || charset.downcase != 'utf-8'
-          cd = Iconv.new("UTF-8//IGNORE", charset)
           begin
-            cd.iconv body
+            body.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
           rescue
             body
           end

@@ -6,7 +6,6 @@
 
 require 'util/html-parser'
 require 'util/formatter'
-require 'iconv'
 
 module ODDB
 	class NullWriter < ::NullWriter
@@ -17,7 +16,6 @@ module ODDB
 		def send_meta(attributes); end
 	end
 	class BasicHtmlParser < HTMLParser
-    iconv = Iconv.new('utf-8', 'iso-8859-1')
 		entities = {}
 		[
 			'nbsp', 'iexcl', 'cent', 'pound', 'curren',
@@ -42,7 +40,7 @@ module ODDB
 			'yuml', 
 		].each_with_index { |name, idx| 
 			# Html-Entities start at chr 160
-			entities.store(name, iconv.iconv((idx + 160).chr))
+			entities.store(name, (idx + 160).chr.encode("UTF-8", 'iso-8859-1', :invalid => :replace, :undef => :replace, :replace => "?"))
 		}
 		Entitydefs = entities	
 
