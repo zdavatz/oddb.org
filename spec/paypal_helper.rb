@@ -76,7 +76,10 @@ class PaypalUser
         else
           browser.button(:value,"Jetzt zahlen").click
         end
-        browser.window(:title => /Ihre Zahlung ist jetzt/).wait_until_present
+        if browser.button(:value,"Zustimmen und zahlen").exist?
+          browser.button(:value,"Zustimmen und zahlen").click
+        end
+        browser.window(:title => /Sie haben Ihre Zahlung|Ihre Zahlung ist jetzt/).wait_until_present
         puts "PayPal: Return to oddb.ch"
         browser.button(:name,"merchant_return_link").click
         puts "URL after merchant_return_link was #{browser.url}"
