@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/ajax/json'
 
 
@@ -15,7 +15,6 @@ module ODDB
     module Ajax
 
 class TestJson <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)

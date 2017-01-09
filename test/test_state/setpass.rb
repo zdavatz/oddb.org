@@ -6,9 +6,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/setpass'
 
 module ODDB 
@@ -28,7 +28,6 @@ class StubSetPass
 end
 
 class TestSetPass <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app', :update => 'update').by_default
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

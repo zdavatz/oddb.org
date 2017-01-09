@@ -7,15 +7,14 @@
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'writer'
 
 module ODDB
 	module ChapterParse
 		class TestWriter <Minitest::Test
-      include FlexMock::TestCase
 			def setup
 				@writer = Writer.new
 			end

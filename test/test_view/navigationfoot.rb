@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/session'
 require 'view/navigationfoot.rb'
 require 'custom/lookandfeelbase'
@@ -95,7 +95,6 @@ module ODDB
   module View
 
 class TestNavigationFoot2 <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @navigation = flexmock('navigation',
                             :sort_by => [],
@@ -175,7 +174,6 @@ class TestNavigationFoot2 <Minitest::Test
 end
 
 class TestTopFoot <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @zone_navigation = flexmock('zone_navigation',
                                 :sort_by => [],

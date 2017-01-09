@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
 require 'view/resulttemplate'
@@ -28,7 +28,6 @@ module ODDB
 end
 
 class TestCenteredSearchComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',                             
                             :disabled?  => nil,
@@ -179,7 +178,6 @@ end
 
 #class TestRssFeedbackList <Minitest::Test
 class TestRssFeedbackList   <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
                             :lookup     => 'lookup',
@@ -215,7 +213,6 @@ class TestRssFeedbackList   <Minitest::Test
 end
 
 class TestRssFeedbacks <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',
                             :lookup     => 'lookup',
@@ -237,7 +234,6 @@ class TestRssFeedbacks <Minitest::Test
 end
 
 class TestFachinfoNewsList <Minitest::Test
-  include FlexMock::TestCase
   def test_name
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
@@ -261,7 +257,6 @@ class TestFachinfoNewsList <Minitest::Test
 end
 
 class TestFachinfoNews <Minitest::Test
-  include FlexMock::TestCase
   def test_title
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
@@ -290,7 +285,6 @@ class TestFachinfoNews <Minitest::Test
 end
 
 class TestSLPriceNews <Minitest::Test
-  include FlexMock::TestCase
   def test_title
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
@@ -310,7 +304,6 @@ class TestSLPriceNews <Minitest::Test
 end
 
 class TestGoogleAdSenseComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel',
                             :enabled?     => nil,

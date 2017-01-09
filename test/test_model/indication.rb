@@ -6,9 +6,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/indication'
 
 module ODDB
@@ -16,7 +16,6 @@ module ODDB
     attr_reader :registrations
   end
   class TestIndication <Minitest::Test
-    include FlexMock::TestCase
     class StubRegistration < ODBA::StorageStub
     end
     def setup

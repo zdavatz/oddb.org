@@ -8,11 +8,11 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/odba'
 require 'plugin/bsv_xml'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/logfile'
 require 'ext/swissindex/src/swissindex'
 require 'ext/refdata/src/refdata'
@@ -27,7 +27,6 @@ end
 
 module ODDB
   class TestListener <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -83,7 +82,6 @@ module ODDB
   end if RUN_ALL
 
   class TestGenericsListener <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -123,7 +121,6 @@ module ODDB
   end if RUN_ALL
 
   class TestItCodesListener <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -212,7 +209,6 @@ module ODDB
   end
 
   class TestPreparationsListener <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -660,7 +656,6 @@ module ODDB
   end  if RUN_ALL
 
   class TestBsvXmlPlugin2 <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -977,7 +972,6 @@ module ODDB
   class Package < PackageCommon
   end
   class TestBsvXmlPlugin <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock

@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/lookandfeel_components'
 require 'view/migel/items'
 
@@ -21,7 +21,6 @@ module ODDB
       end
 
 class TestSubHeader <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -77,7 +76,6 @@ class TestSubHeader <Minitest::Test
 end
 
 class TestSearchedList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup => 'lookup',

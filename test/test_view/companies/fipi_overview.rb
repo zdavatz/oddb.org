@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/companies/fipi_overview.rb'
 
 
@@ -15,7 +15,6 @@ module ODDB
     module Companies
 
 class TestFiPiOverviewList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
@@ -64,7 +63,6 @@ class TestFiPiOverviewList <Minitest::Test
 end
 
 class TestExportCSV <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -82,7 +80,6 @@ class TestExportCSV <Minitest::Test
 end
 
 class TestFiPiOverviewComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

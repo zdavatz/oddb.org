@@ -7,16 +7,15 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'plugin/patinfo_invoicer'
 require 'model/invoice'
 
 module ODDB
 	class TestPatinfoInvoicer <Minitest::Test
-    include FlexMock::TestCase
 		class FlexMock < ::FlexMock
 			#undef :type
 		end

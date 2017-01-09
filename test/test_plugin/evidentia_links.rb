@@ -4,10 +4,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'minitest/mock'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'fileutils'
 require 'plugin/evidentia_search_links'
@@ -29,7 +29,6 @@ module ODDB
     end
   end
   class TestEvidentiaSearchLinksPlugin < Minitest::Test
-    include FlexMock::TestCase
   def setup
       @app = flexmock('stub_app', StubApp.new)
       @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)

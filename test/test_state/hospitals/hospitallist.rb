@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/companies/companylist'
 require 'state/hospitals/hospitallist'
 
@@ -15,7 +15,6 @@ module ODDB
     module Hospitals
 
 class TestHospitalList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)
@@ -31,7 +30,6 @@ class TestHospitalList <Minitest::Test
 end
 
 class TestHospitalResult <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)

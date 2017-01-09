@@ -4,15 +4,14 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/exporter'
 require 'util/log'
 require 'date'
 
 module ODDB
-  include FlexMock::TestCase
   class StubDRbObject
     def clear
     end
@@ -22,7 +21,6 @@ module ODDB
     EXPORT_SERVER = StubDRbObject.new
   end
   class TestExporter <Minitest::Test
-    include FlexMock::TestCase
     def test_test
       assert(true)
     end

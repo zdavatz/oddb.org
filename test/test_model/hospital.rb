@@ -5,14 +5,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/hospital'
 
 module ODDB
 	class TestHospital <Minitest::Test
-    include FlexMock::TestCase
 		def setup
 			@hospital = Hospital.new('12543')
 		end

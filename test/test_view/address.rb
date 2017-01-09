@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'view/address'
 require 'htmlgrid/button'
@@ -23,7 +23,6 @@ class StubVCardMethods
   end
 end
 class TestVCardMethods <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -39,7 +38,6 @@ class TestVCardMethods <Minitest::Test
   end
 end
 class TestSuggestedAddress <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -82,7 +80,6 @@ class TestSuggestedAddress <Minitest::Test
 end
 
 class TestAddress <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

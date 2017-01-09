@@ -4,9 +4,9 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/feedback_observer'
 
 module ODDB
@@ -17,7 +17,6 @@ module ODDB
     end
   end
   class TestFeedbackObserver <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @feedback  = flexmock('feedback', :oid => 123)
       @feedbacks = [@feedback]

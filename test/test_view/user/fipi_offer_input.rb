@@ -5,9 +5,9 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/user/fipi_offer_input'
 
 module ODDB
@@ -15,7 +15,6 @@ module ODDB
     module User
 
 class TestFiPiRadioButtons <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -46,7 +45,6 @@ class TestFiPiRadioButtons <Minitest::Test
 end
 
 class TestRadioButton <Minitest::Test
-  include FlexMock::TestCase
   def test_checked
     @button = ODDB::View::User::FiPiOfferInputForm::RadioButton.new('name', 'value', 'current')
     assert_equal(false, @button.checked?)
@@ -56,7 +54,6 @@ class TestRadioButton <Minitest::Test
 end
 
 class TestFiPiOfferInputForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -76,7 +73,6 @@ class TestFiPiOfferInputForm <Minitest::Test
 end
 
 class TestFiPiOfferInputComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

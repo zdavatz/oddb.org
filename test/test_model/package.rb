@@ -9,10 +9,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'model/package'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
   class PackageCommon
@@ -89,7 +89,6 @@ class StubPackageSequence
   end
 end
 class TestPackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @package = ODDB::Package.new('12')
     @package.sequence = StubPackageSequence.new

@@ -4,9 +4,9 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'meddparser'
 require 'drbsession'
 require 'result'
@@ -16,7 +16,6 @@ module ODDB
   module MedData
 
 class TestDRbSession <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @drb = ODDB::MedData::DRbSession.new(:partner)
   end

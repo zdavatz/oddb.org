@@ -6,10 +6,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'model/galenicgroup'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
 	class GalenicGroup

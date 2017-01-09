@@ -3,7 +3,7 @@
 # Here we test whether sending mails work
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'config'
 require 'util/log'

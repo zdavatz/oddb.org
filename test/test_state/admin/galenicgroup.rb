@@ -5,9 +5,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/galenicgroup'
 require 'state/admin/galenicgroup'
 require 'util/language'
@@ -22,7 +22,6 @@ module ODDB
 		module Admin
 
 class TestGalenicGroup <Minitest::Test
-  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app

@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/analysis/group'
 require 'model/company'
 require 'model/doctor'
@@ -21,12 +21,10 @@ module ODDB
       DEFAULT_FLAVOR = 'gcc'
     end
 class StubPrivateTemplate < ODDB::View::PrivateTemplate
-  include FlexMock::TestCase
   CONTENT = 'content'
 end
 
 class TestPrivateTemplate <Minitest::Test
-  include FlexMock::TestCase
   def stderr_null
     require 'tempfile'
     $stderr = Tempfile.open('stderr')

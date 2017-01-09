@@ -9,14 +9,13 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 
 require 'rclconf'
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/config'
 
 module ODDB
   class TestConfig <Minitest::Test
-    include FlexMock::TestCase
     def setup
       ##### OBSOLETE ######
       @config = Config.new

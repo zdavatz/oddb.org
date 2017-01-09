@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 #require 'htmlgrid/labeltext'
 require 'state/admin/assign_patinfo'
 
@@ -15,7 +15,6 @@ module ODDB
     module Admine
 
 class TestAssignPatinfo <Minitest::Test
-  include FlexMock::TestCase
   def setup
     match    = flexmock('match', :to_a => [':!registration,12345!sequence,1.'])
     pointer  = flexmock('pointer', :resolve => true, :match => match)

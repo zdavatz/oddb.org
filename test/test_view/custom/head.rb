@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/custom/head'
 
 
@@ -15,7 +15,6 @@ module ODDB
     module Custom
 
 class TestOekkHead <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -50,7 +49,6 @@ class StubHeadMethods
 end
 
 class TestHeadMethods <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)
@@ -76,7 +74,6 @@ class StubHead
 end
 
 class TestHead <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup   => 'lookup',

@@ -5,9 +5,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/notify'
 require 'cgi'
 require 'view/resulttemplate'
@@ -18,7 +18,6 @@ module ODDB
 	module State
 
 class TestNotification <Minitest::Test
-  include FlexMock::TestCase
   def test_empty
     @notification = ODDB::State::Notify::Notification.new
     assert(@notification.empty?)
@@ -37,7 +36,6 @@ class StubNotify
 end
 
 class TestNotify <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)

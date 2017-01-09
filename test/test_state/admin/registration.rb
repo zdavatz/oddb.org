@@ -6,9 +6,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/registration'
 require 'util/log'
 require 'model/registration'
@@ -26,7 +26,6 @@ module ODDB
     module Admin
 
 class TestRegistration <Minitest::Test
-  include FlexMock::TestCase
   def setup 
     @pointer = flexmock('pointer', :+ => @pointer)
     @registration= flexmock('registration', 
@@ -287,7 +286,6 @@ class TestRegistration <Minitest::Test
 end
 
 class TestCompanyRegistration <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @pointer = flexmock('pointer', :+ => @pointer)
     @registration= flexmock('registration', 
@@ -361,7 +359,6 @@ class TestCompanyRegistration <Minitest::Test
 end
 
 class TestResellerRegistration <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :event_url => 'event_url')

@@ -34,7 +34,6 @@ module ODDB
 	module View
 
 class TestDataFormat <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

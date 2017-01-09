@@ -10,14 +10,14 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'plugin/refdata'
 require 'fachinfo_hpricot'
 require 'fiparse'
 require 'plugin/text_info'
 require 'stub/cgi'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
 	class FachinfoDocument

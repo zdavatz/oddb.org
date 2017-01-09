@@ -5,14 +5,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/search_result'
 
 module ODDB
   class TestAtcFacade <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @result  = flexmock('result')
       @session = flexmock('session')
@@ -119,7 +118,6 @@ module ODDB
   end
 
   class TestSearchResult <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @result = ODDB::SearchResult.new
     end

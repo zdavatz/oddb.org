@@ -13,9 +13,9 @@ module ODDB
     end
   end
 end
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/drugs/recentregs'
 
 module ODDB
@@ -23,7 +23,6 @@ module ODDB
     module Drugs
 
 class TestPackageMonth <Minitest::Test
-  include FlexMock::TestCase
   def setup
     galenic_form = flexmock('galenic_form', :language => 'language', :galenic_group => 'galenic_group')
     package = flexmock('package',
@@ -52,7 +51,6 @@ class TestPackageMonth <Minitest::Test
   end
 end
 class TestRecentRegs <Minitest::Test
-  include FlexMock::TestCase
   def setup
     log_group = flexmock('log_group', 
                          :newest_date => Time.local(2011,2,3),

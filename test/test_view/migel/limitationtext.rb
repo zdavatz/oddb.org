@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/migel/limitationtext'
 require 'view/pointersteps'
 
@@ -19,7 +19,6 @@ module ODDB
     module Migel
 
 class TestLimitationTextInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -45,7 +44,6 @@ class TestLimitationTextInnerComposite <Minitest::Test
 end
 
 class TestLimitationTextComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -69,7 +67,6 @@ class TestLimitationTextComposite <Minitest::Test
 end
 
 class TestLimitationText <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :enabled?   => nil,

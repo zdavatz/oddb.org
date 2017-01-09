@@ -8,12 +8,12 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'state/global'
 require 'util/language'
 require 'sbsm/state'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/user/yweseecontact'
 require 'state/user/register_download'
 require 'state/migel/result'
@@ -32,7 +32,6 @@ end
 			attr_accessor :model
 		end
 		class TestGlobal <Minitest::Test
-      include FlexMock::TestCase
       class StubSession
 				attr_accessor :user_input, :request_path, :lookandfeel, :flavor, :doctors
         def search_doctor(oid)

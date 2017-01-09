@@ -5,14 +5,13 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/atc_less'
 
 module ODDB
   class TestAtc_lessPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @latest_xlsx = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx')
       @latest_xml  = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xml', 'XMLRefdataPharma-latest.xml')

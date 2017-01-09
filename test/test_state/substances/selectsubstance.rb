@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/inputradio'
 require 'view/search'
 require 'state/substances/selectsubstance'
@@ -16,7 +16,6 @@ module ODDB
     module Substances
 
 class TestSelectSubstance <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app', :merge_substances => 'merge_substances')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

@@ -5,9 +5,9 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("..", File.dirname(__FILE__))
 require 'pp'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/ipn'
 require 'util/session'
 require 'tempfile'
@@ -19,7 +19,6 @@ module ODDB
     module Ipn
 
 class TestIpn <Minitest::Test
-  include FlexMock::TestCase
   YUS_NAME ='ipn'
   YUS_RECEIVER = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
   MAIL_FROM = [ 'invoice_from'  ]

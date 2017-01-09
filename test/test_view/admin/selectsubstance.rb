@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/admin/selectsubstance'
 
 
@@ -15,7 +15,6 @@ module ODDB
     module Admin
 
 class TestSelectSubstanceForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -44,7 +43,6 @@ class TestSelectSubstanceForm <Minitest::Test
 end
 
 class TestSelectSubstanceComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

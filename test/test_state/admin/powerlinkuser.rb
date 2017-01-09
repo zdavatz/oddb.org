@@ -14,9 +14,9 @@ module ODDB
     end
   end
 end
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/powerlinkuser'
 require 'state/companies/fipi_overview'
 
@@ -33,7 +33,6 @@ class StubPowerLinkUser
 end
 
 class TestPowerLinkUser <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')

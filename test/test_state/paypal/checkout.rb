@@ -13,9 +13,9 @@ module ODDB
   end
 end
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/paypal/checkout'
 
 module ODDB
@@ -43,7 +43,6 @@ module ODDB
 		module PayPal
 
 class TestStubCheckout <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app      = flexmock('app')
     @session  = flexmock('session', :app => @app)

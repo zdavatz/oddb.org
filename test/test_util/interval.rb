@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/interval'
 require 'odba'
 
@@ -70,7 +70,6 @@ end
 
 module ODDB
   class TestInterval <Minitest::Test
-    include FlexMock::TestCase
     class StubInterval
       include ODDB::Interval
       def initialize(model, session)
@@ -168,7 +167,6 @@ module ODDB
   end
 
   class TestIndexedInterval <Minitest::Test
-    include FlexMock::TestCase
     class StubSuper
       def init
       end

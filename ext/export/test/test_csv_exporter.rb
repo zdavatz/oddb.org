@@ -7,20 +7,19 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'csv_exporter'
 require 'model/analysis/group'
 require 'model/doctor'
 require 'stub/odba'
 require 'model/limitationtext'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'tempfile'
 
 module ODDB
 	module OdbaExporter
 		class TestCsvExporter <Minitest::Test
-      include FlexMock::TestCase
 			def setup
         dbi = flexmock('dbi', :dbi_args => ['dbi_args'])
         flexmock(ODBA.storage, 

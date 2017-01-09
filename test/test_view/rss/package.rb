@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/htmlgrid/composite'
 require 'view/rss/package'
 require 'htmlgrid/span'
@@ -20,7 +20,6 @@ module ODDB
     module Rss
 
 class TestPackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app       = flexmock('app')
     @lnf       = flexmock('lookandfeel', 

@@ -5,15 +5,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/composition'
 require 'stub/odba'
 
 module ODDB
   class TestComposition <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @composition = ODDB::Composition.new
       @tst_name = 'substance_name'

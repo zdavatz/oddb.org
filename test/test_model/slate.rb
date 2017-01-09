@@ -4,15 +4,14 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/slate'
 
 
 module ODDB
   class TestSlate <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @model = ODDB::Slate.new('name')
     end

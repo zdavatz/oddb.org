@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/drugs/prescription'
 
 class StubPrescriptionSession
@@ -33,7 +33,6 @@ module ODDB
   module State
     module Drugs
 class TestPrescription <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @session = StubPrescriptionSession.new
     @session.event = :rezept

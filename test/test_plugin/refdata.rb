@@ -5,9 +5,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../test", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'ext/refdata/src/refdata'
 require 'plugin/refdata'
 require 'fileutils'
@@ -15,7 +15,6 @@ require 'test_helpers'
 
 module ODDB
   class TestLogging <Minitest::Test
-    include FlexMock::TestCase
     def setup
       ODDB::RefdataPlugin::Logging.flag = true
       TestHelpers.vcr_setup
@@ -88,7 +87,6 @@ module ODDB
   end
 
   class TestRefdataPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @update = flexmock('update', :barcode => 'barcode')
       @app = flexmock('app', :update => @update)

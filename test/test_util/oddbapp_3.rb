@@ -12,7 +12,7 @@ require 'yaml'
 YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
 require 'stub/config'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'digest/md5'
@@ -23,7 +23,7 @@ require 'model/orphan'
 require 'model/epha_interaction'
 require 'model/galenicform'
 require 'util/language'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/oddbapp'
 
 begin
@@ -33,7 +33,6 @@ rescue LoadError
 end
 
 class TestOddbApp3 <MiniTest::Unit::TestCase
-  include FlexMock::TestCase
   def setup
 #    @drb = flexmock(DRb::DRbObject, :new => server)
     ODDB::GalenicGroup.reset_oids

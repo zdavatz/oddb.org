@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/resulttemplate'
 require 'view/migel/subgroup'
 
@@ -19,7 +19,6 @@ module ODDB
     module Migel
 
 class TestProductList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup      => 'lookup',
@@ -56,7 +55,6 @@ class TestProductList <Minitest::Test
 end
 
 class TestSubgroupInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :_event_url => '_event_url')
     @session   = flexmock('session', 
@@ -83,7 +81,6 @@ class TestSubgroupInnerComposite <Minitest::Test
 end
 
 class TestSubgroupComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup      => 'lookup',
@@ -123,7 +120,6 @@ class TestSubgroupComposite <Minitest::Test
 end
 
 class TestSubgroup <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup      => 'lookup',

@@ -5,15 +5,14 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/page_facade'
 
 module ODDB 
 	module State
 		class TestPageFacade <Minitest::Test
-      include FlexMock::TestCase
 			def setup
 				@page = State::PageFacade.new(7)
         @page.model = flexmock('model', :missing => 'missing')
@@ -45,7 +44,6 @@ module ODDB
 		end
 
     class TestOffsetPageFacade <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @facade  = ODDB::State::OffsetPageFacade.new(1)
         @facade.offset = 10
@@ -63,7 +61,6 @@ module ODDB
     end
     class StubOffsetPaging < StubSuper
       include ODDB::State::OffsetPaging
-      include FlexMock::TestCase
       def initialize
         @session = flexmock('session', :user_input => 0)
       end
@@ -76,7 +73,6 @@ module ODDB
     end
 
     class TestOffsetPaging <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @paging = ODDB::State::StubOffsetPaging.new
       end

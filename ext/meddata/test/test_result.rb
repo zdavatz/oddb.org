@@ -4,7 +4,7 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
 require 'result'
-gem 'minitest'
+
 require 'minitest/autorun'
 
 module ODDB

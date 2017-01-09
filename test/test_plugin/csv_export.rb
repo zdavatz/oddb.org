@@ -6,9 +6,9 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'drb/drb'
 require 'plugin/plugin'
 require 'plugin/csv_export'
@@ -24,7 +24,6 @@ ODDB::CsvExportPlugin.class_eval { MIGEL_EXPORT_DIR = test_data_dir }
 
 module ODDB
   class TestCsvExportPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app    = flexmock('app')
       @plugin = ODDB::CsvExportPlugin.new(@app)

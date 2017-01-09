@@ -7,11 +7,11 @@ test_dir = File.expand_path("..", File.dirname(__FILE__))
 $: << test_dir
 $: << File.expand_path("../../src/", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require "plugin/lppv"
 require "net/http"
-require 'flexmock'
+require 'flexmock/minitest'
 # require 'webmock/test_unit'
 require 'vcr'
 require 'pry'
@@ -19,7 +19,6 @@ require 'test_helpers' # for VCR setup
 
 module ODDB
   class TestLppvPlugin <Minitest::Test
-    include FlexMock::TestCase
     class MockApp
       def initialize(packages)
         @packages = packages

@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/ydim'
 require 'iconv'
 require 'tempfile'
@@ -26,7 +26,6 @@ module ODDB
 end
 
 class TestDebitorFacade <Minitest::Test
-  include FlexMock::TestCase
   
   # must setup a dummy id_dsa before running setup the first time
   home_id_dsa = File.join(File.expand_path('~'), '.ssh', 'id_dsa')
@@ -95,7 +94,6 @@ end
 
 module ODDB
   class TestYdimPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @facade = flexmock('facade')
       @app    = flexmock('app')

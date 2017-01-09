@@ -5,13 +5,12 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/csv_result'
 
 class TestCsvResult <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', :lookup => 'lookup').by_default
     @session     = flexmock('session', :lookandfeel => @lookandfeel).by_default

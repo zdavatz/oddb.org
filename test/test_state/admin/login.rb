@@ -6,12 +6,12 @@
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'state/admin/login'
 require 'state/global'
 require 'util/language'
-require 'flexmock'
+require 'flexmock/minitest'
 
 class StubResolvedRootState < ODDB::State::Global
 	include ODDB::State::Admin::Root
@@ -40,7 +40,6 @@ class StubLoginMethods
 end
 
 class TestLoginMethods <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @session      = flexmock('session').by_default
     @loginmethods = ODDB::State::Admin::StubLoginMethods.new(@session)
@@ -110,7 +109,6 @@ class TestLoginMethods <Minitest::Test
 end
 
 class TestTransparentLogin <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @user     = flexmock('user', 
@@ -144,7 +142,6 @@ class TestTransparentLogin <Minitest::Test
 end
 
 class TestTransparentLoginState <Minitest::Test
-  include FlexMock::TestCase
 	class StubSession
 		def app
 			@app ||= StubApp.new

@@ -5,9 +5,9 @@
 #$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/admin/patent'
 
 =begin
@@ -16,7 +16,6 @@ module ODDB
     module Admin
 =end
 class TestPatentInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -38,7 +37,6 @@ class TestPatentInnerComposite <Minitest::Test
 end
 
 class TestReadonlyPatentComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -64,7 +62,6 @@ class TestReadonlyPatentComposite <Minitest::Test
 end
 
 class TestPatentComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

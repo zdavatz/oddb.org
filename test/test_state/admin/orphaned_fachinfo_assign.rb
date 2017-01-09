@@ -15,9 +15,9 @@ module ODDB
 end
 
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'state/admin/orphaned_fachinfo_assign'
 require 'state/drugs/fachinfo'
@@ -27,7 +27,6 @@ module ODDB
 		module Admin
 
 class TestOrphanedFachinfoFacade <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app    = flexmock('app')
     @facade = ODDB::State::Admin::OrphanedFachinfoAssign::OrphanedFachinfoFacade.new(@app)
@@ -43,7 +42,6 @@ class TestOrphanedFachinfoFacade <Minitest::Test
 end
 
 class TestOrphanedFachinfoAssign <Minitest::Test
-  include FlexMock::TestCase
   def setup
     sequence = flexmock('sequence', :registration => 'registration')
     @app     = flexmock('app', :search_sequences => [sequence]).by_default

@@ -10,14 +10,14 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'fachinfo_hpricot'
 require 'fiparse'
 require 'textinfo_pseudo_fachinfo'
 require 'plugin/text_info'
 require 'stub/cgi'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
   module FiParse

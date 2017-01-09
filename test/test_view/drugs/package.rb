@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/package'
 require 'htmlgrid/span'
 require 'model/index_therapeuticus'
@@ -24,7 +24,6 @@ module ODDB
 end
 
 class TestPackageInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel', 
                             :lookup     => 'lookup',
@@ -125,7 +124,6 @@ class TestPackageInnerComposite <Minitest::Test
   end
 end
 class TestODDBViewDrugsPackageComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup 
     dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     @lookandfeel = flexmock('lookandfeel',
@@ -267,7 +265,6 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
   end
 end
 class TestPackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     lookandfeel = flexmock('lookandfeel',

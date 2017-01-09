@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/errormessage'
 require 'view/limit'
 require 'htmlgrid/inputradio'
@@ -19,7 +19,6 @@ module ODDB
     end
 
 class TestLimitForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -45,7 +44,6 @@ class TestLimitForm <Minitest::Test
 end
 
 class TestLimitComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

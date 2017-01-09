@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/companies/centeredsearchform'
 
 
@@ -15,7 +15,6 @@ module ODDB
     module Companies
 
 class TestCenteredSearchComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app       = flexmock('app', :company_count => 0)
     @lnf       = flexmock('lookandfeel', 

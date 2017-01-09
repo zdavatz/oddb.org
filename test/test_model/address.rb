@@ -6,15 +6,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'stub/odba'
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/address'
 
 module ODDB
 	class TestAddress <Minitest::Test
-    include FlexMock::TestCase
 		def setup
 			@address = ODDB::Address.new
 		end
@@ -151,7 +150,6 @@ module ODDB
     end
 	end
   class TestAddress2 <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @address = ODDB::Address2.new
     end
@@ -220,7 +218,6 @@ module ODDB
     include AddressObserver
   end
   class TestAddressObserver <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @observer = ODDB::StubAddressObserver.new
     end
@@ -249,7 +246,6 @@ module ODDB
     end
   end
   class TestAddressSuggestion <Minitest::Test
-    include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)
       @suggestion = ODDB::AddressSuggestion.new

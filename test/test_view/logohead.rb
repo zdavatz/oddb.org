@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/logohead'
 require 'htmlgrid/span'
 
@@ -24,7 +24,6 @@ class StubSponsorDisplay
 end
 
 class TestSponsorDisplay <Minitest::Test
-  include FlexMock::TestCase
   def test_sponsor__sponsor_valid
     user    = flexmock('user', :valid? => nil)
     lnf     = flexmock('lookandfeel', 

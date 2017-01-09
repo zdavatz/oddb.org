@@ -6,15 +6,14 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/download_invoicer'
 require 'model/invoice'
 
 module ODDB
 	class TestDownloadInvoicer <Minitest::Test
-    include FlexMock::TestCase
 		class FlexMock < ::FlexMock
 			#undef :type
 		end

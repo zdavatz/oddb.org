@@ -5,9 +5,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/galenicform'
 require 'util/language'
 
@@ -16,7 +16,6 @@ module ODDB
 		module Admin
 
 class TestGalenicForm2 <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
@@ -52,7 +51,6 @@ class TestGalenicForm2 <Minitest::Test
 end
 
 class	TestGalenicForm <Minitest::Test
-  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app
@@ -77,7 +75,6 @@ class	TestGalenicForm <Minitest::Test
 		end
 	end
 	class StubApp
-    include FlexMock::TestCase
     attr_accessor :galenic_forms
     attr_accessor :model
 		attr_reader :update_called

@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'model/atcclass'
 require 'model/dose'
@@ -19,7 +19,6 @@ module ODDB
 end
 
 class TestAtcClass <Minitest::Test
-  include FlexMock::TestCase
 	class StubSequence
 		attr_accessor :substances
 		def packages

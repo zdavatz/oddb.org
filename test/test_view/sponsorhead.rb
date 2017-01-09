@@ -8,9 +8,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
 require 'date'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/cgi'
 require 'model/sponsor'
 require 'view/sponsorhead'
@@ -29,7 +29,6 @@ module ODDB
       end
     end
     class TestSponsorMethods <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @zones    = flexmock('zones',
                             :sort_by => [],

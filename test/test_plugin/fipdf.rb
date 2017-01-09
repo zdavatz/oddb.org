@@ -5,15 +5,14 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/fipdf'
 
 
 module ODDB
   class TestFiPDFExporter <Minitest::Test
-    include FlexMock::TestCase
     def setup
       fachinfo = flexmock('fachinfo')
       @app    = flexmock('app', :fachinfos => {'key' => fachinfo})

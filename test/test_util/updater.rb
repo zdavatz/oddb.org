@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/updater'
 require 'stub/odba'
 require 'date'
@@ -42,7 +42,6 @@ module ODDB
 		alias :recipients :incomplete_pointers
 	end
   class TestUpdater < Minitest::Test
-    include FlexMock::TestCase
 		class StubLog
 			include ODDB::Persistence
 			attr_accessor :report, :pointers, :recipients, :hash

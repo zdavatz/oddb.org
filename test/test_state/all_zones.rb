@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/all_zones'
 
 module ODDB 
@@ -28,7 +28,6 @@ class StubAllZones < StubSuper
 end
 
 class TestAllZones <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @previous = flexmock('previous')
     @state = ODDB::State::StubAllZones.new(@previous)

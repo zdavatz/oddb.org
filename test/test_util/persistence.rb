@@ -7,12 +7,12 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/odba'
 require 'util/persistence'
 require 'date'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
 	module Persistence
@@ -457,7 +457,6 @@ end
 module ODDB
   module Persistence
     class TestPointer <Minitest::Test
-      include FlexMock::TestCase
       def test_to_csv
         pointer = ODDB::Persistence::Pointer.new(['key', 'value'])
         assert_equal('key,value', pointer.to_csv)

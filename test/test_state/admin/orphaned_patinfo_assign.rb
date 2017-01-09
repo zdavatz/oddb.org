@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'state/admin/orphaned_patinfo_assign'
 require 'state/admin/patinfo_preview'
@@ -16,7 +16,6 @@ module ODDB
 		module Admin
 
 class TestOrphanedPatinfoFacade <Minitest::Test
-  include FlexMock::TestCase
   def setup
   end
   def test_structural_ancestors
@@ -35,7 +34,6 @@ class TestOrphanedPatinfoFacade <Minitest::Test
 end
 
 class TestOrphanedPatinfoAssign <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @sequence = flexmock('sequence')
     @app      = flexmock('app', :search_sequences => [@sequence]).by_default

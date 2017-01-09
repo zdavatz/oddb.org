@@ -5,18 +5,17 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'util/log'
 require 'stub/odba'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/logfile'
 require 'util/mail'
 
 module ODDB
 
    class TestLog <Minitest::Test
-    include FlexMock::TestCase
     TEST_SENDER   = 'default_mail_from@ywesee.com'
     LOG_RECEIVER  = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
     SUBJECT       = 'ch.ODDB.org Report - 08/1975'

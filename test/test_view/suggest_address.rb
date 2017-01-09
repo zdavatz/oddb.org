@@ -5,16 +5,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/suggest_address'
 
 module ODDB
   module View
 
     class TestSuggestAddressForm <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @lnf      = flexmock('lookandfeel', 
                              :lookup     => 'lookup',
@@ -54,7 +53,6 @@ module ODDB
     end
 
     class TestSuggestAddressComposite <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @lnf       = flexmock('lookandfeel', 
                               :lookup     => 'lookup',

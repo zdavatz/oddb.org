@@ -15,16 +15,15 @@ module ODDB
   end
 end
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/ngram_similarity'
 
 module ODDB
   module Util
 
 class TestNGramSimilarity <Minitest::Test
-  include FlexMock::TestCase
   def test_compare
     assert_in_delta(0.428, NGramSimilarity.compare('str', 'string2', 1), 0.001)
   end

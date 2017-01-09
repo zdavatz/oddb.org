@@ -7,11 +7,11 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'plugin/medwin'
 require 'util/html_parser'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'ext/meddata/src/meddata'
 
 module ODDB
@@ -28,7 +28,6 @@ module ODDB
 end
 
 class TestMedwinCompanyPlugin <Minitest::Test
-  include FlexMock::TestCase
 	class StubApp
 		attr_reader :pointers, :values, :companies
 		def initialize
@@ -193,7 +192,6 @@ class TestMedwinCompanyPlugin <Minitest::Test
 end
 
 class TestMedwinPackagePlugin <Minitest::Test
-  include FlexMock::TestCase
 	class StubSequence
 		attr_accessor :packages
 		def active?

@@ -6,9 +6,9 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 begin
   require 'pry'
 rescue LoadError
@@ -26,8 +26,6 @@ module ODDB
         $stdout.close
         $stdout = STDERR
       end
-
-    include FlexMock::TestCase
     def setup
       TestHelpers.vcr_setup
       @@refdata_article ||= ODDB::Refdata::RefdataArticle.new

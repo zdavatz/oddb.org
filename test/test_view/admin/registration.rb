@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'view/admin/registration'
 require 'htmlgrid/span'
@@ -68,7 +68,6 @@ module TestSetup
 end
 
 class TestRegistrationSequences <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -95,7 +94,6 @@ class TestRegistrationSequences <Minitest::Test
   end
 end
 class TestRootRegistrationSequences <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -109,7 +107,6 @@ class TestRootRegistrationSequences <Minitest::Test
 end
 
 class TestFachinfoLanguageSelect <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -126,7 +123,6 @@ class TestFachinfoLanguageSelect <Minitest::Test
 end
 
 class TestRegistrationInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -144,7 +140,6 @@ class TestRegistrationInnerComposite <Minitest::Test
 end
 
 class TestRegistrationForm <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -226,7 +221,6 @@ class TestRegistrationForm <Minitest::Test
 end
 
 class TestResellerRegistrationForm <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
@@ -256,7 +250,6 @@ class TestResellerRegistrationForm <Minitest::Test
 end
 
 class TestRegistrationComposite <Minitest::Test
-  include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup

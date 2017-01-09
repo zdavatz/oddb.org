@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/company'
 require 'model/analysis/group'
 require 'model/galenicgroup'
@@ -107,7 +107,6 @@ module ODDB
 		end
 
 		class TestPointerSteps <Minitest::Test
-      include FlexMock::TestCase
 			def setup 
 				@model = StubPointerStepsModel.new
 				@session = StubPointerStepsSession.new

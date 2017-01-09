@@ -5,14 +5,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/part'
 
 module ODDB
   class TestPart <Minitest::Test
-    include FlexMock::TestCase
     def setup
       part = flexmock(ODBA.cache, :next_id => 123)
       @part = ODDB::Part.new

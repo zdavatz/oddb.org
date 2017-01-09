@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/drugs/init'
 require 'state/global'
 require 'util/persistence'
@@ -120,7 +120,6 @@ module ODDB
   end
 end
 class TestODDBStateAdminRoot <Minitest::Test
-  include FlexMock::TestCase
   class StubState < ODDB::State::Admin::Global
     include ODDB::State::Admin::Root
   end

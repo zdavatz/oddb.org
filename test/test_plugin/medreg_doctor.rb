@@ -6,10 +6,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/odba'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/medreg_doctor'
 require 'tempfile'
 require 'ostruct'
@@ -19,7 +19,6 @@ require 'model/doctor'
 Minitest::Test.i_suck_and_my_tests_are_order_dependent!()
 
 class TestDoctorPlugin <Minitest::Test
-  include FlexMock::TestCase
   RunTestTakingLong = false
   def teardown
     ODBA.storage = nil

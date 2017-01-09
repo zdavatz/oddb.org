@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/recentregs'
 require 'date'
 require 'htmlgrid/select'
@@ -17,7 +17,6 @@ module ODDB
     module Drugs
 
 class TestDateChooser <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -42,7 +41,6 @@ class TestDateChooser <Minitest::Test
 end
 
 class TestDateHeader <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', :lookandfeel => @lnf)
@@ -59,7 +57,6 @@ class TestDateHeader <Minitest::Test
 end
 
 class TestRootRecentRegsList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -104,7 +101,6 @@ class TestRootRecentRegsList <Minitest::Test
 end
 
 class TestRecentRegsList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -142,7 +138,6 @@ class TestRecentRegsList <Minitest::Test
 end
 
 class TestRecentRegsComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

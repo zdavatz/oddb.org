@@ -7,9 +7,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/html_parser'
 
 module ODDB
@@ -149,7 +149,6 @@ class TestHtmlParser <Minitest::Test
 end
 
 class TestHtmlFormatter <Minitest::Test
-  include FlexMock::TestCase
 	class StubWriter
 		attr_reader :called, :arguments
 		def method_missing(method_name, *args)
@@ -476,7 +475,6 @@ class TestHtmlFontHandler <Minitest::Test
 end
 
 class TestBasicHtmlParser <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @formatter = flexmock('formatter')
     @parser = ODDB::BasicHtmlParser.new(@formatter)
@@ -502,7 +500,6 @@ class TestBasicHtmlParser <Minitest::Test
 end
 
 class TestHtmlTableHandlerCell <Minitest::Test
-  include FlexMock::TestCase
   def setup
     attrs = {}
     @cell = ODDB::HtmlTableHandler::Cell.new(attrs)
@@ -545,7 +542,6 @@ class TestHtmlTableHandlerCell <Minitest::Test
 end
 
 class TestHtmlTableHandlerRow <Minitest::Test
-  include FlexMock::TestCase
   def setup
     attrs = {}
     @row = ODDB::HtmlTableHandler::Row.new(attrs)

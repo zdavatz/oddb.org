@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/patent'
 
 module ODDB
@@ -14,7 +14,6 @@ module ODDB
     module Admin
 
 class TestPatent <Minitest::Test
-  include FlexMock::TestCase
   def setup
     flexmock(SwissregPlugin).new_instances do |s|
       s.should_receive(:get_detail).and_return({'key' => 'value'})
@@ -37,7 +36,6 @@ class TestPatent <Minitest::Test
 end
 
 class TestCompanyPatent <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', :lookandfeel => @lnf)

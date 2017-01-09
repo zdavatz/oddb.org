@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/errormessage'
 require 'view/admin/mergeindication'
 
@@ -16,7 +16,6 @@ module ODDB
     module Admin
 
 class TestMergeIndicationForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -38,7 +37,6 @@ class TestMergeIndicationForm <Minitest::Test
 end
 
 class TestMergeIndicationComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

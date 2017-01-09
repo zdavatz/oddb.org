@@ -14,9 +14,9 @@ module ODDB
   end
 end
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/drugs/fachinfo'
 
 module ODDB
@@ -24,7 +24,6 @@ module ODDB
     module Drugs
 
 class TestSequences <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup => 'lookup',

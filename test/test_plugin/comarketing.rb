@@ -6,14 +6,13 @@
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/comarketing'
 
 module ODDB
   class TestCoMarketingPluginWithFile <Minitest::Test
-    include FlexMock::TestCase
     TestIksnr = '40414' #  1 Pur-Rutin, Filmtabletten  55817 1 Venutabs, Filmtabletten
     def setup
       @@today = Date.new(2014,5,1)
@@ -72,7 +71,6 @@ The following          2 Original/Comarketing-Pairs were not found in the Databa
     end
   end
 	class TestCoMarketingPlugin <Minitest::Test
-    include FlexMock::TestCase
 		def setup
 			@app = flexmock('app')
 			@plugin = ODDB::CoMarketingPlugin.new(@app)

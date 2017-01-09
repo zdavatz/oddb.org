@@ -5,14 +5,13 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'command/merge'
 
 module ODDB 
   class TestMergeCommand <Minitest::Test
-    include FlexMock::TestCase
     def setup
       target = flexmock('target', 
                         :merge => 'merge',

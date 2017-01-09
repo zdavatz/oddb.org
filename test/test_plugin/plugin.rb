@@ -6,9 +6,9 @@
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/plugin'
 require 'fileutils'
 
@@ -22,7 +22,6 @@ module ODDB
   end
 
   class TestSessionStub <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app     = flexmock('app', :get_currency_rate => 'get_currency_rate')
       @session = ODDB::Plugin::SessionStub.new(@app)
@@ -33,7 +32,6 @@ module ODDB
   end
 
   class TestPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app    = flexmock('app')
       @plugin = ODDB::Plugin.new(@app)

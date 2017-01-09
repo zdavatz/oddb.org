@@ -5,9 +5,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/registration'
 require 'model/text'
 require 'model/fachinfo'
@@ -125,7 +125,6 @@ class StubRegistrationPatinfo
   end
 end
 class TestRegistration <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @registration = ODDB::Registration.new('12345')
   end

@@ -3,9 +3,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/resultsort'
 require 'model/dose'
 require 'model/slentry'
@@ -25,7 +25,6 @@ module ODDB
   end
 
   class TestResultStateSort <Minitest::Test
-    include FlexMock::TestCase
     def setup
       package = flexmock('package', :expired? => nil)
       @model = flexmock('model', :packages => [package])
@@ -44,7 +43,6 @@ module ODDB
   end
 
   class TestResultSort <Minitest::Test
-    include FlexMock::TestCase
     @@seqnr ||= 1
     @@ikscd ||= 1
     @@iksnr ||= 12345

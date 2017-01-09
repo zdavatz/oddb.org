@@ -4,9 +4,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/cgi'
 require 'stub/odba'
 require 'stub/session'
@@ -27,7 +27,6 @@ module ODDB
   end
   module View
     class TestFachinfoChangelog <Minitest::Test
-      include FlexMock::TestCase
       DEBUG_HTML = false
       def teardown
         ODBA.storage = nil

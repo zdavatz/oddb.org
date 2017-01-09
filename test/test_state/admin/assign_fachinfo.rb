@@ -5,9 +5,9 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'state/admin/assign_fachinfo'
 
@@ -16,7 +16,6 @@ module ODDB
 		module Admin
 
 class TestRegistrationFacade <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @registration   = flexmock('registration')
     @facade         = ODDB::State::Admin::AssignFachinfo::RegistrationFacade.new(@registration)
@@ -47,7 +46,6 @@ class TestRegistrationFacade <Minitest::Test
 end
 
 class TestAssignFachinfo <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @registration = flexmock('registration')
     sequence  = flexmock('sequence', :registration => @registration)

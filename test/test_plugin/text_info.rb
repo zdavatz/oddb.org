@@ -7,11 +7,11 @@ require 'syck'
 require 'yaml'
 YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'fileutils'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'flexmock/test_unit'
 require 'plugin/text_info'
 require 'model/text'
@@ -32,7 +32,6 @@ module ODDB
   class TestTextInfoPlugin <MiniTest::Test
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
-    include FlexMock::TestCase
     def setup
       super
       @app = flexmock 'application'
@@ -168,7 +167,6 @@ module ODDB
   end if RUN_ALL
 
   class TestExtractMatchedName <MiniTest::Test
-    include FlexMock::TestCase
     Nr_FI_in_AIPS_test = 4
     Nr_PI_in_AIPS_test = 1
     def teardown

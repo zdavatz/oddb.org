@@ -4,16 +4,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'remote/sequence'
 
 module ODDB
   module Remote
 
 class TestSequence < ::Minitest::Test
-  include FlexMock::TestCase
   def setup
     atc       = flexmock('atc', :code => 'code')
     @remote   = flexmock('remote', :atc => atc)

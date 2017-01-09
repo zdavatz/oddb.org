@@ -6,14 +6,13 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/invoice'
 
 module ODDB
 	class TestInvoice <Minitest::Test
-    include FlexMock::TestCase
 		def setup
 			@invoice = ODDB::Invoice.new
 		end

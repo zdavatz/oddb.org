@@ -5,9 +5,9 @@
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/user/mailinglist'
 require 'sbsm/validator'
 $: << File.expand_path("../..", File.dirname(__FILE__))
@@ -17,7 +17,6 @@ module ODDB
     module User
 
 class TestMailingList <Minitest::Test
-  include FlexMock::TestCase
   def setup
 		Util.configure_mail :test
 		Util.clear_sent_mails

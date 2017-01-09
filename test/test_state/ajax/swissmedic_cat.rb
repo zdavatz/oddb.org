@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'sbsm/state'
 require 'util/persistence'
 require 'state/ajax/swissmedic_cat'
@@ -16,7 +16,6 @@ module ODDB
     module Ajax
 
 class TestSwissmedicCat <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @package  = flexmock('package')
     sequence = flexmock('sequence', :package => @package)

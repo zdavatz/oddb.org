@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'view/feedbacks'
 
@@ -15,7 +15,6 @@ module ODDB
 	module View
 
 class TestFeedbackForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :attributes => {},
@@ -105,7 +104,6 @@ class TestFeedbackForm <Minitest::Test
 end
 
 class TestFeedbackList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     component  = flexmock('component', :update => 'update')
     components = {[0,0] => component}
@@ -159,7 +157,6 @@ class TestFeedbackList <Minitest::Test
 end
 
 class TestFeedbackPager <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

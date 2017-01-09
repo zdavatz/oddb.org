@@ -3,15 +3,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/epha_interaction'
 require 'stub/odba'
 
 module ODDB
   class TestEphaInteraction <Minitest::Test
-    include FlexMock::TestCase
     ATC_CODE_1 = 'N06AB06'
     ATC_CODE_2 = 'G03AA13'
 

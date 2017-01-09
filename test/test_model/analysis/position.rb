@@ -4,16 +4,15 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/analysis/position'
 
 module ODDB
   module Analysis
 
 class TestPosition <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @position = ODDB::Analysis::Position.new('poscd')
     group     = flexmock('group', :groupcd => 'groupcd')

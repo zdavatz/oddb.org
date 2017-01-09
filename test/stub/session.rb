@@ -3,7 +3,7 @@
 # Stub: Session -- oddb -- 22.10.2002 -- hwyss@ywesee.com 
 
 require 'util/session'
-require 'flexmock'
+require 'flexmock/minitest'
 module ODDB
   class StubApp
     attr_accessor :last_update, :currency, :unknown_user, :sponsor, :registrations

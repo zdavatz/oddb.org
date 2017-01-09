@@ -4,15 +4,14 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'meddparser'
 
 module ODDB
   module MedData
     class TestFormatter <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @writer    = flexmock('writer')
         @formatter = ODDB::MedData::Formatter.new(@writer)
@@ -24,7 +23,6 @@ module ODDB
       end
     end
     class TestResultWriter <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @writer = ODDB::MedData::ResultWriter.new
       end
@@ -58,7 +56,6 @@ module ODDB
       end
     end
     class TestDetailWriter <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @writer = ODDB::MedData::DetailWriter.new
       end

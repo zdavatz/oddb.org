@@ -7,7 +7,7 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'stub/odba'
@@ -18,7 +18,7 @@ require 'model/sequence'
 require 'model/package'
 require 'model/galenicgroup'
 require 'model/composition'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
@@ -38,7 +38,6 @@ end
 module ODDB
 
   class SwissmedicPluginTestXLSX < Minitest::Test
-    include FlexMock::TestCase
 
     def setup
       ODDB::GalenicGroup.reset_oids

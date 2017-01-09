@@ -5,9 +5,9 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/welcomehead'
 require 'state/pharmacies/setpass'
 require 'state/pharmacies/pharmacy'
@@ -17,7 +17,6 @@ module ODDB
     module Pharmacies
 
 class TestRootPharmacy <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @update  = flexmock('update', :user => 'user')
     @app     = flexmock('app', :update => @update)

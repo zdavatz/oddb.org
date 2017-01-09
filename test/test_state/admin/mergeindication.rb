@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/mergeindication'
 require 'state/admin/indication'
 
@@ -15,7 +15,6 @@ module ODDB
     module Admin
 
 class TestMergeIndication <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app', 
                         :indication_by_text => 'target',

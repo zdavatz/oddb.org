@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/latest'
 
 module ODDB
@@ -19,7 +19,6 @@ module ODDB
   ChangedContent = 'changed content size'
 
   class TestLatest <MiniTest::Unit::TestCase
-    include FlexMock::TestCase
     def setup
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive) if File.exists?(@archive)

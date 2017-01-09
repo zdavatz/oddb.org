@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/invoice_observer'
 require 'odba'
 
@@ -19,7 +19,6 @@ module ODDB
     end
   end
   class TestInvoiceObserver <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @observer = ODDB::StubInvoiceObserver.new
     end

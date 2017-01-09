@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/companies/company'
 
 module ODDB
@@ -19,7 +19,6 @@ module ODDB
 end
 
 class TestUnknownCompanyInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')
@@ -39,7 +38,6 @@ class TestUnknownCompanyInnerComposite <Minitest::Test
 end
 
 class TestUserCompanyForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -85,7 +83,6 @@ class TestUserCompanyForm <Minitest::Test
 end
 
 class TestAjaxCompanyForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -114,7 +111,6 @@ class TestAjaxCompanyForm <Minitest::Test
 end
 
 class TestUnknownCompanyComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -139,7 +135,6 @@ class TestUnknownCompanyComposite <Minitest::Test
 end
 
 class TestUserCompanyComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -171,7 +166,6 @@ class TestUserCompanyComposite <Minitest::Test
 end
 
 class TestRootPharmaCompanyComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -233,7 +227,6 @@ module ODDB
   end
 end
 class TestRootCompany <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:enabled?)

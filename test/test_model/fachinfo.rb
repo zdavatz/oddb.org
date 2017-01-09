@@ -7,9 +7,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/fachinfo'
 require 'model/text'
 require 'yaml'
@@ -22,7 +22,6 @@ module ODDB
     attr_accessor :registrations
   end
   class TestFachinfo <Minitest::Test
-    include FlexMock::TestCase
     class StubRegistration
       attr_accessor :company_name
       attr_accessor :generic_type
@@ -181,7 +180,6 @@ ATC-Code: L01XE31
     end
   end
   class TestFachinfoDocument <Minitest::Test
-    include FlexMock::TestCase
     def setup
       fachinfo = ODDB::FachinfoDocument2001.new
       fachinfo.composition = ODDB::Text::Chapter.new

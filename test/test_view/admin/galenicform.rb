@@ -6,9 +6,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'view/admin/galenicform'
 require 'stub/cgi'
@@ -81,8 +81,6 @@ end
 	class StubModel
 		attr_accessor :galenic_group
 	end
-
-  include FlexMock::TestCase
 	def setup
     flexstub(ODBA.cache) do |cache|
       cache.should_receive(:next_id).and_return(123)
@@ -99,7 +97,6 @@ end
 end	
 
 class TestGalenicFormForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -123,7 +120,6 @@ class TestGalenicFormForm <Minitest::Test
 end
 
 class TestGalenicFormComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

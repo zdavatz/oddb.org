@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'define_empty_class'
 require 'state/companies/companylist'
 
@@ -25,7 +25,6 @@ class TestCompanyList < State::Companies::CompanyList
 end
 
 class TestCompanyListState <Minitest::Test
-  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user, :user_input
 		def app
@@ -147,7 +146,6 @@ class TestCompanyListState <Minitest::Test
 end
 
 class TestCompanyResult <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
@@ -163,7 +161,6 @@ class TestCompanyResult <Minitest::Test
 end
 
 class TestCompanyList2 <Minitest::Test
-  include FlexMock::TestCase
   def setup
     company  = flexmock('company', :listed? => nil)
     @app     = flexmock('app',

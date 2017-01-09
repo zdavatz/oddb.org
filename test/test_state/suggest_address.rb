@@ -6,9 +6,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/suggest_address'
 require 'util/mail'
 
@@ -16,7 +16,6 @@ module ODDB
 	module State
 
 class TestSuggestAddress <Minitest::Test
-  include FlexMock::TestCase
   def setup
     Util.configure_mail :test
     Util.clear_sent_mails

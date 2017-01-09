@@ -6,14 +6,13 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'meddata'
 
 module ODDB
 	class TestMedData <Minitest::Test
-    include FlexMock::TestCase
 		def test__dispatch
 			str = MedData::Result
 			instance = str.new('bar', 'baz')

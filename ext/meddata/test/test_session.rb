@@ -3,9 +3,9 @@
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'meddata/src/session'
 
 module ODDB
@@ -21,7 +21,6 @@ end
 module ODDB
   module MedData
     class TestSession <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @response = flexmock('response') do |r|
           r.should_receive(:[]).with('set-cookie').and_return('cookie_header')
@@ -162,7 +161,6 @@ module ODDB
     end
     
     class TestSessionException <Minitest::Test
-      include FlexMock::TestCase
       
       def stdout_null
         require 'tempfile'

@@ -11,7 +11,7 @@ require 'syck'
 require 'yaml'
 YAML::ENGINE.yamler = 'syck'
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'digest/md5'
@@ -21,11 +21,10 @@ require 'model/atcclass'
 require 'model/orphan'
 require 'model/galenicform'
 require 'util/language'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/oddbapp'
 
 class TestOddbApp2 <MiniTest::Unit::TestCase
-  include FlexMock::TestCase
   TEST_EAN13 = '7601123456789'
 	def setup
 		ODDB::GalenicGroup.reset_oids

@@ -7,9 +7,9 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/prescription'
 
 module ODDB
@@ -86,7 +86,6 @@ Vor dem Morgenessen gemütlich"
 end
 
 class TestPrescription <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @prescription = ODDB::Prescription.create_example_prescription
   end

@@ -5,9 +5,9 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/select'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/template'
@@ -20,7 +20,6 @@ require 'state/user/download_export'
 
 
 class TestDownloadExportInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')
@@ -42,7 +41,6 @@ class TestDownloadExportInnerComposite <Minitest::Test
 end
 
 class TestDownloadExportComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup).and_return('lookup')

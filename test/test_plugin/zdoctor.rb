@@ -6,9 +6,9 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'plugin/doctors'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'flexmock/test_unit'
 
 module ODDB
@@ -18,7 +18,6 @@ module ODDB
       PARSER = FlexMock.new("PARSER") 
     end
 		class TestDoctorPlugin <Minitest::Test
-      include FlexMock::TestCase
 			def setup
         @config = flexmock('config', :config => 'config')
         @app = flexmock('application_setup', :config => @config) #, :doctor_by_origin => 'doctor_by_origin')

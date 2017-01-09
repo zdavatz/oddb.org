@@ -7,9 +7,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/select'
 require 'define_empty_class'
 require 'state/admin/activeagent'
@@ -20,7 +20,6 @@ module ODDB
 		module Admin
 
 class TestActiveAgentState <Minitest::Test
-  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app
@@ -190,7 +189,6 @@ class TestActiveAgentState <Minitest::Test
 end
 
 class TestActiveAgent  <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @session = flexmock('session', :app => @app)
@@ -335,7 +333,6 @@ class TestActiveAgent  <Minitest::Test
 end
 
 class TestCompanyActiveAgent <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app     = flexmock('app')
     @session = flexmock('session', 

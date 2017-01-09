@@ -5,10 +5,10 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'minitest/unit'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'mechanize'
@@ -34,7 +34,6 @@ module ODDB
   end
   class TestAnalysisPluginDownload <Minitest::Test
     @@today = Today
-    include FlexMock::TestCase
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -74,8 +73,7 @@ module ODDB
 
   class TestAnalysisPluginWithoutDownload <Minitest::Test
     @@today = Today
-    Download_file = File.expand_path(File.join(__FILE__, '../../data/xlsx/analysis_de_2014.10.14_small.xlsx')) 
-    include FlexMock::TestCase
+    Download_file = File.expand_path(File.join(__FILE__, '../../data/xlsx/analysis_de_2014.10.14_small.xlsx'))
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock

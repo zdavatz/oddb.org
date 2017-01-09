@@ -5,23 +5,21 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/prescription'
 
 module ODDB
   module View
     module Drugs
 class TestPrescriptionInnerForm <Minitest::Test
-  include FlexMock::TestCase
   def test_init
     # pending
   end
 end
 
 class TestPrescriptionDrugsHeader <Minitest::Test
-  include FlexMock::TestCase
   def test_init
     # pending
   end

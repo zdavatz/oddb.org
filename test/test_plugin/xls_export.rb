@@ -6,15 +6,14 @@
 #$: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'drb/drb'
 require 'plugin/xls_export'
 
 module ODDB
   class TestXlsExportPlugin <Minitest::Test
-    include FlexMock::TestCase
     def stderr_null
       require 'tempfile'
       $stderr = Tempfile.open('stderr')
@@ -73,7 +72,6 @@ module ODDB
     @@today = Date.new(2011,2,3)
   end
   class TestXlsExportPlugin <Minitest::Test
-    include FlexMock::TestCase
     def test_export_patents
       patent = flexmock('patent', :expiry_date => Date.new(2011,2,4))
       registration = flexmock('registration', 

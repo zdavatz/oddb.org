@@ -5,9 +5,9 @@
 #$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/drugs/ddd'
 
 
@@ -16,7 +16,6 @@ module ODDB
     module Drugs
 
 class TestDDDComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @session = flexmock('session', 
@@ -38,7 +37,6 @@ class TestDDDComposite <Minitest::Test
 end
 
 class TestDDDTree <Minitest::Test
-  include FlexMock::TestCase
   def setup
     atc_class  = flexmock('atc_class', 
                           :has_ddd?    => nil,

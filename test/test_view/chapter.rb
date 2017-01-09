@@ -6,12 +6,12 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'view/chapter'
 require 'stub/cgi'
 require 'model/text'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
 	module View
@@ -95,7 +95,6 @@ module ODDB
 			end
 		end
     class TestChapter2 <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @lnf     = flexmock('lookandfeel')
         @session = flexmock('session', :lookandfeel => @lnf)
@@ -295,7 +294,6 @@ module ODDB
 
     
     class TestEditChapterTableToHtml <Minitest::Test
-      include FlexMock::TestCase
       def test_table_to_html
         @lookandfeel = FlexMock.new 'lookandfeel'
         @lookandfeel.should_receive(:section_style).and_return { 'section_style' }

@@ -6,16 +6,15 @@
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'ext/swissindex/src/swissindex'
 require 'plugin/swissindex'
 require 'fileutils'
 
 module ODDB
   class TestLogging <Minitest::Test
-    include FlexMock::TestCase
     def setup
       ODDB::SwissindexPlugin::Logging.flag = true
     end
@@ -89,7 +88,6 @@ module ODDB
   end
 
   class TestSwissindexMigelPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app = flexmock('app', :update => 'update')
       @plugin = ODDB::SwissindexMigelPlugin.new(@app)

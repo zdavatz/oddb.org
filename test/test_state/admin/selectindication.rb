@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/selectindication'
 
 module ODDB
@@ -15,7 +15,6 @@ module ODDB
 
 module SelectIndicationMethods
   class TestSelection <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @registration = flexmock('registration', :pointer => 'pointer')
       @selection = ODDB::State::Admin::SelectIndicationMethods::Selection.new('user_input', 'selection', @registration)
@@ -35,7 +34,6 @@ module SelectIndicationMethods
 end # SelectIndicationMethods
 
 class TestSelectIndication <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app        = flexmock('app', :update => 'update')
     @lnf        = flexmock('lookandfeel', :lookup => 'lookup')

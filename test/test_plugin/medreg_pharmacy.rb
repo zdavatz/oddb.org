@@ -6,9 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'plugin/medreg_pharmacy'
 require 'tempfile'
@@ -24,7 +24,6 @@ module ODDB
   end
 end
 class TestCompanyPlugin <Minitest::Test
-  include FlexMock::TestCase
   Test_Companies_XLSX = File.expand_path(File.join(__FILE__, '../../data/xlsx/companies_20141014.xlsx'))
   def teardown
     ODBA.storage = nil

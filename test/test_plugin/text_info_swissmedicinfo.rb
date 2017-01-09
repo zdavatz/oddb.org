@@ -4,10 +4,10 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'fileutils'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'stub/oddbapp'
@@ -37,7 +37,6 @@ module ODDB
   end
 
   class TestTextInfoChangeLogin <MiniTest::Test
-    include FlexMock::TestCase
     def setup
       super
     end # Fuer Problem mit fachinfo italic
@@ -61,7 +60,6 @@ Line 3\x06;\bT"
 
 if RunAll
   class TestTextInfoPluginAipsMetaData <MiniTest::Test
-    include FlexMock::TestCase
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -190,7 +188,6 @@ if RunAll
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     end
-    include FlexMock::TestCase
 
     def create(dateiname, content)
         FileUtils.makedirs(File.dirname(dateiname))
@@ -299,7 +296,6 @@ if RunAll
 
   end
   class TestTextInfoPluginChecks <MiniTest::Test
-    include FlexMock::TestCase
     def teardown
       FileUtils.rm_rf @@vardir
       ODBA.storage = nil
@@ -340,7 +336,6 @@ if RunAll
   end
 
   class TestTextInfoPlugin_iksnr <MiniTest::Test
-    include FlexMock::TestCase
     def test_get_iksnr_comprimes
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
       assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
@@ -403,7 +398,6 @@ end
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     end
-    include FlexMock::TestCase
 
     def create(dateiname, content)
         FileUtils.makedirs(File.dirname(dateiname))

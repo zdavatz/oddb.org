@@ -5,9 +5,9 @@
 $: << File.expand_path('../../', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/list'
 require 'htmlgrid/pass'
 require 'view/user/register_download'
@@ -28,7 +28,6 @@ module ODDB
     module User
 
 class TestRegisterDownloadForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :attributes => {},
@@ -72,7 +71,6 @@ class TestRegisterDownloadForm <Minitest::Test
 end
 
 class TestRegisterDownloadComposite <Minitest::Test
-  include FlexMock::TestCase
   def test_register_download_form
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

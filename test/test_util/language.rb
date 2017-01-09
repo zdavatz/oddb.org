@@ -6,9 +6,9 @@
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/language'
 require 'odba'
 require 'util/searchterms'
@@ -132,7 +132,6 @@ module ODDB
   end
 
   class TestDescriptions <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @descriptions = ODDB::SimpleLanguage::Descriptions.new
     end
@@ -142,7 +141,6 @@ module ODDB
   end
 
   class TestSimpleLanguage <Minitest::Test
-    include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)
       @simplelanguage = ODDB::StubSimpleLanguage.new
@@ -172,7 +170,6 @@ module ODDB
     include ODDB::Language
   end
   class TestLanguage <Minitest::Test
-    include FlexMock::TestCase
     def setup
       flexmock(ODBA.cache, :next_id => 123)
       @language = ODDB::StubLanguage.new

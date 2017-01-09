@@ -5,9 +5,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/patinfo_stats'
 
 
@@ -15,7 +15,6 @@ module ODDB
 	module State
 		module Admin
       class TestInvoiceItemFacade <Minitest::Test
-        include FlexMock::TestCase
         def test_initialize
           invoice_item = flexmock('invoice_item') do |item|
             item.should_receive(:time).and_return('time')
@@ -25,7 +24,6 @@ module ODDB
         end
       end
       class TestSequenceFacade <Minitest::Test
-        include FlexMock::TestCase
         def setup
           sequence = flexmock('sequence') do |seq|
             seq.should_receive(:iksnr).and_return('iksnr')
@@ -53,7 +51,6 @@ module ODDB
         end
       end
       class TestCompanyFacade <Minitest::Test
-        include FlexMock::TestCase
         def setup
           @company = flexmock('company') do |comp|
             comp.should_receive(:name).and_return('name')
@@ -136,7 +133,6 @@ module ODDB
           end
       end
       class TestPatinfoStatsCommon <Minitest::Test
-        include FlexMock::TestCase
         include ODDB::State::Admin
         def test_init
           setup_patinfo_stats_common
@@ -146,7 +142,6 @@ module ODDB
         end
       end
       class TestPatinfoStatsCompanyUser <Minitest::Test
-        include FlexMock::TestCase
         include ODDB::State::Admin
         def test_init
           setup_patinfo_stats_common
@@ -156,7 +151,6 @@ module ODDB
         end
       end
       class TestPatinfoStats <Minitest::Test
-        include FlexMock::TestCase
         include ODDB::State::Admin
         def test_symbol
           setup_patinfo_stats_common

@@ -5,16 +5,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/oddbconfig'
 require 'plugin/fachinfo_invoicer'
 require 'model/registration'
 
 module ODDB
   class TestFachinfoInvoicer  <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app    = flexmock('app')
       @plugin = ODDB::FachinfoInvoicer.new(@app)

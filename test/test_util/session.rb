@@ -7,9 +7,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/config'
 require 'util/session'
 # require 'stub/oddbapp'
@@ -17,7 +17,6 @@ require 'stub/odba'
 
 module ODDB
   class TestSession <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @unknown_user = flexmock('unknown_user',
                                :valid? => false)

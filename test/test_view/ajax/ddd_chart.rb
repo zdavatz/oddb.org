@@ -6,15 +6,14 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/ajax/ddd_chart'
 require 'RMagick'
 #require 'encoding/character/utf-8'
 
 class TestSideBar <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @sidebar = SideBar.new
   end
@@ -108,7 +107,6 @@ class TestSideBar <Minitest::Test
 end
 
 class TestDDDChart <Minitest::Test
-  include FlexMock::TestCase
   def setup
     package  = flexmock('package',
                         :sequence             => 'sequence',

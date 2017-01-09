@@ -6,9 +6,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/galenicform'
 
 module ODDB
@@ -17,7 +17,6 @@ module ODDB
     public :adjust_types, :sequences
   end
   class TestGalenicForm <Minitest::Test
-    include FlexMock::TestCase
     class StubGroup
       attr_reader :add_called, :remove_called
       def add(form)

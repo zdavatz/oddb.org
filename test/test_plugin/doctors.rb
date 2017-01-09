@@ -6,14 +6,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/doctors'
 require 'tempfile'
 
 class TestDoctorPlugin <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @config = flexmock('config')
     @app    = flexmock('app', :config => @config)

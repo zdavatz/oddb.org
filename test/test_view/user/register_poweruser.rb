@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/select'
 require 'view/user/register_poweruser'
 
@@ -16,7 +16,6 @@ module ODDB
     module User
 
 class TestRegisterPowerUserForm  <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -41,7 +40,6 @@ class TestRegisterPowerUserForm  <Minitest::Test
 end
 
 class TestRenewPowerUserComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

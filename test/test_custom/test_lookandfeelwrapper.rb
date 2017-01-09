@@ -5,9 +5,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'custom/lookandfeelwrapper'
 
 module ODDB
@@ -28,7 +28,6 @@ module SBSM
     RESULT_FILTER = self.method(:filter)
   end
   class TestLookandfeelWrapper <Minitest::Test
-    include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -55,7 +54,6 @@ end
 
 module ODDB
   class TestLookandfeelEvidentia <Minitest::Test
-    include FlexMock::TestCase
     def create_env
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -75,7 +73,6 @@ module ODDB
     end
   end
   class TestLookandfeelStandardResult <Minitest::Test
-    include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -160,7 +157,6 @@ module ODDB
   end
 
   class TestLookandfeelGenerika <Minitest::Test
-    include FlexMock::TestCase
     def setup
       session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -182,7 +178,6 @@ module ODDB
   end
 
   class TestLookandfeelEvidentia <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -275,7 +270,6 @@ module ODDB
   end
 
   class TestLookandfeelJustMedical <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -376,7 +370,6 @@ module ODDB
   end
 
   class TestLookandfeelSwissmedic <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -399,7 +392,6 @@ module ODDB
   end
 
   class TestLookandfeelOekk <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -470,7 +462,6 @@ module ODDB
   end
 
   class TestLookandfeelMobile <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -538,7 +529,6 @@ module ODDB
   end
 
   class TestLookandfeelSwissMedInfo <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)
@@ -612,7 +602,6 @@ module ODDB
   end
 
   class TestLookandfeelComplementaryType <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock('session') do |s|
         s.should_receive(:flavor)

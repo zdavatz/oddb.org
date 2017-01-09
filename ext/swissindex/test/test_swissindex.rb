@@ -5,9 +5,9 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'swissindex'
 
 module ODDB
@@ -23,7 +23,6 @@ module Swissindex
     REFDATA_SERVER = RefDataServerStrub.new
   end
     class TestSwissindexPlugin <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @nonpharma =ODDB::Swissindex::SwissindexMigel.new
         @ssl  = flexmock('http', :verify_mode= => nil)

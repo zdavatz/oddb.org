@@ -7,15 +7,14 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/atcclass'
 require 'model/atcnode'
 
 module ODDB
   class TestAtcNode <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @root = ODDB::AtcNode.new(nil)
       @atcN = ODDB::AtcClass.new('N')

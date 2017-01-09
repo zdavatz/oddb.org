@@ -5,15 +5,14 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/who'
 
 module ODDB
   class WhoPlugin < Plugin
     class TestCodeHandler <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @handler = ODDB::WhoPlugin::CodeHandler.new
       end
@@ -31,7 +30,6 @@ module ODDB
   end
 
   class TestWhoPlugin <Minitest::Test
-    include FlexMock::TestCase
     def teardown
       super
     end

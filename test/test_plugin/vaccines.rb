@@ -5,10 +5,10 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'rubygems'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/vaccines'
 require 'stub/odba'
 

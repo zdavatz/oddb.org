@@ -5,15 +5,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/sequence'
 require 'state/global'
 require 'util/mail'
 
-class TestResellerSequence <Minitest::Test  
-  include FlexMock::TestCase
+class TestResellerSequence <Minitest::Test
   def setup
     @lookandfeel = flexmock('lookandfeel')
     @session = flexmock('session') do |s|
@@ -221,7 +220,6 @@ class TestResellerSequence <Minitest::Test
 end
 
 class TestSequence <Minitest::Test
-  include FlexMock::TestCase
   def setup
     ptr      = flexmock('ptr', :skeleton => 'skeleton')
     pointer      = flexmock('pointer', :+ => ptr)
@@ -721,7 +719,6 @@ class TestSequence <Minitest::Test
 end
 
 class TestCompanySequence <Minitest::Test
-  include FlexMock::TestCase
   class StubPointer
     attr_writer :model
     def resolve(app)

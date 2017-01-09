@@ -7,18 +7,17 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'model/substance'
 require 'util/searchterms'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
   class Substance
     attr_writer :sequences
   end
   class TestSubstance <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @substance = ODDB::Substance.new
       @substance.descriptions.store('lt', "Acidum Acetylsalicylicum")

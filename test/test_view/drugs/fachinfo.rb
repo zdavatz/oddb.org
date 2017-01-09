@@ -6,7 +6,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/cgi'
 require 'view/drugs/fachinfo'
 require 'view/drugs/ddd'
@@ -26,7 +26,6 @@ module ODDB
 end
 
 class TestFiChapterChooserLink <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super
@@ -77,7 +76,6 @@ class TestFiChapterChooserLink <Minitest::Test
 end
 
 class TestFiChapterChooser <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super
@@ -142,7 +140,6 @@ class TestFiChapterChooser <Minitest::Test
 end
 
 class TestFachinfoInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def test_init
     lookandfeel = flexmock('lookandfeel', :lookup     => 'lookup')
     @session    = flexmock('session', :lookandfeel => lookandfeel)
@@ -154,7 +151,6 @@ class TestFachinfoInnerComposite <Minitest::Test
 end
 
 class TestFachinfoPreviewComposite <Minitest::Test
-  include FlexMock::TestCase
   def test_fachinfo_name
     lookandfeel = flexmock('lookandfeel', :lookup     => 'lookup')
     @session    = flexmock('session', :lookandfeel => lookandfeel)
@@ -168,7 +164,6 @@ class TestFachinfoPreviewComposite <Minitest::Test
 end
 
 class TestFachinfoComposite <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super
@@ -229,7 +224,6 @@ class TestFachinfoComposite <Minitest::Test
 end
 
 class TestEditFiChapterChooser <Minitest::Test
-  include FlexMock::TestCase
   def test_display_names
     photos  = flexmock('photos', :has_photo? => false)
     lookandfeel = flexmock('lookandfeel', 
@@ -271,7 +265,6 @@ class TestEditFiChapterChooser <Minitest::Test
 end
 
 class TestRootFachinfoComposite <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super
@@ -361,7 +354,6 @@ class TestRootFachinfoComposite <Minitest::Test
   end
 end
 class TestFI_ChangeLogs <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super
@@ -413,7 +405,6 @@ class TestFI_ChangeLogs <Minitest::Test
 end
 
 class TestEvidentiaFiChapterChooser <Minitest::Test
-  include FlexMock::TestCase
   def teardown
     ODBA.storage = nil
     super

@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'util/failsafe'
 
 module ODDB
@@ -14,7 +14,6 @@ module ODDB
     include Failsafe
   end
   class TestFailsafe <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @util = ODDB::StubFailsafe.new
     end

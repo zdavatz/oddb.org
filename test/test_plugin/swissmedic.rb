@@ -4,7 +4,7 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'stub/odba'
@@ -14,7 +14,7 @@ require 'plugin/swissmedic'
 require 'model/registration'
 require 'model/sequence'
 require 'model/package'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
@@ -47,7 +47,6 @@ module ODDB
       :deletes_packages
   end
    class SwissmedicPluginTest < Minitest::Test
-    include FlexMock::TestCase
     NAME_OFFSET = 2
     INDICATION_OFFSET = 18
     ROW_ASPIRIN = 5 # row in excel -1

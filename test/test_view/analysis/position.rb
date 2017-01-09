@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/resulttemplate'
 require 'htmlgrid/labeltext'
 require 'view/analysis/position'
@@ -17,7 +17,6 @@ module ODDB
     module Analysis
 
 class TestAdditionalInfoComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', 
@@ -46,7 +45,6 @@ class TestAdditionalInfoComposite <Minitest::Test
 end
 
 class TestPositionInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup => 'lookup',
@@ -85,7 +83,6 @@ class TestPositionInnerComposite <Minitest::Test
 end
 
 class TestPositionComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf        = flexmock('lookandfeel', 
                            :lookup     => 'lookup',

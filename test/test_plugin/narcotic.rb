@@ -7,15 +7,14 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'plugin/narcotic'
-require 'flexmock'
+require 'flexmock/minitest'
 
 
 module ODDB
 	class TestNarcoticPlugin <Minitest::Test
-    include FlexMock::TestCase
 		def setup
 			@app = flexmock('app')
 			@plugin = NarcoticPlugin.new(@app)

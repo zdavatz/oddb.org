@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/password_lost'
 require 'state/admin/confirm'
 require 'util/mail'
@@ -16,7 +16,6 @@ module ODDB
     module Admin
 
 class TestPasswordLost <Minitest::Test
-  include FlexMock::TestCase
   def setup
     Util.configure_mail :test
     Util.clear_sent_mails

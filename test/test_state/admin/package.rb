@@ -5,10 +5,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'state/admin/package'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/global'
 require 'model/commercial_form'
 
@@ -28,7 +28,6 @@ module ODDB
     end
   end
 class TestPackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     package      = flexmock('package', :pointer => 'pointer')
     sequence     = flexmock('sequence', :package => package)
@@ -427,7 +426,6 @@ class TestPackage <Minitest::Test
 end
 
 class TestCompanyPackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     pointer = StubPointer.new
     @session = flexmock('session')
@@ -485,7 +483,6 @@ class TestCompanyPackage <Minitest::Test
 end
 
 class TestDeductiblePackage <Minitest::Test
-  include FlexMock::TestCase
   def test_update
     @session = flexmock('session', 
                         :user_input   => 'user_input',

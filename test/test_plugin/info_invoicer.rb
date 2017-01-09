@@ -5,16 +5,15 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/info_invoicer'
 require 'date'
 require 'model/invoice'
 require 'yus/entity'
 
 class TestInfoInvoicer <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @app      = flexmock('app')
     @invoicer = ODDB::InfoInvoicer.new(@app)

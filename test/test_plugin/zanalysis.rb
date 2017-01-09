@@ -4,14 +4,13 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/analysis'
 
 module ODDB
   class TestAnalysisPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @position = flexmock('position', :pointer => 'pointer')
       @analysis_group = flexmock('analysis_group', :position => @position)

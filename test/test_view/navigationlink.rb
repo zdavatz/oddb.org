@@ -4,16 +4,15 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/navigation'
 
 module ODDB
   module View
 
 class TestNavigationLink <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -36,7 +35,6 @@ class TestNavigationLink <Minitest::Test
 end
 
 class TestLanguageNavigationLink <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -56,7 +54,6 @@ class TestLanguageNavigationLink <Minitest::Test
 end
 
 class TestLanguageNavigationLinkShort <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -76,7 +73,6 @@ class TestLanguageNavigationLinkShort <Minitest::Test
 end
 
 class TestCurrencyNavigationLink <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

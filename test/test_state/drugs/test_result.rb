@@ -7,11 +7,11 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'define_empty_class'
 require 'state/drugs/result'
-require 'flexmock'
+require 'flexmock/minitest'
 
 module ODDB
 	module State
@@ -89,7 +89,6 @@ class StubResultSession
 end
 
 class TestResult <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :disabled? => nil)
     @session = flexmock('session', :lookandfeel => @lnf)

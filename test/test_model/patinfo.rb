@@ -8,9 +8,9 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/patinfo'
 
 module ODDB
@@ -20,7 +20,6 @@ module ODDB
 end
 
 class TestPatinfo <Minitest::Test
-  include FlexMock::TestCase
 	class StubSequence < ODBA::StorageStub
 		include ODDB::Persistence
 		def patinfo=(patinfo)

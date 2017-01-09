@@ -4,11 +4,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/odba'
 require 'fileutils'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/medical_products'
 require 'model/text'
 require 'model/atcclass'
@@ -152,7 +152,6 @@ module ODDB
       @@datadir = File.expand_path '../../ext/fiparse/test/data/docx/', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var', File.dirname(__FILE__)
     end
-    include FlexMock::TestCase
     
     def setup
       assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")

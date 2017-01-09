@@ -5,9 +5,9 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'spreadsheet'
 require 'generics_xls'
 require 'date'
@@ -15,7 +15,6 @@ require 'date'
 module ODDB
   module OdbaExporter
     class TestGenericXls <Minitest::Test
-      include FlexMock::TestCase
       def setup
         @loggroup_swiss = LogGroup.new(:swissmedic_journal)
         @loggroup_swiss.create_log(Date.today)

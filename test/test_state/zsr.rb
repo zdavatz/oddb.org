@@ -6,16 +6,15 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'state/global'
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/zsr'
 require 'util/mail'
 
 module ODDB 
 	module State
 		class TestZSR <Minitest::Test
-			include FlexMock::TestCase
 			def test_zsr
 				@app     = flexmock('app')
 				@session = flexmock('session', 

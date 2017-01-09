@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/ajax/swissmedic_cat'
 require 'htmlgrid/link'
 
@@ -16,7 +16,6 @@ module ODDB
     module Ajax
 
 class TestSwissmedicCat <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup      => 'lookup',

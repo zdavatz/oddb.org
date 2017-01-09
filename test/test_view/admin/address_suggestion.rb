@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/select'
@@ -16,7 +16,6 @@ require 'view/admin/address_suggestion'
 require 'htmlgrid/textarea'
 
 class TestAddressSuggestionForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -38,7 +37,6 @@ class TestAddressSuggestionForm <Minitest::Test
 end
 
 class TestAddressSuggestionInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def test_message
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -55,7 +53,6 @@ class TestAddressSuggestionInnerComposite <Minitest::Test
 end
 
 class TestActiveAddress <Minitest::Test
-  include FlexMock::TestCase
   def test_parent_class
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -81,7 +78,6 @@ class TestActiveAddress <Minitest::Test
 end
 
 class TestAddressSuggestionComposite <Minitest::Test
-  include FlexMock::TestCase
   def test_address
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',

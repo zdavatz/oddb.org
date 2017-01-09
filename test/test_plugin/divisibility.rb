@@ -3,9 +3,9 @@
 # ODDB::TestDrugbankPlugin -- oddb.org -- 29.08.2012 -- yasaka@ywesee.com
 
 require 'pathname'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
 $: << root.join('test').join('test_plugin')
@@ -34,7 +34,6 @@ end
 
 module ODDB
   class TestDivisibilityPlugin <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @app    = FlexMock.new 'app'
       @plugin = DivisibilityPlugin.new @app

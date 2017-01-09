@@ -4,9 +4,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'htmlgrid/errormessage'
 require 'view/drugs/resultlimit'
 require 'htmlgrid/inputradio'
@@ -18,7 +18,6 @@ module ODDB
     module Drugs
 
 class TestResultLimitList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -96,7 +95,6 @@ class TestResultLimitList <Minitest::Test
 end
 
 class TestResultLimitComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',

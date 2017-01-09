@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/resulttemplate'
 require 'htmlgrid/labeltext'
 require 'view/migel/product'
@@ -28,7 +28,6 @@ module ODDB
     module Migel
 
 class TestProductInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel    = flexmock('lookandfeel', 
                                :_event_url  => nil,
@@ -228,7 +227,6 @@ end
 
 
 class TestAccessoryOfList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @app     = flexmock('app')
@@ -250,7 +248,6 @@ class TestAccessoryOfList <Minitest::Test
 end
 
 class TestPointerSteps <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :disabled?  => nil,
@@ -331,7 +328,6 @@ class TestPointerSteps <Minitest::Test
 end
 
 class TestProduct <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :enabled? => nil,

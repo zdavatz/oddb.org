@@ -5,9 +5,9 @@
 #$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/galenicgroup'
 require 'view/logo'
 require 'model/analysis/group'
@@ -25,7 +25,6 @@ module ODDB
     module Drugs
 
 class TestPriceHistoryList <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
@@ -79,7 +78,6 @@ class TestPriceHistoryList <Minitest::Test
 end
 
 class TestPriceHistoryComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf       = flexmock('lookandfeel', 
                           :lookup     => 'lookup',
@@ -105,7 +103,6 @@ class TestPriceHistoryComposite <Minitest::Test
 end
 
 class TestPriceHistory <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 
                          :lookup     => 'lookup',

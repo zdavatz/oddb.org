@@ -5,7 +5,7 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 require 'ean_factory'
-gem 'minitest'
+
 require 'minitest/autorun'
 
 module ODDB

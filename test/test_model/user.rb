@@ -7,9 +7,9 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'stub/odba'
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'model/user'
 require 'digest/md5'
 
@@ -18,7 +18,6 @@ module ODDB
     YUS_SERVER = FlexMock.new 'yus_server'
   end
   class TestUnknownUser <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @user = UnknownUser.new
     end
@@ -39,7 +38,6 @@ module ODDB
     end
   end
   class TestYusStub <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @stub = YusStub.new 'test@mail.ch'
       @session = flexmock 'yus-session'
@@ -65,7 +63,6 @@ module ODDB
     end
   end
   class TestYusUser <Minitest::Test
-    include FlexMock::TestCase
     def setup
       @session = flexmock 'yus-session'
       @user = YusUser.new @session
@@ -246,7 +243,6 @@ module ODDB
     end
   end
   class TestUserObserver <Minitest::Test
-    include FlexMock::TestCase
     class Observer
       attr_reader :saved
       include UserObserver

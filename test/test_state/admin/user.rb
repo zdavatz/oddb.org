@@ -14,9 +14,9 @@ module ODDB
   end
 end
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'state/admin/user'
 require 'state/admin/logout'
 require 'state/drugs/fachinfo'
@@ -42,7 +42,6 @@ class StubUser < StubSuper
   end
 end
 class TestUser <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @session = flexmock('session')
     @model   = flexmock('model')

@@ -4,11 +4,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
 require 'stub/odba'
 require 'fileutils'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'plugin/epha_interactions'
 require 'model/text'
 require 'model/atcclass'
@@ -152,7 +152,6 @@ module ODDB
     end
 
   class TestEphaInteractionPlugin <MiniTest::Unit::TestCase
-    include FlexMock::TestCase
     
     def setup
       @app = StubApp.new

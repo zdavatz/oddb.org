@@ -5,16 +5,15 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'stub/cgi'
 require 'view/zsr'
 
 module ODDB
 	module View
 		class TestZsr <Minitest::Test
-			include FlexMock::TestCase
 			def test_zsr
 				@lnf     = flexmock('lookandfeel', 
 														:lookup     => 'lookup',

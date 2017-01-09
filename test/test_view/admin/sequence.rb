@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-gem 'minitest'
+
 require 'minitest/autorun'
-require 'flexmock'
+require 'flexmock/minitest'
 require 'view/additional_information'
 require 'view/admin/sequence'
 require 'htmlgrid/span'
@@ -15,7 +15,6 @@ require 'model/sequence'
 require 'view/admin/registration'
 
 class TestRootActiveAgents <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup)
@@ -82,7 +81,6 @@ class TestRootActiveAgents <Minitest::Test
 end
 
 class TestSequencePackage <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup)
@@ -138,7 +136,6 @@ class TestSequencePackage <Minitest::Test
 end
 
 class TestSequenceInnerComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -178,7 +175,6 @@ class TestSequenceInnerComposite <Minitest::Test
 end
 
 class TestSequenceForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -320,7 +316,6 @@ class TestSequenceForm <Minitest::Test
 end
 
 class TestSequenceComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -415,7 +410,6 @@ class TestSequenceComposite <Minitest::Test
 end
 
 class TestRootSequenceForm <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
@@ -487,7 +481,6 @@ class TestRootSequenceForm <Minitest::Test
 end
 
 class TestResellerSequenceComposite <Minitest::Test
-  include FlexMock::TestCase
   def setup
     @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
