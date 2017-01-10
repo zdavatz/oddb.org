@@ -183,26 +183,26 @@ describe "ch.oddb.org" do
   end
 
   it "should have a link to the migel" do
-    @browser.link(:text=>'MiGeL').when_present.click
+    @browser.link(:text=>'MiGeL').click
     @browser.link(:name => 'migel_alphabetical').wait_until_present
     expect(@browser.text).to match /Pflichtleistung/
     expect(@browser.text).to match /Mittel und Gegenst/ # Mittel und Gegenstände
   end unless ['just-medical'].index(Flavor)
 
   it "should find Aspirin" do
-    @browser.text_field(:name, "search_query").when_present.set("Aspirin")
+    @browser.text_field(:name, "search_query").set("Aspirin")
     @browser.button(:name, "search").click; small_delay
     expect(@browser.text).to match /Aspirin 500|ASS Cardio Actavis 100 mg|Aspirin Cardio 300/
   end
 
   it "should have a link to the extended search" do
-    @browser.link(:text => /erweitert/).when_present.click; small_delay
+    @browser.link(:text => /erweitert/).click; small_delay
     expect(@browser.url).to match /#{Flavor}\/fachinfo_search/
   end
   
   it "should find inderal" do
-    @browser.text_field(:name, "search_query").when_present.set("inderal")
-    @browser.button(:name, "search").when_present.click; sleep(1)
+    @browser.text_field(:name, "search_query").set("inderal")
+    @browser.button(:name, "search").click; sleep(1)
     expect(@browser.text).to match /Inderal 10 mg/
     expect(@browser.text).to match /Inderal 40 mg/
   end
@@ -236,12 +236,12 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the french language versions" do
-    @browser.link(:text=>/Français|French/i).when_present.click; small_delay
+    @browser.link(:text=>/Français|French/i).click; small_delay
     expect(@browser.text).to match /Comparez simplement et rapidement les prix des médicaments/
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the german language versions" do
-    @browser.link(:text=>/Deutsch|German/).when_present.click; small_delay
+    @browser.link(:text=>/Deutsch|German/).click; small_delay
     expect(@browser.text).to match /Vergleichen Sie einfach und schnell Medikamentenpreise./
   end unless ['just-medical'].index(Flavor)
 
@@ -337,10 +337,10 @@ describe "ch.oddb.org" do
   it "should be possible to request a new password" do
     @browser.link(:text=>'Abmelden').click if @browser.link(:text=>'Abmelden').exists?
     small_delay
-    @browser.link(:text=>'Anmeldung').when_present.click; small_delay
-    @browser.link(:name=>'password_lost').when_present.click
-    @browser.text_field(:name, 'email').when_present.set 'ngiger@ywesee.com'
-    @browser.button(:name, 'password_request').when_present.click; small_delay
+    @browser.link(:text=>'Anmeldung').click; small_delay
+    @browser.link(:name=>'password_lost').click
+    @browser.text_field(:name, 'email').set 'ngiger@ywesee.com'
+    @browser.button(:name, 'password_request').click; small_delay
     url = @browser.url
     text = @browser.text
     expect(url).not_to match /error/i
