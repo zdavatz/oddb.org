@@ -101,8 +101,10 @@ describe "ch.oddb.org" do
       expect(File.exist?(Oddb_log_file)).to eql true
       cmd = "tail -1 #{Oddb_log_file}"
       log_line =  `#{cmd}`.split
-      url_from_received_mail = /http:[^\s]+/.match(log_line.last).to_s
+      src =  log_line.find{|x| /http:[^\s]+/.match(x) }
+      url_from_received_mail = /http:[^\s"]+/.match(src)[0]
       puts "oddb_log_file #{Oddb_log_file} url_from_received_mail #{url_from_received_mail}"
+      expect(url_from_received_mail).not_to eq ''
 
       # As a normal user I must not be view the change
       expect(login(ViewerUser,  ViewerPassword)).to eq true

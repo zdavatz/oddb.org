@@ -93,14 +93,14 @@ describe "ch.oddb.org" do
   end
 
   def getTextFieldInAsafeWay(field_name)
-    elem = @browser.element(:id, field_name)
+    elem = @browser.textarea(:id, field_name)
     unless elem and elem.present?
       createScreenshot(@browser, "_no_#{field_name}_#{__LINE__}")
       binding.pry if BreakIntoPry
       sleep 10
       exit 3
     end
-    @browser.text_field(:id => field_name)
+    elem
   end
   def genComment(unique)
     "Kommentar #{@timestamp} #{unique}"

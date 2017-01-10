@@ -97,7 +97,7 @@ describe "ch.oddb.org" do
     expect(td.style('background-color')).to match /0, 0, 0, 0/
     @browser.element(:id => 'ikscat_1').hover
     res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
-    expect(res).to eq true
+    expect(res.class).to eq Watir::HTMLElement
     @browser.text_field(:text => /Medikamentennamen/).exists?
     res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
     @browser.buttons.first.click # Don't know how to close it else
@@ -269,8 +269,11 @@ describe "ch.oddb.org" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
     expect(@browser.link(:text => 'PI').exist?).to eq true
     @browser.link(:text => 'PI').click; small_delay
+    # As this opens a new window we must focus on it
+    @browser.windows.last.use if @browser.windows.size > 1
     expect(@browser.url).to match /patinfo/i
     expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
+    @browser.windows.last.close if @browser.windows.size > 1
   end
 
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do

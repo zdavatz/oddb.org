@@ -121,7 +121,7 @@ describe "ch.oddb.org" do
     expect(pubprice.exist?).to eq true
     expect(pubprice.text).to match /^\d+\.\d+/
     pubprice_link = @browser.link(:name => /compare/)
-    expect(pubprice_link.title).to eq 'Fachinformation'
+    expect(pubprice_link.title).to eq 'Preisvergleich'
   end
 
   it "should contain a link to the FI for the drug when in price comparison" do
