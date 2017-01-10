@@ -37,7 +37,7 @@ require 'fileutils'
 require 'page-object'
 require 'fileutils'
 require 'pp'
-require "watir-webdriver/wait"
+require 'watir'
 
 homeUrl ||= ENV['ODDB_URL']
 homeUrl ||= "http://oddb-ci2.dyndns.org"
@@ -52,7 +52,6 @@ if RUBY_PLATFORM.match(/mingw/)
 else
   browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
   browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
-  require 'watir-webdriver'
 end
 Browser2test = browsers2test
 RegExpTwoMedis = /\/,?\d{13}[,\/]\d{13}(\?|)$/
@@ -106,9 +105,11 @@ def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
   sleep 0.5
   sleep 0.5 unless @browser.link(:name =>'login_form').exists?
   return true unless  @browser.link(:text=>'Anmeldung').exists?
-  @browser.link(:text=>'Anmeldung').when_present.click
-  @browser.text_field(:name, 'email').when_present.set(user)
-  @browser.text_field(:name, 'pass').when_present.set(password)
+  if @browser.link(:text=>'Anmeldung').visible?
+    @browser.link(:text=>'Anmeldung').click
+    @browser.text_field(:name, 'email').set(user)
+    @browser.text_field(:name, 'pass').set(password)
+  end
   # puts "Login with #{@browser.text_field(:name, 'email').value} and #{@browser.text_field(:name, 'pass').value}"
   if remember_me
     @browser.checkbox(:name, "remember_me").set

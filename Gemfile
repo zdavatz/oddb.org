@@ -63,9 +63,7 @@ group :development, :test do
   gem 'flexmock' # ,'~> 1.3.0'
   gem 'hoe'
   gem 'hoe-travis'
-  gem 'turn'
-  gem 'minitest'
-  gem 'simplecov', '~> 0.7.1'
+  gem 'simplecov'
   gem 'travis-lint'
 end
 
@@ -74,6 +72,7 @@ gem 'diff-lcs'
 group :test do
   gem 'rspec'
   gem 'rspec-core'
+  gem 'minitest'
   gem 'minitest-should_syntax'
   gem 'watir'
   gem 'watir-webdriver'
