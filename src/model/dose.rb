@@ -124,7 +124,13 @@ module ODDB
 			rescue StandardError
 				if(@unit.nil?)
 					1
-				elsif(other.unit.nil?)
+        elsif other.is_a?(Integer)
+          if @unit.is_a?(Integer)
+            @unit <=> other.unit
+          else
+            -1
+          end
+        elsif(other.unit.nil?)
 					-1
 				else
 					@unit <=> other.unit

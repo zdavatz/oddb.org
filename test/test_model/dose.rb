@@ -181,4 +181,16 @@ class TestDose <Minitest::Test
     assert_equal 'cl', wanted.unit
     assert_in_delta(0.17, wanted.qty, 0.01)
   end
+  def test_sort
+    dose1 = ODDB::Dose.new('1000',  'mg')
+    dose2 = ODDB::Dose.new('1', 'mg')
+    doses = [dose1, dose2].sort
+    assert_equal(dose2, doses.first)
+  end
+  def test_sort_number
+    dose1 = ODDB::Dose.new(25, 'ml')
+    dose2 = 1
+    doses = [dose1, dose2].sort
+    assert_equal(dose1, doses.first)
+  end
 end
