@@ -27,6 +27,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * There are some Selenium/Watir based GUI integration tests. For details on how to use them have
   a look at tests_watir.textile
 
+* There is test/wrk_performance.lua allows a stress test with a typical load. See test/wrk_performance.lua for details on howto run it
+
 == LOCAL DOCUMENTATION:
 
 * To build your local documentation do:
