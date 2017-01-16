@@ -18,16 +18,6 @@ require 'odba'
 # NOTE
 # If all yaml are allowd, that these have unicode characters.
 # Then please use the following. see export_yaml method.
-require 'yaml'
-YAML::ENGINE.yamler = "syck"
-# ODBA objects need YAML syck engine
-# see
-#   * odba/persistable.rb
-#   * odba/stub.rb
-#require 'yaml'
-#require 'syck'
-#require 'syck/encoding'
-#YAML::ENGINE.yamler = "syck"
 
 module ODDB
 	module OdbaExporter

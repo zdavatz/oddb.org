@@ -3,10 +3,12 @@
 # ODDB::OddbYaml -- oddb.org -- 07.05.2013 -- yasaka@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbYaml -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
-
+require 'syck'
 require 'yaml'
-YAML::ENGINE.yamler = "syck"
-
+# ODBA objects need YAML syck engine
+# see
+#   * odba/persistable.rb
+#   * odba/stub.rb
 class Time
   def to_yaml_properties
     []
