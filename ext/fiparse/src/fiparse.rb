@@ -10,8 +10,6 @@ require 'odba'
 require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
-require 'fachinfo_pdf'
-require 'indications'
 require 'fachinfo_hpricot'
 require 'patinfo_hpricot'
 require 'ydocx/document'
@@ -126,7 +124,7 @@ module YDocx
   end
   class Document
     def init
-      @directory = 'fi' # in doc/resources
+      @directory = 'fachinfo' # in doc/resources
       @references = []
       #prepare_reference
     end
@@ -139,7 +137,7 @@ module YDocx
       @files
     end
     private
-    def optional_copy(source_path) # copy to resources/images/fi/:lang
+    def optional_copy(source_path) # copy to resources/images/fachinfo/:lang
       file = File.basename source_path
       image_path = File.join ODDB::PROJECT_ROOT, 'doc', 'resources', 'images', @directory
       image_file = File.join image_path, @options[:lang], file
@@ -173,6 +171,9 @@ module ODDB
     def FiParse.extract_indications(path)
       Indications.extract(path)
     end
+    def FiParse.extract_minifi(path)
+      MiniFi.extract(path)
+    end
     def parse_fachinfo_docx(path, iksnr, lang='de')
       doc = YDocx::Document.open(path, {
         :iksnr => iksnr,
@@ -194,12 +195,6 @@ module ODDB
       writer.lang   = lang
       writer.extract(Hpricot(src), :fi, title, styles)
     end
-		def parse_fachinfo_pdf(src)
-			writer = FachinfoPDFWriter.new
-			parser = Rpdf2txt::Parser.new(src, 'UTF-8')
-			parser.extract_text(writer)
-			writer.to_fachinfo
-		end unless defined?(Minitest)
 		def parse_patinfo_html(src, format=:documed, title='', styles = nil)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
@@ -215,7 +210,6 @@ module ODDB
     module_function :storage=
     module_function :parse_fachinfo_docx
     module_function :parse_fachinfo_html
-    module_function :parse_fachinfo_pdf  unless defined?(Minitest)
     module_function :parse_patinfo_html
 	end
 end
