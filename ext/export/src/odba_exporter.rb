@@ -6,7 +6,6 @@
 
 require 'fileutils'
 require 'tempfile'
-require 'archive/tarsimple'
 require 'zip'
 require 'models'
 require 'model/analysis/group'
