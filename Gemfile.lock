@@ -77,6 +77,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
+    minitar (0.5.4)
     minitest (5.10.1)
     minitest-should_syntax (1.0.2)
       minitest
@@ -231,6 +232,7 @@ DEPENDENCIES
   mail (= 2.2.7)
   mechanize (= 2.7.3)
   mime-types
+  minitar
   minitest
   minitest-should_syntax
   money (= 3.7.1)

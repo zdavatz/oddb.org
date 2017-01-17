@@ -11,6 +11,7 @@ require 'models'
 require 'model/analysis/group'
 require 'oddb_yaml'
 require 'csv_exporter'
+require 'archive/tar/minitar'
 require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
@@ -54,24 +55,20 @@ end
 		def OdbaExporter.compress_many(dir, name, files)
 			FileUtils.mkdir_p(dir)
 			Dir.chdir(dir)
-			tmp_name = name + '.tmp'
-			tar_name = tmp_name + '.tar'
-			gz_name = tar_name + '.gz'
+			gz_name = name + '.tar.gz'
 			File.delete(gz_name) if(File.exist?(gz_name))
-			tar_archive = Archive::Tar.new(tar_name)
-			tar_archive.create_archive(files.join(" "))
-			tar_archive.compress_archive
-			FileUtils.mv(gz_name, name + '.tar.gz')
+      tgz = Zlib::GzipWriter.new(File.open(gz_name, 'wb'))
+      # Warning: tgz will be closed!
+      Archive::Tar::Minitar.pack(files, tgz)
 
-			zip_name = tmp_name + '.zip'
+			zip_name = name + '.zip'
 			File.delete(zip_name) if(File.exist?(zip_name))
 			Zip::OutputStream.open(zip_name) { |zos|
 				files.each { |fname|
-					zos.put_next_entry(fname)
+					zos.put_next_entry(File.basename(fname))
 					zos.puts File.read(fname)
 				}
 			}
-			FileUtils.mv(zip_name, name + '.zip')
 			name
 		end
 		def OdbaExporter.export_competition_xls(comp_id, dir, name, db_path=nil)

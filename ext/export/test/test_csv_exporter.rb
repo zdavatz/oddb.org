@@ -9,7 +9,7 @@ $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
 
 require 'minitest/autorun'
-require 'csv_exporter'
+require 'odba_exporter'
 require 'model/analysis/group'
 require 'model/doctor'
 require 'stub/odba'
@@ -99,6 +99,50 @@ module ODDB
 				CsvExporter.dump(CsvExporter::ANALYSIS, @pos, fh)
 				assert_equal(expected, IO.read(fh))
 			end
+      def test_compress_many_with_one_file
+        expected = <<-CSV
+8600;00;9300.00;Test de;Teste fr;Fussnote;FRussnote;Taxen;Taxes;Limit;LimitFR;Titel;Titre;C,I;30;n;{teiliste}:{spital},{list1}:{blabla};{list1}:{blabla}
+        CSV
+        fh = Tempfile.new('foo')
+        CsvExporter.dump(CsvExporter::ANALYSIS, @pos, fh)
+        assert_equal(expected, IO.read(fh))
+        export_dir = File.join(File.dirname(fh.path), 'export')
+        out_name = 'test_tar'
+        FileUtils.rm_rf(export_dir) if File.exist?(export_dir)
+        OdbaExporter.compress_many(export_dir, out_name, [fh.path])
+        assert_equal(true, File.exist?(export_dir))
+        assert(File.exist?(out_name + '.zip'))
+        assert(File.exist?(out_name + '.tar.gz'))
+        assert(File.size(out_name + '.zip') > 100)
+        assert(File.size(out_name + '.tar.gz') > 100)
+        system("rm -rf #{export_dir}") # FileUtils.rm_f(export_dir) did not work
+        assert_equal(false, File.exist?(export_dir))
+      end
+
+      def test_compress_many_with_several_files
+        expected1 = 'Some dumy content for my first file, which should be at least 100 chars long'
+        expected2 = 'Some dumy content for my second file, which should be at least 100 chars long'
+        fh1 = Tempfile.new('file_1')
+        File.open(fh1.path, 'w+') {|f| f.write expected1}
+        assert_equal(expected1, IO.read(fh1))
+        fh2 = Tempfile.new('file_2')
+        File.open(fh2.path, 'w+') {|f| f.write expected2}
+        assert_equal(expected2, IO.read(fh2))
+
+        export_dir = File.join(File.dirname(fh1.path), 'export')
+        out_name = 'test_tar'
+        FileUtils.rm_rf(export_dir) if File.exist?(export_dir)
+        OdbaExporter.compress_many(export_dir, out_name, [fh1.path, fh2.path])
+        assert_equal(true, File.exist?(export_dir))
+        assert(File.exist?(out_name + '.zip'))
+        assert(File.exist?(out_name + '.tar.gz'))
+        assert(File.size(out_name + '.zip') > 100)
+        assert(File.size(out_name + '.tar.gz') > 100)
+        # TODO: Check content of zip and tar file
+
+        system("rm -rf #{export_dir}") # FileUtils.rm_f(export_dir) did not work
+        assert_equal(false, File.exist?(export_dir))
+      end
 		end
 	end
 end
