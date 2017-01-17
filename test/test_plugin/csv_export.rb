@@ -60,7 +60,6 @@ module ODDB
         @file_path = 'file_path'
         @options   = {}
         @options[:compression] = 'compsression'
-        @options[:iconv] = 'iconv'
       end
       expected = {:change_flags => {}, :report => "", :recipients => [], :files => {"file_path.compsression" => "application/compsression"}}
       assert_equal(expected, @plugin.log_info)

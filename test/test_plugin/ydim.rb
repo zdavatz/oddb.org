@@ -9,7 +9,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'plugin/ydim'
-require 'iconv'
 require 'tempfile'
 require 'model/hospital'
 require 'model/company'
@@ -80,16 +79,6 @@ class TestDebitorFacade <Minitest::Test
       eval "#{constant} = keep"
     end
   end
-=begin
-  def test_missing_method__iconv_error
-    icon = flexmock('iconv') do |i|
-      i.should_receive(:iconv).and_raise(Iconv::IllegalSequence)
-    end
-    replace_constant('ODDB::YdimPlugin::ICONV', icon) do 
-      assert_equal('', @facade.hogehoge)
-    end
-  end
-=end
 end
 
 module ODDB
