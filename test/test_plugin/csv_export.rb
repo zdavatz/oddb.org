@@ -62,7 +62,7 @@ module ODDB
         @options[:compression] = 'compsression'
         @options[:iconv] = 'iconv'
       end
-      expected = {:report => "", :files => {"file_path.compsression" => ["application/compsression", "iconv"]}, :recipients => [], :change_flags => {}}
+      expected = {:change_flags => {}, :report => "", :recipients => [], :files => {"file_path.compsression" => "application/compsression"}}
       assert_equal(expected, @plugin.log_info)
     end
     def test_export_price_history

@@ -129,9 +129,7 @@ module ODDB
             log.date_str = today.strftime("%d.%m.%Y")
             log.report = report
             path = File.join(EXPORT_DIR, "#{file}.zip")
-            log.files = {
-              path => ['application/zip']
-            }
+            log.files = { path => ['application/zip'] }
             log.notify(title)
           end
         end
@@ -291,9 +289,7 @@ module ODDB
           file = today.strftime("teilbarkeit.%Y-%m-%d.csv")
           dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
           path = File.join(dir, file)
-          log.files = {
-            path => ['text/csv', 'UTF-8']
-          }
+          log.files = { path => ['text/csv'] }
           log.notify('Teilbarkeit Export')
         end
       end
@@ -310,9 +306,7 @@ module ODDB
           file = today.strftime("flickr_ean_export.%Y-%m-%d.csv")
           dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
           path = File.join(dir, file)
-          log.files = {
-            path => ['text/csv', 'UTF-8']
-          }
+          log.files = { path => ['text/csv'] }
           log.notify('Flickr Ean Export')
         end
       end

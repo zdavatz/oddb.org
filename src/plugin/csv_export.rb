@@ -25,7 +25,7 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
-      @options = { :iconv => 'UTF-8', :compression => 'zip'}
+      @options = {:compression => 'zip'}
       recipients.concat self.class::ODDB_RECIPIENTS
       _export_drugs 'oddb', [ :rectype, :iksnr, :ikscd, :ikskey, :barcode,
         :bsv_dossier, :pharmacode, :name_base, :galenic_form,
@@ -57,10 +57,7 @@ module ODDB
       name = "#{export_name}.csv"
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
-      encoding = if enc = @options.delete(:iconv) and enc = enc.split('/')
-                   enc.first
-                 end
-      exporter.to_csv_file(keys, path, :packages, encoding)
+      exporter.to_csv_file(keys, path, :packages)
       @counts = exporter.counts
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = @app.log_group(:bsv_sl).newest_date.strftime("#{export_name}.%Y-%m-%d.csv")
@@ -125,11 +122,10 @@ module ODDB
       @session.lookandfeel = LookandfeelBase.new(@session)
       @file_path = path = File.join(EXPORT_DIR, file)
       exporter = View::Drugs::CsvResult.new(@model, @session)
-      encoding = 'UTF-8'
       keys = [ # th
         :barcode, :pharmacode, :name_base,
       ]
-      exporter.to_csv_file(keys, path, :fachinfos, encoding, :fachinfo_chapter)
+      exporter.to_csv_file(keys, path, :fachinfos, :fachinfo_chapter)
       @total = exporter.total
       @target_packages = packages.length
       @notes  = {
@@ -221,8 +217,7 @@ module ODDB
       name = "#{export_name}.csv"
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
-      encoding = 'UTF-8'
-      exporter.to_csv_file(keys, path, :packages, encoding, :division)
+      exporter.to_csv_file(keys, path, :packages, :division)
       @total = exporter.total
       @counts = exporter.divisions
       EXPORT_SERVER.compress(EXPORT_DIR, name)
@@ -252,8 +247,7 @@ module ODDB
       name = "#{export_name}.csv"
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
-      encoding = 'UTF-8'
-      exporter.to_csv_file(keys, path, :packages, encoding, :flickr_photo)
+      exporter.to_csv_file(keys, path, :packages, :flickr_photo)
       @total = exporter.total
       @counts = exporter.flickr_photos
       EXPORT_SERVER.compress(EXPORT_DIR, name)
@@ -278,9 +272,6 @@ module ODDB
         if comp = @options[:compression]
           path = @file_path + "." << comp
           type = "application/#{comp}"
-        end
-        if iconv = @options[:iconv]
-          type = [ type, iconv ]
         end
         hash.store(:files, { path => type })
         hash.store(:recipients, recipients)

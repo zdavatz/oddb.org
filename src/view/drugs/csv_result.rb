@@ -380,7 +380,7 @@ class CsvResult < HtmlGrid::Component
     end
     header
   end
-  def to_csv(keys, symbol=:active_packages, encoding='utf-8', target=:atc_class)
+  def to_csv(keys, symbol=:active_packages, target=:atc_class)
     result = []
     eans   = {}
     index  = 0
@@ -484,17 +484,13 @@ class CsvResult < HtmlGrid::Component
       puts "unexpected target #{target}"
     end
     res =result.compact.collect { |line|
-      if encoding
-        CSV.generate_line(line, {:col_sep => ';'}).encode(encoding, :invalid => :replace, :undef => :replace, :replace => '')
-      else
-        CSV.generate_line(line, {:col_sep => ';'})
-      end
+      CSV.generate_line(line, {:col_sep => ';'}).encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
     }
     res.join('')
   end
-	def to_csv_file(keys, path, symbol=:active_packages, encoding='utf-8', target=:atc_class)
+	def to_csv_file(keys, path, symbol=:active_packages, target=:atc_class)
 		File.open(path, 'w') do |fh|
-      fh.puts to_csv(keys, symbol, encoding, target)
+      fh.puts to_csv(keys, symbol, target)
     end
 	end
   def vaccine(pack)

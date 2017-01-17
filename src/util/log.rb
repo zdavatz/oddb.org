@@ -34,12 +34,9 @@ module ODDB
 			].compact.join(' - ')
       LogFile.append('oddb/debug', "log notify #{subject}: start outgoing process #{@recipients.inspect}. Must attach #{@files.size} files and #{@parts.size} parts. ", Time.now)
       attachments = []
-      @files.each { |path, (mime, iconv)|
+      @files.each { |path, (mime)|
         begin
           content = File.read(path)
-          if iconv
-            content = Iconv.new(iconv, 'UTF-8').iconv content
-          end
           attachments << { :filename => File.basename(path), :mime_type => mime, :content => content }
         rescue Errno::ENOENT => e
           LogFile.append('oddb/debug', " " + e.inspect.to_s + "\n" + e.backtrace.inspect.to_s, Time.now)

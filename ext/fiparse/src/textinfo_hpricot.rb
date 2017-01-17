@@ -388,7 +388,7 @@ class TextinfoHpricot
     found
   end
   def target_encoding(text)
-    Iconv.iconv(ENCODING + "//TRANSLIT//IGNORE", 'utf8', text).first
+    text.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "?")
   rescue
     text
   end

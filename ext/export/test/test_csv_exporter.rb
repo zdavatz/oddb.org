@@ -20,7 +20,11 @@ require 'tempfile'
 module ODDB
 	module OdbaExporter
 		class TestCsvExporter <Minitest::Test
+      def teardown
+        Dir.chdir(@saved_dir)
+      end
 			def setup
+        @saved_dir = Dir.pwd
         dbi = flexmock('dbi', :dbi_args => ['dbi_args'])
         flexmock(ODBA.storage, 
                  :dbi => dbi,
@@ -79,7 +83,8 @@ module ODDB
 				CSV
 				fh = Tempfile.new('foo')
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
-        assert_equal(expected, IO.read(fh))
+       assert_equal('UTF-8', IO.read(fh).encoding.to_s)
+       assert_equal(expected, IO.read(fh))
 			end
 			def test_dump_2
 				@addr.type = 'at_praxis'
@@ -139,7 +144,6 @@ module ODDB
         assert(File.size(out_name + '.zip') > 100)
         assert(File.size(out_name + '.tar.gz') > 100)
         # TODO: Check content of zip and tar file
-
         system("rm -rf #{export_dir}") # FileUtils.rm_f(export_dir) did not work
         assert_equal(false, File.exist?(export_dir))
       end
