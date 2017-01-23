@@ -43,7 +43,7 @@ require 'remote/migel/model'
 class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
-  RESULT_SIZE_LIMIT = 250
+  RESULT_SIZE_LIMIT = 500
 	ODBA_EXCLUDE_VARS = [
 		"@atc_chooser", "@bean_counter", "@sorted_fachinfos", "@sorted_feedbacks",
     "@sorted_minifis",
