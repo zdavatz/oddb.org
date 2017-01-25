@@ -1525,7 +1525,7 @@ module ODDB
 		EXPORT_HOUR = 2
 		UPDATE_HOUR = 9
     MEMORY_LIMIT = 7*1024 # 7 GB # 5 are normally enough, but running unit tests needs between 6 and 7 GB
-    MEMORY_LIMIT_CRAWLER = 2048  # ruby 1.9.3 worked with 1450 # 1,4 GB. Ruby 2.4.0 show (via htop) useages between 1200 and 1700 MB
+    MEMORY_LIMIT_CRAWLER = 2600  # ruby 1.9.3 worked with 1450 # 1,4 GB. Ruby 2.4.0 show (via htop) useages between 1200 and 1700 MB
 		RUN_CLEANER = true
 		RUN_UPDATER = false
 		SESSION = Session
@@ -2021,10 +2021,10 @@ module ODDB
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
             if mbytes > MEMORY_LIMIT
-              puts "Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
+              puts "#{Time.now}: Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
               Thread.main.raise SystemExit
             elsif /crawler/i.match(status) and mbytes > MEMORY_LIMIT_CRAWLER
-              puts "Footprint exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
+              puts "#{Time.now}: Footprint of #{mbytes}MB exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
               Thread.main.raise SystemExit
             end
             lastsessions = sessions
