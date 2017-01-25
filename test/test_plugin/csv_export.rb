@@ -7,6 +7,7 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
+require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'drb/drb'
@@ -15,7 +16,7 @@ require 'plugin/csv_export'
 require 'test_plugin/plugin'
 require 'view/drugs/csv_result'
 require 'util/log'
-
+require 'model/galenicgroup'
 test_data_dir = File.expand_path('../../data/csv', __FILE__)
 ODDB::CsvExportPlugin.class_eval { remove_const(:EXPORT_DIR) }
 ODDB::CsvExportPlugin.class_eval { EXPORT_DIR = test_data_dir }
@@ -672,6 +673,58 @@ module ODDB
     end
     def test_export_flirkr_photo
       skip('test_export_fachinfo_chapter__no_match pending')
+    end
+    def test_export_ddd
+     flexmock(FileUtils,
+               :mkdir_p => nil,
+               :cp      => 'cp'
+              )
+      log_group = flexmock('log_group', :newest_date => Time.local(2011,2,3))
+      @package = ODDB::Package.new('02')
+      @pharmacode = 123456
+      @package.pharmacode= @pharmacode
+      assert_equal(@pharmacode.to_s, @package.pharmacode.to_s)
+      ddd = ODDB::AtcClass::DDD.new('O')
+      ddd.dose = ODDB::Dose.new(95 , 'mg')
+      atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'C01DA02'
+      gal_group =  ODDB::GalenicGroup.new
+      gal_group.add(ODDB::GalenicForm.new)
+      gal_group.route_of_administration = 'O'
+      gal_group.galenic_forms.values.first.descriptions['de'] = 'Tabletten'
+      seq = flexmock ODDB::Sequence.new('01'), :atc_class => atc,
+                    :galenic_group => gal_group,
+                    :galenic_forms => [gal_group.galenic_forms.values.first],
+                    :dose => ODDB::Dose.new(125, 'mg'),
+                    :name => 'seqname',
+                    :longevity => nil
+      @package.price_public = ODDB::Util::Money.new(103.4, 'CHF')
+      @package.sequence = seq
+      assert_equal(1, atc.ddds.size)
+      assert_equal('O', atc.ddds.values.first.administration_route)
+      part = ODDB::Part.new
+      part.count = 3
+      part.multi = 1
+      part.addition = 0
+      part.measure = ODDB::Dose.new(125, 'mg')
+      @package.parts.push part
+      flexmock(@app,
+               :atc_classes => {'key' => atc},
+               :log_group   => log_group,
+               :active_packages => [@package]
+              )
+      export_server = flexmock('export_server', :compress => 'compress')
+
+      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
+        result =  @plugin.export_ddd_csv # no exception should be raised here
+        assert_equal(true, File.exist?(result))
+        lines = IO.readlines(result)
+        assert_equal(2, lines.size)
+        # We did not setup a IKSNR
+        assert_equal('iksnr;package;pharmacode;description;atc_code;available_roas;ddd_roa;ddd_dose;package_roa;package_dose;galenic_forms;price_public;ddd_price',
+                     lines.first.chomp)
+        assert_equal(';002;123456;seqname;C01DA02;O;O;95 mg;125 mg;O;Tabletten;103.40;0.0', lines.last.chomp)
+      end
+
     end
   end
 end 

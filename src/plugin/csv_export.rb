@@ -6,6 +6,8 @@
 
 require 'plugin/plugin'
 require 'oddb2tdat'
+require 'model/package'
+require 'model/atcclass'
 
 module ODDB
 	class CsvExportPlugin < Plugin
@@ -150,21 +152,40 @@ module ODDB
 
     def export_ddd_csv
       @options = { }
-      recipients.concat self.class::ODDB_RECIPIENTS
-      files = []
+      recipients.concat ['log']
       @file_path = File.join EXPORT_DIR, 'ddd.csv'
       CSV.open(@file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
-        csv << [:iksnr, :package, :pharmacode, :atc_code, :description, :price_public, :ddd_price]
+        csv << [:iksnr,
+                :package,
+                :pharmacode,
+                :description,
+                :atc_code,
+                :available_roas,
+                :ddd_roa,
+                :ddd_dose,
+                :package_roa,
+                :package_dose,
+                :galenic_forms,
+                :price_public,
+                :ddd_price]
         @app.active_packages.sort{|x,y| [x.iksnr.to_i, x.ikscd.to_i] <=> [y.iksnr.to_i, y.ikscd.to_i]}.each do |package|
+          next unless package.price_public # Skip drugs not in SL list
           csv << [package.iksnr,
                   package.ikscd,
                   package.pharmacode,
-                  package.atc_class ? package.atc_class.code : '',
                   package.name,
-                  package.price_public,
+                  package.atc_class ? package.atc_class.code : nil,
+                  package.atc_class.ddds.keys.join(','), # available_roas
+                  package.ddd ? package.ddd.administration_route : nil,
+                  package.ddd ? package.ddd.dose.to_s : nil,
+                  package.dose ? package.dose.to_s : nil,
+                  package.galenic_group ? package.galenic_group.route_of_administration : nil,
+                  package.galenic_forms.collect{|x| x.to_s}.join(','),
+                  package.price_public ? package.price_public.to_s : nil,
                   package.ddd_price,
                   ]
         end
+        @file_path
       end
     end
     def export_index_therapeuticus
