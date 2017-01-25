@@ -719,10 +719,10 @@ module ODDB
         assert_equal(true, File.exist?(result))
         lines = IO.readlines(result)
         assert_equal(2, lines.size)
-        # We did not setup a IKSNR
+        # We did not setup a IKSNR and we do not have ddd_price
         assert_equal('iksnr;package;pharmacode;description;atc_code;available_roas;ddd_roa;ddd_dose;package_roa;package_dose;galenic_forms;price_public;ddd_price',
                      lines.first.chomp)
-        assert_equal(';002;123456;seqname;C01DA02;O;O;95 mg;125 mg;O;Tabletten;103.40;0.0', lines.last.chomp)
+        assert_equal(';002;123456;seqname;C01DA02;O;O;95 mg;125 mg;O;Tabletten;103.40;', lines.last.chomp)
       end
 
     end

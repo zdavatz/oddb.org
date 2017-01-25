@@ -12,8 +12,8 @@ require 'stub/odba'
 
 require 'minitest/autorun'
 require 'model/package'
+require 'model/atcclass'
 require 'flexmock/minitest'
-
 module ODDB
   class PackageCommon
     check_accessor_list = {
@@ -93,6 +93,7 @@ class TestPackage <Minitest::Test
     @package = ODDB::Package.new('12')
     @package.sequence = StubPackageSequence.new
   end
+  if true
   def test_initialize
     assert_equal('012', @package.ikscd)
     refute_nil(@package.oid)
@@ -322,7 +323,9 @@ class TestPackage <Minitest::Test
     ddd = flexmock :dose => ODDB::Dose.new(20, 'mg')
     atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }
     seq = flexmock :atc_class => atc, :galenic_group => group,
-                   :dose => ODDB::Dose.new(10, 'mg'), :longevity => nil
+                   :dose => ODDB::Dose.new(10, 'mg'),
+                   :compositions => [],
+                   :longevity => nil
     @package.price_public = ODDB::Util::Money.new(10, 'CHF')
     @package.sequence = seq
     part = flexmock :comparable_size => ODDB::Dose.new(10, 'Tabletten')
@@ -335,12 +338,35 @@ class TestPackage <Minitest::Test
     ddd = flexmock :dose => ODDB::Dose.new(20, 'mg')
     atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }
     seq = flexmock :atc_class => atc, :galenic_group => group,
-                   :dose => ODDB::Dose.new(20, 'mg'), :longevity => 2
+                   :dose => ODDB::Dose.new(20, 'mg'),
+                   :compositions => [],
+                   :longevity => 2
     @package.price_public = ODDB::Util::Money.new(10, 'CHF')
     @package.sequence = seq
     part = flexmock :comparable_size => ODDB::Dose.new(10, 'Tabletten')
     @package.parts.push part
     assert_equal ODDB::Util::Money.new(1, 'CHF'), @package.ddd_price
+  end
+  def test_ddd_dafalgan_kinder
+    # Tageskosten für Dafalgan Kinder
+    # Tagesdosis  3 g Publikumspreis  1.40 CHF
+    # Stärke  250 mg  Packungsgrösse  12 Sachet(s)
+    # Berechnung  ( 3 g / 250 mg ) x ( 1.40 / 12 Sachet(s) ) = 1.40 CHF / Tag
+    group = flexmock 'galenic_group'
+    group.should_receive(:match).and_return(true)
+    ddd = flexmock :dose => ODDB::Dose.new(3, 'g')
+    atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }
+    seq = flexmock :atc_class => atc, :galenic_group => group,
+                   :dose => ODDB::Dose.new(250, 'mg'),
+                   :compositions => [],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(1.40, 'CHF')
+    @package.sequence = seq
+    part = flexmock :comparable_size => ODDB::Dose.new(12, 'Sachet(s)')
+    @package.parts.push part
+    price = @package.ddd_price
+    # require 'pry'; binding.pry
+    assert_equal ODDB::Util::Money.new(1.40, 'CHF').to_s, @package.ddd_price.to_s
   end
   def test_delete_part
     part = flexmock(:oid => 4)
@@ -600,4 +626,325 @@ class TestPackage <Minitest::Test
                         flexmock(:active_agents => [act3])
     assert_equal %w{sub1 sub2 sub3}, @package.substances
   end
+  def test_ddd_Disflatyl_iksnr_52051
+    @package = ODDB::Package.new('12')
+    @package.sequence = StubPackageSequence.new
+    ddd = ODDB::AtcClass::DDD.new('O')
+    ddd.dose = ODDB::Dose.new(0.5 , 'g')
+    atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'A03AX13'
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Tropfen',
+                   :dose => ODDB::Dose.new(40, 'mg / ml'),
+                   :compositions => [],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(6.45, 'CHF')
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new('30','ml')
+    @package.parts.push part
+    assert_equal('ml', @package.parts.first.measure.unit)
+    assert_equal(30, @package.parts.first.measure.qty)
+    assert_equal('30 ml', @package.parts.first.size)
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(2.69, 'CHF').to_s, @package.ddd_price.to_s
+  end
+  def test_ddd_Emend_iksnr_56359
+    @package = ODDB::Package.new('02')
+    ddd = ODDB::AtcClass::DDD.new('O')
+    ddd.dose = ODDB::Dose.new(95 , 'mg')
+    atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'C01DA02'
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Tabletten',
+                   :dose => ODDB::Dose.new(125, 'mg'),
+                   :compositions => [],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(103.4, 'CHF')
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 3
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(125, 'mg')
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(34.47, 'CHF').to_s, price.to_s
+  end
+  def test_ddd_Ursofalk_iksnr_54634
+    # 54634;021;2117031;Ursofalk, suspension;A05AA02;O;O;0.75 g;250 mg;;suspension;59.15;
+    # acidum ursodeoxycholicum 250 mg, natrii cyclamas, aromatica, conserv.: E 210, excipiens ad suspensionem pro 5 ml.
+    @package = ODDB::Package.new('021')
+    ddd = ODDB::AtcClass::DDD.new('O')
+    ddd.dose = ODDB::Dose.new(0.75 , 'g')
+    atc = flexmock 'atc', :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'A05AA02'
+    excipiens = flexmock 'excipiens', :description => "Excipiens ad Suspensionem pro 5 Ml"
+    composition = flexmock 'composition', :excipiens => excipiens
+    seq = flexmock 'sequence', :atc_class => atc,
+                   :galenic_group => 'suspension',
+                   :dose => ODDB::Dose.new(250, 'mg'),
+                   :compositions => [ composition ],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(59.15, 'CHF')
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(250, 'ml')
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(3.55, 'CHF').to_s, price.to_s
+
+  end
+  def test_ddd_Pradaxa_iksnr_61385
+    @package = ODDB::Package.new('007')
+    ddd = ODDB::AtcClass::DDD.new('O')
+    ddd.dose = ODDB::Dose.new(0.22 , 'g') # Wallimann used 0.22 WHO updated it to 0.3 on 2016-12-19.
+    excipiens = flexmock 'excipiens', :description => "Excipiens pro Capsula"
+    composition = flexmock 'composition', :excipiens => excipiens
+    atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'B01AE07'
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Kapseln',
+                   :dose => ODDB::Dose.new(110, 'mg'),
+                   :compositions => [composition],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(112.50, 'CHF')
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 60
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(3.75, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    # ( 0.22 g / 110 mg ) x ( 112.50 / 60 Kapsel(n) ) = 5.11 CHF / Tag
+    # dabigatranum etexilatum 110 mg ut dabigatranum etexilati mesilas, color.: E 132, E 110, excipiens pro capsula.
+    # Still incorrect price      14.39       17.15 old_price     157.68  for 1851160 Colophos, Lösung
+    #   new_info 61385;007;5304489;Pradaxa 110 mg, Kapseln;B01AE07;O;O;0.22 g;110 mg;roa_O;Kapseln;112.50;3.75
+  end
+  def test_ddd_Nitroglycerin_iksnr_36830
+    @package = ODDB::Package.new('018')
+    ddd = ODDB::AtcClass::DDD.new('O')
+    ddd.dose = ODDB::Dose.new(5 , 'mg')
+    # PI says  Kapseln aufbeissen und zerkauen, Inhalt mit Speichel vermischt im Munde behalten. Leere Kapsel nach Eintritt der Wirkung (wenige Sekunden) ausspucken.
+    # I think this should qualify for sub lingual
+    atc = flexmock :has_ddd? => true, :ddds => { 'O' => ddd }, :code => 'C01DA02'
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Kaugummi',
+                   :dose => ODDB::Dose.new(0.8, 'mg'),
+                   :compositions => [],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(7.4, 'CHF')
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 30
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(0.77, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    #   new_info 36830;018;823902;Nitroglycerin Streuli, Kaukapseln;C01DA02;O,SL,TD,oral aerosol;O;5 mg;0.8 mg;;Kautabletten;7.40;1.54
+    # Still incorrect price       1.54        0.77 old_price       1.54  for  823902 Nitroglycerin Streuli, Kaukapseln
+    # WHO   5   mg  O
+    #     2.5   mg  oral aerosol
+    #     2.5   mg  SL
+    #       5   mg  TD
+  end
+  def test_ddd_Estradot_iksnr_55976
+    @package = ODDB::Package.new('017')
+    ddd_o = ODDB::AtcClass::DDD.new('O')
+    ddd_o.dose = ODDB::Dose.new(3 , 'mg')
+    ddd_td_gel = ODDB::AtcClass::DDD.new('TDgel')
+    ddd_td_gel.dose = ODDB::Dose.new(1 , 'mg')
+    ddd_td_patch = ODDB::AtcClass::DDD.new('TDpatch refer to amount delivered per 24 hours')
+    ddd_td_patch.dose = ODDB::Dose.new(50 , 'mcg')
+    atc = flexmock  :has_ddd? => true,
+                    :ddds => {
+                      'O' => ddd_o,
+                      'TDgel' => ddd_td_gel,
+                      'TDpatch refer to amount delivered per 24 hours' => ddd_td_patch,
+                    },
+                    :code => 'G03CA03'
+    excipiens = flexmock 'excipiens', :description => "Excipiens ad Praeparationem pro 2.5 Cm², cum Liberatione 25 µg/24 H"
+    composition = flexmock 'composition', :excipiens => excipiens
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Pflaster/Transdermale Systeme', #galenic_forms.first = 'Transdermales Pflaster'
+                   :dose => ODDB::Dose.new(390, "µg"),
+                   :compositions => [composition],
+                   :longevity => nil
+    @package.price_public = ODDB::Util::Money.new(18.65, 'CHF')
+    @package.sequence = seq
+    assert_equal(3, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 8
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    #    new_info 55976;017;2635412;Estradot 25, Transdermales Pflaster;G03CA03;N,O,P,R,V,TD,TDgel,Pdepot long duration,Pdepot short duration,TDpatch refer to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours *;O;2 mg;390 µg;roa_TD;Transdermales Pflaster;18.65;11.96
+    #Still incorrect price      11.96        1.33 old_price      11.96  for 2635412 Estradot 25, Transdermales Pflaster
+    # WHO for G03CA03   estradiol   0.3   mg  N
+    # 2     mg  O
+    # 1     mg  P   depot short duration
+    # 0.3   mg  P   depot long duration
+    # 5     mg  R
+    # 50    mcg   TD  patch refer to amount delivered per 24 hours
+    # 1     mg  TD  gel
+    # 25    mcg   V
+    # 7.5   mcg   V   vaginal ring refers to amount delivered per 24 hours
+    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    # Test again with a different rate
+    excipiens = flexmock 'excipiens', :description => "Excipiens ad Praeparationem pro 2.5 Cm², cum Liberatione 0.005 mg/h"
+    composition = flexmock 'composition', :excipiens => excipiens
+    seq2 = flexmock :atc_class => atc,
+                   :galenic_group => 'Pflaster/Transdermale Systeme', #galenic_forms.first = 'Transdermales Pflaster'
+                   :dose => ODDB::Dose.new(390, "µg"),
+                   :compositions => [composition],
+                   :longevity => nil
+    @package.sequence = seq2
+    price = @package.ddd_price
+    # We just wanted to receive a different price. No real example!
+    assert_equal ODDB::Util::Money.new(5.60, 'CHF').to_s, price.to_s
+  end
+  def test_cum_liberation
+    allowed_failures = [
+      # belong to 54704 Estalis which has no WHO DDD therefore no more work is needed.
+          'Excipiens Ad Praeparationem pro 16 Cm² Cum Liberatione 50 µg Et 170 µg/24 H',
+          'Excipiens Ad Praeparationem pro 16 Cm² Cum Liberatione 50 µg Et 250 µg/24 H',
+          'Excipiens Ad Praeparationem pro 20 Cm² Cum Liberatione 150 µg Et 20 µg/24 H',
+          'Excipiens Ad Praeparationem pro 9 Cm² Cum Liberatione 50 µg Et 140 µg/24 H',
+      ]
+    test_cases = [
+          'Excipiens Ad Praeparationem pro 10.5 Cm² Cum Liberatione 25 µg/h',
+          'Excipiens Ad Praeparationem pro 10 Cm² Cum Liberatione 100 µg/24 H',
+          'Excipiens Ad Praeparationem pro 10 Cm², Cum Liberatione 2 Mg/24h',
+          'Excipiens Ad Praeparationem pro 10 Cm² Cum Liberatione 9.5 Mg/24h',
+          'Excipiens Ad Praeparationem pro 21 Cm² Cum Liberatione 50 µg/h',
+          'Excipiens Ad Praeparationem pro 22.50 Cm² Cum Liberatione 25 Mg/16h',
+          'Excipiens Ad Praeparationem pro 39 Cm² Cum Liberatione 3.9mg/24h',
+          'Excipiens pro Praeparatione Cum Liberatione 20 µg/24 H',
+          'Excipiens pro Praeparatione, Cum Liberatione 20 µg/24 H',
+    ]
+    test_cases.each do |excipiens|
+       m = ODDB::Package::CUM_LIBERATION_REGEXP.match(excipiens.downcase)
+       assert(m[1])
+       value = Unit.new(m[1])
+       # binding.pry if /mg\/24h/.match excipiens
+       # puts "#{value} #{m[1]} aus #{excipiens}"
+       assert(value.compatible?(Unit.new('1g/24h')))
+    end
+    allowed_failures.each do |excipiens|
+       m = ODDB::Package::CUM_LIBERATION_REGEXP.match(excipiens.downcase)
+       assert_nil(m)
+    end
+  end
+  def test_ad_granulatum
+    allowed_failures = [ # the have no unit
+        'Ad Granulatum',
+        'Excipiens Ad Granulatum',
+        'Excipiens Ad Granulatum, pro Charta',
+        'Excipiens Ad Granulatum pro Vitro',
+      ]
+    test_cases = [
+        'Excipiens Ad Granulatum Corresp. Solutio Reconstituta 5 Ml',
+        'Excipiens Ad Granulatum Corresp. Suspensio Reconstituta 0.5 Ml',
+        'Excipiens Ad Granulatum Corresp. Suspensio Reconstituta 5 Ml',
+        'Excipiens Ad Granulatum Corresp., Suspensio Reconstituta 60 Ml',
+        'Excipiens Ad Granulatum pro 0.5 G',
+        'Excipiens Ad Granulatum pro 10 G',
+        'Excipiens Ad Granulatum pro 1 G',
+        'Excipiens Ad Granulatum pro 240 Mg',
+        'Excipiens Ad Granulatum pro 3 G',
+        'Excipiens Ad Granulatum pro Charta 1.5 G',
+        'Excipiens Ad Granulatum, pro Charta 1.8 G',
+        'Excipiens Ad Granulatum pro Charta 4.74 G',
+        'Excipiens Ad Granulatum pro Charta 950 Mg',
+        'Q.s. Ad Granulatum pro 1 G',
+    ]
+    test_cases.each do |excipiens|
+       m = ODDB::Package::AD_GRANULATUM_REGEXP.match(excipiens.downcase)
+       assert(m[1])
+       value = Unit.new(m[1])
+       # binding.pry if /mg\/24h/.match excipiens
+       # puts "#{value} #{m[1]} aus #{excipiens}"
+       assert(value.compatible?(Unit.new('1g')) || value.compatible?(Unit.new('1l')))
+    end
+    allowed_failures.each do |excipiens|
+       m = ODDB::Package::AD_GRANULATUM_REGEXP.match(excipiens.downcase)
+       assert_nil(m)
+    end
+  end
+end
+  def test_ddd_Colosan_iksnr_43319
+    @package = ODDB::Package.new('078')
+    ddd_o = ODDB::AtcClass::DDD.new('O')
+    ddd_o.dose = ODDB::Dose.new(8 , 'g')
+    package_dose =ODDB::Dose.new(875, "mg")
+    @package.price_public = ODDB::Util::Money.new(12.35, 'CHF')
+    atc = flexmock  :has_ddd? => true,
+                    :ddds => {
+                      'O' => ddd_o,
+                    },
+                    :code => 'G03CA03'
+    excipiens = flexmock 'excipiens', :description => "Excipiens ad Granulatum pro 1 G"
+    composition = flexmock 'composition', :excipiens => excipiens
+    seq = flexmock :atc_class => atc,
+                   :galenic_group => 'Lösbar zur Einnahme',
+                   :dose => package_dose,
+                   :compositions => [composition],
+                   :longevity => nil
+    @package.sequence = seq
+    assert_equal(1, atc.ddds.size)
+    assert_equal('O', atc.ddds.values.first.administration_route)
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(200, 'g')
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(0.56, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    #   ( 8 g / 875 mg ) x ( 12.35 / 200 g ) = 0.04 CHF / Tag
+    # Colosan   new_info 43319;078;1337003;Colosan mite citron, granulé;A06AC03;O;O;8 g;875 mg;roa_O;Granulat;12.35;
+    # Still incorrect price      12.35        0.58 old_price       0.04  for 1337003 Colosan mite citron, granulé
+  end
+  require 'pry'
+  bin_admin_snippet = %(
+$package = registration('43319').package('078')
+$package.seqnr
+$package.price_public.to_s
+$package.galenic_group
+$package.dose
+$package.parts.size
+$package.atc_class
+$package.atc_class.code
+$package.atc_class.ddds.keys
+$package.atc_class.ddds.values.first.dose
+$package.atc_class.ddds.values.last.dose
+$package.parts.size
+$package.parts.first.size
+$package.parts.first.addition
+$package.parts.first.count
+$package.parts.first.multi
+$package.parts.first.measure
+$package.parts.first.measure.class
+$package.compositions.first.excipiens
+)
 end

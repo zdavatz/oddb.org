@@ -13,6 +13,7 @@ require 'model/feedback_observer'
 require 'model/package'
 require 'model/sequence'
 require 'model/part'
+require 'ruby-units'
 
 module ODDB
 	class PackageCommon
@@ -253,6 +254,27 @@ module ODDB
         atc.ddds['O']
       end
     end
+    def ddd_pflaster
+      if (atc = atc_class) and atc.respond_to?(:has_ddd?) and atc.has_ddd?
+        if atc.ddds['TDpatch refer to amount delivered per 24 hours']
+          atc.ddds['TDpatch refer to amount delivered per 24 hours']
+        elsif atc.ddds['TD']
+          atc.ddds['TD']
+        else
+          atc.ddds.values.first
+        end
+      end
+    end
+    def quanty_to_unit(dose)
+      Unit.new(dose.to_s.sub(' / ', '/'))
+    rescue
+      puts "Could not convert #{dose.to_s} for #{iksnr}/#{ikscd} #{name}"
+      nil
+    end
+    # some constant to simplify testing
+    SHOW_PRICE_CALCULATION = false
+    CUM_LIBERATION_REGEXP = /cum Liberatione ([\d\.]+\s*[µm]g\/\d*\s*h)$/i
+    AD_GRANULATUM_REGEXP  = /ad Granulatum[^\d]+([\d\.]+\s[mugl]+)$/i
 		def ddd_price
 			if(!@disable_ddd_price && (ddd = self.ddd) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
@@ -260,12 +282,47 @@ module ODDB
 
         _ddd_price = 0.00
         factor = (longevity || 1).to_f
-        if (grp = galenic_group) && grp.match(@@ddd_galforms) 
+        if sequence.compositions.first  && sequence.compositions.first.excipiens
+          excipiens = sequence.compositions.first.excipiens.description
+        else
+          excipiens = nil
+        end
+        variant = -1
+        puts "@@ddd_galforms #{@@ddd_galforms} galenic_group #{galenic_group} match #{(grp = galenic_group) && grp.match(@@ddd_galforms)} excipiens #{excipiens}" if SHOW_PRICE_CALCULATION
+        u_mdose = quanty_to_unit(mdose)
+        u_size = quanty_to_unit(size)
+        u_ddose = quanty_to_unit(ddose)
+        if excipiens && /capsula/i.match(excipiens) && u_ddose && u_mdose && u_size
+            _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
+            puts "_ddd_price 0 #{_ddd_price} = #{price} * (#{u_ddose} / #{u_size}"  if SHOW_PRICE_CALCULATION
+        elsif excipiens && (m = CUM_LIBERATION_REGEXP.match(excipiens.downcase))
+          variant = 10
+          # we cannot mix units 'h' and 'H', therefore we downcase the excipiens
+          u_mdose = (Unit.new(m[1])*Unit.new('24 h')) # per day
+          u_ddose = Unit.new(ddd_pflaster.dose.to_s)
+          _ddd_price = price / u_size / (u_ddose.base / u_mdose.base )
+          puts "_ddd_price #{variant}: #{_ddd_price} =price  #{price} / u_size #{u_size} /u_ddose (#{u_ddose} /u_mdose  #{u_mdose})" if SHOW_PRICE_CALCULATION
+        elsif excipiens && (m = AD_GRANULATUM_REGEXP.match(excipiens.downcase))
+          variant = 20
+          u_mdose = Unit.new(mdose.to_s)
+          u_pro = Unit.new(m[1])
+          _ddd_price = price / (u_size.base * u_mdose.base/u_pro.base/ u_ddose.base)
+          puts "_ddd_price #{variant}: #{_ddd_price} =price  #{price} / u_size #{u_size} /u_ddose (#{u_ddose} /u_mdose  #{u_mdose})" if SHOW_PRICE_CALCULATION
+        elsif (grp = galenic_group) && grp.match(@@ddd_galforms)
           if(mdose > (ddose * factor))
-            _ddd_price = (price / size.to_f) / factor
+            # old and wrong: _ddd_price = (price / size.to_f) / factor
+            if @parts.size != 1
+              variant = 11
+              _ddd_price = nil
+            else
+              variant = 13
+              _ddd_price = (price / @parts.first.count) / factor
+              puts "_ddd_price #{variant}: #{_ddd_price} = #{price} / #{size} / #{factor}" if SHOW_PRICE_CALCULATION
+            end
           else
-            _ddd_price = (price / size.to_f) \
-              * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
+            variant = 14
+            _ddd_price = (price / size.to_f) * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
+            puts "_ddd_price #{variant}: #{_ddd_price} = #{price} / #{size} + #{ddose} * #{factor} ( #{mdose.want(ddose.unit)}" if SHOW_PRICE_CALCULATION
           end
         else
           # This is valid only for the following case, for example, mdose unit: mg/ml, size unit: ml
@@ -275,22 +332,45 @@ module ODDB
           # size: total amount of package
           begin
             if size.to_s.match(@@ddd_grmforms)
+              puts "Test to_g #{mdose.to_g == 0} test via unit #{u_mdose.compatible?(Unit.new('1 g'))}" if SHOW_PRICE_CALCULATION
               unless mdose.to_g == 0
-                _ddd_price = (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
+                # originally _ddd_price = (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
+                # ( 0.5 g / 40 mg/ml ) x ( 6.45 / 30 ml )
+                # _ddd_price 3 0.43 = 6.45 / 30 ml / 40 mg/ml.to_g).to_f / 0.0005)) / 1.0
+                # TODO: Adapt show text to this algorithm
+                if u_mdose.compatible?(u_size)
+                  variant = 1
+                  _ddd_price =  (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
+
+                  # _ddd_price = price/ ((u_size.base_scalar/u_mdose.base_scalar) /(u_mdose.base_scalar/u_ddose.base_scalar))
+                  _ddd_price = price * (u_ddose.base_scalar / ((u_mdose.base_scalar * u_size.base_scalar)))
+                  _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
+                elsif u_mdose.compatible?(u_ddose) && excipiens && (m = /\d+\s*\S*/.match(excipiens))
+                  exc_dose = quanty_to_unit(m[0].sub('Ml', 'ml'))
+                  comparable_unit = quanty_to_unit(comparable_size.to_s)
+                  variant = 2
+                  _ddd_price =  price / ( (u_mdose/exc_dose).base / (u_ddose/comparable_unit).base)
+                else
+                  variant = 3
+                  _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
+                end
+                puts "_ddd_price 3.#{variant} #{_ddd_price} = #{price} / size #{size} / mdose #{mdose}.to_g).to_f / ddose #{u_ddose})) / #{factor}" if SHOW_PRICE_CALCULATION
               end
             else
               _ddd_price = (price / ((size * mdose).to_f / ddose.to_f)) / factor
+              puts "_ddd_price 4 #{_ddd_price} = #{price} / #{size} * #{mdose}.to_f / #{ddose.to_f})) / #{factor}" if SHOW_PRICE_CALCULATION
             end
-          rescue StandardError
+          rescue StandardError => e
+            puts "ddd_price #{e} #{iksnr} pack #{ikscd} from \n#{e.backtrace[0..5].join("\n")}" if SHOW_PRICE_CALCULATION
+            _ddd_price = nil
           end
         end
-        unless _ddd_price.to_s.match(/^0.*0$/u)
-          _ddd_price
-        end
+        _ddd_price.to_s.match(/^0.*0$/u) ? nil : _ddd_price
 			end
-		rescue RuntimeError
-		end
-
+		rescue RuntimeError => e
+      puts "_ddd_price RuntimeError #{e} #{iksnr} pack #{ikscd} from \n#{e.backtrace[0..5].join("\n")}" if SHOW_PRICE_CALCULATION
+      _ddd_price = nil
+	end
     def delete_part(oid)
       @parts.delete_if { |comp| comp.oid == oid }
     end
