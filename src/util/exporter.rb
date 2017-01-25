@@ -96,6 +96,12 @@ module ODDB
 			plug.export_competition(company, db_path)
 			plug
 		end
+    def export_ddd_csv
+      plug = CsvExportPlugin.new(@app)
+      safe_export 'ddd.csv' do
+        plug.export_ddd_csv
+      end
+    end
     def export_csv
       plug = CsvExportPlugin.new(@app)
       safe_export 'oddb.csv' do

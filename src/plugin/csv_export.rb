@@ -147,6 +147,26 @@ module ODDB
       puts $!.backtrace
       raise
     end
+
+    def export_ddd_csv
+      @options = { }
+      recipients.concat self.class::ODDB_RECIPIENTS
+      files = []
+      @file_path = File.join EXPORT_DIR, 'ddd.csv'
+      CSV.open(@file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
+        csv << [:iksnr, :package, :pharmacode, :atc_code, :description, :price_public, :ddd_price]
+        @app.active_packages.sort{|x,y| [x.iksnr.to_i, x.ikscd.to_i] <=> [y.iksnr.to_i, y.ikscd.to_i]}.each do |package|
+          csv << [package.iksnr,
+                  package.ikscd,
+                  package.pharmacode,
+                  package.atc_class ? package.atc_class.code : '',
+                  package.name,
+                  package.price_public,
+                  package.ddd_price,
+                  ]
+        end
+      end
+    end
     def export_index_therapeuticus
       @options = { }
       recipients.concat self.class::ODDB_RECIPIENTS
@@ -156,7 +176,7 @@ module ODDB
       files.push EXPORT_SERVER.export_idx_th_csv(ids, EXPORT_DIR, 'idx_th.csv')
       ids = @app.packages.compact.sort_by { |pac| pac.ikskey.to_s }.collect { |pac|
         pac.odba_id }
-      files.push EXPORT_SERVER.export_ean13_idx_th_csv(ids, EXPORT_DIR, 
+      files.push EXPORT_SERVER.export_ean13_idx_th_csv(ids, EXPORT_DIR,
                                                        'ean13_idx_th.csv')
       EXPORT_SERVER.compress_many(EXPORT_DIR, 'index_therapeuticus', files)
     end

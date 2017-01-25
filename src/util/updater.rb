@@ -91,6 +91,16 @@ module ODDB
         log.notify(subj)
       }
     end
+    def export_ddd_csv(date = @@today)
+      subj = 'ddd.csv'
+      wrap_update(CsvExportPlugin, subj) {
+        plug = CsvExportPlugin.new(@app)
+        plug.export_ddd_csv
+        log = Log.new(date)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
     def export_oddb_csv(date = @@today)
       subj = 'oddb.csv'
       wrap_update(CsvExportPlugin, subj) {

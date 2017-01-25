@@ -429,6 +429,13 @@ module ODDB
         raise
       end
     end
+    def test_export_ddd_csv
+      flexmock(@plugin) do |plug|
+        plug.should_receive(:export_ddd_csv)
+      end
+      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
+      assert_equal(nil, @exporter.export_ddd_csv)
+    end
   end
 end
 

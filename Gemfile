@@ -47,6 +47,7 @@ gem 'rmagick', '2.13.4' # cannot build 2.13.2 on oddb-ci2
 gem 'rpdf2txt', '0.8.4'
 gem 'racc' #, '1.4.11'
 gem 'rubyXL', '3.3.1'
+gem 'ruby-units'
 gem "rubyntlm", '0.5.1'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'savon', '~>2.11.1'

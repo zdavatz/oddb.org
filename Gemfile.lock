@@ -141,6 +141,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     ruby-ole (1.2.12)
+    ruby-units (2.1.0)
     rubyXL (3.3.1)
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
@@ -257,6 +258,7 @@ DEPENDENCIES
   rpdf2txt (= 0.8.4)
   rspec
   rspec-core
+  ruby-units
   rubyXL (= 3.3.1)
   rubyntlm (= 0.5.1)
   rubyzip (>= 1.1.6)

@@ -297,7 +297,7 @@ module ODDB
       end
     end
 
-if true
+if false
 
 		def test_update_bsv_no_repeats
 			today = Date.today()
@@ -551,8 +551,6 @@ if true
                                                   # Exporter#mail_swissmedic_notifications
       assert_equal(expected, @updater.update_swissmedic_followers)
     end
-end
-if true
    def test_run
       logs = flexmock('logs') do |logs|
         logs.should_receive(:newest_date).and_return(Date.new(2011,1,1))
@@ -571,5 +569,9 @@ if true
       assert_equal(nil, @updater.run)
     end
   end
+    def test_export_ddd_csv
+      setup_csv_export_plugin
+      assert_equal(nil, @updater.export_ddd_csv)
+    end
   end
 end
