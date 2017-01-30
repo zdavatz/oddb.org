@@ -1316,6 +1316,17 @@ end
         flexmock(@session.app, :registration => registration)
         assert_kind_of(State::Drugs::Patinfo, @state.patinfo)
       end
+      def test_patinfo_nil
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
+        end
+        sequence     = flexmock('sequence', :patinfo => nil)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
+        assert_kind_of(ODDB::State::Http404, @state.patinfo)
+      end
       def test_patinfo_package
         flexmock(@session) do |s|
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')

@@ -418,8 +418,8 @@ module ODDB
         if iksnr && seqnr \
           && (reg = @session.app.registration(iksnr)) \
           && (seq = reg.sequence(seqnr))
-          (ikscd && pack = seq.package(ikscd)) ? patinfo = pack.patinfo : patinfo = seq.patinfo
-          return State::Drugs::Patinfo.new(@session, patinfo) unless patinfo.descriptions.empty?
+          (ikscd && pack = seq.package(ikscd)) ? pat_info = pack.patinfo : pat_info = seq.patinfo
+          return State::Drugs::Patinfo.new(@session, pat_info) if pat_info && !pat_info.descriptions.empty?
         end
         Http404.new(@session, nil)
       end
