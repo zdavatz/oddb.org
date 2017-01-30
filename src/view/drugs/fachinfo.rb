@@ -4,6 +4,7 @@
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
+require 'mathn'
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
@@ -105,17 +106,17 @@ class FiChapterChooser < HtmlGrid::Composite
     names = display_names(document) - [:amzv]
     pos = [0, 0]
     if @lookandfeel.enabled?(:evidentia, false)
-      right_offset = xwidth / 2
+      right_offset = (xwidth / 2).to_i
       pos = [0, 1]
       @components.store(pos, 'fachinfo_clinic_info')
       css_map.store(pos, 'fi-title')
       component_css_map.store(pos, 'fi-title')
-      colspan_map.store(pos, xwidth / 2)
+      colspan_map.store(pos, (xwidth / 2).to_i)
       pos = [right_offset, 1]
       @components.store(pos, 'fachinfo_extra_info')
       css_map.store(pos, 'fi-title')
       component_css_map.store(pos, 'fi-title')
-      colspan_map.store(pos, xwidth / 2)
+      colspan_map.store(pos, (xwidth / 2).to_i)
       clinical_names = [:indications,
                         :usage,
                         :contra_indications,
@@ -143,7 +144,7 @@ class FiChapterChooser < HtmlGrid::Composite
       xx = 0
       yy = 2
       clinical_names.each { |name|
-        if (yy >= 2 + (clinical_names.size/2) )
+        if (yy >= 2 + (clinical_names.size/2).to_i )
           yy = 2
           xx = 1
         end
@@ -162,7 +163,7 @@ class FiChapterChooser < HtmlGrid::Composite
       xx = right_offset
       yy = 2
       extra_names.each { |name|
-        if (yy >= 2 + (clinical_names.size/2) )
+        if (yy >= 2 + (clinical_names.size/2).to_i )
           yy = 2
           xx = right_offset + 1
         end

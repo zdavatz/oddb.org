@@ -2,6 +2,7 @@
 # encoding: utf-8
 # ODDB::Stage::PageFacade -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Stage::PageFacade -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
+require 'mathn'
 
 module ODDB
 	module State
@@ -46,7 +47,7 @@ module ODDB
 				@model = load_model
 				@pages = []
 				msize = @model.size
-				num_pages = [((msize - ITEM_SLACK) / ITEM_LIMIT), 0].max.next
+				num_pages = [((msize - ITEM_SLACK) / ITEM_LIMIT).to_i, 0].max.next
 				num_pages.times { |pagenum|
 					page = OffsetPageFacade.new(pagenum)
 					offset = pagenum * ITEM_LIMIT

@@ -4,6 +4,7 @@
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
+require 'mathn'
 require 'htmlgrid/list'
 require 'htmlgrid/value'
 require 'htmlgrid/datevalue'
@@ -287,7 +288,7 @@ class ResultList < HtmlGrid::List
     if(model.respond_to?(:overflow?) && model.overflow?) &&
         (@lookandfeel.enabled?(:explain_atc) or valid_search_types.size > 1)
       x, y, = offset
-      half = full_colspan / 2
+      half = (full_colspan / 2).to_i
       @grid.add(explain_atc(model), x, y)
       @grid.add_style("list migel-group", x, y)
       @grid.set_colspan(x, y, half)
