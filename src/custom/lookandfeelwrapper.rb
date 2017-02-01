@@ -1074,7 +1074,6 @@ module ODDB
         :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse',
         :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des médicaments phyto-therapeutiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur phyto-pharma.ch',
-        :generic_definition =>  'Was ist ein Phytopharmakon?',
         :generic_definition =>  'Qu\'est qu\'n médicament pharmacokinétique?',
         :generic_definition_url => 'http://fr.wikipedia.org/wiki/Phytopharmacie',
       },
