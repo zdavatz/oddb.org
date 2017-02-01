@@ -26,7 +26,7 @@ module ODDB
         'dojox/data/JsonRestStore',
         'dijit/form/ComboBox',
         'dijit/ProgressBar',
-        'ywesee/widget/Tooltip',
+        'dijit/TooltipDialog',
       ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
