@@ -7,6 +7,7 @@
 require 'model/analysis/group'
 require 'view/drugs/atcchooser'
 require 'plugin/comarketing'
+require 'view/tooltip'
 
 module ODDB
 	module View
@@ -173,7 +174,7 @@ module ODDB
             node.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
             node.href = @lookandfeel._event_url(:ddd_price, args)
           else
-            node.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
+            # node.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
           end
 				end
 				node.label = true
@@ -183,18 +184,18 @@ module ODDB
 				@deductible_count ||= 0
 				@deductible_count += 1
 				span = HtmlGrid::Span.new(model, @session, self)
-				tooltip = HtmlGrid::Div.new(model, @session, self)
 				deductible = model.deductible
 				if(deductible)
-					tooltip.value = @lookandfeel.lookup(:deductible_title, 
+					tooltip_content = @lookandfeel.lookup(:deductible_title,
 																							@lookandfeel.lookup(deductible))
 				else
-					tooltip.value = @lookandfeel.lookup(:deductible_unknown_title)
+					tooltip_content = @lookandfeel.lookup(:deductible_unknown_title)
 				end
 				span.css_id = "deductible_#{@deductible_count}"
 				span.css_class = deductible.to_s
-				span.dojo_tooltip = tooltip
+				# span.dojo_tooltip = tooltip
 				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
+        ODDB::View::TooltipHelper.set_tooltip(span, nil, tooltip_content)
 				span.label = true
 				span
 			end
@@ -269,7 +270,8 @@ module ODDB
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
 				txt.css_id = "ikscat_#{@ikscat_count}"
-				txt.dojo_tooltip = url
+        ODDB::View::TooltipHelper.set_tooltip(txt, url, 'dummy content')
+				# txt.dojo_tooltip = url
 				txt
 			end
       def product_overview_link(model, session=@session)

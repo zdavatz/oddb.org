@@ -16,11 +16,15 @@ require 'model/galenicgroup'
 require 'model/analysis/group'
 require 'model/package'
 require 'state/drugs/compare'
+require 'stub/cgi'
 
 module ODDB
   class Session
     DEFAULT_FLAVOR = 'gcc'
   end
+end
+class StubContainer
+  attr_accessor :additional_javascripts
 end
 
 class TestPackageInnerComposite <Minitest::Test
@@ -71,7 +75,9 @@ class TestPackageInnerComposite <Minitest::Test
                          )
     ith        = flexmock('ith', :language => 'language')
     flexmock(ODDB::IndexTherapeuticus, :find_by_code => ith)
-    @composite = ODDB::View::Drugs::PackageInnerComposite.new(@model, @session)
+    @container = flexmock('container', StubContainer.new)
+    @container.should_receive(:additional_javascripts).and_return(Array.new)
+    @composite = ODDB::View::Drugs::PackageInnerComposite.new(@model, @session, @container)
   end
   def test_init
     assert_equal({}, @composite.init)
@@ -207,6 +213,10 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :ikskey    => 'ikskey',
                           :pointer   => 'pointer',
                           :parts     => [part],
+                          :registration_date  => 'registration_date',
+                          :sequence_date  => 'sequence_date',
+                          :revision_date  => 'revision_date',
+                          :expiration_date  => 'expiration_date',
                           :swissmedic_source   => {'swissmedic_source' => 'x'},
                           :deductible          => 'deductible',
                           :price_exfactory     => 'price_exfactory',
@@ -220,10 +230,15 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                          )
     ith        = flexmock('ith', :language => 'language')
     flexmock(ODDB::IndexTherapeuticus, :find_by_code => ith)
-    @composite = ODDB::View::Drugs::PackageComposite.new(@model, @session)
+    @container = flexmock('container', StubContainer.new)
+    @container.should_receive(:additional_javascripts).and_return(Array.new)
+    @composite = ODDB::View::Drugs::PackageComposite.new(@model, @session, @container)
   end
   def test_init
     assert_equal({}, @composite.init)
+  end
+  def test_to_html
+    assert_equal('xxx', @composite.to_html(CGI.new))
   end
   def test_init__twitter_share
     skip('Niklaus does not know why this test does not work any longer')
@@ -364,8 +379,8 @@ class TestPackage <Minitest::Test
                           :division => 'division',
                           :compositions => [composition],
                          )
-    @model    = flexmock('model',                                 :chemical_substance => nil,
-
+    @model    = flexmock('model',
+                         :chemical_substance => nil,
                          :name       => 'name',
                          :size       => 'size',
                          :narcotic?  => nil,

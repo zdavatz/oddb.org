@@ -182,9 +182,7 @@ class PackageInnerComposite < HtmlGrid::Composite
         code = code.gsub /\d+\.$/u, ''
       end
       if ith
-        tooltip = HtmlGrid::Div.new(model, @session, self)
-        tooltip.value = ith.send(@session.language) 
-        span.dojo_tooltip = tooltip
+        TooltipHelper.set_tooltip(span, nil, ith.send(@session.language))
       end
     end
     span.label = true

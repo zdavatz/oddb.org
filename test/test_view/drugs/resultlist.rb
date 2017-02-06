@@ -279,6 +279,25 @@ class TestResultList <Minitest::Test
     flexmock(model, :overflow? => true)
     assert_equal([@model], @list.compose_list(model))
   end
+  def test_compose_list_with_real_overflow
+    flexmock(@list, :full_colspan => 2)
+    model = [@model]
+    flexmock(model, :overflow? => true)
+    @lookandfeel = flexmock('lookandfeel33',
+                           :lookup     => 'lookup',
+                           :attributes => {},
+                           :language   => 'language',
+                           :enabled?   => true,
+                           :disabled?  => nil,
+                           :_event_url => '_event_url'
+                          )
+    # @lookandfeel.should_receive(:enabled?).with(:explain_atc).once
+    @session.lookandfeel = @lookandfeel
+    @session.should_receive(:enabled?).with(:explain_atc).once
+    require 'pry'; binding.pry
+    # assert_equal(true, @lookandfeel.enabled?(:explain_atc))
+    assert_equal([@model], @list.compose_list(model))
+  end
 end
 		end
 	end
