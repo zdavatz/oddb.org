@@ -154,7 +154,7 @@ class TestResellerSequence <Minitest::Test
     assert_equal(@sequence, @sequence.get_patinfo_input({}))
   end
   def test_parse_patinfo__error
-    assert_equal(nil, @sequence.parse_patinfo('src'))
+    assert_nil(@sequence.parse_patinfo('src'))
   end
   def test_store_slate_item
     app = flexmock('app') do |a|
@@ -309,7 +309,7 @@ class TestSequence <Minitest::Test
       s.should_receive(:user_input).and_return('pointer')
       s.should_receive(:allowed?).and_return(true)
     end
-    assert_equal(nil, @sequence.check_model)
+    assert_nil(@sequence.check_model)
   end
   def test_check_model__e_state_expired
     flexmock(@model, :pointer => 'pointer1')
@@ -348,7 +348,7 @@ class TestSequence <Minitest::Test
     # This is a method defined in SBSM::State
     # This test is made just for the understanding of this method.
     mandatory = []
-    assert_equal(nil, @sequence.error_check_and_store('key', ['value'], mandatory))
+    assert_nil(@sequence.error_check_and_store('key', ['value'], mandatory))
   end
   def test_user_input
     # This is a method defined in SBSM::State
@@ -446,10 +446,10 @@ class TestSequence <Minitest::Test
         ).and_return(active_agent)
       a.should_receive(:substance)
     end
-    assert_equal(nil, @sequence.update_compositions(input))
+    assert_nil(@sequence.update_compositions(input))
   end
   def test_update_compositions__nil
-    assert_equal(nil, @sequence.update_compositions({}))
+    assert_nil(@sequence.update_compositions({}))
   end
   def test_update
     flexmock(@session) do |s|
@@ -457,8 +457,13 @@ class TestSequence <Minitest::Test
       s.should_receive(:language).and_return('language')
       s.should_receive(:user)
     end
+    atc_class = flexmock('atc_class') do |atc|
+      atc.should_receive(:code).and_return('atc_code')
+      atc.should_receive(:repair_needed?).once.and_return(false)
+    end
     flexmock(@app) do |a|
       a.should_receive(:update)
+      a.should_receive(:atc_class).and_return(atc_class)
     end
     company = flexmock('company') do |c|
       c.should_receive(:pointer)
@@ -473,6 +478,7 @@ class TestSequence <Minitest::Test
       m.should_receive(:parent).and_return(parent)
       m.should_receive(:append)
       m.should_receive(:carry)
+      m.should_receive(:atc_class).and_return(atc_class)
     end
     # Actually, this should not be replaced by flexmock
     flexmock(@sequence) do |s|
@@ -690,7 +696,7 @@ class TestSequence <Minitest::Test
       m.should_receive(:name).and_return('name')
       m.should_receive(:pointer).and_return('pointer')
     end
-    assert_equal(nil, @sequence.instance_eval('store_slate'))
+    assert_nil(@sequence.instance_eval('store_slate'))
   end
   def test_atc_request
     ODDB::Util.configure_mail :test
@@ -761,7 +767,7 @@ class TestCompanySequence <Minitest::Test
   end
   def test_delete__nil
     flexmock(@session, :allowed? => nil)
-    assert_equal(nil, @sequence.delete)
+    assert_nil(@sequence.delete)
   end
   def test_new_active_agent
     flexmock(@session, :allowed? => true)
@@ -799,12 +805,20 @@ class TestCompanySequence <Minitest::Test
       s.should_receive(:language).and_return('language')
       s.should_receive(:user)
     end
-    flexmock(@app, :update => nil)
+    atc_class = flexmock('atc_class') do |atc|
+      atc.should_receive(:code).and_return('atc_code')
+      atc.should_receive(:repair_needed?).once.and_return(false)
+    end
+    flexmock(@app) do |a|
+      a.should_receive(:update)
+      a.should_receive(:atc_class).and_return(atc_class)
+    end
     company = flexmock('company', :pointer => nil)
     parent = flexmock('parent', :sequence => nil)
     flexmock(@model) do |m|
       m.should_receive(:company).and_return(company)
       m.should_receive(:pointer)
+      m.should_receive(:atc_class).and_return(atc_class)
       m.should_receive(:is_a?).and_return(true)
       m.should_receive(:parent).and_return(parent)
       m.should_receive(:append)
@@ -831,6 +845,6 @@ class TestCompanySequence <Minitest::Test
              :name  => 'name',
              :pointer => 'pointer'
             )
-    assert_equal(nil, @sequence.store_slate)
+    assert_nil(@sequence.store_slate)
   end
 end

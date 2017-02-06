@@ -125,6 +125,7 @@ module SequenceMethods
 =end
 		atc_input = self.user_input(:code, :code)
 		atc_code = atc_input[:code]
+    old_atc_code = @model.atc_class ? @model.atc_class.code : nil
 		if(atc_code.nil?)
 			# error already stored by user_input(:code, :code)
 		elsif((descr = @session.user_input(:atc_descr)) \
@@ -147,6 +148,7 @@ module SequenceMethods
 			@session.app.update(company.pointer, mail, unique_email)
 		end
     @model = @session.app.update(@model.pointer, input, unique_email)
+    @session.app.atc_class(old_atc_code).repair_needed? if old_atc_code && !old_atc_code.eql?(atc_code)
     update_compositions input
 		newstate
 	end
