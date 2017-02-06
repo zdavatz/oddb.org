@@ -8,6 +8,7 @@ module ODDB
   module View
     class TooltipHelper
       def self.set_tooltip(element,  href=nil, content=nil)
+        set_preload = "preload: true," if href
         element.additional_javascripts.push <<-EOS
 require([
     "dijit/TooltipDialog",
@@ -19,6 +20,7 @@ require([
     var #{element.css_id}_dialog = new TooltipDialog({
         id: '#{element.css_id}_dialog',
         content:  '#{content}',
+        #{set_preload}
         href: '#{href}', // the initialization of href must come after content!!
         onMouseLeave: function(){
             popup.close(#{element.css_id}_dialog);
@@ -27,6 +29,7 @@ require([
     on(dom.byId('#{element.css_id}'), 'mouseover', function(){
         popup.open({
             popup: #{element.css_id}_dialog,
+            orient: ['before'],
             around: dom.byId('#{element.css_id}')
         });
     });
