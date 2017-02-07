@@ -170,6 +170,7 @@ module ODDB
                 :ddd_price]
         @app.active_packages.sort{|x,y| [x.iksnr.to_i, x.ikscd.to_i] <=> [y.iksnr.to_i, y.ikscd.to_i]}.each do |package|
           next unless package.price_public # Skip drugs not in SL list
+          next unless package.atc_class && package.atc_class.ddds.size > 0
           csv << [package.iksnr,
                   package.ikscd,
                   package.pharmacode,
