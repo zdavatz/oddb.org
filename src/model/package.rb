@@ -272,7 +272,7 @@ module ODDB
       nil
     end
     # some constant to simplify testing
-    SHOW_PRICE_CALCULATION = true
+    SHOW_PRICE_CALCULATION = false
     CUM_LIBERATION_REGEXP = /cum Liberatione ([\d\.]+\s*[µm]g\/\d*\s*h)$/i
     AD_GRANULATUM_REGEXP  = /ad Granulatum[^\d]+([\d\.]+\s[mugl]+)$/i
 		def ddd_price
@@ -306,12 +306,6 @@ module ODDB
           u_mdose = Unit.new(sequence.active_agents.first.dose.to_s)
            _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
           puts "_ddd_price #{variant}: #{_ddd_price} =price  #{price} / u_size #{u_size} /u_ddose (#{u_ddose} /u_mdose  #{u_mdose})" if SHOW_PRICE_CALCULATION
-#        elsif u_mdose != u_adose
-#          variant = 31
-#           _ddd_price = price * (u_ddose.base / u_adose.base)
-#          puts "_ddd_price #{variant}: #{_ddd_price} =price  #{price} / u_size #{u_size} /u_adose (#{u_adose} /u_mdose  #{u_mdose})" if SHOW_PRICE_CALCULATION
-#          binding.pry
-#          puts ''
         elsif excipiens && /capsula/i.match(excipiens) && u_ddose && u_mdose && u_size
             _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
             puts "_ddd_price 0 #{_ddd_price} = #{price} * (#{u_ddose} / #{u_size}"  if SHOW_PRICE_CALCULATION
@@ -371,7 +365,6 @@ module ODDB
                   _ddd_price =  price / ( (u_mdose/exc_dose).base / (u_ddose/comparable_unit).base)
                 else
                   variant = 3
-                  binding.pry if iksnr && iksnr.to_i == 54634
                   _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
                 end
                 puts "_ddd_price 3.#{variant} #{_ddd_price} = #{price} / size #{size} / mdose #{mdose}.to_g).to_f / ddose #{u_ddose})) / #{factor}" if SHOW_PRICE_CALCULATION
