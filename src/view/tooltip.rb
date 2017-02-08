@@ -4,11 +4,19 @@
 # ODDB::View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/div'
+require 'open-uri'
 module ODDB
   module View
+    # see https://dojotoolkit.org/api/?qs=1.10/dijit/TooltipDialog
     class TooltipHelper
       def self.set_tooltip(element,  href=nil, content=nil)
-        set_preload = "preload: true," if href
+        # "preload: false,  preventCache: false. Slow, displays sometimes to the right, but never the home page
+        # "preload: true,  preventCache: false. Loads early, only first tooltip ever outside, displays sometimes the homePage
+        # Therefore we decide to fetch the content via open-uri. This increases the size of the page by about 25%
+        # set_preload = "preload: true," if href
+        if href
+          content = open(href).read
+        end
         element.additional_javascripts.push <<-EOS
 require([
     "dijit/TooltipDialog",
@@ -20,18 +28,17 @@ require([
     var #{element.css_id}_dialog = new TooltipDialog({
         id: '#{element.css_id}_dialog',
         content:  '#{content}',
-        #{set_preload}
-        href: '#{href}', // the initialization of href must come after content!!
         onMouseLeave: function(){
-            popup.close(#{element.css_id}_dialog);
+          popup.close(#{element.css_id}_dialog);
         }
     });
+    console.log("Added #{element.css_id}_dialog for href #{href ? href : 'none'}.isLoaded " +  #{element.css_id}_dialog.isLoaded);
     on(dom.byId('#{element.css_id}'), 'mouseover', function(){
         popup.open({
-            popup: #{element.css_id}_dialog,
-            orient: ['before'],
-            around: dom.byId('#{element.css_id}')
-        });
+          popup: #{element.css_id}_dialog,
+          orient: ['before'],
+          around: dom.byId('#{element.css_id}')
+      });
     });
 });
 EOS
