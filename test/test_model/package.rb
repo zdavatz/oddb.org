@@ -92,23 +92,33 @@ class TestPackage <Minitest::Test
   def setup
     @package = ODDB::Package.new('12')
     @package.sequence = StubPackageSequence.new
+    ddd_td_o = ODDB::AtcClass::DDD.new('0')
+    ddd_td_o.dose = ODDB::Dose.new(5 , 'mg')
+    ddd_td_pdepot = ODDB::AtcClass::DDD.new('Pdepot')
+    ddd_td_pdepot.dose = ODDB::Dose.new(2.7 , 'mg')
+    @N05AX08 = flexmock('N05AX08', :has_ddd? => true,
+                    :ddds => { 'O' => ddd_td_o, 'Pdepot' => ddd_td_pdepot,},
+                    :code => 'N05AX08')
   end
   def create_test_package(iksnr: , ikscd: , price_public: , ddd_dose: , atc_code: ,
                           pack_dose: ,
                           excipiens: nil,
                           composition_text: nil,
                           parts: [],
-                          galenic_group: 'Tabletten')
+                          galenic_group: 'Tabletten',
+                          route_of_administration: nil)
     @seq = flexmock('seq_01', ODDB::Sequence.new('01'))
+    @seq.should_receive(:pointer).and_return("#{iksnr}/#{01}/#{ikscd}")
     @package = @seq.create_package(sprintf("%03i", ikscd))
     @package.price_public = ODDB::Util::Money.new(price_public, 'CHF')
     @ddd_o = ODDB::AtcClass::DDD.new('O')
     @ddd_o.dose = ddd_dose
     @atc = flexmock('atc_class', :has_ddd? => true, :ddds => {'O' => @ddd_o,}, :code => atc_code)
-    @excipiens = flexmock 'excipiens', :description => excipiens
+    @excipiens = flexmock('excipiens', :to_s => excipiens)
     @composition = flexmock 'composition', :excipiens => @excipiens
     @active_agent = ODDB::ActiveAgent.new(atc_code)
     @active_agent.dose = pack_dose
+    @seq.should_receive(:route_of_administration).and_return(route_of_administration).by_default
     @seq.should_receive(:iksnr).and_return(sprintf("%05i", iksnr))
     @seq.should_receive(:atc_class).and_return(@atc).by_default
     @seq.should_receive(:dose).and_return(pack_dose).by_default
@@ -116,7 +126,6 @@ class TestPackage <Minitest::Test
     @seq.should_receive(:composition_text).and_return(composition_text).by_default
     @seq.should_receive(:active_agents).and_return([@active_agent]).by_default
     @seq.should_receive(:galenic_group).and_return(galenic_group).by_default
-    @seq.should_receive(:excipiens).and_return(excipiens).by_default
     @seq.should_receive(:longevity).and_return(nil).by_default
 
     parts.each{|part| @package.parts.push part}
@@ -664,30 +673,6 @@ class TestPackage <Minitest::Test
     price = @package.ddd_price
     assert_equal ODDB::Util::Money.new(34.47, 'CHF').to_s, price.to_s
   end
-  def test_ddd_Ursofalk_iksnr_54634
-    create_test_package(iksnr: 54634, ikscd: 21, price_public: 59.15,
-                        ddd_dose:ODDB::Dose.new(0.75 , 'g'),
-                        pack_dose:  ODDB::Dose.new(250, 'mg'),
-                        atc_code: 'A05AA02',
-                        excipiens: 'Excipiens ad Suspensionem pro 5 Ml',
-                        composition_text: 'acidum ursodeoxycholicum 250 mg, natrii cyclamas, aromatica, conserv.: E 210, excipiens ad suspensionem pro 5 ml.',
-                        galenic_group: 'suspension'
-                        )
-    @seq.should_receive(:compositions).and_return([])
-    # IKSRN false  u_adose (dose of first active agent 0 != dose  of package 250 mg
-    # Test to_g false test via unit true
-    # variant = 2 Zeile 372
-
-    part = ODDB::Part.new
-    part.count = 1
-    part.multi = 1
-    part.addition = 0
-    part.measure = ODDB::Dose.new(250, 'ml')
-    @package.parts.push part
-    # binding.pry
-    price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(3.55, 'CHF').to_s, price.to_s
-  end
   def test_ddd_Pradaxa_iksnr_61385
     create_test_package(iksnr: 61385, ikscd: 7, price_public: 112.50,
                         ddd_dose: ODDB::Dose.new(0.22 , 'g'),
@@ -974,13 +959,12 @@ II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro
     price = @package.ddd_price
     assert_equal ODDB::Util::Money.new(0.90, 'CHF').to_s, price ? price.to_s : 'not calculated'
   end
-end
   def test_ddd_Disflatyl_iksnr_52051
     create_test_package(iksnr: 52051, ikscd: 10, price_public: 6.45,
                         ddd_dose: ODDB::Dose.new(0.5 , 'g'),
                         pack_dose: ODDB::Dose.new(40, 'mg / ml'),
                         atc_code: 'A03AX13',
-                        excipiens: 'Excipiens ad Solutione',
+                        excipiens: 'Excipiens ad Solutionem',
                         composition_text: 'simeticonum 40 mg, arom.: vanillinum et alia, saccharinum natricum, conserv.: E 210, E 211, excipiens ad solutionem pro 1 ml',
                         galenic_group: 'Tropfen'
                         )
@@ -993,12 +977,87 @@ end
     assert_equal('ml', @package.parts.first.measure.unit)
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
-    assert_equal ODDB::Util::Money.new(2.69, 'CHF').to_s, @package.ddd_price.to_s
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(2.69, 'CHF').to_s, price.to_s
+  end
+  def test_ddd_Ursofalk_iksnr_54634
+    create_test_package(iksnr: 54634, ikscd: 21, price_public: 59.15,
+                        ddd_dose:ODDB::Dose.new(0.75 , 'g'),
+                        pack_dose:  ODDB::Dose.new(250, 'mg'),
+                        atc_code: 'A05AA02',
+                        excipiens: 'Excipiens ad Suspensionem pro 5 Ml',
+                        composition_text: 'acidum ursodeoxycholicum 250 mg, natrii cyclamas, aromatica, conserv.: E 210, excipiens ad suspensionem pro 5 ml.',
+                        galenic_group: 'suspension'
+                        )
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(250, 'ml')
+    @package.parts.push part
+    price = @package.ddd_price
+    assert_equal ODDB::Util::Money.new(3.55, 'CHF').to_s, price.to_s
+  end
+end
+  def test_ddd_Risperdal_iksnr_56092
+    # ATC code    Name       DDD    U   Adm.R   Note
+    #  N05AX08   risperidone   5   mg  O
+    #                        2.7   mg  P   depot
+    # 56092 02 003
+    # 2569514 RISPERDAL CONSTA Inj Susp 37.5 mg Inj kit N05AX08 257.30  43.31 18.53 24.78 134%
+    create_test_package(iksnr: 56092, ikscd: 3, price_public: 257.30, # On ODDB the current PP is 258.79 as per 08.12.2016
+                        ddd_dose: ODDB::Dose.new(5 , 'mg'),
+                        pack_dose: ODDB::Dose.new(37.5, 'mg'),
+                        atc_code: @N05AX08.code,
+                        excipiens: '  Aqua Ad Iniectabilia Q.s. Ad Solutionem',
+                        route_of_administration: 'roa_P',
+                        composition_text: 'Praeparatio sicca: risperidonum 25 mg, copoly(dl-lactidum-glycolidum).
+Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, acidum citricum anhydricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 2 ml, pro vase, in suspensione recenter reconstituta.',
+                        galenic_group: 'Injektion/Infusion'
+                        )
+    @seq.should_receive(:atc_class).and_return(@N05AX08)
+    composition1 = flexmock('composition1', :excipiens => nil)
+    composition2 = flexmock('composition2', :excipiens => 'Aqua Ad Iniectabilia Q.s. Ad Solutionem')
+    @seq.should_receive(:compositions).and_return([composition1, composition2])
+    # @seq.compositions = [composition1, composition2]
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new('30','ml')
+    @package.parts.push part
+    assert_equal('ml', @package.parts.first.measure.unit)
+    assert_equal(30, @package.parts.first.measure.qty)
+    assert_equal('30 ml', @package.parts.first.size)
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
   end
 
+  def test_ddd_Risperdal_iksnr_58467
+    create_test_package(iksnr: 58467, ikscd: 1, price_public: 28.75,
+                        ddd_dose: ODDB::Dose.new(5 , 'mg'),
+                        pack_dose: ODDB::Dose.new(30, 'ml'),
+                        atc_code: @N05AX08.code,
+                        excipiens: 'Excipiens ad Solutionem',
+                        composition_text: 'risperidonum 1 mg, conserv.: E 210, excipiens ad solutionem pro 1 ml.',
+                        galenic_group: 'Injektion/Infusion'
+                        )
+    @seq.should_receive(:atc_class).and_return(@N05AX08)
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new('30','ml')
+    @package.parts.push part
+    assert_equal('ml', @package.parts.first.measure.unit)
+    assert_equal(30, @package.parts.first.measure.qty)
+    assert_equal('30 ml', @package.parts.first.size)
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+  end
   require 'pry'
   bin_admin_snippet = %(
-$package = registration('54634').package('021')
+$package = registration('56092').package('001')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
@@ -1023,3 +1082,6 @@ $package.compositions.first.excipiens
 $package.sequence.composition_text
  )
 end
+# :!registration,36631!sequence,02. @@ddd_galforms (?i-mx:tabletten?) galenic_group Tabletten match true excipiens Excipiens pro Compresso Obducto.
+# Could not convert 1 Mio UI for 36631/067 Penicillin Spirig HC 1 Mio U.I., Filmtabletten
+# Could not convert 1 Mio UI for 36631/067 Penicillin Spirig HC 1 Mio U.I., Filmtabletten
