@@ -939,15 +939,15 @@ public
             composition_in_db.odba_store
             sequence.odba_store
           elsif not (parsed_comps.size == 1 && composition_in_db.substances.empty?)
-            composition_in_db.active_agents.dup.each_with_index { |act, atc_idx|
+            composition_in_db.active_agents.dup.each_with_index { |act, act_idx|
               unless active_agents.include?(act.odba_instance)
-                trace_msg("update_compositions delete_active_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_active_agent #{comp_idx} act_idx #{act_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_active_agent(act.substance)
               end if act and act.substance
             }
-            composition_in_db.inactive_agents.dup.each_with_index { |act, atc_idx|
+            composition_in_db.inactive_agents.dup.each_with_index { |act, act_idx|
               unless inactive_agents.include?(act.odba_instance)
-                trace_msg("update_compositions delete_inactive_agent #{comp_idx} atc_idx #{atc_idx} #{act.pointer.inspect} #{act.substance.inspect}")
+                trace_msg("update_compositions delete_inactive_agent #{comp_idx} act_idx #{act_idx} #{act.pointer.inspect} #{act.substance.inspect}")
                 composition_in_db.delete_inactive_agent(act.substance)
               end if act and act.substance
             } if composition_in_db.inactive_agents and composition_in_db.inactive_agents.is_a?(Array)
