@@ -56,9 +56,6 @@ module ODDB
     def extract_text(node)
       unless(node.children.any? { |br| br.element? && br.name != 'br' })
         html = node.inner_html
-        if RUBY_VERSION < '1.9'
-          #html.gsub! /\240/, ''
-        end
         html.gsub(/\s+/, ' ').gsub(/\s*<br\s*\/?>\s*/, "\n").strip
       end
     end
@@ -126,31 +123,39 @@ module ODDB
         if(match = @@query_re.match(link.attributes['href']))
           code = match[1]
           atc = import_atc(code, link.inner_text.to_s)
-          import_ddds atc, link.parent.parent
+          import_ddds(atc, link.parent.parent) if atc && atc.is_a?(ODDB::AtcClass)
         end
       end
-    rescue SocketError => e
-      @repairs << "Unable to fetch #{get_code}"
+    rescue NoMethodError, SocketError => e
+      @repairs << "Unable to fetch #{get_code} because of #{e}"
     end
     def import_ddds(atc, row)
       code = nil
+      old_keys = atc.ddds.keys
+      new_keys = []
       begin
-        code, link, dose, unit, adm, comment = row.children.collect do |td|
-          extract_text(td).to_s end
+        code, link, dose, unit, adm, comment = row.children.collect do |td| extract_text(td).to_s end
         comment = comment.empty? ? nil: comment
-        return unless code.empty? || code == atc.code
+        break unless code.empty? || code == atc.code
         unless dose.empty?
           key = "%s%s" % [adm.empty? ? '*' : adm, comment]
+          new_keys << key
           pointer = if ddd = atc.ddd(key)
                       ddd.pointer
                     else
                       atc.pointer + [:ddd, key]
                     end
           unit = UNIT_REPLACEMENTS.fetch(unit, unit)
-          @app.update pointer.creator, :note => comment,
-                                       :dose => Drugs::Dose.new(dose, unit)
+          @app.update pointer.creator, :note => comment, :dose => Drugs::Dose.new(dose, unit)
+          atc.ddds[key] = ddd
         end
       end while row = row.next_sibling
+      (old_keys - new_keys).each do |key|
+        atc.delete_ddd(key)
+      end
+      atc.repair_needed?
+      atc.odba_store
+      nil
     end
     def import_ddd_guidelines(atc, table)
       chp, sec = nil

@@ -8,7 +8,13 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'stub/odba'
+require 'stub/oddbapp'
 require 'plugin/who'
+begin
+require 'pry'
+rescue LoadError
+end
 
 module ODDB
   class WhoPlugin < Plugin
@@ -34,13 +40,19 @@ module ODDB
       super
     end
     def setup
-      datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
+      @datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
       mechanize = Mechanize.new
-      path = File.join datadir, 'atc_ddd.html'
+      path = File.join @datadir, 'atc_ddd.html'
       mechanize_get = mechanize.get('file://' + path)
-      @agent  = flexmock('agent', :get => mechanize_get)
-      @app    = flexmock('app')
+      @agent  = flexmock('agent')
+      @agent.should_receive(:get).and_return do |args|
+        mechanize.get('file://' + path)
+      end
+      @app = flexmock('app', ODDB::App.new)
       @plugin = ODDB::WhoPlugin.new(@app)
+      @code2tst = 'N05AX08'
+      @atc = @app.create_atc_class(@code2tst)
+      @atc.pointer = Persistence::Pointer.new([:atc_class, @atc.code.to_sym])
     end
     def test_capitalize_all
       assert_equal('Str', @plugin.capitalize_all('str'))
@@ -86,7 +98,7 @@ module ODDB
                        :inner_html => 'html'
                       )
       table = flexmock('table') do |t|
-        t.should_receive(:/).and_return([node])
+        t.should_receive(:/).and_return([node]) # /
       end
       assert_equal(true, @plugin.import_ddd_guidelines(atc, table))
     end
@@ -133,7 +145,7 @@ module ODDB
                        :name       => 'p',
                        :next_sibling => table
                       )
-      flexmock(table, :/ => [node])
+      flexmock(table, :/ => [node]) # /
       link = flexmock('link', :parent => node)
  
       assert_equal(true, @plugin.import_guidelines(atc, link))
@@ -152,13 +164,7 @@ module ODDB
                      :children => [code, link, dose, unit, adm, comment],
                      :next_sibling => nil
                     )
-      pointer = flexmock('pointer', :creator => 'creator')
-      ddd = flexmock('ddd', :pointer => pointer)
-      atc = flexmock('atc', 
-                     :code => nil,
-                     :ddd  => ddd
-                    )
-      assert_equal(nil, @plugin.import_ddds(atc, row))
+      assert_nil(@plugin.import_ddds(@atc, row))
     end
     def test_import_ddds__atc_pointer
       flexmock(@app, :update => 'update')
@@ -176,17 +182,13 @@ module ODDB
                     )
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
-      atc = flexmock('atc', 
-                     :code => nil,
-                     :ddd  => nil,
-                     :pointer => pointer
-                    )
-      assert_equal(nil, @plugin.import_ddds(atc, row))
+      assert_nil(@plugin.import_ddds(@atc, row))
     end
     def test_import_code
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
       atc = flexmock('atc', 
+                     :ddds => {},
                      :guidelines => nil,
                      :pointer    => pointer
                     )
@@ -215,7 +217,7 @@ module ODDB
                              )
       flexmock(@app, :update => atc)
       flexmock(@app, :atc_class => atc, :atc_classes => atc_hash)
-      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      expected = "Imported  31 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
       assert_equal(expected, @plugin.import(@agent))
     end
     def test_import_repairs
@@ -246,27 +248,78 @@ module ODDB
       result = @plugin.import(@agent)
       m = /Created\s+(\d+)\s+English/.match(result)
       assert_equal(0, m[1].to_i)
-      assert_match('Imported  30 ATC-Codes', result)
+      assert_match('Imported  31 ATC-Codes', result)
       assert_match("Updated    1 Guidelines\n", result)
-      skip "Don't know how to stub wron sequences"
+      skip "Don't know how to stub wrong sequences"
       assert_match("Repaired   1 wrong sequences\n", result)
     end
     def test_import_new_atc_code
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
-      atc = flexmock('atc',
-                     :guidelines => nil,
-                     :pointer    => pointer
-                    )
       atc_hash = Hash.new
       atc_classes = flexmock(atc_hash, :odba_store => 'odba_store', :each => atc_hash.each)
-      flexmock(@app, :update => atc)
+      flexmock(@app, :update => @atc)
       flexmock(@app, :atc_classes => atc_classes)
       @app.should_receive(:atc_class).and_return {|arg| atc_hash[arg] }
-      expected = "Imported  30 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      expected = "Imported  31 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
       result = @plugin.import(@agent)
       m = /Created\s+(\d+)\s+English/.match(result)
       assert(m[1].to_i > 0)
+    end
+    def test_import_delete_ddd_roa_P
+      @app.atc_classes
+      atc = @app.atc_class(@code2tst) || @app.create_atc_class(@code2tst)
+      @app.atc_class(@code2tst).create_ddd('0')
+      @app.atc_class(@code2tst).ddds['0'].dose = Quanty.new(5, 'mg')
+      @app.atc_class(@code2tst).create_ddd('P')
+      @app.atc_class(@code2tst).ddds['P'].dose = Quanty.new(2.7, 'mg')
+      @app.atc_class(@code2tst).create_ddd('Pdepot')
+      @app.atc_class(@code2tst).ddds['Pdepot'].dose = Quanty.new(1.8, 'mg')
+      atc.pointer = Persistence::Pointer.new([:atc_class, @atc.code.to_sym])
+      @app.atc_class(@code2tst).ddds.each {|key, value| value.pointer =  Persistence::Pointer.new(atc.pointer + [:ddd, key]) }
+      pointer = flexmock('atc_pointer')
+      atc_creator = flexmock('atc_creator')
+      # atc_creator.should_receive(:issue_update).and_return(@app.atc_class(@code2tst))
+      pointer.should_receive(:creator).and_return(atc_creator)
+      pointer.should_receive(:+).and_return(pointer)
+      expected = "Imported  31 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      @datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
+      mechanize = Mechanize.new
+      path = File.join @datadir, @code2tst+'.html'
+      mechanize_get = mechanize.get('file://' + path)
+      agent  = flexmock('agent')
+      agent.should_receive(:get).and_return(mechanize_get)
+      @app.should_receive(:update).at_least.once.and_return(@app.atc_class(@code2tst))
+      @plugin = ODDB::WhoPlugin.new(@app)
+      result = @plugin.import(agent)
+      m = /Created\s+(\d+)\s+English/.match(result)
+      assert(m[1].to_i > 0)
+      assert_equal(['O', 'Pdepot'], @app.atc_class(@code2tst).ddds.keys.sort)
+    end
+    def test_import_add_ddd_roa_P
+      @app.atc_classes
+      atc = @app.atc_class(@code2tst) || @app.create_atc_class(@code2tst)
+      @app.atc_class(@code2tst).create_ddd('0')
+      @app.atc_class(@code2tst).ddds['0'].dose = Quanty.new(5, 'mg')
+      atc.pointer = Persistence::Pointer.new([:atc_class, @atc.code.to_sym])
+      @app.atc_class(@code2tst).ddds.each {|key, value| value.pointer =  Persistence::Pointer.new(atc.pointer + [:ddd, key]) }
+      pointer = flexmock('atc_pointer')
+      atc_creator = flexmock('atc_creator')
+      pointer.should_receive(:creator).and_return(atc_creator)
+      pointer.should_receive(:+).and_return(pointer)
+      expected = "Imported  31 ATC-Codes\nCreated    0 English descriptions\nUpdated    1 Guidelines\nUpdated    0 DDD-Guidelines\nRepaired   0 wrong sequences\n"
+      @datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
+      mechanize = Mechanize.new
+      path = File.join @datadir, @code2tst+'.html'
+      mechanize_get = mechanize.get('file://' + path)
+      agent  = flexmock('agent')
+      agent.should_receive(:get).and_return(mechanize_get)
+      @app.should_receive(:update).at_least.times(4).and_return(@app.atc_class(@code2tst))
+      @plugin = ODDB::WhoPlugin.new(@app)
+      result = @plugin.import(agent)
+      m = /Created\s+(\d+)\s+English/.match(result)
+      assert(m[1].to_i > 0)
+      assert_equal(['O', 'Pdepot'], @app.atc_class(@code2tst).ddds.keys.sort)
     end
   end
 end
