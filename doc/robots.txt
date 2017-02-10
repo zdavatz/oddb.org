@@ -16,7 +16,7 @@ Disallow: /en/provita
 Disallow: /de/santesuisse
 Disallow: /fr/santesuisse
 Disallow: /en/santesuisse
-Disallow: /de/mymedi
-Disallow: /fr/mymedi
-Disallow: /en/mymedi
+Disallow: /de/evidentia
+Disallow: /fr/evidentia
+Disallow: /en/evidentia
 Disallow: /resources/dojo
