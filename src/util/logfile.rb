@@ -33,7 +33,9 @@ module ODDB
 		end
     def debug(msg)
       msg = "#{caller[0]}: #{msg}"
-      $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+      unless ENV['TRAVIS']
+        $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+      end
       if not defined?(@@debugLog) or not @@debugLog
         name = LogFile.filename('oddb/debug', Time.now)
         FileUtils.makedirs(File.dirname(name))
