@@ -6,11 +6,12 @@ require 'pathname'
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
-
 root = Pathname.new(__FILE__).realpath.parent.parent.parent
 $: << root.join('test').join('test_plugin')
 $: << root.join('src')
-
+$: << File.expand_path('..', File.dirname(__FILE__))
+require 'stub/odba'
+require 'stub/oddbapp'
 require 'plugin/divisibility'
 
 module Kernel
@@ -35,17 +36,11 @@ end
 module ODDB
   class TestDivisibilityPlugin <Minitest::Test
     def setup
-      @app    = FlexMock.new 'app'
+      @app    = flexmock('app', ODDB::App.new)
       @plugin = DivisibilityPlugin.new @app
-      @div = flexmock('division')
-      @div.should_receive(:pointer).and_return('div-pointer')
-      @sequence = flexmock('sequence')
-      @sequence.should_receive(:iksnr).and_return('00000')
-      @sequence.should_receive(:seqnr).and_return('000')
     end
     def teardown
       super # to clean up FlexMock
-      #pass
     end
     def test_update_from_csv_with_invalid_path
       stdout = Kernel.capture(:stdout){ @plugin.update_from_csv 'bad_ext.pdf' }
@@ -60,13 +55,32 @@ module ODDB
       assert_equal(@plugin.updated_sequences, [])
     end
     def test_update_from_csv_with_valid_path
-      # TODO
-      # Test here CSV parsing
-      assert_equal(@plugin.created_div, 0)
-      assert_equal(@plugin.updated_div, 0)
-      assert_equal(@plugin.updated_sequences, [])
+      reg_15678 =  @app.create_registration('15678')
+      seq = reg_15678.create_sequence('01')
+      seq.pointer = Persistence::Pointer.new([:registration, 15678, :sequence, seq.seqnr])
+      pack = seq.create_package('062')
+      seq.fix_pointers
+      @app.should_receive(:registration).once.with('15678').and_return(reg_15678)
+      @app.should_receive(:registration).and_return(nil)
+      def @app.update(pointer, values, origin=nil)
+        @system.update(pointer, values, origin)
+      end
+      @plugin.update_from_csv File.expand_path('../data/csv/teilbarkeit_example.csv', File.dirname(__FILE__))
+      assert_equal(1, @plugin.created_div)
+      assert_equal(0, @plugin.updated_div)
+      assert_equal(1, @plugin.updated_sequences.size)
+      assert_equal('Ja (siehe Bemerkung)', @plugin.updated_sequences.first.division.crushable)
+      assert_equal('Nein', @plugin.updated_sequences.first.division.dissolvable)
+      assert_equal('Nein', @plugin.updated_sequences.first.division.divisable)
+      assert_equal('Zerkleinerung hat einen Wirkungsverlust zur Folge. Vorschlag: Methergin Tropflösung (auf Rezept)',
+                   @plugin.updated_sequences.first.division.notes)
     end
     def test_report
+      @div = flexmock('division')
+      @div.should_receive(:pointer).and_return('div-pointer')
+      @sequence = flexmock('sequence')
+      @sequence.should_receive(:iksnr).and_return('00000')
+      @sequence.should_receive(:seqnr).and_return('000')
       report = @plugin.report
       assert_equal 3, report.split("\n").length
       @plugin.updated_sequences = [@sequence]
