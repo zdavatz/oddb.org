@@ -21,6 +21,17 @@ module ODBA
 end
 module ODDB
   Today = Date.new(2014,5,1)
+  class Plugin
+    @@today = Today
+    ARCHIVE_PATH = File.expand_path('../../test_run', File.dirname(__FILE__))
+  end
+  def ODDB.init_analysis_test_variables(object= self)
+    object.today = Today
+    object.datadir = File.expand_path '../data', File.dirname(__FILE__)
+    object.data_file = File.join(object.datadir, 'xlsx/analysenliste_2017_01_01.xlsx')
+    object.index_html  = File.join(object.datadir, 'html/bag_analysen.html')
+    object.download_file = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xls/analysis_latest.xlsx')
+  end
   class BagDelegator
     def method_missing key, *args, &block
       @mock.send key, *args, &block
@@ -29,80 +40,42 @@ module ODDB
       @mock = mock
     end
   end
-  class AnalysisPlugin
-    @@today = Today
-  end
   class TestAnalysisPluginDownload <Minitest::Test
-    @@today = Today
+    attr_accessor :today, :datadir, :download_file, :data_file, :index_html
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
     end
     def setup
-      @pointer = FlexMock.new 'pointer'
-      @pointer.should_receive(:+).and_return @pointer
-      @pointer.should_receive(:creator).and_return 'creator'
-
-      @position = FlexMock.new 'position'
-      @position.should_receive(:pointer).and_return @pointer
-
-      @analysis_group = FlexMock.new 'analysis_group'
-      @analysis_group.should_receive(:oid).and_return 'oid'
-      @analysis_group.should_receive(:position).and_return @position
-      @analysis_group.should_receive(:update_position).and_return 'update_position'
-      
-      @app = FlexMock.new 'app'
-      @app.should_receive(:delete_all_analysis_group).and_return true
-      @app.should_receive(:analysis_group).and_return(@analysis_group)
-      @app.should_receive(:analysis_groups).and_return([@analysis_group])
-      @app.should_receive(:analysis_positions).and_return([])
-      @app.should_receive(:create)
-      @app.should_receive(:update)
-      @app.should_receive(:recount).and_return('recount')
-      @plugin = AnalysisPlugin.new(@app)
-      @download_file = File.expand_path(File.join(__FILE__, "../../../data/xls/analysis_fr_#{Today.strftime('%Y.%m.%d')}.xlsx")) 
-      @latest_file = File.expand_path(File.join(__FILE__, "../../../data/xls/analysis_fr_latest.xlsx")) 
-      FileUtils.rm(@download_file, :verbose => false) if File.exists?(@download_file)
-      FileUtils.rm(@latest_file, :verbose => false)   if File.exists?(@latest_file)
-    end
-    def test_update
-      skip('BAG has changed the format. Not yet adapted')
-      assert_equal('recount', @plugin.update)
-      assert(File.exists?(@download_file))
-    end
-  end
-
-  class TestAnalysisPluginWithoutDownload <Minitest::Test
-    @@today = Today
-    Download_file = File.expand_path(File.join(__FILE__, '../../data/xlsx/analysis_de_2014.10.14_small.xlsx'))
-    def teardown
-      ODBA.storage = nil
-      super # to clean up FlexMock
-    end
-    def setup
-      ODDB::GalenicGroup.reset_oids
-      ODBA.storage.reset_id
+      ODDB.init_analysis_test_variables(self)
+      FileUtils.rm_rf(ODDB::Plugin::ARCHIVE_PATH, :verbose => true)
+      FileUtils.makedirs(ODDB::Plugin::ARCHIVE_PATH)
+      FileUtils.cp(@data_file,  ODDB::Plugin::ARCHIVE_PATH, {verbose: false, preserve: true})
       @app = ODDB::App.new
       @plugin = AnalysisPlugin.new(@app)
-      def @plugin.get_latest_file(lang = 'de')
-        return true, Download_file
+      @agent = flexmock('mechanize_mock', Mechanize.new)
+      @agent.should_receive(:get).with(AnalysisPlugin::INDEX_URL).and_return do
+        Mechanize.new.get('file://'+ @index_html)
       end
-      @latest_file = File.expand_path(File.join(__FILE__, "../../../data/xls/analysis_fr_latest.xlsx")) 
-      FileUtils.rm(@latest_file, :verbose => false)   if File.exists?(@latest_file)
+      @agent.should_receive(:get).and_return do |args|
+        if /excelformat/i.match(args)
+          Mechanize.new.get('file://'+@data_file)
+        else
+          nil
+        end
+      end
     end
     def test_update
-      @plugin.update
-      assert(File.exists?(Download_file))
-      assert_equal(4, @app.analysis_groups.size)
-      assert_equal('1000', @app.analysis_groups.first[1].groupcd)
-      assert_equal('1,25-Dihydroxycholecalciferol', @app.analysis_groups.first[1].positions.first[1].description)
-      assert_equal('C', @app.analysis_groups.first[1].positions.first[1].lab_areas)
-      assert_equal(85, @app.analysis_groups.first[1].positions.first[1].taxpoints)
-      assert_equal('Alkalische Phosphatase-Isoenzyme mittels elektrophoretischer Differenzierung', @app.analysis_groups['1030'].positions.first[1].description)
-      assert_equal('Alpha-1-Antitrypsin',  @app.analysis_groups['1032'].positions.first[1].description)
-      assert_equal('in Stoffwechsellaboratorien der Universitätskliniken',
-                   @app.analysis_groups['1007'].positions.first[1].limitation_text.to_s)
-      
+      result = @plugin.update(@agent)
+      assert(File.exists?(@download_file))
+      assert_match(/update_group_position de/, @plugin.log_info.to_s)
+      assert_match(/update_group_position fr/, @plugin.log_info.to_s)
+      assert_match(/update_group_position it/, @plugin.log_info.to_s)
+      assert_equal(24, @app.analysis_groups.size)
+      assert_equal( "17-cétostéroïdes, fractionnés", @app.analysis_group('1003').position('00').description('fr'))
+      assert_equal( "17-chetosteroidi, frazionati", @app.analysis_group('1003').position('00').description('it'))
+      assert_equal( "17-Ketosteroide, fraktioniert", @app.analysis_group('1003').position('00').description('de'))
     end
   end
+
 end
