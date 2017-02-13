@@ -683,7 +683,7 @@ class SequenceComposite < HtmlGrid::Composite
       components.store [0,7], :division
       components.store [0,8], :sequence_packages
       css_map.store [0,6], 'subheading'
-    end if false
+    end
     super
   end
   def compositions(model, session=@session)
@@ -721,8 +721,8 @@ class RootSequenceForm < HtmlGrid::Form
     [0,2] => :composition_text,
     [0,3] => 'active_agents',
     [0,4] => :compositions,
-#    [0,5] => 'division',
-#    [0,6] => :division,
+    [0,5] => 'division',
+    [0,6] => :division,
   }
   CSS_MAP = {
     [0,1] => 'subheading',
@@ -739,8 +739,7 @@ class RootSequenceForm < HtmlGrid::Form
     RootCompositions.new(model.compositions, @session, self)
   end
   def division(model, session=@session)
-    return nil
-    # RootDivisionComposite.new(model.division, session, self)
+    RootDivisionComposite.new(model.division, session, self)
   end
   def hidden_fields(context)
     super << context.hidden('patinfo', 'keep')
