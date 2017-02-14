@@ -96,9 +96,17 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
   def test_search_oddb
     expected = ODDB::SearchResult.new
     expected.atc_classes = []
-    expected.search_type=:unwanted_effect
-    #assert_equal(expected, @app.search_oddb('query', 'lang'))
+    expected.search_type=:sequence
+    expected.exact = true
+    expected.search_query = "query"
+    expected.error_limit = 500
     assert(same?(expected, @app.search_oddb('query', 'lang')))
+  end
+  def test_search_by_unwanted_effect
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type=:unwanted_effect
+    assert(same?(expected, @app.search_by_unwanted_effect('query', 'lang')))
   end
   def test_search_oddb__atc_class
     expected = ODDB::SearchResult.new
@@ -247,6 +255,9 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected.atc_classes = []
     expected.search_type = :combined
     result = @app.search_combined('query', 'lang')
+    expected.exact = true
+    expected.search_query = "query"
+    expected.error_limit = 500
     assert(same?(expected, result), "Result #{result.inspect} should match #{expected.inspect}" )
   end
   def test_search_exact_substance
