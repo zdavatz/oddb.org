@@ -93,7 +93,7 @@ class TestActiveAgent <Minitest::Test
     assert_equal('', active_agent.substance.to_s)
     active_agent.init(@app)
     assert_equal(name, active_agent.to_s)
-    assert_equal(nil, active_agent.sequence)
+    assert_nil(active_agent.sequence)
     assert_equal(true, active_agent.is_active_agent)
   end
   def test_init_is_comon_agent

@@ -321,7 +321,7 @@ class TestCompany <Minitest::Test
 		}
 		reg = StubRegistration.new
 		@company.add_registration(reg)
-		assert_equal(nil, @company.name)
+		assert_nil(@company.name)
 		@company.update_values(values)
 		assert_equal('ywesee.com', @company.name)
 		assert_equal(true, @company.cl_status)

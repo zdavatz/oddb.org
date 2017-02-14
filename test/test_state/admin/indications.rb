@@ -24,7 +24,7 @@ class TestIndications <Minitest::Test
     @state   = ODDB::State::Admin::Indications.new(@session, @model)
   end
   def test_init
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
   def test_symbol
     assert_equal('language', @state.symbol)

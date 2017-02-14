@@ -11,10 +11,10 @@ require 'view/resulttemplate'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module View
-    Copyright::ODDB_VERSION = 'version'
+    Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
     class TestResultTemplate <Minitest::Test
       def stderr_null
         require 'tempfile'

@@ -51,7 +51,7 @@ class TestRootActiveAgents <Minitest::Test
     assert_kind_of(HtmlGrid::Link, @agents.add('model'))
   end
   def test_composition
-    assert_equal(nil, @agents.composition)
+    assert_nil(@agents.composition)
   end
   def test_css_id
     assert_equal('active-agents-', @agents.css_id)
@@ -76,7 +76,7 @@ class TestRootActiveAgents <Minitest::Test
     assert_equal('part[][0]', @agents.name('part'))
   end
   def test_unsaved
-    assert_equal(nil, @agents.unsaved(nil))
+    assert_nil(@agents.unsaved(nil))
   end
 end
 
@@ -287,7 +287,7 @@ class TestSequenceForm <Minitest::Test
     flexmock(@model) do |m|
       m.should_receive(:has_patinfo?)
     end
-    assert_equal(nil, @composite.patinfo(@model, @session))
+    assert_nil(@composite.patinfo(@model, @session))
   end
   def test_profile_link
     company = flexmock('company', :pointer => 'pointer')

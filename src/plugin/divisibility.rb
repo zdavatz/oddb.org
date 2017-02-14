@@ -41,6 +41,7 @@ module ODDB
             iksnr = ean[4..8]
             ikscd = ean[9..11]
           end
+          next unless iksnr
           if reg = @app.registration(iksnr) and
              pac = reg.package(ikscd) and
              seq = pac.sequence

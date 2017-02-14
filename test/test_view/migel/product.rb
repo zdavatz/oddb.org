@@ -22,9 +22,9 @@ require 'remote/migel/model/group'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
-    Copyright::ODDB_VERSION = 'version'
+    Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
     module Migel
 
 class TestProductInnerComposite <Minitest::Test
@@ -117,7 +117,7 @@ class TestProductInnerComposite <Minitest::Test
                    :has_ddd?    => nil,
                    :parent_code => 'code'
                   )
-    assert_equal(nil, @composite.atc_ddd_link(atc, @session))
+    assert_nil(@composite.atc_ddd_link(atc, @session))
   end
   def test_atc_description
     flexmock(@lookandfeel, :language => 'language')

@@ -180,7 +180,7 @@ module ODDB
       active.more_info = tst
       assert_equal(tst, active.more_info)
       active.more_info = nil
-      assert_equal(nil, active.more_info)
+      assert_nil(active.more_info)
     end
 
     def test_composition_corresp

@@ -148,6 +148,7 @@ class OddbPrevalence
 		_clean_odba_stubs_hash(@atc_classes)
 		@atc_classes.each_value { |atc| _clean_odba_stubs_array(atc.sequences) }
 		_clean_odba_stubs_hash(@registrations)
+    _clean_odba_stubs_hash(@evidentia_search_links_hash)
 		@registrations.each_value { |reg|
 			_clean_odba_stubs_hash(reg.sequences)
 			reg.sequences.each_value { |seq|
@@ -155,7 +156,6 @@ class OddbPrevalence
 				_clean_odba_stubs_array(seq.active_agents)
 			}
 		}
-    _clean_odba_stubs_hash(@evidentia_search_links_hash)
 	end
 	def _clean_odba_stubs_hash(hash)
 		if(hash.values.any? { |val| val.odba_instance.nil? })

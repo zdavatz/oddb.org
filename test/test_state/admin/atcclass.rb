@@ -30,7 +30,7 @@ class TestAtcClass <Minitest::Test
     flexmock(@state, :unique_email => 'unique_email')
   end
   def test_init
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
   def test_update
     assert_equal(@state, @state.update)

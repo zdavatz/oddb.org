@@ -232,7 +232,7 @@ module ODDB
     assert_equal(false, inactive.is_active_agent)
     assert_equal([agent1, agent2], comp.active_agents)
     set_is_active_agent(agent2, nil)
-    assert_equal(nil, agent2.is_active_agent)
+    assert_nil(agent2.is_active_agent)
     res = @plugin.cleanup_active_agents_with_nil
   end
 end

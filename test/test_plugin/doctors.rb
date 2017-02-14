@@ -99,7 +99,7 @@ class TestDoctorPlugin <Minitest::Test
     target = {:symbol => 'value1'}
     source = {:symbol => 'value2'}
     symbol = :symbol
-    assert_equal(nil, @plugin.merge_address(target, source, symbol))
+    assert_nil(@plugin.merge_address(target, source, symbol))
     expected = {:symbol => ['value1', 'value2']}
     assert_equal(expected, target)
   end
@@ -143,7 +143,7 @@ class TestDoctorPlugin <Minitest::Test
     end
     flexmock(@plugin, :puts => nil)
     replace_constant('ODDB::Doctors::DoctorPlugin::PARSER', parser) do
-      assert_equal(nil, @plugin.get_doctor_data('doc_id'))
+      assert_nil(@plugin.get_doctor_data('doc_id'))
     end
   end
   def test_fix_doctors

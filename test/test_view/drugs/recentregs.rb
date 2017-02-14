@@ -96,7 +96,7 @@ class TestRootRecentRegsList <Minitest::Test
   end
   def test_init
     skip("Niklaus does not know whether nil or 3 is correct")
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
 end
 
@@ -133,7 +133,7 @@ class TestRecentRegsList <Minitest::Test
   end
   def test_init
     skip("Niklaus does not know whether nil or 1 is correct")
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
 end
 

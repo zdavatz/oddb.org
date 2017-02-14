@@ -16,7 +16,12 @@ module ODDB
 # in xlsx of 2014.10.08.xlsx
 # Kapitel  Pos.-Nr.  TP  Bezeichnung  Limitation  Fach-bereich
 # A        B         C   D            E           F
-
+    BASE_URL  = "https://www.bag.admin.ch"
+    INDEX_URL = "#{BASE_URL}/bag/de/home/themen/versicherungen/krankenversicherung/krankenversicherung-leistungen-tarife/Analysenliste.html"
+    LANGUAGES = { 'de' => 'Deutsch',
+                  'fr' => 'Français',
+                  'it' => 'Italiano',
+                  }
     COL = {
       :chapter              => 0, # A
       :group_position_code  => 1, # B
@@ -38,53 +43,43 @@ module ODDB
       save_for_log "@archive #{@archive}"
       super
     end
-    def update
-      needs_update_fr, target_fr = get_latest_file('fr')
-      needs_update_de, target_de = get_latest_file('de')
-      if needs_update_de or needs_update_fr or @app.analysis_groups.size == 0
+    def update(agent=Mechanize.new)
+      @agent = agent
+      needs_update, target = get_latest_file
+      if needs_update || @app.analysis_groups.size == 0
         save_for_log "deleting all_analysis_group (#{@app.analysis_groups.size} groups)"
-        ODBA.transaction {
+        ODBA.transaction do
           @app.delete_all_analysis_group
-          update_group_position(target_de, 'de')
-          update_group_position(target_fr, 'fr')
-        }
+          LANGUAGES.each {|short, name| update_group_position(target, short, name) }
+        end
       end
       save_for_log "update finished with #{@app.analysis_groups.size} groups and #{@app.analysis_positions.size} positions"
       @app.recount
     end
-    def update_group_position(path, lang)
-      save_for_log " update_group_position #{lang} #{path}"
-      parse_xls(path).each { |position|
+    def update_group_position(path, short, name)
+      save_for_log " update_group_position #{short} #{name} #{path}"
+      parse_xlsx(path, short, name).each { |position|
         group = update_group(position)
         if(position[:analysis_revision] == 'S')
           delete_position(group, position)
         else
-          position = update_position(group, position, lang)
+          position = update_position(group, position, short, name)
         end
       }
     end
-    def get_latest_file(lang = 'de')
-      agent = Mechanize.new
-      url = "http://www.bag.admin.ch/themen/krankenversicherung/00263/00264/04185/index.html?lang=#{lang}"
-      page = agent.get url
-      keyword = if lang == 'de'
-                  'Liste der Analysenpositionen'
-                elsif lang == 'fr'
-                  'Liste des positions relatives aux analyses'
-                end
-      links = page.links.select do |link|
-        ptrn = keyword.gsub /[^A-Za-z]/u, '.'
-        /#{ptrn}/iu.match link.attributes['title']
-      end
-      link = links.first or raise "could not identify url to analysis_#{lang}.xlsx (#{keyword})"
-      file = agent.get(link.href)
+    def get_latest_file
+      page = @agent.get INDEX_URL
+      keyword = 'Liste der Analysenpositionen'
+      links = page.links.find_all{|link| /excelforma/i.match (link.href) }
+      link = links.first or raise "could not identify url to analysis.xlsx"
+      file = @agent.get(link.href)
       download = file.body
-      latest = File.join @archive, "analysis_#{lang}_latest.xlsx"
-      target = File.join @archive, @@today.strftime("analysis_#{lang}_%Y.%m.%d.xlsx")
+      latest = File.join @archive, "analysis_latest.xlsx"
+      target = File.join @archive, @@today.strftime("analysis_%Y.%m.%d.xlsx")
       needs_update = true
       if(!File.exist?(latest) or download.size != File.size(latest))
+        FileUtils.makedirs(File.dirname(latest)) unless File.directory?(File.dirname(latest))
         File.open(latest, 'w+') { |f| f.write download }
-        File.open(target, 'w+') { |f| f.write download }
         save_for_log "saved get_latest_file as #{target} and #{latest}"
       else
         save_for_log "latest_file #{target} is uptodate"
@@ -92,31 +87,43 @@ module ODDB
       end
       return needs_update,latest
     end
-    def parse_xls(path)
+    def parse_xlsx(path, short, name)
       workbook = RubyXL::Parser.parse(path)
       positions = []
       rows = 0
-      workbook[0].each do |row|
-        rows += 1
-        if rows > 1
-          groupcd, poscd = row[COL[:group_position_code]].value.to_s.split('.')
-          poscd ||= '00'
-          chapter            = row[COL[:chapter]]           ? row[COL[:chapter]].value            : nil
-          taxpoints          = row[COL[:taxpoints]]         ? row[COL[:taxpoints]].value          : nil
-          description        = row[COL[:description]]       ? row[COL[:description]].value        : nil
-          limitation_text    = row[COL[:limitation_text]]   ? row[COL[:limitation_text]].value    : nil
-          lab_areas          = row[COL[:lab_areas]]         ? row[COL[:lab_areas]].value          : nil
-          positions << {
-            :chapter            => chapter,
-            :group              => groupcd,
-            :position           => poscd,
-            :taxpoints          => taxpoints,
-            :description        => description,
-            :limitation_text    => limitation_text,
-            :lab_areas          => lab_areas,
-          }
+      found_language = false
+      examined = []
+      workbook.each do |worksheet|
+        next if found_language
+        examined <<  worksheet.sheet_name
+        next unless worksheet.sheet_name.eql?(name)
+        worksheet.each do |row|
+          # workbook[0].sheet_name, eg. Deutsch
+          rows += 1
+          if rows > 1
+            next unless row[COL[:group_position_code]]# puts "Skipping rows #{rows}"
+            found_language = true
+            string = sprintf('%6.2f',row[COL[:group_position_code]].value)
+            groupcd, poscd = string.split('.')
+            poscd ||= '00'
+            chapter            = row[COL[:chapter]]           ? row[COL[:chapter]].value            : nil
+            taxpoints          = row[COL[:taxpoints]]         ? row[COL[:taxpoints]].value          : nil
+            description        = row[COL[:description]]       ? row[COL[:description]].value        : nil
+            limitation_text    = row[COL[:limitation_text]]   ? row[COL[:limitation_text]].value    : nil
+            lab_areas          = row[COL[:lab_areas]]         ? row[COL[:lab_areas]].value          : nil
+            positions << {
+              :chapter            => chapter,
+              :group              => groupcd,
+              :position           => poscd,
+              :taxpoints          => taxpoints,
+              :description        => description,
+              :limitation_text    => limitation_text,
+              :lab_areas          => lab_areas,
+            }
+          end
         end
       end
+      raise "Unable to find worksheet for #{short} #{name} examined #{examined}" unless found_language
       positions
     end
     def update_group(position)
@@ -128,9 +135,9 @@ module ODDB
         group
       end
     end
-    def update_position(group, position, language)
+    def update_position(group, position, short, name)
       poscd   = position.delete(:position)
-      position.store(language, position.delete(:description))
+      position.store(short, position.delete(:description))
       lim_txt = position.delete(:limitation_text)
       return unless group
       pos = if grp_obj = @app.analysis_group(group.oid) and pos_obj = grp_obj.position(poscd)
@@ -142,7 +149,7 @@ module ODDB
       if(lim_txt)
         lim_txt.gsub!(/^Limitation: /,'')
         lim_ptr = pos.pointer + :limitation_text
-        args = {language => lim_txt}
+        args = {short => lim_txt}
         lim = @app.update(lim_ptr.creator, args, :analysis)
         @app.update(pos.pointer, {:limitation_text => lim}, :anaylsis)
       end

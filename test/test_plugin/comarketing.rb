@@ -160,7 +160,7 @@ The following          2 Original/Comarketing-Pairs were not found in the Databa
       find_result = flexmock('find_result', :pointer => 'pointer')
       flexmock(find_result, :comarketing_with => find_result)
       flexmock(@app, :registration => find_result)
-      assert_equal(nil, @plugin.update_pair('original_iksnr', 'comarketing_iksnr'))
+      assert_nil(@plugin.update_pair('original_iksnr', 'comarketing_iksnr'))
     end
     def test_update_pair__not_found
       @plugin.instance_eval('@not_found = []')

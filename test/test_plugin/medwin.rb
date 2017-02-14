@@ -167,7 +167,7 @@ class TestMedwinCompanyPlugin <Minitest::Test
                        :pointer     => 'pointer'
                       )
     replace_constant('ODDB::MedwinCompanyPlugin::MEDDATA_SERVER', server) do  
-      assert_equal(nil, @plugin.update_company(company))
+      assert_nil(@plugin.update_company(company))
     end
   end
   def test_update_company__result_empty
@@ -185,7 +185,7 @@ class TestMedwinCompanyPlugin <Minitest::Test
                        :pointer     => 'pointer'
                       )
     replace_constant('ODDB::MedwinCompanyPlugin::MEDDATA_SERVER', server) do  
-      assert_equal(nil, @plugin.update_company(company))
+      assert_nil(@plugin.update_company(company))
     end
   end
 
@@ -302,7 +302,7 @@ class TestMedwinPackagePlugin <Minitest::Test
                        :search => [],
                        :detail => {'key' => 'detail'}
                       )
-    assert_equal(nil, @plugin.update_package(meddata, package))
+    assert_nil(@plugin.update_package(meddata, package))
   end
   def test_update_package__ean13__medwin_error
     package = flexmock('package', 
@@ -361,7 +361,7 @@ class TestMedwinPackagePlugin <Minitest::Test
       s.should_receive(:session).and_yield(meddata)
     end
     replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
-      assert_equal(nil, @plugin.update)
+      assert_nil(@plugin.update)
     end
   end
   def test_update_package_trade_status
@@ -431,7 +431,7 @@ class TestMedwinPackagePlugin <Minitest::Test
     end
     flexmock(@plugin, :sleep => 'sleep')
     replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
-      assert_equal(nil, @plugin.update_trade_status)
+      assert_nil(@plugin.update_trade_status)
     end
   end
 end

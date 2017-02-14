@@ -13,7 +13,7 @@ require 'view/user/preferences'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module View
     class Copyright < HtmlGrid::Composite

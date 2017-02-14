@@ -21,7 +21,7 @@ module ODDB
 
     def test_full_loop_no_problem
       @r_loop = ResilientLoop.new(LoopName)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
         result = []
       loop_entries = [0,1,2,3]
       loop_entries.each{
@@ -30,12 +30,12 @@ module ODDB
       }
       @r_loop.finished
       assert_equal(loop_entries, result)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
     end
 
     def test_full_loop_always_timeout
       @r_loop = ResilientLoop.new(LoopName)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
       result = []
       loop_entries = [0,1,2,3]
       begin
@@ -47,12 +47,12 @@ module ODDB
       rescue Timeout::Error
       end
       assert_equal([], result)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
     end
 
     def test_full_loop_recovers_from_first_timeout
       @r_loop = ResilientLoop.new(LoopName)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
       result = []
       loop_entries = [0,1,2,3,4,5,6]
       toggle = false
@@ -64,7 +64,7 @@ module ODDB
       rescue Timeout::Error
       end
       assert_equal(loop_entries, result)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
     end
 
     def test_skip_some_entries
@@ -84,7 +84,7 @@ module ODDB
         }
       end
       assert_equal([0,1], result)
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
       assert_equal(0, @r_loop.nr_skipped)
       assert(File.exist?(@r_loop.state_file))
 
@@ -98,7 +98,7 @@ module ODDB
           next if @r_loop.must_skip?(entry)
           @r_loop.try_run(entry, TimeoutValue) { result << entry; }
       }
-      assert_equal(nil, @r_loop.state_id)
+      assert_nil(@r_loop.state_id)
       assert_equal([2,3,4], result)
       assert_equal(2, @r_loop.nr_skipped)
     end

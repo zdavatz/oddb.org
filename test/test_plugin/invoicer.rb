@@ -86,7 +86,7 @@ class TestInvoicer <Minitest::Test
       l.should_receive(:notify).and_return('notify')
     end
     def @invoicer.subject; end
-    assert_equal(nil, @invoicer.send_invoice('date', 'mail', ['item']))
+    assert_nil(@invoicer.send_invoice('date', 'mail', ['item']))
   end
 
 

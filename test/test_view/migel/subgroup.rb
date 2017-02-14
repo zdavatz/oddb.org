@@ -13,9 +13,9 @@ require 'view/migel/subgroup'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
-    Copyright::ODDB_VERSION = 'version'
+    Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
     module Migel
 
 class TestProductList <Minitest::Test

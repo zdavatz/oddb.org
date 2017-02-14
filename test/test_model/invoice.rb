@@ -39,11 +39,11 @@ module ODDB
 			assert_equal(true, @invoice.payment_received?)
 		end
 		def test_item_by_text
-			assert_equal(nil, @invoice.item_by_text('foo'))
+			assert_nil(@invoice.item_by_text('foo'))
 			item = @invoice.create_item
 			item.text = 'foo'
 			assert_equal(item, @invoice.item_by_text('foo'))
-			assert_equal(nil, @invoice.item_by_text('bar'))
+			assert_nil(@invoice.item_by_text('bar'))
 		end
 		def test_expired
 			assert_equal(true, @invoice.expired?)

@@ -6,7 +6,7 @@
 # when all other unit tests are included.
 # To work aroung this bug, we run some files separately
 
-@@startTime ||= Time.now
+StartTime ||= Time.now
 
 ENV['TZ'] = 'UTC'
 
@@ -85,7 +85,7 @@ class OddbTestRunner
           problems << path
         end
     }
-    diffSeconds = (Time.now - @@startTime).to_i
+    diffSeconds = (Time.now - StartTime).to_i
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
     puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were #{problems.join(',')}" if problems.size > 0
     puts "   Took #{(diffSeconds/60).to_i} minutes and #{diffSeconds % 60} seconds to run"

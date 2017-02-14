@@ -137,7 +137,6 @@ return false;
         "searchAttr"     => "search_query",
         "labelAttr"      => "drug",
         "jsId"           => "prescription_searchbar",
-        "labelAttr"      => "drug",
         "type"           => "text",
         "id"             => "prescription_searchbar",
         "store"          => "search_matches",

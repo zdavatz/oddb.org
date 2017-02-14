@@ -39,7 +39,7 @@ class TestOddbValidator <Minitest::Test
 	def test_ikscd
 		assert_equal('123', @validator.validate(:ikscd, '123'))
 		assert_equal('003', @validator.validate(:ikscd, '3'))
-		assert_equal(nil, @validator.validate(:ikscd, nil))
+		assert_nil(@validator.validate(:ikscd, nil))
 		assert_equal('', @validator.validate(:ikscd, ''))
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:ikscd, '123456').class)
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:ikscd, '1a34').class)
@@ -48,7 +48,7 @@ class TestOddbValidator <Minitest::Test
 		assert_equal('00300', @validator.validate(:iksnr, '00300'))
 		assert_equal('12345', @validator.validate(:iksnr, '12345'))
 		assert_equal('1234567890', @validator.validate(:iksnr, '1234567890'))
-		assert_equal(nil, @validator.validate(:iksnr, nil))
+		assert_nil(@validator.validate(:iksnr, nil))
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '123').class)
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '12345678901').class)
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '1a345').class)
@@ -76,7 +76,7 @@ class TestOddbValidator <Minitest::Test
 	end
 	def test_seqnr
 		assert_equal('12', @validator.validate(:seqnr, '12'))
-		assert_equal(nil, @validator.validate(:seqnr, nil))
+		assert_nil(@validator.validate(:seqnr, nil))
 		assert_equal('', @validator.validate(:seqnr, ''))
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:seqnr, '123').class)
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:seqnr, '1a3').class)
@@ -94,7 +94,7 @@ class TestOddbValidator <Minitest::Test
 	end
 	def test_filename
 		assert_equal('oddb.yaml.gz', @validator.validate(:filename, "oddb.yaml.gz"))
-		assert_equal(nil, @validator.validate(:filename, "/etc/passwd"))
+		assert_nil(@validator.validate(:filename, "/etc/passwd"))
 	end
   def test_ean13
     assert_equal('7680382940243', @validator.ean13('7680382940243'))
@@ -116,7 +116,7 @@ class TestOddbValidator <Minitest::Test
     end
   end
   def test_emails__nil
-    assert_equal(nil, @validator.emails(''))
+    assert_nil(@validator.emails(''))
   end
   def test_emails__domainless
     # Actuall, I do not know how to make the result 'domainless'
@@ -196,7 +196,7 @@ class TestOddbValidator <Minitest::Test
     end
   end
   def test_code__empty
-    assert_equal(nil, @validator.code(''))
+    assert_nil(@validator.code(''))
   end
   def test_dose__error
     assert_raises(SBSM::InvalidDataError) do

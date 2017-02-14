@@ -196,7 +196,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		}
 		@app.update(pointer, values)
 		package = @app.registration('12345').package(32)
-		assert_equal(nil, package.descr)
+		assert_nil(package.descr)
 		assert_equal('A', package.ikscat)
 	end
 	def test_galenic_form
@@ -301,7 +301,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 			company1.oid => company1,
 			company2.oid => company2,
 		}
-		assert_equal(nil, @app.company_by_name('pear'))
+		assert_nil(@app.company_by_name('pear'))
 	end
 	def test_create_company
 			@app.companies = {}
@@ -401,7 +401,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		}
 		@app.update(result.pointer, values)
 		assert_equal('Coagulantium', result.la)
-		assert_equal(nil, @app.indication_by_text('Hypertonicum'))
+		assert_nil(@app.indication_by_text('Hypertonicum'))
 		#assert_equal([], @app.indication_index.fetch('hypertonicum'))
 		assert_equal(result, @app.indication_by_text('Coagulantium'))
 		#assert_equal([result], @app.indication_index.fetch('coagulantium'))
@@ -584,7 +584,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 	end
   def test_doctor_by_origin__nil
 		@app.doctors = {}
-		assert_equal(nil, @app.doctor_by_origin(:doc, 4567))
+		assert_nil(@app.doctor_by_origin(:doc, 4567))
   end
 	def test_substance_by_smcd
 		sub1 = FlexMock.new
@@ -642,7 +642,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
     flexmock(ODDB::Util::Ipn) do |ipn|
       ipn.should_receive(:process).once.with('notification', ODDB::App)
     end
-    assert_equal(nil, @app.ipn('notification'))
+    assert_nil(@app.ipn('notification'))
   end
   def test_yus_allowed?
     assert_equal('session', @app.yus_allowed?('email', 'action', 'key'))
@@ -667,10 +667,10 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
     assert_equal({"active_patinfo"=>1}, @app.active_pdf_patinfos)
   end
   def test_address_suggestion
-    assert_equal(nil, @app.address_suggestion('12345'))
+    assert_nil(@app.address_suggestion('12345'))
   end
   def test_analysis_group
-    assert_equal(nil, @app.analysis_group(0))
+    assert_nil(@app.analysis_group(0))
   end
   def test_analysis_positions
     assert_equal([], @app.analysis_positions)

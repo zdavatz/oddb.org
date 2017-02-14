@@ -3,7 +3,7 @@ cache: bundler
 sudo: false
 bundler_args: --without debugger
 rvm:
-  - 1.9.3
+  - 2.4.0
 script:
   - bundle exec rake quanty
   - bundle exec ruby test/suite.rb

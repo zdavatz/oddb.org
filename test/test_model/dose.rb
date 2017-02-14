@@ -125,12 +125,20 @@ class TestDose <Minitest::Test
 		dose2 = ODDB::Dose.new('1', 'mg')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
-	def test_comparable9
-		dose1 = ODDB::Dose.new('1000', nil) 
-		dose2 = ODDB::Dose.new('1', 'mg')
-		assert(dose2 > dose1, "dose2 was not > dose1")
-		assert(dose1 < dose2, "dose1 was not < dose2")
-	end
+  def test_comparable9
+    dose1 = ODDB::Dose.new('1000', nil)
+    dose2 = ODDB::Dose.new('1', 'mg')
+    assert(dose2 > dose1, "dose2 was not > dose1")
+    assert(dose1 < dose2, "dose1 was not < dose2")
+  end
+  def test_comparable10
+    dose = ODDB::Dose.new('1000', nil)
+    assert_nil(nil <=> dose, "nil <=> dose")
+  end
+  def test_comparable11
+    dose = ODDB::Dose.new('1000', nil)
+    assert_equal(-1, dose <=> nil, "nil <=> dose")
+  end
 	def test_complex_unit
 		dose = nil
 		dose = ODDB::Dose.new(20.0, 'mg/5ml')

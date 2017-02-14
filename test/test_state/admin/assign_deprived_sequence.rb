@@ -103,7 +103,7 @@ class TestAssignDeprivedSequence <Minitest::Test
              :user_input => pointer
             )
     flexmock(@app, :update => 'update')
-    assert_equal(nil, @state.assign_deprived_sequence)
+    assert_nil(@state.assign_deprived_sequence)
   end
   def test_assign_deprived_sequence__pdf_patinfo
     flexmock(@model, 
@@ -121,7 +121,7 @@ class TestAssignDeprivedSequence <Minitest::Test
              :resolve    => 'resolve'
             )
     flexmock(@app, :update => 'update')
-    assert_equal(nil, @state.assign_deprived_sequence)
+    assert_nil(@state.assign_deprived_sequence)
   end
   def test_assing_deprived_sequence__not_allowed
     flexmock(@model, :sequence => @sequence)
@@ -147,7 +147,7 @@ class TestAssignDeprivedSequence <Minitest::Test
              :unique_email => 'unique_email'
             )
     flexmock(@model, :pointer => 'pointer')
-    assert_equal(nil, @state.shadow)
+    assert_nil(@state.shadow)
   end
   def test_symbol
     assert_equal(:name_base, @state.symbol)

@@ -49,7 +49,7 @@ class TestIpn <Minitest::Test
   end
   def test_send_notification__nil
     invoice = flexmock('invoice', :yus_name => nil)
-    assert_equal(nil, ODDB::Util::Ipn.send_notification(invoice){})
+    assert_nil(ODDB::Util::Ipn.send_notification(invoice){})
   end
   def test_send_poweruser_notification
     item    = flexmock('item', :duration => 1)
@@ -91,7 +91,7 @@ class TestIpn <Minitest::Test
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     $stdout  = Tempfile.new('tempfile')
-    assert_equal(nil, ODDB::Util::Ipn.send_download_seller_notification(invoice))
+    assert_nil(ODDB::Util::Ipn.send_download_seller_notification(invoice))
     $oddb    = oddb_bak
     $stdout  = STDOUT
     assert_equal(0, Util.sent_mails.size)
@@ -101,7 +101,7 @@ class TestIpn <Minitest::Test
 
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
-    assert_equal(nil, ODDB::Util::Ipn.send_download_seller_notification(invoice))
+    assert_nil(ODDB::Util::Ipn.send_download_seller_notification(invoice))
     $oddb    = oddb_bak
     assert_equal(0, Util.sent_mails.size)
   end

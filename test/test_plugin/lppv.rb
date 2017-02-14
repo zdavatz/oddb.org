@@ -12,9 +12,11 @@ require 'minitest/autorun'
 require "plugin/lppv"
 require "net/http"
 require 'flexmock/minitest'
-# require 'webmock/test_unit'
 require 'vcr'
-require 'pry'
+begin
+  require 'pry'
+rescue LoadError
+end
 require 'test_helpers' # for VCR setup
 
 module ODDB

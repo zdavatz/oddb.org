@@ -18,7 +18,7 @@ require 'custom/lookandfeelwrapper'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module State
     class Global < SBSM::State

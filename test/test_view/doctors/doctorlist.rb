@@ -55,7 +55,7 @@ class TestDoctorList <Minitest::Test
     @list    = ODDB::View::Doctors::DoctorList.new([@model], @session)
   end
   def test_init
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
 end
 

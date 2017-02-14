@@ -16,12 +16,12 @@ require 'model/analysis/group'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
 
   module View
     class Copyright < HtmlGrid::Composite
-      ODDB_VERSION = 'oddb_version'
+      ODDB_VERSION = 'oddb_version' unless defined?(ODDB_VERSION)
     end
     module Drugs
 
@@ -54,7 +54,7 @@ class TestCompareList <Minitest::Test
   end
   def test_package_line
     offset = [0,0]
-    assert_equal(nil, @list.package_line(offset))
+    assert_nil(@list.package_line(offset))
   end
   def test_compose_list
     generic_type = flexmock('generic_type')

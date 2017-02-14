@@ -105,7 +105,7 @@ class TestRootState <Minitest::Test
 	def test_new_registration
 		@state.extend(State::Admin::Root)
 		regstate = @state.new_registration
-		assert_equal(nil, regstate.model.company)
+		assert_nil(regstate.model.company)
 	end
 end
 		end

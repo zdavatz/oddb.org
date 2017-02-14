@@ -13,7 +13,7 @@ require 'view/printtemplate'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
 
     class StubPrint

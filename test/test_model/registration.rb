@@ -138,7 +138,7 @@ class TestRegistration <Minitest::Test
   def test_active__renewal
     assert_equal(true, @registration.active?)
     @registration.expiration_date = @@two_years_ago - 1 
-    assert_equal(nil, @registration.active?)
+    assert_nil(@registration.active?)
     @registration.renewal_flag = true
     assert_equal(true, @registration.active?)
   end

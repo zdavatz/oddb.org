@@ -13,7 +13,7 @@ require 'view/companies/company'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
   end
 end
@@ -61,7 +61,7 @@ class TestUserCompanyForm <Minitest::Test
     @form = ODDB::View::Companies::UserCompanyForm.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
   def test_address
     assert_kind_of(HtmlGrid::InputText, @form.address(@model, @session))

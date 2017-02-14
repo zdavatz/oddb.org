@@ -49,7 +49,7 @@ class TestAddressSuggestion <Minitest::Test
     @state   = ODDB::State::Admin::AddressSuggestion.new(@session, @model)
   end
   def test_init
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
   def test_delete
     pointer = Persistence::Pointer.new
@@ -119,7 +119,7 @@ class TestAddressSuggestion <Minitest::Test
   def test_accept__error
     input = {}
     flexmock(@session, :user_input => input)
-    assert_equal(nil, @state.accept)
+    assert_nil(@state.accept)
   end
 
 

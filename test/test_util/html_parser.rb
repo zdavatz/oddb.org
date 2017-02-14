@@ -391,7 +391,7 @@ class TestHtmlTableHandler <Minitest::Test
     assert_equal(['child'], @handler.children(0,0))
   end
   def test_children__nil
-    assert_equal(nil, @handler.children(0,0))
+    assert_nil(@handler.children(0,0))
   end
   def test_current_colspan
     current_row = ODDB::HtmlTableHandler::Row.new({})
@@ -480,14 +480,14 @@ class TestBasicHtmlParser <Minitest::Test
     @parser = ODDB::BasicHtmlParser.new(@formatter)
   end
   def test_finish_endtab
-    assert_equal(nil, @parser.finish_endtag('tag'))
+    assert_nil(@parser.finish_endtag('tag'))
   end
   def test_finish_endtab__last_tag
     @parser.instance_eval('@stack = ["tag"]')
-    assert_equal(nil, @parser.finish_endtag('tag'))
+    assert_nil(@parser.finish_endtag('tag'))
   end
   def test_finish_endtag__empty
-    assert_equal(nil, @parser.finish_endtag(''))
+    assert_nil(@parser.finish_endtag(''))
   end
   def test_start_td
     flexmock(@formatter) do |f|

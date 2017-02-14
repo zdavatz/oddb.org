@@ -397,7 +397,7 @@ end
         flexmock(@session) do |s|
           s.should_receive(:zone)
         end
-        assert_equal(nil, @state.export_csv)
+        assert_nil(@state.export_csv)
       end
       def test_extend
         mod = flexmock(Module.new) do |m|
@@ -461,7 +461,7 @@ end
         registration = flexmock('registration', :sequence => sequence)
         flexmock(@session.app, :registration => registration)
         skip("Niklaus did not have time to debug this assert")
-        assert_equal(nil, @state.feedbacks)
+        assert_nil(@state.feedbacks)
       end
       def test_notify__package
         item = flexmock('item') do |i|
@@ -496,7 +496,7 @@ end
         registration = flexmock('registration', :sequence => sequence)
         flexmock(@session.app, :registration => registration)
         skip("Avoid NoMethodError: undefined method `notify' for #<ODDB::State::Global:0x000000030b9f98>")
-        assert_equal(nil, @state.notify)
+        assert_nil(@state.notify)
       end
       def test_help_navigation
         expected = [
@@ -635,7 +635,7 @@ end
         assert_kind_of(State::User::RegisterPowerUser, @state.proceed_poweruser)
       end
       def test_proceed_poweruser__error
-        assert_equal(nil, @state.proceed_poweruser)
+        assert_nil(@state.proceed_poweruser)
       end
       def test_resolve
         @state.request_path = 1
@@ -741,7 +741,7 @@ end
         assert_equal(@state, @state.resolve)
       end
       def test_resolve__nil
-        assert_equal(nil, @state.resolve)
+        assert_nil(@state.resolve)
       end
       def test_rss
         flexmock(@session) do |s|
@@ -760,7 +760,7 @@ end
         assert_kind_of(State::Http404, @state.rss)
       end
       def test_rss__nil
-        assert_equal(nil, @state.rss)
+        assert_nil(@state.rss)
       end
       def test_fachinfo_rss
         flexmock(@session) do |s|
@@ -1263,7 +1263,7 @@ end
         assert_equal('unique_email', @state.unique_email)
       end
       def test_unique_email__nil
-        assert_equal(nil, @state.unique_email)
+        assert_nil(@state.unique_email)
       end
       def test_user_input
         flexmock(@session) do |s|

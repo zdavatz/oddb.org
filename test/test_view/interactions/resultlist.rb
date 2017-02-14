@@ -52,7 +52,7 @@ class TestResultList <Minitest::Test
     assert_kind_of(HtmlGrid::Link, @list.name(@model, @session))
   end
   def test_search_oddb
-    assert_equal(nil, @list.search_oddb(@model, @session))
+    assert_nil(@list.search_oddb(@model, @session))
   end
   def test_search_oddb__active_sequeces_not_empty
     flexmock(@sequence, :active_package_count => 1)

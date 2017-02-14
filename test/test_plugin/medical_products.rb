@@ -226,7 +226,7 @@ module ODDB
 			packages = @app.registrations.first[1].packages
       assert(packages, 'packages must be available')
       assert_equal(1, packages.size, 'we must have exactly two packages')
-      assert_equal(nil, packages.first.commercial_forms.first)
+      assert_nil(packages.first.commercial_forms.first)
     end
     def test_update_invalid_ean
       fileName = File.join('errors', 'invalid_ean13.docx')

@@ -350,7 +350,7 @@ class TestCompanyActiveAgent <Minitest::Test
     pointer = flexmock('pointer', :skeleton => 'skeleton')
     parent = flexmock('parent', :pointer => pointer)
     flexmock(@model, :parent => parent)
-    assert_equal(nil, @state.delete)
+    assert_nil(@state.delete)
   end
   def test_update
     flexmock(@session, 

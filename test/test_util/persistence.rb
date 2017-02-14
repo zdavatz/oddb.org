@@ -170,7 +170,7 @@ module ODDB
 				'zap'	=>	nil,
 				'date'=>	Date.new(2003,02,01),
 			}
-			assert_equal(nil, @obj.undiffable?("foo"))
+			assert_nil(@obj.undiffable?("foo"))
 			assert_equal(expected, @obj.diff(values.dup))
 			obj = StubPersistenceUndiffable.new
 			assert_equal(true, @obj.undiffable?(obj))
@@ -185,7 +185,7 @@ module ODDB
 			assert_equal(expected, @obj.diff(values))
 		end
 		def test_nil_if_empty
-			assert_equal(nil, @obj.nil_if_empty(' '))
+			assert_nil(@obj.nil_if_empty(' '))
 			assert_equal('foo', @obj.nil_if_empty('foo'))
 		end
 		def test_oid
@@ -204,7 +204,7 @@ module ODDB
 			assert_equal('Foobar', @obj.foo)
 			assert_equal('Boofar', @obj.bar)
 			assert_equal('Foobaz', @obj.baz)
-			assert_equal(nil, @obj.zap)
+			assert_nil(@obj.zap)
 		end
 	end
 	class TestPersistencePointer <Minitest::Test
@@ -316,7 +316,7 @@ module ODDB
 		def test_issue_update
 			app = StubPointerApp2.new
 			obj = @pointer.issue_create(app)
-			assert_equal(nil, obj.values)
+			assert_nil(obj.values)
 			values = {
 				'zaf'	=>	'flop',
 				'urks'=>	'bong',
@@ -449,7 +449,7 @@ module ODDB
 		def test_respond_to_anything
 			message = :undefinded_method
 			@item.send(message)
-			assert_equal(nil, @item.send(message))
+			assert_nil(@item.send(message))
 		end
 	end
 end

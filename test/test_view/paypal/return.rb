@@ -11,7 +11,7 @@ require 'view/paypal/return'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module View
     class Copyright < HtmlGrid::Composite
@@ -46,7 +46,7 @@ class TestReturnDownloads <Minitest::Test
     @list    = ODDB::View::PayPal::ReturnDownloads.new([@model], @session)
   end
   def test_additional_download_link
-    assert_equal(nil, @list.additional_download_link(@model))
+    assert_nil(@list.additional_download_link(@model))
   end
   def test_download_link
     assert_kind_of(HtmlGrid::Link, @list.download_link(@model))

@@ -245,13 +245,13 @@ class TestResult <Minitest::Test
 
   def test_get_sortby
     flexmock(@session, :user_input => :dsp)
-    assert_equal(nil, @state.get_sortby!)
+    assert_nil(@state.get_sortby!)
   end
   def test_get_sortby__sortvalue
     flexmock(@session, :user_input => :dsp)
     sortby = [:most_precise_dose, :comparable_size, :price_public]
     @state.instance_eval('@sortby = sortby')
-    assert_equal(nil, @state.get_sortby!)
+    assert_nil(@state.get_sortby!)
   end
   def test_init
     atc_class = flexmock('atc_class', :package_count => 101, :code => nil)

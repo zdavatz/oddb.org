@@ -13,11 +13,11 @@ require 'htmlgrid/form'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module View
     class Copyright < HtmlGrid::Composite
-      ODDB_VERSION = 'oddb_version'
+      ODDB_VERSION = 'oddb_version' unless defined?(ODDB_VERSION)
     end
     class StubForm
       def initialize(a,b,c)
@@ -82,7 +82,7 @@ class TestPublicTemplate <Minitest::Test
       c.should_receive(:script).and_return('script')
       c.should_receive(:style).and_return('style')
     end
-    expected = 'scriptscriptscriptstylestyle'
+    expected = 'scriptscriptstylestyle'
     assert_equal(expected, @template.dynamic_html_headers(context))
   end
   def test_dynamic_html_headers__not_enabled

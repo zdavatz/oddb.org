@@ -539,7 +539,7 @@ class TestSequence <Minitest::Test
   end
   def test_match
     @seq.match('Aspirin')
-    assert_equal(nil, @seq.match('Aspirin'))
+    assert_nil(@seq.match('Aspirin'))
     @seq.name_base='Aspirin'
     assert_equal(MatchData, @seq.match('Aspirin').class)
     assert_equal(MatchData, @seq.match('aspirin').class)

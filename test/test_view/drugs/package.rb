@@ -20,7 +20,7 @@ require 'stub/cgi'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
 end
 class StubContainer
@@ -238,14 +238,19 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_to_html
-    assert_equal('xxx', @composite.to_html(CGI.new))
+    html = @composite.to_html(CGI.new)
+    [ '</TABLE>',
+      'label_deductible_1',
+      'division_divisable',
+      'dissolvable',
+      ].each { |expression| assert_match( expression, html) }
   end
   def test_init__twitter_share
-    skip('Niklaus does not know why this test does not work any longer')
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_share).and_return(false)
       l.should_receive(:resource).and_return('resource')
+      l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
@@ -261,11 +266,11 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_init__facebook_share
-    skip('Niklaus does not know why this test does not work any longer')
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(false)
       l.should_receive(:enabled?).once.with(:facebook_share).and_return(true)
+      l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
       l.should_receive(:enabled?).at_least.once.with(:patinfos)
