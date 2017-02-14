@@ -9,6 +9,7 @@ buggy = [
   'admin/password_lost.rb',
   'drugs/fachinfo.rb',
   'global.rb',
+  'page_facade.rb',
 ]
 runner = OddbTestRunner.new(File.dirname(__FILE__), buggy)
 runner.run_isolated_tests

@@ -15,6 +15,13 @@ require 'model/sequence'
 require 'model/part'
 require 'ruby-units'
 
+# add some units
+RubyUnits::Unit.define('UI') do |bp|
+  bp.definition   = RubyUnits::Unit.new('1 each')
+  bp.aliases      = %w(UI U.I.)
+  bp.kind         = :counting
+end
+
 module ODDB
 	class PackageCommon
 		include Persistence

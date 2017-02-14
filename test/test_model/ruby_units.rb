@@ -2,7 +2,7 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'ruby-units'
+require 'model/package'
 require 'util/money'
 require 'minitest/autorun'
 module ODDB
@@ -25,11 +25,14 @@ module ODDB
     end
     def test_600_ui
       result = Unit.new('600 UI')
-      assert_equal(true, result)
+      assert_equal('600 UI', result.to_s)
+      assert_equal(600, result.scalar)
     end
     def test_10_UI_per_ml
       result = Unit.new('10 UI/ml')
-      assert_equal(true, result)
+      assert_equal('10 UI/ml', result.to_s)
+      assert_equal(10, result.scalar)
+      assert(result.compatible?(Unit.new('/liter')))
     end
   end
 end

@@ -3,10 +3,13 @@
 # ODDB::TestAnalysisPlugin -- oddb.org -- 07.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'stub/odba'
+require 'stub/oddbapp'
 require 'plugin/analysis'
 
 module ODDB
@@ -46,7 +49,8 @@ module ODDB
               )
       group    = flexmock('group', :pointer => pointer)
       position = {:position => 'poscd'}
-      assert_equal('delete', @plugin.update_position(group, position, 'language'))
+      skip('Niklaus does not think that this test is correct, analysis does not have any delete method')
+      assert_equal('delete', @plugin.update_position(group, position, 'short', 'language'))
     end
     def test_position__delete_permissions
       pointer  = flexmock('pointer', :creator => 'creator' )
@@ -70,7 +74,7 @@ module ODDB
               )
       group    = flexmock('group', :pointer => pointer, :oid => 'oid')
       position = {:position => 'poscd', :permissions => ['permission']}
-      assert_equal(@position, @plugin.update_position(group, position, 'language'))
+      assert_equal(@position, @plugin.update_position(group, position, 'short', 'language'))
     end
     def test_position__delete_limitation
       pointer  = flexmock('pointer', :creator => 'creator' )
@@ -94,7 +98,7 @@ module ODDB
               )
       group    = flexmock('group', :pointer => pointer, :oid => 'oid')
       position = {:position => 'poscd', :limitation => limitation_text}
-      assert_equal(@position, @plugin.update_position(group, position, 'language'))
+      assert_equal(@position, @plugin.update_position(group, position, 'short', 'language'))
     end
     def test_position__delete_footnote
       pointer  = flexmock('pointer', :creator => 'creator' )
@@ -118,7 +122,7 @@ module ODDB
               )
       group    = flexmock('group', :pointer => pointer, :oid => 'oid')
       position = {:position => 'poscd', :footnote => footnote}
-      assert_equal(@position, @plugin.update_position(group, position, 'language'))
+      assert_equal(@position, @plugin.update_position(group, position, 'short', 'language'))
     end
     def test_position__delete_list_title
       pointer  = flexmock('pointer', :creator => 'creator' )
@@ -142,7 +146,7 @@ module ODDB
               )
       group    = flexmock('group', :pointer => pointer, :oid => 'oid')
       position = {:position => 'poscd', :list_title => list_title}
-      assert_equal(@position, @plugin.update_position(group, position, 'language'))
+      assert_equal(@position, @plugin.update_position(group, position, 'short', 'language'))
     end
     def test_position__delete_taxnote
       pointer  = flexmock('pointer', :creator => 'creator' )
@@ -165,91 +169,14 @@ module ODDB
                :delete => 'delete'
               )
       group    = flexmock('group', :pointer => pointer, :oid => 'oid')
-      position = {:position => 'poscd', :taxnote => taxnote}
-      skip("Parts test-suite should probably be removed, as AnalysisPlugin does not have ANALYSIS_PARSER!!")
-      assert_equal('delete', @plugin.update_position(group, position, 'language'))
-    end
-    def stderr_null
-      require 'tempfile'
-      $stderr = Tempfile.open('stderr')
-      yield
-      $stderr.close
-      $stderr = STDERR
-    end
-    def replace_constant(constant, temp)
-      stderr_null do
-        keep = eval constant
-        eval "#{constant} = temp"
-        yield
-        eval "#{constant} = keep"
-      end
-    end
-    def test_update_dacapo
-      pointer  = flexmock('pointer', :creator => 'creator')
-      flexmock(pointer, :+ => pointer)
-      position = flexmock('position', :pointer => pointer)
-      group    = flexmock('group', :position => position)
-      flexmock(@app, 
-               :analysis_group => group,
-               :update => 'update'
-              )
-      server = flexmock('ANALYSIS_PARSER') do |serv|
-        info = ['info']
-        serv.should_receive(:dacapo).and_yield('code', info)
-      end
-      skip("Parts test-suite should probably be removed, as AnalysisPlugin does not have ANALYSIS_PARSER!!")
-      replace_constant('ODDB::AnalysisPlugin::ANALYSIS_PARSER', server) do
-        assert_equal('update', @plugin.update_dacapo)
-      end
-    end
-    def test_position
-      pointer  = flexmock('pointer', :creator => 'creator' )
-      flexmock(pointer, :+ => pointer)
-      limitation_text = flexmock('limitation_text', :pointer => pointer)
-      footnote   = flexmock('footnote', :pointer => pointer)
-      list_title = flexmock('list_title', :pointer => pointer)
-      taxnote    = flexmock('taxnote', :pointer => pointer)
-      permissions = flexmock('permissions', :pointer => pointer)
-      update     = flexmock('update', 
-                            :limitation_text => limitation_text,
-                            :footnote   => footnote,
-                            :list_title => list_title,
-                            :taxnote    => taxnote,
-                            :pointer    => pointer,
-                            :permissions => permissions
-                           )
-      group    = flexmock('group', :pointer => pointer)
-      flexmock(@app, 
-               :create  => group,
-               :update  => update,
-               :delete  => 'delete',
-               :recount => 'recount'
-              )
-      position = {:position => 'poscd', :delete => 'groupcd'}
-      server = flexmock('ANALYSIS_PARSER') do |serv|
-        serv.should_receive(:parse_pdf).and_return([position])
-      end
-      skip("Parts test-suite should probably be removed, as AnalysisPlugin does not have ANALYSIS_PARSER!!")
-      replace_constant('ODDB::AnalysisPlugin::ANALYSIS_PARSER', server) do
-        assert_equal('recount', @plugin.update('path', 'language'))
-      end
-    end
-    def test_position__analysis_revision
-      pointer  = flexmock('pointer', :creator => 'creator' )
-      flexmock(pointer, :+ => pointer)
-      group    = flexmock('group', :pointer => pointer)
-      flexmock(@app, 
-               :create  => group,
-               :recount => 'recount'
-              )
-      position = {:delete => 'groupcd', :analysis_revision => 'S'}
-      server = flexmock('ANALYSIS_PARSER') do |serv|
-        serv.should_receive(:parse_pdf).and_return([position])
-      end
-      skip("Parts test-suite should probably be removed, as AnalysisPlugin does not have ANALYSIS_PARSER!!")
-      replace_constant('ODDB::AnalysisPlugin::ANALYSIS_PARSER', server) do
-        assert_equal('recount', @plugin.update('path', 'language'))
-      end
+      group = ODDB::Analysis::Group.new('0000')
+      group.pointer = Persistence::Pointer.new(:group, '0000')
+      position = group.create_position('00')
+      position.create_taxnote # = 'taxnote'
+      position.pointer = Persistence::Pointer.new(:position, '00')
+
+      skip('Niklaus does not think that this test is correct, analysis does not have any delete method')
+      assert_equal('delete', @plugin.update_position(group, position, 'short', 'language'))
     end
   end
 end
