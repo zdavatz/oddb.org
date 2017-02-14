@@ -17,7 +17,7 @@ require 'model/analysis/group'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
     Copyright::ODDB_VERSION = 'version'
     module Admin

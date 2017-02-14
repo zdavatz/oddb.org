@@ -22,6 +22,7 @@ module ODDB
         @lnf       = flexmock('lookandfeel',
                               :lookup     => 'lookup',
                               :attributes => {},
+                              :enabled? => false,
                               :_event_url => '_event_url'
                              )
         @session   = flexmock('session',

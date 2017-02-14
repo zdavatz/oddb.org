@@ -155,6 +155,8 @@ class TestResultList <Minitest::Test
     def user_input(what)
       nil
     end
+    def lookandfeel=(value)
+    end
 	end
 	class StubAtc
 		attr_accessor :packages, :package_count
@@ -205,7 +207,7 @@ class TestResultList <Minitest::Test
       ses.should_receive(:allowed?).and_return(true)
       ses.should_receive(:disabled?)
       ses.should_receive(:cookie_set_or_get)
-      ses.should_receive(:enabled?)
+      ses.should_receive(:enabled?).by_default
       ses.should_receive(:_event_url)
       ses.should_receive(:get_cookie_input).and_return('get_cookie_input')
       ses.should_receive(:get_code).and_return(nil)
@@ -294,8 +296,6 @@ class TestResultList <Minitest::Test
     # @lookandfeel.should_receive(:enabled?).with(:explain_atc).once
     @session.lookandfeel = @lookandfeel
     @session.should_receive(:enabled?).with(:explain_atc).once
-    require 'pry'; binding.pry
-    # assert_equal(true, @lookandfeel.enabled?(:explain_atc))
     assert_equal([@model], @list.compose_list(model))
   end
 end

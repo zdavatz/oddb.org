@@ -22,7 +22,7 @@ require 'sbsm/user'
 
 module HtmlGrid
 	class List
-		BACKGROUND_SUFFIX = ' bg'
+		BACKGROUND_SUFFIX = ' bg' unless defined?(BACKGROUND_SUFFIX)
 	end
 end
 module ODDB

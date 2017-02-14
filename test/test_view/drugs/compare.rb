@@ -16,12 +16,12 @@ require 'model/analysis/group'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
 
   module View
     class Copyright < HtmlGrid::Composite
-      ODDB_VERSION = 'oddb_version'
+      ODDB_VERSION = 'oddb_version' unless defined?(ODDB_VERSION)
     end
     module Drugs
 

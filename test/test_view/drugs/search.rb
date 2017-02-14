@@ -13,9 +13,9 @@ require 'view/drugs/search'
 module ODDB
   module View
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
-    Copyright::ODDB_VERSION = 'version'
+    Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
     module Drugs
 
 class TestSearch <Minitest::Test
@@ -66,7 +66,7 @@ class TestSearch <Minitest::Test
                        :style  => 'style',
                        :link   => 'link'
                       )
-    expected = 'scriptscriptscriptstylestyle'
+    expected = 'scriptscriptstylestyle'
     assert_equal(expected, @view.other_html_headers(context))
   end
 end

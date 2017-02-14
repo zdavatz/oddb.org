@@ -66,7 +66,7 @@ class TestFachinfoConfirmForm <Minitest::Test
 		html = @form.to_html(CGI.new)
 		expected = [
 			'<FORM NAME="stdform" METHOD="POST" ACCEPT-CHARSET="UTF-8" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
-			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=\'back\';">',
+			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=&#39;back&#39;;">',
 			'<INPUT value="lookup" type="submit" name="update">',
 		]
 		expected.each { |line| 
@@ -81,7 +81,7 @@ class TestFachinfoConfirmForm <Minitest::Test
 		html = @form.to_html(CGI.new)
 		expected = [
 			'<FORM NAME="stdform" METHOD="POST" ACCEPT-CHARSET="UTF-8" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
-			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=\'back\';">',
+			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=&#39;back&#39;;">',
 		]
 		expected.each { |line| 
 			assert(html.index(line), "missing: #{line}\nin:\n#{html}")

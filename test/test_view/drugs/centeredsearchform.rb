@@ -19,7 +19,7 @@ require 'remote/migel/model/product'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module Migel
     class Product

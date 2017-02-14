@@ -11,10 +11,10 @@ require 'view/confirm'
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc'
+    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
   end
   module View
-  Copyright::ODDB_VERSION = 'version'
+  Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
 class TestConfirmComposite <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')

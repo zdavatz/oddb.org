@@ -16,9 +16,9 @@ require 'view/privatetemplate'
 
 module ODDB
   module View
-    Copyright::ODDB_VERSION = 'version'
+    Copyright::ODDB_VERSION = 'version' unless defined?(Copyright::ODDB_VERSION)
     class Session
-      DEFAULT_FLAVOR = 'gcc'
+      DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
     end
 class StubPrivateTemplate < ODDB::View::PrivateTemplate
   CONTENT = 'content'
