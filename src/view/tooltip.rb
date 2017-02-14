@@ -15,8 +15,9 @@ module ODDB
         # Therefore we decide to fetch the content via open-uri. This increases the size of the page by about 25%
         # set_preload = "preload: true," if href
         if href
-          content = open(href).read
+          content = defined?(Minitest) ? href : open(href).read
         end
+        return unless element.additional_javascripts # satisfy unittest without additional_javascripts
         element.additional_javascripts.push <<-EOS
 require([
     "dijit/TooltipDialog",

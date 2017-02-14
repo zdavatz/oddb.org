@@ -95,10 +95,9 @@ class TestFiChapterChooser <Minitest::Test
     @session   = flexmock('session',
                           :state       => @state,
                           :language    => 'language',
-                          :user_input    => nil,
+                          :user_input  => 'user_input',
                           :user_agent    => 'Mozilla',
                           :lookandfeel => @lookup,
-                          :user_input  => 'user_input'
                          )
     @pointer   = flexmock('pointer', :skeleton => 'skeleton')
     @language  = flexmock('language', :chapter_names => [ 'chapter_names' ], :change_log => [])
@@ -373,10 +372,9 @@ class TestFI_ChangeLogs <Minitest::Test
     @session   = flexmock('session',
                           :state       => @state,
                           :language    => 'language',
-                          :user_input    => nil,
+                          :user_input  => 'user_input',
                           :user_agent    => 'Mozilla',
                           :lookandfeel => @lookup,
-                          :user_input  => 'user_input'
                         )
     @pointer   = flexmock('pointer', :skeleton => 'skeleton')
     @text_item = ODDB::FachinfoDocument.new
@@ -420,20 +418,15 @@ class TestEvidentiaFiChapterChooser <Minitest::Test
     @lookup.should_receive(:enabled?).by_default.and_return(false)
     @lookup.should_receive(:enabled?).with(:evidentia, false).and_return(true)
     @lookup.should_receive(:enabled?).with(:ajax).and_return(true)
-#    @lookup.should_receive(:lookup).with(:print_title).and_return('Drucken').at_least.once
-#    @lookup.should_receive(:lookup).with(:fachinfo_all_icon).and_return('fachinfo_all_icon').at_least.once
-#    @lookup.should_receive(:lookup).with(:fachinfo_all_title).and_return('fachinfo_all_title').at_least.once
-
     @state     = flexmock('state')
     @state.should_receive(:allowed?).by_default.and_return(nil)
     @session   = flexmock('session',
                           :state       => @state,
                           :language    => 'language',
-                          :user_input    => nil,
+                          :user_input  => 'user_input',
                           :server_name    => 'server_name',
                           :user_agent    => 'Mozilla',
                           :lookandfeel => @lookup,
-                          :user_input  => 'user_input'
                          )
     @pointer   = flexmock('pointer', :skeleton => 'skeleton')
     @language  = flexmock('language', :chapter_names => [ 'chapter_names' ], :change_log => [])
