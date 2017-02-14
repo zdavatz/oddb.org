@@ -112,7 +112,7 @@ module ODDB
       @plugin.instance_eval('@out_of_trade_false_list = [package]')
       @plugin.instance_eval('@out_of_trade_true_list  = [package]')
       # no debugging log
-      assert_equal(nil, @plugin.update_out_of_trade)
+      assert_nil(@plugin.update_out_of_trade)
     end
 
     def test_update_pharmacode
@@ -132,7 +132,7 @@ module ODDB
       @plugin.instance_eval('@update_pharmacode_list = [[package, pharmacode]]')
       @plugin.instance_eval('@delete_pharmacode_list = [[package, nil]]')
       # no debugging log
-      assert_equal(nil, @plugin.update_pharmacode)
+      assert_nil(@plugin.update_pharmacode)
     end
     def test_report
       package = flexmock('package',

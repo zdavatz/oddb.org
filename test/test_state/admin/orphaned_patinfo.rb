@@ -31,7 +31,7 @@ class TestOrphanedPatinfo <Minitest::Test
     @state   = ODDB::State::Admin::OrphanedPatinfo.new(@session, @model)
   end
   def test_init
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
   def test_choice
     flexmock(@session, :user_input => {:state_id => 123, :meaning_index => 0})

@@ -332,7 +332,7 @@ if false
       assert_equal('block', @updater.instance_eval("wrap_update('klass', 'subject'){'block'}"))
     end
     def test_wrap_update__error
-      assert_equal(nil, @updater.instance_eval("wrap_update('klass', 'subject'){raise}"))
+      assert_nil(@updater.instance_eval("wrap_update('klass', 'subject'){raise}"))
     end
     def test_import_evidentia_fi_search_links
       setup_update_simple(EvidentiaSearchLinksPlugin)
@@ -479,7 +479,7 @@ if false
     end
     def test_update_fachinfo
       setup_update_notify_simple(TextInfoPlugin, :import_news)
-      assert_equal(nil, @updater.update_fachinfo)
+      assert_nil(@updater.update_fachinfo)
     end
     def test_update_fachinfo__iksnrs
       setup_update_notify_simple(TextInfoPlugin, :import_fulltext)
@@ -487,7 +487,7 @@ if false
     end
     def test_run_random
       setup_update_notify_simple(TextInfoPlugin, :import_news)
-      assert_equal(nil, @updater.run_random)
+      assert_nil(@updater.run_random)
     end
     def test_update_doctors
       setup_update_simple(ODDB::Doctors::DoctorPlugin)
@@ -519,10 +519,10 @@ if false
     end
 
     def test_update_update_package_trade_status_by_refdata
-      assert_equal(nil, @updater.update_package_trade_status_by_refdata)
+      assert_nil(@updater.update_package_trade_status_by_refdata)
     end
     def test_update_migel
-      assert_equal(nil, @updater.migel_nonpharma('pharmacode_file'))
+      assert_nil(@updater.migel_nonpharma('pharmacode_file'))
     end
     def test_update_swissmedic
       setup_update_swissmedic
@@ -566,12 +566,12 @@ if false
         setup_update_bsv_followers                # for update_bsv_followers
         setup_update_simple(ODDB::Interaction::InteractionPlugin) # for update_interactions
       end
-      assert_equal(nil, @updater.run)
+      assert_nil(@updater.run)
     end
   end
     def test_export_ddd_csv
       setup_csv_export_plugin
-      assert_equal(nil, @updater.export_ddd_csv)
+      assert_nil(@updater.export_ddd_csv)
     end
   end
 end

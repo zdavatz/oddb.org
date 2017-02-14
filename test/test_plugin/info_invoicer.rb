@@ -267,7 +267,7 @@ class TestInfoInvoicer <Minitest::Test
              :yus_create_user => nil,
              :update   => update
             )
-    assert_equal(nil, @invoicer.send_daily_invoices(Date.new(2011,2,3)))
+    assert_nil(@invoicer.send_daily_invoices(Date.new(2011,2,3)))
   end
   def test_send_daily_invoices__no_groups
     active_infos = flexmock('active_infos', :delete => 'delete')
@@ -290,7 +290,7 @@ class TestInfoInvoicer <Minitest::Test
              :slate    => slate,
              :invoices => {'key' => invoice}
             )
-    assert_equal(nil, @invoicer.send_daily_invoices(Date.new(2011,2,3)))
+    assert_nil(@invoicer.send_daily_invoices(Date.new(2011,2,3)))
   end
   def test_send_annual_invoices
     # Memo

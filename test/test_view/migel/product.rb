@@ -117,7 +117,7 @@ class TestProductInnerComposite <Minitest::Test
                    :has_ddd?    => nil,
                    :parent_code => 'code'
                   )
-    assert_equal(nil, @composite.atc_ddd_link(atc, @session))
+    assert_nil(@composite.atc_ddd_link(atc, @session))
   end
   def test_atc_description
     flexmock(@lookandfeel, :language => 'language')

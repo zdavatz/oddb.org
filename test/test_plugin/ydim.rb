@@ -314,7 +314,7 @@ module ODDB
                       :data         => {:name => ''},
                       :item_pointer => 'pointer'
                      )
-      assert_equal(nil, @plugin.item_name(item))
+      assert_nil(@plugin.item_name(item))
     end
     def test_item_text__last_day
       data = {

@@ -308,7 +308,7 @@ class TestCompanyRegistration <Minitest::Test
     @reg = ODDB::State::Admin::CompanyRegistration.new(@session, @model)
   end
   def test_init
-    assert_equal(nil, @reg.init)
+    assert_nil(@reg.init)
   end
   def test_allowed
     flexmock(@session, :allowed? => true)

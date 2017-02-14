@@ -68,7 +68,7 @@ class TestDoctorForm <Minitest::Test
     @form    = ODDB::View::Doctors::DoctorForm.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
 end
 

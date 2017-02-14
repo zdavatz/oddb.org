@@ -42,7 +42,7 @@ class TestPackage <Minitest::Test
     flexmock(@model, :pointer => 'pointer')
     flexmock(@session, :user_input => 'pointer')
     flexmock(@state, :allowed? => true)
-    assert_equal(nil, @state.check_model)
+    assert_nil(@state.check_model)
   end
   def test_check_model__e_state_expired
     flexmock(@model, :pointer => 'pointer')

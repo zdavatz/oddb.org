@@ -113,7 +113,7 @@ class TestPackageForm <Minitest::Test
     @form = ODDB::View::Admin::PackageForm.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
   def test_sl_entry
     flexmock(@model, :sl_entry => nil)

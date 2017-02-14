@@ -27,7 +27,7 @@ class TestYusPrivileges <Minitest::Test
     @list    = ODDB::View::Admin::YusPrivileges.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
   def test_checkbox
     flexmock(@model, 
@@ -85,7 +85,7 @@ class TestYusGroups <Minitest::Test
     @list      = ODDB::View::Admin::YusGroups.new(@model, @session, @container)
   end
   def test_init
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
   def test_checkbox
     affiliation = flexmock('affiliation', :name => 'name')
@@ -135,7 +135,7 @@ class TestEntityForm <Minitest::Test
     $entity_raise_errror = false
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
   def test_association
     flexmock(@model, :association => 'association')
@@ -161,7 +161,7 @@ class TestEntityForm <Minitest::Test
     @model    = flexmock('model_entity')
     @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
     flexmock(@model, :is_a? => true)
-    assert_equal(nil, @form.set_pass(@model))
+    assert_nil(@form.set_pass(@model))
   end
 end
 

@@ -69,14 +69,14 @@ class TestPrescription <Minitest::Test
   end
   def test_check_model_with_valid_ean
     @session.set_user_input(:ean, '7680999999999')
-    assert_equal(nil, @state.send(:check_model))
+    assert_nil(@state.send(:check_model))
   end
   def test_package_for
     assert_equal(false, @state.respond_to?(:package_for))
     assert_equal(true, @state.private_methods.include?(:package_for))
   end
   def test_ajax_package_for_invalid_ean
-    assert_equal(nil, @state.send(:package_for, '0'))
+    assert_nil(@state.send(:package_for, '0'))
   end
   def test_package_for_valid_ean
     assert_equal(Package, @state.send(:package_for, '7680000000000').class)

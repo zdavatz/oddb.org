@@ -31,7 +31,7 @@ class TestPasswordLostComposite <Minitest::Test
     @composite = ODDB::View::Admin::PasswordLostComposite.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @composite.init)
+    assert_nil(@composite.init)
   end
 end
 

@@ -329,7 +329,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     flexstub(@app) do |app|
       app.should_receive(:async).and_yield
     end
-    assert_equal(nil, @app.update_feedback_rss_feed)
+    assert_nil(@app.update_feedback_rss_feed)
   end
   def test_update_feedback_rss_feed__error
     flexstub(@app) do |app|
@@ -338,10 +338,10 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     flexstub(ODDB::Plugin) do |plg|
       plg.should_receive(:new).and_raise(StandardError)
     end
-    assert_equal(nil, @app.update_feedback_rss_feed)
+    assert_nil(@app.update_feedback_rss_feed)
   end
   def test_replace_fachinfo
-    assert_equal(nil, @app.replace_fachinfo('iksnr', 'pointer'))
+    assert_nil(@app.replace_fachinfo('iksnr', 'pointer'))
   end
   def test_generate_dictionary
     assert_equal('generate_dictionary', @app.generate_dictionary('language'))
@@ -378,7 +378,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     assert_equal('commercial_form', @app.commercial_form('123'))
   end
   def test_commercial_form_by_name
-    assert_equal(nil, @app.commercial_form_by_name('name'))
+    assert_nil(@app.commercial_form_by_name('name'))
   end
   def test_config
     expected = ODDB::Config.new
@@ -456,7 +456,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
       inv.should_receive(:pointer)
     end
     @app.invoices = {'oid' => invoice}
-    assert_equal(nil, @app.clean_invoices)
+    assert_nil(@app.clean_invoices)
   end
   def test_set_all_export_flag_registration
     flexstub(@app) do |app|
@@ -500,7 +500,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
   end
 
   def test_get_epha_interaction
-    assert_equal(nil, @app.get_epha_interaction('atc_code_self', 'atc_code_other'))
+    assert_nil(@app.get_epha_interaction('atc_code_self', 'atc_code_other'))
   end
 
   def test_delete_all_epha_interactions
@@ -541,7 +541,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     @app.registrations = {  '1111' => drug_0, '2222' => drug_1,}
     drugs              = {  '1111' => drug_0, '2222' => drug_1,}
     res_1 = @app.get_epha_interaction(code_1, drugs)
-    assert_equal(nil, res_1)
+    assert_nil(res_1)
     res_2 = @app.get_epha_interaction(code_0, code_1)
     assert_equal(ODDB::EphaInteraction, res_2.class)
   end

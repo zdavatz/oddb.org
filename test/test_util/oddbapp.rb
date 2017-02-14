@@ -215,7 +215,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(ODDB::MergeCommand) do |klass|
       klass.should_receive(:new).and_return(command)
     end
-    assert_equal(nil, @app.merge_commercial_forms(source, target))
+    assert_nil(@app.merge_commercial_forms(source, target))
   end
   def test_merge_companies
     source = flexmock('source') do |sou|
@@ -230,7 +230,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(ODDB::MergeCommand) do |klass|
       klass.should_receive(:new).and_return(command)
     end
-    assert_equal(nil, @app.merge_companies(source, target))
+    assert_nil(@app.merge_companies(source, target))
   end
   def test_merge_galenic_forms
     source = flexmock('source') do |sou|
@@ -245,7 +245,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(ODDB::MergeCommand) do |klass|
       klass.should_receive(:new).and_return(command)
     end
-    assert_equal(nil, @app.merge_galenic_forms(source, target))
+    assert_nil(@app.merge_galenic_forms(source, target))
   end
   def test_merge_indications
     source = flexmock('source') do |sou|
@@ -260,7 +260,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(ODDB::MergeCommand) do |klass|
       klass.should_receive(:new).and_return(command)
     end
-    assert_equal(nil, @app.merge_indications(source, target))
+    assert_nil(@app.merge_indications(source, target))
     end
   def test_merge_substances
     source = flexmock('source') do |sou|
@@ -275,7 +275,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(ODDB::MergeCommand) do |klass|
       klass.should_receive(:new).and_return(command)
     end
-    assert_equal(nil, @app.merge_substances(source, target))
+    assert_nil(@app.merge_substances(source, target))
   end
   def test_delete_fachinfo
     @app.fachinfos = {'oid' => 'fachinfo'}
@@ -355,35 +355,35 @@ class TestOddbApp <MiniTest::Unit::TestCase
       'n'
     end
     setup_assign_effective_forms
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__S
     def $stdin.readline
       'S'
     end
     setup_assign_effective_forms
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__s
     def $stdin.readline
       's'
     end
     setup_assign_effective_forms
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__q
     def $stdin.readline
       'q'
     end
     setup_assign_effective_forms
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__d
     def $stdin.readline
       'd'
     end
     setup_assign_effective_forms
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__other_name
     setup_assign_effective_forms
@@ -397,7 +397,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     def $stdin.readline
       'c abc'
     end
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_assign_effective_forms__else
     def $stdin.readline
@@ -410,7 +410,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(@app.system) do |sys|
       sys.should_receive(:substance).and_return(@substance)
     end
-    assert_equal(nil, @app.assign_effective_forms)
+    assert_nil(@app.assign_effective_forms)
   end
   def test_inject_poweruser
     flexstub(@app) do |app|
@@ -437,7 +437,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
       cache.should_receive(:indices).and_return([])
       cache.should_receive(:create_index)
     end
-    assert_equal(nil, @app.rebuild_indices)
+    assert_nil(@app.rebuild_indices)
   end
   def test_accept_orphaned
     flexstub(@app) do |app|
@@ -446,10 +446,10 @@ class TestOddbApp <MiniTest::Unit::TestCase
     flexstub(@app.system) do |sys|
       sys.should_receive(:execute_command)
     end
-    assert_equal(nil, @app.accept_orphaned('orphan', 'pointer', :symbol))
+    assert_nil(@app.accept_orphaned('orphan', 'pointer', :symbol))
   end
   def test_clean
-    assert_equal(nil, @app.clean)
+    assert_nil(@app.clean)
   end
   def test_admin
     @app.users = {123 => 'user'}
@@ -459,10 +459,10 @@ class TestOddbApp <MiniTest::Unit::TestCase
     assert_equal([], @app.currencies)
   end
   def test_pharmacy
-    assert_equal(nil, @app.pharmacy('ean13'))
+    assert_nil(@app.pharmacy('ean13'))
   end
   def test_hospital
-    assert_equal(nil, @app.hospital('ean13'))
+    assert_nil(@app.hospital('ean13'))
   end
   def test_each_atc_class
     assert_equal(Enumerator, @app.each_atc_class.class)
@@ -506,7 +506,7 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_migel_product__error
     @app.migel_groups = {'1' => 'group'}
     skip("Niklaus has not time to mock migel_product")
-    assert_equal(nil, @app.migel_product('1.2.3'))
+    assert_nil(@app.migel_product('1.2.3'))
   end
   def test_index_therapeuticus
     @app.indices_therapeutici = {'code' => 'index'}

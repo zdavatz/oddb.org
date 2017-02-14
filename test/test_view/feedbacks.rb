@@ -39,7 +39,7 @@ class TestFeedbackForm <Minitest::Test
     @form      = ODDB::View::FeedbackForm.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
   def test_init__else
     flexmock(@state, :passed_turing_test => false)
@@ -48,7 +48,7 @@ class TestFeedbackForm <Minitest::Test
              :generate_challenge => generate_challenge,
              :resource           => 'resource'
             )
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
   def test_radio_good
     flexmock(@model, :good_key => 'good_key')

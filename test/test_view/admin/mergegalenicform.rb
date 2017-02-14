@@ -31,7 +31,7 @@ class TestMergeGalenicFormForm <Minitest::Test
     @form    = ODDB::View::Admin::MergeGalenicFormForm.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @form.init)
+    assert_nil(@form.init)
   end
 end
 

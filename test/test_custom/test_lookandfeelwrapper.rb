@@ -218,7 +218,7 @@ module ODDB
           assert_equal(expected, @look.explain_result_components)
     end
     def test_migel_list_components
-      assert_equal(nil, defined?(@look.migel_list_components))
+      assert_nil(defined?(@look.migel_list_components))
     end
     def test_zone_navigation__migel
       flexstub(@session) do |s|

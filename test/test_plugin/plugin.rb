@@ -41,7 +41,7 @@ module ODDB
       super # to clean up FlexMock
     end
     def test_http_file
-      assert_equal(nil, @plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest'))
+      assert_nil(@plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest'))
       assert_equal(true, @plugin.http_file('www.google.ch', '/search?q=generika', '/tmp/oddbtest'))
       assert(File.exist?('/tmp/oddbtest'))
     end

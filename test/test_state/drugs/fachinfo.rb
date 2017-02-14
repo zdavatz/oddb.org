@@ -41,8 +41,8 @@ class TestFachinfoChangelogs <Minitest::Test
   end
   def test_init
     flexmock(@state, :allowed? => true)
-    assert_equal(nil, @state.init)
-    assert_equal(nil, @state.default_view)
+    assert_nil(@state.init)
+    assert_nil(@state.default_view)
   end
 end
 
@@ -77,7 +77,7 @@ class TestFachinfoPrint <Minitest::Test
   end
   def test_init
     flexmock(@state, :allowed? => true)
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
 end
 

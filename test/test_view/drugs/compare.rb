@@ -54,7 +54,7 @@ class TestCompareList <Minitest::Test
   end
   def test_package_line
     offset = [0,0]
-    assert_equal(nil, @list.package_line(offset))
+    assert_nil(@list.package_line(offset))
   end
   def test_compose_list
     generic_type = flexmock('generic_type')

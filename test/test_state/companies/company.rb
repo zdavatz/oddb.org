@@ -231,7 +231,7 @@ class TestUserCompany <Minitest::Test
   end
   def test_validate
     # This is a testcase for a private method
-    assert_equal(nil, @state.instance_eval('validate("input")'))
+    assert_nil(@state.instance_eval('validate("input")'))
   end
   def test_user_or_creator
     # This is a testcase for a private method

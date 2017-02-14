@@ -135,17 +135,17 @@ REPORT
       flexmock(@plugin) do |plug|
         plug.should_receive(:update_swissmedic_feed).with(:recall).and_return(nil)
       end
-      assert_equal(nil, @plugin.update_recall_feed)
+      assert_nil(@plugin.update_recall_feed)
     end
     def test_update_hpc_feed
       flexmock(@plugin) do |plug|
         plug.should_receive(:update_swissmedic_feed).with(:hpc).and_return(nil)
       end
-      assert_equal(nil, @plugin.update_hpc_feed)
+      assert_nil(@plugin.update_hpc_feed)
     end
     def test_update_price_feeds
       flexmock(@app).should_receive(:each_package).and_yield(@package)
-      assert_equal(nil, @plugin.update_price_feeds(Date.new(2011,2,3)))
+      assert_nil(@plugin.update_price_feeds(Date.new(2011,2,3)))
     end
     def test_update_price_feeds__previous_nil
       flexmock(@package) do |p|

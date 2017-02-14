@@ -69,7 +69,7 @@ class TestAtcChooserList <Minitest::Test
     @list    = ODDB::View::Drugs::AtcChooserList.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @list.init)
+    assert_nil(@list.init)
   end
   def test_result_link__true
     flexmock(@model, 

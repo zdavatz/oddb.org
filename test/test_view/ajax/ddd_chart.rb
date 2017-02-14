@@ -55,7 +55,7 @@ class TestSideBar <Minitest::Test
     assert_kind_of(Magick::Draw, @sidebar.draw_title)
   end
   def test_draw_title__nil
-    assert_equal(nil, @sidebar.draw_title)
+    assert_nil(@sidebar.draw_title)
   end
   def test_draw_source
     @sidebar.instance_eval('@theme_options[:source_font_size] = 1.0')
@@ -81,7 +81,7 @@ class TestSideBar <Minitest::Test
     assert_equal(1, @sidebar.draw_label(0,0))
   end
   def test_draw_label__nil
-    assert_equal(nil, @sidebar.draw_label(0,0))
+    assert_nil(@sidebar.draw_label(0,0))
   end
   def test_draw
     @sidebar.instance_eval('@has_data = true')
@@ -142,7 +142,7 @@ class TestDDDChart <Minitest::Test
     @chart   = ODDB::View::Ajax::DDDChart.new([@model], @session)
   end
   def test_init
-    assert_equal(nil, @chart.init)
+    assert_nil(@chart.init)
   end
   def test_to_html
     flexmock(@session) do |s|

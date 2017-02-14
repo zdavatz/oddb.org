@@ -18,7 +18,7 @@ class TestCsvResult <Minitest::Test
     @result      = ODDB::View::Drugs::CsvResult.new(@model, @session)
   end
   def test_init
-    assert_equal(nil, @result.init)
+    assert_nil(@result.init)
   end
   def test_boolean
     assert_equal('lookup', @result.boolean('bool'))
@@ -44,9 +44,9 @@ class TestCsvResult <Minitest::Test
                         :barcode  => 'barcode'
                        )
     result = @result.bsv_dossier(package)
-    assert_equal(nil, result)
+    assert_nil(result)
     result = @result.bsv_dossier(nil)
-    assert_equal(nil, result)
+    assert_nil(result)
   end
   def test_casrn
     narcotic = flexmock('narcotic', :casrn => 'casrn')

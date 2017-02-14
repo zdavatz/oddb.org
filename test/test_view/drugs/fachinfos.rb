@@ -56,7 +56,7 @@ class TestFachinfoList <Minitest::Test
     @list    = View::Drugs::FachinfoList.new([@model], @session)
   end
   def test_fachinfo
-    assert_equal(nil, @list.fachinfo(@model))
+    assert_nil(@list.fachinfo(@model))
   end
 end
 

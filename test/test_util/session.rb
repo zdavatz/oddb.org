@@ -72,7 +72,7 @@ module ODDB
       @session.instance_eval('@process_start = 0')
       ODDB::Session.class_eval('@@requests = {"remote_ip" => [0,1,2,3,4,5,6]}')
       flexmock(@session.state, :limited? => true)
-      assert_equal(nil, @session.limit_queries)
+      assert_nil(@session.limit_queries)
     end
     def test_login
       user = flexmock('user',
@@ -205,7 +205,7 @@ module ODDB
     def test_search_hospital
       @app.should_receive(:hospital_by_gln).with('key').once.and_return(nil)
       @app.should_receive(:search_hospitals).never
-      assert_equal(nil, @session.search_hospital('key'))
+      assert_nil(@session.search_hospital('key'))
     end
     def test_navigation
       expected = [
@@ -243,7 +243,7 @@ module ODDB
     def test_reset_query_limit
       # This is a testcase for a class method
       assert_equal({}, ODDB::Session.reset_query_limit)
-      assert_equal(nil, ODDB::Session.reset_query_limit('ip'))
+      assert_nil(ODDB::Session.reset_query_limit('ip'))
     end
     ThreePackages = { '7680576730049' => 'package',
                      '7680193950301' => 'package',
@@ -420,7 +420,7 @@ module ODDB
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/'")
       res = @session.get_address_parent
-      assert_equal(nil, res)
+      assert_nil(res)
     end
     def test_get_address_parent_via_persistent_input
       @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')

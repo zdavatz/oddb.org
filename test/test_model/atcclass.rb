@@ -38,7 +38,7 @@ class TestAtcClass <Minitest::Test
 		assert_equal('N02BA01', @atc_class.code)
 	end
   def test_origin
-    assert_equal(nil, @atc_class.origin)
+    assert_nil(@atc_class.origin)
   end
   def test_active_packages
     seq1 = flexmock 'sequence1'
@@ -147,7 +147,7 @@ class TestAtcClass <Minitest::Test
 		level2 = ODDB::AtcClass.new('N02')
 		assert_equal('N', level2.parent_code)
 		level1 = ODDB::AtcClass.new('N')
-		assert_equal(nil, level1.parent_code)
+		assert_nil(level1.parent_code)
 	end
 	def test_has_ddd
 		assert_equal(false, @atc_class.has_ddd?)

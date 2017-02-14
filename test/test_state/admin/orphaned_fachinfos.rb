@@ -22,7 +22,7 @@ class TestOrphanedFachinfos <Minitest::Test
     @state   = ODDB::State::Admin::OrphanedFachinfos.new(@session, @model)
   end
   def test_init
-    assert_equal(nil, @state.init)
+    assert_nil(@state.init)
   end
   def test_symbol
     assert_equal(:name, @state.symbol)

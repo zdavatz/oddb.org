@@ -71,7 +71,7 @@ module ODDB
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.run)
+      assert_nil(@exporter.run)
     end
     def test_run__on_15th_day
       flexmock(@exporter) do  |exp|
@@ -88,7 +88,7 @@ module ODDB
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.run)
+      assert_nil(@exporter.run)
     end
     def test_run__on_sunday
       flexmock(@exporter) do  |exp|
@@ -106,7 +106,7 @@ module ODDB
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.run)
+      assert_nil(@exporter.run)
     end
     def test_export_helper
       flexmock(Exporter::EXPORT_SERVER) do |exp|
@@ -138,7 +138,7 @@ module ODDB
         plug.should_receive(:export_drugs_extended)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_export_csv_errorcase1
       flexmock(@plugin) do |plug|
@@ -150,7 +150,7 @@ module ODDB
         logclass.should_receive(:new).times(1).and_return(@log)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_export_csv_errorcase2
       flexmock(@plugin) do |plug|
@@ -169,14 +169,14 @@ module ODDB
         plug.should_receive(:export_analysis)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_analysis_csv)
+      assert_nil(@exporter.export_analysis_csv)
     end
     def test_export_doc_csv
       flexmock(@plugin) do |plug|
         plug.should_receive(:export_doctors)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_doc_csv)
+      assert_nil(@exporter.export_doc_csv)
     end
     def test_export_doc_csv__error
       flexmock(@plugin) do |plug|
@@ -213,7 +213,7 @@ module ODDB
         plug.should_receive(:export_index_therapeuticus)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_index_therapeuticus_csv)
+      assert_nil(@exporter.export_index_therapeuticus_csv)
     end
     def test_export_index_therapeuticus_csv__error
       flexmock(@plugin) do |plug|
@@ -231,7 +231,7 @@ module ODDB
         plug.should_receive(:export_migel)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_migel_csv)
+      assert_nil(@exporter.export_migel_csv)
     end
     def test_export_pdf
       flexmock(@plugin) do |plug|
@@ -258,7 +258,7 @@ module ODDB
         file.should_receive(:open).and_yield(fh)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_sl_pcodes)
+      assert_nil(@exporter.export_sl_pcodes)
     end
     def test_export_sl_pcodes__error
       flexmock(File) do |file|
@@ -285,7 +285,7 @@ module ODDB
         plug.should_receive(:export_drugs_extended).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_export_csv_on_tuesday
       flexmock(@exporter, :today => Date.new(2011,1,4)) # Tuesday
@@ -295,7 +295,7 @@ module ODDB
         plug.should_receive(:export_drugs_extended).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_export_csv_on_wednesday
       flexmock(@exporter, :today => Date.new(2011,1,5)) # Wednesday
@@ -305,7 +305,7 @@ module ODDB
         plug.should_receive(:export_drugs_extended).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_export_csv_on_thursday
       flexmock(@exporter, :today => Date.new(2011,1,6)) # Tursday
@@ -315,7 +315,7 @@ module ODDB
         plug.should_receive(:export_drugs_extended).once.with_no_args
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_csv)
+      assert_nil(@exporter.export_csv)
     end
     def test_mail_download_stats
       flexmock(Log) do |logclass|
@@ -324,7 +324,7 @@ module ODDB
       end
       flexmock(File).should_receive(:read)
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.mail_download_stats)
+      assert_nil(@exporter.mail_download_stats)
     end
     def test_mail_download_invoices
       flexmock(@plugin) do |plug|
@@ -339,7 +339,7 @@ module ODDB
         plug.should_receive(:report).and_return(nil)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.mail_fachinfo_log)
+      assert_nil(@exporter.mail_fachinfo_log)
     end
     def test_mail_fachinfo_log__report
       flexmock(@plugin) do |plug|
@@ -351,7 +351,7 @@ module ODDB
         logclass.should_receive(:new).times(1).and_return(@log)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.mail_fachinfo_log)
+      assert_nil(@exporter.mail_fachinfo_log)
     end
 
     def test_mail_feedback_stats
@@ -362,7 +362,7 @@ module ODDB
       flexmock(File).should_receive(:read)
       flexmock(LogFile).should_receive(:filename).times(1).with('feedback', Date)
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.mail_feedback_stats)
+      assert_nil(@exporter.mail_feedback_stats)
     end
     def test_mail_patinfo_invoice
       flexmock(@plugin) do |plug|
@@ -380,7 +380,7 @@ module ODDB
         logclass.should_receive(:new).times(0).and_return(@log)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_price_history_csv) 
+      assert_nil(@exporter.export_price_history_csv)
     end
     def test_mail_stats__before_8th
       flexmock(Log) do |logclass|
@@ -389,7 +389,7 @@ module ODDB
       end
       flexmock(File).should_receive(:read)
       flexmock(LogFile).should_receive(:filename).once.with('key', any)
-      assert_equal(nil, @exporter.mail_stats('key'))
+      assert_nil(@exporter.mail_stats('key'))
     end
     def test_mail_stats__after_8th
       flexmock(@exporter, :today => Date.new(2011,1,10))
@@ -401,7 +401,7 @@ module ODDB
       flexmock(File).should_receive(:read)
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       # test
-      assert_equal(nil, @exporter.mail_stats('key'))
+      assert_nil(@exporter.mail_stats('key'))
     end
     def test_mail_swissmedic_notifications
       flexmock(@plugin) do |plug|
@@ -434,7 +434,7 @@ module ODDB
         plug.should_receive(:export_ddd_csv)
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal(nil, @exporter.export_ddd_csv)
+      assert_nil(@exporter.export_ddd_csv)
     end
   end
 end

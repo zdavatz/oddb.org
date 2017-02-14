@@ -81,7 +81,7 @@ module ODDB
         @state = ODDB::State::StubFeedbacks.new(@session, @model)
       end
       def test_init
-        assert_equal(nil, @state.init)
+        assert_nil(@state.init)
       end
       def test_init__filter
         flexmock(@session, :user_input => 'index')
