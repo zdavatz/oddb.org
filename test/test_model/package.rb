@@ -14,6 +14,10 @@ require 'minitest/autorun'
 require 'model/package'
 require 'model/atcclass'
 require 'flexmock/minitest'
+begin
+  require 'pry'
+rescue LoadError
+end
 module ODDB
   class PackageCommon
     check_accessor_list = {
@@ -398,7 +402,6 @@ class TestPackage <Minitest::Test
     part = flexmock :comparable_size => ODDB::Dose.new(12, 'Sachet(s)')
     @package.parts.push part
     price = @package.ddd_price
-    # require 'pry'; binding.pry
     assert_equal ODDB::Util::Money.new(1.40, 'CHF').to_s, @package.ddd_price.to_s
   end
   def test_delete_part
@@ -796,8 +799,6 @@ class TestPackage <Minitest::Test
        m = ODDB::Package::CUM_LIBERATION_REGEXP.match(excipiens.downcase)
        assert(m[1])
        value = Unit.new(m[1])
-       # binding.pry if /mg\/24h/.match excipiens
-       # puts "#{value} #{m[1]} aus #{excipiens}"
        assert(value.compatible?(Unit.new('1g/24h')))
     end
     allowed_failures.each do |excipiens|
@@ -1057,7 +1058,6 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     price =  @package.ddd_price
     assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
   end
-  require 'pry'
   bin_admin_snippet = %(
 $package = registration('56092').package('001')
 $package.seqnr
@@ -1084,6 +1084,3 @@ $package.compositions.first.excipiens
 $package.sequence.composition_text
  )
 end
-# :!registration,36631!sequence,02. @@ddd_galforms (?i-mx:tabletten?) galenic_group Tabletten match true excipiens Excipiens pro Compresso Obducto.
-# Could not convert 1 Mio UI for 36631/067 Penicillin Spirig HC 1 Mio U.I., Filmtabletten
-# Could not convert 1 Mio UI for 36631/067 Penicillin Spirig HC 1 Mio U.I., Filmtabletten
