@@ -284,7 +284,7 @@ module ODDB
       nil
     end
     # some constant to simplify testing
-    SHOW_PRICE_CALCULATION = true
+    SHOW_PRICE_CALCULATION = false
     CUM_LIBERATION_REGEXP = /cum Liberatione ([\d\.]+\s*[µm]g\/\d*\s*h)$/i
     AD_GRANULATUM_REGEXP  = /ad Granulatum[^\d]+([\d\.]+\s[mugl]+)$/i
 		def ddd_price
@@ -366,7 +366,7 @@ module ODDB
             end
           else
             variant = 14
-            _ddd_price = (price / size.to_f) * (ddose.to_f / mdose.want(ddose.unit).to_f) / factor
+            _ddd_price = (price / @parts.first.count) * (ddose.to_f / mdose.want(ddose.unit).to_f) / factor
             puts "_ddd_price #{variant}: #{_ddd_price} = #{price} / count #{@parts.first.count} * ( #{ddose} / #{mdose.want(ddose.unit)})" if SHOW_PRICE_CALCULATION
           end
         else

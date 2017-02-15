@@ -1224,25 +1224,6 @@ Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./m
     assert_nil(price)
   end
 
-# Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
-# Solvens: aqua ad iniectabilia 1 ml.
-# WHO has G03GA07   lutropin alfa   75  U   P
-# FI:  Eine Durchstechflasche mit Pulver enthält 3,7 µg Lutropin alfa, damit mindestens 75 IE entnommen werden können.
-
-# Xeplion
-# WHO: N05AX13    paliperidone  6   mg  O
-#    2.5   mg  P   depot Expressed as paliperidone
-# paliperidonum 25 mg ut paliperidoni palmitas, polysorbatum 20, macrogolum 4000, acidum citricum monohydricum, dinatrii phosphas anhydricus, natrii dihydrogenophosphas monohydricus, aqua ad iniectabilia q.s. ad suspensionem pro 0.25 ml.
-# FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
-
-
-# Humatrope -   53052  -  01
-# Praeparatio cryodesiccata: somatropinum ADNr 6 mg, glycinum, mannitolum, natrii phosphates, pro vitro.
-# Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.
-# WHO: H01AC01    somatropin  2   U   P
-# FI Patronen mit Trockensubstanz 6 mg, 12 mg, 24 mg Somatropin
-# Humatrope Patronen können mit einem geeigneten, CE-zertifizierten Pen verwendet werden.
-
   def test_ddd_Humatrope_iksnr_53052
     create_test_package(iksnr: 53052, ikscd: 53, price_public: 693.95,
                         pack_dose: ODDB::Dose.new(12, 'mg'),
@@ -1304,8 +1285,7 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     # 10 TU = 22.00, 20ml*1000 UI/ml= 20000 UI = 20 TU, -> 10TU=11 Fr.
     assert_equal(ODDB::Util::Money.new(11.00, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
-  end
-  def test_ddd_Urokinase_iksnr_48198
+  def test_ddd_Urokinase_iksnr_46240
     create_test_package(iksnr: 46240, ikscd: 66, price_public: 219.15,
                         pack_dose: ODDB::Dose.new(500000, 'UI'),
                         galenic_group: 'Injektion/Infusion',
@@ -1323,9 +1303,43 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     price =  @package.ddd_price
     assert_equal(ODDB::Util::Money.new(1314.90, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
-  # 48198;015;1857145;Urokinase
+  end
+
+  def test_ddd_Arcoxia_iksnr_56079
+    create_test_package(iksnr: 56079, ikscd: 65, price_public: 39.65,
+                        pack_dose: ODDB::Dose.new(30, 'mg'),
+                        galenic_group: 'Tabletten',
+                        atc_code: 'M01AH05', # M01AH05    etoricoxib  60  mg  O
+                        ddd_dose: ODDB::Dose.new(60, 'mg'),
+                        excipiens: 'Pro Vitro',
+                        composition_text: %(
+                        etoricoxibum 30 mg, color.: E 132.
+excipiens pro compresso obducto.
+)
+                        )
+    part = ODDB::Part.new
+    part.count = 28
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(30, 'mg')
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(2.83, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+  end
+
+# Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
+# Solvens: aqua ad iniectabilia 1 ml.
+# WHO has G03GA07   lutropin alfa   75  U   P
+# FI:  Eine Durchstechflasche mit Pulver enthält 3,7 µg Lutropin alfa, damit mindestens 75 IE entnommen werden können.
+
+# Xeplion
+# WHO: N05AX13    paliperidone  6   mg  O
+#    2.5   mg  P   depot Expressed as paliperidone
+# paliperidonum 25 mg ut paliperidoni palmitas, polysorbatum 20, macrogolum 4000, acidum citricum monohydricum, dinatrii phosphas anhydricus, natrii dihydrogenophosphas monohydricus, aqua ad iniectabilia q.s. ad suspensionem pro 0.25 ml.
+# FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
+
    bin_admin_snippet = %(
-$package = registration('48198').package('066')
+$package = registration('56079').package('065')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
