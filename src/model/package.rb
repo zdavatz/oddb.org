@@ -313,23 +313,19 @@ module ODDB
           variant = 40
           if /[\d.-]+ TU/.match(ddose.to_s)
             ddd_dose_tu = u_ddose.scalar * 1000
-            if dose.unit.index('/ml')
-              measure = Unit.new(parts.first.measure.to_s)
-              pack_dose_u =  ((u_mdose.base * measure.base)).scalar
-            else
-              pack_dose_u = catch_ui[1].to_i
-            end
+          elsif /[\d.-]+ MU/.match(ddose.to_s)
+            ddd_dose_tu = u_ddose.scalar * 1000 * 1000 # MU = milllion unit
           elsif /([\d.-])+ U/.match(ddose.to_s)
             ddd_dose_tu = u_ddose.scalar
-            if dose.unit.index('/ml')
-              measure = Unit.new(parts.first.measure.to_s)
-              pack_dose_u =  ((u_mdose.base * measure.base)).scalar
-            else
-              pack_dose_u = catch_ui[1].to_i
-            end
           else
             puts "Unable to match ddose #{ddose.to_s}"
             return nil
+          end
+          if dose.unit.index('/ml')
+            measure = Unit.new(parts.first.measure.to_s)
+            pack_dose_u =  ((u_mdose.base * measure.base)).scalar
+          else
+            pack_dose_u = catch_ui[1].to_i
           end
           _ddd_price = (price / parts.first.count /  parts.first.multi / (pack_dose_u/ ddd_dose_tu))
           puts "_ddd_price #{variant}: #{_ddd_price} = price  #{price} / count #{parts.first.count} / multi #{ parts.first.multi} / ( pack_dose_u #{pack_dose_u} /ddd_dose_tu  #{ddd_dose_tu})" if SHOW_PRICE_CALCULATION
@@ -371,7 +367,7 @@ module ODDB
           else
             variant = 14
             _ddd_price = (price / size.to_f) * (ddose.to_f / mdose.want(ddose.unit).to_f) / factor
-            puts "_ddd_price #{variant}: #{_ddd_price} = #{price} / #{size} * ( #{ddose} / #{mdose.want(ddose.unit)})" if SHOW_PRICE_CALCULATION
+            puts "_ddd_price #{variant}: #{_ddd_price} = #{price} / count #{@parts.first.count} * ( #{ddose} / #{mdose.want(ddose.unit)})" if SHOW_PRICE_CALCULATION
           end
         else
           # This is valid only for the following case, for example, mdose unit: mg/ml, size unit: ml

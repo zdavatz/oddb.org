@@ -1285,7 +1285,6 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     price =  @package.ddd_price
     assert_equal(ODDB::Util::Money.new(1.93, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
-  end
   def test_ddd_Heparin_iksnr_46240
     create_test_package(iksnr: 46240, ikscd: 30, price_public:22.00,
                         pack_dose: ODDB::Dose.new(1000, 'UI/ml'),
@@ -1305,8 +1304,28 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     # 10 TU = 22.00, 20ml*1000 UI/ml= 20000 UI = 20 TU, -> 10TU=11 Fr.
     assert_equal(ODDB::Util::Money.new(11.00, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
+  end
+  def test_ddd_Urokinase_iksnr_48198
+    create_test_package(iksnr: 46240, ikscd: 66, price_public: 219.15,
+                        pack_dose: ODDB::Dose.new(500000, 'UI'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'B01AD04', # B01AD04    urokinase   3   MU  P
+                        ddd_dose: ODDB::Dose.new(3, 'MU'),
+                        excipiens: 'Pro Vitro',
+                        composition_text: %(Praeparatio cryodesiccata: urokinasum 500000 U.I., natrii phosphates, dinatrii phosphas dodecahydricus, natrii dihydrogenophosphas dihydricus, albuminum humanum, pro vitro.)
+                        )
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(1314.90, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+  end
+  # 48198;015;1857145;Urokinase
    bin_admin_snippet = %(
-$package = registration('46240').package('030')
+$package = registration('48198').package('066')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
