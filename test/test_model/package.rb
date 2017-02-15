@@ -384,9 +384,8 @@ class TestPackage <Minitest::Test
     @package.parts.push part
     assert_equal '1.00', @package.ddd_price.to_s
 
-    @package.sequence.longevity = 2
-    skip('longevity should be considered')
-    assert_equal '2.00', @package.ddd_price.to_s
+    @seq.should_receive(:longevity).and_return(2)
+    assert_equal '0.50', @package.ddd_price.to_s
   end
   def test_ddd_dafalgan_kinder
     # Tageskosten für Dafalgan Kinder
@@ -925,26 +924,6 @@ class TestPackage <Minitest::Test
     price = @package.ddd_price
     assert_equal ODDB::Util::Money.new(0.69, 'CHF').to_s, price ? price.to_s : 'not calculated'
   end
-  def test_ddd_Champix_iksnr_57736
-    create_test_package(iksnr: 57736, ikscd: 9, price_public: 121.35,
-                  ddd_dose: ODDB::Dose.new(7 , 'g'),
-                  pack_dose: ODDB::Dose.new(4.5, 'g'),
-                  atc_code: 'N07BA03',
-                  excipiens: 'Excipiens ad Pulverem',
-                  composition_text: ' I) 0.5 mg: vareniclinum 0.5 mg ut vareniclini tartras, excipiens pro compresso obducto.
-II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro compresso obducto.'
-                  )
-    part = ODDB::Part.new
-    part.count = 1
-    part.multi = 1
-    part.addition = 0
-    part.measure = ODDB::Dose.new(400, 'g')
-    @package.parts.push part
-    price = @package.ddd_price
-    skip('Champix should return 5.11')
-    assert_equal ODDB::Util::Money.new(5.11, 'CHF').to_s, price ? price.to_s : 'not calculated'
-  end
-
   def test_ddd_Laxipeg_iksnr_62765
     create_test_package(iksnr: 62765, ikscd: 1, price_public: 18.45,
                         ddd_dose: ODDB::Dose.new(9.736, "g"),
@@ -1001,7 +980,7 @@ II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro
     price = @package.ddd_price
     assert_equal ODDB::Util::Money.new(3.55, 'CHF').to_s, price.to_s
   end
-end
+
   def test_ddd_Risperdal_iksnr_56092
     # ATC code    Name       DDD    U   Adm.R   Note
     #  N05AX08   risperidone   5   mg  O
@@ -1058,12 +1037,187 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     price =  @package.ddd_price
     assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
   end
-  bin_admin_snippet = %(
-$package = registration('56092').package('001')
+  def test_ddd_Risperdal_iksnr_56092
+    # ATC code    Name       DDD    U   Adm.R   Note
+    #  N05AX08   risperidone   5   mg  O
+    #                        2.7   mg  P   depot
+    # 56092 02 003
+    # 2569514 RISPERDAL CONSTA Inj Susp 37.5 mg Inj kit N05AX08 257.30  43.31 18.53 24.78 134%
+    create_test_package(iksnr: 56092, ikscd: 3, price_public: 257.30, # On ODDB the current PP is 258.79 as per 08.12.2016
+                        ddd_dose: ODDB::Dose.new(5 , 'mg'),
+                        pack_dose: ODDB::Dose.new(37.5, 'mg'),
+                        atc_code: @N05AX08.code,
+                        excipiens: '  Aqua Ad Iniectabilia Q.s. Ad Solutionem',
+                        route_of_administration: 'roa_P',
+                        composition_text: 'Praeparatio sicca: risperidonum 25 mg, copoly(dl-lactidum-glycolidum).
+Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, acidum citricum anhydricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 2 ml, pro vase, in suspensione recenter reconstituta.',
+                        galenic_group: 'Injektion/Infusion'
+                        )
+    @seq.should_receive(:atc_class).and_return(@N05AX08)
+    composition1 = flexmock('composition1', :excipiens => nil)
+    composition2 = flexmock('composition2', :excipiens => 'Aqua Ad Iniectabilia Q.s. Ad Solutionem')
+    @seq.should_receive(:compositions).and_return([composition1, composition2])
+    # @seq.compositions = [composition1, composition2]
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new('30','ml')
+    @package.parts.push part
+    assert_equal('ml', @package.parts.first.measure.unit)
+    assert_equal(30, @package.parts.first.measure.qty)
+    assert_equal('30 ml', @package.parts.first.size)
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+  end
+  def test_ddd_Fludex_iksnr_53975
+    create_test_package(iksnr: 53975, ikscd: 11, price_public: 17.90  ,
+                        ddd_dose: ODDB::Dose.new(2.5 , 'mg'),
+                        pack_dose: ODDB::Dose.new(1.5, 'mg'),
+                        atc_code: 'C03BA11',
+                        excipiens: 'Excipiens pro Compresso Obducto.',
+                        composition_text: 'indapamidum 1.5 mg, excipiens pro compresso obducto.',
+                        galenic_group: 'Retard-Tabletten'
+                        )
+    part = ODDB::Part.new
+    part.count = 30
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(0.60, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+  end
+  def test_ddd_Symfona_iksnr_63137
+    create_test_package(iksnr: 63137, ikscd: 1, price_public: 58.70,
+                        pack_dose: ODDB::Dose.new(240, 'mg'),
+                        atc_code: 'N06DX02',
+                        ddd_dose: ODDB::Dose.new(0.12, 'g'),
+                        excipiens: 'Excipiens Pro Compresso',
+                        composition_text: 'ginkgo bilobae extractum acetonicum siccum 240 mg corresp. flavonglycosida ginkgo 52.8-64.8 mg et terpenlactona ginkgo 13.0-15.8 mg, DER: 35-67:1, excipiens pro compresso.',
+                        galenic_group: 'Tabletten'
+                        )
+    part = ODDB::Part.new
+    part.count = 30
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
+    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+  end
+  def test_ddd_Symfona_iksnr_63137
+    create_test_package(iksnr: 63137, ikscd: 1, price_public: 58.70,
+                        pack_dose: ODDB::Dose.new(240, 'mg'),
+                        atc_code: 'N06DX02',
+                        ddd_dose: ODDB::Dose.new(0.12, 'g'),
+                        excipiens: 'Excipiens Pro Compresso',
+                        composition_text: 'ginkgo bilobae extractum acetonicum siccum 240 mg corresp. flavonglycosida ginkgo 52.8-64.8 mg et terpenlactona ginkgo 13.0-15.8 mg, DER: 35-67:1, excipiens pro compresso.',
+                        galenic_group: 'Tabletten'
+                        )
+    part = ODDB::Part.new
+    part.count = 30
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
+    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+  end
+  def test_ddd_Symfona_iksnr_54499
+    create_test_package(iksnr: 54499, ikscd: 19, price_public: 123.90,
+                        pack_dose: ODDB::Dose.new(100, 'mg'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'B01AB06', # Key ["Panti Xa"]
+                        # WHO: B01AB06   nadroparin  2.85  TU  P   anti Xa,   thousand units
+                        ddd_dose: ODDB::Dose.new(2.85, 'TU'),
+                        excipiens: 'Excipiens',
+                        composition_text: 'nadroparinum calcicum ca. 100 mg corresp. 11400 U.I., aqua ad iniectabilia q.s. ad solutionem pro 0.6 ml.',
+                        )
+    part = ODDB::Part.new
+    part.count = 10
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(3.10, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    # Recormon Praeparatio cryodesiccata: epoetinum beta ADNr 2000 U.I., ureum, natrii chloridum, polysorbatum 20, natrii phosphates, calcii chloridum dihydricum, glycinum, leucinum, isoleucinum, threoninum, acidum glutamicum, phenylalaninum, pro praeparatione aus gentechnisch verändertem Mais hergestellt.
+# Solvens: aqua ad iniectabilia 0.3 ml, pro vase.
+
+# Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
+# Solvens: aqua ad iniectabilia 1 ml.
+# WHO has G03GA07   lutropin alfa   75  U   P
+# FI:  Eine Durchstechflasche mit Pulver enthält 3,7 µg Lutropin alfa, damit mindestens 75 IE entnommen werden können.
+
+# Humatrope -   53052  -  01
+# Praeparatio cryodesiccata: somatropinum ADNr 6 mg, glycinum, mannitolum, natrii phosphates, pro vitro.
+# Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.
+# WHO: H01AC01    somatropin  2   U   P
+# FI Patronen mit Trockensubstanz 6 mg, 12 mg, 24 mg Somatropin
+# Humatrope Patronen können mit einem geeigneten, CE-zertifizierten Pen verwendet werden.
+
+# Betaferon reg/53225/seq/02
+# WHO L03AB08   interferon beta-1b  4   MU  P
+# Praeparatio cryodesiccata: interferonum beta-1b ADNr 0.3 mg corresp. 9.6 Mio U.I., albuminum humanum, mannitolum, pro vitro.
+# Solvens: natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 1.2 ml.
+# Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./ml.
+# FI 1 Durchstechflasche (Pulver) zu:
+# 9,6 Millionen IU (300 Mikrogramm) Interferonum beta-1b ADNr bei einer kalkulierten Überfüllung von 20%.
+# Lösungsmittel
+# 1 Fertigspritze zu 1,2 ml 0,54% (m/V) Natriumchlorid-Lösung.
+# Nach Rekonstitution enthält 1 ml 8 Mio. IU (250 Mikrogramm) Interferonum beta-1b ADNr.
+
+# Xeplion
+# WHO: N05AX13    paliperidone  6   mg  O
+#    2.5   mg  P   depot Expressed as paliperidone
+# paliperidonum 25 mg ut paliperidoni palmitas, polysorbatum 20, macrogolum 4000, acidum citricum monohydricum, dinatrii phosphas anhydricus, natrii dihydrogenophosphas monohydricus, aqua ad iniectabilia q.s. ad suspensionem pro 0.25 ml.
+# FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
+  end
+  end
+  def test_ddd_Champix_iksnr_57736
+    create_test_package(iksnr: 57736, ikscd: 9, price_public: 121.35,
+                  ddd_dose: ODDB::Dose.new(2 , 'mg'),
+                  pack_dose: ODDB::Dose.new(1.5, 'mg'),
+                  atc_code: 'N07BA03',
+                  excipiens: 'Excipiens pro Compresso Obducto',
+                  composition_text: ' I) 0.5 mg: vareniclinum 0.5 mg ut vareniclini tartras, excipiens pro compresso obducto.
+II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro compresso obducto.'
+                  )
+# ch.oddb> $package.parts.first.size
+#-> 11 + 42 Tablette(n) à 0.5 mg
+    @active_agent_0_5_mg = ODDB::ActiveAgent.new('N07BA03')
+    @active_agent_0_5_mg.dose = ODDB::Dose.new(0.5, 'mg')
+    @active_agent_1_0_mg = ODDB::ActiveAgent.new('N07BA03')
+    @active_agent_1_0_mg.dose = ODDB::Dose.new(1, 'mg')
+    @seq.should_receive(:active_agents).and_return([@active_agent_0_5_mg, @active_agent_1_0_mg])
+    part_1 = ODDB::Part.new
+    part_1.count = 42
+    part_1.multi = 1
+    part_1.addition = 0
+    part_1.measure = ODDB::Dose.new('0.5','mg')
+    @package.parts.push part_1
+    part_2 = ODDB::Part.new
+    part_2.count = 42
+    part_2.multi = 1
+    part_2.addition = 0
+    part_2.measure = ODDB::Dose.new('1.0','mg')
+    @package.parts.push part_2
+    price = @package.ddd_price
+    skip('Champix should return 5.11 as it contains 42 times 0.5 and 1 mg')
+    assert_equal ODDB::Util::Money.new(5.11, 'CHF').to_s, price ? price.to_s : 'not calculated'
+  end
+
+
+   bin_admin_snippet = %(
+$package = registration('57736').package('009')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
 $package.dose
+$package.longevity
 $package.parts.size
 $package.atc_class
 $package.atc_class.code
