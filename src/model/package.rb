@@ -313,10 +313,20 @@ module ODDB
           variant = 40
           if /[\d.-]+ TU/.match(ddose.to_s)
             ddd_dose_tu = u_ddose.scalar * 1000
-            pack_dose_u = catch_ui[1].to_i
+            if dose.unit.index('/ml')
+              measure = Unit.new(parts.first.measure.to_s)
+              pack_dose_u =  ((u_mdose.base * measure.base)).scalar
+            else
+              pack_dose_u = catch_ui[1].to_i
+            end
           elsif /([\d.-])+ U/.match(ddose.to_s)
             ddd_dose_tu = u_ddose.scalar
-            pack_dose_u = catch_ui[1].to_i
+            if dose.unit.index('/ml')
+              measure = Unit.new(parts.first.measure.to_s)
+              pack_dose_u =  ((u_mdose.base * measure.base)).scalar
+            else
+              pack_dose_u = catch_ui[1].to_i
+            end
           else
             puts "Unable to match ddose #{ddose.to_s}"
             return nil

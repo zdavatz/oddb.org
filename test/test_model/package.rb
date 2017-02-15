@@ -774,7 +774,7 @@ class TestPackage <Minitest::Test
     @package.sequence = seq2
     price = @package.ddd_price
     # We just wanted to receive a different price. No real example!
-    assert_equal ODDB::Util::Money.new(17.93, 'CHF').to_s, price.to_s
+    assert_equal ODDB::Util::Money.new(17.93, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
   end
   def test_cum_liberation
     allowed_failures = [
@@ -1266,7 +1266,6 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     # we cannot compare the WHO DDD and the dose
     assert_nil(price)
   end
-  end
   def test_ddd_InsulinNovonordisk_iksnr_62260
     create_test_package(iksnr: 62260, ikscd: 53, price_public:72.40,
                         pack_dose: ODDB::Dose.new(100, 'UI/ml'),
@@ -1284,10 +1283,30 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.measure = ODDB::Dose.new(3, 'ml')
     @package.parts.push part
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(5.79, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal(ODDB::Util::Money.new(1.93, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+  end
+  end
+  def test_ddd_Heparin_iksnr_46240
+    create_test_package(iksnr: 46240, ikscd: 30, price_public:22.00,
+                        pack_dose: ODDB::Dose.new(1000, 'UI/ml'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'B01AB01', # B01AB01    heparin   10  TU  P
+                        ddd_dose: ODDB::Dose.new(10, 'TU'),
+                        excipiens: 'Aqua Ad Iniectabilia Q.s. Ad Solutionem',
+                        composition_text: %(heparinum natricum 1000 U.I., aqua ad iniectabilia q.s. ad solutionem pro 1 ml.)
+                        )
+    part = ODDB::Part.new
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(20, 'ml')
+    @package.parts.push part
+    price =  @package.ddd_price
+    # 10 TU = 22.00, 20ml*1000 UI/ml= 20000 UI = 20 TU, -> 10TU=11 Fr.
+    assert_equal(ODDB::Util::Money.new(11.00, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
    bin_admin_snippet = %(
-$package = registration('62260').package('001')
+$package = registration('46240').package('030')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
@@ -1312,5 +1331,6 @@ $package.active_agents.first.dose
 $package.compositions.first.corresp
 $package.compositions.first.excipiens
 $package.sequence.composition_text
+
  )
 end
