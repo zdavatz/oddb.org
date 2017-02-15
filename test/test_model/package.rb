@@ -93,6 +93,7 @@ class StubPackageSequence
   end
 end
 class TestPackage <Minitest::Test
+  DDD_PRICE_NIL = 'not calculated'
   def setup
     @package = ODDB::Package.new('12')
     @package.sequence = StubPackageSequence.new
@@ -690,7 +691,7 @@ class TestPackage <Minitest::Test
     part.measure = nil
     @package.parts.push part
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(3.75, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(3.75, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     # ( 0.22 g / 110 mg ) x ( 112.50 / 60 Kapsel(n) ) = 5.11 CHF / Tag
     # dabigatranum etexilatum 110 mg ut dabigatranum etexilati mesilas, color.: E 132, E 110, excipiens pro capsula.
     # Still incorrect price      14.39       17.15 old_price     157.68  for 1851160 Colophos, Lösung
@@ -709,9 +710,9 @@ class TestPackage <Minitest::Test
     part.measure = nil
     @package.parts.push part
     price = @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(1.54, 'CHF').to_s, price ? price.to_s : 'not calculated', 'This is double because we use "0"')
+    assert_equal(ODDB::Util::Money.new(1.54, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL, 'This is double because we use "0"')
     skip("Here we cannot distinguish between 2.5   mg  oral aerosol and 5   mg  O, Therefore we use the '0'")
-    assert_equal ODDB::Util::Money.new(0.77, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(0.77, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     #   new_info 36830;018;823902;Nitroglycerin Streuli, Kaukapseln;C01DA02;O,SL,TD,oral aerosol;O;5 mg;0.8 mg;;Kautabletten;7.40;1.54
     # Still incorrect price       1.54        0.77 old_price       1.54  for  823902 Nitroglycerin Streuli, Kaukapseln
     # WHO   5   mg  O
@@ -746,7 +747,7 @@ class TestPackage <Minitest::Test
     part.measure = nil
     @package.parts.push part
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     #    new_info 55976;017;2635412;Estradot 25, Transdermales Pflaster;G03CA03;N,O,P,R,V,TD,TDgel,Pdepot long duration,Pdepot short duration,TDpatch refer to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours *;O;2 mg;390 µg;roa_TD;Transdermales Pflaster;18.65;11.96
     #Still incorrect price      11.96        1.33 old_price      11.96  for 2635412 Estradot 25, Transdermales Pflaster
     # WHO for G03CA03   estradiol   0.3   mg  N
@@ -758,7 +759,7 @@ class TestPackage <Minitest::Test
     # 1     mg  TD  gel
     # 25    mcg   V
     # 7.5   mcg   V   vaginal ring refers to amount delivered per 24 hours
-    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     # Test again with a different rate
     excipiens = flexmock 'excipiens', :description => "Excipiens ad Praeparationem pro 2.5 Cm², cum Liberatione 0.005 mg/h"
     composition = flexmock 'composition', :excipiens => excipiens
@@ -856,7 +857,7 @@ class TestPackage <Minitest::Test
     part.measure = ODDB::Dose.new(200, 'g')
     @package.parts.push part
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(0.56, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(0.56, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     #   ( 8 g / 875 mg ) x ( 12.35 / 200 g ) = 0.04 CHF / Tag
     # Colosan   new_info 43319;078;1337003;Colosan mite citron, granulé;A06AC03;O;O;8 g;875 mg;roa_O;Granulat;12.35;
     # Still incorrect price      12.35        0.58 old_price       0.04  for 1337003 Colosan mite citron, granulé
@@ -881,7 +882,7 @@ class TestPackage <Minitest::Test
     @package.parts.push part
 
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(3.7, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(3.7, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     # Tagesdosis  90 mg Publikumspreis  16.45 CHF
     # Stärke  60 mg Packungsgrösse  20 Tablette(n)
     # Berechnung  ( 90 mg / 60 mg ) x ( 16.45 / 20 Tablette(n) ) = 1.23 CHF / Tag
@@ -902,7 +903,7 @@ class TestPackage <Minitest::Test
     @package.parts.push part
 
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(1.43, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(1.43, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
   end
   def test_ddd_Mucilar_iksnr_39474
     create_test_package(iksnr: 39474, ikscd: 26, price_public: 19.65,
@@ -922,7 +923,7 @@ class TestPackage <Minitest::Test
     part.measure = ODDB::Dose.new(400, 'g')
     @package.parts.push part
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(0.69, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(0.69, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
   end
   def test_ddd_Laxipeg_iksnr_62765
     create_test_package(iksnr: 62765, ikscd: 1, price_public: 18.45,
@@ -939,7 +940,7 @@ class TestPackage <Minitest::Test
     @package.parts.push part
     @seq.should_receive(:active_agents).and_return([@active_agent, @active_agent])
     price = @package.ddd_price
-    assert_equal ODDB::Util::Money.new(0.90, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(0.90, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
   end
   def test_ddd_Disflatyl_iksnr_52051
     create_test_package(iksnr: 52051, ikscd: 10, price_public: 6.45,
@@ -1012,7 +1013,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
 
   def test_ddd_Risperdal_iksnr_58467
@@ -1035,7 +1036,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Risperdal_iksnr_56092
     # ATC code    Name       DDD    U   Adm.R   Note
@@ -1068,7 +1069,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Fludex_iksnr_53975
     create_test_package(iksnr: 53975, ikscd: 11, price_public: 17.90  ,
@@ -1086,7 +1087,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.measure = nil
     @package.parts.push part
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(0.60, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(0.60, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Symfona_iksnr_63137
     create_test_package(iksnr: 63137, ikscd: 1, price_public: 58.70,
@@ -1105,7 +1106,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     @package.parts.push part
     price =  @package.ddd_price
     skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
-    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Symfona_iksnr_63137
     create_test_package(iksnr: 63137, ikscd: 1, price_public: 58.70,
@@ -1124,7 +1125,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     @package.parts.push part
     price =  @package.ddd_price
     skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
-    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
+    assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Symfona_iksnr_54499
     create_test_package(iksnr: 54499, ikscd: 19, price_public: 123.90,
@@ -1143,39 +1144,7 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.measure = nil
     @package.parts.push part
     price =  @package.ddd_price
-    assert_equal(ODDB::Util::Money.new(3.10, 'CHF').to_s, (price ? price.to_s : 'not calculated'))
-    # Recormon Praeparatio cryodesiccata: epoetinum beta ADNr 2000 U.I., ureum, natrii chloridum, polysorbatum 20, natrii phosphates, calcii chloridum dihydricum, glycinum, leucinum, isoleucinum, threoninum, acidum glutamicum, phenylalaninum, pro praeparatione aus gentechnisch verändertem Mais hergestellt.
-# Solvens: aqua ad iniectabilia 0.3 ml, pro vase.
-
-# Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
-# Solvens: aqua ad iniectabilia 1 ml.
-# WHO has G03GA07   lutropin alfa   75  U   P
-# FI:  Eine Durchstechflasche mit Pulver enthält 3,7 µg Lutropin alfa, damit mindestens 75 IE entnommen werden können.
-
-# Humatrope -   53052  -  01
-# Praeparatio cryodesiccata: somatropinum ADNr 6 mg, glycinum, mannitolum, natrii phosphates, pro vitro.
-# Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.
-# WHO: H01AC01    somatropin  2   U   P
-# FI Patronen mit Trockensubstanz 6 mg, 12 mg, 24 mg Somatropin
-# Humatrope Patronen können mit einem geeigneten, CE-zertifizierten Pen verwendet werden.
-
-# Betaferon reg/53225/seq/02
-# WHO L03AB08   interferon beta-1b  4   MU  P
-# Praeparatio cryodesiccata: interferonum beta-1b ADNr 0.3 mg corresp. 9.6 Mio U.I., albuminum humanum, mannitolum, pro vitro.
-# Solvens: natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 1.2 ml.
-# Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./ml.
-# FI 1 Durchstechflasche (Pulver) zu:
-# 9,6 Millionen IU (300 Mikrogramm) Interferonum beta-1b ADNr bei einer kalkulierten Überfüllung von 20%.
-# Lösungsmittel
-# 1 Fertigspritze zu 1,2 ml 0,54% (m/V) Natriumchlorid-Lösung.
-# Nach Rekonstitution enthält 1 ml 8 Mio. IU (250 Mikrogramm) Interferonum beta-1b ADNr.
-
-# Xeplion
-# WHO: N05AX13    paliperidone  6   mg  O
-#    2.5   mg  P   depot Expressed as paliperidone
-# paliperidonum 25 mg ut paliperidoni palmitas, polysorbatum 20, macrogolum 4000, acidum citricum monohydricum, dinatrii phosphas anhydricus, natrii dihydrogenophosphas monohydricus, aqua ad iniectabilia q.s. ad suspensionem pro 0.25 ml.
-# FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
-  end
+    assert_equal(ODDB::Util::Money.new(3.10, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Champix_iksnr_57736
     create_test_package(iksnr: 57736, ikscd: 9, price_public: 121.35,
@@ -1207,12 +1176,118 @@ II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro
     @package.parts.push part_2
     price = @package.ddd_price
     skip('Champix should return 5.11 as it contains 42 times 0.5 and 1 mg')
-    assert_equal ODDB::Util::Money.new(5.11, 'CHF').to_s, price ? price.to_s : 'not calculated'
+    assert_equal ODDB::Util::Money.new(5.11, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+  end
+  def test_ddd_Recormon_iksnr_54766
+    create_test_package(iksnr: 54766, ikscd: 76, price_public: 738.50,
+                        pack_dose: ODDB::Dose.new(10000, 'UI'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'B03XA01', # B03XA01    erythropoietin  1   TU  P
+                        ddd_dose: ODDB::Dose.new(1, 'TU'),
+                        excipiens: 'Pro Praeparatione aus Gentechnisch Verändertem mais Hergestellt',
+                        composition_text: %(Praeparatio cryodesiccata: epoetinum beta ADNr 10000 U.I., ureum, natrii chloridum, polysorbatum 20, natrii phosphates, calcii chloridum dihydricum, glycinum, leucinum, isoleucinum, threoninum, acidum glutamicum, phenylalaninum, pro praeparatione aus gentechnisch verändertem Mais hergestellt.
+Solvens: aqua ad iniectabilia 0.6 ml, pro vase.)
+                        )
+    @active_agent = ODDB::ActiveAgent.new('B03XA01')
+    @active_agent.dose = ODDB::Dose.new(10000,  'UI')
+    @seq.should_receive(:active_agents).and_return([@active_agent])
+    part = ODDB::Part.new
+    part.size = '6 Spritze(n)'
+    part.count = 6
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(12.31, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
 
+  def test_ddd_Betaferon_iksnr_53225
+    create_test_package(iksnr: 53225, ikscd: 47, price_public: 738.50,
+                        pack_dose: ODDB::Dose.new(0.3, 'mg'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'L03AB08', #     L03AB08    interferon beta-1b  4   MU  P
+                        ddd_dose: ODDB::Dose.new(4, 'MU'),
+                        excipiens: 'Pro Vitro',
+                        composition_text: %(Praeparatio cryodesiccata: interferonum beta-1b ADNr 0.3 mg corresp. 9.6 Mio U.I., albuminum humanum, mannitolum, pro vitro.
+Solvens: natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 1.2 ml.
+Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./ml.)
+                        )
+    part = ODDB::Part.new
+    part.size = 'Kombipackung(en)'
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_nil(price)
+  end
 
+# Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
+# Solvens: aqua ad iniectabilia 1 ml.
+# WHO has G03GA07   lutropin alfa   75  U   P
+# FI:  Eine Durchstechflasche mit Pulver enthält 3,7 µg Lutropin alfa, damit mindestens 75 IE entnommen werden können.
+
+# Xeplion
+# WHO: N05AX13    paliperidone  6   mg  O
+#    2.5   mg  P   depot Expressed as paliperidone
+# paliperidonum 25 mg ut paliperidoni palmitas, polysorbatum 20, macrogolum 4000, acidum citricum monohydricum, dinatrii phosphas anhydricus, natrii dihydrogenophosphas monohydricus, aqua ad iniectabilia q.s. ad suspensionem pro 0.25 ml.
+# FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
+
+
+# Humatrope -   53052  -  01
+# Praeparatio cryodesiccata: somatropinum ADNr 6 mg, glycinum, mannitolum, natrii phosphates, pro vitro.
+# Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.
+# WHO: H01AC01    somatropin  2   U   P
+# FI Patronen mit Trockensubstanz 6 mg, 12 mg, 24 mg Somatropin
+# Humatrope Patronen können mit einem geeigneten, CE-zertifizierten Pen verwendet werden.
+
+  def test_ddd_Humatrope_iksnr_53052
+    create_test_package(iksnr: 53052, ikscd: 53, price_public: 693.95,
+                        pack_dose: ODDB::Dose.new(12, 'mg'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'H01AC01', # H01AC01    somatropin  2   U   P
+                        ddd_dose: ODDB::Dose.new(2, 'U'),
+                        excipiens: 'Pro Vitro',
+                        composition_text: %(Praeparatio cryodesiccata: somatropinum ADNr 12 mg, glycinum, mannitolum, natrii phosphates, pro vitro.
+Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.)
+                        )
+
+    # agents first.dose = 12 mg
+    part = ODDB::Part.new
+    part.size = 'Kombipackung(en)'
+    part.count = 1
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price =  @package.ddd_price
+    # we cannot compare the WHO DDD and the dose
+    assert_nil(price)
+  end
+  end
+  def test_ddd_InsulinNovonordisk_iksnr_62260
+    create_test_package(iksnr: 62260, ikscd: 53, price_public:72.40,
+                        pack_dose: ODDB::Dose.new(100, 'UI/ml'),
+                        galenic_group: 'Injektion/Infusion',
+                        atc_code: 'A10AB05', # A10AB05    insulin aspart  40  U   P
+                        ddd_dose: ODDB::Dose.new(40, 'U'),
+                        excipiens: 'Aqua Ad Iniectabilia Q.s. Ad Solutionem',
+                        composition_text: %(insulinum aspartum 100 U.I., glycerolum, zincum ut zinci chloridum, natrii phosphates, natrii chloridum, conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.)
+                        )
+    part = ODDB::Part.new
+    part.size = 'Kombipackung(en)'
+    part.count = 1
+    part.multi = 5
+    part.addition = 0
+    part.measure = ODDB::Dose.new(3, 'ml')
+    @package.parts.push part
+    price =  @package.ddd_price
+    assert_equal(ODDB::Util::Money.new(5.79, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+  end
    bin_admin_snippet = %(
-$package = registration('57736').package('009')
+$package = registration('62260').package('001')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group
@@ -1234,6 +1309,7 @@ $package.parts.first.measure.class
 $package.active_agents.size
 $package.active_agents.first
 $package.active_agents.first.dose
+$package.compositions.first.corresp
 $package.compositions.first.excipiens
 $package.sequence.composition_text
  )
