@@ -173,12 +173,7 @@ module ODDB
                       else
                         [:pointer, model.pointer]
                       end
-            args = [
-              pointer,
-              [:search_type, @session.persistent_user_input(:search_type)],
-              [:search_query, @session.persistent_user_input(:search_query)]
-            ]
-            span.href = @lookandfeel._event_url(:price_history, args)
+            span.href = @lookandfeel._event_url(:price_history, [ pointer ])
             suffix = @lookandfeel.lookup(:click_for_price_history)
           else
             span = HtmlGrid::Span.new(model, @session, self)

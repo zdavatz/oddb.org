@@ -394,6 +394,62 @@ describe "ch.oddb.org" do
     check_search_with_type
   end
 
+  it 'should display the correct calculation for Bicalutamid Actavis' do
+    @browser.goto(OddbUrl + '/de/gcc/ddd_price/reg/59111/seq/02/pack/004/search_query/Bicalutamid+Actavis%22/search_type/st_sequence')
+    skip('no yet ready')
+    tageskosten =  @browser.trs.find{|x| /^Tageskosten/.match(x.text)}.text
+    expect(tageskosten).to match 'Tagesdosis 50 mg'
+    expect(tageskosten).to match 'Publikumspreis 645.10 CHF'
+    expect(tageskosten).to match '6.45 CHF / Tag'
+    expect(tageskosten).to match 'Stärke 150 mg Packungsgrösse 100 Tablette'
+    expect(tageskosten).to match 'Berechnung xxx'
+  end
+
+  ['Inderal',
+   'Augmentin'
+   ].each do |medi|
+    it "should have a working instant search for #{medi} and takeskosten" do
+      @browser.link(:text=>'Instant').click if @browser.link(:text=>'Instant').exists?
+      expect(@browser.text).to match /Art der Suche: Plus/i
+      0.upto(10).each{ |idx|
+                      begin
+                        chooser = @browser.text_field(:id, 'searchbar')
+                        chooser.set(medi)
+                        sleep idx*0.1
+                        chooser.send_keys(:down)
+                        sleep idx*0.1
+                        value = chooser.value
+                        res = medi.match(value)
+                        sleep 0.5
+                        break if /#{medi}/i.match(value) and value.length > medi.length
+                      rescue StandardError => e
+                        puts "in rescue"
+                        createScreenshot(@browser, "rescue_#{medi}_#{__LINE__}")
+                        puts e.inspect
+                        puts caller[0..5]
+                        next
+                      end
+                      }
+      @browser.send_keys("\n")
+      url = @browser.url
+      inhalt = @browser.text
+      expect(inhalt).to match(/Preisvergleich für/i)
+      expect(inhalt).to match(/#{medi}/i)
+      expect(inhalt).to match(/Zusammensetzung/i)
+      back_to_list = @browser.link(:text => /Zurück zur Liste/)
+      old_text = @browser.text.clone
+      expect(back_to_list.visible?)
+      # visit price_history
+      price_history =  @browser.link(:href => /price_history/)
+      price_history.click
+      back_to_list = @browser.link(:text => /Zurück zur Liste/)
+      expect(back_to_list.visible?)
+      back_to_list.click
+      expect(@browser.text).to match medi
+      expect(@browser.text).not_to match LeeresResult
+    end
+  end
+
   after :all do
     @browser.close
   end
