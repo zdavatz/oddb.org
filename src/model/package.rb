@@ -284,7 +284,7 @@ module ODDB
       nil
     end
     # some constant to simplify testing
-    SHOW_PRICE_CALCULATION = true
+    SHOW_PRICE_CALCULATION = false
     CUM_LIBERATION_REGEXP = /cum Liberatione ([\d\.]+\s*[µm]g\/\d*\s*h)$/i
     AD_GRANULATUM_REGEXP  = /ad Granulatum[^\d]+([\d\.]+\s[mugl]+)$/i
 		def ddd_price
