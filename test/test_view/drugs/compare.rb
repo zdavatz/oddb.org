@@ -105,6 +105,7 @@ class TestCompare <Minitest::Test
                         :allowed?    => nil,
                         :event       => 'event',
                         :zone        => 'zone',
+                        :search_form => 'search_form',
                         :persistent_user_input => 'persistent_user_input',
                         :flavor      => 'flavor',
                         :get_cookie_input => 'get_cookie_input',
