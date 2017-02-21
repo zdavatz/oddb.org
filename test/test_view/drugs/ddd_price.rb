@@ -41,8 +41,9 @@ class TestDDDPriceTable <Minitest::Test
                           :lookandfeel => @lnf,
                           :error       => 'error',
                           :currency    => 'currency',
-                          :get_currency_rate => 1.0
+                          :get_currency_rate => 1.0,
                          )
+    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose', 
                           :fact => fact,
@@ -50,11 +51,12 @@ class TestDDDPriceTable <Minitest::Test
                           :want => 'want'
                          )
     @ddd       = flexmock('ddd', :dose => dose)
-    atc_class  = flexmock('atc_class', :ddd => @ddd)
-    @model     = flexmock('model', 
+    atc_class  = flexmock('atc_class', :ddd => @ddd, :code => 'atc_code')
+    @model     = flexmock('model',
                           :atc_class    => atc_class,
                           :dose         => dose,
                           :price_public => 'price_public',
+                          :ddd_price_calc_variant => ['price', 'calculation', 'variant'],
                           :ddd_price    => 'ddd_price',
                           :longevity    => 'longevity',
                           :size         => 'size'
@@ -108,6 +110,7 @@ class TestDDDPriceComposite <Minitest::Test
                           :get_currency_rate => 1.0,
                           :language    => 'language'
                          )
+    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose', 
                           :fact => fact,
@@ -115,7 +118,7 @@ class TestDDDPriceComposite <Minitest::Test
                           :want => 'want'
                          )
     @ddd       = flexmock('ddd', :dose => dose)
-    atc_class  = flexmock('atc_class', :ddd => @ddd)
+    atc_class  = flexmock('atc_class', :ddd => @ddd, :code => 'atc_code')
     commercial_form = flexmock('commercial_form', :language => 'language')
     part       = flexmock('part', 
                           :multi   => 'multi',
@@ -130,6 +133,7 @@ class TestDDDPriceComposite <Minitest::Test
                           :dose         => dose,
                           :price_public => 'price_public',
                           :ddd_price    => 'ddd_price',
+                          :ddd_price_calc_variant => ['price', 'calculation', 'variant'],
                           :longevity    => 'longevity',
                           :size         => 'size',
                           :commercial_forms => ['commercial_form'],
@@ -185,6 +189,7 @@ class TestDDDPrice <Minitest::Test
                          :event       => 'event',
                          :get_cookie_input => 'get_cookie_input',
                         )
+    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact      = flexmock('fact', :factor => 'factor')
     dose      = flexmock('dose', 
                          :fact => fact,
@@ -192,7 +197,7 @@ class TestDDDPrice <Minitest::Test
                          :want => 'want'
                         )
     ddd       = flexmock('ddd', :dose => dose)
-    atc_class = flexmock('atc_class', :ddd => ddd)
+    atc_class  = flexmock('atc_class', :ddd => ddd, :code => 'atc_code')
     commercial_form = flexmock('commercial_form', :language => 'language')
     part      = flexmock('part', 
                          :multi   => 'multi',
@@ -207,6 +212,7 @@ class TestDDDPrice <Minitest::Test
                          :dose       => dose,
                          :price_public => 'price_public',
                          :ddd_price  => 'ddd_price',
+                          :ddd_price_calc_variant => ['price', 'calculation', 'variant'],
                          :longevity  => 'longevity',
                          :size       => 'size',
                          :commercial_forms => [commercial_form],

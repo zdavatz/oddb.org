@@ -396,7 +396,6 @@ describe "ch.oddb.org" do
 
   it 'should display the correct calculation for Bicalutamid Actavis' do
     @browser.goto(OddbUrl + '/de/gcc/ddd_price/reg/59111/seq/02/pack/004/search_query/Bicalutamid+Actavis%22/search_type/st_sequence')
-    skip('no yet ready')
     tageskosten =  @browser.trs.find{|x| /^Tageskosten/.match(x.text)}.text
     expect(tageskosten).to match 'Tagesdosis 50 mg'
     expect(tageskosten).to match 'Publikumspreis 645.10 CHF'

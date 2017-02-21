@@ -132,7 +132,6 @@ class TestPackage <Minitest::Test
     @seq.should_receive(:active_agents).and_return([@active_agent]).by_default
     @seq.should_receive(:galenic_group).and_return(galenic_group).by_default
     @seq.should_receive(:longevity).and_return(nil).by_default
-
     parts.each{|part| @package.parts.push part}
   end
   if true
@@ -401,8 +400,11 @@ class TestPackage <Minitest::Test
                         )
     part = flexmock :comparable_size => ODDB::Dose.new(12, 'Sachet(s)')
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(4, variant)
     assert_equal ODDB::Util::Money.new(1.40, 'CHF').to_s, @package.ddd_price.to_s
+    assert_equal('1.40 / 12  x 250 mg / 3 g / 1.0', calc)
   end
   def test_delete_part
     part = flexmock(:oid => 4)
@@ -674,8 +676,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = ODDB::Dose.new(125, 'mg')
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(13, variant)
     assert_equal ODDB::Util::Money.new(34.47, 'CHF').to_s, price.to_s
+    assert_equal('103.40 / 375 mg / 1.0', calc)
   end
   def test_ddd_Pradaxa_iksnr_61385
     create_test_package(iksnr: 61385, ikscd: 7, price_public: 112.50,
@@ -690,12 +695,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(31, variant)
     assert_equal ODDB::Util::Money.new(3.75, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
-    # ( 0.22 g / 110 mg ) x ( 112.50 / 60 Kapsel(n) ) = 5.11 CHF / Tag
-    # dabigatranum etexilatum 110 mg ut dabigatranum etexilati mesilas, color.: E 132, E 110, excipiens pro capsula.
-    # Still incorrect price      14.39       17.15 old_price     157.68  for 1851160 Colophos, Lösung
-    #   new_info 61385;007;5304489;Pradaxa 110 mg, Kapseln;B01AE07;O;O;0.22 g;110 mg;roa_O;Kapseln;112.50;3.75
+    assert_equal('112.50 x ( 0.22 g / ( 110 mg x 60 ))', calc)
   end
   def test_ddd_Nitroglycerin_iksnr_36830
     create_test_package(iksnr: 36830, ikscd: 18, price_public: 7.4,
@@ -709,8 +713,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
     assert_equal(ODDB::Util::Money.new(1.54, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL, 'This is double because we use "0"')
+    assert_equal('7.40 / 30 x ( 5 mg / 0.8 mg ) / 1.0', calc)
     skip("Here we cannot distinguish between 2.5   mg  oral aerosol and 5   mg  O, Therefore we use the '0'")
     assert_equal ODDB::Util::Money.new(0.77, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
     #   new_info 36830;018;823902;Nitroglycerin Streuli, Kaukapseln;C01DA02;O,SL,TD,oral aerosol;O;5 mg;0.8 mg;;Kautabletten;7.40;1.54
@@ -746,8 +753,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(10, variant)
     assert_equal ODDB::Util::Money.new(1.17, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+    assert_equal('18.65 / 8 / (50 ug /  25 ug)', calc)
     #    new_info 55976;017;2635412;Estradot 25, Transdermales Pflaster;G03CA03;N,O,P,R,V,TD,TDgel,Pdepot long duration,Pdepot short duration,TDpatch refer to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours,VVaginal ring refers to amount delivered per 24 hours *;O;2 mg;390 µg;roa_TD;Transdermales Pflaster;18.65;11.96
     #Still incorrect price      11.96        1.33 old_price      11.96  for 2635412 Estradot 25, Transdermales Pflaster
     # WHO for G03CA03   estradiol   0.3   mg  N
@@ -772,9 +782,12 @@ class TestPackage <Minitest::Test
                    :composition_text => 'composition_text',
                    :longevity => nil
     @package.sequence = seq2
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(4, variant)
     # We just wanted to receive a different price. No real example!
     assert_equal ODDB::Util::Money.new(17.93, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+    assert_equal('18.65 / 8  x 390 µg / 3 mg / 1.0', calc)
   end
   def test_cum_liberation
     allowed_failures = [
@@ -856,11 +869,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = ODDB::Dose.new(200, 'g')
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(20, variant)
     assert_equal ODDB::Util::Money.new(0.56, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
-    #   ( 8 g / 875 mg ) x ( 12.35 / 200 g ) = 0.04 CHF / Tag
-    # Colosan   new_info 43319;078;1337003;Colosan mite citron, granulé;A06AC03;O;O;8 g;875 mg;roa_O;Granulat;12.35;
-    # Still incorrect price      12.35        0.58 old_price       0.04  for 1337003 Colosan mite citron, granulé
+    assert_equal('12.35 / 200 g x (7/8 / 8 g)', calc)
   end
   def test_ddd_Arlevert_iksnr_59285
    create_test_package(iksnr: 59285, ikscd: 1, price_public: 16.45,
@@ -881,13 +894,11 @@ class TestPackage <Minitest::Test
     part.measure = nil
     @package.parts.push part
 
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(30, variant)
     assert_equal ODDB::Util::Money.new(3.7, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
-    # Tagesdosis  90 mg Publikumspreis  16.45 CHF
-    # Stärke  60 mg Packungsgrösse  20 Tablette(n)
-    # Berechnung  ( 90 mg / 60 mg ) x ( 16.45 / 20 Tablette(n) ) = 1.23 CHF / Tag
-    #         new_info 59285;001;4960731;Arlevert, Tabletten;N07CA02;O;O;90 mg;60 mg;roa_O;Tabletten;16.45;1.23
-    # Still incorrect price       1.23        3.70 old_price       1.23  for 4960731 Arlevert, Tabletten
+    assert_equal('16.45 x ( 90 mg / ( 20 mg x 20 )', calc)
   end
   def test_ddd_Dekane_iksnr_47693
     create_test_package(iksnr: 47693, ikscd: 47, price_public: 27.35,
@@ -902,8 +913,11 @@ class TestPackage <Minitest::Test
     part.measure = nil
     @package.parts.push part
 
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
     assert_equal ODDB::Util::Money.new(1.43, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+    assert_equal('27.35 / 100 x ( 1.5 g / 286.8 mg ) / 1.0', calc)
   end
   def test_ddd_Mucilar_iksnr_39474
     create_test_package(iksnr: 39474, ikscd: 26, price_public: 19.65,
@@ -922,8 +936,11 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = ODDB::Dose.new(400, 'g')
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(32, variant)
     assert_equal ODDB::Util::Money.new(0.69, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+    assert_equal('19.65 / ( ( 400 g / ( 7 g /  4.5 g / 9 g ) )', calc)
   end
   def test_ddd_Laxipeg_iksnr_62765
     create_test_package(iksnr: 62765, ikscd: 1, price_public: 18.45,
@@ -939,8 +956,11 @@ class TestPackage <Minitest::Test
     part.measure = ODDB::Dose.new(10, 'g')
     @package.parts.push part
     @seq.should_receive(:active_agents).and_return([@active_agent, @active_agent])
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(32, variant)
     assert_equal ODDB::Util::Money.new(0.90, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
+    assert_equal('18.45 / ( ( 200 g / ( 9.736 g /  10 g / 10 g ) )', calc)
   end
   def test_ddd_Disflatyl_iksnr_52051
     create_test_package(iksnr: 52051, ikscd: 10, price_public: 6.45,
@@ -960,7 +980,10 @@ class TestPackage <Minitest::Test
     assert_equal('ml', @package.parts.first.measure.unit)
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(1, variant)
+    assert_equal('6.45 x 0.5 g / ( 40 mg/ml x 30 ml )', calc)
     assert_equal ODDB::Util::Money.new(2.69, 'CHF').to_s, price.to_s
   end
   def test_ddd_Ursofalk_iksnr_54634
@@ -978,16 +1001,14 @@ class TestPackage <Minitest::Test
     part.addition = 0
     part.measure = ODDB::Dose.new(250, 'ml')
     @package.parts.push part
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(2, variant)
     assert_equal ODDB::Util::Money.new(3.55, 'CHF').to_s, price.to_s
+    assert_equal('59.15 / ( 0.75 g / 5 ml / ( 0.75 g / 250 ml) )', calc)
   end
 
   def test_ddd_Risperdal_iksnr_56092
-    # ATC code    Name       DDD    U   Adm.R   Note
-    #  N05AX08   risperidone   5   mg  O
-    #                        2.7   mg  P   depot
-    # 56092 02 003
-    # 2569514 RISPERDAL CONSTA Inj Susp 37.5 mg Inj kit N05AX08 257.30  43.31 18.53 24.78 134%
     create_test_package(iksnr: 56092, ikscd: 3, price_public: 257.30, # On ODDB the current PP is 258.79 as per 08.12.2016
                         ddd_dose: ODDB::Dose.new(5 , 'mg'),
                         pack_dose: ODDB::Dose.new(37.5, 'mg'),
@@ -1012,7 +1033,10 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal('ml', @package.parts.first.measure.unit)
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(-3, variant)
+    assert_equal('xxx', calc)
     assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
 
@@ -1035,8 +1059,11 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal('ml', @package.parts.first.measure.unit)
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(34, variant)
     assert_equal(ODDB::Util::Money.new(28.75, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('28.75 / ( 30 ml / 30 ml )', calc)
   end
   def test_ddd_Risperdal_iksnr_56092
     # ATC code    Name       DDD    U   Adm.R   Note
@@ -1068,8 +1095,11 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     assert_equal('ml', @package.parts.first.measure.unit)
     assert_equal(30, @package.parts.first.measure.qty)
     assert_equal('30 ml', @package.parts.first.size)
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(33, variant)
     assert_equal(ODDB::Util::Money.new(18.53, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('257.30 / (37.5 mg / 2.7 mg)', calc)
   end
   def test_ddd_Fludex_iksnr_53975
     create_test_package(iksnr: 53975, ikscd: 11, price_public: 17.90  ,
@@ -1086,7 +1116,10 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(13, variant)
+    assert_equal('17.90 / 30  / 1.0', calc)
     assert_equal(ODDB::Util::Money.new(0.60, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
   def test_ddd_Symfona_iksnr_63137
@@ -1104,7 +1137,10 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(-3, variant)
+    assert_equal('xxx', calc)
     skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
     assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
@@ -1123,7 +1159,10 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(13, variant)
+    assert_equal('58.70 / 30  / 1.0', calc)
     skip('WHO recommends only 0.12 g whereas the FI recommonds one tablet of 204 mg/day')
     assert_equal(ODDB::Util::Money.new(0.98, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
   end
@@ -1143,8 +1182,11 @@ Solvens: carmellosum natricum, polysorbatum 20, dinatrii phosphas dihydricus, ac
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(41, variant)
     assert_equal(ODDB::Util::Money.new(3.10, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('123.90 /  10 / 1 / ( 11400 / 2850.0)', calc)
   end
   def test_ddd_Champix_iksnr_57736
     create_test_package(iksnr: 57736, ikscd: 9, price_public: 121.35,
@@ -1174,7 +1216,10 @@ II) 1 mg: vareniclinum 1 mg ut vareniclini tartras, color.: E 132, excipiens pro
     part_2.addition = 0
     part_2.measure = ODDB::Dose.new('1.0','mg')
     @package.parts.push part_2
-    price = @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
+    assert_equal('121.35 / 42 x ( 2 mg / 1.5 mg ) / 1.0', calc)
     skip('Champix should return 5.11 as it contains 42 times 0.5 and 1 mg')
     assert_equal ODDB::Util::Money.new(5.11, 'CHF').to_s, price ? price.to_s : DDD_PRICE_NIL
   end
@@ -1198,8 +1243,11 @@ Solvens: aqua ad iniectabilia 0.6 ml, pro vase.)
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(41, variant)
     assert_equal(ODDB::Util::Money.new(12.31, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('738.50 /  6 / 1 / ( 10000 / 1000)', calc)
   end
 
   def test_ddd_Betaferon_iksnr_53225
@@ -1220,7 +1268,10 @@ Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./m
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(4, variant)
+    assert_equal('738.50 / 1  x 0.3 mg / 4 MU / 1.0', calc)
     assert_nil(price)
   end
 
@@ -1243,7 +1294,10 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(4, variant)
+    assert_equal('693.95 / 1  x 12 mg / 2 U / 1.0', calc)
     # we cannot compare the WHO DDD and the dose
     assert_nil(price)
   end
@@ -1263,8 +1317,11 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.addition = 0
     part.measure = ODDB::Dose.new(3, 'ml')
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(53, variant)
     assert_equal(ODDB::Util::Money.new(1.93, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('72.40 /  1 / 5 / ( 300 / 40)', calc)
   end
   def test_ddd_Heparin_iksnr_46240
     create_test_package(iksnr: 46240, ikscd: 30, price_public:22.00,
@@ -1281,9 +1338,12 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.addition = 0
     part.measure = ODDB::Dose.new(20, 'ml')
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(51, variant)
     # 10 TU = 22.00, 20ml*1000 UI/ml= 20000 UI = 20 TU, -> 10TU=11 Fr.
     assert_equal(ODDB::Util::Money.new(11.00, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('22.00 /  1 / 1 / ( 20000 / 10000)', calc)
   end
   def test_ddd_Urokinase_iksnr_46240
     create_test_package(iksnr: 46240, ikscd: 66, price_public: 219.15,
@@ -1300,8 +1360,11 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.addition = 0
     part.measure = nil
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(42, variant)
     assert_equal(ODDB::Util::Money.new(1314.90, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('219.15 /  1 / 1 / ( 500000 / 3000000)', calc)
   end
   end
 
@@ -1323,8 +1386,11 @@ excipiens pro compresso obducto.
     part.addition = 0
     part.measure = ODDB::Dose.new(30, 'mg')
     @package.parts.push part
-    price =  @package.ddd_price
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
     assert_equal(ODDB::Util::Money.new(2.83, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('39.65 / 28 x ( 60 mg / 30 mg ) / 1.0', calc)
   end
 
 # Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.

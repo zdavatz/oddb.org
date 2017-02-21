@@ -149,6 +149,11 @@ module ODDB
     def get_currency_rate(currency)
       @currency_rates[currency] ||= @app.get_currency_rate(currency)
     end
+    def convert_price(price, currency)
+      if(price and rate = get_currency_rate(currency))
+        price * rate
+      end
+    end
     def interaction_basket
       if(ids = user_input(:substance_ids))
         ids = ids.split(/,/).collect { |id| id.to_i }

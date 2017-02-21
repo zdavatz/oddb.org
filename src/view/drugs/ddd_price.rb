@@ -15,17 +15,18 @@ class DDDPriceTable < HtmlGrid::Composite
 	include View::DataFormat
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0]	=>	:ddd_oral,
-		[2,0]	=>	:price_public,
+    [0,0] =>  :atc_class,
+		[2,0]	=>	:ddd_oral,
+		[4,0]	=>	:price_public,
 		[0,1]	=>	:dose,
 		[2,1]	=>	:size,
 		[0,2]	=>	:calculation,
 	}
 	COLSPAN_MAP = {
-		[1,2]	=>	3,
+		[1,2,3]	=>	3,
 	}
 	CSS_MAP = { 
-		[0,0,4,2] => 'list', 
+		[0,0,6,2] => 'list',
 		[0,2,2]		=> 'list nowrap' 
 	}
 	LABELS = true
@@ -39,6 +40,14 @@ class DDDPriceTable < HtmlGrid::Composite
 			comp
 		end
 	end
+  def atc_class(model)
+    if (model && (atc = model.atc_class))
+      comp = HtmlGrid::Value.new(:atc_class, model.atc_class.code, @session, self)
+      comp.value =  model.atc_class.code
+      comp
+    end
+  end
+
 	def dose(model)
 		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
 			comp = HtmlGrid::Value.new(:dose, model, @session, self)
@@ -49,27 +58,9 @@ class DDDPriceTable < HtmlGrid::Composite
 	end
 	def calculation(model)
 		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
-      currency = @session.currency
-			mprice = model.price_public
-      mprice = convert_price(mprice, currency)
-			dprice = model.ddd_price
-      dprice = convert_price(dprice, currency)
-			mdose = model.dose
-			ddose = ddd.dose
-			curr = @session.currency
+			dprice, calculation, variant = model.ddd_price_calc_variant(@session.currency)
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
-      if(factor = model.longevity)
-        comp.value = @lookandfeel.lookup(:ddd_calc_long, factor, mprice,
-                                         model.size, dprice, curr)
-
-      elsif(mdose > ddose and model.galenic_group =~ /tabletten?/iu)
-        comp.value = @lookandfeel.lookup(:ddd_calc_tablet, mprice,
-                                         model.size, dprice, curr)
-      else
-        comp.value = @lookandfeel.lookup(:ddd_calculation, ddose,
-                                         mdose, mprice, model.size,
-                                         dprice, curr)
-      end
+      comp.value = @lookandfeel.lookup(:ddd_calculation, calculation, dprice, @session.currency)
 			comp
 		end
 	end
