@@ -1377,9 +1377,10 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
   end
 
   def test_ddd_Arcoxia_iksnr_56079
+    # check also :!registration,51795!sequence,01!package,040.: Aspirin Cardio 100, Filmtabletten Could not convert 1 tablet
     create_test_package(iksnr: 56079, ikscd: 65, price_public: 39.65,
                         pack_dose: ODDB::Dose.new(30, 'mg'),
-                        galenic_group: 'Tabletten',
+                        galenic_group: 'tablet',
                         atc_code: 'M01AH05', # M01AH05    etoricoxib  60  mg  O
                         ddd_dose: ODDB::Dose.new(60, 'mg'),
                         excipiens: 'Pro Vitro',
@@ -1401,6 +1402,85 @@ excipiens pro compresso obducto.
     assert_equal('39.65 / 28 x ( 60 mg / 30 mg ) / 1.0', calc)
   end
 
+  def test_dose_mio_UI_per_ml
+    # :!registration,59055!sequence,01!package,001.: Binocrit 1000 IE/0,5 ml, Injektionslösung in Fertigspritzen Could not convert 1000U.I. / 0.5ml
+    res = @package.quanty_to_unit('1000U.I. / 0.5ml')
+    expected = Unit.new(1000, 'UI / ml')
+    assert(expected.compatible?(res))
+  end
+  def test_dose_mio_UI
+    # :!registration,36631!sequence,02!package,067.: Penicillin Spirig HC 1 Mio U.I., Filmtabletten Could not convert 1 Mio UI
+    res = @package.quanty_to_unit('1 Mio UI')
+    expected = Unit.new(1000*1000, 'UI')
+    assert(expected.compatible?(res))
+    assert_equal(res, expected)
+  end
+  def test_dose_mio_UI_ml
+    # :!registration,51035!sequence,06!package,186.: Neupogen Amgen 30, Fertigspritzen Could not convert 30Mio. U. / 0.5ml
+    res = @package.quanty_to_unit('30Mio. U. / 0.5ml')
+    expected = Unit.new(60, 'MU/ml')
+    assert(expected.compatible?(res))
+    assert_equal(res, expected)
+  end
+  def test_dose_1400_IE
+    # :!registration,47473!sequence,02!package,055.: Miacalcic mite 100, Nasalspray Could not convert 1400 IE
+    res = @package.quanty_to_unit('1400 IE')
+    expected = Unit.new(1400, 'U')
+    assert(expected.compatible?(res))
+    assert_equal(res, expected)
+  end
+
+  def test_ddd_Collu_Blache_iksnr_36030
+    skip('this package should never have a dose of mg/ml/ml after parsing!')
+    create_test_package(iksnr: 36030, ikscd: 11, price_public: 10.20,
+                        pack_dose: ODDB::Dose.new(0.6, 'mg/ml/ml'),
+                        galenic_group: 'Buccal-/Dentalprodukte',
+                        atc_code: 'R02AA05', # R02AA05    chlorhexidine   30  mg  O
+                        ddd_dose: ODDB::Dose.new(30, 'mg'),
+                        excipiens: 'Excipiens ad Solutionem',
+                        composition_text: 'chlorhexidini digluconas 0.5 mg/ml corresp. chlorhexidini digluconas 0.11 mg pro dosi, oxybuprocaini hydrochloridum 0.10 mg/ml corresp. oxybuprocaini hydrochloridum 0.022 mg pro dosi, aromatica, saccharinum natricum, excipiens ad solutionem pro 1 ml.'
+                        )
+    part = ODDB::Part.new
+    part.count = 28
+    part.multi = 1
+    part.addition = 0
+    part.measure = ODDB::Dose.new(50, 'ml')
+    @package.parts.push part
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
+    assert_equal(ODDB::Util::Money.new(2.83, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('39.65 / 28 x ( 60 mg / 30 mg ) / 1.0', calc)
+  end
+  def test_ddd_Cardio_Spirig_iksnr_66097
+    create_test_package(iksnr: 66097, ikscd: 11, price_public: 6.90,
+                        pack_dose: ODDB::Dose.new(100, 'mg'),
+                        galenic_group: 'Tabletten',
+                        atc_code: 'B01AC06', # B01AC06    acetylsalicylic acid  1   tablet  O   Independent of strength
+                        route_of_administration: 'roa_0',
+                        ddd_dose: ODDB::Dose.new(30, 'mg'),
+                        excipiens: 'Excipiens pro Compresso Obducto.',
+                        composition_text: 'acidum acetylsalicylicum 100 mg, excipiens pro compresso obducto.'
+                        )
+    @ddd_o = ODDB::AtcClass::DDD.new('OIndependent of strength')
+    @ddd_o.dose = ODDB::Dose.new(30, 'mg')
+    @atc = flexmock('atc_class', :has_ddd? => true, :ddds => {'OIndependent of strength' => @ddd_o,}, :code => 'B01AC06')
+    @seq.should_receive(:atc_class).and_return(@atc)
+    # OIndependent of strength
+    part = ODDB::Part.new
+    part.count = 30
+    part.multi = 1
+    part.addition = 0
+    part.measure = nil
+    @package.parts.push part
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(50, variant)
+    assert_equal(ODDB::Util::Money.new(0.23, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
+    assert_equal('6.90 /  30 / 1', calc)
+  end
+# :!registration,66097!sequence,01!package,001.: ASS Cardio Spirig HC 100 mg, Filmtabletten Could not convert 1 tablet
+
 # Luveris reg/55430/seq/01   Praeparatio cryodesiccata: lutropinum alfa 3.7 µg, saccharum, dinatrii phosphas dihydricus, natrii dihydrogenophosphas monohydricus, polysorbatum 20, methioninum, nitrogenium, pro vitro.
 # Solvens: aqua ad iniectabilia 1 ml.
 # WHO has G03GA07   lutropin alfa   75  U   P
@@ -1413,7 +1493,7 @@ excipiens pro compresso obducto.
 # FI Bei Xeplion (Paliperidonpalmitat) Retardsuspension zur intramuskulären Injektion handelt es sich um eine weisse bis cremefarbige Suspension in Fertigspritzen.
 
    bin_admin_snippet = %(
-$package = registration('56079').package('065')
+$package = registration('40580').package('009')
 $package.seqnr
 $package.price_public.to_s
 $package.galenic_group

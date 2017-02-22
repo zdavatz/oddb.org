@@ -25,7 +25,7 @@ end
 module ODDB
 	class PackageCommon
 		include Persistence
-    @@ddd_galforms = /tabletten?/iu
+    @@ddd_galforms = /tablet?/iu
     @@ddd_grmforms = /(?!mg\/ml)[mg|g|ml]/iu
     @@flickr_forms = /^http(?:s*):\/\/(?:.*)\.flickr\.com\/photos\/(?:.[^\/]*)\/([0-9]*)(?:\/*)/
 		class << self
@@ -263,7 +263,7 @@ module ODDB
           roa_2 = route_of_administration.sub('roa_', '')
           return atc.ddds[ddd_key] if ddd_key.eql?(roa_2) || ddd_key.eql?(roa_2[0]) || ddd_key[0].eql?(roa_2[0])
         end if route_of_administration
-        atc.ddds['O']
+        atc.ddds['O'] || atc.ddds['OIndependent of strength']
       end
     end
     def ddd_pflaster
@@ -278,7 +278,14 @@ module ODDB
       end
     end
     def quanty_to_unit(dose)
-      Unit.new(dose.to_s.sub(' / ', '/'))
+      s = dose.to_s.sub('U.I.', 'UI').sub(' / ', '/')
+      if m = /\d(\s?Mio\.?\s?U\.?)/.match(s)
+        s.sub!(m[1], 'MU')
+      end
+      if m = /\d+\s+IE$/.match(s)
+        s.sub!(/IE$/, 'U')
+      end
+      Unit.new(s)
     rescue
       puts "#{pointer}: #{name} Could not convert #{dose.to_s}"
       nil
@@ -292,13 +299,13 @@ module ODDB
       return price
     end
     def ddd_price_calc_variant(currency = 'CHF')
+      _ddd_price = nil
       variant = -1
       calc = 'no calculation done'
 			if(!@disable_ddd_price && (ddd = self.ddd) \
-				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
+				&& (price = price_public) && (price.amount > 0) && (ddose = ddd.dose) && (mdose = dose) \
         && size = comparable_size)
         price = price * ODDB::Currency.rate('CHF', currency) unless currency.eql?('CHF')
-        _ddd_price = nil
         factor = (longevity || 1).to_f
         if sequence.compositions.first
           excipiens = sequence.compositions.collect{|c|  c.excipiens && c.excipiens.to_s}.compact.first
@@ -308,13 +315,20 @@ module ODDB
         puts "#{pointer} @@ddd_galforms #{@@ddd_galforms} galenic_group #{galenic_group} match #{(grp = galenic_group) && grp.match(@@ddd_galforms)} excipiens #{excipiens}" if SHOW_PRICE_CALCULATION
         u_mdose = quanty_to_unit(mdose)
         u_size = quanty_to_unit(size)
-        u_ddose = quanty_to_unit(ddose)
-        u_adose = sequence.active_agents.first ? quanty_to_unit(sequence.active_agents.first.dose) : 0
-        catch_ui = composition_text && / (\d+) U[.]?I[.]?/.match(composition_text)
-        if u_mdose != u_adose
-          puts "IKSRN #{iksnr} u_adose (dose of first active agent #{u_adose} != dose  of package #{u_mdose}" if SHOW_PRICE_CALCULATION
+        if atc_class.ddds.keys.eql?(["OIndependent of strength"])
+        else
+          u_ddose = quanty_to_unit(ddose)
+          u_adose = sequence.active_agents.first ? quanty_to_unit(sequence.active_agents.first.dose) : 0
+          catch_ui = composition_text && / (\d+) U[.]?I[.]?/.match(composition_text)
+          if u_mdose != u_adose
+            puts "IKSRN #{iksnr} u_adose (dose of first active agent #{u_adose} != dose  of package #{u_mdose}" if SHOW_PRICE_CALCULATION
+          end
         end
-        if catch_ui && u_ddose.compatible?(Unit.new('1 TU'))
+        if atc_class.ddds.keys.eql?(["OIndependent of strength"])
+          variant = 50
+          _ddd_price = price / parts.first.count / parts.first.multi
+          calc = "#{price} /  #{parts.first.count} / #{ parts.first.multi}"
+        elsif catch_ui && u_ddose.compatible?(Unit.new('1 TU'))
           if /[\d.-]+ TU/.match(ddose.to_s)
             variant = 41
             ddd_dose_tu = u_ddose.scalar * 1000
