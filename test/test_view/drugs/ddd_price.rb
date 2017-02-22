@@ -55,6 +55,7 @@ class TestDDDPriceTable <Minitest::Test
     @model     = flexmock('model',
                           :atc_class    => atc_class,
                           :dose         => dose,
+                          :ddd          => @ddd,
                           :price_public => 'price_public',
                           :ddd_price_calc_variant => ['price', 'calculation', 'variant'],
                           :ddd_price    => 'ddd_price',
@@ -63,8 +64,8 @@ class TestDDDPriceTable <Minitest::Test
                          )
     @composite = ODDB::View::Drugs::DDDPriceTable.new(@model, @session)
   end
-  def test_ddd_oral
-    assert_kind_of(HtmlGrid::Value, @composite.ddd_oral(@model))
+  def test_ddd_roa
+    assert_kind_of(HtmlGrid::Value, @composite.ddd_roa(@model))
   end
   def test_calculation
     assert_kind_of(HtmlGrid::Value, @composite.calculation(@model))
@@ -131,6 +132,7 @@ class TestDDDPriceComposite <Minitest::Test
                           :name_base    => 'name_base',
                           :atc_class    => atc_class,
                           :dose         => dose,
+                          :ddd          => @ddd,
                           :price_public => 'price_public',
                           :ddd_price    => 'ddd_price',
                           :ddd_price_calc_variant => ['price', 'calculation', 'variant'],
@@ -196,8 +198,8 @@ class TestDDDPrice <Minitest::Test
                          :unit => 'unit',
                          :want => 'want'
                         )
-    ddd       = flexmock('ddd', :dose => dose)
-    atc_class  = flexmock('atc_class', :ddd => ddd, :code => 'atc_code')
+    @ddd       = flexmock('ddd', :dose => dose)
+    atc_class  = flexmock('atc_class', :ddd => @ddd, :code => 'atc_code')
     commercial_form = flexmock('commercial_form', :language => 'language')
     part      = flexmock('part', 
                          :multi   => 'multi',
@@ -210,6 +212,7 @@ class TestDDDPrice <Minitest::Test
                          :name_base  => 'name_base',
                          :atc_class  => atc_class,
                          :dose       => dose,
+                         :ddd        => @ddd,
                          :price_public => 'price_public',
                          :ddd_price  => 'ddd_price',
                           :ddd_price_calc_variant => ['price', 'calculation', 'variant'],

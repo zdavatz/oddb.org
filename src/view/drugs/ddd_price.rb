@@ -16,7 +16,7 @@ class DDDPriceTable < HtmlGrid::Composite
 	include View::AdditionalInformation
 	COMPONENTS = {
     [0,0] =>  :atc_class,
-		[2,0]	=>	:ddd_oral,
+		[2,0]	=>	:ddd_roa,
 		[4,0]	=>	:price_public,
 		[0,1]	=>	:dose,
 		[2,1]	=>	:size,
@@ -32,8 +32,8 @@ class DDDPriceTable < HtmlGrid::Composite
 	LABELS = true
 	LEGACY_INTERFACE = false
 	DEFAULT_CLASS = HtmlGrid::Value
-	def ddd_oral(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
+	def ddd_roa(model)
+		if(model && (atc = model.atc_class) && (ddd = model.ddd) && model.dose && ddd.dose)
 			comp = HtmlGrid::Value.new(:ddd_dose, ddd.dose, @session, self)
 			ddose = ddd.dose
 			comp.value = ddose
@@ -49,7 +49,7 @@ class DDDPriceTable < HtmlGrid::Composite
   end
 
 	def dose(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
+		if(model && (atc = model.atc_class) && (ddd = model.ddd) && model.dose && ddd.dose)
 			comp = HtmlGrid::Value.new(:dose, model, @session, self)
 			mdose = model.dose
 			comp.value = mdose
@@ -57,12 +57,19 @@ class DDDPriceTable < HtmlGrid::Composite
 		end
 	end
 	def calculation(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
+		if(model && (atc = model.atc_class) && (ddd = model.ddd) && model.dose && ddd.dose)
 			dprice, calculation, variant = model.ddd_price_calc_variant(@session.currency)
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
-      comp.value = @lookandfeel.lookup(:ddd_calculation, calculation, dprice, @session.currency)
-			comp
-		end
+      if dprice
+        comp.value = @lookandfeel.lookup(:ddd_calculation, calculation, dprice, @session.currency)
+      else
+        comp.value = @lookandfeel.lookup(:ddd_unable_to_calculate)
+      end
+    else
+      comp = HtmlGrid::Span.new(model, @session, self)
+      comp.value = @lookandfeel.lookup(:ddd_unable_to_calculate)
+    end
+    comp
 	end
 	def price_public(model)
 		item = super
