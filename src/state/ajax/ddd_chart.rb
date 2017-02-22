@@ -25,7 +25,7 @@ class DDDChart < Global
       end
     end
     packages.uniq!
-    @model = packages.select do |pac| pac.ddd_price end.sort_by do |pac|
+    @model = packages.select do |pac| pac.ref_data_listed? && pac.ddd_price end.sort_by do |pac|
       [ pac.name_base, pac.size ]
     end
   end

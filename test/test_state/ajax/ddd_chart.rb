@@ -20,6 +20,8 @@ class TestDDDChart <Minitest::Test
     @comparable = flexmock('comparable', 
                           :ddd_price => 'ddd_price',
                           :name_base => 'name_base',
+                          :ref_data_listed?  => true,
+                          :pointer => 'comparable.pointer',
                           :size => 'size'
                          )
     sequence = flexmock('sequence', :comparables => [@comparable])
@@ -28,8 +30,10 @@ class TestDDDChart <Minitest::Test
                         :sequence  => sequence,
                         :ddd_price => 'ddd_price',
                         :name_base => 'name_base',
-                        :size => 'size'
+                        :size => 'size',
+                        :pointer => 'pointer',
                        )
+    @package.should_receive(:ref_data_listed? ).and_return(true).by_default
     flexmock(@comparable, :public_packages => [@package])
     flexmock(sequence, :public_packages => [@package])
     registration = flexmock('registration', :package => @package)
@@ -43,6 +47,11 @@ class TestDDDChart <Minitest::Test
   end
   def test_init
     expected = [@comparable, @package]
+    assert_equal(expected, @state.init)
+  end
+  def test_not_active
+    @package.should_receive(:ref_data_listed?).and_return(false)
+    expected = [@comparable]
     assert_equal(expected, @state.init)
   end
 end
