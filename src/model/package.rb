@@ -380,7 +380,11 @@ module ODDB
           _ddd_price = price / (u_size.base * (u_mdose.base/u_pro.base)/ u_ddose.base)
           calc    = "#{price} / #{u_size} x (#{u_mdose.base/u_pro.base} / #{u_ddose})"
         elsif (grp = galenic_group.to_s) && grp.match(@@ddd_galforms)
-          if (u_mdose && (u_mdose > (u_ddose * factor))) ||  /retard/i.match(grp)
+          if fachinfo && fachinfo.descriptions['de'] && /Wochentablette|pro Woche/i.match(fachinfo.descriptions['de'].usage.to_s)
+            variant = 15
+            _ddd_price = price / (@parts.first.count * @parts.first.multi) / 7
+            calc = "#{price} / ( #{@parts.first.count} x #{@parts.first.multi} ) / 7"
+          elsif (u_mdose && (u_mdose > (u_ddose * factor)))
             if @parts.size != 1
               variant = 11
               _ddd_price = nil
@@ -391,8 +395,8 @@ module ODDB
             end
           else
             variant = 14
-            _ddd_price = (price / @parts.first.count) * (ddose.to_f / mdose.want(ddose.unit).to_f) / factor
-            calc = "#{price} / #{@parts.first.count} x ( #{ddose} / #{mdose} ) / #{factor}"
+            _ddd_price = price / (@parts.first.count * @parts.first.multi) * (ddose.to_f / mdose.want(ddose.unit).to_f) / factor
+            calc = "#{price} / ( #{@parts.first.count} x #{@parts.first.multi} ) x ( #{ddose} / #{mdose} ) / #{factor}"
           end
         else
           # This is valid only for the following case, for example, mdose unit: mg/ml, size unit: ml
@@ -435,7 +439,7 @@ module ODDB
             calc = "#{price} / #{size} x #{mdose} / #{ddose} / #{factor}"
           end
         end
-        _ddd_price = nil if _ddd_price && _ddd_price.amount.to_i > 10000
+        _ddd_price = nil if _ddd_price && _ddd_price.amount.to_i > 20000
         _ddd_price.to_s.match(/^0\.0*$/u) ? nil : _ddd_price
         puts "#{pointer}: #{variant} #{calc}" if SHOW_PRICE_CALCULATION
         return _ddd_price, calc, variant
