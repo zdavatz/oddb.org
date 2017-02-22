@@ -382,10 +382,18 @@ class TestPackage <Minitest::Test
                     :count => 10
                    )
     @package.parts.push part
-    assert_equal '1.00', @package.ddd_price.to_s
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(13, variant)
+    assert_equal ODDB::Util::Money.new(1.00, 'CHF').to_s, @package.ddd_price.to_s
+    assert_equal('10.00 / 10  / 1.0', calc)
 
     @seq.should_receive(:longevity).and_return(2)
-    assert_equal '0.50', @package.ddd_price.to_s
+    price, calc, variant =  @package.ddd_price_calc_variant
+    assert_equal(price,  @package.ddd_price)
+    assert_equal(14, variant)
+    assert_equal ODDB::Util::Money.new(0.5, 'CHF').to_s, @package.ddd_price.to_s
+    assert_equal('10.00 / 10 x ( 20 mg / 20 mg ) / 2.0', calc)
   end
   def test_ddd_dafalgan_kinder
     # Tageskosten für Dafalgan Kinder
@@ -1269,10 +1277,10 @@ Solutio reconstituta: interferonum beta-1b ADNr 0.25 mg/ml corresp. 8 Mio U.I./m
     part.measure = nil
     @package.parts.push part
     price, calc, variant =  @package.ddd_price_calc_variant
-    assert_equal(price,  @package.ddd_price)
+    assert_nil(price)
+    assert_nil(@package.ddd_price)
     assert_equal(4, variant)
     assert_equal('738.50 / 1  x 0.3 mg / 4 MU / 1.0', calc)
-    assert_nil(price)
   end
 
   def test_ddd_Humatrope_iksnr_53052
@@ -1295,11 +1303,11 @@ Solvens: glycerolum, conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad s
     part.measure = nil
     @package.parts.push part
     price, calc, variant =  @package.ddd_price_calc_variant
-    assert_equal(price,  @package.ddd_price)
-    assert_equal(4, variant)
-    assert_equal('693.95 / 1  x 12 mg / 2 U / 1.0', calc)
     # we cannot compare the WHO DDD and the dose
     assert_nil(price)
+    assert_nil(@package.ddd_price)
+    assert_equal(4, variant)
+    assert_equal('693.95 / 1  x 12 mg / 2 U / 1.0', calc)
   end
   def test_ddd_InsulinNovonordisk_iksnr_62260
     create_test_package(iksnr: 62260, ikscd: 53, price_public:72.40,

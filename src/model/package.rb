@@ -280,7 +280,7 @@ module ODDB
     def quanty_to_unit(dose)
       Unit.new(dose.to_s.sub(' / ', '/'))
     rescue
-      puts "Could not convert #{dose.to_s} for #{iksnr}/#{ikscd} #{name}"
+      puts "#{pointer}: #{name} Could not convert #{dose.to_s}"
       nil
     end
     # some constant to simplify testing
@@ -298,7 +298,7 @@ module ODDB
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
         && size = comparable_size)
         price = price * ODDB::Currency.rate('CHF', currency) unless currency.eql?('CHF')
-        _ddd_price = 0.00
+        _ddd_price = nil
         factor = (longevity || 1).to_f
         if sequence.compositions.first
           excipiens = sequence.compositions.collect{|c|  c.excipiens && c.excipiens.to_s}.compact.first
@@ -408,23 +408,11 @@ module ODDB
                   variant = 33
                   _ddd_price = (price / (u_mdose.base/u_ddose.base))
                   calc = "#{price} / (#{u_mdose} / #{u_ddose})"
-                elsif u_ddose.compatible?((u_mdose * u_size))
-                  variant = 35
-                  _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
-                  calc = "#{price} #{u_ddose} / ( #{u_adose}/#{u_size} )"
                 elsif u_mdose.compatible?(u_adose)
                   variant = 34
                   _ddd_price = price / (u_mdose.base/u_adose.base)
                   calc = "#{price} / ( #{u_mdose} / #{u_adose} )"
-                else
-                  variant = 36
-                  calc = "#{u_mdose} incompatible with u_ddose #{u_ddose} and u_adose #{u_adose}"
-                  _ddd_price = 0
                 end
-              else
-                variant = 3
-                _ddd_price = price * (u_ddose.base / ((u_mdose * u_size).base ))
-                calc = "#{price}  * ( #{u_ddose} / (#{u_mdose} * #{u_size}))"
               end
             end
           else
@@ -435,7 +423,7 @@ module ODDB
         end
         _ddd_price = nil if _ddd_price && _ddd_price.amount.to_i > 10000
         _ddd_price.to_s.match(/^0\.0*$/u) ? nil : _ddd_price
-        puts "#{calc}"
+        puts "#{pointer}: #{variant} #{calc}" if SHOW_PRICE_CALCULATION
         return _ddd_price, calc, variant
       else
         return _ddd_price, "Disabled or invalid", -2
