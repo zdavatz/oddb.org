@@ -2006,7 +2006,7 @@ module ODDB
           begin
             next if defined?(Minitest)
             max_threads = 100
-            max_sessions = 10000
+            max_sessions = 20000
             lasttime = time
             time = Time.now
             alarm = time - lasttime > 60 ? '*' : ' '
