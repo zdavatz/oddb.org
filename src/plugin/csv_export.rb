@@ -167,10 +167,14 @@ module ODDB
                 :package_dose,
                 :galenic_forms,
                 :price_public,
-                :ddd_price]
+                :ddd_price,
+                :calculation,
+                :variant,
+               ]
         @app.active_packages.sort{|x,y| [x.iksnr.to_i, x.ikscd.to_i] <=> [y.iksnr.to_i, y.ikscd.to_i]}.each do |package|
           next unless package.price_public # Skip drugs not in SL list
           next unless package.atc_class && package.atc_class.ddds.size > 0
+          ddd_price, calculation, variant = package.ddd_price_calc_variant
           csv << [package.iksnr,
                   package.ikscd,
                   package.pharmacode,
@@ -183,8 +187,10 @@ module ODDB
                   package.galenic_group ? package.galenic_group.route_of_administration : nil,
                   package.galenic_forms.collect{|x| x.to_s}.join(','),
                   package.price_public ? package.price_public.to_s : nil,
-                  package.ddd_price,
-                  ]
+                  ddd_price,
+                  calculation,
+                  variant,
+                ]
         end
         @file_path
       end
