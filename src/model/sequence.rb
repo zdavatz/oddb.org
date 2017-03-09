@@ -89,8 +89,8 @@ module ODDB
     end
     def active?
       (!@inactive_date || (@inactive_date > @@two_years_ago)) \
-        && @registration && @registration.is_a?(ODDB::Registration) && @registration.active? \
-        && !violates_patent?
+        && @registration && @registration.is_a?(ODDB::Registration) && @registration.active?
+      # && !violates_patent? # Zeno decided on March 9, 2017, that these sequences should appear
     end
     def active_agents
       @compositions.inject([]) { |acts, comp|
