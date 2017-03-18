@@ -1525,7 +1525,7 @@ module ODDB
 		EXPORT_HOUR = 2
 		UPDATE_HOUR = 9
     MEMORY_LIMIT = 7*1024 # 7 GB # 5 are normally enough, but running unit tests needs between 6 and 7 GB
-    MEMORY_LIMIT_CRAWLER = 4000  # ruby 1.9.3 worked with 1450 # 1,4 GB. Ruby 2.4.0 show (via htop) useages between 1200 and 1700 MB
+    MEMORY_LIMIT_CRAWLER = 8000  # ruby 1.9.3 worked with 1450 # 1,4 GB. Ruby 2.4.0 show (via htop) useages between 1200 and 1700 MB
 		RUN_CLEANER = true
 		RUN_UPDATER = false
 		SESSION = Session
