@@ -12,80 +12,75 @@ module ODDB
   # Note:: Atcclass#db_id is ID from DB of drugbank.ca
   # See::  http://www.drugbank.ca/documentation
   class DrugbankPlugin < Plugin
-    def initialize app=nil
+    PAGE_DOES_NOT_EXIST = "How did you get here? That page doesn't exist. Oh well, it happens."
+    def initialize(app=nil, agent: Mechanize.new)
       super app
-      @search_url = "http://www.drugbank.ca/search?utf8=✓&query=%s&commit=Search"
+      # https://www.drugbank.ca/unearth/q?utf8=%E2%9C%93&query=Tamoxifen&searcher=drugs&approved=1&vet_approved=1&nutraceutical=1&illicit=1&withdrawn=1&investigational=1&button=
       @links = []
       # report
       @checked   = 0
       @nonlinked = 0
       @activated = 0
+      @changed   = 0
+      @agent = agent
     end
     ##
     # Update id of drugbank.ca for direct link url
     def update_db_id
+      start_time = Time.now
       @app.atc_classes.values.each do |atc|
         next if atc.description.empty? # skip parent atc_class
         next unless atc.code.length > 6 # short codes are not in drugbank.ca
-        sleep 5
-        _search_with atc
-        db_id = _extract_db_id
+        @checked += 1
+        db_id = _search_with(atc, @agent)
+        puts "Changing #{atc.db_id} => #{db_id}" unless db_id.eql?(atc.db_id) if $VERBOSE
+        @changed += 1 unless db_id.eql?(atc.db_id)
         @app.update atc.pointer, { :db_id => db_id }
         db_id.nil? ? @nonlinked += 1 : @activated += 1
-        @checked += 1
       end
+      @duration_in_secs = (Time.now.to_i - start_time.to_i)
     end
     def report
       [
         "Checked ATC classes   : #{@checked}",
         "Actived Drugbank Link : #{@activated}",
         "Non-link ATC classes  : #{@nonlinked}",
+        "Updated ATC classes   : #{@changed}",
+        "Update job took       : #{@duration_in_secs.to_i} seconds",
       ].join("\n")
     end
     private
-    def _search_with atc
+    def _search_with(atc, agent)
       @links = []
-      agent = Mechanize.new
       agent.keep_alive = false
       agent.user_agent_alias = 'Linux Firefox'
       page = nil
       limit = 3
       tried = 0
+      url = 'https://www.drugbank.ca/unearth/q?utf8=%E2%9C%93&query=' + atc.name +
+          '&searcher=drugs&approved=1&vet_approved=1&nutraceutical=1&illicit=1&withdrawn=1&investigational=1&button='
       begin
         tried += 1
-        page = agent.get(@search_url % atc.code)
+        page = agent.get(url)
+      rescue Mechanize::ResponseCodeError => e
+        return nil
       rescue Net::HTTP::Persistent::Error => e
         if /timeout/iu =~ e.message and tried <= limit
           sleep 10
           retry
         end
       end
-      if page
-        @links = page.links.select do |link|
-          link if link.text.match /DB/
+      begin
+        if page && page.links && (reference = page.links.find{ |x| /^D\w{3}\d{3}/.match(x.to_s) })
+          puts "Found #{reference.to_s} for #{atc.code} #{atc.name} with #{atc.active_packages.size} active_packages" if $VERBOSE
+          # first one is A01AB03 with 22 active_packages
+          return reference.to_s
         end
+      rescue => err
+        puts "Error search for #{atc.code} #{atc.name}" if $VERBOSE
       end
-    end
-    ##
-    # Extract first ID from search result
-    #
-    # URL format is:
-    #   http://www.drugbank.ca/drugs/DB00571
-    def _extract_db_id
-      db_id = nil
-      @links.each do |link|
-        if link.uri.to_s =~ /drugs\/(DB\d{5})/iu
-          case db_id
-          when NilClass
-            db_id = $1
-          when String
-            db_id = [db_id, $1]
-          when Array
-            db_id << $1
-          end
-        end
-      end
-      db_id
+      puts "Nothing found #{reference.to_s} for #{atc.code} #{atc.name}" if $VERBOSE
+      nil
     end
   end
 end

@@ -39,7 +39,7 @@ module AtcLink
   def atc_dosing_link(atc, session=@session)
     if(atc.ni_id)
       link = HtmlGrid::Link.new(:dosing, atc, session, self)
-      link.href = "http://dosing.de/Niere/arzneimittel/#{atc.ni_id}.html"
+      link.href = "http://www.dosing.de/popup_niere.php?monoid=#{atc.ni_id}"
       link.target = '_blank'
       link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:dosing_title))
