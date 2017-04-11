@@ -27,6 +27,7 @@ require 'plugin/rss'
 require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
 require 'plugin/swissreg'
+require 'plugin/shortage'
 require 'plugin/text_info'
 require 'plugin/vaccines'
 require 'plugin/who'
@@ -203,6 +204,7 @@ module ODDB
       logfile_stats
       update_evidentia_fi_search_links
       update_epha_interactions
+      update_drugshortage
 
       # recall, hpc
       update_swissmedic_feeds
@@ -357,6 +359,9 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                             "Check and fix inconsistencies in all FI and PI",
                             :update_swissmedicno_fi_pi
+    end
+    def update_drugshortage
+      update_immediate_with_error_report(ShortagePlugin, 'drugshortage.ch')
     end
     def update_doctors
       update_simple(Doctors::DoctorPlugin, 'Doctors')

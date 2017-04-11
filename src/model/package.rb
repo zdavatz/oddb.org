@@ -2,7 +2,7 @@
 # encoding: utf-8
 # ODDB::Package -- oddb.org -- 06.06.2013 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
-# ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com
 
 require 'util/persistence'
 require 'util/money'
@@ -38,7 +38,7 @@ module ODDB
 			end
 			def registration_data(*names)
 				names.each { |name|
-					define_method(name) { 
+					define_method(name) {
 						if(@sequence && @sequence.respond_to?(:registration) && (reg = @sequence.registration))
 							reg.send(name) if reg.respond_to?(name)
 						end
@@ -47,12 +47,13 @@ module ODDB
 			end
 			def sequence_data(*names)
 				names.each { |name|
-					define_method(name) { 
+					define_method(name) {
 						@sequence && @sequence.respond_to?(name) && @sequence.send(name)
 					}
 				}
 			end
 		end
+		Shortage_fields = [ :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_url]
 		attr_reader :ikscd, :parts, :pharmacode
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
@@ -61,7 +62,9 @@ module ODDB
       :generic_group_factor, :photo_link, :disable_photo_forwarding, :disable_ddd_price, :ddd_dose,
 			:sl_entry, :deductible_m, # for just-medical
       :bm_flag, :mail_order_prices,
-      :patinfo, :pdf_patinfo
+      :patinfo, :pdf_patinfo,
+       # E.g. https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=3056
+      :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_url
     check_accessor_list = {
       :sequence => "ODDB::Sequence",
       :ikscat => "String",
@@ -91,6 +94,12 @@ module ODDB
       :mail_order_prices => "Array",
       :pat_info => "ODDB::Patinfo",
       :pdf_patinfo => "String",
+      :shortage_link => "String",
+      :shortage_info => "String",
+      :shortage_state => "String",
+      :shortage_last_update => "Date",
+      :shortage_delivery_date => "String", # can be offen
+      :shortage_url => "String",
     }
     define_check_class_methods check_accessor_list
 		alias :pointer_descr :ikscd
@@ -130,7 +139,7 @@ module ODDB
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
       @parts = []
-      @mail_order_prices = [] 
+      @mail_order_prices = []
 		end
     def add_mail_order_price(price, url)
       @mail_order_prices ||= []
@@ -167,9 +176,9 @@ module ODDB
                     || @market_date <= @@today)
 		end
     def active_agents
-      @parts.inject([]) { |acts, part| 
+      @parts.inject([]) { |acts, part|
         if part.active_agents.is_a?(Array)
-          acts.concat part.active_agents 
+          acts.concat part.active_agents
         else
           acts
         end
@@ -194,7 +203,7 @@ module ODDB
         @parts.odba_delete
       end
 			if(@sl_entry.respond_to?(:checkout))
-				@sl_entry.checkout 
+				@sl_entry.checkout
 				@sl_entry.odba_delete
 			end
       delete_all_mail_order_prices
@@ -696,6 +705,20 @@ module ODDB
     end
     def prices
       @prices ||= {}
+    end
+
+    def update_shortage_list(new_shortage_info)
+      raise "Mismatching GTIN #{self.barcode} #{new_shortage_info.gtin}" unless self.barcode.eql?(new_shortage_info.gtin)
+      Shortage_fields.each { |item| eval "raise 'field #{item.to_s} may not be nil' unless new_shortage_info.#{item.to_s}"}
+      @shortage_state = new_shortage_info.shortage_state
+      @shortage_last_update = new_shortage_info.shortage_last_update
+      @shortage_delivery_date = new_shortage_info.shortage_delivery_date
+      @shortage_url = new_shortage_info.shortage_url
+      odba_store
+    end
+    def no_longer_in_shortage_list
+      Shortage_fields.each { |item| eval("@#{item.to_s} = nil") }
+      odba_store
     end
 	end
 end

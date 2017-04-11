@@ -107,6 +107,40 @@ class TestPackage <Minitest::Test
                     :ddds => { 'O' => ddd_td_o, 'Pdepot' => ddd_td_pdepot,},
                     :code => 'N05AX08')
   end
+  def test_add_shortage_info_gtin_mismatch
+    new_shortage_info = OpenStruct.new
+    new_shortage_info.gtin = '1234567890123'
+    assert_raises(RuntimeError) { @package.update_shortage_list(new_shortage_info) }
+  end
+  def test_add_shortage_info
+    new_shortage_info = OpenStruct.new
+    new_shortage_info.gtin = '7680123450123'
+    new_shortage_info.shortage_state = 'shortage_state'
+    new_shortage_info.shortage_last_update = '2016-01-16'
+    new_shortage_info.shortage_delivery_date =  '2016-05-16'
+    new_shortage_info.shortage_url = 'shortage_url'
+    @package = flexmock(@package, 'testPackage')
+    @package.should_receive(:odba_store).at_least.once
+    @package.update_shortage_list(new_shortage_info)
+    assert_equal('2016-01-16', @package.shortage_last_update.to_s)
+    assert_equal('2016-05-16', @package.shortage_delivery_date.to_s)
+    assert_equal('shortage_url', @package.shortage_url)
+    assert_equal('shortage_state', @package.shortage_state)
+  end
+  def test_no_longer_in_shortage_list
+    @package.shortage_info = 'info'
+    @package.shortage_last_update= Date.today-30
+    @package.shortage_delivery_date = 'offen'
+    @package.shortage_url = 'url'
+    @package = flexmock(@package, 'testPackage')
+    @package.should_receive(:odba_store).at_least.once
+    @package.no_longer_in_shortage_list
+    assert_nil(@package.shortage_state)
+    assert_nil(@package.shortage_last_update)
+    assert_nil(@package.shortage_delivery_date)
+    assert_nil(@package.shortage_url)
+  end
+
   def create_test_package(iksnr: , ikscd: , price_public: , ddd_dose: , atc_code: ,
                           pack_dose: ,
                           excipiens: nil,
@@ -136,7 +170,6 @@ class TestPackage <Minitest::Test
     @seq.should_receive(:longevity).and_return(nil).by_default
     parts.each{|part| @package.parts.push part}
   end
-  if true
   def test_initialize
     assert_equal('012', @package.ikscd)
     refute_nil(@package.oid)
@@ -1531,7 +1564,6 @@ excipiens pro compresso obducto.
     assert_equal(ODDB::Util::Money.new(0.77, 'CHF').to_s, (price ? price.to_s : DDD_PRICE_NIL))
     assert_equal(price,  @package.ddd_price)
   end
-end
   def test_ddd_Alendronat_iksnr_58215
     # FI says Wochentabletten: 70 mg Alendronat als Alendronat Natriumtrihydrat 91,37 mg.
     create_test_package(iksnr: 58215, ikscd: 3, price_public: 34.25,

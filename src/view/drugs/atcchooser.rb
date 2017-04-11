@@ -46,22 +46,12 @@ module AtcLink
       link
     end
   end
-  def atc_pharmacokinetic_link(atc, session=@session)
-    if(atc.code.length > 6)
-      link = HtmlGrid::Link.new(:pharmacokinetic, atc, session, self)
-      link.target = '_blank'
-      link.set_attribute('class', 'square infos')
-      link.set_attribute('title', @lookandfeel.lookup(:pharmacokinetic_title))
-      link.href = "http://matrix.epha.ch"
-      link
-    end
-  end
 end
 class AtcChooserList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>	:description,
 		[1,0]	=>	:atc_ddd_link,
-	}	
+	}
 	CSS_MAP = {
 		[1,0]	=>	"list right"
 	}
@@ -70,7 +60,7 @@ class AtcChooserList < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	OMIT_HEADER = true
 	SORT_DEFAULT = false
-	SORT_REVERSE = false 
+	SORT_REVERSE = false
 	def init
 		css_map.store([0,0], "atcchooser#{@model.level.next}")
 		@model = @model.children
@@ -100,20 +90,20 @@ class AtcChooserList < HtmlGrid::List
 			end
 		}
 		offset
-	end	
+	end
 	def description(mdl, session)
 		link = HtmlGrid::Link.new(:atcchooser, mdl, @session, self)
 		event, args, css = if(result_link?(mdl))
 			[
-				:search, 
-				{'search_query'=>mdl.code}, 
+				:search,
+				{'search_query'=>mdl.code},
 				"atclink",
 			]
 		else
 			#@lookandfeel.event_url(:atc_chooser, {'code'=>mdl.code})
 			[
 				:atc_chooser,
-				{'code'=>mdl.code}, 
+				{'code'=>mdl.code},
 				"atcchooser",
 			]
 		end
@@ -132,7 +122,7 @@ class AtcChooserList < HtmlGrid::List
 	def result_link?(mdl)
 		mdl.code.length > 2 \
 			&& (mdl.path_to?(@atc) \
-			|| (!mdl.children.any?{ |child| 
+			|| (!mdl.children.any?{ |child|
 				child.has_sequence? } \
 			&& !mdl.sequences.empty?))
 	end

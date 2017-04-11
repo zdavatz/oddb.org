@@ -76,7 +76,7 @@ class AtcHeader < HtmlGrid::Composite
       else
         args = [
           :search_query, @session.persistent_user_input(:search_query).gsub('/', '%2F'),
-          :search_type, @session.persistent_user_input(:search_type),	
+          :search_type, @session.persistent_user_input(:search_type),
           :code, code
         ]
       end
@@ -89,7 +89,6 @@ class AtcHeader < HtmlGrid::Composite
     links = [
       :atc_drugbank_link,
       :atc_dosing_link,
-      :atc_pharmacokinetic_link,
     ].collect{ |link| self.send(link, *[model, session]) }.compact
     links.dup.each_with_index{ |l, i| links.insert(links.index(l), '&nbsp;-&nbsp;') unless i.zero? }
     links
@@ -109,7 +108,7 @@ class AtcHeader < HtmlGrid::Composite
 			 && pages.size > 1)
 			args = {
 				:search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
-				:search_type => @session.persistent_user_input(:search_type),	
+				:search_type => @session.persistent_user_input(:search_type),
 			}
 			View::Pager.new(pages, @session, self, :search, args)
 		end
@@ -305,7 +304,7 @@ class ResultList < HtmlGrid::List
       if page = @session.user_input(:page)
         model = @session.state.pages[page]
       elsif code
-        page = if code2page = @session.state.code2page 
+        page = if code2page = @session.state.code2page
                  code2page[code]||0
                else
                  0
@@ -345,16 +344,16 @@ class ResultList < HtmlGrid::List
   end
 	def fachinfo(model, session=@session)
 		super(model, session, 'square important infos')
-	end	
+	end
   def prescription(model, session=@session)
     super(model, session, 'list important')
   end
 	def registration_date(model, session=@session)
 		span = HtmlGrid::Span.new(model, @session, self)
-		span.value = HtmlGrid::DateValue.new(:registration_date, 
+		span.value = HtmlGrid::DateValue.new(:registration_date,
 																				 model, @session, self)
 		if(exp = (model.inactive_date || model.expiration_date))
-			span.set_attribute('title', 
+			span.set_attribute('title',
 												 @lookandfeel.lookup(:valid_until, @lookandfeel.format_date(exp)))
 		end
 		span
@@ -364,7 +363,7 @@ class ResultList < HtmlGrid::List
     switched = (current == 'pages' ? 'atc' : 'pages')
     args = {
       :search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
-      :search_type => @session.persistent_user_input(:search_type),	
+      :search_type => @session.persistent_user_input(:search_type),
       :resultview  => switched,
     }
     link = HtmlGrid::Link.new("rv_#{switched}", model, @session, self)

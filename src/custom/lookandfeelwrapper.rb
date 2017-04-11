@@ -180,7 +180,6 @@ module ODDB
       :atc_drugbank_link,
       :atc_dosing_link,
       :atc_division_link,
-      :atc_pharmacokinetic_link,
     ]
 		DICTIONARIES = {
 			'de'	=>	{
@@ -278,7 +277,6 @@ module ODDB
       :atc_drugbank_link,
       :atc_dosing_link,
       :atc_division_link,
-      :atc_pharmacokinetic_link,
       :legal_note,
       :explain_atc,
       :explain_link,
