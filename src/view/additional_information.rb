@@ -26,7 +26,7 @@ module ODDB
         parts = []
         multi = part.multi.to_i
         count = part.count.to_i
-        if(multi > 1) 
+        if(multi > 1)
           parts.push(multi)
         end
         if(multi > 1 && count > 1)
@@ -72,15 +72,9 @@ module ODDB
           super(atc, session)
         end
       end
-      def atc_pharmacokinetic_link(atc, session=@session)
-        if(atc.code and \
-           !@lookandfeel.disabled?(:atc_pharmacokinetic_link))
-          super(atc, session)
-        end
-      end
 			def atc_description(atc, session=@session)
 				if(descr = atc.description(@lookandfeel.language))
-					descr.dup.to_s << ' (' << atc.code << ')' 
+					descr.dup.to_s << ' (' << atc.code << ')'
 				else
 					atc.code
 				end
@@ -95,13 +89,13 @@ module ODDB
 					square(:parallel_import)
 				elsif(model.patent_protected?)
 					link = HtmlGrid::Link.new(:square_patent, model, @session, self)
-					link.href = @lookandfeel.lookup(:swissreg_url, 
+					link.href = @lookandfeel.lookup(:swissreg_url,
                         model.patent.certificate_number)
 					square(:patent, link)
 				elsif(comarketing = model.comarketing_with)
 					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
 					link.href = CoMarketingPlugin::SOURCE_URI
-					link.set_attribute('title', 
+					link.set_attribute('title',
 						 @lookandfeel.lookup(:comarketing, comarketing.name_base))
 					square(:comarketing, link)
 				end
@@ -117,7 +111,7 @@ module ODDB
           smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
           if smart_link_format.include?('reg')
             link.href = @lookandfeel._event_url(:show, smart_link_format)
-          else 
+          else
             old_link_format = {:pointer => model.pointer}
             link.href = @lookandfeel._event_url(:show, old_link_format)
           end
@@ -219,7 +213,7 @@ module ODDB
           iksnr = iksnrs.first
         end
         unless iksnr.empty?
-					link = HtmlGrid::Link.new(:square_fachinfo, 
+					link = HtmlGrid::Link.new(:square_fachinfo,
 							model, @session, self)
 					link.href = @lookandfeel._event_url(:fachinfo, {:reg => iksnr})
 					link.css_class = css
@@ -235,7 +229,7 @@ module ODDB
         #  link.href = @lookandfeel._event_url(:feedbacks, [:migel_product, model.migel_code.gsub(/\./,'')])
         end
         link.css_class = "square feedback"
-				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
+				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt,
 					model.localized_name(@session.language)))
 				link
 			end
@@ -295,16 +289,16 @@ module ODDB
 				end
 			end
 			def limitation_link(sltxt, model = nil)
-				link = HtmlGrid::Link.new(:square_limitation, 
+				link = HtmlGrid::Link.new(:square_limitation,
 					nil, @session, self)
         reg = seq = pack = groupcd = poscd = nil
         if model.is_a?(ODDB::Package)
           reg  = model.registration.iksnr
-          seq  = model.sequence.seqnr 
+          seq  = model.sequence.seqnr
           pack = model.ikscd
         elsif model.is_a?(ODDB::Sequence)
           reg  = model.registration.iksnr
-          seq  = model.seqnr 
+          seq  = model.seqnr
           pack = if (packs = model.packages.values.select{|pac| pac.limitation_text} and !packs.empty?)
                    packs.first.ikscd
                  end
