@@ -844,7 +844,7 @@ gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein. Die
 Krankenkasse muss bis 5 Jahre in der Vergangenheit abrechnen können.
 
 4. Bei %i Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
-8-stelligen Swissmedic-Code, die Packung kommt aber in Medwin vor.
+8-stelligen Swissmedic-Code, die Packung kommt aber bei Refdata.ch vor.
 
 5. Bei %i Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 5-stelligen Swissmedic-Code. Die Produkte sind aber sicherlich bei der
