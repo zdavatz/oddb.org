@@ -14,7 +14,11 @@ module ODDB
       PackageCommon::Shortage_fields.each do |item|
         pack.should_receive(item).and_return(item.to_s).by_default
       end
+      atc_class = flexmock('atc_class')
+      atc_class.should_receive(:code).and_return('atc').by_default
       pack.should_receive(:barcode).and_return(gtin).by_default
+      pack.should_receive(:name).and_return('name').by_default
+      pack.should_receive(:atc_class).and_return(atc_class).by_default
       pack.should_receive(:no_longer_in_shortage_list).and_return(true)
       pack.should_receive(:update_shortage_list).and_return(true)
       @app.should_receive(:package_by_ean13).with(gtin).and_return(pack)
@@ -52,17 +56,22 @@ Deleted           2 shortages
 Changed           1 shortages
 Update job took   0 seconds
 GTIN of concerned packages is
-7680623550019
+7680623550019;atc;name
 Changes were:
-7680623550019 shortage_state: shortage_state => aktuell keine Lieferungen
+7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
               shortage_last_update: shortage_last_update => 2017-02-24
               shortage_delivery_date: shortage_delivery_date => offen
-              shortage_url: shortage_url => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934)
+              shortage_url: shortage_url => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
+
+Deleted were:
+7680490590777;atc;name
+7680490590999;atc;name
+)
       assert_equal(expected, @plugin.report)
     end
     def test_changes_with_test_file
       @plugin.update(@agent)
-      expected = {"7680623550019"=>["shortage_state: shortage_state => aktuell keine Lieferungen",
+      expected = {"7680623550019;atc;name"=>["shortage_state: shortage_state => aktuell keine Lieferungen",
                                     "shortage_last_update: shortage_last_update => 2017-02-24",
                                     "shortage_delivery_date: shortage_delivery_date => offen",
                                     "shortage_url: shortage_url => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"

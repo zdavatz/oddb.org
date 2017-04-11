@@ -10,7 +10,15 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_drugshortage
+      opts = {
+        :reparse  => false,
+      }
+      ARGV.each do |arg|
+        if arg =~ /reparse/
+          opts[:reparse] = true
+        end
+      end
+      Updater.new(system).update_drugshortage(opts)
     end
   end
 end
