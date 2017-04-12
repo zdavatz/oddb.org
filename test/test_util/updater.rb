@@ -297,8 +297,6 @@ module ODDB
       end
     end
 
-if false
-
 		def test_update_bsv_no_repeats
 			today = Date.today()
 			this_month = Date.new(today.year, today.month)
@@ -568,7 +566,10 @@ if false
       end
       assert_nil(@updater.run)
     end
-  end
+    def test_export_oddb2_csv
+      setup_csv_export_plugin
+      assert_equal('notify', @updater.export_oddb2_csv)
+    end
     def test_export_ddd_csv
       setup_csv_export_plugin
       assert_nil(@updater.export_ddd_csv)

@@ -362,7 +362,17 @@ module ODDB
     end
     def update_drugshortage(opts=nil)
       @options = opts
-      update_immediate_with_error_report(ShortagePlugin, 'drugshortage.ch')
+      subj = 'drugshortage.ch'
+      # update_immediate_with_error_report(ShortagePlugin, )
+      wrap_update(ShortagePlugin, subj) {
+        plug = ShortagePlugin.new(@app, @options)
+        plug.update
+        return if plug.report.empty?
+        plug.export_drugshortage_csv
+        log = Log.new(plug.date)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
     end
     def update_doctors
       update_simple(Doctors::DoctorPlugin, 'Doctors')
