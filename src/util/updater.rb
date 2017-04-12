@@ -360,7 +360,8 @@ module ODDB
                             "Check and fix inconsistencies in all FI and PI",
                             :update_swissmedicno_fi_pi
     end
-    def update_drugshortage
+    def update_drugshortage(opts=nil)
+      @options = opts
       update_immediate_with_error_report(ShortagePlugin, 'drugshortage.ch')
     end
     def update_doctors
@@ -549,7 +550,11 @@ module ODDB
     end
     def update_immediate_with_error_report(klass, subj, update_method=:update)
       LogFile.append('oddb/debug', "update_immediate_with_error_report #{subj}", Time.now)
-      plug = klass.new(@app)
+      if @options
+        plug = klass.new(@app, @options)
+      else
+        plug = klass.new(@app)
+      end
       plug.send(update_method)
       log = Log.new(@@today)
       log.update_values(log_info(plug))
