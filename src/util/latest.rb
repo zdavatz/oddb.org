@@ -29,6 +29,7 @@ module ODDB
       else
         file = agent.get(download_url)
         download = file.is_a?(String) ? file : file.body # if open-uri is used somewhere, download is String
+        FileUtils.makedirs(File.dirname(file_today)) unless File.exist?(File.dirname(file_today))
         File.open(file_today, 'w+') { |f| f.write download }
         if(!File.exist?(latest) or File.size(file_today) != File.size(latest))
           File.open(latest, 'w+') { |f| f.write download }

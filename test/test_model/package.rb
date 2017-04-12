@@ -1,9 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestPackage -- oddb.org -- 18.04.2012 -- yasaka@ywesee.com
-# TestPackage -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
-# TestPackage -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
-
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -118,27 +114,62 @@ class TestPackage <Minitest::Test
     new_shortage_info.shortage_state = 'shortage_state'
     new_shortage_info.shortage_last_update = '2016-01-16'
     new_shortage_info.shortage_delivery_date =  '2016-05-16'
-    new_shortage_info.shortage_url = 'shortage_url'
+    new_shortage_info.shortage_link = 'shortage_link'
     @package = flexmock(@package, 'testPackage')
     @package.should_receive(:odba_store).at_least.once
     @package.update_shortage_list(new_shortage_info)
     assert_equal('2016-01-16', @package.shortage_last_update.to_s)
     assert_equal('2016-05-16', @package.shortage_delivery_date.to_s)
-    assert_equal('shortage_url', @package.shortage_url)
+    assert_equal('shortage_link', @package.shortage_link)
     assert_equal('shortage_state', @package.shortage_state)
   end
   def test_no_longer_in_shortage_list
     @package.shortage_info = 'info'
     @package.shortage_last_update= Date.today-30
     @package.shortage_delivery_date = 'offen'
-    @package.shortage_url = 'url'
+    @package.shortage_link = 'url'
     @package = flexmock(@package, 'testPackage')
     @package.should_receive(:odba_store).at_least.once
     @package.no_longer_in_shortage_list
     assert_nil(@package.shortage_state)
     assert_nil(@package.shortage_last_update)
     assert_nil(@package.shortage_delivery_date)
-    assert_nil(@package.shortage_url)
+    assert_nil(@package.shortage_link)
+  end
+
+  def test_add_nomarketing_info_gtin_mismatch
+    new_nomarketing_info = OpenStruct.new
+    new_nomarketing_info.gtin = '1234567890123'
+    assert_raises(RuntimeError) { @package.update_nomarketing_list(new_nomarketing_info) }
+  end
+  def test_add_nomarketing_info_delivery_and_nomarketing_nil
+    new_nomarketing_info = OpenStruct.new
+    new_nomarketing_info.gtin = @package.barcode
+    assert_raises(RuntimeError) { @package.update_nomarketing_list(new_nomarketing_info) }
+  end
+  def test_add_nomarketing_info
+    new_nomarketing_info = OpenStruct.new
+    new_nomarketing_info.gtin = '7680123450123'
+    new_nomarketing_info.nodelivery_since = '2016-02-16'
+    new_nomarketing_info.nomarketing_since = '2016-01-16'
+    new_nomarketing_info.nomarketing_date =  '2016-05-16'
+    @package = flexmock(@package, 'testPackage')
+    @package.should_receive(:odba_store).at_least.once
+    @package.update_nomarketing_list(new_nomarketing_info)
+    assert_equal('2016-01-16', @package.nomarketing_since.to_s)
+    assert_equal('2016-05-16', @package.nomarketing_date.to_s)
+    assert_equal('2016-02-16', @package.nodelivery_since)
+  end
+  def test_no_longer_in_nomarketing_list
+    @package.nomarketing_since= Date.today-30
+    @package.nomarketing_date = Date.today-60
+    @package.nodelivery_since = nil
+    @package = flexmock(@package, 'testPackage')
+    @package.should_receive(:odba_store).at_least.once
+    @package.no_longer_in_nomarketing_list
+    assert_nil(@package.nodelivery_since)
+    assert_nil(@package.nomarketing_date)
+    assert_nil(@package.nomarketing_since)
   end
 
   def create_test_package(iksnr: , ikscd: , price_public: , ddd_dose: , atc_code: ,

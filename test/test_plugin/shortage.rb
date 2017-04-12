@@ -5,14 +5,32 @@ require 'flexmock/minitest'
 require 'plugin/shortage'
 
 module ODDB
+  Today = Date.new(2014,5,1)
+  class Plugin
+    @@today = Today
+  end
+  class ShortagePlugin < Plugin
+    attr_reader :changes_shortages, :deleted_shortages, :found_shortages,
+                :nomarketing_href, :latest_shortage, :latest_nomarketing
+    attr_accessor :duration_in_secs
+  end
+end
+
+module ODDB
   class TestShortagePluginWithFile <Minitest::Test
     TestGtinShortage      = '7680623550019' #  ACETALGIN Filmtabl 1 g 16 Stk
     TestGtinNoShortage    = '7680490590999'
     TestGtinNeverShortage = '7680490590777'
-    def add_mock_package(name, gtin)
+    def add_mock_package(name, gtin, add_shortage_fields = true)
       pack= flexmock(name)
-      PackageCommon::Shortage_fields.each do |item|
-        pack.should_receive(item).and_return(item.to_s).by_default
+      if add_shortage_fields
+        PackageCommon::Shortage_fields.each do |item|
+          pack.should_receive(item).and_return(item.to_s).by_default
+        end
+      else
+        PackageCommon::NoMarketing_fields.each do |item|
+          pack.should_receive(item).and_return(item.to_s).by_default
+        end
       end
       atc_class = flexmock('atc_class')
       atc_class.should_receive(:code).and_return('atc').by_default
@@ -21,62 +39,185 @@ module ODDB
       pack.should_receive(:atc_class).and_return(atc_class).by_default
       pack.should_receive(:no_longer_in_shortage_list).and_return(true)
       pack.should_receive(:update_shortage_list).and_return(true)
+      pack.should_receive(:nomarketing_date).and_return('2016-01-01').by_default
+      pack.should_receive(:nomarketing_since).and_return('2016-02-01').by_default
+      pack.should_receive(:nodelivery_since).and_return('2016-03-01').by_default
+      pack.should_receive(:no_longer_in_nomarketing_list).and_return(true).by_default
+      pack.should_receive(:update_nomarketing_list).and_return(true).by_default
       @app.should_receive(:package_by_ean13).with(gtin).and_return(pack)
       pack
+    end
+    def add_mock_registration(iksnr, packages = [])
+      reg= flexmock(iksnr.to_s)
+      reg.should_receive(:active_packages).and_return(packages).by_default
+      @app.should_receive(:registration).with(iksnr.to_s).and_return(reg).by_default
+      reg
     end
     def setup
       @@today = Date.new(2014,5,1)
       @app = flexmock('app')
-      # @app.should_receive(:delete).by_default
+      @session = flexmock('session')
+      @session.should_receive(:flavor).and_return('flavor')
+      @session.should_receive(:language).and_return('de')
+      @session.should_receive(:default_language).and_return('de')
+      @csv_file = File.expand_path(File.join(__FILE__, '../../../data/downloads/drugshortage.csv'))
+      FileUtils.rm_f(Dir.glob(@csv_file))
       path = File.expand_path('../../data/html/drugshortage*.html', File.dirname(__FILE__))
       FileUtils.rm_f(Dir.glob(path))
+      path = File.expand_path('../../data/xlsx/nomarketing*', File.dirname(__FILE__))
+      FileUtils.rm_f(Dir.glob(path))
+
       @app.should_receive(:find).and_return(TestGtinShortage)
       @app.should_receive(:iksnr).and_return(TestGtinShortage)
-      file_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'drugshortage.html'))
-      assert(File.exist?(file_name))
-      @html = File.read(file_name)
+      @drugshortage_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'drugshortage.html'))
+      assert(File.exist?(@drugshortage_name))
+      @html_drugshortage = File.read(@drugshortage_name)
+
+      @nomarketing_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'swissmedic', 'nomarketing.html'))
+      assert(File.exist?(@nomarketing_name))
+      @html_nomarketing = File.read(@nomarketing_name)
+
+      @nomarketing_xlsx_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xlsx', 'nomarketing_2017_03_13.xlsx'))
+      assert(File.exist?(@nomarketing_xlsx_name))
+      @xlxs_nomarketing = File.read(@nomarketing_xlsx_name)
+
+      @reg_62294 = add_mock_registration(62294)
+      @reg_59893 = add_mock_registration(59893)
+      @app.should_receive(:registration).with('59893').and_return(nil)
+      @app.should_receive(:registration).with('62294').and_return(@reg_62294)
+
       @package_no_changes = add_mock_package('package_no_changes', '7680519690140')
       @package_no_changes.should_receive(:shortage_state).and_return('aktuell keine Lieferungen')
       @package_no_changes.should_receive(:shortage_last_update).and_return('2017-01-13')
       @package_no_changes.should_receive(:shortage_delivery_date).and_return('offen')
-      @package_no_changes.should_receive(:shortage_url).and_return('https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786')
+      @package_no_changes.should_receive(:shortage_link).and_return('https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786')
       @package_never_in_short = add_mock_package('package_never_in_short', TestGtinNeverShortage)
       @package_deleted_in_short = add_mock_package('package_deleted_in_short', TestGtinNoShortage)
       @package_new_in_short = add_mock_package('package_never_in_short', TestGtinShortage)
-      @app.should_receive(:packages).and_return([@package_never_in_short, @package_deleted_in_short, @package_new_in_short])
+      @app.should_receive(:active_packages).and_return([@package_never_in_short, @package_deleted_in_short, @package_new_in_short])
       @agent    = flexmock('agent', Mechanize.new)
-      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return @html
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
+      @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
+      @agent.should_receive(:get).with('https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html'+
+                                       '?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--').and_return(@xlxs_nomarketing)
+
+      @pack_62294_001 = add_mock_package('pack_62294_001', '7680622940010', false)
+      @pack_62294_007 = add_mock_package('pack_62294_007', '7680622940070', false)
+      @pack_62294_007.should_receive(:atc_class).and_return(nil)
+      @pack_59893_001 = add_mock_package('pack_59893_001', '7680598930010', false)
+      @reg_62294.should_receive(:active_packages).and_return([@pack_62294_001, @pack_62294_007])
+      @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001])
       @plugin = ShortagePlugin.new @app
     end
-    def test_report_with_test_file
-      @plugin.update(@agent)
-      @app.flexmock_verify
-      expected = %(Found               2 shortages in https://www.drugshortage.ch/UebersichtaktuelleLieferengpaesse2.aspx
+    def expected_test_result
+            @plugin.duration_in_secs = 25
+ %(Update job took #{sprintf('%3i', @plugin.duration_in_secs)} seconds
+Found               2 shortages in https://www.drugshortage.ch/UebersichtaktuelleLieferengpaesse2.aspx
 Deleted           2 shortages
 Changed           1 shortages
-Update job took   0 seconds
-GTIN of concerned packages is
+Found               2 nomarketings packages for https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--
+Deleted           3 nomarketings
+Changed           2 nomarketings
+Nr. IKSNR         1 not in oddb.org database
+
+
+Nomarketing GTIN of concerned packages:
+7680622940010
+7680622940070
+
+Nomarketing changes:
+7680622940010;atc;name nodelivery_since: nodelivery_since =>
+              nomarketing_date: nomarketing_date => 27.03.2017
+              nomarketing_since: nomarketing_since => 13.06.2014
+              nomarketing_link: nomarketing_link => #{@plugin.nomarketing_href}
+7680622940070;;name nodelivery_since: nodelivery_since =>
+              nomarketing_date: nomarketing_date => 27.03.2017
+              nomarketing_since: nomarketing_since => 13.06.2014
+              nomarketing_link: nomarketing_link => #{@plugin.nomarketing_href}
+
+Nomarketing deletions:
+7680490590777;atc;name
+7680490590999;atc;name
 7680623550019;atc;name
-Changes were:
+
+IKSNR not found in oddb database:
+59893
+
+
+DrugShortag GTIN of concerned packages:
+7680623550019
+7680519690140
+
+DrugShortag changes:
 7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
               shortage_last_update: shortage_last_update => 2017-02-24
               shortage_delivery_date: shortage_delivery_date => offen
-              shortage_url: shortage_url => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
+              shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
 
-Deleted were:
+DrugShortag deletions:
 7680490590777;atc;name
-7680490590999;atc;name
-)
-      assert_equal(expected, @plugin.report)
+7680490590999;atc;name)
+    end
+    def test_report
+      @plugin.update(@agent)
+      @app.flexmock_verify
+      assert_equal(expected_test_result, @plugin.report)
     end
     def test_changes_with_test_file
       @plugin.update(@agent)
       expected = {"7680623550019;atc;name"=>["shortage_state: shortage_state => aktuell keine Lieferungen",
                                     "shortage_last_update: shortage_last_update => 2017-02-24",
                                     "shortage_delivery_date: shortage_delivery_date => offen",
-                                    "shortage_url: shortage_url => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"
+                                    "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"
                                    ]}
-      assert_equal(expected , @plugin.changes)
+      assert_equal(expected , @plugin.changes_shortages)
+    end
+    def check_csv_lines(content)
+      lines = content.split("\n")
+      assert_equal('GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)',
+                   lines.first.strip)
+      assert(lines.find{|line| line.strip.eql?("7680622940010;atc;name;27.03.2017;13.06.2014;;#{@plugin.nomarketing_href};;;;") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;name;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+    end
+    def test_export_csv
+      assert_equal(false, File.exist?(@csv_file))
+      @plugin.update(@agent)
+      assert_equal(@csv_file , @plugin.export_drugshortage_csv)
+      assert(File.exist?(@csv_file))
+      check_csv_lines(IO.read(@csv_file))
+    end
+    def test_date
+      @plugin.update(@agent)
+      assert_equal(@@today , @plugin.date)
+    end
+    def test_run_with_same_content
+      FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
+      FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
+      @plugin.update(@agent)
+      result =  @plugin.report
+      assert(result.empty?)
+      FileUtils.rm_f(@plugin.latest_shortage)
+      FileUtils.rm_f(@plugin.latest_nomarketing)
+    end
+    def test_sending_email
+      Util.configure_mail :test
+      Util.clear_sent_mails
+      subj = 'my_mail_subject'
+      @plugin.update(@agent)
+      @plugin.export_drugshortage_csv
+      log = Log.new(@plugin.date)
+      result = log.update_values(@plugin.log_info)
+      res = result.index(expected_test_result)
+      assert(result.to_s.index('Found               2 shortages'))
+      mails_sent = Util.sent_mails
+      assert_equal(0, mails_sent.size)
+      log.notify(subj)
+      assert_equal(1, mails_sent.size)
+      assert_equal(mails_sent.first.to, ['ywesee_test@ywesee.com'])
+      assert_equal(1, mails_sent.first.attachments.size)
+      attached = mails_sent.first.attachments.first
+      assert_equal('drugshortage.csv', attached.filename)
+      check_csv_lines(attached.body.decoded)
     end
   end
 end

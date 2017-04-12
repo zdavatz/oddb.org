@@ -53,7 +53,8 @@ module ODDB
 				}
 			end
 		end
-		Shortage_fields = [ :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_url]
+		Shortage_fields = [ :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_link]
+		NoMarketing_fields = [ :nodelivery_since, :nomarketing_date, :nomarketing_since,  :nomarketing_link]
 		attr_reader :ikscd, :parts, :pharmacode
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
@@ -64,7 +65,8 @@ module ODDB
       :bm_flag, :mail_order_prices,
       :patinfo, :pdf_patinfo,
        # E.g. https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=3056
-      :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_url
+      :shortage_state, :shortage_last_update, :shortage_delivery_date, :shortage_link,
+      :nodelivery_since, :nomarketing_date, :nomarketing_since, :nomarketing_link
     check_accessor_list = {
       :sequence => "ODDB::Sequence",
       :ikscat => "String",
@@ -99,7 +101,10 @@ module ODDB
       :shortage_state => "String",
       :shortage_last_update => "Date",
       :shortage_delivery_date => "String", # can be offen
-      :shortage_url => "String",
+      :shortage_link => "String",
+      :nomarketing_date => "Date",
+      :nomarketing_since => "Date",
+      :nodelivery_since => "Date",
     }
     define_check_class_methods check_accessor_list
 		alias :pointer_descr :ikscd
@@ -707,13 +712,31 @@ module ODDB
       @prices ||= {}
     end
 
+    def update_nomarketing_list(new_nomarketing_info)
+      # See https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html?lang=dedownload=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--
+      # nomarketing_date: (Column A Datum der Meldung)
+      # nomarketing_since: (Column F Nicht-Inverkehrbringen ab)
+      # nodelivery_since: (Column G: Vertriebsunterbruch ab)
+      raise "Mismatching GTIN #{self.barcode} #{new_nomarketing_info.gtin}" unless self.barcode.eql?(new_nomarketing_info.gtin)
+      raise "nomarketing_since or nodelivery_since must not be nil" unless new_nomarketing_info.nomarketing_since || new_nomarketing_info.nodelivery_since
+      @nomarketing_date = new_nomarketing_info.nomarketing_date
+      @nomarketing_since = new_nomarketing_info.nomarketing_since
+      @nodelivery_since = new_nomarketing_info.nodelivery_since
+      odba_store
+    end
+
+    def no_longer_in_nomarketing_list
+      NoMarketing_fields.each { |item| eval("@#{item.to_s} = nil") }
+      odba_store
+    end
+
     def update_shortage_list(new_shortage_info)
       raise "Mismatching GTIN #{self.barcode} #{new_shortage_info.gtin}" unless self.barcode.eql?(new_shortage_info.gtin)
       Shortage_fields.each { |item| eval "raise 'field #{item.to_s} may not be nil' unless new_shortage_info.#{item.to_s}"}
       @shortage_state = new_shortage_info.shortage_state
       @shortage_last_update = new_shortage_info.shortage_last_update
       @shortage_delivery_date = new_shortage_info.shortage_delivery_date
-      @shortage_url = new_shortage_info.shortage_url
+      @shortage_link = new_shortage_info.shortage_link
       odba_store
     end
     def no_longer_in_shortage_list
