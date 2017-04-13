@@ -219,5 +219,8 @@ DrugShortag deletions:
       assert_equal('drugshortage.csv', attached.filename)
       check_csv_lines(attached.body.decoded)
     end
+    def test_update_opts_nil
+      @plugin = ShortagePlugin.new @app, nil
+    end
   end
 end
