@@ -22,6 +22,7 @@ module ODDB
       super(app)
       @@logInfo = []
       @options = opts
+      @options ||= {}
       @latest_shortage = File.expand_path('../../data/html/drugshortage-latest.html', File.dirname(__FILE__))
       @latest_nomarketing = File.expand_path('../../data/xlsx/nomarketing-latest.xlsx', File.dirname(__FILE__))
       @report_shortage = []
