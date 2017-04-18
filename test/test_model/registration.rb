@@ -132,12 +132,12 @@ class TestRegistration <Minitest::Test
     assert_equal(true, @registration.active?)
     @registration.inactive_date = (Date.today >> 1)
     assert_equal(true, @registration.active?)
-    @registration.inactive_date = Date.today 
+    @registration.inactive_date = Date.today
     assert_equal(false, @registration.active?)
   end
   def test_active__renewal
     assert_equal(true, @registration.active?)
-    @registration.expiration_date = @@two_years_ago - 1 
+    @registration.expiration_date = @@two_years_ago - 1
     assert_nil(@registration.active?)
     @registration.renewal_flag = true
     assert_equal(true, @registration.active?)
@@ -219,17 +219,17 @@ class TestRegistration <Minitest::Test
       "02"	=>	seq2,
     }
     @registration.instance_variable_set('@sequences', sequences)
-    seq1.should_receive(:checkout).and_return { 
-      assert(true)	
+    seq1.should_receive(:checkout).and_return {
+      assert(true)
     }
-    seq1.should_receive(:odba_delete).and_return { 
-      assert(true)	
+    seq1.should_receive(:odba_delete).and_return {
+      assert(true)
     }
-    seq2.should_receive(:checkout).and_return { 
-      assert(true)	
+    seq2.should_receive(:checkout).and_return {
+      assert(true)
     }
-    seq2.should_receive(:odba_delete).and_return { 
-      assert(true)	
+    seq2.should_receive(:odba_delete).and_return {
+      assert(true)
     }
     @registration.checkout
   end
@@ -317,8 +317,8 @@ class TestRegistration <Minitest::Test
   end
   def test_generic_type
     company = flexmock "company"
-    @registration.company = company 
-    company.should_receive(:generic_type).and_return { "complementary" }	
+    @registration.company = company
+    company.should_receive(:generic_type).and_return { "complementary" }
     assert_equal("complementary", @registration.generic_type)
     @registration.generic_type = "generic"
     assert_equal("generic", @registration.generic_type)
@@ -356,7 +356,7 @@ class TestRegistration <Minitest::Test
     assert_equal 'Localized Name', @registration.localized_name(:de)
   end
   def test_may_violate_patent
-    assert_equal nil, @registration.may_violate_patent?
+    assert_nil(@registration.may_violate_patent?)
     @registration.registration_date = @@today
     assert_equal true, @registration.may_violate_patent?
     @registration.registration_date = @@one_year_ago
@@ -423,7 +423,7 @@ class TestRegistration <Minitest::Test
     assert_equal %w{pac1 pac2 pac3}, @registration.packages
   end
   def test_patent_protected
-    assert_equal nil, @registration.patent_protected?
+    assert_nil(@registration.patent_protected?)
     pat1 = flexmock :protected? => false
     @registration.instance_variable_set '@patent', pat1
     assert_equal false, @registration.patent_protected?
