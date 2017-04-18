@@ -182,6 +182,8 @@ DrugShortag deletions:
       assert_equal(@@today , @plugin.date)
     end
     def test_run_with_same_content
+      FileUtils.makedirs(File.dirname(@plugin.latest_shortage)) unless File.exist?(File.dirname(@plugin.latest_shortage))
+      FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       @plugin.update(@agent)
@@ -197,6 +199,7 @@ DrugShortag deletions:
       @agent.should_receive(:get).with('https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html'+
                                        '?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--').and_return(@xlxs_nomarketing)
       FileUtils.makedirs(File.dirname(@plugin.latest_shortage)) unless File.exist?(File.dirname(@plugin.latest_shortage))
+      FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
