@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # View::PublicTemplate -- oddb -- 15.01.2013 -- yasaka@ywesee.com
-# View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 require 'htmlgrid/template'
 require 'view/navigationfoot'
 require 'sbsm/time'
@@ -56,6 +56,15 @@ module ODDB
 			]
       def init
         @additional_javascripts = []
+        app_id_tag = {
+            "name"    =>  "apple-itunes-app",
+            "content" =>  'app-id=' + @lookandfeel.lookup(:apple_itunes_app),
+            }
+        if META_TAGS.size == 1
+          META_TAGS.unshift app_id_tag
+        else
+          META_TAGS[0] = app_id_tag
+        end
         super
       end
 			def content(model, session)
@@ -126,7 +135,7 @@ require(['dojo/ready'], function(ready) {
         scripts
       end
 			def title(context)
-				context.title { 
+				context.title {
 					[
 						@lookandfeel.lookup(:html_title),
 						@lookandfeel.lookup(@session.state.zone),
