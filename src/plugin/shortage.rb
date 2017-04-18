@@ -60,6 +60,7 @@ module ODDB
             ]
       added_info = [ 'gtin', 'atc', 'package_name' ]
       sorted = (@found_nomarketings.values + @found_shortages.values).sort do |x,y| x.gtin <=> y.gtin end
+      FileUtils.makedirs(File.dirname(@csv_file_path)) unless File.exist?(File.dirname(@csv_file_path))
       CSV.open(@csv_file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
         values = []; (added_info + keys).each do |key|
           next if :gtin.eql?(key)
