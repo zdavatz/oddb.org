@@ -12,7 +12,7 @@ module ODDB
   class ShortagePlugin < Plugin
     attr_reader :changes_shortages, :deleted_shortages, :found_shortages,
                 :nomarketing_href, :latest_shortage, :latest_nomarketing
-    attr_accessor :duration_in_secs
+    attr_accessor :duration_in_secs,  :has_relevant_changes
   end
 end
 
@@ -112,18 +112,14 @@ module ODDB
     def expected_test_result
             @plugin.duration_in_secs = 25
  %(Update job took #{sprintf('%3i', @plugin.duration_in_secs)} seconds
-Found               2 shortages in https://www.drugshortage.ch/UebersichtaktuelleLieferengpaesse2.aspx
+Found             2 shortages in https://www.drugshortage.ch/UebersichtaktuelleLieferengpaesse2.aspx
 Deleted           2 shortages
 Changed           1 shortages
-Found               2 nomarketings packages for https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--
+Found             2 nomarketings packages for https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--
 Deleted           3 nomarketings
 Changed           2 nomarketings
 Nr. IKSNR         1 not in oddb.org database
 
-
-Nomarketing GTIN of concerned packages:
-7680622940010
-7680622940070
 
 Nomarketing changes:
 7680622940010;atc;name nodelivery_since: nodelivery_since =>
@@ -143,10 +139,6 @@ Nomarketing deletions:
 IKSNR not found in oddb database:
 59893
 
-
-DrugShortag GTIN of concerned packages:
-7680623550019
-7680519690140
 
 DrugShortag changes:
 7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
@@ -199,6 +191,23 @@ DrugShortag deletions:
       FileUtils.rm_f(@plugin.latest_shortage)
       FileUtils.rm_f(@plugin.latest_nomarketing)
     end
+    def test_run_with_same_relevevant_content
+      @agent    = flexmock('agent', Mechanize.new)
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
+      @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
+      @agent.should_receive(:get).with('https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html'+
+                                       '?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--').and_return(@xlxs_nomarketing)
+      FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
+      FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
+      @plugin.update(@agent)
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage + '<---some dummy content/ -->')
+      @plugin.update(@agent)
+      result =  @plugin.report
+      assert(result.empty?)
+      FileUtils.rm_f(@plugin.latest_shortage)
+      FileUtils.rm_f(@plugin.latest_nomarketing)
+    end
     def test_sending_email
       Util.configure_mail :test
       Util.clear_sent_mails
@@ -208,7 +217,7 @@ DrugShortag deletions:
       log = Log.new(@plugin.date)
       result = log.update_values(@plugin.log_info)
       res = result.index(expected_test_result)
-      assert(result.to_s.index('Found               2 shortages'))
+      assert(result.to_s.index(/Found\s+2 shortages/))
       mails_sent = Util.sent_mails
       assert_equal(0, mails_sent.size)
       log.notify(subj)

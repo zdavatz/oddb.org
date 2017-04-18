@@ -21,7 +21,7 @@ module ODDB
       def initialize(app)
         @app = app
         @cgi = CGI.initialize_without_offline_prompt('html4')
-        @flavor = Session::DEFAULT_FLAVOR
+        @flavor = 'gcc'
         @http_protocol = 'http'
         @server_name = SERVER_NAME
         @default_language = 'de'
