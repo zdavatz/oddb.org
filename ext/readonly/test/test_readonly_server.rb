@@ -18,7 +18,7 @@ module ODDB
   Currency = 'test'
   class TestReadonlyServer <Minitest::Test
     def setup
-      @serv = ReadonlyServer.new 
+      @serv = ReadonlyServer.new
     end
     def test_remote_comparables
       sequence = flexmock('sequence') do |seq|
@@ -61,7 +61,7 @@ module ODDB
       return_value = @serv.remote_each_company do |company|
         assert_equal('company', company)
       end
-      assert_equal(nil, return_value)
+      assert_nil(return_value)
     end
     def test_remote_each_package
       package = flexmock('package') do |pac|
@@ -77,7 +77,7 @@ module ODDB
       return_value = @serv.remote_each_package do |pac|
         assert_equal(package, pac)
       end
-      assert_equal(nil, return_value)
+      assert_nil(return_value)
     end
     def test_remote_export
       flexstub(ODDB::Exporter) do |klass|
@@ -132,7 +132,7 @@ module ODDB
     end
     def test_get_currency_rate
       currency = flexmock('currency', :rate => 'rate')
-      replace_constant('ODDB::Currency', currency) do 
+      replace_constant('ODDB::Currency', currency) do
         assert_equal('rate', @serv.get_currency_rate('symbol'))
       end
     end
