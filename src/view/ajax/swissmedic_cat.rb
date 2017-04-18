@@ -146,14 +146,13 @@ class SwissmedicCat < HtmlGrid::Composite
 		else
 			date = HtmlGrid::Value.new(:patent_protected, patent, @session, self)
 		end
-		date.value = @lookandfeel.format_date(patent.expiry_date)
+		date.value = patent.expiry_date ? @lookandfeel.format_date(patent.expiry_date) : ''
 		date
 	end
 	def sl_since(model)
 		sl = model.sl_entry
 		date = sl.introduction_date
-		@lookandfeel.lookup(:sl_since, 
-												@lookandfeel.format_date(date))
+		@lookandfeel.lookup(:sl_since, @lookandfeel.format_date(date))
 	end
 end
 		end
