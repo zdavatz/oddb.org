@@ -39,7 +39,8 @@ module Job
         system.peer_cache ODBA.cache unless opts[:readonly] rescue Errno::ECONNREFUSED
         block.call ODDB::App.new(:auxiliary => true)
       end
-    rescue Interrupt # C-c
+    rescue Interrupt => error # C-c
+      puts error.backtrace.join("\n")
       puts "Interrupted !!"
       puts "Please check #{PID_FILE}."
       puts
