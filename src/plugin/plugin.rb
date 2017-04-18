@@ -89,6 +89,7 @@ module ODDB
         end
         path = File.join(RSS_PATH, stub.language, name)
         tmp = File.join(RSS_PATH, stub.language, '.' + name)
+        @cgi = CGI.initialize_without_offline_prompt('html4') unless @cgi
         FileUtils.mkdir_p(File.dirname(path))
         File.open(tmp, 'w+') { |fh|
           fh.puts view.to_html(@cgi)
