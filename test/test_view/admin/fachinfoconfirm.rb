@@ -69,7 +69,7 @@ class TestFachinfoConfirmForm <Minitest::Test
 			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=&#39;back&#39;;">',
 			'<INPUT value="lookup" type="submit" name="update">',
 		]
-		expected.each { |line| 
+		expected.each { |line|
 			assert(html.index(line), "missing: #{line}\nin:\n#{html}")
 		}
 	end
@@ -83,9 +83,9 @@ class TestFachinfoConfirmForm <Minitest::Test
 			'<FORM NAME="stdform" METHOD="POST" ACCEPT-CHARSET="UTF-8" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
 			'<INPUT value="lookup" type="button" name="back" onClick="document.location.href=&#39;back&#39;;">',
 		]
-		expected.each { |line| 
+		expected.each { |line|
 			assert(html.index(line), "missing: #{line}\nin:\n#{html}")
-		}    
+		}
 		line = '<INPUT name="update" type="submit" value="lookup">'
 		assert_nil(html.index(line), "found: #{line}\nin:\n#{html}\n...but it should not be there!")
 	end

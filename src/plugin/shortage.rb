@@ -2,6 +2,8 @@
 require 'plugin/plugin'
 require 'model/package'
 require 'util/oddbconfig'
+require 'util/log'
+require 'util/mail'
 require 'custom/lookandfeelbase'
 require 'mechanize'
 require 'drb'
@@ -9,7 +11,6 @@ require 'util/latest'
 require 'date'
 require 'rubyXL'
 require 'csv'
-require 'util/session'
 
 module ODDB
   class ShortagePlugin < Plugin
@@ -37,10 +38,11 @@ module ODDB
       @report_summary = [ sprintf("Update job took %3i seconds",  @duration_in_secs.to_i) ]
       report_shortage
       report_nomarketing
-      return [] if (@report_shortage.size + @report_nomarketing.size) == 0
+      return [] unless @has_relevant_changes
       (@report_summary + [''] + @report_nomarketing  + [''] + @report_shortage).join("\n")
     end
     def update(agent=Mechanize.new)
+      @has_relevant_changes = false
       @agent = agent
       start_time = Time.now
       update_nomarketing
@@ -58,6 +60,7 @@ module ODDB
             ]
       added_info = [ 'gtin', 'atc', 'package_name' ]
       sorted = (@found_nomarketings.values + @found_shortages.values).sort do |x,y| x.gtin <=> y.gtin end
+      FileUtils.makedirs(File.dirname(@csv_file_path)) unless File.exist?(File.dirname(@csv_file_path))
       CSV.open(@csv_file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
         values = []; (added_info + keys).each do |key|
           next if :gtin.eql?(key)
@@ -102,15 +105,14 @@ module ODDB
         return
       end
       @report_shortage = []
-      @report_summary << sprintf("Found             %3i shortages in #{SOURCE_URI}",  @found_shortages.size)
+      @report_summary << sprintf("Found           %3i shortages in #{SOURCE_URI}",  @found_shortages.size)
       @report_summary << sprintf("Deleted         %3i shortages",  @deleted_shortages.size)
       @report_summary << sprintf("Changed         %3i shortages", @changes_shortages.size)
-      @report_shortage << "\nDrugShortag GTIN of concerned packages:"
-      @found_shortages.keys.each{|key| @report_shortage << key}
       @report_shortage << "\nDrugShortag changes:"
       @changes_shortages.each {|gtin, changed| @report_shortage << "#{gtin} #{changed.join("\n              ")}" }
       @report_shortage << "\nDrugShortag deletions:"
       @deleted_shortages.each {|gtin| @report_shortage << "#{gtin}" }
+      @has_relevant_changes = true if @deleted_shortages.size > 0 || @changes_shortages.size > 0
     end
     def report_nomarketing
       unless @found_nomarketings && @found_nomarketings.size  > 0
@@ -118,19 +120,17 @@ module ODDB
         return
       end
       @report_nomarketing = []
-      @report_summary << sprintf("Found             %3i nomarketings packages for #{@nomarketing_href}",  @found_nomarketings.size)
+      @report_summary << sprintf("Found           %3i nomarketings packages for #{@nomarketing_href}",  @found_nomarketings.size)
       @report_summary << sprintf("Deleted         %3i nomarketings",  @deleted_nomarketings.size)
       @report_summary << sprintf("Changed         %3i nomarketings", @changes_nomarketings.size)
       @report_summary << sprintf("Nr. IKSNR       %3i not in oddb.org database", @missing_nomarketings.size)
-      @report_nomarketing << "\nNomarketing GTIN of concerned packages:"
-      @found_nomarketings.keys.each{|key| @report_nomarketing << key}
       @report_nomarketing << "\nNomarketing changes:"
       @changes_nomarketings.each {|gtin, changed| @report_nomarketing << "#{gtin} #{changed.join("\n              ")}" }
       @report_nomarketing << "\nNomarketing deletions:"
       @deleted_nomarketings.each {|gtin| @report_nomarketing << "#{gtin}" }
       @report_nomarketing << "\nIKSNR not found in oddb database:"
       @missing_nomarketings.each {|iksnr| @report_nomarketing << "#{iksnr}" }
-
+      @has_relevant_changes = true if @deleted_nomarketings.size > 0 || @changes_nomarketings.size > 0
     end
     def update_drugshortage
       @deleted_shortages = []

@@ -1211,7 +1211,8 @@ end
         assert_equal('snapback_event', state.snapback_event)
       end
       def test_snapback_event__direct_event
-        assert_equal(@state.instance_eval('DIRECT_EVENT'), @state.snapback_event)
+        assert_nil(@state.snapback_event)
+        assert_nil(@state.instance_eval('DIRECT_EVENT'))
       end
       def test_sort
         @state.instance_eval('@model = []')

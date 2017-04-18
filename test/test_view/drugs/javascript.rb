@@ -15,6 +15,10 @@ if ENV['TRAVIS']
 else
   puts "Running javascript tests"
   class TestJavaScript <Minitest::Test
+    def setup
+      has_node_js = `which nodejs`
+      skip('No nodejs found. Therefore skipping javascript tests')
+    end
     def test_simple_logging
       assert_equal("testing\n", `nodejs -e "console.log('testing');"`);
     end

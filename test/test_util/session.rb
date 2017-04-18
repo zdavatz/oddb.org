@@ -193,7 +193,7 @@ module ODDB
     def test_search_pharmacy
       @app.should_receive(:search_pharmacies).once.and_return( ['search_pharmacies'])
       @app.should_receive(:pharmacy_by_gln).with('key').once.and_return(nil)
-      assert_equal(nil  , @session.search_pharmacy('key'))
+      assert_nil(@session.search_pharmacy('key'))
       assert_equal(['search_pharmacies'], @session.search_pharmacies('key'))
     end
     def test_search_companies
@@ -286,7 +286,7 @@ module ODDB
       @session = ODDB::Session.new('key', @app, @validator)
       @session.instance_eval("@request_path = '/de/gcc/home_interactions/58392,7680591310011,L02BA01,58643'")
       expected = {"58392"=>"package",
-                  "7680591310011"=>"package", 
+                  "7680591310011"=>"package",
                   "L02BA01"=>"package",
                   "58643"=>"package",}
       assert_equal(expected, @session.choosen_drugs)
@@ -297,7 +297,7 @@ module ODDB
       drugs = {'7680591310012' => 'package_drugs'}
       @session.set_persistent_user_input(:drugs, drugs)
       expected = {"58392"=>"package",
-                  "7680591310011"=>"package", 
+                  "7680591310011"=>"package",
                   "L02BA01"=>"package",
                   "58643"=>"package",
                   "7680591310012"=>"package_drugs",}
@@ -364,7 +364,7 @@ module ODDB
                  }
         @session = ODDB::Session.new('key', @app, @validator)
         @session.set_persistent_user_input(:zsr_id, 'P123456')
-        @session.set_persistent_user_input(:drugs, drugs) 
+        @session.set_persistent_user_input(:drugs, drugs)
         res = @session.instance_eval(cmd)
         assert_equal(url,res)
       }

@@ -101,7 +101,6 @@ module ODDB
       :shortage_state => "String",
       :shortage_last_update => "Date",
       :shortage_delivery_date => "String", # can be offen
-      :shortage_link => "String",
       :nomarketing_date => "Date",
       :nomarketing_since => "Date",
       :nodelivery_since => "Date",

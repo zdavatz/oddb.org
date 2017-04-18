@@ -29,7 +29,7 @@ module ODDB
       # The followings are testcases for private methods
       def test_set_templates
         chapter = flexmock('chapter', :heading => nil)
-        assert_equal(nil, @writer.instance_eval('set_templates(chapter)'))
+        assert_nil(@writer.instance_eval('set_templates(chapter)'))
       end
       def test_set_templates__amzv
         chapter = flexmock('chapter', :heading => 'AMZV')
