@@ -176,6 +176,7 @@ DrugShortag deletions:
       assert_equal(@csv_file , @plugin.export_drugshortage_csv)
       assert(File.exist?(@csv_file))
       check_csv_lines(IO.read(@csv_file))
+      assert(File.exist?(@csv_file.sub('.csv', '-2014.05.01.csv')))
     end
     def test_date
       @plugin.update(@agent)
