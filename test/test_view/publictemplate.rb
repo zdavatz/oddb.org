@@ -10,6 +10,7 @@ require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'view/publictemplate'
 require 'htmlgrid/form'
+require 'sbsm/cgi'
 
 module ODDB
   class Session
@@ -35,28 +36,28 @@ module ODDB
 class TestPublicTemplate <Minitest::Test
   def setup
     @zones    = flexmock('zones', )
-    @lnf      = flexmock('lookandfeel', 
-                         :lookup     => 'lookup',
+    @lnf      = flexmock('lookandfeel',
                          :enabled?   => nil,
                          :attributes => {},
                          :resource   => 'resource',
                          :resource_global => 'resource_global',
-                         :zones      => [@zones],
                          :disabled?  => nil,
                          :zone_navigation => [ 'zone_navigation' ],
                          :direct_event    => 'direct_event',
                          :_event_url => '_event_url',
                          :navigation => ['navigation'],
                         )
+    @lnf.should_receive(:lookup).and_return('lookup').by_default
+    @lnf.should_receive(:zones).and_return([@zones]).by_default
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
-    @session  = flexmock('session', 
-                         :lookandfeel => @lnf,
+    @session  = flexmock('session',
                          :flavor      => 'gcc',
                          :user        => user,
                          :sponsor     => sponsor,
                          :get_cookie_input => nil,
                         )
+    @session.should_receive(:lookandfeel).and_return(@lnf).by_default
     @model    = flexmock('model')
 
     @template = ODDB::View::StubPublicTemplate.new(@model, @session)
@@ -66,7 +67,7 @@ class TestPublicTemplate <Minitest::Test
     assert_equal('link', @template.css_link(context))
   end
   def test_css_link__lookandfeel_enabled
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :enabled? => true,
              :resource_external => 'resource_external'
             )
@@ -74,7 +75,7 @@ class TestPublicTemplate <Minitest::Test
     assert_equal('link', @template.css_link(context))
   end
   def test_dynamic_html_headers
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :enabled? => true,
              :resource_global => 'resource_global'
             )
@@ -129,6 +130,25 @@ class TestPublicTemplate <Minitest::Test
       l.should_receive(:enabled?).with(:oekk_structure, false).and_return(true)
     end
     assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
+  end
+  def test_meta_apple_app_id
+    @lnf.should_receive(:lookup).and_return{|arg| arg.to_s}
+    @lnf.should_receive(:zones).and_return([])
+    @session.should_receive(:event).and_return(nil)
+    @session.should_receive(:lookandfeel).and_return(@lnf)
+    context = flexmock('context', :title => 'title')
+    context = flexmock('context') do |c|
+      c.should_receive(:script).and_return('script')
+      c.should_receive(:style).and_return('style')
+    end
+    state = flexmock('state')
+    state.should_receive(:zone).and_return('zone')
+    state.should_receive(:direct_event).and_return(nil)
+     @session.should_receive(:state).and_return(state)
+     @cgi = CGI.initialize_without_offline_prompt('html4')
+     @template.init
+     html =  @template.to_html(@cgi)
+     assert(/META name="apple-itunes-app" content="app-id.*/.match(html))
   end
 end
 

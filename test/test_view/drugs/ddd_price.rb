@@ -31,13 +31,13 @@ module ODDB
 
 class TestDDDPriceTable <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :disabled?  => nil,
                           :enabled?   => nil,
                           :attributes => {}
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
                           :currency    => 'currency',
@@ -45,7 +45,7 @@ class TestDDDPriceTable <Minitest::Test
                          )
     @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
-    dose       = flexmock('dose', 
+    dose       = flexmock('dose',
                           :fact => fact,
                           :unit => 'unit',
                           :want => 'want'
@@ -76,16 +76,16 @@ class TestDDDPriceTable <Minitest::Test
   end
   def test_calculation__mdose_ddose
     fact  = flexmock('fact', :factor => 'factor')
-    mdose = flexmock('mdose', 
+    mdose = flexmock('mdose',
                      :want => 1,
                      :fact => fact
                     )
-    ddose = flexmock('ddose', 
+    ddose = flexmock('ddose',
                      :want => 0,
                      :fact => fact,
                      :unit => 'unit'
                     )
-    flexmock(@model, 
+    flexmock(@model,
              :longevity => nil,
              :dose      => mdose
             )
@@ -96,7 +96,7 @@ end
 
 class TestDDDPriceComposite <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :enabled?   => nil,
                           :disabled?  => nil,
                           :lookup     => 'lookup',
@@ -104,7 +104,7 @@ class TestDDDPriceComposite <Minitest::Test
                           :resource   => 'resource',
                           :_event_url => '_event_url'
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
                           :currency    => 'currency',
@@ -113,7 +113,7 @@ class TestDDDPriceComposite <Minitest::Test
                          )
     @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
-    dose       = flexmock('dose', 
+    dose       = flexmock('dose',
                           :fact => fact,
                           :unit => 'unit',
                           :want => 'want'
@@ -121,14 +121,14 @@ class TestDDDPriceComposite <Minitest::Test
     @ddd       = flexmock('ddd', :dose => dose)
     atc_class  = flexmock('atc_class', :ddd => @ddd, :code => 'atc_code')
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part       = flexmock('part', 
+    part       = flexmock('part',
                           :multi   => 'multi',
                           :count   => 'count',
                           :measure => 'measure',
                           :commercial_form => commercial_form
                          )
     indication = flexmock('indication', :language => 'language')
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :name_base    => 'name_base',
                           :atc_class    => atc_class,
                           :dose         => dose,
@@ -155,7 +155,7 @@ end
 
 class TestDDDPrice <Minitest::Test
   def setup
-    @lnf      = flexmock('lookandfeel', 
+    @lnf      = flexmock('lookandfeel',
                          :enabled?   => nil,
                          :disabled?  => nil,
                          :attributes => {},
@@ -171,11 +171,11 @@ class TestDDDPrice <Minitest::Test
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
     snapback_model = flexmock('snapback_model', :pointer => 'pointer')
-    state     = flexmock('state', 
+    state     = flexmock('state',
                          :direct_event   => 'direct_event',
                          :snapback_model => snapback_model
                         )
-    @session  = flexmock('session', 
+    @session  = flexmock('session',
                          :lookandfeel => @lnf,
                          :user        => user,
                          :sponsor     => sponsor,
@@ -193,7 +193,7 @@ class TestDDDPrice <Minitest::Test
                         )
     @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact      = flexmock('fact', :factor => 'factor')
-    dose      = flexmock('dose', 
+    dose      = flexmock('dose',
                          :fact => fact,
                          :unit => 'unit',
                          :want => 'want'
@@ -201,14 +201,14 @@ class TestDDDPrice <Minitest::Test
     @ddd       = flexmock('ddd', :dose => dose)
     atc_class  = flexmock('atc_class', :ddd => @ddd, :code => 'atc_code')
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part      = flexmock('part', 
+    part      = flexmock('part',
                          :multi   => 'multi',
                          :count   => 'count',
                          :measure => 'measure',
                          :commercial_form => commercial_form
                         )
     indication = flexmock('indication', :language => 'language')
-    @model    = flexmock('model', 
+    @model    = flexmock('model',
                          :name_base  => 'name_base',
                          :atc_class  => atc_class,
                          :dose       => dose,
@@ -227,11 +227,11 @@ class TestDDDPrice <Minitest::Test
   end
   def test_meta_tag
     flexmock(@template, :u => 'u')
-    context = flexmock('context', 
+    context = flexmock('context',
                        :meta => 'meta',
                        :link => 'link'
                       )
-    assert_equal('metametalinkmeta', @template.meta_tags(context))
+    assert_equal('metametametalinkmeta', @template.meta_tags(context))
   end
   def test_pointer_descr
     assert_equal('lookup', @template.pointer_descr(@model))

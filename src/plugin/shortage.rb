@@ -52,6 +52,7 @@ module ODDB
     def export_drugshortage_csv
       @options = { }
       @csv_file_path = File.join EXPORT_DIR, 'drugshortage.csv'
+      @dated_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv"
       session = SessionStub.new(@app)
       session.language = 'de'
       session.lookandfeel = LookandfeelBase.new(session)
@@ -84,6 +85,7 @@ module ODDB
           csv << values
         end
       end
+      FileUtils.cp(@csv_file_path, @dated_csv_file_path, :verbose => true)
       @csv_file_path
     end
     # send a log mail after running the import
