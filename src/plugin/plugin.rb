@@ -3,6 +3,8 @@
 # Plugin -- oddb -- 01.11.2011 -- yasaka@ywesee.com
 # Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com
 
+require 'cgi'
+require 'sbsm/cgi'
 require 'util/http'
 require 'util/logfile'
 require 'util/today'
@@ -18,6 +20,7 @@ module ODDB
       attr_accessor :language, :lookandfeel
       def initialize(app)
         @app = app
+        @cgi = CGI.initialize_without_offline_prompt('html4')
         @flavor = Session::DEFAULT_FLAVOR
         @http_protocol = 'http'
         @server_name = SERVER_NAME
@@ -33,7 +36,7 @@ module ODDB
     end
 		include HttpFile
 		ARCHIVE_PATH = File.expand_path('../../data', File.dirname(__FILE__))
-		# Recipients for Plugin-Specific Update-Logs can be added in 
+		# Recipients for Plugin-Specific Update-Logs can be added in
 		# 'Plugin's subclasses
 		RECIPIENTS = []
 		attr_reader :change_flags, :month
@@ -63,8 +66,8 @@ module ODDB
 		end
 		def resolve_link(model)
 			pointer = model.pointer
-			str = if(model.respond_to?(:name_base)) 
-				(model.name_base.to_s + ': ').ljust(50) 
+			str = if(model.respond_to?(:name_base))
+				(model.name_base.to_s + ': ').ljust(50)
 			else
 				''
 			end
@@ -88,7 +91,7 @@ module ODDB
         tmp = File.join(RSS_PATH, stub.language, '.' + name)
         FileUtils.mkdir_p(File.dirname(path))
         File.open(tmp, 'w+') { |fh|
-          fh.puts view.to_html(CGI.new('html4'))
+          fh.puts view.to_html(@cgi)
         }
         FileUtils.mv(tmp, path) if File.exists?(tmp)
       end
