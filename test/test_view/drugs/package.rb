@@ -29,7 +29,7 @@ end
 
 class TestPackageInnerComposite <Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel', 
+    @lookandfeel = flexmock('lookandfeel',
                             :lookup     => 'lookup',
                             :enabled?   => nil,
                             :language   => 'language',
@@ -37,7 +37,7 @@ class TestPackageInnerComposite <Minitest::Test
                             :attributes => {},
                             :_event_url => '_event_url'
                            )
-    atc_class  = flexmock('atc_class', 
+    atc_class  = flexmock('atc_class',
                           :description => 'description',
                           :code        => 'code',
                           :has_ddd?    => true,
@@ -45,7 +45,7 @@ class TestPackageInnerComposite <Minitest::Test
                           :pointer     => 'pointer'
                          )
     @app       = flexmock('app', :atc_class => atc_class)
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel       => @lookandfeel,
                           :error             => 'error',
                           :app               => @app,
@@ -55,7 +55,7 @@ class TestPackageInnerComposite <Minitest::Test
                           :persistent_user_input => 'persistent_user_input'
                          )
     @pointer   = flexmock('pointer')
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :narcotic?           => nil,
                           :ddd_price           => 'ddd_price',
                           :production_science  => 'production_science',
@@ -90,7 +90,7 @@ class TestPackageInnerComposite <Minitest::Test
   def test_init__feedback
     flexmock(@lookandfeel, :enabled? => true)
     flexmock(@composite, :hash_insert_row => 'hash_insert_row')
-    flexmock(@model, 
+    flexmock(@model,
              :fachinfo_active? => nil,
              :has_fachinfo?    => nil,
              :localized_name   => 'localized_name',
@@ -112,7 +112,7 @@ class TestPackageInnerComposite <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_init__sl_entry
-    flexmock(@model, 
+    flexmock(@model,
              :sl_entry        => 'sl_entry',
              :limitation_text => 'limitation_text'
             )
@@ -130,7 +130,7 @@ class TestPackageInnerComposite <Minitest::Test
   end
 end
 class TestODDBViewDrugsPackageComposite <Minitest::Test
-  def setup 
+  def setup
     dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
     @lookandfeel = flexmock('lookandfeel',
                             :enabled?   => nil,
@@ -140,7 +140,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                             :attributes => {},
                             :_event_url => '_event_url'
                            ).by_default
-    atc_class  = flexmock('atc_class', 
+    atc_class  = flexmock('atc_class',
                             :description => 'description',
                           :code        => 'code',
                           :has_ddd?    => true,
@@ -148,7 +148,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :pointer     => 'pointer'
                          )
     @app       = flexmock('app', :atc_class => atc_class)
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lookandfeel,
                           :error       => 'error',
                           :app         => @app,
@@ -161,7 +161,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     substance        = flexmock('substance', :language => 'language')
     galenic_form     = flexmock('galenic_form', :language => 'language')
     parent           = flexmock('parent', :galenic_form => galenic_form)
-    @active_agent    = flexmock('active_agent', 
+    @active_agent    = flexmock('active_agent',
                                 :is_active_agent => true,
                                 :oid => 'oid',
                                 :more_info => 'more_info',
@@ -201,7 +201,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :division => 'division',
                           :compositions => [composition],
                           )
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :oid       => 'oid',
                           :name      => 'name',
                           :size      => 'size',
@@ -259,7 +259,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
       l.should_receive(:enabled?).at_least.once.with(:ddd_chart)
     end
     indication = flexmock('indication', :language => 'language')
-    flexmock(@model, 
+    flexmock(@model,
              :commercial_forms => [@commercial_form],
              :indication       => indication
             )
@@ -308,12 +308,12 @@ class TestPackage <Minitest::Test
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
     snapback_model = flexmock('snapback_model', :pointer => 'pointer')
-    state     = flexmock('state', 
+    state     = flexmock('state',
                         :direct_event   => 'direct_event',
                         :snapback_model => snapback_model,
                         :zone           => 'zone'
                        )
-    atc_class = flexmock('atc_class', 
+    atc_class = flexmock('atc_class',
                          :description => 'description',
                          :code        => 'code',
                          :has_ddd?    => true,
@@ -351,7 +351,7 @@ class TestPackage <Minitest::Test
                             :substance => substance,
                             :parent    => parent
                             )
-    active_agent = flexmock('active_agent', 
+    active_agent = flexmock('active_agent',
                             :more_info => 'more_info',
                             :oid => 'oid',
                             :is_active_agent => true,
@@ -416,6 +416,6 @@ class TestPackage <Minitest::Test
   ODDB::View::Copyright::ODDB_VERSION = 'oddb_version'
   def test_meta_tags
     context = flexmock('context', :meta => 'meta')
-    assert_equal('metametameta', @package.meta_tags(context))
+    assert_equal('metametametameta', @package.meta_tags(context))
   end
 end
