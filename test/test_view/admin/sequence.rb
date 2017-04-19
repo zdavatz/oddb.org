@@ -5,9 +5,9 @@
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'stub/cgi'
 require 'view/additional_information'
 require 'view/admin/sequence'
 require 'htmlgrid/span'
@@ -182,7 +182,7 @@ class TestSequenceForm <Minitest::Test
       l.should_receive(:language)
       l.should_receive(:event_url)
       l.should_receive(:_event_url)
-    end 
+    end
     @session = flexmock('session') do |s|
       s.should_receive(:lookandfeel).and_return(@lookandfeel)
       s.should_receive(:error)
@@ -394,6 +394,11 @@ class TestSequenceComposite <Minitest::Test
       m.should_receive(:pointer)
     end
     @composite = ODDB::View::Admin::SequenceComposite.new(@model, @session)
+  end
+  def test_division
+    result = @composite.division(@model, @session)
+    assert_kind_of(ODDB::View::Drugs::DivisionComposite,result)
+    assert(/<TD>divisable<\/TD>/.match(result.to_html(CGI.new)))
   end
   def test_compositions
     assert_kind_of(ODDB::View::Admin::Compositions, @composite.compositions(@model, @session))
