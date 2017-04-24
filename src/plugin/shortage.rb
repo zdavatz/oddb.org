@@ -138,18 +138,22 @@ module ODDB
       @deleted_shortages = []
       @changes_shortages = {}
       @found_shortages = {}
-      return unless Latest.get_latest_file(@latest_shortage, SOURCE_URI, @agent)
+      latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, @agent)
       page = Nokogiri::HTML(File.read(@latest_shortage))
       gtin_regex = /^\d{13}$/
-      @shortages = page.css('tr').find_all{|x| x.children[2] && gtin_regex.match(x.children[2].text)}
+      @shortages = page.css('td').find_all{|x| gtin_regex.match(x.text) }
       raise "unable to parse #{SOURCE_URI}" if @shortages.size == 0
       @shortages.each do |shortage|
         added_info = OpenStruct.new
-        added_info.gtin =  gtin_regex.match(shortage.children[2].text)[0]
-        added_info.shortage_state = shortage.children[7].text
-        added_info.shortage_last_update = Date.strptime(shortage.children[5].text,"%d.%m.%Y").to_s
-        added_info.shortage_delivery_date = shortage.children[8].text
-        added_info.shortage_link  = (BASE_URI + '/' + shortage.css('a').first.attributes.first.last.value).clone
+        if shortage.parent.css('td').size != 9
+          raise "Unable to parse #{shortage.text} in #{SOURCE_URI}"
+        end
+        added_info.gtin =  shortage.text
+        lines = shortage.parent.text.split("\n")
+        added_info.shortage_last_update = Date.strptime(shortage.parent.css('td')[4].text,"%d.%m.%Y").to_s
+        added_info.shortage_state = shortage.parent.css('td')[6].text
+        added_info.shortage_delivery_date = shortage.parent.css('td')[7].text
+        added_info.shortage_link  = (BASE_URI + '/' + shortage.parent.css('td')[0].children.first.children.first.attributes.first.last.value).clone
         @found_shortages[added_info.gtin] = added_info
       end
       old_packages_with_shortage = @app.active_packages.find_all do |package|
@@ -158,6 +162,7 @@ module ODDB
       # set packages which are no longer in the shortage list to the default values
       old_packages_with_shortage.each do |package|
         next if @found_shortages[package.barcode]
+        next unless @app.package_by_ean13(package.barcode)
         @deleted_shortages << "#{package.barcode};#{package.atc_class.code};#{package.name}"
         package.no_longer_in_shortage_list
       end

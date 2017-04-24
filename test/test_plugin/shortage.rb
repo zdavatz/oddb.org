@@ -18,6 +18,10 @@ end
 
 module ODDB
   class TestShortagePluginWithFile <Minitest::Test
+    # Aus ID=2934">ACETALGIN Filmtabl 1 g 16 Stk 7680623550019
+    #     ID=3056">AEROCHAMBER PLUS 762860504332
+    #     ID=2786">AGOPTON Kaps 30 680519690140
+
     TestGtinShortage      = '7680623550019' #  ACETALGIN Filmtabl 1 g 16 Stk
     TestGtinNoShortage    = '7680490590999'
     TestGtinNeverShortage = '7680490590777'
@@ -37,14 +41,14 @@ module ODDB
       pack.should_receive(:barcode).and_return(gtin).by_default
       pack.should_receive(:name).and_return('name').by_default
       pack.should_receive(:atc_class).and_return(atc_class).by_default
-      pack.should_receive(:no_longer_in_shortage_list).and_return(true)
+      pack.should_receive(:no_longer_in_shortage_list).and_return(true).by_default
       pack.should_receive(:update_shortage_list).and_return(true)
       pack.should_receive(:nomarketing_date).and_return('2016-01-01').by_default
       pack.should_receive(:nomarketing_since).and_return('2016-02-01').by_default
       pack.should_receive(:nodelivery_since).and_return('2016-03-01').by_default
       pack.should_receive(:no_longer_in_nomarketing_list).and_return(true).by_default
       pack.should_receive(:update_nomarketing_list).and_return(true).by_default
-      @app.should_receive(:package_by_ean13).with(gtin).and_return(pack)
+      @app.should_receive(:package_by_ean13).with(gtin).and_return(pack).by_default
       pack
     end
     def add_mock_registration(iksnr, packages = [])
@@ -73,6 +77,10 @@ module ODDB
       assert(File.exist?(@drugshortage_name))
       @html_drugshortage = File.read(@drugshortage_name)
 
+      @drugshortage_changed_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'drugshortage-changed.html'))
+      assert(File.exist?(@drugshortage_changed_name))
+      @html_drugshortage_changed = File.read(@drugshortage_changed_name)
+
       @nomarketing_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'swissmedic', 'nomarketing.html'))
       assert(File.exist?(@nomarketing_name))
       @html_nomarketing = File.read(@nomarketing_name)
@@ -80,8 +88,9 @@ module ODDB
       @nomarketing_xlsx_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xlsx', 'nomarketing_2017_03_13.xlsx'))
       assert(File.exist?(@nomarketing_xlsx_name))
       @xlxs_nomarketing = File.read(@nomarketing_xlsx_name)
-
+      @reg_47431 = add_mock_registration(62294)
       @reg_62294 = add_mock_registration(62294)
+      @reg_49059 = add_mock_registration(49059)
       @reg_59893 = add_mock_registration(59893)
       @app.should_receive(:registration).with('59893').and_return(nil)
       @app.should_receive(:registration).with('62294').and_return(@reg_62294)
@@ -94,7 +103,7 @@ module ODDB
       @package_never_in_short = add_mock_package('package_never_in_short', TestGtinNeverShortage)
       @package_deleted_in_short = add_mock_package('package_deleted_in_short', TestGtinNoShortage)
       @package_new_in_short = add_mock_package('package_never_in_short', TestGtinShortage)
-      @app.should_receive(:active_packages).and_return([@package_never_in_short, @package_deleted_in_short, @package_new_in_short])
+      @app.should_receive(:active_packages).and_return([@package_never_in_short, @package_deleted_in_short, @package_new_in_short]).by_default
       @agent    = flexmock('agent', Mechanize.new)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
       @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
@@ -104,8 +113,8 @@ module ODDB
       @pack_62294_007 = add_mock_package('pack_62294_007', '7680622940070', false)
       @pack_62294_007.should_receive(:atc_class).and_return(nil)
       @pack_59893_001 = add_mock_package('pack_59893_001', '7680598930010', false)
-      @reg_62294.should_receive(:active_packages).and_return([@pack_62294_001, @pack_62294_007])
-      @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001])
+      @reg_62294.should_receive(:active_packages).and_return([@pack_62294_001, @pack_62294_007])  #.by_default
+      @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001])# .by_default
       @plugin = ShortagePlugin.new @app
     end
     def expected_test_result
@@ -169,6 +178,8 @@ DrugShortag deletions:
                    lines.first.strip)
       assert(lines.find{|line| line.strip.eql?("7680622940010;atc;name;27.03.2017;13.06.2014;;#{@plugin.nomarketing_href};;;;") })
       assert(lines.find{|line| line.strip.eql?("7680519690140;atc;name;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;name;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+
     end
     def test_export_csv
       assert_equal(false, File.exist?(@csv_file))
@@ -182,18 +193,43 @@ DrugShortag deletions:
       @plugin.update(@agent)
       assert_equal(@@today , @plugin.date)
     end
+    def add_no_changes_for_second_run(add_date_change = false)
+      @package_changed_7680623550019 = add_mock_package('changed_7680623550019', TestGtinNeverShortage)
+      @package_changed_7680623550019.should_receive(:shortage_state).and_return("aktuell keine Lieferungen")
+      @package_changed_7680623550019.should_receive(:shortage_last_update).and_return(Date.new(2017,02,24))
+      @package_changed_7680623550019.should_receive(:shortage_delivery_date).and_return("offen")
+      if add_date_change
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934")
+      else
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return(nil)
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934\n")
+      end
+      @app.should_receive(:package_by_ean13).with('7680623550019').and_return(@package_changed_7680623550019)
+      @app.should_receive(:package_by_ean13).with('7680519690140').and_return(@package_no_changes)
+      @app.should_receive(:package_by_ean13).with('7680490590777').and_return(@package_never_in_short)
+      @app.should_receive(:active_packages).and_return([@package_no_changes, @package_changed_7680623550019])
+      @plugin = ShortagePlugin.new @app
+    end
     def test_run_with_same_content
       FileUtils.makedirs(File.dirname(@plugin.latest_shortage)) unless File.exist?(File.dirname(@plugin.latest_shortage))
       FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       @plugin.update(@agent)
+      add_no_changes_for_second_run
+      @plugin = ShortagePlugin.new @app
+      @plugin.update(@agent)
       result =  @plugin.report
-      assert(result.empty?)
+      expected = %(DrugShortag changes:
+7680623550019;atc;name shortage_link:  => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
+)
+      assert_match(/Changed\s+1\s+shortages/, result)
+      assert_match(/Deleted\s+0\s+shortages/, result)
+      assert(result.index(expected))
       FileUtils.rm_f(@plugin.latest_shortage)
       FileUtils.rm_f(@plugin.latest_nomarketing)
     end
-    def test_run_with_same_relevevant_content
+    def test_run_with_same_changed_content
       @agent    = flexmock('agent', Mechanize.new)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
       @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
@@ -204,11 +240,21 @@ DrugShortag deletions:
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
+      puts @plugin.latest_shortage
       @plugin.update(@agent)
-      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage + '<---some dummy content/ -->')
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@drugshortage_changed_name)
+      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage)
       @plugin.update(@agent)
       result =  @plugin.report
-      assert(result.empty?)
+      assert_equal(false, result.empty?)
+      assert(/Changed\s+1\s+shortages/.match(result))
+      expected = %(DrugShortag changes:
+7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
+              shortage_last_update: shortage_last_update => 2017-02-24
+              shortage_delivery_date: shortage_delivery_date => offen
+              shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
+)
+      assert(result.index(expected))
       FileUtils.rm_f(@plugin.latest_shortage)
       FileUtils.rm_f(@plugin.latest_nomarketing)
     end
