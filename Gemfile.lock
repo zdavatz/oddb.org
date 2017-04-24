@@ -52,7 +52,7 @@ GEM
       hoe (~> 3.0)
     hpricot (0.8.6)
     htmlentities (4.3.4)
-    htmlgrid (1.1.3)
+    htmlgrid (1.1.4)
       sbsm (>= 1.2.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -226,7 +226,7 @@ DEPENDENCIES
   hoe-travis
   hpricot (= 0.8.6)
   htmlentities
-  htmlgrid
+  htmlgrid (>= 1.1.4)
   httpi (= 2.4.2)
   i18n (= 0.6.9)
   json
@@ -280,4 +280,4 @@ DEPENDENCIES
   yus (= 1.0.0)
 
 BUNDLED WITH
-   1.13.7
+   1.14.6

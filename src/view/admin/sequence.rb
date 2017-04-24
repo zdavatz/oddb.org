@@ -160,7 +160,7 @@ class RootActiveAgents < ActiveAgents
     input
   end
   def galenic_form(model)
-    input = HtmlGrid::InputText.new("galenic_form[#{composition}]", 
+    input = HtmlGrid::InputText.new("galenic_form[#{composition}]",
                                     model, @session, self)
     input.label = true
     if model && gf = model.galenic_form
@@ -439,7 +439,7 @@ end
 module SequenceDisplay
 	def atc_class(model, session)
 		self::class::DEFAULT_CLASS.new(:code, model.atc_class, session, self)
-	end	
+	end
 	def atc_descr(model, session)
 		if(atc = model.atc_class)
 			txt = HtmlGrid::Text.new(:atc_descr, model, session, self)
@@ -455,7 +455,7 @@ module SequenceDisplay
 			if(days > 1)
 				output + "#{days.round} #{@lookandfeel.lookup(:atc_request_days)}"
 			else
-				days = (days * 24)  
+				days = (days * 24)
 				output + "#{days.round} #{@lookandfeel.lookup(:atc_request_hours)}"
 			end
 		else
@@ -600,7 +600,7 @@ class SequenceForm < HtmlGrid::Composite
 	end
 	def delete_patinfo(model, session=@session)
 		if(model.has_patinfo?)
-			button = HtmlGrid::Button.new(:delete_patinfo, 
+			button = HtmlGrid::Button.new(:delete_patinfo,
 																		model, session, self)
 			script = "this.form.patinfo.value = 'delete'; this.form.submit();"
 			button.set_attribute('onclick', script)
@@ -608,7 +608,7 @@ class SequenceForm < HtmlGrid::Composite
 		end
 	end
 	def language_select(model, session=@session)
-		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
+		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model,
 			session, self)
 		#sel.label = false
 		sel
@@ -630,12 +630,12 @@ class SequenceForm < HtmlGrid::Composite
 	end
 	def profile_link(model, session=@session)
 		if(comp = model.company)
-			link = HtmlGrid::Link.new(:company_link, model, session, self)  
+			link = HtmlGrid::Link.new(:company_link, model, session, self)
 			args = { :pointer	=>	comp.pointer }
 			link.href = @lookandfeel._event_url(:resolve, args)
 			link.set_attribute('class', 'small')
 			link.label = false
-			link  
+			link
 		end
 	end
 	def patinfo_label(model, session=@session)
@@ -690,11 +690,10 @@ class SequenceComposite < HtmlGrid::Composite
     Compositions.new(model.compositions, @session, self)
   end
   def division(model, session)
-    # View::Drugs::DivisionComposite.new(model.division, session, self)
-    return nil
+    View::Drugs::DivisionComposite.new(model.division, session, self)
   end
 	def sequence_name(model, session)
-		[ 
+		[
 			(model.company.name if model.company),
 			model.name,
 		].compact.join('&nbsp;-&nbsp;')
