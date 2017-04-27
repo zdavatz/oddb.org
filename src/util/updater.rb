@@ -227,7 +227,7 @@ module ODDB
       run_on_monthday(20) {
         update_whocc
       }
-      update_drugshortage
+    #update_drugshortage
     end
     def run_random
       # no task
