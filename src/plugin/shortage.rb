@@ -103,6 +103,7 @@ module ODDB
     private
     def report_shortage
       unless @shortages && @shortages.size  > 0
+        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
         @report_summary << "Nothing changed in #{SOURCE_URI}"
         return
       end
@@ -114,10 +115,14 @@ module ODDB
       @changes_shortages.each {|gtin, changed| @report_shortage << "#{gtin} #{changed.join("\n              ")}" }
       @report_shortage << "\nDrugShortag deletions:"
       @deleted_shortages.each {|gtin| @report_shortage << "#{gtin}" }
-      @has_relevant_changes = true if @deleted_shortages.size > 0 || @changes_shortages.size > 0
+      if @deleted_shortages.size > 0 || @changes_shortages.size > 0
+        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
+        @has_relevant_changes = true
+      end
     end
     def report_nomarketing
       unless @found_nomarketings && @found_nomarketings.size  > 0
+        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), :verbose => true)
         @report_summary << "Nothing changed in #{@nomarketing_href}"
         return
       end
@@ -132,7 +137,10 @@ module ODDB
       @deleted_nomarketings.each {|gtin| @report_nomarketing << "#{gtin}" }
       @report_nomarketing << "\nIKSNR not found in oddb database:"
       @missing_nomarketings.each {|iksnr| @report_nomarketing << "#{iksnr}" }
-      @has_relevant_changes = true if @deleted_nomarketings.size > 0 || @changes_nomarketings.size > 0
+      if @deleted_nomarketings.size > 0 || @changes_nomarketings.size > 0
+        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), :verbose => true)
+        @has_relevant_changes = true
+      end
     end
     def update_drugshortage
       @deleted_shortages = []

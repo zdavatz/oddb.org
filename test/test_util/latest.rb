@@ -112,5 +112,9 @@ module ODDB
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 
+    def test_get_daily_name
+      assert_equal(@file_today, Latest.get_daily_name(@latest))
+    end
+
   end
 end

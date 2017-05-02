@@ -7,7 +7,12 @@ require 'plugin/shortage'
 module ODDB
   Today = Date.new(2014,5,1)
   class Plugin
-    @@today = Today
+    @@today ||= Today
+    def self.next_day
+      puts "next_day @@today #{@@today}"
+      @@today = @@today + 1
+      puts "next_day @@today is now #{@@today}"
+    end
   end
   class ShortagePlugin < Plugin
     attr_reader :changes_shortages, :deleted_shortages, :found_shortages,
@@ -226,8 +231,8 @@ DrugShortag deletions:
       assert_match(/Changed\s+1\s+shortages/, result)
       assert_match(/Deleted\s+0\s+shortages/, result)
       assert(result.index(expected))
-      FileUtils.rm_f(@plugin.latest_shortage)
-      FileUtils.rm_f(@plugin.latest_nomarketing)
+      assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_shortage)))
+      assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_nomarketing)))
     end
     def test_run_with_changed_content
       @agent    = flexmock('agent', Mechanize.new)
@@ -239,11 +244,15 @@ DrugShortag deletions:
       FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
-      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
-      puts @plugin.latest_shortage
+      puts ShortagePlugin::SOURCE_URI
       @plugin.update(@agent)
-      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@drugshortage_changed_name)
-      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage, :verbose => true)
+#      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage, :verbose => true)
+      Plugin.next_day
+      @agent    = flexmock('agent', Mechanize.new)
+      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage_changed)
+      @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
+      @agent.should_receive(:get).with('https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html'+
+                                       '?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--').and_return(@xlxs_nomarketing)
       FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage.sub('latest', @@today.strftime("%Y.%m.%d")), :verbose => true)
       @plugin.update(@agent)
       result =  @plugin.report
