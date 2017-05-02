@@ -205,6 +205,9 @@ module ODDB
       update_evidentia_fi_search_links
       update_epha_interactions
 
+      # drugshortage
+      update_drugshortage
+
       # recall, hpc
       update_swissmedic_feeds
 
@@ -227,7 +230,6 @@ module ODDB
       run_on_monthday(20) {
         update_whocc
       }
-    #update_drugshortage
     end
     def run_random
       # no task
