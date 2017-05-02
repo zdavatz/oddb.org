@@ -202,16 +202,16 @@ DrugShortag deletions:
       @package_changed_7680623550019 = add_mock_package('changed_7680623550019', TestGtinNeverShortage)
       @package_changed_7680623550019.should_receive(:shortage_state).and_return("aktuell keine Lieferungen")
       @package_changed_7680623550019.should_receive(:shortage_last_update).and_return(Date.new(2017,02,24))
+      @package_changed_7680623550019.should_receive(:shortage_last_update).and_return(Date.new(2017,02,24))
       @package_changed_7680623550019.should_receive(:shortage_delivery_date).and_return("offen")
       if add_date_change
         @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934")
       else
-        @package_changed_7680623550019.should_receive(:shortage_link).and_return(nil)
-        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934\n")
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934")
       end
       @app.should_receive(:package_by_ean13).with('7680623550019').and_return(@package_changed_7680623550019)
       @app.should_receive(:package_by_ean13).with('7680519690140').and_return(@package_no_changes)
-      @app.should_receive(:package_by_ean13).with('7680490590777').and_return(@package_never_in_short)
+      @app.should_receive(:package_by_ean13).with('7680490590777').and_return(@package_never_in_short).by_default
       @app.should_receive(:active_packages).and_return([@package_no_changes, @package_changed_7680623550019])
       @plugin = ShortagePlugin.new @app
     end
@@ -222,15 +222,11 @@ DrugShortag deletions:
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       @plugin.update(@agent)
       add_no_changes_for_second_run
+      @app.should_receive(:package_by_ean13).with('7680490590777').and_return(nil)
       @plugin = ShortagePlugin.new @app
       @plugin.update(@agent)
       result =  @plugin.report
-      expected = %(DrugShortag changes:
-7680623550019;atc;name shortage_link:  => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
-)
-      assert_match(/Changed\s+1\s+shortages/, result)
-      assert_match(/Deleted\s+0\s+shortages/, result)
-      assert(result.index(expected))
+      assert_equal(0, result.size)
       assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_shortage)))
       assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_nomarketing)))
     end

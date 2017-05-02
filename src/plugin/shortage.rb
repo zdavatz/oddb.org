@@ -116,8 +116,9 @@ module ODDB
       @report_shortage << "\nDrugShortag deletions:"
       @deleted_shortages.each {|gtin| @report_shortage << "#{gtin}" }
       if @deleted_shortages.size > 0 || @changes_shortages.size > 0
-        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
         @has_relevant_changes = true
+      else
+        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
       end
     end
     def report_nomarketing
@@ -139,6 +140,7 @@ module ODDB
       @missing_nomarketings.each {|iksnr| @report_nomarketing << "#{iksnr}" }
       if @deleted_nomarketings.size > 0 || @changes_nomarketings.size > 0
         FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), :verbose => true)
+      else
         @has_relevant_changes = true
       end
     end
@@ -148,6 +150,7 @@ module ODDB
       @found_shortages = {}
       @shortages = []
       latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, @agent)
+      return unless latest
       puts "\nupdate_drugshortage latest is #{latest}  #{latest && File.exist?(latest)} @latest_shortage #{@latest_shortage} #{File.exist?(@latest_shortage)}"
       content = File.open(@latest_shortage, "r:UTF-8", &:read)
       puts "content is #{content.size} long and #{content.encoding}. Using Nokogiri::VERSION #{Nokogiri::VERSION} RUBY_VERSION #{RUBY_VERSION}"
@@ -195,7 +198,7 @@ module ODDB
           in_pack = eval("pack.#{item}")
           in_info = eval("info.#{item}")
           next if in_pack.to_s.eql?(in_info.to_s)
-          changed << "#{item}: #{in_pack} => #{in_info}".rstrip
+          changed << (msg = "#{item}: #{in_pack} => #{in_info}".rstrip)
         end
         next if changed.size == 0
         @changes_shortages["#{gtin};#{pack.atc_class.code};#{pack.name}"] = changed
