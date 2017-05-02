@@ -229,7 +229,7 @@ DrugShortag deletions:
       FileUtils.rm_f(@plugin.latest_shortage)
       FileUtils.rm_f(@plugin.latest_nomarketing)
     end
-    def test_run_with_same_changed_content
+    def test_run_with_changed_content
       @agent    = flexmock('agent', Mechanize.new)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage)
       @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
@@ -243,15 +243,16 @@ DrugShortag deletions:
       puts @plugin.latest_shortage
       @plugin.update(@agent)
       @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@drugshortage_changed_name)
-      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage)
+      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage, :verbose => true)
+      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage.sub('latest', @@today.strftime("%Y.%m.%d")), :verbose => true)
       @plugin.update(@agent)
       result =  @plugin.report
       assert_equal(false, result.empty?)
       assert(/Changed\s+1\s+shortages/.match(result))
       expected = %(DrugShortag changes:
 7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
-              shortage_last_update: shortage_last_update => 2017-02-24
-              shortage_delivery_date: shortage_delivery_date => offen
+              shortage_last_update: shortage_last_update => 2017-04-22
+              shortage_delivery_date: shortage_delivery_date => in Abklärung / en cours de clarification
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
 )
       assert(result.index(expected))

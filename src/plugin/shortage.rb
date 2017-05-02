@@ -138,11 +138,23 @@ module ODDB
       @deleted_shortages = []
       @changes_shortages = {}
       @found_shortages = {}
+      @shortages = []
       latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, @agent)
-      page = Nokogiri::HTML(File.read(@latest_shortage))
+      puts "\nupdate_drugshortage latest is #{latest}  #{latest && File.exist?(latest)} @latest_shortage #{@latest_shortage} #{File.exist?(@latest_shortage)}"
+      content = File.open(@latest_shortage, "r:UTF-8", &:read)
+      puts "content is #{content.size} long and #{content.encoding}. Using Nokogiri::VERSION #{Nokogiri::VERSION} RUBY_VERSION #{RUBY_VERSION}"
+      page = Nokogiri::HTML(content)
       gtin_regex = /^\d{13}$/
       @shortages = page.css('td').find_all{|x| gtin_regex.match(x.text) }
-      raise "unable to parse #{SOURCE_URI}" if @shortages.size == 0
+      if @shortages.size == 0
+        puts "Page has #{page.css('td').size} TD elements found via css"
+        puts "Dumping TD is"
+        puts page.css('td').collect{|x|x.text}
+        puts "Page is "
+        puts page.elements.first.text
+        puts (msg = "unable to parse #{SOURCE_URI} via #{@latest_shortage}  #{File.size(@latest_shortage)} page has #{page.elements.size} elements")
+        raise msg
+      end
       @shortages.each do |shortage|
         added_info = OpenStruct.new
         if shortage.parent.css('td').size != 9
