@@ -319,26 +319,31 @@ module ODDB
             end
           end
           @sl_entries.each do |pac_ptr, sl_data|
-            pack = pac_ptr.resolve @app
-            @known_packages.delete pac_ptr
-            unless pack.nil?
-              pointer = pac_ptr + :sl_entry
-              if sl_data.empty?
-                if pack.sl_entry
-                  @deleted_sl_entries += 1
-                  @app.delete pointer
-                end
-              else
-                if pack.sl_entry
-                  @updated_sl_entries += 1
+            begin
+              pack = pac_ptr.resolve @app
+              @known_packages.delete pac_ptr
+              unless pack.nil?
+                pointer = pac_ptr + :sl_entry
+                if sl_data.empty?
+                  if pack.sl_entry
+                    @deleted_sl_entries += 1
+                    @app.delete pointer
+                  end
                 else
-                  @created_sl_entries += 1
+                  if pack.sl_entry
+                    @updated_sl_entries += 1
+                  else
+                    @created_sl_entries += 1
+                  end
+                  if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
+                    sl_data.store :limitation, true
+                  end
+                  @app.update pointer.creator, sl_data, :bag
                 end
-                if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
-                  sl_data.store :limitation, true
-                end
-                @app.update pointer.creator, sl_data, :bag
               end
+            rescue ODDB::Persistence::InvalidPathError => error
+              puts "Skipping #{error} pac_ptr #{pac_ptr}"
+              # skip
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
