@@ -347,35 +347,40 @@ module ODDB
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
-            if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry) && (sl_entry.respond_to?(:pointer))
-              sl_ptr = sl_entry.pointer
-              sl_ptr ||= pac.pointer + [:sl_entry]
-              txt_ptr = sl_ptr + :limitation_text
-              if lim_data.empty?
-                if sl_entry.limitation_text
-                  @deleted_limitation_texts += 1
-                  @app.delete txt_ptr
-                end
-              else
-                if sl_entry.limitation_text
-                  @updated_limitation_texts += 1
-                else
-                  @created_limitation_texts += 1
-                end
-                # In order to refresh limitation text old objects in ODBA cache
-                # before updating. Otherwise, the link between sl_entry and
-                # limitation_text may not produced even if there are both objects
-                # in ODBA cache.
-                begin
-                  if sl_entry.limitation_text || txt_ptr.resolve(@app)
+            begin
+              if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry) && (sl_entry.respond_to?(:pointer))
+                sl_ptr = sl_entry.pointer
+                sl_ptr ||= pac.pointer + [:sl_entry]
+                txt_ptr = sl_ptr + :limitation_text
+                if lim_data.empty?
+                  if sl_entry.limitation_text
+                    @deleted_limitation_texts += 1
                     @app.delete txt_ptr
                   end
-                rescue ODDB::Persistence::UninitializedPathError,
-                       ODDB::Persistence::InvalidPathError
-                  # skip
+                else
+                  if sl_entry.limitation_text
+                    @updated_limitation_texts += 1
+                  else
+                    @created_limitation_texts += 1
+                  end
+                  # In order to refresh limitation text old objects in ODBA cache
+                  # before updating. Otherwise, the link between sl_entry and
+                  # limitation_text may not produced even if there are both objects
+                  # in ODBA cache.
+                  begin
+                    if sl_entry.limitation_text || txt_ptr.resolve(@app)
+                      @app.delete txt_ptr
+                    end
+                  rescue ODDB::Persistence::UninitializedPathError,
+                        ODDB::Persistence::InvalidPathError
+                    # skip
+                  end
+                  @app.update txt_ptr.creator, lim_data, :bag
                 end
-                @app.update txt_ptr.creator, lim_data, :bag
               end
+            rescue TypeError, ODDB::Persistence::InvalidPathError => error
+              puts "Skipping '#{error}' pac_ptr #{pac_ptr}"
+              # skip
             end
           end
           if @registration
