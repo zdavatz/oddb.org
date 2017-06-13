@@ -17,6 +17,7 @@ module ODDB
     'config'			        => default_config_files,
     'data_dir'            => File.expand_path('../data', File.dirname(__FILE__)),
     'log_dir'             => File.expand_path('../log', File.dirname(__FILE__)),
+    'log_pattern'         => File.join(Dir.pwd, 'log','/%Y/%m/%d/app_log'),
     'url_bag_sl_zip'      => 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip',
     'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
     'server_url'          => 'druby://localhost:10000',
@@ -41,7 +42,7 @@ module ODDB
     'flickr_shared_secret' => '',
     'app_user_agent'       => '', # as Regexp
     'paypal_server'        => 'www.paypal.com',     # or www.sandbox.paypal.com
-    'paypal_receiver'      => 'zdavatz@ywesee.com', # or test_paypal@ywesee.com 
+    'paypal_receiver'      => 'zdavatz@ywesee.com', # or test_paypal@ywesee.com
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)

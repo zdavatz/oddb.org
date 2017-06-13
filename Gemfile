@@ -1,14 +1,9 @@
-source "http://rubygems.org"
-if /^2/.match(RUBY_VERSION)
-  gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
-  gem 'syck'
-else
-  ruby "1.9.3"
-  gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
-end
+source "https://rubygems.org"
+gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
+
+gem 'syck'
 
 gem 'activesupport', '3.1.0'
-#gem 'archive-tarsimple', '1.1.1'
 gem 'minitar'
 gem 'bigdecimal'#, '1.1.0'
 gem 'builder'
@@ -16,7 +11,6 @@ gem 'dbd-pg', '0.3.9'
 gem 'diffy'
 gem 'deprecated', '2.0.1'
 gem 'facets', '1.8.54'
-# gem 'fastthread'# , '1.0.7'
 gem 'flickraw', '0.9.8'
 gem 'gruff', '0.5.1'
 gem 'hpricot', '0.8.6'
@@ -51,20 +45,18 @@ gem 'ruby-units'
 gem "rubyntlm", '0.5.1'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'savon', '~>2.11.1'
-gem 'sbsm',  '1.3.0' # , :git => 'https://github.com/ngiger/sbsm.git'
+# gem 'sbsm',  '1.4.3' # , :git => 'https://github.com/ngiger/sbsm.git'
+gem 'sbsm',  '>= 1.4.5', :path => '/home/niklaus/git/sbsm' # , :git => 'https://github.com/ngiger/sbsm.git'
 gem 'spreadsheet', '0.9.7'
-# gem 'swissmedic-diff', '0.2.2', :git => 'https://github.com/ngiger/swissmedic-diff.git'
 gem 'swissmedic-diff', '0.2.2'
 gem 'webrobots', '0.1.1'
-gem 'ydim', '1.0.0'
+gem 'ydim'
 gem 'ydocx', '1.2.5'
-gem 'yus', '1.0.0'
+gem 'yus'
 
 group :development, :test do
   gem "rake"
   gem 'flexmock' # ,'~> 1.3.0'
-  gem 'hoe'
-  gem 'hoe-travis'
   gem 'simplecov'
   gem 'travis-lint'
 end
@@ -84,9 +76,5 @@ group :test do
 end
 
 group :debugger do
-if /^2/.match(RUBY_VERSION)
   gem 'pry-byebug'
-else
-  gem 'pry-debugger'
-end
 end

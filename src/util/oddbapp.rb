@@ -30,7 +30,7 @@ require 'util/today'
 require 'models'
 require 'commands'
 require 'paypal'
-require 'sbsm/drbserver'
+require 'sbsm/app'
 require 'sbsm/index'
 require 'util/config'
 require 'fileutils'
@@ -105,6 +105,8 @@ class OddbPrevalence
     @substances ||= {}
 		#recount()
 		rebuild_atc_chooser()
+  rescue => error
+    binding.pry
 	end
   def retrieve_from_index(index_name, query, result = nil)
     # $stdout.puts "#{caller[0]}: retrieve_from_index #{index_name} #{query}"; $stdout.flush
@@ -1518,7 +1520,7 @@ class OddbPrevalence
 end
 
 module ODDB
-	class App < SBSM::DRbServer
+	class App < SBSM::App
 		include Failsafe
 		AUTOSNAPSHOT = true
 		CLEANING_INTERVAL = 5*60
@@ -1535,13 +1537,15 @@ module ODDB
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
-		attr_reader :cleaner, :updater
-		def initialize opts={}
+		attr_reader :cleaner, :updater, :system # system aka persistence
+		def initialize(opts={}, app: app)
       if opts.has_key?(:process)
         @process = opts[:process]
       else
         @process = :user
       end
+      @app = app
+      super()
       puts "process: #{$0}"
       @rss_mutex = Mutex.new
 			@admin_threads = ThreadGroup.new
@@ -1554,7 +1558,6 @@ module ODDB
 			@system.odba_store
       puts "init system: #{Time.now - start}"
 			puts "setup drb-delegation"
-			super(@system)
       return if opts[:auxiliary]
 			puts "reset"
 			reset()
@@ -1563,6 +1566,10 @@ module ODDB
 			puts "system initialized"
       puts "initialized: #{Time.now - start}"
 		end
+    def method_missing(m, *args, &block)
+      puts "Delegating #{m}"
+      @system.send(m, *args, &block)
+    end
 		# prevalence-methods ################################
 		def accept_orphaned(orphan, pointer, symbol, origin=nil)
 			command = AcceptOrphan.new(orphan, pointer,symbol, origin)
@@ -1713,9 +1720,10 @@ module ODDB
       if RUN_UPDATER and @process == :user
         @random_updater = run_random_updater
       end
+      # TODO: Fix reset
 			@mutex.synchronize {
 				@sessions.clear
-			}
+			} if false
 		end
     def run_random_updater
       Thread.new {

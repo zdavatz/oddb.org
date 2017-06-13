@@ -1,22 +1,6 @@
 require 'rubygems'
-require 'hoe'
 require 'fileutils'
 require 'rake/clean'
-
-## To run 'rake git:manifest' you will need the 'hoe-git' gem.
-
-Hoe.plugin :git
-Hoe.plugin :travis
-
-Hoe.spec 'oddb.org' do
-  # HEY! If you fill these out in ~/.hoe_template/Rakefile.erb then
-  # you'll never have to touch them again!
-  # (delete this comment too, of course)
-
-developer('Masaomi Hatakeyama, Zeno R.R. Davatz, Niklaus Giger', 'mhatakeyama@ywesee.com, zdavatz@ywesee.com, ngiger@ywesee.co')
-self.local_rdoc_dir = 'rdoc'
-
-end
 
 class Rake::Task
   def overwrite(&block)
@@ -53,7 +37,8 @@ task :quanty do
   end
 end
 
-Rake::Task[:docs].overwrite do
+desc "Generate documentation"
+task :docs do
   FileUtils.rm_rf('documentation', :verbose => true)
   system("rdoc --main README.txt --format=darkfish --exclude 'js' --exclude 'Gemfile*' --exclude 'sql.in' --exclude 'csv' --exclude 'bak' --exclude 'coverage' --exclude 'log' --exclude 'xml' --exclude 'yaml' --exclude 'yml' --exclude 'patch' --exclude '~' --exclude 'html' --exclude 'test'  --exclude 'data' --exclude 'pdf' --exclude 'vendor' --op documentation/")
 end

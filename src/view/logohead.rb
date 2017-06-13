@@ -37,7 +37,7 @@ module ODDB
 				model.respond_to?(:any?) \
 				&& (date = spons.sponsor_until) \
 				&& date >= @@today \
-				&& model.any? { |item| 
+				&& model.any? { |item|
 					spons.represents?(item) || (item.respond_to?(:packages) \
 						&& item.packages.any? { |pac| spons.represents?(pac)})
 				}

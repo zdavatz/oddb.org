@@ -33,8 +33,14 @@ module ODDB
 				@@requests.clear
 			end
 		end
-		def initialize(key, app, validator=nil)
-			super(key, app, validator)
+    def initialize(app:,
+                   trans_handler: nil,
+                   validator: nil,
+                   unknown_user: nil,
+                   cookie_name: nil,
+                   multi_threaded: false)
+      super
+      @app = app
 			@interaction_basket = []
 			@interaction_basket_atc_codes = []
       @currency_rates = {}
@@ -69,8 +75,8 @@ module ODDB
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
 			if(@state.limited?)
-				requests.delete_if { |other| 
-					(@process_start - other) >= QUERY_LIMIT_AGE 
+				requests.delete_if { |other|
+					(@process_start - other) >= QUERY_LIMIT_AGE
 				}
 				requests.push(@process_start)
 				if(requests.size > QUERY_LIMIT)
@@ -81,6 +87,7 @@ module ODDB
 			end
 		end
     def login
+      binding.pry
       # @app.login raises Yus::YusError
       # caller must rescue Yus::UnknownEntityError and Yus::AuthenticationError
       @user = @app.login(user_input(:email), user_input(:pass))
@@ -143,7 +150,7 @@ module ODDB
 			@interaction_basket.clear
       @interaction_basket_atc_codes.clear
 		end
-		def currency 
+		def currency
 			cookie_set_or_get(:currency) || "CHF"
 		end
     def get_currency_rate(currency)
@@ -179,7 +186,7 @@ module ODDB
       @interaction_basket.collect { |sub| sub.oid }.join(',')
     end
     def interaction_basket_link
-      lookandfeel._event_url(:interaction_basket, 
+      lookandfeel._event_url(:interaction_basket,
                              :substance_ids => interaction_basket_ids)
     end
 		def analysis_alphabetical(range)
