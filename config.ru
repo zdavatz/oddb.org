@@ -35,7 +35,6 @@ trap("USR2") {
 
 ODBA.cache.setup
 ODBA.cache.clean_prefetched
-DRb.install_id_conv ODBA::DRbIdConv.new
 
 require 'rack'
 require 'rack/static'
@@ -43,7 +42,6 @@ require 'rack/show_exceptions'
 require 'rack'
 require 'webrick'
 SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
-
 use Rack::CommonLogger, SBSM.logger
 use(Rack::Static, urls: ["/doc/"])
 use Rack::ContentLength

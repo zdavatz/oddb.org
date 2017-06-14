@@ -1538,7 +1538,7 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(process: nil, auxiliary: nil, app: app)
+		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB::SERVER_URI)
       if process
         @process = process
       else
@@ -1563,6 +1563,8 @@ module ODDB
 			reset()
       puts "reset: #{Time.now - start}"
       log_size
+      DRb.install_id_conv ODBA::DRbIdConv.new
+      DRb.start_service(server_uri, self)
 			puts "system initialized"
       puts "initialized: #{Time.now - start}"
 		end
