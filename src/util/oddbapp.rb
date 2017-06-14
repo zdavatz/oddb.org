@@ -1538,9 +1538,9 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(opts={}, app: app)
-      if opts.has_key?(:process)
-        @process = opts[:process]
+		def initialize(process: nil, auxiliary: nil, app: app)
+      if process
+        @process = process
       else
         @process = :user
       end
@@ -1558,7 +1558,7 @@ module ODDB
 			@system.odba_store
       puts "init system: #{Time.now - start}"
 			puts "setup drb-delegation"
-      return if opts[:auxiliary]
+      return if auxiliary
 			puts "reset"
 			reset()
       puts "reset: #{Time.now - start}"
