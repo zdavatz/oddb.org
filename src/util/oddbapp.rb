@@ -1567,7 +1567,6 @@ module ODDB
       puts "initialized: #{Time.now - start}"
 		end
     def method_missing(m, *args, &block)
-      puts "Delegating #{m}"
       @system.send(m, *args, &block)
     end
 		# prevalence-methods ################################

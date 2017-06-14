@@ -35,6 +35,7 @@ trap("USR2") {
 
 ODBA.cache.setup
 ODBA.cache.clean_prefetched
+DRb.install_id_conv ODBA::DRbIdConv.new
 
 require 'rack'
 require 'rack/static'

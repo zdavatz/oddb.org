@@ -68,6 +68,7 @@ module ODDB
           @cfg = nil
         else
           @cfg = YAML.load_file(@mailing_list_configuration)
+          @cfg['smtp_auth'] ||= 'plain'
           cfg = @cfg.clone
           Mail.defaults do
             delivery_method :smtp, {
@@ -168,7 +169,7 @@ module ODDB
 
     def Util.log_and_deliver_mail(mail)
       Util.configure_mail unless @mail_configured
-      mail.from << @cfg.mail_from unless mail.from.size > 0
+      mail.from << @cfg['mail_from'] unless mail.from.size > 0
       mail.reply_to = @cfg['reply_to']
       Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
       res = mail.deliver
