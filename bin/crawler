@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+# vim: ai ts=2 sts=2 et sw=2 ft=ruby
+begin
+  require 'pry'
+rescue LoadError
+end
+$stdout.sync = true
+
+lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'src').untaint)
+$LOAD_PATH << lib_dir
+
+require 'sbsm/logger'
+require 'rubyntlm'
+require 'net/ntlm'
+require 'net/ntlm/version'
+
+require 'util/currency'
+require 'util/oddbapp'
+require 'util/rack_interface'
+require 'etc/db_connection'
+
+case ARGV.first
+when /google(-|_)crawler/i
+  server_uri = ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER
+  process = :google_crawler
+  $0 = "Oddb (OddbApp:Google-Crawler)"
+when 'crawler'
+  server_uri = ODDB::SERVER_URI_FOR_CRAWLER
+  process = :crawler
+  $0 = "Oddb (OddbApp:Crawler)"
+else
+  puts "you must specify which crawler I am"
+  exit 2
+end
+
+SBSM.info(msg= "Changed my name to #{$0}")
+puts msg
+File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
+  fh.puts "15"
+end
+
+trap("USR1") {
+	puts "caught USR1 signal, clearing Sessions\n"
+	$oddb.clear
+}
+trap("USR2") {
+	puts "caught USR2 signal, flushing stdout...\n"
+	$stdout.flush
+}
+
+ODBA.cache.setup
+ODBA.cache.clean_prefetched
+SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
+SBSM.info "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
+
+$stdout.sync = true
+VERSION = `git rev-parse HEAD`
+puts msg = "Used version: sbsm #{SBSM::VERSION} and oddb.org #{VERSION}"
+SBSM.logger.info(msg)
+
+oddb_app = ODDB::App.new(server_uri: server_uri)
+puts(msg = "#{$0}: DRb thread before join"); SBSM.info(msg)
+DRb.thread.join
+puts(msg = "#{$0}: DRb thread to finished"); SBSM.info(msg)

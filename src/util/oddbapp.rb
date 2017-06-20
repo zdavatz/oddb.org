@@ -105,8 +105,6 @@ class OddbPrevalence
     @substances ||= {}
 		#recount()
 		rebuild_atc_chooser()
-  rescue => error
-    binding.pry
 	end
   def retrieve_from_index(index_name, query, result = nil)
     # $stdout.puts "#{caller[0]}: retrieve_from_index #{index_name} #{query}"; $stdout.flush
@@ -1557,7 +1555,7 @@ module ODDB
 			@system.init
 			@system.odba_store
       puts "init system: #{Time.now - start}"
-			puts "setup drb-delegation"
+			puts "setup drb-delegation auxiliary #{auxiliary}"
       return if auxiliary
 			puts "reset"
 			reset()
@@ -1565,7 +1563,7 @@ module ODDB
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
       DRb.start_service(server_uri, self)
-			puts "system initialized"
+			puts "system initialized started at #{server_uri}"
       puts "initialized: #{Time.now - start}"
 		end
     def method_missing(m, *args, &block)

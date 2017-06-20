@@ -38,7 +38,7 @@ module ODDB
                    validator: nil,
                    unknown_user: nil,
                    cookie_name: nil,
-                   multi_threaded: false)
+                   multi_threaded: true)
       super
       @app = app
 			@interaction_basket = []
@@ -87,7 +87,6 @@ module ODDB
 			end
 		end
     def login
-      binding.pry
       # @app.login raises Yus::YusError
       # caller must rescue Yus::UnknownEntityError and Yus::AuthenticationError
       @user = @app.login(user_input(:email), user_input(:pass))
