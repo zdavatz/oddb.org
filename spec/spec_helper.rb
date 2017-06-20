@@ -96,12 +96,6 @@ def setup_browser
       prompt_for_download: false,
       default_directory: DownloadDir
     }
-    prefs = {
-      :download => {
-        :prompt_for_download => false,
-        :default_directory => DownloadDir
-      }
-    }
     options.add_preference(:download, prefs)
     @browser = Watir::Browser.new  :chrome, options: options
     Selenium::WebDriver::Chrome::Options#add_preference
