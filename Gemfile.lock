@@ -5,16 +5,6 @@ GIT
     dbi (0.4.6)
       deprecated (= 2.0.1)
 
-PATH
-  remote: /home/niklaus/git/sbsm
-  specs:
-    sbsm (1.4.5)
-      chrono_logger
-      hpricot
-      mail
-      mimemagic
-      rack
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -25,12 +15,17 @@ GEM
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
+    archive-zip (0.7.0)
+      io-like (~> 0.3.0)
     bigdecimal (1.3.2)
     blankslate (3.1.3)
     builder (3.2.3)
     byebug (9.0.6)
     childprocess (0.7.0)
       ffi (~> 1.0, >= 1.0.11)
+    chromedriver-helper (1.1.0)
+      archive-zip (~> 0.7.0)
+      nokogiri (~> 1.6)
     chrono_logger (1.1.1)
     coderay (1.1.1)
     color (1.8)
@@ -69,6 +64,7 @@ GEM
       rack
       socksify
     i18n (0.6.9)
+    io-like (0.3.0)
     json (2.1.0)
     mail (2.2.7)
       activesupport (>= 2.3.6)
@@ -168,10 +164,15 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     sax-machine (1.3.2)
-    selenium-webdriver (3.4.0)
+    sbsm (1.4.5)
+      chrono_logger
+      hpricot
+      mail
+      mimemagic
+      rack
+    selenium-webdriver (3.4.3)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
-      websocket (~> 1.0)
     simplecov (0.14.1)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -204,7 +205,6 @@ GEM
       crack (>= 0.3.2)
       hashdiff
     webrobots (0.1.1)
-    websocket (1.2.4)
     ydbd-pg (0.5.3)
       pg
       ydbi (>= 0.5.0)
@@ -236,6 +236,7 @@ DEPENDENCIES
   activesupport (= 3.1.0)
   bigdecimal
   builder
+  chromedriver-helper
   dbd-pg (= 0.3.9)
   dbi!
   deprecated (= 2.0.1)
@@ -285,7 +286,7 @@ DEPENDENCIES
   rubyzip (>= 1.1.6)
   savon (~> 2.11.1)
   sax-machine
-  sbsm (>= 1.4.5)!
+  sbsm (>= 1.4.5)
   simplecov
   spreadsheet (= 0.9.7)
   swissmedic-diff (= 0.2.2)

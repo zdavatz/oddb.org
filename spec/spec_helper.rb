@@ -77,19 +77,34 @@ def setup_browser
     profile['browser.download.dir'] = DownloadDir
     profile['browser.download.folderList'] = 2
     profile['browser.helperApps.alwaysAsk.force'] = false
+    profile['security.insecure_password.ui.enabled'] = false
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/zip;application/octet-stream;application/x-zip;application/x-zip-compressed;text/csv;test/semicolon-separated-values"
-    Selenium::WebDriver::Firefox::Binary.path=  '/usr/bin/firefox-bin'
-    @browser = Selenium::WebDriver.for :firefox, :profile => profile
-    # @browser = Watir::Browser.new :firefox, :profile => profile
+    [ '/usr/bin/firefox-bin',  '/usr/bin/firefox'].each do |binary|
+      if File.exist?(binary)
+        Selenium::WebDriver::Firefox::Binary.path= binary
+        break
+      end
+    end
+    @browser = Watir::Browser.new :firefox, :profile => profile
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--disable-translate')
+    prefs = {
+      prompt_for_download: false,
+      default_directory: DownloadDir
+    }
     prefs = {
       :download => {
         :prompt_for_download => false,
         :default_directory => DownloadDir
       }
     }
-    @browser = Watir::Browser.new :chrome, :prefs => prefs
+    options.add_preference(:download, prefs)
+    @browser = Watir::Browser.new  :chrome, options: options
+    Selenium::WebDriver::Chrome::Options#add_preference
   elsif Browser2test[0].to_s.eql?('ie')
     puts "Trying unknown browser type Internet Explorer"
     @browser = Watir::Browser.new :ie
@@ -118,7 +133,7 @@ def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
   end
   @browser.button(:name,"login").click
   sleep 1 unless @browser.button(:name,"logout").exists?
-  if  @browser.button(:name,"login").exists?
+  if  @browser.link(:name,"login").exists?
     @browser.goto(OddbUrl)
     return false
   else
