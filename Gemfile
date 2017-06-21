@@ -45,7 +45,7 @@ gem 'ruby-units'
 gem "rubyntlm", '0.5.1'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
 gem 'savon', '~>2.11.1'
-gem 'sbsm',  '>= 1.4.5'
+gem 'sbsm',  '>= 1.4.6'
 gem 'spreadsheet', '0.9.7'
 gem 'swissmedic-diff', '0.2.2'
 gem 'webrobots', '0.1.1'
@@ -73,6 +73,7 @@ group :test do
   gem 'page-object'
   gem 'vcr'
   gem 'webmock'
+  gem 'rack-test'
 end
 
 group :debugger do
