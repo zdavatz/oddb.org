@@ -7,6 +7,12 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+begin
+  require 'pry'
+rescue LoadError
+  # ignore error when pry cannot be loaded (for Jenkins-CI)
+end
+
 require 'syck'
 require 'stub/odba'
 
@@ -21,6 +27,7 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock/minitest'
 require 'util/oddbapp'
+require 'util/rack_interface'
 
 class TestOddbApp2 <MiniTest::Unit::TestCase
   TEST_EAN13 = '7601123456789'
@@ -28,7 +35,8 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-		@app = ODDB::App.new
+    @app = ODDB::App.new(server_uri: 'druby://localhost:20002', unknown_user: ODDB::UnknownUser.new)
+    @rack_app = ODDB::Util::RackInterface.new(app: @app)
 
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\
@@ -70,7 +78,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 	def test_galenic_group_initialized
 		expected_pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
 		assert_equal(expected_pointer, @app.galenic_groups.values.first.pointer)
-		assert_equal('Unbekannt', expected_pointer.resolve(@app).description)
+		assert_equal('Unbekannt', @app.galenic_groups.values.first.description)
 	end
 	def test_unknown_user
 		assert_instance_of(ODDB::UnknownUser, @app.unknown_user)
@@ -514,16 +522,6 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		expected = Date.new(1977-07-07)
 		result = @app.last_medication_update
 		assert_equal(expected, result)
-	end
-	def test_async
-		foo = "bar"
-		@app.async {
-			sleep 0.5
-			foo = "baz"
-		}
-		assert_equal("bar", foo)
-		sleep 1
-		assert_equal("baz", foo)
 	end
 	def test_fachinfo
 		@app.fachinfos = { 1 => "foo", "1" =>	"bar"}

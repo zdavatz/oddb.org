@@ -1529,42 +1529,49 @@ module ODDB
 		RUN_CLEANER = true
 		RUN_UPDATER = false
 		SESSION = Session
-		UNKNOWN_USER = UnknownUser
 		UPDATE_INTERVAL = 24*60*60
 		VALIDATOR = Validator
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB::SERVER_URI)
+		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB::SERVER_URI, unknown_user: unknown_user)
+      @@last_start_time ||= 0
+      start = Time.now
       if process
         @process = process
       else
         @process = :user
       end
+      @unknown_user = unknown_user
       @app = app
       super()
-      puts "process: #{$0}"
+      puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} "
       @rss_mutex = Mutex.new
-			@admin_threads = ThreadGroup.new
-      start = Time.now
-			@system = ODBA.cache.fetch_named('oddbapp', self){
-				OddbPrevalence.new
-			}
-			puts "init system"
-			@system.init
-			@system.odba_store
-      puts "init system: #{Time.now - start}"
-			puts "setup drb-delegation auxiliary #{auxiliary}"
+      @admin_threads = ThreadGroup.new
+      @system = ODBA.cache.fetch_named('oddbapp', self){
+        OddbPrevalence.new
+      }
+      puts "init system starting after #{Time.now - start} seconds"
+      @system.init
+      @system.odba_store
       return if auxiliary
-			puts "reset"
-			reset()
-      puts "reset: #{Time.now - start}"
+      @@primary_server ||= nil
+      reset()
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
-      DRb.start_service(server_uri, self)
-			puts "system initialized started at #{server_uri}"
+      if @@primary_server && defined?(MiniTest)
+        DRb.remove_server(@@primary_server)
+        Thread.kill(DRb.thread)
+        @@primary_server = nil
+        GC.start
+      end
+
+      @@primary_server = DRb.start_service(server_uri, self)
       puts "initialized: #{Time.now - start}"
+      @@last_start_time = (Time.now - start).to_i
+    rescue => error
+      puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
 		end
     def method_missing(m, *args, &block)
       @system.send(m, *args, &block)
@@ -1575,7 +1582,6 @@ module ODDB
 			@system.execute_command(command)
 		end
 		def clean
-			super
 			@system.clean_invoices
 		end
 		def create(pointer)
@@ -1719,10 +1725,7 @@ module ODDB
       if RUN_UPDATER and @process == :user
         @random_updater = run_random_updater
       end
-      # TODO: Fix reset
-			@mutex.synchronize {
-				@sessions.clear
-			} if false
+      SBSM::SessionStore.clear
 		end
     def run_random_updater
       Thread.new {
@@ -1998,7 +2001,8 @@ module ODDB
       end
     end
     def log_size
-      @size_logger = Thread.new {
+      @@size_logger ||= nil
+      @@size_logger ||= Thread.new {
         time = Time.now
         bytes = 0
         threads = 0
@@ -2022,6 +2026,7 @@ module ODDB
             # Shutdown if more than #{max_threads} threads are created, probably because of spiders
             if threads > max_threads
               puts "With #{threads} threads we have more than #{max_threads} threads. Exiting"
+              @@size_logger = nil
               exit
             end
             lastbytes = bytes
@@ -2029,15 +2034,18 @@ module ODDB
             mbytes = bytes / (2**20)
             if mbytes > MEMORY_LIMIT
               puts "#{Time.now}: Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
+              @@size_logger = nil
               Thread.main.raise SystemExit
             elsif /crawler/i.match(status) and mbytes > MEMORY_LIMIT_CRAWLER
               puts "#{Time.now}: Footprint of #{mbytes}MB exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
+              @@size_logger = nil
               Thread.main.raise SystemExit
             end
             lastsessions = sessions
             sessions = @sessions.size
             if sessions > max_sessions
               puts "With #{sessions} sessions we have more than #{max_sessions} sessions. Exiting"
+              @@size_logger = nil
               exit
             end
             gc = ''

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # OddbApp -- oddb -- 09.04.2012 -- yasaka@ywesee.com
-# OddbApp -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
+# OddbApp -- oddb -- 18.11.2002 -- hwyss@ywesee.com
 
 require 'syck'
 require 'util/oddbapp'
@@ -23,7 +23,7 @@ class OddbPrevalence
 end
 module ODDB
   ODDB_VERSION = 'version'
-	class App < SBSM::DRbServer
+	class App < SBSM::App
 		remove_const :RUN_CLEANER
 		remove_const :RUN_UPDATER
 		RUN_CLEANER = false
