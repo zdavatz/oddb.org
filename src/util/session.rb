@@ -40,6 +40,8 @@ module ODDB
                    cookie_name: nil,
                    multi_threaded: true)
       super
+      require 'util/csstemplate'
+      # ODDB::CssTemplate::FLAVORS.keys
       @app = app
 			@interaction_basket = []
 			@interaction_basket_atc_codes = []
@@ -70,6 +72,31 @@ module ODDB
       super || (logged_in? && @user.expired?)
 		end
 		def flavor
+      #phyto-pharma
+      # oekk is not in CssTemplate!
+      if @flavor.nil? && !/(^ch\.oddb\.org|^oddb-ci)/i.match(server_name)
+        @flavor = ODDB::CssTemplate::FLAVORS.keys.find do |key| /(www|)#{key}\./i.match(server_name) end
+        case server_name
+        when /^(www\.|)*(anthroposophika\.|anthroposophy\.|anthroposophica.)/i
+          @flavor = 'anthroposophy'
+        when /^(www\.|)(xn--|)(homeopathy|homopathika|homoeopathika)(-tfb|)\./i
+          @flavor = 'homeopathy'
+        when /(^i\.|^mobile\.)/i
+          @flavor = 'mobile'
+        when /^oekk\./i
+          @flavor = 'oekk'
+        when /^(www\.|)(phyto-pharma|phytotherapeutika)\./i
+          @flavor = 'phyto-pharma'
+        else
+          puts(msg = "No @flavor found via #{server_name}")
+          SBSM.debug(msg)
+        end unless @flavor
+        if @flavor
+          @flavor = @flavor.to_s
+          puts(msg = "@flavor set to #{@flavor.inspect}")
+          SBSM.debug(msg)
+        end
+      end
 			@flavor ||= (@valid_input[:partner] || super)
 		end
 		def limit_queries
@@ -125,7 +152,13 @@ module ODDB
       end
       super
     end
+
+    # TODO: handle limit_queries
     def process(request)
+      require 'pry'; binding.pry
+            @flavor = ODDB::CssTemplate::FLAVORS.keys.find do |key| /#{key}\./i.match(server_name) end
+      puts "process @flavor set to #{@flavor}"
+
       @request_path = request.unparsed_uri
       @process_start = Time.now
       super
@@ -135,7 +168,8 @@ module ODDB
         limit_queries
       end
       '' ## return empty string across the drb-border
-    end
+    end if false
+
     def is_mobile_app?
       config = ODDB.config
       false if config.app_user_agent.empty?
