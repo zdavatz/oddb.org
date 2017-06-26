@@ -2006,7 +2006,7 @@ module ODDB
         time = Time.now
         bytes = 0
         threads = 0
-        sessions = 0
+        nr_sessions = 0
         format = "%s %s: sessions: %4i - threads: %4i  - memory: %4iMB %s"
         status = case @process
                  when :google_crawler ; 'status_google_crawler'
@@ -2041,15 +2041,15 @@ module ODDB
               @@size_logger = nil
               Thread.main.raise SystemExit
             end
-            lastsessions = sessions
-            sessions = @sessions.size
-            if sessions > max_sessions
-              puts "With #{sessions} sessions we have more than #{max_sessions} sessions. Exiting"
+            lastsessions = nr_sessions
+            nr_sessions = SBSM::SessionStore.sessions.size
+            if lastsessions> max_sessions
+              puts "With #{nr_sessions} sessions we have more than #{max_sessions} sessions. Exiting"
               @@size_logger = nil
               exit
             end
             gc = ''
-            gc << 'S' if sessions < lastsessions
+            gc << 'S' if nr_sessions < lastsessions
             gc << 'T' if threads < lastthreads
             gc << 'M' if bytes < lastbytes
             path = File.expand_path('../../doc/resources/downloads/' + status,
@@ -2057,7 +2057,7 @@ module ODDB
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm,
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
-                                  sessions, threads, mbytes, gc)
+                                  nr_sessions, threads, mbytes, gc)
             File.open(path, 'w') { |fh|
               fh.puts lines
             }
