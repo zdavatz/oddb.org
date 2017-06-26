@@ -91,11 +91,7 @@ module ODDB
           puts(msg = "No @flavor found via #{server_name}")
           SBSM.debug(msg)
         end unless @flavor
-        if @flavor
-          @flavor = @flavor.to_s
-          puts(msg = "@flavor set to #{@flavor.inspect}")
-          SBSM.debug(msg)
-        end
+        @flavor = @flavor.to_s if @flavor
       end
 			@flavor ||= (@valid_input[:partner] || super)
 		end

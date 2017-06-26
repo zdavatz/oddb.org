@@ -42,6 +42,7 @@ require 'rack/show_exceptions'
 require 'rack'
 require 'webrick'
 SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
+SBSM.logger.level = Logger::WARN
 use Rack::CommonLogger, SBSM.logger
 use(Rack::Static, urls: ["/doc/"])
 use Rack::ContentLength
