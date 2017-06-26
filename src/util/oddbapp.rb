@@ -1535,7 +1535,7 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB::SERVER_URI, unknown_user: unknown_user)
+		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB.config.server_url, unknown_user: unknown_user)
       @@last_start_time ||= 0
       start = Time.now
       if process

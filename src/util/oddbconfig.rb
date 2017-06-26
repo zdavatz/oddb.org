@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # OddbConfig -- oddb.org -- 17.08.2012 -- yasaka@ywesee.com
-# OddbConfig -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com 
-# OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com 
+# OddbConfig -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
+# OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com
 
 # Do not require any Application-Internals in this file
 
@@ -11,28 +11,13 @@ $USING_STRSCAN = true
 require 'config'
 
 module ODDB
-	SERVER_NAME = 'ch.oddb.org'
-	SERVER_URI = "druby://localhost:10000"
-	SERVER_URI_FOR_CRAWLER = "druby://localhost:10001"
-	SERVER_URI_FOR_GOOGLE_CRAWLER = "druby://localhost:10008"
-	FIPARSE_URI = "druby://localhost:10002"
-	FIPDF_URI = "druby://localhost:10003"
-	DOCPARSE_URI = "druby://localhost:10004"
-	EXPORT_URI = "druby://localhost:10005"
-	MEDDATA_URI = "druby://localhost:10006"
-	SWISSREG_URI = "druby://localhost:10007"
-	READONLY_URI = "druby://localhost:10013"
-	CURRENCY_URI = "druby://localhost:10999"
-  YUS_URI = "drbssl://localhost:9997"
-  MIGEL_URI = 'druby://localhost:33000'
-  YUS_DOMAIN = 'oddb.org'
-	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
+  PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
   IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
-	PAYPAL_SERVER   = ODDB.config.paypal_server
-	PAYPAL_RECEIVER = ODDB.config.paypal_receiver
-  
-	ENCODING = 'UTF-8'
-	## Prices and Durations
+  PAYPAL_SERVER   = ODDB.config.paypal_server
+  PAYPAL_RECEIVER = ODDB.config.paypal_receiver
+
+  ENCODING = 'UTF-8'
+  ## Prices and Durations
   DOWNLOAD_EXPORT_PRICES = {
     'analysis.csv'				=> 300,
     'chde.xls'	          => 600,
@@ -69,7 +54,7 @@ module ODDB
     'price_history.csv'   => 2000,
     'swissdrug-update.xls'=> 1700,
   }
-  DOWNLOAD_EXPORT_DURATIONS = { 
+  DOWNLOAD_EXPORT_DURATIONS = {
     'analysis.csv'				=> 30,
     'chde.xls'	          => 30,
     'de.oddb.yaml'				=> 30,
@@ -89,7 +74,7 @@ module ODDB
     'price_history.csv'   => 30,
     'swissdrug-update.xls'=> 30,
   }
-  DOWNLOAD_EXPORT_SUBSCRIPTION_DURATIONS = { 
+  DOWNLOAD_EXPORT_SUBSCRIPTION_DURATIONS = {
     'chde.xls'	          => 365,
     'de.oddb.yaml'				=> 365,
     'generics.xls'				=> 365,
@@ -106,23 +91,23 @@ module ODDB
   DOWNLOAD_PROTOCOLS = [ 'stanza' ]
   DOWNLOAD_UNCOMPRESSED = [
   ]
-	FI_UPLOAD_PRICES = {
-		:activation => 1500,
-		:annual_fee => 350,
-		:processing => 150,
-	}
-	FI_UPLOAD_DURATION = 365
-	PI_UPLOAD_DURATION = 365
-	PI_UPLOAD_PRICES = {
-		:activation => 1000,
-		:annual_fee => 120,
-		:processing => 90,
-	}
-	QUERY_LIMIT_PRICES = {
-		1		=>	5,
-		30	=>	50,
-		365	=>	400,
-	}
-	VAT_RATE = 8.0
+  FI_UPLOAD_PRICES = {
+    :activation => 1500,
+    :annual_fee => 350,
+    :processing => 150,
+  }
+  FI_UPLOAD_DURATION = 365
+  PI_UPLOAD_DURATION = 365
+  PI_UPLOAD_PRICES = {
+    :activation => 1000,
+    :annual_fee => 120,
+    :processing => 90,
+  }
+  QUERY_LIMIT_PRICES = {
+    1		=>	5,
+    30	=>	50,
+    365	=>	400,
+  }
+  VAT_RATE = 8.0
   RSS_PATH = File.join(PROJECT_ROOT, 'data', 'rss')
 end
