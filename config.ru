@@ -24,14 +24,17 @@ case APPNAME
 when /google(-|_)crawler/i
   server_uri = ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER
   process = :google_crawler
-  port    = 8102
   $0 = "Oddb (OddbApp:Google-Crawler)"
 when 'crawler'
   server_uri = ODDB::SERVER_URI_FOR_CRAWLER
   process = :crawler
-  port    = 8103
   $0 = "Oddb (OddbApp:Crawler)"
 end if defined?(APPNAME)
+process ||= :user
+if (m = /p\s(\d+)/.match(ENV['SUDO_COMMAND']))
+  port =  m[1]
+end
+
 
 File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
   fh.puts "15"
@@ -54,18 +57,19 @@ require 'rack/static'
 require 'rack/show_exceptions'
 require 'rack'
 require 'webrick'
+ODDB.config.log_pattern.sub!('app', process.to_s)
 SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
 SBSM.logger.level = Logger::WARN
 use Rack::CommonLogger, SBSM.logger
 use(Rack::Static, urls: ["/doc/"])
 use Rack::ContentLength
-SBSM.info "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
+SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 
 $stdout.sync = true
 VERSION = `git rev-parse HEAD`
 SBSM.logger.info( "process #{process} port #{port} on #{server_uri} sbsm #{SBSM::VERSION} and oddb.org #{VERSION}")
 
 
-my_app = ODDB::Util::RackInterface.new(app: ODDB::App.new(server_uri: server_uri, process: (process || :user)))
+my_app = ODDB::Util::RackInterface.new(app: ODDB::App.new(server_uri: server_uri, process: process))
 app = Rack::ShowExceptions.new(Rack::Lint.new(my_app))
 run app
