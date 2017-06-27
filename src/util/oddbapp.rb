@@ -1542,13 +1542,9 @@ module ODDB
     @@primary_server = nil
 		attr_reader :cleaner, :updater, :system # system aka persistence
 		def initialize(process: nil, auxiliary: nil,  app: nil, server_uri: ODDB.config.server_url, unknown_user: nil)
+      @process = (process || :user)
       @@last_start_time ||= 0
       start = Time.now
-      if process
-        @process = process
-      else
-        @process = :user
-      end
       @unknown_user = unknown_user
       @app = app
       super()

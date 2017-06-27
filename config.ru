@@ -1,5 +1,4 @@
-#\ -w -p 8012
-# 8012 is the port used to serve
+#!/usr/bin/env ruby
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
 begin
   require 'pry'
@@ -19,6 +18,20 @@ require 'util/currency'
 require 'util/oddbapp'
 require 'util/rack_interface'
 require 'etc/db_connection'
+
+server_uri = nil
+case APPNAME
+when /google(-|_)crawler/i
+  server_uri = ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER
+  process = :google_crawler
+  port    = 8102
+  $0 = "Oddb (OddbApp:Google-Crawler)"
+when 'crawler'
+  server_uri = ODDB::SERVER_URI_FOR_CRAWLER
+  process = :crawler
+  port    = 8103
+  $0 = "Oddb (OddbApp:Crawler)"
+end if defined?(APPNAME)
 
 File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
   fh.puts "15"
@@ -50,9 +63,9 @@ SBSM.info "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 
 $stdout.sync = true
 VERSION = `git rev-parse HEAD`
-puts msg = "Used version: sbsm #{SBSM::VERSION} and oddb.org #{VERSION}"
-SBSM.logger.info(msg)
+SBSM.logger.info( "process #{process} port #{port} on #{server_uri} sbsm #{SBSM::VERSION} and oddb.org #{VERSION}")
 
-my_app = ODDB::Util::RackInterface.new(app: ODDB::App.new)
+
+my_app = ODDB::Util::RackInterface.new(app: ODDB::App.new(server_uri: server_uri, process: (process || :user)))
 app = Rack::ShowExceptions.new(Rack::Lint.new(my_app))
 run app
