@@ -104,6 +104,9 @@ class OddbPrevalence
 		@sponsors ||= {}
     @substances ||= {}
 		#recount()
+    sorted_minifis
+    sorted_feedbacks
+    sorted_fachinfos
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
@@ -1333,14 +1336,14 @@ class OddbPrevalence
   def sorted_fachinfos
     @sorted_fachinfos ||= @fachinfos.values.select { |fi|
       fi.revision }.sort_by { |fi| fi.revision }.reverse
-  end
+    end
   def sorted_feedbacks
     @sorted_feedbacks ||= @feedbacks.values.sort_by { |fb| fb.time }.reverse
   end
   def sorted_minifis
     @sorted_minifis ||= @minifis.values.sort_by { |minifi|
-      [ -minifi.publication_date.year,
-        -minifi.publication_date.month, minifi.name] }
+    [ -minifi.publication_date.year,
+      -minifi.publication_date.month, minifi.name] }
   end
   def sorted_patented_registrations
     @registrations.values.select { |reg|
@@ -1434,6 +1437,8 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
+                                    $stdout.puts "#{caller[0]}: rebuild_indices #{index_definition.index_name}"
+
         doit = if(name and name.length > 0)
                  name.match(index_definition.index_name)
                elsif(block)
@@ -1534,8 +1539,9 @@ module ODDB
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
+    @@primary_server = nil
 		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(process: nil, auxiliary: nil, app: app, server_uri: ODDB.config.server_url, unknown_user: unknown_user)
+		def initialize(process: nil, auxiliary: nil,  app: nil, server_uri: ODDB.config.server_url, unknown_user: nil)
       @@last_start_time ||= 0
       start = Time.now
       if process
@@ -1548,6 +1554,7 @@ module ODDB
       super()
       puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} "
       @rss_mutex = Mutex.new
+      @cache_mutex = Mutex.new
       @admin_threads = ThreadGroup.new
       @system = ODBA.cache.fetch_named('oddbapp', self){
         OddbPrevalence.new
@@ -1556,7 +1563,6 @@ module ODDB
       @system.init
       @system.odba_store
       return if auxiliary
-      @@primary_server ||= nil
       reset()
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
@@ -1574,7 +1580,9 @@ module ODDB
       puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
 		end
     def method_missing(m, *args, &block)
-      @system.send(m, *args, &block)
+      @cache_mutex.synchronize do
+        @system.send(m, *args, &block)
+      end
     end
 		# prevalence-methods ################################
 		def accept_orphaned(orphan, pointer, symbol, origin=nil)
