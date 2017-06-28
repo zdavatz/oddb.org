@@ -2027,28 +2027,34 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
+            lastbytes = bytes
+            bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+            mbytes = (bytes / (2**20)).to_i
+
             # Shutdown if more than #{max_threads} threads are created, probably because of spiders
+            info = "#{@process} #{threads} threads, footprint of #{mbytes}MB,  #{nr_sessions} sessions. Exiting as "
             if threads > max_threads
-              puts "With #{threads} threads we have more than #{max_threads} threads. Exiting"
+              puts info += "more than #{max_threads} threads"
+              SBSM.error(info)
               @@size_logger = nil
               exit
             end
-            lastbytes = bytes
-            bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-            mbytes = bytes / (2**20)
             if mbytes > MEMORY_LIMIT
-              puts "#{Time.now}: Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
+              puts info += "exceeds #{MEMORY_LIMIT}MB"
+              SBSM.error(info)
               @@size_logger = nil
               Thread.main.raise SystemExit
             elsif /crawler/i.match(status) and mbytes > MEMORY_LIMIT_CRAWLER
-              puts "#{Time.now}: Footprint of #{mbytes}MB exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
+              puts info += "exceeds #{MEMORY_LIMIT_CRAWLER}MB"
+              SBSM.error(info)
               @@size_logger = nil
               Thread.main.raise SystemExit
             end
             lastsessions = nr_sessions
             nr_sessions = SBSM::SessionStore.sessions.size
             if lastsessions> max_sessions
-              puts "With #{nr_sessions} sessions we have more than #{max_sessions} sessions. Exiting"
+              puts info += "more than #{max_sessions} sessions"
+              SBSM.error(info)
               @@size_logger = nil
               exit
             end
