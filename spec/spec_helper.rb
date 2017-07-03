@@ -108,17 +108,25 @@ def setup_browser
   end
 end
 
+def login_link
+  @browser.link(:name =>'login_form')
+end
+
 def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
+  @saved_user ||= 'unbekannt'
   setup_browser
   @browser.goto OddbUrl
   sleep 0.5
-  sleep 0.5 unless @browser.link(:name =>'login_form').exists?
-  return true unless  @browser.link(:text=>'Anmeldung').exists?
-  if @browser.link(:text=>'Anmeldung').visible?
-    @browser.link(:text=>'Anmeldung').click
-    @browser.text_field(:name, 'email').set(user)
-    @browser.text_field(:name, 'pass').set(password)
+  sleep 0.5 unless login_link.exists?
+  if @saved_user.eql?(user) &&
+      login_link.exists? &&
+      !login_link.visible?
+    return true
   end
+  logout unless login_link.exist? && login_link.visible?
+  login_link.click
+  @browser.text_field(:name, 'email').set(user)
+  @browser.text_field(:name, 'pass').set(password)
   # puts "Login with #{@browser.text_field(:name, 'email').value} and #{@browser.text_field(:name, 'pass').value}"
   if remember_me
     @browser.checkbox(:name, "remember_me").set
@@ -127,7 +135,7 @@ def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
   end
   @browser.button(:name,"login").click
   sleep 1 unless @browser.button(:name,"logout").exists?
-  if  @browser.link(:name,"login").exists?
+  if login_link.exists?
     @browser.goto(OddbUrl)
     return false
   else
