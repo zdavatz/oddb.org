@@ -50,6 +50,12 @@ class PaypalUser
 
   def paypal_buy(browser, complete = CompleteCheckout)
     sleep(1) # must loose some time
+    # the following lines were collected using firefox TestSide Recorder on 2017.07.04 but do not work
+    browser.checkbox(:id, "keepMeLoggedIn").set
+    browser.text_field(:id, "password").set("12345678")
+    browser.text_field(:id, "email").set("customer-1@ywesee.com")
+    browser.button(:value,"Einloggen").click
+
     login_button = browser.button(:name => /login_button/i)
     if login_button and login_button.exists?
       login_button.click

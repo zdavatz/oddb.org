@@ -11,7 +11,7 @@ describe "ch.oddb.org" do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
   end
-  
+
   before :each do
     @browser.goto OddbUrl
     login
@@ -113,7 +113,7 @@ describe "ch.oddb.org" do
     td = @browser.td(:class =>/^list/, :text => /^Sevikar/)
     expect(td.exist?).to eq true
     expect(td.links.size).to eq 1
-    expect(@browser.element(:id => 'ikscat_1').text).to eq 'B / SL'
+    expect(@browser.element(:id => 'ikscat_1').text).to eq 'B / SL / SO'
     expect(@browser.link(:text => 'L').exists?).to eq true
     expect(@browser.link(:text => 'L').href).to match /limitation_text\/reg/
     expect(@browser.link(:text => 'FI').exists?).to eq true
@@ -199,7 +199,7 @@ describe "ch.oddb.org" do
     @browser.link(:text => /erweitert/).click; small_delay
     expect(@browser.url).to match /#{Flavor}\/fachinfo_search/
   end
-  
+
   it "should find inderal" do
     @browser.text_field(:name, "search_query").set("inderal")
     @browser.button(:name, "search").click; sleep(1)
@@ -212,7 +212,7 @@ describe "ch.oddb.org" do
     names = [ 'Aspirin', 'inderal', 'Sintrom', 'Incivo', 'Certican', 'Glucose']
     res = false
     saved = @idx
-    names.each { 
+    names.each {
       |name|
         waitForOddbToBeReady(@browser, OddbUrl)
         @browser.text_field(:name, "search_query").set(name)
@@ -351,7 +351,8 @@ describe "ch.oddb.org" do
     expect(text).to match /Vielen Dank. Sie erhalten in Kürze ein E-Mail mit weiteren Anweisungen./
   end
 
-  it "should download the results of a search" do
+  it "should download the results of a search after paying with PayPal" do
+    skip("Paypal login page is no longer usable with Watir")
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text_field(:name, "search_query").set(test_medi)
@@ -401,13 +402,13 @@ describe "ch.oddb.org" do
     expect(tageskosten).to match 'Publikumspreis 645.10 CHF'
     expect(tageskosten).to match '6.45 CHF / Tag'
     expect(tageskosten).to match 'Stärke 150 mg Packungsgrösse 100 Tablette'
-    expect(tageskosten).to match 'Berechnung xxx'
+    expect(tageskosten).to match /Berechnung \d+\.\d+.+= \d+\.\d+.CHF \/ Tag/
   end
 
   ['Inderal',
    'Augmentin'
    ].each do |medi|
-    it "should have a working instant search for #{medi} and takeskosten" do
+    it "should have a working instant search for #{medi} and going back" do
       @browser.link(:text=>'Instant').click if @browser.link(:text=>'Instant').exists?
       expect(@browser.text).to match /Art der Suche: Plus/i
       0.upto(10).each{ |idx|

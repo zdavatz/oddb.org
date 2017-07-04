@@ -84,6 +84,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to checkout oddb.csv via paypal" do
+    skip("Paypal login page is no longer usable with Watir")
     waitForOddbToBeReady(@browser, OddbUrl)
 		logout
 		@browser.link(:name, "user").click; small_delay
@@ -111,6 +112,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be checkout via paypal a poweruser" do
+    skip("Paypal login page is no longer usable with Watir")
     select_poweruser(PaypalUser::OneDay)
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     @browser.button(:name, "proceed_poweruser").click; small_delay
@@ -138,6 +140,7 @@ describe "ch.oddb.org" do
   end
 
   it "should return a correct link to a CSV file if the payment is okay" do
+    skip("Paypal login page is no longer usable with Watir")
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     choose_medi_and_csv_display(nil)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
@@ -161,6 +164,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not download a CSV file if the payment was not accepted" do
+    skip("Paypal login page is no longer usable with Watir")
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     choose_medi_and_csv_display(@customer_2)
     expect(@customer_2.init_paypal_checkout(@browser)).to eql true
@@ -175,6 +179,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to cancel a paypal before login" do
+    skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
@@ -186,6 +191,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to cancel a paypal after login but before paying" do
+    skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
