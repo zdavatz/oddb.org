@@ -29,6 +29,10 @@ when 'crawler'
   server_uri = ODDB::SERVER_URI_FOR_CRAWLER
   process = :crawler
   $0 = "Oddb (OddbApp:Crawler)"
+else
+  server_uri = nil
+  process = APPNAME.to_sym
+  $0 = "Oddb (OddbApp:#{APPNAME.capitalize})"
 end if defined?(APPNAME)
 process ||= :user
 if (m = /p\s(\d+)/.match(ENV['SUDO_COMMAND']))

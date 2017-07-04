@@ -2015,7 +2015,8 @@ module ODDB
         status = case @process
                  when :google_crawler ; 'status_google_crawler'
                  when :crawler        ; 'status_crawler'
-                 else                 ; 'status'
+                 when :user           ; 'status'
+                 else                 ; "status_#{@process}"
                  end
         loop {
           begin
