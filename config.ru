@@ -19,7 +19,7 @@ require 'util/oddbapp'
 require 'util/rack_interface'
 require 'etc/db_connection'
 
-server_uri = nil
+server_uri = ODDB::SERVER_URI
 case APPNAME
 when /google(-|_)crawler/i
   server_uri = ODDB::SERVER_URI_FOR_GOOGLE_CRAWLER
@@ -67,7 +67,7 @@ SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 
 $stdout.sync = true
 VERSION = `git rev-parse HEAD`
-SBSM.logger.info( "process #{process} port #{port} on #{server_uri} sbsm #{SBSM::VERSION} and oddb.org #{VERSION}")
+SBSM.logger.info("process #{process} port #{port} on #{server_uri} sbsm #{SBSM::VERSION} and oddb.org #{VERSION}")
 
 
 my_app = ODDB::Util::RackInterface.new(app: ODDB::App.new(server_uri: server_uri, process: process))
