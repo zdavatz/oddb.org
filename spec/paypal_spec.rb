@@ -24,9 +24,9 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    @customer_1 = PaypalUser.new('customer-1@ywesee.com', '12345678', 'Müller', 'Max')
+    @customer_1 = PaypalUser.new('customer-1@ywesee.com', '12345678', 'Müller', 'Cécile') # Use UTF-8 to check encoding
     @customer_1.ywesee_user = "#{@act_id}@ywesee.com"
-    @customer_2 = PaypalUser.new('poor_soul@ywesee.com', '87654321', 'Wesen', 'Armes')
+    @customer_2 = PaypalUser.new('poor_soul@ywesee.com', '87654321', 'Stürmer', 'Léopold')
   end
 
   after :each do
@@ -93,10 +93,10 @@ describe "ch.oddb.org" do
 		@browser.link(:name, "directlink_oddb_csv").click; small_delay # 500
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.select_list(:name, "business_area").select("Medi-Information")
-		@browser.text_field(:name, "address").set 'Adresse'
-		@browser.text_field(:name, "plz").set 'plz'
-		@browser.text_field(:name, "city").set 'city'
-		@browser.text_field(:name, "phone").set 'phone'
+		@browser.text_field(:name, "address").set 'Rue César' # Use UTF-8 to check encoding
+		@browser.text_field(:name, "plz").set '8077'
+		@browser.text_field(:name, "city").set 'Zürich'
+		@browser.text_field(:name, "phone").set '055 12345678'
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     @browser.button(:name => /checkout/).click; small_delay
     expect(@customer_1.paypal_buy(@browser)).to eql true

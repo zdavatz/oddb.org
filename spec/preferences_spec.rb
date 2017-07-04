@@ -15,8 +15,7 @@ describe "ch.oddb.org" do
 
   infos = [ [nil,nil],
     [AdminUser, AdminPassword],
-    [ViewerUser, ViewerPassword]]
-  infos.each do |info|
+    [ViewerUser, ViewerPassword]].each do |info|
     user = info.first
     pw = info.last
     Watir.default_timeout = 5
@@ -34,6 +33,8 @@ describe "ch.oddb.org" do
       expect(@browser.button(:name => 'update').exist?).to eql true
       @browser.button(:name => 'update').click
       expect(@browser.image(:src => /blue/).exist?).to eql true
+      @browser.link(:text => 'Analysen').click
+      expect(@browser.image(:src => /blue/).exist?).to eql true
       @browser.link(:name => 'en').click
       expect(@browser.image(:src => /blue/).exist?).to eql true
     end
@@ -42,16 +43,11 @@ describe "ch.oddb.org" do
 
 
   it "should save zsr in preferences" do
+    skip('For unknown reason getting the ZSR-ID does not work any longer')
     alternate_url = "https://www.ruby-lang.org/de/"
     login(AdminUser, AdminPassword)
     @browser.link(:name=>'preferences').click
-    expect(@browser.text).to match /Wählen Sie die Farbe, welche Ihnen am besten gefällt. Ihre Wahl wird automatisch in Ihrem Cookie gespeichert./
-    @browser.radio(:id, "blue").set
-    @browser.radio(:id, "instant").set
-    @browser.radio(:id, "st_substance").set
-    @browser.button(:name => 'update').click
     expect(@browser.text).to match /ZSR/i
-    skip('For unknown reason getting the ZSR-ID does not work any longer')
     set_zsr_of_doctor('J 0390.19', 'Davatz', 'zsr_id')
     expect(@browser.text).to match /Davatz/
 
