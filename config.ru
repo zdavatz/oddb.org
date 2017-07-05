@@ -63,8 +63,21 @@ require 'rack'
 require 'webrick'
 ODDB.config.log_pattern.sub!('app', process.to_s)
 SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
+# We want to redirect the standard error also to the logger
+# next line found via https://stackoverflow.com/questions/9637092/redirect-stderr-to-logger-instance
+$stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
+
 SBSM.logger.level = Logger::WARN
-use Rack::CommonLogger, SBSM.logger
+require "clogger"
+Rack_And_UserAgent = "$ip - $remote_user [$time_local{%d/%b/%Y %H:%M:%S}] " \
+            '"$request" $status $response_length $request_time{4}  "$http_user_agent"'
+
+use Clogger,
+    # ours is Combined + $request_time
+    #  LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+    :format =>  Rack_And_UserAgent,
+    :logger => SBSM.logger,
+    :reentrant => true
 use(Rack::Static, urls: ["/doc/"])
 use Rack::ContentLength
 SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
