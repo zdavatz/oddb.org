@@ -209,12 +209,13 @@ describe "ch.oddb.org" do
 
   it "should trigger the limitation after maximal 5 queries" do
     logout
-    names = [ 'Aspirin', 'inderal', 'Sintrom', 'Incivo', 'Certican', 'Glucose']
+    names = [ 'ipramol', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Marcoumar', 'Augmentin']
     res = false
     saved = @idx
     names.each {
       |name|
         waitForOddbToBeReady(@browser, OddbUrl)
+        @browser.select_list(:name, "search_type").select("Markenname")
         @browser.text_field(:name, "search_query").set(name)
         @browser.button(:name, "search").click; small_delay
         createScreenshot(@browser, '_'+@idx.to_s)
@@ -224,7 +225,7 @@ describe "ch.oddb.org" do
         end
         @idx += 1
     }
-    expect(@idx -saved).to be <= 6
+    expect(res).to eql true
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the english language versions" do

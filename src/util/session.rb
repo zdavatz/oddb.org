@@ -97,10 +97,9 @@ module ODDB
 		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
+      # puts (msg = "limit_queries #{remote_ip} @state.limited? #{@state.limited? } has #{requests.size} entries #{request_path}")
 			if(@state.limited?)
-				requests.delete_if { |other|
-					(@process_start - other) >= QUERY_LIMIT_AGE
-				}
+				requests.delete_if { |other| (@process_start - other) >= QUERY_LIMIT_AGE }
 				requests.push(@process_start)
 				if(requests.size > QUERY_LIMIT)
 					@desired_state = @state
@@ -149,28 +148,20 @@ module ODDB
       super
     end
 
-    # TODO: handle limit_queries
-    def process(request)
-      require 'pry'; binding.pry
-            @flavor = ODDB::CssTemplate::FLAVORS.keys.find do |key| /#{key}\./i.match(server_name) end
-      puts "process @flavor set to #{@flavor}"
-
-      @request_path = request.unparsed_uri
+    def process_late
       @process_start = Time.now
-      super
       if(!is_crawler? &&
          !is_mobile_app? &&
          self.lookandfeel.enabled?(:query_limit))
         limit_queries
       end
-      '' ## return empty string across the drb-border
-    end if false
+    end
 
     def is_mobile_app?
       config = ODDB.config
       false if config.app_user_agent.empty?
       app_pattern = /#{config.app_user_agent}/
-      !!app_pattern.match(@request.user_agent) && flavor == 'mobile'
+      !!app_pattern.match(@rack_request.user_agent) && flavor == 'mobile'
     end
 		def add_to_interaction_basket(object)
 			@interaction_basket = @interaction_basket.push(object).uniq
