@@ -1,6 +1,9 @@
 User-agent: Mediapartners-Google*
 Disallow: /
 User-agent: *
+Disallow: /de/mobile
+Disallow: /fr/mobile
+Disallow: /en/mobile
 Disallow: /de/oekk
 Disallow: /fr/oekk
 Disallow: /en/oekk
