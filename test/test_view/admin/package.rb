@@ -14,6 +14,7 @@ require 'htmlgrid/span'
 require 'htmlgrid/labeltext'
 require 'view/additional_information'
 require 'view/admin/package'
+require 'stub/cgi'
 
 class TestCompositionSelect <Minitest::Test
   def setup
@@ -24,7 +25,7 @@ class TestCompositionSelect <Minitest::Test
   def test_selection
     composition  = flexmock('composition')
     registration = flexmock('registration', :compositions => [composition])
-    flexmock(@model,   
+    flexmock(@model,
              :composition   => composition,
              :registration  => registration
             )
@@ -77,13 +78,20 @@ end
 
 class TestPackageForm <Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel', 
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
+    @lookandfeel = flexmock('lookandfeel',
                             :lookup       => 'lookup',
+                            :enabled? => false,
+                            :result_list_components => @result_list_components,
+                            :format_date => 'format_date',
                             :attributes   => {},
                             :format_price => 'format_price',
                             :_event_url   => '_event_url'
                            )
-    @session = flexmock('session', 
+    @session = flexmock('session',
+                        :cgi         => CGI.new,
                         :lookandfeel => @lookandfeel,
                         :error       => 'error',
                         :warning?    => nil,
@@ -95,7 +103,21 @@ class TestPackageForm <Minitest::Test
                         :ikskey => 'ikskey'
                       )
     company = flexmock('company', :invoiceable? => 'invoiceable?')
-    @model   = flexmock('model', 
+    patent     = flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31))
+    @model    = flexmock('model',
+                         :ikscat     => 'ikscat',
+                         :lppv      => 'lppv',
+                         :index_therapeuticus => 'index_therapeuticus',
+                         :production_science => 'production_science',
+                         :registration_date => 'registration_date',
+                         :sequence_date => 'sequence_date',
+                         :revision_date => 'revision_date',
+                         :expiration_date => 'expiration_date',
+                         :market_date => 'market_date',
+                         :preview? => 'preview',
+                         :patent => patent,
+                         :result_list_components => @result_list_components,
+                         :ith_swissmedic => 'ith_swissmedic',
                         :out_of_trade => 'out_of_trade',
                         :generic_group_factor => 1,
                         :sl_entry => sl_entry,
@@ -127,14 +149,14 @@ end
 
 class TestPackageComposite <Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel', 
+    @lookandfeel = flexmock('lookandfeel',
                             :disabled?  => nil,
                             :enabled?   => nil,
                             :attributes => {},
                             :lookup     => 'lookup'
                            )
     @app     = flexmock('app')
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :app         => @app,
                         :lookandfeel => @lookandfeel,
                         :error       => 'error'
@@ -160,21 +182,28 @@ end
 
 class TestRootPackageComposite <Minitest::Test
   def setup
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
     @lookandfeel = flexmock('lookandfeel',
                             :attributes   => {},
                             :lookup       => 'lookup',
                             :format_price => 'format_price',
+                            :format_date => 'format_date',
+                            :enabled? => false,
+                            :result_list_components => @result_list_components,
                             :event_url    => 'event_url',
                             :_event_url   => '_event_url',
                             :base_url     => 'base_url'
                            )
     @app     = flexmock('app')
     state    = flexmock('state')
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :app         => @app,
                         :lookandfeel => @lookandfeel,
                         :error       => 'error',
                         :warning?    => nil,
+                        :cgi         => CGI.new,
                         :error?      => nil,
                         :state       => state
                        )
@@ -184,7 +213,7 @@ class TestRootPackageComposite <Minitest::Test
                         :generic_group_factor => 2.5
                       )
     sl_entry = flexmock('sl_entry', :pointer => 'pointer')
-    part     = flexmock('part', 
+    part     = flexmock('part',
                         :multi   => 'multi',
                         :count   => 'count',
                         :measure => 'measure',
@@ -192,7 +221,15 @@ class TestRootPackageComposite <Minitest::Test
                        )
     company = flexmock('company', :invoiceable? => 'invoiceable?')
     @model   = flexmock('model',
+                        :production_science => 'production_science',
                         :parent       => parent,
+                         :registration_date => 'registration_date',
+                         :sequence_date => 'sequence_date',
+                         :revision_date => 'revision_date',
+                         :expiration_date => 'expiration_date',
+                         :market_date => 'market_date',
+                        :preview? => false,
+                        :patent => flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31)),
                         :size         => 'size',
                         :out_of_trade => 'out_of_trade',
                         :sl_entry     => sl_entry,
@@ -201,6 +238,8 @@ class TestRootPackageComposite <Minitest::Test
                         :generic_group_factor => 1,
                         :generic_group_comparables => [package],
                         :swissmedic_source => { 'swissmedic_source' => 'x'},
+                        :index_therapeuticus => 'index_therapeuticus',
+                        :ith_swissmedic => 'ith_swissmedic',
                         :iksnr        => 'iksnr',
                         :seqnr        => 'seqnr',
                         :ikscd        => 'ikscd',
@@ -227,7 +266,7 @@ end
 
 class TestDeductiblePackageComposite <Minitest::Test
   def test_source
-    @lookandfeel = flexmock('lookandfeel', 
+    @lookandfeel = flexmock('lookandfeel',
                             :attributes => {},
                             :disabled?  => nil,
                             :enabled?   => nil,

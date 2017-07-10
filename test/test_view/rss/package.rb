@@ -2,6 +2,7 @@
 # encoding: utf-8
 # ODDB::View::Rss::TestPackage -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 
@@ -14,6 +15,7 @@ require 'model/index_therapeuticus'
 require 'model/package'
 require 'sbsm/validator'
 require 'state/drugs/compare'
+require 'stub/cgi'
 
 module ODDB
   module View
@@ -22,7 +24,12 @@ module ODDB
 class TestPackage <Minitest::Test
   def setup
     @app       = flexmock('app')
-    @lnf       = flexmock('lookandfeel', 
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
+    @lnf       = flexmock('lookandfeel',
+                          :format_date => true,
+                          :result_list_components => @result_list_components,
                           :lookup     => 'lookup',
                           :_event_url => '_event_url',
                           :resource   => 'resource',
@@ -32,7 +39,8 @@ class TestPackage <Minitest::Test
                           :attributes => {},
                           :format_price => 'format_price'
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
+                          :cgi => CGI.new,
                           :app => @app,
                           :lookandfeel => @lnf,
                           :language    => 'language',
@@ -41,18 +49,18 @@ class TestPackage <Minitest::Test
                           :currency    => 'currency',
                           :persistent_user_input => 'persistent_user_input'
                          )
-    price_public = flexmock('price_public', 
+    price_public = flexmock('price_public',
                             :valid_from => Time.utc(2011,2,3),
                             :to_f => 1.0,
                             :to_i => 1,
                             :to_s => 'price_public'
                            )
-    flexmock(price_public, 
+    flexmock(price_public,
              :- => price_public,
              :/ => price_public,
              :* => price_public
             )
-    atc_class  = flexmock('atc_class', 
+    atc_class  = flexmock('atc_class',
                           :code => 'code',
                           :has_ddd?    => true,
                           :description => 'description',
@@ -61,7 +69,15 @@ class TestPackage <Minitest::Test
                          )
     flexmock(@app, :atc_class => atc_class)
     limitation_text = flexmock('limitation_text', :language => 'language')
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
+                          :ikscat => 'ikscat',
+            :lppv => 'lppv',
+            :registration_date => Date.new(2000,1,1),
+            :sequence_date => Date.new(2000,1,1),
+            :revision_date => Date.new(2000,1,1),
+            :expiration_date => Date.new(2099,1,1),
+            :preview? => false,
+                        :patent => flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31)),
                           :price_public => price_public,
                           :name => 'name',
                           :size => 'size',
