@@ -208,7 +208,7 @@ class PackageInnerComposite < HtmlGrid::Composite
     link.value = model.name
     link.label = true
     args = {
-      :zone => :drugs, 
+      :zone => :drugs,
       :search_query => model.name_base.gsub('/', '%2F'),
       :search_type => :st_oddb,
     }
@@ -266,15 +266,14 @@ class PackageComposite < HtmlGrid::Composite
       css_map.store [0,8], 'subheading'
       css_map.store [0,9], 'list'
     end
-    y = components.length + 1
-    if @lookandfeel.enabled?(:twitter_share)
-      components.store [0,y,0], :twitter_share
-      css_map.store [0,y], 'list'
+    y = components.length
+    if @lookandfeel.enabled?(:facebook_share, true) && seq
+      components.store [0,y,0], :facebook
+      css_map.store [0,y,0], 'list'
     end
-    y = components.length + 1
-    if @lookandfeel.enabled?(:facebook_share)
-      components.store [0,y,1], :facebook_share
-      css_map.store [0,y], 'list spaced'
+    if @lookandfeel.enabled?(:twitter_share)
+      components.store [0,y,1], :twitter_share
+      css_map.store [0,y,1], 'list'
     end
     super
   end
@@ -298,6 +297,11 @@ class PackageComposite < HtmlGrid::Composite
     val = HtmlGrid::Value.new(:source, model, @session, self)
     val.value = package_source(model) if model
     val
+  end
+  def to_html(context)
+    # load javascript-sdk of fb in body
+    html = super
+    @lookandfeel.enabled?(:facebook_share, true) ? html = facebook_sdk + html : html
   end
 end
 class Package < PrivateTemplate

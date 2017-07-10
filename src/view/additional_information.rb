@@ -8,7 +8,8 @@ require 'model/analysis/group'
 require 'view/drugs/atcchooser'
 require 'plugin/comarketing'
 require 'view/tooltip'
-
+require 'view/ajax/swissmedic_cat'
+require 'view/facebook'
 module ODDB
 	module View
     module PartSize
@@ -179,17 +180,17 @@ module ODDB
 				@deductible_count += 1
 				span = HtmlGrid::Span.new(model, @session, self)
 				deductible = model.deductible
+				span.css_id = "deductible_#{@deductible_count}"
+				span.css_class = deductible.to_s
+				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
 				if(deductible)
 					tooltip_content = @lookandfeel.lookup(:deductible_title,
 																							@lookandfeel.lookup(deductible))
 				else
 					tooltip_content = @lookandfeel.lookup(:deductible_unknown_title)
 				end
-				span.css_id = "deductible_#{@deductible_count}"
-				span.css_class = deductible.to_s
-				# span.dojo_tooltip = tooltip
-				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
-        ODDB::View::TooltipHelper.set_tooltip(span, nil, tooltip_content)
+        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
+        ODDB::View::TooltipHelper.set_java_script(span, htlm)
 				span.label = true
 				span
 			end
@@ -264,8 +265,8 @@ module ODDB
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
 				txt.css_id = "ikscat_#{@ikscat_count}"
-        ODDB::View::TooltipHelper.set_tooltip(txt, url, 'dummy content')
-				# txt.dojo_tooltip = url
+        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
+        ODDB::View::TooltipHelper.set_java_script(txt, htlm)
 				txt
 			end
       def product_overview_link(model, session=@session)
@@ -479,6 +480,18 @@ module ODDB
         link.set_attribute("title", @lookandfeel.lookup(:twitter_share))
         link.css_class = "twitter"
         link
+      end
+      def facebook(model, session=@session)
+        if model.is_a?(DRb::DRbObject)
+          # in the case of migel items
+          base = model.localized_name(session.language).to_s.force_encoding('utf-8')
+          code = model.pharmacode.to_s.force_encoding('utf-8')
+          facebook_link  = @lookandfeel._event_url(:migel_search, {:migel_pharmacode => code})
+        else
+          base = model.name_base
+          facebook_link = @lookandfeel._event_url(:show, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        end
+        [facebook_share(model, session, facebook_link), '&nbsp;']
       end
 		end
 	end
