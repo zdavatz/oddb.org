@@ -35,8 +35,8 @@ class Redirect < HtmlGrid::Component
 			<< "image_url=https://www.generika.cc/images/oddb_paypal.jpg"
 		if((user = @session.user).is_a?(YusUser))
 			add = "&email=#{user.email}&first_name=#{CGI.escape(user.name_first)}" \
-				<< "&last_name=#{CGI.escape(user.name_last)}&address1=#{CGI.escape(user.address)}" \
-				<< "&city=#{CGI.escape(user.city)}&zip=#{user.plz}" \
+				<< "&last_name=#{CGI.escape(user.name_last)}&address1=#{CGI.escape(user.address ? user.address : '')}" \
+				<< "&city=#{CGI.escape(user.city ? user.city : '')}&zip=#{user.plz}" \
 				<< "&redirect_cmd=_xclick&cmd=_ext-enter"
       url << add
 		else
