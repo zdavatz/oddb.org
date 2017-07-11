@@ -209,7 +209,8 @@ describe "ch.oddb.org" do
 
   it "should be checkout via paypal as poweruser for one day sing a new credit card and login name" do
     id = Time.now.to_i
-    new_customer = PaypalUser.new("tst-#{id}@ywesee.com", "last_#{id}", "pw_#{id}", "first_#{id}")
+    new_customer = PaypalUser.new("tst-#{id}@ywesee.com", "pw_#{id}", "last_#{id}", "first_#{id}")
+    puts "Created @ywesee_user #{new_customer.ywesee_user} with ywesee_password #{new_customer.ywesee_password}"
     select_poweruser(PaypalUser::OneDay)
     puts "email #{new_customer.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     @browser.button(:name, "proceed_poweruser").click; small_delay
