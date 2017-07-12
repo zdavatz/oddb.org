@@ -469,5 +469,26 @@ module ODDB
       assert_equal(@@today.to_s,  @session.choosen_fachinfo_diff[1].last.time.to_s)
       assert_equal(@@today.to_s,  @session.choosen_fachinfo_diff[2].time.to_s)
     end
+    def test_is_mobile
+      @session = ODDB::Session.new(app: SBSM::App.new)
+      assert_equal(false, @session.is_mobile_app?)
+    end
+    def test_is_mobile_when_useragent_rack_request_nil
+      @app = SBSM::App.new
+      ODDB.config.app_user_agent = 'mobile'
+      @session = ODDB::Session.new(app: @app)
+      assert_equal(false, @session.is_mobile_app?)
+    end
+    def test_is_mobile_when_useragent_and_rack_request
+        @app = SBSM::App.new
+        ODDB.config.app_user_agent = 'mobile'
+        saved_server_name = ODDB::Session::SERVER_NAME
+        eval("ODDB::Session::SERVER_NAME = 'mobile.oddb.org'")
+        @session = ODDB::Session.new(app: @app)
+        @session.rack_request = flexmock('rack_request', :user_agent => 'mobile')
+        assert_equal(true, @session.is_mobile_app?)
+        eval("ODDB::Session::SERVER_NAME = '#{saved_server_name}'")
+        saved_server_name = ODDB::Session::SERVER_NAME
+      end
   end
 end # ODDB

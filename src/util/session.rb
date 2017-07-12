@@ -159,9 +159,9 @@ module ODDB
 
     def is_mobile_app?
       config = ODDB.config
-      false if config.app_user_agent.empty?
+      return false if config.app_user_agent.empty?
       app_pattern = /#{config.app_user_agent}/
-      !!app_pattern.match(@rack_request.user_agent) && flavor == 'mobile'
+      !!@rack_request && app_pattern.match(@rack_request.user_agent) && flavor == 'mobile'
     end
 		def add_to_interaction_basket(object)
 			@interaction_basket = @interaction_basket.push(object).uniq

@@ -622,5 +622,4 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_yus_set_preference
     assert_equal('session', @app.yus_set_preference('name', 'key', 'value', 'domain'))
   end
-
 end
