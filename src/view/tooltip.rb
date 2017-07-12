@@ -11,6 +11,7 @@ module ODDB
     class TooltipHelper
       def self.set_java_script(element, content, href = 'none')
       return unless element.additional_javascripts
+      content =  content.force_encoding('UTF-8')
       element.additional_javascripts.push <<-EOS
 require([
     "dijit/TooltipDialog",
@@ -21,7 +22,7 @@ require([
 ], function(TooltipDialog, popup, on, dom){
     var #{element.css_id}_dialog = new TooltipDialog({
         id: '#{element.css_id}_dialog',
-        content:  '#{content}',
+        content:  "#{content.gsub('"', '\\"')}",
         onMouseLeave: function(){
           popup.close(#{element.css_id}_dialog);
         }
