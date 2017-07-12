@@ -207,6 +207,24 @@ describe "ch.oddb.org" do
     expect(@browser.text).to match /Inderal 40 mg/
   end
 
+  it "should find redirect an iphone to the mobile flavor" do
+    begin
+      iphone_ua =  "Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1"
+      new_options = @default_chrome_options.clone
+      new_options.args << "--user-agent=#{iphone_ua}"
+      iphone_browser = Watir::Browser.new  :chrome, options: new_options
+      iphone_browser.goto 'http://www.useragentstring.com/'
+      expect(iphone_browser.textarea(:id => "uas_textfeld").value).to eql iphone_ua
+      iphone_browser.goto OddbUrl
+      expect(iphone_browser.url).to match(/\/\/i\./)
+      txt = iphone_browser.text.clone
+      expect(txt).not_to match(/Fachinfo-Online/)
+      expect(txt).not_to match(/Feedback/)
+    ensure
+      iphone_browser.close if iphone_browser
+    end
+  end
+
   it "should trigger the limitation after maximal 5 queries" do
     logout
     names = [ 'ipramol', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Marcoumar', 'Augmentin']

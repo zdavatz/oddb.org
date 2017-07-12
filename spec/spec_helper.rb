@@ -70,6 +70,15 @@ SNAP_NAME = 'Lubex®'
 def setup_browser
   return if @browser
   FileUtils.makedirs(DownloadDir)
+  @default_chrome_options = Selenium::WebDriver::Chrome::Options.new
+  @default_chrome_options.add_argument('--ignore-certificate-errors')
+  @default_chrome_options.add_argument('--disable-popup-blocking')
+  @default_chrome_options.add_argument('--disable-translate')
+  prefs = {
+    prompt_for_download: false,
+    default_directory: DownloadDir
+  }
+  @default_chrome_options.add_preference(:download, prefs)
   if Browser2test[0].to_s.eql?('firefox')
     puts "Setting upd default profile for firefox"
     profile = Selenium::WebDriver::Firefox::Profile.new
@@ -88,16 +97,7 @@ def setup_browser
     @browser = Watir::Browser.new :firefox, :profile => profile
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--disable-popup-blocking')
-    options.add_argument('--disable-translate')
-    prefs = {
-      prompt_for_download: false,
-      default_directory: DownloadDir
-    }
-    options.add_preference(:download, prefs)
-    @browser = Watir::Browser.new  :chrome, options: options
+    @browser = Watir::Browser.new  :chrome, options: @default_chrome_options
     Selenium::WebDriver::Chrome::Options#add_preference
   elsif Browser2test[0].to_s.eql?('ie')
     puts "Trying unknown browser type Internet Explorer"
