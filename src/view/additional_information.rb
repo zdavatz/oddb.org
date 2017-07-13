@@ -189,7 +189,8 @@ module ODDB
 				else
 					tooltip_content = @lookandfeel.lookup(:deductible_unknown_title)
 				end
-        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
+        cgi = session.cgi || CGI.initialize_without_offline_prompt('html4')
+        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(cgi)
         ODDB::View::TooltipHelper.set_java_script(span, htlm)
 				span.label = true
 				span

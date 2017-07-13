@@ -2160,4 +2160,5 @@ end
 begin
  	require ODDB.config.testenvironment1
 rescue LoadError
+rescue => error
 end
