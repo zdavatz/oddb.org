@@ -29,7 +29,12 @@ end
 
 class TestPackageInnerComposite <Minitest::Test
   def setup
+   @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
     @lookandfeel = flexmock('lookandfeel',
+                            :format_date => 'format_date',
+                              :result_list_components => @result_list_components,
                             :lookup     => 'lookup',
                             :enabled?   => nil,
                             :language   => 'language',
@@ -52,10 +57,22 @@ class TestPackageInnerComposite <Minitest::Test
                           :language          => 'language',
                           :currency          => 'currency',
                           :get_currency_rate => 1.0,
+                          :cgi               => CGI.new,
                           :persistent_user_input => 'persistent_user_input'
                          )
     @pointer   = flexmock('pointer')
+    patent     = flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31))
     @model     = flexmock('model',
+                          :ikscat    => 'ikscat',
+                          :lppv      => 'lppv',
+                          :preview?  => 'preview',
+                          :patent  =>   patent,
+                          :result_list_components => @result_list_components,
+                          :registration_date  => 'registration_date',
+                          :sequence_date  => 'sequence_date',
+                          :revision_date  => 'revision_date',
+                          :market_date => 'market_date',
+                          :expiration_date  => 'expiration_date',
                           :narcotic?           => nil,
                           :ddd_price           => 'ddd_price',
                           :production_science  => 'production_science',
@@ -132,7 +149,12 @@ end
 class TestODDBViewDrugsPackageComposite <Minitest::Test
   def setup
     dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
     @lookandfeel = flexmock('lookandfeel',
+                            :result_list_components => @result_list_components,
+                            :format_date => 'format_date',
                             :enabled?   => nil,
                             :language   => 'language',
                             :lookup     => 'lookup',
@@ -152,6 +174,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :lookandfeel => @lookandfeel,
                           :error       => 'error',
                           :app         => @app,
+                          :cgi         =>  ::CGI.new,
                           :language    => 'language',
                           :currency    => 'currency',
                           :state       => 'state',
@@ -199,9 +222,22 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                          )
     sequence   = flexmock('sequence',
                           :division => 'division',
+                          :iksnr => 'iksnr',
+                          :seqnr => 'seqnr',
                           :compositions => [composition],
                           )
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
+    patent     = flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31))
     @model     = flexmock('model',
+                          :ikscat    => 'ikscat',
+                          :ikscd     => 'ikscd',
+                          :lppv      => 'lppv',
+                          :preview?  => 'preview',
+                          :patent    => patent,
+                          :market_date => 'market_date',
+                          :result_list_components => @result_list_components,
                           :oid       => 'oid',
                           :name      => 'name',
                           :size      => 'size',
@@ -210,6 +246,8 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :sl_entry  => nil,
                           :atc_class => atc_class,
                           :name_base => 'name_base',
+                          :iksnr     => 'iksnr',
+                          :seqnr     => 'seqnr',
                           :ikskey    => 'ikskey',
                           :pointer   => 'pointer',
                           :parts     => [part],
@@ -248,7 +286,8 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
   def test_init__twitter_share
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(true)
-      l.should_receive(:enabled?).once.with(:facebook_share).and_return(false)
+      l.should_receive(:enabled?).once.with(:facebook_share, true).and_return(true)
+      l.should_receive(:enabled?).at_least.once.with(:ajax).and_return(false)
       l.should_receive(:resource).and_return('resource')
       l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
@@ -269,7 +308,8 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(false)
-      l.should_receive(:enabled?).once.with(:facebook_share).and_return(true)
+      l.should_receive(:enabled?).once.with(:facebook_share, true).and_return(true)
+      l.should_receive(:enabled?).at_least.once.with(:ajax).and_return(false)
       l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
@@ -288,7 +328,12 @@ end
 class TestPackage <Minitest::Test
   def setup
     dose = flexmock('dose', :qty => 'qty', :unit => 'unit')
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
     lookandfeel = flexmock('lookandfeel',
+                           :format_date => 'format_date',
+                           :result_list_components => @result_list_components,
                            :enabled?     => nil,
                            :attributes   => {},
                            :resource     => 'resource',
@@ -322,6 +367,7 @@ class TestPackage <Minitest::Test
                         )
     app       = flexmock('app', :atc_class => atc_class)
     @session  = flexmock('session',
+                         :cgi          => CGI.new,
                          :lookandfeel  => lookandfeel,
                          :user         => user,
                          :sponsor      => sponsor,
@@ -384,7 +430,21 @@ class TestPackage <Minitest::Test
                           :division => 'division',
                           :compositions => [composition],
                          )
+    @result_list_components = flexmock('result_list_components',
+                                       :has_value? => false,
+                                       )
+    patent     = flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31))
     @model    = flexmock('model',
+                         :ikscat     => 'ikscat',
+                         :lppv      => 'lppv',
+                         :registration_date => 'registration_date',
+                         :sequence_date => 'sequence_date',
+                         :revision_date => 'revision_date',
+                         :expiration_date => 'expiration_date',
+                         :market_date => 'market_date',
+                         :preview? => 'preview',
+                         :patent => patent,
+                         :result_list_components => @result_list_components,
                          :chemical_substance => nil,
                          :name       => 'name',
                          :size       => 'size',

@@ -39,6 +39,8 @@ module ODDB
     ENABLED = [
       :fachinfos,
       :feedback,
+      :facebook_fan,
+      :facebook_share,
     ]
     def compare_list_components
       {

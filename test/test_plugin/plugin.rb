@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::TestPlugin -- 21.06.2011 -- mhatakeyama@ywesee.com
-# ODDB::TestPlugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com 
+# ODDB::TestPlugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com
 
 #$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -41,8 +41,11 @@ module ODDB
       super # to clean up FlexMock
     end
     def test_http_file
-      assert_nil(@plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest'))
-      assert_equal(true, @plugin.http_file('www.google.ch', '/search?q=generika', '/tmp/oddbtest'))
+      session = flexmock('session')
+      session.should_receive(:get).and_return(false)
+      assert_nil(@plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest', session))
+      res = @plugin.http_file('www.google.ch', '/search?q=generika', '/tmp/oddbtest')
+      assert_equal(true, res)
       assert(File.exist?('/tmp/oddbtest'))
     end
     def test_log_info
@@ -57,7 +60,7 @@ module ODDB
       end
     end
     def test_resolve_link
-      model = flexmock('model', 
+      model = flexmock('model',
                        :pointer   => 'pointer',
                        :name_base => 'name_base'
                       )

@@ -6,22 +6,31 @@ GIT
       deprecated (= 2.0.1)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     activesupport (3.1.0)
       multi_json (~> 1.0)
-    addressable (2.5.0)
+    addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
-    bigdecimal (1.3.0)
+    archive-zip (0.7.0)
+      io-like (~> 0.3.0)
+    bigdecimal (1.3.2)
     blankslate (3.1.3)
-    builder (3.2.2)
+    builder (3.2.3)
     byebug (9.0.6)
-    childprocess (0.5.9)
+    childprocess (0.7.0)
       ffi (~> 1.0, >= 1.0.11)
+    chromedriver-helper (1.1.0)
+      archive-zip (~> 0.7.0)
+      nokogiri (~> 1.6)
+    chrono_logger (1.1.1)
+    clogger (2.2.0)
+      rack (>= 1.0, < 3.0)
     coderay (1.1.1)
+    color (1.8)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     data_magic (1.0)
@@ -31,25 +40,22 @@ GEM
       dbi (>= 0.4.0)
       pg
     deprecated (2.0.1)
-    diff-lcs (1.2.5)
-    diffy (3.1.0)
-    domain_name (0.5.20161129)
+    diff-lcs (1.3)
+    diffy (3.2.0)
+    docile (1.1.5)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     facets (1.8.54)
-    faker (1.7.2)
+    faker (1.7.3)
       i18n (~> 0.5)
-    ffi (1.9.14)
-    flexmock (2.3.4)
+    ffi (1.9.18)
+    flexmock (2.3.5)
     flickraw (0.9.8)
     gruff (0.5.1)
       rmagick
     gyoku (1.3.1)
       builder (>= 2.1.2)
-    hashdiff (0.3.2)
-    hoe (3.16.0)
-      rake (>= 0.8, < 13.0)
-    hoe-travis (1.3.1)
-      hoe (~> 3.0)
+    hashdiff (0.3.4)
     hpricot (0.8.6)
     htmlentities (4.3.4)
     htmlgrid (1.1.4)
@@ -60,7 +66,8 @@ GEM
       rack
       socksify
     i18n (0.6.9)
-    json (2.0.2)
+    io-like (0.3.0)
+    json (2.1.0)
     mail (2.2.7)
       activesupport (>= 2.3.6)
       mime-types
@@ -76,19 +83,20 @@ GEM
       webrobots (>= 0.0.9, < 0.2)
     method_source (0.8.2)
     mime-types (2.99.3)
-    mini_portile2 (2.1.0)
-    minitar (0.5.4)
-    minitest (5.10.1)
+    mimemagic (0.3.2)
+    mini_portile2 (2.2.0)
+    minitar (0.6.1)
+    minitest (5.10.2)
     minitest-should_syntax (1.0.2)
       minitest
     money (3.7.1)
       i18n (~> 0.4)
     multi_json (1.0.4)
     needle (1.3.0)
-    net-http-digest_auth (1.4)
+    net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
-    nokogiri (1.7.0.1)
-      mini_portile2 (~> 2.1.0)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
     nori (2.6.0)
     ntlm-http (0.1.1)
     odba (1.1.2)
@@ -118,7 +126,9 @@ GEM
       pry (~> 0.10)
     public_suffix (2.0.5)
     racc (1.4.14)
-    rack (2.0.1)
+    rack (2.0.3)
+    rack-test (0.6.3)
+      rack (>= 1.0)
     rake (12.0.0)
     rake-compiler (0.9.9)
       rake
@@ -127,26 +137,27 @@ GEM
     rmagick (2.13.4)
     rmail (1.0.0)
     rpdf2txt (0.8.4)
-    rspec (3.5.0)
-      rspec-core (~> 3.5.0)
-      rspec-expectations (~> 3.5.0)
-      rspec-mocks (~> 3.5.0)
-    rspec-core (3.5.4)
-      rspec-support (~> 3.5.0)
-    rspec-expectations (3.5.0)
+    rrba (1.0.0)
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.5.0)
-    rspec-mocks (3.5.0)
+      rspec-support (~> 3.6.0)
+    rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.5.0)
-    rspec-support (3.5.0)
-    ruby-ole (1.2.12)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
+    ruby-ole (1.2.12.1)
     ruby-units (2.1.0)
     rubyXL (3.3.1)
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
     rubyntlm (0.5.1)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     savon (2.11.1)
       akami (~> 1.2)
@@ -157,54 +168,70 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     sax-machine (1.3.2)
-    sbsm (1.3.0)
+    sbsm (1.5.6)
+      chrono_logger
       hpricot
       mail
+      mimemagic
       rack
-    selenium-webdriver (3.0.5)
+    selenium-webdriver (3.4.3)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
-      websocket (~> 1.0)
-    simplecov (0.7.1)
-      multi_json (~> 1.0)
-      simplecov-html (~> 0.7.1)
-    simplecov-html (0.7.1)
+    simplecov (0.14.1)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.1)
     slop (3.6.0)
-    socksify (1.7.0)
+    socksify (1.7.1)
     spreadsheet (0.9.7)
       ruby-ole (>= 1.0)
     swissmedic-diff (0.2.2)
-    syck (1.2.0)
+    syck (1.3.0)
+    transaction-simple (1.4.0.2)
     travis-lint (2.0.0)
       json
     treetop (1.6.8)
       polyglot (~> 0.3)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.2)
+    unf_ext (0.0.7.4)
     vcr (3.0.3)
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
-    watir (6.1.0)
+    watir (6.2.1)
       selenium-webdriver (~> 3.0)
     watir-webdriver (0.9.9)
       selenium-webdriver (>= 2.46.2)
-    webmock (2.3.2)
+    webmock (3.0.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
     webrobots (0.1.1)
-    websocket (1.2.3)
     ydbd-pg (0.5.3)
       pg
       ydbi (>= 0.5.0)
     ydbi (0.5.3)
       deprecated (= 2.0.1)
-    ydim (1.0.0)
+    ydim (1.0.5)
+      deprecated (= 2.0.1)
+      hpricot
+      mail
+      needle
+      odba (>= 1.1.2)
+      rclconf
+      rrba
+      syck
+      ydbd-pg (>= 0.5.1)
+      ydbi (>= 0.5.1)
+      ypdf-writer
     ydocx (1.2.5)
     yml_reader (0.7)
-    yus (1.0.0)
+    ypdf-writer (1.3.3)
+      color (>= 1.4.0)
+      transaction-simple (~> 1.3)
+    yus (1.0.2)
 
 PLATFORMS
   ruby
@@ -213,6 +240,8 @@ DEPENDENCIES
   activesupport (= 3.1.0)
   bigdecimal
   builder
+  chromedriver-helper
+  clogger
   dbd-pg (= 0.3.9)
   dbi!
   deprecated (= 2.0.1)
@@ -222,8 +251,6 @@ DEPENDENCIES
   flexmock
   flickraw (= 0.9.8)
   gruff (= 0.5.1)
-  hoe
-  hoe-travis
   hpricot (= 0.8.6)
   htmlentities
   htmlgrid (>= 1.1.4)
@@ -250,6 +277,7 @@ DEPENDENCIES
   pg (= 0.12.0)
   pry-byebug
   racc
+  rack-test
   rake
   rclconf (= 1.0.0)
   rdoc (= 3.9.4)
@@ -264,7 +292,7 @@ DEPENDENCIES
   rubyzip (>= 1.1.6)
   savon (~> 2.11.1)
   sax-machine
-  sbsm (= 1.3.0)
+  sbsm (>= 1.5.6)
   simplecov
   spreadsheet (= 0.9.7)
   swissmedic-diff (= 0.2.2)
@@ -275,9 +303,9 @@ DEPENDENCIES
   watir-webdriver
   webmock
   webrobots (= 0.1.1)
-  ydim (= 1.0.0)
+  ydim
   ydocx (= 1.2.5)
-  yus (= 1.0.0)
+  yus
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

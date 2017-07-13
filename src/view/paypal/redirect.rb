@@ -5,14 +5,15 @@
 require 'htmlgrid/component'
 require 'util/oddbconfig'
 require 'config'
+require 'cgi'
 
 module ODDB
 	module View
 		module PayPal
 class Redirect < HtmlGrid::Component
-	def http_headers 
+	def http_headers
 		invoice = @model.oid
-		names = @model.items.values.collect { |item| 
+		names = @model.items.values.collect { |item|
       txt = item.text
       case txt
       when 'unlimited access'
@@ -21,7 +22,7 @@ class Redirect < HtmlGrid::Component
         txt
       end
     }.join(' ,')
-		ret_url = @lookandfeel._event_url(:paypal_return, 
+		ret_url = @lookandfeel._event_url(:paypal_return,
 			{:invoice => invoice})
 		url = 'https://' << PAYPAL_SERVER << '/cgi-bin/webscr?' \
 			<< "business=#{PAYPAL_RECEIVER}&" \
@@ -33,15 +34,16 @@ class Redirect < HtmlGrid::Component
 			<< "cancel_return=#{@lookandfeel.base_url}&" \
 			<< "image_url=https://www.generika.cc/images/oddb_paypal.jpg"
 		if((user = @session.user).is_a?(YusUser))
-			url << "&email=#{user.email}&first_name=#{user.name_first}" \
-				<< "&last_name=#{user.name_last}&address1=#{user.address}" \
-				<< "&city=#{user.city}&zip=#{user.plz}" \
+			add = "&email=#{user.email}&first_name=#{CGI.escape(user.name_first)}" \
+				<< "&last_name=#{CGI.escape(user.name_last)}&address1=#{CGI.escape(user.address ? user.address : '')}" \
+				<< "&city=#{CGI.escape(user.city ? user.city : '')}&zip=#{user.plz}" \
 				<< "&redirect_cmd=_xclick&cmd=_ext-enter"
+      url << add
 		else
 			url << '&cmd=_xclick'
 		end
 		{
-			'Location'	=>	url,
+			'Location'	=>	url.encode('ASCII'),
 		}
 	end
   def to_html(context)

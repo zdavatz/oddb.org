@@ -95,6 +95,7 @@ require 'state/user/init'
 require 'state/user/sponsorlink'
 require 'util/session'
 require 'util/umlautsort'
+require 'plugin/rss'
 require 'sbsm/state'
 
 
@@ -799,7 +800,7 @@ module ODDB
         if channel
           key = channel.gsub('.', '_').to_sym
           if(@session.lookandfeel.enabled?(key))
-            if @session.flavor != ODDB::Session::DEFAULT_FLAVOR
+            if ODDB::RssPlugin::FLAVORED_RSS.index(@session.flavor)
               channel = File.basename(channel, '.rss') + '-' + \
                         (@session.flavor ? @session.flavor : '') + '.rss'
             end

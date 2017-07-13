@@ -30,7 +30,7 @@ require 'util/today'
 require 'models'
 require 'commands'
 require 'paypal'
-require 'sbsm/drbserver'
+require 'sbsm/app'
 require 'sbsm/index'
 require 'util/config'
 require 'fileutils'
@@ -104,6 +104,9 @@ class OddbPrevalence
 		@sponsors ||= {}
     @substances ||= {}
 		#recount()
+    sorted_minifis
+    sorted_feedbacks
+    sorted_fachinfos
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
@@ -1333,14 +1336,14 @@ class OddbPrevalence
   def sorted_fachinfos
     @sorted_fachinfos ||= @fachinfos.values.select { |fi|
       fi.revision }.sort_by { |fi| fi.revision }.reverse
-  end
+    end
   def sorted_feedbacks
     @sorted_feedbacks ||= @feedbacks.values.sort_by { |fb| fb.time }.reverse
   end
   def sorted_minifis
     @sorted_minifis ||= @minifis.values.sort_by { |minifi|
-      [ -minifi.publication_date.year,
-        -minifi.publication_date.month, minifi.name] }
+    [ -minifi.publication_date.year,
+      -minifi.publication_date.month, minifi.name] }
   end
   def sorted_patented_registrations
     @registrations.values.select { |reg|
@@ -1434,6 +1437,8 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
+                                    $stdout.puts "#{caller[0]}: rebuild_indices #{index_definition.index_name}"
+
         doit = if(name and name.length > 0)
                  name.match(index_definition.index_name)
                elsif(block)
@@ -1518,7 +1523,7 @@ class OddbPrevalence
 end
 
 module ODDB
-	class App < SBSM::DRbServer
+	class App < SBSM::App
 		include Failsafe
 		AUTOSNAPSHOT = true
 		CLEANING_INTERVAL = 5*60
@@ -1529,47 +1534,58 @@ module ODDB
 		RUN_CLEANER = true
 		RUN_UPDATER = false
 		SESSION = Session
-		UNKNOWN_USER = UnknownUser
 		UPDATE_INTERVAL = 24*60*60
 		VALIDATOR = Validator
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
-		attr_reader :cleaner, :updater
-		def initialize opts={}
-      if opts.has_key?(:process)
-        @process = opts[:process]
-      else
-        @process = :user
-      end
-      puts "process: #{$0}"
-      @rss_mutex = Mutex.new
-			@admin_threads = ThreadGroup.new
+    @@primary_server = nil
+		attr_reader :cleaner, :updater, :system # system aka persistence
+		def initialize(process: nil, auxiliary: nil,  app: nil, server_uri: ODDB.config.server_url, unknown_user: nil)
+      @process = (process || :user)
+      @@last_start_time ||= 0
       start = Time.now
-			@system = ODBA.cache.fetch_named('oddbapp', self){
-				OddbPrevalence.new
-			}
-			puts "init system"
-			@system.init
-			@system.odba_store
-      puts "init system: #{Time.now - start}"
-			puts "setup drb-delegation"
-			super(@system)
-      return if opts[:auxiliary]
-			puts "reset"
-			reset()
-      puts "reset: #{Time.now - start}"
+      @unknown_user = unknown_user
+      @app = app
+      super()
+      puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} "
+      @rss_mutex = Mutex.new
+      @cache_mutex = Mutex.new
+      @admin_threads = ThreadGroup.new
+      @system = ODBA.cache.fetch_named('oddbapp', self){
+        OddbPrevalence.new
+      }
+      puts "init system starting after #{Time.now - start} seconds"
+      @system.init
+      @system.odba_store
+      return if auxiliary
+      reset()
       log_size
-			puts "system initialized"
+      DRb.install_id_conv ODBA::DRbIdConv.new
+      if @@primary_server && defined?(MiniTest)
+        DRb.remove_server(@@primary_server)
+        Thread.kill(DRb.thread)
+        @@primary_server = nil
+        GC.start
+      end
+
+      @@primary_server = DRb.start_service(server_uri, self)
       puts "initialized: #{Time.now - start}"
+      @@last_start_time = (Time.now - start).to_i
+    rescue => error
+      puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
 		end
+    def method_missing(m, *args, &block)
+      @cache_mutex.synchronize do
+        @system.send(m, *args, &block)
+      end
+    end
 		# prevalence-methods ################################
 		def accept_orphaned(orphan, pointer, symbol, origin=nil)
 			command = AcceptOrphan.new(orphan, pointer,symbol, origin)
 			@system.execute_command(command)
 		end
 		def clean
-			super
 			@system.clean_invoices
 		end
 		def create(pointer)
@@ -1713,9 +1729,7 @@ module ODDB
       if RUN_UPDATER and @process == :user
         @random_updater = run_random_updater
       end
-			@mutex.synchronize {
-				@sessions.clear
-			}
+      SBSM::SessionStore.clear
 		end
     def run_random_updater
       Thread.new {
@@ -1991,16 +2005,18 @@ module ODDB
       end
     end
     def log_size
-      @size_logger = Thread.new {
+      @@size_logger ||= nil
+      @@size_logger ||= Thread.new {
         time = Time.now
         bytes = 0
         threads = 0
-        sessions = 0
+        nr_sessions = 0
         format = "%s %s: sessions: %4i - threads: %4i  - memory: %4iMB %s"
         status = case @process
                  when :google_crawler ; 'status_google_crawler'
                  when :crawler        ; 'status_crawler'
-                 else                 ; 'status'
+                 when :user           ; 'status'
+                 else                 ; "status_#{@process}"
                  end
         loop {
           begin
@@ -2012,29 +2028,39 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
-            # Shutdown if more than #{max_threads} threads are created, probably because of spiders
-            if threads > max_threads
-              puts "With #{threads} threads we have more than #{max_threads} threads. Exiting"
-              exit
-            end
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-            mbytes = bytes / (2**20)
+            mbytes = (bytes / (2**20)).to_i
+
+            # Shutdown if more than #{max_threads} threads are created, probably because of spiders
+            info = "#{@process} #{threads} threads, footprint of #{mbytes}MB,  #{nr_sessions} sessions. Exiting as "
+            if threads > max_threads
+              puts info += "more than #{max_threads} threads"
+              SBSM.error(info)
+              @@size_logger = nil
+              exit
+            end
             if mbytes > MEMORY_LIMIT
-              puts "#{Time.now}: Footprint exceeds #{MEMORY_LIMIT}MB. Exiting. Exiting #{status}."
+              puts info += "exceeds #{MEMORY_LIMIT}MB"
+              SBSM.error(info)
+              @@size_logger = nil
               Thread.main.raise SystemExit
             elsif /crawler/i.match(status) and mbytes > MEMORY_LIMIT_CRAWLER
-              puts "#{Time.now}: Footprint of #{mbytes}MB exceeds #{MEMORY_LIMIT_CRAWLER}MB. Exiting #{status}."
+              puts info += "exceeds #{MEMORY_LIMIT_CRAWLER}MB"
+              SBSM.error(info)
+              @@size_logger = nil
               Thread.main.raise SystemExit
             end
-            lastsessions = sessions
-            sessions = @sessions.size
-            if sessions > max_sessions
-              puts "With #{sessions} sessions we have more than #{max_sessions} sessions. Exiting"
+            lastsessions = nr_sessions
+            nr_sessions = SBSM::SessionStore.sessions.size
+            if lastsessions> max_sessions
+              puts info += "more than #{max_sessions} sessions"
+              SBSM.error(info)
+              @@size_logger = nil
               exit
             end
             gc = ''
-            gc << 'S' if sessions < lastsessions
+            gc << 'S' if nr_sessions < lastsessions
             gc << 'T' if threads < lastthreads
             gc << 'M' if bytes < lastbytes
             path = File.expand_path('../../doc/resources/downloads/' + status,
@@ -2042,7 +2068,7 @@ module ODDB
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm,
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
-                                  sessions, threads, mbytes, gc)
+                                  nr_sessions, threads, mbytes, gc)
             File.open(path, 'w') { |fh|
               fh.puts lines
             }

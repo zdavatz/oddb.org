@@ -14,6 +14,9 @@ require 'view/rss/swissmedic'
 
 module ODDB
   class RssPlugin < Plugin
+    FLAVORED_RSS = %w[
+      just-medical
+    ]
     attr_reader :report
     def initialize(app)
       super
@@ -142,9 +145,7 @@ module ODDB
       entries
     end
     def generate_flavored_rss(name)
-      %w[
-        just-medical
-      ].each do |flavor|
+      FLAVORED_RSS.each do |flavor|
         l10n_sessions { |stub|
         orig = File.join(RSS_PATH, stub.language, name)
         file = File.basename(name, '.rss') + '-' + flavor + '.rss'

@@ -2,6 +2,7 @@
 # encoding: utf-8
 # ODDB::View::Drugs::TestResultLimit -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 
@@ -11,6 +12,7 @@ require 'htmlgrid/errormessage'
 require 'view/drugs/resultlimit'
 require 'htmlgrid/inputradio'
 require 'model/registration'
+require 'stub/cgi'
 
 
 module ODDB
@@ -19,17 +21,21 @@ module ODDB
 
 class TestResultLimitList <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
+                        :format_date => 'format_date',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
+                        :result_list_components  => flexmock('result_list_components', :has_value? => false),
+                        :has_value? => false,
                         :disabled?  => nil,
                         :enabled?   => nil,
                         :resource   => 'resource',
                         :resource_global => 'resource_global'
                        )
     @state   = flexmock('state', :package_count => 0).by_default
-    @session = flexmock('session', 
+    @session = flexmock('session',
+                        :cgi         => CGI.new,
                         :lookandfeel => @lnf,
                         :event       => 'event',
                         :allowed?    => nil,
@@ -39,14 +45,23 @@ class TestResultLimitList <Minitest::Test
                        )
     minifi   = flexmock('minifi', :pointer => 'pointer')
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part     = flexmock('part', 
+    part     = flexmock('part',
                         :multi   => 'multi',
                         :count   => 'count',
                         :measure => 'measure',
                         :commercial_form => commercial_form
                        )
     registration = flexmock('registration', :iksnr => 'iksnr')
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
+                        :patent => flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31)),
+                        :expiration_date => 'expiration_date',
+                        :sequence_date    => 'sequence_date',
+                        :registration_date => 'registration_date',
+                        :revision_date => 'revision_date',
+                        :index_therapeuticus => 'index_therapeuticus',
+                        :ith_swissmedic => 'ith_swissmedic',
+                        :production_science => 'production_science',
+                        :preview? => false,
                         :minifi => minifi,
                         :fachinfo_active? => nil,
                         :has_fachinfo?    => nil,
@@ -85,7 +100,7 @@ class TestResultLimitList <Minitest::Test
     assert_nil(@list.compose_empty_list(offset))
   end
   def test_most_precise_dose
-    flexmock(@model, 
+    flexmock(@model,
              :pretty_dose   => nil,
              :active_agents => ['active_agent'],
              :dose          => 'dose'
@@ -96,7 +111,9 @@ end
 
 class TestResultLimitComposite <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
+                        :result_list_components  => flexmock('result_list_components', :has_value? => false),
+                        :format_date => 'format_date',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
@@ -107,12 +124,13 @@ class TestResultLimitComposite <Minitest::Test
                         :resource_global => 'resource_global',
                         :format_price    => 'format_price'
                        )
-    state    = flexmock('state', 
+    state    = flexmock('state',
                         :price         => 'price',
                         :package_count => 1
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
+                        :cgi         => CGI.new,
                         :state       => state,
                         :zone        => 'zone',
                         :event       => 'event',
@@ -127,14 +145,23 @@ class TestResultLimitComposite <Minitest::Test
                        )
     minifi   = flexmock('minifi', :pointer => 'pointer')
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part     = flexmock('part', 
+    part     = flexmock('part',
                         :multi   => 'multi',
                         :count   => 'count',
                         :measure => 'measure',
                         :commercial_form => commercial_form
                        )
     registration = flexmock('registration', :iksnr => 'iksnr')
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
+                        :sequence_date    => 'sequence_date',
+                        :registration_date => 'registration_date',
+                        :revision_date => 'revision_date',
+                        :expiration_date => 'expiration_date',
+                        :index_therapeuticus => 'index_therapeuticus',
+                        :ith_swissmedic => 'ith_swissmedic',
+                        :production_science => 'production_science',
+                        :preview? => false,
+                        :patent => flexmock('patent', :certificate_number => 'certificate_number', :expiry_date => Date.new(2099,12,31)),
                         :minifi           => minifi,
                         :fachinfo_active? => nil,
                         :has_fachinfo?    => nil,

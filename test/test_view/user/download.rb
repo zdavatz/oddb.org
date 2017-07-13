@@ -19,7 +19,7 @@ module ODDB
 class TestDownload <Minitest::Test
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :user_input  =>'user_input'
                        )
@@ -27,10 +27,11 @@ class TestDownload <Minitest::Test
     @view    = ODDB::View::User::Download.new(@model, @session)
   end
   def test_init
-    assert_equal('../data/downloads/user_input', @view.init)
+    dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
+    assert_equal(dir +  '/user_input', @view.init)
   end
   def test_to_html
-    flexmock(@session, 
+    flexmock(@session,
              :remote_addr => 'remote_addr',
              :passthru    => 'passthru'
             )

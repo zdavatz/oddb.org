@@ -11,6 +11,7 @@ require 'flexmock/minitest'
 require 'view/searchbar'
 require 'htmlgrid/select'
 require 'util/session'
+require 'rack/test'
 
 module ODDB
   module View
@@ -122,10 +123,7 @@ return false;
                         :sorted_fachinfos => [],
                         :sorted_feedbacks => [],
                         :package_by_ean13 => 'package',)
-        @validator = flexmock('validator',
-                              :reset_errors => 'reset_errors',
-                              :validate     => 'validate')
-        @session = ODDB::Session.new('key', @app, @validator)
+        @session = ODDB::Session.new(app: @app)
         @model     = flexmock('model')
         @inputtext = ODDB::View::PrescriptionDrugSearchBar.new('name', @model, @session, @container)
       end

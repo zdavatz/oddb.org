@@ -31,6 +31,7 @@ JS
         EOS
       end
       def facebook_share(model, session=@session, share_url=nil)
+        # share_url ||= "http://static.ak.fbcdn.net/connect.php/js/FB.Share"
         if share_url
         <<-EOS
 <div class="fb-like" data-href="#{share_url}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-action="recommend" data-font="arial"></div>

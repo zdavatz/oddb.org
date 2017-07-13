@@ -33,8 +33,16 @@ module ODDB
 				@@requests.clear
 			end
 		end
-		def initialize(key, app, validator=nil)
-			super(key, app, validator)
+    def initialize(app:,
+                   trans_handler: nil,
+                   validator: nil,
+                   unknown_user: nil,
+                   cookie_name: nil,
+                   multi_threaded: true)
+      super
+      require 'util/csstemplate'
+      # ODDB::CssTemplate::FLAVORS.keys
+      @app = app
 			@interaction_basket = []
 			@interaction_basket_atc_codes = []
       @currency_rates = {}
@@ -64,14 +72,34 @@ module ODDB
       super || (logged_in? && @user.expired?)
 		end
 		def flavor
+      #phyto-pharma
+      # oekk is not in CssTemplate!
+      if @flavor.nil? && !/(^ch\.oddb\.org|^oddb-ci)/i.match(server_name)
+        @flavor = ODDB::CssTemplate::FLAVORS.keys.find do |key| /(www|)#{key}\./i.match(server_name) end
+        case server_name
+        when /^(www\.|)*(anthroposophika\.|anthroposophy\.|anthroposophica.)/i
+          @flavor = 'anthroposophy'
+        when /^(www\.|)(xn--|)(homeopathy|homopathika|homoeopathika)(-tfb|)\./i
+          @flavor = 'homeopathy'
+        when /(^i\.|^mobile\.)/i
+          @flavor = 'mobile'
+        when /^oekk\./i
+          @flavor = 'oekk'
+        when /^(www\.|)(phyto-pharma|phytotherapeutika)\./i
+          @flavor = 'phyto-pharma'
+        else
+          puts(msg = "No @flavor found via #{server_name}")
+          SBSM.debug(msg)
+        end unless @flavor
+        @flavor = @flavor.to_s if @flavor
+      end
 			@flavor ||= (@valid_input[:partner] || super)
 		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
+      # puts (msg = "limit_queries #{remote_ip} @state.limited? #{@state.limited? } has #{requests.size} entries #{request_path}")
 			if(@state.limited?)
-				requests.delete_if { |other| 
-					(@process_start - other) >= QUERY_LIMIT_AGE 
-				}
+				requests.delete_if { |other| (@process_start - other) >= QUERY_LIMIT_AGE }
 				requests.push(@process_start)
 				if(requests.size > QUERY_LIMIT)
 					@desired_state = @state
@@ -119,22 +147,21 @@ module ODDB
       end
       super
     end
-    def process(request)
-      @request_path = request.unparsed_uri
+
+    def process_late
       @process_start = Time.now
-      super
       if(!is_crawler? &&
          !is_mobile_app? &&
          self.lookandfeel.enabled?(:query_limit))
         limit_queries
       end
-      '' ## return empty string across the drb-border
     end
+
     def is_mobile_app?
       config = ODDB.config
-      false if config.app_user_agent.empty?
+      return false if config.app_user_agent.empty?
       app_pattern = /#{config.app_user_agent}/
-      !!app_pattern.match(@request.user_agent) && flavor == 'mobile'
+      !!@rack_request && app_pattern.match(@rack_request.user_agent) && flavor == 'mobile'
     end
 		def add_to_interaction_basket(object)
 			@interaction_basket = @interaction_basket.push(object).uniq
@@ -143,7 +170,7 @@ module ODDB
 			@interaction_basket.clear
       @interaction_basket_atc_codes.clear
 		end
-		def currency 
+		def currency
 			cookie_set_or_get(:currency) || "CHF"
 		end
     def get_currency_rate(currency)
@@ -179,7 +206,7 @@ module ODDB
       @interaction_basket.collect { |sub| sub.oid }.join(',')
     end
     def interaction_basket_link
-      lookandfeel._event_url(:interaction_basket, 
+      lookandfeel._event_url(:interaction_basket,
                              :substance_ids => interaction_basket_ids)
     end
 		def analysis_alphabetical(range)

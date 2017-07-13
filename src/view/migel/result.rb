@@ -76,9 +76,11 @@ class List < HtmlGrid::List
     super
   end
   def facebook(model=@model, session=@session)
-    code = model.migel_code.to_s.force_encoding('utf-8')
-    facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => code.gsub(/\./, '')})
-    [facebook_share(model, session, facebook_link), '&nbsp;']
+    if @lookandfeel.enabled?(:facebook_share)
+      code = model.migel_code.to_s.force_encoding('utf-8')
+      facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => code.gsub(/\./, '')})
+      [facebook_share(model, session, facebook_link), '&nbsp;']
+    end
   end
   def limitation_link(model)
     code = model.migel_code.to_s.force_encoding('utf-8')

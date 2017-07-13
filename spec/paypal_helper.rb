@@ -28,7 +28,7 @@ class PaypalUser
               }
 
   # By default I setup a valid Paypal client
-  def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = 'Müller', first_name = 'Max')
+  def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = 'Miller', first_name = 'Max')
     @ywesee_user = email
     @ywesee_password = password
     @email = email
@@ -50,6 +50,12 @@ class PaypalUser
 
   def paypal_buy(browser, complete = CompleteCheckout)
     sleep(1) # must loose some time
+    # the following lines were collected using firefox TestSide Recorder on 2017.07.04 but do not work
+    browser.checkbox(:id, "keepMeLoggedIn").set
+    browser.text_field(:id, "password").set("12345678")
+    browser.text_field(:id, "email").set("customer-1@ywesee.com")
+    browser.button(:value,"Einloggen").click
+
     login_button = browser.button(:name => /login_button/i)
     if login_button and login_button.exists?
       login_button.click
@@ -107,11 +113,14 @@ paypal_receiver:     test_paypal@ywesee.com
     oddb_config = YAML.load_file(Oddb_yml)
     return false unless oddb_config['paypal_server']
     return false unless oddb_config['paypal_receiver']
+    return false unless /sandbox/.match(oddb_config['paypal_server'])
+    return false unless /test_paypal/.match(oddb_config['paypal_receiver'])
+
     cmd = "curl -s --insecure https://api-3t.sandbox.paypal.com/nvp -d  \"USER=#{@receiver[:user]}&PWD=#{@receiver[:password]}&SIGNATURE=#{@receiver[:signature]}&METHOD=SetExpressCheckout&VERSION=98&PAYMENTREQUEST_0_AMT=10&PAYMENTREQUEST_0_CURRENCYCODE=USD&PAYMENTREQUEST_0_PAYMENTACTION=SALE&cancelUrl=http://ch.oddb.org/cancel.html&returnUrl=http://ch.oddb.org/return.hml\""
     res = `#{cmd}`
     okay = /ACK=Success/.match(res) != nil
     puts res
-    puts "Paypal connection is #{okay ? 'okay' : 'not working'}"
+    puts "Paypal connection is #{okay ? 'okay' : 'not working'}. Using #{oddb_config['paypal_server']} and #{oddb_config['paypal_receiver']} from #{Oddb_yml}"
     return okay
   end
   PaypalUser.check_setup

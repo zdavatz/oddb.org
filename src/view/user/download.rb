@@ -12,7 +12,8 @@ module ODDB
 class Download < HtmlGrid::PassThru
 	def init
 		if(filename = @session.user_input(:filename))
-			@path = File.join('..', 'data', 'downloads', filename)
+      dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
+			@path = File.join(dir, filename)
 		end
 	end
 	def to_html(context)

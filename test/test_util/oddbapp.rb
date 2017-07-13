@@ -24,6 +24,7 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock/minitest'
 require 'util/oddbapp'
+require 'util/rack_interface'
 
 begin
   require 'pry'
@@ -37,7 +38,8 @@ class TestOddbApp <MiniTest::Unit::TestCase
 		ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-		@app = ODDB::App.new
+    @app = ODDB::App.new(server_uri: 'druby://localhost:20001', unknown_user: ODDB::UnknownUser.new)
+    @rack_app = ODDB::Util::RackInterface.new(app: @app)
 
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\
@@ -620,5 +622,4 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_yus_set_preference
     assert_equal('session', @app.yus_set_preference('name', 'key', 'value', 'domain'))
   end
-
 end

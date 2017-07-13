@@ -70,6 +70,15 @@ SNAP_NAME = 'Lubex®'
 def setup_browser
   return if @browser
   FileUtils.makedirs(DownloadDir)
+  @default_chrome_options = Selenium::WebDriver::Chrome::Options.new
+  @default_chrome_options.add_argument('--ignore-certificate-errors')
+  @default_chrome_options.add_argument('--disable-popup-blocking')
+  @default_chrome_options.add_argument('--disable-translate')
+  prefs = {
+    prompt_for_download: false,
+    default_directory: DownloadDir
+  }
+  @default_chrome_options.add_preference(:download, prefs)
   if Browser2test[0].to_s.eql?('firefox')
     puts "Setting upd default profile for firefox"
     profile = Selenium::WebDriver::Firefox::Profile.new
@@ -77,19 +86,19 @@ def setup_browser
     profile['browser.download.dir'] = DownloadDir
     profile['browser.download.folderList'] = 2
     profile['browser.helperApps.alwaysAsk.force'] = false
+    profile['security.insecure_password.ui.enabled'] = false
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/zip;application/octet-stream;application/x-zip;application/x-zip-compressed;text/csv;test/semicolon-separated-values"
-    Selenium::WebDriver::Firefox::Binary.path=  '/usr/bin/firefox-bin'
-    @browser = Selenium::WebDriver.for :firefox, :profile => profile
-    # @browser = Watir::Browser.new :firefox, :profile => profile
+    [ '/usr/bin/firefox-bin',  '/usr/bin/firefox'].each do |binary|
+      if File.exist?(binary)
+        Selenium::WebDriver::Firefox::Binary.path= binary
+        break
+      end
+    end
+    @browser = Watir::Browser.new :firefox, :profile => profile
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
-    prefs = {
-      :download => {
-        :prompt_for_download => false,
-        :default_directory => DownloadDir
-      }
-    }
-    @browser = Watir::Browser.new :chrome, :prefs => prefs
+    @browser = Watir::Browser.new  :chrome, options: @default_chrome_options
+    Selenium::WebDriver::Chrome::Options#add_preference
   elsif Browser2test[0].to_s.eql?('ie')
     puts "Trying unknown browser type Internet Explorer"
     @browser = Watir::Browser.new :ie
@@ -99,17 +108,25 @@ def setup_browser
   end
 end
 
+def login_link
+  @browser.link(:name =>'login_form')
+end
+
 def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
+  @saved_user ||= 'unbekannt'
   setup_browser
   @browser.goto OddbUrl
   sleep 0.5
-  sleep 0.5 unless @browser.link(:name =>'login_form').exists?
-  return true unless  @browser.link(:text=>'Anmeldung').exists?
-  if @browser.link(:text=>'Anmeldung').visible?
-    @browser.link(:text=>'Anmeldung').click
-    @browser.text_field(:name, 'email').set(user)
-    @browser.text_field(:name, 'pass').set(password)
+  sleep 0.5 unless login_link.exists?
+  if @saved_user.eql?(user) &&
+      login_link.exists? &&
+      !login_link.visible?
+    return true
   end
+  logout unless login_link.exist? && login_link.visible?
+  login_link.click
+  @browser.text_field(:name, 'email').set(user)
+  @browser.text_field(:name, 'pass').set(password)
   # puts "Login with #{@browser.text_field(:name, 'email').value} and #{@browser.text_field(:name, 'pass').value}"
   if remember_me
     @browser.checkbox(:name, "remember_me").set
@@ -118,7 +135,7 @@ def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
   end
   @browser.button(:name,"login").click
   sleep 1 unless @browser.button(:name,"logout").exists?
-  if  @browser.button(:name,"login").exists?
+  if login_link.exists?
     @browser.goto(OddbUrl)
     return false
   else

@@ -7,12 +7,17 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+begin
+  require 'pry'
+rescue LoadError
+  # ignore error when pry cannot be loaded (for Jenkins-CI)
+end
+
 require 'syck'
 require 'stub/odba'
 require 'stub/config'
 
 require 'minitest/autorun'
-require 'stub/oddbapp'
 require 'digest/md5'
 require 'util/persistence'
 require 'model/substance'
@@ -23,12 +28,7 @@ require 'model/galenicform'
 require 'util/language'
 require 'flexmock/minitest'
 require 'util/oddbapp'
-
-begin
-  require 'pry'
-rescue LoadError
-  # ignore error when pry cannot be loaded (for Jenkins-CI)
-end
+require 'stub/oddbapp'
 
 class TestOddbApp3 <MiniTest::Unit::TestCase
   def setup
@@ -36,7 +36,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
     dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-    @app = ODDB::App.new
+    @app = ODDB::App.new(server_uri: 'druby://localhost:20003')
 
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\

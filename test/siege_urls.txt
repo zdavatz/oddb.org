@@ -1,0 +1,41 @@
+# comments behind hashes
+# I tested it via  siege -v -t1m -f test/siege_urls.txt
+BASE_URL=http://ch.oddb.org
+# BASE_URL=http://oddb-ci2.dyndns.org
+$(BASE_URL)/
+$(BASE_URL)/de/gcc/fachinfo/reg/65814
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Nolvadex/search_type/st_sequence?#best_result
+$(BASE_URL)/de/gcc/patinfo/reg/39053/seq/02/pack/039
+$(BASE_URL)/de/gcc/show/fachinfo/00699/diff/11.01.2017
+$(BASE_URL)/de/gcc/company/ean/7601001331709
+$(BASE_URL)/de/gcc/fachinfo/reg/66292
+$(BASE_URL)/de/gcc/fachinfo/reg/66165
+$(BASE_URL)/de/gcc/fachinfo/reg/66096
+$(BASE_URL)/de/gcc/fachinfo/reg/66073
+$(BASE_URL)/de/gcc/fachinfo/reg/66072
+$(BASE_URL)/de/gcc/fachinfo/reg/66009
+$(BASE_URL)/de/gcc/fachinfo/reg/65967
+$(BASE_URL)/de/gcc/fachinfo/reg/65964
+$(BASE_URL)/de/gcc/fachinfo/reg/65962
+$(BASE_URL)/de/gcc/fachinfo/reg/65952
+$(BASE_URL)/de/gcc/fachinfo/reg/65908
+$(BASE_URL)/de/gcc/fachinfo/reg/65899
+$(BASE_URL)/de/gcc/fachinfo/reg/65890
+$(BASE_URL)/de/gcc/fachinfo/reg/65883
+$(BASE_URL)/de/gcc/fachinfo/reg/65881
+$(BASE_URL)/de/gcc/fachinfo/reg/65866
+$(BASE_URL)/de/gcc/fachinfo/reg/65854
+$(BASE_URL)/de/gcc/fachinfo/reg/65850
+$(BASE_URL)/de/gcc/fachinfo/reg/65822
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Teva/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Novartis/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Sandoz/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/iscador U/search_type/st_combined&#best_result
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Aspirin/search_type/st_combined&#best_result
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Paracetamol/search_type/st_oddb#best_result
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Teva/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Novartis/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Sandoz/search_type/st_company
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/iscador U/search_type/st_combined&#best_result
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Aspirin/search_type/st_combined&#best_result
+$(BASE_URL)/de/gcc/search/zone/drugs/search_query/Paracetamol/search_type/st_oddb#best_result

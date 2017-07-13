@@ -25,9 +25,9 @@ class DDDPriceTable < HtmlGrid::Composite
 	COLSPAN_MAP = {
 		[1,2,3]	=>	3,
 	}
-	CSS_MAP = { 
+	CSS_MAP = {
 		[0,0,6,2] => 'list',
-		[0,2,2]		=> 'list nowrap' 
+		[0,2,2]		=> 'list nowrap'
 	}
 	LABELS = true
 	LEGACY_INTERFACE = false
@@ -102,7 +102,7 @@ class DDDPriceComposite < HtmlGrid::Composite
         components.store [0,3,0], :twitter_share
         css_map.store [0,3], 'list'
       end
-      if @lookandfeel.enabled?(:facebook_share)
+      if @lookandfeel.enabled?(:facebook_share, false)
         components.store [0,3,1], :facebook_share
         css_map.store [0,3], 'list spaced'
       end

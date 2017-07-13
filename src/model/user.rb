@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# User -- oddb -- 15.11.2002 -- hwyss@ywesee.com 
+# User -- oddb -- 15.11.2002 -- hwyss@ywesee.com
 
 require 'drb'
 require 'sbsm/user'
@@ -50,12 +50,12 @@ module ODDB
     alias :eql? :==
   end
   class YusUser < SBSM::KnownUser
-    PREFERENCE_KEYS = [ :salutation, :name_first, :name_last, :address, 
-      :city, :plz, :company_name, :business_area, :phone, 
+    PREFERENCE_KEYS = [ :salutation, :name_first, :name_last, :address,
+      :city, :plz, :company_name, :business_area, :phone,
       :poweruser_duration]
     PREFERENCE_KEYS.each { |key|
       define_method(key) {
-        remote_call(:get_preference, key) 
+        remote_call(:get_preference, key)
       }
     }
     attr_reader :yus_session
@@ -78,7 +78,7 @@ module ODDB
 				allowed?(action, key.company) \
           || allowed?(action, key.pointer.to_yus_privilege)
 			when SequenceCommon
-				allowed?(action, key.registration)	
+				allowed?(action, key.registration)
       else
         remote_call(:allowed?, action, key)
 			end
@@ -105,12 +105,12 @@ module ODDB
       end
     end
     def groups
-      remote_call(:entities).reject { |entity| 
+      remote_call(:entities).reject { |entity|
         /@/u.match(entity.name)
       }
     end
     def method_missing(method, *args, &block)
-      remote_call(method, *args, &block) 
+      remote_call(method, *args, &block)
     end
     def name
       remote_call(:name)
