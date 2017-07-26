@@ -17,7 +17,7 @@ module ODDB
     module ChapterMethods
       PRE_STYLE = 'font-family: Courier New, monospace; font-size: 12px;'
       PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 1.4em;'
-      SUB_STYLE = 'font-style: italic' 
+      SUB_STYLE = 'font-style: italic'
       TABLE_STYLE = 'border-collapse: collapse;'
       TD_STYLE = 'padding: 4px; vertical-align: top;'
       def formats(context, paragraph)
@@ -26,10 +26,14 @@ module ODDB
           return '&nbsp;'  if paragraph.eql?(' ')
           return context.span({ 'style' => self.class::PAR_STYLE }) { paragraph }
         end
-        txt = paragraph.text.encode("UTF-8")
+        if paragraph.text.encoding.to_s.eql?('ISO-8859-1') || paragraph.text.encoding.to_s.eql?('ASCII-8BIT')
+          txt = paragraph.text.force_encoding('ISO-8859-1').encode('UTF-8')
+        else
+          txt = paragraph.text.encode("UTF-8")
+        end
         paragraph.formats.each { |format|
           tag = :span
-          style = [] 
+          style = []
           attrs = {}
           if(format.italic?)
             style << 'font-style:italic;'
@@ -51,33 +55,33 @@ module ODDB
           if format.link?
             tag = :a
           end
-                               
+
           escape_method = (format.symbol?) ? :escape_symbols : :escape
-          str = self.send(escape_method, txt[format.range]) 
+          str = self.send(escape_method, txt[format.range])
           if(style.empty? && tag == :span)
             res << str.force_encoding('utf-8')
           elsif tag == :a
             attrs.store 'href', str.strip
-            res << context.send(tag, attrs) { str }              
+            res << context.send(tag, attrs) { str }
           else
             attrs.store('style', style.join(' '))
-            res << context.send(tag, attrs) { 
+            res << context.send(tag, attrs) {
               str
-            }                               
+            }
           end
         }
         if(paragraph.preformatted?)
           context.pre({ 'style' => self.class::PRE_STYLE }) { res }
         elsif not paragraph.to_s.eql?('')
-          ## this must be an inline element, to enable starting 
+          ## this must be an inline element, to enable starting
           ## paragraphs on the same line as the section-subheading
-          context.span({ 'style' => self.class::PAR_STYLE }) { 
+          context.span({ 'style' => self.class::PAR_STYLE }) {
             begin
-              res.gsub("\n", context.br.force_encoding('utf-8')) 
+              res.gsub("\n", context.br.force_encoding('utf-8'))
             rescue ArgumentError
               br = context.br.force_encoding('utf-8')
               res = res.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
-              res.gsub("\n", br) 
+              res.gsub("\n", br)
             end
           } << context.br.force_encoding('utf-8')
         end
@@ -109,7 +113,7 @@ module ODDB
         section_attr = { 'style' => @lookandfeel.section_style }
         subhead_attr = { 'style' => self.class::SUB_STYLE }
         sections.collect { |section|
-          context.p(section_attr) { 
+          context.p(section_attr) {
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
             begin
@@ -124,7 +128,7 @@ module ODDB
             end
             head.force_encoding('utf-8')
             head << paragraphs(context, section.paragraphs)
-          } 
+          }
         }.join
       end
       def paragraphs(context, paragraphs, emit_p = false)
@@ -139,7 +143,7 @@ module ODDB
           elsif(paragraph.is_a? Text::Paragraph)
             add = formats(context, paragraph)
             add = '' unless add
-            if not emit_p or first 
+            if not emit_p or first
               res += add
             else
               res += '</p>' + add + "<p>"
@@ -221,7 +225,7 @@ module ODDB
       BACKGROUND_SUFFIX = ''
       DEFAULT_CLASS = HtmlGrid::InputText
       def compose_list(model, offset)
-        if(@model.length < 2 or 
+        if(@model.length < 2 or
           (@model.last.name != '' and @model.last.url != ''))
           @grid.add(add(@model, @session), *offset)
           @grid.add_style('list', *offset)
