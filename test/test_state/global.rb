@@ -116,7 +116,7 @@ end
 			class StubGalenicForm
 				include Language
 			end
-
+      @@saved = ODDB::RSS_PATH
  			def setup
         @lnf = flexmock('lookandfeel', :zones => [:analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies], :flavor => nil).by_default
         @session = StubSession.new(@lnf)
@@ -124,6 +124,7 @@ end
 			end
 			def teardown
 				ODBA.storage = nil
+        eval("ODDB::RSS_PATH = '#{@@saved}'")
         super
 			end
 			def test_resolve1
@@ -783,7 +784,12 @@ end
         assert_nil(@state.rss)
       end
       def test_fachinfo_rss
+        eval("ODDB::RSS_PATH = Dir.mktmpdir")
+        path =  File.join(RSS_PATH, 'language', 'channel')
+        FileUtils.makedirs(File.dirname(path))
+        File.open(path, 'w+') { |f| f.write('dummy') }
         flexmock(@session) do |s|
+          s.should_receive(:language).and_return('language')
           s.should_receive(:user_input).and_return('channel')
           s.should_receive(:"lookandfeel.enabled?").and_return(true)
           s.should_receive(:request_path).and_return('channel/feedback.rss')
@@ -791,7 +797,12 @@ end
         assert_kind_of(State::Rss::PassThru, @state.rss)
       end
       def test_fachinfo_2006_rss
+        eval("ODDB::RSS_PATH = Dir.mktmpdir")
+        path =  File.join(RSS_PATH, 'language', 'channel')
+        FileUtils.makedirs(File.dirname(path))
+        File.open(path, 'w+') { |f| f.write('dummy') }
         flexmock(@session) do |s|
+          s.should_receive(:language).and_return('language')
           s.should_receive(:user_input).and_return('channel')
           s.should_receive(:"lookandfeel.enabled?").and_return(true)
           s.should_receive(:request_path).and_return('channel/feedback-2006.rss')
