@@ -801,7 +801,11 @@ module ODDB
               channel = File.basename(channel, '.rss') + '-' + \
                         (@session.flavor ? @session.flavor : '') + '.rss'
             end
-            Rss::PassThru.new(@session, channel)
+            begin
+              Rss::PassThru.new(@session, channel)
+            rescue => error
+              Http404.new(@session, nil)
+            end
           else
             Http404.new(@session, nil)
           end

@@ -13,18 +13,32 @@ require 'state/rss/passthru'
 module ODDB
   module State
     module Rss
-
 class TestPassThru <Minitest::Test
+  @@saved = ODDB::RSS_PATH
   def setup
+    eval("ODDB::RSS_PATH = Dir.mktmpdir")
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :language    => 'language',
                         :passthru    => 'passthru'
                        )
-    @state   = ODDB::State::Rss::PassThru.new(@session, 'model')
+    super
   end
-  def test_init
+  def teardown
+    eval("ODDB::RSS_PATH = '#{@@saved}'")
+    super
+  end
+  def test_init_no_file
+    assert_raises(Errno::ENOENT) do
+      @state   = ODDB::State::Rss::PassThru.new(@session, 'model')
+    end
+  end
+  def test_init_with_rss_file
+    path =  File.join(RSS_PATH, 'language', 'model')
+    FileUtils.makedirs(File.dirname(path))
+    File.open(path, 'w+') { |f| f.write('dummy') }
+    @state = ODDB::State::Rss::PassThru.new(@session, 'model')
     assert_equal('passthru', @state.init)
   end
 end
