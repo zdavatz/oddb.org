@@ -104,7 +104,7 @@ class SideBar < Gruff::Base
 
     # TODO Round maximum marker value to a round number like 100, 0.1, 0.5, etc.
     increment = if number_of_lines.to_i > 0
-                  significant(@maximum_value.to_f / number_of_lines) 
+                  significant(@maximum_value.to_f / number_of_lines)
                 else
                   0
                 end
@@ -196,8 +196,7 @@ class SideBar < Gruff::Base
                                           longest_factor) * label_kerning
         end
       else
-        longest_left_label_width = calculate_width(@marker_font_size,
-        label(@maximum_value.to_f))
+        longest_left_label_width = calculate_width(@marker_font_size, label(@maximum_value.to_f, nil))
       end
 
       # Shift graph if left line numbers are hidden
@@ -213,8 +212,7 @@ class SideBar < Gruff::Base
       extra_room_for_long_label = calculate_width(@marker_font_size, last_label) / 2.0
       @graph_right_margin = @right_margin + extra_room_for_long_label
 
-      @graph_bottom_margin = @bottom_margin +
-      @marker_caps_height + LABEL_MARGIN
+      @graph_bottom_margin = @bottom_margin +  @marker_caps_height + LABEL_MARGIN
     end
 
     @graph_right = @raw_columns - @graph_right_margin
@@ -251,6 +249,7 @@ class DDDChart < HtmlGrid::Component
       oseq = original.sequence
       @model.each_with_index do |pac, idx|
         ddd_price = pac.ddd_price
+        next if ddd_price.nil?
         @data.push ddd_price
         base = pac.name_base
         size = comparable_size(pac)
@@ -290,7 +289,7 @@ class DDDChart < HtmlGrid::Component
     gr.theme = {
       :colors => ['#ccff99'],
       :marker_color => '#dddddd',
-      :font_color => 'black',      
+      :font_color => 'black',
       :background_colors => "white",
       :custom_colors => { @original_index => '#2ba476' },
       :source => @lookandfeel.lookup(:ddd_chart_source),
