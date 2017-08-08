@@ -13,7 +13,7 @@ require 'view/latin1'
 require 'state/feedbacks'
 require 'state/global'
 
-module ODDB 
+module ODDB
 	module State
     module Feedbacks
 
@@ -29,9 +29,17 @@ module ODDB
           flexmock(@item, :feedbacks => 'feedbacks')
           assert_equal('feedbacks', @wrapper.feedback_list)
         end
+        def test_feedback_list_empty
+          flexmock(@item, :feedbacks => nil)
+          assert_nil(@wrapper.feedback_list)
+        end
         def test_feedback_count
           flexmock(@item, :feedbacks => [1,2,3])
           assert_equal(3, @wrapper.feedback_count)
+        end
+        def test_feedback_count_empty
+          flexmock(@item, :feedbacks =>nil)
+          assert_equal(0, @wrapper.feedback_count)
         end
         def test_next_index
           assert_equal(10, @wrapper.next_index)
@@ -62,13 +70,13 @@ module ODDB
         @errors  = {}
       end
     end
-    
+
     class TestFeedbacks <Minitest::Test
       def setup
         @lnf     = flexmock('lookandfeel')
         @app     = flexmock('app', :update => 'update')
         feedback  = flexmock('feedback', :pointer => 'pointer' )
-        @session = flexmock('session', 
+        @session = flexmock('session',
                             :app         => @app,
                             :language    => 'de',
                             :lookandfeel => @lnf,
@@ -98,7 +106,7 @@ module ODDB
         flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
         flexmock(@app, :update => 'update')
         current_feedback = flexmock('current_feedback', :pointer => 'pointer')
-        flexmock(@model, 
+        flexmock(@model,
                  :current_feedback  => current_feedback,
                  :current_feedback= => nil
                 )
@@ -111,7 +119,7 @@ module ODDB
         flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
         flexmock(@app, :update => 'update')
         item = flexmock('item', :pointer => 'pointer')
-        flexmock(@model, 
+        flexmock(@model,
                  :current_feedback  => ODDB::Persistence::CreateItem.new,
                  :current_feedback= => nil,
                  :item => item
@@ -124,7 +132,7 @@ module ODDB
         flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
         flexmock(@app, :update => 'update')
         current_feedback = flexmock('current_feedback', :pointer => 'pointer')
-        flexmock(@model, 
+        flexmock(@model,
                  :current_feedback  => current_feedback,
                  :current_feedback= => nil
                 )
