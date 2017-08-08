@@ -272,6 +272,26 @@ end
         end
         assert_equal(@state, @state.add_to_interaction_basket)
       end
+      def test_interaction_basket_empty
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:resolve).and_return('object')
+        end
+        flexmock(@session) do |ses|
+          ses.should_receive(:user_input).and_return(pointer)
+          ses.should_receive(:interaction_basket)
+        end
+        assert_nil(@state.interaction_basket)
+      end
+      def test_interaction_basket
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:resolve).and_return('object')
+        end
+        flexmock(@session) do |ses|
+          ses.should_receive(:user_input).and_return(pointer)
+          ses.should_receive(:interaction_basket).and_return('interaction_basket')
+        end
+        assert_nil(@state.interaction_basket)
+      end
       def test_allowed?
         model = flexmock('model') do |mod|
           mod.should_receive(:is_a?).and_return(true)

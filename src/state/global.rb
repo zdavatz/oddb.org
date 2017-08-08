@@ -454,11 +454,8 @@ module ODDB
 				self::class::HOME_STATE
 			end
 			def interaction_basket
-				if((array = @session.interaction_basket).empty?)
-					State::Interactions::EmptyBasket.new(@session, array)
-				else
-					State::Interactions::Basket.new(@session, array)
-				end
+        SBSM.debug("interaction_basket no longer supported: URL was #{@session.request_path}")
+        return nil
 			end
 			def limited?
 				self.class.const_get(:LIMITED)
