@@ -462,6 +462,7 @@ Zeno Davatz
 				:drugs										=>	'Medikamente',
         :drugbank                 =>  "DrugBank.ca",
         :drugbank_title           =>  "Open Data Drug & Drug Target Database - www.drugbank.ca",
+        :drugshortage             =>  'Drugshortage Info',
 				:dsp_sort									=>	'Sortierung nach Stärke, Packung und Preis',
 				:direct_link                    =>      'Direkt-Link',
 				:ean13										=>	'EAN',
