@@ -57,7 +57,7 @@ module ODDB
     class StubApp
       attr_writer :log_group
 			attr_reader :pointer, :values, :model
-      attr_accessor :last_date, :epha_interactions
+      attr_accessor :last_date, :epha_interactions, :app
       def initialize
 				@model = StubLog.new
         @epha_interactions = []
@@ -130,6 +130,7 @@ module ODDB
           bsv.should_receive(:update).and_return('update')
           bsv.should_receive(:_update).and_return('_update')
           bsv.should_receive(:change_flags).and_return({})
+          bsv.should_receive(:log_info_bsv).and_return(@recipients)
           bsv.should_receive(:log_info).and_return(@recipients)
       end
       flexstub(BsvXmlPlugin) do |klass|
@@ -199,8 +200,10 @@ module ODDB
       @updater.instance_eval('@@today = Date.today')    # reset the @@today to the default value for the other test-cases
     end
     def setup_log_notify_bsv
-      log = flexmock('log') do |log|
+      @log = flexmock('log') do |log|
         log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
+        log.should_receive(:resolve).and_return(OpenStruct.new)
+        log.should_receive(:creator).and_return('creator')
       end
       @plugin = flexmock('plugin') do |plg|
         plg.should_receive(:log_info).and_return(@recipients)
@@ -208,7 +211,7 @@ module ODDB
       end
       flexstub(Persistence::Pointer) do |klass|
         klass.should_receive(:new).and_return(flexmock('ptr') do |obj|
-          obj.should_receive(:resolve).and_return(log)
+          obj.should_receive(:resolve).and_return(@log)
           obj.should_receive(:creator)
           obj.should_receive(:+)
         end)
@@ -404,14 +407,11 @@ module ODDB
     def test_log_notify_bsv # test private method
       setup_log_notify_bsv
       @recipients[:change_flags] = {'ptr' => []}
+      @plugin.should_receive(:app).and_return('app')
       plugin = @plugin
-      assert_equal("notify", @updater.instance_eval('log_notify_bsv(plugin, "date")'))
-    end
-    def test_log_notify_bsv__else_change_flags
-      setup_log_notify_bsv
-      @recipients[:change_flags] = {}
-      plugin = @plugin
-      assert_equal("notify", @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+      mocked = flexmock('updater', @updater)
+      mocked.should_receive(:log).and_return(@log)
+      assert_equal("notify", mocked.instance_eval('log_notify_bsv(plugin, "date", "subject", mocked.log)'))
     end
     def test_update_bsv
       setup_bsv_xml_plugin
@@ -552,6 +552,7 @@ module ODDB
    def test_run
       logs = flexmock('logs') do |logs|
         logs.should_receive(:newest_date).and_return(Date.new(2011,1,1))
+        logs.should_receive(:resolve).and_return(true)
       end
       flexstub(@app) do |app|
         app.should_receive(:create).and_return(logs)

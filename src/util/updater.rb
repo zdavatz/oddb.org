@@ -276,24 +276,26 @@ module ODDB
       }
     end
     def update_bsv
+      logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 
-      LogFile.append('oddb/debug', " getin update_bsv", Time.now)
+      LogFile.append('oddb/debug', " getting update_bsv #{logs_pointer.class}", Time.now)
 
       sl_errors_dir = File.expand_path("doc/sl_errors/#{@@today.year}/#{"%02d" % @@today.month.to_i}", ODDB::PROJECT_ROOT)
       sl_error_file = File.join(sl_errors_dir, 'bag_xml_swissindex_pharmacode_error.log')
       if File.exist?(sl_error_file)
         FileUtils.rm sl_error_file
       end
-      logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
       logs = @app.create(logs_pointer)
       this_month = Date.new(@@today.year, @@today.month)
       if (latest = logs.newest_date) && latest > this_month
         this_month = latest
       end
+      date_pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, this_month])
+      LogFile.append('oddb/debug', " getting update_bsv date_pointer #{date_pointer.class}", Time.now)
       klass = BsvXmlPlugin
       plug = klass.new(@app)
       subj = 'SL-Update (XML)'
-            return_value_plug_update = nil
+      return_value_plug_update = nil
       wrap_update(klass, subj) {
 
         return_value_plug_update = plug.update
@@ -301,14 +303,14 @@ module ODDB
 
         #if plug.update
         if return_value_plug_update
-          log_notify_bsv(plug, this_month, subj)
+          log_notify_bsv(plug, this_month, subj, date_pointer)
         end
       }
-            return return_value_plug_update
+      return return_value_plug_update
     end
     def update_bsv_followers
 
-      LogFile.append('oddb/debug', " getin update_bsv_followers", Time.now)
+      LogFile.append('oddb/debug', " getting update_bsv_followers", Time.now)
 
       update_package_trade_status_by_refdata
       update_lppv
@@ -483,16 +485,15 @@ module ODDB
     end
 
     private
-    def log_notify_bsv(plug, date, subj='SL-Update')
-
-      LogFile.append('oddb/debug', " getin log_notify_bsv", Time.now)
+    def log_notify_bsv(plug, date, subj, pointer)
+      LogFile.append('oddb/debug', " getting log_notify_bsv", Time.now)
       LogFile.append('oddb/debug', " date=" + date.inspect.to_s, Time.now)
-
-      pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
-      LogFile.append('oddb/debug', " after pointer creating", Time.now)
       values = log_info(plug)
       LogFile.append('oddb/debug', " after log_info(plug)", Time.now)
-      if log = pointer.resolve(@app)
+      if @prevalence && !defined?(MiniTest)
+        @prevalence = ODBA.cache.fetch_named('oddbapp', self) {OddbPrevalence.new}
+      end
+      if log = @prevalence ? pointer.resolve(@prevalence) :  OpenStruct.new
         change_flags = values[:change_flags]
         if previous = log.change_flags
           previous.each do |ptr, flgs|
@@ -505,11 +506,10 @@ module ODDB
           end
         end
       end
-      LogFile.append('oddb/debug', " before @app.update", Time.now)
+      LogFile.append('oddb/debug', " before @app.update @prevalence #{@prevalence.class}", Time.now)
       log = @app.update(pointer.creator, values)
 
       LogFile.append('oddb/debug', " after @app.update", Time.now)
-      #log.notify(subj)
       return_value_log_notify = log.notify(subj)
       LogFile.append('oddb/debug', " the first log.notify end", Time.now)
       LogFile.append('oddb/debug', " return_value_log_notify = " + return_value_log_notify.inspect.to_s, Time.now)
@@ -521,7 +521,6 @@ module ODDB
       return_value_log2_notify = log2.notify(subj)
       LogFile.append('oddb/debug', " the second log.notify end", Time.now)
       LogFile.append('oddb/debug', " return_value_log2_notify = " + return_value_log2_notify.inspect.to_s, Time.now)
-      #log2.notify(subj)
       return_value_log2_notify
     end
     def notify_error(klass, subj, error)
