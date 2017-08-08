@@ -10,6 +10,7 @@ run_isolated =  ['searchbar.rb',
                  'drugs/fachinfo.rb',
                  'drugs/fachinfo_change_logs.rb',
                  'drugs/javascript.rb',
+                 'interactions/interaction_chooser.rb',
                 ]
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
 runner = OddbTestRunner.new(File.dirname(__FILE__), run_isolated)

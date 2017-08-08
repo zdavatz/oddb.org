@@ -94,6 +94,8 @@ class TestPackage <Minitest::Test
                           :ikskey    => 'ikskey',
                           :limitation_text     => limitation_text,
                           :production_science  => 'production_science',
+                          :shortage_state      => 'shortage_state',
+                          :shortage_link       => 'shortage_link',
                           :parallel_import     => 'parallel_import',
                           :ith_swissmedic      => 'ith_swissmedic',
                           :index_therapeuticus => 'index_therapeuticus',
