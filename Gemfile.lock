@@ -193,6 +193,7 @@ GEM
       json
     treetop (1.6.8)
       polyglot (~> 0.3)
+    trollop (2.1.2)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
@@ -298,6 +299,7 @@ DEPENDENCIES
   swissmedic-diff (= 0.2.2)
   syck
   travis-lint
+  trollop
   vcr
   watir
   watir-webdriver
