@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <PARTNER xmlns="http://refdatabase.refdata.ch/" CREATION_DATETIME="2017-08-09T15:27:38.5027531+02:00">
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001028333</GLN>
+        <STATUS>I</STATUS>
+        <STDATE>2007-10-09T00:00:00</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Fux Christine &amp; Marcel</DESCR1>
+        <DESCR2>St Martini Apotheke</DESCR2>
+        <ROLE>
+          <TYPE>Pharm</TYPE>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001367753</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2010-09-06T11:25:10.387</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Amavita Apotheke Vorstadt</DESCR1>
+        <DESCR2>GaleniCare AG</DESCR2>
+        <ROLE>
+          <TYPE>Pharm</TYPE>
+          <STREET>Vorstadt</STREET>
+          <STRNO>30/32</STRNO>
+          <ZIP>8200</ZIP>
+          <CITY>Schaffhausen</CITY>
+          <CTN>SH</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001396371</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2012-08-08T15:53:50.043</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Lindenapotheke Rupperswil</DESCR1>
+        <DESCR2>AB Lindenapotheke AG</DESCR2>
+        <ROLE>
+          <TYPE>Pharm</TYPE>
+          <STREET>Mitteldorf</STREET>
+          <STRNO>4</STRNO>
+          <ZIP>5102</ZIP>
+          <CITY>Rupperswil</CITY>
+          <CTN>AG</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-05-11T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001365346</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2015-03-27T12:21:47.813</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Apotheke Drogerie Strättligen AG</DESCR1>
+        <DESCR2/>
+        <ROLE>
+          <TYPE>Pharm</TYPE>
+          <STREET>Schulstrasse</STREET>
+          <STRNO>27</STRNO>
+          <ZIP>3604</ZIP>
+          <CITY>Thun</CITY>
+          <CTN>BE</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+        <ROLE>
+          <TYPE>DruSto</TYPE>
+          <STREET>Schulstrasse</STREET>
+          <STRNO>27</STRNO>
+          <ZIP>3604</ZIP>
+          <CITY>Thun</CITY>
+          <CTN>BE</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001397835</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2015-10-19T11:05:09.59</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Sandoz AG</DESCR1>
+        <DESCR2/>
+        <ROLE>
+          <TYPE>Indus</TYPE>
+          <STREET>Lichtstrasse</STREET>
+          <STRNO>35</STRNO>
+          <ZIP>4056</ZIP>
+          <CITY>Basel</CITY>
+          <CTN>BS</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001372689</GLN>
+        <STATUS>I</STATUS>
+        <STDATE>2010-06-01T00:00:00</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Globopharm AG</DESCR1>
+        <DESCR2>Niederlassung Stäfa</DESCR2>
+        <ROLE>
+          <TYPE>Indus</TYPE>
+        </ROLE>
+      </ITEM>
+      <!-- Rivopharm has no street info -->
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001004092</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2006-01-01T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Rivopharm SA</DESCR1>
+        <DESCR2/>
+        <ROLE>
+          <TYPE>Indus</TYPE>
+          <ZIP>6928</ZIP>
+          <CITY>Manno</CITY>
+          <CTN>TI</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <RESULT xmlns="http://refdatabase.refdata.ch/Partner_out">
+        <OK_ERROR>OK</OK_ERROR>
+        <NBR_RECORD>7</NBR_RECORD>
+      </RESULT>
+    </PARTNER>
+  </soap:Body>
+</soap:Envelope>

@@ -103,6 +103,7 @@ GEM
       ydbd-pg (>= 0.5.1)
       ydbi (>= 0.5.1)
     oddb2tdat (1.1.2)
+    ox (2.5.0)
     page-object (2.0.0)
       net-http-persistent (~> 2.9.4)
       page_navigation (>= 0.9)
@@ -272,6 +273,7 @@ DEPENDENCIES
   nokogiri
   odba (>= 1.1.2)
   oddb2tdat (= 1.1.2)
+  ox
   page-object
   parslet (= 1.7.0)
   paypal (= 2.0.0)

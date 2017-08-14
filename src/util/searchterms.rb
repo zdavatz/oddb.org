@@ -102,5 +102,9 @@ module ODDB
 			                # don't exclude analysis-codes
 			term.length > 2 # && !/^[0-9]+$/u.match(term)
 		}
+    rescue => error
+      require 'pry'; binding.pry
+      28
+      nil
 	end
 end

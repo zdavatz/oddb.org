@@ -10,7 +10,7 @@ require 'plugin/atc_less'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
-require 'plugin/medreg_pharmacy'
+require 'plugin/refdata_partner'
 require 'plugin/medreg_doctor'
 require 'plugin/dosing'
 require 'plugin/drugbank'
@@ -263,10 +263,10 @@ module ODDB
         log.notify(subj)
       }
     end
-    def update_medreg_companies(opts = nil)
-      LogFile.append('oddb/debug', " update update_medreg_companies opts #{opts.inspect}", Time.now)
-      klass = ODDB::Companies::MedregPharmacyPlugin
-      subj = 'companies (Medreg)'
+    def update_regdata_partners(opts = nil)
+      LogFile.append('oddb/debug', " update update_regdata_partners opts #{opts.inspect}", Time.now)
+      klass = ODDB::Companies::RefdataPartnerPlugin
+      subj = 'companies (Refdata)'
       wrap_update(klass, subj) {
         plug = klass.new(@app, opts)
         plug.update

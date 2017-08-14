@@ -1095,8 +1095,9 @@ class OddbPrevalence
 		retrieve_from_index("doctor_index", key)
 	end
 	def search_companies(key)
-    result =  [ company_by_gln(key)] if key.to_s.match(VALID_EAN13)
-    return result if result and (result.size > 0 and not result.first.is_pharmacy?)
+    result =  [ company_by_gln(key)].compact if key.to_s.match(VALID_EAN13)
+    return [] unless result && result.size > 0
+    return result unless result.first.is_pharmacy?
     companies = retrieve_from_index("company_index", key)
     matching_companies = companies.find_all{
       |item|
