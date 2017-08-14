@@ -31,11 +31,12 @@ class ItemWrapper < SimpleDelegator
 	end
 	def feedback_list
     unless @item.feedbacks.is_a?(ODDB::Migel::Item)
+      return nil unless @item.feedbacks
       @item.feedbacks[@index, INDEX_STEP]
     end
 	end
 	def feedback_count
-		@item.feedbacks.size
+		@item.feedbacks ? @item.feedbacks.size : 0
 	end
 	def has_next?
 		feedback_count > next_index
@@ -53,7 +54,7 @@ end
 attr_reader :passed_turing_test
 def init
 	@model = ItemWrapper.new(@model)
-	@filter = Proc.new { |model| 
+	@filter = Proc.new { |model|
 		index = @session.user_input(:index).to_i
 		model.index = index
 		model
@@ -61,7 +62,7 @@ def init
 	super
 end
 def update
-	mandatory = [:name, :email, :show_email, :experience, 
+	mandatory = [:name, :email, :show_email, :experience,
 		:recommend, :impression, :helps]
   unless @passed_turing_test
     mandatory.push :captcha
@@ -74,7 +75,7 @@ def update
   elsif(hash[:captcha] == answer)
     @passed_turing_test = true
   else
-    @errors.store(:captcha, create_error('e_failed_turing_test', 
+    @errors.store(:captcha, create_error('e_failed_turing_test',
       :captcha, nil))
   end
 	unless(error?)
@@ -87,7 +88,7 @@ def update
 			}
       hash.store(:item, @model.item)
 		end
-		
+
 		# store new Feedback
 		time = Time.now
 		hash.store(:time , time)

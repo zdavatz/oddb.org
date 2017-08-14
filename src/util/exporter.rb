@@ -1,9 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 14.05.2013 -- yasaka@ywesee.com
-# ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
-# ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
-
 require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
@@ -37,11 +33,11 @@ module ODDB
       LogFile.append('oddb/debug', ' ' + msg, now)
       system("logger #{__FILE__}: #{msg}")
     end
-    
+
     def restart_export_server(sleep_time = 60)
       logExport("restart_export_server. Called from #{caller[0].split(':in ')[0]}")
       EXPORT_SERVER.clear
-      sleep(sleep_time)      
+      sleep(sleep_time)
       logExport("restart_export_server. Done sleeping #{sleep_time} seconds")
       return sleep 0.1 # to be compatible with return code of old sleep
     end
@@ -52,8 +48,9 @@ module ODDB
 		end
     def run
       #
-      mail_patinfo_invoices
-      mail_fachinfo_log
+      # As decided by Zeno on August 14 2017, we do not need these invoices anymore
+      # mail_patinfo_invoices
+      # mail_fachinfo_log
       run_on_monthday(1) {
         mail_download_invoices
       }
@@ -328,9 +325,9 @@ module ODDB
 			rescue StandardError => e
 				log.report = ([
 					"Nothing to Report.",
-					nil, 
+					nil,
 					e.class,
-					e.message 
+					e.message
 				] + e.backtrace).join("\n")
 			end
 			log.notify("#{key.capitalize}-Statistics")

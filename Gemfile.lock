@@ -103,6 +103,7 @@ GEM
       ydbd-pg (>= 0.5.1)
       ydbi (>= 0.5.1)
     oddb2tdat (1.1.2)
+    ox (2.5.0)
     page-object (2.0.0)
       net-http-persistent (~> 2.9.4)
       page_navigation (>= 0.9)
@@ -168,7 +169,7 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     sax-machine (1.3.2)
-    sbsm (1.5.6)
+    sbsm (1.5.8)
       chrono_logger
       hpricot
       mail
@@ -193,6 +194,7 @@ GEM
       json
     treetop (1.6.8)
       polyglot (~> 0.3)
+    trollop (2.1.2)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
@@ -271,6 +273,7 @@ DEPENDENCIES
   nokogiri
   odba (>= 1.1.2)
   oddb2tdat (= 1.1.2)
+  ox
   page-object
   parslet (= 1.7.0)
   paypal (= 2.0.0)
@@ -292,12 +295,13 @@ DEPENDENCIES
   rubyzip (>= 1.1.6)
   savon (~> 2.11.1)
   sax-machine
-  sbsm (>= 1.5.6)
+  sbsm (>= 1.5.7)
   simplecov
   spreadsheet (= 0.9.7)
   swissmedic-diff (= 0.2.2)
   syck
   travis-lint
+  trollop
   vcr
   watir
   watir-webdriver
@@ -308,4 +312,4 @@ DEPENDENCIES
   yus
 
 BUNDLED WITH
-   1.15.1
+   1.15.3

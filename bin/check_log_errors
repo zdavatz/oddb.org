@@ -1,0 +1,96 @@
+#!/usr/bin/env ruby
+
+require 'date'
+require 'trollop'
+require 'pp'
+
+STDOUT.sync = true
+Root = '/var/www/oddb.org'
+
+Opts = Trollop::options do
+  version "0.1 by Niklaus Giger 09.08.2017"
+  banner <<-EOS
+#{__FILE__}
+
+Usage: is a small helper script to analyze the log files produced by oddb.org
+       Log files are searched inside #{Root}.
+       #{__FILE__} [options]
+where [options] are:
+EOS
+  opt :offset, 'Analyse data with an offset of -<x> days, e.g. 0 = today, -1 =  yesterday', :type => Integer, :default => 1
+end
+
+GREP_PATTERN = 'show_exceptions.rb'
+LINE_LENGTH  = 110
+Yesterday = (Date.today-Opts.offset)
+Year =  Yesterday.year
+
+pattern = "#{Root}/log/#{Year}/#{sprintf('%02d', Yesterday.month)}/#{sprintf('%02d', Yesterday.day)}/*log"
+
+log_files = Dir.glob(pattern)
+
+Errors = {}
+Restarts = {}
+Details = {}
+
+def trenner
+  puts "-"*LINE_LENGTH
+end
+
+
+def chapter(msg)
+  trenner
+  puts msg
+  trenner
+end
+
+
+def get_details(log)
+  puts "#{Time.now}: Analysing #{sprintf('%-55s', log)} (#{sprintf('%6d', (File.size(log)/1024).to_i)} kB)"
+  lines = File.open(log).readlines
+  indices = lines.map.with_index {|line, i| /#{GREP_PATTERN}/.match(line) ? i : nil}.compact
+  Errors[log] = indices.size
+  indices.each do |index |
+    my_caller = []
+    lines[(index-300)..index].reverse.each_with_index { |line, idx| break if /\[#{Year}|GET http|POST http|HEAD http/.match(line); my_caller<< line}
+    search_idx = -1
+    reason = my_caller[search_idx].chomp
+    while /ODBA::Stub|^\s*$/.match(reason)
+      search_idx -= 1
+      break unless my_caller[search_idx]
+      reason = my_caller[search_idx].chomp
+    end
+    next unless reason
+    puts reason if $VERBOSE
+    Details[reason] ||= 0
+    Details[reason] += 1
+  end
+end
+
+chapter("Results for the #{Yesterday}. Analysing #{log_files.size} logfiles matching #{pattern}")
+log_files.each do|log|
+  get_details(log)
+  nr_Restarts = `grep -c Exiting #{log}`.chomp.to_i
+  Restarts[log] = nr_Restarts
+end
+
+chapter("Exceptions")
+
+Errors.sort{|left,right|  right[1] <=> left[1] }.each do |log,count|
+  next if count == 0
+  puts "#{sprintf('%5d', count)} Errors in #{sprintf('%-55s', log)} (#{sprintf('%6d', (File.size(log)/1024).to_i)} kB)"
+end
+
+
+chapter("Restarts")
+Restarts.sort{|left,right|  right[1] <=> left[1] }.each do |log,count|
+  next if count == 0
+  puts "#{sprintf('%5d', count)} Restarts in #{log}"
+end
+
+chapter ("Detailled summary of occurences by reason (for all logfiles combined)")
+Details.sort{|left,right|  [right[1], right[0]] <=> [left[1], left[0]] }.each do |reason, count|
+  puts "#{sprintf('%5d', count)} #{reason}"
+end
+
+trenner

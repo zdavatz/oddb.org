@@ -11,7 +11,7 @@ module ODDB
   module Util
     Job.run do |system|
       updater = Updater.new system
-      updater.update_medreg_companies(ARGV)
+      updater.update_regdata_partners(ARGV)
     end
   end
 end

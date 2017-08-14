@@ -11,9 +11,17 @@ module ODDB
 class PassThru < Global
   VIEW = HtmlGrid::PassThru
   VOLATILE = true
+  def initialize(session, channel)
+    super(session, channel)
+    @path = File.join(RSS_PATH, session.language, model)
+    unless File.exist?(@path)
+      SBSM.error("Could not find #{@path}")
+      raise Errno::ENOENT
+    end
+  end
+
   def init
-    path = File.join(RSS_PATH,  @session.language, @model)
-    @session.passthru(path, 'inline')
+    @session.passthru(@path, 'inline') if File.exist?(@path)
   end
 end
     end

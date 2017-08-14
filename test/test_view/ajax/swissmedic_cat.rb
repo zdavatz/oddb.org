@@ -17,7 +17,7 @@ module ODDB
 
 class TestSwissmedicCat <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup      => 'lookup',
                           :format_date => 'format_date',
                           :attributes  => {},
@@ -25,15 +25,17 @@ class TestSwissmedicCat <Minitest::Test
                          )
     @session   = flexmock('session', :lookandfeel => @lnf)
     sl_entry   = flexmock('sl_entry', :introduction_date => Time.utc(2011,2,3))
-    @parent    = flexmock('parent', 
+    @parent    = flexmock('parent',
                           :certificate_number => 'certificate_number',
                           :expiry_date => Time.utc(2011,2,3)
                          ).by_default
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :ikscat   => 'ikscat',
                           :sl_entry => sl_entry,
                           :lppv     => 'lppv',
                           :preview? => nil,
+                          :shortage_state => '1 aktuell keine Lieferungen',
+                          :shortage_link => 'https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=1808',
                           :patent   => @parent,
                           :sl_generic_type   => 'sl_generic_type',
                           :registration_date => Time.utc(2011,2,3),
@@ -50,11 +52,11 @@ class TestSwissmedicCat <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_reorganize_components
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :result_list_components => {'key' => :deductible},
              :enabled?   => nil
             )
-    flexmock(@model, 
+    flexmock(@model,
              :deductible => true,
              :preview?   => true
             )

@@ -29,10 +29,15 @@ class SwissmedicCat < HtmlGrid::Composite
 	end
 	def reorganize_components
 		y=0
+		if @model.shortage_state
+			@components.store([0,y], :drugshortage)
+			@components.store([1,y], "drugshortage")
+			y += 1
+		end
 		if(cat = @model.ikscat)
 			iks = "ikscat_" << cat.to_s.downcase
 			@components.store([0,y], :ikscat)
-			@components.store([1,y], iks)
+			@components.store([1,y,0], iks)
 			y += 1
 		end
 		if (sl = @model.sl_entry) && sl.respond_to?(:introduction_date) && sl.introduction_date
@@ -112,6 +117,13 @@ class SwissmedicCat < HtmlGrid::Composite
 		@css_map.store([1,0,1,y], 'list')
 		@css_map.store([0,0,1,y], 'bold top list')
 	end
+  def drugshortage(model)
+    link = HtmlGrid::Link.new(:shortage, model, @session, self)
+    link.value = model.shortage_state
+    link.href = model.shortage_link
+    link.css_class = 'list'
+    link
+  end
 	def deductible(model)
 		link = HtmlGrid::Link.new(:deductible, model, @session, self)
 		link.value = @lookandfeel.lookup(deductible_value(model))

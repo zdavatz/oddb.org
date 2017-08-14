@@ -14,6 +14,8 @@ require 'view/printtemplate'
 require 'view/publictemplate'
 require 'view/form'
 require 'view/chapter'
+require 'model/package'
+require 'model/epha_interaction'
 # Test it with de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
 
 module ODDB
@@ -74,7 +76,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
     div.value << model.atc_class.code  + ': ' + model.atc_class.name if model.atc_class
     div
   end
-  
+
   def delete(model, session=@session)
     return if @printing_active
     if @container.is_a? ODDB::View::Interactions::InteractionChooserDrug
@@ -119,7 +121,11 @@ class InteractionChooserDrug < HtmlGrid::Composite
     ean13 = @session.user_input(:search_query)
     path = @session.request_path
     @drugs = @session.choosen_drugs
-    @interactions = EphaInteractions.get_interactions(model.atc_class.code, @drugs)
+    if model.atc_class
+      @interactions = EphaInteractions.get_interactions(model.atc_class.code, @drugs)
+    else
+      @interactions = []
+    end
     if @model.is_a? ODDB::Package
       nextRow = 0
       unless @hide_interaction_headers
@@ -158,7 +164,7 @@ return false;
       span.value = @lookandfeel.lookup(:interactions)
       span.set_attribute('id', 'InteractionChooserDrug.header_info')
       span.set_attribute('class', 'print bold')
-      span 
+      span
     else
       View::Interactions::InteractionChooserDrugHeader.new(model, session, self)
     end
@@ -185,21 +191,21 @@ return false;
         headerDiv.set_attribute('style', "background-color: #{interaction[:color]}")
       end
       list.value << headerDiv
-    
+
       infoDiv = HtmlGrid::Div.new(model, @session, self)
       infoDiv.value = []
       infoDiv.value << interaction[:text]
       infoDiv.set_attribute('style', "background-color: #{interaction[:color]}") unless @printing_active
-      list.value << infoDiv                                                            
+      list.value << infoDiv
     }
     list.css_class = 'print' if @printing_active
     list
-  end  
+  end
 end
 
 class InteractionChooserDrugList < HtmlGrid::List
  attr_reader :model, :value
-  COMPONENTS = {} 
+  COMPONENTS = {}
   CSS_MAP = {}
   CSS_CLASS = 'composite'
   SORT_HEADER = false
@@ -213,7 +219,7 @@ class InteractionChooserDrugList < HtmlGrid::List
       }
     end
   end
-  
+
 end
 class InteractionChooserDrugDiv < HtmlGrid::Div
   def init
@@ -362,7 +368,7 @@ class InteractionChooserForm < View::Form
   end
   def epha_public_domain(model, session=@session)
     link = HtmlGrid::Link.new(:epha_public_domain, model, session, self)
-    link.css_class = 'navigation'		
+    link.css_class = 'navigation'
     link.href = "https://github.com/epha/matrix"
     link
   end

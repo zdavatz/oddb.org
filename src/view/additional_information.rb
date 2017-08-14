@@ -243,6 +243,23 @@ module ODDB
         link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
         link
       end
+      def drugshortage(model, session=@session)
+        short = model.shortage_state
+        return nil unless short
+        short_span = HtmlGrid::Span.new(model, session, self)
+        short_span.value= "&#x25cf;&nbsp"
+        font_size = '; font-size: large'
+        if /^1/.match(short)
+          short_span.set_attribute('style','color: red' + font_size)
+        else
+          short_span.set_attribute('style','color: green' + font_size)
+        end
+        url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        short_span.css_id = "ikscat_drugshortage"
+        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
+        ODDB::View::TooltipHelper.set_java_script(short_span, htlm)
+        short_span
+      end
 			def ikscat(model, session=@session)
 				@ikscat_count ||= 0
 				@ikscat_count += 1
@@ -268,7 +285,7 @@ module ODDB
 				txt.css_id = "ikscat_#{@ikscat_count}"
         htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
         ODDB::View::TooltipHelper.set_java_script(txt, htlm)
-				txt
+				[drugshortage(model, session=@session), txt].compact
 			end
       def product_overview_link(model, session=@session)
         return unless @lookandfeel.enabled?(:evidentia, false)
