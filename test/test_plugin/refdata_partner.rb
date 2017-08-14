@@ -43,9 +43,7 @@ class TestCompanyPlugin <Minitest::Test
             )
     @config  = flexmock('config')
     @company = flexmock('company', :pointer => 'pointer',
-                        :ean13= => 'ean13',
-                        :name= => 'name',
-                        :addresses= => 'addresses',
+                        :name => 'name',
                         :business_area= => 'business_area',
                         :odba_isolated_store => 'odba_isolated_store',
                         :oid => 'oid',
@@ -54,8 +52,22 @@ class TestCompanyPlugin <Minitest::Test
                         :name => 'name',
                         :business_area => 'business_area',
                         :narcotics => 'narcotics',
-                        :addresses => 'addresses',
                        )
+    @company = flexmock('bb company', ODDB::Company.new,
+                        :ean13= => 'ean13',
+                        :pointer => 'pointer',
+                        :name => 'name',
+                        :business_area => 'business_area',
+                        :narcotics => 'narcotics',
+                        :odba_isolated_store => 'odba_isolated_store',
+                        :oid => 'oid',
+                        :odba_store => 'odba_store',
+                       )
+    @company.should_receive(:addresses).and_return([]).by_default
+    @company.should_receive(:addresses=).and_return([]).by_default
+    @company.should_receive(:name=).and_return(nil).by_default
+    @company.should_receive(:narcotics=).and_return(nil).by_default
+    @company.should_receive(:business_area=).and_return(nil).by_default
     @app     = flexmock('app',
               :config => @config,
               :create_company => @company,
@@ -119,6 +131,44 @@ class TestCompanyPlugin <Minitest::Test
     assert_equal('Sandoz AG', first_address.name)
     assert_nil(sandoz[:narcotics])
   end
+
+  def test_update_must_keep_telefon_and_fax
+    gln_sandoz = 7601001397835
+    fon_sandoz = '077 123 45 67'
+    fax_sandoz = '077 123 45 99'
+    sandoz = flexmock('sandoz', :oid => 'oid')
+    old_address = ODDB::Address2.new
+    old_address.name    =  'Sandoz must be changed'
+    old_address.address =  'must be changed 3555'
+    old_address.location = '333 must be changed'
+    old_address.fon = [fon_sandoz]
+    old_address.fax = [fax_sandoz]
+    @company.should_receive(:addresses).and_return([old_address])
+    @app.should_receive(:company_by_gln).with("7601001372689" ).and_return([sandoz])
+    @app.should_receive(:company_by_gln).with(any).and_return(nil)
+    @app.should_receive(:delete_company).with('oid').never
+    @plugin = flexmock('refdata_partner_plugin', ODDB::Companies::RefdataPartnerPlugin.new(@app, [gln_sandoz]))
+    flexmock(@plugin, :get_latest_file => [true, Test_Companies_XML])
+    flexmock(@plugin, :get_company_data => {})
+    created, updated, deleted, skipped = @plugin.update
+    sandoz = ODDB::Companies::RefdataPartnerPlugin.all_partners.find {|x| x['GLN'].to_i == gln_sandoz }
+    assert_equal(sandoz[:business_area], ODDB::BA_type::BA_pharma)
+    addresses = sandoz[:addresses]
+    assert_equal(1, addresses.size)
+    first_address = addresses.first
+    assert_equal(ODDB::Address2, first_address.class)
+    assert_equal('Sandoz AG', first_address.name)
+    assert_equal('4056 Basel', first_address.location)
+    assert_equal('4056', first_address.plz)
+    assert_equal('Basel', first_address.city)
+    assert_equal('35', first_address.number)
+    assert_equal([fax_sandoz], first_address.fax)
+    assert_equal([fon_sandoz], first_address.fon)
+    assert_equal('Lichtstrasse', first_address.street)
+    assert_nil(first_address.additional_lines)
+    assert_nil(sandoz[:narcotics])
+  end
+
   def test_update_all
     globofarm = flexmock('globofarm', :oid => 'oid')
     @app.should_receive(:company_by_gln).with("7601001372689" ).and_return(globofarm)

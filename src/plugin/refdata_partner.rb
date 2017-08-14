@@ -266,7 +266,7 @@ module ODDB
         end
         data[:business_area]        = ba_type
         changes = {}
-        [:name, :business_area, :narcotics, :addresses].each do |field|
+        [:name, :business_area, :narcotics].each do |field|
             has_changes = eval("company.#{field.to_s} != data['#{field}']")
             orig  =  eval("company.#{field.to_s}")
             changed = eval("data[:#{field}]")
@@ -274,12 +274,26 @@ module ODDB
               changes[field] ="#{orig} => #{changed}"
             end
         end
+        new_addr = data[:addresses].first
+        old_addr = company.addresses.first
+        changes['addresses'] = 'no old address' unless old_addr
+        changes['addresses'] = 'no new address' unless new_addr
+        if new_addr && old_addr &&
+          (old_addr.address != new_addr.address ||
+            old_addrlocation != new_addr.location ||
+            old_addr.name != new_addr.name
+          )
+          changes['addresses'] = 'Changed address'
+        end if new_addr && old_addr
+        new_addr.fon = old_addr.fon if old_addr.fon && !new_addr.fon
+        new_addr.fax = old_addr.fax if old_addr.fax && !new_addr.fax
         return if changes.size == 0
         action == 'update' ? ( @partners_updated += 1)  : (@partners_created += 1)
         company.ean13         = gln
         company.name          = data[:name]
         company.business_area = ba_type.to_s
         company.narcotics     = data[:narcotics]
+        old_address = company.addresses.first
         company.addresses     = data[:addresses]
         company.odba_store
         @@all_partners << data
