@@ -132,7 +132,7 @@ module ODDB
         while nr_tries < 3 && !success
           begin
             r_loop.try_run(gln, defined?(Minitest) ? 500 : 5 ) do
-              log "Searching for company with GLN #{gln}. Skipped #{@partners_skipped}, created #{@partners_created} updated #{@partners_updated} of #{@glns_to_import.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
+              # log "Searching for company with GLN #{gln}. Skipped #{@partners_skipped}, created #{@partners_created} updated #{@partners_updated} of #{@glns_to_import.size}).#{nr_tries > 0 ? ' nr_tries is ' + nr_tries.to_s : ''}"
               page_1 = @agent.get(BetriebeURL)
               raise Search_failure if page_1.content.match(failure)
               hash = [
@@ -149,7 +149,7 @@ module ODDB
                 raise Search_failure if page_3.content.match(failure)
                 company = parse_details(page_3, gln)
                 company['GLN'] = gln
-                store_company(company, gln)
+                company = store_company(company, gln)
               elsif info = @info_to_gln[gln]
                 # Probably a company
               else
@@ -280,26 +280,28 @@ module ODDB
         changes['addresses'] = 'no new address' unless new_addr
         if new_addr && old_addr &&
           (old_addr.address != new_addr.address ||
-            old_addrlocation != new_addr.location ||
+            old_addr.location != new_addr.location ||
             old_addr.name != new_addr.name
           )
-          changes['addresses'] = 'Changed address'
+          orig  =  eval("company.addresses")
+          changed = eval("data[:addresses]")
+          changes['addresses'] = "#{orig} => #{changed}"
         end if new_addr && old_addr
-        new_addr.fon = old_addr.fon if old_addr.fon && !new_addr.fon
-        new_addr.fax = old_addr.fax if old_addr.fax && !new_addr.fax
         return if changes.size == 0
         action == 'update' ? ( @partners_updated += 1)  : (@partners_created += 1)
         company.ean13         = gln
         company.name          = data[:name]
         company.business_area = ba_type.to_s
         company.narcotics     = data[:narcotics]
-        old_address = company.addresses.first
-        company.addresses     = data[:addresses]
+        company.addresses.push(new_addr) unless company.addresses.first
+        company.addresses.first.name = new_addr.name
+        company.addresses.first.address = new_addr.address
+        company.addresses.first.location = new_addr.location
         company.odba_store
-        @@all_partners << data
+        @@all_partners << company
         @app.companies.odba_store
         log "store_company #{action} #{gln} oid #{company.oid} in database. pointer #{pointer.inspect} #{changes}"
-        company_copy = @app.company_by_gln(gln)
+        company
       end
       def parse_xml(path)
         log "parsing #{path} #{File.size(path)} bytes"
@@ -310,6 +312,8 @@ module ODDB
         items.each do |item|
           next if item.is_a?(Ox::Comment)
           next unless item.name.eql?('ITEM')
+          gln = item.locate('GLN').first.text.to_i
+          next if @glns_to_import.size > 0 && !@glns_to_import.index(gln)
           inactive = false
           hash = {}
           item.nodes.each do |elem|
@@ -321,7 +325,6 @@ module ODDB
                 type = elem.nodes.find{|x| x.name.eql?('TYPE')}
                 inactive ||= !(type.text.eql?('Pharm') || type.text.eql?('Indus'))
                 if inactive
-                  gln = hash['GLN']
                   if company = @app.company_by_gln(gln)
                     # log "inactive company with gln #{gln}"
                     # @app.delete_company(company.oid)
