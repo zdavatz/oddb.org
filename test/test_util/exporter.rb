@@ -59,8 +59,8 @@ module ODDB
       # totally whilte box test
       flexmock(@exporter) do  |exp|
         exp.should_receive(:today).and_return(Date.new(2011,1,1)) # Saturday
-        exp.should_receive(:mail_patinfo_invoices).once.with_no_args
-        exp.should_receive(:mail_fachinfo_log).once.with_no_args
+        exp.should_receive(:mail_patinfo_invoices).never.with_no_args
+        exp.should_receive(:mail_fachinfo_log).never.with_no_args
         exp.should_receive(:mail_download_invoices).once.with_no_args
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
@@ -76,8 +76,8 @@ module ODDB
     def test_run__on_15th_day
       flexmock(@exporter) do  |exp|
         exp.should_receive(:today).and_return(Date.new(2011,1,15)) # Saturday
-        exp.should_receive(:mail_patinfo_invoices).once.with_no_args
-        exp.should_receive(:mail_fachinfo_log).once.with_no_args
+        exp.should_receive(:mail_patinfo_invoices).never.with_no_args
+        exp.should_receive(:mail_fachinfo_log).never.with_no_args
         exp.should_receive(:mail_download_invoices).once.with_no_args
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
@@ -93,8 +93,8 @@ module ODDB
     def test_run__on_sunday
       flexmock(@exporter) do  |exp|
         exp.should_receive(:today).and_return(Date.new(2011,1,2)) # Sunday
-        exp.should_receive(:mail_patinfo_invoices).once.with_no_args
-        exp.should_receive(:mail_fachinfo_log).once.with_no_args
+        exp.should_receive(:mail_patinfo_invoices).never.with_no_args
+        exp.should_receive(:mail_fachinfo_log).never.with_no_args
         exp.should_receive(:mail_download_invoices).times(0).with_no_args
         exp.should_receive(:mail_download_stats).once.with_no_args
         exp.should_receive(:mail_feedback_stats).once.with_no_args
