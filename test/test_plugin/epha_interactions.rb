@@ -164,6 +164,7 @@ module ODDB
       @sequence = flexmock('sequence',
                            :creator => @sequence)
       seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
+      FileUtils.rm_f(ODDB::EphaInteractions::CSV_FILE, verbose: true)
       @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
       @agent = flexmock(Mechanize.new)
