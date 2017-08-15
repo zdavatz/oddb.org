@@ -66,14 +66,6 @@ module ODDB
 			end
       def odba_store
       end
-      def create_epha_interaction(atc_code_self, atc_code_other)
-        epha_interaction = StubEphaInteractions.new
-        @epha_interactions ||= []
-        @epha_interactions << epha_interaction
-        epha_interaction
-      end
-      def delete_all_epha_interactions
-      end
 			def update(pointer, values, reason = nil)
 				@pointer = pointer
 				@values = values

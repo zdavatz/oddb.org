@@ -113,15 +113,6 @@ module ODDB
       end
       def odba_isolated_store
       end
-      def delete_all_epha_interactions
-		@epha_interactions = {}
-      end
-	  def create_epha_interaction(first, second)
-		epha_interaction = ODDB::EphaInteraction.new
-		@epha_interactions ||= {}
-		@epha_interactions[[first,second]] = epha_interaction
-		epha_interaction
-	  end
       def update(pointer, values, reason = nil)
         @pointer = pointer
         @values = values

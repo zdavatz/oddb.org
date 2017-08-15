@@ -76,7 +76,6 @@ class OddbPrevalence
 		@doctors ||= {}
 		@epha_interactions ||= []
 		@epha_interactions_hash ||= {}
-    ODDB::EphaInteractions.set(@epha_interactions_hash)
     @evidentia_search_links_hash ||= {}
     ODDB::EvidentiaSearchLink.set(@evidentia_search_links_hash)
 		@experiences ||= {}
@@ -107,6 +106,7 @@ class OddbPrevalence
     sorted_minifis
     sorted_feedbacks
     sorted_fachinfos
+    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE)
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
@@ -399,12 +399,6 @@ class OddbPrevalence
     experience = ODDB::Experience.new
     @experiences.store(experience.oid, experience)
   end
-  def create_epha_interaction(atc_code_self, atc_code_other)
-    epha_interaction = ODDB::EphaInteraction.new
-    @epha_interactions_hash ||= {}
-    @epha_interactions_hash[ [atc_code_self, atc_code_other] ] = epha_interaction
-    epha_interaction
-  end
   def create_evidentia_search_link(gtin, link, trademark)
     evidentia_search_link = ODDB::EvidentiaSearchLink.new(gtin, link, trademark)
     @evidentia_search_links_hash_hash ||= {}
@@ -524,28 +518,6 @@ class OddbPrevalence
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
-  def delete_all_epha_interactions
-	if @epha_interactions.is_a?(Array)
-		@epha_interactions.each do |item|
-			delete(item.pointer) if item and item.pointer
-            @epha_interactions.delete(item)
-		end
-		@epha_interactions.odba_store
-		@epha_interactions = {}
-		@epha_interactions.odba_store
-		self.odba_store
-	end
-	if  @epha_interactions_hash.is_a?(Hash)
-		@epha_interactions_hash.values.each do |item|
-			delete(item.pointer) if item and item.pointer
-            @epha_interactions.delete(item)
-		end
-		@epha_interactions_hash = {}
-		@epha_interactions_hash.odba_store
-    ODDB::EphaInteractions.set(@epha_interactions_hash)
-		self.odba_store
-	end
-  end
   def delete_all_evidentia_search_links
     @evidentia_search_links_hash = {}
     @evidentia_search_links_hash.odba_store

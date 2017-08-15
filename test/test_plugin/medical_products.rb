@@ -58,16 +58,12 @@ module ODDB
     class StubApp
       attr_writer :log_group
       attr_reader :pointer, :values, :model
-      attr_accessor :last_date, :epha_interactions, :registrations
+      attr_accessor :last_date, :registrations
       def initialize
         @model = StubLog.new
-        @epha_interactions = []
         @registrations = {}
         @company_mock = FlexMock.new(ODDB::Company)
         @company_mock.should_receive(:pointer).and_return(@pointer)
-        epha_mock = FlexMock.new(@epha_interactions)
-        epha_mock = FlexMock.new(@epha_interactions)
-        epha_mock.should_receive(:odba_store)
         product_mock = FlexMock.new(@registrations)
         product_mock.should_receive(:odba_store)
         @pointer_mock = FlexMock.new(Persistence::Pointer)
@@ -115,8 +111,6 @@ module ODDB
       def odba_store
       end
       def odba_isolated_store
-      end
-      def delete_all_epha_interactions
       end
       def update(pointer, values, reason = nil)
         @pointer = pointer

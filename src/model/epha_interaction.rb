@@ -3,7 +3,6 @@
 require 'util/persistence'
 require 'util/searchterms'
 require 'util/language'
-require 'mechanize'
 require 'csv'
 
 module ODDB
@@ -26,11 +25,46 @@ module ODDB
     def EphaInteractions.get
       @@epha_interactions
     end
-    def EphaInteractions.set(interactions)
-      @@epha_interactions = interactions
-    end
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
     CSV_ORIGIN_URL  = 'https://download.epha.ch/data/matrix/matrix.csv'
+    EPHA_INFO = Struct.new(:atc_code_self, :atc_code_other, # these two items are our unique index. They may not be changed
+              :atc_name, :name_other, :info, :action, :effect, :measures, :severity)
+
+    def self.read_from_csv(csv_file)
+      unless File.exist?(csv_file)
+        puts "Warning #{csv_file} not found. No EphaInteractions saved"
+        return
+      end
+      startTime = Time.now
+      FileUtils.cp(csv_file, ODDB::EphaInteractions::CSV_FILE, preserve: true, verbose: true) unless ODDB::EphaInteractions::CSV_FILE.eql?(csv_file)
+      counter = 0
+      File.readlines(csv_file).each do |line|
+        line = line.force_encoding('utf-8')
+        next if /ATC1.*Name1.*ATC2.*Name2/.match(line)
+        begin
+          elements = CSV.parse_line(line)
+        rescue CSV::MalformedCSVError
+          msg << "CSV::MalformedCSVError in line #{counter}: #{line}"
+          next
+        end
+        next if elements.size == 0 # Eg. empty line at the end
+        epha_interaction = EPHA_INFO.new
+        counter += 1
+        epha_interaction.atc_code_self = elements[0]
+        epha_interaction.atc_name = elements[1]
+        epha_interaction.atc_code_other = elements[2]
+        epha_interaction.name_other = elements[3]
+        epha_interaction.info = elements[4]
+        epha_interaction.action = elements[5]
+        epha_interaction.effect = elements[6]
+        epha_interaction.measures = elements[7]
+        epha_interaction.severity = elements[8]
+        @@epha_interactions [ [epha_interaction.atc_code_self, epha_interaction.atc_code_other] ] = epha_interaction        
+      end
+      endTime = Time.now
+      puts "Took #{ (endTime - startTime).to_i} seconds to load #{csv_file}"
+    end
+
     def self.calculate_atc_codes(drugs)
       atc_codes = []
       if drugs and !drugs.empty?
@@ -40,6 +74,7 @@ module ODDB
       end
       atc_codes
     end
+
     def EphaInteractions.get_epha_interaction(atc_code_self, atc_code_other)
       result = nil
       @@epha_interactions.each{ | key, value |
@@ -80,44 +115,6 @@ module ODDB
         }
       }
       results.uniq.sort_by { |item| item[:severity] + item[:header]  }.reverse
-    end
-  end
-  class EphaInteraction
-    include ODBA::Persistable
-    include Persistence
-     # Based on information contained in http://community.epha.ch/interactions_de_utf8.csv
-    # ATC1  Name1 ATC2  Name2 Info  Mechanismus Effekt  Massnahmen  Grad
-    # N06AB06 Sertralin M03BX02 Tizanidin Keine Interaktion Tizanidin wird über CYP1A2 metabolisiert. Sertralin beeinflusst CYP1A2 jedoch nicht.  Keine Interaktion.  Die Kombination aus Sertralin und Tizanidin hat kein bekanntes Interaktionspotential. A
-    attr_accessor :atc_code_self, :atc_code_other # these two items are our unique index. They may not be changed
-    attr_accessor :atc_name, :name_other, :info, :action, :effect, :measures, :severity
-
-    def initialize
-		super
-    end
-
-    def init(app)
-		@pointer.append(@oid)
-    end
-
-    def search_terms
-      terms = [
-        @atc_code_self, @atc_name,
-        @atc_code_other, @name_other,
-        @info, @action, @effect,
-        @measures, @severity
-      ]
-      ODDB.search_terms(terms)
-    end
-    def search_text
-      search_terms.join(' ')
-    end
-    def pointer_descr
-      [@atc_code_self, @atc_name, @atc_code_other, @name_other, @info].compact.join(' ')
-    end
-    def to_s
-      # bin/admin will not display lines longer than 200 chars
-      [@atc_code_self, @atc_name, @atc_code_other, @name_other, @info,
-        @action, @effect,  @measures, @severity].compact.join(';')[0..199]
     end
   end
 end
