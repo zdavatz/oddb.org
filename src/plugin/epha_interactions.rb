@@ -36,6 +36,7 @@ module ODDB
     def update(agent=Mechanize.new, csv_file_path = ODDB::EphaInteractions::CSV_FILE)
       @@report = []
       latest = csv_file_path.sub(/\.csv$/, '-latest.csv')
+      FileUtils.makedirs(File.dirname(ODDB::EphaInteractions::CSV_FILE))
       if Latest.get_latest_file(latest, ODDB::EphaInteractions::CSV_ORIGIN_URL, agent)
         msg = "EphaInteractionPlugin.update latest #{latest} #{File.exists?(latest)} via #{File.expand_path(csv_file_path)} from #{ODDB::EphaInteractions::CSV_ORIGIN_URL}"
         @@report << msg
@@ -51,6 +52,8 @@ module ODDB
       else
         FileUtils.cp(latest, ODDB::EphaInteractions::CSV_FILE, preserve: true, verbose: true) unless File.exist?(ODDB::EphaInteractions::CSV_FILE)
       end
+      old_ones = Dir.glob(latest.sub( '-latest.csv', '-20*.csv'))
+      FileUtils.rm(old_ones, verbose: true)
       true
     end
   end

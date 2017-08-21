@@ -36,6 +36,7 @@ module ODDB
         return
       end
       startTime = Time.now
+      FileUtils.makedirs(File.dirname(ODDB::EphaInteractions::CSV_FILE))
       FileUtils.cp(csv_file, ODDB::EphaInteractions::CSV_FILE, preserve: true, verbose: true) unless ODDB::EphaInteractions::CSV_FILE.eql?(csv_file)
       counter = 0
       File.readlines(csv_file).each do |line|
