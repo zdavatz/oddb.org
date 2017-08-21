@@ -23,10 +23,8 @@ module ODDB
     def self.get_latest_file(latest, download_url, agent = Mechanize.new, must_unzip = false)
       file_today = get_daily_name(latest)
       file_yesterday = latest.sub('latest', (@@today.to_date-1).strftime("%Y.%m.%d"))
-      if File.exist?(file_today) and File.exists?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
-        FileUtils.rm_f(file_yesterday, {:verbose => false})
-      end
-
+      self.remove_yesterday_if_equal(file_today, file_yesterday)
+      
       if File.exist?(file_today) and File.exists?(latest) and File.size(latest) == File.size(file_today)
         Latest.log "found #{file_today} and same size as latest #{File.size(file_today)} bytes."
         return false
@@ -42,10 +40,18 @@ module ODDB
         else
           Latest.log "copy file_today #{file_today} #{File.exist?(file_today)} (#{File.size(file_today)} bytes) to #{latest}"
           FileUtils.cp(file_today, latest, {:verbose => false})
+          self.remove_yesterday_if_equal(file_today, file_yesterday)
           return false
         end
       end
+      self.remove_yesterday_if_equal(file_today, file_yesterday)
       latest
+    end
+    private
+    def self.remove_yesterday_if_equal(file_today, file_yesterday)
+      if File.exist?(file_today) and File.exists?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
+        FileUtils.rm_f(file_yesterday, {:verbose => false})
+      end
     end
   end
 end
