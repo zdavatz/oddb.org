@@ -113,15 +113,6 @@ module ODDB
       end
       def odba_isolated_store
       end
-      def delete_all_epha_interactions
-		@epha_interactions = {}
-      end
-	  def create_epha_interaction(first, second)
-		epha_interaction = ODDB::EphaInteraction.new
-		@epha_interactions ||= {}
-		@epha_interactions[[first,second]] = epha_interaction
-		epha_interaction
-	  end
       def update(pointer, values, reason = nil)
         @pointer = pointer
         @values = values
@@ -173,6 +164,7 @@ module ODDB
       @sequence = flexmock('sequence',
                            :creator => @sequence)
       seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
+      FileUtils.rm_f(ODDB::EphaInteractions::CSV_FILE, verbose: true)
       @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
       @agent = flexmock(Mechanize.new)

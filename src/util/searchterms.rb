@@ -76,7 +76,7 @@ module ODDB
   }
   TERM_PTRN = /[#{TERM_PAIRS.keys.join}]/u
   def ODDB.search_term(term)
-    term.force_encoding('UTF-8')
+    term.force_encoding('UTF-8') unless term.frozen?
     term = term.to_s.gsub /[[:punct:]]/u, ''
     term.gsub! /[\/\s\-]+/u, ' '
     term.gsub! TERM_PTRN do |match| TERM_PAIRS.fetch match, match end
@@ -102,9 +102,5 @@ module ODDB
 			                # don't exclude analysis-codes
 			term.length > 2 # && !/^[0-9]+$/u.match(term)
 		}
-    rescue => error
-      require 'pry'; binding.pry
-      28
-      nil
 	end
 end

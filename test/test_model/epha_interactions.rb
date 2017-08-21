@@ -15,7 +15,7 @@ module ODDB
     ATC_CODE_2 = 'G03AA13'
 
     def setup
-      @epha_interaction = EphaInteraction.new
+      @epha_interaction = ODDB::EphaInteractions::EPHA_INFO.new
       @epha_interaction.atc_code_self = ATC_CODE_1
       @epha_interaction.atc_code_other = ATC_CODE_2
     end
@@ -23,25 +23,6 @@ module ODDB
       assert_nil @epha_interaction.atc_name
       @epha_interaction.atc_name = 'A Name'
       assert_equal 'A Name', @epha_interaction.atc_name
-    end
-    def test_pointer_descr
-      @epha_interaction.atc_name = 'name'
-      @epha_interaction.info = 'Keine Nebenwirkung'
-      assert_equal "#{ATC_CODE_1} name #{ATC_CODE_2} Keine Nebenwirkung", @epha_interaction.pointer_descr
-    end
-    def test_search_terms
-      @epha_interaction.atc_name = 'name'
-      @epha_interaction.name_other = 'other'
-      @epha_interaction.info = 'Keine Nebenwirkung'
-      expected = ["N06AB06", 'name', ATC_CODE_2, "other", "Keine Nebenwirkung"]
-      assert_equal expected, @epha_interaction.search_terms
-    end
-    def test_search_text
-      @epha_interaction.atc_name = 'name'
-      @epha_interaction.name_other = 'other'
-      @epha_interaction.info = 'Keine Nebenwirkung'
-      expected = ["N06AB06", 'name', ATC_CODE_2, "other", "Keine Nebenwirkung"].join(' ')
-      assert_equal expected, @epha_interaction.search_text
     end
   end
 end

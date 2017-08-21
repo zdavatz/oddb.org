@@ -7,7 +7,7 @@ must_be_run_separately = Dir.glob(File.join(File.dirname(__FILE__), "*.rb")).col
 must_be_run_separately.delete(File.basename(__FILE__))
 
 must_be_run_separately.delete('hospitals.rb')
-must_be_run_separately.delete('medreg_pharmacy.rb')
+must_be_run_separately.delete('refdata_partner.rb')
 must_be_run_separately.delete('medwin.rb')
 must_be_run_separately.delete('ouwerkerk.rb')
 

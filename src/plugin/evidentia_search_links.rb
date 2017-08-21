@@ -31,6 +31,8 @@ module ODDB
         @app.evidentia_search_links_hash = EvidentiaSearchLink.get
         @app.odba_store
       end
+      old_ones = Dir.glob(latest.sub( '-latest.csv', '-20*.csv'))
+      FileUtils.rm(old_ones, verbose: true)
       true
     end
   end

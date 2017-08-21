@@ -504,18 +504,8 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     assert_equal('package_1234567890', @app.package_by_ean13('7612345678900'))
   end
 
-  def test_epha_interaction_count
-    assert_equal(0, @app.epha_interaction_count)
-    @app.create_epha_interaction('atc_code_self', 'atc_code_other')
-    assert_equal(1, @app.epha_interaction_count)
-  end
-
   def test_get_epha_interaction
     assert_nil(@app.get_epha_interaction('atc_code_self', 'atc_code_other'))
-  end
-
-  def test_delete_all_epha_interactions
-    assert_equal(OddbPrevalence, @app.delete_all_epha_interactions.class)
   end
 
   def test_epha_interaction
@@ -554,6 +544,5 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     res_1 = @app.get_epha_interaction(code_1, drugs)
     assert_nil(res_1)
     res_2 = @app.get_epha_interaction(code_0, code_1)
-    assert_equal(ODDB::EphaInteraction, res_2.class)
   end
 end
