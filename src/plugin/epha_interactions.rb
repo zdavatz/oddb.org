@@ -52,8 +52,6 @@ module ODDB
       else
         FileUtils.cp(latest, ODDB::EphaInteractions::CSV_FILE, preserve: true, verbose: true) unless File.exist?(ODDB::EphaInteractions::CSV_FILE)
       end
-      old_ones = Dir.glob(latest.sub( '-latest.csv', '-20*.csv'))
-      FileUtils.rm(old_ones, verbose: true)
       true
     end
   end
