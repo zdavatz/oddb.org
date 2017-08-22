@@ -12,6 +12,7 @@ require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'model/patinfo'
+require 'util/today'
 
 module ODDB
 	class Patinfo
@@ -33,6 +34,7 @@ class TestPatinfo <Minitest::Test
 	def setup
 		@patinfo = ODDB::Patinfo.new
 	end
+
 	def test_add_sequence
 		@patinfo.sequences = []
 		prod = StubSequence.new
@@ -138,5 +140,25 @@ date
                  :usage, :unwanted_effects, :general_advice, :other_advice,
                  :composition, :packages, :distribution, :fabrication, :iksnrs, :company, :date ]
     assert_equal expected, doc.chapter_names
+  end
+  def test_add_change_log_item
+    saved_language = ENV['LANGUAGE']
+    ENV['LANGUAGE'] = 'C'
+    doc = ODDB::PatinfoDocument.new
+    doc.add_change_log_item('old text', 'new text')
+    item = doc.change_log[0]
+    assert_instance_of ODDB::PatinfoDocument::ChangeLogItem, item
+    assert_equal [item], doc.change_log
+    assert_equal @@today, item.time
+    assert_instance_of Diffy::Diff, item.diff
+    expected = "-old text
+\\ No newline at end of file
++new text
+\\ No newline at end of file
+"
+    assert_equal expected, item.diff.to_s
+    assert_equal @@today.to_s, item.time.to_s
+  ensure
+    ENV['LANGUAGE'] = saved_language
   end
 end

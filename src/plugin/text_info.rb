@@ -138,13 +138,6 @@ module ODDB
       res
     end
 
-    def TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
-      msg = "add_change_log_item: update #{text_item.class} lang #{lang} #{text_item.class} #{old_text.split("\n")[0..2]} -> #{new_text.split("\n")[0..2]}"
-      LogFile.debug msg
-      text_item.add_change_log_item(old_text, new_text)
-      text_item.odba_store
-    end
-
     def TextInfoPlugin::store_fachinfo(app, reg, fis)
       existing = reg.fachinfo
       if existing
@@ -157,7 +150,8 @@ module ODDB
           new_text = text_item.text
           LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
           unless old_text.eql?(new_text)
-            TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
+            text_item.add_change_log_item(old_text, new_text)
+            text_item.odba_store
           end
         else
           LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
@@ -271,11 +265,25 @@ module ODDB
       end
     end
 
+   def store_patinfo_change_diff(patinfo, old_text, patinfo_lang)
+     old_size = patinfo.change_log.size
+     new_text = patinfo_lang.to_s
+      if old_text.eql?(new_text)
+        LogFile.debug "store_patinfo_change_diff: skip #{patinfo.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size}"
+      else
+        diff_item = patinfo.add_change_log_item(old_text, new_text)
+        patinfo.odba_store
+        LogFile.debug "store_patinfo_change_diff: #{patinfo.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size} -> #{patinfo.change_log.size}"
+      end
+   end
+
    def store_patinfo_for_one_packages(package, lang, patinfo_lang)
       package.patinfo = @app.create_patinfo unless package.patinfo
       msg = "#{package.pointer} #{lang} #{package.patinfo.oid} #{package.patinfo.pointer} #{patinfo_lang.to_s.split("\n")[0..1]}"
       LogFile.debug msg; puts msg
+      old_text = package.patinfo.descriptions[lang].clone
       eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
+      store_patinfo_change_diff(package.patinfo.description(lang), old_text, patinfo_lang)
       package.patinfo.odba_store
       package.odba_store
       @corrected_pis << "#{package.iksnr} #{lang} #{package.name}"
@@ -292,18 +300,21 @@ module ODDB
       # existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
       if existing
+        old_text = existing.description(lang).to_s.clone
         languages = existing.descriptions
         LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} existing oid #{existing.oid} #{languages[lang].to_s.split("\n")[0..1]}"
         LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} new #{patinfo_lang.to_s.split("\n")[0..1]}"
         languages[lang] = patinfo_lang
         ptr = existing.pointer
         patinfo = @app.update ptr, languages
+        store_patinfo_change_diff(patinfo.description(lang), old_text, patinfo_lang)
         patinfo.odba_store
       else
         patinfo = @app.create_patinfo
         patinfo.descriptions # create descriptions by default
         patinfo.descriptions[lang] = patinfo_lang
         reg.sequences.values.first.patinfo = patinfo
+        # we do not have to call store_patinfo_change_diff, as it is the first time
         patinfo.odba_store
         reg.sequences.values.first.odba_store
         reg.odba_store
@@ -1213,6 +1224,8 @@ module ODDB
         return
       end
       nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
+      reg = nil
+      reg = @app.registration(meta_info.iksnr)
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
           LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type}  because reparse is demanded: #{@options[:reparse]} #{meta_info.authNrs}"
