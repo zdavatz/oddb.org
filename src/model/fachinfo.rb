@@ -14,25 +14,13 @@ require 'diffy'
 require 'util/today'
 
 module ODDB
-	class Fachinfo
-    class ChangeLogItem # we cannot remove this class or loading the ODBA cache will fail!
-      attr_accessor :email, :time, :chapter, :language
+  class Fachinfo
+    class ChangeLogItem  # we cannot remove this class or loading the ODBA cache will fail!
     end
-      attr_accessor :links
-		include Persistence
-		include Language
-		include RegistrationObserver
-                include RegistrationObserver
-    ODBA_SERIALIZABLE = ['@change_log']
-    def add_change_log_item(email, chapter, language)
-      item = ChangeLogItem.new
-      item.email = email
-      item.time = Time.now
-      item.chapter = chapter
-      item.language = language
-      self.change_log.push(item)
-      self.odba_store
-    end
+    attr_accessor :links
+    include Persistence
+    include Language
+    include RegistrationObserver
     def article_codes(expired=true)
       codes = []
       @registrations.collect { |reg|
@@ -58,6 +46,7 @@ module ODDB
       }
       codes
     end
+
     def links
       @links ||= []
 			@links.compact.sort_by{|link| link.created}.reverse
@@ -164,6 +153,7 @@ module ODDB
   end
 	class FachinfoDocument
     include Persistence
+    attr_accessor :change_log
     def pointer_descr
       'Fachinfo'
     end

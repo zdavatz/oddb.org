@@ -5,6 +5,7 @@
 
 require 'util/language'
 require 'model/sequence_observer'
+require 'diffy'
 
 module ODDB
 	class Patinfo
@@ -58,6 +59,43 @@ module ODDB
 		end
 	end
 	class PatinfoDocument
+    include Persistence
+    class ChangeLogItem
+      include Persistence
+      attr_accessor :time, :diff
+      def <=>(anOther)
+        # [diff.to_s, time] <=> [anOther.diff.to_s, anOther.time]
+        diff.to_s <=> anOther.diff.to_s
+      end
+      def pointer_descr
+        time.strftime('%d.%m.%Y')
+      end
+    end
+    Patinfo_diff_options= {:diff                           => "-U 3",
+                            :source                         => 'strings',
+                            :include_plus_and_minus_in_html => true,
+                            :include_diff_info              => false,
+                            :context                        => 0,
+                            :allow_empty_diff               => false,
+                            }
+    def add_change_log_item(old_text, new_text, date = @@today, options = Patinfo_diff_options)
+      @change_log ||= []
+      item = ChangeLogItem.new
+      item.time = date
+      item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
+      if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
+        puts "PatinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.split("\n")[0..2] : ''}"
+        return
+      end
+      already_disabled = GC.disable
+      self.change_log.push(item)
+      self.odba_store
+      GC.enable unless already_disabled
+    end
+    attr_writer   :change_log
+    def change_log
+      @change_log ||= []
+    end
 		CHAPTERS = [
 			:name,
 			:galenic_form,

@@ -13,6 +13,9 @@ require 'flexmock/minitest'
 require 'model/fachinfo'
 require 'model/text'
 require 'yaml'
+class Diffy::Diff
+  attr_reader :tempfiles
+end
 
 module ODDB
   class Fachinfo
@@ -32,6 +35,31 @@ module ODDB
       @fachinfo = ODDB::Fachinfo.new
 
     end
+
+    def tempfile(string, fn = 'diffy-spec')
+      t = Tempfile.new(fn)
+      # ensure tempfiles aren't unlinked when GC runs by maintaining a
+      # reference to them.
+      @tempfiles ||=[]
+      @tempfiles.push(t)
+      t.print(string)
+      t.flush
+      t.close
+      t.path
+    end
+
+    def test_marshall_diff_item_with_closed_tempfile
+      string1 = "foo\nbar\nbang\n"
+      string2 = "foo\nbang\n"
+      path1, path2 = tempfile(string1, 'path with spaces'), tempfile(string2, 'path with spaces')
+      res = Diffy::Diff.new(path1, path2, :source => 'strings')
+      assert_nil(res.tempfiles)
+      res.diff
+      skip('ODBA is not yet up to this task')
+      assert_equal(false,  res.tempfiles.eql?([]))
+      binary = ODBA::Marshal.dump(res)
+    end
+
     def test_add_registration
       reg = StubRegistration.new
       @fachinfo.add_registration(reg)
@@ -154,6 +182,14 @@ ATC-Code: L01XE31
       doc = flexmock :name => 'Nom'
       @fachinfo.descriptions.store 'fr', doc
       assert_equal 'Nom', @fachinfo.localized_name(:fr)
+    end
+    def test_fachinfo_lang_and_descriptions
+      @fachinfo = ODDB::Fachinfo.new
+      @fachinfo.descriptions.store 'de', 'deutsch'
+      @fachinfo.descriptions.store 'fr', 'français'
+      assert_equal @fachinfo['de'].to_s, @fachinfo.descriptions['de'].to_s
+      skip('This does not work as expected')
+      assert_equal @fachinfo['fr'].to_s, @fachinfo.descriptions['fr'].to_s
     end
     def test_pointer_descr
       assert_nil @fachinfo.pointer_descr

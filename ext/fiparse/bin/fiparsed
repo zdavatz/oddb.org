@@ -8,6 +8,9 @@ require 'drb/drb'
 require 'util/oddbconfig'
 require 'fiparse'
 
+$: << File.expand_path("../../..", File.dirname(__FILE__))
+require 'etc/db_connection'
+
 $0 = "Oddb (FiParse)"
 DRb.start_service(ODDB::FIPARSE_URI, ODDB::FiParse)
 DRb.thread.join
