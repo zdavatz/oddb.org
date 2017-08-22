@@ -149,12 +149,13 @@ module ODDB
       existing = reg.fachinfo
       if existing
         lang = fis.keys.first
-        old_text = eval("existing.#{lang}.text")
+        old_text = eval("existing.#{lang}.text").clone
+        fis[lang].change_log = eval("existing.#{lang}.change_log").clone
         updated_fi = app.update reg.fachinfo.pointer, fis
         if old_text
           text_item = eval("updated_fi.#{lang}")
           new_text = text_item.text
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)}"
+          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
           unless old_text.eql?(new_text)
             TextInfoPlugin::add_change_log_item(text_item, old_text, new_text, lang)
           end
@@ -1186,7 +1187,7 @@ module ODDB
 
     def found_matching_iksnr(iksnrs)
       matched_iksnrs = @options[:iksnrs] && ((@options[:iksnrs] & iksnrs).size > 0)
-      return (@options[:iksnrs] == nil || matched_iksnrs)
+      return (@options[:iksnrs] == nil || (@options[:reparse] && @options[:iksnrs].size == 0) || matched_iksnrs)
     end
 
     def get_textinfo(meta_info, iksnr)
