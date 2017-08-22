@@ -109,20 +109,6 @@ module ODDB
       assert_equal(false, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
-      assert_equal(false, File.exists?(@file_yesterday))
-      assert_equal(DefaultContent.size, File.size(@latest))
-    end
-
-    def test_no_file_today_but_yesterday
-      puts 'test_today_content_same_latest_content'  if $VERBOSE
-      File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
-      File.open(@file_yesterday, 'w+') {|f| f.write(DefaultContent) }
-      FileUtils.rm(@file_today) if File.exist?(@file_today)
-      res = Latest.get_latest_file(@latest, @url, @agent)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
-      assert_equal(false, File.exists?(@file_yesterday))
-      assert_equal(false, res)
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 

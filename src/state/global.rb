@@ -172,7 +172,7 @@ module ODDB
           :preferences            => State::User::Preferences,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
-          :diff                   => State::Drugs::FachinfoDocumentChangelogs,
+          :diff                   => State::Drugs::DocumentChangelogs,
           :ddd                    => State::Drugs::DDD,
           :ddd_chart              => State::Ajax::DDDChart,
           :ddd_price              => State::Drugs::DDDPrice,
@@ -251,7 +251,8 @@ module ODDB
           [ :rezept ]                             => State::Drugs::PrescriptionPrint,
         }
         CHANGELOGS_STATES = {
-          [ :fachinfo ]                           => State::Drugs::FachinfoDocumentChangelogs
+          [ :fachinfo ]                           => State::Drugs::DocumentChangelogs,
+          [ :patinfo ]                            => State::Drugs::DocumentChangelogs,
         }
         REVERSE_MAP = {}
         VIEW = View::Search
@@ -929,13 +930,13 @@ module ODDB
         end
 			end
       def show
-        choosen = @session.choosen_fachinfo_diff
+        choosen = @session.choosen_info_diff
         if choosen.size == 3
-          State::Drugs::FachinfoDocumentChangelogItem.new(@session, choosen[2])
+          State::Drugs::DocumentChangelogItem.new(@session, choosen[2])
         elsif choosen.size == 2
-          State::Drugs::FachinfoDocumentChangelogs.new(@session, choosen[1])
+          State::Drugs::DocumentChangelogs.new(@session, choosen[1])
         elsif choosen.size == 1
-          State::Drugs::FachinfoDocumentChangelogs.new(@session, [])
+          State::Drugs::DocumentChangelogs.new(@session, [])
 				elsif (@session.request_path == @request_path)
 					self
         else

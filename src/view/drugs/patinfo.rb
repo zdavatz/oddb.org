@@ -6,6 +6,7 @@
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
+require 'view/drugs/change_logs'
 require 'model/patinfo'
 
 module ODDB
@@ -86,6 +87,13 @@ class PiChapterChooser < HtmlGrid::Composite
       end
     end
     document = @model.send(@session.language)
+    next_offset = 1
+    @css_map            = {[0,0,2] => 'chapter-tab'}
+    if document.change_log.size > 0
+      @components.store([next_offset, 0], :change_log)
+      @css_map.store(           [next_offset, 0], 'chapter-tab')
+      next_offset += 1
+    end
     names = display_names(document)
     xx = 0
     yy = 0
@@ -107,6 +115,18 @@ class PiChapterChooser < HtmlGrid::Composite
     }
     colspan_map.store(pos, xwidth - pos.at(0))
     super
+  end
+  def change_log(model, session=@session, key=:change_log)
+    link = HtmlGrid::Link.new(key, model, session, self)
+    link.set_attribute('title', @lookandfeel.lookup(:change_log))
+    ikscd = model.sequences.first.packages.values.first.ikscd
+    link.href = @lookandfeel._event_url(:show,  [:patinfo, model.sequences.first.iksnr, model.sequences.first.seqnr, ikscd, :diff] )
+    if @lookandfeel.enabled?(:evidentia, false)
+      img = get_image("patinfo_#{key.to_s}_icon".to_sym)
+      return [img, link]
+    else
+      return link
+    end
   end
   def display_names(document)
     if document

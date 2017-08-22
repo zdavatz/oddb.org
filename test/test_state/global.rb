@@ -74,7 +74,7 @@ end
         def set_persistent_user_input(key, value)
         end
         attr_writer :diff_info
-        def choosen_fachinfo_diff
+        def choosen_info_diff
           return @diff_info || []
         end
 			end
@@ -175,8 +175,8 @@ end
                                @session.app.registrations.values.first.fachinfo.de.change_log.first,
                             ]
         newstate = @state.show
-        assert_equal(3, @session.choosen_fachinfo_diff.size)
-        assert_instance_of(State::Drugs::FachinfoDocumentChangelogItem, newstate)
+        assert_equal(3, @session.choosen_info_diff.size)
+        assert_instance_of(State::Drugs::DocumentChangelogItem, newstate)
       end
       def test_aa_resolve_changelog_item_no_such_item
         setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff/1")
@@ -187,7 +187,7 @@ end
         puts @session.app.registration('54316').fachinfo.de.change_log[0].inspect
         puts @session.app.registration('54316').fachinfo.de.change_log[1].inspect
         assert_instance_of(NilClass, @session.app.registration('54316').fachinfo.de.change_log[1])
-        assert_instance_of(ODDB::State::Drugs::FachinfoDocumentChangelogs, newstate)
+        assert_instance_of(ODDB::State::Drugs::DocumentChangelogs, newstate)
       end
       def test_aa_resolve_changelog_via_user_input
         setup_registration(54316, "/de/gcc/show/fachinfo/54316/diff")
@@ -196,7 +196,7 @@ end
                                @session.app.registrations.values.first.fachinfo.de.change_log,
                             ]
         newstate = @state.show
-        assert_instance_of(State::Drugs::FachinfoDocumentChangelogs, newstate)
+        assert_instance_of(State::Drugs::DocumentChangelogs, newstate)
       end
       def test_aa_resolve_changelog_no_registration
         setup_registration(nil, "/de/gcc/show/fachinfo/54316/diff")
@@ -212,7 +212,7 @@ end
                             ]
         @session.app.registration('54316').fachinfo.de.add_change_log_item("Old_Text", "new_text")
         newstate = @state.show
-        assert_instance_of(ODDB::State::Drugs::FachinfoDocumentChangelogs, newstate)
+        assert_instance_of(ODDB::State::Drugs::DocumentChangelogs, newstate)
       end
       def test_aa_resolve_changelog_item_no_registration
         setup_registration(nil, "/de/gcc/show/fachinfo/54316/diff/0")
