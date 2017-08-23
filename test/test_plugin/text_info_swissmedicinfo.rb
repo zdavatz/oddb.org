@@ -438,6 +438,8 @@ end
     end
     def setup_texinfo_mock(type = :fachinfo)
       textinfo = flexmock(type)
+      textinfo.should_receive(:change_log).and_return([]).by_default
+      textinfo.should_receive(:change_log=).and_return(nil).by_default
       textinfo.should_receive(:iksnr).and_return('iksnr')
       textinfo.should_receive(:iksnrs).and_return('iksnrs')
       textinfo.should_receive(:pointer).and_return(Persistence::Pointer.new(type))
@@ -529,6 +531,9 @@ if RunAll
       TextInfoPlugin::create_registration(@app, info, '01', '019') # Ohne Dosierpumpe
       TextInfoPlugin::create_registration(@app, info, '01', '086') # Mit Dosierpumpe
       @app.registration('43788').company = Aut_43788
+      # Test Changelog
+      fachinfo.should_receive(:change_log).and_return([]).at_least.once
+      fachinfo.should_receive(:change_log=).and_return(nil).at_least.once
 
       setup_refdata_mock
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
@@ -544,7 +549,6 @@ if RunAll
       assert_equal(nr_fis, @plugin.updated_fis.size)
       assert_equal(nr_pis, @plugin.updated_pis.size)
       assert(nr_fis + nr_pis, @plugin.updated.size)
-
     end
   end
 end
