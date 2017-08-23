@@ -3,6 +3,8 @@
 # FiParse::PatinfoHpricot -- oddb -- 08.05.2013 -- yasaka@ywesee.com
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
+$: << File.expand_path("../../../test", File.dirname(__FILE__))
+require 'stub/odba.rb'
 require 'model/patinfo'
 require 'textinfo_hpricot'
 
