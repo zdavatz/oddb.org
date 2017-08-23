@@ -67,10 +67,6 @@ class PiChapterChooser < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => :full_text,
   }
-  COMPONENT_CSS_MAP = {
-    [0,0,2] => 'chapter-tab',
-    [2,0]	  => 'chapter-tab bold',
-  }
   CSS_CLASS = 'composite'
   CSS_MAP = {
     [0,0,2]      => 'chapter-tab',
@@ -79,20 +75,26 @@ class PiChapterChooser < HtmlGrid::Composite
   }
   def init
     xwidth = self::class::XWIDTH
-    unless(@model.pointer.skeleton == [:create])
-      if(@session.state.allowed?)
-        components.store([2,0], :print_edit)
-      else
-        components.store([2,0], :print)
-      end
-    end
-    document = @model.send(@session.language)
     next_offset = 1
     @css_map            = {[0,0,2] => 'chapter-tab'}
+    @component_css_map = {
+      [0,0,2] => 'chapter-tab',
+      [1, 0]	  => 'chapter-tab',
+    }
+    unless(@model.pointer.skeleton == [:create])
+    document = @model.send(@session.language)
     if document.change_log.size > 0
-      @components.store([next_offset, 0], :change_log)
-      @css_map.store(           [next_offset, 0], 'chapter-tab')
+      components.store([next_offset, 0], :change_log)
+      @css_map.store(   [next_offset, 0], 'chapter-tab')
       next_offset += 1
+    end
+      if(@session.state.allowed?)
+        components.store([next_offset,0], :print_edit)
+      else
+        components.store([next_offset,0], :print)
+      end
+      colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
+      @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     end
     names = display_names(document)
     xx = 0
