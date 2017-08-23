@@ -82,12 +82,12 @@ module ODDB
                             ]
         @session.diff_info = diff_info
 
-        assert_equal(3, @session.choosen_fachinfo_diff.size)
+        assert_equal(3, @session.choosen_info_diff.size)
       end
       def test_diff_single_item
         @item   = ODDB::View::Drugs::FachinfoDocumentChangelogItem.new(@text_item.change_log[1], @session)
         @item.init
-        assert_match(@reg_nr, @session.choosen_fachinfo_diff[0].iksnr)
+        assert_match(@reg_nr, @session.choosen_info_diff[0].iksnr)
         result_single_item = @item.to_html(CGI.new)
         File.open("test_diff_single_item.html", 'w+') {|f| f.write result_single_item.split('<TD').join("\n") }if DEBUG_HTML
         assert_match(@@one_year_ago.strftime('%d.%m.%Y'), result_single_item)
@@ -102,8 +102,8 @@ module ODDB
         diff_info = [ @session.app.registrations.values.first,]
         @session.diff_info = diff_info
         @session.request_path = changelog_request_path
-        assert_equal(1, @session.choosen_fachinfo_diff.size)
-        assert_match(@reg_nr, @session.choosen_fachinfo_diff[0].iksnr)
+        assert_equal(1, @session.choosen_info_diff.size)
+        assert_match(@reg_nr, @session.choosen_info_diff[0].iksnr)
         @list.init
         result_change_item = @item.to_html(CGI.new)
         File.open("test_diff_single_item.html", 'w+') {|f| f.write result_change_item.split('<TD').join("\n") }if DEBUG_HTML
@@ -124,8 +124,8 @@ module ODDB
         diff_info = [ @session.app.registrations.values.first,]
         @session.diff_info = diff_info
         @session.request_path = changelog_request_path
-        assert_equal(1, @session.choosen_fachinfo_diff.size)
-        assert_match(@reg_nr, @session.choosen_fachinfo_diff[0].iksnr)
+        assert_equal(1, @session.choosen_info_diff.size)
+        assert_match(@reg_nr, @session.choosen_info_diff[0].iksnr)
         @list.init
         result_3_items = @list.to_html(CGI.new)
         File.open("test_diff.html", 'w+') {|f| f.write result_3_items.split('<TD').join("\n") } if DEBUG_HTML

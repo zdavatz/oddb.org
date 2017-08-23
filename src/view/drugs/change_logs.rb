@@ -9,7 +9,7 @@ module ODDB
   module View
     module Drugs
       # --- display de/gcc/show/fachinfo/63171/diff/31.10.2015
-      class FachinfoDocumentChangelogItemComposite < HtmlGrid::Composite
+      class DocumentChangelogItemComposite < HtmlGrid::Composite
         LEGACY_INTERFACE = false
         COMPONENTS = {
           [0,0, 0] => :nr_chunks,
@@ -44,8 +44,8 @@ module ODDB
           model.time.strftime('%d.%m.%Y')
         end
       end
-      class FachinfoDocumentChangelogItem < PrivateTemplate
-        CONTENT = View::Drugs::FachinfoDocumentChangelogItemComposite
+      class DocumentChangelogItem < PrivateTemplate
+        CONTENT = View::Drugs::DocumentChangelogItemComposite
         SNAPBACK_EVENT = :change_log
         def backtracking(model, session=@session)
           class_name = "th-pointersteps"
@@ -61,7 +61,11 @@ module ODDB
           #  /fachinfo/reg/65453
           link_ref = HtmlGrid::Link.new(:home, model, @session, self)
           link_ref.css_class = class_name
-          link_ref.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_info_diff.first.iksnr ])
+          if model.is_a?(ODDB::FachinfoDocument::ChangeLogItem)
+            link_ref.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_info_diff.first.iksnr ])
+          else
+            link_ref.href  = @lookandfeel._event_url(:patinfo,  [ :reg, @session.choosen_info_diff.first.iksnr ])
+          end
           link_ref.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_info_diff.first.name_base
           fields << link_ref
 
@@ -83,7 +87,7 @@ module ODDB
       end
 
       # --- display de/gcc/show/fachinfo/63171/diff
-      class FachinfoDocumentChangelogList < HtmlGrid::List
+      class ChangelogList < HtmlGrid::List
         LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
         COMPONENTS = {
@@ -116,16 +120,24 @@ module ODDB
           link
         end
         def get_link_href(model)
-          @lookandfeel._event_url(:show,[ :fachinfo,  @session.choosen_info_diff.first.iksnr,
-                                          :diff, model.time.strftime('%d.%m.%Y')
-                                        ] )
+          if model.is_a?(ODDB::FachinfoDocument::ChangeLogItem)
+            @lookandfeel._event_url(:show,[ :fachinfo,
+                                            @session.choosen_info_diff.first.iksnr,
+                                            :diff, model.time.strftime('%d.%m.%Y') ] )
+          elsif model.is_a?(ODDB::PatinfoDocument::ChangeLogItem)
+            @lookandfeel._event_url(:show,[ :patinfo,
+                                            @session.choosen_info_diff.first.iksnr,
+                                            @session.choosen_info_diff.first.seqnr,
+                                            @session.choosen_info_diff.first.ikscd,
+                                            :diff, model.time.strftime('%d.%m.%Y') ] )
+          end
         end
       end
-      class FachinfoDocumentChangelogsComposite < HtmlGrid::Composite
+      class ChangelogsComposite < HtmlGrid::Composite
         LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
         COMPONENTS = {
-          [0,0] =>  FachinfoDocumentChangelogList,
+          [0,0] =>  ChangelogList,
         }
         def initialize(model, session, container)
           # latest changes must come first!
@@ -133,9 +145,9 @@ module ODDB
           super
         end
       end
-      class FachinfoDocumentChangelogs < View::PrivateTemplate
+      class DocumentChangelogs < View::PrivateTemplate
         SEARCH_HEAD = View::SelectSearchForm
-        CONTENT = View::Drugs::FachinfoDocumentChangelogsComposite
+        CONTENT = View::Drugs::ChangelogsComposite
         def backtracking(model, session=@session)
           class_name = "th-pointersteps"
           fields = []

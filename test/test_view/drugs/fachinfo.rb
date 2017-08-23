@@ -11,7 +11,7 @@ require 'stub/cgi'
 require 'view/drugs/fachinfo'
 require 'view/drugs/ddd'
 require 'model/text'
-require 'stub/cgi'
+
 module ODDB
   module View
     module Drugs

@@ -88,9 +88,11 @@ module ODDB
         when /^(www\.|)(phyto-pharma|phytotherapeutika)\./i
           @flavor = 'phyto-pharma'
         else
-          puts(msg = "No @flavor found via #{server_name}")
-          SBSM.debug(msg)
+          if (m = /^\/[a-z]{2}\/([a-z]+)/.match(request_path))
+            @flavor = m[1]
+          end
         end unless @flavor
+        @flavor ||= 'gcc'
         @flavor = @flavor.to_s if @flavor
       end
 			@flavor ||= (@valid_input[:partner] || super)
@@ -275,18 +277,28 @@ module ODDB
 			@app.sponsor(flavor)
 		end
     # we expect a european date in the format tt.dd.yyyy
-    DIFF_REGEXP = /show\/fachinfo\/(\d{5})\/diff(?:\/(\d{2}\.\d{1,2}\.\d{1,4}))*/
-    def choosen_fachinfo_diff
+    FI_DIFF_REGEXP = /show\/fachinfo\/(\d{5})\/diff(?:\/(\d{2}\.\d{1,2}\.\d{1,4}))*/
+    PI_DIFF_REGEXP = /show\/patinfo\/(\d{5})\/(\d{2})\/(\d{3})\/diff(?:\/(\d{1,2}\.\d{1,2}\.\d{1,4}))*/
+    def choosen_info_diff
       item = nil
-      m = DIFF_REGEXP.match(request_path)
-      if m
-        reg = @app.registration(m[1])
-        log = reg.fachinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
-        if reg and m[2]
-          item = log.find{|item| item.time.strftime('%d.%m.%Y').eql?(m[2])}
-          return [reg, log, item].compact
+      m = FI_DIFF_REGEXP.match(request_path)
+      found = log = item = date = nil
+      if  m = FI_DIFF_REGEXP.match(request_path)
+        found = @app.registration(m[1])
+        log = found.fachinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
+        date = m[2]
+      elsif m = PI_DIFF_REGEXP.match(request_path)
+        found = @app.registration(m[1]).sequence(m[2]).package(m[3])
+        log = found.patinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
+        date = m[4]
+      end
+      puts "choosen_info_diff #{request_path} => #{[found.class, log.class, item.class].compact}"
+      if log
+        if found && date
+          item = log.find{|item| item.time.strftime('%d.%m.%Y').eql?(date)}
+          return [found, log, item].compact
         else
-          return [reg, log]
+          return [found, log]
         end
       end
       return []

@@ -2,9 +2,10 @@
 # encoding: utf-8
 # ODDB::View::Drugs::TestPatinfo -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-
+require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'view/drugs/patinfo'
@@ -42,7 +43,7 @@ class TestPatinfoComposite <Minitest::Test
                           :state       => state,
                           :user_input  => 'user_input',
                          )
-    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'])
+    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
     registration = flexmock('registration', :iksnr => 'iksnr')
     sequence   = flexmock('sequence', 
                           :registration => registration,
@@ -62,7 +63,7 @@ class TestPatinfoComposite <Minitest::Test
   end
   def test_document_composite
     model      = ODDB::PatinfoDocument2001.new
-    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'])
+    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
     registration = flexmock('registration', :iksnr => 'iksnr')
     sequence   = flexmock('sequence', 
                           :registration => registration,
