@@ -8,29 +8,32 @@ require 'htmlgrid/value'
 module ODDB
   module View
     module Drugs
-      def self.get_show_change_link_href(model, pack_or_reg, lnf, add = [] )
+      def self.get_show_change_link_href(model, pack_or_reg, lnf, supress_date = false )
+        may_be_date = supress_date ? [] : [ model.time.strftime('%d.%m.%Y')]
         if pack_or_reg.is_a?(ODDB::Registration)
           # http://ch.oddb.org/fr/gcc/show/fachinfo/65511/diff
           lnf._event_url(:show,[ :fachinfo,
                                           pack_or_reg.iksnr,
-                                          :diff, model.time.strftime('%d.%m.%Y') ] + add)
+                                          :diff] + may_be_date)
         elsif pack_or_reg.is_a?(ODDB::Package)
           # http://ch.oddb.org/de/gcc/show/patinfo/56195/01/002/diff
           lnf._event_url(:show,[ :patinfo,
                                           pack_or_reg.iksnr,
                                           pack_or_reg.seqnr,
                                           pack_or_reg.ikscd,
-                                          :diff, model.time.strftime('%d.%m.%Y') ] + add )
+                                          :diff] + may_be_date)
         end
       end
-      def self.get_change_log_href_and_value(pack_or_reg, lnf, add = []  )
+      def self.get_change_log_href_and_value(pack_or_reg, lnf)
         if pack_or_reg.is_a?(ODDB::Registration)
           # http://ch.oddb.org/fr/gcc/show/fachinfo/65511/diff
-          href  = lnf._event_url(:fachinfo, [ :reg, pack_or_reg.iksnr ] + add )
+          href  = lnf._event_url(:fachinfo, [ :reg, pack_or_reg.iksnr ])
           value = lnf.lookup(:fachinfo_name0) + pack_or_reg.name_base
         elsif pack_or_reg.is_a?(ODDB::Package)
           # http://ch.oddb.org/de/gcc/show/patinfo/56195/01/002/diff
-          href  = lnf._event_url(:patinfo,  [ :reg, pack_or_reg.iksnr ] + add )
+          href  = lnf._event_url(:patinfo,  [ :reg, pack_or_reg.iksnr,
+                                              :seq, pack_or_reg.seqnr,
+                                              :pack, pack_or_reg.ikscd ] )
           value = lnf.lookup(:patinfo_name0) + pack_or_reg.name_base
         end
         [href, value]
@@ -101,7 +104,7 @@ module ODDB
           fields << '&nbsp;-&nbsp;'
           link_changes = HtmlGrid::Link.new(:home, model, @session, self)
           link_changes.css_class = class_name
-          link_changes.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel, [:diff] )
+          link_changes.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel, :supress_date)
           link_changes.value = @lookandfeel.lookup(:change_log_backtracking)
           fields << link_changes
 

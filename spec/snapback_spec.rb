@@ -30,8 +30,6 @@ describe "ch.oddb.org snapback" do
   Search_SnapBack = /Suchresultat|Home/
   FI_url  = "de/gcc/fachinfo/reg/#{SNAP_IKSNR}"
   FI_Snap = /Sie befinden sich in - ,(Home|Suchresultat),Fachinformation zu #{SNAP_NAME}/
-  Diff_URL = /\/show\/fachinfo\/#{SNAP_IKSNR}\/diff/
-  Date_Regexp = /\d{2}.\d{2}.\d{4}/
   diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
   test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, Date_Regexp,  diff_url, /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
   test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",diff_url, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
@@ -84,24 +82,6 @@ describe "ch.oddb.org snapback" do
     expect(link.exist?).to be true
     link.click
     check_home_links
-  end
-
-  it "should have a working link to Änderungen from the diff" do
-    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
-    check_home_links
-    link = @browser.link(:text => Date_Regexp)
-    expect(link.exist?).to be true
-    saved_url = @browser.url.to_s.clone
-    saved_text = @browser.text
-    link.click
-    check_home_links
-    link = @browser.link(:text => /Änderungen/)
-    expect(link.exist?).to be true
-    link.click
-    check_home_links
-    expect(@browser.url.to_s).to eql saved_url.to_s
-    expect(@browser.text[0..100]).to eql saved_text[0..100]
-    expect(@browser.text).to eql saved_text
   end
 
   it "should allow going back, then forward" do

@@ -64,6 +64,8 @@ AdminPassword     = 'ng1234'
 ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
 LeeresResult      =  /hat ein leeres Resultat/
+Date_Regexp = /\d{2}.\d{2}.\d{4}/
+
 SNAP_IKSNR = 40501
 SNAP_NAME = 'Lubex®'
 
