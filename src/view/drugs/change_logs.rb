@@ -54,6 +54,15 @@ module ODDB
                       }
 
         DEFAULT_CLASS = HtmlGrid::Value
+        def init
+          change_log_key = components.find{|x,y| y.eql?('th_change_log')}.first
+          if  @session.choosen_info_diff.first.is_a?(ODDB::Registration)
+            components[change_log_key] = 'th_change_log_FI'
+          elsif @session.choosen_info_diff.first.is_a?(ODDB::Package)
+            components[change_log_key] = 'th_change_log_PI'
+          end
+          super
+        end
         def diff(model)
           return model.diff.to_s(:html)
         end

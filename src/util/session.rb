@@ -292,7 +292,6 @@ module ODDB
         log = found.patinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
         date = m[4]
       end
-      puts "choosen_info_diff #{request_path} => #{[found.class, log.class, item.class].compact}"
       if log
         if found && date
           item = log.find{|item| item.time.strftime('%d.%m.%Y').eql?(date)}
