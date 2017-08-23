@@ -910,13 +910,14 @@ class OddbPrevalence
 	def search_oddb(query, lang)
 		# current search_order:
 		# 1. atcless
-		# 2. iksnr or ean13
-		# 3. atc-code
-		# 4. exact word in sequence name
-		# 5. company-name
-		# 6. substance
-		# 7. indication
-		# 8. sequence
+		# 2. drug_shortage
+		# 3. iksnr or ean13
+		# 4. atc-code
+		# 5. exact word in sequence name
+		# 6. company-name
+		# 7. substance
+		# 8. indication
+		# 9. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
 		result.search_query = query
@@ -930,7 +931,21 @@ class OddbPrevalence
 			result.atc_classes = [atc]
 			result.search_type = :atcless
 			return result
-    end
+		end
+		if(query == 'drug_shortage' || query == 'drugshortage')
+			atc = ODDB::AtcClass.new('n.n.')
+			atc.sequences = []
+			pacs = active_packages.find_all{|x| x.shortage_state && /^1/.match(x.shortage_state)}
+			pacs.each do |pac|
+				seq = ODDB::Sequence.new(pac.sequence.seqnr)
+				seq.registration = pac.registration
+				seq.packages.store pac.ikscd, pac
+				atc.sequences << seq
+			end
+			result.atc_classes = [atc]
+			result.search_type = :drug_shortage
+			return result
+		end
 		# iksnr or ean13
 		if(match = @@iks_or_ean.match(query))
 			iksnr = match[1]
