@@ -8,7 +8,33 @@ require 'htmlgrid/value'
 module ODDB
   module View
     module Drugs
-      # --- display de/gcc/show/fachinfo/63171/diff/31.10.2015
+      def self.get_show_change_link_href(model, pack_or_reg, lnf, add = [] )
+        if pack_or_reg.is_a?(ODDB::Registration)
+          # http://ch.oddb.org/fr/gcc/show/fachinfo/65511/diff
+          lnf._event_url(:show,[ :fachinfo,
+                                          pack_or_reg.iksnr,
+                                          :diff, model.time.strftime('%d.%m.%Y') ] + add)
+        elsif pack_or_reg.is_a?(ODDB::Package)
+          # http://ch.oddb.org/de/gcc/show/patinfo/56195/01/002/diff
+          lnf._event_url(:show,[ :patinfo,
+                                          pack_or_reg.iksnr,
+                                          pack_or_reg.seqnr,
+                                          pack_or_reg.ikscd,
+                                          :diff, model.time.strftime('%d.%m.%Y') ] + add )
+        end
+      end
+      def self.get_change_log_href_and_value(pack_or_reg, lnf, add = []  )
+        if pack_or_reg.is_a?(ODDB::Registration)
+          # http://ch.oddb.org/fr/gcc/show/fachinfo/65511/diff
+          href  = lnf._event_url(:fachinfo, [ :reg, pack_or_reg.iksnr ] + add )
+          value = lnf.lookup(:fachinfo_name0) + pack_or_reg.name_base
+        elsif pack_or_reg.is_a?(ODDB::Package)
+          # http://ch.oddb.org/de/gcc/show/patinfo/56195/01/002/diff
+          href  = lnf._event_url(:patinfo,  [ :reg, pack_or_reg.iksnr ] + add )
+          value = lnf.lookup(:patinfo_name0) + pack_or_reg.name_base
+        end
+        [href, value]
+      end
       class DocumentChangelogItemComposite < HtmlGrid::Composite
         LEGACY_INTERFACE = false
         COMPONENTS = {
@@ -58,22 +84,15 @@ module ODDB
           fields << link_home
           fields << '&nbsp;-&nbsp;'
 
-          #  /fachinfo/reg/65453
           link_ref = HtmlGrid::Link.new(:home, model, @session, self)
           link_ref.css_class = class_name
-          if model.is_a?(ODDB::FachinfoDocument::ChangeLogItem)
-            link_ref.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_info_diff.first.iksnr ])
-          else
-            link_ref.href  = @lookandfeel._event_url(:patinfo,  [ :reg, @session.choosen_info_diff.first.iksnr ])
-          end
-          link_ref.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_info_diff.first.name_base
+          link_ref.href, link_ref.value = Drugs.get_change_log_href_and_value(@session.choosen_info_diff.first, @lookandfeel)
           fields << link_ref
 
           fields << '&nbsp;-&nbsp;'
-          #  /fachinfo/reg/65453
           link_changes = HtmlGrid::Link.new(:home, model, @session, self)
           link_changes.css_class = class_name
-          link_changes.href  = @lookandfeel._event_url(:show, [:fachinfo, @session.choosen_info_diff.first.iksnr, :diff])
+          link_changes.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel, [:diff] )
           link_changes.value = @lookandfeel.lookup(:change_log_backtracking)
           fields << link_changes
 
@@ -86,7 +105,6 @@ module ODDB
         end
       end
 
-      # --- display de/gcc/show/fachinfo/63171/diff
       class ChangelogList < HtmlGrid::List
         LEGACY_INTERFACE = false
         CSS_CLASS = 'composite'
@@ -101,36 +119,23 @@ module ODDB
           return unless model and @session.choosen_info_diff.size > 0
           nr = 0; model.diff.each_chunk{|x| nr+= 1}
           link = HtmlGrid::Link.new(:change_log, model, @session, self)
-          link.href = get_link_href(model)
+          link.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel)
           link.value = nr
           link
         end
         def change_log_date(model)
           return unless model and @session.choosen_info_diff.size > 0
           link = HtmlGrid::Link.new(:change_log, model, @session, self)
-          link.href = get_link_href(model)
+          link.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel)
           link.value = model.time.strftime('%d.%m.%Y')
           link
         end
         def trademark(model)
           return unless model and @session.choosen_info_diff.size > 0
           link = HtmlGrid::Link.new(:change_log, model, @session, self)
-          link.href = get_link_href(model)
+          link.href = Drugs.get_show_change_link_href(model, @session.choosen_info_diff.first, @lookandfeel)
           link.value = @session.choosen_info_diff.first.name_base
           link
-        end
-        def get_link_href(model)
-          if model.is_a?(ODDB::FachinfoDocument::ChangeLogItem)
-            @lookandfeel._event_url(:show,[ :fachinfo,
-                                            @session.choosen_info_diff.first.iksnr,
-                                            :diff, model.time.strftime('%d.%m.%Y') ] )
-          elsif model.is_a?(ODDB::PatinfoDocument::ChangeLogItem)
-            @lookandfeel._event_url(:show,[ :patinfo,
-                                            @session.choosen_info_diff.first.iksnr,
-                                            @session.choosen_info_diff.first.seqnr,
-                                            @session.choosen_info_diff.first.ikscd,
-                                            :diff, model.time.strftime('%d.%m.%Y') ] )
-          end
         end
       end
       class ChangelogsComposite < HtmlGrid::Composite
@@ -160,12 +165,10 @@ module ODDB
           return fields unless  @session.choosen_info_diff.first
 
           fields << '&nbsp;-&nbsp;'
-          #  /fachinfo/reg/65453
-          link_fi = HtmlGrid::Link.new(:home, model, @session, self)
-          link_fi.css_class = class_name
-          link_fi.href  = @lookandfeel._event_url(:fachinfo, [ :reg, @session.choosen_info_diff.first.iksnr ])
-          link_fi.value = @lookandfeel.lookup(:fachinfo_name0) + @session.choosen_info_diff.first.name_base
-          fields << link_fi
+          link = HtmlGrid::Link.new(:home, model, @session, self)
+          link.css_class = class_name
+          link.href, link.value = Drugs.get_change_log_href_and_value(@session.choosen_info_diff.first, @lookandfeel)
+          fields << link
 
           fields << '&nbsp;-&nbsp;'
           span = HtmlGrid::Span.new(model, session, self)
