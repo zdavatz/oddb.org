@@ -73,7 +73,7 @@ class StubResultAtc
 	end
 end
 class StubResultSession
-	attr_accessor :user_input
+	attr_accessor :user_input, :persistent_user_input
 	def initialize
 		@user_input = {}
 	end
@@ -86,6 +86,8 @@ class StubResultSession
 	def language 
 		:to_s
 	end
+  def persistent_user_input(key)
+  end
 end
 
 class TestResult <Minitest::Test

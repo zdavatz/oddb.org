@@ -29,6 +29,10 @@ class Result < State::Drugs::Global
     @pages = []
 		@model.session = @session
 		@model.atc_classes.delete_if { |atc| atc.package_count == 0 }
+      if /drug(_?)shortage/i.match(@session.persistent_user_input(:search_query)) && !@session.user_input(:sortvalue)
+         @sortby = [:name_base]
+         sort
+      end
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
 			@default_view = ODDB::View::Drugs::EmptyResult
     elsif(@model.overflow?)
