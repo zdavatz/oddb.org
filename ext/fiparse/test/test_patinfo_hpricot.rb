@@ -14,7 +14,6 @@ $: << File.expand_path('../../..', File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'patinfo_hpricot'
-require 'stub/odba'
 require 'plugin/text_info'
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 require 'stub/cgi'

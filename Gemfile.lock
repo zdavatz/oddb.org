@@ -136,6 +136,7 @@ GEM
     rdoc (3.9.4)
     rmagick (2.13.4)
     rmail (1.0.0)
+    rpdf2txt (0.8.4)
     rrba (1.0.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
@@ -284,6 +285,7 @@ DEPENDENCIES
   rdoc (= 3.9.4)
   rmagick (= 2.13.4)
   rmail (= 1.0.0)
+  rpdf2txt (= 0.8.4)
   rspec
   rspec-core
   ruby-units
