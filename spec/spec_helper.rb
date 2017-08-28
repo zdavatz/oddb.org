@@ -38,6 +38,7 @@ require 'page-object'
 require 'fileutils'
 require 'pp'
 require 'watir'
+require 'minitest/spec/expect'
 
 homeUrl ||= ENV['ODDB_URL']
 homeUrl ||= "http://oddb-ci2.dyndns.org"

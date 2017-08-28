@@ -70,6 +70,7 @@ group :test do
   gem 'rspec-core'
   gem 'minitest'
   gem 'minitest-should_syntax'
+  gem 'minitest-spec-expect'
   gem 'watir'
   gem 'chromedriver-helper'
   gem 'watir-webdriver'
