@@ -485,7 +485,9 @@ describe "ch.oddb.org" do
       inhalt = @browser.text
       m = /sessions:\s+(\d+).+threads:\s+(\d+).+memory:\s+(\d+)/.match(inhalt)
       expect(m).not_to be nil
-      1.upto(3).each {|idx| expect(m[1].to_i).to be > 0 }
+      expect(m[1].to_i).to be >= 0 # sessions can be 0
+      expect(m[2].to_i).to be > 0 # we must have at least one thread
+      expect(m[3].to_i).to be > 0 # memory
       m2 = /^\s*(\d+)-(\d+)-(\d+)\s+(\d+):(\d+):(\d+):/.match(inhalt)
       expect(m2).not_to be nil
       time = Time.parse(m2[0])
@@ -496,6 +498,6 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end
