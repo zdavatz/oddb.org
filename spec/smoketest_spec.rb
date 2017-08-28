@@ -472,7 +472,32 @@ describe "ch.oddb.org" do
     end
   end
 
+  [ 'status',
+    'status_crawler',
+   'status_google_crawler',
+#   'status_evidentia',
+   'status_generika',
+#   'status_just-medical',
+   ].each do | name |
+    it "should have a working status page #{name}" do
+      @browser.goto(OddbUrl + '/resources/downloads/'+ name)
+      url = @browser.url
+      inhalt = @browser.text
+      m = /sessions:\s+(\d+).+threads:\s+(\d+).+memory:\s+(\d+)/.match(inhalt)
+      expect(m).not_to be nil
+      expect(m[1].to_i).to be >= 0 # sessions can be 0
+      expect(m[2].to_i).to be > 0 # we must have at least one thread
+      expect(m[3].to_i).to be > 0 # memory
+      m2 = /^\s*(\d+)-(\d+)-(\d+)\s+(\d+):(\d+):(\d+):/.match(inhalt)
+      expect(m2).not_to be nil
+      time = Time.parse(m2[0])
+      diff_seconds = Time.now.to_i - time.to_i
+      # * less than 5 minutes
+      expect(diff_seconds).to be < 310 
+    end
+  end
+
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

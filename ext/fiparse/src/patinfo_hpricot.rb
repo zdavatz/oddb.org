@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# FiParse::PatinfoHpricot -- oddb -- 08.05.2013 -- yasaka@ywesee.com
-# FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/patinfo'
 require 'textinfo_hpricot'
