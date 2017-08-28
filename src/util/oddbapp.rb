@@ -64,7 +64,7 @@ class OddbPrevalence
 		@last_medication_update ||= Time.now()
 	end
 	def init
-		self.create_unknown_galenic_group()
+		create_unknown_galenic_group()
 		@accepted_orphans ||= {}
 		@address_suggestions ||= {}
 		@analysis_groups ||= {}
@@ -1498,7 +1498,8 @@ class OddbPrevalence
       end
     end
   end
-	def self.create_unknown_galenic_group
+	private
+	def create_unknown_galenic_group
 		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)
 			@galenic_groups = {}
 			pointer = ODDB::Persistence::Pointer.new([:galenic_group])

@@ -168,6 +168,12 @@ module ODDB
 		def storage=(storage)
 			ODBA.storage = storage
 		end
+    def FiParse.extract_indications(path)
+      Indications.extract(path)
+    end
+    def FiParse.extract_minifi(path)
+      MiniFi.extract(path)
+    end
     def parse_fachinfo_docx(path, iksnr, lang='de')
       doc = YDocx::Document.open(path, {
         :iksnr => iksnr,
