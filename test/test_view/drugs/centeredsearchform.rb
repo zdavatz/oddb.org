@@ -7,6 +7,8 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 
 require 'minitest/autorun'
+require 'stub/odba'
+require 'model/fachinfo'
 require 'flexmock/minitest'
 require 'view/drugs/centeredsearchform'
 require 'model/package'
@@ -34,7 +36,6 @@ class TestCenteredSearchComposite <Minitest::Test
                             :lookup     => 'lookup',
                             :attributes => {},
                             :_event_url => '_event_url',
-                            :zones      => ['zones'],
                             :zones      => ['zones'],
                             :base_url   => 'base_url',
                             :zone_navigation => ['zone_navigation'],
@@ -331,7 +332,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
     @composite = ODDB::View::Drugs::GoogleAdSenseComposite.new(@model, @session)
   end
   def test_rss_feeds_left
-    flexmock(@session, 
+    flexmock(@session,
              :language    => 'language',
              :rss_updates => 'rss_updates',
             )
@@ -377,5 +378,29 @@ class TestGoogleAdSenseComposite <Minitest::Test
     feedback = flexmock('feedback', :item => item)
     flexmock(@model, :feedbacks => [feedback])
     assert_kind_of(ODDB::View::Drugs::RssFeedbacks, @composite.rss_feeds_right(@model, @session))
+  end
+  def test_rss_fake_admin_php
+    flexmock(@session,
+             :language    => 'en_US',
+             :rss_updates => 'rss_updates',
+             :request_path => 'test/wp-admin/setup-config.php?language=en_US',
+            )
+    flexmock(@lookandfeel) do |l|
+      l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
+      l.should_receive(:enabled?).once.with(:fachinfo_rss).and_return(true)
+      l.should_receive(:resource)
+      l.should_receive(:resource_global)
+    end
+    revision      = flexmock('revision',
+                             :month => 'month',
+                             :year  => 'year'
+                            )
+    registration  = flexmock('registration', :iksnr => 'iksnr')
+    fachinfo_news = flexmock('fachinfo_news', ODDB::Fachinfo.new)
+    flexmock(@model,
+             :fachinfo_news => [fachinfo_news]
+            )
+    result = @composite.rss_feeds_left(@model, @session)
+    assert_equal(0, result.length)
   end
 end

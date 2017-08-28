@@ -29,25 +29,23 @@ describe "ch.oddb.org change_log" do
     end
   end
 
-  { 'Fachinformation'      => "/de/gcc/show/fachinfo/40501/diff",
-    'Patienteninformation' => "/fr/gcc/show/patinfo/66418/01/001/diff"}.each do |type, diff_url|
-    it "should have a working link to Änderungen from the #{type} diff" do
-      @browser.goto(OddbUrl + diff_url)
-      check_home_links
-      link = @browser.link(:text => Date_Regexp)
-      expect(link.visible?).to be true
-      saved_url = @browser.url.to_s.clone
-      saved_text = @browser.text
-      link.click
+    it "should have a working link to Änderungen " do
+      @browser.goto(OddbUrl + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
       check_home_links
       link = @browser.link(:text => /Änderungen|Changements/)
       expect(link.visible?).to be true
       link.click
       check_home_links
-      expect(@browser.url.to_s).to eql saved_url.to_s
-      expect(@browser.text[0..100]).to eql saved_text[0..100]
-      expect(@browser.text).to eql saved_text
+      saved_url = @browser.url.to_s.clone
+      saved_text = @browser.text
+      link = @browser.link(:text => /Information/i)
+      expect(link.visible?).to be true
+      link.click
+      check_home_links
     end
+  
+  { 'Fachinformation'      => "/de/gcc/show/fachinfo/40501/diff",
+    'Patienteninformation' => "/fr/gcc/show/patinfo/66418/01/001/diff"}.each do |type, diff_url|
     
     it "should have a working link to  #{type}information from the #{type} diff" do
       @browser.goto(OddbUrl + diff_url)

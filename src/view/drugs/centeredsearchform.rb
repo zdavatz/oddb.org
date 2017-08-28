@@ -426,6 +426,9 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
       content.push HpcNews.new(:hpc, @session, self)
     end
     content
+  rescue => error
+    SBSM.error "Return [] because of #{error} for #{model.class} requested via #{session.request_path}"
+    return []
   end
   def rss_feeds_right(model, session=@session)
     return unless(@lookandfeel.enabled?(:rss_box))

@@ -82,12 +82,12 @@ class PiChapterChooser < HtmlGrid::Composite
       [1, 0]	  => 'chapter-tab',
     }
     unless(@model.pointer.skeleton == [:create])
-    document = @model.send(@session.language)
-    if document.change_log.size > 0
-      components.store([next_offset, 0], :change_log)
-      @css_map.store(   [next_offset, 0], 'chapter-tab')
-      next_offset += 1
-    end
+      document = @model.send(@session.language)
+      if document.change_log.size > 0
+        components.store([next_offset, 0], :change_log)
+        @css_map.store(   [next_offset, 0], 'chapter-tab')
+        next_offset += 1
+      end
       if(@session.state.allowed?)
         components.store([next_offset,0], :print_edit)
       else
@@ -119,15 +119,20 @@ class PiChapterChooser < HtmlGrid::Composite
     super
   end
   def change_log(model, session=@session, key=:change_log)
-    link = HtmlGrid::Link.new(key, model, session, self)
-    link.set_attribute('title', @lookandfeel.lookup(:change_log))
-    ikscd = model.sequences.first.packages.values.first.ikscd
-    link.href = @lookandfeel._event_url(:show,  [:patinfo, model.sequences.first.iksnr, model.sequences.first.seqnr, ikscd, :diff] )
-    if @lookandfeel.enabled?(:evidentia, false)
-      img = get_image("patinfo_#{key.to_s}_icon".to_sym)
-      return [img, link]
-    else
-      return link
+    if  @model.description(@session.language).is_a?(ODDB::PatinfoDocument) &&
+        @model.description(@session.language).change_log.size > 0
+
+      link = HtmlGrid::Link.new(key, model, session, self)
+      link.set_attribute('title', @lookandfeel.lookup(:change_log))
+      args = Drugs.get_args(model, @session)
+      args += [ :diff]
+      link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
+      if @lookandfeel.enabled?(:evidentia, false)
+        img = get_image("patinfo_#{key.to_s}_icon".to_sym)
+        return [img, link]
+      else
+        return link
+      end
     end
   end
   def display_names(document)
