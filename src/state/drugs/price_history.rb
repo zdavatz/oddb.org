@@ -3,6 +3,7 @@
 # ODDB::State::Drugs::PriceHistory -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
 
+require 'model/package'
 require 'state/global_predefine'
 require 'view/drugs/price_history'
 
@@ -34,12 +35,12 @@ class PriceHistory < State::Drugs::Global
       dates = {}
       pack.prices.each do |key, prices|
         previous = nil
-        prices.sort_by do |price| price.valid_from end.each do |price|
+        next unless prices.is_a?(Array)
+        prices.sort_by do |price| price.valid_from || Date.today end.each do |price|
           date = price.valid_from
           change = (dates[date] ||= PriceChange.new(date))
           change.send("#{key}=", price)
-          if price.credits && previous && (pprice = previous.send(key)) \
-            && pprice.credits
+          if price.credits && previous && (pprice = previous.send(key)) && pprice.credits
             if pprice.to_f.abs > 0.0001
               change.send "percent_#{key}=", (price - pprice) / pprice * 100
             end
@@ -47,7 +48,7 @@ class PriceHistory < State::Drugs::Global
           previous = change
         end
       end
-      @model.concat dates.values
+      @model.concat dates.values.find_all{|x| x.valid_from}
     end
   end
 end

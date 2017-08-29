@@ -146,6 +146,16 @@ describe "ch.oddb.org" do
     expect(td.links.first.href).to match /\/price_history\//
   end
 
+  it "should display two differnt prices for 55717 daTSCAN TM 123 I-Ioflupane " do
+    @browser.goto "#{OddbUrl}/de/#{Flavor}/price_history/reg/55717/seq/01/pack/002"
+    inhalt = @browser.text.clone
+    first_index  = inhalt.index(/01.03.2012.*936.61.*1149.20/)
+    second_index = inhalt.index(/01.03.2010.*1070.00.*1294.25/)
+    expect(first_index).not_to be nil
+    expect(second_index).not_to be nil
+    expect(first_index < second_index)
+  end
+
   it "should show a registration info" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091"
     windowSize = @browser.windows.size
