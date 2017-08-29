@@ -289,6 +289,7 @@ module ODDB
         date = m[2]
       elsif m = PI_DIFF_REGEXP.match(request_path)
         found = @app.registration(m[1]).sequence(m[2]).package(m[3])
+        # found ||= @app.registration(m[1]).package(m[3])
         log = found.patinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
         date = m[4]
       end
