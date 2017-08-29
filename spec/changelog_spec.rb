@@ -29,6 +29,24 @@ describe "ch.oddb.org change_log" do
     end
   end
 
+    it "should work with Giotrif" do
+      select_product_by_trademark('Giotrif')
+      check_home_links
+      link = @browser.links.find{|x| /patinfo.*seq\/02/.match(x.href)}
+      link.click
+      check_home_links
+      link = @browser.link(:text => /Änderungen|Changements/)
+      expect(link.visible?).to be true
+      link.click
+      check_home_links
+      saved_url = @browser.url.to_s.clone
+      saved_text = @browser.text
+      link = @browser.link(:text => /Information/i)
+      expect(link.visible?).to be true
+      link.click
+      check_home_links
+    end
+
     it "should have a working link to Änderungen " do
       @browser.goto(OddbUrl + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
       check_home_links
