@@ -9,7 +9,6 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'model/galenicgroup'
-require 'view/logo'
 require 'model/analysis/group'
 require 'view/drugs/price_history'
 require 'htmlgrid/select'
