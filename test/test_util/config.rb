@@ -59,4 +59,26 @@ module ODDB
   @config = RCLConf::RCLConf.new(ARGV, defaults)
   @config
   end
+  class TestConfigLog <Minitest::Test
+    def setup
+      sleep 0.1
+      dir = File.expand_path(File.join(__FILE__, '..', '..', '..'))
+      @config_ru = File.join(dir, 'config.ru')
+      load 'config.rb'
+    end
+    def test_log_pattern
+      # this will be the apache rack_log. The app will be replace in the config.ru
+      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/app_log'))
+    end
+    def test_log_pattern_default_app
+      eval("::APPNAME=  nil")
+      load @config_ru
+      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/oddb_log'))
+    end
+    def test_log_pattern_with_appname
+      eval("::APPNAME='crawler'")
+      load @config_ru
+      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/crawler_log'))
+    end
+  end
 end
