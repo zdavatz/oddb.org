@@ -20,10 +20,10 @@ module ODDB
         else
           args = []
         end
-        if model.sequences.first
-          args += [:seq, model.sequences.first.seqnr ]
-        elsif  session && (m2 = /seq\/(\d+)/.match(session.request_path))
+        if  session && (m2 = /seq\/(\d+)/.match(session.request_path))
           args += [:seq, m2[1] ]
+        elsif model.sequences.first
+          args += [:seq, model.sequences.first.seqnr ]
         end
         if session && (m3 = /pack\/(\d+)/.match(session.request_path))
           args += [:pack, m3[1] ]

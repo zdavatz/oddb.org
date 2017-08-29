@@ -34,7 +34,7 @@ describe "ch.oddb.org" do
     "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/st_combined"
   end
 
-  def select_product_by_trademark(name)
+  def evidentia_select_product_by_trademark(name)
     @browser.goto create_url_for(name)
     @browser.element(:id => 'ikscat_1').wait_until_present
     expect(@browser.url.index(Evidentia_URL)).to eq 0
@@ -47,7 +47,7 @@ describe "ch.oddb.org" do
   end
 
   it "should list C09DB02 before C09DX03 when looking for Sevikar" do
-    select_product_by_trademark('Sevikar')
+    evidentia_select_product_by_trademark('Sevikar')
     drugs = get_drugs_as_arra_of_strings
     text = @browser.text.clone
     expected_order = [ 'C09DB02', 'C09DX03']
@@ -58,19 +58,19 @@ describe "ch.oddb.org" do
 
   # Reasoning: Levetiracetam is the active substance, not the trademark name
   it "should list Keppra at the top when searching for Levetiracetam" do
-    select_product_by_trademark('Levetiracetam')
+    evidentia_select_product_by_trademark('Levetiracetam')
     drugs = get_drugs_as_arra_of_strings
     expect(drugs.first).to match /Keppra/i
   end
 
   it "should list #{LeveDesitin} at the top when searching for #{LeveDesitin}" do
-    select_product_by_trademark(LeveDesitin)
+    evidentia_select_product_by_trademark(LeveDesitin)
     drugs = get_drugs_as_arra_of_strings
     expect(drugs.first).to match /#{LeveDesitin}/i
   end
 
   it 'should list all SL products before the Non-SL' do
-    select_product_by_trademark('Levetiracetamum')
+    evidentia_select_product_by_trademark('Levetiracetamum')
     # File.open('Levetiracetamum.text', 'w+'){|f| f.write text } ; binding.pry
     drugs = get_drugs_as_arra_of_strings
     [  'Flasche', 'Tabletten', ].each do |gal_group|
@@ -91,7 +91,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not contain a column Fachinfo" do
-    select_product_by_trademark(Lamivudin)
+    evidentia_select_product_by_trademark(Lamivudin)
     fi = @browser.td(:class_name => /list /, :text => 'FI')
     expect(fi.exist?).to eq false
   end
@@ -104,7 +104,7 @@ describe "ch.oddb.org" do
   end
 
   it "should contain a link to the limiation in Sevikar HCT preparation" do
-    select_product_by_trademark(Sevikar)
+    evidentia_select_product_by_trademark(Sevikar)
     link = @browser.link(:text => 'L')
     expect(link.href.index('limitation_text')).to be > 0
     expect(link.text).to eq 'L'
@@ -116,7 +116,7 @@ describe "ch.oddb.org" do
 
   it "should contain a link to the price comparision in price public" do
     # http://ch.oddb.org/de/gcc/search/zone/drugs/search_query/sevikar%20hct/search_type/st_sequence?#best_result
-    select_product_by_trademark(Sevikar)
+    evidentia_select_product_by_trademark(Sevikar)
     pubprice = @browser.td(:class_name => /pubprice/)
     expect(pubprice.exist?).to eq true
     expect(pubprice.text).to match /^\d+\.\d+/
@@ -141,7 +141,7 @@ describe "ch.oddb.org" do
   end
 
   it "should contain a link to the fachinfo for Lamivudin-Zidovudin" do
-    select_product_by_trademark(Lamivudin)
+    evidentia_select_product_by_trademark(Lamivudin)
     link = @browser.link(:text => Lamivudin)
     expect(link.exists?)
     expect(link.href.index('ean')).to eq(nil)
@@ -149,7 +149,7 @@ describe "ch.oddb.org" do
   end
 
   it "should display a limitation link for #{Sevikar}" do
-    select_product_by_trademark(Sevikar)
+    evidentia_select_product_by_trademark(Sevikar)
     expect(@browser.element(:id => 'ikscat_1').text).to eq 'B / SL'
     span = @browser.element(:id => 'deductible_1')
     expect(span.exist?).to eq true
@@ -163,14 +163,14 @@ describe "ch.oddb.org" do
   end
 
   it "should display lamivudin with SO and SG in category (price comparision)" do
-    select_product_by_trademark('lamivudin')
+    evidentia_select_product_by_trademark('lamivudin')
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?).to eq true
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?).to eq true
   end
 
   # Inhaltstoffe, z.B. Carbidopa
   it "should list trademark first e.g. Duodopa" do
-    select_product_by_trademark(Duodopa)
+    evidentia_select_product_by_trademark(Duodopa)
     link = @browser.link(:text => Duodopa)
     expect(link.exists?)
     expect(link.href.index('ean')).to eq(nil)
@@ -208,7 +208,7 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should display Cellcept before other" do
-    select_product_by_trademark('Cellcept')
+    evidentia_select_product_by_trademark('Cellcept')
     text = @browser.text.clone
     cellcept = text.scan(/Cellcept|Myfenax/)
     first = cellcept.index('Myfenax')
@@ -216,7 +216,7 @@ describe "ch.oddb.org" do
   end
 
   it "should list #{LeveDesitin} with a link to the product overview" do
-    select_product_by_trademark(LeveDesitin)
+    evidentia_select_product_by_trademark(LeveDesitin)
     expect(@browser.link(:href => /medical/).href).to match LeveDesitin.gsub(' ', '-')
     expect(@browser.link(:href => /medical/).text).to eql('')
     expect(@browser.link(:href => /medical/).href).to match LeveDesitin.gsub(' ', '-')
