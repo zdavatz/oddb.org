@@ -31,7 +31,7 @@ module ODDB
                       :sorted_feedbacks => [],
                       :package_by_ean13 => 'package',
                       )
-      @session = ODDB::Session.new(app: @app)
+      @session = flexmock('session', ODDB::Session.new(app: @app))
     end
     def teardown
       ODBA.storage = nil
@@ -148,6 +148,14 @@ module ODDB
     def test_interaction_basket
       @session.should_receive(:user_input).with(:substance_ids).and_return(nil)
       assert_equal([], @session.interaction_basket)
+    end
+    def test_interaction_detail
+      @session = flexmock('session', ODDB::Session.new(app: @app))
+      @session.should_receive(:event).at_least.once.and_return(:interaction_detail)
+      @session.should_receive(:user_input).with(:substance_ids).and_return(nil)
+      @session.should_receive(:user_input).with(:atc_code).at_least.once.and_return("C07AB02,G04BE03")
+      result =  @session.interaction_basket_atc_codes
+      assert_equal(['C07AB02', 'G04BE03'], @session.interaction_basket_atc_codes)
     end
     def test_interaction_basket_count
       assert_equal(0, @session.interaction_basket_count)
@@ -453,7 +461,7 @@ module ODDB
       res = @session.get_address_parent
       assert_equal('7601001380028', res)
     end
-    def test_change_log_fachfino
+    def test_change_log_fachinfo
       reg_nr = '51193'
       @session = ODDB::Session.new(app: @app)
 
