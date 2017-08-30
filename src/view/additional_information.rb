@@ -244,6 +244,8 @@ module ODDB
         link
       end
       def drugshortage(model, session=@session)
+        @shortcat_count ||= 0
+        @shortcat_count += 1
         short = model.shortage_state
         return nil unless short
         short_span = HtmlGrid::Span.new(model, session, self)
@@ -255,7 +257,7 @@ module ODDB
           short_span.set_attribute('style','color: green' + font_size)
         end
         url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
-        short_span.css_id = "ikscat_drugshortage"
+        short_span.css_id = "ikscat_drugshortage_#{@shortcat_count}"
         htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
         ODDB::View::TooltipHelper.set_java_script(short_span, htlm)
         short_span
