@@ -192,7 +192,8 @@ module ODDB
       @interaction_basket = @interaction_basket.compact.uniq
     end
     def interaction_basket_atc_codes
-      if atc_codes = user_input(:atc_code) and event == :interaction_basket
+
+      if (event == :interaction_basket || event == :interaction_detail) && (atc_codes = user_input(:atc_code))
         codes = atc_codes.split(/,/)
         @interaction_basket_atc_codes.delete_if { |code| !codes.delete(code) }
         codes.each { |code| @interaction_basket_atc_codes.push(code)}

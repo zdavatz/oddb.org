@@ -52,11 +52,14 @@ class InteractionDetail < State::Interactions::Global
       https.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       xml = ""
-      https.start {|w|
+      error_code  = -1
+      response = nil
+      https.start do |w|
         response = w.get(base_url)
         xml = response.body
-      }
-
+        error_code = response.code.to_i
+      end
+      return nil unless error_code >= 200 && error_code < 300
       # parse xml document
       doc = REXML::Document.new(xml)
       if mechanism = doc.elements['/EPha/Response/Interactions/Interaction/Mechanism']
