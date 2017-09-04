@@ -97,7 +97,7 @@ module ODDB
             end
           end
       }
-      allChapters[chapterName] = ptr.chapter if ptr.chapter
+      allChapters[chapterName] = ptr.chapter if ptr && ptr.chapter
       info =  self.to_textinfo(allChapters)
       info.iksnrs = []
       info.packages.paragraphs.each{ |pack| m=pack.match(/\d{13}/); info.iksnrs << m[0] if m  } if info.packages
