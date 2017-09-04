@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# letsencrypt unterstützt vor 2018 keine Wildcards! Siehe https://letsencrypt.org/docs/faq/#will-lets-encrypt-issue-wildcard-certificates
+WILDCARDS="*.epilepsie-generika.ch epilepsie-generika.ch *.epilepsie-generika.li epilepsie-generika.li *.epilepsie-medikament.ch epilepsie-medikament.ch *.epilepsie-therapie.ch *.generika.cc  *.nachahmer.ch *.oddb.org"
+
+# ch.oddb.org must be the first, the other ones are added alphabetically sorted
+DOMAINS="
+ch.oddb.org
+anthroposophika.ch
+anthroposophika.oddb.org
+anthroposophy.oddb.org
+desitin.ch.oddb.org
+desitin.oddb.org
+epilepsie-therapie.ch
+evidentia.oddb.org
+generika.cc
+generika.oddb.org
+homeopathy.oddb.org
+homoeopathika.oddb.org
+i.ch.oddb.org
+i.oddb.org
+just-medical.oddb.org
+mobile.ch.oddb.org
+mobile.oddb.org
+nachahmer.ch
+new.ch.oddb.org
+oddb.org
+oekk.oddb.org
+phyto-pharma.ch
+phyto-pharma.oddb.org
+phytotherapeutika.ch
+ramaze.ch.oddb.org
+santesuisse.oddb.org
+sl_errors.oddb.org
+webalizer.anthroposophika.ch
+webalizer.anthroposophika.oddb.org
+webalizer.ch.oddb.org
+webalizer.desitin.ch.oddb.org
+webalizer.evidentia.oddb.org
+webalizer.generika.cc
+webalizer.generika.oddb.org
+webalizer.homoeopathika.oddb.org
+webalizer.i.ch.oddb.org
+webalizer.i.mobile.oddb.org
+webalizer.i.oddb.org
+webalizer.just-medical.oddb.org
+webalizer.mobile.oddb.org
+webalizer.oddb.org
+webalizer.oekk.oddb.org
+webalizer.phyto-pharma.ch
+webalizer.phyto-pharma.oddb.org
+webalizer.phytotherapeutika.ch
+webalizer.santesuisse.oddb.org
+webalizer.xn--homopathika-tfb.ch
+webalizer.xn--homopathika-tfb.oddb.org
+www.anthroposophica.ch
+www.anthroposophika.ch
+www.ch.oddb.org
+www.oddb.org
+www.phyto-pharma.ch
+www.phytotherapeutika.ch
+www.xn--homopathika-tfb.ch
+xn--homopathika-tfb.ch
+xn--homopathika-tfb.oddb.org
+"
+
+TO_ADD=''
+for name in $DOMAINS
+do
+  TO_ADD="$TO_ADD -d $name"
+done
+echo please call manually the following commands
+echo cd /home/ywesee/software/letsencrypt
+echo /etc/init.d/apache2 stop
+echo ./certbot-auto --standalone certonly -w /var/www/oddb.org $TO_ADD
+echo /etc/init.d/apache2 stop
