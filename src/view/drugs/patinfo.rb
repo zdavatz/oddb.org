@@ -88,6 +88,11 @@ class PiChapterChooser < HtmlGrid::Composite
         @css_map.store(   [next_offset, 0], 'chapter-tab')
         next_offset += 1
       end
+      # text readability heatmap link
+      unless @session.user_input(:chapter)
+        components.store([next_offset, 0], :heatmap)
+        @css_map.store([next_offset, 0], 'chapter-tab')
+      end
       if(@session.state.allowed?)
         components.store([next_offset,0], :print_edit)
       else
@@ -134,6 +139,45 @@ class PiChapterChooser < HtmlGrid::Composite
         return link
       end
     end
+  end
+  def heatmap(model, session)
+    link = HtmlGrid::Link.new(:heatmap, model, session, self)
+    link.set_attribute('title', @lookandfeel.lookup(:heatmap))
+    seq = model.sequences.first
+    link.href = @lookandfeel._event_url(:show, [
+      :patinfo, seq.iksnr, seq.seqnr, seq.packages.values.first.ikscd])
+    link.onclick = <<-EOS
+(function(e) {
+  e.preventDefault();
+  var widget = document.getElementById('scrolliris_container');
+  if (widget) {
+    widget.outerHTML = "";
+    delete widget;
+  } else {
+    (function(d, w) {
+      var config = {
+          projectId: '#{ODDB.config.scrolliris_project_id}'
+        , apiKey: '#{ODDB.config.scrolliris_fi_read_key}'
+        }
+      , settings = {
+          endpointURL: 'https://api.scrolliris.io/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
+        }
+      , options = {
+          selectors: {
+            article: 'table td.article'
+          , heading: 'div > h3'
+          , paragraph: 'div > p'
+          , sentence: 'p > span'
+          , material: 'ul,ol,table,pre,code'
+          }
+        }
+      ;
+      var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://widget.scrolliris.io/projects/'+c.projectId+'/reflector.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
+    })(document, window);
+  }
+})(event);
+    EOS
+    link
   end
   def display_names(document)
     if document
@@ -214,8 +258,37 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
   CSS_MAP = {
     [0,0] => 'th',
     [1,0] => 'th right',
-    [0,2] => 'list',
+    [0,2] => 'list article',
   }
+  def init
+    super
+    unless @session.user_input(:chapter)
+      # text readability tracker (scrolliris)
+      @additional_javascripts ||= []
+      @additional_javascripts << <<-EOS
+(function(d, w) {
+  var config = {
+      projectId: '#{ODDB.config.scrolliris_project_id}'
+    , apiKey: '#{ODDB.config.scrolliris_pi_write_key}'
+    }
+  , settings = {
+      endpointURL: 'https://api.scrolliris.io/v1.0/projects/'+config.projectId+'/events/read'
+    }
+  , options = {
+      selectors: {
+        article: 'table td.article'
+      , heading: 'div > h3'
+      , paragraph: 'div > p'
+      , sentence: 'p > span'
+      , material: 'ul,ol,table,pre,code'
+      }
+    }
+  ;
+  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://script.scrolliris.io/projects/'+c.projectId+'/tracker.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(c,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
+})(document, window);
+EOS
+    end
+  end
   def chapter_chooser(model, session=@session)
     if(klass = self.class.const_get(:CHOOSER_CLASS))
       klass.new(model, session, self)
@@ -236,6 +309,21 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
   def patinfo_name(model, session)
     model = model.send(@session.language)
     super(model, session)
+  end
+  def javascripts(context)
+    scripts = ''
+    (@additional_javascripts || []).each do |script|
+      args = {
+        'type'     => 'text/javascript',
+        'language' => 'JavaScript',
+        'async'    => true
+      }
+      scripts << context.script(args) do script end
+    end
+    scripts
+  end
+  def to_html(context)
+    javascripts(context).to_s << super
   end
 end
 class PatinfoPrintInnerComposite < PatinfoInnerComposite
