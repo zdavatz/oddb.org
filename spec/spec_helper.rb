@@ -41,7 +41,7 @@ require 'watir'
 require 'minitest/spec/expect'
 
 homeUrl ||= ENV['ODDB_URL']
-homeUrl ||= "http://oddb-ci2.dyndns.org"
+homeUrl ||= "https://oddb-ci2.dyndns.org"
 OddbUrl = homeUrl
 Flavor    = OddbUrl.match(/just-medical/) ?  'just-medical' : 'gcc'
 ImageDest = File.join(Dir.pwd, 'images')

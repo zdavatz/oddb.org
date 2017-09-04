@@ -6,7 +6,7 @@ require 'spec_helper'
 
 describe "ch.oddb.org" do
 
-  Evidentia_URL = 'http://evidentia.oddb-ci2.dyndns.org'
+  Evidentia_URL = 'https://evidentia.oddb-ci2.dyndns.org'
   HomeURL       = "#{Evidentia_URL}/de/gcc/home_drugs/"
   Lamivudin     = 'Lamivudin-Zidovudin-Mepha'
   Sevikar       = 'Sevikar HCT'
@@ -23,6 +23,7 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto Evidentia_URL
+    expect(@browser.url.index(Evidentia_URL)).to eq 0
   end
 
   after :each do
@@ -44,6 +45,12 @@ describe "ch.oddb.org" do
 
   def get_drugs_as_arra_of_strings
     @browser.trs.find_all{|x| x.elements[1].title.eql?('Fachinformation') }.collect{|x| x.text.clone}
+  end
+
+  it "should work for evidentia" do
+    url =  'https://generika.oddb-ci2.dyndns.org'
+    @browser.goto url
+    expect(@browser.url.chomp('/')).to eq url
   end
 
   it "should list C09DB02 before C09DX03 when looking for Sevikar" do

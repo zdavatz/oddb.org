@@ -74,7 +74,7 @@ describe "ch.oddb.org" do
     price = 17
     cmd = "grant_download '#{ViewerUser}', 'oddb2.csv', #{price}"
     res = run_bin_admin(cmd)
-    wrong_url = /(-> http:\/\/[\w.]+)(.+)/.match(res)
+    wrong_url = /(-> https:\/\/[\w.]+)(.+)/.match(res)
     expect(wrong_url).not_to be nil
     destination = "#{OddbUrl}/#{wrong_url[2]}"
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
