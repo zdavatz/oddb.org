@@ -215,10 +215,10 @@ class FiChapterChooser < HtmlGrid::Composite
   end
   def display_names(document)
     names = (document ? document.chapter_names : [])
-    if @container.respond_to?(:photos) and !@container.photos.nil?
+    if @container.respond_to?(:photos) && @container.photos && !@container.photos.nil?
       names << :photos
     end
-    if @container.respond_to?(:links) and !@container.links.empty?
+    if @container.respond_to?(:links) && @container.links && !@container.links.empty?
       names << :links
     end
     names
