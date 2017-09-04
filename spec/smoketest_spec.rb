@@ -482,7 +482,7 @@ describe "ch.oddb.org" do
     end
   end
 
-  [ 'status',
+  [ 'status_oddb',
     'status_crawler',
    'status_google_crawler',
 #   'status_evidentia',
