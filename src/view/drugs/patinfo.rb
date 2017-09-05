@@ -92,6 +92,7 @@ class PiChapterChooser < HtmlGrid::Composite
       unless @session.user_input(:chapter)
         components.store([next_offset, 0], :heatmap)
         @css_map.store([next_offset, 0], 'chapter-tab')
+        next_offset += 1
       end
       if(@session.state.allowed?)
         components.store([next_offset,0], :print_edit)
