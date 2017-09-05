@@ -80,7 +80,13 @@ module ODDB
           values << @app.package_by_ean13(info.gtin).name
           keys.each do |key|
             next if :gtin.eql?(key)
-            values << (info[key] ? info[key].gsub(';', ',') : nil)
+            begin
+              values << (info[key] ? info[key].to_s.gsub(';', ',') : nil)
+            rescue => error
+              msg = "Got error: #{error} key: #{key} info: #{info}"
+              $STDOUT.puts  msg
+              raise msg
+            end
           end
           csv << values
         end
