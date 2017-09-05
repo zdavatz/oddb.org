@@ -270,15 +270,19 @@ module ODDB
       end
     end
 
-   def store_patinfo_change_diff(patinfo, old_text, patinfo_lang)
-     old_size = patinfo.change_log.size
+   def store_patinfo_change_diff(patinfo_doc, old_text, patinfo_lang)
+     unless patinfo_doc.is_a?(ODDB::PatinfoDocument) && patinfo_doc.change_log.is_a?(Array)
+       puts "Cannot update #{patinfo_doc.class}. It should be a ODDB::PatinfoDocument"
+       return
+     end
+     old_size = patinfo_doc.change_log.size
      new_text = patinfo_lang.to_s
       if old_text.eql?(new_text)
-        LogFile.debug "store_patinfo_change_diff: skip #{patinfo.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size}"
+        LogFile.debug "store_patinfo_change_diff: skip #{patinfo_doc.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size}"
       else
-        diff_item = patinfo.add_change_log_item(old_text, new_text)
-        patinfo.odba_store
-        LogFile.debug "store_patinfo_change_diff: #{patinfo.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size} -> #{patinfo.change_log.size}"
+        diff_item = patinfo_doc.add_change_log_item(old_text, new_text)
+        patinfo_doc.odba_store
+        LogFile.debug "store_patinfo_change_diff: #{patinfo_doc.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size} -> #{patinfo_doc.change_log.size}"
       end
    end
 
