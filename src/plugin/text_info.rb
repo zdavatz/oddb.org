@@ -20,7 +20,6 @@ require 'util/logfile'
 require 'rubyXL'
 
 module ODDB
-
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang,
                                   :informationUpdate, :refdata, :xml_file, :same_content_as_xml_file)
   class TextInfoPlugin < Plugin
@@ -238,7 +237,13 @@ module ODDB
       LogFile.debug "update_fachinfo_lang #{meta_info.iksnr} #{meta_info}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:fi].push meta_info.title
-        return
+        if fis.values.first.date.to_s.index(Date.today.year.to_s) ||
+          fis.values.first.date.to_s.index((Date.today.year-1).to_s)
+          LogFile.debug "@iksless date #{fis.values.first.date} accepted #{meta_info[:type]} as #{meta_info} not found in Packungen.xlsx"
+        else
+          LogFile.debug "@iksless date #{fis.values.first.date} rejected #{meta_info[:type]} as #{meta_info} not found in Packungen.xlsx"
+          return
+        end
       end
       begin
         if reg = @app.registration(meta_info.iksnr)
@@ -305,19 +310,17 @@ module ODDB
         LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} existing oid #{existing.oid} #{languages[lang].to_s.split("\n")[0..1]}"
         LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} new #{patinfo_lang.to_s.split("\n")[0..1]}"
         languages[lang] = patinfo_lang
-        ptr = existing.pointer
-        patinfo = @app.update ptr, languages
+        patinfo = @app.update  existing.pointer, languages
         store_patinfo_change_diff(patinfo.description(lang), old_text, patinfo_lang)
         patinfo.odba_store
       else
-        patinfo = @app.create_patinfo
-        patinfo.descriptions # create descriptions by default
-        patinfo.descriptions[lang] = patinfo_lang
-        reg.sequences.values.first.patinfo = patinfo
-        # we do not have to call store_patinfo_change_diff, as it is the first time
-        patinfo.odba_store
-        reg.sequences.values.first.odba_store
-        reg.odba_store
+        created = @app.create_patinfo;
+        languages = created.descriptions;
+        languages[lang] = patinfo_lang;
+        sequence = reg.sequences.values.first;
+        patinfo = sequence.patinfo = @app.update created.pointer, languages;
+        patinfo.odba_store;
+        sequence.odba_store;
         LogFile.debug "store_patinfo #{patinfo.pointer} none for reg.iksnr #{reg.iksnr} new oid #{patinfo.oid} #{ patinfo_lang.to_s.split("\n")[0..2]}"
       end
       reg.each_sequence do |seq|
@@ -337,7 +340,13 @@ module ODDB
       LogFile.debug "update_patinfo_lang #{meta_info} #{pis.keys}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:pi].push meta_info.title
-        return
+        if pis.values.first.date.to_s.index(Date.today.year.to_s) ||
+          pis.values.first.date.to_s.index((Date.today.year-1).to_s)
+          LogFile.debug "@iksless date #{pis.values.first.date} accepted #{meta_info[:type]} as #{meta_info} not found in Packungen.xlsx"
+        else
+          LogFile.debug "@iksless date #{pis.values.first.date} rejected #{meta_info[:type]} as #{meta_info} not found in Packungen.xlsx"
+          return
+        end
       end
       # return unless @options[:reparse] && @options[:newest]
       if pis.size != 1 || !pis.values.first
@@ -983,10 +992,7 @@ module ODDB
             age_in_hours = (age / 60*60).to_i
           end
           # informationUpdate could be read from meta_info.xml_file
-          if iksnrs_from_xml.size > 0 && type == 'fachinfo' and @app.registration(iksnrs_from_xml[0]) and not @app.registration(iksnrs_from_xml[0]).fachinfo
-            LogFile.debug "get_fi_pi_to_update: no reg or fi add #{meta_info}"
-            @to_parse << meta_info
-          elsif @options[:reparse] || age_in_hours < 3
+          if @options[:reparse] || age_in_hours < 3
             LogFile.debug "get_fi_pi_to_update: reparse #{@options[:reparse]} or age_in_hours < 3 is #{age_in_hours} #{meta_info}"
             @to_parse << meta_info
           else
@@ -1219,10 +1225,6 @@ module ODDB
       type = meta_info[:type].to_sym
       return unless Languages.index(meta_info.lang.to_sym)
       return if @options[:target] != :both && @options[:target] != type
-      if type == :pi && !@packages[meta_info[:iksnr]]
-        LogFile.debug "skip #{meta_info[:type]} as #{meta_info.iksnr} #{meta_info.title} not found in Packungen.xlsx"
-        return
-      end
       nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
       reg = nil
       reg = @app.registration(meta_info.iksnr)
