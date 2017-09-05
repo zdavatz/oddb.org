@@ -196,6 +196,7 @@ module ODDB
       @fachinfo.should_receive(:de).and_return(lang_de)
       @fachinfo.should_receive(:fr).and_return(lang_de)
       @fachinfo.should_receive(:it).and_return(lang_de)
+      @fachinfo.should_receive(:oid).and_return('oid')
       @fachinfo.should_receive(:pointer).and_return(pointer)
       @fachinfo.should_receive(:descriptions).and_return(@descriptions)
       @fachinfo.should_receive(:odba_store)
