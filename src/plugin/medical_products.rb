@@ -45,8 +45,8 @@ module ODDB
     end
     
     def update
-      data_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', defined?(Minitest) ? 'test' : '.', 'data', 'docx'))
-#      LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
+      data_dir = ODDB.config.data_dir
+      # LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
       atc_code = @app.atc_class(atc_code) 
       atc_code = add_dummy_medical_product unless atc_code
       @options[:files].each{
