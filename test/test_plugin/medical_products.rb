@@ -142,12 +142,13 @@ module ODDB
     end
 
   class TestMedicalProductPlugin <MiniTest::Unit::TestCase
-    unless defined?(@@datadir)
-      @@datadir = File.expand_path '../../ext/fiparse/test/data/docx/', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var', File.dirname(__FILE__)
-    end
+    @@datadir = File.expand_path '../../ext/fiparse/test/run/docx/', File.dirname(__FILE__)
+    @@origdir = File.expand_path '../../ext/fiparse/test/data/docx/', File.dirname(__FILE__)
+    @@vardir = File.expand_path '../var', File.dirname(__FILE__)
     
     def setup
+      FileUtils.rm_rf(@@datadir)
+      FileUtils.makedirs(@@datadir)
       assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
       FileUtils.mkdir_p @@vardir
       ODDB.config.data_dir = @@vardir
@@ -176,7 +177,7 @@ module ODDB
       super # to clean up FlexMock
     end
     def test_update_medical_product_with_absolute_path
-      fileName = File.join(@@datadir, 'Sinovial_DE.docx')
+      fileName = File.join(@@origdir, 'Sinovial_DE.docx')
       assert(File.exists?(fileName), "File #{fileName} must exist")
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
@@ -187,7 +188,7 @@ module ODDB
       assert_equal('Fertigspritze', packages.first.commercial_forms.first)
     end
     def test_update_medical_product_with_lang_and_relative
-      fileName = 'Sinovial_DE.docx'
+      fileName = File.join(@@origdir, 'Sinovial_DE.docx')
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
@@ -223,7 +224,7 @@ module ODDB
       assert_nil(packages.first.commercial_forms.first)
     end
     def test_update_invalid_ean
-      fileName = File.join('errors', 'invalid_ean13.docx')
+      fileName = File.join(@@origdir, 'errors', 'invalid_ean13.docx')
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       assert_raises(SBSM::InvalidDataError) {@plugin.update()}
