@@ -26,6 +26,9 @@ module ODDB
       @options ||= {}
       @latest_shortage = File.expand_path('../../data/html/drugshortage-latest.html', File.dirname(__FILE__))
       @latest_nomarketing = File.expand_path('../../data/xlsx/nomarketing-latest.xlsx', File.dirname(__FILE__))
+      @csv_file_path = File.join EXPORT_DIR, 'drugshortage.csv'
+      @yesterday_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{(@@today-1).strftime("%Y.%m.%d")}.csv"
+      @dated_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv"
       @report_shortage = []
       @report_nomarketing = []
       FileUtils.rm_f(@latest_shortage, :verbose => true)    if @options[:reparse] && File.exist?(@latest_shortage)
@@ -47,12 +50,17 @@ module ODDB
       start_time = Time.now
       update_nomarketing
       update_drugshortage
+      export_drugshortage_csv
       @duration_in_secs = (Time.now.to_i - start_time.to_i)
     end
     def export_drugshortage_csv
       @options = { }
-      @csv_file_path = File.join EXPORT_DIR, 'drugshortage.csv'
-      @dated_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv"
+      if report.empty? && File.exist?(@csv_file_path)
+        FileUtils.cp(@csv_file_path, @dated_csv_file_path, :verbose => true)
+        FileUtils.rm_f(@yesterday_csv_file_path) if File.exist?(@yesterday_csv_file_path) && IO.read(@yesterday_csv_file_path).eql?(IO.read(@csv_file_path))
+        return
+      end
+        
       session = SessionStub.new(@app)
       session.language = 'de'
       session.lookandfeel = LookandfeelBase.new(session)
@@ -91,7 +99,7 @@ module ODDB
           csv << values
         end
       end
-      FileUtils.cp(@csv_file_path, @dated_csv_file_path, :verbose => true)
+      FileUtils.rm_f(@yesterday_csv_file_path) if File.exist?(@yesterday_csv_file_path) && IO.read(@yesterday_csv_file_path).eql?(IO.read(@csv_file_path))
       @csv_file_path
     end
     # send a log mail after running the import
@@ -109,7 +117,7 @@ module ODDB
     private
     def report_shortage
       unless @shortages && @shortages.size  > 0
-        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
+        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage))
         @report_summary << "Nothing changed in #{SOURCE_URI}"
         return
       end

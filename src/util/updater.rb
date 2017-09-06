@@ -371,7 +371,6 @@ module ODDB
         plug = ShortagePlugin.new(@app, @options)
         plug.update
         return if plug.report.empty?
-        plug.export_drugshortage_csv
         log = Log.new(plug.date)
         log.update_values(log_info(plug))
         log.notify(subj)
