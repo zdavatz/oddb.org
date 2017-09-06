@@ -16,7 +16,8 @@ module ODDB
   end
   class ShortagePlugin < Plugin
     attr_reader :changes_shortages, :deleted_shortages, :found_shortages,
-                :nomarketing_href, :latest_shortage, :latest_nomarketing
+                :nomarketing_href, :latest_shortage, :latest_nomarketing, 
+                :csv_file_path, :dated_csv_file_path, :yesterday_csv_file_path
     attr_accessor :duration_in_secs,  :has_relevant_changes
   end
 end
@@ -187,12 +188,15 @@ DrugShortag deletions:
 
     end
     def test_export_csv
-      assert_equal(false, File.exist?(@csv_file))
+      FileUtils.rm(@plugin.csv_file_path) if File.exist?(@plugin.csv_file_path)
       @plugin.update(@agent)
       assert_equal(@csv_file , @plugin.export_drugshortage_csv)
       assert(File.exist?(@csv_file))
       check_csv_lines(IO.read(@csv_file))
-      assert(File.exist?(@csv_file.sub('.csv', '-2014.05.01.csv')))
+      assert(File.exist?(@plugin.csv_file_path))
+      assert_equal(@plugin.yesterday_csv_file_path, @csv_file.sub('.csv', '-2014.04.30.csv'))
+      assert_equal(@plugin.dated_csv_file_path, @csv_file.sub('.csv', '-2014.05.01.csv'))
+      assert(File.exist?(@plugin.dated_csv_file_path))
     end
     def test_date
       @plugin.update(@agent)
@@ -220,7 +224,16 @@ DrugShortag deletions:
       FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
+      FileUtils.rm_f(@plugin.yesterday_csv_file_path)
+      File.open(@plugin.dated_csv_file_path, 'w+') {|f| f.write( %(GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)
+))}
+
+      FileUtils.cp(@plugin.dated_csv_file_path, @plugin.yesterday_csv_file_path, :verbose => true)
       @plugin.update(@agent)
+      assert_equal(false, File.exist?(@plugin.yesterday_csv_file_path))
+      assert_equal(true, File.exist?(@plugin.dated_csv_file_path))
+      assert_equal(false, File.exist?(@plugin.yesterday_csv_file_path))
+
       add_no_changes_for_second_run
       @app.should_receive(:package_by_ean13).with('7680490590777').and_return(nil)
       @plugin = ShortagePlugin.new @app
@@ -229,6 +242,7 @@ DrugShortag deletions:
       assert_equal(0, result.size)
       assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_shortage)))
       assert_equal(false, File.exist?(Latest.get_daily_name(@plugin.latest_nomarketing)))
+      assert_equal(true, File.exist?(@plugin.dated_csv_file_path))
     end
     def test_run_with_changed_content
       @agent    = flexmock('agent', Mechanize.new)
@@ -263,6 +277,15 @@ DrugShortag deletions:
       assert(result.index(expected))
       FileUtils.rm_f(@plugin.latest_shortage)
       FileUtils.rm_f(@plugin.latest_nomarketing)
+    end
+    def test_create_drugshortage_csv
+      FileUtils.makedirs(File.dirname(@plugin.latest_shortage)) unless File.exist?(File.dirname(@plugin.latest_shortage))
+      FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
+      FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
+      FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
+      FileUtils.rm(@plugin.csv_file_path) if File.exist?(@plugin.csv_file_path)
+      @plugin.update(@agent)
+      assert(File.exist?(@plugin.csv_file_path))
     end
     def test_sending_email
       Util.configure_mail :test
