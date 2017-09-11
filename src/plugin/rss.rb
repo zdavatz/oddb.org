@@ -63,7 +63,7 @@ module ODDB
         nn.each do |matched|
           number_str = matched.join
           number_int = matched[0] + matched[2]
-          oddb_link  = "http://#{SERVER_NAME}/#{current_lang}/gcc/show/reg/#{number_int}"
+          oddb_link  = "#{root_url}/#{current_lang}/gcc/show/reg/#{number_int}"
           description.gsub!(
             number_str,
             "<a href='#{oddb_link}' target='_blank'>#{number_str}</a>"

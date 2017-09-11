@@ -22,7 +22,7 @@ module ODDB
         @app = app
         @cgi = CGI.initialize_without_offline_prompt('html4')
         @flavor = 'gcc'
-        @http_protocol = 'http'
+        @http_protocol = 'https'
         @server_name = SERVER_NAME
         @default_language = 'de'
         @currency_rates = {}
@@ -64,6 +64,9 @@ module ODDB
 		def report
 			''
 		end
+    def root_url
+      "https://#{SERVER_NAME}"
+    end
 		def resolve_link(model)
 			pointer = model.pointer
 			str = if(model.respond_to?(:name_base))
@@ -71,7 +74,7 @@ module ODDB
 			else
 				''
 			end
-			str << "http://#{SERVER_NAME}/de/gcc/resolve/pointer/" << CGI.escape(pointer.to_s) << ' '
+			str << "#{root_url}/de/gcc/resolve/pointer/" << CGI.escape(pointer.to_s) << ' '
 		rescue StandardError
 			"Error creating Link for #{pointer.inspect}"
 		end

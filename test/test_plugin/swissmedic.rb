@@ -390,7 +390,7 @@ if false
       assert_equal(expected, @plugin.pointer_from_row(row))
     end
       def test_resolve_link__with_pointer
-      expected = "http://#{SERVER_NAME}/de/gcc/show/reg/12345/seq/01/pack/001"
+      expected = "https://#{SERVER_NAME}/de/gcc/show/reg/12345/seq/01/pack/001"
       pointer = Persistence::Pointer.new([:registration, '12345'], ['sequence', '01'], ['package', '001'])
       package = flexmock('pack') do |pac|
         pac.should_receive(:iksnr).and_return('12345')

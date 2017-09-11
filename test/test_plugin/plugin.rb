@@ -13,14 +13,6 @@ require 'plugin/plugin'
 require 'fileutils'
 
 module ODDB
-  class Plugin
-    class SessionStub
-      class Session
-        DEFAULT_FLAVOR = 'default_flavor'
-      end
-    end
-  end
-
   class TestSessionStub <Minitest::Test
     def setup
       @app     = flexmock('app', :get_currency_rate => 'get_currency_rate')
@@ -64,12 +56,12 @@ module ODDB
                        :pointer   => 'pointer',
                        :name_base => 'name_base'
                       )
-      expected = "name_base:                                        http://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
+      expected = "name_base:                                        https://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
       assert_equal(expected, @plugin.resolve_link(model))
     end
     def test_resolve_link__else
       model = flexmock('model', :pointer => 'pointer')
-      expected = "http://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
+      expected = "https://#{SERVER_NAME}/de/gcc/resolve/pointer/pointer "
       assert_equal(expected, @plugin.resolve_link(model))
     end
     def test_resolve_link__error

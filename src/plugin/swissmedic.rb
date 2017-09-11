@@ -694,19 +694,18 @@ public
       lines.flatten.join("\n")
     end
     def resolve_link(ptr)
-
       if ptr.is_a?(Persistence::Pointer)
         if reg = @app.resolve(ptr) and reg.is_a?(ODDB::Registration)
-          "http://#{SERVER_NAME}/de/gcc/show/reg/#{reg.iksnr}"
+          "#{root_url}/de/gcc/show/reg/#{reg.iksnr}"
         elsif seq = @app.resolve(ptr) and seq.is_a?(ODDB::Sequence)
-          "http://#{SERVER_NAME}/de/gcc/show/reg/#{seq.iksnr}/seq/#{seq.seqnr}"
+          "#{root_url}/de/gcc/show/reg/#{seq.iksnr}/seq/#{seq.seqnr}"
         elsif pac = @app.resolve(ptr) and pac.is_a?(ODDB::Package)
-          "http://#{SERVER_NAME}/de/gcc/show/reg/#{pac.iksnr}/seq/#{pac.seqnr}/pack/#{pac.ikscd}"
+          "#{root_url}/de/gcc/show/reg/#{pac.iksnr}/seq/#{pac.seqnr}/pack/#{pac.ikscd}"
         end
       else
         return "no pointer for nil " unless ptr
         ptr = pointer_from_row(ptr)
-        "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
+        "#{root_url}/de/gcc/resolve/pointer/#{ptr}"
       end
     end
     #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])

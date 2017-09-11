@@ -103,7 +103,7 @@ module ODDB
       #}
       @updated.push(
         comp.name + " - " + "[#{update[:ean13]}]" + " - " +
-        sprintf("http://#{SERVER_NAME}/de/gcc/company/ean/%s", update[:ean13].to_s + " ")
+        sprintf("#{root_url}/de/gcc/company/ean/%s", update[:ean13].to_s + " ")
       )
       @app.update(comp.pointer, update, :refdata)
     end
@@ -138,7 +138,7 @@ sicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch
         EOS
 			]
       @probable_errors_oddb.each { |pack|
-        lines.push sprintf("%07i: http://#{SERVER_NAME}/de/gcc/resolve/pointer/%s",
+        lines.push sprintf("%07i: #{root_url}/de/gcc/resolve/pointer/%s",
                            pack.pharmacode, pack.pointer)
       }
 			lines.push nil
@@ -148,7 +148,7 @@ In den folgenden Fällen ist die Swissmedic-Packungsnummer von Medwin.ch
 ziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.
       EOS
       @probable_errors_medwin.each { |pack|
-        lines.push sprintf("%07i: http://#{SERVER_NAME}/de/gcc/resolve/pointer/%s",
+        lines.push sprintf("%07i: #{root_url}/de/gcc/resolve/pointer/%s",
                            pack.pharmacode, pack.pointer)
       }
 			lines.push nil

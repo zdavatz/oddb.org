@@ -108,7 +108,7 @@ module ODDB
                 unless nilpackages.empty? 
                   message =  "Package name may have a number in it and therefore basename becomes nil.\n"
                   message << "The following packages are skipped during export_generics, since the packages are not comparable.\n\n"
-                  link = "http://#{SERVER_NAME}/de/gcc/search/zone/drugs/search_query/"
+                  link = "https://#{SERVER_NAME}/de/gcc/search/zone/drugs/search_query/"
                   message << "Package (company, EAN code, link):\n" 
                   message << nilpackages.map{|pac| [pac.company_name, pac.barcode, link + pac.barcode].join(", ")}.join("\n")
                   message << "\n"
