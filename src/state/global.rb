@@ -882,7 +882,7 @@ module ODDB
 			end
 			alias :result :search
 			def _search_drugs(query, stype)
-				case stype
+				result = case stype
         when 'st_combined'
           @session.search_combined(query, @session.language)
 				when 'st_sequence'
@@ -900,6 +900,13 @@ module ODDB
 				else
 					@session.search_oddb(query)
 				end
+        if  @session.user_input(:search_imitation_SL_only) || true
+          puts "Before filtering using #{stype} for search_imitation_SL_only we have #{result.package_count} results"
+          result.each{|atc| atc.packages.reject! { |pack| !pack.sl_entry }}
+          count = 0; result.each{|atc| atc.packages.each { |pack| puts pack.sl_entry.class; count+=1 }}; count
+          puts "After filtering we have #{count} packages in result"
+        end
+        result
 			end
 			def _search_drugs_state(query, stype)
         if(stype == "st_registration" && (reg = @session.registration(query)))
@@ -918,7 +925,7 @@ module ODDB
           end
         else
           result = _search_drugs(query, stype)
-          if @session.lookandfeel.has_result_filter?
+          if @session.lookandfeel.has_result_filter? # eg. homeopathy
             lnf = @session.lookandfeel
             filter_proc = Proc.new do |seq| lnf.result_filter seq end
             result.filter! filter_proc

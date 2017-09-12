@@ -15,8 +15,17 @@ class Preferences < State::Global
     if style = @session.user_input(:style)
       @session.set_cookie_input(:style, style)
     end
-    [:search_type, :search_form].each do |key|
-      if val = @session.user_input(key)
+    [ :search_type,
+      :search_form,
+      :search_imitation_only,
+      :search_imitation_A,
+      :search_imitation_B,
+      :search_imitation_C,
+      :search_imitation_D,
+      :search_imitation_E,
+      :search_imitation_valid,
+     ].each do |key|
+      if val = !!@session.user_input(key)
         @session.set_cookie_input(key, val)
         @session.set_persistent_user_input(key, val)
       end

@@ -79,7 +79,6 @@ class PreferencesForm < View::Form
     if chosen
       radio.set_attribute('checked', true)
     end
-    puts "#{__LINE__}: Adding search_imitation_valid #{@lookandfeel.lookup(:search_imitation_SL_only)}"
     [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_SL_only)]
   end
   def search_imitation_valid(model, session=@session)
@@ -90,7 +89,6 @@ class PreferencesForm < View::Form
     if chosen
       radio.set_attribute('checked', true)
     end
-    puts "#{__LINE__}: Adding search_imitation_valid #{@lookandfeel.lookup(:search_imitation_valid)}"
     [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_valid)]
   end
   def search_imitation_types(model, session=@session)
