@@ -319,6 +319,15 @@ module ODDB
       drugs.merge!(persistent) if persistent
       drugs
     end
+
+    def update_limitation(sym_name)
+      verified_id = nil
+      id = cookie_set_or_get(sym_name) || @persistent_user_input[sym_name]
+      puts "update_limitation #{sym_name} id #{id}"
+      @persistent_user_input[sym_name] = id
+      id
+    end
+
     def zsr_id
       verified_id = nil
       id = cookie_set_or_get(:zsr_id) || @persistent_user_input[:zsr_id]

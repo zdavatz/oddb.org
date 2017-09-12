@@ -13,23 +13,35 @@ module ODDB
 class PreferencesForm < View::Form
   COMPONENTS = {
     [0,0] => 'style_chooser_description',
-    [0,2] => :styles,
-    [0,3] => 'search_type_selection_description',
-    [0,5] => :search_forms,
-    [0,7] => :search_types,
-    [0,8] => :zsr_id,
-    [0,9] => View::ZsrDetails,
-    [0,10] => :button,
+    [0,1] => :styles,
+    [0,2] => 'search_type_selection_description',
+    [0,3] => :search_forms,
+    [0,4] => :search_types,
+    [0,5] => 'search_imitation_description',
+    [0,6] => :search_imitation_types,
+    [0,7] => :search_imitation_SL_only,
+    [0,8] => 'search_swissmedic_description',
+    [0,9] => :search_imitation_valid,
+    [0,10] => 'zsr_description',
+    [0,11] => :zsr_id,
+    [0,12] => View::ZsrDetails,
+    [0,13] => :button,
   }
   CSS_MAP = {
     [0,0] => 'subheading',
-    [0,2] => 'list',
-    [0,3] => 'subheading',
-    [0,5] => 'list',
-    [0,7] => 'list',
-    [0,8] => 'list',
-    [0,9] => 'list',
-    [0,10] => 'button',
+    [0,1] => 'list',
+    [0,2] => 'subheading',
+    [0,3] => 'list',
+    [0,4] => 'list',
+    [0,5] => 'subheading',
+    [0,6] => 'button',
+    [0,7] => 'button',
+    [0,8] => 'subheading',
+    [0,9] => 'button',
+    [0,10] => 'subheading',
+    [0,11] => 'list',
+    [0,12] => 'list',
+    [0,13] => 'button',
   }
   CSS_CLASS = 'composite'
   def styles(model, session=@session)
@@ -56,6 +68,47 @@ class PreferencesForm < View::Form
       label = label_for(name, @lookandfeel.lookup("oddb_style_#{name}"))
       fields << [radio, '&nbsp;', label, div]
       fields << '<br/>'
+    end
+    fields
+  end
+  def search_imitation_SL_only(model, session=@session)
+    radio = HtmlGrid::InputRadio.new(:search_imitation_SL_only, model, session, self)
+    radio.set_attribute('id', :search_imitation_SL_only)
+    radio.value = :search_imitation_SL_only
+    chosen = session.get_cookie_input(:search_imitation_SL_only)
+    if chosen
+      radio.set_attribute('checked', true)
+    end
+    puts "#{__LINE__}: Adding search_imitation_valid #{@lookandfeel.lookup(:search_imitation_SL_only)}"
+    [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_SL_only)]
+  end
+  def search_imitation_valid(model, session=@session)
+    radio = HtmlGrid::InputRadio.new(:search_imitation_valid, model, session, self)
+    radio.set_attribute('id', :search_imitation_valid)
+    radio.value = :search_imitation_valid
+    chosen = session.get_cookie_input(:search_imitation_valid)
+    if chosen
+      radio.set_attribute('checked', true)
+    end
+    puts "#{__LINE__}: Adding search_imitation_valid #{@lookandfeel.lookup(:search_imitation_valid)}"
+    [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_valid)]
+  end
+  def search_imitation_types(model, session=@session)
+    fields = []
+    [
+      :search_imitation_A,
+      :search_imitation_B,
+      :search_imitation_C,
+      :search_imitation_D,
+      :search_imitation_E,
+    ].each do |method|
+      choosen = session.get_cookie_input(method)
+      radio = HtmlGrid::InputRadio.new(method, model, session, self)
+      radio.set_attribute('id', method.to_s)
+      radio.value = method.to_s
+      radio.set_attribute('checked', choosen)
+      puts "#{__LINE__}: Adding#{method} #{@lookandfeel.lookup(method)} choosen #{choosen}"
+      fields << [radio, "&nbsp;", @lookandfeel.lookup(method), '<br/>']
     end
     fields
   end
@@ -123,7 +176,7 @@ class PreferencesForm < View::Form
     input.set_attribute('onchange', js)
     fields << input
     fields
-  end  
+  end
   def button(model, session=@session)
     post_event_button(:update)
   end
