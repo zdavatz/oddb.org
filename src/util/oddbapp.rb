@@ -1894,7 +1894,7 @@ module ODDB
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preference(name, key)
       }
-    rescue Yus::YusError
+    rescue RangeError, Yus::YusError => error
       # user not found
     end
     def yus_get_preferences(name, keys)
