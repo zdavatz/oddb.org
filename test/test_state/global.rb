@@ -57,6 +57,8 @@ end
 						})[key]
 					end
 				end
+        def get_cookie_input(key)
+        end
 				def allowed?(foo, bar)
 					true
 				end
@@ -118,7 +120,9 @@ end
 			end
       @@saved = ODDB::RSS_PATH
  			def setup
-        @lnf = flexmock('lookandfeel', :zones => [:analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies], :flavor => nil).by_default
+        @lnf = flexmock('lookandfeel', :zones => [:analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies],
+                        :has_sequence_filter? => false,
+                        :flavor => nil).by_default
         @session = StubSession.new(@lnf)
 				@state = State::Global.new(@session, @session)
 			end
@@ -228,7 +232,7 @@ end
             q.should_receive(:is_a?).and_return(false)
             q.should_receive(:force_encoding).and_return('force_encoding')
         end
-        @lnf.should_receive(:has_result_filter?).and_return(false)
+        @lnf.should_receive(:has_sequence_filter?).and_return(false)
         flexstub(@session) do |s|
           s.should_receive(:user_input).with(:fachinfo).and_return(54316)
           s.should_receive(:user_input).and_return(nil)
@@ -1113,8 +1117,8 @@ end
           s.should_receive(:_search_drugs).and_return(result)
         end
         lookandfeel = flexmock('lookandfeel') do |lnf|
-          lnf.should_receive(:has_result_filter?).and_return(true)
-          lnf.should_receive(:result_filter)
+          lnf.should_receive(:has_sequence_filter?).and_return(true)
+          lnf.should_receive(:sequence_filter)
         end
         flexmock(@session) do |s|
           s.should_receive(:lookandfeel).and_return(lookandfeel)

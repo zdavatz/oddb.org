@@ -1446,15 +1446,15 @@ Zeno Davatz
         :search                   =>  'Suchen',
         :search_type              =>  'Art der Suche:&nbsp;',
         :search_type_selection_description =>   'Wählen Sie die Default-Suche die im Drop-Down immer zuerst erscheinen soll.',
-        :search_imitation_description => 'Eingrenzen nach Swissmedic Kategorie',
-        :search_imitation_A       =>  'A (Einmalige Abgabe auf ärztliche Verschreibung)',
-        :search_imitation_B       =>  'B (Abgabe auf ärztliche Verschreibung)',
-        :search_imitation_C       =>  'C (Abgabe nach Fachberatung durch Medizinalpersonen)',
-        :search_imitation_D       =>  'D (Abgabe nach Fachberatung)',
-        :search_imitation_E       =>  'E (Abgabe ohne Fachberatung)',
+        :search_limitation_description => 'Eingrenzen nach Swissmedic Kategorie',
+        :search_limitation_A       =>  'A (Einmalige Abgabe auf ärztliche Verschreibung)',
+        :search_limitation_B       =>  'B (Abgabe auf ärztliche Verschreibung)',
+        :search_limitation_C       =>  'C (Abgabe nach Fachberatung durch Medizinalpersonen)',
+        :search_limitation_D       =>  'D (Abgabe nach Fachberatung)',
+        :search_limitation_E       =>  'E (Abgabe ohne Fachberatung)',
         :search_swissmedic_description => 'Eingrenzen nach SL Medikamenten',
-        :search_imitation_SL_only =>  'Nur Medikamente aus der SL-Liste',
-        :search_imitation_valid   =>  'Nur aktuell zugelassene Medikamente',
+        :search_limitation_SL_only =>  'Nur Medikamente aus der SL-Liste',
+        :search_limitation_valid   =>  'Nur aktuell zugelassene Medikamente',
         :select_indication        =>  'Anwendungs-Auswahl',
         :select_indication_list   =>  'Die von Ihnen eingegebene Anwendung existiert noch nicht. Bitte wählen Sie eine andere oder erstellen Sie sie neu.',
         :select_substance_list    =>  'Der von Ihnen eingegebene Wirkstoff existiert noch nicht. Bitte wählen Sie einen anderen oder erstellen Sie ihn neu.',
@@ -2865,14 +2865,14 @@ Zeno Davatz
         :search_reset              =>  'Retour',
         :search_type              =>  'Type de la recherche:&nbsp;',
         :search_type_selection_description =>   'Choissisez le type de recherche, qui doit apparaître en premier dans la liste drop-down',
-        :search_imitation_description => 'Limitez le choix',
-        :search_imitation_SL_only =>  'Limitez selon catégorie Swissmedic',
-        :search_imitation_SL_A    =>  'SL A (Remise sur ordonnance médicale non renouvable)',
-        :search_imitation_SL_B    =>  'SL B (Remise sur ordonnance médicale)',
-        :search_imitation_SL_C    =>  'SL C (Remise sur conseil des professionnels de la santé)',
-        :search_imitation_SL_D    =>  'SL D (Remise sur conseil spécialisé)',
-        :search_imitation_SL_E    =>  'SL E (Remise sur conseil spécialisé)',
-        :search_imitation_valid   =>  'Limitez sloen médicament liste SL',
+        :search_limitation_description => 'Limitez le choix',
+        :search_limitation_SL_only =>  'Limitez selon catégorie Swissmedic',
+        :search_limitation_SL_A    =>  'SL A (Remise sur ordonnance médicale non renouvable)',
+        :search_limitation_SL_B    =>  'SL B (Remise sur ordonnance médicale)',
+        :search_limitation_SL_C    =>  'SL C (Remise sur conseil des professionnels de la santé)',
+        :search_limitation_SL_D    =>  'SL D (Remise sur conseil spécialisé)',
+        :search_limitation_SL_E    =>  'SL E (Remise sur conseil spécialisé)',
+        :search_limitation_valid   =>  'Limitez sloen médicament liste SL',
         :select_indication_list    =>  'L\'indication que vous avez choisie n\'est pas connue. Choisissez-en une autre ou confirmez la création d\'une nouvelle indication.',
         :select_indication        =>  'Sélection d\'indication',
         :select_substance          =>  'Choix du principe actif',
@@ -4136,14 +4136,14 @@ Zeno Davatz
         :search_type              =>  'Type of Search:&nbsp;',
         :select_indication_list    =>  'The requested indication is unknown. Choose a similar one or create a new indication from your input.',
         :search_type_selection_description =>   'Select the first item of the list of possible search type in the drop-down list',
-        :search_imitation_description => 'Limit the search to',
-        :search_imitation_SL_only =>  'Limit according to Swissmedic category',
-        :search_imitation_SL_A    =>  'A (One time release after prescription by doctor)',
-        :search_imitation_SL_B    =>  'B (Release after prescription of doctor)',
-        :search_imitation_SL_C    =>  'C (Release after advice of medical person)',
-        :search_imitation_SL_D    =>  'D (Release after adivce)',
-        :search_imitation_SL_E    =>  'E (Release without advice)',
-        :search_imitation_valid   =>  'Limit to drugs on SL',
+        :search_limitation_description => 'Limit the search to',
+        :search_limitation_SL_only =>  'Limit according to Swissmedic category',
+        :search_limitation_SL_A    =>  'A (One time release after prescription by doctor)',
+        :search_limitation_SL_B    =>  'B (Release after prescription of doctor)',
+        :search_limitation_SL_C    =>  'C (Release after advice of medical person)',
+        :search_limitation_SL_D    =>  'D (Release after adivce)',
+        :search_limitation_SL_E    =>  'E (Release without advice)',
+        :search_limitation_valid   =>  'Limit to drugs on SL',
         :select_indication        =>  'Select an indication',
         :select_substance         =>  'Choose active agent',
         :select_substance_list    =>  'The active agent you have entered does not exist. Please choose another one or create a new substance from your input.',
@@ -4601,7 +4601,7 @@ Zeno Davatz
       ObjectSpace.define_finalizer challenge, @@turing_finalizer
       challenge
     end
-    def has_result_filter?
+    def has_sequence_filter?
       false
     end
     def migel_list_components
@@ -4671,7 +4671,7 @@ Zeno Davatz
         [5,0]  =>  :google_search,
       }
     end
-    def result_filter pac_or_seq
+    def sequence_filter(sequence)
       true
     end
   end

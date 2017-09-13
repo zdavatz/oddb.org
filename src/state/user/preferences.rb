@@ -17,18 +17,18 @@ class Preferences < State::Global
     end
     [ :search_type,
       :search_form,
-      :search_imitation_only,
-      :search_imitation_A,
-      :search_imitation_B,
-      :search_imitation_C,
-      :search_imitation_D,
-      :search_imitation_E,
-      :search_imitation_valid,
-     ].each do |key|
-      if val = !!@session.user_input(key)
-        @session.set_cookie_input(key, val)
-        @session.set_persistent_user_input(key, val)
-      end
+      :search_limitation_A,
+      :search_limitation_B,
+      :search_limitation_C,
+      :search_limitation_D,
+      :search_limitation_E,
+      :search_limitation_SL_only,
+      :search_limitation_valid,
+    ].each do |key|
+      val = !!@session.user_input(key)
+      @session.set_cookie_input(key, val.to_s)
+      @session.set_persistent_user_input(key, val.to_s)
+      puts "Setting #{key} to #{val.inspect} from #{@session.user_input(key).inspect}"
     end
     if zsr_id = @session.user_input(:zsr_id)
       zsr_id = zsr_id.gsub(/[ \.]/, '')

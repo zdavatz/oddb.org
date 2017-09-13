@@ -7,8 +7,10 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
 require 'minitest/autorun'
+require 'stub/odba'
 require 'flexmock/minitest'
 require 'model/search_result'
+require 'model/sequence'
 
 module ODDB
   class TestAtcFacade <Minitest::Test
@@ -19,12 +21,13 @@ module ODDB
       @session.should_receive(:request_path).and_return(nil)
       @session.should_receive(:lookandfeel).and_return(@lnf)
       @session.should_receive(:user).and_return(nil)
-      @atc     = flexmock('atc')
+      @atc     = ODDB::AtcClass.new('C07AA05')
       @facade  = ODDB::AtcFacade.new(@atc, @session, @result)
     end
     def test_active_packages
-      flexmock(@atc, :active_packages => 'active_packages')
-      assert_equal('active_packages', @facade.active_packages)
+      flexmock(@atc, :packages => [flexmock('active', :expired? => false, :to_s => 'active_package')])
+      assert_equal(1, @facade.active_packages.size)
+      assert_equal('active_package', @facade.active_packages.first.to_s)
     end
     def test_code
       flexmock(@atc, :code => 'code')
@@ -38,10 +41,9 @@ module ODDB
       flexmock(@atc, :odba_id => 'odba_id')
       assert_equal('odba_id', @facade.odba_id)
     end
-    def test_packages
-      sequence = flexmock('sequence', :name => 'sequence')
-      package1 = flexmock('package1',
-                          :expired?        => nil,
+    def setup_two_packages(sequence)
+      @package1 = flexmock('package1',
+                          :expired?        => false,
                           :generic_type    => :original,
                           :name_base       => 'package1',
                           :galenic_forms   => [],
@@ -59,8 +61,8 @@ module ODDB
                           :ikscat          => 'ikscat',
                           :name            => 'name_package1',
                          )
-      package2 = flexmock('package2', 
-                          :expired?        => nil,
+      @package2 = flexmock('package2', 
+                          :expired?        => false,
                           :generic_type    => :original,
                           :name_base       => 'package2',
                           :galenic_forms   => [],
@@ -79,18 +81,22 @@ module ODDB
                           :name            => 'name_package2',
                          )
 
-      active_packages = [package2, package1]
-      flexmock(@atc, :active_packages => active_packages)
-      expected = [package1, package2]
+    end
+    def test_packages
+      sequence = flexmock('sequence', :name => 'sequence')
+      setup_two_packages(sequence)
+      active_packages = [@package2, @package1]
+      flexmock(@atc, :packages => active_packages)
+      expected = [@package1, @package2]
       assert_equal(expected, @facade.packages)
     end
     def test_empty?
-      flexmock(@atc, :active_packages => [])
+      flexmock(@atc, :packages => [])
       assert(@facade.empty?)
     end
     def test_has_ddd?
-      package = flexmock('package', :ddd => 'ddd')
-      flexmock(@atc, :active_packages => [package])
+      package = flexmock('package', :ddd => 'ddd', :expired? => false)
+      flexmock(@atc, :packages => [package])
       @facade  = ODDB::AtcFacade.new(@atc, @session, @result)
       assert(@facade.has_ddd?)
     end
@@ -103,8 +109,7 @@ module ODDB
       assert_equal('pointer', @facade.pointer)
     end
     def test_package_count
-      flexmock(@atc, :package_count => 'package_count')
-      assert_equal('package_count', @facade.package_count)
+      assert_equal(0, @facade.package_count)
     end
     def test_parent_code
       flexmock(@atc, :parent_code => 'parent_code')
@@ -120,6 +125,40 @@ module ODDB
   class TestSearchResult <Minitest::Test
     def setup
       @result = ODDB::SearchResult.new
+      @package = create_package
+    end
+    def create_package(name = 'package')
+       flexmock(name,
+                          :expired?        => nil,
+                          :generic_type    => :original,
+                          :name            => name + 'xx',
+                          :name_base       => name,
+                          :galenic_forms   => [],
+                          :dose            => 'dose',
+                          :company         => 'company',
+                          :out_of_trade    => false,
+                          :sl_generic_type => :original,
+                          :comparable_size => 1,
+                          :sl_entry        => nil,
+                          :registration    => flexmock('registration', :name_base => 'registration'),
+                          :iksnr           => 'isknr',
+                          :seqnr           => 'isknr',
+                          :ikscd           => 'ikscd',
+                          :ikscat          => 'ikscat',
+                          :public?         => true,
+                         )
+    end
+    def testresult_with_2_packages
+      @atc     = ODDB::AtcClass.new('C07AA05')
+      @atc.sequences << (sequence = ODDB::Sequence.new('01'))
+     
+      @package1 = create_package('package1')
+      @package2 = create_package('package2')
+      @atc.sequences.first.packages['001'] = @package1
+      @atc.sequences.first.packages['002'] = @package2
+      assert_equal(2, @atc.sequences.first.package_count)
+      @result.atc_classes = [@atc]
+      assert_equal(2, @result.package_count)
     end
     def test_atc_facades
       atc_class = flexmock('atc_class')
@@ -131,15 +170,26 @@ module ODDB
     def test_empty?
       assert(@result.empty?)
     end
-    def test_filter!
-      atc_class = flexmock('atc_class', :filter => 'filter')
-      @result.instance_eval('@atc_classes = [atc_class]')
-      assert_equal(['filter'], @result.filter!('filter_proc'))
+    def test_sequence_filter_nil
+      testresult_with_2_packages
+      @result.sequence_filter
+      assert_equal(2, @result.package_count)
+    end
+    def test_sequence_filter_true
+      testresult_with_2_packages
+      @result.sequence_filter= Proc.new do |seq| true end
+      assert(@result.sequence_filter)
+      assert_equal(2, @result.package_count)
+    end
+    def test_sequence_filter_false
+      testresult_with_2_packages
+      @result.sequence_filter= Proc.new do |seq| false end
+      assert(@result.sequence_filter)
+      assert_equal(0, @result.package_count)
     end
     def test_package_count
-      atc_class = flexmock('atc_class', :package_count => 1)
-      @result.instance_eval('@atc_classes = [atc_class]')
-      assert_equal(1, @result.package_count)
+      testresult_with_2_packages
+      assert_equal(2, @result.package_count)
     end
     def test_overflow?
       atc_class = flexmock('atc_class', :package_count => 1)
@@ -153,7 +203,7 @@ module ODDB
     end
     def test_delete_empty_packages
       # This is a testcase for a private method
-      atc_class = flexmock('atc_class', :active_packages => [])
+      atc_class = flexmock('atc_class', :packages => [])
       assert_equal([], @result.instance_eval('delete_empty_packages([atc_class])'))
     end
     def test_atc_sorted__already
@@ -163,7 +213,7 @@ module ODDB
     def test_atc_sorted
       atc_class = flexmock('atc_class', 
                            :package_count => 1,
-                           :active_packages => ['package']
+                           :packages => [@package]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
       result = @result.atc_sorted
@@ -173,7 +223,7 @@ module ODDB
     def test_atc_sorted__overflow
       atc_class = flexmock('atc_class', 
                            :package_count => 1,
-                           :active_packages => ['package'],
+                           :packages => [@package],
                            :description   => 'description'
                           )
       @result.instance_eval('@atc_classes = [atc_class, atc_class]')
@@ -185,9 +235,12 @@ module ODDB
     def test_atc_sorted__search_type_substance
       active_agent = flexmock('active_agent', :same_as? => nil)
       sequence = flexmock('sequence', :name => 'package')
+      registration = flexmock('registration', :name_base => 'name_base')
       package   = flexmock('package',
                            :expired?        => nil,
                            :generic_type    => :original,
+                           :registration    => registration,
+                           :sl_entry        => 'sl_entry',
                            :name_base       => 'name_base',
                            :galenic_forms   => [],
                            :dose            => 'dose',
@@ -201,7 +254,7 @@ module ODDB
                           )
       atc_class = flexmock('atc_class', 
                            :package_count => 1,
-                           :active_packages => [package]
+                           :packages => [package]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
       @result.instance_eval('@search_type = :substance')
@@ -212,7 +265,7 @@ module ODDB
     def test_atc_sorted__relevance_not_empty
       atc_class = flexmock('atc_class',
                            :package_count => 1,
-                           :active_packages => ['package']
+                           :packages => [@package]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
       @result.instance_eval('@relevance = {"key" => "value"}')
@@ -224,7 +277,7 @@ module ODDB
       sequence = flexmock('sequence', :active? => false)
       atc_class = flexmock('atc_class',
                            :package_count => 1,
-                           :active_packages => ['package'],
+                           :packages => [@package],
                            :sequences     => [sequence]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
@@ -240,7 +293,7 @@ module ODDB
       sequence = flexmock('sequence', :active? => true)
       atc_class = flexmock('atc_class',
                            :package_count => 1,
-                           :active_packages => ['package'],
+                           :packages => [@package],
                            :sequences     => [sequence]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
@@ -275,13 +328,24 @@ module ODDB
     def test_each
       atc_class = flexmock('atc_class', 
                            :package_count => 1,
-                           :active_packages => ['package']
+                           :packages => [@package]
                           )
       @result.instance_eval('@atc_classes = [atc_class]')
       @result.each do |atc|
         assert_kind_of(ODDB::AtcFacade, atc)
       end
     end
-
-  end if false
+    def test_filtered_packages
+      testresult_with_2_packages
+      filter_proc = Proc.new do |pack| !pack.name_base.eql?('package1')  end
+      assert_equal(2, @result.package_count)
+      assert_equal(1, @result.atc_classes.size)
+      assert_equal(2, @result.package_count)
+      @result.package_filters = {'only_package1' => filter_proc}
+      @result.apply_filters
+      assert_equal(1, @result.package_count)
+      assert_equal('package1', @result.atc_classes.first.packages.first.name_base)
+      assert_equal(1, @result.atc_classes.size)
+    end
+  end
 end

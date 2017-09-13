@@ -310,7 +310,7 @@ class ResultList < HtmlGrid::List
                  0
                end
         model = @session.state.pages[page]
-      end
+      end 
     end
 
     code = @session.persistent_user_input(:code)
@@ -319,6 +319,7 @@ class ResultList < HtmlGrid::List
         compose_subheader(atc, offset)
         offset = resolve_offset(offset, self::class::OFFSET_STEP)
         if(show_packages? || code == atc.code)
+                                               puts "view/drug/resultlist #{atc.code} with #{atc.packages.size} packages"
           packages = atc.packages
           super(packages, offset)
           offset[1] += packages.size

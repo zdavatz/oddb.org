@@ -3,6 +3,7 @@
 
 require 'htmlgrid/form'
 require 'htmlgrid/inputradio'
+require 'htmlgrid/inputcheckbox'
 require 'view/publictemplate'
 require 'view/form'
 require 'view/zsr'
@@ -17,11 +18,11 @@ class PreferencesForm < View::Form
     [0,2] => 'search_type_selection_description',
     [0,3] => :search_forms,
     [0,4] => :search_types,
-    [0,5] => 'search_imitation_description',
-    [0,6] => :search_imitation_types,
-    [0,7] => :search_imitation_SL_only,
+    [0,5] => 'search_limitation_description',
+    [0,6] => :search_limitation_types,
+    [0,7] => :search_limitation_SL_only,
     [0,8] => 'search_swissmedic_description',
-    [0,9] => :search_imitation_valid,
+    [0,9] => :search_limitation_valid,
     [0,10] => 'zsr_description',
     [0,11] => :zsr_id,
     [0,12] => View::ZsrDetails,
@@ -34,8 +35,8 @@ class PreferencesForm < View::Form
     [0,3] => 'list',
     [0,4] => 'list',
     [0,5] => 'subheading',
-    [0,6] => 'button',
-    [0,7] => 'button',
+    [0,6] => 'list',
+    [0,7] => 'list',
     [0,8] => 'subheading',
     [0,9] => 'button',
     [0,10] => 'subheading',
@@ -71,42 +72,33 @@ class PreferencesForm < View::Form
     end
     fields
   end
-  def search_imitation_SL_only(model, session=@session)
-    radio = HtmlGrid::InputRadio.new(:search_imitation_SL_only, model, session, self)
-    radio.set_attribute('id', :search_imitation_SL_only)
-    radio.value = :search_imitation_SL_only
-    chosen = session.get_cookie_input(:search_imitation_SL_only)
-    if chosen
-      radio.set_attribute('checked', true)
-    end
-    [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_SL_only)]
+  def search_limitation_SL_only(model, session=@session)
+    get_checkbock(:search_limitation_SL_only,  model, session)
   end
-  def search_imitation_valid(model, session=@session)
-    radio = HtmlGrid::InputRadio.new(:search_imitation_valid, model, session, self)
-    radio.set_attribute('id', :search_imitation_valid)
-    radio.value = :search_imitation_valid
-    chosen = session.get_cookie_input(:search_imitation_valid)
-    if chosen
-      radio.set_attribute('checked', true)
+  def get_checkbock(method,  model, session)
+    chosen = session.get_cookie_input(method)
+    checkbox = ::HtmlGrid::InputCheckbox.new(method, model, session, self)
+    checkbox.set_attribute('id', method.to_s)
+    if chosen && chosen.to_s.eql?('true')
+      checkbox.value = 'true'
+      checkbox.set_attribute('checked', true)
     end
-    [radio, "&nbsp;", @lookandfeel.lookup(:search_imitation_valid)]
+    puts "#{__LINE__}: Adding #{method}  #{@lookandfeel.lookup(method)} from #{session.get_cookie_input(method).inspect}"
+    [checkbox, "&nbsp;", @lookandfeel.lookup(method)]
   end
-  def search_imitation_types(model, session=@session)
+  def search_limitation_valid(model, session=@session)
+    get_checkbock(:search_limitation_valid,  model, session)
+  end
+  def search_limitation_types(model, session=@session)
     fields = []
     [
-      :search_imitation_A,
-      :search_imitation_B,
-      :search_imitation_C,
-      :search_imitation_D,
-      :search_imitation_E,
+      :search_limitation_A,
+      :search_limitation_B,
+      :search_limitation_C,
+      :search_limitation_D,
+      :search_limitation_E,
     ].each do |method|
-      choosen = session.get_cookie_input(method)
-      radio = HtmlGrid::InputRadio.new(method, model, session, self)
-      radio.set_attribute('id', method.to_s)
-      radio.value = method.to_s
-      radio.set_attribute('checked', choosen)
-      puts "#{__LINE__}: Adding#{method} #{@lookandfeel.lookup(method)} choosen #{choosen}"
-      fields << [radio, "&nbsp;", @lookandfeel.lookup(method), '<br/>']
+      fields << get_checkbock(method, model, session) +  [ '<br/>']
     end
     fields
   end

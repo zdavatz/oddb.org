@@ -27,8 +27,9 @@ module ODDB
       :ignore_patent, :impression, :invoice_htmlinfos, :limit_invoice_duration, :lppv,
       :parallel_import, :preview_with_market_date, :prescription, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
-      :search_imitation_only, :search_imitation_A, :search_imitation_B,
-      :search_imitation_C, :search_imitation_D, :search_imitation_E, :search_imitation_valid,
+      :search_limitation_A, :search_limitation_B,
+      :search_limitation_C, :search_limitation_D, :search_limitation_E, 
+      :search_limitation_SL_only, :search_limitation_valid,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
       :force_new_ydim_debitor, :textinfo_update, :keep_generic_type
     ]
