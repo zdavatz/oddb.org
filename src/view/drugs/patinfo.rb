@@ -145,6 +145,7 @@ class PiChapterChooser < HtmlGrid::Composite
     link = HtmlGrid::Link.new(:heatmap, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:heatmap))
     seq = model.sequences.first
+    return nil unless seq
     link.href = @lookandfeel._event_url(:show, [
       :patinfo, seq.iksnr, seq.seqnr, seq.packages.values.first.ikscd])
     link.onclick = <<-EOS
