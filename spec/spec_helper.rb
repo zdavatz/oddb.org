@@ -237,7 +237,7 @@ def check_download(element_to_click)
 end
 
 def select_product_by_trademark(name)
-  @browser.goto create_url_for(name)
+  @browser.goto create_url_for(name, 'st_sequence')
   @browser.element(:id => 'ikscat_1').wait_until_present
   expect(@browser.url.index(OddbUrl)).to eq 0
   expect(@browser.url.index("/de/gcc")).not_to eq 0
@@ -245,6 +245,6 @@ def select_product_by_trademark(name)
 end
 
 
-def create_url_for(query)
-  "#{OddbUrl}/de/gcc/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/st_combined"
+def create_url_for(query, stype= 'st_combined')
+  "#{OddbUrl}/de/gcc/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/#{stype}"
 end
