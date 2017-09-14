@@ -1787,7 +1787,7 @@ module ODDB
                           :vat_rate => 8.0
       inv.payment_received!
       inv.odba_store
-      "http://#{SERVER_NAME}/de/gcc/download/invoice/#{inv.oid}/email/#{email}/filename/#{filename}"
+      "https://#{SERVER_NAME}/de/gcc/download/invoice/#{inv.oid}/email/#{email}/filename/#{filename}"
     end
 
 		def assign_effective_forms(arg=nil)

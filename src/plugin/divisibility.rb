@@ -25,7 +25,7 @@ module ODDB
       content << "\n\n"
       urls = []
       @updated_sequences.each do |seq|
-        url = "http://#{SERVER_NAME}/de/gcc/drug/reg/#{seq.iksnr}/seq/#{seq.seqnr}"
+        url = "#{root_url}/de/gcc/drug/reg/#{seq.iksnr}/seq/#{seq.seqnr}"
         urls << url
       end
       content << urls.join("\n")

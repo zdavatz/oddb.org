@@ -41,7 +41,7 @@ module ODDB
                           )
       companies = {'company_name' => [fachinfo]}
       @plugin.instance_eval('@companies = companies')
-      expected = "company_name\nname_base:\n  http://#{SERVER_NAME}/de/gcc/fachinfo/reg/iksnr\n\n"
+      expected = "company_name\nname_base:\n  https://#{SERVER_NAME}/de/gcc/fachinfo/reg/iksnr\n\n"
       assert_equal(expected, @plugin.report)
     end
     def test_run

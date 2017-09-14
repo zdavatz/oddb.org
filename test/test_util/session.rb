@@ -497,6 +497,9 @@ module ODDB
         assert_equal(true, @session.is_mobile_app?)
         eval("ODDB::Session::SERVER_NAME = '#{saved_server_name}'")
         saved_server_name = ODDB::Session::SERVER_NAME
-      end
+    end
+    def test_root_url
+      assert_equal("https://www.oddb.org", @session.root_url)
+    end
   end
 end # ODDB

@@ -350,5 +350,8 @@ module ODDB
       end if ean_from_url
       parent
     end
+    def root_url
+      "https://#{SERVER_NAME}"
+    end
   end
 end

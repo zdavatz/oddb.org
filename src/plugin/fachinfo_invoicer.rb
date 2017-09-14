@@ -31,7 +31,7 @@ module ODDB
         report << company_name << "\n"
         fachinfos.sort_by { |fi| fi.name_base }.each { |fi|
           if reg = fi.registrations.first
-            report << sprintf("%s:\n  http://#{SERVER_NAME}/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr)
+            report << sprintf("%s:\n  #{root_url}/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr)
           end
         }
         report << "\n"

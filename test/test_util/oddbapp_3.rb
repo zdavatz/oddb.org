@@ -333,7 +333,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     flexstub(@app.system) do |sys|
       sys.should_receive(:update).and_return(inv)
     end
-    expected = "http://#{ODDB::SERVER_NAME}/de/gcc/download/invoice/oid/email/email/filename/filename"
+    expected = "https://#{ODDB::SERVER_NAME}/de/gcc/download/invoice/oid/email/email/filename/filename"
     assert_equal(expected, @app.grant_download('email', 'filename', 'price'))
   end
   def test_update_feedback_rss_feed

@@ -77,7 +77,7 @@ REPORT
       content.should_receive(:xpath).with('.//p/strong').and_return(desc)
       content.should_receive(:inner_html).and_return(text)
       assert_equal(
-        "Zulassungsnummer: <a href='http://#{SERVER_NAME}/de/gcc/show/reg/12345' target='_blank'>12‘345</a>",
+        "Zulassungsnummer: <a href='https://#{SERVER_NAME}/de/gcc/show/reg/12345' target='_blank'>12‘345</a>",
         @plugin.compose_description(content)
       )
       # 54'321
@@ -88,7 +88,7 @@ REPORT
       content.should_receive(:xpath).with('.//p/strong').and_return(desc)
       content.should_receive(:inner_html).and_return(text)
       assert_equal(
-        "Zulassungsnummer: <a href='http://#{SERVER_NAME}/de/gcc/show/reg/54321' target='_blank'>54'321</a>",
+        "Zulassungsnummer: <a href='https://#{SERVER_NAME}/de/gcc/show/reg/54321' target='_blank'>54'321</a>",
         @plugin.compose_description(content)
       )
     end
