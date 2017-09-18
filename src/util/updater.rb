@@ -202,7 +202,7 @@ module ODDB
     end
     def run
       logfile_stats
-      update_evidentia_fi_search_links
+      # update_evidentia_fi_search_links # Zeno decided to disable this job temporarily on 2017-09-18
       update_epha_interactions
 
       # drugshortage
