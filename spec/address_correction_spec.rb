@@ -80,7 +80,7 @@ describe "ch.oddb.org" do
                             root_url + '/de/gcc/pharmacy/ean/7601001380028',
                             ),
     ]
-  to_check[0..0].each {
+  to_check.each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do
       login(ViewerUser,  ViewerPassword)
@@ -136,6 +136,6 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end
