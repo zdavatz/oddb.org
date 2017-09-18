@@ -1714,7 +1714,7 @@ module ODDB
     end
 		def reset
 			@random_updater.kill if(@random_updater.is_a? Thread)
-      if RUN_UPDATER and @process == :user
+      if RUN_UPDATER && @process == :user && !defined?(Minitest)
         @random_updater = run_random_updater
       end
       SBSM::SessionStore.clear
