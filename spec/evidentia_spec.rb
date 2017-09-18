@@ -6,7 +6,7 @@ require 'spec_helper'
 
 describe "ch.oddb.org" do
 
-  Evidentia_URL = 'https://evidentia.oddb-ci2.dyndns.org'
+  Evidentia_URL = 'http://evidentia.oddb-ci2.dyndns.org:8412' # : 'https://evidentia.oddb.org'
   HomeURL       = "#{Evidentia_URL}/de/gcc/home_drugs/"
   Lamivudin     = 'Lamivudin-Zidovudin-Mepha'
   Sevikar       = 'Sevikar HCT'
@@ -31,6 +31,11 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, '_'+@idx.to_s)
   end
 
+  def get_first_drug
+    text = @browser.text.clone
+    m = /Präparat.*Ka­te­go­ri­sie­rung.*\n.*\n(.*)\n/.match(text)
+    return m[1]
+  end    
   def create_url_for(query)
     "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/st_combined"
   end
@@ -66,19 +71,17 @@ describe "ch.oddb.org" do
   # Reasoning: Levetiracetam is the active substance, not the trademark name
   it "should list Keppra at the top when searching for Levetiracetam" do
     evidentia_select_product_by_trademark('Levetiracetam')
-    drugs = get_drugs_as_arra_of_strings
-    expect(drugs.first).to match /Keppra/i
+    expect(get_first_drug).to match /Keppra/i
   end
 
   it "should list #{LeveDesitin} at the top when searching for #{LeveDesitin}" do
     evidentia_select_product_by_trademark(LeveDesitin)
-    drugs = get_drugs_as_arra_of_strings
-    expect(drugs.first).to match /#{LeveDesitin}/i
+    drug_line = get_first_drug
+    expect(drug_line).to match /#{LeveDesitin}/i
   end
 
   it 'should list all SL products before the Non-SL' do
     evidentia_select_product_by_trademark('Levetiracetamum')
-    # File.open('Levetiracetamum.text', 'w+'){|f| f.write text } ; binding.pry
     drugs = get_drugs_as_arra_of_strings
     [  'Flasche', 'Tabletten', ].each do |gal_group|
       last_SL = -1
@@ -182,8 +185,8 @@ describe "ch.oddb.org" do
     expect(link.exists?)
     expect(link.href.index('ean')).to eq(nil)
     expect(link.href.index('fachinfo')).to be > 0
-    text = @browser.text.clone
-    expect(/Präparate.*\n.*\n/.match(text)[0]).to match Duodopa
+    drug_line = get_first_drug
+    expect(drug_line).to match Duodopa
   end
 
   def check_cellcept(text)

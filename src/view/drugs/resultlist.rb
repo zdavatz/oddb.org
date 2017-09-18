@@ -319,7 +319,6 @@ class ResultList < HtmlGrid::List
         compose_subheader(atc, offset)
         offset = resolve_offset(offset, self::class::OFFSET_STEP)
         if(show_packages? || code == atc.code)
-                                               puts "view/drug/resultlist #{atc.code} with #{atc.packages.size} packages"
           packages = atc.packages
           super(packages, offset)
           offset[1] += packages.size

@@ -50,7 +50,6 @@ module ODDB
       @atc.pointer
     end
     def packages
-      # require 'pry'; binding.pry
       @packages ||= active_packages
       unless(@packages_sorted)
         @packages = sort_result(@packages, @session)
@@ -59,7 +58,6 @@ module ODDB
       @packages
     end
     def package_count(generic_type=nil)
-      # require 'pry'; binding.pry if generic_type
       return packages.size
     end
     def parent_code
@@ -87,9 +85,10 @@ module ODDB
       @relevance = {}
       @atc_classes = []
     end
-    def atc_facades
+    def atc_facades(session=nil)
+      @session = session
       @atc_facades ||= @atc_classes.collect do |atc_class|
-        atc = AtcFacade.new(atc_class, @session, self)
+        atc = AtcFacade.new(atc_class, session, self)
       end
       unless @atc_facades.is_a?(Array) && @atc_facades.first.is_a?(ODDB::AtcFacade)
         puts "atc_facades will flatten as #{@atc_facades.size} elements #{@atc_facades.first.class}"
@@ -98,7 +97,7 @@ module ODDB
       @atc_facades
     end
     def atc_sorted
-      atc_facades
+      atc_facades(@session)
       @atc_sorted or begin 
         if(overflow?)
           @atc_sorted = @atc_facades.sort_by { |atc| 
@@ -151,10 +150,10 @@ module ODDB
     def empty?
       @atc_classes.nil? || @atc_classes.empty?
     end
-    def sequence_filter
+    def sequence_filter(session=nil)
       @packages = []
       @atc_facades = nil
-      @atc_facades = atc_facades
+      @atc_facades = atc_facades(session)
       @atc_facades = @atc_facades.collect do |atc|
         if @sequence_filter
           sequences = atc.atc.sequences.select do |pack| @sequence_filter.call pack end
@@ -172,8 +171,8 @@ module ODDB
       @package_count = nil
       @atc_facades
     end
-    def apply_filters
-      sequence_filter
+    def apply_filters(session=nil)
+      sequence_filter(session)
       filtered = []
       @atc_facades.each do |facade|
         @package_filters.each do |key, filter_proc|
@@ -182,10 +181,12 @@ module ODDB
         end
       end
       @packages = filtered
-      @atc_facades.each do |facade|
-        puts "facade #{facade.atc.code} has #{facade.atc.packages.size} atc.packages and #{facade.packages.size} packages"
-      end;
-      puts "search_result #{__LINE__}: #{@package_filters.keys}: After we have  #{@packages.size} packages. @package_count #{@package_count.inspect}/#{package_count}"
+      if false # for debbing ony
+        @atc_facades.each do |facade|
+          puts "facade #{facade.atc.code} has #{facade.atc.packages.size} atc.packages and #{facade.packages.size} packages"
+        end;
+        puts "search_result #{__LINE__}: #{@package_filters.keys}: After we have  #{@packages.size} packages. @package_count #{@package_count.inspect}/#{package_count}"
+      end
       @atc_facades.each do |facade|
         @package_filters.each do |key, filter_proc|
           packages =  facade.atc.packages
@@ -208,7 +209,7 @@ module ODDB
       if @packages
         return @packages.size
       end
-      @package_count ||= atc_facades.inject(0) { |count, atc| 
+      @package_count ||= atc_facades(@session).inject(0) { |count, atc| 
         count + atc.packages.size }
     end
     def set_relevance(odba_id, relevance)

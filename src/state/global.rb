@@ -905,19 +905,16 @@ module ODDB
         end
         if result.respond_to?(:package_filters)
           result.package_filters = get_search_filters 
-          result.apply_filters
-          puts "state/global.rb result returns #{result.package_count}"
+          result.apply_filters(@session)
         end
         result
       end
       def get_search_filters
         filters = {}
         if  @session.get_cookie_input(:search_limitation_SL_only).to_s.eql?('true')
-          puts "Add filter search_limitation_SL_only"
           filters[:search_limitation_SL_only] = Proc.new do |pack| pack.sl_entry end
         end
         if  @session.get_cookie_input(:search_limitation_valid).to_s.eql?('true')
-          puts "Add filter search_limitation_valid"
           filters[:search_limitation_valid] = Proc.new do |pack| !pack.out_of_trade end
         end
         categories = []
@@ -930,10 +927,8 @@ module ODDB
           categories << key.to_s.sub('search_limitation_', '')
         end
         unless categories.empty?
-          puts "Add filter :search_limitation using #{categories}"
           filters[:search_limitation] = Proc.new do |pack| pack.ikscat && categories.index(pack.ikscat) end
         end
-        puts "\nHaving #{filters.size} filters #{filters.keys}\n"
         filters
       end
 			def _search_drugs_state(query, stype)

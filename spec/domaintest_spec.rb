@@ -43,6 +43,7 @@ DOMAINS= [
 'phyto-pharma.ch',
 'phyto-pharma.oddb.org',
 'phytotherapeutika.ch',
+'ramaze.ch.oddb.org',
 'santesuisse.oddb.org',
 'www.anthroposophica.ch',
 'www.anthroposophika.ch',
@@ -55,7 +56,6 @@ DOMAINS= [
 'xn--homopathika-tfb.oddb.org',
   ]
 DOMAINS_TO_BE_ADDED = [
-'ramaze.ch.oddb.org',
 'webalizer.anthroposophika.ch',
 'webalizer.anthroposophika.oddb.org',
 'webalizer.ch.oddb.org',
