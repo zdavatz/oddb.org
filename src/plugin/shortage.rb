@@ -132,7 +132,7 @@ module ODDB
       if @deleted_shortages.size > 0 || @changes_shortages.size > 0
         @has_relevant_changes = true
       else
-        FileUtils.rm(Latest.get_daily_name(@latest_shortage), :verbose => true)
+        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage), :verbose => true)
       end
     end
     def report_nomarketing
