@@ -28,6 +28,7 @@ class TestSequences <Minitest::Test
     @lnf     = flexmock('lookandfeel', 
                         :lookup => 'lookup',
                         :has_result_filter? => true,
+                        :has_sequence_filter? => false,
                         :result_filter => true
                        )
     sequence = flexmock('sequence', :has_public_packages? => nil)

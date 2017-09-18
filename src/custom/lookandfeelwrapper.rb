@@ -28,7 +28,7 @@ module SBSM
     def sequence_filter(sequence)
       res = @component.sequence_filter(sequence)
       if res && flt = self.class::SEQUENCE_FILTER
-        res &&= flt.call(pac_or_seq)
+        res &&= flt.call(sequence)
       end
       res
     end

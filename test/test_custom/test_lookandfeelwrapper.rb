@@ -22,10 +22,10 @@ module ODDB
 end
 module SBSM
   class StubLookandfeelWrapper < LookandfeelWrapper
-    def self.filter(pac_or_seq)
-      'self.class::RESULT_FILTER'
+    def self.filter(sequence)
+      'self.class::SEQUENCE_FILTER'
     end
-    RESULT_FILTER = self.method(:filter)
+    SEQUENCE_FILTER = self.method(:filter)
   end
   class TestLookandfeelWrapper <Minitest::Test
     def setup
@@ -35,19 +35,19 @@ module SBSM
       end
       @component = flexmock('component') do |c|
         c.should_receive(:session).and_return(session)
-        c.should_receive(:result_filter).and_return('result_filter')
+        c.should_receive(:sequence_filter).and_return('sequence_filter')
       end
       @look = LookandfeelWrapper.new(@component)
     end
     def test_format_price
       assert_equal('1.23', @look.format_price(123.4))
     end
-    def test_has_result_filter?
-      assert_equal(false, @look.has_result_filter?)
+    def test_has_sequence_filter?
+      assert_equal(false, @look.has_sequence_filter?)
     end
-    def test_result_filter
+    def test_sequence_filter
       wrapper = StubLookandfeelWrapper.new(@component)
-      assert_equal('self.class::RESULT_FILTER', wrapper.result_filter('pac_or_seq'))
+      assert_equal('self.class::SEQUENCE_FILTER', wrapper.sequence_filter(1))
     end
   end
 end
