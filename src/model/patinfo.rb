@@ -84,7 +84,7 @@ module ODDB
       item.time = date
       item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
       if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
-        puts "PatinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.split("\n")[0..2] : ''}"
+        # puts "PatinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.to_s.split("\n")[0..2] : ''}"
         return
       end
       already_disabled = GC.disable
