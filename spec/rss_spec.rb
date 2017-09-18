@@ -22,6 +22,27 @@ describe "ch.oddb.org" do
     @idx += 1
   end
 
+  def  check_for_rss_feed(link=nil)
+    # chromium just downloads the rss feeds
+    @filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+    @browser.goto(link.href) if link
+    if @browser.driver.browser.eql?(:firefox)
+      sleep(2)
+      text = @browser.text.clone
+      expect(/This is a “feed” of frequently changing content on this site.|Subscribe to this/o.match(text)).not_to eql nil
+      if false # old
+        puts GlobAllDownloads
+        filesAfterDownload =  Dir.glob(GlobAllDownloads)
+        diff_files = filesAfterDownload - @filesBeforeDownload
+        expect(diff_files.size).to eql 1
+        expect(File.basename(diff_files.first)).to eql subject + '.rss'
+      end
+    else
+      text = @browser.text.clone
+      expect(/logo_rss.png/.match(text)).not_to eql nil
+      expect(/<\/channel>/.match(text)).not_to eql nil
+    end
+  end
   {
     'hpc'             => 'Health Professional Communication \(HPC\)',
     'price_cut'       => 'Preissenkungen von Produkten in der Spezialitäten-Liste',
@@ -36,27 +57,7 @@ describe "ch.oddb.org" do
         link = @browser.link(:href => /rss\/channel\/#{subject}/)
         debug = /fachinfo/i.match(subject) ? true : false
         expect(link.exists?).to be true
-        if @browser.driver.browser.eql?(:firefox)
-          Watir.default_timeout = 60 if /fachinfo/i.match(subject) # reading fachinfo takes a long time
-          $stdout.puts "#{Time.now}: goto #{link.href} timeout #{Watir.default_timeout}" if debug
-          @browser.goto(link.href)
-          # We have problem as the fachinfo size is 26MB and goes back to 2006.
-          Watir.default_timeout = 600 if /fachinfo/i.match(subject) # reading fachinfo takes a long time
-          $stdout.puts "#{Time.now}: #{@browser.url} start reading text timeout #{Watir.default_timeout}" if debug
-          content = @browser.text.clone
-          File.open(subject + '.rss', 'w+' ) { |f| f.write content }
-          expect(content).to match /#{test_string}/
-          $stdout.puts "#{Time.now}: #{@browser.url} has is #{content.size} text.size long" if debug
-        else
-          # chromium just downloads the rss feeds
-          filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-          @browser.goto(link.href)
-          sleep(2)
-          filesAfterDownload =  Dir.glob(GlobAllDownloads)
-          diff_files = filesAfterDownload - filesBeforeDownload
-          expect(diff_files.size).to eql 1
-          expect(File.basename(diff_files.first)).to eql subject + '.rss'
-        end
+        check_for_rss_feed(link)
         @browser.back
       end
     }
@@ -65,27 +66,16 @@ describe "ch.oddb.org" do
   }.each do
     |subject, test_string|
       it "should have a working #{subject}" do
-        filesBeforeDownload =  Dir.glob(GlobAllDownloads)
+        @filesBeforeDownload =  Dir.glob(GlobAllDownloads)
         url = OddbUrl + '/de/gcc/rss/channel/' + subject + '.rss'
         @browser.goto url
-        if @browser.driver.browser.eql?(:firefox)
-          expect(@browser.url).to eql url
-          content = @browser.text.clone
-          expect(content).to match /#{test_string}/
-        else
-          # chromium just downloads the rss feeds
-          sleep(2)
-          filesAfterDownload =  Dir.glob(GlobAllDownloads)
-          diff_files = filesAfterDownload - filesBeforeDownload
-          expect(diff_files.size).to eql 1
-          expect(File.basename(diff_files.first)).to eql subject + '.rss'
-        end
+        check_for_rss_feed
       end
   end
 
   after :all do
     Watir.default_timeout = @saved_timeout
     $stdout.puts "#{Time.now}: #{__FILE__} after all. Restored timeout to #{@saved_timeout}"
-    @browser.close
+    @browser.close if @browser
   end
 end

@@ -73,19 +73,22 @@ SNAP_NAME = 'Lubex®'
 def setup_browser
   return if @browser
   FileUtils.makedirs(DownloadDir)
-  @default_chrome_options = Selenium::WebDriver::Chrome::Options.new
-  @default_chrome_options.add_argument('--ignore-certificate-errors')
-  @default_chrome_options.add_argument('--disable-popup-blocking')
-  @default_chrome_options.add_argument('--disable-translate')
+  if Browser2test[0].to_s.eql?('firefox')
+    @browser_options = Selenium::WebDriver::Firefox::Options.new
+  else
+    @browser_options = Selenium::WebDriver::Chrome::Options.new
+  end
+  @browser_options.add_argument('--ignore-certificate-errors')
+  @browser_options.add_argument('--disable-popup-blocking')
+  @browser_options.add_argument('--disable-translate')
   prefs = {
     prompt_for_download: false,
     default_directory: DownloadDir
   }
-  @default_chrome_options.add_preference(:download, prefs)
+  @browser_options.add_preference(:download, prefs)
   if Browser2test[0].to_s.eql?('firefox')
     puts "Setting upd default profile for firefox"
     profile = Selenium::WebDriver::Firefox::Profile.new
-    # profile['capabilities.firefox_binary.dir'] = '/usr/bin/firefox-bin'
     profile['browser.download.dir'] = DownloadDir
     profile['browser.download.folderList'] = 2
     profile['browser.helperApps.alwaysAsk.force'] = false
@@ -97,10 +100,11 @@ def setup_browser
         break
       end
     end
-    @browser = Watir::Browser.new :firefox, :profile => profile
+    # @browser_options.add_preference(:profile, profile)
+    @browser = Watir::Browser.new :firefox
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
-    @browser = Watir::Browser.new  :chrome, options: @default_chrome_options
+    @browser = Watir::Browser.new  :chrome, options: @browser_options
     Selenium::WebDriver::Chrome::Options#add_preference
   elsif Browser2test[0].to_s.eql?('ie')
     puts "Trying unknown browser type Internet Explorer"
@@ -153,10 +157,12 @@ end
 def logout
   setup_browser
   @browser.goto OddbUrl
-  sleep(0.1) unless @browser.link(:name=>'logout').exists?
   logout_btn = @browser.link(:name=>'logout')
+  sleep(0.1) unless login_link.exists?
   return unless  logout_btn.exists?
   logout_btn.click
+rescue Selenium::WebDriver::Error::ServerError => error
+  puts "logout with error #{error}"
 end
 
 def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
@@ -179,7 +185,8 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   }
   endTime = Time.now
   sleep(0.2)
-  @browser.link(:text=>'Plus').click if @browser.link(:text=>'Plus').exists?
+  plus_link =  @browser.link(:name => 'search_instant')
+  plus_link.click if plus_link.exist? && plus_link.visible? && /Plus/i.match(plus_link.text)
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 end
 
