@@ -99,10 +99,10 @@ describe "ch.oddb.org" do
 		@browser.text_field(:name, "phone").set '055 12345678'
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     @browser.button(:name => /checkout/).click; small_delay
+    skip("Paypal login page is no longer usable with Watir")
     expect(@customer_1.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_oddb_csv')
     link = @browser.link(:name => 'download')
@@ -142,6 +142,7 @@ describe "ch.oddb.org" do
   end
 
   it "should return a correct link to a CSV file if the payment is okay" do
+    skip("Paypal login page is no longer usable with Watir")
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     choose_medi_and_csv_display(nil)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
@@ -150,7 +151,6 @@ describe "ch.oddb.org" do
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(@browser.url).not_to match  /errors/
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_csv_okay')
@@ -167,6 +167,7 @@ describe "ch.oddb.org" do
   end
 
   it "should not download a CSV file if the payment was not accepted" do
+    skip("Paypal login page is no longer usable with Watir")
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     choose_medi_and_csv_display(@customer_2)
     expect(@customer_2.init_paypal_checkout(@browser)).to eql true
@@ -174,7 +175,6 @@ describe "ch.oddb.org" do
     expect(@customer_2.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(@browser.url).not_to match  /errors/
     sleep(1) # it takes some time to download the file
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
@@ -183,6 +183,7 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to cancel a paypal before login" do
+    skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
@@ -191,11 +192,11 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, 'paypal_csv_payment_cancelled')
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(@browser.url.index(OddbUrl)).not_to be nil
   end
 
   it "should be possible to cancel a paypal after login but before paying" do
+    skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
@@ -203,11 +204,11 @@ describe "ch.oddb.org" do
     puts "URL after #{@browser.url} OddbUrl"
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(@browser.url.index(OddbUrl)).not_to be nil
   end
 
   it "should be checkout via paypal as poweruser for one day sing a new credit card and login name" do
+    skip("Paypal login page is no longer usable with Watir")
     id = Time.now.to_i
     new_customer = PaypalUser.new("tst-#{id}@ywesee.com", "pw_#{id}", "last_#{id}", "first_#{id}")
     puts "Created @ywesee_user #{new_customer.ywesee_user} with ywesee_password #{new_customer.ywesee_password}"
@@ -218,7 +219,6 @@ describe "ch.oddb.org" do
     @browser.button(:name => 'checkout').click; small_delay
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaymentUnconfirmed
-    skip("Paypal login page is no longer usable with Watir")
     expect(new_customer.paypal_buy(@browser)).to eql true
     forward_to_home = @browser.link(:name => /forward_to_home|back_to_home/)
     puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"

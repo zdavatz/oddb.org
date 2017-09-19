@@ -46,7 +46,7 @@ describe "ch.oddb.org" do
       sleep idx*0.1
     end
 
-    Moor = 'Apotheke Moor'
+    Moor = 'Apotheke Moor AG'
     MoorEAN = '7601001380028'
   # We don't repeat here the tests that are in the smoketest!
   it "check pharmacy" do
