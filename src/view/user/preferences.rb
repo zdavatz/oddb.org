@@ -83,7 +83,6 @@ class PreferencesForm < View::Form
       checkbox.value = 'true'
       checkbox.set_attribute('checked', true)
     end
-    puts "#{__LINE__}: Adding #{method}  #{@lookandfeel.lookup(method)} from #{session.get_cookie_input(method).inspect}"
     [checkbox, "&nbsp;", @lookandfeel.lookup(method)]
   end
   def search_limitation_valid(model, session=@session)
