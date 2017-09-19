@@ -71,6 +71,7 @@ group :test do
   gem 'minitest-should_syntax'
   gem 'minitest-spec-expect'
   gem 'watir'
+  gem 'watir-scroll'
   gem 'chromedriver-helper'
   gem 'watir-webdriver'
   gem 'page-object'

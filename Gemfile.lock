@@ -204,6 +204,8 @@ GEM
       nokogiri (>= 1.4.2)
     watir (6.2.1)
       selenium-webdriver (~> 3.0)
+    watir-scroll (0.3.0)
+      watir (>= 6.0)
     watir-webdriver (0.9.9)
       selenium-webdriver (>= 2.46.2)
     webmock (3.0.1)
@@ -304,6 +306,7 @@ DEPENDENCIES
   trollop
   vcr
   watir
+  watir-scroll
   watir-webdriver
   webmock
   webrobots (= 0.1.1)
