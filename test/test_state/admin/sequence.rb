@@ -55,9 +55,10 @@ class TestResellerSequence <Minitest::Test
     assert_equal(@sequence, @sequence.get_patinfo_input({}))
   end
   def test_get_patinfo_input__patinfo_upload
+    pi_file  = flexmock('pi_file', :[] => {})
     flexmock(@session) do |s|
       s.should_receive(:user_input).once.with(:html_upload)
-      s.should_receive(:user_input).once.with(:patinfo_upload).and_return('pi_file')
+      s.should_receive(:user_input).at_least.once.with(:patinfo_upload).and_return(pi_file)
     end
     pointer = flexmock('pointer') do |p|
       p.should_receive(:skeleton).and_return([:company])  # This is the key point
