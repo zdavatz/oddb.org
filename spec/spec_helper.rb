@@ -196,6 +196,7 @@ def small_delay
 end
 
 def createScreenshot(browser, added=nil)
+  return
   small_delay
   if browser.url.index('?')
     name = File.join(ImageDest, File.basename(browser.url.split('?')[0]).gsub(/\W/, '_'))

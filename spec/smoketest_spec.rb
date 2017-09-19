@@ -220,7 +220,7 @@ describe "ch.oddb.org" do
   it "should find redirect an iphone to the mobile flavor" do
     begin
       iphone_ua =  "Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1"
-      new_options = @default_chrome_options.clone
+      new_options = @browser_options.clone
       new_options.args << "--user-agent=#{iphone_ua}"
       iphone_browser = Watir::Browser.new  :chrome, options: new_options
       iphone_browser.goto 'http://www.useragentstring.com/'
@@ -347,6 +347,7 @@ describe "ch.oddb.org" do
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
+    @browser.scroll.to :top
     @browser.link(:text, "Beispiel-Download").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
@@ -526,7 +527,7 @@ describe "ch.oddb.org" do
       @browser.goto(@user_pref_url)
       expect(@browser.checkbox(:id => limitation.to_s).set?).to be true
       select_product_by_trademark(drug_name)
-      binding.pry unless @browser.span(:class => 'breadcrumb-1').exist? # >Liste für "Methotrexat" (18)</span>'
+      # binding.pry unless @browser.span(:class => 'breadcrumb-1').exist? # >Liste für "Methotrexat" (18)</span>'
       list_title = @browser.span(:class => 'breadcrumb-1').text
       nr_items = /\((\d+)\)/.match(list_title)[1].to_i
       categories =  @browser.elements(:id => /ikscat_\d+$/).collect{|x| x.text}
