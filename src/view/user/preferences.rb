@@ -38,7 +38,7 @@ class PreferencesForm < View::Form
     [0,6] => 'list',
     [0,7] => 'list',
     [0,8] => 'subheading',
-    [0,9] => 'button',
+    [0,9] => 'list',
     [0,10] => 'subheading',
     [0,11] => 'list',
     [0,12] => 'list',
