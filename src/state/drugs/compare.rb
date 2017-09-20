@@ -51,7 +51,7 @@ class Compare < State::Drugs::Global
 		def initialize(package)
 			@package = PackageFacade.new(package, package)
 			@comparables = package.comparables.collect { |pack|
-				PackageFacade.new(pack, package) unless pack.expired?
+				PackageFacade.new(pack, package)
 			}.compact.sort
 			@comparables
 		end
