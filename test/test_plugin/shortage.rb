@@ -196,7 +196,7 @@ DrugShortag deletions:
       assert(File.exist?(@plugin.csv_file_path))
       assert_equal(@plugin.yesterday_csv_file_path, @csv_file.sub('.csv', '-2014.04.30.csv'))
       assert_equal(@plugin.dated_csv_file_path, @csv_file.sub('.csv', '-2014.05.01.csv'))
-      assert(File.exist?(@plugin.dated_csv_file_path))
+      assert(File.exist?(@plugin.dated_csv_file_path)) unless `which ssconvert`.chomp.empty?
     end
     def test_date
       @plugin.update(@agent)

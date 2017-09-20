@@ -882,7 +882,7 @@ module ODDB
 			end
 			alias :result :search
 			def _search_drugs(query, stype)
-				case stype
+				result = case stype
         when 'st_combined'
           @session.search_combined(query, @session.language)
 				when 'st_sequence'
@@ -900,7 +900,37 @@ module ODDB
 				else
 					@session.search_oddb(query)
 				end
-			end
+        if @session.lookandfeel.has_sequence_filter? # eg. homeopathy
+          result.sequence_filter = Proc.new do |seq| @session.lookandfeel.sequence_filter seq end
+        end
+        if result.respond_to?(:package_filters)
+          result.package_filters = get_search_filters 
+          result.apply_filters(@session)
+        end
+        result
+      end
+      def get_search_filters
+        filters = {}
+        if  @session.get_cookie_input(:search_limitation_SL_only).to_s.eql?('true')
+          filters[:search_limitation_SL_only] = Proc.new do |pack| pack.sl_entry end
+        end
+        if  @session.get_cookie_input(:search_limitation_valid).to_s.eql?('true')
+          filters[:search_limitation_valid] = Proc.new do |pack| !pack.out_of_trade end
+        end
+        categories = []
+        [ :search_limitation_A,
+          :search_limitation_B,
+          :search_limitation_C,
+          :search_limitation_D,
+          :search_limitation_E].each do |key|
+          next unless @session.get_cookie_input(key).to_s.eql?('true')
+          categories << key.to_s.sub('search_limitation_', '')
+        end
+        unless categories.empty?
+          filters[:search_limitation] = Proc.new do |pack| pack.ikscat && categories.index(pack.ikscat) end
+        end
+        filters
+      end
 			def _search_drugs_state(query, stype)
         if(stype == "st_registration" && (reg = @session.registration(query)))
           if(allowed?(reg))
@@ -918,11 +948,6 @@ module ODDB
           end
         else
           result = _search_drugs(query, stype)
-          if @session.lookandfeel.has_result_filter?
-            lnf = @session.lookandfeel
-            filter_proc = Proc.new do |seq| lnf.result_filter seq end
-            result.filter! filter_proc
-          end
           @session.set_cookie_input(:resultview, 'pages') if @session.flavor == 'desitin'
           state = State::Drugs::Result.new(@session, result)
           state.search_query = query

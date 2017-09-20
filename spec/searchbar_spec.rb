@@ -76,9 +76,8 @@ describe "ch.oddb.org" do
   end
 
   { '125Dihydroxycholecalciferol 1000' => '1,25-Dihydroxycholecalciferol',
-    '125'                              => '125',
-    '125'                              => '1,25-Dihydroxycholecalciferol',
     '125Dihydroxycholecalciferol'      => '1,25-Dihydroxycholecalciferol',
+    '125'                              => 'CA 125',
   }.each {
     |searchterm, searchtext|
     it "should be possible to find #{searchtext} when searching via #{searchterm} in analysen" do
@@ -89,6 +88,7 @@ describe "ch.oddb.org" do
       @browser.button(:name => 'search').click;  small_delay
 
       expect(@browser.text).not_to match LeeresResult
+      binding.pry unless  /#{searchtext}/.match(@browser.text)
       expect(@browser.text).to match /#{searchtext}/
     end
   }  unless ['just-medical'].index(Flavor)
@@ -337,6 +337,8 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should show no drugs for Fortex via unwanted effects search" do
+    # Fortext should not show up, as it was never registered in Switzerland
+    # However we have not yet had the time to fix this problem
     @browser.link(:name, 'drugs').click;  small_delay
 
     @browser.select_list(:name, "search_type").select("Unerwünschte Wirkung")

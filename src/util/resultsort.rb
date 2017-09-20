@@ -130,7 +130,7 @@ private
           !package.out_of_trade &&
           !package.expired? &&
           ( a_session && a_session.lookandfeel.enabled?(:evidentia, false)) ||
-            (a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) &&
+            (a_session && a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) &&
              /desitin/i.match(a_session.user.name.to_s))
       if is_desitin
         name_to_use = ' ' +  package.registration.name_base
@@ -140,7 +140,7 @@ private
         prio = classified_group(package)
       end
       name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.*/, '')
-      consider_trademark = a_session.lookandfeel.enabled?(:evidentia, false) &&
+      consider_trademark = a_session && a_session.lookandfeel.enabled?(:evidentia, false) &&
           trademark &&
           !package.out_of_trade &&
           !package.expired? &&
@@ -149,7 +149,7 @@ private
       prio = add_generic_weight(prio, package, consider_trademark)
       # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
       if DebugSort
-        puts "adjusted_name_and_prio evidentia? #{a_session.lookandfeel.enabled?(:evidentia, false)}" +
+        puts "adjusted_name_and_prio evidentia? #{a_session && a_session.lookandfeel.enabled?(:evidentia, false)}" +
             " #{trademark} TM? #{consider_trademark.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
             " out_of_trade #{package.out_of_trade.inspect} dose #{package.dose.inspect} #{package.sl_entry != nil} is_desitin #{is_desitin} prio #{prio.inspect}"
       end

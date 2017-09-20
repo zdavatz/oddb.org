@@ -64,22 +64,23 @@ describe "ch.oddb.org" do
   end
 
   AddressCorrections = Struct.new(:name, :url_display, :url_correct)
+  root_url = OddbUrl.sub(':443','')
   to_check = [
     # TODO: How can we ensure that we have valid EAN and OID?
       AddressCorrections.new('company',
-                              OddbUrl + '/de/gcc/company/ean/7601001001121',
+                              root_url + '/de/gcc/company/ean/7601001001121',
                               ),
       AddressCorrections.new('doctor',
-                              OddbUrl + '/de/gcc/doctor/ean/7601000254344',
+                              root_url + '/de/gcc/doctor/ean/7601000254344',
                              ),
       AddressCorrections.new('hospital',
-                            OddbUrl + '/de/gcc/hospital/ean/7601002002592',
+                            root_url + '/de/gcc/hospital/ean/7601002002592',
                             ),
       AddressCorrections.new('pharmacy',
-                            OddbUrl + '/de/gcc/pharmacy/ean/7601001380028',
+                            root_url + '/de/gcc/pharmacy/ean/7601001380028',
                             ),
     ]
-  to_check[0..0].each {
+  to_check.each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do
       login(ViewerUser,  ViewerPassword)
@@ -135,6 +136,6 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

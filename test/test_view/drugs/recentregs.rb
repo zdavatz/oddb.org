@@ -89,6 +89,7 @@ class TestRootRecentRegsList <Minitest::Test
                        )
     @model   = flexmock('model', 
                         :date => Date.new(2011,2,3),
+                        :code => 'atc10',
                         :package_count => 1,
                         :packages => [package]
                        )

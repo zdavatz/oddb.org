@@ -29,13 +29,14 @@ module PatinfoPdfMethods # for sequence, package
       input.store(:patinfo, patinfo.pointer)
       input.store(:pdf_patinfo, nil)
       @infos.push(:i_patinfo_assigned)
-		elsif(pi_file = @session.user_input(:patinfo_upload))
+		elsif(@session.user_input(:patinfo_upload))
+      pi_file = @session.user_input(:patinfo_upload)[:tempfile]
 			company = @model.company
 			if(!company.invoiceable?)
 				err = create_error(:e_company_not_invoiceable, :pdf_patinfo, nil)
 				newstate = resolve_state(company.pointer).new(@session, company)
 				newstate.errors.store(:pdf_patinfo, err)
-			elsif(pi_file.read(4) == "%PDF")
+			elsif(pi_file.read(4).eql?("%PDF"))
         pi_file.rewind
         filename = if self.is_a?(ODDB::State::Admin::Package)
 				  "#{@model.iksnr}_#{@model.seqnr}_#{@model.ikscd}_#{Time.now.to_f}.pdf"

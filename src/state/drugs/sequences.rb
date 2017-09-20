@@ -19,8 +19,8 @@ class Sequences < State::Drugs::Global
   def index_lookup(range)
     lnf = @session.lookandfeel
     seqs = @session.search_sequences(range, false)
-    if lnf.has_result_filter?
-      seqs = seqs.select do |seq| lnf.result_filter seq end
+    if lnf.has_sequence_filter?
+      seqs = seqs.select do |seq| lnf.sequence_filter seq end
     end
     seqs.select do |seq|
       seq.has_public_packages? 

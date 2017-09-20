@@ -74,12 +74,12 @@ class SuggestAddressForm < View::Form
 	end
   def fon(model)
     input = HtmlGrid::InputText.new(:fon, model, @session, self)
-    input.value = model.fon.join(', ')
+    input.value = model.fon.is_a?(Array) ? model.fon.join(', ') : model.fon
     input
   end
   def fax(model)
     input = HtmlGrid::InputText.new(:fax, model, @session, self)
-    input.value = model.fax.join(', ')
+    input.value = model.fax.is_a?(Array) ? model.fax.join(', ') : model.fax
     input
   end
 	def additional_lines(model)

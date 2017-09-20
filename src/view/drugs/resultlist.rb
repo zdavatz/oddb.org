@@ -310,7 +310,7 @@ class ResultList < HtmlGrid::List
                  0
                end
         model = @session.state.pages[page]
-      end
+      end 
     end
 
     code = @session.persistent_user_input(:code)

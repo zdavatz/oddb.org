@@ -171,6 +171,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected.search_type = :company
     #assert_equal(expected, @app.search_exact_company('query'))
     assert(same?(expected, @app.search_exact_company('query')))
+
   end
   def test_search_exact_indication
     expected = ODDB::SearchResult.new
@@ -178,6 +179,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected.search_type = :indication
     expected.exact = true
     assert(same?(expected, @app.search_exact_indication('query')))
+
   end
   def test_search_migel_alphabetical
     migelid = flexmock('migelid',
@@ -249,6 +251,14 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected.atc_classes = []
     expected.search_type = :sequence
     assert(same?(expected, @app.search_exact_sequence('query')))
+
+  end
+  def test_search_exact_sequence_with_filter
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :sequence
+    assert(same?(expected, @app.search_exact_sequence('query')))
+
   end
   def test_search_combined
     expected = ODDB::SearchResult.new
@@ -265,6 +275,7 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected.atc_classes = []
     expected.search_type = :substance
     assert(same?(expected, @app.search_exact_substance('query')))
+
   end
   def test_search_pharmacies
     assert_equal([], @app.search_pharmacies('key'))

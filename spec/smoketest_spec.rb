@@ -220,7 +220,7 @@ describe "ch.oddb.org" do
   it "should find redirect an iphone to the mobile flavor" do
     begin
       iphone_ua =  "Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1"
-      new_options = @default_chrome_options.clone
+      new_options = @browser_options.clone
       new_options.args << "--user-agent=#{iphone_ua}"
       iphone_browser = Watir::Browser.new  :chrome, options: new_options
       iphone_browser.goto 'http://www.useragentstring.com/'
@@ -347,6 +347,7 @@ describe "ch.oddb.org" do
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text_field(:name, "search_query").set(test_medi)
     @browser.button(:name, "search").click; small_delay
+    @browser.scroll.to :top
     @browser.link(:text, "Beispiel-Download").click; small_delay
     @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
@@ -506,6 +507,43 @@ describe "ch.oddb.org" do
       expect(diff_seconds).to be < 310 
     end
   end
+  { :search_limitation_A => 'Methotrexat',
+    :search_limitation_B => 'Inderal',
+    :search_limitation_C => 'Allergo-X',
+    :search_limitation_D => 'SAL 5 Nerven',
+    :search_limitation_E => 'Holunder',
+    :search_limitation_SL_only => 'Methotrexat',
+    }.each do |limitation, drug_name|
+    it "limiting the search to #{limitation} using #{drug_name}" do
+      @ids = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
+              "search_limitation_SL_only", "search_limitation_valid"]
+      @user_pref_url = OddbUrl + '/de/gcc/preferences'
+      @browser.goto(@user_pref_url)
+      @ids.each { |id|  @browser.checkbox(:id => id).clear }
+
+      @browser.checkbox(:id => limitation.to_s).set(true)
+      @browser.button(name: 'update').click
+      @browser.goto(OddbUrl)
+      @browser.goto(@user_pref_url)
+      expect(@browser.checkbox(:id => limitation.to_s).set?).to be true
+      select_product_by_trademark(drug_name)
+      # binding.pry unless @browser.span(:class => 'breadcrumb-1').exist? # >Liste für "Methotrexat" (18)</span>'
+      list_title = @browser.span(:class => 'breadcrumb-1').text
+      nr_items = /\((\d+)\)/.match(list_title)[1].to_i
+      categories =  @browser.elements(:id => /ikscat_\d+$/).collect{|x| x.text}
+      categories.each do |category| expect(/^|\sA[$|\s]/.match(category)).not_to be nil; end
+      expect(categories.size).to eq nr_items
+      expect(nr_items).to be > 0
+      puts "Successfully searched with #{limitation} for #{drug_name} which returned #{nr_items} packages"
+    end
+  end
+  x = %(
+  TODO: Search without limitation which should be greater than limited
+  TODO: Search with a combination
+  TODO: Homeopathy
+
+=> ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E", "search_limitation_SL_only", "search_limitation_valid"]
+)
 
   after :all do
     @browser.close if @browser

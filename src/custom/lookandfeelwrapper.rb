@@ -13,7 +13,7 @@ module SBSM
     def google_analytics_token
       "UA-115196-1"
     end
-    RESULT_FILTER = nil
+    SEQUENCE_FILTER = nil
     def format_price(price, currency=nil)
       unless(price.is_a?(ODDB::Util::Money))
         price = price.to_f / 100.0
@@ -22,13 +22,13 @@ module SBSM
         [currency, sprintf('%.2f', price)].compact.join(' ')
       end
     end
-    def has_result_filter?
-      !!self.class::RESULT_FILTER
+    def has_sequence_filter?
+      !!self.class::SEQUENCE_FILTER
     end
-    def result_filter pac_or_seq
-      res = @component.result_filter pac_or_seq
-      if res && flt = self.class::RESULT_FILTER
-        res &&= flt.call(pac_or_seq)
+    def sequence_filter(sequence)
+      res = @component.sequence_filter(sequence)
+      if res && flt = self.class::SEQUENCE_FILTER
+        res &&= flt.call(sequence)
       end
       res
     end
@@ -982,7 +982,7 @@ module ODDB
     end
   end
   class LookandfeelAnthroposophy < SBSM::LookandfeelWrapper
-    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :anthroposophy end
+    SEQUENCE_FILTER = Proc.new do |seq| seq.complementary_type == :anthroposophy end
     HTML_ATTRIBUTES = {
       :logo => {
         'width'		=>	'370',
@@ -1017,7 +1017,7 @@ module ODDB
     }
   end
   class LookandfeelHomeopathy < SBSM::LookandfeelWrapper
-    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :homeopathy end
+    SEQUENCE_FILTER = Proc.new do |seq| seq.complementary_type == :homeopathy end
     HTML_ATTRIBUTES = {
       :logo => {
         'width'		=>	'370',
@@ -1052,7 +1052,7 @@ module ODDB
     }
   end
   class LookandfeelPhytoPharma < SBSM::LookandfeelWrapper
-    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :phytotherapy end
+    SEQUENCE_FILTER = Proc.new do |seq| seq.complementary_type == :phytotherapy end
     HTML_ATTRIBUTES = {
       :logo => {
         'width'		=>	'344',
@@ -1087,7 +1087,7 @@ module ODDB
     }
   end
   class LookandfeelDesitin < SBSM::LookandfeelWrapper
-    RESULT_FILTER = Proc.new do |seq| (comp = seq.company) && comp.oid == 215 end
+    SEQUENCE_FILTER = Proc.new do |seq| (comp = seq.company) && comp.oid == 215 end
     ENABLED = [ :ajax, :breadcrumbs, :ddd_chart, :login_form, :logo, :logout,
                 :ywesee_contact, ]
     DICTIONARIES = {

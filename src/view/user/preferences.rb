@@ -3,6 +3,7 @@
 
 require 'htmlgrid/form'
 require 'htmlgrid/inputradio'
+require 'htmlgrid/inputcheckbox'
 require 'view/publictemplate'
 require 'view/form'
 require 'view/zsr'
@@ -13,23 +14,35 @@ module ODDB
 class PreferencesForm < View::Form
   COMPONENTS = {
     [0,0] => 'style_chooser_description',
-    [0,2] => :styles,
-    [0,3] => 'search_type_selection_description',
-    [0,5] => :search_forms,
-    [0,7] => :search_types,
-    [0,8] => :zsr_id,
-    [0,9] => View::ZsrDetails,
-    [0,10] => :button,
+    [0,1] => :styles,
+    [0,2] => 'search_type_selection_description',
+    [0,3] => :search_forms,
+    [0,4] => :search_types,
+    [0,5] => 'search_limitation_description',
+    [0,6] => :search_limitation_types,
+    [0,7] => :search_limitation_SL_only,
+    [0,8] => 'search_swissmedic_description',
+    [0,9] => :search_limitation_valid,
+    [0,10] => 'zsr_description',
+    [0,11] => :zsr_id,
+    [0,12] => View::ZsrDetails,
+    [0,13] => :button,
   }
   CSS_MAP = {
     [0,0] => 'subheading',
-    [0,2] => 'list',
-    [0,3] => 'subheading',
-    [0,5] => 'list',
+    [0,1] => 'list',
+    [0,2] => 'subheading',
+    [0,3] => 'list',
+    [0,4] => 'list',
+    [0,5] => 'subheading',
+    [0,6] => 'list',
     [0,7] => 'list',
-    [0,8] => 'list',
+    [0,8] => 'subheading',
     [0,9] => 'list',
-    [0,10] => 'button',
+    [0,10] => 'subheading',
+    [0,11] => 'list',
+    [0,12] => 'list',
+    [0,13] => 'button',
   }
   CSS_CLASS = 'composite'
   def styles(model, session=@session)
@@ -56,6 +69,35 @@ class PreferencesForm < View::Form
       label = label_for(name, @lookandfeel.lookup("oddb_style_#{name}"))
       fields << [radio, '&nbsp;', label, div]
       fields << '<br/>'
+    end
+    fields
+  end
+  def search_limitation_SL_only(model, session=@session)
+    get_checkbock(:search_limitation_SL_only,  model, session)
+  end
+  def get_checkbock(method,  model, session)
+    chosen = session.get_cookie_input(method)
+    checkbox = ::HtmlGrid::InputCheckbox.new(method, model, session, self)
+    checkbox.set_attribute('id', method.to_s)
+    if chosen && chosen.to_s.eql?('true')
+      checkbox.value = 'true'
+      checkbox.set_attribute('checked', true)
+    end
+    [checkbox, "&nbsp;", @lookandfeel.lookup(method)]
+  end
+  def search_limitation_valid(model, session=@session)
+    get_checkbock(:search_limitation_valid,  model, session)
+  end
+  def search_limitation_types(model, session=@session)
+    fields = []
+    [
+      :search_limitation_A,
+      :search_limitation_B,
+      :search_limitation_C,
+      :search_limitation_D,
+      :search_limitation_E,
+    ].each do |method|
+      fields << get_checkbock(method, model, session) +  [ '<br/>']
     end
     fields
   end
@@ -123,7 +165,7 @@ class PreferencesForm < View::Form
     input.set_attribute('onchange', js)
     fields << input
     fields
-  end  
+  end
   def button(model, session=@session)
     post_event_button(:update)
   end
