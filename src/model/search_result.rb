@@ -50,7 +50,7 @@ module ODDB
       @atc.pointer
     end
     def packages
-      @packages ||= active_packages
+      @packages ||= @atc.packages
       unless(@packages_sorted)
         @packages = sort_result(@packages, @session)
         @packages_sorted = true
@@ -151,6 +151,7 @@ module ODDB
       @atc_classes.nil? || @atc_classes.empty?
     end
     def sequence_filter(session=nil)
+      @session = session
       @packages = []
       @atc_facades = nil
       @atc_facades = atc_facades(session)
@@ -172,6 +173,7 @@ module ODDB
       @atc_facades
     end
     def apply_filters(session=nil)
+      @session = session
       sequence_filter(session)
       filtered = []
       @atc_facades.each do |facade|
@@ -206,10 +208,7 @@ module ODDB
       (@atc_classes.size > 1) && (package_count >= @display_limit)
     end
     def package_count
-      if @packages
-        return @packages.size
-      end
-      @package_count ||= atc_facades(@session).inject(0) { |count, atc| 
+      @package_count = atc_facades(@session).inject(0) { |count, atc| 
         count + atc.packages.size }
     end
     def set_relevance(odba_id, relevance)
