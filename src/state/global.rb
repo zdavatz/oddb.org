@@ -915,7 +915,7 @@ module ODDB
           filters[:search_limitation_SL_only] = Proc.new do |pack| pack.sl_entry end
         end
         if  @session.get_cookie_input(:search_limitation_valid).to_s.eql?('true')
-          filters[:search_limitation_valid] = Proc.new do |pack| !pack.out_of_trade end
+          filters[:search_limitation_valid] = Proc.new do |pack| !pack.expired? end
         end
         categories = []
         [ :search_limitation_A,
