@@ -266,8 +266,8 @@ public
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       @update_comps = (opts and opts[:update_compositions])
-      msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect}"
-      msg += " #{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
+      msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect} "
+      msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
       LogFile.debug(msg)
       threads = []
@@ -280,7 +280,7 @@ public
         @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
         last_checked = nil
-        LogFile.debug("file2open #{file2open} checked #{target} and #{@latest_packungen}")
+        LogFile.debug("file2open #{file2open} checked #{file2open} and #{@latest_packungen}")
         workbook = Spreadsheet.open(file2open)
         Util.check_column_indices(workbook.worksheets[0])
         @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
@@ -335,10 +335,10 @@ public
         #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xlsx when setting the "deaktiviert am" date.
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
-        end_time = Time.now - start_time
         verify_packages(file2open)
         update_export_flags(agent)
-        check_all_packages(file2open) if opts[:check]
+        check_all_packages(@latest_packungen) if opts[:check]
+        end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
         if File.exists?(file2open) and File.exists?(@latest_packungen) and FileUtils.compare_file(file2open, @latest_packungen)
           LogFile.debug " rm_f #{file2open} after #{@update_time} minutes"
@@ -352,6 +352,7 @@ public
           memo
         }
       else
+        check_all_packages(@latest_packungen) if opts[:check]
         LogFile.debug("file2open #{file2open} nothing to do for opts #{opts}")
         false
       end
