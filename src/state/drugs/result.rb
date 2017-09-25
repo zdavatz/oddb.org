@@ -27,18 +27,22 @@ class Result < State::Drugs::Global
 	include ResultStateSort
 	def init
     @pages = []
-		@model.session = @session
-		@model.atc_classes.delete_if { |atc| atc.package_count == 0 }
-      if /drug(_?)shortage/i.match(@session.persistent_user_input(:search_query)) && !@session.user_input(:sortvalue)
-         @sortby = [:name_base]
-         sort
-      end
-		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
-			@default_view = ODDB::View::Drugs::EmptyResult
+    @model.session = @session
+    @model.atc_classes.delete_if { |atc| atc.package_count == 0 }
+    if /drug(_?)shortage/i.match(@session.persistent_user_input(:search_query)) && !@session.user_input(:sortvalue)
+      @sortby = [:name_base]
+      sort
+    end
+    if @model.respond_to?(:package_filters)
+      @model.package_filters = get_search_filters
+      @model.apply_filters(@session)
+    end
+    if(@model.atc_classes.nil? || @model.atc_classes.empty?)
+      @default_view = ODDB::View::Drugs::EmptyResult
     elsif(@model.overflow?)
- 			query = @session.persistent_user_input(:search_query).to_s.downcase
-			page  = 0
-			count = 0
+      query = @session.persistent_user_input(:search_query).to_s.downcase
+      page  = 0
+      count = 0
       @code2page = {}
       @model.each { |atc|
         @code2page.store(atc.code, page)
@@ -55,8 +59,8 @@ class Result < State::Drugs::Global
         @session.set_cookie_input(:resultview, 'pages')
         page()
       }
-		end
-	end
+    end
+  end
 	def export_csv
 		if(creditable?('org.oddb.download'))
 			PaymentMethod.new(@session, @model)
