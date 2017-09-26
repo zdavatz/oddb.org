@@ -9,18 +9,18 @@ describe "ch.oddb.org" do
 
   before :all do
     @idx = 0
+    @all_search_limitations = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
+            "search_limitation_SL_only", "search_limitation_valid"]
     waitForOddbToBeReady(@browser, OddbUrl)
   end
 
   before :each do
     @browser.goto OddbUrl
-    login
   end
 
   after :each do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
-    logout
   end
 
   def check_nutriflex_56091(text)
@@ -81,6 +81,10 @@ describe "ch.oddb.org" do
     expect(@browser.url).to match OddbUrl
   end
   end
+  describe 'desitin' do
+    before :all do
+      login
+    end
   it "should display the correct color iscador U" do
     @browser.select_list(:name, "search_type").select("Markenname")
     @browser.text_field(:name, "search_query").set('iscador U')
@@ -507,45 +511,97 @@ describe "ch.oddb.org" do
       expect(diff_seconds).to be < 310 
     end
   end
-  { :search_limitation_A => 'Methotrexat',
-    :search_limitation_B => 'Inderal',
-    :search_limitation_C => 'Allergo-X',
-    :search_limitation_D => 'SAL 5 Nerven',
-    :search_limitation_E => 'Holunder',
-    :search_limitation_SL_only => 'Methotrexat',
-    }.each do |limitation, drug_name|
-    it "limiting the search to #{limitation} using #{drug_name}" do
-      @ids = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
-              "search_limitation_SL_only", "search_limitation_valid"]
-      @user_pref_url = OddbUrl + '/de/gcc/preferences'
-      @browser.goto(@user_pref_url)
-      @ids.each { |id|  @browser.checkbox(:id => id).clear }
 
+  def set_seach_preferences(prefs)
+    @user_pref_url = OddbUrl + '/de/gcc/preferences'
+    @browser.goto(@user_pref_url)
+    @all_search_limitations.each { |id|  @browser.checkbox(:id => id).clear }
+    for limitation in prefs do
       @browser.checkbox(:id => limitation.to_s).set(true)
-      @browser.button(name: 'update').click
+    end
+    @browser.button(name: 'update').click
+  end
+
+  def get_nr_items
+    return 0 if LeeresResult.match(@browser.text)
+    list_title = @browser.span(:class => 'breadcrumb-1').text
+    nr_items = /\((\d+)\)/.match(list_title)[1].to_i
+  end
+  # found using the following bin/admin (There are less < 1% of these cases)
+  snippet1 = %(
+    registrations.values.find{|x| x.active_packages.size > 0 && x.packages.size > x.active_packages.size }  # 48606 Gromazol
+  )
+  @valid_only_trademark_example = 'Gromazol'
+  it 'should not display expired drugs, when search says active drugs only' do
+    set_seach_preferences([])
+    select_product_by_trademark(@valid_only_trademark_example)
+    nr_unrestricted_products = get_nr_items
+    puts "found #{nr_unrestricted_products} unrestricted products for #{@valid_only_trademark_example}"
+    set_seach_preferences([:search_limitation_valid])
+    select_product_by_trademark(@valid_only_trademark_example)
+    nr_restricted_products = get_nr_items
+    puts "found #{nr_restricted_products} restricted products for #{@valid_only_trademark_example}"
+    expect(nr_unrestricted_products).to be > 0
+    skip('Will probably fail if you did not search for one of the few examples via bin admin')
+    expect(nr_unrestricted_products).to be > nr_restricted_products
+    puts "Limit to only valid products succeeded for #{@valid_only_trademark_example}" if nr_unrestricted_products > nr_restricted_products
+  end
+
+  # To find examples we used the following bin/admin snippet
+  snippet = %(
+  $cat = 'A';
+  $examples = registrations.values.find_all{|x| x.packages.find_all{|pack| pack.ikscat && pack.ikscat.eql?($cat)}.size > 0 && x.packages.find_all{|pack|  pack.ikscat && !pack.ikscat.eql?($cat)}.size > 0  }
+  # or SL onyl
+  $examples = registrations.values.find_all{|x| x.packages.find_all{|pack| pack.sl_entry}.size > 0 && x.packages.find_all{|pack| !pack.sl_entry}.size > 0  }
+  # 656
+  )
+
+  [
+    [:search_limitation_A,  'Fosfolag', false],
+    [:search_limitation_B,  'Allergo-X', true],
+    [:search_limitation_C,  'Allergo-X', true],
+    [:search_limitation_D,  'Elmex', true],
+    [:search_limitation_E,  'Holunder', true],
+    [:search_limitation_SL_only,  'Soolantra 10 mg', true],
+    [:search_limitation_SL_only,  'Methotrexat', true],
+    [:search_limitation_SL_only,  'mephadolor', false],
+    [:search_limitation_SL_only,  'Omeprazol MUT Sandoz', true],
+    # Done in separate spec test, as one has to search often for an actual valid example
+    #  :search_limitation_valid => @valid_only_trademark_example,
+    ].each do |example|
+    limitation = example[0]
+    drug_name  = example[1]
+    must_be_greater  = example[2]
+    it "limiting the search to #{limitation} using #{drug_name}" do
+      set_seach_preferences([])
+      select_product_by_trademark(drug_name)
+      nr_unrestricted_first = get_nr_items
+      expect(nr_unrestricted_first).to be > 0
+
+      set_seach_preferences([limitation])
       @browser.goto(OddbUrl)
       @browser.goto(@user_pref_url)
       expect(@browser.checkbox(:id => limitation.to_s).set?).to be true
       select_product_by_trademark(drug_name)
       # binding.pry unless @browser.span(:class => 'breadcrumb-1').exist? # >Liste für "Methotrexat" (18)</span>'
-      list_title = @browser.span(:class => 'breadcrumb-1').text
-      nr_items = /\((\d+)\)/.match(list_title)[1].to_i
+      nr_restriced = get_nr_items
       categories =  @browser.elements(:id => /ikscat_\d+$/).collect{|x| x.text}
       categories.each do |category| expect(/^|\sA[$|\s]/.match(category)).not_to be nil; end
-      expect(categories.size).to eq nr_items
-      expect(nr_items).to be > 0
-      puts "Successfully searched with #{limitation} for #{drug_name} which returned #{nr_items} packages"
+      expect(categories.size).to eq nr_restriced
+      expect(nr_restriced).to be > 0
+
+      # Reset preferences to zer
+      set_seach_preferences([])
+      select_product_by_trademark(drug_name)
+      nr_unrestricted_second = get_nr_items
+      puts "Testing nr items found with #{limitation} for #{drug_name} which returned #{nr_unrestricted_first}/#{nr_restriced}/#{nr_unrestricted_second} items. must_be_greater is #{must_be_greater}"
+      expect(nr_unrestricted_second).to be > 0
+      expect(nr_unrestricted_second).to eql nr_unrestricted_first
+      expect(nr_unrestricted_first).to be > nr_restriced if must_be_greater
     end
   end
-  x = %(
-  TODO: Search without limitation which should be greater than limited
-  TODO: Search with a combination
-  TODO: Homeopathy
-
-=> ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E", "search_limitation_SL_only", "search_limitation_valid"]
-)
-
   after :all do
     @browser.close if @browser
+  end
   end
 end
