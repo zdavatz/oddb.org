@@ -124,7 +124,6 @@ def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
   @saved_user ||= 'unbekannt'
   setup_browser
   @browser.goto OddbUrl
-  sleep 0.5
   sleep 0.5 unless login_link.exists?
   if @saved_user.eql?(user) &&
       login_link.exists? &&
@@ -246,10 +245,24 @@ def check_download(element_to_click)
 end
 
 def select_product_by_trademark(name)
-  @browser.goto create_url_for(name, 'st_sequence')
-  @browser.element(:id => 'ikscat_1').wait_until_present
-  expect(@browser.url.index(OddbUrl)).to eq 0
-  expect(@browser.url.index("/de/gcc")).not_to eq 0
+  if false
+    @browser.goto create_url_for(name, 'st_sequence')
+  else
+    @browser.goto OddbUrl
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set(name)
+    small_delay; @browser.button(:name, "search").click
+  end
+  @text = @browser.text.clone
+  return @text if LeeresResult.match(@text)
+  begin
+    if (res = @browser.element(:id => 'ikscat_1').wait_until_present(timeout: 2))
+      expect(@browser.url.index(OddbUrl)).to eq 0
+      expect(@browser.url.index("/de/gcc")).not_to eq 0
+    end
+  rescue Watir::Wait::TimeoutError => error
+  end
+ensure
   @text = @browser.text.clone
 end
 
