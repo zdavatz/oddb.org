@@ -244,7 +244,6 @@ module ODDB
                            :name_base       => 'name_base',
                            :galenic_forms   => [],
                            :dose            => 'dose',
-                           :comparable_size => 1,
                            :active_agents   => [active_agent],
                           :company         => 'company',
                           :out_of_trade    => false,
