@@ -600,6 +600,17 @@ describe "ch.oddb.org" do
       expect(nr_unrestricted_first).to be > nr_restriced if must_be_greater
     end
   end
+  it "should display a result for homeopathy Similasan Arnica" do
+    url = OddbUrl + "/de/homeopathy"
+    @browser.goto(url)
+    @browser.select_list(:name, "search_type").select("Markenname")
+    @browser.text_field(:name, "search_query").set('Similasan Arnica')    
+    @browser.button(:name, "search").click
+    text = @browser.text.clone
+    expect(text[0..1000]).not_to match /traceback/i
+    expect(text[0..1000]).to match /Homöopathika für Muskeln und Skelett/i
+  end
+
   after :all do
     @browser.close if @browser
   end

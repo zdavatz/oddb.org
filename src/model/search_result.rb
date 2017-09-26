@@ -158,7 +158,7 @@ module ODDB
       @atc_facades = @atc_facades.collect do |atc|
         if @sequence_filter
           sequences = atc.atc.sequences.select do |pack| @sequence_filter.call pack end
-          packs = sequences.collect{|seq| seq.packages.values}
+          packs = sequences.collect{|seq| seq.packages.values}.flatten
           atc.packages = packs
           @packages << packs
           sequences.empty? ? nil : atc
@@ -202,14 +202,13 @@ module ODDB
     rescue => error
       puts "Error #{error} in apply_filters"
       puts error.backtrace[0..5].join("\n")
-      require 'pry'; binding.pry
     end
     def overflow?
       (@atc_classes.size > 1) && (package_count >= @display_limit)
     end
     def package_count
       @package_count = atc_facades(@session).inject(0) { |count, atc| 
-        count + atc.packages.size }
+        count += atc.packages.size }
     end
     def set_relevance(odba_id, relevance)
       @relevance[odba_id] = @relevance[odba_id].to_f + relevance.to_f
