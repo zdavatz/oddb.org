@@ -255,7 +255,6 @@ public
         GC.enable unless already_disabled
         trace_msg"update finished iksnr #{iksnr} seqnr #{seqnr} check #{reg == nil} #{seq == nil}"
       end
-      @update_time = ((Time.now - start_time) / 60.0).to_i
       LogFile.debug "update check done"
     end
 
@@ -314,7 +313,6 @@ public
         msg += " with #{@latest_packungen} "
         msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
         LogFile.debug(msg)
-        start_time = Time.new
         result = diff file2open, @latest_packungen, [:atc_class, :sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
@@ -353,6 +351,8 @@ public
         }
       else
         check_all_packages(@latest_packungen) if opts[:check]
+        end_time = Time.now - start_time
+        @update_time = (end_time / 60.0).to_i
         LogFile.debug("file2open #{file2open} nothing to do for opts #{opts}")
         false
       end
