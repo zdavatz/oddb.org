@@ -112,7 +112,8 @@ public
       idx = -999
       if opts[:update_compositions]
         # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts}"
-        return res
+        return true if opts[:iksnrs] == nil 
+        return !!opts[:iksnrs].index(iksnr)
       end
       if opts[:iksnrs] == nil or idx = opts[:iksnrs].index(iksnr)
         # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts} idx #{idx}"
@@ -295,9 +296,8 @@ public
           next if last_checked == to_be_checked
           last_checked = to_be_checked
           to_consider = mustcheck(iksnr, opts)
-          # next if not iksnr == 488 and not iksnr == 46489
-          # next unless to_consider
-          # LogFile.debug " update #{row_nr} iksnr #{iksnr} seqnr #{seqnr} #{to_consider}"
+          # LogFile.debug " update #{row_nr} iksnr #{iksnr} seqnr #{seqnr} #{to_consider} to_be_checked #{to_be_checked}"
+          next unless to_consider
           already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
           reg = @app.registration("%05i" %iksnr)
           seq = reg.sequence("%02i" %seqnr) if reg
