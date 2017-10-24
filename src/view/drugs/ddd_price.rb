@@ -60,7 +60,7 @@ class DDDPriceTable < HtmlGrid::Composite
 		if(model && (atc = model.atc_class) && (ddd = model.ddd) && model.dose && ddd.dose)
 			dprice, calculation, variant = model.ddd_price_calc_variant(@session.currency)
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
-      if dprice
+      if dprice && dprice.to_f > 0.01
         comp.value = @lookandfeel.lookup(:ddd_calculation, calculation, dprice, @session.currency)
       else
         comp.value = @lookandfeel.lookup(:ddd_unable_to_calculate)

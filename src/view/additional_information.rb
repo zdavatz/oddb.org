@@ -145,7 +145,7 @@ module ODDB
         node = chart ?
                  HtmlGrid::Link.new(:ddd_price_link, model, @session, self) :
                  HtmlGrid::Span.new(model, @session, self)
-				if(ddd_price = model.ddd_price)
+				if (ddd_price = model.ddd_price) && ddd_price.to_f > 0.01
           ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
