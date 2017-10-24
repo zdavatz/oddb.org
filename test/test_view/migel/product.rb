@@ -194,10 +194,11 @@ class TestProductInnerComposite <Minitest::Test
              :get_currency_rate => 1.0,
              :persistent_user_input => 'persistent_user_input'
             )
-    flexmock(@model, :ddd_price => 'ddd_price')
+    price = '1.0'
+    flexmock(@model, :ddd_price => price)
     result = @composite.ddd_price(@model, @session)
     assert_kind_of(HtmlGrid::Span, result)
-    assert_equal('ddd_price', result.value)
+    assert_equal(price, result.value)
   end
   def test_ddd_price__chart
     flexmock(@lookandfeel, :enabled? => true)
@@ -206,10 +207,11 @@ class TestProductInnerComposite <Minitest::Test
              :get_currency_rate => 1.0,
              :persistent_user_input => 'persistent_user_input'
             )
-    flexmock(@model, :ddd_price => 'ddd_price')
+    price = '1.1'
+    flexmock(@model, :ddd_price => price  )
     result = @composite.ddd_price(@model, @session)
     assert_kind_of(HtmlGrid::Link, result)
-    assert_equal('ddd_price', result.value)
+    assert_equal(price, result.value)
   end
   def test_description
     flexmock(@model, :language => 'Position 12.34.56.78.9')
