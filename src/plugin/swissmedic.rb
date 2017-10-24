@@ -238,7 +238,7 @@ public
           reg.expiration_date = Date.parse(new_date)
           reg.odba_store
           @updated_expiration_dates[iksnr] = new_date
-          LogFile.debug "reg #{iksnr} expiration_date #{new_date}"
+          LogFile.debug "reg #{iksnr} changed expiration_date #{old_date} -> #{new_date}"
         end
         seq = reg.sequence("%02i" %seqnr) if reg
         pack = seq.package("%03i" %ikscd) if seq
@@ -262,10 +262,10 @@ public
     def update(opts = {}, agent=Mechanize.new, file2open=get_latest_file(agent))
       $swissmedic_do_tracing = true
       start_time = Time.new
-      cleanup_active_agents_with_nil
+      @update_comps = (opts and opts[:update_compositions])
+      cleanup_active_agents_with_nil if @update_comps || opts[:check]
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
-      @update_comps = (opts and opts[:update_compositions])
       msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect} "
       msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
@@ -276,11 +276,14 @@ public
         trace_memory_useage
       end
       row_nr = 4
-      if @update_comps && file2open &&  File.exists?(file2open)
+      if @update_comps
+        file2open && File.exists?(file2open)
+        file2use = file2open if file2open && File.exists?(file2open)
+        file2use ||= file2open if @latest_packungen && File.exists?(@latest_packungen)
         @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
         last_checked = nil
-        LogFile.debug("file2open #{file2open} checked #{file2open} and #{@latest_packungen}")
+        LogFile.debug("file2use #{file2use} checked #{file2open} and #{@latest_packungen}")
         workbook = Spreadsheet.open(file2open)
         Util.check_column_indices(workbook.worksheets[0])
         @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
@@ -350,6 +353,7 @@ public
           memo
         }
       else
+        LogFile.debug("@update_comps #{@update_comps} check_all_packages #{opts[:check]}")
         check_all_packages(@latest_packungen) if opts[:check]
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
