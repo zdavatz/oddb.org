@@ -10,6 +10,7 @@ must_be_run_separately.delete('hospitals.rb')
 must_be_run_separately.delete('refdata_partner.rb')
 must_be_run_separately.delete('medwin.rb')
 must_be_run_separately.delete('ouwerkerk.rb')
+must_be_run_separately.delete('medical_products.rb')
 
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')
 runner = OddbTestRunner.new(File.dirname(__FILE__), must_be_run_separately)
