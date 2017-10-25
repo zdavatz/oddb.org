@@ -279,12 +279,12 @@ public
       if @update_comps
         file2open && File.exists?(file2open)
         file2use = file2open if file2open && File.exists?(file2open)
-        file2use ||= file2open if @latest_packungen && File.exists?(@latest_packungen)
+        file2use ||= @latest_packungen if @latest_packungen && File.exists?(@latest_packungen)
         @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
         last_checked = nil
         LogFile.debug("file2use #{file2use} checked #{file2open} and #{@latest_packungen}")
-        workbook = Spreadsheet.open(file2open)
+        workbook = Spreadsheet.open(file2use)
         Util.check_column_indices(workbook.worksheets[0])
         @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
         workbook.worksheets[0].each() do
