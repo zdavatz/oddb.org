@@ -73,6 +73,7 @@ module ODDB
       @fi_atc_code_missmatch = []
       @target_keys = Util::COLUMNS_JULY_2015
       @iksnrs_meta_info = {}
+      @skipped_override ||= []
       @missing_override ||= []
     end
     def save_info type, name, lang, page, flags={}
@@ -270,71 +271,49 @@ module ODDB
       end
     end
 
-   def store_patinfo_change_diff(patinfo_doc, old_text, patinfo_lang)
-     unless patinfo_doc.is_a?(ODDB::PatinfoDocument) && patinfo_doc.change_log.is_a?(Array)
-       puts "Cannot update #{patinfo_doc.class}. It should be a ODDB::PatinfoDocument"
-       return
-     end
-     old_size = patinfo_doc.change_log.size
-     new_text = patinfo_lang.to_s
-      if old_text.eql?(new_text)
-        LogFile.debug "store_patinfo_change_diff: skip #{patinfo_doc.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size}"
+   def store_patinfo_change_diff(patinfo, lang, new_patinfo_lang)
+     old_text = patinfo.description(lang).to_s
+     raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.is_a?(ODDB::PatinfoDocument)
+     raise "Must pass ODDB::Patinfo" unless patinfo.is_a?(ODDB::Patinfo)
+     old_size = patinfo.description(lang).change_log.size
+     if old_text.eql?(new_patinfo_lang.to_s)
+        LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
       else
-        diff_item = patinfo_doc.add_change_log_item(old_text, new_text)
-        patinfo_doc.odba_store
-        LogFile.debug "store_patinfo_change_diff: #{patinfo_doc.odba_id} eql? #{old_text.eql?(new_text)} size #{old_size} -> #{patinfo_doc.change_log.size}"
+        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+        patinfo.odba_store
+        LogFile.debug "store_patinfo_change_diff: #{lang} #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size} -> #{patinfo.description(lang).change_log.size}"
       end
    end
 
-   def store_patinfo_for_one_packages(package, lang, patinfo_lang)
-      package.patinfo = @app.create_patinfo unless package.patinfo
-      msg = "#{package.pointer} #{lang} #{package.patinfo.oid} #{package.patinfo.pointer} #{patinfo_lang.to_s.split("\n")[0..1]}"
-      LogFile.debug msg; puts msg
-      old_text = package.patinfo.descriptions[lang].clone
-      eval("package.patinfo.descriptions['#{lang}']= patinfo_lang")
-      store_patinfo_change_diff(package.patinfo.description(lang), old_text, patinfo_lang)
-      package.patinfo.odba_store
+    def store_package_patinfo(package, lang, patinfo_lang)
+      return unless package
+      msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang}"
+      if package.patinfo && package.patinfo.descriptions && package.patinfo.description(lang).is_a?(ODDB::PatinfoDocument)
+        old_ti = package.patinfo
+        Languages.each do |old_lang|
+          next if old_lang.eql?(lang)
+          eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
+        end
+        msg += ' change_diff'
+        store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
+      else
+        package.patinfo = @app.create_patinfo
+        package.patinfo.descriptions[lang] = patinfo_lang.to_s
+        msg += ' created patinfo'
+      end
       package.odba_store
-      @corrected_pis << "#{package.iksnr} #{lang} #{package.name}"
+      # Update patinfo of sequence
+      package.sequence.patinfo = package.patinfo  unless package.sequence.patinfo.object_id == package.patinfo  .object_id
+      package.sequence.odba_store
+      LogFile.debug "called odba_store #{msg}"
+      package.patinfo
     end
 
     def store_patinfo_for_all_packages(iksnr, lang, patinfo_lang)
       reg = @app.registration(iksnr)
-      # Remove possible package specific patinfos
+      patinfo = store_package_patinfo(reg.packages.values.first, lang, patinfo_lang)
       reg.each_package do |package|
-          package.instance_eval("@patinfo = nil")
-      end
-      reg.odba_store
-
-      # existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
-      existing = reg.sequences.collect{ |seqnr, seq| seq.patinfo }.compact.first
-      if existing
-        old_text = existing.description(lang).to_s.clone
-        languages = existing.descriptions
-        LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} existing oid #{existing.oid} #{languages[lang].to_s.split("\n")[0..1]}"
-        LogFile.debug "store_patinfo update for reg.iksnr #{reg.iksnr} lang #{lang} new #{patinfo_lang.to_s.split("\n")[0..1]}"
-        languages[lang] = patinfo_lang
-        patinfo = @app.update  existing.pointer, languages
-        store_patinfo_change_diff(patinfo.description(lang), old_text, patinfo_lang)
-        patinfo.odba_store
-      else
-        created = @app.create_patinfo;
-        languages = created.descriptions;
-        languages[lang] = patinfo_lang;
-        sequence = reg.sequences.values.first;
-        patinfo = sequence.patinfo = @app.update created.pointer, languages;
-        patinfo.odba_store;
-        sequence.odba_store;
-        LogFile.debug "store_patinfo #{patinfo.pointer} none for reg.iksnr #{reg.iksnr} new oid #{patinfo.oid} #{ patinfo_lang.to_s.split("\n")[0..2]}"
-      end
-      reg.each_sequence do |seq|
-        if !seq.pdf_patinfo.nil? and !seq.pdf_patinfo.empty?
-          seq.pdf_patinfo = ''
-          @app.update(seq.pointer, {:pdf_patinfo => ''}, :text_info)
-          seq.odba_isolated_store
-        end
-        seq.patinfo = patinfo
-        seq.odba_store
+        package.patinfo = patinfo unless package.patinfo.object_id == patinfo.object_id
       end
       reg.odba_store
       @corrected_pis << "#{iksnr} #{lang} #{reg.name_base}"
@@ -372,34 +351,23 @@ module ODDB
           else # more than 1 PI for iksnr found
             pis.each do|lang, patinfo_lang|
               next unless lang.to_s.eql?(meta_info.lang)
-              msg = "#{meta_info.iksnr} #{lang}: #{meta_info.title}"
               reg.packages.each do |package|
                 barcode_override = "#{package.barcode}_#{meta_info.type}_#{lang}"
+                msg = "#{meta_info.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang}: #{meta_info.title}"
                 name = @specify_barcode_to_text_info[barcode_override]
                 if meta_info.title.eql?(name)
-                  current_name = nil
-                  current_name ||= eval("package.patinfo.#{lang}.name if package.patinfo.#{lang}") if package.patinfo
-                  if current_name == nil || patinfo_lang.name.eql?(current_name)
-                    LogFile.debug "#{package.pointer}: Updated as matched via #{barcode_override} -> #{name} #{package.instance_eval('@patinfo')}"
-                    store_patinfo_for_one_packages(package, lang, patinfo_lang)
-                  else # must save other langues which may be correct
-                    old_ti = package.patinfo
-                    package.patinfo = @app.create_patinfo
-                    Languages.each do |old_lang|
-                      next if old_lang.eql?(lang)
-                      eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
-                    end
-                    LogFile.debug "#{package.pointer}: Created new #{current_name} as matched via #{barcode_override} -> #{name} #{package.patinfo.oid}"
-                    store_patinfo_for_one_packages(package, lang, patinfo_lang)
-                  end
+                  store_package_patinfo(package, lang, patinfo_lang)
+                  LogFile.debug "called odba_store: #{package.ikscd} #{msg}"
                   @corrected_pis << msg
-                  @updated_pis << "  #{msg}"
+                  @updated_pis << msg
                 elsif name
-                  LogFile.debug "Skipped: #{msg} as #{meta_info.title} != #{name}"
+                  LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
+                  @skipped_override << barcode_override
                 else
                   LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
                   @missing_override << "#{barcode_override}: '#{meta_info.title}' # != override #{name}"
                 end
+                puts "package.patinfo updated sequence #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.pointer}"
               end
             end
           end
@@ -585,7 +553,10 @@ module ODDB
         res << "#{@nonconforming_content.size} non conforming contents:\n"
         res << @nonconforming_content.join("\n")
       end
-      res << ""
+      if @skipped_override.size > 0
+        res << "\n#{Override_file}: The #{@skipped_override.size} has skipped entries for\n"
+        res << @skipped_override.join("\n")
+      end
       if @missing_override.size == 0
         res << "\nNo need to add anything to #{Override_file}"
       else
@@ -1261,9 +1232,7 @@ module ODDB
       end if type != :fi # we will create a registration in this case later
       text_info = get_textinfo(meta_info,  meta_info.iksnr)
 
-      if !text_info || !text_info.descriptions.keys.index(meta_info.lang)
-        LogFile.debug "must create textinfo for #{meta_info.type} #{meta_info.lang} #{meta_info.iksnr} of #{meta_info.authNrs}"
-      elsif !is_same_html
+      if !is_same_html
         LogFile.debug "parse_textinfo #{__LINE__} #{html_name} does is not the same: #{meta_info.authNrs}"
       elsif @options[:reparse]
         LogFile.debug "parse_textinfo #{__LINE__} reparse demanded via @options #{@options}"
