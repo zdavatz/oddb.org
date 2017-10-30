@@ -132,7 +132,9 @@ class PiChapterChooser < HtmlGrid::Composite
       link.set_attribute('title', @lookandfeel.lookup(:change_log))
       args = Drugs.get_args(model, @session)
       args += [ :diff]
-      link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
+      ikscd = args[5]
+      ikscd ||= @session.app.registration(args[1]).sequence(args[3]).packages.keys.first 
+      link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], ikscd, :diff])
       if @lookandfeel.enabled?(:evidentia, false)
         img = get_image("patinfo_#{key.to_s}_icon".to_sym)
         return [img, link]
