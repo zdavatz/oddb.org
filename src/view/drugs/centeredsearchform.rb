@@ -186,10 +186,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,7,4]	=>	:sl_count_text,
 				[0,8]		=>	:atc_chooser,
 				[0,9]	=>	:download_app,
-				[0,10]  =>  :download_amiko_iOS,
-				[0,11]	=>	:download_amiko,
-        [0,12]  =>  :download_amiko_os_x,
-				[0,13]	=>	:download_amiko_win,
 			})
       pos_legal = 15
       css_map.store([0,4,1,10], 'list center')

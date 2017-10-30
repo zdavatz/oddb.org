@@ -179,30 +179,6 @@ module ODDB
         link.href = 'http://itunes.apple.com/us/app/generika/id520038123?ls=1&mt=8'
         link
       end
-      def download_amiko(model, session)
-        link = HtmlGrid::Link.new(:download_amiko, model, session, self)
-        link.set_attribute('class', 'list')
-        link.href = @lookandfeel.lookup(:download_amiko_link)
-        link
-      end
-      def download_amiko_iOS(model, session)
-        link = HtmlGrid::Link.new(:download_amiko_iOS, model, session, self)
-        link.set_attribute('class', 'list')
-        link.href = @lookandfeel.lookup(:download_amiko_iOS_link)
-        link
-      end
-      def download_amiko_os_x(model, session)
-        link = HtmlGrid::Link.new(:download_amiko_os_x, model, session, self)
-        link.set_attribute('class', 'list')
-        link.href = @lookandfeel.lookup(:download_amiko_os_x_link)
-        link
-      end
-      def download_amiko_win(model, session)
-        link = HtmlGrid::Link.new(:download_amiko_win, model, session, self)
-        link.set_attribute('class', 'list')
-        link.href = @lookandfeel.lookup(:download_amiko_win_link)
-        link
-      end
 			def download_export(model, session)
 				link = HtmlGrid::Link.new(:download_export, model, session, self)
 				link.href = @lookandfeel._event_url(:download_export)
