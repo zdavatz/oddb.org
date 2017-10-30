@@ -415,7 +415,7 @@ module ODDB
       super(division)
       @division = replace_observer(@division, division)
     end
-		def	replace_observer(target, value)
+		def replace_observer(target, value)
 			if(target.respond_to?(:remove_sequence))
 				target.remove_sequence(self)
 			end

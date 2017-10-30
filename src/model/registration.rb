@@ -316,7 +316,7 @@ module ODDB
     def minifi=(minifi)
 			@minifi = replace_observer(@minifi, minifi)
     end
-		def	replace_observer(target, value)
+		def replace_observer(target, value)
 			if(target.respond_to?(:remove_registration))
 				target.remove_registration(self)
 			end

@@ -3,9 +3,11 @@
 # Parinfo -- oddb -- 05.04.2013 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
+require 'util/persistence'
 require 'util/language'
 require 'model/sequence_observer'
 require 'diffy'
+require 'util/today'
 
 module ODDB
 	class Patinfo
@@ -60,6 +62,9 @@ module ODDB
 	end
 	class PatinfoDocument
     include Persistence
+    def pointer_descr
+      'Patinfo'
+    end
     class ChangeLogItem
       include Persistence
       attr_accessor :time, :diff
@@ -79,16 +84,20 @@ module ODDB
                             :allow_empty_diff               => false,
                             }
     def add_change_log_item(old_text, new_text, date = @@today, options = Patinfo_diff_options)
+      return if  old_text.to_s.eql?(new_text.to_s)
       @change_log ||= []
       item = ChangeLogItem.new
       item.time = date
-      item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
-      if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
-        # puts "PatinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.to_s.split("\n")[0..2] : ''}"
-        return
-      end
+      item.diff =  Diffy::Diff.new(old_text ? old_text.to_s : '', new_text, options)
       already_disabled = GC.disable
-      self.change_log.push(item)
+      begin
+        if @change_log &&  @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
+          return
+        end
+        self.change_log.push(item)
+      rescue => error
+        self.change_log = [item]
+      end
       self.odba_store
       GC.enable unless already_disabled
     end

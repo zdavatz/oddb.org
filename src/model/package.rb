@@ -10,7 +10,7 @@ require 'util/today'
 require 'model/slentry'
 require 'model/ean13'
 require 'model/feedback_observer'
-require 'model/package'
+require 'model/patinfo'
 require 'model/sequence'
 require 'model/part'
 require 'ruby-units'
@@ -94,7 +94,6 @@ module ODDB
       :deductible_m => "String",
       :bm_flag => ["TrueClass","NilClass","FalseClass"],
       :mail_order_prices => "Array",
-      :pat_info => "ODDB::Patinfo",
       :pdf_patinfo => "String",
       :shortage_link => "String",
       :shortage_info => "String",
@@ -121,7 +120,15 @@ module ODDB
     def patinfo # {sequence|package}
       # Since February 2016 we suport different patinfo inside the sequence, this happens in over 100 cases
       # eg. Tramal, IKSNR 43788
-      @patinfo || (self.sequence && self.sequence.patinfo)
+      result = @patinfo || (self.sequence && self.sequence.patinfo.is_a?(ODDB::Patinfo) && self.sequence.patinfo)
+      if @patinfo
+        # puts "patinfo is #{@patinfo.class}"
+      elsif self.sequence && self.sequence.patinfo
+        # puts "Package.patinfo OR #{self.sequence.patinfo.class}"
+      else
+        result = nil
+      end
+      result
     end
     def pdf_patinfo # {sequence|package}
       @pdf_patinfo ? @pdf_patinfo : self.sequence.pdf_patinfo

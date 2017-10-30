@@ -252,13 +252,15 @@ class TestPackage <Minitest::Test
   end
   def test_patinfo_via_sequence
     seq = StubPackageSequence.new
-    seq.patinfo = 'pat_info_from_sequence'
+    assert_equal(nil.object_id, @package.patinfo.object_id)
+    seq.patinfo = ODDB::Patinfo.new
+    saved_id =seq.patinfo.object_id
     @package.sequence = seq
-    assert_equal('pat_info_from_sequence', @package.patinfo)
+    assert_equal(saved_id, @package.patinfo.object_id)
   end
   def test_patinfo_self
     seq = flexmock('sequence')
-    seq.should_receive.once(:patinfo).and_return('pat_info_from_sequence')
+    seq.should_receive.once(:patinfo).and_return('patinfo_from_sequence')
     @package.sequence = seq
     @package.patinfo = 'patinfo_self'
     assert_equal('patinfo_self', @package.patinfo)

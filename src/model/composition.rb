@@ -172,7 +172,7 @@ module ODDB
       }
       values
     end
-    def	replace_observer(target, value)
+    def replace_observer(target, value)
       if(target.respond_to?(:remove_sequence))
         target.remove_sequence(@sequence)
       end
