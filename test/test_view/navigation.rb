@@ -76,19 +76,5 @@ class TestZoneNavigation <Minitest::Test
   end
 end
 
-class TestCountryNavigation <Minitest::Test
-  def setup
-    @lnf       = flexmock('lookandfeel', 
-                          :lookup     => 'lookup',
-                          :attributes => {}
-                         )
-    @session   = flexmock('session', :lookandfeel => @lnf)
-    @model     = flexmock('model')
-    @composite = ODDB::View::CountryNavigation.new(@model, @session)
-  end
-  def test_link
-    assert_kind_of(HtmlGrid::Link, @composite.link('key', @model))
-  end
-end
   end # View
 end # ODDB

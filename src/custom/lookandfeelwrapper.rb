@@ -153,7 +153,6 @@ module ODDB
       :ajax,
       :breadcrumbs,
       :companylist,
-      :country_navigation,
       :ddd_chart,
       :facebook_fan,
       :facebook_share,

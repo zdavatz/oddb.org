@@ -66,8 +66,6 @@ module ODDB
             [0,0]	=>	'subheading',
             [1,0]	=>	'subheading right',
           }
-        elsif(@lookandfeel.enabled?(:country_navigation))
-          components.store([0,0], View::CountryNavigation)
         end
         super
       end
@@ -86,9 +84,6 @@ module ODDB
         [1,0]	=>	'navigation right',
       }
       def init
-        if(@lookandfeel.enabled?(:country_navigation))
-          components.store([0,0], View::CountryNavigation)
-        end
         super
       end
     end

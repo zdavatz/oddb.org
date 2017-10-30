@@ -23,8 +23,6 @@ module ODDB
 		end
 		class CenteredNavigation < ZoneNavigation 
 			CSS_CLASS = "center"
-#		class CenteredNavigation < ZoneNavigation 
-#			CSS_CLASS = "ccomponent"
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation

@@ -68,25 +68,5 @@ module ODDB
         super(links)
       end
     end
-    class CountryNavigation < HtmlGrid::Composite
-      COMPONENTS = {
-        [0,0] => :oddb_de,
-        [1,0] => 'navigation_divider',
-        [2,0] => :oddb_chde,
-      }
-      LEGACY_INTERFACE = false
-      def link(key, model)
-        link = HtmlGrid::Link.new('oddb_%s' % key, model, @session, self)
-        link.href = "http://%s.oddb.org/" % key
-        link.css_class = 'navigation'
-        link
-      end
-      def oddb_chde(model)
-        link(:chde, model)
-      end
-      def oddb_de(model)
-        link(:de, model)
-      end
-    end
 	end
 end
