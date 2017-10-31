@@ -232,7 +232,7 @@ module ODDB
 				link.href = @lookandfeel._event_url(:recent_registrations)
 				link.set_attribute('class', 'list')
 				count = @session.app.recent_registration_count
-				[database_last_updated(model), ',&nbsp;', count, '&nbsp;', link]
+				[database_last_updated(model), '<br>', count, '&nbsp;', link]
 			end
 			def paypal(model, session)
 				if(@lookandfeel.enabled?(:paypal))
