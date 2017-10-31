@@ -37,9 +37,11 @@ module ODDB
             fullname = user.name
           end
           div.value = @lookandfeel.lookup(:welcome, fullname)
-          parts.push div
+        else
+          div.value = '&nbsp;'
         end
-        parts
+        parts.push div
+        return (parts.size  == 1 ? div : parts)
       end
     end
   end
