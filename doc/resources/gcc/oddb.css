@@ -439,6 +439,10 @@ td.pubprice {
   padding-right : 10px;
   text-align    : right;
 }
+img.logo {
+    display: block;
+    margin: 0 auto;
+}
 td.logo {
   vertical-align : top;
   position       : relative;
@@ -849,6 +853,9 @@ a.th-pointersteps {
   font-size   : 11px;
   margin-top  : 40px;
   color       : black;
+}
+div.personal {
+ text-align: center;
 }
 .right {
   text-align : right;

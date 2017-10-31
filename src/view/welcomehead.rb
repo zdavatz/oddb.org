@@ -19,14 +19,11 @@ module ODDB
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0]	=>	'logo',
-				[1,0]	=>	'welcome',
+				[0,1]	=>	'personal', # x, y, col
 			}
-			COMPONENTS = {
-				[0,0]		=>	View::Logo,
-				[1,0,0]	=>	:sponsor,
-				[1,0,1]	=>	"break",
-				[1,0,2]	=>	:home_welcome,
-				[1,0,3]	=>	:welcome,
+      COMPONENTS = {
+				[0,0] => View::Logo,
+				[0,1] => :welcome,    # Willkommen logged-in user aus personal
 			}
 			def banner(model, session=@session)
 				if(@lookandfeel.enabled?(:epatents)) #, false))
