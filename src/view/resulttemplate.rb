@@ -12,7 +12,7 @@ module ODDB
 			HEAD = View::LogoHead
 			COMPONENTS = {}
 			def init
-				if(@lookandfeel.enabled?(:topfoot))
+				if(@lookandfeel.enabled?(:topfoot, false))
 					@components = {
 						[0,0]		=>	:topfoot,
 						[0,1]		=>	:head,

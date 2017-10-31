@@ -797,7 +797,6 @@ module ODDB
 			:recent_registrations,
 			:search_reset,
 			:sequences,
-			:topfoot,
       :user,
 			:ywesee_contact,
    ]
