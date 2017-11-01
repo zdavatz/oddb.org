@@ -79,9 +79,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
     @session.flavor == Session::DEFAULT_FLAVOR or
     @lookandfeel.enabled?(:ajax, false)
   end
-  def instant_search_only?
-    @session.flavor == 'just-medical'
-  end
+
 end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
   CONTENT = CenteredSearchComposite

@@ -1033,6 +1033,14 @@ td.logo {
 	text-align : right;
 	color : silver;
 }
+a.logo {
+  display: block;
+  margin: 0 auto;
+}
+.company_logo {
+  display: block;
+  margin: 0 auto;
+}
 .personal {
 	text-decoration : none;
 	font-weight : bold;

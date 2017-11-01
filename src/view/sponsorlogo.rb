@@ -13,6 +13,7 @@ module ODDB
 				if(@model and name = @model.logo_filename)
 					@attributes['src'] = @lookandfeel.resource_global(:company_logo, name)
 					@attributes['alt'] = @model.name
+					@attributes['class'] = 'company_logo'
 				end
 			end
 			def to_html(context)

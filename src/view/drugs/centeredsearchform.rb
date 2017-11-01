@@ -83,17 +83,10 @@ require(["dojo/parser", "dijit/ProgressBar"], function(){
       args = { :search_form => 'instant' }
       link.href  = @lookandfeel._event_url(:home, args)
       link.value = 'Instant'
+      fields << '<br>'
       fields << link
-      fields << '&nbsp;|&nbsp;'
-      fields << _link_to_fachinfo_search
       fields
     end
-  end
-  def _link_to_fachinfo_search
-    link = HtmlGrid::Link.new(:fachinfo_search, @model, @session, self)
-    link.href  = @lookandfeel._event_url(:fachinfo_search, {})
-    link.value = @lookandfeel.lookup(:fachinfo_search)
-    link
   end
 end
 class CenteredCompareSearchForm < CenteredSearchForm
@@ -120,9 +113,8 @@ class CenteredCompareSearchForm < CenteredSearchForm
     args = { :search_form => 'plus' }
     link.href  = @lookandfeel._event_url(:home, args)
     link.value = 'Plus'
+    fields << '<br>'
     fields << link
-    fields << '&nbsp;|&nbsp;'
-    fields << _link_to_fachinfo_search
     fields
   end
 end
@@ -165,23 +157,23 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
-				[0,4]    => :recent_registrations,
-				[0,5,0]  => :database_size,
-				[0,5,1]  => :sequences,
-				[0,6,0]  => :narcotics_size,
-				[0,6,1]  => :narcotics,
-				[0,7,0]  => :vaccines_size,
-				[0,7,1]  => :vaccines,
-				[0,8,0]  => :fachinfo_size,
-				[0,8,1]  => :fi_count_text,
-				[0,9,0]  => :patinfo_size,
-				[0,9,1]  => :pi_count_text,
-				[0,10,0] => :atc_ddd_size,
-				[0,10,1] => :ddd_count_text,
-				[0,11,0] => :limitation_size,
-				[0,11,1] => :sl_count_text,
-				[0,12]   => :atc_chooser,
-				[0,13]   => :download_app,
+				[0,5]    => :recent_registrations,
+				[0,6,0]  => :database_size,
+				[0,6,1]  => :sequences,
+				[0,7,0]  => :narcotics_size,
+				[0,7,1]  => :narcotics,
+				[0,8,0]  => :vaccines_size,
+				[0,8,1]  => :vaccines,
+				[0,9,0]  => :fachinfo_size,
+				[0,9,1]  => :fi_count_text,
+				[0,10,0]  => :patinfo_size,
+				[0,10,1]  => :pi_count_text,
+				[0,11,0] => :atc_ddd_size,
+				[0,11,1] => :ddd_count_text,
+				[0,12,0] => :limitation_size,
+				[0,12,1] => :sl_count_text,
+				[0,13]   => :atc_chooser,
+				[0,14]   => :download_app,
 			})
       pos_legal = 15
       css_map.store([0,4,1,10], 'list center')

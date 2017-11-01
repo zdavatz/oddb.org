@@ -85,9 +85,6 @@ module ODDB
         'st_company', 'st_indication', 'st_interaction',
         'st_unwanted_effect', 'st_registration', 'st_pharmacode',
       ],
-      :fachinfo_search_type => [
-        'fi_usage', 'fi_interactions', 'fi_unwanted_effects'
-      ],
 			:fi_status		=>	['false', 'true'],
       :generic_type    => [nil, 'generic', 'original'],
       :sl_generic_type => [nil, 'generic', 'original'],
@@ -194,7 +191,6 @@ module ODDB
 			:effective_substances,
 			:export_csv,
       :fachinfo,
-      :fachinfo_search,
 			:fachinfos,
 			:feedbacks,
 			:fipi_offer_input,
@@ -332,7 +328,6 @@ module ODDB
       :exam,
 			:fachinfo_price,
       :fachinfo_index,
-      :fachinfo_search_full_text,
       :factor,
 			:fi_quantity,
 			:index,
@@ -404,7 +399,6 @@ module ODDB
 			:en,
 			:equivalent_substance,
       :experience,
-      :fachinfo_search_term,
 			:fax,
       :buy, # file
 			:fi_update,

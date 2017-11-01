@@ -76,8 +76,6 @@ module InstantSearchBarMethods
       @session.set_persistent_user_input(:drugs, {})
       @session.set_persistent_user_input(:ean, nil)
       url  = @session.request_path.gsub('/,','/') if @session.request_path
-    elsif
-      url = @session.create_search_url(:fachinfo_search, [:ean, @session.persistent_user_input(:drugs) ? @session.persistent_user_input(:drugs).keys : [] ].flatten )
     else
       url = @session.create_search_url(:home_interactions)
     end
@@ -94,7 +92,7 @@ function xhrGet(arg) {
   if(ean13) {
     ean13 = ean13[0];
     var id = 'drugs';
-    if (new_url.match(/\\/(prescription|fachinfo_search|rezept|zsr_[A-Z]\\d+)$/))
+    if (new_url.match(/\\/(prescription|rezept|zsr_[A-Z]\\d+)$/))
     {
       new_url = new_url + '/ean/' + ean13; 
     } else {
@@ -143,7 +141,7 @@ function selectXhrRequest() {
           path = path +  ',' + ean13;
         }
         get_to(path.replace('?/','/') );
-      } else if (path.match(/fachinfo_search|rezept/))
+      } else if (path.match(/rezept/))
       {
         if (path.match(/ean/) == null) {
           if (path.match(/\\/$/)) {
@@ -156,7 +154,7 @@ function selectXhrRequest() {
         }
         searchbar.value = '';
         get_to(path.replace('?/','/'));
-      } else { // neither home_interactions, fachinfo_search nor rezept
+      } else { // neither home_interactions nor rezept
         xhrGet(searchbar.value);
         searchbar.value = '';
       }
@@ -187,21 +185,12 @@ require(['dojo/ready'], function(ready) {
       args.push :index_name, index
     end
     @session.set_persistent_user_input(:drugs, @session.choosen_drugs)
-    if @session.request_path and @session.request_path.match(/fachinfo_search/)
-      target = @session.lookandfeel._event_url(:ajax_matches, args)
-      html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
-                        'jsId'           => 'search_matches',
-                        'idAttribute'    => 'drug',
-                        'target'         => target
-      html << super(context)
-    else
-      target = @session.lookandfeel._event_url(:ajax_matches, args)
-      html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
-                        'jsId'           => 'search_matches',
-                        'idAttribute'    => 'drug',
-                        'target'         => target
-      html << super(context)
-    end
+    target = @session.lookandfeel._event_url(:ajax_matches, args)
+    html = context.div 'data-dojo-type' => 'dojox.data.JsonRestStore',
+                      'jsId'           => 'search_matches',
+                      'idAttribute'    => 'drug',
+                      'target'         => target
+    html << super(context)
   end
 end
 class SearchBar < HtmlGrid::InputText
@@ -320,13 +309,6 @@ class PrescriptionDrugSearchBar < HtmlGrid::InputText
   def init
     super
     xhr_request_init(:prescription)
-  end
-end
-class FachinfoSearchDrugSearchBar < HtmlGrid::InputText
-  include InstantSearchBarMethods
-  def init
-    super
-    xhr_request_init(:fachinfo_search)
   end
 end
 class InteractionChooserBar < HtmlGrid::InputText  # interaction_chooser

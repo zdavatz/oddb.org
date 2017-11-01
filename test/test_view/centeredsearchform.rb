@@ -197,7 +197,7 @@ class TestCenteredSearchComposite <Minitest::Test
     result = @composite.recent_registrations(@model, @session)
     assert_equal(5, result.length)
     assert_kind_of(HtmlGrid::DateValue, result[0])
-    assert_equal(',&nbsp;', result[1])
+    assert_equal('<br>', result[1])
     assert_equal('recent_registration_count', result[2])
     assert_equal('&nbsp;', result[3])
     assert_kind_of(HtmlGrid::Link, result[4])

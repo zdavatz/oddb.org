@@ -826,6 +826,14 @@ a.th-pointersteps {
 .logo {
 	border : 0px dotted red;
 }
+a.logo {
+  display: block;
+  margin: 0 auto;
+}
+.company_logo {
+  display: block;
+  margin: 0 auto;
+}
 .personal {
 	font-weight : bold;
 	font-size : 11px;

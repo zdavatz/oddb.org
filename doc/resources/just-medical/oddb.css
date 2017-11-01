@@ -844,6 +844,14 @@ a.th-pointersteps {
 .logo {
   border : 0px dotted red;
 }
+a.logo {
+  display: block;
+  margin: 0 auto;
+}
+.company_logo {
+  display: block;
+  margin: 0 auto;
+}
 .personal {
   font-weight : bold;
   font-size   : 11px;
@@ -1024,8 +1032,7 @@ div#composition-list td, div#composition-list th {
 a.footnote {
   font-weight : normal;
 }
-form#prescription_form label,
-form#fachinfo_search_form label {
+form#prescription_form label {
   font-weight : normal;
 }
 
@@ -1038,7 +1045,6 @@ form#fachinfo_search_form label {
 }
 div#widget_searchbar,
 div#widget_prescription_searchbar,
-div#widget_fachinfo_search_searchbar,
 div#widget_interaction_searchbar,
 div#widget_interaction_chooser_searchbar {
   padding : 2px;
@@ -1046,14 +1052,12 @@ div#widget_interaction_chooser_searchbar {
   width   : 260px;
 }
 div#widget_prescription_searchbar,
-div#widget_fachinfo_search_searchbar,
 div#widget_interaction_searchbar,
 div#widget_interaction_chooser_searchbar {
   width : 400px;
 }
 #searchbar_popup,
 #prescription_searchbar_popup,
-#fachinfo_search_searchbar_popup,
 #interaction_searchbar_popup,
 #interaction_chooser_searchbar_popup {
   border : 1px solid ButtonShadow;
@@ -1062,8 +1066,6 @@ div#widget_interaction_chooser_searchbar {
 #searchbar_popup .dijitMenuItemSelected,
 #prescription_searchbar_popup    .dijitMenuItemHover,
 #prescription_searchbar_popup    .dijitMenuItemSelected,
-#fachinfo_search_searchbar_popup .dijitMenuItemHover,
-#fachinfo_search_searchbar_popup .dijitMenuItemSelected,
 #interaction_searchbar_popup .dijitMenuItemHover,
 #interaction_searchbar_popup .dijitMenuItemSelected,
 #interaction_chooser_searchbar_popup .dijitMenuItemHover,

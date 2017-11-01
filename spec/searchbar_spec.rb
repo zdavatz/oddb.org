@@ -20,7 +20,7 @@ describe "ch.oddb.org" do
     unless chooser and chooser.present?
       msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
       puts msg
-      # require 'pry'; binding.pry
+      require 'pry'; binding.pry
       raise msg
     end
     0.upto(30).each{ |idx|
@@ -63,13 +63,6 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
-  def enter_fachinfo_search
-    if @browser.link(:name=>'fachinfo_search').exists?
-      @browser.link(:name=>'fachinfo_search').click;  small_delay
-
-    end
-  end
-  
   after :each do
     createScreenshot(@browser, '_'+$prescription_test_id.to_s) if @browser
     $prescription_test_id += 1
@@ -92,63 +85,6 @@ describe "ch.oddb.org" do
       expect(@browser.text).to match /#{searchtext}/
     end
   }  unless ['just-medical'].index(Flavor)
-
-  chapters = {
-    'Unerw.Wirkungen' => 'Kopfschmerzen',
-    'Dos./Anw.' => 'Kinder',
-    'Interakt.' => 'Tocilizumab',
-  }
-  chapters.each{ |chapter_name, text|
-    it "should should work (58868 Actemra) with #{chapter_name} and #{text}" do
-      enter_fachinfo_search
-      enter_search_to_field_by_name('Actemra', 'searchbar');
-
-      @browser.select_list(:name, "fachinfo_search_type").select(chapter_name)
-      @browser.checkbox(:name,'fachinfo_search_full_text').set
-      @browser.text_field(:name => 'fachinfo_search_term').set(text)
-      @browser.text_field(:name => 'fachinfo_search_term').send_keys :tab
-      @browser.button(:id => 'fi_search').click;  small_delay
-
-      expect(@browser.text).to match text
-      expect(@browser.text).to match /Actemra/
-    end
-  }
-  it "should should be possible to add and delete several drugs:" do
-    enter_fachinfo_search
-    expect(@browser.text).not_to match /Actemra/
-    expect(@browser.text).not_to match /Aspirin/
-    enter_search_to_field_by_name('Actemra', 'searchbar');
-    enter_search_to_field_by_name('Aspirin', 'searchbar');
-    expect(@browser.text).to match /Actemra/
-    expect(@browser.text).to match /Aspirin/
-    @browser.element(:id => /minus_Actemra/i).click;  small_delay
-
-    expect(@browser.text).not_to match /Actemra/
-    expect(@browser.text).to match /Aspirin/
-    @browser.element(:id => /minus_Aspirin/i).click;  small_delay
-
-    expect(@browser.text).not_to match /Actemra/
-    expect(@browser.text).not_to match /Aspirin/
-    # @browser.url.should match /fachinfo_search\/$/
-  end
-
-  it "should should be possible to delete all drugs:" do
-    enter_fachinfo_search
-    expect(@browser.text).not_to match /Actemra/
-    expect(@browser.text).not_to match /Aspirin/
-    enter_search_to_field_by_name('Actemra', 'searchbar');
-    enter_search_to_field_by_name('Aspirin', 'searchbar');
-    enter_search_to_field_by_name('Ponstan', 'searchbar');
-    expect(@browser.text).to match /Actemra/
-    expect(@browser.text).to match /Aspirin/
-    expect(@browser.text).to match /Ponstan/
-    @browser.element(:name => 'delete').click;  small_delay
-; small_delay
-    expect(@browser.text).not_to match /Actemra/
-    expect(@browser.text).not_to match /Aspirin/
-    expect(@browser.text).not_to match /Ponstan/
-    expect(@browser.url).to match /fachinfo_search\/$/
-  end
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
@@ -245,10 +181,6 @@ describe "ch.oddb.org" do
   end
 
   pending "should work with the notify_confirm searchbar" do
-    expect(false).to eq(true)
-  end
-
-  pending "should work with the drugs/fachinfos searchbar" do
     expect(false).to eq(true)
   end
 

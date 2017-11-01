@@ -191,8 +191,7 @@ module ODDB
           if @value.respond_to?(:links)
             html << links(context, @value.links)
           end
-          if hl = @session.user_input(:highlight) or
-             hl = @session.user_input(:fachinfo_search_term) # fachinfo_search
+          if hl = @session.user_input(:highlight)
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
           end
         end
