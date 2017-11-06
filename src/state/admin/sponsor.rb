@@ -63,12 +63,12 @@ class Sponsor < State::Admin::Global
 		path = File.expand_path(filename, PATH)
 		FileUtils.mkdir_p(PATH)
 		File.open(path, 'wb') { |fh|
-			fh << io.read
+			fh << File.open(io[:tempfile].path).read
 		}
 		filename
 	end
 	def keyname(io, key)
-		[@session.flavor, key, io.original_filename].join('_')
+		[@session.flavor, key, io[:filename]].join('_')
 	end
 end
 		end
