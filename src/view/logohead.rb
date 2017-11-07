@@ -52,13 +52,10 @@ module ODDB
     class LogoHead < CommonLogoHead
       COMPONENTS = {
         [0,0]   => View::Logo,
-        [1,0,0] => :sponsor,
-        [1,0,1] => :welcome,
         [0,1]   => :language_chooser,
       }
       CSS_MAP = {
         [0,0] => 'logo',
-        [1,0] => 'right',
         [0,1] => 'list',
       }
       COMPONENT_CSS_MAP = {
