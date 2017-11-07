@@ -4,17 +4,19 @@
 
 require 'view/publictemplate'
 require 'view/navigation'
+require 'view/welcomehead'
 require 'view/sponsorhead'
 
 module ODDB
 	module View
 		class ResultTemplate < PublicTemplate
-			HEAD = View::LogoHead
+			HEAD = View::WelcomeHead
 			COMPONENTS = {}
 			def init
 				@components = {
-					[0,0]		=>	:content,
-					[0,1]		=>	:foot,
+					[0,0]		=>	:head,
+					[0,1]		=>	:content,
+					[0,2]		=>	:foot,
 				}
 				super
 			end

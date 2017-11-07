@@ -5,10 +5,14 @@
 # ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/component'
-require 'view/logohead'
 
 module ODDB
 	module View
+    class PopupLogo < HtmlGrid::Component
+    end
+    class Logo < View::PopupLogo
+    end
+  require 'view/logohead'
 		class PopupLogo < HtmlGrid::Component
 			CSS_CLASS = 'logo'
 			LOGO_KEY = :logo
