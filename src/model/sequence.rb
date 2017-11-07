@@ -214,7 +214,7 @@ module ODDB
     def has_patinfo?
       ((!@patinfo.nil? and @patinfo.valid?) || !@pdf_patinfo.nil?) \
         && patinfo_active? \
-        && !company.disable_patinfo
+        && (company && !company.disable_patinfo)
     end
     def has_public_packages?
       if @packages.is_a?(Hash)
