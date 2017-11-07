@@ -135,7 +135,6 @@ module ODDB
 			:recent_registrations,
 			:search_reset,
 			:sequences,
-			:topfoot,
 			:ywesee_contact,
 			:logout,
 		]
@@ -504,7 +503,6 @@ module ODDB
       :search_reset,
       :sequences,
       :show_ean13,
-      :topfoot,
     ]
     DISABLED = [
       :rss_box,
