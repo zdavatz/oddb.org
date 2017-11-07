@@ -32,7 +32,8 @@ module ODDB
           @attributes['alt'] = @lookandfeel.lookup(self::class::LOGO_KEY)
         end
         # change class if we are not in the home e,g de/gcc/home
-        @attributes['class'] = 'search_logo' if @session.request_path.dup.sub(/^\//,'').split('/').size > 3 
+        request_path =  @session.request_path.dup.sub(/^\//,'')
+        @attributes['class'] = 'search_logo' if request_path.split('/').size > 3 || /preferences/.match(request_path)
       end
 			def to_html(context)
         link_attrs = if attrs = @lookandfeel.attributes(:logo) and href = attrs['href']
