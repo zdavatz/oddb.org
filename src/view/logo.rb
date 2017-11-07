@@ -20,7 +20,7 @@ module ODDB
         super
         if(@lookandfeel)
           @attributes.update(@lookandfeel.attributes(self::class::LOGO_KEY))
-          src = zone_logo_src(self::class::LOGO_KEY)
+          src = logo_src(self::class::LOGO_KEY)
           if (@session.flavor == Session::DEFAULT_FLAVOR or \
               @session.lookandfeel.enabled?(:preferences)) and
              style = @session.get_cookie_input(:style) and
@@ -48,13 +48,6 @@ module ODDB
 				else
 					@lookandfeel.resource(key)
 				end
-			end
-			def zone_logo_src(key)
-				src = if(@lookandfeel.enabled?(:zone_logo))
-					zone_key = [key, @session.state.zone].join('_').intern
-					logo_src(zone_key)
-				end
-				src || logo_src(key)
 			end
 		end
 		class Logo < View::PopupLogo
