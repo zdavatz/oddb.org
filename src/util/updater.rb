@@ -52,7 +52,6 @@ module ODDB
     }
     LOG_FILES = {
       :powerlink				=>	'Powerlink-Statistics',
-      #:passthru				=>	'Banner-Clicks',
     }
     SPONSORS = {
       :generika	=>	'Exklusiv-Sponsoring Generika.cc',

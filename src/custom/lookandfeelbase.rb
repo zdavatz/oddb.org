@@ -233,8 +233,6 @@ Zeno Davatz
         :ba_pharma                =>  'Pharmaunternehmen',
         :ba_public_pharmacy       =>  'öffentliche Apotheke',
         :ba_research_institute    =>  'wissenschaftliches Institut',
-        :banner_destination        =>  "http://www.mediservice.ch/60000/d/pg000000247d.html",
-        :banner                    =>  'MediService - Apotheke - Farmacia - Pharmacie',
         :barcode_label                                          =>      'EAN-Code',
         :base_patent              =>  'Grund-Patent Nr.',
         :base_patent_date          =>  'Schutzbeginn des Grund-Patentes',
@@ -901,11 +899,6 @@ Zeno Davatz
         :home_migel                =>  'MiGeL-Home',
         :home_substances          =>  'Wirkstoffe-Home',
         :home_user                =>  'Services-Home',
-        :home_welcome_doctors      =>  "Willkommen bei oddb.org, dem\naktuellsten Ärzte-Portal der Schweiz.\nDie monatliche Aktualisierung erfolgt direkt\nüber die offiziellen Daten der <a class='welcome' href='http://www.fmh.ch' target='_self'>FMH</a>.",
-        :home_welcome              =>  "Willkommen bei oddb.org, dem<br>aktuellsten Medikamenten-Portal der Schweiz.",
-        :home_welcome_data        =>  "** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten **",
-        :home_welcome_hospitals   =>  'Willkommen bei den Spitälern der Schweiz!',
-        :home_welcome_pharmacies  =>  'Willkommen bei den Apotheken der Schweiz!',
         :hors_commerce            =>  'a.H.',
         :hospital_count_text      =>  'Spitäler',
         :hospitallist              =>  'Spitalverzeichnis',
@@ -1905,7 +1898,6 @@ Zeno Davatz
         :ba_info                  =>  'Information Médicale',
         :ba_insurance              =>  'Caisse maladie',
         :ba_pharma                =>  'Entreprise pharmaceuticale',
-        :banner_destination        =>  "http://www.mediservice.ch/60000/d/pg000000247d.html",
         :base_patent              =>  'Brevet de base',
         :base_patent_date          =>  'Début de la protection Brevet de base',
         :base_patent_detail        =>  'Détails du Brevet de base sur Swissreg',
@@ -2415,10 +2407,6 @@ Zeno Davatz
         :home_interactions        =>  'Accueil-Interactions',
         :homeopathy                =>  'Médicament homéopathique',
         :home_user                =>  'Accueil-Services',
-        :home_welcome              =>  "Bienvenue sur oddb.org,<br>le portail des génériques de la Suisse avec<br>tous les médicaments disponibles sur le marché suisse!",
-        :home_welcome_data        =>  "** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Déclaration d'origine</a> des données **",
-        :home_welcome_doctors      =>  "Bienvenue sur oddb.org,\nle portail des Médecins Suisses le plus actuel de la Suisse.\nLa mise à jour mensuelle s'effectue directement\npar les données officielles de <a class='welcome' href='http://www.fmh.ch/ww/fr/pub/welcome.htm'>FMH</a>.",
-        :home_welcome_hospitals   =>  'Bienvenue parmi les hôpitaux suisses !',
         :hors_commerce            =>  'h.c.',
         :hospital_count_text      =>  'Hôpitals',
         :hospitallist              =>  'annuaire des hôpitaux',
@@ -3162,8 +3150,6 @@ Zeno Davatz
         :ba_info                  =>  'Medical information provider',
         :ba_insurance              =>  'Health insurance',
         :ba_pharma                =>  'Pharmaceutical enterprise',
-        :banner_destination        =>  "http://www.mediservice.ch/60000/d/pg000000247d.html",
-        :banner                    =>  'MediService - Apotheke - Farmacia - Pharmacie',
         :barcode_label                                          =>      'EAN-Code',
         :base_patent              =>  'Base patent',
         :base_patent_date          =>  'Beginning of the protection of the base patent',
@@ -3688,9 +3674,6 @@ Zeno Davatz
         :homeopathy                =>  'Homeopathy',
         :home_substances          =>  'Substance-Home',
         :home_user                =>  'Services-Home',
-        :home_welcome_doctors      =>  "Welcome to oddb.org the\nopen doctors database of Switzerland.\nThe data is being update directly over\n <a class='welcome' href='http://www.fmh.ch' target='_self'>Swiss Medical Association</a>.",
-        :home_welcome              =>  "Welcome to oddb.org<br>the open drug database of Switzerland.",
-        :home_welcome_data        =>  "** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Declaration of origin</a> of the data **",
         :hors_commerce            =>  'n.t.',
         :hospital_count_text      =>  'Hospitals',
         :hospitallist              =>  'Hospitals',
@@ -4408,10 +4391,6 @@ Zeno Davatz
       },
     }
     HTML_ATTRIBUTES = {
-      :banner => {
-        'width'    =>  '468',
-        'height'  =>  '62',
-      },
       :explain_search => {
         'style'  =>  'padding-top: 40px;',
       },
@@ -4420,10 +4399,6 @@ Zeno Davatz
       },
       :login_welcome =>  {
         'tag'  =>  'th',
-      },
-      :logo => {
-        'width'    =>  '285',
-        'height'  =>  '122',
       },
       :pass  => {
         'type'  =>  'password',
@@ -4468,7 +4443,6 @@ Zeno Davatz
       }
     }
     RESOURCES = {
-      :banner                  =>  'banner.gif',
       :css                    =>  'oddb.css',
       :css_print              =>  'print.css',
       :company_logo            =>  'logos',

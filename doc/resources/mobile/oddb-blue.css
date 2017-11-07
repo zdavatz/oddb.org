@@ -438,7 +438,16 @@ td.pubprice {
   padding-right : 10px;
   text-align    : right;
 }
+img.logo {
+    width: 350px;
+    display: block;
+    margin: 0 auto;
+}
+td.welcomeleft  {
+  width : 33%;
+}
 td.logo {
+  width          : 33%;
   vertical-align : top;
   position       : relative;
   padding        : 4px;

@@ -12,26 +12,12 @@ require 'view/sponsorlogo'
 module ODDB
   module View
     module Personal
-      def welcome(model, session)
-        parts = []
-        user = session.user
+      # Return text div like Willkommen oddb_logged_in_user, else an empty div
+      def personal(model, session)
         div = HtmlGrid::Div.new(model, session, self)
         div.css_class = 'personal'
-        if(user.is_a?(ODDB::YusUser))
-          if company = @session.app.yus_model(user.name) and
-             logo_filename = company.logo_filename
-            if (company.url and !company.url.empty?)
-		          link = HtmlGrid::HttpLink.new(:url, company, session, self)
-              link.set_attribute('title', company.url)
-            else
-              link = HtmlGrid::Link.new(:logo, company, session, self)
-              link.set_attribute('href',
-                @lookandfeel.resource_global(:company_logo, logo_filename))
-            end
-            link.set_attribute('target', '_blank')
-            link.value = View::CompanyLogo.new(company, session, self)
-            parts.push link
-          end
+        user = session.user
+        if (user.is_a?(ODDB::YusUser))
           fullname = [user.name_first, user.name_last].compact.join(' ')
           if(fullname.strip.empty?)
             fullname = user.name
@@ -40,8 +26,31 @@ module ODDB
         else
           div.value = '&nbsp;'
         end
-        parts.push div
-        return (parts.size  == 1 ? div : parts)
+        div
+      end
+      # Returns company logo (if presnt) for a logged in ODDB user, else an empty div
+      def personal_logo(model, session)
+        user = session.user
+        div = HtmlGrid::Div.new(model, session, self)
+        div.css_class = 'personal_logo'
+        if(user.is_a?(ODDB::YusUser))
+          if company = @session.app.yus_model(user.name) and
+             logo_filename = company.logo_filename
+            if (company.url and !company.url.empty?)
+		          div = HtmlGrid::HttpLink.new(:url, company, session, self)
+              div.set_attribute('title', company.url)
+            else
+              div = HtmlGrid::Link.new(:logo, company, session, self)
+              div.set_attribute('href',
+                @lookandfeel.resource_global(:company_logo, logo_filename))
+            end
+            div.set_attribute('target', '_blank')
+            div.value = View::CompanyLogo.new(company, session, self)
+          end
+        else
+          div.value = '&nbsp;'
+        end
+        div
       end
     end
   end

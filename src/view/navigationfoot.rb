@@ -6,12 +6,15 @@ require 'htmlgrid/composite'
 require 'htmlgrid/text'
 require 'view/navigation'
 require 'view/copyright'
+require 'view/personal'
 
 module ODDB
 	module View
 		class NavigationFoot < HtmlGrid::Composite
+			include Personal
 			CSS_CLASS = "composite"
 			COMPONENTS = {
+				[0,0]		=>	:personal,
 				[1,0]		=>	View::ZoneNavigation,
 				[0,1]		=>	View::Copyright,
 				[1,1]		=>	View::Navigation,

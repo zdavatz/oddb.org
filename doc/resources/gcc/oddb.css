@@ -440,10 +440,18 @@ td.pubprice {
   text-align    : right;
 }
 img.logo {
+    width: 350px;
     display: block;
     margin: 0 auto;
 }
+td.welcomeleft  {
+  width : 33%;
+}
+td.welcomecenter  {
+  text-align: center;
+}
 td.logo {
+  width          : 33%;
   vertical-align : top;
   position       : relative;
   padding        : 4px;
@@ -861,9 +869,6 @@ a.logo {
   font-size   : 11px;
   margin-top  : 40px;
   color       : black;
-}
-div.personal {
- text-align: center;
 }
 .right {
   text-align : right;

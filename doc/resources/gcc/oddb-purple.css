@@ -439,8 +439,16 @@ td.pubprice {
   padding-right : 10px;
   text-align    : right;
 }
+img.logo {
+    width: 350px;
+    display: block;
+    margin: 0 auto;
+}
+td.welcomeleft  {
+  width : 33%;
+}
 td.logo {
-  vertical-align : top;
+  width          : 33%;  vertical-align : top;
   position       : relative;
   padding        : 4px;
   padding-top    : 12px;
@@ -470,7 +478,7 @@ td.title {
 }
 td.navigation {
   background      : #19245c;
-  color           : gray;
+  color           : white;
   text-decoration : none;
   padding         : 4px;
   font-size       : 12px;

@@ -9,17 +9,10 @@ require 'htmlgrid/link'
 require 'view/logo'
 
 module ODDB
-	module View
-		module Doctors
-class WelcomeHeadDoctors < View::WelcomeHead
-	COMPONENTS = {
-		[0,0]		=>	View::Logo,
-		[1,0,0]	=>	:sponsor,
-		[1,0,1]	=>	"break",
-		[1,0,2]	=>	"home_welcome_doctors",
-    [1,0,3] =>  :welcome,
-	}
-	end
-		end
-	end
+  module View
+    module Doctors
+      class WelcomeHeadDoctors < View::WelcomeHead
+      end
+    end
+  end
 end
