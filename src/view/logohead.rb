@@ -55,13 +55,11 @@ module ODDB
         [1,0,0] => :sponsor,
         [1,0,1] => :welcome,
         [0,1]   => :language_chooser,
-        [1,1]   => :tab_navigation,
       }
       CSS_MAP = {
         [0,0] => 'logo',
         [1,0] => 'right',
         [0,1] => 'list',
-        [1,1] => 'tabnavigation right',
       }
       COMPONENT_CSS_MAP = {
         [0,1] => 'component',
@@ -69,11 +67,6 @@ module ODDB
       def language_chooser(model, session=@session)
         unless @lookandfeel.disabled?(:search_result_head_navigation)
           super
-        end
-      end
-      def tab_navigation(model, session=@session)
-        unless @lookandfeel.disabled?(:search_result_head_navigation)
-          View::TabNavigation.new(model, session, self)
         end
       end
     end

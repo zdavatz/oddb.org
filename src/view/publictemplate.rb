@@ -155,15 +155,6 @@ require(['dojo/ready'], function(ready) {
 					@lookandfeel.lookup(event)
 				end
 			end
-			def topfoot(model, session)
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					just_medical(model, session)
-				elsif(@lookandfeel.enabled?(:oekk_structure, false))
-					oekk_head(model)
-				else
-					TopFoot.new(model, session, self)
-				end
-			end
 		end
 	end
 end
