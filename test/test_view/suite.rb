@@ -5,6 +5,7 @@
 $: << File.expand_path(File.dirname(__FILE__))
 
 run_isolated =  ['searchbar.rb',
+                 'personal.rb',
                  'navigationfoot.rb',
                  'admin/fachinfoconfirm.rb',
                  'drugs/fachinfo.rb',

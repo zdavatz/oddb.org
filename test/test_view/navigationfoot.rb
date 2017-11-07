@@ -71,7 +71,6 @@ module ODDB
 				@app = StubApp.new
 				@app.last_update = Time.now
         @session = ODDB::Session.new(app: @app)
-        puts " @session.lookandfeel  is #{ @session.lookandfeel }"
         @session.lookandfeel = StubLookandfeel.new(@session)
         skip("Under Rack it is too difficult to test it this way")
 				@view = View::NavigationFoot.new(nil, @session)
@@ -119,7 +118,7 @@ class TestNavigationFoot2 <Minitest::Test
                           :_event_url      => '_event_url',
                           :navigation      => @navigation,
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @session   = flexmock('session', :lookandfeel => @lnf, :user => nil)
     @model     = flexmock('model')
     @composite = ODDB::View::NavigationFoot.new(@model, @session)
   end
@@ -172,31 +171,6 @@ class TestNavigationFoot2 <Minitest::Test
     expected = {[0, 0] => "subheading", [1, 0] => "subheading right"}
     @session   = flexmock('session', :lookandfeel => @lnf)
     @composite = ODDB::View::NavigationFoot.new(@model, @session)
-    assert_equal(expected, @composite.init)
-  end
-end
-
-class TestTopFoot <Minitest::Test
-  def setup
-    @zone_navigation = flexmock('zone_navigation',
-                                :sort_by => [],
-                                :each_with_index => 'each_with_index',
-                                :empty? => false,
-                          )
-    @lnf       = flexmock('lookandfeel',
-                          :lookup   => 'lookup',
-                          :enabled? => true,
-                          :attributes      => {},
-                          :zone_navigation => @zone_navigation,
-                          :direct_event    => 'direct_event',
-                          :_event_url      => '_event_url'
-                         )
-    @session   = flexmock('session', :lookandfeel => @lnf)
-    @model     = flexmock('model')
-    @composite = ODDB::View::TopFoot.new(@model, @session)
-  end
-  def test_init
-    expected = {[0, 0] => "navigation", [1, 0] => "navigation right"}
     assert_equal(expected, @composite.init)
   end
 end

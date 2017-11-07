@@ -117,20 +117,6 @@ class TestPublicTemplate <Minitest::Test
     flexmock(@model, :name => 'name')
     assert_equal('name', @template.title_part_three)
   end
-  def test_topfoot
-    assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
-  end
-  def test_topfoot__just_medical_structure
-    flexmock(@lnf, :enabled? => true)
-    assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
-  end
-  def test_topfoot__oekk_structure
-    flexmock(@lnf) do |l|
-      l.should_receive(:enabled?).with(:just_medical_structure, false).and_return(false)
-      l.should_receive(:enabled?).with(:oekk_structure, false).and_return(true)
-    end
-    assert_kind_of(ODDB::View::TopFoot, @template.topfoot(@model, @session))
-  end
   def test_meta_apple_app_id
     @lnf.should_receive(:lookup).and_return{|arg| arg.to_s}
     @lnf.should_receive(:zones).and_return([])

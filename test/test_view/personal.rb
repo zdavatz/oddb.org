@@ -2,13 +2,14 @@
 # encoding: utf-8
 # ODDB::View::TestPersonal -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
-
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'htmlgrid/urllink'
 require 'view/personal'
+require 'stub/cgi'
 
 module ODDB
   module View
@@ -49,15 +50,9 @@ class TestPersonal <Minitest::Test
     @view    = ODDB::View::StubPersonal.new(@model, @session)
   end
   def test_welcome
-    assert_kind_of(HtmlGrid::HttpLink, @view.welcome(@model, @session)[0])
-  end
-  def test_welcome__name_empty
-    flexmock(@user, 
-             :name_first => '',
-             :name_last  => '',
-             :name => 'name'
-            )
-    assert_kind_of(HtmlGrid::HttpLink, @view.welcome(@model, @session)[0])
+    assert_kind_of(HtmlGrid::Div, @view.personal(@model, @session))
+    assert_kind_of(String, @view.personal(@model, @session).to_html(CGI.new))
+    assert_equal('<DIV class="personal">lookup</DIV>', @view.personal(@model, @session).to_html(CGI.new))
   end
 end
 

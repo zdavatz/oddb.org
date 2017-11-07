@@ -28,7 +28,7 @@ class TestCompanyLogo <Minitest::Test
     @component = ODDB::View::CompanyLogo.new(@model, @session)
   end
   def test_init
-    assert_equal('name', @component.init)
+    assert_equal('company_logo', @component.init)
   end
   def test_to_html
     context = flexmock('context', :img => 'img')

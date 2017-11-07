@@ -2,12 +2,14 @@
 # encoding: utf-8
 # ODDB::View::TestWelcomeHead -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'view/welcomehead'
+require 'stub/cgi'
 
 module ODDB
   class Session
@@ -38,54 +40,11 @@ class TestWelcomeHead <Minitest::Test
     @model     = flexmock('model')
     @composite = ODDB::View::WelcomeHead.new(@model, @session)
   end
-  def test_banner__epatents
-    lnf = flexmock('lnf_epatents') do |lnf|
-      lnf.should_receive(:resource_localized).and_return(false)
-      lnf.should_receive(:attributes).and_return({})
-      lnf.should_receive(:enabled?).and_return(true)
-      lnf.should_receive(:resource).and_return('resource')
-      lnf.should_receive(:lookup).and_return('lookup')
-      lnf.should_receive(:_event_url)
-    end
-    setup_welcome(lnf)
-    expected = "<A HREF=\"http://petition.eurolinux.org\"><img src=\"http://aful.org/images/patent_banner.gif\" alt=\"Petition against e-patents\"></A><BR>"
-    assert_equal(expected, @composite.banner(@model, @session))
-  end
-  def test_bannr__banner
-    lnf = flexmock('lnf_banner') do |lnf|
-      lnf.should_receive(:attributes).and_return({})
-      lnf.should_receive(:enabled?).with(:banner).once.and_return(true)
-      lnf.should_receive(:enabled?).and_return(false)
-      lnf.should_receive(:resource).and_return('resource')
-      lnf.should_receive(:lookup).and_return('lookup')
-      lnf.should_receive(:_event_url)
-    end
-    setup_welcome(lnf)
-    assert_kind_of(HtmlGrid::Link, @composite.banner(@model, @session))
-  end
-  def test_banner__nil
-    setup_welcome
-    assert_nil(@composite.banner(@model, @session))
-  end
   def test_home_welcome
     setup_welcome
-    expected = ["lookup", "<br>", "lookup"]
-    assert_equal(expected, @composite.home_welcome(@model, @session))
+    expected = "<TABLE cellspacing=\"0\" class=\"composite\"><TR><TD class=\"logo\">&nbsp;</TD></TR><TR><TD class=\"personal_logo\"><DIV class=\"personal_logo\">&nbsp;</DIV></TD></TR></TABLE>"
+    assert_equal(expected,  @composite.to_html(CGI.new))
   end
-  def test_home_welcome__screencast
-    lnf = flexmock('lnf_epatents') do |lnf|
-      lnf.should_receive(:resource_localized).and_return(false)
-      lnf.should_receive(:attributes).and_return({})
-      lnf.should_receive(:enabled?).and_return(true)
-      lnf.should_receive(:resource).and_return('resource')
-      lnf.should_receive(:lookup).and_return('lookup')
-      lnf.should_receive(:_event_url)
-    end
-    setup_welcome(lnf)
-    expected = ["lookup", "<br>", "lookup"]
-    assert_kind_of(HtmlGrid::Link, @composite.home_welcome(@model, @session)[0])
-  end
-
 end
 
   end # View
