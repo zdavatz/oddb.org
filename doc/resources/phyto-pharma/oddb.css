@@ -444,6 +444,9 @@ img.logo {
     display: block;
     margin: 0 auto;
 }
+img.search_logo {
+    width: 350px;
+}
 td.welcomeleft  {
   width : 33%;
 }

@@ -12,7 +12,7 @@ module ODDB
     end
     class Logo < View::PopupLogo
     end
-  require 'view/logohead'
+    require 'view/logohead'
 		class PopupLogo < HtmlGrid::Component
 			CSS_CLASS = 'logo'
 			LOGO_KEY = :logo
@@ -31,6 +31,8 @@ module ODDB
           @attributes['src'] = src
           @attributes['alt'] = @lookandfeel.lookup(self::class::LOGO_KEY)
         end
+        # change class if we are not in the home e,g de/gcc/home
+        @attributes['class'] = 'search_logo' if @session.request_path.dup.sub(/^\//,'').split('/').size > 3 
       end
 			def to_html(context)
         link_attrs = if attrs = @lookandfeel.attributes(:logo) and href = attrs['href']

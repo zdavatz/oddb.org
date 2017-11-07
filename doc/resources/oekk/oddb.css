@@ -459,6 +459,9 @@ img.logo {
     display: block;
     margin: 0 auto;
 }
+img.search_logo {
+    width: 350px;
+}
 td.welcomeleft  {
   width : 33%;
 }
@@ -468,6 +471,9 @@ td.logo {
 	position : relative;
 	top : 3px;
 	padding-bottom : 3px;
+}
+img.search_logo {
+    width: 350px;
 }
 td.section-title {
 	font-weight : bold;

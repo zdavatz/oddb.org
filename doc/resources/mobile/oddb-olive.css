@@ -453,6 +453,9 @@ td.logo {
   padding        : 4px;
   padding-top    : 12px;
 }
+img.search_logo {
+    width: 350px;
+}
 td.section-title {
   font-weight : bold;
   padding-top : 8px;
