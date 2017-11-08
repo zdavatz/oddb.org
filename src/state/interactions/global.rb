@@ -12,6 +12,9 @@ class Global < State::Global
 	HOME_STATE = State::Interactions::Init
 	ZONE = :interactions
 	ZONE_NAVIGATION = [
+		State::Drugs::RecentRegs,
+		State::Drugs::AtcChooser,
+		State::Drugs::Sequences,
 	]
 	def limit_state
 		State::Interactions::Limit.new(@session, nil)
