@@ -269,7 +269,7 @@ module ODDB
     def create_part
       part = Part.new
       part.package = self
-      @parts ||= []
+      @parts = [] if @parts.nil? || !@parts.is_a?(Array)
       @parts.push part
       part
     end

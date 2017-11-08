@@ -46,6 +46,9 @@ module ODDB
       :mail_order_prices        => "Array",
     }
     define_check_class_methods check_accessor_list
+    def debug_only_set_parts_to_stub  # for test_create_part_when_parts_are_nil
+      @parts =ODBA::CacheStub.new
+    end
   end
   class Package < PackageCommon
     public :adjust_types
@@ -408,6 +411,14 @@ class TestPackage <Minitest::Test
   end
   def test_create_part
     assert_equal [], @package.parts
+    part = @package.create_part
+    assert_instance_of ODDB::Part, part
+    assert_equal [part], @package.parts
+    assert_equal @package, part.package
+  end
+  def test_create_part_when_parts_are_nil
+    @package.debug_only_set_parts_to_stub
+    assert_instance_of ODBA::CacheStub, @package.parts
     part = @package.create_part
     assert_instance_of ODDB::Part, part
     assert_equal [part], @package.parts
