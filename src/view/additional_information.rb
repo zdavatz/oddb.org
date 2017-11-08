@@ -183,15 +183,6 @@ module ODDB
 				span.css_id = "deductible_#{@deductible_count}"
 				span.css_class = deductible.to_s
 				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
-				if(deductible)
-					tooltip_content = @lookandfeel.lookup(:deductible_title,
-																							@lookandfeel.lookup(deductible))
-				else
-					tooltip_content = @lookandfeel.lookup(:deductible_unknown_title)
-				end
-        cgi = session.cgi || CGI.initialize_without_offline_prompt('html4')
-        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(cgi)
-        ODDB::View::TooltipHelper.set_java_script(span, htlm)
 				span.label = true
 				span
 			end
