@@ -33,7 +33,9 @@ module ODDB
         end
         # change class if we are not in the home e,g de/gcc/home
         splits =  @session.request_path.dup.sub(/^\//,'').split('/')
-        if splits.size > 3 || (splits.size == 3 && !/home/i.match(splits.last))
+        if /home_interaction/i.match(splits.last) ||
+            splits.size > 3 ||
+            (splits.size == 3 && !/home/i.match(splits.last))
           @attributes['class'] = 'search_logo'
         end
       end
