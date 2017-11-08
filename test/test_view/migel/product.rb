@@ -40,7 +40,8 @@ class TestProductInnerComposite <Minitest::Test
                                :lookandfeel => @lookandfeel,
                                :error       => nil,
                                :event_url   => nil,
-                               :language    => 'language'
+                               :language    => 'language',
+                               :request_path => 'request_path',
                               )
     group           = flexmock('group', 
                                :language => 'language',
@@ -405,6 +406,7 @@ class TestProduct <Minitest::Test
                         :zone    => 'zone',
                         :event   => 'event',
                         :flavor  => 'flavor',
+                        :request_path => 'request_path',
                        )
     @view = ODDB::View::Migel::Product.new(@model, @session)
   end

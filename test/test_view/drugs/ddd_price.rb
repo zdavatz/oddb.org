@@ -190,6 +190,7 @@ class TestDDDPrice <Minitest::Test
                          :flavor      => 'flavor',
                          :event       => 'event',
                          :get_cookie_input => 'get_cookie_input',
+                         :request_path => 'request_path',
                         )
     @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact      = flexmock('fact', :factor => 'factor')

@@ -54,7 +54,7 @@ module ODDB
                              :_event_url => '_event_url',
                              :navigation => @zone_navigation,
                              :zone_navigation => @zone_navigation,
-                             :direct_event => 'direct_event'
+                             :direct_event => 'direct_event',
                             )
         user      = flexmock('user', :valid? => nil)
         @zone = flexmock('zone', :zone => 'zone')
@@ -64,7 +64,8 @@ module ODDB
                             :flavor => Session::DEFAULT_FLAVOR,
                             :get_cookie_input => 'get_cookie_input',
                             :user    => user,
-                            :sponsor => user
+                            :sponsor => user,
+                             :request_path => 'request_path',
                         )
         @model    = flexmock('model')
         @content  = flexmock('content', :new => 'new')
@@ -88,7 +89,8 @@ module ODDB
         state = flexmock('state', :zone => 'zone')
         flexmock(@session, 
                  :state    => state,
-                 :currency => 'currency'
+                 :currency => 'currency',
+                 :request_path => 'request_path',
                 )
         replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do 
           assert_equal({}, @template.init)

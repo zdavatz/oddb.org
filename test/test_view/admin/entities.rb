@@ -60,7 +60,8 @@ class TestEntities <Minitest::Test
                         :flavor   => 'flavor',
                         :allowed? => nil,
                         :event    => 'event',
-                        :zone     => 'zone'
+                        :zone     => 'zone',
+                        :request_path => 'request_path',
                        )
     flexmock(ODDB::View::Admin::Entities::Wrapper).new_instances do |wrapper|
       wrapper.should_receive(:get_preference).and_return('get_preference')

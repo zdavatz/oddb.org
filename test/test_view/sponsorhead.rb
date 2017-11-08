@@ -48,6 +48,7 @@ module ODDB
                             :flavor => Session::DEFAULT_FLAVOR,
                             :get_cookie_input => 'get_cookie_input',
                             :sponsor => user,
+                            :request_path => 'request_path',
                            )
         @model   = flexmock('model')
         @view    = ODDB::View::StubSponsorMethods.new(@model, @session)
@@ -79,6 +80,9 @@ module ODDB
 					@attributes = {}
 					@enabled = true
 				end
+        def request_path
+          'request_path'
+        end
 				def app
 					self
 				end

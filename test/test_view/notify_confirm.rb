@@ -31,6 +31,7 @@ class TestNotifyConfirmComposite <Minitest::Test
                           :event       => 'event',
                           :flavor      => Session::DEFAULT_FLAVOR,
                           :zone        =>  'zone',
+                          :request_path => 'request_path',
                          )
     item       = flexmock('item', :name => 'name')
     @model     = flexmock('model', 
@@ -87,6 +88,7 @@ class TestNotifyConfirm <Minitest::Test
                         :flavor      => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => 'get_cookie_input',
                         :persistent_user_input => 'persistent_user_input',
+                        :request_path => 'request_path',
                        )
     item     = flexmock('item', :name => 'name')
     @model   = flexmock('model', 

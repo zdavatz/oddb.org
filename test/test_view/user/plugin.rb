@@ -73,6 +73,7 @@ class TestPlugin <Minitest::Test
                           :user        => user,
                           :sponsor     => sponsor,
                           :flavor      => 'flavor',
+                          :request_path => 'request_path',
                          )
     @model     = flexmock('model')
 #    skip("Leads to ODDB::View::PopupLogo::Session ODDB::View::PopupLogo::Session")

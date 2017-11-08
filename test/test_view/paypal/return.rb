@@ -130,6 +130,7 @@ class TestReturn <Minitest::Test
                          :user        => user,
                          :sponsor     => sponsor,
                          :flavor      => 'flavor',
+                         :request_path => 'request_path',
                         )
     @item    = flexmock('item',
                         :type         => :poweruser,

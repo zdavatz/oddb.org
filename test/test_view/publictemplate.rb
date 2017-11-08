@@ -55,6 +55,7 @@ class TestPublicTemplate <Minitest::Test
                          :flavor      => 'gcc',
                          :user        => user,
                          :sponsor     => sponsor,
+                         :request_path => 'request_path',
                          :get_cookie_input => nil,
                         )
     @session.should_receive(:lookandfeel).and_return(@lnf).by_default

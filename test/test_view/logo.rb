@@ -36,12 +36,13 @@ class TestPopupLogo <Minitest::Test
                         :lookandfeel => @lnf,
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => 'get_cookie_input',
+                        :request_path => 'request_path',
                        )
     @model     = flexmock('model')
     @component = ODDB::View::PopupLogo.new(@model, @session)
   end
   def test_init
-    assert_equal('lookup', @component.init)
+    assert_nil(@component.init)
   end
   def test_to_html
     flexmock(@lnf, :_event_url => '_event_url')
@@ -62,15 +63,6 @@ class TestPopupLogo <Minitest::Test
             )
     assert_equal('resource_localized', @component.logo_src('key'))
   end
-  def test_zone_logo_src
-    flexmock(@lnf,
-             :enabled? => true,
-             :resource_localized => 'resource_localized'
-            )
-    state = flexmock('state', :zone => 'zone')
-    flexmock(@session, :state => state)
-    assert_equal('resource_localized', @component.zone_logo_src('key'))
-  end
 end
 
 class TestLogo <Minitest::Test
@@ -85,6 +77,7 @@ class TestLogo <Minitest::Test
                         :lookandfeel => @lnf,
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => nil,
+                        :request_path => 'request_path',
                        )
     @model   = flexmock('model')
     @logo    = ODDB::View::Logo.new(@model, @session)
@@ -106,6 +99,7 @@ class TestLogo <Minitest::Test
                         :lookandfeel => @lnf,
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => nil,
+                        :request_path => 'request_path',
                        )
     @model   = flexmock('model')
     @logo    = ODDB::View::Logo.new(@model, @session)

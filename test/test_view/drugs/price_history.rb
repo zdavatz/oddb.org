@@ -37,7 +37,8 @@ class TestPriceHistoryList <Minitest::Test
                         :lookandfeel => @lnf,
                         :event       => 'event',
                         :get_currency_rate => 1.0,
-                        :currency    => 'CHF'
+                        :currency    => 'CHF',
+                        :request_path => 'request_path',
                        )
     ppublic  = flexmock('public', 
                         :authority => 'authority',
@@ -134,7 +135,8 @@ class TestPriceHistory <Minitest::Test
                          :allowed?    => nil,
                          :event       => 'event',
                          :zone        => 'zone',
-                         :persistent_user_input => 'persistent_user_input'
+                         :persistent_user_input => 'persistent_user_input',
+                         :request_path => 'request_path',
                         )
     @package  = flexmock('package', 
                          :name  => 'name',

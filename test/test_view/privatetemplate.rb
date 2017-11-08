@@ -69,6 +69,7 @@ class TestPrivateTemplate <Minitest::Test
                          :allowed?   => nil,
                         :flavor => Session::DEFAULT_FLAVOR,
                         :state => state,
+                        :request_path => 'request_path',
                         :get_cookie_input => 'get_cookie_input',
                         :sponsor => user,
                         )

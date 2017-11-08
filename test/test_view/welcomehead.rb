@@ -35,7 +35,8 @@ class TestWelcomeHead <Minitest::Test
                           :flavor => Session::DEFAULT_FLAVOR,
                           :lookandfeel => @lnf,
                           :state => state,
-                          :sponsor     => sponsor
+                          :sponsor     => sponsor,
+                          :request_path => 'request_path',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::WelcomeHead.new(@model, @session)

@@ -60,6 +60,7 @@ class TestConfirm <Minitest::Test
                          :sponsor => user,
                          :flavor  => 'default',
                          :logo    => @logo,
+                         :request_path => 'request_path',
                         )
     @model    = flexmock('model')
     @template = ODDB::View::Confirm.new(@model, @session)
