@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Logo -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
-# ODDB::View::Logo -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com 
-# ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/component'
 
@@ -33,9 +30,10 @@ module ODDB
         end
         # change class if we are not in the home e,g de/gcc/home
         splits =  @session.request_path.dup.sub(/^\//,'').split('/')
-        if /home_interaction/i.match(splits.last) ||
+        if @session.persistent_user_input(:search_query) && (
+            /home_interaction/i.match(splits.last) ||
             splits.size > 3 ||
-            (splits.size == 3 && !/home/i.match(splits.last))
+            (splits.size == 3 && !/home/i.match(splits.last)))
           @attributes['class'] = 'search_logo'
         end
       end
