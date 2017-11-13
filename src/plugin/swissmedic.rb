@@ -262,6 +262,12 @@ public
     def update(opts = {}, agent=Mechanize.new, file2open=get_latest_file(agent))
       $swissmedic_do_tracing = true
       start_time = Time.new
+      threads = []
+      threads << Thread.new do trace_memory_useage end
+      sleep 0.01 unless threads.last        
+      if threads.last
+        threads.last.priority = threads.last.priority + 1
+      end
       @update_comps = (opts and opts[:update_compositions])
       cleanup_active_agents_with_nil if @update_comps || opts[:check]
       require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
@@ -270,11 +276,6 @@ public
       msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
       LogFile.debug(msg)
-      threads = []
-      threads << Thread.new do
-        threads.last.priority = threads.last.priority + 1
-        trace_memory_useage
-      end
       row_nr = 4
       if @update_comps
         file2open && File.exists?(file2open)
