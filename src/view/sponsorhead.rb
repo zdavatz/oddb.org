@@ -17,7 +17,7 @@ class SponsorHead < CommonLogoHead
 	COMPONENTS = {
 		[0,0]		=>	View::Logo,
 		[0,1]		=>	:language_chooser,
-		[1,0]	=>	:sponsor,
+		[1,0]	=>	:personal_logo,
 		[1,1]		=>	View::TabNavigation,
 	}
 	CSS_CLASS = 'composite'

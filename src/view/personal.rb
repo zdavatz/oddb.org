@@ -7,6 +7,7 @@
 require 'htmlgrid/div'
 require 'htmlgrid/link'
 require 'model/user'
+require 'view/google_ad_sense'
 require 'view/sponsorlogo'
 
 module ODDB
@@ -42,13 +43,19 @@ module ODDB
             else
               div = HtmlGrid::Link.new(:logo, company, session, self)
               div.set_attribute('href',
-                @lookandfeel.resource_global(:company_logo, logo_filename))
+              @lookandfeel.resource_global(:company_logo, logo_filename))
             end
             div.set_attribute('target', '_blank')
             div.value = View::CompanyLogo.new(company, session, self)
           end
         else
-          div.value = '&nbsp;'
+          if((spons = @session.sponsor) && spons.valid?)
+            div.value = View::SponsorLogo.new(spons, session, self)
+          elsif(@lookandfeel.enabled?(:google_adsense))
+            return ad_sense(model, session)
+          else
+            div.value = '&nbsp;'
+          end
         end
         div
       end

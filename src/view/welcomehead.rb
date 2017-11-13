@@ -7,7 +7,6 @@ require 'htmlgrid/composite'
 require 'htmlgrid/text'
 require 'htmlgrid/link'
 require 'view/logohead'
-require 'view/sponsorhead'
 
 module ODDB
 	module View
@@ -18,11 +17,9 @@ module ODDB
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0]	=>	'logo',
-				[0,1]	=>	'personal_logo', # x, y, col
 			}
       COMPONENTS = {
 				[0,0] => View::Logo,
-				[0,1] => :personal_logo,  # Willkommen logged-in user aus personal
 			}
     end
 	end
