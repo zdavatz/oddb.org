@@ -6,12 +6,14 @@ require 'paypal_helper'
 @workThread = nil
 
 describe "ch.oddb.org" do
+  VALID_ONLY_TRADEMARK_EXAMPLE = 'canesten'
 
   before :all do
     @idx = 0
     @all_search_limitations = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
             "search_limitation_SL_only", "search_limitation_valid"]
     waitForOddbToBeReady(@browser, OddbUrl)
+    @browser.link(:name => 'search_instant').click unless   @browser.link(:name => 'search_instant').text.eql?('Instant')
   end
 
   before :each do
@@ -82,7 +84,7 @@ describe "ch.oddb.org" do
   end
   end
   describe 'desitin' do
-    before :all do
+    before :each do
       login
     end
   it "should display the correct color iscador U" do
@@ -209,11 +211,6 @@ describe "ch.oddb.org" do
     expect(@browser.text).to match /Aspirin 500|ASS Cardio Actavis 100 mg|Aspirin Cardio 300/
   end
 
-  it "should have a link to the extended search" do
-    @browser.link(:text => /erweitert/).click; small_delay
-    expect(@browser.url).to match /#{Flavor}\/fachinfo_search/
-  end
-
   it "should find inderal" do
     @browser.text_field(:name, "search_query").set("inderal")
     @browser.button(:name, "search").click; sleep(1)
@@ -240,24 +237,28 @@ describe "ch.oddb.org" do
   end
 
   it "should trigger the limitation after maximal 5 queries" do
-    logout
-    names = [ 'ipramol', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Marcoumar', 'Augmentin']
-    res = false
-    saved = @idx
-    names.each {
-      |name|
-        waitForOddbToBeReady(@browser, OddbUrl)
-        @browser.select_list(:name, "search_type").select("Markenname")
-        @browser.text_field(:name, "search_query").set(name)
-        @browser.button(:name, "search").click; small_delay
-        createScreenshot(@browser, '_'+@idx.to_s)
-        if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
-          res = true
-          break
-        end
-        @idx += 1
-    }
-    expect(res).to eql true
+    begin
+      logout
+      names = [ 'ipramol', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Marcoumar', 'Augmentin']
+      res = false
+      saved = @idx
+      names.each {
+        |name|
+          waitForOddbToBeReady(@browser, OddbUrl)
+          @browser.select_list(:name, "search_type").select("Markenname")
+          @browser.text_field(:name, "search_query").set(name)
+          @browser.button(:name, "search").click; small_delay
+          createScreenshot(@browser, '_'+@idx.to_s)
+          if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
+            res = true
+            break
+          end
+          @idx += 1
+      }
+      expect(res).to eql true
+    ensure
+      login
+    end
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the english language versions" do
@@ -294,6 +295,7 @@ describe "ch.oddb.org" do
 
   it "should open a sequence specific patinfo" do # 15219 Zymafluor
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/15219"; small_delay
+    require 'pry'; binding.pry unless @browser.link(:text => 'PI').exist?
     expect(@browser.link(:text => 'PI').exist?).to eq true
     @browser.link(:text => 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
@@ -301,6 +303,7 @@ describe "ch.oddb.org" do
 
   it "should open a package specific patinfo" do # 43788 Tramal
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
+    require 'pry'; binding.pry unless @browser.link(:text => 'PI').exist?
     expect(@browser.link(:text => 'PI').exist?).to eq true
     @browser.link(:text => 'PI').click; small_delay
     # As this opens a new window we must focus on it
@@ -312,6 +315,7 @@ describe "ch.oddb.org" do
 
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
+    require 'pry'; binding.pry unless @browser.link(:text => 'PI').exist?
     expect(@browser.link(:text => 'PI').exist?).to eq true
     @browser.link(:text => 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
@@ -447,7 +451,7 @@ describe "ch.oddb.org" do
       @browser.link(:text=>'Instant').click if @browser.link(:text=>'Instant').exists?
       skip("backtrace does not work with Augmentin which contains ( in the link") if /Augmentin/i.match(medi)
 
-      expect(@browser.text).to match /Art der Suche: Plus/i
+      expect(@browser.text).to match /Art der Suche:\s*$\s*Plus/im
       0.upto(10).each{ |idx|
                       begin
                         chooser = @browser.text_field(:id, 'searchbar')
@@ -508,6 +512,7 @@ describe "ch.oddb.org" do
       time = Time.parse(m2[0])
       diff_seconds = Time.now.to_i - time.to_i
       # * less than 5 minutes
+      require 'pry'; binding.pry unless diff_seconds < 310
       expect(diff_seconds).to be < 310 
     end
   end
@@ -531,20 +536,20 @@ describe "ch.oddb.org" do
   snippet1 = %(
     registrations.values.find{|x| x.active_packages.size > 0 && x.packages.size > x.active_packages.size }  # 48606 Gromazol
   )
-  @valid_only_trademark_example = 'Gromazol'
   it 'should not display expired drugs, when search says active drugs only' do
+    login
     set_seach_preferences([])
-    select_product_by_trademark(@valid_only_trademark_example)
+    select_product_by_trademark(VALID_ONLY_TRADEMARK_EXAMPLE)
     nr_unrestricted_products = get_nr_items
-    puts "found #{nr_unrestricted_products} unrestricted products for #{@valid_only_trademark_example}"
+    puts "found #{nr_unrestricted_products} unrestricted products for #{VALID_ONLY_TRADEMARK_EXAMPLE}"
     set_seach_preferences([:search_limitation_valid])
-    select_product_by_trademark(@valid_only_trademark_example)
+    select_product_by_trademark(VALID_ONLY_TRADEMARK_EXAMPLE)
     nr_restricted_products = get_nr_items
-    puts "found #{nr_restricted_products} restricted products for #{@valid_only_trademark_example}"
+    puts "found #{nr_restricted_products} restricted products for #{VALID_ONLY_TRADEMARK_EXAMPLE}"
     expect(nr_unrestricted_products).to be > 0
     skip('Will probably fail if you did not search for one of the few examples via bin admin')
     expect(nr_unrestricted_products).to be > nr_restricted_products
-    puts "Limit to only valid products succeeded for #{@valid_only_trademark_example}" if nr_unrestricted_products > nr_restricted_products
+    puts "Limit to only valid products succeeded for #{VALID_ONLY_TRADEMARK_EXAMPLE}" if nr_unrestricted_products > nr_restricted_products
   end
 
   # To find examples we used the following bin/admin snippet
@@ -567,12 +572,13 @@ describe "ch.oddb.org" do
     [:search_limitation_SL_only,  'mephadolor', false],
     [:search_limitation_SL_only,  'Omeprazol MUT Sandoz', true],
     # Done in separate spec test, as one has to search often for an actual valid example
-    #  :search_limitation_valid => @valid_only_trademark_example,
+    #  :search_limitation_valid => VALID_ONLY_TRADEMARK_EXAMPLE,
     ].each do |example|
     limitation = example[0]
     drug_name  = example[1]
     must_be_greater  = example[2]
     it "limiting the search to #{limitation} using #{drug_name}" do
+      login
       set_seach_preferences([])
       select_product_by_trademark(drug_name)
       nr_unrestricted_first = get_nr_items

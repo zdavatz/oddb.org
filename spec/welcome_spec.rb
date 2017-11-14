@@ -15,7 +15,7 @@ describe "ch.oddb.org" do
     login(ViewerUser, ViewerPassword)
   end
 
-  ViewerDescription = 'gesponsorten Login von Desitin Pharma'
+  ViewerDescription = 'Willkommen Max Miller'
 
   before :each do
     @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
@@ -31,7 +31,6 @@ describe "ch.oddb.org" do
     |zone|
     it "should be possible to see the sponsored log-in in zone #{zone}" do
       expect(@browser.link(:name, zone).exists?).to eq(true)
-      skip 'sponsored login desitin not working correctly'
       expect(@browser.text).to match (ViewerDescription)
       @browser.link(:name, zone).click
       sleep(0.1) unless @browser.link(:name, "logout").exists?

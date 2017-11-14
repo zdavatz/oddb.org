@@ -120,7 +120,7 @@ def login_link
   @browser.link(:name =>'login_form')
 end
 
-def login(user = ViewerUser, password=ViewerPassword, remember_me=false)
+def login(user = ViewerUser, password=ViewerPassword, remember_me=true)
   @saved_user ||= 'unbekannt'
   setup_browser
   @browser.goto OddbUrl
@@ -188,6 +188,8 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   plus_link =  @browser.link(:name => 'search_instant')
   plus_link.click if plus_link.exist? && plus_link.visible? && /Plus/i.match(plus_link.text)
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
+rescue => error
+  require 'pry'; binding.pry
 end
 
 def small_delay
@@ -248,10 +250,15 @@ def select_product_by_trademark(name)
   if false
     @browser.goto create_url_for(name, 'st_sequence')
   else
-    @browser.goto OddbUrl
-    @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set(name)
-    small_delay; @browser.button(:name, "search").click
+    begin
+      @browser.goto OddbUrl
+      @browser.link(:name => 'search_instant').click unless   @browser.link(:name => 'search_instant').text.eql?('Instant')
+      @browser.select_list(:name, "search_type").select("Markenname")
+      @browser.text_field(:name, "search_query").set(name)
+      small_delay; @browser.button(:name, "search").click
+    rescue => error
+      # require 'pry'; binding.pry
+    end
   end
   @text = @browser.text.clone
   return @text if LeeresResult.match(@text)
@@ -260,7 +267,7 @@ def select_product_by_trademark(name)
       expect(@browser.url.index(OddbUrl)).to eq 0
       expect(@browser.url.index("/de/gcc")).not_to eq 0
     end
-  rescue Watir::Wait::TimeoutError => error
+  rescue => error
   end
 ensure
   @text = @browser.text.clone
