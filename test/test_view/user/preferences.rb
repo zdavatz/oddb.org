@@ -64,6 +64,8 @@ module ODDB
                             :flavor => 'gcc',
                             :valid_values => [:search_type],
                             :user_agent => 'Mozilla',
+                            :sponsor => nil,
+                            :persistent_user_input => nil,
                           )
         @view    = ODDB::View::User::Preferences.new(@model, @session)
         result = @view.to_html(CGI.new)

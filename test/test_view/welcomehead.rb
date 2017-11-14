@@ -36,6 +36,8 @@ class TestWelcomeHead <Minitest::Test
                           :lookandfeel => @lnf,
                           :state => state,
                           :sponsor     => sponsor,
+                          :sponsor => nil,
+                          :persistent_user_input => nil,
                           :request_path => 'request_path',
                          )
     @model     = flexmock('model')
@@ -43,7 +45,7 @@ class TestWelcomeHead <Minitest::Test
   end
   def test_home_welcome
     setup_welcome
-    expected = "<TABLE cellspacing=\"0\" class=\"composite\"><TR><TD class=\"logo\">&nbsp;</TD></TR><TR><TD class=\"personal_logo\"><DIV class=\"personal_logo\">&nbsp;</DIV></TD></TR></TABLE>"
+    expected = "<TABLE cellspacing=\"0\" class=\"composite\"><TR><TD class=\"logo\">&nbsp;</TD></TR></TABLE>"
     assert_equal(expected,  @composite.to_html(CGI.new))
   end
 end

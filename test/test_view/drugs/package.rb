@@ -291,7 +291,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_share, true).and_return(true)
-      l.should_receive(:enabled?).at_least.once.with(:ajax).and_return(false)
+      l.should_receive(:enabled?).with(:ajax).and_return(false)
       l.should_receive(:resource).and_return('resource')
       l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
@@ -313,7 +313,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
       l.should_receive(:enabled?).at_least.once.with(:show_ean13)
       l.should_receive(:enabled?).once.with(:twitter_share).and_return(false)
       l.should_receive(:enabled?).once.with(:facebook_share, true).and_return(true)
-      l.should_receive(:enabled?).at_least.once.with(:ajax).and_return(false)
+      l.should_receive(:enabled?).with(:ajax).and_return(false)
       l.should_receive(:enabled?).at_least.once.with(:link_pubprice_to_price_comparison, false)
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)

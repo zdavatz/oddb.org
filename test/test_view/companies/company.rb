@@ -267,6 +267,7 @@ class TestRootCompany <Minitest::Test
       s.should_receive(:event)
       s.should_receive(:flavor)
       s.should_receive(:zone)
+      s.should_receive(:persistent_user_input)
       s.should_receive(:request_path).and_return 'request_path'
     end
     @model = flexmock('model') do |m|

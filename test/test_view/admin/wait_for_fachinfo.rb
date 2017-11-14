@@ -52,6 +52,7 @@ class TestWaitForFachinfo <Minitest::Test
                         :state   => state,
                         :flavor  => 'flavor',
                         :request_path => 'request_path',
+                        :persistent_user_input => nil,
                        )
     @model   = flexmock('model')
     @view    = ODDB::View::Admin::WaitForFachinfo.new(@model, @session)

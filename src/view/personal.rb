@@ -5,6 +5,7 @@
 # ODDB::View::Personal -- oddb.org -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'htmlgrid/div'
+require 'htmlgrid/composite'
 require 'htmlgrid/link'
 require 'model/user'
 require 'view/google_ad_sense'

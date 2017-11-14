@@ -65,7 +65,8 @@ module ODDB
                             :get_cookie_input => 'get_cookie_input',
                             :user    => user,
                             :sponsor => user,
-                             :request_path => 'request_path',
+                            :persistent_user_input => nil,
+                            :request_path => 'request_path',
                         )
         @model    = flexmock('model')
         @content  = flexmock('content', :new => 'new')

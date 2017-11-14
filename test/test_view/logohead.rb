@@ -21,6 +21,9 @@ class StubSponsorDisplay
     @session = session
     @lookandfeel = session.lookandfeel
   end
+  def sponsor(model, session)
+    session.sponsor
+  end
 end
 
 class TestSponsorDisplay <Minitest::Test
@@ -33,20 +36,14 @@ class TestSponsorDisplay <Minitest::Test
                        :format_date     => 'format_date',
                        :resource_global => 'resource_global'
                       )
-    sponsor = flexmock('sponsor', 
-                       :valid? => true,
-                       :name   => 'name',
-                       :logo_filename => 'logo_filename',
-                       :sponsor_until => 'sponsor_until'
-                      )
     session = flexmock('session', 
                        :lookandfeel => lnf,
                        :user => user,
-                       :sponsor => sponsor
+                       :sponsor => 'sponsor'
                       )
     model   = flexmock('model')
     @view   = ODDB::View::SponsorDisplay::StubSponsorDisplay.new(model, session)
-    assert_kind_of(ODDB::View::SponsorLogo, @view.sponsor(model, session))
+    assert_equal('sponsor', @view.sponsor(model, session))
   end
   def test_sponsor__sponsor_invalid
     user    = flexmock('user', :valid? => nil)
@@ -58,7 +55,7 @@ class TestSponsorDisplay <Minitest::Test
                       )
     model   = flexmock('model')
     @view   = ODDB::View::SponsorDisplay::StubSponsorDisplay.new(model, session)
-    assert_kind_of(ODDB::View::GoogleAdSense, @view.sponsor(model, session))
+    assert_nil(@view.sponsor(model, session))
   end
 end
 

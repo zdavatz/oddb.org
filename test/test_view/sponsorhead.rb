@@ -48,6 +48,7 @@ module ODDB
                             :flavor => Session::DEFAULT_FLAVOR,
                             :get_cookie_input => 'get_cookie_input',
                             :sponsor => user,
+                            :persistent_user_input => nil,
                             :request_path => 'request_path',
                            )
         @model   = flexmock('model')
@@ -76,6 +77,8 @@ module ODDB
 			class StubHeadSession
 				attr_writer :enabled, :attributes
 				attr_accessor :sponsor
+        def persistent_user_input(item)
+        end
 				def initialize
 					@attributes = {}
 					@enabled = true

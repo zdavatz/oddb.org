@@ -37,6 +37,8 @@ class TestPopupLogo <Minitest::Test
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => 'get_cookie_input',
                         :request_path => 'request_path',
+                        :sponsor => nil,
+                        :persistent_user_input => nil,
                        )
     @model     = flexmock('model')
     @component = ODDB::View::PopupLogo.new(@model, @session)
@@ -78,6 +80,8 @@ class TestLogo <Minitest::Test
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => nil,
                         :request_path => 'request_path',
+                        :sponsor => nil,
+                        :persistent_user_input => nil,
                        )
     @model   = flexmock('model')
     @logo    = ODDB::View::Logo.new(@model, @session)
@@ -100,6 +104,8 @@ class TestLogo <Minitest::Test
                         :flavor => Session::DEFAULT_FLAVOR,
                         :get_cookie_input => nil,
                         :request_path => 'request_path',
+                        :sponsor => nil,
+                        :persistent_user_input => nil,
                        )
     @model   = flexmock('model')
     @logo    = ODDB::View::Logo.new(@model, @session)
