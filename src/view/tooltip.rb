@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::LogoHead -- oddb -- 30.11.2012 -- yasaka@ywesee.com
-# ODDB::View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/div'
 require 'open-uri'

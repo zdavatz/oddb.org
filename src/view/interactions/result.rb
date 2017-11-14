@@ -7,7 +7,7 @@ require 'view/form'
 require 'view/publictemplate'
 require 'view/interactions/resultlist'
 require 'view/searchbar'
-require 'view/sponsorhead'
+require 'view/logohead'
 
 module ODDB
 	module View

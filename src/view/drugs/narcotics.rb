@@ -150,7 +150,6 @@ class NarcoticsResultComposite < HtmlGrid::Composite
 end
 
 class Narcotics < View::ResultTemplate
-  include View::SponsorMethods
   CONTENT = NarcoticsResultComposite
   JAVASCRIPTS = ['bit.ly']
 end

@@ -4,7 +4,7 @@
 
 require 'view/resulttemplate'
 require 'view/admin/loginform'
-require 'view/sponsorhead'
+require 'view/logohead'
 
 module ODDB
 	module View

@@ -38,7 +38,7 @@ module ODDB
 				[0,0]		=>	:head,
 				[0,1]		=>	:content,
 				[0,2]		=>	:foot,
-			}
+		}
 			HEAD = View::LogoHead
 			HTTP_HEADERS = {
 				"Content-Type"	=>	"text/html; charset=UTF-8",

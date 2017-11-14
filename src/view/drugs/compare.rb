@@ -11,7 +11,7 @@ require 'view/drugs/privatetemplate'
 require 'view/resultcolors'
 require 'view/resultfoot'
 require 'view/dataformat'
-require 'view/sponsorhead'
+require 'view/logohead'
 
 module ODDB
 	module View
@@ -195,7 +195,6 @@ module InsertBackbutton
   end
 end
 class Compare < PrivateTemplate
-	include View::SponsorMethods
   include InsertBackbutton
 	CONTENT = CompareComposite
 	SNAPBACK_EVENT = :result

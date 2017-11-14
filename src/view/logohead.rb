@@ -30,18 +30,23 @@ module ODDB
     class LogoHead < CommonLogoHead
       COMPONENTS = {
         [0,0]   => View::Logo,
-        [1,0,0] => :personal_logo,
+        [1,0]   => :personal_logo,
         [0,1]   => :language_chooser,
         [1,1]   => :tab_navigation,
       }
       CSS_MAP = {
-        [0,0] => 'logo',
         [0,1] => 'list',
-        [1,1] => 'tabnavigation right',
+        [1,0] => 'welcomeright',
+        [1,1] => 'tabnavigation',
       }
       COMPONENT_CSS_MAP = {
-        [0,1] => 'component',
+         [0,0] => 'welcomeleft',
       }
+      def init
+        super
+        @components.delete([1,0]) unless sponsor_or_logo
+        # puts "LogoHead for #{@session.request_path} #{@components}"
+      end
       def language_chooser(model, session=@session)
         unless @lookandfeel.disabled?(:search_result_head_navigation)
           super
@@ -52,20 +57,6 @@ module ODDB
           View::TabNavigation.new(model, session, self)
         end
       end
-    end
-    class PopupLogoHead < CommonLogoHead
-      COMPONENTS = {
-        [0,0]		=>	View::PopupLogo,
-        [1,0]		=>	:personal_logo,
-      }
-      CSS_MAP = {
-        [0,0]	=>	'logo',
-        [1,0]	=>	'right',
-      }
-      COMPONENT_CSS_MAP = {}
-      GOOGLE_FORMAT = '234x60_as'
-      GOOGLE_WIDTH = '234'
-      GOOGLE_HEIGHT = '60'
     end
   end
 end

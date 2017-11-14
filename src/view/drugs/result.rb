@@ -8,7 +8,7 @@ require 'view/resulttemplate'
 require 'view/drugs/resultlist'
 require 'view/resultfoot'
 require 'view/searchbar'
-require 'view/sponsorhead'
+require 'view/logohead'
 require 'view/drugs/rootresultlist'
 require 'view/pager'
 require 'view/user/export'
@@ -182,7 +182,6 @@ class ResultComposite < HtmlGrid::Composite
   end
 end
 class Result < View::ResultTemplate
-	include View::SponsorMethods
 	CONTENT = ResultComposite
   JAVASCRIPTS = ['bit.ly']
 end

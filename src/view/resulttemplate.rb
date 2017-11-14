@@ -5,7 +5,7 @@
 require 'view/publictemplate'
 require 'view/navigation'
 require 'view/welcomehead'
-require 'view/sponsorhead'
+require 'view/logohead'
 
 module ODDB
 	module View

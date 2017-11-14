@@ -15,6 +15,7 @@ module ODDB
   module View
     module Personal
       # Return text div like Willkommen oddb_logged_in_user, else an empty div
+      # Goes to navigationfoot
       def personal(model, session)
         div = HtmlGrid::Div.new(model, session, self)
         div.css_class = 'personal'
@@ -30,14 +31,37 @@ module ODDB
         end
         div
       end
+      
+      def sponsor_or_logo
+        res = nil
+        user = @session.user
+        splits =  @session.request_path.dup.sub(/^\//,'').split('/')
+        if(user.is_a?(ODDB::YusUser))
+          if (company = @session.app.yus_model(user.name)) and logo_filename = company.logo_filename
+            res = :company
+          else
+            res = nil
+          end
+        else
+          res = :sponsor_logo if (spons = @session.sponsor) && spons.valid?
+          if splits.size < 3 || splits.last.eql?('home')
+            res = nil
+          else
+            res =  @lookandfeel.enabled?(:google_adsense) ? :google_adsense : nil
+          end
+        end
+        # puts "sponsor_or_logo for #{user} with #{@session.request_path} is #{res.inspect}"
+        res
+      end
+
       # Returns company logo (if presnt) for a logged in ODDB user, else an empty div
       def personal_logo(model, session)
-        user = session.user
         div = HtmlGrid::Div.new(model, session, self)
         div.css_class = 'personal_logo'
-        if(user.is_a?(ODDB::YusUser))
-          if company = @session.app.yus_model(user.name) and
-             logo_filename = company.logo_filename
+        case  sponsor_or_logo
+        when :company
+          user = session.user
+          company = @session.app.yus_model(user.name) and logo_filename = company.logo_filename
             if (company.url and !company.url.empty?)
 		          div = HtmlGrid::HttpLink.new(:url, company, session, self)
               div.set_attribute('title', company.url)
@@ -48,15 +72,12 @@ module ODDB
             end
             div.set_attribute('target', '_blank')
             div.value = View::CompanyLogo.new(company, session, self)
-          end
+        when :sponsor_logo 
+          div.value = View::SponsorLogo.new(@session.sponsor, session, self)
+        when  :google_adsense 
+          return ad_sense(model, session)
         else
-          if((spons = @session.sponsor) && spons.valid?)
-            div.value = View::SponsorLogo.new(spons, session, self)
-          elsif(@lookandfeel.enabled?(:google_adsense))
-            return ad_sense(model, session)
-          else
-            div.value = '&nbsp;'
-          end
+          div.value = '&nbsp;personal_logo' # this should never be visible
         end
         div
       end

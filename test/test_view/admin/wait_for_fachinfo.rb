@@ -39,6 +39,8 @@ class TestWaitForFachinfo <Minitest::Test
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => nil,
+                        :disabled?  => false,
+                        :zones      => {},
                         :resource   => 'resource',
                         :event_url  => 'event_url'
                        )

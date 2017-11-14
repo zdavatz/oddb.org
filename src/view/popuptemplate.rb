@@ -7,7 +7,7 @@ require 'view/publictemplate'
 module ODDB
 	module View
 		class PopupTemplate < View::PublicTemplate
-			HEAD = View::PopupLogoHead
+			HEAD = View::LogoHead
 			FOOT = nil
 		end
 	end

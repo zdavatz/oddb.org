@@ -184,7 +184,7 @@ class PreferencesComposite < HtmlGrid::Composite
 end
 class Preferences < View::PublicTemplate
   CONTENT = View::User::PreferencesComposite
-  HEAD    = View::LogoHead
+  HEAD    = View::WelcomeHead
   JAVASCRIPTS = ['prescription']
   private
   def init

@@ -44,7 +44,7 @@ class TestPopupLogo <Minitest::Test
     @component = ODDB::View::PopupLogo.new(@model, @session)
   end
   def test_init
-    assert_nil(@component.init)
+    assert(@component.init) # should not raise any exceptions
   end
   def test_to_html
     flexmock(@lnf, :_event_url => '_event_url')

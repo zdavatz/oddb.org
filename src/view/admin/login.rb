@@ -11,7 +11,7 @@ module ODDB
 		module Admin
 class Login < View::PublicTemplate
 	CONTENT = View::Admin::LoginComposite
-	HEAD = View::LogoHead
+	HEAD = View::WelcomeHead
 end
 		end
 	end
