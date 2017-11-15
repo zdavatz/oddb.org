@@ -189,7 +189,9 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
   plus_link.click if plus_link.exist? && plus_link.visible? && /Plus/i.match(plus_link.text)
   puts "Took #{(endTime - startTime).round} seconds for for #{OddbUrl} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 rescue => error
-  require 'pry'; binding.pry
+  puts "error #{error} visiting #{url}"
+  raise error
+  # require 'pry'; binding.pry
 end
 
 def small_delay
