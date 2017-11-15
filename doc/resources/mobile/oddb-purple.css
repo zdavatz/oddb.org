@@ -454,6 +454,7 @@ td.welcomecenter  {
 }
 td.welcomeright  {
   width : 33%;
+  padding-top : 36px;
 }
 td.personal_logo {
   width          : 33%;

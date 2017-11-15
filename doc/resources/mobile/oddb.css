@@ -452,6 +452,7 @@ td.welcomeleft  {
 }
 td.welcomecenter  {
   width : 33%;
+  padding-top : 36px;
 }
 td.welcomeright  {
   width : 33%;
