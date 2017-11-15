@@ -6,6 +6,7 @@
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
+require 'htmlgrid/span'
 require 'view/external_links'
 require 'view/additional_information'
 

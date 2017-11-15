@@ -121,7 +121,6 @@ end
 module InsertBackbutton
   def reorganize_components
     super
-    components.store([1,1,0], :print)
     idx = components.index(:backtracking)
     if(@lookandfeel.enabled?(:breadcrumbs))
       css_map.store(idx, 'breadcrumbs')
@@ -186,12 +185,6 @@ module InsertBackbutton
     else
       super
     end
-  end
-  def print(model, session=@session)
-    link = HtmlGrid::Link.new(:print, model, @session, self)
-    link.set_attribute('onClick', 'window.print();')
-    link.href = ""
-    link
   end
 end
 class Compare < PrivateTemplate
