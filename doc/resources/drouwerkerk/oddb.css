@@ -1020,23 +1020,13 @@ table.composite {
 td.composite {
 	vertical-align : top;
 }
-img.logo {
+img.logo, img.welcomeleft, img.welcomecenter {
     width: 350px;
     display: block;
     margin: 0 auto;
-    float:  left;
 }
-# img.logo used by LogoHead used by home_interaction
 img.welcomeleft {
-    width: 350px;
-    display: block;
-    margin: 0 auto;
     float:  left;
-}
-img.welcomecenter {
-    width: 350px;
-    display: block;
-    margin: 0 auto;
 }
 td.welcomeleft  {
   width : 33%;

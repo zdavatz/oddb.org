@@ -32,19 +32,28 @@ module ODDB
         div
       end
       
+      def is_at_home
+        splits =  @session.request_path.dup.sub(/^\//,'').split('/')
+        splits.size < 3 ||splits[2].eql?('home')
+      end
+
       def sponsor_or_logo
         res = nil
         user = @session.user
         splits =  @session.request_path.dup.sub(/^\//,'').split('/')
         if(user.is_a?(ODDB::YusUser))
           if (company = @session.app.yus_model(user.name)) and logo_filename = company.logo_filename
-            res = :company
+            if is_at_home
+              res = nil
+            else
+              res = :company
+            end
           else
             res = nil
           end
         else
           res = :sponsor_logo if (spons = @session.sponsor) && spons.valid?
-          if splits.size < 3 || splits.last.eql?('home')
+          if is_at_home
             res = nil
           else
             res =  @lookandfeel.enabled?(:google_adsense) ? :google_adsense : nil
@@ -77,7 +86,7 @@ module ODDB
         when  :google_adsense 
           return ad_sense(model, session)
         else
-          div.value = '&nbsp;personal_logo' # this should never be visible
+          div.value = '&nbsp;' # this should never be visible
         end
         div
       end

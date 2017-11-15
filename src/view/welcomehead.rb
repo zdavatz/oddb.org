@@ -22,23 +22,23 @@ module ODDB
         [0,0] => View::Logo,
         [1,0] => View::Logo,
         [2,0] => :personal_logo,
+        [0,1] => '&nbsp;',
       }
       COMPONENT_CSS_MAP = {
+        [0,0] =>  'welcomeleft',
         [2,0] =>  'welcomeright',
       }
       def init
         super
-        if (info = sponsor_or_logo)        
-          if /home/.match(@session.request_path)
-            @components[[0,0]] = '&nbsp;' # remove left logo
-          else
-            @components[[1,0]] = '&nbsp;' # remove middle logo
-          end
+        if is_at_home || /home/.match(@session.request_path)
+          @components[[0,0]] = '&nbsp;' # remove left logo
         else
-            @components[[0,0]] = '&nbsp;'
-            @components[[2,0]] = '&nbsp;'
+          @components[[1,0]] = '&nbsp;' # remove middle logo
         end
-        # puts "WelcomeHead #{info} for #{@session.request_path} => #{@components} #{@css_class}"
+        unless sponsor_or_logo
+          @components[[2,0]] = '&nbsp;' # remove right logo
+        end
+        # puts "WelcomeHead #{is_at_home} for #{@session.request_path} => #{@components} #{@css_class} #{@session.user}"
         super
       end
     end
