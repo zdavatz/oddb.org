@@ -45,7 +45,7 @@ class TestWelcomeHead <Minitest::Test
   end
   def test_home_welcome
     setup_welcome
-    expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="welcomeleft">lookup</TD><TD class="welcomecenter">&nbsp;</TD><TD class="welcomeright">lookup</TD></TR></TABLE>'
+    expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="welcomeleft">lookup</TD><TD class="welcomecenter">&nbsp;</TD><TD class="welcomeright">lookup</TD></TR><TR><TD>lookup</TD><TD>&nbsp;</TD><TD>&nbsp;</TD></TR></TABLE>'
 
     assert_equal(expected,  @composite.to_html(CGI.new))
   end
