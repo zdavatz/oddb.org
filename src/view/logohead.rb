@@ -39,9 +39,6 @@ module ODDB
         [1,0] => 'welcomeright',
         [1,1] => 'tabnavigation',
       }
-      COMPONENT_CSS_MAP = {
-         [0,0] => 'welcomeleft',
-      }
       def init
         super
         @components.delete([1,0]) unless sponsor_or_logo

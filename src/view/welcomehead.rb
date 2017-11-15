@@ -24,8 +24,6 @@ module ODDB
         [2,0] => :personal_logo,
       }
       COMPONENT_CSS_MAP = {
-        [0,0]	=>	'welcomeleft',
-        [1,0] =>  'welcomecenter',
         [2,0] =>  'welcomeright',
       }
       def init

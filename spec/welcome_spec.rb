@@ -35,7 +35,7 @@ describe "ch.oddb.org" do
       @browser.link(:name, zone).click
       sleep(0.1) unless @browser.link(:name, "logout").exists?
       expect(@browser.link(:name, "logout").exists?).to eq(true)
-      expect(@browser.text).to match (ViewerDescription)
+      expect(@browser.text).to match (ViewerDescription) unless zone.eql?('doctors')
     end
   end
 
