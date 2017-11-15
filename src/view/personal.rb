@@ -34,7 +34,7 @@ module ODDB
       
       def is_at_home
         splits =  @session.request_path.dup.sub(/^\//,'').split('/')
-        splits.size < 3 ||splits[2].eql?('home')
+        splits.size < 3 || splits[2].eql?('home') || splits[2].eql?('self')
       end
 
       def sponsor_or_logo
