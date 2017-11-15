@@ -443,12 +443,35 @@ img.logo {
     width: 350px;
     display: block;
     margin: 0 auto;
+    float:  left;
 }
-img.search_logo {
+# img.logo used by LogoHead used by home_interaction
+img.welcomeleft {
     width: 350px;
+    display: block;
+    margin: 0 auto;
+    float:  left;
+}
+img.welcomecenter {
+    width: 350px;
+    display: block;
+    margin: 0 auto;
 }
 td.welcomeleft  {
   width : 33%;
+}
+td.welcomecenter  {
+  width : 33%;
+}
+td.welcomeright  {
+  width : 33%;
+}
+td.personal_logo {
+  width          : 33%;
+  vertical-align : top;
+  position       : relative;
+  padding        : 4px;
+  padding-top    : 12px;
 }
 td.logo {
   width          : 33%;
@@ -853,9 +876,6 @@ a.th-pointersteps {
   font-size : 11px;
   color     : silver;
 }
-.logo {
-  border : 0px dotted red;
-}
 a.logo {
   display: block;
   margin: 0 auto;
@@ -863,6 +883,7 @@ a.logo {
 .company_logo {
   display: block;
   margin: 0 auto;
+  float: right;
 }
 .personal {
   font-weight : bold;

@@ -851,6 +851,7 @@ a.logo {
 .company_logo {
   display: block;
   margin: 0 auto;
+  float: right;
 }
 .personal {
   font-weight : bold;

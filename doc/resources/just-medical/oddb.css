@@ -444,9 +444,6 @@ img.logo {
     display: block;
     margin: 0 auto;
 }
-img.search_logo {
-    width: 350px;
-}
 td.welcomeleft  {
   width : 33%;
 }
@@ -853,9 +850,6 @@ a.th-pointersteps {
   font-size : 11px;
   color     : silver;
 }
-.logo {
-  border : 0px dotted red;
-}
 a.logo {
   display: block;
   margin: 0 auto;
@@ -863,6 +857,7 @@ a.logo {
 .company_logo {
   display: block;
   margin: 0 auto;
+  float: right;
 }
 .personal {
   font-weight : bold;
