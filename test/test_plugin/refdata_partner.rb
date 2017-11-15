@@ -64,10 +64,10 @@ class TestCompanyPlugin <Minitest::Test
     created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
     # $stdout.puts "result: created #{created} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
-    assert_equal(1, created)
-    assert_equal(0, updated)
-    assert_equal(0, deleted)
-    assert_equal(0, skipped)
+    assert_equal({7601001396371=>"AB Lindenapotheke AG"}, created)
+    assert_equal({}, updated)
+    assert_equal({}, deleted)
+    assert_equal({}, skipped)
     linden = ODDB::Companies::RefdataPartnerPlugin.all_partners.first
     assert_equal(1, linden.addresses.size)
     first_address = linden.addresses.first
@@ -149,10 +149,10 @@ class TestCompanyPlugin <Minitest::Test
     created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
     # $stdout.puts "result: created #{created} deleted #{deleted} skipped #{skipped} in #{diffTime} seconds"
-    assert_equal(4, created)
-    assert_equal(0, updated)
-    assert_equal(0, deleted)
-    assert_equal(NR_SKIPPED, skipped) # 1 inactive, 1 not Pharm
+    assert_equal({7601001397835=>"Sandoz AG", 7601001004092=>"Rivopharm SA", 7601001367753=>"Vorstadt Apotheke", 7601001396371=>"AB Lindenapotheke AG"}, created)
+    assert_equal({}, updated)
+    assert_equal({}, deleted)
+    assert_equal(NR_SKIPPED, skipped.size) # 1 inactive, 1 not Pharm
   end
 
   def test_get_latest_file

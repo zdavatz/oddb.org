@@ -17,9 +17,7 @@ require 'plugin/drugbank'
 require 'plugin/divisibility'
 require 'plugin/epha_interactions'
 require 'plugin/evidentia_search_links'
-require 'plugin/hospitals'
 require 'plugin/lppv'
-require 'plugin/medwin'
 require 'plugin/medical_products'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
@@ -251,20 +249,8 @@ module ODDB
     def update_atc_drugbank_link
       update_notify_simple(DrugbankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
     end
-    def update_medreg_doctors(opts = nil)
-      LogFile.append('oddb/debug', " update update_medreg_doctors", Time.now)
-      klass = ODDB::Doctors::MedregDoctorPlugin
-      subj = 'doctors (Medreg)'
-      wrap_update(klass, subj) {
-        plug = klass.new(@app)
-        plug.update
-        log = Log.new(@@today)
-        log.update_values(log_info(plug))
-        log.notify(subj)
-      }
-    end
-    def update_regdata_partners(opts = nil)
-      LogFile.append('oddb/debug', " update update_regdata_partners opts #{opts.inspect}", Time.now)
+    def update_refdata_partners(opts = nil)
+      LogFile.append('oddb/debug', " update update_refdata_partners opts #{opts.inspect}", Time.now)
       klass = ODDB::Companies::RefdataPartnerPlugin
       subj = 'companies (Refdata)'
       wrap_update(klass, subj) {
@@ -397,15 +383,8 @@ module ODDB
     def update_evidentia_fi_search_links
       update_immediate_with_error_report(EvidentiaSearchLinksPlugin, 'Evidentia_FI_search_links')
     end
-    def update_hospitals
-      update_simple(HospitalPlugin, 'Hospitals')
-    end
-
     def update_lppv
       update_immediate(LppvPlugin, 'Lppv')
-    end
-    def update_medwin_companies
-      update_simple(MedwinCompanyPlugin, 'Medwin-Companies')
     end
     def update_price_feeds(month = @@today)
       RssPlugin.new(@app).update_price_feeds(month)
@@ -419,9 +398,6 @@ module ODDB
     end
     def update_hpc_feed(month = @@today)
       update_immediate_with_error_report(RssPlugin, 'hpc.rss', :update_hpc_feed)
-    end
-    def update_trade_status
-      update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
     end
     def update_btm(path)
       update_notify_simple(NarcoticPlugin, 'Narcotics (XLS)', :update_from_xls, [path])
@@ -452,7 +428,7 @@ module ODDB
       update_comarketing
       update_swissreg_news
       update_lppv
-      update_medwin_companies
+      update_refdata_partners
       exporter = Exporter.new(@app)
       exporter.export_generics_xls
       export_patents_xls

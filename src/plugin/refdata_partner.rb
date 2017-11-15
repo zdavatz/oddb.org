@@ -31,7 +31,20 @@ module ODDB
         file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_partners.xml')
         FileUtils.rm_f(file2save, :verbose => false)
         @client = Savon.client(wsdl: "http://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
-        response = @client.call(:download)
+        # TYPE Search Type
+        # PTYPE Partner Type, JUR or NAT
+        # Search Term dependant of the search type: DATE -> mutationDate (dd.MM.yyyy), GLN -> Gln, NAME -> Name
+        # TERM
+        soap = %(<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <DownloadPartnerInput xmlns="http://refdatabase.refdata.ch/">
+      <TYPE xmlns="http://refdatabase.refdata.ch/Partner_in">ALL</TYPE>
+      <PTYPE xmlns="http://refdatabase.refdata.ch/Partner_in">JUR</PTYPE>
+    </DownloadPartnerInput>
+  </soap:Body>
+</soap:Envelope>)
+        response = @client.call(:download, :xml => soap)
         if response.success? && (xml = response.to_xml)
           FileUtils.makedirs(File.dirname(file2save))
           File.open(file2save, 'w+') { |file| file.write xml }
@@ -105,10 +118,10 @@ module ODDB
         @info_to_gln    = {}
         @@logInfo       = []
         super
-        @partners_created = 0
-        @partners_updated = 0
-        @partners_skipped = 0
-        @partners_inactive = 0
+        @partners_created = {}
+        @partners_updated = {}
+        @partners_skipped = {}
+        @partners_inactive = {}
         @archive = File.join ARCHIVE_PATH, 'xls'
         @@all_partners    = []
         @agent = Companies.setup_default_agent
@@ -154,7 +167,7 @@ module ODDB
                 # Probably a company
               else
                 log "could not find gln #{gln}"
-                @partners_skipped += 1
+                @partners_skipped[gln] = gln
               end
               success = true
             end
@@ -164,8 +177,8 @@ module ODDB
             nr_tries += 1
             sleep defined?(MiniTest) ? 0.01 : 60
           end
-          if (@partners_created + @partners_updated) % 100 == 99
-            log "Start saving @app.companies.odba_store #{gln} after #{@partners_created} created #{@partners_updated} updated"
+          if (@partners_created.size + @partners_updated.size) % 100 == 99
+            log "Start saving @app.companies.odba_store #{gln} after #{@partners_created.size} created #{@partners_updated.size} updated"
             @app.companies.odba_store
             log "Finished @app.companies.odba_store" if DebugImport
           end
@@ -220,9 +233,12 @@ module ODDB
       def report
         report = "Update of pharmacies and pharma industry partners\n\n"
         report << "Number of partners: " << @app.companies.size.to_s << "\n"
-        report << "New partners: "       << @partners_created.to_s << "\n"
-        report << "Updated partners: "   << @partners_updated.to_s << "\n"
-        report << "Inactive partners: "  << @partners_inactive.to_s << "\n"
+        report << "New partners: "       << @partners_created.size.to_s << "\n"
+        @partners_created.each { | gln, name | report << "#{gln}: #{name}\n" }
+        report << "Updated partners: "   << @partners_updated.size.to_s << "\n"
+        @partners_updated.each { | gln, name | report << "#{gln}: #{name}\n" }
+        report << "Inactive partners: "  << @partners_inactive.size.to_s << "\n"
+        # @partners_inactive.each { | gln, name | report << "#{gln}: #{name}\n" }
         report
       end
       def update_address(data)
@@ -270,7 +286,7 @@ module ODDB
             has_changes = eval("company.#{field.to_s} != data['#{field}']")
             orig  =  eval("company.#{field.to_s}")
             changed = eval("data[:#{field}]")
-            if (orig <=> changed) != 0
+            if (orig.to_s <=> changed.to_s) != 0
               changes[field] ="#{orig} => #{changed}"
             end
         end
@@ -288,7 +304,7 @@ module ODDB
           changes['addresses'] = "#{orig} => #{changed}"
         end if new_addr && old_addr
         return if changes.size == 0
-        action == 'update' ? ( @partners_updated += 1)  : (@partners_created += 1)
+        action == 'update' ? ( @partners_updated[gln] = data[:name])  : (@partners_created[gln.to_i] = data[:name])
         company.ean13         = gln
         company.name          = data[:name]
         company.business_area = ba_type.to_s
@@ -328,7 +344,7 @@ module ODDB
                   if company = @app.company_by_gln(gln)
                     # log "inactive company with gln #{gln}"
                     # @app.delete_company(company.oid)
-                    @partners_inactive += 1
+                    @partners_inactive[gln] = company.name
                   end
                 elsif type.text.eql?('Indus')
                   street  = (f1 = elem.locate('STREET').first) && f1.text
@@ -355,7 +371,7 @@ module ODDB
             end
           end
           if inactive
-            @partners_skipped += 1
+            @partners_skipped [gln] = gln
           else
             @info_to_gln[hash['GLN']] = hash
           end
