@@ -32,6 +32,7 @@ module ODDB
         super
         if is_at_home || /home/.match(@session.request_path)
           @components[[0,0]] = '&nbsp;' # remove left logo
+          @components[[2,0]] = '&nbsp;' # remove right logo
         else
           @components[[1,0]] = '&nbsp;' # remove middle logo
         end
