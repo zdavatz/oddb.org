@@ -33,6 +33,7 @@ class LanguageChooser < Navigation
 			end
 			symbol_map.store(state, LanguageNavigationLink)
 			components.store(pos, state)
+			components.store([xpos-1,0], :navigation_divider) if idx > 0
 			offset = idx.next * 2
 		}
     # TODO: move currency switcher to preferences menu
