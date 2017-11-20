@@ -34,6 +34,7 @@ module ODDB
       def method_missing(*args)
       end
     end
+    SWISSMEDIC_BASE_URL = 'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen'
 		include HttpFile
 		ARCHIVE_PATH = File.expand_path('../../data', File.dirname(__FILE__))
 		# Recipients for Plugin-Specific Update-Logs can be added in

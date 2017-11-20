@@ -4,7 +4,7 @@
 # Its features include
 #   * update/check can be limited to some IKSRN by passing opts[:iksnrs] (only used by jobs/import_swissmedic_only)
 #   * create a nice, human readable mail about the changes made
-#   * downlaods packungen.xlsx and Präparateliste.xlsx from the Swissmedic (see @index_url)
+#   * downloads packungen.xlsx and Präparateliste.xlsx from the Swissmedic
 #   * leaves exactly one copy of the downloaded packungen.xlxs in the format data/xls/Packungen-2017.09.07.xlsx
 #   * leaves exactly one copy of the downloaded Präparateliste.xlxs in the format data/xls/Präparateliste-2017.09.07.xlsx
 #   * ignore drugs only for veterinary use
@@ -22,7 +22,6 @@
 #   * limit its own memory useage to 16 GB
 
 require 'fileutils'
-require 'mechanize'
 require 'ostruct'
 require 'plugin/plugin'
 require 'pp'
@@ -52,6 +51,8 @@ module ODDB
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
     $swissmedic_memory_error = nil
     DATE_FORMAT = '%d.%m.%Y'
+    PACKAGES_URL    = SWISSMEDIC_BASE_URL + '/excel-version_zugelasseneverpackungen.xlsx.download.xlsx/excel-version_zugelasseneverpackungen.xlsx'
+    PREPARATIONS_URL= SWISSMEDIC_BASE_URL + '/excel-version_erweitertepraeparateliste.xlsx.download.xlsx/excel-version_erweitertepraeparateliste.xlsx'
 
     def self.get_memory_error
       $swissmedic_memory_error
@@ -68,8 +69,6 @@ private
 public
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
-      @index_url = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00230/index.html?lang=de'
-      trace_msg("SwissmedicPlugin @index_url #{@index_url}")
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       init_stats
@@ -259,7 +258,7 @@ public
       LogFile.debug "update check done"
     end
 
-    def update(opts = {}, agent=Mechanize.new, file2open=get_latest_file(agent))
+    def update(opts = {}, file2open=get_latest_file)
       $swissmedic_do_tracing = true
       start_time = Time.new
       threads = []
@@ -338,7 +337,7 @@ public
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         verify_packages(file2open)
-        update_export_flags(agent)
+        update_export_flags
         check_all_packages(@latest_packungen) if opts[:check]
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
@@ -398,8 +397,8 @@ public
       end
       @diff.updates.uniq!
     end
-    def update_export_flags(agent)
-      initialize_export_registrations(agent) # Takes a long time (3 minutes)
+    def update_export_flags
+      initialize_export_registrations # Takes a long time (3 minutes)
       set_all_export_flag_false
       update_export_sequences @export_sequences
       update_export_registrations @export_registrations
@@ -537,41 +536,35 @@ public
         end
       end
     end
-    def get_latest_file(agent, keyword='Packungen', extension = '.xlsx')
+    def get_latest_file(keyword='Packungen')
+      if keyword.eql?('Packungen')
+        index_url = PACKAGES_URL
+      elsif keyword.eql?('Präparateliste')
+        index_url = PREPARATIONS_URL
+      else
+        raise "Unknown keyword #{keyword} in get_latest_file"
+      end
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
-      latest_name = File.join @archive, "#{keyword}-latest"+extension
+      latest_name = File.join @archive, "#{keyword}-latest.xlsx"
       cmd = "@latest_#{keyword.downcase.gsub(/[^a-zA-Z]/, '_')} = '#{latest_name}'"
       LogFile.debug " cmd #{cmd}"
       eval cmd
-      latest_name = File.join @archive, "#{keyword}-latest"+extension
+      latest_name = File.join @archive, "#{keyword}-latest.xlsx"
       if File.exist?(target) and File.exists?(latest_name) and File.size(target) == File.size(latest_name)
         LogFile.debug " skip writing #{target} as it already exists and is #{File.size(target)} bytes."
         return target
       end
-      page = agent.get @index_url
-      links = page.links.select do |link|
-        ptrn = keyword.gsub /[^A-Za-z]/u, '.'
-        /#{ptrn}/iu.match link.attributes['title']
-      end
-      link = links.first or raise "could not identify url to #{keyword}.xlsx"
-      file = agent.get(link.href)
-      download = file.body
 
-      if extension == '.xlsx'
-        latest_xls = latest_name.sub('.xlsx', '.xls')
-        if File.exist?(latest_xls)
-          latest_name = latest_xls
-        end
-      end
       latest = ''
       if(File.exist? latest_name)
         latest = File.read latest_name
       end
+      download = fetch_with_http(index_url)
       if(download[-1] != ?\n)
         download << "\n"
       end
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
-        File.open(target, 'w') { |fh| fh.puts(download) }
+        File.open(target, 'w') { |fh| fh.write(download) }
         msg = "updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
         LogFile.debug(msg)
@@ -582,9 +575,9 @@ public
         nil
       end
     end
-    def initialize_export_registrations(agent)
+    def initialize_export_registrations
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
-      if target_name = get_latest_file(agent, 'Präparateliste')
+      if target_name = get_latest_file('Präparateliste')
         LogFile.debug " cp #{target_name} #{latest_name}"
         FileUtils.cp target_name, latest_name, :verbose => true
       end

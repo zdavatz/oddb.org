@@ -3,7 +3,7 @@
 
 require 'util/today'
 require 'util/logfile'
-require 'mechanize'
+require 'open-uri'
 
 module ODDB
   class Latest
@@ -17,10 +17,16 @@ module ODDB
       file_today = latest_name.sub('latest', @@today.strftime("%Y.%m.%d"))
     end
 
+    def self.fetch_with_http(url)
+      open(url) do |input|
+        input.read
+      end
+    end
+
     # get_latest_file
     # returns name of downloaded if it has been already downloaded today and its size
     # is different from the latest downloaded file.
-    def self.get_latest_file(latest, download_url, agent = Mechanize.new, must_unzip = false)
+    def self.get_latest_file(latest, download_url, must_unzip = false)
       file_today = get_daily_name(latest)
       file_yesterday = latest.sub('latest', (@@today.to_date-1).strftime("%Y.%m.%d"))
       if File.exist?(file_today) and File.exists?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
@@ -31,8 +37,7 @@ module ODDB
         Latest.log "found #{file_today} and same size as latest #{File.size(file_today)} bytes."
         return false
       else
-        file = agent.get(download_url)
-        download = file.is_a?(String) ? file : file.body # if open-uri is used somewhere, download is String
+        download = Latest.fetch_with_http(download_url)
         FileUtils.makedirs(File.dirname(file_today)) unless File.exist?(File.dirname(file_today))
         File.open(file_today, 'w+') { |f| f.write download }
         if(!File.exist?(latest) or File.size(file_today) != File.size(latest))

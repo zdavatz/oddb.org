@@ -60,13 +60,14 @@ module ODDB
       # @app = flexmock 'app'
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
-      @app = ODDB::App.new
+      @app = flexmock(ODDB::App.new)
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
-      @plugin = SwissmedicPlugin.new @app, @archive
+      @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
       @current  = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
       @older    = File.expand_path '../data/xlsx/Packungen-2015.06.04.xlsx', File.dirname(__FILE__)
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read).by_default
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
       @latest   = File.join @archive, 'xls', 'Packungen-latest.xlsx'
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
@@ -88,26 +89,6 @@ module ODDB
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
-    end
-
-    def setup_index_page(packungen_xlsx=@current)
-      link = flexmock('link', :href => 'href')
-      links = flexmock('links', :select => [link])
-      page = flexmock('page', :links => links)
-      index = flexmock 'index'
-      link1 = OpenStruct.new :attributes => {'title' => 'Packungen'},
-                             :href => 'url'
-      link2 = OpenStruct.new :attributes => {'title' => 'Something'},
-                             :href => 'other'
-      link3 = OpenStruct.new :attributes => {'title' => 'Präparateliste'},
-                             :href => 'url'
-      index.should_receive(:links).and_return [link1, link2, link3]
-      index.should_receive(:body).and_return(IO.read(packungen_xlsx))
-      agent = flexmock(Mechanize.new)
-      agent.should_receive(:user_agent_alias=).and_return(true)
-      agent.should_receive(:get).and_return(index)
-      uri = 'http://www.example.com'
-      [agent, page]
     end
 
     def setup_simple_seq(iksnr = '12345', seqnr='01')
@@ -151,16 +132,13 @@ module ODDB
       act
     end
 
-if false
+if true
     def test_get_latest_file__identical
       content = 'Content of the xml'
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
       File.open(@latest, 'wb+') { |f| f.write content }
-      agent, page = setup_index_page
-      page.should_receive(:body).and_return(content)
-      agent.should_receive(:get).and_return(page)
-      @plugin.get_latest_file(agent)
+      @plugin.get_latest_file()
       assert File.exist?(@latest), "#{@latest} should have been saved"
       assert File.exist?(@target), "#{@target} should have been saved"
     end
@@ -168,9 +146,7 @@ if false
     def test_get_latest_file__new
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
-      agent, page = setup_index_page
-      page.should_receive(:body).and_return('Content of the xls')
-      @plugin.get_latest_file(agent)
+      @plugin.get_latest_file()
       assert File.exist?(@target), "#@target was not saved"
     end
 
@@ -178,10 +154,7 @@ if false
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
       File.open(@latest, 'w') { |fh| fh.puts 'Content of a previous xml' }
-      agent, page = setup_index_page
-      page.should_receive(:body).and_return('Content of the xml')
-      agent.should_receive(:get).and_return(page)
-      @plugin.get_latest_file(agent)
+      @plugin.get_latest_file()
       assert File.exist?(@target), "#@target was not saved"
     end
 
@@ -680,8 +653,7 @@ if false
                    :verbose => true, :preserve => true)
       FileUtils.cp(older, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
-      agent, page = setup_index_page(older)
-      result =  @plugin.update({}, agent)
+      result =  @plugin.update
       puts @plugin.report
       assert_equal(4, @plugin.updated_agents.size)
       assert_equal(15, @plugin.recreate_missing.size)
@@ -689,24 +661,13 @@ if false
       assert_equal(8, @plugin.known_export_sequences.size)
       FileUtils.cp(newer, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
-      agent, page = setup_index_page(newer)
-      result =  @plugin.update({}, agent)
+      result =  @plugin.update
       puts @plugin.report
-      assert_equal(2, @plugin.updated_agents.size)
+      assert_equal(0, @plugin.updated_agents.size)
       assert_equal(0, @plugin.recreate_missing.size)
       assert_equal(8, @plugin.known_export_registrations.size)
       assert_equal(8, @plugin.known_export_sequences.size)
       assert_kind_of(OpenStruct, result)
     end
-    def test_update_swissmedic_only
-     opts = {
-        :fix_galenic_form       => false,
-        :iksnrs                 => [],
-        :update_compositions    => false,
-      }
-      expected = []
-      assert_equal(expected, @plugin.update(opts))
-    end if false
   end
-
 end

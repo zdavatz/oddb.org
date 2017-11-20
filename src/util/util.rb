@@ -5,7 +5,13 @@ module ODDB
   module Util
     # please keep this constant in sync between (GEM) swissmedic-diff/lib/swissmedic-diff.rb and (GEM) oddb2xml/lib/oddb2xml/extractor.rb
     def Util.check_column_indices(sheet)
-      row = sheet[4] # Headers are found at row 4
+      if  /Zugelassene Verpackungen/i.match(sheet[2][0].value)
+        row = sheet[3] # Headers are found at row 3
+      elsif /Zulassungs-nummer/i.match(sheet[4][0].value)
+        row = sheet[4] # Headers are found at row 4
+      else
+        raise "Did not find Zugelassene Verpackunge in row 3 or 4"
+      end
 
       error_2015 = nil
       COLUMNS_JULY_2015.each{
@@ -23,7 +29,7 @@ module ODDB
     # please keep this constant in sync between (GEM) swissmedic-diff/lib/swissmedic-diff.rb and (GEM) oddb2xml/lib/oddb2xml/extractor.rb
     COLUMNS_JULY_2015 = {
         :iksnr => /Zulassungs-Nummer/i,                  # column-nr: 0
-        :seqnr => /Dosisstärke-nummer/i,
+        :seqnr => /Dosis+tärke-nummer/i, # Dosisstärke-nummer
         :name_base => /Präparatebezeichnung/i,
         :company => /Zulassungsinhaberin/i,
         :production_science => /Heilmittelcode/i,

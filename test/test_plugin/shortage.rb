@@ -31,6 +31,24 @@ module ODDB
     TestGtinShortage      = '7680623550019' #  ACETALGIN Filmtabl 1 g 16 Stk
     TestGtinNoShortage    = '7680490590999'
     TestGtinNeverShortage = '7680490590777'
+    def get_pack_mock(name = 'pack_mock')
+      atc_class = flexmock('atc_class')
+      atc_class.should_receive(:code).and_return('atc').by_default
+      pack= flexmock(name)
+      pack.should_receive(:atc_class).and_return(atc_class).by_default
+      pack.should_receive(:nomarketing_date).and_return('nomarketing_date').by_default
+      pack.should_receive(:nomarketing_since).and_return('nomarketing_since').by_default
+      pack.should_receive(:nodelivery_since).and_return('nodelivery_since').by_default
+      pack.should_receive(:nomarketing_link).and_return("nomarketing_link").by_default
+      pack.should_receive(:update_nomarketing_list).and_return(true).by_default
+      pack.should_receive(:shortage_state).and_return('aktuell keine Lieferungen')
+      pack.should_receive(:shortage_delivery_date).and_return('shortage_delivery_date')
+      pack.should_receive(:shortage_last_update).and_return('shortage_state')
+      pack.should_receive(:shortage_link).and_return('shortage_link')
+      pack.should_receive(:update_shortage_list).and_return('update_shortage_list')
+      pack.should_receive(:name).and_return(name).by_default
+      pack
+    end
     def add_mock_package(name, gtin, add_shortage_fields = true)
       pack= flexmock(name)
       if add_shortage_fields
@@ -55,6 +73,8 @@ module ODDB
       pack.should_receive(:no_longer_in_nomarketing_list).and_return(true).by_default
       pack.should_receive(:update_nomarketing_list).and_return(true).by_default
       @app.should_receive(:package_by_ean13).with(gtin).and_return(pack).by_default
+      pack.should_receive(:shortage_last_update).and_return('shortage_last_update').by_default
+      pack.should_receive(:shortage_last_update).and_return('shortage_state').by_default
       pack
     end
     def add_mock_registration(iksnr, packages = [])
@@ -66,6 +86,7 @@ module ODDB
     def setup
       @@today = Date.new(2014,5,1)
       @app = flexmock('app')
+      @app.should_receive(:package_by_ean13).and_return(get_pack_mock).by_default
       @session = flexmock('session')
       @session.should_receive(:flavor).and_return('flavor')
       @session.should_receive(:language).and_return('de')
@@ -121,29 +142,33 @@ module ODDB
       @pack_59893_001 = add_mock_package('pack_59893_001', '7680598930010', false)
       @reg_62294.should_receive(:active_packages).and_return([@pack_62294_001, @pack_62294_007])  #.by_default
       @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001])# .by_default
-      @plugin = ShortagePlugin.new @app
+      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      @plugin = flexmock('ShortagePlugin', ShortagePlugin.new(@app))
+      @latest = flexmock('latest', Latest)
+      @latest.should_receive(:fetch_with_http).with( ODDB::ShortagePlugin::SOURCE_URI).and_return(File.open(@drugshortage_name).read).by_default
+      @latest.should_receive(:fetch_with_http).with( ODDB::ShortagePlugin::NoMarketingSource).and_return(File.open(@nomarketing_xlsx_name).read).by_default
     end
     def expected_test_result
             @plugin.duration_in_secs = 25
  %(Update job took #{sprintf('%3i', @plugin.duration_in_secs)} seconds
 Found             2 shortages in https://www.drugshortage.ch/UebersichtaktuelleLieferengpaesse2.aspx
 Deleted           2 shortages
-Changed           1 shortages
-Found             2 nomarketings packages for https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--
+Changed           2 shortages
+Found             2 nomarketings packages for 
 Deleted           3 nomarketings
 Changed           2 nomarketings
 Nr. IKSNR         1 not in oddb.org database
 
 
 Nomarketing changes:
-7680622940010;atc;name nodelivery_since: nodelivery_since =>
+7680622940010;atc;pack_mock nodelivery_since: nodelivery_since =>
               nomarketing_date: nomarketing_date => 27.03.2017
               nomarketing_since: nomarketing_since => 13.06.2014
-              nomarketing_link: nomarketing_link => #{@plugin.nomarketing_href}
-7680622940070;;name nodelivery_since: nodelivery_since =>
+              nomarketing_link: nomarketing_link =>
+7680622940070;atc;pack_mock nodelivery_since: nodelivery_since =>
               nomarketing_date: nomarketing_date => 27.03.2017
               nomarketing_since: nomarketing_since => 13.06.2014
-              nomarketing_link: nomarketing_link => #{@plugin.nomarketing_href}
+              nomarketing_link: nomarketing_link =>
 
 Nomarketing deletions:
 7680490590777;atc;name
@@ -155,10 +180,12 @@ IKSNR not found in oddb database:
 
 
 DrugShortag changes:
-7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
-              shortage_last_update: shortage_last_update => 2017-02-24
+7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-02-24
               shortage_delivery_date: shortage_delivery_date => offen
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
+7680519690140;atc;pack_mock shortage_last_update: shortage_state => 2017-01-13
+              shortage_delivery_date: shortage_delivery_date => offen
+              shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786
 
 DrugShortag deletions:
 7680490590777;atc;name
@@ -171,20 +198,19 @@ DrugShortag deletions:
     end
     def test_changes_with_test_file
       @plugin.update(@agent)
-      expected = {"7680623550019;atc;name"=>["shortage_state: shortage_state => aktuell keine Lieferungen",
-                                    "shortage_last_update: shortage_last_update => 2017-02-24",
-                                    "shortage_delivery_date: shortage_delivery_date => offen",
-                                    "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"
-                                   ]}
+      expected = {"7680623550019;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-02-24", "shortage_delivery_date: shortage_delivery_date => offen",
+                                                  "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"],
+                  "7680519690140;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-01-13", "shortage_delivery_date: shortage_delivery_date => offen",
+                                                  "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786"]}
       assert_equal(expected , @plugin.changes_shortages)
     end
     def check_csv_lines(content)
       lines = content.split("\n")
       assert_equal('GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)',
                    lines.first.strip)
-      assert(lines.find{|line| line.strip.eql?("7680622940010;atc;name;27.03.2017;13.06.2014;;#{@plugin.nomarketing_href};;;;") })
-      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;name;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
-      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;name;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+      assert(lines.find{|line| line.strip.eql?("7680622940010;atc;pack_mock;27.03.2017;13.06.2014;;#{@plugin.nomarketing_href};;;;") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
 
     end
     def test_export_csv
@@ -229,6 +255,7 @@ DrugShortag deletions:
 ))}
 
       FileUtils.cp(@plugin.dated_csv_file_path, @plugin.yesterday_csv_file_path, :verbose => true)
+      @app.package_by_ean13("7680623550033")
       @plugin.update(@agent)
       assert_equal(false, File.exist?(@plugin.yesterday_csv_file_path))
       assert_equal(true, File.exist?(@plugin.dated_csv_file_path))
@@ -256,21 +283,18 @@ DrugShortag deletions:
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       puts ShortagePlugin::SOURCE_URI
       @plugin.update(@agent)
+      @drugshortage_changed_name
 #      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage, :verbose => true)
       Plugin.next_day
-      @agent    = flexmock('agent', Mechanize.new)
-      @agent.should_receive(:get).with(ShortagePlugin::SOURCE_URI).and_return(@html_drugshortage_changed)
-      @agent.should_receive(:get).with(ShortagePlugin::NoMarketingSource).and_return(@html_nomarketing)
-      @agent.should_receive(:get).with('https://www.swissmedic.ch/arzneimittel/00156/00221/00225/index.html'+
-                                       '?lang=de&download=NHzLpZeg7t,lnp6I0NTU042l2Z6ln1acy4Zn4Z2qZpnO2Yuq2Z6gpJCDdX57e2ym162epYbg2c_JjKbNoKSn6A--').and_return(@xlxs_nomarketing)
       FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage.sub('latest', @@today.strftime("%Y.%m.%d")), :verbose => true)
+      @latest.should_receive(:fetch_with_http).with( ODDB::ShortagePlugin::SOURCE_URI).and_return(File.open(@drugshortage_changed_name).read)
+      @latest.should_receive(:fetch_with_http).with( ODDB::ShortagePlugin::NoMarketingSource).and_return(File.open(@nomarketing_xlsx_name).read)
       @plugin.update(@agent)
       result =  @plugin.report
       assert_equal(false, result.empty?)
-      assert(/Changed\s+1\s+shortages/.match(result))
+      assert(/Changed\s+2\s+shortages/.match(result))
       expected = %(DrugShortag changes:
-7680623550019;atc;name shortage_state: shortage_state => aktuell keine Lieferungen
-              shortage_last_update: shortage_last_update => 2017-04-22
+7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-04-22
               shortage_delivery_date: shortage_delivery_date => in Abklärung / en cours de clarification
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
 )

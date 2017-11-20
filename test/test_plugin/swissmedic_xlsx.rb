@@ -47,37 +47,26 @@ module ODDB
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
-      @plugin = SwissmedicPlugin.new @app, @archive
+      @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
       @current  = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
       @older    = File.expand_path '../data/xlsx/Packungen-2015.06.04.xlsx', File.dirname(__FILE__)
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read).by_default
+      @prep_from = File.expand_path('../data/xlsx/Präparateliste-latest.xlsx', File.dirname(__FILE__))
+      FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
+                   :verbose => true, :preserve => true)
+      FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Präparateliste-latest.xlsx'),
+                   :verbose => true, :preserve => true)
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PREPARATIONS_URL).and_return(File.open(@prep_from).read).by_default
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exists?(@latest)
+      puts  ODDB::SwissmedicPlugin::PREPARATIONS_URL
+      assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/excel-version_erweitertepraeparateliste.xlsx.download.xlsx/excel-version_erweitertepraeparateliste.xlsx', ODDB::SwissmedicPlugin::PREPARATIONS_URL)
     end
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
     end
-    def setup_index_page
-      link = flexmock('link', :href => 'href')
-      links = flexmock('links', :select => [link])
-      page = flexmock('page', :links => links)
-      index = flexmock 'index'
-      link1 = OpenStruct.new :attributes => {'title' => 'Packungen'},
-                             :href => 'url'
-      link2 = OpenStruct.new :attributes => {'title' => 'Something'},
-                             :href => 'other'
-      link3 = OpenStruct.new :attributes => {'title' => 'Präparateliste'},
-                             :href => 'url'
-      index.should_receive(:links).and_return [link1, link2, link3]
-      index.should_receive(:body).and_return(IO.read(@current))
-      agent = flexmock(Mechanize.new)
-      agent.should_receive(:user_agent_alias=).and_return(true)
-      agent.should_receive(:get).and_return(index)
-      uri = 'http://www.example.com'
-      [agent, page]
-    end
-
     def check_agents(sequences)
       sequences.each {
         |seq|
@@ -111,7 +100,6 @@ module ODDB
     end
 
     def test_july_2015
-      agent, page = setup_index_page
       # Use first the last month and compare it to a non existing lates
       FileUtils.rm(Dir.glob("#{File.dirname(@latest)}/*"), :verbose => true)
       FileUtils.cp(@older, File.dirname(@latest), :verbose => true, :preserve => true)
@@ -148,7 +136,8 @@ module ODDB
       seq.create_package('001')
       @app.should_receive(:delete).twice
 
-      result = @plugin.update({:update_compositions => true}, agent)
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read)
+      result = @plugin.update({:update_compositions => true})
       assert_equal(3, @app.registrations.size)
       assert_equal(3, @app.sequences.size)
       assert_equal(5, @app.packages.size)
@@ -162,8 +151,9 @@ module ODDB
       assert_equal(4, @app.sequences.size)
       assert_equal(7, @app.packages.size)
 
-      puts "\nStarting second_run\n\n"
-      result_second_run = @plugin.update({}, agent)
+      puts "\nStarting second_run with #{ODDB::SwissmedicPlugin::PREPARATIONS_URL}\n\n"
+      @plugin.should_receive(:fetch_with_http).with(ODDB::SwissmedicPlugin::PREPARATIONS_URL).and_return(File.open(@prep_from).read)
+      result_second_run = @plugin.update({})
       puts @plugin.report
       assert File.exist?(@target), "#@target was not saved"
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
@@ -197,15 +187,6 @@ module ODDB
       assert_equal(17, @app.active_packages.size)
       res =  @app.active_sequences.collect{|s| s.compositions.collect {|c| c.active_agents.find_all{|a| a.is_active_agent == nil }}}
       assert_equal(0, res.flatten.size)
-    end
-
-    def test_mustcheck
-      agent = flexmock(Mechanize.new)
-      assert_equal(true, @plugin.mustcheck('46111', {:iksnrs => ['46111']}))
-      assert_equal(true, @plugin.mustcheck('46112', {:iksnrs => ['46111', '46112']}))
-      assert_equal(true, @plugin.mustcheck('46112', {:update_compositions => true}))
-
-      assert_equal(false, @plugin.mustcheck('46112', {:iksnrs => ['46111']}))
     end
 
   def set_is_active_agent element, value

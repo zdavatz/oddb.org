@@ -200,6 +200,7 @@ module ODDB
       self.class::RECIPIENTS
     end
     def run
+      update_drugshortage
       logfile_stats
       # update_evidentia_fi_search_links # Zeno decided to disable this job temporarily on 2017-09-18
       update_epha_interactions
