@@ -103,5 +103,13 @@ module ODDB
       @app.rss_updates[name] = [@month || @@today, model.size]
       @app.odba_isolated_store
     end
+    def fetch_with_http(url)
+      open(url) do |input|
+        input.read
+      end
+    end
+    def save_file(filename, content)
+      open(filename, 'w+') { |output| output.write(content) }
+    end
 	end
 end

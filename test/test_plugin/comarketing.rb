@@ -30,7 +30,7 @@ module ODDB
       @latest = File.join @archive, 'xlsx', 'CoMarketing-latest.xlsx'
       @target = File.join @archive, 'xlsx',
                           @@today.strftime('CoMarketing-%Y.%m.%d.xlsx')
-      @plugin = CoMarketingPlugin.new @app, @archive
+      @plugin = flexmock('plugin', CoMarketingPlugin.new(@app, @archive))
       @data = File.expand_path '../data/xls/CoMarketing.xlsx',
                                File.dirname(__FILE__)
       @older = File.expand_path '../data/xls/CoMarketing.older.xlsx',
@@ -39,19 +39,10 @@ module ODDB
                                   File.dirname(__FILE__)
     end
     def test_report_with_test_file
-      #      flexmock(@app, :registration => find_result)
       result = @plugin.find(TestIksnr)
-      @agent    = FlexMock.new 'agent'
-      @got      = FlexMock.new 'got'
-      @links    = FlexMock.new 'links'
-      @agent.should_receive(:get).and_return @got
-      @got.should_receive(:links).and_return @links
-      @find    = FlexMock.new 'find'
-      @links.should_receive(:find).and_return @find
-      @attributes    = FlexMock.new 'attributes '
-      @find.should_receive(:attributes).and_return @attributes
-      @attributes.should_receive("[]").and_return File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xls', 'CoMarketing_small_010514.xlsx'))
-      @plugin.update(@agent)
+      file_name =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xls', 'CoMarketing_small_010514.xlsx'))
+      @plugin.should_receive(:fetch_with_http).once.with( ODDB::CoMarketingPlugin::SOURCE_URI).and_return(File.open(file_name).read)
+      @plugin.update
       assert_nil(result)
       @app.flexmock_verify
       expected = %(Found                  2 Co-Marketing-Pairs

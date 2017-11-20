@@ -6,7 +6,6 @@
 require 'plugin/plugin'
 require 'util/oddbconfig'
 require 'util/searchterms'
-require 'mechanize'
 require 'drb'
 require 'rubyXL'
 require 'open-uri'
@@ -14,7 +13,7 @@ require 'tempfile'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-		SOURCE_URI = 'https://www.swissmedic.ch/arzneimittel/00156/00221/00222/00239/index.html?lang=de'
+		SOURCE_URI = 'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/excel-version_co-Marketing_basis.xlsx.download.xlsx/excel-version_co_marketing_basis.xlsx'
 		def find(iksnr)
       @app.registration(iksnr)
 		end
@@ -79,9 +78,7 @@ module ODDB
 		end
     def get_pairs(url)
       tempfile = Tempfile.new('comarketing.xlsx')
-      open(url) do |input|
-          tempfile.print input.read
-      end
+      save_file(tempfile.path, fetch_with_http(url))
       pairs = []
       workbook = RubyXL::Parser.parse(tempfile.path)
       workbook[0].each do |row|
@@ -94,18 +91,12 @@ module ODDB
       tempfile.close
       pairs.uniq
     end
-		def update(agent=Mechanize.new)
+		def update
       @deleted = 0
 			@updated = 0
 			@found = 0
 			@not_found = []
-      page = agent.get SOURCE_URI
-      link = page.links.find do |node|
-        /Excel-Version/iu.match node.attributes['title']
-      end or raise "unable to identify url for Co-Marketing-data"
-      url = link.attributes['href']
-      url = "https://www.swissmedic.ch/#{link.attributes['href']}" unless File.exists?(url) # for unit testing
-			@pairs = get_pairs(url)
+			@pairs = get_pairs(SOURCE_URI)
 			@pairs.each { |pair|
 				update_pair(*pair)
 			}
