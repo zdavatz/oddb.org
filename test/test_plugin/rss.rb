@@ -26,9 +26,9 @@ module ODDB
     def setup
       @current = flexmock('current', :valid_from => Time.local(2011,2,3))
       @package = flexmock('package', 
-                         :price_public => @current,
-                         :data_origin  => 'data_origin'
-                        )
+                          :price_public => @current,
+                          :data_origin  => 'data_origin'
+                         )
       @app = FlexMock.new 'app'
       @plugin = flexmock('rss_plugin', RssPlugin.new(@app))
     end
@@ -160,7 +160,7 @@ REPORT
       previous = flexmock('previous')
       flexmock(@package) do |p|
         p.should_receive(:price_public).with_no_args.and_return(@current)
-#        p.should_receive(:price_public).with(1).once.and_return(previous)
+        #        p.should_receive(:price_public).with(1).once.and_return(previous)
       end
       flexmock(previous, :> => false)
       flexmock(@current, :> => true)
@@ -168,26 +168,37 @@ REPORT
       assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
     end
     def setup_marktueberwachung
+      @host = 'https://www.swissmedic.ch'
+      @first_recall = { # :link=>"https://www.swissmedic.ch//swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/chargenrueckruf-acnecremepluswidmer.html",
+                       :title=>"Chargenrückruf – Acne Crème plus Widmer",
+                       :date=>"07.11.2017",
+                       :description=>"Die Firma Louis Widmer AG zieht vorsorglich die obenerwähnten Chargen von 47033 Acne Crème plus Widmer bis auf Stufe Detailhandel vom Markt zurück. "
+                      }
+      @first_hpc =  {  :link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html",
+                     :title=>"DHPC - Dantrolen i.v., Injektionslösung",
+                     :date=>"17.11.2017",
+                     :description=>"Die Firma Norgine AG informiert über wichtige, die Anwendung von Dantrolen i.v., Injektionslösung betreffende Änderungen."
+                    }
+
       @app.should_receive(:rss_updates).and_return({})
       @app.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
       example_dir = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic')
       ODDB::RssPlugin::RSS_URLS.each do |lang, lang_cont|
         [:hpc, :recall].each do | rss_type |        
           [1,2,3].each do |index|
-            #            https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/swissmedic/de/home/humanarzneimittel/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1
-            file_url1 = "https://www.swissmedic.ch/swissmedic/de/home/de/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1"
-            require 'pry'; binding.pry unless lang_cont[rss_type][:index]
-            file_url = lang_cont[rss_type][:index].gsub('1', index.to_s)
-            example_file = File.join(example_dir, index == 3 ? 'page-empty.html' : "page-#{rss_type}-1.html")
-            unless File.exist?(example_file) && File.size(example_file) > 1024
-              puts "Should call\nwget '#{file_url}' -O #{example_file}"
-              # require 'pry'; binding.pry
-              assert(File.exist?(example_file))
-            else
-              # puts "Added #{example_file}"
-            end
-            @plugin.should_receive(:fetch_with_http).with(file_url).and_return(File.open(example_file).read)
+          #            https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/swissmedic/de/home/humanarzneimittel/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1
+          file_url1 = "https://www.swissmedic.ch/swissmedic/de/home/de/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1"
+          file_url = lang_cont[rss_type][:index].gsub('1', index.to_s)
+          example_file = File.join(example_dir, index == 3 ? 'page-empty.html' : "page-#{rss_type}-1.html")
+          unless File.exist?(example_file) && File.size(example_file) > 1024
+            puts "Should call\nwget '#{file_url}' -O #{example_file}"
+            # require 'pry'; binding.pry
+            assert(File.exist?(example_file))
+          else
+            # puts "Added #{example_file}"
           end
+          @plugin.should_receive(:fetch_with_http).with(file_url).and_return(File.open(example_file).read)
+        end
         end
       end
     end
@@ -195,10 +206,9 @@ REPORT
       setup_marktueberwachung
       first_page =  Nokogiri::HTML(@plugin.fetch_with_http(ODDB::RssPlugin::RSS_URLS[:de][:recall][:index]))
       detail = first_page.xpath(".//div[@class='row']").first
-      result = @plugin.detail_info(ODDB::RssPlugin::RSS_URLS[:de][:recall][:index], detail, true)
+      result = @plugin.detail_info(@host, detail, true)
       assert_equal('Chargenrückruf – Acne Crème plus Widmer', result[:title])
-      expected = {:link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1//swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/chargenrueckruf-acnecremepluswidmer.html", :title=>"Chargenrückruf – Acne Crème plus Widmer", :date=>"07.11.2017", :description=>"Die Firma Louis Widmer AG zieht vorsorglich die obenerwähnten Chargen von 47033 Acne Crème plus Widmer bis auf Stufe Detailhandel vom Markt zurück. "}
-      expected.each do |key, value|
+      @first_recall.each do |key, value|
         assert_equal(value, result[key])
       end
     end
@@ -206,28 +216,34 @@ REPORT
       setup_marktueberwachung
       first_page =  Nokogiri::HTML(@plugin.fetch_with_http(ODDB::RssPlugin::RSS_URLS[:de][:hpc][:index]))
       detail = first_page.xpath(".//div[@class='row']").first
-      result = @plugin.detail_info(ODDB::RssPlugin::RSS_URLS[:de][:hpc][:index], detail, true)
-      assert_equal('DHPC - Dantrolen i.v., Injektionslösung', result[:title])
-      expected = {:link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1//swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html", :title=>"DHPC - Dantrolen i.v., Injektionslösung", :date=>"17.11.2017", :description=>"Die Firma Norgine AG informiert über wichtige, die Anwendung von Dantrolen i.v., Injektionslösung betreffende Änderungen."}
-      expected.each do |key, value|
+      result = @plugin.detail_info(@host, detail, true)
+      @first_hpc.each do |key, value|
         assert_equal(value, result[key], "key #{key} should match #{value}")
       end
+    end
+    def test_swissmedic_entries_of__with_recall
+      setup_marktueberwachung
+      to_test = @first_recall.clone
+      entries = @plugin.update_recall_feed
+      assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal('Chargenrückruf – Acne Crème plus Widmer',        entries['de'].first[:title])
+      to_test.each do |key, value|
+        assert_equal(value, entries['de'].first[key], "key #{key} should match #{value}")
+      end
+      assert_equal(10, entries['de'].length)
     end
     def test_swissmedic_entries_of__with_hpc
       setup_marktueberwachung
       entries = @plugin.update_hpc_feed
+      to_test = @first_hpc.clone
       assert_equal(['de', 'fr', 'en'], entries.keys)
+      assert_equal(12, entries['de'].length)
       assert_equal('DHPC - Dantrolen i.v., Injektionslösung', entries['de'].first[:title])
       assert_equal('DHPC – Cinryze 500 U (C1-INAKTIVATOR HUMAN)', entries['de'].last[:title])
-      assert_equal(12, entries['de'].length)
+      result = entries['de'].first
+      @first_hpc.each do |key, value|
+        assert_equal(value, entries['de'].first[key], "key #{key} should match #{value}")
       end
     end
-
-    def test_swissmedic_entries_of__with_recall
-      setup_marktueberwachung
-      entries = @plugin.update_recall_feed
-      assert_equal(['de', 'fr', 'en'], entries.keys)
-      assert_equal('Chargenrückruf / Donepezil-Mepha 5 mg / 10 mg, Lactab',        entries['de'].first[:title])
-      assert_equal(1, entries['de'].length)
-    end
   end
+end

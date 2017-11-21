@@ -98,7 +98,8 @@ module ODDB
     end
     def detail_info(host, container, count=false)
       entry = {}
-      entry[:link] = host + '/' + container.xpath(".//h3/a").first.attributes['href'].text
+      entry[:link] = host + container.xpath(".//h3/a").first.attributes['href'].text
+      # require 'pry'; binding.pry
       @downloaded_urls[entry[:link]] = true
       @current_issue_count  ||= 0 # for unit test
       @new_entry_count      ||= 0
