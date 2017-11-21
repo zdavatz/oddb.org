@@ -30,10 +30,7 @@ module ODDB
                          :data_origin  => 'data_origin'
                         )
       @app = FlexMock.new 'app'
-      @plugin = RssPlugin.new @app
-    end
-    def setup_agent
-      agent
+      @plugin = flexmock('rss_plugin', RssPlugin.new(@app))
     end
     def teardown
       path = RssPlugin::RSS_PATH
@@ -60,14 +57,6 @@ REPORT
     def test_sort_packages
       assert_equal([@package], @plugin.sort_packages([@package]))
     end
-    def test_download
-      agent = flexmock(Mechanize.new)
-      agent.should_receive(:user_agent_alias=).and_return(true)
-      agent.should_receive(:get).and_return('Mechanize Page')
-      uri = 'http://www.example.com'
-      response = @plugin.download(uri, agent)
-      assert_equal('Mechanize Page', response)
-    end
     def test_compose_description
       # 12‘345
       desc = flexmock('Desc')
@@ -76,6 +65,7 @@ REPORT
       content = flexmock('Content')
       content.should_receive(:xpath).with('.//p/strong').and_return(desc)
       content.should_receive(:inner_html).and_return(text)
+      skip('Niklaus does not parse the IKSNR at the moment')
       assert_equal(
         "Zulassungsnummer: <a href='https://#{SERVER_NAME}/de/gcc/show/reg/12345' target='_blank'>12‘345</a>",
         @plugin.compose_description(content)
@@ -177,77 +167,67 @@ REPORT
       flexmock(@plugin, :update_rss_feeds => 'update_rss_feeds')
       assert_equal('update_rss_feeds', @plugin.update_price_feeds(Date.new(2011,2,3)))
     end
-    Market  = { :recall =>
-                  ['https://www.swissmedic.ch/marktueberwachung/00135/00166/02524/index.html?lang=de',
-                    File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_example.html')],
-                :hpc =>
-                  ['https://www.swissmedic.ch/marktueberwachung/00135/00157/02519/index.html?lang=de',
-                    File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/hpc_example.html')],
-
-      }
     def setup_marktueberwachung
-      @index_hpc     = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/markt_überwachung.html')
-      teaser_1_file   = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/teaserFlex_1.html')
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00166/01954/index.html?lang=de').and_return(IO.read(Market[:recall][1]))
-        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00166/02524/index.html?lang=de').and_return(IO.read(Market[:recall][1]))
-        plug.should_receive(:open).with(Market[:recall][0]).and_return(IO.read(Market[:recall][1]))
-        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00157/02519/index.html?lang=de').and_return(IO.read(Market[:hpc][1]))
-        plug.should_receive(:open).with('https://www.swissmedic.ch//marktueberwachung/00135/00157/00363/index.html?lang=de').and_return(IO.read(Market[:hpc][1]))
-        plug.should_receive(:open).with(Market[:hpc][0])   .and_return(IO.read(Market[:hpc][1]))
-        plug.should_receive(:update_rss_feeds).and_return('update_rss_feeds')
-      end
       @app.should_receive(:rss_updates).and_return({})
       @app.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
-
-      @mechanize = flexmock("mechanize")
-      @plugin.agent= @mechanize
+      example_dir = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic')
+      ODDB::RssPlugin::RSS_URLS.each do |lang, lang_cont|
+        [:hpc, :recall].each do | rss_type |        
+          [1,2,3].each do |index|
+            #            https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/swissmedic/de/home/humanarzneimittel/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1
+            file_url1 = "https://www.swissmedic.ch/swissmedic/de/home/de/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1"
+            require 'pry'; binding.pry unless lang_cont[rss_type][:index]
+            file_url = lang_cont[rss_type][:index].gsub('1', index.to_s)
+            example_file = File.join(example_dir, index == 3 ? 'page-empty.html' : "page-#{rss_type}-1.html")
+            unless File.exist?(example_file) && File.size(example_file) > 1024
+              puts "Should call\nwget '#{file_url}' -O #{example_file}"
+              # require 'pry'; binding.pry
+              assert(File.exist?(example_file))
+            else
+              # puts "Added #{example_file}"
+            end
+            @plugin.should_receive(:fetch_with_http).with(file_url).and_return(File.open(example_file).read)
+          end
+        end
+      end
     end
     def test_recall_example
       setup_marktueberwachung
-      result = @plugin.detail_info('https://www.swissmedic.ch/marktueberwachung/00135/00166/02524/index.html?lang=de', true)
-      assert_equal('Chargenrückruf / Donepezil-Mepha 5 mg / 10 mg, Lactab', result[:title])
+      first_page =  Nokogiri::HTML(@plugin.fetch_with_http(ODDB::RssPlugin::RSS_URLS[:de][:recall][:index]))
+      detail = first_page.xpath(".//div[@class='row']").first
+      result = @plugin.detail_info(ODDB::RssPlugin::RSS_URLS[:de][:recall][:index], detail, true)
+      assert_equal('Chargenrückruf – Acne Crème plus Widmer', result[:title])
+      expected = {:link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1//swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/chargenrueckruf-acnecremepluswidmer.html", :title=>"Chargenrückruf – Acne Crème plus Widmer", :date=>"07.11.2017", :description=>"Die Firma Louis Widmer AG zieht vorsorglich die obenerwähnten Chargen von 47033 Acne Crème plus Widmer bis auf Stufe Detailhandel vom Markt zurück. "}
+      expected.each do |key, value|
+        assert_equal(value, result[key])
+      end
     end
     def test_hpc_example
       setup_marktueberwachung
-      result = @plugin.detail_info('https://www.swissmedic.ch/marktueberwachung/00135/00157/02519/index.html?lang=de', true)
-      assert_equal('DHPC Invirase® (Saquinavir)', result[:title])
+      first_page =  Nokogiri::HTML(@plugin.fetch_with_http(ODDB::RssPlugin::RSS_URLS[:de][:hpc][:index]))
+      detail = first_page.xpath(".//div[@class='row']").first
+      result = @plugin.detail_info(ODDB::RssPlugin::RSS_URLS[:de][:hpc][:index], detail, true)
+      assert_equal('DHPC - Dantrolen i.v., Injektionslösung', result[:title])
+      expected = {:link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1//swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html", :title=>"DHPC - Dantrolen i.v., Injektionslösung", :date=>"17.11.2017", :description=>"Die Firma Norgine AG informiert über wichtige, die Anwendung von Dantrolen i.v., Injektionslösung betreffende Änderungen."}
+      expected.each do |key, value|
+        assert_equal(value, result[key], "key #{key} should match #{value}")
+      end
     end
     def test_swissmedic_entries_of__with_hpc
       setup_marktueberwachung
-      if /^1\.9/.match(RUBY_VERSION)
-        skip("Avoid ArgumentError: invalid byte sequence in US-ASCII")
-      else
-      index_hpc = Mechanize.new().get('file://'+@index_hpc)
-      @teaser_hpc  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/hpc_teaser.html')
-      teaser_hpc = Mechanize.new().get('file://'+@teaser_hpc)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=de').and_return(index_hpc)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=fr').and_return(index_hpc)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00157/index.html?lang=en').and_return(index_hpc)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_hpc)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=10&teaserFlex=1').and_return(nil)
       entries = @plugin.update_hpc_feed
       assert_equal(['de', 'fr', 'en'], entries.keys)
-      assert_equal('DHPC Invirase® (Saquinavir)',        entries['de'].first[:title])
-      assert_equal(1, entries['de'].length)
+      assert_equal('DHPC - Dantrolen i.v., Injektionslösung', entries['de'].first[:title])
+      assert_equal('DHPC – Cinryze 500 U (C1-INAKTIVATOR HUMAN)', entries['de'].last[:title])
+      assert_equal(12, entries['de'].length)
       end
     end
 
     def test_swissmedic_entries_of__with_recall
       setup_marktueberwachung
-      @index_recall  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_index.html')
-      index_recall  = Mechanize.new().get('file://'+@index_recall)
-      @teaser_recall  = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic/recall_teaser.html')
-      teaser_recall = Mechanize.new().get('file://'+@teaser_recall)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=de').and_return(index_recall)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=fr').and_return(index_recall)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/marktueberwachung/00135/00166/index.html?lang=en').and_return(index_recall)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=0&teaserFlex=1').and_return(teaser_recall)
-      @mechanize.should_receive(:get).with('https://www.swissmedic.ch/index.html?lang=de&start=10&teaserFlex=1').and_return(nil)
       entries = @plugin.update_recall_feed
       assert_equal(['de', 'fr', 'en'], entries.keys)
       assert_equal('Chargenrückruf / Donepezil-Mepha 5 mg / 10 mg, Lactab',        entries['de'].first[:title])
       assert_equal(1, entries['de'].length)
     end
   end
-end

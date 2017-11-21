@@ -11,9 +11,51 @@ require 'view/rss/price_cut'
 require 'view/rss/price_rise'
 require 'view/rss/sl_introduction'
 require 'view/rss/swissmedic'
+require 'mechanize'
 
 module ODDB
   class RssPlugin < Plugin
+    RSS_URLS = {
+      :de  => {
+               :hpc => {
+                        # we use https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1
+                        :human   => 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-.html',
+                        },
+                :recall => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe.html'
+                           }
+               },
+      :fr  => {
+               :hpc => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/fr/home/medicaments-a-usage-humain/surveillance-du-marche/health-professional-communication--hpc-.html'
+                        },
+                :recall => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/fr/home/medicaments-a-usage-humain/surveillance-du-marche/qualitaetsmaengel-und-chargenrueckrufe/retraits-de-lots.html',
+                           }
+               },
+      :it  => {
+               :hpc => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/it/home/medicamenti-per-uso-umano/sorveglianza-del-mercato/health-professional-communication--hpc-.html',
+                        },
+                :recall => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/it/home/medicamenti-per-uso-umano/sorveglianza-del-mercato/qualitaetsmaengel-und-chargenrueckrufe/ritiri-delle-partite.html',
+                           }
+               },
+      :en  => {
+               :hpc => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/market-surveillance/health-professional-communication--hpc-.html',
+                        },
+                :recall => {
+                        :human    => 'https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/market-surveillance/qualitaetsmaengel-und-chargenrueckrufe/batch-recalls.html',
+                           }
+               },
+      }
+    RSS_URLS.keys.each do |lang|
+      [:hpc, :recall].each do |rss_type|
+        RSS_URLS[lang][rss_type][:index] = RSS_URLS[lang][rss_type][:human].sub(/\.html$/, '/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1')
+      end
+    end
+
     FLAVORED_RSS = %w[
       just-medical
     ]
@@ -36,55 +78,35 @@ module ODDB
         [-time.year, -time.month, -time.day, pac]
       }
     end
-    def agent=(agent) # made agent writable for running unit tests
-      @agent = agent
-    end
-    def download(uri, agent = @agent)
-      unless agent
-        agent = Mechanize.new
-        agent.user_agent_alias = "Linux Firefox"
-      end
-      return agent.get(uri)
-    rescue EOFError
-      retries ||= 3
-      if retries > 0
-        retries -= 1
-        sleep 5
-        retry
-      else
-        raise
-      end
-    end
     def compose_description(content)
+      number = content.xpath(".//td").last
       current_lang = @lang || 'de'
       description  = content.inner_html
-      if dd = content.xpath('.//p/strong') and
-         nn = dd.text.scan(/(\d{2})([‘'])(\d{3})/) and !nn.empty?
-        nn.each do |matched|
-          number_str = matched.join
+      content.xpath('.//td').each do |elem|
+         if  matched = /^(\d{2})([‘']*)(\d{3})\s*$/.match(elem.text)
+          number_str = matched[0]
           number_int = matched[0] + matched[2]
           oddb_link  = "#{root_url}/#{current_lang}/gcc/show/reg/#{number_int}"
           description.gsub!(
             number_str,
             "<a href='#{oddb_link}' target='_blank'>#{number_str}</a>"
           )
-        end
+         end
       end
+      require 'pry'; binding.pry
       description
     end
-    def detail_info(url, count=false)
-      return nil if @downloaded_urls[url] # the same url may appear in various files
-      @downloaded_urls[url] = true
+    def detail_info(host, container, count=false)
+      entry = {}
+      entry[:link] = host + '/' + container.xpath(".//h3/a").first.attributes['href'].text
+      @downloaded_urls[entry[:link]] = true
       @current_issue_count  ||= 0 # for unit test
       @new_entry_count      ||= 0
-      entry = {}
-      container = Nokogiri::HTML(open(url))
-      if h1 = container.xpath(".//h1[@id='contentStart']")
-        title = h1.text
-      end
-      return nil unless container
-      date_field = /\d\d\.\d\d.\d\d\d\d/.match(container.text)
-      return nil unless date_field
+      title                 =  container.xpath(".//h3/a").text
+      entry[:title]         = title
+      date_field            = container.xpath(".//div/p[@class='teaserDate']").text
+      entry[:date]          = date_field
+      entry[:description]   = container.xpath(".//div/p")[1..-1].text
       date = Date.parse(date_field.to_s)
       if count
         if date.year == @@today.year and date.month ==  @@today.month
@@ -96,50 +118,30 @@ module ODDB
           LogFile.append('oddb/debug', " rss adding new entry: #{date.to_s} #{title}", Time.now.utc)
         end
       end
-      entry[:title]       = title || ''
-      entry[:date]        = date.to_s
-      entry[:description] = compose_description(container.xpath(".//div[starts-with(@id, 'sprungmarke')]/div"))
-      entry[:link]        = url
       entry
     end
     def swissmedic_entries_of(type)
       entries = Hash.new{|h,k| h[k] = [] }
-      host = "https://www.swissmedic.ch"
-      per_page = 5
-      swissmedic_categories = {
-        :recall => '00166',
-        :hpc    => '00157',
-      }
-      category = swissmedic_categories[type]
-      return entries unless category
+      return entries unless RSS_URLS[LookandfeelBase::DICTIONARIES.keys.first.to_sym].keys.index(type)
       LookandfeelBase::DICTIONARIES.each_key do |lang|
         @lang = lang # current_lang
         count = (lang == 'de' ? true : false)
-        base_uri   = host + "/marktueberwachung/00135/#{category}/index.html?lang=#{lang}" # &start=0
-        first_page = download(base_uri)
+        # require 'pry'; binding
+        base_uri = RSS_URLS[lang.to_sym][type][:index]
+        uri = URI(base_uri)
+        host = uri.scheme + '://' + uri.host
+        first_page =  Nokogiri::HTML(fetch_with_http(base_uri))
         step_nr = 1
         while true
           break unless first_page
-          step_url = first_page.link_with(:text => step_nr.to_s)
-          step_nr += 1
-          unless step_url and step_url.href # and step_url.match(/&start=([\d]*)/)
-            break
-          else
-            url = host+'/'+step_url.href
-            step_page = download(url)
-            idx = 0
-            break unless step_page
-            step_page.links.compact.each{
-              |link|
-              idx += 1
-              regexp = /\/00135\/#{category}\/\d{5}\//
-              next unless link and link.href and link.href.match(regexp)
-              detail_url = host + '/' + link.href
-              result = detail_info(detail_url, count)
-              entries[lang] << result if result and not entries[lang].index{ |x| x[:title] == result[:title] and   x[:date] == result[:date] }
-            }
+          first_page.xpath(".//div[@class='row']").each do |item|
+            result = detail_info(host, item, count)
+            entries[lang] << result if result and not entries[lang].index{ |x| x[:title] == result[:title] and   x[:date] == result[:date] }
+            
           end
-          entries[lang]
+          step_nr += 1
+          first_page =  Nokogiri::HTML(fetch_with_http(base_uri.gsub('1', step_nr.to_s)))
+          break if /Keine Resultate/i.match(first_page.text)
         end
       end
       entries
