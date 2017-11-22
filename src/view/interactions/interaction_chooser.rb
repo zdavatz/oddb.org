@@ -351,6 +351,10 @@ class InteractionChooserForm < View::Form
     [0,2] => 'inner-button',
     [0,3] => 'inner-button',
     }
+  COLSPAN_MAP = {
+    [0,0] => 2,
+    [0,1] => 2,
+  }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LABELS = true
