@@ -32,6 +32,7 @@ gem 'nokogiri'# , '1.6.1'
 gem 'ox', '2.8.2' # a replacement for nokogir
 gem 'odba',  '>= 1.1.2'
 gem 'oddb2tdat', '1.1.2'
+gem 'activesupport', '3.1.0' # this is needed for paypal 2.0.0
 gem 'paypal', '2.0.0'
 gem 'parslet', '1.7.0'
 gem 'pg', '0.12.0'
