@@ -57,31 +57,6 @@ REPORT
     def test_sort_packages
       assert_equal([@package], @plugin.sort_packages([@package]))
     end
-    def test_compose_description
-      # 12‘345
-      desc = flexmock('Desc')
-      text = "Zulassungsnummer: 12‘345"
-      desc.should_receive(:text).and_return(text)
-      content = flexmock('Content')
-      content.should_receive(:xpath).with('.//p/strong').and_return(desc)
-      content.should_receive(:inner_html).and_return(text)
-      skip('Niklaus does not parse the IKSNR at the moment')
-      assert_equal(
-        "Zulassungsnummer: <a href='https://#{SERVER_NAME}/de/gcc/show/reg/12345' target='_blank'>12‘345</a>",
-        @plugin.compose_description(content)
-      )
-      # 54'321
-      desc = flexmock('Desc')
-      text = "Zulassungsnummer: 54'321"
-      desc.should_receive(:text).and_return(text)
-      content = flexmock('Content')
-      content.should_receive(:xpath).with('.//p/strong').and_return(desc)
-      content.should_receive(:inner_html).and_return(text)
-      assert_equal(
-        "Zulassungsnummer: <a href='https://#{SERVER_NAME}/de/gcc/show/reg/54321' target='_blank'>54'321</a>",
-        @plugin.compose_description(content)
-      )
-    end
     def test_swissmedic_entries_of__with_unknown_type
       assert_empty(@plugin.swissmedic_entries_of(:invalid_type))
     end
@@ -169,26 +144,32 @@ REPORT
     end
     def setup_marktueberwachung
       @host = 'https://www.swissmedic.ch'
-      @first_recall = { # :link=>"https://www.swissmedic.ch//swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/chargenrueckruf-acnecremepluswidmer.html",
+      @first_recall = { :link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/chargenrueckruf-acnecremepluswidmer.html",
                        :title=>"Chargenrückruf – Acne Crème plus Widmer",
                        :date=>"07.11.2017",
-                       :description=>"Die Firma Louis Widmer AG zieht vorsorglich die obenerwähnten Chargen von 47033 Acne Crème plus Widmer bis auf Stufe Detailhandel vom Markt zurück. "
+                       :description=>"<a href='https://ch.oddb.org/de/gcc/show/reg/47033' target='_blank'>Swissmedic-Registration 47033</a><br>Die Firma Louis Widmer AG zieht vorsorglich die obenerwähnten Chargen von 47033 Acne Crème plus Widmer bis auf Stufe Detailhandel vom Markt zurück. "
                       }
       @first_hpc =  {  :link=>"https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html",
                      :title=>"DHPC - Dantrolen i.v., Injektionslösung",
                      :date=>"17.11.2017",
-                     :description=>"Die Firma Norgine AG informiert über wichtige, die Anwendung von Dantrolen i.v., Injektionslösung betreffende Änderungen."
+                     :description=>"<a href='https://ch.oddb.org/de/gcc/show/reg/45217' target='_blank'>Swissmedic-Registration 45217</a><br>Die Firma Norgine AG informiert über wichtige, die Anwendung von Dantrolen i.v., Injektionslösung betreffende Änderungen."
                     }
 
       @app.should_receive(:rss_updates).and_return({})
       @app.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
       example_dir = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic')
+      @hpc_example_url = 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html'
+      @recall_example_url = 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html'
       ODDB::RssPlugin::RSS_URLS.each do |lang, lang_cont|
         [:hpc, :recall].each do | rss_type |        
           [1,2,3].each do |index|
           #            https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/swissmedic/de/home/humanarzneimittel/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1
           file_url1 = "https://www.swissmedic.ch/swissmedic/de/home/de/marktueberwachung/qualitaetsmaengel-und-chargenrueckrufe/chargenrueckrufe/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1"
           file_url = lang_cont[rss_type][:index].gsub('1', index.to_s)
+          if index == 1
+            url = (rss_type == :hpc ? @first_hpc[:link] : @first_recall[:link])
+            @plugin.should_receive(:fetch_with_http).with(url).and_return(File.open(File.join(example_dir, File.basename(url))).read)
+          end
           example_file = File.join(example_dir, index == 3 ? 'page-empty.html' : "page-#{rss_type}-1.html")
           unless File.exist?(example_file) && File.size(example_file) > 1024
             puts "Should call\nwget '#{file_url}' -O #{example_file}"
@@ -201,6 +182,7 @@ REPORT
         end
         end
       end
+      @plugin.should_receive(:fetch_with_http).and_return("")
     end
     def test_recall_example
       setup_marktueberwachung

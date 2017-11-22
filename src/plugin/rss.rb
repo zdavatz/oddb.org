@@ -78,27 +78,26 @@ module ODDB
         [-time.year, -time.month, -time.day, pac]
       }
     end
-    def compose_description(content)
-      number = content.xpath(".//td").last
+    def compose_oddb_link(url)
+      content = Nokogiri::HTML(fetch_with_http(url))
       current_lang = @lang || 'de'
-      description  = content.inner_html
+      description = ''
       content.xpath('.//td').each do |elem|
          if  matched = /^(\d{2})([‘']*)(\d{3})\s*$/.match(elem.text)
           number_str = matched[0]
           number_int = matched[0] + matched[2]
           oddb_link  = "#{root_url}/#{current_lang}/gcc/show/reg/#{number_int}"
-          description.gsub!(
-            number_str,
-            "<a href='#{oddb_link}' target='_blank'>#{number_str}</a>"
-          )
+          # LookandfeelBase::DICTIONARIES['de'][:iksnr]
+          description = "<a href='#{oddb_link}' target='_blank'>#{LookandfeelBase::DICTIONARIES[current_lang][:iksnr]} #{number_str}</a>"
          end
       end
-      require 'pry'; binding.pry
       description
     end
+
     def detail_info(host, container, count=false)
       entry = {}
       entry[:link] = host + container.xpath(".//h3/a").first.attributes['href'].text
+      oddb_link    = compose_oddb_link(entry[:link])
       # require 'pry'; binding.pry
       @downloaded_urls[entry[:link]] = true
       @current_issue_count  ||= 0 # for unit test
@@ -107,7 +106,7 @@ module ODDB
       entry[:title]         = title
       date_field            = container.xpath(".//div/p[@class='teaserDate']").text
       entry[:date]          = date_field
-      entry[:description]   = container.xpath(".//div/p")[1..-1].text
+      entry[:description]   = oddb_link + '<br>' + container.xpath(".//div/p")[1..-1].text
       date = Date.parse(date_field.to_s)
       if count
         if date.year == @@today.year and date.month ==  @@today.month
