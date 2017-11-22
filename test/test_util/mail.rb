@@ -128,10 +128,9 @@ module ODDB
       assert(mails_sent.first.to.index('customer2@another_company.com'))
       assert_equal(1, mails_sent.first.attachments.size)
       assert_equal('notifications.csv', mails_sent.first.attachments.first.filename)
-      assert_equal('text/comma-separated-values', mails_sent.first.attachments.first.mime_type)
+      assert_equal('text/csv', mails_sent.first.attachments.first.mime_type)
       assert_equal('example_content', mails_sent.first.attachments.first.body.decoded)
-      skip "first.body fails here, but works when sending real mails!"
-      assert_equal('mail_body', mails_sent.first.body)
+      assert_equal('mail_body', mails_sent.first.parts.first.body.to_s)
     end
   end
   class TestSendRealMail <Minitest::Test
@@ -170,8 +169,8 @@ module ODDB
     end
 
     def test_send_an_email
-      if Util.get_mailing_list_receivers('admin')
-        skip "Cannot test sending an email if not admin list is defined"
+      if Util.get_mailing_list_receivers('admin').empty?
+        skip "Cannot test sending an email if admin list is empty"
       end
       res = Util.send_mail('admin', "Test Mail from #{__FILE__}", "Test run at #{Time.now}")
     end

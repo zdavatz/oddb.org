@@ -98,7 +98,7 @@ module ODDB
 
       second = mail.attachments.last
       assert_equal('test_file',       second.filename)
-      assert_equal('text/plain',      second.mime_type)
+      assert_equal('text/csv',        second.mime_type)
       assert_equal('example_content', second.body.decoded)
     end
 
