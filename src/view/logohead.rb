@@ -48,9 +48,8 @@ module ODDB
         # puts "LogoHead for #{@session.request_path} #{@components}"
       end
       def language_chooser(model, session=@session)
-        unless @lookandfeel.disabled?(:search_result_head_navigation)
-          super
-        end
+        # We do not want the language_chooser to be displayed when displaying results
+        return nil
       end
       def tab_navigation(model, session=@session)
         unless @lookandfeel.disabled?(:search_result_head_navigation)
