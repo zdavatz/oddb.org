@@ -5,8 +5,6 @@
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'syck'
-# next line to fix an error paypal-2.0.0/lib/notification.rb
-require 'active_support/core_ext/class/attribute_accessors'
 require 'odba'
 require 'odba/index_definition'
 require 'odba/drbwrapper'
@@ -29,7 +27,6 @@ require 'util/ngram_similarity'
 require 'util/today'
 require 'models'
 require 'commands'
-require 'paypal'
 require 'sbsm/app'
 require 'sbsm/index'
 require 'util/config'

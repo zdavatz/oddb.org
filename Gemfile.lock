@@ -65,10 +65,8 @@ GEM
     i18n (0.6.9)
     io-like (0.3.0)
     json (2.1.0)
-    mail (2.4.4)
-      i18n (>= 0.4.0)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     mechanize (2.7.5)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -79,8 +77,11 @@ GEM
       ntlm-http (~> 0.1, >= 0.1.1)
       webrobots (>= 0.0.9, < 0.2)
     method_source (0.8.2)
-    mime-types (1.25.1)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
+    mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitar (0.6.1)
     minitest (5.10.2)
@@ -116,7 +117,6 @@ GEM
       money (> 0.0.0)
     pg (0.12.0)
       rake-compiler (~> 0.7)
-    polyglot (0.3.5)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -133,9 +133,7 @@ GEM
     rake-compiler (0.9.9)
       rake
     rclconf (1.0.0)
-    rdoc (3.9.4)
     rmagick (2.13.4)
-    rmail (1.0.0)
     rrba (1.0.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
@@ -190,9 +188,6 @@ GEM
     transaction-simple (1.4.0.2)
     travis-lint (2.0.0)
       json
-    treetop (1.4.15)
-      polyglot
-      polyglot (>= 0.3.1)
     trollop (2.1.2)
     unf (0.1.4)
       unf_ext
@@ -259,7 +254,7 @@ DEPENDENCIES
   httpi (= 2.4.2)
   i18n (= 0.6.9)
   json
-  mail (= 2.4.4)
+  mail (= 2.7.0)
   mechanize
   mime-types
   minitar
@@ -284,9 +279,7 @@ DEPENDENCIES
   rack-test
   rake
   rclconf (= 1.0.0)
-  rdoc (= 3.9.4)
   rmagick (= 2.13.4)
-  rmail (= 1.0.0)
   rspec
   rspec-core
   ruby-units
