@@ -29,13 +29,12 @@ module ODDB
       @url = 'http://www.example.com'
       @page  = flexmock('page')
       @page.should_receive(:body).by_default.and_return(DefaultContent)
-      @agent = flexmock(Mechanize.new)
-      @agent.should_receive(:get).and_return(@page)
+      flexmock(Latest, :open => DefaultContent)
     end
 
     def test_first_download
       assert_equal(false, File.exists?(@file_today))
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       puts "test_first_download #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
       assert_equal(true, File.exists?(@file_today))
       assert_equal(@latest, res)
@@ -45,7 +44,7 @@ module ODDB
       puts 'test_today_different_content_today_latest'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(ChangedContent) }
       assert_equal(true, File.exists?(@latest))
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       puts "test_today_different_content_today_latest #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
       assert_equal(@latest, res)
       assert_equal(true, File.exists?(@file_today))
@@ -57,7 +56,7 @@ module ODDB
       puts 'test_today_different_content_new_content'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(ChangedContent) }
       assert_equal(false, File.exists?(@file_today))
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       system("ls -l #{@archive}/*") if $VERBOSE
       assert_equal(@latest, res)
       assert_equal(true, File.exists?(@file_today))
@@ -69,7 +68,7 @@ module ODDB
       puts 'test_today_different_content_new_content'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
       File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
@@ -81,7 +80,7 @@ module ODDB
       File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
       File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
       File.open(@file_yesterday, 'w+') {|f| f.write(DefaultContent) }
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
@@ -94,7 +93,7 @@ module ODDB
       File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
       File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
       File.open(@file_yesterday, 'w+') {|f| f.write('different') }
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
@@ -105,7 +104,7 @@ module ODDB
     def test_no_file_today
       puts 'test_today_content_same_latest_content'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
-      res = Latest.get_latest_file(@latest, @url, @agent)
+      res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
       assert_equal(true, File.exists?(@file_today))
       assert_equal(true, File.exists?(@latest))
