@@ -33,7 +33,7 @@ class TestDivExportCSV <Minitest::Test
     @form    = ODDB::View::Drugs::DivExportCSV.new(@model, @session)
   end
   def test_init
-    expected = "location.href='_event_url';return false;"
+    expected = {:zone=>"zone", :search_query=>"persistent_user_input", :search_type=>"persistent_user_input"}
     assert_equal(expected, @form.init)
   end
 end

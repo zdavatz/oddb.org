@@ -80,22 +80,14 @@ class ResultLimitList < HtmlGrid::List
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=> :export_csv,
-		[0,1]	=> SearchForm,
-		[0,2] => ResultLimitList, 
-		[0,3]	=> View::LimitComposite,
+		[0,0]	=> SearchForm,
+		[0,1] => ResultLimitList, 
+		[0,2]	=> View::LimitComposite,
 	}
 	LEGACY_INTERFACE = false
   CSS_MAP = {
     [0,0] => 'right',
-    [0,1] => 'right',
   }
-	def export_csv(model)
-    state = @session.state
-		if(state.respond_to?(:package_count) && state.package_count.to_i > 0)
-			View::Drugs::DivExportCSV.new(model, @session, self)
-		end
-	end
 end
 class ResultLimit < ResultTemplate
 	HEAD = View::WelcomeHead

@@ -292,9 +292,6 @@ class PrescriptionForm < View::Form
     buttons << print
     buttons << '&nbsp;'
     @drugs = @session.choosen_drugs
-    @session.set_persistent_user_input(:export_drugs, @drugs)
-    buttons << post_event_button(:export_csv)
-    buttons << '&nbsp;'
     buttons
   end
   def delete_all(model, session=@session)
@@ -591,122 +588,6 @@ class Prescription < View::PrivateTemplate
     span.set_attribute('class', 'bold')
     fields << span
     fields
-  end
-end
-class PrescriptionCsv < HtmlGrid::Component
-  COMPONENTS = [ # of package
-    :barcode,
-    :name_with_size,
-    :price_public,
-    :company_name,
-  ]
-  def init
-    super
-    @coder = HTMLEntities.new
-  end
-  def http_headers
-    prescription_for = []
-    %w[first_name family_name birth_day].each do |attr|
-      prescription_for << user_input(attr)
-    end
-    name = @lookandfeel.lookup(:prescription).dup + '_'
-    name ||= '_'
-    unless prescription_for.empty?
-      name << prescription_for.join('_').gsub(/[\s]+/u, '_')
-    else
-      name << Date.today.strftime("%d.%m.%Y")
-    end
-    {
-      'Content-Type'        => 'text/csv',
-      'Content-Disposition' => "attachment;filename=#{name}.csv",
-    }
-  end
-  def to_csv
-    @lines = []
-    @lines << person
-    insert_blank
-    @lines << date
-    insert_blank
-    drugs = @session.persistent_user_input(:export_drugs)
-    @index = 0
-    drugs.each do |ean13, package|
-      @lines << extract(package)
-      insert_blank
-      if comment = comment_value
-        insert_blank
-        @lines << comment
-      end
-      insert_blank
-      @index += 1
-    end
-    @lines.pop
-    csv = ''
-    @lines.collect do |line|
-      csv << CSV.generate_line(line, {:col_sep => ';'})
-    end
-    csv
-  end
-  def to_html(context)
-    to_csv
-  end
-  private
-  def user_input(attr)
-    key = "prescription_#{attr}".to_sym
-    input = @session.user_input(key)
-    case input
-    when String
-      # pass
-    when Hash
-       if element = input[@index] and !element.empty?
-         input = element
-       else
-         input = nil
-       end
-    else
-      input = nil
-    end
-    input = @coder.decode(input).gsub(/;/, ' ') if input.class == String
-    input
-  end
-  def lookup(attr)
-    key = "prescription_#{attr}".to_sym
-    if value = @lookandfeel.lookup(key)
-      @coder.decode(value)
-    end
-  end
-  def insert_blank
-    if !@lines.last or !@lines.last.empty?
-      @lines << []
-    end
-  end
-  # line
-  def person
-    type = (user_input(:sex) == '1' ? 'w' : 'm')
-    [
-      user_input(:first_name)  || '',
-      user_input(:family_name) || '',
-      user_input(:birth_day)   || '',
-      lookup("sex_#{type}")
-    ]
-  end
-  def date
-    [Date.today.strftime("%d.%m.%Y")]
-  end
-  def extract(pack)
-    COMPONENTS.collect do |key|
-      value = if(self.respond_to?(key))
-        self.send(key, pack)
-      elsif pack
-        pack.send(key)
-      else
-        ""
-      end.to_s
-      value.empty? ? nil : value
-    end
-  end
-  def comment_value
-    comment = user_input(:comment)
-    comment ? [comment] : []
   end
 end
     end

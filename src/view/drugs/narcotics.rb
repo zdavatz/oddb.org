@@ -70,9 +70,7 @@ class NarcoticsResultComposite < HtmlGrid::Composite
     components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
                             ? self::class::ROOT_LISTCLASS \
                             : self::class::DEFAULT_LISTCLASS)
-		if(@lookandfeel.enabled?(:export_csv))
-			components.store([1,0], :export_csv)
-    elsif(@lookandfeel.enabled?(:print, false))
+		if(@lookandfeel.enabled?(:print, false))
       components.store([1,0], :print)
 		else
 			colspan_map.store([0,0], 2)
@@ -132,11 +130,6 @@ class NarcoticsResultComposite < HtmlGrid::Composite
     }
     ExplainResult.new(model, @session, self, comps)
   end
-	def export_csv(model, session=@session)
-		if(@lookandfeel.enabled?(:export_csv))
-			View::Drugs::DivExportCSV.new(model, @session, self)
-		end
-	end
   def print(model, session=@session)
     link = HtmlGrid::Link.new(:print, model, @session, self)
     link.set_attribute('onClick', 'window.print();')

@@ -183,14 +183,6 @@ class TestResult <Minitest::Test
     @state.instance_eval('@pages = [page]')
     assert_equal(page, @state.page)
   end
-  def test_export_csv
-    flexmock(@state, :creditable? => nil)
-    assert_kind_of(ODDB::State::Drugs::RegisterDownload, @state.export_csv)
-  end
-  def test_export_csv__creditable
-    flexmock(@state, :creditable? => true)
-    assert_kind_of(ODDB::State::Drugs::PaymentMethod, @state.export_csv)
-  end
   def test_limit_state
     atc_class = flexmock('atc_class', :active_packages => ['active_package'])
     model     = flexmock('drug', :atc_classes => [atc_class])

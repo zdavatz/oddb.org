@@ -5,8 +5,6 @@
 
 require 'state/global_predefine'
 require 'state/page_facade'
-require 'state/drugs/register_download'
-require 'state/drugs/payment_method'
 require 'view/drugs/result'
 require 'model/registration'
 require 'model/invoice'
@@ -61,13 +59,6 @@ class Result < State::Drugs::Global
       }
     end
   end
-	def export_csv
-		if(creditable?('org.oddb.download'))
-			PaymentMethod.new(@session, @model)
-		else
-			RegisterDownload.new(@session, @model)
-		end
-	end
 	def get_sortby!
 		super
 		if(@sortby.first == :dsp)

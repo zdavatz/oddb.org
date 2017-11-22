@@ -16,9 +16,6 @@ class AjaxEmpty < Global # empty HTML
   VIEW = HtmlGrid::Component
   VOLATILE = true
 end
-class PrescriptionCsvExport < State::Drugs::Global
-  VIEW = View::Drugs::PrescriptionCsv
-end
 class Prescription < State::Drugs::Global
   DIRECT_EVENT = :rezept
   VIEW = View::Drugs::Prescription
@@ -40,9 +37,6 @@ class Prescription < State::Drugs::Global
       'Location' => @session.lookandfeel._event_url(:rezept, [])
     }
     self
-  end
-  def export_csv
-    PrescriptionCsvExport.new(@session, @model)
   end
   def ajax_add_drug(ean13 = @session.user_input(:ean))
     check_model(ean13)

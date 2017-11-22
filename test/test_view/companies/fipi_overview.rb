@@ -62,23 +62,6 @@ class TestFiPiOverviewList <Minitest::Test
   end
 end
 
-class TestExportCSV <Minitest::Test
-  def setup
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :attributes => {},
-                        :base_url   => 'base_url',
-                        :_event_url => '_event_url'
-                       )
-    @session = flexmock('session', :lookandfeel => @lnf)
-    @model   = flexmock('model')
-    @form    = ODDB::View::Companies::ExportCSV.new(@model, @session)
-  end
-  def test_init
-    assert_equal("location.href='_event_url';return false;", @form.init)
-  end
-end
-
 class TestFiPiOverviewComposite <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', 

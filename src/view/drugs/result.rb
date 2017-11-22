@@ -26,7 +26,6 @@ class DivExportCSV < HtmlGrid::DivForm
 		[2,0]	=>	:submit,
 	}
   LEGACY_INTERFACE = false
-	EVENT = :export_csv
 	def init
 		super
     search_query = @session.persistent_user_input(:search_query)
@@ -40,8 +39,6 @@ class DivExportCSV < HtmlGrid::DivForm
 			:search_query	=>	search_query,
 			:search_type	=>	@session.persistent_user_input(:search_type),
 		}
-		url = @lookandfeel._event_url(:export_csv, data)
-		self.onsubmit = "location.href='#{url}';return false;"
 	end
 	def example(model)
 		super('Inderal.Preisvergleich.csv')
@@ -109,9 +106,7 @@ class ResultComposite < HtmlGrid::Composite
     components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
                             ? self::class::ROOT_LISTCLASS \
                             : self::class::DEFAULT_LISTCLASS)
-		if(@lookandfeel.enabled?(:export_csv))
-			components.store([1,0], :export_csv)
-    elsif(@lookandfeel.enabled?(:print, false))
+		if(@lookandfeel.enabled?(:print, false))
       components.store([1,0], :print)
 		else
 			colspan_map.store([0,0], 2)
@@ -165,11 +160,6 @@ class ResultComposite < HtmlGrid::Composite
     $stdout.puts "explain_colors #{comps}"
     ExplainResult.new(model, @session, self, comps)
   end
-	def export_csv(model, session=@session)
-		if @lookandfeel.enabled?(:export_csv) and not @session.flavor == 'evidentia'
-			View::Drugs::DivExportCSV.new(model, @session, self)
-		end
-	end
   def print(model, session=@session)
     link = HtmlGrid::Link.new(:print, model, @session, self)
     link.set_attribute('onClick', 'window.print();')
