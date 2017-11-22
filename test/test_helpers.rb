@@ -119,8 +119,8 @@ module ODDB
           if i.response.headers['Content-Disposition'] and /www.swissmedic.ch/.match(i.request.uri)
             puts "#{Time.now}: URI was #{i.request.uri}"
             m = /filename=.([^\d]+)/.match(i.response.headers['Content-Disposition'][0])
-            puts "#{Time.now}: SwissmedicDownloader #{m[1]} (#{i.response.body.size} bytes)."
             if m and true
+              puts "#{Time.now}: SwissmedicDownloader #{m[1]} (#{i.response.body.size} bytes)."
               name = m[1].chomp('_')
               swissmedic_dir = File.join(WorkDir, 'swissmedic')
               FileUtils.makedirs(swissmedic_dir)
