@@ -205,8 +205,17 @@ module ODDB
             components.store(coordinates, element)
             css_map.store(coordinates, 'explain right')
           end
+          if @session.request_path.index('/drugs/search_query')
+            components[[0,0]] = :price_compare
+          end
         end
         super
+      end
+      def price_compare(model, session=@session)
+        span = HtmlGrid::Span.new(model, @session, self)
+        span.value = @lookandfeel.lookup(:price_compare)
+        span.set_attribute('id', 'price_compare')
+        span
       end
       def explain_result(model, session=@session)
         klass = nil

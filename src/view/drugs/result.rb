@@ -65,7 +65,6 @@ class ResultComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0,0]	=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
-		[0,1]		=>	'price_compare',
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -73,23 +72,19 @@ class ResultComposite < HtmlGrid::Composite
 	DEFAULT_LISTCLASS = View::Drugs::ResultList
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
-	CSS_MAP = {
-		[0,0] =>	'result-found',
-    [1,0] =>  'right',
-		[0,1] =>	'list bold price-compare',
-    [1,1] =>  'right',
-	}
-	def init
+    CSS_MAP = {
+      [0,0] =>  'result-found left',
+      [1,1] =>  'list bold',
+    }
+  def init
     if(@lookandfeel.enabled?(:breadcrumbs))
       components.store([0,0,0], :breadcrumbs)
-      css_map.store([0,0], 'breadcrumbs')
+      css_map.store([0,0], 'breadcrumbs left')
     end
-    if @lookandfeel.disabled?(:search)
-      colspan_map.store [0,1], 2
-    else
-      components.store [1,1], SelectSearchForm
+    unless @lookandfeel.disabled?(:search)
+     components.store [0,0,2], :search_drug_form
     end
-    y = 2
+    y = 1
     if(@lookandfeel.enabled?(:explain_sort, false))
       components.store([0,y], "explain_sort")
       css_map.store([0,y], "navigation")
@@ -118,8 +113,15 @@ class ResultComposite < HtmlGrid::Composite
       components.store([0,y], :result_foot)
       colspan_map.store([0,y], 2)
     end
-		super
-	end
+    super
+  end
+  def search_drug_form(model, session=@session)
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.css_class = "right search_drug_form"
+      div.set_attribute('id', 'search_drug_form')
+      div.value = SelectSearchForm.new(model, session=@session)
+      div
+  end
   def breadcrumbs(model, session=@session)
     breadcrumbs = []
     level = 2
@@ -157,7 +159,6 @@ class ResultComposite < HtmlGrid::Composite
       [0,1]	=>	:explain_generic,
       [0,2]	=>	'explain_unknown',
     }
-    $stdout.puts "explain_colors #{comps}"
     ExplainResult.new(model, @session, self, comps)
   end
   def print(model, session=@session)
