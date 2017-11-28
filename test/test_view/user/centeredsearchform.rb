@@ -41,6 +41,9 @@ class TestCenteredSearchComposite <Minitest::Test
     flexmock(@app, :substance_count => 0)
     assert_equal(0, @composite.substance_count(@model, @session))
   end
+  def test_mediudate_link
+    assert_kind_of(HtmlGrid::Link, @composite.mediudate_link(@model, @session))
+  end
 end
 
     end # User

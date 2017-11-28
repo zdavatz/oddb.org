@@ -389,15 +389,6 @@ describe "ch.oddb.org" do
     expect(IO.readlines(diffFiles[0]).size).to be > 5
   end unless ['just-medical'].index(Flavor)
 
-  it "should be possible to subscribe to the mailing list via Services" do
-    @browser.link(:name, 'user').click; small_delay
-    expect(@browser.text).to match /Mailing-Liste/
-    @browser.link(:name, 'mailinglist').click; small_delay
-    @browser.text_field(:name, 'email').value = 'ngiger@ywesee.com'
-    @browser.button(:name, 'subscribe').click; small_delay
-    @browser.button(:name, 'unsubscribe').click; small_delay
-  end if false # Zeno remarked on 2014-09-01 that I should not test the mailing list
-
   it "should be possible to request a new password" do
     @browser.link(:text=>'Abmelden').click if @browser.link(:text=>'Abmelden').exists?
     small_delay

@@ -181,17 +181,14 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Willkommen bei Generika.cc',
 			},
 			'fr'	=>	{
 				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
 			},
 			'en'	=>	{
 				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Welcome to Generika.cc',
 			}
 		}

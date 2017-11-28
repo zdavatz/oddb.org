@@ -81,7 +81,6 @@ require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
 require 'state/user/fipi_offer_confirm'
 require	'state/user/help'
-require 'state/user/mailinglist'
 require 'state/user/passthru'
 require 'state/user/register_poweruser'
 require 'state/paypal/return'
@@ -196,7 +195,6 @@ module ODDB
           :limitation_analysis    => State::Analysis::LimitationText,
           :listed_companies       => State::Companies::CompanyList,
           :login_form             => State::Admin::Login,
-          :mailinglist            => State::User::MailingList,
           :migel_alphabetical     => State::Migel::Alphabetical,
           :minifi                 => State::Drugs::MiniFi,
           :password_lost          => State::Admin::PasswordLost,

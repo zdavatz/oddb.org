@@ -229,7 +229,6 @@ module ODDB
 			:login,
 			:login_form,
 			:logout,
-			:mailinglist,
 			:merge,
 			:migel_alphabetical,
       :migel_search,

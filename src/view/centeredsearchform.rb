@@ -132,7 +132,6 @@ module ODDB
 				:ddd_count_text		=>	HtmlGrid::Text,
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
-				:mailinglist			=>	HtmlGrid::Link,
 				:narcotics				=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
@@ -210,13 +209,6 @@ module ODDB
 			def interactions(model, session)
 				link = HtmlGrid::Link.new(:interactions, model, session, self)
 				link.href = @lookandfeel._event_url(:interactions_home)
-				link.label = true
-				link.set_attribute('class', 'list')
-				link
-			end
-			def mailinglist(model, session)
-				link = HtmlGrid::Link.new(:mailinglist, model, session, self)
-				link.href = @lookandfeel._event_url(:mailinglist)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link

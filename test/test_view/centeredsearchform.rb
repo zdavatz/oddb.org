@@ -177,9 +177,6 @@ class TestCenteredSearchComposite <Minitest::Test
   def test_interactions
     assert_kind_of(HtmlGrid::Link, @composite.interactions(@model, @session))
   end
-  def test_mailinglist
-    assert_kind_of(HtmlGrid::Link, @composite.mailinglist(@model, @session))
-  end
   def test_limitation_size
     flexmock(@app, :limitation_text_count => 'limitation_text_count')
     assert_equal('limitation_text_count&nbsp;', @composite.limitation_size(@model, @session))
