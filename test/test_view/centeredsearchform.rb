@@ -181,9 +181,6 @@ class TestCenteredSearchComposite <Minitest::Test
     flexmock(@app, :limitation_text_count => 'limitation_text_count')
     assert_equal('limitation_text_count&nbsp;', @composite.limitation_size(@model, @session))
   end
-  def test_plugin
-    assert_kind_of(HtmlGrid::Link, @composite.plugin(@model, @session))
-  end
   def test_narcotics_size
     flexmock(@app, :narcotics => 'narcotics')
     # 9 is the length of the string narcotics
