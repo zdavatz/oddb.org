@@ -63,8 +63,6 @@ class ResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
 	COLSPAN_MAP	= {}
 	COMPONENTS = {
-		[0,0,0]	=>	:title_found,
-		[0,0,1]	=>	:dsp_sort,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -72,19 +70,8 @@ class ResultComposite < HtmlGrid::Composite
 	DEFAULT_LISTCLASS = View::Drugs::ResultList
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
-    CSS_MAP = {
-      [0,0] =>  'result-found left',
-      [1,1] =>  'list bold',
-    }
   def init
-    if(@lookandfeel.enabled?(:breadcrumbs))
-      components.store([0,0,0], :breadcrumbs)
-      css_map.store([0,0], 'breadcrumbs left')
-    end
-    unless @lookandfeel.disabled?(:search)
-     components.store [0,0,2], :search_drug_form
-    end
-    y = 1
+    y = 0
     if(@lookandfeel.enabled?(:explain_sort, false))
       components.store([0,y], "explain_sort")
       css_map.store([0,y], "navigation")
@@ -122,7 +109,37 @@ class ResultComposite < HtmlGrid::Composite
       div.value = SelectSearchForm.new(model, session=@session)
       div
   end
-  def breadcrumbs(model, session=@session)
+  def explain_colors(model, session=@session)
+    comps = {
+      [0,0]	=>	:explain_original,
+      [0,1]	=>	:explain_generic,
+      [0,2]	=>	'explain_unknown',
+    }
+    ExplainResult.new(model, @session, self, comps)
+  end
+  def print(model, session=@session)
+    link = HtmlGrid::Link.new(:print, model, @session, self)
+    link.set_attribute('onClick', 'window.print();')
+    link.href = ""
+    link
+  end
+  def title_found(model, session=@session)
+    query = @session.persistent_user_input(:search_query)
+    @lookandfeel.lookup(:title_found, query, model.package_count)
+  end
+end
+class Result < View::PrivateTemplate
+	CONTENT = ResultComposite
+	SNAPBACK_EVENT = :result
+    SEARCH_HEAD = ODDB::View::SelectSearchForm
+    JAVASCRIPTS = ['bit.ly']
+  def init
+    if @lookandfeel.disabled?(:search)
+     components.delete [1,1]
+    end
+    super
+  end
+  def backtracking(model, session=@session)
     breadcrumbs = []
     level = 2
     if @lookandfeel.enabled?(:home)
@@ -145,36 +162,13 @@ class ResultComposite < HtmlGrid::Composite
     span3 = HtmlGrid::Span.new(model, @session, self)
     span3.css_class = "breadcrumb"
     span3.value = '&ndash;'
-    breadcrumbs.push span2, span3
-  end
-	def dsp_sort(model, session)
-		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
-		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
-		link.href = url
-		link
-	end
-  def explain_colors(model, session=@session)
-    comps = {
-      [0,0]	=>	:explain_original,
-      [0,1]	=>	:explain_generic,
-      [0,2]	=>	'explain_unknown',
-    }
-    ExplainResult.new(model, @session, self, comps)
-  end
-  def print(model, session=@session)
-    link = HtmlGrid::Link.new(:print, model, @session, self)
-    link.set_attribute('onClick', 'window.print();')
-    link.href = ""
+    url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
+    link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
+    link.href = url
     link
+    breadcrumbs.push span2, span3, link
+    breadcrumbs
   end
-  def title_found(model, session=@session)
-    query = @session.persistent_user_input(:search_query)
-    @lookandfeel.lookup(:title_found, query, model.package_count)
-  end
-end
-class Result < View::ResultTemplate
-	CONTENT = ResultComposite
-  JAVASCRIPTS = ['bit.ly']
 end
 class EmptyResultComposite < HtmlGrid::Composite
 	COMPONENTS = {
