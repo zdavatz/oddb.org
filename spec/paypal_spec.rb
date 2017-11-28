@@ -14,8 +14,6 @@ require 'paypal_helper'
 @workThread = nil
 
 describe "ch.oddb.org" do
-  Six_Test_Drug_Names = [ 'Marcoumar', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Amikin']
-  PaymentUnconfirmed = /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
   before :all do
     @idx = 0
     @act_id = Time.now.strftime('%Y%m%d-%H%M%S')
@@ -35,7 +33,7 @@ describe "ch.oddb.org" do
   end
 
   def choose_medi_and_csv_display(customer)
-    test_medi = Six_Test_Drug_Names.first
+    test_medi = PaypalUser::Six_Test_Drug_Names.first
     if customer
       if res = login(customer.email, customer.password)
         expect(@browser.link(:name => 'login_form').exist?).to eql false
@@ -61,7 +59,7 @@ describe "ch.oddb.org" do
     logout
     res = false
     saved = @idx
-    Six_Test_Drug_Names.each {
+    PaypalUser::Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
         if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
@@ -71,7 +69,7 @@ describe "ch.oddb.org" do
         @idx += 1
     }
     expect(@idx - saved).to be <= 5
-    search_for_medi(Six_Test_Drug_Names.first) # I want a medi with few packages
+    search_for_medi(PaypalUser::Six_Test_Drug_Names.first) # I want a medi with few packages
     sleep(1) # delay a little
     if duration == PaypalUser::OneYear
       @browser.radio(:name => 'days', :value => PaypalUser::OneYear.to_s).set
@@ -112,6 +110,24 @@ describe "ch.oddb.org" do
     expect(@browser.url).not_to match /appdown/
   end
 
+  it 'should show the poweruser dialog with the top left logo' do
+    logout
+    expect(@browser.link(:name => 'login_form').exist?).to eql true
+    PaypalUser::Six_Test_Drug_Names.each do |name|
+      select_product_by_trademark(name)
+      if /Abfragebeschränkung/i.match(@browser.text)
+        break
+      end
+    end
+    @browser.radio(:name => 'days', :value => PaypalUser::OneDay.to_s).set
+    @browser.button(:name, "proceed_poweruser").click; small_delay
+    # expect logo to be at the top left
+    expect(@browser.images.first.wd.location.x).to be < 20
+    expect(@browser.images.first.wd.location.y).to be < 20
+    expect(@browser.element(:id => 'aswift_0_expand').visible?).to be true
+    expect(@browser.images.first.alt).to eq 'ch.oddb.org'
+  end
+
   it "should be checkout via paypal as poweruser for one day" do
     select_poweruser(PaypalUser::OneDay)
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
@@ -134,7 +150,7 @@ describe "ch.oddb.org" do
     logout
     login(@customer_1.email, @customer_1.password)
     expect(@browser.link(:name => 'login_form').exist?).to eql false
-    Six_Test_Drug_Names.each {
+    PaypalUser::Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
         expect(@browser.text).not_to match /Abfragebeschränkung auf 5 Abfragen pro Tag/
@@ -163,7 +179,7 @@ describe "ch.oddb.org" do
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
     expect(diffFiles.size).to eq(1)
-    expect(IO.read(diffFiles.first)).to match /#{Six_Test_Drug_Names.first}/i
+    expect(IO.read(diffFiles.first)).to match /#{PaypalUser::Six_Test_Drug_Names.first}/i
   end
 
   it "should not download a CSV file if the payment was not accepted" do
@@ -232,7 +248,7 @@ describe "ch.oddb.org" do
     logout
     login(new_customer.email, new_customer.password)
     expect(@browser.link(:name => 'login_form').exist?).to eql false
-    Six_Test_Drug_Names.each {
+    PaypalUser::Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
         expect(@browser.text).not_to match /Abfragebeschränkung auf 5 Abfragen pro Tag/

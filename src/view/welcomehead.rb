@@ -30,16 +30,17 @@ module ODDB
       }
       def init
         super
-        if is_at_home || /home/.match(@session.request_path)
+        # POST method is used when requesting a poweruser login
+        if (is_at_home || /home/.match(@session.request_path)) && !@session.request_method.eql?('POST')
           @components[[0,0]] = '&nbsp;' # remove left logo
           @components[[2,0]] = '&nbsp;' # remove right logo
         else
           @components[[1,0]] = '&nbsp;' # remove middle logo
         end
         unless sponsor_or_logo
-          @components[[2,0]] = '&nbsp;' # remove right logo
+          # remove right logo
+          @components[[2,0]] = '&nbsp;' unless @session.request_method.eql?('POST')
         end
-        # puts "WelcomeHead #{is_at_home} for #{@session.request_path} => #{@components} #{@css_class} #{@session.user}"
         super
       end
     end

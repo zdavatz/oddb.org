@@ -86,6 +86,7 @@ module ODDB
         when  :google_adsense 
           return ad_sense(model, session)
         else
+          return ad_sense(model, session) if session.request_method.eql?('POST')
           div.value = '&nbsp;' # this should never be visible
         end
         div

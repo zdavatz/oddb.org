@@ -26,6 +26,8 @@ class PaypalUser
   @receiver   = { :user =>  'test_paypal_api1.ywesee.com', :password => '1401791830',
                   :signature => 'ArMY3QHPQrA9ttub.wccQPPgmgPiAiJr7-05DWZV41xVYcNN9KNECII9',
               }
+  Six_Test_Drug_Names = [ 'Marcoumar', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Amikin']
+  PaymentUnconfirmed = /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
 
   # By default I setup a valid Paypal client
   def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = 'Miller', first_name = 'Max')
