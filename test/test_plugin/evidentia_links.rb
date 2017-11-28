@@ -39,9 +39,10 @@ module ODDB
       ODDB.config.log_dir = @@destination
       @fileName = File.join(@@datadir, 'evidentia_fi_link.csv')
       FileUtils.rm_f(@@destination, :verbose => $VERBOSE)
-      @mechanize = flexmock('Mechanize')
-      @mechanize.should_receive(:get).with(ODDB::EvidentiaSearchLinksPlugin::CSV_ORIGIN_URL).and_return(IO.read(@fileName))
       @latest = File.join(@@destination, 'evidentia_fi_link-latest.csv')
+      @plugin = flexmock('evidentia_plugin', ODDB::EvidentiaSearchLinksPlugin.new(@app, {}))
+      @plugin.should_receive(:fetch_with_http).with(ODDB::EvidentiaSearchLinksPlugin::CSV_ORIGIN_URL).and_return(File.open(@fileName).read).by_default
+      skip('Evidentia FI will be phased out end of 2017')
     end
 
     def teardown
@@ -53,8 +54,7 @@ module ODDB
     def test_update_evidentia_search_links_update
       @app.should_receive(:odba_store).once
       assert(File.exists?(@fileName), "File #{@fileName} must exist")
-      @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
-      assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
+      assert_equal(true, @plugin.update(), 'Plugin must be able to update')
       report = @plugin.report
       assert(report.match(/Added 19 search_links/), 'report must match links')
       assert_equal('7680657820010 http://evidentia.ch/pneumologie/medical-fact-sheets/Esbriet Esbriet®',
@@ -67,19 +67,17 @@ module ODDB
     def test_skip_update_if_csv_okay
       @app.should_receive(:odba_store).never
       FileUtils.cp(@fileName, @latest, :verbose => $VERBOSE)
-      @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
-      assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
+      assert_equal(true, @plugin.update(), 'Plugin must be able to update')
       report = @plugin.report
       assert(report.empty?, 'Must skip importing CSV file and return an empty report')
       assert_equal(true, File.exist?(@latest), "#{@latest} must exist")
     end
     def test_skip_update_twice_in_one_day_must_skip
       @app.should_receive(:odba_store).once
-      @plugin = ODDB::EvidentiaSearchLinksPlugin.new(@app, {})
-      assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
+      assert_equal(true, @plugin.update(), 'Plugin must be able to update')
       report1 = @plugin.report
       assert(report1.match(/Added 19 search_links/), 'report must match links')
-      assert_equal(true, @plugin.update(@mechanize), 'Plugin must be able to update')
+      assert_equal(true, @plugin.update(), 'Plugin must be able to update')
       report2 = @plugin.report
       assert(report2.empty?, 'Must skip importing CSV file and return an empty report')
       assert_equal(true, File.exist?(@latest), "#{@latest} must exist")

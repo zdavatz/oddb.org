@@ -37,7 +37,6 @@ module ODDB
     class StubPackage
       attr_accessor :commercial_forms
       def initialize
-        puts "StubPackage addin CommercialForm"
         @commercial_mock = FlexMock.new(ODDB::CommercialForm)
         @commercial_forms = [@commercial_mock]
       end
@@ -148,6 +147,7 @@ module ODDB
       @app = StubApp.new
       @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var', File.dirname(__FILE__)
+      eval("ODDB::EphaInteractions::CSV_FILE = '#{File.join(@@vardir, File.basename(ODDB::EphaInteractions::CSV_FILE))}'")
       assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
       FileUtils.mkdir_p @@vardir
       ODDB.config.data_dir = @@vardir
@@ -165,26 +165,37 @@ module ODDB
                            :creator => @sequence)
       seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
       FileUtils.rm_f(ODDB::EphaInteractions::CSV_FILE, verbose: true)
-      @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
+      @fileName = File.join(@@vardir, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
-      @agent = flexmock(Mechanize.new)
-      @page  = flexmock('page')
-      @page.should_receive(:body).by_default.and_return(IO.read(@fileName))
-      @agent.should_receive(:get).and_return(@page)
+      @plugin = flexmock('evidentia_plugin', ODDB::EphaInteractionPlugin.new(@app, {}))
+      @mock_latest = flexmock('latest', Latest)
+      @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
+        File.open(File.join(@@datadir, File.basename(@fileName))).read)
     end
     
     def teardown
-      FileUtils.rm_rf @@vardir
+      FileUtils.rm_rf(@@vardir, :verbose => true)
       ODBA.storage = nil
       super # to clean up FlexMock
     end
 
-    def test_update_epha_interactions_update
-      assert(File.exists?(@fileName), "File #{@fileName} must exist")
-      @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
+    def test_update_epha_interactions_empty
       FileUtils.rm(@latest, :verbose => false) if File.exists?(@latest)
-      assert(@plugin.update(@agent, @fileName))
+      FileUtils.rm(@fileName, :verbose => false) if File.exists?(@fileName)
+      assert(@plugin.update(@fileName))
       report = @plugin.report
+      files = Dir.glob("#{@@vardir}/*")
+      assert_equal(3, files.size)
+      assert(report.match("EphaInteractionPlugin.update latest"))
+      assert(report.match(/Added 1 interactions/))
+    end
+    def test_update_epha_interactions_update
+      FileUtils.rm(@latest, :verbose => false) if File.exists?(@latest)
+      @plugin.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return('old_content')
+      assert(@plugin.update(@fileName))
+      report = @plugin.report
+      files = Dir.glob("#{@@vardir}/*")
+      assert_equal(3, files.size)
       assert(report.match("EphaInteractionPlugin.update latest"))
       assert(report.match(/Added 1 interactions/))
     end

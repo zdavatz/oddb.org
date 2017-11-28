@@ -21,11 +21,11 @@ module ODDB
       @@report.join("\n")
     end
 
-    def update(agent = Mechanize.new)
+    def update
       @@report = []
       csv_file = File.expand_path('../../data/csv/evidentia_fi_link.csv', File.dirname(__FILE__))
       latest = csv_file.sub(/\.csv$/, '-latest.csv')
-      result = Latest.get_latest_file(latest, ODDB::EvidentiaSearchLinksPlugin::CSV_ORIGIN_URL, agent)
+      result = Latest.get_latest_file(latest, ODDB::EvidentiaSearchLinksPlugin::CSV_ORIGIN_URL)
       if result.is_a?(String)
         @@report << EvidentiaSearchLink.import_csv_file(latest)
         @app.evidentia_search_links_hash = EvidentiaSearchLink.get
