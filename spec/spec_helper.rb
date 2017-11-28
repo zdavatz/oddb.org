@@ -114,6 +114,7 @@ def setup_browser
     puts "Trying unknown browser type #{Browser2test[0]}"
     @browser = Watir::Browser.new Browser2test[0]
   end
+  Watir.default_timeout = 5
 end
 
 def login_link

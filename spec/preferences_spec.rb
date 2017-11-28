@@ -18,7 +18,6 @@ describe "ch.oddb.org" do
     [ViewerUser, ViewerPassword]].each do |info|
     user = info.first
     pw = info.last
-    Watir.default_timeout = 5
     it "should save the color prefence as user #{user}" do
       user ? login(user, pw) : logout
       @browser.link(:name => 'de').click
@@ -38,7 +37,6 @@ describe "ch.oddb.org" do
       @browser.link(:name => 'en').click
       expect(@browser.image(:src => /blue/).exist?).to eql true
     end
-    Watir.default_timeout = 60
   end
 
 

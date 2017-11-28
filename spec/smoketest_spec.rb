@@ -106,8 +106,9 @@ describe "ch.oddb.org" do
     res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
     expect(res.class).to eq Watir::HTMLElement
     @browser.text_field(:text => /Medikamentennamen/).exists?
-    res = @browser.element(:text => /Spezialitätenliste/).wait_until_present
-    @browser.buttons.first.click # Don't know how to close it else
+    selbstbehalt = @browser.link(:text => /Selbstbehalt/)
+    selbstbehalt.wait_until_present
+    selbstbehalt.click
     @browser.back
   end
 

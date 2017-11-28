@@ -17,10 +17,10 @@ MephaExamples = [
 ]
 
 MephaInteractions = [ # given drugs defined above
-  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung/,
   /N06AB05: Paroxetin => L02BA01: Tamoxifen Wirkungsverringerung von Tamoxifen/,
   /N06AB05: Paroxetin => C07AB02: Metoprolol Erhöhte Metoprololkonzentrationen/,
-  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion/,
+#  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion/, # is considedred green in November 2017
+#  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung/, # is considedred green in November 2017
 ]
 
 

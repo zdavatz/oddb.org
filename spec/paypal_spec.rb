@@ -100,7 +100,7 @@ describe "ch.oddb.org" do
     skip("Paypal login page is no longer usable with Watir")
     expect(@customer_1.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_oddb_csv')
     link = @browser.link(:name => 'download')
@@ -135,7 +135,7 @@ describe "ch.oddb.org" do
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => 'checkout').click; small_delay
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     skip("Paypal login page is no longer usable with Watir")
     expect(@customer_1.paypal_buy(@browser)).to eql true
     forward_to_home = @browser.link(:name => /forward_to_home|back_to_home/)
@@ -166,7 +166,7 @@ describe "ch.oddb.org" do
     expect(@customer_1.paypal_buy(@browser)).to eql true
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.url).not_to match  /errors/
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_csv_okay')
@@ -190,7 +190,7 @@ describe "ch.oddb.org" do
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
     expect(@customer_2.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.url).not_to match  /errors/
     sleep(1) # it takes some time to download the file
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
@@ -207,7 +207,7 @@ describe "ch.oddb.org" do
     puts "URL after #{@browser.url} OddbUrl"
     createScreenshot(@browser, 'paypal_csv_payment_cancelled')
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.url.index(OddbUrl)).not_to be nil
   end
 
@@ -219,7 +219,7 @@ describe "ch.oddb.org" do
     expect(@customer_1.paypal_buy(@browser, PaypalUser::CancelCheckoutLater)).to eql true
     puts "URL after #{@browser.url} OddbUrl"
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.url.index(OddbUrl)).not_to be nil
   end
 
@@ -234,7 +234,7 @@ describe "ch.oddb.org" do
     expect(new_customer.init_paypal_checkout(@browser)).to eql true
     @browser.button(:name => 'checkout').click; small_delay
     expect(@browser.url).to match /sandbox.paypal.com/
-    expect(@browser.text).not_to match PaymentUnconfirmed
+    expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(new_customer.paypal_buy(@browser)).to eql true
     forward_to_home = @browser.link(:name => /forward_to_home|back_to_home/)
     puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"
