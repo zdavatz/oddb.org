@@ -14,7 +14,6 @@ require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resultfoot'
 require 'view/lookandfeel_components'
-require 'view/facebook'
 
 module ODDB
   module View
@@ -23,7 +22,6 @@ class List < HtmlGrid::List
   include View::AdditionalInformation
   include DataFormat
   include View::LookandfeelComponents
-  include View::Facebook
   COMPONENTS = {}
   CSS_CLASS = 'composite'
   CSS_HEAD_KEYMAP = {
@@ -76,11 +74,7 @@ class List < HtmlGrid::List
     super
   end
   def facebook(model=@model, session=@session)
-    if @lookandfeel.enabled?(:facebook_share)
-      code = model.migel_code.to_s.force_encoding('utf-8')
-      facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => code.gsub(/\./, '')})
-      [facebook_share(model, session, facebook_link), '&nbsp;']
-    end
+    nil
   end
   def limitation_link(model)
     code = model.migel_code.to_s.force_encoding('utf-8')
@@ -188,15 +182,8 @@ class ResultComposite < HtmlGrid::Composite
   }
 end
 class Result < View::PrivateTemplate
-  include View::Facebook
   CONTENT = ResultComposite
   SNAPBACK_EVENT = :result
-  def to_html(context)
-    # load javascript-sdk of fb in body
-    html = super
-    html = facebook_sdk + html
-    html
-  end
 end
 class EmptyResultForm < HtmlGrid::Form
   COMPONENTS = {
