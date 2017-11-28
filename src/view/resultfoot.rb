@@ -205,7 +205,8 @@ module ODDB
             components.store(coordinates, element)
             css_map.store(coordinates, 'explain right')
           end
-          if @session.request_path.index('/drugs/search_query')
+          if @session.request_path.index('/drugs/search_query') ||
+             @session.request_path.index('/compare/')
             components[[0,0]] = :price_compare
           end
         end

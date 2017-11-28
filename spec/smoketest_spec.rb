@@ -14,6 +14,7 @@ describe "ch.oddb.org" do
             "search_limitation_SL_only", "search_limitation_valid"]
     waitForOddbToBeReady(@browser, OddbUrl)
     @browser.link(:name => 'search_instant').click unless   @browser.link(:name => 'search_instant').text.eql?('Instant')
+    @direktvergleich = 'Für den Direktvergleich klicken Sie'
   end
 
   before :each do
@@ -150,6 +151,26 @@ describe "ch.oddb.org" do
     expect(td.exist?).to eq true
     expect(td.links.size).to eq 1
     expect(td.links.first.href).to match /\/price_history\//
+  end
+  
+  it "should display Für den Preisvergleich in search result at the bottom" do
+    medi = 'lamivudin'
+    select_product_by_trademark(medi)
+    inhalt = @browser.text.clone
+    expect(/#{@direktvergleich}[^\n]*\nWillkommen Max Miller/i).to match(inhalt)
+    expect(/#{medi}.*#{@direktvergleich}/im).to match(inhalt)
+    expect(/#{@direktvergleich}.*#{medi}/im).not_to match(inhalt)
+  end
+
+  it "should display Für den Preisvergleich in the price comparision" do
+    medi = 'lamivudin'
+    select_product_by_trademark(medi)
+    expect(@browser.link(name: 'best_result').visible?).to be true
+    @browser.link(name: 'best_result').click
+    inhalt = @browser.text.clone
+    expect(/#{@direktvergleich}[^\n]*\nWillkommen Max Miller/i).to match(inhalt)
+    expect(/#{medi}.*#{@direktvergleich}/im).to match(inhalt)
+    expect(/#{@direktvergleich}.*#{medi}/im).not_to match(inhalt)
   end
 
   it "should display two differnt prices for 55717 daTSCAN TM 123 I-Ioflupane " do
