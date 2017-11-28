@@ -78,8 +78,6 @@ require 'state/user/preferences'
 require 'state/user/download'
 require 'state/user/download_item'
 require 'state/user/download_export'
-require 'state/user/fipi_offer_input'
-require 'state/user/fipi_offer_confirm'
 require	'state/user/help'
 require 'state/user/passthru'
 require 'state/user/register_poweruser'
@@ -174,7 +172,6 @@ module ODDB
           :ddd_price              => State::Drugs::DDDPrice,
           :download_export        => State::User::DownloadExport,
           :fachinfos              => State::Drugs::Fachinfos,
-          :fipi_offer_input       => State::User::FiPiOfferInput,
           :help                   => State::User::Help,
           :home                   => State::Drugs::Init,
           :home_admin             => State::Admin::Init,

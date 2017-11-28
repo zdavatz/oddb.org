@@ -130,7 +130,6 @@ module ODDB
 				:database_size		=>	HtmlGrid::Text,
 				:database_size_text	=>	HtmlGrid::Text,
 				:ddd_count_text		=>	HtmlGrid::Text,
-				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
 				:narcotics				=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
@@ -189,13 +188,6 @@ module ODDB
 																	model, session, self)
 				args = {'download[generics.xls]' => 1}
 				link.href = @lookandfeel._event_url(:download_export, args)
-				link.set_attribute('class', 'list')
-				link
-			end
-			def fipi_offer(model, session)
-				link = HtmlGrid::Link.new(:fipi_offer, model, session, self)
-				link.href = @lookandfeel._event_url(:fipi_offer_input)
-				link.label = true
 				link.set_attribute('class', 'list')
 				link
 			end

@@ -167,9 +167,6 @@ class TestCenteredSearchComposite <Minitest::Test
   def test_export_divider
     assert_kind_of(HtmlGrid::Span, @composite.export_divider(@model, @session))
   end
-  def test_fipi_offer
-    assert_kind_of(HtmlGrid::Link, @composite.fipi_offer(@model, @session))
-  end
   def test_fachinfo_size
     flexmock(@app, :fachinfo_count => 'fachinfo_count')
     assert_equal('fachinfo_count&nbsp;', @composite.fachinfo_size(@model, @session))

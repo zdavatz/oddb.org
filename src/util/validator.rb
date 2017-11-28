@@ -193,8 +193,6 @@ module ODDB
       :fachinfo,
 			:fachinfos,
 			:feedbacks,
-			:fipi_offer_input,
-			:fipi_overview,
       :foto, # photo
 			:galenic_form,
 			:galenic_group,

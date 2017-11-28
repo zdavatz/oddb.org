@@ -16,7 +16,6 @@ require 'state/admin/login'
 require 'state/admin/root'
 require 'model/galenicgroup'
 require 'model/commercial_form'
-require 'state/companies/fipi_overview'
 require 'util/persistence'
 
 module ODDB
@@ -148,12 +147,6 @@ class TestODDBStateAdminRoot <Minitest::Test
     substance = flexmock('substance', :is_effective_form? => nil)
     flexmock(@session, :substances => [substance])
     assert_kind_of(ODDB::State::Substances::EffectiveSubstances, @state.effective_substances)
-  end
-  def test_fipi_overview
-    pointer = flexmock('pointer', :resolve => 'company')
-    flexmock(@session, :user_input => pointer)
-    flexmock(@app, :company => 'company')
-    assert_kind_of(ODDB::State::Companies::FiPiOverview, @state.fipi_overview)
   end
   def test_galenic_groups
     galenic_group = flexmock('galenic_group')

@@ -18,7 +18,6 @@ end
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'state/admin/powerlinkuser'
-require 'state/companies/fipi_overview'
 
 module ODDB
   module State
@@ -45,9 +44,6 @@ class TestPowerLinkUser <Minitest::Test
                        )
     @model   = flexmock('model')
     @state   = ODDB::State::Admin::StubPowerLinkUser.new(@session, @model)
-  end
-  def test_fipi_overview
-    assert_kind_of(ODDB::State::Companies::FiPiOverview, @state.fipi_overview)
   end
   def test_new_fachinfo
     flexmock(@session, :language => 'language')

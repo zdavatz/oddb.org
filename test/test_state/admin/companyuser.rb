@@ -81,11 +81,6 @@ class TestCompanyUser <Minitest::Test
     @model   = flexmock('model')
     @state   = StubCompanyUser.new(@model, @session)
   end
-  def test_fipi_overview
-    company = flexmock('company')
-    flexmock(@session, :"user.model" => company)
-    assert_kind_of(ODDB::State::Companies::FiPiOverview, @state.fipi_overview)
-  end
   def test_new_fachinfo
     registration = flexmock('registration', 
                             :name_base => 'name_base',
