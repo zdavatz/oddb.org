@@ -29,7 +29,6 @@ class CompareList < HtmlGrid::List
     :compositions      => 'list italic',
     :ddd_price         => 'list right',
     :deductible        => 'list right',
-    :prescription      => 'list',
     :fachinfo          => 'list',
     :ikscat            => 'list italic',
     :most_precise_dose => 'list right',

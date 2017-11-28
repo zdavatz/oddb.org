@@ -18,38 +18,37 @@ class ResultLimitList < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {
     [0,0]  => :minifi,
-    [1,0]  => :prescription,
-		[2,0]	 => :fachinfo,
-		[3,0]	 =>	:patinfo,
-		[4,0]	 =>	:narcotic,
-		[5,0]	 =>	:name_base,
-		[6,0]	 =>	:galenic_form,
-		[7,0]	 =>	:comparable_size,
-		[8,0]	 =>	:price_exfactory,
-		[9,0]	 =>	:price_public,
-		[10,0] =>	:ikscat,
-		[11,0] =>	:feedback,
-		[12,0] => :google_search,
-		[13,0] =>	:notify,
+		[1,0]	 => :fachinfo,
+		[2,0]	 =>	:patinfo,
+		[3,0]	 =>	:narcotic,
+		[4,0]	 =>	:name_base,
+		[5,0]	 =>	:galenic_form,
+		[6,0]	 =>	:comparable_size,
+		[7,0]	 =>	:price_exfactory,
+		[8,0]	 =>	:price_public,
+		[9,0] =>	:ikscat,
+		[10,0] =>	:feedback,
+		[11,0] => :google_search,
+		[12,0] =>	:notify,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
 		[0,0,5]	 => 'list',
-		[5,0]    => 'list big',
-		[6,0]    => 'list',
-		[7,0,4]  => 'list right',
-		[11,0,3] => 'list right',
+		[4,0]    => 'list big',
+		[5,0]    => 'list',
+		[6,0,4]  => 'list right',
+		[10,0,3] => 'list right',
 	}
 	CSS_HEAD_MAP = {
+		[6,0]  => 'th right',
 		[7,0]  => 'th right',
 		[8,0]  => 'th right',
-		[9,0]  => 'th right',
+		[9,0] => 'th right',
 		[10,0] => 'th right',
 		[11,0] => 'th right',
 		[12,0] => 'th right',
-		[13,0] => 'th right',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i
@@ -63,9 +62,6 @@ class ResultLimitList < HtmlGrid::List
 			super
 		end
 	end
-  def prescription(model, session)
-    super(model, session, 'list important')
-  end
 	def fachinfo(model, session)
 		super(model, session, 'square important infos')
 	end	

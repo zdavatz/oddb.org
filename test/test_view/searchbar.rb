@@ -105,57 +105,6 @@ return false;
       end
     end
 
-    class TestPrescriptionSearchBar <Minitest::Test
-      def setup
-				@persistent_user_input = flexmock('persistent_user_input', :keys => [])
-        @container = flexmock('container', :additional_javascripts => [])
-        @lnf       = flexmock('lookandfeel',
-                              :lookup     => 'lookup',
-				                      :base_url   => 'base_url',
-                              :attributes => {},
-                              :event_url  => 'event_url',
-                              :_event_url => '_event_url',
-                             )
-        @unknown_user = flexmock('unknown_user',
-                                 :valid? => false)
-        @app = flexmock('app',
-                        :unknown_user     => @unknown_user,
-                        :sorted_fachinfos => [],
-                        :sorted_feedbacks => [],
-                        :package_by_ean13 => 'package',)
-        @session = ODDB::Session.new(app: @app)
-        @model     = flexmock('model')
-        @inputtext = ODDB::View::PrescriptionDrugSearchBar.new('name', @model, @session, @container)
-      end
-      def test_init
-        expected = {
-        "queryExpr"      => "${0}",
-        "name"           => "name",
-        "data-dojo-type" => "dijit.form.ComboBox",
-        "searchAttr"     => "search_query",
-        "labelAttr"      => "drug",
-        "jsId"           => "prescription_searchbar",
-        "type"           => "text",
-        "id"             => "prescription_searchbar",
-        "store"          => "search_matches",
-        "hasDownArrow"   => "false",
-        "value"          => "persistent_user_input",
-        "autoComplete"   => "false",
-        "onChange"       => "selectXhrRequest",
-        }
-        skip "Must FIX!!! name in searchbar"
-        assert_equal(expected, @inputtext.init)
-      end
-      def test_to_html
-        context = flexmock('context',
-                           :div   => 'div',
-                           :input => 'input'
-                          )
-        flexmock(@container, :index_name => 'index_name')
-        assert_equal('divinput', @inputtext.to_html(context))
-      end
-    end
-
     class TestSelectSearchForm <Minitest::Test
       def setup
         @lnf     = flexmock('lookandfeel',

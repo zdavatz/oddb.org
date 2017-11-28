@@ -48,14 +48,14 @@ describe "ch.oddb.org" do
   end
   
   before :all do
-    $prescription_test_id = 1
+    $searchbar_test_id = 1
     waitForOddbToBeReady(@browser, OddbUrl)
     login
   end
 
   before :each do
     @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
-    # puts "before #{$prescription_test_id} with #{@browser.windows.size} windows"
+    # puts "before #{$searchbar_test_id} with #{@browser.windows.size} windows"
     while @browser.windows.size > 1
       @browser.windows.first.use
       @browser.windows.last.close if @browser.windows.last
@@ -64,8 +64,8 @@ describe "ch.oddb.org" do
   end
 
   after :each do
-    createScreenshot(@browser, '_'+$prescription_test_id.to_s) if @browser
-    $prescription_test_id += 1
+    createScreenshot(@browser, '_'+$searchbar_test_id.to_s) if @browser
+    $searchbar_test_id += 1
   end
 
   { '125Dihydroxycholecalciferol 1000' => '1,25-Dihydroxycholecalciferol',

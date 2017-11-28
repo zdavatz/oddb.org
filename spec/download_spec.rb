@@ -15,7 +15,6 @@ describe "ch.oddb.org" do
 
   before :each do
     @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
-    # puts "before #{$prescription_test_id} with #{@browser.windows.size} windows"
     while @browser.windows.size > 1
       @browser.windows.first.use
       @browser.windows.last.close if @browser.windows.last

@@ -438,16 +438,6 @@ module ODDB
           link
         end
       end
-      def prescription(model, session=@session, css='important') # rezept -> prescription
-        link = HtmlGrid::Link.new(:rezept, model, session, self)
-        link.css_class = css
-        link.set_attribute('title', @lookandfeel.lookup(:prescription))
-        link.href = @lookandfeel._event_url(:rezept, [:ean, model.barcode])
-        img = HtmlGrid::Image.new(:prescription, model, @session, self)
-        img.set_attribute('src', @lookandfeel.resource_global(:prescription))
-        link.value = img
-        link
-      end
       def qty_unit(model, session=@session)
         if(model.qty || model.unit)
           unit = nil

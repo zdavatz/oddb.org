@@ -90,17 +90,7 @@ class InteractionChooserDrugHeader < HtmlGrid::Composite
           ODDB::View::Interactions.calculate_atc_codes({})
         end
         link.onclick = %(
-        var element = document.getElementById('prescription_comment_0');
-        // innerText for IE, textContent for other browsers
-        if (element != null) {
-          var text = element.innerText || element.textContent;
-          // element.innerHTML = text;
-          console.log ("Text of prescription_comment_0 "+ text);
-          window.sessionStorage.setItem('comment', text);
-        } else {
-            console.log ("element is null. No text of prescription_comment_0");
-           window.sessionStorage.removeItem('comment');
-        }
+        window.sessionStorage.removeItem('comment');
         console.log ("Going to new url #{url} in interaction_chooser");
         window.location.href = '#{url}';
         )

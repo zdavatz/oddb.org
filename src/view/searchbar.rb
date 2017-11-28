@@ -72,13 +72,7 @@ module InstantSearchBarMethods
   def xhr_request_init(keyword)
     target = keyword.intern
     id  = "#{target}_searchbar"
-    if /prescription/i.match(target.to_s)
-      @session.set_persistent_user_input(:drugs, {})
-      @session.set_persistent_user_input(:ean, nil)
-      url  = @session.request_path.gsub('/,','/') if @session.request_path
-    else
-      url = @session.create_search_url(:home_interactions)
-    end
+    url = @session.create_search_url(:home_interactions)
     val = @session.lookandfeel.lookup(:add_drug)
     if @container.respond_to?(:progress_bar)
       progressbar = "setTimeout('show_progressbar(\'#{id}\')', 10);"
@@ -92,7 +86,7 @@ function xhrGet(arg) {
   if(ean13) {
     ean13 = ean13[0];
     var id = 'drugs';
-    if (new_url.match(/\\/(prescription|rezept|zsr_[A-Z]\\d+)$/))
+    if (new_url.match(/\\/(zsr_[A-Z]\\d+)$/))
     {
       new_url = new_url + '/ean/' + ean13; 
     } else {
@@ -302,13 +296,6 @@ class InteractionSearchBar < AutocompleteSearchBar # home_interactions
     @searchbar_id = 'interaction_searchbar'
     @label_attr   = 'drug'
     super
-  end
-end
-class PrescriptionDrugSearchBar < HtmlGrid::InputText
-  include InstantSearchBarMethods
-  def init
-    super
-    xhr_request_init(:prescription)
   end
 end
 class InteractionChooserBar < HtmlGrid::InputText  # interaction_chooser

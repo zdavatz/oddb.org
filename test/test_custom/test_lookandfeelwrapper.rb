@@ -85,7 +85,6 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-        [0,0] => :prescription,
         [1,0] => :fachinfo,
         [2,0] => :patinfo,
         [3,0] => :name_base,
@@ -130,7 +129,6 @@ module ODDB
     end
     def test_result_list_components
       expected = {[0, 0]=>:limitation_text,
-                  [1, 0]=>:prescription,
                   [2, 0]=>:fachinfo,
                   [3, 0]=>:patinfo,
                   [4, 0]=>:narcotic,
@@ -283,7 +281,6 @@ module ODDB
     end
     def test_compare_list_components
       expected = {
-        [0, 0] => :prescription,
         [2, 0] => :fachinfo,
         [3, 0] => :patinfo,
         [4, 0] => :company_name,
@@ -349,7 +346,6 @@ module ODDB
     def test_result_list_components
       expected = {
         [0, 0] => :limitation_text,
-        [1, 0] => :prescription,
         [2, 0] => :fachinfo,
         [3, 0] => :patinfo,
         [4, 0] => :narcotic,

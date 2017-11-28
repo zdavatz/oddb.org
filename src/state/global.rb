@@ -47,7 +47,6 @@ require 'state/drugs/patinfos'
 require 'state/drugs/price_history'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
-require 'state/drugs/prescription'
 require 'state/drugs/sequence'
 require 'state/drugs/sequences'
 require 'state/drugs/shorten_path'
@@ -209,7 +208,6 @@ module ODDB
           :paypal_thanks          => State::User::PayPalThanks,
           :price_history          => State::Drugs::PriceHistory,
           :recent_registrations   => State::Drugs::RecentRegs,
-          :rezept                 => State::Drugs::Prescription,
           :sequences              => State::Drugs::Sequences,
           :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,
@@ -235,7 +233,6 @@ module ODDB
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
-          [ :rezept ]                                                         => State::Drugs::Prescription,
           [ :zsr ]                                                            => State::Zsr,
         }
         READONLY_STATES = RESOLVE_STATES.dup.update({
@@ -246,7 +243,6 @@ module ODDB
         PRINT_STATES = {
           [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
           [ :patinfo ]                            => State::Drugs::PatinfoPrint,
-          [ :rezept ]                             => State::Drugs::PrescriptionPrint,
         }
         CHANGELOGS_STATES = {
           [ :fachinfo ]                           => State::Drugs::DocumentChangelogs,
@@ -538,9 +534,7 @@ module ODDB
 			end
       def print
         state = self.search
-        if @session.request_path.index("/print/rezept/")
-          State::Drugs::PrescriptionPrint.new(@session, nil)
-        elsif @session.user_input(:pointer)
+        if @session.user_input(:pointer)
           self
         elsif (pack_nr = @session.user_input(:pack)) &&
               (iksnr = @session.user_input(:reg)) &&
@@ -643,10 +637,6 @@ module ODDB
 					end
 				end
 			end
-      def rezept
-        State::Drugs::Prescription.new(@session, nil)
-      end
-
       def home_interactions
         State::Interactions::InteractionChooser.new(@session, nil)
       end
