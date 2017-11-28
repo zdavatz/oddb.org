@@ -1619,7 +1619,7 @@ Zeno Davatz
         :th_ikscat_title          =>  'Abgabekategorie / SL-Eintrag',
         :th_ikscd                  =>  'Packungsnummer',
         :th_ikskey                =>  'Swissmedic-Nr.',
-        :th_iksnr                  =>  'Reg.-Nr.',
+        :th_iksnr                  =>  'Reg.&#8209;Nr.', # &#8209; is non breaking dash
         :th_iksnrs                =>  'Registrationsnummern',
         :th_inactive_agents       =>  'Hilfsstoffe',
         :th_inactive_date          =>  'Deaktiviert',
@@ -2956,7 +2956,7 @@ Zeno Davatz
         :th_ikscat                =>  'Cat.',
         :th_ikscat_title          =>  'Catégorie Swissmedic / Entrée LS',
         :th_ikscd                  =>  "numéro d'emballage ",
-        :th_iksnr                  =>  'Reg.-nr.',
+        :th_iksnr                  =>  'Reg.&#8209;nr.', # &#8209; is non breaking dash
         :th_inactive_agents       =>  'Agents auxilliaires',
         :th_inducers              =>  'Animation par',
         :th_inhibitors            =>  'Réprimé par',
@@ -4236,7 +4236,7 @@ Zeno Davatz
         :th_ikscat                =>  'Category',
         :th_ikscat_title          =>  'Swissmedic Category / SL-Entry',
         :th_ikscd                  =>  'Package number',
-        :th_iksnr                  =>  'Reg.-No.',
+        :th_iksnr                  =>  'Reg.&#8209;No.', # &#8209; is non breaking dash
         :th_iksnrs                =>  'Registration numbers',
         :th_inactive_date          =>  'Deactivatet',
         :th_inactive_agents       =>  'Inactive agents',
