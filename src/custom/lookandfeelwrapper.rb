@@ -473,6 +473,9 @@ module ODDB
     end
   end
   class LookandfeelJustMedical < SBSM::LookandfeelWrapper
+    def google_analytics_token
+      'UA-21383510-11'
+    end
     ENABLED = [
       :ajax,
       :atc_chooser,
