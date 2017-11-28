@@ -29,6 +29,7 @@ require 'util/language'
 require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'stub/oddbapp'
+require 'util/latest'
 
 class TestOddbApp3 <MiniTest::Unit::TestCase
   def setup
@@ -529,10 +530,11 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
     @latest = @fileName.sub('.csv', '-latest.csv')
     FileUtils.rm(@latest) if File.exists?(@latest)
-    @agent = flexmock(Mechanize.new)
-    @agent.should_receive(:get).and_return(IO.read(@fileName))
+    @mock_latest = flexmock('latest', ODDB::Latest)
+    @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
+      File.open(File.join(@@datadir, File.basename(@fileName))).read)
     @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
-    assert(@plugin.update(@agent, @fileName))
+    assert(@plugin.update(@fileName))
     code_0 = 'C09CA01'
     code_1 = 'C07AB02'
     atc_class_0 = flexmock('atc_class_0') do |reg|
