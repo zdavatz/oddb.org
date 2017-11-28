@@ -180,8 +180,7 @@ module ODDB
     end
 
     def test_update_epha_interactions_empty
-      FileUtils.rm(@latest, :verbose => false) if File.exists?(@latest)
-      FileUtils.rm(@fileName, :verbose => false) if File.exists?(@fileName)
+      FileUtils.rm(Dir.glob("#{@@vardir}/*"), :verbose => false)
       assert(@plugin.update(@fileName))
       report = @plugin.report
       files = Dir.glob("#{@@vardir}/*")

@@ -103,11 +103,11 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     waitForOddbToBeReady(@browser, OddbUrl)
+    login
   end
 
   before :each do
     @browser.goto OddbUrl
-    login
   end
 
   after :each do
