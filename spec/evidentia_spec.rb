@@ -6,8 +6,8 @@ require 'spec_helper'
 
 describe "ch.oddb.org" do
 
-  Evidentia_URL = 'http://evidentia.oddb-ci2.dyndns.org:8412' # : 'https://evidentia.oddb.org'
-  HomeURL       = "#{Evidentia_URL}/de/gcc/home_drugs/"
+  Evidentia_URL = 'https://oddb-ci2.dyndns.org' # : 'https://evidentia.oddb.org'
+  HomeURL       = "#{Evidentia_URL}/de/evidentia/home_drugs/"
   Lamivudin     = 'Lamivudin-Zidovudin-Mepha'
   Sevikar       = 'Sevikar HCT'
   Duodopa       = 'Duodopa'
@@ -37,11 +37,14 @@ describe "ch.oddb.org" do
     return m[1]
   end    
   def create_url_for(query)
-    "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{URI.encode(query)}/search_type/st_combined"
+    "#{Evidentia_URL}/de/evidentia/search/zone/drugs/search_query/#{URI.encode(query)}?"
   end
 
   def evidentia_select_product_by_trademark(name)
-    @browser.goto create_url_for(name)
+    url = create_url_for(name)
+    puts "evidentia_select_product_by_trademark #{name} returns #{url}"
+    @browser.goto url
+    @browser.goto url # somehow the first goto is not sufficient
     @browser.element(:id => 'ikscat_1').wait_until_present
     expect(@browser.url.index(Evidentia_URL)).to eq 0
     expect(@browser.url.index('/de/evidentia')).not_to eq 0
@@ -200,6 +203,7 @@ describe "ch.oddb.org" do
 
   def search_in_home(search_query, search_type='Preisvergleich')
     @browser.goto(OddbUrl)
+    @browser.link(:name, 'drugs').wait_until_present
     @browser.link(:name, 'drugs').click;  small_delay
     @browser.select_list(:name, "search_type").select(search_type)
     @browser.text_field(:name, "search_query").value = search_query

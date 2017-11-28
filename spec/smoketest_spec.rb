@@ -372,23 +372,6 @@ describe "ch.oddb.org" do
     @browser.windows.last.close
   end
 
-  it "should download the example" do
-    test_medi = 'Aspirin'
-    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.text_field(:name, "search_query").set(test_medi)
-    @browser.button(:name, "search").click; small_delay
-    @browser.scroll.to :top
-    @browser.link(:text, "Beispiel-Download").click; small_delay
-    @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
-    filesAfterDownload =  Dir.glob(GlobAllDownloads)
-    diffFiles = (filesAfterDownload - filesBeforeDownload)
-    expect(diffFiles.size).to eq(1)
-    text = IO.read(diffFiles[0])
-    expect(text).to match /EAN-Code/
-    expect(text).to match /Inderal/
-    expect(IO.readlines(diffFiles[0]).size).to be > 5
-  end unless ['just-medical'].index(Flavor)
-
   it "should be possible to request a new password" do
     @browser.link(:text=>'Abmelden').click if @browser.link(:text=>'Abmelden').exists?
     small_delay

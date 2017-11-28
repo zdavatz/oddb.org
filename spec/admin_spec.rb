@@ -97,7 +97,7 @@ credit org.oddb.download
     @browser.file_field(:name =>  "patinfo_upload").set(original)
     @browser.button(:name,"update").click
     expect(@browser.link(:text, "PI").exists?).to be true
-    new_content = open(@browser.link(:text, "PI").href, 'rb').read;
+    new_content = open(@browser.link(:text, "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
     org_content = open(original, 'rb').read;
     expect(org_content).to eq new_content
   end
