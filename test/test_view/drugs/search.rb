@@ -49,6 +49,7 @@ class TestSearch <Minitest::Test
                         :get_cookie_input => 'get_cookie_input',
                         :event            => 'event',
                         :request_path => 'request_path',
+                        :request_method => 'GET',
                        )
     @model   = flexmock('model')
     @view    = ODDB::View::Drugs::Search.new(@model, @session)

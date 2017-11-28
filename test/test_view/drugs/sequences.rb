@@ -105,7 +105,8 @@ class TestSequencesComposite <Minitest::Test
                           :lookandfeel => @lnf,
                           :state       => state,
                           :event       => 'event',
-                          :zone        => 'zone'
+                          :zone        => 'zone',
+                          :request_path => 'request_path',
                          )
     @model     = flexmock('model', :generic_type => 'generic_type')
     flexmock(state, :model => [@model])

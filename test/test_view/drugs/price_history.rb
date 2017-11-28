@@ -137,6 +137,7 @@ class TestPriceHistory <Minitest::Test
                          :zone        => 'zone',
                          :persistent_user_input => 'persistent_user_input',
                          :request_path => 'request_path',
+                         :request_method => 'GET',
                         )
     @package  = flexmock('package', 
                          :name  => 'name',

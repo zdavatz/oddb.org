@@ -67,6 +67,7 @@ module ODDB
                             :sponsor => user,
                             :persistent_user_input => nil,
                             :request_path => 'request_path',
+                            :request_method => 'GET',
                         )
         @model    = flexmock('model')
         @content  = flexmock('content', :new => 'new')

@@ -82,6 +82,7 @@ class TestResultComposite <Minitest::Test
                           :zone        => 'zone',
                           :flavor      => 'flavor',
                           :event       => 'event',
+                          :request_path => 'request_path',
                           :get_cookie_input  => 'get_cookie_input',
                          )
     @model     = flexmock([], 

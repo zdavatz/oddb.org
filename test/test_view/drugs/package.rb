@@ -388,6 +388,7 @@ class TestPackage <Minitest::Test
                          :flavor       => 'flavor',
                          :event           => 'event',
                          :get_cookie_input => 'get_cookie_input',
+                         :request_method => 'GET',
                          )
     commercial_form = flexmock('commercial_form', :language => 'language')
     substance = flexmock('substance', :language => 'language')

@@ -269,6 +269,7 @@ class TestRootCompany <Minitest::Test
       s.should_receive(:zone)
       s.should_receive(:persistent_user_input)
       s.should_receive(:request_path).and_return 'request_path'
+      s.should_receive(:request_method).and_return 'GET'
     end
     @model = flexmock('model') do |m|
       m.should_receive(:business_area).by_default

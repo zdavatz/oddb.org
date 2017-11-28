@@ -168,6 +168,7 @@ class TestRecentRegsComposite <Minitest::Test
                           :flavor      => 'flavor',
                           :user_input  => 'user_input',
                           :get_cookie_input => 'get_cookie_input',
+                          :request_path => 'request_path',
                          )
     package    = flexmock('package', :generic_type => 'generic_type')
     @model     = flexmock('model', 

@@ -39,6 +39,7 @@ class TestWelcomeHead <Minitest::Test
                           :sponsor => nil,
                           :persistent_user_input => nil,
                           :request_path => 'request_path',
+                          :request_method => 'GET',
                          )
     @model     = flexmock('model')
     @composite = ODDB::View::WelcomeHead.new(@model, @session)

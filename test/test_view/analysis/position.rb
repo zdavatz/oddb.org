@@ -95,7 +95,8 @@ class TestPositionComposite <Minitest::Test
                            :lookandfeel => @lnf,
                            :language    => 'language',
                            :error       => 'error',
-                           :event       => 'event'
+                           :event       => 'event',
+                           :request_path => 'request_path',
                           )
     limitation_text = flexmock('limitation_text', :language => 'language')
     taxnote     = flexmock('taxnote', :language => 'language')

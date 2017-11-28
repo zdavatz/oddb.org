@@ -132,6 +132,7 @@ class TestReturn <Minitest::Test
                          :flavor      => 'flavor',
                          :request_path => 'request_path',
                          :persistent_user_input => nil,
+                         :request_method => 'GET',
                         )
     @item    = flexmock('item',
                         :type         => :poweruser,

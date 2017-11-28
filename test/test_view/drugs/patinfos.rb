@@ -63,6 +63,7 @@ class TestPatinfosComposite <Minitest::Test
                           :state => state,
                           :zone  => 'zone',
                           :event => 'event',
+                          :request_path => 'request_path',
                          )
     @model     = flexmock('model', 
                           :generic_type => 'generic_type',

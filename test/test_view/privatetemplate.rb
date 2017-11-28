@@ -74,6 +74,7 @@ class TestPrivateTemplate <Minitest::Test
                         :sponsor => user,
                         :sponsor => nil,
                         :persistent_user_input => nil,
+                        :request_method => 'GET',
                         )
     @model    = flexmock('model')
     content = flexmock('content', :new => 'new')

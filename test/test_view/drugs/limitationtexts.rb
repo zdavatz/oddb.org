@@ -68,6 +68,8 @@ class TestLimitationTextsComposite <Minitest::Test
                           :limitation_text_count => 0,
                           :zone        => 'zone',
                           :event       => 'event',
+                          :request_path => 'request_path',
+                          :request_method => 'GET',
                          )
     limitation_text = flexmock('limitation_text', :pointer => 'pointer')
     @model     = flexmock('model', 

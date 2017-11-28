@@ -40,7 +40,8 @@ class TestVaccinesComposite <Minitest::Test
                           :lookandfeel => @lnf,
                           :state => state,
                           :event => 'event',
-                          :zone  => 'zone'
+                          :zone  => 'zone',
+                          :request_path => 'request_path',
                          )
     @model     = flexmock('model', :generic_type => 'generic_type')
     @composite = ODDB::View::Drugs::VaccinesComposite.new([@model], @session)

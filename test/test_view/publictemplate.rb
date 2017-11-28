@@ -59,6 +59,7 @@ class TestPublicTemplate <Minitest::Test
                          :get_cookie_input => nil,
                          :sponsor => nil,
                          :persistent_user_input => nil,
+                         :request_method => 'GET',
                         )
     @session.should_receive(:lookandfeel).and_return(@lnf).by_default
     @model    = flexmock('model')

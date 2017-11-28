@@ -89,6 +89,7 @@ class TestNotifyConfirm <Minitest::Test
                         :get_cookie_input => 'get_cookie_input',
                         :persistent_user_input => 'persistent_user_input',
                         :request_path => 'request_path',
+                        :request_method => 'GET',
                        )
     item     = flexmock('item', :name => 'name')
     @model   = flexmock('model', 

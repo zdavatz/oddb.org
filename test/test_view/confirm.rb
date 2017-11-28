@@ -62,6 +62,7 @@ class TestConfirm <Minitest::Test
                          :logo    => @logo,
                          :request_path => 'request_path',
                          :persistent_user_input => nil,
+                         :request_method => 'GET',
                         )
     @model    = flexmock('model')
     @template = ODDB::View::Confirm.new(@model, @session)

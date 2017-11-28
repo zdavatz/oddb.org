@@ -62,6 +62,7 @@ class TestEntities <Minitest::Test
                         :event    => 'event',
                         :zone     => 'zone',
                         :request_path => 'request_path',
+                        :request_method => 'GET',
                         :sponsor => nil,
                         :persistent_user_input => nil,
                        )

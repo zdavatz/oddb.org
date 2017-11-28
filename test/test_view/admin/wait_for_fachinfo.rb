@@ -54,6 +54,7 @@ class TestWaitForFachinfo <Minitest::Test
                         :state   => state,
                         :flavor  => 'flavor',
                         :request_path => 'request_path',
+                        :request_method => 'GET',
                         :persistent_user_input => nil,
                        )
     @model   = flexmock('model')

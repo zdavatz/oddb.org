@@ -408,6 +408,7 @@ class TestProduct <Minitest::Test
                         :flavor  => 'flavor',
                         :request_path => 'request_path',
                         :persistent_user_input => nil,
+                        :request_method => 'GET',
                        )
     @view = ODDB::View::Migel::Product.new(@model, @session)
   end

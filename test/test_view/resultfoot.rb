@@ -138,7 +138,10 @@ module ODDB
                             :attributes => {},
                             :explain_result_components => {[0,0] => :explain_fachinfo}
                            )
-        @session = flexmock('session', :lookandfeel => @lnf)
+        @session = flexmock('session',
+                            :lookandfeel => @lnf,
+                            :request_path => 'request_path',
+                            )
         @model   = flexmock('model')
         @composite = ODDB::View::StubResultFootBuilder.new(@model, @session)
         assert_kind_of(ODDB::View::ResultFoot, @composite.result_foot(@model, @session))
@@ -170,7 +173,10 @@ module ODDB
                               :attributes => {},
                               :explain_result_components => {[0,0] => :explain_fachinfo}
                              )
-        @session   = flexmock('session', :lookandfeel => @lnf)
+        @session   = flexmock('session',
+                              :lookandfeel => @lnf,
+                              :request_path => 'request_path',
+                              )
         @model     = flexmock('model')
         @composite = ODDB::View::ResultFoot.new(@model, @session)
         expected = {} # was [0, 0]=>"explain", [0, 1]=>"explain right"

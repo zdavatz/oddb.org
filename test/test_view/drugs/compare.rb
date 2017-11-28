@@ -110,6 +110,7 @@ class TestCompare <Minitest::Test
                         :flavor      => 'flavor',
                         :get_cookie_input => 'get_cookie_input',
                         :request_path => 'request_path',
+                        :request_method => 'GET',
                        )
     comparable = flexmock('comparable', 
                           :generic_type  => 'generic_type',

@@ -191,6 +191,7 @@ class TestDDDPrice <Minitest::Test
                          :event       => 'event',
                          :get_cookie_input => 'get_cookie_input',
                          :request_path => 'request_path',
+                         :request_method => 'GET',
                         )
     @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact      = flexmock('fact', :factor => 'factor')
@@ -222,7 +223,7 @@ class TestDDDPrice <Minitest::Test
                          :commercial_forms => [commercial_form],
                          :parts      => [part],
                          :ikskey     => 'ikskey',
-                         :indication => indication
+                         :indication => indication,
                         )
     @template = ODDB::View::Drugs::DDDPrice.new(@model, @session)
   end
