@@ -87,7 +87,6 @@ require 'state/paypal/return'
 require 'state/rss/passthru'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
-require 'state/user/plugin'
 require 'state/user/init'
 require 'state/user/sponsorlink'
 require 'util/session'
@@ -201,7 +200,6 @@ module ODDB
           :patinfos               => State::Drugs::Patinfos,
           :foto                   => State::Drugs::Photo,
           :narcotics              => State::Drugs::Narcotics,
-          :plugin                 => State::User::Plugin,
           :passthru               => State::User::PassThru,
           :paypal_thanks          => State::User::PayPalThanks,
           :price_history          => State::Drugs::PriceHistory,

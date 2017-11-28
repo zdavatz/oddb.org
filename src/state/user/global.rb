@@ -3,7 +3,6 @@
 # State::User::Global -- oddb -- 24.08.2004 -- mhuggler@ywesee.com
 
 require 'state/user/init'
-require 'state/user/plugin'
 require 'state/user/download_export'
 
 module ODDB
@@ -13,7 +12,6 @@ class Global < State::Global
 	HOME_STATE = State::User::Init
 	ZONE = :user
 	ZONE_NAVIGATION = [
-		State::User::Plugin,
 		State::User::DownloadExport,
 	]
 end

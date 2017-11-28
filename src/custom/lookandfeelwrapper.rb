@@ -96,9 +96,9 @@ module ODDB
         [5,0,1] => :name_base,
         [5,0,2] => 'result_item_end',
         [6,0]   => :galenic_form,
-        [8,0]   => :comparable_size,
-        [9,0]   => :price_exfactory,
-        [0,0]   => :price_public,
+        [7,0]   => :comparable_size,
+        [8,0]   => :price_exfactory,
+        [9,0]   => :price_public,
         [10,0]  => :deductible,
         [11,0]  => :substances,
         [12,0]  => :company_name,
@@ -106,7 +106,7 @@ module ODDB
         [14,0]  => :registration_date,
         [15,0]  => :feedback,
         [16,0]  => :google_search,
-        [18,0]  => :notify,
+        [17,0]  => :notify,
       }
     end
 	end

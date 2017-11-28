@@ -133,7 +133,6 @@ module ODDB
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
 				:narcotics				=>	HtmlGrid::Link,
-				:plugin						=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
 				:sequences				=>	CenteredNavigationLink,
 				:software_feedback=>	HtmlGrid::Link,
@@ -230,13 +229,6 @@ module ODDB
 				if(@lookandfeel.enabled?(:paypal))
 					PayPalForm.new(model, session, self)
 				end
-			end
-			def plugin(model, session)
-				link = HtmlGrid::Link.new(:plugin, model, session, self)
-				link.href = @lookandfeel._event_url(:plugin)
-				link.label = true
-				link.set_attribute('class', 'list')
-				link
 			end
 			def patinfo_size(model, session)
 				@session.app.patinfo_count.to_s << '&nbsp;'
