@@ -4,7 +4,7 @@
 require 'htmlgrid/form'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/inputcheckbox'
-require 'view/publictemplate'
+require 'view/privatetemplate'
 require 'view/form'
 
 module ODDB
@@ -161,7 +161,8 @@ class PreferencesComposite < HtmlGrid::Composite
   }
   CSS_CLASS = 'composite'
 end
-class Preferences < View::PublicTemplate
+class Preferences < View::PrivateTemplate
+  SEARCH_HEAD = ODDB::View::SelectSearchForm
   CONTENT = View::User::PreferencesComposite
   HEAD    = View::LogoHead
   JAVASCRIPTS = ['autofill']

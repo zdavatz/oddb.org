@@ -34,8 +34,8 @@ class TestCenteredSearchComposite <Minitest::Test
     @model     = flexmock('model')
     @composite = ODDB::View::User::CenteredSearchComposite.new(@model, @session)
   end
-  def test_new_registration
-    assert_kind_of(HtmlGrid::Link, @composite.new_registration(@model, @session))
+  def test_download_export
+    assert_kind_of(HtmlGrid::Link, @composite.download_export(@model, @session))
   end
   def test_substance_count
     flexmock(@app, :substance_count => 0)

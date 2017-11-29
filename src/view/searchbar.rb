@@ -7,6 +7,7 @@
 require 'view/form'
 require 'htmlgrid/divform'
 require 'htmlgrid/inputtext'
+require 'htmlgrid/select'
 
 module ODDB
   module View

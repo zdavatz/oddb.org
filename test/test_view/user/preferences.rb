@@ -46,8 +46,10 @@ module ODDB
                             :resource => 'resource',
                             :base_url => 'http://dummy.oddb.org',
                             :google_analytics_token => 'google_analytics_token',
+                            :direct_event => 'direct_event',
                           )
         state      = flexmock('state', :zone => 'zone',
+                              :snapback_model => nil,
                               :direct_event => true)
         user       = flexmock('user', :valid? => true)
         
@@ -63,6 +65,7 @@ module ODDB
                             :valid_values => [:search_type],
                             :user_agent => 'Mozilla',
                             :sponsor => nil,
+                            :event => nil,
                             :persistent_user_input => nil,
                           )
         @view    = ODDB::View::User::Preferences.new(@model, @session)

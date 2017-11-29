@@ -115,7 +115,8 @@ class RecentRegsComposite < View::Drugs::ResultComposite
     [span1, dv, span2]
   end
 end
-class RecentRegs < View::ResultTemplate
+class RecentRegs < View::PrivateTemplate
+    SEARCH_HEAD = ODDB::View::SelectSearchForm
 	CONTENT = View::Drugs::RecentRegsComposite
 end
 		end
