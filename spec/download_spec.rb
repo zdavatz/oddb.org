@@ -28,49 +28,12 @@ describe "ch.oddb.org" do
     @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
     expect(paypal_user.paypal_buy(@browser)).to eql true
   end
-  it "should download the results of a search to Marcoumar" do
-    skip('paypal_login does not work')
-    login(ViewerUser,  ViewerPassword)
-    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.text_field(:name, "search_query").set('Marcoumar')
-    @browser.button(:name, "search").click
-    @browser.button(:value,"Resultat als CSV Downloaden").click
-    paypal_login if false # PayPal login does not longer work
-    @browser.link(:name => 'download').wait_until_present
-    @browser.link(:name => 'download').click
-    sleep(1) # Downloading takes some time
-    expect(@browser.url).not_to match  /errors/
-    filesAfterDownload =  Dir.glob(GlobAllDownloads)
-    diffFiles = (filesAfterDownload - filesBeforeDownload)
-    expect(diffFiles.size).to eq(1)
-  end unless ['just-medical'].index(Flavor)
 
   it "should be possible to run a bin/admin command" do
     cmd = 'registrations.size'
     res = run_bin_admin(cmd)
     # puts "res of cmd #{cmd} is \n#{res}"
     expect(res).to match(/-\> \d+/)
-  end
-
-  it "should be possible to download Zulassungsinhaber Desitin as admin user" do
-    logout; login(AdminUser, AdminPassword)
-    @browser.select_list(:name, "search_type").select("Zulassungsinhaber")
-    @browser.text_field(:id, "searchbar").set("Desitin")
-    @browser.button(:name,"search").click
-    @browser.button(:name,"export_csv").click
-    @browser.select_list(:name, "payment_method").select("Rechnung")
-    @browser.button(:name, "proceed_payment").click
-    link = @browser.button(:name, "checkout_invoice")
-    filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    link.click
-    expect(@browser.url).not_to match /errors/
-    expect(@browser.url).not_to match /appdown/
-    sleep(1) # Downloading takes some time
-    filesAfterDownload =  Dir.glob(GlobAllDownloads)
-    diffFiles = (filesAfterDownload - filesBeforeDownload)
-    expect(diffFiles.size).to eq(1)
-    inhalt = IO.read(diffFiles.first)
-    expect(inhalt).to match /Desitin/i
   end
 
   it "should be possible to run grant_download oddb2.csv" do

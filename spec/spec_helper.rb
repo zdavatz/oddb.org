@@ -11,6 +11,7 @@ RSpec.configure do |config|
 end
 
 BreakIntoPry = false
+STDOUT.sync = true
 begin
   require 'pry'
 rescue LoadError
