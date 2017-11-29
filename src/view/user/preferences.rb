@@ -6,7 +6,6 @@ require 'htmlgrid/inputradio'
 require 'htmlgrid/inputcheckbox'
 require 'view/publictemplate'
 require 'view/form'
-require 'view/zsr'
 
 module ODDB
   module View
@@ -23,10 +22,7 @@ class PreferencesForm < View::Form
     [0,7] => :search_limitation_SL_only,
     [0,8] => 'search_swissmedic_description',
     [0,9] => :search_limitation_valid,
-    [0,10] => 'zsr_description',
-    [0,11] => :zsr_id,
-    [0,12] => View::ZsrDetails,
-    [0,13] => :button,
+    [0,10] => :button,
   }
   CSS_MAP = {
     [0,0] => 'subheading',
@@ -39,10 +35,7 @@ class PreferencesForm < View::Form
     [0,7] => 'list',
     [0,8] => 'subheading',
     [0,9] => 'list',
-    [0,10] => 'subheading',
-    [0,11] => 'list',
-    [0,12] => 'list',
-    [0,13] => 'button',
+    [0,10] => 'button',
   }
   CSS_CLASS = 'composite'
   def styles(model, session=@session)
@@ -152,20 +145,6 @@ class PreferencesForm < View::Form
     label.value = (text ? text : name)
     label
   end
-  def zsr_id(model, session)
-    fields = []
-    fields << @lookandfeel.lookup(:zsr_id) + '&nbsp;'
-    input = HtmlGrid::InputText.new(:zsr_id, model, session, self)
-    zsr_id = session.get_cookie_input(:zsr_id)
-    input.value = zsr_id
-    ODDB::View::Helpers.saveFieldValueForLaterUse(input, :zsr_id, '')
-    js =  "require(['dojo/domReady!'], function(){ js_save_zsr_id();});"
-    input.onclick = js
-    input.set_attribute('onBlur', js)
-    input.set_attribute('onchange', js)
-    fields << input
-    fields
-  end
   def button(model, session=@session)
     post_event_button(:update)
   end
@@ -184,13 +163,8 @@ class PreferencesComposite < HtmlGrid::Composite
 end
 class Preferences < View::PublicTemplate
   CONTENT = View::User::PreferencesComposite
-  HEAD    = View::WelcomeHead
-  JAVASCRIPTS = ['prescription']
-  private
-  def init
-    super
-    self.onload = "require(['dojo/domReady!'], function(){ js_get_zsr_id();});"
-  end
+  HEAD    = View::LogoHead
+  JAVASCRIPTS = ['autofill']
 end
     end
   end

@@ -45,17 +45,12 @@ class TestCenteredSearchComposite <Minitest::Test
                           :flavor => 'flavor',
                           :event => 'event',
                           :persistent_user_input => [],
-                          :request_path => 'de/gcc/rezept/ean/7680651330010',
+                          :request_path => 'de/gcc/ean/7680651330010',
                           :user_input => 'user_input',
                           :choosen_drugs => [7680651330010],
                           :create_search_url => 'create_search_url',
                          )
-    if false
-      @registration = StubRegistration.new('iksnr')
-      @model     = flexmock('model', @registration.sequences.values.first.packages.first)
-    else
-       @model     = flexmock('model')
-    end
+    @model     = flexmock('model')
     @model.should_receive(:atc_class).and_return(nil).by_default
     @composite = ODDB::View::Interactions::CenteredSearchComposite.new(@model, @session)
   end

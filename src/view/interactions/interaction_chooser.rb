@@ -128,7 +128,7 @@ class InteractionChooserDrug < HtmlGrid::Composite
       end
       @attributes.store('id', 'drugs_' + @model.barcode)
     end
-    url = @session.create_search_url(:home_interactions, ean13)
+    url = @session.create_search_url(ean13)
     self.onsubmit = <<-JS
 function get_to(url) {
   var form = document.createElement("form");

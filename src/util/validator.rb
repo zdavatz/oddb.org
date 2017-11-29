@@ -304,7 +304,6 @@ module ODDB
 			:vcard,
 			:wait,
 			:ywesee_contact,
-			:zsr,
 		]
 		FILES = [
 			:logo_file,
@@ -462,7 +461,6 @@ module ODDB
 			:unsubscribe,
 			:url,
 			:urls,
-      :zsr_id,
 		]
 		ZONES = [:admin, :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user,
 		 :hospitals, :substances, :companies]

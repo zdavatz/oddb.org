@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::TestZsr -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -31,8 +30,8 @@ end
 
 module ODDB
   module View
-    class TestZsr <Minitest::Test
-      def test_zsr
+    class TestPreferences <Minitest::Test
+      def test_prefs
         @lnf     = flexmock('lookandfeel', 
                             :lookup     => 'lookup',
                             :attributes => {},
@@ -57,7 +56,6 @@ module ODDB
                             :zone => 'zone',
                             :user_input => 'user_input',
                             :request_path => 'dummy.oddb.org/de/gcc/preferences/',
-                            :zsr_id => nil,
                             :state => state,
                             :get_cookie_input => 'get_cookie_input',
                             :user => user,
@@ -70,7 +68,6 @@ module ODDB
         @view    = ODDB::View::User::Preferences.new(@model, @session)
         result = @view.to_html(CGI.new)
         assert(result.index('composite'), "HTML should contain a composite")
-        assert(/ZSR/i.match(result), "HTML should contain ZSR")
       end
     end
   end # View

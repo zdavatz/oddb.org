@@ -35,11 +35,6 @@ class Preferences < State::Global
       @session.set_persistent_user_input(key, val.to_s)
       puts "2. Setting #{key} to #{val.inspect} from #{@session.user_input(key).inspect}"
     end
-    if zsr_id = @session.user_input(:zsr_id)
-      zsr_id = zsr_id.gsub(/[ \.]/, '')
-      @session.set_cookie_input(:zsr_id, zsr_id)
-      @session.set_persistent_user_input(:zsr_id, zsr_id)
-    end
     self
   end
 end

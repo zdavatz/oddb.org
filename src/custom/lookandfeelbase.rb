@@ -1777,9 +1777,6 @@ Zeno Davatz
         :ywesee_contact_name      =>  'Zeno Davatz',
         :ywesee_contact_text      =>  'Bitte schreiben Sie an:',
         :ywesee                    =>  'ywesee',
-        :zsr                      =>  'zsr',
-        :zsr_description          =>  'Bestimmen Sie die ZSR (Zulassungsnummer) Ihres Arztes',
-        :zsr_id                   =>  'Eingabe der ZSR Nummer im Format J123456 oder J 1234.56',
       },
       'fr'      =>    {
         :'|unknown'                =>  'autres',
@@ -2991,8 +2988,6 @@ Zeno Davatz
         :welcome                  =>  'Bienvenue',
         :welcome0                  =>  'Bienvenue ',
         :welcome1                  =>  '!',
-        :zsr                      =>  'zsr',
-        :zsr_id                   =>  'Entrez le numéro ZSR (format J123456 ou J 1234.56)',
       },
       'en'      =>    {
         :'|unknown'                =>  'others',
@@ -4279,8 +4274,6 @@ Zeno Davatz
         :ywesee_contact_name      =>  'Zeno Davatz',
         :ywesee_contact_text      =>  'Please write to',
         :ywesee                    =>  'ywesee',
-        :zsr                      =>  'zsr',
-        :zsr_id                   =>  'Enter the ZSR id (format is J123456 or J 1234.56)',
       },
     }
     HTML_ATTRIBUTES = {

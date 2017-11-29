@@ -86,12 +86,7 @@ function xhrGet(arg) {
   if(ean13) {
     ean13 = ean13[0];
     var id = 'drugs';
-    if (new_url.match(/\\/(zsr_[A-Z]\\d+)$/))
-    {
-      new_url = new_url + '/ean/' + ean13; 
-    } else {
-      new_url = new_url + ',' + ean13;
-    }
+    new_url = new_url + ',' + ean13;
     console.log('xhrGet call replace_element id '+ id + ' new_url '+new_url);
     replace_element(id, new_url)
   }

@@ -212,24 +212,6 @@ def createScreenshot(browser, added=nil)
   puts "createScreenshot: #{name} done" if $VERBOSE
 end
 
-def set_zsr_of_doctor(zsr_id, name = 'Davatz', field_name = 'prescription_zsr_id')
-  corrected = zsr_id.gsub(/[ \.]/, '');
-  zsr_field = @browser.text_field(:name => field_name)
-  zsr_field.set zsr_id
-  zsr_field.send_keys :enter
-  startTime = Time.now
-  while (Time.now - startTime) < 30
-    fieldOkay =  zsr_field.value == corrected
-    foundName = @browser.text.index(name)
-    if (fieldOkay or zsr_field.value == zsr_id) and foundName
-      break
-    end
-    # $stderr.puts "val #{zsr_field.value} #{Time.now - startTime} cond #{fieldOkay} foundName #{foundName.inspect}"
-    zsr_field.send_keys :enter if fieldOkay
-    sleep(1)
-  end
-end
-
 def run_bin_admin(cmd)
   ENV['RUBYOPT']=nil
   # puts "running bin/admin #{cmd}"

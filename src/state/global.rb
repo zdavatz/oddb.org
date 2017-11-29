@@ -73,7 +73,6 @@ require 'state/migel/items'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
-require 'state/zsr'
 require 'state/user/preferences'
 require 'state/user/download'
 require 'state/user/download_item'
@@ -204,7 +203,6 @@ module ODDB
           :sequences              => State::Drugs::Sequences,
           :shorten_path           => State::Drugs::ShortenPath,
           :vaccines               => State::Drugs::Vaccines,
-          :zsr                    => State::Zsr,
         }
         HOME_STATE = State::Drugs::Init
         LIMITED = false
@@ -226,7 +224,6 @@ module ODDB
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
-          [ :zsr ]                                                            => State::Zsr,
         }
         READONLY_STATES = RESOLVE_STATES.dup.update({
           [ :registration ]                       => State::Drugs::Registration,
@@ -298,8 +295,10 @@ module ODDB
       def preferences_navigation
         if @session.flavor == Session::DEFAULT_FLAVOR or
            @session.lookandfeel.enabled?(:preferences)
+        puts "preferences_navigation #{@session.request_path} #{State::User::Preferences}"
           [State::User::Preferences]
         else
+          puts "preferences_navigation #{@session.request_path} empty"
           []
         end
       end
@@ -1098,10 +1097,6 @@ module ODDB
 			def zone_navigation
 				self::class::ZONE_NAVIGATION
 			end
-      def zsr
-        model = nil
-        Zsr.new(@session, model)
-      end
 			private
 			def compare_entries(a, b)
 				@sortby.each { |sortby|

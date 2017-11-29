@@ -16,7 +16,6 @@ must_be_run_isolated = [
   'resilient_loop.rb',
   'session.rb',
   'tel_search.rb',
-  'zsr.rb',
 ]
 
 require File.join(File.expand_path(File.dirname(File.dirname(__FILE__))), 'helpers.rb')

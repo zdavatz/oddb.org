@@ -265,39 +265,6 @@ module ODDB
       @session.instance_eval("@request_path = '/de/gcc/home_interactions/#{UrlForThreePackages}'")
       assert_equal(ThreePackages, @session.choosen_drugs)
     end
-    def test_choosen_drugs_for_rezept
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/rezept/ean/#{UrlForThreePackages}'")
-      assert_equal(ThreePackages, @session.choosen_drugs)
-    end
-    def test_choosen_drugs_for_rezept_print
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}'")
-      assert_equal(ThreePackages, @session.choosen_drugs)
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages}?'")
-      assert_equal(ThreePackages, @session.choosen_drugs)
-    end
-    def test_choosen_drugs_for_rezept_print_with_slashes
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/print/rezept/ean/#{UrlForThreePackages.gsub(',','/')}'")
-      assert_equal(ThreePackages, @session.choosen_drugs)
-    end
-    ZsrAndEAN = "/de/gcc/print/rezept/zsr_J039019/ean/#{UrlForThreePackages.gsub(',','/')}"
-    def test_zsr_id
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
-      assert_equal('J039019', @session.zsr_id)
-    end
-    def test_choosen_drugs_for_rezept_print_with_zsr
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '#{ZsrAndEAN}'")
-      assert_equal(ThreePackages, @session.choosen_drugs)
-    end
     def test_choosen_drugs_for_interactions_with_atc_and_iksnr
       @session = ODDB::Session.new(app: @app)
 
@@ -321,20 +288,6 @@ module ODDB
                   "7680591310012"=>"package_drugs",}
       assert_equal(expected, @session.choosen_drugs)
     end
-    def test_handle_gracefully_malformed_url_1
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = 'de/gcc/prescription/zsr_J039019/zsr_/ean/7680591310011'")
-      assert_equal({'7680591310011' => 'package'}, @session.choosen_drugs)
-      assert_equal('J039019', @session.zsr_id)
-    end
-    def test_handle_gracefully_malformed_url_2
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = 'de/gcc/prescription/zsr_J039019%2f'")
-      assert_equal({}, @session.choosen_drugs)
-      assert_equal('J039019', @session.zsr_id)
-    end
     def test_choosen_drugs_nothing_found
       @session = ODDB::Session.new(app: @app)
 
@@ -342,13 +295,11 @@ module ODDB
       @session.set_persistent_user_input(:drugs, nil)
       assert_equal({}, @session.choosen_drugs)
     end
-    def test_create_search_url_without_zsr_id
+    def test_create_search_url_interactions
       {
-        'create_search_url(:home_interactions, nil)' => 'http://www.oddb.org/de/gcc/home_interactions',
-        'create_search_url(:rezept)'                      => 'http://www.oddb.org/de/gcc/rezept',
-        'create_search_url()'                             => 'http://www.oddb.org/de/gcc/rezept',
-        'create_search_url(:home_interactions, [7680576730049,7680193950301] )' =>
-            'http://www.oddb.org/de/gcc/home_interactions/7680576730049/7680193950301'
+        'create_search_url' => 'http://www.oddb.org/de/gcc/home_interactions',
+        'create_search_url([7680576730049,7680193950301] )' =>
+            'http://www.oddb.org/de/gcc/home_interactions/ean/7680576730049/7680193950301'
         }.each {
           |cmd, url|
         @session = ODDB::Session.new(app: @app)
@@ -356,81 +307,6 @@ module ODDB
         res = @session.instance_eval(cmd)
         assert_equal(url,res)
       }
-    end
-    def test_create_search_url_with_zsr_id
-      {
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456',
-        'create_search_url(:rezept, ["7680495260320"] )' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680495260320',
-        'create_search_url(:rezept, [7680516801112,7680576730063] )' =>
-            'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
-        }.each {
-          |cmd, url|
-        @session = ODDB::Session.new(app: @app)
-
-        @session.set_persistent_user_input(:zsr_id, 'P123456')
-        res = @session.instance_eval(cmd)
-        assert_equal(url,res)
-      }
-    end
-    def test_create_search_url_with_choosen_drugs
-      {
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/zsr_P123456/ean/7680516801112/7680576730063',
-        }.each {
-          |cmd, url|
-        drugs = {'7680516801112' => 'package_drugs',
-                 7680576730063 => 'drug 7680576730063'
-                 }
-        @session = ODDB::Session.new(app: @app)
-
-        @session.set_persistent_user_input(:zsr_id, 'P123456')
-        @session.set_persistent_user_input(:drugs, drugs)
-        res = @session.instance_eval(cmd)
-        assert_equal(url,res)
-      }
-    end
-    def test_create_search_url_no_zsr_idwith_choosen_drugs
-      {
-        'create_search_url(:rezept)' =>
-          'http://www.oddb.org/de/gcc/rezept/ean/7680516801112',
-        }.each {
-          |cmd, url|
-        drugs = {'7680516801112' => 'package_drugs'}
-        @session = ODDB::Session.new(app: @app)
-
-        @session.set_persistent_user_input(:zsr_id, nil)
-        @session.set_persistent_user_input(:drugs, drugs)
-        res = @session.instance_eval(cmd)
-        assert_equal(url, res)
-      }
-    end
-    def test_get_address_parent_pharmacy
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/rezept/pharmacy/7601001380028/oid/27'")
-      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
-      res = @session.get_address_parent
-      assert_equal('7601001380028',res)
-    end
-    def test_get_address_parent_hospital
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/rezept/hospital/7601001380028/oid/27'")
-      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
-      res = @session.get_address_parent
-      assert_equal('7601001380028',res)
-    end
-    def test_get_address_parent_doctor
-      @session = ODDB::Session.new(app: @app)
-
-      @session.instance_eval("@request_path = '/de/gcc/rezept/doctor/7601001380028/oid/27'")
-      @app.should_receive(:hospital_by_gln).once.with('7601001380028').and_return('7601001380028')
-      res = @session.get_address_parent
-      assert_equal('7601001380028',res)
     end
     def test_get_address_parent_no_parent_in_url
       @session = ODDB::Session.new(app: @app)

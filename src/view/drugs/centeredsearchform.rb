@@ -43,15 +43,19 @@ class CenteredSearchForm < View::CenteredSearchForm
     @additional_javascripts ||= []
     # This method is called in setTimeout() from SearchBar class
     @additional_javascripts.push <<-JS
-require(["dojo/parser", "dijit/ProgressBar"], function(){
-  show_progressbar = function(searchbar_id){
-    var progressBar = searchProgressBar.set({
-      style: "display:block;",
-      value: Infinity,
-    });
-    var searchbar = dojo.byId(searchbar_id);
-    searchbar.style.display = "none";
-  };
+require(["dojo"], function(dojo){
+  dojo.require("dojo/parser");
+  dojo.require("dojo/ProgressBar");
+  dojo.ready(function(){
+    show_progressbar = function(searchbar_id){
+      var progressBar = searchProgressBar.set({
+        style: "display:block;",
+        value: Infinity,
+      });
+      var searchbar = dojo.byId(searchbar_id);
+      searchbar.style.display = "none";
+    };
+  });
 });
     JS
   end
