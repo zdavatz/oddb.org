@@ -18,36 +18,30 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::User::CenteredSearchForm,
-		[0,4]		=>	View::CenteredNavigation,
-		[0,5,0]	 =>	:mediudate_link,
-		[0,5,1]	=>	:divider,
-		[0,5,2]	=>	:new_registration,
-		[0,6,0]	=>	:database_size,
-		[0,6,1]	=>	'database_size_text',
-		[0,6,2]	=>	'comma_separator',
-		[0,6,3]	=>	'database_last_updated_txt',
-		[0,6,4]	=>	:database_last_updated,
-		[0,7]		=>	:generic_definition,
-		[0,8]		=>	:legal_note,
-		[0,9]		=>	:paypal,
+		[0,2,0]		=>	:download_export,
+		[0,2,1]		=>	:divider,
+		[0,2,2]	 =>	:mediudate_link,
+		[0,3,0]	=>	:database_size,
+		[0,3,1]	=>	'database_size_text',
+		[0,3,2]	=>	'comma_separator',
+		[0,3,3]	=>	'database_last_updated_txt',
+		[0,3,4]	=>	:database_last_updated,
+		[0,4]		=>	:generic_definition,
+		[0,5]		=>	:legal_note,
+		[0,6]		=>	:paypal,
 	}
 	CSS_MAP = {
 		[0,0,1,10]		=>	'list center',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,8]	=>	'legal-note',
+		[0,5]	=>	'legal-note',
 	}
     def mediudate_link(model, session)
-      link = HtmlGrid::Link.new(:mediupdate, model, @session, self)
+      link = HtmlGrid::Link.new(:mediupdate, model, session, self)
       link.href = @lookandfeel.lookup(:mediupdate_url)
-      # link.css_class = 'list'
+      link.set_attribute('target', '_blank')
       link
     end
-	def new_registration(model, session)
-		link = HtmlGrid::Link.new(:new_registration, model, @session, self)
-		link.href = @lookandfeel._event_url(:new_registration)
-		link
-	end
 	def substance_count(model, session)
 		@session.app.substance_count
 	end
