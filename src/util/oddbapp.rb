@@ -1178,9 +1178,9 @@ class OddbPrevalence
 
   def search_pharmacies(key)
     result = [ pharmacy_by_gln(key)] if key.to_s.match(VALID_EAN13)
-    return result if result and result.size > 0 and result.first.is_pharmacy?
+    return result if result && result.first && result.first.is_pharmacy?
     companies = retrieve_from_index("company_index", key)
-    matching_companies = companies.find_all{|item| item.is_pharmacy? }
+    matching_companies = companies.find_all{|item| item && item.is_pharmacy? }
     matching_companies
   end
   def search_registration_holder(key)
@@ -1528,8 +1528,8 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
     @@primary_server = nil
-		attr_reader :cleaner, :updater, :system # system aka persistence
-		def initialize(process: nil, auxiliary: nil,  app: nil, server_uri: ODDB.config.server_url, unknown_user: nil)
+    attr_reader :cleaner, :updater, :system # system aka persistence
+    def initialize(process: nil, auxiliary: nil,  app: nil, server_uri: ODDB.config.server_url, unknown_user: nil)
       @process = (process || :user)
       @@last_start_time ||= 0
       start = Time.now
