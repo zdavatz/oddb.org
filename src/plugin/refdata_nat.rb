@@ -292,7 +292,8 @@ module ODDB
         xml = IO.read(path)
         items = Ox.load(xml, mode: :hash_no_attrs)[:"soap:Envelope"][:"soap:Body"][:PARTNER][:ITEM]
         @info_to_gln = {}
-        items.each do |item|
+        items.each_with_index do |item, index|
+          log "At item #{index} of #{items.size}"  if (index % 10000) == 0
           role = item[:ROLE].is_a?(Hash) ? item[:ROLE] : item[:ROLE].values.first
           type = role[:TYPE]
           next unless type.eql?('DoctMed')
