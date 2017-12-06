@@ -32,12 +32,10 @@ require 'util/rack_interface'
 class TestOddbApp2 <MiniTest::Unit::TestCase
   TEST_EAN13 = '7601123456789'
 	def setup
-		ODDB::GalenicGroup.reset_oids
+	ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
-		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
     @app = ODDB::App.new(server_uri: 'druby://localhost:20002', unknown_user: ODDB::UnknownUser.new)
-    @rack_app = ODDB::Util::RackInterface.new(app: @app)
-
+    # @rack_app = ODDB::Util::RackInterface.new(app: @app)
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\
         .and_return('session')
@@ -770,10 +768,18 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
     @app.companies = {company.oid => company}
     assert_equal(company, @app.company_by_gln(gln))
   end
+  def test_hospital_pharmacy_by_gln
+    gln = TEST_EAN13
+    pharmacy = @app.create_company
+    pharmacy.ean13 = gln
+    pharmacy.business_area = ODDB::BA_type::BA_hospital_pharmacy
+    assert_equal(pharmacy, @app.pharmacy_by_gln(gln))
+  end
   def test_pharmacy_by_gln
     gln = TEST_EAN13
-    pharmacy = ODDB::Pharmacy.new(gln)
-    @app.companies = {TEST_EAN13 => pharmacy}
+    pharmacy = @app.create_company
+    pharmacy.ean13 = gln
+    pharmacy.business_area = ODDB::BA_type::BA_public_pharmacy
     assert_equal(pharmacy, @app.pharmacy_by_gln(gln))
   end
   def test_search_pharmacies_by_gln

@@ -31,7 +31,7 @@ module ODDB
       Base_uri = 'https://www.swissreg.ch'
       Start_uri = "#{Base_uri}/srclient/faces/jsp/start.jsp"
       HitsPerPage = 250
-      LogDir = 'log'
+      LogDir = defined?(MiniTest) ? 'test/log' : 'log'
 
       def writeResponse(agent, filename)
         if defined?(RSpec) or defined?(MiniTest) or $VERBOSE

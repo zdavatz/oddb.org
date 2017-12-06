@@ -206,7 +206,7 @@ class TestRefdataNatPlugin <Minitest::Test
     assert_equal({@burgener_gln_id=>@burgener_fullname, 7601000729446=>"Naser Ramadani"}, created)
     assert_equal({}, updated)
     assert_equal({}, deleted)
-    assert_equal(0, skipped.size) # 1 doctor, 1 not doctor
+    assert_equal(0, skipped.size)
   end
 
   def test_get_latest_file

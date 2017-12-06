@@ -180,7 +180,7 @@ module ODDB
     end
 
     def test_update_epha_interactions_empty
-      FileUtils.rm(Dir.glob("#{@@vardir}/*"), :verbose => false)
+      FileUtils.rm_rf(Dir.glob("#{@@vardir}/*"), :verbose => false)
       assert(@plugin.update(@fileName))
       report = @plugin.report
       files = Dir.glob("#{@@vardir}/*")

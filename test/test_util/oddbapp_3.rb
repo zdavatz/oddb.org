@@ -33,12 +33,12 @@ require 'util/latest'
 
 class TestOddbApp3 <MiniTest::Unit::TestCase
   def setup
-#    @drb = flexmock(DRb::DRbObject, :new => server)
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
     dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
     @app = ODDB::App.new(server_uri: 'druby://localhost:20003')
 
+    flexmock('epha', ODDB::EphaInteractions).should_receive(:read_from_csv).and_return([])
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\
         .and_return('session').by_default

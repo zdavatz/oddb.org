@@ -107,7 +107,7 @@ class OddbPrevalence
     sorted_minifis
     sorted_feedbacks
     sorted_fachinfos
-    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE)
+    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE) unless defined?(MiniTest)
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
@@ -1418,6 +1418,7 @@ class OddbPrevalence
 
 	## indices
 	def rebuild_indices(name=nil, &block)
+      verbose = !defined?(MiniTest)
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
@@ -1426,7 +1427,7 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
-                                    $stdout.puts "#{caller[0]}: rebuild_indices #{index_definition.index_name}"
+            $stdout.puts "#{caller[0]}: rebuild_indices #{index_definition.index_name}" if verbose
 
         doit = if(name and name.length > 0)
                  name.match(index_definition.index_name)
@@ -1438,18 +1439,18 @@ class OddbPrevalence
 				if(doit)
 					index_start = Time.now
 					begin
-						puts "dropping: #{index_definition.index_name}"
+						puts "dropping: #{index_definition.index_name}" if verbose
 						ODBA.cache.drop_index(index_definition.index_name)
 					rescue StandardError => e
 						puts e.message
 					end
-					puts "creating: #{index_definition.index_name}"
+					puts "creating: #{index_definition.index_name}" if verbose
 					ODBA.cache.create_index(index_definition, ODDB)
 					begin
-						puts "filling: #{index_definition.index_name}"
+						puts "filling: #{index_definition.index_name}" if verbose
 						puts index_definition.init_source
 						source = instance_eval(index_definition.init_source)
-						puts "source.size: #{source.size}"
+						puts "source.size: #{source.size}" if verbose
 						ODBA.cache.fill_index(index_definition.index_name,
 							source)
 					rescue StandardError => e
@@ -1457,10 +1458,10 @@ class OddbPrevalence
 						puts e.message
 						puts e.backtrace
 					end
-					puts "finished in #{(Time.now - index_start) / 60.0} min"
+					puts "finished in #{(Time.now - index_start) / 60.0} min" if verbose
 				end
 			}
-			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
+			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h" if verbose
 		rescue StandardError => e
 			puts "INDEX CREATION ERROR:"
 			puts e.message
@@ -1537,14 +1538,12 @@ module ODDB
       @unknown_user = unknown_user
       @app = app
       super()
-      puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} "
+      puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds"  unless defined?(MiniTest)
       @rss_mutex = Mutex.new
       @cache_mutex = Mutex.new
       @admin_threads = ThreadGroup.new
-      @system = ODBA.cache.fetch_named('oddbapp', self){
-        OddbPrevalence.new
-      }
-      puts "init system starting after #{Time.now - start} seconds"
+      @system = ODBA.cache.fetch_named('oddbapp', self){ OddbPrevalence.new  }
+      puts "init system starting after #{Time.now - start} seconds" unless defined?(MiniTest)
       @system.init
       @system.odba_store
       return if auxiliary
@@ -1559,11 +1558,11 @@ module ODDB
       end
 
       @@primary_server = DRb.start_service(server_uri, self)
-      puts "initialized: #{Time.now - start}"
+      puts "initialized: #{Time.now - start}"  unless defined?(MiniTest)
       @@last_start_time = (Time.now - start).to_i
     rescue => error
       puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
-		end
+    end
     def method_missing(m, *args, &block)
       @cache_mutex.synchronize do
         @system.send(m, *args, &block)
