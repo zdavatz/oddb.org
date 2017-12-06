@@ -62,14 +62,14 @@ class TestCompany <Minitest::Test
     assert_equal ['atc1', 'atc2', 'atc3', 'atc4'], @company.atc_classes
   end
   def test_disable_invoice_fachinfo
-    assert_equal nil, @company.disable_invoice_fachinfo
+    assert_nil @company.disable_invoice_fachinfo
     @company.disable_invoice_fachinfo = true
     assert_equal true, @company.disable_invoice_fachinfo
     @company.disable_invoice_fachinfo = false
     assert_equal false, @company.disable_invoice_fachinfo
   end
   def test_disable_invoice_patinfo
-    assert_equal nil, @company.disable_invoice_patinfo
+    assert_nil @company.disable_invoice_patinfo
     @company.disable_invoice_patinfo = true
     assert_equal true, @company.disable_invoice_patinfo
     @company.disable_invoice_patinfo = false
@@ -298,6 +298,18 @@ class TestCompany <Minitest::Test
     ]
     assert_equal expected, @company.search_terms
   end
+  def test_search_terms_for_ean13_as_int
+    @company.name = 'Company-Name'
+    @company.ean13 = 7681123456789
+    addr = @company.address(0)
+    addr.address = 'Street, Number'
+    addr.location = '1234 City'
+    expected = [
+      'Company', 'Name', 'Company', 'CompanyName', 'Company Name',
+       "7681123456789", "Street Number", "1234 City", "City", "1234"
+    ]
+    assert_equal expected, @company.search_terms
+  end
   def test_search_terms_with_space
     @company.name = 'Company-Name'
     @company.ean13 = '7681123456789'
@@ -308,7 +320,6 @@ class TestCompany <Minitest::Test
       'Company', 'Name', 'Company', 'CompanyName', 'Company Name',
        "7681123456789", "Street Number", "1234 City", "City", "1234"
     ]
-    puts "@company.search_terms #{@company.search_terms.inspect}"
     assert_equal expected, @company.search_terms
   end
 	def test_update_values

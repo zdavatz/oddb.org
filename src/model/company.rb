@@ -172,7 +172,7 @@ module ODDB
 		def search_terms
 			terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
 			terms += [
-				@name, @ean13,
+				@name, @ean13.to_s,
 			]
 			@addresses.each { |addr|
 				terms += addr.search_terms
