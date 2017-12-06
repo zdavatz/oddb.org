@@ -3,7 +3,6 @@
 
 require 'state/global_predefine'
 require 'view/pharmacies/pharmacy'
-require 'model/pharmacy'
 
 module ODDB
 	module State

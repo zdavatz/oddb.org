@@ -6,7 +6,6 @@
 require 'state/global_predefine'
 require 'state/pharmacies/pharmacy'
 require 'view/pharmacies/pharmacylist'
-require 'model/pharmacy'
 require 'model/user'
 require 'util/interval'
 require 'sbsm/user'
