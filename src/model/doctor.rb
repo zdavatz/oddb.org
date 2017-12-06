@@ -61,7 +61,7 @@ module ODDB
 				@name, @firstname,
 				@email,
 				@specialities,
-				@ean13,
+				@ean13.to_s,
 			] + @addresses.collect { |addr|
 				addr.search_terms
 			})

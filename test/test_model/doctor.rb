@@ -136,6 +136,20 @@ module ODDB
                    "Street", "Location" ]
       assert_equal expected, @doctor.search_terms
     end
+    def test_search_terms_ean13_by_int
+      @doctor.name = 'Last-Name'
+      @doctor.firstname = 'First-Name'
+      @doctor.email = 'email@test.ch'
+      @doctor.specialities = ['Neurologie']
+      @doctor.ean13 = 7681123456789
+      addr = flexmock 'address'
+      addr.should_receive(:search_terms).and_return ['Street', 'Location']
+      @doctor.addresses.push addr
+      expected = [ "Last", "LastName", "Last Name", "First", "FirstName",
+                   "First Name", "emailtestch", "Neurologie", "7681123456789",
+                   "Street", "Location" ]
+      assert_equal expected, @doctor.search_terms
+    end
     def test_search_text
       @doctor.name = 'Last-Name'
       @doctor.firstname = 'First-Name'

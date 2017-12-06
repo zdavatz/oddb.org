@@ -755,6 +755,13 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
     @app.doctors = {doctor.oid => doctor}
     assert_equal(doctor, @app.doctor_by_gln(gln))
   end
+  def test_doctor_by_gln_as_int
+    gln = TEST_EAN13.to_i
+    doctor = ODDB::Doctor.new
+    doctor.ean13 = gln
+    @app.doctors = {doctor.oid => doctor}
+    assert_equal(doctor, @app.doctor_by_gln(gln))
+  end
   def test_hospital_by_gln
     gln = TEST_EAN13
     hospital = @app.create_hospital(gln)
