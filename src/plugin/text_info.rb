@@ -1344,7 +1344,7 @@ module ODDB
       FileUtils.makedirs(@details_dir, verbose: true)
       return unless File.exist?(@aips_xml)
       content = IO.read(@aips_xml, :encoding => 'UTF-8')
-      LogFile.debug "#{Time.now}: read #{content.size} bytes"
+      LogFile.debug "#{Time.now}: read #{@aips_xml} #{content.size} bytes"
       content.split('</medicalInformation>').each do |chunk|
         meta_info = handle_chunk(chunk)
         next unless meta_info

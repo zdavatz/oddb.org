@@ -190,30 +190,6 @@ module ODDB
             puts "#{Time.now}: response.body is now #{i.response.body.size} bytes long"
             i.response.headers['Content-Length'] = i.response.body.size
           end
-          if /medregbm.admin.ch/i.match(i.request.uri)
-            puts "#{Time.now}: #{__LINE__}: URI was #{i.request.uri} containing #{i.response.body.size} bytes"
-            medreg_dir = File.join(WorkDir, 'medreg')
-            FileUtils.makedirs(medreg_dir)
-            xlsx_name = File.join(medreg_dir, /ListBetrieb/.match(i.request.uri) ? 'Betriebe.xlsx' : 'Personen.xlsx')
-            File.open(xlsx_name, 'wb+') { |f| f.write(i.response.body) }
-            puts "#{Time.now}: Openening saved #{xlsx_name} (#{File.size(xlsx_name)} bytes) will take some time. URI was #{i.request.uri}"
-            workbook = RubyXL::Parser.parse(xlsx_name)
-            worksheet = workbook[0]
-            idx = 1; to_delete = []
-            while (worksheet.sheet_data[idx])
-              idx += 1
-              next unless worksheet.sheet_data[idx-1][0]
-              to_delete << (idx-1) unless TestHelpers::GTINS_MEDREG.index(worksheet.sheet_data[idx-1][0].value.to_i)
-            end
-            if to_delete.size > 0
-              puts "#{Time.now}: Deleting #{to_delete.size} of the #{idx} items will take some time"
-              to_delete.reverse.each{ |row_id|  worksheet.delete_row(row_id) }
-              workbook.write(xlsx_name)
-              i.response.body = IO.binread(xlsx_name)
-              i.response.headers['Content-Length'] = i.response.body.size
-              puts "#{Time.now}: response.body is now #{i.response.body.size} bytes long. #{xlsx_name} was #{File.size(xlsx_name)}"
-            end
-          end
         end
       end
       VCR.insert_cassette('oddb2xml',

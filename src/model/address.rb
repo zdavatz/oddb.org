@@ -6,6 +6,7 @@
 
 require 'util/searchterms'
 require 'util/persistence'
+require 'diffy'
 
 module ODDB
 	class Address
@@ -53,6 +54,7 @@ module ODDB
     include Persistence
 		include PersistenceMethods
     ODBA_SERIALIZABLE = ['@additional_lines', '@fax', '@fon']
+    ODBA_EXCLUDE_VARS = ['@to_diffable']
 		@@city_pattern = /[^0-9]+[^0-9\-](?!-)([0-9]+)?/u
 		attr_accessor :name, :additional_lines, :address,
 			:location, :title, :fon, :fax, :canton, :type
@@ -134,9 +136,26 @@ module ODDB
 		def ydim_lines
 			[@address].concat(@additional_lines)
 		end
+		def diff(other, options = Diff_options)
+          return false unless other
+          Diffy::Diff.new(to_diffable(self), to_diffable(other), options).to_s
+		end
 		def <=>(other)
 			self.lines <=> other.lines
 		end
+    private
+        def to_diffable(element)
+          result = (element.lines  +
+                    [:fon] + (element.fon.is_a?(Array) ? element.fon : [element.fon] ) +
+                    [:fax] +  (element.fax.is_a?(Array) ? element.fax : [element.fax] )).join(",")+"\n"
+          result
+        end
+        Diff_options= {:diff                           => "-U 3",
+                            :source                         => 'strings',
+                            :include_plus_and_minus_in_html => true,
+                            :include_diff_info              => false,
+                            :context                        => 0,
+                            }
 	end
 	module AddressObserver
 		attr_accessor :addresses

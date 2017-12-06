@@ -10,8 +10,8 @@ require 'plugin/atc_less'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
-require 'plugin/refdata_partner'
-require 'plugin/medreg_doctor'
+require 'plugin/refdata_jur'
+require 'plugin/refdata_nat'
 require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
@@ -249,13 +249,27 @@ module ODDB
     def update_atc_drugbank_link
       update_notify_simple(DrugbankPlugin, 'ATC Class (drugbank.ca)', :update_db_id)
     end
-    def update_refdata_partners(opts = nil)
-      LogFile.append('oddb/debug', " update update_refdata_partners opts #{opts.inspect}", Time.now)
-      klass = ODDB::Companies::RefdataPartnerPlugin
+    def update_refdata_jur(opts = nil)
+      LogFile.append('oddb/debug', " update refdata jur opts #{opts.inspect}", Time.now)
+      klass = ODDB::Companies::RefdataJurPlugin
       subj = 'companies (Refdata)'
       wrap_update(klass, subj) {
         plug = klass.new(@app, opts)
         plug.update
+        return if plug.report.empty?
+        log = Log.new(@@today)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
+    def update_refdata_nat(opts = nil)
+      LogFile.append('oddb/debug', " update refdata nat opts #{opts.inspect}", Time.now)
+      klass = ODDB::Doctors::RefdataNatPlugin
+      subj = 'doctors (Refdata)'
+      wrap_update(klass, subj) {
+        plug = klass.new(@app, opts)
+        plug.update
+        return if plug.report.empty?
         log = Log.new(@@today)
         log.update_values(log_info(plug))
         log.notify(subj)
@@ -428,7 +442,7 @@ module ODDB
       update_comarketing
       update_swissreg_news
       update_lppv
-      update_refdata_partners
+      update_refdata_jur
       exporter = Exporter.new(@app)
       exporter.export_generics_xls
       export_patents_xls

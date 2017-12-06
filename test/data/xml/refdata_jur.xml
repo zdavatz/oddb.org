@@ -4,6 +4,107 @@
     <PARTNER xmlns="http://refdatabase.refdata.ch/" CREATION_DATETIME="2017-08-09T15:27:38.5027531+02:00">
       <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
         <PTYPE>JUR</PTYPE>
+        <GLN>7601002028127</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2014-11-10T09:10:15.413</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Bethesda Spital AG</DESCR1>
+        <DESCR2>Apotheke</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+          <STREET>Gellertstrasse</STREET>
+          <STRNO>144</STRNO>
+          <ZIP>4052</ZIP>
+          <CITY>Basel</CITY>
+          <CTN>BS</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-06-23T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601002003117</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2009-03-09T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Hôpital neuchâtelois Val-de-Travers</DESCR1>
+        <DESCR2>Pharmacie</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+          <STREET>rue de l'Hôpital</STREET>
+          <STRNO>4</STRNO>
+          <ZIP>2108</ZIP>
+          <CITY>Couvet</CITY>
+          <CTN>NE</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601002054799</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2006-01-01T00:00:00</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>Clinica Psichiatrica di Giorno</DESCR1>
+        <DESCR2>Farmacia</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+          <STREET>Via Lugano</STREET>
+          <ZIP>6982</ZIP>
+          <CITY>Agno</CITY>
+          <CTN>TI</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-05-29T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601001049048</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2010-06-07T15:22:32.757</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>HUG Hôpitaux Universitaires de Genève</DESCR1>
+        <DESCR2>Division de pharmacologie et toxicologie cliniques</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+          <STREET>rue Gabrielle-Perret-Gentil</STREET>
+          <STRNO>4</STRNO>
+          <ZIP>1205</ZIP>
+          <CITY>Genève</CITY>
+          <CTN>GE</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-06-29T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601002525954</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2017-06-29T08:26:58.46</STDATE>
+        <LANG>DE</LANG>
+        <DESCR1>GZO Spital Wetzikon</DESCR1>
+        <DESCR2>Notfallstation</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+          <STREET>Spitalstrasse</STREET>
+          <STRNO>66</STRNO>
+          <ZIP>8623</ZIP>
+          <CITY>Wetzikon ZH</CITY>
+          <CTN>ZH</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-11-02T00:00:00">
+        <PTYPE>JUR</PTYPE>
+        <GLN>7601002139625</GLN>
+        <STATUS>I</STATUS>
+        <STDATE>2016-10-31T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Fondation de Nant</DESCR1>
+        <DESCR2>Unité Résidentielle Hospitalière</DESCR2>
+        <ROLE>
+          <TYPE>Hosp</TYPE>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>JUR</PTYPE>
         <GLN>7601001028333</GLN>
         <STATUS>I</STATUS>
         <STDATE>2007-10-09T00:00:00</STDATE>

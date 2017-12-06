@@ -148,9 +148,11 @@ module ODDB
       @address.lines = ['line','line']
       assert_equal(1, @address <=> address)
     end
-	end
+  end
   class TestAddress2 <Minitest::Test
+    puts 1
     def setup
+    puts __LINE__
       @address = ODDB::Address2.new
     end
     def test_city
@@ -204,14 +206,6 @@ module ODDB
       @address.additional_lines = ['line']
       expected = ["address", "line"]
       assert_equal(expected, @address.ydim_lines)
-    end
-    def test_compare
-      address = ODDB::Address2.new
-      lines1 = []
-      lines2 = []
-      flexmock(@address, :lines => lines2)
-      flexmock(address, :lines => lines1)
-      assert_equal(0, @address <=> address)
     end
   end
   class StubAddressObserver

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <PARTNER xmlns="http://refdatabase.refdata.ch/" CREATION_DATETIME="2017-11-29T09:51:55.329746+01:00">
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>NAT</PTYPE>
+        <GLN>7601000115690</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2006-01-01T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Burgener</DESCR1>
+        <DESCR2>Roland</DESCR2>
+        <ROLE>
+          <TYPE>DoctMed</TYPE>
+          <ZIP>3960</ZIP>
+          <CITY>Sierre</CITY>
+          <CTN>VS</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>NAT</PTYPE>
+        <GLN>7601003123081</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2006-01-01T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Robert-Matthey</DESCR1>
+        <DESCR2>Caroline</DESCR2>
+        <ROLE>
+          <TYPE>Pharmst</TYPE>
+          <TYPE>HeaProv</TYPE>
+          <ZIP>9470</ZIP>
+          <CITY>Buchs SG</CITY>
+          <CTN>SG</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">                                                                                                                                         
+        <PTYPE>NAT</PTYPE>                                                                                                                                                                                                      
+        <GLN>7601000729446</GLN>                                                                                                                                                                                                
+        <STATUS>A</STATUS>                                                                                                                                                                                                      
+        <STDATE>2006-01-01T00:00:00</STDATE>                                                                                                                                                                                    
+        <LANG>FR</LANG>                                                                                                                                                                                                         
+        <DESCR1>Ramadani</DESCR1>                                                                                                                                                                                               
+        <DESCR2>Naser</DESCR2>                                                                                                                                                                                                  
+        <ROLE>                                                                                                                                                                                                                  
+          <TYPE>DoctMed</TYPE>                                                                                                                                                                                                  
+        </ROLE>                                                                                                                                                                                                                 
+      </ITEM>                                                                                                                                                                                                                         
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-11-28T00:00:00">
+        <PTYPE>NAT</PTYPE>
+        <GLN>7601007428298</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2017-11-28T16:25:30.95</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Torres Fonseca</DESCR1>
+        <DESCR2>Rita Margarida</DESCR2>
+        <ROLE>
+          <TYPE>Physio</TYPE>
+          <ZIP>1007</ZIP>
+          <CITY>Lausanne</CITY>
+          <CTN>VD</CTN>
+          <CNTRY>CH</CNTRY>
+        </ROLE>
+      </ITEM>
+      <RESULT xmlns="http://refdatabase.refdata.ch/Partner_out">
+        <OK_ERROR>OK</OK_ERROR>
+        <NBR_RECORD>294694</NBR_RECORD>
+      </RESULT>
+    </PARTNER>
+  </soap:Body>
+</soap:Envelope>

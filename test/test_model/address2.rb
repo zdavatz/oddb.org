@@ -213,7 +213,53 @@ module ODDB
       other.location = '8706 Meilen'
       assert_equal([other, @address], [@address, other].sort)
     end
-	end
+    def test_diff
+      address2 = ODDB::Address2.new
+      lines2 = ['lines_first', 'lines2_second']
+      address2.additional_lines = lines2
+      address2.fax = ['077 234 45 67 89']
+      address3 = ODDB::Address2.new
+      lines3 = ['lines_first', 'lines3_second']
+      address3.fon = ['077 234 45 67 89']
+      address3.additional_lines = lines3
+      result =  address2.diff(address3)
+      assert_equal(0, result.index('-lines_first,lines2_second,fon,fax,077 234 45 67 89'))
+    end
+    def test_diff_equals
+      address2 = ODDB::Address2.new
+      lines2 = ['lines_first', 'lines2_second']
+      address2.additional_lines = lines2
+      address3 = address2.clone
+      assert_equal('', address2.diff(address3))
+    end
+    def test_diff_with_nil
+      address2 = ODDB::Address2.new
+      lines2 = ['lines_first', 'lines2_second']
+      address2.additional_lines = lines2
+      address3 = address2.clone
+      assert_equal(false, address2.diff(nil))
+    end
+    def test_diff_with_fax_as_string
+      address2 = ODDB::Address2.new
+      lines2 = ['lines_first', 'lines2_second']
+      address2.fax = '066 234 56 78'
+      address2.fon = '066 234 56 78'
+      address2.additional_lines = lines2
+      address3 = address2.clone
+      assert_equal('', address2.diff(address3))
+    end
+    def test_diff_with_fax_fon_as_string
+      address2 = ODDB::Address2.new
+      lines2 = ['lines_first', 'lines2_second']
+      address3 = address2.clone
+      address2.fon = '066 234 56 78'
+      address2.additional_lines = lines2
+      address3.fax = '055 122 56 78'
+      result =  address2.diff(address3)
+      assert(result.index('066 234 56 78'))
+      assert(result.index('055 122 56 78'))
+    end
+  end
   class TestAddressObserver <Minitest::Test
     class Observer
       include AddressObserver
