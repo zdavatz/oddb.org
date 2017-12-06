@@ -84,6 +84,7 @@ class OddbPrevalence
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
+    # for historical reasons the keys for hospitals are Strings, whereas for companies they are integers
     @hospitals ||= {}
 		@indications ||= {}
     @indices_therapeutici ||= {}
@@ -407,8 +408,8 @@ class OddbPrevalence
   end
   def create_hospital(ean13)
     raise "ean13 #{ean13.to_s[0..80]} not valid" unless  ean13.to_s.match(VALID_EAN13)
-    hospital = ODDB::Hospital.new(ean13)
-    @hospitals.store(ean13, hospital)
+    hospital = ODDB::Hospital.new(ean13.to_s)
+    @hospitals.store(ean13.to_s, hospital)
   end
 	def create_fachinfo
 		fachinfo = ODDB::Fachinfo.new

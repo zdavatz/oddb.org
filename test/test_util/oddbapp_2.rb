@@ -697,7 +697,20 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
       hos.should_receive(:new).and_return(hospital)
     end
     assert_equal(hospital, @app.create_hospital(TEST_EAN13))
+    assert_equal(hospital, @app.hospital_by_gln(TEST_EAN13.to_s))
+    assert_equal(hospital, @app.hospital_by_gln(TEST_EAN13.to_i))
     assert_raises(RuntimeError) { @app.create_hospital(0) }
+  end
+  def test_create_hospital_as_int
+    hospital = flexmock('hospital') do |hos|
+      hos.should_receive(:oid)
+    end
+    flexmock(ODDB::Hospital) do |hos|
+      hos.should_receive(:new).and_return(hospital)
+    end
+    assert_equal(hospital, @app.create_hospital(TEST_EAN13.to_i))
+    assert_equal(hospital, @app.hospital_by_gln(TEST_EAN13.to_s))
+    assert_equal(hospital, @app.hospital_by_gln(TEST_EAN13.to_i))
   end
   def test_create_fachinfo
     fachinfo = flexmock('fachinfo') do |fi|
