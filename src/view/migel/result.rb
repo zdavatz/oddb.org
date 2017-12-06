@@ -25,7 +25,6 @@ class List < HtmlGrid::List
   COMPONENTS = {}
   CSS_CLASS = 'composite'
   CSS_HEAD_KEYMAP = {
-    :feedback            => 'th right',
     :google_search       => 'th right',
     :facebook            => 'th right',
     :notify              => 'th right',
@@ -33,7 +32,6 @@ class List < HtmlGrid::List
   }
   CSS_KEYMAP = {
     :date                => 'list',
-    :feedback            => 'list right',
     :google_search       => 'list',
     :limitation_text     => 'list',
     :migel_code          => 'list',

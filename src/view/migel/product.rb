@@ -62,7 +62,6 @@ class ProductInnerComposite < HtmlGrid::Composite
   include DataFormat
   SYMBOL_MAP = {
     :date           => HtmlGrid::DateValue,
-    :feedback_label => HtmlGrid::LabelText,
   }
   COMPONENTS = {
     [0,0] => :migel_code,
@@ -74,8 +73,6 @@ class ProductInnerComposite < HtmlGrid::Composite
     [0,6] => :date,
     [0,7] => :price,
     [1,7] => :qty_unit,
-    [0,8] => :feedback_label,
-    [1,8] => :feedback,
   }
   CSS_MAP = {
     [0,0,1,9] => 'list top',

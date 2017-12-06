@@ -30,10 +30,8 @@ class ItemWrapper < SimpleDelegator
     end
 	end
 	def feedback_list
-    unless @item.feedbacks.is_a?(ODDB::Migel::Item)
       return nil unless @item.feedbacks
       @item.feedbacks[@index, INDEX_STEP]
-    end
 	end
 	def feedback_count
 		@item.feedbacks ? @item.feedbacks.size : 0

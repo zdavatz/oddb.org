@@ -5,7 +5,6 @@
 require 'rss/maker'
 require 'view/feedbacks'
 require 'view/drugs/feedbacks'
-require 'view/migel/feedbacks'
 
 module ODDB
   module View
@@ -23,8 +22,6 @@ class FeedbackTemplate < HtmlGrid::Template
     view = case model.item.odba_instance
            when ODDB::Package
              View::Drugs::FeedbackList
-           when ODDB::Migel::Product
-             View::Migel::FeedbackList
            end
     view.new([model], @session, self)
   end
@@ -58,9 +55,6 @@ class Feedback < HtmlGrid::Component
                   when ODDB::Package
                     title = @lookandfeel.lookup(:feedback_title, 
                                                 parent.name, parent.size)
-                  when ODDB::Migel::Product
-                    title = [ @lookandfeel.lookup(:feedback_title_migel), 
-                              parent.name ].join
                   end
           item.title = sanitize title
           
