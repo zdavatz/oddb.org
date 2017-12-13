@@ -54,6 +54,13 @@ module ODDB
 			assert_equal('8000', @address.plz)
 			assert_equal('Zurich', @address.city)
 		end
+		def test_iso_8859_location
+			iso_8859_location = '8000 Zürich'.encode('iso-8859-1')
+			assert_equal('ISO-8859-1', iso_8859_location.encoding.to_s)
+			@address.location = iso_8859_location
+			assert_equal('8000', @address.plz)
+			assert_equal('Zürich', @address.city)
+		end
 		def test_location__2
 			@address.location = 'Zurich'
 			assert_equal('Zurich', @address.city)
