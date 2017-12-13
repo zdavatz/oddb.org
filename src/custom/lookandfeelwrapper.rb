@@ -246,7 +246,6 @@ module ODDB
       :custom_tab_navigation,
       :google_analytics,
       :drugs,
-      :external_css,
       :help_link,
       :legal_note_vertical,
       :link_trade_name_to_fachinfo,
@@ -393,9 +392,6 @@ module ODDB
       'en'  =>  {
         :html_title               =>  'evidentia - know-how and tools for doctors',
       },
-    }
-    RESOURCES = {
-      :external_css => 'http://evidentia.ch/css/oddb.css',
     }
     def compare_list_components
       {
