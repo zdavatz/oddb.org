@@ -144,6 +144,7 @@ class PiChapterChooser < HtmlGrid::Composite
     end
   end
   def heatmap(model, session)
+    # text readability heatmap (scrolliris)
     link = HtmlGrid::Link.new(:heatmap, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:heatmap))
     seq = model.sequences.first
@@ -165,7 +166,7 @@ class PiChapterChooser < HtmlGrid::Composite
         , apiKey: '#{ODDB.config.scrolliris_fi_read_key}'
         }
       , settings = {
-          endpointURL: 'https://api.scrolliris.io/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
+          endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
         }
       , options = {
           selectors: {
@@ -177,7 +178,7 @@ class PiChapterChooser < HtmlGrid::Composite
           }
         }
       ;
-      var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://widget.scrolliris.io/projects/'+c.projectId+'/reflector.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
+      var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/widget/v1.0/projects/'+c.projectId+'/heatmap.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
     })(document, window);
   }
 })(event);
@@ -268,7 +269,7 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
   def init
     super
     unless @session.user_input(:chapter)
-      # text readability tracker (scrolliris)
+      # text readability measure (scrolliris)
       @additional_javascripts ||= []
       @additional_javascripts << <<-EOS
 (function(d, w) {
@@ -277,7 +278,7 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
     , apiKey: '#{ODDB.config.scrolliris_pi_write_key}'
     }
   , settings = {
-      endpointURL: 'https://api.scrolliris.io/v1.0/projects/'+config.projectId+'/events/read'
+      endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/events/read'
     }
   , options = {
       selectors: {
@@ -289,7 +290,7 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
       }
     }
   ;
-  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://script.scrolliris.io/projects/'+c.projectId+'/tracker.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(c,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
+  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/script/v1.0/projects/'+c.projectId+'/measure.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(c,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
 EOS
     end
