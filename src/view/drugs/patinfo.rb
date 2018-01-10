@@ -176,6 +176,10 @@ class PiChapterChooser < HtmlGrid::Composite
           , sentence: 'p > span'
           , material: 'ul,ol,table,pre,code'
           }
+        , widget: {
+            extension: 'overlay'
+          , initialState: 'active'
+          }
         }
       ;
       var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/widget/v1.0/projects/'+c.projectId+'/heatmap.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
