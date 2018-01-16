@@ -77,7 +77,6 @@ class CompareList < HtmlGrid::List
 		}
 	end
 	def active_agents(model, session)
-    $stdout.puts "compore active_agents #{model.class}"
 		model.active_agents.join(',<br>')
 	end
 	def compose_empty_list(offset)
@@ -98,7 +97,7 @@ class CompareList < HtmlGrid::List
 	end
 	def price_difference(model, session)
 		if(diff = model.price_difference)
-			sprintf('%+d%', diff*100.0)
+			sprintf('%+d%%', diff*100.0)
 		end
 	end
   def sort_model

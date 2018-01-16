@@ -3,6 +3,8 @@
 # require 'simplecov'
 # SimpleCov.start
 
+require 'date'
+
 RSpec.configure do |config|
   config.mock_with :flexmock
   config.expect_with :rspec do |c|
