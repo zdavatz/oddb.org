@@ -32,11 +32,12 @@ require 'stub/oddbapp'
 require 'util/latest'
 
 class TestOddbApp3 <MiniTest::Unit::TestCase
+  $app = ODDB::App.new(server_uri: "druby://localhost:20003", unknown_user: ODDB::UnknownUser.new)
   def setup
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
     dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-    @app = ODDB::App.new(server_uri: 'druby://localhost:20003')
+    @app =$app.clone
 
     flexmock('epha', ODDB::EphaInteractions).should_receive(:read_from_csv).and_return([])
     @session = flexmock('session') do |ses|

@@ -31,11 +31,12 @@ require 'util/rack_interface'
 
 class TestOddbApp2 <MiniTest::Unit::TestCase
   TEST_EAN13 = '7601123456789'
+  @@port_id ||= 20002
+  $app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
 	def setup
-	ODDB::GalenicGroup.reset_oids
+    ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
-    @app = ODDB::App.new(server_uri: 'druby://localhost:20002', unknown_user: ODDB::UnknownUser.new)
-    # @rack_app = ODDB::Util::RackInterface.new(app: @app)
+    @app = $app.clone
     @session = flexmock('session') do |ses|
       ses.should_receive(:grant).with('name', 'key', 'item', 'expires')\
         .and_return('session')
@@ -180,6 +181,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		assert_equal(expected, @app.patinfos)
 	end
 	def test_create_patinfo2
+    saved = @app.patinfos.clone
 		pat1 = @app.create_patinfo
 		pat2 = @app.create_patinfo
 		expected = {pat1.oid=>pat1,
@@ -187,6 +189,8 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 							}
 		assert_equal(expected,@app.patinfos)
 		assert_equal(pat1.oid+1,pat2.oid)
+  ensure
+    @app.patinfos = saved
 	end
 	def test_update_package
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
@@ -213,11 +217,14 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		assert_equal(galenic_form, @app.galenic_form('Tabletten'))
 	end
 	def test_create_galenic_group
+    saved = @app.galenic_groups.clone
 		@app.galenic_groups = {}
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group])
 		galgroup = @app.create(pointer)
 		assert_equal(galgroup.oid, @app.galenic_group(galgroup.oid).oid)
 		assert_equal(1, @app.galenic_groups.size)
+  ensure
+    @app.galenic_groups = saved
 	end
 	def test_create_substance
 		@app.substances = {}
@@ -324,8 +331,8 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 		doctor = @app.doctors.values.first
 		assert_equal(ODDB::Doctor, @app.doctor(oid).class)
 		assert_equal(doctor, @app.doctor(oid))
-		assert_equal(2, doctor.oid)
-		assert_equal(':!doctor,2.', doctor.pointer.to_s)
+		assert(doctor.oid >= 1)
+		assert_equal(":!doctor,#{doctor.oid}.", doctor.pointer.to_s)
 	end
 	def test_delete_company
 		company3 = @app.create_company
