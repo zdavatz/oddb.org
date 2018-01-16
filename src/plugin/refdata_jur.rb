@@ -98,6 +98,7 @@ module ODDB
       end
       def initialize(app=nil, glns_to_import = [])
         @glns_to_import = glns_to_import.clone
+        @glns_to_import ||= []
         @glns_to_import.delete_if {|item| item.size == 0}
         @info_to_gln    = {}
         @@logInfo       = []

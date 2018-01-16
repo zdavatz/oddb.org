@@ -393,6 +393,7 @@ class OddbPrevalence
   end
 	def create_doctor
 		doctor = ODDB::Doctor.new
+		doctor.pointer = ODDB::Persistence::Pointer.new([:doctor, doctor.oid])
 		@doctors ||= {}
     @doctors.store(doctor.oid, doctor)
 	end

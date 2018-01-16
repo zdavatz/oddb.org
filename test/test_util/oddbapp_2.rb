@@ -322,9 +322,10 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
 			@app.create_doctor
 		oid = @app.doctors.keys.first
 		doctor = @app.doctors.values.first
-		puts @app.doctors.inspect
 		assert_equal(ODDB::Doctor, @app.doctor(oid).class)
 		assert_equal(doctor, @app.doctor(oid))
+		assert_equal(2, doctor.oid)
+		assert_equal(':!doctor,2.', doctor.pointer.to_s)
 	end
 	def test_delete_company
 		company3 = @app.create_company

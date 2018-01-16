@@ -249,6 +249,20 @@ class TestRefdataJurPlugin <Minitest::Test
     assert_equal(2, @app.hospitals.size)
   end
 
+  def test_update_gtins_to_import_nil
+    globofarm = flexmock('globofarm', :oid => 'oid', :name => 'name')
+    @app.should_receive(:company_by_gln).with(7601001372689).and_return(globofarm)
+    @app.should_receive(:company_by_gln).with(any).and_return(nil)
+    @app.should_receive(:delete_company).with('oid').never
+    @plugin = ODDB::Companies::RefdataJurPlugin.new(@app, nil)
+    flexmock(@plugin, :get_latest_file => [true, Test_JUR__XML])
+    flexmock(@plugin, :get_company_data => {})
+    startTime = Time.now
+    created, updated, deleted, skipped = @plugin.update
+    diffTime = (Time.now - startTime).to_i
+    assert_equal(@expected_created, created)
+  end
+
   def test_update_report_empty
     @plugin = ODDB::Companies::RefdataJurPlugin.new(@app,[760100139999])
     flexmock(@plugin, :get_latest_file => [true, Test_JUR__XML])
