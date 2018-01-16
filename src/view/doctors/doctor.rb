@@ -156,7 +156,7 @@ class DoctorInnerComposite < HtmlGrid::Composite
     if(addrs.empty?)
       addrs = addrs.dup
       addr = ODDB::Address2.new
-      addr.pointer = model.pointer + [:address, 0]
+      addr.pointer = model.pointer + [:address, 0] if model.pointer
       addrs.push(addr)
     end
     Addresses.new(addrs, @session, self)
