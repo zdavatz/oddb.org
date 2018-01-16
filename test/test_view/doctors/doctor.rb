@@ -113,10 +113,9 @@ class TestDoctorComposite <Minitest::Test
                           :may_sell_drugs => 'may_sell_drugs',
                           :remark_sell_drugs => 'remark_sell_drugs',
                          ).by_default
-    @composite = ODDB::View::Doctors::DoctorComposite.new(@model, @session)
+    @composite = ODDB::View::Doctors::DoctorInnerComposite.new(@model, @session)
   end
   def test_addresses
-    skip("avoid undefined method `addresses' ")
     assert_kind_of(ODDB::View::Doctors::Addresses, @composite.addresses(@model))
   end
   def test_addresses__empty
@@ -124,8 +123,6 @@ class TestDoctorComposite <Minitest::Test
              :addresses => [@address],
              :pointer   => []
             )
-    flexmock(@session, :zone => 'zone')
-    skip("avoid undefined method `addresses' ")
     assert_kind_of(ODDB::View::Doctors::Addresses, @composite.addresses(@model))
   end
 end

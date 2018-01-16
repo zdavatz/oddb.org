@@ -77,6 +77,16 @@ module ODDB
 			@doctor.addresses = [addr2, addr1, addr3]
 			assert_equal(addr1, @doctor.praxis_address)
 		end
+		def test_addresses_nil
+			addr1 = flexmock "praxis_addresse1"
+			addr1.should_receive(:type).and_return { 'at_praxis' }
+			addr2 = flexmock "work_addresse2"
+			addr2.should_receive(:type).and_return { 'at_work' }
+			addr3 = flexmock "work_addresse3"
+			addr3.should_receive(:type).and_return { 'at_praxis' }
+			@doctor.addresses = [addr1, addr2, addr3]
+			assert_equal([addr1, addr3], @doctor.praxis_addresses)
+		end
 		def test_praxis_addresses
 			addr1 = flexmock "praxis_addresse1"
 			addr1.should_receive(:type).and_return { 'at_praxis' }

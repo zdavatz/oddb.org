@@ -157,6 +157,7 @@ module ODDB
                             :source                         => 'strings',
                             :include_plus_and_minus_in_html => true,
                             :include_diff_info              => false,
+                            :allow_empty_diff               => true,
                             :context                        => 0,
                             }
 	end

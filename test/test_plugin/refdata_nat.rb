@@ -43,6 +43,7 @@ class TestRefdataNatPlugin <Minitest::Test
     @plugin = flexmock('refdata_doctor_plugin', ODDB::Doctors::RefdataNatPlugin.new(@app))
     @burgener_gln_id = 7601000115690
     @burgener_fullname = 'Roland Burgener'
+    @ramadani_fullname = "Mit Umlauten äüöèàéç Ramadani"
   end
   def test_update_burgener
     @plugin = flexmock('refdata_doctor_plugin', ODDB::Doctors::RefdataNatPlugin.new(@app, [@burgener_gln_id]))
@@ -65,6 +66,27 @@ class TestRefdataNatPlugin <Minitest::Test
     assert_equal('Sierre', first_address.city)
     assert_nil(first_address.address)
     assert_equal([], first_address.fon)
+  end
+
+  def test_update_Ramadani_utf8
+    gtin2import = 7601000729446
+    @plugin = flexmock('refdata_doctor_plugin', ODDB::Doctors::RefdataNatPlugin.new(@app, [gtin2import]))
+    ramadani_from_app = flexmock('ramadani_from_app', ODDB::Doctor.new)
+    ramadani_from_app.name = 'nameüüüü'
+    ramadani_from_app.firstname = 'firstnameç'
+    flexmock(@plugin, :get_latest_file => [true, Test_NAT_XML])
+    flexmock(@plugin, :get_doctor_data => {})
+    @app.should_receive(:doctor_by_gln).with(gtin2import).and_return(ramadani_from_app)
+    @app.should_receive(:doctor_by_gln).with(any).and_return(nil)
+    @app.should_receive(:delete_doctor).with('oid').never
+    startTime = Time.now
+    created, updated, deleted, skipped = @plugin.update
+    diffTime = (Time.now - startTime).to_i
+    assert_equal([gtin2import], updated.keys)
+    ramadani = ODDB::Doctors::RefdataNatPlugin.all_doctors.first
+    assert_equal('französisch', ramadani.language)
+    assert_equal('Ramadani', ramadani.name)
+    assert_equal(@ramadani_fullname.split(' ')[0..-2].join(' '), ramadani.firstname)
   end
 
   def test_update_must_keep_telefon_and_fax
@@ -174,8 +196,7 @@ class TestRefdataNatPlugin <Minitest::Test
     old_address1.location = '3960 Sierre'
     ramadani.name = 'Ramadani'
     ramadani.firstname = 'Naser'
-    ramadani.language = 'französisch'
-    
+    ramadani.language = 'französisch'    
     ramadani.addresses <<  old_address1 
     assert_equal(1,  ramadani.addresses.size)
     @app.should_receive(:doctor_by_gln).with(gln).and_return(ramadani)
@@ -186,9 +207,9 @@ class TestRefdataNatPlugin <Minitest::Test
     assert_equal(1,  ramadani.addresses.size)
     created, updated, deleted, skipped = @plugin.update
     assert_equal(0,  created.size)
-    assert_equal(0,  updated.size)
+    assert_equal(1,  updated.size)
     assert_equal(0,  deleted.size)
-    assert_equal(true, @plugin.report.empty?)
+    assert_equal(false, @plugin.report.empty?)
   end
 
   def test_update_all
@@ -203,7 +224,7 @@ class TestRefdataNatPlugin <Minitest::Test
     startTime = Time.now
     created, updated, deleted, skipped = @plugin.update
     diffTime = (Time.now - startTime).to_i
-    assert_equal({@burgener_gln_id=>@burgener_fullname, 7601000729446=>"Naser Ramadani"}, created)
+    assert_equal({@burgener_gln_id=>@burgener_fullname, 7601000729446=> @ramadani_fullname}, created)
     assert_equal({}, updated)
     assert_equal({}, deleted)
     assert_equal(0, skipped.size)
