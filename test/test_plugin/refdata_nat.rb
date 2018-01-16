@@ -8,7 +8,6 @@ require 'stub/odba'
 require 'model/doctor'
 require 'plugin/refdata_nat'
 require 'tempfile'
-begin require 'pry'; rescue => LoadError; end
 
 class TestRefdataNatPlugin <Minitest::Test
   Test_NAT_XML = File.expand_path(File.join(__FILE__, '../../data/xml/refdata_nat.xml'))
