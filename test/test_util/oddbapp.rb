@@ -33,12 +33,13 @@ rescue LoadError
 end
 
 class TestOddbApp <MiniTest::Unit::TestCase
+  @@port_id ||= 19000
 	def setup
-#    @drb = flexmock(DRb::DRbObject, :new => server)
-		ODDB::GalenicGroup.reset_oids
+    ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
+    @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
+    @@port_id += 1
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-    @app = ODDB::App.new(server_uri: 'druby://localhost:20001', unknown_user: ODDB::UnknownUser.new)
     @rack_app = ODDB::Util::RackInterface.new(app: @app)
 
     @session = flexmock('session') do |ses|
