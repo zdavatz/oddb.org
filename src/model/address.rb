@@ -68,7 +68,8 @@ module ODDB
 			@fax = []
 		end
 		def city
-      @location
+			return nil unless @location
+			@location
 			city_utf8 = @location.encode('UTF-8', invalid: :replace, undef: :replace, replace: "" )
 			if(m = @@city_pattern.match(city_utf8))
 				 m.to_s.strip.sub(/^\W+/, '') # remove leading non word characters
@@ -118,7 +119,8 @@ module ODDB
 			end
 		end
 		def plz
-            location_utf8 = @location.encode('UTF-8', invalid: :replace, undef: :replace, replace: "" )
+			return nil unless @location
+			location_utf8 = @location.encode('UTF-8', invalid: :replace, undef: :replace, replace: "" )
 			if(match = /[1-9][0-9]{3}/.match(location_utf8))
 				 match.to_s
 			end
