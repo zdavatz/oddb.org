@@ -148,10 +148,10 @@ module ODDB
 		end
     private
         def to_diffable(element)
-          result = (element.lines  +
+          items = (element.lines  +
                     [:fon] + (element.fon.is_a?(Array) ? element.fon : [element.fon] ) +
-                    [:fax] +  (element.fax.is_a?(Array) ? element.fax : [element.fax] )).join(",")+"\n"
-          result
+                    [:fax] +  (element.fax.is_a?(Array) ? element.fax : [element.fax] )).flatten
+          items.collect { |x| x.to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '') }.join(",")+"\n"
         end
         Diff_options= {:diff                           => "-U 3",
                             :source                         => 'strings',

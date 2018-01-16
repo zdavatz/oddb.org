@@ -251,6 +251,13 @@ module ODDB
       address3 = address2.clone
       assert_equal(false, address2.diff(nil))
     end
+    def test_diff_with_non_ascii_char
+      address2 = ODDB::Address2.new
+      address2.additional_lines = ['lines_first']
+      address3 = address2.clone
+      address2.lines.first[8] = "\xA8"
+      assert_equal('', address2.diff(address3))
+    end
     def test_diff_with_fax_as_string
       address2 = ODDB::Address2.new
       lines2 = ['lines_first', 'lines2_second']
