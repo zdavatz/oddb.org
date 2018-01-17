@@ -140,8 +140,9 @@ module ODDB
 			[@address].concat(@additional_lines)
 		end
 		def diff(other, options = Diff_options)
-          return false unless other
-          Diffy::Diff.new(to_diffable(self), to_diffable(other), options).to_s
+      return '' unless other
+      return super(other) if other.is_a?(Hash) # Happens when sending an address suggestion
+      Diffy::Diff.new(to_diffable(self), to_diffable(other), options).to_s
 		end
 		def <=>(other)
 			self.lines <=> other.lines
