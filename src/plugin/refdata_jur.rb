@@ -306,6 +306,10 @@ module ODDB
       def parse_xml(path)
         log "parse_xml #{path} #{File.size(path)} bytes"
         xml = IO.read(path)
+        if defined?(Minitest) && xml.size > 100*1024
+          $stdout.puts "File #{path} way too big #{File.size(path)}"
+          require 'pry'; binding.pry
+        end
         items = Ox.load(xml, mode: :hash_no_attrs)[:"soap:Envelope"][:"soap:Body"][:PARTNER][:ITEM]
         @info_to_gln = {}
         items.each_with_index do |item, index|

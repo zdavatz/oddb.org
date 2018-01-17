@@ -3,6 +3,7 @@ gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
 
 gem 'syck'
 
+gem 'mathn'
 gem 'minitar'
 gem 'bigdecimal'#, '1.1.0'
 gem 'builder'

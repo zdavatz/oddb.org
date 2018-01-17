@@ -129,6 +129,18 @@ module ODDB
         klass.should_receive(:new).and_return(bsv)
       end
     end
+    def setup_refdata_jur_plugin
+      refdata = flexmock('setup_refdata_jur_plugin') do |plug|
+          plug.should_receive(:update).and_return('update')
+          plug.should_receive(:_update).and_return('_update')
+          plug.should_receive(:change_flags).and_return({})
+          plug.should_receive(:log_info_bsv).and_return(@recipients)
+          plug.should_receive(:log_info).and_return(@recipients)
+      end
+      flexstub(ODDB::Companies::RefdataJurPlugin) do |klass|
+        klass.should_receive(:new).and_return(refdata)
+      end
+    end
     def setup_exporter
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:log_info).and_return(@recipients)
@@ -231,6 +243,7 @@ module ODDB
       end
     end
     def setup_update_swissmedic_followers
+      setup_refdata_jur_plugin
       setup_bsv_xml_plugin
       log = flexmock('log') do |log|
         log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
@@ -274,6 +287,7 @@ module ODDB
       end
     end
     def setup_update_bsv_followers
+      setup_refdata_jur_plugin
       setup_update_immediate(LppvPlugin)          # for update_lppv
       flexstub(RssPlugin) do |klass|              # for update_price_feeds
         klass.should_receive(:new).and_return(flexmock('rss') do |obj|
@@ -479,10 +493,6 @@ module ODDB
     def test_update_doctors
       setup_update_simple(ODDB::Doctors::DoctorPlugin)
       assert_equal('notify', @updater.update_doctors)
-    end
-    def test_update_hospitals
-      setup_update_simple(HospitalPlugin)
-      assert_equal('notify', @updater.update_hospitals)
     end
     def test_update_lppv
       setup_update_immediate(LppvPlugin)

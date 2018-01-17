@@ -8,7 +8,6 @@ require 'stub/odba'
 require 'util/oddbapp'
 require 'plugin/refdata_jur'
 require 'tempfile'
-begin require 'pry'; rescue => LoadError; end
 
 class TestRefdataJurPlugin <Minitest::Test
   Test_JUR__XML = File.expand_path(File.join(__FILE__, '../../data/xml/refdata_jur.xml'))

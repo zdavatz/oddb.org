@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # @@today -- oddb.org -- 11.07.2007 -- hwyss@ywesee.com
+require 'date'
 
 class Object
 	unless(defined?(@@date_arithmetic_optimization))

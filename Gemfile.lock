@@ -73,6 +73,7 @@ GEM
     json (1.8.6)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
+    mathn (0.1.0)
     mechanize (2.7.5)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -265,6 +266,7 @@ DEPENDENCIES
   i18n (= 0.6.9)
   json
   mail (= 2.7.0)
+  mathn
   mechanize
   mime-types
   minitar
@@ -317,4 +319,4 @@ DEPENDENCIES
   yus
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
