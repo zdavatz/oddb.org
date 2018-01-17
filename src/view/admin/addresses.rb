@@ -38,7 +38,7 @@ class AddressList < HtmlGrid::List
 	def parent_class(model)
     obj = model.parent || begin
 		  ptr = model.address_pointer
-		  ptr.parent.resolve(@session)
+		  ptr.parent.resolve(@session) if ptr
     end
 		@lookandfeel.lookup(obj.class)
 	end
