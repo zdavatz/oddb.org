@@ -473,13 +473,13 @@ describe "ch.oddb.org" do
       expect(inhalt).to match(/Preisvergleich für/i)
       expect(inhalt).to match(/#{medi}/i)
       expect(inhalt).to match(/Zusammensetzung/i)
-      back_to_list = @browser.link(:text => /Zurück zur Liste/)
+      back_to_list = @browser.link(:text => /Liste/)
       old_text = @browser.text.clone
       expect(back_to_list.visible?)
       # visit price_history
       price_history =  @browser.link(:href => /price_history/)
       price_history.click
-      back_to_list = @browser.link(:text => /Zurück zur Liste/)
+      back_to_list = @browser.link(:text => /Liste/)
       expect(back_to_list.visible?)
       back_to_list.click
       expect(@browser.text).to match medi
@@ -508,7 +508,8 @@ describe "ch.oddb.org" do
       time = Time.parse(m2[0])
       diff_seconds = Time.now.to_i - time.to_i
       # * less than 5 minutes
-      require 'pry'; binding.pry unless diff_seconds < 310
+      # require 'pry'; binding.pry unless diff_seconds < 310
+      puts "status page #{url} is too old #{time}" unless diff_seconds < 310
       expect(diff_seconds).to be < 310 
     end
   end

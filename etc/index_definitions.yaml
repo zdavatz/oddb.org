@@ -173,7 +173,6 @@ target_klass: 'ODDB::Doctor'
 resolve_search_term: 'search_text'
 resolve_target: ''
 resolve_origin: ''
-dictionary: 'simple'
 init_source: '@doctors.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
@@ -222,7 +221,7 @@ target_klass: 'ODDB::Hospital'
 resolve_search_term: 'search_text'
 resolve_target: ''
 resolve_origin: ''
-dictionary: 'simple'
+dictionary: 'german'
 init_source: '@hospitals.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 

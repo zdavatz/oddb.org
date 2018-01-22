@@ -86,6 +86,10 @@ SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 
 $stdout.sync = true
 VERSION = `git rev-parse HEAD`
+process ||= :oddb
+if (m = /p\s(\d+)/.match(ENV['SUDO_COMMAND']))
+  port =  m[1]
+end
 SBSM.logger.info("process #{process} port #{port} on #{server_uri} sbsm #{SBSM::VERSION} and oddb.org #{VERSION}")
 
 
