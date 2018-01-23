@@ -349,21 +349,6 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     expected = "https://#{ODDB::SERVER_NAME}/de/gcc/download/invoice/oid/email/email/filename/filename"
     assert_equal(expected, @app.grant_download('email', 'filename', 'price'))
   end
-  def test_update_feedback_rss_feed
-    flexstub(@app) do |app|
-      app.should_receive(:async).and_yield
-    end
-    assert_nil(@app.update_feedback_rss_feed)
-  end
-  def test_update_feedback_rss_feed__error
-    flexstub(@app) do |app|
-      app.should_receive(:async).and_yield
-    end
-    flexstub(ODDB::Plugin) do |plg|
-      plg.should_receive(:new).and_raise(StandardError)
-    end
-    assert_nil(@app.update_feedback_rss_feed)
-  end
   def test_replace_fachinfo
     assert_nil(@app.replace_fachinfo('iksnr', 'pointer'))
   end
