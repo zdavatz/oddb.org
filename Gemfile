@@ -31,7 +31,7 @@ gem 'net-http-digest_auth'#, '1.2'
 gem 'net-http-persistent'# , '2.7'
 gem 'nokogiri'# , '1.6.1'
 gem 'ox', '2.8.2' # a replacement for nokogir
-gem 'odba',  '>= 1.1.4'
+gem 'odba',  '>= 1.1.5'
 gem 'oddb2tdat', '1.1.2'
 gem 'activesupport', '~> 4.1.11' # this is needed for paypal 2.0.0
 gem 'paypal', '2.0.0'
