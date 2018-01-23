@@ -103,7 +103,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     ntlm-http (0.1.1)
-    odba (1.1.4)
+    odba (1.1.5)
       ydbd-pg (>= 0.5.1)
       ydbi (>= 0.5.1)
     oddb2tdat (1.1.2)
@@ -275,7 +275,7 @@ DEPENDENCIES
   net-http-digest_auth
   net-http-persistent
   nokogiri
-  odba (>= 1.1.4)
+  odba (>= 1.1.5)
   oddb2tdat (= 1.1.2)
   ox (= 2.8.2)
   page-object

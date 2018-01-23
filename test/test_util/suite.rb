@@ -12,6 +12,7 @@ must_be_run_isolated = [
   'oddbapp.rb',
   'oddbapp_2.rb',
   'oddbapp_3.rb',
+  'oddbapp_rss.rb',
   'persistence.rb',
   'resilient_loop.rb',
   'session.rb',
