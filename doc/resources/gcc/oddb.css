@@ -448,16 +448,13 @@ img.welcomeleft {
     float:  left;
 }
 td.welcomeleft  {
-  float : left;
-  width : 33%;
+  align : left;
 }
 td.welcomecenter  {
-  float : center;
-  width : 33%;
+  align : center;
 }
 td.welcomeright  {
-  float : right;
-  width : 33%;
+  align : right;
 }
 td.personal_logo {
   width          : 33%;
