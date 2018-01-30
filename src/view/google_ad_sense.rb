@@ -45,10 +45,7 @@ google_color_bg = "E6FFD6";
 google_color_link = "003366";
 google_color_url = "FF3300";
 google_color_text = "003399";
-//--></script>
-<script type="text/javascript"
-  src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
-	</script>
+//--><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 				EOS
 			end
 		end
