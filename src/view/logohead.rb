@@ -36,7 +36,7 @@ module ODDB
       }
       CSS_MAP = {
         [0,1] => 'list',
-        [1,0] => 'welcomeright',
+        [1,0] => 'right',
         [1,1] => 'tabnavigation',
       }
       COMPONENT_CSS_MAP = {

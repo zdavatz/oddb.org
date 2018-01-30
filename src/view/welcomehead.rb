@@ -26,7 +26,7 @@ module ODDB
       }
       COMPONENT_CSS_MAP = {
         [0,0] =>  'welcomeleft',
-        [2,0] =>  'welcomeright',
+        [2,0] =>  'right',
       }
       def init
         super
