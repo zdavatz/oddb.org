@@ -62,7 +62,7 @@ class PiChapterChooser < HtmlGrid::Composite
   include View::Print
   XWIDTH = 8
   COLSPAN_MAP = {
-    [2,0] => XWIDTH - 3,
+    [2,0] => XWIDTH - 2,
   }
   COMPONENTS = {
     [0,0] => :full_text,
