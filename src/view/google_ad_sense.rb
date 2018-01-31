@@ -6,10 +6,10 @@
 module ODDB
 	module View
 		module GoogleAdSenseMethods
-			def ad_sense(model, session)
+			def ad_sense(model, session, label)
 				if(@lookandfeel.enabled?(:google_adsense) \
 					&& !(@session.user.valid? || active_sponsor?))
-					google = GoogleAdSense.new(model, session, self)
+					google = GoogleAdSense.new(model, session, self, label)
 					google.channel = self::class::GOOGLE_CHANNEL
 					google.format = self::class::GOOGLE_FORMAT
 					google.width = self::class::GOOGLE_WIDTH
@@ -25,6 +25,10 @@ module ODDB
 		end
 		class GoogleAdSense < HtmlGrid::Component
 			attr_accessor :channel, :format, :width, :height
+      def initialize(model, session, container = nil, label = 'undefined label')
+        @my_label = label
+        super(model, session, container)
+      end
 			def init
 				@format = "250x250_as"
 				@width = "250"
@@ -32,41 +36,44 @@ module ODDB
 				super
 			end
 			def to_html(context)
+        # To test the placement I prepended a string like Werbung #{@my_label} #{@width}x #{@height}<br>#{@script}
+        # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
 				<<-EOS
-<script type="text/javascript"><!--
-google_ad_client = "pub-6948570700973491";
-google_ad_width = "#{@width}";
-google_ad_height = "#{@height}";
-google_ad_format = "#{@format}";
-google_ad_channel ="#{@channel}";
-google_ad_type = "text_image";
-google_color_border = "DBE1D6";
-google_color_bg = "E6FFD6";
-google_color_link = "003366";
-google_color_url = "FF3300";
-google_color_text = "003399";
-//--></script>
-<script type="text/javascript"
-  src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
-	</script>
+#{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>' unless /right/.match(@my_label)}
+<ins class="adsbygoogle"
+     style="display:block height  #{@height}px width {@width}px"
+     google_ad_channel ="#{@channel}";
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-6948570700973491"
+     data-ad-slot="9996698154"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 				EOS
 			end
 		end
 		class GoogleAdSenseComposite < HtmlGrid::Composite
 			include GoogleAdSenseMethods
 			COMPONENTS = {
-				[0,0]	=>	:ad_sense,
+				[0,0]	=>	:ad_sense_left,
 				[1,0]	=>	:content,
-				[2,0]	=>	:ad_sense,
+				[2,0]	=>	:ad_sense_right,
 			}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
+				[1,0]	=>	'left',
 				[2,0]	=>	'right',
 			}
 			GOOGLE_CHANNEL = ''
 			GOOGLE_FORMAT = '250x250_as'
 			GOOGLE_WIDTH = '250'
 			GOOGLE_HEIGHT = '250'
+      def ad_sense_right(model, session)
+        GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_right')
+      end
+      def ad_sense_left(model, session)
+        GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_left')
+      end
 			def content(model, session)
 				self::class::CONTENT.new(model, @session, self)
 			end

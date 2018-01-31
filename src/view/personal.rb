@@ -63,7 +63,7 @@ module ODDB
         res
       end
 
-      # Returns company logo (if presnt) for a logged in ODDB user, else an empty div
+      # Returns company logo (if present) for a logged in ODDB user, else an empty div
       def personal_logo(model, session)
         div = HtmlGrid::Div.new(model, session, self)
         div.css_class = 'personal_logo'
@@ -84,9 +84,9 @@ module ODDB
         when :sponsor_logo 
           div.value = View::SponsorLogo.new(@session.sponsor, session, self)
         when  :google_adsense 
-          return ad_sense(model, session)
+          return ad_sense(model, session, 'search_result')
         else
-          return ad_sense(model, session) if session.request_method.eql?('POST')
+          return ad_sense(model, session, 'post_search') if session.request_method.eql?('POST')
           div.value = '&nbsp;' # this should never be visible
         end
         div

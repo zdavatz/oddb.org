@@ -16,7 +16,7 @@ module ODDB
       CSS_MAP = {
         [0,0]	=>	'welcomeleft',
         [1,0] =>  'welcomecenter',
-        [2,0] =>  'welcomeright',
+        [2,0] =>  'right',
       }
       COMPONENTS = {
         [0,0] => View::Logo,
