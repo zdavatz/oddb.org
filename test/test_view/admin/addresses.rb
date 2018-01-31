@@ -42,10 +42,26 @@ class TestAddressList <Minitest::Test
                         :address_pointer => address_pointer
                        )
     flexmock(address_pointer, :parent => @model)
-    @list    = ODDB::View::Admin::AddressList.new([@model], @session)
   end
   def test_address_type
+    @list    = ODDB::View::Admin::AddressList.new([@model], @session)
     assert_equal('lookup', @list.address_type(@model))
+  end
+  def test_address_model_nil
+    address_pointer = flexmock('address_pointer')
+    method   = flexmock('method', :arity => 1)
+    @model   = flexmock('model_nil', 
+                        :url     => 'url',
+                        :type    => 'type',
+                        :time    => Time.utc(2011,2,3),
+                        :method  => method,
+                        :pointer => 'pointer',
+                        :resolve => 'resolve',
+                        :parent  => nil,
+                        :address_pointer => nil
+                       )
+    flexmock(address_pointer, :parent => nil)
+    @list    = ODDB::View::Admin::AddressList.new([@model], @session)
   end
 end
 

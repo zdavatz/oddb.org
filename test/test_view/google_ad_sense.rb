@@ -22,8 +22,10 @@ class TestGoogleAdSense <Minitest::Test
     @component = ODDB::View::GoogleAdSense.new(@model, @session)
   end
   def test_to_html
-    expected = "<script type=\"text/javascript\"><!--\ngoogle_ad_client = \"pub-6948570700973491\";\ngoogle_ad_width = \"250\";\ngoogle_ad_height = \"250\";\ngoogle_ad_format = \"250x250_as\";\ngoogle_ad_channel =\"\";\ngoogle_ad_type = \"text_image\";\ngoogle_color_border = \"DBE1D6\";\ngoogle_color_bg = \"E6FFD6\";\ngoogle_color_link = \"003366\";\ngoogle_color_url = \"FF3300\";\ngoogle_color_text = \"003399\";\n//--></script>\n<script type=\"text/javascript\"\n  src=\"https://pagead2.googlesyndication.com/pagead/show_ads.js\">\n\t</script>\n"
-    assert_equal(expected, @component.to_html('context'))
+    html =  @component.to_html('context')
+    assert_match(/adsbygoogle.js/, html)
+    assert(html.index('data-ad-client="ca-pub-6948570700973491"'))
+    assert(html.index('style="display:block height  250px width {@width}px"'))
   end
 end
 
@@ -63,8 +65,8 @@ class TestGoogleAdSenseComposite <Minitest::Test
                           :enabled? => true
                          )
     @session   = flexmock('session', :lookandfeel => @lnf,  :sponsor => sponsor, :user => user)
-    @composite = ODDB::View::GoogleAdSenseComposite.new(@model, @session)
-    assert_kind_of(ODDB::View::GoogleAdSense, @composite.ad_sense(@model, @session))
+    @composite = ODDB::View::GoogleAdSenseComposite.new(@model, @session, 'left')
+    assert_kind_of(ODDB::View::GoogleAdSense, @composite.ad_sense(@model, @session, 'right'))
   end
 end
 
