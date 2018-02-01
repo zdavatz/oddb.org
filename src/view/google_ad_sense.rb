@@ -43,16 +43,11 @@ module ODDB
 <ins class="adsbygoogle"
      style="display:block height  #{@height}px width {@width}px"
      google_ad_channel ="#{@channel}";
+     data-ad-format="autorelaxed"
      data-ad-client="ca-pub-6948570700973491"
      data-ad-slot="9996698154"></ins>
 <script>
-     var el = document.querySelector('.hidden-md, .hidden-lg');
-     var display = window.getComputedStyle(el, null).getPropertyValue('display');
-     var ins = el.querySelector('ins');
-     if (display === 'block'){
-            ins.setAttribute('data-ad-format', 'auto');
-        }
-        (adsbygoogle = window.adsbygoogle || []).push({});
+     (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 				EOS
 			end
