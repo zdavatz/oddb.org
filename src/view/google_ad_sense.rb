@@ -44,6 +44,8 @@ module ODDB
      style="display:block height  #{@height}px width {@width}px"
      google_ad_channel ="#{@channel}";
      data-matched-content-ui-type="text"
+     data-matched-content-rows-num=4
+     data-matched-content-columns-num=1
      data-ad-format="autorelaxed"
      data-ad-client="ca-pub-6948570700973491"
      data-ad-slot="9996698154"></ins>
