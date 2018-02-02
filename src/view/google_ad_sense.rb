@@ -49,7 +49,9 @@ module ODDB
 <ins class="adsbygoogle example_responsive_1"
      style="display:block height  #{@height}px width {@width}px"
      google_ad_channel ="#{@channel}";
-     style="display:inline-block"
+     data-matched-content-ui-type="image_sidebyside"
+     data-matched-content-rows-num=1
+     data-matched-content-columns-num=1
      data-ad-client="ca-pub-6948570700973491"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
