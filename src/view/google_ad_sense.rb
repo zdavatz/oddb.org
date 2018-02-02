@@ -43,6 +43,7 @@ module ODDB
 <ins class="adsbygoogle"
      style="display:block height  #{@height}px width {@width}px"
      google_ad_channel ="#{@channel}";
+     data-matched-content-ui-type="text"
      data-ad-format="autorelaxed"
      data-ad-client="ca-pub-6948570700973491"
      data-ad-slot="9996698154"></ins>
