@@ -44,7 +44,7 @@ module ODDB
           @media(min-width: 500px) { .example_responsive_1 { width: 468px; height: 60px; } }
           @media(min-width: 800px) { .example_responsive_1 { width: 728px; height: 90px; } }
         </style>
-#{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>' unless /right/.match(@my_label)}
+#{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
     <!-- example_responsive_1 -->
 <ins class="adsbygoogle example_responsive_1"
      style="display:block height  #{@height}px width {@width}px"
