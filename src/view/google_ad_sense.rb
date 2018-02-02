@@ -44,15 +44,15 @@ module ODDB
           @media(min-width: 500px) { .example_responsive_1 { width: 368px; height: 60px; } }
           @media(min-width: 800px) { .example_responsive_1 { width: 400px; height: 90px; } }
         </style>
-#{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
-    <!-- example_responsive_1 -->
-<ins class="adsbygoogle example_responsive_1"
-     style="display:block height  #{@height}px width {@width}px"
-     google_ad_channel ="#{@channel}";
-     data-matched-content-ui-type="image_sidebyside"
-     data-matched-content-rows-num=1
-     data-matched-content-columns-num=1
-     data-ad-client="ca-pub-6948570700973491"></ins>
+          #{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
+        <!-- example_responsive_1 -->
+        <ins class="adsbygoogle example_responsive_1"
+          style="display:block height  #{@height}px width {@width}px"
+          google_ad_channel ="#{@channel}";
+          data-matched-content-ui-type="image_sidebyside"
+          data-matched-content-rows-num=1
+          data-matched-content-columns-num=1
+          data-ad-client="ca-pub-6948570700973491"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
