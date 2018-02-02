@@ -40,13 +40,13 @@ module ODDB
         # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
 				<<-EOS
         <style>
-          .example_responsive_1 { width: 320px; height: 100px; }
-          @media(min-width: 500px) { .example_responsive_1 { width: 468px; height: 60px; } }
-          @media(min-width: 800px) { .example_responsive_1 { width: 728px; height: 90px; } }
+          .search_result { width: 320px; height: 100px; }
+          @media(min-width: 500px) { .search_result { width: 468px; height: 60px; } }
+          @media(min-width: 800px) { .search_result { width: 728px; height: 90px; } }
         </style>
           #{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
-        <!-- example_responsive_1 -->
-        <ins class="adsbygoogle example_responsive_1"
+        <!-- search_result -->
+        <ins class="adsbygoogle search_result"
           style="display:block height  #{@height}px width {@width}px"
           google_ad_channel ="#{@channel}";
           data-matched-content-ui-type="image_sidebyside"
