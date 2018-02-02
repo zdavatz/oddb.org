@@ -50,8 +50,7 @@ module ODDB
      style="display:block height  #{@height}px width {@width}px"
      google_ad_channel ="#{@channel}";
      style="display:inline-block"
-     data-ad-client="ca-pub-6948570700973491"
-     data-ad-slot="9996698154"></ins>
+     data-ad-client="ca-pub-6948570700973491"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
