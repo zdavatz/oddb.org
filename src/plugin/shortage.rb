@@ -202,7 +202,7 @@ module ODDB
       old_packages_with_shortage.each do |package|
         next if @found_shortages[package.barcode]
         next unless @app.package_by_ean13(package.barcode)
-        @deleted_shortages << "#{package.barcode};#{package.atc_class.code};#{package.name}"
+        @deleted_shortages << "#{package.barcode};#{package.atc_class ? package.atc_class.code : ''};#{package.name}"
         package.no_longer_in_shortage_list
       end
       puts @found_shortages.keys
@@ -218,7 +218,7 @@ module ODDB
           changed << (msg = "#{item}: #{in_pack} => #{in_info}".rstrip)
         end
         next if changed.size == 0
-        @changes_shortages["#{gtin};#{pack.atc_class.code};#{pack.name}"] = changed
+        @changes_shortages["#{gtin};#{pack.atc_class ? pack.atc_class.code : ''};#{pack.name}"] = changed
         pack.update_shortage_list(info)
       end
     end
