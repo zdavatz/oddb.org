@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'swissmedic-diff'
 
 module ODDB
 
@@ -25,32 +26,6 @@ module ODDB
       }
       raise "#{error_2015}" if error_2015
     end
-
-    # please keep this constant in sync between (GEM) swissmedic-diff/lib/swissmedic-diff.rb and (GEM) oddb2xml/lib/oddb2xml/extractor.rb
-    COLUMNS_JULY_2015 = {
-        :iksnr => /Zulassungs-Nummer/i,                  # column-nr: 0
-        :seqnr => /Dosis+tärke-nummer/i, # Dosisstärke-nummer
-        :name_base => /Präparatebezeichnung/i,
-        :company => /Zulassungsinhaberin/i,
-        :production_science => /Heilmittelcode/i,
-        :index_therapeuticus => /IT-Nummer/i,            # column-nr: 5
-        :atc_class => /ATC-Code/i,
-        :registration_date => /Erstzulassungs-datum./i,
-        :sequence_date => /Zul.datum Dosisstärke/i,
-        :expiry_date => /Gültigkeitsdauer der Zulassung/i,
-        :ikscd => /Packungscode/i,                 # column-nr: 10
-        :size => /Packungsgrösse/i,
-        :unit => /Einheit/i,
-        :ikscat => /Abgabekategorie Packung/i,
-        :ikscat_seq => /Abgabekategorie Dosisstärke/i,
-        :ikscat_preparation => /Abgabekategorie Präparat/i, # column-nr: 15
-        :substances => /Wirkstoff/i,
-        :composition => /Zusammensetzung/i,
-        :indication_registration => /Anwendungsgebiet Präparat/i,
-        :indication_sequence => /Anwendungsgebiet Dosisstärke/i,
-        :gen_production => /Gentechnisch hergestellte Wirkstoffe/i, # column-nr 20
-        :insulin_category => /Kategorie bei Insulinen/i,
-        :drug_index       => /Verz. bei betäubunsmittel-haltigen Präparaten/i,
-    }
+    COLUMNS_JULY_2015 = SwissmedicDiff::Diff::COLUMNS_JULY_2015
   end
 end
