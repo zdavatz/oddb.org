@@ -19,8 +19,8 @@ module ODDB
         :xml_file => nil, # if set will force download => false 
       }
       ARGV.each do |arg|
-        if arg =~ /^\-\-(target|type)[\s=](fi|pi|both)$/
-          opts[:target] = $2.intern
+        if arg =~ /(fi|pi|both)$/
+          opts[:target] = $1.intern
         elsif arg =~ /reparse/
           opts[:reparse] = true
         elsif arg =~ /no\-download/
