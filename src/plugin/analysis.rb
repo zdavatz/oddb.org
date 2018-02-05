@@ -70,7 +70,7 @@ module ODDB
     def get_latest_file
       page = @agent.get INDEX_URL
       keyword = 'Liste der Analysenpositionen'
-      links = page.links.find_all{|link| /excelforma/i.match (link.href) }
+      links = page.links.find_all{|link| /xlsx/i.match (link.href) }
       link = links.first or raise "could not identify url to analysis.xlsx"
       file = @agent.get(link.href)
       download = file.body
