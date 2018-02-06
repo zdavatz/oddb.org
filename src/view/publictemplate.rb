@@ -91,16 +91,11 @@ module ODDB
           if @lookandfeel.enabled?(:google_analytics)
             headers << context.script('type' => 'text/javascript') do
               <<-EOS
-require(['dojo/ready'], function(ready) {
+require(['dojo/ready','dojox/analytics/Urchin'], function(ready) {
   ready(function() {
-    setTimeout(
-      require(['dojox/analytics/Urchin'], function(analytics) {
-        var tracker = new dojox.analytics.Urchin({
-          acct: '#{@lookandfeel.google_analytics_token}'
-        })
-      }),
-      100
-    );
+      dojo.ready(function(){
+        new dojox.analytics.Urchin({ acct: '#{@lookandfeel.google_analytics_token}' });
+    });
   });
 });
               EOS
