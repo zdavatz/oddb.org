@@ -36,9 +36,11 @@ module ODDB
 				super
 			end
 			def to_html(context)
-        # To test the placement I prepended a string like Werbung #{@my_label} #{@width}x #{@height}<br>#{@script}
-        # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
-				<<-EOS
+        if /search_result/i.match(@my_label)
+          # To test the placement I prepended a string like Werbung #{@my_label} #{@width}x #{@height}<br>#{@script}
+          # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
+          # Add  google_adtest = "on";  to the adsbygoogle javascript to force seeing the ad
+          result = %(
         <style>
           .search_result { width: 320px; height: 100px; }
           @media(min-width: 500px) { .search_result { width: 468px; height: 60px; } }
@@ -56,9 +58,31 @@ module ODDB
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-				EOS
-			end
-		end
+)
+        else
+          result = %(
+<style>
+.homes_responsive { width: 320px; height: 100px; }
+@media(min-width: 500px) { .example_responsive_1 { width: 368px; height: 60px; } }
+@media(min-width: 800px) { .example_responsive_1 { width: 428px; height: 90px; } }
+</style>
+    #{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
+        <!-- search_result -->
+        <ins class="adsbygoogle search_result"
+          style="display:block height  #{@height}px width {@width}px"
+          google_ad_channel ="#{@channel}";
+          data-matched-content-ui-type="image_sidebyside"
+          data-matched-content-rows-num=3
+          data-matched-content-columns-num=1
+          data-ad-client="ca-pub-6948570700973491"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+)
+        end
+        result
+      end
+      end
 		class GoogleAdSenseComposite < HtmlGrid::Composite
 			include GoogleAdSenseMethods
 			COMPONENTS = {
