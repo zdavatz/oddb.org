@@ -287,23 +287,42 @@ module ODDB
 
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
-      msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang}"
-      if package.patinfo && package.patinfo.descriptions && package.patinfo.description(lang).is_a?(ODDB::PatinfoDocument)
-        old_ti = package.patinfo
-        Languages.each do |old_lang|
+      msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
+      begin  # Here I catch a few bad entries in our database
+        name_okay = eval("package.patinfo.#{lang}.name")
+        if name_okay.nil?
+          puts "Cleaning bad patinfo #{masg}"
+          package.patinfo = nil
+        end
+      rescue NoMethodError => error
+          puts "Delete lang #{lang} patinfo NoMethodError #{msg}"
+          package.patinfo.descriptions.delete(lang)
+          package.patinfo.odba_store
+      end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
+      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+        old_ti = package.patinfo;  Languages.each do |old_lang|
           next if old_lang.eql?(lang)
           eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
         end
         msg += ' change_diff'
         store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
+      elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
+        package.patinfo.descriptions[lang] = patinfo_lang
+        package.patinfo.odba_store
+        msg += ' new patinfo'
       else
         package.patinfo = @app.create_patinfo
-        package.patinfo.descriptions[lang] = patinfo_lang.to_s
+        package.patinfo.descriptions[lang] = patinfo_lang
+        package.patinfo.odba_store
         msg += ' created patinfo'
       end
       package.odba_store
+      unless package.patinfo.descriptions.values.first.is_a?(ODDB::PatinfoDocument)
+        msg = "class #{package.patinfo.descriptions.values.first.class} is not a PatinfoDocument"
+        raise msg
+      end
       # Update patinfo of sequence
-      package.sequence.patinfo = package.patinfo  unless package.sequence.patinfo.object_id == package.patinfo  .object_id
+      package.sequence.patinfo = package.patinfo  unless package.sequence.patinfo.object_id == package.patinfo.object_id
       package.sequence.odba_store
       LogFile.debug "called odba_store #{msg}"
       package.patinfo
