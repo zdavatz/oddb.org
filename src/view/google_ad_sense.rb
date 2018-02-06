@@ -63,16 +63,16 @@ module ODDB
           result = %(
 <style>
 .homes_responsive { width: 320px; height: 100px; }
-@media(min-width: 500px) { .homes_responsive { width: 368px; height: 60px; } }
-@media(min-width: 800px) { .homes_responsive { width: 428px; height: 90px; } }
+@media(min-width: 500px) { .homes_responsive { width: 268px; height: 60px; } }
+@media(min-width: 800px) { .homes_responsive { width: 328px; height: 90px; } }
 </style>
     #{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
         <!-- homes_responsive -->
         <ins class="adsbygoogle homes_responsive"
           style="display:block height  #{@height}px width {@width}px"
           google_ad_channel ="#{@channel}";
-          data-matched-content-ui-type="image_sidebyside"
-          data-matched-content-rows-num=3
+          data-matched-content-ui-type="text"
+          data-matched-content-rows-num=4
           data-matched-content-columns-num=1
           data-ad-client="ca-pub-6948570700973491"></ins>
 <script>
