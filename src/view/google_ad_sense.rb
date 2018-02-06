@@ -76,10 +76,10 @@ module ODDB
 			GOOGLE_WIDTH = '250'
 			GOOGLE_HEIGHT = '250'
       def ad_sense_right(model, session)
-        GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_right')
+        @session.logged_in? ? nil : GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_right')
       end
       def ad_sense_left(model, session)
-        GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_left')
+        @session.logged_in? ? nil : GoogleAdSense.new(:ad_sense_, model, session, 'ad_sense_left')
       end
 			def content(model, session)
 				self::class::CONTENT.new(model, @session, self)
