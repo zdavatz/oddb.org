@@ -63,8 +63,8 @@ module ODDB
           result = %(
 <style>
 .homes_responsive { width: 320px; height: 100px; }
-@media(min-width: 500px) { .homes_responsive { width: 268px; height: 60px; } }
-@media(min-width: 800px) { .homes_responsive { width: 328px; height: 90px; } }
+@media(min-width: 500px) { .homes_responsive { width: 168px; height: 60px; } }
+@media(min-width: 800px) { .homes_responsive { width: 228px; height: 90px; } }
 </style>
     #{'<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'}
         <!-- homes_responsive -->
