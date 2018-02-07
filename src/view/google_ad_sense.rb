@@ -39,7 +39,7 @@ module ODDB
         if /search_result/i.match(@my_label)
           # To test the placement I prepended a string like Werbung #{@my_label} #{@width}x #{@height}<br>#{@script}
           # The if statement below is an ugly hack to prevent loading the adsbygoogle.js twice
-          # Add  google_adtest = "on";  to the adsbygoogle javascript to force seeing the ad
+          # Add  google_adtest = "on";  for showing ads on your Test-Server if you are behind a Dnydns IP.
           result = %(
         <style>
           .search_result { width: 320px; height: 100px; }
