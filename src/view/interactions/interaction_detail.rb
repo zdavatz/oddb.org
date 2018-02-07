@@ -113,10 +113,9 @@ class InteractionDetailForm < View::Form
 	}
 	COMPONENTS = {
     [0,0]   =>  '',
-    [0,1,0] =>  'th_pointer_descr',
-    [0,1,1] =>  :backtracking,
-    [0,1,2] =>  :interactions,
-    [0,1,3] =>  :interaction_detail,
+    [0,1,0] =>  :backtracking,
+    [0,1,1] =>  :interactions,
+    [0,1,2] =>  :interaction_detail,
     [1,1,0] =>  :search_query,
     [1,1,1] =>  :submit,
     [0,2]   =>  View::Interactions::InteractionDetailComposite,

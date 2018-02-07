@@ -26,9 +26,8 @@ class InteractionsForm < View::Form
 	}
 	COMPONENTS = {
 		[0,0]		=>	:interactions_count,
-		[0,1,0]	=>  'th_pointer_descr',
-		[0,1,1]	=>  :backtracking,
-		[0,1,2]	=>  'back_to_interactions',
+		[0,1,0]	=>  :backtracking,
+		[0,1,1]	=>  'back_to_interactions',
 		[1,1,0]	=>	:search_query,
 		[1,1,1]	=>	:submit,
 	}

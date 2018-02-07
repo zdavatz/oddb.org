@@ -88,7 +88,6 @@ module ODDB
         def backtracking(model, session=@session)
           class_name = "th-pointersteps"
           fields = []
-          fields << HtmlGrid::LabelText.new(:th_pointer_descr, model, session, self)
           link_home = HtmlGrid::Link.new(:home, model, @session, self)
           link_home.css_class = class_name
           link_home.href  = @lookandfeel._event_url(:home, [])
@@ -168,7 +167,6 @@ module ODDB
         def backtracking(model, session=@session)
           class_name = "th-pointersteps"
           fields = []
-          fields << HtmlGrid::LabelText.new(:th_pointer_descr, model, session, self)
           link_home = HtmlGrid::Link.new(:home, model, @session, self)
           link_home.css_class = class_name
           link_home.href  = @lookandfeel._event_url(:home, [])

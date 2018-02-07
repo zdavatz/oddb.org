@@ -405,7 +405,6 @@ class InteractionChooser < View::PrivateTemplate
   end
   def backtracking(model, session=@session)
     fields = []
-    fields << @lookandfeel.lookup(:th_pointer_descr)
     link = HtmlGrid::Link.new(:home_interactions, model, @session, self)
     link.css_class = "list"
     link.href  = @lookandfeel._event_url(:home_interactions, [])

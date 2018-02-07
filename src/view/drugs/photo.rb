@@ -75,7 +75,6 @@ class Photo < PrivateTemplate
   SNAPBACK_EVENT = :result
   def backtracking(model, session=@session)
     fields = []
-    fields << @lookandfeel.lookup(:th_pointer_descr)
     link = HtmlGrid::Link.new(:result, model, @session, self)
     link.css_class = "list"
     query = @session.persistent_user_input(:search_query)
