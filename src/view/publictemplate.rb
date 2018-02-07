@@ -61,6 +61,10 @@ module ODDB
 					"name"				=>	"description",
 					"content"			=>	"Open Drug Database Switzerland",
 				},
+        {
+          "name"        =>  "theme-color",
+          "content"     =>  "#8ddb45",
+        },
 			]
       def init
         @additional_javascripts = []
