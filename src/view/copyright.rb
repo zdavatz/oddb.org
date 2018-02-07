@@ -11,14 +11,9 @@ module ODDB
 	module View
 		class Copyright < HtmlGrid::Composite
 			COMPONENTS = {
-				[0,0]			=>  :lgpl_license,
-				[1,0]			=>  'comma_separator',
-				[2,0]			=>  :current_year,
-				[3,0]			=>	:cpr_link,
-				[4,0]			=>	:oddb_version,
-			}
-			COMPONENT_CSS_MAP = {
-				[0,0,5] => 'subheading',
+				[0,0]			=>  :current_year,
+				[1,0]			=>	:cpr_link,
+				[2,0]			=>	:oddb_version,
 			}
 			LEGACY_INTERFACE = false
 			def oddb_version(model)
@@ -30,11 +25,6 @@ module ODDB
 			def cpr_link(model)
 				link = standard_link(:cpr_link, model)
 				link.href = 'http://www.ywesee.com'
-				link
-			end
-			def lgpl_license(model)
-				link = standard_link(:lgpl_license, model)
-				link.href = 'http://www.gnu.org/copyleft/lesser.html'
 				link
 			end
 			def current_year(model)

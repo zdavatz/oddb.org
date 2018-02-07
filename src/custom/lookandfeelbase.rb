@@ -979,7 +979,6 @@ Zeno Davatz
         :language_select_html     =>  'Sprache des Html-Files',
         :legal_note                =>  'Rechtlicher Hinweis',
         :legal_note_pagename      =>  'ODDB.RechtlicherHinweis',
-        :lgpl_license              =>  'LGPL',
         :limitation                =>  'Limitation',
         :limitation_points        =>  'Limitationspunkte',
         :limitation_text          =>  'Limitationstext',
