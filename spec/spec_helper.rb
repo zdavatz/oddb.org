@@ -64,8 +64,9 @@ RegExpOneMedi  = /\/,?\d{13}(\?|)$/
 TwoMedis = [ 'Nolvadex', 'Losartan' ]
 DownloadDir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'downloads'))
 GlobAllDownloads  = File.join(DownloadDir, '*')
-AdminUser         = 'ngiger@ywesee.com'
-AdminPassword     = 'ng1234'
+AdminUser         = ENV['admin_user'] || 'ngiger@ywesee.com'
+AdminPassword     = ENV['admin_password']
+raise "Must define env variable admin_password" unless ENV['admin_password'] && AdminPassword.size > 0
 ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
 LeeresResult      =  /hat ein leeres Resultat/

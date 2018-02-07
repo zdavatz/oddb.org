@@ -434,8 +434,8 @@ describe "ch.oddb.org" do
     @browser.goto(OddbUrl + '/de/gcc/ddd_price/reg/59111/seq/02/pack/004/search_query/Bicalutamid+Actavis%22/search_type/st_sequence')
     tageskosten =  @browser.trs.find{|x| /^Tageskosten/.match(x.text)}.text
     expect(tageskosten).to match 'Tagesdosis 50 mg'
-    expect(tageskosten).to match 'Publikumspreis 645.10 CHF'
-    expect(tageskosten).to match '6.45 CHF / Tag'
+    expect(tageskosten).to match 'Publikumspreis 615.95 CHF'
+    expect(tageskosten).to match '6.16 CHF / Tag'
     expect(tageskosten).to match 'Stärke 150 mg Packungsgrösse 100 Tablette'
     expect(tageskosten).to match /Berechnung \d+\.\d+.+= \d+\.\d+.CHF \/ Tag/
   end
