@@ -483,6 +483,6 @@ class TestPackage <Minitest::Test
   ODDB::View::Copyright::ODDB_VERSION = 'oddb_version'
   def test_meta_tags
     context = flexmock('context', :meta => 'meta')
-    assert_equal('metametametametameta', @package.meta_tags(context))
+    assert_equal('metametametametametameta', @package.meta_tags(context))
   end
 end

@@ -233,7 +233,7 @@ class TestDDDPrice <Minitest::Test
                        :meta => 'meta',
                        :link => 'link'
                       )
-    assert_equal('metametametametalinkmeta', @template.meta_tags(context))
+    assert_equal('metametametametametalinkmeta', @template.meta_tags(context))
   end
   def test_pointer_descr
     assert_equal('lookup', @template.pointer_descr(@model))
