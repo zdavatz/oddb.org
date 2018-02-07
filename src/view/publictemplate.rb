@@ -53,6 +53,14 @@ module ODDB
 					"name"				=>	"robots",
 					"content"			=>	"follow, index, noarchive",
 				},
+				{
+					"name"				=>	"viewport",
+					"content"			=>	"width=device-width, initial-scale=1",
+				},
+				{
+					"name"				=>	"description",
+					"content"			=>	"Open Drug Database Switzerland",
+				},
 			]
       def init
         @additional_javascripts = []
