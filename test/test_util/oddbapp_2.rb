@@ -33,6 +33,7 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
   TEST_EAN13 = '7601123456789'
   @@port_id ||= 20002
 	def setup
+    GC.start # start a garbage collection
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
