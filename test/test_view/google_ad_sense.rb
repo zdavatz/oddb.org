@@ -17,7 +17,7 @@ module ODDB
 class TestGoogleAdSense <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @session   = flexmock('session', :lookandfeel => @lnf )
     @model     = flexmock('model')
     @component = ODDB::View::GoogleAdSense.new(@model, @session)
   end
@@ -40,7 +40,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
                           :lookup   => 'lookup',
                           :enabled? => nil
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    @session   = flexmock('session', :lookandfeel => @lnf, :logged_in? => true)
     @model     = flexmock('model')
     @composite = ODDB::View::GoogleAdSenseComposite.new(@model, @session)
   end
@@ -64,7 +64,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
                           :lookup   => 'lookup',
                           :enabled? => true
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf,  :sponsor => sponsor, :user => user)
+    @session   = flexmock('session', :lookandfeel => @lnf,  :sponsor => sponsor, :user => user, :logged_in? => true)
     @composite = ODDB::View::GoogleAdSenseComposite.new(@model, @session, 'left')
     assert_kind_of(ODDB::View::GoogleAdSense, @composite.ad_sense(@model, @session, 'right'))
   end
