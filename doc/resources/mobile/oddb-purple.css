@@ -439,15 +439,12 @@ td.pubprice {
   text-align    : right;
 }
 img.logo, img.welcomeleft, img.welcomecenter {
-    width: 350px;
+    width: 315px;
     display: block;
     margin: 0 auto;
 }
 img.welcomeleft {
     float:  left;
-}
-td.welcomeleft  {
-  width : 33%;
 }
 td.welcomecenter  {
   width : 33%;
