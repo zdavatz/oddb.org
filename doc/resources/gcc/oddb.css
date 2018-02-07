@@ -283,10 +283,12 @@ a.legal-note:active {
 a.chapter-tab {
   background : #ccff99;
   color      : red;
+  -webkit-text-size-adjust: none;
 }
 a.chapter-tab:link, a.chapter-tab:visited {
   background : #ccff99;
   color      : blue;
+  -webkit-text-size-adjust: none;
 }
 /* misc */
 a.powerlink {
