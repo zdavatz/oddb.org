@@ -51,9 +51,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * Herve Robin
 
 == LICENSE:
-===oddb.org
+=== oddb.org
 * GPLv3.0
-===Dojo Toolkit
+=== Dojo Toolkit
 * Licensed under the MIT license from http://www.opensource.org/licenses/mit-license.php:
 ** doc/resources/javascript/qrcode.js
 
