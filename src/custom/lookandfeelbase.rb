@@ -1109,7 +1109,7 @@ Zeno Davatz
               :oddb_style_purple        =>  'Lila Blau',
         :oddb_de                  =>  'Deutschland',
         :oddb_chde                =>  'Deutschland - Schweiz',
-        :oddb_version              =>  '&nbsp;Commit-ID',
+        :oddb_version              =>  '&nbsp;Source',
         :oddb_yaml_gz              =>  'oddb.yaml.gz',
         :oddb_yaml_zip            =>  'oddb.yaml.zip',
         :original                  =>  'Original',
