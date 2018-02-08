@@ -55,7 +55,7 @@ module ODDB
 				},
 				{
 					"name"				=>	"viewport",
-					"content"			=>	"width=device-width, initial-scale=1",
+					"content"			=>	"width=device-width",
 				},
 				{
 					"name"				=>	"description",
