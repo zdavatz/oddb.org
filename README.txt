@@ -40,23 +40,24 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 == DEVELOPERS:
 
-* Zeno R.R. Davatz
-* Masaomi Hatakeyama
-* Yasuhiro Asaka 
-* Niklaus Giger
-* Hanney Wyss (up to Version 1.0)
+* Zeno R.R. Davatz 2002-present
+* Niklaus Giger 2012-present
+* Masaomi Hatakeyama 2009-2011
+* Yasuhiro Asaka 2008-2009
+* Hanney Wyss 2002-2008
 
 == FRENCH TRANSLATION HELP
 
 * Herve Robin
 
 == LICENSE:
-
-* GPLv2.1
+===oddb.org
+* GPLv3.0
+===Dojo Toolkit
 * Licensed under the MIT license from http://www.opensource.org/licenses/mit-license.php:
 ** doc/resources/javascript/qrcode.js
 
 == Trademarks
 The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED. see http://www.denso-wave.com/qrcode/faqpatent-e.html
 
-Join the chat at https://gitter.im/zdavatz/oddb.org
+Issues at https://github.com/zdavatz/oddb.org/issues
