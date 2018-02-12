@@ -86,7 +86,7 @@ module ODDB
         CONTENT = View::Drugs::DocumentChangelogItemComposite
         SNAPBACK_EVENT = :change_log
         def backtracking(model, session=@session)
-          class_name = "th-pointersteps"
+          class_name = "breadcrumbs"
           fields = []
           link_home = HtmlGrid::Link.new(:home, model, @session, self)
           link_home.css_class = class_name
@@ -165,7 +165,7 @@ module ODDB
         SEARCH_HEAD = View::SelectSearchForm
         CONTENT = View::Drugs::ChangelogsComposite
         def backtracking(model, session=@session)
-          class_name = "th-pointersteps"
+          class_name = "breadcrumbs"
           fields = []
           link_home = HtmlGrid::Link.new(:home, model, @session, self)
           link_home.css_class = class_name

@@ -15,10 +15,10 @@ module ODDB
 				[0,0]	=>	:pointer_descr,
 			}
 			CSS_HEAD_MAP = {
-				[0,0] =>	'th-pointersteps',
+				[0,0] =>	'breadcrumbs',
 			}
 			CSS_MAP = {
-				[0,0] =>	'th-pointersteps',
+				[0,0] =>	'breadcrumbs',
 			}
 			OFFSET_STEP = [1,0]
 			SORT_DEFAULT = nil
@@ -56,7 +56,7 @@ module ODDB
 				@grid.add_field(self::class::STEP_DIVISOR, *offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				@grid.add_field(value, *offset)
-				@grid.add_style('th-pointersteps', *offset)
+				@grid.add_style('breadcrumbs', *offset)
 			end
 			def compose_list(model=@model, offset=[0,0])
 				#bg_flag = false
@@ -74,7 +74,7 @@ module ODDB
 					link = HtmlGrid::Link.new(event, @model, @session, self)
 					unless (@lookandfeel.direct_event == event)
 						link.set_attribute('href', url)
-						link.set_attribute('class', 'th-pointersteps')
+						link.set_attribute('class', 'breadcrumbs')
 						if(link.value.nil?)
 							link.value = event
 						end

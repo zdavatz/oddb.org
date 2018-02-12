@@ -834,14 +834,6 @@ th {
   padding     : 4px;
   text-align  : left;
 }
-/* pointersteps-classes */
-th.th-pointersteps {
-  background      : white;
-  color           : black;
-  font-weight     : bold;
-  text-align      : left;
-  text-decoration : none;
-}
 th, td.th {
   background      : #2ba476;
   color           : white;
@@ -857,11 +849,6 @@ a.th:hover {
 }
 a.th:active {
   color : red;
-}
-a.th-pointersteps {
-  background : white;
-  color      : blue;
-  text-align : left;
 }
 /* layout-classes */
 .sponsor {
