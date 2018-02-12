@@ -20,7 +20,7 @@ module ODDB
 			CSS_MAP = {
 				[0,0] =>	'breadcrumbs',
 			}
-			OFFSET_STEP = [1,0]
+			OFFSET_STEP = [0,0]
 			SORT_DEFAULT = nil
 			SORT_HEADER = false
 			SORT_REVERSE = false
