@@ -47,21 +47,17 @@ module ODDB
 			FOOT = View::NavigationFoot
 			META_TAGS = [
 				{
-					"name"				=>	"robots",
-					"content"			=>	"follow, index, noarchive",
+					"name" => "robots",      "content" => "follow, index, noarchive",
 				},
 				{
-					"name"				=>	"viewport",
-					"content"			=>	"width=device-width",
+					"name" => "viewport",    "content" => "width=device-width",
 				},
 				{
-					"name"				=>	"description",
-					"content"			=>	"Open Drug Database Switzerland",
+					"name" => "description", "content" => "Open Drug Database Switzerland",
 				},
-        {
-          "name"        =>  "theme-color",
-          "content"     =>  "#8ddb45",
-        },
+				{
+					"name" => "theme-color", "content" =>  "#8ddb45",
+				},
 			]
       def init
         @additional_javascripts = []
@@ -90,7 +86,6 @@ module ODDB
              style != "default" and
              @lookandfeel.attributes(:styles).keys.include?(style)
             link.gsub!(/oddb\.css/, "oddb-#{style}.css")
-            link.set_attribute('async', 'true')
           end
           link
 				end

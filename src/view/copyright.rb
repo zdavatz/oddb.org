@@ -12,8 +12,7 @@ module ODDB
 		class Copyright < HtmlGrid::Composite
 			COMPONENTS = {
 				[0,0]			=>  :current_year,
-				[1,0]			=>	:cpr_link,
-				[2,0]			=>	:oddb_version,
+				[1,0]			=>	:oddb_version,
 			}
 			LEGACY_INTERFACE = false
 			def oddb_version(model)
@@ -22,13 +21,12 @@ module ODDB
 				link.set_attribute('title', link.href)
 				link
 			end
-			def cpr_link(model)
-				link = standard_link(:cpr_link, model)
-				link.href = 'http://www.ywesee.com'
-				link
-			end
 			def current_year(model)
-				Time.now.year.to_s
+				link = standard_link(:oddb_version, model)
+				link.value = Time.now.year.to_s
+				link.href = @lookandfeel.lookup(:cpr_link)
+				link.set_attribute('title', link.href)
+				link
 			end
 			def standard_link(key, model)
 				klass = if(@lookandfeel.enabled?(:popup_links, false))

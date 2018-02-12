@@ -138,7 +138,7 @@ class InteractionDetailForm < View::Form
     link.href = @lookandfeel._event_url(:interaction_basket, args) do |args|
       args.map!{|arg| CGI.unescape(arg)}
     end
-    link.set_attribute('class', 'th-pointersteps')
+    link.set_attribute('class', 'breadcrumbs')
     link
   end
   def interactions(model, session=@session)
@@ -148,7 +148,7 @@ class InteractionDetailForm < View::Form
     link.href = @lookandfeel._event_url(:interactions, args) do |args|
       args.map!{|arg| CGI.unescape(arg)}
     end
-    link.set_attribute('class', 'th-pointersteps')
+    link.set_attribute('class', 'breadcrumbs')
     link
   end
   def interaction_detail(model, session=@session)

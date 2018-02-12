@@ -345,7 +345,7 @@ Zeno Davatz
         :correct                  =>  'Korrigieren',
         :corresp                  =>  '&nbsp;entspricht&nbsp;',
         :correspondence           =>  'Korrespondenzsprache',
-        :cpr_link                  =>  '&nbsp;ywesee.com,',
+        :cpr_link                  =>  'http://www.ywesee.com',
         :cpr_updated              =>  '&nbsp;aktualisiert&nbsp;am:&nbsp;',
         :create_composition       => 'Bestandteil hinzufügen',
         :dacapo_title              =>  'Zusatzinformationen&nbsp;von:&nbsp;<a href="http://www.dacapo.ch">www.dacapo.ch</a>',
