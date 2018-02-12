@@ -147,7 +147,7 @@ class Result < View::PrivateTemplate
       dv.css_class = "breadcrumb"
       dv.value = "&lt;"
       span1 = HtmlGrid::Span.new(model, @session, self)
-      span1.css_class = "breadcrumb-#{level} bold"
+      span1.css_class = "breadcrumb bold"
       level -= 1
       link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
       link1.href = @lookandfeel._event_url(:home)
@@ -156,7 +156,7 @@ class Result < View::PrivateTemplate
       breadcrumbs.push span1, dv
     end
     span2 = HtmlGrid::Span.new(model, @session, self)
-    span2.css_class = "breadcrumb-#{level}"
+    span2.css_class = "breadcrumb"
     query = @session.persistent_user_input(:search_query).gsub('/', '%2F')
     span2.value = @lookandfeel.lookup(:list_for, query, model.package_count)
     span3 = HtmlGrid::Span.new(model, @session, self)
