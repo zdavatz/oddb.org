@@ -202,7 +202,7 @@ class FiChapterChooser < HtmlGrid::Composite
       colspan_map.store(pos, xwidth - pos.at(0))
     end
     # Instead of using a larger colspan we add a non breaking space in the next cell and enlarge it to the right
-    # Niklaus hopes to fix a display problem with iOS, where the font size of the photo was too large
+    # This fixes a display problem with iOS, where the font size of the photo was too large
     colspan_map.delete(pos)
     new_pos = pos.clone
     new_pos[0] += 1
