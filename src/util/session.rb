@@ -286,11 +286,13 @@ module ODDB
       found = log = item = date = nil
       if  m = FI_DIFF_REGEXP.match(request_path)
         found = @app.registration(m[1])
+        return [] unless found
         log = found.fachinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
         date = m[2]
       elsif m = PI_DIFF_REGEXP.match(request_path)
-        found = @app.registration(m[1]).sequence(m[2]).package(m[3])
-        found ||= @app.registration(m[1]).package(m[3])
+        return [] unless (reg = app.registration(m[1]))
+        return [] unless (seq = reg.sequence(m[2]))
+        return [] unless (found =seq.package(m[3]))
         return [] unless found
         log = found.patinfo.send(self.language).change_log.sort!{|x,y| y.time.to_s <=> x.time.to_s}
         date = m[4]
