@@ -104,13 +104,13 @@ class RecentRegsComposite < View::Drugs::ResultComposite
     dv.css_class = "breadcrumb"
     dv.value = "&lt;"
     span1 = HtmlGrid::Span.new(model, @session, self)
-    span1.css_class = "breadcrumb-2 bold"
+    span1.css_class = "breadcrumb bold"
     link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
     link1.href = @lookandfeel._event_url(:home)
     link1.css_class = "list"
     span1.value = link1
     span2 = HtmlGrid::Span.new(model, @session, self)
-    span2.css_class = "breadcrumb-1"
+    span2.css_class = "breadcrumb"
     span2.value = @lookandfeel.lookup(:recent_registrations)
     [span1, dv, span2]
   end

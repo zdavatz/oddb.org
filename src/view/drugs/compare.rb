@@ -147,7 +147,7 @@ module InsertBackbutton
       dv.value = "&lt;"
       if @lookandfeel.enabled?(:home)
         span1 = HtmlGrid::Span.new(model, @session, self)
-        span1.css_class = "breadcrumb-#{level} bold"
+        span1.css_class = "breadcrumb bold"
         level -= 1
         link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
         link1.href = @lookandfeel._event_url(:home)
@@ -156,7 +156,7 @@ module InsertBackbutton
         breadcrumbs.push span1, dv
       end
       span2 = HtmlGrid::Span.new(model, @session, self)
-      span2.css_class = "breadcrumb-#{level}"
+      span2.css_class = "breadcrumb"
       level -= 1
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
@@ -173,7 +173,7 @@ module InsertBackbutton
       end
       span2.value = link2
       span3 = HtmlGrid::Span.new(model, @session, self)
-      span3.css_class = "breadcrumb-#{level}"
+      span3.css_class = "breadcrumb"
       if(respond_to?(:pointer_descr))
         span3.value = self.send(:pointer_descr, model)
       elsif(model.respond_to? :pointer_descr)

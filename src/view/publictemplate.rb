@@ -29,9 +29,6 @@ module ODDB
         'dijit/TooltipDialog',
       ]
       DOJO_PARSE_WIDGETS = false
-      DOJO_PREFIX = {
-        'ywesee' => '/resources/javascript/ywesee',
-      }
 			CONTENT = nil
 			CSS_CLASS = "composite"
 			COMPONENTS = {
@@ -93,6 +90,7 @@ module ODDB
              style != "default" and
              @lookandfeel.attributes(:styles).keys.include?(style)
             link.gsub!(/oddb\.css/, "oddb-#{style}.css")
+            link.set_attribute('async', 'true')
           end
           link
 				end

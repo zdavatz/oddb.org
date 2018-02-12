@@ -983,16 +983,8 @@ span.auc-factor-125 {
   border           : 1px solid #0F0;
   background-color : #BFB;
 }
-span.breadcrumb-1 {
-  font-size : 12px;
-}
-span.breadcrumb-2 {
-  font-size : 14px;
-}
-span.breadcrumb-3 {
-  font-size : 16px;
-}
 span.breadcrumb {
+  font-size : 12px;
   margin-left  : 6px;
   margin-right : 6px;
 }
