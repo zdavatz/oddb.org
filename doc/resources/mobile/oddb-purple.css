@@ -5,7 +5,8 @@ body {
   font-size        : 12px;
   border           : 0px dotted;
   background-color : white;
-  margin           : 8px;
+  margin-top       : 8px;
+  margin-bottom    : 8px;
 }
 label {
   font-weight : bold;
@@ -980,17 +981,7 @@ span.auc-factor-125 {
   border           : 1px solid #0F0;
   background-color : #BFB;
 }
-span.breadcrumb-1 {
-  font-size : 12px;
-}
-span.breadcrumb-2 {
-  font-size : 14px;
-}
-span.breadcrumb-3 {
-  font-size : 16px;
-}
 span.breadcrumb {
-  margin-left  : 6px;
   margin-right : 6px;
 }
 td.breadcrumbs {
