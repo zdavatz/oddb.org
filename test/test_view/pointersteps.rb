@@ -117,19 +117,12 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
   <TR>
-    <TD class="th-pointersteps">
+    <TD class="breadcrumbs">
       Th_pointer_descr
-    </TD>
-    <TD>
-      <A name="backsnap" href="url" class="th-pointersteps">
+      <A name="backsnap" href="url" class="breadcrumbs">
         Backsnap
       </A>
-    </TD>
-    <TD>
-      #{View::PointerSteps::STEP_DIVISOR}
-    </TD>
-    <TD class="th-pointersteps">
-      bon
+      #{View::PointerSteps::STEP_DIVISOR}bon
     </TD>
   </TR>
 </TABLE>
@@ -142,26 +135,18 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
 <TR>
-<TD class="th-pointersteps">Th_pointer_descr
-</TD>
-<TD>
-<A name="backsnap" href="url" class="th-pointersteps">Backsnap
+<TD class="breadcrumbs">Th_pointer_descr
+<A name="backsnap" href="url" class="breadcrumbs">Backsnap
 </A>
-</TD>
-<TD>&nbsp;-&nbsp;
-</TD>
-<TD class="th-pointersteps">
+&nbsp;-&nbsp;
 <A class="list" href="http://www.oddb.org/de/gcc/resolve/{&quot;pointer&quot;=&gt;&quot;-foo-&quot;}" name="pointer_descr">foo
 </A>
-</TD>
-<TD>&nbsp;-&nbsp;
-</TD>
-<TD class="th-pointersteps">bon
+&nbsp;-&nbsp;
+bon
 </TD>
 </TR>
 </TABLE>
         EOS
-        
 				assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
 			end
 			def test_to_html3
@@ -170,9 +155,8 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
 <TR>
-<TD class="th-pointersteps">Th_pointer_descr</TD>
-<TD>
-<A name="backsnap" href="url" class="th-pointersteps">Backsnap</A>
+<TD class="breadcrumbs">Th_pointer_descr
+<A name="backsnap" href="url" class="breadcrumbs">Backsnap</A>
 </TD>
 </TR>
 </TABLE>
@@ -193,7 +177,7 @@ module ODDB
         flexmock(@session, :lookup => nil)
         offset = [0,0]
 				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
-        assert_equal([1, 0], steps.compose_snapback(offset))
+        assert_equal([0, 0], steps.compose_snapback(offset))
       end
       def test_pointer_descr
         flexmock(@session, :allowed? => nil)
