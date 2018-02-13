@@ -335,6 +335,20 @@ describe "ch.oddb.org" do
     @browser.windows.last.close if @browser.windows.size > 1
   end
 
+  it 'should work for two patinfo in two different registration' do
+    ['/de/gcc/patinfo/reg/57489/seq/01',
+     '/de/gcc/patinfo/reg/55297/seq/04',
+     ].each do  |pi_url|
+        @browser.goto "#{OddbUrl}/#{pi_url}"
+        expect(/NoMethodError/i.match(@browser.text)).to be nil
+        expect(@browser.link(:name => 'effects').visible?).to be true
+        expect(@browser.link(:name => 'change_log').visible?).to be true
+        @browser.link(:name => 'effects').click
+        @browser.back
+        @browser.link(:name => 'change_log').click
+
+    end
+  end
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
     require 'pry'; binding.pry unless @browser.link(:text => 'PI').exist?

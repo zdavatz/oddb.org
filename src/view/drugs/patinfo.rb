@@ -13,6 +13,18 @@ module ODDB
   module View
     module Drugs
       def Drugs.get_args(model, session)
+        reg = (m = /reg\/(\d+)/.match(session.request_path)) ? m[1] : nil
+        seq = (m = /seq\/(\d+)/.match(session.request_path)) ? m[1] : nil
+        ikscd = (m = /pack\/(\d+)/.match(session.request_path)) ? m[1] : nil
+        if ikscd
+          return [:reg, reg, :seq, seq, :pack, ikscd ]
+        elsif seq
+          package = session.app.registration(reg).sequence(seq).packages.values.first
+          return [:reg, reg, :seq, seq, :pack, package.ikscd ]
+        elsif reg
+          package = session.app.registration(reg).packages.first
+          return [:reg, reg, :seq,  package.seqnr, :pack, package.ikscd ]
+        end
         if model.sequences.first
           args = [:reg, model.sequences.first.registration.iksnr ]
         elsif session && (m = /reg\/(\d+)/.match(session.request_path))
@@ -136,14 +148,11 @@ class PiChapterChooser < HtmlGrid::Composite
   def change_log(model, session=@session, key=:change_log)
     if  @model.description(@session.language).is_a?(ODDB::PatinfoDocument) &&
         @model.description(@session.language).change_log.size > 0
-
       link = HtmlGrid::Link.new(key, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:change_log))
       args = Drugs.get_args(model, @session)
       args += [ :diff]
-      ikscd = args[5]
-      ikscd ||= @session.app.registration(args[1]).sequence(args[3]).packages.keys.first 
-      link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], ikscd, :diff])
+      link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
       if @lookandfeel.enabled?(:evidentia, false)
         img = get_image("patinfo_#{key.to_s}_icon".to_sym)
         return [img, link]
