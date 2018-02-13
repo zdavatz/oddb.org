@@ -113,7 +113,7 @@ class TestFiChapterChooser <Minitest::Test
     @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
   end
   def test_init
-    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
+    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [3, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
     result = @composite.init
     assert_equal(expected.keys.sort, result.keys.sort)
     assert_equal(expected.values.sort, result.values.sort)
@@ -121,7 +121,7 @@ class TestFiChapterChooser <Minitest::Test
   end
   def test_init__status_allowed
     @state.should_receive(:allowed?).and_return(true)
-    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
+    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [3, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
     result = @composite.init
     assert_equal(expected.keys.sort, result.keys.sort)
     assert_equal(expected.values.sort, result.values.sort)

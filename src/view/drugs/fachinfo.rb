@@ -98,6 +98,10 @@ class FiChapterChooser < HtmlGrid::Composite
       next_offset += 1
     end
     @components.store(        [next_offset, 0], :print)
+    @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
+    @css_map.store(           [next_offset, 0], 'chapter-tab bold')
+    next_offset += 1
+    @components.store([next_offset, 0], "&nbsp;")
     colspan_map.store(        [next_offset, 0], XWIDTH - next_offset) unless @lookandfeel.enabled?(:evidentia, false)
     @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')

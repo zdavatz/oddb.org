@@ -343,6 +343,7 @@ describe "ch.oddb.org" do
         expect(/NoMethodError/i.match(@browser.text)).to be nil
         expect(@browser.link(:name => 'effects').visible?).to be true
         expect(@browser.link(:name => 'change_log').visible?).to be true
+        expect(@browser.link(:name => 'print').visible?).to be true
         @browser.link(:name => 'effects').click
         @browser.back
         @browser.link(:name => 'change_log').click

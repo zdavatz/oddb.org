@@ -127,7 +127,7 @@ module ODDB
                 mutex.synchronize do
                   # if empty hash is returned, something error may be happened
                   photo = pack.photo(image_size)
-                  photos << photo if !photo.empty?
+                  photos << photo if photo && !photo.empty?
                 end
               end
             end

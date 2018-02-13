@@ -73,9 +73,6 @@ end
 class PiChapterChooser < HtmlGrid::Composite
   include View::Print
   XWIDTH = 8
-  COLSPAN_MAP = {
-    [2,0] => XWIDTH - 2,
-  }
   COMPONENTS = {
     [0,0] => :full_text,
   }
@@ -111,6 +108,10 @@ class PiChapterChooser < HtmlGrid::Composite
       else
         components.store([next_offset,0], :print)
       end
+      @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
+      @css_map.store(           [next_offset, 0], 'chapter-tab bold')
+      next_offset += 1
+      @components.store([next_offset, 0], "&nbsp;")
       colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
       @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     end

@@ -86,7 +86,6 @@ class TestFachinfosComposite <Minitest::Test
     chapters = []
     fachinfo.each_chapter { |chap|
       chapters << chap  
-                          pp chap
     }
     registration = flexmock('registration', :fachinfo_active? => nil)
     fachinfo.registrations = [registration]
