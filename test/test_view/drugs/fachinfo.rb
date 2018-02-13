@@ -113,7 +113,7 @@ class TestFiChapterChooser <Minitest::Test
     @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
   end
   def test_init
-    expected = {[2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
+    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
     result = @composite.init
     assert_equal(expected.keys.sort, result.keys.sort)
     assert_equal(expected.values.sort, result.values.sort)
@@ -121,7 +121,7 @@ class TestFiChapterChooser <Minitest::Test
   end
   def test_init__status_allowed
     @state.should_receive(:allowed?).and_return(true)
-    expected = {[2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
+    expected = {[1, 1]=>"chapter-tab", [2, 0]=>"chapter-tab bold", [0, 0, 2]=>"chapter-tab", [0, 1]=>"chapter-tab"}
     result = @composite.init
     assert_equal(expected.keys.sort, result.keys.sort)
     assert_equal(expected.values.sort, result.values.sort)
@@ -276,14 +276,15 @@ class TestRootFachinfoComposite <Minitest::Test
     cell2 = @table.next_cell!
     @table << 'cell2'
 
-    @lookup      = flexmock('lookup', :to_s => @table)
+      @lookup      = flexmock('lookup', :to_s => @table,
+                              :gsub => nil,)
     @lookandfeel = flexmock('lookandfeel', 
                            :attributes => {},
                            :lookup     => @lookup,
                             :enabled? => false,
                            :disabled?  => false,
                           :base_url   => 'base_url',
-                           :_event_url => '_event_url'
+                           :_event_url => '_event_url',
                           )
     state      = flexmock('state', :allowed? => nil)
     @session   = flexmock('session', 
