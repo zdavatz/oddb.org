@@ -11,12 +11,15 @@ module ODDB
   class TestResilientLoop < Minitest::Test
     TimeoutValue = 0.1
     def setup
+      sleep(TimeoutValue*2);
       @r_loop = nil
+      super
     end
 
     def teardown
       @r_loop.finished
       super
+      sleep(TimeoutValue*2);
     end
 
     def test_full_loop_no_problem
