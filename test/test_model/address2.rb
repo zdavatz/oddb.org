@@ -251,6 +251,28 @@ module ODDB
       address3 = address2.clone
       assert_equal('', address2.diff(nil))
     end
+    def test_location__with_non_ascii_char
+      address2 = ODDB::Address2.new
+      # Here we have the problem only when one of the lines was UTF-8 and the other one US-ASCII with a non ASCII char
+      address2.additional_lines =  ["Cabinet médical", "Le Yucca"]
+      address2.location =  "1941 Cries (Voll" +[0xc3,0xa8,].pack("c*").force_encoding("US-ASCII") + "ges)"
+      emails = [nil]
+      assert_equal('Cabinet médical<br>Le Yucca<br>1941 Cries (Vollèges)<br>', (address2.lines + emails).join("<br>"))
+    end
+    def test_additionallines_with_non_ascii_char
+      address2 = ODDB::Address2.new
+      # Here we have the problem only when one of the lines was UTF-8 and the other one US-ASCII with a non ASCII char
+      address2.additional_lines =  ["Cabinet médical", "Le Yucca", "1941 Cries (Voll" +[0xc3,0xa8,].pack("c*").force_encoding("US-ASCII") + "ges)"]
+      emails = [nil]
+      assert_equal('Cabinet médical<br>Le Yucca<br>1941 Cries (Vollèges)<br>', (address2.lines + emails).join("<br>"))
+    end
+    def test_diff_with_non_ascii_char
+      address2 = ODDB::Address2.new
+      address2.additional_lines = ['lines_first']
+      address3 = address2.clone
+      address2.lines.first[8] = "\xA8"
+      assert_equal('', address2.diff(address3))
+    end
     def test_diff_with_fax_as_string
       address2 = ODDB::Address2.new
       lines2 = ['lines_first', 'lines2_second']

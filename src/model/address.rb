@@ -1,9 +1,4 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-# ODDB::Address -- oddb.org -- 24.04.2013 -- yasaka@ywesee.com
-# ODDB::Address -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
-# ODDB::Address -- oddb.org -- 20.09.2004 -- jlang@ywesee.com
-
 require 'util/searchterms'
 require 'util/persistence'
 require 'diffy'
@@ -69,9 +64,8 @@ module ODDB
 		end
 		def city
 			return nil unless @location
-			@location
-			city_utf8 = @location.encode('UTF-8', invalid: :replace, undef: :replace, replace: "" )
-			if(m = @@city_pattern.match(city_utf8))
+			to_utf(@location)
+			if(m = @@city_pattern.match(@location))
 				 m.to_s.strip.sub(/^\W+/, '') # remove leading non word characters
 			end
 		end
@@ -94,6 +88,8 @@ module ODDB
 			lines
 		end
 		def lines_without_title
+      @additional_lines.each { |line| line = to_utf(line) }
+      to_utf(@name)
 			lines = ([
 				@name,
 			] + @additional_lines +
@@ -105,6 +101,8 @@ module ODDB
       lines
 		end
 		def location_canton
+      to_utf(@canton)
+      to_utf(@location)
 			if(@canton && @location)
 				@location + " (#{@canton})"
 			else
@@ -120,8 +118,8 @@ module ODDB
 		end
 		def plz
 			return nil unless @location
-			location_utf8 = @location.encode('UTF-8', invalid: :replace, undef: :replace, replace: "" )
-			if(match = /[1-9][0-9]{3}/.match(location_utf8))
+      to_utf(@location)
+			if(match = /[1-9][0-9]{3}/.match(@location))
 				 match.to_s
 			end
 		end
@@ -152,7 +150,7 @@ module ODDB
           items = (element.lines  +
                     [:fon] + (element.fon.is_a?(Array) ? element.fon : [element.fon] ) +
                     [:fax] +  (element.fax.is_a?(Array) ? element.fax : [element.fax] )).flatten
-          items.collect { |x| x.to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '') }.join(",")+"\n"
+          items.collect { |x| (x.is_a?(Symbol) ? x : to_utf(x) ) }.join(",")+"\n"
         end
         Diff_options= {:diff                           => "-U 3",
                             :source                         => 'strings',
@@ -161,6 +159,15 @@ module ODDB
                             :allow_empty_diff               => true,
                             :context                        => 0,
                             }
+        def to_utf(line)
+          return unless line
+          return line if line.encoding.to_s.eql?('UTF-8')
+          if /ISO-8859-1/.match(line.encoding.to_s)
+            line.encode!('UTF-8')
+          else
+            line = line.force_encoding('UTF-8')
+          end
+        end
 	end
 	module AddressObserver
 		attr_accessor :addresses
