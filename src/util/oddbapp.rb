@@ -1551,16 +1551,19 @@ module ODDB
       reset()
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
+      @cache_mutex.synchronize do
       if @@primary_server && defined?(MiniTest)
-        DRb.remove_server(@@primary_server)
-        Thread.kill(DRb.thread)
-        @@primary_server = nil
-        GC.start
+          GC.start # start a garbage collection
+          DRb.remove_server(@@primary_server)
+          Thread.kill(DRb.thread)
+          @@primary_server = nil
+          GC.start
+        end
+        @@primary_server = DRb.start_service(server_uri, self)
+        puts "initialized: #{Time.now - start}"  unless defined?(MiniTest)
+        @@last_start_time = (Time.now - start).to_i
       end
 
-      @@primary_server = DRb.start_service(server_uri, self)
-      puts "initialized: #{Time.now - start}"  unless defined?(MiniTest)
-      @@last_start_time = (Time.now - start).to_i
     rescue => error
       puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
     end
