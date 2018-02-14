@@ -52,10 +52,6 @@ module ODDB
           [0,0] => 'th',
         }
         CSS_CLASS = 'composite'
-        COLSPAN_MAP = { [0,0] => 9,
-                        [0,1] => 8,
-                      }
-
         DEFAULT_CLASS = HtmlGrid::Value
         def init
           change_log_key = components.find{|x,y| y.eql?('th_change_log')}.first
