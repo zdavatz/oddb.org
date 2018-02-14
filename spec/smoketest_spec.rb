@@ -541,7 +541,7 @@ describe "ch.oddb.org" do
 
   def get_nr_items
     return 0 if LeeresResult.match(@browser.text)
-    list_title = @browser.span(:class => 'breadcrumb-1').text
+    list_title = @browser.span(:class => 'breadcrumb', :text => /\(.*\)/).text
     nr_items = /\((\d+)\)/.match(list_title)[1].to_i
   end
   # found using the following bin/admin (There are less < 1% of these cases)
@@ -601,7 +601,6 @@ describe "ch.oddb.org" do
       @browser.goto(@user_pref_url)
       expect(@browser.checkbox(:id => limitation.to_s).set?).to be true
       select_product_by_trademark(drug_name)
-      # binding.pry unless @browser.span(:class => 'breadcrumb-1').exist? # >Liste für "Methotrexat" (18)</span>'
       nr_restriced = get_nr_items
       categories =  @browser.elements(:id => /ikscat_\d+$/).collect{|x| x.text}
       categories.each do |category| expect(/^|\sA[$|\s]/.match(category)).not_to be nil; end
