@@ -8,18 +8,23 @@ unless File.directory?(directory) && File.readable?(directory)
   raise "Directory #{directory} not found or not readable"
 end
 
-files = Dir.glob(File.join(directory, '**/*.js')).find_all{ |x| x.match(/\/[a-z]+\.js$/i)}.sort.uniq
-
-puts files[0..5].join("\n"  )
-puts "Found #{files.size} to zip"
-files.each do |file|
-  backup = "#{file}.compressed" 
-  next if File.exist?(backup)
-  FileUtils.cp(file, backup, preserve: true, verbose: true)
-  cmd = "gzip #{file} ; mv #{file}.gz #{file}"
-  system cmd
+def unzip_files(directory, extension)
+  search_pattern = File.join(directory, "**/*#{extension}")
+  files = Dir.glob(search_pattern)
+  puts "Directory #{directory}: Found #{files.size} #{extension}-files to zip"
+  files.each do |file|
+    next if /uncompressed/i.match(file)
+    unless  File.extname(file).eql?(extension)
+      puts "Skipping #{file}"
+      next
+    end
+    backup = "#{file}.compressed" 
+    next if File.exist?(backup)
+    FileUtils.cp(file, backup, preserve: true, verbose: false)
+    cmd = "gzip #{file} ; mv #{file}.gz #{file}"
+    system cmd
+  end
 end
-             
 
-                 
-                 
+unzip_files(directory, '.js')
+unzip_files(directory, '.css')
