@@ -174,11 +174,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,11,1] => :sl_count_text,
 				[0,12]   => :atc_chooser,
 				[0,13]   => :download_app,
-<<<<<<< HEAD
-				[0,14]   => :download_app_generika,
-=======
 				[0,14]   => :download_android_app,
->>>>>>> 6e11f2df57e992d104f83be44e856f6fb2d24f15
 			})
       pos_legal = 16
       css_map.store([0,4,1,10], 'list center')
