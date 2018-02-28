@@ -174,12 +174,14 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,11,1] => :sl_count_text,
 				[0,12]   => :atc_chooser,
 				[0,13]   => :download_app,
+				[0,14]   => :download_android_app,
 			})
-      pos_legal = 15
+      pos_legal = 16
       css_map.store([0,4,1,10], 'list center')
       css_map.store([0,4,1,11], 'list center')
       css_map.store([0,4,1,12], 'list center')
       css_map.store([0,4,1,13], 'list center')
+      css_map.store([0,4,1,14], 'list center')
       if @lookandfeel.is_a?(ODDB::LookandfeelGenerika)
         pos_legal += 1
         components.update [0,pos_legal-1] => :generic_definition

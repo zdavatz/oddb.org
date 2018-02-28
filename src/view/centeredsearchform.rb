@@ -176,6 +176,12 @@ module ODDB
         link.href = 'http://itunes.apple.com/us/app/generika/id520038123?ls=1&mt=8'
         link
       end
+      def download_android_app(model, session)
+        link = HtmlGrid::Link.new(:download_android_app, model, session, self)
+        link.set_attribute('class', 'list')
+        link.href = 'https://play.google.com/store/apps/details?id=org.oddb.generika'
+        link
+      end
 			def download_export(model, session)
 				link = HtmlGrid::Link.new(:download_export, model, session, self)
 				link.href = @lookandfeel._event_url(:download_export)

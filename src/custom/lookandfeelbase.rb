@@ -433,6 +433,7 @@ Zeno Davatz
         :download_analysis1        =>  'hier',
         :download_analysis2        =>  '.',
         :download_app              =>  'iPhone / iPad generika App Download',
+        :download_android_app     =>  'Android generika App Download',
         :download_doctors0        =>  'Für den Download aller Arztadressen in einem YAML-File klicken Sie bitte ',
         :download_doctors1        =>  'hier',
         :download_doctors2        =>  '.',
