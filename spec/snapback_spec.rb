@@ -26,10 +26,10 @@ describe "ch.oddb.org snapback" do
 
   SnapbackTestStep = Struct.new(:line, :search_type, :search_value, :link_to_click, :expect_url, :expect_snapback_text, :next_step)
   Search_URL=  /search_query\/#{SNAP_IKSNR}|de\/gcc$|home_drugs\/$|#{OddbUrl}\/$/
-  Search_Snap = /Sie befinden sich in - ,Home,#{SNAP_IKSNR},\d{2},\d{3}/
+  Search_Snap = /Home - #{SNAP_IKSNR} - \d{2} - \d{3}/
   Search_SnapBack = /Suchresultat|Home/
   FI_url  = "de/gcc/fachinfo/reg/#{SNAP_IKSNR}"
-  FI_Snap = /Sie befinden sich in - ,(Home|Suchresultat),Fachinformation zu #{SNAP_NAME}/
+  FI_Snap = /(Home|Suchresultat) - FI zu #{SNAP_NAME}/
   diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
   test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, Date_Regexp,  diff_url, /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
   test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",diff_url, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
@@ -185,9 +185,9 @@ describe "ch.oddb.org snapback" do
     iksnr = FI_Link.match(link.href)[1]
     link.click
     check_home_links
-    steps = @browser.tds.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
+    steps = @browser.tds.find_all{ |x| x.class_name.eql? 'breadcrumbs'}
     text = steps.collect{ |y| y.text }.join('').clone
-    expect(text).to match /Sie befinden sich/
+    expect(text).to match /Home - FI zu/
   end
 
   Snapback_Registration = { '63184' => 'Celecoxib Helvepharm'}
@@ -195,13 +195,12 @@ describe "ch.oddb.org snapback" do
     iksnr = Snapback_Registration.keys.first
     name = Snapback_Registration.values.first
     search_item(/Swissmedic/, iksnr)
-    check_pointer_steps(/Sie befinden sich in - ,Home,#{iksnr}/)
-
+    check_pointer_steps(/Home - #{iksnr}/)
     expect(@browser.text).not_to match LeeresResult
     expect(@browser.text).to match /Deutsche Bezeichnung|Präparat/
     expect(@browser.text).to match name
     @browser.link(:name => 'square_fachinfo').click
-    check_pointer_steps(/Sie befinden sich in\s+-\s+,Home,Fachinformation zu #{name}/)
+    check_pointer_steps(/Home - FI zu #{name}/)
     @browser.link(:name => 'change_log').click
     check_pointer_steps(/Home,Fachinformation zu #{name}.+,Änderungen/)
     @browser.link(:name => 'change_log').click
@@ -210,7 +209,7 @@ describe "ch.oddb.org snapback" do
 
   def check_pointer_steps(expected, line = nil)
     check_home_links
-    steps = @browser.elements.find_all{ |x| x.class_name.eql? 'th-pointersteps'}
+    steps = @browser.elements.find_all{ |x| x.class_name.eql? 'breadcrumbs'}
     text = steps.collect{ |y| y.text }.join(',').clone
     puts "#{__LINE__}: #{Time.now} Pointersteps are #{text}\n should #{expected} are #{expected.match(text).inspect}"
     expect(text).to match expected
