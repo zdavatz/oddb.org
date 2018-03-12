@@ -18,7 +18,7 @@ module ODDB
     BASE_URI = 'https://www.drugshortage.ch'
     SOURCE_URI = BASE_URI + '/index.php/uebersicht-2/'
     SOURCE_URI = BASE_URI + '/UebersichtaktuelleLieferengpaesse2.aspx'
-    NoMarketingSource =  SWISSMEDIC_BASE_URL + "/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuer.xlsx.download.xlsx/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuer.xlsx"
+    NoMarketingSource =  SWISSMEDIC_BASE_URL + "/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruch.xlsx.download.xlsx/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruch.xlsx"
 
     def initialize app, opts={:reparse => false}
       super(app)
