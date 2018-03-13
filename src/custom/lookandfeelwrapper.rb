@@ -764,6 +764,7 @@ module ODDB
 			:recent_registrations,
 			:search_reset,
 			:sequences,
+      :show_ean13,
       :user,
 			:ywesee_contact,
    ]
