@@ -123,7 +123,7 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 15]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 16]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_init__facebook_fan
@@ -155,7 +155,7 @@ class TestCenteredSearchComposite <Minitest::Test
              :limitation_text_count => 'limitation_text_count',
              :recent_registration_count => 'recent_registration_count'
             )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 16]=>"legal-note"}
+    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 17]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
   def test_create_link

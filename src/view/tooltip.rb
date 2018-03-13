@@ -10,7 +10,7 @@ module ODDB
       def self.set_java_script(element, content, href = 'none')
       return unless element.additional_javascripts
       content =  content.force_encoding('UTF-8')
-      element.additional_javascripts.push <<-EOS
+      script = <<-EOS
 require([
     "dijit/TooltipDialog",
     "dijit/popup",
@@ -35,6 +35,7 @@ require([
     });
 });
 EOS
+        element.additional_javascripts.push script
       end
       def self.set_tooltip(element,  href=nil, content=nil)
         # "preload: false,  preventCache: false. Slow, displays sometimes to the right, but never the home page

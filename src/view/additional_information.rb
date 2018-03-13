@@ -238,20 +238,18 @@ module ODDB
         @shortcat_count ||= 0
         @shortcat_count += 1
         short = model.shortage_state
-        return nil unless short
-        short_span = HtmlGrid::Span.new(model, session, self)
-        short_span.value= "&#x25cf;&nbsp"
+        link = HtmlGrid::Link.new(:drugshortage_label, @model, @session, self)
+        link.value= "&#x25cf;&nbsp"
         font_size = '; font-size: large'
         if /^1/.match(short)
-          short_span.set_attribute('style','color: red' + font_size)
+          link.set_attribute('style','color: red' + font_size)
+          link.href = model.shortage_link
         else
-          short_span.set_attribute('style','color: green' + font_size)
+          link.set_attribute('style','color: green' + font_size)
+          link.href = nil
         end
-        url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
-        short_span.css_id = "ikscat_drugshortage_#{@shortcat_count}"
-        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
-        ODDB::View::TooltipHelper.set_java_script(short_span, htlm)
-        short_span
+        link.css_id = "ikscat_drugshortage_#{@shortcat_count}"
+        link
       end
 			def ikscat(model, session=@session)
 				@ikscat_count ||= 0
@@ -276,8 +274,6 @@ module ODDB
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
 				txt.css_id = "ikscat_#{@ikscat_count}"
-        htlm = ODDB::View::Ajax::SwissmedicCat.new(model, session).to_html(session.cgi)
-        ODDB::View::TooltipHelper.set_java_script(txt, htlm)
 				[drugshortage(model, session=@session), txt].compact
 			end
       def product_overview_link(model, session=@session)

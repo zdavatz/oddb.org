@@ -118,6 +118,13 @@ class PackageInnerComposite < HtmlGrid::Composite
     if(@model.production_science)
       components.store([2,12], :production_science)
     end
+    if components[[0,13]]
+      components.store([2,13], :drugshortage_label)
+      components.store([3,13], :drugshortage)
+    else
+      components.store([0,13], :drugshortage_label)
+      components.store([1,13], :drugshortage)
+    end
 
     if(@model.sl_entry)
       components.store([2,9], :limitation)
