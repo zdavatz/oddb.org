@@ -238,6 +238,7 @@ module ODDB
         @shortcat_count ||= 0
         @shortcat_count += 1
         short = model.shortage_state
+        return nil unless short
         link = HtmlGrid::Link.new(:drugshortage_label, @model, @session, self)
         link.value= "&#x25cf;&nbsp"
         font_size = '; font-size: large'
