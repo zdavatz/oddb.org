@@ -605,13 +605,15 @@ module ODDB
     end
     def _update path=@latest
       Zip::File.foreach(path) do |entry|
-        LogFile.append('oddb/debug', " bsv_xml: entry.name = " + entry.name.to_s, Time.now)
         case entry.name
-        when /(\w+)(-\d+)?.xml$/u
-          updater = $~[1].gsub(/[A-Z]/u) do |match| "_" << match.downcase end
-          entry.get_input_stream do |io| send('update' << updater, io) end
-        when 'Publications.xls'
-          # do nothing, is not even an xls as of 11.11.2008
+        when 'Preparations.xml'
+          LogFile.append('oddb/debug', " bsv_xml: update_preparations", Time.now)
+          entry.get_input_stream do |io| send('update_preparations', io) end
+        when 'ItCodes.xml'
+          LogFile.append('oddb/debug', " bsv_xml: update_it_codes", Time.now)
+          entry.get_input_stream do |io| send('update_it_codes', io) end
+        else
+          LogFile.append('oddb/debug', " bsv_xml: Skipping entry.name = " + entry.name.to_s, Time.now)
         end
       end
     end

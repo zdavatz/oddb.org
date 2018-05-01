@@ -679,13 +679,7 @@ module ODDB
       flexstub(Zip::File) do |z|
         z.should_receive(:foreach).and_yield(entry)
       end
-      flexstub(@plugin) do |p|
-        p.should_receive(:update_ab_cdef).and_return('update_ab_cdef')
-      end
-      flexstub(entry) do |e|
-        e.should_receive(:get_input_stream).and_return(@plugin.update_ab_cdef)
-      end
-      assert_equal('update_ab_cdef', @plugin._update('path'))
+      assert_nil @plugin._update('path')
     end
     def test__update_do_nothing
       entry = flexmock('entry') do |e|
@@ -1698,7 +1692,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
 
       # Not-downloading tests
       result = @plugin.download_file(target_url, save_dir, file_name)
-      assert_equal nil, result
+      assert_nil result
 
       # Check files
       skip("Line #{__LINE__}: Don't know how to mock this stuff at the moment")

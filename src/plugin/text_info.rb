@@ -291,7 +291,7 @@ module ODDB
       begin  # Here I catch a few bad entries in our database
         name_okay = eval("package.patinfo.#{lang}.name")
         if name_okay.nil?
-          puts "Cleaning bad patinfo #{masg}"
+          puts "Cleaning bad patinfo #{msg}"
           package.patinfo = nil
         end
       rescue NoMethodError => error
