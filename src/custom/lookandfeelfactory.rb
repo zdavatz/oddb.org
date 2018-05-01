@@ -30,13 +30,6 @@ module ODDB
 			'oekk'	=>	[
 				LookandfeelOekk,
 			],
-			'santesuisse' =>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelButtons, 
-				LookandfeelStandardResult,
-				LookandfeelSantesuisse, 
-			],
 			'swissmedic'	=>	[
 				LookandfeelSwissmedic,
 			],

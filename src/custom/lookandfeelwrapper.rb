@@ -208,32 +208,6 @@ module ODDB
       super
     end
   end
-	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
-    ENABLED = [
-      :ajax,
-      :doctors
-    ]
-		DICTIONARIES = {
-			'de'	=>	{
-				:search_explain	=>	'Willkommen bei sant&eacute;suisse und oddb.org<br><br>Vergleichen Sie einfach und schnell Medikamentenpreise indem Sie<br>entweder ein Medikament oder einen Wirkstoff im Suchbalken eingeben.',
-			},
-			'fr'	=>	{
-				:search_explain	=>	'Bienvenu sur santesuisse.ch et oddb.org.<br><br>Comparez simplement et rapidement les prix des m&eacute;dicaments<br>en entrant le nom du m&eacute;dicament ou un principe actif<br>dans la barre d\'outils de recherche.',
-			},
-			'en'	=>	{
-				:search_explain	=>  "Welcome to santesuisse.ch and oddb.org<br><br>Compare Drug-Prices quickly by simply typing<br>a name or substance in the search bar.",
-			},
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'252',
-				'height'	=>	'96',
-			},
-		}
-    def zones(filter=false)
-      [ :doctors, :drugs ]
-    end
-	end
   class LookandfeelJustMedical < SBSM::LookandfeelWrapper
     def google_analytics_token
       'UA-21383510-11'
