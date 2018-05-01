@@ -167,7 +167,7 @@ module ODDB
       FileUtils.rm_f(ODDB::EphaInteractions::CSV_FILE, verbose: true)
       @fileName = File.join(@@vardir, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
-      @plugin = flexmock('evidentia_plugin', ODDB::EphaInteractionPlugin.new(@app, {}))
+      @plugin = flexmock('epha_plugin', ODDB::EphaInteractionPlugin.new(@app, {}))
       @mock_latest = flexmock('latest', Latest)
       @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
         File.open(File.join(@@datadir, File.basename(@fileName))).read)

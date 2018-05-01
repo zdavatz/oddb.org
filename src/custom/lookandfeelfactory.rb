@@ -11,12 +11,6 @@ module ODDB
 	class LookandfeelFactory < SBSM::LookandfeelFactory
 		BASE = LookandfeelBase
 		WRAPPERS = {
-			'evidentia'=>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelStandardResult,
-				LookandfeelEvidentia,
-			],
       'desitin' => [
         LookandfeelDesitin,
       ],

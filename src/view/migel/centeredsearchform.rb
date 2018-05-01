@@ -37,20 +37,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,2]		=>	'migel_search_explain', 
 			}
 			@css_map = { [0,0,1,3] => 'center' }
-		elsif(@lookandfeel.enabled?(:evidentia, false))
-			@components = {
-				[0,0]		=>	View::CenteredSearchForm,
-				[0,1]		=>	'migel_search_explain', 
-				[0,2,0]	=>	'download_migel0',
-				[0,2,1]	=>	:download_migel,
-				[0,2,2]	=>	'download_migel2',
-				[0,3,0]	=>	:migel_count,
-				[0,3,1]	=>	'migel_count_text',
-				[0,3,2]	=>	'comma_separator',
-				[0,3,6]	=>	'database_last_updated_txt',
-				[0,3,7]	=>	:database_last_updated,
-			}
-			@css_map = { [0,0,1,4] => 'center' }
 		end
 		super
 	end

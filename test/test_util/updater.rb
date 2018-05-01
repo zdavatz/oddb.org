@@ -338,10 +338,6 @@ module ODDB
     def test_wrap_update__error
       assert_nil(@updater.instance_eval("wrap_update('klass', 'subject'){raise}"))
     end
-    def test_import_evidentia_fi_search_links
-      setup_update_simple(EvidentiaSearchLinksPlugin)
-      assert_equal('notify', @updater.update_evidentia_fi_search_links)
-    end
     def test_export_competition_xls
       setup_export_competition_xls
       assert_equal('path', @updater.export_competition_xls(@company))

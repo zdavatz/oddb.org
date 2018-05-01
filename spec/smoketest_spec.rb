@@ -505,7 +505,6 @@ describe "ch.oddb.org" do
   [ 'status_oddb',
     'status_crawler',
    'status_google_crawler',
-#   'status_evidentia',
    'status_generika',
 #   'status_just-medical',
    ].each do | name |

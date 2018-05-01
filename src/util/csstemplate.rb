@@ -9,26 +9,6 @@ module ODDB
     RESOURCE_PATH = "../../doc/resources/"
     TEMPLATE = File.expand_path('../../data/css/template.css', File.dirname(__FILE__))
     FLAVORS = {
-      :evidentia => {
-        :bg                         => '#d5e4f1',
-        :bg_bright                  => '#ACD0F0',
-        :bg_medium                  => '#6699CC',
-        :bg_medium_font_color       => 'black',
-        :bg_dark                    => '#3F008E',
-        :bg_dark_font_color         => 'white',
-        :bg_dark_link_hover_color   => '#e20a16',
-        :bg_dark_link_active_color  => '#e20a16',
-        :bg_navigation              => '#3F008E',
-        :home_link_color            => '#3F008E',
-        :home_link_hover_color      => '#e20a16',
-        :list_font_color            => '#3F008E',
-        :list_link_color            => '#3F008E',
-        :list_link_hover_color      => '#e20a16',
-        #:rslt_bg                   => '#ACD0F0',
-        :navigation_font_color      => 'white',
-        :navigation_link_font_color => 'white',
-        :rslt_link_hover_color      => '#6666CC',
-      },
       :desitin => {
         :bg_dark                         => '#1b49a2',
         :bg_bright                       => '#d8e1f3',

@@ -13,7 +13,6 @@ require 'view/drugs/photo'
 require 'view/drugs/change_logs'
 require 'model/shorten_path'
 require 'ostruct'
-require 'plugin/evidentia_search_links'
 
 module ODDB
 	module View
@@ -70,11 +69,7 @@ class FiChapterChooser < HtmlGrid::Composite
   XWIDTH = 8
   CSS_CLASS = 'composite'
   def init
-    if @lookandfeel.enabled?(:evidentia, false)
-      xwidth = 4
-    else
-      xwidth = self::class::XWIDTH
-    end
+    xwidth = self::class::XWIDTH
     @components         = {}
     @component_css_map  = {[0,0,2] => 'chapter-tab',
                            }
@@ -102,109 +97,27 @@ class FiChapterChooser < HtmlGrid::Composite
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     next_offset += 1
     @components.store([next_offset, 0], "&nbsp;")
-    colspan_map.store(        [next_offset, 0], XWIDTH - next_offset) unless @lookandfeel.enabled?(:evidentia, false)
+    colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
     @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')
     next_offset += 1
-    if @lookandfeel.enabled?(:evidentia, false)
-      @components.store(        [next_offset, 0], :product_overview_link)
-      colspan_map.store(        [next_offset, 0], XWIDTH - next_offset)
-      @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
-      @css_map.store(           [next_offset, 0], 'chapter-tab bold')
-      next_offset += 1
-    end
     names = display_names(document) - [:amzv]
     pos = [0, 0]
-    if @lookandfeel.enabled?(:evidentia, false)
-      right_offset = (xwidth / 2).to_i
-      pos = [0, 1]
-      @components.store(pos, 'fachinfo_clinic_info')
-      css_map.store(pos, 'fi-title')
-      component_css_map.store(pos, 'fi-title')
-      colspan_map.store(pos, (xwidth / 2).to_i)
-      pos = [right_offset, 1]
-      @components.store(pos, 'fachinfo_extra_info')
-      css_map.store(pos, 'fi-title')
-      component_css_map.store(pos, 'fi-title')
-      colspan_map.store(pos, (xwidth / 2).to_i)
-      clinical_names = [:indications,
-                        :usage,
-                        :contra_indications,
-                        :unwanted_effects,
-                        :restrictions,
-                        :interactions,
-                        :pregnancy,
-                        :driving_ability,
-                        :overdose,
-                        :packages,
-                        :photo,
-                        ] & names
-      extra_names = [ :composition,
-                      :galenic_form,
-                      :effects,
-                      :kinetic,
-                      :preclinic,
-                      :other_advice,
-                      :iksnrs,
-                      :registration_owner,
-                      :date] & names
-
-      # Fill left half with clinical_names, order is top-down, then left-to right
-      # always only 2 columns
-      xx = 0
-      yy = 2
-      clinical_names.each { |name|
-        if (yy >= 2 + (clinical_names.size/2).to_i )
-          yy = 2
-          xx = 1
-        end
-        pos = [xx, yy]
-        image_name = "fachinfo_#{name.to_s}_icon".to_sym
-        lnf = @lookandfeel.lookup(image_name)
-        @components.store([xx, yy, 0], image_name)
-        @components.store([xx, yy, 1], name)
-        css_map.store(pos, 'chapter-tab')
-        component_css_map.store(pos, 'chapter-tab')
-        symbol_map.store(image_name, View::Drugs::FiChapterChooserImage)
-        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+    xx = 0
+    yy = 1
+    names.each { |name|
+      if (xx >= xwidth)
         yy += 1
-      }
-      # Fill right half with extra_names
-      xx = right_offset
-      yy = 2
-      extra_names.each { |name|
-        if (yy >= 2 + (clinical_names.size/2).to_i )
-          yy = 2
-          xx = right_offset + 1
-        end
-        pos = [xx, yy]
-        image_name = "fachinfo_#{name.to_s}_icon".to_sym
-        lnf = @lookandfeel.lookup(image_name)
-        @components.store([xx, yy, 0], image_name)
-        @components.store([xx, yy, 1], name)
-        css_map.store(pos, 'chapter-tab')
-        component_css_map.store(pos, 'chapter-tab')
-        symbol_map.store(image_name, View::Drugs::FiChapterChooserImage)
-        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
-        yy += 1
-      }
-    else
-      xx = 0
-      yy = 1
-      names.each { |name|
-        if (xx >= xwidth)
-          yy += 1
-          xx = 0
-        end
-        pos = [xx, yy]
-        @components.store(pos, name)
-        css_map.store(pos, 'chapter-tab')
-        component_css_map.store(pos, 'chapter-tab')
-        symbol_map.store(name, View::Drugs::FiChapterChooserLink)
-        xx += 1
-      }
-      colspan_map.store(pos, xwidth - pos.at(0))
-    end
+        xx = 0
+      end
+      pos = [xx, yy]
+      @components.store(pos, name)
+      css_map.store(pos, 'chapter-tab')
+      component_css_map.store(pos, 'chapter-tab')
+      symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+      xx += 1
+    }
+    colspan_map.store(pos, xwidth - pos.at(0))
     # Instead of using a larger colspan we add a non breaking space in the next cell and enlarge it to the right
     # This fixes a display problem with iOS, where the font size of the photo was too large
     colspan_map.delete(pos)
@@ -220,12 +133,7 @@ class FiChapterChooser < HtmlGrid::Composite
     link = HtmlGrid::Link.new(key, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:change_log))
     link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr, :diff] )
-    if @lookandfeel.enabled?(:evidentia, false)
-      img = get_image("fachinfo_#{key.to_s}_icon".to_sym)
-      return [img, link]
-    else
-      return link
-    end
+    link
   end
   def ddd(model, session)
     if(atc = model.atc_class)
@@ -284,31 +192,20 @@ class FiChapterChooser < HtmlGrid::Composite
     end
     names
   end
-  def get_image(name, model=@model, session=@session)
-    if @lookandfeel.enabled?(:evidentia, false) && (lnf =  @lookandfeel.lookup(name))
-      img = HtmlGrid::Image.new(name, model, session, self)
-      img.set_attribute('src', 'http://'+ session.server_name + '/resources/' +lnf)
-    else
-      img = nil
-    end
-    img
-  end
   def full_text(model, session)
     img = nil
     if(@model.pointer.skeleton == [:create])
       @lookandfeel.lookup(:fachinfo_all)
     else
-      img = get_image(:fachinfo_all_icon)
       link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
       link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
       unless(@session.user_input(:chapter).nil?)
         link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.registrations.first.iksnr})
       end
-      [ img, link].compact
+      link
     end
   end
   def print(model, session=@session, key=:print)
-    img = get_image(:fachinfo_print_icon)
     link = HtmlGrid::Link.new(key, model, session, self)
     link.set_attribute('title', @lookandfeel.lookup(:print_title))
     link.set_attribute('target', '_blank')
@@ -316,24 +213,7 @@ class FiChapterChooser < HtmlGrid::Composite
       :fachinfo  => model.registrations.first.iksnr,
     }
     link.href = @lookandfeel._event_url(:print, args)
-    [ img, link].compact
-  end
-  def product_overview_link(model, session=@session)
-    return unless @lookandfeel.enabled?(:evidentia, false)
-    package = nil
-    if model.respond_to?(:registrations) # Fachinfo
-      model.registrations.each do |reg|
-        package ||= reg.packages.find{|x| EvidentiaSearchLink.get_info(x.barcode)}
-      end
-    end
-    return unless package
-    return unless (info = EvidentiaSearchLink.get_info(package.barcode))
-    link = HtmlGrid::Link.new(:fi_product_overview_link, model, session, self)
-    link.href = info.link
-    link.set_attribute('title', @lookandfeel.lookup(:product_overview_link))
-    link.set_attribute('target', '_blank')
-    img = get_image(:fachinfo_product_overview_link_icon)
-    [ img, link].compact
+    link
   end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite

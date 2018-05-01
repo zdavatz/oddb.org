@@ -83,23 +83,11 @@ class TestCenteredSearchComposite <Minitest::Test
     expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
     assert_equal(expected, @composite.init)
   end
-  def test_init__evidentia
-    @lookandfeel.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
-    @lookandfeel.should_receive(:enabled?).once.with(:evidentia, false).and_return(true)
-    @lookandfeel.should_receive(:enabled?).once.with(:just_medical_structure, false)
-    @lookandfeel.should_receive(:enabled?).once.with(:oekk_structure, false)
-    @lookandfeel.should_receive(:enabled?).never.with(:search_reset)
-    @lookandfeel.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
-    flexmock(@app, :recent_registration_count => 'recent_registration_count')
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
-    assert_equal(expected, @composite.init)
-  end
   def test_init__data_counts
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
-      l.should_receive(:enabled?).once.with(:evidentia, false)
       l.should_receive(:enabled?).once.with(:data_counts).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_fan, false)
       l.should_receive(:enabled?).once.with(:fachinfos)
@@ -131,7 +119,6 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
       l.should_receive(:enabled?).once.with(:just_medical_structure, false)
       l.should_receive(:enabled?).once.with(:oekk_structure, false)
-      l.should_receive(:enabled?).once.with(:evidentia, false)
       l.should_receive(:enabled?).once.with(:data_counts).and_return(true)
       l.should_receive(:enabled?).once.with(:facebook_fan, false).and_return(true)
       l.should_receive(:enabled?).once.with(:fachinfos)

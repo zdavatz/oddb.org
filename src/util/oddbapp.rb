@@ -36,8 +36,6 @@ require 'util/config'
 require 'fileutils'
 require 'yus/session'
 require 'model/analysis/group'
-require 'model/evidentia_search_link'
-
 require 'remote/migel/model'
 
 class OddbPrevalence
@@ -57,7 +55,7 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups, :shorten_paths
-  attr_accessor  :epha_interactions_hash,  :epha_interactions, :evidentia_search_links_hash
+  attr_accessor  :epha_interactions_hash,  :epha_interactions
   VALID_EAN13 = /^\d{13}/
 	def initialize
 		init
@@ -76,8 +74,6 @@ class OddbPrevalence
 		@doctors ||= {}
 		@epha_interactions ||= []
 		@epha_interactions_hash ||= {}
-    @evidentia_search_links_hash ||= {}
-    ODDB::EvidentiaSearchLink.set(@evidentia_search_links_hash)
 		@experiences ||= {}
 		@fachinfos ||= {}
     @feedbacks ||= {}
@@ -152,7 +148,6 @@ class OddbPrevalence
 		_clean_odba_stubs_hash(@atc_classes)
 		@atc_classes.each_value { |atc| _clean_odba_stubs_array(atc.sequences) }
 		_clean_odba_stubs_hash(@registrations)
-    _clean_odba_stubs_hash(@evidentia_search_links_hash)
 		@registrations.each_value { |reg|
 			_clean_odba_stubs_hash(reg.sequences)
 			reg.sequences.each_value { |seq|
@@ -401,12 +396,6 @@ class OddbPrevalence
     experience = ODDB::Experience.new
     @experiences.store(experience.oid, experience)
   end
-  def create_evidentia_search_link(gtin, link, trademark)
-    evidentia_search_link = ODDB::EvidentiaSearchLink.new(gtin, link, trademark)
-    @evidentia_search_links_hash_hash ||= {}
-    @evidentia_search_links_hash_hash.store(gtin, evidentia_search_link)
-    evidentia_search_link
-  end
   def create_hospital(ean13)
     raise "ean13 #{ean13.to_s[0..80]} not valid" unless  ean13.to_s.match(VALID_EAN13)
     hospital = ODDB::Hospital.new(ean13.to_s)
@@ -520,12 +509,6 @@ class OddbPrevalence
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
-  def delete_all_evidentia_search_links
-    @evidentia_search_links_hash = {}
-    @evidentia_search_links_hash.odba_store
-    ODDB::EvidentiaSearchLink.set(@evidentia_search_links_hash)
-    self.odba_store
-  end
   def delete_all_narcotics
     @narcotics.values.each do |narc|
       delete(narc.pointer)
@@ -1343,9 +1326,6 @@ class OddbPrevalence
 	def sponsor(flavor)
 		@sponsors[flavor.to_s]
 	end
-  def evidentia_search_link(key)
-     ODDB::EvidentiaSearchLink.get_info(key)
-  end
   def substance(key, neurotic=false)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]

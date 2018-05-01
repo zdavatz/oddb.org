@@ -30,15 +30,6 @@ module ODDB
     end
   public
     # zeno defined the sort order in mail of Oktobre 21, 2015
-    # Bei Evidentia müssen  E-Mail from November 27 2015
-    # redefined by Zeno on Januar 25 as following
-    # *Ausser Handel
-    # *Nicht mehr zugelassen
-
-    # ist stärker als rot, grün oder nicht klassifiziert, d.h. rote oder
-    # grüne die nicht bei Refdata gelistet sind oder bei Swissmedic nicht
-    # zugelassen sind, rutschen runter.
-
     # Somit ist die Reihenfolge:
 
     # Markenname rot
@@ -129,7 +120,7 @@ private
       is_desitin = package_from_desitin &&
           !package.out_of_trade &&
           !package.expired? &&
-          ( a_session && a_session.lookandfeel.enabled?(:evidentia, false)) ||
+          ( a_session && false) ||
             (a_session && a_session.user && !a_session.user.is_a?(ODDB::UnknownUser) &&
              /desitin/i.match(a_session.user.name.to_s))
       if is_desitin
@@ -140,16 +131,10 @@ private
         prio = classified_group(package)
       end
       name_to_use = name_to_use.clone.downcase.sub(/\s+\d+.*/, '')
-      consider_trademark = a_session && a_session.lookandfeel.enabled?(:evidentia, false) &&
-          trademark &&
-          !package.out_of_trade &&
-          !package.expired? &&
-          (trademark.downcase.eql?(package.registration.name_base.downcase) ||
-           Dose.new(package.registration.name_base.downcase.sub(trademark.downcase, '')).qty != 0)
+      consider_trademark = false
       prio = add_generic_weight(prio, package, consider_trademark)
-      # eg.g http://evidentia.oddb-ci2.dyndns.org/de/evidentia/search/zone/drugs/search_query/Cordarone/search_type/st_combined
       if DebugSort
-        puts "adjusted_name_and_prio evidentia? #{a_session && a_session.lookandfeel.enabled?(:evidentia, false)}" +
+        puts "adjusted_name_and_prio" +
             " #{trademark} TM? #{consider_trademark.inspect} pack #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.name_base} -> #{name_to_use} #{decode_package(package)} type #{package.sl_generic_type} expired? #{package.expired?.inspect}" +
             " out_of_trade #{package.out_of_trade.inspect} dose #{package.dose.inspect} #{package.sl_entry != nil} is_desitin #{is_desitin} prio #{prio.inspect}"
       end

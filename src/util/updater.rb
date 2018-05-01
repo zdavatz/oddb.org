@@ -16,7 +16,6 @@ require 'plugin/dosing'
 require 'plugin/drugbank'
 require 'plugin/divisibility'
 require 'plugin/epha_interactions'
-require 'plugin/evidentia_search_links'
 require 'plugin/lppv'
 require 'plugin/medical_products'
 require 'plugin/narcotic'
@@ -200,7 +199,6 @@ module ODDB
     def run
       update_drugshortage
       logfile_stats
-      # update_evidentia_fi_search_links # Zeno decided to disable this job temporarily on 2017-09-18
       update_epha_interactions
 
       # drugshortage
@@ -393,9 +391,6 @@ module ODDB
     end
     def update_epha_interactions
       update_immediate_with_error_report(EphaInteractionPlugin, 'EPHA interactions')
-    end
-    def update_evidentia_fi_search_links
-      update_immediate_with_error_report(EvidentiaSearchLinksPlugin, 'Evidentia_FI_search_links')
     end
     def update_lppv
       update_immediate(LppvPlugin, 'Lppv')

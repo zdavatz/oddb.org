@@ -53,25 +53,6 @@ module SBSM
 end
 
 module ODDB
-  class TestLookandfeelEvidentia <Minitest::Test
-    def create_env
-      @session = flexmock('session') do |s|
-        s.should_receive(:flavor)
-        s.should_receive(:language)
-      end
-      @component = LookandfeelBase.new(@session)
-    end
-    def test_google_analytics_token_evidentia
-      create_env
-      @lookandfeel = LookandfeelEvidentia.new(@component)
-      assert_equal('UA-22215261-3', @lookandfeel.google_analytics_token)
-    end
-    def test_google_analytics_token_desitin
-      create_env
-      @lookandfeel = LookandfeelDesitin.new(@component)
-      assert_equal('UA-115196-1', @lookandfeel.google_analytics_token)
-    end
-  end
   class TestLookandfeelStandardResult <Minitest::Test
     def setup
       session = flexmock('session') do |s|
@@ -171,99 +152,6 @@ module ODDB
     end
     def test_zones
       assert_equal( [:drugs, :user, :companies], @look.zones)
-    end
-  end
-
-  class TestLookandfeelEvidentia <Minitest::Test
-    def setup
-      @session = flexmock('session') do |s|
-        s.should_receive(:flavor)
-        s.should_receive(:language)
-      end
-      component = flexmock('component') do |c|
-        c.should_receive(:session).and_return(@session)
-      end
-      @look = LookandfeelEvidentia.new(component)
-    end
-    def test_compare_list_components
-      expected = {
-        [2, 0]=>:name_base,
-        [3, 0]=>:company_name,
-        [4, 0]=>:most_precise_dose,
-        [5, 0]=>:comparable_size,
-        [6, 0]=>:compositions,
-        [7, 0]=>:price_exfactory,
-        [8, 0]=>:price_public,
-        [9, 0]=>:price_difference,
-        [10, 0]=>:ikscat
-      }
-      assert_equal(expected, @look.compare_list_components)
-    end
-    def test_explain_result_components
-      expected = {[0, 0]=>:explain_original,
-                  [0, 1]=>:explain_generic,
-                  [0, 2]=>"explain_unknown",
-                  [0, 3]=>:explain_limitation,
-                  [1, 0]=>"explain_efp",
-                  [1, 1]=>"explain_pbp",
-                  [1, 2]=>:explain_deductible,
-                  [1, 3]=>"explain_sl",
-                  [2, 0]=>"explain_slg",
-                  [2, 1]=>"explain_slo",
-                  [2, 2]=>:explain_lppv
-                 }
-          assert_equal(expected, @look.explain_result_components)
-    end
-    def test_migel_list_components
-      assert_nil(defined?(@look.migel_list_components))
-    end
-    def test_zone_navigation__migel
-      flexstub(@session) do |s|
-        s.should_receive(:zone).and_return(:migel)
-      end
-      expected = []
-      assert_equal(expected, @look.zone_navigation)
-    end
-    def test_zone_navigation__sequences
-      flexstub(@session) do |s|
-        s.should_receive(:zone).and_return(:else)
-      end
-      expected = []
-      assert_equal(expected, @look.zone_navigation)
-    end
-
-    def test_navigation
-      flexstub(@session) do |s|
-        s.should_receive(:zone)
-      end
-      expected = [:meddrugs_update, :data_declaration, :home]
-      assert_equal(expected, @look.navigation)
-    end
-
-    def test_enabled
-      flexstub(@session) do |s|
-        s.should_receive(:zone)
-      end
-      # assert_equal(false, @look.enabled?(:feedback))
-      # assert_equal(true,  @look.enabled?(:external_css))
-    end
-
-    def test_result_list_components
-      expected = {[0, 0, 0]=>:name_base,
-                  [0, 0, 1]=>"result_item_end",
-                  [0, 0, 2]=>:limitation_text,
-                  [1, 0]=> :product_overview_link,
-                  [2, 0]=>:substances,
-                  [3, 0]=>:galenic_form,
-                  [4, 0]=>:most_precise_dose,
-                  [5, 0]=>:comparable_size,
-                  [6, 0]=>:price_exfactory,
-                  [7, 0]=>:price_public,
-                  [8, 0]=>:deductible,
-                  [9, 0]=>:company_name,
-                  [10, 0]=>:ikscat
-                 }
-      assert_equal(expected, @look.result_list_components)
     end
   end
 

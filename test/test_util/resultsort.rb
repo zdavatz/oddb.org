@@ -235,23 +235,6 @@ module ODDB
     ]
 
     end
-    def setup_evidentia
-      setup_more_products
-      @component = LookandfeelBase.new(@session)
-      @evidentia = LookandfeelEvidentia.new(@component)
-      sl_entry_valid = flexmock('sl_entry_valid')
-      sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
-      sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
-      sl_entry_invalid = flexmock('sl_entry_invalid')
-      sl_entry_invalid.should_receive(:odba_instance).by_default.and_return(nil)
-      sl_entry_invalid.should_receive(:valid_until).by_default.and_return(Date.today - 1)
-      @p001.should_receive(:sl_entry).and_return(nil)
-      @p002.should_receive(:sl_entry).and_return(sl_entry_valid)
-      @p003.should_receive(:sl_entry).and_return(sl_entry_invalid)
-      @evidentia_products       = [@p001, @p002, @p003]
-      @expected_order_evidentia = [@p003, @p001, @p002]
-    end
-
     def create_leve_product(name, is_original=false)
       gen_or_original = is_original ? :original : :generic
       product = create_default_product_mock(name, false, is_original ? :original : :generic, @gal_levetiracetam)
@@ -263,54 +246,6 @@ module ODDB
       product
     end
 
-    def setup_evidentia_trademark(url_with_name)
-      @session.should_receive(:flavor).and_return(@evidentia)
-      @component = LookandfeelBase.new(@session)
-      @evidentia = LookandfeelEvidentia.new(@component)
-      @session.should_receive(:flavor).and_return(@evidentia)
-      @session.should_receive(:lookandfeel).and_return(@evidentia)
-      @gal_levetiracetam = flexmock('gal_levetiracetam')
-      @gal_levetiracetam.should_receive(:collect).by_default.and_return(['gal_levetiracetam'])
-      @sl_entry_valid = flexmock('sl_entry_valid')
-      @sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
-      @sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
-      gal_z = flexmock('gal_z')
-      gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
-      @desitin = create_leve_product('Levetiracetam Desitin 1000 mg')
-      @actavis = create_leve_product('Levetiracetam Actavis 1000 mg')
-      @keppra250 = create_leve_product('Keppra 250 mg', true)
-      @keppra200 = create_leve_product('Keppra OutOfTrade 200 mg', true)
-      @keppra200.should_receive(:out_of_trade).and_return(true)
-      @keppra210 = create_default_product_mock('Keppra 210 mg', false, :original, :original, @gal_levetiracetam)
-      @keppra210.should_receive(:sl_entry).and_return(nil)
-      @rivoleve200 = create_leve_product('Rivoleve 200 mg')
-      @rivoleve500  = create_leve_product('Rivoleve 500 mg')
-      @rivoleve500.should_receive(:out_of_trade).and_return(true)
-
-      @zzz = create_leve_product('ZZZ')
-      @tm_products  = [@desitin, @actavis, @keppra250, @keppra200, @keppra210, @rivoleve200, @rivoleve500, @zzz]
-      if url_with_name
-        @session.should_receive(:request_path).and_return(
-          "/de/evidentia/search/zone/drugs/search_query/#{URI.encode(url_with_name)}/search_type/st_combined")
-      end
-    end
-
-    def test_sort_result_evidentia_sl_before_non_sl
-      setup_evidentia
-      @expected_order_evidentia.each{ |item| assert_equal(FlexMock, item.class) }
-      res = @sort.sort_result(@evidentia_products, @session)
-      found_non_sl = false
-      res.each_with_index{
-        |item, idx|
-        if not found_non_sl and item.sl_entry and (item.sl_entry.valid_until > Date.today)
-          found_non_sl = idx
-        elsif found_non_sl
-          found_sl = false
-          found_sl = (item.sl_entry.valid_until > Date.today) if item.sl_entry
-          assert_equal(false, found_sl, "Non-SL #{found_non_sl} #{res[found_non_sl].name_base} must come before SL #{idx} #{res[idx].name_base}")
-        end
-      }
-    end
     def test_galform_str__else
       @galenic_form.should_receive(:odba_instance).and_return('odba_instance')
       @galenic_form.should_receive(:language).and_return('language')
@@ -396,62 +331,6 @@ module ODDB
       assert_equal(expected_order, @sort.sort_result(order_2.reverse, @session))
     end
 
-    def test_sort_result_evidentia_default_levetiracetam
-      setup_evidentia_trademark('Levetiracetam')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      assert_equal(true, @keppra200.out_of_trade)
-      assert_equal(false, @keppra210.out_of_trade)
-      assert_equal(false, @keppra250.out_of_trade)
-      assert_equal(:original, @keppra250.sl_generic_type)
-      assert_equal(:original, @keppra200.sl_generic_type)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Keppra 250 mg', # has sl_entry and is not out_of_trade
-        'Levetiracetam Desitin 1000 mg',
-        'Levetiracetam Actavis 1000 mg',
-        'Rivoleve 200 mg',
-        'ZZZ',
-        'Keppra 210 mg', # has no sl_entry and should come after ZZZ
-        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
-        'Rivoleve 500 mg',
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-
-    def test_sort_result_evidentia_default_levetiracetam_actavis
-      setup_evidentia_trademark('Levetiracetam Actavis')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Levetiracetam Actavis 1000 mg',
-        'Keppra 250 mg',
-        'Levetiracetam Desitin 1000 mg',
-        'Rivoleve 200 mg',
-        'ZZZ',
-        'Keppra 210 mg',
-        'Keppra OutOfTrade 200 mg',
-        'Rivoleve 500 mg',
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-
-    def test_sort_result_evidentia_levetiracetam_search_Rivoleve
-      setup_evidentia_trademark('Rivoleve')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Rivoleve 200 mg',
-        'Keppra 250 mg',
-        'Levetiracetam Desitin 1000 mg',
-        'Levetiracetam Actavis 1000 mg',
-        'ZZZ',
-        'Keppra 210 mg',
-        'Keppra OutOfTrade 200 mg',
-        'Rivoleve 500 mg', # also out of trade
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-
     def test_sort_case_insensitive
       aaa_name = 'AAAA'
       aaa_first =  [ aaa_name, 'Duodopa' ]
@@ -463,7 +342,6 @@ module ODDB
         'DUODOPA' => aaa_last,
         }.each do |name, expected_names|
         setup_session
-        setup_evidentia_trademark(nil)
         gal_z = flexmock('gal_z')
         gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
         aaa = create_default_product_mock(aaa_name, false, :generic, :generic, gal_z)
@@ -471,157 +349,12 @@ module ODDB
         duodopa = create_default_product_mock('Duodopa', false, :generic, :generic, gal_z)
         duodopa.should_receive(:sl_entry).and_return(@sl_entry_valid)
         products = [aaa, duodopa]
-        test_session = @session.clone
-        test_session.should_receive(:request_path).and_return(
-          "/de/evidentia/search/zone/drugs/search_query/#{name}/search_type/st_combined")
-        # puts "products #{products.collect {|x| x.name_base}} test_session #{test_session.request_path}"
         @sort    = ODDB::StubResultSort.new(products)
-        res = @sort.sort_result(products, test_session)
-        assert_equal(expected_names, res.collect{|pack| pack.name_base}, "name #{name} #{expected_names}")
+        res = @sort.sort_result(products, @session)
+        assert_equal( ["AAAA", "Duodopa"], res.collect{|pack| pack.name_base}, "name #{name} #{expected_names}")
       end
     end
 
-    def test_sort_result_evidentia_levetiracetam_search_Levetiracetam_Desitin
-      setup_evidentia_trademark('Levetiracetam Desitin')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Levetiracetam Desitin 1000 mg',
-        'Keppra 250 mg',
-        'Levetiracetam Actavis 1000 mg',
-        'Rivoleve 200 mg',
-        'ZZZ',
-        'Keppra 210 mg',
-        'Keppra OutOfTrade 200 mg',
-        'Rivoleve 500 mg',
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-    def test_sort_result_evidentia_default_Keppra
-      setup_evidentia_trademark('Keppra')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Keppra 250 mg', # has sl_entry and is not out_of_trade
-        'Keppra 210 mg', # has no sl_entry and should come after Keppra 250 mg
-        'Levetiracetam Desitin 1000 mg',
-        'Levetiracetam Actavis 1000 mg',
-        'Rivoleve 200 mg',
-        'ZZZ',
-        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
-        'Rivoleve 500 mg',
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-
-    def test_sort_result_evidentia_default_Keppra_first_via_Levetiracetam
-      setup_evidentia_trademark('Levetiracetam')
-      @sort    = ODDB::StubResultSort.new(@tm_products)
-      res = @sort.sort_result(@tm_products, @session)
-      expected_names =  [
-        'Keppra 250 mg', # has sl_entry and is not out_of_trade
-        'Levetiracetam Desitin 1000 mg',
-        'Levetiracetam Actavis 1000 mg',
-        'Rivoleve 200 mg',
-        'ZZZ',
-        'Keppra 210 mg', # has no sl_entry and should come after ZZZ
-        'Keppra OutOfTrade 200 mg', # is out of trade and must come after the other Keppra
-        'Rivoleve 500 mg',
-      ]
-      assert_equal(expected_names, res.collect{|pack| pack.name_base})
-    end
-
-    def setup_evidentia_avalox(lnf = nil)
-      if lnf
-        @session.should_receive(:flavor).and_return(@evidentia)
-        @component = LookandfeelBase.new(@session)
-        @evidentia = LookandfeelEvidentia.new(@component)
-        @session.should_receive(:flavor).and_return(@evidentia)
-        @session.should_receive(:lookandfeel).and_return(@evidentia)
-      end
-      @gal_avalox = flexmock('gal_avalox')
-      @gal_avalox.should_receive(:collect).by_default.and_return(['gal_avalox'])
-      @sl_entry_valid = flexmock('sl_entry_valid')
-      @sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
-      @sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
-      gal_z = flexmock('gal_z')
-      gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
-      @tablette = create_default_product_mock('Avalox', false, :original, :original, @gal_avalox)
-      @tablette.should_receive(:sl_entry).and_return(@sl_entry_valid)
-      @tablette.should_receive(:iksnr).and_return('55213')
-      @tablette.should_receive(:expired?).and_return(false)
-      @tablette.should_receive(:seqnr).and_return('01')
-
-      @infusion = create_default_product_mock('Avalox', false, nil, :generic, @gal_avalox)
-      @infusion.should_receive(:sl_entry).and_return(@sl_entry_valid)
-      @infusion.should_receive(:iksnr).and_return('58257')
-      @infusion.should_receive(:seqnr).and_return('01')
-      @infusion.should_receive(:expired?).and_return(false)
-      @avalox_products  = [@infusion, @tablette]
-    end
-
-    def test_evidentia_avalox
-      setup_evidentia_avalox(true)
-      @sort    = ODDB::StubResultSort.new(@avalox_products)
-      @session.should_receive(:request_path).and_return("/de/evidentia/search/zone/drugs/search_query/Avalox/search_type/st_combined")
-      res = @sort.sort_result(@avalox_products, @session)
-      expected_iksnr = [55213, 58257]
-      assert_equal(expected_iksnr, res.collect{|pack| pack.iksnr.to_i})
-    end
-
-    def test_gcc_avalox
-      setup_evidentia_avalox(false)
-      @sort    = ODDB::StubResultSort.new(@avalox_products)
-      @session.should_receive(:request_path).and_return("/de/gcc/search/zone/drugs/search_query/Avalox/search_type/st_combined")
-      res = @sort.sort_result(@avalox_products, @session)
-      expected_iksnr = [55213, 58257]
-      assert_equal(expected_iksnr, res.collect{|pack| pack.iksnr.to_i})
-    end
-
-    def setup_evidentia_torimat(lnf = nil)
-      def create_topo(lnf, value)
-        if lnf
-          @session.should_receive(:flavor).and_return(@evidentia)
-          @component = LookandfeelBase.new(@session)
-          @evidentia = LookandfeelEvidentia.new(@component)
-          @session.should_receive(:flavor).and_return(@evidentia)
-          @session.should_receive(:lookandfeel).and_return(@evidentia)
-        end
-        @gal_avalox = flexmock('gal_avalox')
-        @gal_avalox.should_receive(:collect).by_default.and_return(['gal_avalox'])
-        @sl_entry_valid = flexmock('sl_entry_valid')
-        @sl_entry_valid.should_receive(:odba_instance).by_default.and_return(nil)
-        @sl_entry_valid.should_receive(:valid_until).by_default.and_return(Date.today + 1)
-        gal_z = flexmock('gal_z')
-        gal_z.should_receive(:collect).by_default.and_return(['gal_z'])
-        name = "Torimat Desitin #{value} mg"
-        product = create_default_product_mock(name, false, :original, :original, @gal_avalox)
-        product.should_receive(:sl_entry).and_return(@sl_entry_valid)
-        product.should_receive(:iksnr).and_return('53537')
-        product.should_receive(:expired?).and_return(false)
-        product.should_receive(:seqnr).and_return('01')
-        product.should_receive(:dose).and_return(Quanty.new(value, 'mg'))
-        product
-      end
-      @torimat_products  = [create_topo(lnf, 200), create_topo(lnf, 100),create_topo(lnf, 50), create_topo(lnf, 25)]
-      @torimat_expected =["Torimat Desitin 25 mg", "Torimat Desitin 50 mg", "Torimat Desitin 100 mg", "Torimat Desitin 200 mg"]
-
-    end
-
-    def test_dose_desitin_1
-      setup_evidentia_torimat(true)
-      @sort    = ODDB::StubResultSort.new(@avalox_products)
-      @session.should_receive(:request_path).and_return("/de/evidentia/search/zone/drugs/search_query/Torimat/search_type/st_combined")
-      res = @sort.sort_result(@torimat_products, @session)
-      assert_equal(@torimat_expected, res.collect{|pack| pack.name})
-    end
-    def test_dose_desitin_2
-      setup_evidentia_torimat(false)
-      @sort    = ODDB::StubResultSort.new(@avalox_products)
-      @session.should_receive(:request_path).and_return("/de/gcc/search/zone/drugs/search_query/Torimat/search_type/st_combined")
-      res = @sort.sort_result(@torimat_products, @session)
-      assert_equal(@torimat_expected, res.collect{|pack| pack.name})
-    end
   end
 end # ODDB
 

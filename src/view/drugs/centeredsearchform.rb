@@ -147,14 +147,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3]		=>	:generic_definition,
 				[0,4]	  =>	:legal_note,
 			}
-		elsif(@lookandfeel.enabled?(:evidentia, false))
-			@components = {
-				[0,0]	  =>	:search_form,
-				[0,1]	  =>	'search_explain', 
-				[0,2,0]	=>	'database_last_updated_txt',
-				[0,2,1]	=>	:database_last_updated,
-				[0,3]		=>	:generic_definition,
-			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
 				[0,4]    => :recent_registrations,

@@ -154,12 +154,7 @@ class PiChapterChooser < HtmlGrid::Composite
       args = Drugs.get_args(model, @session)
       args += [ :diff]
       link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
-      if @lookandfeel.enabled?(:evidentia, false)
-        img = get_image("patinfo_#{key.to_s}_icon".to_sym)
-        return [img, link]
-      else
-        return link
-      end
+      return link
     end
   end
   def heatmap(model, session)

@@ -277,21 +277,6 @@ module ODDB
 				txt.css_id = "ikscat_#{@ikscat_count}"
 				[drugshortage(model, session=@session), txt].compact
 			end
-      def product_overview_link(model, session=@session)
-        return unless @lookandfeel.enabled?(:evidentia, false)
-        if model.is_a?(ODDB::Package)
-          return unless (info = EvidentiaSearchLink.get_info(model.barcode))
-          link = HtmlGrid::Link.new('', nil, @session, self)
-          link.href = info.link
-          img = HtmlGrid::Image.new('name', model, session, self)
-          img.set_attribute('src', 'http://'+ session.server_name + '/resources/evidentia/evidentia_24x24.png')
-          link.css_class = "product_overview_link"
-          link.set_attribute('title', @lookandfeel.lookup(:product_overview_link))
-          link.set_attribute('target', '_blank')
-          link.value = img
-          link
-        end
-      end
 			def limitation_text(model, session=@session)
 				if(sltxt = model.limitation_text)
 					limitation_link(sltxt, model)
