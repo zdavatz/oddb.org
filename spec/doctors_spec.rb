@@ -13,7 +13,7 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    @browser.link(:text=>'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
+    @browser.link(:visible_text=>'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
   end
 
   after :each do
@@ -67,10 +67,10 @@ AerzteDefinitions = [
     AerzteDefinitions.each {
                          |arzt|
                               expect(@browser.text).to match arzt.name
-                              @browser.link(:text =>arzt.name).click
+                              @browser.link(:visible_text =>arzt.name).click
                               # don't know why we need to wait here, but it works!
-                              sleep 0.5 unless @browser.link(:text => /vCard/).exists?
-                              nrFiles = check_download(@browser.link(:text => /vCard/))
+                              sleep 0.5 unless @browser.link(:visible_text => /vCard/).exists?
+                              nrFiles = check_download(@browser.link(:visible_text => /vCard/))
                               expect(nrFiles.size).to eq(1)
                               expect(File.size(nrFiles.first)).to be >= 100
 
@@ -80,7 +80,7 @@ AerzteDefinitions = [
                    expect(inhalt).to match /#{key}.#{value}/m
                  }
                            # Check map link
-                              @browser.link(:text => /map.search/).click
+                              @browser.link(:visible_text => /map.search/).click
                               expect(@browser.url).to match /bahnhofstr/i
                               expect(@browser.url).to match /mollis/i
                               @browser.back

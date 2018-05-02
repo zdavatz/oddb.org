@@ -35,13 +35,13 @@ describe "ch.oddb.org change_log" do
       link = @browser.links.find{|x| /patinfo.*seq\/02/.match(x.href)}
       link.click
       check_home_links
-      link = @browser.link(:text => /Änderungen|Changements/)
+      link = @browser.link(:visible_text => /Änderungen|Changements/)
       expect(link.visible?).to be true
       link.click
       check_home_links
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
-      link = @browser.link(:text => /Information/i)
+      link = @browser.link(:visible_text => /Information/i)
       expect(link.visible?).to be true
       link.click
       check_home_links
@@ -50,13 +50,13 @@ describe "ch.oddb.org change_log" do
     it "should have a working link to Änderungen " do
       @browser.goto(OddbUrl + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
       check_home_links
-      link = @browser.link(:text => /Änderungen|Changements/)
+      link = @browser.link(:visible_text => /Änderungen|Changements/)
       expect(link.visible?).to be true
       link.click
       check_home_links
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
-      link = @browser.link(:text => /Information/i)
+      link = @browser.link(:visible_text => /Information/i)
       expect(link.visible?).to be true
       link.click
       check_home_links
@@ -68,21 +68,21 @@ describe "ch.oddb.org change_log" do
     it "should have a working link to  #{type}information from the #{type} diff" do
       @browser.goto(OddbUrl + diff_url)
       check_home_links
-      @browser.link(:text => Date_Regexp).wait_until_present(timeout: 3)
-      link = @browser.link(:text => Date_Regexp)
+      @browser.link(:visible_text => Date_Regexp).wait_until_present(timeout: 3)
+      link = @browser.link(:visible_text => Date_Regexp)
       expect(link.visible?).to be true
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
       link.click
       check_home_links
-      link = @browser.link(:text => /Information/i)
+      link = @browser.link(:visible_text => /Information/i)
       expect(link.visible?).to be true
       link.click
       saved_text2 = @browser.text
       if  /Pat/i.match(type)
-        expect(saved_text2.match(/Home.* Information.*patient/)).not_to be nil
+        expect(saved_text2.match(/Information.*patient/)).not_to be nil
       else
-        expect(saved_text2.match(/Home.* #{type}/)).not_to be nil
+        expect(saved_text2.match(/^#{type}/)).not_to be nil
       end
       expect(/L'information demandée n'est malheureusement plus accessible./.match(saved_text2)).to be nil
       check_home_links

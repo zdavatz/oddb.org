@@ -15,9 +15,9 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    if @browser.link(:text=>'Plus').exists?
+    if @browser.link(:visible_text=>'Plus').exists?
       puts "Going from instant to plus"
-    @browser.link(:text=>'Plus').click
+    @browser.link(:visible_text=>'Plus').click
     end
   end
 
@@ -58,11 +58,11 @@ view org.oddb.patinfo_stats.associated
 credit org.oddb.download
 )
   def create_or_update_user(email = session_uniq_email, yus_rights= ['yus_privileges[login|org.oddb.CompanyUser]'])
-    require 'pry'; binding.pry unless @browser.link(:text, "Admin").exists?
-    @browser.link(:text=>'Admin').click
-    @browser.link(:text=>'Benutzer').click
+    require 'pry'; binding.pry unless @browser.link(:visible_text, "Admin").exists?
+    @browser.link(:visible_text=>'Admin').click
+    @browser.link(:visible_text=>'Benutzer').click
     @browser.button(:name => 'new_user').click
-    if @browser.link(:text => /#{email}/).exists?
+    if @browser.link(:visible_text => /#{email}/).exists?
       @browser.goto OddbUrl
     end
     @browser.text_field(:name => 'name').set email
@@ -74,9 +74,9 @@ credit org.oddb.download
     yus_rights.each {|right| @browser.checkbox(:name => right).set }
     @browser.button(:name => 'update').click
     @browser.goto OddbUrl
-    @browser.link(:text=>'Admin').click
-    @browser.link(:text=>'Benutzer').click
-    expect(@browser.link(:text => /#{email}/).exists?).to eq(true)
+    @browser.link(:visible_text=>'Admin').click
+    @browser.link(:visible_text=>'Benutzer').click
+    expect(@browser.link(:visible_text => /#{email}/).exists?).to eq(true)
     @browser.goto OddbUrl
   end
 
@@ -91,13 +91,13 @@ credit org.oddb.download
     if @browser.button(:name,"delete_patinfo").exists?
       @browser.button(:name,"delete_patinfo").click
     end
-    expect(@browser.link(:text, "PI").exists?).to be false
+    expect(@browser.link(:visible_text, "PI").exists?).to be false
     @browser.button(:name => 'delete_patinfo').click if @browser.button(:name => 'delete_patinfo').exist?
     expect(@browser.button(:name => 'delete_patinfo').exist?).to eq false
     @browser.file_field(:name =>  "patinfo_upload").set(original)
     @browser.button(:name,"update").click
-    expect(@browser.link(:text, "PI").exists?).to be true
-    new_content = open(@browser.link(:text, "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
+    expect(@browser.link(:visible_text, "PI").exists?).to be true
+    new_content = open(@browser.link(:visible_text, "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
     org_content = open(original, 'rb').read;
     expect(org_content).to eq new_content
   end
@@ -136,8 +136,8 @@ credit org.oddb.download
     |link_name|
       it "should be possible to sort users by #{link_name.sub('th_','')}" do
         pending # does not work (september 2014)
-        @browser.link(:text=>'Admin').click
-        @browser.link(:text=>'Benutzer').click
+        @browser.link(:visible_text=>'Admin').click
+        @browser.link(:visible_text=>'Benutzer').click
         check_sort(link_name)
       end
   }

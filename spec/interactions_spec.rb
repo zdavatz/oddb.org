@@ -172,7 +172,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     inhalt = @browser.text
     expect(inhalt).to match(/#{TwoMedis.first}/i)
     expect(inhalt).to match(/#{TwoMedis.last}/i)
-    @browser.link(:text => /Alle löschen/i).click
+    @browser.link(:visible_text => /Alle löschen/i).click
     sleep(0.5)
     url = @browser.url
     inhalt = @browser.text
@@ -270,7 +270,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
 
   it "should show interactions for epha example medicaments added manually" do
     @browser.goto OddbUrl
-    @browser.link(:text=>'Interaktionen').click
+    @browser.link(:visible_text=>'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
     MephaExamples.each{ |medi| add_one_drug_to_interactions(medi.name) }
     inhalt = @browser.text
@@ -280,7 +280,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "after delete all drugs a new search must be possible" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
-    @browser.link(:text=>'Interaktionen').click
+    @browser.link(:visible_text=>'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
     add_one_drug_to_interactions(test_medi)
     expect(@browser.text).to match (test_medi)
@@ -293,7 +293,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "after adding a single medicament there should be no ',' in the URL" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
-    @browser.link(:text=>'Interaktionen').click
+    @browser.link(:visible_text=>'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
     @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
     expect(@browser.text).not_to match (test_medi)

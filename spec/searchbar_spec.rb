@@ -79,9 +79,7 @@ describe "ch.oddb.org" do
       small_delay unless @browser.text_field(:name, "search_query").exists?
       @browser.text_field(:name, "search_query").value = searchterm
       @browser.button(:name => 'search').click;  small_delay
-
       expect(@browser.text).not_to match LeeresResult
-      binding.pry unless  /#{searchtext}/.match(@browser.text)
       expect(@browser.text).to match /#{searchtext}/
     end
   }  unless ['just-medical'].index(Flavor)
@@ -127,7 +125,7 @@ describe "ch.oddb.org" do
     @browser.select_list(:name, "search_type").select("Preisvergleich")
     @browser.text_field(:name, "search_query").send_keys :return
     expect(@browser.url).to match /#{name}/i
-    expect(@browser.text_field(:text, /#{name}/i).exist?).to eql true
+    expect(@browser.text_field(:visible_text, /#{name}/i).exist?).to eql true
     expect(@browser.text).not_to match LeeresResult
 
     expect(@browser.text).not_to match LeeresResult
@@ -135,7 +133,7 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").send_keys :return
     expect(@browser.url).to match(invalid)
     expect(@browser.url).not_to match /#{name}/i
-    expect(@browser.text_field(:text, /#{name}/i).exist?).to eql false
+    expect(@browser.text_field(:visible_text, /#{name}/i).exist?).to eql false
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find the Kantonsspital Glarus via Spital" do
@@ -341,8 +339,8 @@ describe "ch.oddb.org" do
     @browser.text_field(:name, "search_query").value = "Deponit"
     @browser.select_list(:name, "search_type").select("Markenname")
     text = @browser.text.clone
-    expect(@browser.link(:text => 'WHO-DDD').exist?).to eq true
-    expect(@browser.link(:text => 'WHO-DDD').href).to match(/atc_code\/\w{7}/)
+    expect(@browser.link(:visible_text => 'WHO-DDD').exist?).to eq true
+    expect(@browser.link(:visible_text => 'WHO-DDD').href).to match(/atc_code\/\w{7}/)
     expect(text).not_to match LeeresResult
     expect(text).to match('Deponit')
     expect(@browser.url).not_to match /#best_result$/

@@ -32,8 +32,8 @@ describe "ch.oddb.org" do
       expect(@browser.button(:name => 'update').exist?).to eql true
       @browser.button(:name => 'update').click
       expect(@browser.image(:src => /blue/).exist?).to eql true
-      @browser.link(:text => 'Analysen').wait_until_present
-      @browser.link(:text => 'Analysen').click
+      @browser.link(:visible_text => 'Analysen').wait_until_present
+      @browser.link(:visible_text => 'Analysen').click
       expect(@browser.image(:src => /blue/).exist?).to eql true
       @browser.link(:name => 'en').click
       expect(@browser.image(:src => /blue/).exist?).to eql true

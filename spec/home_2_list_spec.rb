@@ -80,6 +80,7 @@ describe "ch.oddb.org" do
     end
 
     it "in home_companies we should see all companies when logged in as admin" do
+    binding.pry
       @browser.goto OddbUrl + '/de/gcc/home_companies'
       check_nr_companies(true)
     end

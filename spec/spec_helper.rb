@@ -27,7 +27,7 @@ homeUrl ||= "oddb-ci2.dyndns.org"
 OddbUrl = homeUrl
 @browser = Watir::Browser.new(:chrome)
 @browser.goto OddbUrl
-@browser.link(:text=>'Interaktionen').click
+@browser.link(:visible_text=>'Interaktionen').click
 id = 'home_interactions'
 medi = 'Losartan'
 chooser = @browser.text_field(:id, id)

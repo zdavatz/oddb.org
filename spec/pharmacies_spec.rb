@@ -13,7 +13,7 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    @browser.link(:text=>'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
+    @browser.link(:visible_text=>'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
   end
 
   after :each do
@@ -57,9 +57,9 @@ describe "ch.oddb.org" do
     expect(@browser.text).to match Moor
     expect(@browser.text).to match 'Kantonsspital Glarus AG'
     expect(@browser.text).to match 'St. Fridolin Pharma AG'
-    @browser.link(:text =>Moor).click
+    @browser.link(:visible_text =>Moor).click
     # don't know why we need to wait here, but it works!
-    sleep 0.5 unless @browser.link(:text => /Lageplan/).exists?
+    sleep 0.5 unless @browser.link(:visible_text => /Lageplan/).exists?
     inhalt = @browser.text
     expect(inhalt).to match Moor
     expect(@browser.url).to match /pharmacy\/ean/
@@ -67,7 +67,7 @@ describe "ch.oddb.org" do
     expect(inhalt).to match MoorEAN
     expect(inhalt).to match "Zaunplatz 2"
     expect(inhalt).to match "8750 Glarus"
-    @browser.link(:text => /map.search/).click
+    @browser.link(:visible_text => /map.search/).click
     expect(@browser.url).to match /glarus.zaunplatz-2/i
     @browser.back
   # go back to search result

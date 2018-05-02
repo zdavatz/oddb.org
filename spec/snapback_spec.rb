@@ -78,7 +78,7 @@ describe "ch.oddb.org snapback" do
   it "should always have the correct home link" do
     @browser.goto(OddbUrl + '/de/gcc' + diff_url)
     check_home_links
-    link = @browser.link(:text => /Fachinformation zu/)
+    link = @browser.link(:visible_text => /Fachinformation zu/)
     expect(link.exist?).to be true
     link.click
     check_home_links
@@ -94,7 +94,7 @@ describe "ch.oddb.org snapback" do
     while current
       nr += 1
       # puts "\nRunning test step #{nr}\n  #{current.inspect}"
-      link = @browser.link(:text => current.link_to_click)
+      link = @browser.link(:visible_text => current.link_to_click)
       # puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
       expect(link.exist?).to be true
       link.click
@@ -125,14 +125,14 @@ describe "ch.oddb.org snapback" do
       current = current.next_step
       while current and nr < step_to_test
         nr += 1
-        link = @browser.link(:text => current.link_to_click)
+        link = @browser.link(:visible_text => current.link_to_click)
         expect(link.exist?).to be true
         @prev_url = @browser.url.clone
         link.click
         check_home_links
         current = current.next_step
       end
-      home_link = @browser.link(:text => 'Home')
+      home_link = @browser.link(:visible_text => 'Home')
       expect(home_link.exist?).to be true
       saved_text = @browser.text
       saved_url = @browser.url
@@ -163,7 +163,7 @@ describe "ch.oddb.org snapback" do
       nr += 1
       puts "\nRunning test step #{nr}\n  #{current.inspect}"
       if current.link_to_click
-        link = @browser.link(:text => current.link_to_click)
+        link = @browser.link(:visible_text => current.link_to_click)
         puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
         expect(link.exist?).to be true
         link.click
