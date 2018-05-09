@@ -65,7 +65,7 @@ module ParseUtil
   end
 
   def ParseUtil.parse_compositions(composition_text, active_agents_string = '')
-    active_agents = active_agents_string ? active_agents_string.downcase.split(/,\s+/) : []
+    active_agents = active_agents_string ? active_agents_string.gsub('[', '').downcase.split(/,\s+/) : []
     comps = []
     lines = composition_text.gsub(/\r\n?/u, "\n").split(/\n/u)
     lines.select do
