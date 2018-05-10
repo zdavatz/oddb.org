@@ -11,7 +11,7 @@ require 'util/money'
 module SBSM
   class LookandfeelWrapper < Lookandfeel
     def google_analytics_token
-      "UA-115196-1"
+      "UA-118968446-1"
     end
     SEQUENCE_FILTER = nil
     def format_price(price, currency=nil)

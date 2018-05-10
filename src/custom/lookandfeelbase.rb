@@ -16,7 +16,7 @@ module ODDB
   class Hospital; end
   class LookandfeelBase <  SBSM::Lookandfeel
     def google_analytics_token
-      "UA-115196-1"
+      "UA-118968446-1"
     end
     @@turing_files = {}
     @@turings = {}
