@@ -129,7 +129,16 @@ public
         break unless row
         iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         next if iksnr.to_i == 0
-        next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
+        science = cell(row, @target_keys.keys.index(:production_science))
+        if (science.eql?('Tierarzneimittel'))
+          if (registration = @app.registration(iksnr))
+            LogFile.debug("store_found_packages delete Tierarzneimittel #{iksnr}")
+            @app.delete_registration(iksnr)
+          else
+            # LogFile.debug("store_found_packages skip Tierarzneimittel #{iksnr}")
+          end
+          next
+        end
         seqnr   = "%02i" % cell(row, @target_keys.keys.index(:seqnr)).to_i
         packnr  = "%03i" % cell(row, @target_keys.keys.index(:ikscd)).to_i
         key = [iksnr, seqnr, packnr]
@@ -1158,7 +1167,7 @@ public
       opts = {:date => first_day, :create_only => false}.update(opts)
       opts[:date] ||= first_day
       group = cell(row, @target_keys.keys.index(:production_science))
-      if(group != 'Tierarzneimittel')
+      unless (group.eql?('Tierarzneimittel'))
         iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         science = cell(row, @target_keys.keys.index(:production_science))
         ptr = if(registration = @app.registration(iksnr))
