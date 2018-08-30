@@ -3,8 +3,15 @@ cache: bundler
 sudo: false
 bundler_args: --without debugger
 rvm:
-  - 2.4.2
+  - 2.4.4
   - 2.5.0
+  - ruby-head
+  
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: 2.4.4
+
 script:
   - bundle exec rake quanty
   - bundle exec ruby test/suite.rb
@@ -12,10 +19,6 @@ notifications:
   email:
     recipients:
       - ngiger@ywesee.com
-addons:
-  apt:
-    packages:
-    - nodejs
 # some unit tests behave differently with other
 env:
   - de_CH.UTF-8 LANGUAGE=de_CH
