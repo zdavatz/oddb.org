@@ -478,11 +478,12 @@ public
         else
           object = @app.resolve(ptr)
           next unless object
-          if object.is_a?(ODDB::Package) &&
-            @app.registration(iksnr).sequence(seqnr) &&
-            @app.registration(iksnr).sequence(seqnr).packages.keys.index(packnr)
-            LogFile.debug "(#{index} of #{deletions.size}) iksnr #{iksnr} seqnr #{seqnr} pack #{packnr} #{object.class}"
-            @app.delete ptr
+          if object.is_a?(ODDB::Package)
+            found = @app.registration(iksnr)  &&
+              @app.registration(iksnr).sequence(seqnr) &&
+              @app.registration(iksnr).sequence(seqnr).packages.keys.index(packnr)
+            LogFile.debug "(#{index} of #{deletions.size}) iksnr #{iksnr} seqnr #{seqnr} pack #{packnr} found #{found} ptr #{ptr}"
+            @app.delete ptr if found
           end
         end
       end
