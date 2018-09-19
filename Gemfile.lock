@@ -48,7 +48,7 @@ GEM
     facets (1.8.54)
     faker (1.8.4)
       i18n (~> 0.5)
-    ffi (1.9.23)
+    ffi (1.9.25)
     flexmock (2.3.5)
     flickraw (0.9.8)
     gruff (0.5.1)
@@ -157,7 +157,7 @@ GEM
       nokogiri (>= 1.4.4)
       rubyzip (>= 1.1.6)
     rubyntlm (0.5.1)
-    rubyzip (1.2.1)
+    rubyzip (1.2.2)
     safe_yaml (1.0.4)
     savon (2.11.1)
       akami (~> 1.2)
@@ -319,4 +319,4 @@ DEPENDENCIES
   yus
 
 BUNDLED WITH
-   1.16.1
+   1.16.5
