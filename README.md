@@ -36,7 +36,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ## Developers
 
 * [Zeno R.R. Davatz](https://www.linkedin.com/in/zdavatz/) 2002-present
-* Niklaus Giger 2012-present
+* [Niklaus Giger](https://www.giger-electronique.ch/index.shtml) 2012-present
 * [Masaomi Hatakeyama](http://www.fgcz.ch/the-center/people/hatakeyama.html) 2009-2011
 * [Yasuhiro Asaka](https://www.linkedin.com/in/yasuhiro-asaka/) 2008-2009
 * [Hannes Wyss](https://www.linkedin.com/in/hanneswyss/) 2002-2008
