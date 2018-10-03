@@ -1,7 +1,5 @@
 # oddb.org
-
 * https://github.com/zdavatz/oddb.org
-* http://choddb.rubyforge.org/
 
 ## Description
 Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
