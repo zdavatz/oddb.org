@@ -6,7 +6,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Features/Problems
 * Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/oddb.yml
-* If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/wiki.php/Choddb/Gem)
+* If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/Niklaus/Index).
 
 ## Requirements
 * see Guide.txt
