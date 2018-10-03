@@ -6,8 +6,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Features/Problems
 * Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/oddb.yml
-* If you install oddb.org via gem please also see these instructions:
-  * http://dev.ywesee.com/wiki.php/Choddb/Gem
+* If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/wiki.php/Choddb/Gem)
 
 ## Requirements
 * see Guide.txt
@@ -49,10 +48,11 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ### oddb.org
 * GPLv3.0
 ### Dojo Toolkit
-* Licensed under the MIT license from http://www.opensource.org/licenses/mit-license.php:
+* Licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php)
 ** doc/resources/javascript/qrcode.js
 
 ## Trademarks
-The word "QR Code" is registered trademark of DENSO WAVE INCORPORATED. see http://www.denso-wave.com/qrcode/faqpatent-e.html
+The word "QR Code" is registered trademark of [DENSO WAVE INCORPORATED](http://www.denso-wave.com/qrcode/faqpatent-e.html)
 
-Issues at https://github.com/zdavatz/oddb.org/issues
+## Issues
+[Issues](https://github.com/zdavatz/oddb.org/issues)
