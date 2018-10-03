@@ -35,15 +35,15 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Developers
 
-* Zeno R.R. Davatz 2002-present
+* [Zeno R.R. Davatz](https://www.linkedin.com/in/zdavatz/) 2002-present
 * Niklaus Giger 2012-present
-* Masaomi Hatakeyama 2009-2011
-* Yasuhiro Asaka 2008-2009
-* Hannes Wyss 2002-2008
+* [Masaomi Hatakeyama](http://www.fgcz.ch/the-center/people/hatakeyama.html) 2009-2011
+* [Yasuhiro Asaka](https://www.linkedin.com/in/yasuhiro-asaka/) 2008-2009
+* [Hannes Wyss](https://www.linkedin.com/in/hanneswyss/) 2002-2008
 
 ## French Translation Help
 
-* Herve Robin. Thank you Herve!
+* [Herve Robin](https://www.linkedin.com/in/herobin/). Thank you Herve!
 
 ## License
 ### oddb.org
