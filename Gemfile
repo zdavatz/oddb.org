@@ -40,7 +40,7 @@ gem 'pg', '0.12.0'
 gem 'rclconf', '1.0.0'
 gem 'rmagick', '2.13.4' # cannot build 2.13.2 on oddb-ci2
 gem 'racc' #, '1.4.11'
-gem 'rubyXL', '3.3.1'
+gem 'rubyXL', '3.3.30'
 gem 'ruby-units'
 gem "rubyntlm", '0.5.1'
 gem "rubyzip", ">= 1.1.6" , :require => 'zip'
