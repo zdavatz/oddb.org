@@ -196,7 +196,7 @@ class PackageInnerComposite < HtmlGrid::Composite
     span
   end
   def introduction_date(model, session=@session)
-    HtmlGrid::DateValue.new(:introduction_date, model.sl_entry, @session, self)
+    HtmlGrid::DateValue.new(:introduction_date, model.sl_entry, @session, self) if model &&  model.respond_to?(:introduction_date)
   end
 	def limitation_text(model, session=@session)
     text = HtmlGrid::Div.new(model, @session, self)
