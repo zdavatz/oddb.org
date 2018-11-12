@@ -12,8 +12,8 @@
         <DESCR2>Roland</DESCR2>
         <ROLE>
           <TYPE>DoctMed</TYPE>
-          <ZIP>3960</ZIP>
-          <CITY>Sierre</CITY>
+          <ZIP>1941</ZIP>
+          <CITY>Cries (Vollèges)</CITY>
           <CTN>VS</CTN>
           <CNTRY>CH</CNTRY>
         </ROLE>
@@ -35,18 +35,19 @@
           <CNTRY>CH</CNTRY>
         </ROLE>
       </ITEM>
-      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">                                                                                                                                         
-        <PTYPE>NAT</PTYPE>                                                                                                                                                                                                      
-        <GLN>7601000729446</GLN>                                                                                                                                                                                                
-        <STATUS>A</STATUS>                                                                                                                                                                                                      
-        <STDATE>2006-01-01T00:00:00</STDATE>                                                                                                                                                                                    
-        <LANG>FR</LANG>                                                                                                                                                                                                         
-        <DESCR1>Ramadani</DESCR1>                                                                                                                                                                                               
-        <DESCR2>Mit Umlauten äüöèàéç</DESCR2>                                                                                                                                                                                                  
-        <ROLE>                                                                                                                                                                                                                  
-          <TYPE>DoctMed</TYPE>                                                                                                                                                                                                  
-        </ROLE>                                                                                                                                                                                                                 
-      </ITEM>                                                                                                                                                                                                                         
+      <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2016-01-06T00:00:00">
+        <PTYPE>NAT</PTYPE>
+        <GLN>7601000729446</GLN>
+        <STATUS>A</STATUS>
+        <STDATE>2006-01-01T00:00:00</STDATE>
+        <LANG>FR</LANG>
+        <DESCR1>Ramadani</DESCR1>
+        <DESCR2>Mit Umlauten äüöèàéç</DESCR2>
+        <ROLE>
+          <TYPE>DoctMed</TYPE>
+          <CITY>Affoltern am Albis</CITY>
+        </ROLE>
+      </ITEM>
       <ITEM xmlns="http://refdatabase.refdata.ch/Partner_out" DT="2017-11-28T00:00:00">
         <PTYPE>NAT</PTYPE>
         <GLN>7601007428298</GLN>

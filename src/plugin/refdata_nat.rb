@@ -241,10 +241,14 @@ module ODDB
         changes = {}
         [:name, :firstname, :language].each do |field|
             has_changes = eval("doctor.#{field.to_s} != data['#{field}']")
-            orig  =  eval("doctor.#{field.to_s}")
-            changed = eval("data[:#{field}]")
+            orig  =  eval("doctor.#{field.to_s}").to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
+            changed = eval("data[:#{field}]").to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
             if (orig <=> changed) != 0
-              changes[field] ="#{orig} => #{changed}"
+              begin
+                 changes[field] = changed
+              rescue => error
+                changes[field] = "Error #{error} in field #{field}"
+              end
             end
         end
         found_plz = false
