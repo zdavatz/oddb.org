@@ -197,7 +197,6 @@ module ODDB
       self.class::RECIPIENTS
     end
     def run
-      update_drugshortage
       logfile_stats
       update_epha_interactions
 
