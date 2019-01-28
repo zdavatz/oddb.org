@@ -260,8 +260,8 @@ module ODDB
             next if field.eql?(:narcotics) && !@with_details
             next unless company.respond_to?(field.to_sym) #business_area is not defined for hospitals
             has_changes = eval("company.#{field.to_s} != data['#{field}']")
-            orig  =  eval("company.#{field.to_s}")
-            changed = eval("data[:#{field}]")
+            orig  =  eval("company.#{field.to_s}").to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '?')
+            changed = eval("data[:#{field}]").to_s.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '?')
             if (orig.to_s <=> changed.to_s) != 0
               changes[field] ="#{orig} => #{changed}"
             end
