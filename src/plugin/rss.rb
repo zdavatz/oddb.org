@@ -140,8 +140,10 @@ module ODDB
             
           end
           step_nr += 1
+          # In January 2019 swissmedic changed the text from "Keine Resultate" to "Keine Ergebnisse" and the import never finished
+          LogFile.append('oddb/debug', " swissmedic_entries_of: #{type.to_s} #{base_uri.gsub('1', step_nr.to_s)}", Time.now.utc) if step_nr > 20
           first_page =  Nokogiri::HTML(fetch_with_http(base_uri.gsub('1', step_nr.to_s)))
-          break if /Keine Resultate/i.match(first_page.text)
+          break if /Keine (Resultate|Ergebnisse)/i.match(first_page.text)
         end
       end
       entries
