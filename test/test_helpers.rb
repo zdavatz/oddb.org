@@ -4,6 +4,7 @@ require 'vcr'
 require 'webmock'
 require 'fileutils'
 require 'zip'
+require 'flexmock'
 
 begin
   require 'pry'
@@ -203,5 +204,21 @@ module ODDB
     def TestHelpers.vcr_teardown
       VCR.eject_cassette
     end
+  end
+end
+  include WebMock::API
+
+def mock_downloads
+  WebMock.enable!
+  { 'https://www.swissmedic.ch/swissmedic/de/home/services/listen_neu.html' => 'html/listen_neu.html',
+    'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/erweiterte_ham.xlsx.download.xlsx/Erweiterte_Arzneimittelliste%20HAM_31012019.xlsx' =>
+      'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx'
+    }.each do |url, file|
+    inhalt = File.read(File.join(Dir.pwd, 'test', 'data', file))
+    m = flexmock('open-uri')
+    m.should_receive(:open).with(url).and_return(inhalt)
+    stub_request(:any,url).to_return(body: inhalt)
+    stub_request(:get,url).to_return(body: inhalt)
+    stub_request(:open,url).to_return(body: inhalt)
   end
 end

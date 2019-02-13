@@ -99,10 +99,10 @@ module ODDB
       saved_reg_seq = nil
       row_nr = 0
       Util.check_column_indices(workbook.worksheets[0])
-      iksnr_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:iksnr)
-      seqnr_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:seqnr)
-      atc_col             = ODDB::Util::COLUMNS_JULY_2015.keys.index(:atc_class)
-      ikscd_col           = ODDB::Util::COLUMNS_JULY_2015.keys.index(:ikscd)
+      iksnr_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:iksnr)
+      seqnr_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:seqnr)
+      atc_col             = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:atc_class)
+      ikscd_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:ikscd)
       workbook.worksheets[0].each do |row|
         row_nr += 1
         next unless row and row.cells[iksnr_col] and row.cells[iksnr_col].value and row.cells[iksnr_col].value.to_i > 0

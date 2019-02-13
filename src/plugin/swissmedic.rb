@@ -51,9 +51,15 @@ module ODDB
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
     $swissmedic_memory_error = nil
     DATE_FORMAT = '%d.%m.%Y'
-    PACKAGES_URL    = SWISSMEDIC_BASE_URL + '/excel-version_zugelasseneverpackungen.xlsx.download.xlsx/excel-version_zugelasseneverpackungen.xlsx'
-    PREPARATIONS_URL= SWISSMEDIC_BASE_URL + '/excel-version_erweitertepraeparateliste.xlsx.download.xlsx/excel-version_erweitertepraeparateliste.xlsx'
+    BASE_URL = 'https://www.swissmedic.ch'
 
+    def self.get_packages_url
+      @@packages_url
+    end
+    def self.get_preparations_url
+      @@gpreparations_url
+    end
+     
     def self.get_memory_error
       $swissmedic_memory_error
     end
@@ -63,11 +69,16 @@ private
       return nil unless row[idx]
       row_value = row[idx]
       return nil unless row_value.value
-      return row_value.value.to_date if row_value.is_a?(RubyXL::Cell)
+      return Date.parse row_value.value.to_s if row_value.is_a?(RubyXL::Cell)
       row_value
     end
 public
     def initialize(app=nil, archive=ARCHIVE_PATH)
+      doc = Nokogiri::HTML(open(BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
+      @@packages_url = BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Verpackungen/.match(x.children.text) }.attributes['href'].value
+      @@gpreparations_url = BASE_URL + doc.xpath("//a").find{|x| /Erweiterte Arzneimittelliste/.match(x.children.text) }.attributes['href'].value
+      @comarketing_url = BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
+      doc = nil
       super app
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
@@ -94,7 +105,7 @@ public
       @iksnr_with_wrong_data = []
       @active_registrations_praeparateliste = {}
       @update_time = 0 # minute
-      @target_keys = Util::COLUMNS_JULY_2015
+      @target_keys = Util::COLUMNS_FEBRUARY_2019
       @empty_compositions = []
       @known_packages = []
       @deletes_packages = []
@@ -225,7 +236,7 @@ public
     def check_all_packages(file2open)
       workbook = Spreadsheet.open(file2open)
       Util.check_column_indices(workbook.worksheets[0])
-      @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+      @target_keys = Util::COLUMNS_FEBRUARY_2019 if @target_keys.is_a?(Array)
       listed_packages = []
       row_nr = 0
       workbook.worksheets[0].each() do
@@ -267,7 +278,7 @@ public
       LogFile.debug "update check done"
     end
 
-    def update(opts = {}, file2open=get_latest_file)
+    def update(opts = {}, file2open=get_latest_file('Packungen'))
       $swissmedic_do_tracing = true
       start_time = Time.new
       threads = []
@@ -295,7 +306,7 @@ public
         LogFile.debug("file2use #{file2use} checked #{file2open} and #{@latest_packungen}")
         workbook = Spreadsheet.open(file2use)
         Util.check_column_indices(workbook.worksheets[0])
-        @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+        @target_keys = Util::COLUMNS_FEBRUARY_2019 if @target_keys.is_a?(Array)
         workbook.worksheets[0].each() do
           |row|
           row_nr += 1
@@ -384,7 +395,7 @@ public
       @diff.newest_rows.values.each do |obj|
         obj.values.each do |row|
           # File used is row.worksheet.workbook.root.filepath
-          @target_keys = Util::COLUMNS_JULY_2015 if @target_keys.is_a?(Array)
+          @target_keys = Util::COLUMNS_FEBRUARY_2019 if @target_keys.is_a?(Array)
           iksnr = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
           if reg = @app.registration(iksnr.to_s)
             {
@@ -546,11 +557,11 @@ public
         end
       end
     end
-    def get_latest_file(keyword='Packungen')
+    def get_latest_file(keyword='Keyword must be given!')
       if keyword.eql?('Packungen')
-        index_url = PACKAGES_URL
+        index_url = ODDB::SwissmedicPlugin.get_packages_url
       elsif keyword.eql?('Präparateliste')
-        index_url = PREPARATIONS_URL
+        index_url = ODDB::SwissmedicPlugin.get_preparations_url
       else
         raise "Unknown keyword #{keyword} in get_latest_file"
       end

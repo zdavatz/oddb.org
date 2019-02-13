@@ -10,6 +10,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'minitest/unit'
+require 'flexmock/minitest'
+require 'test_helpers'
 require 'stub/odba'
 require 'util/persistence'
 require 'plugin/swissmedic'
@@ -18,7 +20,6 @@ require 'model/sequence'
 require 'model/package'
 require 'model/galenicgroup'
 require 'model/composition'
-require 'flexmock/minitest'
 require 'ostruct'
 require 'tempfile'
 require 'util/log'
@@ -42,26 +43,30 @@ module ODDB
     def setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
+      mock_downloads
       @app = flexmock(ODDB::App.new)
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
+      @older    = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
-      @current  = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
-      @older    = File.expand_path '../data/xlsx/Packungen-2015.06.04.xlsx', File.dirname(__FILE__)
+      @bag_listen  = File.expand_path '../data/html/listen_neu.html', File.dirname(__FILE__)
+      @current  = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
-      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read).by_default
-      @prep_from = File.expand_path('../data/xlsx/Präparateliste-latest.xlsx', File.dirname(__FILE__))
-      FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
+      @plugin.should_receive(:fetch_with_http).with('https://www.swissmedic.ch/swissmedic/de/home/services/listen_neu.html').and_return(File.open(@bag_listen).read).by_default
+      @plugin.should_receive(:open).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@current).read).by_default
+      @prep_from = File.expand_path('../data/xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx', File.dirname(__FILE__))
+      FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')),
                    :verbose => true, :preserve => true)
-      FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Präparateliste-latest.xlsx'),
+      FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx^'),
                    :verbose => true, :preserve => true)
-      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PREPARATIONS_URL).and_return(File.open(@prep_from).read).by_default
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read).by_default
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exists?(@latest)
-      puts  ODDB::SwissmedicPlugin::PREPARATIONS_URL
-      assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/excel-version_erweitertepraeparateliste.xlsx.download.xlsx/excel-version_erweitertepraeparateliste.xlsx', ODDB::SwissmedicPlugin::PREPARATIONS_URL)
+      puts  ODDB::SwissmedicPlugin.get_preparations_url
+      assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/zugelassene_packungen_ham.xlsx.download.xlsx/Zugelassene_Packungen%20HAM_31012019.xlsx', ODDB::SwissmedicPlugin.get_packages_url)
+      assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/erweiterte_ham.xlsx.download.xlsx/Erweiterte_Arzneimittelliste%20HAM_31012019.xlsx', ODDB::SwissmedicPlugin.get_preparations_url)
     end
     def teardown
       ODBA.storage = nil
@@ -102,13 +107,12 @@ module ODDB
     def test_july_2015
       # Use first the last month and compare it to a non existing lates
       FileUtils.rm(Dir.glob("#{File.dirname(@latest)}/*"), :verbose => true)
-      FileUtils.cp(@older, File.dirname(@latest), :verbose => true, :preserve => true)
+      FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
       FileUtils.cp(@current, @target, :verbose => true, :preserve => true)
       FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
 
  # OddbPrevalence::registration(00278,sequence,01)
       newest  = @current.clone
-      @adata = @older.clone
       assert_equal(0, @app.registrations.size)
       reg = @app.create_registration('00278')
       reg.pointer = Persistence::Pointer.new([:registration, '00278'])
@@ -136,7 +140,11 @@ module ODDB
       seq.create_package('001')
       @app.should_receive(:delete).twice
 
-      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read)
+      reg = @app.create_registration('48624')
+      seq = reg.create_sequence('02')
+      seq.create_package('022')
+
+      @plugin.should_receive(:fetch_with_http).with(  ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@current).read)
       result = @plugin.update({:update_compositions => true})
       assert_equal(3, @app.registrations.size)
       assert_equal(3, @app.sequences.size)
@@ -151,8 +159,8 @@ module ODDB
       assert_equal(4, @app.sequences.size)
       assert_equal(7, @app.packages.size)
 
-      puts "\nStarting second_run with #{ODDB::SwissmedicPlugin::PREPARATIONS_URL}\n\n"
-      @plugin.should_receive(:fetch_with_http).with(ODDB::SwissmedicPlugin::PREPARATIONS_URL).and_return(File.open(@prep_from).read)
+      puts "\nStarting second_run with #{ODDB::SwissmedicPlugin.get_preparations_url}\n\n"
+      @plugin.should_receive(:fetch_with_http).with(ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read)
       result_second_run = @plugin.update({})
       puts @plugin.report
       assert File.exist?(@target), "#@target was not saved"

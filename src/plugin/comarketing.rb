@@ -4,6 +4,7 @@
 # ODDB::ComarketingPlugin -- oddb.org -- 09.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
+require 'plugin/swissmedic'
 require 'util/oddbconfig'
 require 'util/searchterms'
 require 'drb'
@@ -13,7 +14,13 @@ require 'tempfile'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-		SOURCE_URI = 'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen/excel-version_co-Marketing_basis.xlsx.download.xlsx/excel-version_co_marketing_basis.xlsx'
+    doc = Nokogiri::HTML(open( ODDB::SwissmedicPlugin::BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
+    @@comarketing_url = ODDB::SwissmedicPlugin::BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
+    doc = nil
+    def self.get_comarketing_url
+      @@comarketing_url
+    end
+
 		def find(iksnr)
       @app.registration(iksnr)
 		end
@@ -96,7 +103,7 @@ module ODDB
 			@updated = 0
 			@found = 0
 			@not_found = []
-			@pairs = get_pairs(SOURCE_URI)
+			@pairs = get_pairs(CoMarketingPlugin.get_comarketing_url)
 			@pairs.each { |pair|
 				update_pair(*pair)
 			}

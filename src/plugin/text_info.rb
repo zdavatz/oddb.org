@@ -71,7 +71,7 @@ module ODDB
       @duplicate_entries = []
       @fi_without_atc_code = []
       @fi_atc_code_missmatch = []
-      @target_keys = Util::COLUMNS_JULY_2015
+      @target_keys = Util::COLUMNS_FEBRUARY_2019
       @iksnrs_meta_info = {}
       @skipped_override ||= []
       @missing_override ||= []
@@ -99,7 +99,7 @@ module ODDB
       LogFile.debug "read_packages found latest_name #{latest_name}"
       @packages = {}
       @veterinary_products = {}
-      @target_keys = Util::COLUMNS_JULY_2015
+      @target_keys = Util::COLUMNS_FEBRUARY_2019
       RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
         next unless row[@target_keys.keys.index(:iksnr)].to_i and
             row[@target_keys.keys.index(:seqnr)].to_i and

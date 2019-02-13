@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'minitest/unit'
+require 'test_helpers'
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'util/persistence'
@@ -65,9 +66,11 @@ module ODDB
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
-      @current  = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
-      @older    = File.expand_path '../data/xlsx/Packungen-2015.06.04.xlsx', File.dirname(__FILE__)
-      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin::PACKAGES_URL).and_return(File.open(@current).read).by_default
+      @state_2019_01_31 = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
+      @state_2015_07_02 = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
+      prep_from = File.expand_path('../data/xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx', File.dirname(__FILE__))
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@state_2015_07_02).read).by_default
+      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
       @latest   = File.join @archive, 'xls', 'Packungen-latest.xlsx'
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
@@ -77,12 +80,9 @@ module ODDB
       latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
       FileUtils.makedirs(File.dirname(latest_to))
       FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
-
-
-      prep_from = File.expand_path('../data/xlsx/Präparateliste-latest.xlsx', File.dirname(__FILE__))
       FileUtils.cp(prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
-      FileUtils.cp(prep_from, File.join(@archive, 'xls', 'Präparateliste-latest.xlsx'),
+      FileUtils.cp(prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx'),
                    :verbose => true, :preserve => true)
       @workbook = Spreadsheet.open( @test_packages)
     end
@@ -132,7 +132,6 @@ module ODDB
       act
     end
 
-if true
     def test_get_latest_file__identical
       content = 'Content of the xml'
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
@@ -308,37 +307,67 @@ if true
       composition = flexmock('composition', :pointer => 'pointer')
       assert_equal('update', @plugin._update_galenic_form(composition, 'language', '123,name'))
     end
-    def test_diff
+    def test_diff_february_2019
       pac = flexmock 'package'
       pac.should_receive(:data_origin).and_return :swissmedic
       reg = flexmock 'registration'
       reg.should_receive(:package).and_return pac
       @app.should_receive(:registration).and_return reg
-      result = @plugin.diff(@current, @older)
-      assert_equal 10, result.news.size
-      assert_equal "Viscotears Tropfgel, Augengel", result.news.first[2].value
+      result = @plugin.diff(@state_2019_01_31, @state_2015_07_02)
+      assert_equal 37, result.news.size
+      assert_equal "Zymafluor 0.25 mg, Tabletten", result.news.first[2].value
       assert_equal 2, result.updates.size
-      assert_equal "Colon Sérocytol, suppositoire", result.updates.first[2].value
-      assert_equal 6, result.changes.size
-      expected = {
-        "00278"=>[:company, :atc_class],
-        "48624"=>[:new],
-        "62069"=>[:new],
-        "16105"=>[:new],
-        "00488"=>[:new],
-        "00279"=>[:delete]
+      assert_equal "Coeur-Vaisseaux Sérocytol, suppositoire", result.updates.first[2].value
+      assert_equal 37, result.changes.size
+      expected = {"00277"=>[:production_science],
+                  "15219"=>[:new],
+                  "16598"=>[:new],
+                  "28486"=>[:new],
+                  "30015"=>[:new],
+                  "31644"=>[:new],
+                  "32475"=>[:new],
+                  "35366"=>[:new],
+                  "43454"=>[:new],
+                  "44625"=>[:new],
+                  "45882"=>[:new],
+                  "53290"=>[:new],
+                  "53662"=>[:new],
+                  "54015"=>[:new],
+                  "54534"=>[:new],
+                  "55558"=>[:new],
+                  "66297"=>[:new],
+                  "55594"=>[:new],
+                  "55674"=>[:new],
+                  "56352"=>[:new],
+                  "58943"=>[:new],
+                  "59267"=>[:new],
+                  "61186"=>[:new],
+                  "62069"=>[:expiry_date],
+                  "62132"=>[:new],
+                  "65856"=>[:new],
+                  "65857"=>[:new],
+                  "58734"=>[:new],
+                  "55561"=>[:new],
+                  "65160"=>[:new],
+                  "58158"=>[:new],
+                  "44447"=>[:new],
+                  "39252"=>[:new],
+                  "00278"=>[:delete],
+                  "48624"=>[:delete],
+                  "57678"=>[:delete],
+                  "00488"=>[:delete]
       }
       assert_equal(expected, result.changes)
-      assert_equal 2, result.package_deletions.size
+      assert_equal 11, result.package_deletions.size
       assert_equal 4, result.package_deletions.first.size
       iksnrs = result.package_deletions.collect { |row| row[0] }.sort
       ikscds = result.package_deletions.collect { |row| row[2] }.sort
-      assert_equal ["00279", "00279"], iksnrs
-      assert_equal ['001', '002'], ikscds
-      assert_equal 1, result.sequence_deletions.size
-      assert_equal ['00279', '01'], result.sequence_deletions.at(0)
-      assert_equal 1, result.registration_deletions.size
-      assert_equal ['00279'], result.registration_deletions.at(0)
+      assert_equal ["00278", "00278", "00488", "48624", "57678", "62069", "62069", "62069", "62069", "62069", "62069"], iksnrs
+      assert_equal  ["001", "001", "002", "009", "010", "011", "012", "013", "014", "022", "024"], ikscds
+      assert_equal 6, result.sequence_deletions.size
+      assert_equal ['00278', '01'], result.sequence_deletions.at(0)
+      assert_equal 4, result.registration_deletions.size
+      assert_equal ['00278'], result.registration_deletions.at(0)
       assert_equal 0, result.replacements.size
     end
     def test_deactivate
@@ -616,7 +645,6 @@ if true
       expected = {"email"=>[registration]}
       assert_equal(expected, @plugin.mail_notifications)
     end
-    end
     def test_update_swissmedic
       expected = []
       company_ptr = Persistence::Pointer.new([:registration, '111'], [:sequence, '222'])
@@ -647,7 +675,7 @@ if true
       @app = flexmock(@app)
       @app.should_receive(:resolve).and_return(nil)
       newer = File.expand_path(File.join(@archive, '..', 'data', 'xlsx', 'Packungen-latest.xlsx'))
-      older = @current
+      older = @state_2015_07_02
       FileUtils.cp(older,
                    File.join(@archive, 'xls', 'Packungen-latest.xlsx'),
                    :verbose => true, :preserve => true)

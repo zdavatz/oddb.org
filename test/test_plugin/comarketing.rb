@@ -41,7 +41,7 @@ module ODDB
     def test_report_with_test_file
       result = @plugin.find(TestIksnr)
       file_name =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xls', 'CoMarketing_small_010514.xlsx'))
-      @plugin.should_receive(:fetch_with_http).once.with( ODDB::CoMarketingPlugin::SOURCE_URI).and_return(File.open(file_name).read)
+      @plugin.should_receive(:fetch_with_http).once.with( ODDB::CoMarketingPlugin.get_comarketing_url).and_return(File.open(file_name).read)
       @plugin.update
       assert_nil(result)
       @app.flexmock_verify
