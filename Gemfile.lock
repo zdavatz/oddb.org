@@ -107,6 +107,7 @@ GEM
       ydbd-pg (>= 0.5.1)
       ydbi (>= 0.5.1)
     oddb2tdat (1.1.2)
+    optimist (3.0.0)
     ox (2.8.2)
     page-object (2.2.4)
       page_navigation (>= 0.10)
@@ -186,7 +187,7 @@ GEM
     socksify (1.7.1)
     spreadsheet (0.9.7)
       ruby-ole (>= 1.0)
-    swissmedic-diff (0.2.4)
+    swissmedic-diff (0.2.6)
       nokogiri
       rubyXL (>= 3.3.1)
       rubyzip
@@ -196,7 +197,6 @@ GEM
     transaction-simple (1.4.0.2)
     travis-lint (2.0.0)
       json
-    trollop (2.1.2)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
     unf (0.1.4)
@@ -280,6 +280,7 @@ DEPENDENCIES
   nokogiri
   odba (>= 1.1.5)
   oddb2tdat (= 1.1.2)
+  optimist
   ox (= 2.8.2)
   page-object
   parslet (= 1.7.0)
@@ -302,10 +303,9 @@ DEPENDENCIES
   sbsm (>= 1.5.9)
   simplecov
   spreadsheet (= 0.9.7)
-  swissmedic-diff (= 0.2.4)
+  swissmedic-diff (= 0.2.6)
   syck
   travis-lint
-  trollop
   vcr
   watir
   watir-scroll
