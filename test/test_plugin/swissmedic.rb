@@ -52,11 +52,11 @@ module ODDB
     INDICATION_OFFSET = 18
     ROW_ASPIRIN = 5 # row in excel -1
     ROW_WELEDA = 8
-    ROW_VETERINARY = 9
     ROW_OSANIT = 10
     ROW_AXOTIDE = 19
     IKSNR_WELEDA = "09232"
     EXPIRATION_DATE_ASPIRIN = Date.new(2017,5,9)
+    MEDI_NAME = 'Zymafluor 0.25 mg, Tabletten'
     def setup
       # @app = flexmock 'app'
       ODDB::GalenicGroup.reset_oids
@@ -76,7 +76,7 @@ module ODDB
       FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exists?(@latest)
 
-      @test_packages = File.expand_path '../data/xlsx/Packungen.xlsx', File.dirname(__FILE__)
+      @test_packages = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
       latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
       FileUtils.makedirs(File.dirname(latest_to))
       FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
@@ -137,7 +137,7 @@ module ODDB
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
       File.open(@latest, 'wb+') { |f| f.write content }
-      @plugin.get_latest_file()
+      @plugin.get_latest_file('Packungen')
       assert File.exist?(@latest), "#{@latest} should have been saved"
       assert File.exist?(@target), "#{@target} should have been saved"
     end
@@ -145,7 +145,7 @@ module ODDB
     def test_get_latest_file__new
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
-      @plugin.get_latest_file()
+      @plugin.get_latest_file('Packungen')
       assert File.exist?(@target), "#@target was not saved"
     end
 
@@ -153,25 +153,21 @@ module ODDB
       assert !File.exist?(@latest), "A previous test did not clean up #@latest"
       assert !File.exist?(@target), "A previous test did not clean up #@target"
       File.open(@latest, 'w') { |fh| fh.puts 'Content of a previous xml' }
-      @plugin.get_latest_file()
+      @plugin.get_latest_file('Packungen')
       assert File.exist?(@target), "#@target was not saved"
     end
 
     def test_update_company__create
-      row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
+      # 15219	1	Zymafluor 0.25 mg, Tabletten	MEDA Pharma GmbH	Synthetika human	13.05.1.	A01AA01	15.06.50	15.06.50	31.12.17	068	400	Tablette(n)	C	C	C	fluoridum	fluoridum 0.25 mg ut natrii fluoridum, aromatica, excipiens pro compresso.		Kariesprophylaxe
+      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};
 
-      name = 'Bayer (Schweiz) AG'
+      name = 'MEDA Pharma GmbH'
       @app.should_receive(:company_by_name).with(name, 0.8)
       ptr = Persistence::Pointer.new(:company)
       args = { :name => name, :business_area => 'ba_pharma' }
       @app.should_receive(:update).with(ptr.creator, args)\
         .times(1).and_return { assert true }
       @plugin.update_company(row)
-    end
-
-    def test_update_registration__ignore_vet
-      row = @workbook.worksheet(0).row(ROW_VETERINARY)
-      @plugin.update_registration(row)
     end
 
     def stdout_null
@@ -199,10 +195,12 @@ module ODDB
     end
 
     def test_update_sequence__create
-      row = @workbook.worksheet(0).row(ROW_ASPIRIN)
-      assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
+      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};
+      assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
       reg = flexmock 'registration'
-      ptr = Persistence::Pointer.new([:registration, '08537'])
+      # 15219	1	Zymafluor 0.25 mg, Tabletten	MEDA Pharma GmbH	Synthetika human	13.05.1.	A01AA01	15.06.50	15.06.50	31.12.17	068	400	Tablette(n)	C	C	C	fluoridum	fluoridum 0.25 mg ut natrii fluoridum, aromatica, excipiens pro compresso.		Kariesprophylaxe
+      reg_nr = '15219'
+      ptr = Persistence::Pointer.new([:registration, reg_nr])
       ptr= flexmock('registration_fake')
       ptr.should_receive(:update).with_any_args.and_return 'update'
       reg.should_receive(:pointer).and_return ptr
@@ -212,22 +210,22 @@ module ODDB
       reg.should_receive(:sequence).with('00').and_return(nil)
       reg.should_receive(:sequence).with('01').and_return(seq)
       j06aa = ODDB::AtcClass.new('J06AA')
-      n02ba01 = ODDB::AtcClass.new('N02BA01')
-      reg.should_receive(:iksnr).and_return '08537'
-      reg.should_receive(:atc_classes).and_return [n02ba01]
+      a010aa01 = ODDB::AtcClass.new('A01AA01')
+      reg.should_receive(:iksnr).and_return reg_nr
+      reg.should_receive(:atc_classes).and_return [a010aa01]
       seq.should_receive(:atc_class).and_return j06aa
       j06aa.descriptions[:de]='description for j06aa'
-      n02ba01.descriptions[:de]='description for n02ba01'
-      @app.should_receive(:atc_class).with('J06AA').and_return n02ba01
-      @app.should_receive(:atc_class).with('N02BA01').and_return n02ba01
-      sptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
+      a010aa01.descriptions[:de]='description for a010aa01'
+      @app.should_receive(:atc_class).with('J06AA').and_return a010aa01
+      @app.should_receive(:atc_class).with('a010aa01').and_return a010aa01
+      sptr = Persistence::Pointer.new([:registration, reg_nr], [:sequence, '01'])
       seq.should_receive(:pointer).and_return sptr
       args = {
-        :composition_text => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
-        :name_base        =>"Aspirin",
+        :composition_text => "fluoridum 0.25 mg ut natrii fluoridum, aromatica, excipiens pro compresso.",
+        :name_base        =>"Zymafluor 0.25 mg",
         :name_descr       =>"Tabletten",
         :dose             =>nil,
-        :sequence_date    => Date.new(1936,6,30),
+        :sequence_date    => Date.new(1950,6,15),
         :export_flag      =>nil,
       }
       @app.should_receive(:update).with(sptr, args, :swissmedic).and_return 'update_with_expected_args'
@@ -237,7 +235,8 @@ module ODDB
 
 
     def test_update_galenic_form__dont_update__descr
-      row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
+      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  
+      assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
@@ -250,7 +249,7 @@ module ODDB
       assert true
     end
     def test_update_galenic_form__dont_update__composition
-      row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
+      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
@@ -264,7 +263,7 @@ module ODDB
       assert true
     end
     def test_update_galenic_form__create__descr
-      row = @workbook.worksheet(0).row(ROW_ASPIRIN);  assert_equal('Aspirin, Tabletten', row[NAME_OFFSET].value)
+      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'

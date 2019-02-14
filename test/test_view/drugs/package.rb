@@ -145,7 +145,8 @@ class TestPackageInnerComposite <Minitest::Test
     assert_equal({}, @composite.init)
   end
   def test_introduction_date
-    assert_kind_of(HtmlGrid::DateValue, @composite.introduction_date(@model, @session))
+    # before 2019.02.13 was assert_kind_of(HtmlGrid::DateValue, @composite.introduction_date(@model, @session))
+    assert_nil(@composite.introduction_date(@model, @session))
   end
 end
 class TestODDBViewDrugsPackageComposite <Minitest::Test

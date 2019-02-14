@@ -21,9 +21,9 @@ module ODDB
         tables = @tables.at(2)
         tables.each_row { |row|
           case(row.cdata(0))
-          when /genehmigung/iu
+          when /genehmigung|Gesuch \/ Zulassung bzw. Bewilligung/iu
             data[:iksnrs] = [row.cdata(1)].flatten.collect { |str|
-              if(match = /(?:iks|oicm|swissmedic),?\s+(\d{5})\b/iu.match(str))
+              if(match = /(?:iks-zulassung|iks|oicm|swissmedic),?\s+(\d{5})\b/iu.match(str))
                 match[1]
               elsif(match = /bag,?\s+(\d{3,5})\b/iu.match(str))
                 sprintf("%05i", match[1])

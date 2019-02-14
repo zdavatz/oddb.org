@@ -618,17 +618,19 @@ public
       workbook.worksheets[0].each() do |row|
         row_nr += 1
         next if row_nr <= 4
-        iksnr = "%05i" % cell(row, iksnr_idx).to_i
-        seqnr = "%02i" % cell(row, seqnr_idx).to_i
-        export = row[export_flag_idx].value
-        if export =~ /E/
-          data = {}
-          @export_sequences[[iksnr, seqnr]] = data
-          unless @export_registrations[iksnr]
+        next unless row # Happens at the end of test files from test/test_plugin/swissmedic.rb
+        next unless row[export_flag_idx] # Happens at the end of test files from test/test_plugin/swissmedic.rb
+          iksnr = "%05i" % cell(row, iksnr_idx).to_i
+          seqnr = "%02i" % cell(row, seqnr_idx).to_i
+          export = row[export_flag_idx].value
+          if export =~ /E/
             data = {}
-            @export_registrations.store iksnr, data
+            @export_sequences[[iksnr, seqnr]] = data
+            unless @export_registrations[iksnr]
+              data = {}
+              @export_registrations.store iksnr, data
+            end
           end
-        end
       end
       LogFile.debug "initialize_export_registrations #{latest_name} contains #{@export_registrations.size} export_registrations and #{@export_sequences.size} export_sequences"
       @export_registrations

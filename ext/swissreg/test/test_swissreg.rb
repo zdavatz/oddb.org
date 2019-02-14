@@ -29,6 +29,7 @@ module ODDB
                 :expiry_date             => Date.new(2000, 8, 17),
                 :deletion_date           => Date.new(2000, 8, 17)
         }
+
         @detail_for_54642   = '/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=C00463756/01'
         @expected_for_54642 = {
                 :certificate_number     => "C00463756/01",
@@ -58,6 +59,9 @@ module ODDB
 
       def test_detail_online_for_46574
         data = Swissreg.get_detail(@detail_for_46574)
+        assert_equal([], @expected_for_46574.keys - data.keys)
+        assert_equal(@expected_for_46574.keys, data.keys)
+        assert_equal([], @expected_for_46574.values- data.values)
         assert_equal(@expected_for_46574, data)
       end
 

@@ -103,6 +103,43 @@ Swissmedic: All registrations present"
       @app.should_receive(:registration).with('16105').and_return(nil)
       @app.should_receive(:registration).with('57678').and_return(nil)
       @app.should_receive(:registration).with('00488').and_return(nil)
+      @app.should_receive(:registration).with('15219').and_return(nil)
+      @app.should_receive(:registration).with('16598').and_return(nil)
+      @app.should_receive(:registration).with('28486').and_return(nil)
+      @app.should_receive(:registration).with('30015').and_return(nil)
+      @app.should_receive(:registration).with('31644').and_return(nil)
+      @app.should_receive(:registration).with('32475').and_return(nil)
+      @app.should_receive(:registration).with('35366').and_return(nil)
+      @app.should_receive(:registration).with('39252').and_return(nil)
+      @app.should_receive(:registration).with('39252').and_return(nil)
+      @app.should_receive(:registration).with('43454').and_return(nil)
+      @app.should_receive(:registration).with('43454').and_return(nil)
+      @app.should_receive(:registration).with('44447').and_return(nil)
+      @app.should_receive(:registration).with('44625').and_return(nil)
+      @app.should_receive(:registration).with('45882').and_return(nil)
+      @app.should_receive(:registration).with('53290').and_return(nil)
+      @app.should_receive(:registration).with('53662').and_return(nil)
+      @app.should_receive(:registration).with('54015').and_return(nil)
+      @app.should_receive(:registration).with('54534').and_return(nil)
+      @app.should_receive(:registration).with('55558').and_return(nil)
+      @app.should_receive(:registration).with('55561').and_return(nil)
+      @app.should_receive(:registration).with('55594').and_return(nil)
+      @app.should_receive(:registration).with('55674').and_return(nil)
+      @app.should_receive(:registration).with('55674').and_return(nil)
+      @app.should_receive(:registration).with('56352').and_return(nil)
+      @app.should_receive(:registration).with('58158').and_return(nil)
+      @app.should_receive(:registration).with('58734').and_return(nil)
+      @app.should_receive(:registration).with('58943').and_return(nil)
+      @app.should_receive(:registration).with('59267').and_return(nil)
+      @app.should_receive(:registration).with('61186').and_return(nil)
+      @app.should_receive(:registration).with('61186').and_return(nil)
+      @app.should_receive(:registration).with('62069').and_return(nil)
+      @app.should_receive(:registration).with('62132').and_return(nil)
+      @app.should_receive(:registration).with('65160').and_return(nil)
+      @app.should_receive(:registration).with('65856').and_return(nil)
+      @app.should_receive(:registration).with('65857').and_return(nil)
+      @app.should_receive(:registration).with('65857').and_return(nil)
+      @app.should_receive(:registration).with('66297').and_return(nil)
 
       @app.should_receive(:registration).with('00277').and_return(reg_00277)
       @app.should_receive(:registration).with('00278').and_return(reg_00278)
@@ -125,7 +162,7 @@ Swissmedic: All registrations present"
       @plugin = ODDB::Atc_lessPlugin.new(@app)
       FileUtils.makedirs(File.dirname(@latest_xlsx))
       FileUtils.makedirs(File.dirname(@latest_xml))
-      tst_xlsx = File.expand_path(File.join(File.dirname(__FILE__), '../data/xlsx/Packungen-2015.07.02.xlsx'))
+      tst_xlsx = File.expand_path(File.join(File.dirname(__FILE__), '../data/xlsx/Packungen-2019.01.31.xlsx'))
       tst_xml  = File.expand_path(File.join(File.dirname(__FILE__), '../data/xml/XMLRefdataPharma-2015.07.01.xml'))
       FileUtils.cp(tst_xlsx, @latest_xlsx, :verbose => true)
       FileUtils.cp(tst_xml,  @latest_xml, :verbose => true)
@@ -140,16 +177,15 @@ Total Sequences without ATC-Class: 1
 00274 00
 Swissmedic: All sequences present
 No empty ATC-codes found
-Corrected 2 ATC-code in sequences
+Corrected 1 ATC-code in sequences
   00277/01 D0XXXXX -> J06AA
-  00278/01 J06AA -> J06A
 All ATC codes present in database
 Checked against 0 ATC-codes from RefData
 All ATC codes from swissmedic are as long as those from refdata
 Deleted 1 sequences '00' in registrations
   00279
-Skipped 8 registrations
-  47066 48624 62069 62069 62069 16105 57678 00488"
+Skipped 36 registrations
+  15219 16105 16598 28486 30015 31644 32475 35366 43454 44625 45882 53290 53662 54015 54534 55558 66297 55594 55674 56352 59267 61186 62069 62132 65856 65857 55674 43454 61186 58734 55561 65160 58158 44447 15219 39252"
 
       assert_equal(expected, @plugin.report)
     end
