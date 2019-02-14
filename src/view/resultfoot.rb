@@ -62,7 +62,7 @@ module ODDB
         super
       end
       def explain_comarketing(model, session=@session)
-        explain_square_link(model, :comarketing, CoMarketingPlugin::SOURCE_URI)
+        explain_square_link(model, :comarketing, CoMarketingPlugin.get_comarketing_url)
       end
       def explain_ddd_price(model, session=@session)
         explain_link(model, :ddd_price)

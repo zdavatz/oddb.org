@@ -95,7 +95,7 @@ module ODDB
 					square(:patent, link)
 				elsif(comarketing = model.comarketing_with)
 					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
-					link.href = CoMarketingPlugin::SOURCE_URI
+					link.href = CoMarketingPlugin.get_comarketing_url
 					link.set_attribute('title',
 						 @lookandfeel.lookup(:comarketing, comarketing.name_base))
 					square(:comarketing, link)
