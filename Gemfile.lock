@@ -187,7 +187,7 @@ GEM
     socksify (1.7.1)
     spreadsheet (0.9.7)
       ruby-ole (>= 1.0)
-    swissmedic-diff (0.2.6)
+    swissmedic-diff (0.2.7)
       nokogiri
       rubyXL (>= 3.3.1)
       rubyzip
@@ -303,7 +303,7 @@ DEPENDENCIES
   sbsm (>= 1.5.9)
   simplecov
   spreadsheet (= 0.9.7)
-  swissmedic-diff (= 0.2.6)
+  swissmedic-diff (= 0.2.7)
   syck
   travis-lint
   vcr

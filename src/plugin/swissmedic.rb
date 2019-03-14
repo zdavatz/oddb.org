@@ -69,6 +69,7 @@ private
       return nil unless row[idx]
       row_value = row[idx]
       return nil unless row_value.value
+      return SwissmedicDiff::VALUE_UNLIMITED if SwissmedicDiff::REGEXP_UNLIMITED.match(row_value.value.to_s)
       return Date.parse row_value.value.to_s if row_value.is_a?(RubyXL::Cell)
       row_value
     end
@@ -1190,10 +1191,14 @@ public
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = date_cell(row, @target_keys.keys.index(:expiry_date))
-        if expiration.nil?
-          @skipped_packages << row
-          return nil
+        if row[@target_keys.keys.index(:expiry_date)] && row[@target_keys.keys.index(:expiry_date)].value && SwissmedicDiff::REGEXP_UNLIMITED.match(row[@target_keys.keys.index(:expiry_date)].value.to_s)
+          expiration = nil
+        else
+          expiration = date_cell(row, @target_keys.keys.index(:expiry_date))
+          if expiration.nil?
+            @skipped_packages << row
+            return nil
+          end
         end
         reg_date = date_cell(row, @target_keys.keys.index(:registration_date))
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
@@ -1212,7 +1217,7 @@ public
           :inactive_date       => nil,
           :export_flag         => nil,
         }
-        if(expiration < opts[:date])
+        if expiration && (expiration < opts[:date])
           args.store :renewal_flag, true
           args.store :renewal_flag_swissmedic, true
         end
@@ -1287,7 +1292,7 @@ public
       update_excipiens_in_composition(seq, parsed_comps)
     end
 
-    def update_registrations(rows, replacements, opts=nil)
+   def update_registrations(rows, replacements, opts=nil)
       opts ||= { :create_only => @latest_packungen ? !File.exist?(@latest_packungen) : false,
                :date        => @@today, }
       nr_rows = rows.size

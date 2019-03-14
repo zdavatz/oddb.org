@@ -180,9 +180,13 @@ module ODDB
       item = ChangeLogItem.new
       item.time = date
       item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
-      if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
-        puts "FachinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.split("\n")[0..2] : ''}"
-        return
+      begin
+        if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
+          puts "FachinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.split("\n")[0..2] : ''}"
+          return
+        end
+      rescue => error
+        puts "FachinfoDocument::ChangeLogItem: Error #{error} for #{old_text ? old_text.split("\n")[0..2] : ''}"
       end
       already_disabled = GC.disable
       self.change_log.push(item)

@@ -180,13 +180,15 @@ module ODDB
       @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
       assert(result_second_run); assert_equal(41, @app.registrations.size)
 
-      assert_equal({"00277"=>[:production_science], "15219"=>[:new], "16598"=>[:new], "28486"=>[:new], "30015"=>[:new],
-                    "31644"=>[:new], "32475"=>[:new], "35366"=>[:new], "43454"=>[:new], "44625"=>[:new], "45882"=>[:new],
-                    "53290"=>[:new], "53662"=>[:new], "54015"=>[:new], "54534"=>[:new], "55558"=>[:new], "66297"=>[:new],
-                    "55594"=>[:new], "55674"=>[:new], "56352"=>[:new], "58943"=>[:new], "59267"=>[:new], "61186"=>[:new],
-                    "62069"=>[:expiry_date], "62132"=>[:new], "65856"=>[:new], "65857"=>[:new], "58734"=>[:new], "55561"=>[:new],
-                    "65160"=>[:new], "58158"=>[:new], "44447"=>[:new], "39252"=>[:new], "00278"=>[:delete], "48624"=>[:delete],
-                    "57678"=>[:delete], "00488"=>[:delete]}, result_second_run.changes)
+      expected = {
+            "00277"=>[:expiry_date, :production_science], "15219"=>[:new], "16598"=>[:new], "28486"=>[:new], "30015"=>[:new],
+            "31644"=>[:new], "32475"=>[:new], "35366"=>[:new], "43454"=>[:new], "44625"=>[:new], "45882"=>[:new],
+            "53290"=>[:new], "53662"=>[:new], "54015"=>[:new], "54534"=>[:new], "55558"=>[:new], "66297"=>[:new],
+            "55594"=>[:new], "55674"=>[:new], "56352"=>[:new], "58943"=>[:new], "59267"=>[:new], "61186"=>[:new],
+            "62069"=>[:expiry_date], "62132"=>[:new], "65856"=>[:new], "65857"=>[:new], "58734"=>[:new], "55561"=>[:new],
+            "65160"=>[:new], "58158"=>[:new], "44447"=>[:new], "39252"=>[:new], "00278"=>[:delete], "48624"=>[:delete],
+            "57678"=>[:delete], "00488"=>[:delete]}
+      assert_equal(expected, result_second_run.changes)
       missing = {}
       @app.registrations.each{
         |id, reg|

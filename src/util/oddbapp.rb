@@ -1201,9 +1201,7 @@ class OddbPrevalence
 		result = ODDB::SearchResult.new
 		result.exact = true
     key = ODDB.search_term(key)
-		retrieve_from_index("substance_index", key, result).find { |sub|
-      sub.same_as? key
-    }
+		retrieve_from_index("substance_index", key, result).find_all { |sub| sub.is_a?(ODDB::Substance)}.find { |sub| sub.same_as? key}
 	end
 	def search_substances(query)
 		if(subs = substance(query))

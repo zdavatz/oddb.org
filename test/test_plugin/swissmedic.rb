@@ -315,10 +315,10 @@ module ODDB
       result = @plugin.diff(@state_2019_01_31, @state_2015_07_02)
       assert_equal 37, result.news.size
       assert_equal "Zymafluor 0.25 mg, Tabletten", result.news.first[2].value
-      assert_equal 2, result.updates.size
+      assert_equal 3, result.updates.size
       assert_equal "Coeur-Vaisseaux Sérocytol, suppositoire", result.updates.first[2].value
       assert_equal 37, result.changes.size
-      expected = {"00277"=>[:production_science],
+      expected = {"00277"=>[:expiry_date, :production_science],
                   "15219"=>[:new],
                   "16598"=>[:new],
                   "28486"=>[:new],
