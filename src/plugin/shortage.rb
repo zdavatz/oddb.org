@@ -16,9 +16,8 @@ module ODDB
   class ShortagePlugin < Plugin
     EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     BASE_URI = 'https://www.drugshortage.ch'
-    SOURCE_URI = BASE_URI + '/index.php/uebersicht-2/'
     SOURCE_URI = BASE_URI + '/UebersichtaktuelleLieferengpaesse2.aspx'
-    NoMarketingSource =  SWISSMEDIC_BASE_URL + "/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruch.xlsx.download.xlsx/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruch.xlsx"
+    NoMarketingSource =  'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuerhomant.xlsx.download.xlsx/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuer.xlsx'
 
     def initialize app, opts={:reparse => false}
       super(app)

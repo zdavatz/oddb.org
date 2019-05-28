@@ -34,7 +34,6 @@ module ODDB
       def method_missing(*args)
       end
     end
-    SWISSMEDIC_BASE_URL     = 'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/listen'
     SWISSMEDIC_HUMAN_URL_DE = 'https://www.swissmedic.ch//swissmedic/de/home/humanarzneimittel'
     SWISSMEDIC_HUMAN_URL_FR = 'https://www.swissmedic.ch//swissmedic/fr/medicaments-a-usage-humain'
     SWISSMEDIC_HUMAN_URL_IT = 'https://www.swissmedic.ch//swissmedic/it/home/medicamenti-per-uso-umano'
