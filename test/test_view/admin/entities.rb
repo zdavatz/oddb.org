@@ -12,7 +12,6 @@ require 'view/admin/entities'
 require 'model/company'
 require 'model/galenicgroup'
 require 'model/doctor'
-require 'model/analysis/group'
 
 module ODDB
   module View

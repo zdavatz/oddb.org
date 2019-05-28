@@ -167,10 +167,6 @@ module ODDB
       expected = "http://www.oddb.org/de/gcc/interaction_basket/substance_ids/"
       assert_equal(expected, @session.interaction_basket_link)
     end
-    def test_analysis_alphabetical
-      flexmock(@app, :search_analysis_alphabetical => 'search_analysis_alphabetical')
-      assert_equal('search_analysis_alphabetical', @session.analysis_alphabetical('range'))
-    end
     def test_migel_alphabetical
       flexmock(@app, :search_migel_alphabetical => 'search_migel_alphabetical')
       assert_equal('search_migel_alphabetical', @session.migel_alphabetical('range'))

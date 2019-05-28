@@ -208,14 +208,8 @@ module ODDB
       assert_equal(expected, @look.explain_result_components)
     end
     def test_zones
-      expected = [ :analysis, :interactions, State::Drugs::Init, State::Drugs::AtcChooser, State::Drugs::Sequences ]
+      expected = [ :interactions, State::Drugs::Init, State::Drugs::AtcChooser, State::Drugs::Sequences ]
       assert_equal(expected, @look.zones)
-    end
-    def test_zone_navigation__analysis
-      flexstub(@session) do |s|
-        s.should_receive(:zone).and_return(:analysis)
-      end
-      assert_equal([:analysis_alphabetical], @look.zone_navigation)
     end
     def test_zone_navigation__else
       flexstub(@session) do |s|

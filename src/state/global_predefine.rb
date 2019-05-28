@@ -8,9 +8,6 @@ require 'sbsm/state'
 module ODDB
   module State
     class Global < SBSM::State; end
-    module Analysis
-      class Global < State::Global; end
-    end
     module Limit; end
     module Admin
       class Global < State::Global; end

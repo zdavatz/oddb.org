@@ -8,7 +8,6 @@ require 'fileutils'
 require 'tempfile'
 require 'zip'
 require 'models'
-require 'model/analysis/group'
 require 'oddb_yaml'
 require 'csv_exporter'
 require 'archive/tar/minitar'
@@ -97,18 +96,6 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 				exporter = GenericXls.new(fh.path)
 				exporter.export_generics
 				exporter.close
-				nil
-			}
-		end
-		def OdbaExporter.export_analysis_csv(odba_ids, dir, name)
-			safe_export(dir, name) { |fh|
-				fh << <<-HEAD
-groupcd;poscd;anonymouspos;analysis_description_de;analysis_description_fr;analysis_footnote_de;analysis_footnote_fr;analysis_taxnote_de;analysis_taxnote_fr;analysis_limitation_de;analysis_limitation_fr;analysis_list_title_de;analysis_list_title_fr;lab_areas;taxpoints;finding;analysis_permissions_de;analysis_permissions_fr
-				HEAD
-				odba_ids.each { |odba_id|
-					item = ODBA.cache.fetch(odba_id, nil)
-					CsvExporter.dump(CsvExporter::ANALYSIS, item, fh)	
-				}
 				nil
 			}
 		end

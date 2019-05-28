@@ -357,24 +357,19 @@ module ODDB
     end
     def zones
       [
-        :analysis, :interactions,
+        :interactions,
         State::Drugs::Init, State::Drugs::AtcChooser, State::Drugs::Sequences
       ]
     end
 		def zone_navigation
-			case @session.zone
-			when :analysis
-				[:analysis_alphabetical]
-			else
 				[]
-			end
 		end
   end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
 		def enabled?(event, default=true)
 			case event.to_sym
 			when :query_limit, :google_adsense, :doctors, :interactions, :migel,
-				:user , :hospitals, :companies, :analysis, :pharmacies
+				:user , :hospitals, :companies, :pharmacies
 				false
 			else
 				@component.enabled?(event, default)

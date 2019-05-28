@@ -120,7 +120,7 @@ end
 			end
       @@saved = ODDB::RSS_PATH
  			def setup
-        @lnf = flexmock('lookandfeel', :zones => [:analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies],
+        @lnf = flexmock('lookandfeel', :zones => [:doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies],
                         :has_sequence_filter? => false,
                         :flavor => nil).by_default
         @session = StubSession.new(@lnf)
@@ -973,13 +973,6 @@ end
         end
         assert_kind_of(State::Migel::Result, @state.search)
       end
-      def test_search__analysis
-        setup_search('analysis')
-        flexmock(@session) do |s|
-          s.should_receive(:language)
-        end
-        assert_kind_of(State::Analysis::Result, @state.search)
-      end
       def test_search__else
         setup_search('else')
         flexmock(@state) do |s|
@@ -1311,7 +1304,7 @@ end
         assert_kind_of(State::User::YweseeContact, @state.ywesee_contact)
       end
       def test_zones
-        expected = [ :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies ]
+        expected = [ :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies ]
         assert_equal(expected, @state.zones)
       end
       def test_zone_navigation

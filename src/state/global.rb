@@ -11,12 +11,6 @@ require 'state/ajax/ddd_price'
 require 'state/ajax/ddd_chart'
 require 'state/ajax/matches'
 require 'state/ajax/swissmedic_cat'
-require 'state/analysis/init'
-require 'state/analysis/group'
-require 'state/analysis/position'
-require 'state/analysis/alphabetical'
-require 'state/analysis/result'
-require 'state/analysis/limitationtext'
 require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
@@ -159,7 +153,6 @@ module ODDB
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
           :api_search             => State::Drugs::ApiSearch,
-          :analysis_alphabetical  => State::Analysis::Alphabetical,
           :data                   => State::User::DownloadItem,
           :preferences            => State::User::Preferences,
           :compare                => State::Drugs::Compare,
@@ -173,7 +166,6 @@ module ODDB
           :help                   => State::User::Help,
           :home                   => State::Drugs::Init,
           :home_admin             => State::Admin::Init,
-          :home_analysis          => State::Analysis::Init,
           :home_companies         => State::Companies::Init,
           :home_doctors           => State::Doctors::Init,
           :home_pharmacies      => State::Pharmacies::Init,
@@ -186,7 +178,6 @@ module ODDB
           :interaction_chooser    => State::Interactions::InteractionChooser,
           :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
-          :limitation_analysis    => State::Analysis::LimitationText,
           :listed_companies       => State::Companies::CompanyList,
           :login_form             => State::Admin::Login,
           :migel_alphabetical     => State::Migel::Alphabetical,
@@ -206,9 +197,7 @@ module ODDB
         HOME_STATE = State::Drugs::Init
         LIMITED = false
         RESOLVE_STATES = {
-          [ :analysis_group, :position ]                                      => State::Analysis::Position,
-          [ :analysis_group ]                                                 => State::Analysis::Group,
-          [ :company ]                                                        => State::Companies::Company,
+           [ :company ]                                                        => State::Companies::Company,
           [ :doctor ]                                                         => State::Doctors::Doctor,
           [ :hospital ]                                                       => State::Hospitals::Hospital,
           [ :pharmacy ]                                                    => State::Pharmacies::Pharmacy,
@@ -677,15 +666,6 @@ module ODDB
           ODDB::State::Admin::TransparentLogin.new(@session, model)
         end
       end
-      def analysis
-        if group_cd = @session.user_input(:group) and group = @session.app.analysis_group(group_cd)
-          if position = group.position(@session.user_input(:position))
-            State::Analysis::Position.new(@session, position)
-          else
-            State::Analysis::Group.new(@session, group)
-          end
-        end
-      end
       def doctor
         model = if ean = @session.user_input(:ean)
                    @session.search_doctors(ean).first
@@ -839,9 +819,6 @@ module ODDB
                 State::Migel::Result.new(@session, [])
               end
             end
-					when :analysis
-						result = @session.search_analysis(query, @session.language)
-						State::Analysis::Result.new(@session, result)
 					else
 						query = query.to_s.downcase.gsub(/\s+/u, ' ')
 						stype = @session.user_input(:search_type)
@@ -1088,7 +1065,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-			[ :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
+			[ :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
 			end
 			def zone_navigation
 				self::class::ZONE_NAVIGATION

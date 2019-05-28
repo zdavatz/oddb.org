@@ -38,7 +38,7 @@ class TestAdmin <Minitest::Test
     assert_kind_of(ODDB::State::Admin::Registration, @admin.new_registration)
   end
   def test_zones
-    expected = [:analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
+    expected = [:pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
     assert_equal(expected, @admin.zones)
   end
 end

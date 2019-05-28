@@ -105,7 +105,7 @@ class TestCompanyUser <Minitest::Test
     assert_kind_of(ODDB::State::Admin::PatinfoStatsCompanyUser, @state.patinfo_stats_company)
   end
   def test_zones
-    expected = [:admin, :analysis, :interactions,:drugs, :migel, :user, :substances, :companies]
+    expected = [:admin, :interactions,:drugs, :migel, :user, :substances, :companies]
     assert_equal(expected, @state.zones)
   end
   def test_home_companies

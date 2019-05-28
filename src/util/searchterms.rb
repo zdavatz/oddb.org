@@ -99,7 +99,6 @@ module ODDB
 			end
 			terms
 		}.select { |term|
-			                # don't exclude analysis-codes
 			term.length > 2 # && !/^[0-9]+$/u.match(term)
 		}
 	end

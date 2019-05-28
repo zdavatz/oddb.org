@@ -212,9 +212,6 @@ module ODDB
       lookandfeel._event_url(:interaction_basket,
                              :substance_ids => interaction_basket_ids)
     end
-		def analysis_alphabetical(range)
-			@app.search_analysis_alphabetical(range, self.language)
-		end
 		def migel_alphabetical(range)
 			@app.search_migel_alphabetical(range, self.language)
 		end

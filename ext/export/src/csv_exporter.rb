@@ -8,11 +8,6 @@ require 'csv'
 module ODDB
 	module OdbaExporter
 		module CsvExporter
-			ANALYSIS = [ :groupcd, :poscd, :analysis_anonymous, :defr,
-				:analysis_footnote, :analysis_taxnote, 
-				:analysis_limitation, :analysis_list_title, 
-				:lab_areas, :taxpoints, :finding,
-				:analysis_permissions ]
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
 				:name, :praxis, :first_address_data, :email, :language, 
 				:specialities]
@@ -35,33 +30,6 @@ module ODDB
       PRICE_POINT = [:amount, :authority, :origin]
 			def CsvExporter.address_data(item, opts={})
 				collect_data(ADDRESS, item)
-			end
-			def CsvExporter.analysis_anonymous(item, opts={})
-				if(item.anonymousgroup)
-				[item.anonymousgroup, item.anonymouspos].join('.')
-				else
-					''
-				end
-			end
-			def CsvExporter.analysis_limitation(item, opts={})
-				self.defr(item.limitation_text)
-			end
-			def CsvExporter.analysis_list_title(item, opts={})
-				self.defr(item.list_title)
-			end
-			def CsvExporter.analysis_permissions(item, opts={})
-				[:de, :fr].collect { |lang|
-					item.permissions.send(lang).collect { |perm|
-						'{' << perm.specialization.to_s << '}:{' \
-							<< perm.restriction.to_s << '}'
-					}.join(',')
-				}
-			end
-			def CsvExporter.analysis_footnote(item, opts={})
-				self.defr(item.footnote)
-			end
-			def CsvExporter.analysis_taxnote(item, opts={})
-				self.defr(item.taxnote)
 			end
 			def CsvExporter.collect_data(keys, item, opts={})
 				keys.collect { |key|

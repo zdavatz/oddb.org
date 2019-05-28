@@ -11,7 +11,6 @@ require 'view/resultfoot'
 require 'view/drugs/limitationtexts'
 require 'model/sequence'
 require 'model/package'
-require 'model/analysis/group'
 
 module ODDB
   module View

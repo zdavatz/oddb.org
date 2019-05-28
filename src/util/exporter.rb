@@ -108,10 +108,6 @@ module ODDB
         plug.export_drugs_extended
       end
     end
-		def export_analysis_csv
-			plug = CsvExportPlugin.new(@app)
-			plug.export_analysis
-		end
 		def export_doc_csv
       safe_export 'doctors.csv' do
         plug = CsvExportPlugin.new(@app)

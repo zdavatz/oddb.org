@@ -138,17 +138,6 @@ module ODDB
         assert_equal('export_doc_csv', @plugin.export_doctors)
       end
     end
-    def test_export_analysis
-      position = flexmock('position',
-                          :code    => 123,
-                          :odba_id => 123
-                         )
-      flexmock(@app, :analysis_positions => [position])
-      export_server = flexmock('export_server', :export_analysis_csv => 'export_analysis_csv')
-      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        assert_equal('export_analysis_csv', @plugin.export_analysis)
-      end
-    end
     def test__export_drugs
       flexmock(FileUtils,
                :mkdir_p => nil,

@@ -259,7 +259,7 @@ class TestODDBStateAdminRoot <Minitest::Test
     assert_kind_of(ODDB::State::Admin::Entity, @state.user)
   end
   def test_zones
-    expected = [:admin, :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
+    expected = [:admin, :pharmacies, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
     assert_equal(expected, @state.zones)
   end
 end

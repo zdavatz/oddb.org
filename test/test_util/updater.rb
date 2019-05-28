@@ -416,20 +416,6 @@ module ODDB
       setup_bsv_xml_plugin
       assert_equal('update', @updater.update_bsv)
     end
-    def test_update_analysis_sending_log
-      plugin = flexmock('analysis') do |analysis|
-          analysis.should_receive(:log_info).and_return(@recipients)
-          analysis.should_receive(:update).and_return('update')
-      end
-      stub = flexstub(AnalysisPlugin) do |klass|
-        klass.should_receive(:new).and_return(plugin)
-        klass.should_receive(:update).and_return('update')
-      end
-      @updater = flexmock(ODDB::Updater.new(@app))
-      @updater.update_analysis
-      assert_spy_called(plugin, {:times => 1}, :update)
-      assert_spy_called(plugin, {:times => 1}, :log_info)
-    end
     def test_update_immediate   # update_immediate is a private method
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:update)

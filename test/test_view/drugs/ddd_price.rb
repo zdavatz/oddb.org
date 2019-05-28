@@ -12,7 +12,6 @@ require 'view/drugs/compare'
 require 'view/drugs/ddd_price'
 require 'htmlgrid/select'
 require 'model/galenicgroup'
-require 'model/analysis/group'
 
 module ODDB
   class Session

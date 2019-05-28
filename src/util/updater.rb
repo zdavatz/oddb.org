@@ -5,7 +5,6 @@
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
-require 'plugin/analysis'
 require 'plugin/atc_less'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
@@ -219,26 +218,12 @@ module ODDB
       if(return_value_update_bsv)
         update_bsv_followers
       end
-      run_on_monthday(1) {
-        update_analysis
-      }
       run_on_monthday(20) {
         update_whocc
       }
     end
     def run_random
       # no task
-    end
-    def update_analysis
-      klass = AnalysisPlugin
-      subj = 'Analysis'
-      wrap_update(klass, subj) {
-        plug = klass.new(@app)
-        plug.update
-        log = Log.new(@@today)
-        log.update_values(log_info(plug))
-        log.notify(subj)
-      }
     end
     def update_atc_dosing_link
       update_notify_simple(DosingPlugin, 'ATC Class (dosing.de)', :update_ni_id)

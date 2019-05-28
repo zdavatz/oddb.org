@@ -7,7 +7,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
-require 'model/analysis/group'
 require 'model/company'
 require 'model/doctor'
 require 'model/galenicgroup'

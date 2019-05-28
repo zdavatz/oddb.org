@@ -23,11 +23,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     [9,0]  => 'direct_link',
 
     [0,1]   => 'export_datafiles',
-    [0,2]   => :csv_analysis_export,
-    [2,2]   => :csv_analysis_price,
-    [5,2]   => :datadesc_analysis_csv,
-    [7,2]   => :example_analysis_csv,
-    [9,2]   => :directlink_analysis_csv,
     [0,3]   => :csv_doctors_export,
     [2,3]   => :csv_doctors_price,
     [5,3]   => :datadesc_doctors_csv,
@@ -137,7 +132,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     :compression => HtmlGrid::Select,
   }
   %w(
-    analysis.csv doctors.csv doctors.yaml index_therapeuticus
+    doctors.csv doctors.yaml index_therapeuticus
     oddb.csv migel.csv oddb2.csv oddb.yaml
     price_history.yaml price_history.csv oddb.dat
     generics.xls patents.xls swissdrug_update.xls
@@ -160,12 +155,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   end
   def csv_export2(model, session)
     checkbox_with_filesize("oddb2.csv")
-  end
-  def csv_analysis_export(model, session)
-    checkbox_with_filesize("analysis.csv")
-  end
-  def csv_analysis_price(model, session)
-    once('analysis.csv')
   end
   def csv_doctors_export(model, session)
     checkbox_with_filesize("doctors.csv")
@@ -190,9 +179,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   end
   def csv_price_history_price_12(model, session)
     radio_price('price_history.csv', 12)
-  end
-  def datadesc_analysis_csv(model, session)
-    datadesc('analysis.csv')
   end
   def datadesc_doctors_csv(model, session)
     datadesc('doctors.csv')
@@ -244,9 +230,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   end
   def example_doctors_csv(model, session)
     example('doctors.csv')
-  end
-  def example_analysis_csv(model, session)
-    example('analysis.csv')
   end
   def example_doctors_yaml(model, session)
     example('doctors.yaml')

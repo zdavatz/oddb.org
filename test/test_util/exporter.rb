@@ -164,13 +164,6 @@ module ODDB
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       assert_equal('sleep', @exporter.export_csv)
     end
-    def test_export_analysis_csv
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:export_analysis)
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_nil(@exporter.export_analysis_csv)
-    end
     def test_export_doc_csv
       flexmock(@plugin) do |plug|
         plug.should_receive(:export_doctors)

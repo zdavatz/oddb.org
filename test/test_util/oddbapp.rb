@@ -145,9 +145,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_count_vaccines
     assert_equal(0, @app.count_vaccines)
   end
-  def test_analysis_count
-    assert_equal(0, @app.analysis_count)
-  end
   def test_pharmacy_count
     assert_equal(0, @app.pharmacy_count)
   end

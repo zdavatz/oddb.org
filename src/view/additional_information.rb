@@ -4,7 +4,6 @@
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
-require 'model/analysis/group'
 require 'view/drugs/atcchooser'
 require 'plugin/comarketing'
 require 'view/tooltip'
@@ -296,15 +295,11 @@ module ODDB
           pack = if (packs = model.packages.values.select{|pac| pac.limitation_text} and !packs.empty?)
                    packs.first.ikscd
                  end
-        elsif model.is_a?(ODDB::Analysis::Position)
-          groupcd = model.groupcd
-          poscd   = model.poscd
+ 
         end
 
         if reg and seq and pack
           link.href = @lookandfeel._event_url(:limitation_text, [:reg, reg, :seq, seq, :pack, pack])
-        elsif groupcd and poscd
-          link.href = @lookandfeel._event_url(:limitation_analysis, [:group, groupcd, :position, poscd])
         else
   				link.href = @lookandfeel._event_url(:resolve, {'pointer'=>CGI.escape(sltxt.pointer.to_s)})
         end

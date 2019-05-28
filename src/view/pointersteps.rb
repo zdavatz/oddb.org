@@ -101,12 +101,6 @@ module ODDB
                                         {:oid => model.oid}
                                       end
                         @lookandfeel._event_url(:doctor, link_format)
-                      elsif model.is_a?(ODDB::Analysis::Group)
-                        link_format = {:group => model.groupcd}
-                        @lookandfeel._event_url(:analysis, link_format)
-                      elsif model.is_a?(ODDB::Analysis::Position)
-                        link_format = [:group, model.groupcd, :position, model.poscd]
-                        @lookandfeel._event_url(:analysis, link_format)
                       else
                         old_link_format = {:pointer => model.pointer}
                         @lookandfeel._event_url(:show, old_link_format)

@@ -23,7 +23,6 @@ class TestDownloadExport <Minitest::Test
 	end
   def test_duration
     assert_equal(0, DownloadExport.duration('file'))
-    assert_equal(30, DownloadExport.duration('analysis.csv'))
   end
   def test_subscription_duration
     assert_equal(0, DownloadExport.subscription_duration('file'))

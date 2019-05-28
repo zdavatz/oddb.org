@@ -133,35 +133,6 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
     #assert_equal(expected, @app.search_oddb('12345', 'lang'))
     assert(same?(expected, @app.search_oddb('12345', 'lang')))
   end
-  def test_multilinguify_analysis
-    flexstub(@app) do |app|
-      app.should_receive(:system).and_return(@app.instance_eval('@system'))
-    end
-    flexstub(@app.system) do |sys|
-      sys.should_receive(:update)
-    end
-    pointer = flexmock('pointer') do |ptr|
-      ptr.should_receive(:creator)
-    end
-    flexstub(pointer) do |ptr|
-      ptr.should_receive(:+).and_return(pointer)
-    end
-    position = flexmock('position') do |pos|
-      pos.should_receive(:description).and_return('description')
-      pos.should_receive(:pointer).and_return(pointer)
-      pos.should_receive(:footnote).and_return('footnote')
-      pos.should_receive(:list_title).and_return('list_title')
-      pos.should_receive(:taxnote).and_return('taxnote')
-      pos.should_receive(:permissions).and_return('permissions')
-      pos.should_receive(:odba_store).and_return('odba_store')
-    end
-    position.instance_variable_set('@limitation', 'limitation')
-    group = flexmock('group') do |grp|
-      grp.should_receive(:positions).and_return({'key'=>position})
-    end
-    @app.analysis_groups = {'key'=>group}
-    assert_equal([position], @app.multilinguify_analysis)
-  end
   def test_search_doctors
     assert_equal([], @app.search_doctors('key'))
   end
@@ -370,12 +341,6 @@ class TestOddbApp3 <MiniTest::Unit::TestCase
       sys.should_receive(:new).and_return('admin_subsystem')
     end
     assert_equal('admin_subsystem', @app.admin_subsystem)
-  end
-  def test_search_analysis
-    assert_equal([], @app.search_analysis('key', 'en'))
-  end
-  def test_search_analysis_alphabetical
-    assert_equal([], @app.search_analysis_alphabetical('query', 'en'))
   end
   def test_resolve
     pointer = flexmock('pointer') do |ptr|

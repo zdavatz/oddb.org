@@ -166,7 +166,7 @@ module ODDB
 		class Pointer
       SECURE_COMMANDS = [
 				:active_agent, :address, :address_suggestion, :atc_class,
-        :analysis_group, :commercial_form, :company, :doctor, :hospital,
+        :commercial_form, :company, :doctor, :hospital,
         :fachinfo, :feedback, :galenic_form, :galenic_group,
         :generic_group, :indication, :invoice,
         :address_suggestion, :migel_group, :subgroup, :product,
@@ -276,8 +276,13 @@ module ODDB
           diff = obj.diff(values, hook)
           unless diff.empty?
             obj.update_values(diff, origin)
-            $stdout.puts "self #{obj.inspect} is PGresult" if obj.is_a?(PGresult)
-            obj.odba_store unless obj.is_a?(PGresult)
+            if defined?(PGresult)
+              $stdout.puts "self #{obj.inspect} is PGresult" if obj.is_a?( PGresult)
+              obj.odba_store unless obj.is_a?(PGresult)
+             else
+                $stdout.puts "self #{obj.inspect} is PG::Result" if obj.is_a?( PG::Result)
+                obj.odba_store unless obj.is_a?(PG::Result)
+           end
           end
 				end
 				obj

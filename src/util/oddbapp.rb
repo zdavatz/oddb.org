@@ -35,7 +35,6 @@ require 'sbsm/index'
 require 'util/config'
 require 'fileutils'
 require 'yus/session'
-require 'model/analysis/group'
 require 'remote/migel/model'
 
 class OddbPrevalence
@@ -47,7 +46,7 @@ class OddbPrevalence
     "@sorted_minifis",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
-  attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
+  attr_reader :address_suggestions, :atc_chooser, :atc_classes,
     :companies, :divisions, :doctors, :experiences, :fachinfos,
     :galenic_groups, :hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
@@ -65,7 +64,6 @@ class OddbPrevalence
 		create_unknown_galenic_group()
 		@accepted_orphans ||= {}
 		@address_suggestions ||= {}
-		@analysis_groups ||= {}
 		@atc_classes ||= {}
 		@commercial_forms ||= {}
 		@companies ||= {}
@@ -207,17 +205,6 @@ class OddbPrevalence
   end
 	def address_suggestion(oid)
 		@address_suggestions[oid.to_i]
-	end
-	def analysis_group(grpcd)
-		@analysis_groups[grpcd]
-	end
-	def analysis_positions
-		@analysis_groups ||= {}
-		@analysis_groups.values.inject([]) { |memo, group|
-			if group and group.positions
-				memo.concat(group.positions.values)
-			end
-		}
 	end
 	def atcless_sequences
 		retrieve_from_index('atcless', 'true')
@@ -364,10 +351,6 @@ class OddbPrevalence
 			inj
 		}
 	end
-	def create_analysis_group(groupcd)
-		group = ODDB::Analysis::Group.new(groupcd)
-		@analysis_groups.store(groupcd, group)
-	end
 	def create_atc_class(atc_class)
 		atc = ODDB::AtcClass.new(atc_class)
 		@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
@@ -506,22 +489,11 @@ class OddbPrevalence
 	def currencies
 		@currency_rates.keys.sort
 	end
-	def analysis_count
-		@analysis_count ||= analysis_positions.size
-	end
   def delete_all_narcotics
     @narcotics.values.each do |narc|
       delete(narc.pointer)
     end
     @narcotics.odba_isolated_store
-  end
-  def delete_all_analysis_group
-    analysis_positions.each do |pos|
-      delete(pos.pointer)
-    end
-    analysis_groups.values.each do |grp|
-      delete(grp.pointer)
-    end
   end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
@@ -853,7 +825,6 @@ class OddbPrevalence
 		@bean_counter = Thread.new {
       while(again)
         again = false
-        @analysis_count = analysis_positions.size
         @atc_ddd_count = count_atc_ddd()
         @doctor_count = @doctors.size
         @company_count = @companies.size
@@ -877,19 +848,6 @@ class OddbPrevalence
   end
 	def resolve(pointer)
 		pointer.resolve(self)
-	end
-	def search_analysis(key, lang)
-    if lang.to_s != 'fr'
-			lang = 'de'
-		end
-		retrieve_from_index("analysis_index_#{lang}", key)
-	end
-	def search_analysis_alphabetical(query, lang)
-    if lang.to_s != 'fr'
-			lang = 'de'
-		end
-		index_name = "analysis_alphabetical_index_#{lang}"
-    retrieve_from_index(index_name, query)
 	end
   @@iks_or_ean = /(?:\d{4})?(\d{5})(?:\d{4})?/u
 	def search_oddb(query, lang)
@@ -1904,40 +1862,6 @@ module ODDB
       }
     end
 
-		def multilinguify_analysis
-			@system.analysis_positions.each { |pos|
-				if(descr = pos.description)
-					pos.instance_variable_set('@description', nil)
-					@system.update(pos.pointer, {:de => descr})
-				end
-				if(fn = pos.footnote)
-					pos.instance_variable_set('@footnote', nil)
-					ptr = pos.pointer + :footnote
-					@system.update(ptr.creator, {:de => fn})
-				end
-				if(lt = pos.list_title)
-					pos.instance_variable_set('@list_title', nil)
-					ptr = pos.pointer + :list_title
-					@system.update(ptr.creator, {:de => lt})
-				end
-				if(tn = pos.taxnote)
-					pos.instance_variable_set('@taxnote', nil)
-					ptr = pos.pointer + :taxnote
-					@system.update(ptr.creator, {:de => tn})
-				end
-				if(perm = pos.permissions)
-					pos.instance_variable_set('@permissions', nil)
-					ptr = pos.pointer + :permissions
-					@system.update(ptr.creator, {:de => perm})
-				end
-				if(lim = pos.instance_variable_get('@limitation'))
-					pos.instance_variable_set('@limitation', nil)
-					ptr = pos.pointer + :limitation_text
-					@system.update(ptr.creator, {:de => lim})
-				end
-				pos.odba_store
-			}
-		end
     def migrate_feedbacks
       @system.each_package { |pac|
         _migrate_feedbacks(pac)

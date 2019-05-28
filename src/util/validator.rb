@@ -148,8 +148,6 @@ module ODDB
 			:ajax_ddd_price,
 			:ajax_matches,
 			:ajax_swissmedic_cat,
-			:analysis,
-			:analysis_alphabetical,
       :api_search,
 			:assign,
 			:assign_deprived_sequence,
@@ -200,7 +198,6 @@ module ODDB
 			:help,
 			:home,
 			:home_admin,
-			:home_analysis,
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
@@ -220,7 +217,6 @@ module ODDB
 			:interaction_detail,
 			:interactions,
 			:legal_note,
-      :limitation_analysis,
 			:limitation_text,
 			:limitation_texts,
       :listed_companies,
@@ -462,7 +458,7 @@ module ODDB
 			:url,
 			:urls,
 		]
-		ZONES = [:admin, :analysis, :pharmacies, :doctors, :interactions, :drugs, :migel, :user,
+		ZONES = [:admin, :pharmacies, :doctors, :interactions, :drugs, :migel, :user,
 		 :hospitals, :substances, :companies]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/iu

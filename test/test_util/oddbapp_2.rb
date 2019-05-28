@@ -674,19 +674,6 @@ class TestOddbApp2 <MiniTest::Unit::TestCase
   def test_address_suggestion
     assert_nil(@app.address_suggestion('12345'))
   end
-  def test_analysis_group
-    assert_nil(@app.analysis_group(0))
-  end
-  def test_analysis_positions
-    assert_equal([], @app.analysis_positions)
-  end
-  def test_create_analysis_group
-    group = flexmock('group')
-    flexmock(ODDB::Analysis::Group) do |grp|
-      grp.should_receive(:new).and_return(group)
-    end
-    assert_equal(group, @app.create_analysis_group(0))
-  end
   def test_create_commercial_form
     form = flexmock('form') do |frm|
       frm.should_receive(:oid)

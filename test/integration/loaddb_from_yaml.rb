@@ -24,7 +24,7 @@ require 'model/substance'
     "@sorted_minifis",
   ]
   ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
-  attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
+  attr_reader :address_suggestions, :atc_chooser, :atc_classes,
     :companies, :divisions, :doctors, :epha_interactions, :experiences, :fachinfos, 
     :galenic_groups, :hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
@@ -491,40 +491,6 @@ module ODDB
       }
     end
 
-    def multilinguify_analysis
-      @system.analysis_positions.each { |pos|
-        if(descr = pos.description)
-          pos.instance_variable_set('@description', nil)
-          @system.update(pos.pointer, {:de => descr})
-        end
-        if(fn = pos.footnote)
-          pos.instance_variable_set('@footnote', nil)
-          ptr = pos.pointer + :footnote
-          @system.update(ptr.creator, {:de => fn})
-        end
-        if(lt = pos.list_title)
-          pos.instance_variable_set('@list_title', nil)
-          ptr = pos.pointer + :list_title
-          @system.update(ptr.creator, {:de => lt})
-        end
-        if(tn = pos.taxnote)
-          pos.instance_variable_set('@taxnote', nil)
-          ptr = pos.pointer + :taxnote
-          @system.update(ptr.creator, {:de => tn})
-        end
-        if(perm = pos.permissions)
-          pos.instance_variable_set('@permissions', nil)
-          ptr = pos.pointer + :permissions
-          @system.update(ptr.creator, {:de => perm})
-        end
-        if(lim = pos.instance_variable_get('@limitation'))
-          pos.instance_variable_set('@limitation', nil)
-          ptr = pos.pointer + :limitation_text
-          @system.update(ptr.creator, {:de => lim})
-        end
-        pos.odba_store
-      }
-    end
     def migrate_feedbacks
       @system.each_package { |pac|
         _migrate_feedbacks(pac)
@@ -647,7 +613,7 @@ module ODDB
         child = iconv.iconv(child)
       when ODDB::Text::Section, ODDB::Text::Paragraph, ODDB::PatinfoDocument,
            ODDB::PatinfoDocument2001, ODDB::Text::Table, ODDB::Text::Cell,
-           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink,
+           ODDB::Interaction::AbstractLink,
            ODDB::Dose
         child = _migrate_obj_to_utf8 child, queue, table, iconv, opts
       when ODDB::Address2

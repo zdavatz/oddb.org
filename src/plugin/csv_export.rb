@@ -17,11 +17,6 @@ module ODDB
     ODDB_RECIPIENTS          = ['oddb']
     ODDB_RECIPIENTS_DAT      = ['oddb_dat']
     ODDB_RECIPIENTS_EXTENDED = ['oddb_dat_extended']
-		def export_analysis
-			ids = @app.analysis_positions.sort_by { |pos|
-				pos.code }.collect { |pos| pos.odba_id }
-			EXPORT_SERVER.export_analysis_csv(ids, EXPORT_DIR, 'analysis.csv')
-		end
 		def export_doctors
 			ids = @app.doctors.values.collect { |item| item.odba_id }
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')

@@ -85,7 +85,7 @@ module CompanyUser
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
 	end
 	def zones
-		[:admin, :analysis, :interactions,:drugs, :migel, :user, :substances, :companies]
+		[:admin, :interactions,:drugs, :migel, :user, :substances, :companies]
 	end
 end
 		end

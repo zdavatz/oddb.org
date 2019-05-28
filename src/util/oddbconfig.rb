@@ -19,7 +19,6 @@ module ODDB
   ENCODING = 'UTF-8'
   ## Prices and Durations
   DOWNLOAD_EXPORT_PRICES = {
-    'analysis.csv'				=> 300,
     'chde.xls'	          => 600,
     'de.oddb.yaml'				=> 600,
     'doctors.csv'					=> 1900,
@@ -55,7 +54,6 @@ module ODDB
     'swissdrug-update.xls'=> 1700,
   }
   DOWNLOAD_EXPORT_DURATIONS = {
-    'analysis.csv'				=> 30,
     'chde.xls'	          => 30,
     'de.oddb.yaml'				=> 30,
     'doctors.csv'					=> 30,
