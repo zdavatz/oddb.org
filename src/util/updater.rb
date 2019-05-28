@@ -435,7 +435,7 @@ module ODDB
       update_package_trade_status_by_refdata
       update_comarketing
       update_swissreg_news
-      update_lppv
+      # update_lppv # as per May 2019 LPPV.ch does not provide an XLSX file anymore.
       update_refdata_jur
       exporter = Exporter.new(@app)
       exporter.export_generics_xls
