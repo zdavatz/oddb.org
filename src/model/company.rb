@@ -170,7 +170,12 @@ module ODDB
       @prices[:patinfo] = units
     end
 		def search_terms
-			terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
+      begin
+        terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
+      rescue => error
+        $stdout.puts "search_terms: #{error} in #{@name}"
+        terms = @name.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '?').split(/[\s\-()]+/u).select { |str| str.size >= 3 }
+      end
 			terms += [
 				@name, @ean13.to_s,
 			]
