@@ -17,7 +17,7 @@ module ODDB
     EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     BASE_URI = 'https://www.drugshortage.ch'
     SOURCE_URI = BASE_URI + '/UebersichtaktuelleLieferengpaesse2.aspx'
-    NoMarketingSource =  'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuerhomant.xlsx.download.xlsx/liste_der_meldungennicht-inverkehrbringenvertriebsunterbruchfuer.xlsx'
+    NoMarketingSource =  'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx'
 
     def initialize app, opts={:reparse => false}
       super(app)
@@ -265,9 +265,9 @@ module ODDB
       workbook = RubyXL::Parser.parse(path)
       rows = 0
       cols_headers = { 0 => /Datum der Meldung/,
-                       1 => /Zul.-Nr./,
-                       5 => /Nicht-Inverkehrbringen ab/,
-                       6 => /Vertriebsunterbruch ab/,
+                       1 => /Zulassungs-.*nummer.*/m,
+                       7 => /Nicht-Inverkehrbringen ab/,
+                       8 => /Vertriebsunterbruch ab/,
                        }
       first_row = false
       workbook.first.each do |row|
