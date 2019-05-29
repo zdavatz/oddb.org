@@ -173,8 +173,11 @@ module ODDB
       begin
         terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
       rescue => error
-        $stdout.puts "search_terms: #{error} in #{@name}"
-        terms = @name.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '?').split(/[\s\-()]+/u).select { |str| str.size >= 3 }
+        corrected = @name.force_encoding(Encoding::UTF_8)
+        $stdout.puts "search_terms: #{error} #{pointer} in #{@name} storing correctd #{corrected}"
+        @name = corrected
+        self.odba_store;
+        terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
       end
 			terms += [
 				@name, @ean13.to_s,

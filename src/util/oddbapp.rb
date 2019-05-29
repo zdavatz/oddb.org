@@ -362,6 +362,7 @@ class OddbPrevalence
 	end
 	def create_company
 		company = ODDB::Company.new
+		company.pointer = ODDB::Persistence::Pointer.new([:company, company.oid])
 		@companies.store(company.oid, company)
     company
 	end
