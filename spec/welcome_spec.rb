@@ -14,7 +14,7 @@ describe "ch.oddb.org" do
     login(ViewerUser, ViewerPassword)
   end
 
-  ViewerDescription = 'Willkommen Max Miller'
+  ViewerDescription = "Willkommen #{A_USER_FIRST_NAME} #{A_USER_NAME}"
 
   before :each do
     @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
@@ -25,7 +25,7 @@ describe "ch.oddb.org" do
     @browser.goto OddbUrl
   end
 
-  [ 'analysis', 'pharmacies', 'doctors', 'interactions', 'migel', 'user', 'hospitals', 'companies'].each do
+  [ 'pharmacies', 'doctors', 'interactions', 'migel', 'user', 'hospitals', 'companies'].each do
     |zone|
     it "should be possible to see the sponsored log-in in zone #{zone}" do
       expect(@browser.link(:name, zone).exists?).to eq(true)

@@ -151,7 +151,7 @@ describe "ch.oddb.org" do
     medi = 'lamivudin'
     select_product_by_trademark(medi)
     inhalt = @browser.text.clone
-    expect(/#{@direktvergleich}[^\n]*\nWillkommen Max Miller/i).to match(inhalt)
+    expect(/#{@direktvergleich}[^\n]*\nWillkommen #{A_USER_FIRST_NAME} #{A_USER_NAME}/i).to match(inhalt)
     expect(/#{medi}.*#{@direktvergleich}/im).to match(inhalt)
     expect(/#{@direktvergleich}.*#{medi}/im).not_to match(inhalt)
   end
@@ -162,7 +162,7 @@ describe "ch.oddb.org" do
     expect(@browser.link(name: 'best_result').visible?).to be true
     @browser.link(name: 'best_result').click
     inhalt = @browser.text.clone
-    expect(/#{@direktvergleich}[^\n]*\nWillkommen Max Miller/i).to match(inhalt)
+    expect(/#{@direktvergleich}[^\n]*\nWillkommen #{A_USER_FIRST_NAME} #{A_USER_NAME}/i).to match(inhalt)
     expect(/#{medi}.*#{@direktvergleich}/im).to match(inhalt)
     expect(/#{@direktvergleich}.*#{medi}/im).not_to match(inhalt)
   end

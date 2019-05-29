@@ -30,7 +30,7 @@ class PaypalUser
   PaymentUnconfirmed = /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
 
   # By default I setup a valid Paypal client
-  def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = 'Miller', first_name = 'Max')
+  def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = A_USER_NAME, first_name = A_USER_FIRST_NAME )
     @ywesee_user = email
     @ywesee_password = password
     @email = email

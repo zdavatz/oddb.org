@@ -66,6 +66,8 @@ DownloadDir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'download
 GlobAllDownloads  = File.join(DownloadDir, '*')
 AdminUser         = ENV['admin_user'] || 'ngiger@ywesee.com'
 AdminPassword     = ENV['admin_password']
+A_USER_NAME       = 'Müller'
+A_USER_FIRST_NAME = 'Cécile'
 raise "Must define env variable admin_password" unless ENV['admin_password'] && AdminPassword.size > 0
 ViewerUser        = 'info@desitin.ch'
 ViewerPassword    = 'desitin'
