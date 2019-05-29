@@ -56,6 +56,7 @@ GEM
     gyoku (1.3.1)
       builder (>= 2.1.2)
     hashdiff (0.3.4)
+    highline (2.0.2)
     hpricot (0.8.6)
     htmlentities (4.3.4)
     htmlgrid (1.1.4)
@@ -85,7 +86,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
-    mini_mime (1.0.0)
+    mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitar (0.6.1)
     minitest (5.10.2)
@@ -103,9 +104,9 @@ GEM
       mini_portile2 (~> 2.3.0)
     nori (2.6.0)
     ntlm-http (0.1.1)
-    odba (1.1.5)
-      ydbd-pg (>= 0.5.1)
-      ydbi (>= 0.5.1)
+    odba (1.1.6)
+      ydbd-pg (>= 0.5.6)
+      ydbi (>= 0.5.6)
     oddb2tdat (1.1.2)
     optimist (3.0.0)
     ox (2.8.2)
@@ -119,8 +120,7 @@ GEM
       blankslate (>= 2.0, <= 4.0)
     paypal (2.0.0)
       money (> 0.0.0)
-    pg (0.12.0)
-      rake-compiler (~> 0.7)
+    pg (1.0.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -134,8 +134,6 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rake (12.3.0)
-    rake-compiler (0.9.9)
-      rake
     rclconf (1.0.0)
     rmagick (2.13.4)
     rrba (1.0.0)
@@ -192,7 +190,7 @@ GEM
       rubyXL (>= 3.3.1)
       rubyzip
       spreadsheet
-    syck (1.3.0)
+    syck (1.4.0)
     thread_safe (0.3.6)
     transaction-simple (1.4.0.2)
     travis-lint (2.0.0)
@@ -217,13 +215,13 @@ GEM
       crack (>= 0.3.2)
       hashdiff
     webrobots (0.1.1)
-    ydbd-pg (0.5.4)
+    ydbd-pg (0.5.6)
       pg
-      ydbi (= 0.5.4)
-    ydbi (0.5.4)
+      ydbi (= 0.5.6)
+    ydbi (0.5.6)
       deprecated (= 2.0.1)
     ydiffy (0.0.2)
-    ydim (1.0.5)
+    ydim (1.1.1)
       deprecated (= 2.0.1)
       hpricot
       mail
@@ -232,15 +230,20 @@ GEM
       rclconf
       rrba
       syck
-      ydbd-pg (>= 0.5.1)
-      ydbi (>= 0.5.1)
+      ydbd-pg (>= 0.5.5)
+      ydbi (>= 0.5.5)
       ypdf-writer
     ydocx (1.2.5)
     yml_reader (0.7)
     ypdf-writer (1.3.3)
       color (>= 1.4.0)
       transaction-simple (~> 1.3)
-    yus (1.0.2)
+    yus (1.0.5)
+      deprecated (= 2.0.1)
+      highline
+      needle
+      odba (>= 1.1.6)
+      rclconf
 
 PLATFORMS
   ruby
@@ -278,14 +281,14 @@ DEPENDENCIES
   net-http-digest_auth
   net-http-persistent
   nokogiri
-  odba (>= 1.1.5)
+  odba (>= 1.1.6)
   oddb2tdat (= 1.1.2)
   optimist
   ox (= 2.8.2)
   page-object
   parslet (= 1.7.0)
   paypal (= 2.0.0)
-  pg (= 0.12.0)
+  pg (= 1.0.0)
   pry-byebug
   racc
   rack
@@ -313,11 +316,11 @@ DEPENDENCIES
   watir-webdriver
   webmock
   webrobots (= 0.1.1)
-  ydbd-pg (= 0.5.4)
+  ydbd-pg (= 0.5.6)
   ydiffy
-  ydim
+  ydim (= 1.1.1)
   ydocx (= 1.2.5)
-  yus
+  yus (= 1.0.5)
 
 BUNDLED WITH
    1.17.3
