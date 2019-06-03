@@ -295,7 +295,7 @@ module ODDB
       LogFile.append('oddb/debug', " getting update_bsv_followers", Time.now)
 
       update_package_trade_status_by_refdata
-      update_lppv
+      # update_lppv
       update_price_feeds
       export_oddb_csv
       export_oddb2_csv
