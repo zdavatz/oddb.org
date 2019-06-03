@@ -65,7 +65,7 @@ module ODDB
           @session.checkErrors(@agent.page.body)
           @agent.page.links[3].click
           @session.writeResponse(@agent, "#{LogDir}/homepage.html")
-          @state = @agent.page.form["javax.faces.ViewState"]
+          @state = nil         
         rescue Net::HTTPInternalServerError, Mechanize::ResponseCodeError
           puts "Net::HTTPInternalServerError oder Mechanize::ResponseCodeError gesehen.\n   #{Base_uri} hat wahrscheinlich Probleme"
           raise

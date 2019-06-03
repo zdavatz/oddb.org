@@ -285,10 +285,10 @@ module ODDB
         next unless first_row
         break unless row[0] # empty row
         added_info = OpenStruct.new
-        added_info.nomarketing_date   = row[cols_headers.keys[0]].value
+        added_info.nomarketing_date   = Date.parse(row[cols_headers.keys[0]].value.to_s) if row[cols_headers.keys[0]] && row[cols_headers.keys[0]].value
         added_info.iksnr              = row[cols_headers.keys[1]].value.to_s
-        added_info.nomarketing_since  = row[cols_headers.keys[2]].value
-        added_info.nodelivery_since   = row[cols_headers.keys[3]].value
+        added_info.nomarketing_since  = Date.parse(row[cols_headers.keys[2]].value.to_s) if row[cols_headers.keys[2]] && row[cols_headers.keys[2]].value
+        added_info.nodelivery_since   = Date.parse(row[cols_headers.keys[3]].value.to_s) if row[cols_headers.keys[3]] && row[cols_headers.keys[3]].value
         added_info.nomarketing_link   = @nomarketing_href
         unless @app.registration(added_info.iksnr)
           @missing_nomarketings << (added_info.iksnr)

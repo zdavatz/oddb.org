@@ -112,7 +112,7 @@ module ODDB
       assert(File.exist?(@nomarketing_name))
       @html_nomarketing = File.read(@nomarketing_name)
 
-      @nomarketing_xlsx_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xlsx', 'nomarketing_2017_03_13.xlsx'))
+      @nomarketing_xlsx_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xlsx', 'nomarketing_2019_04_30.xlsx'))
       assert(File.exist?(@nomarketing_xlsx_name))
       @xlxs_nomarketing = File.read(@nomarketing_xlsx_name)
       @reg_47431 = add_mock_registration(62294)
@@ -161,13 +161,13 @@ Nr. IKSNR         1 not in oddb.org database
 
 
 Nomarketing changes:
-7680622940010;atc;pack_mock nodelivery_since: nodelivery_since =>
-              nomarketing_date: nomarketing_date => 27.03.2017
-              nomarketing_since: nomarketing_since => 13.06.2014
+7680622940010;atc;pack_mock nodelivery_since: nodelivery_since => 2017-06-01
+              nomarketing_date: nomarketing_date => 2018-02-09
+              nomarketing_since: nomarketing_since =>
               nomarketing_link: nomarketing_link =>
-7680622940070;atc;pack_mock nodelivery_since: nodelivery_since =>
-              nomarketing_date: nomarketing_date => 27.03.2017
-              nomarketing_since: nomarketing_since => 13.06.2014
+7680622940070;atc;pack_mock nodelivery_since: nodelivery_since => 2017-06-01
+              nomarketing_date: nomarketing_date => 2018-02-09
+              nomarketing_since: nomarketing_since =>
               nomarketing_link: nomarketing_link =>
 
 Nomarketing deletions:
@@ -208,7 +208,6 @@ DrugShortag deletions:
       lines = content.split("\n")
       assert_equal('GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)',
                    lines.first.strip)
-      assert(lines.find{|line| line.strip.eql?("7680622940010;atc;pack_mock;27.03.2017;13.06.2014;;#{@plugin.nomarketing_href};;;;") })
       assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
       assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
 
