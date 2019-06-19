@@ -283,7 +283,7 @@ module ODDB
 			},
 		}
     RESOURCES = {
-      :external_css => 'https://www.just-medical.com/css/new.oddb.css',
+      :external_css => 'https://www.just-medical.ch/common/css/new.oddb.css',
     }
     def compare_list_components
       {
