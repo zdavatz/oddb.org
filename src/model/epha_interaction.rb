@@ -26,7 +26,7 @@ module ODDB
       @@epha_interactions
     end
     CSV_FILE = File.expand_path('../../data/csv/interactions_de_utf8.csv', File.dirname(__FILE__))
-    CSV_ORIGIN_URL  = 'https://download.epha.ch/data/matrix/matrix.csv'
+    CSV_ORIGIN_URL  = 'https://raw.githubusercontent.com/zdavatz/oddb2xml_files/master/interactions_de_utf8.csv'
     EPHA_INFO = Struct.new(:atc_code_self, :atc_code_other, # these two items are our unique index. They may not be changed
               :atc_name, :name_other, :info, :action, :effect, :measures, :severity)
 
