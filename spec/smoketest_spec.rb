@@ -620,6 +620,20 @@ describe "ch.oddb.org" do
     expect(text[0..1000]).to match /Homöopathika für Muskeln und Skelett/i
   end
 
+  it "should display the ATC-Browser, way down to H05AA02" do
+    @browser.link(:name => 'atc_chooser').click
+    text = @browser.text.clone
+    expect(text[0..1000]).to match /\(A\)/
+    expect(text[0..1000]).to match /\(V\)/
+    @browser.link(:text => /.*\(H\)/).click
+    @browser.link(:text => /.*\(H05\)/).click
+    @browser.link(:text => /.*\(H05A\)/).click
+    @browser.link(:text => /.*\(H05AA\)/).click
+    @browser.link(:text => /.*\(H05AA02\)/).click
+    text = @browser.text.clone
+    expect(text[0..1000]).to match /Forsteo/
+  end
+
   after :all do
     @browser.close if @browser
   end

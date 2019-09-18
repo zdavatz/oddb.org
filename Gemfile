@@ -29,7 +29,7 @@ gem 'multi_json', '1.0.4'
 gem 'needle', '1.3.0'
 gem 'net-http-digest_auth'#, '1.2'
 gem 'net-http-persistent'# , '2.7'
-gem 'nokogiri'# , '1.6.1'
+gem 'nokogiri', '1.10.4'
 gem 'ox', '2.8.2' # a replacement for nokogir
 gem 'odba',  '>= 1.1.6'
 gem 'oddb2tdat', '1.1.2'

@@ -69,7 +69,7 @@ module ODDB
         msg = value.repair_needed?
         @repairs << msg if msg
       }
-      # run impot
+      # run import
       while(code = @codes.shift)
         @count += 1
         import_code(agent, code)
@@ -103,8 +103,10 @@ module ODDB
       ]
       }
       new_codes.each{ |atc, details|
-          atc_code = import_atc(atc, details[0], :whocc_new)
-          @codes.push(atc_code)
+          if atc.length > 0
+            atc_code = import_atc(atc, details[0], :whocc_new)
+            @codes.push(atc_code)
+        end
       }
     end
     def import_code(agent, get_code)
@@ -112,7 +114,7 @@ module ODDB
       (page/"//b/a").each do |link|
         if(match = @@query_re.match(link.attributes['href']))
           code = match[1]
-          if(code == get_code)
+          if(code == get_code && code.length > 0)
             atc = import_atc(code, link.inner_text.to_s)
             import_guidelines(atc, link)
           end
