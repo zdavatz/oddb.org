@@ -51,9 +51,8 @@ module ODDB
                },
       }
     RSS_URLS.keys.each do |lang|
-      [:hpc, :recall].each do |rss_type|
-        RSS_URLS[lang][rss_type][:index] = RSS_URLS[lang][rss_type][:human].sub(/\.html$/, '/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1')
-      end
+      RSS_URLS[lang][:recall][:index] = RSS_URLS[lang][:recall][:human].sub(/\.html$/, '/_jcr_content/par/teaserlist.content.paging-1.html?pageIndex=1')
+      RSS_URLS[lang][:hpc]   [:index] = RSS_URLS[lang][:hpc]   [:human].sub(/\.html$/, '/_jcr_content/par/columncontrols/items/0/column/teaserlist.content.paging-1.html?pageIndex=1')
     end
 
     FLAVORED_RSS = %w[
