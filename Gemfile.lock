@@ -100,7 +100,7 @@ GEM
     needle (1.3.0)
     net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
-    nokogiri (1.10.4)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
     ntlm-http (0.1.1)
@@ -280,7 +280,7 @@ DEPENDENCIES
   needle (= 1.3.0)
   net-http-digest_auth
   net-http-persistent
-  nokogiri (= 1.10.4)
+  nokogiri (= 1.10.8)
   odba (>= 1.1.6)
   oddb2tdat (= 1.1.2)
   optimist
