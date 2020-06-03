@@ -2,9 +2,7 @@
 # encoding: utf-8
 # Migel::Model::SuperModel -- migel -- 10.10.2011 -- mhatakeyama@ywesee.com
 
-require 'remote/migel/lib/fixes/singular'
-require 'facet/module/basename'
-
+require 'active_support/inflector'
 module Migel
   # forward definitions (circular dependency Model <-> M10lDocument)
   class ModelSuper; end 
@@ -95,14 +93,14 @@ module Migel
             instance_variable_set(varname, Array.new)
           end
         }
-        define_method("add_#{plural.to_s.singular}") { |inst|
+        define_method("add_#{plural.to_s.singularize}") { |inst|
           container = self.send(plural)
           unless(container.any? { |other| inst.eql? other }) 
             container.push(inst) 
           end
           inst
         }
-        define_method("remove_#{plural.to_s.singular}") { |inst|
+        define_method("remove_#{plural.to_s.singularize}") { |inst|
           self.send(plural).delete_if { |other| inst.eql? other }
         }
         connectors.push(varname)
@@ -152,12 +150,16 @@ module Migel
             instance_variable_set("@#{key}", Util::Multilingual.new)
           end
         }
-        define_method(:to_s) { 
+        define_method(:to_s) {
           self.send(key).to_s
         }
       end
       def singular
-        basename.gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+        if respond_to?(:basename)
+          basename.gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+        else
+          self.to_s.singularize
+        end
       end
       def serialize(key)
       end

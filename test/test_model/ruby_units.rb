@@ -16,7 +16,8 @@ module ODDB
     def test_case_Disflatyl
       price = Unit.new('6.45 USD')
       _ddd_price = price / ((@mdose * @size).base / @ddose.base)
-      assert_equal('2.6875 USD', _ddd_price.to_s)
+      assert_equal('2.6875', _ddd_price.scalar.to_f.to_s)
+      assert_equal('5232861677742131222424394894671875/1947111321950560360698936123457536 USD', _ddd_price.to_s)
     end
     def test_case_Disflatyl_SFR
       price_sfr = ODDB::Util::Money.new(6.45)

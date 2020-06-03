@@ -12,7 +12,7 @@ require 'substance_index'
 require 'format'
 require 'fachinfo_wrapper'
 require 'cgi'
-require 'RMagick'
+require 'rmagick'
 
 
 $dumped_ids = []

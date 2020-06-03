@@ -7,7 +7,7 @@
 # See:: /path/to/gems/hpricot/lib/hpricot/builder.rb
 module Hpricot
   def self.uxs(str)
-    str.to_s.force_encoding('utf-8').
+    str.to_s.dup.force_encoding('utf-8').
         gsub(/\&(\w+);/) { [NamedCharacters[$1] || 63].pack("U*") }. # 63 = ?? (query char)
         gsub(/\&\#(\d+);/) { [$1.to_i].pack("U*") }
   end

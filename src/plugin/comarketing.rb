@@ -11,10 +11,11 @@ require 'drb'
 require 'rubyXL'
 require 'open-uri'
 require 'tempfile'
+require 'cmath'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-    doc = Nokogiri::HTML(open( ODDB::SwissmedicPlugin::BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
+    doc = Nokogiri::HTML(URI.open( ODDB::SwissmedicPlugin::BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
     @@comarketing_url = ODDB::SwissmedicPlugin::BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
     doc = nil
     def self.get_comarketing_url
