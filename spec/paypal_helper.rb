@@ -23,8 +23,9 @@ class PaypalUser
   OneDay              = 1
   Password_Dummy      = '87654321'
   CheckoutName        = 'checkout_paypal'
-  @receiver   = { :user =>  'test_paypal_api1.ywesee.com', :password => '1401791830',
-                  :signature => 'ArMY3QHPQrA9ttub.wccQPPgmgPiAiJr7-05DWZV41xVYcNN9KNECII9',
+  @receiver   = { user: 'test_paypal_api1.ywesee.com',
+                  password: '1401791830',
+                  signature: 'ArMY3QHPQrA9ttub.wccQPPgmgPiAiJr7-05DWZV41xVYcNN9KNECII9',
               }
   Six_Test_Drug_Names = [ 'Marcoumar', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Amikin']
   PaymentUnconfirmed = /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
@@ -41,57 +42,57 @@ class PaypalUser
   end
 
   def init_paypal_checkout(browser)
-    browser.text_field(:name, "name_last").wait_until_present
-    browser.text_field(:name, "email").     set(@email) if browser.text_field(:name, "email").enabled?
-    browser.text_field(:name, "pass").      set(@password)   if browser.text_field(:name, "pass").exists? and browser.text_field(:name, "pass").enabled?
-    browser.text_field(:name, "set_pass_2").set(@password)   if browser.text_field(:name, "set_pass_2").exists? and  browser.text_field(:name, "set_pass_2").enabled?
-    browser.text_field(:name, "name_last"). set(@family_name)
-    browser.text_field(:name, "name_first").set(@first_name)
+    browser.text_field(name:  "name_last").wait_until(&:present?)
+    browser.text_field(name:  "email").     set(@email) if browser.text_field(name:  "email").enabled?
+    browser.text_field(name:  "pass").      set(@password)   if browser.text_field(name:  "pass").exists? and browser.text_field(name:  "pass").enabled?
+    browser.text_field(name:  "set_pass_2").set(@password)   if browser.text_field(name:  "set_pass_2").exists? and  browser.text_field(name:  "set_pass_2").enabled?
+    browser.text_field(name:  "name_last"). set(@family_name)
+    browser.text_field(name:  "name_first").set(@first_name)
     return true
   end
 
   def paypal_buy(browser, complete = CompleteCheckout)
     sleep(1) # must loose some time
     # the following lines were collected using firefox TestSide Recorder on 2017.07.04 but do not work
-    browser.checkbox(:id, "keepMeLoggedIn").set
-    browser.text_field(:id, "password").set("12345678")
-    browser.text_field(:id, "email").set("customer-1@ywesee.com")
-    browser.button(:value,"Einloggen").click
+    browser.checkbox(id:  "keepMeLoggedIn").set
+    browser.text_field(id:  "password").set("12345678")
+    browser.text_field(id:  "email").set("customer-1@ywesee.com")
+    browser.button(value: "Einloggen").click
 
-    login_button = browser.button(:name => /login_button/i)
+    login_button = browser.button(name: /login_button/i)
     if login_button and login_button.exists?
       login_button.click
-      browser.window(:title => /Pay with a PayPal account/).wait_until_present
+      browser.window(title: /Pay with a PayPal account/).wait_until(&:present?)
     end
-    browser.text_field(:id, "login_email").set(@email)
-    browser.text_field(:id, "login_password").set(@password)
+    browser.text_field(id:  "login_email").set(@email)
+    browser.text_field(id:  "login_password").set(@password)
     puts "PayPal: Log In"
     if complete == CancelCheckoutEarly
-      browser.button(:name,"cancel_return").click
+      browser.button(name: "cancel_return").click
     else
-      browser.button(:value,"Log In").click
-      if browser.div(:text => /Please check your email/i).exist?
+      browser.button(value: "Log In").click
+      if browser.div(text:  /Please check your email/i).exist?
         puts "LogIn failed"
         return false
       end
-      browser.window(:title => /Angaben prüfen/).wait_until_present
+      browser.window(title: /Angaben prüfen/).wait_until(&:present?)
       if complete == CancelCheckoutLater
-        browser.button(:name,"cancel_return").click
+        browser.button(name: "cancel_return").click
       else
-        puts "PayPal: Jetzt zahlen. Must accept first #{browser.button(:id => /accept.x/).exists?}"
-        if browser.button(:id => /accept.x/).exists?
-          browser.button(:id => /accept.x/).click
+        puts "PayPal: Jetzt zahlen. Must accept first #{browser.button(id: /accept.x/).exists?}"
+        if browser.button(id: /accept.x/).exists?
+          browser.button(id: /accept.x/).click
         else
-          browser.button(:value,"Jetzt zahlen").click
+          browser.button(value: "Jetzt zahlen").click
         end
-        if browser.button(:value,"Zustimmen und zahlen").exist?
-          browser.button(:value,"Zustimmen und zahlen").click
+        if browser.button(value: "Zustimmen und zahlen").exist?
+          browser.button(value: "Zustimmen und zahlen").click
         end
-        browser.window(:title => /Sie haben Ihre Zahlung|Ihre Zahlung ist jetzt/).wait_until_present
+        browser.window(title: /Sie haben Ihre Zahlung|Ihre Zahlung ist jetzt/).wait_until(&:present?)
         puts "PayPal: Return to oddb.ch"
-        browser.button(:name,"merchant_return_link").click
+        browser.button(name: "merchant_return_link").click
         puts "URL after merchant_return_link was #{browser.url}"
-        browser.window(:url => /paypal_return/).wait_until_present
+        browser.window(:url => /paypal_return/).wait_until(&:present?)
       end
     end
     puts "URL after preceeding to paypal was #{browser.url}"

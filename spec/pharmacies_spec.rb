@@ -13,7 +13,7 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    @browser.link(:visible_text=>'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
+    @browser.link(visible_text: 'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
   end
 
   after :each do
@@ -25,12 +25,12 @@ describe "ch.oddb.org" do
 
     def enter_search_to_field_by_name(search_text, field_name)
       idx = 1
-      chooser = @browser.text_field(:name,field_name)
+      chooser = @browser.text_field(name: field_name)
       0.upto(2).each{
         |idx|
         break if chooser and chooser.present?
         sleep 1
-        chooser = @browser.text_field(:name,field_name)
+        chooser = @browser.text_field(name: field_name)
       }
       unless chooser and chooser.present?
         msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
@@ -52,14 +52,14 @@ describe "ch.oddb.org" do
   it "check pharmacy" do
 #    require 'pry'; binding.pry
     login
-    @browser.link(:name, 'pharmacies').click
+    @browser.link(name:  'pharmacies').click
     enter_search_to_field_by_name('Glarus', 'search_query');
     expect(@browser.text).to match Moor
     expect(@browser.text).to match 'Kantonsspital Glarus AG'
     expect(@browser.text).to match 'St. Fridolin Pharma AG'
-    @browser.link(:visible_text =>Moor).click
+    @browser.link(visible_text: Moor).click
     # don't know why we need to wait here, but it works!
-    sleep 0.5 unless @browser.link(:visible_text => /Lageplan/).exists?
+    sleep 0.5 unless @browser.link(visible_text:  /Lageplan/).exists?
     inhalt = @browser.text
     expect(inhalt).to match Moor
     expect(@browser.url).to match /pharmacy\/ean/
@@ -67,7 +67,7 @@ describe "ch.oddb.org" do
     expect(inhalt).to match MoorEAN
     expect(inhalt).to match "Zaunplatz 2"
     expect(inhalt).to match "8750 Glarus"
-    @browser.link(:visible_text => /map.search/).click
+    @browser.link(visible_text:  /map.search/).click
     expect(@browser.url).to match /glarus.zaunplatz-2/i
     @browser.back
   # go back to search result
@@ -75,7 +75,7 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 
 end

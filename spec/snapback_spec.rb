@@ -53,15 +53,15 @@ describe "ch.oddb.org snapback" do
   end
 
   def search_item(search_type, search_value)
-    if @browser.link(:name, 'drugs').exists?
-      @browser.link(:name, 'drugs').click; small_delay
+    if @browser.link(name:  'drugs').exists?
+      @browser.link(name:  'drugs').click; small_delay
     end
-    if @browser.link(:name, 'drugs').exists?
-      @browser.link(:name, 'drugs').click; small_delay
+    if @browser.link(name:  'drugs').exists?
+      @browser.link(name:  'drugs').click; small_delay
     end
-    @browser.select_list(:name, "search_type").select(/#{search_type}/)
-    @browser.text_field(:name, "search_query").value = search_value
-    @browser.text_field(:name, "search_query").send_keys :enter
+    @browser.select_list(name:  "search_type").select(/#{search_type}/)
+    @browser.text_field(name:  "search_query").value = search_value
+    @browser.text_field(name:  "search_query").send_keys :enter
   end
 
   def check_home_links
@@ -78,7 +78,7 @@ describe "ch.oddb.org snapback" do
   it "should always have the correct home link" do
     @browser.goto(OddbUrl + '/de/gcc' + diff_url)
     check_home_links
-    link = @browser.link(:visible_text => /Fachinformation zu/)
+    link = @browser.link(visible_text:  /Fachinformation zu/)
     expect(link.exist?).to be true
     link.click
     check_home_links
@@ -94,7 +94,7 @@ describe "ch.oddb.org snapback" do
     while current
       nr += 1
       # puts "\nRunning test step #{nr}\n  #{current.inspect}"
-      link = @browser.link(:visible_text => current.link_to_click)
+      link = @browser.link(visible_text:  current.link_to_click)
       # puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
       expect(link.exist?).to be true
       link.click
@@ -125,14 +125,14 @@ describe "ch.oddb.org snapback" do
       current = current.next_step
       while current and nr < step_to_test
         nr += 1
-        link = @browser.link(:visible_text => current.link_to_click)
+        link = @browser.link(visible_text:  current.link_to_click)
         expect(link.exist?).to be true
         @prev_url = @browser.url.clone
         link.click
         check_home_links
         current = current.next_step
       end
-      home_link = @browser.link(:visible_text => 'Home')
+      home_link = @browser.link(visible_text:  'Home')
       expect(home_link.exist?).to be true
       saved_text = @browser.text
       saved_url = @browser.url
@@ -152,8 +152,8 @@ describe "ch.oddb.org snapback" do
   end
 
   it "should work follow correctly the expected paths" do
-    if @browser.link(:name, 'drugs').exists?
-      @browser.link(:name, 'drugs').click; small_delay
+    if @browser.link(name:  'drugs').exists?
+      @browser.link(name:  'drugs').click; small_delay
     end
     check_home_links
     nr = 0
@@ -163,7 +163,7 @@ describe "ch.oddb.org snapback" do
       nr += 1
       puts "\nRunning test step #{nr}\n  #{current.inspect}"
       if current.link_to_click
-        link = @browser.link(:visible_text => current.link_to_click)
+        link = @browser.link(visible_text:  current.link_to_click)
         puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
         expect(link.exist?).to be true
         link.click
@@ -199,11 +199,11 @@ describe "ch.oddb.org snapback" do
     expect(@browser.text).not_to match LeeresResult
     expect(@browser.text).to match /Deutsche Bezeichnung|Präparat/
     expect(@browser.text).to match name
-    @browser.link(:name => 'square_fachinfo').click
+    @browser.link(name: 'square_fachinfo').click
     check_pointer_steps(/Home - FI zu #{name}/)
-    @browser.link(:name => 'change_log').click
+    @browser.link(name: 'change_log').click
     check_pointer_steps(/Home,Fachinformation zu #{name}.+,Änderungen/)
-    @browser.link(:name => 'change_log').click
+    @browser.link(name: 'change_log').click
     check_pointer_steps(/Home,Fachinformation zu #{name}.+,Änderungen,\d{2}\.\d{2}\.\d{4}/)
   end
 
@@ -216,6 +216,6 @@ describe "ch.oddb.org snapback" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

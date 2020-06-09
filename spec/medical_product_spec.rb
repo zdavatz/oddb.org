@@ -28,7 +28,7 @@ describe "ch.oddb.org" do
     @browser.goto url
     expect(@browser.text).to match /Galenische Form\s+Injektionslösung in Fertigspritze/
   end
-  
+
   it "should work as show/reg for viagra" do
     url = "#{OddbUrl}/de/#{Flavor}/show/reg/62949/seq/01/pack/001"
     @browser.goto url
@@ -36,7 +36,7 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
- 
+
 end

@@ -15,9 +15,9 @@ describe "ch.oddb.org" do
 
   before :each do
     @browser.goto OddbUrl
-    if @browser.link(:visible_text=>'Plus').exists?
+    if @browser.link(visible_text: 'Plus').exists?
       puts "Going from instant to plus"
-    @browser.link(:visible_text=>'Plus').click
+    @browser.link(visible_text: 'Plus').click
     end
   end
 
@@ -29,7 +29,7 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 
   def session_uniq_email
@@ -58,58 +58,58 @@ view org.oddb.patinfo_stats.associated
 credit org.oddb.download
 )
   def create_or_update_user(email = session_uniq_email, yus_rights= ['yus_privileges[login|org.oddb.CompanyUser]'])
-    require 'pry'; binding.pry unless @browser.link(:visible_text, "Admin").exists?
-    @browser.link(:visible_text=>'Admin').click
-    @browser.link(:visible_text=>'Benutzer').click
-    @browser.button(:name => 'new_user').click
-    if @browser.link(:visible_text => /#{email}/).exists?
+    require 'pry'; binding.pry unless @browser.link(visible_text:  "Admin").exists?
+    @browser.link(visible_text: 'Admin').click
+    @browser.link(visible_text: 'Benutzer').click
+    @browser.button(name: 'new_user').click
+    if @browser.link(visible_text: /#{email}/).exists?
       @browser.goto OddbUrl
     end
-    @browser.text_field(:name => 'name').set email
-    @browser.text_field(:name => 'name_last').set "Familie #{get_session_timestamp}"
-    @browser.text_field(:name => 'name_first').set 'Hans'
-    @browser.text_field(:name => 'address').set 'Im Dorf'
-    @browser.text_field(:name => 'plz').set Time.now.strftime('%H%M')
-    @browser.text_field(:name => 'city').set 'Irgendwo'
-    yus_rights.each {|right| @browser.checkbox(:name => right).set }
-    @browser.button(:name => 'update').click
+    @browser.text_field(name: 'name').set email
+    @browser.text_field(name: 'name_last').set "Familie #{get_session_timestamp}"
+    @browser.text_field(name: 'name_first').set 'Hans'
+    @browser.text_field(name: 'address').set 'Im Dorf'
+    @browser.text_field(name: 'plz').set Time.now.strftime('%H%M')
+    @browser.text_field(name: 'city').set 'Irgendwo'
+    yus_rights.each {|right| @browser.checkbox(name: right).set }
+    @browser.button(name: 'update').click
     @browser.goto OddbUrl
-    @browser.link(:visible_text=>'Admin').click
-    @browser.link(:visible_text=>'Benutzer').click
-    expect(@browser.link(:visible_text => /#{email}/).exists?).to eq(true)
+    @browser.link(visible_text: 'Admin').click
+    @browser.link(visible_text: 'Benutzer').click
+    expect(@browser.link(visible_text: /#{email}/).exists?).to eq(true)
     @browser.goto OddbUrl
   end
 
   def upload_pat_info(original)
     expect(File.exists?(original)).to be true
     FileUtils.cp(original, DownloadDir, :verbose => true)
-    @browser.select_list(:name, "search_type").select("Swissmedic-# (5-stellig)")
-    @browser.text_field(:id, "searchbar").set("43788")
-    @browser.button(:value,"Suchen").click
-    @browser.link(:name, "seqnr").click
-    @browser.link(:name, "ikscd").click
-    if @browser.button(:name,"delete_patinfo").exists?
-      @browser.button(:name,"delete_patinfo").click
+    @browser.select_list(name: "search_type").select("Swissmedic-# (5-stellig)")
+    @browser.text_field(id:  "searchbar").set("43788")
+    @browser.button(value: "Suchen").click
+    @browser.link(name: "seqnr").click
+    @browser.link(name: "ikscd").click
+    if @browser.button(name: "delete_patinfo").exists?
+      @browser.button(name: "delete_patinfo").click
     end
-    expect(@browser.link(:visible_text, "PI").exists?).to be false
-    @browser.button(:name => 'delete_patinfo').click if @browser.button(:name => 'delete_patinfo').exist?
-    expect(@browser.button(:name => 'delete_patinfo').exist?).to eq false
-    @browser.file_field(:name =>  "patinfo_upload").set(original)
-    @browser.button(:name,"update").click
-    expect(@browser.link(:visible_text, "PI").exists?).to be true
-    new_content = open(@browser.link(:visible_text, "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
-    org_content = open(original, 'rb').read;
+    expect(@browser.link(visible_text:  "PI").exists?).to be false
+    @browser.button(name: 'delete_patinfo').click if @browser.button(name: 'delete_patinfo').exist?
+    expect(@browser.button(name: 'delete_patinfo').exist?).to eq false
+    @browser.file_field(name: "patinfo_upload").set(original)
+    @browser.button(name: "update").click
+    expect(@browser.link(visible_text:  "PI").exists?).to be true
+    new_content = URI.open(@browser.link(visible_text:  "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
+    org_content = URI.open(original, 'rb').read;
     expect(org_content).to eq new_content
   end
 
   def check_sort(link_name)
-    expect(@browser.link(:name => link_name).exists?).to be true
-    @browser.link(:name => link_name).click
+    expect(@browser.link(name: link_name).exists?).to be true
+    @browser.link(name: link_name).click
     text_before = @browser.text
     expect(text_before).not_to match /RangeError/i
     expect(text_before.size).to be > 100
-    expect(@browser.link(:name => link_name).exists?).to be true
-    @browser.link(:name => link_name).click
+    expect(@browser.link(name: link_name).exists?).to be true
+    @browser.link(name: link_name).click
     text_after = @browser.text
     expect(text_after).not_to match /RangeError/i
     expect(text_after.size).to be > 100
@@ -136,8 +136,8 @@ credit org.oddb.download
     |link_name|
       it "should be possible to sort users by #{link_name.sub('th_','')}" do
         pending # does not work (september 2014)
-        @browser.link(:visible_text=>'Admin').click
-        @browser.link(:visible_text=>'Benutzer').click
+        @browser.link(visible_text: 'Admin').click
+        @browser.link(visible_text: 'Benutzer').click
         check_sort(link_name)
       end
   }

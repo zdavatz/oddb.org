@@ -13,7 +13,7 @@ describe "ch.oddb.org" do
     @all_search_limitations = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
             "search_limitation_SL_only", "search_limitation_valid"]
     waitForOddbToBeReady(@browser, OddbUrl)
-    @browser.link(:name => 'search_instant').click unless   @browser.link(:name => 'search_instant').text.eql?('Instant')
+    @browser.link(name: 'search_instant').click unless   @browser.link(name: 'search_instant').text.eql?('Instant')
     @direktvergleich = 'Für den Direktvergleich klicken Sie'
   end
 
@@ -89,48 +89,48 @@ describe "ch.oddb.org" do
       login
     end
   it "should display the correct color iscador U" do
-    @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set('iscador U')
+    @browser.select_list(name: "search_type").select("Markenname")
+    @browser.text_field(name: "search_query").set('iscador U')
     sleep(0.1)
-    @browser.button(:name, "search").click
-    @browser.element(:id => 'ikscat_1').wait_until_present
-    expect(@browser.element(:id => 'ikscat_1').text).to eq 'A / SL'
-    expect(@browser.link(:visible_text => 'FI').exists?).to eq true
-    expect(@browser.link(:visible_text => 'PI').exists?).to eq true
-    expect(@browser.td(:visible_text => 'A').exists?).to eq true
-    expect(@browser.td(:visible_text => 'C').exists?).to eq false
-    expect(@browser.link(:visible_text => 'FB').exists?).to eq true
-    td = @browser.td(:visible_text => /Iscador/i)
+    @browser.button(name: "search").click
+    @browser.element(id: 'ikscat_1').wait_until(&:present?)
+    expect(@browser.element(id: 'ikscat_1').text).to eq 'A / SL'
+    expect(@browser.link(visible_text: 'FI').exists?).to eq true
+    expect(@browser.link(visible_text: 'PI').exists?).to eq true
+    expect(@browser.td(visible_text: 'A').exists?).to eq true
+    expect(@browser.td(visible_text: 'C').exists?).to eq false
+    expect(@browser.link(visible_text: 'FB').exists?).to eq true
+    td = @browser.td(visible_text: /Iscador/i)
     expect(td.style('background-color')).to match /0, 0, 0, 0/
-    selbstbehalt =   @browser.span(:text => /A \/ SL/).wait_until_present
+    selbstbehalt =   @browser.span(:text => /A \/ SL/).wait_until(&:present?)
   end
 
   it "should display a limitation link for Sevikar" do
-    @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set('Sevikar')
+    @browser.select_list(name: "search_type").select("Markenname")
+    @browser.text_field(name: "search_query").set('Sevikar')
     sleep(0.1)
-    @browser.button(:name, "search").click
-    @browser.element(:id => 'ikscat_1').wait_until_present
-    td = @browser.td(:class =>/^list/, :visible_text => /^Sevikar/)
+    @browser.button(name: "search").click
+    @browser.element(id: 'ikscat_1').wait_until(&:present?)
+    td = @browser.td(:class =>/^list/, visible_text: /^Sevikar/)
     expect(td.exist?).to eq true
     expect(td.links.size).to eq 1
-    expect(@browser.element(:id => 'ikscat_1').text).to eq 'B / SL / SO'
-    expect(@browser.link(:visible_text => 'L').exists?).to eq true
-    expect(@browser.link(:visible_text => 'L').href).to match /limitation_text\/reg/
-    expect(@browser.link(:visible_text => 'FI').exists?).to eq true
-    expect(@browser.link(:visible_text => 'PI').exists?).to eq true
-    expect(@browser.td(:visible_text => 'A').exists?).to eq false
-    expect(@browser.td(:visible_text => 'C').exists?).to eq false
-#    @browser.link(:visible_text => '10%').exists?.should eq true
-    expect(@browser.link(:visible_text => 'FB').exists?).to eq true
+    expect(@browser.element(id: 'ikscat_1').text).to eq 'B / SL / SO'
+    expect(@browser.link(visible_text: 'L').exists?).to eq true
+    expect(@browser.link(visible_text: 'L').href).to match /limitation_text\/reg/
+    expect(@browser.link(visible_text: 'FI').exists?).to eq true
+    expect(@browser.link(visible_text: 'PI').exists?).to eq true
+    expect(@browser.td(visible_text: 'A').exists?).to eq false
+    expect(@browser.td(visible_text: 'C').exists?).to eq false
+#    @browser.link(visible_text: '10%').exists?.should eq true
+    expect(@browser.link(visible_text: 'FB').exists?).to eq true
   end
 
   it "should display lamivudin with SO and SG in category (price comparision)" do
-    @browser.select_list(:name, "search_type").select("Preisvergleich")
-    @browser.text_field(:name, "search_query").set('lamivudin')
+    @browser.select_list(name: "search_type").select("Preisvergleich")
+    @browser.text_field(name: "search_query").set('lamivudin')
     sleep(0.1)
-    @browser.button(:name, "search").click
-    @browser.element(:id => 'ikscat_1').wait_until_present
+    @browser.button(name: "search").click
+    @browser.element(id: 'ikscat_1').wait_until(&:present?)
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SO')}.exists?).to eq true
     expect(@browser.tds.find{ |x| x.text.eql?('A / SL / SG')}.exists?).to eq true
 
@@ -141,12 +141,12 @@ describe "ch.oddb.org" do
     expect(td.links.first.href).to match /\/price_history\//
 
     # Check link to price history for ex factory price
-    td = @browser.td(:class => /list right/, :visible_text => /\d+\.\d+/)
+    td = @browser.td(:class => /list right/, visible_text: /\d+\.\d+/)
     expect(td.exist?).to eq true
     expect(td.links.size).to eq 1
     expect(td.links.first.href).to match /\/price_history\//
   end
-  
+
   it "should display Für den Preisvergleich in search result at the bottom" do
     medi = 'lamivudin'
     select_product_by_trademark(medi)
@@ -159,7 +159,7 @@ describe "ch.oddb.org" do
   it "should display Für den Preisvergleich in the price comparision" do
     medi = 'lamivudin'
     select_product_by_trademark(medi)
-    expect(@browser.link(name: 'best_result').visible?).to be true
+    expect(@browser.link(name: 'best_result').present?).to be true
     @browser.link(name: 'best_result').click
     inhalt = @browser.text.clone
     expect(/#{@direktvergleich}[^\n]*\nWillkommen #{A_USER_FIRST_NAME} #{A_USER_NAME}/i).to match(inhalt)
@@ -214,21 +214,21 @@ describe "ch.oddb.org" do
   end
 
   it "should have a link to the migel" do
-    @browser.link(:visible_text =>'MiGeL').click
-    @browser.link(:name => 'migel_alphabetical').wait_until_present
+    @browser.link(visible_text: 'MiGeL').click
+    @browser.link(name: 'migel_alphabetical').wait_until(&:present?)
     expect(@browser.text).to match /Pflichtleistung/
     expect(@browser.text).to match /Mittel und Gegenst/ # Mittel und Gegenstände
   end unless ['just-medical'].index(Flavor)
 
   it "should find Aspirin" do
-    @browser.text_field(:name, "search_query").set("Aspirin")
-    @browser.button(:name, "search").click; small_delay
+    @browser.text_field(name: "search_query").set("Aspirin")
+    @browser.button(name: "search").click; small_delay
     expect(@browser.text).to match /Aspirin 500|ASS Cardio Actavis 100 mg|Aspirin Cardio 300/
   end
 
   it "should find inderal" do
-    @browser.text_field(:name, "search_query").set("inderal")
-    @browser.button(:name, "search").click; sleep(1)
+    @browser.text_field(name: "search_query").set("inderal")
+    @browser.button(name: "search").click; sleep(1)
     expect(@browser.text).to match /Inderal 10 mg/
     expect(@browser.text).to match /Inderal 40 mg/
   end
@@ -240,7 +240,7 @@ describe "ch.oddb.org" do
       new_options.args << "--user-agent=#{iphone_ua}"
       iphone_browser = Watir::Browser.new  :chrome, options: new_options
       iphone_browser.goto 'http://www.useragentstring.com/'
-      expect(iphone_browser.textarea(:id => "uas_textfeld").value).to eql iphone_ua
+      expect(iphone_browser.textarea(id: "uas_textfeld").value).to eql iphone_ua
       iphone_browser.goto OddbUrl
       expect(iphone_browser.url).to match(/\/\/i\./)
       txt = iphone_browser.text.clone
@@ -260,9 +260,9 @@ describe "ch.oddb.org" do
       names.each {
         |name|
           waitForOddbToBeReady(@browser, OddbUrl)
-          @browser.select_list(:name, "search_type").select("Markenname")
-          @browser.text_field(:name, "search_query").set(name)
-          @browser.button(:name, "search").click; small_delay
+          @browser.select_list(name: "search_type").select("Markenname")
+          @browser.text_field(name: "search_query").set(name)
+          @browser.button(name: "search").click; small_delay
           createScreenshot(@browser, '_'+@idx.to_s)
           if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
             res = true
@@ -278,20 +278,20 @@ describe "ch.oddb.org" do
 
   it "should have a link to the english language versions" do
     @browser.goto OddbUrl
-    english = @browser.link(:visible_text =>'English')
-    english.wait_until_present
+    english = @browser.link(visible_text: 'English')
+    english.wait_until(&:present?)
     english.click
-    @browser.button(:name, "search").wait_until_present
+    @browser.button(name: "search").wait_until(&:present?)
     expect(@browser.text).to match /Search for your favorite drug fast and easy/
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the french language versions" do
-    @browser.link(:visible_text =>/Français|French/i).click; small_delay
+    @browser.link(visible_text: /Français|French/i).click; small_delay
     expect(@browser.text).to match /Comparez simplement et rapidement les prix des médicaments/
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the german language versions" do
-    @browser.link(:visible_text =>/Deutsch|German/).click; small_delay
+    @browser.link(visible_text: /Deutsch|German/).click; small_delay
     expect(@browser.text).to match /Vergleichen Sie einfach und schnell Medikamentenpreise./
   end unless ['just-medical'].index(Flavor)
 
@@ -299,7 +299,7 @@ describe "ch.oddb.org" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/patinfo/reg/51795/seq/01"; small_delay
     windowSize = @browser.windows.size
     expect(@browser.url).to match OddbUrl
-    @browser.link(:visible_text , 'Drucken').click; small_delay
+    @browser.link(visible_text: 'Drucken').click; small_delay
     expect(@browser.windows.size).to eq(windowSize + 1)
     @browser.windows.last.use
     sleep(0.5)
@@ -310,17 +310,17 @@ describe "ch.oddb.org" do
 
   it "should open a sequence specific patinfo" do # 15219 Zymafluor
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/15219"; small_delay
-    require 'pry'; binding.pry unless @browser.link(:visible_text => 'PI').exist?
-    expect(@browser.link(:visible_text => 'PI').exist?).to eq true
-    @browser.link(:visible_text => 'PI').click; small_delay
+    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+    expect(@browser.link(visible_text: 'PI').exist?).to eq true
+    @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
   end
 
   it "should open a package specific patinfo" do # 43788 Tramal
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
-    require 'pry'; binding.pry unless @browser.link(:visible_text => 'PI').exist?
-    expect(@browser.link(:visible_text => 'PI').exist?).to eq true
-    @browser.link(:visible_text => 'PI').click; small_delay
+    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+    expect(@browser.link(visible_text: 'PI').exist?).to eq true
+    @browser.link(visible_text: 'PI').click; small_delay
     # As this opens a new window we must focus on it
     @browser.windows.last.use if @browser.windows.size > 1
     expect(@browser.url).to match /patinfo/i
@@ -334,20 +334,20 @@ describe "ch.oddb.org" do
      ].each do  |pi_url|
         @browser.goto "#{OddbUrl}/#{pi_url}"
         expect(/NoMethodError/i.match(@browser.text)).to be nil
-        expect(@browser.link(:name => 'effects').visible?).to be true
-        expect(@browser.link(:name => 'change_log').visible?).to be true
-        expect(@browser.link(:name => 'print').visible?).to be true
-        @browser.link(:name => 'effects').click
+        expect(@browser.link(name: 'effects').present?).to be true
+        expect(@browser.link(name: 'change_log').present?).to be true
+        expect(@browser.link(name: 'print').present?).to be true
+        @browser.link(name: 'effects').click
         @browser.back
-        @browser.link(:name => 'change_log').click
+        @browser.link(name: 'change_log').click
 
     end
   end
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
-    require 'pry'; binding.pry unless @browser.link(:visible_text => 'PI').exist?
-    expect(@browser.link(:visible_text => 'PI').exist?).to eq true
-    @browser.link(:visible_text => 'PI').click; small_delay
+    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+    expect(@browser.link(visible_text: 'PI').exist?).to eq true
+    @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
     text = @browser.text.clone
     expect(text).to match /Was sind Tramal Tropfen Lösung zum Einnehmen und wann werden sie angewendet/
@@ -356,8 +356,8 @@ describe "ch.oddb.org" do
 
   it "should show correct Tramal Tropfen Lösung zum Einnehmen ohne Dosierpumpe(4788/01/086)" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"; small_delay
-    expect(@browser.link(:visible_text => 'PI').exist?).to eq true
-    @browser.link(:visible_text => 'PI').click; small_delay
+    expect(@browser.link(visible_text: 'PI').exist?).to eq true
+    @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
     text = @browser.text.clone
     expect(text).to match /Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe/
@@ -369,8 +369,8 @@ describe "ch.oddb.org" do
     expect(@browser.url).to match OddbUrl
     windowSize = @browser.windows.size
     @browser.windows.last.use
-    @browser.link(:visible_text , /Drucken/i).wait_until_present
-    @browser.link(:visible_text , /Drucken/i).click;
+    @browser.link(visible_text: /Drucken/i).wait_until(&:present?)
+    @browser.link(visible_text: /Drucken/i).click;
     small_delay unless @browser.windows.size == windowSize + 1
     expect(@browser.windows.size).to eq(windowSize + 1)
     @browser.windows.last.use
@@ -381,12 +381,12 @@ describe "ch.oddb.org" do
   end
 
   it "should be possible to request a new password" do
-    @browser.link(:visible_text =>'Abmelden').click if @browser.link(:visible_text =>'Abmelden').exists?
+    @browser.link(visible_text: 'Abmelden').click if @browser.link(visible_text: 'Abmelden').exists?
     small_delay
-    @browser.link(:visible_text =>'Anmeldung').click; small_delay
-    @browser.link(:name=>'password_lost').click
-    @browser.text_field(:name, 'email').set 'ngiger@ywesee.com'
-    @browser.button(:name, 'password_request').click; small_delay
+    @browser.link(visible_text: 'Anmeldung').click; small_delay
+    @browser.link(name: 'password_lost').click
+    @browser.text_field(name: 'email').set 'ngiger@ywesee.com'
+    @browser.button(name: 'password_request').click; small_delay
     url = @browser.url
     text = @browser.text
     expect(url).not_to match /error/i
@@ -398,17 +398,17 @@ describe "ch.oddb.org" do
     skip("Paypal login page is no longer usable with Watir")
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.text_field(:name, "search_query").set(test_medi)
-    @browser.button(:name, "search").click; small_delay
-    @browser.button(:value,"Resultat als CSV Downloaden").click; small_delay
-    @browser.text_field(:name => /name_last/i).value= "Mustermann"; small_delay
-    @browser.text_field(:name => /name_first/i).value= "Max"; small_delay
+    @browser.text_field(name: "search_query").set(test_medi)
+    @browser.button(name: "search").click; small_delay
+    @browser.button(value: "Resultat als CSV Downloaden").click; small_delay
+    @browser.text_field(name: /name_last/i).value= "Mustermann"; small_delay
+    @browser.text_field(name: /name_first/i).value= "Max"; small_delay
     paypal_user = PaypalUser.new
-    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
     expect(paypal_user.paypal_buy(@browser)).to eql true
     expect(@browser.url).not_to match  /errors/
-    @browser.link(:name => 'download').wait_until_present
-    @browser.link(:name => 'download').click
+    @browser.link(name: 'download').wait_until(&:present?)
+    @browser.link(name: 'download').click
     sleep(1) # Downloading might take some time
     filesAfterDownload =  Dir.glob(GlobAllDownloads)
     diffFiles = (filesAfterDownload - filesBeforeDownload)
@@ -416,9 +416,9 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   def check_search_with_type
-    query =  @browser.text_field(:name, "search_query")
+    query =  @browser.text_field(name: "search_query")
     expect(query.exists?).to eq true
-    search_type = @browser.select_list(:name, "search_type")
+    search_type = @browser.select_list(name: "search_type")
     expect(search_type.exists?).to eq true
   end
 
@@ -432,7 +432,7 @@ describe "ch.oddb.org" do
     diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
     @browser.goto(OddbUrl + '/de/gcc' + diff_url)
     check_search_with_type
-    link =  @browser.link(:name, "change_log")
+    link =  @browser.link(name: "change_log")
     expect(link.exists?).to eq true
     link.click
     check_search_with_type
@@ -452,13 +452,13 @@ describe "ch.oddb.org" do
    'Augmentin'
    ].each do |medi|
     it "should have a working instant search for #{medi} and going back" do
-      @browser.link(:visible_text =>'Instant').click if @browser.link(:visible_text =>'Instant').exists?
+      @browser.link(visible_text: 'Instant').click if @browser.link(visible_text: 'Instant').exists?
       skip("backtrace does not work with Augmentin which contains ( in the link") if /Augmentin/i.match(medi)
 
       expect(@browser.text).to match /Art der Suche:\s*$\s*Plus/im
       0.upto(10).each{ |idx|
                       begin
-                        chooser = @browser.text_field(:id, 'searchbar')
+                        chooser = @browser.text_field(id: 'searchbar')
                         chooser.set(medi)
                         sleep idx*0.1
                         chooser.send_keys(:down)
@@ -481,14 +481,14 @@ describe "ch.oddb.org" do
       expect(inhalt).to match(/Preisvergleich für/i)
       expect(inhalt).to match(/#{medi}/i)
       expect(inhalt).to match(/Zusammensetzung/i)
-      back_to_list = @browser.link(:visible_text => /Liste/)
+      back_to_list = @browser.link(visible_text: /Liste/)
       old_text = @browser.text.clone
-      expect(back_to_list.visible?)
+      expect(back_to_list.present?)
       # visit price_history
       price_history =  @browser.link(:href => /price_history/)
       price_history.click
-      back_to_list = @browser.link(:visible_text => /Liste/)
-      expect(back_to_list.visible?)
+      back_to_list = @browser.link(visible_text: /Liste/)
+      expect(back_to_list.present?)
       back_to_list.click
       expect(@browser.text).to match medi
       expect(@browser.text).not_to match LeeresResult
@@ -517,23 +517,23 @@ describe "ch.oddb.org" do
       # * less than 5 minutes
       # require 'pry'; binding.pry unless diff_seconds < 310
       puts "status page #{url} is too old #{time}" unless diff_seconds < 310
-      expect(diff_seconds).to be < 310 
+      expect(diff_seconds).to be < 310
     end
   end
 
   def set_seach_preferences(prefs)
     @user_pref_url = OddbUrl + '/de/gcc/preferences'
     @browser.goto(@user_pref_url)
-    @all_search_limitations.each { |id|  @browser.checkbox(:id => id).clear }
+    @all_search_limitations.each { |id|  @browser.checkbox(id: id).clear }
     for limitation in prefs do
-      @browser.checkbox(:id => limitation.to_s).set(true)
+      @browser.checkbox(id: limitation.to_s).set(true)
     end
     @browser.button(name: 'update').click
   end
 
   def get_nr_items
     return 0 if LeeresResult.match(@browser.text)
-    list_title = @browser.span(:class => 'breadcrumb', :visible_text => /\(.*\)/).text
+    list_title = @browser.span(:class => 'breadcrumb', visible_text: /\(.*\)/).text
     nr_items = /\((\d+)\)/.match(list_title)[1].to_i
   end
   # found using the following bin/admin (There are less < 1% of these cases)
@@ -591,10 +591,10 @@ describe "ch.oddb.org" do
       set_seach_preferences([limitation])
       @browser.goto(OddbUrl)
       @browser.goto(@user_pref_url)
-      expect(@browser.checkbox(:id => limitation.to_s).set?).to be true
+      expect(@browser.checkbox(id: limitation.to_s).set?).to be true
       select_product_by_trademark(drug_name)
       nr_restriced = get_nr_items
-      categories =  @browser.elements(:id => /ikscat_\d+$/).collect{|x| x.text}
+      categories =  @browser.elements(id: /ikscat_\d+$/).collect{|x| x.text}
       categories.each do |category| expect(/^|\sA[$|\s]/.match(category)).not_to be nil; end
       expect(categories.size).to eq nr_restriced
       expect(nr_restriced).to be > 0
@@ -612,16 +612,16 @@ describe "ch.oddb.org" do
   it "should display a result for homeopathy Similasan Arnica" do
     url = OddbUrl + "/de/homeopathy"
     @browser.goto(url)
-    @browser.select_list(:name, "search_type").select("Markenname")
-    @browser.text_field(:name, "search_query").set('Similasan Arnica')    
-    @browser.button(:name, "search").click
+    @browser.select_list(name: "search_type").select("Markenname")
+    @browser.text_field(name: "search_query").set('Similasan Arnica')
+    @browser.button(name: "search").click
     text = @browser.text.clone
     expect(text[0..1000]).not_to match /traceback/i
     expect(text[0..1000]).to match /Homöopathika für Muskeln und Skelett/i
   end
 
   it "should display the ATC-Browser, way down to H05AA02" do
-    @browser.link(:name => 'atc_chooser').click
+    @browser.link(name: 'atc_chooser').click
     text = @browser.text.clone
     expect(text[0..1000]).to match /\(A\)/
     expect(text[0..1000]).to match /\(V\)/

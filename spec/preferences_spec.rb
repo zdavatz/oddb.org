@@ -10,33 +10,37 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 
-  infos = [ [nil,nil],
-    [AdminUser, AdminPassword],
-    [ViewerUser, ViewerPassword]].each do |info|
-    user = info.first
-    pw = info.last
-    it "should save the color prefence as user #{user}" do
+  infos = [
+    [nil,nil, 'Spital'],
+    [AdminUser, AdminPassword, 'Admin'],
+    [ViewerUser, ViewerPassword, 'Arzt' ]
+    ].each do |info|
+    user = info[0]
+    pw = info[1]
+    link_text = info[2]
+    it "should save the color prefence as user #{user} using link #{link_text}" do
       user ? login(user, pw) : logout
-      @browser.link(:name => 'de').click
-      @browser.link(:name=>'preferences').click
-      blue = @browser.radio(:id, "blue")
+      @browser.link(name: 'de').click
+      @browser.link(name: 'preferences').click
+      blue = @browser.radio(id:  "blue")
       expect(blue.exist?).to eql true
-      red = @browser.radio(:id, "red")
+      red = @browser.radio(id:  "red")
       expect(red.exist?).to eql true
       blue.set
-      @browser.radio(:id, "instant").set
-      @browser.radio(:id, "st_substance").set
-      expect(@browser.button(:name => 'update').exist?).to eql true
-      @browser.button(:name => 'update').click
-      expect(@browser.image(:src => /blue/).exist?).to eql true
-      @browser.link(:visible_text => 'Analysen').wait_until_present
-      @browser.link(:visible_text => 'Analysen').click
-      expect(@browser.image(:src => /blue/).exist?).to eql true
-      @browser.link(:name => 'en').click
-      expect(@browser.image(:src => /blue/).exist?).to eql true
+      @browser.radio(id:  "instant").set
+      @browser.radio(id:  "st_substance").set
+      expect(@browser.button(name: 'update').exist?).to eql true
+      @browser.button(name: 'update').click
+      expect(@browser.image(src: /blue/).exist?).to eql true
+      Watir::Anchor#wait_until(@browser.link(visible_text: link_text)(&:present?))
+#      require 'pry'; binding.pry
+      @browser.link(visible_text: link_text).click
+      expect(@browser.image(src: /blue/).exist?).to eql true
+      @browser.link(name: 'en').click
+      expect(@browser.image(src: /blue/).exist?).to eql true
     end
   end
 end

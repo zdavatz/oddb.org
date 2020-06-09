@@ -7,7 +7,7 @@ if !File.exists?(currencyDir)
   require File.join(currencyDir, 'lib', 'currency')
   require File.join(currencyDir, 'lib', 'currency', 'version')
   # Adapted from ../currency/bin/currencyd
-  DRB_TEST_URI = 'druby://127.0.0.1:20999'
+  DRB_TEST_URI = 'druby://127.0.0.1:10999'
 
   module Currency
     require 'drb'
@@ -33,6 +33,8 @@ if !File.exists?(currencyDir)
       ODDB::Currency = DRbObject.new(nil, ODDB::CURRENCY_URI)
     end
     after :all do
+      puts "After"
+      system('sudo netstat -tulpen | grep 10999')
       puts "After_all #{Currency.class} #{::Currency.class} #{ODDB::Currency}"
       Currency.stop_service
       puts "After_all done"

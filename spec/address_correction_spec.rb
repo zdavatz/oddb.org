@@ -10,12 +10,12 @@ describe "ch.oddb.org" do
 
   def enter_search_to_field_by_name(search_text, field_name)
     idx = -2
-    chooser = @browser.text_field(:name,field_name)
-    0.upto(2).each{ 
+    chooser = @browser.text_field(name: field_name)
+    0.upto(2).each{
       |idx|
       break if chooser and chooser.present?
       sleep 1
-      chooser = @browser.text_field(:name,field_name)
+      chooser = @browser.text_field(name: field_name)
     }
     unless chooser and chooser.present?
       msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
@@ -46,7 +46,7 @@ describe "ch.oddb.org" do
     # puts "chooser value #{chooser.value} text  #{chooser.text}"
     createScreenshot(@browser, "_#{search_text}_#{__LINE__}")
   end
-  
+
   before :all do
     waitForOddbToBeReady(@browser, OddbUrl)
     logout
@@ -83,16 +83,16 @@ describe "ch.oddb.org" do
     it "should be possible to correct an address for a #{correction.name}" do
       login(ViewerUser,  ViewerPassword)
       @browser.goto correction.url_display
-      sleep(1) unless @browser.button(:name, "correct").exist?
-      unless @browser.button(:name, "correct").exist?
+      sleep(1) unless @browser.button(name:  "correct").exist?
+      unless @browser.button(name:  "correct").exist?
         skip "Login failed. Please check your setup"
       end
-      @browser.button(:name, "correct").click
+      @browser.button(name:  "correct").click
       expect(@browser.url).to match /\/suggest_address\/.*\/address\//
-      @browser.text_field(:name, "email").set("ngiger@ywesee.com")
-      @browser.textarea(:name, "message").set("Testbemerkung")
-      @browser.textarea(:name, "additional_lines").set("Neue Addresszeile")
-      @browser.button(:value,"Vorschlag senden").click
+      @browser.text_field(name:  "email").set("ngiger@ywesee.com")
+      @browser.textarea(name:  "message").set("Testbemerkung")
+      @browser.textarea(name:  "additional_lines").set("Neue Addresszeile")
+      @browser.button(value: "Vorschlag senden").click
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
       ean13 = /\d{13}/.match(@browser.url)
@@ -100,8 +100,8 @@ describe "ch.oddb.org" do
       expect(File.exist?(Oddb_log_file)).to eql true
       cmd = "tail -1 #{Oddb_log_file}"
       log_line =  `#{cmd}`.split
-      src =  log_line.find{|x| /https:[^\s]+/.match(x) }
-      url_from_received_mail = /https:[^\s"]+/.match(src)[0]
+      src =  log_line.find{|x| /http(|s):[^\s]+/.match(x) }
+      url_from_received_mail = /http(|s):[^\s"]+/.match(src)[0]
       puts "oddb_log_file #{Oddb_log_file} url_from_received_mail #{url_from_received_mail}"
       expect(url_from_received_mail).not_to eq ''
 
@@ -121,7 +121,7 @@ describe "ch.oddb.org" do
       sleep 1
       text = @browser.text.clone
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
-      expect(@browser.button(:name => 'accept').exist?).to eq(true)
+      expect(@browser.button(name: 'accept').exist?).to eq(true)
       expect(@browser.text).to match /Momentan Aktive Adresse/
       expect(@browser.text).to match /E-Mail für Rückfragen/
       expect(@browser.url).to eq(url_from_received_mail)

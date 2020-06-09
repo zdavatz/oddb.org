@@ -7,7 +7,7 @@ require 'spec_helper'
 describe "ch.oddb.org" do
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 
   before :all do
@@ -33,15 +33,15 @@ describe "ch.oddb.org" do
       it "we should find the corresponding list of #{kind}" do
         @browser.goto url
         expect(@browser.url).to eq(url)
-        expect(@browser.link(:name, link_name).exist?).to eq(true)
+        expect(@browser.link(name: link_name).exist?).to eq(true)
       end
 
       it "we should find ranges in #{url}" do
         @browser.goto url
         expect(@browser.url).to eq(url)
-        expect(@browser.link(:name => link_name).exist?).to eq(true)
-        @browser.link(:name, link_name).click
-        expect(@browser.link(:name => 'range').exist?).to eq(true)
+        expect(@browser.link(name: link_name).exist?).to eq(true)
+        @browser.link(name: link_name).click
+        expect(@browser.link(name: 'range').exist?).to eq(true)
       end unless kind == 'companies' # see below for special tests for companies
     end
   }
@@ -54,8 +54,8 @@ describe "ch.oddb.org" do
     nr_founds
   end
   def check_nr_companies(must_have_all)
-    expect(@browser.link(:name, CompanyListName).exist?).to eq(true)
-    @browser.link(:name, CompanyListName).click
+    expect(@browser.link(name: CompanyListName).exist?).to eq(true)
+    @browser.link(name: CompanyListName).click
     expect(@browser.url.index(CompanyListName)).to be > 0
     nr_founds = count_nr_companies_displayed
     if must_have_all
@@ -86,8 +86,8 @@ describe "ch.oddb.org" do
 
     it "in home_companies we should have the link active_companies if logged in as admin" do
       @browser.goto OddbUrl + '/de/gcc/home_companies'
-      @browser.link(:name, CompanyListName).click
-      link = @browser.link(:name, 'listed_companies')
+      @browser.link(name: CompanyListName).click
+      link = @browser.link(name: 'listed_companies')
       expect(link.exist?).to eq(true)
       link.click
       expect(count_nr_companies_displayed).to be <= CompanyLimitListed

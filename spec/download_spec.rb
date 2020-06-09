@@ -4,7 +4,6 @@
 require 'spec_helper'
 require 'pp'
 require 'tmpdir'
-require "selenium-webdriver"
 require 'paypal_helper'
 
 describe "ch.oddb.org" do
@@ -25,7 +24,7 @@ describe "ch.oddb.org" do
   def paypal_login
     paypal_user = PaypalUser.new
     expect(paypal_user.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
     expect(paypal_user.paypal_buy(@browser)).to eql true
   end
 

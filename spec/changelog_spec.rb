@@ -35,14 +35,14 @@ describe "ch.oddb.org change_log" do
       link = @browser.links.find{|x| /patinfo.*seq\/02/.match(x.href)}
       link.click
       check_home_links
-      link = @browser.link(:visible_text => /Änderungen|Changements/)
-      expect(link.visible?).to be true
+      link = @browser.link(visible_text: /Änderungen|Changements/)
+      expect(link.present?).to be true
       link.click
       check_home_links
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
-      link = @browser.link(:visible_text => /Information/i)
-      expect(link.visible?).to be true
+      link = @browser.link(visible_text: /Information/i)
+      expect(link.present?).to be true
       link.click
       check_home_links
     end
@@ -50,33 +50,33 @@ describe "ch.oddb.org change_log" do
     it "should have a working link to Änderungen " do
       @browser.goto(OddbUrl + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
       check_home_links
-      link = @browser.link(:visible_text => /Änderungen|Changements/)
-      expect(link.visible?).to be true
+      link = @browser.link(visible_text: /Änderungen|Changements/)
+      expect(link.present?).to be true
       link.click
       check_home_links
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
-      link = @browser.link(:visible_text => /Information/i)
-      expect(link.visible?).to be true
+      link = @browser.link(visible_text: /Information/i)
+      expect(link.present?).to be true
       link.click
       check_home_links
     end
-  
+
   { 'Fachinformation'      => "/de/gcc/show/fachinfo/40501/diff",
     'Patienteninformation' => "/fr/gcc/show/patinfo/58081/01/002/diff"}.each do |type, diff_url|
-    
+
     it "should have a working link to  #{type}information from the #{type} diff" do
       @browser.goto(OddbUrl + diff_url)
       check_home_links
-      @browser.link(:visible_text => Date_Regexp).wait_until_present(timeout: 3)
-      link = @browser.link(:visible_text => Date_Regexp)
-      expect(link.visible?).to be true
+      @browser.link(visible_text: Date_Regexp).wait_until(&:present?)
+      link = @browser.link(visible_text: Date_Regexp)
+      expect(link.present?).to be true
       saved_url = @browser.url.to_s.clone
       saved_text = @browser.text
       link.click
       check_home_links
-      link = @browser.link(:visible_text => /Information/i)
-      expect(link.visible?).to be true
+      link = @browser.link(visible_text: /Information/i)
+      expect(link.present?).to be true
       link.click
       saved_text2 = @browser.text
       if  /Pat/i.match(type)
@@ -90,6 +90,6 @@ describe "ch.oddb.org change_log" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

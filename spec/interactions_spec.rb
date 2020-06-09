@@ -48,20 +48,20 @@ OrderOfInteractions = [
 BlutungsRisiko = 'Erhöhtes.*Blutungsrisiko'
 
 describe "ch.oddb.org" do
- 
+
   def interactionsUrl
     "#{OddbUrl}/de/#{Flavor}/home_interactions"
   end
 
   def add_one_drug_to_interactions(name)
     expect(@browser.url).to match(interactionsUrl)
-    elem = @browser.element(:id, 'interaction_chooser_searchbar')
+    elem = @browser.element(id: 'interaction_chooser_searchbar')
     unless elem and elem.present?
       createScreenshot(@browser, "_no_searchbar_#{name}_#{__LINE__}")
       sleep 10
       exit 3
     end
-    chooser = @browser.text_field(:id, 'interaction_chooser_searchbar')
+    chooser = @browser.text_field(id: 'interaction_chooser_searchbar')
     value = nil
     0.upto(10).each{ |idx|
                      begin
@@ -95,9 +95,9 @@ describe "ch.oddb.org" do
     inhalt = @browser.text
     MephaInteractions.each do |interaction|
       # binding.pry unless interaction.match(inhalt)
-      expect(inhalt).to match (interaction) 
+      expect(inhalt).to match (interaction)
     end
-    @browser.link(:name => 'delete').click
+    @browser.link(name:  'delete').click
   end
 
   before :all do
@@ -120,8 +120,8 @@ describe "ch.oddb.org" do
   it "should show both interaction direction for marcoumar and ponstan" do
     found_using = %(
 grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
-"M01AG01","Mefenaminsäure","B01AA04","Phenprocoumon","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"                           
-"B01AA04","Phenprocoumon","M01AG01","Mefenaminsäure","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"                           
+"M01AG01","Mefenaminsäure","B01AA04","Phenprocoumon","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"
+"B01AA04","Phenprocoumon","M01AG01","Mefenaminsäure","Erhöhtes GIT-Blutungsrisiko","Antiphlogistika hemmen die Thrombozytenaggregation und dadurch kommt es zu einer additiven Wirkung auf die Blutgerinnung.","Bei der Kombination von Antikoagulantien mit Antiphlogistika ist das Blutungsrisiko erhöht. Gastrointestinale Blutungen werden durch die schleimhautschädigende Wirkung der NSAIDs zusätzlich begünstigt.","Die Kombination von Antiphlogistika mit Antikoagulantien vermeiden. Ist die kombinierte Anwendung unumgänglich, den Patienten insbesondere auf Symptome einer gastrointestinalen Blutung überwachen. Das veränderte Blutungsrisiko wird kaum in einem veränderten INR abgebildet , sicherheitshalber sollte der INR trotzdem engmaschig monitorisiert werden. Wenn möglich NSAIDs nur lokal anwenden oder Wechsel der Analgesie auf Paracetamol oder Opioide. ","D"
 )
     medis = [ 'Ponstan', 'Marcoumar']
     url = interactionsUrl
@@ -172,7 +172,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
     inhalt = @browser.text
     expect(inhalt).to match(/#{TwoMedis.first}/i)
     expect(inhalt).to match(/#{TwoMedis.last}/i)
-    @browser.link(:visible_text => /Alle löschen/i).click
+    @browser.link(visible_text: /Alle löschen/i).click
     sleep(0.5)
     url = @browser.url
     inhalt = @browser.text
@@ -239,20 +239,20 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
           actPos = inhalt.index(m[0])
           expect(actPos).to be > lastPos
           lastPos = actPos
-          
+
         }
-    @browser.link(:name => 'delete').click
+    @browser.link(name:  'delete').click
   end
-  
+
   it "should show interactions having given iksnr,ean13,atc_code,iksnr" do
-    url = interactionsUrl + '/' 
+    url = interactionsUrl + '/'
     url += MephaExamples[0].iksnr + ','
     url += MephaExamples[1].ean13 + ','
     url += MephaExamples[2].atc_code + ','
     url += MephaExamples[3].iksnr
     check_url_with_epha_example_interaction(url)
   end
-  
+
   it "should show interactions having given atc_codes" do
     atc_codes = MephaExamples.collect{ |x| x.atc_code}
     check_url_with_epha_example_interaction("#{interactionsUrl}/#{atc_codes.join(',')}")
@@ -270,7 +270,7 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
 
   it "should show interactions for epha example medicaments added manually" do
     @browser.goto OddbUrl
-    @browser.link(:visible_text=>'Interaktionen').click
+    @browser.link(visible_text: 'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
     MephaExamples.each{ |medi| add_one_drug_to_interactions(medi.name) }
     inhalt = @browser.text
@@ -280,11 +280,11 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "after delete all drugs a new search must be possible" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
-    @browser.link(:visible_text=>'Interaktionen').click
+    @browser.link(visible_text: 'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
     add_one_drug_to_interactions(test_medi)
     expect(@browser.text).to match (test_medi)
-    @browser.link(:name => 'delete').click
+    @browser.link(name:  'delete').click
     expect(@browser.text).not_to match (test_medi)
     add_one_drug_to_interactions(test_medi)
     expect(@browser.text).to match (test_medi)
@@ -293,9 +293,9 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   it "after adding a single medicament there should be no ',' in the URL" do
     test_medi = 'Losartan'
     @browser.goto OddbUrl
-    @browser.link(:visible_text=>'Interaktionen').click
+    @browser.link(visible_text: 'Interaktionen').click
     expect(@browser.url).to match(interactionsUrl)
-    @browser.link(:name => 'delete').click if @browser.link(:name => 'delete').exists?
+    @browser.link(name:  'delete').click if @browser.link(name:  'delete').exists?
     expect(@browser.text).not_to match (test_medi)
     add_one_drug_to_interactions(test_medi)
     expect(@browser.text).to match (test_medi)
@@ -303,6 +303,6 @@ grep M01AG01 data/csv/interactions_de_utf8-latest.csv | grep B01AA04
   end unless ['just-medical'].index(Flavor)
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

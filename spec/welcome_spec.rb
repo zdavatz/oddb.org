@@ -4,7 +4,6 @@
 require 'spec_helper'
 require 'pp'
 require 'tmpdir'
-require "selenium-webdriver"
 
 describe "ch.oddb.org" do
 
@@ -28,11 +27,11 @@ describe "ch.oddb.org" do
   [ 'pharmacies', 'doctors', 'interactions', 'migel', 'user', 'hospitals', 'companies'].each do
     |zone|
     it "should be possible to see the sponsored log-in in zone #{zone}" do
-      expect(@browser.link(:name, zone).exists?).to eq(true)
+      expect(@browser.link(name: zone).exists?).to eq(true)
       expect(@browser.text).to match (ViewerDescription)
-      @browser.link(:name, zone).click
-      sleep(0.1) unless @browser.link(:name, "logout").exists?
-      expect(@browser.link(:name, "logout").exists?).to eq(true)
+      @browser.link(name: zone).click
+      sleep(0.1) unless @browser.link(name: "logout").exists?
+      expect(@browser.link(name: "logout").exists?).to eq(true)
       expect(@browser.text).to match (ViewerDescription) unless zone.eql?('doctors')
     end
   end
@@ -41,6 +40,6 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end

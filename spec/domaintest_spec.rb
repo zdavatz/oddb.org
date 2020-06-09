@@ -78,7 +78,7 @@ DOMAINS_TO_BE_ADDED = [
     url = "https://#{domain}"
     it "should workd with #{url}" do
       @browser.goto(url)
-      expect(@browser.text_field(:name, "search_query").exist?).to eql true
+      expect(@browser.text_field(name: "search_query").exist?).to eql true
     end
   end
   after :all do

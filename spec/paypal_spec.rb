@@ -36,22 +36,22 @@ describe "ch.oddb.org" do
     test_medi = PaypalUser::Six_Test_Drug_Names.first
     if customer
       if res = login(customer.email, customer.password)
-        expect(@browser.link(:name => 'login_form').exist?).to eql false
+        expect(@browser.link(name: 'login_form').exist?).to eql false
         puts "Login for customer successful"
       else
         puts "Login for customer failed first_time"
         logout
       end
     end
-    @browser.text_field(:name, "search_query").set(test_medi)
-    @browser.button(:name, "search").click; small_delay
-    @browser.button(:value,"Resultat als CSV Downloaden").click
+    @browser.text_field(name:  "search_query").set(test_medi)
+    @browser.button(name:  "search").click; small_delay
+    @browser.button(value: "Resultat als CSV Downloaden").click
   end
 
   def search_for_medi(name)
     waitForOddbToBeReady(@browser, OddbUrl)
-    @browser.text_field(:name, "search_query").set(name)
-    @browser.button(:name, "search").click; small_delay
+    @browser.text_field(name:  "search_query").set(name)
+    @browser.button(name:  "search").click; small_delay
   end
 
   def select_poweruser(duration = PaypalUser::OneDay)
@@ -72,11 +72,11 @@ describe "ch.oddb.org" do
     search_for_medi(PaypalUser::Six_Test_Drug_Names.first) # I want a medi with few packages
     sleep(1) # delay a little
     if duration == PaypalUser::OneYear
-      @browser.radio(:name => 'days', :value => PaypalUser::OneYear.to_s).set
+      @browser.radio(name: 'days', value: PaypalUser::OneYear.to_s).set
     elsif duration ==  PaypalUser::OneMonth
-      @browser.radio(:name => 'days', :value => PaypalUser::OneMonth.to_s).set
+      @browser.radio(name: 'days', value: PaypalUser::OneMonth.to_s).set
     else
-      @browser.radio(:name => 'days', :value => PaypalUser::OneDay.to_s).set
+      @browser.radio(name: 'days', value: PaypalUser::OneDay.to_s).set
     end
     sleep 5
   end
@@ -84,26 +84,26 @@ describe "ch.oddb.org" do
   it "should be possible to checkout oddb.csv via paypal" do
     waitForOddbToBeReady(@browser, OddbUrl)
 		logout
-		@browser.link(:name, "user").click; small_delay
+		@browser.link(name:  "user").click; small_delay
     sleep(1) # is needed, don't know how to wait for link
-		@browser.link(:name, "download_export").click; small_delay; small_delay
-    @browser.select_list(:name, "compression").select("TAR/GZ")
-		@browser.link(:name, "directlink_oddb_csv").click; small_delay # 500
+		@browser.link(name:  "download_export").click; small_delay; small_delay
+    @browser.select_list(name:  "compression").select("TAR/GZ")
+		@browser.link(name:  "directlink_oddb_csv").click; small_delay # 500
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
-    @browser.select_list(:name, "business_area").select("Medi-Information")
-		@browser.text_field(:name, "address").set 'Rue César' # Use UTF-8 to check encoding
-		@browser.text_field(:name, "plz").set '8077'
-		@browser.text_field(:name, "city").set 'Zürich'
-		@browser.text_field(:name, "phone").set '055 12345678'
+    @browser.select_list(name:  "business_area").select("Medi-Information")
+		@browser.text_field(name:  "address").set 'Rue César' # Use UTF-8 to check encoding
+		@browser.text_field(name:  "plz").set '8077'
+		@browser.text_field(name:  "city").set 'Zürich'
+		@browser.text_field(name:  "phone").set '055 12345678'
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
-    @browser.button(:name => /checkout/).click; small_delay
+    @browser.button(name: /checkout/).click; small_delay
     skip("Paypal login page is no longer usable with Watir")
     expect(@customer_1.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_oddb_csv')
-    link = @browser.link(:name => 'download')
+    link = @browser.link(name: 'download')
     expect(link.exists?).to be true
     link.click; small_delay
     expect(@browser.url).not_to match  /errors/
@@ -112,33 +112,33 @@ describe "ch.oddb.org" do
 
   it 'should show the poweruser dialog with the top left logo' do
     logout
-    expect(@browser.link(:name => 'login_form').exist?).to eql true
+    expect(@browser.link(name: 'login_form').exist?).to eql true
     PaypalUser::Six_Test_Drug_Names.each do |name|
       select_product_by_trademark(name)
       if /Abfragebeschränkung/i.match(@browser.text)
         break
       end
     end
-    @browser.radio(:name => 'days', :value => PaypalUser::OneDay.to_s).set
-    @browser.button(:name, "proceed_poweruser").click; small_delay
+    @browser.radio(name: 'days', value: PaypalUser::OneDay.to_s).set
+    @browser.button(name:  "proceed_poweruser").click; small_delay
     # expect logo to be at the top left
     expect(@browser.images.first.wd.location.x).to be < 20
     expect(@browser.images.first.wd.location.y).to be < 20
-    expect(@browser.element(:id => 'aswift_0_expand').visible?).to be true
+    expect(@browser.element(id: 'aswift_0_expand').present?).to be true
     expect(@browser.images.first.alt).to eq 'ch.oddb.org'
   end
 
   it "should be checkout via paypal as poweruser for one day" do
     select_poweruser(PaypalUser::OneDay)
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
-    @browser.button(:name, "proceed_poweruser").click; small_delay
+    @browser.button(name:  "proceed_poweruser").click; small_delay
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => 'checkout').click; small_delay
+    @browser.button(name: 'checkout').click; small_delay
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     skip("Paypal login page is no longer usable with Watir")
     expect(@customer_1.paypal_buy(@browser)).to eql true
-    forward_to_home = @browser.link(:name => /forward_to_home|back_to_home/)
+    forward_to_home = @browser.link(name: /forward_to_home|back_to_home/)
     puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"
     expect(forward_to_home.exists?).to be true
     createScreenshot(@browser, 'paypal_poweruser')
@@ -149,7 +149,7 @@ describe "ch.oddb.org" do
     # ensure that login a new power user works and that he can visit as many drugs as he wants
     logout
     login(@customer_1.email, @customer_1.password)
-    expect(@browser.link(:name => 'login_form').exist?).to eql false
+    expect(@browser.link(name: 'login_form').exist?).to eql false
     PaypalUser::Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
@@ -162,7 +162,7 @@ describe "ch.oddb.org" do
     puts "email #{@customer_1.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
     choose_medi_and_csv_display(nil)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => /checkout/).click; small_delay
+    @browser.button(name: /checkout/).click; small_delay
     expect(@customer_1.paypal_buy(@browser)).to eql true
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     expect(@browser.url).to match /sandbox.paypal.com/
@@ -170,7 +170,7 @@ describe "ch.oddb.org" do
     expect(@browser.url).not_to match  /errors/
     expect(@browser.text).to match /Vielen Dank! Sie können jetzt mit dem untigen Link die Daten downloaden./
     createScreenshot(@browser, 'paypal_csv_okay')
-    link = @browser.link(:name => 'download')
+    link = @browser.link(name: 'download')
     expect(link.exists?).to be true
     link.click; small_delay
     expect(@browser.url).not_to match /errors/
@@ -187,7 +187,7 @@ describe "ch.oddb.org" do
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     choose_medi_and_csv_display(@customer_2)
     expect(@customer_2.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
     expect(@customer_2.paypal_buy(@browser)).to eql true
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
@@ -202,7 +202,7 @@ describe "ch.oddb.org" do
     skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
     expect(@customer_1.paypal_buy(@browser, PaypalUser::CancelCheckoutEarly)).to eql true
     puts "URL after #{@browser.url} OddbUrl"
     createScreenshot(@browser, 'paypal_csv_payment_cancelled')
@@ -215,7 +215,7 @@ describe "ch.oddb.org" do
     skip("Paypal login page is no longer usable with Watir")
     choose_medi_and_csv_display(@customer_1)
     expect(@customer_1.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
     expect(@customer_1.paypal_buy(@browser, PaypalUser::CancelCheckoutLater)).to eql true
     puts "URL after #{@browser.url} OddbUrl"
     expect(@browser.url).to match /sandbox.paypal.com/
@@ -230,13 +230,13 @@ describe "ch.oddb.org" do
     puts "Created @ywesee_user #{new_customer.ywesee_user} with ywesee_password #{new_customer.ywesee_password}"
     select_poweruser(PaypalUser::OneDay)
     puts "email #{new_customer.ywesee_user}: URL before preceeding to paypal was #{@browser.url}"
-    @browser.button(:name, "proceed_poweruser").click; small_delay
+    @browser.button(name:  "proceed_poweruser").click; small_delay
     expect(new_customer.init_paypal_checkout(@browser)).to eql true
-    @browser.button(:name => 'checkout').click; small_delay
+    @browser.button(name: 'checkout').click; small_delay
     expect(@browser.url).to match /sandbox.paypal.com/
     expect(@browser.text).not_to match PaypalUser::PaymentUnconfirmed
     expect(new_customer.paypal_buy(@browser)).to eql true
-    forward_to_home = @browser.link(:name => /forward_to_home|back_to_home/)
+    forward_to_home = @browser.link(name: /forward_to_home|back_to_home/)
     puts "PayPal: Payment okay? #{forward_to_home.exists?}  #{forward_to_home.exists? ? forward_to_home.href : 'no href'}"
     expect(forward_to_home.exists?).to be true
     createScreenshot(@browser, 'paypal_poweruser')
@@ -247,7 +247,7 @@ describe "ch.oddb.org" do
     # ensure that login a new power user works and that he can visit as many drugs as he wants
     logout
     login(new_customer.email, new_customer.password)
-    expect(@browser.link(:name => 'login_form').exist?).to eql false
+    expect(@browser.link(name: 'login_form').exist?).to eql false
     PaypalUser::Six_Test_Drug_Names.each {
       |name|
         search_for_medi(name)
@@ -256,6 +256,6 @@ describe "ch.oddb.org" do
   end
 
   after :all do
-    @browser.close
+    @browser.close if @browser
   end
 end unless ['just-medical'].index(Flavor)

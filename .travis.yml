@@ -3,14 +3,14 @@ cache: bundler
 sudo: false
 bundler_args: --without debugger
 rvm:
-  - 2.4.4
+  - 2.7.1
   - 2.5.0
   - ruby-head
-  
+
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: 2.4.4
+    - rvm: 2.5.0
 
 script:
   - bundle exec rake quanty
