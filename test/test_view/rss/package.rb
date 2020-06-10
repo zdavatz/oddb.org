@@ -45,8 +45,6 @@ class TestPackage <Minitest::Test
                           :lookandfeel => @lnf,
                           :language    => 'language',
                           :error       => 'error',
-                          :get_currency_rate => 1.0,
-                          :currency    => 'currency',
                           :persistent_user_input => 'persistent_user_input'
                          )
     price_public = flexmock('price_public',

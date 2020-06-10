@@ -16,7 +16,7 @@ module ODDB
 class TestCenteredSearchComposite <Minitest::Test
   def setup
     @app       = flexmock('app')
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :enabled?   => nil,
                           :attributes => {},
@@ -27,16 +27,14 @@ class TestCenteredSearchComposite <Minitest::Test
                           :zone_navigation => ['zone_navigation'],
                           :direct_event    => 'direct_event',
                           :languages  => ['languages'],
-                          :currencies => ['currencies'],
                           :language   => 'language'
                          ).by_default
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :app  => @app,
                           :zone => 'zone',
                           :lookandfeel  => @lnf,
                           :migel_count  => 0,
                           :request_path => 'request_path',
-                          :currency     => 'currency',
                           :event        => 'event',
                          )
     @model     = flexmock('model')

@@ -141,11 +141,11 @@ module ODDB
       end
     end
 
-  class TestMedicalProductPlugin <MiniTest::Unit::TestCase
+  class TestMedicalProductPlugin <Minitest::Test
     @@datadir = File.expand_path '../../ext/fiparse/test/run/docx/', File.dirname(__FILE__)
     @@origdir = File.expand_path '../../ext/fiparse/test/data/docx/', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var', File.dirname(__FILE__)
-    
+
     def setup
       @hostname = Socket.gethostbyname(Socket.gethostname).first
       FileUtils.rm_rf(@@datadir)
@@ -172,7 +172,7 @@ module ODDB
       seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
       @app = StubApp.new
     end # Fuer Problem mit fachinfo italic
-    
+
     def teardown
       FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
@@ -230,4 +230,4 @@ module ODDB
       assert_raises(SBSM::InvalidDataError) {@plugin.update()}
     end
   end
-end 
+end

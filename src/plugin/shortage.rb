@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+  #!/usr/bin/env ruby
 require 'plugin/plugin'
 require 'model/package'
 require 'util/oddbconfig'
@@ -10,6 +10,7 @@ require 'drb'
 require 'util/latest'
 require 'date'
 require 'rubyXL'
+require 'rubyXL/convenience_methods/workbook'
 require 'csv'
 
 module ODDB
@@ -60,7 +61,7 @@ module ODDB
         FileUtils.rm_f(@yesterday_csv_file_path) if File.exist?(@yesterday_csv_file_path) && IO.read(@yesterday_csv_file_path).eql?(IO.read(@csv_file_path))
         return
       end
-        
+
       session = SessionStub.new(@app)
       session.language = 'de'
       session.lookandfeel = LookandfeelBase.new(session)
@@ -70,7 +71,7 @@ module ODDB
       added_info = [ 'gtin', 'atc', 'package_name' ]
       sorted = (@found_nomarketings.values + @found_shortages.values).sort do |x,y| x.gtin <=> y.gtin end
       FileUtils.makedirs(File.dirname(@csv_file_path)) unless File.exist?(File.dirname(@csv_file_path))
-      CSV.open(@csv_file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
+      CSV.open(@csv_file_path, "w", col_sep: ';', encoding: 'UTF-8') do |csv|
         values = []; (added_info + keys).each do |key|
           next if :gtin.eql?(key)
           values << session.lookandfeel.lookup(key)
@@ -171,7 +172,7 @@ module ODDB
       puts "content is #{content.size} long and #{content.encoding}. Using Nokogiri::VERSION #{Nokogiri::VERSION} RUBY_VERSION #{RUBY_VERSION}"
       page = Nokogiri::HTML(content)
       gtin_regex = /^\d{13}$/
-      @shortages = page.css('td').find_all{|x| gtin_regex.match(x.text) }      
+      @shortages = page.css('td').find_all{|x| gtin_regex.match(x.text) }
       if @shortages.size == 0
         puts "Page has #{page.css('td').size} TD elements found via css"
         puts "Dumping TD is"

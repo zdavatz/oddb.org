@@ -29,21 +29,21 @@ module ODDB
 
 class TestProductInnerComposite <Minitest::Test
   def setup
-    @lookandfeel    = flexmock('lookandfeel', 
+    @lookandfeel    = flexmock('lookandfeel',
                                :_event_url  => nil,
                                :attributes  => {},
                                :disabled?   => nil,
                                :enabled?    => nil,
                                :lookup      => 'lookup'
                               ).by_default
-    @session        = flexmock('session', 
+    @session        = flexmock('session',
                                :lookandfeel => @lookandfeel,
                                :error       => nil,
                                :event_url   => nil,
                                :language    => 'language',
                                :request_path => 'request_path',
                               )
-    group           = flexmock('group', 
+    group           = flexmock('group',
                                :language => 'language',
                                :pointer  => 'pointer',
                                :migel_code => 'migel_code'
@@ -70,13 +70,13 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_comparable_size
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part = flexmock('part', 
+    part = flexmock('part',
                     :multi   => 'multi',
                     :count   => 'count',
                     :measure => 'measure',
                     :commercial_form => commercial_form
                    )
-    flexmock(@model, 
+    flexmock(@model,
              :commercial_forms => ['commercial_form'],
              :parts            => [part]
             )
@@ -84,7 +84,7 @@ class TestProductInnerComposite <Minitest::Test
     assert_equal(expected, @composite.comparable_size(@model, @session))
   end
   def test_comparable_size__no_commercial_form
-    flexmock(@model, 
+    flexmock(@model,
              :commercial_forms => [],
              :size             => 'size'
             )
@@ -92,7 +92,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_part_size
     commercial_form = flexmock('commercial_form', :language => 'language')
-    part = flexmock('part', 
+    part = flexmock('part',
                     :multi   => 2,
                     :count   => 2,
                     :measure => 'measure',
@@ -102,7 +102,7 @@ class TestProductInnerComposite <Minitest::Test
     assert_equal(expected, @composite.part_size(part, @session))
   end
   def test_part_size__no_parts
-    part = flexmock('part', 
+    part = flexmock('part',
                     :multi   => 2,
                     :count   => 2,
                     :measure => "measure",
@@ -114,7 +114,7 @@ class TestProductInnerComposite <Minitest::Test
   def test_atc_ddd_link
     app = flexmock('app', :atc_class => nil)
     flexmock(@session, :app => app)
-    atc = flexmock('atc', 
+    atc = flexmock('atc',
                    :has_ddd?    => nil,
                    :parent_code => 'code'
                   )
@@ -122,7 +122,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_atc_description
     flexmock(@lookandfeel, :language => 'language')
-    atc = flexmock('atc', 
+    atc = flexmock('atc',
                    :description => 'description',
                    :code        => 'code'
                   )
@@ -131,7 +131,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_atc_description__else
     flexmock(@lookandfeel, :language => 'language')
-    atc = flexmock('atc', 
+    atc = flexmock('atc',
                    :description => nil,
                    :code        => 'code'
                   )
@@ -144,7 +144,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_comarketing__parent_protected
     patent = flexmock('patent', :certificate_number => 'certificate_number')
-    flexmock(@model, 
+    flexmock(@model,
              :parallel_import   => nil,
              :patent_protected? => true,
              :patent            => patent
@@ -153,7 +153,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_comarketing__comarketing_with
     comarketing = flexmock('comarketing', :name_base => 'name_base')
-    flexmock(@model, 
+    flexmock(@model,
              :parallel_import   => nil,
              :patent_protected? => false,
              :comarketing_with  => comarketing
@@ -166,11 +166,11 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_compositions
     galenic_form = flexmock('galenic_form', :language => 'language')
-    composition  = flexmock('composition', 
+    composition  = flexmock('composition',
                             :galenic_form  => galenic_form,
                             :active_agents => ['active_agent', 'active_agent']
                            )
-    flexmock(@model, 
+    flexmock(@model,
              :compositions  => [composition],
              :active_agents => ['active_agent']
             )
@@ -180,7 +180,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_compositions__active_agents_1
     galenic_form = flexmock('galenic_form', :language => 'language')
-    composition  = flexmock('composition', 
+    composition  = flexmock('composition',
                             :galenic_form  => galenic_form,
                             :active_agents => ['active_agent']
                            )
@@ -190,12 +190,11 @@ class TestProductInnerComposite <Minitest::Test
     assert_equal('language: active_agent', link.value)
   end
   def test_ddd_price
-    flexmock(@session, 
-             :currency          => 'currency',
-             :get_currency_rate => 1.0,
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input'
             )
     price = '1.0'
+
     flexmock(@model, :ddd_price => price)
     result = @composite.ddd_price(@model, @session)
     assert_kind_of(HtmlGrid::Span, result)
@@ -203,9 +202,7 @@ class TestProductInnerComposite <Minitest::Test
   end
   def test_ddd_price__chart
     flexmock(@lookandfeel, :enabled? => true)
-    flexmock(@session, 
-             :currency          => 'currency',
-             :get_currency_rate => 1.0,
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input'
             )
     price = '1.1'
@@ -233,7 +230,7 @@ class TestAccessoryOfList <Minitest::Test
   def setup
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @app     = flexmock('app')
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :app => @app,
                         :lookandfeel => @lnf,
                         :event => 'event'
@@ -242,7 +239,7 @@ class TestAccessoryOfList <Minitest::Test
     @list = ODDB::View::Migel::AccessoryOfList.new([@model], @session)
   end
   def test_migel_code
-    flexmock(@model, 
+    flexmock(@model,
              :is_a? => true,
              :pharmacode => 'pharmacode'
             )
@@ -252,13 +249,13 @@ end
 
 class TestPointerSteps <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :disabled?  => nil,
                         :lookup     => 'lookup',
                         :_event_url => '_event_url'
                        )
     method   = flexmock('method', :arity => 0)
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
                         :pointer => 'pointer',
                         :pointer_descr => 'pointer_descr',
                         :method  => method,
@@ -267,7 +264,7 @@ class TestPointerSteps <Minitest::Test
                         :oid        => 'oid',
                        ).by_default
     state    = flexmock('state', :snapback_model => @model)
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :state       => state
                        )
@@ -332,7 +329,7 @@ end
 
 class TestProduct <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :enabled? => nil,
                         :attributes => {},
                         :resource   => 'resource',
@@ -346,12 +343,12 @@ class TestProduct <Minitest::Test
                         :base_url  => 'base_url'
                        )
     user     = flexmock('user', :valid? => nil)
-    group    = flexmock('group', 
+    group    = flexmock('group',
                         :pointer    => 'pointer',
                         :language   => 'language',
                         :migel_code => 'migel_code'
                        )
-    subgroup = flexmock('subgroup', 
+    subgroup = flexmock('subgroup',
                         :pointer   => 'pointer',
                         :language  => 'language',
                         :migel_code => 'migel_code'
@@ -360,7 +357,7 @@ class TestProduct <Minitest::Test
     limitation_text = flexmock('limitation_text', :language => 'language')
     unit     = flexmock('unit', :language => 'language')
     method   = flexmock('method', :arity => 0)
-    accessory    = flexmock('accessory', 
+    accessory    = flexmock('accessory',
                             :pointer => 'pointer',
                             :migel_code => 'migel_code',
                             :method  => method
@@ -369,7 +366,7 @@ class TestProduct <Minitest::Test
                         :ean_code => 'ean_code',
                         :status   => 'status'
                        )
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
                         :pointer => 'pointer',
                         :migel_code => 'migel_code',
                         :items   => ['item'],
@@ -391,11 +388,11 @@ class TestProduct <Minitest::Test
                         :ikscd      => 'ikscd',
                         :is_a?      => true,
                        )
-    state    = flexmock('state', 
+    state    = flexmock('state',
                         :direct_event   => 'direct_event',
                         :snapback_model => @model
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :user    => user,
                         :sponsor => user,

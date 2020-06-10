@@ -145,7 +145,6 @@ module ODDB
                  HtmlGrid::Link.new(:ddd_price_link, model, @session, self) :
                  HtmlGrid::Span.new(model, @session, self)
 				if (ddd_price = model.ddd_price) && ddd_price.to_f > 0.01
-          ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
 					node.value = ddd_price
@@ -295,7 +294,7 @@ module ODDB
           pack = if (packs = model.packages.values.select{|pac| pac.limitation_text} and !packs.empty?)
                    packs.first.ikscd
                  end
- 
+
         end
 
         if reg and seq and pack

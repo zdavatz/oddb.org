@@ -96,7 +96,7 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 		:fax_label			=>	HtmlGrid::Text,
 		:url						=>	HtmlGrid::HttpLink,
 		:url_header			=>	HtmlGrid::LabelText,
-	}	
+	}
 	CSS_MAP = {
 		[0,0,2,5]	=>	'list',
 		[0,6,2,3]	=>	'list',
@@ -148,7 +148,7 @@ class UserCompanyForm < View::Form
 		:business_area				=>	HtmlGrid::Select,
 		:generic_type					=>	HtmlGrid::Select,
 		:complementary_type		=>	HtmlGrid::Select,
-		:registration_count		=>	HtmlGrid::Value,	
+		:registration_count		=>	HtmlGrid::Value,
     :invoice_email        =>  HtmlGrid::Value,
 	}
 	TAG_METHOD = :multipart_form
@@ -224,7 +224,7 @@ class AjaxCompanyForm < UserCompanyForm
 		:price_index_package			=>	HtmlGrid::InputCurrency,
 		:price_lookandfeel				=>	HtmlGrid::InputCurrency,
 		:price_lookandfeel_member	=>	HtmlGrid::InputCurrency,
-		:registration_count				=>	HtmlGrid::Value,	
+		:registration_count				=>	HtmlGrid::Value,
 	}
 	def business_area(model, session=@session)
 		select = HtmlGrid::Select.new(:business_area, model, @session, self)
@@ -417,7 +417,7 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0,0]	=>	:company_name,
 		[0,0,1]	=>	:ean13,
-		[0,1]		=>	View::Companies::UnknownCompanyInnerComposite,	
+		[0,1]		=>	View::Companies::UnknownCompanyInnerComposite,
 		[1,1]		=>	View::CompanyLogo,
 	}
 	COLSPAN_MAP = {
@@ -474,13 +474,13 @@ class UserCompanyComposite < View::Companies::CompanyComposite
 		[1,1]	=>	'logo right',
     [0,2,2]   =>  'list',
     [0,4,2]   =>  'list',
-	}	
+	}
 end
 class AjaxCompanyComposite < CompanyComposite
 	CSS_ID = 'company-content'
 	def AjaxCompanyComposite.select_company_form(company)
 		case company.business_area.to_s
-			#when nil 
+			#when nil
 			#AjaxUnknownCompanyForm
 		when 'ba_pharma'
 			AjaxPharmaCompanyForm
@@ -488,7 +488,7 @@ class AjaxCompanyComposite < CompanyComposite
 			AjaxInsuranceCompanyForm
 		when 'ba_info'
 			AjaxInfoCompanyForm
-		else 
+		else
 			AjaxOtherCompanyForm
 		end
 	end
@@ -532,7 +532,7 @@ class RootPharmaCompanyComposite < AjaxCompanyComposite
     [0,2,2]   =>  'list',
     [0,4,2]   =>  'list',
     [0,6,2]   =>  'list',
-	}	
+	}
 end
 class RootOtherCompanyComposite < AjaxCompanyComposite
 	COMPONENTS = {
@@ -550,7 +550,7 @@ class RootOtherCompanyComposite < AjaxCompanyComposite
 		[0,0]	=>	'th',
 		[1,1]	=>	'logo right',
     [0,2,2]   =>  'list',
-	}	
+	}
 end
 class PowerLinkCompanyComposite < View::Companies::CompanyComposite
 	COMPONENTS = {
@@ -561,7 +561,7 @@ class PowerLinkCompanyComposite < View::Companies::CompanyComposite
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[1,1]	=>	'logo right',
-	}	
+	}
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
 	}
@@ -580,7 +580,7 @@ class RootCompany < View::PrivateTemplate
 		case company.business_area.to_s
 		when 'ba_pharma'
 			RootPharmaCompanyComposite
-		else 
+		else
 			RootOtherCompanyComposite
 		end
 	end

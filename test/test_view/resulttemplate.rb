@@ -44,7 +44,7 @@ module ODDB
                                     :each_with_index => 'each_with_index',
                                     :empty? => false,
                               )
-        @lnf      = flexmock('lookandfeel', 
+        @lnf      = flexmock('lookandfeel',
                              :lookup     => 'lookup',
                              :enabled?   => nil,
                              :attributes => {},
@@ -71,30 +71,28 @@ module ODDB
                         )
         @model    = flexmock('model')
         @content  = flexmock('content', :new => 'new')
-        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do 
+        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do
           @template = ODDB::View::ResultTemplate.new(@model, @session)
         end
       end
       def test_init
-        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do 
+        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do
           assert_equal({}, @template.init)
         end
       end
       def test_init__enabled
-        flexmock(@lnf, 
+        flexmock(@lnf,
                  :enabled? => true,
                  :languages  => ['language'],
-                 :currencies => ['currency'],
                  :language   => 'language',
                  :resource_localized => 'resource_localized'
                 )
         state = flexmock('state', :zone => 'zone')
-        flexmock(@session, 
+        flexmock(@session,
                  :state    => state,
-                 :currency => 'currency',
                  :request_path => 'request_path',
                 )
-        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do 
+        replace_constant('ODDB::View::ResultTemplate::CONTENT', @content) do
           assert_equal({}, @template.init)
         end
       end

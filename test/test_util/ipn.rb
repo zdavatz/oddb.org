@@ -69,8 +69,8 @@ class TestIpn <Minitest::Test
                         :text        => 'text',
                         :total_netto => 2.35
                        )
- 
-    invoice  = flexmock('invoice', 
+
+    invoice  = flexmock('invoice',
                         :yus_name     => YUS_NAME,
                         :items        => {'key' => item},
                         :total_netto  => 2.35,
@@ -107,12 +107,12 @@ class TestIpn <Minitest::Test
   end
 
   def test_send_download_notification
-    item    = flexmock('item', 
+    item    = flexmock('item',
                            :quantity    => 1,
                            :text        => 'text',
                            :total_netto => 2.35
                           )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
@@ -127,12 +127,12 @@ class TestIpn <Minitest::Test
     check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
   def test_send_download_notification__protocol
-    item    = flexmock('item', 
+    item    = flexmock('item',
                            :quantity    => 1,
                            :text        => 'text',
                            :total_netto => 2.35
                           )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :yus_name     => YUS_NAME,
                        :oid          => 'oid',
                        :items        => {'key' => item},
@@ -148,11 +148,11 @@ class TestIpn <Minitest::Test
     check_sent_one_mail(SUBJECT_DOWNLOAD)
   end
 	def test_process_invoice__poweruser
-    system  = flexmock('system', 
+    system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil
                       )
-    item    = flexmock('item', 
+    item    = flexmock('item',
                        :quantity    => 1,
                        :text        => 'text',
                        :total_netto => 2.35,
@@ -160,7 +160,7 @@ class TestIpn <Minitest::Test
                        :duration    => 1,
                        :expiry_time => nil
                       )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :payment_received! => nil,
                        :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
@@ -184,11 +184,11 @@ class TestIpn <Minitest::Test
     $oddb    = oddb_bak
   end
   def test_process_invoice__download
-    system  = flexmock('system', 
+    system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil
                       )
-    item    = flexmock('item', 
+    item    = flexmock('item',
                        :quantity    => 1,
                        :text        => 'text',
                        :total_netto => 2.35,
@@ -196,7 +196,7 @@ class TestIpn <Minitest::Test
                        :duration    => 1,
                        :expiry_time => nil
                       )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :payment_received! => nil,
                        :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
@@ -221,7 +221,7 @@ class TestIpn <Minitest::Test
     check_sent_one_mail(SUBJECT_DOWNLOAD, 2)
   end
   def test_process
-    item    = flexmock('item', 
+    item    = flexmock('item',
                        :quantity    => 1,
                        :text        => 'text',
                        :total_netto => 2.35,
@@ -229,7 +229,7 @@ class TestIpn <Minitest::Test
                        :duration    => 1,
                        :expiry_time => nil
                       )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :payment_received! => nil,
                        :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
@@ -248,12 +248,12 @@ class TestIpn <Minitest::Test
       y.should_receive(:inject)
     end
 
-    system  = flexmock('system', 
+    system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil,
                        :invoice            => invoice
                       )
-    notification = flexmock('notification', 
+    notification = flexmock('notification',
                             :complete?  => true,
                             :params     => {'invoice' => '123'}
                            )
@@ -264,7 +264,7 @@ class TestIpn <Minitest::Test
     assert_equal(invoice, result)
   end
   def test_process__complete_false
-    item    = flexmock('item', 
+    item    = flexmock('item',
                        :quantity    => 1,
                        :text        => 'text',
                        :total_netto => 2.35,
@@ -272,7 +272,7 @@ class TestIpn <Minitest::Test
                        :duration    => 1,
                        :expiry_time => nil
                       )
-    invoice = flexmock('invoice', 
+    invoice = flexmock('invoice',
                        :payment_received! => nil,
                        :yus_name          => YUS_NAME,
                        :items             => {'key' => item},
@@ -292,12 +292,12 @@ class TestIpn <Minitest::Test
       y.should_receive(:inject)
     end
 
-    system  = flexmock('system', 
+    system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil,
                        :invoice            => invoice
                       )
-    notification = flexmock('notification', 
+    notification = flexmock('notification',
                             :complete?  => false,
                             :params     => {'invoice' => '123'}
                            )
@@ -309,12 +309,12 @@ class TestIpn <Minitest::Test
 
   def test_format_invoice
     lookandfeel = flexmock('lookandfeel', :lookup => 'lookup')
-    item        = flexmock('item', 
+    item        = flexmock('item',
                            :quantity    => 1,
                            :text        => 'text',
                            :total_netto => 2.35
                           )
-    invoice     = flexmock('invoice', 
+    invoice     = flexmock('invoice',
                            :items        => {'key' => item},
                            :total_netto  => 2.35,
                            :vat          => 6.789,
@@ -322,20 +322,20 @@ class TestIpn <Minitest::Test
                           )
     expected = "lookup\n\n" +
                "====================\n" +
-               "1 x text    EUR 2.35\n" +
+               "1 x text    CHF 2.35\n" +
                "--------------------\n" +
-               "    lookup  EUR 2.35\n" +
+               "    lookup  CHF 2.35\n" +
                "--------------------\n" +
-               "    lookup  EUR 6.79\n" +
+               "    lookup  CHF 6.79\n" +
                "====================\n" +
-               "    lookup  EUR 3.46\n" +
+               "    lookup  CHF 3.46\n" +
                "====================\n"
     assert_equal(expected, ODDB::Util::Ipn.format_invoice(invoice, lookandfeel))
   end
   def test_format_line
     data  = ['data1', 'data2', 'data3']
     sizes = [1,2,3]
-    expected = "data1 data2  EUR data3"
+    expected = "data1 data2  CHF data3"
     assert_equal(expected, ODDB::Util::Ipn.format_line(sizes, data))
   end
   def test_yus
@@ -346,6 +346,6 @@ class TestIpn <Minitest::Test
   end
 end
     end # Ipn
-  end # Util	
+  end # Util
 end # ODDB
 

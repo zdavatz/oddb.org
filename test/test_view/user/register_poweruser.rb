@@ -17,13 +17,13 @@ module ODDB
 
 class TestRegisterPowerUserForm  <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :_event_url => '_event_url',
                         :base_url   => 'base_url'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :user        => 'user',
                         :logged_in?  => nil,
@@ -41,7 +41,7 @@ end
 
 class TestRenewPowerUserComposite <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :_event_url => '_event_url',
@@ -49,8 +49,8 @@ class TestRenewPowerUserComposite <Minitest::Test
                           :base_url   => 'base_url',
                           :format_price => 'format_price'
                          )
-    state      = flexmock('state', :currency => 'CHF')
-    @session   = flexmock('session', 
+    state      = flexmock('state')
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :zone        => 'zone',
                           :user        => 'user',
@@ -63,7 +63,7 @@ class TestRenewPowerUserComposite <Minitest::Test
                           :persistent_user_input => 'persistent_user_input',
                           :get_cookie_input => 'get_cookie_input',
                          )
-    item       = flexmock('item', 
+    item       = flexmock('item',
                           :quantity => 1,
                           :text     => 'text',
                           :vat      => 2,

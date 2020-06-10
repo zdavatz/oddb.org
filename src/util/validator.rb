@@ -28,7 +28,7 @@ module ODDB
       :parallel_import, :preview_with_market_date, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
       :search_limitation_A, :search_limitation_B,
-      :search_limitation_C, :search_limitation_D, :search_limitation_E, 
+      :search_limitation_C, :search_limitation_D, :search_limitation_E,
       :search_limitation_SL_only, :search_limitation_valid,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
       :force_new_ydim_debitor, :textinfo_update, :keep_generic_type
@@ -77,7 +77,6 @@ module ODDB
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 'phytotherapy', ],
 			:compression	=>	[ 'compr_zip', 'compr_gz' ],
-			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
 			:deductible_m	=>	[nil, 'deductible_g', 'deductible_o'],
       :search_type => [

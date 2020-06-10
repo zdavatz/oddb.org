@@ -36,7 +36,7 @@ module Ipn
         system.yus_grant(yus_name, 'login', 'org.oddb.PowerUser')
         system.yus_grant(yus_name, 'view', 'org.oddb', item.expiry_time)
       when :download
-        system.yus_grant(yus_name, 'download', item.text, 
+        system.yus_grant(yus_name, 'download', item.text,
                          item.expiry_time)
       end
     }
@@ -80,10 +80,10 @@ module Ipn
         lookandfeel.lookup("download_mail_instr_#{suffix}"),
       ]
       parts = [
-        lookandfeel.lookup(:download_mail_salut, salut, 
+        lookandfeel.lookup(:download_mail_salut, salut,
                            yus(recipient, :name_last)),
         lines.join("\n"),
-        urls.join("\n"), 
+        urls.join("\n"),
         lookandfeel.lookup(:download_mail_feedback),
         format_invoice(invoice, lookandfeel),
       ]
@@ -128,7 +128,7 @@ module Ipn
       dkey = "poweruser_duration_#{item.duration.to_i}"
       duration = lookandfeel.lookup(dkey)
       parts = [
-        lookandfeel.lookup(:poweruser_mail_salut, salut, 
+        lookandfeel.lookup(:poweruser_mail_salut, salut,
                            yus(recipient, :name_last)),
         lookandfeel.lookup(:poweruser_mail_body),
         lookandfeel.lookup(:poweruser_mail_instr, duration,
@@ -179,7 +179,7 @@ module Ipn
     sizes = [qsizes.max, tsizes.max, nsizes.max]
 
     width = sizes.inject(7) { |a,b| a + b }
-    
+
     dline = "=" * width
     sline = "-" * width
 
@@ -198,7 +198,7 @@ module Ipn
     lines.join("\n")
   end
   def Ipn.format_line(sizes, data)
-    sprintf("%#{sizes.at(0)}s %-#{sizes.at(1)}s  EUR %#{sizes.at(2)}s",
+    sprintf("%#{sizes.at(0)}s %-#{sizes.at(1)}s  CHF %#{sizes.at(2)}s",
       *data)
   end
   def Ipn.yus(recipient, key)

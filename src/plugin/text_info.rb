@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::TextInfoPlugin -- oddb.org -- 22.05.2013 -- yasaka@ywesee.com
-# ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
-# ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
+# ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com
 require 'date'
 require 'drb'
 require 'mechanize'
@@ -93,7 +93,7 @@ module ODDB
     def puts_sync(msg)
       $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
     end
-    IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)  
+    IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)
     def read_packages # adapted from swissmedic.rb
       latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx'
       LogFile.debug "read_packages found latest_name #{latest_name}"
@@ -407,7 +407,7 @@ module ODDB
       if reg = @app.registration(iksnr)
 
         reg.each_sequence{
-            |seq| 
+            |seq|
                 next unless seq.patinfo and seq.patinfo.pointer;
                 puts_sync "delete_patinfo #{iksnr} pointer #{seq.patinfo.pointer}"
                 @app.delete(seq.patinfo.pointer)
@@ -428,7 +428,7 @@ module ODDB
                 "Check for inconsistencies in swissmedicinfo FI and PI found #{@inconsistencies.size} problems.\n"+
                 "Summary: \n"
           headings = {}
-          @error_reasons.sort.each{ |id, count|  
+          @error_reasons.sort.each{ |id, count|
                                     item = "  * found #{sprintf('%3d', count)} #{id}\n"
                                     headings[id] = item
                                     msg += item
@@ -717,18 +717,18 @@ module ODDB
       puts e.backtrace.join("\n")
       []
     end
-    
+
     def detect_format(html)
       return :swissmedicinfo if html.index('section1') or html.index('Section7000')
       html.match(/MonTitle/i) ? :compendium : :swissmedicinfo
-    end    
+    end
     def extract_iksnrs languages
       iksnrs = []
       languages.each_value do |doc|
         return TextInfoPlugin::get_iksnrs_from_string(doc.iksnrs.to_s)
       end
     end
-    
+
     def submit_event agent, form, eventtarget, *args
       max_retries = ODDB.config.text_info_max_retry
       form['__EVENTTARGET'] = eventtarget
@@ -803,7 +803,7 @@ module ODDB
 
     def TextInfoPlugin.find_iksnr_in_string(string, iksnr)
       nr  = ''
-      string.each_char{ 
+      string.each_char{
         |char|
           nr << char if char >= '0' and char <= '9'
           nr.eql?(iksnr) ? break : nr  = '' if char.eql?(' ') or char.eql?(',')
@@ -883,10 +883,10 @@ module ODDB
             iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(node.text, iksnr))
           end
         end
-      end.new).each{ 
-        |x| 
+      end.new).each{
+        |x|
             if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
-              name = x.parent.at('./title').text 
+              name = x.parent.at('./title').text
               puts_sync "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
               return name
             end
@@ -1036,9 +1036,9 @@ module ODDB
     PI_iksnrs_mismatched_to_aips_xml  = "oddb.registration('iksnr').sequences['0x'].patinfo.descriptions['de'].iksnrs.to_s does not match entity authNrs from AipsDownload_latest.xml"
     Mismatch_reg_name_to_fi_name      = 'oddb.registration.name_base differs from oddb.registration.fachinfo.name_base'
     Mismatch_reg_name_to_pi_name      = "oddb.registration.registration.name_base differs from name_base in registration('iksnr').sequences['0x'].patinfo.name_base"
-    
+
     def log_error(iksnr, name_base, id, added_info, suppress_re_import = false)
-      @error_reasons[id] += 1      
+      @error_reasons[id] += 1
       info = [id, iksnr, name_base]
       if added_info then added_info.class == Array ? info += added_info : info << added_info end
       @inconsistencies << info
@@ -1070,14 +1070,14 @@ module ODDB
           log_error(@packages[iksnr].iksnr, @packages[iksnr].name_base, Iksnr_only_packages, @packages[iksnr]) unless @app.registration(iksnr)
       }
       @app.registrations.each{
-        |aReg| 
+        |aReg|
           reg= aReg[1];
           iksnr_2_check = reg.iksnr
           xls_package_info = @packages[iksnr_2_check]
 
           log_error(reg.iksnr, reg.name_base, Flagged_as_inactive, xls_package_info) if reg.inactive? and xls_package_info
           next if reg.inactive? # we are only interested in the active registrations
-      
+
           log_error(reg.iksnr, reg.name_base, Iksnr_only_oddb, xls_package_info, true) unless xls_package_info
 
           if xls_package_info and not xls_package_info.name_base.eql?(reg.name_base)
@@ -1085,12 +1085,12 @@ module ODDB
           end
 
           if  reg.fachinfo and reg.fachinfo.iksnrs
-            fi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(reg.fachinfo.iksnrs.to_s) 
+            fi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(reg.fachinfo.iksnrs.to_s)
             xml_iksnrs = @fis_to_iksnrs[iksnr_2_check] ? @fis_to_iksnrs[iksnr_2_check] : []
             if xml_iksnrs and fi_iksnrs != xml_iksnrs
               txt = ''
               xml_iksnrs.each{ |id| txt += @app.registration(id) ? "#{id} #{@app.registration(id).name_base}, " : id + ', ' }
-              log_error(reg.iksnr, reg.name_base, FI_iksnrs_mismatched_to_aips_xml, txt) 
+              log_error(reg.iksnr, reg.name_base, FI_iksnrs_mismatched_to_aips_xml, txt)
               # TODO: update the fachinfo.iksnrs
             end
           end
@@ -1119,7 +1119,7 @@ module ODDB
                 pi_iksnrs = TextInfoPlugin::get_iksnrs_from_string(seq.patinfo.descriptions['de'].iksnrs.to_s)
                 pi_xml_iksnrs = @pis_to_iksnrs[iksnr_2_check]
                 if pi_iksnrs and pi_xml_iksnrs and pi_iksnrs.sort.uniq != pi_xml_iksnrs
-                  log_error(reg.iksnr, reg.name_base, PI_iksnrs_mismatched_to_aips_xml, pi_xml_iksnrs) 
+                  log_error(reg.iksnr, reg.name_base, PI_iksnrs_mismatched_to_aips_xml, pi_xml_iksnrs)
                   hasDefect = true
                 end
               end
@@ -1143,7 +1143,7 @@ module ODDB
                 @app.update(seq.pointer, :patinfo => nil)
                 seq.odba_isolated_store
               end
-          } 
+          }
       }
       LogFile.debug "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
       LogFile.debug "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
@@ -1151,7 +1151,7 @@ module ODDB
       @packages = nil # free some memory if we want to import
       true # an update/import should return true or you will never send a report
     end
-  
+
     def update_swissmedicno_fi_pi(options = {})
       LogFile.debug "update_swissmedicno_fi_pi #{options}"
       threads = []
@@ -1422,7 +1422,7 @@ module ODDB
     def get_swissmedicinfo_changed_items(index, target)
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
-      @doc = Nokogiri::XML(IO.read(@aips_xml, {:encoding => 'UTF-8'}))
+      @doc = Nokogiri::XML(IO.read(@aips_xml, encoding: 'UTF-8'))
       index.each_pair do |state, names|
         find_changed_new_items(keys, names, state)
       end

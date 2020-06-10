@@ -2,7 +2,7 @@
 # encoding: utf-8
 # ODDB::View::CenteredSearchForm -- oddb.org -- 08.05.2013 -- yasaka@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
-# ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
+# ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/form'
 require 'htmlgrid/input'
@@ -21,7 +21,7 @@ module ODDB
 		class CenteredNavigationLink < NavigationLink
 			CSS_CLASS = "list"
 		end
-		class CenteredNavigation < ZoneNavigation 
+		class CenteredNavigation < ZoneNavigation
 			CSS_CLASS = "center"
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
@@ -55,7 +55,6 @@ module ODDB
 				context.hidden('no_note', "1")<<
 				context.hidden('return', @lookandfeel._event_url(:paypal_thanks))<<
 				context.hidden('cancel_return', @lookandfeel.base_url)<<
-				context.hidden('currency_code', "EUR")<<
 				context.hidden('tax', "0")
 			end
 		end
@@ -76,7 +75,7 @@ module ODDB
 			EVENT = :search
 			FORM_METHOD = 'POST'
 			SYMBOL_MAP = {
-				:search_query			=>	View::SearchBar,	
+				:search_query			=>	View::SearchBar,
 			}
 			HTML_ATTRIBUTES = {
 				#'width'				=>	'100%',
@@ -108,13 +107,13 @@ module ODDB
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
 			include ExternalLinks
-			include UserSettings 
+			include UserSettings
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0,1,5]		=>	'list center',
 				[0,5,1,2]		=>	'list small',
-				[0,7,1,1]		=>	'list center',				
+				[0,7,1,1]		=>	'list center',
 				[0,8,1,1]		=>	'list small',
 			}
 			COMPONENT_CSS_MAP = {
@@ -154,7 +153,7 @@ module ODDB
 				@session.app.package_count.to_s << '&nbsp;'
 			end
 			def database_last_updated(model, session=@session)
-				HtmlGrid::DateValue.new(:last_medication_update, 
+				HtmlGrid::DateValue.new(:last_medication_update,
 																@session.app, @session, self)
 			end
 			def ddd_count_text(model, session)
@@ -190,7 +189,7 @@ module ODDB
 				link
 			end
 			def download_generics(model, session)
-				link = HtmlGrid::Link.new(:download_generics, 
+				link = HtmlGrid::Link.new(:download_generics,
 																	model, session, self)
 				args = {'download[generics.xls]' => 1}
 				link.href = @lookandfeel._event_url(:download_export, args)

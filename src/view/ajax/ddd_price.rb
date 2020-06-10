@@ -22,9 +22,9 @@ class DDDPriceTable < HtmlGrid::Composite
 	COLSPAN_MAP = {
 		[1,2]	=>	3,
 	}
-	CSS_MAP = { 
-		[0,0,4,2] => 'list', 
-		[0,2,2]		=> 'list nowrap' 
+	CSS_MAP = {
+		[0,0,4,2] => 'list',
+		[0,2,2]		=> 'list nowrap'
 	}
 	LABELS = true
 	LEGACY_INTERFACE = false
@@ -47,11 +47,9 @@ class DDDPriceTable < HtmlGrid::Composite
 	end
 	def calculation(model)
 		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')))
-      currency = @session.currency
+			currency = @session.currency
 			mprice = model.price_public
-      mprice = convert_price(mprice, currency)
 			dprice = model.ddd_price
-      dprice = convert_price(dprice, currency)
 			mdose = model.dose
 			ddose = ddd.dose
 			wanted = wanted_unit(mdose, ddose)
@@ -62,7 +60,6 @@ class DDDPriceTable < HtmlGrid::Composite
       if(factor = model.longevity)
         comp.value = @lookandfeel.lookup(:ddd_calc_long, factor, mprice,
                                          model.size, dprice, curr)
-
       elsif(mdose > ddose)
         comp.value = @lookandfeel.lookup(:ddd_calc_tablet, mprice,
                                          model.size, dprice, curr)

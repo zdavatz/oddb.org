@@ -35,7 +35,7 @@ module ODDB
 
 class TestDataFormat <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :disabled?  => false,
@@ -57,7 +57,7 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::PopupLink, @format.company_name(@model, @session))
   end
   def test_company_name__powerlink
-    company = flexmock('company', 
+    company = flexmock('company',
                        :powerlink => 'powerlink',
                        :pointer   => 'pointer',
                        :name      => 'name'
@@ -68,7 +68,7 @@ class TestDataFormat <Minitest::Test
   end
   def test_company_name__companylist
     method  = flexmock('method', :arity => 1)
-    company = flexmock('company', 
+    company = flexmock('company',
                        :name    => 'name',
                        :powerlink => 'powerlink',
                        :listed? => true,
@@ -84,7 +84,7 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::PopupLink, @format.company_name(@model, @session))
   end
   def test_most_precise_dose
-    dose = flexmock('dose', 
+    dose = flexmock('dose',
                     :is_a? => true,
                     :qty   => 1
                    )
@@ -92,13 +92,13 @@ class TestDataFormat <Minitest::Test
     assert_equal(dose.to_s, @format.most_precise_dose(@model, @session))
   end
   def test_name_base
-    flexmock(@session, 
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input',
              :language => 'language'
             )
     indication   = flexmock('indication', :language => 'language')
     registration = flexmock('registration', :indication => indication)
-    flexmock(@model, 
+    flexmock(@model,
              :pointer      => 'pointer',
              :barcode      => 'barcode',
              :name_base    => 'name_base',
@@ -150,13 +150,13 @@ class TestDataFormat <Minitest::Test
   end
 
   def test_name_base__no_barcode
-    flexmock(@session, 
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input',
              :language => 'language'
             )
     indication   = flexmock('indication', :language => 'language')
     registration = flexmock('registration', :indication => indication)
-    flexmock(@model, 
+    flexmock(@model,
              :pointer      => 'pointer',
              :barcode      => nil,
              :name_base    => 'name_base',
@@ -183,7 +183,7 @@ class TestDataFormat <Minitest::Test
             )
     indication   = flexmock('indication', :language => 'language')
     registration = flexmock('registration', :indication => indication)
-    flexmock(@model, 
+    flexmock(@model,
              :pointer      => 'pointer',
              :barcode      => 'barcode',
              :name_base    => 'name_base',
@@ -203,13 +203,13 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::Link, result[2])
   end
   def test_name_base__descr_empty
-    flexmock(@session, 
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input',
              :language => 'language'
             )
     indication   = flexmock('indication', :language => 'language')
     registration = flexmock('registration', :indication => indication)
-    flexmock(@model, 
+    flexmock(@model,
              :pointer      => 'pointer',
              :barcode      => 'barcode',
              :name_base    => 'name_base',
@@ -229,13 +229,13 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::Link, result[2])
   end
   def test_name_base__photo_link_empty
-    flexmock(@session, 
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input',
              :language => 'language'
             )
     indication   = flexmock('indication', :language => 'language')
     registration = flexmock('registration', :indication => indication)
-    flexmock(@model, 
+    flexmock(@model,
              :pointer      => 'pointer',
              :barcode      => 'barcode',
              :name_base    => 'name_base',
@@ -253,21 +253,11 @@ class TestDataFormat <Minitest::Test
     assert_kind_of(HtmlGrid::Link, result[0])
   end
 
-  def test_convert_price
-    # This is a testcase for a private method
-    flexmock(@session, :get_currency_rate => 1.0)
-    price = 1.23
-    currency = 'CHF'
-    assert_in_delta(1.23, @format.instance_eval('convert_price(price, currency)'), 1e-10)
-  end
   def test_formatted_price
     # This is a testcase for a private method
     flexmock(@model, :key => 1.23)
-    flexmock(@session, 
-             :get_currency_rate => 1.0,
-             :currency          => 'CHF'
-            )
-    flexmock(@lnf, 
+    flexmock(@session)
+    flexmock(@lnf,
              :format_price => 'format_price',
              :enabled?     => nil
             )
@@ -275,17 +265,15 @@ class TestDataFormat <Minitest::Test
   end
   def test_formatted_price__price_history
     # This is a testcase for a private method
-    flexmock(@model, 
+    flexmock(@model,
              :key     => 1.23,
              :pointer => 'pointer',
              :has_price_history? => true
             )
-    flexmock(@session, 
-             :get_currency_rate => 1.0,
-             :currency          => 'CHF',
+    flexmock(@session,
              :persistent_user_input => 'persistent_user_input'
             )
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :format_price => 'format_price',
              :enabled?     => true
             )
@@ -294,7 +282,7 @@ class TestDataFormat <Minitest::Test
   def test_formatted_price__price_chf_zero
     # This is a testcase for a private method
     flexmock(@model, :key => 0)
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :disabled? => nil,
              :enabled?  => nil
             )
@@ -310,11 +298,8 @@ class TestDataFormat <Minitest::Test
   end
   def test_price
     flexmock(@model, :price => 1.23)
-    flexmock(@session, 
-             :get_currency_rate => 1.0,
-             :currency          => 'CHF'
-            )
-    flexmock(@lnf, 
+    flexmock(@session)
+    flexmock(@lnf,
              :format_price => 'format_price',
              :enabled?     => nil
             )
@@ -322,11 +307,8 @@ class TestDataFormat <Minitest::Test
   end
   def test_price_exfactory
     flexmock(@model, :price_exfactory => 1.23)
-    flexmock(@session, 
-             :get_currency_rate => 1.0,
-             :currency          => 'CHF'
-            )
-    flexmock(@lnf, 
+    flexmock(@session)
+    flexmock(@lnf,
              :format_price => 'format_price',
              :enabled?     => nil
             )
@@ -344,8 +326,6 @@ class TestDataFormat <Minitest::Test
                        )
     @session = flexmock('session',
                         :lookandfeel => @lnf,
-                        :get_currency_rate => 1.0,
-                        :currency          => 'CHF'
                        )
     @format  = ODDB::View::StubDataFormat.new(@model, @session)
     assert_kind_of(HtmlGrid::Span, @format.price_public(@model, @session))
@@ -357,8 +337,6 @@ class TestDataFormat <Minitest::Test
     @lnf.should_receive(:enabled?).with(:link_pubprice_to_price_comparison, false).and_return(true)
     @session = flexmock('session',
                         :lookandfeel => @lnf,
-                        :get_currency_rate => 1.0,
-                        :currency          => 'CHF'
                        )
     @format  = ODDB::View::StubDataFormat.new(@model, @session)
     assert_kind_of(HtmlGrid::Link, @format.price_public(@model, @session))

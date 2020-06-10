@@ -97,7 +97,7 @@ credit org.oddb.download
     @browser.file_field(name: "patinfo_upload").set(original)
     @browser.button(name: "update").click
     expect(@browser.link(visible_text:  "PI").exists?).to be true
-    new_content = URI.open(@browser.link(visible_text:  "PI").href, 'rb', {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read;
+    new_content = URI.open(@browser.link(visible_text:  "PI").href, 'rb', ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read;
     org_content = URI.open(original, 'rb').read;
     expect(org_content).to eq new_content
   end

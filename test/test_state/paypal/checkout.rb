@@ -60,7 +60,7 @@ class TestStubCheckout <Minitest::Test
     assert_equal(expected, @checkout.checkout_keys)
   end
   def test_ajax_autofill
-    flexmock(@session, 
+    flexmock(@session,
              :user_input          => 'email',
              :yus_get_preferences => {'key' => 'value'},
              :logged_in?          => nil
@@ -68,10 +68,10 @@ class TestStubCheckout <Minitest::Test
     assert_kind_of(ODDB::State::PayPal::AjaxCheckout, @checkout.ajax_autofill)
   end
   def test_currency
-    assert_equal('EUR', @checkout.currency)
+    assert_equal('CHF', @checkout.currency)
   end
   def test_user_input
-    error = flexmock('error', 
+    error = flexmock('error',
                      :message => 'e_missing_',
                      :value   => 'value'
                     )
@@ -85,13 +85,13 @@ class TestStubCheckout <Minitest::Test
     assert_equal(expected, @checkout.user_input('keys', 'mandatory'))
   end
   def test_create_user
-    user = flexmock('user', 
+    user = flexmock('user',
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
                     :valid?          => true,
                    )
     flexmock(@app, :yus_create_user => user)
-    flexmock(@session, 
+    flexmock(@session,
              :force_login => 'force_login',
              :set_cookie_input => 'set_cookie_input'
             )
@@ -102,13 +102,13 @@ class TestStubCheckout <Minitest::Test
     flexmock(@app) do |a|
       a.should_receive(:yus_create_user).and_raise(Yus::DuplicateNameError)
     end
-    flexmock(@session, 
+    flexmock(@session,
              :force_login => 'force_login',
              :set_cookie_input => 'set_cookie_input'
             )
     input = {'key' => 'value'}
     flexmock(@checkout, :create_error => 'create_error')
-    assert_raises(RuntimeError) do 
+    assert_raises(RuntimeError) do
       @checkout.create_user(input)
     end
   end
@@ -116,18 +116,18 @@ class TestStubCheckout <Minitest::Test
     flexmock(@app) do |a|
       a.should_receive(:yus_create_user).and_raise(RuntimeError)
     end
-    flexmock(@session, 
+    flexmock(@session,
              :force_login => 'force_login',
              :set_cookie_input => 'set_cookie_input'
             )
     input = {'key' => 'value'}
     flexmock(@checkout, :create_error => 'create_error')
-    assert_raises(RuntimeError) do 
+    assert_raises(RuntimeError) do
       @checkout.create_user(input)
     end
   end
   def test_create_invoice
-    abstract = flexmock('abstract', 
+    abstract = flexmock('abstract',
                         :text     => 'text',
                         :duration => 1.23,
                         :price    => 'price',
@@ -145,20 +145,20 @@ class TestStubCheckout <Minitest::Test
     assert_equal(invoice, @checkout.create_invoice(input))
   end
   def test_checkout
-    flexmock(@session, 
+    flexmock(@session,
              :input_keys  => ['input_key'],
              :logged_in?  => true,
              :user        => 'user',
              :force_login => 'force_login',
              :set_cookie_input => 'set_cookie_input'
             )
-    user = flexmock('user', 
+    user = flexmock('user',
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
                     :email           => 'email',
                     :valid?          => true,
                    )
-    abstract = flexmock('abstract', 
+    abstract = flexmock('abstract',
                         :text     => 'text',
                         :duration => 1.23,
                         :price    => 'price',
@@ -170,31 +170,31 @@ class TestStubCheckout <Minitest::Test
     pointer = flexmock('pointer', :creator => 'creator')
     flexmock(pointer, :+ => pointer)
     invoice  = flexmock('invoice', :pointer => pointer)
-    flexmock(@app, 
+    flexmock(@app,
              :yus_create_user => user,
              :update => invoice
             )
-    flexmock(@checkout, 
+    flexmock(@checkout,
              :error?       => @checkout.instance_eval('@errors').empty? ? false : true,
              :unique_email => 'unique_email'
             )
     assert_kind_of(ODDB::State::PayPal::Redirect, @checkout.checkout)
   end
   def test_checkout__missing_keys_empty
-    user = flexmock('user', 
+    user = flexmock('user',
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
                     :valid?          => true,
                     :email           => 'email',
                    )
-    flexmock(@session, 
+    flexmock(@session,
              :input_keys  => [:email, :pass],
              :logged_in?  => false,
              :login       => user,
              :force_login => 'force_login',
              :set_cookie_input => 'set_cookie_input'
             )
-    abstract = flexmock('abstract', 
+    abstract = flexmock('abstract',
                         :text     => 'text',
                         :duration => 1.23,
                         :price    => 'price',
@@ -206,31 +206,31 @@ class TestStubCheckout <Minitest::Test
     pointer = flexmock('pointer', :creator => 'creator')
     flexmock(pointer, :+ => pointer)
     invoice  = flexmock('invoice', :pointer => pointer)
-    flexmock(@app, 
+    flexmock(@app,
              :yus_create_user => user,
              :update => invoice
             )
-    flexmock(@checkout, 
+    flexmock(@checkout,
              :error?       => @checkout.instance_eval('@errors').empty? ? false : true,
              :unique_email => 'unique_email'
             )
     assert_kind_of(ODDB::State::PayPal::Redirect, @checkout.checkout)
   end
   def test_checkout__yus_authentication_error
-    user = flexmock('user', 
+    user = flexmock('user',
                     :set_preferences => 'set_preferences',
                     :allowed?        => nil,
                     :valid?          => true,
                     :email           => 'email'
                    )
-    flexmock(@session, 
+    flexmock(@session,
              :input_keys  => [:email, :pass],
              :logged_in?  => false,
              :login       => user,
              :set_cookie_input => 'set_cookie_input'
             )
     @session.should_receive(:force_login).and_raise(Yus::AuthenticationError)
-    abstract = flexmock('abstract', 
+    abstract = flexmock('abstract',
                         :text     => 'text',
                         :duration => 1.23,
                         :price    => 'price',
@@ -242,12 +242,12 @@ class TestStubCheckout <Minitest::Test
     pointer = flexmock('pointer', :creator => 'creator')
     flexmock(pointer, :+ => pointer)
     invoice  = flexmock('invoice', :pointer => pointer)
-    flexmock(@app, 
+    flexmock(@app,
              :yus_create_user => user,
              :update => invoice
             )
     error = flexmock('error', :message => 'message')
-    flexmock(@checkout, 
+    flexmock(@checkout,
              :error?       => true,
              :unique_email => 'unique_email',
              :create_error => error

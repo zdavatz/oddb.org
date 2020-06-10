@@ -54,8 +54,6 @@ class TestPackageInnerComposite <Minitest::Test
                           :error             => 'error',
                           :app               => @app,
                           :language          => 'language',
-                          :currency          => 'currency',
-                          :get_currency_rate => 1.0,
                           :cgi               => CGI.new,
                           :persistent_user_input => 'persistent_user_input'
                          )
@@ -178,9 +176,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :app         => @app,
                           :cgi         =>  ::CGI.new,
                           :language    => 'language',
-                          :currency    => 'currency',
                           :state       => 'state',
-                          :get_currency_rate     => 1.0,
                           :persistent_user_input => 'persistent_user_input'
                          )
     substance        = flexmock('substance', :language => 'language')
@@ -348,7 +344,6 @@ class TestPackage <Minitest::Test
                            :_event_url   => '_event_url',
                            :language     => 'language',
                            :languages    => 'languages',
-                           :currencies   => 'currencies',
                            :base_url     => 'base_url',
                            :navigation   => ['navigation'],
                            :resource_localized => 'resource_localized',
@@ -380,10 +375,8 @@ class TestPackage <Minitest::Test
                          :error        => 'error',
                          :app          => app,
                          :request_path => 'request_path',
-                         :currency     => 'currency',
                          :language     => 'language',
                          :zone         => 'zone',
-                         :get_currency_rate     => 1.0,
                          :persistent_user_input => 'persistent_user_input',
                          :flavor       => 'flavor',
                          :event           => 'event',

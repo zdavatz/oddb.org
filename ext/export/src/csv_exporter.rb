@@ -9,12 +9,12 @@ module ODDB
 	module OdbaExporter
 		module CsvExporter
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
-				:name, :praxis, :first_address_data, :email, :language, 
+				:name, :praxis, :first_address_data, :email, :language,
 				:specialities]
 			ADDRESS = [:type, :name, :additional_lines, :address,
 				:plz, :city, :canton, :fon, :fax]
-			DEFR = [:de, :fr] 
-			DEFRIT = [:de, :fr, :it] 
+			DEFR = [:de, :fr]
+			DEFRIT = [:de, :fr, :it]
       INDEX_THERAPEUTICUS = [ :code, :defr, :idx_th_comment, :idx_th_limitation ]
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
 				:migel_product_text, :accessory_code, :defrit,
@@ -23,7 +23,7 @@ module ODDB
 			MIGEL_SUBGROUP = [:migel_group, :code, :defrit,
 				:migel_limitation]
 			MIGEL_GROUP = [:code, :defrit, :migel_limitation]
-			NARCOTIC = [:casrn, :swissmedic_code, :narc_substance, 
+			NARCOTIC = [:casrn, :swissmedic_code, :narc_substance,
 				:category, :narc_reservation_text]
       PRICE_HISTORY = [:iksnr, :ikscd, :name, :size, :barcode, :pharmacode,
         :out_of_trade, :price_history]
@@ -63,7 +63,7 @@ module ODDB
 				self.collect_languages(DEFRIT, item)
 			end
 			def CsvExporter.dump(keys, item, fh, opts={})
-        CSV.open(fh.path, "a+", {:col_sep => ';', :encoding => 'UTF-8'}) { |csv|
+        CSV.open(fh.path, "a+", col_sep: ';', :encoding: 'UTF-8') { |csv|
           csv << collect_data(keys, item, opts).flatten
         }
 			end

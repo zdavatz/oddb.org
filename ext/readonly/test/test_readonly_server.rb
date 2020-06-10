@@ -130,11 +130,5 @@ module ODDB
         eval "#{constant} = keep"
       end
     end
-    def test_get_currency_rate
-      currency = flexmock('currency', :rate => 'rate')
-      replace_constant('ODDB::Currency', currency) do
-        assert_equal('rate', @serv.get_currency_rate('symbol'))
-      end
-    end
   end
 end

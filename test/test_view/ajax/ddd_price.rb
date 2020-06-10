@@ -16,27 +16,25 @@ module ODDB
 
 class TestDDDPriceTable <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :disabled?  => nil,
                           :enabled?   => nil,
                           :attributes => {}
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
-                          :currency    => 'currency',
-                          :get_currency_rate => 1
                          )
     @fact      = flexmock('fact', :factor => 'factor')
-    dose       = flexmock('dose', 
+    dose       = flexmock('dose',
                           :fact => @fact,
                           :unit => 'unit',
                           :want => 'want'
                          )
     @ddd       = flexmock('ddd', :dose => dose)
     atc_class  = flexmock('atc_class', :ddd => @ddd)
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :atc_class => atc_class,
                           :dose      => dose,
                           :ddd_price => 'ddd_price',
@@ -57,18 +55,18 @@ class TestDDDPriceTable <Minitest::Test
     assert_kind_of(HtmlGrid::Value, @composite.calculation(@model))
   end
   def test_calculation__mdose_lt_ddose
-    ddd_dose   = flexmock('ddd_dose', 
+    ddd_dose   = flexmock('ddd_dose',
                           :want => 1,
                           :fact => @fact,
                           :unit => 'unit'
                          )
-    model_dose = flexmock('model_dose', 
+    model_dose = flexmock('model_dose',
                           :want => 2,
                           :fact => @fact,
                           :unit => 'unit'
                          )
     flexmock(@ddd, :dose => ddd_dose)
-    flexmock(@model, 
+    flexmock(@model,
              :longevity => nil,
              :dose      => model_dose
             )
@@ -78,11 +76,11 @@ end
 
 class TestDDDPrice <Minitest::Test
   def setup
-    lookup     = flexmock('lookup', 
+    lookup     = flexmock('lookup',
                           :value  => 'value',
                           :value= => nil
                          )
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => lookup,
                           :enabled?   => true,
                           :disabled?  => true,
@@ -90,21 +88,19 @@ class TestDDDPrice <Minitest::Test
                           :resource   => 'resource',
                           :_event_url => '_event_url'
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
-                          :currency    => 'currency',
-                          :get_currency_rate => 1
                          )
     fact       = flexmock('fact', :factor => 'factor')
-    dose       = flexmock('dose', 
+    dose       = flexmock('dose',
                           :fact => fact,
                           :unit => 'unit',
                           :want => 'want'
                          )
     ddd        = flexmock('ddd', :dose => dose)
     atc_class  = flexmock('atc_class', :ddd => ddd)
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :atc_class => atc_class,
                           :dose      => dose,
                           :ddd_price => 'ddd_price',

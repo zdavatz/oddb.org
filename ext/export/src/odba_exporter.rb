@@ -23,7 +23,7 @@ module ODDB
 	module OdbaExporter
 		def OdbaExporter.clear
 begin
-			Thread.new { 
+			Thread.new {
 				sleep 1
 				DRb.thread.exit
 			}
@@ -106,7 +106,7 @@ ean13;index_therapeuticus
         HEAD
         odba_ids.each { |odba_id|
           item = ODBA.cache.fetch(odba_id, nil)
-          CsvExporter.dump([ :barcode, :index_therapeuticus ], item, fh)	
+          CsvExporter.dump([ :barcode, :index_therapeuticus ], item, fh)
         }
         nil
       }
@@ -118,7 +118,7 @@ index_therapeuticus;description_de;description_fr;comment_de;comment_fr;limitati
         HEAD
         odba_ids.each { |odba_id|
           item = ODBA.cache.fetch(odba_id, nil)
-          CsvExporter.dump(CsvExporter::INDEX_THERAPEUTICUS, item, fh)	
+          CsvExporter.dump(CsvExporter::INDEX_THERAPEUTICUS, item, fh)
         }
         nil
       }
@@ -177,7 +177,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
           head.push "#{datestr} (exfactory)", 'authority', 'origin',
                     "#{datestr} (public)", 'authority', 'origin'
         end
-        CSV.open(fh.path, "w", {:col_sep => ';'}) do |csv| csv << head end
+        CSV.open(fh.path, "w", col_sep: ';') do |csv| csv << head end
         packages.sort_by do |pack| pack.name end.each do |pack|
           CsvExporter.dump(CsvExporter::PRICE_HISTORY, pack, fh, :dates => dates)
         end

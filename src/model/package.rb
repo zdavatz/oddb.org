@@ -325,7 +325,6 @@ module ODDB
 			if(!@disable_ddd_price && (ddd = self.ddd) \
 				&& (price = price_public) && (price.amount > 0) && (ddose = ddd.dose) && (mdose = dose) \
         && size = comparable_size)
-        price = price * ODDB::Currency.rate('CHF', currency) unless currency.eql?('CHF')
         factor = (longevity || 1).to_f
         if sequence.compositions.first
           excipiens = sequence.compositions.collect{|c|  c.excipiens && c.excipiens.to_s}.compact.first

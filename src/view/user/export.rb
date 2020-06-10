@@ -21,7 +21,7 @@ module Export
   end
 	def datadesc(filename)
 		if(display?(filename))
-			link = HtmlGrid::Link.new(:data_description, 
+			link = HtmlGrid::Link.new(:data_description,
 				@model, @session, self)
 			path = File.join('datadesc', "#{filename}.txt")
 			link.href = @lookandfeel.resource_global(:downloads, path)
@@ -36,7 +36,7 @@ module Export
     res
 	end
 	def example(filename)
-		link = HtmlGrid::Link.new(:example_download, 
+		link = HtmlGrid::Link.new(:example_download,
 															@model, @session, self)
 		link.href = @lookandfeel.resource_global(:examples, filename)
 		link.css_class = 'small'
@@ -72,7 +72,7 @@ module Export
 	end
 	def checkbox_with_filesize(filename)
 		if(display?(filename))
-			checkbox = HtmlGrid::InputCheckbox.new("download[#{filename}]", 
+			checkbox = HtmlGrid::InputCheckbox.new("download[#{filename}]",
 				@model, @session, self)
 			size = filesize(filename)
 			[checkbox, "&nbsp;", "#{filename} #{size}"]
@@ -81,11 +81,11 @@ module Export
 	def once(filename)
 		if(display?(filename))
 			price = State::User::DownloadExport.price(filename)
-			hidden = HtmlGrid::Input.new("months[#{filename}]", 
+			hidden = HtmlGrid::Input.new("months[#{filename}]",
 				@model, @session, self)
 			hidden.set_attribute('type', 'hidden')
 			hidden.value = '1'
-			[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+			[@lookandfeel.format_price(price.to_i * 100, 'CHF'), hidden]
 		end
 	end
 	def radio_price(filename, value=1)
@@ -103,7 +103,7 @@ module Export
 			  price = State::User::DownloadExport.subscription_price(filename)
       end
 			radio.value = value.to_s
-			[radio, "&nbsp;", @lookandfeel.format_price(price.to_i * 100, 'EUR')]
+			[radio, "&nbsp;", @lookandfeel.format_price(price.to_i * 100, 'CHF')]
 		end
 	end
 	#legacy method (for htmlgrid.so)
@@ -114,7 +114,7 @@ module Export
 			checked = months[filename] || '1'
 			radio1 = HtmlGrid::InputRadio.new(name, @model, @session, self)
 			price = State::User::DownloadExport.price(filename)
-			price1 = @lookandfeel.format_price(price.to_i * 100, 'EUR')
+			price1 = @lookandfeel.format_price(price.to_i * 100, 'CHF')
 			radio1.value = '1'
 			if(checked == '1')
 				radio1.set_attribute('checked', true)
@@ -125,7 +125,7 @@ module Export
 				radio2.set_attribute('checked', true)
 			end
 			price = State::User::DownloadExport.subscription_price(filename)
-			price2 = @lookandfeel.format_price(price.to_i * 100, 'EUR')
+			price2 = @lookandfeel.format_price(price.to_i * 100, 'CHF')
 			[radio1, nil, price1, nil, radio2, nil, price2]
 		end
 	end

@@ -77,7 +77,8 @@ module ODDB
               :domain => cfg['smtp_domain'],
               :user_name => cfg['smtp_user'],
               :password => cfg['smtp_pass'],
-              :authentication => cfg['smtp_auth']
+              :authentication => cfg['smtp_auth'],
+              :content_transfer_encoding => 'UTF-8',
             }
           end
         end
@@ -97,6 +98,7 @@ module ODDB
       mail.to      recipients
       mail.subject mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
       mail.body    mail_body.  respond_to?(:force_encoding)  ?  mail_body.   force_encoding("utf-8") : mail_body
+      mail.charset='UTF-8'
       log_and_deliver_mail(mail)
     rescue => e
       msg = "Util.send_mail rescue: error is #{e.inspect} recipients #{recipients.inspect} #{caller.join("\n")}"

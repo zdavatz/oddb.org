@@ -1,12 +1,8 @@
 require 'odba/drbwrapper'
 require 'remote/package'
-require 'util/currency'
 
 module ODDB
   class ReadonlyServer
-    def get_currency_rate(symbol)
-      ODDB::Currency.rate('CHF', symbol)
-    end
     def remote_comparables(package)
       package = ODDB::Remote::Package.new(package)
       sequence = package.sequence

@@ -18,7 +18,7 @@ module ODDB
   DefaultContent = 'default content'
   ChangedContent = 'changed content size'
 
-  class TestLatest <MiniTest::Unit::TestCase
+  class TestLatest <Minitest::Test
     def setup
       @archive = File.expand_path('../var', File.dirname(__FILE__))
       FileUtils.rm_rf(@archive) if File.exists?(@archive)

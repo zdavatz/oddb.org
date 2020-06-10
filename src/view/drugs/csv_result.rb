@@ -338,7 +338,7 @@ class CsvResult < HtmlGrid::Component
       parts = []
       multi = part.multi.to_i
       count = part.count.to_i
-      if(multi > 1) 
+      if(multi > 1)
         parts.push(multi)
       end
       if(multi > 1 && count > 1)
@@ -484,7 +484,7 @@ class CsvResult < HtmlGrid::Component
       puts "unexpected target #{target}"
     end
     res =result.compact.collect { |line|
-      CSV.generate_line(line, {:col_sep => ';'}).encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '')
+      CSV.generate_line(line, col_sep: ';').encode('utf-8', invalid: :replace, undef: :replace, replace: '')
     }
     res.join('')
   end

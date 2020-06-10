@@ -32,7 +32,7 @@ rescue LoadError
   # ignore error when pry cannot be loaded (for Jenkins-CI)
 end
 
-class TestOddbApp <MiniTest::Unit::TestCase
+class TestOddbApp <Minitest::Test
   @@port_id ||= 19000
 	def setup
     GC.start # start a garbage collection
@@ -455,9 +455,6 @@ class TestOddbApp <MiniTest::Unit::TestCase
   def test_admin
     @app.users = {123 => 'user'}
     assert_equal('user', @app.admin('123'))
-  end
-  def test_currencies
-    assert_equal([], @app.currencies)
   end
   def test_pharmacy
     assert_nil(@app.pharmacy('ean13'))

@@ -60,8 +60,6 @@ Zeno Davatz
         :'0-9'                    =>  '0-9',
         :'|unknown'                =>  'andere',
         :CHF                      =>  'CHF',
-        :EUR                      =>  'EUR',
-        :USD                      =>  'USD',
         :li_open                  =>  '<li>',
         :li_close                  =>  '</li>',
         :ol_open                  =>  '<ol>',
@@ -635,7 +633,7 @@ Zeno Davatz
         :explain_ddd_price_url    =>  'http://wiki.oddb.org/wiki.php/ODDB/Tageskosten',
         :explain_deductible        =>  'SB = Selbstbehalt',
         :explain_deductible_url    =>  'http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm',
-        :explain_efp              =>  'EFP = Exfactory-Preis, exkl. Mwst.(CHF, USD, EURO)',
+        :explain_efp              =>  'EFP = Exfactory-Preis, exkl. Mwst CHF',
         :explain_expired          =>  'Grauer Hintergrund = Pendente Zulassungsverlängerung',
         :explain_feedback          =>  ' = Feedback zum Medikament',
         :explain_fachinfo          =>  ' = Fachinformation',
@@ -663,7 +661,7 @@ Zeno Davatz
         :explain_narc_overview    =>  '<a href="http://www.swissmedic.ch/index/index.html?action=id&id=35&lang=en">Gesamtübersicht Betäubungsmittel</a> ',
         :explain_original          =>  'Rot&nbsp;=&nbsp;Original',
         :explain_original_url      =>  'http://www.interpharma.ch',
-        :explain_pbp              =>  'PP = Publikumspreis, inkl. Mwst.(CHF, USD, EURO)',
+        :explain_pbp              =>  'PP = Publikumspreis, inkl. Mwst.CHF',
         :explain_parallel_import  =>  ' = Parallel Import',
         :explain_patinfo          =>  ' = Patienteninformation',
         :explain_phytotherapy      =>  ' = Phytotherapeutisches Arzneimittel',
@@ -2084,7 +2082,7 @@ Zeno Davatz
         :explain_ddd_price_url    =>  'http://wiki.oddb.org/wiki.php/ODDB/Tageskosten',
         :explain_deductible        =>  'QP = Quote-Part',
         :explain_deductible_url    =>  'http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm',
-        :explain_efp              =>  'PEF = Prix ex-factory, TVA excl.(CHF, USD, EURO)',
+        :explain_efp              =>  'PEF = Prix ex-factory, TVA excl CHF',
         :explain_expired          =>  'Fond gris = Prolongation de l\'autorisation vacante',
         :explain_feedback          =>  ' =  Remarques et commentaires au sujet de ce médicament et de sa fiche',
         :explain_fachinfo          =>  ' = Information destinée aux professionnels',
@@ -2108,7 +2106,7 @@ Zeno Davatz
         :explain_original          =>  'rouge&nbsp;=&nbsp;original',
         :explain_parallel_import  =>  ' = Parallel import',
         :explain_patinfo          =>  ' = Information destinée aux patients',
-        :explain_pbp              =>  'PP = Prix public, TVA comp.(CHF, USD, EURO)',
+        :explain_pbp              =>  'PP = Prix public, TVA comp CHF',
         :explain_phytotherapy      =>  ' = Médicament phytothérapeutique',
         :explain_password_lost    =>  'Communiquez-nous votre adresse e-mail s.v.p. Nous vous enverrons en retour un e-mail avec un lien. Cliquez sur le lien puis entrez votre nouveau mot de passe.',
         :explain_pr                =>  'DDP = Demande des prix',
@@ -3244,7 +3242,7 @@ Zeno Davatz
         #:explain_comarketing_url  =>  'http://www.swissmedic.ch/en/industrie/overall.asp?lang=2&theme=0.00106.00003&theme_id=941#Marketing',
         :explain_ddd_price        =>  'DC = Daily Cost',
         :explain_ddd_price_url    =>  'http://wiki.oddb.org/wiki.php/ODDB/Tageskosten',
-        :explain_efp              =>  'EFP = Ex-Factory-Price, exkl. VAT.(CHF, USD, EURO)',
+        :explain_efp              =>  'EFP = Ex-Factory-Price, exkl. VAT CHF',
         :explain_expired          =>  'Gray background = Pending Permission Extension',
         :explain_feedback          =>  ' = Drugs Feedback',
         :explain_fachinfo          =>  ' = Information for Professionals',
@@ -3267,7 +3265,7 @@ Zeno Davatz
         :explain_narc_url         =>  'https://www.swissmedic.ch/bewilligungen/00155/00242/00243/00406/index.html?lang=en',
         :explain_original          =>  'Red&nbsp;=&nbsp;Original',
         :explain_original_url      =>  'http://www.interpharma.ch',
-        :explain_pbp              =>  'CP = Consumer Price, inkl. VAT.(CHF, USD, EURO)',
+        :explain_pbp              =>  'CP = Consumer Price, inkl. VAT CHF',
         :explain_patinfo          =>  ' = Consumer Information',
         :explain_phytotherapy      =>  ' = Phytotherapeutics',
         :explain_password_lost    =>  'Please enter your e-mail-address. We will send you an e-mail containing a Link. Please click onto the Link in the e-mail and set your new Passwort.',
@@ -4227,9 +4225,6 @@ Zeno Davatz
       }
     end
     def comparison_sorter
-    end
-    def currencies
-      ['CHF', 'EUR', 'USD']
     end
     def explain_result_components
       {

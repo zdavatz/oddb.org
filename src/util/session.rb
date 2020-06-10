@@ -45,7 +45,6 @@ module ODDB
       @app = app
 			@interaction_basket = []
 			@interaction_basket_atc_codes = []
-      @currency_rates = {}
 		end
     def active_state
       state = super
@@ -173,16 +172,8 @@ module ODDB
       @interaction_basket_atc_codes.clear
 		end
 		def currency
-			cookie_set_or_get(:currency) || "CHF"
+			"CHF"
 		end
-    def get_currency_rate(currency)
-      @currency_rates[currency] ||= @app.get_currency_rate(currency)
-    end
-    def convert_price(price, currency)
-      if(price and rate = get_currency_rate(currency))
-        price * rate
-      end
-    end
     def interaction_basket
       if(ids = user_input(:substance_ids))
         ids = ids.split(/,/).collect { |id| id.to_i }

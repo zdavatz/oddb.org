@@ -15,8 +15,7 @@ require 'fileutils'
 module ODDB
 	class Plugin
     class SessionStub
-      attr_reader :app, :flavor, :http_protocol, :server_name, :default_language,
-        :currency
+      attr_reader :app, :flavor, :http_protocol, :server_name, :default_language
       attr_accessor :language, :lookandfeel
       def initialize(app)
         @app = app
@@ -25,11 +24,6 @@ module ODDB
         @http_protocol = 'https'
         @server_name = SERVER_NAME
         @default_language = 'de'
-        @currency_rates = {}
-        @currency = 'CHF'
-      end
-      def get_currency_rate(currency)
-        @currency_rates[currency] ||= @app.get_currency_rate(currency)
       end
       def method_missing(*args)
       end

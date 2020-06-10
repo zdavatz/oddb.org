@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestYdimPlugin -- oddb.org -- 23.03.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestYdimPlugin -- oddb.org -- 23.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -25,7 +25,7 @@ module ODDB
 end
 
 class TestDebitorFacade <Minitest::Test
-  
+
   # must setup a dummy id_dsa before running setup the first time
   home_id_dsa = File.join(File.expand_path('~'), '.ssh', 'id_dsa')
   unless File.exists?(home_id_dsa)
@@ -36,20 +36,20 @@ class TestDebitorFacade <Minitest::Test
 
   def setup
     @yus_model = flexmock('yus_model')
-    @app       = flexmock('app', 
+    @app       = flexmock('app',
                           :yus_model => @yus_model,
                           :yus_get_preference => 'yus_get_preference',
                           :yus_set_preference => 'yus_set_preference'
                          )
     @facade    = ODDB::YdimPlugin::DebitorFacade.new('email', @app)
   end
-  
+
   def test_ydim_id
     assert_equal('id', @facade.ydim_id='id')
     assert_equal('yus_get_preference', @facade.ydim_id)
   end
   def test_ydim_id__debitor
-    flexmock(@yus_model, 
+    flexmock(@yus_model,
              :ydim_id=   => nil,
              :odba_store => 'odba_store'
             )
@@ -95,12 +95,12 @@ module ODDB
     def test_debitor_id__identify_debitor
       debitor = flexmock('debitor', :unique_id => 'unique_id')
       client  = flexmock('client', :search_debitors => [debitor])
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
-      flexmock(@facade, 
+      flexmock(@facade,
                :ydim_id  => nil,
                :ydim_id= => 'ydim_id',
                :fullname => 'fullname',
@@ -109,7 +109,7 @@ module ODDB
       assert_equal('unique_id', @plugin.debitor_id(@facade))
     end
     def test_debitor_id__create_debitor
-      debitor = flexmock('debitor', 
+      debitor = flexmock('debitor',
                          :name=              => nil,
                          :salutation=        => nil,
                          :contact=           => nil,
@@ -122,12 +122,12 @@ module ODDB
                          :unique_id          => 'unique_id'
                         )
       client  = flexmock('client', :create_debitor => debitor)
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
-      flexmock(@facade, 
+      flexmock(@facade,
                :ydim_id    => nil,
                :fullname   => 'fullname',
                :name_first => 'name_first',
@@ -143,7 +143,7 @@ module ODDB
       assert_equal('unique_id', @plugin.debitor_id(@facade))
     end
     def test_ydim_connect
-      server = flexmock('server', 
+      server = flexmock('server',
                         :logout => 'logout',
                         :login  => 'login'
                        )
@@ -156,19 +156,19 @@ module ODDB
     def test_identify_debitor
       debitor = flexmock('debitor', :unique_id => 'unique_id')
       client  = flexmock('client', :search_debitors => [debitor])
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
-      flexmock(@facade, 
+      flexmock(@facade,
                :fullname => 'fullname',
                :ydim_id= => 'ydim_id'
               )
       assert_equal(debitor, @plugin.identify_debitor(@facade))
     end
     def test_create_debitor
-      debitor = flexmock('debitor', 
+      debitor = flexmock('debitor',
                          :name=              => nil,
                          :salutation=        => nil,
                          :contact=           => nil,
@@ -181,12 +181,12 @@ module ODDB
                          :unique_id          => 'unique_id'
                         )
       client  = flexmock('client', :create_debitor => debitor)
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
-      flexmock(@facade, 
+      flexmock(@facade,
                :fullname   => 'fullname',
                :name_first => 'name_first',
                :name_last  => 'name_last',
@@ -201,7 +201,7 @@ module ODDB
       assert_equal(debitor, @plugin.create_debitor(@facade))
     end
     def test_create_debitor__oddb_hospital
-      debitor = flexmock('debitor', 
+      debitor = flexmock('debitor',
                          :name=              => nil,
                          :salutation=        => nil,
                          :contact=           => nil,
@@ -214,13 +214,13 @@ module ODDB
                          :unique_id          => 'unique_id'
                         )
       client  = flexmock('client', :create_debitor => debitor)
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
       hospital = ODDB::Hospital.new('ean13')
-      facade  = flexmock(hospital, 
+      facade  = flexmock(hospital,
                 :fullname   => 'fullname',
                 :name_first => 'name_first',
                 :name_last  => 'name_last',
@@ -235,7 +235,7 @@ module ODDB
       assert_equal(debitor, @plugin.create_debitor(facade))
     end
     def test_create_debitor__oddb_company
-      debitor = flexmock('debitor', 
+      debitor = flexmock('debitor',
                          :name=              => nil,
                          :salutation=        => nil,
                          :contact=           => nil,
@@ -248,14 +248,14 @@ module ODDB
                          :unique_id          => 'unique_id'
                         )
       client  = flexmock('client', :create_debitor => debitor)
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
       flexmock(ODBA.cache, :next_id => 123)
       company = ODDB::Company.new
-      facade  = flexmock(company, 
+      facade  = flexmock(company,
                 :fullname   => 'fullname',
                 :name_first => 'name_first',
                 :name_last  => 'name_last',
@@ -270,7 +270,7 @@ module ODDB
       assert_equal(debitor, @plugin.create_debitor(facade))
     end
     def test_create_debitor__facade_business_area
-      debitor = flexmock('debitor', 
+      debitor = flexmock('debitor',
                          :name=              => nil,
                          :salutation=        => nil,
                          :contact=           => nil,
@@ -283,14 +283,14 @@ module ODDB
                          :unique_id          => 'unique_id'
                         )
       client  = flexmock('client', :create_debitor => debitor)
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
       flexmock(DRb::DRbObject, :new => server)
       flexmock(ODBA.cache, :next_id => 123)
       company = ODDB::Company.new
-      facade  = flexmock(company, 
+      facade  = flexmock(company,
                 :fullname   => 'fullname',
                 :name_first => 'name_first',
                 :name_last  => 'name_last',
@@ -310,7 +310,7 @@ module ODDB
       assert_equal('name', @plugin.item_name(item))
     end
     def test_item_name__empty
-      item = flexmock('item', 
+      item = flexmock('item',
                       :data         => {:name => ''},
                       :item_pointer => 'pointer'
                      )
@@ -323,7 +323,7 @@ module ODDB
         :first_valid_date => Date.new(2011,1,2),
         :last_valid_date  => Date.new(2011,2,1)
       }
-      item = flexmock('item', 
+      item = flexmock('item',
                       :data => data,
                       :text => 'text',
                       :time => Time.local(2011,2,3)
@@ -338,7 +338,7 @@ module ODDB
         :first_valid_date => Date.new(2010,1,2),
         :last_valid_date  => Date.new(2011,2,1)
       }
-      item = flexmock('item', 
+      item = flexmock('item',
                       :data => data,
                       :text => 'text',
                       :time => Time.local(2011,2,3)
@@ -353,7 +353,7 @@ module ODDB
         :first_valid_date => Date.new(2011,1,2),
         :last_valid_date  => Date.new(2011,2,1)
       }
-      item = flexmock('item', 
+      item = flexmock('item',
                       :data => data,
                       :text => 'text',
                       :type => 'type',
@@ -373,7 +373,7 @@ module ODDB
     end
     def test_send_invoice
       client = flexmock('client', :send_invoice => 'send_invoice')
-      server = flexmock('server', 
+      server = flexmock('server',
                         :logout => 'logout',
                         :login  => client
                        )
@@ -387,7 +387,7 @@ module ODDB
     end
     def test_invoice_description
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :annual_fee,
                          :item_pointer => pointer
@@ -397,7 +397,7 @@ module ODDB
     end
     def test_invoice_description__poweruser
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :poweruser,
                          :item_pointer => pointer,
@@ -408,7 +408,7 @@ module ODDB
     end
     def test_invoice_description__csv_export
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :csv_export,
                          :item_pointer => pointer
@@ -418,7 +418,7 @@ module ODDB
     end
     def test_invoice_description__download
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :download,
                          :item_pointer => pointer
@@ -428,7 +428,7 @@ module ODDB
     end
     def test_invoice_description__index
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :index,
                          :item_pointer => pointer
@@ -438,7 +438,7 @@ module ODDB
     end
     def test_invoice_description__lookandfeel
       pointer = flexmock('pointer', :resolve => 'resolve')
-      item    = flexmock('item', 
+      item    = flexmock('item',
                          :time => Time.local(2011,2,3),
                          :type => :lookandfeel,
                          :item_pointer => pointer
@@ -447,19 +447,19 @@ module ODDB
       assert_equal(expected, @plugin.invoice_description([item], Date.new(2011,2,3)))
     end
     def test_inject_from_items
-      invoice    = flexmock('invoice', 
+      invoice    = flexmock('invoice',
                             :description=    => nil,
                             :date=           => nil,
                             :currency=       => nil,
                             :payment_period= => nil,
                             :unique_id       => 'unique_id'
-                           ) 
-      client     = flexmock('client', 
+                           )
+      client     = flexmock('client',
                             :create_invoice => invoice,
                             :add_items      => nil
                            )
 
-      server     = flexmock('server', 
+      server     = flexmock('server',
                             :logout => 'logout',
                             :login  => client
                            )
@@ -473,9 +473,9 @@ module ODDB
                             :quantity  => 1.0,
                             :ydim_data => {:name => 'name'},
                             :item_pointer => pointer
-                           ) 
+                           )
       yus_model  = flexmock('yus_model')
-      flexmock(@app, 
+      flexmock(@app,
                :yus_model => yus_model,
                :yus_get_preference => 'yus_get_preference'
               )
@@ -485,7 +485,7 @@ module ODDB
     def test_inject__ydim_id
       invoice = flexmock('invoice', :ydim_id => 'ydim_id')
       client  = flexmock('client', :invoice => 'invoice')
-      server  = flexmock('server', 
+      server  = flexmock('server',
                          :logout => 'logout',
                          :login  => client
                         )
@@ -502,8 +502,8 @@ module ODDB
                             :quantity  => 1.0,
                             :ydim_data => {:name => 'name'},
                             :item_pointer => pointer
-                           ) 
-      invoice    = flexmock('invoice', 
+                           )
+      invoice    = flexmock('invoice',
                             :description=    => nil,
                             :date=           => nil,
                             :currency=       => nil,
@@ -517,19 +517,19 @@ module ODDB
                             :odba_store      => 'odba_store',
                             :payment_received? => nil,
                             :payment_received= => nil
-                           ) 
-      client     = flexmock('client', 
+                           )
+      client     = flexmock('client',
                             :create_invoice => invoice,
                             :add_items      => nil
                            )
 
-      server     = flexmock('server', 
+      server     = flexmock('server',
                             :logout => 'logout',
                             :login  => client
                            )
       flexmock(DRb::DRbObject, :new => server)
       yus_model  = flexmock('yus_model')
-      flexmock(@app, 
+      flexmock(@app,
                :yus_model => yus_model,
                :yus_get_preference => 'yus_get_preference'
               )

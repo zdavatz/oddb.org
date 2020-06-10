@@ -31,22 +31,22 @@ class LimitForm < View::Form
 		error_message
 	end
 	def query_limit_poweruser_a(model)
-		query_limit_poweruser_txt(:query_limit_poweruser_a, 
+		query_limit_poweruser_txt(:query_limit_poweruser_a,
 			@session.state.price(365))
 	end
 	def query_limit_poweruser_b(model)
 		price = @session.state.price(30)
 		@lookandfeel.lookup(:query_limit_poweruser_b,
 			@session.class.const_get(:QUERY_LIMIT),
-			@lookandfeel.format_price(price * 100, 'EUR'))
+			@lookandfeel.format_price(price * 100, 'CHF'))
 	end
 	def query_limit_poweruser_c(model)
 		query_limit_poweruser_txt(:query_limit_poweruser_c,
 			@session.state.price(1))
 	end
 	def query_limit_poweruser_txt(key, price)
-		@lookandfeel.lookup(key, 
-			@lookandfeel.format_price(price * 100, 'EUR'))
+		@lookandfeel.lookup(key,
+			@lookandfeel.format_price(price * 100, 'CHF'))
 	end
 	def query_limit_poweruser_1(model)
 		query_limit_poweruser_radio(1)
@@ -99,17 +99,17 @@ class LimitComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	LEGACY_INTERFACE = false
 	def query_limit(model)
-		@lookandfeel.lookup(:query_limit, 
+		@lookandfeel.lookup(:query_limit,
 			@session.class.const_get(:QUERY_LIMIT))
 	end
 	def query_limit_download(model)
-		link = HtmlGrid::Link.new(:query_limit_download, 
+		link = HtmlGrid::Link.new(:query_limit_download,
 			model, @session, self)
 		link.value = link.href = @lookandfeel._event_url(:download_export)
 		link
 	end
 	def query_limit_email(model)
-		link = HtmlGrid::Link.new(:ywesee_contact_email, 
+		link = HtmlGrid::Link.new(:ywesee_contact_email,
 			model, @session, self)
 		link.href = @lookandfeel.lookup(:ywesee_contact_href)
 		link
@@ -119,7 +119,7 @@ class LimitComposite < HtmlGrid::Composite
 			@session.class.const_get(:QUERY_LIMIT))
 	end
 	def query_limit_more_info(model)
-		link = HtmlGrid::Link.new(:query_limit_more_info, 
+		link = HtmlGrid::Link.new(:query_limit_more_info,
 			model, @session, self)
 		link.href = "http://www.ywesee.com/pmwiki.php?n=Main.WekoBlog"
 		link

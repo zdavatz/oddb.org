@@ -24,19 +24,17 @@ end
 
 class TestUserSettings <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :enabled?   => true,
                         :languages  => ['languages'],
                         :language   => 'language',
                         :attributes => {},
-                        :currencies => ['currencies'],
                         :_event_url => '_event_url'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel  => @lnf,
                         :request_path => 'request_path',
-                        :currency     => 'currency'
                        )
     @model   = flexmock('model')
     @setting = ODDB::View::StubUserSettings.new(@model, @session)

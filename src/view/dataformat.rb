@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::View::DataFormat -- oddb.org -- 11.10.2012 -- yasaka@ywesee.com
-# ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
-# ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com
 
 require 'view/external_links'
 
@@ -156,13 +156,10 @@ module ODDB
 				if(price_chf != 0)
 					prices = {
 						'CHF'	=>	price_chf,
-						'EUR'	=>	convert_price(price_chf, 'EUR'),
-						'USD'	=>	convert_price(price_chf, 'USD'),
 					}
 					prices.dup.each { |cur, val|
 						prices.store(cur, @lookandfeel.format_price(val))
 					}
-					display = prices.delete(@session.currency)
           span = nil
           suffix = ''
           if @lookandfeel.enabled?(:price_history) \
@@ -184,17 +181,12 @@ module ODDB
 					span.label = true
 					span
 				elsif(!@lookandfeel.disabled?(:price_request))
-					link = wiki_link(model, :price_request, 
+					link = wiki_link(model, :price_request,
 													 :price_request_pagename)
 					link.label = true
 					link
 				else
 					@lookandfeel.lookup(:deductible_unknown)
-				end
-			end
-			def convert_price(price, currency)
-				if(price and rate = @session.get_currency_rate(currency))
-					price * rate 
 				end
 			end
 		end

@@ -16,7 +16,7 @@ class AjaxCheckout < Global
 end
 module Checkout
   include State::Admin::LoginMethods
-	CURRENCY = 'EUR'
+	CURRENCY = 'CHF'
   def ajax_autofill
     email = @session.user_input(:email)
     prefs = {}
@@ -36,7 +36,7 @@ module Checkout
         @user ||= @session.login
         reconsider_permissions(@user, self)
         @session.force_login(@user)
-      rescue Yus::UnknownEntityError 
+      rescue Yus::UnknownEntityError
         # ignore: in this case we simply create a new user in 'create_user'
       rescue Yus::AuthenticationError
         @errors.store(:pass, create_error(:e_authentication_error, :pass, nil))
@@ -92,7 +92,7 @@ module Checkout
 		invoice
 	end
 	def create_user(input)
-		hash = input.dup 
+		hash = input.dup
     ## don't store passwords in cookie vars...
 		hash.delete(:set_pass_2)
 		pass = hash.delete(:pass)

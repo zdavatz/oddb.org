@@ -112,7 +112,6 @@ module ODDB
 	end
 	class LookandfeelLanguages < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:currency_switcher,
 			:language_switcher,
 		]
 	end

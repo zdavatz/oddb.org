@@ -39,10 +39,7 @@ class TestDDDPriceTable <Minitest::Test
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
-                          :currency    => 'currency',
-                          :get_currency_rate => 1.0,
                          )
-    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose',
                           :fact => fact,
@@ -106,11 +103,8 @@ class TestDDDPriceComposite <Minitest::Test
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
-                          :currency    => 'currency',
-                          :get_currency_rate => 1.0,
                           :language    => 'language'
                          )
-    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact       = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose',
                           :fact => fact,
@@ -180,9 +174,7 @@ class TestDDDPrice <Minitest::Test
                          :sponsor     => sponsor,
                          :state       => state,
                          :allowed?    => nil,
-                         :error       => 'error',
-                         :currency    => 'currency',
-                         :get_currency_rate => 1.0,
+                         :error       => 'error'
                          :zone        => 'zone',
                          :persistent_user_input => 'persistent_user_input',
                          :language    => 'language',
@@ -192,7 +184,6 @@ class TestDDDPrice <Minitest::Test
                          :request_path => 'request_path',
                          :request_method => 'GET',
                         )
-    @session.should_receive(:convert_price).and_return{ |price,currency| price}
     fact      = flexmock('fact', :factor => 'factor')
     dose      = flexmock('dose',
                          :fact => fact,

@@ -29,7 +29,7 @@ require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'util/rack_interface'
 
-class TestOddbApp2 <MiniTest::Unit::TestCase
+class TestOddbApp2 <Minitest::Test
   TEST_EAN13 = '7601123456789'
   @@port_id ||= 20002
 	def setup

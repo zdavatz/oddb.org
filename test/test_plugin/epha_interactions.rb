@@ -141,8 +141,8 @@ module ODDB
       end
     end
 
-  class TestEphaInteractionPlugin <MiniTest::Unit::TestCase
-    
+  class TestEphaInteractionPlugin <Minitest::Test
+
     def setup
       @app = StubApp.new
       @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
@@ -172,7 +172,7 @@ module ODDB
       @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
         File.open(File.join(@@datadir, File.basename(@fileName))).read)
     end
-    
+
     def teardown
       FileUtils.rm_rf(@@vardir, :verbose => true)
       ODBA.storage = nil
@@ -199,4 +199,4 @@ module ODDB
       assert(report.match(/Added 1 interactions/))
     end
   end
-end 
+end

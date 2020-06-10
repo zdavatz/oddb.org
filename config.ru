@@ -15,7 +15,6 @@ begin # with a rescue
   require 'net/ntlm'
   require 'net/ntlm/version'
 
-  require 'util/currency'
   server_uri = ODDB::SERVER_URI
   case APPNAME
   when /google(-|_)crawler/i

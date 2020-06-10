@@ -13,7 +13,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'rubyXL'
 
-module ODDB 
+module ODDB
 	class LppvPlugin < Plugin
     # Taken from http://www.lppv.ch/20160530/wp-content/download/LPPA_D.xlsx
     # PhCode  GTIN  Artikelname IT  Bezeichnung muteDate  muteTyp
@@ -42,11 +42,11 @@ module ODDB
 		end
     def update
       @eans = []
-      doc = Nokogiri::HTML(open("http://#{LPPV_HOST}/"))
+      doc = Nokogiri::HTML(URI.open("http://#{LPPV_HOST}/"))
       links = Hash[doc.xpath('//a[@href]').map {|link| [link.text.strip, link["href"]]}]
       link = links.values.find{|x| /LPPV_D/.match(x) }
       @download_to = File.join ARCHIVE_PATH, File.basename(link)
-      File.open(@download_to, 'w+') { |f| f.write open(link).read }
+      URI.open(@download_to, 'w+') { |f| f.write URI.open(link).read }
       workbook = RubyXL::Parser.parse(@download_to)
       positions = []
       rows = 0

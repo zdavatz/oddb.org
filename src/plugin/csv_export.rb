@@ -43,7 +43,7 @@ module ODDB
         :limitation, :limitation_points, :limitation_text, :lppv,
         :registration_date, :expiration_date, :inactive_date, :export_flag,
         :casrn, :generic_type, :has_generic, :deductible, :out_of_trade,
-        :c_type, :route_of_administration, :galenic_group_de, 
+        :c_type, :route_of_administration, :galenic_group_de,
         :galenic_group_fr ]
     end
     def _export_drugs(export_name, keys)
@@ -149,7 +149,7 @@ module ODDB
       @options = { }
       recipients.concat ['log']
       @file_path = File.join EXPORT_DIR, 'ddd.csv'
-      CSV.open(@file_path, "w", {:col_sep => ';', :encoding => 'UTF-8'}) do |csv|
+      CSV.open(@file_path, "w", col_sep: ';', encoding: 'UTF-8') do |csv|
         csv << [:iksnr,
                 :package,
                 :pharmacode,

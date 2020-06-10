@@ -13,15 +13,6 @@ require 'plugin/plugin'
 require 'fileutils'
 
 module ODDB
-  class TestSessionStub <Minitest::Test
-    def setup
-      @app     = flexmock('app', :get_currency_rate => 'get_currency_rate')
-      @session = ODDB::Plugin::SessionStub.new(@app)
-    end
-    def test_get_currency_rate
-      assert_equal('get_currency_rate', @session.get_currency_rate('currency'))
-    end
-  end
 
   class TestPlugin <Minitest::Test
     def setup

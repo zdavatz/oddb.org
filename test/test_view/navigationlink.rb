@@ -14,7 +14,7 @@ module ODDB
 
 class TestNavigationLink <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :enabled?   => nil,
@@ -36,12 +36,12 @@ end
 
 class TestLanguageNavigationLink <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :language   => 'language'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel  => @lnf,
                         :request_path => 'request_path'
                        )
@@ -55,12 +55,12 @@ end
 
 class TestLanguageNavigationLinkShort <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :language   => 'language'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel  => @lnf,
                         :request_path => 'request_path'
                        )
@@ -70,38 +70,6 @@ class TestLanguageNavigationLinkShort <Minitest::Test
   def test_init
     assert_equal('Name', @link.init)
   end
-end
-
-class TestCurrencyNavigationLink <Minitest::Test
-  def setup
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :attributes => {},
-                        :_event_url => '_event_url'
-                       )
-    @session = flexmock('session', 
-                        :lookandfeel  => @lnf,
-                        :currency     => 'currency',
-                        :request_path => 'request_path'
-                       )
-    @model   = flexmock('model')
-    @link    = ODDB::View::CurrencyNavigationLink.new('name', @model, @session)
-  end
-  def test_init
-    assert_equal('_event_url', @link.init)
-  end
-  def test_init__else
-    expected = "aaa/bbb/ccc/ddd/currency/name"
-    @session = flexmock('session', 
-                        :lookandfeel  => @lnf,
-                        :currency     => 'currency',
-                        :request_path => expected,
-                       )
-    @model   = flexmock('model')
-    @link    = ODDB::View::CurrencyNavigationLink.new('name', @model, @session)
-    assert_equal(expected, @link.init)
-  end
-
 end
 
   end # View

@@ -31,7 +31,7 @@ require 'util/oddbapp'
 require 'stub/oddbapp'
 require 'util/latest'
 
-class TestOddbApp3 <MiniTest::Unit::TestCase
+class TestOddbApp3 <Minitest::Test
   @@port_id ||= 23000
 	def setup
     GC.start # start a garbage collection

@@ -25,7 +25,7 @@ class LanguageChooser < Navigation
 	HTML_ATTRIBUTES = { }
 	def build_navigation
 		offset = 0
-		@lookandfeel.languages.each_with_index { |state, idx| 
+		@lookandfeel.languages.each_with_index { |state, idx|
 			xpos = idx*2
 			pos = [xpos,0]
 			if(state.is_a?(String))
@@ -36,20 +36,7 @@ class LanguageChooser < Navigation
 			components.store([xpos-1,0], :navigation_divider) if idx > 0
 			offset = idx.next * 2
 		}
-    # TODO: move currency switcher to preferences menu
 		offset = 0
-		if( false && @lookandfeel.enabled?(:currency_switcher)) 
-			@lookandfeel.currencies.each_with_index { |state, idx| 
-				xpos = offset + idx*2
-				pos = [xpos,1]
-				if(state.is_a?(String))
-					state = state.intern
-				end
-				symbol_map.store(state, CurrencyNavigationLink)
-				components.store(pos, state)
-				components.store([xpos-1,0], :navigation_divider) if idx > 0
-			}
-		end
 	end
 end
 class LanguageChooserShort < Navigation
@@ -59,7 +46,7 @@ class LanguageChooserShort < Navigation
   HTML_ATTRIBUTES = { }
   def build_navigation
     offset = 0
-    @lookandfeel.languages.each_with_index do |state, idx| 
+    @lookandfeel.languages.each_with_index do |state, idx|
       xpos = idx*2
       pos = [xpos,0]
       if(state.is_a?(String))

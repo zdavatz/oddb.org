@@ -51,7 +51,7 @@ class InvoiceItems < HtmlGrid::List
 	def total_brutto
 		format_price(@model.inject(0) { |inj, item|
 			inj + item.total_brutto
-		}, @session.state.currency || 'EUR')
+		}, 'CHF')
 	end
 	def total_netto
 		format_price @model.inject(0) { |inj, item|

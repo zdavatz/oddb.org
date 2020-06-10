@@ -29,13 +29,13 @@ module ODDB
 
 class TestRegisterDownloadForm <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :attributes => {},
                         :_event_url => '_event_url',
                         :lookup     => 'lookup',
                         :base_url   => 'base_url'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :logged_in?  => nil,
                         :user        => 'user',
@@ -56,12 +56,12 @@ class TestRegisterDownloadForm <Minitest::Test
     assert_kind_of(ODDB::View::User::StubRegisterDownloadForm, form)
   end
   def test_hidden_fields
-    flexmock(@session, 
+    flexmock(@session,
              :state      => 'state',
              :zone       => 'zone',
              :user_input => ['user_input'],
             )
-    flexmock(@lnf, 
+    flexmock(@lnf,
              :flavor => 'flavor',
              :language => 'language'
             )
@@ -72,7 +72,7 @@ end
 
 class TestRegisterDownloadComposite <Minitest::Test
   def test_register_download_form
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :_event_url => '_event_url',
@@ -80,8 +80,8 @@ class TestRegisterDownloadComposite <Minitest::Test
                           :base_url   => 'base_url',
                           :format_price => 1.23
                          )
-    state      = flexmock('state', :currency => 'CHF')
-    @session   = flexmock('session', 
+    state      = flexmock('state')
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :zone        => 'zone',
                           :get_cookie_input => 'get_cookie_input',
@@ -91,7 +91,7 @@ class TestRegisterDownloadComposite <Minitest::Test
                           :state       => state,
                           :user        => 'user'
                          )
-    item       = flexmock('item', 
+    item       = flexmock('item',
                           :quantity => 1.0,
                           :text     => 'text',
                           :total_netto => 12.34,

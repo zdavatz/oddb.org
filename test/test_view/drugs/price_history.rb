@@ -24,34 +24,32 @@ module ODDB
 
 class TestPriceHistoryList <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :event_url  => 'event_url',
                         :disabled?  => nil,
-                        :enabled?   => nil, 
+                        :enabled?   => nil,
                         :format_price => 'format_price'
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :event       => 'event',
-                        :get_currency_rate => 1.0,
-                        :currency    => 'CHF',
                         :request_path => 'request_path',
                        )
-    ppublic  = flexmock('public', 
+    ppublic  = flexmock('public',
                         :authority => 'authority',
                         :to_i      => 1,
                         :origin    => 'url date',
                         :mutation_code => 'mutation_code'
-                       ) 
-    exfactory = flexmock('exfactory', 
+                       )
+    exfactory = flexmock('exfactory',
                          :authority => 'authority',
                          :to_i      => 1,
                          :origin    => 'origin',
                          :mutation_code => 'mutation_code'
                         )
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
                         :exfactory  => exfactory,
                         :public     => ppublic,
                         :percent_exfactory => 0.5,
@@ -78,16 +76,16 @@ end
 
 class TestPriceHistoryComposite <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :event_url  => 'event_url'
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :event       => 'event'
                          )
-    package    = flexmock('package', 
+    package    = flexmock('package',
                           :name  => 'name',
                           :size  => 'size',
                           :iksnr => 'iksnr',
@@ -103,7 +101,7 @@ end
 
 class TestPriceHistory <Minitest::Test
   def setup
-    @lnf      = flexmock('lookandfeel', 
+    @lnf      = flexmock('lookandfeel',
                          :lookup     => 'lookup',
                          :enabled?   => nil,
                          :attributes => {},
@@ -120,11 +118,11 @@ class TestPriceHistory <Minitest::Test
     user      = flexmock('user', :valid? => nil)
     sponsor   = flexmock('sponsor', :valid? => nil)
     snapback_model = flexmock('snapback_model', :pointer => 'pointer')
-    state     = flexmock('state', 
+    state     = flexmock('state',
                          :direct_event   => 'direct_event',
                          :snapback_model => snapback_model
                         )
-    @session  = flexmock('session', 
+    @session  = flexmock('session',
                          :lookandfeel => @lnf,
                          :user        => user,
                          :sponsor     => sponsor,
@@ -138,7 +136,7 @@ class TestPriceHistory <Minitest::Test
                          :request_path => 'request_path',
                          :request_method => 'GET',
                         )
-    @package  = flexmock('package', 
+    @package  = flexmock('package',
                          :name  => 'name',
                          :size  => 'size',
                          :iksnr => 'iksnr',
@@ -147,7 +145,7 @@ class TestPriceHistory <Minitest::Test
 
   end
   def test_init
-    model    = flexmock([], 
+    model    = flexmock([],
                          :package => @package,
                          :pointer_descr= => nil
                         )
@@ -155,7 +153,7 @@ class TestPriceHistory <Minitest::Test
     assert_equal({}, template.init)
   end
   def test_init__no_package
-    model    = flexmock([], 
+    model    = flexmock([],
                          :package => nil,
                          :pointer_descr= => nil
                         )

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::NavigationLink -- oddb -- 20.11.2002 -- hwyss@ywesee.com 
+# View::NavigationLink -- oddb -- 20.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/link'
 
@@ -37,24 +37,5 @@ module ODDB
         @value = @name.to_s.capitalize
       end
     end
-		class CurrencyNavigationLink < HtmlGrid::Link
-			CSS_CLASS = "list"
-			def init
-				super
-				current = @session.currency
-				unless(current == @name.to_s)
-					path = @session.request_path.dup
-					path.slice!(/\/$/u)
-					if(path.count('/') < 3)
-						args = { :currency => @name }
-						path = @lookandfeel._event_url(:self, args)
-					else
-						path.slice!(/\/currency\/[^\/]*/u)
-						path << '/currency/' << @name.to_s
-					end
-					@attributes.store("href", path)
-				end
-			end
-		end
 	end
 end

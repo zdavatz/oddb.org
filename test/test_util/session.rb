@@ -141,10 +141,6 @@ module ODDB
     def test_currency
       assert_equal('CHF', @session.currency)
     end
-    def test_get_currency_rate
-      flexmock(@app, :get_currency_rate => 'get_currency_rate')
-      assert_equal('get_currency_rate', @session.get_currency_rate('CHF'))
-    end
     def test_interaction_basket
       @session.should_receive(:user_input).with(:substance_ids).and_return(nil)
       assert_equal([], @session.interaction_basket)

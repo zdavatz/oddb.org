@@ -10,7 +10,6 @@ require 'odba/index_definition'
 require 'odba/drbwrapper'
 require 'odba/18_19_loading_compatibility'
 require 'custom/lookandfeelbase'
-require 'util/currency'
 require 'util/failsafe'
 require 'util/ipn'
 require 'util/oddbconfig'
@@ -45,7 +44,7 @@ class OddbPrevalence
 		"@atc_chooser", "@bean_counter", "@sorted_fachinfos", "@sorted_feedbacks",
     "@sorted_minifis",
 	]
-	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
+	ODBA_SERIALIZABLE = [ '@rss_updates' ]
   attr_reader :address_suggestions, :atc_chooser, :atc_classes,
     :companies, :divisions, :doctors, :experiences, :fachinfos,
     :galenic_groups, :hospitals, :invoices, :last_medication_update, :last_update,
@@ -67,7 +66,6 @@ class OddbPrevalence
 		@atc_classes ||= {}
 		@commercial_forms ||= {}
 		@companies ||= {}
-		@currency_rates ||= {}
     @divisions ||= {}
 		@doctors ||= {}
 		@epha_interactions ||= []
@@ -487,9 +485,6 @@ class OddbPrevalence
 		user = ODDB::CompanyUser.new
 		@users.store(user.oid, user)
 	end
-	def currencies
-		@currency_rates.keys.sort
-	end
   def delete_all_narcotics
     @narcotics.values.each do |narc|
       delete(narc.pointer)
@@ -719,9 +714,6 @@ class OddbPrevalence
 	end
 	def generic_group(package_pointer)
 		@generic_groups[package_pointer]
-	end
-	def get_currency_rate(symbol)
-    ODDB::Currency.rate('CHF', symbol)
 	end
   def index_therapeuticus(code)
     @indices_therapeutici[code.to_s]
@@ -1177,9 +1169,6 @@ class OddbPrevalence
 			seq.concat(reg.sequences.values)
 		}
 	end
-	def set_currency_rate(symbol, value)
-		@currency_rates.store(symbol, value)
-	end
 	def slate(name)
 		@slates[name]
 	end
@@ -1502,7 +1491,7 @@ module ODDB
       end
 
     rescue => error
-      puts "Error initializing #{error} with @@primary_server #{@@primary_server}"
+      puts "Error initializing #{error} with @@primary_server #{@@primary_server}" unless defined?(Minitest)
     end
     def method_missing(m, *args, &block)
       @cache_mutex.synchronize do
@@ -1564,7 +1553,7 @@ module ODDB
       invoice_pointer = Persistence::Pointer.new(:invoice)
       time = Time.now
       expiry = InvoiceItem.expiry_time(days, time)
-      invoice_data = { :currency => State::PayPal::Checkout::CURRENCY }
+      invoice_data = { }
       item_data = {
         :duration     => days,
         :expiry_time  => expiry,
@@ -1720,7 +1709,7 @@ module ODDB
     end
     def grant_download(email, filename, price, expires=Time.now+2592000)
       ip = Persistence::Pointer.new(:invoice)
-      inv = update ip.creator, :yus_name => email, :currency => 'EUR'
+      inv = update ip.creator, :yus_name => email
       itp = inv.pointer + :item
       update itp.creator, :text => filename, :price => price, :time => Time.now,
                           :type => :download, :expiry_time => expires,
