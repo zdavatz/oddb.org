@@ -32,13 +32,13 @@ describe "ch.oddb.org" do
 
       it "we should find the corresponding list of #{kind}" do
         @browser.goto url
-        expect(@browser.url).to eq(url)
+        expect(@browser.url).to match(url)
         expect(@browser.link(name: link_name).exist?).to eq(true)
       end
 
       it "we should find ranges in #{url}" do
         @browser.goto url
-        expect(@browser.url).to eq(url)
+        expect(@browser.url).to match(url)
         expect(@browser.link(name: link_name).exist?).to eq(true)
         @browser.link(name: link_name).click
         expect(@browser.link(name: 'range').exist?).to eq(true)
@@ -76,11 +76,12 @@ describe "ch.oddb.org" do
       @idx = 0
       waitForOddbToBeReady(@browser, OddbUrl)
       logout
-      login(AdminUser, AdminPassword)
+      expect(login(AdminUser, AdminPassword)).to eq(true)
     end
 
     it "in home_companies we should see all companies when logged in as admin" do
       @browser.goto OddbUrl + '/de/gcc/home_companies'
+      @browser.link(name: CompanyListName).click
       check_nr_companies(true)
     end
 

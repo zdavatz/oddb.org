@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LogGroupTest -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com 
-# ODDB::LogGroupTest -- oddb.org -- 16.05.2003 -- hwyss@ywesee.com 
+# ODDB::LogGroupTest -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::LogGroupTest -- oddb.org -- 16.05.2003 -- hwyss@ywesee.com
 
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -10,6 +10,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'util/loggroup'
+require 'util/currency'
 
 module ODDB
 	class LogGroup
@@ -56,5 +57,15 @@ class TestLogGroup <Minitest::Test
   def test_years
     @group.instance_eval('@logs = {Time.local(2011,2,3) => "value"}')
     assert_equal([2011], @group.years)
+  end
+  def test_marshall
+    hexdump = "0408553a09446174655b0b690069006902c0a8553a0d526174696f6e616c5b076c2b0800001a71180269029dff6900660c32323939313631"
+             # 0408553a09446174655b0b69006900690069006900660c32323939313631
+    binary = [hexdump].pack('H*')
+    obj = ::Marshal.load(binary)
+   assert_equal(Date, obj.class)
+   assert_equal(-4712, obj.year)
+   assert_equal(1, obj.month)
+   assert_equal(1, obj.day)
   end
 end

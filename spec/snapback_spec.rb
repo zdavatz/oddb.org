@@ -96,6 +96,7 @@ describe "ch.oddb.org snapback" do
       # puts "\nRunning test step #{nr}\n  #{current.inspect}"
       link = @browser.link(visible_text:  current.link_to_click)
       # puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
+      # binding.pry unless link.exist?
       expect(link.exist?).to be true
       link.click
       check_home_links
@@ -126,6 +127,7 @@ describe "ch.oddb.org snapback" do
       while current and nr < step_to_test
         nr += 1
         link = @browser.link(visible_text:  current.link_to_click)
+        # binding.pry unless link.exist?
         expect(link.exist?).to be true
         @prev_url = @browser.url.clone
         link.click

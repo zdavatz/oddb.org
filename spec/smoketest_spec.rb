@@ -310,7 +310,7 @@ describe "ch.oddb.org" do
 
   it "should open a sequence specific patinfo" do # 15219 Zymafluor
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/15219"; small_delay
-    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+  #   require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
@@ -318,7 +318,7 @@ describe "ch.oddb.org" do
 
   it "should open a package specific patinfo" do # 43788 Tramal
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
-    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+  #   require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
     # As this opens a new window we must focus on it
@@ -345,7 +345,7 @@ describe "ch.oddb.org" do
   end
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
     @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
-    require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
+  #   require 'pry'; binding.pry unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i

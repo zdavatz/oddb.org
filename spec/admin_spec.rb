@@ -58,7 +58,7 @@ view org.oddb.patinfo_stats.associated
 credit org.oddb.download
 )
   def create_or_update_user(email = session_uniq_email, yus_rights= ['yus_privileges[login|org.oddb.CompanyUser]'])
-    require 'pry'; binding.pry unless @browser.link(visible_text:  "Admin").exists?
+    # require 'pry'; binding.pry unless @browser.link(visible_text:  "Admin").exists?
     @browser.link(visible_text: 'Admin').click
     @browser.link(visible_text: 'Benutzer').click
     @browser.button(name: 'new_user').click
@@ -97,7 +97,8 @@ credit org.oddb.download
     @browser.file_field(name: "patinfo_upload").set(original)
     @browser.button(name: "update").click
     expect(@browser.link(visible_text:  "PI").exists?).to be true
-    new_content = URI.open(@browser.link(visible_text:  "PI").href, 'rb', ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read;
+    new_content = URI.open(@browser.link(visible_text:  "PI").href, 'rb', ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
+                           ).read;
     org_content = URI.open(original, 'rb').read;
     expect(org_content).to eq new_content
   end

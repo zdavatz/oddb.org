@@ -19,7 +19,7 @@ describe "ch.oddb.org" do
     unless chooser and chooser.present?
       msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
       puts msg
-      require 'pry'; binding.pry
+      # require 'pry'; binding.pry
       raise msg
     end
     0.upto(30).each{ |idx|
@@ -66,22 +66,6 @@ describe "ch.oddb.org" do
     createScreenshot(@browser, '_'+$searchbar_test_id.to_s) if @browser
     $searchbar_test_id += 1
   end
-
-  { '125Dihydroxycholecalciferol 1000' => '1,25-Dihydroxycholecalciferol',
-    '125Dihydroxycholecalciferol'      => '1,25-Dihydroxycholecalciferol',
-    '125'                              => 'CA 125',
-  }.each {
-    |searchterm, searchtext|
-    it "should be possible to find #{searchtext} when searching via #{searchterm} in analysen" do
-      @browser.link(name: 'analysis').click;  small_delay
-
-      small_delay unless @browser.text_field(name: "search_query").exists?
-      @browser.text_field(name: "search_query").value = searchterm
-      @browser.button(name: 'search').click;  small_delay
-      expect(@browser.text).not_to match LeeresResult
-      expect(@browser.text).to match /#{searchtext}/
-    end
-  }  unless ['just-medical'].index(Flavor)
 
   it "should work with the privatetemplate searchbar" do
     field_name = 'search_query'
