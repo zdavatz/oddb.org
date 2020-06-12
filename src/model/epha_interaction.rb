@@ -3,6 +3,7 @@
 require 'util/persistence'
 require 'util/searchterms'
 require 'util/language'
+require 'util/logfile'
 require 'csv'
 
 module ODDB
@@ -60,10 +61,10 @@ module ODDB
         epha_interaction.effect = elements[6]
         epha_interaction.measures = elements[7]
         epha_interaction.severity = elements[8]
-        @@epha_interactions [ [epha_interaction.atc_code_self, epha_interaction.atc_code_other] ] = epha_interaction        
+        @@epha_interactions [ [epha_interaction.atc_code_self, epha_interaction.atc_code_other] ] = epha_interaction
       end
       endTime = Time.now
-      puts "Took #{ (endTime - startTime).to_i} seconds to load #{csv_file}"
+      LogFile.debug("Took #{ (endTime - startTime).to_i} seconds to load #{csv_file}")
     end
 
     def self.calculate_atc_codes(drugs)

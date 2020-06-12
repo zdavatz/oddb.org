@@ -59,7 +59,7 @@ module ODDB
     def self.get_preparations_url
       @@gpreparations_url
     end
-     
+
     def self.get_memory_error
       $swissmedic_memory_error
     end
@@ -123,7 +123,7 @@ public
       idx = -999
       if opts[:update_compositions]
         # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts}"
-        return true if opts[:iksnrs] == nil 
+        return true if opts[:iksnrs] == nil
         return !!opts[:iksnrs].index(iksnr)
       end
       if opts[:iksnrs] == nil or idx = opts[:iksnrs].index(iksnr)
@@ -284,7 +284,7 @@ public
       start_time = Time.new
       threads = []
       threads << Thread.new do trace_memory_useage end
-      sleep 0.01 unless threads.last        
+      sleep 0.01 unless threads.last
       if threads.last
         threads.last.priority = threads.last.priority + 1
       end
@@ -364,10 +364,10 @@ public
         @update_time = (end_time / 60.0).to_i
         if File.exists?(file2open) and File.exists?(@latest_packungen) and FileUtils.compare_file(file2open, @latest_packungen)
           LogFile.debug " rm_f #{file2open} after #{@update_time} minutes"
-          FileUtils.rm_f(file2open, :verbose => true)
+          FileUtils.rm_f(file2open, verbose: true)
         else
           LogFile.debug " cp #{file2open} #{@latest_packungen} after #{@update_time} minutes"
-          FileUtils.cp file2open, @latest_packungen, :verbose => true
+          FileUtils.cp file2open, @latest_packungen, verbose: true
         end
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)|
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
@@ -601,7 +601,7 @@ public
       latest_name = File.join @archive, "Präparateliste-latest.xlsx"
       if target_name = get_latest_file('Präparateliste')
         LogFile.debug " cp #{target_name} #{latest_name}"
-        FileUtils.cp target_name, latest_name, :verbose => true
+        FileUtils.cp target_name, latest_name, verbose: true
       end
       seq_indices = {}
       [ :seqnr, :export_flag ].each do |key|

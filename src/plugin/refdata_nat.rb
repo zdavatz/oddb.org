@@ -30,7 +30,7 @@ module ODDB
       xml = nil
       begin
         file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_nat.xml')
-        FileUtils.rm_f(file2save, :verbose => false)
+        FileUtils.rm_f(file2save, verbose: false)
         @client = Savon.client(wsdl: "http://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
         # TYPE Search Type
         # PTYPE Partner Type, JUR or NAT

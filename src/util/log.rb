@@ -11,8 +11,7 @@ require 'util/mail'
 module ODDB
 	class Log
 		include Persistence
-		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
-			'@files']
+		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients', '@files']
 		attr_accessor :report, :pointers, :recipients, :change_flags,
 			:files, :parts, :date_str
 		attr_reader :date

@@ -1465,12 +1465,12 @@ module ODDB
       @unknown_user = unknown_user
       @app = app
       super()
-      puts "process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds"  unless defined?(MiniTest)
+      LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds")  unless defined?(MiniTest)
       @rss_mutex = Mutex.new
       @cache_mutex = Mutex.new
       @admin_threads = ThreadGroup.new
       @system = ODBA.cache.fetch_named('oddbapp', self){ OddbPrevalence.new  }
-      puts "init system starting after #{Time.now - start} seconds" unless defined?(MiniTest)
+      LogFile.debug("init system starting after #{Time.now - start} seconds") unless defined?(MiniTest)
       @system.init
       @system.odba_store
       return if auxiliary
@@ -1486,12 +1486,12 @@ module ODDB
           GC.start
         end
         @@primary_server = DRb.start_service(server_uri, self)
-        puts "initialized: #{Time.now - start}"  unless defined?(MiniTest)
+        LogFile.debug("initialized: #{Time.now - start}") unless defined?(MiniTest)
         @@last_start_time = (Time.now - start).to_i
       end
 
     rescue => error
-      puts "Error initializing #{error} with @@primary_server #{@@primary_server}" unless defined?(Minitest)
+      LogFile.debug("Error initializing #{error} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
     end
     def method_missing(m, *args, &block)
       @cache_mutex.synchronize do

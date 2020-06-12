@@ -38,7 +38,7 @@ class SubHeader < HtmlGrid::Composite
   end
   def migel_code(model=@model, session=@session)
     link = HtmlGrid::Link.new(:to_s, @model, @session, self)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     key_value = {:migel_code => code}
     event = :migel_search
     link.href = @lookandfeel._event_url(event, key_value)
@@ -99,7 +99,7 @@ class SearchedList < HtmlGrid::List
       else
         value = ''
       end
-      value.to_s.force_encoding('utf-8')
+      value.to_s.encode('utf-8')
     end
   end
   def init
@@ -112,7 +112,7 @@ class SearchedList < HtmlGrid::List
     else
       name = model.article_name
     end
-    name.to_s.force_encoding('utf-8') if name
+    name.to_s.encode('utf-8') if name
   end
   def companyname(model = @model, session = @session)
     if model.companyname.respond_to?(session.language)
@@ -120,7 +120,7 @@ class SearchedList < HtmlGrid::List
     else
       name = model.companyname
     end
-    name.to_s.force_encoding('utf-8') if name
+    name.to_s.encode('utf-8') if name
   end
   def size(model = @model, session = @session)
     if model.size.respond_to?(session.language)
@@ -128,7 +128,7 @@ class SearchedList < HtmlGrid::List
     else
       size = model.size
     end
-    size.to_s.force_encoding('utf-8') if size
+    size.to_s.encode('utf-8') if size
   end
   def compose_list(model = @model, offset=[0,0])
     # Grouping products with migel_code
@@ -168,7 +168,7 @@ class SearchedList < HtmlGrid::List
       end
       link.href = @lookandfeel._event_url(@session.event, args)
     elsif @model.first
-      args = [:migel_code, @model.first.migel_code.force_encoding('utf-8').gsub('.',''), sort_way, component.to_s]
+      args = [:migel_code, @model.first.migel_code.encode('utf-8').gsub('.',''), sort_way, component.to_s]
       if page
         args.concat [:page, page+1]
       end

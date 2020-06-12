@@ -161,12 +161,17 @@ class UserCompanyForm < View::Form
 		address_delegate(model, :address)
 	end
 	def address_delegate(model, symbol)
-		input = HtmlGrid::InputText.new(symbol,
-			model.address(0), @session, self)
-		if(input.value.is_a?(Array))
-			input.value = input.value.join(', ')
-		end
-		input
+    begin
+      return unless model
+      input = HtmlGrid::InputText.new(symbol, model.address(0), @session, self)
+      if(input.value.is_a?(Array))
+        input.value = input.value.join(', ')
+        input
+      end
+      rescue => error
+        binding.pry
+        nil
+      end
 	end
 	def city(model, session=@session)
 		address_delegate(model, :city)
@@ -182,6 +187,7 @@ class UserCompanyForm < View::Form
 	end
 	def patinfo_stats(model, session=@session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
+    return link unless model
     args = unless model.ean13.to_s.strip.empty?
              {:company => model.ean13}
            else
@@ -448,9 +454,11 @@ class CompanyComposite < HtmlGrid::Composite
 	}
   LEGACY_INTERFACE = false
   def inactive_packages(model, session=@session)
+    return unless model
     InactivePackages.new(model.inactive_packages, @session, self)
   end
 	def inactive_registrations(model, session=@session)
+    return unless model
 		InactiveRegistrations.new(model.inactive_registrations, session, self)
 	end
 end

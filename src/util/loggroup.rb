@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# LogGroup -- oddb -- 16.05.2003 -- hwyss@ywesee.com 
+# LogGroup -- oddb -- 16.05.2003 -- hwyss@ywesee.com
 
 require 'date'
 require 'util/log'
@@ -24,12 +24,16 @@ module ODDB
 			@logs[date]
 		end
 		def months(year)
-			@logs.keys.select { |date| 
-				date.year == year 
-			}.collect { |date| 
-				date.month 
+			@logs.keys.select { |date|
+				date.year == year
+			}.collect { |date|
+				date.month
 			}.sort
 		end
+    def marshal_load array
+      require 'pry'; binding.pry
+      @name, @version = array
+    end
 		def newest_date
 			@logs.keys.max
 		end

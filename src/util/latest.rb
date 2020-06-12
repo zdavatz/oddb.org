@@ -18,7 +18,7 @@ module ODDB
     end
 
     def self.fetch_with_http(url)
-      open(url) do |input|
+      URI.open(url) do |input|
         input.read
       end
     end
@@ -30,7 +30,7 @@ module ODDB
       file_today = get_daily_name(latest)
       file_yesterday = latest.sub('latest', (@@today.to_date-1).strftime("%Y.%m.%d"))
       if File.exist?(file_today) and File.exists?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
-        FileUtils.rm_f(file_yesterday, {:verbose => false})
+        FileUtils.rm_f(file_yesterday, verbose: false)
       end
 
       if File.exist?(file_today) and File.exists?(latest) and File.size(latest) == File.size(file_today)
@@ -46,7 +46,7 @@ module ODDB
           return latest
         else
           Latest.log "copy file_today #{file_today} #{File.exist?(file_today)} (#{File.size(file_today)} bytes) to #{latest}"
-          FileUtils.cp(file_today, latest, {:verbose => false})
+          FileUtils.cp(file_today, latest, verbose: false)
           return false
         end
       end

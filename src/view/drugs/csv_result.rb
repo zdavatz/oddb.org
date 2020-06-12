@@ -250,7 +250,7 @@ class CsvResult < HtmlGrid::Component
         txt = sl.limitation_text
         if txt.respond_to?(@lookandfeel.language) and lim_txt = txt.send(@lookandfeel.language).to_s
           @counts['limitation_texts'] += 1
-          lim_txt.force_encoding('utf-8')
+          lim_txt.encode('utf-8')
           lim_txt.gsub(/\n/u, '|')
         end
       rescue => e

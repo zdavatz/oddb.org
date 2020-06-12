@@ -5,6 +5,7 @@ begin
 rescue LoadError
 end
 $stdout.sync = true
+$stdout.puts "#{Time.now} Starting #{$0}"
 
 lib_dir = File.expand_path(File.join(File.dirname(__FILE__), 'src').untaint)
 $LOAD_PATH << lib_dir
@@ -13,7 +14,7 @@ begin # with a rescue
   require 'sbsm/logger'
   require 'rubyntlm'
   require 'net/ntlm'
-  require 'net/ntlm/version'
+  require "config"
 
   server_uri = ODDB::SERVER_URI
   case APPNAME

@@ -15,7 +15,7 @@ require 'fileutils'
 module ODDB
 	class Plugin
     class SessionStub
-      attr_reader :app, :flavor, :http_protocol, :server_name, :default_language
+      attr_reader :app, :flavor, :http_protocol, :server_name, :default_language, :currency
       attr_accessor :language, :lookandfeel
       def initialize(app)
         @app = app
@@ -24,6 +24,8 @@ module ODDB
         @http_protocol = 'https'
         @server_name = SERVER_NAME
         @default_language = 'de'
+        @currency = 'CHF'
+        @currency_rates = {}
       end
       def method_missing(*args)
       end
@@ -101,7 +103,7 @@ module ODDB
       @app.odba_isolated_store
     end
     def fetch_with_http(url)
-      open(url) do |input|
+      URI.open(url) do |input|
         input.read
       end
     end

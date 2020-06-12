@@ -32,8 +32,8 @@ module ODDB
       @dated_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv"
       @report_shortage = []
       @report_nomarketing = []
-      FileUtils.rm_f(@latest_shortage, :verbose => true)    if @options[:reparse] && File.exist?(@latest_shortage)
-      FileUtils.rm_f(@latest_nomarketing, :verbose => true) if @options[:reparse] && File.exist?(@latest_nomarketing)
+      FileUtils.rm_f(@latest_shortage, verbose: true)    if @options[:reparse] && File.exist?(@latest_shortage)
+      FileUtils.rm_f(@latest_nomarketing, verbose: true) if @options[:reparse] && File.exist?(@latest_nomarketing)
     end
     def date
       @@today
@@ -57,7 +57,7 @@ module ODDB
     def export_drugshortage_csv
       @options = { }
       if report.empty? && File.exist?(@csv_file_path)
-        FileUtils.cp(@csv_file_path, @dated_csv_file_path, :verbose => true)
+        FileUtils.cp(@csv_file_path, @dated_csv_file_path, verbose: true)
         FileUtils.rm_f(@yesterday_csv_file_path) if File.exist?(@yesterday_csv_file_path) && IO.read(@yesterday_csv_file_path).eql?(IO.read(@csv_file_path))
         return
       end
@@ -133,12 +133,12 @@ module ODDB
       if @deleted_shortages.size > 0 || @changes_shortages.size > 0
         @has_relevant_changes = true
       else
-        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage), :verbose => true)
+        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage), verbose: true)
       end
     end
     def report_nomarketing
       unless @found_nomarketings && @found_nomarketings.size  > 0
-        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), :verbose => true)
+        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), verbose: true)
         @report_summary << "Nothing changed in #{@nomarketing_href}"
         return
       end
@@ -154,7 +154,7 @@ module ODDB
       @report_nomarketing << "\nIKSNR not found in oddb database:"
       @missing_nomarketings.each {|iksnr| @report_nomarketing << "#{iksnr}" }
       if @deleted_nomarketings.size > 0 || @changes_nomarketings.size > 0
-        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), :verbose => true)
+        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), verbose: true)
       else
         @has_relevant_changes = true
       end

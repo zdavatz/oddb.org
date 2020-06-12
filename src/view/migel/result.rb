@@ -63,7 +63,7 @@ class List < HtmlGrid::List
       else
         value = ''
       end
-      value.to_s.force_encoding('utf-8')
+      value.to_s.encode('utf-8')
     end
   end
   def init
@@ -75,7 +75,7 @@ class List < HtmlGrid::List
     nil
   end
   def limitation_link(model)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     link = HtmlGrid::Link.new(:square_limitation, nil, @session, self)
     link.href = @lookandfeel._event_url(:migel_search, {:migel_limitation => code.delete('.')})
     link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
@@ -90,17 +90,17 @@ class List < HtmlGrid::List
     end
   end
   def product_description(model)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     link = PointerLink.new(:to_s, model, @session, self)
     text = [
       model,
-      (model.product_text.to_s.force_encoding('utf-8') if(model.respond_to?(:product_text))),
+      (model.product_text.to_s.encode('utf-8') if(model.respond_to?(:product_text))),
     ].compact.collect { |item|
       if item.is_a? String
         item
       elsif item.respond_to?(@session.language)
         item.send(@session.language)
-      end.force_encoding('utf-8')
+      end.encode('utf-8')
     }.join(': ').gsub("\n", ' ')
     if(text.size > 60)
       text = text[0,57] << '...'
@@ -118,7 +118,7 @@ class List < HtmlGrid::List
     link
   end
   def migel_code(model)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     if model.respond_to?(:items) and items = model.items and !items.empty?
       # If a migelid has only inactive products, link to empty result
       link = PointerLink.new(:to_s, model, @session, self)

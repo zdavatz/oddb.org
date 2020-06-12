@@ -640,10 +640,10 @@ module ODDB
 
       # check and compare the latest file and save
       if(File.exists?(latest_file) && FileUtils.compare_file(save_file, latest_file))
-        FileUtils.rm_f(save_file, :verbose => true)
+        FileUtils.rm_f(save_file, verbose: true)
         return nil
       else
-        FileUtils.cp(save_file, latest_file, :verbose => true)
+        FileUtils.cp(save_file, latest_file, verbose: true)
         return save_file
       end
     rescue EOFError

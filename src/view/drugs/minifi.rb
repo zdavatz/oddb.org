@@ -21,10 +21,10 @@ class MiniFiChapter < Chapter
   def link_product(context, html)
     ptrn = /#{@model.name}(®|\(TM\))?/u
     link = HtmlGrid::Link.new(:name, @model, @session, self)
-    link.href = @lookandfeel._event_url(:search, 
-                                        :search_type => 'st_sequence', 
+    link.href = @lookandfeel._event_url(:search,
+                                        :search_type => 'st_sequence',
                                         :search_query => @model.name.gsub('/', '%2F'))
-    html.force_encoding('utf-8')
+    html.encode('utf-8')
   end
   def to_html(context)
     link_product(context, sanitize(sections(context, @value.sections))) << footer(context).to_s
@@ -35,8 +35,8 @@ class MiniFiChapter < Chapter
         atc_ddd_link(@registration.atc_classes.first),
         comarketing(@registration),
         google_search(@registration),
-      ].compact.collect { |part| 
-        part.to_html(context) 
+      ].compact.collect { |part|
+        part.to_html(context)
       }.join(@lookandfeel.lookup(:navigation_divider))
     end
   end
@@ -49,7 +49,7 @@ class MiniFiComposite < HtmlGrid::Composite
   CSS_MAP = {
     [0,0] => 'th',
     [0,1]	=> 'list',
-  }	
+  }
   LEGACY_INTERFACE = false
   def document(model)
     if(model and chapter = model.send(@session.language))

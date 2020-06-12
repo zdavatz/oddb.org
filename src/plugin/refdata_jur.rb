@@ -33,12 +33,12 @@ module ODDB
       end
       do_match
     end
-    
+
     def self.download_partners_xml
       xml = nil
       begin
         file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_jur.xml')
-        FileUtils.rm_f(file2save, :verbose => false)
+        FileUtils.rm_f(file2save, verbose: false)
         @client = Savon.client(wsdl: "http://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
         # TYPE Search Type
         # PTYPE Partner Type, JUR or NAT
@@ -361,7 +361,7 @@ module ODDB
                 descr = item[:DESCR2]
                 if comp = @app.company_by_gln(gln)
                   # log("#{gln}: Overriding ba_type #{ba_type} from database #{comp.business_area} descr2 #{descr}")
-                  ba_type = comp.business_area 
+                  ba_type = comp.business_area
                 else
                   if descr
                     descr.upcase!
@@ -381,7 +381,7 @@ module ODDB
               details = get_detail_to_gln(gln)
               hash.merge!(details)
             end
-            company = store_company(hash, gln, ba_type)                  
+            company = store_company(hash, gln, ba_type)
           end
           if inactive
             @partners_skipped [gln.to_i] = gln.to_i

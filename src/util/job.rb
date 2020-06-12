@@ -3,6 +3,7 @@ require 'drb'
 require 'config'
 require 'util/oddbapp'
 require 'util/log'
+require 'util/logfile'
 require 'etc/db_connection'
 
 module ODDB
@@ -31,7 +32,7 @@ module Job
           File.open(PID_FILE, 'w') { |fh|
             fh << [Process.pid, current_job[:basename], Time.now].join(',')
           }
-          puts "#{PID_FILE} is created"
+          LogFile.debug "#{PID_FILE} is created (pid is #{Process.pid})"
         end
         ODBA.cache.setup
         ODBA.cache.clean_prefetched

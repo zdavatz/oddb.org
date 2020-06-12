@@ -59,7 +59,7 @@ module ODDB
           escape_method = (format.symbol?) ? :escape_symbols : :escape
           str = self.send(escape_method, txt[format.range])
           if(style.empty? && tag == :span)
-            res << str.force_encoding('utf-8')
+            res << str.encode('utf-8')
           elsif tag == :a
             attrs.store 'href', str.strip
             res << context.send(tag, attrs) { str }
@@ -77,13 +77,13 @@ module ODDB
           ## paragraphs on the same line as the section-subheading
           context.span({ 'style' => self.class::PAR_STYLE }) {
             begin
-              res.gsub("\n", context.br.force_encoding('utf-8'))
+              res.gsub("\n", context.br.encode('utf-8'))
             rescue ArgumentError
-              br = context.br.force_encoding('utf-8')
+              br = context.br.encode('utf-8')
               res = res.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
               res.gsub("\n", br)
             end
-          } << context.br.force_encoding('utf-8')
+          } << context.br.encode('utf-8')
         end
       end
       def heading(context)
@@ -117,7 +117,7 @@ module ODDB
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
             begin
-              /\n\s*$/u.match(section.subheading.force_encoding('utf-8'))
+              /\n\s*$/u.match(section.subheading.encode('utf-8'))
             rescue
               section.subheading = section.subheading.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
             end
@@ -126,7 +126,7 @@ module ODDB
             elsif(!section.subheading.strip.empty?)
               head << "&nbsp;"
             end
-            head.force_encoding('utf-8')
+            head.encode('utf-8')
             head << paragraphs(context, section.paragraphs)
           }
         }.join

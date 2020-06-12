@@ -35,7 +35,7 @@ module ODDB
       if File.exists?(path) and File.extname(path) == '.csv'
         @updated_divisibilities = []
         @updated_sequences      = []
-        CSV.foreach(path, :encoding => 'UTF-8', :col_sep => ';') do |row|
+        CSV.foreach(path, encoding: 'UTF-8', col_sep: ';') do |row|
           iksnr = ikscd = nil
           if ean = row[0] and /^\d{13}/u =~ ean
             iksnr = ean[4..8]

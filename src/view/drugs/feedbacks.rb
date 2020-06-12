@@ -66,7 +66,7 @@ class FeedbackList < View::FeedbackList
 		[1,6,1]		=>	:helps,
 	}
   def name(model, session=@session)
-    model.name.force_encoding('utf-8')
+    model.name.encode('utf-8')
   rescue
     if model.name.respond_to?(:encode)
       name = model.name.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
@@ -75,7 +75,7 @@ class FeedbackList < View::FeedbackList
     end
   end
   def message(model, session=@session)
-    model.message.force_encoding('utf-8')
+    model.message.encode('utf-8')
   rescue
      message = model.message.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
   end
@@ -93,7 +93,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 		[1,1] => 'th right',
 		[0,2] => 'top',
 		[1,2]	=> 'component border-left top'
-	}	
+	}
 	LEGACY_INTERFACE = false
 	def current_feedback(model)
 		FeedbackForm.new(model.current_feedback, @session, self)
@@ -107,7 +107,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 		end
 	end
 	def feedback_title(model)
-		@lookandfeel.lookup(:feedback_title, 
+		@lookandfeel.lookup(:feedback_title,
 			model.name, model.size)
 	end
 end

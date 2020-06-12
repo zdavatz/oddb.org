@@ -35,7 +35,7 @@ class AccessoryList < HtmlGrid::List
     :description => :nbsp,
   }
   def migel_code(model=@model, session=@session)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     link = PointerLink.new(:to_s, model, @session, self)
     link.value = code
     event = :migel_search
@@ -51,7 +51,7 @@ class AccessoryOfList < AccessoryList
   def migel_code(model=@model, session=@session)
     if model.is_a?(DRbObject)
       # Actually, model is a Migel::Model::Product instance.
-      model.pharmacode.to_s.force_encoding('utf-8')
+      model.pharmacode.to_s.encode('utf-8')
     else
       ''
     end
@@ -94,7 +94,7 @@ class ProductInnerComposite < HtmlGrid::Composite
       str = model.send(@session.language)
     end
     if (str)
-      str = str.to_s.force_encoding('utf-8')
+      str = str.to_s.encode('utf-8')
       value.value = str.gsub(@@migel_pattern) {
         if group_cd = $~[1]
           if subgroup_cd = $~[2]
@@ -117,7 +117,7 @@ class ProductInnerComposite < HtmlGrid::Composite
     pointer_link(model.group, :migel_group)
   end
   def limitation_text(model)
-    text = model.limitation_text.to_s.force_encoding('utf-8')
+    text = model.limitation_text.to_s.encode('utf-8')
     description(text, :limitation_text)
   end
   def subgroup(model)
@@ -125,18 +125,18 @@ class ProductInnerComposite < HtmlGrid::Composite
   end
   def pointer_link(model, key)
     link = PointerLink.new(:to_s, model, @session, self)
-    link.value = model.send(@session.language).to_s.force_encoding('utf-8')
+    link.value = model.send(@session.language).to_s.encode('utf-8')
     event = :migel_search
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     link.href = @lookandfeel._event_url(event, {key => code.delete('.')})
     link
   end
   def product_text(model)
-    text = model.product_text.to_s.force_encoding('utf-8')
+    text = model.product_text.to_s.encode('utf-8')
     description(text, :product_text)
   end
   def migel_code(model)
-    code = model.migel_code.to_s.force_encoding('utf-8')
+    code = model.migel_code.to_s.encode('utf-8')
     if items = model.items and !items.empty?
       link = PointerLink.new(:to_s, model, @session, self)
       link.value = code
@@ -178,7 +178,7 @@ class PointerSteps < ODDB::View::PointerSteps
     if model.is_a?(DRbObject)
       # This is the case where Product instance comes from migel DRb server
       # DRbObject is acutally Migel::Model::Group, Subgroup class. see lib/migel/model/migelid.rb in migel project.
-      code = model.migel_code.to_s.force_encoding('utf-8')
+      code = model.migel_code.to_s.encode('utf-8')
       key = case code.length
             when 2
               :migel_group
@@ -205,10 +205,10 @@ class Product < View::PrivateTemplate
     ODDB::View::Migel::PointerSteps.new(model, @session, self)
   end
   def meta_tags(context)
-    content = @model.name.send(@session.language).force_encoding('utf-8')
+    content = @model.name.send(@session.language).encode('utf-8')
     res = super << context.meta('name' => 'title', 'content' => content)
     if text = @model.migelid_text
-      content = text.send(@session.language).to_s.force_encoding('utf-8')
+      content = text.send(@session.language).to_s.encode('utf-8')
       res << context.meta('name' => 'description', 'content' => content)
     end
     res
