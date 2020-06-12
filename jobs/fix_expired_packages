@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby193
+#!/usr/local/bin/ruby-271
 # encoding: utf-8
 # must be scheduled in crontab to run as the same user as oddb
 
@@ -19,7 +19,7 @@ module ODDB
     Job.run do |app|
       Util.log("job starting")
       to_deactivate = app.registrations.values.find_all do|x| x.packages.size > 0 &&
-          x.expiration_date && 
+          x.expiration_date &&
           (x.expiration_date.year < 2017 || (x.expiration_date.year == 2017 && x.expiration_date.month < 8))
       end
       @deleted_packages = []
