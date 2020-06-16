@@ -38,6 +38,7 @@ class TestDDDPriceTable <Minitest::Test
                          )
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
+                          :currency    => 'CHF',
                           :error       => 'error',
                          )
     fact       = flexmock('fact', :factor => 'factor')
@@ -102,6 +103,7 @@ class TestDDDPriceComposite <Minitest::Test
                          )
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
+                          :currency    => 'CHF',
                           :error       => 'error',
                           :language    => 'language'
                          )
@@ -173,9 +175,11 @@ class TestDDDPrice <Minitest::Test
                          :user        => user,
                          :sponsor     => sponsor,
                          :state       => state,
+                         :currency    => 'CHF',
                          :allowed?    => nil,
-                         :error       => 'error'
+                         :error       => 'error',
                          :zone        => 'zone',
+                         :currency    => 'CHF',
                          :persistent_user_input => 'persistent_user_input',
                          :language    => 'language',
                          :flavor      => 'flavor',

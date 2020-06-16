@@ -90,7 +90,7 @@ module ODDB
       @app.update pointer.creator, {:en => name, :origin => origin}
     end
     def import_new_codes(agent)
-      page = Nokogiri::HTML(open(@new_url).read)
+      page = Nokogiri::HTML(URI.open(@new_url).read)
       new_codes = {}
       page.css('tr').each {
         |tr|
