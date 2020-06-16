@@ -7,11 +7,7 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-begin
-  require 'pry'
-rescue LoadError
-  # ignore error when pry cannot be loaded (for Jenkins-CI)
-end
+begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
 
 require 'syck'
 require 'stub/odba'

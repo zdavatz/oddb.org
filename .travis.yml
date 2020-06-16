@@ -1,7 +1,6 @@
 language: ruby
 cache: bundler
-sudo: false
-bundler_args: --without debugger
+
 rvm:
   - 2.7.1
   - 2.5.0
@@ -11,10 +10,14 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: 2.5.0
+install:
+  - bundle config set without 'debugger'
+  - bundle install --jobs=3 --retry=3
 
 script:
   - bundle exec rake quanty
   - bundle exec ruby test/suite.rb
+
 notifications:
   email:
     recipients:

@@ -303,8 +303,8 @@ module ODDB
       # export_oddb2tdat
       # export_oddb2tdat_with_migel
       export_ouwerkerk
-      export_generics_xls
       export_competition_xlss
+      export_generics_xls
     end
     def update_comarketing
       update_immediate(CoMarketingPlugin, 'Co-Marketing')

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # suite.rb -- oddb.org -- 11.04.2012 -- yasaka@ywesee.com
-# suite.rb -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com 
+# suite.rb -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com
 # In order to execute test/suite.rb,
 # yusd and meddatad is needed to run.
 $: << File.dirname(__FILE__)
@@ -20,7 +20,11 @@ suites << "test_model/suite.rb"
 suites << "test_util/suite.rb"
 
 if $0 == __FILE__
+  $stdout.sync = true
+  $stderr.sync = true
   runner = OddbTestRunner.new(File.dirname(__FILE__), suites)
   runner.run_isolated_tests
   runner.show_results_and_exit
+  puts "Done with show_results_and_exit"
+  exit 0
 end

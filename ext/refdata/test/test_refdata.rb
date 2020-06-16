@@ -9,10 +9,6 @@ $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'flexmock/minitest'
-begin
-  require 'pry'
-rescue LoadError
-end
 require 'refdata'
 require 'test_helpers'
 module ODDB

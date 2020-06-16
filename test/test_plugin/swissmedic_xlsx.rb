@@ -27,10 +27,7 @@ require 'util/util'
 require 'util/oddbconfig'
 require 'stub/oddbapp'
 
-begin
-  require 'pry';
-rescue LoadError
-end
+begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
 
 class FlexMock::TestUnitFrameworkAdapter
     attr_accessor :assertions
@@ -167,7 +164,7 @@ module ODDB
       assert_equal(7, @app.registrations.size)
       assert_equal(8, @app.sequences.size)
       assert_equal(11, @app.packages.size)
-      
+
       reg = @app.create_registration('00488')
       seq = reg.create_sequence('02')
       seq.create_package('001')

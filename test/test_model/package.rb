@@ -12,10 +12,7 @@ require 'model/atcclass'
 require 'flexmock/minitest'
 require 'model/registration'
 require 'model/fachinfo'
-begin
-  require 'pry'
-rescue LoadError
-end
+begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
 module ODDB
   class PackageCommon
     check_accessor_list = {
