@@ -55,6 +55,7 @@ module ODDB
 				context.hidden('no_note', "1")<<
 				context.hidden('return', @lookandfeel._event_url(:paypal_thanks))<<
 				context.hidden('cancel_return', @lookandfeel.base_url)<<
+        context.hidden('currency_code', "CHF")<<
 				context.hidden('tax', "0")
 			end
 		end

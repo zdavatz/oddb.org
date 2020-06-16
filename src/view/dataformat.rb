@@ -154,12 +154,6 @@ module ODDB
 			def formatted_price(key, model)
         price_chf = model.respond_to?(key) ? model.send(key).to_i : 0
 				if(price_chf != 0)
-					prices = {
-						'CHF'	=>	price_chf,
-					}
-					prices.dup.each { |cur, val|
-						prices.store(cur, @lookandfeel.format_price(val))
-					}
           span = nil
           suffix = ''
           if @lookandfeel.enabled?(:price_history) \
@@ -175,8 +169,8 @@ module ODDB
           else
             span = HtmlGrid::Span.new(model, @session, self)
           end
-					span.value = display
-					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
+					span.value = @lookandfeel.format_price(price_chf)
+					title = 'CHF'
 					span.set_attribute('title', title << suffix)
 					span.label = true
 					span

@@ -112,13 +112,13 @@ class SearchedList < HtmlGrid::List
     else
       name = model.article_name
     end
-    name.to_s.encode('utf-8') if name
+    CGI.unescape(name).encode('utf-8') if name
   end
   def companyname(model = @model, session = @session)
     if model.companyname.respond_to?(session.language)
-      name = model.companyname.send(session.language)
+      name = CGI.unescape(model.companyname.send(session.language))
     else
-      name = model.companyname
+      name = CGI.unescape(model.companyname)
     end
     name.to_s.encode('utf-8') if name
   end

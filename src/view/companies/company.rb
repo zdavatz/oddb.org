@@ -168,10 +168,7 @@ class UserCompanyForm < View::Form
         input.value = input.value.join(', ')
         input
       end
-      rescue => error
-        binding.pry
-        nil
-      end
+    end
 	end
 	def city(model, session=@session)
 		address_delegate(model, :city)

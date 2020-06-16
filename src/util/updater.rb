@@ -445,9 +445,6 @@ module ODDB
     def update_package_trade_status_by_refdata(logging = false)
       update_notify_simple(RefdataPlugin, 'Refdata', :update_package_trade_status, [logging])
     end
-    def migel_nonpharma(pharmacode_file, logging = false)
-      update_notify_simple(SwissindexMigelPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
-    end
     def update_mail_order_prices(csv_file_path)
       update_notify_simple(MailOrderPricePlugin, 'Update Mail Order Prices', :update, [csv_file_path])
     end

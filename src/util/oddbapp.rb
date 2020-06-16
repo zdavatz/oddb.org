@@ -1999,6 +1999,7 @@ module ODDB
       code = migel_code.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
       MIGEL_SERVER.search_limitation(code)
     end
+    # e.g. search_migel_items_by_migel_code('100101001').first.name.de
     def search_migel_items_by_migel_code(query, sortvalue = nil, reverse = nil)
       # migel_search event
       # search items by migel_code
@@ -2009,6 +2010,8 @@ module ODDB
                    end
       MIGEL_SERVER.search_migel_product_by_migel_code(migel_code, sortvalue, reverse)
     end
+    # search_migel_items('7610472169537', 'de')
+    # 1163158
     def search_migel_items(query, lang, sortvalue = nil, reverse = nil)
       # search event
       # search items by using search box
@@ -2023,6 +2026,11 @@ module ODDB
     def migel_product_index_keys(lang)
       MIGEL_SERVER.migelid_index_keys(lang)
     end
+    def refdata_migel_update(pharmacode)
+      puts "refdata_migel_update #{pharmacode}"
+      handler = ODDB::SwissindexMigelPlugin.new(self)
+      handler.search_item(pharmacode)
+    end if false # Niklaus used this to debug the part of migel/jobs/update_migel under oddb.org
     def migel_count
       @migel_count ||= MIGEL_SERVER.migelids.length
     end

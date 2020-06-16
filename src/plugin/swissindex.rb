@@ -23,24 +23,24 @@ module ODDB
       def Logging.start(file)
         if @@flag
           @@start_time = Time.now
-          FileUtils.mkdir_p(File.dirname(file))    
+          FileUtils.mkdir_p(File.dirname(file))
           log_file = File.open(file, 'w')
           log_file.print "# ", Time.now, "\n"
-          yield(log_file) 
+          yield(log_file)
           log_file.close
         end
       end
       def Logging.append(file)
         if @@flag
-          FileUtils.mkdir_p(File.dirname(file))    
+          FileUtils.mkdir_p(File.dirname(file))
           log_file = File.open(file, 'a')
-          yield(log_file) 
+          yield(log_file)
           log_file.close
         end
       end
       def Logging.append_estimate_time(file, count, total)
         if @@flag && @@start_time
-          FileUtils.mkdir_p(File.dirname(file))    
+          FileUtils.mkdir_p(File.dirname(file))
           File.open(file, 'a') do |log|
             estimate = (Time.now - @@start_time) * total / count
             log.print count, " / ", total, "\t"
@@ -94,7 +94,7 @@ module ODDB
       # output
       #
       open(@output_file, "w") do |f|
-        f.print "position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n" 
+        f.print "position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n"
         count = 1
         pharmacode_list.each do |pharmacode|
           try_time = 0
@@ -181,7 +181,7 @@ module ODDB
       table
     end
     def search_item(pharmacode)
-      $stdout.puts "SwissindexMigelPlugin.search_item #{migel_code}"
+      $stdout.puts "pid #{Process.pid}: SwissindexMigelPlugin.search_item #{pharmacode}"
       item = {}
       SWISSINDEX_MIGEL_SERVER.session(ODDB::Swissindex::SwissindexMigel) do |swissindex|
         item = swissindex.search_item_with_swissindex_migel(pharmacode)

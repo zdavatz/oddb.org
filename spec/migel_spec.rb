@@ -49,6 +49,7 @@ if !File.exists?(migelDir)
     before :all do
       @idx = 0
       waitForOddbToBeReady(@browser, OddbUrl)
+      login
     end
 
     it "should correct result for Migel product 100101011" do
@@ -62,16 +63,33 @@ if !File.exists?(migelDir)
       expect(inhalt).to match /Limitationstext.*Limitation :.*Nécessité d'une décharge de durée prolongée\(au moins 1 mois\)/m
     end
 
+    it "should correct result for Migel search_query/10.01.01.00.1" do
+      @browser.link(name: 'migel').click;  small_delay
+      @browser.text_field(name: "search_query").value = "10.01.01.00.1"
+      @browser.button(name: 'search').click;  small_delay
+      inhalt = @browser.text.dup
+      expect(inhalt).not_to match LeeresResult
+      expect(inhalt).to match /GEHHILFEN/
+      expect(inhalt).to match /Hand-\/Gehstöcke/
+      expect(inhalt).to match /Krücken für Erwachsene/
+    end
+
+    it "should be possible to find Krücke via MiGeL" do
+      @browser.link(name: 'migel').click;  small_delay
+      @browser.text_field(name: "search_query").value = "Krücke"
+      @browser.button(name: 'search').click;  small_delay
+      expect(@browser.text).not_to match LeeresResult
+      expect(@browser.text).to match /Beschreibung/
+      expect(@browser.text).to match /Krücken/
+    end
+
     it "should correct result for Migel product 100101011" do
       url = OddbUrl + '/de/gcc/migel_search/migel_code/100101001'
       @browser.goto(url)
       inhalt = @browser.text.dup
       expect(inhalt).not_to match LeeresResult
-      expect(inhalt).to match /Höchstvergütungsbetrag: 25.00 \( 1 Paar \) MiGel Code: 10.01.01.00.1/
-      expect(inhalt).to match /Untergruppe Höhenausgleich für Gips und Orthesen/
-      # expect(inhalt).to match /Untergruppe.*Hand-\/Gehstöcke/
-      expect(inhalt).to match /Beschreibung.*Krücken für Erwachsene, anatomischer- \/ orthopädischer Griff, Kauf/
-      expect(inhalt).to match /Limitationstext.*Limitation :.*Nécessité d'une décharge de durée prolongée\(au moins 1 mois\)/m
+      expect(inhalt).to match /Höchstvergütungsbetrag:.*Paar.+MiGel Code: 10.01.01.00.1/
+      expect(inhalt).to match /Krücke/
     end
   end
 end
