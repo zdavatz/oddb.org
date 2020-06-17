@@ -25,9 +25,9 @@ class DateChooser < HtmlGrid::Composite
 				 [year, separator]
 			else
 				link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
-				args = { :year => year, :month => month } 
+				args = { :year => year, :month => month }
 				link.href = @lookandfeel._event_url(:recent_registrations, args)
-				link.value = year
+				link.value = year.to_s
 				link.css_class = 'list'
 				[link, separator]
 			end
@@ -43,7 +43,7 @@ class DateChooser < HtmlGrid::Composite
 			mstr = @lookandfeel.lookup("month_#{month}")
 			if(cmonth != month && months.include?(month))
 				link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
-				args = { :year => year, :month => month } 
+				args = { :year => year, :month => month }
 				link.href = @lookandfeel._event_url(:recent_registrations, args)
 				link.value = mstr
 				link.css_class = 'list'
@@ -67,7 +67,7 @@ class DateHeader < HtmlGrid::Composite
 		date = model.date
 		[
 			@lookandfeel.lookup('month_' + date.month.to_s),
-			date.year, 
+			date.year.to_s,
 			'-',
 			model.package_count,
 			@lookandfeel.lookup(:products),

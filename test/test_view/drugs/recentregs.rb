@@ -18,17 +18,17 @@ module ODDB
 
 class TestDateChooser <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :_event_url => '_event_url'
                          )
-    state      = flexmock('state', 
+    state      = flexmock('state',
                           :date   => Date.new(2011,2,3),
                           :months => (1..12).to_a,
                           :years  => [2010, 2011]
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :state       => state
                          )
@@ -37,6 +37,7 @@ class TestDateChooser <Minitest::Test
   end
   def test_years
     assert_kind_of(HtmlGrid::Link, @composite.years(@model)[0])
+    0
   end
 end
 
@@ -44,7 +45,7 @@ class TestDateHeader <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', :lookandfeel => @lnf)
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :date => Date.new(2011,2,3),
                           :package_count => 'package_count'
                          )
@@ -58,20 +59,20 @@ end
 
 class TestRootRecentRegsList <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :event_url  => 'event_url',
                         :_event_url => '_event_url',
                         :result_list_components => {[0,0] => 'component'}
                        )
-    state    = flexmock('state', 
+    state    = flexmock('state',
                         :date   => Date.new(2011,2,3),
                         :months => (1..12).to_a,
                         :years  => [2010, 2011],
                         :pages  => 'pages',
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :state       => state,
                         :persistent_user_input => 'persistent_user_input',
@@ -81,13 +82,13 @@ class TestRootRecentRegsList <Minitest::Test
                        )
     registration = flexmock('registration', :pointer => 'pointer')
     sequence = flexmock('sequence', :pointer => 'pointer')
-    package  = flexmock('package', 
+    package  = flexmock('package',
                         :generic_type => 'generic_type',
                         :registration => registration,
                         :sequence     => sequence,
                         :pointer      => 'pointer'
                        )
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
                         :date => Date.new(2011,2,3),
                         :code => 'atc10',
                         :package_count => 1,
@@ -103,20 +104,20 @@ end
 
 class TestRecentRegsList <Minitest::Test
   def setup
-    @lnf     = flexmock('lookandfeel', 
+    @lnf     = flexmock('lookandfeel',
                         :lookup     => 'lookup',
                         :attributes => {},
                         :event_url  => 'event_url',
                         :_event_url => '_event_url',
-                        :result_list_components => {[0,0] => 'component'} 
+                        :result_list_components => {[0,0] => 'component'}
                        )
-    state    = flexmock('state', 
+    state    = flexmock('state',
                         :date   => Date.new(2011,2,3),
                         :months => (1..12).to_a,
                         :years  => [2010, 2011],
                         :pages  => 'pages',
                        )
-    @session = flexmock('session', 
+    @session = flexmock('session',
                         :lookandfeel => @lnf,
                         :state       => state,
                         :persistent_user_input => 'persistent_user_input',
@@ -125,7 +126,7 @@ class TestRecentRegsList <Minitest::Test
                         :get_cookie_input => 'get_cookie_input',
                        )
     package  = flexmock('package', :generic_type => 'generic_type')
-    @model   = flexmock('model', 
+    @model   = flexmock('model',
                         :date => Date.new(2011,2,3),
                         :package_count => 1,
                         :packages => [package]
@@ -140,7 +141,7 @@ end
 
 class TestRecentRegsComposite <Minitest::Test
   def setup
-    @lnf       = flexmock('lookandfeel', 
+    @lnf       = flexmock('lookandfeel',
                           :lookup     => 'lookup',
                           :attributes => {},
                           :enabled?   => nil,
@@ -152,13 +153,13 @@ class TestRecentRegsComposite <Minitest::Test
                           :result_list_components    => {[0,0] => 'component'},
                           :explain_result_components => {[0,1] => :explain_fachinfo}
                          )
-    state      = flexmock('state', 
+    state      = flexmock('state',
                           :date   => Date.new(2011,2,3),
                           :months => (1..12).to_a,
                           :years  => [2010, 2011],
                           :pages => 'pages',
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :allowed?    => nil,
                           :state       => state,
@@ -171,7 +172,7 @@ class TestRecentRegsComposite <Minitest::Test
                           :request_path => 'request_path',
                          )
     package    = flexmock('package', :generic_type => 'generic_type')
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :date => Date.new(2011,2,3),
                           :package_count => 1,
                           :packages      => [package]
@@ -179,6 +180,9 @@ class TestRecentRegsComposite <Minitest::Test
     @composite = ODDB::View::Drugs::RecentRegsComposite.new([@model], @session)
   end
   def test_breadcrumbs
+    test = @composite.to_html(CGI.new)
+    puts test
+    require 'pry'; binding.pry
     result = @composite.breadcrumbs(@model, @session)
     assert_equal(3, result.length)
     assert_kind_of(HtmlGrid::Span, result[0])
