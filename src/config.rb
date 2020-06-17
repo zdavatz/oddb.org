@@ -7,19 +7,19 @@
 require 'rclconf'
 
 module ODDB
-  SERVER_URI ||="druby://localhost:10000"
+  SERVER_URI ||="druby://127.0.0.1:10000"
   SERVER_NAME ||='ch.oddb.org'
-  SERVER_URI_FOR_CRAWLER ||="druby://localhost:10001"
-  SERVER_URI_FOR_GOOGLE_CRAWLER ||="druby://localhost:10008"
-  FIPARSE_URI ||="druby://localhost:10002"
-  FIPDF_URI ||="druby://localhost:10003"
-  DOCPARSE_URI ||="druby://localhost:10004"
-  EXPORT_URI ||="druby://localhost:10005"
-  MEDDATA_URI ||="druby://localhost:10006"
-  SWISSREG_URI ||="druby://localhost:10007"
-  READONLY_URI ||="druby://localhost:10013"
-  YUS_URI ||="drbssl://localhost:9997"
-  MIGEL_URI ||='druby://localhost:33000'
+  SERVER_URI_FOR_CRAWLER ||="druby://127.0.0.1:10001"
+  SERVER_URI_FOR_GOOGLE_CRAWLER ||="druby://127.0.0.1:10008"
+  FIPARSE_URI ||="druby://127.0.0.1:10002"
+  FIPDF_URI ||="druby://127.0.0.1:10003"
+  DOCPARSE_URI ||="druby://127.0.0.1:10004"
+  EXPORT_URI ||="druby://127.0.0.1:10005"
+  MEDDATA_URI ||="druby://127.0.0.1:10006"
+  SWISSREG_URI ||="druby://127.0.0.1:10007"
+  READONLY_URI ||="druby://127.0.0.1:10013"
+  YUS_URI ||="drbssl://127.0.0.1:9997"
+  MIGEL_URI ||='druby://127.0.0.1:33000'
   YUS_DOMAIN ||='oddb.org'
 
   oddb_dir = File.expand_path('..', File.dirname(__FILE__))
