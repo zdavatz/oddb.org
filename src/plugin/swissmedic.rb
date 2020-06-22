@@ -29,6 +29,8 @@ require 'util/persistence'
 require 'util/today'
 require 'swissmedic-diff'
 require 'util/logfile'
+require 'parslet'
+require 'parslet/convenience'
 
 # Some monkey patching needed to avoid an error
 module RubyXL
@@ -280,6 +282,15 @@ public
     end
 
     def update(opts = {}, file2open=get_latest_file('Packungen'))
+      @@loaded ||= false
+      begin
+        @@loaded = true
+        filename = File.join(File.expand_path(File.dirname(__FILE__)), 'parslet_compositions.rb')
+        Kernel::load(filename) # We delay the inclusion to avoid defining a module wide method substance in Parslet
+        LogFile.debug("Loaded #{filename}")
+      rescue => error
+        LogFile.debug("Error loading parslet_compositions.rb #{filename} #{error}")
+      end unless @@loaded
       $swissmedic_do_tracing = true
       start_time = Time.new
       threads = []
@@ -290,7 +301,6 @@ public
       end
       @update_comps = (opts and opts[:update_compositions])
       cleanup_active_agents_with_nil if @update_comps || opts[:check]
-      require 'plugin/parslet_compositions' # We delay the inclusion to avoid defining a module wide method substance in Parslet
       init_stats
       msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect} "
       msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
