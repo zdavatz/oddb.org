@@ -233,6 +233,15 @@ describe "ch.oddb.org" do
     expect(@browser.text).to match /Inderal 40 mg/
   end
 
+  it "should display plus/minus signs for feedbacks" do
+    # Found an example with + and - sign via bin/admin
+    # sorted_feedbacks.find_all{ |x| !x.experience && x.time.year > 2010}.first.item.sequence
+    @browser.goto(OddbUrl+'/de/gcc/feedbacks/reg/62126/seq/02/pack/005')
+    text = @browser.text.dup
+    expect(text).to match /Persönliche Erfahrung.+\-.+Empfehlung/m
+    expect(text).to match /Empfehlung.+\+.+Persönlicher Eindruck/m
+  end
+
   it "should find redirect an iphone to the mobile flavor" do
     begin
       iphone_ua =  "Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1"
