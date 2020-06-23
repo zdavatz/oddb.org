@@ -209,9 +209,6 @@ module ODDB
       update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
       update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
 
-      if(update_swissmedic)
-        update_swissmedic_followers
-      end
       return_value_update_bsv = update_bsv
       LogFile.append('oddb/debug', " return_value_update_bsv=" + return_value_update_bsv.inspect.to_s, Time.now)
       #if(update_bsv)
