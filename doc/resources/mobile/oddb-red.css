@@ -92,7 +92,7 @@ a.feedback:link, a.feedback:visited {
   background-color : #ffbc6f;
 }
 span.google_search,
-a.google_search, 
+a.google_search,
 a.google_search:link, a.google_search:visited {
   color            : white;
   background-color : #184fca;
@@ -146,11 +146,11 @@ a.atcchooser3:hover, a.atcchooser4:hover,
 a.atcchooser5:hover {
   color : #501616;
 }
-a.atclink2, a.atclink3, 
+a.atclink2, a.atclink3,
 a.atclink4, a.atclink5 {
   color : #501616;
 }
-a.atclink2:hover, a.atclink3:hover, 
+a.atclink2:hover, a.atclink3:hover,
 a.atclink4:hover, a.atclink5:hover {
   color : #501616;
 }
@@ -584,14 +584,14 @@ td.chapter-tab {
   padding      : 4px;
 }
 /* print-classes */
-div.big { 
+div.big {
   padding-top : 12px;
   font-weight : bold;
   font-size   : 26px;
 }
 /* new style of formatting */
 /* use multiple classes to style! */
-td.interaction-connection { 
+td.interaction-connection {
   margin-top      : 0px;
   list-style-type : circle;
   width           : 20%;
@@ -603,11 +603,11 @@ td.interaction-substance {
   font-size : 14px;
   width     : 20%;
 }
-td.interaction-drug { 
+td.interaction-drug {
   margin-top      : 0px;
   list-style-type : circle;
 }
-td.interaction-atc { 
+td.interaction-atc {
   margin-top      : 0px;
   list-style-type : circle;
 }
@@ -616,7 +616,7 @@ div.interaction-header {
   text-align      : left;
   text-decoration : none;
 }
-tr.interaction-info { 
+tr.interaction-info {
   margin-top      : 0px;
   list-style-type : circle;
 }
@@ -802,7 +802,7 @@ input.standard {
 input.search {
   width   : 160px;
   padding : 0px;
-} 
+}
 td.center input.search {
   width  : 260px;
   margin : 7px;
@@ -882,7 +882,7 @@ a.logo {
 .right {
   text-align : right;
 }
-tr.expired td, td.expired { 
+tr.expired td, td.expired {
   filter           : alpha(opacity=65);
   -moz-opacity     : 0.65;
   opacity          : 0.65;
@@ -893,7 +893,7 @@ tr.disabled {
   filter  : alpha(opacity=75);
 }
 textarea {
-  width       : 400px;
+  width       : 100%;
   height      : 100px;
   font-family : Arial, Helvetica, sans-serif;
 }
@@ -1024,7 +1024,7 @@ div#composition-list div.galenic-form {
   float      : none;
 }
 div#composition-list label {
-  padding-right : 4px; 
+  padding-right : 4px;
 }
 div#compositions {
   overflow : auto;
