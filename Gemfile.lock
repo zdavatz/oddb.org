@@ -53,7 +53,7 @@ GEM
     highline (2.0.3)
     hpricot (0.8.6)
     htmlentities (4.3.4)
-    htmlgrid (1.1.8)
+    htmlgrid (1.1.9)
       sbsm (>= 1.2.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
