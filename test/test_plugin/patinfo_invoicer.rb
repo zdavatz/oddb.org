@@ -67,7 +67,7 @@ module ODDB
 			item1.item_pointer = ptr1
 			item1.text = '11111 11'
 			item1.type = :annual_fee
-			item1.time = Time.local(day.year, day.month, 
+			item1.time = Time.local(day.year, day.month,
 				day.day, 10, 32)
 			## Item that has never before been uploaded
 			## should be in new invoice
@@ -75,7 +75,7 @@ module ODDB
 			item2.item_pointer = ptr2
 			item2.text = '22222 22'
 			item2.type = :annual_fee
-			item2.time = Time.local(day.year, day.month, 
+			item2.time = Time.local(day.year, day.month,
 				day.day, 10, 32)
 			## Item that is already once in new invoice
 			## (item1) - should not be in new invoice
@@ -83,7 +83,7 @@ module ODDB
 			item3.item_pointer = ptr3
 			item3.text = '11111 11'
 			item3.type = :annual_fee
-			item3.time = Time.local(day.year, day.month, 
+			item3.time = Time.local(day.year, day.month,
 				day.day, 16, 23)
 			## Item that has been paid less than a year ago
 			## (inv2) - should not be in new invoice
@@ -91,7 +91,7 @@ module ODDB
 			item4.item_pointer = ptr4
 			item4.text = '33333 33'
 			item4.type = :annual_fee
-			item4.time = Time.local(day.year, day.month, 
+			item4.time = Time.local(day.year, day.month,
 				day.day, 16, 23)
 			items = [item1, item2, item3, item4]
 
@@ -127,9 +127,9 @@ module ODDB
 				itm1.should_receive(:text).and_return { '44444 44' }
 				{1 => itm1}
 			}
-			@app.should_receive(:invoices).and_return { 
+			@app.should_receive(:invoices).and_return {
 				{
-					1 => inv1, 
+					1 => inv1,
 					2 => inv2,
 					3 => inv3,
 				}
@@ -177,16 +177,16 @@ module ODDB
 			slate.should_receive(:items).and_return {
 				items
 			}
-			@app.should_receive(:slate).and_return { |name| 
+			@app.should_receive(:slate).and_return { |name|
 				assert_equal(:patinfo, name)
 				slate
 			}
 			@app.should_receive(:active_pdf_patinfos).and_return {
 				{
 					'12345_01.pdf' => 1, '12345_02.12347435.pdf' => 1,
-					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1, 
+					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1,
 															 '12345_03.12345654.pdf' => 1,
-				}	
+				}
 			}
 			assert_equal(2, @plugin.recent_items(today - 1).size)
 			assert_equal([item3,item1], @plugin.recent_items(today - 1))
@@ -293,22 +293,22 @@ module ODDB
 			item_vals3 = item_vals1.dup
 			item_vals3.store(:item_pointer, ptr3)
 			expected = [
-				[pointer.creator, {:yus_name => 'user1', 
-					:keep_if_unpaid => true, :ydim_id => 2134}, invoice],
+				[pointer.creator, {:yus_name => 'user1',
+					:keep_if_unpaid => true}, invoice],
 				[item_ptr.dup.creator, item_vals1, nil],
 				[item_ptr.dup.creator, item_vals2, nil],
 				[item_ptr.dup.creator, item_vals3, nil],
 			]
-			@app.should_receive(:update, 4).and_return { |uptr, values| 
+			@app.should_receive(:update, 4).and_return { |uptr, values|
 				exp_ptr, exp_vals, res = expected.shift
 				assert_equal(exp_ptr, uptr)
 				assert_equal(exp_vals, values)
-				## flag the pointer as used (because Item.init appends 
+				## flag the pointer as used (because Item.init appends
 				## an odba_id) the pointer must not be reused
 				uptr.instance_variable_get('@directions').at(0).at(1).append('used')
 				res
 			}
-			@plugin.create_invoice('user1', items, 2134)
+			@plugin.create_invoice('user1', items)
 			@app.flexmock_verify
 		end
     def test_unique_name

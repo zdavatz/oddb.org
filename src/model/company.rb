@@ -22,7 +22,7 @@ module ODDB
       :disable_patinfo, :ean13, :generic_type,
       :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name,
       :powerlink, :regulatory_email, :swissmedic_email, :swissmedic_salutation,
-      :url, :ydim_id, :limit_invoice_duration, :force_new_ydim_debitor,
+      :url, :limit_invoice_duration,
       :narcotics
     attr_reader :invoice_dates, :disabled_invoices
 		alias :fullname :name

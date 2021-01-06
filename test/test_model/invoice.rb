@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestInvoice -- oddb -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com 
+# TestInvoice -- oddb -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -166,29 +166,6 @@ module ODDB
     def test_to_s
       @item.text = 'some item text'
       assert_equal 'some item text', @item.to_s
-    end
-    def test_ydim_data
-      now = Time.now
-      expt = Time.now + 24*3600
-      @item.data.store :some, :data
-      @item.expiry_time = expt 
-      @item.price = 100.0
-      @item.quantity = 4
-      @item.text = 'A Text'
-      @item.time = now
-      @item.unit = 'Stück'
-      @item.vat_rate = 7.6
-      expected = {
-        :data        => { :some => :data },
-        :expiry_time => expt,
-        :price       => 100.0,
-        :quantity    => 4,
-        :text        => 'A Text',
-        :time        => now,
-        :unit        => 'Stück',
-        :vat_rate    => 7.6,
-      }
-      assert_equal expected, @item.ydim_data
     end
 	end
 end

@@ -3,7 +3,6 @@
 # OddbApp -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # OddbApp -- oddb -- 18.11.2002 -- hwyss@ywesee.com
 
-require 'syck'
 require 'util/oddbapp'
 
 class OddbPrevalence

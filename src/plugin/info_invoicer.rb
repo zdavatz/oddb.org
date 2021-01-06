@@ -91,7 +91,7 @@ module ODDB
           item.data ||= {}
           item.data.update({
             :days => days,
-            :first_valid_date => date_start, 
+            :first_valid_date => date_start,
             :last_valid_date => date_end,
           })
         end
@@ -99,16 +99,16 @@ module ODDB
     end
     def annual_items
       active = active_infos
-      ## all items for which the product still exists 
-      slate_items.select { |item| 
+      ## all items for which the product still exists
+      slate_items.select { |item|
         # but only once per sequence.
         item.type == :annual_fee && active.delete(unique_name(item))
       }
     end
     def all_items
       active = active_infos
-      ## all items for which the product still exists 
-      slate_items.reverse.select { |item| 
+      ## all items for which the product still exists
+      slate_items.reverse.select { |item|
         # but only once per sequence.
         (item.type == :processing) || active.delete(unique_name(item))
       }
@@ -116,15 +116,15 @@ module ODDB
     def filter_paid(items, date=@@today)
       ## Prinzipielles Vorgehen
       # Für jedes item in items:
-      # Gibt es ein Invoice, welches nicht expired? ist 
-      # und welches ein Item beinhaltet, das den typ 
+      # Gibt es ein Invoice, welches nicht expired? ist
+      # und welches ein Item beinhaltet, das den typ
       # :annual_fee hat und den selben unique_name wie item
 
       items = items.sort_by { |item| item.time }
 
       ## Vorgeschlagener Algorithmus
       # 1. alle invoices von app
-      # 2. davon alle items, die nicht expired? und den 
+      # 2. davon alle items, die nicht expired? und den
       #    typ :annual_fee haben
       # 3. davon den unique_name
       # 4. -> neue Collection pointers
@@ -143,10 +143,10 @@ module ODDB
       }
       fee_names.uniq!
       prc_names.uniq!
-      
+
       # 5. Duplikate löschen
       result = []
-      items.each { |item| 
+      items.each { |item|
         ## as patinfos/fachinfos can be assigned to other sequences, check at
         #  least all sequences in the current registration for non-expired
         #  invoices
@@ -166,7 +166,7 @@ module ODDB
     def group_by_company(items)
       active_comps = active_companies
       companies = {}
-      items.each { |item| 
+      items.each { |item|
         ptr = item.item_pointer
         if(seq = pointer_resolved(ptr))
           ## correct the item's stored name (it may have changed in Packungen.xlsx)
@@ -222,7 +222,7 @@ module ODDB
       }
       ## remove duplicate processing items
       active = active_infos
-      recents.reject { |item| 
+      recents.reject { |item|
         item.type == :processing && !active.delete(unique_name(item))
       }
     end
@@ -235,7 +235,7 @@ module ODDB
       logInvoice "patinfo_invoices annual #{payable_items.size}/#{items.size} payable_items/items" if payable_items.size > 0
       groups = group_by_company(payable_items)
       groups.each { |company, items|
-        ## if autoinvoice is disabled, but a preferred invoice_date is set, 
+        ## if autoinvoice is disabled, but a preferred invoice_date is set,
         ## invoice-start and -end-dates should be adjusted to that date.
         if(company.invoice_disabled?(@infotype))
           if(date = company.invoice_date(@infotype))
@@ -270,17 +270,13 @@ module ODDB
             ## adjust the fee according to date
             adjust_overlap_fee(day, items)
             ensure_yus_user(company)
-            ## first send the invoice 
-            if ydim_id = send_invoice(invoice_date, email, items, day)
-              ## then store it in the database
-              create_invoice(email, items, ydim_id)
-            end
+            ## first send the invoice
           elsif((day >> 12) == company.invoice_date(@infotype))
             ## if the date has been set to one year from now,
             ## this invoice has already been sent manually.
             ## store the items anyway to prevent sending a 2-year
             ## invoice on the following day..
-            create_invoice(email, items, nil)
+            create_invoice(email, items)
           end
         end
       }
@@ -301,11 +297,7 @@ module ODDB
           ## adjust the annual fee according to date
           adjust_annual_fee(company, items)
           ensure_yus_user(company)
-          ## first send the invoice 
-          if ydim_id = send_invoice(invoice_date, email, items, day)
-            ## then store it in the database
-            create_invoice(email, items, ydim_id)
-          end
+          ## first send the invoice
         end
       }
       nil

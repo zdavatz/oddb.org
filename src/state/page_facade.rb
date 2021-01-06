@@ -2,7 +2,7 @@
 # encoding: utf-8
 # ODDB::Stage::PageFacade -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Stage::PageFacade -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
-require 'mathn'
+# require 'mathn'
 
 module ODDB
 	module State

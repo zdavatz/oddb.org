@@ -23,11 +23,11 @@ module ODDB
       @observer = ODDB::StubInvoiceObserver.new
     end
     def test_add_invoice
-      flexmock(ODBA.cache, 
+      flexmock(ODBA.cache,
                :next_id => 123,
                :store   => 'store'
               )
-      invoice = flexmock('invoice', 
+      invoice = flexmock('invoice',
                          :marshal_dump => 'marshal_dump',
                          :user_pointer= => nil,
                          :odba_isolated_store => 'odba_isolated_store'
@@ -42,11 +42,11 @@ module ODDB
       assert_equal('name_first name', @observer.contact)
     end
     def test_invoice
-      flexmock(ODBA.cache, 
+      flexmock(ODBA.cache,
                :next_id => 123,
                :store   => 'store'
               )
-      invoice = flexmock('invoice', 
+      invoice = flexmock('invoice',
                          :marshal_dump => 'marshal_dump',
                          :user_pointer= => nil,
                          :odba_isolated_store => 'odba_isolated_store',
@@ -61,11 +61,11 @@ module ODDB
       assert_equal('email', @observer.invoice_email)
     end
     def test_remove_invoice
-      flexmock(ODBA.cache, 
+      flexmock(ODBA.cache,
                :next_id => 123,
                :store   => 'store'
               )
-      invoice = flexmock('invoice', 
+      invoice = flexmock('invoice',
                          :marshal_dump => 'marshal_dump',
                          :user_pointer= => nil,
                          :odba_isolated_store => 'odba_isolated_store',
@@ -74,19 +74,6 @@ module ODDB
       @observer.add_invoice(invoice)
 
       assert_equal(invoice, @observer.remove_invoice(invoice))
-    end
-    def test_ydim_address_lines
-      @observer.instance_eval do
-        @address = 'address'
-      end
-      assert_equal(['address'], @observer.ydim_address_lines)
-    end
-    def test_ydim_location
-      @observer.instance_eval do
-        @plz = 'plz'
-        @location = 'location'
-      end
-      assert_equal('plz location', @observer.ydim_location)
     end
   end
 end # ODDB

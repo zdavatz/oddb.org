@@ -4,7 +4,7 @@
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
-require 'mathn'
+# require 'mathn'
 require 'htmlgrid/list'
 require 'htmlgrid/value'
 require 'htmlgrid/datevalue'

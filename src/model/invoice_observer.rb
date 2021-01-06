@@ -4,8 +4,8 @@
 
 module ODDB
 	module InvoiceObserver
-		attr_accessor :salutation, :name, :name_first, :fullname, :address, 
-			:location, :plz, :ydim_id
+		attr_accessor :salutation, :name, :name_first, :fullname, :address,
+			:location, :plz
 		def add_invoice(invoice)
 			self.invoices.push(invoice)
 			@invoices.odba_isolated_store
@@ -37,12 +37,6 @@ module ODDB
 				odba_store
 			end
 			@invoices
-		end
-		def ydim_address_lines
-			[@address].compact
-		end
-		def ydim_location
-			[@plz, @location].compact.join(' ')
 		end
 	end
 end

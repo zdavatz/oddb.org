@@ -1,11 +1,12 @@
 source "https://rubygems.org"
 gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
 
-gem 'syck'
 
 gem 'cmath'
-gem 'mathn'
+# gem 'mathn'
 gem 'minitar'
+gem 'webrick'
+gem 'rss'
 gem 'bigdecimal'
 gem 'builder'
 gem 'clogger'
@@ -51,7 +52,6 @@ gem 'spreadsheet'
 gem 'swissmedic-diff'
 gem 'optimist'
 gem 'webrobots'
-gem 'ydim'
 gem 'ydocx'
 gem 'yus'
 

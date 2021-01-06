@@ -5,18 +5,16 @@
 
 require 'date'
 require 'plugin/plugin'
-require 'plugin/ydim'
 require 'util/today'
 require 'util/oddbconfig'
 
 module ODDB
 	class Invoicer < Plugin
-		def create_invoice(email, items, ydim_id)
+		def create_invoice(email, items)
 			pointer = Persistence::Pointer.new(:invoice)
 			values = {
 				:yus_name		    =>	email,
 				:keep_if_unpaid =>	true,
-				:ydim_id				=>	ydim_id,
 			}
       invoice = @app.update(pointer.creator, values)
       pointer = invoice.pointer + [:item]
@@ -34,31 +32,8 @@ module ODDB
       ## assume user exists
       mail
     end
-		def resend_invoice(invoice, day = @@today)
-			YdimPlugin.new(@app).send_invoice(invoice.ydim_id)
-		end
 		def rp2fr(price)
 			price.to_f / 100.0
-		end
-		def send_invoice(date, mail, items, service_date=date)
-			plugin = YdimPlugin.new(@app)
-			ydim_inv = plugin.inject_from_items(date, mail, items, 'CHF', service_date)
-			ydim_id = ydim_inv.unique_id
-			plugin.send_invoice(ydim_id)
-			ydim_id
-    rescue StandardError => e
-			log = Log.new(@@today)
-			log.report = [
-        "Invoicer#send_invoice(#{date}, #{mail}, #{items.join(',')}, #{service_date})",
-				"Error: #{e.class}",
-				"Message: #{e.message}",
-				"Backtrace:",
-				e.backtrace.join("\n"),
-			].join("\n")
-			log.recipients += [ 'ipn' ]
-			#log.notify("Error Invoice: #{subject}")
-			log.notify("Error Invoice: ")
-      nil
 		end
 	end
 end

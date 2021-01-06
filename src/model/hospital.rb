@@ -13,7 +13,7 @@ module ODDB
 		include UserObserver
 		ODBA_SERIALIZABLE = ['@addresses']
 		attr_accessor :name, :business_unit, :narcotics,
-			:addresses, :email, :ydim_id
+			:addresses, :email
 		attr_reader :ean13
 		alias :fullname :name
     alias :contact_email :email
@@ -28,7 +28,7 @@ module ODDB
 			terms = [
 				@name, @ean13, @business_unit, @email
 			]
-			@addresses.each { |addr| 
+			@addresses.each { |addr|
 				terms += addr.search_terms
 			}
 			ODDB.search_terms(terms)

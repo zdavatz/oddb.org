@@ -5,7 +5,7 @@ content = IO.readlines(DbDefinition)
 FilesToInstall.each {
   |file, destDir|
   if File.exists?(file)
-    FileUtils.cp(file, destDir, :verbose => true, :preserve => true) 
+    FileUtils.cp(file, destDir, :verbose => true, :preserve => true)
   else
     puts "Skip cp non-exisiting file #{file} => #{destDir}"
   end
@@ -26,7 +26,7 @@ ProductionDirs.each {
 
 storageRegExp = /^ODBA.storage.dbi/
 FileUtils.makedirs(File.dirname(DbDefinition), :verbose => true)
-File.open(DbDefinition, 'w+') { 
+File.open(DbDefinition, 'w+') {
   |f|
   content.each{
                |line|
@@ -38,11 +38,10 @@ File.open(DbDefinition, 'w+') {
                }
 }
 
-cmds = [ 
+cmds = [
     "sudo svc -d #{ServiceDir}/ch.oddb*",
     "sudo -u postgres dropdb #{DBTestName}",
     "sudo -u postgres createdb -E UTF8 -T template0 #{DBTestName}",
-    "sudo -u apache test/integration/loaddb_from_yaml  #{DBTestName}",
     "sudo -u apache psql #{DBTestName} -f #{CreateDictonaryScript}",
     "sudo -u apache jobs/rebuild_indices",
     "sudo svc -u #{ServiceDir}/ch.oddb*"

@@ -31,7 +31,7 @@ module ODDB
       :search_limitation_C, :search_limitation_D, :search_limitation_E,
       :search_limitation_SL_only, :search_limitation_valid,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
-      :force_new_ydim_debitor, :textinfo_update, :keep_generic_type
+      :textinfo_update, :keep_generic_type
     ]
 		DATES = [
       :activate_fachinfo,
@@ -340,7 +340,6 @@ module ODDB
       :pharmacode,
 			:price_exfactory,
 			:price_public,
-      :ydim_id,
 			:year,
 		]
 		STRINGS = [

@@ -134,9 +134,6 @@ module ODDB
         @additional_lines[0].split(/\s/)[0]
 			end
 		end
-		def ydim_lines
-			[@address].concat(@additional_lines)
-		end
 		def diff(other, options = Diff_options)
       return '' unless other
       return super(other) if other.is_a?(Hash) # Happens when sending an address suggestion
@@ -185,12 +182,6 @@ module ODDB
 			@addresses.push(addr)
 			addr
 		end
-		def ydim_address_lines(pos=0)
-			address_item(:ydim_lines, pos) || []
-		end
-		def ydim_location(pos=0)
-			address_item(:location, pos)
-    end
 	end
 	class AddressSuggestion < Address2
 		include Persistence

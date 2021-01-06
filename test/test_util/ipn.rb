@@ -166,7 +166,6 @@ class TestIpn <Minitest::Test
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
-                       :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
                        :total_netto       => 2.35,
                        :vat               => 6.789,
@@ -174,10 +173,6 @@ class TestIpn <Minitest::Test
                        :oid               => 'oid'
 
                       )
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject)
-    end
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     assert_equal([:poweruser], ODDB::Util::Ipn.process_invoice(invoice, system))
@@ -202,7 +197,6 @@ class TestIpn <Minitest::Test
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
-                       :ydim_id           => 'ydim_id',
                        :types             => [:download],
                        :total_netto       => 2.35,
                        :vat               => 6.789,
@@ -210,10 +204,6 @@ class TestIpn <Minitest::Test
                        :oid               => 'oid'
 
                       )
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject)
-    end
-
     oddb_bak = $oddb
     $oddb    = flexmock('oddb', :yus_get_preference => 'yus_get_preference')
     assert_equal([:download], ODDB::Util::Ipn.process_invoice(invoice, system))
@@ -235,7 +225,6 @@ class TestIpn <Minitest::Test
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
-                       :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
                        :total_netto       => 2.35,
                        :vat               => 6.789,
@@ -244,10 +233,6 @@ class TestIpn <Minitest::Test
                        :odba_store        => nil
 
                       )
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject)
-    end
-
     system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil,
@@ -278,7 +263,6 @@ class TestIpn <Minitest::Test
                        :items             => {'key' => item},
                        :max_duration      => 'max_duration',
                        :item_by_text      => item,
-                       :ydim_id           => 'ydim_id',
                        :types             => [:poweruser],
                        :total_netto       => 2.35,
                        :vat               => 6.789,
@@ -288,10 +272,6 @@ class TestIpn <Minitest::Test
                        :ipn=              => nil
 
                       )
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject)
-    end
-
     system  = flexmock('system',
                        :yus_set_preference => nil,
                        :yus_grant          => nil,

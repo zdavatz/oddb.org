@@ -37,7 +37,7 @@ class UserCompany < Company
 	end
 	def update
 		unless(@session.allowed?('edit', @model.pointer.to_yus_privilege))
-			return State::Companies::Company.new(@session, @model) 
+			return State::Companies::Company.new(@session, @model)
 		end
 		keys = [
 			:address,
@@ -103,7 +103,7 @@ class UserCompany < Company
 				if((date = input[:invoice_date_patinfo]) \
 					 && date != company.invoice_date(:patinfo) && date <= @@today)
 					input.delete(:invoice_date_patinfo)
-					err = create_error('e_date_must_be_in_future', :invoice_date_patinfo, 
+					err = create_error('e_date_must_be_in_future', :invoice_date_patinfo,
 						(@@today + 1).strftime('%d.%m.%Y'))
 					@errors.store(:invoice_date_patinfo, err)
 				end
@@ -131,7 +131,7 @@ class UserCompany < Company
 	def user_or_creator
 		mdl = @model.user
 		if(mdl.nil?)
-			mdl = Persistence::CreateItem.new(Persistence::Pointer.new([:user])) 
+			mdl = Persistence::CreateItem.new(Persistence::Pointer.new([:user]))
 			mdl.carry(:model, @model)
 			mdl.carry(:unique_email, @session.user_input(:contact_email))
 		end
@@ -183,7 +183,6 @@ class RootCompany < UserCompany
 			:ean13,
 			:fax,
 			:fon,
-      :force_new_ydim_debitor,
 			:generic_type,
 			:invoice_date_fachinfo,
 			:invoice_date_index,
@@ -207,7 +206,6 @@ class RootCompany < UserCompany
       :swissmedic_email,
       :swissmedic_salutation,
 			:url,
-      :ydim_id,
 		]
 		do_update(keys)
 	end
@@ -215,11 +213,6 @@ class RootCompany < UserCompany
   def validate input
     if input[:invoice_email] == @model.contact_email
       input.delete :invoice_email
-    end
-    if (input[:invoice_email] || input[:contact_email]) \
-      && "#{input[:force_new_ydim_debitor]}#{input[:ydim_id]}".empty?
-      err = create_error(:e_need_ydim_id, :ydim_id, '')
-      @errors.store(:ydim_id, err)
     end
   end
 end

@@ -11,7 +11,6 @@ require 'flexmock/minitest'
 require 'plugin/invoicer'
 require 'util/persistence'
 require 'yus/entity'
-require 'plugin/ydim'
 require 'util/log'
 require 'util/today'
 
@@ -22,7 +21,7 @@ class TestInvoicer <Minitest::Test
   end
   def test_create_invoice
     pointer = flexmock('pointer')
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
@@ -36,7 +35,7 @@ class TestInvoicer <Minitest::Test
       p.should_receive(:creator)
     end
     item = {'key' => 'value'}
-    assert_equal([item], @invoicer.create_invoice('email', [item], 'ydim_id'))
+    assert_equal([item], @invoicer.create_invoice('email', [item]))
   end
   def test_ensure_yus_user__error
     flexmock(@app) do |a|
@@ -53,42 +52,14 @@ class TestInvoicer <Minitest::Test
              :yus_set_preference => nil
             )
     pointer      = flexmock('pointer', :to_yus_privilege => 'to_yus_privilege')
-    comp_or_hosp = flexmock('comp_or_hosp', 
+    comp_or_hosp = flexmock('comp_or_hosp',
                             :invoice_email => 'invoice_email',
                             :pointer       => pointer
                            )
     assert_equal('invoice_email', @invoicer.ensure_yus_user(comp_or_hosp))
   end
-  def test_resend_invoice
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:send_invoice).and_return('send_invoice')
-    end
-    invoice = flexmock('invoice', :ydim_id => 'ydim_id')
-    assert_equal('send_invoice', @invoicer.resend_invoice(invoice, Time.local(2011,2,3)))
-  end
   def test_rp2fr
     assert_in_delta(1.234, @invoicer.rp2fr(123.4), 0.01)
   end
-  def test_send_invoice
-    ydim_inv = flexmock('ydim_inv', :unique_id => 'ydim_id')
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject_from_items).and_return(ydim_inv)
-      y.should_receive(:send_invoice).and_return('send_invoice')
-    end
-    assert_equal('ydim_id', @invoicer.send_invoice('date', 'mail', 'items'))
-  end
-  def test_send_invoice__error
-    flexmock(ODDB::YdimPlugin).new_instances do |y|
-      y.should_receive(:inject_from_items).and_raise(StandardError)
-    end
-    flexmock(ODDB::Log).new_instances do |l|
-      l.should_receive(:report)
-      l.should_receive(:notify).and_return('notify')
-    end
-    def @invoicer.subject; end
-    assert_nil(@invoicer.send_invoice('date', 'mail', ['item']))
-  end
-
-
 end
 

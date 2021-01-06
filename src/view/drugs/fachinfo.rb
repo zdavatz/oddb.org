@@ -4,7 +4,7 @@
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
-require 'mathn'
+# require 'mathn'
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'

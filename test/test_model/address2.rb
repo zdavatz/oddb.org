@@ -89,7 +89,7 @@ module ODDB
 		def test_lines__1
 			@address.title = 'Herrn Dr. med.'
 			@address.name = 'Werner Blaumacher'
-			@address.additional_lines = ['Arztpraxis', 
+			@address.additional_lines = ['Arztpraxis',
 			'Praxisgemeinschaft Steinfels']
 			@address.address = 'Burgweg 28'
 			@address.location = '8706 Meilen'
@@ -132,7 +132,7 @@ module ODDB
 			other.type = 'at_praxis'
 
 			@address.name = 'Walter F. Hugentobler'
-			@address.additional_lines = ['Arztpraxis', 
+			@address.additional_lines = ['Arztpraxis',
 				'Praxisgemeinschaft Steinfels']
 			@address.address = 'Burgweg 28'
 			@address.location = '8706 Meilen'
@@ -187,20 +187,6 @@ module ODDB
       ]
       assert_equal(expected, @address.search_terms)
     end
-    def test_ydim_lines
-      @address.title = 'Herrn Dr. med.'
-      @address.name = 'Werner Blaumacher'
-      @address.additional_lines = [ 'Arztpraxis',
-      'Praxisgemeinschaft Steinfels' ]
-      @address.address = 'Burgweg 28'
-      @address.location = '8706 Meilen'
-      expected = [
-        'Burgweg 28',
-        'Arztpraxis',
-        'Praxisgemeinschaft Steinfels',
-      ]
-      assert_equal(expected, @address.ydim_lines)
-    end
     def test_plz_from_location
       @address.location = '4051  Basel '
       assert_equal('4051', @address.plz)
@@ -212,14 +198,14 @@ module ODDB
     def test_compare
       @address.title = 'Herrn Dr. med.'
       @address.name = 'Werner Blaumacher'
-      @address.additional_lines = [ 'Arztpraxis', 
+      @address.additional_lines = [ 'Arztpraxis',
         'Praxisgemeinschaft Steinfels' ]
       @address.address = 'Burweg 28'
       @address.location = '8706 Meilen'
       other = Address2.new
       other.title = 'Frau Dr. med.'
       other.name = 'Waltraud Hotzenkocherle'
-      other.additional_lines = [ 'Arztpraxis', 
+      other.additional_lines = [ 'Arztpraxis',
         'Praxisgemeinschaft Steinfels' ]
       other.address = 'Burgweg 28'
       other.location = '8706 Meilen'
@@ -321,29 +307,6 @@ module ODDB
       assert_equal 'A Name', @observer.address_item(:name, 0)
       assert_equal 'Another Name', @observer.address_item(:name, 1)
       assert_equal 'The First Line', @observer.address_item(:address, 1)
-    end
-    def test_ydim_address_lines
-      @address2.title = 'Herrn Dr. med.'
-      @address2.name = 'Werner Blaumacher'
-      @address2.additional_lines = [ 'Arztpraxis', 
-        'Praxisgemeinschaft Steinfels' ]
-      @address2.address = 'Burgweg 28'
-      @address2.location = '8706 Meilen'
-      expected = [
-        'Burgweg 28',
-        'Arztpraxis',
-        'Praxisgemeinschaft Steinfels',
-      ]
-      assert_equal(expected, @observer.ydim_address_lines(1))
-    end
-    def test_ydim_location
-      @address2.title = 'Herrn Dr. med.'
-      @address2.name = 'Werner Blaumacher'
-      @address2.additional_lines = [ 'Arztpraxis', 
-        'Praxisgemeinschaft Steinfels' ]
-      @address2.address = 'Burgweg 28'
-      @address2.location = '8706 Meilen'
-      assert_equal('8706 Meilen', @observer.ydim_location(1))
     end
   end
 end

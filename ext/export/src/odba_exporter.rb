@@ -8,16 +8,12 @@ require 'fileutils'
 require 'tempfile'
 require 'zip'
 require 'models'
-require 'oddb_yaml'
 require 'csv_exporter'
 require 'archive/tar/minitar'
 require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
 require 'odba'
-# NOTE
-# If all yaml are allowd, that these have unicode characters.
-# Then please use the following. see export_yaml method.
 
 module ODDB
 	module OdbaExporter
@@ -181,30 +177,6 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
         packages.sort_by do |pack| pack.name end.each do |pack|
           CsvExporter.dump(CsvExporter::PRICE_HISTORY, pack, fh, :dates => dates)
         end
-        nil
-      }
-    end
-    def OdbaExporter.export_yaml(odba_ids, dir, name, opts={})
-      need_unescape = false
-      if name == "oddb.yaml"
-        require 'syck'
-        require 'syck/encoding'
-        need_unescape = true
-      end
-      opts.each do |key, val| Thread.current[key] = val end
-      safe_export(dir, name) { |fh|
-        odba_ids.each { |odba_id|
-          begin
-            yaml = YAML.dump(ODBA.cache.fetch(odba_id, nil))
-            if need_unescape
-              fh.puts Syck.unescape(yaml)
-            else
-              fh.puts yaml
-            end
-            fh.puts
-          rescue
-          end
-        }
         nil
       }
     end

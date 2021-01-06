@@ -38,13 +38,13 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_actimve_companies
     company  = flexmock('company')
-    sequence = flexmock('sequence', 
+    sequence = flexmock('sequence',
                         :is_a?   => true,
                         :company => company
                        )
     pointer  = flexmock('pointer')
     flexmock(pointer, :resolve => sequence)
-    item     = flexmock('item', 
+    item     = flexmock('item',
                         :type         => :annual_fee,
                         :item_pointer => pointer,
                        )
@@ -68,7 +68,7 @@ class TestInfoInvoicer <Minitest::Test
     assert_equal([item], @invoicer.adjust_annual_fee(company, [item]))
   end
   def test_adjust_company_fee
-    item    = flexmock('item', 
+    item    = flexmock('item',
                        :type   => :annual_fee,
                        :price= => nil
                       )
@@ -102,7 +102,7 @@ class TestInfoInvoicer <Minitest::Test
     assert_equal([item], @invoicer.slate_items)
   end
   def test_annual_items
-    item  = flexmock('item', 
+    item  = flexmock('item',
                      :time => @@today,
                      :type => :annual_fee
                     )
@@ -110,14 +110,14 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(@app, :slate => slate)
 
     active_infos = flexmock('active_infos', :delete => nil)
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :active_infos => active_infos,
              :unique_name  => nil
             )
     assert_equal([], @invoicer.annual_items)
   end
   def test_all_items
-    item  = flexmock('item', 
+    item  = flexmock('item',
                      :time => @@today,
                      :type => :annual_fee
                     )
@@ -126,7 +126,7 @@ class TestInfoInvoicer <Minitest::Test
 
 
     active_infos = flexmock('active_infos', :delete => nil)
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :active_infos => active_infos,
              :unique_name  => nil
             )
@@ -139,7 +139,7 @@ class TestInfoInvoicer <Minitest::Test
     assert_equal([], @invoicer.neighborhood_unique_names('item'))
   end
   def test_filter_paid__annual_fee
-    item = flexmock('item', 
+    item = flexmock('item',
                     :time     => @@today,
                     :expired? => false,
                     :type     => :annual_fee
@@ -152,7 +152,7 @@ class TestInfoInvoicer <Minitest::Test
     assert_equal([item], @invoicer.filter_paid([item], Date.new(2011,2,3)))
   end
   def test_filter_paid__processing
-    item = flexmock('item', 
+    item = flexmock('item',
                     :time     => @@today,
                     :expired? => false,
                     :type     => :processing
@@ -166,12 +166,12 @@ class TestInfoInvoicer <Minitest::Test
   end
   def test_group_by_company
     company  = flexmock('company')
-    sequence = flexmock('sequence', 
+    sequence = flexmock('sequence',
                         :name => 'name',
                         :company => company
                        )
     pointer  = flexmock('pointer', :resolve => sequence)
-    item     = flexmock('item', 
+    item     = flexmock('item',
                         :item_pointer => pointer,
                         :data         => {},
                         :time         => @@today,
@@ -186,21 +186,21 @@ class TestInfoInvoicer <Minitest::Test
     assert_kind_of(ODDB::AbstractInvoiceItem, result.values[0][0])
   end
   def test_recent_items
-    item  = flexmock('item', 
+    item  = flexmock('item',
                      :time => @@today,
                      :type => :annual_fee
                     )
     slate = flexmock('slate', :items => {'key1' => item, 'key2' => item})
     flexmock(@app, :slate => slate)
     active_infos = flexmock('active_infos', :delete => 'delete')
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :active_infos => active_infos,
              :unique_name  => 'unique_name'
             )
     assert_equal([], @invoicer.recent_items(Date.new(2011,2,3)))
   end
   def test_recent_items__processing
-    item  = flexmock('item', 
+    item  = flexmock('item',
                      :time => Time.local(2011,2,4),
                      :type => :processing
                     )
@@ -208,7 +208,7 @@ class TestInfoInvoicer <Minitest::Test
     slate = flexmock('slate', :items => {'key1' => item, 'key2' => item})
     flexmock(@app, :slate => slate)
     active_infos = flexmock('active_infos', :delete => nil)
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :active_infos => active_infos,
              :unique_name  => 'unique_name'
             )
@@ -237,7 +237,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(item, :dup => item)
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    company  = flexmock('company', 
+    company  = flexmock('company',
                         :invoice_disabled? => false,
                         :contact_email     => 'contact_email',
                         :name              => 'name',
@@ -247,21 +247,20 @@ class TestInfoInvoicer <Minitest::Test
                         :limit_invoice_duration => 'limit_invoice_duration'
                        )
     update   = flexmock('update', :pointer => pointer)
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
             )
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name      => 'unique_name',
              :active_infos     => active_infos,
              :invoices         => {'key' => invoice},
              :activation_fee   => 'price',
              :group_by_company => {company => [item]},
              :ensure_yus_user  => nil,
-             :send_invoice     => 'ydim_id'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice},
              :yus_create_user => nil,
@@ -280,13 +279,13 @@ class TestInfoInvoicer <Minitest::Test
                        )
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name     => 'unique_name',
              :active_infos    => active_infos,
              :invoices        => {'key' => invoice},
              :activation_fee  => 'price'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice}
             )
@@ -313,7 +312,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(item, :dup => item)
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    company  = flexmock('company', 
+    company  = flexmock('company',
                         :invoice_disabled? => true,
                         :contact_email     => 'contact_email',
                         :name              => 'name',
@@ -325,21 +324,20 @@ class TestInfoInvoicer <Minitest::Test
                         :odba_store        => nil
                        )
     update   = flexmock('update', :pointer => pointer)
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
             )
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name      => 'unique_name',
              :active_infos     => active_infos,
              :invoices         => {'key' => invoice},
              :activation_fee   => 'price',
              :group_by_company => {company => [item]},
              :ensure_yus_user  => nil,
-             :send_invoice     => 'ydim_id'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice},
              :yus_create_user => nil,
@@ -369,7 +367,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(item, :dup => item)
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    company  = flexmock('company', 
+    company  = flexmock('company',
                         :invoice_disabled? => false,
                         :contact_email     => 'contact_email',
                         :name              => 'company_name',
@@ -381,21 +379,20 @@ class TestInfoInvoicer <Minitest::Test
                         :odba_store        => nil
                        )
     update   = flexmock('update', :pointer => pointer)
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
             )
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name      => 'unique_name',
              :active_infos     => active_infos,
              :invoices         => {'key' => invoice},
              :activation_fee   => 'price',
              :group_by_company => {company => [item]},
              :ensure_yus_user  => 'ensure_yus_user',
-             :send_invoice     => 'ydim_id'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice},
              :yus_create_user => nil,
@@ -426,7 +423,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(item, :dup => item)
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    company  = flexmock('company', 
+    company  = flexmock('company',
                         :invoice_disabled? => false,
                         :contact_email     => 'contact_email',
                         :name              => 'company_name',
@@ -438,21 +435,20 @@ class TestInfoInvoicer <Minitest::Test
                         :odba_store        => nil
                        )
     update   = flexmock('update', :pointer => pointer)
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
             )
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name      => 'unique_name',
              :active_infos     => active_infos,
              :invoices         => {'key' => invoice},
              :activation_fee   => 'price',
              :group_by_company => {company => [item]},
              :ensure_yus_user  => 'ensure_yus_user',
-             :send_invoice     => 'ydim_id'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice},
              :yus_create_user => nil,
@@ -482,7 +478,7 @@ class TestInfoInvoicer <Minitest::Test
     flexmock(item, :dup => item)
     invoice  = flexmock('invoice', :items => {'key' => item})
     slate    = flexmock('slate', :items => {'key1' => item, 'key2' => item})
-    company  = flexmock('company', 
+    company  = flexmock('company',
                         :invoice_disabled? => false,
                         :contact_email     => 'contact_email',
                         :name              => 'company_name',
@@ -494,21 +490,20 @@ class TestInfoInvoicer <Minitest::Test
                         :odba_store        => nil
                        )
     update   = flexmock('update', :pointer => pointer)
-    flexmock(pointer, 
+    flexmock(pointer,
              :+       => pointer,
              :dup     => pointer,
              :creator => nil
             )
-    flexmock(@invoicer, 
+    flexmock(@invoicer,
              :unique_name      => 'unique_name',
              :active_infos     => active_infos,
              :invoices         => {'key' => invoice},
              :activation_fee   => 'price',
              :group_by_company => {company => [item]},
              :ensure_yus_user  => 'ensure_yus_user',
-             :send_invoice     => 'ydim_id'
             )
-    flexmock(@app, 
+    flexmock(@app,
              :slate    => slate,
              :invoices => {'key' => invoice},
              :yus_create_user => nil,

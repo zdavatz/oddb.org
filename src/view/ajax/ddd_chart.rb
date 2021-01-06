@@ -6,7 +6,7 @@
 require 'htmlgrid/component'
 require 'view/additional_information'
 require 'gruff'
-require 'mathn'
+# require 'mathn'
 
 class SideBar < Gruff::Base
   LABEL_MARGIN = LEGEND_MARGIN = TITLE_MARGIN = 4

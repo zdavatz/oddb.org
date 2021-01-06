@@ -3,7 +3,6 @@
 # ODDB::State::PayPal::Ipn -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::PayPal::Ipn -- oddb.org -- 19.04.2005 -- hwyss@ywesee.com
 
-require 'plugin/ydim'
 require 'util/mail'
 
 module ODDB
@@ -40,7 +39,6 @@ module Ipn
                          item.expiry_time)
       end
     }
-    YdimPlugin.new(system).inject(invoice)
     invoice.types.each { |type|
       case type
       when :poweruser
