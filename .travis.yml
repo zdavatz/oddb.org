@@ -4,6 +4,7 @@ cache: bundler
 rvm:
   - 2.7.1
   - 2.5.0
+  - 3.0.0
   - ruby-head
 
 matrix:
@@ -16,7 +17,7 @@ install:
 
 script:
   - bundle exec rake quanty
-  - bundle exec ruby test/suite.rb
+  - travis_wait 30 bundle exec ruby test/suite.rb
 
 notifications:
   email:
