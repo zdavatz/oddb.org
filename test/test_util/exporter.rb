@@ -50,7 +50,6 @@ module ODDB
       flexmock(FiPDFExporter).should_receive(:new).and_return(@plugin)
       flexmock(OuwerkerkPlugin).should_receive(:new).and_return(@plugin)
       flexmock(YamlExporter).should_receive(:new).and_return(@plugin)
-      flexmock(DownloadInvoicer).should_receive(:new).and_return(@plugin)
       flexmock(FachinfoInvoicer).should_receive(:new).and_return(@plugin)
       flexmock(PatinfoInvoicer).should_receive(:new).and_return(@plugin)
       flexmock(LogFile) do |logclass| logclass.should_receive(:filename).with(@jetzt, 'oddb/debug',).and_return('/tmp/logfile')  end
@@ -318,13 +317,6 @@ module ODDB
       flexmock(File).should_receive(:read)
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       assert_nil(@exporter.mail_download_stats)
-    end
-    def test_mail_download_invoices
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:run).and_return('run')
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal('run', @exporter.mail_download_invoices)
     end
     def test_mail_fachinfo_log__noreport
       flexmock(@plugin) do |plug|
