@@ -2,6 +2,7 @@
 # encoding: utf-8
 # FiParse::TestPatinfoHpricot -- oddb -- 09.04.2012 -- yasaka@ywesee.com
 # FiParse::TestPatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
+begin require 'pry'; rescue LoadError; end
 
 require 'hpricot'
 
@@ -1069,24 +1070,24 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         File.open(File.basename(HtmlName.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@fachinfo.to_yaml }
       end
 
-      def test_fachinfo_atc
+      def test_fachinfo_atc_30785
         assert_nil(@@fachinfo.effects)
         assert_nil(@@fachinfo.atc_code)
       end
 
-      def test_fachinfo2
+      def test_fachinfo_30785
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end
 
-      def test_name2
+      def test_name_30785
         assert_equal(MedicInfoName, @@fachinfo.name.to_s) # is okay as found this in html Ponstan&reg;
       end
 
-      def test_galenic_form
+      def test_galenic_form_30785
         assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', @@fachinfo.galenic_form.heading)
       end
 
-     def test_all_to_html
+     def test_all_to_html_30785
 
         @lookandfeel = FlexMock.new 'lookandfeel'
         @lookandfeel.should_receive(:section_style).and_return { 'section_style' }

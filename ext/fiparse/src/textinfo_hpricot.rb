@@ -21,6 +21,7 @@ class TextinfoHpricot
     code = nil
     ptr = OpenStruct.new
     ptr.chapter = chapter
+    ptr.table = nil
     if @format == :swissmedicinfo
       if elem.at("div") and elem.at("p") # formatted like cipralex iksnr 62184
         heading = elem.at("div").inner_text;
@@ -86,25 +87,25 @@ class TextinfoHpricot
     (doc/paragraph_tag).each { |elem|
       if !name or elem != name
         code, text = chapter(elem)
-        identify_chapter(code, text) 
+        identify_chapter(code, text)
       end
-    } 
+    }
     paragraph_tag_pre_2013 = "div[@id^='Section']"
     (doc/paragraph_tag_pre_2013).each {
       |elem|
       if !name or elem != name
         code, text = chapter(elem)
-        identify_chapter(code, text) 
+        identify_chapter(code, text)
       end
     }
     to_textinfo
   end
-  # return array of styles which have the attribute 
+  # return array of styles which have the attribute
   def TextinfoHpricot::get_italic_style(styles)
     return ['s8'] unless styles # this was the default assumed for swissmedicinfo
     styleNamesWithItalic =  []
-    styles.split('}').each{ 
-      |style| 
+    styles.split('}').each{
+      |style|
         matches = /([^{]+){(.+)/.match(style)
         next unless matches
         styleNamesWithItalic << matches[1].sub('.','') if ItalicRegexp.match(matches[2])
@@ -116,15 +117,15 @@ class TextinfoHpricot
   def TextinfoHpricot::get_fixed_font_style(styles)
     return [] unless styles
     styleNamesWithFixedFont =  []
-    styles.split('}').each{ 
-      |style| 
+    styles.split('}').each{
+      |style|
         matches = /([^{]+){(.+)/.match(style)
         next unless matches
         styleNamesWithFixedFont << matches[1].sub('.','') if FixedFontRegexp.match(matches[2])
     }
     styleNamesWithFixedFont
   end
-#   
+#
   private
   FixedFontRegexp = /font-family:Courier/i
   ItalicRegexp = /font-style:italic/i
@@ -141,7 +142,7 @@ class TextinfoHpricot
     end
     false
   end
-  
+
   def has_italic?(elem, ptr)
     if @format == :swissmedicinfo
       return true if ItalicRegexp.match(elem.attributes['style'])
