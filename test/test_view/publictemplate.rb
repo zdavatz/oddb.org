@@ -68,7 +68,7 @@ class TestPublicTemplate <Minitest::Test
   end
   def test_css_link
     context = flexmock('context', :link => 'link')
-    assert_equal('link', @template.css_link(context))
+    assert_nil(@template.css_link(context))
   end
   def test_css_link__lookandfeel_enabled
     flexmock(@lnf,
@@ -76,7 +76,7 @@ class TestPublicTemplate <Minitest::Test
              :resource_external => 'resource_external'
             )
     context = flexmock('context', :link => 'link')
-    assert_equal('link', @template.css_link(context))
+    assert_nil(@template.css_link(context))
   end
   def test_dynamic_html_headers
     flexmock(@lnf,

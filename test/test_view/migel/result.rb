@@ -29,6 +29,7 @@ class TestList <Minitest::Test
                         :language => 'language').by_default
     @model   = flexmock('model',
                         :force_encoding => 'force_encoding',
+                        :encode          => 'encode',
                         :product_text => 'product_text').by_default
     @model.should_receive(:is_a?).with(String).and_return(true)
     @model.should_receive(:is_a?).and_return(false)
@@ -110,6 +111,7 @@ class TestResultList <Minitest::Test
     limitation_text = flexmock('limitation_text', :pointer => 'pointer')
     group    = flexmock('group', 
                         :limitation_text => limitation_text,
+                        :encode          => 'encode',
                         :migel_code      => 'migel_code',
                         :pointer         => 'pointer',
                         :language        => 'language',
@@ -120,6 +122,7 @@ class TestResultList <Minitest::Test
     @model   = flexmock('model', 
                         :group           => group,
                         :migel_code      => 'migel_code',
+                        :encode          => 'encode',
                         :pointer         => 'pointer',
                         :language        => 'language',
                         :products        => ['product'],

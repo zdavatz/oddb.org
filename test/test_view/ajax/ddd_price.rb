@@ -25,6 +25,7 @@ class TestDDDPriceTable <Minitest::Test
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :error       => 'error',
+                          :currency    => 'CHF',
                          )
     @fact      = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose',
@@ -90,7 +91,8 @@ class TestDDDPrice <Minitest::Test
                          )
     @session   = flexmock('session',
                           :lookandfeel => @lnf,
-                          :error       => 'error',
+                           :currency    => 'CHF',
+                         :error       => 'error',
                          )
     fact       = flexmock('fact', :factor => 'factor')
     dose       = flexmock('dose',
