@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestAddress -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com 
-# ODDB::TestAddress -- oddb.org -- 24.02.2003 -- jlang@ywesee.com, usenguel@ywesee.com 
+# ODDB::TestAddress -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestAddress -- oddb.org -- 24.02.2003 -- jlang@ywesee.com, usenguel@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -25,14 +25,14 @@ module ODDB
 				'Studio medico',
 				'Christoph Profos',
 				'Ospedale San Giovanni',
-				'6500 Bellinzona' 
+				'6500 Bellinzona'
 			]
 			expected = [
 				'Claudio Marone',
 				'Studio medico',
 				'Christoph Profos',
 				'Ospedale San Giovanni',
-				'6500 Bellinzona' 
+				'6500 Bellinzona'
 			]
 			assert_equal(expected, @address.lines_without_title)
 		end
@@ -41,10 +41,10 @@ module ODDB
 				'Herr Dr. med.',
 				'Herrn Dr. med.',
 				'Frau Dr. med',
-				'6500 Bellinzona' 
+				'6500 Bellinzona'
 			]
 			expected = [
-				'6500 Bellinzona' 
+				'6500 Bellinzona'
 			]
 			assert_equal(expected, @address.lines_without_title)
 		end
@@ -62,7 +62,7 @@ module ODDB
 		def test_street__2
 			@address.lines = [
 				'Ospedale San Giovanni',
-				'6500 Bellinzona' 
+				'6500 Bellinzona'
 			]
 			assert_equal('Ospedale San Giovanni', @address.street)
 			assert_nil(@address.number)
@@ -201,12 +201,6 @@ module ODDB
       @address.address = 'street, 123'
       assert_equal('street', @address.street)
     end
-    def test_ydim_lines
-      @address.address = 'address'
-      @address.additional_lines = ['line']
-      expected = ["address", "line"]
-      assert_equal(expected, @address.ydim_lines)
-    end
   end
   class StubAddressObserver
     include AddressObserver
@@ -227,16 +221,6 @@ module ODDB
     def test_create_address
       @observer.addresses = []
       assert_kind_of(ODDB::Address2, @observer.create_address)
-    end
-    def test_ydim_address_lines
-      address = flexmock('address', :ydim_lines => 'ydim_lines')
-      @observer.addresses = [address]
-      assert_equal('ydim_lines', @observer.ydim_address_lines)
-    end
-    def test_ydim_location
-      address = flexmock('address', :location => 'location')
-      @observer.addresses = [address]
-      assert_equal('location', @observer.ydim_location)
     end
   end
   class TestAddressSuggestion <Minitest::Test
