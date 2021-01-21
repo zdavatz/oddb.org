@@ -57,7 +57,7 @@ module ODDB
     def sort_result(packages, a_session)
       m = a_session && a_session.request_path && /search_query[\/=]([^\/=&]*)/.match(a_session.request_path)
       trademark = false
-      trademark = URI.unescape(m[1]) if m
+      trademark = CGI.unescape(m[1]) if m
       puts "Resultsort #{__LINE__}: tm #{trademark.inspect} from #{a_session.request_path}" if DebugSort && a_session
       begin
         packages.uniq!
