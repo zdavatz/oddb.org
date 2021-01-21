@@ -114,7 +114,9 @@ module ODDB
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
+      puts_sync "postprocess update_rss_feeds done"
       update_yearly_fachinfo_feeds
+      puts_sync "postprocess update_yearly_fachinfo_feeds done"
     end
 
     def TextInfoPlugin::replace_textinfo(app, new_ti, container, type) # type must be :patinfo or :fachinfo
@@ -148,7 +150,13 @@ module ODDB
         if old_text
           text_item = eval("updated_fi.#{lang}")
           new_text = text_item.text
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
+          if fis[lang].change_log && fis[lang].change_log.respond_to?(:size)
+            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
+                "eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
+          else
+            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
+                "eql? #{old_text.eql?(new_text)} without change_logs"
+          end
           unless old_text.eql?(new_text)
             text_item.add_change_log_item(old_text, new_text)
             text_item.odba_store

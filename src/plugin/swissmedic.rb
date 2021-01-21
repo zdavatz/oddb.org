@@ -579,7 +579,7 @@ public
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xlsx")
       latest_name = File.join @archive, "#{keyword}-latest.xlsx"
       cmd = "@latest_#{keyword.downcase.gsub(/[^a-zA-Z]/, '_')} = '#{latest_name}'"
-      LogFile.debug " cmd #{cmd}"
+      LogFile.debug "index_url #{index_url} cmd #{cmd}"
       eval cmd
       latest_name = File.join @archive, "#{keyword}-latest.xlsx"
       if File.exist?(target) and File.exists?(latest_name) and File.size(target) == File.size(latest_name)

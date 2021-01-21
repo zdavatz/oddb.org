@@ -80,13 +80,21 @@ class Fachinfo < HtmlGrid::Component
       feed.image.title = @lookandfeel.lookup(:logo)
       feed.encoding = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
+      counter = 0
       @model.each do |fachinfo|
-        if @year
-          next if (fachinfo.revision.utc.year != @year)
-        else
-          next if (fachinfo.revision.utc.year < @@today.year-1)
+        if fachinfo.localized_name
+          if @year
+            next if (fachinfo.revision.utc.year != @year)
+          else
+            next if (fachinfo.revision.utc.year < @@today.year-1)
+          end
+          counter += 1
+          if counter % 5000 == 0
+            puts "Sleeping 6 seconds in item_to_html to give cleanup some time  #{counter} of #{@model.size} o #{fachinfo.odba_id} iksnrs #{fachinfo.iksnrs} #{fachinfo.revision} @year #{@year} #{counter}"
+            sleep 6
+          end
+          item_to_html(context, fachinfo, feed)
         end
-        item_to_html(context, fachinfo, feed)
       end
     end.to_s
   end

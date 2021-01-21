@@ -33,7 +33,10 @@ module ODDB
         else
           descriptions[key]
         end
-      rescue NoMethodError
+      rescue ODBA::OdbaError, NoMethodError => error
+        puts "Descriptions.description error"
+        puts caller[0..10].join("\n")
+        return ''
       end
     end
 		def descriptions
@@ -85,7 +88,7 @@ module ODDB
 		def init(app=nil)
 			super
 			unless(@pointer.last_step.size > 1)
-				@pointer.append(@oid) 
+				@pointer.append(@oid)
 			end
 			@pointer
 		end

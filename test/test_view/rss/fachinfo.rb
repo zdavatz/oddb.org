@@ -17,7 +17,7 @@ module ODDB
 class TestFachinfoItem <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :language    => 'language'
                          )
@@ -40,7 +40,7 @@ class TestFachinfo <Minitest::Test
                           :resource   => 'resource',
                           :attributes => {}
                          )
-    @session   = flexmock('session', 
+    @session   = flexmock('session',
                           :lookandfeel => @lnf,
                           :language    => 'language'
                          )
@@ -48,7 +48,7 @@ class TestFachinfo <Minitest::Test
                           :is_a? => true,
                           :chapter_names => ['chapter_name']
                          )
-    @model     = flexmock('model', 
+    @model     = flexmock('model',
                           :localized_name => 'localized_name',
                           :language => @document,
                           :pointer  => 'pointer',
@@ -132,12 +132,11 @@ class TestFachinfo <Minitest::Test
                           :revision => Time.utc(@year,2,3),
                          )
     @raised_no_method_error = false
-    @model.should_receive(:iksnrs).and_return { @raised_no_method_error = true ; raise(NoMethodError) }
+    @model.should_receive(:iksnrs).and_return { [] }
     @component = ODDB::View::Rss::Fachinfo.new([@model], @session, container, @year)
     context = flexmock('context', :html => 'html')
     res =  @component.to_html(context)
     assert(res.is_a?(String), 'should not raise an error')
-    assert(@raised_no_method_error, 'must have catched NoMethodError')
   end
 end
     end # Interactions
