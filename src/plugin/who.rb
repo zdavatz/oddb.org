@@ -38,9 +38,9 @@ module ODDB
     }
     def initialize *args
       super
-      @root_url = 'http://www.whocc.no/'
+      @root_url = 'https://www.whocc.no/'
       @ddd_url  = @root_url+ 'atc_ddd_index/'
-      @new_url  = @root_url+ 'atc/lists_of_new_atc_ddds_and_altera/new_atc/?order_by=1&d=DESC'
+      @new_url = @root_url+ '/ddd/lists_of_temporary_atc_ddds_and_alterations/atc_codes/?order_by=1&d=DESC'
       @codes = CodeHandler.new
       @count = 0
       @created = 0
@@ -74,6 +74,7 @@ module ODDB
         @count += 1
         import_code(agent, code)
       end
+
       import_new_codes(agent)
       @app.atc_classes.odba_store
       report

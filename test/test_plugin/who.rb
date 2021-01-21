@@ -238,7 +238,7 @@ module ODDB
       pointer = flexmock('pointer', :creator => 'creator')
       flexmock(pointer, :+ => pointer)
       atc = flexmock('atc',
-                     :guidelines => nil,
+                     :repairs => [ 'repairs_1'],
                      :pointer    => pointer
                     )
       @a_hash = Hash.new
@@ -261,8 +261,6 @@ module ODDB
       m = /Created\s+(\d+)\s+English/.match(result)
       assert_equal(0, m[1].to_i)
       assert_match('Imported  31 ATC-Codes', result)
-      assert_match("Updated    1 Guidelines\n", result)
-      skip "Don't know how to stub wrong sequences"
       assert_match("Repaired   1 wrong sequences\n", result)
     end
   end
