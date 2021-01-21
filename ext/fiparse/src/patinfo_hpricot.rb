@@ -102,13 +102,14 @@ class PatinfoHpricot < TextinfoHpricot
     #   And Section order is also not fixed :(
     PatinfoHpricot::text_to_chapter(text(elem))
   end
-  
+
   def PatinfoHpricot::text_to_chapter(text)
     code =
     case text
-    when /^Was\s*sollte\s*dazu\s*beachtet\s*werden|^De\s*quai\s*faut\-il/                                  ; '7640'
-    when /^Wann\s*(darf|d.rfen)\s*.*nicht\s*.*werden\??|^Quand\s*.*ne\sdoit\-(il|elle)/                    ; '7680'
+    when /^Was\s*sollte\s*dazu\s*beachtet\s*werden|^De\s*quai\s*faut\-il|^De quoi faut-il tenir/           ; '7640'
+    when /^Wann\s*(darf|d.rfen)\s*.*nicht\s*.*werden\??|^Quand\s*.*ne\sdoit\-(il|elle)|Quand \S+ ne/       ; '7680'
     when /^(Was|Wann)\s*.*angewendet[\?]?|^Qu.est-ce\s*que/                                                ; '7620'
+    when /^Quand \S+ (est|sont)-.*/                                                                        ; '7620'
     when /^Wann\s*ist\s*bei\s*der\s*[\w\s\/]*Vorsicht\s*geboten\??|^Quelles\s*sont\s*les\s*pr.cautions/    ; '7700'
     when /Schwangerschaft|pendant\s*la\s*grossesse\s*ou\s*l.allaitement\??/                                ; '7720'
     when /^Wie\s*verwenden\s*Sie|^Comment\s*utiliser/                                                      ; '7740'
@@ -116,12 +117,12 @@ class PatinfoHpricot < TextinfoHpricot
     when /^Was\s*ist\s*ferner\s*zu\s*beachten\??|^.\s*quoi\s*faut\-il\s*encore\s*faire\s*attention\??/     ; '7780'
     when /^Was\s*ist[\w\s,\-]*enthalten\??|^Que\s*contient/                                                ; '7840'
     when /^Zulassungsnummer|^Num.ro\s*d.autorisation/                                                      ; '7860'
-    when /^Wo\s*erhalten\s*Sie|^O.\s*obtenez\-vous/                                                        ; '7880'
+    when /^Wo\s*erhalten\s*Sie|^O.\s*obtenez\-vous|^Que contiennent \S+/                                   ; '7880'
     when /^Herstellerin|^Fabricant/                                                                        ; '7920'
     when /^Diese\s*Packungsbeilage\s*wurde|^Cette\s*notice\s*/                                             ; '7940'
     when /^Zulassungsinhaberin(en)?|^Titulaire\s*de\s*l.autorisation/                                      ; '9000'
-    when /^Name\s*des\s*Pr.parate[s]?|^Nom\s*de\s*la\s*pr.paration/                                        ; '9010'
-    when /^Kurzcharakteristikum|^Caract.ristique\s*.\s*court/                                              ; nil
+    when /^Name\s*des\s*Pr.parate[s].*|^Nom\s*de\s*la\s*pr.paration|^(\S+ )?Arzneimittel\(*/               ; '9010'
+    when /^Kurzcharakteristikum|^Caract.ristique\s*.\s*court|^Médicament.*/                                ; '9010'
     end
     [code, text]
   end

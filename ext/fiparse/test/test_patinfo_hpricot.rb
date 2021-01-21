@@ -441,8 +441,8 @@ class TestPatinfoHpricotChapters <Minitest::Test
       ['7620','Wann wird Traumeel, Salbe angewendet?'],
       ['7680','Wann darf Notakeh D3, Salbe nicht oder nur mit Vorsicht angewendet werden?'],
       ['7680','Wann darf Notakehl® D3, Salbe nicht oder nur mit Vorsicht angewendet werden?'],
-      ['0', 'Information für Patientinnen und Patienten'],
-      ['0', 'Information destinée aux patients'],
+      [nil, 'Information für Patientinnen und Patienten'],
+      [nil, 'Information destinée aux patients'],
 
       ['9010', 'Name des Präparates'],
       ['9010', 'Name des Präparates, Homöopathisches Arzneimittel (Homöopathisch-spagyrisches'],
@@ -604,7 +604,6 @@ class TestPatinfoHpricotChapters <Minitest::Test
           nrFailures += 1
         end
     }
-    skip("Niklaus has no priority to bring the nrFailures down to 0 from 31")
     assert_equal nrFailures, 0
   end
   end
@@ -632,7 +631,7 @@ class TestPatinfoHpricotChapters <Minitest::Test
         @view = View::Chapter.new(:name, nil, @session)
         @view.value = @@patinfo.usage
         result = @view.to_html(CGI.new)
-        expected = [  /Wie verwenden Sie Ponstan?/, # heading
+        expected = [  /Wie verwenden Sie Ponstan\?/, # heading
                       /Alter    Suspension     Kapseln      Zäpfchen/,
                       />Alter    Suspension     Kapseln      Zäpfchen       \n/,
                       /<PRE/,
