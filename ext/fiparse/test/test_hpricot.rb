@@ -19,13 +19,33 @@ require 'patinfo_hpricot'
 require 'plugin/text_info'
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 require 'stub/cgi'
+require 'fachinfo_hpricot'
+require 'patinfo_hpricot'
 
 module ODDB
   module FiParse
 class TestPatinfoHpricot <Minitest::Test
   def setup
-    @writer = PatinfoHpricot.new
+    @writer = FachinfoHpricot.new
   end
+  def test_galenic_form_with_multiple_entries
+    html = <<-HTML
+    <p class="s3" id="section1"><span class="s2"><span>CoAprovel® 150/12,5; 300/12,5; 300/25</span></span></p>
+    <p class="s7" id="section3"><span class="s6"><span>Galenische Form und Wirkstoffmenge pro Einheit</span></span></p>
+<p class="s7"><span class="s8"><span>CoAprovel 150/12.5:</span></span><span class="s9"><span> Filmtabletten zu 150 mg Irbesartan und 12.5 mg Hydrochlorothiazid.</span></span></p>
+<p class="s7"><span class="s8"><span>CoAprovel 300/12.5:</span></span><span class="s9"><span> Filmtabletten zu 300 mg Irbesartan und 12.5 mg Hydrochlorothiazid.</span></span></p>
+<p class="s7"><span class="s8"><span>CoAprovel 300/25:</span></span><span class="s9"><span> Filmtabletten zu 300 mg Irbesartan und 25 mg Hydrochlorothiazid.</span></span></p>
+HTML
+    writer = FachinfoHpricot.new
+    writer.format =  :swissmedicinfo
+    fachinfo = writer.extract(Hpricot(html), :pi, 'CoAprovel®')
+    assert_equal('Galenische Form und Wirkstoffmenge pro Einheit', fachinfo.galenic_form.heading)
+    assert_equal('CoAprovel 150/12.5: Filmtabletten zu 150 mg Irbesartan und 12.5 mg Hydrochlorothiazid.',
+                 fachinfo.galenic_form.paragraphs.first.text)
+    assert_equal('CoAprovel 300/25: Filmtabletten zu 300 mg Irbesartan und 25 mg Hydrochlorothiazid.',
+                 fachinfo.galenic_form.paragraphs.last.text)
+  end
+
   def test_nasivin_spaces
   html = <<-HTML
     <div class="paragraph">
@@ -216,30 +236,30 @@ HTML
     section = chapter.sections.at(3)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected = %(  Alter    Suspension     Kapseln     Zäpfchen         
-  in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg  
-  Jahren   pro Tag        pro Tag     pro Tag         
-------------------------------------------------------- 
-  ½        5 ml   3×      -           1 Supp.          
-                                     125 mg 2-3×     
-------------------------------------------------------- 
- 1-3      7,5 ml 3×      -           1 Supp.          
-                                     125 mg 3×       
-------------------------------------------------------- 
- 3-6      10 ml  3×      -           1 Supp.          
-                                     125 mg 4×       
-------------------------------------------------------- 
- 6-9      15 ml  3×      -           1 Supp.          
-                                     500 mg 1-2×     
-------------------------------------------------------- 
- 9-12     20 ml  3×      1 Kps 2-3×  1 Supp.          
-                                     500 mg 2×       
-------------------------------------------------------- 
- 12-14    25 ml  3×      1 Kps 3×    1 Supp.          
-                                     500 mg 3×        
- 
-)
-    assert_equal(expected.chomp, paragraph.text)
+    expected = %(  Alter    Suspension     Kapseln     Zäpfchen
+  in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg
+  Jahren   pro Tag        pro Tag     pro Tag
+-------------------------------------------------------
+  ½        5 ml   3×      -           1 Supp.
+                                     125 mg 2-3×
+-------------------------------------------------------
+ 1-3      7,5 ml 3×      -           1 Supp.
+                                     125 mg 3×
+-------------------------------------------------------
+ 3-6      10 ml  3×      -           1 Supp.
+                                     125 mg 4×
+-------------------------------------------------------
+ 6-9      15 ml  3×      -           1 Supp.
+                                     500 mg 1-2×
+-------------------------------------------------------
+ 9-12     20 ml  3×      1 Kps 2-3×  1 Supp.
+                                     500 mg 2×
+-------------------------------------------------------
+ 12-14    25 ml  3×      1 Kps 3×    1 Supp.
+                                     500 mg 3x)
+    puts "exp <#{expected}>"
+    puts "ist <#{paragraph.text.gsub(/\w+$/,'')}>"
+    assert_equal(expected, paragraph.text)
     assert_equal(true, paragraph.preformatted?)
   end
   def test_identify_chapter__raises_unknown_chaptercode
@@ -250,6 +270,18 @@ HTML
   def test_identify_chapter__7930
     assert_nil(@writer.identify_chapter('7930', nil))
   end
+  def test_identify_chapter__nil
+    chapter = flexmock('chapter', :to_s => '12345')
+    assert_equal(chapter, @writer.identify_chapter(nil, chapter))
+  end
+  def test_to_textinfo
+    assert_kind_of(ODDB::PatinfoDocument, @writer.to_textinfo)
+  end
+end
+class TestPatinfoHpricot <Minitest::Test
+  def setup
+    @writer = PatinfoHpricot.new
+  end
   def test_identify_chapter__7520
     chapter = flexmock('chapter',
                        :sections  => 'sections',
@@ -257,13 +289,6 @@ HTML
                       )
     @writer.identify_chapter('7520', chapter)
     assert_equal(chapter, @writer.identify_chapter('7520', chapter))
-  end
-  def test_identify_chapter__nil
-    chapter = flexmock('chapter', :to_s => '12345')
-    assert_equal(chapter, @writer.identify_chapter(nil, chapter))
-  end
-  def test_to_textinfo
-    assert_kind_of(ODDB::PatinfoDocument, @writer.to_textinfo)
   end
 end
   end
