@@ -63,12 +63,6 @@ class TestUserCompanyForm <Minitest::Test
   def test_init
     assert_nil(@form.init)
   end
-  def test_address
-    assert_kind_of(HtmlGrid::InputText, @form.address(@model, @session))
-  end
-  def test_address_delegate
-    assert_kind_of(HtmlGrid::InputText, @form.address_delegate(@model, :address))
-  end
   def test_address_delegate__input_array
     input_text = flexmock('input_text') do |i|
       i.should_receive(:value).and_return([])
