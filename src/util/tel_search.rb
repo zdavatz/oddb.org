@@ -10,7 +10,7 @@ class TelSearch
     # http://tel.search.ch/api/?was=niklaus+giger&wo=8753
     # http://tel.search.ch/api/?lang=en&maxnum=10&was=niklaus+giger&wo=8753+Wieshoschet
     addition = name.gsub(/\s/,'+')
-    url = "http://tel.search.ch/api/?lang=en&maxnum=10&was="
+    url = "https://tel.search.ch/api/?lang=en&maxnum=10&was="
     if plz or street
       addition += '&wo='
       addition += "#{plz}" if plz
@@ -24,7 +24,7 @@ class TelSearch
       return TelSearch.analyse_answer(IO.read(filename), typ)
     end
     test_ausgabe = File.open(filename, 'w+')
-    inhalt = open(url){
+    inhalt = URI.open(url){
       |f|
         f.each_line {|line| test_ausgabe.puts line }
       }
