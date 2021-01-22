@@ -11,9 +11,9 @@ DrugDescription = Struct.new(:name, :iksnr, :ean13, :atc_code, :wirkstoff)
 # http://matrix.epha.ch/#/58392,59131,39053,58643
 MephaExamples = [
   DrugDescription.new('Losartan', 	'58392', '7680589810141', 'C09CA01', 'Losartan'),
-  DrugDescription.new('Metoprolol', '59131', '7680592060090', 'C07AB02', 'metoprololi tartras'),
+  DrugDescription.new('Metoprolol', '59206', '7680592060090', 'C07AB02', 'metoprololi tartras'),
   DrugDescription.new('Nolvadex', 	'39053', '7680390530474', 'L02BA01', 'Tamoxifen'),
-  DrugDescription.new('Paroxetin',	'58643', '7680586430045', 'N06AB05', 'paroxetinum' ),
+  DrugDescription.new('Paroxetin',	'58636', '7680586360069', 'N06AB05', 'paroxetinum' ),
 ]
 
 MephaInteractions = [ # given drugs defined above
@@ -22,7 +22,6 @@ MephaInteractions = [ # given drugs defined above
 #  /N06AB05: Paroxetin => C09CA01: Losartan Vermutlich keine relevante Interaktion/, # is considedred green in November 2017
 #  /C07AB02: Metoprolol => C09CA01: Losartan Verstärkte Blutdrucksenkung/, # is considedred green in November 2017
 ]
-
 
 Inderal   = 'Inderal 10 mg'
 Ponstan   = 'Ponstan 125 mg'
@@ -82,7 +81,6 @@ describe "ch.oddb.org" do
                         return
                    end
                     }
-    # require 'pry'; binding.pry
     chooser.set(value + "\n")
     sleep(1)
     createScreenshot(@browser, "_#{name}_#{__LINE__}")
@@ -94,7 +92,7 @@ describe "ch.oddb.org" do
     expect(@browser.url).to match (interactionsUrl)
     inhalt = @browser.text
     MephaInteractions.each do |interaction|
-      # binding.pry unless interaction.match(inhalt)
+      binding.pry unless interaction.match(inhalt)
       expect(inhalt).to match (interaction)
     end
     @browser.link(name:  'delete').click

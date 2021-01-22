@@ -98,7 +98,7 @@ describe "ch.oddb.org" do
       skip "Could not find Oddb_log_file #{Oddb_log_file}" unless File.exists?(Oddb_log_file)
       expect(File.exist?(Oddb_log_file)).to eql true
       cmd = "tail -1 #{Oddb_log_file}"
-      log_line =  `#{cmd}`.split
+      log_line =  CGI.unescape(`#{cmd}`).split
       src =  log_line.find{|x| /http(|s):[^\s]+/.match(x) }
       url_from_received_mail = /http(|s):[^\s"]+/.match(src)[0]
       puts "oddb_log_file #{Oddb_log_file} url_from_received_mail #{url_from_received_mail}"
