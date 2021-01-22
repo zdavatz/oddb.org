@@ -124,7 +124,7 @@ describe "ch.oddb.org" do
     # expect logo to be at the top left
     expect(@browser.images.first.wd.location.x).to be < 20
     expect(@browser.images.first.wd.location.y).to be < 20
-    expect(@browser.element(id: 'aswift_0_expand').present?).to be true
+    # expect(@browser.element(id: 'aswift_0_expand').present?).to be true
     expect(@browser.images.first.alt).to eq 'ch.oddb.org'
   end
 

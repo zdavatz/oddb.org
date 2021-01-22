@@ -88,9 +88,9 @@ describe "ch.oddb.org" do
     before :each do
       login
     end
-  it "should display the correct color iscador U" do
+  it "should display the correct color Pethidin" do
     @browser.select_list(name: "search_type").select("Markenname")
-    @browser.text_field(name: "search_query").set('iscador U')
+    @browser.text_field(name: "search_query").set('Pethidin')
     sleep(0.1)
     @browser.button(name: "search").click
     @browser.element(id: 'ikscat_1').wait_until(&:present?)
@@ -100,7 +100,7 @@ describe "ch.oddb.org" do
     expect(@browser.td(visible_text: 'A').exists?).to eq true
     expect(@browser.td(visible_text: 'C').exists?).to eq false
     expect(@browser.link(visible_text: 'FB').exists?).to eq true
-    td = @browser.td(visible_text: /Iscador/i)
+    td = @browser.td(visible_text: /Pethidin/i)
     expect(td.style('background-color')).to match /0, 0, 0, 0/
     selbstbehalt =   @browser.span(:text => /A \/ SL/).wait_until(&:present?)
   end
@@ -251,7 +251,7 @@ describe "ch.oddb.org" do
       iphone_browser.goto 'http://www.useragentstring.com/'
       expect(iphone_browser.textarea(id: "uas_textfeld").value).to eql iphone_ua
       iphone_browser.goto OddbUrl
-      expect(iphone_browser.url).to match(/\/\/i\./)
+      expect(iphone_browser.url).to match(/\/\/i\./) # this fails
       txt = iphone_browser.text.clone
       expect(txt).not_to match(/Fachinfo-Online/)
       expect(txt).not_to match(/Feedback/)
@@ -447,8 +447,8 @@ describe "ch.oddb.org" do
     check_search_with_type
   end
 
-  it 'should display the correct calculation for Bicalutamid Actavis' do
-    @browser.goto(OddbUrl + '/de/gcc/ddd_price/reg/59111/seq/02/pack/004/search_query/Bicalutamid+Actavis%22/search_type/st_sequence')
+  it 'should display the correct calculation for Bicalutamid Sandoz' do
+    @browser.goto(OddbUrl + '/de/gcc/search/zone/drugs/search_query/Bicalutamid%20Sandoz/search_type/st_sequence?#best_result')
     tageskosten =  @browser.trs.find{|x| /^Tageskosten/.match(x.text)}.text
     expect(tageskosten).to match 'Tagesdosis 50 mg'
     expect(tageskosten).to match 'Publikumspreis 615.95 CHF'
@@ -577,7 +577,7 @@ describe "ch.oddb.org" do
   [
     [:search_limitation_A,  'Fosfolag', false],
     [:search_limitation_B,  'Allergo-X', true],
-    [:search_limitation_C,  'Allergo-X', true],
+    # [:search_limitation_C,  'Allergo-X', true], #skipping per 22.1.2021
     [:search_limitation_D,  'Elmex', true],
     [:search_limitation_E,  'Holunder', true],
     [:search_limitation_SL_only,  'Soolantra 10 mg', true],

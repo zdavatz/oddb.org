@@ -5,7 +5,7 @@ require 'spec_helper'
 @workThread = nil
 
 describe "ch.oddb.org" do
- 
+
   before :all do
     @idx = 0
     @saved_timeout ||= Watir.default_timeout
@@ -52,7 +52,7 @@ describe "ch.oddb.org" do
     'fachinfo'        => 'Neue und geänderte Fachinformtionen im Schweizer Gesundheitsmarkt',
   }.each{
     |subject, test_string|
-      it "should have a working RSS-feed #{subject}" do
+      it "should have a working RSS-feed /de/gcc/rss/channel/#{subject}" do
         expect(@browser.url).to match OddbUrl
         link = @browser.link(:href => /rss\/channel\/#{subject}/)
         debug = /fachinfo/i.match(subject) ? true : false
@@ -61,11 +61,13 @@ describe "ch.oddb.org" do
         @browser.back
       end
     }
+    # 2021.01.22: Links for fachinfo and fachinfo-2008 failed via SPEC; but worked by hand
+    # is the generated file just too big? (185 kB)W
     {
       'fachinfo-2008'   => 'Neue und geänderte Fachinformtionen im Schweizer Gesundheitsmarkt',
   }.each do
     |subject, test_string|
-      it "should have a working #{subject}" do
+      it "should have a working /de/gcc/rss/channel/#{subject}.rss" do
         @filesBeforeDownload =  Dir.glob(GlobAllDownloads)
         url = OddbUrl + '/de/gcc/rss/channel/' + subject + '.rss'
         @browser.goto url
