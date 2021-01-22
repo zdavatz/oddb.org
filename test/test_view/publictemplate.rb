@@ -67,7 +67,7 @@ class TestPublicTemplate <Minitest::Test
     @template = ODDB::View::StubPublicTemplate.new(@model, @session)
   end
   def test_css_link
-    context = flexmock('context', :link => 'link')
+    context = flexmock('context', :link => nil)
     assert_nil(@template.css_link(context))
   end
   def test_css_link__lookandfeel_enabled
@@ -75,7 +75,7 @@ class TestPublicTemplate <Minitest::Test
              :enabled? => true,
              :resource_external => 'resource_external'
             )
-    context = flexmock('context', :link => 'link')
+    context = flexmock('context', :link => nil)
     assert_nil(@template.css_link(context))
   end
   def test_dynamic_html_headers
