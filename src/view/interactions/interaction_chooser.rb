@@ -363,7 +363,7 @@ class InteractionChooserForm < View::Form
   def epha_public_domain(model, session=@session)
     link = HtmlGrid::Link.new(:epha_public_domain, model, session, self)
     link.css_class = 'navigation'
-    link.href = "https://github.com/epha/matrix"
+    link.href = "https://epha.ch/matrix/search/q=/"
     link
   end
   def delete_all(model, session=@session)
