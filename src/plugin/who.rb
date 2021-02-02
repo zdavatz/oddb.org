@@ -82,13 +82,18 @@ module ODDB
     def import_atc(code, name, origin = :whocc)
       name = capitalize_all name
       atc = @app.atc_class(code)
-      pointer = if atc = @app.atc_class(code)
-                  atc.pointer
-                else
-                  @created += 1
-                  Persistence::Pointer.new([:atc_class, code]).creator
-                end
-      @app.update pointer.creator, {:en => name, :origin => origin}
+      if atc = @app.atc_class(code)
+        atc.pointer
+        @app.update atc.pointer.creator, {:en => name, :origin => origin}
+      else
+        @created += 1
+        @app.create_atc_class(code)
+        pointer = @app.atc_class(code).pointer
+        new_atc =  @app.atc_class(code)
+        new_atc.descriptions[:en] = name
+        new_atc.origin = origin
+        puts "import_atc created atc_class name #{new_atc.name} origin #{new_atc.origin} pointer is now #{pointer}"
+      end
     end
     def import_new_codes(agent)
       page = Nokogiri::HTML(URI.open(@new_url).read)
@@ -112,6 +117,7 @@ module ODDB
     end
     def import_code(agent, get_code)
       page = agent.get(@ddd_url + "?code=%s&showdescription=yes" % get_code)
+      puts "import_code #{get_code} "
       (page/"//b/a").each do |link|
         if(match = @@query_re.match(link.attributes['href']))
           code = match[1]
@@ -149,6 +155,7 @@ module ODDB
                       atc.pointer + [:ddd, key]
                     end
           unit = UNIT_REPLACEMENTS.fetch(unit, unit)
+          puts "import_ddds #{atc} note #{comment} dose #{dose} unit #{unit}"
           @app.update pointer.creator, :note => comment, :dose => Drugs::Dose.new(dose, unit)
           atc.ddds[key] = ddd
         end
