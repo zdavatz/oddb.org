@@ -194,11 +194,11 @@ module ODDB
       atcFromRegistration = nil
       atcFromRegistration = registration.sequences.values.first.atc_class.code if registration.sequences.values.first and registration.sequences.values.first.atc_class
 
-      if atcFromFI == atcFromXml and atcFromRegistration and atcFromFI == atcFromRegistration
+      if atcFromFI == atcFromXml && atcFromRegistration && atcFromFI == atcFromRegistration
         LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml} matched and found"
         return # no need to change anything
       end
-      if atcFromFI == atcFromXml and not atcFromRegistration
+      if atcFromFI == atcFromXml &&  (!atcFromRegistration || atcFromFI != !atcFromRegistration)
         return unless atcFromFI # in this case we cannot correct it!
         atc_class = app.atc_class(atcFromFI)
         return if atc_class.is_a?(ArgumentError)
