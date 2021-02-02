@@ -347,7 +347,7 @@ public
         msg += " with #{@latest_packungen} "
         msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
         LogFile.debug(msg)
-        result = diff file2open, @latest_packungen, [:atc_class, :sequence_date]
+        result = diff file2open, @latest_packungen, [:sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
         if @latest_packungen and File.exists?(@latest_packungen)
@@ -1371,11 +1371,13 @@ public
       end
 
       seq_date = date_cell(row, @target_keys.keys.index(:sequence_date))
+      atc_class = cell(row, @target_keys.keys.index(:atc_class))
       args = {
         :composition_text => ctext,
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
+        :atc_class        => atc_class,
         :sequence_date    => seq_date,
         :export_flag      => nil,
       }
