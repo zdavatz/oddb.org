@@ -7,14 +7,19 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'view/ajax/ddd_chart'
-require 'RMagick'
+require 'rmagick'
 
 class ODDB::View::Ajax::DDDChart
   attr_reader :data
 end
 
+def skip_under_github_actions
+  skip("For unknown reason this test fails via github actions: Magick::ImageMagickError: unable to read font `(null)' @ error/annotate.c/RenderFreetype/1367'") if ENV['TEST_ENV']  && ENV['TEST_ENV'].eql?('ubuntu-ci')
+end
+
 class TestSideBar <Minitest::Test
   def setup
+    skip_under_github_actions
     @sidebar = SideBar.new
   end
   def test_setup_graph_measurements
@@ -97,6 +102,7 @@ end
 
 class TestDDDChart <Minitest::Test
   def setup_test(price = 123)
+    skip_under_github_actions
     @package  = flexmock('package'+ name,
                         :sequence             => 'sequence',
                        )

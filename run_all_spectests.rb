@@ -24,5 +24,5 @@ echo "Finished #{name}"
   end
   FileUtils.chmod('+x', 'tmp.sh')
   puts content
-  system("ssh -X oddb-ci2.dyndns.org git/oddb.org/tmp.sh 2>&1 | tee --append #{log_file}")
+  system("ssh -X oddb-ci2.dyndns.org git/oddb.org/tmp.sh 2>&1 | tee -a #{log_file}")
 end

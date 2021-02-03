@@ -15,6 +15,8 @@ on:
 
 jobs:
   test:
+    env:
+      TEST_ENV: ubuntu-ci
     runs-on: ubuntu-latest
 # Using a matrix fails, because /setup-ruby always invokes bundle install without any additional args
 # Fixed by adding not defining the debugger group in the Gemfile
