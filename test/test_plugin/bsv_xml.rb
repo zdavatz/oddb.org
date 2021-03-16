@@ -462,10 +462,13 @@ module ODDB
       sl_ptr = flexmock('sl_pointer') do |ptr|
         ptr.should_receive(:+).and_return(txt_ptr)
       end
+      limitation_text = flexmock('limitation_text') do |ptr|
+        ptr.should_receive(:+).and_return(txt_ptr)
+      end
       sl_entry = flexmock('sl_entry') do |sle|
         sle.should_receive(:pointer).and_return(sl_ptr)
-        sle.should_receive(:limitation_text)
-        #sle.should_receive(:limitation_text).and_return('limitation_text')
+        #sle.should_receive(:limitation_text)
+        sle.should_receive(:limitation_text).and_return(limitation_text)
       end
       package = flexmock('package') do |pac|
         pac.should_receive(:sl_entry).and_return(sl_entry)
@@ -478,10 +481,9 @@ module ODDB
         ptr.should_receive(:creator)
       end
       sl_entries = {pac_ptr => {'key' => 'sl_data'}}
-      #sl_entries = {pac_ptr => {}}
       @listener.instance_eval('@sl_entries = sl_entries')
-      lim_texts = {pac_ptr => 'lim_data'}
-      @listener.instance_eval('@lim_texts = lim_texts')
+      @listener.instance_eval('@lim_texts = {}')
+      @listener.instance_eval('@name = {:de => :name_de}')
       flexmock(@app) do |app|
         app.should_receive(:delete)
         app.should_receive(:update)

@@ -336,6 +336,7 @@ module ODDB
                     @created_sl_entries += 1
                   end
                   if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
+                    LogFile.debug("limitation store sl_data for #{pac_ptr} #{@iksnr} #{@name[:de]} lim: #{lim_data[:de].to_s[0..70]}") # if $VERBSE
                     sl_data.store :limitation, true
                   end
                   @app.update pointer.creator, sl_data, :bag
@@ -352,6 +353,8 @@ module ODDB
                 sl_ptr = sl_entry.pointer
                 sl_ptr ||= pac.pointer + [:sl_entry]
                 txt_ptr = sl_ptr + :limitation_text
+                # 2021.03.16 Niklaus has no idea, why I have to freeze it here
+                # but without a freeze the @app.update fails miserably
                 if lim_data.empty?
                   if sl_entry.limitation_text
                     @deleted_limitation_texts += 1
@@ -375,6 +378,10 @@ module ODDB
                         ODDB::Persistence::InvalidPathError
                     # skip
                   end
+                txt_ptr = sl_ptr + :limitation_text
+                # 2021.03.16 Niklaus has no idea, why I have to redefine it here
+                # but without redefining the @app.update fails miserably
+                  LogFile.debug("limitation update txt_ptr for #{txt_ptr}") # if $VERBSE
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
