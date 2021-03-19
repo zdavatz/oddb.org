@@ -47,7 +47,6 @@ module ODDB
       flexmock(SwissmedicPlugin).should_receive(:new).and_return(@plugin)
       flexmock(XlsExportPlugin).should_receive(:new).and_return(@plugin)
       flexmock(CsvExportPlugin).should_receive(:new).and_return(@plugin)
-      flexmock(FiPDFExporter).should_receive(:new).and_return(@plugin)
       flexmock(OuwerkerkPlugin).should_receive(:new).and_return(@plugin)
       flexmock(YamlExporter).should_receive(:new).and_return(@plugin)
       flexmock(FachinfoInvoicer).should_receive(:new).and_return(@plugin)
@@ -224,13 +223,6 @@ module ODDB
       end
       flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
       assert_nil(@exporter.export_migel_csv)
-    end
-    def test_export_pdf
-      flexmock(@plugin) do |plug|
-        plug.should_receive(:run).and_return('run')
-      end
-      flexmock(LogFile).should_receive(:filename).and_return('/tmp/logfile')
-      assert_equal('run', @exporter.export_pdf)
     end
     def test_export_sl_pcodes
       flexmock(@app) do |app|

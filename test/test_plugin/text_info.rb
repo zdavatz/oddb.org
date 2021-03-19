@@ -246,13 +246,6 @@ module ODDB
                   }
     end
 if RUN_ALL
-    def test_update_swissmedicno_fi_pi # see also jobs/update_swissmedicno_fi_pi
-      @reg.should_receive(:odba_store).at_least.once
-      @options = {:download => false,  :reparse => true, :xml_file => @aips_download} # specify an XML file to speed things up
-      @plugin.import_swissmedicinfo(@options)
-      assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
-    end
-
     def test_53662_pi_de
       @options[:iksnrs] = ['53662']
       @plugin.import_swissmedicinfo(@options)

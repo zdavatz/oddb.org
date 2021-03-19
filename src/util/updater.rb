@@ -1,3 +1,4 @@
+
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::Updater-- oddb.org -- 16.04.2013 -- yasaka@ywesee.com
@@ -328,18 +329,6 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                             "Fach- und Patienteninfo Updates (swissmedicinfo.ch)",
                             :import_swissmedicinfo
-    end
-    def check_swissmedicno_fi_pi(opts=nil)
-      @options = opts
-      update_notify_simple TextInfoPlugin,
-                            "Check all FI and PI for inconsistencies",
-                            :check_swissmedicno_fi_pi
-    end
-    def update_swissmedicno_fi_pi(opts=nil)
-      @options = opts
-      update_notify_simple TextInfoPlugin,
-                            "Check and fix inconsistencies in all FI and PI",
-                            :update_swissmedicno_fi_pi
     end
     def update_drugshortage(opts=nil)
       @options = opts

@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
@@ -132,17 +131,6 @@ module ODDB
           end
         end
       end
-    end
-    def export_fachinfo_pdf(langs = [:de, :fr])
-      plug = FiPDFExporter.new(@app)
-      langs.each { |lang|
-        name = "fachinfos_#{lang}.pdf"
-        safe_export name do
-          path = File.join(EXPORT_DIR, name)
-          plug.write_pdf(lang, path)
-          EXPORT_SERVER.compress(EXPORT_DIR, name)
-        end
-      }
     end
 		def export_generics_xls
 			plug = XlsExportPlugin.new(@app)
