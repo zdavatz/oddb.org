@@ -92,7 +92,7 @@ class PiChapterChooser < HtmlGrid::Composite
     }
     unless(@model.pointer.skeleton == [:create])
       document = @model.send(@session.language)
-      if document.change_log.size > 0
+      if !document.empty? && document.change_log.size > 0
         components.store([next_offset, 0], :change_log)
         @css_map.store(   [next_offset, 0], 'chapter-tab')
         next_offset += 1
@@ -204,7 +204,7 @@ class PiChapterChooser < HtmlGrid::Composite
     link
   end
   def display_names(document)
-    if document
+    unless document&.empty?
       document.chapter_names
     else
       []
@@ -244,7 +244,7 @@ class PatinfoInnerComposite < HtmlGrid::DivComposite
         (chapter = @model.send(name)) && !chapter.empty?)
         components.store([0,idx], name)
       end
-    } if @model
+    } unless @model&.empty?
     super
   end
 end
@@ -264,7 +264,7 @@ class PatinfoPreviewComposite < HtmlGrid::Composite
   }
   DEFAULT_CLASS = HtmlGrid::Value
   def patinfo_name(model, session)
-    @lookandfeel.lookup(:patinfo_name, model.name) if model
+    @lookandfeel.lookup(:patinfo_name, model.name) unless  model&.empty?
   end
 end
 class PatinfoComposite < View::Drugs::PatinfoPreviewComposite

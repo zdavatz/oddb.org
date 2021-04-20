@@ -303,12 +303,13 @@ module ODDB
           package.patinfo = nil
         end
       rescue NoMethodError => error
-          puts "Delete lang #{lang} patinfo NoMethodError #{msg}"
-          package.patinfo.descriptions.delete(lang)
+          puts "Delete lang #{lang} patinfo NoMethodError #{msg} delete? #{package.patinfo.descriptions.respond_to?(:delete)}"
+          package.patinfo.descriptions.delete(lang) if package.patinfo.descriptions.respond_to?(:delete)
           package.patinfo.odba_store
       end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
-      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
-        old_ti = package.patinfo;  Languages.each do |old_lang|
+      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.respond_to?(:[]) && package.patinfo.descriptions[lang]
+        old_ti = package.patinfo
+        Languages.each do |old_lang|
           next if old_lang.eql?(lang)
           eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
         end

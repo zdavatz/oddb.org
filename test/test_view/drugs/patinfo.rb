@@ -18,7 +18,7 @@ class TestPatinfoInnerComposite <Minitest::Test
   def setup
     @lnf       = flexmock('lookandfeel', :lookup => 'lookup')
     @session   = flexmock('session', :lookandfeel => @lnf)
-    @model     = flexmock('model', :chapter_names => ['chapter_names'])
+    @model     = flexmock('model', :empty? => false, :chapter_names => ['chapter_names'])
     @composite = ODDB::View::Drugs::PatinfoInnerComposite.new(@model, @session)
   end
   def test_init
@@ -43,7 +43,7 @@ class TestPatinfoComposite <Minitest::Test
                           :state       => state,
                           :user_input  => 'user_input',
                          )
-    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
+    language   = flexmock('language', :empty? => false, :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
     registration = flexmock('registration', :iksnr => 'iksnr')
     sequence   = flexmock('sequence', 
                           :registration => registration,
@@ -63,7 +63,7 @@ class TestPatinfoComposite <Minitest::Test
   end
   def test_document_composite
     model      = ODDB::PatinfoDocument2001.new
-    language   = flexmock('language', :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
+    language   = flexmock('language', :empty? => false, :name => 'name', :chapter_names => ['chapter_names'], :change_log => [])
     registration = flexmock('registration', :iksnr => 'iksnr')
     sequence   = flexmock('sequence', 
                           :registration => registration,
