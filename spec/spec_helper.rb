@@ -5,13 +5,6 @@
 
 require 'date'
 require 'webdrivers'
-puts "with webdrivers"
-#Selenium::WebDriver::Chrome.path = '/opt/google/chrome/chromedriver'
-Selenium::WebDriver::Chrome.path = '/opt/google/chrome/chrome'
-# /opt/google/chrome/chrome'# was '/usr/bin/chromium'
-
-# Webdrivers::Chromedriver.version = '2.35'
-
 
 RSpec.configure do |config|
   config.mock_with :flexmock
@@ -88,9 +81,15 @@ SNAP_NAME = 'Lubex®'
 def setup_browser
   return if @browser
   FileUtils.makedirs(DownloadDir)
+  # drivers will be cached under $HOME/.webdrivers
   if Browser2test[0].to_s.eql?('firefox')
+    Selenium::WebDriver::Firefox.path = '/usr/bin/firefox'
+    require 'webdrivers/geckodriver'
     @browser_options = Selenium::WebDriver::Firefox::Options.new
   else
+    Selenium::WebDriver::Chrome.path = '/usr/bin/google-chrome-beta'
+    require 'webdrivers/chromedriver'
+    puts "with webdrivers and using #{Selenium::WebDriver::Chrome.path}"
     @browser_options = Selenium::WebDriver::Chrome::Options.new
   end
   @browser_options.add_argument('--ignore-certificate-errors')
@@ -111,16 +110,19 @@ def setup_browser
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/zip;application/octet-stream;application/x-zip;application/x-zip-compressed;text/csv;test/semicolon-separated-values"
     [ '/usr/bin/firefox-bin',  '/usr/bin/firefox'].each do |binary|
       if File.exist?(binary)
-        Selenium::WebDriver::Firefox::Binary.path= binary
+        Selenium::WebDriver::Firefox.path= binary
+        puts "Using #{binary}"
         break
       end
     end
     # @browser_options.add_preference(:profile, profile)
-    @browser = Watir::Browser.new :firefox
+    #@browser = Watir::Browser.new  :firefox
+    pp @browser_options
+    @browser = Watir::Browser.new :firefox,  options: @browser_options
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
-    @browser = Watir::Browser.new  :chrome, options: @browser_options
-    Selenium::WebDriver::Chrome::Options#add_preference
+    @browser = Watir::Browser.new :chrome, options: @browser_options
+    Selenium::WebDriver::Chrome::Options #add_preference
   elsif Browser2test[0].to_s.eql?('ie')
     puts "Trying unknown browser type Internet Explorer"
     @browser = Watir::Browser.new :ie
