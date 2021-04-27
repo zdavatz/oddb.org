@@ -112,6 +112,7 @@ public
       @empty_compositions = []
       @known_packages = []
       @deletes_packages = []
+      @unparsed_compositions = []
     end
 
     # traces many details of changes. Use it for debugging purposes
@@ -125,8 +126,8 @@ public
       idx = -999
       if opts[:update_compositions]
         # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts}"
-        return true if opts[:iksnrs] == nil
-        return !!opts[:iksnrs].index(iksnr)
+        return true if opts[:iksnrs]&.size==0
+        return !!opts[:iksnrs]&.index(iksnr)
       end
       if opts[:iksnrs] == nil or idx = opts[:iksnrs].index(iksnr)
         # LogFile.debug " iksnr #{iksnr} mustcheck #{res} opts #{opts} idx #{idx}"
@@ -255,8 +256,13 @@ public
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = @app.registration("%05i" %iksnr)
         old_date = reg.expiration_date ? reg.expiration_date.strftime(DATE_FORMAT) : nil
-        new_date = Date.parse(cell(row, @target_keys.keys.index(:expiry_date))).strftime(DATE_FORMAT)
-        unless old_date && old_date.eql?(new_date)
+        if cell(row, @target_keys.keys.index(:expiry_date)).to_s.match(/unbegrenzt/i)
+          puts "Setting unbegrenzt for #{iksnr} #{seqnr} #{ikscd}"
+          new_date = nil # Date.new(2099,12,31).strftime(DATE_FORMAT)
+        else
+          new_date = Date.parse(cell(row, @target_keys.keys.index(:expiry_date))).strftime(DATE_FORMAT)
+        end
+        unless old_date&.eql?(new_date)
           reg.expiration_date = Date.parse(new_date)
           reg.odba_store
           @updated_expiration_dates[iksnr] = new_date
@@ -482,6 +488,7 @@ public
         if row.length == 1 # only in the case of registration_deletions
           @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
         else # the case of sequence_deletions
+          next if defined?(SwissmedicPluginTestXLSX2021)
           @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
         end
       }
@@ -498,7 +505,7 @@ public
         unless is_package_deletion
           @app.delete ptr
         else
-          object = @app.resolve(ptr)
+          object = defined?(SwissmedicPluginTestXLSX2021) ? nil : @app.resolve(ptr)
           next unless object
           if object.is_a?(ODDB::Package)
             found = @app.registration(iksnr)  &&
@@ -596,7 +603,7 @@ public
         download << "\n"
       end
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
-        File.open(target, 'w') { |fh| fh.write(download) }
+        File.open(target, 'w') { |fh| fh.write(download) ; fh.close}
         msg = "updated download.size is #{download.size} -> #{target} #{File.size(target)}"
         msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
         LogFile.debug(msg)
@@ -739,6 +746,8 @@ public
         atcless,
         "Deleted #{@deletes_packages.size} packages not in Packungen.xlsx",
         " " + @deletes_packages.collect{|x| x.join(' ')}.join("\n"),
+        "Unparsed compositions #{@unparsed_compositions.size}:",
+        " " + @unparsed_compositions.collect{|x| x.join(' ')}.join("\n"),
         "Updated #{@updated_expiration_dates.size} expiration_dates: \n  #{@updated_expiration_dates.keys.to_a.join("\n  ")}",
       ]
                           end
@@ -969,14 +978,14 @@ public
             components_in_db = sequence.compositions.find_all{|value| composition_in_db = value if (value and value.source.eql?(parsed_comp.source)) }
             if components_in_db.size == 0
               composition_in_db = create_composition_in_sequence(sequence)
-              LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} created composition oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
+              LogFile.debug("#{sequence.iksnr}/#{sequence.seqnr} created composition oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
             elsif components_in_db.size == 1 # normal case
               composition_in_db = components_in_db.first
-              LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} using oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
+              LogFile.debug("#{sequence.iksnr}/#{sequence.seqnr} using oid #{composition_in_db.oid} source #{parsed_comp.source[0..50]}")
             else
               composition_in_db = components_in_db.first
               components_in_db[2..-1].each{ |composition|
-                LogFile.debug("#{__FILE__}: #{__LINE__} #{sequence.iksnr}/#{sequence.seqnr} deleting oid #{composition.oid} source #{parsed_comp.source[0..50]}")
+                LogFile.debug("#{sequence.iksnr}/#{sequence.seqnr} deleting oid #{composition.oid} source #{parsed_comp.source[0..50]}")
                 sequence.compositions.delete composition
                 sequence.compositions.odba_store
               }
@@ -1034,6 +1043,7 @@ public
           end
         end
       end
+      sequence.odba_store
       comps
     end
     def update_export_sequences export_sequences
@@ -1273,8 +1283,9 @@ public
       iksnr = "%05i" % seq.iksnr.to_i
       seq.compositions.each_with_index {
         |db_composition, idx|
-          parsed_composition = parsed_compositions.find {|parse_comp| parse_comp.source.eql?(db_composition.source)}
-          if parsed_composition and parsed_composition.excipiens
+          parsed_composition = nil
+          parsed_composition = parsed_compositions&.find {|parse_comp| parse_comp.source.eql?(db_composition.source)}
+          if parsed_composition&.excipiens
             # excipiens = ActiveAgent.new(parsed_composition.excipiens.name, false)
             # substance = update_substance(parsed_composition.excipiens.name)
             excipiens = update_substance(parsed_composition.excipiens.name)
@@ -1293,11 +1304,15 @@ public
     def update_all_sequence_info(row, reg, seq, opts=nil, replacements=nil)
       composition_text   = cell(row, @target_keys.keys.index(:composition))
       active_agents_text = cell(row, @target_keys.keys.index(:substances))
-      parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
-      comps = update_compositions(seq, row, opts, composition_text, parsed_comps)
-      comps.each_with_index do |comp, idx|
-        update_galenic_form(seq, comp, opts)
-      end if comps
+      begin
+        parsed_comps = ParseUtil.parse_compositions(composition_text, active_agents_text)
+        comps = update_compositions(seq, row, opts, composition_text, parsed_comps)
+        comps.each_with_index do |comp, idx|
+          update_galenic_form(seq, comp, opts)
+        end if comps
+      rescue => error
+        @unparsed_compositions << "#{seq.iksnr}: #{composition_text}"
+      end
       update_package(reg, seq, row, replacements, opts) if replacements
       update_excipiens_in_composition(seq, parsed_comps)
     end

@@ -303,13 +303,12 @@ module ODDB
           package.patinfo = nil
         end
       rescue NoMethodError => error
-          puts "Delete lang #{lang} patinfo NoMethodError #{msg} delete? #{package.patinfo.descriptions.respond_to?(:delete)}"
-          package.patinfo.descriptions.delete(lang) if package.patinfo.descriptions.respond_to?(:delete)
+          puts "Delete lang #{lang} patinfo NoMethodError #{msg}"
+          package.patinfo.descriptions.delete(lang)
           package.patinfo.odba_store
       end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
-      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.respond_to?(:[]) && package.patinfo.descriptions[lang]
-        old_ti = package.patinfo
-        Languages.each do |old_lang|
+      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+        old_ti = package.patinfo;  Languages.each do |old_lang|
           next if old_lang.eql?(lang)
           eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
         end
@@ -922,7 +921,7 @@ module ODDB
             end
             if type =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64$/
               file = File.join(dir, "#{i + 1}.#{$1}")
-              File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)) }
+              File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)); f.close }
             end
           end
         end
@@ -988,7 +987,7 @@ module ODDB
               end
             end
             output = builder.to_xml
-            File.open(meta_info.xml_file, 'w:utf-8'){ |fh| fh << builder.to_xml }
+            File.open(meta_info.xml_file, 'w:utf-8'){ |fh| fh << builder.to_xml; f.close}
             age_in_hours = 0
           else
             age = Time.now - File.mtime(meta_info.xml_file )
@@ -1196,7 +1195,7 @@ module ODDB
       is_same_html = File.exist?(html_name) && IO.read(html_name, :encoding => 'UTF-8') == html
       unless is_same_html
         FileUtils.makedirs(File.dirname(html_name))
-        File.open(html_name, 'w+:utf-8') {|f| f.write html }
+        File.open(html_name, 'w+:utf-8') {|f| f.write html; f.close }
         call_xmllint(html_name, true)
         LogFile.debug "IKSNR #{meta_info.iksnr}: File.size(#{html_name}) is #{File.size(html_name)}"
       end
@@ -1334,7 +1333,7 @@ module ODDB
       meta_info.same_content_as_xml_file = File.exist?(outfile) && IO.read(outfile, :encoding => 'UTF-8') == chunk
       unless meta_info.same_content_as_xml_file
         FileUtils.makedirs(File.dirname(outfile))
-        File.open(outfile, 'w+') { |f| f.write(chunk) }
+        File.open(outfile, 'w+') { |f| f.write(chunk); f.close }
         call_xmllint(outfile)
       end
       # Tidy it up
