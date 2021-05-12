@@ -374,7 +374,7 @@ class ParseComposition
   ERRORS_TO_FIX = {
     /(\d+)\s+-\s*(\d+)/ => '\1-\2',
     "o.1" => "0.1",
-    /polymerisat(i|um) \d:\d/ => "polymerisatum",  
+    /polymerisat(i|um) \d:\d/ => "polymerisatum",
     /\s+(mg|g) DER:/ => ' \1, DER:',
     " mind. " => " min. ",
     " streptococci pyogen. " => " streptococci pyogen ",
@@ -386,7 +386,7 @@ class ParseComposition
     / U\.: (excipiens) / => ' U. \1 ',
     / U\.: (alnus|betula|betula|betulae) / => ' U., \1 ',
     /^(acari allergeni extractum (\(acarus siro\)|).+\s+U\.:)/ => 'A): \1',
-    "Solvens: alprostadilum" => "alprostadilum"
+    "Solvens: alprostadilum" => "alprostadilum",
   }
   @@error_handler = ParseUtil::HandleSwissmedicErrors.new(ERRORS_TO_FIX)
 
