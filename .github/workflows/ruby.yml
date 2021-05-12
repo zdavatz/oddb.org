@@ -35,3 +35,6 @@ jobs:
 
     - name: Run tests via test/suite.rb
       run: bundle exec ruby test/suite.rb
+
+    - name: Run spec tests for compositions
+      run: bundle exec rspec spec/parslet_spec.rb
