@@ -747,7 +747,7 @@ public
         "Deleted #{@deletes_packages.size} packages not in Packungen.xlsx",
         " " + @deletes_packages.collect{|x| x.join(' ')}.join("\n"),
         "Unparsed compositions #{@unparsed_compositions.size}:",
-        " " + @unparsed_compositions.collect{|x| x.join(' ')}.join("\n"),
+        " " + @unparsed_compositions.join("\n"),
         "Updated #{@updated_expiration_dates.size} expiration_dates: \n  #{@updated_expiration_dates.keys.to_a.join("\n  ")}",
       ]
                           end
