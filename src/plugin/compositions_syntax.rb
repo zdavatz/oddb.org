@@ -258,6 +258,7 @@ class CompositionParser < Parslet::Parser
 
   rule(:pro_identifiers) {
     str("ut aqua ad iniectabilia q.s. ad emulsionem pro ") |
+      str("aqua ").maybe >> str("ad iniectabile q.s. ad suspensionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile q.s. ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabilia q.s. ad solutionem pro ") |

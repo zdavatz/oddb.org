@@ -1294,6 +1294,16 @@ describe ParseComposition do
     specify { expect(substance.unit).to eq nil }
   end
 
+  context "should handle 41174" do
+    string = "triamcinoloni acetonidum 10 mg, carmellosum natricum, natrii chloridum, polysorbatum 80, conserv.: alcohol benzylicus 9.9 mg, aqua ad iniectabile q.s. ad suspensionem pro 1 ml."
+    composition = ParseComposition.from_string(string)
+    specify { expect(composition.source).to eq string }
+    specify { expect(composition.label).to eq nil }
+    specify { expect(composition.substances.size).to be > 1 }
+    specify { expect(composition.substances.first.name).to eq "Triamcinoloni Acetonidum" }
+    specify { expect(composition.substances.last.name).to eq "Alcohol Benzylicus" }
+  end
+
   context "should handle 67023" do
     string = "noradrenalinum 0.06 mg ut noradrenalini tartras, natrii chloridum, acidum hydrochloridum, aqua ad iniectabile q.s. ad solutionem pro 1 ml corresp. natrium 3.308 mg."
     composition = ParseComposition.from_string(string)
