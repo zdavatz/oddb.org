@@ -12,7 +12,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * see Guide.txt
 
 ## Usefuel commands
-### Reparse compositions of 5 digit Swissmedic Numbers
+### Reparse compositions of 5 digit Swissmedic Numbers ([issue #139](https://github.com/zdavatz/oddb.org/issues/139))
 `sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_composition 67685 60134`
 ### Reparse all compositions
 `sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_composition`
