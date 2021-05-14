@@ -721,6 +721,8 @@ public
                   @new_compositions.keys.to_a.join("\n"),
                   "\n\nNew agents were",
                   @new_agents.keys.to_a.join("\n"),
+                  "\nUnparsed compositions #{@unparsed_compositions.size}:",
+                  " " + @unparsed_compositions.join("\n"),
                  ]
       else
         lines += [
@@ -1311,6 +1313,7 @@ public
           update_galenic_form(seq, comp, opts)
         end if comps
       rescue => error
+        LogFile.debug("#{seq.iksnr} #{seq.seqnr} unparsed_composition from #{composition_text}")
         @unparsed_compositions << "#{seq.iksnr}: #{composition_text}"
       end
       update_package(reg, seq, row, replacements, opts) if replacements
