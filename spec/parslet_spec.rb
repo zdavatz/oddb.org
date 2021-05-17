@@ -1294,6 +1294,38 @@ describe ParseComposition do
     specify { expect(substance.unit).to eq nil }
   end
 
+  context "should handle 55788" do
+    string = "timololum 2.5 mg ut timololi maleas, natrii dihydrogenophosphas dihydricus et dinatrii phosphas dodecahydricus corresp. phosphas 13.36 mg, aqua ad iniectabile, ad solutionem pro 1 ml."
+    composition = ParseComposition.from_string(string)
+    specify { expect(composition.source).to eq string }
+    specify { expect(composition.label).to eq nil }
+    specify { expect(composition.substances.size).to be > 1 }
+    specify { expect(composition.substances.first.name).to eq "Timololum" }
+    specify { expect(composition.substances.last.name).to eq "Dinatrii Phosphas Dodecahydricus" }
+  end
+
+  context "should handle 68040" do
+    string = "pemetrexedum 1000 mg ut pemetrexedum diargininum, argininum, cysteinum, propylenglycolum 1400 mg, acidum citricum"
+    string = "pemetrexedum 1000 mg ut pemetrexedum diargininum, argininum, cysteinum, propylenglycolum 1400 mg, acidum citricum, aqua ad iniectabile, q.s. ad solutionem pro 40 ml."
+    composition = ParseComposition.from_string(string)
+    specify { expect(composition.source).to eq string }
+    specify { expect(composition.label).to eq nil }
+    specify { expect(composition.substances.size).to be > 1 }
+    specify { expect(composition.substances.first.name).to eq "Pemetrexedum" }
+    specify { expect(composition.substances.last.name).to eq "Acidum Citricum" }
+  end
+
+  context "should handle 68267 Moderna" do
+    string = "CX-024414 1.26 mg, heptadecan-9-ylis 8-((2-hydroxyethyl)(6-oxo-6-(undecyloxy)hexyl)amino)-octanoas, cholesterolum, 1,2-distearoyl-sn-glycero-3-phosphocholinum, 1,2-dimyristoyl-rac-glycero-3-macrogoli 2000 aether methylicus, trometamolum, trometamoli hydrochloridum, acidum aceticum, natrii acetas, saccharum, aqua ad iniectabile, ad suspensionem pro 6.3 ml corresp. natrium 0.033 mg pro"
+    composition = ParseComposition.from_string(string)
+    specify { expect(composition.source).to eq string }
+    specify { expect(composition.label).to eq nil }
+    specify { expect(composition.substances.size).to be > 1 }
+    specify { expect(composition.substances.first.name).to eq "Cx-024414" }
+    specify { expect(composition.substances[1].name).to match /Cholesterolum/ }
+    specify { expect(composition.substances.last.name).to match /Saccharum/ }
+  end
+
   context "should handle 41174" do
     string = "triamcinoloni acetonidum 10 mg, carmellosum natricum, natrii chloridum, polysorbatum 80, conserv.: alcohol benzylicus 9.9 mg, aqua ad iniectabile q.s. ad suspensionem pro 1 ml."
     composition = ParseComposition.from_string(string)

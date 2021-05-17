@@ -258,8 +258,11 @@ class CompositionParser < Parslet::Parser
 
   rule(:pro_identifiers) {
     str("ut aqua ad iniectabilia q.s. ad emulsionem pro ") |
+    str("aqua ad iniectabile, ad suspensionem pro ")|
       str("aqua ").maybe >> str("ad iniectabile q.s. ad suspensionem pro ") |
+      str("aqua ").maybe >> str("ad iniectabile, q.s. ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile q.s. ad solutionem pro ") |
+      str("aqua ").maybe >> str("ad iniectabile, ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabilia q.s. ad solutionem pro ") |
       str("aqua ").maybe >> str("ad solutionem pro ") |
@@ -357,6 +360,7 @@ class CompositionParser < Parslet::Parser
     (
       simple_subtance_with_digits_in_name_and_dose |
       der |
+      str("heptadecan-9-ylis 8-((2-hydroxyethyl)(6-oxo-6-(undecyloxy)hexyl)amino)-octanoas") | # Moderna
       substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz |
       substance_lead.maybe.as(:more_info) >> space? >> simple_substance >> str("pro dosi").maybe
     ).as(:substance) >>
