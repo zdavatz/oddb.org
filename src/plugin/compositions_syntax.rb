@@ -303,6 +303,8 @@ class CompositionParser < Parslet::Parser
       str("q.s. ad") |
       str("q.s. pro praeparatione") |
       str("saccharum ad") |
+      str("gelatina, pro capsula ") |
+      str("pro capsula corresp. natrium") |
       str("solvens (i.v.): aqua ad iniectabilia")
   }
 
@@ -319,6 +321,8 @@ class CompositionParser < Parslet::Parser
       str("mineralia:") >> str(":") >> space? |
       str("Solvens:") >> space? |
       str("Suspension:") >> space? |
+      str("Kapselhülle:") >> space? |
+      str("Drucktinte:") >> space? |
       substance_more_info
   }
   rule(:corresp_substance_label) {

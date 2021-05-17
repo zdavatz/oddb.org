@@ -79,13 +79,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 17352" do
-      string = "scopolamini butylbromidum 20 mg, natrii chloridum, aqua ad iniectabile, q.s. ad solutionem pro 1 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 18022" do
       string = "uvae ursi folium (Arctostaphylos uva-ursi (L.) Spreng., folium) 0.46 g, orthosiphonis folium (Orthosiphon aristatus (Blume) Miq. var. aristatus (syn. Orthosiphon stamineus Benth., folium) 0.260 g, betulae folium (Betula pendula Roth and/or Betula pubescens Ehrh., folium) 0.260 g, juniperi galbulus (Juniperus communis L., pseudofructus) 0.130 g, levistici radix (Levisticum officinale Koch, radix et rhizoma) 0.130 g, menthae piperitae folium (Mentha × piperita L., folium), pro charta 1.3 g."
       composition = ParseComposition.from_string(string)
@@ -107,20 +100,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 27867" do
-      string = "metyraponum 250.00 mg, macrogolum 400, glycerolum (85 per centum), aqua purificata, macrogolum 4000, Kapselhülle: gelatina, glycerolum (85 per centum), E 171, E 215 0.71 mg, ethylvanillinum, propylis parahydroxybenzoas natricus 0.35 mg, 4-methoxyacetophenonum, Drucktinte: E 120, aluminii chloridum hexahydricum, natrii hydroxidum, hypromellosum, propylenglycolum, pro capsula corresp. natrium 0.13 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 29080" do
-      string = "natrii chloridum, kalii chloridum, natrii dihydrogenophosphas dihydricus, magnesii chloridum hexahydricum 0.305 g, natrii lactas entspricht Sodium Lactate Lösung 50% 5.156 g, glucosum monohydricum corresp. glucosum, antiox.: E 223 0.054 g, acidum hydrochloridum concentratum, aqua ad iniectabile, q.s. ad solutionem pro 1000 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 30724" do
       string = "echinaceae purpureae herbae recentis tinctura 860 mg ratio: 1:12 Auszugsmittel Ethanolum 57.3% m/m, echinaceae purpureae radicis recentis tinctura 45 mg ratio: 1:11 Auszugsmittel Ethanolum 57.3% m/m, ad solutionem pro 1 ml corresp. ethanolum 62-70 % V/V."
       composition = ParseComposition.from_string(string)
@@ -128,22 +107,8 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 30785" do
-      string = "acidum mefenamicum 250 mg, gelatina, lactosum monohydricum 77.61 mg, natrii laurilsulfas, Kapselhülle: gelatina, E 132, E 171, E 172 (flavum), Drucktinte: lacca, E 172 (nigrum), propylenglycolum, pro capsula corresp. natrium 93 µg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 31567" do
       string = "dexamethasonum 1 mg, neomycinum 3.5 mg ut neomycini sulfas 4.6 mg, polymyxini B sulfas 6000 U.I., natrii chloridum, polysorbatum 20, acidum hydrochloridum aut natrii hydroxidum, hypromellosum, aqua purificata, benzalkonii chloridum 40 µg, ad suspensionem pro 1 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 31841" do
-      string = "amantadini hydrochloridum 100 mg, rapae oleum raffinatum, lecithinum ex soja, sojae oleum partim hydrogenatum 10.67 mg, cera flava, sojae oleum hydrogenatum 2.67 mg, Kapselhülle: E 215 0.53 mg, gelatina, glycerolum (85 per centum), E 172 (rubrum), propylis parahydroxybenzoas natricus 0.27 mg, sorbitolum 6.738 mg, mannitolum, amylum hydrolysatum, E 171, Drucktinte: lacca, E 171 pro capsula corresp. natrium 0.72 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -170,13 +135,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 36527" do
-      string = "ferrum 100 mg ut ferrosi glycinatis sulfas ut ferrosi sulfas heptahydricus et glycinum, E 300, cellulosum microcristallinum, hypromellosum, hydroxypropylcellulosum, acidi methacrylici et ethylis acrylatis polymerisatum 1:1, natrii laurilsulfas, polysorbatum 80, triethylis acetylcitras, talcum, matériel de la capsule: gelatina, E 171, E 172 (rubrum), E 172 (nigrum), E 172 (flavum), pro capsula corresp. natrium 0.0239 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 36896" do
       string = "carbamazepinum 100 mg, macrogoli 8 stearas typus I, hydroxyethylcellulosum, cellulosum microcristallinum, carmellosum natricum, sorbitolum liquidum non cristallisabile 1.25 g, propylenglycolum 125 mg, aqua purificata, aromatica (Caramel), saccharinum natricum, E 200, propylis parahydroxybenzoas 1.5 mg, E 218 6 mg ad suspensionem pro 5 ml corresp. natrium 0.57 mg."
       composition = ParseComposition.from_string(string)
@@ -191,13 +149,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 38477" do
-      string = "chondroitini sulfas natricus 500 mg, talcum, Kapselhülle: gelatina q.s., E 132, E 171, pro capsula corresp. natrium 45 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 38695" do
       string = "betamethasonum 0.5 mg ut betamethasoni dipropionas, gentamicinum 1.0 mg ut gentamicini sulfas, natrii dihydrogenophosphas dihydricus, acidum phosphoricum, paraffinum liquidum, alcohol cetylicus et stearylicus 72 mg, macrogoli aether cetostearylicus, vaselinum album, natrii hydroxidum, aqua purificata, chlorocresolum 1 mg ad emulsionem pro 1 g."
       composition = ParseComposition.from_string(string)
@@ -207,13 +158,6 @@ describe ParseComposition do
 
   it "should handle isknr 39036" do
       string = "hydroxocobalaminum 0.5 mg, l-O-phosphothreoninum 10 mg, glutaminum 60 mg, l-O-phosphoserinum 40 mg, arginini hydrochloridum 100 mg, sorbitolum liquidum non cristallisabile 9 g, E 211 30 mg, natrii hydroxidum, aromatica, aqua ad solutionem pro vitro 10 ml corresp. natrium 8.1 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 39259" do
-      string = "estramustini phosphas 140 mg ut estramustini phosphas dinatricus monohydricus, talcum, natrii laurilsulfas, silica colloidalis anhydrica, magnesii stearas, Kapselhülle: gelatina, E 171, Drucktinte: lacca, E 172 (nigrum), propylenglycolum, kalii hydroxidum, pro capsula corresp. natrium 12.53 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -235,13 +179,6 @@ describe ParseComposition do
 
   it "should handle isknr 41905" do
       string = "domperidonum 1 mg, sorbitolum liquidum non cristallisabile corresp. sorbitolum 318.5 mg, cellulosum microcristallinum et carmellosum natricum, E 218 1.8 mg, propylis parahydroxybenzoas 0.2 mg, polysorbatum 20, natrii hydroxidum, saccharinum natricum aqua purificata ad suspensionem pro 1 ml corresp. natrium 0.11 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 42277" do
-      string = "chondroitini sulfas natricus 400 mg, magnesii stearas, materiale di capsula: gelatina, E 104, E 132, pro capsula corresp. natrium 36.6 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -275,20 +212,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 42782" do
-      string = "acidum ursodeoxycholicum 250 mg, maydis amylum, silica colloidalis anhydrica, magnesii stearas, Kapselhülle: E 171, gelatina, aqua purificata, natrii laurilsulfas, pro capsula corresp. natrium 0.016 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 42888" do
-      string = "etoposidum 50 mg, acidum citricum, macrogolum 400, glycerolum (85 per centum), aqua purificata, Kapselhülle: gelatina, glycerolum (85 per centum), E 171, E 172, E 215 0.93 mg, propylis parahydroxybenzoas natricus 0.47 mg, pro capsula corresp. natrium 0.23 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 42894" do
       string = "metoclopramidi hydrochloridum 4 mg, aqua purificata, saccharinum natricum, E 218 1.8 mg, propylis parahydroxybenzoas 0.2 mg, ad suspensionem pro 1 ml corresp. 12 gutta corresp. natrium 0.11 mg."
       composition = ParseComposition.from_string(string)
@@ -305,13 +228,6 @@ describe ParseComposition do
 
   it "should handle isknr 46180" do
       string = "matricariae extractum ethanolicum liquidum 20 mg corresp. matricariae aetheroleum 200 µg et levomenolum 70 µg, DER: 2.7-5.5:1, Auszugsmittel EtOH 95.4% V/V (Ethanol 99.04%, gereinigtes Wasser, Ph.Eur. 0.62%, Natriumacetat*3H2O, Ph.Eur. 0.22%, Natriumhydroxid, Ph.Eur. 0.13%, alcoholes adipis lanae, conserv.: propylis parahydroxybenzoas, E 218, excipiens ad unguentum pro 1 g."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 46851" do
-      string = "diclofenacum natricum 100 mg, lactosum monohydricum 50 mg, cellulosum microcristallinum, carmellosum natricum, glyceroli trimyristas, E 171, ammonio methacrylatis copolymerum B, triethylis citras, silica colloidalis hydrica, Kapselhülle: gelatina, aqua purificata, E 171, E 172 (nigrum), E 172 (rubrum), E 127, Drucktinte: lacca, E 172 (nigrum), propylenglycolum, kalii hydroxidum, pro capsula corresp. natrium 7.27 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -345,13 +261,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 49391" do
-      string = "acidum mefenamicum 250 mg, polysorbatum 80, carmellosum natricum conexum, cellulosum microcristallinum, povidonum K 25, acidum stearicum, Kapselhülle: gelatina, pro capsula corresp. natrium 50.6 µg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 50725" do
       string = "mesalazinum 1 g, dinatrii edetas, natrii acetas trihydricus, acidum hydrochloridum, aqua, E 223, ad suspensionem pro dosi."
       composition = ParseComposition.from_string(string)
@@ -361,13 +270,6 @@ describe ParseComposition do
 
   it "should handle isknr 50766" do
       string = "dexamethasonum 1 mg, tobramycinum 3 mg, dinatrii edetas, natrii chloridum, natrii sulfas, tyloxapolum, hydroxyethylcellulosum, aqua, natrii hydroxidum aut acidum sulfuricum, benzalkonii chloridum 0.1 mg, ad suspensionem pro 1 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 51357" do
-      string = "ofloxacinum 3 mg, natrii chloridum, acidum hydrochloridum aut natrii hydroxidum, aqua ad iniectabile, benzalkonii chloridum 25 µg, ad solutionem pro 1 ml."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -396,13 +298,6 @@ describe ParseComposition do
 
   it "should handle isknr 52852" do
       string = "oxcarbazepinum 60 mg, aqua purificata, sorbitolum liquidum non cristallisabile 250 mg, propylenglycolum 25 mg, cellulosum dispergibile, macrogoli 8 stearas typus I, aromatica, saccharinum natricum, E 300, E 200, propylis parahydroxybenzoas 0.3 mg, E 218 1.2 mg ad suspensionem pro 1 ml corresp. natrium < 23 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 52958" do
-      string = "hydroxycarbamidum 500 mg, acidum citricum, dinatrii phosphas, magnesii stearas, lactosum monohydricum 42.2 mg, Kapselhülle: E 132, E 172 (flavum), E 171, E 127, natrii laurilsulfas, gelatina, Drucktinte: lacca, E 172 (nigrum), propylenglycolum, ammonii hydroxidum, pro capsula corresp. natrium 11.7 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -464,13 +359,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 54577" do
-      string = "temozolomidum 180 mg, lactosum 316.3 mg, carboxymethylamylum natricum A, silica colloidalis anhydrica, acidum tartaricum, acidum stearicum, Kapselhülle: natrii laurilsulfas, gelatina, E 171, E 172 (flavum), E 172 (rubrum), Drucktinte: lacca, aqua purificata, ammonii hydroxidum, kalii hydroxidum, E 172 (nigrum), pro capsula corresp. natrium 1.14 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 54634" do
       string = "acidum ursodeoxycholicum 250 mg, aqua purificata, xylitolum, glycerolum, cellulosum microcristallinum et carmellosum natricum, propylenglycolum 50 mg, natrii citras dihydricus, acidum citricum, natrii chloridum, natrii cyclamas, aromatica (Lemon), E 210 7.5 mg ad suspensionem pro 5 ml corresp. natrium 11.1 mg."
       composition = ParseComposition.from_string(string)
@@ -501,20 +389,6 @@ describe ParseComposition do
 
   it "should handle isknr 55119" do
       string = "ureum 100 mg, PEG-45/dodecyl glycol copolymer, methoxy PEG-22/dodecyl glycol copolymer, sorbitani isostearas, ricini oleum hydrogenatum, PEG-2 hydrogenated castor oil 4.1 mg, ozokeritum, PEG-7 hydrogenated castor oil 25 mg, paraffinum perliquidum, isopropylis palmitas, triglycerida media, octyldodecanolum, glycerolum (85 per centum), natrii lactatis solutio, acidum lacticum, magnesii sulfas heptahydricus, dimeticonum, aqua purificata, alcohol benzylicus 12 mg, ad emulsionem pro 1 g."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 55164" do
-      string = "diclofenacum natricum 75 mg, cellulosum microcristallinum, povidonum K 25, silica colloidalis anhydrica, acidi methacrylici et ethylis acrylatis polymerisatum 1:1, natrii hydroxidi solutio 1 mol/L, propylenglycolum, ammonio methacrylatis copolymerum B, ammonio methacrylatis copolymerum A, triethylis citras, talcum, Kapselhülle: gelatina, aqua, E 132, E 171, natrii laurilsulfas, Drucktinte: lacca, E 171, propylenglycolum, pro capsula corresp. natrium 5.5 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 55196" do
-      string = "oseltamivirum 45 mg ut oseltamiviri phosphas, amylum pregelificatum, povidonum K 30, carmellosum natricum conexum, talcum, natrii stearylis fumaras, Kapselhülle: gelatina, E 171, E 172 (nigrum), Drucktinte: lacca, alcohol butylicus, E 171, E 132, ethanolum anhydricum, methanolum, pro capsula corresp. natrium 245.8 µg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -562,20 +436,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 55781" do
-      string = "Lösung nach Rekonstitution (1:1): natrii chloridum 6.136 g, natrii hydrogenocarbonas 2.940 g, calcii chloridum anhydricum 0.1665 g ut calcii chloridum dihydricum, magnesii chloridum anhydricum 0.0476 g ut glucosum 5.55 mmol, magnesii chloridum hexahydricum, glucosum 1.000 g ut glucosum monohydricum, natrii dihydrogenophosphas dihydricus, acidum hydrochloridum 25 per centum, aqua ad iniectabilia, q.s. ad solutionem pro 1000 ml, Corresp., natrium 140 mmol, calcium 1.5 mmol, magnesium 0.50 mmol, chloridum 109 mmol, hydrogenocarbonas 35 mmol, glucosum 5.55 mmol."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 55788" do
-      string = "timololum 5 mg ut timololi maleas, natrii dihydrogenophosphas dihydricus et dinatrii phosphas dodecahydricus corresp. phosphas 13.36 mg, aqua ad iniectabile, ad solutionem pro 1 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 55812" do
       string = "tacalcitolum monohydricum 4.17 µg corresp. tacalcitolum 4 µg, paraffinum perliquidum, propylenglycolum 100 mg, triglycerida media, octyldodecanolum, macrogoli 21 aether stearylicus, diisopropylis adipas, dinatrii phosphas dodecahydricus, xanthani gummi, kalii dihydrogenophosphas, dinatrii edetas, aqua purificata, E 312, phenoxyethanolum, ad emulsionem pro 1 g."
       composition = ParseComposition.from_string(string)
@@ -606,13 +466,6 @@ describe ParseComposition do
 
   it "should handle isknr 56149" do
       string = "Lösung nach Rekonstitution (1:1): calcii chloridum anhydricum 0.1942 g ut calcii chloridum dihydricum, natrii chloridum 5.786 g, magnesii chloridum anhydricum 0.0476 g ut magnesii chloridum hexahydricum, glucosum 22.73 g ut glucosum monohydricum, natrii hydrogenocarbonas 2.94 g, aqua ad iniectabile q.s. ad solutionem pro 1000 ml, Corresp. natrium 134 mmol, calcium 1.75 mmol, magnesium 0.5 mmol, chloridum 104.5 mmol, hydrogenocarbonas 34 mmol, glucosum 126.1 mmol."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 56898" do
-      string = "miglustatum 100 mg, carboxymethylamylum natricum A, povidonum K 30, magnesii stearas, Kapselhülle: gelatina, E 171, Drucktinte: E 172 (nigrum), lacca, pro capsula corresp. natrium 190 µg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -662,20 +515,6 @@ describe ParseComposition do
 
   it "should handle isknr 57417" do
       string = "rotigotinum 18.00 mg, silicone adhesive, povidonum K 90, E 223, E 304, E 307, poly(ethylenis terephthalas), ad praeparationem pro 40 cm², cum liberatione 8 mg/24h."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 57563" do
-      string = "sunitinibum 50 mg ut sunitinibi malas, mannitolum, carmellosum natricum conexum, povidonum K 25, magnesii stearas, Kapselhülle: gelatina, E 172 (rubrum), E 171, E 172 (flavum), E 172 (nigrum), Drucktinte: lacca, propylenglycolum, natrii hydroxidum, povidonum, E 171, pro capsula corresp. natrium 0.71 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 57566" do
-      string = "A) Lösung A: glucosum 51.5 g ut glucosum monohydricum, calcii chloridum dihydricum 245 mg, magnesii chloridum hexahydricum 68 mg, aqua ad iniectabile q.s. ad solutionem pro 1000 ml."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -746,13 +585,6 @@ describe ParseComposition do
 
   it "should handle isknr 59959" do
       string = "ciclopiroxum olaminum 10 mg, octyldodecanolum, paraffinum perliquidum, alcohol stearylicus 57.5 mg, alcohol cetylicus 57.5 mg, myristyl alcohol, sorbitani stearas, polysorbatum 60, cocamide dea, alcohol benzylicus 10 mg, acidum lacticum, aqua purificata, ad emulsionem pro 1000 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 60095" do
-      string = "dutasteridum 0.5 mg, tamsulosini hydrochloridum 0.4 mg corresp. tamsulosinum 0.367 mg, Dutasterid-Weichkapsel innerhalb der Hartkapsel: glycerolorum octanoas/decanoas, E 321, gelatina, glycerolum, E 171, E 172, aqua purificata, triglycerida media, lecithinum ex soja, Tamsulosin-Pellets in Hartkapsel: cellulosum microcristallinum, acidi methacrylici et ethylis acrylatis polymerisati 1:1 dispersio 30 per centum cum polysorbatum 80 et natrii laurilsulfas, talcum, triethylis citras, aqua purificata, Kapselhülle: carrageen, kalii chloridum, aqua purificata, hypromellosum, cera carnauba, maydis amylum, E 110 0.04-0.08 mg, E 171, E 172, Drucktinte: lacca, propylenglycolum, E 172 (nigrum), kalii hydroxidum, pro capsula corresp. natrium 245 µg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -996,13 +828,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 63023" do
-      string = "lisdexamfetamini dimesilas 60 mg corresp. dexamfetaminum 17.8 mg, cellulosum microcristallinum, carmellosum natricum conexum, magnesii stearas, Kapselhülle: gelatina, E 133, E 171, Drucktinte: lacca, propylenglycolum, kalii hydroxidum, E 172 (nigrum), pro capsula corresp. natrium 0.3146 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 63165" do
       string = "imiquimodum 37.5 mg, acidum isostearicum, alcohol benzylicus 20.0 mg, alcohol cetylicus 22.0 mg, alcohol stearylicus 31.0 mg, vaselinum album, polysorbatum 60, sorbitani stearas, glycerolum, xanthani gummi, E 218 2.0 mg, propylis parahydroxybenzoas 0.2 mg, aqua purificata, ad emulsionem pro 1 g."
       composition = ParseComposition.from_string(string)
@@ -1012,13 +837,6 @@ describe ParseComposition do
 
   it "should handle isknr 63180" do
       string = "dinatrii phosphas dihydricus 453 mg et natrii dihydrogenophosphas dihydricus 75 mg corresp. natrium 128.13 mg et phosphas 288 mg = 3 mmol, silica colloidalis anhydrica, amylum pregelificatum, magnesii stearas, Kapselhülle: gelatina, titanii dioxidum, E 129 29 µg, pro capsula."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 63277" do
-      string = "Lösung: ranibizumabum 10 mg, histidini hydrochloridum monohydricum, histidinum, trehalosum dihydricum, polysorbatum 20, aqua ad iniectabile, q.s. ad solutionem pro mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -1040,13 +858,6 @@ describe ParseComposition do
 
   it "should handle isknr 65095" do
       string = "celecoxibum 100 mg, lactosum monohydricum 149.7 mg, natrii laurilsulfas, povidonum K 30, carmellosum natricum conexum, magnesii stearas, Kapselhülle: gelatina, E 171, Drucktinte: lacca, propylenglycolum, E 132, pro capsula corresp., natrium 0.71 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 65173" do
-      string = "ibrutinibum 140 mg, cellulosum microcristallinum, carmellosum natricum conexum, natrii laurilsulfas, magnesii stearas, Kapselhülle: gelatina, E 171, Drucktinte: lacca, E 172, propylenglycolum, pro capsula corresp. natrium 2.73 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -1075,13 +886,6 @@ describe ParseComposition do
 
   it "should handle isknr 65381" do
       string = "darunavirum 100 mg ut darunavirum ethanolum, hydroxypropylcellulosum, cellulosum microcristallinum, carmellosum natricum, acidum citricum monohydricum, sucralosum, acidum hydrochloridum concentratum, aromatica (Geschmacksüberdeckungsaroma), aromatica (Erdbeer), E 219 3.43 mg, aqua purificata ad suspensionem pro 1 ml corresp. natrium 570 µg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 65499" do
-      string = "netupitantum 300 mg, palonosetronum 0.5 mg ut palonosetroni hydrochloridum, cellulosum microcristallinum, sacchari lauras corresp. saccharum 20 mg, povidonum K 30, carmellosum natricum conexum, silica colloidalis hydrica, natrii stearylis fumaras, magnesii stearas, macrogol 6 glyceroli caprylocapras, glycerolum, polyglyceroli-3 mono-oleas, aqua purificata, E 320, matériel de la capsule: gelatina, sorbitolum 7 mg, 1,4-sorbitanum, E 171, E 172 (flavum), E 172 (rubrum), encre: lacca, E 172 (nigrum), propylenglycolum, ammonii hydroxidum pro capsula corresp. natrium 0.38 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -1220,13 +1024,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 65790" do
-      string = "Kapsel: duloxetinum 60 mg ut duloxetini hydrochloridum, sacchari sphaerae ut saccharum 60-68.63 mg et maydis amylum, hypromellosum, talcum, hypromellosum, saccharum 24.51 mg, talcum, hypromellosi acetas succinas, triethylis citras, Kapselhülle: gelatina, E 132, E 171, E 172 (flavum) pro capsula corresp. natrium 4 µg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 65795" do
       string = "Kapsel: duloxetinum 60 mg ut duloxetini hydrochloridum, sacchari sphaerae, maydis amylum, hydroxypropylcellulosum, hypromellosum, hypromellosi acetas succinas, saccharum, talcum, E 171, Kapselhülle: gelatina, E 132, E 171, E 172 (flavum) pro capsula corresp. saccharum 132.46 mg."
       composition = ParseComposition.from_string(string)
@@ -1243,13 +1040,6 @@ describe ParseComposition do
 
   it "should handle isknr 65862" do
       string = "1 ml corresp. dilutio spag. Baumann D1 ex angelica archangelica et coffea arabica et crataegus et datura stramonium et valeriana officinalis et leonurus cardiaca et melissa officinalis et ana partes ad solutionem, corresp. ethanolum 22-27 % V/V."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 66009" do
-      string = "omeprazolum 40 mg, sacchari sphaerae corresp. saccharum ca. 233 mg et maydis amylum, natrii laurilsulfas, dinatrii phosphas, mannitolum, hypromellosum, macrogolum 6000, talcum, polysorbatum 80, acidi methacrylici et ethylis acrylatis polymerisati 1:1 dispersio 30 per centum, E 171, Kapselhülle: aqua purificata, gelatina, E 132, E 171 pro capsula corresp. natrium 0.4 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -1388,13 +1178,6 @@ describe ParseComposition do
       expect(composition.substances.size).to be > 1
   end
 
-  it "should handle isknr 67588" do
-      string = "atomoxetinum 100 mg corresp. atomoxetini hydrochloridum 114.3 mg, maydis amylum, amylum pregelificatum, dimeticonum 350, carboxymethylamylum natricum A, Kapselhülle: gelatina, E 171, E 172 (flavum), E 172 (rubrum), Drucktinte: lacca, propylenglycolum, E 172 (nigrum), kalii hydroxidum, pro capsula corresp. natrium 1.68 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
   it "should handle isknr 67594" do
       string = "posaconazolum 200 mg, polysorbatum 80, xanthani gummi, natrii benzoas 10 mg, acidum citricum monohydricum, natrii citras dihydricus, glycerolum, glucosum liquidum 1.75 g, E 171, simeticonum, polysorbatum 65, methylcellulosum, macrogoli stearas, mono/diglycerida, E 200, E 210 0.045 mg, acidum sulfuricum, aromatica (Kirschen), alcohol benzylicus 0.0875 mg, aqua purificata ad suspensionem pro 5 ml corresp. natrium 3.4 mg."
       composition = ParseComposition.from_string(string)
@@ -1439,20 +1222,6 @@ describe ParseComposition do
 
   it "should handle isknr 68087" do
       string = "haemagglutininum influenzae A (H1N1) (Virus-Stamm A/Guangdong-Maonan/SWL1536/2019 (H1N1)-pdm09: reassortant virus CNIC-1909 derived from A/Guangdong-Maonan/SWL1536/2019) 15 µg, haemagglutininum influenzae A (H3N2) (Virus-Stamm A/Hong Kong/2671/2019 (H3N2)-like: reassortant virus IVR-208 derived from A/Hong Kong/2671/2019) 15 µg, haemagglutininum influenzae B (Virus-Stamm B/Washington/02/2019 (Victoria lineage)) 15 µg, haemagglutininum influenzae B (Virus-Stamm B/Phuket/3073/2013 (Yamagata lineage)) 15 µg, kalii chloridum, kalii dihydrogenophosphas, dinatrii phosphas dihydricus, natrii chloridum, calcii chloridum dihydricum, magnesii chloridum hexahydricum, aqua ad iniectabilia q.s. ad suspensionem pro 0.5 ml corresp. natrium 2.0 mg, kalium 0.1 mg, residui: cetrimidum, formaldehydum, gentamicini sulfas, polysorbatum 80, ovalbuminum."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 68165" do
-      string = "levofloxacinum 5 mg ut levofloxacinum hemihydricum, dexamethasonum 1 mg ut dexamethasoni natrii phosphas, benzalkonii chloridi solutio 0.10 mg, natrii dihydrogenophosphas monohydricus, dinatrii phosphas dodecahydricus, natrii citras dihydricus, natrii hydroxidum aut acidum hydrochloridum dilutum ad pH, aqua ad iniectabile, ad solutionem pro 1 ml corresp. phosphas 4.01 mg."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 68225" do
-      string = "tozinameranum 225 µg, ((4-hydroxybutyl)azanediyl)bis(hexane-6,1-diylis)bis(2-hexyldecanoas), 2-(macrogoli 2000)-N,N-ditetradecylacetamidum, 1,2-distearoyl-sn-glycero-3-phosphocholinum, cholesterolum, saccharum, natrii chloridum, kalii chloridum, dinatrii phosphas dihydricus, kalii dihydrogenophosphas, aqua ad iniectabile, pro vitro corresp. natrium 0.16 mg et kalium 0.01 mg pro dosi."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
