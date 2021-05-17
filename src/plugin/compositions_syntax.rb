@@ -290,6 +290,7 @@ class CompositionParser < Parslet::Parser
       str("aether q.s.") |
       str("ana partes") |
       str("aqua ad iniectabilia q.s. ad solutionem") |
+      str("aqua ad iniectabile, pro vitro ") |
       str("aqua ad iniectabilia") |
       str("aqua q.s. ad") |
       str("excipiens pro compresso obducto") |
@@ -317,6 +318,7 @@ class CompositionParser < Parslet::Parser
       str("residui:") >> space? |
       str("mineralia:") >> str(":") >> space? |
       str("Solvens:") >> space? |
+      str("Suspension:") >> space? |
       substance_more_info
   }
   rule(:corresp_substance_label) {
@@ -360,6 +362,7 @@ class CompositionParser < Parslet::Parser
     (
       simple_subtance_with_digits_in_name_and_dose |
       der |
+      str("((4-hydroxybutyl)azanediyl)bis(hexane-6,1-diylis)bis(2-hexyldecanoas)") |
       str("heptadecan-9-ylis 8-((2-hydroxyethyl)(6-oxo-6-(undecyloxy)hexyl)amino)-octanoas") | # Moderna
       substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz |
       substance_lead.maybe.as(:more_info) >> space? >> simple_substance >> str("pro dosi").maybe
