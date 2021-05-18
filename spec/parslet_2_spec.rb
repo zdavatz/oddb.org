@@ -7,17 +7,11 @@ else
 end
 require "parslet/rig/rspec"
 describe ParseComposition do
+# 8653 68409 68267 68235 68225 68165 681 68087 68040 68005 67951 67826 67811 67808 67773 677 67641 676 67596 67594 67588 67541 67540 67515 67503 675 67478 67421 67379 67378 67366 67295 67275 67192 67031 66988 66852 66778 66742 66731 66540 66427 66423 66174 66161 66156 66093 66009 65899 65868 65862 65852 65823 65816 65795 65794 65790 65781 65778 65761 65759 65758 65757 65756 65755 65754 65753 65752 65750 65749 65748 65746 65745 65726 65642 65608 65499 65381 65371 65219 65193 65173 65095 65094 65080 638 637 63277 63180 63165 63023 62874 62827 62730 62676 62675 62104 61544 61514 61359 61292 61193 61186 60951 60689 60642 60641 60640 60639 60638 60637 60636 60635 60634 60633 60632 60631 60630 60629 60628 60627 60626 60625 60624 60623 60621 60609 60608 60606 60544 60469 60095 59959 598 59777 59400 59263 58945 58943 58900 58277 58157 58078 57850 57814 57707 57650 57566 57563 57417 57263 57231 57051 57029 56983 56933 56898 56149 56046 55938 55931 55812 55788 55781 55717 55695 55596 55595 55581 55470 55423 55389 55383 55375 55295 55236 55196 55164 55119 55070 55052 54994 54634 54577 54539 54238 54036 53943 53915 53904 53675 53634 53211 52969 52958 52852 52838 52715 52618 51760 51357 50766 50725 49391 49366 485 48473 47726 47162 46851 46180 44524 43679 42894 42888 42782 42496 42414 42408 42407 42277 41905 40231 39639 39259 39036 38695 38477 38178 36896 36527 36355 34755 33422 31841 31567 30785 30724 29080 27867 22958 19137 18022 17352 12548
 
 
   it "should handle isknr 00485" do
       string = "haemagglutininum influenzae A (H1N1) (Virus-Stamm A/Brisbane/02/2018 (H1N1)-like: reassortant virus A/Brisbane/02/2018, IVR-190) 15 µg, haemagglutininum influenzae A (H3N2) (Virus-Stamm A/Kansas/14/2017 (H3N2)-like: reassortant virus A/Kansas/14/2017, NYMC X-327) 15 µg, haemagglutininum influenzae B (Virus Stamm B/Colorado/06/2017-like: reassortant virus B/Maryland/15/2016 NYMC BX-69A) 15 µg, kalii chloridum, kalii dihydrogenophosphas, dinatrii phosphas dihydricus, natrii chloridum, calcii chloridum dihydricum, magnesii chloridum hexahydricum, residui: natrii citras dihydricus max. 1 mg, cetrimidum max. 15 µg, formaldehydum max. 10 µg, gentamicini sulfas max. 1 ng, tylosini tartras nihil, hydrocortisonum nihil, polysorbatum 80 nihil, ovalbuminum max. 0.1 µg, aqua ad iniectabilia q.s. ad suspensionem pro 0.5 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 00598" do
-      string = "escherichiae coli lysati filtratum 6 mg, E 310, natrii hydrogenoglutamas anhydricus, amylum pregelificatum, magnesii stearas, mannitolum, matériel de la capsule: E 172 (rubrum), E 172 (flavum), E 171, gelatina, pro capsula corresp. natrium 2.85 mg."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -60,13 +54,6 @@ describe ParseComposition do
 
   it "should handle isknr 00681" do
       string = "toxoidum diphtheriae ≥ 2 U.I., toxoidum tetani ≥ 20 U.I., toxoidum pertussis 8 µg, haemagglutininum filamentosum von Bordetella pertussis 8 µg, pertactinum von Bordetella pertussis 2.5 µg, virus poliomyelitis typus 1 inactivatus 40 U., virus poliomyelitis typus 2 inactivatus 8 U., virus poliomyelitis typus 3 inactivatus 32 U., natrii chloridum corresp. natrium 1.8 mg, aluminium 0.5 mg ut aluminii hydroxidum hydricum ad adsorptionem et aluminii phosphas, medium 199, aqua ad iniectabile, q.s. ad suspensionem pro 0.5 ml, residui: formaldehydum, polysorbatum 80, neomycini sulfas, polymyxini B sulfas."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 08653" do
-      string = "hamamelidis aqua (Hamamelis virginiana L, folium et cortex aut ramunculus) 62.5 mg ratio: 1:1.12-2.08 Destillationsmittel: Ethanolum 7.5 % m/m, vaselinum album, adeps lanae 165 mg, glyceroli mono/di/triadipas/alcanoas(C8,C10)/isostearas, alcohol cetylicus et stearylicus 20 mg, paraffinum microcristallinum, acidum citricum, glyceroli mono-oleas, glyceroli monostearas 40-55, E 304, E 307, lecithinum, propylenglycolum 50 mg, aqua purificata, dinatrii edetas, paraffinum liquidum, ad unguentum pro 1 g."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -270,13 +257,6 @@ describe ParseComposition do
 
   it "should handle isknr 50766" do
       string = "dexamethasonum 1 mg, tobramycinum 3 mg, dinatrii edetas, natrii chloridum, natrii sulfas, tyloxapolum, hydroxyethylcellulosum, aqua, natrii hydroxidum aut acidum sulfuricum, benzalkonii chloridum 0.1 mg, ad suspensionem pro 1 ml."
-      composition = ParseComposition.from_string(string)
-      expect(composition.source).to eq string
-      expect(composition.substances.size).to be > 1
-  end
-
-  it "should handle isknr 52618" do
-      string = "I) Kleberprotein-Lösung gefroren: fibrinogenum humanum 144-220 mg, factor XIII 1.2-20 U., aprotininum syntheticum 4500-7500 U., albuminum humanum, histidinum, nicotinamidum, polysorbatum 80, natrii citras dihydricus, aqua ad iniectabile q.s. ad solutionem pro 2 ml."
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
@@ -1229,7 +1209,21 @@ describe ParseComposition do
 
   it "should handle isknr 68235" do
       string = "Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten, hydroxypropylbetadexum, acidum citricum monohydricum, 1-(4-tolyl)-ethanolum, acidum hydrochloridum, polysorbatum 80, natrii chloridum, natrii hydroxidum, trinatrii citras dihydricus, aqua ad iniectabile, pro dosi."
+            composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
+  end
+      it "should handle isknr 68235" do
+      string = "Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten, hydroxypropylbetadexum, acidum citricum monohydricum, 1-(4-tolyl)-ethanolum, acidum hydrochloridum, polysorbatum 80, natrii chloridum, natrii hydroxidum, trinatrii citras dihydricus, aqua ad iniectabile, pro dosi."
+      string = "hydroxypropylbetadexum, acidum citricum monohydricum, acidum hydrochloridum, polysorbatum 80, natrii chloridum, natrii hydroxidum, trinatrii citras dihydricus"
+      string = 
+"Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten, hydroxypropylbetadexum, acidum citricum monohydricum, 1-(4-tolyl)-ethanolum, acidum hydrochloridum, polysorbatum 80, natrii chloridum, natrii hydroxidum, trinatrii citras dihydricus, aqua ad iniectabile."
+#      string = "Ad26.COV2-S 8,92 log10 infekt. Einheiten" # works
+      string = "Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten" # works
+      string = "Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten, trinatrii citras dihydricus, aqua ad iniectabile." # DOES not work
+      string = "etonogestrelum, trinatrii citras dihydricus, aqua." # DOES not work
       composition = ParseComposition.from_string(string)
+      pp composition
       expect(composition.source).to eq string
       expect(composition.substances.size).to be > 1
   end

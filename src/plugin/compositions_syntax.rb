@@ -236,11 +236,11 @@ class CompositionParser < Parslet::Parser
   rule(:name_with_parenthesis) {
     forbidden_in_substance_name.absent? >>
       ((comma | lparen).absent? >> any).repeat(0) >> part_with_parenthesis >>
-      (forbidden_in_substance_name.absent? >> (identifier.repeat(1) | part_with_parenthesis | rparen) >> space?).repeat(0)
+     (forbidden_in_substance_name.absent? >> (identifier.repeat(1) | part_with_parenthesis | rparen) >> space?).repeat(0)
   }
   rule(:substance_name) {
     (
-                            name_with_parenthesis |
+                            name_with_parenthesis >> str("/").maybe |
                             name_without_parenthesis
                           ) >>
       str("pro dosi").maybe >> space?

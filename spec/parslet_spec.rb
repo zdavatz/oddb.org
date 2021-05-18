@@ -1326,6 +1326,38 @@ describe ParseComposition do
     specify { expect(composition.substances.last.name).to match /Saccharum/ }
   end
 
+  it "should handle isknr 00598" do
+      string = "escherichiae coli lysati filtratum 6 mg, E 310, natrii hydrogenoglutamas anhydricus, amylum pregelificatum, magnesii stearas, mannitolum, matériel de la capsule: E 172 (rubrum), E 172 (flavum), E 171, gelatina, pro capsula corresp. natrium 2.85 mg."
+      composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
+  end
+
+  it "should handle isknr 68225" do
+      string = "tozinameranum 225 µg, ((4-hydroxybutyl)azanediyl)bis(hexane-6,1-diylis)bis(2-hexyldecanoas), 2-(macrogoli 2000)-N,N-ditetradecylacetamidum, 1,2-distearoyl-sn-glycero-3-phosphocholinum, cholesterolum, saccharum, natrii chloridum, kalii chloridum, dinatrii phosphas dihydricus, kalii dihydrogenophosphas, aqua ad iniectabile, pro vitro corresp. natrium 0.16 mg et kalium 0.01 mg pro dosi."
+      composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
+  end
+
+  strings = [ "alcanoas", "glyceroli mono/di/triadipas/alcanoas/isostearas",
+              "alcanoas(C8,C10)", "glyceroli mono/di/triadipas/alcanoas(C8,C10)/isostearas",
+              "hamamelidis aqua (Hamamelis virginiana L, folium et cortex aut ramunculus) 62.5 mg ratio: 1:1.12-2.08 Destillationsmittel: Ethanolum 7.5 % m/m, vaselinum album, adeps lanae 165 mg, glyceroli mono/di/triadipas/alcanoas(C8,C10)/isostearas, alcohol cetylicus et stearylicus 20 mg, paraffinum microcristallinum, acidum citricum, glyceroli mono-oleas, glyceroli monostearas 40-55, E 304, E 307, lecithinum, propylenglycolum 50 mg, aqua purificata, dinatrii edetas, paraffinum liquidum, ad unguentum pro 1 g.",
+  ].each do |string|
+    it "should handle isknr 08653 #{string}" do
+        composition = ParseComposition.from_string(string)
+        expect(composition.source).to eq string
+        expect(composition.substances.size).to be >= 1
+      end
+    end
+
+  it "should handle isknr 68235" do
+      string = "Suspension: Ad26.COV2-S 8,92 log10 infekt. Einheiten, hydroxypropylbetadexum, acidum citricum monohydricum, 1-(4-tolyl)-ethanolum, acidum hydrochloridum, polysorbatum 80, natrii chloridum, natrii hydroxidum, trinatrii citras dihydricus, aqua ad iniectabile, pro dosi."
+            composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
+  end
+
   context "should handle 41174" do
     string = "triamcinoloni acetonidum 10 mg, carmellosum natricum, natrii chloridum, polysorbatum 80, conserv.: alcohol benzylicus 9.9 mg, aqua ad iniectabile q.s. ad suspensionem pro 1 ml."
     composition = ParseComposition.from_string(string)
