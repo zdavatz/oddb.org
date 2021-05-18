@@ -11,17 +11,20 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ## Requirements
 * see Guide.txt
 
-## Usefuel commands
+## Useful commands
 ### Reparse compositions of 5 digit Swissmedic Numbers ([issue #139](https://github.com/zdavatz/oddb.org/issues/139))
-`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_composition 67685 60134`
+`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_compositions 67685 60134`
 ### Reparse all compositions
-`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_composition`
+`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_compositions`
+### Check all packages
+`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only check`
 
 ## Tests
 
 * to run the Tests you need to do
   * bundle install
   * rake test
+  * bundle exec rake spec/parslet_spec.rb # for parsing the compositions
   * look at the index.html in the coverage directory
   
 * There are some Selenium/Watir based GUI integration tests. For details on how to use them have

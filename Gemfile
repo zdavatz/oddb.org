@@ -56,6 +56,7 @@ gem 'ydocx'
 gem 'yus'
 
 group :development, :test do
+  gem "standard"
   gem "rake"
   gem 'flexmock'
   gem 'simplecov'

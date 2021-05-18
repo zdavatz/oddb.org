@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 # This file is responsible for merging the actual content of the Packungen.xlsx from SwissMedic into the ODDB database.
 # Its features include
 #   * update/check can be limited to some IKSRN by passing opts[:iksnrs] (only used by jobs/import_swissmedic_only)
@@ -93,6 +92,7 @@ public
     end
 
     def init_stats
+      @current_iksnr = nil
       @recreate_missing = []
       @known_export_registrations = 0
       @known_export_sequences = 0
@@ -143,6 +143,7 @@ public
         |row, index|
         break unless row
         iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
+        @current_iksnr = iksnr.to_i
         next if iksnr.to_i == 0
         science = cell(row, @target_keys.keys.index(:production_science))
         if (science.eql?('Tierarzneimittel'))
@@ -187,6 +188,7 @@ public
           # LogFile.debug "verify_packages check #{iksnr.inspect}. #{@deletes_packages.size} @deletes_packages"
           next if iksnr.eql?('00000')
           next if iksnr.to_s.size != 5
+          @current_iksnr = iksnr.to_i
           unless reg.fachinfo
             if @known_packages.find{|x| x[0].to_i == iksnr.to_i}
               # LogFile.debug "verify_packages: Missing fi for #{iksnr}" # There are about 1200 occurrences of this, eg. Testlösung zur Allergiediagnose Teomed
@@ -215,7 +217,7 @@ public
       @max_mbytes ||= (16 * 1024) # Good default is 16 GB, afterwards the server slows down a lot
       bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
       @mbytes = (bytes / (2**20)).to_i
-      LogFile.debug("Using #{@mbytes} MB of memory. Limit is #{@max_mbytes}. Swissmedic_do_tracing #{$swissmedic_do_tracing.inspect}")
+      LogFile.debug("Using #{@mbytes} MB of memory. Limit is #{@max_mbytes}. Swissmedic_do_tracing #{$swissmedic_do_tracing.inspect} at iksnr #{@current_iksnr}")
     end
     def trace_memory_useage
       max_mbytes = 16 * 1024 # Good default is 16 GB, afterwards the server slows down a lot
@@ -251,6 +253,7 @@ public
         next unless cell(row, 0).to_i > 0
         next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
         iksnr =  cell(row, @target_keys.keys.index(:iksnr)).to_i
+        @current_iksnr = iksnr
         seqnr =  cell(row, @target_keys.keys.index(:seqnr)).to_i
         ikscd =  cell(row, @target_keys.keys.index(:ikscd)).to_i
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
@@ -306,7 +309,7 @@ public
         threads.last.priority = threads.last.priority + 1
       end
       @update_comps = (opts and opts[:update_compositions])
-      cleanup_active_agents_with_nil if @update_comps || opts[:check]
+      cleanup_active_agents_with_nil if opts[:check]
       init_stats
       msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect} "
       msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
@@ -331,6 +334,7 @@ public
           break unless row
           next if (cell(row, @target_keys.keys.index(:production_science)) == 'Tierarzneimittel')
           iksnr =  cell(row, @target_keys.keys.index(:iksnr)).to_i
+          @current_iksnr = iksnr
           seqnr =  cell(row, @target_keys.keys.index(:seqnr)).to_i
           to_be_checked = [iksnr, seqnr]
           next if last_checked == to_be_checked
@@ -639,6 +643,7 @@ public
         next unless row # Happens at the end of test files from test/test_plugin/swissmedic.rb
         next unless row[export_flag_idx] # Happens at the end of test files from test/test_plugin/swissmedic.rb
           iksnr = "%05i" % cell(row, iksnr_idx).to_i
+          @current_iksnr = iksnr.to_i
           seqnr = "%02i" % cell(row, seqnr_idx).to_i
           export = row[export_flag_idx].value
           if export =~ /E/
