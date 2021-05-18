@@ -143,7 +143,7 @@ class CompositionParser < Parslet::Parser
       str("Mia.") |
       str("Mrd.") |
       str("% m/m") |
-      str("% m/m") |
+      str("%m/m") |
       str("%")
   }
   rule(:dose_unit) { units.as(:unit) }
@@ -265,6 +265,7 @@ class CompositionParser < Parslet::Parser
       str("aqua ").maybe >> str("ad iniectabile, ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabilia q.s. ad solutionem pro ") |
+      str("aqua purificata ad suspensionem pro ") |
       str("aqua ").maybe >> str("ad solutionem pro ") |
       str("aqua ").maybe >> str("q.s. ad emulsionem pro ") |
       str("aqua ").maybe >> str("q.s. ad gelatume pro ") |
@@ -276,6 +277,7 @@ class CompositionParser < Parslet::Parser
       str("excipiens ad solutionem pro ") |
       str("pro vase ") |
       str("pro capsula ") |
+      str("ad emulsionem pro") |
       str("q.s. ad pulverem pro ")
   }
   rule(:excipiens_dose) {
@@ -304,7 +306,7 @@ class CompositionParser < Parslet::Parser
       str("q.s. pro praeparatione") |
       str("saccharum ad") |
       str("gelatina, pro capsula ") |
-      str("pro capsula corresp. natrium") |
+      str("pro capsula corresp.") >> comma.maybe >> (str(" natrium") | str(" saccharum")) |
       str("solvens (i.v.): aqua ad iniectabilia")
   }
 
@@ -368,7 +370,7 @@ class CompositionParser < Parslet::Parser
       der |
       str("((4-hydroxybutyl)azanediyl)bis(hexane-6,1-diylis)bis(2-hexyldecanoas)") |
       str("heptadecan-9-ylis 8-((2-hydroxyethyl)(6-oxo-6-(undecyloxy)hexyl)amino)-octanoas") | # Moderna
-      substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz |
+      substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz|
       substance_lead.maybe.as(:more_info) >> space? >> simple_substance >> str("pro dosi").maybe
     ).as(:substance) >>
       (space? >> str(", ").maybe >> ratio.maybe).as(:ratio) >>

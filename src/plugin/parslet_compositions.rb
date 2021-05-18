@@ -380,6 +380,7 @@ class ParseComposition
     " streptococci pyogen. " => " streptococci pyogen ",
     " ut excipiens" => ", excipiens",
     ", aqua ad iniectabile, pro dosi" => "aqua", # for IKSNR 68235
+    " ad suspensionem pro 10 ml corresp. natrium 31.7 mg" => "", # for 39639
     " Corresp. " => " corresp. ",
     ",," => ",",
     "avena elatior,dactylis glomerata" => "avena elatior, dactylis glomerata",
