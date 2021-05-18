@@ -257,16 +257,16 @@ public
         reg = @app.registration("%05i" %iksnr)
         old_date = reg.expiration_date ? reg.expiration_date.strftime(DATE_FORMAT) : nil
         if cell(row, @target_keys.keys.index(:expiry_date)).to_s.match(/unbegrenzt/i)
-          puts "Setting unbegrenzt for #{iksnr} #{seqnr} #{ikscd}"
+          # LogFile.debu "Setting unbegrenzt for #{iksnr} #{seqnr} #{ikscd}"
           new_date = nil # Date.new(2099,12,31).strftime(DATE_FORMAT)
         else
           new_date = Date.parse(cell(row, @target_keys.keys.index(:expiry_date))).strftime(DATE_FORMAT)
         end
-        unless old_date&.eql?(new_date)
+        if new_date && !old_date&.eql?(new_date)
+          LogFile.debug "reg #{iksnr} changed expiration_date #{old_date} -> #{new_date}"
           reg.expiration_date = Date.parse(new_date)
           reg.odba_store
           @updated_expiration_dates[iksnr] = new_date
-          LogFile.debug "reg #{iksnr} changed expiration_date #{old_date} -> #{new_date}"
         end
         seq = reg.sequence("%02i" %seqnr) if reg
         pack = seq.package("%03i" %ikscd) if seq
