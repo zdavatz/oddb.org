@@ -547,7 +547,7 @@ describe ParseComposition do
     toxoidum = info.first.substances.find { |x| x.name.match(/Toxoidum Diphtheriae/i) }
     specify { expect(toxoidum.class).to eq ParseSubstance }
     if toxoidum
-      specify { expect(toxoidum.name).to eq "Toxoidum Diphtheriae" }
+      specify { expect(toxoidum.name).to eq "Dtpa-ipv-komponente (suspension): Toxoidum Diphtheriae" }
       specify { expect(toxoidum.qty.to_f).to eq 30.0 }
       specify { expect(toxoidum.unit).to eq "U.I./0.5 ml" }
     end
@@ -1214,13 +1214,12 @@ describe ParseComposition do
     specify { expect(composition.source).to eq string }
 
     specify { expect(composition.label).to eq "I" }
-    specify { expect(composition.label_description).to eq "DTPa-IPV-Komponente (Suspension)" }
 
     specify { expect(composition.galenic_form).to eq nil }
     specify { expect(composition.route_of_administration).to eq nil }
 
     toxoidum = composition.substances.find { |x| /toxoidum diphther/i.match(x.name) }
-    specify { expect(toxoidum.name).to eq "Toxoidum Diphtheriae" }
+    specify { expect(toxoidum.name).to eq "Dtpa-ipv-komponente (suspension): Toxoidum Diphtheriae" }
     specify { expect(toxoidum.qty).to eq 30 }
     specify { expect(toxoidum.unit).to eq "U.I." }
 
@@ -1414,6 +1413,20 @@ describe ParseComposition do
       composition = ParseComposition.from_string(string)
       expect(composition.source).to eq string
       expect(composition.substances.size).to be >= 1
+  end
+
+  it "should handle isknr 65755" do
+      string = "Praeparatio cryodesiccata: calloselasma rhodostoma venensis antitoxinum equis F(ab')2 Neutralisierungskapazität 16 mg Schlangengift, glycinum, natrii chloridum, conserv.: phenolum ≤ 0.25 % m/m, pro vitro."
+      composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
+  end
+
+  it "should handle isknr 68005" do
+      string = "etonogestrelum 11.7 mg cum liberatione 0.12 mg/24h, ethinylestradiolum 2.7 mg cum liberatione 0.015 mg/24h, ethyleni et vinylis acetatis polymerisatum, magnesii stearas pro praeparatione."
+      composition = ParseComposition.from_string(string)
+      expect(composition.source).to eq string
+      expect(composition.substances.size).to be > 1
   end
 
   context "should handle 41174" do

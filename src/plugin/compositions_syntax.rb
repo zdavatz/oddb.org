@@ -107,6 +107,7 @@ class CompositionParser < Parslet::Parser
       str("ng") |
       str("guttae") |
       str("mg/g") |
+      str("mg/24h") |
       str("mg/ml") |
       str("MBq/ml") |
       str("MBq") |
@@ -150,7 +151,7 @@ class CompositionParser < Parslet::Parser
   rule(:qty_range) { (number >> space? >> (str("+/-") | str(" - ") | str(" -") | str("-") | str("±")) >> space? >> number).as(:qty_range) }
   rule(:qty_unit) { dose_qty >> (space >> dose_unit).maybe }
   rule(:dose_qty) { number.as(:qty) }
-  rule(:min_max) { (str("min.") | str("max.") | str("ca.") | str("<")) >> space? }
+  rule(:min_max) { (str("min.") | str("max.") | str("ca.") | str("<") | str("≤")) >> space? }
   # 75 U.I. hFSH et 75 U.I. hLH
   rule(:dose_fsh) { qty_unit >> space >> str("et") >> space >> qty_unit.as(:dose_right) }
   rule(:dose_per) { (digits >> str("/") >> digits).as(:qty) }
@@ -231,7 +232,7 @@ class CompositionParser < Parslet::Parser
 
   rule(:part_with_parenthesis) {
     lparen >> ((lparen | rparen).absent? >> any).repeat(1) >>
-      (part_with_parenthesis | rparen >> str("-like:") | rparen) >> space?
+      (part_with_parenthesis | rparen >> str("-like:") | (rparen >> str(":").maybe)) >> space?
   }
   rule(:name_with_parenthesis) {
     forbidden_in_substance_name.absent? >>
