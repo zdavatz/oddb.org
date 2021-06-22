@@ -86,12 +86,6 @@ class FiChapterChooser < HtmlGrid::Composite
       @css_map.store(           [next_offset, 0], 'chapter-tab')
       next_offset += 1
     end
-    # text readability heatmap link
-    unless @session.user_input(:chapter)
-      @components.store([next_offset, 0], :heatmap)
-      @css_map.store([next_offset, 0], 'chapter-tab')
-      next_offset += 1
-    end
     @components.store(        [next_offset, 0], :print)
     @component_css_map.store( [next_offset, 0], 'chapter-tab bold')
     @css_map.store(           [next_offset, 0], 'chapter-tab bold')
@@ -139,48 +133,6 @@ class FiChapterChooser < HtmlGrid::Composite
     if(atc = model.atc_class)
       View::Drugs::FiChapterChooserLink.new(:ddd, model, session, self)
     end
-  end
-  def heatmap(model, session)
-    # text readability heatmap (scrolliris)
-    link = HtmlGrid::Link.new(:heatmap, model, session, self)
-    link.set_attribute('title', @lookandfeel.lookup(:heatmap))
-    link.href = @lookandfeel._event_url(:show,  [:fachinfo, model.registrations.first.iksnr])
-    link.onclick = <<-EOS
-(function(e) {
-  e.preventDefault();
-  var widget = document.getElementById('scrolliris_container');
-  if (widget) {
-    widget.outerHTML = "";
-    delete widget;
-  } else {
-    (function(d, w) {
-      var config = {
-          projectId: '#{ODDB.config.scrolliris_project_id}'
-        , apiKey: '#{ODDB.config.scrolliris_fi_read_key}'
-        }
-      , settings = {
-          endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
-        }
-      , options = {
-          selectors: {
-            article: 'table td.article'
-          , heading: 'div > h3'
-          , paragraph: 'div > p'
-          , sentence: 'p > span'
-          , material: 'ul,ol,table,pre,code'
-          }
-        , widget: {
-            extension: 'overlay'
-          , initialState: 'active'
-          }
-        }
-      ;
-      var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/widget/v1.0/projects/'+c.projectId+'/heatmap.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
-    })(document, window);
-  }
-})(event);
-    EOS
-    link
   end
   def display_names(document)
     names = (document ? document.chapter_names : [])
@@ -333,32 +285,6 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
       end
     end
     super
-    unless @session.user_input(:chapter)
-      # text readability measure (scrolliris)
-      @additional_javascripts ||= []
-      @additional_javascripts << <<-EOS
-(function(d, w) {
-  var config = {
-      projectId: '#{ODDB.config.scrolliris_project_id}'
-    , apiKey: '#{ODDB.config.scrolliris_fi_write_key}'
-    }
-  , settings = {
-      endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/events/read'
-    }
-  , options = {
-      selectors: {
-        article: 'table td.article'
-      , heading: 'div > h3'
-      , paragraph: 'div > p'
-      , sentence: 'p > span'
-      , material: 'ul,ol,table,pre,code'
-      }
-    }
-  ;
-  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/script/v1.0/projects/'+c.projectId+'/measure.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(c,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
-})(document, window);
-EOS
-    end
   end
 	def chapter_chooser(model, session)
 		if(klass = self.class.const_get(:CHOOSER_CLASS))

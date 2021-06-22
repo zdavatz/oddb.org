@@ -97,12 +97,6 @@ class PiChapterChooser < HtmlGrid::Composite
         @css_map.store(   [next_offset, 0], 'chapter-tab')
         next_offset += 1
       end
-      # text readability heatmap link
-      unless @session.user_input(:chapter)
-        components.store([next_offset, 0], :heatmap)
-        @css_map.store([next_offset, 0], 'chapter-tab')
-        next_offset += 1
-      end
       if(@session.state.allowed?)
         components.store([next_offset,0], :print_edit)
       else
@@ -156,52 +150,6 @@ class PiChapterChooser < HtmlGrid::Composite
       link.href = @lookandfeel._event_url([:show, :patinfo, args[1], args[3], args[5], :diff])
       return link
     end
-  end
-  def heatmap(model, session)
-    # text readability heatmap (scrolliris)
-    link = HtmlGrid::Link.new(:heatmap, model, session, self)
-    link.set_attribute('title', @lookandfeel.lookup(:heatmap))
-    seq = model.sequences.first
-    return nil unless seq
-    return nil unless seq.packages.values.size > 0
-    link.href = @lookandfeel._event_url(:show, [
-      :patinfo, seq.iksnr, seq.seqnr, seq.packages.values.first.ikscd])
-    link.onclick = <<-EOS
-(function(e) {
-  e.preventDefault();
-  var widget = document.getElementById('scrolliris_container');
-  if (widget) {
-    widget.outerHTML = "";
-    delete widget;
-  } else {
-    (function(d, w) {
-      var config = {
-          projectId: '#{ODDB.config.scrolliris_project_id}'
-        , apiKey: '#{ODDB.config.scrolliris_fi_read_key}'
-        }
-      , settings = {
-          endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
-        }
-      , options = {
-          selectors: {
-            article: 'table td.article'
-          , heading: 'div > h3'
-          , paragraph: 'div > p'
-          , sentence: 'p > span'
-          , material: 'ul,ol,table,pre,code'
-          }
-        , widget: {
-            extension: 'overlay'
-          , initialState: 'active'
-          }
-        }
-      ;
-      var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/widget/v1.0/projects/'+c.projectId+'/heatmap.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
-    })(document, window);
-  }
-})(event);
-    EOS
-    link
   end
   def display_names(document)
     unless document&.empty?
@@ -284,35 +232,6 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
     [1,0] => 'th right',
     [0,2] => 'list article',
   }
-  def init
-    super
-    unless @session.user_input(:chapter)
-      # text readability measure (scrolliris)
-      @additional_javascripts ||= []
-      @additional_javascripts << <<-EOS
-(function(d, w) {
-  var config = {
-      projectId: '#{ODDB.config.scrolliris_project_id}'
-    , apiKey: '#{ODDB.config.scrolliris_pi_write_key}'
-    }
-  , settings = {
-      endpointURL: 'https://api.scrolliris.com/v1.0/projects/'+config.projectId+'/events/read'
-    }
-  , options = {
-      selectors: {
-        article: 'table td.article'
-      , heading: 'div > h3'
-      , paragraph: 'div > p'
-      , sentence: 'p > span'
-      , material: 'ul,ol,table,pre,code'
-      }
-    }
-  ;
-  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='https://lib.scrolliris.com/script/v1.0/projects/'+c.projectId+'/measure.js?api_key='+c.apiKey;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(c,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
-})(document, window);
-EOS
-    end
-  end
   def chapter_chooser(model, session=@session)
     if(klass = self.class.const_get(:CHOOSER_CLASS))
       klass.new(model, session, self)
