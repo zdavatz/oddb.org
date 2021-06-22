@@ -55,11 +55,6 @@ module ODDB
     'testenvironment2'    => '',
     'flickr_api_key'       => '',
     'flickr_shared_secret' => '',
-    'scrolliris_project_id'   => '',
-    'scrolliris_fi_write_key' => '',
-    'scrolliris_fi_read_key'  => '',
-    'scrolliris_pi_write_key' => '',
-    'scrolliris_pi_read_key'  => '',
     'app_user_agent'       => '', # as Regexp
     'paypal_server'        => 'www.paypal.com',     # or www.sandbox.paypal.com
     'paypal_receiver'      => 'zdavatz@ywesee.com', # or test_paypal@ywesee.com
