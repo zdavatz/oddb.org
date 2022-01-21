@@ -1,6 +1,11 @@
 source "https://rubygems.org"
 gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
 
+# Worksround for ruby 3.1,https://stackoverflow.com/questions/70500220/rails-7-ruby-3-1-loaderror-cannot-load-such-file-net-smtp
+# https://github.com/mikel/mail/pull/1439
+gem 'net-smtp', require: false
+gem 'net-imap', require: false
+gem 'net-pop', require: false
 
 gem 'cmath'
 # gem 'mathn'
@@ -83,5 +88,6 @@ group :test do
 end
 
 group :debugger do
-  gem 'pry-byebug'
+  gem 'rbs'
+  gem 'typeprof'
 end
