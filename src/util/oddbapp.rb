@@ -1352,7 +1352,7 @@ class OddbPrevalence
 				File.dirname(__FILE__))
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
-			YAML.load_documents(file) { |index_definition|
+			YAML.load_stream(file) { |index_definition|
             $stdout.puts "#{caller[0]}: rebuild_indices #{index_definition.index_name}" if verbose
 
         doit = if(name and name.length > 0)

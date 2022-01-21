@@ -85,7 +85,7 @@ module ODDB
       debug_msg "update_atc_codes: Starting"
       [ @packungen_xlsx, @refdata_xml].each {
         |file|
-        unless File.exists?(file)
+        unless File.exist?(file)
           msg  = "Could not find #{File.expand_path(file)}"
           debug_msg(msg)
           $stdout.puts msg

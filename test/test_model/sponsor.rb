@@ -37,8 +37,8 @@ module ODDB
         File.dirname(__FILE__))
     end
     def teardown
-      File.delete(@file) if File.exists?(@file)
-      File.delete(@file2) if File.exists?(@file2)
+      File.delete(@file) if File.exist?(@file)
+      File.delete(@file2) if File.exist?(@file2)
     end
     def test_adjust_types
       values = {

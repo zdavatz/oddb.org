@@ -43,7 +43,7 @@ class OddbTestRunner
       if USE_SIMPLECOV
         cmd = "#{rubyExe} -e\"require 'simplecov'; SimpleCov.maximum_coverage_drop 99; SimpleCov.command_name '#{group_name}'; SimpleCov.start; require '#{path}'\""
       else
-        cmd = "#{rubyExe} -e\"require '#{path}'\""
+        cmd = "#{rubyExe} #{path}"
       end
       if DryRun
         puts "would exec #{cmd}"

@@ -356,7 +356,14 @@ expected = "-line 2
     end
     def test_fachinfo_text_with_table
       file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'Cansartan-61215.yaml'))
-      fi = YAML.load_file(file)
+      fi = YAML.safe_load(File.read(file), permitted_classes: [ODDB::FachinfoDocument2001,
+                                                               ODDB::Text::Chapter,
+                                                               ODDB::Text::Format,
+                                                               Symbol,
+                                                               ODDB::Text::Table,
+                                                               ODDB::Text::MultiCell,
+                                                               ODDB::Text::Paragraph,
+                                                               ODDB::Text::Section], aliases: true)
       fi_text = fi.text
       text_last_table_row = fi.effects.paragraphs[17].rows[5].to_s
       text_chapter_17 = fi.effects.paragraphs[17].to_s

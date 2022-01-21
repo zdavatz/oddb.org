@@ -15,23 +15,19 @@ on:
 
 jobs:
   test:
-    env:
-      TEST_ENV: ubuntu-ci
-    runs-on: ubuntu
-# Using a matrix fails, because /setup-ruby always invokes bundle install without any additional args
-# Fixed by adding not defining the debugger group in the Gemfile
+  # see https://github.com/ruby/setup-ruby
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu]
-        ruby: [3.0, 3.1]
+        os: [ubuntu-latest]
+        ruby: ['3.0', 3.1]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests via test/suite.rb
       run: bundle exec ruby test/suite.rb
 

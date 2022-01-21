@@ -17,7 +17,7 @@ module ODDB
       @latest_xml  = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xml', 'XMLRefdataPharma-latest.xml')
       [@latest_xlsx, @latest_xml].each {
         |file|
-          FileUtils.rm(file, :verbose => false) if File.exists?(file)
+          FileUtils.rm(file, :verbose => false) if File.exist?(file)
       }
       @app    = flexmock('setup_app', :sequences => [],:registrations => {},:atcless_sequences => [], :registration => nil )
       @@today = Date.new(2015,1,15)

@@ -326,7 +326,7 @@ class TestRootFachinfoComposite <Minitest::Test
     @composite = ODDB::View::Drugs::RootFachinfoComposite.new(@model, @session)
   end
   def test_init
-    assert_nil(@composite.init)
+    assert_empty(@composite.init)
   end
   def test_chapter_view
     flexmock(@company, :invoiceable? => true)

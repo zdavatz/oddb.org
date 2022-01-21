@@ -25,8 +25,6 @@ require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'util/rack_interface'
 
-begin  require 'pry' rescue LoadError end # ignore error when pry cannot be loaded (for Jenkins-CI)
-
 class TestOddbApp <Minitest::Test
   @@port_id ||= 19000
 	def setup
