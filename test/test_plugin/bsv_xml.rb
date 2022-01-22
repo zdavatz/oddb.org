@@ -1701,7 +1701,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       assert File.exist?(save_file), "download to #{save_file} failed."
       assert File.exist?(latest_file), "download to #{latest_file} failed."
     ensure
-      FileUtils.rm_r save_dir if File.exists? save_dir
+      FileUtils.rm_r save_dir if File.exist? save_dir
     end
     def test_update_it_codes
       updates = []

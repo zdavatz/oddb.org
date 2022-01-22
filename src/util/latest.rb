@@ -29,11 +29,11 @@ module ODDB
     def self.get_latest_file(latest, download_url, must_unzip = false)
       file_today = get_daily_name(latest)
       file_yesterday = latest.sub('latest', (@@today.to_date-1).strftime("%Y.%m.%d"))
-      if File.exist?(file_today) and File.exists?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
+      if File.exist?(file_today) and File.exist?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
         FileUtils.rm_f(file_yesterday, verbose: false)
       end
 
-      if File.exist?(file_today) and File.exists?(latest) and File.size(latest) == File.size(file_today)
+      if File.exist?(file_today) and File.exist?(latest) and File.size(latest) == File.size(file_today)
         Latest.log "found #{file_today} and same size as latest #{File.size(file_today)} bytes."
         return false
       else

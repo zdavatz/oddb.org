@@ -84,7 +84,7 @@ class TestOuwerkerkPlugin <Minitest::Test
 		@indication.update_values({:de => 'Placebo'})
 	end
 	def teardown
-		if(File.exists? @plugin.file_path)
+		if(File.exist? @plugin.file_path)
       FileUtils.rm_f(@plugin.file_path)
 		end
 		ODBA.storage = nil
@@ -334,7 +334,7 @@ class TestOuwerkerkPlugin <Minitest::Test
 			:bsv_sl => bsvlog,
 		}
 		@plugin.export_xls
-		assert(File.exists?(File.dirname(@plugin.file_path)))
-		assert(File.exists?(@plugin.file_path))
+		assert(File.exist?(File.dirname(@plugin.file_path)))
+		assert(File.exist?(@plugin.file_path))
 	end
 end

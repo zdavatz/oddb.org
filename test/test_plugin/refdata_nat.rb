@@ -236,15 +236,15 @@ class TestRefdataNatPlugin <Minitest::Test
   def test_get_latest_file
     latest = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_nat_latest.xml"))
     current  = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_nat_#{Time.now.strftime('%Y.%m.%d')}.xml"))
-    FileUtils.rm_f(current) if File.exists?(current)
-    FileUtils.rm_f(latest) if File.exists?(latest)
+    FileUtils.rm_f(current) if File.exist?(current)
+    FileUtils.rm_f(latest) if File.exist?(latest)
     @plugin = ODDB::Doctors::RefdataNatPlugin.new(@app)
     res = @plugin.get_latest_file
     assert(res[0], 'needs_update must be true')
     assert(res[1].match(/latest/), 'filename must match latest')
     assert_equal(latest, res[1])
-    assert(File.exists?(latest), 'doctors_latest.xml must exist')
-    assert(File.exists?(current), 'doctors_with_timestamp.xml must exist')
+    assert(File.exist?(latest), 'doctors_latest.xml must exist')
+    assert(File.exist?(current), 'doctors_with_timestamp.xml must exist')
     assert_equal(File.size(Test_NAT_XML), File.size(res[1]))
   end
 end

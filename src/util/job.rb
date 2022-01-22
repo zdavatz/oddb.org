@@ -63,7 +63,7 @@ module Job
   def Job.running_job
     unless @running_job
       @running_job = {}
-      if File.exists?(PID_FILE)
+      if File.exist?(PID_FILE)
         values = (File.read(PID_FILE) || '').split(',')
       else
         values =[]

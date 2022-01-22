@@ -134,7 +134,7 @@ class DownloadItemComposite < View::User::DownloadExportInnerComposite
       desc_method = ('datadesc_' + file.gsub(/\./, '_').downcase).intern
       if self.respond_to?(desc_method)
         self.send(desc_method, model, @session)
-      elsif File.exists?(
+      elsif File.exist?(
         @lookandfeel.resource_global(:downloads, File.join('dadadesc', "#{file}.txt"))
       )
         datadesc(file)

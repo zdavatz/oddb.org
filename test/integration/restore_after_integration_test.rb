@@ -5,8 +5,8 @@ ProductionDirs.each {
     file = File.join(TopDir, dir)
     backup = backupName(file)
     puts "backup #{backup} ->  #{file}"
-    next unless File.exists?(backup)
-    if  File.exists?(file) and FileUtils.compare_file(file, backupName(file))
+    next unless File.exist?(backup)
+    if  File.exist?(file) and FileUtils.compare_file(file, backupName(file))
       puts "nothing to do for #{file}"
     else
       FileUtils.mv(backup, file, :verbose => true)

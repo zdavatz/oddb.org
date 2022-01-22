@@ -22,7 +22,7 @@ module ODDB
       ].join("\n")
     end
     def update_from_xls(path, lang='de')
-      if File.exists?(path)
+      if File.exist?(path)
         @update_bm_flag = 0
         @update_ikscat  = 0
         workbook = Spreadsheet.open(path)

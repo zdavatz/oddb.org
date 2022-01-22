@@ -21,7 +21,7 @@ module ODDB
   class TestLatest <Minitest::Test
     def setup
       @archive = File.expand_path('../var', File.dirname(__FILE__))
-      FileUtils.rm_rf(@archive) if File.exists?(@archive)
+      FileUtils.rm_rf(@archive) if File.exist?(@archive)
       FileUtils.makedirs(@archive)
       @latest = File.join(@archive, 'tst-latest.txt')
       @file_today = File.join(@archive, 'tst-2015.03.13.txt')
@@ -33,22 +33,22 @@ module ODDB
     end
 
     def test_first_download
-      assert_equal(false, File.exists?(@file_today))
+      assert_equal(false, File.exist?(@file_today))
       res = Latest.get_latest_file(@latest, @url)
       puts "test_first_download #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
-      assert_equal(true, File.exists?(@file_today))
+      assert_equal(true, File.exist?(@file_today))
       assert_equal(@latest, res)
     end
 
     def test_today_different_content_today_latest
       puts 'test_today_different_content_today_latest'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(ChangedContent) }
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@latest))
       res = Latest.get_latest_file(@latest, @url)
       puts "test_today_different_content_today_latest #{Dir.glob(File.join(@archive, '*'))}" # if $VERBOSE
       assert_equal(@latest, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       skip('size does not match')
       assert_equal(DefaultContent.size, File.size(@latest))
     end
@@ -56,12 +56,12 @@ module ODDB
     def test_today_different_content_new_content
       puts 'test_today_different_content_new_content'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(ChangedContent) }
-      assert_equal(false, File.exists?(@file_today))
+      assert_equal(false, File.exist?(@file_today))
       res = Latest.get_latest_file(@latest, @url)
       system("ls -l #{@archive}/*") if $VERBOSE
       assert_equal(@latest, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       skip('size does not match')
       assert_equal(DefaultContent.size, File.size(@latest))
     end
@@ -72,8 +72,8 @@ module ODDB
       File.open(@file_today, 'w+') {|f| f.write(DefaultContent) }
       res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 
@@ -84,10 +84,10 @@ module ODDB
       File.open(@file_yesterday, 'w+') {|f| f.write(DefaultContent) }
       res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       assert_equal(DefaultContent.size, File.size(@latest))
-      assert_equal(false, File.exists?(@file_yesterday))
+      assert_equal(false, File.exist?(@file_yesterday))
     end
 
     def test_today_different_yesterday
@@ -97,10 +97,10 @@ module ODDB
       File.open(@file_yesterday, 'w+') {|f| f.write('different') }
       res = Latest.get_latest_file(@latest, @url)
       assert_equal(false, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       assert_equal(DefaultContent.size, File.size(@latest))
-      assert_equal(true, File.exists?(@file_yesterday))
+      assert_equal(true, File.exist?(@file_yesterday))
     end
 
     def test_no_file_today
@@ -109,8 +109,8 @@ module ODDB
       res = Latest.get_latest_file(@latest, @url)
       skip('always fails if no latest file preseent')
       assert_equal(false, res)
-      assert_equal(true, File.exists?(@file_today))
-      assert_equal(true, File.exists?(@latest))
+      assert_equal(true, File.exist?(@file_today))
+      assert_equal(true, File.exist?(@latest))
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 

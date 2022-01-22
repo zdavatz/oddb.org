@@ -32,7 +32,7 @@ module ODDB
       content
     end
     def update_from_csv(path)
-      if File.exists?(path) and File.extname(path) == '.csv'
+      if File.exist?(path) and File.extname(path) == '.csv'
         @updated_divisibilities = []
         @updated_sequences      = []
         CSV.foreach(path, encoding: 'UTF-8', col_sep: ';') do |row|

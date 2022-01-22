@@ -96,7 +96,7 @@ module ODDB
         File.open(tmp, 'w+') { |fh|
           fh.puts view.to_html(@cgi)
         }
-        FileUtils.mv(tmp, path) if File.exists?(tmp)
+        FileUtils.mv(tmp, path) if File.exist?(tmp)
       end
       LogFile.append('oddb/debug', " update_rss_feeds #{@name}: month #{@month} today #{@@today} with #{model.size} entries", Time.now.utc)
       @app.rss_updates[name] = [@month || @@today, model.size]

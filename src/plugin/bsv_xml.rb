@@ -640,13 +640,13 @@ module ODDB
 
       # FileUtils.compare_file cannot compare tempfile
       target_file.save_as save_file
-      LogFile.append('oddb/debug', " bsv_xml: File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
-      if(File.exists?(latest_file))
+      LogFile.append('oddb/debug', " bsv_xml: File.exist?(#{latest_file}) = " + File.exist?(latest_file).inspect.to_s, Time.now)
+      if(File.exist?(latest_file))
         LogFile.append('oddb/debug', " bsv_xml: FileUtils.compare_file(#{save_file} #{File.size(save_file)} bytes with #{latest_file} #{File.size(latest_file)} bytes) = " + FileUtils.compare_file(save_file, latest_file).inspect.to_s, Time.now)
       end
 
       # check and compare the latest file and save
-      if(File.exists?(latest_file) && FileUtils.compare_file(save_file, latest_file))
+      if(File.exist?(latest_file) && FileUtils.compare_file(save_file, latest_file))
         FileUtils.rm_f(save_file, verbose: true)
         return nil
       else
@@ -660,7 +660,7 @@ module ODDB
         sleep 10 - retries
         retry
       else
-        if File.exists? save_file
+        if File.exist? save_file
           File.unlink save_file
         end
         raise

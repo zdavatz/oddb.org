@@ -155,7 +155,7 @@ module ODDB
         path = File.join(RSS_PATH, stub.language, file)
         tmp = File.join(RSS_PATH, stub.language, '.' << file)
         FileUtils.mkdir_p(File.dirname(path))
-        if File.exists?(orig)
+        if File.exist?(orig)
           rss = File.read(orig, :encoding => 'utf-8')
           File.open(tmp, 'w:utf-8') do |fh|
             fh.puts rss.gsub(/\/gcc\//, "/#{flavor}/")

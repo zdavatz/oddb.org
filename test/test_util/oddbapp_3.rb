@@ -476,7 +476,7 @@ class TestOddbApp3 <Minitest::Test
     ODDB.config.log_dir = @@vardir
     @fileName = File.join(@@datadir, 'epha_interactions_de_utf8-example.csv')
     @latest = @fileName.sub('.csv', '-latest.csv')
-    FileUtils.rm(@latest) if File.exists?(@latest)
+    FileUtils.rm(@latest) if File.exist?(@latest)
     @mock_latest = flexmock('latest', ODDB::Latest)
     @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
       File.open(File.join(@@datadir, File.basename(@fileName))).read)

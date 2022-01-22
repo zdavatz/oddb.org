@@ -26,9 +26,9 @@ class DownloadItem < State::User::RegisterDownload
     # All files have .zip compressed version without epub and prc.
     # Some items have only .zip and .tar.gz only.
     if file = input[:buy]
-      filename = File.exists?(File.join(dir, File.basename(file, '.zip') + '.zip')) ? file : nil
+      filename = File.exist?(File.join(dir, File.basename(file, '.zip') + '.zip')) ? file : nil
       unless filename # epub, prc format
-        filename = File.exists?(File.join(dir, file)) ? file : nil
+        filename = File.exist?(File.join(dir, file)) ? file : nil
       end
     end
     if filename

@@ -80,7 +80,7 @@ module ODDB
 private 
     def get_state
       @state_file = File.join(ODDB::LogFile::LOG_ROOT, @loopname + '.state')
-      if File.exists?(@state_file)
+      if File.exist?(@state_file)
         content = IO.read(@state_file)
         eval("@state_id = #{content}")
       else

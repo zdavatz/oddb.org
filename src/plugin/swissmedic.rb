@@ -178,7 +178,7 @@ public
     def verify_packages(file2open)
       @deletes_packages = []
       @missing_fis = []
-      if file2open and File.exists?(file2open)
+      if file2open and File.exist?(file2open)
         store_found_packages(file2open)
         @known_packages.sort!.uniq!
         LogFile.debug "verify_packages from #{file2open} #{@app.registrations.size} registrations and #{@known_packages.size}" +
@@ -312,14 +312,14 @@ public
       cleanup_active_agents_with_nil if opts[:check]
       init_stats
       msg = "opts #{opts} @update_comps #{@update_comps} update file2open #{file2open.inspect} "
-      msg += "#{File.size(file2open)} bytes. " if file2open && File.exists?(file2open)
-      msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exists?(@latest_packungen)
+      msg += "#{File.size(file2open)} bytes. " if file2open && File.exist?(file2open)
+      msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exist?(@latest_packungen)
       LogFile.debug(msg)
       row_nr = 4
       if @update_comps
-        file2open && File.exists?(file2open)
-        file2use = file2open if file2open && File.exists?(file2open)
-        file2use ||= @latest_packungen if @latest_packungen && File.exists?(@latest_packungen)
+        file2open && File.exist?(file2open)
+        file2use = file2open if file2open && File.exist?(file2open)
+        file2use ||= @latest_packungen if @latest_packungen && File.exist?(@latest_packungen)
         @iksnrs_to_import =[]
         opts[:fix_galenic_form] = true
         last_checked = nil
@@ -353,14 +353,14 @@ public
       elsif(file2open)
         LogFile.debug(msg)
         msg =  "#{__FILE__}: #{__LINE__} Comparing #{file2open} "
-        msg +=  File.exists?(file2open) ? "#{File.size(file2open)} bytes " : " absent" if file2open
+        msg +=  File.exist?(file2open) ? "#{File.size(file2open)} bytes " : " absent" if file2open
         msg += " with #{@latest_packungen} "
-        msg +=  File.exists?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
+        msg +=  File.exist?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
         LogFile.debug(msg)
         result = diff file2open, @latest_packungen, [:sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
-        if @latest_packungen and File.exists?(@latest_packungen)
+        if @latest_packungen and File.exist?(@latest_packungen)
           LogFile.debug " Compared #{file2open} #{File.size(file2open)} bytes with #{@latest_packungen} #{File.size(@latest_packungen)} bytes"
         else
           LogFile.debug " No latest_packungen #{@latest_packungen} exists"
@@ -382,7 +382,7 @@ public
         check_all_packages(@latest_packungen) if opts[:check]
         end_time = Time.now - start_time
         @update_time = (end_time / 60.0).to_i
-        if File.exists?(file2open) and File.exists?(@latest_packungen) and FileUtils.compare_file(file2open, @latest_packungen)
+        if File.exist?(file2open) and File.exist?(@latest_packungen) and FileUtils.compare_file(file2open, @latest_packungen)
           LogFile.debug " rm_f #{file2open} after #{@update_time} minutes"
           FileUtils.rm_f(file2open, verbose: true)
         else
@@ -593,7 +593,7 @@ public
       LogFile.debug "index_url #{index_url} cmd #{cmd}"
       eval cmd
       latest_name = File.join @archive, "#{keyword}-latest.xlsx"
-      if File.exist?(target) and File.exists?(latest_name) and File.size(target) == File.size(latest_name)
+      if File.exist?(target) and File.exist?(latest_name) and File.size(target) == File.size(latest_name)
         LogFile.debug " skip writing #{target} as it already exists and is #{File.size(target)} bytes."
         return target
       end
@@ -609,7 +609,7 @@ public
       if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.write(download) ; fh.close}
         msg = "updated download.size is #{download.size} -> #{target} #{File.size(target)}"
-        msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exists?(latest_name)
+        msg += "#{target} now #{File.size(target)} bytes != #{latest_name} #{File.size(latest_name)}" if File.exist?(latest_name)
         LogFile.debug(msg)
         target
       else

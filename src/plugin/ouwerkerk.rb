@@ -187,7 +187,7 @@ module ODDB
         end
       end
 			dir = File.dirname(@file_path)
-			Dir.mkdir(dir) unless File.exists?(dir)
+			Dir.mkdir(dir) unless File.exist?(dir)
 			workbook = Spreadsheet::Excel.new(@file_path)
 			#fmt_default = Format.new(:bg_color => 0x7FFF)
 			#workbook.instance_variable_set('@format', fmt_default)

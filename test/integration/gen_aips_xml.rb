@@ -3,9 +3,9 @@ require 'nokogiri'
 require File.expand_path(File.join(File.dirname(__FILE__), 'common.rb'))
 
 aipsDownload = File.join(TopDir, 'data', 'xml', 'AipsDownload_latest.xml')
-unless File.exists?(aipsDownload)
+unless File.exist?(aipsDownload)
   puts "Could not find #{aipsDownload}"
-  exit 2 
+  exit 2
 end
 puts "Using #{aipsDownload} #{(File.size(aipsDownload)/1024).round} KBytes"
 
@@ -19,12 +19,12 @@ puts "Using #{aipsDownload} #{(File.size(aipsDownload)/1024).round} KBytes"
                     |child|
                     if  /authNrs/i.match( child.name.to_s)
                                   iksnr = child.text.to_s
-                                  IKSNRS_TO_EXTRACT.each{ |nr| 
+                                  IKSNRS_TO_EXTRACT.each{ |nr|
                                     to_delete = false if child.text.to_s.index(nr)
                                                         }
                       puts "Preserving #{iksnr} #{x.attributes['type']} #{x.attributes['lang']}" unless to_delete
                     end
-                }                                        
+                }
                 x.remove if to_delete
 }
 ausgabe = File.join(TopDir, 'test', 'integration', 'data', 'AipsDownload_latest.xml')

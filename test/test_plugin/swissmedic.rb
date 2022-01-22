@@ -73,8 +73,8 @@ module ODDB
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
       @latest   = File.join @archive, 'xls', 'Packungen-latest.xlsx'
-      FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
-      FileUtils.rm(@latest) if File.exists?(@latest)
+      FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
+      FileUtils.rm(@latest) if File.exist?(@latest)
 
       @test_packages = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
       latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))

@@ -3,6 +3,7 @@
 .ruby-version
 .lock*
 data/csv/
+test/data/csv/
 data/downloads/
 data/html/
 data/quanty/Makefile

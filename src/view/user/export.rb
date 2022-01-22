@@ -31,7 +31,7 @@ module Export
 	end
 	def display?(name)
 		res = file_paths(name).any? { |path|
-			File.exists?(path) && File.size(path) > 0
+			File.exist?(path) && File.size(path) > 0
 		}
     res
 	end

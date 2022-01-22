@@ -276,15 +276,15 @@ class TestRefdataJurPlugin <Minitest::Test
   def test_get_latest_file
     latest = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_jur_latest.xml"))
     current  = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml"))
-    FileUtils.rm_f(current) if File.exists?(current)
-    FileUtils.rm_f(latest) if File.exists?(latest)
+    FileUtils.rm_f(current) if File.exist?(current)
+    FileUtils.rm_f(latest) if File.exist?(latest)
     @plugin = ODDB::Companies::RefdataJurPlugin.new(@app)
     res = @plugin.get_latest_file
     assert(res[0], 'needs_update must be true')
     assert(res[1].match(/latest/), 'filename must match latest')
     assert_equal(latest, res[1])
-    assert(File.exists?(latest), 'companies_latest.xml must exist')
-    assert(File.exists?(current), 'companies_with_timestamp.xml must exist')
+    assert(File.exist?(latest), 'companies_latest.xml must exist')
+    assert(File.exist?(current), 'companies_with_timestamp.xml must exist')
     assert_equal(File.size(Test_JUR__XML), File.size(res[1]))
   end
 end

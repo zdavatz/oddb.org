@@ -64,7 +64,7 @@ module ODDB
         Mail.defaults do delivery_method :test end
       else
         @mailing_list_configuration = MailingDefaultConfiguration
-        unless File.exists?(@mailing_list_configuration)
+        unless File.exist?(@mailing_list_configuration)
           @cfg = nil
         else
           @cfg = YAML.load_file(@mailing_list_configuration)

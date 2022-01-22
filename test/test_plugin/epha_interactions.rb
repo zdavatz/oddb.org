@@ -189,7 +189,7 @@ module ODDB
       assert(report.match(/Added 1 interactions/))
     end
     def test_update_epha_interactions_update
-      FileUtils.rm(@latest, :verbose => false) if File.exists?(@latest)
+      FileUtils.rm(@latest, :verbose => false) if File.exist?(@latest)
       @plugin.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return('old_content')
       assert(@plugin.update(@fileName))
       report = @plugin.report

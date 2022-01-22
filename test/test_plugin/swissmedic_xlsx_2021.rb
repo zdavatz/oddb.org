@@ -57,8 +57,8 @@ module ODDB
       FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')),
                    :verbose => true, :preserve => true)
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read).by_default
-      FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
-      FileUtils.rm(@latest) if File.exists?(@latest)
+      FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
+      FileUtils.rm(@latest) if File.exist?(@latest)
     end
     def teardown
       ODBA.storage = nil

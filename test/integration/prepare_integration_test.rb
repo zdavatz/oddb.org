@@ -4,7 +4,7 @@ content = IO.readlines(DbDefinition)
 
 FilesToInstall.each {
   |file, destDir|
-  if File.exists?(file)
+  if File.exist?(file)
     FileUtils.cp(file, destDir, :verbose => true, :preserve => true)
   else
     puts "Skip cp non-exisiting file #{file} => #{destDir}"
@@ -16,7 +16,7 @@ ProductionDirs.each {
    |dir|
     file = File.join(TopDir, dir)
     backup = backupName(file)
-    if  File.exists?(backup)
+    if  File.exist?(backup)
       puts "Sorry backup #{backup} already exists. Skipping!!"
       exit 2
     else
@@ -47,6 +47,6 @@ cmds = [
     "sudo svc -u #{ServiceDir}/ch.oddb*"
 ]
 
-puts "Skip executing cmds:" unless File.exists?(ServiceDir)
-cmds.each { |cmd| puts "  "+cmd; system(cmd) if File.exists?(ServiceDir) }
+puts "Skip executing cmds:" unless File.exist?(ServiceDir)
+cmds.each { |cmd| puts "  "+cmd; system(cmd) if File.exist?(ServiceDir) }
 

@@ -38,7 +38,7 @@ module ODDB
       latest = csv_file_path.sub(/\.csv$/, '-latest.csv')
       FileUtils.makedirs(File.dirname(ODDB::EphaInteractions::CSV_FILE))
       if Latest.get_latest_file(latest, ODDB::EphaInteractions::CSV_ORIGIN_URL)
-        msg = "EphaInteractionPlugin.update latest #{latest} #{File.exists?(latest)} via #{File.expand_path(csv_file_path)} from #{ODDB::EphaInteractions::CSV_ORIGIN_URL}"
+        msg = "EphaInteractionPlugin.update latest #{latest} #{File.exist?(latest)} via #{File.expand_path(csv_file_path)} from #{ODDB::EphaInteractions::CSV_ORIGIN_URL}"
         @@report << msg
         debug_msg(msg)
         @lineno = 0

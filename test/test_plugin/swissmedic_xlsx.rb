@@ -59,8 +59,8 @@ module ODDB
       FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx^'),
                    :verbose => true, :preserve => true)
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read).by_default
-      FileUtils.makedirs(File.dirname(@latest)) unless File.exists?(File.dirname(@latest))
-      FileUtils.rm(@latest) if File.exists?(@latest)
+      FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
+      FileUtils.rm(@latest) if File.exist?(@latest)
       puts  ODDB::SwissmedicPlugin.get_preparations_url
       assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/zugelassene_packungen_ham.xlsx.download.xlsx/Zugelassene_Packungen%20HAM_31012019.xlsx', ODDB::SwissmedicPlugin.get_packages_url)
       assert_equal('https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/erweiterte_ham.xlsx.download.xlsx/Erweiterte_Arzneimittelliste%20HAM_31012019.xlsx', ODDB::SwissmedicPlugin.get_preparations_url)

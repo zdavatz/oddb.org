@@ -179,7 +179,7 @@ module ODDB
     end
     def test_update_medical_product_with_absolute_path
       fileName = File.join(@@origdir, 'Sinovial_DE.docx')
-      assert(File.exists?(fileName), "File #{fileName} must exist")
+      assert(File.exist?(fileName), "File #{fileName} must exist")
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
