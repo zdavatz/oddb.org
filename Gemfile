@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem 'dbi', :git => 'https://github.com/ngiger/ruby-dbi'
+gem 'dbi', :git => 'https://github.com/zdavatz/ruby-dbi'
 
 
 gem 'cmath'
