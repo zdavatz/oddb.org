@@ -31,7 +31,7 @@ module ODDB
       begin
         file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_nat.xml')
         FileUtils.rm_f(file2save, verbose: false)
-        @client = Savon.client(wsdl: "http://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
+        @client = Savon.client(wsdl: "https://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
         # TYPE Search Type
         # PTYPE Partner Type, JUR or NAT
         # Search Term dependant of the search type: DATE -> mutationDate (dd.MM.yyyy), GLN -> Gln, NAME -> Name

@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/ngiger/ruby-dbi
+  remote: https://github.com/zdavatz/ruby-dbi
   revision: ce41c14531235005dfcb671895b4f26b74b1ca4d
   specs:
     dbi (0.4.6)
