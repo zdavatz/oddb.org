@@ -37,6 +37,7 @@ module ODDB
       end
       puts "\nopts == #{opts.inspect}\n\n"
       Updater.new(system).update_textinfo_swissmedicinfo(opts)
+      puts "\nupdate_textinfo_swissmedicinfo done with #{opts.inspect}\n\n"
     end
   end
 end

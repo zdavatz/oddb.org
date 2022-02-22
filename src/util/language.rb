@@ -27,16 +27,20 @@ module ODDB
       end
 		end
     def description(key=nil)
-      begin
-        if descriptions.is_a?(Array) or descriptions[key].nil?
-          descriptions.first
-        else
-          descriptions[key]
-        end
-      rescue ODBA::OdbaError, NoMethodError => error
-        puts "Descriptions.description error"
-        puts caller[0..10].join("\n")
+      unless @descriptions
         return ''
+      else
+        begin
+          if @descriptions.is_a?(Array) || @descriptions[key].nil?
+            @descriptions.first
+          else
+            @descriptions[key]
+          end
+        rescue ODBA::OdbaError, NoMethodError => error
+          puts "Descriptions.description error"
+#          puts caller[0..10].join("\n")
+          return ''
+        end
       end
     end
 		def descriptions

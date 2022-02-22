@@ -7,6 +7,7 @@ require 'rss/maker'
 require 'view/drugs/fachinfo'
 require 'view/latin1'
 require 'util/today'
+require 'util/logfile'
 
 module ODDB
   module View
@@ -80,7 +81,9 @@ class Fachinfo < HtmlGrid::Component
       feed.image.title = @lookandfeel.lookup(:logo)
       feed.encoding = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
-      counter = 0
+      mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
+      LogFile.debug "#{Time.now}: RSS.to_html for #{feed.channel.language} called from #{caller.join("\n")}"
+      LogFile.debug "#{Time.now}: Starting RSS.to_html for #{@model.size} FI. Using #{mbytes} MBs"
       @model.each do |fachinfo|
         if fachinfo.localized_name
           if @year
@@ -88,14 +91,17 @@ class Fachinfo < HtmlGrid::Component
           else
             next if (fachinfo.revision.utc.year < @@today.year-1)
           end
-          counter += 1
-          if counter % 5000 == 0
-            puts "Sleeping 6 seconds in item_to_html to give cleanup some time  #{counter} of #{@model.size} o #{fachinfo.odba_id} iksnrs #{fachinfo.iksnrs} #{fachinfo.revision} @year #{@year} #{counter}"
-            sleep 6
-          end
           item_to_html(context, fachinfo, feed)
+          fachinfo.odba_store
         end
       end
+      mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
+      LogFile.debug "#{Time.now}: Sleeping 6 seconds in item_to_html to give cleanup some time #{@model.size} FIs @year #{@year}. Using #{mbytes} MB"
+      sleep 6
+      mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
+      LogFile.debug "#{Time.now}: Finished RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"
+      GC.start
+      LogFile.debug "#{Time.now}: Finished and collected garbage RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"
     end.to_s
   end
 end

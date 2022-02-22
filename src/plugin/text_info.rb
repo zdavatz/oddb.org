@@ -320,18 +320,24 @@ module ODDB
         msg += ' new patinfo'
       else
         package.patinfo = @app.create_patinfo
+        package.patinfo.odba_store
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
         msg += ' created patinfo'
       end
+      package.sequence.odba_store
       package.odba_store
       unless package.patinfo.descriptions.values.first.is_a?(ODDB::PatinfoDocument)
         msg = "class #{package.patinfo.descriptions.values.first.class} is not a PatinfoDocument"
         raise msg
       end
       # Update patinfo of sequence
+      package.patinfo.odba_store
+      package.sequence.odba_store
       package.sequence.patinfo = package.patinfo  unless package.sequence.patinfo.object_id == package.patinfo.object_id
       package.sequence.odba_store
+      package.patinfo.odba_store
+      package.odba_store
       LogFile.debug "called odba_store #{msg}"
       package.patinfo
     end
@@ -1491,6 +1497,7 @@ module ODDB
       if @options[:download] != false
         puts_sync "job is done. now postprocess works ..."
         postprocess
+        puts_sync "job and postprocess are done"
       end
       true # report
     end
