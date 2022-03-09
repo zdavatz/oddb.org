@@ -78,15 +78,9 @@ module ODDB
 			"Error creating Link for #{pointer.inspect}"
 		end
     def update_yearly_fachinfo_feeds
-      @@did_run ||= false
-      LogFile.debug "#{Time.now}:update_yearly_fachinfo_feeds several times? @@did_run is #{@@did_run}"
-      if @@did_run
-        LogFile.debug "#{Time.now}: Skip running update_yearly_fachinfo_feeds several time"
-      else
-        @app.sorted_fachinfos.collect{|x| x.revision.utc.year}.sort.uniq.each do |year|
-          update_rss_feeds("fachinfo-#{year}.rss", @app.sorted_fachinfos, View::Rss::Fachinfo, year)
-        end
-        @@did_run = true
+      LogFile.debug "#{Time.now}:update_yearly_fachinfo_feeds"
+      @app.sorted_fachinfos.collect{|x| x.revision.utc.year}.sort.uniq.each do |year|
+        update_rss_feeds("fachinfo-#{year}.rss", @app.sorted_fachinfos, View::Rss::Fachinfo, year)
       end
       LogFile.debug "#{Time.now}: Done update_yearly_fachinfo_feeds"
     end
