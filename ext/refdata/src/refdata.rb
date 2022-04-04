@@ -1,6 +1,11 @@
 #!/usr/bin/ruby
 # encoding: utf-8
 
+# To test it place the following two lines at the end of this file
+#   test1 = ODDB::Refdata::RefdataArticle.new
+#   test1.get_refdata_info('7680657880014')
+# and call sudo -u apache bundle-311 exec ruby-311  ext/refdata/bin/refdatad
+
 require 'rubygems'
 require 'drb'
 require 'rubyntlm'
@@ -8,6 +13,7 @@ require 'net/ntlm'
 require 'net/ntlm/version'
 require 'savon'
 require 'config'
+require 'util/logfile'
 
 module ODDB
   module Refdata
@@ -15,8 +21,7 @@ module ODDB
     # This procedure is needed for the migel import!
     def Refdata.debug_msg(string)
       return unless DebugRefdata
-       $stdout.puts "#{Time.now}: #{string}"
-       $stdout.flush
+       ODDB::LogFile.debug  "#{string}"
     end
 
     def Refdata.session(type = RefdataArticle)
@@ -36,6 +41,9 @@ module ODDB
   Refdata.check_net_ntlm_version
 
 module Archiver
+  REFDATA_BASE_URI = "http://refdatabase.refdata.ch"
+  ODDB::LogFile.debug "Refdata: Starting debugging using REFDATA_BASE_URI http://refdatabase.refdata.ch"
+
   def historicize(filename, archive_path, content)
     save_dir = File.join archive_path, 'xml'
     FileUtils.mkdir_p save_dir
@@ -47,12 +55,12 @@ module Archiver
       f.puts content
     end
     FileUtils.cp(archive, latest)
-    $stdout.puts "Archiver #{latest} #{File.size(latest)} bytes. archive #{archive}"
+    ODDB::LogFile.debug "Archiver #{latest} #{File.size(latest)} bytes. archive #{archive}"
   end
 end
 
 class RequestHandler
-  def initialize(wsdl_url = "http://refdatabase.refdata.ch/Service/Article.asmx?WSDL")
+  def initialize(wsdl_url = "https://refdatabase.refdata.ch/Service/Article.asmx?WSDL")
     @client = Savon.client(
       :wsdl => wsdl_url,
       :log => false,
@@ -101,11 +109,11 @@ class RefdataArticle < RequestHandler
   @@time_download ||= {}
   $stdout.sync = true
   def initialize
-    super("http://refdatabase.refdata.ch/Service/Article.asmx?WSDL")
+    super()
   end
 
   def download_all(type = 'Pharma')
-    $stdout.puts "RefdataArticle.download_all starting #{type} @@items #{@@items.size}"
+    ODDB::LogFile.debug "RefdataArticle.download_all starting #{type} @@items #{@@items.size}"
     @type = type
     if @@items[type] && @@time_download[type] &&
         ((diff = Time.now- @@time_download[type]).to_i < 24*60*60) # less than 24 hours
@@ -133,7 +141,7 @@ class RefdataArticle < RequestHandler
           historicize("XMLRefdata#{type}.xml",archive_path, xml)
           @@items[@type] = response.to_hash[:article][:item]
           @@time_download[type] = Time.now
-          $stdout.puts "RefdataArticle.download_all done #{type} time #{@@time_download[type]}"
+          ODDB::LogFile.debug "RefdataArticle.download_all done #{type} time #{@@time_download[type]}"
           return true
         else
           # received broken data or unexpected error
@@ -144,7 +152,7 @@ class RefdataArticle < RequestHandler
         raise StandardError
       end
     rescue StandardError, Timeout::Error => err
-      $stdout.puts "Download failed: try_time #{try_time} #{err}. from #{caller[0..5].join("\n")}"
+      ODDB::LogFile.debug "Refdata Download failed: try_time #{try_time} #{err}. from #{caller[0..5].join("\n")}"
       if err.is_a?(ArgumentError)
         raise err
       end
@@ -163,7 +171,6 @@ class RefdataArticle < RequestHandler
   end
   def get_refdata_info(code, key_type = :gtin, type = 'Pharma')
     download_all(type) unless @@items and @@items[type]
-
     Refdata.debug_msg "RefdataArticle.get_refdata_info1 code #{code} key_type #{key_type} type #{type}"
     item = {}
     item = @@items[type].find { |i| i.has_key?(key_type) and code == i[key_type] } if @@items and @@items[type]
@@ -182,7 +189,7 @@ class RefdataArticle < RequestHandler
     end
   end
   def search_item(code, type = 'Pharma')
-    $stdout.puts "RefdataArticle.search_item code #{code} type #{type}"
+    ODDB::LogFile.debug "RefdataArticle.search_item code #{code} type #{type}"
     @type = type
     try_time = 3
     is_gtin = code.to_s.length == 13
@@ -208,15 +215,15 @@ class RefdataArticle < RequestHandler
                       elsif pharma[:item].is_a?(Hash)
                         pharma[:item]
                       end
-        $stdout.puts "RefdataArticle.search_item code #{code} type #{type} returns #{pharma_item}"
+        ODDB::LogFile.debug "RefdataArticle.search_item code #{code} type #{type} returns #{pharma_item}"
         return pharma_item
       else
         # Pharmacode is not found in request result by ean(GTIN) code
-        $stdout.puts "RefdataArticle.search_item code #{code} type #{type} returns {}"
+        ODDB::LogFile.debug "RefdataArticle.search_item code #{code} type #{type} returns {}"
         return {}
       end
     rescue StandardError, Timeout::Error => err
-      $stdout.puts "RefdataArticle.search_item(#{code}) failed: #{err}"
+      ODDB::LogFile.debug "RefdataArticle.search_item(#{code}) failed: #{err}"
       if err.is_a?(ArgumentError)
         raise err
       end
@@ -236,4 +243,5 @@ class RefdataArticle < RequestHandler
 end
 
   end # Refdata
+
 end # ODDB
