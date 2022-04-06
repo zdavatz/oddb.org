@@ -149,7 +149,6 @@ module ODDB
         log.print @update_pharmacode_list.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"
         log.print "\n"
         log.print "delete_pharmacode_list (Total: #{@delete_pharmacode_list.length})\n"
-        log.print @delete_pharmacode_list.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"
       end
       # update part: out_of_trade flag
       #   Process1, in trade (false)    if there is a eancode or package is inactive in swissindex
@@ -179,9 +178,9 @@ module ODDB
       log_file = File.join(log_dir, 'update_out_of_trade.log')
       Logging.start(log_file) do |log|
         log.print "\nstart change out_of_trade flag (false) (Total: #{activated.length})\n"
-        log.print activated.map{|x| x.barcode}.join("\n"), "\n"
+        log.print activated.map{|x| x.barcode  if x.respond_to?(:barcode)}.join("\n"), "\n"
         log.print "\nstart change out_of_trade flag (true) (Total: #{inactivated.length})\n"
-        log.print inactivated.map{|x| x.barcode}.join("\n"), "\n"
+        log.print inactivated.map{|x| x.barcode if x.respond_to?(:barcode)}.join("\n"), "\n"
       end
     end
     def update_pharmacode

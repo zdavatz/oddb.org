@@ -81,14 +81,14 @@ class TestExport <Minitest::Test
   end
   def test_display__true
     flexmock(File, 
-             :exists? => true,
+             :exist? => true,
              :size    => 1
             )
     assert_equal(true, @export.display?('filename'))
   end
   def test_datadesc
     flexmock(File, 
-             :exists? => true,
+             :exist? => true,
              :size    => 1
             )
     assert_kind_of(HtmlGrid::Link, @export.datadesc('filename'))

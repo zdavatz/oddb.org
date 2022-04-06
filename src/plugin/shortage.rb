@@ -184,8 +184,8 @@ module ODDB
       end
       @shortages.each do |shortage|
         added_info = OpenStruct.new
-        if shortage.parent.css('td').size != 9
-          raise "Unable to parse #{shortage.text} in #{SOURCE_URI}"
+        if shortage.parent.css('td').size != 9 && shortage.parent.css('td').size != 27
+          raise "Unable to parse #{shortage.text} in #{SOURCE_URI}. Found only #{shortage.parent.css('td').size} tds"
         end
         added_info.gtin =  shortage.text
         lines = shortage.parent.text.split("\n")

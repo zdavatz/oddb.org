@@ -54,6 +54,7 @@ class TestFachinfo <Minitest::Test
                           :pointer  => 'pointer',
                           :revision => Time.utc(@year,2,3),
                           :iksnrs   => ['iksnrs'],
+                          :odba_store => true,
                          )
     @component = ODDB::View::Rss::Fachinfo.new([@model], @session)
     @expected_2011 = %(<?xml version="1.0" encoding="UTF-8"?>
@@ -130,6 +131,7 @@ class TestFachinfo <Minitest::Test
                           :language => @document,
                           :pointer  => 'pointer',
                           :revision => Time.utc(@year,2,3),
+                          :odba_store => true,
                          )
     @raised_no_method_error = false
     @model.should_receive(:iksnrs).and_return { [] }
