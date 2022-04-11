@@ -78,8 +78,8 @@ module ODDB
 			"Error creating Link for #{pointer.inspect}"
 		end
     def update_yearly_fachinfo_feeds
-      LogFile.debug "#{Time.now}:update_yearly_fachinfo_feeds"
       @app.sorted_fachinfos.collect{|x| x.revision.utc.year}.sort.uniq.each do |year|
+        LogFile.debug "#{Time.now}:update_yearly_fachinfo_feeds for #{year}"
         update_rss_feeds("fachinfo-#{year}.rss", @app.sorted_fachinfos, View::Rss::Fachinfo, year)
       end
       LogFile.debug "#{Time.now}: Done update_yearly_fachinfo_feeds"

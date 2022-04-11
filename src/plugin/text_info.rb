@@ -113,6 +113,7 @@ module ODDB
       LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
     end
     def postprocess
+      LogFile.debug "#{Time.now}:postprocess fachinfo.rss"
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
       puts_sync "postprocess update_rss_feeds done"
       update_yearly_fachinfo_feeds
