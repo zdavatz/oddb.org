@@ -144,8 +144,13 @@ module ODDB
       existing = reg.fachinfo
       if existing
         lang = fis.keys.first
-        old_text = eval("existing.#{lang}.text").clone
-        fis[lang].change_log = eval("existing.#{lang}.change_log").clone
+        begin
+          old_text = eval("existing.#{lang}.text").clone
+          fis[lang].change_log = eval("existing.#{lang}.change_log").clone
+        rescue => error
+          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} fixing invalid old_text"
+          old_text = nil
+        end
         updated_fi = app.update reg.fachinfo.pointer, fis
         if old_text
           text_item = eval("updated_fi.#{lang}")
