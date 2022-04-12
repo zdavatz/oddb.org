@@ -326,7 +326,6 @@ module ODDB
         msg += ' new patinfo'
       else
         package.patinfo = @app.create_patinfo
-        package.patinfo.odba_store
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
         msg += ' created patinfo'
