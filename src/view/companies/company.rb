@@ -434,7 +434,7 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 	end
 	def ean13(model, session=@session)
 		if(model and model.ean13)
-			"&nbsp;-&nbsp;"+model.ean13
+      "&nbsp;-&nbsp;"+model.ean13.to_s
 		end
 	end
 end
