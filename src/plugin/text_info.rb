@@ -1354,7 +1354,7 @@ module ODDB
     end
 
     def report_problematic_names
-      LogFile.debug "#{Time.now}: Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
+      LogFile.debug "Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
       File.open(@problematic_fi_pi, 'w+') do |file|
         file.write("# resolve these problems and add them to #{@missing_override_file}")
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
@@ -1382,7 +1382,7 @@ module ODDB
       FileUtils.makedirs(@details_dir, verbose: true)
       return unless File.exist?(@aips_xml)
       content = IO.read(@aips_xml, :encoding => 'UTF-8')
-      LogFile.debug "#{Time.now}: read #{@aips_xml} #{content.size} bytes"
+      LogFile.debug "read #{@aips_xml} #{content.size} bytes"
       content.split('</medicalInformation>').each do |chunk|
         meta_info = handle_chunk(chunk)
         next unless meta_info

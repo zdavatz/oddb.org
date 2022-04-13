@@ -79,11 +79,14 @@ module ODDB
 		end
     def update_yearly_fachinfo_feeds
       @app.sorted_fachinfos.collect{|x| x.revision.utc.year}.sort.uniq.each do |year|
-        LogFile.debug "#{Time.now}:update_yearly_fachinfo_feeds for #{year}"
+        LogFile.debug "update_yearly_fachinfo_feeds for #{year}"
         update_rss_feeds("fachinfo-#{year}.rss", @app.sorted_fachinfos, View::Rss::Fachinfo, year)
       end
-      LogFile.debug "#{Time.now}: Done update_yearly_fachinfo_feeds"
+      LogFile.debug "Done update_yearly_fachinfo_feeds"
     end
+    # update_rss_feeds comes these different paths
+    # * update_yearly_fachinfo_feeds
+    # * postprocess of import_swissmedicinfo
     def update_rss_feeds(name, model, view_klass, args = nil)
       return if model.empty?
       l10n_sessions do |stub|
