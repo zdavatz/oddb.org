@@ -82,8 +82,7 @@ class Fachinfo < HtmlGrid::Component
       feed.encoding = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
-      LogFile.debug "#{Time.now}: RSS.to_html for #{feed.channel.language} called from #{caller.join("\n")}"
-      LogFile.debug "#{Time.now}: Starting RSS.to_html for #{@model.size} FI. Using #{mbytes} MBs"
+      LogFile.debug "#{Time.now}: Starting RSS.to_html  #{feed.channel.language} for #{@model.size} FI. Using #{mbytes} MBs"
       @model.each do |fachinfo|
         if fachinfo.localized_name
           if @year
@@ -97,7 +96,7 @@ class Fachinfo < HtmlGrid::Component
       end
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
       LogFile.debug "#{Time.now}: Sleeping 6 seconds in item_to_html to give cleanup some time #{@model.size} FIs @year #{@year}. Using #{mbytes} MB"
-      sleep 6
+      sleep 6 unless defined?(MiniTest)
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
       LogFile.debug "#{Time.now}: Finished RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"
       GC.start
