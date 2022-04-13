@@ -91,7 +91,6 @@ class Fachinfo < HtmlGrid::Component
             next if (fachinfo.revision.utc.year < @@today.year-1)
           end
           item_to_html(context, fachinfo, feed)
-          fachinfo.odba_store
         end
       end
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
