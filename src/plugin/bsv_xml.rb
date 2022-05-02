@@ -320,17 +320,19 @@ module ODDB
           end
           @sl_entries.each do |pac_ptr, sl_data|
             begin
-              pack = pac_ptr.resolve @app
+              pac = pac_ptr.resolve @app
               @known_packages.delete pac_ptr
-              unless pack.nil?
+               if pac.nil? || !pac.is_a?(ODDB::Package)
+                LogFile.debug "Skipping pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class} pac is_a? #{pac.class}"
+               else
                 pointer = pac_ptr + :sl_entry
                 if sl_data.empty?
-                  if pack.sl_entry
+                  if pac.sl_entry
                     @deleted_sl_entries += 1
                     @app.delete pointer
                   end
                 else
-                  if pack.sl_entry
+                  if pac.sl_entry
                     @updated_sl_entries += 1
                   else
                     @created_sl_entries += 1
@@ -343,13 +345,17 @@ module ODDB
                 end
               end
             rescue ODDB::Persistence::InvalidPathError => error
-              puts "Skipping #{error} pac_ptr #{pac_ptr}"
+              LogFile.debug "Skipping #{error} pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class}"
               # skip
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
             begin
-              if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry) && (sl_entry.respond_to?(:pointer))
+               pac = pac_ptr.resolve @app
+               if pac.nil? || !pac.is_a?(ODDB::Package)
+                LogFile.debug "Skipping pac_ptr #{pac_ptr} lim_data is_a? #{lim_data.class} pac is_a? #{pac.class}"
+               else
+                sl_entry = pac.sl_entry
                 sl_ptr = sl_entry.pointer
                 sl_ptr ||= pac.pointer + [:sl_entry]
                 txt_ptr = sl_ptr + :limitation_text
@@ -385,8 +391,8 @@ module ODDB
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
-            rescue TypeError, ODDB::Persistence::InvalidPathError => error
-              puts "Skipping '#{error}' pac_ptr #{pac_ptr}"
+            rescue TypeError, ODBA::OdbaError, ODDB::Persistence::InvalidPathError => error
+              LogFile.debug "Skipping '#{error}' pac_ptr #{pac_ptr}"
               # skip
             end
           end
