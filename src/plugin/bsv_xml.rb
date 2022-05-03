@@ -322,7 +322,8 @@ module ODDB
             begin
               pac = pac_ptr.resolve @app
               @known_packages.delete pac_ptr
-               if pac.nil? || !pac.is_a?(ODDB::Package)
+               next if pac.nil?
+               unless pac.is_a?(ODDB::Package)
                 LogFile.debug "Skipping pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class} pac is_a? #{pac.class}"
                else
                 pointer = pac_ptr + :sl_entry
@@ -352,10 +353,12 @@ module ODDB
           @lim_texts.each do |pac_ptr, lim_data|
             begin
                pac = pac_ptr.resolve @app
-               if pac.nil? || !pac.is_a?(ODDB::Package)
+               next if pac.nil?
+               unless pac.is_a?(ODDB::Package)
                 LogFile.debug "Skipping pac_ptr #{pac_ptr} lim_data is_a? #{lim_data.class} pac is_a? #{pac.class}"
                else
                 sl_entry = pac.sl_entry
+				next if sl_entry.nil?
                 sl_ptr = sl_entry.pointer
                 sl_ptr ||= pac.pointer + [:sl_entry]
                 txt_ptr = sl_ptr + :limitation_text
