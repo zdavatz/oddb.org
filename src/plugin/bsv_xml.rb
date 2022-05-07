@@ -295,6 +295,13 @@ module ODDB
               :lim_text => @lim_data,
               :size     => @size,
             })
+          elsif @pack && !@duplicate_iksnr
+            ## don't take the Swissmedic-Category unless it's missing in the DB
+            LogFile.debug "Pack @sl_entries  #{@pack.pointer}"
+            @data.delete :ikscat if @pack.ikscat
+            @app.update @pack.pointer, @data, :bag
+            @sl_entries.store @pack.pointer, @sl_data
+            @lim_texts.store @pack.pointer, @lim_data
           end
           @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size = nil
         when 'Preparation'
