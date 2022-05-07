@@ -297,7 +297,6 @@ module ODDB
             })
           elsif @pack && !@duplicate_iksnr
             ## don't take the Swissmedic-Category unless it's missing in the DB
-            LogFile.debug "Pack @sl_entries  #{@pack.pointer}"
             @data.delete :ikscat if @pack.ikscat
             @app.update @pack.pointer, @data, :bag
             @sl_entries.store @pack.pointer, @sl_data
@@ -350,7 +349,7 @@ module ODDB
                   @app.update pointer.creator, sl_data, :bag
                 end
               end
-            rescue ODDB::Persistence::InvalidPathError => error
+            rescue ODBA::OdbaError, ODDB::Persistence::InvalidPathError => error
               LogFile.debug "Skipping #{error} pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class}"
               # skip
             end
@@ -390,7 +389,7 @@ module ODDB
                       @app.delete txt_ptr
                     end
                   rescue ODDB::Persistence::UninitializedPathError,
-                        ODDB::Persistence::InvalidPathError >> error
+                        ODDB::Persistence::InvalidPathError => error
                         LogFile.debug "Skipping  delete txt_ptr '#{error}' txt_ptr #{txt_ptr}"
                     # skip
                   end
