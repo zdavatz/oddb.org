@@ -303,6 +303,10 @@ module ODDB
             @deferred_packages.each do |info|
               ptr = seq.pointer + [:package, info[:ikscd]]
               @app.update seq.pointer, info[:sequence]
+              unless seq.package(info[:ikscd])
+                LogFile.debug "create_package export #{seq.export_flag} ptr #{ptr}"
+                seq.create_package(info[:ikscd])
+              end
               @app.update ptr.creator, info[:package]
               pptr = ptr + [:part]
               size = info[:size].sub(/(^| )[^\d.,]+(?= )/, '')
@@ -333,7 +337,7 @@ module ODDB
                     @created_sl_entries += 1
                   end
                   if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
-                    LogFile.debug("limitation store sl_data for #{pac_ptr} #{@iksnr} #{@name[:de]} lim: #{lim_data[:de].to_s[0..70]}") # if $VERBSE
+                    LogFile.debug("limitation store sl_data for #{pac_ptr} #{@iksnr} #{@name[:de]} lim: #{lim_data[:de].to_s[0..70]}")
                     sl_data.store :limitation, true
                   end
                   @app.update pointer.creator, sl_data, :bag
@@ -352,13 +356,14 @@ module ODDB
                 LogFile.debug "Skipping pac_ptr #{pac_ptr} lim_data is_a? #{lim_data.class} pac is_a? #{pac.class}"
                else
                 sl_entry = pac.sl_entry
-				next if sl_entry.nil?
+                next if sl_entry.nil?
                 sl_ptr = sl_entry.pointer
                 sl_ptr ||= pac.pointer + [:sl_entry]
                 txt_ptr = sl_ptr + :limitation_text
                 # 2021.03.16 Niklaus has no idea, why I have to freeze it here
                 # but without a freeze the @app.update fails miserably
-                if lim_data.empty?
+                if lim_data.nil? || lim_data.empty?
+                  LogFile.debug("limitation delete txt_ptr for #{txt_ptr} limitation_text #{sl_entry.limitation_text.class}")
                   if sl_entry.limitation_text
                     @deleted_limitation_texts += 1
                     @app.delete txt_ptr
@@ -378,13 +383,14 @@ module ODDB
                       @app.delete txt_ptr
                     end
                   rescue ODDB::Persistence::UninitializedPathError,
-                        ODDB::Persistence::InvalidPathError
+                        ODDB::Persistence::InvalidPathError >> error
+                        LogFile.debug "Skipping  delete txt_ptr '#{error}' txt_ptr #{txt_ptr}"
                     # skip
                   end
                 txt_ptr = sl_ptr + :limitation_text
                 # 2021.03.16 Niklaus has no idea, why I have to redefine it here
                 # but without redefining the @app.update fails miserably
-                  LogFile.debug("limitation update txt_ptr for #{txt_ptr}") # if $VERBSE
+                  LogFile.debug("limitation update txt_ptr for #{txt_ptr} lim_data #{lim_data.class}")
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
@@ -578,7 +584,11 @@ module ODDB
             @deleted_sl_entries += 1
             flag_change pointer, :sl_entry_delete
             sl_ptr = pointer + :sl_entry
-            @app.delete sl_ptr
+            begin
+              @app.delete sl_ptr
+            rescue  ODBA::OdbaError => error
+              LogFile.debug "Preparations unable to delete pointer #{pointer} data #{data}"
+            end
           end
         end
         @text, @html = nil
