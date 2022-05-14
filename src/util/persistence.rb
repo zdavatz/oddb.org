@@ -38,7 +38,7 @@ module ODBA
 					@odba_container.odba_replace_stubs(self, @receiver)
 				end
 				@receiver
-			rescue OdbaError => e
+			rescue ODBA::OdbaError => e
 				msg = "ODBA::Stub was unable to replace #{@odba_class}:#{@odba_id} - "
 				if(@odba_container.respond_to?(:pointer))
 					msg << @odba_container.pointer.to_s	
@@ -267,7 +267,7 @@ module ODDB
           ### odba_store or odba_isolated_store on whoever was the
           ### last connection to this item.
         end
-      rescue InvalidPathError, UninitializedPathError => e
+      rescue InvalidPathError, UninitializedPathError, ODBA::OdbaError => e
         warn "Could not delete: #{to_s}, reason: #{e.message}"
       end
 			def issue_update(hook, values, origin = nil)
