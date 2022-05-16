@@ -5,6 +5,7 @@
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
+require 'date'
 require 'drb'
 require 'fileutils'
 require 'mechanize'
@@ -449,6 +450,32 @@ module ODDB
             @pack ||= @app.package_by_ikskey(@text)
             @out_of_trade = @pack.out_of_trade if @pack
           end
+
+          # There's a bug where the XML source is incorrect with some flags,
+          # the RSS looks ok but the generated xls isn't.
+          # https://github.com/zdavatz/oddb.org/issues/154
+          # To workaround that, we are using the logic from the RSS plugin.
+          # https://github.com/zdavatz/oddb.org/blob/94e2d1a8f009168d7236a896f57760a6ba4502f7/src/plugin/rss.rb#L209-L224
+          today = Date.today
+          cutoff = (today << 1) + 1
+          first = Time.local(cutoff.year, cutoff.month, cutoff.day)
+          last = Time.local(today.year, today.month, today.day)
+          range = first..last
+          if !@pack.nil? && (current = @pack.price_public) && range.cover?(current.valid_from)
+            previous = @pack.price_public(1)
+            if previous.nil?
+              if current.authority == :sl
+                flag_change @pack.pointer, :sl_entry
+              end
+            elsif [:sl, :lppv, :bag].include?(@pack.data_origin(:price_public))
+              if previous > current
+                flag_change @pack.pointer, :price_cut
+              elsif current > previous
+                flag_change @pack.pointer, :price_rise
+              end
+            end
+          end
+
           if @text.strip.empty?
             if @out_of_trade
               @missing_ikscodes_oot.push @report
