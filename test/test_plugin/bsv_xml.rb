@@ -711,7 +711,7 @@ module ODDB
     end
     def test_download_file__file_exist
       flexstub(File) do |f|
-        f.should_receive(:exists?).and_return(true)
+        f.should_receive(:exist?).and_return(true)
       end
       flexstub(FileUtils) do |f|
         f.should_receive(:cp)
