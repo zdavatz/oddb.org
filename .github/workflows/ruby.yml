@@ -24,28 +24,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
+
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Replace helveticy by sans-serif
+
+    - name: Replace helvetica by lato
       run: |
-            echo '<?xml version="1.0"?>'  > ~/.fonts.conf
-            echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">'  >> ~/.fonts.conf
-            echo '<fontconfig>'  >> ~/.fonts.conf
-            echo '<!-- Helvetica is a non true type font, and will look bad. This'  >> ~/.fonts.conf
-            echo 'replaces it with whatever is the default sans-serif font -->'  >> ~/.fonts.conf
-            echo '<match target="pattern" name="family" >'  >> ~/.fonts.conf
-            echo '<test name="family" qual="any" >'  >> ~/.fonts.conf
-            echo '<string>Helvetica</string>'  >> ~/.fonts.conf
-            echo '</test>'  >> ~/.fonts.conf
-            echo '<edit mode="assign" name="family" >'  >> ~/.fonts.conf
-            echo '<string>sans-serif</string>'  >> ~/.fonts.conf
-            echo '</edit>'  >> ~/.fonts.conf
-            echo '</match>'  >> ~/.fonts.conf
-            echo '<dir>~/.fonts</dir>'  >> ~/.fonts.conf
-            echo '</fontconfig>'  >> ~/.fonts.conf
-            fc-list
+        mkdir -p ~/.magick/
+        echo '<?xml version="1.0"?>'  > ~/.magick/type.xml
+        echo '<typemap>'  >> ~/.magick/type.xml
+        echo '<type format="ttf" name="Helvetica" fullname="Helvetica Regular" family="Helvetica" glyphs="/usr/share/fonts/truetype/lato/Lato-Regular.ttf"/>' >> ~/.magick/type.xml
+        echo '</typemap>'  >> ~/.magick/type.xml
+        cat ~/.magick/type.xml
+        convert -list font
 
     - name: Run tests via test/suite.rb
       run: bundle exec ruby test/suite.rb
