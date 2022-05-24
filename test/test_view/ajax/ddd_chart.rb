@@ -26,14 +26,14 @@ class TestSideBar <Minitest::Test
     @sidebar.instance_eval('@maximum_value = 123')
     @sidebar.instance_eval('@spread = 0.0')
     @sidebar.instance_eval('@marker_count = 1.0')
-    assert_in_delta(444.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(448.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_setup_graph_measurements__hide_line_markers
     @sidebar.instance_eval('@maximum_value = 123')
     @sidebar.instance_eval('@spread = 0.0')
     @sidebar.instance_eval('@marker_count = 1.0')
     @sidebar.instance_eval('@hide_line_markers = 0')
-    assert_in_delta(474.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(477.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_setup_graph_measurements__has_left_labels
     @sidebar.instance_eval('@maximum_value = 123')
@@ -41,7 +41,7 @@ class TestSideBar <Minitest::Test
     @sidebar.instance_eval('@marker_count = 1.0')
     @sidebar.instance_eval('@has_left_labels = true')
     @sidebar.labels = {'key' => ' 1 /x '}
-    assert_in_delta(444.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(448.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_draw_title
     @sidebar.instance_eval('@hide_title = nil')

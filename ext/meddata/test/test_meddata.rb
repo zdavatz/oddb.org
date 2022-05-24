@@ -20,6 +20,7 @@ module ODDB
 			assert_equal('baz', instance.ctl)
 		end
     def test_session
+      skip
       ODDB::MedData.session do |search_type|
         assert_kind_of(ODDB::MedData::DRbSession, search_type)
       end
