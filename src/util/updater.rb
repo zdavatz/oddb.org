@@ -294,14 +294,14 @@ module ODDB
       update_package_trade_status_by_refdata
       # update_lppv
       update_price_feeds
-      export_oddb_csv
-      export_oddb2_csv
+      #export_oddb_csv
+      #export_oddb2_csv
       # oddb2tdat no more needed as defined by Zeno on May 19, 2014
       # export_oddb2tdat
       # export_oddb2tdat_with_migel
       export_ouwerkerk
-      export_competition_xlss
-      export_generics_xls
+      #export_competition_xlss
+      #export_generics_xls
     end
     def update_comarketing
       update_immediate(CoMarketingPlugin, 'Co-Marketing')
