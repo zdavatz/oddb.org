@@ -625,6 +625,12 @@ module ODDB
           end
         end
         @text, @html = nil
+      rescue ODBA::OdbaError => error
+        # Sometimes there would be an ODBAError, if we are not catching it,
+        # the whole import job would stop. Zeno said it's safe to ignore the errors,
+        # I am not so sure. Things with ODBA are so uncertain.
+        # Ref https://github.com/zdavatz/oddb.org/issues/169
+        warn "Error in tag_end #{error}"
       rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
         raise
