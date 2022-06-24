@@ -287,6 +287,7 @@ module ODDB
         @seq_data ||= {}
         case name
         when 'Pack'
+          fix_flags_with_rss_logic
           if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
             @deferred_packages.push({
               :ikscd    => @ikscd,
@@ -303,7 +304,7 @@ module ODDB
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
-          @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size = nil
+          @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size, @price, @price_type = nil
         when 'Preparation'
           if !@deferred_packages.empty? \
             && seq = identify_sequence(@registration, @name, @substances)
@@ -327,10 +328,10 @@ module ODDB
             begin
               pac = pac_ptr.resolve @app
               @known_packages.delete pac_ptr
-               next if pac.nil?
-               unless pac.is_a?(ODDB::Package)
+              next if pac.nil?
+              unless pac.is_a?(ODDB::Package)
                 LogFile.debug "Skipping pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class} pac is_a? #{pac.class}"
-               else
+              else
                 pointer = pac_ptr + :sl_entry
                 if sl_data.empty?
                   if pac.sl_entry
@@ -451,31 +452,6 @@ module ODDB
             @out_of_trade = @pack.out_of_trade if @pack
           end
 
-          # There's a bug where the XML source is incorrect with some flags,
-          # the RSS looks ok but the generated xls isn't.
-          # https://github.com/zdavatz/oddb.org/issues/154
-          # To workaround that, we are using the logic from the RSS plugin.
-          # https://github.com/zdavatz/oddb.org/blob/94e2d1a8f009168d7236a896f57760a6ba4502f7/src/plugin/rss.rb#L209-L224
-          today = Date.today
-          cutoff = (today << 1) + 1
-          first = Time.local(cutoff.year, cutoff.month, cutoff.day)
-          last = Time.local(today.year, today.month, today.day)
-          range = first..last
-          if !@pack.nil? && (current = @pack.price_public) && range.cover?(current.valid_from)
-            previous = @pack.price_public(1)
-            if previous.nil?
-              if current.authority == :sl
-                flag_change @pack.pointer, :sl_entry
-              end
-            elsif [:sl, :lppv, :bag].include?(@pack.data_origin(:price_public))
-              if previous > current
-                flag_change @pack.pointer, :price_cut
-              elsif current > previous
-                flag_change @pack.pointer, :price_rise
-              end
-            end
-          end
-
           if @text.strip.empty?
             if @out_of_trade
               @missing_ikscodes_oot.push @report
@@ -501,7 +477,6 @@ module ODDB
           if @price > 0
             @data.store :"price_#{@price_type}", @price
           end
-          @price, @price_type = nil
         when 'Price'
           @price.amount = @text.to_f if @price
         when 'ValidFromDate'
@@ -636,6 +611,33 @@ module ODDB
         raise
       ensure
         GC.enable unless already_disabled
+      end
+
+      def fix_flags_with_rss_logic
+        # There's a bug where the XML source is incorrect with some flags,
+        # the RSS looks ok but the generated xls isn't.
+        # https://github.com/zdavatz/oddb.org/issues/154
+        # To workaround that, we are using the logic from the RSS plugin.
+        # https://github.com/zdavatz/oddb.org/blob/94e2d1a8f009168d7236a896f57760a6ba4502f7/src/plugin/rss.rb#L209-L224
+        today = Date.today
+        cutoff = (today << 1) + 1
+        first = Time.local(cutoff.year, cutoff.month, cutoff.day)
+        last = Time.local(today.year, today.month, today.day)
+        range = first..last
+        if (current = @price) && range.cover?(current.valid_from) && !@pack.nil?
+          previous = @pack.price_public
+          if previous.nil?
+            if current.authority == :sl
+              flag_change @pack.pointer, :sl_entry
+            end
+          elsif [:sl, :lppv, :bag].include?(@pack.data_origin(:price_public))
+            if previous > current
+              flag_change @pack.pointer, :price_cut
+            elsif current > previous
+              flag_change @pack.pointer, :price_rise
+            end
+          end
+        end
       end
     end
     attr_reader :preparations_listener
