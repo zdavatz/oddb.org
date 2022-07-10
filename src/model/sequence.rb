@@ -30,7 +30,7 @@ module ODDB
       end
     end
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
-								:compositions, :longevity
+								:compositions, :bag_compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
                   :patinfo, :pdf_patinfo, :atc_request_time,
                   :deactivate_patinfo, :sequence_date, :activate_patinfo,
@@ -60,6 +60,7 @@ module ODDB
 			@seqnr = sprintf('%02d', seqnr.to_i)
 			@packages = {}
 			@compositions = []
+      @bag_compositions = []
 		end
 		def active_packages
 			if(active?) 
@@ -138,10 +139,19 @@ module ODDB
     def composition(oid)
       @compositions.find { |comp| comp.oid == oid }
     end
+    def bag_composition(oid)
+      @bag_compositions.find { |comp| comp.oid == oid }
+    end
     def create_composition
       comp = Composition.new
       comp.sequence = self
       @compositions.push comp
+      comp
+    end
+    def create_bag_composition
+      comp = Composition.new
+      comp.sequence = self
+      (@bag_compositions ||= []).push comp
       comp
     end
     def create_division
@@ -162,6 +172,10 @@ module ODDB
     def delete_composition(oid)
       @compositions.delete_if { |comp| comp.oid == oid }
       @compositions.odba_isolated_store
+    end
+    def delete_bag_composition(oid)
+      @bag_compositions.delete_if { |comp| comp.oid == oid }
+      @bag_compositions.odba_isolated_store
     end
 		def delete_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)

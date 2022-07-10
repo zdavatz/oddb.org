@@ -199,6 +199,9 @@ module ODDB
         nil
       end
       def identify_sequence registration, name, substances
+        if registration.nil?
+          return nil
+        end
         subs = substances.collect do |data|
           [data[:lt], ODDB::Dose.new(data[:dose], data[:unit])]
         end
@@ -229,6 +232,33 @@ module ODDB
           end
         end
         sequence
+      end
+      def add_bag_composition_to_sequence sequence, substances
+        subs = substances.collect do |data|
+          [data[:lt], ODDB::Dose.new(data[:dose], data[:unit])]
+        end
+
+        composition_pointer = sequence.pointer + :bag_composition        
+        comp = if (sequence.bag_compositions.nil? || sequence.bag_compositions.empty?) then @app.create composition_pointer else sequence.bag_compositions[0] end
+        if !sequence.bag_compositions.empty?
+          first_composition = sequence.bag_compositions[0]
+          first_composition.active_agents.each do |agent|
+            first_composition.delete_active_agent(agent)
+            agent.odba_delete
+            first_composition.odba_store
+          end
+        end
+
+        subs.each do |name, dose|
+          substance = @app.substance name
+          unless substance
+            sptr = Persistence::Pointer.new :substance
+            substance = @app.update sptr.creator, :lt => name
+          end
+          pointer = comp.pointer + [:active_agent, name]
+          agent = @app.update pointer.creator, :dose => dose,
+                                               :substance => substance.oid
+        end
       end
       def load_ikskey pcode
         return if pcode.to_s.empty?
@@ -261,6 +291,7 @@ module ODDB
           @report_data = {}
           @deferred_packages = []
           @substances = []
+          @sequence = nil
         when /(.+)Price/u
           @price_type = $~[1].downcase.to_sym
           @price = Util::Money.new(0, @price_type, 'CH')
@@ -304,10 +335,13 @@ module ODDB
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
+          if !@pack.nil?
+            @sequence = @pack.sequence
+          end
           @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size, @price, @price_type = nil
         when 'Preparation'
-          if !@deferred_packages.empty? \
-            && seq = identify_sequence(@registration, @name, @substances)
+          seq = @sequence || identify_sequence(@registration, @name, @substances)
+          if !@deferred_packages.empty? && seq
             @deferred_packages.each do |info|
               ptr = seq.pointer + [:package, info[:ikscd]]
               @app.update seq.pointer, info[:sequence]
@@ -323,6 +357,9 @@ module ODDB
               @sl_entries.store ptr, info[:sl_entry]
               @lim_texts.store ptr, info[:lim_text]
             end
+          end
+          if !seq.nil?
+            add_bag_composition_to_sequence seq, @substances
           end
           @sl_entries.each do |pac_ptr, sl_data|
             begin
@@ -351,7 +388,7 @@ module ODDB
                   @app.update pointer.creator, sl_data, :bag
                 end
               end
-            rescue ODBA::OdbaError, ODDB::Persistence::InvalidPathError => error
+            rescue ODBA::OdbaError, ODDB::Persistence::InvalidPathError, NoMethodError => error
               LogFile.debug "Skipping #{error} pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class}"
               # skip
             end
@@ -402,7 +439,7 @@ module ODDB
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
-            rescue TypeError, ODBA::OdbaError, ODDB::Persistence::InvalidPathError => error
+            rescue TypeError, ODBA::OdbaError, ODDB::Persistence::InvalidPathError, NoMethodError => error
               LogFile.debug "Skipping '#{error}' pac_ptr #{pac_ptr}"
               # skip
             end
@@ -413,7 +450,7 @@ module ODDB
             @unknown_registrations.push @report_data
           end
           @iksnr, @registration, @sl_entries, @lim_texts, @duplicate_iksnr,
-            @atc_code, @deferred_packages, @substances = nil
+            @atc_code, @deferred_packages, @substances, @sequence = nil
         when 'AtcCode'
           @atc_code = @text
         when 'SwissmedicNo5'
