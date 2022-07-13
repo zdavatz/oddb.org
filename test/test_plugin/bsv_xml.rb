@@ -1649,6 +1649,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       seq.should_receive(:package).and_return nil
       seq.should_receive(:create_package)
       seq.should_receive(:export_flag).and_return ''
+      seq.should_receive(:bag_compositions).and_return []
       seq
     end
  if RUN_ALL
@@ -1819,6 +1820,13 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
       @app.should_receive(:delete)
+      @app.should_receive(:update)
+      composition = flexmock 'composition'
+      composition.should_receive(:pointer).and_return(Persistence::Pointer.new(:composition))
+      @app.should_receive(:create).and_return composition
+      substance = flexmock 'substance'
+      substance.should_receive(:oid)
+      @app.should_receive(:substance).and_return substance
       expected_updates = {}
       ptr = Persistence::Pointer.new [:registration, '39271']
       expected_updates.store ptr, { :generic_type => :original,
@@ -1884,7 +1892,14 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       pack_ptr = (reg.pointer + [:package, '028']).creator
       @app.should_receive(:update).once.with(reg.pointer,  {}).and_return reg
       @app.should_receive(:update).once.with(pack_ptr,  {:sl_generic_type=>:original, :deductible=>:deductible_g, :ikscat=>"B", :narcotic=>false, :price_exfactory=>2.90, :price_public=>7.50}).and_return true
+      @app.should_receive(:update).once
       @app.should_receive(:update) do | arg1 |  assert(false)  end
+      composition = flexmock 'composition'
+      composition.should_receive(:pointer).and_return(Persistence::Pointer.new(:composition))
+      @app.should_receive(:create).and_return composition
+      substance = flexmock 'substance'
+      substance.should_receive(:oid)
+      @app.should_receive(:substance).and_return substance
       swissindex = flexmock('swissindex', :search_item => nil)
       server = flexmock('server') do |serv|
         serv.should_receive(:session).and_yield(swissindex)
@@ -1915,6 +1930,12 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:package_by_ikskey).and_return nil
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
+      composition = flexmock 'composition'
+      composition.should_receive(:pointer).and_return(Persistence::Pointer.new(:composition))
+      @app.should_receive(:create).and_return composition
+      substance = flexmock 'substance'
+      substance.should_receive(:oid)
+      @app.should_receive(:substance).and_return substance
       expected_updates = {}
       # ptr = Persistence::Pointer.new [:registration, '39271']
       ptr = reg.pointer
@@ -1927,7 +1948,9 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       seq.should_receive(:pointer).and_return ptr
       seq.should_receive(:active_agents).and_return([flexmock('active-agent')])
       reg.should_receive(:sequence).and_return(seq)
+      seq.should_receive(:bag_compositions).and_return []
       expected_updates.store ptr.creator, [{:name_base=>"Ponstan"}, seq]
+      @app.should_receive(:update).and_return seq
       ptr += [:package, '028']
       pac = flexmock 'package'
       pac.should_receive(:sl_entry).and_return nil
@@ -2000,6 +2023,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       ptr = Persistence::Pointer.new [:registration, '39271']
       seq.should_receive(:pointer).and_return ptr.clone + [:sequence, '02']
       seq.should_receive(:active_agents).and_return([flexmock('active-agent', {:same_as? => true})])
+      seq.should_receive(:bag_compositions).and_return []
       reg.should_receive(:sequences).and_return({'02' => seq})
       package.should_receive(:registration).and_return nil
       @app.should_receive(:package_by_ikskey).and_return nil
@@ -2054,6 +2078,12 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
       @app.should_receive(:delete)
+      composition = flexmock 'composition'
+      composition.should_receive(:pointer).and_return(Persistence::Pointer.new(:composition))
+      @app.should_receive(:create).and_return composition
+      substance = flexmock 'substance'
+      substance.should_receive(:oid)
+      @app.should_receive(:substance).and_return substance
       expected_updates = {}
       ptr = Persistence::Pointer.new [:registration, '39271']
       expected_updates.store ptr, { :generic_type => :original,
@@ -2080,9 +2110,10 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :limitation        => nil,
       }
       expected_updates.store ptr.creator, data
-      @app.should_receive(:update).and_return do |ptr, data|
+      @app.should_receive(:update).once.with_any_args.and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
+      @app.should_receive(:update).with_any_args
       @plugin.update_preparations StringIO.new(@src) # TODO:
       listener = @plugin.preparations_listener
       assert_equal [], listener.conflicted_registrations
@@ -2100,6 +2131,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       end
       sequence = flexmock('sequence_1', opts)
       sequence.should_receive(:atc_class).and_return(atc_class)
+      sequence.should_receive(:bag_compositions).and_return []
       if steps = opts[:steps]
         iksnr, seqnr, pacnr = steps
         ptr = Persistence::Pointer.new [:registration, iksnr], [:sequence, seqnr]
