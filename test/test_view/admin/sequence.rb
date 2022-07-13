@@ -392,6 +392,7 @@ class TestSequenceComposite <Minitest::Test
       m.should_receive(:compositions).and_return([composition])
       m.should_receive(:packages).and_return({'key' => @package})
       m.should_receive(:pointer)
+      m.should_receive(:bag_compositions).and_return([])
     end
     @composite = ODDB::View::Admin::SequenceComposite.new(@model, @session)
   end

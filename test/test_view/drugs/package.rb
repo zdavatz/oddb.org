@@ -223,6 +223,7 @@ class TestODDBViewDrugsPackageComposite <Minitest::Test
                           :iksnr => 'iksnr',
                           :seqnr => 'seqnr',
                           :compositions => [composition],
+                          :bag_compositions => [],
                           )
     @result_list_components = flexmock('result_list_components',
                                        :has_value? => false,
@@ -427,6 +428,7 @@ class TestPackage <Minitest::Test
     sequence   = flexmock('sequence',
                           :division => 'division',
                           :compositions => [composition],
+                          :bag_compositions => [],
                          )
     @result_list_components = flexmock('result_list_components',
                                        :has_value? => false,

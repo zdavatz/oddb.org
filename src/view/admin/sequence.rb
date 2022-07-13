@@ -44,7 +44,8 @@ class ActiveAgents < HtmlGrid::List
   SORT_HEADER = false
   LEGACY_INTERFACE = false
   LABELS = false
-  def initialize(model, session, container = nil)
+  def initialize(model, session, container = nil, use_bag_title = false)
+    @use_bag_title = use_bag_title
     components.delete([1,0]) unless model.find{ |x| x.dose && x.dose.qty != 0 }
     components.delete([2,0]) unless model.find{ |x| x.more_info}
     super(model, session, container)
@@ -66,6 +67,12 @@ class ActiveAgents < HtmlGrid::List
     if model && sub = model.substance
       sub.send(@session.language)
     end
+  end
+  def lookandfeel_key(component)
+    if component == :substances && @use_bag_title
+      return :bag_substances
+    end
+    super(component)
   end
 end
 class InactiveAgents < HtmlGrid::List
@@ -206,13 +213,26 @@ class CompositionList < HtmlGrid::Composite
       sub_index += 1
     end
     index = (sub_index > 0) ? 1 : 0
-    if model.active_agents and model.active_agents.size > 0
+    show_active_agents = model.active_agents and model.active_agents.size > 0
+    if show_active_agents
       @components[[index,sub_index]] = :active_agents
       sub_index += 1
+    end
+    if !@bag_composition.nil? and @bag_composition.active_agents and @bag_composition.active_agents.size > 0
+      if show_active_agents
+        @components[[index + 1,sub_index - 1]] = :bag_active_agents
+      else
+        @components[[index,sub_index]] = :bag_active_agents
+        sub_index += 1
+      end
     end
     if model.inactive_agents and model.inactive_agents.size > 0
       @components[[index,sub_index]] = :inactive_agents
     end
+  end
+  def initialize(model, session, container, bag_composition = nil)
+    @bag_composition = bag_composition
+    super(model, session, container)
   end
   def init
     reorganize_components
@@ -241,6 +261,13 @@ class CompositionList < HtmlGrid::Composite
     agents = model.active_agents
     return nil unless agents.size > 0
     elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self)
+    elem.css_class = 'left italic'
+    elem
+  end
+  def bag_active_agents(model, session=@session)
+    agents = @bag_composition.active_agents
+    return nil unless agents.size > 0
+    elem = View::Admin::ActiveAgents.new(agents.sort{ |a,b| a.substance.to_s <=> b.substance.to_s }, @session, self, true)
     elem.css_class = 'left italic'
     elem
   end
@@ -274,9 +301,16 @@ class RootCompositionList < CompositionList
 end
 class Compositions < HtmlGrid::DivList
   attr_reader :list_index
-  COMPONENTS = { [0,0] => CompositionList }
+  COMPONENTS = { [0,0] => :composition_list }
   def init
     super
+  end
+  def initialize(model, session, container = nil, bag_composition = nil)
+    @bag_composition = bag_composition
+    super(model, session, container)
+  end
+  def composition_list(model, session=@session)
+    CompositionList.new(model, session, self, @bag_composition)
   end
 end
 class RootCompositions < Compositions
@@ -687,7 +721,8 @@ class SequenceComposite < HtmlGrid::Composite
     super
   end
   def compositions(model, session=@session)
-    Compositions.new(model.compositions, @session, self)
+    bag_composition = !model.bag_compositions.nil? && !model.bag_compositions.empty? && model.bag_compositions[0]
+    Compositions.new(model.compositions, @session, self, bag_composition || nil)
   end
   def division(model, session)
     View::Drugs::DivisionComposite.new(model.division, session, self)

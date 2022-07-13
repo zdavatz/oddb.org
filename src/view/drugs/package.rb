@@ -285,7 +285,8 @@ class PackageComposite < HtmlGrid::Composite
     super
   end
   def compositions(model, session=@session)
-    View::Admin::Compositions.new(model.sequence.compositions, @session, self)
+    bag_composition = !model.sequence.bag_compositions.nil? && !model.sequence.bag_compositions.empty? && model.sequence.bag_compositions[0]
+    View::Admin::Compositions.new(model.sequence.compositions, @session, self, bag_composition || nil)
   end
   def division(model, session)
     division = nil
