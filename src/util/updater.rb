@@ -447,11 +447,15 @@ module ODDB
         change_flags = values[:change_flags]
         if previous = log.change_flags
           previous.each do |ptr, flgs|
-            if flags = change_flags[ptr]
-              flags.concat flgs
-              flags.uniq!
-            else
-              change_flags[ptr] = flgs
+            # It seems like a bug caused nil key to be saved, it's fixed but we have to remove the existing nil key from the database
+            # https://github.com/zdavatz/oddb.org/issues/175
+            if !ptr.nil?
+              if flags = change_flags[ptr]
+                flags.concat flgs
+                flags.uniq!
+              else
+                change_flags[ptr] = flgs
+              end
             end
           end
         end
