@@ -487,6 +487,9 @@ module ODDB
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @app.package_by_ikskey(@text)
             @out_of_trade = @pack.out_of_trade if @pack
+            if !@pack.nil? && @pack.pointer.nil?
+              @pack.fix_pointers
+            end
           end
 
           if @text.strip.empty?
