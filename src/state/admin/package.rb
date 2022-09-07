@@ -141,6 +141,9 @@ module PackageMethods
       comforms = input[:commercial_form] || {}
       counts.each { |idx, count|
         part = @model.parts.at(idx.to_i)
+        if !part.nil? and part.pointer.nil?
+          @model.fix_pointers
+        end
         ptr = part ? part.pointer : (@model.pointer + :part).creator
         current = { :package => @model.pointer }
         [:multi, :count, :measure, :composition].each { |key|

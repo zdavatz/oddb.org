@@ -215,7 +215,11 @@ module ODDB
         else 
           case key
           when :measure, :scale
-            values[key] = Dose.new(*value) if value
+            if value == ""
+              values[key] = nil
+            else
+              values[key] = Dose.new(*value) if value
+            end
           when :multi, :count, :addition
             values[key] = value.to_i if value
           end
