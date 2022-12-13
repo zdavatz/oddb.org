@@ -9,8 +9,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/Niklaus/Index).
 
 ## Requirements
-* git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-* rbenv install 3.1.0
+* `git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build`
+* `rbenv install 3.1.0`
 * see Guide.txt
 
 ## Useful commands
