@@ -11,6 +11,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ## Requirements
 * `git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build`
 * `rbenv install 3.1.0`
+* apache2, daemontools, daemontools-run
 * see Guide.txt
 
 ## Useful commands
