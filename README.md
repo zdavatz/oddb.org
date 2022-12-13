@@ -11,7 +11,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ## Requirements
 * `git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build`
 * `rbenv install 3.1.0`
-* apache2, daemontools, daemontools-run, pkg-config, libmagickwand-dev, libpq-dev
+* `sudo apt-get install apache2 daemontools daemontools-run pkg-config libmagickwand-dev libpq-dev`
+* `bzcat 22:00-postgresql_database-ch_oddb-backup.bz2 | su -c psql -l postgres -p 5433 ch_odd`
 * see Guide.txt
 
 ## Useful commands
