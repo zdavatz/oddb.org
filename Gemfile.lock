@@ -250,10 +250,10 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.7.0)
     webrobots (0.1.2)
-    ydbd-pg (0.5.8)
+    ydbd-pg (0.5.9)
       pg
-      ydbi (= 0.5.8)
-    ydbi (0.5.8)
+      ydbi (= 0.5.9)
+    ydbi (0.5.9)
       deprecated (= 2.0.1)
     ydiffy (0.0.2)
     ydocx (1.2.6)
