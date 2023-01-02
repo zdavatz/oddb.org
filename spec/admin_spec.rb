@@ -81,7 +81,7 @@ credit org.oddb.download
   end
 
   def upload_pat_info(original)
-    expect(File.exists?(original)).to be true
+    expect(File.exist?(original)).to be true
     FileUtils.cp(original, DownloadDir, :verbose => true)
     @browser.select_list(name: "search_type").select("Swissmedic-# (5-stellig)")
     @browser.text_field(id:  "searchbar").set("43788")

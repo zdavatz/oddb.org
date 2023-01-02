@@ -50,7 +50,7 @@ homeUrl ||= "http://oddb-ci2.dyndns.org"
 OddbUrl = homeUrl
 Flavor    = OddbUrl.match(/just-medical/) ?  'just-medical' : 'gcc'
 ImageDest = File.join(Dir.pwd, 'images')
-FileUtils.makedirs(ImageDest, :verbose => true) unless File.exists?(ImageDest)
+FileUtils.makedirs(ImageDest, :verbose => true) unless File.exist?(ImageDest)
 
 if RUBY_PLATFORM.match(/mingw/)
   require 'watir'
