@@ -3,8 +3,8 @@ migelDir= File.join(File.dirname(File.dirname(__FILE__)), '..', 'migel')
 DRB_TEST_URI = 'druby://127.0.0.1:33000'
 require 'spec_helper'
 
-if !File.exists?(migelDir)
-  puts "Cannot run spec tests for migel as #{migelDir} #{File.exists?(migelDir)} not found"
+if !File.exist?(migelDir)
+  puts "Cannot run spec tests for migel as #{migelDir} #{File.exist?(migelDir)} not found"
   else
   $LOAD_PATH << File.join(File.dirname(File.dirname(__FILE__)), 'src')
   $LOAD_PATH << File.join(migelDir, 'lib')

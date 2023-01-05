@@ -111,8 +111,8 @@ paypal_receiver:     test_paypal@ywesee.com
       puts "Generated #{Oddb_yml}"
     end
     error_msg = "File #{Oddb_yml} should exist and be correctly configured for sandbox.paypal.com"
-    puts error_msg unless File.exists?(Oddb_yml)
-    return false unless File.exists?(Oddb_yml)
+    puts error_msg unless File.exist?(Oddb_yml)
+    return false unless File.exist?(Oddb_yml)
     oddb_config = YAML.load_file(Oddb_yml)
     return false unless oddb_config['paypal_server']
     return false unless oddb_config['paypal_receiver']

@@ -95,7 +95,7 @@ describe "ch.oddb.org" do
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
       ean13 = /\d{13}/.match(@browser.url)
-      skip "Could not find Oddb_log_file #{Oddb_log_file}" unless File.exists?(Oddb_log_file)
+      skip "Could not find Oddb_log_file #{Oddb_log_file}" unless File.exist?(Oddb_log_file)
       expect(File.exist?(Oddb_log_file)).to eql true
       cmd = "tail -1 #{Oddb_log_file}"
       log_line =  CGI.unescape(`#{cmd}`).split
