@@ -13,27 +13,22 @@ class ODDB::View::Ajax::DDDChart
   attr_reader :data
 end
 
-def skip_under_github_actions
-  skip("For unknown reason this test fails via github actions: Magick::ImageMagickError: unable to read font `(null)' @ error/annotate.c/RenderFreetype/1367'") if ENV['TEST_ENV']  && ENV['TEST_ENV'].eql?('ubuntu-ci')
-end
-
 class TestSideBar <Minitest::Test
   def setup
-    skip_under_github_actions
     @sidebar = SideBar.new
   end
   def test_setup_graph_measurements
     @sidebar.instance_eval('@maximum_value = 123')
     @sidebar.instance_eval('@spread = 0.0')
     @sidebar.instance_eval('@marker_count = 1.0')
-    assert_in_delta(448.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(435.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_setup_graph_measurements__hide_line_markers
     @sidebar.instance_eval('@maximum_value = 123')
     @sidebar.instance_eval('@spread = 0.0')
     @sidebar.instance_eval('@marker_count = 1.0')
     @sidebar.instance_eval('@hide_line_markers = 0')
-    assert_in_delta(477.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(468.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_setup_graph_measurements__has_left_labels
     @sidebar.instance_eval('@maximum_value = 123')
@@ -41,7 +36,7 @@ class TestSideBar <Minitest::Test
     @sidebar.instance_eval('@marker_count = 1.0')
     @sidebar.instance_eval('@has_left_labels = true')
     @sidebar.labels = {'key' => ' 1 /x '}
-    assert_in_delta(448.0, @sidebar.setup_graph_measurements, 0.01)
+    assert_in_delta(435.0, @sidebar.setup_graph_measurements, 0.01)
   end
   def test_draw_title
     @sidebar.instance_eval('@hide_title = nil')
@@ -102,7 +97,6 @@ end
 
 class TestDDDChart <Minitest::Test
   def setup_test(price = 123)
-    skip_under_github_actions
     @package  = flexmock('package'+ name,
                         :sequence             => 'sequence',
                        )
