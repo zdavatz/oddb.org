@@ -47,6 +47,7 @@ gem 'rclconf'
 gem 'rmagick'
 gem 'racc'
 gem 'rack'
+gem 'rackup'
 gem 'rubyXL'
 gem 'ruby-units'
 gem "rubyntlm"
