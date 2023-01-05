@@ -88,17 +88,17 @@ module ODDB
 			lines
 		end
 		def lines_without_title
-      @additional_lines.each { |line| line = to_utf(line) }
-      to_utf(@name)
 			lines = ([
 				@name,
 			] + @additional_lines +
 			[
 				@address,
 				location_canton,
-		  ]).delete_if { |line| line.to_s.empty? }
-      lines.each{|line| line.strip!}
-      lines
+		  ])
+			.map { |line| to_utf(line) }
+			.delete_if { |line| line.to_s.empty? }
+			.map { |line| line.strip }
+			lines
 		end
 		def location_canton
       to_utf(@canton)
