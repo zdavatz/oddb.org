@@ -94,9 +94,9 @@ module ODDB
         if @change_log &&  @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
           return
         end
-        self.change_log.push(item)
+        @change_log.push(item)
       rescue => error
-        self.change_log = [item]
+        @change_log = [item]
       end
       self.odba_store
       GC.enable unless already_disabled
