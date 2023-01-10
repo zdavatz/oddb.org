@@ -8,7 +8,6 @@ gem 'net-imap', require: false
 gem 'net-pop', require: false
 
 gem 'cmath'
-# gem 'mathn'
 gem 'minitar'
 gem 'webrick'
 gem 'rss'
@@ -43,7 +42,6 @@ gem 'activesupport'
 gem 'paypal'
 gem 'parslet'
 gem 'pg'
-gem 'rackup'
 gem 'rclconf'
 gem 'rmagick'
 gem 'racc'

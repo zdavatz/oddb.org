@@ -189,7 +189,7 @@ module ODDB
         puts "FachinfoDocument::ChangeLogItem: Error #{error} for #{old_text ? old_text.split("\n")[0..2] : ''}"
       end
       already_disabled = GC.disable
-      self.change_log.push(item)
+      @change_log.push(item)
       self.odba_store
       GC.enable unless already_disabled
     end
