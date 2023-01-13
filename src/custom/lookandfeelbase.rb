@@ -15,6 +15,14 @@ module ODDB
   class Doctor; end
   class Hospital; end
   class LookandfeelBase <  SBSM::Lookandfeel
+
+    def base_url
+      # The reverse proxy seems to pass the 443 port along, which generates form action url with port,
+      # The target doesn't have the current session cookie and therefore got errors. #189
+      # We need to remove the port for http and https, but not when called with a fixed port, eg. 8012 for apache
+      super.sub(/:[443|80]\//, '')
+    end
+
     def google_analytics_token
       "UA-118968446-1"
     end

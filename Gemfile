@@ -8,7 +8,6 @@ gem 'net-imap', require: false
 gem 'net-pop', require: false
 
 gem 'cmath'
-# gem 'mathn'
 gem 'minitar'
 gem 'webrick'
 gem 'rss'

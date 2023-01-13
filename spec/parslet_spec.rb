@@ -1,5 +1,5 @@
 VERBOSE_MESSAGES = false
-if File.exists?("#{Dir.pwd}/lib/oddb2xml/parslet_compositions.rb")
+if File.exist?("#{Dir.pwd}/lib/oddb2xml/parslet_compositions.rb")
   require_relative "../lib/oddb2xml/parslet_compositions"
 else
   puts :ParseFailed

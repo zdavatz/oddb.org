@@ -13,7 +13,7 @@ desc 'Build quanty'
 task :quanty do
   parse_rb_name = File.join(File.dirname(__FILE__), 'src/util/quanty/parse.rb')
   quanty_rb_name = File.join(File.dirname(__FILE__), 'src/util/quanty.rb')
-  unless File.exists?(parse_rb_name) and File.exists?(quanty_rb_name)
+  unless File.exist?(parse_rb_name) and File.exist?(quanty_rb_name)
     puts "Rebuilding #{parse_rb_name } and #{quanty_rb_name}"
     FileUtils.makedirs(File.join(File.dirname(__FILE__), 'data/pdf'))
     Dir.chdir(File.join(File.dirname(__FILE__), 'data/quanty'))
