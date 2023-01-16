@@ -305,6 +305,30 @@ b m(image)
     ensure
       ENV['LANGUAGE'] = saved_language
     end
+
+    def test_change_log_item_utf8
+      @oldText = "Crilomus®\nL04AD02"
+      @newText = "Crilomus®\nCodice ATC L04AD02FarmacodinamicaTacrolimus &amp;egrav"
+      saved_language = ENV['LANGUAGE']
+      ENV['LANGUAGE'] = 'LANG=en_US.UTF-8'
+      item = @doc.add_change_log_item @oldText, @newText
+      item = @doc.change_log[0]
+      assert_instance_of ODDB::FachinfoDocument::ChangeLogItem, item
+      assert_equal [item], @doc.change_log
+      assert_equal @@today, item.time
+      assert_instance_of Diffy::Diff, item.diff
+      expected = %(<div class="diff">
+  <ul>
+    <li class="del"><del><span class="symbol">-</span>L04AD02</del></li>
+    <li class="ins"><ins><span class="symbol">+</span><strong>Codice ATC </strong>L04AD02<strong>FarmacodinamicaTacrolimus &amp;amp;egrav</strong></ins></li>
+  </ul>
+</div>
+)
+      assert_equal expected, item.diff.to_s(:html)
+      assert_equal @@today.to_s, item.time.to_s
+    ensure
+      ENV['LANGUAGE'] = saved_language
+    end
     def test_add_change_log_item_with_time
       item = @doc.add_change_log_item 'old text', 'new text', @@one_year_ago
       item = @doc.change_log[0]
