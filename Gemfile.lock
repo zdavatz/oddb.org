@@ -258,7 +258,7 @@ GEM
       ydbi (= 0.5.9)
     ydbi (0.5.9)
       deprecated (= 2.0.1)
-    ydiffy (0.0.2)
+    ydiffy (0.0.4)
     ydocx (1.2.6)
     yml_reader (0.7)
     yus (1.0.6)
