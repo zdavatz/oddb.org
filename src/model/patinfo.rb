@@ -88,7 +88,7 @@ module ODDB
       @change_log ||= []
       item = ChangeLogItem.new
       item.time = date
-      item.diff =  Diffy::Diff.new(old_text ? old_text.to_s : '', new_text, options)
+      item.diff =  Diffy::Diff.new(old_text ? old_text.to_s : '', new_text.to_s, options)
       already_disabled = GC.disable
       begin
         if @change_log &&  @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
