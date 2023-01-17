@@ -289,7 +289,7 @@ module ODDB
      old_text = patinfo.description(lang).to_s
      raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.is_a?(ODDB::PatinfoDocument)
      raise "Must pass ODDB::Patinfo" unless patinfo.is_a?(ODDB::Patinfo)
-     old_size = defined?(patinfo.description(lang).change_log) ? patinfo.description(lang).size : 0
+     old_size = defined?(patinfo.description(lang).change_log) ? old_text.size : 0
      if old_text.eql?(new_patinfo_lang.to_s)
         LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
       else

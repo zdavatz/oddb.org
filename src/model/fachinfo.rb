@@ -179,7 +179,7 @@ module ODDB
       @change_log ||= []
       item = ChangeLogItem.new
       item.time = date
-      item.diff =  Diffy::Diff.new(old_text ? old_text : '', new_text, options)
+      item.diff =  Diffy::Diff.new(old_text ? old_text.to_s : '', new_text.to_s, options)
       begin
         if @change_log and @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
           puts "FachinfoDocument::ChangeLogItem: Don't add duplicated entry #{old_text ? old_text.split("\n")[0..2] : ''}"
