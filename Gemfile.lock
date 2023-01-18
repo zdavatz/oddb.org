@@ -8,7 +8,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.1)
+    activesupport (7.0.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -26,7 +26,7 @@ GEM
     clogger (2.3.1)
       rack (>= 1.0, < 3.0)
     cmath (1.0.0)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
     crack (0.4.5)
       rexml
@@ -225,7 +225,7 @@ GEM
       json
     typeprof (0.21.2)
       rbs (>= 1.8.1)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
