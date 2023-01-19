@@ -17,6 +17,12 @@ class FachinfoItem < HtmlGrid::DivComposite
   DEFAULT_CLASS = View::Chapter
   def init
     @model = @model.send(@session.language)
+    @model.chapter_names.each_with_index { |name, idx|
+      if(@model.respond_to?(name) && \
+        (chapter = @model.send(name)) && !chapter.empty?)
+        components.store([0,idx], name)
+      end
+    } unless @model&.empty?
     super
   end
 end
