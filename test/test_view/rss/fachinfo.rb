@@ -21,7 +21,7 @@ class TestFachinfoItem <Minitest::Test
                           :lookandfeel => @lnf,
                           :language    => 'language'
                          )
-    language   = flexmock('language', :chapter_names => ['chapter_name'])
+    language   = flexmock('language', :chapter_names => ['chapter_name'], :empty? => true)
     flexmock(language, :language => language)
     @model     = flexmock('model', :language => language)
     @composite = ODDB::View::Rss::FachinfoItem.new(@model, @session)
@@ -44,9 +44,10 @@ class TestFachinfo <Minitest::Test
                           :lookandfeel => @lnf,
                           :language    => 'language'
                          )
-    @document   = flexmock('document',
+    @document  = flexmock('document',
                           :is_a? => true,
-                          :chapter_names => ['chapter_name']
+                          :chapter_names => ['chapter_name'],
+                          :empty? => true,
                          )
     @model     = flexmock('model',
                           :localized_name => 'localized_name',
