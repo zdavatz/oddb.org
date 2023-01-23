@@ -26,3 +26,6 @@ Disallow: /de/evidentia
 Disallow: /fr/evidentia
 Disallow: /en/evidentia
 Disallow: /resources/dojo
+
+User-agent: SemrushBot
+Disallow: /
