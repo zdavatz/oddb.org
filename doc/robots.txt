@@ -41,3 +41,6 @@ Disallow: /
 
 User-agent: bingbot
 Disallow: /
+
+User-agent: TurnitinBot
+Disallow: /
