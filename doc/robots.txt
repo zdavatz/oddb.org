@@ -32,3 +32,6 @@ Disallow: /
 
 User-agent: PetalBot
 Disallow: /
+
+User-agent: dotbot
+Disallow: /
