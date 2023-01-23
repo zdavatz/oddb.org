@@ -29,3 +29,6 @@ Disallow: /resources/dojo
 
 User-agent: SemrushBot
 Disallow: /
+
+User-agent: PetalBot
+Disallow: /
