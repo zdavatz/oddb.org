@@ -775,43 +775,33 @@ module ODDB
       index = {}
       Languages.each do |x|
         lang = x.to_s.upcase
-        url  = "http://www.swissmedicinfo.ch/?Lang=#{lang}"
+        url  = "https://www.swissmedicinfo.ch/#{state}.aspx?Lang=#{lang}"
         # LogFile.debug "swissmedicinfo_index #{url}"
         home = @agent.get(url)
-        # behave as javascript click
-        form = home.form_with(:id => 'ctl01')
-        form['__EVENTTARGET']   = "ctl00$HeaderContent$ucSpecialSearch1$LB#{state}Auth"
-        form['__EVENTARGUMENT'] = ''
-        res = form.submit
+        res = home.body
         names = {}
-        {# typ => [name, date]
-          'FI' => [1, 3],
-          'PI' => [0, 2],
-        }.each_pair do |typ, i|
-          _names = []
-          res.search("//table[@id='MainContent_ucSearchResult1_ucResultGrid#{typ}_GVMonographies']/tr").each do |tr|
-            tds = tr.search('td')
-            unless tds.empty?
-              next unless tds[i.first] && tds[i.last]
-              _names << [tds[i.first].text, tds[i.last].text]
-            end
-          end
-          names[typ.downcase.intern] = _names.sort.reverse end
+        home.search("table").each do |table|
+            _names = []
+            typ = 'PI'
+            typ = 'FI' if /FI_/.match(table.attributes['id'].value)
+            trs = table.search('tr')
+            trs.each_with_index do |tr, idx|
+              tds = tr.search('td');
+              next unless tds.first && tds.last
+              _names << [tds.first.text, tds.last.text]
+            end; 0
+          names[typ.downcase.intern] = _names.sort.reverse
+        end; 0
         index[lang.downcase.intern] = names
       end
       index
     end
     def textinfo_swissmedicinfo_index
       setup_default_agent
-      url = 'http://www.swissmedicinfo.ch/'
-      # accept form
-      accept = @agent.get(url)
-      form   = accept.form_with(:id => 'ctl01')
-      button = form.button_with(:name => 'ctl00$MainContent$btnOK')
-      form.submit(button) # discard
+      url = 'https://www.swissmedicinfo.ch/'
       index = {}
-      %w[New Change].each do |state|
-        index[state.downcase.intern] = swissmedicinfo_index(state)
+      %w[NewTexts UpdatedTexts].each do |state|
+          index[state.downcase.intern] = swissmedicinfo_index(state)
       end
       index
     end
