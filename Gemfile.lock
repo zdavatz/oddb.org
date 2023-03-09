@@ -133,7 +133,7 @@ GEM
     pg (1.4.5)
     public_suffix (4.0.7)
     racc (1.6.0)
-    rack (2.2.6.2)
+    rack (2.2.6.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rackup (0.1.0)
