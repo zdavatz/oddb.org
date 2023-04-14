@@ -1202,6 +1202,8 @@ public
         end
         part.odba_store
       end
+    rescue ODBA::OdbaError => e
+      LogFile.debug "Skipping #{e} #{reg}, #{seq}, #{row}"
     end
     def update_registration(row, opts = {})
       GC.start
