@@ -159,6 +159,9 @@ module ODDB
       #   Process4, delete pharmacode if there is no eancode in swissindex
       update_pharmacode
       return true
+    rescue ODBA::OdbaError => error
+      LogFile.debug "Skipping #{error}"
+      # skip
     end
     def update_out_of_trade
       # Process 1

@@ -67,7 +67,12 @@ module ODDB
     def parse_refdata_xml # See als extractor.rb in oddb2xml
       debug_msg "update_atc_codes: parse_refdata_xml #{@refdata_xml}"
       data = {}
-      result = SwissRegArticleEntry.parse(IO.read(@refdata_xml).force_encoding("ISO-8859-1").encode("utf-8", replace: nil).sub(Strip_For_Sax_Machine, ''), :lazy => true)
+      result = SwissRegArticleEntry
+        .parse(
+          IO.read(@refdata_xml)
+            .force_encoding("ISO-8859-1")
+            .encode("utf-8", replace: nil)
+            .sub(Strip_For_Sax_Machine, ''))
       items = result.ARTICLE.ITEM
       items.each do |pac|
         if gtin = pac.GTIN
