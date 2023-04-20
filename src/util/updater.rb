@@ -215,9 +215,6 @@ module ODDB
       if(return_value_update_bsv)
         update_bsv_followers
       end
-      run_on_monthday(20) {
-        update_whocc
-      }
     end
     def run_random
       # no task
