@@ -208,13 +208,6 @@ module ODDB
       # textinfo
       update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
       update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
-
-      return_value_update_bsv = update_bsv
-      LogFile.append('oddb/debug', " return_value_update_bsv=" + return_value_update_bsv.inspect.to_s, Time.now)
-      #if(update_bsv)
-      if(return_value_update_bsv)
-        update_bsv_followers
-      end
     end
     def run_random
       # no task
