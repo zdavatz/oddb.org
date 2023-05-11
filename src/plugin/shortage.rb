@@ -184,14 +184,14 @@ module ODDB
       end
       @shortages.each do |shortage|
         added_info = OpenStruct.new
-        if shortage.parent.css('td').size != 9 && shortage.parent.css('td').size != 27
+        if shortage.parent.css('td').size != 11 && shortage.parent.css('td').size != 27
           raise "Unable to parse #{shortage.text} in #{SOURCE_URI}. Found only #{shortage.parent.css('td').size} tds"
         end
         added_info.gtin =  shortage.text
         lines = shortage.parent.text.split("\n")
         added_info.shortage_last_update = Date.strptime(shortage.parent.css('td')[4].text,"%d.%m.%Y").to_s
-        added_info.shortage_state = shortage.parent.css('td')[6].text
-        added_info.shortage_delivery_date = shortage.parent.css('td')[7].text
+        added_info.shortage_state = shortage.parent.css('td')[3].text
+        added_info.shortage_delivery_date = shortage.parent.css('td')[1].text
         added_info.shortage_link  = (BASE_URI + '/' + shortage.parent.css('td')[0].children.first.children.first.attributes.first.last.value).clone
         @found_shortages[added_info.gtin] = added_info
       end
