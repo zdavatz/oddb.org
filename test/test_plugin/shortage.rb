@@ -180,11 +180,11 @@ IKSNR not found in oddb database:
 
 
 DrugShortag changes:
-7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-02-24
-              shortage_delivery_date: shortage_delivery_date => offen
+7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-02-22
+              shortage_delivery_date: shortage_delivery_date => 2024
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
 7680519690140;atc;pack_mock shortage_last_update: shortage_state => 2017-01-13
-              shortage_delivery_date: shortage_delivery_date => offen
+              shortage_delivery_date: shortage_delivery_date => 2024
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786
 
 DrugShortag deletions:
@@ -198,18 +198,17 @@ DrugShortag deletions:
     end
     def test_changes_with_test_file
       @plugin.update(@agent)
-      expected = {"7680623550019;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-02-24", "shortage_delivery_date: shortage_delivery_date => offen",
-                                                  "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"],
-                  "7680519690140;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-01-13", "shortage_delivery_date: shortage_delivery_date => offen",
-                                                  "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786"]}
+      expected = {
+        "7680623550019;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-02-22", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934"],
+        "7680519690140;atc;pack_mock"=>["shortage_last_update: shortage_state => 2017-01-13", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786"]
+      }
       assert_equal(expected , @plugin.changes_shortages)
     end
     def check_csv_lines(content)
       lines = content.split("\n")
       assert_equal('GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)',
                    lines.first.strip)
-      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
-      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;offen;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;2024;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
 
     end
     def test_export_csv
@@ -294,7 +293,7 @@ DrugShortag deletions:
       assert(/Changed\s+2\s+shortages/.match(result))
       expected = %(DrugShortag changes:
 7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-04-22
-              shortage_delivery_date: shortage_delivery_date => in Abklärung / en cours de clarification
+              shortage_delivery_date: shortage_delivery_date => 2024
               shortage_link: shortage_link => https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2934
 )
       assert(result.index(expected))
