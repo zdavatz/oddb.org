@@ -192,7 +192,7 @@ module ODDB
         added_info.shortage_last_update = Date.strptime(shortage.parent.css('td')[4].text,"%d.%m.%Y").to_s
         added_info.shortage_state = shortage.parent.css('td')[3].text
         added_info.shortage_delivery_date = shortage.parent.css('td')[1].text
-        added_info.shortage_link  = (BASE_URI + '/' + shortage.parent.css('td')[0].children.first.children.first.attributes.first.last.value).clone
+        added_info.shortage_link  = (shortage.parent.css('td')[0].children.first.attributes.first.last.value).clone
         @found_shortages[added_info.gtin] = added_info
       end
       old_packages_with_shortage = @app.active_packages.find_all do |package|
