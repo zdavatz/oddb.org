@@ -69,9 +69,18 @@ module Job
         values =[]
       end
       if values.length == 3
-        keys  = [:pid, :basename, :time]
-        array = [keys, values].transpose.flatten
-        @running_job = Hash[*array]
+        pid = values[0]
+        puts "Found pid #{pid} in job.pid"
+        if (Process.getpgid(pid.to_i) rescue nil)
+          process = Process.getpgid(pid.to_i) rescue nil
+          puts "Job #{process} is running"
+          keys  = [:pid, :basename, :time]
+          array = [keys, values].transpose.flatten
+          @running_job = Hash[*array]
+        else
+          puts "Job is not running, deleting staled pid file"
+          File.unlink(PID_FILE)
+        end
       end
     end
     @running_job
