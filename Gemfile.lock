@@ -320,7 +320,7 @@ DEPENDENCIES
   rake
   rbs
   rclconf
-  rmagick
+  rmagick (= 4.2.4)
   rspec
   rspec-core
   rss
