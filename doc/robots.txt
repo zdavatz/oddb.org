@@ -47,3 +47,6 @@ Disallow: /
 
 User-agent: Amazonbot
 Disallow: /
+
+User-agent: barkrowler
+Disallow: /
