@@ -44,3 +44,6 @@ Disallow: /
 
 User-agent: TurnitinBot
 Disallow: /
+
+User-agent: Amazonbot
+Disallow: /do-not-crawl/
