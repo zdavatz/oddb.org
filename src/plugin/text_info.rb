@@ -293,10 +293,7 @@ module ODDB
      if old_text.eql?(new_patinfo_lang.to_s)
         LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
       else
-        new_patinfo_lang.change_log = patinfo.description(lang).change_log
-        new_patinfo_lang.add_change_log_item(old_text, new_patinfo_lang)
-        new_patinfo_lang.odba_store
-        patinfo.descriptions[lang] = new_patinfo_lang
+        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
         patinfo.odba_store
         LogFile.debug "store_patinfo_change_diff: #{lang} #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size} -> #{patinfo.description(lang).change_log.size}"
       end
@@ -317,6 +314,10 @@ module ODDB
           package.patinfo.odba_store
       end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
       if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+        old_ti = package.patinfo;  Languages.each do |old_lang|
+          next if old_lang.eql?(lang)
+          eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
+        end
         msg += ' change_diff'
         store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
       elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
@@ -903,6 +904,7 @@ module ODDB
       return name
     end
     def extract_image(html_file, name, type, lang, iksnrs)
+      LogFile.debug "Extracting image to #{name}"
       if html_file && File.exist?(html_file)
         resource_dir = (File.join(ODDB::IMAGE_DIR, type.to_s, lang.to_s))
         FileUtils.mkdir_p(resource_dir)
@@ -1274,7 +1276,7 @@ module ODDB
         return
       end
       styles = res[1]
-      extract_image(html_name, meta_info.title, meta_info.type, meta_info.lang, meta_info.authNrs)
+      textinfo_pi_name = nil
       if type == :fi
         if is_same_html && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
           LogFile.debug "parse_textinfo #{__LINE__} #{meta_info.iksnr} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
@@ -1292,7 +1294,19 @@ module ODDB
         end
         textinfo_pi = @parser.parse_patinfo_html(html_name, @format, meta_info.title, styles)
         update_patinfo_lang(meta_info, { meta_info.lang => textinfo_pi } )
+        if textinfo_pi.respond_to?(:name)
+          textinfo_pi_name = textinfo_pi.name
+        end
         textinfo_pi = nil
+      end
+      # Extract image to path generated from XML title,
+      # This should be the "correct" path
+      extract_image(html_name, meta_info.title, meta_info.type, meta_info.lang, meta_info.authNrs)
+      # However, ODBA is always buggy, sometimes it just doesn't like saving objects #231
+      # There's case which the Html pointed the image to a wrong path, and we cannot update
+      # the HTML because ODBA's problem, so here we extract image to path generated from the wrong H1 title,
+      if !textinfo_pi_name.nil?
+        extract_image(html_name, textinfo_pi_name.to_s, meta_info.type, meta_info.lang, meta_info.authNrs)
       end
       LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} textinfo  #{textinfo.to_s.split("\n")[0..2]}" if  self.respond_to?(:textinfo)
       if reg

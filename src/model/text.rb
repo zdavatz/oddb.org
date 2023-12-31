@@ -13,7 +13,7 @@ module ODDB
     class ImageLink
       attr_accessor :src, :style
       def attributes
-        { 'src' => @src, 'style' => @style }
+        { 'src' => @src, 'style' => @style, 'alt' => '' }
       end
       def clean!
       end
