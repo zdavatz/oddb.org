@@ -1294,7 +1294,9 @@ module ODDB
         end
         textinfo_pi = @parser.parse_patinfo_html(html_name, @format, meta_info.title, styles)
         update_patinfo_lang(meta_info, { meta_info.lang => textinfo_pi } )
-        textinfo_pi_name = textinfo_pi.name
+        if textinfo_pi.respond_to?(:name)
+          textinfo_pi_name = textinfo_pi.name
+        end
         textinfo_pi = nil
       end
       # Extract image to path generated from XML title,

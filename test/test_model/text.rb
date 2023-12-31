@@ -30,7 +30,8 @@ module ODDB
       @link.src = '/foo/bar.gif'
       expected = {
         'src' => '/foo/bar.gif',
-        'style' => nil
+        'style' => nil,
+        'alt' => ''
       }
       assert_equal(expected, @link.attributes)
     end
