@@ -293,10 +293,7 @@ module ODDB
      if old_text.eql?(new_patinfo_lang.to_s)
         LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
       else
-        new_patinfo_lang.change_log = patinfo.description(lang).change_log
-        new_patinfo_lang.add_change_log_item(old_text, new_patinfo_lang)
-        new_patinfo_lang.odba_store
-        patinfo.descriptions[lang] = new_patinfo_lang
+        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
         patinfo.odba_store
         LogFile.debug "store_patinfo_change_diff: #{lang} #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size} -> #{patinfo.description(lang).change_log.size}"
       end
@@ -317,6 +314,10 @@ module ODDB
           package.patinfo.odba_store
       end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
       if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+        old_ti = package.patinfo;  Languages.each do |old_lang|
+          next if old_lang.eql?(lang)
+          eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
+        end
         msg += ' change_diff'
         store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
       elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
