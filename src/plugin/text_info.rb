@@ -1303,12 +1303,12 @@ module ODDB
       end
       # Extract image to path generated from XML title,
       # This should be the "correct" path
-      extract_image(html_name, meta_info.title, meta_info.type, meta_info.lang, meta_info.authNrs)
+      extract_image(html_name, meta_info.title[0,100], meta_info.type, meta_info.lang, meta_info.authNrs)
       # However, ODBA is always buggy, sometimes it just doesn't like saving objects #231
       # There's case which the Html pointed the image to a wrong path, and we cannot update
       # the HTML because ODBA's problem, so here we extract image to path generated from the wrong H1 title,
       if !textinfo_pi_name.nil?
-        extract_image(html_name, textinfo_pi_name.to_s, meta_info.type, meta_info.lang, meta_info.authNrs)
+        extract_image(html_name, textinfo_pi_name.to_s[0,100], meta_info.type, meta_info.lang, meta_info.authNrs)
       end
       LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} textinfo  #{textinfo.to_s.split("\n")[0..2]}" if  self.respond_to?(:textinfo)
       if reg
