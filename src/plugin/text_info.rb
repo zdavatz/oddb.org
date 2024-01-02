@@ -320,6 +320,8 @@ module ODDB
         end
         msg += ' change_diff'
         store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
+        package.patinfo.descriptions[lang] = patinfo_lang
+        package.patinfo.odba_store
       elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
