@@ -15,7 +15,7 @@ module ODDB
 class TextinfoHpricot
   attr_reader :name, :company
   # options for swissmedicinfo
-  attr_accessor :format, :title, :lang
+  attr_accessor :format, :title, :lang, :image_folder
   def chapter(elem)
     chapter = Text::Chapter.new
     code = nil
@@ -295,7 +295,7 @@ class TextinfoHpricot
       if src =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64($|,)/
         ptr.target.style = child[:style]
         ext       = $1
-        folder = (@title || @name)[0,100]
+        folder = @image_folder || ((@title || @name).to_s[0,100])
         name_base = File.basename(folder.to_s.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
         file_name = File.join(name_base + '_files', "#{@image_index.to_s}.#{ext}")
         lang = (@lang || 'de')

@@ -189,7 +189,7 @@ module ODDB
       writer.lang   = lang
       writer.extract(Hpricot(src), :fi, title, styles)
     end
-		def parse_patinfo_html(src, format=:documed, title='', styles = nil)
+		def parse_patinfo_html(src, format=:documed, title='', styles = nil, image_folder = nil)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
         src = File.read src
@@ -198,6 +198,7 @@ module ODDB
       writer.format = format
       writer.title  = title
       writer.lang   = lang
+      writer.image_folder = image_folder
       writer.extract(Hpricot(src), :pi, title, styles)
       # swissmedicinfo
 		end
