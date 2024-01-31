@@ -1490,8 +1490,10 @@ module ODDB
       end
 
     rescue => error
-      LogFile.debug("Error initializing #{error}. @@primary_server #{@@primary_server}") unless defined?(Minitest)
-      exit(5)
+      unless defined?(Minitest)
+        LogFile.debug("Error initializing #{error}. @@primary_server #{@@primary_server}")
+        exit(5)
+      end
     end
     def method_missing(m, *args, &block)
       @cache_mutex.synchronize do

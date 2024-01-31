@@ -5,10 +5,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'stub/odba'
 
-require 'Minitest/autorun'
+require 'minitest/autorun'
 require 'stub/oddbapp'
 require 'fileutils'
-require 'flexmock/Minitest'
+require 'flexmock/minitest'
 require 'plugin/text_info'
 require 'model/text'
 module ODDB

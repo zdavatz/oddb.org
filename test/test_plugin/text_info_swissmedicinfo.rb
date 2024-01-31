@@ -5,9 +5,9 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
-require 'Minitest/autorun'
+require 'minitest/autorun'
 require 'fileutils'
-require 'flexmock/Minitest'
+require 'flexmock/minitest'
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'stub/oddbapp'
