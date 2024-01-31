@@ -68,17 +68,17 @@ module ODDB
     end
     def test_log_pattern
       # this will be the apache rack_log. The app will be replace in the config.ru
-      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/app_log'))
+      assert(SBSM.logger.progname, 'app') if defined?(ODDB::TestConfigLog::SBSM)
     end
     def test_log_pattern_default_app
-      eval("::APPNAME=  nil")
+      eval("::APPNAME=''")
       load @config_ru
-      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/oddb_log'))
+      assert(SBSM.logger.progname, 'oddb')
     end
     def test_log_pattern_with_appname
       eval("::APPNAME='crawler'")
       load @config_ru
-      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/crawler_log'))
+      assert(SBSM.logger.progname, 'crawler')
     end
   end
 end

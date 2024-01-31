@@ -430,7 +430,7 @@ module ODDB
       LogFile.append('oddb/debug', " date=" + date.inspect.to_s, Time.now)
       values = log_info(plug)
       LogFile.append('oddb/debug', " after log_info(plug)", Time.now)
-      if !@prevalence && !defined?(MiniTest)
+      if !@prevalence && !defined?(Minitest)
         @prevalence = ODBA.cache.fetch_named('oddbapp', self) {OddbPrevalence.new}
       end
       if log = @prevalence ? pointer.resolve(@prevalence) :  OpenStruct.new

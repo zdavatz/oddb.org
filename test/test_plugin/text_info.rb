@@ -5,10 +5,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'stub/odba'
 
-require 'minitest/autorun'
+require 'Minitest/autorun'
 require 'stub/oddbapp'
 require 'fileutils'
-require 'flexmock/minitest'
+require 'flexmock/Minitest'
 require 'plugin/text_info'
 require 'model/text'
 module ODDB
@@ -25,7 +25,7 @@ module ODDB
         :details_dir
   end
 
-  class TestTextInfoPlugin <MiniTest::Test
+  class TestTextInfoPlugin <Minitest::Test
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     def setup
@@ -162,7 +162,7 @@ module ODDB
     end
   end if RUN_ALL
 
-  class TestExtractMatchedName <MiniTest::Test
+  class TestExtractMatchedName <Minitest::Test
     Nr_FI_in_AIPS_test = 4
     Nr_PI_in_AIPS_test = 1
     def teardown

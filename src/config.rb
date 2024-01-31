@@ -32,7 +32,6 @@ module ODDB
     'config'			        => default_config_files,
     'data_dir'            => File.expand_path('../data', File.dirname(__FILE__)),
     'log_dir'             => File.expand_path('../log', File.dirname(__FILE__)),
-    'log_pattern'         => File.join(Dir.pwd, defined?(MiniTest) ? 'test/log' : 'log','/%Y/%m/%d/app_log'),
     'url_bag_sl_zip'      => 'http://www.xn--spezialittenliste-yqb.ch/File.axd?file=XMLPublications.zip',
     'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
     'server_url'          => SERVER_URI,

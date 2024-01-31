@@ -40,22 +40,30 @@ begin # with a rescue
 
   load 'config.rb'
 
-  log_dir = Date.today.strftime("./log/%Y/")
+  log_dir = Dir.pwd + Date.today.strftime("/log/%Y/")
   FileUtils.mkdir_p(log_dir)
-  SBSM.logger= Logger.new(log_dir + process.to_s, 'daily')
+  $stdout.puts "log_dir now #{log_dir}"
+  SBSM.logger= Logger.new(log_dir + process.to_s + ".log", 'daily')
   # We want to redirect the standard error also to the logger
   # next line found via https://stackoverflow.com/questions/9637092/redirect-stderr-to-logger-instance
-  $stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
-
+#  $stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
+  SBSM.logger.progname = process.to_s;
   SBSM.logger.level = Logger::WARN
 
-  unless defined?(MiniTest) # do real startup
+  unless defined?(Minitest) # do real startup
     require 'util/oddbapp'
     require 'util/rack_interface'
-    require 'etc/db_connection'
-
-    File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
-      fh.puts "15"
+    begin
+      require 'etc/db_connection'
+    rescue LoadError
+      SBSM.logger.info("no file etc/db_connection found. Using defaults")
+    end
+    begin
+      File.open("/proc/#{Process.pid}/oom_score_adj", 'w') do |fh|
+        fh.puts "15"
+      end
+    rescue Errno::EACCES
+      SBSM.logger.info("Could not touch oom_score_adj")
     end
 
     trap("USR1") {
@@ -100,7 +108,7 @@ rescue => error
   exit(1)
 end
 
-unless defined?(MiniTest) # do real startup
+unless defined?(Minitest) # do real startup
   app = Rack::ShowExceptions.new(Rack::Lint.new(my_app))
   run app
 end

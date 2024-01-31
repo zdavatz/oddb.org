@@ -5,9 +5,9 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
-require 'minitest/autorun'
+require 'Minitest/autorun'
 require 'fileutils'
-require 'flexmock/minitest'
+require 'flexmock/Minitest'
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'stub/oddbapp'
@@ -36,7 +36,7 @@ module ODDB
     end
   end
 
-  class TestTextInfoChangeLogin <MiniTest::Test
+  class TestTextInfoChangeLogin <Minitest::Test
     def setup
       super
     end # Fuer Problem mit fachinfo italic
@@ -59,7 +59,7 @@ Line 3\x06;\bT"
   end
 
 if RunAll
-  class TestTextInfoPluginAipsMetaData <MiniTest::Test
+  class TestTextInfoPluginAipsMetaData <Minitest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -183,7 +183,7 @@ if RunAll
 
   end
 
-  class TestTextInfoPlugin <MiniTest::Test
+  class TestTextInfoPlugin <Minitest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -295,7 +295,7 @@ if RunAll
     end
 
   end
-  class TestTextInfoPluginChecks <MiniTest::Test
+  class TestTextInfoPluginChecks <Minitest::Test
     def teardown
       FileUtils.rm_rf @@vardir
       ODBA.storage = nil
@@ -335,7 +335,7 @@ if RunAll
     end # Fuer Problem mit fachinfo italic
   end
 
-  class TestTextInfoPlugin_iksnr <MiniTest::Test
+  class TestTextInfoPlugin_iksnr <Minitest::Test
     def test_get_iksnr_comprimes
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
       assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
@@ -375,7 +375,7 @@ if RunAll
     end
   end
 end
-  class TestTextInfoTramalPlugin <MiniTest::Test
+  class TestTextInfoTramalPlugin <Minitest::Test
     Auth_15219 = "MEDA Pharma GmbH"
     Aut_43788 = 'Grünenthal Pharma AG'
 
