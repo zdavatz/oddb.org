@@ -93,6 +93,7 @@ group :test do
 end
 
 group :debugger do
+  gem 'debug'
   gem 'rbs'
   gem 'typeprof'
 end
