@@ -98,7 +98,7 @@ class OddbPrevalence
     sorted_minifis
     sorted_feedbacks
     sorted_fachinfos
-    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE) unless defined?(Minitest)
+    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE) unless defined?(MiniTest)
 		rebuild_atc_chooser()
 	end
   def retrieve_from_index(index_name, query, result = nil)
@@ -1344,7 +1344,7 @@ class OddbPrevalence
 
 	## indices
 	def rebuild_indices(name=nil, &block)
-      verbose = !defined?(Minitest)
+      verbose = !defined?(MiniTest)
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
@@ -1432,7 +1432,7 @@ class OddbPrevalence
 			@galenic_groups = {}
 			pointer = ODDB::Persistence::Pointer.new([:galenic_group])
 			group = create(pointer)
-			raise "Default GalenicGroup has illegal Object ID (#{group.oid})" unless group.oid == 1 or defined?(Minitest)
+			raise "Default GalenicGroup has illegal Object ID (#{group.oid})" unless group.oid == 1 or defined?(MiniTest)
 			update(group.pointer, {'de'=>'Unbekannt'})
 		end
 	end
@@ -1464,12 +1464,12 @@ module ODDB
       @unknown_user = unknown_user
       @app = app
       super()
-      LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds")  unless defined?(Minitest)
+      LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds")  unless defined?(MiniTest)
       @rss_mutex = Mutex.new
       @cache_mutex = Mutex.new
       @admin_threads = ThreadGroup.new
       @system = ODBA.cache.fetch_named('oddbapp', self){ OddbPrevalence.new  }
-      LogFile.debug("init system starting after #{Time.now - start} seconds") unless defined?(Minitest)
+      LogFile.debug("init system starting after #{Time.now - start} seconds") unless defined?(MiniTest)
       @system.init
       @system.odba_store
       return if auxiliary
@@ -1477,7 +1477,7 @@ module ODDB
       log_size
       DRb.install_id_conv ODBA::DRbIdConv.new
       @cache_mutex.synchronize do
-      if @@primary_server && defined?(Minitest)
+      if @@primary_server && defined?(MiniTest)
           GC.start # start a garbage collection
           DRb.remove_server(@@primary_server)
           Thread.kill(DRb.thread)
@@ -1485,7 +1485,7 @@ module ODDB
           GC.start
         end
         @@primary_server = DRb.start_service(server_uri, self)
-        LogFile.debug("initialized: #{Time.now - start}") unless defined?(Minitest)
+        LogFile.debug("initialized: #{Time.now - start}") unless defined?(MiniTest)
         @@last_start_time = (Time.now - start).to_i
       end
 

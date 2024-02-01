@@ -8,7 +8,7 @@ require 'fileutils'
 
 module ODDB
 	module LogFile
-      if defined?(Minitest)
+      if defined?(MiniTest)
         LOG_ROOT = ODDB.config.log_dir = File.join(PROJECT_ROOT, 'test', 'log')
       else
         LOG_ROOT = File.join(PROJECT_ROOT, 'log')

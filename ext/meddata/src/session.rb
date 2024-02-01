@@ -56,7 +56,7 @@ class Session < HttpSession
 		@http_path = HTTP_PATHS[search_type]
 		@form_keys = FORM_KEYS[search_type]
 		@detail_key = DETAIL_KEYS[search_type]
-    @sleeps_in_seconds = Module.constants.index(:Minitest) ? 0.01 : 1
+    @sleeps_in_seconds = Module.constants.index(:MiniTest) ? 0.01 : 1
 		super(server)
     resp = get '/'    
     sleep(2*@sleeps_in_seconds) # for Timeout::Error

@@ -31,10 +31,10 @@ module ODDB
       Base_uri = 'https://www.swissreg.ch'
       Start_uri = "#{Base_uri}/srclient/faces/jsp/start.jsp"
       HitsPerPage = 250
-      LogDir = defined?(Minitest) ? 'test/log' : 'log'
+      LogDir = defined?(MiniTest) ? 'test/log' : 'log'
 
       def writeResponse(agent, filename)
-        if defined?(RSpec) or defined?(Minitest) or $VERBOSE
+        if defined?(RSpec) or defined?(MiniTest) or $VERBOSE
           File.open(filename, 'w+') { |ausgabe| ausgabe.puts agent.page.body }
         else
           puts "Skipping writing #{filename}" if $VERBOSE

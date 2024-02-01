@@ -25,7 +25,7 @@ module ODDB
         :details_dir
   end
 
-  class TestTextInfoPlugin <Minitest::Test
+  class TestTextInfoPlugin <MiniTest::Test
     @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
     @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
     def setup
@@ -162,7 +162,7 @@ module ODDB
     end
   end if RUN_ALL
 
-  class TestExtractMatchedName <Minitest::Test
+  class TestExtractMatchedName <MiniTest::Test
     Nr_FI_in_AIPS_test = 4
     Nr_PI_in_AIPS_test = 1
     def teardown

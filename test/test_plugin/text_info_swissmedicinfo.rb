@@ -36,7 +36,7 @@ module ODDB
     end
   end
 
-  class TestTextInfoChangeLogin <Minitest::Test
+  class TestTextInfoChangeLogin <MiniTest::Test
     def setup
       super
     end # Fuer Problem mit fachinfo italic
@@ -59,7 +59,7 @@ Line 3\x06;\bT"
   end
 
 if RunAll
-  class TestTextInfoPluginAipsMetaData <Minitest::Test
+  class TestTextInfoPluginAipsMetaData <MiniTest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -183,7 +183,7 @@ if RunAll
 
   end
 
-  class TestTextInfoPlugin <Minitest::Test
+  class TestTextInfoPlugin <MiniTest::Test
     unless defined?(@@datadir)
       @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
       @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
@@ -295,7 +295,7 @@ if RunAll
     end
 
   end
-  class TestTextInfoPluginChecks <Minitest::Test
+  class TestTextInfoPluginChecks <MiniTest::Test
     def teardown
       FileUtils.rm_rf @@vardir
       ODBA.storage = nil
@@ -335,7 +335,7 @@ if RunAll
     end # Fuer Problem mit fachinfo italic
   end
 
-  class TestTextInfoPlugin_iksnr <Minitest::Test
+  class TestTextInfoPlugin_iksnr <MiniTest::Test
     def test_get_iksnr_comprimes
       test_string = '59341 (comprimés filmés), 59342 (comprimés à mâcher), 59343 (granulé oral)'
       assert_equal(["59341", "59342", "59343" ], TextInfoPlugin::get_iksnrs_from_string(test_string))
@@ -375,7 +375,7 @@ if RunAll
     end
   end
 end
-  class TestTextInfoTramalPlugin <Minitest::Test
+  class TestTextInfoTramalPlugin <MiniTest::Test
     Auth_15219 = "MEDA Pharma GmbH"
     Aut_43788 = 'Grünenthal Pharma AG'
 

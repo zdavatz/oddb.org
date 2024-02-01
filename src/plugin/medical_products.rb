@@ -104,7 +104,7 @@ module ODDB
               else
                 report_error("No commercial_form '#{packInfo.commercial_localized}' for ean #{packInfo.ean13}")
               end
-              sequence.fix_pointers unless defined?(Minitest)
+              sequence.fix_pointers unless defined?(MiniTest)
               @app.update(package.parts.first.pointer, args, :medical_product)
             }
         }

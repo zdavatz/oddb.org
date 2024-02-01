@@ -42,24 +42,17 @@ begin # with a rescue
   SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
   # We want to redirect the standard error also to the logger
   # next line found via https://stackoverflow.com/questions/9637092/redirect-stderr-to-logger-instance
-#  $stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
-  SBSM.logger.progname = process.to_s;
+  $stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
+
   SBSM.logger.level = Logger::WARN
 
-  unless defined?(Minitest) # do real startup
+  unless defined?(MiniTest) # do real startup
     require 'util/oddbapp'
     require 'util/rack_interface'
-    begin
-      require 'etc/db_connection'
-    rescue LoadError
-      SBSM.logger.info("no file etc/db_connection found. Using defaults")
-    end
-    begin
-      File.open("/proc/#{Process.pid}/oom_score_adj", 'w') do |fh|
-        fh.puts "15"
-      end
-    rescue Errno::EACCES
-      SBSM.logger.info("Could not touch oom_score_adj")
+    require 'etc/db_connection'
+
+    File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
+      fh.puts "15"
     end
 
     trap("USR1") {
@@ -104,7 +97,7 @@ rescue => error
   exit(1)
 end
 
-unless defined?(Minitest) # do real startup
+unless defined?(MiniTest) # do real startup
   app = Rack::ShowExceptions.new(Rack::Lint.new(my_app))
   run app
 end
