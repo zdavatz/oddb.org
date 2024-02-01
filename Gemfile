@@ -7,11 +7,6 @@ gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 
-
-gem 'base64'
-gem 'drb'
-gem 'csv'
-gem 'observer'
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'

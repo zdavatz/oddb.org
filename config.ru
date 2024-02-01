@@ -15,8 +15,6 @@ begin # with a rescue
   require 'rubyntlm'
   require 'net/ntlm'
   require "config"
-  require 'fileutils'
-  require 'date'
 
   server_uri = ODDB::SERVER_URI
   case APPNAME
@@ -40,9 +38,8 @@ begin # with a rescue
 
   load 'config.rb'
 
-  log_dir = Date.today.strftime("./log/%Y/")
-  FileUtils.mkdir_p(log_dir)
-  SBSM.logger= Logger.new(log_dir + process.to_s, 'daily')
+  ODDB.config.log_pattern.gsub!('app', process.to_s)
+  SBSM.logger= ChronoLogger.new(ODDB.config.log_pattern)
   # We want to redirect the standard error also to the logger
   # next line found via https://stackoverflow.com/questions/9637092/redirect-stderr-to-logger-instance
   $stderr.reopen SBSM.logger.instance_variable_get(:@logdev).dev
@@ -85,7 +82,7 @@ begin # with a rescue
     use Clogger, :logger=> $stdout, :reentrant => true
     use(Rack::Static, urls: ["/doc/"])
     use Rack::ContentLength
-    SBSM.warn "Starting Rack::Server with logging #{process.to_s}"
+    SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 
     $stdout.sync = true
     VERSION = `git rev-parse HEAD`
