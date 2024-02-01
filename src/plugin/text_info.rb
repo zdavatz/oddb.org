@@ -405,7 +405,7 @@ module ODDB
                   @skipped_override << barcode_override
                 else
                   LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
-                  @missing_override << "#{barcode_override}: '#{meta_info.title}' # != override #{name}"
+                  @missing_override << "#{barcode_override}: #{meta_info.title} # != override #{name}"
                 end
                 puts "package.patinfo updated sequence #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.pointer}"
               end

@@ -1,1169 +1,1168 @@
 ---
-7680109990223_pi_de: 'Osanit® Kügelchen'
-7680109990223_pi_fr: 'Osanit® globules '
-7680109990223_pi_it: 'Osanit® globuli'
-7680149910182_pi_de: 'Pulmex® Salbe'
-7680149910182_pi_fr: 'Pulmex® Pommade'
-7680149910182_pi_it: 'Pulmex® Pomata'
-7680149910267_pi_de: 'Pulmex® Salbe'
-7680149910267_pi_fr: 'Pulmex® Pommade'
-7680149910267_pi_it: 'Pulmex® Pomata'
-7680268210101_pi_de: 'Agiolax® mit Senna Granulat 250 g/1000 g' # Kommentar
-7680268210101_pi_fr: 'Agiolax® avec séné granulés 250 g/1000 g'
-7680268210101_pi_it: 'Agiolax® con senna granulato 250 g/1000 g'
-7680268210293_pi_de: 'Agiolax® mit Senna Granulat 250 g/1000 g'
-7680268210293_pi_fr: 'Agiolax® avec séné granulés 250 g/1000 g'
-7680268210293_pi_it: 'Agiolax® con senna granulato 150 g'
-7680268210613_pi_de: 'Agiolax® mit Senna Granulat 150 g'
-7680268210613_pi_fr: 'Agiolax® avec séné granulés 250 g/1000 g'
-7680268210613_pi_it: 'Agiolax® con senna granulato 250 g/1000 g'
-7680320530413_pi_de: 'Stugeron® Tabletten'
-7680320530413_pi_fr: 'Stugeron® Comprimés'
-7680320530413_pi_it: 'Stugeron® Compresse'
-7680334810013_pi_de: 'Vitamin D3 Streuli® Prophylax '
-7680334810013_pi_fr: 'Vitamine D3 Streuli® Prophylax'
-7680334810013_pi_it: 'Vitamina D3 Streuli® Prophylax'
-7680334810020_pi_de: 'Vitamin D3 Streuli® zur Therapie'
-7680334810020_pi_fr: 'Vitamine D3 Streuli® pour la thérapie'
-7680334810020_pi_it: 'Vitamina D3 Streuli® a terapia'
-7680363520198_pi_de: 'Nasivin®'
-7680363520198_pi_fr: 'Nasivine®'
-7680363520273_pi_de: 'Nasivin®'
-7680363520273_pi_fr: 'Nasivine®'
-7680363520358_pi_de: 'Nasivin®'
-7680363520358_pi_fr: 'Nasivine®'
-7680373970242_pi_de: 'Ventolin® 5 mg/mL konzentrierte Lösung für Aerosolgeräte'
-7680373970242_pi_fr: 'Ventolin® 5 mg/mL solution concentrée pour appareils aérosols'
-7680373970242_pi_it: 'Ventolin® 5 mg/mL soluzione concentrata per apparecchi aerosol'
-7680373970327_pi_de: 'Ventolin® 1,25 mg/2,5 mL gebrauchsfertige Lösung für Aerosolgeräte'
-7680373970327_pi_fr: 'Ventolin® 1,25 mg/2,5 mL solution prête à l'emploi pour appareils aérosols'
-7680373970327_pi_it: 'Ventolin® 1,25 mg/2,5 mL soluzione pronta all'uso per apparecchi aerosol'
-7680374820133_pi_de: 'Androcur®-50'
-7680374820133_pi_fr: 'Androcur®-50'
-7680374820133_pi_it: 'Androcur®-50'
-7680374820218_pi_de: 'Androcur®-50'
-7680374820218_pi_fr: 'Androcur®-50'
-7680374820218_pi_it: 'Androcur®-50'
-7680374820560_pi_de: 'Androcur®-10'
-7680374820560_pi_fr: 'Androcur®-10'
-7680374820560_pi_it: 'Androcur®-10 '
-7680375610108_pi_de: 'Fluimucil'
-7680375610108_pi_fr: 'Fluimucil'
-7680375610108_pi_it: 'Fluimucil'
-7680375610375_pi_de: 'Fluimucil'
-7680375610375_pi_fr: 'Fluimucil'
-7680375610375_pi_it: 'Fluimucil'
-7680375610450_pi_de: 'Fluimucil'
-7680375610450_pi_fr: 'Fluimucil'
-7680375610450_pi_it: 'Fluimucil'
-7680375610887_pi_de: 'Fluimucil'
-7680375610887_pi_fr: 'Fluimucil'
-7680375610887_pi_it: 'Fluimucil'
-7680375610962_pi_de: 'Fluimucil'
-7680375610962_pi_fr: 'Fluimucil'
-7680375610962_pi_it: 'Fluimucil'
-7680381330632_pi_de: 'Aspégic 100®'
-7680381330632_pi_fr: 'Aspégic 100®'
-7680381330632_pi_it: 'Aspégic 100®'
-7680381330632_pi_it: 'Aspégic 500®'
-7680381330717_pi_de: 'Aspégic Mite®'
-7680381330717_pi_fr: 'Aspégic Mite®'
-7680381330717_pi_it: 'Aspégic Mite®'
-7680381330984_pi_de: 'Aspégic 500®'
-7680381330984_pi_fr: 'Aspégic 500®'
-7680381330984_pi_it: 'Aspégic 500®'
-7680381331011_pi_de: 'Aspégic Forte®'
-7680381331011_pi_fr: 'Aspégic Forte®'
-7680381331011_pi_it: 'Aspégic Forte®'
-7680381331288_pi_de: 'Aspégic 100®'
-7680381331288_pi_fr: 'Aspégic 100®'
-7680381331288_pi_it: 'Aspégic 100®'
-7680388530158_pi_de: 'Vermox® 100 mg'
-7680388530158_pi_fr: 'Vermox® 100 mg'
-7680388530158_pi_it: 'Vermox® 100 mg'
-7680388530233_pi_de: 'Vermox® 500 mg'
-7680388530233_pi_fr: 'Vermox® 500 mg'
-7680388530233_pi_it: 'Vermox® 500 mg'
-7680393080297_pi_de: 'Diprosalic®'
-7680393080297_pi_fr: 'Diprosalic®'
-7680415690213_pi_de: 'FemiFect' # does not appear in Packungen xlsx!
-7680415690213_pi_fr: 'FemiFect'
-7680415690213_pi_it: 'FemiFect'
-7680419030152_pi_de: 'Motilium®'
-7680419030152_pi_fr: 'Motilium®'
-7680419030152_pi_it: 'Motilium®'
-7680419030237_pi_de: 'Motilium®'
-7680419030237_pi_fr: 'Motilium®'
-7680419030237_pi_it: 'Motilium®'
-7680434540995_pi_de: 'Kamillin Medipharm® Bad'
-7680434540995_pi_fr: 'Kamillin Medipharm® Bain'
-7680437880197_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen'
-7680437880197_pi_fr: 'Tramal® Gouttes, solution à prendre'
-7680437880197_pi_it: 'Tramal® gocce, soluzione orale'
-7680437880272_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen'
-7680437880272_pi_fr: 'Tramal® Gouttes, solution à prendre'
-7680437880272_pi_it: 'Tramal® gocce, soluzione orale'
-7680437880357_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen'
-7680437880357_pi_fr: 'Tramal® Gouttes avec pompe de dosage'
-7680437880357_pi_it: 'Tramal® gocce, soluzione orale'
-7680437880517_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680437880517_pi_fr: 'Tramal® Gouttes avec pompe de dosage'
-7680437880517_pi_it: 'Tramal® gocce, soluzione orale con pompetta dosatrice'
-7680437880784_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680437880784_pi_fr: 'Tramal® Gouttes avec pompe de dosage'
-7680437880784_pi_it: 'Tramal® gocce, soluzione orale con pompetta dosatrice'
-7680437880869_pi_de: 'Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680437880869_pi_fr: 'Tramal® Gouttes avec pompe de dosage'
-7680437880869_pi_it: 'Tramal® gocce, soluzione orale con pompetta dosatrice'
-7680449390455_pi_de: 'Otrivin® Schnupfen'
-7680449390455_pi_fr: 'Otrivin® Rhume'
-7680449390455_pi_it: 'Otrivin® Raffreddore'
-7680449390530_pi_de: 'Otrivin® Schnupfen'
-7680449390530_pi_fr: 'Otrivin® Rhume'
-7680449390530_pi_it: 'Otrivin® Raffreddore'
-7680449390615_pi_de: 'Otrivin® Schnupfen 0.1% Menthol, Dosierspray'
-7680449390615_pi_fr: 'Otrivin® Rhume 0.1% Menthol, Spray-doseur'
-7680449390615_pi_it: 'Otrivin® Raffreddore 0.1% Mentolo, spray dosatore'
-7680451160367_pi_de: 'Similasan Allergisch reagierende Augen, Augentropfen 10 ml '
-7680451160367_pi_fr: 'Similasan réactions allergiques des yeux, gouttes pour les yeux, 10ml'
-7680451160367_pi_it: 'Similasan reazioni allergiche degli occhi, gocce per gli occhi 10ml'
-7680451160374_pi_de: 'Similasan Allergisch reagierende Augen, Monodosen, Augentropfen'
-7680451160374_pi_fr: 'Similasan réactions allergiques des yeux, gouttes pour les yeux, monodoses'
-7680451160374_pi_it: 'Similasan reazioni allergiche degli occhi, gocce per gli occhi monodose'
-7680451170335_pi_de: 'Similasan Trockene Augen, Augentropfen 10 ml'
-7680451170335_pi_fr: 'Similasan yeux secs, gouttes pour les yeux, 10ml'
-7680451170335_pi_it: 'Similasan occhi secchi, gocce per gli occhi 10ml'
-7680451170342_pi_de: 'Similasan Trockene Augen, Monodosen, Augentropfen'
-7680451170342_pi_fr: 'Similasan yeux secs, gouttes pour les yeux, monodoses'
-7680451170342_pi_it: 'Similasan occhi secchi, gocce per gli occhi monodose'
-7680451380116_pi_de: 'Nasivin®'
-7680451380116_pi_fr: 'Nasivine®'
-7680451790366_pi_de: 'Fluimucil'
-7680451790366_pi_fr: 'Fluimucil'
-7680451790366_pi_it: 'Fluimucil'
-7680451790793_pi_de: 'Fluimucil'
-7680451790793_pi_fr: 'Fluimucil'
-7680451790793_pi_it: 'Fluimucil'
-7680451790953_pi_de: 'Fluimucil'
-7680451790953_pi_fr: 'Fluimucil'
-7680451790953_pi_it: 'Fluimucil'
-7680451791264_pi_de: 'Fluimucil'
-7680451791264_pi_fr: 'Fluimucil'
-7680451791264_pi_it: 'Fluimucil'
-7680451990100_pi_de: 'Virudermin® Gel'
-7680451990100_pi_fr: 'Virudermin® Gel'
-7680462060014_pi_de: 'Ben-u-ron® 500 mg Tabletten'
-7680462060014_pi_fr: 'Ben-u-ron® 500 mg comprimés'
-7680462060014_pi_it: 'Ben-u-ron® 500 mg compresse'
-7680462061264_pi_de: 'Ben-u-ron® 500 mg Tabletten'
-7680462061264_pi_fr: 'Ben-u-ron® 500 mg comprimés'
-7680462061264_pi_it: 'Ben-u-ron® 500 mg compresse'
-7680462061318_pi_de: 'Ben-u-ron® 1000 mg Tabletten'
-7680462061318_pi_fr: 'Ben-u-ron® Comprimés 1000 mg'
-7680462061318_pi_it: 'Ben-u-ron® 1000 mg compresse'
-7680462061325_pi_de: 'Ben-u-ron® 1000 mg Tabletten'
-7680462061325_pi_fr: 'Ben-u-ron® Comprimés 1000 mg'
-7680462061325_pi_it: 'Ben-u-ron® 1000 mg compresse'
-7680462061332_pi_de: 'Ben-u-ron® 1000 mg Tabletten'
-7680462061332_pi_fr: 'Ben-u-ron® Comprimés 1000 mg'
-7680462061332_pi_it: 'Ben-u-ron® 1000 mg compresse'
-7680465320016_pi_de: 'Triderm® Creme'
-7680465320016_pi_fr: 'Triderm® Crème'
-7680465320238_pi_de: 'Triderm® Creme'
-7680465320238_pi_fr: 'Triderm® Crème'
-7680466730180_pi_de: 'Salofalk® 250 /500 Suppositorien'
-7680466730180_pi_fr: 'Salofalk® 250 /500 suppositoires'
-7680466730180_pi_it: 'Salofalk® 250/500 supposte'
-7680466730425_pi_de: 'Salofalk® 250 /500 Suppositorien'
-7680466730425_pi_fr: 'Salofalk® 250 /500 suppositoires'
-7680466730425_pi_it: 'Salofalk® 250/500 supposte'
-7680466730500_pi_de: 'Salofalk® 250 /500 Suppositorien'
-7680466730500_pi_fr: 'Salofalk® 250 /500 suppositoires'
-7680466730500_pi_it: 'Salofalk® 250/500 supposte'
-7680466730531_pi_de: 'Salofalk® 1 g'
-7680466730531_pi_fr: 'Salofalk® 1 g'
-7680466730531_pi_it: 'Salofalk® 1 g'
-7680466730548_pi_de: 'Salofalk® 1 g'
-7680466730548_pi_fr: 'Salofalk® 1 g'
-7680466730548_pi_it: 'Salofalk® 1 g'
-7680466730555_pi_de: 'Salofalk® 1 g'
-7680466730555_pi_fr: 'Salofalk® 1 g'
-7680466730555_pi_it: 'Salofalk® 1 g'
-7680479090158_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479090158_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479090158_pi_it: 'Solmucol® 400, 600 granulare'
-7680479090660_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479090660_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479090660_pi_it: 'Solmucol® 400, 600 granulare'
-7680479090745_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479090745_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479090745_pi_it: 'Solmucol® 400, 600 granulare'
-7680479091049_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479091049_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479091049_pi_it: 'Solmucol® 400, 600 granulare'
-7680479091476_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479091476_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479091476_pi_it: 'Solmucol® 400, 600 granulare'
-7680479091551_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479091551_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479091551_pi_it: 'Solmucol® 400, 600 granulare'
-7680479091636_pi_de: 'Solmucol® 400, 600 Granulat'
-7680479091636_pi_fr: 'Solmucol® 400, 600 Granulé'
-7680479091636_pi_it: 'Solmucol® 400, 600 granulare'
-7680482490198_pi_de: 'Regaine® 2%'
-7680482490198_pi_fr: 'Regaine® 2%'
-7680482490198_pi_it: 'Regaine® 2%'
-7680482490273_pi_de: 'Regaine® 2%'
-7680482490273_pi_fr: 'Regaine® 2%'
-7680482490273_pi_it: 'Regaine® 2%'
-7680482490518_pi_de: 'Regaine® 5%'
-7680482490518_pi_fr: 'Regaine® 5%'
-7680482490518_pi_it: 'Regaine® 5%'
-7680482490785_pi_de: 'Regaine® 5%'
-7680482490785_pi_fr: 'Regaine® 5%'
-7680482490785_pi_it: 'Regaine® 5%'
-7680485780470_pi_de: 'Torem® 2,5/5/10'
-7680485780470_pi_fr: 'Torem® 2,5/5/10'
-7680485780470_pi_it: 'Torem® 2,5/5/10'
-7680485780630_pi_de: 'Torem® 2,5/5/10'
-7680485780630_pi_fr: 'Torem® 2,5/5/10'
-7680485780630_pi_it: 'Torem® 2,5/5/10'
-7680485780715_pi_de: 'Torem® 2,5/5/10'
-7680485780715_pi_fr: 'Torem® 2,5/5/10'
-7680485780715_pi_it: 'Torem® 2,5/5/10'
-7680485781019_pi_de: 'Torem® 2,5/5/10'
-7680485781019_pi_fr: 'Torem® 2,5/5/10'
-7680485781019_pi_it: 'Torem® 2,5/5/10'
-7680485781286_pi_de: 'Torem® 200'
-7680485781286_pi_fr: 'Torem® 200'
-7680485781286_pi_it: 'Torem® 200'
-7680485781361_pi_de: 'Torem® 200'
-7680485781361_pi_fr: 'Torem® 200'
-7680485781361_pi_it: 'Torem® 200'
-7680485781446_pi_de: 'Torem® 2,5/5/10'
-7680485781446_pi_fr: 'Torem® 2,5/5/10'
-7680485781446_pi_it: 'Torem® 2,5/5/10'
-7680485781521_pi_de: 'Torem® 2,5/5/10'
-7680485781521_pi_fr: 'Torem® 2,5/5/10'
-7680485781521_pi_it: 'Torem® 2,5/5/10'
-7680488690172_pi_de: 'Bexin® Hustentabletten (Abgabekategorie B)'
-7680488690172_pi_fr: 'Bexine® Comprimés contre la toux (Catégorie de remise B)'
-7680488690172_pi_it: 'Bexin® Compresse contro la tosse '
-7680488690257_pi_de: 'Bexin® Hustentabletten (Abgabekategorie B)'
-7680488690257_pi_fr: 'Bexine® Comprimés contre la toux (Catégorie de remise B)'
-7680488690257_pi_it: 'Bexin® Compresse contro la tosse '
-7680489140126_pi_de: 'CARBOTICON, Kapseln'
-7680489140126_pi_de: 'Carboticon, Kapseln'
-7680489140126_pi_fr: 'Carboticon, gélules'
-7680495370029_pi_de: 'Weleda Euphrasia-Augentropfen'
-7680495370029_pi_fr: 'Collyre Euphrasia Weleda'
-7680495370036_pi_de: 'Weleda Euphrasia-Augentropfen'
-7680495370036_pi_fr: 'Collyre Euphrasia Weleda'
-7680495370180_pi_de: 'Weleda Euphrasia-Augentropfen'
-7680495370180_pi_fr: 'Collyre Euphrasia Weleda'
-7680495370180_pi_it: 'Collirio Euphrasia Weleda'
-7680495370197_pi_de: 'Weleda Euphrasia-Augentropfen Monodosen'
-7680495370197_pi_fr: 'Collyre Euphrasia Weleda Monodoses'
-7680495370197_pi_it: 'Collirio Euphrasia Weleda Monodose'
-7680496000116_pi_de: 'Vagifem®'
-7680496000116_pi_fr: 'Vagifem®'
-7680496000116_pi_it: 'Vagifem®'
-7680496000123_pi_de: 'Vagifem® 10 µg'
-7680496000123_pi_fr: 'Vagifem® 10 µg'
-7680496000123_pi_it: 'Vagifem® 10 µg'
-7680496731089_pi_de: 'Traumalix dolo Gel 5%'
-7680496731089_pi_fr: 'Traumalix dolo Gel 5%'
-7680496731089_pi_it: 'Traumalix dolo Gel 5%'
-7680496731164_pi_de: 'Traumalix dolo Gel 5%'
-7680496731164_pi_fr: 'Traumalix dolo Gel 5%'
-7680496731164_pi_it: 'Traumalix dolo Gel 5%'
-7680496731249_pi_de: 'Traumalix Dolo Gel 10%'
-7680496731249_pi_fr: 'Traumalix Dolo Gel 10%'
-7680496731249_pi_it: 'Traumalix Dolo Gel 10%'
-7680496731324_pi_de: 'Traumalix Dolo Gel 10%'
-7680496731324_pi_fr: 'Traumalix Dolo Gel 10%'
-7680496731324_pi_it: 'Traumalix Dolo Gel 10%'
-7680496880015_pi_de: 'Neocapil® 2%'
-7680496880015_pi_fr: 'Néocapil® 5%'
-7680496880015_pi_it: 'Neocapil® 2%'
-7680496880022_pi_de: 'Neocapil® 5%'
-7680496880022_pi_fr: 'Néocapil® 5%'
-7680496880022_pi_it: 'Neocapil® 5%'
-7680496880275_pi_de: 'Neocapil® 2%'
-7680496880275_pi_fr: 'Néocapil® 2%'
-7680496880275_pi_it: 'Neocapil® 2%'
-7680496880282_pi_de: 'Neocapil® 5%'
-7680496880282_pi_fr: 'Néocapil® 5%'
-7680496880282_pi_it: 'Neocapil® 5%'
-7680497680287_pi_de: 'Fungotox-100 Vaginaltabletten'
-7680497680287_pi_fr: 'Fungotox-100 Comprimés vaginaux'
-7680497680287_pi_it: 'Fungotox-100 Compresse vaginali'
-7680497680362_pi_de: 'Fungotox®-200 Vaginaltabletten'
-7680497680362_pi_fr: 'Fungotox®-200 Comprimés vaginaux'
-7680497680362_pi_it: 'Fungotox®-200 Compresse vaginali'
-7680512850275_pi_de: 'Ricura®, Tropfen'
-7680512850275_pi_fr: 'Ricura®, gouttes'
-7680512850275_pi_it: 'Ricura®, gocce'
-7680512850282_pi_de: 'Ricura®, Tropfen'
-7680512850282_pi_fr: 'Ricura®, gouttes'
-7680512850282_pi_it: 'Ricura®, gocce'
-7680515060145_pi_de: 'Becetamol® 250 mg'
-7680515060145_pi_fr: 'Becetamol® 250 mg'
-7680515060145_pi_it: 'Becetamol® 250 mg'
-7680515060220_pi_de: 'Becetamol® 500 mg'
-7680515060220_pi_fr: 'Becetamol® 500 mg'
-7680515060220_pi_it: 'Becetamol® 500 mg'
-7680515440565_pi_de: 'Arthrotec® 75'
-7680515440565_pi_fr: 'Arthrotec® 75'
-7680515440565_pi_it: 'Arthrotec® 75'
-7680515440640_pi_de: 'Arthrotec® 75'
-7680515440640_pi_fr: 'Arthrotec® 75'
-7680515440640_pi_it: 'Arthrotec® 75'
-7680515440725_pi_de: 'Arthrotec® 75'
-7680515440725_pi_fr: 'Arthrotec® 75'
-7680515440725_pi_it: 'Arthrotec® 75'
-7680515440732_pi_de: 'Arthrotec® 50'
-7680515440732_pi_fr: 'Arthrotec® 50'
-7680515440732_pi_it: 'Arthrotec® 50'
-7680515440749_pi_de: 'Arthrotec® 50'
-7680515440749_pi_fr: 'Arthrotec® 50'
-7680515440749_pi_it: 'Arthrotec® 50'
-7680515440756_pi_de: 'Arthrotec® 50'
-7680515440756_pi_fr: 'Arthrotec® 50'
-7680515440756_pi_it: 'Arthrotec® 50'
-7680520390015_pi_de: 'Lomaherpan® Fieberblasen-Creme'
-7680520390015_pi_fr: 'Lomaherpan® Boutons de fièvre crème'
-7680520390015_pi_it: 'Lomaherpan® Febbre labiale crema'
-7680524710284_pi_de: 'Remotiv® 250 Filmtabletten (Abgabekategorie C)'
-7680524710284_pi_fr: 'Remotiv® 250 Comprimés pelliculés (catégorie de remise C)'
-7680524710284_pi_it: 'Remotiv® 250 compresse film-rivestite (Abgabekategorie C)'
-7680524710369_pi_de: 'Remotiv® 250 Filmtabletten (Abgabekategorie C)'
-7680524710369_pi_fr: 'Remotiv® 250 Comprimés pelliculés (catégorie de remise C)'
-7680524710369_pi_it: 'Remotiv® 250 compresse film-rivestite (Abgabekategorie C)'
-7680524710444_pi_de: 'Remotiv® 250 Filmtabletten (Abgabekategorie C)'
-7680524710444_pi_fr: 'Remotiv® 250 Comprimés pelliculés (catégorie de remise C)'
-7680524710444_pi_it: 'Remotiv® 250 compresse film-rivestite (Abgabekategorie C)'
-7680524710529_pi_de: 'Remotiv® 500 Filmtabletten'
-7680524710529_pi_fr: 'Remotiv® 500 Comprimés pelliculés'
-7680524710529_pi_it: 'Remotiv® 500 compresse film-rivestite'
-7680524710604_pi_de: 'Remotiv® 500 Filmtabletten'
-7680524710604_pi_fr: 'Remotiv® 500 Comprimés pelliculés'
-7680524710604_pi_it: 'Remotiv® 500 compresse film-rivestite'
-7680525590571_pi_de: 'Tramadol-Mepha Tropfen, Lösung zum Einnehmen'
-7680525590571_pi_fr: 'Tramadol-Mepha Gouttes, solution à boire'
-7680525590571_pi_it: 'Tramadol-Mepha gocce, soluzione per uso orale'
-7680525590656_pi_de: 'Tramadol-Mepha Tropfen, Lösung zum Einnehmen'
-7680525590656_pi_fr: 'Tramadol-Mepha Gouttes, solution à boire'
-7680525590656_pi_it: 'Tramadol-Mepha gocce, soluzione per uso orale'
-7680525590731_pi_de: 'Tramadol-Mepha Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680525590731_pi_fr: 'Tramadol-Mepha Gouttes, solution à boire avec pompe de dosage'
-7680525590731_pi_it: 'Tramadol-Mepha gocce, soluzione per uso orale con pompetta dosatrice'
-7680526200011_pi_de: 'Lipanthyl® 200M'
-7680526200011_pi_fr: 'Lipanthyl® 200M'
-7680526200011_pi_it: 'Lipanthyl® 200M'
-7680526200028_pi_de: 'Lipanthyl® 200M'
-7680526200028_pi_fr: 'Lipanthyl® 200M'
-7680526200028_pi_it: 'Lipanthyl® 200M'
-7680526200585_pi_de: 'Lipanthyl® 267M'
-7680526200585_pi_fr: 'Lipanthyl® 267M'
-7680526200585_pi_it: 'Lipanthyl® 267M'
-7680526200660_pi_de: 'Lipanthyl® 267M'
-7680526200660_pi_fr: 'Lipanthyl® 267M'
-7680526200660_pi_it: 'Lipanthyl® 267M'
-7680531280251_pi_de: 'Femoston® 1/10'
-7680531280251_pi_fr: 'Femoston® 1/10'
-7680531280251_pi_it: 'Femoston® 1/10'
-7680531280336_pi_de: 'Femoston® 2/10'
-7680531280336_pi_fr: 'Femoston® 2/10'
-7680531280336_pi_it: 'Femoston® 2/10'
-7680532820678_pi_de: 'Transipeg Forte®'
-7680532820678_pi_de: 'Transipeg®'
-7680532820678_pi_fr: 'Transipeg Forte®'
-7680532820678_pi_fr: 'Transipeg®'
-7680532820678_pi_it: 'Transipeg Forte®'
-7680532820678_pi_it: 'Transipeg®'
-7680532820838_pi_de: 'Transipeg Forte®'
-7680532820838_pi_de: 'Transipeg®'
-7680532820838_pi_fr: 'Transipeg Forte®'
-7680532820838_pi_fr: 'Transipeg®'
-7680532820838_pi_it: 'Transipeg Forte®'
-7680532820838_pi_it: 'Transipeg®'
-7680532821057_pi_de: 'Transipeg Forte®'
-7680532821057_pi_de: 'Transipeg®'
-7680532821057_pi_fr: 'Transipeg Forte®'
-7680532821057_pi_fr: 'Transipeg®'
-7680532821057_pi_it: 'Transipeg Forte®'
-7680532821057_pi_it: 'Transipeg®'
-7680532821132_pi_de: 'Transipeg Forte®'
-7680532821132_pi_de: 'Transipeg®'
-7680532821132_pi_fr: 'Transipeg Forte®'
-7680532821132_pi_fr: 'Transipeg®'
-7680532821132_pi_it: 'Transipeg Forte®'
-7680532821132_pi_it: 'Transipeg®'
-7680536610176_pi_de: 'Zeller Schlaf Filmtabletten'
-7680536610176_pi_fr: 'Zeller Sommeil comprimés pelliculés'
-7680536610176_pi_it: 'Zeller Sonno compresse film–rivestite'
-7680536610251_pi_de: 'Zeller Schlaf Filmtabletten'
-7680536610251_pi_fr: 'Zeller Sommeil comprimés pelliculés'
-7680536610251_pi_it: 'Zeller Sonno compresse film–rivestite'
-7680536610336_pi_de: 'Zeller Schlaf forte Filmtabletten'
-7680536610336_pi_fr: 'Zeller Sommeil forte comprimés pelliculés'
-7680536610336_pi_it: 'Zeller Sonno forte compresse film-rivestite'
-7680536610411_pi_de: 'Zeller Schlaf forte Filmtabletten'
-7680536610411_pi_fr: 'Zeller Sommeil forte comprimés pelliculés'
-7680536610411_pi_it: 'Zeller Sonno forte compresse film-rivestite'
-7680539240189_pi_de: 'Rebalance® 250 Filmtabletten (Abgabekategorie C)'
-7680539240189_pi_fr: 'Rebalance® 250 Comprimés pelliculés (catégorie de remise C)'
-7680539240189_pi_it: 'Rebalance® 250 compresse film-rivestite (Abgabekategorie C)'
-7680539240264_pi_de: 'Rebalance® 250 Filmtabletten (Abgabekategorie C)'
-7680539240264_pi_fr: 'Rebalance® 250 Comprimés pelliculés (catégorie de remise C)'
-7680539240264_pi_it: 'Rebalance® 250 compresse film-rivestite (Abgabekategorie C)'
-7680539240349_pi_de: 'Rebalance® 250 Filmtabletten (Abgabekategorie C)'
-7680539240349_pi_fr: 'Rebalance® 250 Comprimés pelliculés (catégorie de remise C)'
-7680539240349_pi_it: 'Rebalance® 250 compresse film-rivestite (Abgabekategorie C)'
-7680539240424_pi_de: 'Rebalance® 500 Filmtabletten'
-7680539240424_pi_fr: 'Rebalance® 500 Comprimés pelliculés'
-7680539240424_pi_it: 'Rebalance® 500 compresse film-rivestite'
-7680539240509_pi_de: 'Rebalance® 500 Filmtabletten'
-7680539240509_pi_fr: 'Rebalance® 500 Comprimés pelliculés'
-7680539240509_pi_it: 'Rebalance® 500 compresse film-rivestite'
-7680539290016_pi_de: 'Calcimagon®-D3 500/800'
-7680539290016_pi_fr: 'Calcimagon-D3 500/800'
-7680539290016_pi_it: 'Calcimagon-D3 500/800'
-7680539290023_pi_de: 'Calcimagon®-D3 500/800'
-7680539290023_pi_fr: 'Calcimagon-D3 500/800'
-7680539290023_pi_it: 'Calcimagon-D3 500/800'
-7680539290030_pi_de: 'Calcimagon®-D3 500/800'
-7680539290030_pi_fr: 'Calcimagon-D3 500/800'
-7680539290030_pi_it: 'Calcimagon-D3 500/800'
-7680539290047_pi_de: 'Calcimagon®-D3 500/800'
-7680539290047_pi_fr: 'Calcimagon-D3 500/800'
-7680539290047_pi_it: 'Calcimagon-D3 500/800'
-7680539290054_pi_de: 'Calcimagon®-D3 500/800'
-7680539290054_pi_fr: 'Calcimagon-D3 500/800'
-7680539290054_pi_it: 'Calcimagon-D3 500/800'
-7680539290061_pi_de: 'Calcimagon®-D3 500/800'
-7680539290061_pi_fr: 'Calcimagon-D3 500/800'
-7680539290061_pi_it: 'Calcimagon-D3 500/800'
-7680539290078_pi_de: 'Calcimagon®-D3 500/800'
-7680539290078_pi_fr: 'Calcimagon-D3 500/800'
-7680539290078_pi_it: 'Calcimagon-D3 500/800'
-7680539290085_pi_de: 'Calcimagon®-D3 500/800'
-7680539290085_pi_fr: 'Calcimagon-D3 500/800'
-7680539290085_pi_it: 'Calcimagon-D3 500/800'
-7680539290092_pi_de: 'Calcimagon®-D3 500/800'
-7680539290092_pi_fr: 'Calcimagon-D3 500/800'
-7680539290092_pi_it: 'Calcimagon-D3 500/800'
-7680539290108_pi_de: 'Calcimagon®-D3 500/800'
-7680539290108_pi_fr: 'Calcimagon-D3 500/800'
-7680539290108_pi_it: 'Calcimagon-D3 500/800'
-7680539290115_pi_de: 'Calcimagon®-D3 500/800'
-7680539290115_pi_fr: 'Calcimagon-D3 500/800'
-7680539290115_pi_it: 'Calcimagon-D3 500/800'
-7680539290122_pi_de: 'Calcimagon®-D3 500/800'
-7680539290122_pi_fr: 'Calcimagon-D3 500/800'
-7680539290122_pi_it: 'Calcimagon-D3 500/800'
-7680539290283_pi_de: 'Calcimagon®-D3 500/800'
-7680539290283_pi_fr: 'Calcimagon-D3 500/800'
-7680539290283_pi_it: 'Calcimagon-D3 500/800'
-7680539290368_pi_de: 'Calcimagon®-D3 500/800'
-7680539290368_pi_fr: 'Calcimagon-D3 500/800'
-7680539290368_pi_it: 'Calcimagon-D3 500/800'
-7680539290443_pi_de: 'Calcimagon®-D3 500/800'
-7680539290443_pi_fr: 'Calcimagon-D3 500/800'
-7680539290443_pi_it: 'Calcimagon-D3 500/800'
-7680539290528_pi_de: 'Calcimagon®-D3 500/800'
-7680539290528_pi_fr: 'Calcimagon-D3 500/800'
-7680539290528_pi_it: 'Calcimagon-D3 500/800'
-7680539290603_pi_de: 'Calcimagon®-D3 500/800'
-7680539290603_pi_fr: 'Calcimagon-D3 500/800'
-7680539290603_pi_it: 'Calcimagon-D3 500/800'
-7680539290795_pi_de: 'Calcimagon®-D3 500/800'
-7680539290795_pi_fr: 'Calcimagon-D3 500/800'
-7680539290795_pi_it: 'Calcimagon-D3 500/800'
-7680539290870_pi_de: 'Calcimagon®-D3 500/800'
-7680539290870_pi_fr: 'Calcimagon-D3 500/800'
-7680539290870_pi_it: 'Calcimagon-D3 500/800'
-7680539290955_pi_de: 'Calcimagon®-D3 500/800'
-7680539290955_pi_fr: 'Calcimagon-D3 500/800'
-7680539290955_pi_it: 'Calcimagon-D3 500/800'
-7680539291099_pi_de: 'Calcimagon®-D3 500/800'
-7680539291099_pi_fr: 'Calcimagon-D3 500/800'
-7680539291099_pi_it: 'Calcimagon-D3 500/800'
-7680539291204_pi_de: 'Calcimagon®-D3/- Forte'
-7680539291204_pi_fr: 'Calcimagon®-D3/- Forte'
-7680539291204_pi_it: 'Calcimagon-D3 /- Forte'
-7680539291211_pi_de: 'Calcimagon®-D3/- Forte'
-7680539291211_pi_fr: 'Calcimagon®-D3/- Forte'
-7680539291211_pi_it: 'Calcimagon-D3 /- Forte'
-7680539291228_pi_de: 'Calcimagon®-D3/- Forte'
-7680539291228_pi_fr: 'Calcimagon®-D3/- Forte'
-7680539291228_pi_it: 'Calcimagon-D3 /- Forte'
-7680539291235_pi_de: 'Calcimagon®-D3/- Forte'
-7680539291235_pi_fr: 'Calcimagon®-D3/- Forte'
-7680539291235_pi_it: 'Calcimagon-D3 /- Forte'
-7680541520194_pi_de: 'Redormin® 250 Filmtabletten'
-7680541520194_pi_fr: 'Redormin® 250 Comprimés pelliculés'
-7680541520194_pi_it: 'Redormin® 250 Compresse film-rivestite'
-7680541520279_pi_de: 'Redormin® 250 Filmtabletten'
-7680541520279_pi_fr: 'Redormin® 250 Comprimés pelliculés'
-7680541520279_pi_it: 'Redormin® 250 Compresse film-rivestite'
-7680541520354_pi_de: 'Redormin® 500 Filmtabletten'
-7680541520354_pi_fr: 'Redormin® 500 Comprimés pelliculés'
-7680541520354_pi_it: 'Redormin® 500 Compresse film-rivestite'
-7680541520439_pi_de: 'Redormin® 500 Filmtabletten'
-7680541520439_pi_fr: 'Redormin® 500 Comprimés pelliculés'
-7680541520439_pi_it: 'Redormin® 500 Compresse film-rivestite'
-7680541890365_pi_de: 'Nasonex® Dosier Nasenspray'
-7680541890365_pi_fr: 'Nasonex® Spray doseur nasal'
-7680542040363_pi_de: 'Telfast® 120'
-7680542040363_pi_fr: 'Telfast® 120'
-7680542040363_pi_it: 'Telfast® 120'
-7680542040431_pi_de: 'Telfast® 120'
-7680542040431_pi_fr: 'Telfast® 120'
-7680542040431_pi_it: 'Telfast® 120'
-7680542040516_pi_de: 'Telfast® 180'
-7680542040516_pi_fr: 'Telfast® 180'
-7680542040516_pi_it: 'Telfast® 180'
-7680542040783_pi_de: 'Telfast® 180'
-7680542040783_pi_fr: 'Telfast® 180'
-7680542040783_pi_it: 'Telfast® 180'
-7680545340354_pi_de: 'Tebokan® 80'
-7680545340354_pi_fr: 'Tebokan® 80'
-7680545340354_pi_it: 'Tebokan® 80'
-7680545340439_pi_de: 'Tebokan® 80'
-7680545340439_pi_fr: 'Tebokan® 80'
-7680545340439_pi_it: 'Tebokan® 80'
-7680545340453_pi_de: 'Tebokan® 120'
-7680545340453_pi_fr: 'Tebokan® 120'
-7680545340453_pi_it: 'Tebokan® 120'
-7680545340460_pi_de: 'Tebokan® 120'
-7680545340460_pi_fr: 'Tebokan® 120'
-7680545340460_pi_it: 'Tebokan® 120'
-7680545340477_pi_de: 'Tebokan® 120'
-7680545340477_pi_fr: 'Tebokan® 120'
-7680545340477_pi_it: 'Tebokan® 120'
-7680549410138_pi_de: 'Schweden-Mixtur «H» 150 ml'
-7680549410138_pi_fr: 'Schweden-Mixtur «H» 150 ml'
-7680549410138_pi_it: 'Schweden-Mixtur «H» 150 ml '
-7680549410213_pi_de: 'Schweden-Mixtur «H» 250 ml'
-7680549410213_pi_fr: 'Schweden-Mixtur «H» 250 ml'
-7680549410213_pi_it: 'Schweden-Mixtur «H» 250 ml '
-7680549410565_pi_de: 'Schweden-Mixtur «H» 250 ml'
-7680549410565_pi_fr: 'Schweden-Mixtur «H» 250 ml'
-7680549410565_pi_it: 'Schweden-Mixtur «H» 250 ml '
-7680549410640_pi_de: 'Schweden-Mixtur «H» 250 ml'
-7680549410640_pi_fr: 'Schweden-Mixtur «H» 250 ml'
-7680549410640_pi_it: 'Schweden-Mixtur «H» 250 ml '
-7680549410725_pi_de: 'Schweden-Mixtur «H» 250 ml'
-7680549410725_pi_fr: 'Schweden-Mixtur «H» 250 ml'
-7680549410725_pi_it: 'Schweden-Mixtur «H» 250 ml '
-7680549860018_pi_de: 'Femoston® conti 0,5/2,5'
-7680549860018_pi_fr: 'Femoston® conti 0,5/2,5'
-7680549860018_pi_it: 'Femoston® conti 0,5/2,5'
-7680549860186_pi_de: 'Femoston® conti 1/5'
-7680549860186_pi_fr: 'Femoston® conti 1/5'
-7680549860186_pi_it: 'Femoston® conti 1/5'
-7680556890015_pi_de: 'Aerius®'
-7680556890015_pi_fr: 'Aerius®'
-7680556890022_pi_de: 'Aerius®'
-7680556890022_pi_fr: 'Aerius®'
-7680556890046_pi_de: 'Aerius®'
-7680556890046_pi_fr: 'Aerius®'
-7680557250023_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250023_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250023_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250047_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250047_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250047_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250061_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250061_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250061_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250085_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250085_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250085_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250108_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250108_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250108_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250122_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250122_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250122_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250146_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250146_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250146_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250160_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250160_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250160_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250184_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250184_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250184_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250207_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250207_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250207_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250221_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250221_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250221_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250245_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250245_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250245_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250269_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250269_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250269_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250283_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250283_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250283_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250306_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250306_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250306_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250320_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250320_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250320_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250344_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250344_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250344_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250368_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250368_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250368_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250382_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250382_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250382_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250405_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250405_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250405_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250429_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250429_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250429_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250443_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250443_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250443_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250467_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250467_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250467_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250481_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250481_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250481_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250504_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250504_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250504_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250528_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250528_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250528_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250535_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250535_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250535_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250542_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250542_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250542_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250559_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250559_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250559_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250566_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250566_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250566_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250573_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250573_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250573_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250580_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250580_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250580_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250597_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250597_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250597_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250603_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250603_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250603_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250610_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250610_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250610_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250627_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250627_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250627_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250634_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250634_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250634_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250641_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250641_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250641_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250658_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250658_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250658_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250665_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250665_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250665_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250672_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250672_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250672_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250689_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250689_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250689_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250696_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250696_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250696_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250702_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250702_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250702_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250719_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250719_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250719_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250726_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250726_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250726_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250733_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250733_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250733_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250740_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250740_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250740_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250757_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250757_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250757_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557250764_pi_de: 'Aranesp® Fertigspritze mit automatischem Nadelschutzsystem'
-7680557250764_pi_fr: 'Aranesp® seringue préremplie avec système de sécurité automatique de l’aiguille'
-7680557250764_pi_it: 'Aranesp® Siringa preriempita con protezione automatica dell’ago'
-7680557660211_pi_de: 'Algifor-L® 200 Filmtabletten'
-7680557660211_pi_fr: 'Algifor-L® 200 Comprimés filmés'
-7680557660211_pi_it: 'Algifor-L® 200 compresse filmate'
-7680557660419_pi_de: 'Algifor-L® forte 400 Filmtabletten'
-7680557660419_pi_fr: 'Algifor-L® forte 400 Comprimés filmés'
-7680557660419_pi_it: 'Algifor-L® forte 400 compresse filmate'
-7680563580107_pi_de: 'Saridon®'
-7680563580107_pi_fr: 'Saridon®'
-7680563580107_pi_it: 'Saridon®'
-7680563580121_pi_de: 'Saridon®'
-7680563580121_pi_fr: 'Saridon®'
-7680563580121_pi_it: 'Saridon®'
-7680563580251_pi_de: 'Saridon® forte'
-7680563580251_pi_fr: 'Saridon® forte'
-7680563580251_pi_it: 'Saridon® forte'
-7680568730217_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730217_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730217_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730224_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730224_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730224_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730231_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730231_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730231_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730248_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730248_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730248_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730255_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730255_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730255_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730262_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730262_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730262_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730279_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730279_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730279_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730286_pi_de: 'Torasemid Sandoz® eco 2,5/5/10/20'
-7680568730286_pi_fr: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730286_pi_it: 'Torasémide Sandoz® eco 2,5/5/10/20'
-7680568730293_pi_de: 'Torasemid Sandoz® eco 200'
-7680568730293_pi_fr: 'Torasémide Sandoz® eco 200'
-7680568730293_pi_it: 'Torasémide Sandoz® eco 200'
-7680568730309_pi_de: 'Torasemid Sandoz® eco 200'
-7680568730309_pi_fr: 'Torasémide Sandoz® eco 200'
-7680568730309_pi_it: 'Torasémide Sandoz® eco 200'
-7680569330041_pi_de: 'Cimifemin® uno Tabletten'
-7680569330041_pi_fr: 'Cimifemine® uno comprimés'
-7680569330041_pi_it: 'Cimifemin® uno compresse'
-7680569330164_pi_de: 'Cimifemin® uno Tabletten'
-7680569330164_pi_fr: 'Cimifemine® uno comprimés'
-7680569330164_pi_it: 'Cimifemin® uno compresse'
-7680569330171_pi_de: 'Cimifemin® forte Tabletten'
-7680569330171_pi_fr: 'Cimifemine® forte comprimés'
-7680569330171_pi_it: 'Cimifemin® forte compresse'
-7680569330188_pi_de: 'Cimifemin® forte Tabletten'
-7680569330188_pi_fr: 'Cimifemine® forte comprimés'
-7680569330188_pi_it: 'Cimifemin® forte compresse'
-7680572790160_pi_de: 'Fluimucil'
-7680572790160_pi_fr: 'Fluimucil'
-7680572790160_pi_it: 'Fluimucil'
-7680572790177_pi_de: 'Fluimucil'
-7680572790177_pi_fr: 'Fluimucil'
-7680572790177_pi_it: 'Fluimucil'
-7680572790184_pi_de: 'Fluimucil'
-7680572790184_pi_fr: 'Fluimucil'
-7680572790184_pi_it: 'Fluimucil'
-7680574540039_pi_de: 'Panadol® Junior 60 mg'
-7680574540039_pi_fr: 'Panadol® Junior 60 mg'
-7680574540039_pi_it: 'Panadol® Junior 60 mg'
-7680574540091_pi_de: 'Panadol® Junior 125 mg'
-7680574540091_pi_fr: 'Panadol® Junior 125 mg'
-7680574540091_pi_it: 'Panadol® Junior 125 mg'
-7680574540213_pi_de: 'Panadol® Junior 250 mg'
-7680574540213_pi_fr: 'Panadol® Junior 250 mg'
-7680574540213_pi_it: 'Panadol® Junior 250 mg'
-7680577760106_pi_de: 'Tramadol Streuli® Tropfen, Lösung zum Einnehmen'
-7680577760106_pi_fr: 'Tramadol Streuli® gouttes, solution à prendre'
-7680577760106_pi_it: 'Tramadol Streuli® gocce, soluzione orale'
-7680577760113_pi_de: 'Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680577760113_pi_fr: 'Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage'
-7680577760113_pi_it: 'Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice'
-7680577760120_pi_de: 'Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680577760120_pi_fr: 'Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage'
-7680577760120_pi_it: 'Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice'
-7680577760137_pi_de: 'Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe'
-7680577760137_pi_fr: 'Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage'
-7680577760137_pi_it: 'Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice'
-7680578500015_pi_de: 'GRAZAX®, Lyophilisat zum Einnehmen'
-7680578500015_pi_fr: 'GRAZAX®, lyophilisat oral'
-7680578500015_pi_it: 'GRAZAX®, liofilizzato orale'
-7680578500022_pi_de: 'GRAZAX®, Lyophilisat zum Einnehmen'
-7680578500022_pi_fr: 'GRAZAX®, lyophilisat oral'
-7680578500022_pi_it: 'GRAZAX®, liofilizzato orale'
-7680581960011_pi_de: 'Voltaren Dolo® forte 25 mg Liquid Caps, Weichgelatinekapseln'
-7680581960011_pi_fr: 'Voltaren Dolo® forte 25 mg Liquid Caps, capsules de gélatine molle'
-7680581960011_pi_it: 'Voltaren Dolo® forte 25 mg Liquid Caps, capsule gelatinose morbide'
-7680581960028_pi_de: 'Voltaren Dolo® Liquid Caps, Weichgelatinekapseln'
-7680581960028_pi_fr: 'Voltaren Dolo® Liquid Caps, capsules de gélatine molle'
-7680581960028_pi_it: 'Voltaren Dolo® Liquid Caps, capsule gelatinose morbide'
-7680581960035_pi_de: 'Voltaren Dolo® Liquid Caps, Weichgelatinekapseln'
-7680581960035_pi_fr: 'Voltaren Dolo® Liquid Caps, capsules de gélatine molle'
-7680581960035_pi_it: 'Voltaren Dolo® Liquid Caps, capsule gelatinose morbide'
-7680583270200_pi_de: 'Fexofenadine Zentiva® 120 mg'
-7680583270200_pi_fr: 'Fexofenadine Zentiva® 120 mg'
-7680583270200_pi_it: 'Fexofenadine Zentiva® 120 mg'
-7680583270217_pi_de: 'Fexofenadine Zentiva® 120 mg'
-7680583270217_pi_fr: 'Fexofenadine Zentiva® 120 mg'
-7680583270217_pi_it: 'Fexofenadine Zentiva® 120 mg'
-7680583270309_pi_de: 'Fexofenadine Zentiva® 180 mg'
-7680583270309_pi_fr: 'Fexofenadine Zentiva® 180 mg'
-7680583270309_pi_it: 'Fexofenadine Zentiva® 180 mg'
-7680583270316_pi_de: 'Fexofenadine Zentiva® 180 mg'
-7680583270316_pi_fr: 'Fexofenadine Zentiva® 180 mg'
-7680583270316_pi_it: 'Fexofenadine Zentiva® 180 mg'
-7680593220066_pi_de: 'Crilomus®'
-7680593220066_pi_fr: 'Crilomus®'
-7680593220066_pi_it: 'Crilomus®'
-7680593220073_pi_de: 'Crilomus®'
-7680593220073_pi_fr: 'Crilomus®'
-7680593220073_pi_it: 'Crilomus®'
-7680593220080_pi_de: 'Crilomus®'
-7680593220080_pi_fr: 'Crilomus®'
-7680593220080_pi_it: 'Crilomus®'
-7680593220097_pi_de: 'Crilomus®'
-7680593220097_pi_fr: 'Crilomus®'
-7680593220097_pi_it: 'Crilomus®'
-7680593220103_pi_de: 'Crilomus®'
-7680593220103_pi_fr: 'Crilomus®'
-7680593220103_pi_it: 'Crilomus®'
-7680600240032_pi_de: 'Dicloren® Gel'
-7680600240032_pi_fr: 'Dicloren® Gel'
-7680600240032_pi_it: 'Dicloren® Gel '
-7680600240049_pi_de: 'Dicloren® Gel'
-7680600240049_pi_fr: 'Dicloren® Gel'
-7680600240049_pi_it: 'Dicloren® Gel '
-7680612100010_pi_de: 'Irfen Dolo® L 200'
-7680612100010_pi_fr: 'Irfen Dolo® L 200'
-7680612100010_pi_it: 'Irfen Dolo® L 200'
-7680612100027_pi_de: 'Irfen Dolo® L 400'
-7680612100027_pi_fr: 'Irfen Dolo® L 400'
-7680612100027_pi_it: 'Irfen Dolo® L 400'
-7680612830023_pi_de: 'Telfastin Urticaria 180'
-7680612830023_pi_fr: 'Telfastin Allergo® 120, comprimés pelliculés'
-7680612830030_pi_de: 'Telfastin Urticaria 180'
-7680612830030_pi_fr: 'Telfastin Allergo® 120, comprimés pelliculés'
-7680612830047_pi_de: 'Telfastin Urticaria 180'
-7680612830047_pi_fr: 'Telfastin Allergo® 120, comprimés pelliculés'
-7680612830092_pi_de: 'Telfastin 120'
-7680612830092_pi_fr: 'Telfastin 120'
-7680612830108_pi_de: 'Telfastin 120'
-7680612830108_pi_fr: 'Telfastin 120'
-7680612830115_pi_de: 'Telfastin 120'
-7680612830115_pi_fr: 'Telfastin 120'
-7680612840046_pi_de: 'Sertralin Viatris, Filmtabletten'
-7680612840046_pi_fr: 'Sertralin Viatris, comprimés pelliculés'
-7680612840053_pi_de: 'Sertralin Viatris, Filmtabletten'
-7680612840053_pi_fr: 'Sertralin Viatris, comprimés pelliculés'
-7680612840060_pi_de: 'Sertralin Viatris, Filmtabletten'
-7680612840060_pi_fr: 'Sertralin Viatris, comprimés pelliculés'
-7680613480012_pi_de: 'N-Acetylcysteine Alpex 200 mg'
-7680613480012_pi_fr: 'N-Acetylcysteine Alpex 200 mg'
-7680613480012_pi_it: 'N-Acetylcysteine Alpex 200 mg'
-7680613480029_pi_de: 'N-Acetylcysteine Alpex 200 mg'
-7680613480029_pi_fr: 'N-Acetylcysteine Alpex 200 mg'
-7680613480029_pi_it: 'N-Acetylcysteine Alpex 200 mg'
-7680613480036_pi_de: 'N-Acetylcysteine Alpex 600 mg'
-7680613480036_pi_fr: 'N-Acetylcysteine Alpex 600 mg'
-7680613480036_pi_it: 'N-Acetylcysteine Alpex 600 mg'
-7680613480043_pi_de: 'N-Acetylcysteine Alpex 600 mg'
-7680613480043_pi_fr: 'N-Acetylcysteine Alpex 600 mg'
-7680613480043_pi_it: 'N-Acetylcysteine Alpex 600 mg'
-7680613480050_pi_de: 'N-Acetylcysteine Alpex 600 mg'
-7680613480050_pi_fr: 'N-Acetylcysteine Alpex 600 mg'
-7680613480050_pi_it: 'N-Acetylcysteine Alpex 600 mg'
-7680613480067_pi_de: 'N-Acetylcysteine Alpex 600 mg'
-7680613480067_pi_fr: 'N-Acetylcysteine Alpex 600 mg'
-7680613480067_pi_it: 'N-Acetylcysteine Alpex 600 mg'
-7680614850050_pi_de: 'Telmisartan-Mepha 40/80 mg '
-7680614850050_pi_fr: 'Telmisartan-Mepha 40/80 mg '
-7680614850050_pi_it: 'Telmisartan-Mepha 40/80 mg '
-7680614850067_pi_de: 'Telmisartan-Mepha 40/80 mg '
-7680614850067_pi_fr: 'Telmisartan-Mepha 40/80 mg '
-7680614850067_pi_it: 'Telmisartan-Mepha 40/80 mg '
-7680614850074_pi_de: 'Telmisartan-Mepha 40/80 mg '
-7680614850074_pi_fr: 'Telmisartan-Mepha 40/80 mg '
-7680614850074_pi_it: 'Telmisartan-Mepha 40/80 mg '
-7680614850081_pi_de: 'Telmisartan-Mepha 40/80 mg '
-7680614850081_pi_fr: 'Telmisartan-Mepha 40/80 mg '
-7680614850081_pi_it: 'Telmisartan-Mepha 40/80 mg '
-7680627210094_pi_de: 'Sildenafil Viatris'
-7680627210094_pi_fr: 'Sildenafil Viatris'
-7680627210100_pi_de: 'Sildenafil Viatris'
-7680627210100_pi_fr: 'Sildenafil Viatris'
-7680627210117_pi_de: 'Sildenafil Viatris'
-7680627210117_pi_fr: 'Sildenafil Viatris'
-7680627210124_pi_de: 'Sildenafil Viatris'
-7680627210124_pi_fr: 'Sildenafil Viatris'
-7680627210131_pi_de: 'Sildenafil Viatris'
-7680627210131_pi_fr: 'Sildenafil Viatris'
-7680627210148_pi_de: 'Sildenafil Viatris'
-7680627210148_pi_fr: 'Sildenafil Viatris'
-7680627210155_pi_de: 'Sildenafil Viatris'
-7680627210155_pi_fr: 'Sildenafil Viatris'
-7680627210162_pi_de: 'Sildenafil Viatris'
-7680627210162_pi_fr: 'Sildenafil Viatris'
-7680630480019_pi_de: 'Paracetamol Sandoz® 500'
-7680630480019_pi_fr: 'Paracétamol Sandoz® 500'
-7680630480019_pi_it: 'Paracétamol Sandoz® 500'
-7680630480026_pi_de: 'Paracetamol Sandoz® 1000'
-7680630480026_pi_fr: 'Paracétamol Sandoz® 1000'
-7680630480026_pi_it: 'Paracétamol Sandoz® 1000'
-7680630480033_pi_de: 'Paracetamol Sandoz® 1000'
-7680630480033_pi_fr: 'Paracétamol Sandoz® 1000'
-7680630480033_pi_it: 'Paracétamol Sandoz® 1000'
-7680630480040_pi_de: 'Paracetamol Sandoz® 1000'
-7680630480040_pi_fr: 'Paracétamol Sandoz® 1000'
-7680630480040_pi_it: 'Paracétamol Sandoz® 1000'
-7680630480057_pi_de: 'Paracetamol Sandoz® 500'
-7680630480057_pi_fr: 'Paracétamol Sandoz® 500'
-7680630480057_pi_it: 'Paracétamol Sandoz® 500'
-7680630620033_pi_de: 'Amavita Echinacea Tropfen'
-7680630620033_pi_fr: 'Amavita Gouttes Echinacea'
-7680630620033_pi_it: 'Amavita Gocce Echinacea'
-7680632350013_pi_de: 'Paracetamol Spirig HC® 500 mg'
-7680632350013_pi_fr: 'Paracétamol Spirig HC® 500 mg'
-7680632350020_pi_de: 'Paracetamol Spirig HC® 500 mg'
-7680632350020_pi_fr: 'Paracétamol Spirig HC® 1000 mg'
-7680632350037_pi_de: 'Paracetamol Spirig HC® 1000 mg'
-7680632350037_pi_fr: 'Paracétamol Spirig HC® 1000 mg'
-7680632350044_pi_de: 'Paracetamol Spirig HC® 1000 mg'
-7680632350044_pi_fr: 'Paracétamol Spirig HC® 1000 mg'
-7680650820017_pi_de: 'Postinor®'
-7680650820017_pi_fr: 'Postinor®'
-7680650820017_pi_it: 'Postinor®'
-7680650880011_pi_de: 'Kosima® 20'
-7680650880011_pi_fr: 'Kosima® 20'
-7680650880011_pi_it: 'Kosima® 20'
-7680650880028_pi_de: 'Kosima® 20'
-7680650880028_pi_fr: 'Kosima® 20'
-7680650880028_pi_it: 'Kosima® 20'
-7680650880035_pi_de: 'Kosima® 20'
-7680650880035_pi_fr: 'Kosima® 20'
-7680650880035_pi_it: 'Kosima® 20'
-7680650880042_pi_de: 'Kosima® 30'
-7680650880042_pi_fr: 'Kosima® 30'
-7680650880042_pi_it: 'Kosima® 30'
-7680650880059_pi_de: 'Kosima® 30'
-7680650880059_pi_fr: 'Kosima® 30'
-7680650880059_pi_it: 'Kosima® 30'
-7680650880066_pi_de: 'Kosima® 30'
-7680650880066_pi_fr: 'Kosima® 30'
-7680650880066_pi_it: 'Kosima® 30'
-7680652030018_pi_de: 'BronchoVerde® Hustenlöser 25 mg, Granulat'
-7680652030018_pi_fr: 'BronchoVerde® Expectorant 25 mg, granulé'
-7680652030018_pi_it: 'BronchoVerde® Espettorante 25 mg, granulato'
-7680652030025_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Granulat'
-7680652030025_pi_fr: 'BronchoVerde® Expectorant 50 mg, granulé'
-7680652030025_pi_it: 'BronchoVerde® Espettorante 50 mg, granulato'
-7680652030032_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Granulat'
-7680652030032_pi_fr: 'BronchoVerde® Expectorant 50 mg, granulé'
-7680652030032_pi_it: 'BronchoVerde® Espettorante 50 mg, granulato'
-7680652040017_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Brausetabletten'
-7680652040017_pi_fr: 'BronchoVerde® Expectorant 50 mg, comprimés effervescents'
-7680652040017_pi_it: 'BronchoVerde® Espettorante 50 mg, compresse effervescenti'
-7680652040024_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Brausetabletten'
-7680652040024_pi_fr: 'BronchoVerde® Expectorant 50 mg, comprimés effervescents'
-7680652040024_pi_it: 'BronchoVerde® Espettorante 50 mg, compresse effervescenti'
-7680652040031_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Brausetabletten'
-7680652040031_pi_fr: 'BronchoVerde® Expectorant 50 mg, comprimés effervescents'
-7680652040031_pi_it: 'BronchoVerde® Espettorante 50 mg, compresse effervescenti'
-7680652040048_pi_de: 'BronchoVerde® Hustenlöser 50 mg, Brausetabletten'
-7680652040048_pi_fr: 'BronchoVerde® Expectorant 50 mg, comprimés effervescents'
-7680652040048_pi_it: 'BronchoVerde® Espettorante 50 mg, compresse effervescenti'
-7680652040055_pi_de: 'BronchoVerde® Hustenlöser 100 mg, Brausetabletten'
-7680652040055_pi_fr: 'BronchoVerde® Expectorant 100 mg, comprimés effervescents'
-7680652040055_pi_it: 'BronchoVerde® Espettorante 100 mg, compresse effervescenti'
-7680652040062_pi_de: 'BronchoVerde® Hustenlöser 100 mg, Brausetabletten'
-7680652040062_pi_fr: 'BronchoVerde® Expectorant 100 mg, comprimés effervescents'
-7680652040062_pi_it: 'BronchoVerde® Espettorante 100 mg, compresse effervescenti'
-7680652040079_pi_de: 'BronchoVerde® Hustenlöser 100 mg, Brausetabletten'
-7680652040079_pi_fr: 'BronchoVerde® Expectorant 100 mg, comprimés effervescents'
-7680652040079_pi_it: 'BronchoVerde® Espettorante 100 mg, compresse effervescenti'
-7680652040086_pi_de: 'BronchoVerde® Hustenlöser 100 mg, Brausetabletten'
-7680652040086_pi_fr: 'BronchoVerde® Expectorant 100 mg, comprimés effervescents'
-7680652040086_pi_it: 'BronchoVerde® Espettorante 100 mg, compresse effervescenti'
-7680653600012_fi_it: 'Xadago 50 mg, compresse rivestite con film'
-7680653600029_fi_it: 'Xadago 100 mg, compresse rivestite con fil'
-7680653600036_fi_it: 'Xadago 100 mg, compresse rivestite con film'
-7680654260017_pi_de: 'Macrogol-Mepha Pulver'
-7680654260017_pi_fr: 'Macrogol-Mepha poudre'
-7680654260017_pi_it: 'Macrogol-Mepha polvere'
-7680654260024_pi_de: 'Macrogol-Mepha Pulver'
-7680654260024_pi_fr: 'Macrogol-Mepha poudre'
-7680654260024_pi_it: 'Macrogol-Mepha polvere'
-7680654260031_pi_de: 'Macrogol-Mepha Junior Pulver'
-7680654260031_pi_fr: 'Macrogol-Mepha Junior poudre'
-7680654260031_pi_it: 'Macrogol-Mepha Junior polvere'
-7680654260031_pi_it: 'Xadago 50 mg, compresse rivestite con film'
-7680659160053_pi_de: 'Algifor® Dolo forte, Suspension'
-7680659160053_pi_fr: 'Algifor® Dolo forte, Suspension'
-7680659160053_pi_it: 'Algifor® Dolo forte, Suspension'
-7680659160060_pi_de: 'Algifor® Dolo forte, Suspension, Beutel'
-7680659160060_pi_fr: 'Algifor® Dolo forte, Suspension, sachets'
-7680659160060_pi_it: 'Algifor® Dolo forte, Suspension, bustine'
-7680661240019_pi_de: 'LuVit D3 zur Prophylaxe'
-7680661240019_pi_de: 'LuVit D3 zur Therapie'
-7680661240019_pi_fr: 'LuVit D3 pour la prévention'
-7680661240019_pi_fr: 'LuVit D3 pour le traitement'
-7680661240026_pi_de: 'LuVit D3 zur Prophylaxe'
-7680661240026_pi_de: 'LuVit D3 zur Therapie'
-7680661240026_pi_fr: 'LuVit D3 pour la prévention'
-7680661240026_pi_fr: 'LuVit D3 pour le traitement'
-7680661240033_pi_de: 'LuVit D3 zur Prophylaxe'
-7680661240033_pi_fr: 'LuVit D3® pour la prévention, solution buvable'
-7680661240033_pi_fr: 'LuVit D3® pour le traitement, solution buvable'
-7680662830011_pi_de: 'Suliqua® 100/33'
-7680662830011_pi_de: 'Suliqua® 100/50'
-7680662830011_pi_fr: 'Suliqua® 100/33'
-7680662830011_pi_fr: 'Suliqua® 100/50'
-7680662830035_pi_de: 'Suliqua® 100/33'
-7680662830035_pi_de: 'Suliqua® 100/50'
-7680662830035_pi_fr: 'Suliqua® 100/33'
-7680662830035_pi_fr: 'Suliqua® 100/50'
-7680663430012_pi_de: 'Fexofenadin Sandoz® 120 mg'
-7680663430012_pi_de: 'Fexofenadin Sandoz® 180 mg'
-7680663430012_pi_fr: 'Fexofénadine Sandoz® 120 mg'
-7680663430012_pi_fr: 'Fexofénadine Sandoz® 180 mg'
-7680663430029_pi_de: 'Fexofenadin Sandoz® 120 mg'
-7680663430029_pi_de: 'Fexofenadin Sandoz® 180 mg'
-7680663430029_pi_fr: 'Fexofénadine Sandoz® 120 mg'
-7680663430029_pi_fr: 'Fexofénadine Sandoz® 180 mg'
-7680663430036_pi_de: 'Fexofenadin Sandoz® 120 mg'
-7680663430036_pi_de: 'Fexofenadin Sandoz® 180 mg'
-7680663430036_pi_fr: 'Fexofénadine Sandoz® 120 mg'
-7680663430036_pi_fr: 'Fexofénadine Sandoz® 180 mg'
-7680663430043_pi_de: 'Fexofenadin Sandoz® 120 mg'
-7680663430043_pi_de: 'Fexofenadin Sandoz® 180 mg'
-7680663430043_pi_fr: 'Fexofénadine Sandoz® 120 mg'
-7680663430043_pi_fr: 'Fexofénadine Sandoz® 180 mg'
-7680666040010_pi_de: 'Ozempic® DualDose, Injektionslösung in einem Fertigpen'
-7680666040010_pi_de: 'Ozempic® FixDose 1 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040010_pi_de: 'Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040010_pi_fr: 'Ozempic® DualDose, solution injectable dans un stylo prérempli'
-7680666040010_pi_fr: 'Ozempic® FixDose 1 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680666040010_pi_fr: 'Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680666040034_pi_de: 'Ozempic® DualDose, Injektionslösung in einem Fertigpen'
-7680666040034_pi_de: 'Ozempic® FixDose 1 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040034_pi_de: 'Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040034_pi_fr: 'Ozempic® DualDose, solution injectable dans un stylo prérempli'
-7680666040034_pi_fr: 'Ozempic® FixDose 1 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680666040034_pi_fr: 'Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680666040041_pi_de: 'Ozempic® DualDose, Injektionslösung in einem Fertigpen'
-7680666040041_pi_de: 'Ozempic® FixDose 1 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040041_pi_de: 'Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3 ml)'
-7680666040041_pi_fr: 'Ozempic® DualDose, solution injectable dans un stylo prérempli'
-7680666040041_pi_fr: 'Ozempic® FixDose 1 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680666040041_pi_fr: 'Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli (3 ml)'
-7680667620013_pi_de: 'Korolind, Tropfen'
-7680667620013_pi_fr: 'Korolind, Gouttes'
-7680667620020_pi_de: 'Korolind, Tropfen'
-7680667620020_pi_fr: 'Korolind, Gouttes'
-7680667620037_pi_de: 'Korolind, Tropfen'
-7680667620037_pi_fr: 'Korolind, Gouttes'
-7680678360014_pi_de: 'Leqvio®'
-7680678360014_pi_fr: 'Leqvio®'
-7680678360021_pi_de: 'Leqvio®'
-7680678360021_pi_fr: 'Leqvio®'
-7680685140012_pi_de: 'Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz'
-7680685140012_pi_fr: 'Yuflyma 80 mg, solution injectable en seringue préremplie avec protège-aiguille'
-7680685140029_pi_de: 'Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz'
-7680685140029_pi_fr: 'Yuflyma 80 mg, solution injectable en seringue préremplie avec protège-aiguille'
-7680685140036_pi_de: 'Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz'
-7680685140036_pi_fr: 'Yuflyma 80 mg, solution injectable en seringue préremplie avec protège-aiguille'
-7680685140043_pi_de: 'Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz'
-7680685140043_pi_fr: 'Yuflyma 80 mg, solution injectable en seringue préremplie avec protège-aiguille'
-7680685150011_pi_de: 'Yuflyma 40 mg, Injektionslösung im Fertigpen'
-7680685150011_pi_de: 'Yuflyma 80 mg, Injektionslösung im Fertigpen'
-7680685150011_pi_fr: 'Yuflyma 40 mg, solution injectable en stylo prérempli'
-7680685150011_pi_fr: 'Yuflyma 80 mg, solution injectable en stylo prérempli'
-7680685150028_pi_de: 'Yuflyma 40 mg, Injektionslösung im Fertigpen'
-7680685150028_pi_de: 'Yuflyma 80 mg, Injektionslösung im Fertigpen'
-7680685150028_pi_fr: 'Yuflyma 40 mg, solution injectable en stylo prérempli'
-7680685150028_pi_fr: 'Yuflyma 80 mg, solution injectable en stylo prérempli'
-7680685150035_pi_de: 'Yuflyma 40 mg, Injektionslösung im Fertigpen'
-7680685150035_pi_de: 'Yuflyma 80 mg, Injektionslösung im Fertigpen'
-7680685150035_pi_fr: 'Yuflyma 40 mg, solution injectable en stylo prérempli'
-7680685150035_pi_fr: 'Yuflyma 80 mg, solution injectable en stylo prérempli'
-7680685150042_pi_de: 'Yuflyma 40 mg, Injektionslösung im Fertigpen'
-7680685150042_pi_de: 'Yuflyma 80 mg, Injektionslösung im Fertigpen'
-7680685150042_pi_fr: 'Yuflyma 40 mg, solution injectable en stylo prérempli'
-7680685150042_pi_fr: 'Yuflyma 80 mg, solution injectable en stylo prérempli'
-7680678550019_pi_de: 'Flector Dolo Forte Liquid Caps 25 mg, Weichkapseln'
-7680678550026_pi_de: 'Flector Dolo Forte Liquid Caps 25 mg, Weichkapseln'
-7680678550057_pi_de: 'Flector Dolo Forte Liquid Caps 25 mg, Weichkapseln'
-7680678550019_pi_de: 'Flector Dolo Liquid Caps 12,5 mg, Weichkapseln'
-7680678550026_pi_de: 'Flector Dolo Liquid Caps 12,5 mg, Weichkapseln'
-7680678550057_pi_de: 'Flector Dolo Liquid Caps 12,5 mg, Weichkapseln'
-7680678550019_pi_fr: 'Flector Dolo Forte Liquid Caps 25 mg, capsules molles'
-7680678550026_pi_fr: 'Flector Dolo Forte Liquid Caps 25 mg, capsules molles'
-7680678550057_pi_fr: 'Flector Dolo Forte Liquid Caps 25 mg, capsules molles'
-7680678550019_pi_fr: 'Flector Dolo Liquid Caps 12,5 mg, capsules molles'
-7680678550026_pi_fr: 'Flector Dolo Liquid Caps 12,5 mg, capsules molles'
-7680678550057_pi_fr: 'Flector Dolo Liquid Caps 12,5 mg, capsules molles'
-7680417990137_pi_de: 'VICKS MediNait® Sirup'
-7680417990137_pi_fr: 'VICKS MediNait® Sirop'
-7680554970016_pi_de: 'YALDIGO® 500 mg Suppositorien'
-7680554970054_pi_de: 'YALDIGO® 500 mg Suppositorien'
-7680554970030_pi_de: 'YALDIGO® 500 mg Suppositorien'
-7680554970061_pi_de: 'YALDIGO® 500 mg Suppositorien'
-7680554970078_pi_de: 'YALDIGO® 500 mg Suppositorien'
-7680554970016_pi_fr: 'YALDIGO® 500 mg Suppositoires'
-7680554970054_pi_fr: 'YALDIGO® 500 mg Suppositoires'
-7680554970030_pi_fr: 'YALDIGO® 500 mg Suppositoires'
-7680554970061_pi_fr: 'YALDIGO® 500 mg Suppositoires'
-7680554970078_pi_fr: 'YALDIGO® 500 mg Suppositoires'
-7680612640073_pi_de: 'Gabapentin Viatris'
-7680612640080_pi_de: 'Gabapentin Viatris'
-7680612640097_pi_de: 'Gabapentin Viatris'
-7680612640103_pi_de: 'Gabapentin Viatris'
-7680612640110_pi_de: 'Gabapentin Viatris'
-7680612640127_pi_de: 'Gabapentin Viatris'
-7680612640073_pi_fr: 'Gabapentin Viatris'
-7680612640080_pi_fr: 'Gabapentin Viatris'
-7680612640097_pi_fr: 'Gabapentin Viatris'
-7680612640103_pi_fr: 'Gabapentin Viatris'
-7680612640110_pi_fr: 'Gabapentin Viatris'
-7680612640127_pi_fr: 'Gabapentin Viatris'
-7680612650058_pi_de: 'Gabapentin Pfizer®'
-7680612650065_pi_de: 'Gabapentin Pfizer®'
-7680612650072_pi_de: 'Gabapentin Pfizer®'
-7680612650089_pi_de: 'Gabapentin Pfizer®'
-7680612650058_pi_de: 'Gabapentin Viatris'
-7680612650065_pi_de: 'Gabapentin Viatris'
-7680612650072_pi_de: 'Gabapentin Viatris'
-7680612650089_pi_de: 'Gabapentin Viatris'
-7680612650058_pi_fr: 'Gabapentin Pfizer®'
-7680612650065_pi_fr: 'Gabapentin Pfizer®'
-7680612650072_pi_fr: 'Gabapentin Pfizer®'
-7680612650089_pi_fr: 'Gabapentin Pfizer®'
-7680612650058_pi_fr: 'Gabapentin Viatris'
-7680612650065_pi_fr: 'Gabapentin Viatris'
-7680612650072_pi_fr: 'Gabapentin Viatris'
-7680612650089_pi_fr: 'Gabapentin Viatris'
-7680687220002_pi_de: 'Paracetamol Sandoz® eco 1000 mg, Tabletten'
-7680687220002_pi_de: 'Paracetamol Sandoz® eco 500 mg, Tabletten'
-7680687220002_pi_fr: 'Paracétamol Sandoz® eco 1000 mg, comprimés'
-7680687220002_pi_fr: 'Paracétamol Sandoz® eco 500 mg, comprimés'
+7680109990223_pi_de: Osanit® Kügelchen
+7680109990223_pi_fr: Osanit® globules
+7680109990223_pi_it: Osanit® globuli
+7680149910182_pi_de: Pulmex® Salbe
+7680149910182_pi_fr: Pulmex® Pommade
+7680149910182_pi_it: Pulmex® Pomata
+7680149910267_pi_de: Pulmex® Salbe
+7680149910267_pi_fr: Pulmex® Pommade
+7680149910267_pi_it: Pulmex® Pomata
+7680268210101_pi_de: Agiolax® mit Senna Granulat 250 g/1000 g'
+7680268210101_pi_fr: Agiolax® avec séné granulés 250 g/1000 g
+7680268210101_pi_it: Agiolax® con senna granulato 250 g/1000 g
+7680268210293_pi_de: Agiolax® mit Senna Granulat 250 g/1000 g
+7680268210293_pi_fr: Agiolax® avec séné granulés 250 g/1000 g
+7680268210293_pi_it: Agiolax® con senna granulato 150 g
+7680268210613_pi_de: Agiolax® mit Senna Granulat 150 g
+7680268210613_pi_fr: Agiolax® avec séné granulés 250 g/1000 g
+7680268210613_pi_it: Agiolax® con senna granulato 250 g/1000 g
+7680320530413_pi_de: Stugeron® Tabletten
+7680320530413_pi_fr: Stugeron® Comprimés
+7680320530413_pi_it: Stugeron® Compresse
+7680334810013_pi_de: Vitamin D3 Streuli® Prophylax
+7680334810013_pi_fr: Vitamine D3 Streuli® Prophylax
+7680334810013_pi_it: Vitamina D3 Streuli® Prophylax
+7680334810020_pi_de: Vitamin D3 Streuli® zur Therapie
+7680334810020_pi_fr: Vitamine D3 Streuli® pour la thérapie
+7680334810020_pi_it: Vitamina D3 Streuli® a terapia
+7680363520198_pi_de: Nasivin®
+7680363520198_pi_fr: Nasivine®
+7680363520273_pi_de: Nasivin®
+7680363520273_pi_fr: Nasivine®
+7680363520358_pi_de: Nasivin®
+7680363520358_pi_fr: Nasivine®
+7680373970242_pi_de: Ventolin® 5 mg/mL konzentrierte Lösung für Aerosolgeräte
+7680373970242_pi_fr: Ventolin® 5 mg/mL solution concentrée pour appareils aérosols
+7680373970242_pi_it: Ventolin® 5 mg/mL soluzione concentrata per apparecchi aerosol
+7680373970327_pi_de: Ventolin® 1,25 mg/2,5 mL gebrauchsfertige Lösung für Aerosolgeräte
+7680373970327_pi_fr: Ventolin® 1,25 mg/2,5 mL solution prête à l'emploi pour appareils
+  aérosols
+7680373970327_pi_it: Ventolin® 1,25 mg/2,5 mL soluzione pronta all'uso per apparecchi
+  aerosol
+7680374820133_pi_de: Androcur®-50
+7680374820133_pi_fr: Androcur®-50
+7680374820133_pi_it: Androcur®-50
+7680374820218_pi_de: Androcur®-50
+7680374820218_pi_fr: Androcur®-50
+7680374820218_pi_it: Androcur®-50
+7680374820560_pi_de: Androcur®-10
+7680374820560_pi_fr: Androcur®-10
+7680374820560_pi_it: Androcur®-10
+7680375610108_pi_de: Fluimucil
+7680375610108_pi_fr: Fluimucil
+7680375610108_pi_it: Fluimucil
+7680375610375_pi_de: Fluimucil
+7680375610375_pi_fr: Fluimucil
+7680375610375_pi_it: Fluimucil
+7680375610450_pi_de: Fluimucil
+7680375610450_pi_fr: Fluimucil
+7680375610450_pi_it: Fluimucil
+7680375610887_pi_de: Fluimucil
+7680375610887_pi_fr: Fluimucil
+7680375610887_pi_it: Fluimucil
+7680375610962_pi_de: Fluimucil
+7680375610962_pi_fr: Fluimucil
+7680375610962_pi_it: Fluimucil
+7680381330632_pi_de: Aspégic 100®
+7680381330632_pi_fr: Aspégic 100®
+7680381330632_pi_it: Aspégic 500®
+7680381330717_pi_de: Aspégic Mite®
+7680381330717_pi_fr: Aspégic Mite®
+7680381330717_pi_it: Aspégic Mite®
+7680381330984_pi_de: Aspégic 500®
+7680381330984_pi_fr: Aspégic 500®
+7680381330984_pi_it: Aspégic 500®
+7680381331011_pi_de: Aspégic Forte®
+7680381331011_pi_fr: Aspégic Forte®
+7680381331011_pi_it: Aspégic Forte®
+7680381331288_pi_de: Aspégic 100®
+7680381331288_pi_fr: Aspégic 100®
+7680381331288_pi_it: Aspégic 100®
+7680388530158_pi_de: Vermox® 100 mg
+7680388530158_pi_fr: Vermox® 100 mg
+7680388530158_pi_it: Vermox® 100 mg
+7680388530233_pi_de: Vermox® 500 mg
+7680388530233_pi_fr: Vermox® 500 mg
+7680388530233_pi_it: Vermox® 500 mg
+7680393080297_pi_de: Diprosalic®
+7680393080297_pi_fr: Diprosalic®
+7680415690213_pi_de: FemiFect'
+7680415690213_pi_fr: FemiFect
+7680415690213_pi_it: FemiFect
+7680419030152_pi_de: Motilium®
+7680419030152_pi_fr: Motilium®
+7680419030152_pi_it: Motilium®
+7680419030237_pi_de: Motilium®
+7680419030237_pi_fr: Motilium®
+7680419030237_pi_it: Motilium®
+7680434540995_pi_de: Kamillin Medipharm® Bad
+7680434540995_pi_fr: Kamillin Medipharm® Bain
+7680437880197_pi_de: Tramal® Tropfen, Lösung zum Einnehmen
+7680437880197_pi_fr: Tramal® Gouttes, solution à prendre
+7680437880197_pi_it: Tramal® gocce, soluzione orale
+7680437880272_pi_de: Tramal® Tropfen, Lösung zum Einnehmen
+7680437880272_pi_fr: Tramal® Gouttes, solution à prendre
+7680437880272_pi_it: Tramal® gocce, soluzione orale
+7680437880357_pi_de: Tramal® Tropfen, Lösung zum Einnehmen
+7680437880357_pi_fr: Tramal® Gouttes avec pompe de dosage
+7680437880357_pi_it: Tramal® gocce, soluzione orale
+7680437880517_pi_de: Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680437880517_pi_fr: Tramal® Gouttes avec pompe de dosage
+7680437880517_pi_it: Tramal® gocce, soluzione orale con pompetta dosatrice
+7680437880784_pi_de: Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680437880784_pi_fr: Tramal® Gouttes avec pompe de dosage
+7680437880784_pi_it: Tramal® gocce, soluzione orale con pompetta dosatrice
+7680437880869_pi_de: Tramal® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680437880869_pi_fr: Tramal® Gouttes avec pompe de dosage
+7680437880869_pi_it: Tramal® gocce, soluzione orale con pompetta dosatrice
+7680449390455_pi_de: Otrivin® Schnupfen
+7680449390455_pi_fr: Otrivin® Rhume
+7680449390455_pi_it: Otrivin® Raffreddore
+7680449390530_pi_de: Otrivin® Schnupfen
+7680449390530_pi_fr: Otrivin® Rhume
+7680449390530_pi_it: Otrivin® Raffreddore
+7680449390615_pi_de: Otrivin® Schnupfen 0.1% Menthol, Dosierspray
+7680449390615_pi_fr: Otrivin® Rhume 0.1% Menthol, Spray-doseur
+7680449390615_pi_it: Otrivin® Raffreddore 0.1% Mentolo, spray dosatore
+7680451160367_pi_de: Similasan Allergisch reagierende Augen, Augentropfen 10 ml
+7680451160367_pi_fr: Similasan réactions allergiques des yeux, gouttes pour les yeux,
+  10ml
+7680451160367_pi_it: Similasan reazioni allergiche degli occhi, gocce per gli occhi
+  10ml
+7680451160374_pi_de: Similasan Allergisch reagierende Augen, Monodosen, Augentropfen
+7680451160374_pi_fr: Similasan réactions allergiques des yeux, gouttes pour les yeux,
+  monodoses
+7680451160374_pi_it: Similasan reazioni allergiche degli occhi, gocce per gli occhi
+  monodose
+7680451170335_pi_de: Similasan Trockene Augen, Augentropfen 10 ml
+7680451170335_pi_fr: Similasan yeux secs, gouttes pour les yeux, 10ml
+7680451170335_pi_it: Similasan occhi secchi, gocce per gli occhi 10ml
+7680451170342_pi_de: Similasan Trockene Augen, Monodosen, Augentropfen
+7680451170342_pi_fr: Similasan yeux secs, gouttes pour les yeux, monodoses
+7680451170342_pi_it: Similasan occhi secchi, gocce per gli occhi monodose
+7680451380116_pi_de: Nasivin®
+7680451380116_pi_fr: Nasivine®
+7680451790366_pi_de: Fluimucil
+7680451790366_pi_fr: Fluimucil
+7680451790366_pi_it: Fluimucil
+7680451790793_pi_de: Fluimucil
+7680451790793_pi_fr: Fluimucil
+7680451790793_pi_it: Fluimucil
+7680451790953_pi_de: Fluimucil
+7680451790953_pi_fr: Fluimucil
+7680451790953_pi_it: Fluimucil
+7680451791264_pi_de: Fluimucil
+7680451791264_pi_fr: Fluimucil
+7680451791264_pi_it: Fluimucil
+7680451990100_pi_de: Virudermin® Gel
+7680451990100_pi_fr: Virudermin® Gel
+7680462060014_pi_de: Ben-u-ron® 500 mg Tabletten
+7680462060014_pi_fr: Ben-u-ron® 500 mg comprimés
+7680462060014_pi_it: Ben-u-ron® 500 mg compresse
+7680462061264_pi_de: Ben-u-ron® 500 mg Tabletten
+7680462061264_pi_fr: Ben-u-ron® 500 mg comprimés
+7680462061264_pi_it: Ben-u-ron® 500 mg compresse
+7680462061318_pi_de: Ben-u-ron® 1000 mg Tabletten
+7680462061318_pi_fr: Ben-u-ron® Comprimés 1000 mg
+7680462061318_pi_it: Ben-u-ron® 1000 mg compresse
+7680462061325_pi_de: Ben-u-ron® 1000 mg Tabletten
+7680462061325_pi_fr: Ben-u-ron® Comprimés 1000 mg
+7680462061325_pi_it: Ben-u-ron® 1000 mg compresse
+7680462061332_pi_de: Ben-u-ron® 1000 mg Tabletten
+7680462061332_pi_fr: Ben-u-ron® Comprimés 1000 mg
+7680462061332_pi_it: Ben-u-ron® 1000 mg compresse
+7680465320016_pi_de: Triderm® Creme
+7680465320016_pi_fr: Triderm® Crème
+7680465320238_pi_de: Triderm® Creme
+7680465320238_pi_fr: Triderm® Crème
+7680466730180_pi_de: Salofalk® 250 /500 Suppositorien
+7680466730180_pi_fr: Salofalk® 250 /500 suppositoires
+7680466730180_pi_it: Salofalk® 250/500 supposte
+7680466730425_pi_de: Salofalk® 250 /500 Suppositorien
+7680466730425_pi_fr: Salofalk® 250 /500 suppositoires
+7680466730425_pi_it: Salofalk® 250/500 supposte
+7680466730500_pi_de: Salofalk® 250 /500 Suppositorien
+7680466730500_pi_fr: Salofalk® 250 /500 suppositoires
+7680466730500_pi_it: Salofalk® 250/500 supposte
+7680466730531_pi_de: Salofalk® 1 g
+7680466730531_pi_fr: Salofalk® 1 g
+7680466730531_pi_it: Salofalk® 1 g
+7680466730548_pi_de: Salofalk® 1 g
+7680466730548_pi_fr: Salofalk® 1 g
+7680466730548_pi_it: Salofalk® 1 g
+7680466730555_pi_de: Salofalk® 1 g
+7680466730555_pi_fr: Salofalk® 1 g
+7680466730555_pi_it: Salofalk® 1 g
+7680479090158_pi_de: Solmucol® 400, 600 Granulat
+7680479090158_pi_fr: Solmucol® 400, 600 Granulé
+7680479090158_pi_it: Solmucol® 400, 600 granulare
+7680479090660_pi_de: Solmucol® 400, 600 Granulat
+7680479090660_pi_fr: Solmucol® 400, 600 Granulé
+7680479090660_pi_it: Solmucol® 400, 600 granulare
+7680479090745_pi_de: Solmucol® 400, 600 Granulat
+7680479090745_pi_fr: Solmucol® 400, 600 Granulé
+7680479090745_pi_it: Solmucol® 400, 600 granulare
+7680479091049_pi_de: Solmucol® 400, 600 Granulat
+7680479091049_pi_fr: Solmucol® 400, 600 Granulé
+7680479091049_pi_it: Solmucol® 400, 600 granulare
+7680479091476_pi_de: Solmucol® 400, 600 Granulat
+7680479091476_pi_fr: Solmucol® 400, 600 Granulé
+7680479091476_pi_it: Solmucol® 400, 600 granulare
+7680479091551_pi_de: Solmucol® 400, 600 Granulat
+7680479091551_pi_fr: Solmucol® 400, 600 Granulé
+7680479091551_pi_it: Solmucol® 400, 600 granulare
+7680479091636_pi_de: Solmucol® 400, 600 Granulat
+7680479091636_pi_fr: Solmucol® 400, 600 Granulé
+7680479091636_pi_it: Solmucol® 400, 600 granulare
+7680482490198_pi_de: Regaine® 2%
+7680482490198_pi_fr: Regaine® 2%
+7680482490198_pi_it: Regaine® 2%
+7680482490273_pi_de: Regaine® 2%
+7680482490273_pi_fr: Regaine® 2%
+7680482490273_pi_it: Regaine® 2%
+7680482490518_pi_de: Regaine® 5%
+7680482490518_pi_fr: Regaine® 5%
+7680482490518_pi_it: Regaine® 5%
+7680482490785_pi_de: Regaine® 5%
+7680482490785_pi_fr: Regaine® 5%
+7680482490785_pi_it: Regaine® 5%
+7680485780470_pi_de: Torem® 2,5/5/10
+7680485780470_pi_fr: Torem® 2,5/5/10
+7680485780470_pi_it: Torem® 2,5/5/10
+7680485780630_pi_de: Torem® 2,5/5/10
+7680485780630_pi_fr: Torem® 2,5/5/10
+7680485780630_pi_it: Torem® 2,5/5/10
+7680485780715_pi_de: Torem® 2,5/5/10
+7680485780715_pi_fr: Torem® 2,5/5/10
+7680485780715_pi_it: Torem® 2,5/5/10
+7680485781019_pi_de: Torem® 2,5/5/10
+7680485781019_pi_fr: Torem® 2,5/5/10
+7680485781019_pi_it: Torem® 2,5/5/10
+7680485781286_pi_de: Torem® 200
+7680485781286_pi_fr: Torem® 200
+7680485781286_pi_it: Torem® 200
+7680485781361_pi_de: Torem® 200
+7680485781361_pi_fr: Torem® 200
+7680485781361_pi_it: Torem® 200
+7680485781446_pi_de: Torem® 2,5/5/10
+7680485781446_pi_fr: Torem® 2,5/5/10
+7680485781446_pi_it: Torem® 2,5/5/10
+7680485781521_pi_de: Torem® 2,5/5/10
+7680485781521_pi_fr: Torem® 2,5/5/10
+7680485781521_pi_it: Torem® 2,5/5/10
+7680488690172_pi_de: Bexin® Hustentabletten (Abgabekategorie B)
+7680488690172_pi_fr: Bexine® Comprimés contre la toux (Catégorie de remise B)
+7680488690172_pi_it: Bexin® Compresse contro la tosse
+7680488690257_pi_de: Bexin® Hustentabletten (Abgabekategorie B)
+7680488690257_pi_fr: Bexine® Comprimés contre la toux (Catégorie de remise B)
+7680488690257_pi_it: Bexin® Compresse contro la tosse
+7680489140126_pi_de: Carboticon, Kapseln
+7680489140126_pi_fr: Carboticon, gélules
+7680495370029_pi_de: Weleda Euphrasia-Augentropfen
+7680495370029_pi_fr: Collyre Euphrasia Weleda
+7680495370036_pi_de: Weleda Euphrasia-Augentropfen
+7680495370036_pi_fr: Collyre Euphrasia Weleda
+7680495370180_pi_de: Weleda Euphrasia-Augentropfen
+7680495370180_pi_fr: Collyre Euphrasia Weleda
+7680495370180_pi_it: Collirio Euphrasia Weleda
+7680495370197_pi_de: Weleda Euphrasia-Augentropfen Monodosen
+7680495370197_pi_fr: Collyre Euphrasia Weleda Monodoses
+7680495370197_pi_it: Collirio Euphrasia Weleda Monodose
+7680496000116_pi_de: Vagifem®
+7680496000116_pi_fr: Vagifem®
+7680496000116_pi_it: Vagifem®
+7680496000123_pi_de: Vagifem® 10 µg
+7680496000123_pi_fr: Vagifem® 10 µg
+7680496000123_pi_it: Vagifem® 10 µg
+7680496731089_pi_de: Traumalix dolo Gel 5%
+7680496731089_pi_fr: Traumalix dolo Gel 5%
+7680496731089_pi_it: Traumalix dolo Gel 5%
+7680496731164_pi_de: Traumalix dolo Gel 5%
+7680496731164_pi_fr: Traumalix dolo Gel 5%
+7680496731164_pi_it: Traumalix dolo Gel 5%
+7680496731249_pi_de: Traumalix Dolo Gel 10%
+7680496731249_pi_fr: Traumalix Dolo Gel 10%
+7680496731249_pi_it: Traumalix Dolo Gel 10%
+7680496731324_pi_de: Traumalix Dolo Gel 10%
+7680496731324_pi_fr: Traumalix Dolo Gel 10%
+7680496731324_pi_it: Traumalix Dolo Gel 10%
+7680496880015_pi_de: Neocapil® 2%
+7680496880015_pi_fr: Néocapil® 5%
+7680496880015_pi_it: Neocapil® 2%
+7680496880022_pi_de: Neocapil® 5%
+7680496880022_pi_fr: Néocapil® 5%
+7680496880022_pi_it: Neocapil® 5%
+7680496880275_pi_de: Neocapil® 2%
+7680496880275_pi_fr: Néocapil® 2%
+7680496880275_pi_it: Neocapil® 2%
+7680496880282_pi_de: Neocapil® 5%
+7680496880282_pi_fr: Néocapil® 5%
+7680496880282_pi_it: Neocapil® 5%
+7680497680287_pi_de: Fungotox-100 Vaginaltabletten
+7680497680287_pi_fr: Fungotox-100 Comprimés vaginaux
+7680497680287_pi_it: Fungotox-100 Compresse vaginali
+7680497680362_pi_de: Fungotox®-200 Vaginaltabletten
+7680497680362_pi_fr: Fungotox®-200 Comprimés vaginaux
+7680497680362_pi_it: Fungotox®-200 Compresse vaginali
+7680512850275_pi_de: Ricura®, Tropfen
+7680512850275_pi_fr: Ricura®, gouttes
+7680512850275_pi_it: Ricura®, gocce
+7680512850282_pi_de: Ricura®, Tropfen
+7680512850282_pi_fr: Ricura®, gouttes
+7680512850282_pi_it: Ricura®, gocce
+7680515060145_pi_de: Becetamol® 250 mg
+7680515060145_pi_fr: Becetamol® 250 mg
+7680515060145_pi_it: Becetamol® 250 mg
+7680515060220_pi_de: Becetamol® 500 mg
+7680515060220_pi_fr: Becetamol® 500 mg
+7680515060220_pi_it: Becetamol® 500 mg
+7680515440565_pi_de: Arthrotec® 75
+7680515440565_pi_fr: Arthrotec® 75
+7680515440565_pi_it: Arthrotec® 75
+7680515440640_pi_de: Arthrotec® 75
+7680515440640_pi_fr: Arthrotec® 75
+7680515440640_pi_it: Arthrotec® 75
+7680515440725_pi_de: Arthrotec® 75
+7680515440725_pi_fr: Arthrotec® 75
+7680515440725_pi_it: Arthrotec® 75
+7680515440732_pi_de: Arthrotec® 50
+7680515440732_pi_fr: Arthrotec® 50
+7680515440732_pi_it: Arthrotec® 50
+7680515440749_pi_de: Arthrotec® 50
+7680515440749_pi_fr: Arthrotec® 50
+7680515440749_pi_it: Arthrotec® 50
+7680515440756_pi_de: Arthrotec® 50
+7680515440756_pi_fr: Arthrotec® 50
+7680515440756_pi_it: Arthrotec® 50
+7680520390015_pi_de: Lomaherpan® Fieberblasen-Creme
+7680520390015_pi_fr: Lomaherpan® Boutons de fièvre crème
+7680520390015_pi_it: Lomaherpan® Febbre labiale crema
+7680524710284_pi_de: Remotiv® 250 Filmtabletten (Abgabekategorie C)
+7680524710284_pi_fr: Remotiv® 250 Comprimés pelliculés (catégorie de remise C)
+7680524710284_pi_it: Remotiv® 250 compresse film-rivestite (Abgabekategorie C)
+7680524710369_pi_de: Remotiv® 250 Filmtabletten (Abgabekategorie C)
+7680524710369_pi_fr: Remotiv® 250 Comprimés pelliculés (catégorie de remise C)
+7680524710369_pi_it: Remotiv® 250 compresse film-rivestite (Abgabekategorie C)
+7680524710444_pi_de: Remotiv® 250 Filmtabletten (Abgabekategorie C)
+7680524710444_pi_fr: Remotiv® 250 Comprimés pelliculés (catégorie de remise C)
+7680524710444_pi_it: Remotiv® 250 compresse film-rivestite (Abgabekategorie C)
+7680524710529_pi_de: Remotiv® 500 Filmtabletten
+7680524710529_pi_fr: Remotiv® 500 Comprimés pelliculés
+7680524710529_pi_it: Remotiv® 500 compresse film-rivestite
+7680524710604_pi_de: Remotiv® 500 Filmtabletten
+7680524710604_pi_fr: Remotiv® 500 Comprimés pelliculés
+7680524710604_pi_it: Remotiv® 500 compresse film-rivestite
+7680525590571_pi_de: Tramadol-Mepha Tropfen, Lösung zum Einnehmen
+7680525590571_pi_fr: Tramadol-Mepha Gouttes, solution à boire
+7680525590571_pi_it: Tramadol-Mepha gocce, soluzione per uso orale
+7680525590656_pi_de: Tramadol-Mepha Tropfen, Lösung zum Einnehmen
+7680525590656_pi_fr: Tramadol-Mepha Gouttes, solution à boire
+7680525590656_pi_it: Tramadol-Mepha gocce, soluzione per uso orale
+7680525590731_pi_de: Tramadol-Mepha Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680525590731_pi_fr: Tramadol-Mepha Gouttes, solution à boire avec pompe de dosage
+7680525590731_pi_it: Tramadol-Mepha gocce, soluzione per uso orale con pompetta dosatrice
+7680526200011_pi_de: Lipanthyl® 200M
+7680526200011_pi_fr: Lipanthyl® 200M
+7680526200011_pi_it: Lipanthyl® 200M
+7680526200028_pi_de: Lipanthyl® 200M
+7680526200028_pi_fr: Lipanthyl® 200M
+7680526200028_pi_it: Lipanthyl® 200M
+7680526200585_pi_de: Lipanthyl® 267M
+7680526200585_pi_fr: Lipanthyl® 267M
+7680526200585_pi_it: Lipanthyl® 267M
+7680526200660_pi_de: Lipanthyl® 267M
+7680526200660_pi_fr: Lipanthyl® 267M
+7680526200660_pi_it: Lipanthyl® 267M
+7680531280251_pi_de: Femoston® 1/10
+7680531280251_pi_fr: Femoston® 1/10
+7680531280251_pi_it: Femoston® 1/10
+7680531280336_pi_de: Femoston® 2/10
+7680531280336_pi_fr: Femoston® 2/10
+7680531280336_pi_it: Femoston® 2/10
+7680532820678_pi_de: Transipeg®
+7680532820678_pi_fr: Transipeg®
+7680532820678_pi_it: Transipeg®
+7680532820838_pi_de: Transipeg®
+7680532820838_pi_fr: Transipeg®
+7680532820838_pi_it: Transipeg®
+7680532821057_pi_de: Transipeg®
+7680532821057_pi_fr: Transipeg®
+7680532821057_pi_it: Transipeg®
+7680532821132_pi_de: Transipeg®
+7680532821132_pi_fr: Transipeg®
+7680532821132_pi_it: Transipeg®
+7680536610176_pi_de: Zeller Schlaf Filmtabletten
+7680536610176_pi_fr: Zeller Sommeil comprimés pelliculés
+7680536610176_pi_it: Zeller Sonno compresse film–rivestite
+7680536610251_pi_de: Zeller Schlaf Filmtabletten
+7680536610251_pi_fr: Zeller Sommeil comprimés pelliculés
+7680536610251_pi_it: Zeller Sonno compresse film–rivestite
+7680536610336_pi_de: Zeller Schlaf forte Filmtabletten
+7680536610336_pi_fr: Zeller Sommeil forte comprimés pelliculés
+7680536610336_pi_it: Zeller Sonno forte compresse film-rivestite
+7680536610411_pi_de: Zeller Schlaf forte Filmtabletten
+7680536610411_pi_fr: Zeller Sommeil forte comprimés pelliculés
+7680536610411_pi_it: Zeller Sonno forte compresse film-rivestite
+7680539240189_pi_de: Rebalance® 250 Filmtabletten (Abgabekategorie C)
+7680539240189_pi_fr: Rebalance® 250 Comprimés pelliculés (catégorie de remise C)
+7680539240189_pi_it: Rebalance® 250 compresse film-rivestite (Abgabekategorie C)
+7680539240264_pi_de: Rebalance® 250 Filmtabletten (Abgabekategorie C)
+7680539240264_pi_fr: Rebalance® 250 Comprimés pelliculés (catégorie de remise C)
+7680539240264_pi_it: Rebalance® 250 compresse film-rivestite (Abgabekategorie C)
+7680539240349_pi_de: Rebalance® 250 Filmtabletten (Abgabekategorie C)
+7680539240349_pi_fr: Rebalance® 250 Comprimés pelliculés (catégorie de remise C)
+7680539240349_pi_it: Rebalance® 250 compresse film-rivestite (Abgabekategorie C)
+7680539240424_pi_de: Rebalance® 500 Filmtabletten
+7680539240424_pi_fr: Rebalance® 500 Comprimés pelliculés
+7680539240424_pi_it: Rebalance® 500 compresse film-rivestite
+7680539240509_pi_de: Rebalance® 500 Filmtabletten
+7680539240509_pi_fr: Rebalance® 500 Comprimés pelliculés
+7680539240509_pi_it: Rebalance® 500 compresse film-rivestite
+7680539290016_pi_de: Calcimagon®-D3 500/800
+7680539290016_pi_fr: Calcimagon-D3 500/800
+7680539290016_pi_it: Calcimagon-D3 500/800
+7680539290023_pi_de: Calcimagon®-D3 500/800
+7680539290023_pi_fr: Calcimagon-D3 500/800
+7680539290023_pi_it: Calcimagon-D3 500/800
+7680539290030_pi_de: Calcimagon®-D3 500/800
+7680539290030_pi_fr: Calcimagon-D3 500/800
+7680539290030_pi_it: Calcimagon-D3 500/800
+7680539290047_pi_de: Calcimagon®-D3 500/800
+7680539290047_pi_fr: Calcimagon-D3 500/800
+7680539290047_pi_it: Calcimagon-D3 500/800
+7680539290054_pi_de: Calcimagon®-D3 500/800
+7680539290054_pi_fr: Calcimagon-D3 500/800
+7680539290054_pi_it: Calcimagon-D3 500/800
+7680539290061_pi_de: Calcimagon®-D3 500/800
+7680539290061_pi_fr: Calcimagon-D3 500/800
+7680539290061_pi_it: Calcimagon-D3 500/800
+7680539290078_pi_de: Calcimagon®-D3 500/800
+7680539290078_pi_fr: Calcimagon-D3 500/800
+7680539290078_pi_it: Calcimagon-D3 500/800
+7680539290085_pi_de: Calcimagon®-D3 500/800
+7680539290085_pi_fr: Calcimagon-D3 500/800
+7680539290085_pi_it: Calcimagon-D3 500/800
+7680539290092_pi_de: Calcimagon®-D3 500/800
+7680539290092_pi_fr: Calcimagon-D3 500/800
+7680539290092_pi_it: Calcimagon-D3 500/800
+7680539290108_pi_de: Calcimagon®-D3 500/800
+7680539290108_pi_fr: Calcimagon-D3 500/800
+7680539290108_pi_it: Calcimagon-D3 500/800
+7680539290115_pi_de: Calcimagon®-D3 500/800
+7680539290115_pi_fr: Calcimagon-D3 500/800
+7680539290115_pi_it: Calcimagon-D3 500/800
+7680539290122_pi_de: Calcimagon®-D3 500/800
+7680539290122_pi_fr: Calcimagon-D3 500/800
+7680539290122_pi_it: Calcimagon-D3 500/800
+7680539290283_pi_de: Calcimagon®-D3 500/800
+7680539290283_pi_fr: Calcimagon-D3 500/800
+7680539290283_pi_it: Calcimagon-D3 500/800
+7680539290368_pi_de: Calcimagon®-D3 500/800
+7680539290368_pi_fr: Calcimagon-D3 500/800
+7680539290368_pi_it: Calcimagon-D3 500/800
+7680539290443_pi_de: Calcimagon®-D3 500/800
+7680539290443_pi_fr: Calcimagon-D3 500/800
+7680539290443_pi_it: Calcimagon-D3 500/800
+7680539290528_pi_de: Calcimagon®-D3 500/800
+7680539290528_pi_fr: Calcimagon-D3 500/800
+7680539290528_pi_it: Calcimagon-D3 500/800
+7680539290603_pi_de: Calcimagon®-D3 500/800
+7680539290603_pi_fr: Calcimagon-D3 500/800
+7680539290603_pi_it: Calcimagon-D3 500/800
+7680539290795_pi_de: Calcimagon®-D3 500/800
+7680539290795_pi_fr: Calcimagon-D3 500/800
+7680539290795_pi_it: Calcimagon-D3 500/800
+7680539290870_pi_de: Calcimagon®-D3 500/800
+7680539290870_pi_fr: Calcimagon-D3 500/800
+7680539290870_pi_it: Calcimagon-D3 500/800
+7680539290955_pi_de: Calcimagon®-D3 500/800
+7680539290955_pi_fr: Calcimagon-D3 500/800
+7680539290955_pi_it: Calcimagon-D3 500/800
+7680539291099_pi_de: Calcimagon®-D3 500/800
+7680539291099_pi_fr: Calcimagon-D3 500/800
+7680539291099_pi_it: Calcimagon-D3 500/800
+7680539291204_pi_de: Calcimagon®-D3/- Forte
+7680539291204_pi_fr: Calcimagon®-D3/- Forte
+7680539291204_pi_it: Calcimagon-D3 /- Forte
+7680539291211_pi_de: Calcimagon®-D3/- Forte
+7680539291211_pi_fr: Calcimagon®-D3/- Forte
+7680539291211_pi_it: Calcimagon-D3 /- Forte
+7680539291228_pi_de: Calcimagon®-D3/- Forte
+7680539291228_pi_fr: Calcimagon®-D3/- Forte
+7680539291228_pi_it: Calcimagon-D3 /- Forte
+7680539291235_pi_de: Calcimagon®-D3/- Forte
+7680539291235_pi_fr: Calcimagon®-D3/- Forte
+7680539291235_pi_it: Calcimagon-D3 /- Forte
+7680541520194_pi_de: Redormin® 250 Filmtabletten
+7680541520194_pi_fr: Redormin® 250 Comprimés pelliculés
+7680541520194_pi_it: Redormin® 250 Compresse film-rivestite
+7680541520279_pi_de: Redormin® 250 Filmtabletten
+7680541520279_pi_fr: Redormin® 250 Comprimés pelliculés
+7680541520279_pi_it: Redormin® 250 Compresse film-rivestite
+7680541520354_pi_de: Redormin® 500 Filmtabletten
+7680541520354_pi_fr: Redormin® 500 Comprimés pelliculés
+7680541520354_pi_it: Redormin® 500 Compresse film-rivestite
+7680541520439_pi_de: Redormin® 500 Filmtabletten
+7680541520439_pi_fr: Redormin® 500 Comprimés pelliculés
+7680541520439_pi_it: Redormin® 500 Compresse film-rivestite
+7680541890365_pi_de: Nasonex® Dosier Nasenspray
+7680541890365_pi_fr: Nasonex® Spray doseur nasal
+7680542040363_pi_de: Telfast® 120
+7680542040363_pi_fr: Telfast® 120
+7680542040363_pi_it: Telfast® 120
+7680542040431_pi_de: Telfast® 120
+7680542040431_pi_fr: Telfast® 120
+7680542040431_pi_it: Telfast® 120
+7680542040516_pi_de: Telfast® 180
+7680542040516_pi_fr: Telfast® 180
+7680542040516_pi_it: Telfast® 180
+7680542040783_pi_de: Telfast® 180
+7680542040783_pi_fr: Telfast® 180
+7680542040783_pi_it: Telfast® 180
+7680545340354_pi_de: Tebokan® 80
+7680545340354_pi_fr: Tebokan® 80
+7680545340354_pi_it: Tebokan® 80
+7680545340439_pi_de: Tebokan® 80
+7680545340439_pi_fr: Tebokan® 80
+7680545340439_pi_it: Tebokan® 80
+7680545340453_pi_de: Tebokan® 120
+7680545340453_pi_fr: Tebokan® 120
+7680545340453_pi_it: Tebokan® 120
+7680545340460_pi_de: Tebokan® 120
+7680545340460_pi_fr: Tebokan® 120
+7680545340460_pi_it: Tebokan® 120
+7680545340477_pi_de: Tebokan® 120
+7680545340477_pi_fr: Tebokan® 120
+7680545340477_pi_it: Tebokan® 120
+7680549410138_pi_de: Schweden-Mixtur «H» 150 ml
+7680549410138_pi_fr: Schweden-Mixtur «H» 150 ml
+7680549410138_pi_it: Schweden-Mixtur «H» 150 ml
+7680549410213_pi_de: Schweden-Mixtur «H» 250 ml
+7680549410213_pi_fr: Schweden-Mixtur «H» 250 ml
+7680549410213_pi_it: Schweden-Mixtur «H» 250 ml
+7680549410565_pi_de: Schweden-Mixtur «H» 250 ml
+7680549410565_pi_fr: Schweden-Mixtur «H» 250 ml
+7680549410565_pi_it: Schweden-Mixtur «H» 250 ml
+7680549410640_pi_de: Schweden-Mixtur «H» 250 ml
+7680549410640_pi_fr: Schweden-Mixtur «H» 250 ml
+7680549410640_pi_it: Schweden-Mixtur «H» 250 ml
+7680549410725_pi_de: Schweden-Mixtur «H» 250 ml
+7680549410725_pi_fr: Schweden-Mixtur «H» 250 ml
+7680549410725_pi_it: Schweden-Mixtur «H» 250 ml
+7680549860018_pi_de: Femoston® conti 0,5/2,5
+7680549860018_pi_fr: Femoston® conti 0,5/2,5
+7680549860018_pi_it: Femoston® conti 0,5/2,5
+7680549860186_pi_de: Femoston® conti 1/5
+7680549860186_pi_fr: Femoston® conti 1/5
+7680549860186_pi_it: Femoston® conti 1/5
+7680556890015_pi_de: Aerius®
+7680556890015_pi_fr: Aerius®
+7680556890022_pi_de: Aerius®
+7680556890022_pi_fr: Aerius®
+7680556890046_pi_de: Aerius®
+7680556890046_pi_fr: Aerius®
+7680557250023_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250023_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250023_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250047_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250047_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250047_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250061_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250061_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250061_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250085_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250085_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250085_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250108_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250108_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250108_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250122_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250122_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250122_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250146_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250146_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250146_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250160_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250160_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250160_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250184_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250184_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250184_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250207_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250207_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250207_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250221_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250221_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250221_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250245_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250245_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250245_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250269_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250269_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250269_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250283_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250283_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250283_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250306_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250306_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250306_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250320_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250320_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250320_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250344_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250344_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250344_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250368_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250368_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250368_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250382_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250382_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250382_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250405_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250405_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250405_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250429_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250429_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250429_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250443_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250443_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250443_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250467_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250467_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250467_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250481_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250481_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250481_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250504_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250504_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250504_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250528_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250528_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250528_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250535_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250535_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250535_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250542_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250542_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250542_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250559_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250559_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250559_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250566_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250566_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250566_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250573_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250573_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250573_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250580_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250580_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250580_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250597_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250597_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250597_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250603_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250603_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250603_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250610_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250610_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250610_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250627_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250627_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250627_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250634_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250634_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250634_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250641_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250641_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250641_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250658_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250658_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250658_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250665_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250665_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250665_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250672_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250672_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250672_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250689_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250689_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250689_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250696_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250696_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250696_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250702_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250702_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250702_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250719_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250719_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250719_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250726_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250726_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250726_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250733_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250733_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250733_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250740_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250740_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250740_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250757_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250757_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250757_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557250764_pi_de: Aranesp® Fertigspritze mit automatischem Nadelschutzsystem
+7680557250764_pi_fr: Aranesp® seringue préremplie avec système de sécurité automatique
+  de l’aiguille
+7680557250764_pi_it: Aranesp® Siringa preriempita con protezione automatica dell’ago
+7680557660211_pi_de: Algifor-L® 200 Filmtabletten
+7680557660211_pi_fr: Algifor-L® 200 Comprimés filmés
+7680557660211_pi_it: Algifor-L® 200 compresse filmate
+7680557660419_pi_de: Algifor-L® forte 400 Filmtabletten
+7680557660419_pi_fr: Algifor-L® forte 400 Comprimés filmés
+7680557660419_pi_it: Algifor-L® forte 400 compresse filmate
+7680563580107_pi_de: Saridon®
+7680563580107_pi_fr: Saridon®
+7680563580107_pi_it: Saridon®
+7680563580121_pi_de: Saridon®
+7680563580121_pi_fr: Saridon®
+7680563580121_pi_it: Saridon®
+7680563580251_pi_de: Saridon® forte
+7680563580251_pi_fr: Saridon® forte
+7680563580251_pi_it: Saridon® forte
+7680568730217_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730217_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730217_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730224_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730224_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730224_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730231_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730231_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730231_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730248_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730248_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730248_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730255_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730255_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730255_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730262_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730262_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730262_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730279_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730279_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730279_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730286_pi_de: Torasemid Sandoz® eco 2,5/5/10/20
+7680568730286_pi_fr: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730286_pi_it: Torasémide Sandoz® eco 2,5/5/10/20
+7680568730293_pi_de: Torasemid Sandoz® eco 200
+7680568730293_pi_fr: Torasémide Sandoz® eco 200
+7680568730293_pi_it: Torasémide Sandoz® eco 200
+7680568730309_pi_de: Torasemid Sandoz® eco 200
+7680568730309_pi_fr: Torasémide Sandoz® eco 200
+7680568730309_pi_it: Torasémide Sandoz® eco 200
+7680569330041_pi_de: Cimifemin® uno Tabletten
+7680569330041_pi_fr: Cimifemine® uno comprimés
+7680569330041_pi_it: Cimifemin® uno compresse
+7680569330164_pi_de: Cimifemin® uno Tabletten
+7680569330164_pi_fr: Cimifemine® uno comprimés
+7680569330164_pi_it: Cimifemin® uno compresse
+7680569330171_pi_de: Cimifemin® forte Tabletten
+7680569330171_pi_fr: Cimifemine® forte comprimés
+7680569330171_pi_it: Cimifemin® forte compresse
+7680569330188_pi_de: Cimifemin® forte Tabletten
+7680569330188_pi_fr: Cimifemine® forte comprimés
+7680569330188_pi_it: Cimifemin® forte compresse
+7680572790160_pi_de: Fluimucil
+7680572790160_pi_fr: Fluimucil
+7680572790160_pi_it: Fluimucil
+7680572790177_pi_de: Fluimucil
+7680572790177_pi_fr: Fluimucil
+7680572790177_pi_it: Fluimucil
+7680572790184_pi_de: Fluimucil
+7680572790184_pi_fr: Fluimucil
+7680572790184_pi_it: Fluimucil
+7680574540039_pi_de: Panadol® Junior 60 mg
+7680574540039_pi_fr: Panadol® Junior 60 mg
+7680574540039_pi_it: Panadol® Junior 60 mg
+7680574540091_pi_de: Panadol® Junior 125 mg
+7680574540091_pi_fr: Panadol® Junior 125 mg
+7680574540091_pi_it: Panadol® Junior 125 mg
+7680574540213_pi_de: Panadol® Junior 250 mg
+7680574540213_pi_fr: Panadol® Junior 250 mg
+7680574540213_pi_it: Panadol® Junior 250 mg
+7680577760106_pi_de: Tramadol Streuli® Tropfen, Lösung zum Einnehmen
+7680577760106_pi_fr: Tramadol Streuli® gouttes, solution à prendre
+7680577760106_pi_it: Tramadol Streuli® gocce, soluzione orale
+7680577760113_pi_de: Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680577760113_pi_fr: Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage
+7680577760113_pi_it: Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice
+7680577760120_pi_de: Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680577760120_pi_fr: Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage
+7680577760120_pi_it: Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice
+7680577760137_pi_de: Tramadol Streuli® Tropfen, Lösung zum Einnehmen mit Dosierpumpe
+7680577760137_pi_fr: Tramadol Streuli® gouttes, solution à prendre avec pompe de dosage
+7680577760137_pi_it: Tramadol Streuli® gocce, soluzione orale con pompetta dosatrice
+7680578500015_pi_de: GRAZAX®, Lyophilisat zum Einnehmen
+7680578500015_pi_fr: GRAZAX®, lyophilisat oral
+7680578500015_pi_it: GRAZAX®, liofilizzato orale
+7680578500022_pi_de: GRAZAX®, Lyophilisat zum Einnehmen
+7680578500022_pi_fr: GRAZAX®, lyophilisat oral
+7680578500022_pi_it: GRAZAX®, liofilizzato orale
+7680581960011_pi_de: Voltaren Dolo® forte 25 mg Liquid Caps, Weichgelatinekapseln
+7680581960011_pi_fr: Voltaren Dolo® forte 25 mg Liquid Caps, capsules de gélatine
+  molle
+7680581960011_pi_it: Voltaren Dolo® forte 25 mg Liquid Caps, capsule gelatinose morbide
+7680581960028_pi_de: Voltaren Dolo® Liquid Caps, Weichgelatinekapseln
+7680581960028_pi_fr: Voltaren Dolo® Liquid Caps, capsules de gélatine molle
+7680581960028_pi_it: Voltaren Dolo® Liquid Caps, capsule gelatinose morbide
+7680581960035_pi_de: Voltaren Dolo® Liquid Caps, Weichgelatinekapseln
+7680581960035_pi_fr: Voltaren Dolo® Liquid Caps, capsules de gélatine molle
+7680581960035_pi_it: Voltaren Dolo® Liquid Caps, capsule gelatinose morbide
+7680583270200_pi_de: Fexofenadine Zentiva® 120 mg
+7680583270200_pi_fr: Fexofenadine Zentiva® 120 mg
+7680583270200_pi_it: Fexofenadine Zentiva® 120 mg
+7680583270217_pi_de: Fexofenadine Zentiva® 120 mg
+7680583270217_pi_fr: Fexofenadine Zentiva® 120 mg
+7680583270217_pi_it: Fexofenadine Zentiva® 120 mg
+7680583270309_pi_de: Fexofenadine Zentiva® 180 mg
+7680583270309_pi_fr: Fexofenadine Zentiva® 180 mg
+7680583270309_pi_it: Fexofenadine Zentiva® 180 mg
+7680583270316_pi_de: Fexofenadine Zentiva® 180 mg
+7680583270316_pi_fr: Fexofenadine Zentiva® 180 mg
+7680583270316_pi_it: Fexofenadine Zentiva® 180 mg
+7680593220066_pi_de: Crilomus®
+7680593220066_pi_fr: Crilomus®
+7680593220066_pi_it: Crilomus®
+7680593220073_pi_de: Crilomus®
+7680593220073_pi_fr: Crilomus®
+7680593220073_pi_it: Crilomus®
+7680593220080_pi_de: Crilomus®
+7680593220080_pi_fr: Crilomus®
+7680593220080_pi_it: Crilomus®
+7680593220097_pi_de: Crilomus®
+7680593220097_pi_fr: Crilomus®
+7680593220097_pi_it: Crilomus®
+7680593220103_pi_de: Crilomus®
+7680593220103_pi_fr: Crilomus®
+7680593220103_pi_it: Crilomus®
+7680600240032_pi_de: Dicloren® Gel
+7680600240032_pi_fr: Dicloren® Gel
+7680600240032_pi_it: Dicloren® Gel
+7680600240049_pi_de: Dicloren® Gel
+7680600240049_pi_fr: Dicloren® Gel
+7680600240049_pi_it: Dicloren® Gel
+7680612100010_pi_de: Irfen Dolo® L 200
+7680612100010_pi_fr: Irfen Dolo® L 200
+7680612100010_pi_it: Irfen Dolo® L 200
+7680612100027_pi_de: Irfen Dolo® L 400
+7680612100027_pi_fr: Irfen Dolo® L 400
+7680612100027_pi_it: Irfen Dolo® L 400
+7680612830023_pi_de: Telfastin Urticaria 180
+7680612830023_pi_fr: Telfastin Allergo® 120, comprimés pelliculés
+7680612830030_pi_de: Telfastin Urticaria 180
+7680612830030_pi_fr: Telfastin Allergo® 120, comprimés pelliculés
+7680612830047_pi_de: Telfastin Urticaria 180
+7680612830047_pi_fr: Telfastin Allergo® 120, comprimés pelliculés
+7680612830092_pi_de: Telfastin 120
+7680612830092_pi_fr: Telfastin 120
+7680612830108_pi_de: Telfastin 120
+7680612830108_pi_fr: Telfastin 120
+7680612830115_pi_de: Telfastin 120
+7680612830115_pi_fr: Telfastin 120
+7680612840046_pi_de: Sertralin Viatris, Filmtabletten
+7680612840046_pi_fr: Sertralin Viatris, comprimés pelliculés
+7680612840053_pi_de: Sertralin Viatris, Filmtabletten
+7680612840053_pi_fr: Sertralin Viatris, comprimés pelliculés
+7680612840060_pi_de: Sertralin Viatris, Filmtabletten
+7680612840060_pi_fr: Sertralin Viatris, comprimés pelliculés
+7680613480012_pi_de: N-Acetylcysteine Alpex 200 mg
+7680613480012_pi_fr: N-Acetylcysteine Alpex 200 mg
+7680613480012_pi_it: N-Acetylcysteine Alpex 200 mg
+7680613480029_pi_de: N-Acetylcysteine Alpex 200 mg
+7680613480029_pi_fr: N-Acetylcysteine Alpex 200 mg
+7680613480029_pi_it: N-Acetylcysteine Alpex 200 mg
+7680613480036_pi_de: N-Acetylcysteine Alpex 600 mg
+7680613480036_pi_fr: N-Acetylcysteine Alpex 600 mg
+7680613480036_pi_it: N-Acetylcysteine Alpex 600 mg
+7680613480043_pi_de: N-Acetylcysteine Alpex 600 mg
+7680613480043_pi_fr: N-Acetylcysteine Alpex 600 mg
+7680613480043_pi_it: N-Acetylcysteine Alpex 600 mg
+7680613480050_pi_de: N-Acetylcysteine Alpex 600 mg
+7680613480050_pi_fr: N-Acetylcysteine Alpex 600 mg
+7680613480050_pi_it: N-Acetylcysteine Alpex 600 mg
+7680613480067_pi_de: N-Acetylcysteine Alpex 600 mg
+7680613480067_pi_fr: N-Acetylcysteine Alpex 600 mg
+7680613480067_pi_it: N-Acetylcysteine Alpex 600 mg
+7680614850050_pi_de: Telmisartan-Mepha 40/80 mg
+7680614850050_pi_fr: Telmisartan-Mepha 40/80 mg
+7680614850050_pi_it: Telmisartan-Mepha 40/80 mg
+7680614850067_pi_de: Telmisartan-Mepha 40/80 mg
+7680614850067_pi_fr: Telmisartan-Mepha 40/80 mg
+7680614850067_pi_it: Telmisartan-Mepha 40/80 mg
+7680614850074_pi_de: Telmisartan-Mepha 40/80 mg
+7680614850074_pi_fr: Telmisartan-Mepha 40/80 mg
+7680614850074_pi_it: Telmisartan-Mepha 40/80 mg
+7680614850081_pi_de: Telmisartan-Mepha 40/80 mg
+7680614850081_pi_fr: Telmisartan-Mepha 40/80 mg
+7680614850081_pi_it: Telmisartan-Mepha 40/80 mg
+7680627210094_pi_de: Sildenafil Viatris
+7680627210094_pi_fr: Sildenafil Viatris
+7680627210100_pi_de: Sildenafil Viatris
+7680627210100_pi_fr: Sildenafil Viatris
+7680627210117_pi_de: Sildenafil Viatris
+7680627210117_pi_fr: Sildenafil Viatris
+7680627210124_pi_de: Sildenafil Viatris
+7680627210124_pi_fr: Sildenafil Viatris
+7680627210131_pi_de: Sildenafil Viatris
+7680627210131_pi_fr: Sildenafil Viatris
+7680627210148_pi_de: Sildenafil Viatris
+7680627210148_pi_fr: Sildenafil Viatris
+7680627210155_pi_de: Sildenafil Viatris
+7680627210155_pi_fr: Sildenafil Viatris
+7680627210162_pi_de: Sildenafil Viatris
+7680627210162_pi_fr: Sildenafil Viatris
+7680630480019_pi_de: Paracetamol Sandoz® 500
+7680630480019_pi_fr: Paracétamol Sandoz® 500
+7680630480019_pi_it: Paracétamol Sandoz® 500
+7680630480026_pi_de: Paracetamol Sandoz® 1000
+7680630480026_pi_fr: Paracétamol Sandoz® 1000
+7680630480026_pi_it: Paracétamol Sandoz® 1000
+7680630480033_pi_de: Paracetamol Sandoz® 1000
+7680630480033_pi_fr: Paracétamol Sandoz® 1000
+7680630480033_pi_it: Paracétamol Sandoz® 1000
+7680630480040_pi_de: Paracetamol Sandoz® 1000
+7680630480040_pi_fr: Paracétamol Sandoz® 1000
+7680630480040_pi_it: Paracétamol Sandoz® 1000
+7680630480057_pi_de: Paracetamol Sandoz® 500
+7680630480057_pi_fr: Paracétamol Sandoz® 500
+7680630480057_pi_it: Paracétamol Sandoz® 500
+7680630620033_pi_de: Amavita Echinacea Tropfen
+7680630620033_pi_fr: Amavita Gouttes Echinacea
+7680630620033_pi_it: Amavita Gocce Echinacea
+7680632350013_pi_de: Paracetamol Spirig HC® 500 mg
+7680632350013_pi_fr: Paracétamol Spirig HC® 500 mg
+7680632350020_pi_de: Paracetamol Spirig HC® 500 mg
+7680632350020_pi_fr: Paracétamol Spirig HC® 1000 mg
+7680632350037_pi_de: Paracetamol Spirig HC® 1000 mg
+7680632350037_pi_fr: Paracétamol Spirig HC® 1000 mg
+7680632350044_pi_de: Paracetamol Spirig HC® 1000 mg
+7680632350044_pi_fr: Paracétamol Spirig HC® 1000 mg
+7680650820017_pi_de: Postinor®
+7680650820017_pi_fr: Postinor®
+7680650820017_pi_it: Postinor®
+7680650880011_pi_de: Kosima® 20
+7680650880011_pi_fr: Kosima® 20
+7680650880011_pi_it: Kosima® 20
+7680650880028_pi_de: Kosima® 20
+7680650880028_pi_fr: Kosima® 20
+7680650880028_pi_it: Kosima® 20
+7680650880035_pi_de: Kosima® 20
+7680650880035_pi_fr: Kosima® 20
+7680650880035_pi_it: Kosima® 20
+7680650880042_pi_de: Kosima® 30
+7680650880042_pi_fr: Kosima® 30
+7680650880042_pi_it: Kosima® 30
+7680650880059_pi_de: Kosima® 30
+7680650880059_pi_fr: Kosima® 30
+7680650880059_pi_it: Kosima® 30
+7680650880066_pi_de: Kosima® 30
+7680650880066_pi_fr: Kosima® 30
+7680650880066_pi_it: Kosima® 30
+7680652030018_pi_de: BronchoVerde® Hustenlöser 25 mg, Granulat
+7680652030018_pi_fr: BronchoVerde® Expectorant 25 mg, granulé
+7680652030018_pi_it: BronchoVerde® Espettorante 25 mg, granulato
+7680652030025_pi_de: BronchoVerde® Hustenlöser 50 mg, Granulat
+7680652030025_pi_fr: BronchoVerde® Expectorant 50 mg, granulé
+7680652030025_pi_it: BronchoVerde® Espettorante 50 mg, granulato
+7680652030032_pi_de: BronchoVerde® Hustenlöser 50 mg, Granulat
+7680652030032_pi_fr: BronchoVerde® Expectorant 50 mg, granulé
+7680652030032_pi_it: BronchoVerde® Espettorante 50 mg, granulato
+7680652040017_pi_de: BronchoVerde® Hustenlöser 50 mg, Brausetabletten
+7680652040017_pi_fr: BronchoVerde® Expectorant 50 mg, comprimés effervescents
+7680652040017_pi_it: BronchoVerde® Espettorante 50 mg, compresse effervescenti
+7680652040024_pi_de: BronchoVerde® Hustenlöser 50 mg, Brausetabletten
+7680652040024_pi_fr: BronchoVerde® Expectorant 50 mg, comprimés effervescents
+7680652040024_pi_it: BronchoVerde® Espettorante 50 mg, compresse effervescenti
+7680652040031_pi_de: BronchoVerde® Hustenlöser 50 mg, Brausetabletten
+7680652040031_pi_fr: BronchoVerde® Expectorant 50 mg, comprimés effervescents
+7680652040031_pi_it: BronchoVerde® Espettorante 50 mg, compresse effervescenti
+7680652040048_pi_de: BronchoVerde® Hustenlöser 50 mg, Brausetabletten
+7680652040048_pi_fr: BronchoVerde® Expectorant 50 mg, comprimés effervescents
+7680652040048_pi_it: BronchoVerde® Espettorante 50 mg, compresse effervescenti
+7680652040055_pi_de: BronchoVerde® Hustenlöser 100 mg, Brausetabletten
+7680652040055_pi_fr: BronchoVerde® Expectorant 100 mg, comprimés effervescents
+7680652040055_pi_it: BronchoVerde® Espettorante 100 mg, compresse effervescenti
+7680652040062_pi_de: BronchoVerde® Hustenlöser 100 mg, Brausetabletten
+7680652040062_pi_fr: BronchoVerde® Expectorant 100 mg, comprimés effervescents
+7680652040062_pi_it: BronchoVerde® Espettorante 100 mg, compresse effervescenti
+7680652040079_pi_de: BronchoVerde® Hustenlöser 100 mg, Brausetabletten
+7680652040079_pi_fr: BronchoVerde® Expectorant 100 mg, comprimés effervescents
+7680652040079_pi_it: BronchoVerde® Espettorante 100 mg, compresse effervescenti
+7680652040086_pi_de: BronchoVerde® Hustenlöser 100 mg, Brausetabletten
+7680652040086_pi_fr: BronchoVerde® Expectorant 100 mg, comprimés effervescents
+7680652040086_pi_it: BronchoVerde® Espettorante 100 mg, compresse effervescenti
+7680653600012_fi_it: Xadago 50 mg, compresse rivestite con film
+7680653600029_fi_it: Xadago 100 mg, compresse rivestite con fil
+7680653600036_fi_it: Xadago 100 mg, compresse rivestite con film
+7680654260017_pi_de: Macrogol-Mepha Pulver
+7680654260017_pi_fr: Macrogol-Mepha poudre
+7680654260017_pi_it: Macrogol-Mepha polvere
+7680654260024_pi_de: Macrogol-Mepha Pulver
+7680654260024_pi_fr: Macrogol-Mepha poudre
+7680654260024_pi_it: Macrogol-Mepha polvere
+7680654260031_pi_de: Macrogol-Mepha Junior Pulver
+7680654260031_pi_fr: Macrogol-Mepha Junior poudre
+7680654260031_pi_it: Xadago 50 mg, compresse rivestite con film
+7680659160053_pi_de: Algifor® Dolo forte, Suspension
+7680659160053_pi_fr: Algifor® Dolo forte, Suspension
+7680659160053_pi_it: Algifor® Dolo forte, Suspension
+7680659160060_pi_de: Algifor® Dolo forte, Suspension, Beutel
+7680659160060_pi_fr: Algifor® Dolo forte, Suspension, sachets
+7680659160060_pi_it: Algifor® Dolo forte, Suspension, bustine
+7680661240019_pi_de: LuVit D3 zur Therapie
+7680661240019_pi_fr: LuVit D3 pour le traitement
+7680661240026_pi_de: LuVit D3 zur Therapie
+7680661240026_pi_fr: LuVit D3 pour le traitement
+7680661240033_pi_de: LuVit D3 zur Prophylaxe
+7680661240033_pi_fr: LuVit D3® pour le traitement, solution buvable
+7680662830011_pi_de: Suliqua® 100/50
+7680662830011_pi_fr: Suliqua® 100/50
+7680662830035_pi_de: Suliqua® 100/50
+7680662830035_pi_fr: Suliqua® 100/50
+7680663430012_pi_de: Fexofenadin Sandoz® 180 mg
+7680663430012_pi_fr: Fexofénadine Sandoz® 180 mg
+7680663430029_pi_de: Fexofenadin Sandoz® 180 mg
+7680663430029_pi_fr: Fexofénadine Sandoz® 180 mg
+7680663430036_pi_de: Fexofenadin Sandoz® 180 mg
+7680663430036_pi_fr: Fexofénadine Sandoz® 180 mg
+7680663430043_pi_de: Fexofenadin Sandoz® 180 mg
+7680663430043_pi_fr: Fexofénadine Sandoz® 180 mg
+7680666040010_pi_de: Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3
+  ml)
+7680666040010_pi_fr: Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli
+  (3 ml)
+7680666040034_pi_de: Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3
+  ml)
+7680666040034_pi_fr: Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli
+  (3 ml)
+7680666040041_pi_de: Ozempic® FixDose 2 mg, Injektionslösung in einem Fertigpen (3
+  ml)
+7680666040041_pi_fr: Ozempic® FixDose 2 mg, solution injectable dans un stylo prérempli
+  (3 ml)
+7680667620013_pi_de: Korolind, Tropfen
+7680667620013_pi_fr: Korolind, Gouttes
+7680667620020_pi_de: Korolind, Tropfen
+7680667620020_pi_fr: Korolind, Gouttes
+7680667620037_pi_de: Korolind, Tropfen
+7680667620037_pi_fr: Korolind, Gouttes
+7680678360014_pi_de: Leqvio®
+7680678360014_pi_fr: Leqvio®
+7680678360021_pi_de: Leqvio®
+7680678360021_pi_fr: Leqvio®
+7680685140012_pi_de: Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz
+7680685140012_pi_fr: Yuflyma 80 mg, solution injectable en seringue préremplie avec
+  protège-aiguille
+7680685140029_pi_de: Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz
+7680685140029_pi_fr: Yuflyma 80 mg, solution injectable en seringue préremplie avec
+  protège-aiguille
+7680685140036_pi_de: Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz
+7680685140036_pi_fr: Yuflyma 80 mg, solution injectable en seringue préremplie avec
+  protège-aiguille
+7680685140043_pi_de: Yuflyma 80 mg, Injektionslösung in einer Fertigspritze mit Nadelschutz
+7680685140043_pi_fr: Yuflyma 80 mg, solution injectable en seringue préremplie avec
+  protège-aiguille
+7680685150011_pi_de: Yuflyma 80 mg, Injektionslösung im Fertigpen
+7680685150011_pi_fr: Yuflyma 80 mg, solution injectable en stylo prérempli
+7680685150028_pi_de: Yuflyma 80 mg, Injektionslösung im Fertigpen
+7680685150028_pi_fr: Yuflyma 80 mg, solution injectable en stylo prérempli
+7680685150035_pi_de: Yuflyma 80 mg, Injektionslösung im Fertigpen
+7680685150035_pi_fr: Yuflyma 80 mg, solution injectable en stylo prérempli
+7680685150042_pi_de: Yuflyma 80 mg, Injektionslösung im Fertigpen
+7680685150042_pi_fr: Yuflyma 80 mg, solution injectable en stylo prérempli
+7680678550019_pi_de: Flector Dolo Liquid Caps 12,5 mg, Weichkapseln
+7680678550026_pi_de: Flector Dolo Liquid Caps 12,5 mg, Weichkapseln
+7680678550057_pi_de: Flector Dolo Liquid Caps 12,5 mg, Weichkapseln
+7680678550019_pi_fr: Flector Dolo Liquid Caps 12,5 mg, capsules molles
+7680678550026_pi_fr: Flector Dolo Liquid Caps 12,5 mg, capsules molles
+7680678550057_pi_fr: Flector Dolo Liquid Caps 12,5 mg, capsules molles
+7680417990137_pi_de: VICKS MediNait® Sirup
+7680417990137_pi_fr: VICKS MediNait® Sirop
+7680554970016_pi_de: YALDIGO® 500 mg Suppositorien
+7680554970054_pi_de: YALDIGO® 500 mg Suppositorien
+7680554970030_pi_de: YALDIGO® 500 mg Suppositorien
+7680554970061_pi_de: YALDIGO® 500 mg Suppositorien
+7680554970078_pi_de: YALDIGO® 500 mg Suppositorien
+7680554970016_pi_fr: YALDIGO® 500 mg Suppositoires
+7680554970054_pi_fr: YALDIGO® 500 mg Suppositoires
+7680554970030_pi_fr: YALDIGO® 500 mg Suppositoires
+7680554970061_pi_fr: YALDIGO® 500 mg Suppositoires
+7680554970078_pi_fr: YALDIGO® 500 mg Suppositoires
+7680612640073_pi_de: Gabapentin Viatris
+7680612640080_pi_de: Gabapentin Viatris
+7680612640097_pi_de: Gabapentin Viatris
+7680612640103_pi_de: Gabapentin Viatris
+7680612640110_pi_de: Gabapentin Viatris
+7680612640127_pi_de: Gabapentin Viatris
+7680612640073_pi_fr: Gabapentin Viatris
+7680612640080_pi_fr: Gabapentin Viatris
+7680612640097_pi_fr: Gabapentin Viatris
+7680612640103_pi_fr: Gabapentin Viatris
+7680612640110_pi_fr: Gabapentin Viatris
+7680612640127_pi_fr: Gabapentin Viatris
+7680612650058_pi_de: Gabapentin Viatris
+7680612650065_pi_de: Gabapentin Viatris
+7680612650072_pi_de: Gabapentin Viatris
+7680612650089_pi_de: Gabapentin Viatris
+7680612650058_pi_fr: Gabapentin Viatris
+7680612650065_pi_fr: Gabapentin Viatris
+7680612650072_pi_fr: Gabapentin Viatris
+7680612650089_pi_fr: Gabapentin Viatris
+7680687220002_pi_de: Paracetamol Sandoz® eco 500 mg, Tabletten
+7680687220002_pi_fr: Paracétamol Sandoz® eco 500 mg, comprimés
