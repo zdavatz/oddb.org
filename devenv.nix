@@ -4,7 +4,7 @@ let
   pkgs-old = import inputs.nixpkgs-old { system = pkgs.stdenv.system; };
 in
 {
-  packages = [ pkgs.git pkgs.libyaml pkgs.imagemagick ];
+  packages = [ pkgs.git pkgs.libyaml pkgs.imagemagick pkgs.firefox pkgs.chromium  pkgs.chromedriver];
 
   enterShell = ''
     echo This is the devenv shell for the webbrowser ch.oddb.org
@@ -15,6 +15,8 @@ in
   '';
 
   env.FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
+  env.ODDB_URL = "127.0.0.1:8012"; # for running the watir spec tests
+
   languages.ruby.enable = true;
   languages.ruby.versionFile = ./.ruby-version;
   services.postgres = {

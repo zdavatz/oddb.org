@@ -57,7 +57,7 @@ if RUBY_PLATFORM.match(/mingw/)
   browsers2test = [ :ie ]
 else
   browsers2test ||= [ ENV['ODDB_BROWSER'] ] if ENV['ODDB_BROWSER']
-  browsers2test = [ :chrome ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
+  browsers2test = [ :firefox ] unless browsers2test and browsers2test.size > 0 # could be any combination of :ie, :firefox, :chrome
 end
 Browser2test = browsers2test
 RegExpTwoMedis = /\/,?\d{13}[,\/]\d{13}(\?|)$/
@@ -83,11 +83,22 @@ def setup_browser
   FileUtils.makedirs(DownloadDir)
   # drivers will be cached under $HOME/.webdrivers
   if Browser2test[0].to_s.eql?('firefox')
-    Selenium::WebDriver::Firefox.path = '/usr/bin/firefox'
+    browser_path = `which firefox`
+    if browser_path.length > 0
+      Selenium::WebDriver::Firefox.path =  browser_path.chomp
+    else
+      Selenium::WebDriver::Firefox.path = '/usr/bin/firefox'
+    end
+    puts Selenium::WebDriver::Firefox.path
     require 'webdrivers/geckodriver'
     @browser_options = Selenium::WebDriver::Firefox::Options.new
   else
-    Selenium::WebDriver::Chrome.path = '/usr/bin/google-chrome-beta'
+    browser_path = `which chromium`
+    if browser_path.length > 0
+    Selenium::WebDriver::Chrome.path = browser_path.chomp
+    else
+      Selenium::WebDriver::Chrome.path = '/usr/bin/google-chrome-beta'
+    end
     require 'webdrivers/chromedriver'
     puts "with webdrivers and using #{Selenium::WebDriver::Chrome.path}"
     @browser_options = Selenium::WebDriver::Chrome::Options.new
@@ -95,10 +106,12 @@ def setup_browser
   @browser_options.add_argument('--ignore-certificate-errors')
   @browser_options.add_argument('--disable-popup-blocking')
   @browser_options.add_argument('--disable-translate')
-  prefs = {
+  prefs = [
     prompt_for_download: false,
     default_directory: DownloadDir
-  }
+  ]
+  pp prefs
+
   @browser_options.add_preference(:download, prefs)
   if Browser2test[0].to_s.eql?('firefox')
     puts "Setting upd default profile for firefox"
@@ -118,7 +131,17 @@ def setup_browser
     # @browser_options.add_preference(:profile, profile)
     #@browser = Watir::Browser.new  :firefox
     pp @browser_options
-    @browser = Watir::Browser.new :firefox,  options: @browser_options
+    browser_opts = {accept_insecure_certs: true,
+                page_load_timeout: 100,
+                script_timeout: 30}
+    pp browser_opts
+profile = Selenium::WebDriver::Firefox::Profile.new
+profile['browser.download.dir'] = DownloadDir
+profile['browser.download.folderList'] = 2
+profile['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf'
+
+    @browser = Watir::Browser.new :firefox, options: {profile: profile}
+    # @browser = Watir::Browser.new :firefox,  options: browser_opts
   elsif Browser2test[0].to_s.eql?('chrome')
     puts "Setting up a default profile for chrome"
     @browser = Watir::Browser.new :chrome, options: @browser_options

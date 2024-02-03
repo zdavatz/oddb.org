@@ -6,6 +6,7 @@ require 'spec_helper'
 if !File.exist?(migelDir)
   puts "Cannot run spec tests for migel as #{migelDir} #{File.exist?(migelDir)} not found"
   else
+    if false
   $LOAD_PATH << File.join(File.dirname(File.dirname(__FILE__)), 'src')
   $LOAD_PATH << File.join(migelDir, 'lib')
   require File.join(migelDir, 'lib', 'migel')
@@ -14,7 +15,7 @@ if !File.exist?(migelDir)
   require File.join(migelDir, 'lib', 'migel', 'persistence')
   require File.join(migelDir, 'lib', 'migel', 'util', 'server')
   # Adapted from ../migel/bin/migeld
-
+    end
   module Migel
     def Migel::server
       @@server
@@ -36,8 +37,9 @@ if !File.exist?(migelDir)
       end
       logger.info('start') { sprintf("starting migel-server on %s", url) }
     end
-  end
+  end if false
   describe "MigelSpec" do
+    require 'drb'
     MIGEL_SERVER = DRb::DRbObject.new(nil, DRB_TEST_URI)
 
     it "Finde Krücke" do
