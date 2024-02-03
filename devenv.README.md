@@ -28,7 +28,14 @@ The applications must be started manually and should be similar to their invocat
 
 The `bundle install` must be called manually (for unknown reasons sometimes even twice.)
 
-It is your responsability that the port (default 5433) used for the postgres database is in sync between this file (devenv.nix) and [etc/db_connection.rb](./etc/db_connection.rb).
+It is your responsability that the port (default 5433) used for the postgres database is in sync between this file (devenv.nix) and [etc/db_connection.rb](./etc/db_connection.rb). It could look like this
+
+      require 'dbi'
+      require 'odba/connection_pool'
+      require 'pg'
+      ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:dbname=ch_oddb;host=localhost;port=5433', 'postgres', '')
+
+
 
 # Setup
 
@@ -103,9 +110,23 @@ Now you are confident that the ch-oddb web server will work in a new command win
 
 Now you should be able to point your browser to http://127.0.0.1:8012.
 
+Caveat: If your bundle update exits silently after emitting something like `/opt/path_to_oddb/oddb.org/ext/refdata/src/refdata.rb:45:in '<module:Archiver>': Refdata: Starting debugging using REFDATA_BASE_URI http://refdatabase.refdata.ch`, then I recommend to clean the bundler cache by calling `rm -rf .devenv/state/.bundle`, verifying that you are in the devenv shell (where pg ist 10) and calling `bundle install` again.
+
+### Running the spec tests with watir
+
+We added chromium and firefox to the imported packages. The tests are run calling in a devenv shell `bundle exec rspec spec`.
+
+Be aware that you must define the environment variables `SANDOZ_ADMIN_PASSWD` and `admin_password` to run these tests
+
 # TODO:
 
 The following steps could be intergrated into the devenv.nix
+* Why does adding the gem 'debug' lead to the following error?
+
+      Internal Server Error
+      wrong number of arguments (given 2, expected 1)
+      WEBrick/1.8.1 (Ruby/3.3.0/2023-12-25) at 192.168.0.75:8012
+
 * `bundle install`
 * Use the downloaded bz2 backup file directly
 * Always use `bundle exec rake test` to execute the tests. Instead of checking always `.github/workflows/ruby.yml`
