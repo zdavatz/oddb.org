@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Preparations ReleaseDate="01.02.2024">
+  <Preparation ProductCommercial="5175">
+    <NameDe>Nasonex Dosier Nasenspray</NameDe>
+    <NameFr>Nasonex spray nasal doseur</NameFr>
+    <NameIt>Nasonex Dosier Nasenspray</NameIt>
+    <DescriptionDe>Nasenspray 50 mcg </DescriptionDe>
+    <DescriptionFr>spray nasal 50 mcg </DescriptionFr>
+    <DescriptionIt>Nasenspray 50 mcg </DescriptionIt>
+    <AtcCode>R01AD09</AtcCode>
+    <SwissmedicNo5>54189</SwissmedicNo5>
+    <FlagItLimitation>Y</FlagItLimitation>
+    <OrgGenCode>O</OrgGenCode>
+    <FlagSB20>N</FlagSB20>
+    <FlagGGSL>N</FlagGGSL>
+    <CommentDe />
+    <CommentFr />
+    <CommentIt />
+    <VatInEXF>N</VatInEXF>
+    <GammeNumber>1742</GammeNumber>
+    <GammeName>Nasonex Nasal</GammeName>
+    <Preismodell />
+    <Packs>
+      <Pack ProductKey="5175" PackId="7450">
+        <DescriptionDe>140 Dos</DescriptionDe>
+        <DescriptionFr>140 dos</DescriptionFr>
+        <DescriptionIt>140 Dos</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>54189036</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>Y</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>17019</BagDossierNo>
+        <GTIN>7680541890365</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <ExFactoryPrice>
+            <Price>8.5</Price>
+            <ValidFromDate>01.01.2024</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>FREIWILLIGEPS</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Freiwillige Preissenkung</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Baissement de prix volontairement</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Baissement de prix volontairement</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.01.2024</LastPriceChange>
+          </ExFactoryPrice>
+          <PublicPrice>
+            <Price>18</Price>
+            <ValidFromDate>01.01.2024</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>FREIWILLIGEPS</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Freiwillige Preissenkung</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Baissement de prix volontairement</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Baissement de prix volontairement</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Organon GmbH</Description>
+            <Street>Weystrasse 20</Street>
+            <ZipCode>6006</ZipCode>
+            <Place>Luzern</Place>
+            <Phone />
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>15.04.1998</IntegrationDate>
+          <ValidFromDate>15.03.1998</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>0</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Initialzustand</StatusTypeDescriptionSl>
+          <FlagApd>N</FlagApd>
+        </Status>
+      </Pack>
+    </Packs>
+    <Substances>
+      <Substance>
+        <DescriptionLa>Mometasoni-17 furoas</DescriptionLa>
+        <Quantity>50</Quantity>
+        <QuantityUnit>mcg</QuantityUnit>
+      </Substance>
+    </Substances>
+    <Limitations />
+    <ItCodes>
+      <ItCode Code="12.">
+        <DescriptionDe>OTO-RHINOLARYNGOLOGICA</DescriptionDe>
+        <DescriptionFr>OTO-RHINOLARYNGOLOGICA</DescriptionFr>
+        <DescriptionIt>OTORINOLARINGOLOGICI</DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="12.02.">
+        <DescriptionDe>Nase</DescriptionDe>
+        <DescriptionFr>Nez</DescriptionFr>
+        <DescriptionIt>Rinologici</DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="12.02.30.">
+        <DescriptionDe>Nasenmittel mit Corticosteroiden</DescriptionDe>
+        <DescriptionFr>Préparations nasales avec corticostéroïdes</DescriptionFr>
+        <DescriptionIt>Rinologici con corticosteroidi </DescriptionIt>
+        <Limitations />
+      </ItCode>
+    </ItCodes>
+    <Status>
+      <IntegrationDate>15.05.1998</IntegrationDate>
+      <ValidFromDate>16.03.1998</ValidFromDate>
+      <ValidThruDate>31.12.9999</ValidThruDate>
+      <StatusTypeCodeSl>0</StatusTypeCodeSl>
+      <StatusTypeDescriptionSl>Initialzustand</StatusTypeDescriptionSl>
+      <FlagApd>N</FlagApd>
+    </Status>
+  </Preparation>
+</Preparations>
