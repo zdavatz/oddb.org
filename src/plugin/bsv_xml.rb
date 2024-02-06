@@ -146,6 +146,8 @@ module ODDB
                   :updated_sl_entries, :created_limitation_texts,
                   :deleted_limitation_texts, :updated_limitation_texts,
                   :duplicate_iksnrs
+      attr_accessor :test_sequences if defined?(Minitest) #something we should avoid!!
+
       def initialize *args
         super
         @known_packages = {}
@@ -238,7 +240,7 @@ module ODDB
           [data[:lt], ODDB::Dose.new(data[:dose], data[:unit])]
         end
 
-        composition_pointer = sequence.pointer + :bag_composition        
+        composition_pointer = sequence.pointer + :bag_composition
         comp = if (sequence.bag_compositions.nil? || sequence.bag_compositions.empty?) then @app.create composition_pointer else sequence.bag_compositions[0] end
         if !sequence.bag_compositions.empty?
           first_composition = sequence.bag_compositions[0]
@@ -266,7 +268,13 @@ module ODDB
       end
       def tag_start name, attrs
         case name
+        when 'IntegrationDate'
+          @parsing_prices = false
         when 'Pack'
+          @parsing_prices = true
+          @price_change_code = nil
+          @price_amount = nil
+          @valid_from = nil
           @ikscd = nil
           @data = @pac_data.dup
           @report = @report_data.dup.update(@data).update(@reg_data).update(@seq_data)
@@ -292,11 +300,23 @@ module ODDB
           @deferred_packages = []
           @substances = []
           @sequence = nil
-        when /(.+)Price/u
-          @price_type = $~[1].downcase.to_sym
-          @price = Util::Money.new(0, @price_type, 'CH')
-          @price.origin = @origin
-          @price.authority = :sl
+        when 'LastPriceChange' # just ignore it
+        when 'ExFactoryPrice'
+          @valid_from = nil
+          @price_change_code = nil
+          @price = nil
+          @price_exfactory = Util::Money.new(0, :exfactory, 'CH')
+          @price_exfactory.origin = @origin
+          @price_exfactory.authority = :sl
+          @price_type = :exfactory
+        when 'PublicPrice'
+          @valid_from = nil
+          @price_change_code = nil
+          @price = nil
+          @price_type = :public
+          @price_public = Util::Money.new(0, :public, 'CH')
+          @price_public.origin = @origin
+          @price_public.authority = :sl
         when 'Limitation'
           @in_limitation = true
         when 'ItCode'
@@ -317,6 +337,8 @@ module ODDB
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         @seq_data ||= {}
         case name
+        when 'Prices'
+          @parsing_prices = false
         when 'Pack'
           fix_flags_with_rss_logic
           if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
@@ -331,22 +353,38 @@ module ODDB
           elsif @pack && !@duplicate_iksnr
             ## don't take the Swissmedic-Category unless it's missing in the DB
             @data.delete :ikscat if @pack.ikscat
+            if  @pack.price_exfactory.nil? || !@price_exfactory.amount.to_s.eql?(@pack.price_exfactory.amount.to_s) || !@price_change_code.eql?(@pack.price_exfactory.mutation_code)
+              LogFile.debug "tag_end_set price_exfactory #{@price_exfactory} for @pack.price_exfactor '#{@pack.price_exfactory}' #{@pack.price_exfactory&.mutation_code} now #{@price_change_code}"
+              @pack.price_exfactory = @price_exfactory
+              @pack.price_exfactory.mutation_code = @price_exfactory.mutation_code
+              @pack.price_exfactory.valid_from = @price_exfactory.valid_from
+              @data.store :price_exfactory, @price_exfactory
+            end if @price_exfactory
+            if @pack.price_public.nil? || !@price_public.amount.to_s.eql?(@pack.price_public.amount.to_s) || !@price_change_code.eql?(@pack.price_public.mutation_code)
+              LogFile.debug "tag_end price_public #{@price_public} for @pack.price_exfactor '#{@pack.price_public}' #{@pack.price_public&.mutation_code} now #{@price_change_code}"
+              @pack.price_public = @price_public
+              @pack.price_public.valid_from = @price_public.valid_from
+              @pack.price_public.mutation_code = @price_public.mutation_code
+              @data.store :price_public, @price_public
+            end if @price_public
             @app.update @pack.pointer, @data, :bag
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
           if !@pack.nil?
             @sequence = @pack.sequence
+            @pack.odba_store
           end
-          @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size, @price, @price_type = nil
+          @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data, @size, @price_public, @price_exfactory = nil
         when 'Preparation'
           seq = @sequence || identify_sequence(@registration, @name, @substances)
+          @test_sequences ||= []
+          @test_sequences << seq if defined?(Minitest) #something we should avoid!!
           if !@deferred_packages.empty? && seq
             @deferred_packages.each do |info|
               ptr = seq.pointer + [:package, info[:ikscd]]
               @app.update seq.pointer, info[:sequence]
               unless seq.package(info[:ikscd])
-                LogFile.debug "create_package export #{seq.export_flag} ptr #{ptr}"
                 seq.create_package(info[:ikscd])
               end
               @app.update ptr.creator, info[:package]
@@ -367,7 +405,6 @@ module ODDB
               @known_packages.delete pac_ptr
               next if pac.nil?
               unless pac.is_a?(ODDB::Package)
-                LogFile.debug "Skipping pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class} pac is_a? #{pac.class}"
               else
                 pointer = pac_ptr + :sl_entry
                 if sl_data.empty?
@@ -382,14 +419,12 @@ module ODDB
                     @created_sl_entries += 1
                   end
                   if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
-                    LogFile.debug("limitation store sl_data for #{pac_ptr} #{@iksnr} #{@name[:de]} lim: #{lim_data[:de].to_s[0..70]}")
                     sl_data.store :limitation, true
                   end
                   @app.update pointer.creator, sl_data, :bag
                 end
               end
             rescue ODBA::OdbaError, ODDB::Persistence::InvalidPathError, NoMethodError => error
-              LogFile.debug "Skipping #{error} pac_ptr #{pac_ptr} sl_data is_a? #{sl_data.class}"
               # skip
             end
           end
@@ -398,7 +433,6 @@ module ODDB
                pac = pac_ptr.resolve @app
                next if pac.nil?
                unless pac.is_a?(ODDB::Package)
-                LogFile.debug "Skipping pac_ptr #{pac_ptr} lim_data is_a? #{lim_data.class} pac is_a? #{pac.class}"
                else
                 sl_entry = pac.sl_entry
                 next if sl_entry.nil?
@@ -408,7 +442,6 @@ module ODDB
                 # 2021.03.16 Niklaus has no idea, why I have to freeze it here
                 # but without a freeze the @app.update fails miserably
                 if lim_data.nil? || lim_data.empty?
-                  LogFile.debug("limitation delete txt_ptr for #{txt_ptr} limitation_text #{sl_entry.limitation_text.class}")
                   if sl_entry.limitation_text
                     @deleted_limitation_texts += 1
                     @app.delete txt_ptr
@@ -429,18 +462,15 @@ module ODDB
                     end
                   rescue ODDB::Persistence::UninitializedPathError,
                         ODDB::Persistence::InvalidPathError => error
-                        LogFile.debug "Skipping  delete txt_ptr '#{error}' txt_ptr #{txt_ptr}"
                     # skip
                   end
                 txt_ptr = sl_ptr + :limitation_text
                 # 2021.03.16 Niklaus has no idea, why I have to redefine it here
                 # but without redefining the @app.update fails miserably
-                  LogFile.debug("limitation update txt_ptr for #{txt_ptr} lim_data #{lim_data.class}")
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
             rescue TypeError, ODBA::OdbaError, ODDB::Persistence::InvalidPathError, NoMethodError => error
-              LogFile.debug "Skipping '#{error}' pac_ptr #{pac_ptr}"
               # skip
             end
           end
@@ -513,16 +543,32 @@ module ODDB
           @data.store :narcotic, @text == 'Y'
         when 'BagDossierNo'
           @sl_data.store :bsv_dossier, @text if @sl_data
-        when /(.+)Price/u
-          if @price > 0
-            @data.store :"price_#{@price_type}", @price
+        when 'LastPriceChange' # just ignore
+        when 'Prices'
+          @parsing_prices = true
+        when 'ExFactoryPrice'
+          @price_exfactory = Util::Money.new(@price_amount, @price_type, 'CH')
+          @price_exfactory.origin = @origin
+          @price_exfactory.authority = :sl
+          @price_exfactory.mutation_code = @price_change_code
+          @price_exfactory.valid_from = @valid_from
+          if @price_exfactory > 0
+            @data.store :"price_#{@price_type}", @price_exfactory
+          end
+        when 'PublicPrice'
+          @price_public = Util::Money.new(@price_amount, @price_type, 'CH')
+          @price_public.origin = @origin
+          @price_public.authority = :sl
+          @price_public.mutation_code = @price_change_code
+          @price_public.valid_from = @valid_from
+          if @price_public > 0
+            @data.store :"price_#{@price_type}", @price_public
           end
         when 'Price'
-          @price.amount = @text.to_f if @price
+          @price_amount = @text
         when 'ValidFromDate'
-          if @price
-            @price.valid_from = time(@text)
-          elsif @sl_entries
+          @valid_from = time(@text) # for prices
+          if @sl_entries
             @sl_entries.each_value do |sl_data|
               sl_data.store :valid_from, date(@text)
             end
@@ -572,7 +618,7 @@ module ODDB
         when 'IntegrationDate'
           @sl_data.store :introduction_date, date(@text) if @sl_data
         when 'PriceChangeTypeCode'
-          @price.mutation_code = @text
+          @price_change_code = @text
         when 'Limitation'
           @in_limitation = false
         when 'LimitationType'

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Preparations ReleaseDate="01.02.2024">
+  <Preparation ProductCommercial="6149">
+    <NameDe>Ponstan</NameDe>
+    <NameFr>Ponstan</NameFr>
+    <NameIt>Ponstan</NameIt>
+    <DescriptionDe>Filmtabs 500 mg </DescriptionDe>
+    <DescriptionFr>filmtabs 500 mg </DescriptionFr>
+    <DescriptionIt>Filmtabs 500 mg </DescriptionIt>
+    <AtcCode>M01AG01</AtcCode>
+    <SwissmedicNo5>39271</SwissmedicNo5>
+    <FlagItLimitation>Y</FlagItLimitation>
+    <OrgGenCode>O</OrgGenCode>
+    <FlagSB20>Y</FlagSB20>
+    <FlagGGSL>N</FlagGGSL>
+    <CommentDe />
+    <CommentFr />
+    <CommentIt />
+    <VatInEXF>N</VatInEXF>
+    <GammeNumber>2056</GammeNumber>
+    <GammeName>Ponstan Oral</GammeName>
+    <Preismodell />
+    <Packs>
+      <Pack ProductKey="6149" PackId="22581">
+        <DescriptionDe>10 Stk</DescriptionDe>
+        <DescriptionFr>10 pce</DescriptionFr>
+        <DescriptionIt>10 Stk</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>39271061</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>N</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>12495</BagDossierNo>
+        <GTIN>7680392710614</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <ExFactoryPrice>
+            <Price>1.82</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.06.2023</LastPriceChange>
+          </ExFactoryPrice>
+          <PublicPrice>
+            <Price>6.2</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Pfizer AG</Description>
+            <Street>Schärenmoosstrasse 99</Street>
+            <ZipCode>8052</ZipCode>
+            <Place>Zürich</Place>
+            <Phone>+41434957111</Phone>
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>01.12.2008</IntegrationDate>
+          <ValidFromDate>01.12.2008</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>2</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Neuaufnahme</StatusTypeDescriptionSl>
+          <FlagApd>Y</FlagApd>
+        </Status>
+      </Pack>
+      <Pack ProductKey="6149" PackId="22580">
+        <DescriptionDe>30 Stk</DescriptionDe>
+        <DescriptionFr>30 pce</DescriptionFr>
+        <DescriptionIt>30 Stk</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>39271062</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>N</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>12495</BagDossierNo>
+        <GTIN>7680392710621</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <ExFactoryPrice>
+            <Price>4.39</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.06.2023</LastPriceChange>
+          </ExFactoryPrice>
+          <PublicPrice>
+            <Price>9.15</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Pfizer AG</Description>
+            <Street>Schärenmoosstrasse 99</Street>
+            <ZipCode>8052</ZipCode>
+            <Place>Zürich</Place>
+            <Phone>+41434957111</Phone>
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>01.12.2008</IntegrationDate>
+          <ValidFromDate>01.12.2008</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>2</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Neuaufnahme</StatusTypeDescriptionSl>
+          <FlagApd>Y</FlagApd>
+        </Status>
+      </Pack>
+      <Pack ProductKey="6149" PackId="22582">
+        <DescriptionDe>100 Stk</DescriptionDe>
+        <DescriptionFr>100 pce</DescriptionFr>
+        <DescriptionIt>100 Stk</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>39271063</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>Y</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>12495</BagDossierNo>
+        <GTIN>7680392710638</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <ExFactoryPrice>
+            <Price>12.75</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.06.2023</LastPriceChange>
+          </ExFactoryPrice>
+          <PublicPrice>
+            <Price>26.95</Price>
+            <ValidFromDate>01.06.2023</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Pfizer AG</Description>
+            <Street>Schärenmoosstrasse 99</Street>
+            <ZipCode>8052</ZipCode>
+            <Place>Zürich</Place>
+            <Phone>+41434957111</Phone>
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>01.12.2008</IntegrationDate>
+          <ValidFromDate>01.12.2008</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>2</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Neuaufnahme</StatusTypeDescriptionSl>
+          <FlagApd>Y</FlagApd>
+        </Status>
+      </Pack>
+    </Packs>
+    <Substances>
+      <Substance>
+        <DescriptionLa>Acidum mefenamicum</DescriptionLa>
+        <Quantity>500</Quantity>
+        <QuantityUnit>mg</QuantityUnit>
+      </Substance>
+    </Substances>
+    <Limitations />
+    <ItCodes>
+      <ItCode Code="07.">
+        <DescriptionDe>STOFFWECHSEL</DescriptionDe>
+        <DescriptionFr>METABOLISME</DescriptionFr>
+        <DescriptionIt>METABOLISMO</DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="07.10.">
+        <DescriptionDe>Arthritis und rheumatische Krankheiten</DescriptionDe>
+        <DescriptionFr>Arthrites et affections rhumatismales</DescriptionFr>
+        <DescriptionIt>Artrite e malattie reumatiche</DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="07.10.10.">
+        <DescriptionDe>Einfache entzündungshemmende Mittel </DescriptionDe>
+        <DescriptionFr>Anti-inflammatoires simples </DescriptionFr>
+        <DescriptionIt>Antiinfiammatori soli</DescriptionIt>
+        <Limitations />
+      </ItCode>
+    </ItCodes>
+    <Status>
+      <IntegrationDate>15.03.1977</IntegrationDate>
+      <ValidFromDate>15.03.1977</ValidFromDate>
+      <ValidThruDate>31.12.9999</ValidThruDate>
+      <StatusTypeCodeSl>0</StatusTypeCodeSl>
+      <StatusTypeDescriptionSl>Initialzustand</StatusTypeDescriptionSl>
+      <FlagApd>N</FlagApd>
+    </Status>
+  </Preparation>
+</Preparations>
