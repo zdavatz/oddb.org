@@ -537,7 +537,7 @@ module ODDB
             @reg_data.store(:generic_type, (gtype || :unknown))
           end
           @pac_data.store :sl_generic_type, gtype
-        when 'FlagSB20'
+        when /FlagSB/
           @pac_data.store :deductible, @text == 'Y' ? :deductible_o : :deductible_g
         when 'FlagNarcosis'
           @data.store :narcotic, @text == 'Y'
