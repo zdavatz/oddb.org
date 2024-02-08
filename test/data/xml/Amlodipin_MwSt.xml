@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Preparations ReleaseDate="01.02.2024">
+  <Preparation ProductCommercial="28739">
+    <NameDe>Amlodipin Valsartan Sandoz</NameDe>
+    <NameFr>Amlodipine Valsartan Sandoz</NameFr>
+    <NameIt>Amlodipin Valsartan Sandoz</NameIt>
+    <DescriptionDe>Filmtabl 5/80</DescriptionDe>
+    <DescriptionFr>cpr pell 5/80 </DescriptionFr>
+    <DescriptionIt>Filmtabl 5/80</DescriptionIt>
+    <AtcCode>C09DB01</AtcCode>
+    <SwissmedicNo5>66015</SwissmedicNo5>
+    <FlagItLimitation>Y</FlagItLimitation>
+    <OrgGenCode>G</OrgGenCode>
+    <FlagSB20>N</FlagSB20>
+    <FlagGGSL>N</FlagGGSL>
+    <CommentDe />
+    <CommentFr />
+    <CommentIt />
+    <VatInEXF>N</VatInEXF>
+    <GammeNumber>4201</GammeNumber>
+    <GammeName>Amlodipin Valsartan Sandoz Oral</GammeName>
+    <Preismodell />
+    <Packs>
+      <Pack ProductKey="28739" PackId="41466">
+        <DescriptionDe>Blist 98 Stk</DescriptionDe>
+        <DescriptionFr>blist 98 pce</DescriptionFr>
+        <DescriptionIt>Blist 98 Stk</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>66015011</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>Y</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>21116</BagDossierNo>
+        <GTIN>7680660150111</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <PublicPrice>
+            <Price>58.6</Price>
+            <ValidFromDate>01.01.2024</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>MWSTAENDERUNG</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>MwSt-Änderung</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>MwSt-Änderung</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>MwSt-Änderung</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+          <ExFactoryPrice>
+            <Price>36.71</Price>
+            <ValidFromDate>01.12.2020</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>SLAUFNAHME</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preismutation bei Erstaufnahme</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Preismutation bei Erstaufnahme</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preismutation bei Erstaufnahme</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.12.2020</LastPriceChange>
+          </ExFactoryPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Sandoz Pharmaceuticals AG</Description>
+            <Street>Suurstoffi 14</Street>
+            <ZipCode>6343</ZipCode>
+            <Place>Rotkreuz</Place>
+            <Phone>+41417637411</Phone>
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>01.12.2020</IntegrationDate>
+          <ValidFromDate>01.12.2020</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>2</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Neuaufnahme</StatusTypeDescriptionSl>
+          <FlagApd>N</FlagApd>
+        </Status>
+      </Pack>
+    </Packs>
+    <Substances>
+      <Substance>
+        <DescriptionLa>Amlodipinum</DescriptionLa>
+        <Quantity>5</Quantity>
+        <QuantityUnit>mg</QuantityUnit>
+      </Substance>
+      <Substance>
+        <DescriptionLa>Valsartanum</DescriptionLa>
+        <Quantity>80</Quantity>
+        <QuantityUnit>mg</QuantityUnit>
+      </Substance>
+    </Substances>
+    <Limitations>
+      <Limitation>
+        <LimitationCode>AMLOVALSANDO</LimitationCode>
+        <LimitationType>DIA</LimitationType>
+        <LimitationNiveau>P</LimitationNiveau>
+        <IndicationsCodes />
+        <DescriptionDe>Die gleichzeitige Therapie mit AMLODIPIN VALSARTAN SANDOZ und einem Calciumantagonisten des I.T. 02.06 und/oder einem Angiotensin-II-Antagonisten und/oder einem ACE-Hemmer wird von der Grundversicherung nicht vergütet.
+</DescriptionDe>
+        <DescriptionFr>Le traitement combiné d'AMLODIPINE VALSARTAN SANDOZ et d'un antagoniste du calcium I.T. 02.06 et/ou d'un inhibiteur de l'enzyme de conversion de l'angiotensine II et/ou d'un inhibiteur de l'ECA ne sera pas remboursé par l'assurance de base.</DescriptionFr>
+        <DescriptionIt>La terapia combinata di AMLODIPIN VALSARTAN SANDOZ e di un calcio antagonista I.T. 02.06 e/o di un cosiddetti antagonisti del recettore dell'angiotensina II e/o un inibitore ACE non sarà rimborsata dall'assicurazione di base.</DescriptionIt>
+        <ValidFromDate>01.12.2020</ValidFromDate>
+        <ValidThruDate>31.12.9999</ValidThruDate>
+      </Limitation>
+    </Limitations>
+    <ItCodes>
+      <ItCode Code="02.">
+        <DescriptionDe>HERZ UND KREISLAUF</DescriptionDe>
+        <DescriptionFr>COEUR ET CIRCULATION</DescriptionFr>
+        <DescriptionIt>SISTEMA CARDIOVASCOLARE </DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="02.07.">
+        <DescriptionDe>Blutdrucksenkende Mittel</DescriptionDe>
+        <DescriptionFr>Antihypertenseurs</DescriptionFr>
+        <DescriptionIt>Antipertensivi</DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="02.07.20.">
+        <DescriptionDe>Kombinierte blutdrucksenkende Mittel</DescriptionDe>
+        <DescriptionFr>Antihypertenseurs composés</DescriptionFr>
+        <DescriptionIt>Antipertensivi combinati </DescriptionIt>
+        <Limitations />
+      </ItCode>
+    </ItCodes>
+    <Status>
+      <IntegrationDate>01.12.2020</IntegrationDate>
+      <ValidFromDate>01.12.2020</ValidFromDate>
+      <ValidThruDate>31.12.9999</ValidThruDate>
+      <StatusTypeCodeSl>2</StatusTypeCodeSl>
+      <StatusTypeDescriptionSl>Neuaufnahme</StatusTypeDescriptionSl>
+      <FlagApd>N</FlagApd>
+    </Status>
+  </Preparation>
+</Preparations>
