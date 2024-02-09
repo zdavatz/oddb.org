@@ -354,14 +354,14 @@ module ODDB
             ## don't take the Swissmedic-Category unless it's missing in the DB
             @data.delete :ikscat if @pack.ikscat
             if  @pack.price_exfactory.nil? || !@price_exfactory.amount.to_s.eql?(@pack.price_exfactory.amount.to_s) || !@price_change_code.eql?(@pack.price_exfactory.mutation_code)
-              LogFile.debug "tag_end_set price_exfactory #{@price_exfactory} for @pack.price_exfactor '#{@pack.price_exfactory}' #{@pack.price_exfactory&.mutation_code} now #{@price_change_code}"
+              LogFile.debug "#{@iksnr} #{@ikscd} set price_exfactory #{@pack.price_exfactory} now #{@price_exfactory} #{@pack.price_exfactory&.mutation_code} now #{@price_change_code}"
               @pack.price_exfactory = @price_exfactory
               @pack.price_exfactory.mutation_code = @price_exfactory.mutation_code
               @pack.price_exfactory.valid_from = @price_exfactory.valid_from
               @data.store :price_exfactory, @price_exfactory
             end if @price_exfactory
             if @pack.price_public.nil? || !@price_public.amount.to_s.eql?(@pack.price_public.amount.to_s) || !@price_change_code.eql?(@pack.price_public.mutation_code)
-              LogFile.debug "tag_end price_public #{@price_public} for @pack.price_exfactor '#{@pack.price_public}' #{@pack.price_public&.mutation_code} now #{@price_change_code}"
+              LogFile.debug "#{@iksnr} #{@ikscd} set price_public #{@pack.price_public} now #{@price_public} now #{@pack.price_public&.mutation_code} now #{@price_change_code}"
               @pack.price_public = @price_public
               @pack.price_public.valid_from = @price_public.valid_from
               @pack.price_public.mutation_code = @price_public.mutation_code

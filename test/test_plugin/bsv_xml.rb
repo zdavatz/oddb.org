@@ -1616,6 +1616,7 @@ module ODDB
       @myPackage.price_exfactory = Util::Money.new(10, @price_type, 'CH')
       @myPackage.price_exfactory.valid_from = Time.new(2022,1,31)
       @myPackage.price_exfactory.origin = originUrl22
+      @myPackage.price_exfactory.mutation_code = '1JAHRS'
       @myPackage.price_exfactory.type = "exfactory"
 
       @myPackage.price_exfactory = Util::Money.new(10, @price_type, 'CH')
