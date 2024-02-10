@@ -404,14 +404,24 @@ module ODDB
         seq.should_receive(:pointer)
         seq.should_receive(:odba_store)
       end
+      registration = flexmock("registration{__LINE__}") do |reg|
+        reg.should_receive(:ikscat)
+#        reg.should_receive(:pointer)
+#        reg.should_receive(:odba_store)
+      end
       package = flexmock('package') do |pac|
+        pac.should_receive(:registration).and_return(registration)
         pac.should_receive(:price_public).and_return(nil)
         pac.should_receive(:pharmacode).and_return('pharmacode')
         pac.should_receive(:sequence).and_return(sequence)
         pac.should_receive(:price_exfactory).and_return(1)
-        pac.should_receive(:ikscat)
         pac.should_receive(:pointer)
         pac.should_receive(:odba_store)
+        pac.should_receive(:index_therapeuticus)
+        pac.should_receive(:ikscat)
+        pac.should_receive(:generic_type)
+        pac.should_receive(:deductible)
+        pac.should_receive(:narcotic?)
       end
       data = {:public_price => nil, :price_exfactory => 2}
       @listener.instance_eval('@pack = package')
@@ -954,9 +964,11 @@ module ODDB
       end
       preparations_listener = flexmock('preparations_listener') do |p|
         p.should_receive(:change_flags).and_return('change_flags')
+        p.should_receive(:nr_visited_preparations).and_return 0
       end
       flexmock(ODDB::BsvXmlPlugin::PreparationsListener) do |klass|
         klass.should_receive(:new).and_return(preparations_listener)
+        klass.should_receive(:nr_visited_preparations).and_return
       end
       assert_equal('change_flags', @plugin.update_preparations(StringIO.new('io')))
     end
@@ -1527,6 +1539,8 @@ module ODDB
       ODDB::TestHelpers.vcr_setup
       reg = flexmock("registration_#{__LINE__}", opts)
       ptr = Persistence::Pointer.new([:registration, opts[:iksnr]])
+      reg.should_receive(:index_therapeuticus)
+      reg.should_receive(:ikscat)
       reg.should_receive(:pointer).and_return ptr
       reg.should_receive(:package).and_return do |ikscd|
         (packs = opts[:packages]) && packs[ikscd]
@@ -1657,6 +1671,52 @@ module ODDB
       assert_equal(1, nasonex.oid)
     end
 
+    # This is test where the old prices and field like deductible are already correct
+    def test_nasonex_no_price_changes
+      setup_read_from_file('nasonex_2024', '54189', '02', '036')
+      originUrl22 = "Dummy-31-01-2022.xls"
+      @myReg.generic_type = :original
+      @myReg.index_therapeuticus = "12.02.30."
+      @myReg.ikscat = 'B'
+      @myPackage.bm_flag = false # narcotic
+      @myPackage.deductible = :deductible_g
+      @myPackage.price_public = Util::Money.new(18.0033, @price_type, 'CH')
+      assert_equal('18.00', @myPackage.price_public.to_s)
+      assert_equal('18.0033', @myPackage.price_public.amount.to_s)
+      @myPackage.price_public.valid_from = Time.new(2024,1,1)
+      @myPackage.price_public.origin = originUrl22
+      @myPackage.price_public.mutation_code = 'FREIWILLIGEPS'
+      @myPackage.price_public.type = "public"
+
+      @myPackage.price_exfactory = Util::Money.new(8.5, @price_type, 'CH')
+      @myPackage.price_exfactory.valid_from = Time.new(2024,1,1)
+      @myPackage.price_exfactory.origin = originUrl22
+      @myPackage.price_exfactory.mutation_code = 'FREIWILLIGEPS'
+      @myPackage.price_exfactory.type = "exfactory"
+
+      @myPackage.price_public
+      @app.should_receive(:each_package).and_return([@myPackage])
+      @app.should_receive(:package_by_ikskey).and_return @myPackage
+      @myPackage.pointer= 'pointer'
+      @app.should_receive(:registration).and_return @myReg
+      @app.should_receive(:update).at_least.once
+      @app.should_receive(:create).with(nil).and_return(@composition)
+      assert_equal('2024-01-01 00:00:00 +0000', @myPackage.price_exfactory.valid_from.to_s)
+      assert_equal('2024-01-01 00:00:00 +0000', @myPackage.price_public.valid_from.to_s)
+      @plugin.update_preparations File.open(@test_file)
+      seqs = @plugin.preparations_listener.test_sequences
+      nasonex = seqs.first.packages.values.first
+      assert_equal('18.0033', nasonex.price_public.amount.to_s)
+      assert_equal('18.00', nasonex.price_public.to_s)
+      assert_equal('8.50',  nasonex.price_exfactory.to_s)
+      assert_equal(false, nasonex.has_price_history?, 'nasonex may not have a price_history, as price already correct')
+      assert_equal('2024-01-01 00:00:00 +0000', nasonex.price_exfactory.valid_from.to_s)
+      assert_equal('2024-01-01 00:00:00 +0000', nasonex.price_public.valid_from.to_s)
+      assert_equal('FREIWILLIGEPS', nasonex.price_public.mutation_code, 'mutation_code for public price')
+      assert_equal('FREIWILLIGEPS', nasonex.price_exfactory.mutation_code, 'mutation_code for exfactory price')
+      assert_equal(1, nasonex.oid)
+    end
+
     # This is test where we have an old price and a new one with a different VAT
     def test_amlodipin_with_new_vat
       setup_read_from_file('Amlodipin_MwSt', '54189', '02', '036')
@@ -1674,6 +1734,7 @@ module ODDB
       @myPackage.price_public.type = "public"
       @myPackage.price_public.mutation_code = "SLAUFNAHME"
 
+      @myPackage.registration.generic_type = :originalXX
       @app.should_receive(:each_package).and_return([@myPackage])
       @app.should_receive(:package_by_ikskey).and_return @myPackage
       @myPackage.pointer= 'pointer'

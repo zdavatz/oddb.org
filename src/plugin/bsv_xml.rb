@@ -112,6 +112,7 @@ module ODDB
       def tag_end name
         case name
         when 'ItCode'
+#  TODO:         LogFile.debug "#{@iksnr} #{@ikscd} ItCode #{@data.keys}"
           @app.update @pointer.creator, @data, :bag
           unless @lim_data.empty?
             lim_ptr = @pointer + :limitation_text
@@ -145,7 +146,7 @@ module ODDB
                   :created_sl_entries, :deleted_sl_entries,
                   :updated_sl_entries, :created_limitation_texts,
                   :deleted_limitation_texts, :updated_limitation_texts,
-                  :duplicate_iksnrs
+                  :duplicate_iksnrs, :nr_visited_preparations
       attr_accessor :test_sequences if defined?(Minitest) #something we should avoid!!
 
       def initialize *args
@@ -161,6 +162,7 @@ module ODDB
             }
           end
         end
+        @nr_visited_preparations = 25
         @completed_registrations = {}
         @conflicted_registrations = []
         @duplicate_iksnrs = []
@@ -257,6 +259,7 @@ module ODDB
             sptr = Persistence::Pointer.new :substance
             substance = @app.update sptr.creator, :lt => name
           end
+#  TODO:          LogFile.debug "#{@iksnr} #{@ikscd} update active_agent, dose, substance"
           pointer = comp.pointer + [:active_agent, name]
           agent = @app.update pointer.creator, :dose => dose,
                                                :substance => substance.oid
@@ -268,10 +271,9 @@ module ODDB
       end
       def tag_start name, attrs
         case name
-        when 'IntegrationDate'
-          @parsing_prices = false
         when 'Pack'
-          @parsing_prices = true
+          @exf_change_code = nil
+          @ppub_change_code = nil
           @price_change_code = nil
           @price_amount = nil
           @valid_from = nil
@@ -289,6 +291,7 @@ module ODDB
           @sl_data = { :limitation_points => nil, :limitation => nil }
           @lim_data = {}
         when 'Preparation'
+          @nr_visited_preparations += 1
           @descriptions = {}
           @reg_data = {}
           @seq_data = {}
@@ -303,7 +306,7 @@ module ODDB
         when 'LastPriceChange' # just ignore it
         when 'ExFactoryPrice'
           @valid_from = nil
-          @price_change_code = nil
+          @pexf_change_code = nil
           @price = nil
           @price_exfactory = Util::Money.new(0, :exfactory, 'CH')
           @price_exfactory.origin = @origin
@@ -311,7 +314,7 @@ module ODDB
           @price_type = :exfactory
         when 'PublicPrice'
           @valid_from = nil
-          @price_change_code = nil
+          @ppub_change_code = nil
           @price = nil
           @price_type = :public
           @price_public = Util::Money.new(0, :public, 'CH')
@@ -337,8 +340,6 @@ module ODDB
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         @seq_data ||= {}
         case name
-        when 'Prices'
-          @parsing_prices = false
         when 'Pack'
           fix_flags_with_rss_logic
           if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
@@ -353,21 +354,27 @@ module ODDB
           elsif @pack && !@duplicate_iksnr
             ## don't take the Swissmedic-Category unless it's missing in the DB
             @data.delete :ikscat if @pack.ikscat
-            if  @pack.price_exfactory.nil? || !@price_exfactory.amount.to_s.eql?(@pack.price_exfactory.amount.to_s) || !@price_change_code.eql?(@pack.price_exfactory.mutation_code)
-              LogFile.debug "#{@iksnr} #{@ikscd} set price_exfactory #{@pack.price_exfactory} now #{@price_exfactory} #{@pack.price_exfactory&.mutation_code} now #{@price_change_code}"
+            if !@price_exfactory.to_s.eql?(@pack.price_exfactory.to_s) || !@pexf_change_code.eql?(@pack.price_exfactory.mutation_code)
+              LogFile.debug "#{@iksnr} #{@pack.seqnr} #{@ikscd}: #{@price_exfactory.valid_from.to_date} set price_exfactory #{@pack.price_exfactory} now #{@price_exfactory}. #{@pack.price_exfactory&.mutation_code} now #{@pexf_change_code}"
               @pack.price_exfactory = @price_exfactory
-              @pack.price_exfactory.mutation_code = @price_exfactory.mutation_code
+              @pack.price_exfactory.mutation_code = @pexf_change_code
               @pack.price_exfactory.valid_from = @price_exfactory.valid_from
               @data.store :price_exfactory, @price_exfactory
             end if @price_exfactory
-            if @pack.price_public.nil? || !@price_public.amount.to_s.eql?(@pack.price_public.amount.to_s) || !@price_change_code.eql?(@pack.price_public.mutation_code)
-              LogFile.debug "#{@iksnr} #{@ikscd} set price_public #{@pack.price_public} now #{@price_public} now #{@pack.price_public&.mutation_code} now #{@price_change_code}"
+            if !@price_public.to_s.eql?(@pack.price_public.to_s) || !@ppub_change_code.eql?(@pack.price_public.mutation_code)
+              LogFile.debug "#{@iksnr} #{@pack.seqnr} #{@ikscd}: #{@price_public.valid_from.to_date} set price_public #{@pack.price_public} now #{@price_public}. #{@pack.price_public&.mutation_code} now #{@ppub_change_code}"
               @pack.price_public = @price_public
               @pack.price_public.valid_from = @price_public.valid_from
-              @pack.price_public.mutation_code = @price_public.mutation_code
+              @pack.price_public.mutation_code = @ppub_change_code
               @data.store :price_public, @price_public
             end if @price_public
-            @app.update @pack.pointer, @data, :bag
+            @data.delete(:sl_generic_type) if @pack.generic_type.eql?(@data[:sl_generic_type])
+            @data.delete(:deductible) if @pack.deductible.eql?(@data[:deductible])
+            @data.delete(:ikscat) if @pack.registration.ikscat.eql?(@data[:ikscat])
+            @data.delete(:narcotic) if @pack.narcotic?.eql?(@data[:narcotic])
+            if @data.keys.size > 0
+              @app.update @pack.pointer, @data, :bag
+            end
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
@@ -383,6 +390,7 @@ module ODDB
           if !@deferred_packages.empty? && seq
             @deferred_packages.each do |info|
               ptr = seq.pointer + [:package, info[:ikscd]]
+# TODO:              LogFile.debug "#{@iksnr} #{@ikscd} update #{info.keys.join(' ')}"
               @app.update seq.pointer, info[:sequence]
               unless seq.package(info[:ikscd])
                 seq.create_package(info[:ikscd])
@@ -390,6 +398,7 @@ module ODDB
               @app.update ptr.creator, info[:package]
               pptr = ptr + [:part]
               size = info[:size].sub(/(^| )[^\d.,]+(?= )/, '')
+# TODO:              LogFile.debug "#{@iksnr} #{@ikscd} pptr.creator update size,composition"
               @app.update pptr.creator, :size => size,
                                         :composition => seq.compositions.first
               @sl_entries.store ptr, info[:sl_entry]
@@ -467,6 +476,7 @@ module ODDB
                 txt_ptr = sl_ptr + :limitation_text
                 # 2021.03.16 Niklaus has no idea, why I have to redefine it here
                 # but without redefining the @app.update fails miserably
+# TODO:                  LogFile.debug "#{@iksnr} #{@ikscd} update #{lim_data.size} lim_data"
                   @app.update txt_ptr.creator, lim_data, :bag
                 end
               end
@@ -475,7 +485,10 @@ module ODDB
             end
           end
           if @registration
-            @app.update @registration.pointer, @reg_data, :bag
+            unless  @registration.index_therapeuticus.eql?(@reg_data[:index_therapeuticus])
+#              LogFile.debug "#{@iksnr} #{@ikscd} update @reg_data"
+              @app.update @registration.pointer, @reg_data, :bag
+            end
           else
             @unknown_registrations.push @report_data
           end
@@ -544,26 +557,20 @@ module ODDB
         when 'BagDossierNo'
           @sl_data.store :bsv_dossier, @text if @sl_data
         when 'LastPriceChange' # just ignore
-        when 'Prices'
-          @parsing_prices = true
         when 'ExFactoryPrice'
           @price_exfactory = Util::Money.new(@price_amount, @price_type, 'CH')
           @price_exfactory.origin = @origin
           @price_exfactory.authority = :sl
-          @price_exfactory.mutation_code = @price_change_code
+          @price_exfactory.mutation_code = @pexf_change_code
           @price_exfactory.valid_from = @valid_from
-          if @price_exfactory > 0
-            @data.store :"price_#{@price_type}", @price_exfactory
-          end
+          @data.store :"price_#{@price_type}", @price_exfactory
         when 'PublicPrice'
           @price_public = Util::Money.new(@price_amount, @price_type, 'CH')
           @price_public.origin = @origin
           @price_public.authority = :sl
-          @price_public.mutation_code = @price_change_code
+          @price_public.mutation_code = @ppub_change_code
           @price_public.valid_from = @valid_from
-          if @price_public > 0
-            @data.store :"price_#{@price_type}", @price_public
-          end
+          @data.store :"price_#{@price_type}", @price_public
         when 'Price'
           @price_amount = @text
         when 'ValidFromDate'
@@ -618,7 +625,11 @@ module ODDB
         when 'IntegrationDate'
           @sl_data.store :introduction_date, date(@text) if @sl_data
         when 'PriceChangeTypeCode'
-          @price_change_code = @text
+          if @price_type.eql?(:public)
+            @ppub_change_code = @text
+          elsif @price_type.eql?(:exfactory)
+            @pexf_change_code = @text
+          end
         when 'Limitation'
           @in_limitation = false
         when 'LimitationType'
@@ -727,6 +738,7 @@ module ODDB
       end
     end
     attr_reader :preparations_listener
+    attr_accessor :nr_visited_preparations
     def initialize *args
       @latest = File.join ARCHIVE_PATH, 'xml', 'XMLPublications-latest.zip'
       super
@@ -1073,6 +1085,7 @@ Attachments:
       @preparations_listener = PreparationsListener.new @app, opts
       as_utf_8 = StringIO.new(io.read.force_encoding('utf-8'))
       REXML::Document.parse_stream as_utf_8, @preparations_listener
+      LogFile.debug("Finished parse_stream #{defined?(io.path) ? io.path : 'none'} visited #{@preparations_listener.nr_visited_preparations} preparations")
       @change_flags = @preparations_listener.change_flags
     end
   end
