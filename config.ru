@@ -1,9 +1,5 @@
 #!/usr/bin/env ruby
 # vim: ai ts=2 sts=2 et sw=2 ft=ruby
-begin
-  require 'pry'
-rescue LoadError
-end
 $stdout.sync = true
 $stdout.puts "#{Time.now} Starting #{$0}"
 
@@ -11,6 +7,8 @@ lib_dir = File.expand_path(File.join(File.dirname(__FILE__), 'src'))
 $LOAD_PATH << lib_dir
 
 begin # with a rescue
+  require 'bigdecimal'
+  require 'date'
   require 'sbsm/logger'
   require 'rubyntlm'
   require 'net/ntlm'
