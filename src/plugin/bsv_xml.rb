@@ -353,13 +353,17 @@ module ODDB
             })
           elsif @pack && !@duplicate_iksnr
             ## don't take the Swissmedic-Category unless it's missing in the DB
+            ## IKS Cat kommt von der Swissmedic Packungen Datei
             @data.delete :ikscat if @pack.ikscat
+            @data.delete :narcotic # Der Narcotics Flag kommt von der Swissmedic Packungen Datei, Spalte X.
             if !@price_exfactory.to_s.eql?(@pack.price_exfactory.to_s) || !@pexf_change_code.eql?(@pack.price_exfactory.mutation_code)
               LogFile.debug "#{@iksnr} #{@pack.seqnr} #{@ikscd}: #{@price_exfactory.valid_from.to_date} set price_exfactory #{@pack.price_exfactory} now #{@price_exfactory}. #{@pack.price_exfactory&.mutation_code} now #{@pexf_change_code}"
               @pack.price_exfactory = @price_exfactory
               @pack.price_exfactory.mutation_code = @pexf_change_code
               @pack.price_exfactory.valid_from = @price_exfactory.valid_from
               @data.store :price_exfactory, @price_exfactory
+            else
+              @data.delete :price_exfactory
             end if @price_exfactory
             if !@price_public.to_s.eql?(@pack.price_public.to_s) || !@ppub_change_code.eql?(@pack.price_public.mutation_code)
               LogFile.debug "#{@iksnr} #{@pack.seqnr} #{@ikscd}: #{@price_public.valid_from.to_date} set price_public #{@pack.price_public} now #{@price_public}. #{@pack.price_public&.mutation_code} now #{@ppub_change_code}"
@@ -367,11 +371,11 @@ module ODDB
               @pack.price_public.valid_from = @price_public.valid_from
               @pack.price_public.mutation_code = @ppub_change_code
               @data.store :price_public, @price_public
+            else
+              @data.delete :price_public
             end if @price_public
-            @data.delete(:sl_generic_type) if @pack.generic_type.eql?(@data[:sl_generic_type])
-            @data.delete(:deductible) if @pack.deductible.eql?(@data[:deductible])
-            @data.delete(:ikscat) if @pack.registration.ikscat.eql?(@data[:ikscat])
-            @data.delete(:narcotic) if @pack.narcotic?.eql?(@data[:narcotic])
+            @pack.deductible.eql?(@data[:deductible]) ? @data.delete(:deductible) :  @pack.deductible = @data[:deductible]
+            @pack.sl_generic_type.eql?(@data[:sl_generic_type]) ? @data.delete(:sl_generic_type) :  @pack.sl_generic_type = @data[:sl_generic_type]
             if @data.keys.size > 0
               @app.update @pack.pointer, @data, :bag
             end
@@ -528,7 +532,7 @@ module ODDB
           end
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
-            @pack ||= @app.package_by_ikskey(@text)
+            @pack ||= @app.package_by_ikskey(sprintf('%08i', @text.to_i))
             @out_of_trade = @pack.out_of_trade if @pack
             if !@pack.nil? && @pack.pointer.nil?
               @pack.fix_pointers
@@ -721,16 +725,19 @@ module ODDB
         first = Time.local(cutoff.year, cutoff.month, cutoff.day)
         last = Time.local(today.year, today.month, today.day)
         range = first..last
-        if (current = @price) && range.cover?(current.valid_from) && !@pack.nil?
+        if (current = @price_public) && range.cover?(current.valid_from) && !@pack.nil?
           previous = @pack.price_public
           if previous.nil?
             if current.authority == :sl
+              LogFile.debug("fix_flags_with_rss_logic #{@iksnr} sl_entry")
               flag_change @pack.pointer, :sl_entry
             end
           elsif [:sl, :lppv, :bag].include?(@pack.data_origin(:price_public))
             if previous > current
+              LogFile.debug("fix_flags_with_rss_logic #{@iksnr} price_cut")
               flag_change @pack.pointer, :price_cut
             elsif current > previous
+              LogFile.debug("fix_flags_with_rss_logic #{@iksnr} price_rise")
               flag_change @pack.pointer, :price_rise
             end
           end

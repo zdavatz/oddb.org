@@ -21,7 +21,6 @@ require 'ext/swissindex/src/swissindex'
 require 'ext/refdata/src/refdata'
 require 'test_helpers'
 
-RUN_ALL = true
 module ODDB
   class PackageCommon
   end
@@ -83,7 +82,7 @@ module ODDB
       expected = ["hello", "\n", "<", "h>hello", "<", "/h>"]
       assert_equal(expected, paragraph)
     end
-  end if RUN_ALL
+  end
 
   class TestGenericsListener <Minitest::Test
     def teardown
@@ -122,7 +121,7 @@ module ODDB
       assert_nil(@listener.instance_eval('@text'))
       assert_nil(@listener.instance_eval('@html'))
     end
-  end if RUN_ALL
+  end
 
   class TestItCodesListener <Minitest::Test
     def teardown
@@ -204,7 +203,7 @@ module ODDB
       assert_nil(@listener.instance_eval('@text'))
       assert_nil(@listener.instance_eval('@html'))
     end
-  end if RUN_ALL
+  end
 
   class BsvXmlPlugin
     class PreparationsListener < Listener
@@ -422,6 +421,8 @@ module ODDB
         pac.should_receive(:generic_type)
         pac.should_receive(:deductible)
         pac.should_receive(:narcotic?)
+        pac.should_receive(:bm_flag)
+        pac.should_receive(:sl_generic_type)
       end
       data = {:public_price => nil, :price_exfactory => 2}
       @listener.instance_eval('@pack = package')
@@ -671,7 +672,7 @@ module ODDB
         @listener.tag_end('Preparations')
       end
     end
-  end  if RUN_ALL
+  end
 
   class TestBsvXmlPlugin2 <Minitest::Test
     def teardown
@@ -972,7 +973,7 @@ module ODDB
       end
       assert_equal('change_flags', @plugin.update_preparations(StringIO.new('io')))
     end
-  end if RUN_ALL
+  end
 
   # Memo:
   # Hannes-san made the following test-cases
@@ -1031,7 +1032,6 @@ module ODDB
       seq.should_receive(:bag_compositions).and_return []
       seq
     end
- if RUN_ALL
    def test_download_file
       # Preparing variables
       target_url = @url
@@ -1271,7 +1271,6 @@ module ODDB
       @app.should_receive(:update).once.with(seq_ptr, {:name_base => 'Ponstan'}).and_return seq
       pack_ptr = (reg.pointer + [:package, '028']).creator
       @app.should_receive(:update).once.with(reg.pointer,  {}).and_return reg
-#      @app.should_receive(:update).once.with(pack_ptr,  {:sl_generic_type=>:original, :deductible=>:deductible_g, :ikscat=>"B", :narcotic=>false, :price_exfactory=>2.90, :price_public=>7.50}).and_return true
       @app.should_receive(:update).once
       @app.should_receive(:update) do | arg1 |  assert(false)  end
       composition = flexmock 'composition'
@@ -1384,7 +1383,6 @@ module ODDB
       # assert_equal({}, expected_updates)
       assert_equal expected[0], listener.unknown_packages[2]
     end
- end
     def test_update_preparation__conflicted_package
       package = setup_package :pharmacode => "987654",
                               :steps => %w{39271 02 028},
@@ -1443,7 +1441,6 @@ module ODDB
       assert_equal [], listener.unknown_registrations
       assert_equal [], listener.conflicted_registrations
     end
- if RUN_ALL
     def test_update_preparation
       reg = setup_registration :iksnr => '39271'
       reg.should_receive(:packages).and_return []
@@ -1509,7 +1506,6 @@ module ODDB
       assert_equal [], listener.unknown_registrations
       puts "Line #{__LINE__}: Don't know why we should have a price_cut here and were it should come from"
       skip { assert_equal({pac_pointer => [:price_cut]}, @plugin.change_flags) }
-    end
     end
     def setup_package opts={}
       pack = flexmock('package_1', opts)
@@ -1642,6 +1638,8 @@ module ODDB
       @myPackage.price_exfactory.valid_from = Time.new(2024,1,1)
       @myPackage.price_exfactory.origin = "Dummy-01-01-2024.xls"
       @myPackage.price_exfactory.type = "exfactory"
+      @myPackage.deductible = :deductible_o;
+      @myPackage.ikscat = 'MustNotBeOverwritten';
 
       # See https://github.com/zdavatz/oddb.org/issues/240#issuecomment-1932371433
       # we must correct this false price
@@ -1661,6 +1659,10 @@ module ODDB
       @plugin.update_preparations File.open(@test_file)
       seqs = @plugin.preparations_listener.test_sequences
       nasonex = seqs.first.packages.values.first
+      assert_equal(:original, nasonex.sl_generic_type)
+      assert_equal(nil, nasonex.bm_flag)
+      assert_equal('MustNotBeOverwritten', nasonex.ikscat)
+      assert_equal(:deductible_g, nasonex.deductible)
       assert_equal('18.0', nasonex.price_public.amount.to_s)
       assert_equal('8.5',  nasonex.price_exfactory.amount.to_s)
       assert_equal(true, nasonex.has_price_history?, 'nasonex must have a price_history')
@@ -1671,55 +1673,39 @@ module ODDB
       assert_equal(1, nasonex.oid)
     end
 
-    # This is test where the old prices and field like deductible are already correct
-    def test_nasonex_no_price_changes
-      setup_read_from_file('nasonex_2024', '54189', '02', '036')
+    # This is test where we have a swissmedicn08 shorter than 8 digits
+    def test_hepatec
+      setup_read_from_file('hepatec', '00488', '01', '001')
       originUrl22 = "Dummy-31-01-2022.xls"
       @myReg.generic_type = :original
       @myReg.index_therapeuticus = "12.02.30."
       @myReg.ikscat = 'B'
       @myPackage.bm_flag = false # narcotic
       @myPackage.deductible = :deductible_g
-      @myPackage.price_public = Util::Money.new(18.0033, @price_type, 'CH')
-      assert_equal('18.00', @myPackage.price_public.to_s)
-      assert_equal('18.0033', @myPackage.price_public.amount.to_s)
-      @myPackage.price_public.valid_from = Time.new(2024,1,1)
-      @myPackage.price_public.origin = originUrl22
-      @myPackage.price_public.mutation_code = 'FREIWILLIGEPS'
-      @myPackage.price_public.type = "public"
+      @myPackage.prices[:public] = []
+      @myPackage.prices[:exfactory ] = []
 
-      @myPackage.price_exfactory = Util::Money.new(8.5, @price_type, 'CH')
-      @myPackage.price_exfactory.valid_from = Time.new(2024,1,1)
-      @myPackage.price_exfactory.origin = originUrl22
-      @myPackage.price_exfactory.mutation_code = 'FREIWILLIGEPS'
-      @myPackage.price_exfactory.type = "exfactory"
-
-      @myPackage.price_public
       @app.should_receive(:each_package).and_return([@myPackage])
-      @app.should_receive(:package_by_ikskey).and_return @myPackage
+      @app.should_receive(:package_by_ikskey).with('00488001').and_return @myPackage
       @myPackage.pointer= 'pointer'
       @app.should_receive(:registration).and_return @myReg
       @app.should_receive(:update).at_least.once
       @app.should_receive(:create).with(nil).and_return(@composition)
-      assert_equal('2024-01-01 00:00:00 +0000', @myPackage.price_exfactory.valid_from.to_s)
-      assert_equal('2024-01-01 00:00:00 +0000', @myPackage.price_public.valid_from.to_s)
       @plugin.update_preparations File.open(@test_file)
       seqs = @plugin.preparations_listener.test_sequences
-      nasonex = seqs.first.packages.values.first
-      assert_equal('18.0033', nasonex.price_public.amount.to_s)
-      assert_equal('18.00', nasonex.price_public.to_s)
-      assert_equal('8.50',  nasonex.price_exfactory.to_s)
-      assert_equal(false, nasonex.has_price_history?, 'nasonex may not have a price_history, as price already correct')
-      assert_equal('2024-01-01 00:00:00 +0000', nasonex.price_exfactory.valid_from.to_s)
-      assert_equal('2024-01-01 00:00:00 +0000', nasonex.price_public.valid_from.to_s)
-      assert_equal('FREIWILLIGEPS', nasonex.price_public.mutation_code, 'mutation_code for public price')
-      assert_equal('FREIWILLIGEPS', nasonex.price_exfactory.mutation_code, 'mutation_code for exfactory price')
-      assert_equal(1, nasonex.oid)
+      hepatec = seqs.first.packages.values.first
+      assert_equal('415.25', hepatec.price_public.amount.to_s)
+      assert_equal('347.09',  hepatec.price_exfactory.to_s)
+      assert_equal(false, hepatec.has_price_history?, 'hepatec may not have a price_history, as price already correct')
+      assert_equal('2022-12-01 00:00:00 +0000', hepatec.price_exfactory.valid_from.to_s)
+      assert_equal('2024-01-01 00:00:00 +0000', hepatec.price_public.valid_from.to_s)
+      assert_equal('MWSTAENDERUNG', hepatec.price_public.mutation_code, 'mutation_code for public price')
+      assert_equal('3JUEBERPRUEF', hepatec.price_exfactory.mutation_code, 'mutation_code for exfactory price')
     end
 
     # This is test where we have an old price and a new one with a different VAT
     def test_amlodipin_with_new_vat
-      setup_read_from_file('Amlodipin_MwSt', '54189', '02', '036')
+      setup_read_from_file('Amlodipin_MwSt', '66015', '01', '011')
       @myPackage.price_exfactory = Util::Money.new(36.71, @price_type, 'CH')
       @myPackage.price_exfactory.valid_from = Time.new(2020,12,1)
       @myPackage.price_exfactory.origin = "Dummy-01-12-2020.xls"
@@ -1751,7 +1737,6 @@ module ODDB
       seqs = @plugin.preparations_listener.test_sequences
       amlodipin = seqs.first.packages.values.first
       assert_equal(true, amlodipin.has_price_history?, 'amlodipin must have a price_history')
-      assert_equal(true, amlodipin.has_price_history?)
       assert_equal('58.6', amlodipin.price_public.amount.to_s)
       assert_equal('36.71',  amlodipin.price_exfactory.amount.to_s)
       assert_equal('MWSTAENDERUNG', amlodipin.price_public.mutation_code, 'mutation_code for public price')

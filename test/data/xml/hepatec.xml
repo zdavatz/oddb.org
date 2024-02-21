@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Preparations ReleaseDate="01.02.2024">
+  <Preparation ProductCommercial="3439">
+    <NameDe>Hepatect CP</NameDe>
+    <NameFr>Hepatect CP</NameFr>
+    <NameIt>Hepatect CP</NameIt>
+    <DescriptionDe>Inj Lös 500 E/10ml </DescriptionDe>
+    <DescriptionFr>sol inj 500 U/10ml </DescriptionFr>
+    <DescriptionIt>Inj Lös 500 E/10ml </DescriptionIt>
+    <AtcCode>J06BB04</AtcCode>
+    <FlagItLimitation>Y</FlagItLimitation>
+    <OrgGenCode />
+    <FlagSB20>N</FlagSB20>
+    <FlagGGSL>N</FlagGGSL>
+    <CommentDe />
+    <CommentFr />
+    <CommentIt />
+    <VatInEXF>N</VatInEXF>
+    <GammeNumber>1165</GammeNumber>
+    <GammeName>Hepatect Parenteral</GammeName>
+    <Preismodell />
+    <Packs>
+      <Pack ProductKey="3439" PackId="5045">
+        <DescriptionDe>Amp 10 ml</DescriptionDe>
+        <DescriptionFr>amp 10 ml</DescriptionFr>
+        <DescriptionIt>Amp 10 ml</DescriptionIt>
+        <SwissmedicCategory>B</SwissmedicCategory>
+        <SwissmedicNo8>488001</SwissmedicNo8>
+        <SwissmedicNo8ParallelImp />
+        <FlagNarcosis>N</FlagNarcosis>
+        <FlagModal>Y</FlagModal>
+        <FlagGGSL>N</FlagGGSL>
+        <BagDossierNo>16710</BagDossierNo>
+        <GTIN>7680004880018</GTIN>
+        <SizePack />
+        <PrevGTINcode />
+        <Limitations />
+        <PointLimitations />
+        <Prices>
+          <PublicPrice>
+            <Price>415.25</Price>
+            <ValidFromDate>01.01.2024</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PPUB</PriceTypeCode>
+            <PriceTypeDescriptionDe>Publikumspreis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix public</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix public</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>MWSTAENDERUNG</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>MwSt-Änderung</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>MwSt-Änderung</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>MwSt-Änderung</PriceChangeTypeDescriptionIt>
+          </PublicPrice>
+          <ExFactoryPrice>
+            <Price>347.09</Price>
+            <ValidFromDate>01.12.2022</ValidFromDate>
+            <DivisionDescription />
+            <PriceTypeCode>PEXF</PriceTypeCode>
+            <PriceTypeDescriptionDe>Ex-Factory Preis</PriceTypeDescriptionDe>
+            <PriceTypeDescriptionFr>Prix ex-factory</PriceTypeDescriptionFr>
+            <PriceTypeDescriptionIt>Prix ex-factory</PriceTypeDescriptionIt>
+            <PriceChangeTypeCode>3JUEBERPRUEF</PriceChangeTypeCode>
+            <PriceChangeTypeDescriptionDe>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionDe>
+            <PriceChangeTypeDescriptionFr>Réduction de prix à cause du réexamen des conditions d’admission tous les trois ans</PriceChangeTypeDescriptionFr>
+            <PriceChangeTypeDescriptionIt>Preisänderung nach 3-jährlicher Überprüfung der Aufnahmebedingungen</PriceChangeTypeDescriptionIt>
+            <LastPriceChange>01.12.2022</LastPriceChange>
+          </ExFactoryPrice>
+        </Prices>
+        <Partners>
+          <Partner>
+            <PartnerType>V</PartnerType>
+            <Description>Biotest (Schweiz) AG</Description>
+            <Street>Schützenstrasse 17</Street>
+            <ZipCode>5102</ZipCode>
+            <Place>Rupperswil</Place>
+            <Phone>+41628890000</Phone>
+          </Partner>
+        </Partners>
+        <Status>
+          <IntegrationDate>15.03.1997</IntegrationDate>
+          <ValidFromDate>15.03.1997</ValidFromDate>
+          <ValidThruDate>31.12.9999</ValidThruDate>
+          <StatusTypeCodeSl>0</StatusTypeCodeSl>
+          <StatusTypeDescriptionSl>Initialzustand</StatusTypeDescriptionSl>
+          <FlagApd>N</FlagApd>
+        </Status>
+      </Pack>
+    </Packs>
+    <Substances>
+      <Substance>
+        <DescriptionLa>Immunoglobulinum humanum hepatitidis B</DescriptionLa>
+        <Quantity>500</Quantity>
+        <QuantityUnit>UI</QuantityUnit>
+      </Substance>
+    </Substances>
+    <Limitations>
+      <Limitation>
+        <LimitationCode>EXPO TRANSPL</LimitationCode>
+        <LimitationType>DIA</LimitationType>
+        <LimitationNiveau>P</LimitationNiveau>
+        <IndicationsCodes />
+        <DescriptionDe>Bei Exposition und bei Transplantationen.</DescriptionDe>
+        <DescriptionFr>En cas d'exposition et de transplantations.</DescriptionFr>
+        <DescriptionIt>In caso di esposizione e di trapianti.</DescriptionIt>
+        <ValidFromDate>01.01.2007</ValidFromDate>
+        <ValidThruDate>31.12.9999</ValidThruDate>
+      </Limitation>
+    </Limitations>
+    <ItCodes>
+      <ItCode Code="08.">
+        <DescriptionDe>INFEKTIONSKRANKHEITEN</DescriptionDe>
+        <DescriptionFr>MALADIES INFECTIEUSES</DescriptionFr>
+        <DescriptionIt>MALATTIE INFETTIVE </DescriptionIt>
+        <Limitations />
+      </ItCode>
+      <ItCode Code="08.09.">
+        <DescriptionDe>Immuno-Globuline ex Plasma humano</DescriptionDe>
+        <DescriptionFr>Immuno-Globuline ex Plasma humano</DescriptionFr>
+        <DescriptionIt>Immunoglobuline umane </DescriptionIt>
+        <Limitations />
+      </ItCode>
+    </ItCodes>
+    <Status>
+      <IntegrationDate>15.03.1997</IntegrationDate>
+      <ValidFromDate>15.03.1997</ValidFromDate>
+      <ValidThruDate>31.12.9999</ValidThruDate>
+      <StatusTypeCodeSl>0</StatusTypeCodeSl>
+      <StatusTypeDescriptionSl>Initialzustand</StatusTypeDescriptionSl>
+      <FlagApd>N</FlagApd>
+    </Status>
+  </Preparation>
+</Preparations>
