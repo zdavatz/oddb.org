@@ -18,7 +18,6 @@ require 'plugin/divisibility'
 require 'plugin/epha_interactions'
 require 'plugin/lppv'
 require 'plugin/medical_products'
-require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/rss'
 require 'plugin/swissmedic'
@@ -366,9 +365,6 @@ module ODDB
     end
     def update_hpc_feed(month = @@today)
       update_immediate_with_error_report(RssPlugin, 'hpc.rss', :update_hpc_feed)
-    end
-    def update_btm(path)
-      update_notify_simple(NarcoticPlugin, 'Narcotics (XLS)', :update_from_xls, [path])
     end
     def update_swissmedic(*args)
       logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic])
