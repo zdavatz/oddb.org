@@ -138,7 +138,7 @@ module ODDB
       atc
     end
 		def packages
-			@sequences.collect { |seq| seq.packages.values }.flatten
+			@sequences.collect { |seq| seq.packages.values if seq.packages.is_a?(Hash)}.compact.flatten
 		end
 		def substances
 			@sequences.collect { |seq| seq.substances 
