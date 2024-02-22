@@ -21,6 +21,9 @@ end
 class TestAtcClass <Minitest::Test
 	class StubSequence
 		attr_accessor :substances
+		def has_public_packages?
+			true
+		end
 		def packages
 			{
 				:p1	=>	'Package1',
