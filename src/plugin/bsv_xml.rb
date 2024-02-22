@@ -316,10 +316,10 @@ module ODDB
           @valid_from = nil
           @ppub_change_code = nil
           @price = nil
-          @price_type = :public
           @price_public = Util::Money.new(0, :public, 'CH')
           @price_public.origin = @origin
           @price_public.authority = :sl
+          @price_type = :public
         when 'Limitation'
           @in_limitation = true
         when 'ItCode'
@@ -361,18 +361,12 @@ module ODDB
               @pack.price_exfactory = @price_exfactory
               @pack.price_exfactory.mutation_code = @pexf_change_code
               @pack.price_exfactory.valid_from = @price_exfactory.valid_from
-              @data.store :price_exfactory, @price_exfactory
-            else
-              @data.delete :price_exfactory
             end if @price_exfactory
             if !@price_public.to_s.eql?(@pack.price_public.to_s) || !@ppub_change_code.eql?(@pack.price_public.mutation_code)
               LogFile.debug "#{@iksnr} #{@pack.seqnr} #{@ikscd}: #{@price_public.valid_from.to_date} set price_public #{@pack.price_public} now #{@price_public}. #{@pack.price_public&.mutation_code} now #{@ppub_change_code}"
               @pack.price_public = @price_public
               @pack.price_public.valid_from = @price_public.valid_from
               @pack.price_public.mutation_code = @ppub_change_code
-              @data.store :price_public, @price_public
-            else
-              @data.delete :price_public
             end if @price_public
             @pack.deductible.eql?(@data[:deductible]) ? @data.delete(:deductible) :  @pack.deductible = @data[:deductible]
             @pack.sl_generic_type.eql?(@data[:sl_generic_type]) ? @data.delete(:sl_generic_type) :  @pack.sl_generic_type = @data[:sl_generic_type]
@@ -562,19 +556,17 @@ module ODDB
           @sl_data.store :bsv_dossier, @text if @sl_data
         when 'LastPriceChange' # just ignore
         when 'ExFactoryPrice'
-          @price_exfactory = Util::Money.new(@price_amount, @price_type, 'CH')
+          @price_exfactory = Util::Money.new(@price_amount, :exfactory, 'CH')
           @price_exfactory.origin = @origin
           @price_exfactory.authority = :sl
           @price_exfactory.mutation_code = @pexf_change_code
           @price_exfactory.valid_from = @valid_from
-          @data.store :"price_#{@price_type}", @price_exfactory
         when 'PublicPrice'
-          @price_public = Util::Money.new(@price_amount, @price_type, 'CH')
+          @price_public = Util::Money.new(@price_amount, :public, 'CH')
           @price_public.origin = @origin
           @price_public.authority = :sl
           @price_public.mutation_code = @ppub_change_code
           @price_public.valid_from = @valid_from
-          @data.store :"price_#{@price_type}", @price_public
         when 'Price'
           @price_amount = @text
         when 'ValidFromDate'
