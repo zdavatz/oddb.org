@@ -72,6 +72,7 @@ module ODDB
       @fi_atc_code_missmatch = []
       @target_keys = Util::COLUMNS_FEBRUARY_2019
       @iksnrs_meta_info = {}
+      @specify_barcode_to_text_info ||= {}
       @skipped_override ||= []
       @missing_override ||= {}
     end

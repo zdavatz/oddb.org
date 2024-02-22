@@ -170,6 +170,9 @@ module ODDB
     end
 
     def setup
+      path_check = File.expand_path(File.join(File.dirname(__FILE__),  '../../etc', 'barcode_minitest.yml'))
+      assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
+      FileUtils.rm_f(path_check, :verbose => true)
       pointer = flexmock 'pointer'
       @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       latest_from = File.expand_path('../data/xlsx/Packungen-latest.xlsx', File.dirname(__FILE__))
@@ -331,12 +334,12 @@ module ODDB
       old_missing = {'680109990223_pi_de' =>  'Osanit® Kügelchen',
                      '7680109990223_pi_fr' => 'Osanit® globules',
                      '7680109990224_pi_fr' => 'Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang'}
-      real_override_file = File.join(Dir.pwd, 'etc', 'barcode_to_text_info.yml')
-      assert(true, File.exist?(real_override_file))
+      real_override_file = File.join(File.dirname(__FILE__),  '../../etc', 'barcode_to_text_info.yml')
+      assert_equal(false, File.exist?(ODDB::TextInfoPlugin::Override_file), "File #{ODDB::TextInfoPlugin::Override_file} must not exist")
+      assert_equal(true, File.exist?(real_override_file), "File #{real_override_file} must exist")
       real_overrides = YAML.load(File.read(real_override_file))
-      assert_equal(true, real_overrides.size > 0, 'Must have read some real overrides')
       File.open(ODDB::TextInfoPlugin::Override_file, 'w+' ) do |out|
-        YAML.dump(old_missing, out )
+        YAML.dump(old_missing, out)
       end
       assert_equal(5, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 5 lines long, as one is too long')
       old_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
