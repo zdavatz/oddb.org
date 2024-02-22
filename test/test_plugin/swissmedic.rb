@@ -71,13 +71,13 @@ module ODDB
       prep_from = File.expand_path('../data/xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx', File.dirname(__FILE__))
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@state_2015_07_02).read).by_default
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
-      @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
-      @latest   = File.join @archive, 'xls', 'Packungen-latest.xlsx'
+      @target = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
+      @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
       FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exist?(@latest)
 
-      @test_packages = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
-      latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
+      @test_packages = File.expand_path('../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__))
+      latest_to =      File.expand_path('../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
       FileUtils.makedirs(File.dirname(latest_to))
       FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
       FileUtils.cp(prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
