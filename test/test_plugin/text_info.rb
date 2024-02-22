@@ -12,7 +12,6 @@ require 'flexmock/minitest'
 require 'plugin/text_info'
 require 'model/text'
 module ODDB
-  RUN_ALL = false
   class FachinfoDocument
 		def odba_id
 			1
@@ -160,7 +159,7 @@ module ODDB
       old_news = ["Amiodarone Winthrop\302\256/- Mite"]
       assert_equal news, @plugin.true_news(news, old_news)
     end
-  end if RUN_ALL
+  end
 
   class TestExtractMatchedName <MiniTest::Test
     Nr_FI_in_AIPS_test = 4
@@ -177,9 +176,10 @@ module ODDB
       latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
       FileUtils.cp(latest_from, latest_to, :verbose => true, :preserve => true)
       @app = flexmock 'application'
-      @reg = flexmock 'registration'
+      @reg = flexmock "registration_#{__LINE__}"
       @reg.should_receive(:pointer).and_return(pointer).by_default
       @reg.should_receive(:odba_store).and_return(nil).by_default
+      @reg.should_receive(:odba_isolated_store).and_return(nil).by_default
       @reg.should_receive(:company).and_return('company')
       @reg.should_receive(:inactive?).and_return(false)
       lang_de = flexmock 'lang_de'
@@ -204,12 +204,15 @@ module ODDB
 
       @app.should_receive(:create_patinfo).and_return(Patinfo.new)
 
-      atc_class = flexmock('atc_class')
+      atc_class = flexmock("atc_class_#{__LINE__}")
+      atc_class.should_receive(:oid).and_return('oid')
       atc_class.should_receive(:code).and_return('code')
-      @sequence = flexmock 'sequence'
+      @sequence = flexmock "sequence_#{__LINE__}"
       @sequence.should_receive(:seqnr).and_return('01')
       @sequence.should_receive(:pointer).and_return(pointer)
       @sequence.should_receive(:odb_store)
+      @sequence.should_receive(:odba_isolated_store)
+      @sequence.should_receive(:atc_class=).and_return(atc_class)
       @sequence.should_receive(:atc_class).and_return(atc_class)
       @sequence.should_receive(:patinfo).and_return(nil).by_default
       @sequence.should_receive(:patinfo=).and_return(nil).by_default
@@ -217,8 +220,11 @@ module ODDB
       @package = flexmock('package')
       @sequence.should_receive(:package).and_return(@package)
 
-      atc_class = flexmock 'atc_class'
+      atc_class = flexmock("atc_class_#{__LINE__}")
+      atc_class.should_receive(:oid).and_return('oid')
+      atc_class.should_receive(:code).and_return('code')
       atc_class.should_receive(:pointer).and_return(pointer)
+      atc_class.should_receive(:odba_store).and_return(true)
       @app.should_receive(:atc_class).and_return(atc_class)
       @app.should_receive(:update).and_return(@fachinfo)
       @reg.should_receive(:fachinfo).and_return(@fachinfo)
@@ -245,7 +251,7 @@ module ODDB
                   :xml_file => @aips_download,
                   }
     end
-if RUN_ALL
+
     def test_53662_pi_de
       @options[:iksnrs] = ['53662']
       @plugin.import_swissmedicinfo(@options)
@@ -281,7 +287,7 @@ if RUN_ALL
 
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'must find patinfo')
 
-      assert_equal(Nr_PI_in_AIPS_test, @plugin.updated_fis.size, 'nr updated fis must match')
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.updated_fis.size, 'nr updated fis must match')
       assert_equal(0, @plugin.updated_pis.size, 'nr updated pis must match')
 
       assert_equal(0, @plugin.corrected_fis.size, 'corrected_fis must match')
@@ -289,7 +295,7 @@ if RUN_ALL
 
       assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
       # nr_fis = 6 # we add all missing
-      assert_equal(3, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
 
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
@@ -319,20 +325,32 @@ if RUN_ALL
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
       assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
     end
-  end
     def test_import_daily_packungen
       @options[:target] = :pi
       @options[:newest] = true
+      old_missing = {'680109990223_pi_de' =>  'Osanit® Kügelchen',
+                     '7680109990223_pi_fr' => 'Osanit® globules',
+                     '7680109990224_pi_fr' => 'Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang'}
+      real_override_file = File.join(Dir.pwd, 'etc', 'barcode_to_text_info.yml')
+      assert(true, File.exist?(real_override_file))
+      real_overrides = YAML.load(File.read(real_override_file))
+      assert_equal(true, real_overrides.size > 0, 'Must have read some real overrides')
+      File.open(ODDB::TextInfoPlugin::Override_file, 'w+' ) do |out|
+        YAML.dump(old_missing, out )
+      end
+      assert_equal(5, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 5 lines long, as one is too long')
+      old_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       # Add tests that patinfo gets updated
       @plugin.import_swissmedicinfo(@options)
-
       puts @plugin.report
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
       assert_equal(Nr_PI_in_AIPS_test , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.corrected_pis.size, "nr corrected_pis must match")
-
+      new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
+      assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
+      assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 4 lines long')
       assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
       assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
