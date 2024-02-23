@@ -177,30 +177,29 @@ module ODDB
       writer.format = :documed
       writer.extract(Hpricot(doc.to_html(true)), :fi)
     end
-    def parse_fachinfo_html(src, format = :documed, title='', styles = nil)
+    def parse_fachinfo_html(src, title, styles, image_folder)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
         src = File.read src
       end
       writer = FachinfoHpricot.new
-      # swissmedicinfo
-      writer.format = format
+      writer.format = :swissmedicinfo
       writer.title  = title
       writer.lang   = lang
+      writer.image_folder = image_folder
       writer.extract(Hpricot(src), :fi, title, styles)
     end
-		def parse_patinfo_html(src, format=:documed, title='', styles = nil, image_folder = nil)
+		def parse_patinfo_html(src, title, styles, image_folder)
       lang = (src =~ /\/de\// ? 'de' : 'fr')
       if File.exist?(src)
         src = File.read src
       end
 			writer = PatinfoHpricot.new
-      writer.format = format
+      writer.format = :swissmedicinfo
       writer.title  = title
       writer.lang   = lang
       writer.image_folder = image_folder
       writer.extract(Hpricot(src), :pi, title, styles)
-      # swissmedicinfo
 		end
     module_function :storage=
     module_function :parse_fachinfo_docx

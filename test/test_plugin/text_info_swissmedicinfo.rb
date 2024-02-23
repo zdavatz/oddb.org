@@ -459,8 +459,7 @@ if RunAll
       @opts[:target] = :pi
       @plugin = TextInfoPlugin.new(@app, @opts)
       agent = @plugin.init_agent
-      # @app.create_registration('43788')
-      patinfo = setup_texinfo_mock(:patinfo)
+      patinfo = Patinfo.new
       @parser.should_receive(:parse_fachinfo_html).never
       @parser.should_receive(:parse_patinfo_html).and_return(patinfo).at_least.once
       @parser.should_receive(:parse_textinfo).never
@@ -489,7 +488,7 @@ if RunAll
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
       assert(File.exist?(@plugin.problematic_fi_pi), "Datei #{ @plugin.problematic_fi_pi} must exist")
-      path = File.join(File.dirname(__FILE__), '../../doc/resources/images/pi/de/43788Tramal_Tropfen__L_sung_zum_Einnehmen_files/1.png')
+      path = File.join(File.dirname(__FILE__), '../../doc/resources/images/pi/de/43788_Tramal__Tr/1.png')
       assert(File.exist?(path), "Created image file #{path} must exist")
       @app.registration('15219').packages.size
       @app.registration('15219').packages.values.find_all { |x| x.patinfo}
@@ -497,9 +496,7 @@ if RunAll
     end
 
     def test_import_fachinfo_tramal_43788
-      fachinfo = setup_texinfo_mock(:fachinfo)
-      @parser.should_receive(:parse_patinfo_html).never
-      @parser.should_receive(:parse_fachinfo_html).at_least.once.and_return { fachinfo }
+      fachinfo = Fachinfo.new
       info = { :iksnr => '43788', :title => 'Tramal, Tropfen' }
       info = flexmock('info 43788')
       info.should_receive(:iksnr).and_return('43788')
@@ -510,6 +507,7 @@ if RunAll
       @app.registration('43788').company = Aut_43788
 
       setup_refdata_mock
+      @parser.should_receive(:parse_fachinfo_html)
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
         @opts[:target] = :fi
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
