@@ -488,10 +488,9 @@ if RunAll
       replace_constant('ODDB::RefdataPlugin::REFDATA_SERVER', @server) do
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
-      [ @plugin.problematic_fi_pi, @plugin.missing_override_file].each do |filename|
-        assert(File.exist?(filename))
-        # assert(File.size(filename) > 100, "#{filename} must be longer than 100 chars, but is only #{File.size(filename)}")
-      end
+      assert(File.exist?(@plugin.problematic_fi_pi), "Datei #{ @plugin.problematic_fi_pi} must exist")
+      path = File.join(File.dirname(__FILE__), '../../doc/resources/images/pi/de/43788Tramal_Tropfen__L_sung_zum_Einnehmen_files/1.png')
+      assert(File.exist?(path), "Created image file #{path} must exist")
       @app.registration('15219').packages.size
       @app.registration('15219').packages.values.find_all { |x| x.patinfo}
       @app.registration('15219').sequences.values.find_all { |x| x.patinfo}

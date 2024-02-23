@@ -56,7 +56,6 @@ module ODDB
       @wrong_meta_tags = []
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @problematic_fi_pi = File.join ODDB.config.log_dir, 'problematic_fi_pi.lst'
-      @missing_override_file = File.join ODDB.config.log_dir, 'missing_override.lst'
       @title  = ''       # target fi/pi name
       @format = :swissmedicinfo
       @target = :both
@@ -73,8 +72,9 @@ module ODDB
       @fi_atc_code_missmatch = []
       @target_keys = Util::COLUMNS_FEBRUARY_2019
       @iksnrs_meta_info = {}
+      @specify_barcode_to_text_info ||= {}
       @skipped_override ||= []
-      @missing_override ||= []
+      @missing_override ||= {}
     end
     def save_info type, name, lang, page, flags={}
       dir = File.join @dirs[type], lang.to_s
@@ -405,7 +405,7 @@ module ODDB
                   @skipped_override << barcode_override
                 else
                   LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
-                  @missing_override << "#{barcode_override}: #{meta_info.title} # != override #{name}"
+                  @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
                 end
                 puts "package.patinfo updated sequence #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.pointer}"
               end
@@ -603,6 +603,7 @@ module ODDB
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.join("\n")
       end
+      File.open(Override_file, 'w+' ) { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out,  line_width: -1 )}
       res
     end
     def init_agent
@@ -647,7 +648,7 @@ module ODDB
       # are found after an import_daily
       registration.sequences.values.first.name_base = title;
       registration.sequences.values.first.odba_store;
-      LogFile.debug "create_sequence #{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences}"
+      LogFile.debug "create_sequence #{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args.keys} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences}"
     end
 
     def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
@@ -1367,7 +1368,6 @@ module ODDB
     def report_problematic_names
       LogFile.debug "Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
       File.open(@problematic_fi_pi, 'w+') do |file|
-        file.write("# resolve these problems and add them to #{@missing_override_file}")
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
           file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"
           @app.registration(iksnr).packages.each do |pack|
@@ -1509,7 +1509,6 @@ module ODDB
       @iksnrs_meta_info.values.flatten.sort{|x,y| x.iksnr.to_i <=> y.iksnr.to_i}.each do |meta_info|
         parse_textinfo(meta_info)
       end
-      File.open(@missing_override_file, 'w+') {|f| f.puts  @missing_override.join("\n")}
       if @options[:download] != false
         puts_sync "job is done. now postprocess works ..."
         postprocess
