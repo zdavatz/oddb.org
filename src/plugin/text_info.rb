@@ -370,6 +370,7 @@ module ODDB
           return
         end
       end
+
       # return unless @options[:reparse] && @options[:newest]
       if pis.size != 1 || !pis.values.first
         LogFile.debug "We expect pis.size to be 1 and valid, but it is #{pis}"
@@ -600,7 +601,7 @@ module ODDB
         res << "\nNo need to add anything to #{Override_file}"
       else
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
-        res << @missing_override.join("\n")
+        res << @missing_override.collect{ | key, value | "#{key} #{value}"}.join("\n")
       end
       File.open(Override_file, 'w+' ) { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out,  line_width: -1 )}
       res
