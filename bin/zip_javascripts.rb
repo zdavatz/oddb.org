@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'pry'
+require 'debug'
 require 'fileutils'
 
 directory = ARGV[0] || '/var/www/oddb.org/doc/resources/dojo'

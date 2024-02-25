@@ -7,7 +7,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'state/drugs/price_history'
-begin require 'pry'; rescue LoadError; end
+begin require 'debug'; rescue LoadError; end
 
 module ODDB
   module State

@@ -35,7 +35,7 @@ describe "ch.oddb.org" do
       unless chooser and chooser.present?
         msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
         puts msg
-        # require 'pry'; binding.pry
+        # require 'debug'; binding.break
         raise msg
       end
       chooser.set(search_text)

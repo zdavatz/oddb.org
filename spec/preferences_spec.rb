@@ -36,7 +36,7 @@ describe "ch.oddb.org" do
       @browser.button(name: 'update').click
       expect(@browser.image(src: /blue/).exist?).to eql true
       Watir::Anchor#wait_until(@browser.link(visible_text: link_text)(&:present?))
-#      require 'pry'; binding.pry
+#      require 'debug'; binding.break
       @browser.link(visible_text: link_text).click
       expect(@browser.image(src: /blue/).exist?).to eql true
       @browser.link(name: 'en').click

@@ -6,7 +6,7 @@ require 'fileutils'
 require 'zip'
 require 'flexmock'
 
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 
 module ODDB
   module TestHelpers

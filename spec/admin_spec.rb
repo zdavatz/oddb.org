@@ -58,7 +58,7 @@ view org.oddb.patinfo_stats.associated
 credit org.oddb.download
 )
   def create_or_update_user(email = session_uniq_email, yus_rights= ['yus_privileges[login|org.oddb.CompanyUser]'])
-    # require 'pry'; binding.pry unless @browser.link(visible_text:  "Admin").exists?
+    # require 'debug'; binding.break unless @browser.link(visible_text:  "Admin").exists?
     @browser.link(visible_text: 'Admin').click
     @browser.link(visible_text: 'Benutzer').click
     @browser.button(name: 'new_user').click

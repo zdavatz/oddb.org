@@ -13,10 +13,10 @@ RSpec.configure do |config|
   end
 end
 
-BreakIntoPry = false
+BreakIntodebug = false
 STDOUT.sync = true
 begin
-  require 'pry'
+  require 'debug'
 rescue LoadError
   # ignore error for Travis-CI
 end
@@ -208,7 +208,7 @@ def waitForOddbToBeReady(browser = nil, url = OddbUrl, maxWait = 30)
 rescue => error
   puts "error #{error} visiting #{url}"
   raise error
-  # require 'pry'; binding.pry
+  # require 'debug'; binding.break
 end
 
 def small_delay
@@ -258,7 +258,7 @@ def select_product_by_trademark(name)
       @browser.text_field(name: "search_query").set(name)
       small_delay; @browser.button(name: "search").click
     rescue => error
-      # require 'pry'; binding.pry
+      # require 'debug'; binding.break
     end
   end
   @text = @browser.text.clone
