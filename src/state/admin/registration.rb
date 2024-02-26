@@ -18,7 +18,7 @@ module ODDB
 	module State
 		module Admin
 module FachinfoMethods
-	FI_FILE_DIR = File.join(ODDB::RESSOURCES_DIR, 'fachinfo')
+	FI_FILE_DIR = File.join(ODDB::RESOURCES_DIR, 'fachinfo')
 	def assign_fachinfo
 		if(@model.fachinfo)
 			State::Admin::AssignFachinfo.new(@session, @model)

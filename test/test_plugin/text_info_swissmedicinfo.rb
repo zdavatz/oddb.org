@@ -469,7 +469,7 @@ if RunAll
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
       assert(File.exist?(@plugin.problematic_fi_pi), "Datei #{ @plugin.problematic_fi_pi} must exist")
-      path = File.join(ODDB::WORK_DIR, 'doc/resources/images/pi/de/43788Tramal_Tropfen__L_sung_zum_Einnehmen_files/1.png')
+      path = File.join(ODDB::PROJECT_ROOT, 'doc/resources/images/pi/de/43788_Tramal__Tr/1.png')
       assert(File.exist?(path), "Created image file #{path} must exist")
       @app.registration('15219').packages.size
       @app.registration('15219').packages.values.find_all { |x| x.patinfo}

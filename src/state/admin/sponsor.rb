@@ -13,7 +13,7 @@ module ODDB
 class Sponsor < State::Admin::Global
 	DIRECT_EVENT = :sponsor	
 	VIEW = ODDB::View::Admin::Sponsor
-	PATH = File.join(ODDB::RESSOURCES_DIR, 'sponsor')
+	PATH = File.join(ODDB::RESOURCES_DIR, 'sponsor')
 	def update
 		keys = [:sponsor_until, :emails, :company_name, :logo_file, :logo_fr, :urls ]
 		input = user_input(keys)

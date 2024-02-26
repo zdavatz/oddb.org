@@ -10,7 +10,7 @@ module ODDB
 	module State
 		module Admin
 module PatinfoPdfMethods # for sequence, package
-	PDF_DIR = File.join(ODDB::RESSOURCES_DIR, 'patinfo')
+	PDF_DIR = File.join(ODDB::RESOURCES_DIR, 'patinfo')
   HTML_PARSER = DRbObject.new(nil, FIPARSE_URI)
 	def get_patinfo_input(input)
 		newstate = self

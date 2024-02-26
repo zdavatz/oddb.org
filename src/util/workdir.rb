@@ -20,5 +20,5 @@ module ODDB
 
     # Same value for tests and application
     PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
-    RESSOURCES_DIR = File.join(PROJECT_ROOT, 'doc/resources')
+    RESOURCES_DIR = File.join(PROJECT_ROOT, 'doc/resources')
 end
