@@ -24,6 +24,7 @@ require 'util/language'
 require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'util/rack_interface'
+require 'util/workdir'
 
 class TestOddbApp <Minitest::Test
   @@port_id ||= 19000
@@ -33,7 +34,7 @@ class TestOddbApp <Minitest::Test
     ODBA.storage.reset_id
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
     @@port_id += 1
-		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
+    dir = File.join(ODDB::PROJECT_ROOT, 'data/prevalence')
     @rack_app = ODDB::Util::RackInterface.new(app: @app)
 
     @session = flexmock('session') do |ses|

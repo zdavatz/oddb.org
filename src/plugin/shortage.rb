@@ -15,7 +15,6 @@ require 'csv'
 
 module ODDB
   class ShortagePlugin < Plugin
-    EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     BASE_URI = 'https://www.drugshortage.ch'
     SOURCE_URI = BASE_URI + '/UebersichtaktuelleLieferengpaesse2.aspx'
     NoMarketingSource =  'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx'
@@ -25,15 +24,16 @@ module ODDB
       @@logInfo = []
       @options = opts
       @options ||= {}
-      @latest_shortage = File.expand_path('../../data/html/drugshortage-latest.html', File.dirname(__FILE__))
-      @latest_nomarketing = File.expand_path('../../data/xlsx/nomarketing-latest.xlsx', File.dirname(__FILE__))
-      @csv_file_path = File.join EXPORT_DIR, 'drugshortage.csv'
-      @yesterday_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{(@@today-1).strftime("%Y.%m.%d")}.csv"
-      @dated_csv_file_path = File.join EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv"
+      @latest_shortage = File.join(ODDB::WORK_DIR, 'html/drugshortage-latest.html')
+      @latest_nomarketing = File.join(ODDB::WORK_DIR, 'data/xlsx/nomarketing-latest.xlsx')
+      @csv_file_path = File.join(ODDB::EXPORT_DIR, 'drugshortage.csv')
+      @yesterday_csv_file_path = File.join(ODDB::EXPORT_DIR, "drugshortage-#{(@@today-1).strftime("%Y.%m.%d")}.csv")
+      @dated_csv_file_path = File.join(ODDB::EXPORT_DIR, "drugshortage-#{@@today.strftime("%Y.%m.%d")}.csv")
       @report_shortage = []
       @report_nomarketing = []
-      FileUtils.rm_f(@latest_shortage, verbose: true)    if @options[:reparse] && File.exist?(@latest_shortage)
-      FileUtils.rm_f(@latest_nomarketing, verbose: true) if @options[:reparse] && File.exist?(@latest_nomarketing)
+      LogFile.debug "#{Latest.get_daily_name(@latest_shortage)}"
+      FileUtils.rm_f(@latest_shortage)    if @options[:reparse] && File.exist?(@latest_shortage)
+      FileUtils.rm_f(@latest_nomarketing) if @options[:reparse] && File.exist?(@latest_nomarketing)
     end
     def date
       @@today
@@ -81,7 +81,7 @@ module ODDB
           values = []
           values << info.gtin
           unless @app.package_by_ean13(info.gtin)
-            puts "Skipping non existing package #{info.gtin}"
+            LogFile.debug "Skipping non existing package #{info.gtin}"
             next
           end
           atc_class = @app.package_by_ean13(info.gtin).atc_class
@@ -100,6 +100,7 @@ module ODDB
           csv << values
         end
       end
+      LogFile.debug "rm #{@yesterday_csv_file_path}"
       FileUtils.rm_f(@yesterday_csv_file_path) if File.exist?(@yesterday_csv_file_path) && IO.read(@yesterday_csv_file_path).eql?(IO.read(@csv_file_path))
       @csv_file_path
     end
@@ -118,6 +119,7 @@ module ODDB
     private
     def report_shortage
       unless @shortages && @shortages.size  > 0
+      LogFile.debug "rm #{Latest.get_daily_name(@latest_shortage)}"
         FileUtils.rm_f(Latest.get_daily_name(@latest_shortage))
         @report_summary << "Nothing changed in #{SOURCE_URI}"
         return
@@ -133,12 +135,14 @@ module ODDB
       if @deleted_shortages.size > 0 || @changes_shortages.size > 0
         @has_relevant_changes = true
       else
-        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage), verbose: true)
+        LogFile.debug "#{Latest.get_daily_name(@latest_shortage)}"
+        FileUtils.rm_f(Latest.get_daily_name(@latest_shortage))
       end
     end
     def report_nomarketing
       unless @found_nomarketings && @found_nomarketings.size  > 0
-        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing), verbose: true)
+        LogFile.debug "#{Latest.get_daily_name(@latest_nomarketing)}"
+        FileUtils.rm_f(Latest.get_daily_name(@latest_nomarketing))
         @report_summary << "Nothing changed in #{@nomarketing_href}"
         return
       end

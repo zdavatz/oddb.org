@@ -27,6 +27,9 @@ module ODDB
       end
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+      FileUtils.makedirs(ODDB::WORK_DIR)
+      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'lppv/LPPV_D.xlsx'), ODDB::WORK_DIR)
       ODDB::TestHelpers.vcr_setup
       package1 = flexmock('package',
                          :barcode      => '7680554950049',

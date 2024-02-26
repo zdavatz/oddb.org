@@ -9,6 +9,7 @@ require 'state/user/register_download'
 require 'state/user/download_export'
 require 'view/user/export'
 require 'view/user/download_item'
+require 'util/workdir'
 
 module ODDB
   module State
@@ -21,7 +22,7 @@ class DownloadItem < State::User::RegisterDownload
     keys  = [:buy, :month, :compression] # month and compression are optional
     input = user_input(keys, [:buy])
     items = [] # as container (one item)
-    dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
+    dir = ODDB::TEST_DATA_DIR
     filename = nil
     # All files have .zip compressed version without epub and prc.
     # Some items have only .zip and .tar.gz only.

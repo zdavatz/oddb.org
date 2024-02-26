@@ -19,7 +19,7 @@ require 'plugin/rss'
 
 module ODDB
   class RssPlugin < Plugin
-    RSS_PATH = File.expand_path('../../data/rss', __FILE__)
+    RSS_PATH = File.join(ODDB::TEST_DATA_DIR, 'rss')
   end
   class TestRssPlugin <Minitest::Test
     Section = '00135'
@@ -157,7 +157,7 @@ REPORT
 
       @app.should_receive(:rss_updates).and_return({})
       @app.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
-      example_dir = File.expand_path(File.dirname(__FILE__) + '../../data/html/swissmedic')
+      example_dir = File.join(ODDB::TEST_DATA_DIR, 'html/swissmedic')
       @hpc_example_url = 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html'
       @recall_example_url = 'https://www.swissmedic.ch/swissmedic/de/home/humanarzneimittel/marktueberwachung/health-professional-communication--hpc-/dhpc-dantrolen-ivinjektionsloesung.html'
       ODDB::RssPlugin::RSS_URLS.each do |lang, lang_cont|

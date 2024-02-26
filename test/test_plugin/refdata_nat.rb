@@ -10,7 +10,7 @@ require 'plugin/refdata_nat'
 require 'tempfile'
 
 class TestRefdataNatPlugin <Minitest::Test
-  Test_NAT_XML = File.expand_path(File.join(__FILE__, '../../data/xml/refdata_nat.xml'))
+  Test_NAT_XML = File.join(ODDB::TEST_DATA_DIR, 'xml/refdata_nat.xml')
   def teardown
     ODBA.storage = nil
     super # to clean up FlexMock
@@ -234,8 +234,8 @@ class TestRefdataNatPlugin <Minitest::Test
   end
 
   def test_get_latest_file
-    latest = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_nat_latest.xml"))
-    current  = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_nat_#{Time.now.strftime('%Y.%m.%d')}.xml"))
+    latest = File.join(ODDB::WORK_DIR, "xml/refdata_nat_latest.xml")
+    current  = File.join(ODDB::WORK_DIR, "xml/refdata_nat_#{Time.now.strftime('%Y.%m.%d')}.xml")
     FileUtils.rm_f(current) if File.exist?(current)
     FileUtils.rm_f(latest) if File.exist?(latest)
     @plugin = ODDB::Doctors::RefdataNatPlugin.new(@app)

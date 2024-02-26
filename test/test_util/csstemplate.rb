@@ -8,6 +8,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'util/csstemplate'
+require 'util/workdir'
 
 module ODDB
 	class CssTemplate
@@ -15,8 +16,9 @@ module ODDB
 		remove_const :TEMPLATE
 		remove_const :DEFAULT
 		remove_const :FLAVORS
-		RESOURCE_PATH = "../../test/data/css/"
-		TEMPLATE = File.expand_path('./../data/css/template.css', File.dirname(__FILE__))
+		RESOURCE_PATH = File.join(ODDB::TEST_DATA_DIR, 'css/')
+		TEMPLATE = File.join(ODDB::TEST_DATA_DIR, 'css/template.css')
+
 		DEFAULT = {
 			:bar_bg					=>	'white',
 			:bar_txt_color	=>	'black',
@@ -32,7 +34,8 @@ module ODDB
 end
 
 class TestCssTemplate <Minitest::Test
-	TEST_CSS_DIRECTORY = File.expand_path('../data/css/foo', File.dirname(__FILE__))
+	TEST_CSS_DIRECTORY = File.join(ODDB::TEST_DATA_DIR, 'css/foo')
+
 	def setup
 		@foo	=	{
 			:bar_bg					=>	'black',
@@ -80,7 +83,8 @@ class TestCssTemplate <Minitest::Test
 		assert_equal(expected, ODDB::CssTemplate.substitute(src, @foo))
 	end
 	def test_write_css
-		ODDB::CssTemplate.write_css
-		assert(File.exist?(TEST_CSS_DIRECTORY + '/oddb.css'))
+		res = ODDB::CssTemplate.write_css
+		tst_css = File.join(TEST_CSS_DIRECTORY, '/oddb.css')
+		assert(File.exist?(tst_css), "File #{tst_css} must exist")
 	end
 end

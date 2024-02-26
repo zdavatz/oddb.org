@@ -8,12 +8,12 @@ require 'plugin/plugin'
 require 'oddb2tdat'
 require 'model/package'
 require 'model/atcclass'
+require 'util/workdir'
 
 module ODDB
 	class CsvExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
-		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
-    MIGEL_EXPORT_DIR = File.expand_path('../../../migel/data/csv', File.dirname(__FILE__))
+    MIGEL_EXPORT_DIR = File.join(ODDB::PROJECT_ROOT, 'migel/data/csv')
     ODDB_RECIPIENTS          = ['oddb']
     ODDB_RECIPIENTS_DAT      = ['oddb_dat']
     ODDB_RECIPIENTS_EXTENDED = ['oddb_dat_extended']
@@ -58,7 +58,7 @@ module ODDB
       @counts = exporter.counts
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = @app.log_group(:bsv_sl).newest_date.strftime("#{export_name}.%Y-%m-%d.csv")
-      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_dir = File.join(ODDB::WORK_DIR, 'csv')
       backup_path = File.join(backup_dir, backup)
       unless(File.exist? backup_path)
         FileUtils.mkdir_p(backup_dir)
@@ -131,7 +131,7 @@ module ODDB
         'Chapters' => chapters.join(','),
       }
       EXPORT_SERVER.compress(EXPORT_DIR, file)
-      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_dir = File.join(ODDB::WORK_DIR, 'csv')
       backup_path = File.join(backup_dir, file)
       unless(File.exist? backup_path)
         FileUtils.mkdir_p(backup_dir)
@@ -265,7 +265,7 @@ module ODDB
       @counts = exporter.divisions
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = Date.today.strftime("#{export_name}.%Y-%m-%d.csv")
-      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_dir = File.join(ODDB::WORK_DIR, 'csv')
       backup_path = File.join(backup_dir, backup)
       unless(File.exist? backup_path)
         FileUtils.mkdir_p(backup_dir)
@@ -295,7 +295,7 @@ module ODDB
       @counts = exporter.flickr_photos
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = Date.today.strftime("#{export_name}.%Y-%m-%d.csv")
-      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_dir = File.join(ODDB::WORK_DIR, 'csv')
       backup_path = File.join(backup_dir, backup)
       unless(File.exist? backup_path)
         FileUtils.mkdir_p(backup_dir)

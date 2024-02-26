@@ -10,7 +10,7 @@ require 'model/package'
 
 module ODDB
 	class MailOrderPricePlugin < Plugin
-    CSV_DIR  = File.expand_path('../../data/csv', File.dirname(__FILE__))
+    CSV_DIR  = File.join(WORK_DIR, 'csv')
     def report
       lines = [
         "Updated Packages: #{@updated_packages.length}",

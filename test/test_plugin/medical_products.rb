@@ -142,9 +142,9 @@ module ODDB
     end
 
   class TestMedicalProductPlugin <Minitest::Test
-    @@datadir = File.expand_path '../../ext/fiparse/test/run/docx/', File.dirname(__FILE__)
-    @@origdir = File.expand_path '../../ext/fiparse/test/data/docx/', File.dirname(__FILE__)
-    @@vardir = File.expand_path '../var', File.dirname(__FILE__)
+    @@datadir = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/run/docx/')
+    @@origdir = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/docx/')
+    @@vardir = ODDB::WORK_DIR
 
     def setup
       @hostname = Socket.gethostbyname(Socket.gethostname).first

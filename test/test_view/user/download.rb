@@ -10,7 +10,7 @@ require 'flexmock/minitest'
 require 'view/resulttemplate'
 require 'htmlgrid/select'
 require 'state/user/download'
-
+require 'util/workdir'
 
 module ODDB
   module View
@@ -27,8 +27,7 @@ class TestDownload <Minitest::Test
     @view    = ODDB::View::User::Download.new(@model, @session)
   end
   def test_init
-    dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
-    assert_equal(dir +  '/user_input', @view.init)
+    assert_equal(ODDB::EXPORT_DIR +  '/user_input', @view.init)
   end
   def test_to_html
     flexmock(@session,

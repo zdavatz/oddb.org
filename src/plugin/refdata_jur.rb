@@ -37,7 +37,7 @@ module ODDB
     def self.download_partners_xml
       xml = nil
       begin
-        file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_jur.xml')
+        file2save = File.join(ODDB::WORK_DIR, 'xml', 'refdata_jur.xml')
         FileUtils.rm_f(file2save, verbose: false)
         @client = Savon.client(wsdl: "https://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
         # TYPE Search Type
@@ -78,8 +78,8 @@ module ODDB
       agent
     end
     DebugImport         = defined?(MiniTest)
-    Companies_XML      = File.expand_path(File.join(__FILE__, '../../../data/xml/refdata_jur_latest.xml'))
-    Companies_curr      = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml"))
+    Companies_XML       = File.join(ODDB::WORK_DIR, 'xml/refdata_jur_latest.xml')
+    Companies_curr      = File.join(ODDB::WORK_DIR, "xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml")
     # MedRegURL     = 'http://www.medregom.admin.ch/'
 # role_types are => ["Pharm", "Indus", "Hosp", "DruSto", "SerFirm", "DoctMed", "PubHea", "Whole", "Pharmst", "Inst", "HeaIns", "IntOrg", "HeaEmpl", "NursHom", "ONursOrg", "SWFirm", "EmergServ", "Assoc", "NonHealthCare", "HeaTec", "AccIns", "HeaProd", "SpecPra", "Drugg", "GrpPra", "Dent", "Veter", "Nurse", "Lab", "Chiro", "HeaProv", "Physio", "LabLeader", "Midw", "Psycho", "Naturopath", "NutrAdv", "SocSec", "Spitex", "DentGrpPra", "CompTherapist", "VetGrpPra", "PrivPra", "Ergo", "MedPracAss", "DiabAdv", "SpeeTher", "PharmAss", "MedSecr", "EmergCent"]
 

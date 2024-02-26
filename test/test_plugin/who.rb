@@ -38,7 +38,7 @@ module ODDB
       super
     end
     def setup
-      @datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
+      @datadir = File.join(ODDB::TEST_DATA_DIR, 'html/who')
       mechanize = Mechanize.new
       path = File.join @datadir, 'atc_ddd.html'
       mechanize_get = mechanize.get('file://' + path)

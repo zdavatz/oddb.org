@@ -42,18 +42,18 @@ module ODDB
       ODBA.storage.reset_id
       mock_downloads
       @app = flexmock(ODDB::App.new)
-      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
-      @older    = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
+      @older    = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2015.07.02.xlsx')
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
-      @bag_listen  = File.expand_path '../data/html/listen_neu.html', File.dirname(__FILE__)
-      @current  = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
+      @bag_listen  = File.join(ODDB::TEST_DATA_DIR, 'html/listen_neu.html')
+      @current  = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
       @target   = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
       @plugin.should_receive(:fetch_with_http).with('https://www.swissmedic.ch/swissmedic/de/home/services/listen_neu.html').and_return(File.open(@bag_listen).read).by_default
       @plugin.should_receive(:open).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@current).read).by_default
-      @prep_from = File.expand_path('../data/xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx', File.dirname(__FILE__))
+      @prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
       FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')),
                    :verbose => true, :preserve => true)
       FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx^'),

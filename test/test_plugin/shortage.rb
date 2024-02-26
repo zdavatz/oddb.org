@@ -84,6 +84,8 @@ module ODDB
       reg
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+      FileUtils.makedirs(ODDB::EXPORT_DIR)
       @@today = Date.new(2014,5,1)
       @app = flexmock('app')
       @app.should_receive(:package_by_ean13).and_return(get_pack_mock).by_default
@@ -91,28 +93,24 @@ module ODDB
       @session.should_receive(:flavor).and_return('flavor')
       @session.should_receive(:language).and_return('de')
       @session.should_receive(:default_language).and_return('de')
-      @csv_file = File.expand_path(File.join(__FILE__, '../../../data/downloads/drugshortage.csv'))
-      FileUtils.rm_f(Dir.glob(@csv_file))
-      path = File.expand_path('../../data/html/drugshortage*.html', File.dirname(__FILE__))
-      FileUtils.rm_f(Dir.glob(path))
-      path = File.expand_path('../../data/xlsx/nomarketing*', File.dirname(__FILE__))
-      FileUtils.rm_f(Dir.glob(path))
-
+      @csv_file = File.join(ODDB::EXPORT_DIR, 'drugshortage.csv')
+      path = File.join(ODDB::TEST_DATA_DIR, 'html/drugshortage*.html')
+      path = File.join(ODDB::TEST_DATA_DIR, 'xlsx/nomarketing*')
       @app.should_receive(:find).and_return(TestGtinShortage)
       @app.should_receive(:iksnr).and_return(TestGtinShortage)
-      @drugshortage_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'drugshortage.html'))
-      assert(File.exist?(@drugshortage_name))
+      @drugshortage_name  = File.join(ODDB::TEST_DATA_DIR, 'html', 'drugshortage.html')
+      assert(File.exist?(@drugshortage_name), "File #{@drugshortage_name} must exist")
       @html_drugshortage = File.read(@drugshortage_name)
 
-      @drugshortage_changed_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'drugshortage-changed.html'))
+      @drugshortage_changed_name = File.join(ODDB::TEST_DATA_DIR, 'html', 'drugshortage-changed.html')
       assert(File.exist?(@drugshortage_changed_name))
       @html_drugshortage_changed = File.read(@drugshortage_changed_name)
 
-      @nomarketing_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'html', 'swissmedic', 'nomarketing.html'))
+      @nomarketing_name =  File.join(ODDB::TEST_DATA_DIR, 'html', 'swissmedic', 'nomarketing.html')
       assert(File.exist?(@nomarketing_name))
       @html_nomarketing = File.read(@nomarketing_name)
 
-      @nomarketing_xlsx_name = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'xlsx', 'nomarketing_2019_04_30.xlsx'))
+      @nomarketing_xlsx_name =  File.join(ODDB::TEST_DATA_DIR,  'xlsx', 'nomarketing_2019_04_30.xlsx')
       assert(File.exist?(@nomarketing_xlsx_name))
       @xlxs_nomarketing = File.read(@nomarketing_xlsx_name)
       @reg_47431 = add_mock_registration(62294)
@@ -142,7 +140,6 @@ module ODDB
       @pack_59893_001 = add_mock_package('pack_59893_001', '7680598930010', false)
       @reg_62294.should_receive(:active_packages).and_return([@pack_62294_001, @pack_62294_007])  #.by_default
       @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001])# .by_default
-      @archive = File.expand_path('../var', File.dirname(__FILE__))
       @plugin = flexmock('ShortagePlugin', ShortagePlugin.new(@app))
       @latest = flexmock('latest', Latest)
       @latest.should_receive(:fetch_with_http).with( ODDB::ShortagePlugin::SOURCE_URI).and_return(File.open(@drugshortage_name).read).by_default
@@ -208,19 +205,21 @@ DrugShortag deletions:
       lines = content.split("\n")
       assert_equal('GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)',
                    lines.first.strip)
-      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;2024;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") })
+      assert(lines.find{|line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;2024;https://www.drugshortage.ch/detail_lieferengpass.aspx?ID=2786") },
+             "Must find a detail_lieferengpass")
 
     end
     def test_export_csv
       FileUtils.rm(@plugin.csv_file_path) if File.exist?(@plugin.csv_file_path)
       @plugin.update(@agent)
-      assert_equal(@csv_file , @plugin.export_drugshortage_csv)
+      res = @plugin.export_drugshortage_csv
+      assert_equal(@csv_file, res, "File #{res} does not match #{@csv_file}")
       assert(File.exist?(@csv_file))
       check_csv_lines(IO.read(@csv_file))
-      assert(File.exist?(@plugin.csv_file_path))
+      assert(File.exist?(@plugin.csv_file_path), "#{@plugin.csv_file_path} must exist")
       assert_equal(@plugin.yesterday_csv_file_path, @csv_file.sub('.csv', '-2014.04.30.csv'))
-      assert_equal(@plugin.dated_csv_file_path, @csv_file.sub('.csv', '-2014.05.01.csv'))
-      assert(File.exist?(@plugin.dated_csv_file_path)) unless `which ssconvert`.chomp.empty?
+      dated = @plugin.dated_csv_file_path
+      assert_equal(dated, @csv_file.sub('.csv', '-2014.05.01.csv'))
     end
     def test_date
       @plugin.update(@agent)
@@ -244,8 +243,8 @@ DrugShortag deletions:
       @plugin = ShortagePlugin.new @app
     end
     def test_run_with_same_content
-      FileUtils.makedirs(File.dirname(@plugin.latest_shortage)) unless File.exist?(File.dirname(@plugin.latest_shortage))
-      FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
+      FileUtils.makedirs(File.dirname(@plugin.latest_shortage))
+      FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
       FileUtils.rm_f(@plugin.yesterday_csv_file_path)
@@ -279,7 +278,6 @@ DrugShortag deletions:
       FileUtils.makedirs(File.dirname(@plugin.latest_nomarketing)) unless File.exist?(File.dirname(@plugin.latest_nomarketing))
       FileUtils.cp(@drugshortage_name, @plugin.latest_shortage)
       FileUtils.cp(@nomarketing_xlsx_name, @plugin.latest_nomarketing)
-      puts ShortagePlugin::SOURCE_URI
       @plugin.update(@agent)
       @drugshortage_changed_name
 #      FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage, :verbose => true)

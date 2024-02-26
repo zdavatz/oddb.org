@@ -18,12 +18,14 @@ require 'textinfo_pseudo_fachinfo'
 require 'plugin/text_info'
 require 'stub/cgi'
 require 'flexmock/minitest'
+require 'util/workdir'
 
 module ODDB
   module FiParse
+    DOCX_DIR = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/docx')
     class TestPseudoFachinfoDocument <Minitest::Test
       def test_fachinfo_simple
-        @@path = File.expand_path('data/docx/simple.docx', File.dirname(__FILE__))
+        @@path = File.join(DOCX_DIR, 'simple.docx')
         @@writer = TextinfoPseudoFachinfo.new
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
@@ -40,7 +42,7 @@ module ODDB
         assert_equal(2, yaml.scan(/\ssubheading:/).size, 'Must find exactly 2  subheading')
       end
       def test_fachinfo_sinovial_FR
-        @@path = File.expand_path('data/docx/Sinovial_FR.docx', File.dirname(__FILE__))
+        @@path = File.join(DOCX_DIR, 'Sinovial_FR.docx')
         @@writer = TextinfoPseudoFachinfo.new
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)
@@ -59,7 +61,7 @@ module ODDB
         assert_equal('7612291078458, seringue prête 2 ml', @@fachinfo.packages.paragraphs.first.to_s)
       end
       def test_fachinfo_sinovial_DE
-        @@path = File.expand_path('data/docx/Sinovial_DE.docx', File.dirname(__FILE__))
+        @@path = File.join(DOCX_DIR, 'Sinovial_DE.docx')
         @@writer = TextinfoPseudoFachinfo.new
         open(@@path) { |fh| @@fachinfo = @@writer.extract(fh)}
         assert_instance_of(PseudoFachinfoDocument, @@fachinfo)

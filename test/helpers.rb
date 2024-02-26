@@ -87,7 +87,7 @@ class OddbTestRunner
     }
     diffSeconds = (Time.now - StartTime).to_i
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
-    puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were #{problems.join(',')}" if problems.size > 0
+    puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were \n#{problems.join("\n")}" if problems.size > 0
     puts "   Took #{(diffSeconds/60).to_i} minutes and #{diffSeconds % 60} seconds to run"
     exit 2 unless okay
     okay

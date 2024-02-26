@@ -60,11 +60,6 @@ Line 3\x06;\bT"
 
 if RunAll
   class TestTextInfoPluginAipsMetaData <MiniTest::Test
-    unless defined?(@@datadir)
-      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
-    end
-    
     NrRegistration      = 4
     Test_57435_Iksnr    = '57435'
     Test_57435_Name     = 'Baraclude®'
@@ -99,17 +94,15 @@ if RunAll
       flexstub(ODDB::Persistence) do |klass|
         klass.should_receive(:set_oid).and_return('oid')
       end
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
-      @dest = File.join(@@vardir, 'xml', 'AipsDownload_latest.xml')
+      FileUtils.mkdir_p ODDB::XML_DIR
+      @dest = File.join(ODDB::XML_DIR, 'AipsDownload_latest.xml')
       FileUtils.makedirs(File.dirname(@dest))
-      FileUtils.cp(File.join(@@datadir, 'AipsDownload_xeljanz.xml'), @dest)
+      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'xml/AipsDownload_xeljanz.xml'), @dest)
       @app = ODDB::App.new
 
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
-      @fi_path_de = File.join(@@vardir, "html/fachinfo/de/#{Test_Name}_swissmedicinfo.html")
-      @fi_path_fr = File.join(@@vardir, "html/fachinfo/fr/#{Test_Name}_swissmedicinfo.html")    
+      @fi_path_de = File.join(ODDB::TEST_DATA_DIR, "html/fachinfo/de/#{Test_Name}_swissmedicinfo.html")
+      @fi_path_fr = File.join(ODDB::TEST_DATA_DIR, "html/fachinfo/fr/#{Test_Name}_swissmedicinfo.html")
     end
     
     def teardown
@@ -149,7 +142,7 @@ if RunAll
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_Iksnr, [Test_Iksnr], Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum", 'fi', 'de')
-      entry.xml_file = File.join(@@vardir, 'details', "#{Test_Iksnr}_fi_de.xml")
+      entry.xml_file = File.join(ODDB::WORK_DIR, 'details', "#{Test_Iksnr}_fi_de.xml")
       entry.same_content_as_xml_file = false
       expected = [ entry ]
       assert_equal(expected, meta[[Test_Iksnr, 'fi', 'de']], 'Meta information about Test_Iksnr must be correct')
@@ -174,7 +167,7 @@ if RunAll
       refute_nil(meta)
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_57435_Iksnr, ["57435", "57436"], Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance, 'fi', 'de')
-      entry.xml_file = File.join(@@vardir, 'details', "#{Test_57435_Iksnr}_fi_de.xml")
+      entry.xml_file = File.join(ODDB::WORK_DIR, 'details', "#{Test_57435_Iksnr}_fi_de.xml")
       entry.same_content_as_xml_file = false
       expected =  [ entry]
       assert_equal(expected, meta[ [Test_57435_Iksnr, 'fi', 'de']], 'Meta information about Test_57435_Iksnr must be correct')
@@ -184,11 +177,6 @@ if RunAll
   end
 
   class TestTextInfoPlugin <MiniTest::Test
-    unless defined?(@@datadir)
-      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
-    end
-
     def create(dateiname, content)
         FileUtils.makedirs(File.dirname(dateiname))
         ausgabe = File.open(dateiname, 'w+')
@@ -201,22 +189,20 @@ if RunAll
       super
     end
     def setup
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      FileUtils.mkdir_p ODDB::WORK_DIR
       @opts = {
         :target   => :fi,
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
         :companies => [],
         :download => false,
-        :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
+        :xml_file => File.join(ODDB::TEST_DATA_DIR, 'xml', 'AipsDownload.xml'),
       }
       @app = ODDB::App.new
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
-      pi_path_de = File.join(@@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
+      pi_path_de = File.join(ODDB::TEST_DATA_DIR, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')
       pi_de = PatinfoDocument.new
-      pi_path_fr = File.join(@@vardir, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html') 
+      pi_path_fr = File.join(ODDB::TEST_DATA_DIR, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html')
       pi_fr = PatinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
@@ -226,7 +212,7 @@ if RunAll
     end # Fuer Problem mit fachinfo italic
     
     def teardown
-      FileUtils.rm_rf @@vardir
+#      FileUtils.rm_rf ODDB::TEST_DATA_DIR
       ODBA.storage = nil
       super # to clean up FlexMock
     end
@@ -244,8 +230,8 @@ if RunAll
       pi = flexmock 'patinfo'
       flags = {:de => :up_to_date, :fr => :up_to_date}
       @parser.should_receive(:parse_textinfo).never
-      @parser.should_receive(:parse_fachinfo_html).at_least.once
       @parser.should_receive(:parse_patinfo_html).never
+      @parser.should_receive(:parse_fachinfo_html).at_least.once
       @plugin.extract_matched_content("Zyloric®", 'fi', 'de')
       assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
     end
@@ -259,19 +245,19 @@ if RunAll
       # only german fachinfo is present
       @parser.should_receive(:parse_fachinfo_html).at_least.once
       @parser.should_receive(:parse_patinfo_html).never
-      opts = {:iksnrs   => [], :xml_file => File.join(@@datadir, 'AipsDownload.xml')}
+      opts = {:iksnrs   => [], :xml_file => File.join(ODDB::TEST_DATA_DIR, 'xml', 'AipsDownload.xml')}
       @plugin = TextInfoPlugin.new(@app, opts)
       agent = @plugin.init_agent
-      base =  File.expand_path(File.join(__FILE__, '../../../test/data/html/swissmedic/'))
+      base =  File.join(ODDB::TEST_DATA_DIR, 'html/swissmedic')
       mappings = { "http://www.swissmedicinfo.ch/Accept.aspx\?ReturnUrl=\%2f" => File.join(base, 'accept.html'),
                    "http://www.swissmedicinfo.ch/?Lang=DE" => File.join(base, 'lang.html'),
                    "http://www.swissmedicinfo.ch/?Lang=FR" => File.join(base, 'lang.html'),
                   }
       @plugin.parser = @parser
       def @plugin.download_swissmedicinfo_xml
-        @dest = File.join(@@vardir, 'xml', 'AipsDownload_latest.xml')
+        @dest = File.join(ODDB::WORK_DIR, 'xml', 'AipsDownload_latest.xml')
         FileUtils.makedirs(File.dirname(@dest))
-        FileUtils.cp(File.join(@@datadir, 'AipsDownload_xeljanz.xml'), @dest)
+        FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'AipsDownload_xeljanz.xml'), @dest)
         File.join(@dest, 'AipsDownload_xeljanz.xml')
       end
       def @plugin.textinfo_swissmedicinfo_index
@@ -297,23 +283,19 @@ if RunAll
   end
   class TestTextInfoPluginChecks <MiniTest::Test
     def teardown
-      FileUtils.rm_rf @@vardir
+# TODO      FileUtils.rm_rf ODDB::TEST_DATA_DIR
       ODBA.storage = nil
       super # to clean up FlexMock
     end
     def setup
-      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      FileUtils.mkdir_p File.join(ODDB::TEST_DATA_DIR, 'xml')
       @opts = {
         :target   => :fi,
         :reparse  => false,
         :iksnrs   => ['32917'], # auf Zeile 2477310: 1234642 2477314
         :companies => [],
         :download => false,
-        :xml_file => File.join(@@datadir, 'AipsDownload.xml'), 
+        :xml_file => File.join(ODDB::TEST_DATA_DIR, 'xml', 'AipsDownload.xml'),
       }
       @app = flexmock('application', :update => @pointer,
                       :delete => 'delete', 
@@ -323,9 +305,9 @@ if RunAll
       @app.should_receive(:registration).with(1, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return 0
       @app.should_receive(:textinfo_swissmedicinfo_index)
       @parser = flexmock 'parser (simulates ext/fiparse for swissmedicinfo_xml)'
-      pi_path_de = File.join(@@vardir, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')    
+      pi_path_de = File.join(ODDB::TEST_DATA_DIR, 'html/patinfo/de/K_nzle_Passionsblume_Kapseln_swissmedicinfo.html')
       pi_de = PatinfoDocument.new
-      pi_path_fr = File.join(@@vardir, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html') 
+      pi_path_fr = File.join(ODDB::TEST_DATA_DIR, 'html/patinfo/fr/Capsules_PASSIFLORE__K_nzle__swissmedicinfo.html')
       pi_fr = PatinfoDocument.new
       @parser.should_receive(:parse_patinfo_html).with(pi_path_de, :swissmedicinfo, "Künzle Passionsblume Kapseln").and_return pi_de
       @parser.should_receive(:parse_patinfo_html).with(pi_path_fr, :swissmedicinfo, "Capsules PASSIFLORE \"Künzle\"").and_return pi_de
@@ -394,10 +376,6 @@ end
         eval "#{constant} = keep"
       end
     end
-    unless defined?(@@datadir)
-      @@datadir = File.expand_path '../data/xml', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
-    end
 
     def create(dateiname, content)
         FileUtils.makedirs(File.dirname(dateiname))
@@ -407,21 +385,19 @@ end
     end
 
     def teardown
-      FileUtils.rm_rf @@vardir
+# TODO      FileUtils.rm_rf ODDB::WORK_DIR
       ODBA.storage = nil
       super
     end
     def setup
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      FileUtils.mkdir_p ODDB::WORK_DIR
       @opts = {
         :target   => :pi,
         :reparse  => true,
         :iksnrs   => ['43788'],
         :companies => [],
         :download => false,
-        :xml_file => File.join(@@datadir, '43788.xml'),
+        :xml_file => File.join(ODDB::TEST_DATA_DIR, 'xml', '43788.xml'),
       }
       @app = ODDB::App.new
       @plugin = TextInfoPlugin.new(@app, @opts)
@@ -488,7 +464,7 @@ if RunAll
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
       assert(File.exist?(@plugin.problematic_fi_pi), "Datei #{ @plugin.problematic_fi_pi} must exist")
-      path = File.join(File.dirname(__FILE__), '../../doc/resources/images/pi/de/43788_Tramal__Tr/1.png')
+      path = File.join(ODDB::WORK_DIR, 'doc/resources/images/pi/de/43788Tramal_Tropfen__L_sung_zum_Einnehmen_files/1.png')
       assert(File.exist?(path), "Created image file #{path} must exist")
       @app.registration('15219').packages.size
       @app.registration('15219').packages.values.find_all { |x| x.patinfo}
@@ -512,8 +488,8 @@ if RunAll
         @opts[:target] = :fi
         assert(@plugin.import_swissmedicinfo(@opts), 'must be able to run import_swissmedicinfo')
       end
-      assert(File.exist?(@plugin.problematic_fi_pi))
-      assert(File.size(@plugin.problematic_fi_pi) > 100)
+      assert(File.exist?(@plugin.problematic_fi_pi), "#{@plugin.problematic_fi_pi} must exist")
+      assert(File.size(@plugin.problematic_fi_pi) > 100, "#{@plugin.problematic_fi_pi} must be > 100 bytes")
     end
   end
     def test_import_newest_only

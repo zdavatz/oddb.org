@@ -25,18 +25,15 @@ module ODDB
       @app.should_receive(:delete).by_default
       @app.should_receive(:find).and_return(TestIksnr)
       @app.should_receive(:iksnr).and_return(TestIksnr)
-      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      @archive = ODDB::WORK_DIR
       # CoMarketing_small_010514.xlsx
       @latest = File.join @archive, 'xlsx', 'CoMarketing-latest.xlsx'
       @target = File.join @archive, 'xlsx',
                           @@today.strftime('CoMarketing-%Y.%m.%d.xlsx')
       @plugin = flexmock('plugin', CoMarketingPlugin.new(@app, @archive))
-      @data = File.expand_path '../data/xls/CoMarketing.xlsx',
-                               File.dirname(__FILE__)
-      @older = File.expand_path '../data/xls/CoMarketing.older.xlsx',
-                                File.dirname(__FILE__)
-      @initial = File.expand_path '../data/xls/CoMarketing.initial.xlsx',
-                                  File.dirname(__FILE__)
+      @data = File.join(ODDB::TEST_DATA_DIR, 'xls/CoMarketing.xlsx')
+      @older = File.join(ODDB::TEST_DATA_DIR, 'xls/CoMarketing.older.xlsx')
+      @initial = File.join(ODDB::TEST_DATA_DIR, 'xls/CoMarketing.initial.xlsx')
     end
     def test_report_with_test_file
       result = @plugin.find(TestIksnr)

@@ -12,6 +12,7 @@ require 'stub/odba'
 require 'flexmock/minitest'
 require 'util/logfile'
 require 'util/mail'
+require 'util/workdir'
 
 module ODDB
 
@@ -20,6 +21,7 @@ module ODDB
     LOG_RECEIVER  = 'ywesee_test@ywesee.com' # as defined in test/data/oddb_mailing_test.yml
     SUBJECT       = 'ch.ODDB.org Report - 08/1975'
     def setup
+      FileUtils.rm_rf(WORK_DIR)
       Util.configure_mail :test
       Util.clear_sent_mails
       @log = ODDB::Log.new(Date.new(1975,8,21))
@@ -67,7 +69,8 @@ module ODDB
       assert_equal(hash[:report], mails_sent.first.body.to_s)
     end
     def test_notify_file
-      file = File.expand_path('../data/txt/log.txt', File.dirname(__FILE__))
+      file = File.join(WORK_DIR, 'txt/log.txt')
+      FileUtils.mkdir_p(File.dirname(file))
       File.open(file, 'w+') { |f| f.puts "Dummy content" }
       hash = {
         :recipients => ['log'],
@@ -89,7 +92,8 @@ module ODDB
       part_content = "SMeX/SL-Differences (Registrations) 10.09.2014  0
 SL hat anderen 5-Stelligen Swissmedic-Code als SMeX
 "
-      file = File.expand_path('../data/txt/log.txt', File.dirname(__FILE__))
+      file = File.join(WORK_DIR, 'txt/log.txt')
+      FileUtils.mkdir_p(File.dirname(file))
       File.open(file, 'w+') { |f| f.puts "Dummy content" }
       hash = {
         :recipients => ['log'],

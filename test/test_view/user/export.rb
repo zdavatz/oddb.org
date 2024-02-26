@@ -58,12 +58,12 @@ class TestExport <Minitest::Test
     assert(@export.uncompressed?('filename'))
   end
   def test_file_paths
-    export_dir = ODDB::View::User::Export::EXPORT_DIR
+    export_dir = ODDB::EXPORT_DIR
     expected = [File.expand_path('filename', export_dir)]
     assert_equal(expected, @export.file_paths('filename'))
   end
   def test_file_paths__compressed
-    export_dir = ODDB::View::User::Export::EXPORT_DIR
+    export_dir = ODDB::EXPORT_DIR
     expected = [
       File.expand_path('test.dat.zip', export_dir),
       File.expand_path('test.dat.gz', export_dir),
@@ -72,7 +72,7 @@ class TestExport <Minitest::Test
     assert_equal(expected, @export.file_paths('test.dat'))
   end
   def test_file_path
-    export_dir = ODDB::View::User::Export::EXPORT_DIR
+    export_dir = ODDB::EXPORT_DIR
     expected = File.expand_path('filename', export_dir)
     assert_equal(expected, @export.file_path('filename'))
   end

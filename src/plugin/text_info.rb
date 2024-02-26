@@ -825,8 +825,8 @@ module ODDB
 
     def download_swissmedicinfo_xml(file = nil)
       if file
-        content = IO.read(file)
-        LogFile.debug("Read #{content.size} bytes from #{file}")
+        content =  IO.read(file)
+        LogFile.debug("Read #{content.length} bytes from #{file}")
         return content
       end
       setup_default_agent
@@ -1382,7 +1382,10 @@ module ODDB
       @aips_xml = @options[:xml_file] if @options[:xml_file]
       # FileUtils.rm_rf(@details_dir, verbose: true) # spart etwas Zeit und lässt alte Dokus zu
       FileUtils.makedirs(@details_dir, verbose: true)
-      return unless File.exist?(@aips_xml)
+      unless File.exist?(@aips_xml)
+        LogFile.debug("Did not find #{@aips_xml}")
+        return
+      end
       content = IO.read(@aips_xml, :encoding => 'UTF-8')
       LogFile.debug "read #{@aips_xml} #{content.size} bytes"
       content.split('</medicalInformation>').each do |chunk|

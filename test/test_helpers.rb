@@ -5,6 +5,8 @@ require 'webmock'
 require 'fileutils'
 require 'zip'
 require 'flexmock'
+$: << File.expand_path('../src', File.dirname(__FILE__))
+require 'util/workdir'
 
 begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 
@@ -39,7 +41,6 @@ module ODDB
     ensure
       Dir.chdir(savedDir)
     end
-    WorkDir = Dir.pwd
     LEVETIRACETAM_GTIN = 7680620690084
     LEVETIRACETAM_PHAR = 5819012
     LEVETIRACETAM_NAME_DE = 'LEVETIRACETAM DESITIN Mini Filmtab 250 mg 30 Stk'
@@ -89,7 +90,7 @@ module ODDB
         c.cassette_library_dir = File.expand_path("#{Dir.pwd}/fixtures/vcr_cassettes")
         c.before_record(:lppv) do |i|
           if /LPPV_D/.match(i.request.uri)
-            dummy = File.join(WorkDir, 'test', 'data', 'lppv', 'LPPV_D.xlsx')
+            dummy = File.join(ODDB::TEST_DATA_DIR, 'lppv', 'LPPV_D.xlsx')
             i.response.body = IO.read(dummy)
             i.response.headers['Content-Length'] = i.response.body.size
             puts "#{Time.now}: #{__LINE__}: URI was #{i.request.uri} replacing by #{dummy}"
@@ -120,7 +121,7 @@ module ODDB
             if m and true
               puts "#{Time.now}: SwissmedicDownloader #{m[1]} (#{i.response.body.size} bytes)."
               name = m[1].chomp('_')
-              swissmedic_dir = File.join(WorkDir, 'swissmedic')
+              swissmedic_dir = File.join(ODDB::TEST_DATA_DIR, 'swissmedic')
               FileUtils.makedirs(swissmedic_dir)
               xlsx_name = File.join(swissmedic_dir, name + '.xlsx')
               if /Packungen/i.match(xlsx_name)
@@ -151,9 +152,9 @@ module ODDB
             end
           end
           if i.response.headers['Content-Disposition'] and /XMLPublications.zip/.match(i.request.uri)
-            bag_dir = File.join(WorkDir, 'bag')
-            FileUtils.makedirs(WorkDir)
-            tmp_zip = File.join(WorkDir, 'XMLPublications.zip')
+            bag_dir = File.join(ODDB::TEST_DATA_DIR, 'bag')
+            FileUtils.makedirs(ODDB::TEST_DATA_DIR)
+            tmp_zip = File.join(ODDB::TEST_DATA_DIR, 'XMLPublications.zip')
             File.open(tmp_zip, 'wb+') { |f| f.write(i.response.body) }
             TestHelpers.unzip_files(tmp_zip, bag_dir)
             bag_tmp = File.join(bag_dir, 'Preparations.xml')

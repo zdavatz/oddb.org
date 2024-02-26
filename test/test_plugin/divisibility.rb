@@ -65,7 +65,7 @@ module ODDB
       def @app.update(pointer, values, origin=nil)
         @system.update(pointer, values, origin)
       end
-      @plugin.update_from_csv File.expand_path('../data/csv/teilbarkeit_example.csv', File.dirname(__FILE__))
+      @plugin.update_from_csv File.join(ODDB::TEST_DATA_DIR, 'csv/teilbarkeit_example.csv')
       assert_equal(1, @plugin.created_div)
       assert_equal(0, @plugin.updated_div)
       assert_equal(1, @plugin.updated_sequences.size)

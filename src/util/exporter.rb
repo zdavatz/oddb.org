@@ -11,13 +11,12 @@ require 'util/log'
 require 'util/logfile'
 require 'util/schedule'
 require 'util/mail'
+require 'util/workdir'
 
 module ODDB
 	class Exporter
     include Util::Schedule
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
-		EXPORT_DIR = File.expand_path('../../data/downloads',
-																	File.dirname(__FILE__))
 		FileUtils.mkdir_p(EXPORT_DIR)
 		class SessionStub
 			attr_accessor :language, :flavor, :lookandfeel
@@ -183,8 +182,7 @@ module ODDB
 		end
 		def export_sl_pcodes
       safe_export 'sl_pcodes.txt' do
-        path = File.expand_path('../../data/txt/sl_pcodes.txt',
-          File.dirname(__FILE__))
+        path = File.join(WORK_DIR, 'txt/sl_pcodes.txt')
         File.open(path, 'w') { |fh|
           @app.each_package { |pac|
             if(pac.sl_entry && pac.pharmacode)
@@ -273,7 +271,7 @@ module ODDB
           log.date_str = today.strftime("%d.%m.%Y")
           log.report = report
           file = today.strftime("teilbarkeit.%Y-%m-%d.csv")
-          dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+          dir = File.join(WORK_DIR, 'csv')
           path = File.join(dir, file)
           log.files = { path => ['text/csv'] }
           log.notify('Teilbarkeit Export')
@@ -290,7 +288,7 @@ module ODDB
           log.date_str = today.strftime("%d.%m.%Y")
           log.report = report
           file = today.strftime("flickr_ean_export.%Y-%m-%d.csv")
-          dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+          dir = File.join(WORK_DIR, 'csv')
           path = File.join(dir, file)
           log.files = { path => ['text/csv'] }
           log.notify('Flickr Ean Export')

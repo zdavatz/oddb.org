@@ -19,7 +19,7 @@ require 'fileutils'
 module ODDB
 	class OuwerkerkPlugin < Plugin
 		attr_accessor :file_path, :smj, :bsv
-		ARCHIVE_PATH = File.expand_path('../data', File.dirname(__FILE__))
+		ARCHIVE_PATH = ODDB::WORK_DIR
 	end
 end
 

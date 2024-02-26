@@ -25,6 +25,7 @@ require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'stub/oddbapp'
 require 'util/latest'
+require 'util/workdir'
 
 class TestOddbApp3 <Minitest::Test
   @@port_id ||= 23000
@@ -32,7 +33,7 @@ class TestOddbApp3 <Minitest::Test
     GC.start # start a garbage collection
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
-    dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
+    dir = File.join(ODDB::WORK_DIR, 'prevalence')
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
     @@port_id += 1
     flexmock('epha', ODDB::EphaInteractions).should_receive(:read_from_csv).and_return([])

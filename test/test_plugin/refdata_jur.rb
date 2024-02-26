@@ -10,13 +10,13 @@ require 'plugin/refdata_jur'
 require 'tempfile'
 
 class TestRefdataJurPlugin <Minitest::Test
-  Test_JUR__XML = File.expand_path(File.join(__FILE__, '../../data/xml/refdata_jur.xml'))
+  Test_JUR__XML = File.join(ODDB::TEST_DATA_DIR, 'xml/refdata_jur.xml')
   def teardown
     ODBA.storage = nil
     super # to clean up FlexMock
   end
   def setup
-    FileUtils.rm_f(ODDB::Companies::Companies_XML)
+    FileUtils.rm_rf(ODDB::WORK_DIR)
     @config  = flexmock('config',
              :empty_ids => nil,
              :pointer   => 'pointer'
@@ -274,8 +274,8 @@ class TestRefdataJurPlugin <Minitest::Test
   end
 
   def test_get_latest_file
-    latest = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_jur_latest.xml"))
-    current  = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml"))
+    latest = File.join(ODDB::WORK_DIR, "xml/refdata_jur_latest.xml")
+    current  = File.join(ODDB::WORK_DIR, "xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml")
     FileUtils.rm_f(current) if File.exist?(current)
     FileUtils.rm_f(latest) if File.exist?(latest)
     @plugin = ODDB::Companies::RefdataJurPlugin.new(@app)

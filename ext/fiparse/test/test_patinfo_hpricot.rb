@@ -17,17 +17,18 @@ require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'patinfo_hpricot'
 require 'plugin/text_info'
+require 'util/workdir'
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 require 'stub/cgi'
 
 module ODDB
   module FiParse
+    HTML_DIR = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/html')
 class TestPatinfoHpricotCimifeminDe <Minitest::Test
   def setup
     return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
-    @@path = File.expand_path('data/html/de/cimifemin.html',
-      File.dirname(__FILE__))
+    @@path = File.join(HTML_DIR, 'de/cimifemin.html')
     @@writer = PatinfoHpricot.new
     open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
@@ -271,8 +272,7 @@ class TestPatinfoHpricotCimifeminFr <Minitest::Test
   def setup
     return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
-    @@path = File.expand_path('data/html/fr/cimifemin.html',
-      File.dirname(__FILE__))
+    @@path = File.join(HTML_DIR, 'fr/cimifemin.html')
     @@writer = PatinfoHpricot.new
     open(@@path) { |fh|
       @@writer.extract(Hpricot(fh))
@@ -314,8 +314,7 @@ class TestPatinfoHpricotInderalDe <Minitest::Test
   def setup
     return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
-    @@path = File.expand_path('data/html/de/inderal.html',
-      File.dirname(__FILE__))
+    @@path = File.join(HTML_DIR, 'de/inderal.html')
     @@writer = PatinfoHpricot.new
     open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
@@ -357,8 +356,7 @@ class TestPatinfoHpricotInderalDe <Minitest::Test
 end
 class TestPatinfoHpricotPonstanDe <Minitest::Test
   def setup
-    @@path = File.expand_path('data/html/de/ponstan.html',
-      File.dirname(__FILE__))
+    @@path = File.join(HTML_DIR, 'de/ponstan.html')
     @@writer = PatinfoHpricot.new
     open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
@@ -400,7 +398,7 @@ end
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
-        @@path = File.expand_path('data/html/de/nasivin.html', File.dirname(__FILE__))
+        @@path = File.join(HTML_DIR, 'de/nasivin.html')
         @@writer = PatinfoHpricot.new
         open(@@path) { |fh|
           @@patinfo = @@writer.extract(Hpricot(fh), :pi, 'Nasivin', StylesNasivin)
@@ -613,7 +611,7 @@ class TestPatinfoHpricotChapters <Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
-        @@path = File.expand_path('data/html/de/pi_30785_ponstan.html', File.dirname(__FILE__))
+        @@path = File.join(HTML_DIR, 'de/pi_30785_ponstan.html')
         @@writer = PatinfoHpricot.new
         open(@@path) { |fh|
           @@patinfo = @@writer.extract(Hpricot(fh), :pi, 'Ponstan', StylesPonstan)

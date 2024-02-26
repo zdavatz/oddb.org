@@ -5,6 +5,7 @@
 # @config -- oddb.org -- 08.09.2006 -- hwyss@ywesee.com
 
 require 'rclconf'
+require 'util/workdir'
 
 module ODDB
   SERVER_URI ||="druby://127.0.0.1:10000"
@@ -22,7 +23,7 @@ module ODDB
   MIGEL_URI ||='druby://127.0.0.1:33000'
   YUS_DOMAIN ||='oddb.org'
 
-  oddb_dir = File.expand_path('..', File.dirname(__FILE__))
+  oddb_dir = ODDB::PROJECT_ROOT
   default_dir = File.expand_path('etc', oddb_dir)
   default_config_files = [
     File.join(default_dir, 'oddb.yml'),
@@ -30,9 +31,9 @@ module ODDB
   ]
   defaults = {
     'config'			        => default_config_files,
-    'data_dir'            => File.expand_path('../data', File.dirname(__FILE__)),
-    'log_dir'             => File.expand_path('../log', File.dirname(__FILE__)),
-    'log_pattern'         => File.join(Dir.pwd, defined?(MiniTest) ? 'test/log' : 'log','/%Y/%m/%d/app_log'),
+    'data_dir'            => ODDB::WORK_DIR,
+    'log_dir'             => ODDB::LOG_DIR,
+    'log_pattern'         => File.join(ODDB::LOG_DIR, '/%Y/%m/%d/app_log'),
     'url_bag_sl_zip'      => 'http://www.xn--spezialittenliste-yqb.ch/File.axd?file=XMLPublications.zip',
     'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
     'server_url'          => SERVER_URI,

@@ -5,14 +5,15 @@
 # OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com
 
 # Do not require any Application-Internals in this file
+$: << File.expand_path("../../src", File.dirname(__FILE__))
 
 # Rockit redefines some StringScanner stuff, unless this is set
 $USING_STRSCAN = true
 require 'config'
+require 'util/workdir'
 
 module ODDB
-  PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
-  IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
+  IMAGE_DIR = File.join(WORK_DIR, 'doc', 'resources', 'images')
   PAYPAL_SERVER   = ODDB.config.paypal_server
   PAYPAL_RECEIVER = ODDB.config.paypal_receiver
 
