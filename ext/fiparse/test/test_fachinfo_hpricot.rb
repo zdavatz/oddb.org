@@ -76,6 +76,7 @@ if true
     </table>
         )
         writer = FachinfoHpricot.new
+        writer.image_folder = "fiImageFolder_#{__LINE__}"
         code, chapter = writer.chapter(Hpricot(html).at("table"))
         @lookandfeel = FlexMock.new 'lookandfeel'
         @lookandfeel.should_receive(:section_style).and_return { 'section_style' }
@@ -719,9 +720,16 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
       @@path = File.expand_path('data/html/de/fi_62580_novartis_seebris.de.html',  File.dirname(__FILE__))
       @@writer = FachinfoHpricot.new
+      @@writer.image_folder = "Seebri_Breezhaler"
       open(@@path) { |fh|
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName)
       }
+    end
+
+    def test_parse_fachinfo_html_with_image_dir
+      res = FiParse::parse_fachinfo_html(@@path, titles='dummy', styles = nil, 'fiImageFolder')
+      # File.open('tst_fi.yaml', 'w+' ) { |out| YAML.dump(res, out,  line_width: -1 )}
+      assert(res.to_yaml.index('/resources/images/fiImageFolder/3.png'), 'Must have image nr 3 in fiImageFolder')
     end
 
     def test_name2
@@ -753,12 +761,12 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
       assert(@@fachinfo.galenic_form.to_s.index('Firmenlogo'))
       assert(@@fachinfo.effects.to_s.index('(image)'), 'Wirkungen muss Bild enthalten')
       assert(@@fachinfo.galenic_form.to_s.index('(image)'), 'galenic_form must have an image')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/5.png'), 'Must have image nr 5')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/4.png'), 'Must have image nr 4')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/3.png'), 'Must have image nr 3')
+      assert(@@fachinfo.to_yaml.index('/resources/images/Seebri_Breezhaler/5.png'), 'Must have image nr 5')
+      assert(@@fachinfo.to_yaml.index('/resources/images/Seebri_Breezhaler/4.png'), 'Must have image nr 4')
+      assert(@@fachinfo.to_yaml.index('/resources/images/Seebri_Breezhaler/3.png'), 'Must have image nr 3')
 
       assert(@@fachinfo.galenic_form.to_s.index('(image)'), 'Zusamensetzung muss Bild enthalten')
-      assert(@@fachinfo.to_yaml.index('/resources/images/fi/de/_Seebri_Breezhaler_files/1.x-wmf'), 'Must have image nr 1')
+      assert(@@fachinfo.to_yaml.index('/resources/images/Seebri_Breezhaler/1.x-wmf'), 'Must have image nr 1')
     end
 
     def test_iksnrs
@@ -808,6 +816,7 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path('data/html/de/fi_62184_cipralex_de.html',  File.dirname(__FILE__))
         @@writer = FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Cipralex)
@@ -892,6 +901,7 @@ class="
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))
         @@writer = FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Isentres)
@@ -990,6 +1000,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))
         @@writer = FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Clexane)
@@ -1075,6 +1086,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))
         @@writer = FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesPonstan)
@@ -1114,6 +1126,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))
         @@writer = FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, Styles_Baraclude)
@@ -1172,6 +1185,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName,  File.dirname(__FILE__))
         @@writer = ODDB::FiParse::FachinfoHpricot.new
+        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
         open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesCoAprovel)
         }

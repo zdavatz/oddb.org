@@ -173,6 +173,7 @@ module ODDB
       path_check = File.expand_path(File.join(File.dirname(__FILE__),  '../../etc', 'barcode_minitest.yml'))
       assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
       FileUtils.rm_f(path_check, :verbose => true)
+      FileUtils.rm_f(File.expand_path('../data/'), :verbose => true)
       pointer = flexmock 'pointer'
       @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
       latest_from = File.expand_path('../data/xlsx/Packungen-latest.xlsx', File.dirname(__FILE__))
