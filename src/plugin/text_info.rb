@@ -824,7 +824,11 @@ module ODDB
     end
 
     def download_swissmedicinfo_xml(file = nil)
-      return IO.read(file) if file
+      if file
+        content = IO.read(file)
+        LogFile.debug("Read #{content.size} bytes from #{file}")
+        return content
+      end
       setup_default_agent
       url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
       dir  = File.join(ODDB.config.data_dir, 'xml')
