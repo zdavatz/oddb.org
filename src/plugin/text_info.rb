@@ -57,6 +57,7 @@ module ODDB
       @news_log = File.join ODDB.config.log_dir, 'textinfos.txt'
       @problematic_fi_pi = File.join ODDB.config.log_dir, 'problematic_fi_pi.lst'
       @title  = ''       # target fi/pi name
+      @format = :swissmedicinfo
       @target = :both
       @search_term = []
       # FI/PI names
@@ -824,11 +825,7 @@ module ODDB
     end
 
     def download_swissmedicinfo_xml(file = nil)
-      if file
-        content = IO.read(file)
-        LogFile.debug("Read #{content.size} bytes from #{file}")
-        return content
-      end
+      return IO.read(file) if file
       setup_default_agent
       url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
       dir  = File.join(ODDB.config.data_dir, 'xml')
@@ -910,22 +907,26 @@ module ODDB
       @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang.to_s}."
       return name
     end
-    def extract_images(html_file, type, lang, iksnrs, image_folder)
+    def extract_image(html_file, name, type, lang, iksnrs)
+      LogFile.debug "Extracting image to #{name}"
       if html_file && File.exist?(html_file)
+        resource_dir = (File.join(ODDB::IMAGE_DIR, type.to_s, lang.to_s))
+        FileUtils.mkdir_p(resource_dir)
         html = File.open(html_file, 'r:utf-8').read
         if html =~ /<img\s/
           images = Nokogiri::HTML(html).search('//img')
           html = nil
-          images.each_with_index do |img, index|
+          name_base = File.basename(name.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
+          dir = File.join(resource_dir, name_base + '_files')
+          FileUtils.mkdir_p(dir)
+          images.each_with_index do |img, i|
             type, src = img.attributes['src'].to_s.split(',')
             # next regexp must be in sync with ext/fiparse/src/textinfo_hpricot.rb
             unless type =~ /^data:image\/(jp[e]?g|gif|png);base64$/
               @nonconforming_content << "#{iksnrs}: '#{@title}' with non conforming #{type} element x"
             end
             if type =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64$/
-              FileUtils.mkdir_p(image_folder)
-              file = File.join(image_folder, "#{index + 1}.#{$1}")
-              LogFile.debug "Extracting #{iksnrs} image to #{file}"
+              file = File.join(dir, "#{i + 1}.#{$1}")
               File.open(file, 'wb'){ |f| f.write(Base64.decode64(src)); f.close }
             end
           end
@@ -1237,7 +1238,7 @@ module ODDB
       reg = @app.registration(meta_info.iksnr)
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
-          LogFile.debug "at #{nr_uptodate}: #{type}  because reparse is demanded: #{@options[:reparse]} #{meta_info.authNrs}"
+          LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type}  because reparse is demanded: #{@options[:reparse]} #{meta_info.authNrs}"
         else
           return
         end
@@ -1246,7 +1247,7 @@ module ODDB
       html_name = res[0]
       is_same_html = res[2]
       unless html_name
-        LogFile.debug "parse_textinfo #{type}: no html_name for #{meta_info}"
+        LogFile.debug "parse_textinfo #{type} #{__LINE__}: no html_name for #{meta_info}"
         return
       end
       textinfo_fi = nil
@@ -1265,40 +1266,38 @@ module ODDB
       text_info = get_textinfo(meta_info,  meta_info.iksnr)
 
       if !is_same_html
-        LogFile.debug "#{html_name} does is not the same: #{meta_info.authNrs}"
+        LogFile.debug "parse_textinfo #{__LINE__} #{html_name} does is not the same: #{meta_info.authNrs}"
       elsif @options[:reparse]
-        LogFile.debug "reparse demanded via @options #{@options}"
+        LogFile.debug "parse_textinfo #{__LINE__} reparse demanded via @options #{@options}"
       elsif found_matching_iksnr(meta_info.authNrs)
         if meta_info.same_content_as_xml_file
           type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
           return
         end
       elsif meta_info.same_content_as_xml_file
-        LogFile.debug "at #{nr_uptodate}: #{type} same_content_as_xml_file #{meta_info.authNrs}" if false # default casse
+        LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} same_content_as_xml_file #{meta_info.authNrs}" if false # default casse
         type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
         return
       end
       styles = res[1]
       textinfo_pi_name = nil
-      # image_base, image_subfolder must be in sync with ext/fiparse/src/fiparse.rb and ext/fiparse/src/textinfo_hpricot.rb
-      image_base =  File.expand_path('./doc/resources/images')
-      image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0,10].gsub(/[^A-z0-9]/, '_')}")
+      image_folder = "#{meta_info.iksnr}#{meta_info.title}"[0,100]
       if type == :fi
         if is_same_html && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
-          LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
+          LogFile.debug "parse_textinfo #{__LINE__} #{meta_info.iksnr} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
           @up_to_date_fis += 1
           return
         end
-        textinfo_fi ||= @parser.parse_fachinfo_html(html_name, meta_info.title, styles, image_subfolder)
+        textinfo_fi ||= @parser.parse_fachinfo_html(html_name, @format, meta_info.title, styles)
         update_fachinfo_lang(meta_info, { meta_info.lang => textinfo_fi } )
       elsif type == :pi
         # TODO: Do we really catch all the cases when packages have different PIs?
         if is_same_html && !@options[:reparse] && reg && text_info && text_info.descriptions.keys.index(meta_info.lang)
-          LogFile.debug "at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
+          LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
           @up_to_date_pis += 1
           return
         end
-        textinfo_pi = @parser.parse_patinfo_html(html_name,  meta_info.title, styles, image_subfolder)
+        textinfo_pi = @parser.parse_patinfo_html(html_name, @format, meta_info.title, styles, image_folder)
         update_patinfo_lang(meta_info, { meta_info.lang => textinfo_pi } )
         if textinfo_pi.respond_to?(:name)
           textinfo_pi_name = textinfo_pi.name
@@ -1307,8 +1306,19 @@ module ODDB
       end
       # Extract image to path generated from XML title,
       # This should be the "correct" path
-      extract_images(html_name, meta_info.type, meta_info.lang, meta_info.authNrs, File.join(image_base, image_subfolder))
-      LogFile.debug "at #{nr_uptodate}: #{type} textinfo  #{textinfo.to_s.split("\n")[0..2]}" if  self.respond_to?(:textinfo)
+      extract_image(html_name, image_folder, meta_info.type, meta_info.lang, meta_info.authNrs)
+      # However, ODBA is always buggy, sometimes it just doesn't like saving objects #231
+      # There's case which the Html pointed the image to a wrong path, and we cannot update
+      # the HTML because ODBA's problem, so here we extract image to path generated from the wrong H1 title,
+      if !textinfo_pi_name.nil?
+        begin
+          extract_image(html_name, textinfo_pi_name.to_s[0,100], meta_info.type, meta_info.lang, meta_info.authNrs)
+        rescue => error
+          LogFile.debug "#236 #{error}"
+          # Sometimes it gets file name too long error #236
+        end
+      end
+      LogFile.debug "parse_textinfo #{__LINE__} at #{nr_uptodate}: #{type} textinfo  #{textinfo.to_s.split("\n")[0..2]}" if  self.respond_to?(:textinfo)
       if reg
         reg.odba_store
         textinfo = nil
