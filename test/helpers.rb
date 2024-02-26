@@ -28,7 +28,16 @@ class OddbTestRunner
       |file|
     @tests_to_run_in_isolation << File.expand_path(File.join(root_dir, file))  }
   end
-                 
+
+    def check_etc(path)
+      res =  `git status etc`
+      if /barcode_to_text_info/.match(res)
+        puts "#{path} changed etc"
+        exit 5
+      else
+        puts "#{path} left etc unchanged" if $VERBOSE
+      end
+    end
   @@directories =  Hash.new
 
   def run_isolated_tests
@@ -51,7 +60,7 @@ class OddbTestRunner
         result = system(cmd)
         puts "#{Time.now}: OddbTestRunner::Running #{path} failed  " unless result
       end
-
+      check_etc(path)
       @@directories[path] = result
     }
   end
@@ -70,6 +79,7 @@ class OddbTestRunner
         else
           # puts "require #{File.expand_path(file)}"
           require File.expand_path(file)
+          check_etc(file)
         end
     end
   end
@@ -87,7 +97,11 @@ class OddbTestRunner
     }
     diffSeconds = (Time.now - StartTime).to_i
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
-    puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were \n#{problems.join("\n")}" if problems.size > 0
+    if problems.size > 0
+      puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were \n#{problems.join("\n")}"
+    else
+      puts "All tests passed"
+    end
     puts "   Took #{(diffSeconds/60).to_i} minutes and #{diffSeconds % 60} seconds to run"
     exit 2 unless okay
     okay

@@ -148,6 +148,7 @@ module ODDB
     def export_ddd_csv
       @options = { }
       recipients.concat ['log']
+      FileUtils.makedirs(EXPORT_DIR)
       @file_path = File.join EXPORT_DIR, 'ddd.csv'
       CSV.open(@file_path, "w", col_sep: ';', encoding: 'UTF-8') do |csv|
         csv << [:iksnr,
@@ -191,6 +192,7 @@ module ODDB
       end
     end
     def export_index_therapeuticus
+      FileUtils.makedirs(EXPORT_DIR)
       @options = { }
       recipients.concat self.class::ODDB_RECIPIENTS
       ids = @app.indices_therapeutici.sort.collect { |code, idx| idx.odba_id }
@@ -236,6 +238,7 @@ module ODDB
       @file_path = output
       @options ||= {}
       @options[:compression] = 'zip'
+      FileUtils.makedirs(File.dirname(output))
       gem_app = Oddb2tdat.new(input1, output, input2, transfer) # see help of oddb2tdat gem
       gem_app.target.push(:migel)
       gem_app.run

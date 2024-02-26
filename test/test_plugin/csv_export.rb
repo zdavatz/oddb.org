@@ -22,6 +22,8 @@ require 'model/galenicgroup'
 module ODDB
   class TestCsvExportPlugin <Minitest::Test
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+#      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'csv/*.csv'), File.mo)
       @app    = flexmock('app')
       @plugin = ODDB::CsvExportPlugin.new(@app)
     end
@@ -632,6 +634,12 @@ module ODDB
                :log_group => log_group
               )
       export_server = flexmock('export_server', :compress => 'compress')
+      src = File.join(ODDB::TEST_DATA_DIR, 'csv/oddb.csv')
+      assert(File.exist?(src), "#{src} must exist")
+      dest = File.join(ODDB::EXPORT_DIR, 'oddb.csv')
+      FileUtils.makedirs(ODDB::EXPORT_DIR)
+      res = FileUtils.copy_file(src, dest, preserve: true, verbose: true)
+      assert(File.exist?(dest), "#{dest} must exist")
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
         @plugin.instance_eval('@options = {}')
         assert_equal('compress', @plugin.export_oddb_dat(nil))
@@ -648,7 +656,12 @@ module ODDB
               )
       export_server = flexmock('export_server', :compress => 'compress')
       export_dir = File.join(ODDB::TEST_DATA_DIR, 'csv')
-      puts export_dir
+      src = File.join(ODDB::TEST_DATA_DIR, 'csv/oddb.csv')
+      assert(File.exist?(src), "#{src} must exist")
+      dest = File.join(ODDB::EXPORT_DIR, 'oddb.csv')
+      FileUtils.makedirs(ODDB::EXPORT_DIR)
+      res = FileUtils.copy_file(src, dest, preserve: true, verbose: true)
+      assert(File.exist?(dest), "#{dest} must exist")
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::MIGEL_EXPORT_DIR', export_dir ) do
         temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
           @plugin.instance_eval('@options = {}')

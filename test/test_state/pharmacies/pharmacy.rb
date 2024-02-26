@@ -3,11 +3,9 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'state/global'
-
-
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'state/global'
 require 'view/welcomehead'
 require 'state/pharmacies/setpass'
 require 'state/pharmacies/pharmacy'
