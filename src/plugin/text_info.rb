@@ -94,7 +94,7 @@ module ODDB
     end
     IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)
     def read_packages # adapted from swissmedic.rb
-      latest_name = File.join ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx'
+      latest_name = File.join ODDB::WORK_DIR, 'xls', 'Packungen-latest.xlsx'
       LogFile.debug "read_packages found latest_name #{latest_name}"
       @packages = {}
       @veterinary_products = {}
@@ -1358,6 +1358,7 @@ module ODDB
 
     def report_problematic_names
       LogFile.debug "Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries"
+      FileUtils.makedirs(File.dirname(@problematic_fi_pi))
       File.open(@problematic_fi_pi, 'w+') do |file|
         @iksnrs_from_aips.sort.uniq.each do|iksnr|
           file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"

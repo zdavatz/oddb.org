@@ -13,8 +13,8 @@ require 'plugin/atc_less'
 module ODDB
   class TestAtc_lessPlugin <Minitest::Test
     def setup
-      @latest_xlsx = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xls', 'Packungen-latest.xlsx')
-      @latest_xml  = File.join(ODDB::Plugin::ARCHIVE_PATH, 'xml', 'XMLRefdataPharma-latest.xml')
+      @latest_xlsx = File.join(ODDB::WORK_DIR, 'xls', 'Packungen-latest.xlsx')
+      @latest_xml  = File.join(ODDB::WORK_DIR, 'xml', 'XMLRefdataPharma-latest.xml')
       [@latest_xlsx, @latest_xml].each {
         |file|
           FileUtils.rm(file, :verbose => false) if File.exist?(file)

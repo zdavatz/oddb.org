@@ -34,7 +34,6 @@ module ODDB
     SWISSMEDIC_HUMAN_URL_FR = 'https://www.swissmedic.ch//swissmedic/fr/medicaments-a-usage-humain'
     SWISSMEDIC_HUMAN_URL_IT = 'https://www.swissmedic.ch//swissmedic/it/home/medicamenti-per-uso-umano'
 		include HttpFile
-		ARCHIVE_PATH = ODDB::WORK_DIR
 		# Recipients for Plugin-Specific Update-Logs can be added in
 		# 'Plugin's subclasses
 		RECIPIENTS = []

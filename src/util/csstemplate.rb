@@ -7,8 +7,8 @@ require 'util/workdir'
 
 module ODDB
   class CssTemplate
-    RESOURCE_PATH = File.join(ODDB::PROJECT_ROOT, 'doc/resources')
-    TEMPLATE = File.join(ODDB::PROJECT_ROOT, 'data/css/template.css')
+    RESOURCE_PATH = File.join(ODDB::RESSOURCES_DIR)
+    TEMPLATE = File.join(RESOURCE_PATH, 'data/css/template.css')
     FLAVORS = {
       :desitin => {
         :bg_dark                         => '#1b49a2',

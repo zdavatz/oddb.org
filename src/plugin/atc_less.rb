@@ -25,7 +25,7 @@ end
 module ODDB
   class Atc_lessPlugin < Plugin
     Strip_For_Sax_Machine = '<?xml version="1.0" encoding="utf-8"?>'+"\n"
-    def initialize(app=nil, archive=ARCHIVE_PATH)
+    def initialize(app=nil, archive=ODDB::WORK_DIR)
       super app
       debug_msg "initialize update_atc_codes "
       @packungen_xlsx =  File.join archive, 'xls', 'Packungen-latest.xlsx'

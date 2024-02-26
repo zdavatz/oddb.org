@@ -27,8 +27,7 @@ class Company < Global
 end
 class UserCompany < Company
 	VIEW = View::Companies::UserCompany
-	LOGO_PATH = File.expand_path('../../../doc/resources/logos',
-		File.dirname(__FILE__))
+	LOGO_PATH = File.join(ODDB::RESSOURCES_DIR, 'logos')
 	def set_pass
 		update() # save user input
 		if(allowed? && !error?)

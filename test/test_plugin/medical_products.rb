@@ -142,21 +142,18 @@ module ODDB
     end
 
   class TestMedicalProductPlugin <Minitest::Test
-    @@datadir = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/run/docx/')
-    @@origdir = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/docx/')
-    @@vardir = ODDB::WORK_DIR
+    @@datadir = File.join(ODDB::WORK_DIR, 'fiparse/docx')
+    @@origdir = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/docx')
 
     def setup
-      @hostname = Socket.gethostbyname(Socket.gethostname).first
+      FileUtils.rm_rf ODDB::WORK_DIR
+      @hostname = Addrinfo.getaddrinfo(Socket.gethostname, nil).first
       FileUtils.rm_rf(@@datadir)
       FileUtils.makedirs(@@datadir)
-      assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      assert(File.directory?(@@origdir), "Directory #{@@origdir} must exist")
       @opts = {
         :lang  => 'de',
-        :files => [ File.join(@@datadir, 'Sinovial_DE.docx') ],
+        :files => [ File.join(@@origdir, 'Sinovial_DE.docx') ],
       }
       @sequence = flexmock('sequence',
                            :packages => ['packages'],
@@ -174,59 +171,51 @@ module ODDB
     end # Fuer Problem mit fachinfo italic
 
     def teardown
-      FileUtils.rm_rf @@vardir
       super # to clean up FlexMock
     end
     def test_update_medical_product_with_absolute_path
+      FileUtils.cp(File.join(@@origdir, 'Sinovial_DE.docx'), ODDB::WORK_DIR)
       fileName = File.join(@@origdir, 'Sinovial_DE.docx')
       assert(File.exist?(fileName), "File #{fileName} must exist")
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      skip("Niklaus does not want to waste time to mock correctly this situation")
       assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx')
       packages = @app.registrations.first[1].packages
+      skip "TODO" # TODO
       assert_equal('Fertigspritze', packages.first.commercial_forms.first)
     end
     def test_update_medical_product_with_lang_and_relative
+      FileUtils.cp(File.join(@@origdir, 'Sinovial_DE.docx'), ODDB::WORK_DIR)
       fileName = File.join(@@origdir, 'Sinovial_DE.docx')
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      skip("Niklaus does not want to waste time to mock correctly this situation on travis")
-      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx. @hostname is ' + @hostname)
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx.')
     end
     def test_update_medical_product_with_relative_wildcard
+      FileUtils.cp(File.join(@@origdir, 'Sinovial_DE.docx'), ODDB::WORK_DIR)
       options = {:files => [ '*.docx']}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      skip 'We have 2 medical_product in Sinovial_DE.docx. @hostname is ' + @hostname
-      if /localhost/i.match(@hostname)
-        skip 'We have 2 medical_product in Sinovial_DE.docx'
-      else
-        assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx. @hostname is ' + @hostname)
-      end
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_products in Sinovial_DE.docx.')
     end
     def test_update_medical_product_french
+      FileUtils.cp(File.join(@@origdir, 'Sinovial_FR.docx'), ODDB::WORK_DIR)
       options = {:files => [ '*.docx'], :lang => :fr}
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
       res = @plugin.update()
-      skip 'We have 2 medical_product in Sinovial_DE.docx. @hostname is ' + @hostname
-      if /localhost/i.match(@hostname)
-        skip 'We have 2 medical_product in Sinovial_FR.docx'
-      else
-        assert_equal(2, @app.registrations.size, 'We have 2 medical_product in Sinovial_FR.docx')
-      end
-			packages = @app.registrations.first[1].packages
+      skip("Test for FR does not work")
+      assert_equal(2, @app.registrations.size, 'We have 2 medical_product in Sinovial_FR.docx')
+      packages = @app.registrations.first[1].packages
       assert(packages, 'packages must be available')
       assert_equal(1, packages.size, 'we must have exactly two packages')
       assert_nil(packages.first.commercial_forms.first)
     end
     def test_update_invalid_ean
-      fileName = File.join(@@origdir, 'errors', 'invalid_ean13.docx')
+      fileName = File.join(ODDB::TEST_DATA_DIR, 'docx/errors', 'invalid_ean13.docx')
       options = {:files => [ fileName ],  :lang => 'de' }
       @plugin = ODDB::MedicalProductPlugin.new(@app, options)
-      skip("Niklaus does not want to waste time to mock correctly this situation on travis #{@hostname}") if /testing-docker/i.match(@hostname)
       assert_raises(SBSM::InvalidDataError) {@plugin.update()}
     end
   end

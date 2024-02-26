@@ -99,7 +99,7 @@ module ODDB
         @doctors_updated = {}
         @doctors_skipped = {}
         @doctors_inactive = {}
-        @archive = File.join ARCHIVE_PATH, 'xls'
+        @archive = File.join ODDB::WORK_DIR, 'xls'
         @@all_doctors    = []
         @agent = Doctors.setup_default_agent
       end

@@ -35,6 +35,7 @@ module ODDB
 
       def writeResponse(agent, filename)
         if defined?(RSpec) or defined?(MiniTest) or $VERBOSE
+          FileUtils.makedirs(File.dirname(filename))
           File.open(filename, 'w+') { |ausgabe| ausgabe.puts agent.page.body }
         else
           puts "Skipping writing #{filename}" if $VERBOSE

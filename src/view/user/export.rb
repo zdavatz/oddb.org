@@ -127,14 +127,14 @@ module Export
 		end
 	end
 	def file_path(filename)
-		File.expand_path(filename, ODDB::EXPORT_DIR)
+		File.join(ODDB::EXPORT_DIR, filename)
 	end
 	def file_paths(filename)
     if uncompressed?(filename)
-      return [File.expand_path(filename, ODDB::EXPORT_DIR)]
+      return [File.join(ODDB::EXPORT_DIR, filename)]
     end
 		['.zip', '.gz', '.tar.gz'].collect { |suffix|
-			File.expand_path(filename + suffix, ODDB::EXPORT_DIR)
+			File.join(ODDB::EXPORT_DIR, filename + suffix)
 		}
 	end
 	def filesize(filename)

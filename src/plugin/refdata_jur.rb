@@ -107,7 +107,7 @@ module ODDB
         @partners_updated = {}
         @partners_skipped = {}
         @partners_inactive = {}
-        @archive = File.join ARCHIVE_PATH, 'xls'
+        @archive = File.join ODDB::WORK_DIR, 'xls'
         @@all_partners    = []
         @agent = Companies.setup_default_agent
       end

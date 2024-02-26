@@ -12,7 +12,7 @@ require 'delegate'
 module ODDB
 	class FiPDFExporter < Plugin
 		WRITER = DRbObject.new(nil, FIPDF_URI)
-		PDF_PATH = File.expand_path('downloads', ARCHIVE_PATH)
+		PDF_PATH = File.join(ODDB::WORK_DIR, 'downloads')
 		def run
 			write_pdf
 		end

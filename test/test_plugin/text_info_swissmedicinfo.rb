@@ -38,6 +38,7 @@ module ODDB
 
   class TestTextInfoChangeLogin <MiniTest::Test
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
       super
     end # Fuer Problem mit fachinfo italic
 
@@ -86,7 +87,8 @@ if RunAll
     end
     
     def setup
-      flexmock(ODDB::SequenceObserver) do 
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+      flexmock(ODDB::SequenceObserver) do
         |klass|
         klass.should_receive(:set_oid).and_return('oid')
         klass.should_receive(:new).and_return('new')
@@ -189,6 +191,7 @@ if RunAll
       super
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
       FileUtils.mkdir_p ODDB::WORK_DIR
       @opts = {
         :target   => :fi,
@@ -288,6 +291,7 @@ if RunAll
       super # to clean up FlexMock
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
       FileUtils.mkdir_p File.join(ODDB::TEST_DATA_DIR, 'xml')
       @opts = {
         :target   => :fi,
@@ -390,6 +394,7 @@ end
       super
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
       FileUtils.mkdir_p ODDB::WORK_DIR
       @opts = {
         :target   => :pi,

@@ -28,10 +28,10 @@ module ODDB
       end or raise 'unable to identify url for Swissmedic-Journal'
       smj = link.click
 
-      latest = File.join(ARCHIVE_PATH, 'pdf', 'Swissmedic-Journal-latest.pdf')
+      latest = File.join(ODDB::WORK_DIR, 'pdf', 'Swissmedic-Journal-latest.pdf')
       unless File.exist?(latest) && File.read(latest) == smj.body
         filename = month.strftime('%m_%Y.pdf')
-        target = File.join(ARCHIVE_PATH, 'pdf', filename)
+        target = File.join(ODDB::WORK_DIR, 'pdf', filename)
         if File.exist?(target) && File.read(target) != smj.body
           raise "Safety-catch: cannot overwrite #{target} with data from #{link.attributes['href']}"
         end

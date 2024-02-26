@@ -1348,8 +1348,7 @@ class OddbPrevalence
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
-			path = File.expand_path("../../etc/index_definitions.yaml",
-				File.dirname(__FILE__))
+			path = File.join(ODDB::PROJECT_ROOT, 'etc/index_definitions.yaml')
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_stream(file) { |index_definition|
@@ -1946,7 +1945,7 @@ module ODDB
             gc << 'S' if nr_sessions < lastsessions
             gc << 'T' if threads < lastthreads
             gc << 'M' if bytes < lastbytes
-            path = File.expand_path('../../doc/resources/downloads/' + status,
+            path = File.join(ODDB::RESSOURCES_DIR, 'downloads/' + status,
                                     File.dirname(__FILE__))
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm,

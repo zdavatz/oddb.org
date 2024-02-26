@@ -46,7 +46,6 @@ module ODDB
     
     def update
       data_dir = ODDB.config.data_dir
-      # LogFile.debug "file #{@options[:files]} YDocx #{YDocx::VERSION} data_dir #{data_dir}"
       atc_code = @app.atc_class(atc_code) 
       atc_code = add_dummy_medical_product unless atc_code
       @options[:files].each{
@@ -54,11 +53,11 @@ module ODDB
         files = (Dir.glob(param) + Dir.glob(File.join(data_dir, param))).collect{ |file| File.expand_path(file) }.uniq
         files.each {
           |file|
+          LogFile.debug "file #{@options[:files]} data_dir #{data_dir} #{file} #{param}"
             fachinfo = nil
             parts = {}
             reg = nil
             packages = []
-#            LogFile.debug "file is #{file}"
             writer = ODDB::FiParse::TextinfoPseudoFachinfo.new
             pseudo_fi_text = nil
             open(file) { |fh| pseudo_fi_text = writer.extract(fh)}

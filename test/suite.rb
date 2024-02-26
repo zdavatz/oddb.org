@@ -15,9 +15,9 @@ suites << "test_view/suite.rb"
 suites << "test_command/suite.rb"
 suites << "test_remote/suite.rb"
 suites << "test_custom/suite.rb"
-suites << "test_plugin/suite.rb"
 suites << "test_model/suite.rb"
 suites << "test_util/suite.rb"
+suites << "test_plugin/suite.rb"
 
 if $0 == __FILE__
   $stdout.sync = true
