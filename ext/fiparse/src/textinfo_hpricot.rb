@@ -295,19 +295,18 @@ class TextinfoHpricot
       if src =~ /^data:image\/(jp[e]?g|gif|png|x-[ew]mf);base64($|,)/
         ptr.target.style = child[:style]
         ext       = $1
-        folder = @image_folder || ((@title || @name).to_s[0,100])
-        name_base = File.basename(folder.to_s.gsub(/®/, '').gsub(/[^A-z0-9]/, '_')).strip
-        file_name = File.join(name_base + '_files', "#{@image_index.to_s}.#{ext}")
+        file_name = File.join(@image_folder || @title, "#{@image_index.to_s}.#{ext}")
         lang = (@lang || 'de')
       end
+      dir = File.join('/', 'resources', 'images')
     else
       file_name = File.basename(child[:src].
                                 gsub('&#xA;','').
                                 gsub(/\?px=[0-9]*$/, '').strip)
       lang = (file_name[0].upcase == 'F' ? 'fr' : 'de') unless file_name.empty?
+      type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fi' : 'pi')
+      dir = File.join('/', 'resources', 'images', type, lang)
     end
-    type = (self.is_a?(ODDB::FiParse::FachinfoHpricot) ? 'fi' : 'pi')
-    dir = File.join('/', 'resources', 'images', type, lang)
     ptr.target.src = File.join(dir, file_name)
   end
   def insert_image(ptr, child)
