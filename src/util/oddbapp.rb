@@ -1945,8 +1945,7 @@ module ODDB
             gc << 'S' if nr_sessions < lastsessions
             gc << 'T' if threads < lastthreads
             gc << 'M' if bytes < lastbytes
-            path = File.join(ODDB::RESOURCES_DIR, 'downloads/' + status,
-                                    File.dirname(__FILE__))
+            path = File.join(ODDB::RESOURCES_DIR, 'downloads/' + status)
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm,
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
