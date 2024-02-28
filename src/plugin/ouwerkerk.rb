@@ -40,7 +40,7 @@ module ODDB
 			super(app)
       @title_base = title
 			@file_name = @@today.strftime("med-drugs-%Y%m%d.xls")
-			@file_path = File.expand_path("xls/#{@file_name}", self::class::ARCHIVE_PATH)
+			@file_path = File.expand_path("xls/#{@file_name}", ODDB::WORK_DIR)
 		end
 		def export_package(pack, row, pac_flags)
 			if(flags = pac_flags[pack.pointer.to_s])

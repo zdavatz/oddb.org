@@ -90,4 +90,5 @@ end
 group :debugger do
   gem 'rbs'
   gem 'typeprof'
+  gem 'debug'
 end

@@ -489,7 +489,8 @@ class CsvResult < HtmlGrid::Component
     res.join('')
   end
 	def to_csv_file(keys, path, symbol=:active_packages, target=:atc_class)
-		File.open(path, 'w') do |fh|
+      FileUtils.makedirs(File.dirname(path))
+      File.open(path, 'w') do |fh|
       fh.puts to_csv(keys, symbol, target)
     end
 	end

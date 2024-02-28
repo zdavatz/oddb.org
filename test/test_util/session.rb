@@ -16,7 +16,7 @@ require 'stub/odba'
 require 'sbsm/trans_handler'
 require 'sbsm/app'
 require 'rack/test'
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 module ODDB
   class TestSession <Minitest::Test
     def setup

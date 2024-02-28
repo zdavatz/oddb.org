@@ -73,14 +73,14 @@ module ODDB
       raise  "Swissindex migel_nonpharma #{pharmacode_file} exist #{File.exist?(pharmacode_file)}"  unless File.exist?(pharmacode_file)
       return nil unless File.exist?(pharmacode_file)
       Logging.flag = logging
-      log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
+      log_dir  = File.join(ODDB::LOG_DIR, 'debug')
       log_file = File.join(log_dir, 'migel_nonpharma.log')
       Logging.start(log_file) do |log|
         log.print "migel_nonpharma log\n"
       end
 
 
-      dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      dir = File.join(ODDB::WORK_DIR, 'csv')
       FileUtils.mkdir_p dir
       @output_file = File.join(dir, 'swissindex_migel.csv')
 

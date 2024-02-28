@@ -12,7 +12,7 @@ require 'stub/odba'
 require 'stub/oddbapp'
 require 'plugin/who'
 
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 
 module ODDB
   class WhoPlugin < Plugin
@@ -38,7 +38,7 @@ module ODDB
       super
     end
     def setup
-      @datadir = File.expand_path '../data/html/who', File.dirname(__FILE__)
+      @datadir = File.join(ODDB::TEST_DATA_DIR, 'html/who')
       mechanize = Mechanize.new
       path = File.join @datadir, 'atc_ddd.html'
       mechanize_get = mechanize.get('file://' + path)

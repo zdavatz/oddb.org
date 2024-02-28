@@ -11,7 +11,7 @@ module ODDB
     class WelcomeHead < HtmlGrid::Composite
       include Personal
       include SponsorDisplay
-      LOGO_PATH = File.expand_path('../../../doc/resources/logos', File.dirname(__FILE__))
+      LOGO_PATH = File.join(ODDB::RESOURCES_DIR, 'logos')
       CSS_CLASS = 'composite'
       CSS_MAP = {
         [0,0]	=>	'welcomeleft',

@@ -10,6 +10,7 @@ require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'model/sponsor'
+require 'util/workdir'
 
 module ODDB
   class Sponsor
@@ -31,10 +32,8 @@ module ODDB
     def setup
       @sponsor = ODDB::Sponsor.new
       @app = StubApp.new
-      @file = File.expand_path('../data/sponsor/foo.gif', 
-        File.dirname(__FILE__))
-      @file2 = File.expand_path('../data/sponsor/bar.jpg', 
-        File.dirname(__FILE__))
+      @file = File.join(ODDB::WORK_DIR, 'data/sponsor/foo.gif')
+      @file2 = File.join(ODDB::WORK_DIR, 'data/sponsor/bar.jpg')
     end
     def teardown
       File.delete(@file) if File.exist?(@file)

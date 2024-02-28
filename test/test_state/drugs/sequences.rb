@@ -4,6 +4,8 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'minitest/autorun'
+require 'flexmock/minitest'
 require 'state/global'
 module ODDB
   module State
@@ -14,9 +16,6 @@ module ODDB
   end
 end
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
 require 'state/drugs/fachinfo'
 
 module ODDB

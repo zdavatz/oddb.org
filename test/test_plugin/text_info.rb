@@ -11,6 +11,7 @@ require 'fileutils'
 require 'flexmock/minitest'
 require 'plugin/text_info'
 require 'model/text'
+require 'util/workdir'
 module ODDB
   class FachinfoDocument
 		def odba_id
@@ -25,14 +26,11 @@ module ODDB
   end
 
   class TestTextInfoPlugin <MiniTest::Test
-    @@datadir = File.expand_path '../data/html/text_info', File.dirname(__FILE__)
-    @@vardir = File.expand_path '../var/', File.dirname(__FILE__)
+    @@datadir = File.join(ODDB::TEST_DATA_DIR, 'html/text_info')
     def setup
       super
       @app = flexmock 'application'
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      FileUtils.mkdir_p (ODDB::WORK_DIR)
       ODDB.config.text_info_searchform = 'http://textinfo.ch/Search.aspx'
       ODDB.config.text_info_newssource = 'http://textinfo.ch/news.aspx'
       @parser = flexmock('parser (simulates ext/fiparse)', :parse_fachinfo_html => nil,)
@@ -170,14 +168,15 @@ module ODDB
     end
 
     def setup
-      path_check = File.expand_path(File.join(File.dirname(__FILE__),  '../../etc', 'barcode_minitest.yml'))
+      path_check = File.join(ODDB::PROJECT_ROOT, 'etc', 'barcode_minitest.yml')
       assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
       FileUtils.rm_f(path_check, :verbose => true)
       FileUtils.rm_f(File.expand_path('../data/'), :verbose => true)
       pointer = flexmock 'pointer'
-      @aips_download = File.expand_path('../data/xml/Aips_test.xml', File.dirname(__FILE__))
-      latest_from = File.expand_path('../data/xlsx/Packungen-latest.xlsx', File.dirname(__FILE__))
-      latest_to = File.expand_path('../../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
+      @aips_download = File.join(ODDB::TEST_DATA_DIR, 'xml/Aips_test.xml')
+      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xlsx/Packungen-latest.xlsx')
+      latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
+      FileUtils.mkdir_p(File.dirname(latest_to))
       FileUtils.cp(latest_from, latest_to, :verbose => true, :preserve => true)
       @app = flexmock 'application'
       @reg = flexmock "registration_#{__LINE__}"
@@ -335,7 +334,7 @@ module ODDB
       old_missing = {'680109990223_pi_de' =>  'Osanit® Kügelchen',
                      '7680109990223_pi_fr' => 'Osanit® globules',
                      '7680109990224_pi_fr' => 'Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang'}
-      real_override_file = File.join(File.dirname(__FILE__),  '../../etc', 'barcode_to_text_info.yml')
+      real_override_file = File.join(ODDB::PROJECT_ROOT, 'etc', 'barcode_to_text_info.yml')
       assert_equal(false, File.exist?(ODDB::TextInfoPlugin::Override_file), "File #{ODDB::TextInfoPlugin::Override_file} must not exist")
       assert_equal(true, File.exist?(real_override_file), "File #{real_override_file} must exist")
       real_overrides = YAML.load(File.read(real_override_file))

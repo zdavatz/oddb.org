@@ -7,7 +7,7 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 
 require 'stub/odba'
 require 'stub/config'
@@ -25,6 +25,7 @@ require 'flexmock/minitest'
 require 'util/oddbapp'
 require 'stub/oddbapp'
 require 'util/latest'
+require 'util/workdir'
 
 class TestOddbApp3 <Minitest::Test
   @@port_id ||= 23000
@@ -32,7 +33,7 @@ class TestOddbApp3 <Minitest::Test
     GC.start # start a garbage collection
     ODDB::GalenicGroup.reset_oids
     ODBA.storage.reset_id
-    dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
+    dir = File.join(ODDB::PROJECT_ROOT, 'data/prevalence')
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
     @@port_id += 1
     flexmock('epha', ODDB::EphaInteractions).should_receive(:read_from_csv).and_return([])

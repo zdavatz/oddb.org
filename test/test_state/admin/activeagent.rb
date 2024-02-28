@@ -6,10 +6,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'state/global'
-
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'state/global'
 require 'htmlgrid/select'
 require 'define_empty_class'
 require 'state/admin/activeagent'

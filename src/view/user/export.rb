@@ -7,9 +7,6 @@ module ODDB
 	module View
 		module User
 module Export
-	EXPORT_DIR = File.expand_path(
-		'../../../data/downloads',
-		File.dirname(__FILE__))
 	EXPORT_FILE = ''
   def default_month(filename)
     case filename
@@ -130,14 +127,14 @@ module Export
 		end
 	end
 	def file_path(filename)
-		File.expand_path(filename, self::class::EXPORT_DIR)
+		File.join(ODDB::EXPORT_DIR, filename)
 	end
 	def file_paths(filename)
     if uncompressed?(filename)
-      return [File.expand_path(filename, self::class::EXPORT_DIR)]
+      return [File.join(ODDB::EXPORT_DIR, filename)]
     end
 		['.zip', '.gz', '.tar.gz'].collect { |suffix|
-			File.expand_path(filename + suffix, self::class::EXPORT_DIR)
+			File.join(ODDB::EXPORT_DIR, filename + suffix)
 		}
 	end
 	def filesize(filename)

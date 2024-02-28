@@ -19,6 +19,7 @@ require 'fiparse'
 require 'plugin/text_info'
 require 'stub/cgi'
 require 'flexmock/minitest'
+require 'util/workdir'
 
 module ODDB
 	class FachinfoDocument
@@ -27,6 +28,8 @@ module ODDB
 		end
 	end
   module FiParse
+    HTML_DIR = File.join(ODDB::PROJECT_ROOT, 'ext/fiparse/test/data/html')
+
 		HTML_PREFIX = '<HTML><meta charset="utf-8"/><BODY>'
 		HTML_POSTFIX = '</HTML></BODY>'
 if true
@@ -362,7 +365,7 @@ class TestFachinfoHpricotAlcaCDe <Minitest::Test
   MedicalName = 'Alca-C®'
   def setup
     return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-    @@path = File.expand_path('data/html/de/alcac.fi.html', File.dirname(__FILE__))
+    @@path = File.join(HTML_DIR, 'de/alcac.fi.html')
     @@writer = FachinfoHpricot.new
     open(@@path) { |fh|
       @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicalName)
@@ -472,7 +475,7 @@ end
 
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/de/fi_32917_zyloric.de.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'de/fi_32917_zyloric.de.html')
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh|
 
@@ -510,7 +513,7 @@ end
     MedicalName = Zyloric_Reg
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/fr/fi_Zyloric.fr.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'fr/fi_Zyloric.fr.html')
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh|
 
@@ -563,7 +566,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
 
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/de/fi_58106_finasterid.de.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'de/fi_58106_finasterid.de.html')
       @@writer = FachinfoHpricot.new
 
       open(@@path) { |fh|
@@ -615,7 +618,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     MedicInfoName = 'Xalos®-Duo'
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/de/fi_62439_xalos_duo.de.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'de/fi_62439_xalos_duo.de.html')
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh|
         @@fachinfo = @@writer.extract(Hpricot(fh), :fi, MedicInfoName, StylesXalos)
@@ -665,7 +668,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     MedicInfoName = 'Bisoprolol Axapharm'
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/de/fi_62111_bisoprolol.de.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'de/fi_62111_bisoprolol.de.html')
       @@writer = FachinfoHpricot.new
       open(@@path) { |fh|
 
@@ -718,7 +721,7 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
     MedicInfoName = ' Seebri Breezhaler'
     def setup
       return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-      @@path = File.expand_path('data/html/de/fi_62580_novartis_seebris.de.html',  File.dirname(__FILE__))
+      @@path = File.join(HTML_DIR, 'de/fi_62580_novartis_seebris.de.html')
       @@writer = FachinfoHpricot.new
       @@writer.image_folder = "Seebri_Breezhaler"
       open(@@path) { |fh|
@@ -814,7 +817,7 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
 
       def setup
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-        @@path = File.expand_path('data/html/de/fi_62184_cipralex_de.html',  File.dirname(__FILE__))
+        @@path = File.join(HTML_DIR, 'de/fi_62184_cipralex_de.html')
         @@writer = FachinfoHpricot.new
         @@writer.image_folder = "fiImageFolder_#{__LINE__}"
 

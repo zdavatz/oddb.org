@@ -33,6 +33,9 @@ GEM
     data_magic (1.2)
       faker (>= 1.1.2)
       yml_reader (>= 0.6)
+    debug (1.9.1)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     deprecated (2.0.1)
     diff-lcs (1.5.0)
     digest (3.1.1)
@@ -60,7 +63,11 @@ GEM
       socksify
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
+    io-console (0.7.2)
     io-wait (0.2.1)
+    irb (1.11.2)
+      rdoc
+      reline (>= 0.4.2)
     json (2.6.1)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
@@ -131,6 +138,8 @@ GEM
     paypal (2.0.0)
       money (> 0.0.0)
     pg (1.4.5)
+    psych (5.1.2)
+      stringio
     public_suffix (4.0.7)
     racc (1.7.1)
     rack (2.2.6.4)
@@ -143,7 +152,11 @@ GEM
     rake (13.0.6)
     rbs (2.0.0)
     rclconf (1.0.0)
+    rdoc (6.6.2)
+      psych (>= 4.0.0)
     regexp_parser (2.2.0)
+    reline (0.4.3)
+      io-console (~> 0.5)
     rexml (3.2.5)
     rmagick (4.2.4)
     rspec (3.10.0)
@@ -214,6 +227,7 @@ GEM
     standard (1.6.0)
       rubocop (= 1.24.1)
       rubocop-performance (= 1.13.1)
+    stringio (3.1.0)
     strscan (3.0.1)
     swissmedic-diff (0.2.8)
       nokogiri
@@ -278,6 +292,7 @@ DEPENDENCIES
   clogger
   cmath
   dbi!
+  debug
   deprecated
   diff-lcs
   flexmock

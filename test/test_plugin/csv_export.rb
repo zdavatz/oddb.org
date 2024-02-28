@@ -16,16 +16,14 @@ require 'plugin/csv_export'
 require 'test_plugin/plugin'
 require 'view/drugs/csv_result'
 require 'util/log'
+require 'util/workdir'
 require 'model/galenicgroup'
-test_data_dir = File.expand_path('../../data/csv', __FILE__)
-ODDB::CsvExportPlugin.class_eval { remove_const(:EXPORT_DIR) }
-ODDB::CsvExportPlugin.class_eval { EXPORT_DIR = test_data_dir }
-ODDB::CsvExportPlugin.class_eval { remove_const(:MIGEL_EXPORT_DIR) }
-ODDB::CsvExportPlugin.class_eval { MIGEL_EXPORT_DIR = test_data_dir }
 
 module ODDB
   class TestCsvExportPlugin <Minitest::Test
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+#      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'csv/*.csv'), File.mo)
       @app    = flexmock('app')
       @plugin = ODDB::CsvExportPlugin.new(@app)
     end
@@ -636,6 +634,12 @@ module ODDB
                :log_group => log_group
               )
       export_server = flexmock('export_server', :compress => 'compress')
+      src = File.join(ODDB::TEST_DATA_DIR, 'csv/oddb.csv')
+      assert(File.exist?(src), "#{src} must exist")
+      dest = File.join(ODDB::EXPORT_DIR, 'oddb.csv')
+      FileUtils.makedirs(ODDB::EXPORT_DIR)
+      res = FileUtils.copy_file(src, dest, preserve: true, verbose: true)
+      assert(File.exist?(dest), "#{dest} must exist")
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
         @plugin.instance_eval('@options = {}')
         assert_equal('compress', @plugin.export_oddb_dat(nil))
@@ -646,15 +650,23 @@ module ODDB
                :mkdir_p => nil,
                :cp      => 'cp'
               )
-      test_data_dir = File.expand_path('../../data/csv', __FILE__)
       log_group = flexmock('log_group', :newest_date => Time.local(2011,2,3))
       flexmock(@app,
                :log_group => log_group
               )
       export_server = flexmock('export_server', :compress => 'compress')
-      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        @plugin.instance_eval('@options = {}')
-        assert_equal('compress', @plugin.export_oddb_dat_with_migel(nil))
+      export_dir = File.join(ODDB::TEST_DATA_DIR, 'csv')
+      src = File.join(ODDB::TEST_DATA_DIR, 'csv/oddb.csv')
+      assert(File.exist?(src), "#{src} must exist")
+      dest = File.join(ODDB::EXPORT_DIR, 'oddb.csv')
+      FileUtils.makedirs(ODDB::EXPORT_DIR)
+      res = FileUtils.copy_file(src, dest, preserve: true, verbose: true)
+      assert(File.exist?(dest), "#{dest} must exist")
+      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::MIGEL_EXPORT_DIR', export_dir ) do
+        temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
+          @plugin.instance_eval('@options = {}')
+          assert_equal('compress', @plugin.export_oddb_dat_with_migel(nil))
+        end
       end
     end
     def test_export_teilbarkeit

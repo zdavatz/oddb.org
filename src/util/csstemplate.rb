@@ -3,11 +3,12 @@
 # ODDB::CssTemplate -- oddb.org -- 04.10.2012 -- yasaka@ywesee.com
 
 require 'fileutils'
+require 'util/workdir'
 
 module ODDB
   class CssTemplate
-    RESOURCE_PATH = "../../doc/resources/"
-    TEMPLATE = File.expand_path('../../data/css/template.css', File.dirname(__FILE__))
+    RESOURCE_PATH = File.join(ODDB::RESOURCES_DIR)
+    TEMPLATE = File.join(RESOURCE_PATH, 'data/css/template.css')
     FLAVORS = {
       :desitin => {
         :bg_dark                         => '#1b49a2',
@@ -316,7 +317,6 @@ module ODDB
                 fh << substitute(src, updates)
               }
               File.chmod(0664, path)
-              puts path
             end
           }
         end

@@ -12,7 +12,7 @@ require 'model/atcclass'
 require 'flexmock/minitest'
 require 'model/registration'
 require 'model/fachinfo'
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 module ODDB
   class PackageCommon
     check_accessor_list = {
@@ -931,7 +931,7 @@ class TestPackage <Minitest::Test
        m = ODDB::Package::AD_GRANULATUM_REGEXP.match(excipiens.downcase)
        assert(m[1])
        value = Unit.new(m[1])
-       # binding.pry if /mg\/24h/.match excipiens
+       # binding.break if /mg\/24h/.match excipiens
        # puts "#{value} #{m[1]} aus #{excipiens}"
        assert(value.compatible?(Unit.new('1g')) || value.compatible?(Unit.new('1l')))
     end

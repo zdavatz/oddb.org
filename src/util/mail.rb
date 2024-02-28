@@ -5,12 +5,15 @@ require 'mail'
 require 'config'
 require 'util/logfile'
 require 'yaml'
+$: << File.expand_path("../../src", File.dirname(__FILE__))
+require 'util/workdir'
+
 
 module ODDB
   module Util
     # see also the file test/data/oddb_mailing_test.yml
-    MailingTestConfiguration     = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'test', 'data', 'oddb_mailing_test.yml'))
-    MailingDefaultConfiguration  = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'etc', 'oddb.yml'))
+    MailingTestConfiguration     = File.join(PROJECT_ROOT, 'test', 'data', 'oddb_mailing_test.yml')
+    MailingDefaultConfiguration  = File.join(PROJECT_ROOT, 'etc', 'oddb.yml')
     MailingListIds               = 'mailing_list_ids'
     MailingRecipients            = 'mail_recipients'
     @mail_configured             = false

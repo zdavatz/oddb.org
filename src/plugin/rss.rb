@@ -97,7 +97,7 @@ module ODDB
       entry = {}
       entry[:link] = host + container.xpath(".//h3/a").first.attributes['href'].text
       oddb_link    = compose_oddb_link(entry[:link])
-      # require 'pry'; binding.pry
+      # require 'debug'; binding.break
       @downloaded_urls[entry[:link]] = true
       @current_issue_count  ||= 0 # for unit test
       @new_entry_count      ||= 0
@@ -125,7 +125,7 @@ module ODDB
       LookandfeelBase::DICTIONARIES.each_key do |lang|
         @lang = lang # current_lang
         count = (lang == 'de' ? true : false)
-        # require 'pry'; binding
+        # require 'debug'; binding
         base_uri = RSS_URLS[lang.to_sym][type][:index]
         uri = URI(base_uri)
         host = uri.scheme + '://' + uri.host

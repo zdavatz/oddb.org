@@ -13,6 +13,7 @@ require 'ext/refdata/src/refdata'
 module ODDB
   class RefdataPlugin < Plugin
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
+    DEBUG_LOG_DIR  = File.join(ODDB::LOG_DIR, 'oddb/debug')
     class Logging
       @@flag = false
       @@start_time = Time.now
@@ -70,8 +71,7 @@ module ODDB
 
     def update_package_trade_status(logging = !!ENV['LOG_REFDATA'])
       Logging.flag = logging
-      log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
-      log_file = File.join(log_dir, 'update_package_trade_status.log')
+      log_file = File.join(DEBUG_LOG_DIR, 'update_package_trade_status.log')
       Logging.start(log_file) do |log|
         log.print "update_package_trade_status.log\n"
         log.print "out_of_trade_false_list, update_pharmacode_list, out_of_trade_true_list, delete_pharmacode_list, eancode, No./Total, Estimate time\n"
@@ -137,7 +137,7 @@ module ODDB
         count += 1
       end
       # for debug
-      log_file = File.join(log_dir, 'update_package_trade_status_list.log')
+      log_file = File.join(ODDB::LOG_DIR, 'update_package_trade_status_list.log')
       Logging.start(log_file) do |log|
         log.print "out_of_trade true list (Total: #{@out_of_trade_true_list.length})\n"
         log.print @out_of_trade_true_list.map{|x| x.barcode}.join("\n"), "\n"
@@ -177,8 +177,7 @@ module ODDB
         inactivated << @app.update(pack.pointer, {:out_of_trade => true}, :refdata)
       end
       # for debug
-      log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
-      log_file = File.join(log_dir, 'update_out_of_trade.log')
+      log_file = File.join(DEBUG_LOG_DIR, 'update_out_of_trade.log')
       Logging.start(log_file) do |log|
         log.print "\nstart change out_of_trade flag (false) (Total: #{activated.length})\n"
         log.print activated.map{|x| x.barcode  if x.respond_to?(:barcode)}.join("\n"), "\n"
@@ -198,8 +197,7 @@ module ODDB
         deleted << @app.update(pack.pointer, {:pharmacode => nil}, :bag)
       end
       # for debug
-      log_dir  = File.expand_path('../../log/oddb/debug', File.dirname(__FILE__))
-      log_file = File.join(log_dir, 'update_pharmacode.log')
+      log_file = File.join(DEBUG_LOG_DIR, 'update_pharmacode.log')
       Logging.start(log_file) do |log|
         log.print "\nupdate_pharmacode (Total: #{updated.length})\n"
         log.print updated.map{|x, y| x.barcode.to_s + ", " + y.to_s}.join("\n"), "\n"

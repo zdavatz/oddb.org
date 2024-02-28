@@ -12,7 +12,7 @@ puts "Using #{aipsDownload} #{(File.size(aipsDownload)/1024).round} KBytes"
 
 @doc = Nokogiri::XML(File.open(aipsDownload,'r').read)
 @doc.xpath(".//medicalInformation").each{ |x|
-                                          # require 'pry'; binding.pry
+                                          # require 'debug'; binding.break
                                           to_delete = true
                                         iksnr = ''
                   x.children.each {

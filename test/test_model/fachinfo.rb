@@ -13,6 +13,8 @@ require 'flexmock/minitest'
 require 'model/fachinfo'
 require 'model/text'
 require 'yaml'
+require 'util/workdir'
+
 class Diffy::Diff
   attr_reader :tempfiles
 end
@@ -379,7 +381,7 @@ expected = "-line 2
       assert_equal(3, @doc.change_log.size)
     end
     def test_fachinfo_text_with_table
-      file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'data', 'Cansartan-61215.yaml'))
+      file = File.join(ODDB::TEST_DATA_DIR, 'Cansartan-61215.yaml')
       fi = YAML.safe_load(File.read(file), permitted_classes: [ODDB::FachinfoDocument2001,
                                                                ODDB::Text::Chapter,
                                                                ODDB::Text::Format,

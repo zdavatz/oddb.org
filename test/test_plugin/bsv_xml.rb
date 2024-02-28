@@ -995,13 +995,13 @@ module ODDB
       ODDB::TestHelpers.vcr_setup
       @url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
       ODDB.config.url_bag_sl_zip = @url
-      @archive = File.expand_path '../data', File.dirname(__FILE__)
+      @archive = ODDB::TEST_DATA_DIR
       @zip = File.join @archive, 'xml', 'XMLPublications.zip'
       @app = flexmock 'app'
       @plugin = BsvXmlPlugin.new @app
-      @test_src = File.expand_path '../data/xml/bsv_test.xml', File.dirname(__FILE__)
+      @test_src = File.join(TEST_DATA_DIR, 'xml/bsv_test.xml')
       assert(File.exist?(@test_src), "File #{@test_src} must exist?")
-      @test_conflict = File.expand_path '../data/xml/bsv_test_conflicted.xml', File.dirname(__FILE__)
+      @test_conflict = File.join(TEST_DATA_DIR, 'xml/bsv_test_conflicted.xml')
       assert(File.exist?(@test_conflict), "File #{@test_conflict} must exist?")
       @src = File.read(@test_src)
       @conflicted_src = File.read(@test_conflict)
@@ -1556,7 +1556,7 @@ module ODDB
     end
 
     def setup_read_from_file name, iksnr=nil, seqNr=nil, packNr=nil
-      @test_file = File.expand_path "../data/xml/#{name}.xml", File.dirname(__FILE__)
+      @test_file = File.join(TEST_DATA_DIR, "xml/#{name}.xml")
       assert(File.exist?(@test_file), "File #{@test_file} must exist?")
       @src = File.read(@test_file)
       if iksnr

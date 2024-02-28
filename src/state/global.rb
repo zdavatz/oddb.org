@@ -83,6 +83,7 @@ require 'util/session'
 require 'util/umlautsort'
 require 'plugin/rss'
 require 'sbsm/state'
+require 'util/workdir'
 
 
 module ODDB
@@ -535,8 +536,7 @@ module ODDB
 				keys = [:download, :months, :compression]
 				input = user_input(keys, keys)
 				items = []
-				dir = File.expand_path('../../data/downloads',
-					File.dirname(__FILE__))
+				dir = ODDB::EXPORT_DIR
 				compression = input[:compression]
 				if(files = input[:download])
 					files.each { |filename, val|

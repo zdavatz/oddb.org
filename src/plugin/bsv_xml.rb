@@ -739,7 +739,7 @@ module ODDB
     attr_reader :preparations_listener
     attr_accessor :nr_visited_preparations
     def initialize *args
-      @latest = File.join ARCHIVE_PATH, 'xml', 'XMLPublications-latest.zip'
+      @latest = File.join ODDB::WORK_DIR, 'xml', 'XMLPublications-latest.zip'
       super
     end
     def update
@@ -747,7 +747,7 @@ module ODDB
       LogFile.append('oddb/debug', " bsv_xml: getting BsvXmlPlugin.update", Time.now)
 
       target_url = ODDB.config.url_bag_sl_zip
-      save_dir = File.join ARCHIVE_PATH, 'xml'
+      save_dir = File.join ODDB::WORK_DIR, 'xml'
       file_name = "XMLPublications.zip"
 
       LogFile.append('oddb/debug', " bsv_xml: target_url = " + target_url.to_s, Time.now)
@@ -819,7 +819,7 @@ module ODDB
     end
     def save_attached_files(file_name, report)
       if file_name and report
-        log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", ODDB::PROJECT_ROOT)
+        log_dir = File.join(ODDB::PROJECT_ROOT, "doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}")
         log_file = File.join(log_dir, file_name)
         FileUtils.mkdir_p(log_dir)
         open(log_file, "w") do |out|
@@ -896,7 +896,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       name = @@today.strftime('Unknown_Products_in_SL_%d.%m.%Y.txt')
       parts.push ['text/plain', name, unknown]
       ## Add bag_xml_swissindex_pharmacode_error.log (error packages from swissindex server)
-      sl_errors_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", ODDB::PROJECT_ROOT)
+      sl_errors_dir = File.join(ODDB::PROJECT_ROOT, "doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}")
       error_file = File.join(sl_errors_dir, 'bag_xml_swissindex_pharmacode_error.log')
       if File.exist?(error_file)
         report = File.read(error_file)

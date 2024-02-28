@@ -5,11 +5,9 @@
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'state/global'
-
-
 require 'minitest/autorun'
 require 'flexmock/minitest'
+require 'state/global'
 require 'command/accept_orphan'
 
 module ODDB 

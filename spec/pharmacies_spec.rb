@@ -35,7 +35,7 @@ describe "ch.oddb.org" do
       unless chooser and chooser.present?
         msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
         puts msg
-        # require 'pry'; binding.pry
+        # require 'debug'; binding.break
         raise msg
       end
       chooser.set(search_text)
@@ -51,7 +51,7 @@ describe "ch.oddb.org" do
     Strasse = "Hauptstrasse 39"
   # We don't repeat here the tests that are in the smoketest!
   it "check pharmacy" do
-#    require 'pry'; binding.pry
+#    require 'debug'; binding.break
     login
     @browser.link(name:  'pharmacies').click
     enter_search_to_field_by_name('Glarus', 'search_query');

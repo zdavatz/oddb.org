@@ -29,7 +29,7 @@ module ODDB
     def self.download_doctors_xml
       xml = nil
       begin
-        file2save = File.join(ODDB.config.data_dir, 'xml', 'refdata_nat.xml')
+        file2save = File.join(ODDB::WORK_DIR, 'xml', 'refdata_nat.xml')
         FileUtils.rm_f(file2save, verbose: false)
         @client = Savon.client(wsdl: "https://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
         # TYPE Search Type
@@ -71,8 +71,8 @@ module ODDB
       agent
     end
     DebugImport         = defined?(MiniTest)
-    Doctors_XML      = File.expand_path(File.join(__FILE__, '../../../data/xml/refdata_nat_latest.xml'))
-    Doctors_curr      = File.expand_path(File.join(__FILE__, "../../../data/xml/refdata_nat_#{Time.now.strftime('%Y.%m.%d')}.xml"))
+    Doctors_XML      = File.join(ODDB::WORK_DIR, 'xml/refdata_nat_latest.xml')
+    Doctors_curr     = File.join(ODDB::WORK_DIR, "xml/refdata_nat_#{Time.now.strftime('%Y.%m.%d')}.xml")
     # MedRegURL     = 'http://www.medregom.admin.ch/'
 # role_types are => ["Pharm", "Indus", "Hosp", "DruSto", "SerFirm", "DoctMed", "PubHea", "Whole", "Pharmst", "Inst", "HeaIns", "IntOrg", "HeaEmpl", "NursHom", "ONursOrg", "SWFirm", "EmergServ", "Assoc", "NonHealthCare", "HeaTec", "AccIns", "HeaProd", "SpecPra", "Drugg", "GrpPra", "Dent", "Veter", "Nurse", "Lab", "Chiro", "HeaProv", "Physio", "LabLeader", "Midw", "Psycho", "Naturopath", "NutrAdv", "SocSec", "Spitex", "DentGrpPra", "CompTherapist", "VetGrpPra", "PrivPra", "Ergo", "MedPracAss", "DiabAdv", "SpeeTher", "PharmAss", "MedSecr", "EmergCent"]
 
@@ -99,7 +99,7 @@ module ODDB
         @doctors_updated = {}
         @doctors_skipped = {}
         @doctors_inactive = {}
-        @archive = File.join ARCHIVE_PATH, 'xls'
+        @archive = File.join ODDB::WORK_DIR, 'xls'
         @@all_doctors    = []
         @agent = Doctors.setup_default_agent
       end
@@ -296,7 +296,7 @@ module ODDB
         xml = IO.read(path)
         if defined?(Minitest) && xml.size > 100*1024
           $stdout.puts "File #{path} way too big #{File.size(path)}"
-          # require 'pry'; binding.pry
+          # require 'debug'; binding.break
         end
         items = Ox.load(xml, mode: :hash_no_attrs)[:"soap:Envelope"][:"soap:Body"][:PARTNER][:ITEM]
         @info_to_gln = {}

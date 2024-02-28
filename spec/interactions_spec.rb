@@ -92,7 +92,7 @@ describe "ch.oddb.org" do
     expect(@browser.url).to match (interactionsUrl)
     inhalt = @browser.text
     MephaInteractions.each do |interaction|
-      binding.pry unless interaction.match(inhalt)
+      binding.break unless interaction.match(inhalt)
       expect(inhalt).to match (interaction)
     end
     @browser.link(name:  'delete').click

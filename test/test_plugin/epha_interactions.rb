@@ -144,14 +144,12 @@ module ODDB
   class TestEphaInteractionPlugin <Minitest::Test
 
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
       @app = StubApp.new
-      @@datadir = File.expand_path '../data/csv/', File.dirname(__FILE__)
-      @@vardir = File.expand_path '../var', File.dirname(__FILE__)
-      eval("ODDB::EphaInteractions::CSV_FILE = '#{File.join(@@vardir, File.basename(ODDB::EphaInteractions::CSV_FILE))}'")
+      @@datadir = File.join(ODDB::TEST_DATA_DIR, 'csv')
+      eval("ODDB::EphaInteractions::CSV_FILE = '#{File.join(ODDB::WORK_DIR, File.basename(ODDB::EphaInteractions::CSV_FILE))}'")
       assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
-      FileUtils.mkdir_p @@vardir
-      ODDB.config.data_dir = @@vardir
-      ODDB.config.log_dir = @@vardir
+      FileUtils.mkdir_p ODDB::WORK_DIR
       @sequence = flexmock('sequence',
                            :packages => ['packages'],
                            :pointer => 'pointer',
@@ -165,7 +163,7 @@ module ODDB
                            :creator => @sequence)
       seq_ptr.should_receive(:+).with([:sequence, 0]).and_return(@sequence)
       FileUtils.rm_f(ODDB::EphaInteractions::CSV_FILE, verbose: true)
-      @fileName = File.join(@@vardir, 'epha_interactions_de_utf8-example.csv')
+      @fileName = File.join(ODDB::WORK_DIR, 'epha_interactions_de_utf8-example.csv')
       @latest = @fileName.sub('.csv', '-latest.csv')
       @plugin = flexmock('epha_plugin', ODDB::EphaInteractionPlugin.new(@app, {}))
       @mock_latest = flexmock('latest', Latest)
@@ -174,16 +172,14 @@ module ODDB
     end
 
     def teardown
-      FileUtils.rm_rf(@@vardir, :verbose => true)
       ODBA.storage = nil
       super # to clean up FlexMock
     end
 
     def test_update_epha_interactions_empty
-      FileUtils.rm_rf(Dir.glob("#{@@vardir}/*"), :verbose => false)
       assert(@plugin.update(@fileName))
       report = @plugin.report
-      files = Dir.glob("#{@@vardir}/*")
+      files = Dir.glob("#{ODDB::WORK_DIR}/*csv")
       assert_equal(3, files.size)
       assert(report.match("EphaInteractionPlugin.update latest"))
       assert(report.match(/Added 1 interactions/))
@@ -193,7 +189,7 @@ module ODDB
       @plugin.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return('old_content')
       assert(@plugin.update(@fileName))
       report = @plugin.report
-      files = Dir.glob("#{@@vardir}/*")
+      files = Dir.glob("#{ODDB::WORK_DIR}/*.csv")
       assert_equal(3, files.size)
       assert(report.match("EphaInteractionPlugin.update latest"))
       assert(report.match(/Added 1 interactions/))

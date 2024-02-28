@@ -62,13 +62,13 @@ module ODDB
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
       @app = flexmock(ODDB::App.new)
-      @archive = File.expand_path('../var', File.dirname(__FILE__))
+      @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
-      @state_2019_01_31 = File.expand_path '../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__)
-      @state_2015_07_02 = File.expand_path '../data/xlsx/Packungen-2015.07.02.xlsx', File.dirname(__FILE__)
-      prep_from = File.expand_path('../data/xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx', File.dirname(__FILE__))
+      @state_2019_01_31 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
+      @state_2015_07_02 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2015.07.02.xlsx')
+      prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@state_2015_07_02).read).by_default
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
       @target = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
@@ -76,9 +76,8 @@ module ODDB
       FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
       FileUtils.rm(@latest) if File.exist?(@latest)
 
-      @test_packages = File.expand_path('../data/xlsx/Packungen-2019.01.31.xlsx', File.dirname(__FILE__))
-      latest_to =      File.expand_path('../data/xls/Packungen-latest.xlsx', File.dirname(__FILE__))
-      FileUtils.makedirs(File.dirname(latest_to))
+      @test_packages = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
+      latest_to =      File.join(ODDB::TEST_DATA_DIR, 'xls/Packungen-latest.xlsx')
       FileUtils.cp(@test_packages, latest_to, :verbose => true, :preserve => true)
       FileUtils.cp(prep_from, File.join(@archive, 'xls',  @@today.strftime('Präparateliste-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
@@ -673,23 +672,20 @@ module ODDB
                               :company_name => company)
       @app = flexmock(@app)
       @app.should_receive(:resolve).and_return(nil)
-      newer = File.expand_path(File.join(@archive, '..', 'data', 'xlsx', 'Packungen-latest.xlsx'))
+      newer = File.join(ODDB::TEST_DATA_DIR, 'xlsx', 'Packungen-latest.xlsx')
       older = @state_2015_07_02
-      FileUtils.cp(older,
-                   File.join(@archive, 'xls', 'Packungen-latest.xlsx'),
+      FileUtils.cp(older, File.join(ODDB::TEST_DATA_DIR, 'xls', 'Packungen-latest.xlsx'),
                    :verbose => true, :preserve => true)
-      FileUtils.cp(older, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
+      FileUtils.cp(older, File.join(ODDB::TEST_DATA_DIR, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
       result =  @plugin.update
-      puts @plugin.report
       assert_equal(4, @plugin.updated_agents.size)
       assert_equal(15, @plugin.recreate_missing.size)
       assert_equal(8, @plugin.known_export_registrations.size)
       assert_equal(8, @plugin.known_export_sequences.size)
-      FileUtils.cp(newer, File.join(@archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
+      FileUtils.cp(newer, File.join(ODDB::TEST_DATA_DIR, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
                    :verbose => true, :preserve => true)
       result =  @plugin.update
-      puts @plugin.report
       assert_equal(0, @plugin.updated_agents.size)
       assert_equal(0, @plugin.recreate_missing.size)
       assert_equal(8, @plugin.known_export_registrations.size)

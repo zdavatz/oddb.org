@@ -13,7 +13,7 @@ require "plugin/lppv"
 require "net/http"
 require 'flexmock/minitest'
 require 'vcr'
-begin  require 'pry'; rescue LoadError; end # ignore error when pry cannot be loaded (for Jenkins-CI)
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 require 'test_helpers' # for VCR setup
 
 module ODDB
@@ -27,6 +27,9 @@ module ODDB
       end
     end
     def setup
+      FileUtils.rm_rf(ODDB::WORK_DIR)
+      FileUtils.makedirs(ODDB::WORK_DIR)
+      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'lppv/LPPV_D.xlsx'), ODDB::WORK_DIR)
       ODDB::TestHelpers.vcr_setup
       package1 = flexmock('package',
                          :barcode      => '7680554950049',

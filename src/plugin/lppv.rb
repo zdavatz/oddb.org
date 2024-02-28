@@ -45,7 +45,7 @@ module ODDB
       doc = Nokogiri::HTML(URI.open("http://#{LPPV_HOST}/"))
       links = Hash[doc.xpath('//a[@href]').map {|link| [link.text.strip, link["href"]]}]
       link = links.values.find{|x| /LPPV_D/.match(x) }
-      @download_to = File.join ARCHIVE_PATH, File.basename(link)
+      @download_to = File.join ODDB::WORK_DIR, File.basename(link)
       URI.open(@download_to, 'w+') { |f| f.write URI.open(link).read }
       workbook = RubyXL::Parser.parse(@download_to)
       positions = []

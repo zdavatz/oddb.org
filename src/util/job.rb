@@ -9,8 +9,7 @@ require 'etc/db_connection'
 module ODDB
   module Util
 module Job
-  LOG_ROOT = File.expand_path('log', PROJECT_ROOT)
-  PID_FILE = File.expand_path('job.pid', LOG_ROOT)
+  PID_FILE = File.join(LOG_DIR, 'job.pid')
   def Job.run opts={}, &block
     system = DRb::DRbObject.new(nil, ODDB.config.server_url)
     DRb.start_service

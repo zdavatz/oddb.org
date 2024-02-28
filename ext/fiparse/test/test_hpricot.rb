@@ -11,7 +11,7 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../../..', File.dirname(__FILE__))
 $: << File.expand_path('../../../test', File.dirname(__FILE__))
 
-begin require 'pry'; rescue LoadError; end
+begin require 'debug'; rescue LoadError; end
 require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'

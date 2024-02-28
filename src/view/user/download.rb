@@ -5,6 +5,7 @@
 require 'htmlgrid/passthru'
 require 'util/logfile'
 require 'plugin/yaml'
+require 'util/workdir'
 
 module ODDB
 	module View
@@ -12,7 +13,7 @@ module ODDB
 class Download < HtmlGrid::PassThru
 	def init
 		if(filename = @session.user_input(:filename))
-      dir = File.expand_path('../../../data/downloads', File.dirname(__FILE__))
+      dir = ODDB::EXPORT_DIR
 			@path = File.join(dir, filename)
 		end
 	end
