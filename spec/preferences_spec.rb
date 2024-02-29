@@ -6,25 +6,32 @@ require 'spec_helper'
 
 describe "ch.oddb.org" do
   before :all do
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
   end
 
   after :all do
     @browser.close if @browser
   end
 
+  def enter_preferences
+    @browser.goto(ODDB_URL)
+    @browser.link(name: 'de').wait_until(&:present?)
+    @browser.link(name: 'de').click
+    @browser.link(name: 'preferences').wait_until(&:present?)
+    @browser.link(name: 'preferences').click
+    @browser.radio(id:  "blue").wait_until(&:present?)
+  end
   infos = [
     [nil,nil, 'Spital'],
-    [AdminUser, AdminPassword, 'Admin'],
+    [ADMIN_USER, ADMIN_PASSWORD, 'Admin'],
     [ViewerUser, ViewerPassword, 'Arzt' ]
     ].each do |info|
     user = info[0]
     pw = info[1]
     link_text = info[2]
-    it "should save the color prefence as user #{user} using link #{link_text}" do
+    it "should save the color prefence as #{user ? user : "not logged in"} using link #{link_text}" do
       user ? login(user, pw) : logout
-      @browser.link(name: 'de').click
-      @browser.link(name: 'preferences').click
+      enter_preferences
       blue = @browser.radio(id:  "blue")
       expect(blue.exist?).to eql true
       red = @browser.radio(id:  "red")
@@ -34,13 +41,26 @@ describe "ch.oddb.org" do
       @browser.radio(id:  "st_substance").set
       expect(@browser.button(name: 'update').exist?).to eql true
       @browser.button(name: 'update').click
-      expect(@browser.image(src: /blue/).exist?).to eql true
-      Watir::Anchor#wait_until(@browser.link(visible_text: link_text)(&:present?))
-#      require 'debug'; binding.break
-      @browser.link(visible_text: link_text).click
-      expect(@browser.image(src: /blue/).exist?).to eql true
-      @browser.link(name: 'en').click
-      expect(@browser.image(src: /blue/).exist?).to eql true
+      @browser.image.wait_until(&:present?)
+      @browser.goto(ODDB_URL)
+      if user # we are logged in, the settings should be saved
+        @browser.image(src: /blue/).wait_until(&:present?)
+        expect(@browser.image(src: /blue/).exist?).to eql true
+        @browser.link(visible_text: link_text).click
+        @browser.image(src: /blue/).wait_until(&:present?)
+        expect(@browser.image(src: /blue/).exist?).to eql true
+        @browser.link(name: 'en').click
+        @browser.image(src: /blue/).wait_until(&:present?)
+        expect(@browser.image(src: /blue/).exist?).to eql true
+      else
+        @browser.image(src: /gcc/).wait_until(&:present?)
+        expect(@browser.image(src: /gcc/).exist?).to eql true
+        expect(@browser.image(src: /blue/).visible?).to eql false
+        @browser.link(visible_text: link_text).click
+        @browser.image(src: /gcc/).wait_until(&:present?)
+        expect(@browser.image(src: /gcc/).exist?).to eql true
+        expect(@browser.image(src: /blue/).visible?).to eql false
+      end
     end
   end
 end

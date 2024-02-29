@@ -8,11 +8,11 @@ describe "ch.oddb.org" do
 
   before :all do
     @idx = 0
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
     @browser.link(visible_text: 'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
   end
 
@@ -20,55 +20,32 @@ describe "ch.oddb.org" do
     @idx += 1
 #    createScreenshot(@browser, '_'+@idx.to_s)
     # sleep
-#    @browser.goto OddbUrl
+#    @browser.goto ODDB_URL
   end
 
-    def enter_search_to_field_by_name(search_text, field_name)
-      idx = 1
-      chooser = @browser.text_field(name: field_name)
-      0.upto(2).each{
-        |idx|
-        break if chooser and chooser.present?
-        sleep 1
-        chooser = @browser.text_field(name: field_name)
-      }
-      unless chooser and chooser.present?
-        msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
-        puts msg
-        # require 'debug'; binding.break
-        raise msg
-      end
-      chooser.set(search_text)
-      sleep idx*0.1
-      chooser.send_keys(:down)
-      sleep idx*0.1
-      chooser.send_keys(:enter)
-      sleep idx*0.1
-    end
+  MATCH_THIS_PHARMACY = 'Apotheke im Spital'
+  MATCH_THIS_PHARMACYEAN = '7601001409958'
+  Strasse = "Burgstrasse 99"
 
-    Fridolin = 'St. Fridolin Pharma AG'
-    FridolinEAN = '7601001396043'
-    Strasse = "Hauptstrasse 39"
   # We don't repeat here the tests that are in the smoketest!
-  it "check pharmacy" do
-#    require 'debug'; binding.break
+  it "check pharmacy #{MATCH_THIS_PHARMACY} #{MATCH_THIS_PHARMACYEAN}" do
     login
     @browser.link(name:  'pharmacies').click
     enter_search_to_field_by_name('Glarus', 'search_query');
+    @browser.link(text: /Apotheke Gl/).wait_until(&:present?)
     expect(@browser.text).to match 'Kantonsspital Glarus AG'
-    expect(@browser.text).to match /Fridolin/
-    @browser.link(visible_text: Fridolin).click
+    expect(@browser.text).to match /#{MATCH_THIS_PHARMACY}/
+    @browser.link(visible_text:  /#{MATCH_THIS_PHARMACY}/).click
     # don't know why we need to wait here, but it works!
-    sleep 0.5 unless @browser.link(visible_text:  /Lageplan/).exists?
+    @browser.link(visible_text:  /Lageplan/).wait_until(&:present?)
     inhalt = @browser.text
-    expect(inhalt).to match Fridolin
+    expect(inhalt).to match MATCH_THIS_PHARMACY
     expect(@browser.url).to match /pharmacy\/ean/
-    expect(@browser.url).to match FridolinEAN
-    expect(inhalt).to match /Fridolin/
-    expect(inhalt).to matchStrasse
-    expect(inhalt).to match "8750 Glarus"
+    expect(@browser.url).to match MATCH_THIS_PHARMACYEAN
+    expect(inhalt).to match Strasse
+    expect(inhalt).to match Strasse.gsub(' ', '.')
     @browser.link(visible_text:  /map.search/).click
-    expect(@browser.url).to match /glarus,hauptstr.39/i
+    expect(@browser.url).to match /Glarus/
     @browser.back
   # go back to search result
     @browser.back

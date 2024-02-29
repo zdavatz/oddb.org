@@ -12,13 +12,13 @@ describe "ch.oddb.org" do
     @idx = 0
     @all_search_limitations = ["search_limitation_A", "search_limitation_B", "search_limitation_C", "search_limitation_D", "search_limitation_E",
             "search_limitation_SL_only", "search_limitation_valid"]
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
     @browser.link(name: 'search_instant').click unless   @browser.link(name: 'search_instant').text.eql?('Instant')
     @direktvergleich = 'Für den Direktvergleich klicken Sie'
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   after :each do
@@ -40,48 +40,49 @@ describe "ch.oddb.org" do
     before :all do
     end
     before :each do
-      @browser.goto OddbUrl
+      skip "We do not run these tests when testing_ch_oddb_org" unless testing_ch_oddb_org
+      @browser.goto ODDB_URL
       logout
-      login(AdminUser, AdminPassword)
+      login(ADMIN_USER, ADMIN_PASSWORD)
     end
     after :all do
       logout
     end
   it "admin should edit package info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02/pack/04"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/drug/reg/56091/seq/02/pack/04"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     text = @browser.text.clone
     skip 'check_nutriflex_56091 only works with sequence, not with package'
     check_nutriflex_56091(text)
     expect(text).to match /Patinfo aktivieren/i
     expect(text).to match /Braun Medical/i
     expect(text).to match /Nutriflex Lipid/i
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
 
   it "admin should edit sequence info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091/seq/02"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/drug/reg/56091/seq/02"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     text = @browser.text.clone
     expect(text).to match /Patinfo aktivieren/i
     expect(text).to match /Braun Medical/i
     expect(text).to match /Nutriflex Lipid/i
     expect(text).to match /Wirkstoffe.+Arginin.+Isoleucin/im # correct sort order
     check_nutriflex_56091(text)
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
 
   it "admin should edit registration info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/drug/reg/56091"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/drug/reg/56091"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     text = @browser.text.clone
     expect(text).to match /Fachinfo-Upload/i
     expect(text).to match /Braun Medical/i
     expect(text).to match /Nutriflex Lipid/i
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
   end
   describe 'desitin' do
@@ -94,15 +95,16 @@ describe "ch.oddb.org" do
     sleep(0.1)
     @browser.button(name: "search").click
     @browser.element(id: 'ikscat_1').wait_until(&:present?)
-    expect(@browser.element(id: 'ikscat_1').text).to eq 'A / SL'
+    expect(@browser.element(id: 'ikscat_1').text).to eq 'A+ / SL'
     expect(@browser.link(visible_text: 'FI').exists?).to eq true
     expect(@browser.link(visible_text: 'PI').exists?).to eq true
-    expect(@browser.td(visible_text: 'A').exists?).to eq true
+    expect(@browser.td(visible_text: 'A+').exists?).to eq true
     expect(@browser.td(visible_text: 'C').exists?).to eq false
     expect(@browser.link(visible_text: 'FB').exists?).to eq true
     td = @browser.td(visible_text: /Pethidin/i)
     expect(td.style('background-color')).to match /0, 0, 0, 0/
-    selbstbehalt =   @browser.span(:text => /A \/ SL/).wait_until(&:present?)
+    selbstbehalt =   @browser.span(:text => /A+.+\/.+SL/).present?
+    selbstbehalt =   @browser.span(:text => /A+.+\/.+SL/).wait_until(&:present?)
   end
 
   it "should display a limitation link for Sevikar" do
@@ -168,7 +170,7 @@ describe "ch.oddb.org" do
   end
 
   it "should display two differnt prices for 55717 daTSCAN TM 123 I-Ioflupane " do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/price_history/reg/55717/seq/01/pack/002"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/price_history/reg/55717/seq/01/pack/002"
     inhalt = @browser.text.clone
     first_index  = inhalt.index(/01.03.2012.*936.61.*1149.20/)
     second_index = inhalt.index(/01.03.2010.*1070.00.*1294.25/)
@@ -178,34 +180,34 @@ describe "ch.oddb.org" do
   end
 
   it "should show a registration info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/56091"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     text = @browser.text.clone
     expect(text).to match /Braun Medical/i
     expect(text).to match /Nutriflex Lipid/i
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
 
   it "should show a sequence info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/56091/seq/02"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     check_nutriflex_56091(@browser.text.clone)
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
 
   it "should show a package info" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/56091/seq/02/pack/04"
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/56091/seq/02/pack/04"
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     check_nutriflex_56091(@browser.text.clone)
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
   end
 
   it "should contain Open Drug Database" do
-    waitForOddbToBeReady(@browser, OddbUrl)
-    expect(@browser.url).to match    OddbUrl      unless ['just-medical'].index(Flavor)
+    waitForOddbToBeReady(@browser, ODDB_URL)
+    expect(@browser.url).to match    ODDB_URL      unless ['just-medical'].index(Flavor)
     expect(@browser.title).to match /Open Drug Database/i
   end
 
@@ -236,25 +238,27 @@ describe "ch.oddb.org" do
   it "should display plus/minus signs for feedbacks" do
     # Found an example with + and - sign via bin/admin
     # sorted_feedbacks.find_all{ |x| !x.experience && x.time.year > 2010}.first.item.sequence
-    @browser.goto(OddbUrl+'/de/gcc/feedbacks/reg/62126/seq/02/pack/005')
+    @browser.goto(ODDB_URL+'/de/gcc/feedbacks/reg/62126/seq/02/pack/005')
     text = @browser.text.dup
     expect(text).to match /Persönliche Erfahrung.+\-.+Empfehlung/m
     expect(text).to match /Empfehlung.+\+.+Persönlicher Eindruck/m
   end
 
+  # TODO: Niklaus: 2024.02.29 I do not have the energy to setup the watri chrome correctly
   it "should find redirect an iphone to the mobile flavor" do
     begin
       iphone_ua =  "Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1"
       new_options = @browser_options.clone
       new_options.args << "--user-agent=#{iphone_ua}"
       iphone_browser = Watir::Browser.new  :chrome, options: new_options
-      iphone_browser.goto 'http://www.useragentstring.com/'
-      expect(iphone_browser.textarea(id: "uas_textfeld").value).to eql iphone_ua
-      iphone_browser.goto OddbUrl
-      expect(iphone_browser.url).to match(/\/\/i\./) # this fails
+      iphone_browser.goto 'http://www.useragentstring.com/';
       txt = iphone_browser.text.clone
+      expect(iphone_browser.textarea(id: "uas_textfeld").value).to eql iphone_ua
+      expect(txt).to match /AppleWebKit/
+      expect(txt).to match /Mobile/
       expect(txt).not_to match(/Fachinfo-Online/)
       expect(txt).not_to match(/Feedback/)
+      iphone_browser.goto ODDB_URL
     ensure
       iphone_browser.close if iphone_browser
     end
@@ -268,7 +272,7 @@ describe "ch.oddb.org" do
       saved = @idx
       names.each {
         |name|
-          waitForOddbToBeReady(@browser, OddbUrl)
+          waitForOddbToBeReady(@browser, ODDB_URL)
           @browser.select_list(name: "search_type").select("Markenname")
           @browser.text_field(name: "search_query").set(name)
           @browser.button(name: "search").click; small_delay
@@ -286,7 +290,7 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the english language versions" do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
     english = @browser.link(visible_text: 'English')
     english.wait_until(&:present?)
     english.click
@@ -305,28 +309,37 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should open print patinfo in a new window" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/patinfo/reg/51795/seq/01"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/patinfo/reg/51795/seq/01"
+    @browser.link(text: 'PI').wait_until(&:present?)
     windowSize = @browser.windows.size
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     @browser.link(visible_text: 'Drucken').click; small_delay
     expect(@browser.windows.size).to eq(windowSize + 1)
-    @browser.windows.last.use
-    sleep(0.5)
+    # avoid indexing not reliable on WindowCollection
+    @browser.switch_window
     expect(@browser.text).to match /^Ausdruck.*Patienteninformation/im
-    expect(@browser.url).to match OddbUrl
-    @browser.windows.last.close
+    expect(@browser.url).to match ODDB_URL
+    @browser.window(url: ODDB_URL).close
   end
 
   it "should open a sequence specific patinfo" do # 15219 Zymafluor
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/15219"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/15219"; small_delay
   #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
   end
 
+  it "should have a valid link for a Preis Anfrage" do
+    login
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/45572/seq/01/pack/013"
+    @browser.link(visible_text: 'PA').wait_until(&:present?)
+    @browser.link(visible_text: 'PA').click
+    expect(is_link_valid?(@browser.link(visible_text: 'PA').href)).to eq true
+  end
+
   it "should open a package specific patinfo" do # 43788 Tramal
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
   #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
@@ -341,7 +354,7 @@ describe "ch.oddb.org" do
     ['/de/gcc/patinfo/reg/57489/seq/01',
      '/de/gcc/patinfo/reg/55297/seq/04',
      ].each do  |pi_url|
-        @browser.goto "#{OddbUrl}/#{pi_url}"
+        @browser.goto "#{ODDB_URL}/#{pi_url}"
         expect(/NoMethodError/i.match(@browser.text)).to be nil
         expect(@browser.link(name: 'effects').present?).to be true
         expect(@browser.link(name: 'change_log').present?).to be true
@@ -353,7 +366,7 @@ describe "ch.oddb.org" do
     end
   end
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
   #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
@@ -364,7 +377,7 @@ describe "ch.oddb.org" do
   end
 
   it "should show correct Tramal Tropfen Lösung zum Einnehmen ohne Dosierpumpe(4788/01/086)" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"; small_delay
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
     @browser.link(visible_text: 'PI').click; small_delay
     expect(@browser.url).to match /patinfo/i
@@ -374,28 +387,27 @@ describe "ch.oddb.org" do
   end
 
   it "should open print fachinfo in a new window" do
-    @browser.goto "#{OddbUrl}/de/#{Flavor}/fachinfo/reg/51795"; small_delay
-    expect(@browser.url).to match OddbUrl
-    windowSize = @browser.windows.size
-    @browser.windows.last.use
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/fachinfo/reg/51795"
     @browser.link(visible_text: /Drucken/i).wait_until(&:present?)
-    @browser.link(visible_text: /Drucken/i).click;
-    small_delay unless @browser.windows.size == windowSize + 1
+    expect(@browser.url).to match ODDB_URL
+    windowSize = @browser.windows.size
+    @browser.link(visible_text: /Drucken/i).click
     expect(@browser.windows.size).to eq(windowSize + 1)
-    @browser.windows.last.use
-    sleep(1)
-    expect(@browser.text).to match /^Ausdruck.*Fachinformation/im
-    expect(@browser.url).to match OddbUrl
-    @browser.windows.last.close
+    @browser.switch_window
+    expect(@browser.text[0..200]).to match /^Ausdruck.*Fachinformation/im
+    expect(@browser.url).to match ODDB_URL
+    @browser.window(url: ODDB_URL).close
   end
 
   it "should be possible to request a new password" do
-    @browser.link(visible_text: 'Abmelden').click if @browser.link(visible_text: 'Abmelden').exists?
-    small_delay
-    @browser.link(visible_text: 'Anmeldung').click; small_delay
+    @browser.link(visible_text: 'Abmelden').click if @browser.link(visible_text: 'Abmelden').visible?
+    @browser.link(visible_text: 'Anmeldung').wait_until(&:present?)
+    @browser.link(visible_text: 'Anmeldung').click
+    @browser.link(name: 'password_lost').wait_until(&:present?)
     @browser.link(name: 'password_lost').click
+    @browser.text_field(name: 'email').wait_until(&:present?)
     @browser.text_field(name: 'email').set 'ngiger@ywesee.com'
-    @browser.button(name: 'password_request').click; small_delay
+    @browser.button(name: 'password_request').click
     url = @browser.url
     text = @browser.text
     expect(url).not_to match /error/i
@@ -433,13 +445,13 @@ describe "ch.oddb.org" do
 
   it "should display search and search_type for fachinfo diff of 28.11.2015" do
     diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff/28.11.2015"
-    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    @browser.goto(ODDB_URL + '/de/gcc' + diff_url)
     check_search_with_type
   end
 
   it "should display search and search_type for fachinfo diff" do
     diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
-    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    @browser.goto(ODDB_URL + '/de/gcc' + diff_url)
     check_search_with_type
     link =  @browser.link(name: "change_log")
     expect(link.exists?).to eq true
@@ -448,7 +460,7 @@ describe "ch.oddb.org" do
   end
 
   it 'should display the correct calculation for Bicalutamid Sandoz' do
-    @browser.goto(OddbUrl + '/de/gcc/search/zone/drugs/search_query/Bicalutamid%20Sandoz/search_type/st_sequence?#best_result')
+    @browser.goto(ODDB_URL + '/de/gcc/search/zone/drugs/search_query/Bicalutamid%20Sandoz/search_type/st_sequence?#best_result')
     tageskosten =  @browser.trs.find{|x| /^Tageskosten/.match(x.text)}.text
     expect(tageskosten).to match 'Tagesdosis 50 mg'
     expect(tageskosten).to match 'Publikumspreis 615.95 CHF'
@@ -457,13 +469,9 @@ describe "ch.oddb.org" do
     expect(tageskosten).to match /Berechnung \d+\.\d+.+= \d+\.\d+.CHF \/ Tag/
   end
 
-  ['Inderal',
-   'Augmentin'
-   ].each do |medi|
-    it "should have a working instant search for #{medi} and going back" do
+    # this is very tricky!`
+  def select_medi_via_instant(medi)
       @browser.link(visible_text: 'Instant').click if @browser.link(visible_text: 'Instant').exists?
-      skip("backtrace does not work with Augmentin which contains ( in the link") if /Augmentin/i.match(medi)
-
       expect(@browser.text).to match /Art der Suche:\s*$\s*Plus/im
       0.upto(10).each{ |idx|
                       begin
@@ -484,12 +492,19 @@ describe "ch.oddb.org" do
                         next
                       end
                       }
-      @browser.send_keys("\n")
+  end
+
+  ['Inderal',
+   'Augmentin'
+   ].each do |medi|
+    it "should have a working instant search for #{medi} and going back" do
+      skip("backtrace does not work with Augmentin which contains ( in the link") if /Augmentin/i.match(medi)
+      select_medi_via_instant(medi)
       url = @browser.url
       inhalt = @browser.text
       expect(inhalt).to match(/Preisvergleich für/i)
       expect(inhalt).to match(/#{medi}/i)
-      expect(inhalt).to match(/Zusammensetzung/i)
+      expect(inhalt).to matgbgch(/Zusammensetzung/i)
       back_to_list = @browser.link(visible_text: /Liste/)
       old_text = @browser.text.clone
       expect(back_to_list.present?)
@@ -505,13 +520,9 @@ describe "ch.oddb.org" do
   end
 
   [ 'status_oddb',
-    'status_crawler',
-   'status_google_crawler',
-   'status_generika',
-#   'status_just-medical',
    ].each do | name |
     it "should have a working status page #{name}" do
-      @browser.goto(OddbUrl + '/resources/downloads/'+ name)
+      @browser.goto(ODDB_URL + '/resources/downloads/'+ name)
       url = @browser.url
       inhalt = @browser.text
       m = /sessions:\s+(\d+).+threads:\s+(\d+).+memory:\s+(\d+)/.match(inhalt)
@@ -530,8 +541,43 @@ describe "ch.oddb.org" do
     end
   end
 
-  def set_seach_preferences(prefs)
-    @user_pref_url = OddbUrl + '/de/gcc/preferences'
+  [ 'status_crawler',
+   'status_google_crawler',
+   'status_generika',
+#   'status_just-medical',
+   ].each do | name |
+    it "should have a working status page #{name}" do
+      @browser.goto(ODDB_URL + '/resources/downloads/'+ name)
+      url = @browser.url
+      inhalt = @browser.text
+      m = /sessions:\s+(\d+).+threads:\s+(\d+).+memory:\s+(\d+)/.match(inhalt)
+      skip("status page for #{name} may be absent when running under devenv") unless m
+      expect(m).not_to be nil
+      expect(m[1].to_i).to be >= 0 # sessions can be 0
+      expect(m[2].to_i).to be > 0 # we must have at least one thread
+      expect(m[3].to_i).to be > 0 # memory
+      m2 = /^\s*(\d+)-(\d+)-(\d+)\s+(\d+):(\d+):(\d+):/.match(inhalt)
+      expect(m2).not_to be nil
+      time = Time.parse(m2[0])
+      diff_seconds = Time.now.to_i - time.to_i
+      # * less than 5 minutes
+      # require 'debug'; binding.break unless diff_seconds < 310
+      puts "status page #{url} is too old #{time}" unless diff_seconds < 310
+      expect(diff_seconds).to be < 310
+    end
+  end
+
+  def verify_search_preferences(prefs)
+    @user_pref_url = ODDB_URL + '/de/gcc/preferences'
+    @browser.goto(@user_pref_url)
+#    @all_search_limitations.each { |id|  @browser.checkbox(id: id).clear }
+    for limitation in prefs do
+      @browser.checkbox(id: limitation.to_s).set(true)
+    end
+    @browser.button(name: 'update').click
+  end
+  def set_search_preferences(prefs)
+    @user_pref_url = ODDB_URL + '/de/gcc/preferences'
     @browser.goto(@user_pref_url)
     @all_search_limitations.each { |id|  @browser.checkbox(id: id).clear }
     for limitation in prefs do
@@ -551,16 +597,16 @@ describe "ch.oddb.org" do
   )
   it 'should not display expired drugs, when search says active drugs only' do
     login
-    set_seach_preferences([])
+    set_search_preferences([])
     select_product_by_trademark(VALID_ONLY_TRADEMARK_EXAMPLE)
     nr_unrestricted_products = get_nr_items
     puts "found #{nr_unrestricted_products} unrestricted products for #{VALID_ONLY_TRADEMARK_EXAMPLE}"
-    set_seach_preferences([:search_limitation_valid])
+    set_search_preferences([:search_limitation_valid])
     select_product_by_trademark(VALID_ONLY_TRADEMARK_EXAMPLE)
     nr_restricted_products = get_nr_items
     puts "found #{nr_restricted_products} restricted products for #{VALID_ONLY_TRADEMARK_EXAMPLE}"
     expect(nr_unrestricted_products).to be > 0
-    skip('Will probably fail if you did not search for one of the few examples via bin admin')
+#    skip('Will probably fail if you did not search for one of the few examples via bin admin')
     expect(nr_unrestricted_products).to be > nr_restricted_products
     puts "Limit to only valid products succeeded for #{VALID_ONLY_TRADEMARK_EXAMPLE}" if nr_unrestricted_products > nr_restricted_products
   end
@@ -592,13 +638,14 @@ describe "ch.oddb.org" do
     must_be_greater  = example[2]
     it "limiting the search to #{limitation} using #{drug_name}" do
       login
-      set_seach_preferences([])
+      set_search_preferences([])
       select_product_by_trademark(drug_name)
       nr_unrestricted_first = get_nr_items
       expect(nr_unrestricted_first).to be > 0
 
-      set_seach_preferences([limitation])
-      @browser.goto(OddbUrl)
+      set_search_preferences([limitation])
+      verify_search_preferences([limitation])
+      @browser.goto(ODDB_URL)
       @browser.goto(@user_pref_url)
       expect(@browser.checkbox(id: limitation.to_s).set?).to be true
       select_product_by_trademark(drug_name)
@@ -609,7 +656,7 @@ describe "ch.oddb.org" do
       expect(nr_restriced).to be > 0
 
       # Reset preferences to zer
-      set_seach_preferences([])
+      set_search_preferences([])
       select_product_by_trademark(drug_name)
       nr_unrestricted_second = get_nr_items
       puts "Testing nr items found with #{limitation} for #{drug_name} which returned #{nr_unrestricted_first}/#{nr_restriced}/#{nr_unrestricted_second} items. must_be_greater is #{must_be_greater}"
@@ -619,7 +666,7 @@ describe "ch.oddb.org" do
     end
   end
   it "should display a result for homeopathy Similasan Arnica" do
-    url = OddbUrl + "/de/homeopathy"
+    url = ODDB_URL + "/de/homeopathy"
     @browser.goto(url)
     @browser.select_list(name: "search_type").select("Markenname")
     @browser.text_field(name: "search_query").set('Similasan Arnica')

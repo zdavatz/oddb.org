@@ -77,6 +77,9 @@ DOMAINS_TO_BE_ADDED = [
   DOMAINS.each do |domain|
     url = "https://#{domain}"
     it "should work with #{url}" do
+      unless testing_ch_oddb_org
+        skip "Skip testing domains #{domain} when testing_ch_oddb_org is false"
+      end
       @browser.goto(url)
       expect(@browser.text_field(name: "search_query").exist?).to eql true
     end unless /oddb-ci/.match(Socket.gethostname)

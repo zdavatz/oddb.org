@@ -7,47 +7,9 @@ require 'tmpdir'
 require "selenium-webdriver"
 
 describe "ch.oddb.org" do
-
-  def enter_search_to_field_by_name(search_text, field_name)
-    idx = -2
-    chooser = @browser.text_field(name: field_name)
-    0.upto(2).each{
-      |idx|
-      break if chooser and chooser.present?
-      sleep 1
-      chooser = @browser.text_field(name: field_name)
-    }
-    unless chooser and chooser.present?
-      msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
-      puts msg
-      raise msg
-    end
-    0.upto(30).each{ |idx|
-                      begin
-                        chooser.set(search_text)
-                        sleep idx*0.1
-                        chooser.send_keys(:down)
-                        sleep idx*0.1
-                        chooser.send_keys(:enter)
-                        sleep idx*0.1
-                        value = chooser.value
-                        break unless /#{search_text}/.match(value)
-                        sleep 0.5
-                      rescue StandardError => e
-                        puts "in rescue"
-                        createScreenshot(@browser, "rescue_#{search_text}_#{__LINE__}")
-                        puts e.inspect
-                        puts caller[0..5]
-                        return
-                      end
-                    }
-    chooser.set(chooser.value + "\n")
-    # puts "chooser value #{chooser.value} text  #{chooser.text}"
-    createScreenshot(@browser, "_#{search_text}_#{__LINE__}")
-  end
-
   before :all do
-    waitForOddbToBeReady(@browser, OddbUrl)
+    expect(File.exist?(Oddb_log_file)).to eql true
+    waitForOddbToBeReady(@browser, ODDB_URL)
     logout
   end
 
@@ -57,40 +19,41 @@ describe "ch.oddb.org" do
       @browser.windows.first.use
       @browser.windows.last.close if @browser.windows.last
     end
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   AddressCorrections = Struct.new(:name, :url_display, :url_correct)
-  root_url = OddbUrl.sub(':443','')
+  root_url = ODDB_URL.sub(':443','')
+  it "should be possible to correct an address for a doctor when not logged in" do
+    skip "We should add a check for the capital of Switzerland"
+  end
+
   to_check = [
     # TODO: How can we ensure that we have valid EAN and OID?
-      AddressCorrections.new('company',
-                              root_url + '/de/gcc/company/ean/7601001001121',
-                              ),
-      AddressCorrections.new('doctor',
-                              root_url + '/de/gcc/doctor/ean/7601000254344',
-                             ),
-      AddressCorrections.new('hospital',
-                            root_url + '/de/gcc/hospital/ean/7601002002592',
-                            ),
-      AddressCorrections.new('pharmacy',
-                            root_url + '/de/gcc/pharmacy/ean/7601001380028',
-                            ),
+      AddressCorrections.new('company',  root_url + '/de/gcc/company/ean/7601001392717',),
+      AddressCorrections.new('doctor',   root_url + '/de/gcc/doctor/ean/7601000254207',),
+      AddressCorrections.new('hospital', root_url + '/de/gcc/hospital/ean/7601002128780',),
+      AddressCorrections.new('pharmacy', root_url + '/de/gcc/pharmacy/ean/7601001409958',),
     ]
   to_check.each {
     |correction|
     it "should be possible to correct an address for a #{correction.name}" do
-      login(ViewerUser,  ViewerPassword)
+      expect(login).to eq true
       @browser.goto correction.url_display
       sleep(1) unless @browser.button(name:  "correct").exist?
       unless @browser.button(name:  "correct").exist?
         skip "Login failed. Please check your setup"
       end
       @browser.button(name:  "correct").click
+      @browser.tr(text: /Einstellung/).wait_until(&:present?)
       expect(@browser.url).to match /\/suggest_address\/.*\/address\//
       @browser.text_field(name:  "email").set("ngiger@ywesee.com")
       @browser.textarea(name:  "message").set("Testbemerkung")
       @browser.textarea(name:  "additional_lines").set("Neue Addresszeile")
+      @browser.select_list(name: "address_type").click
+      @browser.option(text: 'Arbeitsplatz').click
+      @browser.select_list(name: "canton").click
+      @browser.option(text: 'GL').click
       @browser.button(value: "Vorschlag senden").click
       expect(@browser.text).not_to match /Die von Ihnen gewünschte Information ist leider nicht mehr vorhanden./
       expect(@browser.text).to match /Vielen Dank, Ihr Vorschlag wurde versendet./
@@ -114,7 +77,7 @@ describe "ch.oddb.org" do
 
       # As a admin user I should be able view the change
       logout
-      expect(login(AdminUser, AdminPassword)).to eq true
+      expect(login(ADMIN_USER, ADMIN_PASSWORD)).to eq true
       @browser.goto url_from_received_mail
       expect(@browser.url).to eq(url_from_received_mail)
       sleep 1
