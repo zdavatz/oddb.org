@@ -1,6 +1,5 @@
 .bundle
 .rbenv-version
-.ruby-version
 .lock*
 data/csv/
 test/data/csv/
@@ -41,3 +40,12 @@ documentation/
 test/var
 coverage
 better_dosing_+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

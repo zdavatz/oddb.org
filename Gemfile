@@ -77,10 +77,6 @@ group :test do
   gem 'minitest-should_syntax'
   gem 'minitest-spec-expect'
   gem 'watir'
-  gem 'watir-scroll'
-
-  gem 'webdrivers'
-  gem 'watir-webdriver'
   gem 'page-object'
   gem 'vcr'
   gem 'webmock'
