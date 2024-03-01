@@ -22,7 +22,7 @@ class DownloadItem < State::User::RegisterDownload
     keys  = [:buy, :month, :compression] # month and compression are optional
     input = user_input(keys, [:buy])
     items = [] # as container (one item)
-    dir = ODDB::TEST_DATA_DIR
+    dir = ODDB::EXPORT_DIR
     filename = nil
     # All files have .zip compressed version without epub and prc.
     # Some items have only .zip and .tar.gz only.
