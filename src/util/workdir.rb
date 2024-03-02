@@ -14,7 +14,7 @@ module ODDB
 
     # values differ for tests and application
     EXPORT_DIR = File.join(WORK_DIR, 'downloads')
-    LOG_DIR = File.join(WORK_DIR, 'log')
+    LOG_DIR = File.expand_path(File.join(WORK_DIR, '../log'))
     CSV_DIR = File.join(WORK_DIR, 'csv')
     XML_DIR = File.join(WORK_DIR, 'xml')
 
