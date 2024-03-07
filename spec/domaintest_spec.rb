@@ -10,6 +10,9 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     setup_browser
+    unless @browser.name.eql?(:chrome)
+      fail "This test works only with the chrome browser!"
+    end
   end
 
   before :each do
@@ -19,8 +22,8 @@ describe "ch.oddb.org" do
     @idx += 1
   end
 DOMAINS= [
-'ch.oddb.org',
 'anthroposophika.ch',
+'ch.oddb.org',
 'anthroposophika.oddb.org',
 'anthroposophy.oddb.org',
 'desitin.ch.oddb.org',
@@ -53,38 +56,24 @@ DOMAINS= [
 'www.xn--homopathika-tfb.ch',
 'xn--homopathika-tfb.ch',
 'xn--homopathika-tfb.oddb.org',
-  ]
-DOMAINS_TO_BE_ADDED = [
-'webalizer.anthroposophika.ch',
-'webalizer.anthroposophika.oddb.org',
-'webalizer.ch.oddb.org',
-'webalizer.desitin.ch.oddb.org',
-'webalizer.generika.cc',
-'webalizer.generika.oddb.org',
-'webalizer.homoeopathika.oddb.org',
-'webalizer.i.ch.oddb.org',
-'webalizer.i.mobile.oddb.org',
-'webalizer.i.oddb.org',
-'webalizer.just-medical.oddb.org',
-'webalizer.mobile.oddb.org',
-'webalizer.oddb.org',
-'webalizer.oekk.oddb.org',
-'webalizer.phyto-pharma.ch',
-'webalizer.phyto-pharma.oddb.org',
-'webalizer.phytotherapeutika.ch',
-'webalizer.santesuisse.oddb.org',
-  ]
+]
   DOMAINS.each do |domain|
     url = "https://#{domain}"
     it "should work with #{url}" do
-      unless testing_ch_oddb_org
-        skip "Skip testing domains #{domain} when testing_ch_oddb_org is false"
+      unless is_link_valid?(url)
+        fail "URL #{url} does not respond"
       end
       @browser.goto(url)
+      if  @browser.text.match(/ERR_CERT_COMMON_NAME_INVALID/)
+        @browser.button(text: /Erweitert/).click
+        m = @browser.text.match(/Sein Sicherheitszertifikat stammt von (.+ )/)
+        host = m[1].match(/[^ ]+/)[0]
+        fail "URL #{url} does not have a correct certificate. It comes from #{host}"
+      end
       expect(@browser.text_field(name: "search_query").exist?).to eql true
     end unless /oddb-ci/.match(Socket.gethostname)
   end
   after :all do
     @browser.close if @browser
   end
-end
+end if ARGV.first.index(File.basename(__FILE__))
