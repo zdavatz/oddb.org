@@ -8,7 +8,7 @@ require 'tmpdir'
 describe "ch.oddb.org" do
 
   before :all do
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
     logout
     login(ViewerUser, ViewerPassword)
   end
@@ -21,7 +21,7 @@ describe "ch.oddb.org" do
       @browser.windows.first.use
       @browser.windows.last.close if @browser.windows.last
     end
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   [ 'pharmacies', 'doctors', 'interactions', 'migel', 'user', 'hospitals', 'companies'].each do

@@ -8,12 +8,12 @@ describe "ch.oddb.org snapback" do
 
   before :all do
     @idx = 0
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
     login(ViewerUser,  ViewerPassword)
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
     login(ViewerUser,  ViewerPassword)
   end
 
@@ -21,19 +21,21 @@ describe "ch.oddb.org snapback" do
     @idx += 1
     createScreenshot(@browser, '_'+@idx.to_s)
     # sleep
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   SnapbackTestStep = Struct.new(:line, :search_type, :search_value, :link_to_click, :expect_url, :expect_snapback_text, :next_step)
-  Search_URL=  /search_query\/#{SNAP_IKSNR}|de\/gcc$|home_drugs\/$|#{OddbUrl}\/$/
+  Search_URL=  /search_query\/#{SNAP_IKSNR}|de\/gcc$|home_drugs\/$|#{ODDB_URL}\/$/
   Search_Snap = /Home - #{SNAP_IKSNR} - \d{2} - \d{3}/
   Search_SnapBack = /Suchresultat|Home/
-  FI_url  = "de/gcc/fachinfo/reg/#{SNAP_IKSNR}"
+  FI_URL = "de/gcc/fachinfo/reg/#{SNAP_IKSNR}"
+  FI_URL_MATCH  = /#{Regexp.quote(FI_URL)}/
   FI_Snap = /(Home|Suchresultat) - FI zu #{SNAP_NAME}/
-  diff_url = "/show/fachinfo/#{SNAP_IKSNR}/diff"
-  test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, Date_Regexp,  diff_url, /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
-  test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",diff_url, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
-  test_1_2 = SnapbackTestStep.new(__LINE__, nil, nil, 'FI', FI_url, FI_Snap, test_1_3)
+  DIFF_URL = "/show/fachinfo/#{SNAP_IKSNR}/diff"
+  DIFF_URL_MATCH =  /#{Regexp.quote(DIFF_URL)}/
+  test_1_4 = SnapbackTestStep.new(__LINE__, nil, nil, Date_Regexp,  DIFF_URL_MATCH, /Home,Fachinformation zu Lubex,Änderungen,\d{2}.\d{2}.\d{4}/, nil)
+  test_1_3 = SnapbackTestStep.new(__LINE__, nil, nil, "Änderungen anzeigen",DIFF_URL_MATCH, "Home,Fachinformation zu Lubex,Änderungen", test_1_4)
+  test_1_2 = SnapbackTestStep.new(__LINE__, nil, nil, 'FI', FI_URL_MATCH, FI_Snap, test_1_3)
   FirstTest = SnapbackTestStep.new(__LINE__,/Swissmedic/, SNAP_IKSNR.to_s, nil,  Search_URL, Search_Snap, test_1_2)
   FI_Link = /\/fachinfo\/reg\/(\d+)$/
 
@@ -54,29 +56,29 @@ describe "ch.oddb.org snapback" do
 
   def search_item(search_type, search_value)
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
+    @browser.select_list(name:  "search_type").wait_until(&:present?)
     @browser.select_list(name:  "search_type").select(/#{search_type}/)
     @browser.text_field(name:  "search_query").value = search_value
     @browser.text_field(name:  "search_query").send_keys :enter
   end
 
   def check_home_links
+    @browser.link(text:  "Home").wait_until(&:present?)
+    @browser.links.find{|x| x.text.eql? 'Home' }
+    home_pattern = /\/home|/
     @browser.links.find_all{|x| x.text.eql? 'Home' }.each do |link|
-      home_pattern = /\/home|/
-      # puts "link #{link.text} #{link.href}"
-      # binding.break unless link.exist?
-      # binding.break unless home_pattern.match(link.href)
       expect(link.exist?).to be true
       expect(link.href).to match home_pattern
     end
   end
 
   it "should always have the correct home link" do
-    @browser.goto(OddbUrl + '/de/gcc' + diff_url)
+    @browser.goto(ODDB_URL + '/de/gcc' + DIFF_URL)
     check_home_links
     link = @browser.link(visible_text:  /Fachinformation zu/)
     expect(link.exist?).to be true
@@ -97,6 +99,7 @@ describe "ch.oddb.org snapback" do
       link = @browser.link(visible_text:  current.link_to_click)
       # puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
       # binding.break unless link.exist?
+      link.wait_until(&:present?)
       expect(link.exist?).to be true
       link.click
       check_home_links
@@ -128,6 +131,7 @@ describe "ch.oddb.org snapback" do
         nr += 1
         link = @browser.link(visible_text:  current.link_to_click)
         # binding.break unless link.exist?
+        link.wait_until(&:present?)
         expect(link.exist?).to be true
         @prev_url = @browser.url.clone
         link.click
@@ -140,8 +144,8 @@ describe "ch.oddb.org snapback" do
       saved_url = @browser.url
       home_link.click
       check_home_links
-      if @browser.url.eql?(OddbUrl)
-        expect(@browser.url).to eql? OddbUrl
+      if @browser.url.eql?(ODDB_URL)
+        expect(@browser.url).to eql? ODDB_URL
       else
         expect(@browser.url).to match /\/home\/|\/home_drugs\//
       end
@@ -155,7 +159,7 @@ describe "ch.oddb.org snapback" do
 
   it "should work follow correctly the expected paths" do
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
     check_home_links
     nr = 0
@@ -166,15 +170,21 @@ describe "ch.oddb.org snapback" do
       puts "\nRunning test step #{nr}\n  #{current.inspect}"
       if current.link_to_click
         link = @browser.link(visible_text:  current.link_to_click)
+        link.wait_until(&:present?)
         puts "#{nr}: Clicking link #{current.link_to_click} exist? #{link.exist?}"
         expect(link.exist?).to be true
         link.click
-      elsif  current.search_value
+      elsif current.search_value
         puts "#{nr}: Searching #{current.search_type} for #{ current.search_value}"
         search_item(current.search_type, current.search_value)
       end
-      puts "#{nr}: #{__LINE__}: Got URL #{@browser.url} \n expecting #{current.expect_url}"
-      expect(@browser.url).to match current.expect_url
+      res = current.expect_url.match(@browser.url)
+      unless res
+        sleep(1)
+        res = current.expect_url.match(@browser.url)
+        puts "#{nr}: #{__LINE__}: #{res.inspect} Got URL #{@browser.url} \n expecting #{current.expect_url}"
+      end
+      expect(current.expect_url).to match @browser.url
       check_pointer_steps(current.expect_snapback_text, current.line)
       prev_url = @browser.url.clone
       current = current.next_step
@@ -182,7 +192,7 @@ describe "ch.oddb.org snapback" do
   end
 
   it "should work following a fachinfo" do
-    expect(@browser.url).to match OddbUrl
+    expect(@browser.url).to match ODDB_URL
     link = @browser.link(:href => FI_Link)
     iksnr = FI_Link.match(link.href)[1]
     link.click
@@ -192,7 +202,7 @@ describe "ch.oddb.org snapback" do
     expect(text).to match /Home - FI zu/
   end
 
-  Snapback_Registration = { '63184' => 'Celecoxib Helvepharm'}
+  Snapback_Registration = { '63184' => 'Celecoxib Zentiva'}
   it "should work following a search via IKSNR" do
     iksnr = Snapback_Registration.keys.first
     name = Snapback_Registration.values.first
@@ -200,7 +210,7 @@ describe "ch.oddb.org snapback" do
     check_pointer_steps(/Home - #{iksnr}/)
     expect(@browser.text).not_to match LeeresResult
     expect(@browser.text).to match /Deutsche Bezeichnung|Präparat/
-    expect(@browser.text).to match name
+    expect(@browser.text).to match /#{Regexp.quote(name)}/
     @browser.link(name: 'square_fachinfo').click
     check_pointer_steps(/Home - FI zu #{name}/)
     @browser.link(name: 'change_log').click

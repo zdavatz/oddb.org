@@ -9,12 +9,12 @@ describe "ch.oddb.org" do
   before :all do
     @idx = 0
     @saved_timeout ||= Watir.default_timeout
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
   end
 
   before :each do
-    Watir.default_timeout = @saved_timeout
-    @browser.goto OddbUrl
+    Watir.default_timeout = 1
+    @browser.goto ODDB_URL
     Dir.glob(GlobAllDownloads).each{|f| FileUtils.rm(f)}
   end
 
@@ -24,25 +24,20 @@ describe "ch.oddb.org" do
 
   def  check_for_rss_feed(link=nil)
     # chromium just downloads the rss feeds
-    @filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-    @browser.goto(link.href) if link
-    if @browser.driver.browser.eql?(:firefox)
-      sleep(2)
-      text = @browser.text.clone
-      expect(/This is a “feed” of frequently changing content on this site.|Subscribe to this/o.match(text)).not_to eql nil
-      if false # old
-        puts GlobAllDownloads
-        filesAfterDownload =  Dir.glob(GlobAllDownloads)
-        diff_files = filesAfterDownload - @filesBeforeDownload
-        expect(diff_files.size).to eql 1
-        expect(File.basename(diff_files.first)).to eql subject + '.rss'
+    if link
+      if @browser.name.eql?(:chrome)
+        @browser.goto(link)
+        content = @browser.text
+      else
+        # we cannot visit the download link as this would make the watir block
+        expect(is_link_valid?(link)).to eq true
+        content =  Net::HTTP.get(URI.parse(link))
       end
-    else
-      text = @browser.text.clone
-      expect(/logo_rss.png/.match(text)).not_to eql nil
-      expect(/<\/channel>/.match(text)).not_to eql nil
+      expect(/logo_rss.png/.match(content)).not_to eql nil
+      expect(/<\/channel>/.match(content)).not_to eql nil
     end
   end
+
   {
     'hpc'             => 'Health Professional Communication \(HPC\)',
     'price_cut'       => 'Preissenkungen von Produkten in der Spezialitäten-Liste',
@@ -53,31 +48,34 @@ describe "ch.oddb.org" do
   }.each{
     |subject, test_string|
       it "should have a working RSS-feed /de/gcc/rss/channel/#{subject}" do
-        expect(@browser.url).to match OddbUrl
+        expect(@browser.url).to match ODDB_URL
         link = @browser.link(:href => /rss\/channel\/#{subject}/)
         debug = /fachinfo/i.match(subject) ? true : false
-        expect(link.exists?).to be true
-        check_for_rss_feed(link)
+        expect(is_link_valid?(link.href)).to eq true
+        # expect(link.exists?).to be true
+        check_for_rss_feed(link.href)
         @browser.back
       end
     }
     # 2021.01.22: Links for fachinfo and fachinfo-2008 failed via SPEC; but worked by hand
     # is the generated file just too big? (185 kB)W
-    {
+  {
       'fachinfo-2008'   => 'Neue und geänderte Fachinformtionen im Schweizer Gesundheitsmarkt',
+      'fachinfo-2023'   => 'Neue und geänderte Fachinformtionen im Schweizer Gesundheitsmarkt',
+      'price_rise'      => 'Preiserhöhungen von Produkten in der Spezialitäten-Liste',
   }.each do
     |subject, test_string|
       it "should have a working /de/gcc/rss/channel/#{subject}.rss" do
         @filesBeforeDownload =  Dir.glob(GlobAllDownloads)
-        url = OddbUrl + '/de/gcc/rss/channel/' + subject + '.rss'
-        @browser.goto url
-        check_for_rss_feed
+        url = ODDB_URL + '/de/gcc/rss/channel/' + subject + '.rss'
+        url = "http://"+ url unless /http:/.match(url)
+        expect(is_link_valid?(url)).to eq true
+        check_for_rss_feed(url)
       end
   end
 
   after :all do
     Watir.default_timeout = @saved_timeout
     $stdout.puts "#{Time.now}: #{__FILE__} after all. Restored timeout to #{@saved_timeout}"
-    @browser.close if @browser
   end
 end

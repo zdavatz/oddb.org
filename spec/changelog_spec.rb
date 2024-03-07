@@ -7,17 +7,17 @@ describe "ch.oddb.org change_log" do
 
   before :all do
     @idx = 0
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
     login(ViewerUser,  ViewerPassword)
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   after :each do
     @idx += 1
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
 
@@ -48,7 +48,7 @@ describe "ch.oddb.org change_log" do
     end
 
     it "should have a working link to Änderungen " do
-      @browser.goto(OddbUrl + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
+      @browser.goto(ODDB_URL + '/de/gcc/patinfo/reg/66343/seq/01/pack/001')
       check_home_links
       link = @browser.link(visible_text: /Änderungen|Changements/)
       expect(link.present?).to be true
@@ -63,10 +63,9 @@ describe "ch.oddb.org change_log" do
     end
 
   { 'Fachinformation'      => "/de/gcc/show/fachinfo/40501/diff",
-    'Patienteninformation' => "/fr/gcc/show/patinfo/58081/01/002/diff"}.each do |type, diff_url|
-
-    it "should have a working link to  #{type}information from the #{type} diff" do
-      @browser.goto(OddbUrl + diff_url)
+    'Patienteninformation' => "/fr/gcc/show/patinfo/54642/01/016/diff/"}.each do |type, diff_url|
+    it "should have a working link to  #{type} information from the #{type} diff" do
+      @browser.goto(ODDB_URL + diff_url)
       check_home_links
       @browser.link(visible_text: Date_Regexp).wait_until(&:present?)
       link = @browser.link(visible_text: Date_Regexp)

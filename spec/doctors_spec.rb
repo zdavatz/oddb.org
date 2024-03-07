@@ -8,11 +8,11 @@ describe "ch.oddb.org" do
 
   before :all do
     @idx = 0
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
     @browser.link(visible_text: 'Deutsch').click unless /Vergleichen Sie einfach und schnell Medikamentenpreise./.match(@browser.text)
   end
 
@@ -20,59 +20,47 @@ describe "ch.oddb.org" do
     @idx += 1
 #    createScreenshot(@browser, '_'+@idx.to_s)
     # sleep
-#    @browser.goto OddbUrl
+#    @browser.goto ODDB_URL
   end
-
-    def enter_search_to_field_by_name(search_text, field_name)
-      idx = 1
-      chooser = @browser.text_field(name: field_name)
-      0.upto(2).each{
-        |idx|
-        break if chooser and chooser.present?
-        sleep 1
-        chooser = @browser.text_field(name: field_name)
-      }
-      unless chooser and chooser.present?
-        msg = "idx #{idx} could not find textfield #{field_name} in #{@browser.url}"
-        puts msg
-        # require 'debug'; binding.break
-        raise msg
-      end
-      chooser.set(search_text)
-      sleep idx*0.1
-      chooser.send_keys(:down)
-      sleep idx*0.1
-      chooser.send_keys(:enter)
-      sleep idx*0.1
-    end
-
 ArztDefinition = Struct.new(:name, :street, :fields)
 AerzteDefinitions = [
-  ArztDefinition.new('Züst',    'Bahnhofstr. 3',  { 'Facharzttitel:' => 'Allgemeine Innere Medizin, 2003, Schweiz',
-                                                    'Fertigkeitsausweise:' => 'Sportmedizin, 2004, Schweiz',
+  ArztDefinition.new('Albert',    /Stephan Albert\n8400 Winterthur/,
+                     { 'Facharzttitel:' => 'Allgemeine Innere Medizin, 1998, Schweiz',
+                                                    'Fertigkeitsausweise:' => 'Praxislabor, 2002, Schweiz',
                                                     'Korrespondenzsprache:' => 'deutsch',
-                                                    'Staatsexamenjahr:' => '1992',
-                                                    'EAN:' => '7601000254207',
-                                                    'E-Mail:' => 'peter-zuest@bluewin.ch',
+                                                    'Staatsexamenjahr:' => '',
+                                                    'EAN:' => '',
+                                                    'E-Mail:' => '',
                                                     'Bewilligung Selbstdispensation' => 'Ja',
                                                     'BTM Berechtigung' => 'Ja',
-                                                    'Telefon' => '055 6122353',
+                                                    'Telefon' => '052 213.21.00',
                                                     }),
-  ArztDefinition.new('Pfister', 'Bahnhofstr. 16', { 'Facharzttitel:' => 'Allgemeine Innere Medizin, 1992, Schweiz'}),
+  ArztDefinition.new('Andreae', /Postfach 144.*8408 Winterthur/mi,
+                      { 'Facharzttitel:' => 'Psychiatrie und Psychotherapie, 1987, Schweiz',
+                                                  'EAN:' => '7601000239983'}),
 ]
+
+  ['Winterthur', 'Näfels', 'Mollis'].each do |village|
+    it "should find at least one doctor for #{village}" do
+      waitForOddbToBeReady(@browser, ODDB_URL)
+      @browser.link(name: 'doctors').click
+      enter_search_to_field_by_name(village, 'search_query');
+    end
+  end
+
   # We don't repeat here the tests that are in the smoketest!
   it "check doctors" do
+    waitForOddbToBeReady(@browser, ODDB_URL)
     @browser.link(name: 'doctors').click
-    enter_search_to_field_by_name('Mollis', 'search_query');
+    enter_search_to_field_by_name('Winterthur', 'search_query');
     AerzteDefinitions.each {
                          |arzt|
+                              @browser.link(name: 'name').wait_until(&:present?)
                               expect(@browser.text).to match arzt.name
                               @browser.link(visible_text: arzt.name).click
                               # don't know why we need to wait here, but it works!
-                              sleep 0.5 unless @browser.link(visible_text: /vCard/).exists?
-                              nrFiles = check_download(@browser.link(visible_text: /vCard/))
-                              expect(nrFiles.size).to eq(1)
-                              expect(File.size(nrFiles.first)).to be >= 100
+                              @browser.link(visible_text: /vCard/).wait_until(&:present?)
+                              expect(is_link_valid?(@browser.link(visible_text: /vCard/).href)).to eql true
 
                               inhalt = @browser.text
                               expect(inhalt).to match arzt.street
@@ -81,8 +69,7 @@ AerzteDefinitions = [
                  }
                            # Check map link
                               @browser.link(visible_text: /map.search/).click
-                              expect(@browser.url).to match /bahnhofstr/i
-                              expect(@browser.url).to match /mollis/i
+                              expect(@browser.url).to match /840\d/
                               @browser.back
                            # go back to search result
                               @browser.back

@@ -12,13 +12,13 @@ describe "ch.oddb.org" do
 
   before :all do
     @idx = 0
-    waitForOddbToBeReady(@browser, OddbUrl)
+    waitForOddbToBeReady(@browser, ODDB_URL)
     logout
     login(ViewerUser,  ViewerPassword)
   end
 
   before :each do
-    @browser.goto OddbUrl
+    @browser.goto ODDB_URL
   end
 
   {
@@ -28,7 +28,7 @@ describe "ch.oddb.org" do
   }.each {
     |kind, link_name|
     context "in home_#{kind}" do
-      url = OddbUrl + '/de/gcc/home_'+kind
+      url = ODDB_URL + '/de/gcc/home_'+kind
 
       it "we should find the corresponding list of #{kind}" do
         @browser.goto url
@@ -66,7 +66,7 @@ describe "ch.oddb.org" do
   end
 
   it "in home_companies we should see all companies when logged in as user" do
-    @browser.goto OddbUrl + '/de/gcc/home_companies'
+    @browser.goto ODDB_URL + '/de/gcc/home_companies'
     check_nr_companies(true)
   end
 
@@ -74,19 +74,19 @@ describe "ch.oddb.org" do
   context "admin" do
     before :all do
       @idx = 0
-      waitForOddbToBeReady(@browser, OddbUrl)
+      waitForOddbToBeReady(@browser, ODDB_URL)
       logout
-      expect(login(AdminUser, AdminPassword)).to eq(true)
+      expect(login(ADMIN_USER, ADMIN_PASSWORD)).to eq(true)
     end
 
     it "in home_companies we should see all companies when logged in as admin" do
-      @browser.goto OddbUrl + '/de/gcc/home_companies'
+      @browser.goto ODDB_URL + '/de/gcc/home_companies'
       @browser.link(name: CompanyListName).click
       check_nr_companies(true)
     end
 
     it "in home_companies we should have the link active_companies if logged in as admin" do
-      @browser.goto OddbUrl + '/de/gcc/home_companies'
+      @browser.goto ODDB_URL + '/de/gcc/home_companies'
       @browser.link(name: CompanyListName).click
       link = @browser.link(name: 'listed_companies')
       expect(link.exist?).to eq(true)
