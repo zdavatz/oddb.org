@@ -78,7 +78,7 @@ public
     def initialize(app=nil, archive=ODDB::WORK_DIR)
       doc = Nokogiri::HTML(URI.open(BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
       @@packages_url = BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Packungen/.match(x.children.text) }.attributes['href'].value
-      @@gpreparations_url = BASE_URL + doc.xpath("//a").find{|x| /Erweiterte Arzneimittelliste/.match(x.children.text) }.attributes['href'].value
+      @@gpreparations_url = BASE_URL + doc.xpath("//a").find{|x| /Erweiterte Arzneimittel/.match(x.children.text) }.attributes['href'].value
       @comarketing_url = BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
       doc = nil
       super app
