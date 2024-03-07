@@ -56,10 +56,10 @@ describe "ch.oddb.org snapback" do
 
   def search_item(search_type, search_value)
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
     @browser.select_list(name:  "search_type").wait_until(&:present?)
     @browser.select_list(name:  "search_type").select(/#{search_type}/)
@@ -68,6 +68,7 @@ describe "ch.oddb.org snapback" do
   end
 
   def check_home_links
+    @browser.link(text:  "Home").wait_until(&:present?)
     @browser.links.find{|x| x.text.eql? 'Home' }
     home_pattern = /\/home|/
     @browser.links.find_all{|x| x.text.eql? 'Home' }.each do |link|
@@ -158,7 +159,7 @@ describe "ch.oddb.org snapback" do
 
   it "should work follow correctly the expected paths" do
     if @browser.link(name:  'drugs').exists?
-      @browser.link(name:  'drugs').click; small_delay
+      @browser.link(name:  'drugs').click
     end
     check_home_links
     nr = 0

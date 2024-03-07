@@ -224,7 +224,8 @@ describe "ch.oddb.org" do
 
   it "should find Aspirin" do
     @browser.text_field(name: "search_query").set("Aspirin")
-    @browser.button(name: "search").click; small_delay
+    @browser.button(name: "search").click
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.text).to match /Aspirin 500|ASS Cardio Actavis 100 mg|Aspirin Cardio 300/
   end
 
@@ -275,7 +276,8 @@ describe "ch.oddb.org" do
           waitForOddbToBeReady(@browser, ODDB_URL)
           @browser.select_list(name: "search_type").select("Markenname")
           @browser.text_field(name: "search_query").set(name)
-          @browser.button(name: "search").click; small_delay
+          @browser.button(name: "search").click
+          @browser.link(name: 'name').wait_until(&:present?)
           createScreenshot(@browser, '_'+@idx.to_s)
           if /Abfragebeschränkung auf 5 Abfragen pro Tag/.match(@browser.text)
             res = true
@@ -299,12 +301,15 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the french language versions" do
-    @browser.link(visible_text: /Français|French/i).click; small_delay
+    @browser.link(visible_text: /Français|French/i).click
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.text).to match /Comparez simplement et rapidement les prix des médicaments/
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the german language versions" do
-    @browser.link(visible_text: /Deutsch|German/).click; small_delay
+    @browser.link(visible_text: /Deutsch|German/).click
+    @browser.link(text: 'Abmelden').wait_until(&:present?)
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.text).to match /Vergleichen Sie einfach und schnell Medikamentenpreise./
   end unless ['just-medical'].index(Flavor)
 
@@ -313,7 +318,8 @@ describe "ch.oddb.org" do
     @browser.link(text: 'PI').wait_until(&:present?)
     windowSize = @browser.windows.size
     expect(@browser.url).to match ODDB_URL
-    @browser.link(visible_text: 'Drucken').click; small_delay
+    @browser.link(visible_text: 'Drucken').click
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.windows.size).to eq(windowSize + 1)
     # avoid indexing not reliable on WindowCollection
     @browser.switch_window
@@ -323,10 +329,11 @@ describe "ch.oddb.org" do
   end
 
   it "should open a sequence specific patinfo" do # 15219 Zymafluor
-    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/15219"; small_delay
-  #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/15219"
+    @browser.link(visible_text: 'PI').wait_until(&:present?)
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
-    @browser.link(visible_text: 'PI').click; small_delay
+    @browser.link(visible_text: 'PI').click
+    @browser.link.wait_until(&:present?)
     expect(@browser.url).to match /patinfo/i
   end
 
@@ -339,10 +346,10 @@ describe "ch.oddb.org" do
   end
 
   it "should open a package specific patinfo" do # 43788 Tramal
-    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"; small_delay
-  #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/019"
+    @browser.link(visible_text: 'PI').wait_until(&:present?)
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
-    @browser.link(visible_text: 'PI').click; small_delay
+    @browser.link(visible_text: 'PI').click
     # As this opens a new window we must focus on it
     @browser.windows.last.use if @browser.windows.size > 1
     expect(@browser.url).to match /patinfo/i
@@ -366,10 +373,11 @@ describe "ch.oddb.org" do
     end
   end
   it "should show correct Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe (4788/01/035)" do
-    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/035"; small_delay
-  #   require 'debug'; binding.break unless @browser.link(visible_text: 'PI').exist?
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/035";
+    @browser.link(visible_text: 'PI').wait_until(&:present?)
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
-    @browser.link(visible_text: 'PI').click; small_delay
+    @browser.link(visible_text: 'PI').click;
+    @browser.link.wait_until(&:present?)
     expect(@browser.url).to match /patinfo/i
     text = @browser.text.clone
     expect(text).to match /Was sind Tramal Tropfen Lösung zum Einnehmen und wann werden sie angewendet/
@@ -377,9 +385,11 @@ describe "ch.oddb.org" do
   end
 
   it "should show correct Tramal Tropfen Lösung zum Einnehmen ohne Dosierpumpe(4788/01/086)" do
-    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"; small_delay
+    @browser.goto "#{ODDB_URL}/de/#{Flavor}/show/reg/43788/seq/01/pack/086"
+    @browser.link(visible_text: 'PI').wait_until(&:present?)
     expect(@browser.link(visible_text: 'PI').exist?).to eq true
-    @browser.link(visible_text: 'PI').click; small_delay
+    @browser.link(visible_text: 'PI').click
+    @browser.link.wait_until(&:present?)
     expect(@browser.url).to match /patinfo/i
     text = @browser.text.clone
     expect(text).to match /Tramal Tropfen Lösung zum Einnehmen mit Dosierpumpe/
@@ -420,12 +430,14 @@ describe "ch.oddb.org" do
     test_medi = 'Aspirin'
     filesBeforeDownload =  Dir.glob(GlobAllDownloads)
     @browser.text_field(name: "search_query").set(test_medi)
-    @browser.button(name: "search").click; small_delay
-    @browser.button(value: "Resultat als CSV Downloaden").click; small_delay
-    @browser.text_field(name: /name_last/i).value= "Mustermann"; small_delay
-    @browser.text_field(name: /name_first/i).value= "Max"; small_delay
+    @browser.button(name: "search").click
+    @browser.button(value: "Resultat als CSV Downloaden").wait_until(&:present?)
+    @browser.button(value: "Resultat als CSV Downloaden").click
+    @browser.text_field(name: /name_last/i).value= "Mustermann"
+    @browser.text_field(name: /name_first/i).wait_until(&:present?)
+    @browser.text_field(name: /name_first/i).value= "Max"
     paypal_user = PaypalUser.new
-    @browser.button(name: PaypalUser::CheckoutName).click; small_delay
+    @browser.button(name: PaypalUser::CheckoutName).click
     expect(paypal_user.paypal_buy(@browser)).to eql true
     expect(@browser.url).not_to match  /errors/
     @browser.link(name: 'download').wait_until(&:present?)
@@ -671,6 +683,7 @@ describe "ch.oddb.org" do
     @browser.select_list(name: "search_type").select("Markenname")
     @browser.text_field(name: "search_query").set('Similasan Arnica')
     @browser.button(name: "search").click
+    @browser.link(visible_text: 'PI').wait_until(&:visible?)
     text = @browser.text.clone
     expect(text[0..1000]).not_to match /traceback/i
     expect(text[0..1000]).to match /Homöopathika für Muskeln und Skelett/i

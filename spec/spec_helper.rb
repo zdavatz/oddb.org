@@ -87,11 +87,8 @@ def setup_browser
     else
       Selenium::WebDriver::Chrome.path = '/usr/bin/google-chrome-beta'
     end
-#    require 'webdrivers/chromedriver'
-    puts "with webdrivers and using #{Selenium::WebDriver::Chrome.path}"
     @browser_options = Selenium::WebDriver::Chrome::Options.new
   end
-  @browser_options.add_argument('--ignore-certificate-errors')
   @browser_options.add_argument('--disable-popup-blocking')
   @browser_options.add_argument('--disable-translate')
   prefs = [
@@ -101,7 +98,6 @@ def setup_browser
 
   @browser_options.add_preference(:download, prefs)
   if Browser2test[0].to_s.eql?('firefox')
-    puts "Setting up default profile for firefox" if $VERBOSE
     profile = Selenium::WebDriver::Firefox::Profile.new
     profile['browser.download.dir'] = DownloadDir
     profile['browser.download.folderList'] = 2
@@ -125,7 +121,6 @@ def setup_browser
 
   elsif Browser2test[0].to_s.eql?('chrome')
     Selenium::WebDriver::Chrome.path = `which chromium`.chomp
-    puts "Setting up a default profile for chrome"
     @browser = Watir::Browser.new :chrome, options: @browser_options
     Selenium::WebDriver::Chrome::Options #add_preference
   elsif Browser2test[0].to_s.eql?('ie')
@@ -193,7 +188,7 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
   @seconds = -1
   0.upto(maxWait).each{
     |idx|
-   @browser.goto ODDB_URL; small_delay
+   @browser.goto ODDB_URL
     unless /Es tut uns leid/.match(@browser.text)
       @seconds = idx
       break
@@ -216,13 +211,8 @@ rescue => error
   raise error
 end
 
-def small_delay
-  sleep(0.1)
-end
-
 def createScreenshot(browser, added=nil)
   return
-  small_delay
   if browser.url.index('?')
     name = File.join(ImageDest, File.basename(browser.url.split('?')[0]).gsub(/\W/, '_'))
   else
@@ -266,7 +256,8 @@ def select_product_by_trademark(name)
     @browser.link(name: 'search_instant').click unless   @browser.link(name: 'search_instant').text.eql?('Instant')
     @browser.select_list(name: "search_type").select("Markenname")
     @browser.text_field(name: "search_query").set(name)
-    small_delay; @browser.button(name: "search").click
+    @browser.button(name: "search").wait_until(&:present?)
+    @browser.button(name: "search").click
   rescue => error
     binding.break
   end

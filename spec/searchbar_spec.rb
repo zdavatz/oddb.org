@@ -45,15 +45,16 @@ describe "ch.oddb.org" do
     @browser.link(name: "doctors").click
     @browser.text_field(name: "search_query").wait_until(&:present?)
     @browser.text_field(name: "search_query").value = "Züst"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click;
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.text).to match /Züst Peter/
   end unless ['just-medical'].index(Flavor)
 
   it "should be possible to find Abacavir via Wirkstoffe" do
     if  @browser.link(name: 'substances').exists?
-      @browser.link(name: 'substances').click;  small_delay
+      @browser.link(name: 'substances').click
     end
-    # @browser.text.should_not match /substance_search_explain/
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     @browser.text_field(name: "search_query").value = "Abacavirum"
     @browser.select_list(name: "search_type").select("Inhaltsstoff")
 
@@ -88,7 +89,8 @@ describe "ch.oddb.org" do
 
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(name: "search_query").value = "Glarus"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.link(name: 'name').wait_until(&:present?)
 
     expect(@browser.text).not_to match LeeresResult
     expect(@browser.text).to match /Abteilung/
@@ -101,8 +103,8 @@ describe "ch.oddb.org" do
 
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(name: "search_query").value = "Krücke"
-    @browser.button(name: 'search').click;  small_delay
-
+    @browser.button(name: 'search').click
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     expect(@browser.text).not_to match LeeresResult
     expect(@browser.text).to match /Beschreibung/
     expect(@browser.text).to match /Krücken/
@@ -114,8 +116,8 @@ describe "ch.oddb.org" do
 
     # @browser.text.should_not match /substance_search_explain/
     @browser.text_field(name: "search_query").value = "Novartis"
-    @browser.button(name: 'search').click;  small_delay
-
+    @browser.button(name: 'search').click
+    @browser.link(name: 'name').wait_until(&:present?)
     expect(@browser.text).not_to match LeeresResult
     text = @browser.text.clone
     # Aktuell Einträge come only when we are logged in as admin user
@@ -163,11 +165,11 @@ describe "ch.oddb.org" do
   # Lösungs- und Verdünnungsmittel, inkl. Spüllösungen (V07AB) come from no longer active
   it "should show only ATC-Code for C01EB10 for Adenosin" do
     @browser.link(name: 'drugs').click
-    @browser.text_field(name: "search_query").wait_until(&:present?)
-
+1
     @browser.select_list(name: "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(name: "search_query").value = "Adenosin"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.link(name: 'square_fachinfo').wait_until(&:present?)
     text = @browser.text.clone
     expect(text).not_to match LeeresResult
     expect(text).to match('C01EB10')
@@ -182,7 +184,9 @@ describe "ch.oddb.org" do
 
     @browser.select_list(name: "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(name: "search_query").value = "Gentamycin"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.text_field.wait_until(&:present?)
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     text = @browser.text.clone
     expect(text).to match LeeresResult
   end unless ['just-medical'].index(Flavor)
@@ -192,7 +196,8 @@ describe "ch.oddb.org" do
 
     @browser.select_list(name: "search_type").select("Preisvergleich")
     @browser.text_field(name: "search_query").value = "Gentamycin"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     text = @browser.text.clone
     expect(text).to match LeeresResult
   end unless ['just-medical'].index(Flavor)
@@ -202,7 +207,8 @@ describe "ch.oddb.org" do
     @browser.text_field(name: "search_query").wait_until(&:present?)
     @browser.select_list(name: "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(name: "search_query").value = "Iscover"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     text = @browser.text.clone
     expect(text).to match LeeresResult
   end unless ['just-medical'].index(Flavor)
@@ -212,7 +218,8 @@ describe "ch.oddb.org" do
     @browser.text_field(name: "search_query").wait_until(&:present?)
     @browser.select_list(name: "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(name: "search_query").value = "Fortex"
-    @browser.button(name: 'search').click;  small_delay
+    @browser.button(name: 'search').click
+    @browser.text_field(name: "search_query").wait_until(&:present?)
     text = @browser.text.clone
     expect(text).to match LeeresResult
   end unless ['just-medical'].index(Flavor)
@@ -220,8 +227,8 @@ describe "ch.oddb.org" do
   it "should show no drugs for Fortex via unwanted effects search" do
     # Fortext should not show up, as it was never registered in Switzerland
     # However we have not yet had the time to fix this problem
-    @browser.link(name: 'drugs').click;  small_delay
-
+    @browser.link(name: 'drugs').click
+    @browser.select_list(name: "search_type").wait_until(&:present?)
     @browser.select_list(name: "search_type").select("Unerwünschte Wirkung")
     @browser.text_field(name: "search_query").value = "Fortex"
     @browser.button(name: 'search').click
@@ -235,8 +242,8 @@ describe "ch.oddb.org" do
     @browser.text_field(name: "search_query").wait_until(&:present?)
     @browser.select_list(name: "search_type").select("Preisvergleich und Inhaltsstoff")
     @browser.text_field(name: "search_query").value = "Budesonid"
-    @browser.button(name: 'search').click;  small_delay
-
+    @browser.button(name: 'search').click
+    @browser.link(name: 'name').wait_until(&:present?)
     text = @browser.text.clone
     expect(text).not_to match LeeresResult
     expect(text).to match('Budesonid Sandoz') # by price
