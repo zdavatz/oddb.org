@@ -60,6 +60,7 @@ DOMAINS= [
   DOMAINS.each do |domain|
     url = "https://#{domain}"
     it "should work with #{url}" do
+      pending "https://github.com/zdavatz/oddb.org/issues/267: Zur Zeit werden die nicht vermarktet, die werden nur weitergeleitet."
       unless is_link_valid?(url)
         fail "URL #{url} does not respond"
       end

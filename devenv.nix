@@ -20,7 +20,7 @@ in
   env.ODDB_URL = "127.0.0.1:8012"; # for running the watir spec tests
 
   languages.ruby.enable = true;
-  languages.ruby.versionFile = ./.ruby-version;
+  languages.ruby.version = "3.3";
   services.postgres = {
     enable = true;
     package = pkgs-old.postgresql_10;

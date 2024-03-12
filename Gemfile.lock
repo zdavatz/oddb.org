@@ -22,7 +22,6 @@ GEM
     base64 (0.2.0)
     bigdecimal (3.1.1)
     builder (3.2.4)
-    chrono_logger (1.1.2)
     clogger (2.3.1)
       rack (>= 1.0, < 3.0)
     cmath (1.0.0)
@@ -33,12 +32,12 @@ GEM
     data_magic (1.2)
       faker (>= 1.1.2)
       yml_reader (>= 0.6)
+    date (3.3.4)
     debug (1.9.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     deprecated (2.0.1)
     diff-lcs (1.5.0)
-    digest (3.1.1)
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -64,7 +63,6 @@ GEM
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
-    io-wait (0.2.1)
     irb (1.11.2)
       rdoc
       reline (>= 0.4.2)
@@ -88,7 +86,7 @@ GEM
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_mime (1.1.2)
+    mini_mime (1.1.5)
     mini_portile2 (2.8.5)
     minitar (0.9)
     minitest (5.15.0)
@@ -103,21 +101,15 @@ GEM
     net-http-digest_auth (1.4.1)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
-    net-imap (0.2.3)
-      digest
+    net-imap (0.4.10)
+      date
       net-protocol
-      strscan
-    net-pop (0.1.1)
-      digest
+    net-pop (0.1.2)
       net-protocol
+    net-protocol (0.2.2)
       timeout
-    net-protocol (0.1.2)
-      io-wait
-      timeout
-    net-smtp (0.3.1)
-      digest
+    net-smtp (0.4.0.1)
       net-protocol
-      timeout
     nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -141,7 +133,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (4.0.7)
-    racc (1.7.1)
+    racc (1.7.3)
     rack (2.2.8.1)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -149,7 +141,7 @@ GEM
       rack
       webrick
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.1.0)
     rbs (2.0.0)
     rclconf (1.0.0)
     rdoc (6.6.2)
@@ -205,10 +197,9 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     sax-machine (1.3.2)
-    sbsm (1.6.1)
-      chrono_logger
+    sbsm (1.6.2)
       hpricot
-      mail
+      mail (< 2.8.0)
       mimemagic
       rack
     selenium-webdriver (4.18.1)
@@ -229,13 +220,12 @@ GEM
       rubocop (= 1.24.1)
       rubocop-performance (= 1.13.1)
     stringio (3.1.0)
-    strscan (3.0.1)
     swissmedic-diff (0.2.8)
       nokogiri
       rubyXL (>= 3.3.1)
       rubyzip
       spreadsheet
-    timeout (0.2.0)
+    timeout (0.4.1)
     travis-lint (2.0.0)
       json
     typeprof (0.21.2)
