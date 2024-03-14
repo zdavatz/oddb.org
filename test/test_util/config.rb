@@ -13,6 +13,7 @@ require 'stub/odba'
 require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'util/config'
+require 'logger'
 
 module ODDB
   class TestConfig <Minitest::Test
@@ -73,14 +74,32 @@ module ODDB
     def test_log_pattern_default_app
       skip('Test does not work under Ruby 3.4') if RUBY_VERSION.to_f >= 3.4 # TODO:
       eval("::APPNAME=  nil")
+      args1 = {:shift_age=>0, :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
+      args2 = {:shift_age=>"daily", :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
+      flexmock(Logger::LogDevice) do
+        |klass|
+        klass.should_receive(:new).once.with(
+           File.expand_path(File.join(File.dirname(__FILE__), '..', '..', "log/#{Date.today.year}/oddb.log")), args2)
+        klass.should_receive(:new).at_most.once.with(STDERR, args1) # may be called here or in test_log_pattern_with_appname
+      end
       load @config_ru
-      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/oddb_log'))
+      assert_equal('oddb', SBSM.logger.progname)
     end
     def test_log_pattern_with_appname
       skip('Test does not work under Ruby 3.4') if RUBY_VERSION.to_f >= 3.4 # TODO:
       eval("::APPNAME='crawler'")
+      args1 = {:shift_age=>0, :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
+      args2 = {:shift_age=>"daily", :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
+      flexmock(Logger::LogDevice) do
+        |klass|
+        klass.should_receive(:new).once.with(
+           File.expand_path(File.join(File.dirname(__FILE__), '..', '..', "log/#{Date.today.year}/crawler.log")), args2)
+        klass.should_receive(:new).at_most.once.with(STDERR, args1) # may be called here or in test_log_pattern_default_app
+      end
       load @config_ru
-      assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/crawler_log'))
+      assert_equal('crawler', SBSM.logger.progname)
     end
   end
 end
+
+
