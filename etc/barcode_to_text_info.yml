@@ -1201,81 +1201,220 @@
 7680681780021_pi_fr: TAKHZYRO Seringue préremplie
 7680631800014_pi_de: Phoscap Kapseln
 7680631800014_pi_fr: Phoscap Capsules
-7680470730015_pi_de: PHYTOMED Magnesium comp., Tabletten 
-7680470730015_pi_fr: PHYTOMED Magnesium comp., comprimés 
-7680652250010_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze 
-7680652250027_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze 
-7680652250034_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze 
-7680652250041_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze 
-7680652250010_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie 
-7680652250027_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie 
-7680652250034_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie 
-7680652250041_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie 
-7680632350051_pi_de: Paracetamol Spirig HC® 500 
-7680632350068_pi_de: Paracetamol Spirig HC® 500 
-7680632350075_pi_de: Paracetamol Spirig HC® 500 
-7680632350051_pi_fr: Paracétamol Spirig HC® 500 
-7680632350068_pi_fr: Paracétamol Spirig HC® 500 
-7680632350075_pi_fr: Paracétamol Spirig HC® 500 
-7680548780287_pi_de: Dolo-Spedifen forte 400 
-7680548780010_pi_de: Dolo-Spedifen forte 400 
-7680548780287_pi_fr: Dolo-Spedifen forte 400 
-7680548780010_pi_fr: Dolo-Spedifen forte 400 
-7680405800189_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405801315_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405800264_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405801582_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405802916_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405802930_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803005_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405802978_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405802992_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803098_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803104_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803111_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803135_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405803142_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi 
-7680405800189_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405801315_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405800264_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405801582_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405802916_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405802930_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803005_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405802978_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405802992_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803098_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803104_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803111_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803135_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680405803142_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse 
-7680531080042_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080059_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080073_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080011_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080028_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080035_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette 
-7680531080042_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680531080059_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680531080073_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680531080011_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680531080028_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680531080035_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant 
-7680658820026_pi_de: Praluent® Fertigpens 75 mg 
-7680658820033_pi_de: Praluent® Fertigpens 75 mg 
-7680658820071_pi_de: Praluent® Fertigpens 75 mg 
-7680658820057_pi_de: Praluent® Fertigpens 75 mg 
-7680658820064_pi_de: Praluent® Fertigpens 75 mg 
-7680658820026_pi_fr: Praluent® stylos pré-remplis 75 mg 
-7680658820033_pi_fr: Praluent® stylos pré-remplis 75 mg 
-7680658820071_pi_fr: Praluent® stylos pré-remplis 75 mg 
-7680658820057_pi_fr: Praluent® stylos pré-remplis 75 mg 
-7680658820064_pi_fr: Praluent® stylos pré-remplis 75 mg 
-7680547400438_pi_de: VICKS VapoRub, Salbe 
-7680547400445_pi_de: VICKS VapoRub, Salbe 
-7680547400438_pi_fr: VICKS VapoRub, pommade 
-7680547400445_pi_fr: VICKS VapoRub, pommade 
-7680628410035_pi_de: Palexia® 4 mg/ml Lösung 
-7680628410042_pi_de: Palexia® 4 mg/ml Lösung 
-7680628410035_pi_fr: Palexia® 4 mg/ml solution 
-7680628410042_pi_fr: Palexia® 4 mg/ml solution 
+7680470730015_pi_de: PHYTOMED Magnesium comp., Tabletten
+7680470730015_pi_fr: PHYTOMED Magnesium comp., comprimés
+7680652250010_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze
+7680652250027_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze
+7680652250034_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze
+7680652250041_pi_de: Cosentyx® 75 mg, Injektionslösung in einer Fertigspritze
+7680652250010_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie
+7680652250027_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie
+7680652250034_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie
+7680652250041_pi_fr: Cosentyx® 75 mg, solution injectable en seringue préremplie
+7680632350051_pi_de: Paracetamol Spirig HC® 500
+7680632350068_pi_de: Paracetamol Spirig HC® 500
+7680632350075_pi_de: Paracetamol Spirig HC® 500
+7680632350051_pi_fr: Paracétamol Spirig HC® 500
+7680632350068_pi_fr: Paracétamol Spirig HC® 500
+7680632350075_pi_fr: Paracétamol Spirig HC® 500
+7680548780287_pi_de: Dolo-Spedifen forte 400
+7680548780010_pi_de: Dolo-Spedifen forte 400
+7680548780287_pi_fr: Dolo-Spedifen forte 400
+7680548780010_pi_fr: Dolo-Spedifen forte 400
+7680405800189_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405801315_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405800264_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405801582_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405802916_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405802930_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803005_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405802978_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405802992_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803098_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803104_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803111_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803135_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405803142_pi_de: Nicorette® Polar Mint, wirkstoffhaltiges Kaugummi
+7680405800189_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405801315_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405800264_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405801582_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405802916_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405802930_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803005_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405802978_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405802992_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803098_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803104_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803111_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803135_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680405803142_pi_fr: Nicorette® Polar Mint, gomme à mâcher médicamenteuse
+7680531080042_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080059_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080073_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080011_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080028_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080035_pi_de: YALDIGO® 1600 mg magensaftresistente Tablette
+7680531080042_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680531080059_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680531080073_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680531080011_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680531080028_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680531080035_pi_fr: YALDIGO® 1600 mg comprimé gastro-résistant
+7680658820026_pi_de: Praluent® Fertigpens 75 mg
+7680658820033_pi_de: Praluent® Fertigpens 75 mg
+7680658820071_pi_de: Praluent® Fertigpens 75 mg
+7680658820057_pi_de: Praluent® Fertigpens 75 mg
+7680658820064_pi_de: Praluent® Fertigpens 75 mg
+7680658820026_pi_fr: Praluent® stylos pré-remplis 75 mg
+7680658820033_pi_fr: Praluent® stylos pré-remplis 75 mg
+7680658820071_pi_fr: Praluent® stylos pré-remplis 75 mg
+7680658820057_pi_fr: Praluent® stylos pré-remplis 75 mg
+7680658820064_pi_fr: Praluent® stylos pré-remplis 75 mg
+7680547400438_pi_de: VICKS VapoRub, Salbe
+7680547400445_pi_de: VICKS VapoRub, Salbe
+7680547400438_pi_fr: VICKS VapoRub, pommade
+7680547400445_pi_fr: VICKS VapoRub, pommade
+7680628410035_pi_de: Palexia® 4 mg/ml Lösung
+7680628410042_pi_de: Palexia® 4 mg/ml Lösung
+7680628410035_pi_fr: Palexia® 4 mg/ml solution
+7680628410042_pi_fr: Palexia® 4 mg/ml solution
+7680688540017_pi_de: Fexo Allerg® Spirig HC 120, Filmtabletten
+7680688540024_pi_de: Fexo Allerg® Spirig HC 120, Filmtabletten
+7680688540031_pi_de: Fexo Allerg® Spirig HC 120, Filmtabletten
+7680688540017_pi_fr: Fexo Allerg® Spirig HC 120, comprimés pelliculés
+7680688540024_pi_fr: Fexo Allerg® Spirig HC 120, comprimés pelliculés
+7680688540031_pi_fr: Fexo Allerg® Spirig HC 120, comprimés pelliculés
+7680431670220_pi_de: Cutasept® G (gefärbt)
+7680431670497_pi_de: Cutasept® G (gefärbt)
+7680431670572_pi_de: Cutasept® G (gefärbt)
+7680431670220_pi_fr: Cutasept® G (teinté)
+7680431670497_pi_fr: Cutasept® G (teinté)
+7680431670572_pi_fr: Cutasept® G (teinté)
+7680654000040_pi_de: Vi-De 3 Öl
+7680654000040_pi_fr: Vi-De 3 Huile
+7680680300015_pi_de: Xolair® Injektionslösung in einer Fertigspritze (Neue Fertigspritze, 27G)
+7680680300022_pi_de: Xolair® Injektionslösung in einer Fertigspritze (Neue Fertigspritze, 27G)
+7680680300015_pi_fr: Xolair® Solution injectable en seringue préremplie (nouvelle seringue préremplie, 27G)
+7680680300022_pi_fr: Xolair® Solution injectable en seringue préremplie (nouvelle seringue préremplie, 27G)
+7680138660234_pi_de: Vicks® Inhaler N
+7680682770014_pi_de: Lacosamid Desitin Filmtabletten
+7680682770021_pi_de: Lacosamid Desitin Filmtabletten
+7680682770038_pi_de: Lacosamid Desitin Filmtabletten
+7680682770045_pi_de: Lacosamid Desitin Filmtabletten
+7680682770052_pi_de: Lacosamid Desitin Filmtabletten
+7680682770069_pi_de: Lacosamid Desitin Filmtabletten
+7680682770076_pi_de: Lacosamid Desitin Filmtabletten
+7680682770083_pi_de: Lacosamid Desitin Filmtabletten
+7680682770090_pi_de: Lacosamid Desitin Filmtabletten
+7680682770106_pi_de: Lacosamid Desitin Filmtabletten
+7680682770014_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770021_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770038_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770045_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770052_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770069_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770076_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770083_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770090_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682770106_pi_fr: Lacosamid Desitin comprimés pelliculés
+7680682790012_pi_de: Lacosamid Desitin Sirup
+7680682790012_pi_fr: Lacosamid Desitin sirop
+7680485710422_pi_fr: Nervoheel® N, comprimés
+7680546130596_pi_fr: Nasivine® pur
+7680546130244_pi_fr: Nasivine® pur
+7680546130329_pi_fr: Nasivine® pur
+7680247490388_pi_de: Linoforce® 70 g, Granulat
+7680247490395_pi_de: Linoforce® 70 g, Granulat
+7680247490388_pi_fr: Linoforce® 70 g, Granulés
+7680247490395_pi_fr: Linoforce® 70 g, Granulés
+7680699120000_pi_de: Comirnaty® JN.1 (30 Mikrogramm)/Dosis gebrauchsfertige Injektionsdispersion für Personen ab 12 Jahren (GRAUE Kappe)
+7680699120000_pi_fr: Comirnaty® JN.1 (30 microgrammes)/dose dispersion injectable prête à l’emploi pour les personnes âgées de 12 ans et plus (couvercle GRIS)
+7680560380014_pi_de: NuvaRing® mit Applikator
+7680560380038_pi_de: NuvaRing® mit Applikator
+7680560380021_pi_de: NuvaRing® mit Applikator
+7680560380045_pi_de: NuvaRing® mit Applikator
+7680560380014_pi_fr: NuvaRing® avec applicateur
+7680560380038_pi_fr: NuvaRing® avec applicateur
+7680560380021_pi_fr: NuvaRing® avec applicateur
+7680560380045_pi_fr: NuvaRing® avec applicateur
+7680462060076_pi_de: DAFALGAN® 1 g Tabletten
+7680462060083_pi_de: DAFALGAN® 1 g Tabletten
+7680462060120_pi_de: DAFALGAN® 1 g Tabletten
+7680462060090_pi_de: DAFALGAN® 1 g Tabletten
+7680462060106_pi_de: DAFALGAN® 1 g Tabletten
+7680462060113_pi_de: DAFALGAN® 1 g Tabletten
+7680462060076_pi_fr: DAFALGAN® 1 g comprimés
+7680462060083_pi_fr: DAFALGAN® 1 g comprimés
+7680462060120_pi_fr: DAFALGAN® 1 g comprimés
+7680462060090_pi_fr: DAFALGAN® 1 g comprimés
+7680462060106_pi_fr: DAFALGAN® 1 g comprimés
+7680462060113_pi_fr: DAFALGAN® 1 g comprimés
+7680558510072_pi_de: LinoMed® 300g, Granulat
+7680558510089_pi_de: LinoMed® 300g, Granulat
+7680558510072_pi_fr: LinoMed® 300g, Granulés
+7680558510089_pi_fr: LinoMed® 300g, Granulés
+7680268920758_pi_de: Haldol®
+7680268920758_pi_fr: Haldol®
+7680441570398_pi_de: kodan® forte gefärbt
+7680441570473_pi_de: kodan® forte gefärbt
+7680441570633_pi_de: kodan® forte gefärbt
+7680441570718_pi_de: kodan® forte gefärbt
+7680441570558_pi_de: kodan® forte gefärbt
+7680441570398_pi_fr: kodan® forte incolore
+7680441570473_pi_fr: kodan® forte incolore
+7680441570633_pi_fr: kodan® forte incolore
+7680441570718_pi_fr: kodan® forte incolore
+7680441570558_pi_fr: kodan® forte incolore
+7680696580029_pi_de: Coop Vitality Fexofenadin 180 mg, Filmtabletten
+7680696580036_pi_de: Coop Vitality Fexofenadin 180 mg, Filmtabletten
+7680696580029_pi_fr: Coop Vitality Fexofénadine 180 mg, comprimés pelliculés
+7680696580036_pi_fr: Coop Vitality Fexofénadine 180 mg, comprimés pelliculés
+7680696590028_pi_de: Fexofelan 180 mg, Filmtabletten
+7680696590035_pi_de: Fexofelan 180 mg, Filmtabletten
+7680696590028_pi_fr: Fexofelan 180 mg, comprimés pelliculés
+7680696590035_pi_fr: Fexofelan 180 mg, comprimés pelliculés
+7680563630024_pi_de: Copaxone® 40 mg/ml Fertigspritzen
+7680563630017_pi_de: Copaxone® 40 mg/ml Fertigspritzen
+7680563630031_pi_de: Copaxone® 40 mg/ml Fertigspritzen
+7680563630024_pi_fr: Copaxone® 40 mg/ml seringues préremplies
+7680563630017_pi_fr: Copaxone® 40 mg/ml seringues préremplies
+7680563630031_pi_fr: Copaxone® 40 mg/ml seringues préremplies
+7680612630012_pi_de: Simponi® Fertigspritze
+7680612630036_pi_de: Simponi® Fertigspritze
+7680613180011_pi_fr: Simponi® Stylo prérempli
+7680613180035_pi_fr: Simponi® Stylo prérempli
+7680612630012_pi_fr: Simponi® Seringue préremplie
+7680612630036_pi_fr: Simponi® Seringue préremplie
+7680392540181_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540266_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540341_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540426_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540501_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540778_pi_de: Voltaren® Kinderzäpfchen/Tropfen zum Einnehmen
+7680392540181_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680392540266_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680392540341_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680392540426_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680392540501_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680392540778_pi_fr: Voltarène® Suppositoires pour enfants/Solution buvable en gouttes
+7680684350016_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350054_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350085_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350061_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350078_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350092_pi_de: Fexofenadin Spirig HC® 180, Filmtabletten 
+7680684350016_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680684350054_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680684350085_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680684350061_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680684350078_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680684350092_pi_fr: Fexofénadine Spirig HC® 180, comprimés pelliculés 
+7680696570013_pi_de: Amavita Fexofenadin 180 mg, Filmtabletten 
+7680696570037_pi_de: Amavita Fexofenadin 180 mg, Filmtabletten 
+7680696570013_pi_fr: Amavita Fexofénadine 180 mg, comprimés pelliculés 
+7680696570037_pi_fr: Amavita Fexofénadine 180 mg, comprimés pelliculés 
+7680696600024_pi_de: SUN STORE Fexofenadin 180 mg, Filmtabletten 
+7680696600031_pi_de: SUN STORE Fexofenadin 180 mg, Filmtabletten 
+7680696600024_pi_fr: SUN STORE Fexofénadine 180 mg, comprimés pelliculés 
+7680696600031_pi_fr: SUN STORE Fexofénadine 180 mg, comprimés pelliculés 
