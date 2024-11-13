@@ -14,20 +14,24 @@ class Patent < Global
 	VIEW = View::Admin::Patent
 	def update
     keys = [ :base_patent, :base_patent_date, :certificate_number,
-      :expiry_date, :deletion_date, :iksnr, :issue_date, 
+      :expiry_date, :deletion_date, :iksnr, :issue_date,
       :protection_date, :publication_date, :registration_date ]
 		input = user_input(keys)
 		unless(error?)
 			detail = {}
-			if(cn = input[:certificate_number])
-				url = @session.lookandfeel.lookup(:swissreg_url, cn)
-				plug = SwissregPlugin.new(@session.app)
-				plug.get_detail(url).each { |key, val|
-					if(input[key].nil? || input[key] == '')
-						input.store(key, val)
-					end
-				}
-			end
+
+			# Swissreg has updated, and this code that fetch data via scraping doesn't work anymore
+			# https://github.com/zdavatz/oddb.org/issues/282
+			#
+			# if(cn = input[:certificate_number])
+			# 	url = @session.lookandfeel.lookup(:swissreg_url, cn)
+			# 	plug = SwissregPlugin.new(@session.app)
+			# 	plug.get_detail(url).each { |key, val|
+			# 		if(input[key].nil? || input[key] == '')
+			# 			input.store(key, val)
+			# 		end
+			# 	}
+			# end
 			@model = @session.app.update(@model.pointer, input, unique_email)
 		end
 		self
