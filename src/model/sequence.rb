@@ -226,6 +226,14 @@ module ODDB
       }.compact.uniq
     end
     def has_patinfo?
+      # There are bad records in the database, that despite odba's class saying it's a Patinfo,
+      # it's actually a PatinfoDocument. Probably a bug in ODBA.
+      # https://github.com/zdavatz/oddb.org/issues/280
+      if !@patinfo.nil? && @patinfo.respond_to?(:odba_instance) && !@patinfo.odba_instance.is_a?(ODDB::Patinfo)
+        @patinfo = nil
+        odba_store
+        return false
+      end
       ((!@patinfo.nil? and @patinfo.valid?) || !@pdf_patinfo.nil?) \
         && patinfo_active? \
         && (company && !company.disable_patinfo)
