@@ -212,7 +212,7 @@ module ODDB
         seqs = registration.sequences.values
         sequence = seqs.find do |seq|
           subs.size == seq.active_agents.size && subs.all? do |sub, dose|
-            seq.active_agents.any? do |act| act.same_as?(sub) && act.dose == dose end
+            seq.active_agents.any? do |act| act.respond_to?(:same_as?) &&  act.same_as?(sub) && act.dose == dose end
           end
         end
         sequence ||= seqs.find do |seq| seq.active_agents.empty? end
