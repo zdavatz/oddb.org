@@ -14,6 +14,9 @@ module ODDB
 		include Persistence
 		include Language
 		include SequenceObserver
+    def same_as?(patinfo)
+      false
+    end
     def article_codes
       codes = []
       @sequences.collect { |seq|
