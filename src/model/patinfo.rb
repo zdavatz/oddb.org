@@ -8,6 +8,7 @@ require 'util/language'
 require 'model/sequence_observer'
 require 'diffy'
 require 'util/today'
+require 'util/logfile'
 
 module ODDB
 	class Patinfo
@@ -15,6 +16,7 @@ module ODDB
 		include Language
 		include SequenceObserver
     def same_as?(patinfo)
+      LogFile.debug("#{self.class}: same_as? called for #{self.odba_id}")
       false
     end
     def article_codes
@@ -65,6 +67,11 @@ module ODDB
 	end
 	class PatinfoDocument
     include Persistence
+    def same_as?(patinfo)
+      LogFile.debug("#{self.class}: same_as? called for #{self.odba_id}")
+      false
+    end
+
     def pointer_descr
       'Patinfo'
     end

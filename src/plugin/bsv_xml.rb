@@ -20,6 +20,7 @@ require 'util/today'
 require 'zip'
 require 'plugin/swissindex'
 require 'util/mail'
+require 'util/logfile'
 
 module ODDB
   class BsvXmlPlugin < Plugin
@@ -243,13 +244,20 @@ module ODDB
         end
 
         composition_pointer = sequence.pointer + :bag_composition
-        comp = if (sequence.bag_compositions.nil? || sequence.bag_compositions.empty?) then @app.create composition_pointer else sequence.bag_compositions[0] end
+        comp = if (sequence.bag_compositions.nil? || sequence.bag_compositions.empty?)
+          then @app.create composition_pointer
+          else sequence.bag_compositions[0]
+        end
         if !sequence.bag_compositions.empty?
           first_composition = sequence.bag_compositions[0]
-          first_composition.active_agents.each do |agent|
-            first_composition.delete_active_agent(agent)
-            agent.odba_delete
-            first_composition.odba_store
+          if first_composition.respond_to?(:active_agents)
+            first_composition.active_agents.each do |agent|
+              first_composition.delete_active_agent(agent)
+              agent.odba_delete
+              first_composition.odba_store
+            end
+          else
+            LogFile.debug("what is it? #{self.odba_id} #{self.class} #{sequence.iksnr} first_composition #{first_composition.class} should be a Composition")
           end
         end
 
@@ -259,10 +267,14 @@ module ODDB
             sptr = Persistence::Pointer.new :substance
             substance = @app.update sptr.creator, :lt => name
           end
-#  TODO:          LogFile.debug "#{@iksnr} #{@ikscd} update active_agent, dose, substance"
-          pointer = comp.pointer + [:active_agent, name]
-          agent = @app.update pointer.creator, :dose => dose,
-                                               :substance => substance.oid
+#          LogFile.debug "#{@iksnr} #{@ikscd} update active_agent,substance #{name} dose #{dose} comp is #{comp.class}"
+          if comp.pointer
+            pointer = comp.pointer + [:active_agent, name]
+            agent = @app.update pointer.creator, :dose => dose,
+                                                :substance => substance.oid
+          else
+            LogFile.debug "#{@iksnr} #{@ikscd} is nil: name #{name} dose #{dose}"
+          end
         end
       end
       def load_ikskey pcode
