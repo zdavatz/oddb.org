@@ -301,8 +301,9 @@ describe "ch.oddb.org" do
   end unless ['just-medical'].index(Flavor)
 
   it "should have a link to the french language versions" do
+    @browser.link(visible_text: /Français|French/i).wait_until(&:visible?)
     @browser.link(visible_text: /Français|French/i).click
-    @browser.link(name: 'name').wait_until(&:present?)
+    @browser.button(name: "search").wait_until(&:present?)
     expect(@browser.text).to match /Comparez simplement et rapidement les prix des médicaments/
   end unless ['just-medical'].index(Flavor)
 
