@@ -1,6 +1,6 @@
 source "https://rubygems.org"
-gem 'dbi', :git => 'https://github.com/zdavatz/ruby-dbi'
-
+gem 'observer'
+gem 'csv'
 # Worksround for ruby 3.1,https://stackoverflow.com/questions/70500220/rails-7-ruby-3-1-loaderror-cannot-load-such-file-net-smtp
 # https://github.com/mikel/mail/pull/1439
 gem 'net-smtp', require: false
@@ -14,6 +14,7 @@ gem 'rss'
 gem 'bigdecimal'
 gem 'builder'
 gem 'clogger'
+gem 'chrono_logger'
 gem 'ydbd-pg'
 gem 'ydiffy'
 gem 'deprecated'
@@ -52,7 +53,7 @@ gem 'ruby-units'
 gem "rubyntlm"
 gem "rubyzip", :require => 'zip'
 gem 'savon'
-gem 'sbsm'
+gem 'sbsm'#, :path  => "../sbsm"
 gem 'spreadsheet'
 gem 'swissmedic-diff'
 gem 'optimist'
