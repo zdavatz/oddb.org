@@ -7,6 +7,11 @@ gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 
+gem 'odba', '1.1.8' # path: "../odba.2"
+gem 'htmlgrid', '1.2.2' # path: '../htmlgrid'
+gem 'sbsm', '1.6.1'#, :path  => "../sbsm"
+gem 'ydbd-pg', '0.5.9' # :path  => "../ydbd-pg"
+gem 'ydbi', '0.5.9' # , :path  => "../ydbi"
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'
@@ -15,7 +20,6 @@ gem 'bigdecimal'
 gem 'builder'
 gem 'clogger'
 gem 'chrono_logger'
-gem 'ydbd-pg'
 gem 'ydiffy'
 gem 'deprecated'
 gem 'flickraw'
@@ -23,7 +27,6 @@ gem 'gruff', '0.8' # version 0.9/0.10  fail if now max given
 gem 'hpricot'
 gem 'sax-machine'
 gem 'htmlentities'
-gem 'htmlgrid'
 gem 'httpi'
 gem 'i18n'
 gem 'json'
@@ -36,7 +39,6 @@ gem 'needle'
 gem 'net-http-digest_auth'
 gem 'net-http-persistent'
 gem 'nokogiri'
-gem 'odba'
 gem 'ox'
 gem 'oddb2tdat'
 gem 'activesupport'
@@ -53,7 +55,6 @@ gem 'ruby-units'
 gem "rubyntlm"
 gem "rubyzip", :require => 'zip'
 gem 'savon'
-gem 'sbsm'#, :path  => "../sbsm"
 gem 'spreadsheet'
 gem 'swissmedic-diff'
 gem 'optimist'
@@ -88,4 +89,4 @@ group :debugger do
   gem 'rbs'
   gem 'typeprof'
   gem 'debug'
-end
+end if false
