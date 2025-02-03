@@ -14,6 +14,7 @@ require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
 require 'odba'
+require 'minitar'
 
 module ODDB
 	module OdbaExporter
@@ -54,7 +55,7 @@ end
 			File.delete(gz_name) if(File.exist?(gz_name))
       tgz = Zlib::GzipWriter.new(File.open(gz_name, 'wb'))
       # Warning: tgz will be closed!
-      Archive::Tar::Minitar.pack(files, tgz)
+      Minitar.pack(files, tgz)
 
 			zip_name = name + '.zip'
 			File.delete(zip_name) if(File.exist?(zip_name))
