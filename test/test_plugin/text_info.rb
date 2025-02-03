@@ -25,7 +25,7 @@ module ODDB
         :details_dir
   end
 
-  class TestTextInfoPlugin <MiniTest::Test
+  class TestTextInfoPlugin <Minitest::Test
     @@datadir = File.join(ODDB::TEST_DATA_DIR, 'html/text_info')
     def setup
       super
@@ -159,7 +159,7 @@ module ODDB
     end
   end
 
-  class TestExtractMatchedName <MiniTest::Test
+  class TestExtractMatchedName <Minitest::Test
     Nr_FI_in_AIPS_test = 4
     Nr_PI_in_AIPS_test = 1
     def teardown

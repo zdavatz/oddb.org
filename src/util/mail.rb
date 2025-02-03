@@ -186,7 +186,7 @@ module ODDB
 
     def Util.debug_msg(msg)
       LogFile.append('oddb/debug', ' ' + msg, Time.now)
-      $stderr.puts msg unless defined?(MiniTest)
+      $stderr.puts msg unless defined?(Minitest)
     end
   end
 end
