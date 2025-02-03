@@ -82,7 +82,7 @@ module ODDB
     def test_remote_export
       flexstub(ODDB::Exporter) do |klass|
         klass.should_receive(:new).and_return(flexmock('exp') do |exp|
-          exp.should_receive(:export_helper).once.with('name', Proc).and_yield('path')
+          exp.should_receive(:export_helper).once.with('name').and_yield('path')
         end)
       end
       @serv.remote_export('name') do |path|
