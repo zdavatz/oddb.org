@@ -6,12 +6,13 @@ gem 'csv'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
-
 gem 'odba', '1.1.8' # path: "../odba.2"
 gem 'htmlgrid', '1.2.2' # path: '../htmlgrid'
 gem 'sbsm', '1.6.1'#, :path  => "../sbsm"
 gem 'ydbd-pg', '0.5.9' # :path  => "../ydbd-pg"
 gem 'ydbi', '0.5.9' # , :path  => "../ydbi"
+gem 'gruff','0.8.0'
+gem 'rmagick', '4.2.4'
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'
@@ -23,7 +24,6 @@ gem 'chrono_logger'
 gem 'ydiffy'
 gem 'deprecated'
 gem 'flickraw'
-gem 'gruff', '0.8' # version 0.9/0.10  fail if now max given
 gem 'hpricot'
 gem 'sax-machine'
 gem 'htmlentities'
@@ -46,7 +46,6 @@ gem 'paypal'
 gem 'parslet'
 gem 'pg'
 gem 'rclconf'
-gem 'rmagick', '4.2.4'
 gem 'racc'
 gem 'rack'
 gem 'rackup'
@@ -88,5 +87,5 @@ end
 group :debugger do
   gem 'rbs'
   gem 'typeprof'
-  gem 'debug'
-end if false
+  gem 'debug', '1.9.1'
+end
