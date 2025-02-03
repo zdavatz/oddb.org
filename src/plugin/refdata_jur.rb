@@ -77,7 +77,7 @@ module ODDB
       agent.ignore_bad_chunking = true
       agent
     end
-    DebugImport         = defined?(MiniTest)
+    DebugImport         = defined?(Minitest)
     Companies_XML       = File.join(ODDB::WORK_DIR, 'xml/refdata_jur_latest.xml')
     Companies_curr      = File.join(ODDB::WORK_DIR, "xml/refdata_jur_#{Time.now.strftime('%Y.%m.%d')}.xml")
     # MedRegURL     = 'http://www.medregom.admin.ch/'
@@ -154,10 +154,10 @@ module ODDB
               success = true
             end
           rescue Timeout => e
-            nr_tries += max_retries  if defined?(MiniTest)
+            nr_tries += max_retries  if defined?(Minitest)
             log "rescue #{e} will retry #{max_retries - nr_tries} times"
             nr_tries += 1
-            sleep defined?(MiniTest) ? 0.01 : 60
+            sleep defined?(Minitest) ? 0.01 : 60
           end
         end
         {}
