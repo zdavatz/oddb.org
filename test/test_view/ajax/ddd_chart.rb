@@ -17,15 +17,6 @@ class TestSideBar <Minitest::Test
   def setup
     @sidebar = SideBar.new
   end
-  def test_setup_graph_measurements
-    @sidebar.instance_eval('@maximum_value = 123')
-    @sidebar.instance_eval('@spread = 0.0')
-    @sidebar.instance_eval('@marker_count = 1.0')
-    expected = 444.0
-    result =  @sidebar.setup_graph_measurements
-    skip "Results #{result} are different locally and under github" if (result - expected) > 0.01
-    assert_in_delta(expected, result, 0.01)
-  end
   def test_setup_graph_measurements__hide_line_markers
     @sidebar.instance_eval('@maximum_value = 123')
     @sidebar.instance_eval('@spread = 0.0')

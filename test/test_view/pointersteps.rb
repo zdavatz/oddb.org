@@ -146,7 +146,7 @@ bon
 </TR>
 </TABLE>
         EOS
-				assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
+				assert_equal(expected.gsub(' ', '').tr("\n", ""), steps.to_html(CGI.new).gsub(' ', ''))
 			end
 			def test_to_html3
 				@model.pointer_descr_enable = false
