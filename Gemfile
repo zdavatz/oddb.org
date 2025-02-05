@@ -6,13 +6,13 @@ gem 'csv'
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
-gem 'odba', '1.1.8' # path: "../odba.2"
-gem 'htmlgrid', '1.2.2' # path: '../htmlgrid'
-gem 'sbsm', '1.6.1'#, :path  => "../sbsm"
-gem 'ydbd-pg', '0.5.9' # :path  => "../ydbd-pg"
-gem 'ydbi', '0.5.9' # , :path  => "../ydbi"
-gem 'gruff','0.8.0'
-gem 'rmagick', '4.2.4'
+gem 'odba', '1.1.8'
+gem 'htmlgrid', '1.2.2'
+gem 'sbsm', '1.6.1'
+gem 'ydbd-pg', '0.5.9'
+gem 'ydbi', '0.5.9'
+gem 'gruff','0.8.0' # to be backward compatible with Ruby 3.2
+gem 'rmagick', '4.2.4' # to be backward compatible with Ruby 3.2
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'
@@ -47,8 +47,6 @@ gem 'parslet'
 gem 'pg'
 gem 'rclconf'
 gem 'racc'
-gem 'rack'
-gem 'rackup'
 gem 'rubyXL'
 gem 'ruby-units'
 gem "rubyntlm"
@@ -87,5 +85,5 @@ end
 group :debugger do
   gem 'rbs'
   gem 'typeprof'
-  gem 'debug', '1.9.1'
+  gem 'debug'
 end
