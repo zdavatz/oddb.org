@@ -6,6 +6,7 @@
 require 'util/persistence'
 require 'model/activeagent'
 require 'model/substance'
+require 'util/logfile'
 
 module ODDB
   class Composition
@@ -43,8 +44,12 @@ module ODDB
     def inactive_agents # aka Hilfsstoffe
       @inactive_agents || []
     end
+    LogFile.debug("Added check that we always return active_agent of class ActiveAgent or Substance")
     def active_agent(substance_or_oid)
-      active_agents.find { |active| active.same_as?(substance_or_oid) }
+      if active_agents.find_all { |active| !active.is_a?(ActiveAgent) && !active.is_a?(Substance)}.size > 0
+        LogFile.debug("Did not find any ActiveAgent/Substance in #{substance_or_oid} odba_id #{substance_or_oid.class}" )
+      end
+      active_agents.find { |active| (active.is_a?(ActiveAgent) || active.is_a?(Substance)) && active.same_as?(substance_or_oid) }
     end
     def inactive_agent(substance_or_oid)
       inactive_agents.find { |active| active.same_as?(substance_or_oid) }
