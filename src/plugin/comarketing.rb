@@ -15,11 +15,11 @@ require 'cmath'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-    doc = Nokogiri::HTML(URI.open( ODDB::SwissmedicPlugin::BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
-    @@comarketing_url = ODDB::SwissmedicPlugin::BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
-    doc = nil
     def self.get_comarketing_url
-      @@comarketing_url
+      @@comarketing_url ||= nil
+      return @@comarketing_url if @@comarketing_url
+      doc = Nokogiri::HTML(URI.open( ODDB::SwissmedicPlugin::BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
+      @@comarketing_url = ODDB::SwissmedicPlugin::BASE_URL + doc.xpath("//a").find{|x| /Zugelassene Co-Marketing-Humanarzneimittel/.match(x.children.text) }.attributes['href'].value
     end
 
 		def find(iksnr)

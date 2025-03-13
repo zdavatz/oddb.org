@@ -222,6 +222,10 @@ module ODDB
           ptr = registration.pointer + [:sequence, seqnr]
           sequence = @app.update ptr.creator, :name_base => name[:de]
         end
+        unless sequence.respond_to?(:active_agents)
+          LogFile.debug("#{registration.iksnr} odba_id #{sequence.odba_id} #{sequence.class} does not respond to active_agents")
+          return nil
+        end
         if sequence.active_agents.empty?
           cptr = sequence.pointer + :composition
           comp = @app.create cptr

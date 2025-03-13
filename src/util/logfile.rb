@@ -15,6 +15,7 @@ module ODDB
 			FileUtils.mkdir_p(dir)
 			timestr = time.strftime('%Y-%m-%d %H:%M:%S %Z')
 			File.open(file, 'a') { |fh| fh << [timestr, line, "\n"].join if fh.respond_to?(:<<) }
+			LogFile.debug(line)
 		end
 		def filename(key, time)
 			path = [
@@ -32,7 +33,7 @@ module ODDB
 			end
 		end
     def debug(msg)
-      msg = "#{caller[0]}: #{msg}"
+      msg = /util\/log/.match(caller[0]) ?"#{caller[1]}: #{msg}" : "#{caller[0]}: #{msg}"
       unless ENV['TRAVIS']
         $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
       end
@@ -40,6 +41,7 @@ module ODDB
         name = LogFile.filename('oddb/debug', Time.now)
         FileUtils.makedirs(File.dirname(name))
         @@debugLog = File.open(name, 'a+')
+        @@debugLog.sync = true
       end
       @@debugLog.puts("#{Time.now}: #{msg}")
       @@debugLog.flush
