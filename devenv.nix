@@ -24,12 +24,15 @@ in {
   env.ODDB_PSQL_PORT = "5433";
   env.ODDB_PORT = "8012";
   env.ODDB_URL = "127.0.0.1:${config.env.ODDB_PORT}"; # for running the watir spec tests
+  env.ODDB_DB_BACKUP = "../db_ch_oddb_backup.bz2";
+  env.ODDB_DB_BACKUP_URL = "http://sl_errors.oddb.org/db/22:00-postgresql_database-ch_oddb-backup.bz2";
 
   enterShell = ''
     echo This is the devenv shell for the webbrowser ch.oddb.org
     git --version
     ruby --version
     psql --version
+    get_database_backup
   '';
 
   env.FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
@@ -38,19 +41,23 @@ in {
 
     exec = ''
       require 'open-uri'
+      require 'timeout'
       def connected?(port)
         res = `netstat -tulpen 2>/dev/null| grep #{port}`
         return false unless res&.length > 0
         found = /\:#{port}\s/.match(res)
         return found && (found.length > 0)
       end
-
       port = ARGV[0]
-      while !connected?(port)
-          sleep 1
-          puts "port: #{port} open? #{connected?(port)}"
+      maxWait = ARGV[1]
+      maxWait ||= 1
+      status = Timeout::timeout(maxWait.to_i) do
+        while !connected?(port)
+            sleep 1
+            puts "port: #{port} open? #{connected?(port)}"
+        end
       end
-        puts "port: #{port} is now connected"
+      puts "port: #{port} maxWait #{maxWait} is now connected status was #{status}"
     '';
   };
 
@@ -76,7 +83,6 @@ in {
       create role ch_oddb superuser login password null;
       create role postgres superuser login password null;
       \connect ch_oddb;
-      \i ../22:00-postgresql_database-ch_oddb-backup
     '';
   };
   scripts.start_oddb_daemons.exec = ''
@@ -96,14 +102,53 @@ in {
     wait_for_port_open ${config.env.ODDB_PORT}
     echo Do not forget to start yus and migeld
   '';
-    scripts.load_oddb.exec = ''
-      set -v
-      pg_lao -Z9 -f ch_oddb_dump.gz ch_oddb
+
+    # curl -z/--time-cond db_ch_oddb_backup.bz2
+    scripts.get_database_backup.exec = ''
+      if [ ! -f ${config.env.ODDB_DB_BACKUP} ]; then
+        echo Must download the file ${config.env.ODDB_DB_BACKUP}
+        ${pkgs.curl}/bin/curl -o ${config.env.ODDB_DB_BACKUP} ${config.env.ODDB_DB_BACKUP_URL}
+      else
+        echo I am testing whether I have to update ${config.env.ODDB_DB_BACKUP}
+        ${pkgs.curl}/bin/curl -z ${config.env.ODDB_DB_BACKUP} ${config.env.ODDB_DB_BACKUP_URL}
+      fi
+      ls -l ${config.env.ODDB_DB_BACKUP}
     '';
-    # /usr/local/pg-10_1/bin/pg_dump -U postgres -p 5432 -h localhost --clean --if-exists yus | gzip > /home/ywesee/migration/yus.gz
-    scripts.dump_oddb.exec = ''
-      set -v
-      pg_dump --if-exists --jobs=10 -Z9 -f ch_oddb_dump.gz ch_oddb
+
+    scripts.load_database_backup.exec = ''
+      get_database_backup
+      devenv up --detach
+      wait_for_port_open ${config.env.ODDB_PSQL_PORT}
+      ${pkgs.bzip2}/bin/bzcat ${config.env.ODDB_DB_BACKUP} | ${pkgs-old.postgresql_10}/bin/psql ch_oddb
+    '';
+
+    scripts.dump_database.exec = ''
+      date
+      # --clean --if-exists
+      ${pkgs-old.postgresql_10}/bin/pg_dump -f my_db_backup ch_oddb
+      date
+    '';
+
+    scripts.run_integration_test.exec = ''
+      set -evux
+      date
+      devenv up --detach
+      sleep 5
+      bundle exec ruby ext/export/bin/exportd 2>&1 | tee exportd.log &
+      wait_for_port_open 10005 30
+      echo "Started exportd"
+      bundle exec ruby ext/fiparse/bin/fiparsed 2>&1 | tee fiparsed.log &
+      wait_for_port_open 10002 30
+      bundle exec ruby ext/refdata/bin/refdatad 2>&1 | tee refdatad.log &
+      wait_for_port_open 50001 30
+      echo "Started ext/fiparse/bin/fiparsed"
+      bundle exec rackup --host 127.0.0.1 -p 8012 2>&1 | tee rackup.log &
+      echo "Started rackup"
+      wait_for_port_open 8012 30
+      wait_for_port_open 10000 30
+      echo "Now rackup, fiparse, refdatad and exportd should be running"
+      bundle exec ruby jobs/import_daily 2>&1 | tee import_daily.log
+      bundle exec ruby jobs/import_bsv 2>&1 | tee import_bsv.log
     '';
 
 }
