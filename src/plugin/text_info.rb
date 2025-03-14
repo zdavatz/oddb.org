@@ -308,8 +308,13 @@ module ODDB
           package.patinfo = nil
         end
       rescue NoMethodError => error
-          puts "Delete lang #{lang} patinfo NoMethodError #{msg}"
-          package.patinfo.descriptions.delete(lang)
+          if package.patinfo.descriptions.is_a?(Hash)
+            LogFile.debug "Delete Hash lang #{lang} patinfo NoMethodError #{msg}"
+            package.patinfo.descriptions.delete(lang)
+          else
+            puts "Delete Hash lang #{lang} patinfo NoMethodError #{msg}"
+            package.patinfo.descriptions = nil
+          end
           package.patinfo.odba_store
       end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
       if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
