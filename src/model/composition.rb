@@ -49,7 +49,11 @@ module ODDB
       if active_agents.find_all { |active| !active.is_a?(ActiveAgent) && !active.is_a?(Substance)}.size > 0
         LogFile.debug("Did not find any ActiveAgent/Substance in #{substance_or_oid} odba_id #{substance_or_oid.class}" )
       end
-      active_agents.find { |active| (active.is_a?(ActiveAgent) || active.is_a?(Substance)) && active.same_as?(substance_or_oid) }
+      active_agents.find do |active|
+                           (active.is_a?(ActiveAgent) || active.is_a?(Substance)) &&
+                           active.respond_to?(:same_as?) &&
+                           active.same_as?(substance_or_oid)
+      end
     end
     def inactive_agent(substance_or_oid)
       inactive_agents.find { |active| active.same_as?(substance_or_oid) }
