@@ -206,6 +206,8 @@ module ODDB
 
       # textinfo
       update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
+      GC.start
+      sleep(10) unless defined?(Minitest)
       update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
     end
     def run_random
