@@ -9,6 +9,7 @@ require 'util/persistence'
 require 'model/sequence'
 require 'model/patent'
 require 'util/today'
+require 'util/logfile'
 
 module ODDB
 	class RegistrationCommon
@@ -71,7 +72,13 @@ module ODDB
     def active_packages
       if active?
         @sequences.values.inject([]) do |memo, seq|
-          memo.concat seq.active_packages
+          if seq.instance_of?(ODDB::Sequence)
+            memo.concat seq.active_packages
+          else
+            LogFile.append('oddb/debug',  "Fixing inconsistency #{seq.odba_id} deleting #{ODBA.cache.fetch(seq.odba_id).class} which is not a #{seq.class}")
+            ODBA.cache.delete(ODBA.cache.fetch(seq.odba_id))
+            nil
+          end
         end
       else
         []

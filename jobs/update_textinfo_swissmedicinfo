@@ -23,6 +23,8 @@ module ODDB
           opts[:target] = $1.intern
         elsif arg =~ /reparse/
           opts[:reparse] = true
+        elsif arg =~ /skip/
+          opts[:skip] = true # to skip time consuming postprocess when debugging reparse errors
         elsif arg =~ /no\-download/
           opts[:download] = false
         elsif arg =~ /xml_file=(\w.+)/

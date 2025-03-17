@@ -112,6 +112,7 @@ module ODDB
       LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
     end
     def postprocess
+      return if ARGV.find{|x| /skip/.match(x)}
       LogFile.debug "#{Time.now}:postprocess fachinfo.rss"
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
       puts_sync "postprocess update_rss_feeds done"
@@ -279,7 +280,7 @@ module ODDB
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
       rescue RuntimeError => err
-        @failures.push err.message
+        @failures.push "IKSNR: #{meta_info.iksnr} #{err.message} #{err.backtrace[0..8].join("\n")}"
         []
       end
     end
@@ -301,23 +302,7 @@ module ODDB
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
-      begin  # Here I catch a few bad entries in our database
-        name_okay = eval("package.patinfo.#{lang}.name")
-        if name_okay.nil?
-          puts "Cleaning bad patinfo #{msg}"
-          package.patinfo = nil
-        end
-      rescue NoMethodError => error
-          if package.patinfo.descriptions.is_a?(Hash)
-            LogFile.debug "Delete Hash lang #{lang} patinfo NoMethodError #{msg}"
-            package.patinfo.descriptions.delete(lang)
-          else
-            puts "Delete Hash lang #{lang} patinfo NoMethodError #{msg}"
-            package.patinfo.descriptions = nil
-          end
-          package.patinfo.odba_store
-      end if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo)
-      if package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+      if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
         old_ti = package.patinfo;  Languages.each do |old_lang|
           next if old_lang.eql?(lang)
           eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
@@ -355,7 +340,14 @@ module ODDB
 
     def store_patinfo_for_all_packages(iksnr, lang, patinfo_lang)
       reg = @app.registration(iksnr)
-      patinfo = store_package_patinfo(reg.packages.values.first, lang, patinfo_lang)
+      begin
+        patinfo = store_package_patinfo(reg.packages.values.first, lang, patinfo_lang)
+      rescue RuntimeError => err
+        first_pkg = reg.packages.values.first
+        res = reg.sequence(first_pkg.seqnr).delete_package(first_pkg.ikscd)
+        LogFile.append('oddb/debug',  "Deleted #{res.class} package #{first_pkg.iksnr} #{first_pkg.seqnr} #{first_pkg.ikscd }#{first_pkg.odba_id} #{first_pkg.pointer}, as we got #{err}")
+        @failures.push "IKSNR: #{iksnr} #{first_pkg.seqnr} #{first_pkg.iksnr} #{err.message} #{err.backtrace[0..2].join("\n")}"
+      end
       reg.each_package do |package|
         package.patinfo = patinfo unless package.patinfo.object_id == patinfo.object_id
       end
@@ -422,7 +414,7 @@ module ODDB
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
       rescue RuntimeError => err
-        @failures.push err.message
+        @failures.push "IKSNR: #{meta_info.iksnr} #{err.message} #{err.backtrace[0..8].join("\n")}"
         []
       end
     end
