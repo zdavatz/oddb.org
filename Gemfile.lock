@@ -39,7 +39,7 @@ GEM
       faker (>= 1.1.2)
       yml_reader (>= 0.6)
     date (3.4.1)
-    debug (1.9.1)
+    debug (1.10.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
     deprecated (2.0.1)
@@ -181,7 +181,7 @@ GEM
     rbs (3.8.1)
       logger
     rclconf (1.0.0)
-    rdoc (6.11.0)
+    rdoc (6.12.0)
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
     reline (0.6.0)
@@ -271,7 +271,7 @@ GEM
     standard-performance (1.6.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.23.0)
-    stringio (3.1.2)
+    stringio (3.1.5)
     swissmedic-diff (0.2.9)
       logger
       nokogiri
