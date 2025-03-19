@@ -117,7 +117,9 @@ module ODDB
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments subject #{mail_subject}", Time.now)
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments body #{mail_body}", Time.now)
       # try sending the mail several times
+      nr_times = 0
       1.upto(3).each do |idx|
+        nr_times = idx
         begin
           Mail.deliver do
             from     override_from ? override_from : Util.mail_from
@@ -133,12 +135,12 @@ module ODDB
           LogFile.append('oddb/debug', "Returning after #{idx} tries")
           return true
         rescue => e
-          msg = "Util.send_mail_with_attachments rescue: idx is #{idx} error is #{e.inspect} #{caller[0..10].inspect}"
+          msg = "Util.send_mail_with_attachments rescue: idx is #{nr_times} error is #{e.inspect} #{caller[0..10].inspect}"
           Util.debug_msg(msg)
           sleep(1)
         end
       end
-      raise "Util.send_mail_with_attachments Unable to send after #{idx} tries. error is #{e.inspect} #{caller[0..10].inspect}"
+      raise "Util.send_mail_with_attachments Unable to send after #{nr_times} tries. error is #{e.inspect} #{caller[0..10].inspect}"
     end
 
     # Utility methods for checking mails in  unit-tests
