@@ -102,7 +102,7 @@ module ODDB
         }
         FileUtils.mv(tmp, path) if File.exist?(tmp)
       end
-      LogFile.append('oddb/debug', " update_rss_feeds #{@name}: month #{@month} today #{@@today} with #{model.size} entries", Time.now.utc)
+      LogFile.debug("#{@name}: month #{@month} today #{@@today} with #{model.size} entries")
       @app.rss_updates[name] = [@month || @@today, model.size]
       @app.odba_isolated_store
     end
