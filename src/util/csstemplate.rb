@@ -260,7 +260,7 @@ module ODDB
       :rslt_link_hover_color           => 'blue',
       :sidebar_color                   => '#ddffdd',
       :square_font_size                => '11px',
-      :std_font_family                 => 'Arial, Helvetica, sans-serif',
+      :std_font_family                 => 'Roboto, Arial, Helvetica, sans-serif',
       :std_font_size                   => '12px',
       :subheading_link_color           => 'black',
       :subheading_link_active_color    => 'silver',

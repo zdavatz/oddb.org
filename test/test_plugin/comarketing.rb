@@ -21,7 +21,7 @@ module ODDB
       @reg.should_receive(:comarketing_with).and_return @reg
       @reg.should_receive(:comarketing_with).and_return @reg
       @app.should_receive(:registration).and_return 
-      @app.should_receive(:registrations).and_return Hash.new( TestIksnr => @reg)
+      @app.should_receive(:registrations).and_return Hash.new({"#{TestIksnr}": @reg})
       @app.should_receive(:delete).by_default
       @app.should_receive(:find).and_return(TestIksnr)
       @app.should_receive(:iksnr).and_return(TestIksnr)

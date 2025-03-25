@@ -142,18 +142,21 @@ class TestRegistration <Minitest::Test
     @registration.renewal_flag = true
     assert_equal(true, @registration.active?)
   end
+  def tst_create_packages
+    seq1 = @registration.create_sequence('01')
+    seq2 = @registration.create_sequence('02')
+    seq1.create_package('001')
+    seq1.create_package('002')
+    seq2.create_package('003')
+  end
   def test_active_packages
-    seq1 = flexmock :active_packages => ['pac1', 'pac2']
-    seq2 = flexmock :active_packages => ['pac3']
-    @registration.sequences.update '01' => seq1, '02' => seq2
-    assert_equal %w{pac1 pac2 pac3}, @registration.active_packages
+    tst_create_packages
+    assert_equal ['001', '002', '003'], @registration.active_packages.collect{|x| x.ikscd}
     @registration.expiration_date = @@two_years_ago
     assert_equal [], @registration.active_packages
   end
   def test_active_package_count
-    seq1 = flexmock :active_package_count => 2
-    seq2 = flexmock :active_package_count => 1
-    @registration.sequences.update '01' => seq1, '02' => seq2
+    tst_create_packages
     assert_equal 3, @registration.active_package_count
     @registration.expiration_date = @@two_years_ago
     assert_equal 0, @registration.active_package_count
