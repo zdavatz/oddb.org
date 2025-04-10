@@ -34,7 +34,7 @@ module ODDB
     'data_dir'            => ODDB::WORK_DIR,
     'log_dir'             => ODDB::LOG_DIR,
     'log_pattern'         => File.join(ODDB::LOG_DIR, '/%Y/%m/%d/app_log'),
-    'url_bag_sl_zip'      => 'http://www.xn--spezialittenliste-yqb.ch/File.axd?file=XMLPublications.zip',
+    'url_bag_sl_zip'      => 'https://www.xn--spezialittenliste-yqb.ch/File.axd?file=XMLPublications.zip',
     'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
     'server_url'          => SERVER_URI,
     'migel_base_url'      =>  'https://migel_base_url.net/wsv/wv_getMigel.aspx?Lang=DE&Query', # non working default
