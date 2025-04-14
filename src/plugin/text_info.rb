@@ -143,13 +143,15 @@ module ODDB
 
     def TextInfoPlugin::store_fachinfo(app, reg, fis)
       existing = reg.fachinfo
+      GC.start; mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i / (2**20)
+      msg = "#{mbytes} mbytes used. #{reg.iksnr} #{fis.keys}"
       if existing
         lang = fis.keys.first
         begin
           old_text = eval("existing.#{lang}.text").clone
           fis[lang].change_log = eval("existing.#{lang}.change_log").clone
         rescue => error
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} fixing invalid old_text"
+          LogFile.debug "#{msg} fixing invalid old_text"
           old_text = nil
         end
         updated_fi = app.update reg.fachinfo.pointer, fis
@@ -157,10 +159,10 @@ module ODDB
           text_item = eval("updated_fi.#{lang}")
           new_text = text_item.text
           if fis[lang].change_log && fis[lang].change_log.respond_to?(:size)
-            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
+            LogFile.debug "#{msg} #{existing.pointer} " +
                 "eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
           else
-            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
+            LogFile.debug "#{msg} #{existing.pointer} " +
                 "eql? #{old_text.eql?(new_text)} without change_logs"
           end
           unless old_text.eql?(new_text)
@@ -168,12 +170,12 @@ module ODDB
             text_item.odba_store
           end
         else
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
+          LogFile.debug "#{msg} #{existing.pointer} no old_text"
         end
         updated_fi
       else
         fachinfo = app.create_fachinfo
-        LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} create_fachinfo #{fachinfo.pointer}"
+        LogFile.debug "#{msg} create_fachinfo #{fachinfo.pointer}"
         updated_fi = app.update fachinfo.pointer, fis
       end
     end
@@ -293,7 +295,12 @@ module ODDB
      if old_text.eql?(new_patinfo_lang.to_s)
         LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
       else
-        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+        if patinfo.description(lang).instance_of?(ODDB::PatinfoDocument)
+          diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+        else
+          LogFile.append('oddb/debug', "Corrected bad class")
+          patinfo.descriptions[lang] = new_patinfo_lang
+        end
         patinfo.odba_store
         LogFile.debug "store_patinfo_change_diff: #{lang} #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size} -> #{patinfo.description(lang).change_log.size}"
       end
@@ -301,9 +308,15 @@ module ODDB
 
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
-      msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
-      if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
-        old_ti = package.patinfo;  Languages.each do |old_lang|
+      GC.start; mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i / (2**20)
+      if package.instance_of?(ODDB::Package) && package&.patinfo.instance_of?(ODDB::Patinfo)
+        msg = "#{mbytes} mbytes used. #{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
+      else
+        msg = "#{mbytes} mbytes used. NOT a ODDB::Patinfo #{package.class}"
+      end
+      if package&.patinfo.instance_of?(ODDB::Patinfo) && package&.patinfo&.valid? && package&.patinfo&.descriptions[lang]
+        old_ti = package.patinfo
+        Languages.each do |old_lang|
           next if old_lang.eql?(lang)
           eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
         end
@@ -311,7 +324,7 @@ module ODDB
         store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
-      elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
+      elsif package&.patinfo.instance_of?(ODDB::Patinfo) && package&.patinfo.descriptions.is_a?(Hash)
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
         msg += ' new patinfo'
@@ -334,7 +347,6 @@ module ODDB
       package.sequence.odba_store
       package.patinfo.odba_store
       package.odba_store
-      LogFile.debug "called odba_store #{msg}"
       package.patinfo
     end
 
@@ -356,7 +368,7 @@ module ODDB
     end
 
     def update_patinfo_lang(meta_info, pis)
-      LogFile.debug "update_patinfo_lang #{meta_info} #{pis.keys}"
+      LogFile.debug "#{pis.keys} #{meta_info}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:pi].push meta_info.title
         if pis.values.first.date.to_s.index(Date.today.year.to_s) ||
@@ -409,7 +421,7 @@ module ODDB
             end
           end
         else
-          LogFile.debug "update_patinfo_lang #{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
+          LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, pis, :orphaned_patinfo
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
@@ -1243,7 +1255,7 @@ module ODDB
       html_name = res[0]
       is_same_html = res[2]
       unless html_name
-        LogFile.debug "parse_textinfo #{type}: no html_name for #{meta_info}"
+        LogFile.debug "#{type}: no html_name for #{meta_info}"
         return
       end
       textinfo_fi = nil
@@ -1459,6 +1471,7 @@ module ODDB
 
 
     def import_swissmedicinfo(options=nil)
+      startTime = Time.now.to_i
       LogFile.debug "import_swissmedicinfo options #{options} @options #{@options} "
       @options = options if options
       $stdout.sync = true
@@ -1496,15 +1509,16 @@ module ODDB
           end
         end
       end
-      LogFile.debug "import_swissmedicinfo must parse @to_parse #{@to_parse.size}  FI/PIs"
       LogFile.debug "import_swissmedicinfo must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
       @iksnrs_meta_info.values.flatten.sort{|x,y| x.iksnr.to_i <=> y.iksnr.to_i}.each do |meta_info|
         parse_textinfo(meta_info)
       end
       if @options[:download] != false
-        puts_sync "job is done. now postprocess works ..."
+        endTime = Time.now.to_i
+        LogFile.append('oddb/debug', "job is done. took #{endTime-startTime} seconds. now postprocess works ...")
         postprocess
-        puts_sync "job and postprocess are done"
+        postTime = Time.now
+        LogFile.append('oddb/debug', "job and postprocess are done. took #{Time.now.to_i-endTime} seconds")
       end
       true # report
     end

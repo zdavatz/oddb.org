@@ -15,7 +15,7 @@ module ODDB
     @@report = []
 
     def debug_msg(msg)
-      if defined?(MiniTest) then $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush; return end
+      if defined?(Minitest) then $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush; return end
       if not defined?(@checkLog) or not @checkLog
         name = LogFile.filename('oddb/debug/', Time.now)
         FileUtils.makedirs(File.dirname(name))

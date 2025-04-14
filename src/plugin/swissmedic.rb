@@ -997,7 +997,7 @@ public
                 sequence.compositions.odba_store
               }
             end
-            next if defined?(MiniTest) and not composition_in_db # for unknown reasons we we cannot create the pointer when running under MiniTest
+            next if defined?(Minitest) and not composition_in_db # for unknown reasons we we cannot create the pointer when running under Minitest
             args = {
                     :source => parsed_comp.source,
                     :label => parsed_comp.label,
