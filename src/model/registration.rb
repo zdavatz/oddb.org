@@ -75,10 +75,8 @@ module ODDB
           if seq.instance_of?(ODDB::Sequence)
             memo.concat seq.active_packages
           else
-            unless defined?(Minitest)
-              LogFile.append('oddb/debug',  "Fixing inconsistency #{seq.odba_id} deleting #{ODBA.cache.fetch(seq.odba_id).class} which is not a #{seq.class}")
-              ODBA.cache.delete(ODBA.cache.fetch(seq.odba_id))
-            end
+            LogFile.append('oddb/debug',  "Fixing inconsistency #{seq.odba_id} deleting #{ODBA.cache.fetch(seq.odba_id).class} which is not a #{seq.class}")
+            ODBA.cache.delete(ODBA.cache.fetch(seq.odba_id))
             memo
           end
         end
