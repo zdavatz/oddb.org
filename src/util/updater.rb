@@ -194,20 +194,22 @@ module ODDB
     def recipients
       self.class::RECIPIENTS
     end
-    def run
-      logfile_stats
-      update_epha_interactions
+    def run(opts)
+      unless opts[:patinfo_only]
+        logfile_stats
+        update_epha_interactions
 
-      # drugshortage
-      update_drugshortage
+        # drugshortage
+        update_drugshortage
 
-      # recall, hpc
-      update_swissmedic_feeds
+        # recall, hpc
+        update_swissmedic_feeds
 
-      # textinfo
-      update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
-      GC.start
-      sleep(10) unless defined?(Minitest)
+        # textinfo
+        update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
+        GC.start
+        sleep(10) unless defined?(Minitest)
+      end
       update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
     end
     def run_random
