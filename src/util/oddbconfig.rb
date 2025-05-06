@@ -105,7 +105,7 @@ module ODDB
   QUERY_LIMIT_PRICES = {
     1		=>	5,
     30	=>	50,
-    365	=>	400,
+    365	=>	450,
   }
   VAT_RATE = 8.0
   RSS_PATH = File.join(PROJECT_ROOT, 'data', 'rss')
