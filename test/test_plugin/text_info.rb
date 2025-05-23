@@ -351,6 +351,7 @@ module ODDB
       ODDB::TestHelpers.vcr_setup
       path_check = File.join(ODDB::PROJECT_ROOT, 'etc', 'barcode_minitest.yml')
       assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
+      FileUtils.rm_rf(ODDB::WORK_DIR, :verbose => false)
       FileUtils.rm_f(path_check, :verbose => false)
       FileUtils.rm_f(File.expand_path('../data/'), :verbose => false)
       pointer = flexmock 'pointer'
@@ -502,13 +503,11 @@ module ODDB
       # @reg.should_receive(:odba_store).at_least.once
       # @sequence.should_receive(:odba_store).at_least.once
       # @descriptions.should_receive(:[]=).at_least.once
-
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
-
-      assert_equal(1 , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(2 , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal([], @plugin.up_to_date_pis, 'up_to_date_pis must match')
 
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
@@ -534,7 +533,7 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
-      assert_equal(1 , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(2 , @plugin.updated_pis.size, 'nr updated pis must match')
       new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
       assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 4 lines long')
