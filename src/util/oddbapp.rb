@@ -18,7 +18,6 @@ require 'util/updater'
 require 'util/exporter'
 require 'util/validator'
 require 'util/loggroup'
-require 'util/logfile'
 require 'util/soundex'
 require 'util/iso-latin1'
 require 'util/notification_logger'
@@ -763,20 +762,12 @@ class OddbPrevalence
     ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/u, ''))
   end
   def package_by_ikskey(ikskey)
-    package = nil
     ikskey = ikskey.to_s
     iksnr = "%05i" % ikskey[-8..-4].to_i
     ikscd = ikskey[-3..-1]
     if reg = registration(iksnr)
-      package = reg.package ikscd
-      unless package.is_a?(ODDB::Package)
-        ODDB::LogFile.debug("package_by_ikskey: Invalid class #{package.class} passed via #{ikskey}")
-        package = nil
-      end
-    else
-      ODDB::LogFile.debug("package_by_ikskey: Invalid iksnr #{iksnr} passed via #{ikskey}")
+      reg.package ikscd
     end
-    package
   end
   def package_by_ean13(ean13)
     return false unless ean13.to_s.match(VALID_EAN13)

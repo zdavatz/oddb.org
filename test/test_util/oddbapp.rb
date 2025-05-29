@@ -547,35 +547,11 @@ class TestOddbApp <Minitest::Test
     assert_equal([], @app.fachinfos_by_name('name', 'lang'))
   end
   def test_package_by_ikskey
-    ikskey = '87654123'
-    iksnr = ikskey[-8..-4]
-    ikscd = ikskey[-3..-1]
-    reg = ODDB::Registration.new(iksnr)
-    seq = reg.create_sequence('001')
-    tst_package = seq.create_package(ikscd)
-    @app.registrations = {iksnr => reg}
-    assert_equal(tst_package, @app.package_by_ikskey(ikskey))
-  end
-  def test_package_by_ikskey_when_not_passing_a_package
-    ikskey = '87654123'
-    iksnr = ikskey[-8..-4]
-    ikscd = ikskey[-3..-1]
-    tst_package = ODDB::Package.new(ikskey)
     registration = flexmock('registration') do |reg|
-      reg.should_receive(:package).and_return('tst_package')
+      reg.should_receive(:package).and_return('package')
     end
-    @app.registrations = {iksnr => registration}
-    assert_nil(@app.package_by_ikskey(ikskey))
-  end
-  def test_package_by_ikskey_with_wrong_ikscd
-    ikskey = '87654123'
-    ikscd = ikskey[-3..-1]
-    tst_package = ODDB::Package.new(ikskey)
-    registration = flexmock('registration') do |reg|
-      reg.should_receive(:package).and_return(tst_package)
-    end
-    assert_nil(@app.package_by_ikskey(ikskey))
-    assert_nil(@app.package_by_ikskey('87654124'))
+    @app.registrations = {'12345' => registration}
+    assert_equal('package', @app.package_by_ikskey('12345678'))
   end
   def test__clean_odba_stubs_hash
     value = flexmock('val') do |val|
