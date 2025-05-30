@@ -295,8 +295,8 @@ class RegistrationForm < View::Form
 			link = nil
 			if((patent = model.patent) && (date = patent.expiry_date))
 				link = HtmlGrid::Link.new(:patented_until, patent, @session, self)
-				args = {'pointer' => patent.pointer}
-				link.href = @lookandfeel._event_url(:resolve, args)
+				args = [:reg, model.iksnr, :patent]
+				link.href = @lookandfeel._event_url(:drug, args)
 				link.value = @lookandfeel.format_date(date)
 			else
 				link = HtmlGrid::Link.new(:patented_until, nil, @session, self)
