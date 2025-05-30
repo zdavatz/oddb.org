@@ -37,7 +37,7 @@ module ODDB
             @descriptions[key]
           end
         rescue ODBA::OdbaError, NoMethodError => error
-          puts "Descriptions.description error"
+          puts "Descriptions.description error #{error.inspect}"
 #          puts caller[0..10].join("\n")
           return ''
         end
