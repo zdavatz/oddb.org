@@ -715,6 +715,7 @@ module ODDB
           iksnr = @session.user_input(:reg)
           seqnr = @session.user_input(:seq)
           ikscd = @session.user_input(:pack)
+          is_patent = @session.input_keys.include?(:patent)
           @session.set_persistent_user_input(:reg, iksnr) if iksnr
           @session.set_persistent_user_input(:seq, seqnr) if seqnr
           pointer = if iksnr and seqnr and ikscd and reg=@session.app.registration(iksnr)\
@@ -723,6 +724,8 @@ module ODDB
                     elsif iksnr and seqnr and reg=@session.app.registration(iksnr)\
                       and seq=reg.sequence(seqnr)
                       seq.pointer
+                    elsif iksnr and reg=@session.app.registration(iksnr) and patent = reg.patent and is_patent
+                      patent.pointer
                     elsif iksnr and reg=@session.app.registration(iksnr)
                       reg.pointer
                     end
