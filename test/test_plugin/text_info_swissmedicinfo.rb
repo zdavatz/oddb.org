@@ -55,6 +55,7 @@ module ODDB
 Line 3\x06;\bT:\r@string2I\"(Some text
 Line 2 was changed
 Line 3\x06;\bT"
+require 'debug'; binding.break
       assert(result.index(expected) > 0)
     end
   end
@@ -145,7 +146,6 @@ if RunAll
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_Iksnr, [Test_Iksnr], Test_Atc, Test_Name, "Pfizer AG", "Tofacitinibum", 'fi', 'de')
       entry.xml_file = File.join(ODDB::WORK_DIR, 'details', "#{Test_Iksnr}_fi_de.xml")
-      entry.same_content_as_xml_file = false
       expected = [ entry ]
       assert_equal(expected, meta[[Test_Iksnr, 'fi', 'de']], 'Meta information about Test_Iksnr must be correct')
       assert(@app.registrations.keys.index(Test_Iksnr), 'must have created registration ' + Test_Iksnr.to_s )
@@ -170,7 +170,6 @@ if RunAll
       assert_equal(NrRegistration, meta.size, "we must extract #{NrRegistration} meta info from 2 medicalInformation")
       entry = SwissmedicMetaInfo.new(Test_57435_Iksnr, ["57435", "57436"], Test_57435_Atc, Test_57435_Name, Test_57435_Inhaber, Test_57435_Substance, 'fi', 'de')
       entry.xml_file = File.join(ODDB::WORK_DIR, 'details', "#{Test_57435_Iksnr}_fi_de.xml")
-      entry.same_content_as_xml_file = false
       expected =  [ entry]
       assert_equal(expected, meta[ [Test_57435_Iksnr, 'fi', 'de']], 'Meta information about Test_57435_Iksnr must be correct')
       assert(@app.registrations.keys.index(Test_57435_Iksnr), 'must have created registration ' + Test_57435_Iksnr )

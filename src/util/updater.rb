@@ -195,7 +195,8 @@ module ODDB
       self.class::RECIPIENTS
     end
     def run(opts)
-      unless opts[:patinfo_only]
+      LogFile.append('oddb/debug', "run opts #{opts.inspect}", Time.now)
+      unless (opts[:patinfo_only] || opts[:fachinfo_only])
         logfile_stats
         update_epha_interactions
 
@@ -206,11 +207,10 @@ module ODDB
         update_swissmedic_feeds
 
         # textinfo
-        update_textinfo_swissmedicinfo({:target => :fi, :newest => true})
-        GC.start
-        sleep(10) unless defined?(Minitest)
       end
-      update_textinfo_swissmedicinfo({:target => :pi, :newest => true})
+      GC.start
+      update_textinfo_swissmedicinfo({:target => :fi, :newest => true}) unless opts[:patinfo_only]
+      update_textinfo_swissmedicinfo({:target => :pi, :newest => true}) unless opts[:fachinfo_only]
     end
     def run_random
       # no task

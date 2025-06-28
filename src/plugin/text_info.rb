@@ -20,8 +20,7 @@ require 'util/logfile'
 require 'rubyXL'
 
 module ODDB
-  SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang,
-                                  :informationUpdate, :refdata, :xml_file, :same_content_as_xml_file)
+  SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang, :informationUpdate, :refdata, :xml_file)
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis, :problematic_fi_pi, :missing_override_file
     Languages = [:de, :fr] # TODO: , :it
@@ -39,13 +38,11 @@ module ODDB
       @aips_xml   = File.join(ODDB.config.data_dir, 'xml', 'AipsDownload_latest.xml')
       @details_dir =  File.join(ODDB.config.data_dir, 'details')
       @updated_fis = []
-      @corrected_fis = []
-      @corrected_pis = []
       @updated_pis = []
       @ignored_pseudos = 0
       @session_failures = 0
-      @up_to_date_fis = 0
-      @up_to_date_pis = 0
+      @up_to_date_fis = []
+      @up_to_date_pis = []
       @iksless = Hash.new{|h,k| h[k] = [] }
       @unknown_iksnrs = {}
       @new_iksnrs = {}
@@ -89,13 +86,10 @@ module ODDB
       path
     end
 
-    def puts_sync(msg)
-      $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
-    end
     IKS_Package = Struct.new("IKS_Package", :iksnr, :seqnr, :name_base)
     def read_packages # adapted from swissmedic.rb
       latest_name = File.join ODDB::WORK_DIR, 'xls', 'Packungen-latest.xlsx'
-      LogFile.debug "read_packages found latest_name #{latest_name}"
+      LogFile.debug "found latest_name #{latest_name}"
       @packages = {}
       @veterinary_products = {}
       @target_keys = Util::COLUMNS_FEBRUARY_2019
@@ -109,15 +103,13 @@ module ODDB
         name_base = row[@target_keys.keys.index(:name_base)].value.to_s
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
-      LogFile.debug "read_packages found latest_name #{latest_name} with #{@packages.size} packages"
+      LogFile.debug "found latest_name #{latest_name} with #{@packages.size} packages"
     end
     def postprocess
       return if ARGV.find{|x| /skip/.match(x)}
       LogFile.debug "#{Time.now}:postprocess fachinfo.rss"
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
-      puts_sync "postprocess update_rss_feeds done"
       update_yearly_fachinfo_feeds
-      puts_sync "postprocess update_yearly_fachinfo_feeds done"
     end
 
     def TextInfoPlugin::replace_textinfo(app, new_ti, container, type) # type must be :patinfo or :fachinfo
@@ -126,17 +118,17 @@ module ODDB
       if old_ti
         Languages.each do |lang|
           if old_ti.descriptions && desc = new_ti.descriptions[lang]
-            msg = "replace_textinfo: #{container.class} #{type}lang #{lang} #{new_ti.descriptions[lang].to_s.split("\n")[0..2]}"
-            LogFile.debug msg; puts(msg)
+            msg = "#{container.class} #{type} lang #{lang} #{new_ti.descriptions[lang].to_s.split("\n")[0..2]}"
+            LogFile.debug msg
             old_ti.descriptions[lang] = desc
             old_ti.descriptions.odba_isolated_store
           end
         end
         res = app.update(old_ti.pointer, {:descriptions => old_ti.descriptions})
-        LogFile.debug "replace_textinfo updated #{container.pointer} #{container.pointer} type #{type} #{new_ti.pointer}"
+        LogFile.debug "updated #{container.pointer} #{container.pointer} type #{type} #{new_ti.pointer}"
       else
         res = app.update(container.pointer, {type => new_ti.pointer})
-        LogFile.debug "replace_textinfo updated #{container.pointer} type #{type}" # does not work always old_ti.oid #{old_ti.oid} new_ti.oid #{new_ti.oid}"
+        LogFile.debug "updated #{container.pointer} type #{type}" # does not work always old_ti.oid #{old_ti.oid} new_ti.oid #{new_ti.oid}"
       end
       res
     end
@@ -149,7 +141,7 @@ module ODDB
           old_text = eval("existing.#{lang}.text").clone
           fis[lang].change_log = eval("existing.#{lang}.change_log").clone
         rescue => error
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} fixing invalid old_text"
+          LogFile.debug "#{reg.iksnr} #{fis.keys} fixing invalid old_text"
           old_text = nil
         end
         updated_fi = app.update reg.fachinfo.pointer, fis
@@ -157,7 +149,7 @@ module ODDB
           text_item = eval("updated_fi.#{lang}")
           new_text = text_item.text
           if fis[lang].change_log && fis[lang].change_log.respond_to?(:size)
-            LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
+            LogFile.debug "#{reg.iksnr} #{fis.keys} #{existing.pointer} " +
                 "eql? #{old_text.eql?(new_text)} having #{fis[lang].change_log.size} change_logs"
           else
             LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} " +
@@ -165,15 +157,16 @@ module ODDB
           end
           unless old_text.eql?(new_text)
             text_item.add_change_log_item(old_text, new_text)
+            LogFile.debug "FI: #{reg.iksnr} #{lang} " + updated_fi.description(lang).change_log.first.diff.to_s if defined? Minitest
             text_item.odba_store
           end
         else
-          LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
+          LogFile.debug "#{reg.iksnr} #{fis.keys} #{existing.pointer} no old_text"
         end
         updated_fi
       else
         fachinfo = app.create_fachinfo
-        LogFile.debug "store_fachinfo: #{reg.iksnr} #{fis.keys} create_fachinfo #{fachinfo.pointer}"
+        LogFile.debug "#{reg.iksnr} #{fis.keys} create_fachinfo #{fachinfo.pointer}"
         updated_fi = app.update fachinfo.pointer, fis
       end
     end
@@ -192,7 +185,7 @@ module ODDB
       iksnr = registration.iksnr
       unless atcFromFI
         @fi_without_atc_code << iksnr
-        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI is nil"
+        LogFile.debug "iksnr #{iksnr} atcFromFI is nil"
       end
       found = @iksnrs_meta_info.find{|key, val| key[0] == iksnr && val.first.atcCode}
       atcFromXml = nil
@@ -201,7 +194,7 @@ module ODDB
       atcFromRegistration = registration.sequences.values.first.atc_class.code if registration.sequences.values.first and registration.sequences.values.first.atc_class
 
       if atcFromFI == atcFromXml && atcFromRegistration && atcFromFI == atcFromRegistration
-        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml} matched and found"
+        LogFile.debug "iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml} matched and found"
         return # no need to change anything
       end
       if atcFromFI == atcFromXml &&  (!atcFromRegistration || atcFromFI != !atcFromRegistration)
@@ -213,7 +206,7 @@ module ODDB
         return if atc_class.is_a?(ArgumentError)
         registration.sequences.values.each{
           |sequence|
-            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr} atc_class #{atc_class} #{atc_class.oid}"
+            LogFile.debug "iksnr #{iksnr} save atcFromFI #{atcFromFI} in sequence #{iksnr} sequence #{sequence.seqnr} atc_class #{atc_class} #{atc_class.oid}"
             res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
             atc_class.odba_store
             sequence.atc_class = atc_class
@@ -224,12 +217,12 @@ module ODDB
       end
       if  atcFromFI == atcFromXml and atcFromFI != atcFromRegistration
         # res = app.update(registration.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
-        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI and xml #{atcFromFI} differ from registration #{atcFromRegistration}. No action"
+        LogFile.debug "iksnr #{iksnr} atcFromFI and xml #{atcFromFI} differ from registration #{atcFromRegistration}. No action"
         return
       end
       if atcFromFI and atcFromXml and atcFromFI != atcFromXml
         @fi_atc_code_missmatch << "#{iksnr} FI-html: #{atcFromFI} xml: #{atcFromXml}"
-        LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}). No action"
+        LogFile.debug "iksnr #{iksnr} save atcFromFI #{atcFromFI} (not same as atcFromXml #{atcFromXml}). No action"
         return
       else
         atc_code = atcFromFI
@@ -239,17 +232,17 @@ module ODDB
         atc_class.pointer ||= Persistence::Pointer.new([:atc_class, atc_code])
         registration.sequences.values.each{
           |sequence|
-            LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} save atc_code #{atc_code} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}  atc_class #{atc_class}"
+            LogFile.debug "iksnr #{iksnr} save atc_code #{atc_code} (not same as atcFromXml #{atcFromXml}) in sequence #{sequence.seqnr}  atc_class #{atc_class}"
             res = app.update(sequence.pointer, { :atc_class => atc_class}, :swissmedic_text_info)
             sequence.odba_store
         }
         return
       end
-      LogFile.debug "ensure_correct_atc_code iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml}. What went wrong"
+      LogFile.debug "iksnr #{iksnr} atcFromFI #{atcFromFI} atcFromXml #{atcFromXml}. What went wrong"
     end
 
     def update_fachinfo_lang(meta_info, fis, fi_flags = {})
-      LogFile.debug "update_fachinfo_lang #{meta_info.iksnr} #{meta_info}"
+      LogFile.debug "#{meta_info.iksnr} #{meta_info}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:fi].push meta_info.title
         if fis.values.first.date.to_s.index(Date.today.year.to_s) ||
@@ -266,7 +259,7 @@ module ODDB
           #  but because we still want to extract the iksnrs, we just mark them
           #  and defer inaction until here:
           unless fi_flags[:pseudo] || fis.empty?
-            LogFile.debug  "update_fachinfo_lang #{meta_info.title} iksnr #{meta_info.iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{meta_info.atcCode}"
+            LogFile.debug  "#{meta_info.title} iksnr #{meta_info.iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{meta_info.atcCode}"
             unless meta_info.iksnr.to_i == 0
               fachinfo ||= TextInfoPlugin::store_fachinfo(@app, reg, fis)
               TextInfoPlugin::replace_textinfo(@app, fachinfo, reg, :fachinfo)
@@ -275,7 +268,7 @@ module ODDB
             end
           end
         else
-          LogFile.debug "update_fachinfo_lang #{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
+          LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, fis, :orphaned_fachinfo
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
@@ -285,17 +278,30 @@ module ODDB
       end
     end
 
-   def store_patinfo_change_diff(patinfo, lang, new_patinfo_lang)
+   def store_patinfo_change_log(package, lang, new_patinfo_lang)
+     patinfo = package.patinfo
      old_text = patinfo.description(lang).to_s
+     unless patinfo.description(lang).respond_to?(:add_change_log_item)
+       puts "Skipping patinfo #{package.iksnr} odba_id #{package.odba_id} no add_change_log_item"
+     end
+
      raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.is_a?(ODDB::PatinfoDocument)
      raise "Must pass ODDB::Patinfo" unless patinfo.is_a?(ODDB::Patinfo)
      old_size = defined?(patinfo.description(lang).change_log) ? old_text.size : 0
      if old_text.eql?(new_patinfo_lang.to_s)
-        LogFile.debug "store_patinfo_change_diff: #{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}"
+        LogFile.debug "#{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}" # if defined? Minitest
+        return false
       else
         diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+        if diff_item
+          saved_change_log = patinfo.descriptions[lang].change_log.clone
+          patinfo.descriptions[lang] = new_patinfo_lang
+          patinfo.descriptions[lang].change_log = saved_change_log
+        end
         patinfo.odba_store
-        LogFile.debug "store_patinfo_change_diff: #{lang} #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size} -> #{patinfo.description(lang).change_log.size}"
+        LogFile.debug "PI: #{package.iksnr} #{lang} having #{patinfo.description(lang).change_log.size}" +
+        "#{patinfo.description(lang).change_log.first.diff.to_s[0..80]}"
+          return true
       end
    end
 
@@ -303,14 +309,14 @@ module ODDB
       return unless package
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
       if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
-        old_ti = package.patinfo;  Languages.each do |old_lang|
+        old_ti = package.patinfo;
+        Languages.each do |old_lang|
+          old_lang = old_lang.to_s
           next if old_lang.eql?(lang)
-          eval("package.patinfo.descriptions['#{old_lang}']= old_ti.descriptions['#{old_lang}']")
+          package.patinfo.descriptions[old_lang] = old_ti.descriptions[old_lang]
         end
-        msg += ' change_diff'
-        store_patinfo_change_diff(package.patinfo, lang, patinfo_lang)
+        msg += ' change_diff' if store_patinfo_change_log(package, lang, patinfo_lang)
         package.patinfo.descriptions[lang] = patinfo_lang
-        package.patinfo.odba_store
       elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
@@ -338,9 +344,16 @@ module ODDB
       package.patinfo
     end
 
-    def store_patinfo_for_all_packages(iksnr, lang, patinfo_lang)
-      reg = @app.registration(iksnr)
+    def store_patinfo_for_all_packages(reg, iksnr, lang, patinfo_lang)
       begin
+        unless reg.packages.values.first
+          unless reg.sequences.size == 0
+            reg.create_sequence('01')
+          end
+          sequence = reg.sequences.values.first
+          sequence.create_package('001')
+        end
+        LogFile.debug "Created package  001 for #{iksnr} #{reg.packages.values.first.seqnr} accepted #{patinfo_lang.to_s[0..40]}"
         patinfo = store_package_patinfo(reg.packages.values.first, lang, patinfo_lang)
       rescue RuntimeError => err
         first_pkg = reg.packages.values.first
@@ -352,11 +365,9 @@ module ODDB
         package.patinfo = patinfo unless package.patinfo.object_id == patinfo.object_id
       end
       reg.odba_store
-      @corrected_pis << "#{iksnr} #{lang} #{reg.name_base}"
     end
 
     def update_patinfo_lang(meta_info, pis)
-      LogFile.debug "update_patinfo_lang #{meta_info} #{pis.keys}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:pi].push meta_info.title
         if pis.values.first.date.to_s.index(Date.today.year.to_s) ||
@@ -381,7 +392,7 @@ module ODDB
           return if @iksnrs_meta_info[key].size == 0
           if  @iksnrs_meta_info[key].size == 1 # Same PI for all packages
             pis.each do |lang, patinfo_lang|
-              store_patinfo_for_all_packages(meta_info.iksnr, lang, patinfo_lang)
+              store_patinfo_for_all_packages(reg, meta_info.iksnr, lang, patinfo_lang)
               msg = "#{meta_info.iksnr} #{meta_info.lang}: #{meta_info.title}"
               @updated_pis << "  #{msg}"
             end
@@ -393,9 +404,9 @@ module ODDB
                 msg = "#{meta_info.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang}: #{meta_info.title}"
                 name = @specify_barcode_to_text_info[barcode_override]
                 if meta_info.title.eql?(name)
-                  store_package_patinfo(package, lang, patinfo_lang)
-                  LogFile.debug "called odba_store: #{package.ikscd} #{msg}"
-                  @corrected_pis << msg
+                  res = store_package_patinfo(package, lang, patinfo_lang)
+                  LogFile.debug "called odba_store: #{package.ikscd} #{msg} res = #{res}"
+                  return if res
                   @updated_pis << msg
                 elsif name
                   LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
@@ -404,36 +415,17 @@ module ODDB
                   LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
                   @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
                 end
-                puts "package.patinfo updated sequence #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{package.pointer}"
               end
             end
           end
         else
-          LogFile.debug "update_patinfo_lang #{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
+          LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, pis, :orphaned_patinfo
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
       rescue RuntimeError => err
         @failures.push "IKSNR: #{meta_info.iksnr} #{err.message} #{err.backtrace[0..8].join("\n")}"
         []
-      end
-    end
-
-    def delete_patinfo iksnr, language
-      puts_sync "delete_patinfo iksnr #{iksnr} #{language}"
-      return unless iksnr
-      if reg = @app.registration(iksnr)
-
-        reg.each_sequence{
-            |seq|
-                next unless seq.patinfo and seq.patinfo.pointer;
-                puts_sync "delete_patinfo #{iksnr} pointer #{seq.patinfo.pointer}"
-                @app.delete(seq.patinfo.pointer)
-                @app.update(seq.pointer, :patinfo => nil)
-                seq.odba_isolated_store
-          }
-      else
-        puts_sync "delete_patinfo nothing to do for #{iksnr} ??"
       end
     end
 
@@ -488,9 +480,9 @@ module ODDB
           "Searched for #{@search_term.join(', ')}",
           "Stored #{@updated_fis.size} Fachinfos",
           "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
-          "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
+          "Ignored #{@up_to_date_fis.size} up-to-date Fachinfo-Texts",
           "Stored #{@updated_pis.size} Patinfos",
-          "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
+          "Ignored #{@up_to_date_pis.size} up-to-date Patinfo-Texts",
           "Checked #{@companies.size} companies",
           @companies.join("\n"), nil,
           "Unknown Iks-Numbers: #{unknown_size}",
@@ -620,7 +612,7 @@ module ODDB
       @agent
     end
 
-    def TextInfoPlugin::create_sequence(app, registration, title, seqNr ='00', packNr = '000')
+    def TextInfoPlugin::create_sequence(app, registration, title, seqNr, packNr = '000')
       seq_args = {
         :composition_text => nil,
         :name_base        => title,
@@ -645,13 +637,13 @@ module ODDB
       # are found after an import_daily
       registration.sequences.values.first.name_base = title;
       registration.sequences.values.first.odba_store;
-      LogFile.debug "create_sequence #{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args.keys} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences}"
+      LogFile.debug "#{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args.keys} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences.keys}"#[0..99]
     end
 
-    def TextInfoPlugin::create_registration(app, info, seqNr ='00', packNr = '000')
+    def TextInfoPlugin::create_registration(app, info, seqNr ='01', packNr = '001')
       iksnr = info.iksnr
       # similar to method update_registration in src/plugin/swissmedic.rb
-      LogFile.debug("create_registration #{iksnr}/#{seqNr}/#{packNr} #{info.title} company #{info.authHolder}")
+      LogFile.debug("#{iksnr}/#{seqNr}/#{packNr} #{info.title} company #{info.authHolder}")
       reg_ptr = Persistence::Pointer.new([:registration, info.iksnr]).creator
       args = {
         :ith_swissmedic      => nil,
@@ -687,7 +679,9 @@ module ODDB
         fi_info = @iksnrs_meta_info.find{|key, value| key[0] == first_iksnr && key[1] ==  'fi' && key[2] == 'de' }
         fi_info = fi_info[1].first if fi_info
         infos.first.authNrs.each do |iksnr|
-          unless @app.registration(iksnr)
+          if @app.registration(iksnr)
+            LogFile.debug("found #{iksnr}") if false
+          else
             if @options[:newest] || (@options[:iksnrs] && @options[:iksnrs].index(iksnr))
               if fi_info
                 info = fi_info.clone
@@ -900,7 +894,7 @@ module ODDB
         |x|
             if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
               name = x.parent.at('./title').text
-              puts_sync "extract_matched_name #{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
+              LogFile.debug "#{iksnr} #{type} as '#{type[0].downcase + 'i'}' lang '#{lang.to_s}' path is #{path} returns #{name}"
               return name
             end
       }
@@ -967,7 +961,7 @@ module ODDB
           info = "#{iksnrs_from_xml.first}_#{meta_info.type}_#{meta_info.lang}"
           meta_info.xml_file = File.join(@details_dir, info + '.xml')
           unless File.exist?(meta_info.xml_file)
-            LogFile.debug "get_fi_pi_to_update: creating #{meta_info.xml_file}"
+            LogFile.debug "creating #{meta_info.xml_file}"
             builder = Nokogiri::XML::Builder.new(:encoding => 'utf-8') do |xml|
               datetime = Time.new.strftime('%FT%T%z')
               xml.medicalInformations(XML_OPTIONS) do
@@ -997,11 +991,11 @@ module ODDB
           end
           # informationUpdate could be read from meta_info.xml_file
           if @options[:reparse] || age_in_hours < 3
-            LogFile.debug "get_fi_pi_to_update: reparse #{@options[:reparse]} or age_in_hours < 3 is #{age_in_hours} #{meta_info}"
+            LogFile.debug "reparse #{@options[:reparse]} or age_in_hours < 3 is #{age_in_hours} #{meta_info}"
             @to_parse << meta_info
           else
-            @up_to_date_fis += 1 if type == 'fachinfo'
-            @up_to_date_pis += 1 if type == 'patinfo'
+            @up_to_date_fis << iksnr if type == 'fachinfo'
+            @up_to_date_pis << iksnr if type == 'patinfo'
           end
         end
       end
@@ -1058,7 +1052,7 @@ module ODDB
 
     def check_swissmedicno_fi_pi(options = nil, patinfo_must_be_deleted = false)
       @options = options if options
-      LogFile.debug "check_swissmedicno_fi_pi found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences. Options #{options}. Having #{@iksnrs_meta_info.size} @iksnrs_meta_info"
+      LogFile.debug "found  #{@app.registrations.size} registrations and #{@app.sequences.size} sequences. Options #{options}. Having #{@iksnrs_meta_info.size} @iksnrs_meta_info"
       parse_aips_download if @iksnrs_meta_info.size == 0
       read_packages
       @error_reasons = {
@@ -1155,15 +1149,15 @@ module ODDB
               end
           }
       }
-      LogFile.debug "check_swissmedicno_fi_pi found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
-      LogFile.debug "check_swissmedicno_fi_pi #{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
+      LogFile.debug "found  #{@inconsistencies.size} inconsistencies.\nDeleted #{@nrDeletes.inspect} patinfos."
+      LogFile.debug "#{@iksnrs_to_import.sort.uniq.size}/#{@iksnrs_to_import.size} iksnrs_to_import  are  \n#{@iksnrs_to_import.sort.uniq.join(' ')}"
       @iksnrs_to_import = @iksnrs_to_import.sort.uniq
       @packages = nil # free some memory if we want to import
       true # an update/import should return true or you will never send a report
     end
 
     def update_swissmedicno_fi_pi(options = {})
-      LogFile.debug "update_swissmedicno_fi_pi #{options}"
+      LogFile.debug "#{options}"
       threads = []
       @iksnrs_to_import =[]
       threads << Thread.new do
@@ -1175,16 +1169,10 @@ module ODDB
       # set correct options to force a reparse (reimport)
       @options[:reparse] = true
       @options[:download] = false
-      LogFile.debug "update_swissmedicno_fi_pi finished"
+      LogFile.debug "finished"
       true # an update/import should return true or you will never send a report
     end
   private
-    def call_xmllint(filename, is_html= false)
-      # avoid it as it take way too much time. over 20 minutes for all files.
-      # LogFile.debug "xmllint #{filename}"
-      # system("xmllint #{is_html ? '--html' : ''} --format --output #{filename} #{filename} 2>/dev/null")
-    end
-    # return
     def extract_html(meta_info)
       unless meta_info.xml_file && File.exist?(meta_info.xml_file)
         return [ nil, nil, nil ]
@@ -1195,11 +1183,12 @@ module ODDB
       path = File.join(ODDB.config.data_dir, 'html', meta_info.type, meta_info.lang)
       html_name = File.join(path, meta_info.title.gsub(CharsNotAllowedInBasename, '_') + '.html')
       is_same_html = File.exist?(html_name) && IO.read(html_name, :encoding => 'UTF-8') == html
-      unless is_same_html
+      if is_same_html
+        LogFile.debug "IKSNR #{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: #{html_name} is_same_html" if defined?(Minitest)
+      else
         FileUtils.makedirs(File.dirname(html_name))
         File.open(html_name, 'w+:utf-8') {|f| f.write html; f.close }
-        call_xmllint(html_name, true)
-        LogFile.debug "IKSNR #{meta_info.iksnr}: File.size(#{html_name}) is #{File.size(html_name)}"
+        LogFile.debug "IKSNR #{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: File.size(#{html_name}) is #{File.size(html_name)}"
       end
       m = /<style>(.*)<\/style>/.match(content)
       styles = m ? m[1] : ''
@@ -1228,8 +1217,8 @@ module ODDB
     def parse_textinfo(meta_info)
       type = meta_info[:type].to_sym
       return unless Languages.index(meta_info.lang.to_sym)
-      return if @options[:target] != :both && @options[:target] != type
-      nr_uptodate = type == :fi ? @up_to_date_fis : @up_to_date_pis
+      return if @options[:target].to_sym != :both && @options[:target].to_sym != type
+      nr_uptodate = type == :fi ? @up_to_date_fis.size : @up_to_date_pis.size
       reg = nil
       reg = @app.registration(meta_info.iksnr)
       if @options[:reparse]
@@ -1243,37 +1232,23 @@ module ODDB
       html_name = res[0]
       is_same_html = res[2]
       unless html_name
-        LogFile.debug "parse_textinfo #{type}: no html_name for #{meta_info}"
+        LogFile.debug "#{type}: no html_name for #{meta_info}"
         return
       end
       textinfo_fi = nil
       text_info = nil
-      reg = nil
-      reg = @app.registration(meta_info.iksnr)
+      reg ||= @app.registration(meta_info.iksnr)
       if reg == nil || reg.sequences.size == 0 # Workaround for Ebixa problem
-        if type == :fi
-          LogFile.debug "must create #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
-          TextInfoPlugin::create_registration(@app, meta_info)
-        else
-          LogFile.debug "skip #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
-          return
-        end
-      end if type != :fi # we will create a registration in this case later
+        LogFile.debug "must create #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
+        TextInfoPlugin::create_registration(@app, meta_info)
+      end
       text_info = get_textinfo(meta_info,  meta_info.iksnr)
-
       if !is_same_html
         LogFile.debug "#{html_name} does is not the same: #{meta_info.authNrs}"
       elsif @options[:reparse]
         LogFile.debug "reparse demanded via @options #{@options}"
       elsif found_matching_iksnr(meta_info.authNrs)
-        if meta_info.same_content_as_xml_file
-          type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
-          return
-        end
-      elsif meta_info.same_content_as_xml_file
-        LogFile.debug "at #{nr_uptodate}: #{type} same_content_as_xml_file #{meta_info.authNrs}" if false # default casse
-        type == :fi ? @up_to_date_fis += 1 : @up_to_date_pis += 1
-        return
+        true # nothing to do ??
       end
       styles = res[1]
       textinfo_pi_name = nil
@@ -1282,20 +1257,32 @@ module ODDB
       image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0,10].gsub(/[^A-z0-9]/, '_')}")
       if type == :fi
         if is_same_html && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
-          LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
-          @up_to_date_fis += 1
+          LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}" if defined?(Minitest)
           return
         end
         textinfo_fi ||= @parser.parse_fachinfo_html(html_name, meta_info.title, styles, image_subfolder)
         update_fachinfo_lang(meta_info, { meta_info.lang => textinfo_fi } )
       elsif type == :pi
-        # TODO: Do we really catch all the cases when packages have different PIs?
-        if is_same_html && !@options[:reparse] && reg && text_info && text_info.descriptions.keys.index(meta_info.lang)
-          LogFile.debug "at #{nr_uptodate}: #{type} #{html_name} is_same_html #{html_name}"
-          @up_to_date_pis += 1
+        bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+        mbytes = (bytes / (2**20)).to_i
+        LogFile.debug "Checking #{meta_info.iksnr} #{meta_info.lang} is_same_html #{is_same_html} for #{html_name} using #{mbytes} MB" unless is_same_html
+        begin
+          if text_info && text_info.respond_to?(:descriptions)
+            res = text_info.descriptions.keys
+          end
+        rescue => err # SystemStackError => err
+          LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} is_same_html #{html_name} using #{mbytes} MB #{err}"
+          LogFile.debug  "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
+          LogFile.debug  "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
+          return nil
+        end
+        if is_same_html && !@options[:reparse] && reg && text_info && text_info.respond_to?(:descriptions) && text_info.descriptions.keys.index(meta_info.lang)
           return
         end
+        startTime = Time.now
         textinfo_pi = @parser.parse_patinfo_html(html_name,  meta_info.title, styles, image_subfolder)
+        time2parse = Time.now - startTime
+        LogFile.debug "Took #{time2parse} to parse #{html_name}" if time2parse > 1.0
         update_patinfo_lang(meta_info, { meta_info.lang => textinfo_pi } )
         if textinfo_pi.respond_to?(:name)
           textinfo_pi_name = textinfo_pi.name
@@ -1305,10 +1292,9 @@ module ODDB
       # Extract image to path generated from XML title,
       # This should be the "correct" path
       extract_images(html_name, meta_info.type, meta_info.lang, meta_info.authNrs, File.join(image_base, image_subfolder))
-      LogFile.debug "at #{nr_uptodate}: #{type} textinfo  #{textinfo.to_s.split("\n")[0..2]}" if  self.respond_to?(:textinfo)
       if reg
         reg.odba_store
-        textinfo = nil
+        text_info = nil
         textinfo_fi = nil
         reg = nil
       end
@@ -1320,7 +1306,6 @@ module ODDB
       chunk = %(<?xml version="1.0" encoding="utf-8"?>
 <medicalInformations>) + chunk unless /<medicalInformations>/.match(chunk)
       meta_info = SwissmedicMetaInfo.new
-
       if m = /type="([^"]+)/.match(chunk) then meta_info.type  = m[1] end
       if m = /lang="([^"]+)/.match(chunk) then meta_info.lang = m[1] end
       if m = /informationUpdate="([^"]+)/.match(chunk) then meta_info.informationUpdate = m[1] end
@@ -1333,23 +1318,16 @@ module ODDB
       info = "#{meta_info.authNrs.size > 0 ? meta_info.authNrs.first : meta_info.iksnr}_#{meta_info.type}_#{meta_info.lang}"
       @iksnr_lang_type[info] =  meta_info.title unless @iksnr_lang_type[info]
       outfile = File.join(@details_dir, info + '.xml')
-      is_duplicate = false
       if File.exist?(outfile)
         @iksnrs_from_aips << meta_info.iksnr
         @duplicate_entries << info + ': "' + @iksnr_lang_type[info] + '"' # was first
         @duplicate_entries << info + ': "' + meta_info.title + '"' # was duplicate
-        outfile = File.join(@details_dir,  info + '_' + meta_info.title.gsub(/[^\w]/, '_') + '_problem.xml')
-        is_duplicate = true
+        oldfile = File.join(@details_dir,  info + '_' + meta_info.title.gsub(/[^\w]/, '_') + '_new.xml')
+        FileUtils.makedirs(File.dirname(oldfile))
+        FileUtils.mv(outfile, oldfile)
       end
-      meta_info.same_content_as_xml_file = File.exist?(outfile) && IO.read(outfile, :encoding => 'UTF-8') == chunk
-      unless meta_info.same_content_as_xml_file
-        FileUtils.makedirs(File.dirname(outfile))
-        File.open(outfile, 'w+') { |f| f.write(chunk); f.close }
-        call_xmllint(outfile)
-      end
-      # Tidy it up
+      File.open(outfile, 'w+') { |f| f.write(chunk); f.close }
       meta_info.xml_file = outfile
-      # puts "#{Time.now}: wrote #{outfile} #{File.size(outfile)} bytes" if is_duplicate
       return meta_info
     end
 
@@ -1374,7 +1352,7 @@ module ODDB
     end
 
     def parse_aips_download
-      LogFile.debug "parse_aips_download with @options #{@options}"
+      LogFile.debug "with @options #{@options}"
       @iksnrs_from_aips = []
       @iksnr_lang_type = {}
       @aips_xml = @options[:xml_file] if @options[:xml_file]
@@ -1385,12 +1363,12 @@ module ODDB
         return
       end
       content = IO.read(@aips_xml, :encoding => 'UTF-8')
-      LogFile.debug "read #{@aips_xml} #{content.size} bytes"
+      LogFile.debug "read #{@aips_xml} #{(content.size/1024/1024).to_i} MB"
       content.split('</medicalInformation>').each do |chunk|
         meta_info = handle_chunk(chunk)
         next unless meta_info
         if meta_info.authNrs.size == 0
-          puts_sync "get_meta_info no authNrs found for #{info} with all_numbers #{all_numbers}"
+          LogFile.debug "get_meta_info no authNrs found for #{info} with all_numbers #{all_numbers}"
         else
           meta_info.authNrs.each do |iksnr|
             meta_info.iksnr = iksnr
@@ -1442,13 +1420,16 @@ module ODDB
       end
     end
     def get_swissmedicinfo_changed_items(index, target)
+      started = Time.now
       title,keys = title_and_keys_by(target)
       @updated,@skipped,@invalid,@notfound = report_sections_by(title)
       @doc = Nokogiri::XML(IO.read(@aips_xml, encoding: 'UTF-8'))
       index.each_pair do |state, names|
         find_changed_new_items(keys, names, state)
       end
-      LogFile.debug "get_swissmedicinfo_changed_items #{@new_iksnrs.size} @new_iksnrs"
+      finished = Time.now
+      took = ((finished - started)*10).to_i/10
+      LogFile.debug "took #{took} seconds for  #{@new_iksnrs.size} @new_iksnrs from #{@aips_xml}"
       @doc = nil
     end
   public
@@ -1459,7 +1440,7 @@ module ODDB
 
 
     def import_swissmedicinfo(options=nil)
-      LogFile.debug "import_swissmedicinfo options #{options} @options #{@options} "
+      LogFile.debug "options #{options} @options #{@options} "
       @options = options if options
       $stdout.sync = true
       @specify_barcode_to_text_info = {}
@@ -1476,7 +1457,7 @@ module ODDB
       LogFile.debug "Parsing @options[:newest] #{@options[:newest]} #{@options[:newest] != false}"
       @to_parse = []
       parse_aips_download # to get all meta information
-      LogFile.debug "After parse_aips_download we have  #{@to_parse.size} items to parse. Having #{@iksnrs_meta_info.size} meta items."
+      LogFile.debug "After parse_aips_download we have  #{@to_parse.size} items to parse. Having #{@iksnrs_meta_info.size} meta items. #{ @options[:newest]}"
       @iksnrs_meta_info_clone = @iksnrs_meta_info.clone
       if @options[:newest]
         index = nil
@@ -1493,18 +1474,21 @@ module ODDB
           unless info
             msg  = "  #{meta.type == 'fi' ? 'Fachinfo' : 'Patinfo '} - #{meta.lang.to_s.upcase} - #{meta.title}#{date}#{meta.authNrs}"
             @updated << msg
+            LogFile.debug "msg #{msg}"
           end
         end
       end
-      LogFile.debug "import_swissmedicinfo must parse @to_parse #{@to_parse.size}  FI/PIs"
-      LogFile.debug "import_swissmedicinfo must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
+      LogFile.debug "must parse @to_parse #{@to_parse.size}  FI/PIs"
+      LogFile.debug "must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
       @iksnrs_meta_info.values.flatten.sort{|x,y| x.iksnr.to_i <=> y.iksnr.to_i}.each do |meta_info|
-        parse_textinfo(meta_info)
+        if false # && defined?(Minitest)
+          parse_textinfo(meta_info)
+        else
+          ODBA.cache.transaction { parse_textinfo(meta_info) }
+        end
       end
       if @options[:download] != false
-        puts_sync "job is done. now postprocess works ..."
         postprocess
-        puts_sync "job and postprocess are done"
       end
       true # report
     end

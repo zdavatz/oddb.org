@@ -7,6 +7,10 @@ require 'flexmock/minitest'
 module ODDB
   class StubApp
     attr_accessor :last_update, :currency, :unknown_user, :sponsor, :registrations
+    def registration(iksnr)
+      @registrations ||= {}
+      @registrations[iksnr]
+    end
   end
   class StubSession < SBSM::Session
     attr_accessor :lookandfeel, :app, :flavor, :language, :request_path, :diff_info, :state

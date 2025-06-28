@@ -122,7 +122,7 @@ GEM
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)
-    odba (1.1.8)
+    odba (1.1.9)
     oddb2tdat (1.1.2)
     optimist (3.0.1)
     ox (2.14.12)
@@ -314,7 +314,7 @@ DEPENDENCIES
   net-pop
   net-smtp
   nokogiri
-  odba
+  odba (= 1.1.9)
   oddb2tdat
   optimist
   ox

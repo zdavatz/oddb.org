@@ -43,7 +43,7 @@ module ODDB
                 :iksnrs                 => ["54642"],
                 :deletion_date          => Date.new(2013, 6, 21),
         }
-
+        skip("https://github.com/zdavatz/oddb.org/issues/282")
       end
       def test_get_result_list__online
         data =  Swissreg.search("54642")
