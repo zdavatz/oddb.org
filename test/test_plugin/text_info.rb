@@ -4,9 +4,12 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'stub/odba'
+USE_RUBY_PROF = false
+require 'ruby-prof' if USE_RUBY_PROF
 
 require 'minitest/autorun'
 require 'stub/oddbapp'
+require 'stub/session'
 require 'fileutils'
 require 'flexmock/minitest'
 require 'plugin/text_info'
@@ -21,11 +24,13 @@ module ODDB
 			1
 		end
 	end
+    class PatinfoDocument
+      attr_reader :changelog
+    end
   class TextInfoPlugin
     attr_accessor :parser
     attr_reader :to_parse, :iksnrs_meta_info, :updated_fis, :updated_pis,
-        :corrected_pis, :corrected_fis, :up_to_date_fis, :up_to_date_pis,
-        :details_dir
+        :up_to_date_fis, :up_to_date_pis, :updated, :details_dir, :dirs
   end
 
   class TestChangeLog <Minitest::Test
@@ -356,8 +361,8 @@ module ODDB
       latest_from = File.join(ODDB::TEST_DATA_DIR, '/xls/Packungen-latest.xlsx')
       latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
       FileUtils.mkdir_p(File.dirname(latest_to))
-      FileUtils.cp(latest_from, latest_to, :verbose => true, :preserve => true)
-      @app = flexmock 'application'
+      FileUtils.cp(latest_from, latest_to, :verbose => false, :preserve => true)
+      @app = flexmock "application_#{__LINE__}"
       @reg = flexmock "registration_#{__LINE__}"
       @reg.should_receive(:pointer).and_return(pointer).by_default
       @reg.should_receive(:odba_store).and_return(nil).by_default
@@ -373,13 +378,14 @@ module ODDB
       @descriptions.should_receive(:odba_isolated_store)
       @descriptions = ODDB::SimpleLanguage::Descriptions.new
 
-      @fachinfo = flexmock 'fachinfo'
+      @fachinfo = flexmock('fachinfo', Fachinfo.new)
       @fachinfo.should_receive(:de).and_return(lang_de)
       @fachinfo.should_receive(:fr).and_return(lang_de)
       @fachinfo.should_receive(:it).and_return(lang_de)
       @fachinfo.should_receive(:oid).and_return('oid')
       @fachinfo.should_receive(:pointer).and_return(pointer)
       @fachinfo.should_receive(:descriptions).and_return(@descriptions)
+      @fachinfo.should_receive(:change_log).and_return([])
       @fachinfo.should_receive(:odba_store)
       @fachinfo.should_receive(:iksnrs).and_return(['56079'])
       @fachinfo.should_receive(:name_base).and_return('name_base')
@@ -389,7 +395,7 @@ module ODDB
       atc_class = flexmock("atc_class_#{__LINE__}")
       atc_class.should_receive(:oid).and_return('oid')
       atc_class.should_receive(:code).and_return('code')
-      @sequence = flexmock "sequence_#{__LINE__}"
+      @sequence = flexmock("sequence_#{__LINE__}", Sequence.new('01'))
       @sequence.should_receive(:seqnr).and_return('01')
       @sequence.should_receive(:pointer).and_return(pointer)
       @sequence.should_receive(:odb_store)
@@ -398,9 +404,11 @@ module ODDB
       @sequence.should_receive(:atc_class).and_return(atc_class)
       @sequence.should_receive(:patinfo).and_return(nil).by_default
       @sequence.should_receive(:patinfo=).and_return(nil).by_default
-      @sequence.should_receive(:odba_store)
-      @package = flexmock('package')
+      @package = flexmock("package_#{__LINE__}", Package.new('001'))
       @sequence.should_receive(:package).and_return(@package)
+      @sequence.should_receive(:create_package).and_return(@package)
+      @reg.should_receive(:create_sequence).and_return(@sequence)
+      @package.should_receive(:sequence).and_return(@sequence)
 
       atc_class = flexmock("atc_class_#{__LINE__}")
       atc_class.should_receive(:oid).and_return('oid')
@@ -412,7 +420,7 @@ module ODDB
       @reg.should_receive(:fachinfo).and_return(@fachinfo)
       @reg.should_receive(:iksnr).and_return('56079')
       @reg.should_receive(:name_base).and_return('name_base')
-      @reg.should_receive(:packages).and_return([])
+      @reg.should_receive(:packages).and_return([@package])
       @app.should_receive(:registration).and_return(@reg)
       @app.should_receive(:registrations).and_return({'x' => @reg})
       @app.should_receive(:sequences).and_return([@sequence])
@@ -420,29 +428,35 @@ module ODDB
       @reg.should_receive(:sequence).and_return(@sequence)
       @parser = flexmock('parser (simulates ext/fiparse)',
                          :parse_fachinfo_html => 'fachinfo_html',
-                         :parse_patinfo_html => 'patinfo_html',
+                         :parse_patinfo_html => Patinfo.new,
                          )
       @reg.should_receive(:each_package).and_return([]).by_default
       @reg.should_receive(:each_sequence).and_return([@sequence]).by_default
       @plugin = TextInfoPlugin.new @app
-      FileUtils.rm_rf(@plugin.details_dir, :verbose => true)
+      FileUtils.rm_rf(@plugin.details_dir, :verbose => false)
       @plugin.parser = @parser
       @plugin.download_swissmedicinfo_xml(@aips_download)
       @options = {:target => :both,
-                  :download => false,
-                  :xml_file => @aips_download,
+                  :download => false,          # 1007050 772494
+                  :xml_file => @aips_download, # 1006998 772442
+                                              #      052     52
                   }
+      @details_dir =  File.join(ODDB.config.data_dir, 'details')
+      FileUtils.makedirs(@details_dir)
+      FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'xml/61467_fi_de.xml'), File.join(@details_dir, '61467_fi_de.xml'), :verbose => false, :preserve => true)
     end
 
     def test_53662_pi_de
       @options[:iksnrs] = ['53662']
-      @plugin.import_swissmedicinfo(@options)
+      result = @plugin.import_swissmedicinfo(@options)
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53662", 'fi', 'de']].first.title)
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
+      assert_match('61467', @plugin.updated_fis.join(';'))
     end
 
     def test_Erbiumcitrat_de
       @options[:iksnrs] = ['51704']
+      # 132 259 -> 198
       @plugin.import_swissmedicinfo(@options)
       assert_equal('[169Er]Erbiumcitrat CIS bio international', @plugin.iksnrs_meta_info[["51704", 'fi', 'de']].first.title)
     end
@@ -461,7 +475,6 @@ module ODDB
 
     def test_import_daily_fi
       @options[:target] = :fi
-      @options[:newest] = true
       # Add tests that fachinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
       # @fachinfo.should_receive(:odba_store).at_least.once
@@ -473,16 +486,11 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size > 0, 'must find at least one find fachinfo')
 
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'must find patinfo')
-
       assert_equal(Nr_FI_in_AIPS_test, @plugin.updated_fis.size, 'nr updated fis must match')
       assert_equal(0, @plugin.updated_pis.size, 'nr updated pis must match')
-
-      assert_equal(0, @plugin.corrected_fis.size, 'corrected_fis must match')
-      assert_equal(0, @plugin.corrected_pis.size, 'corrected_pis must match')
-
-      assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
+      assert_equal([], @plugin.up_to_date_pis, 'up_to_date_pis must match')
       # nr_fis = 6 # we add all missing
-      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+      assert_equal([], @plugin.up_to_date_fis, 'up_to_date_fis must match')
 
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
@@ -493,7 +501,6 @@ module ODDB
     end
     def test_import_daily_pi
       @options[:target] = :pi
-      @options[:newest] = true
       # Add tests that patinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
       # @sequence.should_receive(:odba_store).at_least.once
@@ -505,9 +512,8 @@ module ODDB
       assert_equal(2 , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal([], @plugin.up_to_date_pis, 'up_to_date_pis must match')
 
-      assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
-      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+      assert_equal([], @plugin.up_to_date_fis, 'up_to_date_fis must match')
     end
     def test_import_daily_packungen
       @options[:target] = :pi
@@ -533,13 +539,12 @@ module ODDB
       new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
       assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 4 lines long')
-      assert_equal(0, @plugin.corrected_fis.size, 'nr corrected_fis must match')
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
-      assert_equal(0, @plugin.up_to_date_fis, 'up_to_date_fis must match')
+      assert_equal(0, @plugin.up_to_date_fis.size, 'up_to_date_fis must match')
       # why does next check fail in a github action, but never locally
       puts("why does next check fail in a github action, but never locally. hostname = #{`hostname`}")
       skip("why does next check fail in a github action, but never locally. hostname = #{`hostname`}")
-      assert_equal(0, @plugin.up_to_date_pis, 'up_to_date_pis must match')
+      assert_equal(0, @plugin.up_to_date_pis.size, 'up_to_date_pis must match')
     end
 
   end

@@ -100,8 +100,8 @@ class Fachinfo < HtmlGrid::Component
         end
       end
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
-      LogFile.debug "Sleeping 1 second in item_to_html to give cleanup some time #{@model.size} FIs @year #{@year}. Using #{mbytes} MB"
-      sleep 1 unless defined?(Minitest)
+      LogFile.debug "Sleeping 0.1 seconds in item_to_html to give cleanup some time #{@model.size} FIs @year #{@year}. Using #{mbytes} MB"
+      sleep 0.1 unless defined?(MiniTest)
       mbytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i /  (2**20)
       LogFile.debug "Finished RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"
       GC.start
