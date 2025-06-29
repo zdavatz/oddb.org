@@ -17,6 +17,9 @@ module ODBA
 		end
     def ensure_index_deferred *args
     end
+    def transaction(&block)
+      block.call
+    end
 		def store(anything)
 		end
 		def retrieve_from_index(*args)

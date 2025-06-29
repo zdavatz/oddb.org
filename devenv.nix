@@ -32,7 +32,10 @@ in
     port = 5433;
 
     initialDatabases = [
+      { name = "migel"; }
+      { name = "yus"; }
       { name = "ch_oddb"; }
+      { name = "ch_oddb_test"; }
     ];
 
     initdbArgs =
@@ -42,6 +45,8 @@ in
       ];
 
     initialScript = ''
+      create role migel superuser login password null;
+      create role yus superuser login password null;
       create role oddb superuser login password null;
       create role ch_oddb superuser login password null;
       create role postgres superuser login password null;

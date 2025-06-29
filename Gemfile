@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 gem 'dbi', :git => 'https://github.com/zdavatz/ruby-dbi'
+gem 'odba', "1.1.9"
 
 # Worksround for ruby 3.1,https://stackoverflow.com/questions/70500220/rails-7-ruby-3-1-loaderror-cannot-load-such-file-net-smtp
 # https://github.com/mikel/mail/pull/1439
@@ -18,7 +19,7 @@ gem 'ydbd-pg'
 gem 'ydiffy'
 gem 'deprecated'
 gem 'flickraw'
-gem 'gruff', '0.8' # version 0.9/0.10  fail if now max given
+gem 'gruff', '0.8'; #, '0.13' #, '0.8' # version 0.9/0.10  fail if now max given
 gem 'hpricot'
 gem 'sax-machine'
 gem 'htmlentities'
@@ -35,7 +36,6 @@ gem 'needle'
 gem 'net-http-digest_auth'
 gem 'net-http-persistent'
 gem 'nokogiri'
-gem 'odba'
 gem 'ox'
 gem 'oddb2tdat'
 gem 'activesupport'

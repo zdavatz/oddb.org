@@ -5,12 +5,14 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 require 'util/job'
 require 'util/updater'
-
+require "debug"
 module ODDB
   module Util
-    opts = {patinfo_only: false}
+    opts = {patinfo_only: false,
+            fachinfo_only: false,}
     ARGV.each do |arg|
       opts[:patinfo_only] = true if arg =~ /(patinfo_only)$/
+      opts[:fachinfo_only] = true if arg =~ /(fachinfo_only)$/
     end
     Job.run do |system|
       Updater.new(system).run(opts)
