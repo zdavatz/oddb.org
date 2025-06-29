@@ -33,8 +33,8 @@ GEM
     bigdecimal (3.2.2)
     builder (3.3.0)
     chrono_logger (1.1.2)
-    clogger (2.4.0)
-      rack (>= 1.0, < 3.0)
+    clogger (1.3.0)
+      rack (> 0.9)
     cmath (1.0.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
@@ -123,6 +123,8 @@ GEM
     mini_mime (1.1.5)
     minitar (1.0.2)
     minitest (5.25.5)
+    minitest-hooks (1.5.2)
+      minitest (> 5.3)
     minitest-should_syntax (1.0.2)
       minitest
     minitest-spec-expect (2.0.0)
@@ -194,9 +196,11 @@ GEM
       stringio
     public_suffix (6.0.2)
     racc (1.8.1)
-    rack (2.2.17)
+    rack (3.1.16)
     rack-test (2.2.0)
       rack (>= 1.3)
+    rackup (2.2.1)
+      rack (>= 3)
     rainbow (3.1.1)
     rake (13.3.0)
     rbs (3.9.4)
@@ -275,6 +279,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    simple_xlsx_reader (5.1.0)
+      nokogiri
+      rubyzip
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -332,6 +339,8 @@ GEM
     webrick (1.9.1)
     webrobots (0.1.2)
     websocket (1.2.11)
+    xsv (1.3.2)
+      rubyzip (>= 1.3, < 3)
     ydbd-pg (0.5.9)
       pg
       ydbi (= 0.5.9)
@@ -386,6 +395,7 @@ DEPENDENCIES
   mime-types
   minitar
   minitest
+  minitest-hooks
   minitest-should_syntax
   minitest-spec-expect
   money
@@ -407,7 +417,9 @@ DEPENDENCIES
   paypal
   pg
   racc
+  rack
   rack-test
+  rackup
   rake
   rbs
   rclconf
@@ -422,6 +434,7 @@ DEPENDENCIES
   savon
   sax-machine
   sbsm (= 1.6.1)
+  simple_xlsx_reader
   simplecov
   spreadsheet
   standard
@@ -433,6 +446,7 @@ DEPENDENCIES
   webmock
   webrick
   webrobots
+  xsv
   ydbd-pg (= 0.5.9)
   ydbi (= 0.5.9)
   ydiffy

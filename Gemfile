@@ -14,6 +14,10 @@ gem 'gruff','0.8.0' # to be backward compatible with Ruby 3.2
 gem 'rmagick', '4.2.4' # to be backward compatible with Ruby 3.2
 gem 'observer'
 gem 'csv'
+
+gem 'simple_xlsx_reader'
+gem 'rubyXL'
+gem 'xsv'
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'
@@ -48,7 +52,8 @@ gem 'parslet'
 gem 'pg'
 gem 'rclconf'
 gem 'racc'
-gem 'rubyXL'
+gem 'rack'
+gem 'rackup'
 gem 'ruby-units'
 gem "rubyntlm"
 gem "rubyzip", :require => 'zip'
@@ -74,6 +79,7 @@ group :test do
   gem 'rspec'
   gem 'rspec-core'
   gem 'minitest'
+  gem 'minitest-hooks'
   gem 'minitest-should_syntax'
   gem 'minitest-spec-expect'
   gem 'watir'
