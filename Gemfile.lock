@@ -192,6 +192,8 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-ole (1.2.12.2)
+    ruby-prof (1.7.2)
+      base64
     ruby-progressbar (1.11.0)
     ruby-units (2.3.2)
     rubyXL (3.4.25)
@@ -219,6 +221,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    simple_xlsx_reader (5.1.0)
+      nokogiri
+      rubyzip
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -249,7 +254,8 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     unicode-display_width (2.1.0)
-    vcr (6.0.0)
+    vcr (6.3.1)
+      base64
     wasabi (3.6.1)
       addressable
       httpi (~> 2.0)
@@ -340,6 +346,7 @@ DEPENDENCIES
   rspec
   rspec-core
   rss
+  ruby-prof
   ruby-units
   rubyXL
   rubyntlm
@@ -347,6 +354,7 @@ DEPENDENCIES
   savon
   sax-machine
   sbsm
+  simple_xlsx_reader
   simplecov
   spreadsheet
   standard

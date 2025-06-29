@@ -30,15 +30,7 @@ require 'swissmedic-diff'
 require 'util/logfile'
 require 'parslet'
 require 'parslet/convenience'
-
-# Some monkey patching needed to avoid an error
-module RubyXL
-  class Row < OOXMLObject
-    def first
-       cells[0]
-    end
-  end
-end
+require 'simple_xlsx_reader'
 
 module ODDB
   class SwissmedicPlugin < Plugin
@@ -69,9 +61,9 @@ private
     def date_cell(row, idx)
       return nil unless row[idx]
       row_value = row[idx]
-      return nil unless row_value.value
+      return nil unless row_value
       return SwissmedicDiff::VALUE_UNLIMITED if SwissmedicDiff::REGEXP_UNLIMITED.match(row_value.value.to_s)
-      return Date.parse row_value.value.to_s if row_value.is_a?(RubyXL::Cell)
+      return Date.parse row_value.to_s
       row_value
     end
 public
