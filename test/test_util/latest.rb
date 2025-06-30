@@ -15,6 +15,7 @@ module ODDB
     @@today = Time.utc(2015,3,13)
   end
 
+
   DefaultContent = 'default content'
   ChangedContent = 'changed content size'
 
@@ -26,10 +27,10 @@ module ODDB
       @latest = File.join(@archive, 'tst-latest.txt')
       @file_today = File.join(@archive, 'tst-2015.03.13.txt')
       @file_yesterday = File.join(@archive, 'tst-2015.03.12.txt')
-      @url = 'http://www.example.com'
+      @url = 'https://www.example.com'
       @page  = flexmock('page')
       @page.should_receive(:body).by_default.and_return(DefaultContent)
-      flexmock(Latest, :open => DefaultContent)
+      flexmock(Latest, :fetch_with_http => DefaultContent)
     end
 
     def test_first_download
@@ -49,7 +50,6 @@ module ODDB
       assert_equal(@latest, res)
       assert_equal(true, File.exist?(@file_today))
       assert_equal(true, File.exist?(@latest))
-      skip('size does not match')
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 
@@ -62,7 +62,6 @@ module ODDB
       assert_equal(@latest, res)
       assert_equal(true, File.exist?(@file_today))
       assert_equal(true, File.exist?(@latest))
-      skip('size does not match')
       assert_equal(DefaultContent.size, File.size(@latest))
     end
 
@@ -107,7 +106,6 @@ module ODDB
       puts 'test_today_content_same_latest_content'  if $VERBOSE
       File.open(@latest, 'w+') {|f| f.write(DefaultContent) }
       res = Latest.get_latest_file(@latest, @url)
-      skip('always fails if no latest file preseent')
       assert_equal(false, res)
       assert_equal(true, File.exist?(@file_today))
       assert_equal(true, File.exist?(@latest))

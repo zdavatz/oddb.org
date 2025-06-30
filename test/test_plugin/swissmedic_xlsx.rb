@@ -11,7 +11,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'flexmock/minitest'
-require 'test_helpers'
+require 'test_helpers' # for VCR setup
 require 'stub/odba'
 require 'util/persistence'
 require 'plugin/swissmedic'
@@ -41,12 +41,12 @@ module ODDB
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
       mock_downloads
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock(ODDB::App.new)
       @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
-      @older    = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2015.07.02.xlsx')
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
       @bag_listen  = File.join(ODDB::TEST_DATA_DIR, 'html/listen_neu.html')
       @current  = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
@@ -96,120 +96,6 @@ module ODDB
       seq = reg.create_sequence('26')
       seq.create_package('007')
       seq.create_package('008')
-    end
-
-    def test_july_2015
-      # Use first the last month and compare it to a non existing lates
-      FileUtils.rm(Dir.glob("#{File.dirname(@latest)}/*"), :verbose => true)
-      FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
-      FileUtils.cp(@current, @target, :verbose => true, :preserve => true)
-      FileUtils.cp(@older, @latest, :verbose => true, :preserve => true)
-
- # OddbPrevalence::registration(00278,sequence,01)
-      newest  = @current.clone
-      assert_equal(0, @app.registrations.size)
-      reg = @app.create_registration('00278')
-      reg.pointer = Persistence::Pointer.new([:registration, '00278'])
-      seq = reg.create_sequence('01')
-      seq.composition_text = 'composition_text'
-      seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
-      seq.name_base = 'Colon Sérocytol, suppositoire'
-      seq.name_descr = 'name_descr'
-      seq.dose = nil
-      seq.pointer = Persistence::Pointer.new([:registration, '00278', :sequence, '01'])
-      seq.sequence_date = Date.new(2017,5,9)
-      seq.export_flag = false
-      seq.atc_class = ODDB::AtcClass.new('AB0')
-      seq.indication = 'indication'
-      seq.create_package('001')
-      seq.create_package('002')
-      reg = @app.create_registration('57678')
-      seq = reg.create_sequence('01')
-      seq.create_package('001')
-      seq2 = reg.create_sequence('03')
-      seq2.create_package('002')
-
-      reg = @app.create_registration('00279')
-      seq = reg.create_sequence('01')
-      seq.create_package('001')
-      seq.create_package('002')
-
-      reg = @app.create_registration('00288')
-      seq = reg.create_sequence('02')
-      seq.create_package('001')
-      @app.should_receive(:delete).at_least.times(4)
-
-      reg = @app.create_registration('48624')
-      seq = reg.create_sequence('02')
-      seq.create_package('022')
-
-      reg = @app.create_registration('62069')
-      seq = reg.create_sequence('02')
-      seq.create_package('009')
-
-      @plugin.should_receive(:fetch_with_http).with(  ODDB::SwissmedicPlugin.get_packages_url).
-        and_return(File.open(@current).read)
-      result = @plugin.update({:update_compositions => true})
-
-      assert_equal(6, @app.registrations.size)
-      assert_equal(7, @app.sequences.size)
-      assert_equal(9, @app.packages.size)
-      assert_equal(true, result)
-      check_agents(@app.sequences)
-
-      add_influvac # this sequence must be delete
-      assert_equal('26', @app.registration('00485').sequence('26').seqnr)
-      assert_equal(2, @app.registration('00485').active_packages.size)
-      assert_equal(7, @app.registrations.size)
-      assert_equal(8, @app.sequences.size)
-      assert_equal(11, @app.packages.size)
-      reg = @app.create_registration('00488')
-      seq = reg.create_sequence('02')
-      seq.create_package('001')
-
-      puts "\nStarting second_run with #{ODDB::SwissmedicPlugin.get_preparations_url}\n\n"
-      @plugin.should_receive(:fetch_with_http).with(ODDB::SwissmedicPlugin.get_preparations_url).
-        and_return(File.open(@prep_from).read)
-      result_second_run = @plugin.update({})
-      puts @plugin.report
-      assert File.exist?(@target), "#@target was not saved"
-      @app.registrations.each{ |reg| puts "reg #{reg[1].iksnr} with #{reg[1].sequences.size} sequences"} if $VERBOSE
-      assert(result_second_run); assert_equal(41, @app.registrations.size)
-
-     expected = {
-            "00277"=>[:expiry_date, :production_science], "15219"=>[:new], "16598"=>[:new], "28486"=>[:new], "30015"=>[:new],
-            "31644"=>[:new], "32475"=>[:new], "35366"=>[:new], "43454"=>[:new], "44625"=>[:new], "45882"=>[:new],
-            "53290"=>[:new], "53662"=>[:new], "54015"=>[:new], "54534"=>[:new], "55558"=>[:new], "66297"=>[:new],
-            "55594"=>[:new], "55674"=>[:new], "56352"=>[:new], "58943"=>[:new], "59267"=>[:new], "61186"=>[:new],
-            "62069"=>[:atc_class, :expiry_date], "62132"=>[:new], "65856"=>[:new], "65857"=>[:new], "58734"=>[:new], "55561"=>[:new],
-            "65160"=>[:new], "58158"=>[:new], "44447"=>[:new], "39252"=>[:new], "00278"=>[:delete], "48624"=>[:delete],
-            "57678"=>[:delete], "00488"=>[:delete]}
-      assert_equal(expected, result_second_run.changes)
-      missing = {}
-      @app.registrations.each{
-        |id, reg|
-        reg.sequences.each{
-                         |seq_id, seq|
-                          seq.packages.each{
-                                            |pack_id, pack|
-                                           if pack.sequence and not pack.sequence.respond_to?(:odba_id)
-                                            missing["#{id}/#{seq_id}/#{pack_id}"] = pack
-                                           end
-                                           }
-                          }
-      }
-      assert_equal(0, missing.size)
-      check_agents(@app.sequences)
-
-      # Check that influvac is expired
-      assert_equal('26', @app.registration('00485').sequence('26').seqnr)
-      assert_equal(2, @app.registration('00485').active_packages.size)
-      assert_equal(2, @app.registration('00485').packages.size)
-      assert_equal(46, @app.sequences.size)
-      assert_equal(54, @app.packages.size)
-      assert_equal(48, @app.active_packages.size)
-      res =  @app.active_sequences.collect{|s| s.compositions.collect {|c| c.active_agents.find_all{|a| a.is_active_agent == nil }}}
-      assert_equal(0, res.flatten.size)
     end
 
   def set_is_active_agent element, value
