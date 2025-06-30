@@ -191,8 +191,6 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-ole (1.2.12.2)
-    ruby-prof (1.7.2)
-      base64
     ruby-progressbar (1.11.0)
     ruby-units (2.3.2)
     rubyXL (3.4.25)
@@ -344,7 +342,6 @@ DEPENDENCIES
   rspec
   rspec-core
   rss
-  ruby-prof
   ruby-units
   rubyXL
   rubyntlm
