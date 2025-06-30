@@ -93,6 +93,7 @@ module ODDB
       @packages = {}
       @veterinary_products = {}
       @target_keys = Util::COLUMNS_FEBRUARY_2019
+      start_time = Time.now
       rows = SimpleXlsxReader.open(latest_name).sheets.first.rows
       rows.each do |row|
         next unless row[@target_keys.keys.index(:iksnr)].to_i and
@@ -104,7 +105,8 @@ module ODDB
         name_base = row[@target_keys.keys.index(:name_base)]
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
-      LogFile.debug "found latest_name #{latest_name} with #{@packages.size} packages"
+      duration = (Time.now-start_time)
+      LogFile.debug "found latest_name #{latest_name} with #{@packages.size} packages took #{sprintf('%7.3f', duration)} seconds"
     end
     def postprocess
       return if ARGV.find{|x| /skip/.match(x)}
@@ -293,16 +295,19 @@ module ODDB
         LogFile.debug "#{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}" # if defined? Minitest
         return false
       else
-        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+        diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang) if patinfo.description(lang).respond_to?(:add_change_log_item)
         if diff_item
           saved_change_log = patinfo.descriptions[lang].change_log.clone
           patinfo.descriptions[lang] = new_patinfo_lang
           patinfo.descriptions[lang].change_log = saved_change_log
+        else
+          patinfo.descriptions[lang] = new_patinfo_lang
         end
         patinfo.odba_store
-        LogFile.debug "PI: #{package.iksnr} #{lang} having #{patinfo.description(lang).change_log.size}" +
-        "#{patinfo.description(lang).change_log.first.diff.to_s[0..80]}"
-          return true
+        new_size = 0
+        new_size = patinfo.description(lang).change_log.size if patinfo.description(lang).respond_to?(:change_log)
+        LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{new_size} changes"
+        return true
       end
    end
 
@@ -353,16 +358,19 @@ module ODDB
           end
           sequence = reg.sequences.values.first
           sequence.create_package('001')
+          LogFile.debug "Created package  001 for #{iksnr} #{reg.packages.first.seqnr} accepted #{patinfo_lang.to_s[0..40]}"
         end
-        LogFile.debug "Created package  001 for #{iksnr} #{reg.packages.values.first.seqnr} accepted #{patinfo_lang.to_s[0..40]}"
-        patinfo = store_package_patinfo(reg.packages.values.first, lang, patinfo_lang)
+        patinfo = store_package_patinfo(reg.packages.first, lang, patinfo_lang)
       rescue RuntimeError => err
-        first_pkg = reg.packages.values.first
+        first_pkg = reg.packages.first
         res = reg.sequence(first_pkg.seqnr).delete_package(first_pkg.ikscd)
         LogFile.append('oddb/debug',  "Deleted #{res.class} package #{first_pkg.iksnr} #{first_pkg.seqnr} #{first_pkg.ikscd }#{first_pkg.odba_id} #{first_pkg.pointer}, as we got #{err}")
         @failures.push "IKSNR: #{iksnr} #{first_pkg.seqnr} #{first_pkg.iksnr} #{err.message} #{err.backtrace[0..2].join("\n")}"
       end
+      LogFile.debug "Updating #{iksnr} packages #{reg.packages.collect { |x| x.ikscd}}: #{patinfo_lang.to_s[0..40]}"
       reg.each_package do |package|
+        patinfo = store_package_patinfo(package, lang, patinfo_lang)
+        LogFile.debug "Updating #{iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.to_s[0..40]}"
         package.patinfo = patinfo unless package.patinfo.object_id == patinfo.object_id
       end
       reg.odba_store
@@ -1354,6 +1362,7 @@ module ODDB
 
     def parse_aips_download
       LogFile.debug "with @options #{@options}"
+      start_time = Time.now
       @iksnrs_from_aips = []
       @iksnr_lang_type = {}
       @aips_xml = @options[:xml_file] if @options[:xml_file]
@@ -1407,7 +1416,8 @@ module ODDB
       end
       content = nil # get rid of the 800MB file!
       @companies ||=  @options[:companies]
-      puts "#{Time.now}: created #{@iksnrs_meta_info.size} @iksnrs_meta_info"
+      duration = (Time.now - start_time).to_i
+      LogFile.debug  "#{Time.now}: created #{@iksnrs_meta_info.size} @iksnrs_meta_info took #{duration} seconds"
       create_missing_registrations
       report_problematic_names
     end
