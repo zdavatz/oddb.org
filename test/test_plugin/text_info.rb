@@ -106,13 +106,6 @@ module ODDB
       @app.create_registration('61467')
       result = @plugin.import_swissmedicinfo(@options)
 
-      if USE_RUBY_PROF
-        result = RubyProf::Profile.profile do
-          result = @plugin.import_swissmedicinfo(@options)
-        end
-        printer = RubyProf::GraphPrinter.new(result)
-        printer.print(STDOUT, :min_percent => 2)
-      end
       assert_equal(['61467'], @app.registrations.keys)
       assert_equal(['01'], @app.registration('61467').sequences.keys)
       assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
