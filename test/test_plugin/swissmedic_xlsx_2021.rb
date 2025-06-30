@@ -11,7 +11,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'flexmock/minitest'
-require 'test_helpers'
+require 'test_helpers' # for VCR setup
 require 'stub/odba'
 require 'util/persistence'
 require 'plugin/swissmedic'
@@ -40,6 +40,7 @@ module ODDB
     def setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
+      ODDB::TestHelpers.vcr_setup
       mock_downloads
       @app = flexmock(ODDB::App.new)
       @archive = ODDB::WORK_DIR

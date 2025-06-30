@@ -19,7 +19,7 @@ require 'flexmock/minitest'
 require 'util/logfile'
 require 'ext/swissindex/src/swissindex'
 require 'ext/refdata/src/refdata'
-require 'test_helpers'
+require 'test_helpers' # for VCR setup
 
 module ODDB
   class PackageCommon

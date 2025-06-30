@@ -11,7 +11,7 @@ require 'flexmock/minitest'
 require 'ext/refdata/src/refdata'
 require 'plugin/refdata'
 require 'fileutils'
-require 'test_helpers'
+require 'test_helpers' # for VCR setup
 
 module ODDB
   class TestLogging <Minitest::Test

@@ -830,7 +830,7 @@ module ODDB
         return content
       end
       setup_default_agent
-      url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
+      url  = "https://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
       dir  = File.join(ODDB.config.data_dir, 'xml')
       FileUtils.mkdir_p dir
       name = 'swissmedicinfo'
@@ -1451,7 +1451,6 @@ module ODDB
 
 
     def import_swissmedicinfo(options=nil)
-      LogFile.debug "options #{options} @options #{@options} "
       @options = options if options
       $stdout.sync = true
       @specify_barcode_to_text_info = {}

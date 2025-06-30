@@ -7,7 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'minitest/autorun'
 require 'minitest/unit'
-require 'test_helpers'
+require 'test_helpers' # for VCR setup
 require 'stub/odba'
 require 'stub/oddbapp'
 require 'util/persistence'
@@ -58,7 +58,7 @@ module ODDB
     EXPIRATION_DATE_ASPIRIN = Date.new(2017,5,9)
     MEDI_NAME = 'Zymafluor 0.25 mg, Tabletten'
     def setup
-      # @app = flexmock 'app'
+      ODDB::TestHelpers.vcr_setup
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
       @app = flexmock(ODDB::App.new)
@@ -67,9 +67,7 @@ module ODDB
       FileUtils.mkdir_p(@archive)
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
       @state_2019_01_31 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
-      @state_2015_07_02 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2015.07.02.xlsx')
       prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
-      @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@state_2015_07_02).read).by_default
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
       @target = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'

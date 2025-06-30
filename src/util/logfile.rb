@@ -34,7 +34,7 @@ module ODDB
 		end
     def debug(msg)
       msg = /util\/log/.match(caller[0]) ?"#{caller[1]}: #{msg}" : "#{caller[0]}: #{msg}"
-      unless ENV['TRAVIS']
+      unless ENV['GITHUB_SHA']
         $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
       end
       return if defined?(Minitest)
