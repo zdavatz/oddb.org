@@ -17,7 +17,7 @@ require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
 require 'util/logfile'
-require 'rubyXL'
+require 'simple_xlsx_reader'
 
 module ODDB
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang, :informationUpdate, :refdata, :xml_file)
@@ -93,14 +93,15 @@ module ODDB
       @packages = {}
       @veterinary_products = {}
       @target_keys = Util::COLUMNS_FEBRUARY_2019
-      RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
+      rows = SimpleXlsxReader.open(latest_name).sheets.first.rows
+      rows.each do |row|
         next unless row[@target_keys.keys.index(:iksnr)].to_i and
             row[@target_keys.keys.index(:seqnr)].to_i and
             row[@target_keys.keys.index(:production_science)].to_i
         next if (row[@target_keys.keys.index(:production_science)] == 'Tierarzneimittel')
         iksnr = "%05i" % row[@target_keys.keys.index(:iksnr)].to_i
         seqnr = "%03i" % row[@target_keys.keys.index(:seqnr)].to_i
-        name_base = row[@target_keys.keys.index(:name_base)].value.to_s
+        name_base = row[@target_keys.keys.index(:name_base)]
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
       LogFile.debug "found latest_name #{latest_name} with #{@packages.size} packages"

@@ -11,7 +11,7 @@ require 'model/package'
 require "util/html_parser"
 require 'open-uri'
 require 'nokogiri'
-require 'rubyXL'
+require 'simple_xlsx_reader'
 
 module ODDB
 	class LppvPlugin < Plugin
@@ -47,32 +47,31 @@ module ODDB
       link = links.values.find{|x| /LPPV_D/.match(x) }
       @download_to = File.join ODDB::WORK_DIR, File.basename(link)
       URI.open(@download_to, 'w+') { |f| f.write URI.open(link).read }
-      workbook = RubyXL::Parser.parse(@download_to)
+      worksheet = SimpleXlsxReader.open(@download_to).sheets.first
       positions = []
       rows = 0
-      workbook[0].each do |row|
+      worksheet.rows.each do |row|
         rows += 1
         if rows == 1
           # verify and catch error if the format changes without warning
           COL.each do |key, value|
-            actual_name = row[value].value.to_s
+            actual_name = row[value].to_s
             raise "Unexpected column name #{actual_name} does not match exepect #{key.to_s}" unless actual_name.eql?(key.to_s)
           end
         else
-          break unless  row[COL[:GTIN]]
-          pharmacode = row[COL[:PhCode]].value.to_s
-          gtin = row[COL[:GTIN]].value.to_s
-          name = row[COL[:Artikelname]].value.to_s
-          it = row[COL[:IT]].value.to_s
-          desc = row[COL[:Bezeichnung]].value.to_s
-          muteDate = row[COL[:muteDate]].value.to_s
-          muteTyp = row[COL[:muteTyp]].value.to_s
+          pharmacode = row[COL[:PhCode]].to_s
+          gtin = row[COL[:GTIN]].to_s
+          name = row[COL[:Artikelname]].to_s
+          it = row[COL[:IT]].to_s
+          desc = row[COL[:Bezeichnung]].to_s
+          muteDate = row[COL[:muteDate]].to_s
+          muteTyp = row[COL[:muteTyp]].to_s
           # puts "read #{pharmacode} #{gtin} #{name}"
           if gtin.to_i > 0
             @eans << gtin
           else
             if pharmacode.length > 0
-              @eans << pharmacode
+              @eans << pharmacode.to_i.to_s
             else
               @not_updated << "#{pharmacode} neither GTIN nor pharmacoe #{name} #{desc}"
             end
