@@ -13,7 +13,8 @@ require 'flexmock/minitest'
 require 'plugin/text_info'
 require 'model/text'
 require 'util/workdir'
-    require 'debug'
+begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
+
 module ODDB
   class FachinfoDocument
 		def odba_id
@@ -29,7 +30,7 @@ module ODDB
         :up_to_date_fis, :up_to_date_pis, :updated, :details_dir, :dirs
   end
 
-  class TestChangeLog <MiniTest::Test
+  class TestChangeLog <Minitest::Test
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -44,6 +45,10 @@ module ODDB
       @plugin.parser = ::ODDB::FiParse
       @aips_download =  xml_full
       @plugin.download_swissmedicinfo_xml(@aips_download)
+      @latest_from = File.join(ODDB::TEST_DATA_DIR, '/xlsx/Packungen-61467.xlsx')
+      latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
+      FileUtils.mkdir_p(File.dirname(latest_to))
+      FileUtils.cp(@latest_from, latest_to, :verbose => false, :preserve => true)
       @options[:xml_file] = xml_full
     end
     def setup
@@ -54,10 +59,6 @@ module ODDB
       FileUtils.rm_f(path_check, :verbose => false)
       FileUtils.rm_f(File.expand_path('../data/'), :verbose => false)
       pointer = flexmock 'pointer'
-      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xlsx/Packungen-61467.xlsx')
-      latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
-      FileUtils.mkdir_p(File.dirname(latest_to))
-      FileUtils.cp(latest_from, latest_to, :verbose => false, :preserve => true)
       @app = flexmock("application_#{__LINE__}", App.new)
       @app.should_receive(:company_by_name)
     end
@@ -135,8 +136,69 @@ module ODDB
       assert_match('61467', @plugin.updated_fis.join(';')) if @options[:target].eql?(:both)
       assert_match('61467', @plugin.updated_pis.join(';'))
     end
+
+    def test_ignore_missing_iksnr
+      not_found = '99999'
+      @options = {:target => :pi,
+                  :download => false,
+                  :newest => false, # this takes a lot of time
+                  :reparse => true,
+                  :iksnrs => [not_found],
+                  :xml_file => @aips_download,
+                  }
+      prepare_plugin
+      result = @plugin.import_swissmedicinfo(@options)
+      assert_nil(/#{not_found}/.match(@plugin.report))
+    end
+
+    def test_Rubrace
+      rubrace_iksnr = '67402'
+      @app.create_registration(rubrace_iksnr)
+      @app.registration(rubrace_iksnr).create_sequence('01')
+      @app.registration(rubrace_iksnr).create_sequence('02')
+      @app.registration(rubrace_iksnr).create_sequence('03')
+      @app.registration(rubrace_iksnr).sequence('01').create_package('001')
+      @app.registration(rubrace_iksnr).sequence('02').create_package('002')
+      @app.registration(rubrace_iksnr).sequence('03').create_package('003')
+      @app.registration(rubrace_iksnr).sequence('01').create_package('004')
+      @app.registration(rubrace_iksnr).sequence('02').create_package('005')
+      @app.registration(rubrace_iksnr).sequence('03').create_package('006')
+      @app.registration(rubrace_iksnr).packages.each do |package|
+        package.patinfo = patinfo = Patinfo.new if  package.ikscd.eql?('001')
+#        puts "#{package.ikscd} odba_id #{package.odba_id} has #{package.patinfo.class}"
+      end
+      assert_equal(6, @app.registration(rubrace_iksnr).packages.size)
+      assert_equal(false, @app.registration(rubrace_iksnr).packages.first.patinfo.description(:de).respond_to?(:add_change_log_item))
+      assert_nil(@app.registration(rubrace_iksnr).packages.last.patinfo)
+
+
+      @options = {:target => :both,
+                  :download => false,
+                  :newest => false, # this takes a lot of time
+                  :xml_file => @aips_download,
+                  }
+      prepare_plugin(false, 'Rubrace.xml')
+      result = @plugin.import_swissmedicinfo(@options)
+      assert_match(rubrace_iksnr, @plugin.updated_fis.join(';')) if @options[:target].eql?(:both)
+      assert_match(rubrace_iksnr, @plugin.updated_pis.join(';'))
+      assert_equal(6, @app.registration(rubrace_iksnr).packages.size)
+      patinfo_odba_id = @app.registration(rubrace_iksnr).packages.first.patinfo.odba_id
+      assert_match(/Rubraca®, Filmtabletten/, @app.registration(rubrace_iksnr).packages.first.patinfo['de'].to_s[0..70])
+      assert_equal(["01", "02", "03"], @app.registration(rubrace_iksnr).packages.collect{|x| x.seqnr}.uniq.sort)
+      assert_equal(["001", "002", "003", "004", "005", "006"], @app.registration(rubrace_iksnr).packages.collect{|x| x.ikscd}.uniq.sort)
+      @app.registration(rubrace_iksnr).packages.each do |package|
+        # puts "#{package.ikscd} expect #{patinfo_odba_id} odba_id #{package.patinfo.odba_id}"
+        assert_match(/Rubraca®, Filmtabletten/, package.patinfo['de'].to_s[0..70])
+        assert_equal(patinfo_odba_id, package.patinfo.odba_id) if package.seqnr.eql?('01')
+      end
+      assert_equal(patinfo_odba_id,  @app.registration(rubrace_iksnr).sequence('01').packages.values.first.patinfo.odba_id)
+      assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence('02').packages.values.first.patinfo.odba_id)
+      assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence('03').packages.values.first.patinfo.odba_id)
+    end
+
   end
-  class TestTextInfoPlugin <MiniTest::Test
+
+  class TestTextInfoPlugin <Minitest::Test
     @@datadir = File.join(ODDB::TEST_DATA_DIR, 'html/text_info')
     def setup
       super
@@ -270,7 +332,7 @@ module ODDB
     end
   end
 
-  class TestExtractMatchedName <MiniTest::Test
+  class TestExtractMatchedName <Minitest::Test
     Nr_FI_in_AIPS_test = 5
     Nr_PI_in_AIPS_test = 2
     def teardown
@@ -380,6 +442,7 @@ module ODDB
       assert_equal('3TC®', @plugin.iksnrs_meta_info[["53663", 'fi', 'de']].first.title)
       assert_match('61467', @plugin.updated_fis.join(';'))
     end
+
     def test_Erbiumcitrat_de
       @options[:iksnrs] = ['51704']
       # 132 259 -> 198
