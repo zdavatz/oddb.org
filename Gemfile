@@ -2,6 +2,8 @@ source "https://rubygems.org"
 gem 'dbi', :git => 'https://github.com/zdavatz/ruby-dbi'
 # Worksround for ruby 3.1,https://stackoverflow.com/questions/70500220/rails-7-ruby-3-1-loaderror-cannot-load-such-file-net-smtp
 # https://github.com/mikel/mail/pull/1439
+gem 'yus', "1.0.6"
+
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
@@ -14,6 +16,7 @@ gem 'gruff','0.8.0' # to be backward compatible with Ruby 3.2
 gem 'rmagick', '4.2.4' # to be backward compatible with Ruby 3.2
 gem 'observer'
 gem 'csv'
+gem 'logger'
 
 gem 'simple_xlsx_reader'
 gem 'rubyXL'
@@ -63,7 +66,6 @@ gem 'swissmedic-diff'
 gem 'optimist'
 gem 'webrobots'
 gem 'ydocx'
-gem 'yus'
 
 group :development, :test do
   gem "standard"
@@ -87,6 +89,7 @@ group :test do
   gem 'vcr'
   gem 'webmock'
   gem 'rack-test'
+  gem 'getoptlong' # for starting yusd via gem: bundle exec ruby (which yusd)
 end
 
 group :debugger do
