@@ -18,6 +18,7 @@ module ODDB
     MailingRecipients            = 'mail_recipients'
     @mail_configured             = false
     @mailing_list_configuration  = MailingTestConfiguration
+    @deliveries = []
 
     def Util.use_mailing_list_configuration(path)
       @mailing_list_configuration = path
@@ -111,6 +112,18 @@ module ODDB
       raise e
     end
 
+    def Util.oddb_ci_save_mail(mail)
+      subject =  mail.subject.to_s.gsub(/\W/, '_')
+      name = File.join(ENV['ODDB_CI_SAVE_MAIL_IN'],subject)
+      FileUtils.makedirs(ENV['ODDB_CI_SAVE_MAIL_IN'])
+      File.open(name, 'a+') do |file|
+        file.puts mail.body.to_s
+      end
+      LogFile.debug("Saved Mail without attachments #{name} #{subject}")
+      @deliveries << mail
+      puts ("Saved Mail without attachments #{name} #{subject} #{@deliveries}")
+    end
+
     def Util.send_mail_with_attachments(list_and_recipients, mail_subject, mail_body, attachments, override_from = nil)
       Util.configure_mail unless @mail_configured
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
@@ -118,19 +131,26 @@ module ODDB
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments body #{mail_body}", Time.now)
       # try sending the mail several times
       nr_times = 0
+
+      mail = Mail.new
+      mail.from     override_from ? override_from : Util.mail_from
+      mail.to       Util.check_and_get_all_recipients(list_and_recipients)
+      mail.subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
+      mail.body     mail_body
+      mail.body.charset = 'UTF-8'
+      attachments.each do
+        |attachment|
+          mail.add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
+      end
+      e = nil
       1.upto(3).each do |idx|
         nr_times = idx
         begin
-          Mail.deliver do
-            from     override_from ? override_from : Util.mail_from
-            to       Util.check_and_get_all_recipients(list_and_recipients)
-            subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
-            body     mail_body
-            body.charset = 'UTF-8'
-            attachments.each do
-              |attachment|
-              add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
-            end
+          if ENV['ODDB_CI_SAVE_MAIL_IN']
+            oddb_ci_save_mail(mail)
+            return true
+          else
+            mail.deliver
           end
           LogFile.append('oddb/debug', "Returning after #{idx} tries")
           return true
@@ -145,12 +165,19 @@ module ODDB
 
     # Utility methods for checking mails in  unit-tests
     def Util.sent_mails
-      Mail::TestMailer.deliveries
+      if ENV['ODDB_CI_SAVE_MAIL_IN']
+        @deliveries
+      else
+        Mail::TestMailer.deliveries
+      end
     end
 
     # Utility methods for clearing mails in  unit-tests
     def Util.clear_sent_mails
       Mail::TestMailer.deliveries.clear
+      if ENV['ODDB_CI_SAVE_MAIL_IN']
+        @deliveries = []
+      end
     end
   private
     def Util.check_and_get_all_recipients(list_and_recipients)
@@ -181,8 +208,13 @@ module ODDB
       Util.configure_mail unless @mail_configured
       mail.from << @cfg['mail_from'] unless mail.from.size > 0
       mail.reply_to = @cfg['reply_to']
-      Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
-      res = mail.deliver
+      if ENV['ODDB_CI_SAVE_MAIL_IN']
+        oddb_ci_save_mail(mail)
+        res = true
+      else
+        Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
+        res = mail.deliver
+      end
       res
     end
 
