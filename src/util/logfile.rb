@@ -5,6 +5,7 @@
 require 'util/oddbconfig'
 require 'date'
 require 'fileutils'
+require 'fcntl'
 
 module ODDB
 	module LogFile
@@ -34,8 +35,10 @@ module ODDB
 		end
     def debug(msg)
       msg = /util\/log/.match(caller[0]) ?"#{caller[1]}: #{msg}" : "#{caller[0]}: #{msg}"
-      unless ENV['TRAVIS']
-        $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+      unless ENV['GITHUB_SHA']
+        if  $stdout.fcntl(Fcntl::F_GETFD, 0)
+          $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+        end
       end
       if not defined?(@@debugLog) or not @@debugLog
         name = LogFile.filename('oddb/debug', Time.now)

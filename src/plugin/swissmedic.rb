@@ -57,15 +57,6 @@ module ODDB
       $swissmedic_memory_error
     end
 
-private
-    def date_cell(row, idx)
-      return nil unless row[idx]
-      row_value = row[idx]
-      return nil unless row_value
-      return SwissmedicDiff::VALUE_UNLIMITED if SwissmedicDiff::REGEXP_UNLIMITED.match(row_value.value.to_s)
-      return Date.parse row_value.to_s
-      row_value
-    end
 public
     def initialize(app=nil, archive=ODDB::WORK_DIR)
       doc = Nokogiri::HTML(URI.open(BASE_URL + '/swissmedic/de/home/services/listen_neu.html'))
@@ -416,12 +407,12 @@ public
               :expiration_date   =>   @target_keys.keys.index(:expiry_date)
             }.each_pair do |field, i|
               # if future date given
-              date = date_cell(row, i)
+              date = row[i]
               reg_value = reg.send(field)
               if date and not reg_value
                 @diff.updates << row
                 next
-              elsif date and reg_value and reg_value.is_a?(Date) and date.start > reg_value.start
+              elsif date && reg_value && reg_value.is_a?(Date) && date.is_a?(Date) && date > reg_value.start
                 @diff.updates << row
               end
             end
@@ -530,7 +521,7 @@ public
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt,
-                date_cell(row, @target_keys.keys.index(flag)).strftime('%d.%m.%Y')
+                row[@target_keys.keys.index(flag)].strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, cell(row, @target_keys.keys.index(flag))
@@ -810,7 +801,7 @@ public
       @target_keys.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date, :sequence_date
-                   date_cell(row, @target_keys.keys.index(key))
+                   row[@target_keys.keys.index(key)]
                 when :seqnr
                   sprintf "%02i", row[idx].to_i
                 when :iksnr
@@ -1212,16 +1203,16 @@ public
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        if row[@target_keys.keys.index(:expiry_date)] && row[@target_keys.keys.index(:expiry_date)].value && SwissmedicDiff::REGEXP_UNLIMITED.match(row[@target_keys.keys.index(:expiry_date)].value.to_s)
+        if row[@target_keys.keys.index(:expiry_date)] && row[@target_keys.keys.index(:expiry_date)] && SwissmedicDiff::REGEXP_UNLIMITED.match(row[@target_keys.keys.index(:expiry_date)].to_s)
           expiration = nil
         else
-          expiration = date_cell(row, @target_keys.keys.index(:expiry_date))
+          expiration = row[@target_keys.keys.index(:expiry_date)]
           if expiration.nil?
             @skipped_packages << row
             return nil
           end
         end
-        reg_date = date_cell(row, @target_keys.keys.index(:registration_date))
+        reg_date = row[@target_keys.keys.index(:registration_date)]
         vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
                     true
                   else
@@ -1387,7 +1378,7 @@ public
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
 
-      seq_date = date_cell(row, @target_keys.keys.index(:sequence_date))
+      seq_date = row[@target_keys.keys.index(:sequence_date)]
       atc_class = cell(row, @target_keys.keys.index(:atc_class))
       args = {
         :composition_text => ctext,
