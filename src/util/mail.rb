@@ -18,7 +18,6 @@ module ODDB
     MailingRecipients            = 'mail_recipients'
     @mail_configured             = false
     @mailing_list_configuration  = MailingTestConfiguration
-    @deliveries = []
 
     def Util.use_mailing_list_configuration(path)
       @mailing_list_configuration = path
@@ -120,7 +119,6 @@ module ODDB
         file.puts mail.body.to_s
       end
       LogFile.debug("Saved Mail without attachments #{name} #{subject}")
-      @deliveries << mail
       puts ("Saved Mail without attachments #{name} #{subject} #{@deliveries}")
     end
 
@@ -150,12 +148,8 @@ module ODDB
       1.upto(3).each do |idx|
         nr_times = idx
         begin
-          if ENV['ODDB_CI_SAVE_MAIL_IN']
-            oddb_ci_save_mail(mail)
-            return true
-          else
-            mail.deliver
-          end
+          oddb_ci_save_mail(mail) if ENV['ODDB_CI_SAVE_MAIL_IN']
+          mail.deliver
           LogFile.append('oddb/debug', "Returning after #{idx} tries")
           return true
         rescue => e
@@ -169,19 +163,12 @@ module ODDB
 
     # Utility methods for checking mails in  unit-tests
     def Util.sent_mails
-      if ENV['ODDB_CI_SAVE_MAIL_IN']
-        @deliveries
-      else
-        Mail::TestMailer.deliveries
-      end
+      Mail::TestMailer.deliveries
     end
 
     # Utility methods for clearing mails in  unit-tests
     def Util.clear_sent_mails
       Mail::TestMailer.deliveries.clear
-      if ENV['ODDB_CI_SAVE_MAIL_IN']
-        @deliveries = []
-      end
     end
   private
     def Util.check_and_get_all_recipients(list_and_recipients)
