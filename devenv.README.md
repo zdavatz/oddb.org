@@ -138,8 +138,8 @@ Be aware that you must define some environment variables to run these tests. I d
       {
             # for running the watir spec tests
             env.admin_user = "admin@user.com"
-            env.admin_password = "top_secret";
-            env.sandoz_admin_password = "top_secret";
+            env.admin_password_ = "top_secret";
+            env.sandoz_admin_password _ = "top_secret";
       }
 
 It happens frequently, that some watir tests fails, because the content of ODDB database changed. Also rspec runs different tests when
@@ -161,21 +161,25 @@ If you want you can also develop new test using `irb`. Eg. this snippet should w
 
 # TODO:
 
-The following steps could be intergrated into the devenv.nix
-* Why does adding the gem 'debug' lead to the following error?
+* git config pull.rebase true
+* users/oddb.nix
 
-      Internal Server Error
-      wrong number of arguments (given 2, expected 1)
-      WEBrick/1.8.1 (Ruby/3.3.0/2023-12-25) at 192.168.0.75:8012
+## devenv.nix
 
-* `bundle install`
-* Use the downloaded bz2 backup file directly
-* Always use `bundle exec rake test` to execute the tests. Instead of checking always `.github/workflows/ruby.yml`
+* check .config/nix/nix.conf. Must contain access_token with access-tokens = github.com=github_pat_
 
 # Notes
 
 * Niklaus uses the fish shell from https://fishshell.com/
 * Niklaus is working on a https://ch.starlabs.systems/pages/starbook laptop having 32 GB of RAM and a 2TB SSD-HD
-* Nixos 23.11 from https://nixos.org/ installed
+* Nixos 25.05 from https://nixos.org/ installed.
 * If you want to drop into the ruby debugger just insert a line `require 'debug'; debugger`
 * If you want to reload a database dump, just stop the process up job and call `rm -rfv .devenv/state/postgres`
+
+## Fish shell cheatsheets
+* https://devhints.io/fish-shell
+* https://github.com/mbyio/fish_shell_cheatsheet/blob/master/cheatsheet.pdf
+
+## Nix language cheatsheets
+* https://github.com/kquick/nix-cheatsheet/blob/master/nix-cheatsheet.org
+
