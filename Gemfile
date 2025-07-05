@@ -17,7 +17,7 @@ gem 'rmagick', '4.2.4' # to be backward compatible with Ruby 3.2
 gem 'observer'
 gem 'csv'
 gem 'logger'
-
+gem 'swissmedic-diff', '>= 0.3.0'
 gem 'simple_xlsx_reader'
 gem 'rubyXL'
 gem 'xsv'
@@ -62,7 +62,6 @@ gem "rubyntlm"
 gem "rubyzip", :require => 'zip'
 gem 'savon'
 gem 'spreadsheet'
-gem 'swissmedic-diff'
 gem 'optimist'
 gem 'webrobots'
 gem 'ydocx'

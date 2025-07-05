@@ -46,8 +46,8 @@ module ODDB
       @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
-      @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
-      @older  = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
+      @latest = File.join ODDB::TEST_DATA_DIR, 'xls', 'Packungen-latest.xlsx'
+      @older  = File.join(ODDB::TEST_DATA_DIR, 'xls/Packungen-2019.01.31.xlsx')
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
       @bag_listen  = File.join(ODDB::TEST_DATA_DIR, 'html/listen_neu.html')
       @current  = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2021.04.01.xlsx')
@@ -59,7 +59,14 @@ module ODDB
                    :verbose => true, :preserve => true)
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read).by_default
       FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
-      FileUtils.rm(@latest) if File.exist?(@latest)
+      FileUtils.cp(@latest, File.join(ODDB::WORK_DIR, 'xls'), :verbose => true)
+      FileUtils.cp(@older, File.join(ODDB::WORK_DIR, 'xls'), :verbose => true)
+
+      puts File.join(ODDB::WORK_DIR, 'xlsx')
+      puts @latest
+      assert(true, File.exist?('/opt/src/oddb.org-3.4/data4tests/xls/Packungen-latest.xlsx'))
+      require 'debug'; binding.break
+
     end
     def teardown
       ODBA.storage = nil

@@ -295,13 +295,12 @@ GEM
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.25.0)
     stringio (3.1.7)
-    swissmedic-diff (0.2.9)
+    swissmedic-diff (0.3.0)
       logger
       nokogiri
       ostruct
-      rubyXL (>= 3.3.1)
       rubyzip
-      spreadsheet
+      simple_xlsx_reader
     timeout (0.4.3)
     travis-lint (2.0.0)
       json
@@ -420,7 +419,7 @@ DEPENDENCIES
   simplecov
   spreadsheet
   standard
-  swissmedic-diff
+  swissmedic-diff (>= 0.3.0)
   travis-lint
   typeprof
   vcr

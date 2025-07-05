@@ -25,7 +25,7 @@ module ODDB
       if File.exist?(test_file)
         @test_xlsx = test_file
       else
-        @test_xlsx = 'test/data/xlsx/Packungen-latest.xlsx'
+        @test_xlsx = 'test/data/xls/Packungen-latest.xlsx'
       end
       @latest_name = @test_xlsx
       @packages = {}
@@ -48,12 +48,12 @@ module ODDB
      def test_RubyXL_parser
       started = Time.now
       RubyXL::Parser.parse(@latest_name)[0][4..-1].each do |row|
-        next unless row[@target_keys.keys.index(:iksnr)].to_i and
-            row[@target_keys.keys.index(:seqnr)].to_i and
-            row[@target_keys.keys.index(:production_science)].to_i
+        next unless row[@target_keys.keys.index(:iksnr)].value.to_i &&
+            row[@target_keys.keys.index(:seqnr)].value.to_i &&
+            row[@target_keys.keys.index(:production_science)].value.to_i
         next if (row[@target_keys.keys.index(:production_science)] == 'Tierarzneimittel')
-        iksnr = "%05i" % row[@target_keys.keys.index(:iksnr)].to_i
-        seqnr = "%03i" % row[@target_keys.keys.index(:seqnr)].to_i
+        iksnr = "%05i" % row[@target_keys.keys.index(:iksnr)].value.to_i
+        seqnr = "%03i" % row[@target_keys.keys.index(:seqnr)].value.to_i
         name_base = row[@target_keys.keys.index(:name_base)].value.to_s
         @packages[iksnr] = {:iksnr => iksnr, :seqnr => seqnr, :name_base => name_base} # IKS_Package.new(iksnr, seqnr, name_base)
       end

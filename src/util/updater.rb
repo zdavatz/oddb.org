@@ -469,7 +469,7 @@ module ODDB
         "Error: #{error.class}",
         "Message: #{error.message}",
         "Backtrace:",
-        error.backtrace.join("\n"),
+        error.backtrace.join("\n")[0..5000],
       ].compact.join("\n")
       log.recipients = RECIPIENTS.dup
       log.notify("Error: #{subj}")
