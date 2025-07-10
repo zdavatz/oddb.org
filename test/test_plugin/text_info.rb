@@ -4,6 +4,8 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'stub/odba'
+USE_RUBY_PROF = false
+require 'ruby-prof' if USE_RUBY_PROF
 
 require 'minitest/autorun'
 require 'stub/oddbapp'

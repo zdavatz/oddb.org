@@ -31,7 +31,7 @@ module ODDB
       FileUtils.makedirs(ODDB::WORK_DIR)
       FileUtils.cp(File.join(ODDB::TEST_DATA_DIR, 'lppv/LPPV_D.xlsx'), ODDB::WORK_DIR)
       ODDB::TestHelpers.vcr_setup
-      package1 = flexmock("package_#{__LINE__}",
+      package1 = flexmock('package',
                          :barcode      => '7680554950049',
                          :data_origin  => :lppv,
                          :pharmacode   => 'pharmacode',
@@ -42,7 +42,7 @@ module ODDB
                          :pointer      => 'package1-pointer',
                         )
 
-      package2 = flexmock("package_#{__LINE__}",
+      package2 = flexmock('package',
                          :barcode      => '7680452090328',
                          :data_origin  => :lppv,
                          :lppv         => 'lppv',
@@ -52,7 +52,7 @@ module ODDB
                          :sl_entry     => {},
                          :pointer      => 'package2-pointer',
                         )
-      package3 = flexmock("package_#{__LINE__}",
+      package3 = flexmock('package',
                          :barcode      => nil,
                          :pharmacode   => '710670',
                          :data_origin  => :lppv,
@@ -62,7 +62,7 @@ module ODDB
                          :sl_entry     => {},
                          :pointer      => 'package3-pointer',
                         )
-      package4 = flexmock("package_#{__LINE__}",
+      package4 = flexmock('package',
                          :barcode      => 'package4 gtin',
                          :pharmacode   => 'package4 pharma',
                          :data_origin  => :lppv,
@@ -96,6 +96,7 @@ module ODDB
                    "Packages with SL-Entry: 2",
                    "Not updated were: 0 details:"]
       assert(/ACTIVITAL/.match(@plugin.updated_packages.last))
+      # assert(/WARUZOL/.match(@plugin.updated_packages.last))
       expected.each do |one_line|
         puts report unless report.index(one_line)
         assert(report.index(one_line), "Should have '#{one_line}' in\n-------report\n#{report}\n----------end of report")

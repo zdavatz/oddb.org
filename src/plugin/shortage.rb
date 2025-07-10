@@ -9,7 +9,8 @@ require 'mechanize'
 require 'drb'
 require 'util/latest'
 require 'date'
-require 'simple_xlsx_reader'
+require 'rubyXL'
+require 'rubyXL/convenience_methods/workbook'
 require 'csv'
 
 module ODDB
@@ -266,6 +267,7 @@ module ODDB
       end
     end
     def parse_nomarketing_xlsx(path)
+      workbook = RubyXL::Parser.parse(path)
       rows = 0
       cols_headers = { 0 => /Datum der Meldung/,
                        1 => /Zulassungs-.*nummer.*/m,
@@ -273,14 +275,14 @@ module ODDB
                        8 => /Vertriebsunterbruch ab/,
                        }
       first_row = false
-      SimpleXlsxReader.open(path).sheets.first.rows.each do |row|
+      workbook.first.each do |row|
         rows += 1
         unless first_row
-          first_row = cols_headers.values.first.match(row[cols_headers.keys.first].to_s)
+          first_row = cols_headers.values.first.match(row[cols_headers.keys.first].value.to_s)
           if first_row
             cols_headers.each do |cell, expected|
-              next if expected.match(row[cell])
-              raise "Format of #{path} does not match for cell #{cell} not not match #{expected}. Is #{row[cell]}"
+              next if expected.match(row[cell].value)
+              raise "Format of #{path} does not match for cell #{cell} not not match #{expected}. Is #{row[cell].value}"
             end
             next
           end
@@ -288,10 +290,10 @@ module ODDB
         next unless first_row
         break unless row[0] # empty row
         added_info = OpenStruct.new
-        added_info.nomarketing_date   = Date.parse(row[cols_headers.keys[0]].to_s) if row[cols_headers.keys[0]] && row[cols_headers.keys[0]]
-        added_info.iksnr              = row[cols_headers.keys[1]].to_i.to_s
-        added_info.nomarketing_since  = Date.parse(row[cols_headers.keys[2]].to_s) if row[cols_headers.keys[2]] && row[cols_headers.keys[2]]
-        added_info.nodelivery_since   = Date.parse(row[cols_headers.keys[3]].to_s) if row[cols_headers.keys[3]] && row[cols_headers.keys[3]]
+        added_info.nomarketing_date   = Date.parse(row[cols_headers.keys[0]].value.to_s) if row[cols_headers.keys[0]] && row[cols_headers.keys[0]].value
+        added_info.iksnr              = row[cols_headers.keys[1]].value.to_s
+        added_info.nomarketing_since  = Date.parse(row[cols_headers.keys[2]].value.to_s) if row[cols_headers.keys[2]] && row[cols_headers.keys[2]].value
+        added_info.nodelivery_since   = Date.parse(row[cols_headers.keys[3]].value.to_s) if row[cols_headers.keys[3]] && row[cols_headers.keys[3]].value
         added_info.nomarketing_link   = @nomarketing_href
         unless @app.registration(added_info.iksnr)
           @missing_nomarketings << (added_info.iksnr)

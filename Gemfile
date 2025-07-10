@@ -8,9 +8,6 @@ gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
 
-gem 'simple_xlsx_reader'
-gem 'rubyXL'
-gem 'xsv'
 gem 'cmath'
 gem 'minitar'
 gem 'webrick'
@@ -50,6 +47,7 @@ gem 'rmagick', '4.2.4'
 gem 'racc'
 gem 'rack'
 gem 'rackup'
+gem 'rubyXL'
 gem 'ruby-units'
 gem "rubyntlm"
 gem "rubyzip", :require => 'zip'
@@ -76,7 +74,6 @@ group :test do
   gem 'rspec'
   gem 'rspec-core'
   gem 'minitest'
-  gem 'minitest-hooks'
   gem 'minitest-should_syntax'
   gem 'minitest-spec-expect'
   gem 'watir'
