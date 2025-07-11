@@ -7,10 +7,20 @@ require 'ostruct'
 require 'plugin/plugin'
 require 'util/persistence'
 require 'util/today'
-require 'simple_xlsx_reader'
+require 'rubyXL'
+require 'spreadsheet'
 require 'util/logfile'
 require 'util/util'
 require 'plugin/xml_definitions'
+
+# Some monkey patching needed to avoid an error
+module RubyXL
+  class Row < OOXMLObject
+    def first
+       cells[0]
+    end
+  end
+end
 
 module ODDB
   class Atc_lessPlugin < Plugin
@@ -90,23 +100,23 @@ module ODDB
       start_time = Time.new
       idx = 0
       parse_refdata_xml
-      worksheet = SimpleXlsxReader.open(@packungen_xlsx).sheets.first
+      workbook = RubyXL::Parser.parse(@packungen_xlsx)
       saved_reg_seq = nil
       row_nr = 0
-      Util.check_column_indices(worksheet)
+      Util.check_column_indices(workbook.worksheets[0])
       iksnr_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:iksnr)
       seqnr_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:seqnr)
       atc_col             = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:atc_class)
       ikscd_col           = ODDB::Util::COLUMNS_FEBRUARY_2019.keys.index(:ikscd)
-      worksheet.rows.each do |row|
+      workbook.worksheets[0].each do |row|
         row_nr += 1
-        next unless row && row[iksnr_col] && row[iksnr_col] && row[iksnr_col].to_i > 0
-        iksnr               = "%05i" % row[iksnr_col].to_i
-        seqnr               = "%02d" % row[seqnr_col].to_i
-        atc_code_swissmedic = row[atc_col] ? row[atc_col] : nil
+        next unless row and row.cells[iksnr_col] and row.cells[iksnr_col].value and row.cells[iksnr_col].value.to_i > 0
+        iksnr               = "%05i" % row.cells[iksnr_col].value.to_i
+        seqnr               = "%02d" % row.cells[seqnr_col].value.to_i
+        atc_code_swissmedic = row.cells[atc_col] ? row.cells[atc_col].value : nil
         reg_seq = "#{iksnr}/#{seqnr}"
         next if saved_reg_seq.eql?(reg_seq)
-        no8 = sprintf('%05d',row[iksnr_col].to_i) + sprintf('%03d',row[ikscd_col].to_i)
+        no8 = sprintf('%05d',row.cells[iksnr_col].value.to_i) + sprintf('%03d',row.cells[ikscd_col].value.to_i)
         atc_code_refdata = @refdata_to_atc_code[no8]
         good_atc_code = atc_code_swissmedic
         good_atc_code ||= atc_code_refdata
@@ -115,7 +125,7 @@ module ODDB
         saved_reg_seq = reg_seq.clone
         registration = @app.registration(iksnr)
         unless registration
-          medical_type = row[6] ? row[6] : ''
+          medical_type = row.cells[6] ? row.cells[6].value : ''
           next if medical_type and /Tierarzneimittel/i.match(medical_type)
           @missing_registrations << iksnr
           debug_msg "#{__FILE__}: #{__LINE__}: skipping non existent registration #{iksnr} #{medical_type}"
