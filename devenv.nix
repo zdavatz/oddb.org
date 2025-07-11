@@ -406,6 +406,12 @@ in {
         run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
         echo  (date) Finished import_swissmedic status $status | tee -a ci_run.log
 
+        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
+        echo  (date) Finished import_swissmedic_fix status $status | tee -a ci_run.log
+
+        run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
+        echo  (date) Finished import_swissmedic_update status $status | tee -a ci_run.log
+
         set dest ${ODDB_CI_ARCHIVE}'/run_'(date '+%Y-%m-%d-%H')
         mkdir -pv $dest
         mv -v ${ODDB_CI_LOG} $dest
