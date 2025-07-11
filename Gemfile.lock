@@ -8,11 +8,12 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.7.1)
+    activesupport (6.1.7.10)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     akami (1.3.1)
@@ -89,9 +90,11 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.1.2)
-    mini_portile2 (2.8.8)
+    mini_portile2 (2.8.9)
     minitar (0.9)
     minitest (5.15.0)
+    minitest-hooks (1.5.2)
+      minitest (> 5.3)
     minitest-should_syntax (1.0.2)
       minitest
     minitest-spec-expect (2.0.0)
@@ -118,7 +121,7 @@ GEM
       digest
       net-protocol
       timeout
-    nokogiri (1.18.3)
+    nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)
@@ -261,6 +264,8 @@ GEM
     webrick (1.9.1)
     webrobots (0.1.2)
     websocket (1.2.10)
+    xsv (1.3.2)
+      rubyzip (>= 1.3, < 3)
     ydbd-pg (0.5.9)
       pg
       ydbi (= 0.5.9)
@@ -275,12 +280,13 @@ GEM
       needle
       odba (>= 1.1.6)
       rclconf
+    zeitwerk (2.7.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
+  activesupport (< 7.0)
   bigdecimal
   builder
   clogger
@@ -303,6 +309,7 @@ DEPENDENCIES
   mime-types
   minitar
   minitest
+  minitest-hooks
   minitest-should_syntax
   minitest-spec-expect
   money
@@ -343,7 +350,7 @@ DEPENDENCIES
   simplecov
   spreadsheet
   standard
-  swissmedic-diff
+  swissmedic-diff (= 0.2.8)
   travis-lint
   typeprof
   vcr
@@ -351,6 +358,7 @@ DEPENDENCIES
   webmock
   webrick
   webrobots
+  xsv
   ydbd-pg
   ydiffy
   ydocx
