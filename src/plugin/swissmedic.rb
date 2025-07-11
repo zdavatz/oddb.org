@@ -121,9 +121,8 @@ public
     end
 
     def store_found_packages(latest_xslx)
-      workbook = Spreadsheet.open(latest_xslx)
-      workbook.worksheets[0].each_with_index do
-        |row, index|
+      rows = SimpleXlsxReader.open(latest_xslx).sheets.first.rows
+      rows.each_with_index do |row, index|
         break unless row
         iksnr   = "%05i" % cell(row, @target_keys.keys.index(:iksnr)).to_i
         @current_iksnr = iksnr.to_i
@@ -223,12 +222,13 @@ public
     end
 
     def check_all_packages(file2open)
-      workbook = Spreadsheet.open(file2open)
-      Util.check_column_indices(workbook.worksheets[0])
+      worksheet = SimpleXlsxReader.open(file2open).sheets.first
+      worksheet.rows.slurp; 0
+      xxx = Util.check_column_indices(worksheet)
       @target_keys = Util::COLUMNS_FEBRUARY_2019 if @target_keys.is_a?(Array)
       listed_packages = []
       row_nr = 0
-      workbook.worksheets[0].each() do
+      worksheet.rows.each() do
         |row|
         row_nr += 1
         next if row_nr <= 4
@@ -298,7 +298,7 @@ public
       msg += "#{File.size(file2open)} bytes. " if file2open && File.exist?(file2open)
       msg += "Latest #{@latest_packungen} #{File.size(@latest_packungen)} bytes" if @latest_packungen and File.exist?(@latest_packungen)
       LogFile.debug(msg)
-      row_nr = 4
+      row_nr = 0
       if @update_comps
         file2open && File.exist?(file2open)
         file2use = file2open if file2open && File.exist?(file2open)
@@ -307,10 +307,10 @@ public
         opts[:fix_galenic_form] = true
         last_checked = nil
         LogFile.debug("file2use #{file2use} checked #{file2open} and #{@latest_packungen}")
-        workbook = Spreadsheet.open(file2use)
+        worksheet = SimpleXlsxReader.open(latest_name).sheets.first
         Util.check_column_indices(workbook.worksheets[0])
         @target_keys = Util::COLUMNS_FEBRUARY_2019 if @target_keys.is_a?(Array)
-        workbook.worksheets[0].each() do
+        worksheet.rows.each() do
           |row|
           row_nr += 1
           next if row_nr <= 4
@@ -387,7 +387,7 @@ public
       LogFile.debug " done. #{@export_registrations.size} export_registrations @update_comps was #{@update_comps} with #{@diff ? "#{@diff.changes.size} changes" : 'no change information'}"
       $swissmedic_do_tracing = false
       threads.map(&:join)
-      sleep(1.1)
+      sleep(0.2)
       threads.map(&:join)
       @update_comps ? true : @diff
     ensure
@@ -618,17 +618,15 @@ public
       iksnr_idx = reg_indices.delete(:iksnr)
       seqnr_idx = seq_indices.delete(:seqnr)
       export_flag_idx = seq_indices.delete(:export_flag)
-      workbook = Spreadsheet.open(latest_name)
-      row_nr = 0
-      workbook.worksheets[0].each() do |row|
-        row_nr += 1
+      rows = SimpleXlsxReader.open(latest_name).sheets.first.rows
+      rows.each_with_index do |row, row_nr|
         next if row_nr <= 4
         next unless row # Happens at the end of test files from test/test_plugin/swissmedic.rb
         next unless row[export_flag_idx] # Happens at the end of test files from test/test_plugin/swissmedic.rb
           iksnr = "%05i" % cell(row, iksnr_idx).to_i
           @current_iksnr = iksnr.to_i
           seqnr = "%02i" % cell(row, seqnr_idx).to_i
-          export = row[export_flag_idx].value
+          export = row[export_flag_idx]
           if export =~ /E/
             data = {}
             @export_sequences[[iksnr, seqnr]] = data

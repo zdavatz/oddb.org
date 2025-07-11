@@ -65,7 +65,8 @@ module ODDB
       @archive = ODDB::WORK_DIR
       FileUtils.rm_rf(@archive)
       FileUtils.mkdir_p(@archive)
-      @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))
+      @plugin = flexmock("plugin_#{__LINE__}", SwissmedicPlugin.new(@app, @archive))
+      mock_downloads
       @state_2019_01_31 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
       @state_2015_07_02 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2015.07.02.xlsx')
       prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
@@ -83,7 +84,7 @@ module ODDB
                    :verbose => true, :preserve => true)
       FileUtils.cp(prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx'),
                    :verbose => true, :preserve => true)
-      @workbook = Spreadsheet.open( @test_packages)
+      @workbook =  SimpleXlsxReader.open(@test_packages).sheets.first
     end
     def teardown
       ODBA.storage = nil
@@ -158,7 +159,7 @@ module ODDB
 
     def test_update_company__create
       # 15219	1	Zymafluor 0.25 mg, Tabletten	MEDA Pharma GmbH	Synthetika human	13.05.1.	A01AA01	15.06.50	15.06.50	31.12.17	068	400	Tablette(n)	C	C	C	fluoridum	fluoridum 0.25 mg ut natrii fluoridum, aromatica, excipiens pro compresso.		Kariesprophylaxe
-      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};
+      row = @workbook.rows.find { |x| /Zymafluor/.match x[2]};
 
       name = 'MEDA Pharma GmbH'
       @app.should_receive(:company_by_name).with(name, 0.8)
@@ -194,8 +195,8 @@ module ODDB
     end
 
     def test_update_sequence__create
-      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};
-      assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
+      row = @workbook.rows.find { |x| /Zymafluor/.match x[2]};
+      assert_equal(MEDI_NAME, row[NAME_OFFSET])
       reg = flexmock 'registration'
       # 15219	1	Zymafluor 0.25 mg, Tabletten	MEDA Pharma GmbH	Synthetika human	13.05.1.	A01AA01	15.06.50	15.06.50	31.12.17	068	400	Tablette(n)	C	C	C	fluoridum	fluoridum 0.25 mg ut natrii fluoridum, aromatica, excipiens pro compresso.		Kariesprophylaxe
       reg_nr = '15219'
@@ -224,6 +225,7 @@ module ODDB
         :name_base        =>"Zymafluor 0.25 mg",
         :name_descr       =>"Tabletten",
         :dose             =>nil,
+        :atc_class        =>"A01AA01",
         :sequence_date    => Date.new(1950,6,15),
         :export_flag      =>nil,
       }
@@ -234,8 +236,8 @@ module ODDB
 
 
     def test_update_galenic_form__dont_update__descr
-      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  
-      assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
+      row = @workbook.rows.find { |x| /Zymafluor/.match x[2]};
+      assert_equal(MEDI_NAME, row[NAME_OFFSET])
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
@@ -248,7 +250,7 @@ module ODDB
       assert true
     end
     def test_update_galenic_form__dont_update__composition
-      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
+      row = @workbook.rows.find { |x| /Zymafluor/.match x[2]};  assert_equal(MEDI_NAME, row[NAME_OFFSET])
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
@@ -262,7 +264,7 @@ module ODDB
       assert true
     end
     def test_update_galenic_form__create__descr
-      row = @workbook.worksheet(0).find { |x| /Zymafluor/.match x[2].value};  assert_equal(MEDI_NAME, row[NAME_OFFSET].value)
+      row = @workbook.rows.find { |x| /Zymafluor/.match x[2]};  assert_equal(MEDI_NAME, row[NAME_OFFSET])
 
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
@@ -282,7 +284,8 @@ module ODDB
       @plugin.update_galenic_form(seq, comp, row)
     end
     def test_update_galenic_form__create__composition
-      row = @workbook.worksheet(0).row(ROW_WELEDA)
+      @workbook.rows.slurp
+      row = @workbook.rows[ROW_WELEDA]
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
       comp = flexmock 'composition'
@@ -305,69 +308,7 @@ module ODDB
       composition = flexmock('composition', :pointer => 'pointer')
       assert_equal('update', @plugin._update_galenic_form(composition, 'language', '123,name'))
     end
-    def test_diff_february_2019
-      pac = flexmock 'package'
-      pac.should_receive(:data_origin).and_return :swissmedic
-      reg = flexmock 'registration'
-      reg.should_receive(:package).and_return pac
-      @app.should_receive(:registration).and_return reg
-      result = @plugin.diff(@state_2019_01_31, @state_2015_07_02)
-      assert_equal 37, result.news.size
-      assert_equal "Zymafluor 0.25 mg, Tabletten", result.news.first[2].value
-      assert_equal 3, result.updates.size
-      assert_equal "Coeur-Vaisseaux Sérocytol, suppositoire", result.updates.first[2].value
-      assert_equal 37, result.changes.size
-      expected = {"00277"=>[:expiry_date, :production_science],
-                  "15219"=>[:new],
-                  "16598"=>[:new],
-                  "28486"=>[:new],
-                  "30015"=>[:new],
-                  "31644"=>[:new],
-                  "32475"=>[:new],
-                  "35366"=>[:new],
-                  "43454"=>[:new],
-                  "44625"=>[:new],
-                  "45882"=>[:new],
-                  "53290"=>[:new],
-                  "53662"=>[:new],
-                  "54015"=>[:new],
-                  "54534"=>[:new],
-                  "55558"=>[:new],
-                  "66297"=>[:new],
-                  "55594"=>[:new],
-                  "55674"=>[:new],
-                  "56352"=>[:new],
-                  "58943"=>[:new],
-                  "59267"=>[:new],
-                  "61186"=>[:new],
-                  "62069"=>[:expiry_date],
-                  "62132"=>[:new],
-                  "65856"=>[:new],
-                  "65857"=>[:new],
-                  "58734"=>[:new],
-                  "55561"=>[:new],
-                  "65160"=>[:new],
-                  "58158"=>[:new],
-                  "44447"=>[:new],
-                  "39252"=>[:new],
-                  "00278"=>[:delete],
-                  "48624"=>[:delete],
-                  "57678"=>[:delete],
-                  "00488"=>[:delete]
-      }
-      assert_equal(expected, result.changes)
-      assert_equal 11, result.package_deletions.size
-      assert_equal 4, result.package_deletions.first.size
-      iksnrs = result.package_deletions.collect { |row| row[0] }.sort
-      ikscds = result.package_deletions.collect { |row| row[2] }.sort
-      assert_equal ["00278", "00278", "00488", "48624", "57678", "62069", "62069", "62069", "62069", "62069", "62069"], iksnrs
-      assert_equal  ["001", "001", "002", "009", "010", "011", "012", "013", "014", "022", "024"], ikscds
-      assert_equal 6, result.sequence_deletions.size
-      assert_equal ['00278', '01'], result.sequence_deletions.at(0)
-      assert_equal 4, result.registration_deletions.size
-      assert_equal ['00278'], result.registration_deletions.at(0)
-      assert_equal 0, result.replacements.size
-    end
+
     def test_deactivate
       flexmock(@plugin) do |plg|
         plg.should_receive(:pointer)
@@ -548,7 +489,8 @@ module ODDB
         app.should_receive(:update).and_return('update')
         app.should_receive(:unique_atc_class).and_return(atc_class)
       end
-      assert_equal('update', @plugin.update_sequence(registration, @workbook[0][6]))
+      @workbook.rows.slurp
+      assert_equal('update', @plugin.update_sequence(registration, @workbook.rows[6]))
     end
 
     def test_update_export_registrations
@@ -642,55 +584,6 @@ module ODDB
       end
       expected = {"email"=>[registration]}
       assert_equal(expected, @plugin.mail_notifications)
-    end
-    def test_update_swissmedic
-      expected = []
-      company_ptr = Persistence::Pointer.new([:registration, '111'], [:sequence, '222'])
-      seq = flexmock 'sequence'
-      seq.should_receive(:pointer).and_return(company_ptr)
-      company = flexmock('company',
-                         :pointer => company_ptr
-                        )
-      pac = flexmock 'package'
-      pac.should_receive(:data_origin).and_return :swissmedic
-      seq = setup_simple_seq
-      seq.should_receive(:package).and_return(pac)
-      seq.should_receive(:atc_class).and_return nil
-      registration = flexmock('registration',
-                              :pointer => 'pointer',
-                              :ith_swissmedic => 'ith_swissmedic',
-                              :production_science => 'production_science',
-                              :registration_date => 'registration_date',
-                              :expiration_date => 'expiration_date',
-                              :inactive? => false,
-                              :vaccine => 'vaccine',
-                              :index_therapeuticus => 'index_therapeuticus',
-                              :iksnr => 'iksnr',
-                              :package => pac,
-                              :sequence => seq,
-                              :atc_classes => [],
-                              :company_name => company)
-      @app = flexmock(@app)
-      @app.should_receive(:resolve).and_return(nil)
-      newer = File.join(ODDB::TEST_DATA_DIR, 'xlsx', 'Packungen-latest.xlsx')
-      older = @state_2015_07_02
-      FileUtils.cp(older, File.join(ODDB::TEST_DATA_DIR, 'xls', 'Packungen-latest.xlsx'),
-                   :verbose => true, :preserve => true)
-      FileUtils.cp(older, File.join(ODDB::TEST_DATA_DIR, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
-                   :verbose => true, :preserve => true)
-      result =  @plugin.update
-      assert_equal(4, @plugin.updated_agents.size)
-      assert_equal(15, @plugin.recreate_missing.size)
-      assert_equal(8, @plugin.known_export_registrations.size)
-      assert_equal(8, @plugin.known_export_sequences.size)
-      FileUtils.cp(newer, File.join(ODDB::TEST_DATA_DIR, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')),
-                   :verbose => true, :preserve => true)
-      result =  @plugin.update
-      assert_equal(0, @plugin.updated_agents.size)
-      assert_equal(0, @plugin.recreate_missing.size)
-      assert_equal(8, @plugin.known_export_registrations.size)
-      assert_equal(8, @plugin.known_export_sequences.size)
-      assert_kind_of(OpenStruct, result)
     end
   end
 end

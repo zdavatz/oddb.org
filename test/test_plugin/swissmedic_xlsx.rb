@@ -54,9 +54,7 @@ module ODDB
       @plugin.should_receive(:fetch_with_http).with('https://www.swissmedic.ch/swissmedic/de/home/services/listen_neu.html').and_return(File.open(@bag_listen).read).by_default
       @plugin.should_receive(:open).with( ODDB::SwissmedicPlugin.get_packages_url).and_return(File.open(@current).read).by_default
       @prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
-      FileUtils.cp(@prep_from, File.join(@archive, 'xls',  @@today.strftime('Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')),
-                   :verbose => true, :preserve => true)
-      FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx^'),
+      FileUtils.cp(@prep_from, File.join(@archive, 'xls', 'Erweiterte_Arzneimittelliste_HAM_31012019.xlsx'),
                    :verbose => true, :preserve => true)
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(@prep_from).read).by_default
       FileUtils.makedirs(File.dirname(@latest)) unless File.exist?(File.dirname(@latest))
