@@ -25,9 +25,17 @@ class TestIpn <Minitest::Test
   SUBJECT_DOWNLOAD = 'Datendownload von ODDB.org'
   ADMIN_TO = [PAYPAL_RECEIVER, "ywesee_test@ywesee.com"].sort  # as defined in test/data/oddb_mailing_test.yml
   SUBJECT_POWERUSER = "Power-User bei ODDB.org"
+
   def setup
+    @saved_env = ENV['ODDB_CI_SAVE_MAIL_IN']
+    ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
     Util.configure_mail :test
     Util.clear_sent_mails
+  end
+
+  def teardown
+    ENV['ODDB_CI_SAVE_MAIL_IN'] = @saved_env
+    super
   end
 
   def check_sent_one_mail(subject, nrMsg = 1, to = [YUS_RECEIVER])

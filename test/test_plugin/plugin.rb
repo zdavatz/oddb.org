@@ -11,11 +11,13 @@ require 'minitest/autorun'
 require 'flexmock/minitest'
 require 'plugin/plugin'
 require 'fileutils'
+require 'test_helpers' # for VCR setup
 
 module ODDB
 
   class TestPlugin <Minitest::Test
     def setup
+      ODDB::TestHelpers.vcr_setup
       @app    = flexmock('app')
       @plugin = ODDB::Plugin.new(@app)
     end
@@ -24,12 +26,14 @@ module ODDB
       super # to clean up FlexMock
     end
     def test_http_file
-      session = flexmock('session')
-      session.should_receive(:get).and_return(false)
-      assert_nil(@plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest', session))
-      res = @plugin.http_file('www.google.ch', '/search?q=generika', '/tmp/oddbtest')
-      assert_equal(true, res)
-      assert(File.exist?('/tmp/oddbtest'))
+      VCR.use_cassette("googlexx") do
+        session = flexmock('session')#, ODDB::Plugin::SessionStub)
+        session.should_receive(:get).and_return("got_response")
+        assert_nil(@plugin.http_file('www.oddb.org', '/unknown', '/tmp/oddbtest', session))
+        res = @plugin.http_file('www.google.ch', '/search?q=generika', '/tmp/oddbtest')
+        assert_equal(true, res)
+        assert(File.exist?('/tmp/oddbtest'))
+      end
     end
     def test_log_info
       info = @plugin.log_info

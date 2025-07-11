@@ -36,8 +36,11 @@ module ODDB
     def debug(msg)
       msg = /util\/log/.match(caller[0]) ?"#{caller[1]}: #{msg}" : "#{caller[0]}: #{msg}"
       unless ENV['GITHUB_SHA']
-        if  $stdout.fcntl(Fcntl::F_GETFD, 0)
+        begin
           $stdout.puts Time.now.to_s + ': ' + msg; $stdout.flush
+        rescue IOError
+          # ignore this error
+          0
         end
       end
       return if defined?(Minitest)
