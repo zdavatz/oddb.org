@@ -51,7 +51,7 @@ in {
     ];
 
   env = {
-    inherit ODDB_URL ODDB_PORT ODDB_PSQL_PORT ODDB_CI_DATA ODDB_CI_LOG ODDB_CI_ARCHIVE;
+    inherit ODDB_URL ODDB_PORT ODDB_PSQL_PORT ODDB_CI_DATA ODDB_CI_LOG ODDB_CI_ARCHIVE ODDB_CI_SAVE_MAIL_IN;
     FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
   };
 
@@ -367,7 +367,6 @@ in {
     run_integration_test = {
       package = pkgs.fish;
       exec = ''
-        set -U ODDB_CI_SAVE_MAIL_IN "${ODDB_CI_DATA}/mails"
         set needed admin_password SANDOZ_ADMIN_PASSWD
         for variable in $needed
           set env_val (env | grep $variable)

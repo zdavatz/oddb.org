@@ -102,7 +102,7 @@ class RequestHandler
 end
 
 class RefdataArticle < RequestHandler
-  URI = 'druby://localhost:50001'
+  URI = 'druby://127.0.0.1:50001'
   include DRb::DRbUndumped
   include Archiver
   @@items ||= {}
