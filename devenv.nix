@@ -18,16 +18,20 @@
   ODDB_CI_SAVE_MAIL_IN = "${ODDB_CI_LOG}/mail";
   ODDB_CI_ARCHIVE = "./ci_archive";
   fPortIsOpen = ''
-function port_is_open
-    argparse 'h/help'  'p/port=' -- $argv
-    if test "$_flag_port" = ""
-      echo "No port defined"
-      exit 8
+    function port_is_open
+        argparse 'h/help'  'p/port=' -- $argv
+        if test "$_flag_port" = ""
+          echo "No port defined"
+          exit 8
+        end
+        ss -tunlp -4 | grep -w "$_flag_port" >/dev/null
     end
-    ss -tunlp -4 | grep -w "$_flag_port" >/dev/null
-end
-      '';
-
+  '';
+  fBundleInstall = ''
+    function bundle_install
+        run_and_log -l bundle_install.log -s 1 -c "bundle install"
+    end
+  '';
 in {
   packages = with pkgs;
     [
@@ -252,6 +256,8 @@ in {
       package = pkgs.fish;
       exec = ''
         echo (date) start_oddb_daemons | tee -a ci_run.log
+        ${fBundleInstall}
+        bundle_install
 
         if test -d migel
           echo assuming migel is installed | tee -a ci_run.log
@@ -259,7 +265,6 @@ in {
           git clone https://github.com/zavatz/migel.git
           echo cloned migel | tee -a ci_run.log
         end
-        bundle install
         ensure_pg_running
 
         # ports must be kept in sync with src/config.rb
@@ -298,7 +303,6 @@ in {
         echo (date) started load_database_backup | tee ci_run.log
         stop_oddb_daemons
         ensure_pg_running
-        start-postgres &
         for db in yus migel ch_oddb
           psql -c "create role $db superuser login password null;" postgres | echo Done
           set -f DB_BACKUP_URL "http://sl_errors.oddb.org/db/22:00-postgresql_database-$db-backup.bz2"
@@ -306,10 +310,10 @@ in {
           if curl --output /dev/null --silent --head --fail "$DB_BACKUP_URL"
             echo "URL exists: $DB_BACKUP_URL"
             if test -f $DB_BACKUP
-              echo I am testing whether I have to update $DB_BACKUP
-                curl -z $DB_BACKUP $DB_BACKUP_URL
+              echo I am testing whether I have to update $DB_BACKUP from $DB_BACKUP_URL
+                curl -z $DB_BACKUP -o $DB_BACKUP $DB_BACKUP_URL
             else
-              echo Must download the file $DB_BACKUP
+              echo Must download the file $DB_BACKUP from $DB_BACKUP_URL
               curl -o $DB_BACKUP $DB_BACKUP_URL
             end
             if test 0 -eq $status
@@ -354,7 +358,7 @@ in {
     update_latest = {
       package = pkgs.fish;
       exec = ''
-        echo (date) Updating latest files | ci_run.log
+        echo (date) Updating latest files | tee -a ci_run.log
         if test -d oddb-test
           cd oddb-test && git pull && cd ..
         else
@@ -378,7 +382,10 @@ in {
           end
         end
         echo (date) Started run_integration_test | tee ci_run.log
+        ${fBundleInstall}
+        bundle_install
         ensure_pg_running
+        update_latest
         psql ch_oddb -t -c "select count(*) from object;" | head -n1 | grep -v -w 0
         if test 0 -eq $status
           echo "DB ch_oddb seems to be okay" | tee -a ci_run.log
@@ -386,7 +393,6 @@ in {
           load_database_backup
           echo (date) Finished load_database_backup | tee -a ci_run.log
         end
-        update_latest
         echo (date) Finished update_latest | tee -a ci_run.log
         start_oddb_daemons
         echo (date) Started ODDB daemons | tee -a ci_run.log
@@ -411,12 +417,12 @@ in {
 
         run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
         echo  (date) Finished import_swissmedic_update status $status | tee -a ci_run.log
-
         set dest ${ODDB_CI_ARCHIVE}'/run_'(date '+%Y-%m-%d-%H')
         mkdir -pv $dest
         mv -v ${ODDB_CI_LOG} $dest
         echo  (date) Finished you will find all logs under $dest
         mv -v ci_run.log $dest
+        test/report_ci.fish $dest | tee $dest/report_ci.md
         exit 0
       '';
     };
