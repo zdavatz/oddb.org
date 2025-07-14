@@ -830,7 +830,7 @@ module ODDB
         return content
       end
       setup_default_agent
-      url  = "https://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
+      url  = "https://download.swissmedicinfo.ch"
       dir  = File.join(ODDB.config.data_dir, 'xml')
       FileUtils.mkdir_p dir
       name = 'swissmedicinfo'
