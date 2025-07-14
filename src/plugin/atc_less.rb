@@ -19,7 +19,7 @@ module ODDB
       super app
       debug_msg "initialize update_atc_codes "
       @packungen_xlsx =  File.join archive, 'xls', 'Packungen-latest.xlsx'
-      @refdata_xml =  File.join archive, 'xml', 'XMLRefdataPharma-latest.xml'
+      @refdata_xml =  File.join archive, 'xml', 'XMLRefdataPharma-latest.xml' # sync with ext/refdata/src/refdata.rb
       @update_time = 0 # minute
       @missing_registrations = []
       @missing_sequences = []

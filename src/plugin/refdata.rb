@@ -83,9 +83,9 @@ module ODDB
       count = 1
       start_time = Time.now
       @total_packages = @app.packages.length
+      refdata = ODDB::Refdata::RefdataArticle.new
       @app.each_package do |pack|
         item = {}
-        REFDATA_SERVER.session do |swissindex|
           # Process 1
           #   Check swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,
           #   if so the package becomes in trade (false)
@@ -98,9 +98,8 @@ module ODDB
           #   then the package becomes out of trade (true) in ch.oddb
           # Process 4
           #   if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-          item = swissindex.get_refdata_info(pack.barcode.to_s, :gtin)
-        end
-        pharmacode = item[:phar] ? item[:phar].to_i : nil
+        item = refdata.get_refdata_info(pack.barcode.to_s, :gtin)
+        pharmacode = item[:gtin] ? item[:gtin].to_i : nil
         case pharmacode
         when nil   # => not found in swissindex
           # Process 3
@@ -120,11 +119,6 @@ module ODDB
           # Process 1
           if pack.out_of_trade
             @out_of_trade_false_list << pack
-          end
-          # process 2
-          if !pack.pharmacode or
-              pack.pharmacode.to_i != pharmacode
-            @update_pharmacode_list << [pack, pharmacode]
           end
         end
         # for debug
