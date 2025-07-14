@@ -8,7 +8,6 @@
   inherit (builtins) toString;
   inherit (pkgs.stdenv) system;
   pkgs-old = inputs.nixpkgs-old.legacyPackages.${system};
-  pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
 
   ODDB_PSQL_PORT = 5433;
   ODDB_PORT = "8012";
@@ -18,16 +17,40 @@
   ODDB_CI_SAVE_MAIL_IN = "${ODDB_CI_LOG}/mail";
   ODDB_CI_ARCHIVE = "./ci_archive";
   fPortIsOpen = ''
-function port_is_open
-    argparse 'h/help'  'p/port=' -- $argv
-    if test "$_flag_port" = ""
-      echo "No port defined"
-      exit 8
+    function port_is_open
+        argparse 'h/help'  'p/port=' -- $argv
+        if test "$_flag_port" = ""
+          echo "No port defined"
+          exit 8
+        end
+        ss -tunlp -4 | grep -w "$_flag_port" >/dev/null
     end
-    ss -tunlp -4 | grep -w "$_flag_port" >/dev/null
-end
+  '';
+  fBundleInstall = ''
+    run_and_log -l bundle_install.log -s 1 -c "bundle install"
+    if test $status -gt 0
+      echo "Bundle install failed with $status"
+      exit 3
+    end
+  '';
+  fEnsurePgRunning = ''
+        ${fPortIsOpen}
+        wait_for_port -p ${toString ODDB_PSQL_PORT} -t 1
+        if test 0 -eq $status
+          echo "Postgres is running on port ${toString ODDB_PSQL_PORT} status $status"
+        else
+          run_and_log -l pgd.log -s 1 -c "devenv processes start --detach"
+          wait_for_port -p ${toString ODDB_PSQL_PORT} -t 30 # Here we often get timeout errors
+          grep listening .devenv/processes.log | tail -n1
+          tail -n1 .devenv/processes.log # just to be sure
+          if port_is_open --port=${toString ODDB_PSQL_PORT}
+            echo "Postgres is now running on port ${toString ODDB_PSQL_PORT} status $status"
+          else
+            echo "Postgres is NOT running on port ${toString ODDB_PSQL_PORT}"
+            exit 2
+          end
+        end
       '';
-
 in {
   packages = with pkgs;
     [
@@ -45,9 +68,9 @@ in {
       screen
       bzip2
       iproute2 # for ss
-    ]
-    ++ [
-      pkgs-unstable.chromedriver
+      procps # for free in test/report_ci.fish
+      lsb-release
+      chromedriver
     ];
 
   env = {
@@ -133,6 +156,7 @@ in {
         ${ODDB_CI_DATA}/pg-db-ch_oddb-backup.bz2 \
         ${ODDB_CI_DATA}/pg-db-migel-backup.bz2 \
         ${ODDB_CI_DATA}/pg-db-yus-backup.bz2 \
+        etc/db_connection.rb \
         ~/.yus/yus.crt \
         ~/.yus/yus.key \
         ~/.yus/yus.yml
@@ -184,28 +208,6 @@ in {
       '';
     };
 
-    ensure_pg_running = {
-      package = pkgs.fish;
-      exec = ''
-        ${fPortIsOpen}
-        wait_for_port -p ${toString ODDB_PSQL_PORT} -t 1
-        if test 0 -eq $status
-          echo "Postgres is running on port ${toString ODDB_PSQL_PORT} status $status"
-          exit 0
-        end
-        run_and_log -l pgd.log -s 1 -c "devenv processes start --detach"
-        wait_for_port -p ${toString ODDB_PSQL_PORT} -t 30 # Here we often get timeout errors
-        grep listening .devenv/processes.log | tail -n1
-        tail -n1 .devenv/processes.log # just to be sure
-        if port_is_open --port=${toString ODDB_PSQL_PORT}
-          echo "Postgres is running on port ${toString ODDB_PSQL_PORT} status $status"
-          exit 0
-        else
-          echo "Postgres is NOT running on port ${toString ODDB_PSQL_PORT}"
-          exit 2
-        end
-      '';
-    };
     run_and_log = {
       package = pkgs.fish;
       exec = ''
@@ -221,10 +223,11 @@ in {
           return 0
         else
           eval "$_flag_cmd &> $log_file"
+          set res $status
           set endTime (date "+%s")
           set took "took " (math $endTime - $startTime) " seconds"
-          echo "   Log in $_flag_log_file. $took with $status." | tee -a  ci_run.log
-          return 0
+          echo "   Log in $_flag_log_file. $took with $status res $res" | tee -a  ci_run.log
+          return $res
         end      '';
     };
     spawn_and_log_for_port = {
@@ -252,15 +255,14 @@ in {
       package = pkgs.fish;
       exec = ''
         echo (date) start_oddb_daemons | tee -a ci_run.log
-
+        ${fBundleInstall}
         if test -d migel
           echo assuming migel is installed | tee -a ci_run.log
         else
           git clone https://github.com/zavatz/migel.git
           echo cloned migel | tee -a ci_run.log
         end
-        bundle install
-        ensure_pg_running
+        ${fEnsurePgRunning}
 
         # ports must be kept in sync with src/config.rb
         set yusd (which yusd)
@@ -294,11 +296,9 @@ in {
       exec = let
         psql = lib.getExe' pkgs-old.postgresql_10 "psql";
       in ''
-        rm -f ci_run.log
-        echo (date) started load_database_backup | tee ci_run.log
+        echo (date) started load_database_backup | tee -a ci_run.log
         stop_oddb_daemons
-        ensure_pg_running
-        start-postgres &
+        ${fEnsurePgRunning}
         for db in yus migel ch_oddb
           psql -c "create role $db superuser login password null;" postgres | echo Done
           set -f DB_BACKUP_URL "http://sl_errors.oddb.org/db/22:00-postgresql_database-$db-backup.bz2"
@@ -306,10 +306,10 @@ in {
           if curl --output /dev/null --silent --head --fail "$DB_BACKUP_URL"
             echo "URL exists: $DB_BACKUP_URL"
             if test -f $DB_BACKUP
-              echo I am testing whether I have to update $DB_BACKUP
-                curl -z $DB_BACKUP $DB_BACKUP_URL
+              echo I am testing whether I have to update $DB_BACKUP from $DB_BACKUP_URL
+                curl -z $DB_BACKUP -o $DB_BACKUP $DB_BACKUP_URL
             else
-              echo Must download the file $DB_BACKUP
+              echo Must download the file $DB_BACKUP from $DB_BACKUP_URL
               curl -o $DB_BACKUP $DB_BACKUP_URL
             end
             if test 0 -eq $status
@@ -345,8 +345,7 @@ in {
 
     dump_database.exec = ''
       date
-      ensure_pg_running
-      # --clean --if-exists
+      ${fEnsurePgRunning}
       ${pkgs-old.postgresql_10}/bin/pg_dump -f my_db_backup ch_oddb
       date
     '';
@@ -354,9 +353,9 @@ in {
     update_latest = {
       package = pkgs.fish;
       exec = ''
-        echo (date) Updating latest files | ci_run.log
+        echo (date) Updating latest files | tee -a ci_run.log
         if test -d oddb-test
-          cd oddb-test && git pull && cd ..
+          cd oddb-test && git config pull.rebase true && git pull && cd ..
         else
           git clone https://git.sr.ht/~ngiger/oddb-test
         end
@@ -377,8 +376,16 @@ in {
             exit 3
           end
         end
+        rm -rf ci_run.log ${ODDB_CI_LOG}
         echo (date) Started run_integration_test | tee ci_run.log
-        ensure_pg_running
+        ${fPortIsOpen}
+        ${fBundleInstall}
+        ${fEnsurePgRunning}
+        if ! port_is_open -p "${toString ODDB_PSQL_PORT}"
+          echo "postgres not running"
+          exit 3
+        end
+        update_latest
         psql ch_oddb -t -c "select count(*) from object;" | head -n1 | grep -v -w 0
         if test 0 -eq $status
           echo "DB ch_oddb seems to be okay" | tee -a ci_run.log
@@ -386,7 +393,6 @@ in {
           load_database_backup
           echo (date) Finished load_database_backup | tee -a ci_run.log
         end
-        update_latest
         echo (date) Finished update_latest | tee -a ci_run.log
         start_oddb_daemons
         echo (date) Started ODDB daemons | tee -a ci_run.log
@@ -406,17 +412,17 @@ in {
         run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
         echo  (date) Finished import_swissmedic status $status | tee -a ci_run.log
 
-        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
-        echo  (date) Finished import_swissmedic_fix status $status | tee -a ci_run.log
+#        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
+#        echo  (date) Finished import_swissmedic_fix status $status | tee -a ci_run.log
 
-        run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
-        echo  (date) Finished import_swissmedic_update status $status | tee -a ci_run.log
-
+#        run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
+#        echo  (date) Finished import_swissmedic_update status $status | tee -a ci_run.log
         set dest ${ODDB_CI_ARCHIVE}'/run_'(date '+%Y-%m-%d-%H')
         mkdir -pv $dest
         mv -v ${ODDB_CI_LOG} $dest
         echo  (date) Finished you will find all logs under $dest
         mv -v ci_run.log $dest
+        test/report_ci.fish $dest | tee $dest/report_ci.md
         exit 0
       '';
     };
@@ -425,10 +431,7 @@ in {
       exec = ''
         echo (date) Started run_watir_tests > ci_run.log
         date
-        ensure_pg_running
         start_oddb_daemons
-        wait_for_port -p 8012 -t 30
-        wait_for_port -p 10000 -t 30
         bundle exec rake rspec spec/smoketest_spec.rb 2>&1 | tee rspec.log
         echo  (date) Finished rspec status $status | tee -a ci_run.log
         exit

@@ -161,12 +161,15 @@ If you want you can also develop new test using `irb`. Eg. this snippet should w
 
 # TODO:
 
-* git config pull.rebase true
-* users/oddb.nix
+* Should we create etc/db_connection automatically. it is quite simple
+
+      require 'dbi'
+      require 'odba/connection_pool'
+      require 'pg'
+      ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:dbname=ch_oddb;host=localhost;port=5433', 'postgres', '')
+
 
 ## devenv.nix
-
-* check .config/nix/nix.conf. Must contain access_token with access-tokens = github.com=github_pat_
 
 # Notes
 
