@@ -86,7 +86,7 @@ class RequestHandler
 end
 
 class SwissindexMigel < RequestHandler
-  URI = 'druby://localhost:50002'
+  URI = 'druby://127.0.0.1:50002'
   include DRb::DRbUndumped
   include Archiver
   attr_accessor :client, :base_url, :refdataServer

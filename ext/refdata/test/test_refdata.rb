@@ -32,8 +32,7 @@ module ODDB
     def test_search_item_by_pharmacode
       # this is an integration test and will query refdata.ch
       result = @@refdata_article.search_item(TestHelpers::LEVETIRACETAM_PHAR)
-      assert_equal(TestHelpers::LEVETIRACETAM_PHAR.to_s, result[:phar])
-      assert_equal(TestHelpers::LEVETIRACETAM_NAME_DE, result[:name_de])
+      assert_nil(result) # PHARMACODE is no longer supported in 2025
     end
 
     def test_search_item_by_gtin
@@ -41,6 +40,18 @@ module ODDB
       result = @@refdata_article.search_item(TestHelpers::LEVETIRACETAM_GTIN)
       assert_equal(TestHelpers::LEVETIRACETAM_GTIN.to_s, result[:gtin])
       assert_equal(TestHelpers::LEVETIRACETAM_NAME_DE, result[:name_de])
+      expected = {:gtin => TestHelpers::LEVETIRACETAM_GTIN.to_s,
+                  :name_de => TestHelpers::LEVETIRACETAM_NAME_DE,
+                  :name_fr => 'LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce',
+                  :name_it => 'LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce',
+                  :name_en => 'LEVETIRACETAM DESITIN Mini Filmtab 250 mg 30 Stk',
+                  :type => 'Pharma',
+                  :swmc_authnr => '62069008',
+                  :auth_holder_name => 'Desitin Pharma GmbH',
+                  :auth_holder_gln => '7601001320451',
+                  :atc => 'N03AX14',
+                  }
+      assert_equal(expected, result)
     end
 
     def test_check_item
@@ -50,31 +61,15 @@ module ODDB
     end
 
     def test_search_item__error
-      @@refdata_article = ODDB::Refdata::RefdataArticle.new
-      response = flexmock('response', :to_hash => {:nonpharma => nil})
-      wsdl = flexmock('wsdl', :document= => nil)
-      client = flexmock('client') do |c|
-        c.should_receive(:request).and_raise(StandardError)
-      end
-      flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, @http).and_return(client)
-      flexmock(@nonpharma,
-                :sleep => nil,
-                :server => 'server'
-              )
       pharmacode = '1234567'
-      stdout_null do
-        assert_nil(@@refdata_article.search_item(pharmacode))
-      end
+      assert_nil(@@refdata_article.search_item(pharmacode))
     end
-    def test_download_all_pharma
+    def test_download_all
       puts "IntegrationTest: Download_all Pharma takes a few seconds"
       result = @@refdata_article.download_all
-      assert_equal(true, result)
-    end
-    def test_download_all_non_pharma
-      puts "IntegrationTest: Download_all NonPharma takes a few seconds"
-      result = @@refdata_article.download_all('NonPharma')
-      assert_equal(true, result)
+      @@refdata_article.items['Pharma'].size
+      assert_operator 1000, :<=, @@refdata_article.items['Pharma'].size
+      assert_operator 100, :<=, @@refdata_article.items['NonPharma'].size
     end
   end
 

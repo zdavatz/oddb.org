@@ -77,15 +77,6 @@ module ODDB
       assert_equal(file, ODDB::RefdataPlugin::Logging.append_estimate_time('file', 1, 2))
     end
   end # TestLogging
-  class StubDRbObject
-    def compress_many(*args)
-    end
-  end
-  class RefdataPlugin
-    remove_const :REFDATA_SERVER
-    REFDATA_SERVER = StubDRbObject.new
-  end
-
   class TestRefdataPlugin <Minitest::Test
     def setup
       @update = flexmock('update', :barcode => 'barcode')
@@ -99,9 +90,10 @@ module ODDB
     end
     def test_update_out_of_trade
       # Process 1,3
-      package = flexmock('package',
-                         :barcode => 12345,
+      package = flexmock("package_#{__LINE__}",
+                         :barcode => TestHelpers::LEVETIRACETAM_GTIN,
                          :pointer => 'pointer',
+                         :sl_entry => 'sl_entry',
                         )
       @app = flexmock('app')
       @plugin = ODDB::RefdataPlugin.new(@app)
@@ -117,7 +109,7 @@ module ODDB
 
     def test_update_pharmacode
       # Process 2,4
-      package = flexmock('package',
+      package = flexmock("package_#{__LINE__}",
                          :barcode    => nil,
                          :pointer    => 'pointer',
                          :pharmacode => '00001',
@@ -135,7 +127,7 @@ module ODDB
       assert_nil(@plugin.update_pharmacode)
     end
     def test_report
-      package = flexmock('package',
+      package = flexmock("package_#{__LINE__}",
                          :iksnr   => '00001',
                          :seqnr   => '01',
                          :ikscd   => '001',
@@ -182,9 +174,10 @@ REPORT
       swissindex.should_receive(:get_refdata_info).and_return( {:atype=>"PHARMA", :gtin=>"7680437880869", :phar=>"00001"})
       swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
-      package = flexmock('package',
-                         :barcode      => 12345,
+      package = flexmock("package_#{__LINE__}",
+                         :barcode      => "7680437880869",
                          :pointer      => 'pointer',
+                         :sl_entry      => 'sl_entry',
                          :out_of_trade => true,
                          :pharmacode   => '00001'
                         )
@@ -195,20 +188,35 @@ REPORT
       end
       assert_equal(true, @plugin.update_package_trade_status)
       assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
-      assert_equal(1,    @plugin.instance_eval('@out_of_trade_false_list.length'))
       assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
       assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+      assert_equal(1,    @plugin.instance_eval('@out_of_trade_false_list.length'))
+    end
+    def test_update_package_trade_status
+      @plugin = ODDB::RefdataPlugin.new(@app)
+      package = flexmock("package_#{__LINE__}",
+                         :barcode      =>  TestHelpers::LEVETIRACETAM_GTIN,
+                         :pointer      => 'pointer',
+                         :out_of_trade => true,
+                         :sl_entry   => 'sl_entry '
+                        )
+      flexmock(@app) do |app|
+        app.should_receive(:each_package).and_yield(package)
+        app.should_receive(:packages).and_return([package])
+        app.should_receive(:update).and_return(package)
+      end
+      assert_equal(true, @plugin.update_package_trade_status)
+      assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@update_pharmacode_list.length'))
+      assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+      assert_equal(1,    @plugin.instance_eval('@out_of_trade_false_list.length'))
     end
     def test_update_package_trade_status__process2
-      item = {:phar => 'pharmacode'}
-      swissindex = flexmock('swissindex')
-      swissindex.should_receive(:download_all).and_return(true)
-      swissindex.should_receive(:get_refdata_info).and_return( {:atype=>"PHARMA", :gtin=>"7680437880869", :phar=>"00001"})
-      swissindex.should_receive(:cleanup_items).never
-      flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
-      package = flexmock('package',
-                         :barcode      => 12345,
+      @plugin = ODDB::RefdataPlugin.new(@app)
+      package = flexmock("package_#{__LINE__}",
+                         :barcode      => 7680437880869,
                          :pointer      => 'pointer',
+                         :sl_entry      => 'sl_entry',
                          :out_of_trade => false,
                          :pharmacode   => '99999',
                         )
@@ -220,8 +228,9 @@ REPORT
       assert_equal(true, @plugin.update_package_trade_status)
       assert_equal(0,    @plugin.instance_eval('@out_of_trade_true_list.length'))
       assert_equal(0,    @plugin.instance_eval('@out_of_trade_false_list.length'))
-      assert_equal(1,    @plugin.instance_eval('@update_pharmacode_list.length'))
       assert_equal(0,    @plugin.instance_eval('@delete_pharmacode_list.length'))
+      skip("2020.07.15: As the pharmacode was removed, this situation process 2 cannot happen")
+      assert_equal(1,    @plugin.instance_eval('@update_pharmacode_list.length'))
     end
     def test_update_package_trade_status__process3_status_inactive
       item = {:phar => 'pharmacode'}
@@ -230,7 +239,7 @@ REPORT
       swissindex.should_receive(:get_refdata_info).and_return( {}) # inactive
       swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
-      package = flexmock('package',
+      package = flexmock("package_#{__LINE__}",
                          :barcode      => 12345,
                          :pointer      => 'pointer',
                          :out_of_trade => false,
@@ -255,7 +264,7 @@ REPORT
       swissindex.should_receive(:get_refdata_info).and_return( {}) #  not found
       swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
-      package = flexmock('package',
+      package = flexmock("package_#{__LINE__}",
                          :barcode      => 12345,
                          :pointer      => 'pointer',
                          :out_of_trade => false,
@@ -280,7 +289,7 @@ REPORT
       swissindex.should_receive(:get_refdata_info).and_return( {}) #  not found
       swissindex.should_receive(:cleanup_items).never
       flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
-      package = flexmock('package',
+      package = flexmock("package_#{__LINE__}",
                          :barcode      => 12345,
                          :pointer      => 'pointer',
                          :out_of_trade => true,
