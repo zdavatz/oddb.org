@@ -158,6 +158,11 @@ If you want you can also develop new test using `irb`. Eg. this snippet should w
       @browser.link(visible_text: 'Spital').click
       @browser.text_field(id: 'searchbar').set 'Glarus'
       @browser.button(value: "Suchen").click
+      
+# containers
+
+One can run the commands in a container. But starting up take a lot of time (over 7 minutes on my machine).
+Tested via `time echo exit | devenv container run shell`
 
 # TODO:
 

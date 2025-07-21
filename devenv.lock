@@ -104,6 +104,39 @@
         "type": "github"
       }
     },
+    "mk-shell-bin": {
+      "locked": {
+        "lastModified": 1677004959,
+        "owner": "rrbutani",
+        "repo": "nix-mk-shell-bin",
+        "rev": "ff5d8bd4d68a347be5042e2f16caee391cd75887",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rrbutani",
+        "repo": "nix-mk-shell-bin",
+        "type": "github"
+      }
+    },
+    "nix2container": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1752002763,
+        "owner": "nlewo",
+        "repo": "nix2container",
+        "rev": "4f2437f6a1844b843b380d483087ae6d461240ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nlewo",
+        "repo": "nix2container",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1741862977,
@@ -174,6 +207,8 @@
       "inputs": {
         "devenv": "devenv",
         "git-hooks": "git-hooks",
+        "mk-shell-bin": "mk-shell-bin",
+        "nix2container": "nix2container",
         "nixpkgs": "nixpkgs",
         "nixpkgs-old": "nixpkgs-old",
         "nixpkgs-ruby": "nixpkgs-ruby",

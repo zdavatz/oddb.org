@@ -15,10 +15,17 @@ require 'test_helpers' # for VCR setup
 
 module ODDB
   class TestLogging <Minitest::Test
+    @@thread = nil
     def setup
       ODDB::RefdataPlugin::Logging.flag = true
       TestHelpers.vcr_setup
+      @uri = ODDB::Refdata::RefdataArticle::URI.sub('127.0.0.1', "")
+      GC.start
+      unless @@thread
+        @@thread =  DRb.start_service(@uri, ODDB::Refdata)
+     end
     end
+
     def test_flag
       assert(ODDB::RefdataPlugin::Logging.flag)
     end
