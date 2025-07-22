@@ -62,12 +62,11 @@ module ODDB
       ODDB::GalenicGroup.reset_oids
       ODBA.storage.reset_id
       @app = flexmock(ODDB::App.new)
-      @archive = ODDB::WORK_DIR
-      FileUtils.rm_rf(@archive)
+      @archive = ODDB::TEST_DATA_DIR
+      FileUtils.rm_rf(ODDB::WORK_DIR, :verbose => true)
       FileUtils.mkdir_p(@archive)
       @plugin = flexmock("plugin_#{__LINE__}", SwissmedicPlugin.new(@app, @archive))
       mock_downloads
-      @state_2019_01_31 = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Packungen-2019.01.31.xlsx')
       prep_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx')
       @plugin.should_receive(:fetch_with_http).with( ODDB::SwissmedicPlugin.get_preparations_url).and_return(File.open(prep_from).read).by_default
       @target = File.join @archive, 'xls',  @@today.strftime('Packungen-%Y.%m.%d.xlsx')

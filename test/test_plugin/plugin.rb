@@ -3,7 +3,7 @@
 # ODDB::TestPlugin -- 21.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestPlugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com
 
-#$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 
