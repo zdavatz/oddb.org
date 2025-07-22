@@ -437,7 +437,10 @@ public
         end
         # sequence export_flag
         reg.sequences.values.each do |seq|
-          next unless seq.is_a? ODDB::Sequence
+          unless seq.instance_of?(ODDB::Sequence) && seq.respond_to?(:export_flag)
+              LogFile.debug "seq is sequence? #{seq.instance_of?(ODDB::Sequence)} or export_flat defined #{seq.respond_to?(:export_flag)}"
+            next
+          end
           if seq.export_flag
             @known_export_sequences += 1
             @app.update seq.pointer, {:export_flag => false}, :admin

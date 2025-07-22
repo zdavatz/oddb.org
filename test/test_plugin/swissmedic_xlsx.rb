@@ -43,8 +43,8 @@ module ODDB
       mock_downloads
       ODDB::TestHelpers.vcr_setup
       @app = flexmock(ODDB::App.new)
-      @archive = ODDB::WORK_DIR
-      FileUtils.rm_rf(@archive)
+      @archive = ODDB::TEST_DATA_DIR
+      FileUtils.rm_rf(ODDB::WORK_DIR, :verbose => true)
       FileUtils.mkdir_p(@archive)
       @latest = File.join @archive, 'xls', 'Packungen-latest.xlsx'
       @plugin = flexmock('plugin', SwissmedicPlugin.new(@app, @archive))

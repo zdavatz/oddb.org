@@ -25,7 +25,7 @@ module ODDB
       @app.should_receive(:delete).by_default
       @app.should_receive(:find).and_return(TestIksnr)
       @app.should_receive(:iksnr).and_return(TestIksnr)
-      @archive = ODDB::WORK_DIR
+      @archive = ODDB::TEST_DATA_DIR
       # CoMarketing_small_010514.xlsx
       @latest = File.join @archive, 'xlsx', 'CoMarketing-latest.xlsx'
       @target = File.join @archive, 'xlsx',

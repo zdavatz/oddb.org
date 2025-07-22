@@ -20,7 +20,7 @@ module ODDB
       ODDB::RefdataPlugin::Logging.flag = true
       TestHelpers.vcr_setup
       @uri = ODDB::Refdata::RefdataArticle::URI.sub('127.0.0.1', "")
-      GC.start
+      GC.start; sleep 0.01
       unless @@thread
         @@thread =  DRb.start_service(@uri, ODDB::Refdata)
      end
@@ -180,7 +180,6 @@ REPORT
       swissindex.should_receive(:download_all).and_return(true)
       swissindex.should_receive(:get_refdata_info).and_return( {:atype=>"PHARMA", :gtin=>"7680437880869", :phar=>"00001"})
       swissindex.should_receive(:cleanup_items).never
-      flexmock(ODDB::RefdataPlugin::REFDATA_SERVER).should_receive(:session).and_yield(swissindex)
       package = flexmock("package_#{__LINE__}",
                          :barcode      => "7680437880869",
                          :pointer      => 'pointer',

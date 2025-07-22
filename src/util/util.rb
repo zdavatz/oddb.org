@@ -13,8 +13,10 @@ module ODDB
         row = sheet[4] # Headers are found at row 4
       elsif /Zulassungs-nummer/i.match(sheet[5][0])
         row = sheet[5] # Headers are found at row 4
+      elsif /Zulassungs-nummer/i.match(sheet[6][0])
+        row = sheet[5] # Headers are found at row 5
       else
-        raise "Did not find Zugelassene Verpackunge in row 3, 4 or 5"
+        raise "Did not find Zugelassene Verpackunge in row 3, 4, 5 or 6"
       end
 
       error_2015 = nil

@@ -356,7 +356,7 @@ module ODDB
       FileUtils.rm_f(File.expand_path('../data/'), :verbose => false)
       pointer = flexmock 'pointer'
       @aips_download = File.join(ODDB::TEST_DATA_DIR, 'xml/Aips_test.xml')
-      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xlsx/Packungen-latest.xlsx')
+      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xls/Packungen-latest.xlsx')
       latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
       FileUtils.mkdir_p(File.dirname(latest_to))
       FileUtils.cp(latest_from, latest_to, :verbose => false, :preserve => true)

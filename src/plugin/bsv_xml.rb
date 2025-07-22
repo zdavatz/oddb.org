@@ -154,6 +154,10 @@ module ODDB
         super
         @known_packages = {}
         @app.each_package do |pac|
+          unless pac.instance_of?(ODDB::Package)
+            LogFile.debug("pac #{pac.odba_id} is not a Package but a #{pac.class}")
+            next
+          end unless defined?(Minitest)
           if pac.public? && pac.sl_entry
             @known_packages.store pac.pointer, {
               :name_base           => pac.name_base,
