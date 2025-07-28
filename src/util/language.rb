@@ -19,7 +19,7 @@ module ODDB
 				update(values)
 			end
       def first
-        if empty?
+        if !@descriptions || empty?
           ''
         else
           sort.first.last
