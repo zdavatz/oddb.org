@@ -139,6 +139,10 @@ module ODDB
       attachments.each do
         |attachment|
           mail.add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
+          if ENV['ODDB_CI_SAVE_MAIL_IN']
+            filename = File.join(ENV['ODDB_CI_SAVE_MAIL_IN'], attachment[:filename])
+            File.open(filename, 'w+') { |f| f.puts attachment[:content] }
+          end
       end
       e = nil
       1.upto(3).each do |idx|
