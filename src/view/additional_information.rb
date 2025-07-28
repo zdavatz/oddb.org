@@ -9,6 +9,7 @@ require 'plugin/comarketing'
 require 'view/tooltip'
 require 'view/ajax/swissmedic_cat'
 require 'view/facebook'
+require 'util/logfile'
 module ODDB
 	module View
     module PartSize
@@ -276,8 +277,12 @@ module ODDB
 				[drugshortage(model, session=@session), txt].compact
 			end
 			def limitation_text(model, session=@session)
-				if(sltxt = model.limitation_text)
-					limitation_link(sltxt, model)
+				begin
+					if(sltxt = model.limitation_text)
+						limitation_link(sltxt, model)
+					end
+				rescue => error
+					LogFile.debug("#{error} for odba_id #{model.odba_id}")
 				end
 			end
 			def limitation_link(sltxt, model = nil)
