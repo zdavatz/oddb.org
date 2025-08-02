@@ -130,11 +130,10 @@ module SequenceMethods
 			# error already stored by user_input(:code, :code)
 		elsif((descr = @session.user_input(:atc_descr)) \
 			&& !descr.empty?)
-			pointer = Persistence::Pointer.new([:atc_class, atc_code])
-			values = {
-				@session.language	=> descr,	
-			}
-			@session.app.update(pointer.creator, values, unique_email)
+			new_atc_class = @session.app.create_atc_class(atc_code)
+			new_atc_class.pointer ||= Persistence::Pointer.new([:atc_class, atc_code])
+			new_atc_class.descriptions[:en] = descr
+			new_atc_class.odba_store
 			input.store(:atc_class, atc_code)
 		elsif(@session.app.atc_class(atc_code))
 			input.store(:atc_class, atc_code)
