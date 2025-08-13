@@ -25,6 +25,7 @@ module ODDB
       Util.configure_mail :test
       Util.clear_sent_mails
       @log = ODDB::Log.new(Date.new(1975,8,21))
+      ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
     end
     def test_notify_defaults
       @log.notify

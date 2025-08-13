@@ -20,6 +20,7 @@ module ODDB
     LOG_RECEIPIENTS = ['log']
     TEST_SUBJECT    = 'ch.ODDB.org Report'
     TEST_SUBJECT_2  = 'another_test_subject'
+    ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
     def setup
       Util.configure_mail :test
       Util.clear_sent_mails

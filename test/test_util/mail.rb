@@ -19,6 +19,7 @@ module ODDB
     def setup
       Util.configure_mail :test
       Util.clear_sent_mails
+      ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
     end
 
     def test_mailing_configuration

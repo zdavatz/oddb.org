@@ -85,8 +85,8 @@ module ODDB
     end
   end # TestLogging
   class TestRefdataPlugin <Minitest::Test
-    @@thread = nil
     def setup
+      DRb.stop_service
       @update = flexmock('update', :barcode => 'barcode')
       @app = flexmock('app', :update => @update)
       @plugin = ODDB::RefdataPlugin.new(@app)
@@ -98,11 +98,10 @@ module ODDB
       ODDB::RefdataPlugin::Logging.flag = true
       TestHelpers.vcr_setup
       @uri = ODDB::Refdata::RefdataArticle::URI.sub('127.0.0.1', "")
-      GC.start; sleep 0.01
-      @@thread =  DRb.start_service(@uri, ODDB::Refdata)
+      DRb.start_service(@uri, ODDB::Refdata)
     end
     def teardown
-      @@thread.stop_service
+      DRb.stop_service
     end
     def test_update_out_of_trade
       # Process 1,3

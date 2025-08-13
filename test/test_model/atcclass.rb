@@ -194,7 +194,7 @@ class TestAtcClass <Minitest::Test
     assert_nil @atc_class.ddd('O')
   end
   def test_pointer_descr
-    @atc_class.update_values :de => 'Description'
+    @atc_class.update_values 'de' => 'Description'
     assert_equal 'Description (N02BA01)', @atc_class.pointer_descr
   end
 end
