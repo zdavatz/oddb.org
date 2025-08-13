@@ -254,7 +254,7 @@ in {
     start_oddb_daemons = {
       package = pkgs.fish;
       exec = ''
-        echo (date) start_oddb_daemons | tee -a ci_run.log
+        echo (date): start_oddb_daemons | tee -a ci_run.log
         ${fBundleInstall}
         if test -d migel
           echo assuming migel is installed | tee -a ci_run.log
@@ -296,7 +296,7 @@ in {
       exec = let
         psql = lib.getExe' pkgs-old.postgresql_10 "psql";
       in ''
-        echo (date) started load_database_backup | tee -a ci_run.log
+        echo (date): started load_database_backup | tee -a ci_run.log
         stop_oddb_daemons
         ${fEnsurePgRunning}
         for db in yus migel ch_oddb
@@ -313,9 +313,9 @@ in {
               curl -o $DB_BACKUP $DB_BACKUP_URL
             end
             if test 0 -eq $status
-              echo (date) $db: got get_database_backup status $status 2>&1 | tee -a ci_run.log
+              echo (date): $db: got get_database_backup status $status 2>&1 | tee -a ci_run.log
             else
-              echo (date) $db: unable to get file status $status | tee -a ci_run.log
+              echo (date): $db: unable to get file status $status | tee -a ci_run.log
               exit 1
             end
           else
@@ -330,16 +330,16 @@ in {
           psql -c "drop database if exists $db;" postgres
           psql -c "create database $db;" postgres
           run_and_log -l create_{$db}_d.log -s 1 -c "bzcat  $DB_BACKUP | psql $db"
-          echo (date) Select number of object create to ensure backup was run | tee -a ci_run.log
+          echo (date): Select number of object create to ensure backup was run | tee -a ci_run.log
           psql $db -t -c "select count(*) from object;" | head -n1 | grep -v -w 0
           if test 0 -eq $status
-            echo (date) Finished load_database_backup $db status $status | tee -a ci_run.log
+            echo (date): Finished load_database_backup $db status $status | tee -a ci_run.log
           else
-            echo (date) Loading $db status $status from $DB_BACKUP failed | tee -a ci_run.log
+            echo (date): Loading $db status $status from $DB_BACKUP failed | tee -a ci_run.log
             exit 3
           end
         end
-        echo (date) Finished loading all databases | tee -a ci_run.log
+        echo (date): Finished loading all databases | tee -a ci_run.log
       '';
     };
 
@@ -353,14 +353,14 @@ in {
     update_latest = {
       package = pkgs.fish;
       exec = ''
-        echo (date) Updating latest files | tee -a ci_run.log
+        echo (date): Updating latest files | tee -a ci_run.log
         if test -d oddb-test
           cd oddb-test && git config pull.rebase true && git pull && cd ..
         else
           git clone https://git.sr.ht/~ngiger/oddb-test
         end
         rsync -av oddb-test/data/ data/
-        echo (date) Updated latest files status $status | tee -a ci_run.log
+        echo (date): Updated latest files status $status | tee -a ci_run.log
       '';
     };
     run_integration_test = {
@@ -377,7 +377,7 @@ in {
           end
         end
         rm -rf ci_run.log ${ODDB_CI_LOG}
-        echo (date) Started run_integration_test | tee ci_run.log
+        echo (date): Started run_integration_test | tee ci_run.log
         ${fPortIsOpen}
         ${fBundleInstall}
         ${fEnsurePgRunning}
@@ -391,36 +391,35 @@ in {
           echo "DB ch_oddb seems to be okay" | tee -a ci_run.log
         else
           load_database_backup
-          echo (date) Finished load_database_backup | tee -a ci_run.log
+          echo (date): Finished load_database_backup | tee -a ci_run.log
         end
-        echo (date) Finished update_latest | tee -a ci_run.log
+        echo (date): Finished update_latest | tee -a ci_run.log
         start_oddb_daemons
-        echo (date) Started ODDB daemons | tee -a ci_run.log
 
+        echo (date): Started import_daily status $status | tee -a ci_run.log
         run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
-        echo  (date) Finished import_daily status $status | tee -a ci_run.log
 
+        echo (date): Started import_bsv status $status | tee -a ci_run.log
         run_and_log -l import_bsv.log -s 1 -c "bundle exec ruby jobs/import_bsv"
-        echo  (date) Finished import_bsv status $status | tee -a ci_run.log
 
+        echo (date): Started test/suite.rb $status | tee -a ci_run.log
         run_and_log -l suite.log -s 1 -c "bundle exec ruby test/suite.rb"
-        echo  (date) Finished test/suite.rb $status | tee -a ci_run.log
 
+        echo (date): Started running rspec $status | tee -a ci_run.log
         run_and_log -l rspec.log -s 1 -c "bundle exec rspec spec"
-        echo  (date) Finished running rspec $status | tee -a ci_run.log
 
+        echo (date): Started import_swissmedic status $status | tee -a ci_run.log
         run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
-        echo  (date) Finished import_swissmedic status $status | tee -a ci_run.log
 
 #        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
-#        echo  (date) Finished import_swissmedic_fix status $status | tee -a ci_run.log
+#        echo (date): Finished import_swissmedic_fix status $status | tee -a ci_run.log
 
 #        run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
-#        echo  (date) Finished import_swissmedic_update status $status | tee -a ci_run.log
+#        echo (date): Finished import_swissmedic_update status $status | tee -a ci_run.log
         set dest ${ODDB_CI_ARCHIVE}'/run_'(date '+%Y-%m-%d-%H')
         mkdir -pv $dest
         mv -v ${ODDB_CI_LOG} $dest
-        echo  (date) Finished you will find all logs under $dest
+        echo (date): Finished you will find all logs under $dest
         mv -v ci_run.log $dest
         test/report_ci.fish $dest | tee $dest/report_ci.md
         exit 0
@@ -429,11 +428,11 @@ in {
     run_watir_tests = {
       package = pkgs.fish;
       exec = ''
-        echo (date) Started run_watir_tests > ci_run.log
+        echo (date): Started run_watir_tests > ci_run.log
         date
         start_oddb_daemons
         bundle exec rake rspec spec/smoketest_spec.rb 2>&1 | tee rspec.log
-        echo  (date) Finished rspec status $status | tee -a ci_run.log
+        echo (date): Finished rspec status $status | tee -a ci_run.log
         exit
       '';
     };
