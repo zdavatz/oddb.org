@@ -282,7 +282,11 @@ module ODDB
 
    def store_patinfo_change_log(package, lang, new_patinfo_lang)
      patinfo = package.patinfo
-     old_text = patinfo.description(lang).to_s
+     begin
+       old_text = patinfo.description(lang).to_s
+     rescue => error
+       old_test = ''
+     end
      unless patinfo.description(lang).respond_to?(:add_change_log_item)
        puts "Skipping patinfo #{package.iksnr} odba_id #{package.odba_id} no add_change_log_item"
      end
@@ -1347,7 +1351,7 @@ module ODDB
           file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"
           @app.registration(iksnr).packages.each do |pack|
             if pack.is_a?(ODDB::Package)
-              file.puts "#{iksnr} #{pack.barcode} #{pack.name}"
+              file.puts "#{iksnr} #{pack.barcode} #{pack.name}" if pack.respond_to?(:barcode)
             else
               file.puts "# not a pack for #{iksnr} #{pack.inspect}"
             end
