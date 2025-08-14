@@ -73,15 +73,17 @@ module ODDB
             .force_encoding("ISO-8859-1")
             .encode("utf-8", replace: nil)
             .sub(Strip_For_Sax_Machine, ''))
-      items = result.ARTICLE.ITEM
-      items.each do |pac|
-        if gtin = pac.GTIN
-          no8 = gtin[4..11]
-          atc_code = pac.ATC ? pac.ATC.to_s : ''
-          # debug_msg  "update_atc_codes: parse_refdata_xml gtin #{gtin} => #{no8} code #{atc_code}"
-          @refdata_to_atc_code[no8] = atc_code
-        else
-          debug_msg "update_atc_codes: parse_refdata_xml skip item #{item} as not gtin given"
+      if result.ARTICLE
+         items = result.ARTICLE.ITEM
+         items.each do |pac|
+           if gtin = pac.GTIN
+             no8 = gtin[4..11]
+             atc_code = pac.ATC ? pac.ATC.to_s : ''
+             # debug_msg  "update_atc_codes: parse_refdata_xml gtin #{gtin} => #{no8} code #{atc_code}"
+             @refdata_to_atc_code[no8] = atc_code
+           else
+             debug_msg "update_atc_codes: parse_refdata_xml skip item #{item} as not gtin given"
+           end
         end
       end
     end
