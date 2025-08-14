@@ -46,7 +46,7 @@ module Archiver
 end
 
 class RefdataArticle
-  URI = 'druby://127.0.0.1:50001'
+  URI = (defined?(Minitest) ? 'druby://:58001' : 'druby://127.0.0.1:50001')
   include DRb::DRbUndumped
   include Archiver
   RefDataURL = "https://files.refdata.ch/simis-public-prod/Articles/1.0/Refdata.Articles.zip"

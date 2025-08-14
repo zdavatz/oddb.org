@@ -398,12 +398,6 @@ in {
         echo (date): Finished update_latest | tee -a ci_run.log
         start_oddb_daemons
 
-        echo (date): Started import_daily status $status | tee -a ci_run.log
-        run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
-
-        echo (date): Started import_bsv status $status | tee -a ci_run.log
-        run_and_log -l import_bsv.log -s 1 -c "bundle exec ruby jobs/import_bsv"
-
         echo (date): Started test/suite.rb $status | tee -a ci_run.log
         run_and_log -l suite.log -s 1 -c "bundle exec ruby test/suite.rb"
 
@@ -412,6 +406,12 @@ in {
 
         echo (date): Started import_swissmedic status $status | tee -a ci_run.log
         run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
+
+        echo (date): Started import_bsv status $status | tee -a ci_run.log
+        run_and_log -l import_bsv.log -s 1 -c "bundle exec ruby jobs/import_bsv"
+
+        echo (date): Started import_daily status $status | tee -a ci_run.log
+        run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
 
 #        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
 #        echo (date): Finished import_swissmedic_fix status $status | tee -a ci_run.log

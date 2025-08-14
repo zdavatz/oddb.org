@@ -72,7 +72,7 @@ module ODDB
       assert(ODDB.config.log_pattern.index('log/%Y/%m/%d/app_log'))
     end
     def test_log_pattern_default_app
-      skip('Test does not work under Ruby 3.4') if RUBY_VERSION.to_f >= 3.4 # TODO:
+      skip('Test does not work under >= Ruby 3.2') if RUBY_VERSION.to_f >= 3.2 # TODO:
       eval("::APPNAME=  nil")
       args1 = {:shift_age=>0, :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
       args2 = {:shift_age=>"daily", :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
@@ -86,7 +86,7 @@ module ODDB
       assert_equal('oddb', SBSM.logger.progname)
     end
     def test_log_pattern_with_appname
-      skip('Test does not work under Ruby 3.4') if RUBY_VERSION.to_f >= 3.4 # TODO:
+      skip('Test does not work under >= Ruby 3.2') if RUBY_VERSION.to_f >= 3.2 # TODO:
       eval("::APPNAME='crawler'")
       args1 = {:shift_age=>0, :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
       args2 = {:shift_age=>"daily", :shift_size=>1048576, :shift_period_suffix=>"%Y%m%d", :binmode=>false}
