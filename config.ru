@@ -9,6 +9,7 @@ $LOAD_PATH << lib_dir
 begin # with a rescue
   require 'bigdecimal'
   require 'date'
+  require 'chrono_logger'
   require 'sbsm/logger'
   require 'rubyntlm'
   require 'net/ntlm'
@@ -44,7 +45,7 @@ begin # with a rescue
 
   SBSM.logger.level = Logger::WARN
 
-  unless defined?(MiniTest) # do real startup
+  unless defined?(FlexMock) # do real startup
     require 'util/oddbapp'
     require 'util/rack_interface'
     require 'etc/db_connection'
@@ -95,7 +96,7 @@ rescue => error
   exit(1)
 end
 
-unless defined?(MiniTest) # do real startup
+unless defined?(FlexMock) # do real startup
   app = Rack::ShowExceptions.new(Rack::Lint.new(my_app))
   run app
 end
