@@ -86,8 +86,6 @@ module ODDB
     class RefdataJurPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts    "#{Time.now}:  RefdataJurPlugin #{msg}" # unless defined?(Minitest)
-        $stdout.flush
         LogFile.append('oddb/debug', " RefdataJurPlugin #{msg}", Time.now)
       end
 
@@ -314,6 +312,10 @@ module ODDB
         @info_to_gln = {}
         items.each_with_index do |item, index|
           log "At item #{index} of #{items.size}"  if (index % 20000) == 0
+          unless item[:ROLE]
+            log "At item #{index}: No ROLE defined for #{item.inspect}"
+            next
+          end
           role = item[:ROLE].is_a?(Hash) ? item[:ROLE] : item[:ROLE].values.first
           type = role[:TYPE]
           next unless (type.eql?('Pharm') || type.eql?('Indus') || type.eql?('Hosp'))
