@@ -272,7 +272,6 @@ in {
         spawn_and_log_for_port -p 10002 -l fiparsed.log -c "bundle exec ruby ext/fiparse/bin/fiparsed"
         spawn_and_log_for_port -p 10005 -l exportd.log -c "bundle exec ruby ext/export/bin/exportd"
         spawn_and_log_for_port -p 10006 -l meddatad.log -c "bundle exec ruby ext/meddata/bin/meddatad"
-        spawn_and_log_for_port -p 10007 -l swissregd.log -c "bundle exec ruby ext/swissreg/bin/swissregd"
         spawn_and_log_for_port -p 50001 -l refdatad.log -c "bundle exec ruby ext/refdata/bin/refdatad"
         spawn_and_log_for_port -p 50002 -l swissindexd.log -c "bundle exec ruby ext/swissindex/bin/swissindexd"
       '';
@@ -284,7 +283,6 @@ in {
       kill_by_port 10002
       kill_by_port 10005
       kill_by_port 10006
-      kill_by_port 10007
       kill_by_port 33000
       kill_by_port 50001
       kill_by_port 50002

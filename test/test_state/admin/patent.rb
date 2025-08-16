@@ -15,9 +15,6 @@ module ODDB
 
 class TestPatent <Minitest::Test
   def setup
-    flexmock(SwissregPlugin).new_instances do |s|
-      s.should_receive(:get_detail).and_return({'key' => 'value'})
-    end
     @app     = flexmock('app', :update => 'update')
     lookup   = flexmock('lookup', :request_uri => 'request_uri')
     @lnf     = flexmock('lookandfeel', :lookup => lookup)
@@ -53,9 +50,6 @@ class TestCompanyPatent <Minitest::Test
              :user_input => {},
              :app => app
             )
-    flexmock(SwissregPlugin).new_instances do |s|
-      s.should_receive(:get_detail).and_return({'key' => 'value'})
-    end
     flexmock(@view, :allowed? => true)
     flexmock(@view, :unique_email => 'unique_email')
     assert_equal(@view, @view.update)

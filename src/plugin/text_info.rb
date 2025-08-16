@@ -317,7 +317,12 @@ module ODDB
 
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
+      begin
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
+      rescue => error
+        require 'debug'; binding.break
+        0
+      end
       if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
         old_ti = package.patinfo;
         Languages.each do |old_lang|

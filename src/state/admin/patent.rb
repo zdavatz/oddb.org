@@ -5,7 +5,6 @@
 
 require 'state/global_predefine'
 require 'view/admin/patent'
-require 'plugin/swissreg'
 
 module ODDB
 	module State

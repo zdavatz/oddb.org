@@ -22,7 +22,6 @@ require 'plugin/ouwerkerk'
 require 'plugin/rss'
 require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
-require 'plugin/swissreg'
 require 'plugin/shortage'
 require 'plugin/text_info'
 require 'plugin/who'
@@ -386,19 +385,12 @@ module ODDB
       update_atc_less
       update_package_trade_status_by_refdata
       update_comarketing
-      update_swissreg_news
       # update_lppv # as per May 2019 LPPV.ch does not provide an XLSX file anymore.
       update_refdata_jur
       exporter = Exporter.new(@app)
       exporter.export_generics_xls
       export_patents_xls
       exporter.mail_swissmedic_notifications
-    end
-    def update_swissreg
-      update_immediate(SwissregPlugin, 'Patents')
-    end
-    def update_swissreg_news
-      update_immediate(SwissregPlugin, 'Patents', :update_news)
     end
     def update_textinfos *iksnrs
       @options = {}
