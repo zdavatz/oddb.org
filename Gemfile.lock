@@ -124,7 +124,7 @@ GEM
       digest
       net-protocol
       timeout
-    nokogiri (1.18.8)
+    nokogiri (1.18.9)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)
