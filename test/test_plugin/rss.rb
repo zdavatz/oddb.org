@@ -173,7 +173,6 @@ REPORT
           example_file = File.join(example_dir, index == 3 ? 'page-empty.html' : "page-#{rss_type}-1.html")
           unless File.exist?(example_file) && File.size(example_file) > 1024
             puts "Should call\nwget '#{file_url}' -O #{example_file}"
-            # require 'debug'; binding.break
             assert(File.exist?(example_file))
           else
             # puts "Added #{example_file}"

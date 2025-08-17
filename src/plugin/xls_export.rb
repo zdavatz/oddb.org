@@ -39,7 +39,7 @@ module ODDB
 					:recipients => recipients,
 				})
 			end
-      if @nil_data
+      if @nil_data&.size > 0
         hash[:report] += "\n\nThere is nil data in the patents.xls file. " +
                          "Most probably \"Bezeichnung\" is missing.\n" + 
                          @nil_data.join("\n")

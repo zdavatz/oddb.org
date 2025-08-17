@@ -22,7 +22,6 @@ require 'plugin/ouwerkerk'
 require 'plugin/rss'
 require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
-require 'plugin/swissreg'
 require 'plugin/shortage'
 require 'plugin/text_info'
 require 'plugin/who'
@@ -386,19 +385,12 @@ module ODDB
       update_atc_less
       update_package_trade_status_by_refdata
       update_comarketing
-      update_swissreg_news
       # update_lppv # as per May 2019 LPPV.ch does not provide an XLSX file anymore.
       update_refdata_jur
       exporter = Exporter.new(@app)
       exporter.export_generics_xls
       export_patents_xls
       exporter.mail_swissmedic_notifications
-    end
-    def update_swissreg
-      update_immediate(SwissregPlugin, 'Patents')
-    end
-    def update_swissreg_news
-      update_immediate(SwissregPlugin, 'Patents', :update_news)
     end
     def update_textinfos *iksnrs
       @options = {}
@@ -422,7 +414,7 @@ module ODDB
       LogFile.append('oddb/debug', " date=" + date.inspect.to_s, Time.now)
       values = log_info(plug)
       LogFile.append('oddb/debug', " after log_info(plug)", Time.now)
-      if !@prevalence && !defined?(MiniTest)
+      if !@prevalence && !defined?(Minitest)
         @prevalence = ODBA.cache.fetch_named('oddbapp', self) {OddbPrevalence.new}
       end
       if log = @prevalence ? pointer.resolve(@prevalence) :  OpenStruct.new
@@ -469,7 +461,7 @@ module ODDB
         "Error: #{error.class}",
         "Message: #{error.message}",
         "Backtrace:",
-        error.backtrace.join("\n"),
+        error.backtrace.join("\n")[0..5000],
       ].compact.join("\n")
       log.recipients = RECIPIENTS.dup
       log.notify("Error: #{subj}")

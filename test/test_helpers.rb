@@ -210,10 +210,15 @@ def mock_downloads
   WebMock.enable!
   { 'https://www.swissmedic.ch/swissmedic/de/home/services/listen_neu.html' => 'html/listen_neu.html',
     'https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/erweiterte_ham.xlsx.download.xlsx/Erweiterte_Arzneimittelliste%20HAM_31012019.xlsx' =>
-      'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx'
+      'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx',
+    "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/zugelassene_packungen_human.xlsx.download.xlsx/zugelassene_packungen_ham.xlsx" => 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx',
+    /https:\/\/www.swissmedic.ch\/dam\/swissmedic.*zugelassene_packungen_ham.xlsx.*/  => 'xlsx/Erweiterte_Arzneimittelliste_HAM_31012019.xlsx',
     }.each do |url, file|
     inhalt = File.read(File.join(Dir.pwd, 'test', 'data', file))
     m = flexmock('open-uri')
+    if defined?(@plugin)
+      @plugin.should_receive(:fetch_with_http).and_return(inhalt)
+    end
     m.should_receive(:open).with(url).and_return(inhalt)
     stub_request(:any,url).to_return(body: inhalt)
     stub_request(:get,url).to_return(body: inhalt)

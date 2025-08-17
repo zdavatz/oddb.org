@@ -8,7 +8,7 @@ require 'plugin/swissmedic'
 require 'util/oddbconfig'
 require 'util/searchterms'
 require 'drb'
-require 'rubyXL'
+require 'simple_xlsx_reader'
 require 'open-uri'
 require 'tempfile'
 require 'cmath'
@@ -88,11 +88,11 @@ module ODDB
       tempfile = Tempfile.new('comarketing.xlsx')
       save_file(tempfile.path, fetch_with_http(url))
       pairs = []
-      workbook = RubyXL::Parser.parse(tempfile.path)
-      workbook[0].each do |row|
-        if row[0] and row[0].value.to_i > 0
-          original_iksnr = "%05d" % row[0].value.to_i.to_s
-          comarket_iksnr = "%05d" % row[3].value.to_i.to_s
+      rows = SimpleXlsxReader.open(tempfile.path).sheets.first.rows
+      rows.each do |row|
+        if row[0] and row[0].to_i > 0
+          original_iksnr = "%05d" % row[0].to_i.to_s
+          comarket_iksnr = "%05d" % row[3].to_i.to_s
 					pairs <<  [original_iksnr, comarket_iksnr]
         end
       end

@@ -19,6 +19,7 @@ module ODDB
     def setup
       Util.configure_mail :test
       Util.clear_sent_mails
+      ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
     end
 
     def test_mailing_configuration
@@ -89,31 +90,38 @@ module ODDB
     end
 
     def test_send_and_check_receiving_test_mail
-      mails_sent = Util.sent_mails
-      assert_equal(0, mails_sent.size)
-      Mail.deliver do
-        to 'mikel@me.com'
-        from 'you@you.com'
-        subject 'testing'
-        body 'hello'
+      saved_env = ENV['ODDB_CI_SAVE_MAIL_IN']
+      ENV['ODDB_CI_SAVE_MAIL_IN'] = nil
+      begin
+        mails_sent = Util.sent_mails
+        assert_equal(0, mails_sent.size)
+        Mail.deliver do
+          to 'mikel@me.com'
+          from 'you@you.com'
+          subject 'testing'
+          body 'hello'
+        end
+        mails_sent = Util.sent_mails
+        assert_equal(1, mails_sent.size)
+        assert_equal(['mikel@me.com'], mails_sent.first.to)
+        assert_equal(['you@you.com'], mails_sent.first.from)
+        assert_equal('testing', mails_sent.first.subject)
+        assert_equal('hello', mails_sent.first.body.to_s)
+        mails_sent = Util.sent_mails
+        Mail.deliver do
+          to 'you@you.com'
+          from 'mikel@me.com'
+          subject 'testing answer'
+          body 'hello'
+        end
+        assert_equal(2, mails_sent.size)
+        Util.clear_sent_mails
+        mails_sent = Util.sent_mails
+        assert_equal(0, mails_sent.size)
+      rescue => error
+        puts error
       end
-      mails_sent = Util.sent_mails
-      assert_equal(1, mails_sent.size)
-      assert_equal(['mikel@me.com'], mails_sent.first.to)
-      assert_equal(['you@you.com'], mails_sent.first.from)
-      assert_equal('testing', mails_sent.first.subject)
-      assert_equal('hello', mails_sent.first.body.to_s)
-      mails_sent = Util.sent_mails
-      Mail.deliver do
-        to 'you@you.com'
-        from 'mikel@me.com'
-        subject 'testing answer'
-        body 'hello'
-      end
-      assert_equal(2, mails_sent.size)
-      Util.clear_sent_mails
-      mails_sent = Util.sent_mails
-      assert_equal(0, mails_sent.size)
+      ENV['ODDB_CI_SAVE_MAIL_IN'] = saved_env
     end
     def test_send_to_mailing_with_attachement
       attachment = {

@@ -18,7 +18,7 @@ require 'model/package'
 require 'state/drugs/compare'
 require 'remote/migel/model_super'
 require 'remote/migel/model/group'
-
+require 'test_helpers'
 module ODDB
   module View
     class Session
@@ -29,6 +29,7 @@ module ODDB
 
 class TestProductInnerComposite <Minitest::Test
   def setup
+    ODDB::TestHelpers.vcr_setup
     @lookandfeel    = flexmock('lookandfeel',
                                :_event_url  => nil,
                                :attributes  => {},

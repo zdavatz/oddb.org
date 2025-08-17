@@ -17,7 +17,7 @@ require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
 require 'util/logfile'
-require 'rubyXL'
+require 'simple_xlsx_reader'
 
 module ODDB
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder, :substances, :type, :lang, :informationUpdate, :refdata, :xml_file)
@@ -94,14 +94,15 @@ module ODDB
       @veterinary_products = {}
       @target_keys = Util::COLUMNS_FEBRUARY_2019
       start_time = Time.now
-      RubyXL::Parser.parse(latest_name)[0][4..-1].each do |row|
+      rows = SimpleXlsxReader.open(latest_name).sheets.first.rows
+      rows.each do |row|
         next unless row[@target_keys.keys.index(:iksnr)].to_i and
             row[@target_keys.keys.index(:seqnr)].to_i and
             row[@target_keys.keys.index(:production_science)].to_i
         next if (row[@target_keys.keys.index(:production_science)] == 'Tierarzneimittel')
         iksnr = "%05i" % row[@target_keys.keys.index(:iksnr)].to_i
         seqnr = "%03i" % row[@target_keys.keys.index(:seqnr)].to_i
-        name_base = row[@target_keys.keys.index(:name_base)].value.to_s
+        name_base = row[@target_keys.keys.index(:name_base)]
         @packages[iksnr] = IKS_Package.new(iksnr, seqnr, name_base)
       end
       duration = (Time.now-start_time)
@@ -316,7 +317,12 @@ module ODDB
 
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
+      begin
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
+      rescue => error
+        require 'debug'; binding.break
+        0
+      end
       if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
         old_ti = package.patinfo;
         Languages.each do |old_lang|
@@ -833,7 +839,7 @@ module ODDB
         return content
       end
       setup_default_agent
-      url  = "http://download.swissmedicinfo.ch/Accept.aspx?ReturnUrl=%2f"
+      url  = "https://download.swissmedicinfo.ch"
       dir  = File.join(ODDB.config.data_dir, 'xml')
       FileUtils.mkdir_p dir
       name = 'swissmedicinfo'
@@ -1454,7 +1460,6 @@ module ODDB
 
 
     def import_swissmedicinfo(options=nil)
-      LogFile.debug "options #{options} @options #{@options} "
       @options = options if options
       $stdout.sync = true
       @specify_barcode_to_text_info = {}

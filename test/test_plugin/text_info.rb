@@ -15,6 +15,7 @@ require 'flexmock/minitest'
 require 'plugin/text_info'
 require 'model/text'
 require 'util/workdir'
+require 'test_helpers' # for VCR setup
 begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 
 module ODDB
@@ -54,6 +55,7 @@ module ODDB
       @options[:xml_file] = xml_full
     end
     def setup
+      ODDB::TestHelpers.vcr_setup
       require 'ext/fiparse/src/fiparse'
       @details_dir =  File.join(ODDB.config.data_dir, 'details')
       path_check = File.join(ODDB::PROJECT_ROOT, 'etc', 'barcode_minitest.yml')
@@ -94,7 +96,7 @@ module ODDB
     def test_61467_pi_fi
       @options = {:target => :both,
                   :download => false,
-                  :newest => false, # this takes a lot of time
+                  :newest => false, # with true this takes a lot of time
                   :xml_file => @aips_download,
                   }
       @test_change = /CHANGED FOR MINITEST......../
@@ -136,7 +138,7 @@ module ODDB
       not_found = '99999'
       @options = {:target => :pi,
                   :download => false,
-                  :newest => false, # this takes a lot of time
+                  :newest => false, # with true this takes a lot of time
                   :reparse => true,
                   :iksnrs => [not_found],
                   :xml_file => @aips_download,
@@ -190,13 +192,25 @@ module ODDB
       assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence('02').packages.values.first.patinfo.odba_id)
       assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence('03').packages.values.first.patinfo.odba_id)
     end
+    def test_get_swissmedicinfo_changed_items
+      @options = {:target => :both,
+                  :download => false,
+                  :newest => false,
+                  :xml_file => @aips_download,
+      }
+      prepare_plugin
 
+      res = @plugin.import_swissmedicinfo(@options)
+#        assert(@plugin.import_swissmedicinfo(@options), 'must be able to run import_swissmedicinfo')
+      puts @plugin.report
+    end
   end
 
   class TestTextInfoPlugin <Minitest::Test
     @@datadir = File.join(ODDB::TEST_DATA_DIR, 'html/text_info')
     def setup
       super
+      ODDB::TestHelpers.vcr_setup
       @app = flexmock 'application'
       FileUtils.mkdir_p (ODDB::WORK_DIR)
       ODDB.config.text_info_searchform = 'http://textinfo.ch/Search.aspx'
@@ -336,13 +350,15 @@ module ODDB
     end
 
     def setup
+      ODDB::TestHelpers.vcr_setup
       path_check = File.join(ODDB::PROJECT_ROOT, 'etc', 'barcode_minitest.yml')
       assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
+      FileUtils.rm_rf(ODDB::WORK_DIR, :verbose => false)
       FileUtils.rm_f(path_check, :verbose => false)
       FileUtils.rm_f(File.expand_path('../data/'), :verbose => false)
       pointer = flexmock 'pointer'
       @aips_download = File.join(ODDB::TEST_DATA_DIR, 'xml/Aips_test.xml')
-      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xlsx/Packungen-latest.xlsx')
+      latest_from = File.join(ODDB::TEST_DATA_DIR, '/xls/Packungen-latest.xlsx')
       latest_to = File.join(ODDB::WORK_DIR, 'xls/Packungen-latest.xlsx')
       FileUtils.mkdir_p(File.dirname(latest_to))
       FileUtils.cp(latest_from, latest_to, :verbose => false, :preserve => true)
@@ -459,10 +475,13 @@ module ODDB
 
     def test_import_daily_fi
       @options[:target] = :fi
-      # TODO: @options[:newest] = true
       # Add tests that fachinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
       # @fachinfo.should_receive(:odba_store).at_least.once
+      @latest_from = File.join(ODDB::TEST_DATA_DIR, 'xlsx', 'Packungen-2021.04.01.xlsx')
+      latest_to = File.join(ODDB::WORK_DIR, 'xls', 'Packungen-latest.xlsx')
+      FileUtils.mkdir_p(File.dirname(latest_to))
+      FileUtils.cp(@latest_from, latest_to, :verbose => false, :preserve => true)
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size > 0, 'must find at least one find fachinfo')
 
@@ -482,18 +501,15 @@ module ODDB
     end
     def test_import_daily_pi
       @options[:target] = :pi
-      # TODO: @options[:newest] = true
       # Add tests that patinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
       # @sequence.should_receive(:odba_store).at_least.once
       # @descriptions.should_receive(:[]=).at_least.once
-
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
-
-      assert_equal(1 , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(2 , @plugin.updated_pis.size, 'nr updated pis must match')
       assert_equal([], @plugin.up_to_date_pis, 'up_to_date_pis must match')
 
       assert_equal(0, @plugin.updated_fis.size, 'nr updated fis must match')
@@ -501,7 +517,6 @@ module ODDB
     end
     def test_import_daily_packungen
       @options[:target] = :pi
-      # TODO: @options[:newest] = true
       old_missing = {'680109990223_pi_de' =>  'Osanit® Kügelchen',
                      '7680109990223_pi_fr' => 'Osanit® globules',
                      '7680109990224_pi_fr' => 'Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang'}
@@ -520,7 +535,7 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size > 0, 'must find at least one find patinfo')
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'fi'}.size, 'must find fachinfo')
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all{|key| key[1] == 'pi'}.size, 'may not find patinfo')
-      assert_equal(1 , @plugin.updated_pis.size, 'nr updated pis must match')
+      assert_equal(2 , @plugin.updated_pis.size, 'nr updated pis must match')
       new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
       assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, 'File must be now 4 lines long')

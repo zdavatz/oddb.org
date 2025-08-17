@@ -111,6 +111,17 @@ module ODDB
       raise e
     end
 
+    def Util.oddb_ci_save_mail(mail)
+      subject =  mail.subject.to_s.gsub(/\W/, '_')
+      name = File.join(ENV['ODDB_CI_SAVE_MAIL_IN'],subject)
+      FileUtils.makedirs(ENV['ODDB_CI_SAVE_MAIL_IN'])
+      File.open(name, 'a+') do |file|
+        file.puts mail.body.to_s
+      end
+      LogFile.debug("Saved Mail without attachments #{name} #{subject}")
+      puts ("Saved Mail without attachments #{name} #{subject} #{@deliveries}")
+    end
+
     def Util.send_mail_with_attachments(list_and_recipients, mail_subject, mail_body, attachments, override_from = nil)
       Util.configure_mail unless @mail_configured
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments #{list_and_recipients}", Time.now)
@@ -118,20 +129,27 @@ module ODDB
       LogFile.append('oddb/debug', "Util.send_mail send_mail_with_attachments body #{mail_body}", Time.now)
       # try sending the mail several times
       nr_times = 0
+
+      mail = Mail.new
+      mail.from     override_from ? override_from : Util.mail_from
+      mail.to       Util.check_and_get_all_recipients(list_and_recipients)
+      mail.subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
+      mail.body     mail_body
+      mail.body.charset = 'UTF-8'
+      attachments.each do
+        |attachment|
+          mail.add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
+          if ENV['ODDB_CI_SAVE_MAIL_IN']
+            filename = File.join(ENV['ODDB_CI_SAVE_MAIL_IN'], attachment[:filename])
+            File.open(filename, 'w+') { |f| f.puts attachment[:content] }
+          end
+      end
+      e = nil
       1.upto(3).each do |idx|
         nr_times = idx
         begin
-          Mail.deliver do
-            from     override_from ? override_from : Util.mail_from
-            to       Util.check_and_get_all_recipients(list_and_recipients)
-            subject  mail_subject.respond_to?(:force_encoding) ?  mail_subject.force_encoding("utf-8") : mail_subject
-            body     mail_body
-            body.charset = 'UTF-8'
-            attachments.each do
-              |attachment|
-              add_file :filename => attachment[:filename], :content => attachment[:content], :mime_type => attachment[:mime_type]
-            end
-          end
+          oddb_ci_save_mail(mail) if ENV['ODDB_CI_SAVE_MAIL_IN']
+          mail.deliver
           LogFile.append('oddb/debug', "Returning after #{idx} tries")
           return true
         rescue => e
@@ -181,14 +199,19 @@ module ODDB
       Util.configure_mail unless @mail_configured
       mail.from << @cfg['mail_from'] unless mail.from.size > 0
       mail.reply_to = @cfg['reply_to']
-      Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
-      res = mail.deliver
+      if ENV['ODDB_CI_SAVE_MAIL_IN']
+        oddb_ci_save_mail(mail)
+        res = true
+      else
+        Util.debug_msg("Util.log_and_deliver_mail to=#{mail.to} subject #{mail.subject} size #{mail.body.to_s.size} with #{mail.attachments.size} attachments. #{mail.body.inspect}")
+        res = mail.deliver
+      end
       res
     end
 
     def Util.debug_msg(msg)
       LogFile.append('oddb/debug', ' ' + msg, Time.now)
-      $stderr.puts msg unless defined?(MiniTest)
+      $stderr.puts msg unless defined?(Minitest)
     end
   end
 end

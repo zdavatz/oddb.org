@@ -6,7 +6,6 @@ current_dir = (File.expand_path(File.dirname(__FILE__)))
 
 tests2run = [ # we run only a very limited set of tests here
   "#{current_dir}/export/test/test_generics_xls.rb",
-  "#{current_dir}/swissreg/test/test_swissreg.rb",
   "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb",
 # fails  "#{current_dir}/fiparse/test/test_pseudo_fachinfo.rb",
 # fails  "#{current_dir}/fiparse/test/test_hpricot.rb",

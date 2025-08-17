@@ -2,6 +2,7 @@
 # encoding: utf-8
 # require 'simplecov'
 # SimpleCov.start
+# begin  require 'debug'; rescue LoadError; end # ignore error when debug cannot be loaded
 
 require 'date'
 require 'page-object'
@@ -189,6 +190,9 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
   0.upto(maxWait).each{
     |idx|
    @browser.goto ODDB_URL
+    if /Internal Server Error/.match(@browser.text)
+      raise "InternalServerError"
+    end
     unless /Es tut uns leid/.match(@browser.text)
       @seconds = idx
       break
@@ -207,7 +211,7 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
   puts "Took #{(endTime - startTime).round} seconds for for #{ODDB_URL} to be ready. First answer was after #{@seconds} seconds." if (endTime - startTime).round > 2
 rescue => error
   puts "error #{error} visiting #{url}"
-  binding.break
+#  binding.break
   raise error
 end
 
@@ -259,7 +263,6 @@ def select_product_by_trademark(name)
     @browser.button(name: "search").wait_until(&:present?)
     @browser.button(name: "search").click
   rescue => error
-    binding.break
   end
   @text = @browser.text.clone
   return @text if LeeresResult.match(@text)

@@ -4,7 +4,7 @@
 # ODDB::Language -- oddb -- 24.03.2003 -- mhuggler@ywesee.com
 
 require 'util/persistence'
-
+require 'util/logfile'
 module ODDB
 	module SimpleLanguage
 		include Persistence
@@ -19,7 +19,7 @@ module ODDB
 				update(values)
 			end
       def first
-        if !@descriptions || empty?
+        if empty?
           ''
         else
           sort.first.last
@@ -32,12 +32,19 @@ module ODDB
       else
         begin
           if @descriptions.is_a?(Array) || @descriptions[key].nil?
+            descriptions.keys.each do |key|
+              if key.is_a?(Symbol) && descriptions[key.to_s]
+                LogFile.debug "Deleted #{key} for #{self.code} #{@descriptions.values.first}"
+                descriptions.delete(key)
+                self.odba_store
+              end
+            end
             @descriptions.first
           else
             @descriptions[key]
           end
         rescue ODBA::OdbaError, NoMethodError => error
-          puts "Descriptions.description error #{error.inspect}"
+           LogFile.debug "Descriptions.description error #{error.inspect}"
 #          puts caller[0..10].join("\n")
           return ''
         end
