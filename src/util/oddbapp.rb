@@ -34,6 +34,7 @@ require 'util/config'
 require 'fileutils'
 require 'yus/session'
 require 'remote/migel/model'
+require 'util/logfile'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -192,7 +193,12 @@ class OddbPrevalence
 	end
   def active_packages
     @registrations.inject([]) { |pacs, (iksnr,reg)|
-      pacs.concat(reg.active_packages)
+      if reg.instance_of?(ODDB::Registration)
+        pacs.concat(reg.active_packages) if reg.instance_of?(ODDB::Registration)
+      else
+        ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration")
+        pacs
+      end
     }
   end
   def active_packages_has_fachinfo

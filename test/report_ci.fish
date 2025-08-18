@@ -33,8 +33,23 @@ function check_rspec
     else
       echo "## Found errors in $logFile"
       string collect $res
-    end
+      set nr_errors (grep -c 'rspec .' ci_log/rspec.log)
+      echo "Found $nr_errors rspec errors in $logFile. Expected 69"
 
+      set expectedSmokeErrors 31
+      set smokeErrors (grep -c 'rspec ./spec/smoketest_spec.rb' ci_log/rspec.log)
+      if test $expectedSmokeErrors -eq $smokeErrors
+        echo "Expected smokeTestErrors $smokeErrors found"
+      else if test "$expectedSmokeErrors" -lt "$smokeErrors"
+        echo ""
+        echo "Found too many $smokeErrors Smoketest Errors! We expected only $expectedSmokeErrors"
+        echo "  Wherefrom stem the" (math $smokeErrors - $expectedSmokeErrors) "new smoketest errors???"
+        echo ""
+      else
+        echo "Good found only $smokeErrors Smoketest Errors! We expected $expectedSmokeErrors"
+        echo "Please reduce in " (status -f) " expectedSmokeErrors to $smokeErrors"
+      end
+    end
 end
 
 function check_import
@@ -74,9 +89,8 @@ echo Host was (hostname)
 echo Memory (free -mh | tail -n2 | head -n1 | cut -c10-19)
 
 check_suite $dir2check/ci_log/suite.log
-check_rspec $dir2check/ci_log/rspec.log
+show_suite_errors $dir2check/ci_log/suite.log
 for logFile in $dir2check/ci_log/import_*
   check_import $logFile
 end
-
-show_suite_errors $dir2check/ci_log/suite.log
+check_rspec $dir2check/ci_log/rspec.log
