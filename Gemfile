@@ -7,6 +7,9 @@ gem 'yus', "1.0.6"
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
+gem 'mutex_m', require: false
+gem 'drb', require: false
+gem 'nkf', require: false
 gem 'odba', "1.1.9"
 gem 'htmlgrid', '1.2.2'
 gem 'sbsm', '1.6.1'
