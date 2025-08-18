@@ -34,6 +34,7 @@
     end
   '';
   fEnsurePgRunning = ''
+        ${fPortIsOpen}
         wait_for_port -p ${toString ODDB_PSQL_PORT} -t 1
         if test 0 -eq $status
           echo "Postgres is running on port ${toString ODDB_PSQL_PORT} status $status"
@@ -70,6 +71,7 @@ in {
       procps # for free in test/report_ci.fish
       lsb-release
       chromedriver
+      gcc13
     ];
 
   env = {
@@ -77,10 +79,8 @@ in {
     FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
   };
 
-  languages.ruby = {
-    enable = true;
-    version = "3.2.7";
-  };
+  languages.ruby.enable = true;
+  # define your desired version in devenv.local.nix, e.g. languages.ruby.version = "3.4";
 
   services.postgres = {
     enable = true;
