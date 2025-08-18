@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+# #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::State::Global -- oddb.org -- 21.11.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
@@ -7,8 +7,6 @@
 require 'htmlgrid/urllink'
 require 'state/http_404'
 require 'state/admin/login'
-require 'state/ajax/ddd_price'
-require 'state/ajax/ddd_chart'
 require 'state/ajax/matches'
 require 'state/ajax/swissmedic_cat'
 require 'state/companies/company'
@@ -150,7 +148,6 @@ module ODDB
         attr_reader :model, :snapback_model
         DIRECT_EVENT = nil
         GLOBAL_MAP = {
-          :ajax_ddd_price         => State::Ajax::DDDPrice,
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
           :api_search             => State::Drugs::ApiSearch,
@@ -160,8 +157,6 @@ module ODDB
           :compare_search         => State::Drugs::CompareSearch,
           :diff                   => State::Drugs::DocumentChangelogs,
           :ddd                    => State::Drugs::DDD,
-          :ddd_chart              => State::Ajax::DDDChart,
-          :ddd_price              => State::Drugs::DDDPrice,
           :download_export        => State::User::DownloadExport,
           :fachinfos              => State::Drugs::Fachinfos,
           :help                   => State::User::Help,
