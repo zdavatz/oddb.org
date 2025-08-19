@@ -15,8 +15,6 @@ gem 'htmlgrid', '1.2.2'
 gem 'sbsm', '1.6.1'
 gem 'ydbd-pg', '0.5.9'
 gem 'ydbi', '0.5.9'
-gem 'gruff','0.8.0' # to be backward compatible with Ruby 3.2
-gem 'rmagick', '4.2.4' # to be backward compatible with Ruby 3.2
 gem 'observer'
 gem 'csv'
 gem 'logger'

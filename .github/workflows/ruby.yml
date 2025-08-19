@@ -27,23 +27,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: install rmagick development
-      run: sudo apt install libmagickcore-dev graphicsmagick graphicsmagick-imagemagick-compat
-
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-
-    - name: Replace helvetica by lato
-      run: |
-        mkdir -p ~/.magick/
-        echo '<?xml version="1.0"?>'  > ~/.magick/type.xml
-        echo '<typemap>'  >> ~/.magick/type.xml
-        echo '<type format="ttf" name="Helvetica" fullname="Helvetica Regular" family="Helvetica" glyphs="/usr/share/fonts/truetype/lato/Lato-Regular.ttf"/>' >> ~/.magick/type.xml
-        echo '</typemap>'  >> ~/.magick/type.xml
-        cat ~/.magick/type.xml
-        convert -list font
 
     - name: Run tests via test/suite.rb
       run: bundle exec ruby test/suite.rb

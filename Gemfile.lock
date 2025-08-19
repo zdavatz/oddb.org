@@ -51,8 +51,6 @@ GEM
     flexmock (2.3.6)
     flickraw (0.9.10)
     getoptlong (0.2.1)
-    gruff (0.8.0)
-      rmagick
     gyoku (1.3.1)
       builder (>= 2.1.2)
     hashdiff (1.0.1)
@@ -167,7 +165,6 @@ GEM
     reline (0.4.3)
       io-console (~> 0.5)
     rexml (3.3.9)
-    rmagick (4.2.4)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -311,7 +308,6 @@ DEPENDENCIES
   flexmock
   flickraw
   getoptlong
-  gruff (= 0.8.0)
   hpricot
   htmlentities
   htmlgrid (= 1.2.2)
@@ -354,7 +350,6 @@ DEPENDENCIES
   rake
   rbs
   rclconf
-  rmagick (= 4.2.4)
   rspec
   rspec-core
   rss
