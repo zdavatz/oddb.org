@@ -333,11 +333,6 @@ module ODDB
     def update_fachinfo(*iksnrs)
       update_textinfos *iksnrs
     end
-    def update_patinfo_only *companies
-      update_notify_simple TextInfoPlugin,
-                            "Patienteninfo '#{companies.join(', ')}'",
-                            :import_company, [companies, nil, :pi]
-    end
     def update_medical_products(opts)
       @options = opts
       update_notify_simple(MedicalProductPlugin, 'Medical Products', :update)
