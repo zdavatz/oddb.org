@@ -1,39 +1,40 @@
 #!/usr/local/bin/ruby
 # must be scheduled in crontab to run as the same user as oddb
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 
-require 'util/job'
-require 'util/updater'
+require "util/job"
+require "util/updater"
 
 module ODDB
   module Util
     Job.run do |system|
       opts = {
-        :target   => :fi,
-        :reparse  => false,
-        :iksnrs   => [],
-        :companies => [],
-        :download => true,
-        :xml_file => nil, # if set will force download => false 
+        target: :fi,
+        reparse: false,
+        iksnrs: [],
+        companies: [],
+        download: true,
+        xml_file: nil # if set will force download => false
       }
       ARGV.each do |arg|
         if arg =~ /(fi|pi|both)$/
           opts[:target] = $1.intern
-        elsif arg =~ /reparse/
+        elsif /reparse/.match?(arg)
           opts[:reparse] = true
-        elsif arg =~ /skip/
+        elsif /skip/.match?(arg)
           opts[:skip] = true # to skip time consuming postprocess when debugging reparse errors
-        elsif arg =~ /no\-download/
+        elsif /no-download/.match?(arg)
           opts[:download] = false
-        elsif arg =~ /xml_file=(\w.+)/
-                 m = /xml_file=(\w.+)/.match(arg)
+        elsif /xml_file=(\w.+)/.match?(arg)
+          m = /xml_file=(\w.+)/.match(arg)
           opts[:xml_file] = m[1]
           opts[:download] = false
-        elsif arg =~ /^\d{3,5}$/
-          opts[:iksnrs] << sprintf('%05d', arg.to_i)
-        else arg =~ /^\w*$/
+        elsif /^\d{3,5}$/.match?(arg)
+          opts[:iksnrs] << sprintf("%05d", arg.to_i)
+        else
+          arg =~ /^\w*$/
           opts[:companies] << arg if arg.size > 0
         end
       end
