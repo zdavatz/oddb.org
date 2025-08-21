@@ -54,7 +54,9 @@ module ODDB
             filename = "#{@model.iksnr}_#{language}.#{type}"
             FileUtils.mkdir_p(self.class::FI_FILE_DIR)
             path = File.expand_path(filename, self.class::FI_FILE_DIR)
-            File.write(path, fi_file.read)
+            File.open(path) do |fi_file|
+              File.write(path, fi_file.read)
+            end
             fi_file.rewind
             new_state = State::Admin::WaitForFachinfo.new(@session, @model)
             new_state.previous = self
