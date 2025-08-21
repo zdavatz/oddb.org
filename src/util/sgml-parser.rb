@@ -1,12 +1,11 @@
 # A parser for SGML, using the derived class as static DTD.
 
 class SGMLParser
-
   # Regular expressions used for parsing:
   Interesting = /[&<]/
-  Incomplete = Regexp.compile('&([a-zA-Z][a-zA-Z0-9]*|#[0-9]*)?|' +
-                              '<([a-zA-Z][^<>]*|/([a-zA-Z][^<>]*)?|' +
-                              '![^<>]*)?')
+  Incomplete = Regexp.compile("&([a-zA-Z][a-zA-Z0-9]*|#[0-9]*)?|" +
+                              "<([a-zA-Z][^<>]*|/([a-zA-Z][^<>]*)?|" +
+                              "![^<>]*)?")
 
   Entityref = /&([a-zA-Z][-.a-zA-Z0-9]*)[^-.a-zA-Z0-9]/
   Charref = /&#([0-9]+)[^0-9]/
@@ -22,20 +21,20 @@ class SGMLParser
                             '(\s*=\s*' +
                             "('[^']*'" +
                             '|"[^"]*"' +
-                            '|[-~a-zA-Z0-9,./:+*%?!()_#=]*))?')
+                            "|[-~a-zA-Z0-9,./:+*%?!()_#=]*))?")
 
   Entitydefs =
-    {'lt'=>'<', 'gt'=>'>', 'amp'=>'&', 'quot'=>'"', 'apos'=>'\''}
+    {"lt" => "<", "gt" => ">", "amp" => "&", "quot" => '"', "apos" => "'"}
 
-  def initialize(verbose=false)
+  def initialize(verbose = false)
     @verbose = verbose
     reset
   end
 
   def reset
-    @rawdata = ''
+    @rawdata = ""
     @stack = []
-    @lasttag = '???'
+    @lasttag = "???"
     @nomoretags = false
     @literal = false
   end
@@ -68,18 +67,18 @@ class SGMLParser
     n = rawdata.length
     while i < n
       if @nomoretags
-        handle_data(rawdata[i..(n-1)])
+        handle_data(rawdata[i..(n - 1)])
         i = n
         break
       end
       j = rawdata.index(Interesting, i)
-      j = n unless j
+      j ||= n
       if i < j
-        handle_data(rawdata[i..(j-1)])
+        handle_data(rawdata[i..(j - 1)])
       end
       i = j
-      break if (i == n)
-      if rawdata[i] == ?< #
+      break if i == n
+      if rawdata[i] == "<"
         if rawdata.index(Starttagopen, i) == i
           if @literal
             handle_data(rawdata[i, 1])
@@ -100,7 +99,7 @@ class SGMLParser
         end
         if rawdata.index(Commentopen, i) == i
           if @literal
-            handle_data(rawdata[i,1])
+            handle_data(rawdata[i, 1])
             i += 1
             next
           end
@@ -120,21 +119,21 @@ class SGMLParser
           i += k
           next
         end
-      elsif rawdata[i] == ?& #
+      elsif rawdata[i] == "&"
         if rawdata.index(Charref, i) == i
           i += $&.length
           handle_charref($1)
-          i -= 1 unless rawdata[i-1] == ?;
+          i -= 1 unless rawdata[i - 1] == ";"
           next
         end
         if rawdata.index(Entityref, i) == i
           i += $&.length
           handle_entityref($1)
-          i -= 1 unless rawdata[i-1] == ?;
+          i -= 1 unless rawdata[i - 1] == ";"
           next
         end
       else
-        raise RuntimeError, 'neither < nor & ??'
+        raise "neither < nor & ??"
       end
       # We get here only if incomplete matches but
       # nothing else
@@ -146,12 +145,12 @@ class SGMLParser
       end
       j = match + $&.length
       break if j == n # Really incomplete
-      handle_data(rawdata[i..(j-1)])
+      handle_data(rawdata[i..(j - 1)])
       i = j
     end
     # end while
     if _end and i < n
-      handle_data(@rawdata[i..(n-1)])
+      handle_data(@rawdata[i..(n - 1)])
       i = n
     end
     @rawdata = rawdata[i..-1]
@@ -159,16 +158,16 @@ class SGMLParser
 
   def parse_comment(i)
     rawdata = @rawdata
-    if rawdata[i, 4] != '<!--'
-      raise RuntimeError, 'unexpected call to handle_comment'
+    if rawdata[i, 4] != "<!--"
+      raise "unexpected call to handle_comment"
     end
     match = rawdata.index(Commentclose, i)
     return nil unless match
     matched_length = $&.length
     j = match
-    handle_comment(rawdata[i+4..(j-1)])
+    handle_comment(rawdata[i + 4..(j - 1)])
     j = match + matched_length
-    return j-i
+    j - i
   end
 
   def parse_starttag(i)
@@ -176,16 +175,16 @@ class SGMLParser
     j = rawdata.index(Endbracket, i + 1)
     return nil unless j
     attrs = []
-    if rawdata[i+1] == ?> #
+    if rawdata[i + 1] == ">"
       # SGML shorthand: <> == <last open tag seen>
       k = j
       tag = @lasttag
     else
       match = rawdata.index(Tagfind, i + 1)
       unless match
-        raise RuntimeError, 'unexpected call to parse_starttag'
+        raise "unexpected call to parse_starttag"
       end
-      k = i + 1 + ($&.length)
+      k = i + 1 + $&.length
       tag = $&.downcase
       @lasttag = tag
     end
@@ -193,54 +192,54 @@ class SGMLParser
       break unless rawdata.index(Attrfind, k)
       matched_length = $&.length
       attrname, rest, attrvalue = $1, $2, $3
-      if not rest
-        attrvalue = '' # was: = attrname
-      elsif (attrvalue[0] == ?' && attrvalue[-1] == ?') or
-          (attrvalue[0] == ?" && attrvalue[-1] == ?")
+      if !rest
+        attrvalue = "" # was: = attrname
+      elsif (attrvalue[0] == "'" && attrvalue[-1] == "'") or
+          (attrvalue[0] == '"' && attrvalue[-1] == '"')
         attrvalue = attrvalue[1..-2]
       end
       attrs << [attrname.downcase, attrvalue]
       k += matched_length
     end
-    if rawdata[j] == ?> #
+    if rawdata[j] == ">"
       j += 1
     end
     finish_starttag(tag, attrs)
-    return j
+    j
   end
 
   def parse_endtag(i)
     rawdata = @rawdata
     j = rawdata.index(Endbracket, i + 1)
     return nil unless j
-    tag = (rawdata[i+2..j-1].strip).downcase
-    if rawdata[j] == ?> #
+    tag = rawdata[i + 2..j - 1].strip.downcase
+    if rawdata[j] == ">"
       j += 1
     end
     finish_endtag(tag)
-    return j
+    j
   end
 
   def finish_starttag(tag, attrs)
-    method = 'start_' + tag
-    if self.respond_to?(method)
+    method = "start_" + tag
+    if respond_to?(method)
       @stack << tag
       handle_starttag(tag, method, attrs)
-      return 1
+      1
     else
-      method = 'do_' + tag
-      if self.respond_to?(method)
+      method = "do_" + tag
+      if respond_to?(method)
         handle_starttag(tag, method, attrs)
-        return 0
+        0
       else
         unknown_starttag(tag, attrs)
-        return -1
+        -1
       end
     end
   end
 
   def finish_endtag(tag)
-    if tag == ''
+    if tag == ""
       found = @stack.length - 1
       if found < 0
         unknown_endtag(tag)
@@ -248,17 +247,17 @@ class SGMLParser
       end
     else
       unless @stack.include? tag
-        method = 'end_' + tag
-        unless self.respond_to?(method)
+        method = "end_" + tag
+        unless respond_to?(method)
           unknown_endtag(tag)
         end
         return
       end
-      found = @stack.index(tag) #or @stack.length
+      found = @stack.index(tag) # or @stack.length
     end
     while @stack.length > found
       tag = @stack[-1]
-      method = 'end_' + tag
+      method = "end_" + tag
       if respond_to?(method)
         handle_endtag(tag, method)
       else
@@ -270,25 +269,25 @@ class SGMLParser
 
   def parse_special(i)
     rawdata = @rawdata
-    match = rawdata.index(Endbracket, i+1)
+    match = rawdata.index(Endbracket, i + 1)
     return nil unless match
     matched_length = $&.length
-    handle_special(rawdata[i+1..(match-1)])
-    return match - i + matched_length
+    handle_special(rawdata[i + 1..(match - 1)])
+    match - i + matched_length
   end
 
   def handle_starttag(tag, method, attrs)
-    self.send(method, attrs)
+    send(method, attrs)
   end
 
   def handle_endtag(tag, method)
-    self.send(method)
+    send(method)
   end
 
   def report_unbalanced(tag)
     if @verbose
-      print '*** Unbalanced </' + tag + '>', "\n"
-      print '*** Stack:', self.stack, "\n"
+      print "*** Unbalanced </" + tag + ">", "\n"
+      print "*** Stack:", stack, "\n"
     end
   end
 
@@ -307,7 +306,7 @@ class SGMLParser
       handle_data(table[name])
     else
       unknown_entityref(name)
-      return
+      nil
     end
   end
 
@@ -322,11 +321,13 @@ class SGMLParser
 
   def unknown_starttag(tag, attrs)
   end
+
   def unknown_endtag(tag)
   end
+
   def unknown_charref(ref)
   end
+
   def unknown_entityref(ref)
   end
-
 end

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # Util::IsoLatin1 -- oddb -- 05.01.2006 -- hwyss@ywesee.com
 
 module ODDB
@@ -36,28 +36,29 @@ module ODDB
       }
       DOWNCASE_PTRN = /[#{DOWNCASE_PAIRS.keys.join}]/u
       def locale_downcase!
-        self.gsub! DOWNCASE_PTRN do |match| DOWNCASE_PAIRS.fetch match, match end
+        gsub! DOWNCASE_PTRN do |match| DOWNCASE_PAIRS.fetch match, match end
       end
     end
   end
 end
 
 class String
-	unless instance_methods.include?('_downcase')
-		include ODDB::Util::IsoLatin1
-		alias :_downcase :downcase
-		alias :_downcase! :downcase!
-		def downcase
-			#res = _downcase
-      res = _downcase.force_encoding('utf-8')
+  unless instance_methods.include?("_downcase")
+    include ODDB::Util::IsoLatin1
+    alias_method :_downcase, :downcase
+    alias_method :_downcase!, :downcase!
+    def downcase
+      # res = _downcase
+      res = _downcase.force_encoding("utf-8")
       if DOWNCASE_PTRN.match(res)
         res.locale_downcase!
       end
-			res
-		end
-		def downcase!
-			res = _downcase!
-			locale_downcase! || res
-		end
-	end
+      res
+    end
+
+    def downcase!
+      res = _downcase!
+      locale_downcase! || res
+    end
+  end
 end

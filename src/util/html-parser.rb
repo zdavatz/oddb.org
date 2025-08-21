@@ -1,10 +1,9 @@
 # HTML parser
 
-require 'util/sgml-parser'
+require "util/sgml-parser"
 
 class HTMLParser < SGMLParser
-
-  def initialize(formatter, verbose=nil)
+  def initialize(formatter, verbose = nil)
     super(verbose)
     @formatter = formatter
     @savedata = nil
@@ -17,31 +16,28 @@ class HTMLParser < SGMLParser
     @list_stack = []
   end
 
-
   def handle_data(data)
     if @savedata
-      @savedata = @savedata + data
+      @savedata += data
+    elsif @nofill != 0
+      @formatter.add_literal_data(data)
     else
-      if @nofill != 0
-        @formatter.add_literal_data(data)
-      else
-        @formatter.add_flowing_data(data)
-      end
+      @formatter.add_flowing_data(data)
     end
   end
 
   def save_bgn
-    @savedata = ''
+    @savedata = ""
   end
 
   def save_end
     data = @savedata
     @savedata = nil
-    data = '' if data == nil
+    data = "" if data.nil?
     if @nofill == 0
       data = data.split.join(" ")
     end
-    return data
+    data
   end
 
   def anchor_bgn(href, name, type)
@@ -53,7 +49,7 @@ class HTMLParser < SGMLParser
 
   def anchor_end
     if @anchor
-      #handle_data(format "[%d]", @anchorlist.length)
+      # handle_data(format "[%d]", @anchorlist.length)
       @anchor = nil
     end
   end
@@ -62,14 +58,23 @@ class HTMLParser < SGMLParser
     handle_data(alt)
   end
 
-  def start_html(attrs) end
-  def end_html() end
+  def start_html(attrs)
+  end
 
-  def start_head(attrs) end
-  def end_head() end
+  def end_html
+  end
 
-  def start_body(attrs) end
-  def end_body() end
+  def start_head(attrs)
+  end
+
+  def end_head
+  end
+
+  def start_body(attrs)
+  end
+
+  def end_body
+  end
 
   def start_title(attrs)
     save_bgn
@@ -81,7 +86,7 @@ class HTMLParser < SGMLParser
 
   def do_base(attrs)
     for a, v in attrs
-      if a == 'href'
+      if a == "href"
         @base = v
       end
     end
@@ -100,65 +105,64 @@ class HTMLParser < SGMLParser
   def do_nextid(attrs) # Deprecated
   end
 
-
   def start_h1(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h1', 0, 1, 0)
+    @formatter.push_font("h1", 0, 1, 0)
   end
 
   def end_h1
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_h2(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h2', 0, 1, 0)
+    @formatter.push_font("h2", 0, 1, 0)
   end
 
   def end_h2
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_h3(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h3', 0, 1, 0)
+    @formatter.push_font("h3", 0, 1, 0)
   end
 
   def end_h3
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_h4(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h4', 0, 1, 0)
+    @formatter.push_font("h4", 0, 1, 0)
   end
 
   def end_h4
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_h5(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h5', 0, 1, 0)
+    @formatter.push_font("h5", 0, 1, 0)
   end
 
   def end_h5
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_h6(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_font('h6', 0, 1, 0)
+    @formatter.push_font("h6", 0, 1, 0)
   end
 
   def end_h6
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def do_p(attrs)
@@ -168,19 +172,19 @@ class HTMLParser < SGMLParser
   def start_pre(attrs)
     @formatter.end_paragraph(1)
     @formatter.push_font(nil, nil, nil, 1)
-    @nofill = @nofill + 1
+    @nofill += 1
   end
 
   def end_pre
     @formatter.end_paragraph(1)
-    @formatter.pop_font()
-    @nofill = @nofill - 1
+    @formatter.pop_font
+    @nofill -= 1
     if @nofill < 0 then @nofill = 0 end
   end
 
   def start_xmp(attrs)
     start_pre(attrs)
-    setliteral('xmp') # Tell SGML parser
+    setliteral("xmp") # Tell SGML parser
   end
 
   def end_xmp
@@ -189,7 +193,7 @@ class HTMLParser < SGMLParser
 
   def start_listing(attrs)
     start_pre(attrs)
-    setliteral('listing') # Tell SGML parser
+    setliteral("listing") # Tell SGML parser
   end
 
   def end_listing
@@ -203,23 +207,23 @@ class HTMLParser < SGMLParser
 
   def end_address
     @formatter.end_paragraph(0)
-    @formatter.pop_font()
+    @formatter.pop_font
   end
 
   def start_blockquote(attrs)
     @formatter.end_paragraph(1)
-    @formatter.push_margin('blockquote')
+    @formatter.push_margin("blockquote")
   end
 
   def end_blockquote
     @formatter.end_paragraph(1)
-    @formatter.pop_margin()
+    @formatter.pop_margin
   end
 
   def start_ul(attrs)
     @formatter.end_paragraph(0)
-    @formatter.push_margin('ul')
-    @list_stack << ['ul', '*', 0]
+    @formatter.push_margin("ul")
+    @list_stack << ["ul", "*", 0]
   end
 
   def end_ul
@@ -233,27 +237,27 @@ class HTMLParser < SGMLParser
   def do_li(attrs)
     @formatter.end_paragraph(0)
     if @list_stack && @list_stack.size > 0
-      dummy, label, counter = top = @list_stack[-1]
-      top[2] = counter = counter+1
+      _, label, counter = top = @list_stack[-1]
+      top[2] = counter += 1
     else
-      label, counter = '*', 0
+      label, counter = "*", 0
     end
     @formatter.add_label_data(label, counter)
   end
 
   def start_ol(attrs)
     @formatter.end_paragraph(0)
-    @formatter.push_margin('ol')
-    label = '1.'
+    @formatter.push_margin("ol")
+    label = "1."
     for a, v in attrs
-      if a == 'type'
+      if a == "type"
         if v.length == 1
-          v = v + '.'
+          v += "."
           label = v
         end
       end
     end
-    @list_stack << ['ol', label, 0]
+    @list_stack << ["ol", label, 0]
   end
 
   def end_ol
@@ -282,7 +286,7 @@ class HTMLParser < SGMLParser
 
   def start_dl(attrs)
     @formatter.end_paragraph(1)
-    @list_stack << ['dl', '', 0]
+    @list_stack << ["dl", "", 0]
   end
 
   def end_dl
@@ -298,44 +302,80 @@ class HTMLParser < SGMLParser
 
   def do_dd(attrs)
     ddpop
-    @formatter.push_margin('dd')
-    @list_stack << ['dd', '', 0]
+    @formatter.push_margin("dd")
+    @list_stack << ["dd", "", 0]
   end
 
-  def ddpop(bl=0)
+  def ddpop(bl = 0)
     @formatter.end_paragraph(bl)
     if @list_stack.length > 0
-      if @list_stack[-1][0] == 'dd'
+      if @list_stack[-1][0] == "dd"
         @list_stack.pop
         @formatter.pop_margin
       end
     end
   end
 
-  def start_cite(attrs) start_i(attrs) end
-  def end_cite() end_i end
+  def start_cite(attrs)
+    start_i(attrs)
+  end
 
-  def start_code(attrs) start_tt(attrs) end
-  def end_code() end_tt end
+  def end_cite
+    end_i
+  end
 
-  def start_em(attrs) start_i(attrs) end
-  def end_em() end_i end
+  def start_code(attrs)
+    start_tt(attrs)
+  end
 
-  def start_kbd(attrs) start_tt(attrs) end
-  def end_kbd() end_tt end
+  def end_code
+    end_tt
+  end
 
-  def start_samp(attrs) start_tt(attrs) end
-  def end_samp() end_tt end
+  def start_em(attrs)
+    start_i(attrs)
+  end
 
-  def start_strong(attrs) start_b(attrs) end
-  def end_strong() end_b end
+  def end_em
+    end_i
+  end
 
-  def start_var(attrs) start_i(attrs) end
-  def end_var() end_i end
+  def start_kbd(attrs)
+    start_tt(attrs)
+  end
+
+  def end_kbd
+    end_tt
+  end
+
+  def start_samp(attrs)
+    start_tt(attrs)
+  end
+
+  def end_samp
+    end_tt
+  end
+
+  def start_strong(attrs)
+    start_b(attrs)
+  end
+
+  def end_strong
+    end_b
+  end
+
+  def start_var(attrs)
+    start_i(attrs)
+  end
+
+  def end_var
+    end_i
+  end
 
   def start_i(attrs)
     @formatter.push_font(nil, 1, nil, nil)
   end
+
   def end_i
     @formatter.pop_font
   end
@@ -343,6 +383,7 @@ class HTMLParser < SGMLParser
   def start_b(attrs)
     @formatter.push_font(nil, nil, 1, nil)
   end
+
   def end_b
     @formatter.pop_font
   end
@@ -350,6 +391,7 @@ class HTMLParser < SGMLParser
   def start_tt(attrs)
     @formatter.push_font(nil, nil, nil, 1)
   end
+
   def end_tt
     @formatter.pop_font
   end
@@ -360,13 +402,13 @@ class HTMLParser < SGMLParser
     type = nil
     for attrname, value in attrs
       value = value.strip
-      if attrname == 'href'
+      if attrname == "href"
         href = value
       end
-      if attrname == 'name'
+      if attrname == "name"
         name = value
       end
-      if attrname == 'type'
+      if attrname == "type"
         type = value.downcase
       end
     end
@@ -387,28 +429,28 @@ class HTMLParser < SGMLParser
 
   def do_img(attrs)
     align = nil
-    alt = '(image)'
+    alt = "(image)"
     ismap = nil
     src = nil
     width = 0
     height = 0
     for attrname, value in attrs
-      if attrname == 'align'
+      if attrname == "align"
         align = value
       end
-      if attrname == 'alt'
+      if attrname == "alt"
         alt = value
       end
-      if attrname == 'ismap'
+      if attrname == "ismap"
         ismap = value
       end
-      if attrname == 'src'
+      if attrname == "src"
         src = value
       end
-      if attrname == 'width'
+      if attrname == "width"
         width = Integer(value)
       end
-      if attrname == 'height'
+      if attrname == "height"
         height = Integer(value)
       end
     end
@@ -425,5 +467,4 @@ class HTMLParser < SGMLParser
 
   def unknown_endtag(tag)
   end
-
 end

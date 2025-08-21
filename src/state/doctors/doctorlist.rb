@@ -1,45 +1,48 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::State::Doctors::DoctorList -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Doctors::DoctorList -- oddb.org -- 26.05.2003 -- mhuggler@ywesee.com
 
-require 'state/doctors/global'
-require 'state/doctors/doctor'
-require 'view/doctors/doctorlist'
-require 'util/interval'
-require 'model/doctor'
-require 'model/user'
-require 'sbsm/user'
+require "state/doctors/global"
+require "state/doctors/doctor"
+require "view/doctors/doctorlist"
+require "util/interval"
+require "model/doctor"
+require "model/user"
+require "sbsm/user"
 
 module ODDB
-	module State
-		module Doctors
-class DoctorList < State::Doctors::Global
-  include Interval
-	DIRECT_EVENT = :doctorlist
-	VIEW = View::Doctors::Doctors
-	LIMITED = false
-	FILTER_THRESHOLD = 10
-  def init
-    filter_interval
+  module State
+    module Doctors
+      class DoctorList < State::Doctors::Global
+        include Interval
+        DIRECT_EVENT = :doctorlist
+        VIEW = View::Doctors::Doctors
+        LIMITED = false
+        FILTER_THRESHOLD = 10
+        def init
+          filter_interval
+        end
+
+        def paged?
+          @model.size > FILTER_THRESHOLD
+        end
+
+        def symbol
+          :name
+        end
+      end
+
+      class DoctorResult < DoctorList
+        DIRECT_EVENT = :result
+        def init
+          if @model.empty?
+            @default_view = ODDB::View::Doctors::EmptyResult
+          else
+            super
+          end
+        end
+      end
+    end
   end
-  def paged?
-    @model.size > FILTER_THRESHOLD
-  end
-  def symbol
-    :name
-  end
-end
-class DoctorResult < DoctorList
-	DIRECT_EVENT = :result
-	def init
-		if(@model.empty?)
-			@default_view = ODDB::View::Doctors::EmptyResult
-		else
-			super
-		end
-	end
-end
-		end
-	end
 end

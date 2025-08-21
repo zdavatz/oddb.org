@@ -1,20 +1,18 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-
-require 'util/today'
-require 'util/logfile'
-require 'open-uri'
+require "util/today"
+require "util/logfile"
+require "open-uri"
 
 module ODDB
   class Latest
     def self.log(msg)
-      $stdout.puts    "#{Time.now}: Latest #{msg}" # unless defined?(Minitest)
+      $stdout.puts "#{Time.now}: Latest #{msg}" # unless defined?(Minitest)
       $stdout.flush
-      LogFile.append('oddb/debug', " Latest #{msg}", Time.now)
+      LogFile.append("oddb/debug", " Latest #{msg}", Time.now)
     end
 
     def self.get_daily_name(latest_name)
-      file_today = latest_name.sub('latest', @@today.strftime("%Y.%m.%d"))
+      latest_name.sub("latest", @@today.strftime("%Y.%m.%d"))
     end
 
     def self.fetch_with_http(url)
@@ -28,7 +26,7 @@ module ODDB
     # is different from the latest downloaded file.
     def self.get_latest_file(latest, download_url, must_unzip = false)
       file_today = get_daily_name(latest)
-      file_yesterday = latest.sub('latest', (@@today.to_date-1).strftime("%Y.%m.%d"))
+      file_yesterday = latest.sub("latest", (@@today.to_date - 1).strftime("%Y.%m.%d"))
       if File.exist?(file_today) and File.exist?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
         FileUtils.rm_f(file_yesterday, verbose: false)
       end
@@ -39,9 +37,9 @@ module ODDB
       else
         download = Latest.fetch_with_http(download_url)
         FileUtils.makedirs(File.dirname(file_today)) unless File.exist?(File.dirname(file_today))
-        File.open(file_today, 'w+') { |f| f.write download }
-        if(!File.exist?(latest) or File.size(file_today) != File.size(latest))
-          File.open(latest, 'w+') { |f| f.write download }
+        File.write(file_today, download)
+        if !File.exist?(latest) or File.size(file_today) != File.size(latest)
+          File.write(latest, download)
           Latest.log "saved (#{download.size} bytes) as #{file_today} and #{latest}"
           return latest
         else

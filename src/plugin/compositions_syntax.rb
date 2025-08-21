@@ -34,7 +34,7 @@ class CompositionParser < Parslet::Parser
   }
   rule(:radio_isotop) {
     match["a-zA-Z"].repeat(1) >> lparen >> digits >> str("-") >> match["a-zA-Z"].repeat(1 - 3) >> rparen >>
-      ((space? >> match["a-zA-Z"]).repeat(1)).repeat(0)
+      (space? >> match["a-zA-Z"]).repeat(1).repeat(0)
   } # e.g. Xenonum (133-Xe) or yttrii(90-Y) chloridum zum Kalibrierungszeitpunkt
   rule(:ratio_value) { match['0-9:\-\.,'].repeat(1) >> space? } # eg. ratio: 1:1, ratio: 1:1.5-2.4., ratio: 1:0.68-0.95, 1:4,1
 
@@ -189,7 +189,7 @@ class CompositionParser < Parslet::Parser
   }
   # DER: 1:4 or DER: 3.5:1 or DER: 6-8:1 or DER: 4.0-9.0:1'
   rule(:der_identifier) { str("DER:") >> space >> digit >> match['0-9\.\-:'].repeat }
-  rule(:der) { (der_identifier).as(:substance_name) >> space? >> dose.maybe.as(:dose) }
+  rule(:der) { der_identifier.as(:substance_name) >> space? >> dose.maybe.as(:dose) }
   rule(:forbidden_in_substance_name) {
     min_max |
       useage |
@@ -237,7 +237,7 @@ class CompositionParser < Parslet::Parser
   rule(:name_with_parenthesis) {
     forbidden_in_substance_name.absent? >>
       ((comma | lparen).absent? >> any).repeat(0) >> part_with_parenthesis >>
-     (forbidden_in_substance_name.absent? >> (identifier.repeat(1) | part_with_parenthesis | rparen) >> space?).repeat(0)
+      (forbidden_in_substance_name.absent? >> (identifier.repeat(1) | part_with_parenthesis | rparen) >> space?).repeat(0)
   }
   rule(:substance_name) {
     (
@@ -259,7 +259,7 @@ class CompositionParser < Parslet::Parser
 
   rule(:pro_identifiers) {
     str("ut aqua ad iniectabilia q.s. ad emulsionem pro ") |
-    str("aqua ad iniectabile, ad suspensionem pro ")|
+      str("aqua ad iniectabile, ad suspensionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile q.s. ad suspensionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile, q.s. ad solutionem pro ") |
       str("aqua ").maybe >> str("ad iniectabile q.s. ad solutionem pro ") |
@@ -338,7 +338,7 @@ class CompositionParser < Parslet::Parser
   rule(:ratio) { str("ratio:") >> space >> ratio_value }
 
   rule(:solvens) {
-    (str("Solvens:") | str("Solvens (i.m.):")) >> space >> (any.repeat).as(:more_info) >> space? >>
+    (str("Solvens:") | str("Solvens (i.m.):")) >> space >> any.repeat.as(:more_info) >> space? >>
       (substance.as(:substance) >> str("/L").maybe).maybe >>
       any.maybe
   }
@@ -357,7 +357,7 @@ class CompositionParser < Parslet::Parser
   }
 
   rule(:corresp_substance) {
-    (corresp_substance_label) >> space? >>
+    corresp_substance_label >> space? >>
       (
        substance |
        dose.as(:dose_corresp_2) |
@@ -371,7 +371,7 @@ class CompositionParser < Parslet::Parser
       der |
       str("((4-hydroxybutyl)azanediyl)bis(hexane-6,1-diylis)bis(2-hexyldecanoas)") |
       str("heptadecan-9-ylis 8-((2-hydroxyethyl)(6-oxo-6-(undecyloxy)hexyl)amino)-octanoas") | # Moderna
-      substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz|
+      substance_lead.maybe.as(:more_info) >> space? >> lebensmittel_zusatz |
       substance_lead.maybe.as(:more_info) >> space? >> simple_substance >> str("pro dosi").maybe
     ).as(:substance) >>
       (space? >> str(", ").maybe >> ratio.maybe).as(:ratio) >>
@@ -412,7 +412,7 @@ class CompositionParser < Parslet::Parser
   rule(:label) {
     label_id.as(:label) >> space? >>
       label_separator >> str(",").absent? >>
-      (space? >> (match(/[^:]/).repeat(0)).as(:label_description) >> str(":") >> space).maybe
+      (space? >> match(/[^:]/).repeat(0).as(:label_description) >> str(":") >> space).maybe
   }
   rule(:leading_label) {
     label_id >> label_separator >> (str(" et ") | str(", ") | str(" pro usu: ") | space) >>
@@ -534,7 +534,7 @@ class GalenicFormParser < CompositionParser
       any.repeat(1).as(:galenic_form)
   }
   rule(:simple_name) {
-    ((match(["a-zA-Z0-9,%"]) | str("-") | umlaut).repeat(1)) >>
+    (match(["a-zA-Z0-9,%"]) | str("-") | umlaut).repeat(1) >>
       (lparen >> (rparen.absent? >> any.repeat(1)) >> rparen).maybe
   }
   rule(:name_gal_form) { # e.g. Dicloabak 0,1% Augentropfen or 35 Clear-Flex 3,86 % Peritonealdialyselösung
@@ -552,7 +552,7 @@ class GalenicFormParser < CompositionParser
 
   # Phytopharma foie et bile capsules/Leber-Galle Kapseln
   rule(:leber_gallen_kapseln) {
-    ((str("/Leber-Galle Kapseln").absent? >> any).repeat(1)).as(:prepation_name) >>
+    (str("/Leber-Galle Kapseln").absent? >> any).repeat(1).as(:prepation_name) >>
       str("/") >> any.repeat(1).as(:galenic_form) >>
       space?
   }
