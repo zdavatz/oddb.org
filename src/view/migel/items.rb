@@ -6,6 +6,7 @@
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/additional_information'
+require 'view/lookandfeel_components'
 require 'view/dataformat'
 require 'view/pager'
 
