@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # View::Rss::PriceRise -- oddb.org -- 23.05.2007 -- hwyss@ywesee.com
 
-require 'view/drugs/package'
-require 'view/latin1'
+require "view/drugs/package"
+require "view/latin1"
 
 module ODDB
   module View
     module Rss
-class PriceRise < Package
-  def init
-    @title = :price_rise_feed_title
-    @description = :price_rise_feed_description
-    super
-  end
-end
+      class PriceRise < Package
+        def init
+          @title = :price_rise_feed_title
+          @description = :price_rise_feed_description
+          super
+        end
+      end
     end
   end
 end

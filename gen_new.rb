@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-TEST_NAMES ='unparsed.txt'
-OUT_NAME ='spec/parslet_errors_spec.rb'
+TEST_NAMES = "unparsed.txt"
+OUT_NAME = "spec/parslet_errors_spec.rb"
 
 HEADER = %(VERBOSE_MESSAGES = false
 if File.exists?("#{Dir.pwd}/lib/oddb2xml/parslet_compositions.rb")
@@ -21,15 +21,15 @@ end
 
 to_add = {}
 lines = File.readlines(TEST_NAMES)
-lines.each do | line |
-# line = lines.first
+lines.each do |line|
+  # line = lines.first
   found = /^\s*(\d*): (.*)/.match(line)
   if found
     to_add[found[1]] = found[2] unless to_add.values.index(found[2])
   end
 end
 
-output = File.open(OUT_NAME, 'w+')
+output = File.open(OUT_NAME, "w+")
 output.puts HEADER
 to_add.each_with_index do |(iksnr, line), index|
   output.puts %(
@@ -40,7 +40,7 @@ to_add.each_with_index do |(iksnr, line), index|
       expect(composition.substances.size).to be > 1
   end
 )
-#break
+  # break
 end
 
 output.puts %(

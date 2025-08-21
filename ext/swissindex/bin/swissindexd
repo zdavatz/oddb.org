@@ -4,10 +4,9 @@
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'drb/drb'
-require 'swissindex'
+require "drb/drb"
+require "swissindex"
 
 uri = ODDB::Swissindex::SwissindexMigel::URI
 DRb.start_service(uri, ODDB::Swissindex)
 DRb.thread.join
-

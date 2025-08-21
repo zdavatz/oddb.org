@@ -1,5 +1,5 @@
 # test/test_helper.rb
-require 'simplecov'
+require "simplecov"
 SimpleCov.merge_timeout(3600) # 1hr
 SimpleCov.use_merging true
 puts "Reading #{File.expand_path(__FILE__)} merge #{SimpleCov.use_merging.inspect}"

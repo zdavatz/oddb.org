@@ -4,10 +4,9 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-require 'drb/drb'
-require 'util/oddbconfig'
-require 'meddata'
+require "drb/drb"
+require "util/oddbconfig"
+require "meddata"
 
 DRb.start_service(ODDB::MEDDATA_URI, ODDB::MedData)
 DRb.thread.join
-
