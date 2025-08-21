@@ -30,7 +30,7 @@ class TestPatinfoHpricotCimifeminDe <Minitest::Test
 
     @@path = File.join(HTML_DIR, 'de/cimifemin.html')
     @@writer = PatinfoHpricot.new
-    open(@@path) { |fh|
+    File.open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
@@ -274,7 +274,7 @@ class TestPatinfoHpricotCimifeminFr <Minitest::Test
 
     @@path = File.join(HTML_DIR, 'fr/cimifemin.html')
     @@writer = PatinfoHpricot.new
-    open(@@path) { |fh|
+    File.open(@@path) { |fh|
       @@writer.extract(Hpricot(fh))
     }
   end
@@ -316,7 +316,7 @@ class TestPatinfoHpricotInderalDe <Minitest::Test
 
     @@path = File.join(HTML_DIR, 'de/inderal.html')
     @@writer = PatinfoHpricot.new
-    open(@@path) { |fh|
+    File.open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
@@ -358,7 +358,7 @@ class TestPatinfoHpricotPonstanDe <Minitest::Test
   def setup
     @@path = File.join(HTML_DIR, 'de/ponstan.html')
     @@writer = PatinfoHpricot.new
-    open(@@path) { |fh|
+    File.open(@@path) { |fh|
       @@patinfo = @@writer.extract(Hpricot(fh))
     }
   end
@@ -400,10 +400,11 @@ end
 
         @@path = File.join(HTML_DIR, 'de/nasivin.html')
         @@writer = PatinfoHpricot.new
-        open(@@path) { |fh|
+        File.open(@@path) { |fh|
           @@patinfo = @@writer.extract(Hpricot(fh), :pi, 'Nasivin', StylesNasivin)
         }
-        File.open(File.basename(@@path.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@patinfo.to_yaml }
+        FileUtils.makedirs(ODDB::WORK_DIR)
+        File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub('.html','.yaml'))), 'w+') { |fi| fi.puts @@patinfo.to_yaml }
       end
 
       def test_composition5
@@ -613,10 +614,11 @@ class TestPatinfoHpricotChapters <Minitest::Test
 
         @@path = File.join(HTML_DIR, 'de/pi_30785_ponstan.html')
         @@writer = PatinfoHpricot.new
-        open(@@path) { |fh|
+        File.open(@@path) { |fh|
           @@patinfo = @@writer.extract(Hpricot(fh), :pi, 'Ponstan', StylesPonstan)
         }
-        File.open(File.basename(@@path.sub('.html','.yaml')), 'w+') { |fi| fi.puts @@patinfo.to_yaml }
+        FileUtils.makedirs(ODDB::WORK_DIR)
+        File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub('.html','.yaml'))), 'w+') { |fi| fi.puts @@patinfo.to_yaml }
       end
 
       def test_all_to_html
@@ -646,7 +648,7 @@ class TestPatinfoHpricotChapters <Minitest::Test
                       />Alter    Suspension     Kapseln      Zäpfchen/,
                       /#{CourierStyle}Alter    Suspension     Kapseln      Zäpfchen/,
                     ]
-        File.open(File.basename(@@path), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
+        File.open(File.join(ODDB::WORK_DIR, File.basename(@@path)), 'w+') { |x| x.puts("<HTML><BODY>"); x.write(result); x.puts("</HTML></BODY>");}
 
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")

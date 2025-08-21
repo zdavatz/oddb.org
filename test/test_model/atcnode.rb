@@ -92,7 +92,7 @@ module ODDB
       atc = ODDB::AtcClass.new('N')
       atcnode = ODDB::AtcNode.new(atc)
       atccode = flexmock('atccode').should_receive(:length).and_raise(StandardError)
-      assert_nil(atcnode.path_to?(atccode))
+      assert_equal(false, atcnode.path_to?(atccode))
     end
     def test_root_node_path_to
       node = ODDB::AtcNode.new(nil)

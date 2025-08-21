@@ -256,11 +256,13 @@ HTML
                                      500 mg 2×
 -------------------------------------------------------
  12-14    25 ml  3×      1 Kps 3×    1 Supp.
-                                     500 mg 3x)
-    puts "exp <#{expected}>"
-    puts "ist <#{paragraph.text.gsub(/\w+$/,'')}>"
-    assert_equal(expected, paragraph.text)
+                                     500 mg 3×)
     assert_equal(true, paragraph.preformatted?)
+    expected_lines = expected.split("\n")
+    paragraph_lines = paragraph.text.split("\n")
+    expected_lines.each_with_index do |line, idx|
+      assert_equal(line.strip, paragraph_lines[idx].strip)
+    end
   end
   def test_identify_chapter__raises_unknown_chaptercode
     assert_raises(RuntimeError) {

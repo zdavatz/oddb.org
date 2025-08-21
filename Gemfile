@@ -3,7 +3,6 @@ gem 'dbi', :git => 'https://github.com/zdavatz/ruby-dbi'
 # Worksround for ruby 3.1,https://stackoverflow.com/questions/70500220/rails-7-ruby-3-1-loaderror-cannot-load-such-file-net-smtp
 # https://github.com/mikel/mail/pull/1439
 gem 'yus', "1.0.6"
-
 gem 'net-smtp', require: false
 gem 'net-imap', require: false
 gem 'net-pop', require: false
@@ -47,7 +46,6 @@ gem 'multi_json'
 gem 'needle'
 gem 'net-http-digest_auth'
 gem 'net-http-persistent'
-gem 'nokogiri'
 gem 'ox'
 gem 'oddb2tdat'
 gem 'activesupport'
@@ -58,6 +56,7 @@ gem 'rclconf'
 gem 'racc'
 gem 'rack'
 gem 'rackup'
+gem 'rmagick'
 gem 'ruby-units'
 gem "rubyntlm"
 gem "rubyzip", :require => 'zip'

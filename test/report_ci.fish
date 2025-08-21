@@ -33,11 +33,11 @@ function check_rspec
     else
       echo "## Found errors in $logFile"
       string collect $res
-      set nr_errors (grep -c 'rspec .' ci_log/rspec.log)
+      set nr_errors (grep -c 'rspec .' $logFile)
       echo "Found $nr_errors rspec errors in $logFile. Expected 69"
 
       set expectedSmokeErrors 31
-      set smokeErrors (grep -c 'rspec ./spec/smoketest_spec.rb' ci_log/rspec.log)
+      set smokeErrors (grep -c 'rspec ./spec/smoketest_spec.rb' $logFile)
       if test $expectedSmokeErrors -eq $smokeErrors
         echo "Expected smokeTestErrors $smokeErrors found"
       else if test "$expectedSmokeErrors" -lt "$smokeErrors"
