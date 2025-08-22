@@ -1,97 +1,106 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # TestSponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'stub/odba'
+require "stub/odba"
 
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'model/sponsor'
-require 'util/workdir'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "model/sponsor"
+require "util/workdir"
 
 module ODDB
   class Sponsor
     attr_writer :logo_filename
     public :adjust_types
   end
-  class TestSponsor <Minitest::Test
+
+  class TestSponsor < Minitest::Test
     class StubApp
       def company_by_name(name)
-        'company_by_name'
+        "company_by_name"
       end
+
       def company(oid)
-        'company_by_oid'
+        "company_by_oid"
       end
     end
+
     class StubLogo
       attr_accessor :original_filename, :read
-    end	
+    end
+
     def setup
       @sponsor = ODDB::Sponsor.new
       @app = StubApp.new
-      @file = File.join(ODDB::WORK_DIR, 'data/sponsor/foo.gif')
-      @file2 = File.join(ODDB::WORK_DIR, 'data/sponsor/bar.jpg')
+      @file = File.join(ODDB::WORK_DIR, "data/sponsor/foo.gif")
+      @file2 = File.join(ODDB::WORK_DIR, "data/sponsor/bar.jpg")
     end
+
     def teardown
       File.delete(@file) if File.exist?(@file)
       File.delete(@file2) if File.exist?(@file2)
     end
+
     def test_adjust_types
       values = {
-        :company				=>	'ywesee',
-        :sponsor_until	=>	Date.new(2200, 12, 31),
+        company: "ywesee",
+        sponsor_until: Date.new(2200, 12, 31)
       }
       expected = {
-        :company				=>	'company_by_name',
-        :sponsor_until	=>	Date.new(2200, 12, 31),
+        company: "company_by_name",
+        sponsor_until: Date.new(2200, 12, 31)
       }
       assert_equal(expected, @sponsor.adjust_types(values, @app))
       values = {
-        :company				=>	1,
-        :sponsor_until	=>	'2200-1-0',
+        company: 1,
+        sponsor_until: "2200-1-0"
       }
       expected = {
-        :company				=>	'company_by_oid',
-        :sponsor_until	=>	nil,
+        company: "company_by_oid",
+        sponsor_until: nil
       }
       assert_equal(expected, @sponsor.adjust_types(values, @app))
       values = {
-        :company				=>	ODDB::Persistence::Pointer.new([:company, 1]),
-        :sponsor_until	=>	nil,
+        company: ODDB::Persistence::Pointer.new([:company, 1]),
+        sponsor_until: nil
       }
       expected = {
-        :company				=>	'company_by_oid',
-        :sponsor_until	=>	nil,
+        company: "company_by_oid",
+        sponsor_until: nil
       }
       assert_equal(expected, @sponsor.adjust_types(values, @app))
       values = {
-        :company				=>	nil,
-        :sponsor_until	=>	nil,
+        company: nil,
+        sponsor_until: nil
       }
       @sponsor.adjust_types(values, @app)
     end
+
     def test_company_name_robust
       assert_nil(@sponsor.company)
       @sponsor.company_name
     end
+
     def test_represents
-      comp = flexmock 'company'
-      other = flexmock 'other'
-      pac1 = flexmock :company => comp
-      pac2 = flexmock :company => other
+      comp = flexmock "company"
+      other = flexmock "other"
+      pac1 = flexmock company: comp
+      pac2 = flexmock company: other
       @sponsor.company = comp
       assert_equal true, @sponsor.represents?(pac1)
       assert_equal false, @sponsor.represents?(pac2)
     end
+
     def test_url
       assert_nil @sponsor.url
-      @sponsor.urls = { 'fr' => 'french url', 'de' => 'german url' }
-      assert_equal 'german url', @sponsor.url
-      assert_equal 'french url', @sponsor.url('fr')
-      assert_equal 'german url', @sponsor.url('en')
+      @sponsor.urls = {"fr" => "french url", "de" => "german url"}
+      assert_equal "german url", @sponsor.url
+      assert_equal "french url", @sponsor.url("fr")
+      assert_equal "german url", @sponsor.url("en")
     end
   end
 end

@@ -1,128 +1,116 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::View::Hospitals::TestHospitalList -- oddb.org -- 15.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'htmlgrid/labeltext'
-require 'view/hospitals/hospitallist'
-require 'model/company'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "htmlgrid/labeltext"
+require "view/hospitals/hospitallist"
+require "model/company"
 
 module ODDB
-	module View
+  module View
     module Hospitals
+      class TestHospitalList < Minitest::Test
+        def setup
+          @lnf = flexmock("lookandfeel",
+            lookup: "lookup",
+            attributes: {},
+            event_url: "event_url",
+            _event_url: "_event_url")
+          state = flexmock("state",
+            interval: "interval",
+            intervals: ["interval"])
+          @session = flexmock("session",
+            lookandfeel: @lnf,
+            event: "event",
+            state: state)
+          method = flexmock("method", arity: 0)
+          address = flexmock("address",
+            city: "city",
+            plz: "plz",
+            canton: "canton",
+            street: "street",
+            number: "number")
+          @model = flexmock("model",
+            name: "name",
+            method: method,
+            pointer: "pointer",
+            ean13: "ean13",
+            address: address,
+            addresses: [address],
+            narcotics: "narcotics")
+          @list = ODDB::View::Hospitals::HospitalList.new([@model], @session)
+        end
 
-class TestHospitalList <Minitest::Test
-  def setup
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :attributes => {},
-                        :event_url  => 'event_url',
-                        :_event_url => '_event_url'
-                       )
-    state    = flexmock('state', 
-                        :interval  => 'interval',
-                        :intervals => ['interval']
-                       )
-    @session = flexmock('session', 
-                        :lookandfeel => @lnf,
-                        :event       => 'event',
-                        :state       => state,
-                       )
-    method   = flexmock('method', :arity => 0)
-    address  = flexmock('address', 
-                        :city   => 'city',
-                        :plz    => 'plz',
-                        :canton => 'canton',
-                        :street => 'street',
-                        :number => 'number'
-                       )
-    @model   = flexmock('model', 
-                        :name      => 'name',
-                        :method    => method,
-                        :pointer   => 'pointer',
-                        :ean13     => 'ean13',
-                        :address   => address,
-                        :addresses => [address],
-                        :narcotics => 'narcotics'
-                       )
-    @list    = ODDB::View::Hospitals::HospitalList.new([@model], @session)
-  end
-  def test_plz
-    assert_equal('plz', @list.plz(@model))
-  end
-  def test_narcotics
-    flexmock(@model, :narcotics => 'Keine Betäubungsmittelbewilligung')
-    assert_equal('lookup', @list.narcotics(@model))
-  end
-end
-class TestHospitalsComposite <Minitest::Test
-  def test_hospital_list
-    @lnf       = flexmock('lookandfeel', 
-                          :lookup     => 'lookup',
-                          :attributes => {},
-                          :event_url  => 'event_url',
-                          :_event_url => '_event_url',
-                          :disabled?  => nil,
-                          :base_url   => 'base_url'
-                         )
-    state      = flexmock('state', 
-                          :interval  => 'interval',
-                          :intervals => ['interval']
-                         )
-    @session   = flexmock('session', 
-                          :lookandfeel => @lnf,
-                          :zone        => 'zone',
-                          :event       => 'event',
-                          :state       => state,
-                          :event       => 'event',
-                         )
-    method     = flexmock('method', :arity => 0)
-    address    = flexmock('address', 
-                          :city   => 'city',
-                          :plz    => 'plz',
-                          :canton => 'canton',
-                          :street => 'street',
-                          :number => 'number'
-                         )
-    @model     = flexmock('model', 
-                          :name      => 'name',
-                          :method    => method,
-                          :pointer   => 'pointer',
-                          :ean13     => 'ean13',
-                          :address   => address,
-                          :addresses => [address],
-                          :narcotics => 'narcotics'
-                         )
-    @composite = ODDB::View::Hospitals::HospitalsComposite.new([@model], @session)
-    assert_kind_of(ODDB::View::Hospitals::HospitalList, @composite.hospital_list([@model], @session))
-  end
-end
-class TestEmptyResultForm <Minitest::Test
-  def test_title_none_found
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :attributes => {},
-                        :_event_url => '_event_url',
-                        :disabled?  => nil,
-                        :base_url   => 'base_url'
-                       )
-    @session = flexmock('session', 
-                        :lookandfeel => @lnf,
-                        :zone        => 'zone',
-                        :persistent_user_input => 'persistent_user_input',
-                        :event       => 'event',
-                       )
-    @model   = flexmock('model')
-    @form    = ODDB::View::Hospitals::EmptyResultForm.new(@model, @session)
-    assert_equal('lookup', @form.title_none_found(@model, @session))
-  end
-end
+        def test_plz
+          assert_equal("plz", @list.plz(@model))
+        end
 
+        def test_narcotics
+          flexmock(@model, narcotics: "Keine Betäubungsmittelbewilligung")
+          assert_equal("lookup", @list.narcotics(@model))
+        end
+      end
 
+      class TestHospitalsComposite < Minitest::Test
+        def test_hospital_list
+          @lnf = flexmock("lookandfeel",
+            lookup: "lookup",
+            attributes: {},
+            event_url: "event_url",
+            _event_url: "_event_url",
+            disabled?: nil,
+            base_url: "base_url")
+          state = flexmock("state",
+            interval: "interval",
+            intervals: ["interval"])
+          @session = flexmock("session",
+            lookandfeel: @lnf,
+            zone: "zone",
+            event: "event",
+            state: state,
+            event: "event")
+          method = flexmock("method", arity: 0)
+          address = flexmock("address",
+            city: "city",
+            plz: "plz",
+            canton: "canton",
+            street: "street",
+            number: "number")
+          @model = flexmock("model",
+            name: "name",
+            method: method,
+            pointer: "pointer",
+            ean13: "ean13",
+            address: address,
+            addresses: [address],
+            narcotics: "narcotics")
+          @composite = ODDB::View::Hospitals::HospitalsComposite.new([@model], @session)
+          assert_kind_of(ODDB::View::Hospitals::HospitalList, @composite.hospital_list([@model], @session))
+        end
+      end
+
+      class TestEmptyResultForm < Minitest::Test
+        def test_title_none_found
+          @lnf = flexmock("lookandfeel",
+            lookup: "lookup",
+            attributes: {},
+            _event_url: "_event_url",
+            disabled?: nil,
+            base_url: "base_url")
+          @session = flexmock("session",
+            lookandfeel: @lnf,
+            zone: "zone",
+            persistent_user_input: "persistent_user_input",
+            event: "event")
+          @model = flexmock("model")
+          @form = ODDB::View::Hospitals::EmptyResultForm.new(@model, @session)
+          assert_equal("lookup", @form.title_none_found(@model, @session))
+        end
+      end
     end # Hospitals
-	end # View
+  end # View
 end # ODDB

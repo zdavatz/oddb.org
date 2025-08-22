@@ -1,30 +1,32 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # TestFeedback -- oddb -- 02.11.2004 -- jlang@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
-$: << File.expand_path('../../src', File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+$: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'stub/odba'
+require "stub/odba"
 
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'model/feedback'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "model/feedback"
 
 module ODDB
-	class TestFeedback <Minitest::Test
-		def setup
-			@feedback = Feedback.new
-		end
-		def test_init
+  class TestFeedback < Minitest::Test
+    def setup
+      @feedback = Feedback.new
+    end
+
+    def test_init
       ptr = Persistence::Pointer.new :feedback
-			@feedback.pointer = ptr
-			@feedback.init
+      @feedback.pointer = ptr
+      @feedback.init
       assert_equal Persistence::Pointer.new([:feedback, @feedback.oid]), ptr
       assert_equal ptr, @feedback.pointer
-		end
+    end
+
     def test_item_writer
-      item = flexmock 'item2'
+      item = flexmock "item2"
       item.should_receive(:add_feedback).with(@feedback).times(1).and_return do
         assert true
       end
@@ -34,7 +36,7 @@ module ODDB
       item.should_receive(:remove_feedback).with(@feedback).times(1).and_return do
         assert true
       end
-      other = flexmock 'item2'
+      other = flexmock "item2"
       other.should_receive(:add_feedback).with(@feedback).times(1).and_return do
         assert true
       end
@@ -42,5 +44,5 @@ module ODDB
       assert_equal other, res
       assert_equal other, @feedback.item
     end
-	end
+  end
 end

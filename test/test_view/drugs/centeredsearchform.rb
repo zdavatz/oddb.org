@@ -1,65 +1,65 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # View::Drugs::TestCenteredSearch -- oddb.org -- 18.03.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path('../..', File.dirname(__FILE__))
+$: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'stub/odba'
-require 'model/fachinfo'
-require 'flexmock/minitest'
-require 'view/drugs/centeredsearchform'
-require 'model/package'
-require 'view/resulttemplate'
-require 'custom/lookandfeelwrapper.rb'
-require 'htmlgrid/labeltext'
-require 'view/migel/product'
-require 'remote/migel/model_super'
-require 'remote/migel/model/product'
+require "minitest/autorun"
+require "stub/odba"
+require "model/fachinfo"
+require "flexmock/minitest"
+require "view/drugs/centeredsearchform"
+require "model/package"
+require "view/resulttemplate"
+require "custom/lookandfeelwrapper"
+require "htmlgrid/labeltext"
+require "view/migel/product"
+require "remote/migel/model_super"
+require "remote/migel/model/product"
 
 module ODDB
   class Session
-    DEFAULT_FLAVOR = 'gcc' unless defined?(DEFAULT_FLAVOR)
+    DEFAULT_FLAVOR = "gcc" unless defined?(DEFAULT_FLAVOR)
   end
+
   module Migel
     class Product
     end
   end
 end
 
-class TestCenteredSearchComposite <Minitest::Test
+class TestCenteredSearchComposite < Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel',                             
-                            :disabled?  => nil,
-                            :lookup     => 'lookup',
-                            :attributes => {},
-                            :_event_url => '_event_url',
-                            :zones      => ['zones'],
-                            :base_url   => 'base_url',
-                            :zone_navigation => ['zone_navigation'],
-                            :direct_event    => 'direct_event',
-                           ).by_default
+    @lookandfeel = flexmock("lookandfeel",
+      disabled?: nil,
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      zones: ["zones"],
+      base_url: "base_url",
+      zone_navigation: ["zone_navigation"],
+      direct_event: "direct_event").by_default
     @lookandfeel.should_receive(:enabled?).by_default
-    @app       = flexmock('app', :narcotics => 'narcotics')
-    @session   = flexmock('session', 
-                          :app         => @app,
-                          :lookandfeel => @lookandfeel,
-                          :zone        => 'zone',
-                          :persistent_user_input => 'persistent_user_input',
-                          :flavor => 'flavor',
-                          :search_form => 'search_form',
-                          :get_cookie_input => 'get_cookie_input',
-                          :event => 'event',
-                         )
-    @model     = flexmock('model')
+    @app = flexmock("app", narcotics: "narcotics")
+    @session = flexmock("session",
+      app: @app,
+      lookandfeel: @lookandfeel,
+      zone: "zone",
+      persistent_user_input: "persistent_user_input",
+      flavor: "flavor",
+      search_form: "search_form",
+      get_cookie_input: "get_cookie_input",
+      event: "event")
+    @model = flexmock("model")
     @composite = ODDB::View::Drugs::CenteredSearchComposite.new(@model, @session)
   end
+
   def test_init
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
+    expected = {[0, 9] => "legal-note center", [0, 7] => "legal-note"}
     assert_equal(expected, @composite.init)
   end
+
   def test_init__just_medical_structure
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
@@ -67,9 +67,10 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).never.with(:search_reset)
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
     end
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
+    expected = {[0, 9] => "legal-note center", [0, 7] => "legal-note"}
     assert_equal(expected, @composite.init)
   end
+
   def test_init__oekk_structure
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
@@ -79,10 +80,11 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:custom_tab_navigation, false)
       l.should_receive(:enabled?).once.with(:popup_links, false)
     end
-    flexmock(@app, :recent_registration_count => 'recent_registration_count')
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note"}
+    flexmock(@app, recent_registration_count: "recent_registration_count")
+    expected = {[0, 9] => "legal-note center", [0, 7] => "legal-note"}
     assert_equal(expected, @composite.init)
   end
+
   def test_init__data_counts
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
@@ -101,19 +103,19 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:atc_chooser)
       l.should_receive(:enabled?).once.with(:paypal)
     end
-    flexmock(@app, 
-             :package_count   => 'package_count',
-             :narcotics_count => 'narcotics_count',
-             :vaccine_count   => 'vaccine_count',
-             :fachinfo_count  => 'fachinfo_count',
-             :patinfo_count   => 'patinfo_count',
-             :atc_ddd_count   => 'atc_ddd_count',
-             :limitation_text_count => 'limitation_text_count',
-             :recent_registration_count => 'recent_registration_count'
-            )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 16]=>"legal-note"}
+    flexmock(@app,
+      package_count: "package_count",
+      narcotics_count: "narcotics_count",
+      vaccine_count: "vaccine_count",
+      fachinfo_count: "fachinfo_count",
+      patinfo_count: "patinfo_count",
+      atc_ddd_count: "atc_ddd_count",
+      limitation_text_count: "limitation_text_count",
+      recent_registration_count: "recent_registration_count")
+    expected = {[0, 9] => "legal-note center", [0, 7] => "legal-note", [0, 16] => "legal-note"}
     assert_equal(expected, @composite.init)
   end
+
   def test_init__facebook_fan
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:ajax, false).and_return(false)
@@ -132,197 +134,187 @@ class TestCenteredSearchComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:atc_chooser)
       l.should_receive(:enabled?).once.with(:paypal)
     end
-    flexmock(@app, 
-             :package_count   => 'package_count',
-             :narcotics_count => 'narcotics_count',
-             :vaccine_count   => 'vaccine_count',
-             :fachinfo_count  => 'fachinfo_count',
-             :patinfo_count   => 'patinfo_count',
-             :atc_ddd_count   => 'atc_ddd_count',
-             :limitation_text_count => 'limitation_text_count',
-             :recent_registration_count => 'recent_registration_count'
-            )
-    expected = {[0, 9]=>"legal-note center", [0, 7]=>"legal-note", [0, 17]=>"legal-note"}
+    flexmock(@app,
+      package_count: "package_count",
+      narcotics_count: "narcotics_count",
+      vaccine_count: "vaccine_count",
+      fachinfo_count: "fachinfo_count",
+      patinfo_count: "patinfo_count",
+      atc_ddd_count: "atc_ddd_count",
+      limitation_text_count: "limitation_text_count",
+      recent_registration_count: "recent_registration_count")
+    expected = {[0, 9] => "legal-note center", [0, 7] => "legal-note", [0, 17] => "legal-note"}
     assert_equal(expected, @composite.init)
   end
+
   def test_create_link
-    assert_kind_of(HtmlGrid::Link, @composite.create_link('text_key', 'href'))
+    assert_kind_of(HtmlGrid::Link, @composite.create_link("text_key", "href"))
   end
+
   def test_create_link__event
-    flexmock(@lookandfeel, :enabled? => true)
-    assert_kind_of(HtmlGrid::Link, @composite.create_link('text_key', 'href', true))
+    flexmock(@lookandfeel, enabled?: true)
+    assert_kind_of(HtmlGrid::Link, @composite.create_link("text_key", "href", true))
   end
+
   def test_screencast
-    flexmock(@lookandfeel, :enabled? => true)
+    flexmock(@lookandfeel, enabled?: true)
     result = @composite.screencast(@model, @session)
     assert_kind_of(HtmlGrid::Link, result)
-    assert_equal('lookup', result.href)
+    assert_equal("lookup", result.href)
   end
+
   def test_substance_count
-    flexmock(@app, :substance_count => 'substance_count')
-    assert_equal('substance_count', @composite.substance_count(@model, @session))
+    flexmock(@app, substance_count: "substance_count")
+    assert_equal("substance_count", @composite.substance_count(@model, @session))
   end
 end
 
-#class TestRssFeedbackList <Minitest::Test
-class TestRssFeedbackList   <Minitest::Test
+# class TestRssFeedbackList <Minitest::Test
+class TestRssFeedbackList < Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel', 
-                            :lookup     => 'lookup',
-                            :attributes => {},
-                            :_event_url => '_event_url'
-                           )
-    @session   = flexmock('session', :lookandfeel => @lookandfeel)
-    @item      = flexmock('item', :pointer => 'pointer')
-    @model     = flexmock('model', :item => @item)
+    @lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url")
+    @session = flexmock("session", lookandfeel: @lookandfeel)
+    @item = flexmock("item", pointer: "pointer")
+    @model = flexmock("model", item: @item)
     @composite = ODDB::View::Drugs::RssFeedbackList.new([@model], @session)
   end
+
   def test_heading
     assert_kind_of(HtmlGrid::Link, @composite.heading(@model))
   end
+
   def test_heading__package
-    flexmock(ODBA.cache, :next_id => 123)
-    flexmock(@item, 
-             :name => 'name',
-             :size => 'size',
-             :odba_instance => ODDB::Package.new('12345')
-            )
+    flexmock(ODBA.cache, next_id: 123)
+    flexmock(@item,
+      name: "name",
+      size: "size",
+      odba_instance: ODDB::Package.new("12345"))
     assert_kind_of(HtmlGrid::Link, @composite.heading(@model))
   end
+
   def test_heading__migel_product
-    flexmock(ODBA.cache, :next_id => 123)
-    flexmock(@item, 
-             :name => 'name',
-             :size => 'size',
-             :odba_instance => ODDB::Migel::Product.new
-            )
+    flexmock(ODBA.cache, next_id: 123)
+    flexmock(@item,
+      name: "name",
+      size: "size",
+      odba_instance: ODDB::Migel::Product.new)
     assert_kind_of(HtmlGrid::Link, @composite.heading(@model))
   end
 end
 
-class TestRssFeedbacks <Minitest::Test
+class TestRssFeedbacks < Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel',
-                            :lookup     => 'lookup',
-                            :attributes => {},
-                            :_event_url => '_event_url',
-                            :resource   => 'resource',
-                            :resource_global => 'resource_global'
-                           )
-    @session   = flexmock('session',
-                          :lookandfeel => @lookandfeel
-                         )
-    item       = flexmock('item', :pointer => 'pointer')
-    @model     = flexmock('model', :item => item)
+    @lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      resource: "resource",
+      resource_global: "resource_global")
+    @session = flexmock("session",
+      lookandfeel: @lookandfeel)
+    item = flexmock("item", pointer: "pointer")
+    @model = flexmock("model", item: item)
     @composite = ODDB::View::Drugs::RssFeedbacks.new([@model], @session)
   end
+
   def test_rss_image
     assert_kind_of(HtmlGrid::Link, @composite.rss_image([@model]))
   end
 end
 
-class TestFachinfoNewsList <Minitest::Test
+class TestFachinfoNewsList < Minitest::Test
   def test_name
-    lookandfeel = flexmock('lookandfeel', 
-                           :lookup     => 'lookup',
-                           :attributes => {},
-                           :_event_url => '_event_url'
-                          )
-    session = flexmock('session', 
-                       :lookandfeel => lookandfeel,
-                       :language    => 'language'
-                      )
-    registration = flexmock('registration',
-                            :iksnr => 'iksnr'
-                           )
-    model   = flexmock('model',
-                       :localized_name => 'localized_name',
-                       :registrations  => [registration]
-                      )
-    list    = ODDB::View::Drugs::FachinfoNewsList.new([model], session)
+    lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url")
+    session = flexmock("session",
+      lookandfeel: lookandfeel,
+      language: "language")
+    registration = flexmock("registration",
+      iksnr: "iksnr")
+    model = flexmock("model",
+      localized_name: "localized_name",
+      registrations: [registration])
+    list = ODDB::View::Drugs::FachinfoNewsList.new([model], session)
     assert_kind_of(HtmlGrid::Link, list.name(model))
   end
 end
 
-class TestFachinfoNews <Minitest::Test
+class TestFachinfoNews < Minitest::Test
   def test_title
-    lookandfeel = flexmock('lookandfeel', 
-                           :lookup     => 'lookup',
-                           :attributes => {},
-                           :_event_url => '_event_url',
-                           :resource   => 'resource',
-                           :resource_global => 'resource_global'
-                          )
-    session  = flexmock('sesion', 
-                        :lookandfeel => lookandfeel,
-                        :language    => 'language'
-                       )
-    revision = flexmock('revision', 
-                        :month => 'month',
-                        :year  => 'year'
-                       )
-    registration = flexmock('registration', :iksnr => 'iksnr')
-    model    = flexmock('model', 
-                        :revision       => revision,
-                        :localized_name => 'localized_name',
-                        :registrations  => [registration]
-                       )
-    news     = ODDB::View::Drugs::FachinfoNews.new([model], session)
+    lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      resource: "resource",
+      resource_global: "resource_global")
+    session = flexmock("sesion",
+      lookandfeel: lookandfeel,
+      language: "language")
+    revision = flexmock("revision",
+      month: "month",
+      year: "year")
+    registration = flexmock("registration", iksnr: "iksnr")
+    model = flexmock("model",
+      revision: revision,
+      localized_name: "localized_name",
+      registrations: [registration])
+    news = ODDB::View::Drugs::FachinfoNews.new([model], session)
     assert_kind_of(HtmlGrid::Link, news.title([model]))
   end
 end
 
-class TestSLPriceNews <Minitest::Test
+class TestSLPriceNews < Minitest::Test
   def test_title
-    lookandfeel = flexmock('lookandfeel', 
-                           :lookup     => 'lookup',
-                           :attributes => {},
-                           :_event_url => '_event_url',
-                           :resource   => 'resource',
-                           :resource_global => 'resource_global'
-                          )
-    session = flexmock('session',
-                       :rss_updates => 'rss_updates',
-                       :lookandfeel => lookandfeel,
-                      )
-    model = flexmock('model')
+    lookandfeel = flexmock("lookandfeel",
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      resource: "resource",
+      resource_global: "resource_global")
+    session = flexmock("session",
+      rss_updates: "rss_updates",
+      lookandfeel: lookandfeel)
+    model = flexmock("model")
     news = ODDB::View::Drugs::SLPriceNews.new([model], session)
     assert_kind_of(HtmlGrid::Link, news.title([model]))
   end
 end
 
-class TestGoogleAdSenseComposite <Minitest::Test
+class TestGoogleAdSenseComposite < Minitest::Test
   def setup
-    @lookandfeel = flexmock('lookandfeel',
-                            :enabled?     => nil,
-                            :disabled?    => nil,
-                            :lookup       => 'lookup',
-                            :attributes   => {},
-                            :_event_url   => '_event_url',
-                            :zones        => ['zones'],
-                            :base_url     => 'base_url',
-                            :zone_navigation => ['zone_navigation'],
-                            :direct_event => 'direct_event'
-                           ).by_default
-    @app       = flexmock('app')
-    @session   = flexmock('session', 
-                          :lookandfeel => @lookandfeel,
-                          :app         => @app,
-                          :persistent_user_input => 'persistent_user_input',
-                          :zone        => 'zone',
-                          :flavor      => 'flavor',
-                          :search_form => 'search_form',
-                          :get_cookie_input => 'get_cookie_input',
-                          :event => 'event',
-                         ).by_default
-    @model     = flexmock('model').by_default
+    @lookandfeel = flexmock("lookandfeel",
+      enabled?: nil,
+      disabled?: nil,
+      lookup: "lookup",
+      attributes: {},
+      _event_url: "_event_url",
+      zones: ["zones"],
+      base_url: "base_url",
+      zone_navigation: ["zone_navigation"],
+      direct_event: "direct_event").by_default
+    @app = flexmock("app")
+    @session = flexmock("session",
+      lookandfeel: @lookandfeel,
+      app: @app,
+      persistent_user_input: "persistent_user_input",
+      zone: "zone",
+      flavor: "flavor",
+      search_form: "search_form",
+      get_cookie_input: "get_cookie_input",
+      event: "event").by_default
+    @model = flexmock("model").by_default
     @composite = ODDB::View::Drugs::GoogleAdSenseComposite.new(@model, @session)
   end
+
   def test_rss_feeds_left
     flexmock(@session,
-             :language    => 'language',
-             :rss_updates => 'rss_updates',
-            )
+      language: "language",
+      rss_updates: "rss_updates")
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:recall_rss).and_return(false)
       l.should_receive(:enabled?).once.with(:hpc_rss).and_return(false)
@@ -334,19 +326,16 @@ class TestGoogleAdSenseComposite <Minitest::Test
       l.should_receive(:enabled?).once.with(:price_cut_rss).and_return(true)
       l.should_receive(:enabled?).once.with(:price_rise_rss).and_return(true)
     end
-    revision      = flexmock('revision', 
-                             :month => 'month',
-                             :year  => 'year'
-                            )
-    registration  = flexmock('registration', :iksnr => 'iksnr')
-    fachinfo_news = flexmock('fachinfo_news', 
-                             :revision       => revision,
-                             :localized_name => 'localized_name',
-                             :registrations  => [registration]
-                            )
+    revision = flexmock("revision",
+      month: "month",
+      year: "year")
+    registration = flexmock("registration", iksnr: "iksnr")
+    fachinfo_news = flexmock("fachinfo_news",
+      revision: revision,
+      localized_name: "localized_name",
+      registrations: [registration])
     flexmock(@model,
-             :fachinfo_news => [fachinfo_news]
-            )
+      fachinfo_news: [fachinfo_news])
     result = @composite.rss_feeds_left(@model, @session)
     assert_equal(4, result.length)
     assert_kind_of(ODDB::View::Drugs::FachinfoNews, result[0])
@@ -354,6 +343,7 @@ class TestGoogleAdSenseComposite <Minitest::Test
     assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[2])
     assert_kind_of(ODDB::View::Drugs::SLPriceNews, result[3])
   end
+
   def test_rss_feeds_right
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
@@ -361,32 +351,30 @@ class TestGoogleAdSenseComposite <Minitest::Test
       l.should_receive(:resource)
       l.should_receive(:resource_global)
     end
-    item     = flexmock('item', :pointer => 'pointer')
-    feedback = flexmock('feedback', :item => item)
-    flexmock(@model, :feedbacks => [feedback])
+    item = flexmock("item", pointer: "pointer")
+    feedback = flexmock("feedback", item: item)
+    flexmock(@model, feedbacks: [feedback])
     assert_kind_of(ODDB::View::Drugs::RssFeedbacks, @composite.rss_feeds_right(@model, @session))
   end
+
   def test_rss_fake_admin_php
     flexmock(@session,
-             :language    => 'en_US',
-             :rss_updates => 'rss_updates',
-             :request_path => 'test/wp-admin/setup-config.php?language=en_US',
-            )
+      language: "en_US",
+      rss_updates: "rss_updates",
+      request_path: "test/wp-admin/setup-config.php?language=en_US")
     flexmock(@lookandfeel) do |l|
       l.should_receive(:enabled?).once.with(:rss_box).and_return(true)
       l.should_receive(:enabled?).once.with(:fachinfo_rss).and_return(true)
       l.should_receive(:resource)
       l.should_receive(:resource_global)
     end
-    revision      = flexmock('revision',
-                             :month => 'month',
-                             :year  => 'year'
-                            )
-    registration  = flexmock('registration', :iksnr => 'iksnr')
-    fachinfo_news = flexmock('fachinfo_news', ODDB::Fachinfo.new)
+    flexmock("revision",
+      month: "month",
+      year: "year")
+    flexmock("registration", iksnr: "iksnr")
+    fachinfo_news = flexmock("fachinfo_news", ODDB::Fachinfo.new)
     flexmock(@model,
-             :fachinfo_news => [fachinfo_news]
-            )
+      fachinfo_news: [fachinfo_news])
     result = @composite.rss_feeds_left(@model, @session)
     assert_equal(0, result.length)
   end

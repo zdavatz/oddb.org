@@ -1,34 +1,35 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::Refdata::RefdataArticle -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('../../../src', File.dirname(__FILE__))
-$: << File.expand_path('../../../test', File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../../../test", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'refdata'
-require 'test_helpers'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "refdata"
+require "test_helpers"
 module ODDB
+  class TestRefdataArticleFromUrl < Minitest::Test
+    def stdout_null
+      require "tempfile"
+      $stdout = Tempfile.open("stderr")
+      yield
+    ensure
+      $stdout.close
+      $stdout = STDERR
+    end
 
-  class TestRefdataArticleFromUrl <Minitest::Test
-      def stdout_null
-        require 'tempfile'
-        $stdout = Tempfile.open('stderr')
-        yield
-      ensure
-        $stdout.close
-        $stdout = STDERR
-      end
     def setup
       TestHelpers.vcr_setup
       @@refdata_article ||= ODDB::Refdata::RefdataArticle.new
     end
+
     def teardown
       TestHelpers.vcr_teardown
     end
+
     def test_search_item_by_pharmacode
       # this is an integration test and will query refdata.ch
       result = @@refdata_article.search_item(TestHelpers::LEVETIRACETAM_PHAR)
@@ -40,17 +41,16 @@ module ODDB
       result = @@refdata_article.search_item(TestHelpers::LEVETIRACETAM_GTIN)
       assert_equal(TestHelpers::LEVETIRACETAM_GTIN.to_s, result[:gtin])
       assert_equal(TestHelpers::LEVETIRACETAM_NAME_DE, result[:name_de])
-      expected = {:gtin => TestHelpers::LEVETIRACETAM_GTIN.to_s,
-                  :name_de => TestHelpers::LEVETIRACETAM_NAME_DE,
-                  :name_fr => 'LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce',
-                  :name_it => 'LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce',
-                  :name_en => 'LEVETIRACETAM DESITIN Mini Filmtab 250 mg 30 Stk',
-                  :type => 'Pharma',
-                  :swmc_authnr => '62069008',
-                  :auth_holder_name => 'Desitin Pharma GmbH',
-                  :auth_holder_gln => '7601001320451',
-                  :atc => 'N03AX14',
-                  }
+      expected = {gtin: TestHelpers::LEVETIRACETAM_GTIN.to_s,
+                  name_de: TestHelpers::LEVETIRACETAM_NAME_DE,
+                  name_fr: "LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce",
+                  name_it: "LEVETIRACETAM DESITIN mini cpr pel 250 mg 30 pce",
+                  name_en: "LEVETIRACETAM DESITIN Mini Filmtab 250 mg 30 Stk",
+                  type: "Pharma",
+                  swmc_authnr: "62069008",
+                  auth_holder_name: "Desitin Pharma GmbH",
+                  auth_holder_gln: "7601001320451",
+                  atc: "N03AX14"}
       assert_equal(expected, result)
     end
 
@@ -61,16 +61,16 @@ module ODDB
     end
 
     def test_search_item__error
-      pharmacode = '1234567'
+      pharmacode = "1234567"
       assert_nil(@@refdata_article.search_item(pharmacode))
     end
+
     def test_download_all
       puts "IntegrationTest: Download_all Pharma takes a few seconds"
-      result = @@refdata_article.download_all
-      @@refdata_article.items['Pharma'].size
-      assert_operator 1000, :<=, @@refdata_article.items['Pharma'].size
-      assert_operator 100, :<=, @@refdata_article.items['NonPharma'].size
+      @@refdata_article.download_all
+      @@refdata_article.items["Pharma"].size
+      assert_operator 1000, :<=, @@refdata_article.items["Pharma"].size
+      assert_operator 100, :<=, @@refdata_article.items["NonPharma"].size
     end
   end
-
 end # ODDB

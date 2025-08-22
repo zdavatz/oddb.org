@@ -1,19 +1,18 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-# ODDB::View::TestPointerSteps -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com 
-# ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com 
 
-$: << File.expand_path('..', File.dirname(__FILE__))
+# ODDB::View::TestPointerSteps -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com
+
+$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'model/company'
-require 'model/galenicgroup'
-require 'model/doctor'
-require 'view/pointersteps'
-require 'stub/cgi'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "model/company"
+require "model/galenicgroup"
+require "model/doctor"
+require "view/pointersteps"
+require "stub/cgi"
 
 class String
   def to_csv
@@ -22,197 +21,227 @@ class String
 end
 
 module ODDB
-	module View	
-		class StubPointerStepsModel
-			attr_writer :ancestors, :pointer_descr_enable
-			def initialize
-				@pointer_descr_enable = true
-			end
-			def ancestors(arg=nil)
-				@ancestors
-			end
-			def pointer_descr
-				'bon'
-			end
-			def respond_to?(symbol)
-				if symbol==:pointer_descr
-					@pointer_descr_enable
-				else
-					super
-				end
-			end
-			def pointer
-				self
-			end
-      def to_csv
-        self.to_s
+  module View
+    class StubPointerStepsModel
+      attr_writer :ancestors, :pointer_descr_enable
+      def initialize
+        @pointer_descr_enable = true
       end
-		end
-		class StubPointerStepsAncestor
-			attr_reader :pointer_descr
-			def initialize(pointer_descr)
-				@pointer_descr = pointer_descr
-			end
-			def pointer
-				"-" + @pointer_descr + "-"
-			end
-		end
-		class StubPointerStepsSession
-			attr_reader :app, :state
+
+      def ancestors(arg = nil)
+        @ancestors
+      end
+
+      def pointer_descr
+        "bon"
+      end
+
+      def respond_to?(symbol)
+        if symbol == :pointer_descr
+          @pointer_descr_enable
+        else
+          super
+        end
+      end
+
+      def pointer
+        self
+      end
+
+      def to_csv
+        to_s
+      end
+    end
+
+    class StubPointerStepsAncestor
+      attr_reader :pointer_descr
+      def initialize(pointer_descr)
+        @pointer_descr = pointer_descr
+      end
+
+      def pointer
+        "-" + @pointer_descr + "-"
+      end
+    end
+
+    class StubPointerStepsSession
+      attr_reader :app, :state
       def initialize
         @state = StubPointerStepsState.new
       end
+
       def allowed?(key, data)
         true
       end
-			def attributes(key)
-				{}
-			end
+
+      def attributes(key)
+        {}
+      end
+
       def enabled?(key)
         true
       end
-			def direct_event
-				'bon'
-			end
+
+      def direct_event
+        "bon"
+      end
+
       def disabled?(key)
         false
       end
-			def _event_url(*args)
-				(['http://www.oddb.org/de/gcc'] + args).join('/')
-			end
-			def language
-				'de'
-			end
-			def lookandfeel
-				self
-			end
-			def lookup(key)
-				key.to_s.capitalize unless /_title$/.match(key.to_s)
-			end
-      def user_agent
-        'TEST'
-      end
-			def zone
-				'drugs'
-			end
-		end
-		class StubPointerStepsState
-      attr_accessor :snapback_model
-		end
-		class StubPointerStepsContainer
-			def snapback
-				["backsnap", "url"]
-			end
-		end
 
-		class TestPointerSteps <Minitest::Test
-			def setup 
-				@model = StubPointerStepsModel.new
-				@session = StubPointerStepsSession.new
-				@container = StubPointerStepsContainer.new
-			end
-			def test_to_html1
-				steps = View::PointerSteps.new(@model, @session, @container)
-				expected = <<-EOS
-<TABLE cellspacing="0">
-  <TR>
-    <TD class="breadcrumbs">
-      Th_pointer_descr
-      <A name="backsnap" href="url" class="breadcrumbs">
-        Backsnap
-      </A>
-      #{View::PointerSteps::STEP_DIVISOR}bon
-    </TD>
-  </TR>
-</TABLE>
-				EOS
-				assert_equal(expected, CGI.pretty(steps.to_html(CGI.new)))
-			end
-			def test_to_html2
-        @session.state.snapback_model = StubPointerStepsAncestor.new('foo')
-				steps = View::PointerSteps.new(@model, @session, @container)
-				expected = <<-EOS
-<TABLE cellspacing="0">
-<TR>
-<TD class="breadcrumbs">Th_pointer_descr
-<A name="backsnap" href="url" class="breadcrumbs">Backsnap
-</A>
-&nbsp;-&nbsp;
-<A class="list" href="http://www.oddb.org/de/gcc/resolve/{&quot;pointer&quot;=&gt;&quot;-foo-&quot;}" name="pointer_descr">foo
-</A>
-&nbsp;-&nbsp;
-bon
-</TD>
-</TR>
-</TABLE>
+      def _event_url(*args)
+        (["http://www.oddb.org/de/gcc"] + args).join("/")
+      end
+
+      def language
+        "de"
+      end
+
+      def lookandfeel
+        self
+      end
+
+      def lookup(key)
+        key.to_s.capitalize unless /_title$/.match?(key.to_s)
+      end
+
+      def user_agent
+        "TEST"
+      end
+
+      def zone
+        "drugs"
+      end
+    end
+
+    class StubPointerStepsState
+      attr_accessor :snapback_model
+    end
+
+    class StubPointerStepsContainer
+      def snapback
+        ["backsnap", "url"]
+      end
+    end
+
+    class TestPointerSteps < Minitest::Test
+      def setup
+        @model = StubPointerStepsModel.new
+        @session = StubPointerStepsSession.new
+        @container = StubPointerStepsContainer.new
+      end
+
+      def test_to_html1
+        steps = View::PointerSteps.new(@model, @session, @container)
+        expected = <<~EOS
+          <TABLE cellspacing="0">
+            <TR>
+              <TD class="breadcrumbs">
+                Th_pointer_descr
+                <A name="backsnap" href="url" class="breadcrumbs">
+                  Backsnap
+                </A>
+                #{View::PointerSteps::STEP_DIVISOR}bon
+              </TD>
+            </TR>
+          </TABLE>
         EOS
-				assert_equal(expected.gsub(' ', '').tr("\n", ""), steps.to_html(CGI.new).gsub(' ', ''))
-			end
-			def test_to_html3
-				@model.pointer_descr_enable = false
-				steps = View::PointerSteps.new(@model, @session, @container)
-				expected = <<-EOS
-<TABLE cellspacing="0">
-<TR>
-<TD class="breadcrumbs">Th_pointer_descr
-<A name="backsnap" href="url" class="breadcrumbs">Backsnap</A>
-</TD>
-</TR>
-</TABLE>
-				EOS
-				assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
-			end
+        assert_equal(expected, CGI.pretty(steps.to_html(CGI.new)))
+      end
+
+      def test_to_html2
+        @session.state.snapback_model = StubPointerStepsAncestor.new("foo")
+        steps = View::PointerSteps.new(@model, @session, @container)
+        expected = <<~EOS
+          <TABLE cellspacing="0">
+          <TR>
+          <TD class="breadcrumbs">Th_pointer_descr
+          <A name="backsnap" href="url" class="breadcrumbs">Backsnap
+          </A>
+          &nbsp;-&nbsp;
+          <A class="list" href="http://www.oddb.org/de/gcc/resolve/{&quot;pointer&quot;=&gt;&quot;-foo-&quot;}" name="pointer_descr">foo
+          </A>
+          &nbsp;-&nbsp;
+          bon
+          </TD>
+          </TR>
+          </TABLE>
+        EOS
+        assert_equal(expected.delete(" ").tr("\n", ""), steps.to_html(CGI.new).delete(" "))
+      end
+
+      def test_to_html3
+        @model.pointer_descr_enable = false
+        steps = View::PointerSteps.new(@model, @session, @container)
+        expected = <<~EOS
+          <TABLE cellspacing="0">
+          <TR>
+          <TD class="breadcrumbs">Th_pointer_descr
+          <A name="backsnap" href="url" class="breadcrumbs">Backsnap</A>
+          </TD>
+          </TR>
+          </TABLE>
+        EOS
+        assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
+      end
+
       def test_compose
-        flexmock(@model, :structural_ancestors => [@model])
-				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        flexmock(@model, structural_ancestors: [@model])
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_equal(0, steps.compose(@model))
       end
+
       def test_compose_footer
-        flexmock(@model, :is_a? => true)
-				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        flexmock(@model, is_a?: true)
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_equal(0, steps.compose_footer)
       end
+
       def test_compose_snapback
-        flexmock(@session, :lookup => nil)
-        offset = [0,0]
-				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        flexmock(@session, lookup: nil)
+        offset = [0, 0]
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_equal([0, 0], steps.compose_snapback(offset))
       end
+
       def test_pointer_descr
-        flexmock(@session, :allowed? => nil)
-				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        flexmock(@session, allowed?: nil)
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_kind_of(ODDB::View::PointerLink, steps.pointer_descr(@model, @session))
       end
+
       def test_pointer_descr_smart_link
-        flexmock(@session, :allowed? => nil)
-        flexmock(@model, :pointer => "registration, 12345, sequence, 012, package, 01")
-				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        flexmock(@session, allowed?: nil)
+        flexmock(@model, pointer: "registration, 12345, sequence, 012, package, 01")
+        steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_kind_of(ODDB::View::PointerLink, steps.pointer_descr(@model, @session))
       end
+
       class StubSnapback
         include ODDB::View::Snapback
         def initialize(model, session)
-          @model   = model
+          @model = model
           @session = session
         end
       end
+
       def test_snapback
-        previous_state = flexmock('previous_state', 
-                                  :snapback_event      => 'snapback_event',
-                                  :direct_request_path => 'direct_request_path',
-                                  :previous            => nil
-                                 )
-        state     = flexmock('state', 
-                             :direct_event   => nil,
-                             :previous       => previous_state,
-                             :snapback_event => 'snapback_event'
-                            )
-        @session  = flexmock('session', :state => state)
-        @model    = flexmock('model')
+        previous_state = flexmock("previous_state",
+          snapback_event: "snapback_event",
+          direct_request_path: "direct_request_path",
+          previous: nil)
+        state = flexmock("state",
+          direct_event: nil,
+          previous: previous_state,
+          snapback_event: "snapback_event")
+        @session = flexmock("session", state: state)
+        @model = flexmock("model")
         @snapback = ODDB::View::TestPointerSteps::StubSnapback.new(@model, @session)
         expected = ["snapback_event", "direct_request_path"]
         assert_equal(expected, @snapback.snapback)
       end
+
       def test_init__pointervalue_drb
         flexmock(@model) do |m|
           m.should_receive(:is_a?).with(ODDB::LimitationText)
@@ -221,6 +250,7 @@ bon
         steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         refute_nil(steps)
       end
+
       def test_init__pointervalue_symbol
         flexmock(@model) do |m|
           m.should_receive(:is_a?).with(ODDB::LimitationText)
@@ -230,7 +260,6 @@ bon
         steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         refute_nil(steps)
       end
-
-		end
-	end
+    end
+  end
 end
