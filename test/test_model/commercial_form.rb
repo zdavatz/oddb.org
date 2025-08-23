@@ -13,7 +13,7 @@ module ODDB
     def setup
       flexmock(ODBA.cache, next_id: 123)
       @form = ODDB::CommercialForm.new
-      flexmock("pointer", append: "append")
+      pointer = flexmock("pointer", append: "append")
       @form.instance_eval("@pointer = pointer", __FILE__, __LINE__)
     end
 

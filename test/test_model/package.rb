@@ -10,6 +10,7 @@ require "model/atcclass"
 require "flexmock/minitest"
 require "model/registration"
 require "model/fachinfo"
+require "ostruct"
 begin require "debug"; rescue LoadError; end # ignore error when debug cannot be loaded (for Jenkins-CI)
 module ODDB
   class PackageCommon

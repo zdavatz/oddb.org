@@ -123,7 +123,7 @@ module ODDB
 
         def test_parse_fachinfo
           # This is a testcase of a private method
-          flexmock("file", read: nil)
+          file = flexmock("file", read: nil)
           drb = flexmock("drb", parse_fachinfo_type: "result")
           flexmock(DRb::DRbObject, new: drb)
           assert_equal("result", @reg.instance_eval('parse_fachinfo("type", file)', __FILE__, __LINE__))
@@ -132,7 +132,7 @@ module ODDB
         def test_parse_fachinfo__argument_error
           # This is a testcase of a private method
           flexmock(@lnf, lookup: "lookup")
-          flexmock("file") do |f|
+          file = flexmock("file") do |f|
             f.should_receive(:read).and_raise(ArgumentError)
           end
           drb = flexmock("drb", parse_fachinfo_type: "result")
@@ -143,7 +143,7 @@ module ODDB
         def test_parse_fachinfo__standard_error
           # This is a testcase of a private method
           flexmock(@lnf, lookup: "lookup")
-          flexmock("file") do |f|
+          file = flexmock("file") do |f|
             f.should_receive(:read).and_raise(StandardError)
           end
           drb = flexmock("drb", parse_fachinfo_type: "result")

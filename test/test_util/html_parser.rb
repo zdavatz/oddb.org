@@ -430,7 +430,7 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_add_child
     current_row = ODDB::HtmlTableHandler::Row.new({})
-    ODDB::HtmlTableHandler::Cell.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
     current_row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     @handler.instance_eval("@current_row = current_row", __FILE__, __LINE__)
     assert_equal(["child"], @handler.add_child("child"))
@@ -438,10 +438,10 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_children
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows = [row]
     cell = ODDB::HtmlTableHandler::Cell.new({})
     cell.add_child("child")
-    [cell]
+    cells = [cell]
     row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @handler.instance_eval("@rows = rows", __FILE__, __LINE__)
     assert_equal(["child"], @handler.children(0, 0))
@@ -453,7 +453,7 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_current_colspan
     current_row = ODDB::HtmlTableHandler::Row.new({})
-    ODDB::HtmlTableHandler::Cell.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
     current_row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     @handler.instance_eval("@current_row = current_row", __FILE__, __LINE__)
     assert_equal(1, @handler.current_colspan)
@@ -461,7 +461,7 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_each_row
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows = [row]
     @handler.each_row do |r|
       assert_equal(row, r)
     end
@@ -469,7 +469,7 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_next_line
     current_row = ODDB::HtmlTableHandler::Row.new({})
-    ODDB::HtmlTableHandler::Cell.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
     current_row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     @handler.instance_eval("@current_row = current_row", __FILE__, __LINE__)
     assert_equal(["", ""], @handler.next_line)
@@ -477,10 +477,10 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_next_cell
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows = [row]
     cell = ODDB::HtmlTableHandler::Cell.new({"rowspan" => "2"})
     cell.add_child("child")
-    [cell, cell]
+    cells = [cell, cell]
     row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @handler.instance_eval("@rows = rows", __FILE__, __LINE__)
     assert_kind_of(ODDB::HtmlTableHandler::Cell, @handler.next_cell({}))
@@ -488,10 +488,11 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_to_s
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows =[row]
     cell = ODDB::HtmlTableHandler::Cell.new({"rowspan" => "2", "colspan" => "2"})
+    cdata = ['data']
     cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
-    [cell, cell]
+    cells = [cell, cell]
     row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @handler.instance_eval("@rows = rows", __FILE__, __LINE__)
     expected = "------\ndata  \n------\n"
@@ -500,10 +501,11 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_to_s__colspan_1
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows =[row]
     cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
+    cells = [cell, cell]
     cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
-    [cell, cell]
     row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @handler.instance_eval("@rows = rows", __FILE__, __LINE__)
     expected = "----------\ndata  data\n----------\n"
@@ -516,10 +518,11 @@ class TestHtmlTableHandler < Minitest::Test
 
   def test_width
     row = ODDB::HtmlTableHandler::Row.new({})
-    [row]
+    rows = [row]
     cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
     cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
-    [cell, cell]
+    cells = [cell, cell]
     row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @handler.instance_eval("@rows = rows", __FILE__, __LINE__)
     assert_equal(10, @handler.width)
@@ -582,6 +585,8 @@ class TestHtmlTableHandlerCell < Minitest::Test
   end
 
   def test_formatted_cdata
+    cdata = ['data']
+    formats = [[[0, 'format']]]
     @cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
     @cell.instance_eval("@formats = formats", __FILE__, __LINE__)
     expected = ["formatdata"]
@@ -593,6 +598,7 @@ class TestHtmlTableHandlerCell < Minitest::Test
   end
 
   def test_height
+    cdata = ['data']
     @cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
     assert_equal(1, @cell.height)
   end
@@ -606,6 +612,7 @@ class TestHtmlTableHandlerCell < Minitest::Test
   end
 
   def test_width
+    cdata = ['data']
     @cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
     assert_equal(4, @cell.width)
   end
@@ -619,6 +626,7 @@ class TestHtmlTableHandlerRow < Minitest::Test
 
   def test_add_child
     ODDB::HtmlTableHandler::Cell.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
     @row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     assert_equal(["child"], @row.add_child("child"))
   end
@@ -631,14 +639,15 @@ class TestHtmlTableHandlerRow < Minitest::Test
   end
 
   def test_current_colspan
-    ODDB::HtmlTableHandler::Cell.new({})
+    current_row = ODDB::HtmlTableHandler::Row.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
     @row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     assert_equal(1, @row.current_colspan)
   end
 
   def test_each_cell_with_index
     cell = ODDB::HtmlTableHandler::Cell.new({})
-    [cell]
+    cells = [cell]
     @row.instance_eval("@cells = cells", __FILE__, __LINE__)
     @row.each_cell_with_index do |c, i|
       assert_equal(cell, c)
@@ -647,14 +656,15 @@ class TestHtmlTableHandlerRow < Minitest::Test
 
   def test_height
     cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
     cell.instance_eval("@cdata = cdata", __FILE__, __LINE__)
-    [cell]
+    cells = [cell]
     @row.instance_eval("@cells = cells", __FILE__, __LINE__)
     assert_equal(1, @row.height)
   end
 
   def test_next_line
-    ODDB::HtmlTableHandler::Cell.new({})
+    current_cell= ODDB::HtmlTableHandler::Cell.new({})
     @row.instance_eval("@current_cell = current_cell", __FILE__, __LINE__)
     assert_equal(["", ""], @row.next_line)
   end

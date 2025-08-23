@@ -25,7 +25,7 @@ module ODDB
 
     def replace_constant(constant, temp)
       stderr_null do
-        eval constant
+        keep = eval constant
         eval "#{constant} = temp"
         yield
         eval "#{constant} = keep"

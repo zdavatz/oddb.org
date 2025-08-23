@@ -64,13 +64,13 @@ module ODDB
 
     def test__composition_scale
       dose = flexmock("dose", scale: "scale")
-      flexmock("composition", doses: [dose])
+      composition = flexmock("composition", doses: [dose])
       @part.instance_eval("@composition = composition", __FILE__, __LINE__)
       assert_equal("scale", @part._composition_scale)
     end
 
     def test_init
-      flexmock("pointer", append: "append")
+      pointer = flexmock("pointer", append: "append")
       @part.instance_eval("@pointer = pointer", __FILE__, __LINE__)
       assert_equal("append", @part.init("app"))
     end
@@ -85,7 +85,7 @@ module ODDB
 
     def test_fix_pointers
       flexmock(@part, odba_store: "odba_store")
-      flexmock("package", pointer: [])
+      package = flexmock("package", pointer: [])
       @part.instance_eval("@package = package", __FILE__, __LINE__)
       assert_equal("odba_store", @part.fix_pointers)
     end
@@ -117,7 +117,7 @@ module ODDB
       flexmock(ODDB::Persistence::Pointer).new_instances do |p|
         p.should_receive(:resolve).and_return("resolve")
       end
-      {"key" => Persistence::Pointer.new, :measure => "1.0", :multi => "2.0"}
+      values = {"key" => Persistence::Pointer.new, :measure => "1.0", :multi => "2.0"}
       expected = {:measure => Quanty(1, ""), :multi => 2, "key" => "resolve"}
       assert_equal(expected, @part.instance_eval("adjust_types(values)", __FILE__, __LINE__))
     end

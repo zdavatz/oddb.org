@@ -173,7 +173,7 @@ module ODDB
 
         def test__patinfo_deprived_sequences
           flexmock(@state, patinfo_deprived_sequences: "patinfo_deprived_sequences")
-          flexmock("previous", direct_event: :patinfo_deprived_sequences)
+          previous = flexmock("previous", direct_event: :patinfo_deprived_sequences)
           @state.instance_eval("@previous = previous", __FILE__, __LINE__)
           assert_equal("patinfo_deprived_sequences", @state._patinfo_deprived_sequences)
         end

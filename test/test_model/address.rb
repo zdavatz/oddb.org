@@ -162,9 +162,7 @@ module ODDB
   end
 
   class TestAddress2 < Minitest::Test
-    puts 1
     def setup
-      puts __LINE__
       @address = ODDB::Address2.new
     end
 
@@ -257,7 +255,7 @@ module ODDB
     end
 
     def test_init
-      flexmock("pointer", append: "append")
+      pointer = flexmock("pointer", append: "append")
       @suggestion.instance_eval("@pointer = pointer", __FILE__, __LINE__)
       assert_equal("append", @suggestion.init)
     end

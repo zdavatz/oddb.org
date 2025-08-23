@@ -42,7 +42,7 @@ module ODDB
         name_base: "name_base",
         pointer: "pointer",
         registrations: [registration])
-      {"company_name" => [fachinfo]}
+      companies = {'company_name' => [fachinfo]}
       @plugin.instance_eval("@companies = companies", __FILE__, __LINE__)
       expected = "company_name\nname_base:\n  https://#{SERVER_NAME}/de/gcc/fachinfo/reg/iksnr\n\n"
       assert_equal(expected, @plugin.report)

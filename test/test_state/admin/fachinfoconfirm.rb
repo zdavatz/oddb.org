@@ -243,7 +243,7 @@ module ODDB
             ses.should_receive(:registration).and_return(reg)
             ses.should_receive(:user)
           end
-          flexmock("previous") do |pre|
+          previous = flexmock("previous") do |pre|
             pre.should_receive(:previous).and_return("previous")
           end
           @state.instance_eval("@previous = previous", __FILE__, __LINE__)
@@ -288,7 +288,7 @@ module ODDB
         end
 
         def test_back
-          flexmock("previous", previous: "previous")
+          previous = flexmock("previous", previous: "previous")
           @state.instance_eval("@previous = previous", __FILE__, __LINE__)
           assert_equal("previous", @state.back)
         end
@@ -310,7 +310,7 @@ module ODDB
           flexmock(@app,
             update: update,
             replace_fachinfo: "replace_fachinfo")
-          flexmock("previous", previous: "previous")
+          previous = flexmock("previous", previous: "previous")
           @state.instance_eval("@previous = previous", __FILE__, __LINE__)
           assert_equal("previous", @state.update)
         end

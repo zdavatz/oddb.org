@@ -19,7 +19,7 @@ module ODDB
           lookup: "lookup",
           base_url: "base_url")
         component = flexmock("component", update: "update")
-        {[0, 0] => component}
+        components = {[0, 0] => component}
         unless defined?(ODDB::View::FeedbackForm::COMPONENTS)
           instance_eval("ODDB::View::FeedbackForm::COMPONENTS = components", __FILE__, __LINE__)
         end
@@ -116,7 +116,7 @@ module ODDB
     class TestFeedbackList < Minitest::Test
       def setup
         component = flexmock("component", update: "update")
-        {[0, 0] => component}
+        components = {[0, 0] => component}
         unless defined?(ODDB::View::FeedbackList::COMPONENTS)
           instance_eval("ODDB::View::FeedbackList::COMPONENTS = components", __FILE__, __LINE__)
         end

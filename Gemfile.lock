@@ -215,7 +215,7 @@ GEM
       rubocop-ast (>= 1.38.0, < 2.0)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.13.0)
-    ruby-units (2.3.2)
+    ruby-units (4.1.0)
     rubyXL (3.4.25)
       nokogiri (>= 1.10.8)
       rubyzip (>= 1.3.0)

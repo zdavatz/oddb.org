@@ -21,7 +21,7 @@ module ODDB
     end
 
     def test_init
-      flexmock("pointer", append: "append")
+      pointer = flexmock("pointer", append: "append")
       @composition.instance_eval("@pointer = pointer", __FILE__, __LINE__)
       assert_equal("append", @composition.init("app"))
     end
@@ -61,7 +61,7 @@ module ODDB
         checkout: "checkout",
         odba_delete: "odba_delete",
         is_active_agent: true)
-      flexmock([agent], odba_delete: "odba_delete")
+      agents = flexmock([agent], odba_delete: "odba_delete")
       @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
       assert_equal("odba_delete", @composition.checkout)
     end
@@ -100,7 +100,7 @@ module ODDB
     end
 
     def test_doses
-      flexmock("agent",
+      agent = flexmock("agent",
         same_as?: true,
         dose: "dose",
         is_active_agent: true)
@@ -121,13 +121,13 @@ module ODDB
     end
 
     def test_substances
-      flexmock("agent", substance: "substance", is_active_agent: true)
+      agent = flexmock("agent", substance: "substance", is_active_agent: true)
       @composition.instance_eval("@active_agents = [agent]", __FILE__, __LINE__)
       assert_equal(["substance"], @composition.substances)
     end
 
     def test_to_s
-      flexmock("agent", to_s: "agent", is_active_agent: true)
+      agent = flexmock("agent", to_s: "agent", is_active_agent: true)
       @composition.instance_eval("@active_agents = [agent]", __FILE__, __LINE__)
       galenic_form = flexmock("galenic_form", to_s: "galenic_form")
       @composition.galenic_form = galenic_form
@@ -135,7 +135,7 @@ module ODDB
     end
 
     def test_multiply
-      flexmock("agent",
+      agent = flexmock("agent",
         :dose => 1,
         :dose= => nil)
       @composition.instance_eval("@active_agents = [agent]", __FILE__, __LINE__)
@@ -147,7 +147,7 @@ module ODDB
     end
 
     def test_comparison
-      flexmock("agent", same_as?: true, is_active_agent: true)
+      agent = flexmock("agent", same_as?: true, is_active_agent: true)
       @composition.instance_eval("@active_agents = [agent]", __FILE__, __LINE__)
       @composition.instance_eval('@galenic_form = "galenic_form"', __FILE__, __LINE__)
       assert_equal(0, @composition <=> @composition)
@@ -167,26 +167,28 @@ module ODDB
       flexmock(Persistence::Pointer).new_instances do |p|
         p.should_receive(:resolve).and_return("resolve")
       end
-      {"key" => Persistence::Pointer.new}
+      values = {"key" => Persistence::Pointer.new}
       expected = {"key" => "resolve"}
       assert_equal(expected, @composition.instance_eval("adjust_types(values)", __FILE__, __LINE__))
     end
 
     def test_adjust_types__galenic_form
-      flexmock("app", galenic_form: "galenic_form")
+      app    = flexmock('app', :galenic_form => 'galenic_form')
+      values = {:galenic_form => 'value'}
       expected = {galenic_form: "galenic_form"}
       assert_equal(expected, @composition.instance_eval("adjust_types(values, app)", __FILE__, __LINE__))
     end
 
     def test_adjust_types__galenic_form_else
-      flexmock("app", galenic_form: nil)
+      app = flexmock("app", galenic_form: nil)
+      values = {:galenic_form => 'value'}
       @composition.instance_eval('@galenic_form = "galenic_form"', __FILE__, __LINE__)
       expected = {galenic_form: "galenic_form"}
       assert_equal(expected, @composition.instance_eval("adjust_types(values, app)", __FILE__, __LINE__))
     end
 
     def test_replace_observer
-      flexmock("target", remove_sequence: "remove_sequence")
+      target = flexmock("target", remove_sequence: "remove_sequence")
       value = flexmock("value", add_sequence: "add_sequence")
       assert_equal(value, @composition.instance_eval("replace_observer(target, value)", __FILE__, __LINE__))
     end

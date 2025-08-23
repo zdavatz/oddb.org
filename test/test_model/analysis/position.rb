@@ -104,6 +104,7 @@ module ODDB
           restriction: "restriction",
           specialization: "specialization")
         flexmock("permissions", language: [permission])
+        permissions = flexmock('permissions', :language => [permission])
         @position.instance_eval("@permissions = permissions", __FILE__, __LINE__)
         expected = "language restriction specialization groupcd groupcdposcd"
         assert_equal(expected, @position.search_text("language"))

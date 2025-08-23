@@ -26,7 +26,7 @@ class TestArray < Minitest::Test
   end
 
   def test_sort_by
-    values = @array.sort
+    values = @array.sort_by { |item| item }
     assert_equal(ODDB::PointerArray, values.class)
     assert_equal(ODDB::PointerArray, @array.class)
   end

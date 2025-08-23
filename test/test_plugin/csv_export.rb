@@ -38,6 +38,7 @@ module ODDB
     def temporary_replace_constant(object, const, replace)
       require "tempfile"
       $stderr = Tempfile.new("stderr")
+      temp = nil
       object.instance_eval("temp = #{const}; #{const} = replace", __FILE__, __LINE__)
       yield
       object.instance_eval("#{const} = temp", __FILE__, __LINE__)
@@ -46,7 +47,9 @@ module ODDB
     end
 
     def test_report
+      counts = {'key' => 12345}
       @plugin.instance_eval("@counts = counts", __FILE__, __LINE__)
+      time   = 60 * 15
       @plugin.instance_eval("@time = time", __FILE__, __LINE__)
       expected = "key:                             12345\n" \
                  "\n" \

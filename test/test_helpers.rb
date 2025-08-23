@@ -130,10 +130,12 @@ module ODDB
                 workbook = RubyXL::Parser.parse(xlsx_name)
                 worksheet = workbook[0]
                 drugs = []
-                TestHelpers::GTINS_DRUGS.each { |x| next unless x.to_s.size == 13
- drugs << [x.to_s[4..8].to_i, x.to_s[9..11].to_i] }
+                TestHelpers::GTINS_DRUGS.each do |x|
+                  next unless x.to_s.size == 13
+                  drugs << [x.to_s[4..8].to_i, x.to_s[9..11].to_i]
+                end
                 idx = 6
- to_delete = []
+                to_delete = []
                 puts "#{Time.now}: Finding items to delete will take some time"
                 while worksheet.sheet_data[idx]
                   idx += 1
@@ -174,7 +176,7 @@ module ODDB
             i.response.headers["Content-Length"] = i.response.body.size
             puts "#{Time.now}: response.body is now #{i.response.body.size} bytes long. #{tmp_zip} was #{File.size(tmp_zip)}"
           end
-          if !/WSDL$/.match(i.request.uri)() and /refdatabase.refdata.ch\/Service/.match(i.request.uri)
+          if !/WSDL$/.match(i.request.uri) && /refdatabase.refdata.ch\/Service/.match(i.request.uri)
             puts "#{Time.now}: #{__LINE__}: Parsing response.body (#{i.response.body.size} bytes) will take some time. URI was #{i.request.uri}"
             doc = REXML::Document.new(i.response.body)
             items = doc.root.children.first.elements.first

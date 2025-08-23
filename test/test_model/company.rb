@@ -135,7 +135,7 @@ class TestCompany < Minitest::Test
     @company.invoice_date_patinfo = date >> 1
     assert_equal(date >> 1, @company.invoice_date_patinfo)
 
-    @company.today
+    today_bak = @company.today
     # Normal year
     date = Date.new(2010, 1, 2)
     @company.instance_eval("@@today = Date.new(2011,4,1)", __FILE__, __LINE__)
@@ -160,7 +160,7 @@ class TestCompany < Minitest::Test
     @company.invoice_date_fachinfo = date >> 1
     assert_equal(date >> 1, @company.invoice_date_fachinfo)
 
-    @company.today
+    today_bak = @company.today
     # Normal year
     date = Date.new(2010, 1, 2)
     @company.instance_eval("@@today = Date.new(2011,4,1)", __FILE__, __LINE__)
@@ -185,7 +185,7 @@ class TestCompany < Minitest::Test
     @company.invoice_date_index = date >> 1
     assert_equal(date >> 1, @company.invoice_date_index)
 
-    @company.today
+    today_bak = @company.today
     # Normal year
     date = Date.new(2010, 1, 2)
     @company.instance_eval("@@today = Date.new(2011,4,1)", __FILE__, __LINE__)
@@ -210,7 +210,7 @@ class TestCompany < Minitest::Test
     @company.invoice_date_lookandfeel = date >> 1
     assert_equal(date >> 1, @company.invoice_date_lookandfeel)
 
-    @company.today
+     today_bak = @company.today
     # Normal year
     date = Date.new(2010, 1, 2)
     @company.instance_eval("@@today = Date.new(2011,4,1)", __FILE__, __LINE__)
@@ -408,9 +408,9 @@ class TestCompany < Minitest::Test
 
   def test__yearly_repetition
     # This is a testcase for a private method
-    @company.today
+    today_bak = @company.today
     @company.instance_eval("@@today = Date.new(2011,2,3)", __FILE__, __LINE__)
-    Date.new(2008, 2, 29)
+    date = Date.new(2008, 2, 29)
     expected = Date.new(2011, 2, 28)
     assert_equal(expected, @company.instance_eval("_yearly_repetition(date)", __FILE__, __LINE__))
     @company.instance_eval("@@today = today_bak", __FILE__, __LINE__)

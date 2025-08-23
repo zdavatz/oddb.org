@@ -172,7 +172,7 @@ module ODDB
     end
 
     def test_atc_facades
-      flexmock("atc_class")
+      atc_class = flexmock("atc_class")
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
       result = @result.atc_facades
       assert_equal(1, result.length)
@@ -209,7 +209,7 @@ module ODDB
     end
 
     def test_overflow?
-      flexmock("atc_class", package_count: 1)
+      atc_class = flexmock("atc_class",  package_count: 1)
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
       assert_equal(false, @result.overflow?)
     end
@@ -222,7 +222,7 @@ module ODDB
 
     def test_delete_empty_packages
       # This is a testcase for a private method
-      flexmock("atc_class", packages: [])
+      atc_class =  flexmock("atc_class", packages: [])
       assert_equal([], @result.instance_eval("delete_empty_packages([atc_class])", __FILE__, __LINE__))
     end
 
@@ -232,7 +232,7 @@ module ODDB
     end
 
     def test_atc_sorted
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package])
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
@@ -242,7 +242,7 @@ module ODDB
     end
 
     def test_atc_sorted__overflow
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package],
         description: "description")
@@ -271,7 +271,7 @@ module ODDB
         comparable_size: 1,
         sequence: sequence,
         sl_generic_type: :original)
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [package])
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
@@ -282,7 +282,7 @@ module ODDB
     end
 
     def test_atc_sorted__relevance_not_empty
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package])
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
@@ -294,7 +294,7 @@ module ODDB
 
     def test_atc_inactive_sequences
       sequence = flexmock("sequence", active?: false)
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package],
         sequences: [sequence])
@@ -309,7 +309,7 @@ module ODDB
 
     def test_atc_sorted__relevance_not_empty_interaction
       sequence = flexmock("sequence", active?: true)
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package],
         sequences: [sequence])
@@ -334,7 +334,7 @@ module ODDB
     end
 
     def test_atc_sorted__error
-      flexmock("atc_class") do |a|
+      atc_class = flexmock("atc_class") do |a|
         a.should_receive(:package_count).and_raise(StandardError)
       end
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)
@@ -346,7 +346,7 @@ module ODDB
     end
 
     def test_each
-      flexmock("atc_class",
+      atc_class = flexmock("atc_class",
         package_count: 1,
         packages: [@package])
       @result.instance_eval("@atc_classes = [atc_class]", __FILE__, __LINE__)

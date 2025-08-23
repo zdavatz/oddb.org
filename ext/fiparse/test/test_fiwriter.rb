@@ -57,7 +57,7 @@ module ODDB
       end
 
       def test_send_literal_data
-        flexmock("target",
+        target = flexmock("target",
           :preformatted! => nil,
           :<< => nil)
         @writer.instance_eval("@target = target", __FILE__, __LINE__)

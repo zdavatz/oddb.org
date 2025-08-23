@@ -23,6 +23,7 @@ module ODDB
         end
 
         def test_compare_entries__ppub
+          sortby   = [:ppub]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           item1 = flexmock("item1", ppub: "100")
           item2 = flexmock("item2", ppub: "200")
@@ -30,6 +31,7 @@ module ODDB
         end
 
         def test_compare_entries__article_name
+          sortby   = [:article_name]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           item1 = flexmock("item1", article_name: "article_name1")
           item2 = flexmock("item2", article_name: "article_name2")
@@ -37,6 +39,7 @@ module ODDB
         end
 
         def test_compare_entries__nil_case1
+          sortby   = [:article_name]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           item1 = flexmock("item1", article_name: nil)
           item2 = flexmock("item2", article_name: "article_name2")
@@ -44,6 +47,7 @@ module ODDB
         end
 
         def test_compare_entries__nil_case2
+          sortby   = [:article_name]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           item1 = flexmock("item1", article_name: "article_name1")
           item2 = flexmock("item2", article_name: nil)
@@ -51,6 +55,7 @@ module ODDB
         end
 
         def test_compare_entries__nil_case3
+          sortby   = [:article_name]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           item1 = flexmock("item1", article_name: nil)
           item2 = flexmock("item2", article_name: nil)
@@ -58,6 +63,7 @@ module ODDB
         end
 
         def test_compare_entries__error
+          sortby   = [:article_name]
           @state.instance_eval("@sortby = sortby", __FILE__, __LINE__)
           flexmock(@state).should_receive(:umlaut_filter).and_raise(RuntimeError)
           item1 = flexmock("item1", article_name: "article_name1")

@@ -359,9 +359,13 @@ class TestSequence < Minitest::Test
   def test_mandatory_violation
     # This is a method defined in SBSM::State, which is the superclass of State::Global
     # This test is made just for the understanding of this method.
+    value = nil
     assert_equal(true, @sequence.instance_eval("mandatory_violation(value)", __FILE__, __LINE__))
+    value = []
     assert_equal(true, @sequence.instance_eval("mandatory_violation(value)", __FILE__, __LINE__))
+    value = {}
     assert_equal(true, @sequence.instance_eval("mandatory_violation(value)", __FILE__, __LINE__))
+    value = "abc"
     assert_equal(false, @sequence.instance_eval("mandatory_violation(value)", __FILE__, __LINE__))
   end
 

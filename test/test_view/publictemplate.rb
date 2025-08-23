@@ -97,6 +97,7 @@ module ODDB
       end
 
       def test_javascripts
+        additional_javascripts = ['additional_javascripts']
         @template.instance_eval("@additional_javascripts = additional_javascripts", __FILE__, __LINE__)
         context = flexmock("context", script: "script")
         assert_equal("script", @template.javascripts(context))

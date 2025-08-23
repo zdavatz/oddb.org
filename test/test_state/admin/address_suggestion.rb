@@ -131,19 +131,19 @@ module ODDB
         # The followings are testcases for a private method
         def test_select_zone__company
           flexmock(ODBA.cache, next_id: 123)
-          ODDB::Company.new
+          parent = ODDB::Company.new
           assert_equal(:companies, @state.instance_eval("select_zone(parent)", __FILE__, __LINE__))
         end
 
         def test_select_zone__doctor
           flexmock(ODBA.cache, next_id: 123)
-          ODDB::Doctor.new
+          parent = ODDB::Doctor.new
           assert_equal(:doctors, @state.instance_eval("select_zone(parent)", __FILE__, __LINE__))
         end
 
         def test_select_zone__hospital
           flexmock(ODBA.cache, next_id: 123)
-          ODDB::Hospital.new("ean13")
+          parent = ODDB::Hospital.new("ean13")
           assert_equal(:hospitals, @state.instance_eval("select_zone(parent)", __FILE__, __LINE__))
         end
       end

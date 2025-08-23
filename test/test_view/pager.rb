@@ -84,7 +84,7 @@ module ODDB
       end
 
       def test_compose_header
-        flexmock("page", previous: "previous")
+        page = flexmock("page", previous: "previous")
         @view.instance_eval("@page = page", __FILE__, __LINE__)
         offset = [0, 0]
         assert_equal([2, 0], @view.compose_header(offset))

@@ -31,7 +31,7 @@ module ODDB
         end
 
         def test_structural_ancestors
-          flexmock("parent_pointer", resolve: "resolve")
+          parent_pointer = flexmock("parent_pointer", resolve: "resolve")
           @facade.instance_eval("@parent_pointer = parent_pointer", __FILE__, __LINE__)
           assert_equal(["resolve"], @facade.structural_ancestors(@app))
         end

@@ -48,7 +48,7 @@ module ODDB
         end
 
         def test_wait__document
-          flexmock("document")
+          document = flexmock("document")
           @state.instance_eval("@document = document", __FILE__, __LINE__)
           assert_kind_of(ODDB::State::Admin::FachinfoConfirm, @state.wait)
         end

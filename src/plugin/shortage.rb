@@ -152,7 +152,7 @@ module ODDB
         return
       end
       @report_nomarketing = []
-      @report_summary << sprintf("Found           %3i nomarketings packages for #{@nomarketing_href}", @found_nomarketings.size)
+      @report_summary << sprintf("Found           %3i nomarketings packages for #{@nomarketing_href}", @found_nomarketings.size).strip
       @report_summary << sprintf("Deleted         %3i nomarketings", @deleted_nomarketings.size)
       @report_summary << sprintf("Changed         %3i nomarketings", @changes_nomarketings.size)
       @report_summary << sprintf("Nr. IKSNR       %3i not in oddb.org database", @missing_nomarketings.size)

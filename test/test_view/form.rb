@@ -34,14 +34,14 @@ module ODDB
       end
 
       def test_hidden_fields
-        flexmock("context", hidden: "hidden")
+        context = flexmock("context", hidden: "hidden")
         expected = "hiddenhiddenhiddenhiddenhidden"
         assert_equal(expected, @form.instance_eval("hidden_fields(context)", __FILE__, __LINE__))
       end
 
       def test_hidden_fields__pointer
         flexmock(@model, pointer: "pointer")
-        flexmock("context", hidden: "hidden")
+        context = flexmock('context', :hidden => 'hidden')
         expected = "hiddenhiddenhiddenhiddenhiddenhidden"
         assert_equal(expected, @form.instance_eval("hidden_fields(context)", __FILE__, __LINE__))
       end

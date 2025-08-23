@@ -118,12 +118,6 @@ module ODDB
       assert_equal({}, interval.range_patterns)
     end
 
-    def test_interval
-      @interval.instance_eval("@range = range", __FILE__, __LINE__)
-      expected = "a-d"
-      assert_equal(expected, @interval.interval)
-    end
-
     def test_get_intervals
       expected = ["a-d", "e-h", "i-l", "m-p", "q-t", "u-z", "|unknown"]
       assert_equal(expected, @interval.get_intervals)
@@ -213,6 +207,7 @@ module ODDB
     end
 
     def test_interval
+      range = 'range'
       @interval.instance_eval("@range = range", __FILE__, __LINE__)
       assert_equal("range", @interval.interval)
     end

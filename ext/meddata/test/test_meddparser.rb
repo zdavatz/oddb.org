@@ -17,7 +17,7 @@ module ODDB
       end
 
       def test_push_tablecell
-        flexmock("tablehandler", next_cell: "next_cell")
+        tablehandler = flexmock("tablehandler", next_cell: "next_cell")
         @formatter.instance_eval("@tablehandler = tablehandler", __FILE__, __LINE__)
         assert_equal("next_cell", @formatter.push_tablecell({}))
       end
@@ -44,7 +44,7 @@ module ODDB
       end
 
       def test_new_linkhandler
-        flexmock("current_tablehandler", add_child: "add_child")
+        current_tablehandler = flexmock("current_tablehandler", add_child: "add_child")
         @writer.instance_eval("@current_tablehandler = current_tablehandler", __FILE__, __LINE__)
         assert_equal("add_child", @writer.new_linkhandler("handler"))
       end
@@ -54,7 +54,7 @@ module ODDB
       end
 
       def test_send_flowing_data
-        flexmock("current_tablehandler", send_cdata: "send_cdata")
+        current_tablehandler = flexmock("current_tablehandler", send_cdata: "send_cdata")
         @writer.instance_eval("@current_tablehandler = current_tablehandler", __FILE__, __LINE__)
         assert_equal("send_cdata", @writer.send_flowing_data("data"))
       end
@@ -78,7 +78,7 @@ module ODDB
       end
 
       def test_send_flowing_data
-        flexmock("current_tablehandler", send_cdata: "send_cdata")
+        current_tablehandler = flexmock("current_tablehandler", send_cdata: "send_cdata")
         @writer.instance_eval("@current_tablehandler = current_tablehandler", __FILE__, __LINE__)
         assert_equal("send_cdata", @writer.send_flowing_data("data"))
       end

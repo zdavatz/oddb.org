@@ -117,7 +117,7 @@ module ODDB
         app.should_receive(:create)
         app.should_receive(:update)
       end
-      flexmock("package") do |p|
+      package = flexmock("package") do |p|
         p.should_receive(:pointer)
       end
       @listener.instance_eval('@pointer = "pointer"', __FILE__, __LINE__)
@@ -191,6 +191,7 @@ module ODDB
         ptr.should_receive(:+).and_return(pointer)
       end
       @listener.instance_eval("@pointer = pointer", __FILE__, __LINE__)
+      lim_data = {'key' => 'value'}
       @listener.instance_eval("@lim_data = lim_data", __FILE__, __LINE__)
       assert_nil(@listener.tag_end("ItCode"))
     end
@@ -257,12 +258,13 @@ module ODDB
     end
 
     def test_completed_registrations
+      completed_registrations = {'key' => 'value'}
       @listener.instance_eval("@completed_registrations = completed_registrations", __FILE__, __LINE__)
       assert_equal(["value"], @listener.completed_registrations)
     end
 
     def test_erroneous_packages
-      {"key" => @package}
+      known_packages = {"key" => @package}
       @listener.instance_eval("@known_packages = known_packages", __FILE__, __LINE__)
       assert_equal([@package], @listener.erroneous_packages)
     end
@@ -366,7 +368,7 @@ module ODDB
 
     def replace_constant(constant, temp)
       stderr_null do
-        eval constant
+        keep = eval constant
         eval "#{constant} = temp"
         yield
         eval "#{constant} = keep"
@@ -415,7 +417,7 @@ module ODDB
     end
 
     def test_tag_start__error
-      flexmock("pac_data") do |pac|
+      pac_data = flexmock("pac_data") do |pac|
         pac.should_receive(:dup).and_raise(StandardError)
       end
       @listener.instance_eval("@pac_data = pac_data", __FILE__, __LINE__)
@@ -441,7 +443,7 @@ module ODDB
         #        reg.should_receive(:pointer)
         #        reg.should_receive(:odba_store)
       end
-      flexmock("package") do |pac|
+      package = flexmock("package") do |pac|
         pac.should_receive(:registration).and_return(registration)
         pac.should_receive(:price_public).and_return(nil)
         pac.should_receive(:pharmacode).and_return("pharmacode")
@@ -457,6 +459,7 @@ module ODDB
         pac.should_receive(:bm_flag)
         pac.should_receive(:sl_generic_type)
       end
+      data = {:public_price => nil, :price_exfactory => 2}
       @listener.instance_eval("@pack = package", __FILE__, __LINE__)
       @listener.instance_eval("@data = data", __FILE__, __LINE__)
       @listener.instance_eval("@report = {}", __FILE__, __LINE__)
@@ -492,10 +495,9 @@ module ODDB
         ptr.should_receive(:+).and_return(pac_ptr)
         ptr.should_receive(:creator)
       end
-      # sl_entries = {pac_ptr => {'key' => 'sl_data'}}
-      {pac_ptr => {}}
+      sl_entries = {pac_ptr => {}}
       @listener.instance_eval("@sl_entries = sl_entries", __FILE__, __LINE__)
-      {pac_ptr => "lim_data"}
+      lim_texts = {pac_ptr => 'lim_data'}
       @listener.instance_eval("@lim_texts = lim_texts", __FILE__, __LINE__)
       flexmock(@app) do |app|
         app.should_receive(:delete)
@@ -531,7 +533,7 @@ module ODDB
         ptr.should_receive(:+).and_return(pac_ptr)
         ptr.should_receive(:creator)
       end
-      {pac_ptr => {"key" => "sl_data"}}
+      sl_entries = {pac_ptr => {"key" => "sl_data"}}
       @listener.instance_eval("@sl_entries = sl_entries", __FILE__, __LINE__)
       @listener.instance_eval("@lim_texts = {}", __FILE__, __LINE__)
       @listener.instance_eval("@name = {:de => :name_de}", __FILE__, __LINE__)
@@ -544,12 +546,13 @@ module ODDB
 
     def test_tag_end__swissmedic_no_5
       @listener.instance_eval("@report_data = {}", __FILE__, __LINE__)
+      visited_iksnrs = {'12345' => ['atc', 'name']}
       @listener.instance_eval("@visited_iksnrs = visited_iksnrs", __FILE__, __LINE__)
       @listener.instance_eval('@text = "12345"', __FILE__, __LINE__)
       @listener.instance_eval('@atc_code = "atc_code"', __FILE__, __LINE__)
 
       # for find_typo_resigration
-      flexmock("name") do |n|
+      name = flexmock("name") do |n|
         n.should_receive(:collect).and_return(["name"])
         n.should_receive(:downcase)
       end
@@ -570,6 +573,7 @@ module ODDB
 
     def test_tag_end__swissmedic_no_5__else
       @listener.instance_eval("@report_data = {}", __FILE__, __LINE__)
+      visited_iksnrs = {'12345' => ['atc', {:de => 'name'}]}
       @listener.instance_eval("@visited_iksnrs = visited_iksnrs", __FILE__, __LINE__)
       @listener.instance_eval('@text = "12345"', __FILE__, __LINE__)
       @listener.instance_eval('@atc_code = "atc_code"', __FILE__, __LINE__)
@@ -602,7 +606,7 @@ module ODDB
     def test_tag_end__StatusTypeCodeSl__2_6
       @listener.instance_eval("@sl_data = {}", __FILE__, __LINE__)
       @listener.instance_eval('@text = "2"', __FILE__, __LINE__)
-      flexmock("package") do |pac|
+      pack = flexmock("package") do |pac|
         pac.should_receive(:sl_entry)
         pac.should_receive(:pointer)
       end
@@ -613,7 +617,7 @@ module ODDB
     def test_tag_end__StatusTypeCodeSl__3_7
       @listener.instance_eval("@sl_data = {}", __FILE__, __LINE__)
       @listener.instance_eval('@text = "3"', __FILE__, __LINE__)
-      flexmock("package") do |pac|
+      pack = flexmock("package") do |pac|
         pac.should_receive(:sl_entry).and_return("sl_entry")
         pac.should_receive(:pointer)
       end
@@ -662,7 +666,7 @@ module ODDB
         c.should_receive(:clean!).and_return("clean!")
       end
 
-      {"key" => {xx: chapter}}
+      lim_texts = {"key" => {xx: chapter}}
       @listener.instance_eval("@lim_texts = lim_texts", __FILE__, __LINE__)
       assert_nil(@listener.tag_end("DescriptionXX"))
     end
@@ -686,7 +690,7 @@ module ODDB
         c.should_receive(:clean!).and_return("clean!")
       end
 
-      {"key" => {xx: chapter}}
+      lim_texts = {"key" => {xx: chapter}}
       @listener.instance_eval("@lim_texts = lim_texts", __FILE__, __LINE__)
       @listener.instance_eval('@it_descriptions = {:xx => "it_descriptions"}', __FILE__, __LINE__)
       assert_nil(@listener.tag_end("DescriptionXX"))
@@ -701,7 +705,7 @@ module ODDB
       pointer = flexmock("pointer") do |ptr|
         ptr.should_receive(:+)
       end
-      {pointer => "data"}
+      known_packages = {pointer => "data"}
       @listener.instance_eval("@known_packages = known_packages", __FILE__, __LINE__)
       flexmock(@app) do |app|
         app.should_receive(:delete)
@@ -713,7 +717,7 @@ module ODDB
       pointer = flexmock("pointer") do |ptr|
         ptr.should_receive(:+).and_raise(StandardError)
       end
-      {pointer => "data"}
+      known_packages = {pointer => "data"}
       @listener.instance_eval("@known_packages = known_packages", __FILE__, __LINE__)
       assert_raises(StandardError) do
         @listener.tag_end("Preparations")
@@ -827,7 +831,7 @@ module ODDB
     end
 
     def test_report
-      flexmock("preparations_listener") do |p|
+      preparations_listener = flexmock("preparations_listener") do |p|
         p.should_receive(:created_sl_entries).and_return(0)
         p.should_receive(:updated_sl_entries).and_return(0)
         p.should_receive(:deleted_sl_entries).and_return(0)
@@ -850,7 +854,7 @@ module ODDB
       # log_info method is too long.
       # It should be divided into small methods.
 
-      flexmock("preparations_listener") do |p|
+      preparations_listener = flexmock("preparations_listener") do |p|
         p.should_receive(:created_sl_entries).and_return(0)
         p.should_receive(:updated_sl_entries).and_return(0)
         p.should_receive(:deleted_sl_entries).and_return(0)
@@ -902,7 +906,7 @@ module ODDB
     def test_wrap_update_bsv
       Util.configure_mail :test
       Util.clear_sent_mails
-      flexmock("preparations_listener") do |p|
+      preparations_listener = flexmock("preparations_listener") do |p|
         p.should_receive(:created_sl_entries).and_return(["created_sl_entries"])
         p.should_receive(:conflicted_registrations).and_return([])
         p.should_receive(:missing_ikscodes).and_return([])
@@ -916,7 +920,7 @@ module ODDB
       @plugin.instance_eval("@preparations_listener = preparations_listener", __FILE__, __LINE__)
       klass = BsvXmlPlugin
       subj = "SL-Update (XML)"
-      klass.new(@app)
+      plug = klass.new(@app)
       plug = @plugin
 
       return_value_plug_update = nil
@@ -938,7 +942,7 @@ module ODDB
     def test_result
       Util.configure_mail :test
       Util.clear_sent_mails
-      flexmock("preparations_listener") do |p|
+      preparations_listener = flexmock("preparations_listener") do |p|
         p.should_receive(:created_sl_entries).and_return(["created_sl_entries"])
         p.should_receive(:conflicted_registrations).and_return([])
         p.should_receive(:missing_ikscodes).and_return([])
@@ -960,7 +964,7 @@ module ODDB
     end
 
     def test_report_bsv
-      flexmock("preparations_listener") do |p|
+      preparations_listener = flexmock("preparations_listener") do |p|
         p.should_receive(:conflicted_registrations).and_return([])
         p.should_receive(:missing_ikscodes).and_return([])
         p.should_receive(:missing_ikscodes_oot).and_return([])
@@ -1085,7 +1089,7 @@ module ODDB
         eval constant
         eval "#{constant} = temp"
         yield
-        eval "#{constant} = keep"
+        keep = eval "#{constant} = keep"
       end
     end
 

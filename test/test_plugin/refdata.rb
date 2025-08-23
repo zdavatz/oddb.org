@@ -144,7 +144,7 @@ module ODDB
     end
 
     def test_report
-      flexmock("package_#{__LINE__}",
+      package = flexmock("package_#{__LINE__}",
         iksnr: "00001",
         seqnr: "01",
         ikscd: "001",

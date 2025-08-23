@@ -255,6 +255,7 @@ module ODDB
             user: nil,
             carry: nil)
           flexmock(@session, user_input: nil)
+          keys = ['key']
           assert_kind_of(ODDB::Persistence::CreateItem, @state.instance_eval("user_or_creator", __FILE__, __LINE__))
         end
 
@@ -272,6 +273,7 @@ module ODDB
           flexmock(@session,
             user_input: "user_input",
             user: "user")
+          keys = ['key']
           assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval("do_update(keys)", __FILE__, __LINE__))
         end
 
@@ -300,6 +302,7 @@ module ODDB
           flexmock(@session,
             user_input: input,
             user: "user")
+          keys = ['key']
           assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval("do_update(keys)", __FILE__, __LINE__))
         end
 
@@ -318,6 +321,7 @@ module ODDB
           flexmock(@session,
             user_input: {invoice_date_patinfo: Date.new(2011, 2, 3)},
             user: "user")
+          keys = ['key']
           assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval("do_update(keys)", __FILE__, __LINE__))
         end
 
@@ -346,6 +350,7 @@ module ODDB
           flexmock(@session,
             user_input: input,
             user: "user")
+          keys = ['key']
           assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval("do_update(keys)", __FILE__, __LINE__))
         end
 
@@ -373,6 +378,7 @@ module ODDB
           flexmock(@session,
             user_input: "name",
             user: "user")
+          keys = ['key']
           assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval("do_update(keys)", __FILE__, __LINE__))
         end
 
