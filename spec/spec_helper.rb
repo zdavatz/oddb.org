@@ -11,14 +11,22 @@ require "page-object"
 require "fileutils"
 require "watir"
 require "minitest/spec/expect"
+require 'headless'
 
 RSpec.configure do |config|
   config.mock_with :flexmock
   config.expect_with :rspec do |c|
     c.syntax = [:should, :expect]
   end
+  config.before :suite do
+    unless ENV["ODDB_NO_HEADLESS"]
+      $headless = Headless.new
+      $headless.start
+    end
+  end
   config.after :suite do
     $browser.close if $browser && !$browser.closed?
+    $headless.destroy unless ENV["ODDB_NO_HEADLESS"]
   end
 end
 

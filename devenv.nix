@@ -71,6 +71,7 @@ in {
       procps # for free in test/report_ci.fish
       lsb-release
       chromedriver
+      xorg.xvfb # to use gem headless
       gcc13
     ];
 
