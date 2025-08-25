@@ -17,6 +17,8 @@ module ODDB
           @container = flexmock("container", additional_javascripts: [])
           @lnf = flexmock("lookandfeel",
             lookup: "lookup",
+            direct_event: "direct_event",
+            _event_url: "_event_url",
             enabled?: nil,
             attributes: {},
             base_url: "base_url")
