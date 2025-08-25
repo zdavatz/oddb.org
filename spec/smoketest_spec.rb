@@ -36,6 +36,7 @@ describe "ch.oddb.org" do
   end
 
   describe "admin" do
+
     before :all do
     end
     before :each do
@@ -47,6 +48,7 @@ describe "ch.oddb.org" do
     after :all do
       logout
     end
+
     it "admin should edit package info" do
       @browser.goto "#{ODDB_URL}/de/#{Flavor}/drug/reg/56091/seq/02/pack/04"
       @browser.windows.size
@@ -629,6 +631,10 @@ describe "ch.oddb.org" do
     # Done in separate spec test, as one has to search often for an actual valid example
     #  :search_limitation_valid => VALID_ONLY_TRADEMARK_EXAMPLE,
   ]
+  tests = [
+    [:search_limitation_A, "Fosfolag", false],
+    [:search_limitation_D, "Elmex", true],
+  ] if false # if you want to run a subset of the tests
   tests.each do |example|
     limitation = example[0]
     drug_name = example[1]
@@ -687,6 +693,18 @@ describe "ch.oddb.org" do
     @browser.link(text: /.*\(H05AA02\)/).click
     text = @browser.text.clone
     expect(text[0..1000]).to match(/Forsteo/)
+  end
+
+  it "help and legal_note links must be present" do
+    @browser.link(name: /^log/).wait_until(&:visible?)
+    expect(@browser.link(visible_text: "Home").wait_until(&:visible?))
+    expect(@browser.link(visible_text: /Home/).visible?).to be true
+    expect(@browser.link(visible_text: /FAQ/).visible?).to be false
+    expect(@browser.link(visible_text: /Hilfe/).visible?).to be true
+    expect(@browser.link(visible_text: /Rechtlicher/).visible?).to be true
+    help_url = "https://ywesee.com/ODDB/Legal"
+    expect(@browser.link(visible_text: /Hilfe/).href).to eql help_url
+    expect(@browser.link(visible_text: /Rechtlicher/).href).to eql help_url
   end
 
   after :all do

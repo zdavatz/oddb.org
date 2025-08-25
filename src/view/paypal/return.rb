@@ -3,7 +3,6 @@
 # View::PayPal::Return -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
 
 require "view/resulttemplate"
-require "view/datadeclaration"
 
 module ODDB
   module View
@@ -14,7 +13,6 @@ module ODDB
           [1, 0]	=>	:additional_download_link
         }
         CSS_MAP = {
-          [0, 0, 2]	=>	"list"
         }
         DEFAULT_HEAD_CLASS = "subheading"
         LEGACY_INTERFACE = false
@@ -60,11 +58,9 @@ module ODDB
       end
 
       class ReturnComposite < HtmlGrid::Composite
-        include View::DataDeclaration
         ## in this class, COMPONENTS only includes the unchanging components
         COMPONENTS = {
           [0, 0, 1]	=>	"dash_separator",
-          [0, 0, 2]	=>	:data_declaration
         }
         CSS_CLASS = "composite"
         CSS_MAP = {

@@ -287,7 +287,7 @@ class TestODDBViewDrugsPackageComposite < Minitest::Test
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
       l.should_receive(:enabled?).at_least.once.with(:patinfos)
-      l.should_receive(:enabled?).at_least.once.with(:popup_links, false)
+      l.should_receive(:enabled?).never.with(:popup_links, false)
       l.should_receive(:enabled?).at_least.once.with(:ddd_chart)
     end
     indication = flexmock("indication", language: "language")
@@ -307,7 +307,7 @@ class TestODDBViewDrugsPackageComposite < Minitest::Test
       l.should_receive(:enabled?).at_least.once.with(:feedback)
       l.should_receive(:enabled?).at_least.once.with(:fachinfos)
       l.should_receive(:enabled?).at_least.once.with(:patinfos)
-      l.should_receive(:enabled?).at_least.once.with(:popup_links, false)
+      l.should_receive(:enabled?).never.with(:popup_links, false)
       l.should_receive(:enabled?).at_least.once.with(:ddd_chart)
     end
     assert_equal({}, @composite.init)

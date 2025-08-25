@@ -591,7 +591,6 @@ module ODDB
       def test_help_navigation
         expected = [
           :help_link,
-          :faq_link
         ]
         assert_equal(expected, @state.help_navigation)
       end
@@ -626,7 +625,7 @@ module ODDB
       end
 
       def test_navigation
-        expected = [:help_link, :faq_link,
+        expected = [:help_link,
           ODDB::State::Admin::Login,
           ODDB::State::User::YweseeContact,
           ODDB::State::Drugs::Init]

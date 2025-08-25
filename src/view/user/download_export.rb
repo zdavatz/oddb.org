@@ -6,7 +6,6 @@
 
 require "view/publictemplate"
 require "view/form"
-require "view/datadeclaration"
 require "view/user/export"
 require "view/user/yamlexport"
 require "htmlgrid/link"
@@ -425,11 +424,9 @@ module ODDB
 
       class DownloadExportComposite < Form
         include HtmlGrid::ErrorMessage
-        include View::DataDeclaration
         COMPONENTS = {
           [0, 0, 0] => "download_export",
           [0, 0, 1] => "dash_separator",
-          [0, 0, 2] => :data_declaration,
           [0, 1] => :download_export_descr,
           [0, 2] => DownloadExportInnerComposite,
           [0, 3] => :submit
@@ -453,7 +450,6 @@ module ODDB
           page = pages[@lookandfeel.language]
           link = HtmlGrid::Link.new(:download_export_descr, model,
             @session, self)
-          link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.#{page}"
           link
         end
 

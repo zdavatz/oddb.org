@@ -128,7 +128,6 @@ module ODDB
       :data_counts,
       :drugs,
       :export_csv,
-      :faq_link,
       :help_link,
       :home,
       :home_drugs,
@@ -256,7 +255,6 @@ module ODDB
       "de"	=>	{
         all_drugs_pricecomparison: "Schweizer Medikamenten-Enzyklopädie",
         atc_chooser: "ATC-Codes",
-        data_declaration: "Datenherkunft",
         home_drugs: "Medikamente",
         legal_note: "Rechtliche Hinweise",
         meddrugs_update: "med-drugs update",
@@ -269,7 +267,6 @@ module ODDB
       "fr"	=>	{
         all_drugs_pricecomparison: "Encyclopédie des médicaments commercialisés en Suisse",
         atc_chooser: "ATC-Codes",
-        data_declaration: "Source des dates",
         home_drugs: "Médicaments",
         legal_note: "Notice légale",
         meddrugs_update: "med-drugs update",
@@ -282,7 +279,6 @@ module ODDB
       "en"	=>	{
         all_drugs_pricecomparison: "Complete Swiss encyclopaedia of drugs",
         atc_chooser: "ATC-Codes",
-        data_declaration: "Source of data",
         home_drugs: "Drugs",
         legal_note: "Legal Disclaimer",
         meddrugs_update: "med-drugs update",
@@ -340,7 +336,7 @@ module ODDB
     end
 
     def navigation
-      [:meddrugs_update, :legal_note, :data_declaration] \
+      [:meddrugs_update, :legal_note] \
         + zone_navigation + [:home]
     end
 
@@ -400,7 +396,6 @@ module ODDB
       :atc_chooser,
       :drugs,
       :export_csv,
-      :faq_link,
       :help_link,
       :home,
       :home_drugs,
@@ -506,7 +501,6 @@ module ODDB
       :data_counts,
       :drugs,
       :fachinfos,
-      :faq_link,
       :feedback,
       :help_link,
       :home,
@@ -593,7 +587,6 @@ module ODDB
       :ajax,
       :home_drugs,
       :help_link,
-      :faq_link,
       :fachinfos,
       :patinfos,
       :sequences,
@@ -666,7 +659,6 @@ module ODDB
     ENABLED = [
       :home_drugs,
       :help_link,
-      :faq_link,
       :patinfos,
       :sequences,
       :ywesee_contact,

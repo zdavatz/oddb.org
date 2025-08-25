@@ -23,6 +23,7 @@ module ODDB
             intervals: ["interval"])
           @session = flexmock("session",
             lookandfeel: @lnf,
+            direct_event: "direct_event",
             state: state)
           @model = flexmock("model",
             generic_type: "generic_type",
@@ -42,6 +43,7 @@ module ODDB
             lookup: "lookup",
             attributes: {},
             _event_url: "_event_url",
+            direct_event: "direct_event",
             enabled?: nil,
             disabled?: nil,
             base_url: "base_url",

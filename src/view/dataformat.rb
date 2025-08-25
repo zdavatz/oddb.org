@@ -185,10 +185,7 @@ module ODDB
           span.label = true
           span
         elsif !@lookandfeel.disabled?(:price_request)
-          link = wiki_link(model, :price_request,
-            :price_request_pagename)
-          link.label = true
-          link
+          span = HtmlGrid::Span.new(model, @session, self)
         else
           @lookandfeel.lookup(:deductible_unknown)
         end

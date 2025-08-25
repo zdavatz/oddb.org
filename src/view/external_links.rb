@@ -21,10 +21,6 @@ module ODDB
         klass.new(key, model, @session, self)
       end
 
-      def faq_link(model, session = @session)
-        wiki_link(model, :faq_link, :faq_pagename)
-      end
-
       def generic_definition(model, session)
         link = HtmlGrid::Link.new(:generic_definition, model, session, self)
         link.href = @lookandfeel.lookup(:generic_definition_url)
@@ -33,24 +29,20 @@ module ODDB
       end
 
       def help_link(model, session = @session)
-        wiki_link(model, :help_link, :help_pagename)
-      end
-
-      def wiki_link(model, key, namekey)
-        link = external_link(model, key)
-        name = @lookandfeel.lookup(namekey)
-        link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
+        link = NavigationLink.new(:help_link, model, @session, self)
+#        link.name = @lookandfeel.lookup(:help_pagename)
+        link.href = "https://ywesee.com/ODDB/Legal"
         link
       end
 
-      ## meddrugs_update, data_declaration and legal_note:
-      ## extrawurst for just-medical
-      def data_declaration(model, session = @session)
-        wiki_link(model, :data_declaration, :datadeclaration_pagename)
-      end
 
+      ## meddrugs_update, data_declaration and legal_note:
+      ## extrawurst for just-medica
       def legal_note(model, session = @session)
-        wiki_link(model, :legal_note, :legal_note_pagename)
+        link = NavigationLink.new(:legal_note, model, @session, self)
+#        link.name = @lookandfeel.lookup(:legal_note_pagename)
+        link.href = "https://ywesee.com/ODDB/Legal"
+        link
       end
 
       def meddrugs_update(model, session = @session)

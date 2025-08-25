@@ -8,6 +8,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require "minitest/autorun"
 require "flexmock/minitest"
 require "view/resultfoot"
+require "custom/lookandfeelwrapper"
 require "htmlgrid/span"
 
 module ODDB
@@ -147,13 +148,7 @@ module ODDB
 
     class TestResultFootBuilder < Minitest::Test
       def test_result_foot
-        @lnf = flexmock("lookandfeel",
-          navigation: [],
-          disabled?: nil,
-          enabled?: nil,
-          lookup: "lookup",
-          attributes: {},
-          explain_result_components: {[0, 0] => :explain_fachinfo})
+        @lnf = LookandfeelBase.new(ODDB::Plugin::SessionStub.new(@app))
         @session = flexmock("session",
           lookandfeel: @lnf,
           request_path: "request_path")
@@ -162,31 +157,11 @@ module ODDB
         assert_kind_of(ODDB::View::ResultFoot, @composite.result_foot(@model, @session))
       end
 
-      def test_result_foot__legal_note
-        @lnf = flexmock("lookandfeel",
-          navigation: [:legal_note],
-          disabled?: nil,
-          enabled?: nil,
-          lookup: "lookup",
-          attributes: {},
-          explain_result_components: {[0, 0] => :explain_fachinfo})
-        @session = flexmock("session", lookandfeel: @lnf)
-        @model = flexmock("model")
-        @composite = ODDB::View::StubResultFootBuilder.new(@model, @session)
-        skip("Don't know whether ODDB::View::ResultFoot should be accepted")
-        assert_kind_of(ODDB::View::ExplainResult, @composite.result_foot(@model, @session))
-      end
     end
 
     class TestResultFoot < Minitest::Test
       def test_init
-        @lnf = flexmock("lookandfeel",
-          navigation: ["navigation"],
-          disabled?: nil,
-          enabled?: true,
-          lookup: "lookup",
-          attributes: {},
-          explain_result_components: {[0, 0] => :explain_fachinfo})
+        @lnf = LookandfeelBase.new(ODDB::Plugin::SessionStub.new(@app))
         @session = flexmock("session",
           lookandfeel: @lnf,
           request_path: "request_path")
@@ -194,6 +169,25 @@ module ODDB
         @composite = ODDB::View::ResultFoot.new(@model, @session)
         expected = {} # was [0, 0]=>"explain", [0, 1]=>"explain right"
         assert_equal(expected, @composite.init)
+      end
+      def test_result_foot__legal_note
+        @lnf     = flexmock('lookandfeel',
+                            :navigation => [:legal_note],
+                            :disabled?  => nil,
+                            :enabled?   => nil,
+                            :lookup     => 'lookup',
+                            :attributes => {},
+                            :direct_event => 'direct_event',
+                            :_event_url => '_event_url',
+                            :request_path => "request_path",
+                            :explain_result_components => {[0,0] => :explain_fachinfo}
+                           )
+        @session = flexmock('session',
+                            :request_path => "request_path",
+                            :lookandfeel => @lnf)
+        @model   = flexmock('model')
+        @composite = ODDB::View::StubResultFootBuilder.new(@model, @session)
+        assert_kind_of(ODDB::View::ResultFoot, @composite.result_foot(@model, @session))
       end
     end
   end # View

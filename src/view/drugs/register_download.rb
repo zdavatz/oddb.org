@@ -6,7 +6,6 @@ require "htmlgrid/errormessage"
 require "htmlgrid/select"
 require "view/resulttemplate"
 require "view/paypal/invoice"
-require "view/datadeclaration"
 require "view/form"
 require "view/user/autofill"
 

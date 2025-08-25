@@ -33,6 +33,7 @@ module ODDB
         @session = flexmock("session", lookandfeel: @lnf)
         @model = flexmock("model")
         @links = ODDB::View::StubExternalLinks.new(@model, @session)
+        @oddb_legal = /https:\/\/ywesee.com\/ODDB\/Legal/
       end
 
       def test_contact_link
@@ -48,24 +49,22 @@ module ODDB
         assert_kind_of(HtmlGrid::Link, @links.external_link(@model, "key"))
       end
 
-      def test_faq_link
-        assert_kind_of(HtmlGrid::Link, @links.faq_link(@model, @session))
-      end
-
       def test_generic_definition
         assert_kind_of(HtmlGrid::Link, @links.generic_definition(@model, @session))
       end
 
       def test_help_link
-        assert_kind_of(HtmlGrid::Link, @links.help_link(@modle, @session))
-      end
-
-      def test_data_declaration
-        assert_kind_of(HtmlGrid::Link, @links.data_declaration(@model, @session))
+        res = HtmlGrid::Link, @links.help_link(@modle, @session)
+        res = res.last
+        assert_kind_of(HtmlGrid::Link,res)
+        assert(@oddb_legal.match(res.href.to_s))
       end
 
       def test_legal_note
-        assert_kind_of(HtmlGrid::Link, @links.legal_note(@model, @session))
+        res = HtmlGrid::Link, @links.legal_note(@modle, @session)
+        res = res.last # Why we get an array and not a single link??
+        assert_kind_of(HtmlGrid::Link,res)
+        assert(@oddb_legal.match(res.href.to_s))
       end
 
       def test_meddrugs_update

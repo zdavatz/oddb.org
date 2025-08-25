@@ -20,6 +20,7 @@ module ODDB
             lookup: "lookup",
             attributes: {},
             _event_url: "_event_url",
+            direct_event: "direct_event",
             navigation: [],
             disabled?: nil,
             enabled?: nil,

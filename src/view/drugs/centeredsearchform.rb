@@ -224,15 +224,11 @@ module ODDB
         end
 
         def fi_count_text(model, session)
-          create_link(:fi_count_text,
-            "http://wiki.oddb.org/wiki.php?pagename=ODDB.Fi-Upload",
-            :fachinfos)
+          nil
         end
 
         def pi_count_text(model, session)
-          create_link(:pi_count_text,
-            "http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload",
-            :patinfos)
+          nil
         end
 
         def create_link(text_key, href, event = nil)

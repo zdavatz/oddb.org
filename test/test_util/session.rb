@@ -238,7 +238,6 @@ module ODDB
       expected = [
         ODDB::State::User::Preferences,
         :help_link,
-        :faq_link,
         ODDB::State::Admin::Login,
         ODDB::State::User::YweseeContact,
         ODDB::State::Drugs::Init

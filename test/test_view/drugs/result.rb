@@ -20,6 +20,7 @@ module ODDB
             attributes: {},
             resource_global: "resource_global",
             base_url: "base_url",
+            direct_event: "direct_event",
             _event_url: "_event_url")
           @session = flexmock("session",
             lookandfeel: @lnf,
@@ -40,6 +41,7 @@ module ODDB
           @lnf = flexmock("lookandfeel",
             lookup: "lookup",
             attributes: {},
+            direct_event: "direct_event",
             _event_url: "_event_url",
             disabled?: nil,
             base_url: "base_url")
@@ -62,6 +64,7 @@ module ODDB
             enabled?: nil,
             disabled?: nil,
             lookup: "lookup",
+            direct_event: "direct_event",
             event_url: "event_url",
             _event_url: "_event_url",
             base_url: "base_url",

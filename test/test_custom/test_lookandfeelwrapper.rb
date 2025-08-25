@@ -233,7 +233,7 @@ module ODDB
       flexstub(@session) do |s|
         s.should_receive(:zone)
       end
-      expected = [:meddrugs_update, :legal_note, :data_declaration, :home]
+      expected = [:meddrugs_update, :legal_note, :home]
       assert_equal(expected, @look.navigation)
     end
 

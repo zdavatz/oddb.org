@@ -77,6 +77,7 @@ module ODDB
         def price_public(model)
           item = super
           if item.respond_to?(:value)
+            item.value ||= ""
             item.value += " " + @session.currency
             item
           end

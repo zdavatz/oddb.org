@@ -252,7 +252,7 @@ module ODDB
         flexmock(@lnf,
           format_price: "format_price",
           enabled?: nil)
-        assert_kind_of(HtmlGrid::PopupLink, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
+        assert_kind_of(HtmlGrid::Span, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
       end
 
       def test_formatted_price__price_history
@@ -266,7 +266,8 @@ module ODDB
         flexmock(@lnf,
           format_price: "format_price",
           enabled?: true)
-        assert_kind_of(HtmlGrid::Link, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
+        res =  @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__)
+        assert_kind_of(HtmlGrid::Span, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
       end
 
       def test_formatted_price__price_chf_zero
@@ -275,7 +276,7 @@ module ODDB
         flexmock(@lnf,
           disabled?: nil,
           enabled?: nil)
-        assert_kind_of(HtmlGrid::Link, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
+        assert_kind_of(HtmlGrid::Span, @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__))
       end
 
       def test_formatted_price__deductible_unknown
@@ -283,8 +284,8 @@ module ODDB
         flexmock(@model, key: 0)
         flexmock(@lnf, disabled?: true)
         value = @format.instance_eval('formatted_price("key", @model)', __FILE__, __LINE__)
-        assert_kind_of(HtmlGrid::PopupLink, value)
-        assert_equal("http://wiki.oddb.org/wiki.php?pagename=lookup", value.attributes["href"])
+        assert_kind_of(HtmlGrid::Span, value)
+        assert_nil(value.attributes["href"])
       end
 
       def test_price

@@ -135,6 +135,7 @@ module ODDB
             attributes: {},
             enabled?: nil,
             disabled?: nil,
+            direct_event: "direct_event",
             event_url: "event_url",
             _event_url: "_event_url",
             navigation: [],
