@@ -15,6 +15,7 @@ require "minitest/autorun"
 require "stub/oddbapp"
 require "digest/md5"
 require "util/persistence"
+require "model/registration"
 require "model/substance"
 require "model/atcclass"
 require "model/orphan"
@@ -525,26 +526,29 @@ class TestOddbApp2 < Minitest::Test
   end
 
   def test_package_count
+    reg1 = ODDB::Registration.new('10001')
+    seq1 = reg1.create_sequence('01')
+    seq1.create_package('001')
+    reg2 = ODDB::Registration.new('20002')
+    seq2 = reg2.create_sequence('02')
+    seq2.create_package('002')
+    reg3 = ODDB::Registration.new('30003')
+    seq3 = reg3.create_sequence('01')
+    seq3.create_package('001')
+    pack2 = seq3.create_package('002')
+    pack2.disable = true
+    pack3 = seq3.create_package('003')
     @app.registrations = {
-      "reg1"	=>	StubRegistration.new,
-      "reg2"	=>	StubRegistration.new,
-      "reg3"	=>	StubRegistration.new
+      "reg1"	=>	reg1,
+      "reg2"	=>	reg2,
+      "reg3"	=>	reg3,
     }
-    @app.instance_variable_get(:@system).instance_variable_set(:@package_count, nil)
-    count = @app.package_count
-    assert_equal(9, count)
+    count = @app.packages.size
+    assert_equal(5, count)
+    assert_equal(4, @app.package_count)
+    assert_equal(4,  @app.active_packages.size)
   end
 
-  #         def test_patinfo_count
-  #                 @app.registrations = {
-  #                         'reg1'  =>      StubRegistration.new,
-  #                         'reg2'  =>      StubRegistration.new,
-  #                         'reg3'  =>      StubRegistration.new,
-  #                 }
-  #                 @app.instance_variable_get('@system').instance_variable_set('@patinfo_count', nil)
-  #                 count = @app.patinfo_count
-  #                 assert_equal(9,count)
-  #         end
   def test_last_medication_update
     @app.last_medication_update = Date.new(1977 - 0o7 - 0o7)
     @app.create(ODDB::Persistence::Pointer.new([:atc_class, "A"]))

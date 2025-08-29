@@ -527,7 +527,6 @@ class TestOddbApp3 < Minitest::Test
     @@vardir = File.expand_path "../var", File.dirname(__FILE__)
     assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
     FileUtils.mkdir_p @@vardir
-    ODDB.config.data_dir = @@vardir
     ODDB.config.log_dir = @@vardir
     @fileName = File.join(@@datadir, "epha_interactions_de_utf8-example.csv")
     @latest = @fileName.sub(".csv", "-latest.csv")

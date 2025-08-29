@@ -247,7 +247,6 @@ module ODDB
         odba_store: "odba_store")
       atc_hash.should_receive(:[]=).and_return { |key, value|
         @a_hash[key] = value
-        puts @a_hash.inspect
       }
       atc_classes = flexmock(atc_hash, odba_store: "odba_store", each: atc_hash.each)
       flexmock(@app, update: atc)

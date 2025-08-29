@@ -260,7 +260,7 @@ module ODDB
         end
         pointer = dup
         command = pointer.directions.pop
-        command[0] = "create_" << command.first.to_s
+        command[0] = "create_" + command.first.to_s
         hook = pointer.resolve(app)
         new_obj = hook.send(*command.compact)
         new_obj.pointer = self
@@ -291,7 +291,7 @@ module ODDB
         end
         pointer = dup
         command = pointer.directions.pop
-        command[0] = "delete_" << command.first.to_s
+        command[0] = "delete_" + command.first.to_s
         hook = pointer.resolve(app)
         if hook.respond_to?(command.first)
           hook.send(*command.compact)
@@ -367,7 +367,7 @@ module ODDB
       end
 
       def to_s
-        ":" << @directions.collect { |orig|
+        ":" + @directions.collect { |orig|
           step = orig.collect { |arg|
             if arg.is_a? Pointer
               arg
@@ -375,7 +375,7 @@ module ODDB
               arg.to_s.gsub("%", "%%").gsub(/[:!,.]/u, '%\0')
             end
           }
-          "!" << step.join(",")
+          "!" + step.join(",")
         }.join << "."
       end
 

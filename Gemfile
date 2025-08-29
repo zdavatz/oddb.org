@@ -6,6 +6,7 @@ gem "yus", "1.0.6"
 gem "net-smtp", require: false
 gem "net-imap", require: false
 gem "net-pop", require: false
+gem "bigdecimal", require: false
 gem "mutex_m", require: false
 gem "drb", require: false
 gem "nkf", require: false
@@ -25,7 +26,6 @@ gem "cmath"
 gem "minitar"
 gem "webrick"
 gem "rss"
-gem "bigdecimal"
 gem "builder"
 gem "clogger"
 gem "chrono_logger"
@@ -33,6 +33,7 @@ gem "ydiffy"
 gem "deprecated"
 gem "flickraw"
 gem "hpricot"
+gem 'htmlbeautifier'
 gem "sax-machine"
 gem "headless"
 gem "htmlentities"

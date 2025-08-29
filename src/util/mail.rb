@@ -118,7 +118,7 @@ module ODDB
       File.open(name, "a+") do |file|
         file.puts mail.body.to_s
       end
-      LogFile.debug("Saved Mail without attachments #{name} #{subject}")
+      LogFile.debug("Saved Mail without attachments #{name}")
       puts("Saved Mail without attachments #{name} #{subject} #{@deliveries}")
     end
 

@@ -205,14 +205,7 @@ class OddbPrevalence
   end
 
   def active_packages
-    @registrations.inject([]) { |pacs, (iksnr, reg)|
-      if reg.instance_of?(ODDB::Registration)
-        pacs.concat(reg.active_packages) if reg.instance_of?(ODDB::Registration)
-      else
-        ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration")
-        pacs
-      end
-    }
+    packages.find_all {|pac| pac.active?}
   end
 
   def active_packages_has_fachinfo
@@ -915,7 +908,12 @@ class OddbPrevalence
 
   def packages
     @registrations.inject([]) { |pacs, (iksnr, reg)|
-      pacs.concat(reg.packages)
+      if reg.instance_of?(ODDB::Registration)
+        pacs.concat(reg.packages) if reg.instance_of?(ODDB::Registration)
+      else
+        ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration") unless defined?(Minitest)
+        pacs
+      end
     }
   end
 

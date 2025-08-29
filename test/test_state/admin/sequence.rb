@@ -478,7 +478,6 @@ class TestSequence < Minitest::Test
       a.should_receive(:substance)
     end
     skip("Test does not work under Ruby 3.4") if RUBY_VERSION.to_f >= 3.4 # TODO
-
     assert_nil(@sequence.update_compositions(input))
   end
 
