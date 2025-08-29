@@ -132,6 +132,8 @@ module ODDB
       assert(!File.exist?(@tramal_pi.cache_file))
       assert(!File.exist?(@tramal_fi.cache_file))
       @plugin.download_all_html_zip(@all_html_zip)
+      @remove_fi = @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(32917) && x.type.eql?("fi") && x.lang.eql?("de")}.first
+      FileUtils.rm_f(@remove_fi.cache_file, :verbose => true)
       @plugin.unpack_and_beautify_files
       get_tramal_fi_and_pi
       assert(File.exist?(@tramal_pi.cache_file))

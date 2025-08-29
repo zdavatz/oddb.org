@@ -129,6 +129,11 @@ module ODDB
         next if /pdf$|-it.html$/.match(short)
         nrFiles += 1
         path = File.join(@html_cache, short)
+        unless File.exist?(path)
+          meta = @xref_file_2_meta[File.basename(path)]
+          LogFile.debug("Skipping #{meta.type} #{meta.lang} #{meta.iksnr} #{path} as file not found. #{nrFiles}")
+          next
+        end
         oldSize = File.size(path)
         beautiful = HtmlBeautifier.beautify(File.read(path))
         File.open(path, "w+") { |f| f.write(beautiful)}
@@ -142,6 +147,7 @@ module ODDB
       @files2unpack[0..].each do |f|
         res = `sha256sum #{File.join(@html_cache, f)}`
         parts = res.split(" ")
+        next unless parts[1]
         key = File.basename(parts[1])
         meta = @xref_file_2_meta[key]
         @xref_file_2_meta[key].cache_sha256 = parts[0]
