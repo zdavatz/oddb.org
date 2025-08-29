@@ -52,7 +52,6 @@ module ODDB
     end
 
     def test_get_aips_download_xml
-      skip("Do not test large xml!!")
       one_MB = 1024*1024
       @plugin.get_aips_download_xml
       assert(File.exist?(@plugin.aips_xml))
@@ -76,6 +75,15 @@ module ODDB
         @plugin.parse_aips_download(@aips_xml)
         @@saved_meta_info = @plugin.iksnrs_meta_info.dup
       end
+    end
+
+    def test_create_missing_registrations
+      get_iksnrs_meta_info
+      res = @plugin.create_missing_registrations
+      assert_equal(18, res.size)
+      firstMeta = res.values.flatten.first
+      assert_equal(["40858", "40859", "43787", "43788"], firstMeta.authNrs)
+      assert_equal("40858", firstMeta.iksnr)
     end
 
     def get_tramal_fi_and_pi
@@ -187,6 +195,7 @@ module ODDB
       @app = flexmock("application_#{__LINE__}", App.new)
       @app.should_receive(:company_by_name)
     end
+
 
     def check_whether_changed(should_change = false)
       pi = @app.registrations.values.first.sequences.values.first.patinfo
@@ -312,18 +321,6 @@ module ODDB
       assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence("03").packages.values.first.patinfo.odba_id)
     end
 
-    def test_get_swissmedicinfo_changed_items
-      skip("Not yet ready for")
-      @options = {target: :both,
-                  download: false,
-                  newest: false,
-                  xml_file: @aips_download}
-      prepare_plugin
-
-      @plugin.import_swissmedicinfo(@options)
-      #        assert(@plugin.import_swissmedicinfo(@options), 'must be able to run import_swissmedicinfo')
-      puts @plugin.report
-    end
   end
 
   class TestTextInfoPlugin < Minitest::Test
@@ -402,12 +399,6 @@ module ODDB
       agent = @plugin.init_agent
       assert_instance_of Mechanize, agent
       assert(/Mozilla/.match(agent.user_agent))
-    end
-
-    def test_extract_iksnrs
-      de = setup_fachinfo_document "Zulassungsnummer", "57363 (Swissmedic)."
-      fr = setup_fachinfo_document "Numéro d’autorisation", "57364 (Swissmedic)."
-      assert_equal %w[57363], @plugin.extract_iksnrs(de: de, fr: fr).sort
     end
 
     def test_fachinfo_news__unconfigured
@@ -602,6 +593,16 @@ module ODDB
       @plugin.import_swissmedicinfo(@options)
       assert_equal("3TC®", @plugin.iksnrs_meta_info[["53662", "fi", "de"]].first.title)
       assert_equal("3TC®", @plugin.iksnrs_meta_info[["53663", "fi", "de"]].first.title)
+    end
+
+    def test_get_swissmedicinfo_changed_items
+      @options = {target: :both,
+                  download: false,
+                  newest: true,
+                  xml_file: @aips_download}
+
+      res = @plugin.import_swissmedicinfo(@options)
+      puts @plugin.report
     end
 
     def test_import_daily_fi

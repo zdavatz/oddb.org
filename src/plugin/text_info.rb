@@ -117,6 +117,8 @@ module ODDB
       LogFile.debug("Unzipping #{@zip_file} of #{(File.size(@zip_file)/1024/1024).to_i} MB")
       cmd = "unzip -o -q -d #{@html_cache} #{@zip_file}"
       system(cmd)
+      system("rm -f #{@html_cache}/*.-it.html")
+      system("rm -f #{@html_cache}/*-pdf")
       LogFile.debug("Saved #{zip_url} to #{@zip_file} of #{(File.size(@zip_file)/1024/1024).to_i} MB")
     end
 
@@ -125,19 +127,20 @@ module ODDB
       nrFiles = 0
       FileUtils.makedirs(@html_cache)
       save_meta_and_xref_info unless @files2unpack
+      startTime = Time.now
       @files2unpack.each do |short|
         next if /pdf$|-it.html$/.match(short)
         nrFiles += 1
         path = File.join(@html_cache, short)
         unless File.exist?(path)
           meta = @xref_file_2_meta[File.basename(path)]
-          LogFile.debug("Skipping #{meta.type} #{meta.lang} #{meta.iksnr} #{path} as file not found. #{nrFiles}")
+          LogFile.debug("Skipping #{meta.type} #{meta.lang} #{meta.iksnr} #{short} as file not found. #{nrFiles}")
           next
         end
         oldSize = File.size(path)
         beautiful = HtmlBeautifier.beautify(File.read(path))
         File.open(path, "w+") { |f| f.write(beautiful)}
-        LogFile.debug("nrFiles #{nrFiles}") if nrFiles.modulo(500) == 1
+        LogFile.debug("nrFiles #{nrFiles}") if nrFiles.modulo(2000) == 1
       end
       LogFile.debug "Beautified #{nrFiles} files in  #{@html_cache}"
     end
@@ -196,8 +199,12 @@ module ODDB
     end
 
     def postprocess
-      return if ARGV.find { |x| /skip|_only/.match(x) }
-      LogFile.debug "#{Time.now}:postprocess fachinfo.rss ARGV #{ARGV}"
+      if ARGV.find { |x| /skip|_only/.match(x) }
+        LogFile.debug "#{Time.now}:Skipping postprocess as demanded by ARGV #{ARGV}"
+        return
+      else
+        LogFile.debug "#{Time.now}:postprocess fachinfo.rss"
+      end
       update_rss_feeds("fachinfo.rss", @app.sorted_fachinfos, View::Rss::Fachinfo)
       update_yearly_fachinfo_feeds
     end
@@ -356,6 +363,9 @@ module ODDB
               @updated_fis << "  #{meta_info.iksnr} #{fis.keys} #{reg.name_base}"
             end
           end
+          FileUtils.makedirs(File.dirname(meta_info.html_file))
+          FileUtils.cp(meta_info.cache_file, meta_info.html_file, :verbose => true) if File.exist?(meta_info.cache_file)
+
         else
           LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, fis, :orphaned_fachinfo
@@ -381,8 +391,9 @@ module ODDB
       raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.is_a?(ODDB::PatinfoDocument)
       raise "Must pass ODDB::Patinfo" unless patinfo.is_a?(ODDB::Patinfo)
       old_size = defined?(patinfo.description(lang).change_log) ? old_text.size : 0
-      if old_text.eql?(new_patinfo_lang.to_s)
-        LogFile.debug "#{lang} skip #{patinfo.odba_id} eql? #{old_text.eql?(new_patinfo_lang)} size #{old_size}" # if defined? Minitest
+      unchanged = old_text.eql?(new_patinfo_lang.to_s)
+      if unchanged
+        LogFile.debug "#{package.iksnr}/#{package.seqnr} #{lang} skip #{patinfo.odba_id} unchanged #{unchanged} size #{old_size}" # if defined? Minitest
         false
       else
         diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang) if patinfo.description(lang).respond_to?(:add_change_log_item)
@@ -396,7 +407,7 @@ module ODDB
         patinfo.odba_store
         new_size = 0
         new_size = patinfo.description(lang).change_log.size if patinfo.description(lang).respond_to?(:change_log)
-        LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{new_size} changes"
+        LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{new_size} changes #{new_patinfo_lang.to_s[0..80]}"
         true
       end
     end
@@ -517,6 +528,8 @@ module ODDB
               end
             end
           end
+          FileUtils.makedirs(File.dirname(meta_info.html_file))
+          FileUtils.cp(meta_info.cache_file, meta_info.html_file, :verbose => true) if File.exist?(meta_info.cache_file)
         else
           LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, pis, :orphaned_patinfo
@@ -835,12 +848,6 @@ module ODDB
       /MonTitle/i.match?(html) ? :compendium : :swissmedicinfo
     end
 
-    def extract_iksnrs languages
-      languages.each_value do |doc|
-        return TextInfoPlugin.get_iksnrs_from_string(doc.iksnrs.to_s)
-      end
-    end
-
     def submit_event agent, form, eventtarget, *args
       max_retries = ODDB.config.text_info_max_retry
       form["__EVENTTARGET"] = eventtarget
@@ -965,67 +972,14 @@ module ODDB
           end
         end
         LogFile.debug("Called Zip::File daily_name is #{daily_name}")
-        xml = ""
+        File.delete(@aips_xml) if File.exist?(@aips_xml)
         cmd = "unzip -o -q -d #{File.dirname(@aips_xml)} #{zip}"
         res = system(cmd)
-        puts cmd
-        FileUtils.cp(File.join(File.dirname(@aips_xml), daily_name), @aips_xml, :preserve => true, :verbose => true)
+        FileUtils.cp(File.join(dir, daily_name), @aips_xml, :preserve => true, :verbose => true)
         size = File.exist?(@aips_xml) ? File.size(@aips_xml)/1024 : 0
-        LogFile.debug("Saved XML to #{@aips_xml} #{File.exist?(@aips_xml)} #{size} kB")
+        mtime = File.exist?(@aips_xml) ? File.mtime(@aips_xml) : 0
+        LogFile.debug("Saved XML to #{@aips_xml} #{File.exist?(@aips_xml)} #{size} kB of #{mtime}")
       end
-    end
-
-    def extract_matched_content(name, type, lang)
-      content = nil, styles = nil, title = nil, iksnrs = nil
-      return content unless @doc and name
-      nameForRegexp = name.tr('"', ".")
-      path = "//MedicinalDocumentsBundle[@type='#{type[0].downcase + "i"}' and @lang='#{lang}']/title[match(., \"#{nameForRegexp}\")]"
-      match = @doc.xpath(path, Class.new do
-        def match(node_set, name)
-          found_node = catch(:found) do
-            node_set.find_all do |node|
-              title = node.text.gsub(CharsNotAllowedInBasename, "")
-              name = name.gsub(CharsNotAllowedInBasename, "")
-              throw :found, node if title == name
-              false
-            end
-            nil
-          end
-          found_node ? [found_node] : []
-        end
-      end.new).first
-      return nil, nil, nil, nil unless match
-      if match
-        content = match.parent.at("./content")
-        styles = match.parent.at("./style").text
-        title = match.parent.at("./title").text
-        iksnrs = TextInfoPlugin.get_iksnrs_from_string(match.parent.at("./authNrs").text)
-        unless iksnrs.size > 0
-          @wrong_meta_tags << "#{match.parent.at("./authNrs")} authNrs-text: #{match.parent.at("./authNrs").text}"
-        end
-      end
-      [content, styles, title, iksnrs]
-    end
-
-    def extract_matched_name(iksnr, type, lang)
-      name = nil
-      return name unless @doc
-      path = "//MedicinalDocumentsBundle[@type='#{type[0].downcase + "i"}' and @lang='#{lang}']/authNrs"
-      @doc.xpath(path, Class.new do
-        def match(node_set, iksnr)
-          node_set.find_all do |node|
-            iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(node.text, iksnr))
-          end
-        end
-      end.new).each { |x|
-        if iksnr.eql?(TextInfoPlugin.find_iksnr_in_string(x.text, iksnr))
-          name = x.parent.at("./title").text
-          LogFile.debug "#{iksnr} #{type} as '#{type[0].downcase + "i"}' lang '#{lang}' path is #{path} returns #{name}"
-          return name
-        end
-      }
-      @notfound << "  IKSNR-not found #{iksnr.inspect} : #{type} - #{lang}."
-      name
     end
 
     def extract_images(html_file, type, lang, iksnrs, image_folder)
@@ -1079,51 +1033,13 @@ module ODDB
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
-        content, styles, title, iksnrs_from_xml = extract_matched_content(name, type, lang)
+        res = @iksnrs_meta_info.values.flatten.find{|x| x.title.eql?(name) && x.type.eql?(type) && x.lang.eql?(lang)}
+        iksnrs_from_xml = res&.authNrs
         next unless iksnrs_from_xml
+        LogFile.debug "#{iksnrs_from_xml} for #{iksnrs_from_xml} #{type}"
         iksnrs_from_xml.each do |iksnr|
-          meta_info = SwissmedicMetaInfo.new
-          meta_info.type = (type.to_s == "fachinfo") ? "fi" : "pi"
-          meta_info.iksnr = iksnr
-          meta_info.authNrs = iksnrs_from_xml
-          meta_info.lang = lang.to_s
-          meta_info.title = title
-          meta_info.html_file = File.join(@details_dir, File.basename(meta_info.html_file))
-          if File.exist?(meta_info.html_file)
-            age = Time.now - File.mtime(meta_info.html_file)
-            age_in_hours = (age / 60 * 60).to_ik
-          else
-            LogFile.debug "creating #{meta_info.html_file}"
-            builder = Nokogiri::XML::Builder.new(encoding: "utf-8") do |xml|
-              Time.new.strftime("%FT%T%z")
-              xml.MedicinalDocumentsBundles(XML_OPTIONS) do
-                xml.comment "Generated by __FILE__ at #{Time.now}"
-                xml.MedicinalDocumentsBundle("type" => meta_info.type,
-                  "lang" => meta_info.lang,
-                  "version" => 2) do
-                  xml.title meta_info.title
-                  xml.authHolder ""
-                  xml.atcCode ""
-                  xml.substances ""
-                  xml.authNrs iksnrs_from_xml.join(", ")
-                  xml.style styles
-                  # content # does not output anything
-                  # xml.content { xml.cdata content } # outputtted CDATA twice
-                  # xml.content { xml.cdata! content }# generated     <content> <cdata>&lt;content&gt;&lt;![CDATA[&lt;?xml version="1.0"
-                  xml.content { xml.cdata content.text }
-                end
-              end
-            end
-            builder.to_xml
-            File.open(meta_info.html_file, "w:utf-8") { |fh|
-              fh << builder.to_xml
-              f.close
-            }
-            age_in_hours = 0
-          end
-          # informationUpdate could be read from meta_info.html_file
-          if @options[:reparse] || age_in_hours < 3
-            LogFile.debug "reparse #{@options[:reparse]} or age_in_hours < 3 is #{age_in_hours} #{meta_info}"
+          if @options[:reparse]
+            LogFile.debug "reparse #{@options[:reparse]} #{meta_info}"
             @to_parse << meta_info
           else
             @up_to_date_fis << iksnr if type == "fachinfo"
@@ -1334,10 +1250,15 @@ module ODDB
         infoTxt ||= reg.sequences.values.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
       end
     end
-
-    def parse_textinfo(meta_info)
+require 'debug'
+    def parse_textinfo(meta_info, idx)
+      return meta_info.lang.eql?('it') # we cannot parse correctly for italian
       type = meta_info[:type].to_sym
       return if @options[:target].to_sym != :both && @options[:target].to_sym != type
+      unless File.exist?(meta_info.cache_file)
+        LogFile.debug("Skipping #{type} #{meta_info.lang} #{meta_info.iksnr} #{File.basename(meta_info.cache_file)} as file not found.")
+        return
+      end
       cache_content = IO.read(meta_info.cache_file)
       if unchanged = info_is_unchanged(meta_info, cache_content)
         nr_uptodate = (type == :fi) ? @up_to_date_fis.size : @up_to_date_pis.size
@@ -1372,6 +1293,9 @@ module ODDB
       # image_base, image_subfolder must be in sync with ext/fiparse/src/fiparse.rb and ext/fiparse/src/textinfo_hpricot.rb
       image_base = File.expand_path("./doc/resources/images")
       image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0, 10].gsub(/[^A-z0-9]/, "_")}")
+      bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
+      mbytes = (bytes / (2**20)).to_i
+      LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{new_html} using #{mbytes} MB at #{idx}/#{@to_parse.size}" unless unchanged
       if type == :fi
         if unchanged && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
           LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{new_html} unchanged #{new_html}" if defined?(Minitest)
@@ -1380,15 +1304,12 @@ module ODDB
         textinfo_fi ||= @parser.parse_fachinfo_html(new_html, meta_info.title, styles, image_subfolder)
         update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
       elsif type == :pi
-        bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
-        mbytes = (bytes / (2**20)).to_i
-        LogFile.debug "Checking #{meta_info.iksnr} #{meta_info.lang} unchanged #{unchanged} for #{new_html} using #{mbytes} MB" unless unchanged
         begin
           if text_info && text_info.respond_to?(:descriptions)
             text_info.descriptions.keys
           end
         rescue => err # SystemStackError => err
-          LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{new_html} using #{mbytes} MB #{err}"
+          LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
           LogFile.debug "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
           LogFile.debug "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
           return nil
@@ -1592,7 +1513,9 @@ private
       end
       finished = Time.now
       took = ((finished - started) * 10).to_i / 10
-      LogFile.debug "took #{took} seconds for  #{@new_iksnrs.size} @new_iksnrs from #{@aips_xml}"
+      save_to = File.join(ODDB::WORK_DIR, 'new_iksnrs.xml')
+      File.write(save_to, Ox.dump(@new_iksnrs, :indent => 2, :circular => $circular))
+      LogFile.debug "took #{took} seconds for  #{@new_iksnrs.size} @new_iksnrs from #{@aips_xml}. Saved to #{save_to}"
       @doc = nil
     end
 
@@ -1616,11 +1539,12 @@ private
       get_aips_download_xml(@aips_xml)
       parse_aips_download(@aips_xml) # to get all meta information
       download_all_html_zip
-      unpack_and_beautify_files
+      save_meta_and_xref_info unless @files2unpack
+      # unpack_and_beautify_files
 #       calc_and_save_sha256
 
       LogFile.debug "After parse_aips_download we have  #{@to_parse.size} items to parse. Having #{@iksnrs_meta_info.size} meta items. #{@options[:newest]}"
-      @iksnrs_meta_info_clone = @iksnrs_meta_info.clone
+      @iksnrs_meta_info.clone
       if @options[:newest]
         index = nil
         # @to_parse = [] # Reset it to empty, as we want to add only the changed items!
@@ -1642,8 +1566,8 @@ private
       end
       LogFile.debug "must parse @to_parse #{@to_parse.size}  FI/PIs"
       LogFile.debug "must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
-      @iksnrs_meta_info.values.flatten.sort { |x, y| x.iksnr.to_i <=> y.iksnr.to_i }.each do |meta_info|
-        ODBA.cache.transaction { parse_textinfo(meta_info) }
+      @iksnrs_meta_info.values.flatten.sort { |x, y| x.iksnr.to_i <=> y.iksnr.to_i }.each_with_index do |meta_info, idx|
+        ODBA.cache.transaction { parse_textinfo(meta_info, idx) }
       end
       if @options[:download] != false
         postprocess

@@ -227,17 +227,6 @@ Line 3\x06;\bT"
         fi
       end
 
-      def test_import_swissmedicinfo_xml
-        fi = flexmock "fachinfo"
-        fi.should_receive(:pointer).never.and_return Persistence::Pointer.new([:fachinfo, 1])
-        flexmock "patinfo"
-        @parser.should_receive(:parse_textinfo).never
-        @parser.should_receive(:parse_patinfo_html).never
-        @parser.should_receive(:parse_fachinfo_html).at_least.once
-        @plugin.extract_matched_content("Zyloric®", "fi", "de")
-        assert(@plugin.import_swissmedicinfo(@opts), "must be able to run import_swissmedicinfo")
-      end
-
       def test_import_swissmedicinfo_no_iksnr
         fi = flexmock "fachinfo"
         fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo, 1])
