@@ -248,6 +248,7 @@ module ODDB
           return nil
         end
         if sequence.active_agents.empty?
+          sequence.fix_pointers unless sequence.pointer
           cptr = sequence.pointer + :composition
           comp = @app.create cptr
           subs.each do |name, dose|
