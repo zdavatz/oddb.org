@@ -188,7 +188,7 @@ module ODDB
           # letter, we need to remove the hyphen
           @raw_txt.gsub!(/[‐­-]\s*$/u, "")
         end
-        @raw_txt << text.to_s
+        @raw_txt += text.to_s
         @raw_txt.gsub!(/[\n\r]+/u, "\n")
         @raw_txt.gsub!(/^\n+/u, "")
         if @preformatted

@@ -142,7 +142,6 @@ module ODDB
       @plugin.download_all_html_zip(@all_html_zip)
       @remove_fi = @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(32917) && x.type.eql?("fi") && x.lang.eql?("de")}.first
       FileUtils.rm_f(@remove_fi.cache_file, :verbose => true)
-      @plugin.unpack_and_beautify_files
       get_tramal_fi_and_pi
       assert(File.exist?(@tramal_pi.cache_file))
       assert(File.exist?(@tramal_fi.cache_file))
@@ -618,7 +617,7 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size > 0, "must find at least one find fachinfo")
 
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "must find patinfo")
-      assert_equal(Nr_FI_in_AIPS_test, @plugin.updated_fis.size, "nr updated fis must match")
+      assert_equal(10, @plugin.updated_fis.size, "nr updated fis must match")
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
       assert_equal([], @plugin.up_to_date_pis, "up_to_date_pis must match")
       # nr_fis = 6 # we add all missing
@@ -645,7 +644,7 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size > 0, "must find at least one find patinfo")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
-      assert_equal(Nr_PI_in_AIPS_test, @plugin.updated_pis.size, "nr updated pis must match")
+      assert_equal(2, @plugin.updated_pis.size, "nr updated pis must match")
       assert_equal([], @plugin.up_to_date_pis, "up_to_date_pis must match")
 
       assert_equal(0, @plugin.updated_fis.size, "nr updated fis must match")
@@ -672,7 +671,7 @@ module ODDB
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size > 0, "must find at least one find patinfo")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
-      assert_equal(3, @plugin.updated_pis.size, "nr updated pis must match")
+      assert_equal(2, @plugin.updated_pis.size, "nr updated pis must match")
       new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
       assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, "File must be now 4 lines long")

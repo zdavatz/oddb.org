@@ -190,30 +190,47 @@ module ODDB
       writer.extract(Hpricot(doc.to_html(true)), :fi)
     end
 
-    def parse_fachinfo_html(src, title, styles, image_folder)
-      lang = (/\/de\//.match?(src) ? "de" : "fr")
+    def parse_fachinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
       writer = FachinfoHpricot.new
       writer.format = :swissmedicinfo
-      writer.title = title
+      doc = Hpricot(src)
+      title_from_html ||= ""
+      title_from_html = doc.at("title").children.first.to_s if doc.at("title")
+      if writer.title
+        unless writer.title.eql?(title_from_html)
+          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
+        end
+      else writer.title
+          writer.title = title_from_html
+      end
       writer.lang = lang
       writer.image_folder = image_folder
-      writer.extract(Hpricot(src), :fi, title, styles)
+      writer.extract(Hpricot(src))
     end
 
-    def parse_patinfo_html(src, title, styles, image_folder)
-      lang = (/\/de\//.match?(src) ? "de" : "fr")
+    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
       writer = PatinfoHpricot.new
       writer.format = :swissmedicinfo
-      writer.title = title
+      doc = Hpricot(src)
+      unless writer.title
+        title_from_html = doc.at("title").children.first.to_s
+        writer.title = title_from_html
+      else
+        unless writer.title.eql?(title_from_html)
+          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
+        end
+      end
       writer.lang = lang
       writer.image_folder = image_folder
-      writer.extract(Hpricot(src), :pi, title, styles)
+#            def extract(doc, type: :fi, name: nil, styles: nil)
+
+      writer.extract(Hpricot(src), type: :pi)
     end
     module_function :storage=
     module_function :parse_fachinfo_docx

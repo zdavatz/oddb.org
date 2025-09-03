@@ -85,6 +85,11 @@ module ODDB
       @zip_url =  "https://files.refdata.ch/simis-public-prod/MedicinalDocuments/AllHtml.zip"
     end
 
+    def getFreeMemoryInMB
+      m =  /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
+      freeMbytes = (m[1].to_i / (2**10)).to_i
+    end
+
     def save_meta_and_xref_info
       FileUtils.makedirs(File.dirname(@xref_xml))
       FileUtils.makedirs(File.dirname(@meta_xml))
@@ -123,27 +128,7 @@ module ODDB
     end
 
     # Updates also the SHA256 checksum
-    def unpack_and_beautify_files
-      nrFiles = 0
-      FileUtils.makedirs(@html_cache)
-      save_meta_and_xref_info unless @files2unpack
-      startTime = Time.now
-      @files2unpack.each do |short|
-        next if /pdf$|-it.html$/.match(short)
-        nrFiles += 1
-        path = File.join(@html_cache, short)
-        unless File.exist?(path)
-          meta = @xref_file_2_meta[File.basename(path)]
-          LogFile.debug("Skipping #{meta.type} #{meta.lang} #{meta.iksnr} #{short} as file not found. #{nrFiles}")
-          next
-        end
-        oldSize = File.size(path)
-        beautiful = HtmlBeautifier.beautify(File.read(path))
-        File.open(path, "w+") { |f| f.write(beautiful)}
-        LogFile.debug("nrFiles #{nrFiles}") if nrFiles.modulo(2000) == 1
-      end
-      LogFile.debug "Beautified #{nrFiles} files in  #{@html_cache}"
-    end
+
 
     def calc_and_save_sha256
       startTime = Time.now
@@ -385,7 +370,8 @@ module ODDB
         ""
       end
       unless patinfo.description(lang).respond_to?(:add_change_log_item)
-        puts "Skipping patinfo #{package.iksnr} odba_id #{package.odba_id} no add_change_log_item"
+        puts "Resetting patinfo #{package.iksnr} odba_id #{package.odba_id} no add_change_log_item"
+        patinfo.descriptions[lang] = new_patinfo_lang
       end
 
       raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.is_a?(ODDB::PatinfoDocument)
@@ -393,8 +379,8 @@ module ODDB
       old_size = defined?(patinfo.description(lang).change_log) ? old_text.size : 0
       unchanged = old_text.eql?(new_patinfo_lang.to_s)
       if unchanged
-        LogFile.debug "#{package.iksnr}/#{package.seqnr} #{lang} skip #{patinfo.odba_id} unchanged #{unchanged} size #{old_size}" # if defined? Minitest
-        false
+        LogFile.debug "#{package.iksnr}/#{package.seqnr} #{lang} skip #{patinfo.odba_id} unchanged #{unchanged} size #{old_size}" if defined? Minitest
+        return false
       else
         diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang) if patinfo.description(lang).respond_to?(:add_change_log_item)
         if diff_item
@@ -415,16 +401,20 @@ module ODDB
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"
-      if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions[lang]
+      if package&.patinfo.instance_of?(ODDB::Patinfo) && package.patinfo.descriptions && package.patinfo.descriptions[lang]
         old_ti = package.patinfo
         Languages.each do |old_lang|
           old_lang = old_lang.to_s
           next if old_lang.eql?(lang)
           package.patinfo.descriptions[old_lang] = old_ti.descriptions[old_lang]
         end
-        msg += " change_diff" if store_patinfo_change_log(package, lang, patinfo_lang)
-        package.patinfo.descriptions[lang] = patinfo_lang
-      elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.is_a?(Hash)
+        if store_patinfo_change_log(package, lang, patinfo_lang)
+          msg += " change_diff"
+          package.patinfo.descriptions[lang] = patinfo_lang
+        else
+          return package.patinfo
+        end
+      elsif package.patinfo && package.patinfo.is_a?(ODDB::Patinfo) && package.patinfo.descriptions.instance_of?(ODDB::SimpleLanguage::Descriptions)
         package.patinfo.descriptions[lang] = patinfo_lang
         package.patinfo.odba_store
         msg += " new patinfo"
@@ -515,7 +505,6 @@ module ODDB
                 name = @specify_barcode_to_text_info[barcode_override]
                 if meta_info.title.eql?(name)
                   res = store_package_patinfo(package, lang, patinfo_lang)
-                  LogFile.debug "called odba_store: #{package.ikscd} #{msg} res = #{res}"
                   return if res
                   @updated_pis << msg
                 elsif name
@@ -703,6 +692,8 @@ module ODDB
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.collect { |key, value| "#{key} #{value}" }.join("\n")
       end
+      m =  /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
+      res << "\nHaving free #{getFreeMemoryInMB} MB"
       File.open(Override_file, "w+") { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out, line_width: -1) }
       res
     end
@@ -1223,13 +1214,11 @@ module ODDB
 
     private
 
-    def get_styles(cache_content)
-      m = /<style>(.*)<\/style>/.match(cache_content)
-      styles = m ? m[1] : ""
-    end
-
     def info_is_unchanged(meta_info, cache_content )
-      File.exist?(meta_info.html_file) && IO.read(meta_info.html_file) == cache_content
+      src = File.exist?(meta_info.html_file) ? IO.read(meta_info.html_file) : ""
+      res = src.eql?(cache_content)
+      src = nil
+      res
     end
 
     def found_matching_iksnr(iksnrs)
@@ -1250,11 +1239,10 @@ module ODDB
         infoTxt ||= reg.sequences.values.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
       end
     end
-require 'debug'
+
     def parse_textinfo(meta_info, idx)
-      return meta_info.lang.eql?('it') # we cannot parse correctly for italian
+      return if meta_info.lang.eql?('it') # we cannot parse correctly for italian
       type = meta_info[:type].to_sym
-      return if @options[:target].to_sym != :both && @options[:target].to_sym != type
       unless File.exist?(meta_info.cache_file)
         LogFile.debug("Skipping #{type} #{meta_info.lang} #{meta_info.iksnr} #{File.basename(meta_info.cache_file)} as file not found.")
         return
@@ -1263,7 +1251,7 @@ require 'debug'
       if unchanged = info_is_unchanged(meta_info, cache_content)
         nr_uptodate = (type == :fi) ? @up_to_date_fis.size : @up_to_date_pis.size
       end
-      styles = get_styles(cache_content)
+      cache_content = nil
       reg = @app.registration(meta_info.iksnr)
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
@@ -1277,7 +1265,7 @@ require 'debug'
       end
       new_html = meta_info.cache_file
       textinfo_fi = nil
-      reg ||= @app.registration(meta_info.iksnr)
+      reg = @app.registration(meta_info.iksnr)
       if reg.nil? || reg.sequences.size == 0 # Workaround for Ebixa problem
         LogFile.debug "must create #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
         TextInfoPlugin.create_registration(@app, meta_info)
@@ -1295,13 +1283,13 @@ require 'debug'
       image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0, 10].gsub(/[^A-z0-9]/, "_")}")
       bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
       mbytes = (bytes / (2**20)).to_i
-      LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{new_html} using #{mbytes} MB at #{idx}/#{@to_parse.size}" unless unchanged
+      LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{new_html} using #{mbytes} MB (free #{getFreeMemoryInMB}) at #{idx}/#{@metas.size}"
       if type == :fi
         if unchanged && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
           LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{new_html} unchanged #{new_html}" if defined?(Minitest)
           return
         end
-        textinfo_fi ||= @parser.parse_fachinfo_html(new_html, meta_info.title, styles, image_subfolder)
+        textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
         update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
       elsif type == :pi
         begin
@@ -1319,7 +1307,7 @@ require 'debug'
         end
         startTime = Time.now
         begin
-          textinfo_pi = @parser.parse_patinfo_html(new_html, meta_info.title, styles, image_subfolder)
+          textinfo_pi = @parser.parse_patinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
         rescue => error
           textinfo_pi
         end
@@ -1540,7 +1528,6 @@ private
       parse_aips_download(@aips_xml) # to get all meta information
       download_all_html_zip
       save_meta_and_xref_info unless @files2unpack
-      # unpack_and_beautify_files
 #       calc_and_save_sha256
 
       LogFile.debug "After parse_aips_download we have  #{@to_parse.size} items to parse. Having #{@iksnrs_meta_info.size} meta items. #{@options[:newest]}"
@@ -1566,9 +1553,36 @@ private
       end
       LogFile.debug "must parse @to_parse #{@to_parse.size}  FI/PIs"
       LogFile.debug "must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
-      @iksnrs_meta_info.values.flatten.sort { |x, y| x.iksnr.to_i <=> y.iksnr.to_i }.each_with_index do |meta_info, idx|
-        ODBA.cache.transaction { parse_textinfo(meta_info, idx) }
+      if @options[:reparse]
+        if @options[:all]
+          iksnrs_to_parse = @iksnrs_meta_info.values.flatten.collect{|x| x.iksnr}.uniq.sort
+        else
+          iksnrs_to_parse = @options[:iksnrs]
+        end
+        @metas = @iksnrs_meta_info.values.flatten.select do |x|
+          iksnrs_to_parse.index(x.iksnr) && (@options[:target].eql?(:both) || @options[:target].eql?(x.type.to_sym))
+        end
+      elsif @options[:target]
+        @metas = @iksnrs_meta_info.values.flatten.select do |x| @options[:target].eql?(x.type.to_sym) end
+      else
+        @metas = @iksnrs_meta_info.values.flatten
       end
+
+      @metas.each_with_index do |meta_info, idx|
+          if getFreeMemoryInMB < 1024 # < 512 was not enough!
+            LogFile.debug "Stopping as only  #{getFreeMemoryInMB} MB memory left"
+            break
+          end
+          ODBA.cache.transaction do
+            begin
+              parse_textinfo(meta_info, idx)
+            rescue => error
+              puts error
+              puts error.backtrace[0..10].join("\n")
+              raise error # to trigger rollback of transaction
+            end
+          end
+        end
       if @options[:download] != false
         postprocess
       end
@@ -1576,3 +1590,4 @@ private
     end
   end
 end
+

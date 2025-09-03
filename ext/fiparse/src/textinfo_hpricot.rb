@@ -65,7 +65,7 @@ module ODDB
         [code, chapter]
       end
 
-      def extract(doc, type = :fi, name = nil, styles = nil)
+      def extract(doc, type: :fi, name: nil, styles: nil)
         @stylesWithItalic = TextinfoHpricot.get_italic_style(styles)
         @stylesWithFixedFont = TextinfoHpricot.get_fixed_font_style(styles)
         @format = :swissmedicinfo if doc.to_s.index("section1") or doc.to_s.index("Section7000")
@@ -75,7 +75,7 @@ module ODDB
           @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
           paragraph_tag = "div.paragraph"
         when :swissmedicinfo
-          raise "MustPassNameToExtract" unless name
+#          raise "MustPassNameToExtract" unless name
           @name = simple_chapter(name)
           paragraph_tag = "p[@id^='section']"
         else

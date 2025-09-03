@@ -170,7 +170,6 @@ module ODDB
     def pointer_descr
       "Fachinfo"
     end
-
     class ChangeLogItem
       include Persistence
       attr_accessor :time, :diff
@@ -217,6 +216,7 @@ module ODDB
     attr_accessor :interactions, :overdose, :other_advice
     attr_accessor :date, :iksnrs, :reference, :packages
     attr_accessor :delivery, :distribution, :fabrication, :atc_code
+    attr_reader :CHAPTERS
     CHAPTERS = [
       :galenic_form,
       :composition,
@@ -237,6 +237,7 @@ module ODDB
       :packages,
       :date
     ]
+
     def empty?
     end
 

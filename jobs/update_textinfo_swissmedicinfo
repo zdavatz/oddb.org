@@ -13,6 +13,7 @@ module ODDB
       opts = {
         target: :fi,
         reparse: false,
+        all: false,
         iksnrs: [],
         companies: [],
         download: true,
@@ -23,6 +24,8 @@ module ODDB
           opts[:target] = $1.intern
         elsif /reparse/.match?(arg)
           opts[:reparse] = true
+        elsif /all/.match?(arg)
+          opts[:all] = true
         elsif /skip/.match?(arg)
           opts[:skip] = true # to skip time consuming postprocess when debugging reparse errors
         elsif /no-download/.match?(arg)

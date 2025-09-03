@@ -211,7 +211,7 @@ module ODDB
       self.class::RECIPIENTS
     end
 
-    def run(opts)
+    def run(opts) # Aka import_daily
       LogFile.append("oddb/debug", "run opts #{opts.inspect}", Time.now)
       unless opts[:patinfo_only] || opts[:fachinfo_only]
         logfile_stats
