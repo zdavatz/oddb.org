@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # State::Migel::Global  -- oddb -- 04.10.2005 -- ffricker@ywesee.com
 
-require 'state/migel/init'
-require 'state/migel/limit'
+require "state/migel/init"
+require "state/migel/limit"
 
 module ODDB
-	module State
-		module Migel
-class Global < State::Global
-	HOME_STATE = State::Migel::Init
-	ZONE = :migel
-	ZONE_NAVIGATION = [:migel_alphabetical]
-	def limit_state
-		State::Migel::Limit.new(@session, nil)
-	end
-end
-		end
-	end
+  module State
+    module Migel
+      class Global < State::Global
+        HOME_STATE = State::Migel::Init
+        ZONE = :migel
+        ZONE_NAVIGATION = [:migel_alphabetical]
+        def limit_state
+          State::Migel::Limit.new(@session, nil)
+        end
+      end
+    end
+  end
 end

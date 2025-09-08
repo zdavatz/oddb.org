@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # State::User::Checkout -- ODDB -- 18.04.2005 -- hwyss@ywesee.com
 
-require 'state/user/global'
-require 'view/user/checkout'
+require "state/user/global"
+require "view/user/checkout"
 
 module ODDB
-	module State
-		module User
-class Checkout < State::User::Global
-	VIEW = View::User::Checkout
-end
-		end
-	end
+  module State
+    module User
+      class Checkout < State::User::Global
+        VIEW = View::User::Checkout
+      end
+    end
+  end
 end

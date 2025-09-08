@@ -75,7 +75,7 @@ module ParseUtil
       return saved_value
     end
     comps = []
-    lines = composition_text.gsub(/\r\n?/u, "\n").split(/\n/u)
+    lines = composition_text.gsub(/\r\n?/u, "\n").split("\n")
     lines.select do |line|
       composition = ParseComposition.from_string(line)
       if composition.is_a?(ParseComposition)
@@ -83,11 +83,11 @@ module ParseUtil
           active_substance_name = substance_item.name.downcase.sub(/^cum\s/, "")
           substance_item.is_active_agent = !active_agents.find { |x|
             /#{x.downcase
-            .gsub('(', '\(')
-            .gsub(')', '\)')
-            .gsub('[', '\[')
-            .gsub(']', '\]')
-              }($|\s)/
+            .gsub("(", '\(')
+            .gsub(")", '\)')
+            .gsub("[", '\[')
+            .gsub("]", '\]')
+             }($|\s)/
               .match(active_substance_name)
           }.nil?
           substance_item.is_active_agent = true if substance_item.chemical_substance && active_agents.find { |x| x.downcase.eql?(substance_item.chemical_substance.name.downcase) }
@@ -155,7 +155,7 @@ class CompositionTransformer < Parslet::Transform
     @@corresp = dictionary[:corresp].to_s
   }
   rule(substance_name: simple(:substance_name),
-       dose: simple(:dose)) { |dictionary|
+    dose: simple(:dose)) { |dictionary|
     puts "#{File.basename(__FILE__)}:#{__LINE__}: dictionary #{dictionary}" if VERBOSE_MESSAGES
     dose = dictionary[:dose].is_a?(ParseDose) ? dictionary[:dose] : nil
     substance = ParseSubstance.new(dictionary[:substance_name], dose)
@@ -168,8 +168,8 @@ class CompositionTransformer < Parslet::Transform
     @@corresp = dictionary[:more_info].to_s.strip.sub(/:$/, "")
   }
   rule(more_info: simple(:more_info),
-       substance_name: simple(:substance_name),
-       dose: simple(:dose)) { |dictionary|
+    substance_name: simple(:substance_name),
+    dose: simple(:dose)) { |dictionary|
     puts "#{File.basename(__FILE__)}:#{__LINE__}: dictionary #{dictionary}" if VERBOSE_MESSAGES
     dose = dictionary[:dose].is_a?(ParseDose) ? dictionary[:dose] : nil
     substance = ParseSubstance.new(dictionary[:substance_name].to_s, dose)
@@ -180,8 +180,8 @@ class CompositionTransformer < Parslet::Transform
   }
 
   rule(lebensmittel_zusatz: simple(:lebensmittel_zusatz),
-       more_info: simple(:more_info),
-       digits: simple(:digits)) { |dictionary|
+    more_info: simple(:more_info),
+    digits: simple(:digits)) { |dictionary|
     puts "#{File.basename(__FILE__)}:#{__LINE__}: dictionary #{dictionary}" if VERBOSE_MESSAGES
     substance = ParseSubstance.new("#{dictionary[:lebensmittel_zusatz]} #{dictionary[:digits]}")
     substance.more_info = dictionary[:more_info].to_s.strip.sub(/:$/, "") if dictionary[:more_info] && (dictionary[:more_info].to_s.length > 0)
@@ -209,9 +209,9 @@ class CompositionTransformer < Parslet::Transform
     info
   }
   rule(substance: simple(:substance),
-       chemical_substance: simple(:chemical_substance),
-       substance_ut: sequence(:substance_ut),
-       ratio: simple(:ratio)) { |dictionary|
+    chemical_substance: simple(:chemical_substance),
+    substance_ut: sequence(:substance_ut),
+    ratio: simple(:ratio)) { |dictionary|
     puts "#{File.basename(__FILE__)}:#{__LINE__}: dictionary #{dictionary}" if VERBOSE_MESSAGES
     ratio = CompositionTransformer.get_ratio(dictionary)
     if ratio && (ratio.length > 0)
@@ -388,7 +388,7 @@ class ParseComposition
     / U\.: (excipiens) / => ' U. \1 ',
     / U\.: (alnus|betula|betula|betulae) / => ' U., \1 ',
     /^(acari allergeni extractum (\(acarus siro\)|).+\s+U\.:)/ => 'A): \1',
-    "Solvens: alprostadilum" => "alprostadilum",
+    "Solvens: alprostadilum" => "alprostadilum"
   }
   @@error_handler = ParseUtil::HandleSwissmedicErrors.new(ERRORS_TO_FIX)
 
@@ -471,7 +471,7 @@ end
 
 class GalenicFormTransformer < CompositionTransformer
   rule(preparation_name: simple(:preparation_name),
-       galenic_form: simple(:preparation_name)) { |dictionary|
+    galenic_form: simple(:preparation_name)) { |dictionary|
     puts "#{File.basename(__FILE__)}:#{__LINE__}: dictionary #{dictionary}" if VERBOSE_MESSAGES
     dictionary[:preparation_name] ? dictionary[:preparation_name].to_s : nil
     dictionary[:galenic_form] ? dictionary[:galenic_form].to_s : nil

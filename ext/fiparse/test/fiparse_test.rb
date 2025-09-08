@@ -4,12 +4,11 @@
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
+require "minitest/autorun"
+require "fiparse"
 
-require 'minitest/autorun'
-require 'fiparse'
-
-class TestFiParse <Minitest::Test
-	def test_parse_fachinfo_docx
-		puts "Missing tests for fiparse"
-	end
+class TestFiParse < Minitest::Test
+  def test_parse_fachinfo_docx
+    puts "Missing tests for fiparse"
+  end
 end

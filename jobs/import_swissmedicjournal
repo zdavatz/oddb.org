@@ -1,10 +1,10 @@
 #!/usr/local/bin/ruby-271
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 
-require 'util/job'
-require 'util/updater'
+require "util/job"
+require "util/updater"
 
 module ODDB
   module Util

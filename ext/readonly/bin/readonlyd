@@ -4,12 +4,12 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'odba'
-require 'rubygems'
-require 'models'
-require 'readonly_server'
-require 'util/oddbconfig'
-require 'etc/db_connection'
+require "odba"
+require "rubygems"
+require "models"
+require "readonly_server"
+require "util/oddbconfig"
+require "etc/db_connection"
 
 DRb.install_id_conv ODBA::DRbIdConv.new
 DRb.start_service(ODDB::READONLY_URI, ODDB::ReadonlyServer.new)

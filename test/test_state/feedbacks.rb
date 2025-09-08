@@ -1,146 +1,152 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::State::TestFeedbacks -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'htmlgrid/labeltext'
-require 'view/resulttemplate'
-require 'view/latin1'
-require 'state/feedbacks'
-require 'state/global'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "htmlgrid/labeltext"
+require "view/resulttemplate"
+require "view/latin1"
+require "state/feedbacks"
+require "state/global"
 
 module ODDB
-	module State
+  module State
     module Feedbacks
-
-      class TestItemWrapper <Minitest::Test
+      class TestItemWrapper < Minitest::Test
         def setup
-          @item    = flexmock('item')
+          @item = flexmock("item")
           @wrapper = ODDB::State::Feedbacks::ItemWrapper.new(@item)
         end
+
         def test_current_feedback
           assert_kind_of(ODDB::Persistence::CreateItem, @wrapper.current_feedback)
         end
+
         def test_feedback_list
-          flexmock(@item, :feedbacks => 'feedbacks')
-          assert_equal('feedbacks', @wrapper.feedback_list)
+          flexmock(@item, feedbacks: "feedbacks")
+          assert_equal("feedbacks", @wrapper.feedback_list)
         end
+
         def test_feedback_list_empty
-          flexmock(@item, :feedbacks => nil)
+          flexmock(@item, feedbacks: nil)
           assert_nil(@wrapper.feedback_list)
         end
+
         def test_feedback_count
-          flexmock(@item, :feedbacks => [1,2,3])
+          flexmock(@item, feedbacks: [1, 2, 3])
           assert_equal(3, @wrapper.feedback_count)
         end
+
         def test_feedback_count_empty
-          flexmock(@item, :feedbacks =>nil)
+          flexmock(@item, feedbacks: nil)
           assert_equal(0, @wrapper.feedback_count)
         end
+
         def test_next_index
           assert_equal(10, @wrapper.next_index)
         end
+
         def test_has_next
-          flexmock(@item, :feedbacks => [1,2,3,4,5,6,7,8,9,10,11])
+          flexmock(@item, feedbacks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
           assert_equal(true, @wrapper.has_next?)
         end
+
         def test_has_prev
           assert_equal(false, @wrapper.has_prev?)
           @wrapper.index = 1
           assert_equal(true, @wrapper.has_prev?)
         end
+
         def test_prev_index
           assert_equal(-10, @wrapper.prev_index)
         end
       end
-
     end # Feedbacks
 
     class StubFeedbacks < ODDB::State::Global
       include ODDB::State::Feedbacks
       def initialize(session, model)
         @session = session
-        @app     = session.app
+        @app = session.app
         @lookandfeel = session.lookandfeel
-        @model   = model
-        @errors  = {}
+        @model = model
+        @errors = {}
       end
     end
 
-    class TestFeedbacks <Minitest::Test
+    class TestFeedbacks < Minitest::Test
       def setup
-        @lnf     = flexmock('lookandfeel')
-        @app     = flexmock('app', :update => 'update')
-        feedback  = flexmock('feedback', :pointer => 'pointer' )
-        @session = flexmock('session',
-                            :app         => @app,
-                            :language    => 'de',
-                            :lookandfeel => @lnf,
-                            :update_feedback_rss_feed => 'update_feedback_rss_feed',
-                           )
-        @model   = flexmock('model',
-                            :current_feedback => feedback,
-                            :current_feedback= => 'current_feedback=',
-                           )
+        @lnf = flexmock("lookandfeel")
+        @app = flexmock("app", update: "update")
+        feedback = flexmock("feedback", pointer: "pointer")
+        @session = flexmock("session",
+          app: @app,
+          language: "de",
+          lookandfeel: @lnf,
+          update_feedback_rss_feed: "update_feedback_rss_feed")
+        @model = flexmock("model",
+          :current_feedback => feedback,
+          :current_feedback= => "current_feedback=")
         @state = ODDB::State::StubFeedbacks.new(@session, @model)
       end
+
       def test_init
         assert_nil(@state.init)
       end
+
       def test_init__filter
-        flexmock(@session, :user_input => 'index')
+        flexmock(@session, user_input: "index")
         @state.init
-        assert_kind_of(ODDB::State::Feedbacks::ItemWrapper, @state.instance_eval('@filter.call(@model)'))
+        assert_kind_of(ODDB::State::Feedbacks::ItemWrapper, @state.instance_eval("@filter.call(@model)", __FILE__, __LINE__))
       end
+
       def test_update__error
-        flexmock(@state, :user_input => {})
+        flexmock(@state, user_input: {})
         assert_equal(@state, @state.update)
         assert_equal(true, @state.error?)
         assert_kind_of(SBSM::ProcessingError, @state.errors[:captcha])
       end
+
       def test_update
-        flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
-        flexmock(@app, :update => 'update')
-        current_feedback = flexmock('current_feedback', :pointer => 'pointer')
+        flexmock(@session, update_feedback_rss_feed: "update_feedback_rss_feed")
+        flexmock(@app, update: "update")
+        current_feedback = flexmock("current_feedback", pointer: "pointer")
         flexmock(@model,
-                 :current_feedback  => current_feedback,
-                 :current_feedback= => nil
-                )
-        flexmock(@state, :user_input => {})
-        @state.instance_eval('@passed_turing_test = "passed_turing_test"')
+          :current_feedback => current_feedback,
+          :current_feedback= => nil)
+        flexmock(@state, user_input: {})
+        @state.instance_eval('@passed_turing_test = "passed_turing_test"', __FILE__, __LINE__)
         assert_equal(@state, @state.update)
       end
+
       def test_update__feedback_saved
-        flexmock(@lnf, :_event_url => '_event_url')
-        flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
-        flexmock(@app, :update => 'update')
-        item = flexmock('item', :pointer => 'pointer')
+        flexmock(@lnf, _event_url: "_event_url")
+        flexmock(@session, update_feedback_rss_feed: "update_feedback_rss_feed")
+        flexmock(@app, update: "update")
+        item = flexmock("item", pointer: "pointer")
         flexmock(@model,
-                 :current_feedback  => ODDB::Persistence::CreateItem.new,
-                 :current_feedback= => nil,
-                 :item => item
-                )
-        flexmock(@state, :user_input => {:message => 'message'})
-        @state.instance_eval('@passed_turing_test = "passed_turing_test"')
+          :current_feedback => ODDB::Persistence::CreateItem.new,
+          :current_feedback= => nil,
+          :item => item)
+        flexmock(@state, user_input: {message: "message"})
+        @state.instance_eval('@passed_turing_test = "passed_turing_test"', __FILE__, __LINE__)
         assert_equal(@state, @state.update)
       end
+
       def test_upadte__candidates
-        flexmock(@session, :update_feedback_rss_feed => 'update_feedback_rss_feed')
-        flexmock(@app, :update => 'update')
-        current_feedback = flexmock('current_feedback', :pointer => 'pointer')
+        flexmock(@session, update_feedback_rss_feed: "update_feedback_rss_feed")
+        flexmock(@app, update: "update")
+        current_feedback = flexmock("current_feedback", pointer: "pointer")
         flexmock(@model,
-                 :current_feedback  => current_feedback,
-                 :current_feedback= => nil
-                )
-        flexmock(@lnf, :"captcha.valid_answer?" => true)
-        flexmock(@state, :user_input => {:captcha => {'key' => 'word'}})
+          :current_feedback => current_feedback,
+          :current_feedback= => nil)
+        flexmock(@lnf, "captcha.valid_answer?": true)
+        flexmock(@state, user_input: {captcha: {"key" => "word"}})
         assert_equal(@state, @state.update)
       end
     end
-
-
-	end # State
+  end # State
 end # ODDB

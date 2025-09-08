@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # State::Substances::Init -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
-require 'view/substances/search'
+require "view/substances/search"
 
 module ODDB
-	module State
-		module Substances
-class Init < State::Substances::Global
-	VIEW = View::Substances::Search
-	DIRECT_EVENT = :home_substances
-end
-		end
-	end
+  module State
+    module Substances
+      class Init < State::Substances::Global
+        VIEW = View::Substances::Search
+        DIRECT_EVENT = :home_substances
+      end
+    end
+  end
 end

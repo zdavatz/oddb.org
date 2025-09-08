@@ -1,27 +1,27 @@
 #!/usr/local/bin/ruby-271
 # must be scheduled in crontab to run as the same user as oddb
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 
-require 'util/job'
-require 'util/updater'
+require "util/job"
+require "util/updater"
 
 module ODDB
   module Util
     Job.run do |system|
-     opts = {
-        :fix_galenic_form       => false,
-        :iksnrs                 => [],
-        :update_compositions    => false,
-        :check                  => true,
+      opts = {
+        fix_galenic_form: false,
+        iksnrs: [],
+        update_compositions: false,
+        check: true
       }
       ARGV.each do |arg|
-        if arg =~ /fix_galenic_form/
+        if /fix_galenic_form/.match?(arg)
           opts[:fix_galenic_form] = true
-        elsif arg =~ /update_compositions/
+        elsif /update_compositions/.match?(arg)
           opts[:update_compositions] = true
-        elsif arg =~ /^\d+$/
+        elsif /^\d+$/.match?(arg)
           opts[:iksnrs] << arg.to_i if arg.size > 0
         end
       end

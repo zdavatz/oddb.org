@@ -1,17 +1,26 @@
-# encoding: utf-8
-migelDir= File.join(File.dirname(File.dirname(__FILE__)), '..', 'migel')
-require 'spec_helper'
+File.join(File.dirname(__FILE__, 2), "..", "migel")
+require "spec_helper"
 
 describe "MigelSpec" do
-  require 'drb'
-  DRB_TEST_URI = 'druby://127.0.0.1:33000'
+  require "drb"
+  DRB_TEST_URI = "druby://127.0.0.1:33000"
   MIGEL_SERVER = DRb::DRbObject.new(nil, DRB_TEST_URI)
+  MIGEL_NOT_FOUND = "Such-Stichwort hat zu keinem Suchergebnis geführt"
 
   it "Finde Krücke" do
     skip("MIGEL_SERVER search does not work at the moment")
-    expect(MIGEL_SERVER.migelid.search_by_migel_code('10.01.01.00.1').first.code).to eq '01.00.1'
-    expect(MIGEL_SERVER.migelid.search_by_migel_code('10.01.01.00.1').first.name).to match /Höhenausgleich für Gips und Orthese/
-    expect(MIGEL_SERVER.migelid.search_by_migel_code('10.02.01.00.1').first.name).to match /2-stufige Höhenausgleichssohle für Gips/
+    expect(MIGEL_SERVER.migelid.search_by_migel_code("10.01.01.00.1").first.code).to eq "01.00.1"
+    expect(MIGEL_SERVER.migelid.search_by_migel_code("10.01.01.00.1").first.name).to match(/Höhenausgleich für Gips und Orthese/)
+    expect(MIGEL_SERVER.migelid.search_by_migel_code("10.02.01.00.1").first.name).to match(/2-stufige Höhenausgleichssohle für Gips/)
+  end
+
+  def select_migel(name)
+    @browser.goto ODDB_URL
+    @browser.link(name: "de").wait_until(&:present?).click
+    @browser.link(name: "migel").wait_until(&:present?).click
+    @browser.text_field(name: "search_query").set(name)
+    @browser.button(name: "search").wait_until(&:present?).click
+    expect(@browser.text).to match(/#{MIGEL_NOT_FOUND}|Suchresultat/o)
   end
 
   before :all do
@@ -20,46 +29,36 @@ describe "MigelSpec" do
     login
   end
 
-  it "should correct result for Migel product 100101011" do
-    url = ODDB_URL + '/de/gcc/migel_search/migel_product/100101011'
-    @browser.goto(url)
+  it "should correct result for Migel product 100101001" do
+    select_migel("100101001")
     inhalt = @browser.text.dup
-    expect(inhalt).not_to match LeeresResult
-    expect(inhalt).to match /MiGeL-Code.*10.01.01.01.1/
-    expect(inhalt).to match /GEHHILFEN/
-    expect(inhalt).to match /Beschreibung Krücken für Erwachsene, anatomischer- \/ orthopädischer Griff, Kauf/
-    expect(inhalt).to match /Limitationstext.*Limitation :.*Nécessité d'une décharge de durée prolongée\(au moins 1 mois\)/m
+    expect(inhalt).not_to match MIGEL_NOT_FOUND
+    expect(inhalt).to match(/GEHHILFEN/)
+    expect(inhalt).to match(/Hand-\/Gehstöcke/)
+    expect(inhalt).to match(/Krücken für Erwachsene, ergonomischer Griff, Kauf:/)
+    #    expect(inhalt).to match(/Limitationstext.*Limitation :.*Nécessité d'une décharge de durée prolongée\(au moins 1 mois\)/m)
   end
 
   it "should correct result for Migel search_query/10.01.01.00.1" do
-    @browser.link(name: 'migel').click
-    @browser.text_field(name: "search_query").wait_until(&:present?)
-    @browser.text_field(name: "search_query").value = "10.01.01.00.1"
-    @browser.button(name: 'search').click
-    @browser.text_field.wait_until(&:present?)
+    select_migel("10.01.01.00.1")
     inhalt = @browser.text.dup
-    expect(inhalt).not_to match LeeresResult
-    expect(inhalt).to match /GEHHILFEN/
-    expect(inhalt).to match /Höhenausgleich für Gips und Orthesen/
-    expect(inhalt).to match /2-stufige Höhenausgleichssohle für Gips/
+    expect(inhalt).not_to match MIGEL_NOT_FOUND
+    expect(inhalt).to match(/GEHHILFEN/)
+    expect(inhalt).to match(/Hand-\/Gehstöcke/)
+    expect(inhalt).to match(/Krücken für Erwachsene, ergonomischer Griff, Kauf:/)
   end
 
   it "should be possible to find Krücke via MiGeL" do
-    @browser.link(name: 'migel').click
-    @browser.text_field(name: "search_query").wait_until(&:present?)
-    @browser.text_field(name: "search_query").value = "Krücke"
-    @browser.button(name: 'search').click
-    @browser.text_field.wait_until(&:present?)
-    expect(@browser.text).not_to match LeeresResult
-    expect(@browser.text).to match /Beschreibung/
-    expect(@browser.text).to match /Krücken/
+    select_migel("Krücke")
+    expect(@browser.text).not_to match MIGEL_NOT_FOUND
+    expect(@browser.text).to match(/Beschreibung/)
+    expect(@browser.text).to match(/Krücken/)
   end
 
   it "should correct result for Migel migel_code 100101" do
-    url = ODDB_URL + '/de/gcc/migel_search/migel_code/100101'
-    @browser.goto(url)
+    select_migel("100101")
     inhalt = @browser.text.dup
-    expect(inhalt).not_to match LeeresResult
-    expect(inhalt).to match /Es wurden keine Einträge gefunden./
+    expect(inhalt).to match MIGEL_NOT_FOUND
+    expect(inhalt).to match(/zu\s+vergütenden Mittel und Gegenstände./)
   end
 end

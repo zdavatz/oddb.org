@@ -1,20 +1,21 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # InfoInvoicer -- oddb.org -- 27.12.2012 -- yasaka@ywesee.com
 # InfoInvoicer -- oddb.org -- 26.02.2008 -- hwyss@ywesee.com
 
-require 'plugin/invoicer'
-require 'model/sequence'
-require 'util/today'
-require 'util/logfile'
+require "plugin/invoicer"
+require "model/sequence"
+require "util/today"
+require "util/logfile"
 
 module ODDB
   class InfoInvoicer < Invoicer
     def logInvoice(msg)
       now = Time.now
       return if defined?(Minitest)
-      $stdout.puts("#{now}: #{msg}"); $stdout.flush
-      LogFile.append('oddb/debug', ' ' + msg, now)
+      $stdout.puts("#{now}: #{msg}")
+      $stdout.flush
+      LogFile.append("oddb/debug", " " + msg, now)
       system("logger #{__FILE__}: #{msg}")
     end
     attr_accessor :invoice_number
@@ -22,15 +23,16 @@ module ODDB
       send_daily_invoices(day - 1)
       send_annual_invoices(day)
     end
+
     def active_companies
       result = []
       invoices = @app.invoices.values.collect { |inv| inv.dup if inv }
       invoices.each { |inv|
         items = inv.items.values.dup
         items.each { |item|
-          if(item.type == :annual_fee && (ptr = item.item_pointer) \
+          if item.type == :annual_fee && (ptr = item.item_pointer) \
             && (seq = pointer_resolved(ptr)) && seq.is_a?(parent_item_class) \
-            && (company = seq.company))
+            && (company = seq.company)
             result.push(company.odba_instance)
           end
         }
@@ -38,37 +40,40 @@ module ODDB
       result.uniq!
       result
     end
+
     def adjust_annual_fee(company, items)
-      if(date = company.invoice_date(@infotype))
+      if (date = company.invoice_date(@infotype))
         diy = (date - (date << 12)).to_f
         short = date << 1
         items.each { |item|
-          if(item.type == :annual_fee)
+          if item.type == :annual_fee
             tim = item.time
             item_date = Date.new(tim.year, tim.month, tim.day)
             exp = (!company.limit_invoice_duration && item_date > short) \
               ? (date >> 12) : date
             exp_time = Time.local(exp.year, exp.month, exp.day)
             days = (exp - item_date).to_f
-            factor = days/diy
+            factor = days / diy
             item.data ||= {}
-            item.data.update({:last_valid_date => exp, :days => days})
+            item.data.update({last_valid_date: exp, days: days})
             item.quantity = factor
             item.expiry_time = exp_time
           end
         }
       end
     end
+
     def adjust_company_fee(company, items)
       price = company.price(@infotype).to_i
-      if(price > 0)
+      if price > 0
         items.each { |item|
-          if(item.type == :annual_fee)
+          if item.type == :annual_fee
             item.price = price
           end
         }
       end
     end
+
     def adjust_overlap_fee(date, items)
       first_invoice = items.any? { |item| item.type == :activation }
       date_end = (date >> 12)
@@ -77,26 +82,27 @@ module ODDB
       items.each { |item|
         days = diy
         date_start = date
-        if(!first_invoice && (tim = item.expiry_time))
+        if !first_invoice && (tim = item.expiry_time)
           valid = Date.new(tim.year, tim.month, tim.day)
-          if(valid > date_start)
+          if valid > date_start
             date_start = valid
             days = (date_end - valid).to_f
-            factor = days/diy
+            factor = days / diy
             item.quantity = factor
           end
         end
         item.expiry_time = exp_time
-        if(item.type == :annual_fee)
+        if item.type == :annual_fee
           item.data ||= {}
           item.data.update({
-            :days => days,
-            :first_valid_date => date_start,
-            :last_valid_date => date_end,
+            days: days,
+            first_valid_date: date_start,
+            last_valid_date: date_end
           })
         end
       }
     end
+
     def annual_items
       active = active_infos
       ## all items for which the product still exists
@@ -105,6 +111,7 @@ module ODDB
         item.type == :annual_fee && active.delete(unique_name(item))
       }
     end
+
     def all_items
       active = active_infos
       ## all items for which the product still exists
@@ -113,7 +120,8 @@ module ODDB
         (item.type == :processing) || active.delete(unique_name(item))
       }
     end
-    def filter_paid(items, date=@@today)
+
+    def filter_paid(items, date = @@today)
       ## Prinzipielles Vorgehen
       # Für jedes item in items:
       # Gibt es ein Invoice, welches nicht expired? ist
@@ -132,10 +140,10 @@ module ODDB
       prc_names = []
       @app.invoices.each_value { |invoice|
         invoice.items.each_value { |item|
-          if(name = unique_name(item))
-            if(item.type == :annual_fee && !item.expired?(date))
+          if (name = unique_name(item))
+            if item.type == :annual_fee && !item.expired?(date)
               fee_names.push(name)
-            elsif(item.type == :processing && !item.expired?(date))
+            elsif item.type == :processing && !item.expired?(date)
               prc_names.push(name)
             end
           end
@@ -151,11 +159,11 @@ module ODDB
         #  least all sequences in the current registration for non-expired
         #  invoices
         names = neighborhood_unique_names(item)
-        if(name = unique_name(item))
-          if(item.type == :annual_fee && (fee_names & names).empty?)
+        if (name = unique_name(item))
+          if item.type == :annual_fee && (fee_names & names).empty?
             fee_names.push(name)
             result.push(item)
-          elsif(item.type == :processing && (prc_names & names).empty?)
+          elsif item.type == :processing && (prc_names & names).empty?
             prc_names.push(name)
             result.push(item)
           end
@@ -163,12 +171,13 @@ module ODDB
       }
       result
     end
+
     def group_by_company(items)
       active_comps = active_companies
       companies = {}
       items.each { |item|
         ptr = item.item_pointer
-        if(seq = pointer_resolved(ptr))
+        if (seq = pointer_resolved(ptr))
           ## correct the item's stored name (it may have changed in Packungen.xlsx)
           (item.data ||= {})[:name] = seq.name if seq.respond_to?(:name)
           (companies[seq.company.odba_instance] ||= []).push(item)
@@ -177,36 +186,41 @@ module ODDB
       price = activation_fee
       companies.each { |company, items|
         time = items.collect { |item| item.time }.min
-        unless(active_comps.include?(company))
+        unless active_comps.include?(company)
           item = AbstractInvoiceItem.new
           item.price = price
           item.text = "Aufschaltgeb\374hr"
           item.time = time
           item.type = :activation
-          item.unit = 'Einmalig'
+          item.unit = "Einmalig"
           item.vat_rate = VAT_RATE
           items.unshift(item)
         end
       }
       companies
     end
+
     def html_items(day)
       [] # does not apply for fachinfos
     end
+
     def neighborhood_unique_names(item)
       [] # does not apply for fachinfos
     end
+
     def parent_item_class
       Object
     end
+
     def pointer_resolved(pointer)
       pointer.resolve(@app)
-    rescue StandardError
+    rescue
     end
+
     def recent_items(day) # also takes a range of Dates
       fd = nil
       ld = nil
-      if(day.is_a?(Range))
+      if day.is_a?(Range)
         fd = day.first
         ld = day.last.next
       else
@@ -217,7 +231,7 @@ module ODDB
       lt = Time.local(ld.year, ld.month, ld.mday)
       range = ft...lt
       recents = all_items.select { |item|
-        #range.include?(item.time)
+        # range.include?(item.time)
         range.cover?(item.time)
       }
       ## remove duplicate processing items
@@ -226,7 +240,8 @@ module ODDB
         item.type == :processing && !active.delete(unique_name(item))
       }
     end
-    def send_annual_invoices(day = @@today, company_name=nil, invoice_date=day)
+
+    def send_annual_invoices(day = @@today, company_name = nil, invoice_date = day)
       items = annual_items
       ## augment with active html-patinfos
       items += html_items(day)
@@ -237,32 +252,32 @@ module ODDB
       groups.each { |company, items|
         ## if autoinvoice is disabled, but a preferred invoice_date is set,
         ## invoice-start and -end-dates should be adjusted to that date.
-        if(company.invoice_disabled?(@infotype))
-          if(date = company.invoice_date(@infotype))
-            if(date == day)
+        if company.invoice_disabled?(@infotype)
+          if (date = company.invoice_date(@infotype))
+            if date == day
               date = company.invoice_dates[@infotype] = date + 1
               company.odba_store
             end
             time = Time.local(date.year, date.month, date.day)
             items.each { |item|
-              if(item.respond_to?(:odba_store))
+              if item.respond_to?(:odba_store)
                 item.expiry_time = time
                 item.odba_store
               end
             }
           end
-        elsif(email = company.contact_email)
-          if(!company.invoice_date(@infotype))
+        elsif (email = company.contact_email)
+          if !company.invoice_date(@infotype)
             time = items.collect { |item| item.time }.min
             date = Date.new(time.year, time.month, time.day)
             company.invoice_dates[@infotype] = date
             company.odba_store
-          elsif(company_name == company.name)
+          elsif company_name == company.name
             company.invoice_dates[@infotype] = day
             company.odba_store
           end
-          if(company_name == company.name \
-            || (company_name.nil? && day == company.invoice_date(@infotype)))
+          if company_name == company.name \
+            || (company_name.nil? && day == company.invoice_date(@infotype))
             ## work with duplicates
             items = items.collect { |item| item.dup }
             ## adjust the annual fee according to company settings
@@ -271,7 +286,7 @@ module ODDB
             adjust_overlap_fee(day, items)
             ensure_yus_user(company)
             ## first send the invoice
-          elsif((day >> 12) == company.invoice_date(@infotype))
+          elsif (day >> 12) == company.invoice_date(@infotype)
             ## if the date has been set to one year from now,
             ## this invoice has already been sent manually.
             ## store the items anyway to prevent sending a 2-year
@@ -281,15 +296,16 @@ module ODDB
         end
       }
     end
-    def send_daily_invoices(day, company_name=nil, invoice_date=day)
+
+    def send_daily_invoices(day, company_name = nil, invoice_date = day)
       items = recent_items(day)
       payable_items = filter_paid(items, day)
       logInvoice "patinfo_invoices daily #{payable_items.size}/#{items.size} payable_items/items" if payable_items.size > 0
       groups = group_by_company(payable_items)
       groups.each { |company, items|
-        if(!company.invoice_disabled?(@infotype) \
-           && (email = company.contact_email) \
-           && (company_name.nil? || company_name == company.name))
+        if !company.invoice_disabled?(@infotype) \
+           && company.contact_email \
+           && (company_name.nil? || company_name == company.name)
           ## work with duplicates
           items = items.collect { |item| item.dup }
           ## adjust the annual fee according to company settings
@@ -302,6 +318,7 @@ module ODDB
       }
       nil
     end
+
     def slate_items
       @app.slate(@infotype).items.values.sort_by { |item|
         item.time

@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-
 # This is the most important integration test, which ensures that handling payment via paypal works
 # It requires the following setup:
 # * must be run on the server (to be able to check in the log for the URL for new users)
@@ -8,30 +6,29 @@
 # * test-account on developer.paypal.com must exist and specified correctly
 #
 
-require 'spec_helper'
+require "spec_helper"
 
 class PaypalUser
   attr_accessor :email, :password, :family_name, :first_name,
-      :ywesee_user, :ywesee_password
-  Oddb_yml    = File.expand_path(File.join(__FILE__, '../../etc/oddb.yml'))
+    :ywesee_user, :ywesee_password
+  Oddb_yml = File.expand_path(File.join(__FILE__, "../../etc/oddb.yml"))
 
-  CompleteCheckout    = 0
+  CompleteCheckout = 0
   CancelCheckoutEarly = 1
   CancelCheckoutLater = 2
-  OneYear             = 365
-  OneMonth            = 30
-  OneDay              = 1
-  Password_Dummy      = '87654321'
-  CheckoutName        = 'checkout_paypal'
-  @receiver   = { user: 'test_paypal_api1.ywesee.com',
-                  password: '1401791830',
-                  signature: 'ArMY3QHPQrA9ttub.wccQPPgmgPiAiJr7-05DWZV41xVYcNN9KNECII9',
-              }
-  Six_Test_Drug_Names = [ 'Marcoumar', 'inderal', 'Sintrom', 'Prolia', 'Certican', 'Amikin']
+  OneYear = 365
+  OneMonth = 30
+  OneDay = 1
+  Password_Dummy = "87654321"
+  CheckoutName = "checkout_paypal"
+  @receiver = {user: "test_paypal_api1.ywesee.com",
+               password: "1401791830",
+               signature: "ArMY3QHPQrA9ttub.wccQPPgmgPiAiJr7-05DWZV41xVYcNN9KNECII9"}
+  Six_Test_Drug_Names = ["Marcoumar", "inderal", "Sintrom", "Prolia", "Certican", "Amikin"]
   PaymentUnconfirmed = /Ihre Bezahlung ist von PayPal noch nicht bestätigt worden/
 
   # By default I setup a valid Paypal client
-  def initialize(email = 'customer-1@ywesee.com', password = '12345678', family_name = A_USER_NAME, first_name = A_USER_FIRST_NAME )
+  def initialize(email = "customer-1@ywesee.com", password = "12345678", family_name = A_USER_NAME, first_name = A_USER_FIRST_NAME)
     @ywesee_user = email
     @ywesee_password = password
     @email = email
@@ -42,21 +39,21 @@ class PaypalUser
   end
 
   def init_paypal_checkout(browser)
-    browser.text_field(name:  "name_last").wait_until(&:present?)
-    browser.text_field(name:  "email").     set(@email) if browser.text_field(name:  "email").enabled?
-    browser.text_field(name:  "pass").      set(@password)   if browser.text_field(name:  "pass").exists? and browser.text_field(name:  "pass").enabled?
-    browser.text_field(name:  "set_pass_2").set(@password)   if browser.text_field(name:  "set_pass_2").exists? and  browser.text_field(name:  "set_pass_2").enabled?
-    browser.text_field(name:  "name_last"). set(@family_name)
-    browser.text_field(name:  "name_first").set(@first_name)
-    return true
+    browser.text_field(name: "name_last").wait_until(&:present?)
+    browser.text_field(name: "email").set(@email) if browser.text_field(name: "email").enabled?
+    browser.text_field(name: "pass").set(@password) if browser.text_field(name: "pass").exists? and browser.text_field(name: "pass").enabled?
+    browser.text_field(name: "set_pass_2").set(@password) if browser.text_field(name: "set_pass_2").exists? and browser.text_field(name: "set_pass_2").enabled?
+    browser.text_field(name: "name_last").set(@family_name)
+    browser.text_field(name: "name_first").set(@first_name)
+    true
   end
 
   def paypal_buy(browser, complete = CompleteCheckout)
     sleep(1) # must loose some time
     # the following lines were collected using firefox TestSide Recorder on 2017.07.04 but do not work
-    browser.checkbox(id:  "keepMeLoggedIn").set
-    browser.text_field(id:  "password").set("12345678")
-    browser.text_field(id:  "email").set("customer-1@ywesee.com")
+    browser.checkbox(id: "keepMeLoggedIn").set
+    browser.text_field(id: "password").set("12345678")
+    browser.text_field(id: "email").set("customer-1@ywesee.com")
     browser.button(value: "Einloggen").click
 
     login_button = browser.button(name: /login_button/i)
@@ -64,14 +61,14 @@ class PaypalUser
       login_button.click
       browser.window(title: /Pay with a PayPal account/).wait_until(&:present?)
     end
-    browser.text_field(id:  "login_email").set(@email)
-    browser.text_field(id:  "login_password").set(@password)
+    browser.text_field(id: "login_email").set(@email)
+    browser.text_field(id: "login_password").set(@password)
     puts "PayPal: Log In"
     if complete == CancelCheckoutEarly
       browser.button(name: "cancel_return").click
     else
       browser.button(value: "Log In").click
-      if browser.div(text:  /Please check your email/i).exist?
+      if browser.div(text: /Please check your email/i).exist?
         puts "LogIn failed"
         return false
       end
@@ -92,39 +89,37 @@ class PaypalUser
         puts "PayPal: Return to oddb.ch"
         browser.button(name: "merchant_return_link").click
         puts "URL after merchant_return_link was #{browser.url}"
-        browser.window(:url => /paypal_return/).wait_until(&:present?)
+        browser.window(url: /paypal_return/).wait_until(&:present?)
       end
     end
     puts "URL after preceeding to paypal was #{browser.url}"
-    return true
+    true
   end
 
   # There should be a file etc/oddb.yml which should contain at least two lines for paypal
-  def PaypalUser.check_setup
+  def self.check_setup
     if !File.exist?(Oddb_yml)
-      File.open(Oddb_yml, 'w+') do |file|
-        file.write "# Generated by  #{__FILE__} at #{Time.now}
+      File.write(Oddb_yml, "# Generated by  #{__FILE__} at #{Time.now}
 paypal_server:       www.sandbox.paypal.com
 paypal_receiver:     test_paypal@ywesee.com
-"
-      end
+")
       puts "Generated #{Oddb_yml}"
     end
     error_msg = "File #{Oddb_yml} should exist and be correctly configured for sandbox.paypal.com"
     puts error_msg unless File.exist?(Oddb_yml)
     return false unless File.exist?(Oddb_yml)
     oddb_config = YAML.load_file(Oddb_yml)
-    return false unless oddb_config['paypal_server']
-    return false unless oddb_config['paypal_receiver']
-    return false unless /sandbox/.match(oddb_config['paypal_server'])
-    return false unless /test_paypal/.match(oddb_config['paypal_receiver'])
+    return false unless oddb_config["paypal_server"]
+    return false unless oddb_config["paypal_receiver"]
+    return false unless /sandbox/.match?(oddb_config["paypal_server"])
+    return false unless /test_paypal/.match?(oddb_config["paypal_receiver"])
 
     cmd = "curl -s --insecure https://api-3t.sandbox.paypal.com/nvp -d  \"USER=#{@receiver[:user]}&PWD=#{@receiver[:password]}&SIGNATURE=#{@receiver[:signature]}&METHOD=SetExpressCheckout&VERSION=98&PAYMENTREQUEST_0_AMT=10&PAYMENTREQUEST_0_CURRENCYCODE=USD&PAYMENTREQUEST_0_PAYMENTACTION=SALE&cancelUrl=http://ch.oddb.org/cancel.html&returnUrl=http://ch.oddb.org/return.hml\""
     res = `#{cmd}`
-    okay = /ACK=Success/.match(res) != nil
+    okay = !/ACK=Success/.match(res).nil?
     puts res
-    puts "Paypal connection is #{okay ? 'okay' : 'not working'}. Using #{oddb_config['paypal_server']} and #{oddb_config['paypal_receiver']} from #{Oddb_yml}"
-    return okay
+    puts "Paypal connection is #{okay ? "okay" : "not working"}. Using #{oddb_config["paypal_server"]} and #{oddb_config["paypal_receiver"]} from #{Oddb_yml}"
+    okay
   end
   PaypalUser.check_setup
 end

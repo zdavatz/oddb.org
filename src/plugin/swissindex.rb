@@ -1,54 +1,58 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::SwissindexPlugin -- oddb.org -- 07.04.2012 -- yasaka@ywesee.com
 # ODDB::SwissindexPlugin -- oddb.org -- 28.12.2011 -- mhatakeyama@ywesee.com
 
-require 'util/oddbconfig'
-require 'plugin/plugin'
-require 'util/persistence'
-require 'drb'
-require 'fileutils'
-require 'ext/swissindex/src/swissindex'
+require "util/oddbconfig"
+require "plugin/plugin"
+require "util/persistence"
+require "drb"
+require "fileutils"
+require "ext/swissindex/src/swissindex"
 
 module ODDB
   class SwissindexPlugin < Plugin
     class Logging
       @@flag = false
-      def Logging.flag=(bool)
+      def self.flag=(bool)
         @@flag = bool
       end
-      def Logging.flag
+
+      def self.flag
         @@flag
       end
-      def Logging.start(file)
+
+      def self.start(file)
         if @@flag
           @@start_time = Time.now
           FileUtils.mkdir_p(File.dirname(file))
-          log_file = File.open(file, 'w')
+          log_file = File.open(file, "w")
           log_file.print "# ", Time.now, "\n"
           yield(log_file)
           log_file.close
         end
       end
-      def Logging.append(file)
+
+      def self.append(file)
         if @@flag
           FileUtils.mkdir_p(File.dirname(file))
-          log_file = File.open(file, 'a')
+          log_file = File.open(file, "a")
           yield(log_file)
           log_file.close
         end
       end
-      def Logging.append_estimate_time(file, count, total)
+
+      def self.append_estimate_time(file, count, total)
         if @@flag && @@start_time
           FileUtils.mkdir_p(File.dirname(file))
-          File.open(file, 'a') do |log|
+          File.open(file, "a") do |log|
             estimate = (Time.now - @@start_time) * total / count
             log.print count, " / ", total, "\t"
-            em   = estimate/60
-            eh   = em/60
+            em = estimate / 60
+            eh = em / 60
             rest = estimate - (Time.now - @@start_time)
-            rm   = rest/60
-            rh   = rm/60
+            rm = rest / 60
+            rh = rm / 60
             log.print "Estimate total: "
             if eh > 1.0
               log.print "%.2f" % eh, " [h]"
@@ -68,26 +72,25 @@ module ODDB
   end
 
   class SwissindexMigelPlugin < SwissindexPlugin
-		SWISSINDEX_MIGEL_SERVER = DRbObject.new(nil, ODDB::Swissindex::SwissindexMigel::URI)
+    SWISSINDEX_MIGEL_SERVER = DRbObject.new(nil, ODDB::Swissindex::SwissindexMigel::URI)
     def migel_nonpharma(pharmacode_file, logging = false)
-      raise  "Swissindex migel_nonpharma #{pharmacode_file} exist #{File.exist?(pharmacode_file)}"  unless File.exist?(pharmacode_file)
+      raise "Swissindex migel_nonpharma #{pharmacode_file} exist #{File.exist?(pharmacode_file)}" unless File.exist?(pharmacode_file)
       return nil unless File.exist?(pharmacode_file)
       Logging.flag = logging
-      log_dir  = File.join(ODDB::LOG_DIR, 'debug')
-      log_file = File.join(log_dir, 'migel_nonpharma.log')
+      log_dir = File.join(ODDB::LOG_DIR, "debug")
+      log_file = File.join(log_dir, "migel_nonpharma.log")
       Logging.start(log_file) do |log|
         log.print "migel_nonpharma log\n"
       end
 
-
-      dir = File.join(ODDB::WORK_DIR, 'csv')
+      dir = File.join(ODDB::WORK_DIR, "csv")
       FileUtils.mkdir_p dir
-      @output_file = File.join(dir, 'swissindex_migel.csv')
+      @output_file = File.join(dir, "swissindex_migel.csv")
 
       #
       # read pharmacode list
       #
-      pharmacode_list = File.readlines(pharmacode_file).to_a.map{|line| line.chomp}
+      pharmacode_list = File.readlines(pharmacode_file).to_a.map { |line| line.chomp }
       pharmacode_list.delete("")
 
       #
@@ -97,10 +100,8 @@ module ODDB
         f.print "position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n"
         count = 1
         pharmacode_list.each do |pharmacode|
-          try_time = 0
-
           SWISSINDEX_MIGEL_SERVER.session(ODDB::Swissindex::SwissindexMigel) do |swissindex|
-            no_company_data    = false
+            no_company_data = false
             no_swissindex_data = false
             migel_data = swissindex.search_migel(pharmacode)
 
@@ -127,27 +128,27 @@ module ODDB
 
             # support data by migel searched data
             if no_swissindex_data
-              line.concat ['']*5
-              unless migel_data.empty?
-                line << migel_data[1]
-                line << ''
-                line << migel_data[2]
-                line << ''
+              line.concat [""] * 5
+              if migel_data.empty?
+                line.concat [""] * 4
               else
-                line.concat ['']*4
+                line << migel_data[1]
+                line << ""
+                line << migel_data[2]
+                line << ""
               end
             elsif no_company_data
-              unless migel_data.empty?
-                line << migel_data[2]
-                line << ''
+              if migel_data.empty?
+                line.concat [""] * 2
               else
-                line.concat ['']*2
+                line << migel_data[2]
+                line << ""
               end
             end
             if additional_data = migel_data[3..6]
               line.concat additional_data
             end
-            f.print line.join(';'), "\n"
+            f.print line.join(";"), "\n"
           end # SWISSINDEX.session
 
           Logging.append(log_file) do |log|
@@ -155,31 +156,34 @@ module ODDB
           end
           Logging.append_estimate_time(log_file, count, pharmacode_list.length)
           count += 1
-
         end # pharmacode_list
       end # open
-      return true
+      true
     end # migel_nonpharma
+
     def log_info
       hash = super
       if @output_file
         type = "text/csv"
-        hash.store(:files, { @output_file => type })
+        hash.store(:files, {@output_file => type})
       end
       hash
     end
+
     def report
       File.expand_path(@output_file)
     end
+
     def search_migel_table(migel_code)
       $stdout.sync
       $stdout.puts "SwissindexMigelPlugin.search_migel_table #{migel_code}"
-      table =  []
+      table = []
       SWISSINDEX_MIGEL_SERVER.session(ODDB::Swissindex::SwissindexMigel) do |swissindex|
-        table = swissindex.search_migel_table(migel_code, 'MiGelCode')
+        table = swissindex.search_migel_table(migel_code, "MiGelCode")
       end
       table
     end
+
     def search_item(pharmacode)
       $stdout.puts "pid #{Process.pid}: SwissindexMigelPlugin.search_item #{pharmacode}"
       item = {}
@@ -188,5 +192,5 @@ module ODDB
       end
       item
     end
-	end # SwissindexMigel
+  end # SwissindexMigel
 end # ODDB

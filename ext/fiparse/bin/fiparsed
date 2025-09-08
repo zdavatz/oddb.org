@@ -4,14 +4,13 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
-require 'drb/drb'
-require 'util/oddbconfig'
-require 'fiparse'
+require "drb/drb"
+require "util/oddbconfig"
+require "fiparse"
 
 $: << File.expand_path("../../..", File.dirname(__FILE__))
-require 'etc/db_connection'
+require "etc/db_connection"
 
 $0 = "Oddb (FiParse)"
 DRb.start_service(ODDB::FIPARSE_URI, ODDB::FiParse)
 DRb.thread.join
-

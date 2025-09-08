@@ -5,10 +5,10 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'odba'
-require 'odba_exporter'
-require 'util/oddbconfig'
-require 'etc/db_connection'
+require "odba"
+require "odba_exporter"
+require "util/oddbconfig"
+require "etc/db_connection"
 
 DRb.start_service(ODDB::EXPORT_URI, ODDB::OdbaExporter)
 DRb.thread.join
