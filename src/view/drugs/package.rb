@@ -279,7 +279,7 @@ module ODDB
           if seq = @model.sequence and div = seq.division and !div.empty?
             components.store [0, 4], "division"
             components.store [0, 5], :division
-            components.store [0, 6], "th_part"
+            components.store [0, 6], "th_parts"
             components.store [0, 7], :compositions
             components.store [0, 8], "th_source"
             components.store [0, 9], :source
