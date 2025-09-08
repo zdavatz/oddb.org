@@ -1,23 +1,24 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::TestPatent -- oddb.org -- 05.07.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'model/patent'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "model/patent"
 
 module ODDB
-  class TestPatent <Minitest::Test
+  class TestPatent < Minitest::Test
     def setup
-      flexmock(ODBA.cache, :next_id => 123)
+      flexmock(ODBA.cache, next_id: 123)
       @model = ODDB::Patent.new
     end
+
     def test_pointer_descr
       assert_equal(:patent, @model.pointer_descr)
     end
+
     def test_protected
       assert_nil(@model.protected?)
     end

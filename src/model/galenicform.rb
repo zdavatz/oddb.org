@@ -1,59 +1,66 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-# ODDB::GalenicForm -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
-# ODDB::GalenicForm -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
-require 'util/language'
-require 'model/sequence_observer'
+# ODDB::GalenicForm -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::GalenicForm -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com
+
+require "util/language"
+require "model/sequence_observer"
 
 module ODDB
-	class GalenicForm
-		attr_reader :galenic_group
-		include Comparable
-		include Language
-		include SequenceObserver
+  class GalenicForm
+    attr_reader :galenic_group
+    include Comparable
+    include Language
+    include SequenceObserver
     include ODBA::Persistable ## include directly to get odba_index
-		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
-    odba_index :name, 'all_descriptions'
-		def equivalent_to?(other)
-			(self == other) || (other.respond_to?(:galenic_group) and (@galenic_group == other.galenic_group))
-		end
-		def galenic_group=(group)
-			@galenic_group.remove(self) unless(@galenic_group.nil?)
-			group.add(self)
-			@pointer = group.pointer + [:galenic_form, @oid]
-			@galenic_group = group
-		end
-		def merge(other)
-			other.sequences.dup.each { |seq|
+    ODBA_SERIALIZABLE = ["@descriptions", "@synonyms"]
+    odba_index :name, "all_descriptions"
+    def equivalent_to?(other)
+      (self == other) || (other.respond_to?(:galenic_group) and (@galenic_group == other.galenic_group))
+    end
+
+    def galenic_group=(group)
+      @galenic_group.remove(self) unless @galenic_group.nil?
+      group.add(self)
+      @pointer = group.pointer + [:galenic_form, @oid]
+      @galenic_group = group
+    end
+
+    def merge(other)
+      other.sequences.dup.each { |seq|
         seq.compositions.each do |comp|
           if comp.galenic_form == other
             comp.galenic_form = self
             comp.odba_isolated_store
           end
         end
-			}
-			self.synonyms += other.all_descriptions - self.all_descriptions
-		end
-    def route_of_administration
-      @galenic_group.route_of_administration if(@galenic_group)
+      }
+      self.synonyms += other.all_descriptions - all_descriptions
     end
-		def sequence_count
-			@sequences.size
-		end
-		def <=>(other)
-			to_s <=> other.to_s
-		end
-		private
-		def adjust_types(values, app=nil)
-			values = values.dup
-			values.dup.each { |key, value|
-				case(key)
-				when :galenic_group
-					values[key] = value.resolve(app)
-				end
-			}
-			values
-		end
-	end
+
+    def route_of_administration
+      @galenic_group.route_of_administration if @galenic_group
+    end
+
+    def sequence_count
+      @sequences.size
+    end
+
+    def <=>(other)
+      to_s <=> other.to_s
+    end
+
+    private
+
+    def adjust_types(values, app = nil)
+      values = values.dup
+      values.dup.each { |key, value|
+        case key
+        when :galenic_group
+          values[key] = value.resolve(app)
+        end
+      }
+      values
+    end
+  end
 end

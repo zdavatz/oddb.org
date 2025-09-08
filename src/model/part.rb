@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::Part -- oddb.org -- 05.05.2008 -- hwyss@ywesee.com
 # ODDB::Part -- oddb.org -- 05.05.2008 -- hwyss@ywesee.com
 
-require 'model/dose'
-require 'util/persistence'
-require 'strscan'
-require 'util/iso-latin1'
+require "model/dose"
+require "util/persistence"
+require "strscan"
+require "util/iso-latin1"
 
 module ODDB
   module SizeParser
@@ -14,49 +14,54 @@ module ODDB
     def active_agents
       sequence ? sequence.active_agents : []
     end
+
     def comparable_size
       ODDB::Dose.from_quanty(@comparable_size)
     end
+
     def multiplier
       count = @count || 1
       addition = @addition || 0
       [@descr.to_f, 1].max * (@multi || 1).to_f * (count.to_i + addition.to_i)
     end
+
     def set_comparable_size!
       measure = (@measure.nil? || @measure == UNIT) \
-              ? _composition_scale \
+              ? _composition_scale
               : @measure
       measure ||= UNIT
       scale = @scale || UNIT
       @comparable_size = multiplier * measure / scale
     end
+
     def size=(size)
       unless size.to_s.strip.empty?
-        @addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
+        @addition, @multi, @count, @measure, @scale, @comform = parse_size(size)
         if @count == 0
           @count, @multi = @multi, nil
         end
         set_comparable_size!
       end
     end
+
     def parse_size(size)
       unit_pattern = /(([kmµucMG]?([glLJm]|mol|Bq))(\/([mµu]?[glL]))?)|(Mio\.?\s)?((U\.?I\.?)|(I\.E\.))|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)/
-      numeric_pattern = /\d+(\'\d+)*([.,]\d*)?/
+      numeric_pattern = /\d+('\d+)*([.,]\d*)?/
       isolatin1 = ODDB::Util::IsoLatin1::DOWNCASE_PAIRS.values.join
       iso_pattern = /[[:alpha:]()\-#{isolatin1}]+/
 
       description = /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/u
-      numeric     = /#{numeric_pattern}/u
-      unit        = /#{unit_pattern}/u
+      numeric = /#{numeric_pattern}/u
+      unit = /#{unit_pattern}/u
 
-      count     = /(?<je>je)?\s*(?<numeric>#{numeric})/
-      multiple  = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<set>[xXà])/
-      measure   = /(?<numeric>#{numeric})\s*(?<unit1>#{unit})\s*(?<unit2>#{unit})?/
-      addition  = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<plus>\+)/
-      range     = /(?<minus>\-)\s*(?<numeric>#{numeric}\s*(?<unit>#{unit})?)/
-      part      = /(?<in>in)\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
-      scale     = /(?<slash>(\/|pro))\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
-      dose      = /\(\s*#{numeric}\s*#{unit}\s*\)/
+      count = /(?<je>je)?\s*(?<numeric>#{numeric})/
+      multiple = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<set>[xXà])/
+      measure = /(?<numeric>#{numeric})\s*(?<unit1>#{unit})\s*(?<unit2>#{unit})?/
+      addition = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<plus>\+)/
+      range = /(?<minus>-)\s*(?<numeric>#{numeric}\s*(?<unit>#{unit})?)/
+      part = /(?<in>in)\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
+      scale = /(?<slash>(\/|pro))\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
+      dose = /\(\s*#{numeric}\s*#{unit}\s*\)/
 
       s = StringScanner.new(size)
       s_multi = []
@@ -65,40 +70,39 @@ module ODDB
       s_measure = nil
       until s.eos?
         s.skip(/\s+/)
-        case
-        when s.scan(/#{multiple}/)
+        if s.scan(/#{multiple}/)
           m = s[0].match(/#{multiple}/)
           s_multi << [m[:numeric], m[:unit], m[:set]] unless s_count
-        when s.scan(/#{addition}/)
+        elsif s.scan(/#{addition}/)
           m = s[0].match(/#{addition}/)
           s_addition = [m[:numeric], m[:unit], m[:plus]]
-        when s.scan(/#{range}/)
+        elsif s.scan(/#{range}/)
           m = s[0].match(/#{range}/)
           s_range = [m[:minus], m[:numeric], m[:unit]]
-        when s.scan(/#{part}/)
+        elsif s.scan(/#{part}/)
           m = s[0].match(/#{part}/)
           s_part = [m[:in], m[:numeric], m[:unit]]
-        when s.scan(/#{measure}/)
+        elsif s.scan(/#{measure}/)
           m = s[0].match(/#{measure}/)
-          s_measure = [m[:numeric], m[:unit1], m[:unit2]] unless s_measure
-        when s.scan(/#{count}/)
+          s_measure ||= [m[:numeric], m[:unit1], m[:unit2]]
+        elsif s.scan(/#{count}/)
           m = s[0].match(/#{count}/)
-          s_count = [m[:je], m[:numeric]] unless s_count
-        when s.scan(/#{scale}/)
+          s_count ||= [m[:je], m[:numeric]]
+        elsif s.scan(/#{scale}/)
           m = s[0].match(/#{scale}/)
           s_scale = [m[:slash], m[:numeric], m[:unit]]
-        when s.scan(/#{dose}/)
-          s_dose = s[0]
-        when s.scan(/#{description}/)
+        elsif s.scan(/#{dose}/)
+          s[0]
+        elsif s.scan(/#{description}/)
           s_comform += s[0]
-        when s.scan(/.*/)
+        elsif s.scan(/.*/)
         end
       end
       s_comform = nil if s_comform.empty?
       s_count = (s_count ? s_count[1].to_i : 1)
       s_measure ||= [1, (s_range && s_range[2] or s_part && s_part[2]), nil]
       if s_comform
-        s_comform.gsub!('()','')
+        s_comform.gsub!("()", "")
         s_comform.strip!
       end
       [
@@ -107,45 +111,51 @@ module ODDB
         s_count,
         dose_from_measure(s_measure),
         dose_from_scale(s_scale),
-        s_comform,
+        s_comform
       ]
     end
+
     def dose_from_measure(measure)
-      values = measure ? measure[0,2] : [1,nil]
+      values = measure ? measure[0, 2] : [1, nil]
       Dose.new(*values)
     end
+
     def dose_from_scale(scale)
-      values = scale ? scale[1,2] : [1,nil]
+      values = scale ? scale[1, 2] : [1, nil]
       Dose.new(*values)
     end
+
     def dose_from_multi(multi)
-      unless(multi.nil?)
+      if multi.nil?
+        UNIT
+      else
         multi.inject(UNIT) { |inj, node|
           unit = (node[1] if node[1])
           dose = ODDB::Dose.new(node[0], unit)
-          inj *= dose
+          inj * dose
         }
-      else
-        UNIT
       end
     end
+
     def _composition_scale
       if @composition && dose = @composition.doses.compact.first
         dose.scale
       end
     end
   end
+
   class Part
     include Persistence
-		include SizeParser
+    include SizeParser
     class << self
       def package_delegate *args
         args.each { |name|
-          define_method(name) { 
+          define_method(name) {
             @package.send(name) if @package
           }
         }
       end
+
       def update_comparable_size *args
         args.each { |name|
           attr_reader name
@@ -164,66 +174,71 @@ module ODDB
     def init(app)
       @pointer.append(@oid)
     end
+
     def commercial_form=(commercial_form)
-      unless(@commercial_form.nil?)
+      unless @commercial_form.nil?
         @commercial_form.remove_package(@package)
       end
-      unless(commercial_form.nil?)
+      unless commercial_form.nil?
         commercial_form.add_package(@package)
       end
       @commercial_form = commercial_form
     end
+
     def fix_pointers
       @pointer = @package.pointer + [:part, @oid]
       odba_store
     end
+
     def size
       parts = []
       multi = @multi.to_i
       count = @count.to_i
       add = @addition.to_i
-      if(multi > 1) 
+      if multi > 1
         parts.push(multi)
       end
       @measure = nil if @measure == 1
-      if(count > 0 && multi > 1 && !@measure)
-        parts.push('x')
+      if count > 0 && multi > 1 && !@measure
+        parts.push("x")
       end
       if add > 0
-        parts.push add, '+'
+        parts.push add, "+"
       end
-      if(count > 1 || (count > 0 && multi > 1 && !@measure))
+      if count > 1 || (count > 0 && multi > 1 && !@measure)
         parts.push(count)
       end
-      if(@commercial_form)
+      if @commercial_form
         parts.push @commercial_form
         parts.push "à" if @measure
       elsif @measure && !parts.empty?
-        parts.push('x')
+        parts.push("x")
       end
       parts.push @measure if @measure
-      parts.push('/', @scale) if @scale && @scale != 1
-      parts.join(' ')
+      parts.push("/", @scale) if @scale && @scale != 1
+      parts.join(" ")
     end
+
     private
-    def adjust_types(values, app=nil)
+
+    def adjust_types(values, app = nil)
       values = values.dup
       values.dup.each { |key, value|
         case value
         when Persistence::Pointer
           values[key] = value.resolve(app)
-        else 
+        else
           case key
           when :measure, :scale
             if value == ""
               values[key] = nil
-            else
-              values[key] = Dose.new(*value) if value
+            elsif value
+              values[key] = Dose.new(*value)
             end
           when :multi, :count, :addition
             values[key] = value.to_i if value
           end
-        end 
+        end
       }
       values
     end

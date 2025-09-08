@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # Notify -- oddb -- 08.04.2005 -- usenguel@ywesee.com, jlang@ywesee.com
 
-require 'state/drugs/global'
-require 'view/notify_confirm'
-require 'util/logfile'
+require "state/drugs/global"
+require "view/notify_confirm"
+require "util/logfile"
 
 module ODDB
-	module State
-		module Drugs
-class NotifyConfirm < State::Drugs::Global
-	VIEW = View::NotifyConfirm
-end
-		end
-	end
+  module State
+    module Drugs
+      class NotifyConfirm < State::Drugs::Global
+        VIEW = View::NotifyConfirm
+      end
+    end
+  end
 end

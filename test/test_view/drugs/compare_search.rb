@@ -1,38 +1,37 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # ODDB::View::Drugs::TestCompareSearch -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-
-require 'minitest/autorun'
-require 'flexmock/minitest'
-require 'view/drugs/centeredsearchform'
-require 'view/drugs/compare_search'
+require "minitest/autorun"
+require "flexmock/minitest"
+require "view/drugs/centeredsearchform"
+require "view/drugs/compare_search"
 
 module ODDB
   module View
     module Drugs
+      class TestCompareSearchForm < Minitest::Test
+        def setup
+          @container = flexmock("container", additional_javascripts: [])
+          @lnf = flexmock("lookandfeel",
+            lookup: "lookup",
+            direct_event: "direct_event",
+            _event_url: "_event_url",
+            enabled?: nil,
+            attributes: {},
+            base_url: "base_url")
+          @session = flexmock("session",
+            lookandfeel: @lnf,
+            persistent_user_input: "persistent_user_input",
+            flavor: "flavor")
+          @model = flexmock("model")
+          @form = ODDB::View::Drugs::CompareSearchForm.new(@model, @session, @container)
+        end
 
-class TestCompareSearchForm <Minitest::Test
-  def setup
-    @container = flexmock('container', :additional_javascripts => [])
-    @lnf     = flexmock('lookandfeel', 
-                        :lookup     => 'lookup',
-                        :enabled?   => nil,
-                        :attributes => {},
-                        :base_url   => 'base_url'
-                       )
-    @session = flexmock('session', 
-                        :lookandfeel => @lnf,
-                        :persistent_user_input => 'persistent_user_input',
-                        :flavor => 'flavor',
-                       )
-    @model   = flexmock('model')
-    @form    = ODDB::View::Drugs::CompareSearchForm.new(@model, @session, @container)
-  end
-  def test_init
-    expected = ["require([\"dojo/parser\", \"dijit/ProgressBar\"], function(){
+        def test_init
+          expected = ["require([\"dojo/parser\", \"dijit/ProgressBar\"], function(){
   show_progressbar = function(searchbar_id){
     var progressBar = searchProgressBar.set({
       style: \"display:block;\",
@@ -81,11 +80,9 @@ require(['dojo/ready'], function(ready) {
   };
 });
 "]
-    assert_equal(expected, @form.init)
-  end
-end
-
+          assert_equal(expected, @form.init)
+        end
+      end
     end # Drugs
   end # View
 end # ODDB
-

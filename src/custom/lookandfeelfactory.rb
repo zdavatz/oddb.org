@@ -1,56 +1,56 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-# ODDB::LookandfeelFactory -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com 
-# ODDB::LookandfeelFactory -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
-require 'sbsm/lookandfeelfactory'
-require 'custom/lookandfeelbase'
-require 'custom/lookandfeelwrapper'
+# ODDB::LookandfeelFactory -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelFactory -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com
+
+require "sbsm/lookandfeelfactory"
+require "custom/lookandfeelbase"
+require "custom/lookandfeelwrapper"
 
 module ODDB
-	class LookandfeelFactory < SBSM::LookandfeelFactory
-		BASE = LookandfeelBase
-		WRAPPERS = {
-      'desitin' => [
-        LookandfeelDesitin,
+  class LookandfeelFactory < SBSM::LookandfeelFactory
+    BASE = LookandfeelBase
+    WRAPPERS = {
+      "desitin" => [
+        LookandfeelDesitin
       ],
-			'generika'	=>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelGenerika,
-			],
-			'just-medical'=>	[
-				LookandfeelLanguages,
-				LookandfeelJustMedical, 
-			],
-      'mobile'	=>	[
+      "generika"	=>	[
         LookandfeelLanguages,
-        LookandfeelMobile,
+        LookandfeelExtern,
+        LookandfeelGenerika
       ],
-			'oekk'	=>	[
-				LookandfeelOekk,
-			],
-			'swissmedic'	=>	[
-				LookandfeelSwissmedic,
-			],
-			'swissmedinfo'=>	[
-				LookandfeelSwissMedInfo, 
-			],
-      'anthroposophy' => [
+      "just-medical" =>	[
         LookandfeelLanguages,
-        LookandfeelComplementaryType,
-        LookandfeelAnthroposophy,
+        LookandfeelJustMedical
       ],
-      'homeopathy' => [
+      "mobile"	=>	[
+        LookandfeelLanguages,
+        LookandfeelMobile
+      ],
+      "oekk"	=>	[
+        LookandfeelOekk
+      ],
+      "swissmedic"	=>	[
+        LookandfeelSwissmedic
+      ],
+      "swissmedinfo" =>	[
+        LookandfeelSwissMedInfo
+      ],
+      "anthroposophy" => [
         LookandfeelLanguages,
         LookandfeelComplementaryType,
-        LookandfeelHomeopathy,
+        LookandfeelAnthroposophy
       ],
-      'phyto-pharma' => [
+      "homeopathy" => [
         LookandfeelLanguages,
         LookandfeelComplementaryType,
-        LookandfeelPhytoPharma,
+        LookandfeelHomeopathy
       ],
-		}
-	end
+      "phyto-pharma" => [
+        LookandfeelLanguages,
+        LookandfeelComplementaryType,
+        LookandfeelPhytoPharma
+      ]
+    }
+  end
 end

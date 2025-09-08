@@ -3,10 +3,9 @@
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
-require 'drb/drb'
-require 'refdata'
+require "drb/drb"
+require "refdata"
 
 uri = ODDB::Refdata::RefdataArticle::URI
 DRb.start_service(uri, ODDB::Refdata)
 DRb.thread.join
-

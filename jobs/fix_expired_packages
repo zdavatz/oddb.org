@@ -1,14 +1,14 @@
 #!/usr/local/bin/ruby-271
-# encoding: utf-8
+
 # must be scheduled in crontab to run as the same user as oddb
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
 
-require 'util/job'
-require 'util/exporter'
-require 'util/today'
-require 'pry'
+require "util/job"
+require "util/exporter"
+require "util/today"
+require "pry"
 
 module ODDB
   module Util
@@ -18,24 +18,24 @@ module ODDB
     Util.log("#{File.basename(__FILE__)} starting for today #{today}")
     Job.run do |app|
       Util.log("job starting")
-      to_deactivate = app.registrations.values.find_all do|x| x.packages.size > 0 &&
+      to_deactivate = app.registrations.values.find_all do |x|
+        x.packages.size > 0 &&
           x.expiration_date &&
           (x.expiration_date.year < 2017 || (x.expiration_date.year == 2017 && x.expiration_date.month < 8))
       end
       @deleted_packages = []
       Util.log("We must deactivate #{to_deactivate.size} registrations #{to_deactivate.first} #{to_deactivate.last}")
       to_deactivate.each do |reg|
-        reg.packages.find_all{|x| x.ikscd.to_i > 0}.each do |pack|
+        reg.packages.find_all { |x| x.ikscd.to_i > 0 }.each do |pack|
           Util.log(pack.pointer)
           @deleted_packages << [pack.iksnr, pack.seqnr, pack.ikscd]
           already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
           app.delete pack.pointer
           GC.enable unless already_disabled
         end
-        app.update reg.pointer, {:inactive_date => today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
+        app.update reg.pointer, {inactive_date: today, renewal_flag: nil, renewal_flag_swissmedic: nil}, :swissmedic
       end
       Util.log(@deleted_packages)
     end
   end
 end
-

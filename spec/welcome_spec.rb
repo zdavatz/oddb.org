@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # kate: space-indent on; indent-width 2; mixedindent off; indent-mode ruby;
-require 'spec_helper'
-require 'pp'
-require 'tmpdir'
+require "spec_helper"
+require "pp"
+require "tmpdir"
 
 describe "ch.oddb.org" do
-
   before :all do
     waitForOddbToBeReady(@browser, ODDB_URL)
     logout
@@ -16,7 +15,7 @@ describe "ch.oddb.org" do
   ViewerDescription = "Willkommen #{A_USER_FIRST_NAME} #{A_USER_NAME}"
 
   before :each do
-    @timestamp = Time.now.strftime('%Y%m%d%H%M%S')
+    @timestamp = Time.now.strftime("%Y%m%d%H%M%S")
     while @browser.windows.size > 1
       @browser.windows.first.use
       @browser.windows.last.close if @browser.windows.last
@@ -24,15 +23,14 @@ describe "ch.oddb.org" do
     @browser.goto ODDB_URL
   end
 
-  [ 'pharmacies', 'doctors', 'interactions', 'migel', 'user', 'hospitals', 'companies'].each do
-    |zone|
+  ["pharmacies", "doctors", "interactions", "migel", "user", "hospitals", "companies"].each do |zone|
     it "should be possible to see the sponsored log-in in zone #{zone}" do
       expect(@browser.link(name: zone).exists?).to eq(true)
-      expect(@browser.text).to match (ViewerDescription)
+      expect(@browser.text).to match(ViewerDescription)
       @browser.link(name: zone).click
       sleep(0.1) unless @browser.link(name: "logout").exists?
       expect(@browser.link(name: "logout").exists?).to eq(true)
-      expect(@browser.text).to match (ViewerDescription) unless zone.eql?('doctors')
+      expect(@browser.text).to match(ViewerDescription) unless zone.eql?("doctors")
     end
   end
 

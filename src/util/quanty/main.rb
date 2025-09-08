@@ -13,22 +13,22 @@ def Quanty(*a)
   Quanty.new(*a)
 end
 
-class Quanty #< Numeric
+class Quanty # < Numeric
   Self = self
-  RadianUnit = Quanty::Fact.new('radian')
+  RadianUnit = Quanty::Fact.new("radian")
 
   def initialize(*a)
     case a.size
     when 1
       if String === a[0]
-	@val,@unit,@fact = 1.0, a[0], nil
+        @val, @unit, @fact = 1.0, a[0], nil
       else
-	@val,@unit,@fact = a[0], '', nil
+        @val, @unit, @fact = a[0], "", nil
       end
     when 2..3
-        @val,@unit,@fact = a
+      @val, @unit, @fact = a
     else
-      raise ArgumentError, 'wrong # of arguments'
+      raise ArgumentError, "wrong # of arguments"
     end
     unless Fact === @fact
       @fact = Fact.new(@unit)
@@ -38,14 +38,14 @@ class Quanty #< Numeric
   attr_reader :val
   attr_reader :unit
   attr_reader :fact
-  alias value val
+  alias_method :value, :val
 
   def adjust(other)
-    if other.kind_of?(Self)
+    if other.is_a?(Self)
       unless @fact === other.fact
-	raise "not same unit: %s != %s" % [@unit,other.unit]
+        raise "not same unit: %s != %s" % [@unit, other.unit]
       end
-      other.val * ( other.fact.factor / @fact.factor )
+      other.val * (other.fact.factor / @fact.factor)
     else
       raise @unit + ": not null unit" unless @fact.null?
       other / @fact.factor
@@ -55,96 +55,116 @@ class Quanty #< Numeric
   def want(unit)
     obj = Self.new(unit)
     val = obj.adjust(self)
-    Self.new( val, unit, obj.fact )
+    Self.new(val, unit, obj.fact)
   end
 
-  def + (other)
+  def +(other)
     val = @val + adjust(other)
-    if @unit==''
+    if @unit == ""
       val
     else
-      Self.new( val, @unit, @fact )      
+      Self.new(val, @unit, @fact)
     end
   end
 
-  def - (other)
+  def -(other)
     val = @val - adjust(other)
-    if @unit==''
+    if @unit == ""
       val
     else
-      Self.new( val, @unit, @fact )      
+      Self.new(val, @unit, @fact)
     end
   end
 
-  def +@ ; Self.new(  @val, @unit, @fact ) end
-  def -@ ; Self.new( -@val, @unit, @fact ) end
+  def +@
+    Self.new(@val, @unit, @fact)
+  end
 
-  def <=> (other); @val <=> adjust(other) end
-  def  == (other); @val  == adjust(other) end
-  def  >= (other); @val  >= adjust(other) end
-  def  <= (other); @val  <= adjust(other) end
-  def  <  (other); @val  <  adjust(other) end
-  def  >  (other); @val  >  adjust(other) end
+  def -@
+    Self.new(-@val, @unit, @fact)
+  end
 
-  def **(n)
-    if /^[A-Za-z_]+&/ou =~ @unit
-      unit = @unit+'^'+n.to_s
+  def <=>(other)
+    @val <=> adjust(other)
+  end
+
+  def ==(other)
+    @val == adjust(other)
+  end
+
+  def >=(other)
+    @val >= adjust(other)
+  end
+
+  def <=(other)
+    @val <= adjust(other)
+  end
+
+  def <(other)
+    @val < adjust(other)
+  end
+
+  def >(other)
+    @val > adjust(other)
+  end
+
+  def **(other)
+    unit = if /^[A-Za-z_]+&/ou.match?(@unit)
+      @unit + "^" + other.to_s
     else
-      unit = '('+@unit+')^'+n.to_s+''
+      "(" + @unit + ")^" + other.to_s + ""
     end
-    Self.new( @val**n, unit, @fact**n )
+    Self.new(@val**other, unit, @fact**other)
   end
 
-  def * (other)
-    if other.kind_of?(Self)
+  def *(other)
+    if other.is_a?(Self)
       unit = other.unit
       unless @unit.empty?
-	if unit.empty?
-	  unit = @unit
-	else
-	  if /\A[A-Za-z_]/ou =~ unit
-	    unit = @unit+' '+unit
-	  else
-	    unit = @unit+' ('+unit+')' 
-	  end
-	end
+        unit = if unit.empty?
+          @unit
+        elsif /\A[A-Za-z_]/ou.match?(unit)
+          @unit + " " + unit
+        else
+          @unit + " (" + unit + ")"
+        end
       end
-      Self.new( @val*other.val, unit, @fact*other.fact )
+      Self.new(@val * other.val, unit, @fact * other.fact)
     else
-      Self.new( @val*other, @unit, @fact )
+      Self.new(@val * other, @unit, @fact)
     end
   end
 
-  def / (other)
-    if other.kind_of?(Self)
+  def /(other)
+    if other.is_a?(Self)
       unit = other.unit
       if unit.empty?
-	unit = @unit
+        unit = @unit
       else
-	if /\A[A-Za-z_-]+((\^|\*\*)?[0-9.]+)?$/ou =~ unit
-	  unit = '/ '+unit
-	else
-	  unit = '/ ('+unit+')' 
-	end
-	unit = @unit+' '+unit unless @unit.empty?
+        unit = if /\A[A-Za-z_-]+((\^|\*\*)?[0-9.]+)?$/ou.match?(unit)
+          "/ " + unit
+        else
+          "/ (" + unit + ")"
+        end
+        unit = @unit + " " + unit unless @unit.empty?
       end
-      Self.new( @val/other.val, unit, @fact/other.fact )
+      Self.new(@val / other.val, unit, @fact / other.fact)
     else
-      Self.new( @val/other, @unit, @fact )
+      Self.new(@val / other, @unit, @fact)
     end
   end
 
   def coerce(other)
-    [ Self.new(other), self ]
+    [Self.new(other), self]
   end
 
   def to_f
     if @fact.null?
       @val * @fact.factor
     elsif @fact === RadianUnit
-      want('radian').value
+      want("radian").value
     else
-      raise 'cannot convert into non-dimensional Float'
+      raise "cannot convert into non-dimensional Float"
     end
   end
 
@@ -155,5 +175,4 @@ class Quanty #< Numeric
   def inspect
     "Quanty(" + @val.to_s + ",'" + @unit + "')"
   end
-
 end

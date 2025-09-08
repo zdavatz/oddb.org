@@ -32,7 +32,8 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
   * look at the index.html in the coverage directory
   
 * There are some Selenium/Watir based GUI integration tests. For details on how to use them have
-  a look at tests_watir.textile
+  a look at tests_watir.textile. By default they are run using the gem headless (this can be overrriden by
+  setting the environment variable ODDB_NO_HEADLESS)
 
 * There is test/wrk_performance.lua allows a stress test with a typical load. See test/wrk_performance.lua for details on howto run it
 

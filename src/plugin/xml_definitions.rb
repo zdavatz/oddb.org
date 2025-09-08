@@ -1,9 +1,9 @@
 # Definitions for the sax-machine parse to parse
 # Preparations.xml
 
-require 'sax-machine'
+require "sax-machine"
 
-Strip_For_Sax_Machine = '<?xml version="1.0" encoding="utf-8"?>'+"\n"
+Strip_For_Sax_Machine = '<?xml version="1.0" encoding="utf-8"?>' + "\n"
 
 class PriceElement
   include SAXMachine
@@ -31,8 +31,8 @@ end
 
 class PricesElement
   include SAXMachine
-  element :ExFactoryPrice, :class => PriceElement
-  element :PublicPrice, :class => PriceElement
+  element :ExFactoryPrice, class: PriceElement
+  element :PublicPrice, class: PriceElement
 end
 
 class LimitationElement
@@ -50,7 +50,7 @@ end
 
 class LimitationsElement
   include SAXMachine
-  elements :Limitation, :class => LimitationElement
+  elements :Limitation, class: LimitationElement
 end
 
 class PointLimitationElement
@@ -63,7 +63,7 @@ end
 
 class PointLimitationsElement
   include SAXMachine
-  elements :PointLimitation, :class => PointLimitationElement
+  elements :PointLimitation, class: PointLimitationElement
 end
 
 class PackContent
@@ -80,14 +80,14 @@ class PackContent
   element :FlagModal
   element :BagDossierNo
   element :GTIN
-  element :Limitations, :class => LimitationsElement
-  element :PointLimitations, :class => PointLimitationsElement
-  element :Prices, :class => PricesElement
+  element :Limitations, class: LimitationsElement
+  element :PointLimitations, class: PointLimitationsElement
+  element :Prices, class: PricesElement
 end
 
 class PacksElement
   include SAXMachine
-  elements :Pack, :class => PackContent
+  elements :Pack, class: PackContent
 end
 
 class ItCodeContent
@@ -96,18 +96,18 @@ class ItCodeContent
   element :DescriptionDe
   element :DescriptionFr
   element :DescriptionIt
-  element :Limitations, :class => LimitationsElement
+  element :Limitations, class: LimitationsElement
 end
 
 class ItCodeEntry
   include SAXMachine
-  element :ItCode, :class => ItCodeContent
+  element :ItCode, class: ItCodeContent
 end
 
 # handling attributes as suggested by https://github.com/pauldix/sax-machine/issues/30
 class ItCodesElement
   include SAXMachine
-  elements :ItCode, :class => ItCodeContent
+  elements :ItCode, class: ItCodeContent
 end
 
 class SubstanceElement
@@ -119,7 +119,7 @@ end
 
 class SubstancesElement
   include SAXMachine
-  elements :Substance, :class => SubstanceElement
+  elements :Substance, class: SubstanceElement
 end
 
 class PreparationContent
@@ -128,7 +128,7 @@ class PreparationContent
   element :NameFr
   element :NameDe
   element :NameIt
-  element :Status, :class => StatusElement
+  element :Status, class: StatusElement
   element :Dummy
   element :DescriptionDe
   element :DescriptionFr
@@ -142,28 +142,27 @@ class PreparationContent
   element :CommentFr
   element :CommentIt
   element :VatInEXF
-  element :Limitations, :class => LimitationsElement
-  element :Substances, :class => SubstancesElement
-  element :Packs, :class => PacksElement
-  element :ItCodes, :class => ItCodesElement
+  element :Limitations, class: LimitationsElement
+  element :Substances, class: SubstancesElement
+  element :Packs, class: PacksElement
+  element :ItCodes, class: ItCodesElement
 end
 
 class PreparationEntry
   include SAXMachine
-  element :Preparation, :class => PreparationContent
+  element :Preparation, class: PreparationContent
 end
 
 class PreparationsContent
   include SAXMachine
   attribute :ReleaseDate
-  elements :Preparation, :class => PreparationContent
+  elements :Preparation, class: PreparationContent
 end
 
 class PreparationsEntry
   include SAXMachine
-  element :Preparations, :class => PreparationsContent
+  element :Preparations, class: PreparationsContent
 end
-
 
 class CompElement
   include SAXMachine
@@ -182,20 +181,20 @@ class ItemContent
   element :DSCR
   element :ADDSCR
   element :ATC
-  element :COMP, :class => CompElement
+  element :COMP, class: CompElement
 end
 
 class PharmaContent
   include SAXMachine
   attribute :CREATION_DATETIME
-  elements :ITEM, :class => ItemContent
+  elements :ITEM, class: ItemContent
 end
 
 class PharmaEntry
   include SAXMachine
   element :CREATION_DATETIME
-  element :NONPHARMA, :as => :PHARMA, :class => PharmaContent
-  element :PHARMA, :class => PharmaContent
+  element :NONPHARMA, as: :PHARMA, class: PharmaContent
+  element :PHARMA, class: PharmaContent
 end
 
 class ItemContent
@@ -209,7 +208,7 @@ class ItemContent
   element :DSCR
   element :ADDSCR
   element :ATC
-  element :COMP, :class => CompElement
+  element :COMP, class: CompElement
 end
 
 class MedicalInformationContent
@@ -227,17 +226,17 @@ end
 
 class MedicalInformationEntry
   include SAXMachine
-  element :medicalInformation, :class => MedicalInformationContent
+  element :medicalInformation, class: MedicalInformationContent
 end
 
 class MedicalInformationsContent
   include SAXMachine
-  elements :medicalInformation, :class => MedicalInformationContent
+  elements :medicalInformation, class: MedicalInformationContent
 end
 
 class MedicalInformationsEntry
   include SAXMachine
-  element :medicalInformations, :class => MedicalInformationsContent
+  element :medicalInformations, class: MedicalInformationsContent
 end
 
 class SwissRegItemContentContent
@@ -258,11 +257,11 @@ end
 class SwissRegArticleContent
   include SAXMachine
   attribute :CREATION_DATETIME
-  elements :ITEM, :class => SwissRegItemContentContent
+  elements :ITEM, class: SwissRegItemContentContent
 end
 
 class SwissRegArticleEntry
   include SAXMachine
   element :CREATION_DATETIME
-  element :ARTICLE, :class => SwissRegArticleContent
+  element :ARTICLE, class: SwissRegArticleContent
 end

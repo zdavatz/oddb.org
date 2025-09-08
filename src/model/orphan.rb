@@ -1,23 +1,29 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+
 # OrphanedPatinfo -- oddb -- 06.11.2003 -- rwaltert@ywesee.com
 
-require 'util/persistence'
-require 'util/language'
+require "util/persistence"
+require "util/language"
 
 module ODDB
-	class OrphanedTextInfo
+  class OrphanedTextInfo
     include Language
-		attr_accessor :key
-		alias :pointer_desc :key
-		def name
+    attr_accessor :key
+    alias_method :pointer_desc, :key
+    def name
       if desc = descriptions.sort.first
-        desc.last.name rescue $!.message
+        begin
+          desc.last.name
+        rescue
+          $!.message
+        end
       end
-		end
-	end
+    end
+  end
+
   class OrphanedFachinfo < OrphanedTextInfo
   end
+
   class OrphanedPatinfo < OrphanedTextInfo
   end
 end

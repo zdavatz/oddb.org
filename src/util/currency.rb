@@ -1,6 +1,5 @@
-# encoding: utf-8
-require 'drb'
-require 'util/oddbconfig'
+require "drb"
+require "util/oddbconfig"
 
 module ODDB
   CURRENCY_URI = "druby://localhost:10999"
