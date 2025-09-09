@@ -444,7 +444,7 @@ module ODDB
 
       def help_navigation
         [
-          :help_link,
+          :help_link
         ]
       end
 

@@ -447,10 +447,9 @@ module ODDB
             "en" => "MasterData",
             "fr" => "DonneesDeBase"
           }
-          page = pages[@lookandfeel.language]
-          link = HtmlGrid::Link.new(:download_export_descr, model,
+          pages[@lookandfeel.language]
+          HtmlGrid::Link.new(:download_export_descr, model,
             @session, self)
-          link
         end
 
         def init

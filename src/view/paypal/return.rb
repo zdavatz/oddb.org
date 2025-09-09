@@ -12,8 +12,7 @@ module ODDB
           [0, 0]	=>	:download_link,
           [1, 0]	=>	:additional_download_link
         }
-        CSS_MAP = {
-        }
+        CSS_MAP = {}
         DEFAULT_HEAD_CLASS = "subheading"
         LEGACY_INTERFACE = false
         OMIT_HEADER = false
@@ -60,7 +59,7 @@ module ODDB
       class ReturnComposite < HtmlGrid::Composite
         ## in this class, COMPONENTS only includes the unchanging components
         COMPONENTS = {
-          [0, 0, 1]	=>	"dash_separator",
+          [0, 0, 1]	=>	"dash_separator"
         }
         CSS_CLASS = "composite"
         CSS_MAP = {

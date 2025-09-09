@@ -205,7 +205,7 @@ class OddbPrevalence
   end
 
   def active_packages
-    packages.find_all {|pac| pac.active?}
+    packages.find_all { |pac| pac.active? }
   end
 
   def active_packages_has_fachinfo
