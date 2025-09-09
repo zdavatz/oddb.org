@@ -170,6 +170,7 @@ module ODDB
     def pointer_descr
       "Fachinfo"
     end
+
     class ChangeLogItem
       include Persistence
       attr_accessor :time, :diff

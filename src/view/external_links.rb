@@ -30,17 +30,15 @@ module ODDB
 
       def help_link(model, session = @session)
         link = NavigationLink.new(:help_link, model, @session, self)
-#        link.name = @lookandfeel.lookup(:help_pagename)
         link.href = "https://ywesee.com/ODDB/Legal"
         link
       end
-
 
       ## meddrugs_update, data_declaration and legal_note:
       ## extrawurst for just-medica
       def legal_note(model, session = @session)
         link = NavigationLink.new(:legal_note, model, @session, self)
-#        link.name = @lookandfeel.lookup(:legal_note_pagename)
+        #        link.name = @lookandfeel.lookup(:legal_note_pagename)
         link.href = "https://ywesee.com/ODDB/Legal"
         link
       end

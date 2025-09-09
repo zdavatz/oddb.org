@@ -185,7 +185,7 @@ module ODDB
           span.label = true
           span
         elsif !@lookandfeel.disabled?(:price_request)
-          span = HtmlGrid::Span.new(model, @session, self)
+          HtmlGrid::Span.new(model, @session, self)
         else
           @lookandfeel.lookup(:deductible_unknown)
         end

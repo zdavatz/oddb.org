@@ -22,8 +22,8 @@ require "htmlbeautifier"
 
 module ODDB
   SwissmedicMetaInfo = Struct.new("SwissmedicMetaInfo", :iksnr, :authNrs, :atcCode, :title, :authHolder,
-                                  :substances, :type, :lang, :informationUpdate, :refdata,
-                                  :html_file, :cache_file, :cache_sha256, :download_url)
+    :substances, :type, :lang, :informationUpdate, :refdata,
+    :html_file, :cache_file, :cache_sha256, :download_url)
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis, :problematic_fi_pi, :missing_override_file
     attr_reader :reparse_all, :old_hash, :new_hash, :to_parse, :html_cache, :zip_file, :files2unpack if defined?(Minitest)
@@ -42,7 +42,7 @@ module ODDB
       }
       @aips_xml = File.join(ODDB::WORK_DIR, "xml", "AipsDownload_latest.xml")
       @meta_xml = File.join(ODDB::WORK_DIR, "xml", "AipsMetaInfo.xml")
-      @meta_today_xml = File.join(ODDB::WORK_DIR, "xml", "AipsMetaInfo_#{Time.now.strftime('%Y_%m_%d')}.xml")
+      @meta_today_xml = File.join(ODDB::WORK_DIR, "xml", "AipsMetaInfo_#{Time.now.strftime("%Y_%m_%d")}.xml")
       @xref_xml = File.join(ODDB::WORK_DIR, "xml", "AipsXref.xml")
       @zip_file = File.join(ODDB::WORK_DIR, "AllHtml.zip")
       @html_cache = File.join(ODDB::WORK_DIR, "html_cache")
@@ -82,27 +82,27 @@ module ODDB
       @skipped_override ||= []
       @missing_override ||= {}
       @old_meta ||= {}
-      @zip_url =  "https://files.refdata.ch/simis-public-prod/MedicinalDocuments/AllHtml.zip"
+      @zip_url = "https://files.refdata.ch/simis-public-prod/MedicinalDocuments/AllHtml.zip"
     end
 
     def getFreeMemoryInMB
-      m =  /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
-      freeMbytes = (m[1].to_i / (2**10)).to_i
+      m = /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
+      (m[1].to_i / (2**10)).to_i
     end
 
     def save_meta_and_xref_info
       FileUtils.makedirs(File.dirname(@xref_xml))
       FileUtils.makedirs(File.dirname(@meta_xml))
-      File.write(@meta_xml, Ox.dump(@iksnrs_meta_info, :indent => 2, :circular => $circular))
+      File.write(@meta_xml, Ox.dump(@iksnrs_meta_info, indent: 2, circular: $circular))
       @files2unpack = []
       @xref_file_2_meta = {}
       @files2unpack = @iksnrs_meta_info.collect do |key, value|
         value.each do |aVal|
           @xref_file_2_meta[File.basename(aVal.cache_file)] = aVal
         end
-        value.collect do |meta| File.basename(meta.cache_file) end
+        value.collect { |meta| File.basename(meta.cache_file) }
       end.flatten
-      File.write(@xref_xml, Ox.dump(@xref_file_2_meta, :indent => 2, :circular => $circular))
+      File.write(@xref_xml, Ox.dump(@xref_file_2_meta, indent: 2, circular: $circular))
       LogFile.debug "from #{@meta_xml} wrote #{@xref_file_2_meta.size} xrefs to #{@xref_xml}"
     end
 
@@ -111,24 +111,23 @@ module ODDB
       FileUtils.makedirs(@html_cache)
       LogFile.debug("Downloading #{zip_url} to #{@zip_file}")
       File.delete(@zip_file) if File.exist?(@zip_file)
-      if /^http/.match(zip_url)
+      if /^http/.match?(zip_url)
         cmd = "wget --quiet --timestamping #{zip_url}  -O #{@zip_file}"
         system(cmd)
       elsif File.exist?(zip_url)
-        FileUtils.cp(zip_url, @zip_file, :preserve => true, :verbose => true)
+        FileUtils.cp(zip_url, @zip_file, preserve: true, verbose: true)
       end
       # Replaced Zip::File by system call unzip -o -q -d tmp AllHtml.zip. This take only 13 seconds for the 1.1 GB
       # Using the code below we need 20 seconds alone for the 174 kB!
-      LogFile.debug("Unzipping #{@zip_file} of #{(File.size(@zip_file)/1024/1024).to_i} MB")
+      LogFile.debug("Unzipping #{@zip_file} of #{(File.size(@zip_file) / 1024 / 1024).to_i} MB")
       cmd = "unzip -o -q -d #{@html_cache} #{@zip_file}"
       system(cmd)
       system("rm -f #{@html_cache}/*.-it.html")
       system("rm -f #{@html_cache}/*-pdf")
-      LogFile.debug("Saved #{zip_url} to #{@zip_file} of #{(File.size(@zip_file)/1024/1024).to_i} MB")
+      LogFile.debug("Saved #{zip_url} to #{@zip_file} of #{(File.size(@zip_file) / 1024 / 1024).to_i} MB")
     end
 
     # Updates also the SHA256 checksum
-
 
     def calc_and_save_sha256
       startTime = Time.now
@@ -137,12 +136,12 @@ module ODDB
         parts = res.split(" ")
         next unless parts[1]
         key = File.basename(parts[1])
-        meta = @xref_file_2_meta[key]
+        @xref_file_2_meta[key]
         @xref_file_2_meta[key].cache_sha256 = parts[0]
       end
       #  File.exist?(@iksnrs_meta_info.values.first.first.html_file)
       endTime = Time.now
-      File.write(@meta_today_xml, Ox.dump(hash, :indent => 2, :circular => $circular))
+      File.write(@meta_today_xml, Ox.dump(hash, indent: 2, circular: $circular))
       LogFile.debug "Took #{(endTime - startTime).to_i} seconds to create the hash with #{hash.size} entries"
     end
 
@@ -349,7 +348,7 @@ module ODDB
             end
           end
           FileUtils.makedirs(File.dirname(meta_info.html_file))
-          FileUtils.cp(meta_info.cache_file, meta_info.html_file, :verbose => true) if File.exist?(meta_info.cache_file)
+          FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true) if File.exist?(meta_info.cache_file)
 
         else
           LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
@@ -380,7 +379,7 @@ module ODDB
       unchanged = old_text.eql?(new_patinfo_lang.to_s)
       if unchanged
         LogFile.debug "#{package.iksnr}/#{package.seqnr} #{lang} skip #{patinfo.odba_id} unchanged #{unchanged} size #{old_size}" if defined? Minitest
-        return false
+        false
       else
         diff_item = patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang) if patinfo.description(lang).respond_to?(:add_change_log_item)
         if diff_item
@@ -518,7 +517,7 @@ module ODDB
             end
           end
           FileUtils.makedirs(File.dirname(meta_info.html_file))
-          FileUtils.cp(meta_info.cache_file, meta_info.html_file, :verbose => true) if File.exist?(meta_info.cache_file)
+          FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true) if File.exist?(meta_info.cache_file)
         else
           LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, pis, :orphaned_patinfo
@@ -692,7 +691,7 @@ module ODDB
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.collect { |key, value| "#{key} #{value}" }.join("\n")
       end
-      m =  /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
+      /MemFree[: ]*(\d+)/ =~ File.read("/proc/meminfo")
       res << "\nHaving free #{getFreeMemoryInMB} MB"
       File.open(Override_file, "w+") { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out, line_width: -1) }
       res
@@ -922,7 +921,7 @@ module ODDB
         content = IO.read(file)
         LogFile.debug("Read #{content.length} bytes from #{file}")
         FileUtils.mkdir_p File.dirname(@aips_xml)
-        File.open(@aips_xml, "w+") do |file| file.write(content) end
+        File.write(@aips_xml, content)
         return @aips_xml
       end
       setup_default_agent
@@ -965,9 +964,9 @@ module ODDB
         LogFile.debug("Called Zip::File daily_name is #{daily_name}")
         File.delete(@aips_xml) if File.exist?(@aips_xml)
         cmd = "unzip -o -q -d #{File.dirname(@aips_xml)} #{zip}"
-        res = system(cmd)
-        FileUtils.cp(File.join(dir, daily_name), @aips_xml, :preserve => true, :verbose => true)
-        size = File.exist?(@aips_xml) ? File.size(@aips_xml)/1024 : 0
+        system(cmd)
+        FileUtils.cp(File.join(dir, daily_name), @aips_xml, preserve: true, verbose: true)
+        size = File.exist?(@aips_xml) ? File.size(@aips_xml) / 1024 : 0
         mtime = File.exist?(@aips_xml) ? File.mtime(@aips_xml) : 0
         LogFile.debug("Saved XML to #{@aips_xml} #{File.exist?(@aips_xml)} #{size} kB of #{mtime}")
       end
@@ -995,7 +994,7 @@ module ODDB
             end
           end
         end
-        html = nil
+        nil
       end
     end
 
@@ -1020,11 +1019,10 @@ module ODDB
       return [iksnrs, infos] unless @doc
       iksnrs_from_xml = nil
       name = ""
-      content = nil
       [:de, :fr].each do |lang|
         next unless names[lang]
         name = names[lang]
-        res = @iksnrs_meta_info.values.flatten.find{|x| x.title.eql?(name) && x.type.eql?(type) && x.lang.eql?(lang)}
+        res = @iksnrs_meta_info.values.flatten.find { |x| x.title.eql?(name) && x.type.eql?(type) && x.lang.eql?(lang) }
         iksnrs_from_xml = res&.authNrs
         next unless iksnrs_from_xml
         LogFile.debug "#{iksnrs_from_xml} for #{iksnrs_from_xml} #{type}"
@@ -1214,11 +1212,9 @@ module ODDB
 
     private
 
-    def info_is_unchanged(meta_info, cache_content )
+    def info_is_unchanged(meta_info, cache_content)
       src = File.exist?(meta_info.html_file) ? IO.read(meta_info.html_file) : ""
-      res = src.eql?(cache_content)
-      src = nil
-      res
+      src.eql?(cache_content)
     end
 
     def found_matching_iksnr(iksnrs)
@@ -1241,7 +1237,7 @@ module ODDB
     end
 
     def parse_textinfo(meta_info, idx)
-      return if meta_info.lang.eql?('it') # we cannot parse correctly for italian
+      return if meta_info.lang.eql?("it") # we cannot parse correctly for italian
       type = meta_info[:type].to_sym
       unless File.exist?(meta_info.cache_file)
         LogFile.debug("Skipping #{type} #{meta_info.lang} #{meta_info.iksnr} #{File.basename(meta_info.cache_file)} as file not found.")
@@ -1251,8 +1247,7 @@ module ODDB
       if unchanged = info_is_unchanged(meta_info, cache_content)
         nr_uptodate = (type == :fi) ? @up_to_date_fis.size : @up_to_date_pis.size
       end
-      cache_content = nil
-      reg = @app.registration(meta_info.iksnr)
+      @app.registration(meta_info.iksnr)
       if @options[:reparse]
         if meta_info.authNrs && found_matching_iksnr(meta_info.authNrs)
           LogFile.debug "at #{nr_uptodate}: #{type}  because reparse is demanded: #{@options[:reparse]} #{meta_info.authNrs}"
@@ -1308,7 +1303,7 @@ module ODDB
         startTime = Time.now
         begin
           textinfo_pi = @parser.parse_patinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
-        rescue => error
+        rescue
           textinfo_pi
         end
         time2parse = Time.now - startTime
@@ -1377,7 +1372,7 @@ module ODDB
         @iksnr_lang_type[infoTxt] = meta_info.title unless @iksnr_lang_type[infoTxt]
         meta_info.cache_file = File.join(@html_cache, File.basename(meta_info.download_url))
         meta_info.html_file = File.join(@details_dir, meta_info.type, meta_info.lang,
-                                        meta_info.title.gsub(CharsNotAllowedInBasename, "_") + ".html")
+          meta_info.title.gsub(CharsNotAllowedInBasename, "_") + ".html")
         if File.exist?(meta_info.html_file)
           @iksnrs_from_aips << meta_info.iksnr if meta_info.iksnr
           @duplicate_entries << infoTxt + ': "' + @iksnr_lang_type[infoTxt] + '"' # was first
@@ -1419,7 +1414,9 @@ module ODDB
       end
       LogFile.debug "created #{@problematic_fi_pi}"
     end
-public
+
+    public
+
     def parse_aips_download(aips_file = @options[:html_file] || @aips_xml)
       LogFile.debug "#{aips_file} from @options #{@options}"
       start_time = Time.now
@@ -1480,7 +1477,9 @@ public
       create_missing_registrations
       report_problematic_names
     end
-private
+
+    private
+
     def title_and_keys_by(target)
       if target == :fi
         [target.to_s.upcase, {fi: "fachinfo"}]
@@ -1501,8 +1500,8 @@ private
       end
       finished = Time.now
       took = ((finished - started) * 10).to_i / 10
-      save_to = File.join(ODDB::WORK_DIR, 'new_iksnrs.xml')
-      File.write(save_to, Ox.dump(@new_iksnrs, :indent => 2, :circular => $circular))
+      save_to = File.join(ODDB::WORK_DIR, "new_iksnrs.xml")
+      File.write(save_to, Ox.dump(@new_iksnrs, indent: 2, circular: $circular))
       LogFile.debug "took #{took} seconds for  #{@new_iksnrs.size} @new_iksnrs from #{@aips_xml}. Saved to #{save_to}"
       @doc = nil
     end
@@ -1528,7 +1527,7 @@ private
       parse_aips_download(@aips_xml) # to get all meta information
       download_all_html_zip
       save_meta_and_xref_info unless @files2unpack
-#       calc_and_save_sha256
+      #       calc_and_save_sha256
 
       LogFile.debug "After parse_aips_download we have  #{@to_parse.size} items to parse. Having #{@iksnrs_meta_info.size} meta items. #{@options[:newest]}"
       @iksnrs_meta_info.clone
@@ -1554,35 +1553,33 @@ private
       LogFile.debug "must parse @to_parse #{@to_parse.size}  FI/PIs"
       LogFile.debug "must parse @iksnrs_meta_info #{@iksnrs_meta_info.size} FI/PIs"
       if @options[:reparse]
-        if @options[:all]
-          iksnrs_to_parse = @iksnrs_meta_info.values.flatten.collect{|x| x.iksnr}.uniq.sort
+        iksnrs_to_parse = if @options[:all]
+          @iksnrs_meta_info.values.flatten.collect { |x| x.iksnr }.uniq.sort
         else
-          iksnrs_to_parse = @options[:iksnrs]
+          @options[:iksnrs]
         end
         @metas = @iksnrs_meta_info.values.flatten.select do |x|
           iksnrs_to_parse.index(x.iksnr) && (@options[:target].eql?(:both) || @options[:target].eql?(x.type.to_sym))
         end
       elsif @options[:target]
-        @metas = @iksnrs_meta_info.values.flatten.select do |x| @options[:target].eql?(x.type.to_sym) end
+        @metas = @iksnrs_meta_info.values.flatten.select { |x| @options[:target].eql?(x.type.to_sym) }
       else
         @metas = @iksnrs_meta_info.values.flatten
       end
 
       @metas.each_with_index do |meta_info, idx|
-          if getFreeMemoryInMB < 1024 # < 512 was not enough!
-            LogFile.debug "Stopping as only  #{getFreeMemoryInMB} MB memory left"
-            break
-          end
-          ODBA.cache.transaction do
-            begin
-              parse_textinfo(meta_info, idx)
-            rescue => error
-              puts error
-              puts error.backtrace[0..10].join("\n")
-              raise error # to trigger rollback of transaction
-            end
-          end
+        if getFreeMemoryInMB < 1024 # < 512 was not enough!
+          LogFile.debug "Stopping as only  #{getFreeMemoryInMB} MB memory left"
+          break
         end
+        ODBA.cache.transaction do
+          parse_textinfo(meta_info, idx)
+        rescue => error
+          puts error
+          puts error.backtrace[0..10].join("\n")
+          raise error # to trigger rollback of transaction
+        end
+      end
       if @options[:download] != false
         postprocess
       end
@@ -1590,4 +1587,3 @@ private
     end
   end
 end
-
