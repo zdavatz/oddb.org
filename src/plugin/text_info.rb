@@ -1284,8 +1284,16 @@ module ODDB
           LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{new_html} unchanged #{new_html}" if defined?(Minitest)
           return
         end
-        textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
-        update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
+        begin
+          textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
+          update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
+        rescue => err
+          LogFile.debug "#{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
+          LogFile.debug "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
+          LogFile.debug "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
+          @failures.push "IKSNR: #{meta_info.iksnr} FI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
+          return nil
+        end
       elsif type == :pi
         begin
           if text_info && text_info.respond_to?(:descriptions)
@@ -1295,6 +1303,7 @@ module ODDB
           LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
           LogFile.debug "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
           LogFile.debug "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
+          @failures.push "IKSNR: #{meta_info.iksnr} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
           return nil
         end
         if unchanged && !@options[:reparse] && reg && text_info && text_info.respond_to?(:descriptions) && text_info.descriptions.keys.index(meta_info.lang)
@@ -1303,7 +1312,9 @@ module ODDB
         startTime = Time.now
         begin
           textinfo_pi = @parser.parse_patinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
-        rescue
+        rescue => err
+          LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
+          @failures.push "IKSNR: #{meta_info.iksnr} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
           textinfo_pi
         end
         time2parse = Time.now - startTime
