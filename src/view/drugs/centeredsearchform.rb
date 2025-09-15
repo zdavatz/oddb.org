@@ -164,9 +164,9 @@ module ODDB
               [0, 7, 0] => :vaccines_size,
               [0, 7, 1] => :vaccines,
               [0, 8, 0] => :fachinfo_size,
-              [0, 8, 1] => :fi_count_text,
+              [0, 8, 1] => "fachinfos",
               [0, 9, 0] => :patinfo_size,
-              [0, 9, 1] => :pi_count_text,
+              [0, 9, 1] => "patinfos",
               [0, 10, 0] => :atc_ddd_size,
               [0, 10, 1] => :ddd_count_text,
               [0, 11, 0] => :limitation_size,
@@ -221,14 +221,6 @@ module ODDB
           create_link(:sl_count_text,
             "http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm",
             :limitation_texts)
-        end
-
-        def fi_count_text(model, session)
-          nil
-        end
-
-        def pi_count_text(model, session)
-          nil
         end
 
         def create_link(text_key, href, event = nil)
