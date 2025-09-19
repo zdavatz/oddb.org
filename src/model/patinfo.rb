@@ -113,13 +113,16 @@ module ODDB
         if @change_log && @change_log.find { |x| x.diff.to_s.eql?(item.diff.to_s) }
           return
         end
-        @change_log.push(item)
       rescue
         @change_log = [item]
       end
+      already_disabled = GC.disable
+      @change_log.push(item)
       odba_store
       GC.enable unless already_disabled
+      item
     end
+
     attr_writer :change_log
     def change_log
       @change_log ||= []
