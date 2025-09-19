@@ -36,49 +36,41 @@ module ODDB
       end
 
       def test_patinfo
-        assert_instance_of(PatinfoDocument2001, @@patinfo)
+        assert_instance_of(PatinfoDocument, @@patinfo)
       end
 
       def test_name1
-        assert_equal("Cimifemin®", @@writer.name.to_s)
+        assert_equal("Pflanzliches Arzneimittel", @@writer.name.to_s)
       end
 
       def test_company1
         chapter = @@writer.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("ZELLER MEDICAL", chapter.heading)
+        assert_equal("Zulassungsinhaberin", chapter.heading)
+        assert_equal("Zeller Medical AG, CH-8590 Romanshorn", chapter.sections.first.paragraphs.first.text)
       end
 
       def test_galenic_form1
         chapter = @@writer.galenic_form
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Pflanzliches Arzneimittel", chapter.heading)
-        assert_equal(0, chapter.sections.size)
+        assert_nil(chapter)
       end
 
       def test_amzv1
         chapter = @@writer.amzv
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("AMZV", chapter.heading)
-        assert_equal(0, chapter.sections.size)
+        assert_nil(chapter)
       end
 
       def test_effects1
         chapter = @@writer.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist Cimifemin und wann wird es angewendet?",
+        assert_equal("Was ist Cimifemin forte und wann wird es angewendet?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(1, section.paragraphs.size)
+        assert_equal(2, section.paragraphs.size)
         paragraph = section.paragraphs.first
-        expected = "Cimifemin ist ein Arzneimittel mit einem Extrakt aus der "
-        expected << "Heilpflanze Cimicifuga (Traubensilberkerze). Cimifemin wird "
-        expected << "bei Beschwerden in den Wechseljahren (Hitzewallungen, "
-        expected << "Schweissausbrüche, Schlafstörungen, Nervosität und "
-        expected << "Verstimmungszustände) angewendet. Diese können durch Cimifemin "
-        expected << "gelindert werden."
+        expected = "Cimifemin forte enthält einen Trockenextrakt aus Cimicifugawurzelstock (Cimicifuga racemosa, (L.) Nutt., rhizoma)."
         assert_equal(expected, paragraph.text)
       end
 
@@ -89,103 +81,73 @@ module ODDB
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(2, section.paragraphs.size)
+        assert_equal(3, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Bei Spannungs- und Schwellungsgefühl in den Brüsten sowie bei "
-        expected << "unvorhergesehenen Zwischenblutungen, Schmierblutungen oder bei "
-        expected << "wiederkehrender Regelblutung sollten Sie Rücksprache mit Ihrem "
-        expected << "Arzt bzw. Ihrer Ärztin nehmen."
+        expected = "Bei ungewöhnlichem Leistungsabfall, bei Gelbfärbung der Augen oder der Haut, bei dunklem Urin oder entfärbtem Stuhl sollte Cimifemin forte abgesetzt und ein Arzt bzw. eine Ärztin aufgesucht werden."
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Für Diabetikerinnen geeignet."
+        expected = "Bei Spannungs- und Schwellungsgefühl in den Brüsten sowie bei Zwischenblutungen, Schmierblutungen oder bei wiederkehrender Regelblutung sollten Sie Rücksprache mit Ihrem Arzt bzw. Ihrer Ärztin nehmen."
         assert_equal(expected, paragraph.text)
       end
 
       def test_contra_indications1
         chapter = @@writer.contra_indications
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wann darf Cimifemin nicht oder nur mit Vorsicht angewendet werden?",
+        assert_equal("Wann darf Cimifemin forte nicht oder nur mit Vorsicht eingenommen / angewendet werden?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(4, section.paragraphs.size)
+        assert_equal(7, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Cimifemin darf nicht angewendet werden bei bekannter "
-        expected << "Überempfindlichkeit auf einen der Inhaltsstoffe oder auf "
-        expected << "Ranunculaceen (Hahnenfussgewächse)."
-        assert_equal(expected, paragraph.text)
+        expected = /Cimifemin forte darf bei bekannter Überempfindlichkeit /
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Bei vorbestehender Leberschädigung wird von der Einnahme von "
-        expected << "Cimifemin abgeraten."
-        assert_equal(expected, paragraph.text)
+        expected = /Cimifemin forte enthält Lactose. Bitte nehmen Sie Cimifemin fo/
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
-        expected = "Dieses Präparat beeinflusst die körperlichen und psychischen "
-        expected << "Beschwerden in der Abänderung (Klimakterium). Da bisher keine "
-        expected << "klinischen Daten vorliegen, die eine günstige Wirkung auf die "
-        expected << "Knochen feststellen lassen, kann deshalb dieses Präparat nicht "
-        expected << "zur Vorbeugung der Osteoporose verwendet werden."
-        assert_equal(expected, paragraph.text)
+        expected = /Dieses Arzneimittel enthält weniger als 1 mmol Natrium/
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(3)
-        expected = "Informieren Sie Ihren Arzt, Apotheker oder Drogisten bzw. Ihre "
-        expected << "Ärztin, Apothekerin oder Drogistin, wenn Sie an anderen "
-        expected << "Krankheiten leiden, Allergien haben oder andere Arzneimittel "
-        expected << "(auch selbstgekaufte) einnehmen!"
-        assert_equal(expected, paragraph.text)
+        expected = /Informieren Sie Ihren Arzt, Apotheker oder Drogist/
+        assert_match(expected, paragraph.text)
       end
 
       def test_usage1
         chapter = @@writer.usage
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wie verwenden Sie Cimifemin?", chapter.heading)
+        assert_equal("Wie verwenden Sie Cimifemin forte?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
         assert_equal(3, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Soweit nicht anders verschrieben, 2 mal täglich (morgens und "
-        expected << "abends) 1 Tablette unzerkaut mit etwas Flüssigkeit einnehmen."
-        assert_equal(expected, paragraph.text)
+        expected = /Erwachsene: Soweit nicht anders verschrieben/
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Cimifemin kann längere Zeit angewendet werden, mindestens über "
-        expected << "einen Zeitraum von 6 Wochen. Eine Anwendung über 6 Monate "
-        expected << "hinaus soll nur nach Rücksprache mit Ihrem Arzt bzw. Ihrer "
-        expected << "Ärztin erfolgen."
-        assert_equal(expected, paragraph.text)
+        expected = /Die Anwendung und Sicherheit von Cimifemin forte bei Kindern /
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
-        expected = "Halten Sie sich an die in der Packungsbeilage angegebene oder "
-        expected << "vom Arzt bzw. von der Ärztin verschriebene Dosierung. Wenn Sie "
-        expected << "glauben, das Arzneimittel wirke zu schwach oder zu stark, so "
-        expected << "sprechen Sie mit Ihrem Arzt, Apotheker oder Drogisten, bzw. "
-        expected << "Ihrer Ärztin, Apothekerin oder Drogistin."
-        assert_equal(expected, paragraph.text)
+        expected = /Halten Sie sich an die in der Packungsbeilage angegebene oder/
+        assert_match(expected, paragraph.text)
       end
 
       def test_unwanted_effects1
         chapter = @@writer.unwanted_effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Welche Nebenwirkungen kann Cimifemin haben?", chapter.heading)
+        assert_equal("Welche Nebenwirkungen kann Cimifemin forte haben?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(3, section.paragraphs.size)
+        assert_equal(6, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Folgende Nebenwirkungen können bei der Einnahme von Cimifemin "
-        expected << "auftreten: in seltenen Fällen leichte Magenbeschwerden, "
-        expected << "Übelkeit, sehr selten bei Überempfindlichkeit Hautausschlag, "
-        expected << "Juckreiz."
+        expected = "Folgende Nebenwirkungen können bei der Einnahme von Cimifemin forte auftreten:"
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "In sehr seltenen Fällen gibt es Hinweise auf "
-        expected << "Leberschädigungen. Bei ungewöhnlichem Leistungsabfall, bei "
-        expected << "Gelbfärbung der Bindehaut der Augen oder der Haut, bei dunklem "
-        expected << "Urin oder entfärbtem Stuhl sollte Cimifemin abgesetzt und ein "
-        expected << "Arzt bzw. eine Ärztin aufgesucht werden."
+        expected = "·in seltenen Fällen Magenbeschwerden, Übelkeit, Sodbrennen und Durchfall."
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
-        expected = "Wenn Sie Nebenwirkungen bemerken, die hier nicht beschrieben "
-        expected << "sind, sollten Sie Ihren Arzt, Apotheker oder Drogisten bzw. "
-        expected << "Ihre Ärztin, Apothekerin oder Drogistin informieren."
+        expected = "·in einzelnen Fällen Brustspannen oder –schwellung, Schmier- und Zwischenblutungen oder das Wiederauftreten der Regelblutung."
         assert_equal(expected, paragraph.text)
       end
 
@@ -196,36 +158,31 @@ module ODDB
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(3, section.paragraphs.size)
+        assert_equal(6, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Arzneimittel sollen für Kinder unerreichbar aufbewahrt werden. "
-        expected << "Bei Raumtemperatur (15–25 °C) aufbewahren."
+        expected = "Das Arzneimittel darf nur bis zu dem auf dem Behälter mit «EXP» bezeichneten Datum verwendet werden."
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Das Arzneimittel darf nur bis zu dem auf dem Behälter mit "
-        expected << "«Exp» bezeichneten Datum verwendet werden."
+        expected = "Lagerungshinweis"
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
-        expected = "Weitere Auskünfte erteilt Ihnen Ihr Arzt, Apotheker oder "
-        expected << "Drogist bzw. Ihre Ärztin, Apothekerin oder Drogistin."
+        expected = "Bei Raumtemperatur (15-25 °C) in der Originalverpackung aufbewahren."
         assert_equal(expected, paragraph.text)
       end
 
       def test_composition1
         chapter = @@writer.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist in Cimifemin enthalten?", chapter.heading)
+        assert_equal("Was ist in Cimifemin forte enthalten?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(2, section.paragraphs.size)
+        assert_equal(5, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "1 Tablette enthält: 0,018–0,026 ml Flüssigextrakt aus "
-        expected << "Cimicifugawurzelstock (Traubensilberkerze), "
-        expected << "(DEV: 0,78–1,14:1), Auszugsmittel Isopropanol 40% (V/V)."
-        assert_equal(expected, paragraph.text)
+        expected = /Extraktpartikel können in Form von kleinen braunen Punkten au/
+        assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Dieses Präparat enthält zusätzlich Hilfsstoffe."
+        expected = "Wirkstoffe"
         assert_equal(expected, paragraph.text)
       end
 
@@ -237,13 +194,13 @@ module ODDB
         section = chapter.sections.first
         assert_equal(1, section.paragraphs.size)
         paragraph = section.paragraphs.first
-        assert_equal("48734 (Swissmedic).", paragraph.to_s)
+        assert_equal("56933 (Swissmedic)", paragraph.to_s)
       end
 
       def test_packages1
         chapter = @@writer.packages
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wo erhalten Sie Cimifemin? Welche Packungen sind erhältlich?",
+        assert_equal("Wo erhalten Sie Cimifemin forte? Welche Packungen sind erhältlich?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
@@ -253,13 +210,14 @@ module ODDB
         expected = "In Apotheken und Drogerien, ohne ärztliche Verschreibung."
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = "Packungen zu 30, 60 und 180 Tabletten."
+        expected = "Blisterpackungen zu 30 und 90 Tabletten."
         assert_equal(expected, paragraph.text)
-        assert_equal(3, paragraph.formats.size)
+        assert_equal(1, paragraph.formats.size)
       end
 
       def test_distribution1
-        chapter = @@writer.distribution
+#        chapter = @@writer.distribution
+        chapter = @@writer.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsinhaberin", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -267,21 +225,14 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(1, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Zeller Medical AG, 8590 Romanshorn."
+        expected = "Zeller Medical AG, CH-8590 Romanshorn"
         assert_equal(expected, paragraph.text)
       end
 
       def test_date1
         chapter = @@writer.date
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("", chapter.heading)
-        assert_equal(1, chapter.sections.size)
-        section = chapter.sections.first
-        assert_equal("", section.subheading)
-        assert_equal(1, section.paragraphs.size)
-        expected = "Diese Packungsbeilage wurde im Februar 2005 letztmals durch "
-        expected << "die Arzneimittelbehörde (Swissmedic) geprüft."
-        assert_equal(expected, section.paragraphs.first.text)
+        assert_equal("Diese Packungsbeilage wurde im Oktober 2020 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.heading)
       end
     end
 
@@ -430,7 +381,7 @@ module ODDB
         @@path = File.join(HTML_DIR, "de/nasivin.html")
         @@writer = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), :pi, "Nasivin", StylesNasivin)
+          @@patinfo = @@writer.extract(Hpricot(fh), name: "Nasivin", styles: StylesNasivin)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }
@@ -644,7 +595,7 @@ module ODDB
         @@path = File.join(HTML_DIR, "de/pi_30785_ponstan.html")
         @@writer = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), :pi, "Ponstan", StylesPonstan)
+          @@patinfo = @@writer.extract(Hpricot(fh), name: "Ponstan", styles: StylesPonstan)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }

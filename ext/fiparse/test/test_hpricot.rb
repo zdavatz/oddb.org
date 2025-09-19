@@ -39,7 +39,7 @@ module ODDB
         HTML
         writer = FachinfoHpricot.new
         writer.format = :swissmedicinfo
-        fachinfo = writer.extract(Hpricot(html), :pi, "CoAprovel®")
+        fachinfo = writer.extract(Hpricot(html), name: "CoAprovel®")
         assert_equal("Galenische Form und Wirkstoffmenge pro Einheit", fachinfo.galenic_form.heading)
         assert_equal("CoAprovel 150/12.5: Filmtabletten zu 150 mg Irbesartan und 12.5 mg Hydrochlorothiazid.",
           fachinfo.galenic_form.paragraphs.first.text)

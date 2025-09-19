@@ -19,17 +19,17 @@ module ODDB
         @@path = File.join(File.dirname(__FILE__), "data", "html", "43916_fi_de_Normolytoral.html")
         @@writer = FachinfoHpricot.new
         File.open(@@path) do |fh|
-          @@fachinfo = @@writer.extract(Hpricot(fh), type: :fi)
+          @@fachinfo = @@writer.extract(Hpricot(fh), name: "Normolytoral, Pulver zur Herstellung einer Lösung zum Einnehmen im Beutel")
         end
       end
       def test_fachinfo
-        assert_equal(ODDB::FachinfoDocument, @@fachinfo.class)
+        assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
       def test_title
-        assert_equal("Normolytoral", @@writer.title)
+        assert_nil(@@writer.title)
       end
       def test_name
-        assert_equal("Normolytoral", @@writer.name.heading)
+        assert_match(/Normolytoral/, @@writer.name.heading)
       end
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|

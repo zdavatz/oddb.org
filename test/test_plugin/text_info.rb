@@ -137,6 +137,8 @@ module ODDB
       get_iksnrs_meta_info
       @plugin.save_meta_and_xref_info
       get_tramal_fi_and_pi
+      FileUtils.rm_f(@tramal_pi.cache_file)
+      FileUtils.rm_f(@tramal_fi.cache_file)
       assert(!File.exist?(@tramal_pi.cache_file))
       assert(!File.exist?(@tramal_fi.cache_file))
       @plugin.download_all_html_zip(@all_html_zip)

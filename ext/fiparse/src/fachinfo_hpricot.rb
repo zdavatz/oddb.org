@@ -82,8 +82,8 @@ module ODDB
           fi.registration_owner = @registration_owner
           fi.driving_ability = @driving_ability
           fi.preclinic = @preclinic
-          if m = /ATC[ -]Code\s*:\s([A-Z][0-9 A-Z]{0,9})\s/.match(@effects.to_s)
-            fi.atc_code = m[1].gsub(/\s/, "")
+          if m = /(Code ATC|ATC[ -]Code)\s*[\b:\\n]*\s*([A-Z][0-9 A-Z]{0,9})/m.match(@effects.to_s)
+           fi.atc_code = m[2].gsub("\s", "")
           end
           fi
         else

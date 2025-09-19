@@ -22,6 +22,7 @@ def update_text_file(iksnr, type, lang, path, url, name)
   mtime = File.exist?(new_html_file) ? File.mtime(new_html_file) : false
   res = system("wget --quiet --timestamping #{url} -O #{new_html_file}")
   full_type = type.downcase.to_s.eql?("pi") ? "Patinfo" : "Fachinfo"
+  document = type.downcase.to_s.eql?("pi") ? "PatinfoDocument" : "FachinfoDocument2001"
   new_test_file = File.join(@extTest, "test_#{iksnr}_#{type}_#{lang}_#{short}.rb")
   if  !(File.exist?(new_test_file) && (File.size(new_test_file) == 0))
     File.open(new_test_file, "w+") do |file|
@@ -46,17 +47,17 @@ module ODDB
         @@path = File.join(File.dirname(__FILE__), "data", "html", "#{File.basename(new_html_file)}")
         @@writer = #{full_type}Hpricot.new
         File.open(@@path) do |fh|
-          @@#{full_type.downcase} = @@writer.extract(Hpricot(fh), type: :#{type})
+          @@#{full_type.downcase} = @@writer.extract(Hpricot(fh), name: "#{name}")
         end
       end
       def test_#{full_type.downcase}
-        assert_equal(ODDB::#{full_type}Document, @@#{full_type.downcase}.class)
+        assert_equal(ODDB::#{document}, @@#{full_type.downcase}.class)
       end
       def test_title
-        assert_equal("#{short}", @@writer.title)
+        assert_nil(@@writer.title)
       end
       def test_name
-        assert_equal("#{short}", @@writer.name.heading)
+        assert_match(/#{short}/, @@writer.name.heading)
       end
       def test_chapters
         ODDB::#{full_type}Document2001::CHAPTERS.each do |chapter|

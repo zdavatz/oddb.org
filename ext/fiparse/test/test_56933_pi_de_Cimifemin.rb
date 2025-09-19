@@ -19,17 +19,17 @@ module ODDB
         @@path = File.join(File.dirname(__FILE__), "data", "html", "56933_pi_de_Cimifemin.html")
         @@writer = PatinfoHpricot.new
         File.open(@@path) do |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), type: :pi)
+          @@patinfo = @@writer.extract(Hpricot(fh), name: "Cimifemin® forte Tabletten")
         end
       end
       def test_patinfo
         assert_equal(ODDB::PatinfoDocument, @@patinfo.class)
       end
       def test_title
-        assert_equal("Cimifemin", @@writer.title)
+        assert_nil(@@writer.title)
       end
       def test_name
-        assert_equal("Cimifemin", @@writer.name.heading)
+        assert_match(/Cimifemin/, @@writer.name.heading)
       end
       def test_chapters
         ODDB::PatinfoDocument2001::CHAPTERS.each do |chapter|

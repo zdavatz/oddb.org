@@ -38,7 +38,7 @@ module ODDB
               subgroup.add_product(product)
             }
             @model = subgroups.values.sort_by { |sg| sg.migel_code }
-            @model.each { |sg| sg.products.sort_by!(&:code) } # was wrongly translated by standrb --fix!!
+            @model.each { |sg| sg.products.sort! { |a,b| a.code <=> b.code } } # was wrongly translated by standrb --fix!!
             # @model.each { |sg| sg.products.sort_by!(&:code) } # this does not work!! use @model.each { |sg| sg.products.sort! { |a,b| a.code <=> b.code } }
           end
         end
