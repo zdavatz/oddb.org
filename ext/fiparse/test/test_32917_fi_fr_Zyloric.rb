@@ -17,24 +17,19 @@ module ODDB
       def setup
         return if defined?(@@path) && defined?(@@fachinfo) && @@fachinfo
         @@path = File.join(File.dirname(__FILE__), "data", "html", "32917_fi_fr_Zyloric.html")
-        @@writer = FachinfoHpricot.new
-        File.open(@@path) do |fh|
-          @@fachinfo = @@writer.extract(Hpricot(fh), name: "Zyloric®")
-        end
+        @parser = ODDB::FiParse
+        @@fachinfo =  @parser.parse_fachinfo_html(File.read(@@path), lang: "fr")
       end
       def test_fachinfo
         assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
-      def test_title
-        assert_nil(@@writer.title)
-      end
       def test_name
-        assert_match(/Zyloric/, @@writer.name.heading)
+        assert_match(/Zyloric/, @@fachinfo.name.heading)
       end
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|
           begin
-            res = eval("@@writer.#{chapter}")
+            res = eval("@@fachinfo.#{chapter}")
           rescue => error
             puts "For 32917_fi_fr_Zyloric.html chapter #{chapter} is not defined"
           end

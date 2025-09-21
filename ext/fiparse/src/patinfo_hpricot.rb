@@ -56,7 +56,8 @@ module ODDB
             @date ||= chapter
           end
         when "9010" # swissmedicinfo
-          @name = chapter
+          # 56933_pi_fr_Cimifemine.html  would assign Cimifemine® forte comprimés
+          @name = chapter unless /^$|AMZV|^\w+ Arzneimittel|^Médicament|^Wann |^Was /.match(chapter.heading)
         else
           raise "Unknown chapter-code #{code}, while parsing #{@name}"
         end

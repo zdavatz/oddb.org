@@ -22,6 +22,7 @@ def update_text_file(iksnr, type, lang, path, url, name)
   mtime = File.exist?(new_html_file) ? File.mtime(new_html_file) : false
   res = system("wget --quiet --timestamping #{url} -O #{new_html_file}")
   full_type = type.downcase.to_s.eql?("pi") ? "Patinfo" : "Fachinfo"
+  pi_or_fi = "@@#{full_type.downcase}"
   document = type.downcase.to_s.eql?("pi") ? "PatinfoDocument" : "FachinfoDocument2001"
   new_test_file = File.join(@extTest, "test_#{iksnr}_#{type}_#{lang}_#{short}.rb")
   if  !(File.exist?(new_test_file) && (File.size(new_test_file) == 0))
@@ -43,26 +44,21 @@ module ODDB
   module FiParse
     class Test#{full_type}#{short}#{lang.capitalize} < Minitest::Test
       def setup
-        return if defined?(@@path) && defined?(@@#{full_type.downcase}) && @@#{full_type.downcase}
+        return if defined?(@@path) && defined?(#{pi_or_fi}) && #{pi_or_fi}
         @@path = File.join(File.dirname(__FILE__), "data", "html", "#{File.basename(new_html_file)}")
-        @@writer = #{full_type}Hpricot.new
-        File.open(@@path) do |fh|
-          @@#{full_type.downcase} = @@writer.extract(Hpricot(fh), name: "#{name}")
-        end
+        @parser = ODDB::FiParse
+        #{pi_or_fi} =  @parser.parse_#{full_type.downcase}_html(File.read(@@path), lang: "#{lang.downcase}")
       end
       def test_#{full_type.downcase}
-        assert_equal(ODDB::#{document}, @@#{full_type.downcase}.class)
-      end
-      def test_title
-        assert_nil(@@writer.title)
+        assert_equal(ODDB::#{document}, #{pi_or_fi}.class)
       end
       def test_name
-        assert_match(/#{short}/, @@writer.name.heading)
+        assert_match(/#{short}/, #{pi_or_fi}.name.heading)
       end
       def test_chapters
         ODDB::#{full_type}Document2001::CHAPTERS.each do |chapter|
           begin
-            res = eval("@@writer.\#{chapter}")
+            res = eval("#{pi_or_fi}.\#{chapter}")
           rescue => error
             puts "For #{File.basename(new_html_file)} chapter \#{chapter} is not defined"
           end
@@ -130,6 +126,10 @@ searches = [
     [ /Normolytoral/i, "fi", "de",  "de/fi_Normolytoral.html"]
   ]
 
+%(bin/admin all names
+File.open("all_patinfos_name.txt", "w+") {|f| f.puts patinfos.values.collect{|x| x.name.dup.force_encoding('UTF-8')[0..80].split.first}.join("\n")}
+
+)
 def one_manual(x, path)
   fullPath = File.join(@extTest, "data", "html", path)
   puts "#{fullPath} #{File.exist?(fullPath)}"
@@ -141,7 +141,6 @@ def update_rest
   @searches.each do |search|
     meta = @infos.values.flatten.find{|x| search[0].match(x.title) && x.type.eql?(search[1]) && x.lang.eql?(search[2])}
     if meta
-      pp meta
       one_manual(meta, search[3])
     else
       puts "Nothing found for #{search}"

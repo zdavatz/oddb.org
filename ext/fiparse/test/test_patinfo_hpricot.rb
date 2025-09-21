@@ -15,7 +15,7 @@ begin require "debug"; rescue LoadError; end
 require "stub/odba"
 require "minitest/autorun"
 require "flexmock/minitest"
-require "patinfo_hpricot"
+require "fiparse"
 require "plugin/text_info"
 require "util/workdir"
 $: << File.expand_path("../../../test", File.dirname(__FILE__))
@@ -27,41 +27,38 @@ module ODDB
     class TestPatinfoHpricotCimifeminDe < Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
-
         @@path = File.join(HTML_DIR, "de/cimifemin.html")
-        @@writer = PatinfoHpricot.new
-        File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh))
-        }
+        @parser = ODDB::FiParse
+        @@patinfo =  @parser.parse_patinfo_html(File.read(@@path), lang: "fr")
       end
 
       def test_patinfo
         assert_instance_of(PatinfoDocument, @@patinfo)
+        assert(!@@patinfo.instance_of?(PatinfoDocument2001))
       end
 
       def test_name1
-        assert_equal("Pflanzliches Arzneimittel", @@writer.name.to_s)
+        assert_equal("Cimifemin® forte Tabletten", @@patinfo.name.to_s)
       end
 
       def test_company1
-        chapter = @@writer.company
+        chapter = @@patinfo.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsinhaberin", chapter.heading)
         assert_equal("Zeller Medical AG, CH-8590 Romanshorn", chapter.sections.first.paragraphs.first.text)
       end
 
       def test_galenic_form1
-        chapter = @@writer.galenic_form
+        chapter = @@patinfo.galenic_form
         assert_nil(chapter)
       end
 
       def test_amzv1
-        chapter = @@writer.amzv
-        assert_nil(chapter)
+        assert(!@@patinfo.respond_to?(:amzv)) # as it is a PatinfoDocument and not PatinfoDocument2001
       end
 
       def test_effects1
-        chapter = @@writer.effects
+        chapter = @@patinfo.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist Cimifemin forte und wann wird es angewendet?",
           chapter.heading)
@@ -75,7 +72,7 @@ module ODDB
       end
 
       def test_amendments1
-        chapter = @@writer.amendments
+        chapter = @@patinfo.amendments
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was sollte dazu beachtet werden?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -91,7 +88,7 @@ module ODDB
       end
 
       def test_contra_indications1
-        chapter = @@writer.contra_indications
+        chapter = @@patinfo.contra_indications
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wann darf Cimifemin forte nicht oder nur mit Vorsicht eingenommen / angewendet werden?",
           chapter.heading)
@@ -114,7 +111,7 @@ module ODDB
       end
 
       def test_usage1
-        chapter = @@writer.usage
+        chapter = @@patinfo.usage
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wie verwenden Sie Cimifemin forte?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -133,7 +130,7 @@ module ODDB
       end
 
       def test_unwanted_effects1
-        chapter = @@writer.unwanted_effects
+        chapter = @@patinfo.unwanted_effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Welche Nebenwirkungen kann Cimifemin forte haben?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -152,7 +149,7 @@ module ODDB
       end
 
       def test_general_advice1
-        chapter = @@writer.general_advice
+        chapter = @@patinfo.general_advice
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist ferner zu beachten?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -171,7 +168,7 @@ module ODDB
       end
 
       def test_composition1
-        chapter = @@writer.composition
+        chapter = @@patinfo.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist in Cimifemin forte enthalten?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -187,7 +184,7 @@ module ODDB
       end
 
       def test_iksnrs1
-        chapter = @@writer.iksnrs
+        chapter = @@patinfo.iksnrs
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsnummer", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -198,7 +195,7 @@ module ODDB
       end
 
       def test_packages1
-        chapter = @@writer.packages
+        chapter = @@patinfo.packages
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wo erhalten Sie Cimifemin forte? Welche Packungen sind erhältlich?",
           chapter.heading)
@@ -216,8 +213,8 @@ module ODDB
       end
 
       def test_distribution1
-#        chapter = @@writer.distribution
-        chapter = @@writer.company
+#        chapter = @@patinfo.distribution
+        chapter = @@patinfo.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsinhaberin", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -230,7 +227,7 @@ module ODDB
       end
 
       def test_date1
-        chapter = @@writer.date
+        chapter = @@patinfo.date
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Diese Packungsbeilage wurde im Oktober 2020 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.heading)
       end
@@ -241,31 +238,31 @@ module ODDB
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "fr/cimifemin.html")
-        @@writer = PatinfoHpricot.new
+        @@patinfo = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@writer.extract(Hpricot(fh))
+          @@patinfo.extract(Hpricot(fh))
         }
       end
 
       def test_name2
-        assert_equal("Cimifemine®", @@writer.name.to_s)
+        assert_equal("Cimifemine®", @@patinfo.name.to_s)
       end
 
       def test_company2
-        chapter = @@writer.company
+        chapter = @@patinfo.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("ZELLER MEDICAL", chapter.heading)
       end
 
       def test_amzv2
-        chapter = @@writer.amzv
+        chapter = @@patinfo.amzv
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("OEMéd", chapter.heading)
         assert_equal(0, chapter.sections.size)
       end
 
       def test_composition2
-        chapter = @@writer.composition
+        chapter = @@patinfo.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Que contient Cimifemine?", chapter.heading)
         assert_equal(1, chapter.sections.size)
@@ -288,18 +285,18 @@ module ODDB
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/inderal.html")
-        @@writer = PatinfoHpricot.new
+        @@patinfo = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh))
+          @@patinfo = @@patinfo.extract(Hpricot(fh))
         }
       end
 
       def test_galenic_form3
-        assert_nil(@@writer.galenic_form)
+        assert_nil(@@patinfo.galenic_form)
       end
 
       def test_contra_indications3
-        chapter = @@writer.contra_indications
+        chapter = @@patinfo.contra_indications
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wann darf Inderal nicht angewendet werden?",
           chapter.heading)
@@ -310,7 +307,7 @@ module ODDB
       end
 
       def test_precautions3
-        chapter = @@writer.precautions
+        chapter = @@patinfo.precautions
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wann ist bei der Einnahme von Inderal Vorsicht geboten?",
           chapter.heading)
@@ -321,7 +318,7 @@ module ODDB
       end
 
       def test_pregnancy3
-        chapter = @@writer.pregnancy
+        chapter = @@patinfo.pregnancy
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Darf Inderal während einer Schwangerschaft oder in der Stillzeit eingenommen werden?",
           chapter.heading)
@@ -335,14 +332,14 @@ module ODDB
     class TestPatinfoHpricotPonstanDe < Minitest::Test
       def setup
         @@path = File.join(HTML_DIR, "de/ponstan.html")
-        @@writer = PatinfoHpricot.new
+        @@patinfo = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh))
+          @@patinfo = @@patinfo.extract(Hpricot(fh))
         }
       end
 
       def test_composition4
-        chapter = @@writer.composition
+        chapter = @@patinfo.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist in Ponstan enthalten?", chapter.heading)
         assert_equal(5, chapter.sections.size)
@@ -379,9 +376,9 @@ module ODDB
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/nasivin.html")
-        @@writer = PatinfoHpricot.new
+        @@patinfo = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), name: "Nasivin", styles: StylesNasivin)
+          @@patinfo = @@patinfo.extract(Hpricot(fh), name: "Nasivin", styles: StylesNasivin)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }
@@ -389,16 +386,16 @@ module ODDB
 
       def test_composition5
         #          assert_nil(/- :italic/.match(@@fachinfo.to_yaml))
-        chapter = @@writer.effects
+        chapter = @@patinfo.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist Nasivin und wann wird es angewendet?", chapter.heading)
         section = chapter.sections.first
         assert_instance_of(ODDB::Text::Section, section)
         assert_equal("", section.subheading)
-        chapter = @@writer.composition
+        chapter = @@patinfo.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist in Nasivin enthalten?", chapter.heading)
-        chapter = @@writer.packages
+        chapter = @@patinfo.packages
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?", chapter.heading)
         section = chapter.sections.first
@@ -406,7 +403,7 @@ module ODDB
         assert_instance_of(ODDB::Text::Paragraph, paragraph)
         assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung:",
           paragraph.text.lines.first.chomp)
-        chapter = @@writer.date
+        chapter = @@patinfo.date
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Diese Packungsbeilage wurde im Nasivin März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.to_s)
       end
@@ -593,9 +590,9 @@ module ODDB
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/pi_30785_ponstan.html")
-        @@writer = PatinfoHpricot.new
+        @@patinfo = PatinfoHpricot.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), name: "Ponstan", styles: StylesPonstan)
+          @@patinfo = @@patinfo.extract(Hpricot(fh), name: "Ponstan", styles: StylesPonstan)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }
