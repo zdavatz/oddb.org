@@ -53,9 +53,6 @@ module ODDB
 
     def test_get_aips_download_xml
       one_MB = 1024*1024
-      @plugin.get_aips_download_xml
-      assert(File.exist?(@plugin.aips_xml))
-      assert(File.size(@plugin.aips_xml) > one_MB)
       @aips_xml = File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml")
       assert(File.exist?(@aips_xml))
       old_size = File.size(@aips_xml)
@@ -80,10 +77,37 @@ module ODDB
     def test_create_missing_registrations
       get_iksnrs_meta_info
       res = @plugin.create_missing_registrations
-      assert_equal(18, res.size)
+      assert_equal(21, res.size)
       firstMeta = res.values.flatten.first
       assert_equal(["40858", "40859", "43787", "43788"], firstMeta.authNrs)
       assert_equal("40858", firstMeta.iksnr)
+      lastMeta = res.values.flatten.last
+      assert_equal(["61467"], lastMeta.authNrs)
+      assert_equal("61467", lastMeta.iksnr)
+      expected = [
+        "40858_fi_de",
+        "40859_fi_de",
+        "43787_fi_de",
+        "43788_fi_de",
+        "40858_fi_fr",
+        "40859_fi_fr",
+        "43787_fi_fr",
+        "43788_fi_fr",
+        "40858_fi_it",
+        "40859_fi_it",
+        "43787_fi_it",
+        "43788_fi_it",
+        "43788_pi_de",
+        "43788_pi_fr",
+        "43788_pi_it",
+        "32917_fi_de",
+        "32917_fi_fr",
+        "32917_fi_it",
+        "61467_pi_de",
+        "61467_pi_fr",
+        "61467_pi_it"
+        ].sort
+      assert_equal(expected, res.values.flatten.collect{|x| "#{x.iksnr}_#{x.type}_#{x.lang}" }.sort)
     end
 
     def get_tramal_fi_and_pi
@@ -169,21 +193,6 @@ module ODDB
       super # to clean up FlexMock
     end
 
-    def prepare_plugin(remove_details = true, xml_file = "61467_fi_de.xml")
-      @plugin = TextInfoPlugin.new @app
-      FileUtils.makedirs(@details_dir)
-      xml_full = File.join(ODDB::TEST_DATA_DIR, "xml", xml_file)
-      FileUtils.rm_rf(@plugin.details_dir, verbose: false) if remove_details
-      @plugin.parser = ::ODDB::FiParse
-      @aips_download = xml_full
-      @plugin.get_aips_download_xml(@aips_download)
-      @latest_from = File.join(ODDB::TEST_DATA_DIR, "/xlsx/Packungen-61467.xlsx")
-      latest_to = File.join(ODDB::WORK_DIR, "xls/Packungen-latest.xlsx")
-      FileUtils.mkdir_p(File.dirname(latest_to))
-      FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
-      @options[:xml_file] = xml_full
-    end
-
     def setup
       ODDB::TestHelpers.vcr_setup
       require "ext/fiparse/src/fiparse"
@@ -197,6 +206,98 @@ module ODDB
       @app.should_receive(:company_by_name)
     end
 
+    def prepare_plugin(remove_details: true,
+                       parser: ::ODDB::FiParse,
+                       xml_file: File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml"))
+      @plugin = TextInfoPlugin.new @app
+      FileUtils.makedirs(@details_dir)
+      FileUtils.rm_rf(@plugin.details_dir, verbose: false) if remove_details
+      @plugin.parser = ::ODDB::FiParse
+      assert(File.exist?(xml_file))
+      @plugin.get_aips_download_xml(xml_file)
+      @latest_from = File.join(ODDB::TEST_DATA_DIR, "/xlsx/Packungen-61467.xlsx")
+      latest_to = File.join(ODDB::WORK_DIR, "xls/Packungen-latest.xlsx")
+      FileUtils.mkdir_p(File.dirname(latest_to))
+      FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
+      @options[:xml_file] = xml_file
+    end
+
+    def test_47909_pi
+      skip("We should test when the barcode override comes into effect, eg. 47909 Solmucol 400, 600 Granulat")
+    end
+
+    def test_38471_pi_change_log
+      # For this test I search for a small PI which is neither a homeopathic nor naturlheilmittel
+      # Found Glandosane
+      @options = {target: :pi,
+                  download: false,
+                  newest: false, # with true this takes a lot of time
+                  xml_file: @aips_download}
+      meta_info = SwissmedicMetaInfo.new
+      meta_info.iksnr = "38471"
+      meta_info.authNrs = ["38471"]
+      meta_info.type = "pi"
+      meta_info.lang = "de"
+      meta_info.title = "Glandosane"
+      meta_info.informationUpdate="2025-06-13T00:00:00"
+      res = Date.parse(meta_info.informationUpdate)
+      # 2025-06-13
+      @test_change = /CHANGED FOR MINITEST......../
+      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/Glandosane_.html")
+      assert(File.exist?(meta_info.download_url))
+      prepare_plugin(remove_details: false)
+      @plugin.set_html_and_cache_name(meta_info)
+      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
+      @plugin.iksnrs_meta_info[ key ] = [meta_info]
+      FileUtils.makedirs(File.dirname(meta_info.html_file), verbose: false)
+      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
+      FileUtils.cp(meta_info.download_url, meta_info.html_file, verbose: false, preserve: true)
+      assert(File.exist?(meta_info.html_file))
+      content = File.read(meta_info.cache_file)
+      changed_content = content.gsub(/Spirig HealthCare AG/, "Changed Spirig HealthCare AG").
+      gsub("Glandosane ist ", "Glandosane ist geändert worden")
+      changed_content2 = content.gsub(/Spirig HealthCare AG/, "CHANGED SPIRIG HEALTHCARE AG").
+      gsub("Glandosane ist ", "GLANDOSANE IST GEÄNDERT WORDEN")
+      res = @plugin.parse_textinfo(meta_info, 1)
+      assert_equal(["38471"], @app.registrations.keys)
+      assert_equal(["01"], @app.registration("38471").sequences.keys)
+      assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
+      assert_equal(ODDB::Package, pack.class)
+      assert_equal(Date.today, pack.revision.to_date)
+      assert_equal(ODDB::Patinfo, pack.patinfo.class)
+      assert_match(/Spirig HealthCare AG/, pack.patinfo[:de].company.to_s)
+      date = Date.parse pack.patinfo[:de].revision.to_s
+      assert_equal(Date.today, date)
+      assert_match(/geprüft/,  pack.patinfo[:de].date.to_s)
+      assert_match(/Juli 2007/,  pack.patinfo[:de].date.to_s)
+      assert_equal(0, pack.patinfo[:de].change_log.size)
+
+      # Now we inject changes and test whether we will find them
+      File.open(meta_info.cache_file, "w+") { |f| f.write changed_content}
+      @plugin.iksnrs_meta_info[ key ] = [meta_info]
+      res = @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first;0
+      pack = seq.packages.values.first;0
+      assert_equal(1, pack.patinfo[:de].change_log.size)
+      assert_equal(Date.today, pack.patinfo[:de].change_log.first.time)
+      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
+
+      # Now we inject more changes and test whether we will find them
+      File.open(meta_info.cache_file, "w+") { |f| f.write changed_content2}
+      @plugin.iksnrs_meta_info[ key ] = [meta_info]
+      res = @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first;0
+      pack = seq.packages.values.first;0
+      assert_equal(2, pack.patinfo[:de].change_log.size)
+      assert_equal(Date.today, pack.patinfo[:de].change_log.last.time)
+      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/GLANDOSANE IST GEÄNDERT WORDEN/, pack.patinfo[:de].change_log.last.diff.to_s)
+      assert_match(/CHANGED SPIRIG HEALTHCARE AG/, pack.patinfo[:de].change_log.last.diff.to_s)
+    end
 
     def check_whether_changed(should_change = false)
       pi = @app.registrations.values.first.sequences.values.first.patinfo
@@ -224,104 +325,6 @@ module ODDB
         assert_nil(pi.descriptions["de"].contra_indications.to_s.match(@test_change))
       end
     end
-
-    def test_61467_pi_fi
-      @options = {target: :both,
-                  download: false,
-                  newest: false, # with true this takes a lot of time
-                  xml_file: @aips_download}
-      @test_change = /CHANGED FOR MINITEST......../
-      @test_actikierall = /Was ist Actikerall/
-      skip("Not yet ready for")
-      prepare_plugin
-      pi_de_html_src = File.join(ODDB::TEST_DATA_DIR, "html", "Actikerall_.html")
-      assert(File.exist?(pi_de_html_src))
-      pi_de_html_dst = File.join(ODDB::WORK_DIR, "html", "pi", "de", "Actikerall_.html")
-      FileUtils.makedirs(File.dirname(pi_de_html_dst), verbose: false)
-      FileUtils.cp(pi_de_html_src, pi_de_html_dst, verbose: false, preserve: true)
-      @app.create_registration("61467")
-      @plugin.import_swissmedicinfo(@options)
-
-      assert_equal(["61467"], @app.registrations.keys)
-      assert_equal(["01"], @app.registration("61467").sequences.keys)
-      assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
-      assert_equal(ODDB::Patinfo, @app.registrations.values.first.sequences.values.first.patinfo.class)
-      check_whether_changed(false)
-      assert_match("61467", @plugin.updated_fis.join(";"))
-      assert_match("61467", @plugin.updated_pis.join(";"))
-      puts("\n\n\nRerun import and assert that nothing has changed")
-      prepare_plugin
-      @plugin.import_swissmedicinfo(@options)
-      check_whether_changed(false)
-
-      puts("\n\n\nRerun import and assert that PI/FI haved changed")
-      prepare_plugin(false, "61467_changed.xml")
-      @plugin.import_swissmedicinfo(@options)
-      check_whether_changed(true)
-      @app.registrations.values.first.sequences.values.first.patinfo
-      @app.registrations.values.first.fachinfo
-      assert_match("61467", @plugin.updated_fis.join(";")) if @options[:target].eql?(:both)
-      assert_match("61467", @plugin.updated_pis.join(";"))
-    end
-
-    def test_ignore_missing_iksnr
-      skip("Not yet ready for")
-      not_found = "99999"
-      @options = {target: :pi,
-                  download: false,
-                  newest: false, # with true this takes a lot of time
-                  reparse: true,
-                  iksnrs: [not_found],
-                  xml_file: @aips_download}
-      prepare_plugin
-      @plugin.import_swissmedicinfo(@options)
-      assert_nil(/#{not_found}/.match(@plugin.report))
-    end
-
-    def test_Rubrace
-      skip("Not yet ready for")
-      rubrace_iksnr = "67402"
-      @app.create_registration(rubrace_iksnr)
-      @app.registration(rubrace_iksnr).create_sequence("01")
-      @app.registration(rubrace_iksnr).create_sequence("02")
-      @app.registration(rubrace_iksnr).create_sequence("03")
-      @app.registration(rubrace_iksnr).sequence("01").create_package("001")
-      @app.registration(rubrace_iksnr).sequence("02").create_package("002")
-      @app.registration(rubrace_iksnr).sequence("03").create_package("003")
-      @app.registration(rubrace_iksnr).sequence("01").create_package("004")
-      @app.registration(rubrace_iksnr).sequence("02").create_package("005")
-      @app.registration(rubrace_iksnr).sequence("03").create_package("006")
-      @app.registration(rubrace_iksnr).packages.each do |package|
-        package.patinfo = Patinfo.new if package.ikscd.eql?("001")
-        #        puts "#{package.ikscd} odba_id #{package.odba_id} has #{package.patinfo.class}"
-      end
-      assert_equal(6, @app.registration(rubrace_iksnr).packages.size)
-      assert_equal(false, @app.registration(rubrace_iksnr).packages.first.patinfo.description(:de).respond_to?(:add_change_log_item))
-      assert_nil(@app.registration(rubrace_iksnr).packages.last.patinfo)
-
-      @options = {target: :both,
-                  download: false,
-                  newest: false, # this takes a lot of time
-                  xml_file: @aips_download}
-      prepare_plugin(false, "Rubrace.xml")
-      @plugin.import_swissmedicinfo(@options)
-      assert_match(rubrace_iksnr, @plugin.updated_fis.join(";")) if @options[:target].eql?(:both)
-      assert_match(rubrace_iksnr, @plugin.updated_pis.join(";"))
-      assert_equal(6, @app.registration(rubrace_iksnr).packages.size)
-      patinfo_odba_id = @app.registration(rubrace_iksnr).packages.first.patinfo.odba_id
-      assert_match(/Rubraca®, Filmtabletten/, @app.registration(rubrace_iksnr).packages.first.patinfo["de"].to_s[0..70])
-      assert_equal(["01", "02", "03"], @app.registration(rubrace_iksnr).packages.collect { |x| x.seqnr }.uniq.sort)
-      assert_equal(["001", "002", "003", "004", "005", "006"], @app.registration(rubrace_iksnr).packages.collect { |x| x.ikscd }.uniq.sort)
-      @app.registration(rubrace_iksnr).packages.each do |package|
-        # puts "#{package.ikscd} expect #{patinfo_odba_id} odba_id #{package.patinfo.odba_id}"
-        assert_match(/Rubraca®, Filmtabletten/, package.patinfo["de"].to_s[0..70])
-        assert_equal(patinfo_odba_id, package.patinfo.odba_id) if package.seqnr.eql?("01")
-      end
-      assert_equal(patinfo_odba_id, @app.registration(rubrace_iksnr).sequence("01").packages.values.first.patinfo.odba_id)
-      assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence("02").packages.values.first.patinfo.odba_id)
-      assert(patinfo_odba_id != @app.registration(rubrace_iksnr).sequence("03").packages.values.first.patinfo.odba_id)
-    end
-
   end
 
   class TestTextInfoPlugin < Minitest::Test
@@ -463,7 +466,7 @@ module ODDB
 
   class TestExtractMatchedName < Minitest::Test
     Nr_FI_in_AIPS_test = 15
-    Nr_PI_in_AIPS_test = 3
+    Nr_PI_in_AIPS_test = 6
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -565,35 +568,10 @@ module ODDB
       FileUtils.makedirs(@details_dir)
     end
 
-    def test_53662_pi_de
-      skip("Not yet ready for")
-      @options[:iksnrs] = ["53662"]
-      @plugin.import_swissmedicinfo(@options)
-      assert_equal("3TC®", @plugin.iksnrs_meta_info[["53662", "fi", "de"]].first.title)
-      assert_equal("3TC®", @plugin.iksnrs_meta_info[["53663", "fi", "de"]].first.title)
-      assert_match("61467", @plugin.updated_fis.join(";"))
-    end
-
-    def test_Erbiumcitrat_de
-      skip("Not yet ready for")
-      @options[:iksnrs] = ["51704"]
-      # 132 259 -> 198
-      @plugin.import_swissmedicinfo(@options)
-      assert_equal("[169Er]Erbiumcitrat CIS bio international", @plugin.iksnrs_meta_info[["51704", "fi", "de"]].first.title)
-    end
-
     def test_Erbiumcitrat_fr
       @options[:iksnrs] = ["51704"]
       @plugin.import_swissmedicinfo(@options)
       assert_nil(@plugin.iksnrs_meta_info[["51704", "fi", "fr"]])
-    end
-
-    def test_53663_pi_de
-      skip("Not yet ready for")
-      @options[:iksnrs] = ["53662"]
-      @plugin.import_swissmedicinfo(@options)
-      assert_equal("3TC®", @plugin.iksnrs_meta_info[["53662", "fi", "de"]].first.title)
-      assert_equal("3TC®", @plugin.iksnrs_meta_info[["53663", "fi", "de"]].first.title)
     end
 
     def test_get_swissmedicinfo_changed_items
