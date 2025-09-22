@@ -52,14 +52,14 @@ module ODDB
     end
 
     def test_get_aips_download_xml
-      one_MB = 1024*1024
+      one_MB = 1024 * 1024
       @aips_xml = File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml")
       assert(File.exist?(@aips_xml))
       old_size = File.size(@aips_xml)
       assert(old_size < one_MB)
       @plugin.get_aips_download_xml(@aips_xml)
       assert(File.exist?(@plugin.aips_xml))
-      assert_equal(old_size,  File.size(@plugin.aips_xml))
+      assert_equal(old_size, File.size(@plugin.aips_xml))
     end
 
     @@saved_meta_info ||= {}
@@ -106,29 +106,29 @@ module ODDB
         "61467_pi_de",
         "61467_pi_fr",
         "61467_pi_it"
-        ].sort
-      assert_equal(expected, res.values.flatten.collect{|x| "#{x.iksnr}_#{x.type}_#{x.lang}" }.sort)
+      ].sort
+      assert_equal(expected, res.values.flatten.collect { |x| "#{x.iksnr}_#{x.type}_#{x.lang}" }.sort)
     end
 
     def get_tramal_fi_and_pi
-      @tramal_pi = @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de")}.first
-      @tramal_fi = @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de")}.first
+      @tramal_pi = @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de") }.first
+      @tramal_fi = @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de") }.first
     end
 
     def test_parse_aips_download
       get_iksnrs_meta_info
-      assert_equal(3, @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi")}.size)
+      assert_equal(3, @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") }.size)
       # failing at the moment
       # Tramal has 4 IKSNR for 1 FI
       [40858, 40859, 43787, 43788].each do |iksnr|
-        assert_equal(3, @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(iksnr) && x.type.eql?("fi")}.size)
+        assert_equal(3, @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(iksnr) && x.type.eql?("fi") }.size)
       end
-      assert_equal(1, @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(40858) && x.type.eql?("fi") && x.lang.eql?("de")}.size)
+      assert_equal(1, @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(40858) && x.type.eql?("fi") && x.lang.eql?("de") }.size)
       # but only 43788 has also a PI (for Kapseln)
       [40858, 40859, 43787].each do |iksnr|
-        assert_equal(0, @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(iksnr) && x.type.eql?("pi") && x.lang.eql?("de")}.size)
+        assert_equal(0, @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(iksnr) && x.type.eql?("pi") && x.lang.eql?("de") }.size)
       end
-      assert_equal(1, @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de")}.size)
+      assert_equal(1, @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(43788) && x.type.eql?("pi") && x.lang.eql?("de") }.size)
     end
 
     def test_save_meta_and_xref_info
@@ -143,8 +143,8 @@ module ODDB
     end
 
     def test_download_all_html_zip
-      FileUtils.rm_rf(File.join(ODDB::WORK_DIR, "html_cache"), :verbose => true)
-      FileUtils.rm_rf(@plugin.zip_file, :verbose => true)
+      FileUtils.rm_rf(File.join(ODDB::WORK_DIR, "html_cache"), verbose: true)
+      FileUtils.rm_rf(@plugin.zip_file, verbose: true)
       assert(File.exist?(@all_html_zip))
       tst_file = File.join(ODDB::WORK_DIR, "html_cache", "3719e544ca4d466e8f51454e162078cd-de.html")
       assert(!File.exist?(tst_file))
@@ -166,8 +166,8 @@ module ODDB
       assert(!File.exist?(@tramal_pi.cache_file))
       assert(!File.exist?(@tramal_fi.cache_file))
       @plugin.download_all_html_zip(@all_html_zip)
-      @remove_fi = @plugin.iksnrs_meta_info.values.flatten.find_all{|x| x.iksnr.to_i.eql?(32917) && x.type.eql?("fi") && x.lang.eql?("de")}.first
-      FileUtils.rm_f(@remove_fi.cache_file, :verbose => true)
+      @remove_fi = @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(32917) && x.type.eql?("fi") && x.lang.eql?("de") }.first
+      FileUtils.rm_f(@remove_fi.cache_file, verbose: true)
       get_tramal_fi_and_pi
       assert(File.exist?(@tramal_pi.cache_file))
       assert(File.exist?(@tramal_fi.cache_file))
@@ -181,8 +181,8 @@ module ODDB
       assert(@tramal_pi.cache_sha256)
       assert_equal(64, @tramal_fi.cache_sha256.size)
       assert_equal(64, @tramal_pi.cache_sha256.size)
-      nr_sha = @plugin.iksnrs_meta_info.values.flatten.collect{|x| x.cache_sha256}.compact.size
-      nr_uniq = @plugin.iksnrs_meta_info.values.flatten.collect{|x| x.cache_sha256}.compact.uniq.size
+      nr_sha = @plugin.iksnrs_meta_info.values.flatten.collect { |x| x.cache_sha256 }.compact.size
+      nr_uniq = @plugin.iksnrs_meta_info.values.flatten.collect { |x| x.cache_sha256 }.compact.uniq.size
       assert_equal(nr_sha, nr_uniq) # SHA256 value must be uniq
     end
   end
@@ -207,8 +207,8 @@ module ODDB
     end
 
     def prepare_plugin(remove_details: true,
-                       parser: ::ODDB::FiParse,
-                       xml_file: File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml"))
+      parser: ::ODDB::FiParse,
+      xml_file: File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml"))
       @plugin = TextInfoPlugin.new @app
       FileUtils.makedirs(@details_dir)
       FileUtils.rm_rf(@plugin.details_dir, verbose: false) if remove_details
@@ -226,6 +226,59 @@ module ODDB
       skip("We should test when the barcode override comes into effect, eg. 47909 Solmucol 400, 600 Granulat")
     end
 
+    def test_43788_fi_tramal
+      @options = {target: :fi,
+                  download: false,
+                  newest: false, # with true this takes a lot of time
+                  xml_file: @aips_download}
+      meta_info = SwissmedicMetaInfo.new
+      meta_info.iksnr = "43788"
+      meta_info.authNrs = ["43788"]
+      meta_info.type = "fi"
+      meta_info.lang = "de"
+      meta_info.title = "Tramal®"
+      meta_info.informationUpdate = "2025-06-13T00:00:00"
+      Date.parse(meta_info.informationUpdate)
+      # 2025-06-13
+      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/de/43788.html")
+      assert(File.exist?(meta_info.download_url))
+      prepare_plugin(remove_details: false)
+      @plugin.set_html_and_cache_name(meta_info)
+      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
+      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
+      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
+      @plugin.parse_textinfo(meta_info, 1)
+      assert(File.exist?(meta_info.html_file))
+      assert_equal(["43788"], @app.registrations.keys)
+      assert_equal(["01"], @app.registration("43788").sequences.keys)
+      seq = @app.registrations.values.first.sequences.values.first
+      assert_equal(ODDB::Sequence, seq.class)
+      assert_equal(ODDB::Fachinfo, seq.fachinfo.class)
+      assert_equal("Tramal®", seq.fachinfo[:de].name.to_s)
+      assert_equal("N02AX02", seq.fachinfo[:de].atc_code)
+      expected = %(Packungen
+Tramal Kapseln: Packungen zu 10, 20, 60 und
+Klinikpackung zu 200 Kapseln (10 x 20) [A]
+Tramal Lösung zum Einnehmen: Packungen in Tropfflasche zu 10 ml, 3x 10 ml [A]
+Klinikpackung als Tropfflasche zu 10x 10 ml [A]
+Packungen mit Dosierpumpe: zu 30 ml, 50 ml und 96 ml [A]
+Tramal Suppositorien: Packungen zu 10 Suppositorien [A]
+Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
+      assert_equal(expected, seq.fachinfo[:de].packages.to_s)
+      iksnrs = %(Zulassungsnummer
+40858, 40859, 43787, 43788 (Swissmedic).)
+      assert_equal(iksnrs, seq.fachinfo[:de].iksnrs.to_s)
+      owner = %(Zulassungsinhaberin
+Grünenthal Pharma AG, Glarus Süd.)
+      assert_equal(owner, seq.fachinfo[:de].registration_owner.to_s)
+      date = %(Stand der Information
+April 2025)
+      assert_equal(date, seq.fachinfo[:de].date.to_s)
+      assert_equal(0, seq.fachinfo[:de].change_log.size)
+    end
+
     def test_38471_pi_change_log
       # For this test I search for a small PI which is neither a homeopathic nor naturlheilmittel
       # Found Glandosane
@@ -239,8 +292,8 @@ module ODDB
       meta_info.type = "pi"
       meta_info.lang = "de"
       meta_info.title = "Glandosane"
-      meta_info.informationUpdate="2025-06-13T00:00:00"
-      res = Date.parse(meta_info.informationUpdate)
+      meta_info.informationUpdate = "2025-06-13T00:00:00"
+      Date.parse(meta_info.informationUpdate)
       # 2025-06-13
       @test_change = /CHANGED FOR MINITEST......../
       meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/Glandosane_.html")
@@ -248,17 +301,17 @@ module ODDB
       prepare_plugin(remove_details: false)
       @plugin.set_html_and_cache_name(meta_info)
       key = [meta_info.iksnr, meta_info.type, meta_info.lang]
-      @plugin.iksnrs_meta_info[ key ] = [meta_info]
-      FileUtils.makedirs(File.dirname(meta_info.html_file), verbose: false)
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
+      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
       FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
-      FileUtils.cp(meta_info.download_url, meta_info.html_file, verbose: false, preserve: true)
-      assert(File.exist?(meta_info.html_file))
       content = File.read(meta_info.cache_file)
-      changed_content = content.gsub(/Spirig HealthCare AG/, "Changed Spirig HealthCare AG").
-      gsub("Glandosane ist ", "Glandosane ist geändert worden")
-      changed_content2 = content.gsub(/Spirig HealthCare AG/, "CHANGED SPIRIG HEALTHCARE AG").
-      gsub("Glandosane ist ", "GLANDOSANE IST GEÄNDERT WORDEN")
-      res = @plugin.parse_textinfo(meta_info, 1)
+      changed_content = content.gsub("Spirig HealthCare AG", "Changed Spirig HealthCare AG")
+        .gsub("Glandosane ist ", "Glandosane ist geändert worden")
+      changed_content2 = content.gsub("Spirig HealthCare AG", "CHANGED SPIRIG HEALTHCARE AG")
+        .gsub("Glandosane ist ", "GLANDOSANE IST GEÄNDERT WORDEN")
+      @plugin.parse_textinfo(meta_info, 1)
+      assert(File.exist?(meta_info.html_file))
       assert_equal(["38471"], @app.registrations.keys)
       assert_equal(["01"], @app.registration("38471").sequences.keys)
       assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
@@ -270,27 +323,27 @@ module ODDB
       assert_match(/Spirig HealthCare AG/, pack.patinfo[:de].company.to_s)
       date = Date.parse pack.patinfo[:de].revision.to_s
       assert_equal(Date.today, date)
-      assert_match(/geprüft/,  pack.patinfo[:de].date.to_s)
-      assert_match(/Juli 2007/,  pack.patinfo[:de].date.to_s)
+      assert_match(/geprüft/, pack.patinfo[:de].date.to_s)
+      assert_match(/Juli 2007/, pack.patinfo[:de].date.to_s)
       assert_equal(0, pack.patinfo[:de].change_log.size)
 
       # Now we inject changes and test whether we will find them
-      File.open(meta_info.cache_file, "w+") { |f| f.write changed_content}
-      @plugin.iksnrs_meta_info[ key ] = [meta_info]
-      res = @plugin.parse_textinfo(meta_info, 1)
-      seq = @app.registrations.values.first.sequences.values.first;0
-      pack = seq.packages.values.first;0
+      File.write(meta_info.cache_file, changed_content)
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
       assert_equal(1, pack.patinfo[:de].change_log.size)
       assert_equal(Date.today, pack.patinfo[:de].change_log.first.time)
       assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
       assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
 
       # Now we inject more changes and test whether we will find them
-      File.open(meta_info.cache_file, "w+") { |f| f.write changed_content2}
-      @plugin.iksnrs_meta_info[ key ] = [meta_info]
-      res = @plugin.parse_textinfo(meta_info, 1)
-      seq = @app.registrations.values.first.sequences.values.first;0
-      pack = seq.packages.values.first;0
+      File.write(meta_info.cache_file, changed_content2)
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
       assert_equal(2, pack.patinfo[:de].change_log.size)
       assert_equal(Date.today, pack.patinfo[:de].change_log.last.time)
       assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
@@ -580,7 +633,7 @@ module ODDB
                   newest: true,
                   xml_file: @aips_download}
 
-      res = @plugin.import_swissmedicinfo(@options)
+      @plugin.import_swissmedicinfo(@options)
       puts @plugin.report
     end
 
