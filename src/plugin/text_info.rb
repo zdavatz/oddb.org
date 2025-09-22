@@ -430,11 +430,14 @@ module ODDB
     end
 
     def store_patinfo_for_all_packages(reg, iksnr, lang, patinfo_lang)
-      LogFile.debug "Updating #{iksnr} packages #{reg.packages.collect { |x| x.ikscd }}: #{patinfo_lang.to_s[0..40]}"
       reg.each_package do |package|
-        patinfo = store_package_patinfo(package, lang, patinfo_lang)
-        LogFile.debug "Updating #{iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.to_s[0..40]}"
-        package.patinfo = patinfo unless package.patinfo.equal?(patinfo)
+        if package.instance_of?(ODDB::Package)
+          patinfo = store_package_patinfo(package, lang, patinfo_lang)
+          LogFile.debug "Updating #{iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.to_s[0..40]}"
+          package.patinfo = patinfo unless package.patinfo.equal?(patinfo)
+        else
+          LogFile.debug "Failed updating #{iksnr} as odba_id #{package.odba_id} is a #{ODBA.cache.fetch(package.odba_id).class}"
+        end
       end
       reg.odba_store
     end
