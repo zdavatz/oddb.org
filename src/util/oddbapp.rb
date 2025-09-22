@@ -909,11 +909,11 @@ class OddbPrevalence
   def packages
     @registrations.inject([]) do |pacs, (iksnr, reg)|
       if reg.instance_of?(ODDB::Registration)
-        problems = reg.packages.find_all{|pack| !pack.instance_of?(ODDB::Package) }
-        ODDB::LogFile.debug("Reg #{iksnr} odba_id #{reg.odba_id} #{reg.class} #{problems}")  if problems.size > 0
-        pacs.concat(reg.packages.find_all{|pack| pack.instance_of?(ODDB::Package) })
+        problems = reg.packages.find_all { |pack| !pack.instance_of?(ODDB::Package) }
+        ODDB::LogFile.debug("Reg #{iksnr} has invalid packages odba_id #{reg.odba_id} #{reg.class} #{problems}") if problems.size > 0
+        pacs.concat(reg.packages.find_all { |pack| pack.instance_of?(ODDB::Package) })
       else
-        ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration")
+        ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} is not a Registration (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration")
         pacs
       end
     end

@@ -347,14 +347,13 @@ module ODDB
               @updated_fis << "  #{meta_info.iksnr} #{fis.keys} #{reg.name_base}"
             end
           end
-          FileUtils.makedirs(File.dirname(meta_info.html_file))
-          FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true) if File.exist?(meta_info.cache_file)
-
         else
           LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_orphaned"
           store_orphaned meta_info.iksnr, fis, :orphaned_fachinfo
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
+        FileUtils.makedirs(File.dirname(meta_info.html_file))
+        FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true, preserve: true) if File.exist?(meta_info.cache_file)
       rescue RuntimeError => err
         @failures.push "IKSNR: #{meta_info.iksnr} #{err.message} #{err.backtrace[0..8].join("\n")}"
         []
@@ -389,7 +388,7 @@ module ODDB
         new_patinfo_lang.change_log = patinfo.description(lang).change_log # save changelog!
         patinfo.descriptions[lang] = new_patinfo_lang
         package.odba_store
-        LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{ patinfo.description(lang).change_log.size} changes #{new_patinfo_lang.to_s[0..40]}"
+        LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{patinfo.description(lang).change_log.size} changes #{new_patinfo_lang.to_s[0..40]}"
         true
       end
     end
@@ -441,7 +440,7 @@ module ODDB
     end
 
     def update_patinfo_lang(meta_info, textinfo_pi)
-      unless meta_info&.authNrs.size > 0
+      unless meta_info&.authNrs&.size&.> 0
         @iksless[:pi].push meta_info.title
         if textinfo_pi.date.to_s.index(Date.today.year.to_s) ||
             textinfo_pi.date.to_s.index((Date.today.year - 1).to_s)
@@ -485,6 +484,8 @@ module ODDB
           store_orphaned meta_info.iksnr, pis, :orphaned_patinfo
           @unknown_iksnrs.store meta_info.iksnr, meta_info.title
         end
+        FileUtils.makedirs(File.dirname(meta_info.html_file))
+        FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true, preserve: true) if File.exist?(meta_info.cache_file)
       rescue RuntimeError => err
         @failures.push "IKSNR: #{meta_info.iksnr} #{err.message} #{err.backtrace[0..8].join("\n")}"
         []
@@ -688,7 +689,7 @@ module ODDB
       }
       sequence = registration.create_sequence(seqNr) unless sequence = registration.sequence(seqNr)
       sequence.name_base = registration.name_base
-      package = sequence.create_package(packNr)
+      sequence.create_package(packNr)
       app.update(sequence.pointer, seq_args, :swissmedic_text_info)
       sequence.fix_pointers
       # Niklaus does not know why we have to duplicate the code here. But it ensures that newly added fis
@@ -1193,6 +1194,7 @@ module ODDB
     end
 
     public
+
     def parse_textinfo(meta_info, idx)
       return if meta_info.lang.eql?("it") # we cannot parse correctly for italian
       type = meta_info[:type].to_sym
@@ -1292,10 +1294,12 @@ module ODDB
     end
 
     def set_html_and_cache_name(meta_info)
-        meta_info.cache_file = File.join(@html_cache, File.basename(meta_info.download_url))
-        meta_info.html_file = File.join(@details_dir, meta_info.type, meta_info.lang,
-          meta_info.title.gsub(CharsNotAllowedInBasename, "_") + ".html")
+      meta_info.iksnr = meta_info.authNrs.first unless meta_info.iksnr
+      meta_info.cache_file = File.join(@html_cache, File.basename(meta_info.download_url))
+      base_name = "#{meta_info.title.gsub(CharsNotAllowedInBasename, "_")}.html"
+      meta_info.html_file = File.join(@details_dir, meta_info.type, meta_info.lang, base_name)
     end
+
     def handle_chunk(chunk)
       return nil unless chunk.size > 100
       chunk += " </MedicinalDocumentsBundle></MedicinalDocumentsBundle>"
@@ -1533,11 +1537,11 @@ module ODDB
           iksnrs_to_parse.index(x.iksnr) && (@options[:target].eql?(:both) || @options[:target].eql?(x.type.to_sym))
         end
       elsif @options[:target]
-        @metas = @iksnrs_meta_info.values.flatten.select { |x| @options[:target].eql?(x.type.to_sym)}
+        @metas = @iksnrs_meta_info.values.flatten.select { |x| @options[:target].eql?(x.type.to_sym) }
       else
         @metas = @iksnrs_meta_info.values.flatten
       end
-      @metas = @metas.sort_by{|x| x.iksnr}
+      @metas = @metas.sort_by { |x| x.iksnr }
       @metas.each_with_index do |meta_info, idx|
         if getFreeMemoryInMB < 1024 # < 512 was not enough!
           LogFile.debug "Stopping as only  #{getFreeMemoryInMB} MB memory left"
