@@ -100,6 +100,50 @@ class StubPackageSequence
   end
 end
 
+class TestPackageNoMock < Minitest::Test
+
+  def test_delete_invalid_patinfo_with_odba_error
+    seq = ODDB::Sequence.new('99999')
+    @package = flexmock('package', ODDB::Package.new("002"))
+    patinfo =  flexmock('patinfo')
+    patinfo.should_receive(:descriptions).and_raise(ODBA::OdbaError)
+    @package.should_receive(:patinfo).and_return(patinfo)
+    @package.patinfo = patinfo
+    assert_equal(true, @package.has_patinfo?)
+    assert_equal(true, @package.delete_invalid_patinfo)
+    assert_equal(false, @package.has_patinfo?)
+  end
+
+  def test_delete_invalid_patinfo_is_PatinfoDocument
+    seq = ODDB::Sequence.new('99999')
+    @package = seq.create_package("010")
+    @package.patinfo = ODDB::PatinfoDocument.new
+    assert_equal(true, @package.patinfo.instance_of?(ODDB::PatinfoDocument))
+    assert_equal(true, @package.has_patinfo?)
+    assert_equal(true, @package.delete_invalid_patinfo)
+    assert_equal(false, @package.has_patinfo?)
+  end
+
+  def test_delete_invalid_patinfo
+    seq = ODDB::Sequence.new('99998')
+    @package = seq.create_package("010")
+    @package.patinfo = OpenStruct.new(links: "Test")
+    assert_equal(true, @package.has_patinfo?)
+    assert_equal(true, @package.delete_invalid_patinfo)
+    assert_equal(false, @package.has_patinfo?)
+  end
+
+  def test_do_not_delete_valid_patinfo
+    seq = ODDB::Sequence.new('99998')
+    @package = seq.create_package("010")
+    @package.patinfo = ODDB::Patinfo.new
+    assert_equal(true, @package.has_patinfo?)
+    assert_equal(false, @package.delete_invalid_patinfo)
+    assert_equal(true, @package.has_patinfo?)
+  end
+end
+
+
 class TestPackage < Minitest::Test
   DDD_PRICE_NIL = "not calculated"
   def setup

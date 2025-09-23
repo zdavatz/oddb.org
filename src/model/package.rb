@@ -133,6 +133,25 @@ module ODDB
       result
     end
 
+    def delete_invalid_patinfo
+      begin
+        !(@patinfo && @patinfo.respond_to?(:descriptions) && @patinfo.descriptions.keys)
+        if !@patinfo.nil? &&
+            @patinfo.respond_to?(:odba_instance) &&
+            !@patinfo.odba_instance.is_a?(ODDB::Patinfo)
+          @patinfo = nil
+          odba_store
+        end
+        return !(@patinfo && @patinfo.respond_to?(:descriptions) && @patinfo.descriptions.keys)
+      rescue => error
+        LogFile.debug("Correcting #{iksnr}/#{seqnr} patinfo is invalid, as #{error} #{error.backtrace[0..8].join("\n")}")
+        @patinfo = nil
+        odba_store
+        return true
+      end
+      return false
+    end
+
     def pdf_patinfo # {sequence|package}
       @pdf_patinfo || sequence.pdf_patinfo
     end

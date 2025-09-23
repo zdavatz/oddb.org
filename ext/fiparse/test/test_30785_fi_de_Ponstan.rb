@@ -19,7 +19,7 @@ module ODDB
         @@path = File.join(File.dirname(__FILE__), "data", "html", "30785_fi_de_Ponstan.html")
         @@writer = FachinfoHpricot.new
         File.open(@@path) do |fh|
-          @@fachinfo = @@writer.extract(Hpricot(fh), type: :fi)
+          @@fachinfo = @@writer.extract(Hpricot(fh), name: "Ponstan")
         end
       end
       def test_fachinfo
@@ -29,7 +29,7 @@ module ODDB
         assert_equal("Ponstan", @@writer.name.heading)
       end
       def test_title
-        assert_equal("Ponstan", @@writer.title)
+        assert_nil(@@writer.title)
       end
       def test_chapters
         ODDB::FachinfoDocument::CHAPTERS.each do |chapter|

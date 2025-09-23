@@ -17,24 +17,19 @@ module ODDB
       def setup
         return if defined?(@@path) && defined?(@@patinfo) && @@patinfo
         @@path = File.join(File.dirname(__FILE__), "data", "html", "56933_pi_fr_Cimifemine.html")
-        @@writer = PatinfoHpricot.new
-        File.open(@@path) do |fh|
-          @@patinfo = @@writer.extract(Hpricot(fh), type: :pi)
-        end
+        @parser = ODDB::FiParse
+        @@patinfo =  @parser.parse_patinfo_html(File.read(@@path), lang: "fr")
       end
       def test_patinfo
         assert_equal(ODDB::PatinfoDocument, @@patinfo.class)
       end
-      def test_title
-        assert_equal("Cimifemine", @@writer.title)
-      end
       def test_name
-        assert_equal("Cimifemine", @@writer.name.heading)
+        assert_match(/Cimifemine/, @@patinfo.name.heading)
       end
       def test_chapters
         ODDB::PatinfoDocument2001::CHAPTERS.each do |chapter|
           begin
-            res = eval("@@writer.#{chapter}")
+            res = eval("@@patinfo.#{chapter}")
           rescue => error
             puts "For 56933_pi_fr_Cimifemine.html chapter #{chapter} is not defined"
           end

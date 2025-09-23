@@ -17,24 +17,19 @@ module ODDB
       def setup
         return if defined?(@@path) && defined?(@@fachinfo) && @@fachinfo
         @@path = File.join(File.dirname(__FILE__), "data", "html", "43916_fi_de_Normolytoral.html")
-        @@writer = FachinfoHpricot.new
-        File.open(@@path) do |fh|
-          @@fachinfo = @@writer.extract(Hpricot(fh), type: :fi)
-        end
+        @parser = ODDB::FiParse
+        @@fachinfo =  @parser.parse_fachinfo_html(File.read(@@path), lang: "de")
       end
       def test_fachinfo
-        assert_equal(ODDB::FachinfoDocument, @@fachinfo.class)
-      end
-      def test_title
-        assert_equal("Normolytoral", @@writer.title)
+        assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
       def test_name
-        assert_equal("Normolytoral", @@writer.name.heading)
+        assert_match(/Normolytoral/, @@fachinfo.name.heading)
       end
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|
           begin
-            res = eval("@@writer.#{chapter}")
+            res = eval("@@fachinfo.#{chapter}")
           rescue => error
             puts "For 43916_fi_de_Normolytoral.html chapter #{chapter} is not defined"
           end

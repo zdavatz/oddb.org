@@ -404,19 +404,16 @@ in {
         echo (date): Started running rspec $status | tee -a ci_run.log
         run_and_log -l rspec.log -s 1 -c "bundle exec rspec spec"
 
-        echo (date): Started import_swissmedic status $status | tee -a ci_run.log
-        run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
-
-        echo (date): Started import_bsv status $status | tee -a ci_run.log
-        run_and_log -l import_bsv.log -s 1 -c "bundle exec ruby jobs/import_bsv"
-
         stop_oddb_daemons # seems to be necessary to ensure that import_daily runs without any problems
         start_oddb_daemons
         echo (date): Started import_daily status $status | tee -a ci_run.log
         run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
 
-#        run_and_log -l import_swissmedic_fix.log -s 1 -c "bundle exec ruby jobs/import_swissmedic fix_galenic_form"
-#        echo (date): Finished import_swissmedic_fix status $status | tee -a ci_run.log
+        echo (date): Started import_swissmedic status $status | tee -a ci_run.log
+        run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
+
+        echo (date): Started import_bsv status $status | tee -a ci_run.log
+        run_and_log -l import_bsv.log -s 1 -c "bundle exec ruby jobs/import_bsv"
 
 #        run_and_log -l import_swissmedic_update.log -s 1 -c "bundle exec ruby jobs/import_swissmedic update_compositions"
 #        echo (date): Finished import_swissmedic_update status $status | tee -a ci_run.log

@@ -180,4 +180,63 @@
       </DocumentReference>
     </AttachedDocument>
   </MedicinalDocumentsBundle>
+  <MedicinalDocumentsBundle>
+    <Date>2021-10-01T00:00:00</Date>
+    <Domain>Human</Domain>
+    <Type>PIL</Type>
+    <RegulatedAuthorization>
+      <Identifier>61467</Identifier>
+    </RegulatedAuthorization>
+    <Holder>
+      <Identifier>7601001379336</Identifier>
+      <Name>Almirall AG</Name>
+    </Holder>
+    <Language>de</Language>
+    <MainLanguageDocumentChanged>false</MainLanguageDocumentChanged>
+    <AttachedDocument>
+      <Language>de</Language>
+      <Description>Actikerall®</Description>
+      <Period>
+        <Start>2021-01-01T00:00:00</Start>
+      </Period>
+      <DocumentReference>
+        <ContentType>application/pdf</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-de.pdf</Url>
+      </DocumentReference>
+      <DocumentReference>
+        <ContentType>text/html</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-de.html</Url>
+      </DocumentReference>
+    </AttachedDocument>
+    <AttachedDocument>
+      <Language>fr</Language>
+      <Description>Actikerall®</Description>
+      <Period>
+        <Start>2021-01-01T00:00:00</Start>
+      </Period>
+      <DocumentReference>
+        <ContentType>application/pdf</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-fr.pdf</Url>
+      </DocumentReference>
+      <DocumentReference>
+        <ContentType>text/html</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-fr.html</Url>
+      </DocumentReference>
+    </AttachedDocument>
+    <AttachedDocument>
+      <Language>it</Language>
+      <Description>Actikerall®</Description>
+      <Period>
+        <Start>2021-01-01T00:00:00</Start>
+      </Period>
+      <DocumentReference>
+        <ContentType>application/pdf</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-it.pdf</Url>
+      </DocumentReference>
+      <DocumentReference>
+        <ContentType>text/html</ContentType>
+        <Url>https://files.refdata.ch/simis-public-prod/MedicinalDocuments/4adf635661cb4999ad54e0fa28305089-it.html</Url>
+      </DocumentReference>
+    </AttachedDocument>
+  </MedicinalDocumentsBundle>
 </MedicinalDocumentsBundles>

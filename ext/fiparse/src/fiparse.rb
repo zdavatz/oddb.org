@@ -208,7 +208,7 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-      writer.extract(Hpricot(src))
+      writer.extract(Hpricot(src), name: writer.title)
     end
 
     def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
@@ -228,9 +228,8 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-#            def extract(doc, type: :fi, name: nil, styles: nil)
-
-      writer.extract(Hpricot(src), type: :pi)
+      res = writer.extract(Hpricot(src), type: :pi, name: writer.title)
+      res
     end
     module_function :storage=
     module_function :parse_fachinfo_docx

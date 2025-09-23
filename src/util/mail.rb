@@ -116,6 +116,7 @@ module ODDB
       name = File.join(ENV["ODDB_CI_SAVE_MAIL_IN"], subject)
       FileUtils.makedirs(ENV["ODDB_CI_SAVE_MAIL_IN"])
       File.open(name, "a+") do |file|
+        file.puts "Subject: #{mail.subject.to_s}"
         file.puts mail.body.to_s
       end
       LogFile.debug("Saved Mail without attachments #{name}")
@@ -140,6 +141,7 @@ module ODDB
         mail.add_file filename: attachment[:filename], content: attachment[:content], mime_type: attachment[:mime_type]
         if ENV["ODDB_CI_SAVE_MAIL_IN"]
           filename = File.join(ENV["ODDB_CI_SAVE_MAIL_IN"], attachment[:filename])
+          FileUtils.makedirs(ENV["ODDB_CI_SAVE_MAIL_IN"])
           File.open(filename, "w+") { |f| f.puts attachment[:content] }
         end
       end
