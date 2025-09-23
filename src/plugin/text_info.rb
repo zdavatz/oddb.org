@@ -360,6 +360,19 @@ module ODDB
       end
     end
 
+    def fix_odba_error_in_patinfo(package, lang)
+      # Workaround and fix a problem in the database
+      return false unless package.sequence.has_patinfo?
+      bad = package.patinfo.descriptions.find_all{|key, value| !value.instance_of?(ODDB::PatinfoDocument)}
+      if bad.size > 0
+        LogFile.debug "Deleting lang #{lang} from patinfo #{package.iksnr} odba_id #{package.odba_id} bad #{bad}"
+        package.patinfo.descriptions.delete_if{|key, value| !value.instance_of?(ODDB::PatinfoDocument)}
+        package.odba_store
+        return true
+      end
+      return false
+    end
+
     def store_patinfo_change_log(package, lang, new_patinfo_lang)
       patinfo = package.patinfo
       begin
@@ -367,25 +380,17 @@ module ODDB
       rescue
         ""
       end
-      unless patinfo.description(lang).instance_of?(ODDB::PatinfoDocument) # fixing a problem in the database
-        old_text = patinfo.description(lang).to_s
-        patinfo.description(lang)
-        LogFile.debug "Deleting odba_id #{patinfo.description(lang).odba_id} patinfo #{package.iksnr} odba_id #{package.odba_id} no add_change_log_item"
-        patinfo.descriptions[lang] = new_patinfo_lang
-        patinfo.description(lang).odba_delete
-        return
-      end
-
-      raise "Must pass ODDB::PatinfoDocument" unless new_patinfo_lang.instance_of?(ODDB::PatinfoDocument)
-      raise "Must pass ODDB::Patinfo" unless patinfo.instance_of?(ODDB::Patinfo)
+      fix_odba_error_in_patinfo(package, lang)
       old_size = defined?(patinfo.description(lang).change_log) ? old_text.size : 0
       unchanged = old_text.eql?(new_patinfo_lang.to_s)
       if unchanged
         LogFile.debug "#{package.iksnr}/#{package.seqnr} #{lang} skip #{patinfo.odba_id} unchanged #{unchanged} size #{old_size}" if defined? Minitest
         false
       else
-        patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
-        new_patinfo_lang.change_log = patinfo.description(lang).change_log # save changelog!
+        if patinfo.descriptions[lang]
+          patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+          new_patinfo_lang.change_log = patinfo.description(lang).change_log # save changelog!
+        end
         patinfo.descriptions[lang] = new_patinfo_lang
         package.odba_store
         LogFile.debug "PI: #{package.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang} having #{patinfo.description(lang).change_log.size} changes #{new_patinfo_lang.to_s[0..40]}"
@@ -1190,9 +1195,11 @@ module ODDB
       if meta_info.type == "fi"
         reg.fachinfo if reg
       else
+        reg.packages.each{|pack| pack.delete_invalid_patinfo}
         infoTxt = reg.packages.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
         # consider case where all packages have the same patinfo
         infoTxt ||= reg.sequences.values.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
+        infoTxt
       end
     end
 
@@ -1250,6 +1257,7 @@ module ODDB
           textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
           update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
         rescue => err
+          # registration('66016').sequences.values.collect{|x| x.patinfo && x.patinfo['de'].class}
           LogFile.debug "#{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
           LogFile.debug "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
           LogFile.debug "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
@@ -1257,19 +1265,17 @@ module ODDB
           return nil
         end
       elsif type == :pi
-        begin
+        begin  # Workaround and fix a problem in the database
           if text_info && text_info.respond_to?(:descriptions)
             text_info.descriptions.keys
           end
+          if unchanged && !@options[:reparse] && reg && text_info && text_info.respond_to?(:descriptions) && text_info.descriptions.keys.index(meta_info.lang)
+            return
+          end
         rescue => err # SystemStackError => err
           LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
-          LogFile.debug "odba_id #{text_info.odba_id} #{err.backtrace[0..9].join("\n")}"
-          LogFile.debug "backtrace two  #{err.backtrace[-10..-1].join("\n")}"
-          @failures.push "IKSNR: #{meta_info.iksnr} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
-          return nil
-        end
-        if unchanged && !@options[:reparse] && reg && text_info && text_info.respond_to?(:descriptions) && text_info.descriptions.keys.index(meta_info.lang)
-          return
+          @failures.push "IKSNR: #{meta_info.iksnr} #{text_info.odba_id} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..4].join("\n")}"
+          reg.sequences.values.collect{|x| x.patinfo=nil; x.odba_store}
         end
         startTime = Time.now
         begin
