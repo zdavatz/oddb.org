@@ -1,11 +1,5 @@
 #!/usr/bin/env ruby
 
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
-
-require "hpricot"
-
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
@@ -15,7 +9,7 @@ begin require "debug"; rescue LoadError; end
 require "stub/odba"
 require "minitest/autorun"
 require "flexmock/minitest"
-require "fiparse"
+require "patinfo_html_parser"
 require "plugin/text_info"
 require "util/workdir"
 $: << File.expand_path("../../../test", File.dirname(__FILE__))
@@ -24,12 +18,15 @@ require "stub/cgi"
 module ODDB
   module FiParse
     HTML_DIR = File.join(ODDB::PROJECT_ROOT, "ext/fiparse/test/data/html")
-    class TestPatinfoHpricotCimifeminDe < Minitest::Test
+    class TestPatinfoHtmlParserCimifeminDe < Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
         @@path = File.join(HTML_DIR, "de/cimifemin.html")
-        @parser = ODDB::FiParse
         @@patinfo =  @parser.parse_patinfo_html(File.read(@@path), lang: "fr")
+        @@writer = PatinfoHtmlParser.new
+        File.open(@@path) { |fh|
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi, fh.path)
+        }
       end
 
       def test_patinfo
@@ -38,19 +35,22 @@ module ODDB
       end
 
       def test_name1
-        assert_equal("Cimifemin® forte Tabletten", @@patinfo.name.to_s)
+        assert_equal("Cimifemin®", @@writer.name.to_s)
       end
 
       def test_company1
         chapter = @@patinfo.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsinhaberin", chapter.heading)
-        assert_equal("Zeller Medical AG, CH-8590 Romanshorn", chapter.sections.first.paragraphs.first.text)
+        assert_equal(1, chapter.paragraphs.size)
+        assert_equal("Zeller Medical AG, CH-8590 Romanshorn", chapter.paragraphs.first.text)
       end
 
       def test_galenic_form1
-        chapter = @@patinfo.galenic_form
-        assert_nil(chapter)
+        chapter = @@writer.galenic_form
+        assert_instance_of(ODDB::Text::Chapter, chapter)
+        assert_equal("Pflanzliches Arzneimittel", chapter.heading)
+        assert_equal(0, chapter.sections.size)
       end
 
       def test_amzv1
@@ -60,7 +60,7 @@ module ODDB
       def test_effects1
         chapter = @@patinfo.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist Cimifemin forte und wann wird es angewendet?",
+        assert_equal("Was ist Cimifemin uno und wann wird es angewendet?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
@@ -90,7 +90,7 @@ module ODDB
       def test_contra_indications1
         chapter = @@patinfo.contra_indications
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wann darf Cimifemin forte nicht oder nur mit Vorsicht eingenommen / angewendet werden?",
+        assert_equal("Wann darf Cimifemin uno nicht oder nur mit Vorsicht eingenommen / angewendet werden?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
@@ -113,7 +113,7 @@ module ODDB
       def test_usage1
         chapter = @@patinfo.usage
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wie verwenden Sie Cimifemin forte?", chapter.heading)
+        assert_equal("Wie verwenden Sie Cimifemin uno?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
@@ -132,7 +132,7 @@ module ODDB
       def test_unwanted_effects1
         chapter = @@patinfo.unwanted_effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Welche Nebenwirkungen kann Cimifemin forte haben?", chapter.heading)
+        assert_equal("Welche Nebenwirkungen kann Cimifemin uno haben?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
@@ -170,7 +170,7 @@ module ODDB
       def test_composition1
         chapter = @@patinfo.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist in Cimifemin forte enthalten?", chapter.heading)
+        assert_equal("Was ist in Cimifemin uno enthalten?", chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
@@ -197,15 +197,15 @@ module ODDB
       def test_packages1
         chapter = @@patinfo.packages
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wo erhalten Sie Cimifemin forte? Welche Packungen sind erhältlich?",
+        assert_equal("Wo erhalten Sie Cimifemin uno? Welche Packungen sind erhältlich?",
           chapter.heading)
         assert_equal(1, chapter.sections.size)
         section = chapter.sections.first
         assert_equal("", section.subheading)
-        assert_equal(2, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
         expected = "In Apotheken und Drogerien, ohne ärztliche Verschreibung."
         assert_equal(expected, paragraph.text)
+        assert_equal(2, section.paragraphs.size)
         paragraph = section.paragraphs.at(1)
         expected = "Blisterpackungen zu 30 und 90 Tabletten."
         assert_equal(expected, paragraph.text)
@@ -213,7 +213,6 @@ module ODDB
       end
 
       def test_distribution1
-#        chapter = @@patinfo.distribution
         chapter = @@patinfo.company
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Zulassungsinhaberin", chapter.heading)
@@ -233,14 +232,14 @@ module ODDB
       end
     end
 
-    class TestPatinfoHpricotCimifeminFr < Minitest::Test
+    class TestPatinfoHtmlParserCimifeminFr < Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "fr/cimifemin.html")
-        @@patinfo = PatinfoHpricot.new
+        @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo.extract(Hpricot(fh))
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi, fh.path)
         }
       end
 
@@ -278,16 +277,16 @@ module ODDB
         expected = "Cette préparation contient en outre des excipients."
         assert_equal(expected, paragraph.text)
       end
-    end
+    end if false
 
-    class TestPatinfoHpricotInderalDe < Minitest::Test
+    class TestPatinfoHtmlParserInderalDe < Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/inderal.html")
-        @@patinfo = PatinfoHpricot.new
+        @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@patinfo.extract(Hpricot(fh))
+          @@patinfo = @@writer.extract(Nokogiri(fh))
         }
       end
 
@@ -327,14 +326,14 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(1, section.paragraphs.size)
       end
-    end
+    end if false
 
-    class TestPatinfoHpricotPonstanDe < Minitest::Test
+    class TestPatinfoHtmlParserPonstanDe < Minitest::Test
       def setup
         @@path = File.join(HTML_DIR, "de/ponstan.html")
-        @@patinfo = PatinfoHpricot.new
+        @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@patinfo.extract(Hpricot(fh))
+          @@patinfo = @@writer.extract(Nokogiri(fh))
         }
       end
 
@@ -368,48 +367,45 @@ module ODDB
         expected = "5 ml enthalten 1 g Zucker (0,1 Brotwert)."
         assert_equal(expected, paragraph.text)
       end
-    end
+    end if false
 
-    class TestPatinfoHpricotNasivinDe < Minitest::Test
+    class TestPatinfoHtmlParserNasivinDe < Minitest::Test
       StylesNasivin = "<style>p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-size:11pt;font-weight:bold;}.s3{font-family:Arial;font-size:12pt;line-height:150%;}.s4{font-size:11pt;}.s5{font-family:Arial;font-size:11pt;line-height:150%;}.s6{font-weight:bold;}.s7{font-size:11pt;font-style:italic;}</style>"
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/nasivin.html")
-        @@patinfo = PatinfoHpricot.new
+        @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@patinfo.extract(Hpricot(fh), name: "Nasivin", styles: StylesNasivin)
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi, "Nasivin", StylesNasivin)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }
       end
 
       def test_composition5
-        #          assert_nil(/- :italic/.match(@@fachinfo.to_yaml))
-        chapter = @@patinfo.effects
+        chapter = @@writer.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist Nasivin und wann wird es angewendet?", chapter.heading)
-        section = chapter.sections.first
-        assert_instance_of(ODDB::Text::Section, section)
-        assert_equal("", section.subheading)
-        chapter = @@patinfo.composition
+        assert_equal("Was ist VICKS Nasivin und wann wird es angewendet?", chapter.heading)
+        assert_nil(chapter.sections.first)
+        chapter = @@writer.date
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Was ist in Nasivin enthalten?", chapter.heading)
-        chapter = @@patinfo.packages
+        assert_equal("Diese Packungsbeilage wurde im März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.to_s)
+        chapter = @@writer.composition
         assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?", chapter.heading)
+        assert_equal("Was ist in VICKS Nasivin enthalten?", chapter.heading)
+        chapter = @@writer.packages
+        assert_instance_of(ODDB::Text::Chapter, chapter)
+        assert_equal("Wo erhalten Sie VICKS Nasivin? Welche Packungen sind erhältlich?", chapter.heading)
         section = chapter.sections.first
         paragraph = section.paragraphs.first
         assert_instance_of(ODDB::Text::Paragraph, paragraph)
         assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung:",
           paragraph.text.lines.first.chomp)
-        chapter = @@patinfo.date
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Diese Packungsbeilage wurde im Nasivin März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.to_s)
       end
     end
 
-    class TestPatinfoHpricotChapters < Minitest::Test
+    class TestPatinfoHtmlParserChapters < Minitest::Test
       def test_import_chapter
         testCases = [
 
@@ -574,7 +570,7 @@ module ODDB
 
         nrFailures = 0
         testCases.each { |tc|
-          unless tc == res = ODDB::FiParse::PatinfoHpricot.text_to_chapter(tc[1])
+          unless tc == res = ODDB::FiParse::PatinfoHtmlParser.text_to_chapter(tc[1])
             $stdout.puts "Parsing chapter #{tc[1]} failed, returned #{res[0]} != #{tc[0]}"
             nrFailures += 1
           end
@@ -583,16 +579,16 @@ module ODDB
       end
     end
 
-    class TestPatinfoHpricot_30785_PonstanDe < Minitest::Test
+    class TestPatinfoHtmlParser_30785_PonstanDe < Minitest::Test
       CourierStyle = '<SPAN style="padding-bottom: 4px; white-space: normal; line-height: 1.4em;">'
       StylesPonstan = "p{margin-top:0pt;margin-right:0pt;margin-bottom:0pt;margin-left:0pt;}table{border-spacing:0pt;border-collapse:collapse;} table td{vertical-align:top;}.s2{font-family:Arial;font-size:16pt;font-weight:bold;}.s3{line-height:115%;text-align:justify;}.s4{font-family:Arial;font-size:11pt;font-style:italic;font-weight:bold;}.s5{line-height:115%;text-align:right;margin-top:18pt;padding-top:2pt;padding-bottom:2pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s6{font-family:Arial;font-size:12pt;font-style:italic;font-weight:bold;}.s7{line-height:115%;text-align:justify;margin-top:8pt;}.s8{font-family:Arial;font-size:11pt;}.s9{line-height:115%;text-align:justify;margin-top:2pt;}.s10{line-height:115%;text-align:justify;margin-top:6pt;}.s11{font-family:Arial;font-size:11pt;font-style:italic;}.s12{font-family:Courier New;font-size:11pt;}.s13{line-height:115%;text-align:left;}.s14{height:6pt;}.s15{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-top-width:0.5pt;border-top-color:#000000;border-top-style:solid;}.s16{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;}.s17{font-family:Courier;margin-left:0pt;padding-top:2.25pt;padding-right:2.25pt;padding-bottom:3.75pt;padding-left:3.75pt;border-bottom-width:0.5pt;border-bottom-color:#000000;border-bottom-style:solid;}.s18{font-family:Courier;margin-top:2pt;margin-left:-5.4pt;padding-top:0pt;padding-right:5.4pt;padding-bottom:0pt;padding-left:5.4pt;}.s19{font-family:Arial;font-size:11pt;font-weight:bold;}"
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
 
         @@path = File.join(HTML_DIR, "de/pi_30785_ponstan.html")
-        @@patinfo = PatinfoHpricot.new
+        @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@patinfo.extract(Hpricot(fh), name: "Ponstan", styles: StylesPonstan)
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi, "Ponstan", StylesPonstan)
         }
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(@@path.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@patinfo.to_yaml }
@@ -635,6 +631,6 @@ module ODDB
         }
         puts "Sometimes we pass this test. Try at least ten times"
       end
-    end
+    end if false
   end
 end

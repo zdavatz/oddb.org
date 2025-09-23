@@ -1,17 +1,11 @@
 #!/usr/bin/env ruby
-
-# FiParse::TestPatinfoHpricot -- oddb -- 09.04.2012 -- yasaka@ywesee.com
-# FiParse::TestPatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
-
-require "hpricot"
-
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../test", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 
 require "minitest/autorun"
-require "fachinfo_hpricot"
+require "fachinfo_html_parser"
 require "fiparse"
 require "textinfo_pseudo_fachinfo"
 require "plugin/text_info"

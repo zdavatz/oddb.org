@@ -1,11 +1,4 @@
 #!/usr/bin/env ruby
-
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 09.04.2012 -- yasaka@ywesee.com
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
-# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
-
-require "hpricot"
-
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
@@ -15,18 +8,18 @@ begin require "debug"; rescue LoadError; end
 require "stub/odba"
 require "minitest/autorun"
 require "flexmock/minitest"
-require "patinfo_hpricot"
+require "patinfo_html_parser"
 require "plugin/text_info"
 $: << File.expand_path("../../../test", File.dirname(__FILE__))
 require "stub/cgi"
-require "fachinfo_hpricot"
-require "patinfo_hpricot"
+require "fachinfo_html_parser"
+require "patinfo_html_parser"
 
 module ODDB
   module FiParse
-    class TestPatinfoHpricot < Minitest::Test
+    class TestPatinfoHtmlParser < Minitest::Test
       def setup
-        @writer = FachinfoHpricot.new
+        @writer = FachinfoHtmlParser.new
       end
 
       def test_galenic_form_with_multiple_entries
@@ -37,9 +30,9 @@ module ODDB
           <p class="s7"><span class="s8"><span>CoAprovel 300/12.5:</span></span><span class="s9"><span> Filmtabletten zu 300 mg Irbesartan und 12.5 mg Hydrochlorothiazid.</span></span></p>
           <p class="s7"><span class="s8"><span>CoAprovel 300/25:</span></span><span class="s9"><span> Filmtabletten zu 300 mg Irbesartan und 25 mg Hydrochlorothiazid.</span></span></p>
         HTML
-        writer = FachinfoHpricot.new
+        writer = FachinfoHtmlParser.new
         writer.format = :swissmedicinfo
-        fachinfo = writer.extract(Hpricot(html), name: "CoAprovel®")
+        fachinfo = writer.extract(HtmlParser(html), :pi, "CoAprovel®")
         assert_equal("Galenische Form und Wirkstoffmenge pro Einheit", fachinfo.galenic_form.heading)
         assert_equal("CoAprovel 150/12.5: Filmtabletten zu 150 mg Irbesartan und 12.5 mg Hydrochlorothiazid.",
           fachinfo.galenic_form.paragraphs.first.text)
@@ -54,7 +47,7 @@ module ODDB
   <p class="s3"><span class="s4"><span>ab 6 Ja</span></span><span class="s4"><span>hren angewendet werden. Nasivin </span></span><span class="s4"><span>Nasentropfen 0.025% dürfen nur bei</span></span></p>
     </div>
         HTML
-        code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
+        code, chapter = @writer.chapter(HtmlParser(html).at("div.paragraph"))
         assert_equal("7840", code)
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist in Cimifemin enthalten?", chapter.heading)
@@ -75,7 +68,7 @@ module ODDB
        <p class="noSpacing" Second Paragraph</p>
     </div>
         HTML
-        _, _ = @writer.chapter(Hpricot(html).at("div.paragraph"))
+        _, _ = @writer.chapter(HtmlParser(html).at("div.paragraph"))
       end
 
       def test_chapter
@@ -89,7 +82,7 @@ module ODDB
       <p class="noSpacing">Dieses Präparat enthält zusätzlich Hilfsstoffe.</p>
     </div>
         HTML
-        code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
+        code, chapter = @writer.chapter(HtmlParser(html).at("div.paragraph"))
         assert_equal("7840", code)
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist in Cimifemin enthalten?", chapter.heading)
@@ -123,7 +116,7 @@ module ODDB
       <p class="spacing1">Täglich 3 mal 1 Filmtablette bzw. 3 mal 2 Kapseln Ponstan während der Mahlzeiten. Je nach Bedarf kann diese Dosis vermindert oder erhöht werden, jedoch sollten Sie am selben Tag nicht mehr als 4 Filmtabletten oder 8 Kapseln einnehmen. Die übliche Dosierung für Zäpfchen beträgt 3mal täglich 1 Zäpfchen Ponstan zu 500 mg.</p>
     </div>
         HTML
-        code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
+        code, chapter = @writer.chapter(HtmlParser(html).at("div.paragraph"))
         assert_equal("7740", code)
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wie verwenden Sie Ponstan?", chapter.heading)
@@ -213,7 +206,7 @@ module ODDB
         </table>
       </div>
         HTML
-        code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
+        code, chapter = @writer.chapter(HtmlParser(html).at("div.paragraph"))
         assert_equal("7740", code)
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Wie verwenden Sie Ponstan?", chapter.heading)
@@ -289,9 +282,9 @@ module ODDB
       end
     end
 
-    class TestPatinfoHpricot < Minitest::Test
+    class TestPatinfoHtmlParser < Minitest::Test
       def setup
-        @writer = PatinfoHpricot.new
+        @writer = PatinfoHtmlParser.new
       end
 
       def test_identify_chapter__7520

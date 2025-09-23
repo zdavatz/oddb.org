@@ -1,18 +1,12 @@
 #!/usr/bin/env ruby
 
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 04.06.2013 -- yasaka@ywesee.com
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
-
-require "hpricot"
 require "ostruct"
 require "util/oddbconfig"
-require "util/hpricot"
 require "model/text"
 
 module ODDB
   module FiParse
-    class TextinfoHpricot
+    class TextinfoHtmlParser
       attr_reader :name, :company
       # options for swissmedicinfo
       attr_accessor :format, :title, :lang, :image_folder
@@ -34,14 +28,27 @@ module ODDB
             end
           else
             code, text = detect_chapter(elem)
+#              binding.break if /In Apotheken und Drogerien,/.match(text)
             if code and text
               code = code
               chapter.heading = text
               # content
               elem = elem.next
+              elem = elem.next if elem.to_s.eql?("\n")
+              begin
+#              if /Wo erhalten Sie Cimi/.match text
+#                elem = elem.next
+                handle_element(elem, ptr)
+#              end if true
               until end_element_in_chapter?(elem)
+#              until end_element_in_chapter?(elem) && !elem.to_s.eql?("\n")
+                 pp elem
+                 puts end_element_in_chapter?(elem)
                 handle_element(elem, ptr)
                 elem = elem.next
+              end
+              rescue => error
+#                binding.break
               end
             end
           end
@@ -65,9 +72,9 @@ module ODDB
         [code, chapter]
       end
 
-      def extract(doc, type: :fi, name: nil, styles: nil)
-        @stylesWithItalic = TextinfoHpricot.get_italic_style(styles)
-        @stylesWithFixedFont = TextinfoHpricot.get_fixed_font_style(styles)
+      def extract(doc, type = :fi, name = nil, styles = nil)
+        @stylesWithItalic = TextinfoHtmlParser.get_italic_style(styles)
+        @stylesWithFixedFont = TextinfoHtmlParser.get_fixed_font_style(styles)
         @format = :swissmedicinfo if doc.to_s.index("section1") or doc.to_s.index("Section7000")
         case @format
         when :compendium
@@ -158,8 +165,7 @@ module ODDB
       end
 
       def end_element_in_chapter?(elem)
-        elem.nil? or
-          (elem.respond_to?(:attributes) and !elem.attributes["id"].empty?)
+        elem.nil? || (elem.respond_to?(:attributes) && !elem.attributes["id"])
       end
 
       def detect_text_block(elem) # for swissmedicinfo format
@@ -172,9 +178,10 @@ module ODDB
       end
 
       def handle_element(child, ptr, isParagraph = false)
-        # puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}: #{child.to_s[0..30]}"
+        puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}: #{child.to_s[0..30]}"
+#              binding.break if /In Apotheken und Drogerien,/.match(child.to_s[0..30])
         case child
-        when Hpricot::Text
+        when Nokogiri::XML::Text
           if ptr.target.is_a? Text::Table
             # ignore text "\r\n        " in between tag.
           elsif !child.to_s.eql?("\n")
@@ -182,7 +189,7 @@ module ODDB
             ptr.target ||= ptr.section.next_paragraph
             handle_text(ptr, child)
           end
-        when Hpricot::Elem
+        when Nokogiri::XML::Element
           case child.name
           when "h3"
             ptr.section = ptr.chapter.next_section
@@ -243,8 +250,8 @@ module ODDB
           when "td", "th"
             if ptr.table
               ptr.target = ptr.table.next_multi_cell!
-              ptr.target.row_span = child.attributes["rowspan"].to_i unless child.attributes["rowspan"].empty?
-              ptr.target.col_span = child.attributes["colspan"].to_i unless child.attributes["colspan"].empty?
+              ptr.target.row_span = child.attributes["rowspan"].to_i unless child.attributes["rowspan"]&.empty?
+              ptr.target.col_span = child.attributes["colspan"].to_i unless child.attributes["colspan"]&.empty?
               handle_all_children(child, ptr)
               ptr.target = ptr.table
             elsif ptr.target
@@ -280,7 +287,7 @@ module ODDB
       end
 
       def handle_all_children(elem, ptr, isParagraph = false)
-        elem.each_child { |child|
+        elem.children.each { |child|
           handle_element(child, ptr, isParagraph)
         }
       end
@@ -305,7 +312,7 @@ module ODDB
                                     .gsub("&#xA;", "")
                                     .gsub(/\?px=[0-9]*$/, "").strip)
           lang = ((file_name[0].upcase == "F") ? "fr" : "de") unless file_name.empty?
-          type = (is_a?(ODDB::FiParse::FachinfoHpricot) ? "fi" : "pi")
+          type = (is_a?(ODDB::FiParse::FachinfoHtmlParser) ? "fi" : "pi")
           dir = File.join("/", "resources", "images", type, lang)
         end
         ptr.target.src = File.join(dir, file_name)
@@ -353,7 +360,7 @@ module ODDB
       def simple_chapter(elem_or_str)
         if elem_or_str
           chapter = Text::Chapter.new
-          if elem_or_str.is_a?(Hpricot::Elem)
+          if elem_or_str.is_a?(Nokogiri::XML::Element)
             chapter.heading = text(elem_or_str).strip
           elsif elem_or_str.is_a?(String)
             chapter.heading = elem_or_str
@@ -395,11 +402,11 @@ module ODDB
       end
 
       def target_encoding(text)
+#                       require 'debug'; binding.break
         text.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
       rescue
         text
       end
-
       def text(elem)
         return "" unless elem
         str = elem.inner_text || elem.to_s

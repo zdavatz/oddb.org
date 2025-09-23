@@ -11,8 +11,11 @@ gem "mutex_m", require: false
 gem "drb", require: false
 gem "nkf", require: false
 gem "odba", "1.1.9"
-gem "htmlgrid", "1.2.2"
-gem "sbsm", "1.6.1"
+#gem "htmlgrid", "1.2.2"
+gem 'htmlgrid', :git => 'https://github.com/ngiger/htmlgrid.git'
+# gem "sbsm", "1.6.1"
+#gem 'sbsm', :git => 'https://github.com/ngiger/sbsm.git', :branch => 'standard'
+gem 'sbsm', :path => '../sbsm'
 gem "ydbd-pg", "0.5.9"
 gem "ydbi", "0.5.9"
 gem "observer"
@@ -32,8 +35,6 @@ gem "chrono_logger"
 gem "ydiffy"
 gem "deprecated"
 gem "flickraw"
-gem "hpricot"
-gem 'htmlbeautifier'
 gem "sax-machine"
 gem "headless"
 gem "htmlentities"

@@ -1,15 +1,11 @@
 #!/usr/bin/env ruby
 
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 05.03.2013 -- yasaka@ywesee.com
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
-
 require "model/fachinfo"
-require "textinfo_hpricot"
+require "textinfo_html_parser"
 
 module ODDB
   module FiParse
-    class FachinfoHpricot < TextinfoHpricot
+    class FachinfoHtmlParser < TextinfoHtmlParser
       attr_reader :amzv, :name, :composition, :galenic_form, :indications, :effects, :indications,
         :usage, :kinetic, :restrictions, :unwanted_effects, :interactions,
         :overdose, :other_advice, :iksnrs, :date, :pregnancy, :driving_ability,

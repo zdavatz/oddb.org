@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # ODDB::FiParse::TestWriter -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 
-require "hpricot"
-
 $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 

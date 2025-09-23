@@ -1,17 +1,13 @@
 #!/usr/bin/env ruby
 
-# ODDB::FiParse -- oddb.org -- 05.03.2012 -- yasaka@ywesee.com
-# ODDB::FiParse -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
-# ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
-
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
 require "odba"
 require "drb/drb"
 require "util/oddbconfig"
 require "fachinfo_writer"
-require "fachinfo_hpricot"
-require "patinfo_hpricot"
+require "fachinfo_html_parser"
+require "patinfo_html_parser"
 require "ydocx/document"
 require "ydocx/templates/fachinfo"
 
@@ -185,16 +181,16 @@ module ODDB
         iksnr: iksnr,
         lang: lang
       })
-      writer = FachinfoHpricot.new
+      writer = FachinfoNokogiri.new
       writer.format = :documed
-      writer.extract(Hpricot(doc.to_html(true)), :fi)
+      writer.extract(Nokogiri(doc.to_html(true)), :fi)
     end
 
     def parse_fachinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
-      writer = FachinfoHpricot.new
+      writer = FachinfoNokogiri.new
       writer.format = :swissmedicinfo
       doc = Hpricot(src)
       title_from_html ||= ""
@@ -208,14 +204,14 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-      writer.extract(Hpricot(src), name: writer.title)
+      writer.extract(Nokogiri(src), :fi, title, styles)
     end
 
     def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
-      writer = PatinfoHpricot.new
+      writer = PatinfoNokogiri.new
       writer.format = :swissmedicinfo
       doc = Hpricot(src)
       unless writer.title
@@ -228,8 +224,7 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-      res = writer.extract(Hpricot(src), type: :pi, name: writer.title)
-      res
+      writer.extract(Nokogiri(src), :pi, title, styles)
     end
     module_function :storage=
     module_function :parse_fachinfo_docx
