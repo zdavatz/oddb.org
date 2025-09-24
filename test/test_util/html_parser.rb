@@ -26,8 +26,8 @@ class TestHtmlParser < Minitest::Test
     attr_accessor :flowing_data, :literal_data
     attr_reader :called
     def initialize
-      @flowing_data = ""
-      @literal_data = ""
+      @flowing_data =+ ""
+      @literal_data =+ ""
       @called = false
     end
 

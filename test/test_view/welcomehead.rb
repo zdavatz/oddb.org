@@ -33,7 +33,6 @@ module ODDB
           lookandfeel: @lnf,
           state: state,
           sponsor: sponsor,
-          sponsor: nil,
           persistent_user_input: nil,
           request_path: "request_path",
           request_method: "GET")

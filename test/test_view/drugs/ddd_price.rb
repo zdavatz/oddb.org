@@ -169,7 +169,6 @@ module ODDB
             allowed?: nil,
             error: "error",
             zone: "zone",
-            currency: "CHF",
             persistent_user_input: "persistent_user_input",
             language: "language",
             flavor: "flavor",

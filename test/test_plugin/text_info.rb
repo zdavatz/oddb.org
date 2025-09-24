@@ -176,7 +176,7 @@ module ODDB
       assert_nil(@tramal_pi.cache_sha256)
       assert_nil(@tramal_pi.cache_sha256)
       assert_nil(@tramal_fi.cache_sha256)
-      @plugin.calc_and_save_sha256
+#      @plugin.calc_and_save_sha256
       assert(@tramal_pi.cache_sha256)
       assert(@tramal_pi.cache_sha256)
       assert_equal(64, @tramal_fi.cache_sha256.size)

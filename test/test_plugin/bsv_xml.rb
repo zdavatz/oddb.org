@@ -76,6 +76,7 @@ module ODDB
         p.should_receive(:augment_format)
       end
       section = flexmock("section") do |s|
+        s.should_receive(:subheading=).and_return("")
         s.should_receive(:subheading).and_return("")
         s.should_receive(:next_paragraph).and_return(paragraph)
       end
@@ -659,6 +660,7 @@ module ODDB
       end
       section = flexmock("section") do |s|
         s.should_receive(:subheading).and_return("")
+        s.should_receive(:subheading=).and_return("")
         s.should_receive(:next_paragraph).and_return(paragraph)
       end
       chapter = flexmock("chapter") do |c|
@@ -682,6 +684,7 @@ module ODDB
         p.should_receive(:augment_format)
       end
       section = flexmock("section") do |s|
+        s.should_receive(:subheading=).and_return("")
         s.should_receive(:subheading).and_return("")
         s.should_receive(:next_paragraph).and_return(paragraph)
       end
@@ -1731,7 +1734,7 @@ module ODDB
       seqs = @plugin.preparations_listener.test_sequences
       nasonex = seqs.first.packages.values.first
       assert_equal(:original, nasonex.sl_generic_type)
-      assert_equal(nil, nasonex.bm_flag)
+      assert_nil(nasonex.bm_flag)
       assert_equal("MustNotBeOverwritten", nasonex.ikscat)
       assert_equal(:deductible_g, nasonex.deductible)
       assert_equal("18.0", nasonex.price_public.amount.to_s)
