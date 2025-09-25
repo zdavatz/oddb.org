@@ -136,7 +136,7 @@ module ODDB
           comps = model.sequence.compositions
         end
         parts = comps.collect { |comp|
-          part = ""
+          part =+ ""
           if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
             part << galform.send(lang).to_s << ": "
           end
@@ -450,8 +450,8 @@ module ODDB
           if (u = model.unit)
             unit = u.send(@session.language)
           end
-          unit.to_s.force_encoding("utf-8") if unit
-          qty = qty ? model.qty.dup.to_s.force_encoding("utf-8") : ""
+          unit.to_s.encode("utf-8") if unit
+          qty = qty ? model.qty.dup.to_s.encode("utf-8") : ""
           ["&nbsp;(", qty, unit, ")"].compact.join(" ")
         end
       end

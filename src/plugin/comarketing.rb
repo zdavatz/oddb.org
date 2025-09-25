@@ -62,7 +62,7 @@ module ODDB
     end
 
     def report
-      fmt = "Found                %3i Co-Marketing-Pairs\n"
+      fmt =+ "Found                %3i Co-Marketing-Pairs\n"
       fmt << "of which             %3i were found in the Database\n"
       fmt << "New Connections:     %3i\n"
       fmt << "Deleted Connections: %3i\n\n"

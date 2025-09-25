@@ -50,7 +50,7 @@ module ODDB
       end
 
       def hidden_fields(context)
-        "" <<
+        "" +
           context.hidden("cmd", "_xclick") <<
           context.hidden("business", "zdavatz@ywesee.com") <<
           context.hidden("item_name", "ODDB.org") <<
@@ -150,7 +150,7 @@ module ODDB
       end
 
       def atc_ddd_size(mode, session)
-        @session.app.atc_ddd_count.to_s << "&nbsp;"
+        @session.app.atc_ddd_count.to_s + "&nbsp;"
       end
 
       def beta(model, session)
@@ -161,7 +161,7 @@ module ODDB
       end
 
       def database_size(model, session)
-        @session.app.package_count.to_s << "&nbsp;"
+        @session.app.package_count.to_s + "&nbsp;"
       end
 
       def database_last_updated(model, session = @session)
@@ -216,7 +216,7 @@ module ODDB
       end
 
       def fachinfo_size(model, session)
-        @session.app.fachinfo_count.to_s << "&nbsp;"
+        @session.app.fachinfo_count.to_s + "&nbsp;"
       end
 
       def export_divider(model, session)
@@ -232,11 +232,11 @@ module ODDB
       end
 
       def limitation_size(mode, session)
-        @session.app.limitation_text_count.to_s << "&nbsp;"
+        @session.app.limitation_text_count.to_s + "&nbsp;"
       end
 
       def narcotics_size(model, session)
-        @session.app.narcotics.length.to_s << "&nbsp;"
+        @session.app.narcotics.length.to_s + "&nbsp;"
       end
 
       def recent_registrations(model, session)
@@ -254,11 +254,11 @@ module ODDB
       end
 
       def patinfo_size(model, session)
-        @session.app.patinfo_count.to_s << "&nbsp;"
+        @session.app.patinfo_count.to_s + "&nbsp;"
       end
 
       def vaccines_size(model, session)
-        @session.app.vaccine_count.to_s << "&nbsp;"
+        @session.app.vaccine_count.to_s + "&nbsp;"
       end
     end
   end

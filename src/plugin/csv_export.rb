@@ -357,7 +357,7 @@ module ODDB
               key = @session.lookandfeel.lookup(key)
             end
           end
-          report << sprintf("%-32s %5i\n", "#{key}:", val)
+          report += sprintf("%-32s %5i\n", "#{key}:", val)
         end
       end
       if @target_packages

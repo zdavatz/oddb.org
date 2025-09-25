@@ -56,7 +56,7 @@ module ODDB
     end
 
     def description(key = nil)
-      super.to_s.force_encoding("utf-8")
+      super.to_s.encode("utf-8")
     end
   end
 end

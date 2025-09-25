@@ -30,11 +30,11 @@ module ODDB
       end
 
       def breakline(txt, length)
-        name = ""
-        line = ""
+        name =+ ""
+        line =+ ""
         txt.to_s.split(/(:?[\s-])/u).each { |part|
           if (line.length + part.length) > length
-            name << line << "\n"
+            name << line + "\n"
             line = part
           else
             line << part

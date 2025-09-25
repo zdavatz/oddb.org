@@ -605,7 +605,7 @@ module ODDB
               duration_mth = "duration"
               if months == "12"
                 # 								price_mth = 'subscription_' << price_mth
-                duration_mth = "subscription_" << duration_mth
+                duration_mth = "subscription_" + duration_mth
               end
               klass = State::User::DownloadExport
               item.total_netto = klass.send(price_mth, filename)
@@ -1112,7 +1112,7 @@ module ODDB
             carryval = value.value
             @errors.store(key, hash.delete(key))
           elsif mandatory.include?(key) && mandatory_violation(value)
-            error = create_error("e_missing_" << key.to_s, key, value)
+            error = create_error("e_missing_" + key.to_s, key, value)
             @errors.store(key, error)
             hash.delete(key)
           else
@@ -1151,6 +1151,8 @@ module ODDB
         @sortby.each { |sortby|
           aval, bval = nil
           begin
+            a = +a
+            b = +b
             aval = umlaut_filter(a.send(sortby))
             bval = umlaut_filter(b.send(sortby))
           rescue

@@ -24,7 +24,7 @@ module ODDB
       end
 
       def gsub! *args, &block
-        @src.gsub!(*args, &block)
+        @src = @src.gsub(*args, &block)
       end
 
       def preformatted?
@@ -122,7 +122,7 @@ module ODDB
       end
 
       def match(pattern)
-        pattern_s = pattern.to_s
+        pattern_s =+ pattern.to_s
         pattern_s.force_encoding("utf-8")
         pattern = Regexp.new(pattern_s)
         @text.match(pattern)
@@ -275,7 +275,7 @@ module ODDB
       def to_s
         text = ""
         @contents.map do |content|
-          text << if content.is_a? Paragraph
+          text += if content.is_a? Paragraph
             content.text
           else
             content.to_s
@@ -295,7 +295,7 @@ module ODDB
 
       def next_paragraph
         last = @contents.last
-        if last.is_a? Paragraph and last.empty?
+        if last && last.is_a?(Paragraph) && last.empty?
           last
         else
           @contents.push(Paragraph.new).last
@@ -419,7 +419,7 @@ module ODDB
         @rows.each { |row|
           next unless row and row.to_s and row.to_s.length > 0
           add = row.collect { |cell| cell.to_s }.join(" ").delete("\n")
-          string << add + "\n"
+          string += add + "\n"
         }
         string
       end
@@ -481,8 +481,8 @@ module ODDB
 
       def clean!
         @paragraphs.compact!
-        @subheading.gsub!(/(^\s*)|([ \t\r]*$)/u, "")
-        @subheading.gsub!(/\t+/u, " ")
+        @subheading = @subheading.gsub(/(^\s*)|([ \t\r]*$)/u, "")
+        @subheading = @subheading.gsub(/\t+/u, " ")
         @paragraphs.delete_if { |paragraph| paragraph.empty? }
         @paragraphs.each { |paragraph| paragraph.clean! }
       end
@@ -544,8 +544,8 @@ module ODDB
       end
 
       def clean!
-        @heading.strip!
-        @heading.gsub!(/\t+/u, " ")
+        @heading = @heading.strip
+        @heading = @heading.gsub(/\t+/u, " ")
         @sections.delete_if { |section|
           section.clean!
           section.empty?

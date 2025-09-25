@@ -63,7 +63,7 @@ module ODDB
           path = File.expand_path(filename, PATH)
           FileUtils.mkdir_p(PATH)
           File.open(path, "wb") { |fh|
-            fh << File.read(io[:tempfile].path)
+            fh = File.read(io[:tempfile].path)
           }
           filename
         end

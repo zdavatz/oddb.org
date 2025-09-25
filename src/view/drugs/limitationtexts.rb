@@ -40,7 +40,7 @@ module ODDB
             "search_query"	=>	model.name_base.split.first
           }
           link.href = @lookandfeel._event_url(:search, args)
-          link.css_class = "list big" << resolve_suffix(model)
+          link.css_class = "list big" + resolve_suffix(model)
           link
         end
       end

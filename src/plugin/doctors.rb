@@ -74,7 +74,7 @@ module ODDB
       end
 
       def report
-        report = "Doctors update \n\n"
+        report =+ "Doctors update \n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
         report << "New doctors: " << @doctors_created.to_s << "\n"
         report << "Deleted doctors: " << @doctors_deleted.to_s << "\n"

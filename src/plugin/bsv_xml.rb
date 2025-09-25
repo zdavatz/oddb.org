@@ -47,7 +47,7 @@ module ODDB
 
       def text text
         if @html
-          @html << text.gsub(%r{<br\s*/?>}, "\n")
+          @html += text.gsub(%r{<br\s*/?>}, "\n")
           @text = @html.gsub(%r{<[^>]+>}, "")
         end
       end
@@ -62,7 +62,7 @@ module ODDB
       def update_chapter chp, text, subheading = nil
         sec = chp.next_section
         if subheading
-          sec.subheading << subheading.to_s << "\n"
+          sec.subheading += subheading.to_s + "\n"
         end
         # text.each do |line|
         text.each_line do |line|
@@ -85,8 +85,8 @@ module ODDB
 
     class GenericsListener < Listener
       def tag_start name, attrs
-        @text = ""
-        @html = ""
+        @text =+ ""
+        @html =+ ""
       end
 
       def tag_end name
@@ -113,8 +113,8 @@ module ODDB
         when "Limitations"
           @target_data = @lim_data = {}
         else
-          @text = ""
-          @html = ""
+          @text =+ ""
+          @html =+ ""
         end
       end
 
@@ -371,8 +371,8 @@ module ODDB
         when "Substance"
           @substance = {}
         else
-          @text = ""
-          @html = ""
+          @text =+ ""
+          @html =+ ""
         end
       rescue => e
         e.message << "\n@report: " << @report.inspect

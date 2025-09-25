@@ -395,7 +395,7 @@ module ODDB
       def to_yus_privilege
         @directions.inject("org.oddb.model") { |yus, steps|
           steps = steps.dup
-          yus << ".!" << steps.shift.to_s
+          yus += ".!" + steps.shift.to_s
           steps.inject(yus) { |yus, step| yus << "." << step.to_s }
         }
       end

@@ -33,13 +33,13 @@ module ODDB
     def report
       report = super
       @companies.sort.each { |company_name, fachinfos|
-        report << company_name << "\n"
+        report += company_name + "\n"
         fachinfos.sort_by { |fi| fi.name_base }.each { |fi|
           if reg = fi.registrations.first
-            report << sprintf("%s:\n  #{root_url}/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr)
+            report += sprintf("%s:\n  #{root_url}/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr)
           end
         }
-        report << "\n"
+        report += "\n"
       }
       !report.empty? && report
     end

@@ -6,14 +6,14 @@ module ODDB
   module View
     module Admin
       module SwissmedicSource
-        def format_source(keys, source, str = "")
+        def format_source(keys, source, str =+ "")
           keys.each { |key|
             value = source[key]
             case key
             when :import_date, :registration_date, :expiry_date
               value &&= value.strftime("%d.%m.%Y")
             end
-            str << sprintf("%-32s: %s\n", @lookandfeel.lookup(key) { key.to_s }, value)
+            str += sprintf("%-32s: %s\n", @lookandfeel.lookup(key) { key.to_s }, value)
           }
           str
         end

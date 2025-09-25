@@ -49,7 +49,7 @@ module ODDB
     def inactive_agents # aka Hilfsstoffe
       @inactive_agents || []
     end
-    LogFile.debug("Added check that we always return active_agent of class ActiveAgent or Substance")
+#    LogFile.debug("Added check that we always return active_agent of class ActiveAgent or Substance")
     def active_agent(substance_or_oid)
       if active_agents.find_all { |active| !active.is_a?(ActiveAgent) && !active.is_a?(Substance) }.size > 0
         LogFile.debug("Did not find any ActiveAgent/Substance in #{substance_or_oid} odba_id #{substance_or_oid.class}")

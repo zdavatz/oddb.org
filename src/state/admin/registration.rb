@@ -106,7 +106,7 @@ module ODDB
           err = create_error(:e_fi_not_parsed, :fachinfo_upload, msg)
           @errors.store(:fachinfo_upload, err)
         rescue => e
-          msg = " (" << e.message << ")"
+          msg = " (#{e.message})"
           err = create_error(:e_fi_not_parsed, :fachinfo_upload, msg)
           @errors.store(:fachinfo_upload, err)
           e

@@ -269,7 +269,7 @@ module ODDB
     end
 
     def text
-      string = ""
+      string =+ ""
       each_chapter { |chap| string << chap.to_s + "\n" }
       string
     end

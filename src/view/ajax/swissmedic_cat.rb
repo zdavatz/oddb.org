@@ -36,7 +36,7 @@ module ODDB
             y += 1
           end
           if (cat = @model.ikscat)
-            iks = "ikscat_" << cat.to_s.downcase
+            iks = "ikscat_" + cat.to_s.downcase
             @components.store([0, y], :ikscat)
             @components.store([1, y, 0], iks)
             y += 1

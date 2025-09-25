@@ -59,13 +59,13 @@ module ODDB
           escape_method = format.symbol? ? :escape_symbols : :escape
           str = send(escape_method, txt[format.range])
           if style.empty? && tag == :span
-            res << str.encode("utf-8")
+            res += str.encode("utf-8")
           elsif tag == :a
             attrs.store "href", str.strip
-            res << context.send(tag, attrs) { str }
+            res += context.send(tag, attrs) { str }
           else
             attrs.store("style", style.join(" "))
-            res << context.send(tag, attrs) {
+            res += context.send(tag, attrs) {
               str
             }
           end
@@ -83,7 +83,7 @@ module ODDB
               res = res.encode("UTF-16BE", invalid: :replace, undef: :replace, replace: "?").encode("UTF-8")
               res.gsub("\n", br)
             end
-          } << context.br.encode("utf-8")
+          } + context.br.encode("utf-8")
         end
       end
 
@@ -190,13 +190,13 @@ module ODDB
         already_disable = GC.disable
         if @value
           if @value.respond_to?(:heading) and !@value.heading.empty?
-            html << heading(context)
+            html += heading(context)
           end
           if @value.respond_to?(:sections)
-            html << sections(context, @value.sections)
+            html += sections(context, @value.sections)
           end
           if @value.respond_to?(:links)
-            html << links(context, @value.links)
+            html += links(context, @value.links)
           end
           if hl = @session.user_input(:highlight)
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)

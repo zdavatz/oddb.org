@@ -11,20 +11,20 @@ module ODDB
     module DataFormat
       include ExternalLinks
       def breakline(txt, length)
-        name = ""
-        line = ""
-        last = ""
+        name =+ ""
+        line =+ ""
+        last =+ ""
         txt.to_s.split(/(:?[\s-])/u).each { |part|
           if (line.length + last.length + part.length) > length \
             && part.length > 3
             name << line << last << "<br>"
             line = ""
           else
-            line << last
+            line += last
           end
           last = part
         }
-        name << line << last
+        name + line + last
       end
 
       def company_name(model, session = @session)
@@ -72,7 +72,7 @@ module ODDB
           @lookandfeel._event_url(:compare, args)
         end
         link.value = breakline(model.name_base, 25)
-        link_class = "big" << resolve_suffix(model)
+        link_class = "big" + resolve_suffix(model)
         link.css_class = link_class
         if model.good_result?(@query) && !@lookandfeel.disabled?(:best_result)
           link.set_attribute("name", "best_result")
@@ -181,7 +181,7 @@ module ODDB
           end
           span.value = @lookandfeel.format_price(price_chf)
           title = "CHF"
-          span.set_attribute("title", title << suffix)
+          span.set_attribute("title", title + suffix)
           span.label = true
           span
         elsif !@lookandfeel.disabled?(:price_request)

@@ -42,23 +42,3 @@ module ODDB
   end
 end
 
-class String
-  unless instance_methods.include?("_downcase")
-    include ODDB::Util::IsoLatin1
-    alias_method :_downcase, :downcase
-    alias_method :_downcase!, :downcase!
-    def downcase
-      # res = _downcase
-      res = _downcase.force_encoding("utf-8")
-      if DOWNCASE_PTRN.match(res)
-        res.locale_downcase!
-      end
-      res
-    end
-
-    def downcase!
-      res = _downcase!
-      locale_downcase! || res
-    end
-  end
-end

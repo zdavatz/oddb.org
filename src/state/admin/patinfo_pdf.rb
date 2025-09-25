@@ -66,7 +66,7 @@ module ODDB
         def parse_patinfo(src)
           HTML_PARSER.parse_patinfo_html(src, :documed, "", nil, "admin")
         rescue => e
-          msg = " (" << e.message << ")"
+          msg = " (#{e.message})"
           err = create_error(:e_html_not_parsed, :html_upload, msg)
           @errors.store(:html_upload, err)
           nil
