@@ -471,6 +471,7 @@ module ODDB
     @@dose = /(\d+(?:[.,]\d+)?)\s*(.*)/u
     def dose(value)
       return nil if value.empty?
+      value.encode("utf-8")
       if (valid = @@dose.match(value))
         qty = valid[1].tr(",", ".")
         [qty.to_f, valid[2].to_s]
