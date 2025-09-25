@@ -213,7 +213,7 @@ module ODDB
 
     def run(opts) # Aka import_daily
       LogFile.append("oddb/debug", "run opts #{opts.inspect}", Time.now)
-      unless opts[:patinfo_only] || opts[:fachinfo_only]
+      unless opts[:patinfo_only] || opts[:fachinfo_only] || opts[:skip]
         logfile_stats
         update_epha_interactions
 
@@ -226,8 +226,9 @@ module ODDB
         # textinfo
       end
       GC.start
-      update_textinfo_swissmedicinfo({target: :fi, newest: true}) unless opts[:patinfo_only]
-      update_textinfo_swissmedicinfo({target: :pi, newest: true}) unless opts[:fachinfo_only]
+      opts[:newest] =  true
+      update_textinfo_swissmedicinfo(opts.merge({target: :fi})) unless opts[:patinfo_only]
+      update_textinfo_swissmedicinfo(opts.merge({target: :pi})) unless opts[:fachinfo_only]
     end
 
     def run_random
