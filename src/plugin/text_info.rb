@@ -79,7 +79,9 @@ module ODDB
       @specify_barcode_to_text_info ||= {}
       @skipped_override ||= []
       @missing_override ||= {}
-      @old_meta ||= {}
+      @multiple_entries ||= []
+      @invalid_html_url ||= []
+      @already_imported ||= []
       @zip_url = "https://files.refdata.ch/simis-public-prod/MedicinalDocuments/AllHtml.zip"
       @stop_on_low_memory = false
     end
@@ -450,6 +452,22 @@ module ODDB
       reg.odba_store
     end
 
+    def report_multiple(meta_info)
+      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
+      if @iksnrs_meta_info[key].size == 1
+        return
+      else
+        text =+ "#{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: has #{@iksnrs_meta_info[key].size} entries\n"
+        LogFile.debug(text)
+        text << @iksnrs_meta_info[key].collect do |x|
+          date = Date.parse(x.informationUpdate)
+          "   #{date} #{x.title} from #{File.basename(x.download_url)}"
+        end.join("\n")
+        @multiple_entries << text
+        return key
+      end
+    end
+
     def update_patinfo_lang(meta_info, textinfo_pi)
       unless meta_info&.authNrs&.size&.> 0
         @iksless[:pi].push meta_info.title
@@ -477,16 +495,22 @@ module ODDB
               barcode_override = "#{package.barcode}_#{meta_info.type}_#{lang}"
               msg = "#{meta_info.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang}: #{meta_info.title}"
               name = @specify_barcode_to_text_info[barcode_override]
-              if meta_info.title.eql?(name)
-                res = store_package_patinfo(package, lang, textinfo_pi)
-                LogFile.debug "barcode_override #{barcode_override} #{name} #{package.ikscd} #{msg} res = #{res.to_s[0..40]}"
-                @updated_pis << msg
-              elsif name
-                LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
-                @skipped_override << barcode_override
+              if @already_imported.index(key) == 0
+                if meta_info.title.eql?(name)
+                  res = store_package_patinfo(package, lang, textinfo_pi)
+                  LogFile.debug "barcode_override #{barcode_override} #{name} #{package.ikscd} #{msg} res = #{res.to_s[0..40]}"
+                  @updated_pis << msg
+                elsif name
+                  LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
+                  @skipped_override << barcode_override
+                else
+                  LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
+                  @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
+                end
               else
-                LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
-                @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
+                report_multiple(meta_info) unless @already_imported.index(key)
+                @already_imported << key
+                LogFile.debug "already_imported #{key}"
               end
             end
           end
@@ -628,7 +652,18 @@ module ODDB
           @notfound.join("\n"), nil
         ].join("\n")
       end
-      res << ""
+      if @invalid_html_url.size == 0
+        res << "\nNo missing html URL in #{File.basename(@aips_xml)}"
+      else
+        res << "\n#{@invalid_html_url.size} HTML URL not found given in #{File.basename(@aips_xml)}:\n"
+        res << @invalid_html_url.join("\n")
+      end
+      if @multiple_entries.size == 0
+        res << "\nNo multiple entries in #{File.basename(@aips_xml)}"
+      else
+        res << "\nFound #{@multiple_entries.size} multiple entries in #{File.basename(@aips_xml)}:\n"
+        res << @multiple_entries.join("\n")
+      end
       if @updated_pis == 0
         res << "\nNo updated patinfos"
       else
@@ -1209,7 +1244,9 @@ module ODDB
       return if meta_info.lang.eql?("it") # we cannot parse correctly for italian
       type = meta_info[:type].to_sym
       unless File.exist?(meta_info.cache_file)
-        LogFile.debug("Skipping #{type} #{meta_info.lang} #{meta_info.iksnr} #{File.basename(meta_info.cache_file)} as file not found.")
+        msg = "#{meta_info.iksnr} #{meta_info.lang} #{meta_info.download_url}"
+        LogFile.debug(msg)
+        @invalid_html_url << msg
         return
       end
       cache_content = IO.read(meta_info.cache_file)
