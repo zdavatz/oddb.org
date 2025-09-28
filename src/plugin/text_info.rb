@@ -63,7 +63,6 @@ module ODDB
       @problematic_fi_pi = File.join ODDB.config.log_dir, "problematic_fi_pi.lst"
       @title = ""       # target fi/pi name
       @target = :both
-      @search_term = []
       # FI/PI names
       @updated = []
       @skipped = []
@@ -573,7 +572,6 @@ module ODDB
       case @target
       when :both
         res = [
-          "Searched for #{@search_term.join(", ")}",
           "Stored #{@updated_fis.size} Fachinfos",
           "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
           "Ignored #{@up_to_date_fis.size} up-to-date Fachinfo-Texts",
@@ -603,7 +601,6 @@ module ODDB
         ].join("\n")
       when :fi
         res = [
-          "Searched for #{@search_term.join(", ")}",
           "Stored #{@updated_fis.size} Fachinfos",
           "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
           "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts", nil,
@@ -630,7 +627,6 @@ module ODDB
         ].join("\n")
       when :pi
         res = [
-          "Searched for #{@search_term.join(", ")}",
           "Stored #{@updated_pis.size} Patinfos",
           "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
           "Checked #{@companies.size} companies",
@@ -653,7 +649,7 @@ module ODDB
         ].join("\n")
       end
       if @invalid_html_url.size == 0
-        res << "\nNo missing html URL in #{File.basename(@aips_xml)}"
+        res << "\nNo missing html URL in #{File.basename(@aips_xml)}\n"
       else
         res << "\n#{@invalid_html_url.size} HTML URL not found given in #{File.basename(@aips_xml)}:\n"
         res << @invalid_html_url.join("\n")
@@ -665,28 +661,28 @@ module ODDB
         res << @multiple_entries.join("\n")
       end
       if @updated_pis == 0
-        res << "\nNo updated patinfos"
+        res << "\n\nNo updated patinfos"
       else
-        res << "\nStored #{@updated_pis.size} updated patinfos:\n"
+        res << "\n\nStored #{@updated_pis.size} updated patinfos:\n"
         res << @updated_pis.join("\n")
       end
       if @updated_fis == 0
-        res << "\nNo updated patinfos"
+        res << "\nNo updated patinfos\n"
       else
         res << "\nStored #{@updated_fis.size} updated fachinfos:\n"
         res << @updated_fis.join("\n")
       end
       if @wrong_meta_tags.size == 0
-        res << "\nNo wrong metatags found"
+        res << "\nNo wrong metatags found\n"
       else
-        res << "#{@wrong_meta_tags.size} wrong metatags:\n"
+        res << "\n#{@wrong_meta_tags.size} wrong metatags:\n"
         res << @wrong_meta_tags.join("\n")
       end
       res << ""
       if @nonconforming_content.size == 0
-        res << "\nAll imported images had a supported format"
+        res << "\nAll imported images had a supported format\n"
       else
-        res << "#{@nonconforming_content.size} non conforming contents:\n"
+        res << "\n#{@nonconforming_content.size} non conforming contents:\n"
         res << @nonconforming_content.join("\n")
       end
       if @skipped_override.size > 0
@@ -694,13 +690,13 @@ module ODDB
         res << @skipped_override.join("\n")
       end
       if @missing_override.size == 0
-        res << "\nNo need to add anything to #{Override_file}"
+        res << "\nNo need to add anything to #{Override_file}\n"
       else
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.collect { |key, value| "#{key} #{value}" }.join("\n")
       end
       /MemFree[: ]*(\d+)/ =~ File.read("/proc/meminfo")
-      res << "\nHaving free #{getFreeMemoryInMB} MB"
+      res << "\nHaving free #{getFreeMemoryInMB} MB\n"
       File.open(Override_file, "w+") { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out, line_width: -1) }
       res
     end
@@ -1064,10 +1060,10 @@ module ODDB
 
     def report_sections_by(title)
       [
-        ["New/Updates #{title} from swissmedicinfo.ch"], # updated
-        ["Skipped #{title} form swissmedicinfo.ch"],     # skipped
-        ["Invalid #{title} from swissmedicXML"],         # invalid
-        ["Not found #{title} in swissmedicXML"]         # notfound
+        ["\nNew/Updates #{title} from swissmedicinfo.ch"], # updated
+        ["\nSkipped #{title} form swissmedicinfo.ch"],     # skipped
+        ["\nInvalid #{title} from swissmedicXML"],         # invalid
+        ["\nNot found #{title} in swissmedicXML"]         # notfound
       ]
     end
 
@@ -1241,10 +1237,10 @@ module ODDB
     public
 
     def parse_textinfo(meta_info, idx)
-      return if meta_info.lang.eql?("it") # we cannot parse correctly for italian
+      return if meta_info.lang.eql?("it") || meta_info.lang.eql?("en") # we cannot parse correctly for italian/english
       type = meta_info[:type].to_sym
       unless File.exist?(meta_info.cache_file)
-        msg = "#{meta_info.iksnr} #{meta_info.lang} #{meta_info.download_url}"
+        msg = "#{meta_info.iksnr} #{meta_info.lang} #{meta_info.title} #{meta_info.download_url}"
         LogFile.debug(msg)
         @invalid_html_url << msg
         return

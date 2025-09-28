@@ -14,6 +14,7 @@ require "minitest/spec/expect"
 require 'headless'
 
 RSpec.configure do |config|
+  config.pending_failure_output = :skip
   config.mock_with :flexmock
   config.expect_with :rspec do |c|
     c.syntax = [:should, :expect]

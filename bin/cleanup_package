@@ -1,5 +1,7 @@
-$stdout.puts "#{Time.now}: Starting cleanup of packages"
+$msg = "#{Time.now}: Starting cleanup of packages"
+$stdout.puts $msg
 $problems = registrations.inject([]) do |pacs, (iksnr, reg)| pacs.concat(reg.packages.find_all{|pack| !pack.instance_of?(ODDB::Package) }) end
 $problems.collect{|x|  ODBA.cache.delete(ODBA.cache.fetch(x.odba_id))}
 $problems = registrations.inject([]) do |pacs, (iksnr, reg)| pacs.concat(reg.packages.find_all{|pack| !pack.instance_of?(ODDB::Package) }) end
-$stdout.puts "#{Time.now}: Finished cleanup of packages. Found #{$problems.size} problems"
+$msg = "#{Time.now}: Finished cleanup of packages. Found #{$problems.size} problems"
+$stdout.puts $msg

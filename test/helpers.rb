@@ -92,14 +92,14 @@ class OddbTestRunner
         problems << path
       end
     }
-    diffSeconds = (Time.now - StartTime).to_i
+    diffSeconds = (Time.now - StartTime)
     puts "#{Time.now}: OddbTestRunner::Overall result for #{@rootDir} is #{okay}"
     if problems.size > 0
       puts "#{Time.now}: OddbTestRunner::Overall failing test_suites were \n#{problems.join("\n")}"
     else
       puts "All tests passed"
     end
-    puts "   Took #{(diffSeconds / 60).to_i} minutes and #{diffSeconds % 60} seconds to run"
+    puts "   Took #{sprintf("%2d",(diffSeconds / 60).to_i)} minutes and #{sprintf("%5.2f", diffSeconds % 60)} seconds to run #{File.basename(@rootDir)}"
     exit 2 unless okay
     okay
   end
