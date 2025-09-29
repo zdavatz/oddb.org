@@ -459,6 +459,60 @@ describe "ch.oddb.org" do
       end
     end
 
+  # ebenfallsc chlägt fehl Suche nach Inhaltsstoff Ascorbin
+  # Nicht jedoch nach adenosin
+  unless ["just-medical"].index(Flavor)
+    it "should show ATC-Code A11EX for Ascorbin" do
+      @browser.link(name: "drugs").click
+      @browser.select_list(name: "search_type").select("Inhaltsstoff")
+      @browser.text_field(name: "search_query").value = "Ascorbin"
+      @browser.button(name: "search").wait_until(timeout: 10, &:present?)
+      @browser.button(name: "search").click
+      @browser.link(name: "square_fachinfo").wait_until(timeout: 60, &:present?)
+      text = @browser.text.clone
+      expect(text).not_to match LeeresResult
+      expect(text).to match(/Liste\s+für\s+"Ascorbin"/)
+      expect(text).to match("A11EX")
+    end
+  end
+
+
+   unless ["just-medical"].index(Flavor)
+    it "should be possible to find drugs from Sandoz via Zulassungsinhaber" do
+      @browser.link(name: "drugs").click
+      @browser.text_field(name: "search_query").wait_until(&:present?)
+      @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
+      @browser.text_field(name: "search_query").value = "Sandoz"
+      @browser.button(name: "search").wait_until(timeout: 10, &:present?)
+      @browser.button(name: "search").click
+      @browser.link(name: "square_fachinfo").wait_until(timeout: 120, &:present?)
+      text = @browser.text.clone
+      expect(text).not_to match LeeresResult
+      expect(text).not_to match /Traceback (innermost first)/
+      expect(text).to match(/Sandoz.*ortierung nach/)
+      expect(text).to match( /Pharmaceuticals AG/)
+      expect(text).to match /Seite \d+\s*von\s+\d+/
+      /Seite \d+\s*von\s+\d+/.match(text)
+    end
+  end
+
+  unless ["just-medical"].index(Flavor)
+    it "should be possible to find drugs from Ferring via Zulassungsinhaber single page" do
+      @browser.link(name: "drugs").click
+      @browser.text_field(name: "search_query").wait_until(&:present?)
+      @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
+      @browser.text_field(name: "search_query").value = "Ferring"
+      @browser.button(name: "search").click
+      @browser.link(name: "square_fachinfo").wait_until(timeout: 30, &:present?)
+      text = @browser.text.clone
+      expect(text).not_to match LeeresResult
+      expect(text).not_to match /Traceback (innermost first)/
+      expect(text).to match(/Ferring.*ortierung nach/)
+      expect(text).to match(/Ferring AG/)
+      expect(text).not_to match "Seite"
+    end
+  end
+
     def check_search_with_type
       query = @browser.text_field(name: "search_query")
       expect(query.exists?).to eq true
@@ -612,6 +666,7 @@ describe "ch.oddb.org" do
     puts "found #{nr_restricted_products} restricted products for #{VALID_ONLY_TRADEMARK_EXAMPLE}"
     expect(nr_unrestricted_products).to be > 0
     # TODO: Niklaus August 2026. This is a real error
+    # 	Becozym forte	20 Dragée(s)	2.88	5.30	10%		Dragées: 7 Wirkstoffe	Bayer (Schweiz) AG	D / SL
     expect(nr_unrestricted_products).to be > nr_restricted_products
     puts "Limit to only valid products succeeded for #{VALID_ONLY_TRADEMARK_EXAMPLE}" if nr_unrestricted_products > nr_restricted_products
   end
