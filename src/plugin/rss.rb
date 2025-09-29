@@ -155,7 +155,7 @@ module ODDB
           orig = File.join(RSS_PATH, stub.language, name)
           file = File.basename(name, ".rss") + "-" + flavor + ".rss"
           path = File.join(RSS_PATH, stub.language, file)
-          tmp = File.join(RSS_PATH, stub.language, "." << file)
+          tmp = File.join(RSS_PATH, stub.language, "." + file)
           FileUtils.mkdir_p(File.dirname(path))
           if File.exist?(orig)
             rss = File.read(orig, encoding: "utf-8")

@@ -44,7 +44,7 @@ class TestLogFile < Minitest::Test
     begin
       ODDB::LogFile.append(:foo, ";foobar", Time.utc(2003, 8, 21, 19, 32, 10))
       assert(File.exist?(file), "Missing Logfile: #{file}")
-      expected = "2003-08-21 19:32:10 UTC;foobar\n"
+      expected =+ "2003-08-21 19:32:10 UTC;foobar\n"
       assert_equal(expected, File.read(file))
       ODDB::LogFile.append(:foo, ";barbaz", Time.utc(2003, 8, 21, 10, 0o2, 25))
       expected << "2003-08-21 10:02:25 UTC;barbaz\n"

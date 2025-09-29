@@ -12,7 +12,7 @@ module ODDB
   module Util
     class TestIsoLatin1 < Minitest::Test
       def setup
-        @str = "TESTFÄLLE"
+        @str =+ "TESTFÄLLE"
       end
 
       def test_downcase

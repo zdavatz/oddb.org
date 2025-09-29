@@ -289,7 +289,7 @@ function get_to(url) {
           "jsId"           => "search_matches",
           "idAttribute"    => "search_query",
           "target"         => target
-        html << super(context)
+        html += super(context)
       end
     end
 

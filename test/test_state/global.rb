@@ -264,7 +264,7 @@ module ODDB
         @session.app.registrations = {54316 => fi}
         query = flexmock("query") do |q|
           q.should_receive(:is_a?).and_return(false)
-          q.should_receive(:force_encoding).and_return("force_encoding")
+          q.should_receive(:encode).and_return("encode")
         end
         @lnf.should_receive(:has_sequence_filter?).and_return(false)
         flexstub(@session) do |s|

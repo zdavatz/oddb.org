@@ -27,7 +27,7 @@ end
 
 function check_rspec
     set logFile $argv[1]
-    set res (egrep '[[:digit:]]* examples, [[:digit:]]* failures, [[:digit:]]* pending' $logFile)
+    set res (grep -E "[0-9]+) |Watir::Wait::TimeoutError|[0-9] examples" $logFile)
     if test "$res" = ""
       echo "## No errors found in $logFile"
     else

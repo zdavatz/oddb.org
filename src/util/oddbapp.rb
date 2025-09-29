@@ -1814,6 +1814,7 @@ module ODDB
     def _admin(src, result, priority = 0)
       t = Thread.new {
         Thread.current.abort_on_exception = false
+        result =+ result # result String must be unfrozen!
         result << failsafe {
           response = instance_eval(src)
           str = response.to_s

@@ -99,8 +99,8 @@ module ODDB
       mail = Mail.new
       mail.from override_from || Util.mail_from
       mail.to recipients
-      mail.subject mail_subject.respond_to?(:force_encoding) ? mail_subject.force_encoding("utf-8") : mail_subject
-      mail.body mail_body.respond_to?(:force_encoding) ? mail_body.force_encoding("utf-8") : mail_body
+      mail.subject mail_subject
+      mail.body mail_body
       mail.body.charset = "UTF-8"
       log_and_deliver_mail(mail)
     rescue => e
@@ -116,6 +116,7 @@ module ODDB
       name = File.join(ENV["ODDB_CI_SAVE_MAIL_IN"], subject)
       FileUtils.makedirs(ENV["ODDB_CI_SAVE_MAIL_IN"])
       File.open(name, "a+") do |file|
+        file.puts "\n#{''.rjust(120, '⁻')}\nCreated at #{Time.now}\n#{''.rjust(120, '⁻')}\n"
         file.puts "Subject: #{mail.subject.to_s}"
         file.puts mail.body.to_s
       end
@@ -134,7 +135,7 @@ module ODDB
       mail = Mail.new
       mail.from override_from || Util.mail_from
       mail.to Util.check_and_get_all_recipients(list_and_recipients)
-      mail.subject mail_subject.respond_to?(:force_encoding) ? mail_subject.force_encoding("utf-8") : mail_subject
+      mail.subject mail_subject
       mail.body mail_body
       mail.body.charset = "UTF-8"
       attachments.each do |attachment|

@@ -276,7 +276,7 @@ module ODDB
             input.value = ggcs.collect do |pac|
               str = pac.ikskey.to_s
               if (factor = pac.generic_group_factor) && (factor /= my_factor) != 1
-                str << if factor.to_i == factor
+                str += if factor.to_i == factor
                   " (%ix)" % factor
                 else
                   " (%3.1fx)" % factor

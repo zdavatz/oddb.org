@@ -67,7 +67,7 @@ module ODDB
               atc_codes << atc_code
             end
             ids = if basket_ids = @session.interaction_basket_ids and !basket_ids.empty?
-              basket_ids << "," << model.oid.to_s
+              basket_ids + "," + model.oid.to_s
             else
               model.oid.to_s
             end

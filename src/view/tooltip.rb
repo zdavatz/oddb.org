@@ -7,7 +7,7 @@ module ODDB
     class TooltipHelper
       def self.set_java_script(element, content, href = "none")
         return unless element.additional_javascripts
-        content = content.force_encoding("UTF-8")
+        content = content.encode("UTF-8")
         script = <<~EOS
           require([
               "dijit/TooltipDialog",

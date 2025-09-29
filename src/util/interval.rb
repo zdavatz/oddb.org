@@ -46,7 +46,7 @@ module ODDB
     def get_intervals
       @model.collect { |item|
         range_patterns.collect { |range, pattern|
-          range if /^[#{pattern}]/iu.match?(item.send(*symbol).force_encoding("utf-8"))
+          range if /^[#{pattern}]/iu.match?(item.send(*symbol).encode("utf-8"))
         }.compact.first || "|unknown"
       }.flatten.uniq.sort
     end

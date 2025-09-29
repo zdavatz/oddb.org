@@ -27,7 +27,7 @@ module ODDB
             str << "0"
           end
           parts.collect! { |part| part.to_i }
-          norm = ""
+          norm =+ ""
           while (part = parts.shift) && part > 0
             norm << sprintf("%02i.", part)
           end

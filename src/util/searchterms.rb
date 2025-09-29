@@ -76,7 +76,7 @@ module ODDB
   }
   TERM_PTRN = /[#{TERM_PAIRS.keys.join}]/u
   def self.search_term(term)
-    term.force_encoding("UTF-8") unless term.frozen?
+    term = term.encode("UTF-8") unless term.frozen?
     term = term.to_s.gsub(/[[:punct:]]/u, "")
     term.gsub!(/[\/\s\-]+/u, " ")
     term.gsub! TERM_PTRN do |match| TERM_PAIRS.fetch match, match end
@@ -89,7 +89,7 @@ module ODDB
       if opts[:downcase]
         term = term.downcase
       end
-      term.force_encoding("UTF-8") unless term.frozen?
+      term = term.encode("UTF-8") unless term.frozen?
       parts = term.split(/[\/-]/u)
       if parts.size > 1
         terms.push(ODDB.search_term(parts.first))

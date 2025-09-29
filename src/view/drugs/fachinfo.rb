@@ -37,7 +37,7 @@ module ODDB
           if @document.respond_to?(:amzv)
             @value = @lookandfeel.lookup("fi_#{@name}_amzv")
           end
-          @value ||= @lookandfeel.lookup("fi_" << @name.to_s)
+          @value ||= @lookandfeel.lookup("fi_" + @name.to_s)
           @attributes["title"] = if @document.respond_to?(@name) \
                                     && (chapter = @document.send(@name)) \
                                     && chapter.respond_to?(:heading)

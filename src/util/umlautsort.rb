@@ -26,9 +26,9 @@ module ODDB
 
     def umlaut_filter(itm)
       if itm.is_a? String
-        itm = itm.downcase
+        itm =+ itm.downcase
         FILTER_PAIRS.each do |search, replace|
-          itm.gsub! search, replace
+          itm = itm.gsub search, replace
         end
         itm
       else

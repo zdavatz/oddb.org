@@ -53,7 +53,7 @@ class SGMLParser
   end
 
   def feed(data)
-    @rawdata << data
+    @rawdata += data
     goahead(false)
   end
 

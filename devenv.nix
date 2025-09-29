@@ -252,6 +252,13 @@ in {
         end
       '';
     };
+    cleanup_package = {
+      package = pkgs.fish;
+      exec = ''
+      cat bin/cleanup_package | bundle exec ruby bin/admin
+    '';
+    };
+
     start_oddb_daemons = {
       package = pkgs.fish;
       exec = ''
@@ -406,6 +413,8 @@ in {
 
         stop_oddb_daemons # seems to be necessary to ensure that import_daily runs without any problems
         start_oddb_daemons
+        echo (date): Started cleanup_package status $status | tee -a ci_run.log
+        run_and_log -l cleanup_package.log -s 1 -c cleanup_package
         echo (date): Started import_daily status $status | tee -a ci_run.log
         run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
 

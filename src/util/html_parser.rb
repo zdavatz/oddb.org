@@ -195,7 +195,7 @@ module ODDB
           key, val = pair
           inj.store(key.downcase, val.gsub(/(^['"])|(['"])$/u, ""))
         }
-        @current_line = ""
+        @current_line =+ "" # return a mutable string (needed for Ruby >= 3.5)
         @cdata = [@current_line]
         @children = []
         @colspan = [@attributes["colspan"].to_i, 1].max
@@ -248,14 +248,15 @@ module ODDB
       def next_line
         @current_formats = {}
         @formats << @current_formats
-        @current_line = ""
+        @current_line =+ ""
         @cdata << @current_line
       end
 
       def send_cdata(data)
-        @current_line.force_encoding("utf-8")
-        data.force_encoding("utf-8")
+#        @current_line.force_encoding("utf-8")
+        data.encode("utf-8")
         @current_line << data
+        #@current_line += data
         # @current_line.gsub!(/\s+/u, ' ')
         # @current_line.gsub!(/\s+/, ' ')
         @current_line

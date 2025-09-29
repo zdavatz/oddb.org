@@ -361,7 +361,7 @@ Row1 |  Cell1  |  Cell2) + " \n"
     end
 
     def test_gsub
-      @section.subheading << "subheading"
+      @section.subheading += "subheading"
       @section.next_paragraph << "a paragraph"
       @section.next_paragraph << "another paragraph"
       @section.gsub!(/[aeiou]/) { |match| match.upcase }
@@ -411,7 +411,7 @@ Row1 |  Cell1  |  Cell2) + " \n"
     end
 
     def test_empty
-      @chapter.heading << "heading"
+      @chapter.heading += "heading"
       assert_equal false, @chapter.empty?
       @chapter.heading.replace ""
       assert_equal true, @chapter.empty?
@@ -420,9 +420,9 @@ Row1 |  Cell1  |  Cell2) + " \n"
     end
 
     def test_gsub
-      @chapter.heading << "heading"
+      @chapter.heading += "heading"
       section = @chapter.next_section
-      section.subheading << "subheading"
+      section.subheading += "subheading"
       section.next_paragraph << "paragraph"
       @chapter.gsub!(/[aeiou]/) { |match| match.upcase }
       assert_equal <<~EOS.strip, @chapter.to_s
@@ -473,9 +473,9 @@ Row1 |  Cell1  |  Cell2) + " \n"
     end
 
     def test_to_search
-      @chapter.heading << "heading"
+      @chapter.heading += "heading"
       section = @chapter.next_section
-      section.subheading << "subheading"
+      section.subheading += "subheading"
       section.next_paragraph << "paragraph"
       expected = "heading subheading paragraph"
       assert_equal expected, @chapter.to_search

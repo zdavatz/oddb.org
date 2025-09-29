@@ -71,8 +71,7 @@ module ODDB
             lookandfeel: @lnf,
             zone: "zone",
             event: "event",
-            state: state,
-            event: "event")
+            state: state)
           method = flexmock("method", arity: 0)
           address = flexmock("address",
             city: "city",

@@ -160,7 +160,7 @@ module ODDB
 
       def result(bool)
         div = HtmlGrid::Div.new(bool, @session, self)
-        css = "square "
+        css =+ "square "
         if bool
           div.value = "+"
           css << "plus"

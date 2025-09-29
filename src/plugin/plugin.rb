@@ -78,7 +78,7 @@ module ODDB
       else
         ""
       end
-      str << "#{root_url}/de/gcc/resolve/pointer/" << CGI.escape(pointer.to_s) << " "
+      str += "#{root_url}/de/gcc/resolve/pointer/" + CGI.escape(pointer.to_s) + " "
     rescue
       "Error creating Link for #{pointer.inspect}"
     end

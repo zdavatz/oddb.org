@@ -70,7 +70,6 @@ module ODDB
           request_path: "request_path",
           get_cookie_input: "get_cookie_input",
           sponsor: user,
-          sponsor: nil,
           persistent_user_input: nil,
           request_method: "GET")
         @model = flexmock("model")

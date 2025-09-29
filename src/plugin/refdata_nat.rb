@@ -78,7 +78,7 @@ module ODDB
     class RefdataNatPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        $stdout.puts "#{Time.now}:  RefdataNatPlugin #{msg}" # unless defined?(Minitest)
+        $stdout.puts "#{Time.now}:  RefdataNatPlugin #{msg}" unless defined?(Minitest)
         $stdout.flush
         LogFile.append("oddb/debug", " RefdataNatPlugin #{msg}", Time.now)
       end
@@ -207,7 +207,7 @@ module ODDB
 
       def report
         return [] if (@doctors_created.size + @doctors_updated.size) == 0
-        report = "Update of doctors\n\n"
+        report =+ "Update of doctors\n\n"
         report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
         report << "Number of new doctors: " << @doctors_created.size.to_s << "\n"
         report << "Number of updated doctors: " << @doctors_updated.size.to_s << "\n"

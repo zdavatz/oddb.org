@@ -85,7 +85,7 @@ module ODDB
     class RefdataJurPlugin < Plugin
       RECIPIENTS = []
       def log(msg)
-        LogFile.append("oddb/debug", " RefdataJurPlugin #{msg}", Time.now)
+        LogFile.append("oddb/debug", " RefdataJurPlugin #{msg}", Time.now) unless defined?(Minitest)
       end
 
       def save_for_log(msg)

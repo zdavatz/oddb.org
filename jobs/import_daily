@@ -10,7 +10,10 @@ module ODDB
   module Util
     opts = {patinfo_only: false,
             fachinfo_only: false}
+    # force downloading everything via removing:
+    # rm -v data/xml/*yml data/xml/swissmedicinfo.zip data/xml/AipsDownload_latest.xml AllHtml.zip data/AllHtm
     ARGV.each do |arg|
+      opts[:skip] = true if /(skip)$/.match?(arg)
       opts[:patinfo_only] = true if /(patinfo_only)$/.match?(arg)
       opts[:fachinfo_only] = true if /(fachinfo_only)$/.match?(arg)
     end

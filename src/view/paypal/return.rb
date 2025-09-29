@@ -50,7 +50,7 @@ module ODDB
             }
             link = HtmlGrid::Link.new(:download, model, @session, self)
             link.href = @lookandfeel._event_url(:download, data)
-            link.value = "http://" << model.text
+            link.value = "http://" + model.text
             link
           end
         end

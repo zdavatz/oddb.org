@@ -71,7 +71,7 @@ module ODDB
               search_type: "st_sequence",
               search_query: name.gsub("/", "%2F"))
             html = comp.to_html(context)
-            html.gsub!(%r{<pre\b.*?</pre>}imu) { |match| match.gsub(%r{\n}u, "<BR>") }
+            html = html.gsub(%r{<pre\b.*?</pre>}imu) { |match| match.gsub(%r{\n}u, "<BR>") }
             item.description = sanitize(html).gsub(ptrn) do |match|
               link.value = match
               link.to_html(context)

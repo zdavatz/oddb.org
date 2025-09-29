@@ -124,8 +124,6 @@ class TestPackageForm < Minitest::Test
       seqnr: "seqnr",
       ikscd: "ikscd",
       iksnr: "iksnr",
-      ikscat: "ikscat",
-      lppv: "lppv",
       sl_generic_type: "sl_generic_type",
       generic_group_comparables: [package])
     @form = ODDB::View::Admin::PackageForm.new(@model, @session)

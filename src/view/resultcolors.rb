@@ -21,7 +21,7 @@ module ODDB
       def resolve_suffix(model, bg_flag = false)
         # only Package#sl_generic_type
         gt = model.respond_to?(:sl_generic_type) ? model.sl_generic_type : "unknown"
-        " " << gt.to_s << super
+        " " + gt.to_s + super
       end
 
       def row_css(model, bg_flag = false)

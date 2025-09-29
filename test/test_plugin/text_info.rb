@@ -134,10 +134,10 @@ module ODDB
     def test_save_meta_and_xref_info
       get_iksnrs_meta_info
       @plugin.save_meta_and_xref_info
-      get_tramal_fi_and_pi
-      assert(File.exist?(@plugin.meta_xml))
       assert(File.exist?(@plugin.aips_xml))
-      assert(File.exist?(@plugin.xref_xml))
+      assert(File.exist?(@plugin.meta_yml))
+      assert(File.exist?(@plugin.xref_yml))
+      get_tramal_fi_and_pi
       assert_equal(43788, @tramal_fi.iksnr.to_i)
       assert_equal(43788, @tramal_pi.iksnr.to_i)
     end
@@ -155,35 +155,6 @@ module ODDB
       assert_equal(File.join(ODDB::WORK_DIR, "AllHtml.zip"), @plugin.zip_file)
       assert_equal(old_size, File.size(@plugin.zip_file))
       assert(File.exist?(tst_file))
-    end
-
-    def test_unpack_beautify_sha256
-      get_iksnrs_meta_info
-      @plugin.save_meta_and_xref_info
-      get_tramal_fi_and_pi
-      FileUtils.rm_f(@tramal_pi.cache_file)
-      FileUtils.rm_f(@tramal_fi.cache_file)
-      assert(!File.exist?(@tramal_pi.cache_file))
-      assert(!File.exist?(@tramal_fi.cache_file))
-      @plugin.download_all_html_zip(@all_html_zip)
-      @remove_fi = @plugin.iksnrs_meta_info.values.flatten.find_all { |x| x.iksnr.to_i.eql?(32917) && x.type.eql?("fi") && x.lang.eql?("de") }.first
-      FileUtils.rm_f(@remove_fi.cache_file, verbose: true)
-      get_tramal_fi_and_pi
-      assert(File.exist?(@tramal_pi.cache_file))
-      assert(File.exist?(@tramal_fi.cache_file))
-      assert(File.exist?(@tramal_pi.cache_file))
-      assert(File.size(@tramal_pi.cache_file) > 1024)
-      assert_nil(@tramal_pi.cache_sha256)
-      assert_nil(@tramal_pi.cache_sha256)
-      assert_nil(@tramal_fi.cache_sha256)
-      @plugin.calc_and_save_sha256
-      assert(@tramal_pi.cache_sha256)
-      assert(@tramal_pi.cache_sha256)
-      assert_equal(64, @tramal_fi.cache_sha256.size)
-      assert_equal(64, @tramal_pi.cache_sha256.size)
-      nr_sha = @plugin.iksnrs_meta_info.values.flatten.collect { |x| x.cache_sha256 }.compact.size
-      nr_uniq = @plugin.iksnrs_meta_info.values.flatten.collect { |x| x.cache_sha256 }.compact.uniq.size
-      assert_equal(nr_sha, nr_uniq) # SHA256 value must be uniq
     end
   end
 

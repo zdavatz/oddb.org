@@ -53,7 +53,7 @@ module ODDB
           else
             @session.lookandfeel._event_url(:resolve, {pointer: addr_sugg.pointer})
           end
-          input.store(:url, @url.sub!(":443", "")) # remove port number if https
+          input.store(:url, @url = @url.sub(":443", "")) # remove port number if https
           @session.app.update(pointer, input, unique_email)
 
         end

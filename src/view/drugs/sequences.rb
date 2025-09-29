@@ -93,7 +93,7 @@ module ODDB
           else
             @lookandfeel._event_url(:search, args, "best_result")
           end
-          link.css_class = "big" << resolve_suffix(model)
+          link.css_class = "big" + resolve_suffix(model)
           link
         end
       end

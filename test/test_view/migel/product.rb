@@ -393,7 +393,6 @@ module ODDB
             language: "language",
             event: "event",
             zone: "zone",
-            event: "event",
             flavor: "flavor",
             request_path: "request_path",
             persistent_user_input: nil,

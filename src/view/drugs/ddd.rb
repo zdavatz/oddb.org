@@ -132,7 +132,7 @@ module ODDB
         def source(model, session)
           if (atc = model.last)
             link = external_link(atc, :ddd_source)
-            href = "http://www.whocc.no/atcddd/indexdatabase/index.php?query="
+            href =+ "http://www.whocc.no/atcddd/indexdatabase/index.php?query="
             href << atc.code
             link.href = href
             link
