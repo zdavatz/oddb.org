@@ -55,7 +55,7 @@ module ODDB
             @session.set_cookie_input(:resultview, "pages")
             @filter = proc { |model|
               @session.set_cookie_input(:resultview, "pages")
-              page
+              page()  # standard:disable all
             }
           end
         end
@@ -78,13 +78,13 @@ module ODDB
         end
 
         def limit_state
-          model = if @search_type == "st_sequence"
+          model = if @search_type.eql?("st_sequence")
             @model
           else
             _search_drugs(@search_query, "st_sequence")
           end
           result = model.atc_classes.inject([]) { |mdl, atc|
-            mdl + atc.active_packages
+            mdl += atc.active_packages  # standard:disable all
           }
           state = State::Drugs::ResultLimit.new(@session, result)
           state.package_count = @model.package_count
@@ -101,7 +101,7 @@ module ODDB
             ## reset page-input
             if @session.user_input(:page)
               pge = @session.user_input(:page)
-            elsif code = @session.user_input(:code)
+            elsif (code = @session.user_input(:code))
               pge = @code2page[code]
             end
             @session.set_persistent_user_input(:page, pge)

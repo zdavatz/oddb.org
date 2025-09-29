@@ -194,14 +194,17 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
   setup_browser
   startTime = Time.now
   @seconds = -1
-  0.upto(maxWait).each { |idx|
-    @browser.goto ODDB_URL
-    if /Internal Server Error/.match?(@browser.text)
-      raise "InternalServerError"
-    end
-    unless /Es tut uns leid/.match?(@browser.text)
-      @seconds = idx
-      break
+  0.upto(maxWait).each do |idx|
+    begin
+      @browser.goto ODDB_URL
+      if /Internal Server Error/.match?(@browser.text)
+        raise "InternalServerError"
+      end
+      unless /Es tut uns leid/.match?(@browser.text)
+        @seconds = idx
+        break
+      end
+    rescue => error
     end
     if idx == 0
       $stdout.write "Waiting max #{maxWait} seconds for #{url} to be ready"
@@ -211,7 +214,7 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
       $stdout.flush
     end
     sleep 1
-  }
+  end
   endTime = Time.now
   sleep(0.2)
   plus_link = @browser.link(name: "search_instant")
