@@ -11,7 +11,7 @@ require "page-object"
 require "fileutils"
 require "watir"
 require "minitest/spec/expect"
-require 'headless'
+require "headless"
 
 RSpec.configure do |config|
   config.pending_failure_output = :skip
@@ -73,6 +73,7 @@ ViewerUser = "info@desitin.ch"
 ViewerPassword = "desitin"
 LeeresResult = /hat ein leeres Resultat/
 Date_Regexp = /\d{2}.\d{2}.\d{4}/
+TraceBack = /Traceback \(innermost first\)/
 
 SNAP_IKSNR = 40501
 SNAP_NAME = "Lubex®"
@@ -204,7 +205,7 @@ def waitForOddbToBeReady(browser = nil, url = ODDB_URL, maxWait = 30)
         @seconds = idx
         break
       end
-    rescue => error
+    rescue
     end
     if idx == 0
       $stdout.write "Waiting max #{maxWait} seconds for #{url} to be ready"

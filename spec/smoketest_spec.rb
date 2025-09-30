@@ -4,6 +4,41 @@ require "spec_helper"
 require "paypal_helper"
 @workThread = nil
 
+# found via  @browser.links.collect{|x| x.href if x.visible?}.find_all{|x| x.size > 0}
+LINKS_2_CHECK = [
+  "#{ODDB_URL}/de/gcc/atc_chooser/",
+  "#{ODDB_URL}/de/gcc/home/",
+  "#{ODDB_URL}/de/gcc/home_companies/",
+  "#{ODDB_URL}/de/gcc/home_doctors/",
+  "#{ODDB_URL}/de/gcc/home_hospitals/",
+  "#{ODDB_URL}/de/gcc/home_interactions/",
+  "#{ODDB_URL}/de/gcc/home_migel/",
+  "#{ODDB_URL}/de/gcc/home_pharmacies/",
+  "#{ODDB_URL}/de/gcc/home_user/",
+  "#{ODDB_URL}/de/gcc/limitation_texts/",
+  "#{ODDB_URL}/de/gcc/logout/",
+  "#{ODDB_URL}/de/gcc/narcotics/",
+  "#{ODDB_URL}/de/gcc/preferences/",
+  "#{ODDB_URL}/de/gcc/recent_registrations/",
+  "#{ODDB_URL}/de/gcc/rss/channel/feedback.rss",
+  "#{ODDB_URL}/de/gcc/rss/channel/hpc.rss",
+  "#{ODDB_URL}/de/gcc/rss/channel/price_cut.rss",
+  "#{ODDB_URL}/de/gcc/rss/channel/price_rise.rss",
+  "#{ODDB_URL}/de/gcc/rss/channel/recall.rss",
+  "#{ODDB_URL}/de/gcc/rss/channel/sl_introduction.rss",
+  "#{ODDB_URL}/de/gcc/sequences/",
+  "#{ODDB_URL}/de/gcc/vaccines/",
+  "#{ODDB_URL}/en/",
+  "#{ODDB_URL}/fr/",
+  "http://itunes.apple.com/us/app/generika/id520038123?ls=1&mt=8",
+  "http://www.whocc.no/atcddd/",
+  "https://github.com/zdavatz/oddb.org",
+  "https://play.google.com/store/apps/details?id=org.oddb.generika",
+  "https://www.ywesee.com/",
+  "https://ywesee.com/ODDB/Legal"
+  # "#{ODDB_URL}/de/gcc/home/search_form/instant",
+]
+
 describe "ch.oddb.org" do
   VALID_ONLY_TRADEMARK_EXAMPLE = "Norvasc"
 
@@ -35,8 +70,52 @@ describe "ch.oddb.org" do
     expect(text).to match(/Citratsäure/i)
   end
 
-  describe "admin" do
+  describe "main links" do
+    before :each do
+      @browser.goto ODDB_URL
+      unless /#{A_USER_NAME}/o.match?(@browser.text)
+        # logout/login if necessary
+        logout
+        login
+      end
+    end
 
+    it "should be possible use follow recent_registrations  " do
+      @browser.goto ODDB_URL
+      link1 = @browser.link(href: /recent_registrations/).wait_until(&:present?)
+      link1.click
+      expect(@browser.text.clone).not_to match TraceBack
+      @browser.link(href: /#{ODDB_URL}/o).wait_until(timeout: 10, &:present?)
+      text = @browser.text.clone
+      expect(text).not_to match LeeresResult
+      expect(text).not_to match TraceBack
+    end
+
+    LINKS_2_CHECK.each do |link2follow|
+      if link2follow.size == 0 || /rss$/.match(link2follow) || /goo.gl|youtube/.match(link2follow)
+        skip "Skipping #{link2follow}"
+        next
+      end
+      it "should be possible use follow#{link2follow}" do
+        unless @browser.link(href: link2follow).visible?
+          skip "Cannot check#{link2follow} as it is not visible"
+        end
+        @browser.goto ODDB_URL
+        link1 = @browser.link(href: link2follow).wait_until(&:present?)
+        link1.click
+        expect(@browser.text.clone).not_to match TraceBack
+        if /#{ODDB_URL}/o.match?(link2follow)
+          puts "waiting for to appear #{link2follow}" if $VERBOSE
+          @browser.link(href: /#{ODDB_URL}/o).wait_until(timeout: 10, &:present?)
+        end
+        text = @browser.text.clone
+        expect(text).not_to match LeeresResult
+        expect(text).not_to match TraceBack
+      end
+    end
+  end
+
+  describe "admin" do
     before :all do
     end
     before :each do
@@ -459,59 +538,65 @@ describe "ch.oddb.org" do
       end
     end
 
-  # ebenfallsc chlägt fehl Suche nach Inhaltsstoff Ascorbin
-  # Nicht jedoch nach adenosin
-  unless ["just-medical"].index(Flavor)
-    it "should show ATC-Code A11EX for Ascorbin" do
-      @browser.link(name: "drugs").click
-      @browser.select_list(name: "search_type").select("Inhaltsstoff")
-      @browser.text_field(name: "search_query").value = "Ascorbin"
-      @browser.button(name: "search").wait_until(timeout: 10, &:present?)
-      @browser.button(name: "search").click
-      @browser.link(name: "square_fachinfo").wait_until(timeout: 60, &:present?)
+    # ebenfallsc chlägt fehl Suche nach Inhaltsstoff Ascorbin
+    # Nicht jedoch nach adenosin
+    unless ["just-medical"].index(Flavor)
+      it "should show ATC-Code A11EX for Ascorbin" do
+        @browser.link(name: "drugs").click
+        @browser.select_list(name: "search_type").select("Inhaltsstoff")
+        @browser.text_field(name: "search_query").value = "Ascorbin"
+        @browser.button(name: "search").wait_until(timeout: 10, &:present?)
+        @browser.button(name: "search").click
+        @browser.link(name: "square_fachinfo").wait_until(timeout: 60, &:present?)
+        text = @browser.text.clone
+        expect(text).not_to match LeeresResult
+        expect(text).to match(/Liste\s+für\s+"Ascorbin"/)
+        expect(text).to match("A11EX")
+      end
+    end
+
+    unless ["just-medical"].index(Flavor)
+      it "should be possible to find drugs from Sandoz via Zulassungsinhaber" do
+        @browser.link(name: "drugs").click
+        @browser.text_field(name: "search_query").wait_until(&:present?)
+        @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
+        @browser.text_field(name: "search_query").value = "Sandoz"
+        @browser.button(name: "search").wait_until(timeout: 10, &:present?)
+        @browser.button(name: "search").click
+        @browser.link(name: "square_fachinfo").wait_until(timeout: 120, &:present?)
+        text = @browser.text.clone
+        expect(text).not_to match LeeresResult
+        expect(text).not_to match TraceBack
+        expect(text).to match(/Sandoz.*ortierung nach/)
+        expect(text).to match(/Pharmaceuticals AG/)
+        expect(text).to match(/Seite \d+\s*von\s+\d+/)
+        /Seite \d+\s*von\s+\d+/.match(text)
+      end
+    end
+
+    it "should be possible use see New registrations" do
+      @browser.link(name: "new_registrations").click
       text = @browser.text.clone
       expect(text).not_to match LeeresResult
-      expect(text).to match(/Liste\s+für\s+"Ascorbin"/)
-      expect(text).to match("A11EX")
+      expect(text).not_to match TraceBack
     end
-  end
 
-
-   unless ["just-medical"].index(Flavor)
-    it "should be possible to find drugs from Sandoz via Zulassungsinhaber" do
-      @browser.link(name: "drugs").click
-      @browser.text_field(name: "search_query").wait_until(&:present?)
-      @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
-      @browser.text_field(name: "search_query").value = "Sandoz"
-      @browser.button(name: "search").wait_until(timeout: 10, &:present?)
-      @browser.button(name: "search").click
-      @browser.link(name: "square_fachinfo").wait_until(timeout: 120, &:present?)
-      text = @browser.text.clone
-      expect(text).not_to match LeeresResult
-      expect(text).not_to match /Traceback (innermost first)/
-      expect(text).to match(/Sandoz.*ortierung nach/)
-      expect(text).to match( /Pharmaceuticals AG/)
-      expect(text).to match /Seite \d+\s*von\s+\d+/
-      /Seite \d+\s*von\s+\d+/.match(text)
+    unless ["just-medical"].index(Flavor)
+      it "should be possible to find drugs from Ferring via Zulassungsinhaber single page" do
+        @browser.link(name: "drugs").click
+        @browser.text_field(name: "search_query").wait_until(&:present?)
+        @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
+        @browser.text_field(name: "search_query").value = "Ferring"
+        @browser.button(name: "search").click
+        @browser.link(name: "square_fachinfo").wait_until(timeout: 30, &:present?)
+        text = @browser.text.clone
+        expect(text).not_to match LeeresResult
+        expect(text).not_to match TraceBack
+        expect(text).to match(/Ferring.*ortierung nach/)
+        expect(text).to match(/Ferring AG/)
+        expect(text).not_to match "Seite"
+      end
     end
-  end
-
-  unless ["just-medical"].index(Flavor)
-    it "should be possible to find drugs from Ferring via Zulassungsinhaber single page" do
-      @browser.link(name: "drugs").click
-      @browser.text_field(name: "search_query").wait_until(&:present?)
-      @browser.select_list(name: "search_type").select(/Zulassungsin/) # st_company
-      @browser.text_field(name: "search_query").value = "Ferring"
-      @browser.button(name: "search").click
-      @browser.link(name: "square_fachinfo").wait_until(timeout: 30, &:present?)
-      text = @browser.text.clone
-      expect(text).not_to match LeeresResult
-      expect(text).not_to match /Traceback (innermost first)/
-      expect(text).to match(/Ferring.*ortierung nach/)
-      expect(text).to match(/Ferring AG/)
-      expect(text).not_to match "Seite"
-    end
-  end
 
     def check_search_with_type
       query = @browser.text_field(name: "search_query")
@@ -686,10 +771,8 @@ describe "ch.oddb.org" do
     # Done in separate spec test, as one has to search often for an actual valid example
     #  :search_limitation_valid => VALID_ONLY_TRADEMARK_EXAMPLE,
   ]
-  tests = [
-    [:search_limitation_A, "Fosfolag", false],
-    [:search_limitation_D, "Elmex", true],
-  ] if false # if you want to run a subset of the tests
+  # if you want to run a subset of the tests
+
   tests.each do |example|
     limitation = example[0]
     drug_name = example[1]
