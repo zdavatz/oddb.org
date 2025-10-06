@@ -1674,7 +1674,7 @@ module ODDB
         @@last_start_time = (Time.now - start).to_i
       end
     rescue => error
-      LogFile.debug("Error initializing #{error} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
+      LogFile.debug("Error initializing #{error} #{error.backtrace[0..10].join("\n")} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
     end
 
     def method_missing(m, *args, &block)
