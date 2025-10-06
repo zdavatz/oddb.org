@@ -34,7 +34,7 @@ module ODDB
           if @descriptions.is_a?(Array) || @descriptions[key].nil?
             descriptions.keys.each do |key|
               if key.is_a?(Symbol) && descriptions[key.to_s]
-                LogFile.debug "Deleted #{key} for #{@descriptions&.values&.first&.to_s[0..40]}"
+                LogFile.debug "Deleted #{key.inspect} for #{@descriptions&.values&.first&.to_s[0..40]}"
                 descriptions.delete(key)
                 odba_store
               end
