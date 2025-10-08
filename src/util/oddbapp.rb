@@ -1523,15 +1523,19 @@ class OddbPrevalence
   ## indices
   def rebuild_indices(name = nil, &block)
     verbose = !defined?(Minitest)
+    path = File.join(ODDB::PROJECT_ROOT, "etc/index_definitions.yaml")
+    file = File.open(path)
+    @rebuilt = []
+    @failures = []
     ODBA.cache.indices.size
+    @defined_indices = []
+    YAML.load_stream(file) do |index_definition|
+      @defined_indices << index_definition.index_name
+    end
     begin
       start = Time.now
-      path = File.join(ODDB::PROJECT_ROOT, "etc/index_definitions.yaml")
-      FileUtils.mkdir_p(File.dirname(path))
       file = File.open(path)
-      YAML.load_stream(file) { |index_definition|
-        $stdout.puts "#{caller(1..1).first}: rebuild_indices #{index_definition.index_name}" if verbose
-
+      YAML.load_stream(file) do |index_definition|
         doit = if name and name.length > 0
           name.match(index_definition.index_name)
         elsif block
@@ -1542,33 +1546,35 @@ class OddbPrevalence
         if doit
           index_start = Time.now
           begin
-            puts "dropping: #{index_definition.index_name}" if verbose
             ODBA.cache.drop_index(index_definition.index_name)
           rescue => e
-            puts e.message
+            ODDB::LogFile.debug("#{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
           end
-          puts "creating: #{index_definition.index_name}" if verbose
-          ODBA.cache.create_index(index_definition, ODDB)
           begin
-            puts "filling: #{index_definition.index_name}" if verbose
-            puts index_definition.init_source
+            ODBA.cache.create_index(index_definition, ODDB)
             source = instance_eval(index_definition.init_source)
-            puts "source.size: #{source.size}" if verbose
-            ODBA.cache.fill_index(index_definition.index_name,
-              source)
+            ODDB::LogFile.debug("filling: #{index_definition.index_name} source.size: #{source.size}") if verbose
+            ODBA.cache.fill_index(index_definition.index_name, source)
+            @rebuilt << index_definition.index_name
           rescue => e
-            puts e.class
-            puts e.message
-            puts e.backtrace
+            @failures << index_definition.index_name
+            ODDB::LogFile.debug("#{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
           end
-          puts "finished in #{(Time.now - index_start) / 60.0} min" if verbose
+          ODDB::LogFile.debug("finished rebuild #{index_definition.index_name} in #{(Time.now - index_start).to_i} seconds") if verbose
         end
-      }
-      puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h" if verbose
+      end
+      duration = Time.now - start
+      if @failures.size == 0
+        msg =+"Built #{@rebuilt.size} indices: #{@rebuilt.join(" ")}"
+      else
+        msg =+"Built #{@rebuilt.size} indices. Failed building #{@failures.join(" ")}"
+      end
+      msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds.\n#{msg}"
+      ODDB::LogFile.debug("The following indices exist #{(ODBA.cache.indices.keys - @defined_indices).sort} which are not defined in #{path}")
+      ODDB::LogFile.debug msg
+      exit 1 unless @failures.size == 0
     rescue => e
-      puts "INDEX CREATION ERROR:"
-      puts e.message
-      puts e.backtrace
+      ODDB::LogFile.debug "INDEX CREATION ERROR: #{e} #{e.backtrace[0..8].join("\n")}"
     ensure
       file.close
     end
@@ -1649,14 +1655,19 @@ module ODDB
       @unknown_user = unknown_user
       @app = app
       super()
-      LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds") unless defined?(Minitest)
+      ODDB::LogFile.debug("process: #{$0} server_uri #{server_uri}  auxiliary #{auxiliary} after #{Time.now - start} seconds") unless defined?(Minitest)
       @rss_mutex = Mutex.new
       @cache_mutex = Mutex.new
       @admin_threads = ThreadGroup.new
       @system = ODBA.cache.fetch_named("oddbapp", self) { OddbPrevalence.new }
-      LogFile.debug("init system starting after #{Time.now - start} seconds") unless defined?(Minitest)
-      @system.init
-      @system.odba_store
+      ODDB::LogFile.debug("init system starting after #{Time.now - start} seconds") unless defined?(Minitest)
+      begin
+        @system.init
+        @system.odba_store
+      rescue => error
+        ODDB::LogFile.debug("odba_id: #{index.odba_id} #{odba_object.odba_id} #{error} #{error.backtrace[0..10].join("\n")}")
+        nil
+      end
       return if auxiliary
       reset
       log_size
@@ -1674,7 +1685,7 @@ module ODDB
         @@last_start_time = (Time.now - start).to_i
       end
     rescue => error
-      LogFile.debug("Error initializing #{error} #{error.backtrace[0..10].join("\n")} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
+      ODDB::LogFile.debug("Error initializing #{error} #{error.backtrace[0..10].join("\n")} with @@primary_server #{@@primary_server}") unless defined?(Minitest)
     end
 
     def method_missing(m, *args, &block)
