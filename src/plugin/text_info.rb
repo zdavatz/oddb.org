@@ -1214,7 +1214,16 @@ module ODDB
       if meta_info.type == "fi"
         reg.fachinfo if reg
       else
-        reg.packages.each { |pack| pack.delete_invalid_patinfo }
+        begin
+        reg.packages.each { |pack| @pack = pack; pack.delete_invalid_patinfo }
+        rescue => error
+          # fix some error in the database. see https://github.com/zdavatz/oddb.org/issues/386
+          msg = "FIX_DB_ERROR #{iksnr} #{meta_info.lang} #{meta_info.title} #{error} #{@pack.odba_id}"
+          LogFile.debug(msg)
+          reg.sequences.values.collect{|seq| seq.packages.delete_if{|nr, pack| !pack.instance_of?(ODDB::Package)}}
+          reg.odba_store
+          reg.packages.each { |pack| @pack = pack; pack.delete_invalid_patinfo }
+        end
         infoTxt = reg.packages.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
         # consider case where all packages have the same patinfo
         infoTxt ||= reg.sequences.values.collect { |x| x.patinfo if x.respond_to?(:patinfo) }.compact.first
@@ -1268,7 +1277,7 @@ module ODDB
       image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0, 10].gsub(/[^A-z0-9]/, "_")}")
       bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
       mbytes = (bytes / (2**20)).to_i
-      LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{new_html} using #{mbytes} MB (free #{getFreeMemoryInMB}) at #{idx}/#{@metas&.size}" unless unchanged
+      LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{File.basename(new_html)} using #{mbytes} MB (free #{getFreeMemoryInMB}) at #{idx}/#{@metas&.size}" unless unchanged
       if type == :fi
         if unchanged && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
           LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{new_html} unchanged #{new_html}" if defined?(Minitest)
