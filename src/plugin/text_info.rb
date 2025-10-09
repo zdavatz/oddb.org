@@ -75,7 +75,7 @@ module ODDB
       @specify_barcode_to_text_info ||= {}
       @skipped_override ||= []
       @missing_override ||= {}
-      @multiple_entries ||= []
+      @multiple_entries ||= {}
       @invalid_html_url ||= []
       @already_imported ||= []
       @zip_url = "https://files.refdata.ch/simis-public-prod/MedicinalDocuments/AllHtml.zip"
@@ -179,10 +179,11 @@ module ODDB
       old_ti = container.send(type)
       if old_ti
         Languages.each do |lang|
-          if old_ti.descriptions && desc = new_ti.description(lang)
-            msg = "#{container.class} #{type} lang #{lang} #{new_ti.description(lang).to_s.split("\n")[0..2]}"
+          lang_s = lang.to_s
+          if old_ti.descriptions && desc = new_ti.description(lang_s)
+            msg = "#{container.class} #{type} lang #{lang_s} #{new_ti.description(lang_s).to_s.split("\n")[0..2]}"
             LogFile.debug msg
-            old_ti.descriptions[lang] = desc
+            old_ti.descriptions[lang_s] = desc
             old_ti.descriptions.odba_isolated_store
           end
         end
@@ -294,14 +295,13 @@ module ODDB
     end
 
     def update_html_cache_file(meta_info)
-      if !FileUtils.uptodate?(meta_info.html_file, [meta_info.cache_file])
+      if !FileUtils.compare_file(meta_info.html_file, meta_info.cache_file)
         FileUtils.makedirs(File.dirname(meta_info.html_file))
         FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true, preserve: true)
       end
     end
 
     def update_fachinfo_lang(meta_info, fis, fi_flags = {})
-      LogFile.debug "#{meta_info.iksnr} #{meta_info}"
       unless meta_info.authNrs && meta_info.authNrs.size > 0
         @iksless[:fi].push meta_info.title
         if fis.values.first.date.to_s.index(Date.today.year.to_s) ||
@@ -318,6 +318,14 @@ module ODDB
           #  but because we still want to extract the iksnrs, we just mark them
           #  and defer inaction until here:
           unless fi_flags[:pseudo] || fis.empty?
+            if problems = reg.fachinfo.descriptions.find_all{|key,value| key.is_a?(Symbol)}
+              LogFile.debug "Removing fachinfo with lang symbols keys from #{reg.iksnr} #{problems.collect{|x|x.first}}"
+              reg.fachinfo.descriptions.delete_if{|key,value| key.is_a?(Symbol)}
+              reg.fachinfo.descriptions.odba_isolated_store
+              reg.fachinfo.descriptions.odba_store
+              reg.fachinfo.odba_store
+              reg.odba_store
+            end
             LogFile.debug "#{meta_info.title} iksnr #{meta_info.iksnr} store_fachinfo #{fi_flags} #{fis.keys} ATC #{meta_info.atcCode}"
             unless meta_info.iksnr.to_i == 0
               fachinfo ||= TextInfoPlugin.store_fachinfo(@app, reg, fis)
@@ -441,16 +449,19 @@ module ODDB
 
     def report_multiple(meta_info)
       key = [meta_info.iksnr, meta_info.type, meta_info.lang]
-      if @iksnrs_meta_info[key].size == 1
-        return
+      @already_imported ||= []
+      unless @already_imported.index(key)
+        @already_imported << key
+        return false
       else
-        text =+ "#{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: has #{@iksnrs_meta_info[key].size} entries\n"
+        return key if @multiple_entries[key] # Info must be collected only once
+        text = "#{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: has #{@iksnrs_meta_info[key].size} entries\n"
         LogFile.debug(text)
-        text << @iksnrs_meta_info[key].collect do |x|
+        text += @iksnrs_meta_info[key].collect do |x|
           date = Date.parse(x.informationUpdate)
           "   #{date} #{x.title} from #{File.basename(x.download_url)}"
         end.join("\n")
-        @multiple_entries << text
+        @multiple_entries[key] = text
         return key
       end
     end
@@ -482,22 +493,16 @@ module ODDB
               barcode_override = "#{package.barcode}_#{meta_info.type}_#{lang}"
               msg = "#{meta_info.iksnr}/#{package.seqnr}/#{package.ikscd} #{lang}: #{meta_info.title}"
               name = @specify_barcode_to_text_info[barcode_override]
-              if @already_imported.index(key) == 0
-                if meta_info.title.eql?(name)
-                  res = store_package_patinfo(package, lang, textinfo_pi)
-                  LogFile.debug "barcode_override #{barcode_override} #{name} #{package.ikscd} #{msg} res = #{res.to_s[0..40]}"
-                  @updated_pis << msg
-                elsif name
-                  LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
-                  @skipped_override << barcode_override
-                else
-                  LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
-                  @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
-                end
+              if meta_info.title.eql?(name)
+                res = store_package_patinfo(package, lang, textinfo_pi)
+                LogFile.debug "barcode_override #{barcode_override} #{name} #{package.ikscd} #{msg} res = #{res.to_s[0..40]}"
+                @updated_pis << msg
+              elsif name
+                LogFile.debug "Skipped #{barcode_override} in #{Override_file} as we skip #{meta_info.title} != #{name}"
+                @skipped_override << barcode_override
               else
-                report_multiple(meta_info) unless @already_imported.index(key)
-                @already_imported << key
-                LogFile.debug "already_imported #{key}"
+                LogFile.debug "missing_override: not found via #{barcode_override}: '#{name}' != '#{meta_info.title}'"
+                @missing_override["#{barcode_override}"] = "#{meta_info.title} # != override #{name}"
               end
             end
           end
@@ -646,7 +651,9 @@ module ODDB
         res << "\nNo multiple entries in #{File.basename(@aips_xml)}"
       else
         res << "\nFound #{@multiple_entries.size} multiple entries in #{File.basename(@aips_xml)}:\n"
-        res << @multiple_entries.join("\n")
+        @multiple_entries.each do |key, val|
+          res << "#{key.join(" ")}\n#{val}"
+        end
       end
       if @updated_pis == 0
         res << "\n\nNo updated patinfos"
@@ -1235,6 +1242,7 @@ module ODDB
 
     def parse_textinfo(meta_info, idx)
       return if meta_info.lang.eql?("it") || meta_info.lang.eql?("en") # we cannot parse correctly for italian/english
+      return if report_multiple(meta_info)
       type = meta_info[:type].to_sym
       unless File.exist?(meta_info.cache_file)
         msg = "#{meta_info.iksnr} #{meta_info.lang} #{meta_info.title} #{meta_info.download_url}"

@@ -44,9 +44,9 @@ module ODDB
             @descriptions[key]
           end
         rescue ODBA::OdbaError, NoMethodError => error
-          LogFile.debug "Descriptions.description error #{error.inspect}"
-          #          puts caller[0..10].join("\n")
-          ""
+          LogFile.debug "Descriptions.description error #{error.inspect} #{odba_id} #{error.backtrace[0..10].join("\n")}"
+          @descriptions = Descriptions.new
+          odba_store
         end
       else
         ""

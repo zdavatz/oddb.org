@@ -36,6 +36,21 @@ require "yus/session"
 require "remote/migel/model"
 require "util/logfile"
 
+module ODBA
+  class Cache
+    puts("\n#{__FILE__}:#{__LINE__} Please remove this ugly hack to avoid problems. see https://github.com/zdavatz/oddb.org/issues/386 as soon as possible\n\n")
+    def update_indices(odba_object) # :nodoc:
+      if odba_object.odba_indexable?
+        indices.each do |index_name, index|
+          index.update(odba_object)
+        rescue => error
+          ODDB::LogFile.debug("#{index_name} odba_id: #{index.odba_id} #{odba_object.odba_id} #{error} #{error.backtrace[0..10].join("\n")}")
+        end
+      end
+    end
+  end
+end
+
 class OddbPrevalence
   include ODDB::Failsafe
   include ODBA::Persistable
@@ -911,6 +926,7 @@ class OddbPrevalence
       if reg.instance_of?(ODDB::Registration)
         problems = reg.packages.find_all { |pack| !pack.instance_of?(ODDB::Package) }
         ODDB::LogFile.debug("Reg #{iksnr} has invalid packages odba_id #{reg.odba_id} #{reg.class} #{problems}") if problems.size > 0
+        reg.packages.delete_if { |pack| !pack.instance_of?(ODDB::Package) }
         pacs.concat(reg.packages.find_all { |pack| pack.instance_of?(ODDB::Package) })
       else
         ODDB::LogFile.debug("Reg #{reg.odba_id} #{reg.class} is not a Registration (fetch #{ODBA.cache.fetch(reg.odba_id).class}) is not an instance of ODDB::Registration")
@@ -1453,6 +1469,106 @@ class OddbPrevalence
     end
   end
 
+
+  def repair_non_utf8_strings
+    # Added this helper method in October 2025 to fix very old errors in the database, as some ISO-8859-1 strings
+    # were never correctly converted to UTF-8. See https://github.com/zdavatz/oddb.org/issues/386
+    # It took almost an hour to complete on my local laptop
+    startTime = Time.now
+    ODDB::LogFile.debug("Starting")
+    @hospitals.values.each { |hospital| hospital.search_terms; hospital.odba_store}
+    ODDB::LogFile.debug("Finished repairing hospital. Reparing doctors will take 30 minutes or more")
+    @doctors.values.each { |doc| doc.search_terms; doc.odba_store}
+    ODDB::LogFile.debug("Finished repairing doctors")
+    @companies.values.each { |comp| comp.search_terms; comp.odba_store}
+    ODDB::LogFile.debug("Finished repairing companies")
+    res =  @substances.find_all { |key, value| !value.instance_of?(ODDB::Substance) }
+    if res.size > 0
+      @substances.delete_if { |key, value| !value.instance_of?(ODDB::Substance) }
+      @substances.odba_store
+    end
+    ODDB::LogFile.debug("Finished step 1 for @substances deleted #{res}")
+    @substances.values.find_all{|sub| !sub.respond_to?(:_search_keys)}.each{|x|ODBA.cache.delete(ODBA.cache.fetch(x.odba_id))}
+    @substances.odba_store
+    ODDB::LogFile.debug("Finished step 2 for @substances")
+    @substances.collect { |key, value| value._search_keys }
+    ODDB::LogFile.debug("Finished step 3 for @substances")
+    @substances.each do |key, value|
+      begin
+        value.name.encode("UTF-8")
+      rescue Encoding::UndefinedConversionError => error
+        ODDB::LogFile.debug("#{error} name #{value.name.encoding} from substance with odba_id #{value.odba_id} #{value.name[0..40]}")
+        value.name.force_encoding("ISO-8859-1")
+        value.descriptions["en"] = value.name.encode("UTF-8")
+        value.odba_store
+      end
+      begin
+        value.lt.encode("UTF-8")
+      rescue Encoding::UndefinedConversionError => error
+        ODDB::LogFile.debug("#{error} lt #{value.lt.encoding} from substance with odba_id #{value.odba_id} #{value.lt[0..40]}")
+        new_name = value.lt.dup
+        new_name.force_encoding("ISO-8859-1")
+        value.descriptions["en"] = new_name.encode("UTF-8")
+        value.descriptions.odba_store
+        value.odba_store
+      end
+      if value.respond_to?(:synonyms)
+        value.synonyms.each_with_index do |term, idx|
+          term.encode("UTF-8")
+        rescue Encoding::UndefinedConversionError => error
+          ODDB::LogFile.debug("#{error} #{term.encoding} from substance with odba_id #{value.odba_id} #{term[0..40]}")
+          term.force_encoding("ISO-8859-1")
+          value.synonyms[idx] = term.encode("UTF-8")
+          value.synonyms.odba_store
+          value.odba_store
+        end
+      end
+      if value.respond_to?(:descriptions)
+        value.descriptions.each do |lang, term|
+          term.encode("UTF-8")
+        rescue Encoding::UndefinedConversionError => error
+          ODDB::LogFile.debug("#{error} #{lang} #{term.encoding} from substance with odba_id #{value.odba_id} #{term[0..40]}")
+          term.force_encoding("ISO-8859-1")
+          value.descriptions[lang] = term.encode("UTF-8")
+          value.descriptions.odba_store
+          value.odba_store
+        end
+      else
+        ODDB::LogFile.debug("Value #{value} odba_id #{value.odba_id} has no descriptions")
+      end
+    end
+    ODDB::LogFile.debug("Finished repairing substances with wrong name, lt, synonyms or descriptions")
+    sequences.values.each do |seq|
+      # First handle cases where a package is of a wrong type
+      found = seq.packages.find_all {|key, val| !val.instance_of?(ODDB::Package) }
+      if found.size > 0
+        ODDB::LogFile.debug("DB_ERROR wrong type #{seq.iksnr} #{seq.seqnr} found #{found.size} not correct packages")
+        seq.packages.delete_if do |key, val|
+          !val.instance_of?(ODDB::Package)
+        end
+        seq.packages.odba_store
+      end
+
+      # Second handle cases where sl_entry or its limitation_text is invalid
+      begin
+        seq.packages.values.each do |pack|
+          begin
+            valid1 = pack.sl_entry
+            valid2 = pack.limitation_text
+          rescue => error
+            ODDB::LogFile.debug("#{error} #{pack.iksnr} #{pack.seqnr} invalid sl_entry #{pack.odba_id}")
+            pack.delete_sl_entry
+            pack.odba_store
+          end
+        end
+      end
+    end
+    ODDB::LogFile.debug("Finished repairing packages with wrong sl_entry or limitation_text")
+    duration = Time.now - startTime
+    msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds. "
+    ODDB::LogFile.debug(msg)
+  end
+
   def substance_by_connection_key(connection_key)
     @substances.values.select { |substance|
       substance.has_connection_key?(connection_key)
@@ -1545,6 +1661,7 @@ class OddbPrevalence
         end
         if doit
           index_start = Time.now
+          @failures << index_definition.index_name
           begin
             ODBA.cache.drop_index(index_definition.index_name)
           rescue => e
@@ -1556,21 +1673,25 @@ class OddbPrevalence
             ODDB::LogFile.debug("filling: #{index_definition.index_name} source.size: #{source.size}") if verbose
             ODBA.cache.fill_index(index_definition.index_name, source)
             @rebuilt << index_definition.index_name
+            @failures.delete_if{|x| x.eql?( index_definition.index_name)}
+            ODDB::LogFile.debug("finished rebuild #{index_definition.index_name} in #{(Time.now - index_start).to_i} seconds") if verbose
           rescue => e
-            @failures << index_definition.index_name
-            ODDB::LogFile.debug("#{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
+            ODDB::LogFile.debug("failed rebuild #{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
           end
-          ODDB::LogFile.debug("finished rebuild #{index_definition.index_name} in #{(Time.now - index_start).to_i} seconds") if verbose
         end
       end
       duration = Time.now - start
+      msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds. "
+      # ["oddb_commercialform_name", "oddb_galenicform_name", "oddb_indextherapeuticus_code", "oddb_minifi_publication_date", "oddb_package_pharmacode", "oddb_persistence_pointer"]
+      ODDB::LogFile.debug("Removing the following indices #{(ODBA.cache.indices.keys - @defined_indices).sort} which are not defined in #{path}")
+      (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.cache.drop_index(index_name)}
+      (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.storage.drop_index(index_name)}
       if @failures.size == 0
-        msg =+"Built #{@rebuilt.size} indices: #{@rebuilt.join(" ")}"
+        msg += "Built #{@rebuilt.size} indices: #{@rebuilt.join(" ")}"
       else
-        msg =+"Built #{@rebuilt.size} indices. Failed building #{@failures.join(" ")}"
+        msg += "Built #{@rebuilt.size} indices. Failed building #{@failures.size} indices\n  #{@failures.join(" ")}"
       end
-      msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds.\n#{msg}"
-      ODDB::LogFile.debug("The following indices exist #{(ODBA.cache.indices.keys - @defined_indices).sort} which are not defined in #{path}")
+      #  substance_index_atc sequence_limitation_text sequence_index_substance
       ODDB::LogFile.debug msg
       exit 1 unless @failures.size == 0
     rescue => e
@@ -1681,7 +1802,7 @@ module ODDB
           GC.start
         end
         @@primary_server = DRb.start_service(server_uri, self)
-        LogFile.debug("initialized: #{Time.now - start}") unless defined?(Minitest)
+        ODDB::LogFile.debug("initialized: #{Time.now - start}") unless defined?(Minitest)
         @@last_start_time = (Time.now - start).to_i
       end
     rescue => error
