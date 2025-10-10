@@ -1477,6 +1477,12 @@ class OddbPrevalence
     # It took almost an hour to complete on my local laptop
     startTime = Time.now
     ODDB::LogFile.debug("Starting")
+    res =  @registrations.find_all { |key, value| !value.instance_of?(ODDB::Registration) }
+    if res.size > 0
+      @registrations.delete_if { |key, value| !value.instance_of?(ODDB::Registration) }
+      @registrations.odba_store
+    end
+    ODDB::LogFile.debug("Finished step 1 for @registrations deleted #{res}")
     @my_errors = []
     @registrations.values.find_all do |x|
       begin
@@ -1581,6 +1587,7 @@ class OddbPrevalence
     duration = Time.now - startTime
     msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds. "
     ODDB::LogFile.debug(msg)
+    msg
   end
 
   def substance_by_connection_key(connection_key)
@@ -1666,6 +1673,11 @@ class OddbPrevalence
     begin
       start = Time.now
       file = File.open(path)
+      unless name
+        ODDB::LogFile.debug("Start rebuilding deferred_indices")
+        ODBA.cache.create_deferred_indices(true) # Force rebuilding deferred_indices
+        ODDB::LogFile.debug("Finished rebuilding deferred_indices")
+      end
       YAML.load_stream(file) do |index_definition|
         doit = if name and name.length > 0
           name.match(index_definition.index_name)

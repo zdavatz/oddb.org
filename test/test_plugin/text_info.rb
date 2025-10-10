@@ -32,7 +32,7 @@ module ODDB
   end
 
   class TextInfoPlugin
-    attr_accessor :parser, :aips_xml, :zip_url, :iksnrs_meta_info, :aips_xml, :meta_yml, :xref_yml, :xref_file_2_meta
+    attr_accessor :parser, :aips_xml, :zip_url, :iksnrs_meta_info, :aips_xml, :meta_yml, :xref_yml, :xref_file_2_meta, :already_imported
     attr_reader :failures, :invalid_html_url, :updated, :updated_fis, :updated_pis, :problematic_fi_pi, :missing_override_file
     attr_reader :reparse_all, :old_hash, :new_hash, :to_parse, :html_cache, :zip_file, :details_dir, :pis_are_up2date, :fis_are_up2date
   end
@@ -560,6 +560,7 @@ April 2025)
       # Now we inject changes and test whether we will find them
       File.write(meta_info.cache_file, changed_content)
       @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.already_imported = []
       @plugin.parse_textinfo(meta_info, 1)
       seq = @app.registrations.values.first.sequences.values.first
       pack = seq.packages.values.first
@@ -571,6 +572,7 @@ April 2025)
       # Now we inject more changes and test whether we will find them
       File.write(meta_info.cache_file, changed_content2)
       @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.already_imported = []
       @plugin.parse_textinfo(meta_info, 1)
       seq = @app.registrations.values.first.sequences.values.first
       pack = seq.packages.values.first

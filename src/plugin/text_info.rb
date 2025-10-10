@@ -295,7 +295,7 @@ module ODDB
     end
 
     def update_html_cache_file(meta_info)
-      if !FileUtils.compare_file(meta_info.html_file, meta_info.cache_file)
+      unless File.exist?((meta_info.html_file)) && FileUtils.compare_file(meta_info.html_file, meta_info.cache_file)
         FileUtils.makedirs(File.dirname(meta_info.html_file))
         FileUtils.cp(meta_info.cache_file, meta_info.html_file, verbose: true, preserve: true)
       end
@@ -318,7 +318,7 @@ module ODDB
           #  but because we still want to extract the iksnrs, we just mark them
           #  and defer inaction until here:
           unless fi_flags[:pseudo] || fis.empty?
-            if problems = reg.fachinfo.descriptions.find_all{|key,value| key.is_a?(Symbol)}
+            if problems = reg.fachinfo&.descriptions&.find_all{|key,value| key.is_a?(Symbol)}
               LogFile.debug "Removing fachinfo with lang symbols keys from #{reg.iksnr} #{problems.collect{|x|x.first}}"
               reg.fachinfo.descriptions.delete_if{|key,value| key.is_a?(Symbol)}
               reg.fachinfo.descriptions.odba_isolated_store
