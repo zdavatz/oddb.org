@@ -39,6 +39,7 @@ require "util/logfile"
 module ODBA
   class Cache
     puts("\n#{__FILE__}:#{__LINE__} Please remove this ugly hack to avoid problems. see https://github.com/zdavatz/oddb.org/issues/386 as soon as possible\n\n")
+    attr_reader :deferred_indices
     def update_indices(odba_object) # :nodoc:
       if odba_object.odba_indexable?
         indices.each do |index_name, index|
@@ -1476,6 +1477,19 @@ class OddbPrevalence
     # It took almost an hour to complete on my local laptop
     startTime = Time.now
     ODDB::LogFile.debug("Starting")
+    @my_errors = []
+    @registrations.values.find_all do |x|
+      begin
+        next unless x.instance_of?(ODDB::Registration)
+        next unless x.fachinfo
+        l2 = x.fachinfo&.links if x.respond_to?(:fachinfo)
+      rescue => error
+        @my_errors << x.iksnr
+        x.fachinfo&.links = []
+        x.fachinfo.odba_store
+      end
+    end
+    ODDB::LogFile.debug("Repaired #{@my_errors.size} links in fachinfo: #{@my_errors.join(" ")}")
     @hospitals.values.each { |hospital| hospital.search_terms; hospital.odba_store}
     ODDB::LogFile.debug("Finished repairing hospital. Reparing doctors will take 30 minutes or more")
     @doctors.values.each { |doc| doc.search_terms; doc.odba_store}
@@ -1645,6 +1659,7 @@ class OddbPrevalence
     @failures = []
     ODBA.cache.indices.size
     @defined_indices = []
+    ODBA.cache.deferred_indices.each{|index| @defined_indices << index.index_name}
     YAML.load_stream(file) do |index_definition|
       @defined_indices << index_definition.index_name
     end
