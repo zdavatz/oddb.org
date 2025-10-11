@@ -166,7 +166,7 @@ GEM
       stringio
     public_suffix (6.0.2)
     racc (1.8.1)
-    rack (2.2.14)
+    rack (2.2.20)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rackup (0.1.0)
