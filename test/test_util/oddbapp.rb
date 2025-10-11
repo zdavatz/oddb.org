@@ -482,6 +482,7 @@ class TestOddbApp < Minitest::Test
   def test_rebuild_indices
     flexstub(ODBA.cache) do |cache|
       cache.should_receive(:indices).and_return([])
+      cache.should_receive(:deferred_indices).and_return([])
       cache.should_receive(:create_index)
     end
     assert_nil(@app.rebuild_indices)

@@ -117,17 +117,24 @@ module ODDB
       self
     end
 
+    def lt
+      # Introduced this method to allow cleanup of old substances
+      # Some had a now invisible method lt. See https://github.com/zdavatz/oddb.org/issues/386
+      description('en')
+    end
+
     def name
       # First call to descriptions should go to lazy-initialisator
       # if(lt = self.descriptions['lt']) && !lt.empty?
-      if descrs = descriptions and lt = descrs["lt"] and !lt.empty?
+      descrs = descriptions
+      if lt = descrs["lt"] && descrs["lt"]
         lt.to_s
-      elsif @descriptions and en = @descriptions["en"]
+      elsif @descriptions && en = @descriptions["en"]
         en.to_s
       else
         ""
       end
-    rescue
+    rescue => error
       @@name_error_count ||= 0
       @@name_error_count += 1
       warn "#{@@name_error_count}, ODDB::Substance#descriptions error: Substance#odba_id = #{odba_id}"
@@ -177,8 +184,7 @@ module ODDB
     end
 
     def _search_keys
-      keys = descriptions.values \
-        + synonyms
+      keys = descriptions.values + synonyms
       keys.push(name).collect { |key| ODDB.search_term(key) }
     end
 

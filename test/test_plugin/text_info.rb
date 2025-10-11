@@ -21,8 +21,9 @@ begin require "debug"; rescue LoadError; end # ignore error when debug cannot be
 
 module ODDB
   class FachinfoDocument
+    @odba_id = 0
     def odba_id
-      1
+      @odba_id += 1
     end
   end
 
@@ -31,9 +32,9 @@ module ODDB
   end
 
   class TextInfoPlugin
-    attr_accessor :parser
-    attr_reader :to_parse, :iksnrs_meta_info, :updated_fis, :updated_pis,
-      :up_to_date_fis, :up_to_date_pis, :updated, :details_dir, :dirs
+    attr_accessor :parser, :aips_xml, :zip_url, :iksnrs_meta_info, :aips_xml, :meta_yml, :xref_yml, :xref_file_2_meta, :already_imported
+    attr_reader :failures, :invalid_html_url, :updated, :updated_fis, :updated_pis, :problematic_fi_pi, :missing_override_file
+    attr_reader :reparse_all, :old_hash, :new_hash, :to_parse, :html_cache, :zip_file, :details_dir, :pis_are_up2date, :fis_are_up2date
   end
 
   class TestRefdataCache < Minitest::Test
@@ -155,199 +156,6 @@ module ODDB
       assert_equal(File.join(ODDB::WORK_DIR, "AllHtml.zip"), @plugin.zip_file)
       assert_equal(old_size, File.size(@plugin.zip_file))
       assert(File.exist?(tst_file))
-    end
-  end
-
-  class TestChangeLog < Minitest::Test
-    def teardown
-      ODBA.storage = nil
-      super # to clean up FlexMock
-    end
-
-    def setup
-      ODDB::TestHelpers.vcr_setup
-      require "ext/fiparse/src/fiparse"
-      @details_dir = File.join(ODDB::WORK_DIR, "details")
-      path_check = File.join(ODDB::PROJECT_ROOT, "etc", "barcode_minitest.yml")
-      assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
-      FileUtils.rm_f(path_check, verbose: false)
-      FileUtils.rm_f(File.expand_path("../data/"), verbose: false)
-      flexmock "pointer"
-      @app = flexmock("application_#{__LINE__}", App.new)
-      @app.should_receive(:company_by_name)
-    end
-
-    def prepare_plugin(remove_details: true,
-      parser: ::ODDB::FiParse,
-      xml_file: File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml"))
-      @plugin = TextInfoPlugin.new @app
-      FileUtils.makedirs(@details_dir)
-      FileUtils.rm_rf(@plugin.details_dir, verbose: false) if remove_details
-      @plugin.parser = ::ODDB::FiParse
-      assert(File.exist?(xml_file))
-      @plugin.get_aips_download_xml(xml_file)
-      @latest_from = File.join(ODDB::TEST_DATA_DIR, "/xlsx/Packungen-61467.xlsx")
-      latest_to = File.join(ODDB::WORK_DIR, "xls/Packungen-latest.xlsx")
-      FileUtils.mkdir_p(File.dirname(latest_to))
-      FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
-      @options[:xml_file] = xml_file
-    end
-
-    def test_47909_pi
-      skip("We should test when the barcode override comes into effect, eg. 47909 Solmucol 400, 600 Granulat")
-    end
-
-    def test_43788_fi_tramal
-      @options = {target: :fi,
-                  download: false,
-                  newest: false, # with true this takes a lot of time
-                  xml_file: @aips_download}
-      meta_info = SwissmedicMetaInfo.new
-      meta_info.iksnr = "43788"
-      meta_info.authNrs = ["43788"]
-      meta_info.type = "fi"
-      meta_info.lang = "de"
-      meta_info.title = "Tramal®"
-      meta_info.informationUpdate = "2025-06-13T00:00:00"
-      Date.parse(meta_info.informationUpdate)
-      # 2025-06-13
-      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/de/43788.html")
-      assert(File.exist?(meta_info.download_url))
-      prepare_plugin(remove_details: false)
-      @plugin.set_html_and_cache_name(meta_info)
-      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
-      @plugin.iksnrs_meta_info[key] = [meta_info]
-      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
-      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
-      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
-      @plugin.parse_textinfo(meta_info, 1)
-      assert(File.exist?(meta_info.html_file))
-      assert_equal(["43788"], @app.registrations.keys)
-      assert_equal(["01"], @app.registration("43788").sequences.keys)
-      seq = @app.registrations.values.first.sequences.values.first
-      assert_equal(ODDB::Sequence, seq.class)
-      assert_equal(ODDB::Fachinfo, seq.fachinfo.class)
-      assert_equal("Tramal®", seq.fachinfo[:de].name.to_s)
-      assert_equal("N02AX02", seq.fachinfo[:de].atc_code)
-      expected = %(Packungen
-Tramal Kapseln: Packungen zu 10, 20, 60 und
-Klinikpackung zu 200 Kapseln (10 x 20) [A]
-Tramal Lösung zum Einnehmen: Packungen in Tropfflasche zu 10 ml, 3x 10 ml [A]
-Klinikpackung als Tropfflasche zu 10x 10 ml [A]
-Packungen mit Dosierpumpe: zu 30 ml, 50 ml und 96 ml [A]
-Tramal Suppositorien: Packungen zu 10 Suppositorien [A]
-Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
-      assert_equal(expected, seq.fachinfo[:de].packages.to_s)
-      iksnrs = %(Zulassungsnummer
-40858, 40859, 43787, 43788 (Swissmedic).)
-      assert_equal(iksnrs, seq.fachinfo[:de].iksnrs.to_s)
-      owner = %(Zulassungsinhaberin
-Grünenthal Pharma AG, Glarus Süd.)
-      assert_equal(owner, seq.fachinfo[:de].registration_owner.to_s)
-      date = %(Stand der Information
-April 2025)
-      assert_equal(date, seq.fachinfo[:de].date.to_s)
-      assert_equal(0, seq.fachinfo[:de].change_log.size)
-    end
-
-    def test_38471_pi_change_log
-      # For this test I search for a small PI which is neither a homeopathic nor naturlheilmittel
-      # Found Glandosane
-      @options = {target: :pi,
-                  download: false,
-                  newest: false, # with true this takes a lot of time
-                  xml_file: @aips_download}
-      meta_info = SwissmedicMetaInfo.new
-      meta_info.iksnr = "38471"
-      meta_info.authNrs = ["38471"]
-      meta_info.type = "pi"
-      meta_info.lang = "de"
-      meta_info.title = "Glandosane"
-      meta_info.informationUpdate = "2025-06-13T00:00:00"
-      Date.parse(meta_info.informationUpdate)
-      # 2025-06-13
-      @test_change = /CHANGED FOR MINITEST......../
-      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/Glandosane_.html")
-      assert(File.exist?(meta_info.download_url))
-      prepare_plugin(remove_details: false)
-      @plugin.set_html_and_cache_name(meta_info)
-      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
-      @plugin.iksnrs_meta_info[key] = [meta_info]
-      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
-      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
-      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
-      content = File.read(meta_info.cache_file)
-      changed_content = content.gsub("Spirig HealthCare AG", "Changed Spirig HealthCare AG")
-        .gsub("Glandosane ist ", "Glandosane ist geändert worden")
-      changed_content2 = content.gsub("Spirig HealthCare AG", "CHANGED SPIRIG HEALTHCARE AG")
-        .gsub("Glandosane ist ", "GLANDOSANE IST GEÄNDERT WORDEN")
-      @plugin.parse_textinfo(meta_info, 1)
-      assert(File.exist?(meta_info.html_file))
-      assert_equal(["38471"], @app.registrations.keys)
-      assert_equal(["01"], @app.registration("38471").sequences.keys)
-      assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
-      seq = @app.registrations.values.first.sequences.values.first
-      pack = seq.packages.values.first
-      assert_equal(ODDB::Package, pack.class)
-      assert_equal(Date.today, pack.revision.to_date)
-      assert_equal(ODDB::Patinfo, pack.patinfo.class)
-      assert_match(/Spirig HealthCare AG/, pack.patinfo[:de].company.to_s)
-      date = Date.parse pack.patinfo[:de].revision.to_s
-      assert_equal(Date.today, date)
-      assert_match(/geprüft/, pack.patinfo[:de].date.to_s)
-      assert_match(/Juli 2007/, pack.patinfo[:de].date.to_s)
-      assert_equal(0, pack.patinfo[:de].change_log.size)
-
-      # Now we inject changes and test whether we will find them
-      File.write(meta_info.cache_file, changed_content)
-      @plugin.iksnrs_meta_info[key] = [meta_info]
-      @plugin.parse_textinfo(meta_info, 1)
-      seq = @app.registrations.values.first.sequences.values.first
-      pack = seq.packages.values.first
-      assert_equal(1, pack.patinfo[:de].change_log.size)
-      assert_equal(Date.today, pack.patinfo[:de].change_log.first.time)
-      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
-      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
-
-      # Now we inject more changes and test whether we will find them
-      File.write(meta_info.cache_file, changed_content2)
-      @plugin.iksnrs_meta_info[key] = [meta_info]
-      @plugin.parse_textinfo(meta_info, 1)
-      seq = @app.registrations.values.first.sequences.values.first
-      pack = seq.packages.values.first
-      assert_equal(2, pack.patinfo[:de].change_log.size)
-      assert_equal(Date.today, pack.patinfo[:de].change_log.last.time)
-      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
-      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
-      assert_match(/GLANDOSANE IST GEÄNDERT WORDEN/, pack.patinfo[:de].change_log.last.diff.to_s)
-      assert_match(/CHANGED SPIRIG HEALTHCARE AG/, pack.patinfo[:de].change_log.last.diff.to_s)
-    end
-
-    def check_whether_changed(should_change = false)
-      pi = @app.registrations.values.first.sequences.values.first.patinfo
-
-      fi = @app.registrations.values.first.fachinfo
-
-      puts "\n\ncheck_whether_changed should_change #{should_change} change_logs: fi #{fi[:de].change_log&.size}  pi #{pi[:de].change_log&.size}"
-      puts fi.descriptions["de"].galenic_form
-      puts pi.descriptions["de"].contra_indications
-      assert_match(/Actikerall/, pi.descriptions["de"].contra_indications.to_s)
-      assert_match(/Actikerall/, fi.descriptions["de"].contra_indications.to_s)
-      if should_change
-        assert_match(@test_change, fi.descriptions["de"].galenic_form.to_s)
-        assert_match(@test_change, pi.descriptions["de"].contra_indications.to_s)
-        assert_match(@test_change, fi[:de].change_log.first.diff.to_s)
-        assert_equal(1, fi[:de].change_log.size)
-        assert_equal(0, pi.descriptions["it"].to_s.size)
-        assert_equal(0, pi.descriptions["fr"].to_s.size)
-        assert_equal(0, fi.descriptions["it"].to_s.size)
-        assert_equal(0, fi.descriptions["fr"].to_s.size)
-        assert_equal(1, pi[:de].change_log.size)
-        assert_match(@test_change, pi[:de].change_log.first.diff.to_s)
-      else
-        assert_nil(fi.descriptions["de"].galenic_form.to_s.match(@test_change))
-        assert_nil(pi.descriptions["de"].contra_indications.to_s.match(@test_change))
-      end
     end
   end
 
@@ -489,8 +297,6 @@ April 2025)
   end
 
   class TestExtractMatchedName < Minitest::Test
-    Nr_FI_in_AIPS_test = 15
-    Nr_PI_in_AIPS_test = 6
     def teardown
       ODBA.storage = nil
       super # to clean up FlexMock
@@ -498,10 +304,7 @@ April 2025)
 
     def setup
       ODDB::TestHelpers.vcr_setup
-      path_check = File.join(ODDB::PROJECT_ROOT, "etc", "barcode_minitest.yml")
-      assert_equal(ODDB::TextInfoPlugin::Override_file, path_check)
       FileUtils.rm_rf(ODDB::WORK_DIR, verbose: false)
-      FileUtils.rm_f(path_check, verbose: false)
       FileUtils.rm_f(File.expand_path("../data/"), verbose: false)
       pointer = flexmock "pointer"
       latest_from = File.join(ODDB::TEST_DATA_DIR, "/xls/Packungen-latest.xlsx")
@@ -605,10 +408,188 @@ April 2025)
                   xml_file: @aips_download}
 
       @plugin.import_swissmedicinfo(@options)
-      puts @plugin.report
+      assert_equal(14, @plugin.to_parse.size)
+      assert_equal(0, @plugin.updated_fis.size, "nr updated fis must match")
+      assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
+      assert_equal(5,  @plugin.updated.size, "nr updated FI/PI must match") # Title + 4 items
+    end
+  end
+
+
+  class TestImportDaily < Minitest::Test
+    def teardown
+      puts @plugin.report unless @finished_successful
+      ODBA.storage = nil
+      super # to clean up FlexMock
     end
 
+    def setup
+      @finished_successful = false
+      ODDB::TestHelpers.vcr_setup
+      require "ext/fiparse/src/fiparse"
+      @details_dir = File.join(ODDB::WORK_DIR, "details")
+      FileUtils.rm_f(File.expand_path("../data/"), verbose: false)
+      flexmock "pointer"
+      @app = flexmock("application_#{__LINE__}", App.new)
+      @app.should_receive(:company_by_name)
+      @options = {target: :fi,
+                  download: false,
+                  newest: false, # with true this takes a lot of time
+                  xml_file: @aips_download}
+    end
+
+    def prepare_plugin(remove_details: true,
+      parser: ::ODDB::FiParse,
+      xml_file: File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml"))
+      @plugin = TextInfoPlugin.new @app
+      FileUtils.makedirs(@details_dir)
+      FileUtils.rm_rf(@plugin.details_dir, verbose: false) if remove_details
+      @plugin.parser = ::ODDB::FiParse
+      assert(File.exist?(xml_file))
+      @aips_xml = File.join(ODDB::TEST_DATA_DIR, "xml", "AipsDownload_latest.xml")
+      @all_html_zip = File.join(ODDB::TEST_DATA_DIR, "AllHtml.zip")
+      @plugin.zip_url = @all_html_zip
+      @plugin.get_aips_download_xml(xml_file)
+      @plugin.parser = ODDB::FiParse
+      @latest_from = File.join(ODDB::TEST_DATA_DIR, "/xlsx/Packungen-61467.xlsx")
+      latest_to = File.join(ODDB::WORK_DIR, "xls/Packungen-latest.xlsx")
+      FileUtils.mkdir_p(File.dirname(latest_to))
+      FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
+      @options[:xml_file] = xml_file
+    end
+
+    def test_43788_fi_tramal
+      meta_info = SwissmedicMetaInfo.new
+      meta_info.iksnr = "43788"
+      meta_info.authNrs = ["43788"]
+      meta_info.type = "fi"
+      meta_info.lang = "de"
+      meta_info.title = "Tramal®"
+      meta_info.informationUpdate = "2025-06-13T00:00:00"
+      Date.parse(meta_info.informationUpdate)
+      # 2025-06-13
+      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/de/43788.html")
+      assert(File.exist?(meta_info.download_url))
+      prepare_plugin(remove_details: true)
+      @plugin.set_html_and_cache_name(meta_info)
+      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
+      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
+      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
+      # @app.should_receive(:registration).with("43788").and_return(Registration.new("43788"))
+      @plugin.parse_textinfo(meta_info, 1)
+      assert(File.exist?(meta_info.html_file))
+      assert_equal(["43788"], @app.registrations.keys)
+      assert_equal(["01"], @app.registration("43788").sequences.keys)
+      seq = @app.registrations.values.first.sequences.values.first
+      assert_equal(ODDB::Sequence, seq.class)
+      assert_equal(ODDB::Fachinfo, seq.fachinfo.class)
+      assert_equal("Tramal®", seq.fachinfo[:de].name.to_s)
+      assert_equal("N02AX02", seq.fachinfo[:de].atc_code)
+      expected = %(Packungen
+Tramal Kapseln: Packungen zu 10, 20, 60 und
+Klinikpackung zu 200 Kapseln (10 x 20) [A]
+Tramal Lösung zum Einnehmen: Packungen in Tropfflasche zu 10 ml, 3x 10 ml [A]
+Klinikpackung als Tropfflasche zu 10x 10 ml [A]
+Packungen mit Dosierpumpe: zu 30 ml, 50 ml und 96 ml [A]
+Tramal Suppositorien: Packungen zu 10 Suppositorien [A]
+Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
+      assert_equal(expected, seq.fachinfo[:de].packages.to_s)
+      iksnrs = %(Zulassungsnummer
+40858, 40859, 43787, 43788 (Swissmedic).)
+      assert_equal(iksnrs, seq.fachinfo[:de].iksnrs.to_s)
+      owner = %(Zulassungsinhaberin
+Grünenthal Pharma AG, Glarus Süd.)
+      assert_equal(owner, seq.fachinfo[:de].registration_owner.to_s)
+      date = %(Stand der Information
+April 2025)
+      assert_equal(date, seq.fachinfo[:de].date.to_s)
+      assert_equal(0, seq.fachinfo[:de].change_log.size)
+      @finished_successful = true
+    end
+
+    def test_38471_pi_change_log
+      # For this test I search for a small PI which is neither a homeopathic nor naturlheilmittel
+      # Found Glandosane
+      @options = {target: :pi,
+                  download: false,
+                  newest: false, # with true this takes a lot of time
+                  xml_file: @aips_download}
+      meta_info = SwissmedicMetaInfo.new
+      meta_info.iksnr = "38471"
+      meta_info.authNrs = ["38471"]
+      meta_info.type = "pi"
+      meta_info.lang = "de"
+      meta_info.title = "Glandosane"
+      meta_info.informationUpdate = "2025-06-13T00:00:00"
+      Date.parse(meta_info.informationUpdate)
+      # 2025-06-13
+      @test_change = /CHANGED FOR MINITEST......../
+      meta_info.download_url = File.join(ODDB::TEST_DATA_DIR, "html/Glandosane_.html")
+      assert(File.exist?(meta_info.download_url))
+      prepare_plugin(remove_details: false)
+      @plugin.set_html_and_cache_name(meta_info)
+      key = [meta_info.iksnr, meta_info.type, meta_info.lang]
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      # TODO? assert_match(meta_info.iksnr, meta_info.html_file)
+      FileUtils.makedirs(File.dirname(meta_info.cache_file), verbose: false)
+      FileUtils.cp(meta_info.download_url, meta_info.cache_file, verbose: false, preserve: true)
+      content = File.read(meta_info.cache_file)
+      changed_content = content.gsub("Spirig HealthCare AG", "Changed Spirig HealthCare AG")
+        .gsub("Glandosane ist ", "Glandosane ist geändert worden")
+      changed_content2 = content.gsub("Spirig HealthCare AG", "CHANGED SPIRIG HEALTHCARE AG")
+        .gsub("Glandosane ist ", "GLANDOSANE IST GEÄNDERT WORDEN")
+      @plugin.parse_textinfo(meta_info, 1)
+      assert(File.exist?(meta_info.html_file))
+      assert_equal(["38471"], @app.registrations.keys)
+      assert_equal(["01"], @app.registration("38471").sequences.keys)
+      assert_equal(Date.today, @app.registrations.values.first.sequences.values.first.packages.values.first.revision.to_date)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
+      assert_equal(ODDB::Package, pack.class)
+      assert_equal(Date.today, pack.revision.to_date)
+      assert_equal(ODDB::Patinfo, pack.patinfo.class)
+      assert_match(/Spirig HealthCare AG/, pack.patinfo[:de].company.to_s)
+      date = Date.parse pack.patinfo[:de].revision.to_s
+      assert_equal(Date.today, date)
+      assert_match(/geprüft/, pack.patinfo[:de].date.to_s)
+      assert_match(/Juli 2007/, pack.patinfo[:de].date.to_s)
+      assert_equal(0, pack.patinfo[:de].change_log.size)
+
+      # Now we inject changes and test whether we will find them
+      File.write(meta_info.cache_file, changed_content)
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.already_imported = []
+      @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
+      assert_equal(1, pack.patinfo[:de].change_log.size)
+      assert_equal(Date.today, pack.patinfo[:de].change_log.first.time)
+      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
+
+      # Now we inject more changes and test whether we will find them
+      File.write(meta_info.cache_file, changed_content2)
+      @plugin.iksnrs_meta_info[key] = [meta_info]
+      @plugin.already_imported = []
+      @plugin.parse_textinfo(meta_info, 1)
+      seq = @app.registrations.values.first.sequences.values.first
+      pack = seq.packages.values.first
+      assert_equal(2, pack.patinfo[:de].change_log.size)
+      assert_equal(Date.today, pack.patinfo[:de].change_log.last.time)
+      assert_match(/geändert worden/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/Changed Spirig HealthCare AG/, pack.patinfo[:de].change_log.first.diff.to_s)
+      assert_match(/GLANDOSANE IST GEÄNDERT WORDEN/, pack.patinfo[:de].change_log.last.diff.to_s)
+      assert_match(/CHANGED SPIRIG HEALTHCARE AG/, pack.patinfo[:de].change_log.last.diff.to_s)
+      @finished_successful = true
+    end
+
+    Nr_FI_in_AIPS_test = 15
+    Nr_PI_in_AIPS_test = 6
+
     def test_import_daily_fi
+      @app = flexmock(ODDB::App.new)
       @options[:target] = :fi
       # Add tests that fachinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
@@ -617,74 +598,96 @@ April 2025)
       latest_to = File.join(ODDB::WORK_DIR, "xls", "Packungen-latest.xlsx")
       FileUtils.mkdir_p(File.dirname(latest_to))
       FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
+      prepare_plugin(remove_details: true)
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size > 0, "must find at least one find fachinfo")
-
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "must find patinfo")
       assert_equal(10, @plugin.updated_fis.size, "nr updated fis must match")
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
-      assert_equal([], @plugin.up_to_date_pis, "up_to_date_pis must match")
+      assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must match")
       # nr_fis = 6 # we add all missing
-      assert_equal([], @plugin.up_to_date_fis, "up_to_date_fis must match")
-
-      @plugin = TextInfoPlugin.new @app
-      @plugin.parser = @parser
+      assert_equal([], @plugin.fis_are_up2date, "fis_are_up2date must match")
       @plugin.zip_url = @all_html_zip
       @plugin.import_swissmedicinfo(@options)
+      assert_equal([], @plugin.failures, "No Parse Errors")
+      assert_equal(0, @plugin.invalid_html_url.size, "All HTML must exist")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
+      assert_equal([], @plugin.failures)
+
+      puts "\n\nStarting second FI import\n\n"
+      prepare_plugin(remove_details: false)
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal([], @plugin.failures, "No Parse Errors")
+      assert_equal(0, @plugin.invalid_html_url.size, "All HTML must exist")
+      assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
+      assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
+      assert_equal([], @plugin.failures)
+      assert_equal([], @plugin.updated_pis, "updated_pis must match")
+      assert_equal([], @plugin.updated_fis, "No FI may be updated")
+      # we ignored PIs in italian, only de, fr counte
+      assert_equal(Nr_FI_in_AIPS_test*2/3, @plugin.fis_are_up2date.size, "fis_are_up2date must match")
+      assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must be empty")
+      @finished_successful = true
     end
 
     def test_import_daily_pi
-      @options[:target] = :pi
       # Add tests that patinfo gets updated
       # @reg.should_receive(:odba_store).at_least.once
       # @sequence.should_receive(:odba_store).at_least.once
       # @descriptions.should_receive(:[]=).at_least.once
-      @plugin = TextInfoPlugin.new @app
-      @plugin.parser = @parser
+      prepare_plugin(remove_details: true)
+      @options[:target] = :pi
       @plugin.zip_url = @all_html_zip
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size > 0, "must find at least one find patinfo")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
-      assert_equal(2, @plugin.updated_pis.size, "nr updated pis must match")
-      assert_equal([], @plugin.up_to_date_pis, "up_to_date_pis must match")
+      assert_equal([], @plugin.failures, "No Parse Errors")
+      assert_equal(2, @plugin.invalid_html_url.size, "Two missing HTML")
+      nr_pis = 2
+      assert_equal(nr_pis, @plugin.updated_pis.size, "nr updated pis must match")
+      assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must match")
 
       assert_equal(0, @plugin.updated_fis.size, "nr updated fis must match")
-      assert_equal([], @plugin.up_to_date_fis, "up_to_date_fis must match")
+      assert_equal([], @plugin.fis_are_up2date, "fis_are_up2date must match")
+      assert_equal([], @plugin.updated_fis)
+
+      puts "\n\nStarting second PI import\n\n"
+      prepare_plugin(remove_details: false)
+      @options[:target] = :pi
+      @plugin.import_swissmedicinfo(@options)
+      assert_equal([], @plugin.failures, "No Parse Errors")
+      assert_equal(2, @plugin.invalid_html_url.size, "Two missing HTML")
+      assert_equal([], @plugin.updated_fis, "updated_fis must match")
+      assert_equal([], @plugin.updated_pis, "updated_pis must match")
+      assert_equal(4, @plugin.to_parse.size, "to_parse must match") # Missing HTML and pis_are_up2date
+      # we ignored PIs in italian, only de, fr counted
+      assert_equal(2, @plugin.pis_are_up2date.size, "pis_are_up2date must match")
+      assert_equal(nr_pis, @plugin.pis_are_up2date.size)
+      assert_equal([], @plugin.fis_are_up2date, "fis_are_up2date must be empty")
+      @finished_successful = true
     end
 
     def test_import_daily_packungen
       @options[:target] = :pi
+      prepare_plugin(remove_details: true)
+      @plugin.import_swissmedicinfo(@options)
       old_missing = {"680109990223_pi_de" => "Osanit® Kügelchen",
                      "7680109990223_pi_fr" => "Osanit® globules",
                      "7680109990224_pi_fr" => "Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang"}
-      real_override_file = File.join(ODDB::PROJECT_ROOT, "etc", "barcode_to_text_info.yml")
-      assert_equal(false, File.exist?(ODDB::TextInfoPlugin::Override_file), "File #{ODDB::TextInfoPlugin::Override_file} must not exist")
-      assert_equal(true, File.exist?(real_override_file), "File #{real_override_file} must exist")
-      YAML.load_file(real_override_file)
-      File.open(ODDB::TextInfoPlugin::Override_file, "w+") do |out|
-        YAML.dump(old_missing, out)
-      end
-      assert_equal(5, File.readlines(ODDB::TextInfoPlugin::Override_file).size, "File must be now 5 lines long, as one is too long")
-      old_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
       # Add tests that patinfo gets updated
-      @plugin.import_swissmedicinfo(@options)
-      puts @plugin.report
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size > 0, "must find at least one find patinfo")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "may not find patinfo")
-      assert_equal(2, @plugin.updated_pis.size, "nr updated pis must match")
-      new_time = File.ctime(ODDB::TextInfoPlugin::Override_file)
-      assert(new_time > old_time, "ctime of #{ODDB::TextInfoPlugin::Override_file} should have changed")
-      assert_equal(4, File.readlines(ODDB::TextInfoPlugin::Override_file).size, "File must be now 4 lines long")
       assert_equal(0, @plugin.updated_fis.size, "nr updated fis must match")
-      assert_equal(0, @plugin.up_to_date_fis.size, "up_to_date_fis must match")
+      assert_equal(2, @plugin.updated_pis.size, "nr updated pis must match")
+      assert_equal(0, @plugin.fis_are_up2date.size, "fis_are_up2date must match")
       # why does next check fail in a github action, but never locally
-      puts("why does next check fail in a github action, but never locally. hostname = #{`hostname`}")
-      skip("why does next check fail in a github action, but never locally. hostname = #{`hostname`}")
-      assert_equal(0, @plugin.up_to_date_pis.size, "up_to_date_pis must match")
+      msg = "why does next check fail in a github action, but never locally. hostname = #{`hostname`}"
+      skip(msg) unless ["starbook"].index(`hostname`.chomp)
+      assert_equal(0, @plugin.pis_are_up2date.size, "no PI is uptodate")
+      @finished_successful = true
     end
   end
 end

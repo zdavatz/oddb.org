@@ -255,7 +255,12 @@ in {
     cleanup_package = {
       package = pkgs.fish;
       exec = ''
-      cat bin/cleanup_package | bundle exec ruby bin/admin
+      bundle exec ruby jobs/rebuild_indices 2>&1 | tee ci_log/rebuild_indices-1.log
+      echo (date): Finished  jobs/rebuild_indices first $db status $status | tee -a ci_run.log
+      printf "registrations.size\n\nrepair_non_utf8_strings\nquit" | bundle exec ruby bin/admin | tee -a ci_log/repair_non_utf8_strings.log
+      echo (date): Finished  cleanup_package $db status $status | tee -a ci_run.log
+      bundle exec ruby jobs/rebuild_indices 2>&1 | tee ci_log/rebuild_indices-2.log
+      echo (date): Finished  jobs/rebuild_indices second $db status $status | tee -a ci_run.log
     '';
     };
 
@@ -415,8 +420,13 @@ in {
         start_oddb_daemons
         echo (date): Started cleanup_package status $status | tee -a ci_run.log
         run_and_log -l cleanup_package.log -s 1 -c cleanup_package
+
+        rm -fv "data/details/*/666*" # force reparsing about 100 FI/PI
         echo (date): Started import_daily status $status | tee -a ci_run.log
         run_and_log -l import_daily.log -s 1 -c "bundle exec ruby jobs/import_daily"
+
+        echo (date): Started import_daily second time status $status | tee -a ci_run.log
+        run_and_log -l import_daily-2.log -s 1 -c "bundle exec ruby jobs/import_daily"
 
         echo (date): Started import_swissmedic status $status | tee -a ci_run.log
         run_and_log -l import_swissmedic.log -s 1 -c "bundle exec ruby jobs/import_swissmedic"
