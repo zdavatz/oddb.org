@@ -1667,18 +1667,11 @@ class OddbPrevalence
     ODBA.cache.indices.size
     @defined_indices = []
     ODBA.cache.deferred_indices.each{|index| @defined_indices << index.index_name}
-    YAML.load_stream(file) do |index_definition|
-      @defined_indices << index_definition.index_name
-    end
     begin
       start = Time.now
       file = File.open(path)
-      unless name
-        ODDB::LogFile.debug("Start rebuilding deferred_indices")
-        ODBA.cache.create_deferred_indices(true) # Force rebuilding deferred_indices
-        ODDB::LogFile.debug("Finished rebuilding deferred_indices")
-      end
       YAML.load_stream(file) do |index_definition|
+        @current_index = index_definition.index_name
         doit = if name and name.length > 0
           name.match(index_definition.index_name)
         elsif block
@@ -1710,6 +1703,7 @@ class OddbPrevalence
       duration = Time.now - start
       msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds. "
       # ["oddb_commercialform_name", "oddb_galenicform_name", "oddb_indextherapeuticus_code", "oddb_minifi_publication_date", "oddb_package_pharmacode", "oddb_persistence_pointer"]
+      ODDB::LogFile.debug("Deferred_indices are #{@defined_indices.join(" ")}")
       ODDB::LogFile.debug("Removing the following indices #{(ODBA.cache.indices.keys - @defined_indices).sort} which are not defined in #{path}")
       (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.cache.drop_index(index_name)}
       (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.storage.drop_index(index_name)}
@@ -1722,7 +1716,7 @@ class OddbPrevalence
       ODDB::LogFile.debug msg
       exit 1 unless @failures.size == 0
     rescue => e
-      ODDB::LogFile.debug "INDEX CREATION ERROR: #{e} #{e.backtrace[0..8].join("\n")}"
+      ODDB::LogFile.debug "INDEX CREATION ERROR: #{@current_index} #{e} #{e.backtrace[0..8].join("\n")}"
     ensure
       file.close
     end
