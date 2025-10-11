@@ -100,12 +100,14 @@ module ODDB
     end
 
     def active_agents
+      check_compositions
       @compositions.inject([]) { |acts, comp|
         acts.concat comp.active_agents
       }
     end
 
     def inactive_agents
+      check_compositions
       @compositions.inject([]) { |acts, comp|
         acts.concat comp.inactive_agents
       }
@@ -445,6 +447,13 @@ module ODDB
     end
 
     private
+    def check_compositions
+      unless @compositions.instance_of?(Array)
+        ODDB::LogFile.debug("Sequence #{odba_id} #{iksnr} has wrong class #{@compositions.class} for @compositions")
+        @compositions = []
+        odba_store
+      end
+    end
 
     def adjust_types(values, app = nil)
       values = values.dup
