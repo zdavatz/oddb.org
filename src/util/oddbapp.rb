@@ -1664,16 +1664,17 @@ class OddbPrevalence
     file = File.open(path)
     @rebuilt = []
     @failures = []
+    @current_index = "none"
     ODBA.cache.indices.size
-    @defined_indices = []
-    ODBA.cache.deferred_indices.each{|index| @defined_indices << index.index_name}
+    @deffered_indices = []
+    ODBA.cache.deferred_indices.each{|index| @deffered_indices << index.index_name}
     begin
       start = Time.now
       file = File.open(path)
       YAML.load_stream(file) do |index_definition|
         @current_index = index_definition.index_name
         doit = if name and name.length > 0
-          name.match(index_definition.index_name)
+          name.match(@current_index)
         elsif block
           block.call(index_definition)
         else
@@ -1681,32 +1682,33 @@ class OddbPrevalence
         end
         if doit
           index_start = Time.now
-          @failures << index_definition.index_name
+          @failures << @current_index
           begin
-            ODBA.cache.drop_index(index_definition.index_name)
+            ODBA.cache.drop_index(@current_index)
           rescue => e
-            ODDB::LogFile.debug("#{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
+            ODDB::LogFile.debug("#{@current_index} #{e} #{e.backtrace[0..8].join("\n")}")
           end
           begin
             ODBA.cache.create_index(index_definition, ODDB)
             source = instance_eval(index_definition.init_source)
-            ODDB::LogFile.debug("filling: #{index_definition.index_name} source.size: #{source.size}") if verbose
-            ODBA.cache.fill_index(index_definition.index_name, source)
-            @rebuilt << index_definition.index_name
-            @failures.delete_if{|x| x.eql?( index_definition.index_name)}
-            ODDB::LogFile.debug("finished rebuild #{index_definition.index_name} in #{(Time.now - index_start).to_i} seconds") if verbose
+            ODDB::LogFile.debug("filling: #{@current_index} source.size: #{source.size}") if verbose
+            ODBA.cache.fill_index(@current_index, source)
+            @rebuilt << @current_index
+            @failures.delete_if{|x| x.eql?( @current_index)}
+            ODDB::LogFile.debug("finished rebuild #{@current_index} in #{(Time.now - index_start).to_i} seconds") if verbose
           rescue => e
-            ODDB::LogFile.debug("failed rebuild #{index_definition.index_name} #{e} #{e.backtrace[0..8].join("\n")}")
+            ODDB::LogFile.debug("failed rebuild #{@current_index} #{e} #{e.backtrace[0..8].join("\n")}")
           end
         end
       end
       duration = Time.now - start
       msg = "Took #{(duration/60).to_i} m #{sprintf("%3.2f", (duration % 60))} seconds. "
       # ["oddb_commercialform_name", "oddb_galenicform_name", "oddb_indextherapeuticus_code", "oddb_minifi_publication_date", "oddb_package_pharmacode", "oddb_persistence_pointer"]
-      ODDB::LogFile.debug("Deferred_indices are #{@defined_indices.join(" ")}")
-      ODDB::LogFile.debug("Removing the following indices #{(ODBA.cache.indices.keys - @defined_indices).sort} which are not defined in #{path}")
-      (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.cache.drop_index(index_name)}
-      (ODBA.cache.indices.keys - @defined_indices).each { |index_name| ODBA.storage.drop_index(index_name)}
+      @to_drop = ODBA.cache.indices.keys  - @deffered_indices - @rebuilt
+      ODDB::LogFile.debug("Deferred_indices are #{@deffered_indices.join(" ")}")
+      ODDB::LogFile.debug("We should remove the following indices #{@to_drop.sort} which are not defined in #{path}") if @to_drop.size > 0
+      # @to_drop.each { |index_name| ODBA.cache.drop_index(index_name)}
+      # @to_drop.each { |index_name| ODBA.storage.drop_index(index_name)}
       if @failures.size == 0
         msg += "Built #{@rebuilt.size} indices: #{@rebuilt.join(" ")}"
       else
