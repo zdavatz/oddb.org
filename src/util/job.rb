@@ -103,7 +103,7 @@ module ODDB
       end
 
       def self.updater?
-        current_job[:basename].match(/^update|^import/)
+        current_job[:basename].match(/^update|^import|^rebuild|^repair/)
       end
     end
   end
