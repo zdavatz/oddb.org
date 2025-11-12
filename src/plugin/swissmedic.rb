@@ -1161,6 +1161,8 @@ module ODDB
           ikscat: cell(row, @target_keys.keys.index(:ikscat)),
           swissmedic_source: source_row(row)
         }
+        # Next line needed to cleanup some inconsistencies found in November 2025
+        seq.packages.delete_if { |key, value| !value.instance_of?(ODDB::Package)}
         ptr = if (package = reg.package(ikscd))
           return package if opts[:create_only] && pidx == 0
           package.pointer
@@ -1172,17 +1174,19 @@ module ODDB
           args.update(pharmacode: old.pharmacode,
             ancestors: (old.ancestors || []).push(pacnr))
         end
-        if package.nil? && ptr.is_a?(Persistence::Pointer)
-          package = @app.update(ptr, args, :swissmedic)
-        elsif package.nil?
-          package = seq.create_package(ikscd)
-          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
+        if !package.is_a?(ODDB::Package) && ptr.is_a?(Persistence::Pointer)
+          LogFile.debug "#{iksnr}/#{seqnr} must create package #{ikscd}"
+          seq.registration.sequences[seqnr] = seq unless seq.registration.sequence(seqnr)
+          # in November 2025 we needed sometime one OR the other way!
+          package = seq.create_package(ikscd) || @app.update(ptr, args, :swissmedic)
+          package.fix_pointers
           seq.packages[ikscd] = package
-          seq.fix_pointers
+          seq.fix_pointers if seq.respond_to?(:fix_pointers)
           seq.packages.odba_store
           seq.odba_store
+        else
+          @app.update(ptr, args, :swissmedic)
         end
-        @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
           part = package.create_part
           package.parts[pidx] = part
