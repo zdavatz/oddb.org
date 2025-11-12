@@ -1470,7 +1470,6 @@ class OddbPrevalence
     end
   end
 
-
   def repair_non_utf8_strings
     # Added this helper method in October 2025 to fix very old errors in the database, as some ISO-8859-1 strings
     # were never correctly converted to UTF-8. See https://github.com/zdavatz/oddb.org/issues/386
@@ -1691,7 +1690,7 @@ class OddbPrevalence
           begin
             ODBA.cache.create_index(index_definition, ODDB)
             source = instance_eval(index_definition.init_source)
-            ODDB::LogFile.debug("filling: #{@current_index} source.size: #{source.size}") if verbose
+            ODDB::LogFile.debug("filling: #{@current_index} source.size: #{source&.size}") if verbose
             ODBA.cache.fill_index(@current_index, source)
             @rebuilt << @current_index
             @failures.delete_if{|x| x.eql?( @current_index)}
