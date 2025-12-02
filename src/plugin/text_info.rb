@@ -330,7 +330,7 @@ module ODDB
             unless meta_info.iksnr.to_i == 0
               fachinfo ||= TextInfoPlugin.store_fachinfo(@app, reg, fis)
               TextInfoPlugin.replace_textinfo(@app, fachinfo, reg, :fachinfo)
-              ensure_correct_atc_code(@app, reg, meta_info.atcCode)
+              ensure_correct_atc_code(@app, reg, fis[meta_info.lang].atc_code)
               @updated_fis << "#{meta_info.iksnr} #{fis.keys} #{reg.name_base}"
             end
           end
@@ -662,7 +662,7 @@ module ODDB
         res << @updated_pis.join("\n")
       end
       if @updated_fis == 0
-        res << "\nNo updated patinfos\n"
+        res << "\nNo updated fachinfos\n"
       else
         res << "\nStored #{@updated_fis.size} updated fachinfos:\n"
         res << @updated_fis.join("\n")

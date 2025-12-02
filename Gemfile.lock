@@ -166,7 +166,7 @@ GEM
       stringio
     public_suffix (6.0.2)
     racc (1.8.1)
-    rack (2.2.14)
+    rack (2.2.21)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rackup (0.1.0)
@@ -272,7 +272,7 @@ GEM
     standard-performance (1.8.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.25.0)
-    stringio (3.1.7)
+    stringio (3.1.8)
     swissmedic-diff (0.3.0)
       logger
       nokogiri
