@@ -26,6 +26,12 @@ module ODDB
       def test_name
         assert_match(/Normolytoral/, @@fachinfo.name.heading)
       end
+
+      def test_composition
+        assert_match(/Zusammensetzung\nWirkstoffe/, @@fachinfo.composition.to_s)
+        assert_match(/Propylenglycolum \(E 1520\)\), Silica colloidalis anhydrica/, @@fachinfo.composition.to_s)
+      end
+
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|
           begin

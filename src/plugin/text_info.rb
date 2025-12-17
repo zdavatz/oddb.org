@@ -1461,6 +1461,12 @@ module ODDB
         meta_infos = handle_chunk(chunk)
         meta_infos&.each do |meta_info|
           iksnr = meta_info.iksnr
+          if meta_info.iksnr.length != 5
+            msg = "Patching as IKSNR length #{meta_info.iksnr} #{meta_info.lang} #{meta_info.iksnr.length}"
+            LogFile.debug(msg)
+            @wrong_meta_tags << msg
+            iksnr = meta_info.iksnr = meta_info.iksnr[0..4]
+          end
           key = [iksnr, meta_info.type, meta_info.lang]
           key_string = "#{iksnr}_#{meta_info.type}_#{meta_info.lang}"
           @iksnrs_meta_info[key] ||= []
