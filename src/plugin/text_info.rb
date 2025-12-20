@@ -231,9 +231,11 @@ module ODDB
         end
         updated_fi
       else
-        fachinfo = app.create_fachinfo
-        LogFile.debug "#{reg.iksnr} #{fis.keys} create_fachinfo #{fachinfo.pointer}"
-        app.update fachinfo.pointer, fis
+        reg.fachinfo = app.create_fachinfo
+        LogFile.debug "#{reg.iksnr} odba_id #{reg.odba_id} #{fis.keys} create_fachinfo #{reg.fachinfo.pointer}"
+        app.update reg.fachinfo.pointer, fis
+        reg.odba_store
+        reg.fachinfo
       end
     end
 
@@ -731,7 +733,10 @@ module ODDB
       # Niklaus does not know why we have to duplicate the code here. But it ensures that newly added fis
       # are found after an import_daily
       registration.sequences.values.first.name_base = title
+      registration.sequences.odba_store
       LogFile.debug "#{registration.iksnr} seqNr #{seqNr}  #{sequence.pointer} seq_args #{seq_args.keys} app.name #{title} should match #{app.registration(registration.iksnr).name_base} registration.sequences #{registration.sequences.keys}" # [0..99]
+      sequence.odba_store
+      sequence
     end
 
     def self.create_registration(app, metainfo, seqNr = "01", packNr = "001")
@@ -761,9 +766,9 @@ module ODDB
       end
       args.store :company, company.pointer
       registration = app.update reg_ptr, args, :text_plugin_create_registration
-      TextInfoPlugin.create_sequence(app, registration, metainfo.title, seqNr, packNr)
-      registration.odba_store
-      registration
+      sequence = TextInfoPlugin.create_sequence(app, reg, metainfo.title, seqNr, packNr)
+      reg.odba_store
+      reg
     end
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
 
@@ -1270,7 +1275,7 @@ module ODDB
       reg = @app.registration(meta_info.iksnr)
       if reg.nil? || reg.sequences.size == 0 # Workaround for Ebixa problem
         LogFile.debug "must create #{meta_info.type} #{meta_info.lang} #{meta_info.authNrs} as no sequence found for reg #{reg.class}"
-        TextInfoPlugin.create_registration(@app, meta_info)
+        reg = TextInfoPlugin.create_registration(@app, meta_info)
       end
       text_info = get_textinfo(meta_info, meta_info.iksnr)
       if !unchanged
@@ -1289,7 +1294,7 @@ module ODDB
       if type == :fi
         if unchanged && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)
           LogFile.debug "#{meta_info.iksnr} at #{nr_uptodate}: #{type} #{new_html} unchanged #{new_html}" if defined?(Minitest)
-          @fis_are_up2date << meta_info.iksnr
+          @fis_are_up2date << meta_info.iksnr unless @updated_fis.find{|x| x.match(meta_info.iksnr)}
           return
         end
         begin
