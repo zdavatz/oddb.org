@@ -24,9 +24,11 @@ jobs:
         ruby: [3.4]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
+    - name: update apt
+      run: sudo apt-get update
     - name: install rmagick development
-      run: sudo apt install libmagickcore-dev graphicsmagick graphicsmagick-imagemagick-compat
+      run: sudo apt-get install ruby-uuid uuid-dev libmagickcore-dev graphicsmagick graphicsmagick-imagemagick-compat
 
     - uses: ruby/setup-ruby@v1
       with:
