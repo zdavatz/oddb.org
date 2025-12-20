@@ -411,10 +411,9 @@ module ODDB
       assert_equal(14, @plugin.to_parse.size)
       assert_equal(0, @plugin.updated_fis.size, "nr updated fis must match")
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
-      assert_equal(5,  @plugin.updated.size, "nr updated FI/PI must match") # Title + 4 items
+      assert_equal(5, @plugin.updated.size, "nr updated FI/PI must match") # Title + 4 items
     end
   end
-
 
   class TestImportDaily < Minitest::Test
     def teardown
@@ -602,7 +601,14 @@ April 2025)
       @plugin.import_swissmedicinfo(@options)
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size > 0, "must find at least one find fachinfo")
       assert_equal(Nr_PI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size, "must find patinfo")
-      assert_equal(10, @plugin.updated_fis.size, "nr updated fis must match")
+      assert_equal(7, @plugin.updated_fis.size, "nr updated fis must match")
+      assert_equal(["32917 [\"de\"] Zyloric®",
+        "32917 [\"fr\"] Zyloric®",
+        "40858 [\"de\"] Tramal®",
+        "40858 [\"fr\"] Tramal®",
+        "40859 [\"de\"] Tramal®",
+        "43787 [\"de\"] Tramal®",
+        "43788 [\"de\"] Tramal®"], @plugin.updated_fis)
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
       assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must match")
       # nr_fis = 6 # we add all missing
@@ -626,7 +632,7 @@ April 2025)
       assert_equal([], @plugin.updated_pis, "updated_pis must match")
       assert_equal([], @plugin.updated_fis, "No FI may be updated")
       # we ignored PIs in italian, only de, fr counte
-      assert_equal(Nr_FI_in_AIPS_test*2/3, @plugin.fis_are_up2date.size, "fis_are_up2date must match")
+      assert_equal(Nr_FI_in_AIPS_test * 2 / 3, @plugin.fis_are_up2date.size, "fis_are_up2date must match")
       assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must be empty")
       @finished_successful = true
     end
@@ -673,9 +679,6 @@ April 2025)
       @options[:target] = :pi
       prepare_plugin(remove_details: true)
       @plugin.import_swissmedicinfo(@options)
-      old_missing = {"680109990223_pi_de" => "Osanit® Kügelchen",
-                     "7680109990223_pi_fr" => "Osanit® globules",
-                     "7680109990224_pi_fr" => "Test mit langem Namen der nicht umgebrochen sein sollte mehr als 80 Zeichen lang"}
       # Add tests that patinfo gets updated
       assert(@plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "pi" }.size > 0, "must find at least one find patinfo")
       assert_equal(Nr_FI_in_AIPS_test, @plugin.iksnrs_meta_info.keys.find_all { |key| key[1] == "fi" }.size, "must find fachinfo")
