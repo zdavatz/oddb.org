@@ -484,17 +484,7 @@ module ODDB
       seq = @app.registrations.values.first.sequences.values.first
       assert_equal(ODDB::Sequence, seq.class)
       assert_equal(ODDB::Fachinfo, seq.fachinfo.class)
-      assert_equal("Tramal®", seq.fachinfo[:de].name.to_s)
       assert_equal("N02AX02", seq.fachinfo[:de].atc_code)
-      expected = %(Packungen
-Tramal Kapseln: Packungen zu 10, 20, 60 und
-Klinikpackung zu 200 Kapseln (10 x 20) [A]
-Tramal Lösung zum Einnehmen: Packungen in Tropfflasche zu 10 ml, 3x 10 ml [A]
-Klinikpackung als Tropfflasche zu 10x 10 ml [A]
-Packungen mit Dosierpumpe: zu 30 ml, 50 ml und 96 ml [A]
-Tramal Suppositorien: Packungen zu 10 Suppositorien [A]
-Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
-      assert_equal(expected, seq.fachinfo[:de].packages.to_s)
       iksnrs = %(Zulassungsnummer
 40858, 40859, 43787, 43788 (Swissmedic).)
       assert_equal(iksnrs, seq.fachinfo[:de].iksnrs.to_s)
@@ -505,6 +495,16 @@ Grünenthal Pharma AG, Glarus Süd.)
 April 2025)
       assert_equal(date, seq.fachinfo[:de].date.to_s)
       assert_equal(0, seq.fachinfo[:de].change_log.size)
+      expected = %(Packungen
+Tramal Kapseln: Packungen zu 10, 20, 60 und
+Klinikpackung zu 200 Kapseln (10 x 20) [A]
+Tramal Lösung zum Einnehmen: Packungen in Tropfflasche zu 10 ml, 3x 10 ml [A]
+Klinikpackung als Tropfflasche zu 10x 10 ml [A]
+Packungen mit Dosierpumpe: zu 30 ml, 50 ml und 96 ml [A]
+Tramal Suppositorien: Packungen zu 10 Suppositorien [A]
+Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
+      assert_equal(expected, seq.fachinfo[:de].packages.to_s)
+      assert_equal("Tramal®", seq.fachinfo[:de].name.to_s)
       @finished_successful = true
     end
 

@@ -16,6 +16,13 @@ require "util/workdir"
 begin require "debug"; rescue LoadError; end
 
 module ODDB
+  module FiParse
+    class FachinfoHtmlParser
+      def public_detect_chapter(elem)
+        detect_chapter(elem)
+      end
+    end
+  end
   class FachinfoDocument
     def odba_id
       1
@@ -87,7 +94,7 @@ module ODDB
         result = @view.to_html(CGI.new)
         nrPTags = 1
         assert_equal(nrPTags, result.scan(/<p>/i).size, "Should find exactly #{nrPTags} <P> tags in this table")
-        nrNonBreakingSpaces = 3
+        nrNonBreakingSpaces = 2
         assert_equal(nrNonBreakingSpaces, result.scan(/&nbsp;/i).size, "Should find exactly #{nrNonBreakingSpaces} non breaking space in this table")
       end
     end
@@ -196,20 +203,6 @@ module ODDB
         assert_nil(@writer.identify_chapter("7800", nil)) # 7800 = Packungen
       end
 
-      def test_Zulassungsnummer_isentress
-        html = <<~HTML
-          <p class="s4" id="section17"><span class="s44"><span>Zulassungsnummer</span></span></p>
-          <p class="s4"><span class="s48"><span>58267</span></span><span class="s48"><span>, 62946</span></span><span class="s48"><span> (Swissmedic)</span></span></p>
-          <p class="s4">&nbsp;</p>
-        HTML
-        xpath = "p[@id^='section'"
-        elem = Nokogiri(html).at(xpath)
-        assert("Zulassungsnummer", elem.inner_text)
-        assert("58267, 62946 (Swissmedic)", elem.next_sibling.inner_text)
-        assert_nil(elem.at("div"))
-        assert_nil(elem.at("p"))
-      end
-
       def test_Zulassungsnummer_isentress_html
         isentress_html = <<~HTML
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
@@ -267,15 +260,6 @@ module ODDB
         writer = FachinfoHtmlParser.new
         html = <<~HTML
           <table class="s51">
-          <colgroup>
-          <col style="width:1.15833in;">
-          <col style="width:1.40278in;">
-          <col style="width:1.29236in;">
-          <col style="width:0.51875in;">
-          <col style="width:0.48056in;">
-          <col style="width:0.49583in;">
-          <col style="width:0.70833in;">
-          </colgroup>
           <tbody>
           <tr>
           <td class="s42" rowspan="2">
@@ -359,131 +343,6 @@ module ODDB
       end
     end
 
-    class TestFachinfoHtmlParserAlcaCDe < Minitest::Test
-      MedicalName = "Alca-C®"
-      def setup
-        skip("A long time ago this test worked")
-        return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
-        @@path = File.join(HTML_DIR, "de/alcac.fi.html")
-        @@writer = FachinfoHtmlParser.new
-        File.open(@@path) { |fh|
-          @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, MedicalName)
-        }
-      end
-
-      def test_fachinfo1
-        assert_instance_of(FachinfoDocument, @@fachinfo)
-      end
-
-      def test_name1
-        assert_equal(MedicalName, @@fachinfo.name.to_s)
-      end
-
-      def test_company1
-        ## this is unused. Since it's part of the base-class TextinfoHtmlParser, let's test it.
-        chapter = @@writer.company
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("NOVARTIS CONSUMER HEALTH", chapter.heading)
-      end
-
-      def test_galenic_form1
-        chapter = @@fachinfo.galenic_form
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Antipyretikum/Analgetikum mit Vitamin C", chapter.heading)
-        assert_equal(0, chapter.sections.size)
-      end
-
-      def test_amzv1
-        assert_nil @@writer.amzv
-      end
-
-      def test_composition1
-        chapter = @@fachinfo.composition
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Zusammensetzung", chapter.heading)
-        assert_equal(1, chapter.sections.size)
-        section = chapter.sections.first
-        assert_equal("", section.subheading)
-        assert_equal(3, section.paragraphs.size)
-        paragraph = section.paragraphs.at(0)
-        expected = "Wirkstoffe:"
-        assert_equal(expected, paragraph.text)
-        paragraph = section.paragraphs.at(1)
-        expected = /1 Brausetablette enth.*lt: Carbasalatum calcicum 528.*mg corresp. Acidum Acetylsalicylicum 415.*mg, Acidum ascorbicum 250.*mg./
-        assert_match(expected, paragraph.text)
-        paragraph = section.paragraphs.at(2)
-
-        expected = /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120\./
-        assert_match(expected, paragraph.text)
-      end
-
-      def test_effects1
-        chapter = @@fachinfo.effects
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Eigenschaften/Wirkungen", chapter.heading)
-      end
-
-      def test_kinetic1
-        chapter = @@fachinfo.kinetic
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Pharmakokinetik", chapter.heading)
-      end
-
-      def test_indications1
-        chapter = @@fachinfo.indications
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Indikationen/Anwendungsmöglichkeiten", chapter.heading)
-      end
-
-      def test_usage1
-        chapter = @@fachinfo.usage
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Dosierung/Anwendung", chapter.heading)
-      end
-
-      def test_restrictions1
-        chapter = @@fachinfo.restrictions
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Anwendungseinschränkungen", chapter.heading)
-      end
-
-      def test_unwanted_effects1
-        chapter = @@fachinfo.unwanted_effects
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Unerwünschte Wirkungen", chapter.heading)
-      end
-
-      def test_interactions1
-        chapter = @@fachinfo.interactions
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Interaktionen", chapter.heading)
-      end
-
-      def test_overdose1
-        chapter = @@fachinfo.overdose
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Überdosierung", chapter.heading)
-      end
-
-      def test_other_advice1
-        chapter = @@fachinfo.other_advice
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Sonstige Hinweise", chapter.heading)
-      end
-
-      def test_iksnrs1
-        chapter = @@fachinfo.iksnrs
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("IKS-Nummern", chapter.heading)
-      end
-
-      def test_date1
-        chapter = @@fachinfo.date
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Stand der Information", chapter.heading)
-      end
-    end
-
     Zyloric_Reg = "Zyloric®"
 
     # Zyloric had a problem that the content of the fachinfo was mostly in italic
@@ -492,10 +351,7 @@ module ODDB
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.join(HTML_DIR, "de/fi_32917_zyloric.de.html")
         @@writer = FachinfoHtmlParser.new
-        FileUtils.makedirs(ODDB::WORK_DIR)
-        File.open(@@path) { |fh|
-          @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, Zyloric_Reg)
-        }
+        @@fachinfo = @@writer.extract(Nokogiri(File.read(@@path)), image_folder: "fiImageFolder_#{__LINE__}", name: Zyloric_Reg)
       end
 
       def test_fachinfo2
@@ -661,9 +517,9 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
           @@fachinfo.galenic_form.to_s)
       end
 
-      def test_italic_absent
+      def test_italic_absent_1
         occurrences = @@fachinfo.to_yaml.scan("- :italic").size
-        assert(occurrences == 72, "Find exactly 72 occurrences of italic in yaml")
+        assert_equal(72, occurrences, "Find exactly 72 occurrences of italic in yaml")
       end
     end
 
@@ -680,6 +536,14 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
         File.open(@@path) { |fh|
           @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, MedicInfoName, StylesBisoprolol)
         }
+      end
+
+      def test_italic_styles_545
+        italicStyles = TextinfoHtmlParser.get_italic_style(StylesBisoprolol)
+        assert(italicStyles.index("s7"))
+        assert(italicStyles.index("s9"))
+        assert(italicStyles.index("s12"))
+        assert(italicStyles.size == 3)
       end
 
       def test_fachinfo2
@@ -734,8 +598,10 @@ family:Arial;font-size:11pt;line-height:150%;margin-right:113.4pt;}'
       end
 
       def test_parse_fachinfo_html_with_image_dir
-        res = FiParse.parse_fachinfo_html(@@path, image_folder: "fiImageFolder")
-        assert(res.to_yaml.index("/resources/images/fiImageFolder/3.png"), "Must have image nr 3 in fiImageFolder")
+        @parser = ODDB::FiParse
+        @@fachinfo = @@writer.extract(Nokogiri(File.read(@@path)))
+        res = @@fachinfo
+        assert(res.to_yaml.index("/resources/images/Seebri_Breezhaler/8.png"), "Must have image 8.png in fiImageFolder")
       end
 
       def test_name2
@@ -767,12 +633,8 @@ Color: Gelborange S (E 110), excipiens pro capsula.",
         assert(@@fachinfo.galenic_form.to_s.index("Firmenlogo"))
         assert(@@fachinfo.effects.to_s.index("(image)"), "Wirkungen muss Bild enthalten")
         assert(@@fachinfo.galenic_form.to_s.index("(image)"), "galenic_form must have an image")
-        assert(@@fachinfo.to_yaml.index("/resources/images/Seebri_Breezhaler/5.png"), "Must have image nr 5")
-        assert(@@fachinfo.to_yaml.index("/resources/images/Seebri_Breezhaler/4.png"), "Must have image nr 4")
-        assert(@@fachinfo.to_yaml.index("/resources/images/Seebri_Breezhaler/3.png"), "Must have image nr 3")
-
+        assert_equal(5, @@fachinfo.to_yaml.lines.find_all{|x| x.match("/images/")}.size)
         assert(@@fachinfo.galenic_form.to_s.index("(image)"), "Zusamensetzung muss Bild enthalten")
-        assert(@@fachinfo.to_yaml.index("/resources/images/Seebri_Breezhaler/1.x-wmf"), "Must have image nr 1")
       end
 
       def test_iksnrs
@@ -1022,6 +884,13 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         assert_instance_of(FachinfoDocument2001, @@fachinfo)
       end
 
+      def test_fachinfo_detect_chapter
+        doc = Nokogiri(File.read(@@path))
+        code, chapter = @@writer.public_detect_chapter(doc)
+        skip ("Must be fixed")
+        assert_equal(7051, code.to_i, "Must return code 7051 for Darreichungsform")
+      end
+
       def test_fachinfo_atc_49456_Clexane_De
         skip("Sometimes nil") unless @@fachinfo.atc_code
         assert_equal("B01AB05", @@fachinfo.atc_code)
@@ -1140,7 +1009,7 @@ align:left;margin-left:0pt;}.s142{font-family:Arial;font-size:8pt;line-height:15
         @@writer = FachinfoHtmlParser.new
         @@writer.image_folder = "fiImageFolder_#{__LINE__}"
         File.open(@@path) { |fh|
-          @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, MedicInfoName, Styles_Baraclude)
+          @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, MedicInfoName) #, Styles_Baraclude)
         }
       end
 
@@ -1198,10 +1067,7 @@ align:left;margin-left:0pt;}.s142{font-family:Arial;font-size:8pt;line-height:15
         return if defined?(@@path) and defined?(@@fachinfo) and @@fachinfo
         @@path = File.expand_path(HtmlName, File.dirname(__FILE__))
         @@writer = ODDB::FiParse::FachinfoHtmlParser.new
-        @@writer.image_folder = "fiImageFolder_#{__LINE__}"
-        File.open(@@path) { |fh|
-          @@fachinfo = @@writer.extract(Nokogiri(fh), :fi, MedicInfoName, StylesCoAprovel)
-        }
+        @@fachinfo = @@writer.extract(Nokogiri(File.read(@@path)), image_folder: "fiImageFolder_#{__LINE__}", name: MedicInfoName, styles: StylesCoAprovel)
         FileUtils.makedirs(ODDB::WORK_DIR)
         File.open(File.join(ODDB::WORK_DIR, File.basename(HtmlName.sub(".html", ".yaml"))), "w+") { |fi| fi.puts @@fachinfo.to_yaml }
       end

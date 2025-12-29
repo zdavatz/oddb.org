@@ -181,7 +181,7 @@ module ODDB
         iksnr: iksnr,
         lang: lang
       })
-      writer = FachinfoNokogiri.new
+      writer = FachinfoHtmlParser.new
       writer.format = :documed
       writer.extract(Nokogiri(doc.to_html(true)), :fi)
     end
@@ -190,30 +190,9 @@ module ODDB
       if File.exist?(src)
         src = File.read src
       end
-      writer = FachinfoNokogiri.new
+      doc = Nokogiri(src)
+      writer =  FachinfoHtmlParser.new
       writer.format = :swissmedicinfo
-      doc = Hpricot(src)
-      title_from_html ||= ""
-      title_from_html = doc.at("title").children.first.to_s if doc.at("title")
-      if writer.title
-        unless writer.title.eql?(title_from_html)
-          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
-        end
-      else writer.title
-          writer.title = title_from_html
-      end
-      writer.lang = lang
-      writer.image_folder = image_folder
-      writer.extract(Nokogiri(src), :fi, title, styles)
-    end
-
-    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
-      if File.exist?(src)
-        src = File.read src
-      end
-      writer = PatinfoNokogiri.new
-      writer.format = :swissmedicinfo
-      doc = Hpricot(src)
       unless writer.title
         title_from_html = doc.at("title").children.first.to_s
         writer.title = title_from_html
@@ -224,7 +203,27 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-      writer.extract(Nokogiri(src), :pi, title, styles)
+      writer.extract(doc, type: :fi, name: writer.title)
+    end
+
+    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
+      if File.exist?(src)
+        src = File.read src
+      end
+      doc = Nokogiri(src)
+      writer = PatinfoHtmlParser.new
+      writer.format = :swissmedicinfo
+      unless writer.title
+        title_from_html = doc.at("title").children.first.to_s
+        writer.title = title_from_html
+      else
+        unless writer.title.eql?(title_from_html)
+          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
+        end
+      end
+      writer.lang = lang
+      writer.image_folder = image_folder
+      writer.extract(doc, type: :pi, name: writer.title)
     end
     module_function :storage=
     module_function :parse_fachinfo_docx

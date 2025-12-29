@@ -24,7 +24,7 @@ module ODDB
         assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
       def test_name
-        assert_match(/Zyloric/, @@fachinfo.name.heading)
+        assert_equal("Zyloric®", @@fachinfo.name)
       end
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|

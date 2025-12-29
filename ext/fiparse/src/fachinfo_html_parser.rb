@@ -123,7 +123,7 @@ module ODDB
             text += "\n" + elem.at("p").inner_text
           end
         else
-          unless /^section[0-9]*$/i.match?(elem.attributes["id"].to_s)
+          unless /^section[0-9]*$/i.match?(elem.attributes["id"]&.value.to_s)
             return [nil, nil]
           end
           text = text(elem).sub(/^\s/, "")
@@ -151,6 +151,11 @@ module ODDB
           when /^Herstellerin(en)?|^Fabricant/ then "7860"
           when /^Stand\s*der\s*Information|^Mise\s*.\s*jour\s*de\s*l.information/ then "8000"
           end
+#        binding.break if text.match('Darreichungsform') # ^Darreichungsform und Wirkstoffmenge pro Einheitil
+         unless code
+          code = "7050" if elem.respond_to?(:attributes) && elem.attributes["id"].value.eql?("section3")
+          binding.break unless code
+        end if false
         [code, text]
       end
     end

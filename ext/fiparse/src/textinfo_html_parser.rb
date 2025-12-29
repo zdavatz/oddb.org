@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'debug'
 require "ostruct"
 require "util/oddbconfig"
 require "model/text"
@@ -28,27 +29,15 @@ module ODDB
             end
           else
             code, text = detect_chapter(elem)
-#              binding.break if /In Apotheken und Drogerien,/.match(text)
-            if code and text
+            if code && text
               code = code
               chapter.heading = text
               # content
+              old = elem
               elem = elem.next
-              elem = elem.next if elem.to_s.eql?("\n")
-              begin
-#              if /Wo erhalten Sie Cimi/.match text
-#                elem = elem.next
-                handle_element(elem, ptr)
-#              end if true
               until end_element_in_chapter?(elem)
-#              until end_element_in_chapter?(elem) && !elem.to_s.eql?("\n")
-                 pp elem
-                 puts end_element_in_chapter?(elem)
                 handle_element(elem, ptr)
                 elem = elem.next
-              end
-              rescue => error
-#                binding.break
               end
             end
           end
@@ -58,7 +47,7 @@ module ODDB
             anchor = title.at("a")
             if !anchor.nil?
               code = anchor["name"]
-              heading = anchor.next || title
+              heading = anchor.next || elem.at(title_tag).text
               chapter.heading = text(heading) # <a><p></p></a>
             elsif id = title.parent.attributes["id"] and !id.empty? # :compendium format of swissmedicinfo
               code = id.gsub(/[^0-9]/, "")
@@ -82,16 +71,27 @@ module ODDB
           @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
           paragraph_tag = "div.paragraph"
         when :swissmedicinfo
-#          raise "MustPassNameToExtract" unless name
-          @name = simple_chapter(name)
-          paragraph_tag = "p[@id^='section']"
+          if name
+            @name = name
+          else
+            @name = doc.at('title')&.text&.strip
+            @name ||= doc.css('#section1').inner_text
+          end
+          paragraph_tag = "p"
+          handler = Class.new {
+          def regex node_set, regex
+            node_set.find_all { |node| node['id'] =~ /section/ }
+          end
+        }.new
+          paragraph_tag = '"//p", handler'
+          paragraph_tag = "p"
         else
           @name = simple_chapter(doc.at("h1"))
           @company = simple_chapter(doc.at("div.ownerCompany"))
           @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
           paragraph_tag = "div.paragraph"
         end
-        (doc / paragraph_tag).each { |elem|
+        (doc.search paragraph_tag, handler).each { |elem|
           if !name or elem != name
             code, text = chapter(elem)
             identify_chapter(code, text)
@@ -142,9 +142,9 @@ module ODDB
       def has_fixed_font?(elem, ptr)
         if @format == :swissmedicinfo
           return false unless elem.respond_to?(:attributes)
-          return true if FixedFontRegexp.match(elem.attributes["style"])
+          return true if FixedFontRegexp.match(elem.attributes["style"]&.value)
           if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
-            @stylesWithFixedFont.each { |style| return true if elem.attributes["class"].eql?(style) }
+            @stylesWithFixedFont.each { |style| return true if elem.attributes["class"]&.value.eql?(style) }
           end
         end
         false
@@ -152,20 +152,20 @@ module ODDB
 
       def has_italic?(elem, ptr)
         if @format == :swissmedicinfo
-          return true if ItalicRegexp.match(elem.attributes["style"])
+          return true if ItalicRegexp.match(elem.attributes["style"]&.value)
           if ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
-            @stylesWithItalic.each { |style| return true if elem.attributes["class"].eql?(style) }
+            @stylesWithItalic.each { |style| return true if elem.attributes["class"]&.value.eql?(style) }
           end
           false
-        elsif ptr.target.is_a?(Text::Paragraph) and elem.respond_to?(:attributes)
-          !/italic/.match(elem.attributes["style"]).nil?
+        elsif ptr.target.is_a?(Text::Paragraph) && elem.respond_to?(:attributes)
+          /italic/.match(elem.attributes["style"]&.value)
         else
           false
         end
       end
 
       def end_element_in_chapter?(elem)
-        elem.nil? || (elem.respond_to?(:attributes) && !elem.attributes["id"])
+        elem.nil? || (elem.respond_to?(:attributes) && !elem.attributes["id"].nil?)
       end
 
       def detect_text_block(elem) # for swissmedicinfo format
@@ -178,12 +178,13 @@ module ODDB
       end
 
       def handle_element(child, ptr, isParagraph = false)
-        puts "handle_element #{child.class} name #{child.name.inspect} parent #{child.parent.class} name #{child.parent.name.inspect}: #{child.to_s[0..30]}"
-#              binding.break if /In Apotheken und Drogerien,/.match(child.to_s[0..30])
         case child
+        when Nokogiri::XML::EntityReference
+            ptr.target << HTMLEntities.new.decode(child.to_s)
         when Nokogiri::XML::Text
           if ptr.target.is_a? Text::Table
-            # ignore text "\r\n        " in between tag.
+            # # ignore text "\r\n        " in between tag.
+          elsif child.text.match('span>')
           elsif !child.to_s.eql?("\n")
             ptr.section ||= ptr.chapter.next_section
             ptr.target ||= ptr.section.next_paragraph
@@ -191,6 +192,9 @@ module ODDB
           end
         when Nokogiri::XML::Element
           case child.name
+                        when "colgroup"
+                        @@do_break = true
+                                  handle_all_children(child, ptr, false)
           when "h3"
             ptr.section = ptr.chapter.next_section
             ptr.target = ptr.section.subheading
@@ -250,8 +254,8 @@ module ODDB
           when "td", "th"
             if ptr.table
               ptr.target = ptr.table.next_multi_cell!
-              ptr.target.row_span = child.attributes["rowspan"].to_i unless child.attributes["rowspan"]&.empty?
-              ptr.target.col_span = child.attributes["colspan"].to_i unless child.attributes["colspan"]&.empty?
+              ptr.target.row_span = child.attributes["rowspan"]&.value.to_i
+              ptr.target.col_span = child.attributes["colspan"]&.value.to_i
               handle_all_children(child, ptr)
               ptr.target = ptr.table
             elsif ptr.target
@@ -268,8 +272,8 @@ module ODDB
             if ptr.table
               unless ptr.target.respond_to?(:next_image) # after something text (paragraph) in cell
                 ptr.target = ptr.table.next_multi_cell!
-                ptr.target.row_span = child.attributes["rowspan"].to_i unless child.attributes["rowspan"].empty?
-                ptr.target.col_span = child.attributes["colspan"].to_i unless child.attributes["colspan"].empty?
+                ptr.target.row_span = child.attributes["rowspan"]&.value.to_i
+                ptr.target.col_span = child.attributes["colspan"]&.value.to_i
               end
               insert_image(ptr, child)
               ptr.target = ptr.table.next_paragraph
@@ -354,7 +358,7 @@ module ODDB
 
       def preformatted_text(elem)
         str = elem.inner_text || elem.to_s
-        target_encoding(str.delete("\n").gsub(/(\302\240)/u, " ").gsub("&nbsp;&nbsp;", "&nbsp;"))
+        str.delete("\n").gsub(/(\302\240)/u, " ").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
 
       def simple_chapter(elem_or_str)
@@ -371,11 +375,11 @@ module ODDB
 
       def detect_table?(elem)
         found = true
-        if @stylesWithFixedFont and @stylesWithFixedFont.index(elem.attributes["class"])
+        if @stylesWithFixedFont && @stylesWithFixedFont.index(elem.attributes["class"]&.value)
           found = false
-        elsif elem.attributes["class"] == "s24" # :swissmedicinfo
+        elsif elem.attributes["class"]&.value == "s24" # :swissmedicinfo
           found = true
-        elsif elem.attributes["border"] == "0"
+        elsif elem.attributes["border"]&.value == "0"
           # if 'rowSepBelow' class is found,
           # then this elem must be handled as pre-format style paragraph
           catch :pre do
@@ -394,23 +398,21 @@ module ODDB
             end
           end
           if ((elem / :thead).empty? and (elem / :tbody).empty?) or
-              (elem.attributes["cellspacing"] == "0" and elem.attributes["cellpadding"] == "0" and elem.attributes["style"].empty?)
+              (elem.attributes["cellspacing"] == "0" and elem.attributes["cellpadding"] == "0" and elem.attributes["style"].nil?)
             found = false
           end
         end
         found
       end
 
-      def target_encoding(text)
-#                       require 'debug'; binding.break
-        text.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
-      rescue
-        text
-      end
       def text(elem)
         return "" unless elem
-        str = elem.inner_text || elem.to_s
-        target_encoding(str.gsub(/(\s)+/u, " ").gsub(/[■]/u, "").tr(" ", " ").gsub("&nbsp;&nbsp;", "&nbsp;"))
+                        if elem.instance_of?(String)
+                          str = elem
+                        else
+                          str = elem.inner_text || elem.to_s
+                        end
+        str.gsub(/(\s)+/u, " ").gsub(/[■]/u, "").tr(" ", " ").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
     end
   end

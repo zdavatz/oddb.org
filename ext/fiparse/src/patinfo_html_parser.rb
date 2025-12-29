@@ -56,7 +56,6 @@ module ODDB
             @date ||= chapter
           end
         when "9010" # swissmedicinfo
-          # 56933_pi_fr_Cimifemine.html  would assign Cimifemine® forte comprimés
           @name = chapter unless /^$|AMZV|^\w+ Arzneimittel|^Médicament|^Wann |^Was /.match(chapter.heading)
         else
           raise "Unknown chapter-code #{code}, while parsing #{@name}"
@@ -96,8 +95,7 @@ module ODDB
       private
 
       def detect_chapter(elem)
-        pp unless /^section[0-9]*$/.match?(elem.attributes["id"].to_s)
-        return [nil, nil] unless /^section[0-9]*$/.match?(elem.attributes["id"].to_s)
+        return [nil, nil] unless /^section[0-9]*$/.match?(elem.attributes["id"]&.value.to_s)
         # TODO
         #   Update chapter detection if swissmedic repairs FI/PI format.
         #
@@ -105,7 +103,6 @@ module ODDB
         #   And Section order is also not fixed :(
 
         res = PatinfoHtmlParser.text_to_chapter(text(elem))
-        pp res
         res
       end
 

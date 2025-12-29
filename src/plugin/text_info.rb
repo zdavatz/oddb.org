@@ -399,7 +399,6 @@ module ODDB
         true
       end
     end
-
     def store_package_patinfo(package, lang, patinfo_lang)
       return unless package
       msg = "#{package.iksnr}/#{package.seqnr}/#{package.ikscd}: #{lang} #{patinfo_lang.name}"

@@ -18,7 +18,6 @@ def update_text_file(iksnr, type, lang, path, url, name)
   puts "update_text_file #{iksnr} #{type} #{lang} #{path} #{url}"
   short = /^[a-zA-Z]+/.match(name)[0]
   new_html_file = File.join(@extTest, "data", "html", "#{iksnr}_#{type}_#{lang}_#{short}.html")
-#  binding.break
   mtime = File.exist?(new_html_file) ? File.mtime(new_html_file) : false
   res = system("wget --quiet --timestamping #{url} -O #{new_html_file}")
   full_type = type.downcase.to_s.eql?("pi") ? "Patinfo" : "Fachinfo"
@@ -53,7 +52,7 @@ module ODDB
         assert_equal(ODDB::#{document}, #{pi_or_fi}.class)
       end
       def test_name
-        assert_match(/#{short}/, #{pi_or_fi}.name.heading)
+        assert_equal(/#{name}/, #{pi_or_fi}.name)
       end
       def test_chapters
         ODDB::#{full_type}Document2001::CHAPTERS.each do |chapter|
@@ -68,6 +67,7 @@ module ODDB
   end
 end
 )
+      FileUtils.chmod("+x", new_test_file)
     end
   end
   puts "Created #{new_test_file}"
@@ -84,18 +84,15 @@ files.each do |path|
     this = @infos[key]
     if this
       url = this.first.download_url
-  #    puts "Found #{iksnr} #{type} #{lang} #{url}"
        update_text_file(iksnr, type, lang, path, url, this.first.title)
-#      puts "Nothing found for #{key}"
     else
       puts "#{__LINE__} #{path}"
-#      require 'debug'; binding.break
     end
   else
     puts "#{__LINE__} #{path}"
   end
-end if false
-
+  break
+end
 %(
 update_text_file 30785 fi de /opt/src/oddb.org-standard/ext/fiparse/test/data/html/de/fi_30785_ponstan.html https://files.refdata.ch/simis-public-prod/MedicinalDocuments/12006aef84984eb08c3b1304f0d57f54-de.html
 

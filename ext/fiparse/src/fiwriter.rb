@@ -40,8 +40,7 @@ module ODDB
 
       def send_line_break
         if @target == @name
-          @name.strip!
-          @name << "\n"
+          @name += @name.strip + "\n"
         elsif @chapter == @galenic_form && @section
           @section.subheading << "\n"
         elsif @chapter && (@target == @chapter.heading \

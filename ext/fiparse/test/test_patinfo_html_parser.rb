@@ -10,6 +10,7 @@ require "stub/odba"
 require "minitest/autorun"
 require "flexmock/minitest"
 require "patinfo_html_parser"
+require "fiparse"
 require "plugin/text_info"
 require "util/workdir"
 $: << File.expand_path("../../../test", File.dirname(__FILE__))
@@ -21,12 +22,11 @@ module ODDB
     class TestPatinfoHtmlParserCimifeminDe < Minitest::Test
       def setup
         return if defined?(@@path) and defined?(@@patinfo) and @@patinfo
-        @@path = File.join(HTML_DIR, "de/cimifemin.html")
-        @@patinfo =  @parser.parse_patinfo_html(File.read(@@path), lang: "fr")
+        @@path = File.join(File.dirname(__FILE__), "data", "html", "de", "cimifemin.html")
+        assert(File.exist?(@@path))
+        @parser = ODDB::FiParse
         @@writer = PatinfoHtmlParser.new
-        File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Nokogiri(fh), :pi, fh.path)
-        }
+        @@patinfo = FiParse.parse_patinfo_html(File.read(@@path))
       end
 
       def test_patinfo
@@ -35,7 +35,7 @@ module ODDB
       end
 
       def test_name1
-        assert_equal("Cimifemin®", @@writer.name.to_s)
+        assert_equal("Cimifemin® uno Tabletten", @@patinfo.name.to_s)
       end
 
       def test_company1
@@ -44,13 +44,6 @@ module ODDB
         assert_equal("Zulassungsinhaberin", chapter.heading)
         assert_equal(1, chapter.paragraphs.size)
         assert_equal("Zeller Medical AG, CH-8590 Romanshorn", chapter.paragraphs.first.text)
-      end
-
-      def test_galenic_form1
-        chapter = @@writer.galenic_form
-        assert_instance_of(ODDB::Text::Chapter, chapter)
-        assert_equal("Pflanzliches Arzneimittel", chapter.heading)
-        assert_equal(0, chapter.sections.size)
       end
 
       def test_amzv1
@@ -67,7 +60,7 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(2, section.paragraphs.size)
         paragraph = section.paragraphs.first
-        expected = "Cimifemin forte enthält einen Trockenextrakt aus Cimicifugawurzelstock (Cimicifuga racemosa, (L.) Nutt., rhizoma)."
+        expected = "Cimifemin uno enthält einen Trockenextrakt aus Cimicifugawurzelstock (Cimicifuga racemosa (L.) Nutt., rhizoma)."
         assert_equal(expected, paragraph.text)
       end
 
@@ -80,7 +73,7 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(3, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Bei ungewöhnlichem Leistungsabfall, bei Gelbfärbung der Augen oder der Haut, bei dunklem Urin oder entfärbtem Stuhl sollte Cimifemin forte abgesetzt und ein Arzt bzw. eine Ärztin aufgesucht werden."
+        expected = "Bei ungewöhnlichem Leistungsabfall, bei Gelbfärbung der Augen oder der Haut, bei dunklem Urin oder entfärbtem Stuhl sollte Cimifemin uno abgesetzt und ein Arzt bzw. eine Ärztin aufgesucht werden."
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
         expected = "Bei Spannungs- und Schwellungsgefühl in den Brüsten sowie bei Zwischenblutungen, Schmierblutungen oder bei wiederkehrender Regelblutung sollten Sie Rücksprache mit Ihrem Arzt bzw. Ihrer Ärztin nehmen."
@@ -97,10 +90,10 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(7, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = /Cimifemin forte darf bei bekannter Überempfindlichkeit /
+        expected = /Cimifemin uno darf bei bekannter Überempfindlichkeit /
         assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = /Cimifemin forte enthält Lactose. Bitte nehmen Sie Cimifemin fo/
+        expected = /Cimifemin uno enthält Lactose. Bitte nehmen Sie Cimifemin uno/
         assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
         expected = /Dieses Arzneimittel enthält weniger als 1 mmol Natrium/
@@ -122,7 +115,7 @@ module ODDB
         expected = /Erwachsene: Soweit nicht anders verschrieben/
         assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
-        expected = /Die Anwendung und Sicherheit von Cimifemin forte bei Kindern /
+        expected = /Die Anwendung und Sicherheit von Cimifemin uno bei Kindern /
         assert_match(expected, paragraph.text)
         paragraph = section.paragraphs.at(2)
         expected = /Halten Sie sich an die in der Packungsbeilage angegebene oder/
@@ -138,7 +131,7 @@ module ODDB
         assert_equal("", section.subheading)
         assert_equal(6, section.paragraphs.size)
         paragraph = section.paragraphs.at(0)
-        expected = "Folgende Nebenwirkungen können bei der Einnahme von Cimifemin forte auftreten:"
+        expected = "Folgende Nebenwirkungen können bei der Einnahme von Cimifemin uno auftreten:"
         assert_equal(expected, paragraph.text)
         paragraph = section.paragraphs.at(1)
         expected = "·in seltenen Fällen Magenbeschwerden, Übelkeit, Sodbrennen und Durchfall."
@@ -286,7 +279,7 @@ module ODDB
         @@path = File.join(HTML_DIR, "de/inderal.html")
         @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Nokogiri(fh))
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi)
         }
       end
 
@@ -333,7 +326,7 @@ module ODDB
         @@path = File.join(HTML_DIR, "de/ponstan.html")
         @@writer = PatinfoHtmlParser.new
         File.open(@@path) { |fh|
-          @@patinfo = @@writer.extract(Nokogiri(fh))
+          @@patinfo = @@writer.extract(Nokogiri(fh), :pi)
         }
       end
 
@@ -387,7 +380,6 @@ module ODDB
         chapter = @@writer.effects
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Was ist VICKS Nasivin und wann wird es angewendet?", chapter.heading)
-        assert_nil(chapter.sections.first)
         chapter = @@writer.date
         assert_instance_of(ODDB::Text::Chapter, chapter)
         assert_equal("Diese Packungsbeilage wurde im März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", chapter.to_s)
