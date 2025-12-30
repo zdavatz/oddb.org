@@ -57,7 +57,6 @@ module ODDB
       @nonconforming_content = []
       @wrong_meta_tags = []
       @news_log = File.join ODDB.config.log_dir, "textinfos.txt"
-      @problematic_fi_pi = File.join ODDB.config.log_dir, "problematic_fi_pi.lst"
       @title = ""       # target fi/pi name
       @target = :both
       # FI/PI names
@@ -456,14 +455,13 @@ module ODDB
         return false
       else
         return key if @multiple_entries[key] # Info must be collected only once
-        text = "#{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: has #{@iksnrs_meta_info[key].size} entries\n"
+        text = "\n#{meta_info.iksnr} #{meta_info.type} #{meta_info.lang}: has #{@iksnrs_meta_info[key].size} entries\n"
         LogFile.debug(text)
         text += @iksnrs_meta_info[key].collect do |x|
           date = Date.parse(x.informationUpdate)
           "   #{date} #{x.title} from #{File.basename(x.download_url)}"
         end.join("\n")
         @multiple_entries[key] = text
-        return key
       end
     end
 
@@ -653,7 +651,7 @@ module ODDB
       else
         res << "\nFound #{@multiple_entries.size} multiple entries in #{File.basename(@aips_xml)}:\n"
         @multiple_entries.each do |key, val|
-          res << "#{key.join(" ")}\n#{val}"
+          res << val
         end
       end
       if @updated_pis == 0
@@ -1415,35 +1413,6 @@ module ODDB
       meta_infos
     end
 
-    def report_problematic_names
-      LogFile.debug "Creating #{@problematic_fi_pi} with #{@duplicate_entries.size} @duplicate_entries of #{@iksnrs_from_aips.size}"
-      FileUtils.makedirs(File.dirname(@problematic_fi_pi))
-      File.open(@problematic_fi_pi, "w+") do |file|
-        if @duplicate_entries.size > 0
-          begin
-            @iksnrs_from_aips.sort.uniq.each do |iksnr|
-              file.puts "# known packages. There are #{@duplicate_entries.size} @duplicate_entries"
-              if @app.registration(iksnr)
-                @app.registration(iksnr).packages.each do |pack|
-                  if pack.is_a?(ODDB::Package)
-                    file.puts "#{iksnr} #{pack.barcode} #{pack.name}" if pack.respond_to?(:barcode)
-                  else
-                    file.puts "# not a pack for #{iksnr} #{pack.inspect}"
-                  end
-                end
-              end
-            end
-          rescue => error
-            LogFile.debug error
-            0
-          end
-        end
-        file.puts "# Start of @duplicate_entries"
-        @duplicate_entries.sort.uniq.each { |duplicate| file.puts duplicate }
-      end
-      LogFile.debug "created #{@problematic_fi_pi}"
-    end
-
     public
 
     def parse_aips_download(aips_file = @options[:html_file] || @aips_xml)
@@ -1500,7 +1469,6 @@ module ODDB
       duration = (Time.now - start_time).to_i
       LogFile.debug "#{Time.now}: created #{@iksnrs_meta_info.size} @iksnrs_meta_info took #{duration} seconds"
       create_missing_registrations
-      report_problematic_names
     end
 
     private
