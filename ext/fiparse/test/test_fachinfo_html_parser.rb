@@ -415,7 +415,8 @@ module ODDB
       end
 
       def test_galenic_form
-        assert_equal("", @@fachinfo.galenic_form.to_s)
+        assert_equal("Forme pharmaceutique et quantité de principe actif par unité
+Comprimés à 100 mg et 300 mg.", @@fachinfo.galenic_form.to_s)
       end
 
       def test_italic_absent
@@ -885,10 +886,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
       end
 
       def test_fachinfo_detect_chapter
-        doc = Nokogiri(File.read(@@path))
-        code, chapter = @@writer.public_detect_chapter(doc)
-        skip ("Must be fixed")
-        assert_equal(7051, code.to_i, "Must return code 7051 for Darreichungsform")
+        assert_equal("Darreichungsform und Wirkstoffmenge pro Einheit", @@fachinfo.galenic_form.heading)
       end
 
       def test_fachinfo_atc_49456_Clexane_De
@@ -921,10 +919,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
       def test_fixed_font_49456_Clexane_De
         skip("Sometimes nil") unless @@fachinfo.galenic_form &&
           @@fachinfo.galenic_form.heading && @@fachinfo.galenic_form.heading.length > 0
-        assert_equal("Galenische Form und Wirkstoffmenge pro Einheit", @@fachinfo.galenic_form.heading)
-        skip_unless(@@fachinfo.galenic_form.to_yaml, "Sometimes nil")
-        skip_unless(@@fachinfo.galenic_form.to_yaml.index("Fertigspritze"),
-          "Sometimes Fertigspritze is not found")
+        assert_equal("Darreichungsform und Wirkstoffmenge pro Einheit", @@fachinfo.galenic_form.heading)
         search = "mg       2000 I.E.     Fertigspritze"
         index = @@fachinfo.galenic_form.to_yaml.index(search)
         skip_unless(index && index > 0, "Must find #{search} as text in yaml #{@@fachinfo.galenic_form.to_yaml}")
@@ -991,9 +986,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
       end
 
       def test_galenic_form_30785
-        skip("Sometimes nil") unless @@fachinfo.galenic_form &&
-          @@fachinfo.galenic_form.heading && @@fachinfo.galenic_form.heading.length > 0
-        assert_equal("Galenische Form und Wirkstoffmenge pro Einheit", @@fachinfo.galenic_form.heading)
+        assert_equal("Darreichungsform und Wirkstoffmenge pro Einheit", @@fachinfo.galenic_form.heading)
       end
     end
 

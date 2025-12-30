@@ -183,14 +183,14 @@ module ODDB
       })
       writer = FachinfoHtmlParser.new
       writer.format = :documed
-      writer.extract(Nokogiri(doc.to_html(true)), :fi)
+      writer.extract(Nokogiri::HTML4(doc.to_html(true)), :fi)
     end
 
     def parse_fachinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
-      doc = Nokogiri(src)
+      doc = Nokogiri::HTML4(src)
       writer =  FachinfoHtmlParser.new
       writer.format = :swissmedicinfo
       unless writer.title
@@ -210,7 +210,7 @@ module ODDB
       if File.exist?(src)
         src = File.read src
       end
-      doc = Nokogiri(src)
+      doc = Nokogiri::HTML4(src)
       writer = PatinfoHtmlParser.new
       writer.format = :swissmedicinfo
       unless writer.title

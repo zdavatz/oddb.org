@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require "util/logfile"
 require "model/fachinfo"
 require "textinfo_html_parser"
 
@@ -10,6 +11,27 @@ module ODDB
         :usage, :kinetic, :restrictions, :unwanted_effects, :interactions,
         :overdose, :other_advice, :iksnrs, :date, :pregnancy, :driving_ability,
         :contra_indications, :packages
+      @@section_to_code = {
+       '2' => 7000,
+       '3' => 7050,
+       '4' => 7100,
+       '5' => 7150,
+       '6' => 7200,
+       '7' => 7250,
+       '8' => 7300,
+       '9' => 7350,
+       '10'=> 7400,
+       '11'=> 7450,
+       '12'=> 7500,
+       '13'=> 7550,
+       '14'=> 7600,
+       '15'=> 7650,
+       '16'=> 7700,
+       '17'=> 7750,
+       '18'=> 7850,
+       '19'=> 7860,
+       '20'=> 8000,
+        }
       def identify_chapter(code, chapter)
         case code
         when "6900"
@@ -62,10 +84,11 @@ module ODDB
           @packages = chapter
         when nil # special chapers without heading
           @galenic_form ||= chapter
-        when "9200", "8500"
+        when "9200", "8500", "8100"
           # skip "Beschreibung" and unexpected 'AMZV'
         else
-          raise "Unknown chapter-code #{code}, while parsing #{@name}"
+          msg = "Unknown chapter-code #{code}, while parsing #{@name} from #{chapter.to_s}"
+          ODDB::LogFile.debug msg
         end
       end
 
@@ -131,7 +154,7 @@ module ODDB
         code =
           case text
           when /^Zusammensetzung(en)?|^Composition[s]?/ then "7000"
-          when /^Galenische\s*Form(en)?\s*und\s*Wirkstoffmenge[n]?\s*pro\s*Einheit|^Forme[n]?\s*gal.nique[s]?\s*et\s*quantit.[s]?\s*de\s*/ then "7050"
+          when /^Darreichungsform und Wirkstoffmenge pro Einheit|^Galenische\s*Form(en)?\s*und\s*Wirkstoffmenge[n]?\s*pro\s*Einheit|^Forme pharmaceutique et quantité de principe actif par unité/ then "7050"
           when /^Indikation(en)?\s*\/\s*Anwendungsm.glichkeit(en)?|^Indications\s*\/\s*[pP]ossibilit.s\s*d.emploi/ then "7100"
           when /^Dosierung\s*\/\s*Anwendung|^Posologie\s*\/\s*[mM]ode\s*d.emploi/ then "7150"
           when /^Kontraindikation(en)?|^Contre\s*-\s*[iI]ndication(s)?/ then "7200"
@@ -150,12 +173,17 @@ module ODDB
           when /^Zulassungsinhaberin(en)?|^Titulaire\s*de\s*l.autorisation/ then "7850"
           when /^Herstellerin(en)?|^Fabricant/ then "7860"
           when /^Stand\s*der\s*Information|^Mise\s*.\s*jour\s*de\s*l.information/ then "8000"
-          end
-#        binding.break if text.match('Darreichungsform') # ^Darreichungsform und Wirkstoffmenge pro Einheitil
-         unless code
-          code = "7050" if elem.respond_to?(:attributes) && elem.attributes["id"].value.eql?("section3")
-          binding.break unless code
-        end if false
+        end
+        if code.nil? && elem.respond_to?(:attributes) && elem.attributes && elem.attributes["id"]
+            section = elem.attributes["id"].value
+            m = elem.attributes["id"]&.value.match(/section(\d+)/i)
+            if m && m[1].to_i != 1
+              code = @@section_to_code[m[1]].to_s
+              code = m[1] if  m[1].to_i > 1000
+              msg = "Setting code #{code} for #{elem.attributes["id"].value} #{@name} #{lang} #{File.basename(File.dirname(@image_folder||'dummy'))} from #{text}"
+              ODDB::LogFile.debug msg
+            end
+        end
         [code, text]
       end
     end
