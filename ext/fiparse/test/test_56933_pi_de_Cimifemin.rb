@@ -24,7 +24,7 @@ module ODDB
         assert_equal(ODDB::PatinfoDocument, @@patinfo.class)
       end
       def test_name
-        assert_match(/Cimifemin/, @@patinfo.name.heading)
+        assert_equal("Cimifemin® forte Tabletten", @@patinfo.name)
       end
       def test_chapters
         ODDB::PatinfoDocument2001::CHAPTERS.each do |chapter|

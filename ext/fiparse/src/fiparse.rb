@@ -1,17 +1,13 @@
 #!/usr/bin/env ruby
 
-# ODDB::FiParse -- oddb.org -- 05.03.2012 -- yasaka@ywesee.com
-# ODDB::FiParse -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
-# ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
-
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
 require "odba"
 require "drb/drb"
 require "util/oddbconfig"
 require "fachinfo_writer"
-require "fachinfo_hpricot"
-require "patinfo_hpricot"
+require "fachinfo_html_parser"
+require "patinfo_html_parser"
 require "ydocx/document"
 require "ydocx/templates/fachinfo"
 
@@ -185,39 +181,18 @@ module ODDB
         iksnr: iksnr,
         lang: lang
       })
-      writer = FachinfoHpricot.new
+      writer = FachinfoHtmlParser.new
       writer.format = :documed
-      writer.extract(Hpricot(doc.to_html(true)), :fi)
+      writer.extract(Nokogiri::HTML4(doc.to_html(true)), :fi)
     end
 
     def parse_fachinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
       if File.exist?(src)
         src = File.read src
       end
-      writer = FachinfoHpricot.new
+      doc = Nokogiri::HTML4(src)
+      writer =  FachinfoHtmlParser.new
       writer.format = :swissmedicinfo
-      doc = Hpricot(src)
-      title_from_html ||= ""
-      title_from_html = doc.at("title").children.first.to_s if doc.at("title")
-      if writer.title
-        unless writer.title.eql?(title_from_html)
-          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
-        end
-      else writer.title
-          writer.title = title_from_html
-      end
-      writer.lang = lang
-      writer.image_folder = image_folder
-      writer.extract(Hpricot(src), name: writer.title)
-    end
-
-    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
-      if File.exist?(src)
-        src = File.read src
-      end
-      writer = PatinfoHpricot.new
-      writer.format = :swissmedicinfo
-      doc = Hpricot(src)
       unless writer.title
         title_from_html = doc.at("title").children.first.to_s
         writer.title = title_from_html
@@ -228,8 +203,27 @@ module ODDB
       end
       writer.lang = lang
       writer.image_folder = image_folder
-      res = writer.extract(Hpricot(src), type: :pi, name: writer.title)
-      res
+      writer.extract(doc, type: :fi, name: writer.title)
+    end
+
+    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
+      if File.exist?(src)
+        src = File.read src
+      end
+      doc = Nokogiri::HTML4(src)
+      writer = PatinfoHtmlParser.new
+      writer.format = :swissmedicinfo
+      unless writer.title
+        title_from_html = doc.at("title").children.first.to_s
+        writer.title = title_from_html
+      else
+        unless writer.title.eql?(title_from_html)
+          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
+        end
+      end
+      writer.lang = lang
+      writer.image_folder = image_folder
+      writer.extract(doc, type: :pi, name: writer.title)
     end
     module_function :storage=
     module_function :parse_fachinfo_docx

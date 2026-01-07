@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 require "model/patinfo"
-require "textinfo_hpricot"
+require "textinfo_html_parser"
 
 module ODDB
   module FiParse
-    class PatinfoHpricot < TextinfoHpricot
+    class PatinfoHtmlParser < TextinfoHtmlParser
       attr_reader :amendments, :amzv, :composition, :contra_indications,
         :date, :distribution, :effects, :iksnrs, :fabrication, :galenic_form,
         :general_advice, :packages, :precautions, :pregnancy,
@@ -56,7 +56,6 @@ module ODDB
             @date ||= chapter
           end
         when "9010" # swissmedicinfo
-          # 56933_pi_fr_Cimifemine.html  would assign Cimifemine® forte comprimés
           @name = chapter unless /^$|AMZV|^\w+ Arzneimittel|^Médicament|^Wann |^Was /.match(chapter.heading)
         else
           raise "Unknown chapter-code #{code}, while parsing #{@name}"
@@ -96,13 +95,15 @@ module ODDB
       private
 
       def detect_chapter(elem)
-        return [nil, nil] unless /^section[0-9]*$/.match?(elem.attributes["id"].to_s)
+        return [nil, nil] unless /^section[0-9]*$/.match?(elem.attributes["id"]&.value.to_s)
         # TODO
         #   Update chapter detection if swissmedic repairs FI/PI format.
         #
         #   Currently, id attribute 'section*' is not fixed number.
         #   And Section order is also not fixed :(
-        PatinfoHpricot.text_to_chapter(text(elem))
+
+        res = PatinfoHtmlParser.text_to_chapter(text(elem))
+        res
       end
 
       def self.text_to_chapter(text)
