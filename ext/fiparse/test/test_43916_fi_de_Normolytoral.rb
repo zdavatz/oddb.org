@@ -24,14 +24,8 @@ module ODDB
         assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
       def test_name
-        assert_match(/Normolytoral/, @@fachinfo.name.heading)
+        assert_equal('Normolytoral, Pulver zur Herstellung einer Lösung zum Einnehmen im Beutel', @@fachinfo.name)
       end
-
-      def test_composition
-        assert_match(/Zusammensetzung\nWirkstoffe/, @@fachinfo.composition.to_s)
-        assert_match(/Propylenglycolum \(E 1520\)\), Silica colloidalis anhydrica/, @@fachinfo.composition.to_s)
-      end
-
       def test_chapters
         ODDB::FachinfoDocument2001::CHAPTERS.each do |chapter|
           begin

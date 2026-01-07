@@ -76,14 +76,7 @@ module ODDB
   }
   TERM_PTRN = /[#{TERM_PAIRS.keys.join}]/u
   def self.search_term(term)
-    begin
     term = term.encode("UTF-8") unless term.frozen?
-    rescue Encoding::UndefinedConversionError => error
-      # work around some problems. See https://github.com/zdavatz/oddb.org/issues/386
-      puts "#{error} #{term} #{term.encoding} #{error.backtrace[0..3].join("\n")}"
-      term.force_encoding('ISO-8859-1')
-      term = term.encode('UTF-8')
-    end
     term = term.to_s.gsub(/[[:punct:]]/u, "")
     term.gsub!(/[\/\s\-]+/u, " ")
     term.gsub! TERM_PTRN do |match| TERM_PAIRS.fetch match, match end
@@ -96,13 +89,7 @@ module ODDB
       if opts[:downcase]
         term = term.downcase
       end
-      begin
       term = term.encode("UTF-8") unless term.frozen?
-      rescue => error
-        ODDB::LogFile.debug("#{term} #{error} #{error.backtrace[0..10].join("\n")}")
-        term.force_encoding("ISO-8859-1")
-        term = term.encode("UTF-8")
-      end
       parts = term.split(/[\/-]/u)
       if parts.size > 1
         terms.push(ODDB.search_term(parts.first))

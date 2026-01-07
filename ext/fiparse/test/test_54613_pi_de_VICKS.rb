@@ -24,7 +24,7 @@ module ODDB
         assert_equal(ODDB::PatinfoDocument, @@patinfo.class)
       end
       def test_name
-        assert_match(/VICKS/, @@patinfo.name.heading)
+        assert_equal('VICKS Nasivin', @@patinfo.name)
       end
       def test_chapters
         ODDB::PatinfoDocument2001::CHAPTERS.each do |chapter|

@@ -17,16 +17,14 @@ module ODDB
       def setup
         return if defined?(@@path) && defined?(@@fachinfo) && @@fachinfo
         @@path = File.join(File.dirname(__FILE__), "data", "html", "30785_fi_de_Ponstan.html")
-        @@writer = FachinfoHpricot.new
-        File.open(@@path) do |fh|
-          @@fachinfo = @@writer.extract(Hpricot(fh), name: "Ponstan")
-        end
+        @@writer = ODDB::FiParse::FachinfoHtmlParser.new
+        @@fachinfo = @@writer.extract(Nokogiri(File.read(@@path)), image_folder: "fiImageFolder_#{__LINE__}")
       end
       def test_fachinfo
         assert_equal(ODDB::FachinfoDocument2001, @@fachinfo.class)
       end
       def test_name
-        assert_equal("Ponstan", @@writer.name.heading)
+        assert_equal("Ponstan®", @@writer.name)
       end
       def test_title
         assert_nil(@@writer.title)

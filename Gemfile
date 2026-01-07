@@ -32,7 +32,7 @@ gem "chrono_logger"
 gem "ydiffy"
 gem "deprecated"
 gem "flickraw"
-gem "hpricot"
+gem "nokogiri"
 gem 'htmlbeautifier'
 gem "sax-machine"
 gem "headless"
