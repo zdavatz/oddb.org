@@ -1043,8 +1043,8 @@ class OddbPrevalence
         atc.sequences = reg.sequences.values
         result.atc_classes = [atc]
         result.search_type = :iksnr
-        return result
       end
+      return result
     end
     # pharmacode
     if /^\d{6,}$/u.match?(query)
@@ -1056,8 +1056,8 @@ class OddbPrevalence
         atc.sequences = [seq]
         result.atc_classes = [atc]
         result.search_type = :pharmacode
-        return result
       end
+      return result
     end
     key = query.to_s.downcase
     # atc-code
