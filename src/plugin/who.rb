@@ -89,7 +89,7 @@ module ODDB
       name = capitalize_all name
       @app.atc_class(code)
       if atc = @app.atc_class(code)
-        atc.pointer
+        atc.pointer ||= Persistence::Pointer.new([:atc_class, code])
         @app.update atc.pointer.creator, {en: name, origin: origin}
       else
         @created += 1
@@ -143,7 +143,9 @@ module ODDB
         end
       end
     rescue NoMethodError, SocketError => e
-      @repairs << "Unable to fetch #{get_code} because of #{e}"
+      msg = "Unable to fetch #{get_code} because of #{e}"
+      LogFile.debug(msg)
+      @repairs << msg
     end
 
     def import_ddds(atc, row)
