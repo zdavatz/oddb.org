@@ -150,6 +150,11 @@ module ODDB
         && seq.compositions.sort == comps
     end
 
+    def compositions
+      check_compositions
+      @compositions
+    end
+
     def composition(oid)
       @compositions.find { |comp| comp.oid == oid }
     end
@@ -453,6 +458,7 @@ module ODDB
         @compositions = []
         odba_store
       end
+      @compositions.delete_if{|x| !x.instance_of?(ODDB::Composition)}
     end
 
     def adjust_types(values, app = nil)
