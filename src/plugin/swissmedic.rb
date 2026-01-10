@@ -333,7 +333,7 @@ module ODDB
         @update_time = ((Time.now - start_time) / 60.0).to_i
       elsif file2open
         LogFile.debug(msg)
-        msg = "#{__FILE__}: #{__LINE__} Comparing #{file2open} "
+        msg = "#{__FILE__}: #{__LINE__} Comparing using SwissmedicDiff #{file2open} "
         msg += File.exist?(file2open) ? "#{File.size(file2open)} bytes " : " absent" if file2open
         msg += " with #{@latest_packungen} "
         msg += File.exist?(@latest_packungen) ? "#{File.size(@latest_packungen)} bytes " : " absent" if @latest_packungen
@@ -341,14 +341,12 @@ module ODDB
         diff file2open, @latest_packungen, [:sequence_date]
         # check diff from stored data about date-fields of Registration
         check_date! unless @update_comps
-        if @latest_packungen and File.exist?(@latest_packungen)
-          LogFile.debug " Compared #{file2open} #{File.size(file2open)} bytes with #{@latest_packungen} #{File.size(@latest_packungen)} bytes"
-        else
-          LogFile.debug " No latest_packungen #{@latest_packungen} exists"
+        LogFile.debug "SwissmedicDiff::VERSION #{SwissmedicDiff::VERSION} #{SwissmedicDiff.stat}"
+        LogFile.debug "SwissmedicDiff changes: #{@diff.changes.size} #{@diff.changes.keys[0..5]}..#{@diff.changes.keys[-5..-1]}"
+        LogFile.debug "SwissmedicDiff first news: #{@diff.news.first.inspect[0..250]}"
+        unless  @diff.updates.size == SwissmedicDiff.stat[:updates]
+            LogFile.debug "SwissmedicDiff inconsistent!!!!: #{@diff.updates.size} different instead of expected #{SwissmedicDiff.stat[:updates]}"
         end
-        LogFile.debug " @update_comps #{@update_comps}. opts #{opts}. Found #{@diff.news.size} news, #{@diff.updates.size} updates, #{@diff.replacements.size} replacements and #{@diff.package_deletions.size} package_deletions"
-        LogFile.debug " changes: #{@diff.changes.size}"
-        LogFile.debug " first news: #{@diff.news.first.inspect[0..250]}"
         update_registrations(@diff.news + @diff.updates, @diff.replacements, opts)
         sanity_check_deletions(@diff)
         delete(@diff.package_deletions, true)
@@ -407,10 +405,9 @@ module ODDB
               # if future date given
               date = row[i]
               reg_value = reg.send(field)
-              if date and !reg_value
-                @diff.updates << row
+              if date && /unbegrenzt/.match(date.to_s) && !reg_value
                 next
-              elsif date && reg_value && reg_value.is_a?(Date) && date.is_a?(Date) && date > reg_value.start
+              elsif date && reg_value && reg_value.is_a?(Date) && date.is_a?(Date) && date > reg_value
                 @diff.updates << row
               end
             end
@@ -1163,6 +1160,7 @@ module ODDB
         }
         # Next line needed to cleanup some inconsistencies found in November 2025
         seq.packages.delete_if { |key, value| !value.instance_of?(ODDB::Package)}
+        package = nil
         ptr = if (package = reg.package(ikscd))
           return package if opts[:create_only] && pidx == 0
           package.pointer
@@ -1174,19 +1172,17 @@ module ODDB
           args.update(pharmacode: old.pharmacode,
             ancestors: (old.ancestors || []).push(pacnr))
         end
-        if !package.is_a?(ODDB::Package) && ptr.is_a?(Persistence::Pointer)
-          LogFile.debug "#{iksnr}/#{seqnr} must create package #{ikscd}"
-          seq.registration.sequences[seqnr] = seq unless seq.registration.sequence(seqnr)
-          # in November 2025 we needed sometime one OR the other way!
-          package = seq.create_package(ikscd) || @app.update(ptr, args, :swissmedic)
-          package.fix_pointers
+        if package.nil? && ptr.is_a?(Persistence::Pointer)
+          package = @app.update(ptr, args, :swissmedic)
+        elsif package.nil?
+          package = seq.create_package(ikscd)
+          LogFile.debug "create #{iksnr}/#{seqnr}/#{ikscd} ptr #{ptr} package #{package} in #{seq.pointer} #{seq.packages.keys}"
           seq.packages[ikscd] = package
-          seq.fix_pointers if seq.respond_to?(:fix_pointers)
+          seq.fix_pointers
           seq.packages.odba_store
           seq.odba_store
-        else
-          @app.update(ptr, args, :swissmedic)
         end
+        @app.update(ptr, args, :swissmedic)
         if !package.parts or package.parts.empty? or !package.parts[pidx]
           part = package.create_part
           package.parts[pidx] = part
@@ -1351,7 +1347,7 @@ module ODDB
         next if iksnr.eql?("00000")
         to_consider = mustcheck(iksnr, opts)
         next unless row
-        next unless mustcheck(iksnr, opts)
+        next unless to_consider
         LogFile.debug("update #{idx}/#{nr_rows} iksnr #{iksnr} seqnr #{seqnr} #{to_consider} opts #{opts}. #{replacements.size} replacements")
         already_disabled = GC.disable # to prevent method `method_missing' called on terminated object
         reg = update_registration(row, opts) if row
