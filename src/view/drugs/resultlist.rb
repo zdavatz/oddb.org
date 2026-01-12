@@ -39,6 +39,7 @@ module ODDB
 
       class AtcHeader < HtmlGrid::Composite
         include View::AdditionalInformation
+
         COMPONENTS = {
           [0, 0, 0] => :atc_description,
           [0, 0, 2] => :atc_ddd_link,
@@ -135,7 +136,7 @@ module ODDB
         end
 
         def to_html(context)
-          if @model.respond_to?(:mail_order_prices) and !@model.mail_order_prices.empty?
+          if @model.respond_to?(:mail_order_prices) && !@model.mail_order_prices.empty?
             price = @model.mail_order_prices[@index].price
             if /(Rab\.|Rabatt)$/u.match?(price)
               @attributes["src"] = LOGO_PATH + "rose_orange.png"
@@ -158,6 +159,7 @@ module ODDB
         include View::ResultColors
         include View::AdditionalInformation
         include View::LookandfeelComponents
+
         COMPONENTS = {}
         REVERSE_MAP = {
           company_name: false,
@@ -247,7 +249,7 @@ module ODDB
           def add_additional_mail_order_price_method(n)
             n.times do |i|
               define_method(("additional_mail_order_price" + i.to_s).to_sym) do |model, session|
-                if model.mail_order_prices and model.mail_order_prices[i + 1]
+                if model.mail_order_prices && model.mail_order_prices[i + 1]
                   link = HtmlGrid::Link.new(:mail_order_price, model, session, self)
                   link.href = model.mail_order_prices[i + 1].url
                   link.target = "_blank"
@@ -271,7 +273,7 @@ module ODDB
         #     'price_public'
         #   end
         def mail_order_price(model, session = @session)
-          if model.mail_order_prices and !model.mail_order_prices.empty?
+          if model.mail_order_prices && !model.mail_order_prices.empty?
             link = HtmlGrid::Link.new(:mail_order_price, model, session, self)
             link.href = model.mail_order_prices.first.url
             link.target = "_blank"
@@ -296,7 +298,7 @@ module ODDB
           valid_search_types = []
           valid_search_types = @lookandfeel.search_type_selection if @lookandfeel.respond_to?(:search_type_selection)
           if model.respond_to?(:overflow?) && model.overflow? &&
-              (@lookandfeel.enabled?(:explain_atc) or valid_search_types.size > 1)
+              (@lookandfeel.enabled?(:explain_atc) || valid_search_types.size > 1)
             x, y, = offset
             half = (full_colspan / 2).to_i
             @grid.add(explain_atc(model), x, y)
@@ -311,10 +313,10 @@ module ODDB
           code = @session.user_input(:code)
           if @session.get_cookie_input(:resultview) == "atc"
             model = @model.model
-          elsif page = @session.user_input(:page) # 'pages'
+          elsif (page = @session.user_input(:page)) # 'pages'
             model = @session.state.pages[page]
           elsif code
-            page = if code2page = @session.state.code2page
+            page = if (code2page = @session.state.code2page)
               code2page[code] || 0
             else
               0
@@ -323,17 +325,15 @@ module ODDB
           end
 
           code = @session.persistent_user_input(:code)
-          if model
-            model.sort_by(&:code).each { |atc|
-              compose_subheader(atc, offset)
-              offset = resolve_offset(offset, self.class::OFFSET_STEP)
-              if show_packages? || code == atc.code
-                packages = atc.packages
-                super(packages, offset)
-                offset[1] += packages.size
-              end
-            }
-          end
+          model&.sort { |x, y| x.code <=> y.code }&.each { |atc|
+            compose_subheader(atc, offset)
+            offset = resolve_offset(offset, self.class::OFFSET_STEP)
+            if show_packages? || code == atc.code
+              packages = atc.packages
+              super(packages, offset)
+              offset[1] += packages.size
+            end
+          }
         end
 
         def compose_subheader(atc, offset)
@@ -395,9 +395,9 @@ module ODDB
 
         def substances(model, session = @session)
           link = HtmlGrid::Link.new(:show, model, session, self)
-          show_dose = @lookandfeel.disabled?(:show_substance_dose) ? false : true
+          show_dose = !@lookandfeel.disabled?(:show_substance_dose)
           unless @lookandfeel.disabled?(:substances_link)
-            link.href = if reg = model.iksnr and seq = model.seqnr and pac = model.ikscd
+            link.href = if (reg = model.iksnr && seq = model.seqnr && pac = model.ikscd)
               @lookandfeel._event_url(:show, [:reg, reg, :seq, seq, :pack, pac])
             else
               @lookandfeel._event_url(:show, {pointer: model.pointer})
@@ -405,7 +405,7 @@ module ODDB
           end
           if model.active_agents.size == 0
             return nil
-          elsif @lookandfeel.enabled?(:display_3_active_agents) and model.active_agents.size <= 3
+          elsif @lookandfeel.enabled?(:display_3_active_agents) && model.active_agents.size <= 3
             value = model.active_agents.collect { |x| show_dose ? x.to_s : x.substance.to_s }.join("<br>")
             link.value = value
           elsif model.active_agents.size == 1
