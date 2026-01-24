@@ -1295,7 +1295,8 @@ module ODDB
           return
         end
         begin
-          textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
+          sanitized_html = sanitize_html_for_parsing(new_html)
+          textinfo_fi ||= @parser.parse_fachinfo_html(sanitized_html, title: meta_info.title, image_folder: image_subfolder)
           update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
         rescue => err
           # registration('66016').sequences.values.collect{|x| x.patinfo && x.patinfo['de'].class}
@@ -1324,7 +1325,8 @@ module ODDB
         end
         startTime = Time.now
         begin
-          textinfo_pi = @parser.parse_patinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
+          sanitized_html = sanitize_html_for_parsing(new_html)
+          textinfo_pi = @parser.parse_patinfo_html(sanitized_html, title: meta_info.title, image_folder: image_subfolder)
         rescue => err
           LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
           @failures.push "IKSNR: #{meta_info.iksnr} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
@@ -1344,6 +1346,23 @@ module ODDB
       reg&.odba_store
       GC.start
     end
+    # In text_info.rb, fügen Sie diese neue Methode hinzu (z.B. nach der parse_textinfo Methode):
+
+def sanitize_html_for_parsing(html_file)
+  return html_file unless File.exist?(html_file)
+  
+  content = File.read(html_file)
+  # Replace central dots and bullets with hyphens to avoid parsing issues
+  sanitized = content.gsub("·", "-").gsub("•", "-")
+  
+  # Only write back if changed
+  if sanitized != content
+    File.write(html_file, sanitized)
+    LogFile.debug "Sanitized #{html_file}: replaced central dots and bullets"
+  end
+  
+  html_file
+end
 
     def set_html_and_cache_name(meta_info)
       meta_info.iksnr = meta_info.authNrs.first unless meta_info.iksnr
