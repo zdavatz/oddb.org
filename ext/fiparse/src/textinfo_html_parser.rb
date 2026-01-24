@@ -75,7 +75,15 @@ module ODDB
             @name = name
           else
             @name = doc.at('title')&.text&.strip
-            @name ||= doc.css('#section1').inner_text
+            # Extract just the text from section1, not the whole element
+            if @name.nil? || @name.empty?
+              section1 = doc.at('#section1')
+              if section1
+                # Get the first significant text content (usually the heading)
+                @name = section1.css('span').first&.text&.strip
+                @name ||= section1.inner_text&.strip
+              end
+            end
           end
           paragraph_tag = "p"
           handler = Class.new {
@@ -192,9 +200,9 @@ module ODDB
           end
         when Nokogiri::XML::Element
           case child.name
-                        when "colgroup"
-                        @@do_break = true
-                                  handle_all_children(child, ptr, false)
+          when "colgroup"
+            @@do_break = true
+            handle_all_children(child, ptr, false)
           when "h3"
             ptr.section = ptr.chapter.next_section
             ptr.target = ptr.section.subheading
@@ -232,14 +240,21 @@ module ODDB
               ptr.target = ptr.section.next_table
               ptr.table = ptr.target
             else
+              # Preformatted table - collect all rows first for alignment
               ptr.target = ptr.section.next_paragraph
               ptr.table = nil
               ptr.tablewidth = nil
+              ptr.preformatted_table_rows = []
               ptr.target.preformatted!
             end
             handle_all_children(child, ptr)
+            # After processing all children, format the preformatted table
+            if ptr.preformatted_table_rows && !ptr.preformatted_table_rows.empty?
+              format_preformatted_table(ptr)
+            end
             ptr.section = ptr.chapter.next_section
             ptr.table = nil
+            ptr.preformatted_table_rows = nil
           when "thead", "tbody"
             handle_all_children(child, ptr)
           when "tr"
@@ -248,8 +263,14 @@ module ODDB
               handle_all_children(child, ptr)
               ptr.target = ptr.table
             else
+              # Collect row cells for later formatting
+              ptr.current_row_cells = []
               handle_all_children(child, ptr)
-              ptr.target << "\n" if ptr.target
+              # Store the row
+              if ptr.preformatted_table_rows && ptr.current_row_cells
+                ptr.preformatted_table_rows << ptr.current_row_cells
+              end
+              ptr.current_row_cells = nil
             end
           when "td", "th"
             if ptr.table
@@ -258,13 +279,10 @@ module ODDB
               ptr.target.col_span = child.attributes["colspan"]&.value.to_i
               handle_all_children(child, ptr)
               ptr.target = ptr.table
-            elsif ptr.target
-              ptr.target << preformatted_text(child)
-              if child.classes.include?("rowSepBelow")
-                ptr.tablewidth ||= ptr.target.to_s.split("\n").collect { |line| line.length }.max
-                ptr.target << "\n" << ("-" * ptr.tablewidth.to_i)
-              end
-              ## the new format uses td-borders as "row-separators"
+            elsif ptr.current_row_cells
+              # Collect cell text for preformatted table
+              cell_text = preformatted_text(child).strip
+              ptr.current_row_cells << cell_text
             end
           when "div"
             handle_all_children(child, ptr)
@@ -361,6 +379,39 @@ module ODDB
         str.delete("\n").gsub(/(\302\240)/u, " ").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
 
+      def format_preformatted_table(ptr)
+        rows = ptr.preformatted_table_rows
+        return if rows.empty?
+        
+        # Calculate maximum width for each column
+        max_cols = rows.map(&:length).max
+        col_widths = Array.new(max_cols, 0)
+        
+        rows.each do |row|
+          row.each_with_index do |cell, idx|
+            cell_width = cell.to_s.length
+            col_widths[idx] = [col_widths[idx], cell_width].max
+          end
+        end
+        
+        # Format each row with proper spacing
+        rows.each do |row|
+          formatted_cells = row.each_with_index.map do |cell, idx|
+            cell_str = cell.to_s
+            # Pad cell to column width (except last column)
+            if idx < row.length - 1
+              cell_str.ljust(col_widths[idx])
+            else
+              cell_str
+            end
+          end
+          
+          # Join cells with double space separator
+          ptr.target << formatted_cells.join("  ")
+          ptr.target << "\n"
+        end
+      end
+
       def simple_chapter(elem_or_str)
         if elem_or_str
           chapter = Text::Chapter.new
@@ -374,14 +425,19 @@ module ODDB
       end
 
       def detect_table?(elem)
+        # For swissmedicinfo format, always use preformatted paragraphs
+        # instead of Text::Table to ensure proper line breaks
+        if @format == :swissmedicinfo
+          return false
+        end
+        
+        # Original logic for other formats
         found = true
         if @stylesWithFixedFont && @stylesWithFixedFont.index(elem.attributes["class"]&.value)
           found = false
-        elsif elem.attributes["class"]&.value == "s24" # :swissmedicinfo
+        elsif elem.attributes["class"]&.value == "s24"
           found = true
         elsif elem.attributes["border"]&.value == "0"
-          # if 'rowSepBelow' class is found,
-          # then this elem must be handled as pre-format style paragraph
           catch :pre do
             [
               (elem / :thead / :tr / :th),
@@ -407,12 +463,13 @@ module ODDB
 
       def text(elem)
         return "" unless elem
-                        if elem.instance_of?(String)
-                          str = elem
-                        else
-                          str = elem.inner_text || elem.to_s
-                        end
-        str.gsub(/(\s)+/u, " ").gsub(/[■]/u, "").tr(" ", " ").gsub("&nbsp;&nbsp;", "&nbsp;")
+        if elem.instance_of?(String)
+          str = elem
+        else
+          str = elem.inner_text || elem.to_s
+        end
+        # Fixed regex: preserve single spaces, collapse multiple spaces
+        str.gsub(/(\s)+/u, " ").gsub(/[■]/u, "").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
     end
   end
