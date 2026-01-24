@@ -383,10 +383,14 @@ module ODDB
         rows = ptr.preformatted_table_rows
         return if rows.empty?
         
+        # Maximum line width before wrapping (adjust as needed)
+        max_line_width = 100
+        
         # Calculate maximum width for each column
         max_cols = rows.map(&:length).max
         col_widths = Array.new(max_cols, 0)
         
+        # First pass: get natural column widths
         rows.each do |row|
           row.each_with_index do |cell, idx|
             cell_width = cell.to_s.length
@@ -394,22 +398,79 @@ module ODDB
           end
         end
         
-        # Format each row with proper spacing
-        rows.each do |row|
-          formatted_cells = row.each_with_index.map do |cell, idx|
-            cell_str = cell.to_s
-            # Pad cell to column width (except last column)
-            if idx < row.length - 1
-              cell_str.ljust(col_widths[idx])
-            else
-              cell_str
-            end
+        # Calculate total width needed
+        total_width = col_widths.sum + (max_cols - 1) * 2  # 2 spaces between columns
+        
+        # If total width exceeds max, we need to wrap cells
+        if total_width > max_line_width
+          # Adjust column widths proportionally, but with minimum width
+          available_width = max_line_width - (max_cols - 1) * 2
+          min_col_width = 20  # Minimum width per column
+          
+          # Calculate proportional widths
+          total_natural = col_widths.sum.to_f
+          col_widths = col_widths.map do |w|
+            proportional = (w / total_natural * available_width).to_i
+            [proportional, min_col_width].max
           end
           
-          # Join cells with double space separator
-          ptr.target << formatted_cells.join("  ")
-          ptr.target << "\n"
+          # Adjust if we're still over
+          while col_widths.sum > available_width && col_widths.max > min_col_width
+            max_idx = col_widths.index(col_widths.max)
+            col_widths[max_idx] -= 1
+          end
         end
+        
+        # Format each row with wrapping
+        rows.each do |row|
+          # Wrap cells that are too long
+          wrapped_cells = row.each_with_index.map do |cell, idx|
+            wrap_text(cell.to_s, col_widths[idx])
+          end
+          
+          # Find maximum number of lines in any cell
+          max_lines = wrapped_cells.map { |lines| lines.length }.max
+          
+          # Output each line of the row
+          (0...max_lines).each do |line_idx|
+            formatted_line = wrapped_cells.each_with_index.map do |lines, col_idx|
+              line_text = lines[line_idx] || ""
+              # Pad to column width (except last column)
+              if col_idx < row.length - 1
+                line_text.ljust(col_widths[col_idx])
+              else
+                line_text
+              end
+            end
+            
+            ptr.target << formatted_line.join("  ")
+            ptr.target << "\n"
+          end
+        end
+      end
+      
+      def wrap_text(text, width)
+        return [text] if text.length <= width
+        
+        lines = []
+        remaining = text.dup
+        
+        while remaining.length > width
+          # Try to break at a space
+          break_pos = remaining[0...width].rindex(' ')
+          
+          if break_pos && break_pos > width * 0.6  # Don't break too early
+            lines << remaining[0...break_pos]
+            remaining = remaining[break_pos + 1..-1]
+          else
+            # No good break point, hard break
+            lines << remaining[0...width]
+            remaining = remaining[width..-1]
+          end
+        end
+        
+        lines << remaining unless remaining.empty?
+        lines
       end
 
       def simple_chapter(elem_or_str)
