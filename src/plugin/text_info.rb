@@ -1352,11 +1352,16 @@ def sanitize_html_for_parsing(html_file)
   return html_file unless File.exist?(html_file)
   
   content = File.read(html_file)
-  # Remove paragraphs starting with ▼ (warning paragraphs)
-  sanitized = content.gsub(/<p[^>]*>.*?▼.*?<\/p>/m, "")
-
+  # Remove paragraphs starting with ▼ (correct or corrupted encoding)
+  sanitized = content.gsub(/<p[^>]*>.*?(▼|�).*?<\/p>/m, "")
+  
   # Replace central dots and bullets with hyphens to avoid parsing issues
   sanitized = sanitized.gsub("·", "-").gsub("•", "-")
+
+  # Normalize line endings to Unix (LF)
+  sanitized = sanitized.gsub(/\r\n/, "\n").gsub(/\r/, "\n")
+
+  sanitized = sanitized.gsub(/>\s+</, "><")
 
   # Only write back if changed
   if sanitized != content
