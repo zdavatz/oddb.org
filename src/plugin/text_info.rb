@@ -1358,6 +1358,14 @@ def sanitize_html_for_parsing(html_file)
   # Replace various dot/bullet characters with hyphens to avoid parsing issues
   sanitized = sanitized.gsub(/[·•∙‧⋅]/, "-")
 
+  # Replace French/German quotation marks (both Unicode and HTML entities) with standard double quotes
+  # Also handle &nbsp; (non-breaking space) around them
+  sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
+                       .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
+
+  # Or handle all at once with a regex for 70012
+  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ")
+ 
   # Normalize line endings to Unix (LF)
   sanitized = sanitized.gsub(/\r\n/, "\n").gsub(/\r/, "\n")
 
