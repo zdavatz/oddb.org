@@ -1355,8 +1355,8 @@ def sanitize_html_for_parsing(html_file)
   # Remove paragraphs starting with ▼ (correct or corrupted encoding)
   sanitized = content.gsub(/<p[^>]*>.*?(▼|�).*?<\/p>/m, "")
   
-  # Replace central dots and bullets with hyphens to avoid parsing issues
-  sanitized = sanitized.gsub("·", "-").gsub("•", "-")
+  # Replace various dot/bullet characters with hyphens to avoid parsing issues
+  sanitized = sanitized.gsub(/[·•∙‧⋅]/, "-")
 
   # Normalize line endings to Unix (LF)
   sanitized = sanitized.gsub(/\r\n/, "\n").gsub(/\r/, "\n")
