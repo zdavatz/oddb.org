@@ -1350,33 +1350,35 @@ module ODDB
 
 def sanitize_html_for_parsing(html_file)
   return html_file unless File.exist?(html_file)
+  content = File.read(html_file, mode: 'rb').force_encoding('UTF-8')
   
-  content = File.read(html_file)
-  # Remove paragraphs starting with ▼ (correct or corrupted encoding)
-  sanitized = content.gsub(/<p[^>]*>.*?(▼|�).*?<\/p>/m, "")
+  # 1. BREAK THE GIANT LINE IMMEDIATELY (Including Header)
+  # Added: </title>, />, and </style> to ensure the header isn't one giant line.
+  # Added: <body> to ensure the transition to the content is clean.
+  sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
   
-  # Replace various dot/bullet characters with hyphens to avoid parsing issues
+  # 2. REMOVE TARGETED PARAGRAPHS SAFELY
+  # Removed /m so it only stays within one line.
+  # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
+  sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
+  
+  # 3. CLEANUP CHARACTERS
   sanitized = sanitized.gsub(/[·•∙‧⋅]/, "-")
-
-  # Replace French/German quotation marks (both Unicode and HTML entities) with standard double quotes
-  # Also handle &nbsp; (non-breaking space) around them
+  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ")
+  sanitized = sanitized.gsub(/®/, "")
+  
+  # Replace French/German quotation marks 
   sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
                        .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
-
-  # Or handle all at once with a regex for 70012
-  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ")
- 
-  # Normalize line endings to Unix (LF)
-  sanitized = sanitized.gsub(/\r\n/, "\n").gsub(/\r/, "\n")
-
-  sanitized = sanitized.gsub(/>\s+</, "><")
-
+  
+  # 4. NORMALIZE LINE ENDINGS
+  sanitized = sanitized.gsub(/\r\n?/, "\n")
+  
   # Only write back if changed
   if sanitized != content
-    File.write(html_file, sanitized)
-    LogFile.debug "Sanitized #{html_file}: replaced central dots and bullets"
+    File.write(html_file, sanitized, mode: 'wb:utf-8')
+    LogFile.debug "Sanitized #{html_file}: Fully de-minified header and body."
   end
-  
   html_file
 end
 
