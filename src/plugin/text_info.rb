@@ -1384,8 +1384,8 @@ def sanitize_html_for_parsing(html_file)
                      .gsub(/°/, '&deg;')
 
   # Replace French/German quotation marks 
-  sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, '"')
-                       .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '"')
+  sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
+                       .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
   
   # 4. NORMALIZE LINE ENDINGS
   sanitized = sanitized.gsub(/\r\n?/, "\n")
