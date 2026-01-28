@@ -176,6 +176,56 @@ module ODDB
       ODBA.storage = storage
     end
 
+    def self.sanitize_html_for_parsing(html_file)
+      return html_file unless File.exist?(html_file)
+      content = File.read(html_file, mode: 'rb').force_encoding('UTF-8')
+
+      # 1. BREAK THE GIANT LINE IMMEDIATELY (Including Header)
+      # Added: </title>, />, and </style> to ensure the header isn't one giant line.
+      # Added: <body> to ensure the transition to the content is clean.
+      sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
+
+      # 2. REMOVE TARGETED PARAGRAPHS SAFELY
+      # Removed /m so it only stays within one line.
+      # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
+      sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
+
+      # 3. CLEANUP CHARACTERS
+      sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-") # bullets and dashes
+      sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
+      sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
+      sanitized = sanitized.gsub(/®/, "") # registered trademark
+
+      # Normalize all umlauts to HTML entities for consistency
+      sanitized = sanitized.gsub(/ä/, '&auml;')
+                        .gsub(/ö/, '&ouml;')
+                        .gsub(/ü/, '&uuml;')
+                        .gsub(/Ä/, '&Auml;')
+                        .gsub(/Ö/, '&Ouml;')
+                        .gsub(/Ü/, '&Uuml;')
+                        .gsub(/ß/, '&szlig;')
+                        .gsub(/²/, '&sup2;')
+                        .gsub(/³/, '&sup3;')
+                        .gsub(/¹/, '&sup1;')
+                        .gsub(/≥/, '&ge;')
+                        .gsub(/≤/, '&le;')
+                        .gsub(/°/, '&deg;')
+
+      # Replace French/German quotation marks
+      sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
+                          .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
+
+      # 4. NORMALIZE LINE ENDINGS
+      sanitized = sanitized.gsub(/\r\n?/, "\n")
+
+      # Only write back if changed
+      if sanitized != content
+        File.write(html_file, sanitized, mode: 'wb:utf-8')
+        LogFile.debug "Sanitized #{html_file}: Fully de-minified header and body."
+      end
+      sanitized
+    end
+
     def parse_fachinfo_docx(path, iksnr, lang = "de")
       doc = YDocx::Document.open(path, {
         iksnr: iksnr,
@@ -186,10 +236,8 @@ module ODDB
       writer.extract(Nokogiri::HTML4(doc.to_html(true)), :fi)
     end
 
-    def parse_fachinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
-      if File.exist?(src)
-        src = File.read src
-      end
+    def parse_fachinfo_html(html_file, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
+      src = File.exist?(html_file) ? sanitize_html_for_parsing(html_file) : src
       doc = Nokogiri::HTML4(src)
       writer =  FachinfoHtmlParser.new
       writer.format = :swissmedicinfo
@@ -206,10 +254,8 @@ module ODDB
       writer.extract(doc, type: :fi, name: writer.title)
     end
 
-    def parse_patinfo_html(src, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
-      if File.exist?(src)
-        src = File.read src
-      end
+    def parse_patinfo_html(html_file, lang: "de", title: nil, styles: nil, image_folder: File.join(Dir.pwd, "html", "images"))
+      src = File.exist?(html_file) ? sanitize_html_for_parsing(html_file) : html_file
       doc = Nokogiri::HTML4(src)
       writer = PatinfoHtmlParser.new
       writer.format = :swissmedicinfo

@@ -37,6 +37,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 * There is test/wrk_performance.lua allows a stress test with a typical load. See test/wrk_performance.lua for details on howto run it
 
+* Running `bundle exec ruby ext/fiparse/test/tst_one_file.rb -h` show how you can test parsing a FI/PI-html in less than 1 second
+  e.g. use `bundle exec ruby ext/fiparse/test/tst_one_file.rb 56933 -f pi -l fr` to test the french PI of IKSNR 59333
+
 ## Local Documentation
 
 * To build your local documentation do:

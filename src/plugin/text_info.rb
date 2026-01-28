@@ -1295,8 +1295,7 @@ module ODDB
           return
         end
         begin
-          sanitized_html = sanitize_html_for_parsing(new_html)
-          textinfo_fi ||= @parser.parse_fachinfo_html(sanitized_html, title: meta_info.title, image_folder: image_subfolder)
+          textinfo_fi ||= @parser.parse_fachinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
           update_fachinfo_lang(meta_info, {meta_info.lang => textinfo_fi})
         rescue => err
           # registration('66016').sequences.values.collect{|x| x.patinfo && x.patinfo['de'].class}
@@ -1325,8 +1324,7 @@ module ODDB
         end
         startTime = Time.now
         begin
-          sanitized_html = sanitize_html_for_parsing(new_html)
-          textinfo_pi = @parser.parse_patinfo_html(sanitized_html, title: meta_info.title, image_folder: image_subfolder)
+          textinfo_pi = @parser.parse_patinfo_html(new_html, title: meta_info.title, image_folder: image_subfolder)
         rescue => err
           LogFile.debug "SystemStackError? #{err} skip #{meta_info.iksnr} #{meta_info.lang} unchanged #{File.basename(new_html)} using #{mbytes} MB #{err}"
           @failures.push "IKSNR: #{meta_info.iksnr} PI unable to parse #{err.message} #{new_html} #{err.backtrace[0..8].join("\n")}"
@@ -1347,56 +1345,6 @@ module ODDB
       GC.start
     end
     # In text_info.rb, fügen Sie diese neue Methode hinzu (z.B. nach der parse_textinfo Methode):
-
-def sanitize_html_for_parsing(html_file)
-  return html_file unless File.exist?(html_file)
-  content = File.read(html_file, mode: 'rb').force_encoding('UTF-8')
-  
-  # 1. BREAK THE GIANT LINE IMMEDIATELY (Including Header)
-  # Added: </title>, />, and </style> to ensure the header isn't one giant line.
-  # Added: <body> to ensure the transition to the content is clean.
-  sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
-  
-  # 2. REMOVE TARGETED PARAGRAPHS SAFELY
-  # Removed /m so it only stays within one line.
-  # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
-  sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
-  
-  # 3. CLEANUP CHARACTERS
-  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-") # bullets and dashes
-  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
-  sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
-  sanitized = sanitized.gsub(/®/, "") # registered trademark
-
-  # Normalize all umlauts to HTML entities for consistency
-  sanitized = sanitized.gsub(/ä/, '&auml;')
-                     .gsub(/ö/, '&ouml;')
-                     .gsub(/ü/, '&uuml;')
-                     .gsub(/Ä/, '&Auml;')
-                     .gsub(/Ö/, '&Ouml;')
-                     .gsub(/Ü/, '&Uuml;')
-                     .gsub(/ß/, '&szlig;') 
-                     .gsub(/²/, '&sup2;')
-                     .gsub(/³/, '&sup3;')
-                     .gsub(/¹/, '&sup1;')
-                     .gsub(/≥/, '&ge;')
-                     .gsub(/≤/, '&le;')
-                     .gsub(/°/, '&deg;')
-
-  # Replace French/German quotation marks 
-  sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
-                       .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
-  
-  # 4. NORMALIZE LINE ENDINGS
-  sanitized = sanitized.gsub(/\r\n?/, "\n")
-  
-  # Only write back if changed
-  if sanitized != content
-    File.write(html_file, sanitized, mode: 'wb:utf-8')
-    LogFile.debug "Sanitized #{html_file}: Fully de-minified header and body."
-  end
-  html_file
-end
 
     def set_html_and_cache_name(meta_info)
       meta_info.iksnr = meta_info.authNrs.first unless meta_info.iksnr
