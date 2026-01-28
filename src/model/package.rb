@@ -613,7 +613,7 @@ module ODDB
               src: src
             }
           end
-        rescue FlickRaw::FailedResponse
+        rescue FlickRaw::FailedResponse, NoMethodError, StandardError
         end
       end
       photo_hash
