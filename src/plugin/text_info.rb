@@ -1363,9 +1363,10 @@ def sanitize_html_for_parsing(html_file)
   sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
   
   # 3. CLEANUP CHARACTERS
-  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-")
-  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ")
-  sanitized = sanitized.gsub(/®/, "")
+  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-") # bullets and dashes
+  sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
+  sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
+  sanitized = sanitized.gsub(/®/, "") # registered trademark
 
   # Normalize all umlauts to HTML entities for consistency
   sanitized = sanitized.gsub(/ä/, '&auml;')
