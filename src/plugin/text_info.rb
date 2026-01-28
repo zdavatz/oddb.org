@@ -1363,9 +1363,18 @@ def sanitize_html_for_parsing(html_file)
   sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
   
   # 3. CLEANUP CHARACTERS
-  sanitized = sanitized.gsub(/[·•∙‧⋅]/, "-")
+  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-")
   sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ")
   sanitized = sanitized.gsub(/®/, "")
+
+  # Normalize all umlauts to HTML entities for consistency
+  sanitized = sanitized.gsub(/ä/, '&auml;')
+                     .gsub(/ö/, '&ouml;')
+                     .gsub(/ü/, '&uuml;')
+                     .gsub(/Ä/, '&Auml;')
+                     .gsub(/Ö/, '&Ouml;')
+                     .gsub(/Ü/, '&Uuml;')
+                     .gsub(/ß/, '&szlig;') 
   
   # Replace French/German quotation marks 
   sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
