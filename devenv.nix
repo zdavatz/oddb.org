@@ -74,6 +74,7 @@ in {
       xorg.xvfb # to use gem headless
       gcc13
       libxml2
+      pandoc
     ];
 
   env = {
