@@ -15,6 +15,10 @@ begin # with a rescue
   require "net/ntlm"
   require "config"
 
+ # Force UTF-8 encoding for all strings
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
+
   server_uri = ODDB::SERVER_URI
   if defined?(APPNAME) && APPNAME
     case APPNAME
