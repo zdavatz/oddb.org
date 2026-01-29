@@ -1362,20 +1362,25 @@ def sanitize_html_for_parsing(html_file)
   # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
   sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
   
+  sanitized = sanitized.unicode_normalize(:nfc) # 57384
   # 3. CLEANUP CHARACTERS
-  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―]/, "-") # bullets and dashes
+  sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―‑]/, "-") # bullets and dashes
   sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
   sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
   sanitized = sanitized.gsub(/®/, "") # registered trademark
 
   # Normalize all umlauts to HTML entities for consistency
-  sanitized = sanitized.gsub(/ä/, '&auml;')
+  sanitized = sanitized.gsub(/ё/, 'ë')      # Fix encoding corruption first (43225 et al)
+                    .gsub(/⃰/, '*')      # 63295
+                     .gsub(/ä/, '&auml;')
                      .gsub(/ö/, '&ouml;')
                      .gsub(/ü/, '&uuml;')
                      .gsub(/Ä/, '&Auml;')
                      .gsub(/Ö/, '&Ouml;')
                      .gsub(/Ü/, '&Uuml;')
-                     .gsub(/ß/, '&szlig;') 
+                     .gsub(/ë/, '&euml;')
+                     .gsub(/Ë/, '&Euml;')
+                     .gsub(/ß/, '&szlig;')
                      .gsub(/²/, '&sup2;')
                      .gsub(/³/, '&sup3;')
                      .gsub(/¹/, '&sup1;')
