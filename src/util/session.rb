@@ -309,14 +309,22 @@ module ODDB
       if m = FI_DIFF_REGEXP.match(request_path)
         found = @app.registration(m[1])
         return [] unless found
-        log = found.fachinfo.send(language).change_log.sort! { |x, y| y.time.to_s <=> x.time.to_s }
+        log = found.fachinfo.send(language).change_log.select { |item| 
+          item.respond_to?(:time) 
+        }.sort! { |x, y| 
+          y.time.to_s <=> x.time.to_s 
+        }
         date = m[2]
       elsif m = PI_DIFF_REGEXP.match(request_path)
         return [] unless (reg = app.registration(m[1]))
         return [] unless (seq = reg.sequence(m[2]))
         return [] unless (found = seq.package(m[3]))
         return [] unless found
-        log = found.patinfo.send(language).change_log.sort! { |x, y| y.time.to_s <=> x.time.to_s }
+        log = found.patinfo.send(language).change_log.select { |item| 
+          item.respond_to?(:time) 
+        }.sort! { |x, y| 
+          y.time.to_s <=> x.time.to_s 
+        }
         date = m[4]
       end
       if log

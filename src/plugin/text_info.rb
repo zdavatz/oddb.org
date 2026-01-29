@@ -389,7 +389,7 @@ module ODDB
         false
       else
         if patinfo.descriptions[lang]
-          patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang)
+          patinfo.description(lang).add_change_log_item(old_text, new_patinfo_lang.to_s)
           new_patinfo_lang.change_log = patinfo.description(lang).change_log # save changelog!
         end
         patinfo.descriptions[lang] = new_patinfo_lang
@@ -1348,7 +1348,7 @@ module ODDB
     end
     # In text_info.rb, fügen Sie diese neue Methode hinzu (z.B. nach der parse_textinfo Methode):
 
-def sanitize_html_for_parsing(html_file)
+ def sanitize_html_for_parsing(html_file)
   return html_file unless File.exist?(html_file)
   content = File.read(html_file, mode: 'rb').force_encoding('UTF-8')
   
@@ -1357,41 +1357,47 @@ def sanitize_html_for_parsing(html_file)
   # Added: <body> to ensure the transition to the content is clean.
   sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
   
+  # 1.5 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED
+  # This prevents words from running together when tags are stripped
+  sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, '\1 ')
+
   # 2. REMOVE TARGETED PARAGRAPHS SAFELY
   # Removed /m so it only stays within one line.
   # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
   sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
   
+  # 3. NORMALIZE UNICODE (Must happen before character substitutions)
   sanitized = sanitized.unicode_normalize(:nfc) # 57384
-  # 3. CLEANUP CHARACTERS
+  
+  # 4. CLEANUP CHARACTERS
   sanitized = sanitized.gsub(/[·•∙‧⋅§‒–—―‑]/, "-") # bullets and dashes
   sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
   sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
   sanitized = sanitized.gsub(/®/, "") # registered trademark
-
-  # Normalize all umlauts to HTML entities for consistency
+  
+  # 5. Normalize all umlauts to HTML entities for consistency
   sanitized = sanitized.gsub(/ё/, 'ë')      # Fix encoding corruption first (43225 et al)
                     .gsub(/⃰/, '*')      # 63295
-                     .gsub(/ä/, '&auml;')
-                     .gsub(/ö/, '&ouml;')
-                     .gsub(/ü/, '&uuml;')
-                     .gsub(/Ä/, '&Auml;')
-                     .gsub(/Ö/, '&Ouml;')
-                     .gsub(/Ü/, '&Uuml;')
-                     .gsub(/ë/, '&euml;')
-                     .gsub(/Ë/, '&Euml;')
-                     .gsub(/ß/, '&szlig;')
-                     .gsub(/²/, '&sup2;')
-                     .gsub(/³/, '&sup3;')
-                     .gsub(/¹/, '&sup1;')
-                     .gsub(/≥/, '&ge;')
-                     .gsub(/≤/, '&le;')
-                     .gsub(/°/, '&deg;')
-
-  # Replace French/German quotation marks 
+                    .gsub(/ä/, '&auml;')
+                    .gsub(/ö/, '&ouml;')
+                    .gsub(/ü/, '&uuml;')
+                    .gsub(/Ä/, '&Auml;')
+                    .gsub(/Ö/, '&Ouml;')
+                    .gsub(/Ü/, '&Uuml;')
+                    .gsub(/ë/, '&euml;')
+                    .gsub(/Ë/, '&Euml;')
+                    .gsub(/ß/, '&szlig;')
+                    .gsub(/²/, '&sup2;')
+                    .gsub(/³/, '&sup3;')
+                    .gsub(/¹/, '&sup1;')
+                    .gsub(/≥/, '&ge;')
+                    .gsub(/≤/, '&le;')
+                    .gsub(/°/, '&deg;')
+  
+  # 6. Replace French/German quotation marks 
   sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
                        .gsub(/(&nbsp;|\s)*(&raquo;|»)(&nbsp;|\s)*/, '" ')
-  
+ 
   # 4. NORMALIZE LINE ENDINGS
   sanitized = sanitized.gsub(/\r\n?/, "\n")
   
