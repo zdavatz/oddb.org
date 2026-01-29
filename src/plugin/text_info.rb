@@ -1357,9 +1357,9 @@ module ODDB
   # Added: <body> to ensure the transition to the content is clean.
   sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
   
-  # 1.5 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED
+  # 1.5 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED 43225
   # This prevents words from running together when tags are stripped
-  sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, '\1 ')
+  sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, ' ')
 
   # 2. REMOVE TARGETED PARAGRAPHS SAFELY
   # Removed /m so it only stays within one line.
