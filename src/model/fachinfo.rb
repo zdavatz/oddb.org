@@ -210,6 +210,13 @@ module ODDB
 
     def change_log
       @change_log ||= []
+      # Safety check: if somehow @change_log got corrupted, reset it
+      unless @change_log.is_a?(Array)
+        puts "WARNING: change_log was #{@change_log.class}, resetting to Array for #{iksnrs.inspect}"
+        @change_log = []
+        odba_store  # Persist the fix
+      end
+      @change_log
     end
     attr_accessor :name, :galenic_form, :composition
     attr_accessor :effects, :kinetic, :indications, :usage
