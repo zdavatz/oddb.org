@@ -1348,6 +1348,24 @@ module ODDB
     end
     # In text_info.rb, fügen Sie diese neue Methode hinzu (z.B. nach der parse_textinfo Methode):
 
+ def sanitize_title(title)
+  return "" if title.nil? || title.empty?
+  
+  # Force UTF-8 encoding
+  title = title.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
+  
+  # Remove null bytes
+  title = title.gsub(" ", "")
+  
+  # Remove control characters (but keep normal spaces and newlines)
+  title = title.gsub(/[ --]/, "")
+  
+  # Remove trademark symbols for consistency with HTML content sanitization
+  title = title.gsub(/[®™]/, "")
+  
+  title.strip
+end
+
  def sanitize_html_for_parsing(html_file)
   return html_file unless File.exist?(html_file)
   content = File.read(html_file, mode: 'rb').force_encoding('UTF-8')
@@ -1357,14 +1375,15 @@ module ODDB
   # Added: <body> to ensure the transition to the content is clean.
   sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
   
-  # 1.5 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED 43225
+  # 1.5 REMOVE TARGETED PARAGRAPHS SAFELY
+  # Removed /m so it only stays within one line.
+  # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
+  sanitized = sanitized.gsub(/<p[^>]*>.*?(▼|▼|�).*?(?=\n<p|\n<\/body>|<\/p>)/im, "")
+
+  # 2 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED 43225
   # This prevents words from running together when tags are stripped
   sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, ' ')
 
-  # 2. REMOVE TARGETED PARAGRAPHS SAFELY
-  # Removed /m so it only stays within one line.
-  # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
-  sanitized = sanitized.gsub(/<p[^>]*>[^<]*?(▼|▼|�).*?<\/p>/i, "")
   
   # 3. NORMALIZE UNICODE (Must happen before character substitutions)
   sanitized = sanitized.unicode_normalize(:nfc) # 57384
@@ -1374,6 +1393,9 @@ module ODDB
   sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
   sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
   sanitized = sanitized.gsub(/®/, "") # registered trademark
+  sanitized = sanitized.gsub(/™/, "") # trademark Unicode
+  sanitized = sanitized.gsub(/&reg;/i, "") # registered trademark entity
+  sanitized = sanitized.gsub(/&trade;/i, "") # trademark entity
   
   # 5. Normalize all umlauts to HTML entities for consistency
   sanitized = sanitized.gsub(/ё/, 'ë')      # Fix encoding corruption first (43225 et al)
@@ -1460,7 +1482,7 @@ end
       languages.each do |lang, infoDoc|
         meta_info.lang = lang
         meta_info.download_url = infoDoc[:url]
-        meta_info.title = infoDoc[:title]
+        meta_info.title = sanitize_title(infoDoc[:title])
         infoTxt = "#{(meta_info.authNrs.size > 0) ? meta_info.authNrs.first : meta_info.iksnr}_#{meta_info.type}_#{meta_info.lang}"
         @iksnr_lang_type[infoTxt] = meta_info.title unless @iksnr_lang_type[infoTxt]
         set_html_and_cache_name(meta_info)
