@@ -1,0 +1,25 @@
+#!/usr/local/bin/ruby-271
+# Process updated registrations from today file
+# Reads registration numbers from data/txt/today and updates their textinfo
+
+# Process today file for updated registrations
+today_file = File.expand_path("../data/txt/today", File.dirname(__FILE__))
+
+if File.exist?(today_file) && File.size(today_file) > 0
+  puts "Processing registrations from today file: #{today_file}"
+  registrations = File.readlines(today_file).map(&:strip).reject(&:empty?)
+  
+  if registrations.empty?
+    puts "Warning: no registrations found in today file"
+  else
+    puts "Found #{registrations.size} registration(s): #{registrations.join(', ')}"
+    
+    # Process all registrations in a single command
+    regs_arg = registrations.join(' ')
+    cmd = "bundle exec ruby jobs/update_textinfo_swissmedicinfo --target=both #{regs_arg} --reparse"
+    puts "Running: #{cmd}"
+    system(cmd)
+  end
+else
+  puts "Warning: today file not found or empty at #{today_file}"
+end
