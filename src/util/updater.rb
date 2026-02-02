@@ -339,7 +339,7 @@ module ODDB
     def update_textinfo_swissmedicinfo(opts = nil)
       @options = opts
       update_notify_simple TextInfoPlugin,
-        "Fach- und Patienteninfo Updates (swissmedicinfo.ch)",
+        "Fach- und Patienteninfo Updates (swissmedicinfo-pro.ch)",
         :import_swissmedicinfo
     end
 
