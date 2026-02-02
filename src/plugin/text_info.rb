@@ -1380,6 +1380,10 @@ end
   # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)
   sanitized = sanitized.gsub(/<p[^>]*>.*?(▼|▼|�).*?(?=\n<p|\n<\/body>|<\/p>)/im, "")
 
+  # 1.6 REMOVE EMPTY SELF-CLOSING TR TAGS
+  #   # These break Nokogiri's DOM tree causing infinite loops in native code
+  sanitized = sanitized.gsub(/<tr[^>]*\/\s*>/i, '')
+
   # 2 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED 43225
   # This prevents words from running together when tags are stripped
   sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, ' ')
