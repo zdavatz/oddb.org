@@ -863,7 +863,7 @@ module ODDB
       index = {}
       Languages.each do |x|
         lang = x.to_s.upcase
-        url = "https://www.swissmedicinfo.ch/#{state}.aspx?Lang=#{lang}"
+        url = "https://www.swissmedicinfo-pro.ch/#{state}.aspx?Lang=#{lang}"
         # LogFile.debug "swissmedicinfo_index #{url}"
         home = @agent.get(url)
         home.body
