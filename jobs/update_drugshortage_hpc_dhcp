@@ -1,0 +1,42 @@
+#!/usr/local/bin/ruby-271
+# must be scheduled in crontab to run as the same user as oddb
+# Combined job: updates drugshortage, HPC feed, and recall feed
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+require "util/job"
+require "util/updater"
+
+module ODDB
+  module Util
+    # 1. Update drugshortage
+    puts "=== Starting drugshortage update ==="
+    opts = { reparse: false }
+    ARGV.each do |arg|
+      if /reparse/.match?(arg)
+        opts[:reparse] = true
+      end
+    end
+    
+    Job.run do |system|
+      Updater.new(system).update_drugshortage(opts)
+    end
+    puts "=== Completed drugshortage update ==="
+    
+    # 2. Update HPC feed
+    puts "=== Starting HPC feed update ==="
+    Job.run do |system|
+      Updater.new(system).update_hpc_feed
+    end
+    puts "=== Completed HPC feed update ==="
+    
+    # 3. Update recall feed (DHCP)
+    puts "=== Starting recall feed update ==="
+    Job.run do |system|
+      Updater.new(system).update_recall_feed
+    end
+    puts "=== Completed recall feed update ==="
+    
+    puts "=== All updates completed successfully ==="
+  end
+end
