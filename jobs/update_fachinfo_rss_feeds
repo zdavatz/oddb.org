@@ -1,0 +1,44 @@
+#!/usr/local/bin/ruby
+# Update Fachinfo RSS Feeds
+# Run this nightly to update fachinfo RSS feeds after using --skip during the day
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "plugin/text_info"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      puts "=" * 80
+      puts "Starting Fachinfo RSS Feed Update - #{Time.now}"
+      puts "=" * 80
+      
+      plugin = ODDB::TextInfoPlugin.new(system)
+      
+      # Update main fachinfo RSS feed
+      puts "Updating main fachinfo.rss feed..."
+      start_time = Time.now
+      plugin.update_rss_feeds("fachinfo.rss", system.sorted_fachinfos, View::Rss::Fachinfo)
+      duration = Time.now - start_time
+      puts "Main feed updated in #{duration.round(2)} seconds"
+      
+      # Update yearly fachinfo feeds
+      puts "\nUpdating yearly fachinfo feeds..."
+      start_time = Time.now
+      plugin.update_yearly_fachinfo_feeds
+      duration = Time.now - start_time
+      puts "Yearly feeds updated in #{duration.round(2)} seconds"
+      
+      # Store updates
+      puts "\nSaving RSS updates to database..."
+      system.odba_isolated_store
+      
+      puts "\n" + "=" * 80
+      puts "Fachinfo RSS Feed Update Complete - #{Time.now}"
+      puts "=" * 80
+    end
+  end
+end
