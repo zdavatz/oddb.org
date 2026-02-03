@@ -16,7 +16,7 @@ if File.exist?(today_file) && File.size(today_file) > 0
     
     # Process all registrations in a single command
     regs_arg = registrations.join(' ')
-    cmd = "bundle exec ruby jobs/update_textinfo_swissmedicinfo --target=both #{regs_arg} --reparse"
+    cmd = "bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both #{regs_arg} --reparse"
     puts "Running: #{cmd}"
     system(cmd)
   end
