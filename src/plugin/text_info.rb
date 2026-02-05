@@ -1462,7 +1462,7 @@ end
       else
         return meta_infos
       end
-      meta_info.authNrs = doc.search("RegulatedAuthorization/Identifier").children.collect { |x| x.text }
+      meta_info.authNrs = doc.search("RegulatedAuthorization/Identifier").children.collect { |x| x.text[0, 5] }.uniq
       meta_info.informationUpdate = doc.at("Date").text
       meta_info.authHolder = doc.at("Holder/Name").text
       languages = {}
