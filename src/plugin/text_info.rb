@@ -1393,6 +1393,7 @@ end
   sanitized = sanitized.unicode_normalize(:nfc) # 57384
   
   # 4. CLEANUP CHARACTERS
+  sanitized = sanitized.gsub(/[ɣγ]/, "&gamma;") # Latin gamma to Greek gamma (U+0263 -> U+03B3) for FcγRIII etc.
   sanitized = sanitized.gsub(/[·•∙‧⋅§‐‒–—―‑]/, "-") # bullets and dashes (added U+2010)
   sanitized = sanitized.gsub(/[\u00A0\u202F]/, " ") # non-breaking spaces
   sanitized = sanitized.gsub(/[\u200B\u200C\u200D\uFEFF]/, "") # zero-width characters
