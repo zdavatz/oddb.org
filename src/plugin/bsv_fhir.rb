@@ -8,6 +8,7 @@
 
 require "config"
 require "date"
+require "delegate"
 require "drb"
 require "fileutils"
 require "json"
@@ -81,6 +82,7 @@ module ODDB
         LogFile.append("oddb/debug", " bsv_fhir: no FHIR export URL found, aborting", Time.now)
         return nil
       end
+      @fhir_url = target_url
 
       save_dir = File.join(ODDB::WORK_DIR, "ndjson")
       file_name = File.basename(URI.parse(target_url).path)
@@ -107,8 +109,8 @@ module ODDB
     # Parse the FHIR NDJSON and feed the PreparationsListener-compatible data
     # into the same update logic as the XML parser
     def update_preparations_from_fhir(io, opts = {})
-      @preparations_listener = PreparationsListener.new(@app, opts)
-      origin = @@today.strftime("#{fhir_export_url} (%d.%m.%Y)")
+      @preparations_listener = safe_new_preparations_listener(@app, opts)
+      origin = @@today.strftime("#{@fhir_url} (%d.%m.%Y)")
 
       line_count = 0
       io.each_line do |line|
@@ -248,7 +250,7 @@ module ODDB
       reg_auths = resources["RegulatedAuthorization"] || {}
       iksnr = nil
       product_auth = reg_auths.values.find do |ra|
-        is_marketing_auth?(ra) && subject_references_type?(ra, "MedicinalProductDefinition")
+        is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("MedicinalProductDefinition") }
       end
       if product_auth
         iksnr = extract_identifier(product_auth)
@@ -618,6 +620,27 @@ module ODDB
     end
 
     # ---- FHIR Resource extraction helpers ----
+
+    # PreparationsListener#initialize iterates over all packages in the DB
+    # to build @known_packages. Some ODBA stubs may resolve to corrupted
+    # objects (e.g. PatinfoDocument instead of Package), causing NoMethodError.
+    # This wrapper patches each_package to be resilient.
+    def safe_new_preparations_listener(app, opts = {})
+      # Create a delegator that wraps each_package with per-item rescue
+      safe_app = SimpleDelegator.new(app)
+      safe_app.define_singleton_method(:each_package) do |&block|
+        app.each_package do |pac|
+          begin
+            block.call(pac)
+          rescue NoMethodError, StandardError => e
+            ODDB::LogFile.debug("bsv_fhir: skipping corrupted package #{pac.respond_to?(:odba_id) ? pac.odba_id : "?"}: #{e.message}")
+          end
+        end
+      end
+      PreparationsListener.new(safe_app, opts)
+    end
+
+    # ---- FHIR Resource extraction helpers (cont.) ----
 
     def extract_names(med_product)
       names = {}
