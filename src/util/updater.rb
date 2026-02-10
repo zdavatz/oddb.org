@@ -8,6 +8,7 @@
 
 require "plugin/atc_less"
 require "plugin/bsv_xml"
+require "plugin/bsv_fhir"
 require "plugin/comarketing"
 require "plugin/doctors"
 require "plugin/refdata_jur"
@@ -303,6 +304,36 @@ module ODDB
       }
       return_value_plug_update
     end
+
+    def update_bsv_fhir
+  logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
+  LogFile.append("oddb/debug", " getting update_bsv_fhir #{logs_pointer.class}", Time.now)
+
+  sl_errors_dir = File.expand_path("doc/sl_errors/#{@@today.year}/#{"%02d" % @@today.month.to_i}", ODDB::PROJECT_ROOT)
+  sl_error_file = File.join(sl_errors_dir, "bag_xml_swissindex_pharmacode_error.log")
+  FileUtils.rm(sl_error_file) if File.exist?(sl_error_file)
+
+  logs = @app.create(logs_pointer)
+  this_month = Date.new(@@today.year, @@today.month)
+  if (latest = logs.newest_date) && latest > this_month
+    this_month = latest
+  end
+  date_pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, this_month])
+  LogFile.append("oddb/debug", " getting update_bsv_fhir date_pointer #{date_pointer.class}", Time.now)
+
+  klass = BsvFhirPlugin
+  plug = klass.new(@app)
+  subj = "SL-Update (FHIR)"
+  return_value_plug_update = nil
+  wrap_update(klass, subj) {
+    return_value_plug_update = plug.update
+    LogFile.append("oddb/debug", " return_value_BsvFhirPlugin.update = " + return_value_plug_update.inspect, Time.now)
+    if return_value_plug_update
+      log_notify_bsv(plug, this_month, subj, date_pointer)
+    end
+  }
+  return_value_plug_update
+end
 
     def update_bsv_followers
       LogFile.append("oddb/debug", " getting update_bsv_followers", Time.now)
