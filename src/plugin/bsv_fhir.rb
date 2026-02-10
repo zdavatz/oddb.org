@@ -76,7 +76,12 @@ module ODDB
     def update
       LogFile.append("oddb/debug", " bsv_fhir: getting BsvFhirPlugin.update", Time.now)
 
-      target_url = fhir_export_url
+      target_url = find_latest_fhir_export_url
+      unless target_url
+        LogFile.append("oddb/debug", " bsv_fhir: no FHIR export URL found, aborting", Time.now)
+        return nil
+      end
+
       save_dir = File.join(ODDB::WORK_DIR, "ndjson")
       file_name = File.basename(URI.parse(target_url).path)
 
@@ -134,10 +139,36 @@ module ODDB
 
     private
 
-    def fhir_export_url
-      # Build URL with today's date: foph-sl-export-YYYYMMDD.ndjson
-      date_str = @@today.strftime("%Y%m%d")
+    def fhir_export_url_for_date(date)
+      date_str = date.strftime("%Y%m%d")
       "#{FHIR_BASE_URL}foph-sl-export-#{date_str}.ndjson"
+    end
+
+    # BAG publishes NDJSON exports on irregular dates (not daily).
+    # Try today first, then go back day-by-day up to 30 days to find
+    # the latest available export.
+    def find_latest_fhir_export_url
+      today = @@today.respond_to?(:to_date) ? @@today.to_date : Date.today
+      30.times do |offset|
+        candidate_date = today - offset
+        url = fhir_export_url_for_date(candidate_date)
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = (uri.scheme == "https")
+        http.open_timeout = 10
+        http.read_timeout = 10
+        begin
+          response = http.request_head(uri.request_uri)
+          if response.is_a?(Net::HTTPSuccess)
+            LogFile.append("oddb/debug", " bsv_fhir: found export at #{url}", Time.now)
+            return url
+          end
+        rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
+          LogFile.append("oddb/debug", " bsv_fhir: HEAD #{url} failed: #{e.message}", Time.now)
+        end
+      end
+      LogFile.append("oddb/debug", " bsv_fhir: no FHIR export found in last 30 days", Time.now)
+      nil
     end
 
     def download_ndjson(target_url, save_dir, file_name)
@@ -145,8 +176,7 @@ module ODDB
 
       FileUtils.mkdir_p(save_dir)
 
-      save_file = File.join(save_dir,
-        Date.today.strftime(file_name.gsub(".ndjson", "-%Y.%m.%d.ndjson")))
+      save_file = File.join(save_dir, file_name)
       latest_file = File.join(save_dir, "foph-sl-export-latest.ndjson")
 
       LogFile.append("oddb/debug", " bsv_fhir: save_file   = #{save_file}", Time.now)
@@ -160,6 +190,7 @@ module ODDB
       end
 
       File.open(save_file, "wb") { |f| f.write(response.body) }
+      LogFile.append("oddb/debug", " bsv_fhir: downloaded #{File.size(save_file)} bytes to #{save_file}", Time.now)
 
       LogFile.append("oddb/debug", " bsv_fhir: File.exist?(#{latest_file}) = #{File.exist?(latest_file)}", Time.now)
       if File.exist?(latest_file)
