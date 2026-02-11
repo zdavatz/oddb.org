@@ -1420,6 +1420,8 @@ end
                     .gsub(/≥/, '&ge;')
                     .gsub(/≤/, '&le;')
                     .gsub(/°/, '&deg;')
+                    .gsub(/҂/, '&sup2;')     # Cyrillic thousands sign (U+0482) -> ² encoding corruption
+                    .gsub(/ӿ/, '&szlig;')    # Cyrillic ӿ (U+04FF) -> ß encoding corruption
   
   # 6. Replace French/German quotation marks 
   sanitized = sanitized.gsub(/(&nbsp;|\s)*(&laquo;|«)(&nbsp;|\s)*/, ' "')
