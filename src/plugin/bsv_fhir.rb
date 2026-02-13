@@ -12,6 +12,7 @@ require "delegate"
 require "drb"
 require "fileutils"
 require "json"
+require "mechanize"
 require "net/http"
 require "uri"
 require "plugin/bsv_xml"
@@ -77,7 +78,7 @@ module ODDB
     def update
       LogFile.append("oddb/debug", " bsv_fhir: getting BsvFhirPlugin.update", Time.now)
 
-      target_url = find_latest_fhir_export_url
+      target_url = latest_fhir_export_url
       unless target_url
         LogFile.append("oddb/debug", " bsv_fhir: no FHIR export URL found, aborting", Time.now)
         return nil
@@ -141,36 +142,11 @@ module ODDB
 
     private
 
-    def fhir_export_url_for_date(date)
-      date_str = date.strftime("%Y%m%d")
-      "#{FHIR_BASE_URL}foph-sl-export-#{date_str}.ndjson"
-    end
-
-    # BAG publishes NDJSON exports on irregular dates (not daily).
-    # Try today first, then go back day-by-day up to 30 days to find
-    # the latest available export.
-    def find_latest_fhir_export_url
-      today = @@today.respond_to?(:to_date) ? @@today.to_date : Date.today
-      30.times do |offset|
-        candidate_date = today - offset
-        url = fhir_export_url_for_date(candidate_date)
-        uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = (uri.scheme == "https")
-        http.open_timeout = 10
-        http.read_timeout = 10
-        begin
-          response = http.request_head(uri.request_uri)
-          if response.is_a?(Net::HTTPSuccess)
-            LogFile.append("oddb/debug", " bsv_fhir: found export at #{url}", Time.now)
-            return url
-          end
-        rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
-          LogFile.append("oddb/debug", " bsv_fhir: HEAD #{url} failed: #{e.message}", Time.now)
-        end
-      end
-      LogFile.append("oddb/debug", " bsv_fhir: no FHIR export found in last 30 days", Time.now)
-      nil
+    def latest_fhir_export_url
+      agent = Mechanize.new
+      response = agent.get "https://epl.bag.admin.ch/api/sl/public/resources/current"
+      resources = JSON.parse(response.body)
+      "https://epl.bag.admin.ch/static/" + resources["fhir"]["fileUrl"]
     end
 
     def download_ndjson(target_url, save_dir, file_name)
