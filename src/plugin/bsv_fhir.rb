@@ -13,6 +13,7 @@ require "drb"
 require "fileutils"
 require "json"
 require "mechanize"
+require "model/text"
 require "net/http"
 require "uri"
 require "plugin/bsv_xml"
@@ -226,7 +227,7 @@ module ODDB
       reg_auths = resources["RegulatedAuthorization"] || {}
       iksnr = nil
       product_auth = reg_auths.values.find do |ra|
-        is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("MedicinalProductDefinition") }
+        is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("MedicinalProductDefinition/") && !s["reference"].to_s.include?("PackagedProductDefinition/") }
       end
       if product_auth
         iksnr = extract_identifier(product_auth)
@@ -248,7 +249,7 @@ module ODDB
         subjects.each do |subj|
           ref = subj["reference"] || ""
           if ref.include?("PackagedProductDefinition/")
-            ppd_id = ref.split("/").last
+            ppd_id = ref.split("PackagedProductDefinition/").last
             pack_auths[ppd_id] ||= {}
             if is_marketing_auth?(ra)
               pack_auths[ppd_id][:marketing] = ra
@@ -299,8 +300,13 @@ module ODDB
         end
       end
 
-      # AtcCode
-      reg_data[:index_therapeuticus] = nil  # FHIR doesn't carry ItCodes
+      # Index therapeuticus (IT codes) from MedicinalProductDefinition classification
+      it_codes = extract_it_codes(med_product)
+      if it_codes && !it_codes.empty?
+        # Use the most specific (longest) IT code, like the XML parser does
+        itcode = it_codes.max_by { |c| c[:code].length }
+        reg_data[:index_therapeuticus] = itcode[:code]
+      end
 
       # Process each PackagedProductDefinition
       packaged_products.each_value do |ppd|
@@ -379,6 +385,25 @@ module ODDB
               status_code = LISTING_STATUS_MAP[listing_code] || "0"
               sl_data[:status] = status_code
             end
+
+            # costShare -> deductible (FlagSB20 equivalent)
+            # costShare 10 = normal 10% deductible = deductible_g (FlagSB20=N)
+            # costShare 40 = higher 40% deductible = deductible_o (FlagSB20=Y)
+            cost_share = sl_ext[:cost_share]
+            if cost_share
+              data[:deductible] = (cost_share.to_i > 10) ? :deductible_o : :deductible_g
+            end
+
+            # expiryDate -> valid_until
+            if sl_ext[:expiry_date]
+              sl_data[:valid_until] = parse_date(sl_ext[:expiry_date])
+            end
+          end
+
+          # Limitations from indication[].extension[regulatedAuthorization-limitation]
+          lim_data = extract_limitation_data(reimbursement, names, it_codes)
+          if !lim_data.empty?
+            sl_data[:limitation] = true
           end
 
           # Prices
@@ -653,6 +678,72 @@ module ODDB
       nil
     end
 
+    def extract_it_codes(med_product)
+      codes = []
+      (med_product["classification"] || []).each do |cls|
+        (cls["coding"] || []).each do |coding|
+          if coding["system"]&.include?("index-therapeuticus")
+            codes << {code: coding["code"], display: coding["display"]}
+          end
+        end
+      end
+      codes
+    end
+
+    # Extract limitation data from RegulatedAuthorization indication extensions.
+    # Builds Text::Chapter objects per language, matching the XML plugin's
+    # lim_data format: { de: Text::Chapter, fr: Text::Chapter, it: Text::Chapter }
+    def extract_limitation_data(regulated_auth, names, it_codes)
+      lim_data = {}
+      indications = regulated_auth["indication"] || []
+      return lim_data if indications.empty?
+
+      indications.each do |ind|
+        (ind["extension"] || []).each do |ext|
+          next unless ext["url"]&.include?("regulatedAuthorization-limitation")
+
+          limitation_text = nil
+          indication_code = nil
+
+          (ext["extension"] || []).each do |sub_ext|
+            case sub_ext["url"]
+            when "limitationText"
+              limitation_text = sub_ext["valueString"]
+            when "indicationCode"
+              indication_code = sub_ext["valueString"]
+            end
+          end
+
+          next unless limitation_text && !limitation_text.empty?
+
+          # Build a subheading from the indication code + IT code description,
+          # matching how the XML plugin builds limitation text with IT code context
+          subheading = nil
+          if indication_code && it_codes && !it_codes.empty?
+            it_desc = it_codes.max_by { |c| c[:code].length }
+            subheading = [indication_code, it_desc[:display]].compact.join(": ")
+          elsif indication_code
+            subheading = indication_code
+          end
+
+          # The XML plugin stores limitation texts per language (de/fr/it).
+          # The FHIR export only provides a single language text.
+          # We store it as :de (German) which is the primary language.
+          chp = lim_data[:de] ||= Text::Chapter.new
+          sec = chp.next_section
+          if subheading
+            sec.subheading += subheading.to_s + "\n"
+          end
+          limitation_text.each_line do |text_line|
+            par = sec.next_paragraph
+            par << text_line.chomp
+          end
+          chp.clean!
+        end
+      end
+      lim_data
+    end
+
     def extract_substances(ingredients_hash)
       ingredients_hash.values.select { |ing|
         role = ing.dig("role", "coding", 0, "code")
@@ -725,6 +816,10 @@ module ODDB
             result[:listing_period_start] = sub_ext.dig("valuePeriod", "start")
           when "firstListingDate"
             result[:first_listing_date] = sub_ext["valueDate"]
+          when "costShare"
+            result[:cost_share] = sub_ext["valueInteger"]
+          when "expiryDate"
+            result[:expiry_date] = sub_ext["valueDate"]
           end
         end
         return result
