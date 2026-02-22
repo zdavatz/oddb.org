@@ -1374,7 +1374,10 @@ end
   # Added: </title>, />, and </style> to ensure the header isn't one giant line.
   # Added: <body> to ensure the transition to the content is clean.
   sanitized = content.gsub(/(<\/title>|\/>|<\/style>|<\/p>|<\/head>|<\/tr>|<\/table>|<\/div>|<body>)/i, "\\1\n")
-  
+  sanitized = sanitized.gsub(/<title>([^<]*)<\/title>/i) do
+  "<title>#{$1.unicode_normalize(:nfd).gsub(/\p{M}/, '').unicode_normalize(:nfc)}</title>" #26146
+  end
+
   # 1.5 REMOVE TARGETED PARAGRAPHS SAFELY
   # Removed /m so it only stays within one line.
   # Catches ▼ symbol and � (Unicode replacement character for corrupted encoding)

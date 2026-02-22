@@ -2,6 +2,7 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
+require "cgi"
 require "odba"
 require "drb/drb"
 require "util/oddbconfig"
@@ -191,16 +192,10 @@ module ODDB
         src = File.read src
       end
       doc = Nokogiri::HTML4(src)
-      writer =  FachinfoHtmlParser.new
+      writer = FachinfoHtmlParser.new
       writer.format = :swissmedicinfo
-      unless writer.title
-        title_from_html = doc.at("title").children.first.to_s
-        writer.title = title_from_html
-      else
-        unless writer.title.eql?(title_from_html)
-          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
-        end
-      end
+      title_from_html = CGI.unescapeHTML(doc.at("title")&.text.to_s)
+      writer.title = title || title_from_html
       writer.lang = lang
       writer.image_folder = image_folder
       writer.extract(doc, type: :fi, name: writer.title)
@@ -213,14 +208,8 @@ module ODDB
       doc = Nokogiri::HTML4(src)
       writer = PatinfoHtmlParser.new
       writer.format = :swissmedicinfo
-      unless writer.title
-        title_from_html = doc.at("title").children.first.to_s
-        writer.title = title_from_html
-      else
-        unless writer.title.eql?(title_from_html)
-          raise "Title from html #{title_from_html} does not match meta-title #{writer.title}"
-        end
-      end
+      title_from_html = CGI.unescapeHTML(doc.at("title")&.text.to_s)
+      writer.title = title || title_from_html
       writer.lang = lang
       writer.image_folder = image_folder
       writer.extract(doc, type: :pi, name: writer.title)
