@@ -24,6 +24,10 @@ bundle exec ruby test/test_model/test_package.rb
 # Run full GUI integration specs (requires browser)
 bundle exec rspec spec
 
+# Lint with StandardRB (Ruby style checker)
+bundle exec standardrb
+bundle exec standardrb --fix  # auto-fix
+
 # Start the app via Rack (port 8012 by default)
 bundle exec rackup
 
@@ -72,6 +76,8 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - `test/suite.rb` orchestrates all unit test suites via `OddbTestRunner`, running some tests in isolated subprocesses
 - `test/test_helpers.rb` provides test utilities, fixtures, and GTIN data
 - `test/stub/` contains ODBA mocks and other test doubles
+- Tests run with `ENV["TZ"] = "UTC"` forced in `test/helpers.rb`
+- Some test files must run in isolated subprocesses (defined as `must_be_run_separately` in each suite.rb) due to global state conflicts
 
 ### Configuration
 
