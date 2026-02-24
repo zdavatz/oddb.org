@@ -61,7 +61,18 @@ module ODDB
         [code, chapter]
       end
 
-      def extract(doc, type = :fi, name = nil, styles = nil)
+      def extract(doc, type = :fi, name = nil, styles = nil, image_folder: nil, **kwargs)
+        # Support both positional and keyword calling conventions
+        # e.g. extract(doc, :fi, "Name", styles) or extract(doc, type: :fi, name: "Name")
+        if type.is_a?(Hash)
+          kwargs = type.merge(kwargs)
+          type = kwargs.delete(:type) || :fi
+          name = kwargs.delete(:name)
+          styles = kwargs.delete(:styles)
+          image_folder = kwargs.delete(:image_folder)
+        end
+        name = kwargs.delete(:name) if name.nil? && kwargs.key?(:name)
+        @image_folder ||= image_folder
         @stylesWithItalic = TextinfoHtmlParser.get_italic_style(styles)
         @stylesWithFixedFont = TextinfoHtmlParser.get_fixed_font_style(styles)
         @format = :swissmedicinfo if doc.to_s.index("section1") or doc.to_s.index("Section7000")
@@ -529,7 +540,7 @@ module ODDB
         else
           str = elem.inner_text || elem.to_s
         end
-        # Fixed regex: preserve single spaces, collapse multiple spaces
+        # Collapse whitespace runs (but preserve non-breaking spaces for formatting)
         str.gsub(/(\s)+/u, " ").gsub(/[■]/u, "").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
     end

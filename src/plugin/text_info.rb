@@ -1360,8 +1360,6 @@ module ODDB
   # Remove control characters (but keep normal spaces and newlines)
   title = title.gsub(/[ --]/, "")
   
-  # Remove trademark symbols for consistency with HTML content sanitization
-  title = title.gsub(/[®™]/, "")
   
   title.strip
 end
@@ -1434,12 +1432,9 @@ end
   # 4. NORMALIZE LINE ENDINGS
   sanitized = sanitized.gsub(/\r\n?/, "\n")
   
-  # Only write back if changed
-  if sanitized != content
-    File.write(html_file, sanitized, mode: 'wb:utf-8')
-    LogFile.debug "Sanitized #{html_file}: Fully de-minified header and body."
-  end
-  html_file
+  # Return sanitized content directly (don't modify the original file)
+  # This preserves the original for accurate change detection between imports
+  sanitized
 end
 
     def set_html_and_cache_name(meta_info)

@@ -262,10 +262,7 @@ module ODDB
         fi = flexmock("fachinfo")
         fi.should_receive(:fachinfo).and_return("fi_54316")
         @session.app.registrations = {54316 => fi}
-        query = flexmock("query") do |q|
-          q.should_receive(:is_a?).and_return(false)
-          q.should_receive(:encode).and_return("encode")
-        end
+        query = "query"
         @lnf.should_receive(:has_sequence_filter?).and_return(false)
         flexstub(@session) do |s|
           s.should_receive(:user_input).with(:fachinfo).and_return(54316)

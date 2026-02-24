@@ -90,6 +90,8 @@ module ODDB
 
       def clean!
         @text.gsub!(/\t/u, " ")
+        @text.gsub!(/\u00A0/u, " ")
+        @text.gsub!(/[[:space:]]+$/u, "") unless @preformatted
         @raw_txt = nil
       end
 
@@ -418,7 +420,7 @@ module ODDB
         string = ""
         @rows.each { |row|
           next unless row and row.to_s and row.to_s.length > 0
-          add = row.collect { |cell| cell.to_s }.join(" ").delete("\n")
+          add = row.collect { |cell| cell.to_s }.join(" ").delete("\n").gsub(/\u00A0/, " ").rstrip
           string += add + "\n"
         }
         string
