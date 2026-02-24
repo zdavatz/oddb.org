@@ -362,7 +362,8 @@ module ODDB
       def handle_text(ptr, child)
         return if child.parent.name.eql?("tbody") or child.parent.name.eql?("table")
         # handling a situation found only in Baraclude® IKSNR 57'435/436
-        return if /^span>/.match?(child.to_s)
+        # child.to_s may return HTML-encoded form (span&gt;) and may have leading whitespace
+        return if /^\s*span(>|&gt;)/.match?(child.to_s)
         string = text(child)
         m = URI::RFC2396_PARSER.make_regexp.match(string)
         if m and m[0].downcase.index("http")
@@ -387,7 +388,8 @@ module ODDB
 
       def preformatted_text(elem)
         str = elem.inner_text || elem.to_s
-        str.delete("\n").gsub(/(\302\240)/u, " ").gsub("&nbsp;&nbsp;", "&nbsp;")
+        # Filter out malformed "span>" text artifacts (e.g., Baraclude IKSNR 57'435/436)
+        str.delete("\n").gsub(/span>/, "").gsub(/(\302\240)/u, " ").gsub("&nbsp;&nbsp;", "&nbsp;")
       end
 
       def format_preformatted_table(ptr)
@@ -497,13 +499,6 @@ module ODDB
       end
 
       def detect_table?(elem)
-        # For swissmedicinfo format, always use preformatted paragraphs
-        # instead of Text::Table to ensure proper line breaks
-        if @format == :swissmedicinfo
-          return false
-        end
-        
-        # Original logic for other formats
         found = true
         if @stylesWithFixedFont && @stylesWithFixedFont.index(elem.attributes["class"]&.value)
           found = false

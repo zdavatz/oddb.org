@@ -858,7 +858,7 @@ Kautablette: Hydroxypropylcellulose, Sucralose, Saccharin-Natrium, Natriumzitrat
         expected.each { |pattern|
           assert(pattern.match(result), "Missing pattern:\n#{pattern}\nin:\n#{result}")
         }
-        nrBrTags = 135
+        nrBrTags = 137
         assert_equal(nrBrTags, result.scan(/<br>/i).size, "Should find exactly #{nrBrTags} <BR> tags for the complex table")
       end
     end
