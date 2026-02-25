@@ -57,11 +57,13 @@ module ODDB
               args.update({migel_code: migel_code})
             else
               event = :search
-              args.update({
+              pager_args = {
                 zone: :migel,
-                search_query: @session.persistent_user_input(:search_query).gsub("/", "%2F"),
-                search_type: @session.persistent_user_input(:search_type)
-              })
+                search_query: @session.persistent_user_input(:search_query).gsub("/", "%2F")
+              }
+              stype = @session.persistent_user_input(:search_type)
+              pager_args[:search_type] = stype if stype && !stype.empty?
+              args.update(pager_args)
             end
 
             # sort

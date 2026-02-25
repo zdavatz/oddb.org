@@ -25,15 +25,10 @@ module ODDB
         def init
           @pages = Array.new((@model.length.to_f / ITEM_LIMIT).ceil) { |i| ODDB::State::Migel::PageFacade.new(i) }
           @current_page = @session.user_input(:page) || 0
-          @pages[@current_page] = ODDB::State::Migel::PageFacade.new(@current_page)
-          if items = @model[@current_page * ITEM_LIMIT, ITEM_LIMIT]
-            @pages[@current_page].concat items
-          end
-          @pages[@current_page].model = @model
+          load_page(@current_page)
 
           @filter = proc { |model|
             @pages[@current_page]
-            #      page()
           }
         end
 
@@ -69,7 +64,20 @@ module ODDB
         end
 
         def page
+          pge = @session.user_input(:page) || 0
+          load_page(pge) if pge != @current_page
           @pages[@current_page]
+        end
+
+        private
+
+        def load_page(pge)
+          @current_page = pge
+          @pages[@current_page] = ODDB::State::Migel::PageFacade.new(@current_page)
+          if items = @model[@current_page * ITEM_LIMIT, ITEM_LIMIT]
+            @pages[@current_page].concat items
+          end
+          @pages[@current_page].model = @model
         end
       end
     end
