@@ -56,7 +56,7 @@ module ODDB
         # TODO
         # Refactor encoding of Migel::Item, -Product
         # See also items.rb, additional_information.rb
-        %w[pharmacode ean_code article_name size companyname status ppub].each do |attr|
+        %w[ean_code article_name size companyname].each do |attr|
           define_method(attr) do |model, session|
             value = if model.respond_to?(attr) and model.send(attr)
               model.send(attr)

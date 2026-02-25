@@ -58,6 +58,7 @@ module ODDB
             else
               event = :search
               args.update({
+                zone: :migel,
                 search_query: @session.persistent_user_input(:search_query).gsub("/", "%2F"),
                 search_type: @session.persistent_user_input(:search_type)
               })
@@ -83,18 +84,13 @@ module ODDB
         CSS_CLASS = "composite"
         CSS_HEAD_KEYMAP = {}
         CSS_KEYMAP = {
-          pharmacode: "list",
           ean_code: "list",
           article_name: "list bold",
           size: "list italic",
-          status: "list",
           companyname: "list",
-          ppub: "list",
-          google_search: "list",
-          twitter_share: "list",
-          notify: "list"
+          google_search: "list"
         }
-        %w[pharmacode ean_code status ppub].each do |attr|
+        %w[ean_code].each do |attr|
           define_method(attr) do |model, session|
             value = if model.respond_to?(attr) and model.send(attr)
               model.send(attr)

@@ -4284,16 +4284,11 @@ module ODDB
 
     def migel_item_list_components
       {
-        [0, 0] => :pharmacode,
-        [1, 0] => :ean_code,
-        [2, 0] => :article_name,
-        [3, 0] => :size,
-        [4, 0] => :status,
-        [5, 0] => :companyname,
-        [6, 0] => :ppub,
-        [7, 0] => :google_search,
-        [8, 0] => :twitter_share,
-        [9, 0] => :notify
+        [0, 0] => :ean_code,
+        [1, 0] => :article_name,
+        [2, 0] => :size,
+        [3, 0] => :companyname,
+        [4, 0] => :google_search
       }
     end
 

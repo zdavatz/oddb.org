@@ -243,7 +243,7 @@ module ODDB
       end
 
       def google_search(model, session = @session)
-        text = CGI.unescape(model.localized_name(@session.language)).force_encoding("utf-8")
+        text = CGI.unescape(model.localized_name(@session.language).to_s).dup.force_encoding("utf-8")
         link = HtmlGrid::Link.new(:square_google_search, @model, @session, self)
         link.href = "http://www.google.com/search?q=#{text}"
         link.css_class = "square google_search"
@@ -375,13 +375,13 @@ module ODDB
           ikscd = model.ikscd
           link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/drug/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
         elsif model.is_a?(DRb::DRbObject) and model.respond_to?(:article_name) # ODDB::Migel::Item
-          name = model.article_name.to_s.force_encoding("utf-8")
-          migel_code = model.migel_code.to_s.force_encoding("utf-8")
+          name = model.article_name.to_s.dup.force_encoding("utf-8")
+          migel_code = model.migel_code.to_s.dup.force_encoding("utf-8")
           link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_search/migel_code/#{migel_code}"
         elsif model.is_a?(DRb::DRbObject) # ODDB::Migel::Product
           name = [
             model,
-            (model.product_text.to_s.force_encoding("utf-8") if model.respond_to?(:product_text))
+            (model.product_text.to_s.dup.force_encoding("utf-8") if model.respond_to?(:product_text))
           ].compact.collect { |item|
             if item.is_a? String
               item
@@ -471,8 +471,8 @@ module ODDB
         url = ""
         if model.is_a?(DRb::DRbObject)
           # in the case of migel items
-          base = model.localized_name(session.language).to_s.force_encoding("utf-8")
-          code = model.pharmacode.to_s.force_encoding("utf-8")
+          base = model.localized_name(session.language).to_s.dup.force_encoding("utf-8")
+          code = model.pharmacode.to_s.dup.force_encoding("utf-8")
           url = @lookandfeel._event_url(:migel_search, {migel_pharmacode: code})
         else
           base = model.name_base
@@ -494,8 +494,8 @@ module ODDB
       def facebook(model, session = @session)
         if model.is_a?(DRb::DRbObject)
           # in the case of migel items
-          model.localized_name(session.language).to_s.force_encoding("utf-8")
-          code = model.pharmacode.to_s.force_encoding("utf-8")
+          model.localized_name(session.language).to_s.dup.force_encoding("utf-8")
+          code = model.pharmacode.to_s.dup.force_encoding("utf-8")
           facebook_link = @lookandfeel._event_url(:migel_search, {migel_pharmacode: code})
         else
           model.name_base
