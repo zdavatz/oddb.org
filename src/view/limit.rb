@@ -32,11 +32,7 @@ module ODDB
       end
 
       def swiyu_login_link(model)
-        link = HtmlGrid::Link.new(:swiyu_login_link, model, @session, self)
-        link.href = "/swiyu"
-        link.value = @lookandfeel.lookup(:swiyu_login_link)
-        link.css_class = "list"
-        link
+        @lookandfeel.lookup(:swiyu_login_link)
       end
     end
 
