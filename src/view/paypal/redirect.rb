@@ -33,7 +33,7 @@ module ODDB
             + "return=#{ret_url}&" \
             + "cancel_return=#{@lookandfeel.base_url}&" \
             + "image_url=https://www.generika.cc/images/oddb_paypal.jpg"
-          if (user = @session.user).is_a?(YusUser)
+          if (user = @session.user).is_a?(SwiyuUser)
             add =+ "&email=#{user.email}&first_name=#{CGI.escape(user.name_first)}" \
               << "&last_name=#{CGI.escape(user.name_last)}&address1=#{CGI.escape(user.address || "")}" \
               << "&city=#{CGI.escape(user.city || "")}&zip=#{user.plz}" \

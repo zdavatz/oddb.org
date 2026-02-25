@@ -83,27 +83,7 @@ module ODDB
           assert_kind_of(ODDB::State::User::InvalidUser, @loginmethods.login)
         end
 
-        def test_login__unknownentityerror
-          flexmock("user",
-            valid?: nil,
-            allowed?: nil)
-          flexmock(@session) do |s|
-            s.should_receive(:login).and_raise(Yus::UnknownEntityError)
-          end
-          flexmock(@loginmethods, create_error: "create_error")
-          assert_equal(@loginmethods, @loginmethods.login)
-        end
-
-        def test_login__authentificationerror
-          flexmock("user",
-            valid?: nil,
-            allowed?: nil)
-          flexmock(@session) do |s|
-            s.should_receive(:login).and_raise(Yus::AuthenticationError)
-          end
-          flexmock(@loginmethods, create_error: "create_error")
-          assert_equal(@loginmethods, @loginmethods.login)
-        end
+        # Yus error tests removed — Yus auth replaced by Swiyu OID4VP
       end
 
       class TestTransparentLogin < Minitest::Test
@@ -124,20 +104,7 @@ module ODDB
           assert_equal(@state, @state.login)
         end
 
-        def test_login__unknownentityerror
-          flexmock(@session) do |s|
-            s.should_receive(:login).and_raise(Yus::UnknownEntityError)
-          end
-          assert_equal(@state, @state.login)
-          assert_kind_of(ODDB::State::Admin::TransparentLogin, @state.login)
-        end
-
-        def test_login__authentificationerror
-          flexmock(@session) do |s|
-            s.should_receive(:login).and_raise(Yus::AuthenticationError)
-          end
-          assert_equal(@state, @state.login)
-        end
+        # Yus error tests removed — Yus auth replaced by Swiyu OID4VP
       end
 
       class TestTransparentLoginState < Minitest::Test

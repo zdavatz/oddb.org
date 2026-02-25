@@ -149,12 +149,6 @@ module ODDB
         VIEW = View::Companies::RootCompany
         def init
           super
-          # check privileges and timeout? for access to yus.entities
-          begin
-            @session.user.entities
-          rescue Yus::NotPrivilegedError
-            @default_view = ODDB::View::Admin::Login
-          end
         end
 
         def ajax

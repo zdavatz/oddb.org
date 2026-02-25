@@ -14,10 +14,6 @@ require "model/user"
 require "digest/md5"
 
 module ODDB
-  class YusStub
-    YUS_SERVER = FlexMock.new "yus_server"
-  end
-
   class TestUnknownUser < Minitest::Test
     def setup
       @user = UnknownUser.new
@@ -44,40 +40,50 @@ module ODDB
     end
   end
 
-  class TestYusStub < Minitest::Test
+  class TestSwiyuStub < Minitest::Test
     def setup
-      @stub = YusStub.new "test@mail.ch"
-      @session = flexmock "yus-session"
+      @stub = SwiyuStub.new "test@mail.ch"
     end
 
     def test_yus_name
       assert_equal "test@mail.ch", @stub.yus_name
     end
 
-    def test_method_missing
-      skip("Test does not work under Ruby 3.4") if RUBY_VERSION.to_f >= 3.4 # TODO:
-      YusStub::YUS_SERVER.should_receive(:autosession)
-        .times(1).and_return { |domain, block| block.call @session }
-      @session.should_receive(:get_entity_preference)
-        .with("test@mail.ch", :something).and_return do
-        assert true
-        "a result"
-      end
-      assert_equal "a result", @stub.something
+    def test_equal
+      assert_equal false, @stub == SwiyuStub.new("other@mail.ch")
+      assert_equal true, @stub == SwiyuStub.new("test@mail.ch")
+      assert_equal false, @stub.eql?(SwiyuStub.new("other@mail.ch"))
+      assert_equal true, @stub.eql?(SwiyuStub.new("test@mail.ch"))
     end
 
-    def test_equal
-      assert_equal false, @stub == YusStub.new("other@mail.ch")
-      assert_equal true, @stub == YusStub.new("test@mail.ch")
-      assert_equal false, @stub.eql?(YusStub.new("other@mail.ch"))
-      assert_equal true, @stub.eql?(YusStub.new("test@mail.ch"))
+    def test_yus_stub_alias
+      # YusStub should be an alias for SwiyuStub for ODBA compatibility
+      assert_equal SwiyuStub, YusStub
     end
   end
 
-  class TestYusUser < Minitest::Test
+  class TestSwiyuUser < Minitest::Test
     def setup
-      @session = flexmock "yus-session"
-      @user = YusUser.new @session
+      @roles_config = {
+        "roles" => ["org.oddb.CompanyUser"],
+        "permissions" => [
+          {"action" => "login", "key" => "org.oddb.CompanyUser"},
+          {"action" => "edit", "key" => "org.oddb.model.!company.123"},
+          {"action" => "credit", "key" => "org.oddb.FlexMock"},
+          {"action" => "credit", "key" => "org.oddb.Registration"}
+        ],
+        "association" => nil,
+        "preferences" => {
+          "name_first" => "Hans",
+          "name_last" => "Mueller"
+        }
+      }
+      @user = SwiyuUser.new(
+        gln: "7601234567890",
+        first_name: "Hans",
+        last_name: "Mueller",
+        roles_config: @roles_config
+      )
     end
 
     def test_allowed
@@ -90,217 +96,116 @@ module ODDB
 
       company = Company.new
       company.pointer = Persistence::Pointer.new [:company, 123]
-      comp_privilege = "org.oddb.model.!company.123"
-      @session.should_receive(:allowed?).with("company", comp_privilege).times(1)
-        .and_return {
-        assert true
-        "from company"
-      }
-      assert_equal "from company", @user.allowed?("company", company)
+      assert_equal true, @user.allowed?("edit", company)
 
       registration = Registration.new "12345"
       registration.pointer = Persistence::Pointer.new [:registration, "12345"]
-      reg_privilege = "org.oddb.model.!registration.12345"
-      @session.should_receive(:allowed?).with("registration", nil).times(1)
-        .and_return {
-        assert true
-        false
-      }
-      @session.should_receive(:allowed?).with("registration", reg_privilege)
-        .times(1).and_return {
-        assert true
-        "from registration"
-      }
-      assert_equal "from registration",
-        @user.allowed?("registration", registration)
       registration.company = company
-      @session.should_receive(:allowed?).with("registration", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from registration"
-      }
-      assert_equal "from registration",
-        @user.allowed?("registration", registration)
+      assert_equal true, @user.allowed?("edit", registration)
 
       sequence = Sequence.new "01"
       sequence.registration = registration
-      @session.should_receive(:allowed?).with("sequence", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from sequence"
-      }
-      assert_equal "from sequence", @user.allowed?("sequence", sequence)
+      assert_equal true, @user.allowed?("edit", sequence)
 
       package = Package.new "001"
       package.sequence = sequence
-      @session.should_receive(:allowed?).with("package", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from package"
-      }
-      assert_equal "from package", @user.allowed?("package", package)
+      assert_equal true, @user.allowed?("edit", package)
 
       fachinfo = Fachinfo.new
       fachinfo.registrations.push registration
-      @session.should_receive(:allowed?).with("fachinfo", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from fachinfo"
-      }
-      assert_equal "from fachinfo", @user.allowed?("fachinfo", fachinfo)
+      assert_equal true, @user.allowed?("edit", fachinfo)
 
       agent = InactiveAgent.new "inactive_substance"
       agent.sequence = sequence
-      @session.should_receive(:allowed?).with("inactiveagent", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from inactiveagent"
-      }
-      assert_equal "from inactiveagent", @user.allowed?("inactiveagent", agent)
+      assert_equal true, @user.allowed?("edit", agent)
 
       agent = ActiveAgent.new "substance"
       agent.sequence = sequence
-      @session.should_receive(:allowed?).with("activeagent", comp_privilege)
-        .times(1).and_return {
-        assert true
-        "from activeagent"
-      }
-      assert_equal "from activeagent", @user.allowed?("activeagent", agent)
+      assert_equal true, @user.allowed?("edit", agent)
+    end
+
+    def test_allowed_root_user
+      root_config = {"roles" => ["org.oddb.RootUser"]}
+      root_user = SwiyuUser.new(gln: "7601111111111", first_name: "Root", last_name: "User", roles_config: root_config)
+      assert_equal true, root_user.allowed?("login", "org.oddb.RootUser")
+      assert_equal true, root_user.allowed?("edit", "anything")
+    end
+
+    def test_allowed_login
+      assert_equal true, @user.allowed?("login", "org.oddb.CompanyUser")
+      assert_equal false, @user.allowed?("login", "org.oddb.RootUser")
     end
 
     def test_creditable
-      require "model/activeagent"
-      require "model/company"
-      require "model/fachinfo"
-      require "model/package"
-      require "model/registration"
-      require "model/sequence"
-
-      privilege = "org.oddb.FlexMock"
-      @session.should_receive(:allowed?).with("credit", privilege).times(1)
-        .and_return {
-        assert true
-        "creditable from class"
-      }
-      assert_equal "creditable from class", @user.creditable?(FlexMock.new)
-      privilege = "org.oddb.Registration"
-      @session.should_receive(:allowed?).with("credit", privilege).times(1)
-        .and_return {
-        assert true
-        "creditable from string"
-      }
-      assert_equal "creditable from string", @user.creditable?(privilege)
+      assert_equal true, @user.creditable?(FlexMock.new)
+      assert_equal true, @user.creditable?("org.oddb.Registration")
     end
 
     def test_expired
-      @session.should_receive(:ping).and_return {
-        assert true
-        true
-      }
       assert_equal false, @user.expired?
     end
 
-    def test_expired__error
-      @session.should_receive(:ping).and_raise(RangeError)
-      assert(@user.expired?)
-    end
-
-    def stderr_null
-      require "tempfile"
-      $stderr = Tempfile.open("stderr")
-      yield
-      $stderr.close
-      $stderr = STDERR
-    end
-
-    def test_remote_call
-      flexmock(@session).should_receive(:method_name).and_raise(RangeError)
-      stderr_null do
-        assert_nil(@user.remote_call(:method_name, "args"))
-      end
-    end
-
     def test_fullname
-      @session.should_receive(:get_preference).with(:name_first).and_return do
-        assert true
-        "FirstName"
-      end
-      @session.should_receive(:get_preference).with(:name_last).and_return do
-        assert true
-        "LastName"
-      end
-      assert_equal "FirstName LastName", @user.fullname
+      assert_equal "Hans Mueller", @user.fullname
     end
 
     def test_groups
-      ent1 = flexmock name: "PowerUser"
-      ent2 = flexmock name: "test@mail.ch"
-      ent3 = flexmock name: "AdminUser"
-      ent4 = flexmock name: "other@mail.ch"
-      @session.should_receive(:entities).and_return [ent1, ent2, ent3, ent4]
-      assert_equal [ent1, ent3], @user.groups
-    end
-
-    def test_method_missing
-      skip("Test does not work under Ruby 3.4") if RUBY_VERSION.to_f >= 3.4 # TODO:
-      block_arg = nil
-      @session.should_receive(:something).with("an argument", Proc).times(1)
-        .and_return do |arg, block|
-        assert true
-        block.call "a block-argument"
-      end
-      @user.something("an argument") { |arg| block_arg = arg }
-      assert_equal "a block-argument", block_arg
+      assert_equal [], @user.groups
     end
 
     def test_model
+      assert_nil @user.model
+    end
+
+    def test_model_with_association
+      config_with_assoc = @roles_config.merge("association" => 42)
+      user = SwiyuUser.new(gln: "7601234567890", first_name: "Hans", last_name: "Mueller", roles_config: config_with_assoc)
       ODBA.cache = flexmock "odba cache"
-      ODBA.cache.should_receive(:fetch).with("an odba id", @user)
-        .and_return "an object"
-      @session.should_receive(:get_preference).with("association")
-        .and_return "an odba id"
-      assert_equal "an object", @user.model
+      ODBA.cache.should_receive(:fetch).with(42, user).and_return "an object"
+      assert_equal "an object", user.model
     ensure
       ODBA.cache = nil
     end
 
     def test_name
-      @session.should_receive(:name).and_return "test@email.ch"
-      assert_equal "test@email.ch", @user.name
-      assert_equal "test@email.ch", @user.email
-      assert_equal "test@email.ch", @user.unique_email
+      assert_equal "Hans Mueller", @user.name
     end
 
-    def test_set_preferences
-      prefs = {
-        salutation: "Salutation",
-        name_first: "NameFirst",
-        name_last: "NameLast",
-        address: "Address",
-        city: "City",
-        plz: "PLZ",
-        company_name: "CompanyName",
-        business_area: "BusinessArea",
-        phone: "Phone",
-        poweruser_duration: "PoweruserDuration",
-        unknown_key: "UnknownKey"
-      }
-      expected = {
-        salutation: "Salutation",
-        name_first: "NameFirst",
-        name_last: "NameLast",
-        address: "Address",
-        city: "City",
-        plz: "PLZ",
-        company_name: "CompanyName",
-        business_area: "BusinessArea",
-        phone: "Phone",
-        poweruser_duration: "PoweruserDuration"
-      }
-      @session.should_receive(:set_preferences).with(expected).and_return do
-        assert true
-      end
-      @user.set_preferences prefs
+    def test_email
+      assert_equal "7601234567890", @user.email
+      assert_equal "7601234567890", @user.unique_email
+    end
+
+    def test_valid
+      assert_equal true, @user.valid?
+    end
+
+    def test_valid_empty_gln
+      user = SwiyuUser.new(gln: "", first_name: "Hans", last_name: "Mueller")
+      assert_equal false, user.valid?
+    end
+
+    def test_valid_nil_gln
+      user = SwiyuUser.new(gln: nil, first_name: "Hans", last_name: "Mueller")
+      assert_equal false, user.valid?
+    end
+
+    def test_preferences
+      assert_equal "Hans", @user.name_first
+      assert_equal "Mueller", @user.name_last
+    end
+
+    def test_set_preferences_noop
+      # Should not raise
+      @user.set_preferences(name_first: "Test")
+    end
+
+    def test_generate_token
+      assert_nil @user.generate_token
+    end
+
+    def test_cache_html
+      assert_equal false, @user.cache_html?
     end
   end
 

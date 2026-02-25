@@ -19,9 +19,7 @@ module ODDB
   MEDDATA_URI ||= "druby://127.0.0.1:10006"
   SWISSREG_URI ||= "druby://127.0.0.1:10007"
   READONLY_URI ||= "druby://127.0.0.1:10013"
-  YUS_URI ||= "drbssl://127.0.0.1:9997"
   MIGEL_URI ||= "druby://127.0.0.1:33000"
-  YUS_DOMAIN ||= "oddb.org"
 
   oddb_dir = ODDB::PROJECT_ROOT
   default_dir = File.expand_path("etc", oddb_dir)

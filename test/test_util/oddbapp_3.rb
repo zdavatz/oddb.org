@@ -37,29 +37,7 @@ class TestOddbApp3 < Minitest::Test
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
     @@port_id += 1
     flexmock("epha", ODDB::EphaInteractions).should_receive(:read_from_csv).and_return([])
-    @session = flexmock("session") do |ses|
-      ses.should_receive(:grant).with("name", "key", "item", "expires")
-        .and_return("session").by_default
-      ses.should_receive(:entity_allowed?).with("email", "action", "key")
-        .and_return("session").by_default
-      ses.should_receive(:create_entity).with("email", "pass")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preference).with("name", "key")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preference).with("name", "association")
-        .and_return("odba_id").by_default
-      ses.should_receive(:get_entity_preferences).with("name", "keys")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preferences).with("error", "error")
-        .and_raise(Yus::YusError).by_default
-      ses.should_receive(:reset_entity_password).with("name", "token", "password")
-        .and_return("session").by_default
-      ses.should_receive(:set_entity_preference).with("name", "key", "value", "domain")
-        .and_return("session").by_default
-    end
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:autosession).and_yield(@session).by_default
-    end
+    @session = flexmock("session")
     flexmock(ODBA.storage) do |sto|
       sto.should_receive(:remove_dictionary).by_default
       sto.should_receive(:generate_dictionary).with("language")

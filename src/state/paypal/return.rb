@@ -26,15 +26,7 @@ module ODDB
               wrap = ItemWrapper.new(item)
               wrap.email = invoice.yus_name
               wrap.oid = invoice.oid
-              if item.type == :poweruser
-                @session.yus_grant(invoice.yus_name, "login", "org.oddb.PowerUser", item.expiry_time)
-                @session.yus_grant(invoice.yus_name, "view", "org.oddb", item.expiry_time)
-                @session.yus_set_preference(invoice.yus_name, "poweruser_duration", invoice.max_duration)
-              elsif item.type == :download
-                @session.yus_grant(invoice.yus_name, "download", item.text, item.expiry_time)
-              elsif item.type == :csv_export
-                @session.yus_grant(invoice.yus_name, "download", item.text, item.expiry_time)
-              else
+              unless [:poweruser, :download, :csv_export].include?(item.type)
                 $stdout.puts "State::PayPal::Return unhandled type #{item.type}"
               end
               wrap

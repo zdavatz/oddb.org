@@ -86,6 +86,8 @@ begin # with a rescue
       reentrant: true
     use Clogger, logger: $stdout, reentrant: true
     use(Rack::Static, urls: ["/doc/"])
+    require "util/swiyu_middleware"
+    use ODDB::SwiyuMiddleware
     use Rack::ContentLength
     SBSM.warn "Starting Rack::Server with log_pattern #{ODDB.config.log_pattern}"
 

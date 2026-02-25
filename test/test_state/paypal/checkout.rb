@@ -89,44 +89,9 @@ module ODDB
         end
 
         def test_create_user
-          user = flexmock("user",
-            set_preferences: "set_preferences",
-            allowed?: nil,
-            valid?: true)
-          flexmock(@app, yus_create_user: user)
-          flexmock(@session,
-            force_login: "force_login",
-            set_cookie_input: "set_cookie_input")
+          # create_user is now a no-op (Swiyu credential flow)
           input = {"key" => "value"}
-          assert_equal("force_login", @checkout.create_user(input))
-        end
-
-        def test_create_user__yus_duplicate_name_error
-          flexmock(@app) do |a|
-            a.should_receive(:yus_create_user).and_raise(Yus::DuplicateNameError)
-          end
-          flexmock(@session,
-            force_login: "force_login",
-            set_cookie_input: "set_cookie_input")
-          input = {"key" => "value"}
-          flexmock(@checkout, create_error: "create_error")
-          assert_raises(RuntimeError) do
-            @checkout.create_user(input)
-          end
-        end
-
-        def test_create_user__runtime_error
-          flexmock(@app) do |a|
-            a.should_receive(:yus_create_user).and_raise(RuntimeError)
-          end
-          flexmock(@session,
-            force_login: "force_login",
-            set_cookie_input: "set_cookie_input")
-          input = {"key" => "value"}
-          flexmock(@checkout, create_error: "create_error")
-          assert_raises(RuntimeError) do
-            @checkout.create_user(input)
-          end
+          assert_nil(@checkout.create_user(input))
         end
 
         def test_create_invoice
@@ -148,10 +113,11 @@ module ODDB
         end
 
         def test_checkout
+          checkout_user = flexmock("checkout_user", email: "email")
           flexmock(@session,
             input_keys: ["input_key"],
             logged_in?: true,
-            user: "user",
+            user: checkout_user,
             force_login: "force_login",
             set_cookie_input: "set_cookie_input")
           user = flexmock("user",
@@ -187,7 +153,8 @@ module ODDB
             email: "email")
           flexmock(@session,
             input_keys: [:email, :pass],
-            logged_in?: false,
+            logged_in?: true,
+            user: user,
             login: user,
             force_login: "force_login",
             set_cookie_input: "set_cookie_input")
@@ -211,39 +178,7 @@ module ODDB
           assert_kind_of(ODDB::State::PayPal::Redirect, @checkout.checkout)
         end
 
-        def test_checkout__yus_authentication_error
-          user = flexmock("user",
-            set_preferences: "set_preferences",
-            allowed?: nil,
-            valid?: true,
-            email: "email")
-          flexmock(@session,
-            input_keys: [:email, :pass],
-            logged_in?: false,
-            login: user,
-            set_cookie_input: "set_cookie_input")
-          @session.should_receive(:force_login).and_raise(Yus::AuthenticationError)
-          abstract = flexmock("abstract",
-            text: "text",
-            duration: 1.23,
-            price: "price",
-            type: "type",
-            data: "data",
-            quantity: 1)
-          flexmock(@model, items: [abstract])
-          pointer = flexmock("pointer", creator: "creator")
-          flexmock(pointer, :+ => pointer)
-          invoice = flexmock("invoice", pointer: pointer)
-          flexmock(@app,
-            yus_create_user: user,
-            update: invoice)
-          error = flexmock("error", message: "message")
-          flexmock(@checkout,
-            error?: true,
-            unique_email: "unique_email",
-            create_error: error)
-          assert_equal(@checkout, @checkout.checkout)
-        end
+        # Yus authentication error test removed — Yus auth replaced by Swiyu OID4VP
 
         def test_checkout__sbsm_processing_error
           flexmock(@session) do |s|

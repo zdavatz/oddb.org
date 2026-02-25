@@ -14,7 +14,7 @@ module ODDB
           [0, 0]	=>	"invalid_user_welcome",
           [0, 1]	=>	:invalid_user_explain,
           # [0,1,1] => :renew_poweruser,
-          [0, 2]	=>	View::LimitForm
+          [0, 2]	=>	View::LimitComposite
         }
         CSS_MAP = {
           [0, 0]	=>	"th",
@@ -25,7 +25,7 @@ module ODDB
           lkey = "query_limit_poweruser_"
           user = @session.user
           salutation = name_first = name_last = ""
-          if user.is_a?(YusUser)
+          if user.is_a?(SwiyuUser)
             lkey += user.poweruser_duration.to_s
             salutation = @lookandfeel.lookup(user.salutation)
             name_first = user.name_first

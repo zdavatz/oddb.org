@@ -35,27 +35,6 @@ class TestOddbApp2 < Minitest::Test
     @app = ODDB::App.new(server_uri: "druby://localhost:#{@@port_id}", unknown_user: ODDB::UnknownUser.new)
     @@port_id += 1
     @session = flexmock("session") do |ses|
-      ses.should_receive(:grant).with("name", "key", "item", "expires")
-        .and_return("session")
-      ses.should_receive(:entity_allowed?).with("email", "action", "key")
-        .and_return("session")
-      ses.should_receive(:create_entity).with("email", "pass")
-        .and_return("session")
-      ses.should_receive(:get_entity_preference).with("name", "key")
-        .and_return("session")
-      ses.should_receive(:get_entity_preference).with("name", "association")
-        .and_return("odba_id")
-      ses.should_receive(:get_entity_preferences).with("name", "keys")
-        .and_return("session")
-      ses.should_receive(:get_entity_preferences).with("error", "error")
-        .and_raise(Yus::YusError)
-      ses.should_receive(:reset_entity_password).with("name", "token", "password")
-        .and_return("session")
-      ses.should_receive(:set_entity_preference).with("name", "key", "value", "domain")
-        .and_return("session")
-    end
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:autosession).and_yield(@session)
     end
     flexstub(ODBA.storage) do |sto|
       sto.should_receive(:remove_dictionary)
@@ -644,34 +623,16 @@ class TestOddbApp2 < Minitest::Test
   end
 
   def test_login
-    @yus ||= flexmock("yus")
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:login)
-      yus.should_receive(:login_token)
-    end
-    flexmock(ODDB::YusUser) do |yus|
-      yus.should_receive(:new).and_return(@yus)
-    end
-    assert_equal(@yus, @app.login("email", "pass"))
+    # login is now a stub (Swiyu handles auth via middleware)
+    assert_nil(@app.login("email", "pass"))
   end
 
   def test_login_token
-    @yus ||= flexmock("yus")
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:login)
-      yus.should_receive(:login_token)
-    end
-    flexmock(ODDB::YusUser) do |yus|
-      yus.should_receive(:new).and_return(@yus)
-    end
-    assert_equal(@yus.class, @app.login_token("email", "token").class)
+    assert_nil @app.login_token("email", "token")
   end
 
   def test_logout
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:logout).and_return("logout")
-    end
-    assert_equal("logout", @app.logout("session"))
+    assert_nil @app.logout("session")
   end
 
   def test_reset
@@ -700,7 +661,7 @@ class TestOddbApp2 < Minitest::Test
   end
 
   def test_yus_allowed?
-    assert_equal("session", @app.yus_allowed?("email", "action", "key"))
+    assert_equal(false, @app.yus_allowed?("email", "action", "key"))
   end
 
   def test_active_fachinfos

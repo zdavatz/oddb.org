@@ -524,15 +524,7 @@ module ODDB
         end
 
         def company_users(model, session = @session)
-          begin
-            users = @session.user.entities.select { |entity|
-              entity.get_preference("association", YUS_DOMAIN) == model.odba_id
-            }
-            model = View::Admin::Entities.wrap_all(users)
-          rescue Yus::NotPrivilegedError
-            model = []
-          end
-          View::Admin::InnerEntityList.new(model, @session, self)
+          View::Admin::InnerEntityList.new([], @session, self)
         end
       end
 

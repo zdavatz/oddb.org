@@ -20,7 +20,7 @@ module ODDB
         div = HtmlGrid::Div.new(model, session, self)
         div.css_class = "personal"
         user = session.user
-        if user.is_a?(ODDB::YusUser)
+        if user.is_a?(ODDB::SwiyuUser)
           fullname = [user.name_first, user.name_last].compact.join(" ")
           if fullname.strip.empty?
             fullname = user.name
@@ -41,8 +41,8 @@ module ODDB
         res = nil
         user = @session.user
         @session.request_path.dup.sub(/^\//, "").split("/")
-        if user.is_a?(ODDB::YusUser)
-          res = if (company = @session.app.yus_model(user.name)) and company.logo_filename
+        if user.is_a?(ODDB::SwiyuUser)
+          res = if (company = user.model) and company.logo_filename
             if is_at_home
               nil
             else
@@ -68,7 +68,7 @@ module ODDB
         case sponsor_or_logo
         when :company
           user = session.user
-          company = @session.app.yus_model(user.name) and logo_filename = company.logo_filename
+          company = user.model and logo_filename = company.logo_filename
           if company.url and !company.url.empty?
             div = HtmlGrid::HttpLink.new(:url, company, session, self)
             div.set_attribute("title", company.url)

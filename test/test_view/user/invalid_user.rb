@@ -34,8 +34,10 @@ module ODDB
             user: user,
             error: "error",
             state: state,
+            remote_ip: "127.0.0.1",
             warning?: nil,
-            error?: nil)
+            error?: nil,
+            cookie_set_or_get: "cookie")
           @model = flexmock("model")
           @view = ODDB::View::User::InvalidUserComposite.new(@model, @session)
         end

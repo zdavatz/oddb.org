@@ -53,6 +53,29 @@ module ODDB
         link.value = @lookandfeel.lookup(:home)
         link
       end
+
+      def swiyu_login(model)
+        link = HtmlGrid::Link.new(:swiyu_login, model, @session, self)
+        link.css_class = "navigation"
+        link.set_attribute("href", "/swiyu")
+        link.value = @lookandfeel.lookup(:swiyu_login)
+        link
+      end
+
+      def swiyu_logout(model)
+        user = @session.user
+        if user.is_a?(ODDB::SwiyuUser)
+          fullname = [user.name_first, user.name_last].compact.join(" ")
+          fullname = user.name if fullname.strip.empty?
+          link = HtmlGrid::Link.new(:swiyu_logout, model, @session, self)
+          link.css_class = "navigation"
+          link.set_attribute("href", "/swiyu/logout")
+          link.value = "#{fullname} (#{@lookandfeel.lookup(:swiyu_logout)})"
+          link
+        else
+          swiyu_login(model)
+        end
+      end
     end
 
     class ZoneNavigation < Navigation

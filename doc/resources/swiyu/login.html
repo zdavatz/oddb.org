@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ODDB.org - Swiyu Login</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 480px;
+      margin: 60px auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 2em;
+      text-align: center;
+    }
+    h1 {
+      color: #003d73;
+      font-size: 1.4em;
+      margin-bottom: 0.5em;
+    }
+    p {
+      color: #333;
+      font-size: 0.95em;
+    }
+    #qrcode {
+      display: inline-block;
+      margin: 1em 0;
+    }
+    #qrcode canvas, #qrcode img {
+      margin: 0 auto;
+    }
+    #status {
+      margin: 1em 0;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+    .error { color: #c00; }
+    .success { color: #090; }
+    .pending { color: #666; }
+    #deeplink {
+      margin: 1em 0;
+    }
+    #deeplink a {
+      color: #003d73;
+      text-decoration: underline;
+    }
+    #retry-btn {
+      display: none;
+      margin: 1em auto;
+      padding: 0.6em 1.5em;
+      background: #003d73;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    #retry-btn:hover {
+      background: #00507a;
+    }
+    .footer {
+      margin-top: 2em;
+      font-size: 0.8em;
+      color: #999;
+    }
+    .footer a { color: #003d73; }
+  </style>
+  <script src="/doc/resources/javascript/qrcode.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Login via Swiyu Wallet</h1>
+    <p>Scannen Sie den QR-Code mit Ihrer Swiyu Wallet App.</p>
+
+    <div id="qrcode"></div>
+    <div id="deeplink"></div>
+    <div id="status" class="pending">Initialisierung...</div>
+    <button id="retry-btn" onclick="startLogin()">Erneut versuchen</button>
+
+    <div class="footer">
+      <a href="/">Zur&uuml;ck zur Startseite</a>
+    </div>
+  </div>
+
+  <script>
+    var pollTimer = null;
+    var timeoutTimer = null;
+
+    function startLogin() {
+      var statusEl = document.getElementById('status');
+      var qrEl = document.getElementById('qrcode');
+      var deepEl = document.getElementById('deeplink');
+      var retryBtn = document.getElementById('retry-btn');
+
+      // Reset
+      qrEl.innerHTML = '';
+      deepEl.innerHTML = '';
+      retryBtn.style.display = 'none';
+      statusEl.textContent = 'Verifizierung wird erstellt...';
+      statusEl.className = 'pending';
+      if (pollTimer) clearInterval(pollTimer);
+      if (timeoutTimer) clearTimeout(timeoutTimer);
+
+      fetch('/swiyu/login')
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (!data.id || !data.verification_deeplink) {
+            statusEl.textContent = 'Fehler beim Erstellen der Verifizierung.';
+            statusEl.className = 'error';
+            retryBtn.style.display = 'block';
+            return;
+          }
+
+          // Show QR code
+          new QRCode(qrEl, {
+            text: data.verification_deeplink,
+            width: 256,
+            height: 256,
+            colorDark: '#003d73',
+            colorLight: '#ffffff'
+          });
+
+          // Show mobile deeplink
+          var link = document.createElement('a');
+          link.href = data.verification_deeplink;
+          link.textContent = 'In Swiyu Wallet \u00f6ffnen';
+          deepEl.appendChild(link);
+
+          statusEl.textContent = 'Warte auf Wallet-Scan...';
+          statusEl.className = 'pending';
+
+          // Poll for status
+          var verificationId = data.id;
+          pollTimer = setInterval(function() {
+            fetch('/swiyu/status/' + verificationId)
+              .then(function(resp) { return resp.json(); })
+              .then(function(pollData) {
+                if (pollData.state === 'SUCCESS') {
+                  clearInterval(pollTimer);
+                  if (timeoutTimer) clearTimeout(timeoutTimer);
+                  statusEl.textContent = 'Verifiziert! Anmeldung...';
+                  statusEl.className = 'success';
+
+                  fetch('/swiyu/session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ verification_id: verificationId })
+                  })
+                    .then(function(resp) { return resp.json(); })
+                    .then(function(sessionData) {
+                      if (sessionData.status === 'ok') {
+                        window.location.href = sessionData.redirect || '/';
+                      } else {
+                        statusEl.textContent = 'Anmeldung fehlgeschlagen: ' + (sessionData.message || 'Unbekannter Fehler');
+                        statusEl.className = 'error';
+                        retryBtn.style.display = 'block';
+                      }
+                    })
+                    .catch(function() {
+                      statusEl.textContent = 'Netzwerkfehler bei der Anmeldung.';
+                      statusEl.className = 'error';
+                      retryBtn.style.display = 'block';
+                    });
+                } else if (pollData.state === 'FAILED') {
+                  clearInterval(pollTimer);
+                  if (timeoutTimer) clearTimeout(timeoutTimer);
+                  statusEl.textContent = 'Verifizierung fehlgeschlagen. Bitte erneut versuchen.';
+                  statusEl.className = 'error';
+                  retryBtn.style.display = 'block';
+                } else if (pollData.state === 'EXPIRED') {
+                  clearInterval(pollTimer);
+                  if (timeoutTimer) clearTimeout(timeoutTimer);
+                  statusEl.textContent = 'Verifizierung abgelaufen. Bitte erneut versuchen.';
+                  statusEl.className = 'error';
+                  retryBtn.style.display = 'block';
+                }
+              })
+              .catch(function(e) {
+                console.error('Polling error:', e);
+              });
+          }, 2000);
+
+          // Timeout after 5 minutes
+          timeoutTimer = setTimeout(function() {
+            clearInterval(pollTimer);
+            if (statusEl.className === 'pending') {
+              statusEl.textContent = 'Zeitlimit \u00fcberschritten. Bitte erneut versuchen.';
+              statusEl.className = 'error';
+              retryBtn.style.display = 'block';
+            }
+          }, 300000);
+        })
+        .catch(function(err) {
+          statusEl.textContent = 'Netzwerkfehler: ' + err.message;
+          statusEl.className = 'error';
+          retryBtn.style.display = 'block';
+        });
+    }
+
+    // Start automatically
+    startLogin();
+  </script>
+</body>
+</html>

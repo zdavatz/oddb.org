@@ -9,6 +9,8 @@ require "custom/lookandfeelfactory"
 require "state/states"
 require "util/validator"
 require "model/user"
+require "util/swiyu_middleware"
+require "util/swiyu_roles"
 require "fileutils"
 
 module ODDB
@@ -50,11 +52,17 @@ module ODDB
 
     def active_state
       state = super
-      unless @token_login_attempted
-        @token_login_attempted = true
-        if user = login_token
-          state = state.autologin user
-        end
+      session_id = @rack_request&.cookies&.dig("_session_id")
+      auth_data = SwiyuMiddleware.get_auth(session_id) if session_id
+      has_auth = auth_data && auth_data["swiyu_auth"] == "true"
+      if @user.is_a?(SwiyuUser) && !has_auth
+        # Auth was cleared (logout via middleware) — reset session
+        logout
+        state = @state
+      elsif !@user&.valid? && has_auth
+        # Auth available but not yet logged in
+        login
+        state = state.autologin(@user) if @user&.valid?
       end
       state
     end
@@ -120,44 +128,24 @@ module ODDB
     end
 
     def login
-      # @app.login raises Yus::YusError
-      # caller must rescue Yus::UnknownEntityError and Yus::AuthenticationError
-      @user = @app.login(user_input(:email), user_input(:pass))
-      if cookie_set_or_get(:remember_me)
-        set_cookie_input :remember, @user.generate_token
-        set_cookie_input :email, @user.email
-      else
-        @cookie_input.delete :remember
-        # TODO
-        # This works always same with remember_me ... (temporary solution)
-        set_cookie_input :remember, @user.generate_token
-        set_cookie_input :email, @user.email
-        # This does not work in session, expectedly
-        set_persistent_user_input(:remember, @user.generate_token)
-        set_persistent_user_input(:email, @user.email)
+      session_id = @rack_request&.cookies&.dig("_session_id")
+      auth_data = SwiyuMiddleware.get_auth(session_id) if session_id
+      if auth_data && auth_data["swiyu_auth"] == "true"
+        gln = auth_data["swiyu_gln"]
+        roles_config = SwiyuRoles.instance.user_config(gln)
+        @user = SwiyuUser.new(
+          gln: gln,
+          first_name: auth_data["swiyu_firstName"],
+          last_name: auth_data["swiyu_lastName"],
+          roles_config: roles_config
+        )
       end
       @user
     end
 
-    def login_token
-      # @app.login_token raises Yus::YusError
-      email = persistent_user_input(:email) || get_cookie_input(:email)
-      token = persistent_user_input(:remember) || get_cookie_input(:remember)
-      if email && token && !token.empty? && !@user.valid?
-        @user = @app.login_token(email, token)
-        set_cookie_input :remember, @user.generate_token
-        @user
-      end
-    rescue Yus::YusError
-    end
-
     def logout
-      token = get_cookie_input(:remember)
-      @cookie_input.delete :remember
-      if @user.respond_to?(:yus_session)
-        @user.remove_token token
-        @app.logout(@user.yus_session)
-      end
+      session_id = @rack_request&.cookies&.dig("_session_id")
+      SwiyuMiddleware.clear_auth(session_id) if session_id
       super
     end
 

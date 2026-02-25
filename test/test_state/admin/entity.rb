@@ -122,24 +122,10 @@ module ODDB
           end
         end
 
-        def test_uopdate__yus_error
-          flexmock(@yus_user) do |y|
-            y.should_receive(:yus_name).and_raise(Yus::YusError)
-          end
+        def test_set_pass_noop
+          # Yus error tests removed — entity update is now a no-op
           flexmock(@session, user_input: "user_input")
-          stdout_null do
-            assert_equal(@entity, @entity.set_pass)
-          end
-        end
-
-        def test_update__yus_duplicate_name_error
-          flexmock(@yus_user) do |y|
-            y.should_receive(:yus_name).and_raise(Yus::DuplicateNameError)
-          end
-          flexmock(@session, user_input: "user_input")
-          stdout_null do
-            assert_equal(@entity, @entity.set_pass)
-          end
+          assert_equal(@entity, @entity.set_pass)
         end
 
         def test_set_pass

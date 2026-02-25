@@ -33,8 +33,7 @@ require "state/drugs/vaccines"
 require "state/admin/orphaned_patinfos"
 require "state/admin/orphaned_patinfo"
 require "state/admin/patinfo_deprived_sequences"
-require "state/admin/password_lost"
-require "state/admin/password_reset"
+# password_lost and password_reset removed — authentication via Swiyu
 require "state/drugs/patinfo"
 require "state/drugs/patinfos"
 require "state/drugs/price_history"
@@ -189,7 +188,6 @@ module ODDB
         login_form: State::Admin::Login,
         migel_alphabetical: State::Migel::Alphabetical,
         minifi: State::Drugs::MiniFi,
-        password_lost: State::Admin::PasswordLost,
         patinfos: State::Drugs::Patinfos,
         foto: State::Drugs::Photo,
         narcotics: State::Drugs::Narcotics,
@@ -519,7 +517,7 @@ module ODDB
             && (des = @session.desired_state)
             # since the permissions of the current User may have changed, we
             # need to reconsider his viral modules
-            if (user = @session.user).is_a?(YusUser)
+            if (user = @session.user).is_a?(SwiyuUser)
               reconsider_permissions(user, des)
             end
             state = des
@@ -1126,10 +1124,17 @@ module ODDB
       end
 
       def user_navigation
-        [
-          State::Admin::Login,
-          State::User::YweseeContact
-        ]
+        if @session.user.is_a?(SwiyuUser)
+          [
+            :swiyu_logout,
+            State::User::YweseeContact
+          ]
+        else
+          [
+            :swiyu_login,
+            State::User::YweseeContact
+          ]
+        end
       end
 
       def ywesee_contact

@@ -37,29 +37,7 @@ class TestOddbApp < Minitest::Test
     File.join(ODDB::PROJECT_ROOT, "data/prevalence")
     @rack_app = ODDB::Util::RackInterface.new(app: @app)
 
-    @session = flexmock("session") do |ses|
-      ses.should_receive(:grant).with("name", "key", "item", "expires")
-        .and_return("session").by_default
-      ses.should_receive(:entity_allowed?).with("email", "action", "key")
-        .and_return("session").by_default
-      ses.should_receive(:create_entity).with("email", "pass")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preference).with("name", "key")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preference).with("name", "association")
-        .and_return("odba_id").by_default
-      ses.should_receive(:get_entity_preferences).with("name", "keys")
-        .and_return("session").by_default
-      ses.should_receive(:get_entity_preferences).with("error", "error")
-        .and_raise(Yus::YusError).by_default
-      ses.should_receive(:reset_entity_password).with("name", "token", "password")
-        .and_return("session").by_default
-      ses.should_receive(:set_entity_preference).with("name", "key", "value", "domain")
-        .and_return("session").by_default
-    end
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:autosession).and_yield(@session).by_default
-    end
+    @session = flexmock("session")
     flexmock(ODBA.storage) do |sto|
       sto.should_receive(:remove_dictionary).by_default
       sto.should_receive(:generate_dictionary).with("language")
@@ -653,28 +631,21 @@ class TestOddbApp < Minitest::Test
   end
 
   def test_yus_create_user
-    @yus ||= flexmock("yus")
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:login)
-      yus.should_receive(:login_token)
-    end
-    flexmock(ODDB::YusUser) do |yus|
-      yus.should_receive(:new).and_return(@yus)
-    end
-    # assert_equal(@yus, @app.yus_create_user('email', 'pass'))
-    assert_equal(@yus.class, @app.yus_create_user("email", "pass").class)
+    # No-op after Swiyu migration
+    assert_nil @app.yus_create_user("email", "pass")
   end
 
   def test_yus_grant
-    assert_equal("session", @app.yus_grant("name", "key", "item", "expires"))
+    # No-op after Swiyu migration
+    assert_nil @app.yus_grant("name", "key", "item", "expires")
   end
 
   def test_yus_get_preference
-    assert_equal("session", @app.yus_get_preference("name", "key"))
+    assert_nil @app.yus_get_preference("name", "key")
   end
 
   def test_yus_get_preferences
-    assert_equal("session", @app.yus_get_preferences("name", "keys"))
+    assert_equal({}, @app.yus_get_preferences("name", "keys"))
   end
 
   def test_yus_get_preferences__error
@@ -682,17 +653,14 @@ class TestOddbApp < Minitest::Test
   end
 
   def test_yus_model
-    flexstub(ODBA.cache) do |cache|
-      cache.should_receive(:fetch).once.with("odba_id", nil).and_return("yus_model")
-    end
-    assert_equal("yus_model", @app.yus_model("name"))
+    assert_nil @app.yus_model("name")
   end
 
   def test_yus_reset_password
-    assert_equal("session", @app.yus_reset_password("name", "token", "password"))
+    assert_nil @app.yus_reset_password("name", "token", "password")
   end
 
   def test_yus_set_preference
-    assert_equal("session", @app.yus_set_preference("name", "key", "value", "domain"))
+    assert_nil @app.yus_set_preference("name", "key", "value", "domain")
   end
 end

@@ -29,26 +29,13 @@ module ODDB
         end
 
         def checkout
-          ## its possible that we know this user already -> log them in.
-          missing_keys = [:email, :pass] - @session.input_keys
           if @session.logged_in?
             @user = @session.user
-          elsif missing_keys.empty?
-            begin
-              @user ||= @session.login
-              reconsider_permissions(@user, self)
-              @session.force_login(@user)
-            rescue Yus::UnknownEntityError
-              # ignore: in this case we simply create a new user in 'create_user'
-            rescue Yus::AuthenticationError
-              @errors.store(:pass, create_error(:e_authentication_error, :pass, nil))
-            end
           end
           input = user_input(checkout_keys, checkout_mandatory)
           if error?
             self
           else
-            create_user(input)
             State::PayPal::Redirect.new(@session, create_invoice(input))
           end
         rescue SBSM::ProcessingError => err
@@ -98,24 +85,7 @@ module ODDB
         end
 
         def create_user(input)
-          hash = input.dup
-          ## don't store passwords in cookie vars...
-          hash.delete(:set_pass_2)
-          pass = hash.delete(:pass)
-          ## but store the rest of the input there
-          hash.each { |key, val| @session.set_cookie_input(key, val) }
-          email = hash.delete(:email)
-          unless @user.is_a?(YusUser)
-            @user = @session.app.yus_create_user(email, pass)
-          end
-          hash.delete_if { |key, value| value.to_s.empty? }
-          @user.set_preferences(hash) unless hash.empty?
-          reconsider_permissions(@user, self)
-          @session.force_login(@user)
-        rescue Yus::DuplicateNameError
-          raise create_error(:e_duplicate_email, :email, input[:email])
-        rescue RuntimeError, Yus::YusError => e
-          raise create_error(e.message, :email, input[:email])
+          # No-op: user creation handled by Swiyu credential flow
         end
 
         def currency

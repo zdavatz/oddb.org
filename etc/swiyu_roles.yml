@@ -1,0 +1,20 @@
+# etc/swiyu_roles.yml
+# Maps GLN numbers to ODDB role keys and permissions.
+#
+# Role keys correspond to the existing permission system:
+#   org.oddb.RootUser, org.oddb.AdminUser, org.oddb.PowerUser,
+#   org.oddb.CompanyUser, org.oddb.PowerLinkUser
+#
+# "permissions" lists fine-grained action/key pairs checked by allowed?(action, key).
+# "association" links a user to an ODBA-persisted object (e.g., Company) by odba_id.
+
+accepted_issuer_did: "did:tdw:QmeA6Hpod7N85daNqWZD5w8jBCU6oaXcxxQFNZ6ox245ci:identifier-reg.trust-infra.swiyu-int.admin.ch:api:v1:did:5b1672d3-2805-4752-b364-2f87013bc5c3"
+
+users:
+  # Example root user — replace GLN with actual values
+  # "7601000000001":
+  #   roles:
+  #     - org.oddb.RootUser
+  #   permissions:
+  #     - { action: login, key: org.oddb.RootUser }
+  #   association: null

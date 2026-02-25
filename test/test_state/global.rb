@@ -617,7 +617,7 @@ module ODDB
       end
 
       def test_user_navigation
-        expected = [State::Admin::Login, State::User::YweseeContact]
+        expected = [:swiyu_login, State::User::YweseeContact]
         assert_equal(expected, @state.user_navigation)
       end
 

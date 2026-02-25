@@ -15,12 +15,6 @@ module ODDB
       module LoginMethods
         def login
           autologin(@session.login)
-        rescue Yus::UnknownEntityError
-          @errors.store(:email, create_error(:e_authentication_error, :email, nil))
-          self
-        rescue Yus::AuthenticationError
-          @errors.store(:pass, create_error(:e_authentication_error, :pass, nil))
-          self
         end
 
         def autologin(user, default = @previous)

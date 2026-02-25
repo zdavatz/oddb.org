@@ -24,14 +24,7 @@ module ODDB
     end
 
     def ensure_yus_user(comp_or_hosp)
-      mail = comp_or_hosp.invoice_email
-      @app.yus_create_user(mail)
-      @app.yus_grant(mail, "edit", comp_or_hosp.pointer.to_yus_privilege)
-      @app.yus_set_preference(mail, "association", comp_or_hosp.odba_id)
-      mail
-    rescue Yus::YusError
-      ## assume user exists
-      mail
+      comp_or_hosp.invoice_email
     end
 
     def rp2fr(price)

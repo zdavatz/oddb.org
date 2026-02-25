@@ -2,14 +2,12 @@
 
 # User -- oddb -- 15.11.2002 -- hwyss@ywesee.com
 
-require "drb"
 require "sbsm/user"
 require "util/oddbconfig"
 require "util/persistence"
 require "model/invoice"
 require "model/invoice_observer"
 require "state/global_predefine"
-require "yus/entity"
 
 module ODDB
   class UnknownUser < SBSM::UnknownUser
@@ -34,62 +32,85 @@ module ODDB
     end
   end
 
-  class YusStub
-    YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
+  class SwiyuStub
     attr_reader :yus_name
-    def initialize yus_name
+    def initialize(yus_name)
       @yus_name = yus_name
     end
     alias_method :invoice_email, :yus_name
     alias_method :contact_email, :yus_name
-    def method_missing key
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.get_entity_preference(@yus_name, key)
-      }
-    rescue Yus::YusError
-      # user not found
-    end
 
-    def == other
-      other.is_a?(YusStub) && @yus_name == other.yus_name
+    def ==(other)
+      other.is_a?(SwiyuStub) && @yus_name == other.yus_name
     end
     alias_method :eql?, :==
   end
 
-  class YusUser < SBSM::KnownUser
+  class SwiyuUser < SBSM::KnownUser
+    attr_reader :gln, :first_name, :last_name, :roles_config
+
     PREFERENCE_KEYS = [:salutation, :name_first, :name_last, :address,
       :city, :plz, :company_name, :business_area, :phone,
       :poweruser_duration]
-    PREFERENCE_KEYS.each { |key|
-      define_method(key) {
-        remote_call(:get_preference, key)
-      }
-    }
-    attr_reader :yus_session
-    def initialize(yus_session)
-      @yus_session = yus_session
+
+    def initialize(gln:, first_name:, last_name:, roles_config: nil)
+      @gln = gln
+      @first_name = first_name
+      @last_name = last_name
+      @roles_config = roles_config || {}
     end
 
     def allowed?(action, key = nil)
-      case key.odba_instance
+      return check_permission(action, key) if key.nil? || key.is_a?(String)
+      resolved = key.respond_to?(:odba_instance) ? key.odba_instance : key
+      case resolved
       when ActiveAgent
-        allowed?(action, key.sequence)
+        allowed?(action, resolved.sequence)
       when InactiveAgent
-        allowed?(action, key.sequence)
+        allowed?(action, resolved.sequence)
       when Company
-        allowed?(action, key.pointer.to_yus_privilege)
+        allowed?(action, resolved.pointer.to_yus_privilege)
       when Fachinfo
-        allowed?(action, key.registrations.first)
+        allowed?(action, resolved.registrations.first)
       when PackageCommon
-        allowed?(action, key.sequence)
+        allowed?(action, resolved.sequence)
       when RegistrationCommon
-        allowed?(action, key.company) \
-        || allowed?(action, key.pointer.to_yus_privilege)
+        allowed?(action, resolved.company) \
+        || allowed?(action, resolved.pointer.to_yus_privilege)
       when SequenceCommon
-        allowed?(action, key.registration)
+        allowed?(action, resolved.registration)
       else
-        remote_call(:allowed?, action, key)
+        check_permission(action, key)
       end
+    end
+
+    def valid?
+      !@gln.nil? && !@gln.empty?
+    end
+
+    def expired?
+      false
+    end
+
+    def name
+      "#{@first_name} #{@last_name}"
+    end
+
+    def email
+      @gln
+    end
+    alias_method :unique_email, :email
+
+    def fullname
+      "#{@first_name} #{@last_name}"
+    end
+
+    def model
+      if (id = @roles_config&.dig("association"))
+        ODBA.cache.fetch(id, self)
+      end
+    rescue ODBA::OdbaError
+      nil
     end
 
     def creditable?(obj)
@@ -100,54 +121,70 @@ module ODDB
       allowed?("credit", obj)
     end
 
-    def expired?
-      !@yus_session.ping
-    rescue RangeError, DRb::DRbConnError, NoMethodError
-      true
+    def cache_html?
+      false
     end
 
-    def fullname
-      [name_first, name_last].join(" ")
+    def generate_token
+      nil
     end
 
-    def model
-      if (id = remote_call(:get_preference, "association"))
-        ODBA.cache.fetch(id, self)
-      end
+    def remove_token(_token)
+      nil
     end
 
     def groups
-      remote_call(:entities).reject { |entity|
-        /@/u.match(entity.name)
-      }
+      []
     end
 
-    def method_missing(method, *args, &block)
-      remote_call(method, *args, &block)
+    def set_preferences(_values)
     end
 
-    def name
-      remote_call(:name)
-    end
-    alias_method :email, :name
-    alias_method :unique_email, :name
-    def remote_call(method, *args, &block)
-      @yus_session.send(method, *args, &block)
-    rescue RangeError, DRb::DRbError => e
-      warn e
+    def name_first
+      @roles_config&.dig("preferences", "name_first") || @first_name
     end
 
-    def set_preferences(values)
-      (values.keys - PREFERENCE_KEYS).each { |key|
-        values.delete(key)
-      }
-      remote_call(:set_preferences, values)
+    def name_last
+      @roles_config&.dig("preferences", "name_last") || @last_name
+    end
+
+    PREFERENCE_KEYS.each do |key|
+      next if method_defined?(key)
+      define_method(key) do
+        @roles_config&.dig("preferences", key.to_s)
+      end
+    end
+
+    private
+
+    def check_permission(action, key)
+      return false unless @roles_config
+
+      roles = @roles_config["roles"] || []
+
+      # Root users have all permissions
+      return true if roles.include?("org.oddb.RootUser")
+
+      # Check role-level login permissions
+      if action.to_s == "login"
+        return roles.any? { |r| r == key.to_s }
+      end
+
+      # Check explicit permissions list
+      permissions = @roles_config["permissions"] || []
+      permissions.any? do |perm|
+        perm["action"] == action.to_s &&
+          (key.nil? || perm["key"] == key.to_s)
+      end
     end
   end
 
+  # Keep YusStub as alias for backward compatibility with persisted ODBA objects
+  YusStub = SwiyuStub
+
   module UserObserver
     attr_writer :invoice_email
-    def add_user user
+    def add_user(user)
       unless user.nil? || users.include?(user)
         users.push user
         users.odba_store
@@ -157,7 +194,7 @@ module ODDB
     end
 
     def contact_email
-      if usr = users.first
+      if (usr = users.first)
         usr.yus_name
       end
     end
@@ -170,8 +207,8 @@ module ODDB
       @invoice_email || contact_email
     end
 
-    def remove_user user
-      if res = users.delete(user)
+    def remove_user(user)
+      if (res = users.delete(user))
         users.odba_store
         odba_store
         res

@@ -32,7 +32,7 @@ require "sbsm/app"
 require "sbsm/index"
 require "util/config"
 require "fileutils"
-require "yus/session"
+# require "yus/session" — removed, auth via Swiyu
 require "remote/migel/model"
 require "util/logfile"
 
@@ -1786,7 +1786,7 @@ module ODDB
     SESSION = Session
     UPDATE_INTERVAL = 24 * 60 * 60
     VALIDATOR = Validator
-    YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
+    # YUS_SERVER removed — authentication now handled by Swiyu middleware
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
     REFDATA_SERVER = DRbObject.new(nil, ODDB::Refdata::RefdataArticle::URI)
     @@primary_server = nil
@@ -1986,16 +1986,14 @@ module ODDB
     end
 
     def login(email, pass)
-      YusUser.new(YUS_SERVER.login(email, pass, YUS_DOMAIN))
+      nil
     end
 
     def login_token(email, token)
-      YusUser.new(YUS_SERVER.login_token(email, token, YUS_DOMAIN))
+      nil
     end
 
     def logout(session)
-      YUS_SERVER.logout(session)
-    rescue DRb::DRbError, RangeError
     end
 
     def peer_cache cache
@@ -2169,59 +2167,31 @@ module ODDB
     end
 
     def yus_allowed?(email, action, key = nil)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.entity_allowed?(email, action, key)
-      }
+      false
     end
 
     def yus_create_user(email, pass = nil)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.create_entity(email, pass)
-      }
-      # if there is a password, we can log in
-      login(email, pass) if pass
     end
 
     def yus_grant(name, key, item, expires = nil)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.grant(name, key, item, expires)
-      }
     end
 
     def yus_get_preference(name, key)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.get_entity_preference(name, key)
-      }
-    rescue RangeError, Yus::YusError
-      # user not found
+      nil
     end
 
     def yus_get_preferences(name, keys)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.get_entity_preferences(name, keys)
-      }
-    rescue Yus::YusError
-      {} # return an empty hash
+      {}
     end
 
     def yus_model(name)
-      if (odba_id = yus_get_preference(name, "association"))
-        ODBA.cache.fetch(odba_id, nil)
-      end
-    rescue Yus::YusError, ODBA::OdbaError
-      # association not found
+      nil
     end
 
     def yus_reset_password(name, token, password)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.reset_entity_password(name, token, password)
-      }
     end
 
-    def yus_set_preference(name, key, value, domain = YUS_DOMAIN)
-      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
-        session.set_entity_preference(name, key, value, domain)
-      }
+    def yus_set_preference(name, key, value, domain = nil)
     end
 
     def migrate_feedbacks
