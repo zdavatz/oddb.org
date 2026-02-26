@@ -1386,8 +1386,11 @@ end
   sanitized = sanitized.gsub(/<tr[^>]*\/\s*>/i, '')
 
   # 2 ENSURE BLOCK-LEVEL ELEMENTS CREATE SPACES WHEN REMOVED 43225
-  # This prevents words from running together when tags are stripped
-  sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|h[1-6])>/i, ' ')
+  # Insert space before closing tags to prevent words from running together,
+  # while preserving the closing tags for consistent DOM parsing across libxml2 versions.
+  # Previously closing tags were removed entirely, which broke table structure (</td>, </tr>, </th>)
+  # and caused different parsing results depending on the Nokogiri/libxml2 build.
+  sanitized = sanitized.gsub(/<\/(p|div|br|li|tr|td|th|table|thead|tbody|h[1-6])>/i, ' \0')
 
   
   # 3. NORMALIZE UNICODE (Must happen before character substitutions)

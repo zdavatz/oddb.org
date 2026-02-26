@@ -525,6 +525,12 @@ module ODDB
             found = false
           end
         end
+        # Wide tables with style="width:100%" from swissmedicinfo are complex data tables
+        # with colgroup/colspan/rowspan that render poorly as HTML tables in the view.
+        # Treat them as preformatted for consistent, readable column-aligned text output.
+        if found && elem.attributes["style"]&.value&.include?("width:100%")
+          found = false
+        end
         found
       end
 
