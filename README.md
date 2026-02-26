@@ -10,25 +10,29 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Requirements
 * `git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build`
-* `rbenv install 3.1.0`
-* `sudo apt-get install apache2 daemontools daemontools-run pkg-config libmagickwand-dev libpq-dev`
+* `rbenv install 3.4.1`
+* `sudo apt-get install apache2 daemontools daemontools-run pkg-config libmagickwand-dev libpq-dev libmagickcore-dev graphicsmagick uuid-dev`
 * `bzcat 22:00-postgresql_database-ch_oddb-backup.bz2 | su -c psql -l postgres -p 5433 ch_odd`
 * see Guide.txt
 
 ## Useful commands
 ### Reparse compositions of 5 digit Swissmedic Numbers ([issue #139](https://github.com/zdavatz/oddb.org/issues/139))
-`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_compositions 67685 60134`
+`sudo -u apache bundle exec ruby jobs/import_swissmedic_only update_compositions 67685 60134`
 ### Reparse all compositions
-`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only update_compositions`
+`sudo -u apache bundle exec ruby jobs/import_swissmedic_only update_compositions`
 ### Check all packages
-`sudo -u apache bundle-300 exec ruby-300 jobs/import_swissmedic_only check`
+`sudo -u apache bundle exec ruby jobs/import_swissmedic_only check`
+### Reparse FachInfo/PatInfo text for a specific IKSNR
+`bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both 62822 --reparse`
+
+**Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon for changes to take effect.
 
 ## Tests
 
 * to run the Tests you need to do
   * bundle install
-  * rake test
-  * bundle exec rake spec/parslet_spec.rb # for parsing the compositions
+  * bundle exec ruby test/suite.rb
+  * bundle exec rspec spec/parslet_spec.rb # for parsing the compositions
   * look at the index.html in the coverage directory
   
 * There are some Selenium/Watir based GUI integration tests. For details on how to use them have

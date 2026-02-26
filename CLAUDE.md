@@ -28,6 +28,9 @@ bundle exec rspec spec
 bundle exec standardrb
 bundle exec standardrb --fix  # auto-fix
 
+# Reparse FachInfo/PatInfo text for a specific IKSNR
+bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both 62822 --reparse
+
 # Start the app via Rack (port 8012 by default)
 bundle exec rackup
 
@@ -61,6 +64,8 @@ Ruby 3.4 is required. System dependencies: `libmagickcore-dev`, `graphicsmagick`
 ### Multi-Service Architecture
 
 The app runs alongside several daemons (in `ext/`): export, meddata, refdata, swissindex, fiparse, swissreg. External services: Yus (auth, port 9997), MIGEL (port 33000). The main app listens on port 10000.
+
+**Important:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). Code changes to `ext/fiparse/src/` require restarting this daemon to take effect. The main app calls `@parser.parse_fachinfo_html(...)` via DRb, so the fiparse daemon must be running with the current code.
 
 ### Key Entry Points
 
