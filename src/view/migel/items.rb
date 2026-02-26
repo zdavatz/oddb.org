@@ -138,13 +138,18 @@ module ODDB
           # Grouping products with migel_code
           migel_code_group = {}
           model.each do |product|
-            (migel_code_group[product.migel_code] ||= []) << product
+            code = product.migel_code.to_s
+            code = "" if code.strip.empty?
+            (migel_code_group[code] ||= []) << product
           end
           # list up items
           migel_code_group.keys.sort.each do |migel_code|
-            offset_length = migel_code_group[migel_code].length
-            compose_subheader(migel_code_group[migel_code][0], offset)
-            super(migel_code_group[migel_code], offset)
+            products = migel_code_group[migel_code]
+            offset_length = products.length
+            unless migel_code.empty?
+              compose_subheader(products[0], offset)
+            end
+            super(products, offset)
             offset[1] += offset_length
           end
         end
