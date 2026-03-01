@@ -84,6 +84,13 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Tests run with `ENV["TZ"] = "UTC"` forced in `test/helpers.rb`
 - Some test files must run in isolated subprocesses (defined as `must_be_run_separately` in each suite.rb) due to global state conflicts
 
+### Swiyu Login & Query Limit
+
+- Anonymous users are limited to 5 searches per 24h (`QUERY_LIMIT` in `src/util/session.rb`). After exceeding the limit, the user sees a login prompt.
+- Swiyu login is handled by `SwiyuMiddleware` (`src/util/swiyu_middleware.rb`) which serves `doc/resources/swiyu/login.html` and manages auth via an in-memory store keyed by `_session_id` cookie.
+- After login, the user is redirected back to their last search via a `return_url` query parameter passed through the Swiyu flow. Key files: `src/view/limit.rb`, `src/view/navigation.rb`, `doc/resources/swiyu/login.html`.
+- The IP's query limit counter is reset on Swiyu login (`active_state` in `src/util/session.rb`).
+
 ### Troubleshooting
 
 - **Fachinfo table formatting**: Tables from swissmedicinfo with percentage-width styles (e.g. `width:100%`, `width:99.1800%`) are rendered as preformatted column-aligned text. The `detect_table?` method in `ext/fiparse/src/textinfo_html_parser.rb` controls this. After fixing table parsing, restart fiparse (`sudo svc -h /etc/service/fiparse`) and reparse: `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both <IKSNR> --reparse`

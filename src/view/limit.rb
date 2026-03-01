@@ -4,6 +4,7 @@
 
 require "view/resulttemplate"
 require "view/logohead"
+require "cgi"
 
 module ODDB
   module View
@@ -32,7 +33,12 @@ module ODDB
       end
 
       def swiyu_login_link(model)
-        @lookandfeel.lookup(:swiyu_login_link)
+        html = @lookandfeel.lookup(:swiyu_login_link)
+        path = @session.request_path
+        if path && !path.empty? && path != "/"
+          html = html.sub("href='/swiyu'", "href='/swiyu?return_url=#{CGI.escape(path)}'")
+        end
+        html
       end
     end
 

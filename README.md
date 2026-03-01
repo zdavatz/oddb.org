@@ -27,6 +27,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 **Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon with `sudo svc -h /etc/service/fiparse` for changes to take effect.
 
+### Swiyu Login
+The app uses [Swiyu](https://www.eid.admin.ch/en/swiyu) wallet-based authentication (OID4VP). After exceeding the 5-search query limit, users are prompted to log in. The login flow passes a `return_url` parameter so users are redirected back to their last search result after authentication.
+
 ### Rebuild corrupted ODBA search indices
 If searches fail with `NoMethodError: undefined method 'fetch_ids'`, an ODBA index is corrupted. The app will show an error page with the index name. Rebuild it with:
 `bundle exec ruby jobs/rebuild_indices <index_name>`

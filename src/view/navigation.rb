@@ -7,6 +7,7 @@ require "htmlgrid/link"
 require "htmlgrid/popuplink"
 require "view/navigationlink"
 require "view/external_links"
+require "cgi"
 
 module ODDB
   module View
@@ -57,7 +58,13 @@ module ODDB
       def swiyu_login(model)
         link = HtmlGrid::Link.new(:swiyu_login, model, @session, self)
         link.css_class = "navigation"
-        link.set_attribute("href", "/swiyu")
+        path = @session.request_path
+        href = if path && !path.empty? && path != "/"
+          "/swiyu?return_url=#{CGI.escape(path)}"
+        else
+          "/swiyu"
+        end
+        link.set_attribute("href", href)
         link.value = @lookandfeel.lookup(:swiyu_login)
         link
       end

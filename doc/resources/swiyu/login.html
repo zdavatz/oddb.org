@@ -91,6 +91,14 @@
     var pollTimer = null;
     var timeoutTimer = null;
 
+    // Get return URL from query parameter
+    var urlParams = new URLSearchParams(window.location.search);
+    var returnUrl = urlParams.get('return_url') || '/';
+    // Validate it's a safe relative path (prevent open redirect)
+    if (!returnUrl.startsWith('/') || returnUrl.startsWith('//')) {
+      returnUrl = '/';
+    }
+
     function startLogin() {
       var statusEl = document.getElementById('status');
       var qrEl = document.getElementById('qrcode');
@@ -154,7 +162,7 @@
                     .then(function(resp) { return resp.json(); })
                     .then(function(sessionData) {
                       if (sessionData.status === 'ok') {
-                        window.location.href = sessionData.redirect || '/';
+                        window.location.href = returnUrl;
                       } else {
                         statusEl.textContent = 'Anmeldung fehlgeschlagen: ' + (sessionData.message || 'Unbekannter Fehler');
                         statusEl.className = 'error';

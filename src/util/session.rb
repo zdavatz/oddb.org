@@ -62,7 +62,10 @@ module ODDB
       elsif !@user&.valid? && has_auth
         # Auth available but not yet logged in
         login
-        state = state.autologin(@user) if @user&.valid?
+        if @user&.valid?
+          Session.reset_query_limit(remote_ip)
+          state = state.autologin(@user)
+        end
       end
       state
     end

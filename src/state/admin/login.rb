@@ -28,7 +28,7 @@ module ODDB
               ODDB::State::Admin::Login,
               ODDB::State::Admin::TransparentLogin
             ]
-            if entrances.include?(self.class)
+            if entrances.include?(self.class) || des
               location = nextstate.request_path
               if location.nil? or
                   location =~ /logout/ or
