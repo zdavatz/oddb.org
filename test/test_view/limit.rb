@@ -13,6 +13,9 @@ module ODDB
   module View
     class StubSession
       QUERY_LIMIT = "query_limit"
+      def request_path
+        "/de/gcc/search/zone/drugs/search_query/test/search_type/st_oddb"
+      end
     end
 
     class TestLimitComposite < Minitest::Test

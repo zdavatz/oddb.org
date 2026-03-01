@@ -35,6 +35,7 @@ module ODDB
             error: "error",
             state: state,
             remote_ip: "127.0.0.1",
+            request_path: "/de/gcc/search",
             warning?: nil,
             error?: nil,
             cookie_set_or_get: "cookie")

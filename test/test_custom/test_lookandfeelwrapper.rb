@@ -388,8 +388,7 @@ module ODDB
         [10, 0]	=>	:compositions,
         [11, 0]	=>	:ikscat,
         [12, 0]	=>	:feedback,
-        [13, 0]	=> :google_search,
-        [14, 0]	=>	:notify
+        [13, 0]	=> :google_search
       }
       assert_equal(expected, @look.result_list_components)
     end
@@ -555,8 +554,7 @@ module ODDB
         [12, 0]	=>	:company_name,
         [13, 0]	=>	:ikscat,
         [14, 0]	=>	:feedback,
-        [15, 0]	=> :google_search,
-        [16, 0]	=>	:notify
+        [15, 0]	=> :google_search
       }
       assert_equal(expected, @look.result_list_components)
     end
