@@ -25,7 +25,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ### Reparse FachInfo/PatInfo text for a specific IKSNR
 `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both 62822 --reparse`
 
-**Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon for changes to take effect.
+**Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon with `sudo svc -h /etc/service/fiparse` for changes to take effect.
 
 ### Rebuild corrupted ODBA search indices
 If searches fail with `NoMethodError: undefined method 'fetch_ids'`, an ODBA index is corrupted. The app will show an error page with the index name. Rebuild it with:
