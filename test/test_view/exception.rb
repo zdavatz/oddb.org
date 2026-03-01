@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require "minitest/autorun"
 require "flexmock/minitest"
+require "sbsm/validator"
 require "view/exception"
 
 module ODDB
@@ -27,7 +28,7 @@ module ODDB
       end
 
       def test_exception
-        assert_kind_of(HtmlGrid::Text, @composite.exception(@model, @session))
+        assert_kind_of(HtmlGrid::Span, @composite.exception(@model, @session))
       end
     end
   end # View

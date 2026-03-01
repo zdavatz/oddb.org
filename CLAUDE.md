@@ -84,6 +84,12 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Tests run with `ENV["TZ"] = "UTC"` forced in `test/helpers.rb`
 - Some test files must run in isolated subprocesses (defined as `must_be_run_separately` in each suite.rb) due to global state conflicts
 
+### Drug Search Result List
+
+- Result list columns are defined in `result_list_components` in `src/custom/lookandfeelbase.rb` (default) and overridden per flavor in `src/custom/lookandfeelwrapper.rb`.
+- CSS for result list columns is in `CSS_KEYMAP` / `CSS_HEAD_KEYMAP` in `src/view/drugs/resultlist.rb`.
+- Twitter share and mail/notify icons have been removed from all result lists.
+
 ### Swiyu Login & Query Limit
 
 - Anonymous users are limited to 5 searches per 24h (`QUERY_LIMIT` in `src/util/session.rb`). After exceeding the limit, the user sees a login prompt.
