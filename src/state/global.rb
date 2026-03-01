@@ -887,6 +887,10 @@ module ODDB
         exception = SBSM::InvalidDataError.new(:e_huge_search_result,
           :search_query, query)
         State::Exception.new(@session, exception)
+      rescue IndexCorruptedError => e
+        msg = (@session.lookandfeel.lookup(:e_corrupted_index) || "Corrupted search index") +
+          " " + e.index_name
+        State::Exception.new(@session, Struct.new(:message).new(msg))
       end
       alias_method :result, :search
       def _search_drugs(query, stype)

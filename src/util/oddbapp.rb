@@ -52,6 +52,14 @@ module ODBA
   end
 end
 
+class IndexCorruptedError < StandardError
+  attr_reader :index_name
+  def initialize(index_name)
+    @index_name = index_name
+    super("Corrupted index: #{index_name}")
+  end
+end
+
 class OddbPrevalence
   include ODDB::Failsafe
   include ODBA::Persistable
@@ -125,6 +133,9 @@ class OddbPrevalence
     ODBA.cache.retrieve_from_index(index_name, query, result)
   rescue KeyError
     result || []
+  rescue NoMethodError => e
+    $stderr.puts "#{Time.now}: retrieve_from_index(#{index_name}, #{query}) failed: #{e.message} - index may be corrupted, rebuild with: jobs/rebuild_indices #{index_name}"
+    raise IndexCorruptedError.new(index_name)
   end
 
   # prevalence-methods ################################

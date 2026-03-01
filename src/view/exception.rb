@@ -4,6 +4,7 @@
 
 require "view/publictemplate"
 require "htmlgrid/form"
+require "htmlgrid/span"
 require "htmlgrid/text"
 require "view/searchbar"
 
@@ -28,7 +29,13 @@ module ODDB
         exception_header: HtmlGrid::Text
       }
       def exception(model, session)
-        HtmlGrid::Text.new(model.message, model, session, self)
+        if model.is_a?(SBSM::InvalidDataError)
+          HtmlGrid::Text.new(model.message, model, session, self)
+        else
+          span = HtmlGrid::Span.new(model, session, self)
+          span.instance_variable_set(:@value, model.message.to_s)
+          span
+        end
       end
     end
 
