@@ -194,14 +194,12 @@ module ODDB
           :most_precise_dose => "list right",
           :name_base => "list big",
           :narcotic => "list",
-          :notify => "list right",
           :patent => "list",
           :patinfo => "list",
           :price_exfactory => "list right",
           :price_public => "list pubprice",
           :registration_date => "list italic",
           :substances => "list italic",
-          :twitter_share => "list right",
           :mail_order_price => "list bold",
           "nbsp" => "list"
         }
@@ -223,13 +221,11 @@ module ODDB
           :most_precise_dose => "th right",
           :name_base => "th",
           :narcotic => "th",
-          :notify => "th right",
           :patinfo => "th",
           :price_exfactory => "th right",
           :price_public => "th right",
           :registration_date => "th",
           :substances => "th",
-          :twitter_share => "th",
           "nbsp" => "th"
         }
         CSS_HEAD_MAP = {}

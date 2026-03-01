@@ -4316,9 +4316,7 @@ module ODDB
         [12, 0] => :company_name,
         [13, 0] => :ikscat,
         [14, 0] => :feedback,
-        [15, 0] => :twitter_share,
-        [16, 0] => :google_search,
-        [17, 0] => :notify
+        [15, 0] => :google_search
       }
     end
 
