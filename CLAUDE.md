@@ -84,6 +84,14 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Tests run with `ENV["TZ"] = "UTC"` forced in `test/helpers.rb`
 - Some test files must run in isolated subprocesses (defined as `must_be_run_separately` in each suite.rb) due to global state conflicts
 
+### Troubleshooting
+
+- **Corrupted ODBA search index**: If searches crash with `NoMethodError: undefined method 'fetch_ids'` on a non-index object (e.g. `PatinfoDocument`), the ODBA index is corrupted. The app will display an error page telling you which index to rebuild. Fix with:
+  ```bash
+  bundle exec ruby jobs/rebuild_indices <index_name>
+  ```
+  For example: `bundle exec ruby jobs/rebuild_indices sequence_index`
+
 ### Configuration
 
 - `etc/oddb.yml` — primary app config (loaded via RCLConf)
