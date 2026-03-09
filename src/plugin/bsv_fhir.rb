@@ -829,29 +829,33 @@ module ODDB
 
     def extract_prices(regulated_auth)
       prices = []
-      (regulated_auth["extension"] || []).each do |ext|
-        next unless ext["url"]&.include?("productPrice")
-        price_info = {}
-        (ext["extension"] || []).each do |sub_ext|
-          case sub_ext["url"]
-          when "type"
-            code = sub_ext.dig("valueCodeableConcept", "coding", 0, "code")
-            case code
-            when "756002005001"
-              price_info[:type] = :public
-            when "756002005002"
-              price_info[:type] = :exfactory
+      # productPrice extensions are nested inside the reimbursementSL extension
+      (regulated_auth["extension"] || []).each do |reimb_ext|
+        next unless reimb_ext["url"]&.include?("reimbursementSL")
+        (reimb_ext["extension"] || []).each do |ext|
+          next unless ext["url"]&.include?("productPrice")
+          price_info = {}
+          (ext["extension"] || []).each do |sub_ext|
+            case sub_ext["url"]
+            when "type"
+              code = sub_ext.dig("valueCodeableConcept", "coding", 0, "code")
+              case code
+              when "756002005001"
+                price_info[:type] = :public
+              when "756002005002"
+                price_info[:type] = :exfactory
+              end
+            when "changeType"
+              code = sub_ext.dig("valueCodeableConcept", "coding", 0, "code")
+              price_info[:change_type_code] = PRICE_CHANGE_TYPE_MAP[code] || code
+            when "value"
+              price_info[:value] = sub_ext.dig("valueMoney", "value")
+            when "changeDate"
+              price_info[:change_date] = sub_ext["valueDate"]
             end
-          when "changeType"
-            code = sub_ext.dig("valueCodeableConcept", "coding", 0, "code")
-            price_info[:change_type_code] = PRICE_CHANGE_TYPE_MAP[code] || code
-          when "value"
-            price_info[:value] = sub_ext.dig("valueMoney", "value")
-          when "changeDate"
-            price_info[:change_date] = sub_ext["valueDate"]
           end
+          prices << price_info if price_info[:type] && price_info[:value]
         end
-        prices << price_info if price_info[:type] && price_info[:value]
       end
       prices
     end

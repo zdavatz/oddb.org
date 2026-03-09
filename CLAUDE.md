@@ -97,6 +97,14 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - After login, the user is redirected back to their last search via a `return_url` query parameter passed through the Swiyu flow. Key files: `src/view/limit.rb`, `src/view/navigation.rb`, `doc/resources/swiyu/login.html`.
 - The IP's query limit counter is reset on Swiyu login (`active_state` in `src/util/session.rb`).
 
+### BSV FHIR Import (`jobs/import_bsv_fhir`)
+
+- Imports SL (Spezialitätenliste) data from FHIR NDJSON exports downloaded from `epl.bag.admin.ch`
+- Core implementation in `src/plugin/bsv_fhir.rb` (`BsvFhirPlugin`)
+- FHIR data follows the [ch-epl IG](https://fhir.ch/ig/ch-epl/index.html). As of Feb 2026, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` (type code `756000002003`). The `extract_prices` method navigates: `RegulatedAuthorization.extension[reimbursementSL].extension[productPrice]`.
+- Price type codes: `756002005001` = public (retail), `756002005002` = ex-factory
+- NDJSON files are stored in `data/ndjson/`
+
 ### Troubleshooting
 
 - **Fachinfo table formatting**: Tables from swissmedicinfo with percentage-width styles (e.g. `width:100%`, `width:99.1800%`) are rendered as preformatted column-aligned text. The `detect_table?` method in `ext/fiparse/src/textinfo_html_parser.rb` controls this. After fixing table parsing, restart fiparse (`sudo svc -h /etc/service/fiparse`) and reparse: `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both <IKSNR> --reparse`

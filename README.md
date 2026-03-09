@@ -31,6 +31,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 ### Swiyu Login
 The app uses [Swiyu](https://www.eid.admin.ch/en/swiyu) wallet-based authentication (OID4VP). After exceeding the 5-search query limit, users are prompted to log in. The login flow passes a `return_url` parameter so users are redirected back to their last search result after authentication.
 
+### BSV FHIR Import
+The BSV SL (Spezialitätenliste) data is imported from FHIR NDJSON exports via `jobs/import_bsv_fhir`. The FHIR data follows the [ch-epl Implementation Guide](https://fhir.ch/ig/ch-epl/index.html). As of the Feb 2026 IG update, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` resources.
+
 ### Rebuild corrupted ODBA search indices
 If searches fail with `NoMethodError: undefined method 'fetch_ids'`, an ODBA index is corrupted. The app will show an error page with the index name. Rebuild it with:
 `bundle exec ruby jobs/rebuild_indices <index_name>`
