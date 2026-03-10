@@ -286,8 +286,10 @@ module ODDB
           when "td", "th"
             if ptr.table
               ptr.target = ptr.table.next_multi_cell!
-              ptr.target.row_span = child.attributes["rowspan"]&.value.to_i
-              ptr.target.col_span = child.attributes["colspan"]&.value.to_i
+              rowspan = child.attributes["rowspan"]&.value.to_i
+              colspan = child.attributes["colspan"]&.value.to_i
+              ptr.target.row_span = rowspan > 0 ? rowspan : 1
+              ptr.target.col_span = colspan > 0 ? colspan : 1
               handle_all_children(child, ptr)
               ptr.target = ptr.table
             elsif ptr.current_row_cells
@@ -301,8 +303,10 @@ module ODDB
             if ptr.table
               unless ptr.target.respond_to?(:next_image) # after something text (paragraph) in cell
                 ptr.target = ptr.table.next_multi_cell!
-                ptr.target.row_span = child.attributes["rowspan"]&.value.to_i
-                ptr.target.col_span = child.attributes["colspan"]&.value.to_i
+                rowspan = child.attributes["rowspan"]&.value.to_i
+                colspan = child.attributes["colspan"]&.value.to_i
+                ptr.target.row_span = rowspan > 0 ? rowspan : 1
+                ptr.target.col_span = colspan > 0 ? colspan : 1
               end
               insert_image(ptr, child)
               ptr.target = ptr.table.next_paragraph

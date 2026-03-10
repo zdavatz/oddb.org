@@ -28,6 +28,9 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 **Note:** The `fiparse` daemon (DRb on port 10002) runs as a separate process managed by daemontools (`/etc/service/fiparse`). After making code changes to `ext/fiparse/src/`, restart the daemon with `sudo svc -h /etc/service/fiparse` for changes to take effect.
 
+### Fachinfo Table Rendering
+Tables from swissmedicinfo are parsed by `detect_table?` in `ext/fiparse/src/textinfo_html_parser.rb`. Tables with percentage-width styles are rendered as preformatted text; others are rendered as HTML tables with proper `colspan`/`rowspan` support. The view (`src/view/chapter.rb`) only emits `colspan`/`rowspan` attributes when > 1 to avoid invalid `colspan="0"` in the output.
+
 ### Swiyu Login
 The app uses [Swiyu](https://www.eid.admin.ch/en/swiyu) wallet-based authentication (OID4VP). After exceeding the 5-search query limit, users are prompted to log in. The login flow passes a `return_url` parameter so users are redirected back to their last search result after authentication.
 

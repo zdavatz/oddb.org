@@ -107,7 +107,7 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 
 ### Troubleshooting
 
-- **Fachinfo table formatting**: Tables from swissmedicinfo with percentage-width styles (e.g. `width:100%`, `width:99.1800%`) are rendered as preformatted column-aligned text. The `detect_table?` method in `ext/fiparse/src/textinfo_html_parser.rb` controls this. After fixing table parsing, restart fiparse (`sudo svc -h /etc/service/fiparse`) and reparse: `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both <IKSNR> --reparse`
+- **Fachinfo table formatting**: Tables from swissmedicinfo with percentage-width styles (e.g. `width:100%`, `width:99.1800%`) are rendered as preformatted column-aligned text. The `detect_table?` method in `ext/fiparse/src/textinfo_html_parser.rb` controls this. Tables rendered as HTML tables use `colspan`/`rowspan` attributes from the source HTML; these default to `1` when not specified (cells without explicit attributes must not get `0`). The view (`src/view/chapter.rb`) only emits `colspan`/`rowspan` when > 1. After fixing table parsing, restart fiparse (`sudo svc -h /etc/service/fiparse`) and reparse: `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both <IKSNR> --reparse`
 
 - **Corrupted ODBA search index**: If searches crash with `NoMethodError: undefined method 'fetch_ids'` on a non-index object (e.g. `PatinfoDocument`), the ODBA index is corrupted. The app will display an error page telling you which index to rebuild. Fix with:
   ```bash
