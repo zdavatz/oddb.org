@@ -19,22 +19,40 @@ module ODDB
           if atc_codes = @session.interaction_basket_atc_codes and !atc_codes.empty? \
             and substances = @session.interaction_basket and !substances.empty?
 
-            # Build interactions from SQLite DB using substance names
-            substance_names = substances.map { |s| s&.name.to_s }.compact
-            substance_names.combination(2).each do |sub1, sub2|
+            # Try EPha curated interactions first (ATC-to-ATC), then fall back to substance lookup
+            atc_codes.combination(2).each do |atc1, atc2|
+              idx1 = atc_codes.index(atc1)
+              idx2 = atc_codes.index(atc2)
+              sub1 = substances[idx1]&.name.to_s
+              sub2 = substances[idx2]&.name.to_s
+
+              epha = EphaInteractions.find_epha_interaction(atc1, atc2)
+              epha ||= EphaInteractions.find_epha_interaction(atc2, atc1)
+
+              if epha
+                severity = epha["severity_score"].to_s
+                @model << {
+                  substance_active: sub1,
+                  substance_passive: sub2,
+                  active: atc1,
+                  passive: atc2,
+                  info: epha["risk_label"],
+                  rating: severity
+                }
+                next
+              end
+
+              # Fall back to substance-level lookup
               row = EphaInteractions.get_interaction_detail(sub1, sub2)
               row ||= EphaInteractions.get_interaction_detail(sub2, sub1)
               next unless row
 
-              active_idx = substance_names.index(sub1)
-              passive_idx = substance_names.index(sub2)
               severity = row["severity_score"].to_s
-
               @model << {
                 substance_active: sub1,
                 substance_passive: sub2,
-                active: atc_codes[active_idx],
-                passive: atc_codes[passive_idx],
+                active: atc1,
+                passive: atc2,
                 info: row["severity_label"],
                 rating: severity
               }

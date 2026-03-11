@@ -8,11 +8,12 @@ require "sqlite3"
 
 module ODDB
   module EphaInteractions
-    # Severity ratings from the SDIF interactions.db
+    # Severity ratings aligned with SDIF/EPha risk classes
+    # A=0, B=1, C=1, D=2, X=3
     Ratings = {
-      "0" => "Keine Einstufung",
-      "1" => "Vorsicht",
-      "2" => "Schwerwiegend",
+      "0" => "Keine Massnahmen notwendig",
+      "1" => "Vorsichtsmassnahmen",
+      "2" => "Kombination vermeiden",
       "3" => "Kontraindiziert"
     }
     # Colors mapped to severity scores
@@ -22,9 +23,12 @@ module ODDB
       "2" => "#ff82ab",
       "3" => "#ff6a6a"
     }
+    # EPha risk class to severity score
+    RiskClassSeverity = {
+      "A" => 0, "B" => 1, "C" => 1, "D" => 2, "X" => 3
+    }
 
     DB_FILE = File.join(ODDB::WORK_DIR, "sqlite/interactions.db")
-    KEYWORDS_FILE = File.join(ODDB::WORK_DIR, "sqlite/atc_keywords.txt")
 
     def self.db
       @db ||= if File.exist?(DB_FILE)
@@ -41,18 +45,16 @@ module ODDB
       db
     end
 
-    # Load ATC class keywords from file
+    # Load ATC class keywords from class_keywords table
     # Returns hash: { "B01A" => ["antikoagul", "warfarin", ...], ... }
     def self.atc_keywords
       @atc_keywords ||= begin
         keywords = {}
-        if File.exist?(KEYWORDS_FILE)
-          File.readlines(KEYWORDS_FILE, encoding: "utf-8").each do |line|
-            line = line.strip
-            next if line.empty? || line.start_with?("#")
-            prefix, kws = line.split("\t", 2)
-            next unless prefix && kws
-            keywords[prefix.strip] = kws.split(",").map(&:strip).reject(&:empty?)
+        if db
+          db.execute("SELECT atc_prefix, keyword FROM class_keywords").each do |row|
+            prefix = row["atc_prefix"]
+            kw = row["keyword"]
+            (keywords[prefix] ||= []) << kw
           end
         end
         keywords
@@ -88,6 +90,16 @@ module ODDB
       row&.dig("interactions_text")
     end
 
+    # Look up curated EPha interaction between two ATC codes
+    def self.find_epha_interaction(atc1, atc2)
+      return nil unless db
+      row = db.execute(
+        "SELECT * FROM epha_interactions WHERE atc1 = ? AND atc2 = ? LIMIT 1",
+        [atc1, atc2]
+      ).first
+      row
+    end
+
     # Extract context sentence around a keyword match in text.
     # Scans all occurrences and returns the one with highest severity.
     def self.extract_context(text, keyword)
@@ -113,7 +125,6 @@ module ODDB
     end
 
     # Score severity of a text context based on clinical language
-    # Aligned with SDIF ratings: 0=Keine Einstufung, 1=Vorsicht, 2=Schwerwiegend, 3=Kontraindiziert
     def self.score_severity(text)
       t = text.downcase
       return 3 if t.match?(/kontraindiziert|nicht anwenden|darf nicht|kontraindikation/)
@@ -161,7 +172,7 @@ module ODDB
           end
           severity_s = severity.to_s
           header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
-          text = "ATC-Klasse<br><i>#{other_drug.name_with_size} [#{other_atc_code}] gehört zur Klasse — Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}#{hint}"
+          text = "ATC-Klasse (FI-Text)<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}#{hint}"
           results << {
             header: header,
             severity: severity_s,
@@ -174,9 +185,33 @@ module ODDB
       results
     end
 
+    # Build EPha interaction result for display
+    def self.build_epha_result(epha_row, my_drug, my_atc_code, other_drug, other_atc_code)
+      severity_s = epha_row["severity_score"].to_s
+      risk_label = epha_row["risk_label"]
+      effect = epha_row["effect"]
+      mechanism = epha_row["mechanism"]
+      measures = epha_row["measures"]
+
+      header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
+      parts = ["#{severity_s}: #{risk_label}"]
+      parts << "<br><b>#{effect}</b>" unless effect.to_s.empty?
+      parts << "<br>#{mechanism}" unless mechanism.to_s.empty?
+      parts << "<br><i>Massnahmen: #{measures}</i>" unless measures.to_s.empty?
+
+      {
+        header: header,
+        severity: severity_s,
+        color: Colors[severity_s],
+        text: parts.join
+      }
+    end
+
     # Get interactions for a specific drug against all other drugs in the basket.
-    # Uses ATC codes to look up substance names in the SDIF database.
-    # Also performs class-level matching via ATC keywords in FachInfo text.
+    # Three lookup strategies:
+    # 1. EPha curated ATC-to-ATC interactions (epha_interactions table)
+    # 2. Substance-level interactions (interactions table via ATC code)
+    # 3. Class-level interactions (class_keywords + interactions_text)
     def self.get_interactions(my_atc_code, drugs)
       return [] unless db && drugs && !drugs.empty?
 
@@ -193,11 +228,25 @@ module ODDB
       return [] unless my_drug
 
       results = []
+      matched_atc_pairs = Set.new
 
-      # 1. Substance-level interactions (direct matches from interactions table)
+      # 1. EPha curated interactions (highest quality — direct ATC-to-ATC lookup)
+      other_drugs.each do |other_drug|
+        other_atc = other_drug&.atc_class&.code
+        next unless other_atc
+
+        epha_row = find_epha_interaction(my_atc_code, other_atc)
+        if epha_row
+          results << build_epha_result(epha_row, my_drug, my_atc_code, other_drug, other_atc)
+          matched_atc_pairs << other_atc
+        end
+      end
+
+      # 2. Substance-level interactions (for drugs not already matched by EPha)
       my_substances = sdif_substances_for_atc(my_atc_code)
-      other_atc_codes = other_drugs.map { |d| d&.atc_class&.code }.compact.uniq
-      other_substances = other_atc_codes.flat_map { |atc| sdif_substances_for_atc(atc) }.uniq
+      unmatched_drugs = other_drugs.reject { |d| matched_atc_pairs.include?(d&.atc_class&.code) }
+      unmatched_atc_codes = unmatched_drugs.map { |d| d&.atc_class&.code }.compact.uniq
+      other_substances = unmatched_atc_codes.flat_map { |atc| sdif_substances_for_atc(atc) }.uniq
 
       unless my_substances.empty? || other_substances.empty?
         my_substances.each do |my_sub|
@@ -229,8 +278,8 @@ module ODDB
         end
       end
 
-      # 2. Class-level interactions (ATC keyword matching in FachInfo text)
-      other_drugs.each do |other_drug|
+      # 3. Class-level interactions (for drugs not already matched by EPha)
+      unmatched_drugs.each do |other_drug|
         other_atc = other_drug&.atc_class&.code
         next unless other_atc
         class_results = find_class_interactions(my_atc_code, my_drug, other_atc, other_drug)
@@ -277,9 +326,9 @@ module ODDB
       LogFile.debug("read_from_csv called but interactions now come from SQLite DB: #{DB_FILE}")
     end
 
-    # Legacy method - no longer used but kept for compatibility
+    # Legacy method - look up EPha interaction by ATC codes
     def self.get_epha_interaction(atc_code_self, atc_code_other)
-      nil
+      find_epha_interaction(atc_code_self, atc_code_other)
     end
   end
 end

@@ -37,19 +37,32 @@ module ODDB
             end
             @model.store(:title, atc_subs.join(und))
 
-            # Look up interaction detail from SQLite
-            substances = @session.interaction_basket
-            if substances && substances.length >= 2
-              sub1_name = substances[0]&.name.to_s
-              sub2_name = substances[1]&.name.to_s
-              row = EphaInteractions.get_interaction_detail(sub1_name, sub2_name)
-              row ||= EphaInteractions.get_interaction_detail(sub2_name, sub1_name)
-              if row
-                @model.store(:mechanism, row["description"])
-                severity = row["severity_score"].to_s
-                @model.store(:effect, "#{row["severity_label"]} (#{EphaInteractions::Ratings[severity]})")
-                if row["interacting_brands"] && !row["interacting_brands"].empty?
-                  @model.store(:clinic, "Betroffene Präparate: #{row["interacting_brands"]}")
+            # Try EPha curated interaction first (ATC-to-ATC)
+            epha = EphaInteractions.find_epha_interaction(atc_codes[0], atc_codes[1])
+            epha ||= EphaInteractions.find_epha_interaction(atc_codes[1], atc_codes[0])
+
+            if epha
+              severity = epha["severity_score"].to_s
+              effect_text = epha["risk_label"]
+              effect_text += " — #{epha["effect"]}" unless epha["effect"].to_s.empty?
+              @model.store(:effect, effect_text)
+              @model.store(:mechanism, epha["mechanism"])
+              @model.store(:clinic, epha["measures"]) unless epha["measures"].to_s.empty?
+            else
+              # Fall back to substance-level lookup
+              substances = @session.interaction_basket
+              if substances && substances.length >= 2
+                sub1_name = substances[0]&.name.to_s
+                sub2_name = substances[1]&.name.to_s
+                row = EphaInteractions.get_interaction_detail(sub1_name, sub2_name)
+                row ||= EphaInteractions.get_interaction_detail(sub2_name, sub1_name)
+                if row
+                  @model.store(:mechanism, row["description"])
+                  severity = row["severity_score"].to_s
+                  @model.store(:effect, "#{row["severity_label"]} (#{EphaInteractions::Ratings[severity]})")
+                  if row["interacting_brands"] && !row["interacting_brands"].empty?
+                    @model.store(:clinic, "Betroffene Präparate: #{row["interacting_brands"]}")
+                  end
                 end
               end
             end
