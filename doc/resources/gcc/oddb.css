@@ -1076,3 +1076,24 @@ div#widget_interaction_chooser_searchbar {
   background-color : #ccff99;
   color            : black;
 }
+/* Autocomplete dropdown for interaction/drug search */
+.ac-dropdown {
+  position         : absolute;
+  z-index          : 1000;
+  background       : white;
+  border           : 1px solid ButtonShadow;
+  max-height       : 300px;
+  overflow-y       : auto;
+  width            : 400px;
+  display          : none;
+}
+.ac-dropdown .ac-item {
+  padding          : 4px 8px;
+  cursor           : pointer;
+  font-size        : 12px;
+}
+.ac-dropdown .ac-item:hover,
+.ac-dropdown .ac-item.ac-active {
+  background-color : #c8e696;
+  color            : black;
+}

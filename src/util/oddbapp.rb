@@ -124,7 +124,7 @@ class OddbPrevalence
     sorted_minifis
     sorted_feedbacks
     sorted_fachinfos
-    ODDB::EphaInteractions.read_from_csv(ODDB::EphaInteractions::CSV_FILE) unless defined?(Minitest)
+    ODDB::EphaInteractions.db unless defined?(Minitest)
     rebuild_atc_chooser
   end
 

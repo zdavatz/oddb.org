@@ -77,6 +77,7 @@ group :development, :test do
 end
 
 gem "diff-lcs"
+gem "sqlite3"
 
 group :test do
   gem "rspec"

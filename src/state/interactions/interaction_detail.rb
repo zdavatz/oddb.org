@@ -2,10 +2,9 @@
 
 # ODDB::State::Interactions::InteractionDetail -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 
-require	"state/global_predefine"
-require	"view/interactions/interaction_detail"
-require "rexml/document"
-require "net/https"
+require "state/global_predefine"
+require "view/interactions/interaction_detail"
+require "model/sdif_interaction"
 
 module ODDB
   module State
@@ -38,50 +37,23 @@ module ODDB
             end
             @model.store(:title, atc_subs.join(und))
 
-            # get xml document
-            server_url = "api.epha.ch"
-            interaction_key = if ODDB.config.respond_to?(:interaction_key)
-              ODDB.config.interaction_key
-            else
-              "79VVZ51XJKSEN1G"
-            end
-            base_url = "/1.0/interaction/#{atc_codes.first}/#{atc_codes.last}?key=#{interaction_key}"
-            https = Net::HTTP.new(server_url, 443)
-            https.use_ssl = true
-            https.ssl_version = :SSLv3
-            https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-            xml = ""
-            error_code = -1
-            response = nil
-            https.start do |w|
-              response = w.get(base_url)
-              xml = response.body
-              error_code = response.code.to_i
-            end
-            return nil unless error_code >= 200 && error_code < 300
-            # parse xml document
-            doc = REXML::Document.new(xml)
-            if mechanism = doc.elements["/EPha/Response/Interactions/Interaction/Mechanism"]
-              @model.store(:mechanism, mechanism.text)
-            end
-            if effect = doc.elements["/EPha/Response/Interactions/Interaction/Effect"]
-              @model.store(:effect, effect.text)
-            end
-            if clinic = doc.elements["/EPha/Response/Interactions/Interaction/Clinic"]
-              @model.store(:clinic, clinic.text)
-            end
-            @model.store(:references, [])
-            if references = doc.elements["/EPha/Response/Interactions/Interaction/References"]
-              references.each do |element|
-                @model[:references] << {
-                  author: element.attributes["author"],
-                  journal: element.attributes["journal"],
-                  year: element.attributes["year"],
-                  title: element.attributes["title"]
-                }
+            # Look up interaction detail from SQLite
+            substances = @session.interaction_basket
+            if substances && substances.length >= 2
+              sub1_name = substances[0]&.name.to_s
+              sub2_name = substances[1]&.name.to_s
+              row = EphaInteractions.get_interaction_detail(sub1_name, sub2_name)
+              row ||= EphaInteractions.get_interaction_detail(sub2_name, sub1_name)
+              if row
+                @model.store(:mechanism, row["description"])
+                severity = row["severity_score"].to_s
+                @model.store(:effect, "#{row["severity_label"]} (#{EphaInteractions::Ratings[severity]})")
+                if row["interacting_brands"] && !row["interacting_brands"].empty?
+                  @model.store(:clinic, "Betroffene Präparate: #{row["interacting_brands"]}")
+                end
               end
             end
+            @model.store(:references, [])
           end
         end
       end

@@ -15,7 +15,7 @@ require "view/publictemplate"
 require "view/form"
 require "view/chapter"
 require "model/package"
-require "model/epha_interaction"
+require "model/sdif_interaction"
 # Test it with de/gcc/home_interactions/7680317061142,7680353520153,7680546420673,7680193950301,7680517950680
 
 module ODDB
@@ -242,9 +242,9 @@ module ODDB
           [0, 0] => 2
         }
         def init
-          super
           @index_name = "oddb_package_name_with_size_company_name_ean13_fi"
           @additional_javascripts = []
+          super
         end
 
         def javascripts(context)
@@ -362,20 +362,18 @@ module ODDB
 
         def init
           super
-          self.onload = %(require(["dojo/domReady!"], function(){
-     if (document.getElementById('interaction_searchbar') != null) document.getElementById('interaction_searchbar').focus();
-});
+          self.onload = %(
+     if (document.getElementById('interaction_chooser_searchbar') != null) document.getElementById('interaction_chooser_searchbar').focus();
 )
           @form_properties.update({
-            "id" => "interaction_chooser_form",
-            "target" => "_blank"
+            "id" => "interaction_chooser_form"
           })
         end
 
         def epha_public_domain(model, session = @session)
           link = HtmlGrid::Link.new(:epha_public_domain, model, session, self)
           link.css_class = "navigation"
-          link.href = "https://epha.ch/matrix/search/q=/"
+          link.href = "https://github.com/zdavatz/sdif"
           link
         end
 

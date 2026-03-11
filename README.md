@@ -5,6 +5,7 @@
 Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Features/Problems
+* **SDIF Interactions**: Drug interaction checking uses the [SDIF (Swiss Drug Interactions Finder)](https://github.com/nicop2/SDIF) SQLite database (`data/sqlite/interactions.db`). Interactions are detected at substance-level (direct matches) and ATC class-level (keyword matching in FachInfo text). The autocomplete search uses vanilla JavaScript (no Dojo dependency).
 * Twitter share and mail/notify icons have been removed from drug search result lists.
 * Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/oddb.yml
 * If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/Niklaus/Index).
@@ -81,9 +82,8 @@ For example: `bundle exec ruby jobs/rebuild_indices sequence_index`
 ## License
 ### oddb.org
 * GPLv3.0
-### Dojo Toolkit
-* Licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php)
-** doc/resources/javascript/qrcode.js
+### qrcode.js
+* doc/resources/javascript/qrcode.js — Licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php)
 
 ## Trademarks
 The word "QR Code" is registered trademark of [DENSO WAVE INCORPORATED](http://www.denso-wave.com/qrcode/faqpatent-e.html)

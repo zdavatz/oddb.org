@@ -1,0 +1,91 @@
+# ATC class keywords for interaction detection
+# Format: ATC_PREFIX\tkeyword1, keyword2, ...
+# Lines starting with # are comments, empty lines are ignored
+# Keywords are matched case-insensitively against interaction texts
+
+# B01A = Antithrombotische Mittel / Antikoagulantien
+B01A	antikoagul, warfarin, cumarin, coumarin, vitamin-k-antagonist, vitamin k antagonist, blutgerinnungshemm, thrombozytenaggregationshemm, plättchenhemm, antithrombotisch, heparin, thrombin-hemm, faktor-xa, direktes orales antikoagulans, doak
+# B01AC = Thrombozytenaggregationshemmer (ASS, Clopidogrel)
+B01AC	thrombozytenaggregationshemm, plättchenhemm, thrombocytenaggregation
+# M01A = Nichtsteroidale Antiphlogistika (NSAIDs/NSAR)
+M01A	nsar, nsaid, nichtsteroidale antiphlogistika, antiphlogistika, nichtsteroidale antirheumatika, cox-2, cox-hemmer, cyclooxygenase, prostaglandinsynthesehemm, entzündungshemm
+# N02B = Andere Analgetika und Antipyretika (incl. ASS)
+N02B	analgetik, antipyretik, acetylsalicylsäure, paracetamol
+# N02A = Opioide
+N02A	opioid, opiat, morphin, atemdepression, zns-depression
+# C09A = ACE-Hemmer
+C09A	ace-hemmer, ace-inhibitor, ace inhibitor, angiotensin-converting
+# C09B = ACE-Hemmer Kombinationen
+C09B	ace-hemmer, ace-inhibitor, angiotensin-converting
+# C09C = Angiotensin-II-Antagonisten (Sartane)
+C09C	angiotensin, sartan, at1-rezeptor, at1-antagonist, at1-blocker
+# C09D = Angiotensin-II-Antagonisten Kombinationen
+C09D	angiotensin, sartan, at1-rezeptor, at1-antagonist
+# C07 = Beta-Blocker
+C07	beta-blocker, betablocker, β-blocker, betarezeptorenblocker, β-rezeptorenblocker, beta-rezeptor, β-rezeptor, beta-adrenozeptor
+# C08 = Calciumkanalblocker
+C08	calciumantagonist, calciumkanalblocker, kalziumantagonist, kalziumkanalblocker, calcium-antagonist
+# C03 = Diuretika
+C03	diuretik, thiazid, schleifendiuretik, kaliumsparend
+# C03C = Schleifendiuretika
+C03C	schleifendiuretik, furosemid, torasemid
+# C03A = Thiazide
+C03A	thiazid, hydrochlorothiazid
+# C01A = Herzglykoside (Digoxin)
+C01A	herzglykosid, digoxin, digitalis, digitoxin
+# C01B = Antiarrhythmika
+C01B	antiarrhythmi, amiodaron
+# C10A = Statine (Lipidsenker)
+C10A	statin, hmg-coa, lipidsenk, cholesterinsenk
+# N06AB = SSRIs
+N06AB	ssri, serotonin-wiederaufnahme, serotonin reuptake, selektive serotonin, serotonerg
+# N06A = Antidepressiva allgemein
+N06A	antidepressiv, trizyklisch, serotonin, snri, maoh, mao-hemmer, monoaminoxidase
+# A10 = Antidiabetika
+A10	antidiabetik, insulin, blutzucker, hypoglykämie, orale antidiabetika, sulfonylharnstoff, metformin
+# H02 = Corticosteroide
+H02	corticosteroid, kortikosteroid, glucocorticoid, glukokortikoid, kortison, steroid
+# L04 = Immunsuppressiva
+L04	immunsuppress, ciclosporin, tacrolimus, mycophenolat, azathioprin, sirolimus
+# L01 = Antineoplastische Mittel
+L01	antineoplast, zytostatik, methotrexat, chemotherap
+# N03 = Antiepileptika
+N03	antiepileptik, antikonvulsiv, krampflösend, carbamazepin, valproinsäure, phenytoin, enzymindukt
+# N05A = Antipsychotika
+N05A	antipsychoti, neuroleptik, qt-verlänger, qt-zeit
+# N05B = Anxiolytika
+N05B	anxiolytik, benzodiazepin
+# N05C = Sedativa / Hypnotika
+N05C	sedativ, hypnotik, schlafmittel, zns-dämfpend, zns-depression
+# J01 = Antibiotika
+J01	antibiotik, antibakteriell
+# J01FA = Makrolide
+J01FA	makrolid, erythromycin, clarithromycin, azithromycin
+# J01MA = Fluorchinolone
+J01MA	fluorchinolon, chinolon, gyrasehemm
+# J02A = Antimykotika systemisch
+J02A	antimykotik, azol-antimykotik, triazol, itraconazol, fluconazol, voriconazol, cyp3a4-hemm
+# J05A = Antivirale
+J05A	antiviral, proteasehemm, protease-inhibitor, hiv
+# A02BC = Protonenpumpeninhibitoren (PPI)
+A02BC	protonenpumpeninhibitor, protonenpumpenhemm, ppi, säureblocker
+# A02B = Ulkusmittel
+A02B	antazid, h2-blocker, h2-antagonist, säurehemm
+# G03A = Hormonale Kontrazeptiva
+G03A	kontrazeptiv, östrogen, orale kontrazeptiva, hormonelle verhütung
+# N07 = Andere Mittel für das Nervensystem
+N07	dopaminerg, cholinerg, anticholinerg
+# R03 = Mittel bei obstruktiven Atemwegserkrankungen
+R03	bronchodilatat, theophyllin, sympathomimetik, beta-2
+# M04 = Gichtmittel
+M04	urikosurik, gichtmittel, harnsäure, allopurinol
+# B03 = Antianämika
+B03	eisen, eisenpräparat, eisensupplementation
+# L02BA = Antiöstrogene / SERMs (Tamoxifen, Toremifen)
+L02BA	toremifen, tamoxifen, antiöstrogen, östrogen-rezeptor, serm, selektive östrogenrezeptor
+# L02B = Hormonantagonisten
+L02B	hormonantagonist, antihormon, antiandrogen, antiöstrogen
+# V03AB = Antidota (Sugammadex etc.)
+V03AB	sugammadex, antidot, antagonisierung, neuromuskuläre blockade, verdrängung
+# M03A = Muskelrelaxantien, peripher wirkend
+M03A	muskelrelax, neuromuskulär, rocuronium, vecuronium, succinylcholin, curare

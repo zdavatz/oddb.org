@@ -2,11 +2,10 @@
 
 # ODDB::State::Interactions::Interactions -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 
-require	"state/global_predefine"
-require	"view/interactions/interactions"
-require "rexml/document"
-require "net/https"
+require "state/global_predefine"
+require "view/interactions/interactions"
 require "view/pointervalue"
+require "model/sdif_interaction"
 
 module ODDB
   module State
@@ -20,40 +19,25 @@ module ODDB
           if atc_codes = @session.interaction_basket_atc_codes and !atc_codes.empty? \
             and substances = @session.interaction_basket and !substances.empty?
 
-            # get xml document
-            server_url = "api.epha.ch"
-            interaction_key = if ODDB.config.respond_to?(:interaction_key)
-              ODDB.config.interaction_key
-            else
-              "79VVZ51XJKSEN1G"
-            end
-            base_url = "/1.0/interaction/list?atc=#{atc_codes.join(",")}&key=#{interaction_key}"
-            https = Net::HTTP.new(server_url, 443)
-            https.use_ssl = true
-            https.ssl_version = :SSLv3
-            https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            # Build interactions from SQLite DB using substance names
+            substance_names = substances.map { |s| s&.name.to_s }.compact
+            substance_names.combination(2).each do |sub1, sub2|
+              row = EphaInteractions.get_interaction_detail(sub1, sub2)
+              row ||= EphaInteractions.get_interaction_detail(sub2, sub1)
+              next unless row
 
-            xml = ""
-            https.start { |w|
-              response = w.get(base_url)
-              xml = response.body
-            }
+              active_idx = substance_names.index(sub1)
+              passive_idx = substance_names.index(sub2)
+              severity = row["severity_score"].to_s
 
-            # parse xml document
-            doc = REXML::Document.new(xml)
-            if interactions = doc.elements["/EPha/Response/Interactions"]
-              interactions.each do |element|
-                active_sub_id = atc_codes.index(element.attributes["active"])
-                passive_sub_id = atc_codes.index(element.attributes["passive"])
-                @model << {
-                  substance_active: substances[active_sub_id].name,
-                  substance_passive: substances[passive_sub_id].name,
-                  active: element.attributes["active"],
-                  passive: element.attributes["passive"],
-                  info: element.attributes["info"],
-                  rating: element.attributes["rating"]
-                }
-              end
+              @model << {
+                substance_active: sub1,
+                substance_passive: sub2,
+                active: atc_codes[active_idx],
+                passive: atc_codes[passive_idx],
+                info: row["severity_label"],
+                rating: severity
+              }
             end
           end
         end

@@ -74,115 +74,141 @@ function get_to(url) {
       def xhr_request_init(keyword)
         target = keyword.intern
         id = "#{target}_searchbar"
-        url = @session.create_search_url(:home_interactions)
+        url = @session.create_search_url
         val = @session.lookandfeel.lookup(:add_drug)
-        if @container.respond_to?(:progress_bar)
-          progressbar = "setTimeout('show_progressbar('#{id}')', 10);"
+        ajax_args = []
+        if @container.respond_to?(:index_name) && (index = @container.index_name)
+          ajax_args.push :index_name, index
         end
+        ajax_url = @session.lookandfeel._event_url(:ajax_matches, ajax_args)
         @container.additional_javascripts.push <<~EOS
           #{GET_TO_JS}
-          function xhrGet(arg) {
-            var new_url = '#{url}';
-            var ean13 = arg.match(/(^\\d{13})/);
-            console.log('xhrGet arg '+ arg + ' ean13 ' + ean13 + ' for new_url ' + new_url);
-            if(ean13) {
-              ean13 = ean13[0];
-              var id = 'drugs';
-              new_url = new_url + ',' + ean13;
-              console.log('xhrGet call replace_element id '+ id + ' new_url '+new_url);
-              replace_element(id, new_url)
-            }
-          }
-          function initMatches() {
-            var searchbar = dojo.byId('#{id}');
-            searchbar.value = '#{val}';
-            dojo.connect(searchbar, 'onkeypress', function(e) {
-              var popup = dojo.byId('#{target}_searchbar_popup');
-              if(popup && popup.style.overflowX.match(/auto/) && e.keyCode == dojo.keys.ENTER) {
-                #{progressbar}
-                xhrGet(searchbar.value);
-                searchbar.value = '';
+          var _ac_dropdown = null;
+          var _ac_activeIdx = -1;
+          var _ac_selectDrug = null;
+
+          // Inline onkeydown handler - fires before form submission
+          window._acKeydown = function(e) {
+            var dropdown = _ac_dropdown;
+            if (!dropdown) return true;
+            var items = dropdown.querySelectorAll('.ac-item');
+            var visible = dropdown.style.display === 'block';
+            if (e.key === 'Enter') {
+              if (visible && items.length > 0) {
+                var selected = (_ac_activeIdx >= 0 && items[_ac_activeIdx]) ? items[_ac_activeIdx] : items[0];
+                dropdown.style.display = 'none';
+                _ac_selectDrug(selected.getAttribute('data-ean'));
               }
-            });
-            dojo.connect(searchbar, 'onfocus', function(e) {
-              if(searchbar.value == '#{val}')          { searchbar.value = ''; }
-              if(searchbar.value.match(/^(\\d{13})$/)) { searchbar.value = ''; }
-            });
-            dojo.connect(searchbar, 'onblur', function(e) {
-              if(searchbar.value == '') { searchbar.value = '#{val}'; }
-            });
-          }
-          
-          function selectXhrRequest() {
-            var popup = dojo.byId('#{target}_searchbar_popup');
-            var searchbar = dojo.byId('#{id}');
-            if(popup && !popup.style.overflowX.match(/auto/) && searchbar.value != '') {
-              #{progressbar}
-              if (searchbar && searchbar.value && window.location.href)
-              {
-                console.log('selectXhrRequest: window.location.href ' + window.location.href + ' searchbar: ' + searchbar.value);
-                var ean13 = (searchbar.value.match(/^(\\d{13})$/)||[])[1];
-                var path = window.location.href;
-                if (path.match(/home_interactions/)) {
-                  if (path.match(/\\/$/)) {
-                    path = path + ean13;
-                  } else if (path.match(/home_interactions$/)) {
-                    path = path +  '/' + ean13;
-                  } else {
-                    path = path +  ',' + ean13;
-                  }
-                  get_to(path.replace('?/','/') );
-                } else if (path.match(/rezept/))
-                {
-                  if (path.match(/ean/) == null) {
-                    if (path.match(/\\/$/)) {
-                      path = path +  'ean/' + ean13;
-                    } else {
-                      path = path +  '/ean/' + ean13;
-                  }
-                  } else { 
-                     path = path + ',' + ean13;
-                  }
-                  searchbar.value = '';
-                  get_to(path.replace('?/','/'));
-                } else { // neither home_interactions nor rezept
-                  xhrGet(searchbar.value);
-                  searchbar.value = '';
-                }
-              } else console.log('selectXhrRequest cannot find enough information');
+              return false; // prevent form submission
             }
-          }
-          require(['dojo/ready'], function(ready) {
-            ready(function() {
-              initMatches();
+            if (!visible || items.length === 0) return true;
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              _ac_activeIdx = Math.min(_ac_activeIdx + 1, items.length - 1);
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              _ac_activeIdx = Math.max(_ac_activeIdx - 1, -1);
+            } else if (e.key === 'Escape') {
+              dropdown.style.display = 'none';
+              return true;
+            } else { return true; }
+            items.forEach(function(el) { el.classList.remove('ac-active'); });
+            if (_ac_activeIdx >= 0 && items[_ac_activeIdx]) { items[_ac_activeIdx].classList.add('ac-active'); items[_ac_activeIdx].scrollIntoView({block:'nearest'}); }
+            return false;
+          };
+
+          document.addEventListener('DOMContentLoaded', function() {
+            var searchbar = document.getElementById('#{id}');
+            var dropdown = document.getElementById('#{id}_dropdown');
+            if (!searchbar || !dropdown) return;
+            var ajaxUrl = '#{ajax_url}';
+            var baseUrl = '#{url}';
+            var placeholder = '#{val}';
+            var debounceTimer = null;
+            _ac_dropdown = dropdown;
+            _ac_activeIdx = -1;
+
+            searchbar.value = placeholder;
+
+            _ac_selectDrug = function(ean13) {
+              if (!ean13) return;
+              var path = window.location.href;
+              if (path.match(/home_interactions/)) {
+                if (path.match(/\\/$/)) {
+                  path = path + ean13;
+                } else if (path.match(/home_interactions$/)) {
+                  path = path + '/' + ean13;
+                } else {
+                  path = path + ',' + ean13;
+                }
+              } else if (path.match(/rezept/)) {
+                if (path.match(/ean/) == null) {
+                  path = path + (path.match(/\\/$/) ? '' : '/') + 'ean/' + ean13;
+                } else {
+                  path = path + ',' + ean13;
+                }
+              } else {
+                path = baseUrl + ',' + ean13;
+              }
+              get_to(path.replace('?/','/'));
+            };
+
+            function showDropdown(items) {
+              dropdown.innerHTML = '';
+              _ac_activeIdx = -1;
+              if (items.length === 0) { dropdown.style.display = 'none'; return; }
+              items.forEach(function(item, i) {
+                var div = document.createElement('div');
+                div.className = 'ac-item';
+                div.textContent = item.drug;
+                div.setAttribute('data-ean', item.search_query);
+                div.addEventListener('mousedown', function(e) {
+                  e.preventDefault();
+                  _ac_selectDrug(item.search_query);
+                });
+                dropdown.appendChild(div);
+              });
+              dropdown.style.display = 'block';
+            }
+
+            function fetchMatches(query) {
+              var url = ajaxUrl + '/search_query/' + encodeURIComponent(query);
+              fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+                showDropdown(data);
+              }).catch(function() { dropdown.style.display = 'none'; });
+            }
+
+            searchbar.addEventListener('input', function() {
+              var q = searchbar.value.trim();
+              if (q.length < 2 || q === placeholder) {
+                dropdown.style.display = 'none'; return;
+              }
+              clearTimeout(debounceTimer);
+              debounceTimer = setTimeout(function() { fetchMatches(q); }, 200);
+            });
+
+            searchbar.addEventListener('focus', function() {
+              if (searchbar.value === placeholder) searchbar.value = '';
+            });
+            searchbar.addEventListener('blur', function() {
+              setTimeout(function() { dropdown.style.display = 'none'; }, 150);
+              if (searchbar.value === '') searchbar.value = placeholder;
             });
           });
         EOS
-        @attributes.update "data-dojo-type" => "dijit.form.ComboBox",
-          "jsId"           => "#{target}_searchbar",
-          "id"             => "#{target}_searchbar",
-          "store"          => "search_matches",
-          "queryExpr"      => "${0}",
-          "searchAttr"     => "search_query", # name
-          "labelAttr"      => "drug",         # label
-          "hasDownArrow"   => "false",
-          "autoComplete"   => "false",
-          "onChange"       => "selectXhrRequest",
-          "value"          => @session.persistent_user_input(:search_query)
+        @attributes.update(
+          "id" => id,
+          "autocomplete" => "off",
+          "onkeydown" => "return window._acKeydown ? window._acKeydown(event) : true;"
+        )
       end
 
       def to_html(context, *args)
-        args = []
-        if @container.respond_to?(:index_name) && (index = @container.index_name)
-          args.push :index_name, index
-        end
         @session.set_persistent_user_input(:drugs, @session.choosen_drugs)
-        target = @session.lookandfeel._event_url(:ajax_matches, args)
-        html = context.div "data-dojo-type" => "dojox.data.JsonRestStore",
-          "jsId"           => "search_matches",
-          "idAttribute"    => "drug",
-          "target"         => target
-        html << super(context)
+        id = @attributes["id"]
+        html = super(context)
+        html << context.div("id" => "#{id}_dropdown", "class" => "ac-dropdown") { "" }
+        html
       end
     end
 
@@ -232,64 +258,109 @@ function get_to(url) {
         @label_attr ||= ""
         id = @searchbar_id
         val = @lookandfeel.lookup(@name)
-        progressbar = ""
-        if @container.respond_to?(:progress_bar)
-          progressbar = "setTimeout('show_progressbar(\\'widget_searchbar\\')', 10);"
+        ajax_args = []
+        if @container.respond_to?(:index_name) && (index = @container.index_name)
+          ajax_args.push :index_name, index
         end
+        ajax_url = @session.lookandfeel._event_url(:ajax_matches, ajax_args)
         @container.additional_javascripts.push <<~EOS
-          function initMatches() {
-            var searchbar = dojo.byId('#{id}');
-            dojo.connect(searchbar, 'onkeypress', function(e) {
-              if(e.keyCode == dojo.keys.ENTER) {
-                #{progressbar}
-                searchbar.form.submit();
-              }
-            });
-            dojo.connect(searchbar, 'onfocus', function(e) {
-              if(searchbar.value == '#{val}')          { searchbar.value = ''; }
-              if(searchbar.value.match(/^(\\d{13})$/)) { searchbar.value = ''; }
-            });
-            dojo.connect(searchbar, 'onblur', function(e) {
-              if(searchbar.value == '') { searchbar.value = '#{val}'; }
-            });
-          }
-          function selectSubmit() {
-            var popup = dojo.byId('#{id}_popup');
-            var searchbar = dojo.byId('#{id}');
-            if (popup && (popup.style.overflowX.match(/auto/) || popup.style.overflowX.match(/hidden/)) && searchbar.value != '') {
-              searchbar.form.submit();
+          document.addEventListener('DOMContentLoaded', function() {
+            var searchbar = document.getElementById('#{id}');
+            var dropdown = document.getElementById('#{id}_dropdown');
+            if (!searchbar || !dropdown) return;
+            var ajaxUrl = '#{ajax_url}';
+            var placeholder = '#{val}';
+            var debounceTimer = null;
+            var activeIdx = -1;
+            var labelAttr = '#{@label_attr}';
+
+            function showDropdown(items) {
+              dropdown.innerHTML = '';
+              activeIdx = -1;
+              if (items.length === 0) { dropdown.style.display = 'none'; return; }
+              items.forEach(function(item) {
+                var div = document.createElement('div');
+                div.className = 'ac-item';
+                div.textContent = labelAttr && item[labelAttr] ? item[labelAttr] : item.search_query;
+                div.setAttribute('data-value', item.search_query);
+                div.addEventListener('mousedown', function(e) {
+                  e.preventDefault();
+                  searchbar.value = item.search_query;
+                  dropdown.style.display = 'none';
+                  searchbar.form.submit();
+                });
+                dropdown.appendChild(div);
+              });
+              dropdown.style.display = 'block';
             }
-          }
-          require(['dojo/ready'], function(ready) {
-            ready(function() {
-              initMatches();
+
+            function fetchMatches(query) {
+              var url = ajaxUrl + '/search_query/' + encodeURIComponent(query);
+              fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+                showDropdown(data);
+              }).catch(function() { dropdown.style.display = 'none'; });
+            }
+
+            searchbar.addEventListener('input', function() {
+              var q = searchbar.value.trim();
+              if (q.length < 2 || q === placeholder) {
+                dropdown.style.display = 'none'; return;
+              }
+              clearTimeout(debounceTimer);
+              debounceTimer = setTimeout(function() { fetchMatches(q); }, 200);
+            });
+
+            searchbar.addEventListener('keydown', function(e) {
+              var items = dropdown.querySelectorAll('.ac-item');
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIdx = Math.min(activeIdx + 1, items.length - 1);
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIdx = Math.max(activeIdx - 1, 0);
+              } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (activeIdx >= 0 && items[activeIdx]) {
+                  searchbar.value = items[activeIdx].getAttribute('data-value');
+                  dropdown.style.display = 'none';
+                  searchbar.form.submit();
+                } else if (items.length > 0) {
+                  searchbar.value = items[0].getAttribute('data-value');
+                  dropdown.style.display = 'none';
+                  searchbar.form.submit();
+                }
+                return;
+              } else if (e.key === 'Escape') {
+                dropdown.style.display = 'none'; return;
+              } else { return; }
+              items.forEach(function(el) { el.classList.remove('ac-active'); });
+              if (items[activeIdx]) { items[activeIdx].classList.add('ac-active'); items[activeIdx].scrollIntoView({block:'nearest'}); }
+            });
+
+            searchbar.addEventListener('keypress', function(e) {
+              if (e.key === 'Enter') { e.preventDefault(); }
+            });
+            searchbar.addEventListener('focus', function() {
+              if (searchbar.value === placeholder) searchbar.value = '';
+            });
+            searchbar.addEventListener('blur', function() {
+              setTimeout(function() { dropdown.style.display = 'none'; }, 150);
+              if (searchbar.value === '') searchbar.value = placeholder;
             });
           });
         EOS
-        @attributes.update "data-dojo-type" => "dijit.form.ComboBox",
-          "jsId"           => @searchbar_id,
-          "id"             => @searchbar_id,
-          "store"          => "search_matches",
-          "queryExpr"      => "${0}",
-          "searchAttr"     => "search_query", # name
-          "labelAttr"      => @label_attr,    # label
-          "hasDownArrow"   => "false",
-          "autoComplete"   => "false",
-          "onChange"       => "selectSubmit",
-          "value"          => @session.persistent_user_input(:search_query) || val
+        @attributes.update(
+          "id" => @searchbar_id,
+          "autocomplete" => "off",
+          "value" => @session.persistent_user_input(:search_query) || val
+        )
       end
 
       def to_html(context, *args)
-        args = []
-        if @container.respond_to?(:index_name) && (index = @container.index_name)
-          args.push :index_name, index
-        end
-        target = @session.lookandfeel._event_url(:ajax_matches, args)
-        html = context.div "data-dojo-type" => "dojox.data.JsonRestStore",
-          "jsId"           => "search_matches",
-          "idAttribute"    => "search_query",
-          "target"         => target
-        html += super(context)
+        id = @attributes["id"]
+        html = super(context)
+        html += context.div("id" => "#{id}_dropdown", "class" => "ac-dropdown") { "" }
+        html
       end
     end
 

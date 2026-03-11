@@ -6,9 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require "plugin/plugin"
 require "util/oddbconfig"
 require "util/persistence"
-require "util/latest"
 require "drb"
-require "model/epha_interaction"
+require "model/sdif_interaction"
 
 module ODDB
   class EphaInteractionPlugin < Plugin
@@ -36,23 +35,17 @@ module ODDB
       @@report.join("\n")
     end
 
-    def update(csv_file_path = ODDB::EphaInteractions::CSV_FILE)
+    def update(db_path = ODDB::EphaInteractions::DB_FILE)
       @@report = []
-      latest = csv_file_path.sub(/\.csv$/, "-latest.csv")
-      FileUtils.makedirs(File.dirname(ODDB::EphaInteractions::CSV_FILE))
-      if Latest.get_latest_file(latest, ODDB::EphaInteractions::CSV_ORIGIN_URL)
-        msg = "EphaInteractionPlugin.update latest #{latest} #{File.exist?(latest)} via #{File.expand_path(csv_file_path)} from #{ODDB::EphaInteractions::CSV_ORIGIN_URL}"
-        @@report << msg
-        debug_msg(msg)
-        @lineno = 0
-        debug_msg(msg)
-        ODDB::EphaInteractions.read_from_csv(latest)
-        @app.odba_store
-        msg = "Added #{EphaInteractions.get.size} interactions from #{latest}"
+      if File.exist?(db_path)
+        ODDB::EphaInteractions.reload_db
+        msg = "EphaInteractionPlugin: Reloaded interactions from SQLite DB: #{db_path}"
         @@report << msg
         debug_msg(msg)
       else
-        FileUtils.cp(latest, ODDB::EphaInteractions::CSV_FILE, preserve: true, verbose: true) unless File.exist?(ODDB::EphaInteractions::CSV_FILE)
+        msg = "EphaInteractionPlugin: SQLite DB not found at #{db_path}"
+        @@report << msg
+        debug_msg(msg)
       end
       true
     end

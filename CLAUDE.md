@@ -105,6 +105,18 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Price type codes: `756002005001` = public (retail), `756002005002` = ex-factory
 - NDJSON files are stored in `data/ndjson/`
 
+### SDIF Drug Interactions
+
+- Drug interaction checking uses the **SDIF** (Swiss Drug Interactions Finder) SQLite database at `data/sqlite/interactions.db`
+- Core model: `src/model/sdif_interaction.rb` (module `ODDB::EphaInteractions` — name kept for backward compatibility)
+- **Three lookup strategies**:
+  1. **Substance-level**: Look up SDIF substance names via ATC code (`sdif_substances_for_atc`), query `interactions` table for direct matches
+  2. **ATC class-level**: Load drug's `interactions_text` from `drugs` table, search for keywords matching other drug's ATC prefix (from `data/sqlite/atc_keywords.txt`), extract sentence context, score severity
+  3. **Reverse direction hint**: Compare severity of A→B vs B→A; if reverse is higher, show "Gegenrichtung hat höhere Einstufung" hint
+- **Severity scoring** (aligned with SDIF ratings): 3=Kontraindiziert, 2=Schwerwiegend, 1=Vorsicht, 0=Keine Einstufung
+- **Autocomplete**: Vanilla JS with fetch() to `/ajax_matches` endpoint, 200ms debounce, custom dropdown. Uses inline `onkeydown` attribute for keyboard handling (Enter key must be caught before browser form submission). Dojo toolkit replaced with minimal shim at `doc/resources/dojo/dojo/dojo.js`.
+- Key files: `src/view/searchbar.rb` (autocomplete), `src/view/interactions/interaction_chooser.rb` (form), `src/plugin/epha_interactions.rb` (DB update plugin)
+
 ### Troubleshooting
 
 - **Fachinfo table formatting**: Tables from swissmedicinfo with percentage-width styles (e.g. `width:100%`, `width:99.1800%`) are rendered as preformatted column-aligned text. The `detect_table?` method in `ext/fiparse/src/textinfo_html_parser.rb` controls this. Tables rendered as HTML tables use `colspan`/`rowspan` attributes from the source HTML; these default to `1` when not specified (cells without explicit attributes must not get `0`). The view (`src/view/chapter.rb`) only emits `colspan`/`rowspan` when > 1. After fixing table parsing, restart fiparse (`sudo svc -h /etc/service/fiparse`) and reparse: `bundle exec ruby jobs/update_textinfo_swissmedicinfo --skip --target=both <IKSNR> --reparse`
