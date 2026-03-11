@@ -163,9 +163,6 @@ module ODDB
     def self.find_class_interactions(my_atc_code, my_drug, other_atc_code, other_drug)
       return [] unless (fi_text = interactions_text_for_atc(my_atc_code))
 
-      # Check reverse direction severity for hint
-      reverse_severity = class_severity_for_direction(other_atc_code, my_atc_code)
-
       results = []
       atc_keywords.each do |prefix, keywords|
         next unless other_atc_code.start_with?(prefix)
@@ -174,19 +171,17 @@ module ODDB
           context = extract_context(fi_text, kw)
           next unless context
           severity = score_severity(context)
-          hint = ""
-          if reverse_severity > severity
-            hint = "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Gegenrichtung hat höhere Einstufung — diese FI stuft die Interaktion tiefer ein</span>"
-          end
           severity_s = severity.to_s
           header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
           source = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
-          text = "ATC-Klasse<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}#{hint}"
+          text = "ATC-Klasse<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}"
           results << {
             header: header,
             severity: severity_s,
             color: Colors[severity_s],
-            text: "#{source}#{severity_s}: #{Ratings[severity_s]}<br>#{text}"
+            text: "#{source}#{severity_s}: #{Ratings[severity_s]}<br>#{text}",
+            source: "fi",
+            atc_pair: [my_atc_code, other_atc_code].sort
           }
           break # one match per ATC prefix is enough
         end
@@ -195,17 +190,13 @@ module ODDB
     end
 
     # Build EPha interaction result for display.
-    # Also checks FachInfo text severity in both directions for Gegenrichtung hint.
+    # Checks if EPha severity differs between directions (asymmetric EPha rating).
     def self.build_epha_result(epha_row, my_drug, my_atc_code, other_drug, other_atc_code)
       severity_s = epha_row["severity_score"].to_s
       risk_label = epha_row["risk_label"]
       effect = epha_row["effect"]
       mechanism = epha_row["mechanism"]
       measures = epha_row["measures"]
-
-      # Check FachInfo text severity in both directions
-      fi_severity_forward = class_severity_for_direction(my_atc_code, other_atc_code)
-      fi_severity_reverse = class_severity_for_direction(other_atc_code, my_atc_code)
 
       header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
       parts = ["<span style='background-color: #dde8f0; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: EPha.ch</span><br>"]
@@ -214,11 +205,13 @@ module ODDB
       parts << "<br>#{mechanism}" unless mechanism.to_s.empty?
       parts << "<br><i>Massnahmen: #{measures}</i>" unless measures.to_s.empty?
 
-      if fi_severity_forward > 0 || fi_severity_reverse > 0
-        if fi_severity_reverse > fi_severity_forward
-          parts << "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Swissmedic FI: Gegenrichtung hat höhere Einstufung (#{Ratings[fi_severity_reverse.to_s]} vs #{Ratings[fi_severity_forward.to_s]})</span>"
-        elsif fi_severity_forward > fi_severity_reverse
-          parts << "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Swissmedic FI: Diese Richtung hat höhere Einstufung (#{Ratings[fi_severity_forward.to_s]} vs #{Ratings[fi_severity_reverse.to_s]})</span>"
+      # Check EPha reverse direction for asymmetric severity
+      reverse_epha = find_epha_interaction(other_atc_code, my_atc_code)
+      if reverse_epha
+        reverse_sev = reverse_epha["severity_score"].to_i
+        my_sev = epha_row["severity_score"].to_i
+        if reverse_sev > my_sev
+          parts << "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Gegenrichtung hat höhere Einstufung (#{Ratings[reverse_sev.to_s]} vs #{Ratings[my_sev.to_s]})</span>"
         end
       end
 
@@ -226,7 +219,9 @@ module ODDB
         header: header,
         severity: severity_s,
         color: Colors[severity_s],
-        text: parts.join
+        text: parts.join,
+        source: "epha",
+        atc_pair: [my_atc_code, other_atc_code].sort
       }
     end
 
@@ -269,6 +264,11 @@ module ODDB
       my_substances = sdif_substances_for_atc(my_atc_code)
       unmatched_drugs = other_drugs.reject { |d| matched_atc_pairs.include?(d&.atc_class&.code) }
       unmatched_atc_codes = unmatched_drugs.map { |d| d&.atc_class&.code }.compact.uniq
+      # Map substance names back to ATC codes for atc_pair tracking
+      substance_to_atc = {}
+      unmatched_atc_codes.each do |atc|
+        sdif_substances_for_atc(atc).each { |sub| substance_to_atc[sub.downcase] = atc }
+      end
       other_substances = unmatched_atc_codes.flat_map { |atc| sdif_substances_for_atc(atc) }.uniq
 
       unless my_substances.empty? || other_substances.empty?
@@ -292,11 +292,14 @@ module ODDB
             text += "#{severity}: #{Ratings[severity]}"
             text += "<br>#{row["description"]}<br>" if row["description"] && !row["description"].empty?
 
+            other_atc = substance_to_atc[row["interacting_substance"].to_s.downcase]
             results << {
               header: header,
               severity: severity,
               color: Colors[severity],
-              text: text
+              text: text,
+              source: "fi",
+              atc_pair: other_atc ? [my_atc_code, other_atc].sort : nil
             }
           end
         end
@@ -308,6 +311,39 @@ module ODDB
         next unless other_atc
         class_results = find_class_interactions(my_atc_code, my_drug, other_atc, other_drug)
         results.concat(class_results)
+      end
+
+      # Compute pair-max severity across all interaction types for this drug
+      # Include EPha and class-level severities from both directions
+      pair_max = {}
+      results.each do |r|
+        key = r[:atc_pair]
+        next unless key
+        pair_max[key] = [pair_max[key] || 0, r[:severity].to_i].max
+      end
+      # Also check reverse direction severities (from other drugs' perspective)
+      other_drugs.each do |other_drug|
+        other_atc = other_drug&.atc_class&.code
+        next unless other_atc
+        key = [my_atc_code, other_atc].sort
+        # Reverse EPha
+        reverse_epha = find_epha_interaction(other_atc, my_atc_code)
+        if reverse_epha
+          sev = reverse_epha["severity_score"].to_i
+          pair_max[key] = [pair_max[key] || 0, sev].max
+        end
+        # Reverse class-level
+        reverse_class_sev = class_severity_for_direction(other_atc, my_atc_code)
+        pair_max[key] = [pair_max[key] || 0, reverse_class_sev].max
+      end
+
+      # Post-process: add Gegenrichtung hint to FI results where severity < pair max
+      results.each do |r|
+        next unless r[:source] == "fi" && r[:atc_pair]
+        max_sev = pair_max[r[:atc_pair]] || 0
+        if r[:severity].to_i < max_sev
+          r[:text] += "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Gegenrichtung hat höhere Einstufung</span>"
+        end
       end
 
       results.uniq { |r| [r[:header]] }.sort_by { |item| item[:severity].to_s + item[:header].to_s }.reverse

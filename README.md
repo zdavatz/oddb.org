@@ -5,7 +5,7 @@
 Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 ## Features/Problems
-* **SDIF Interactions**: Drug interaction checking uses the [SDIF (Swiss Drug Interactions Finder)](https://github.com/nicop2/SDIF) SQLite database (`data/sqlite/interactions.db`). Three sources: EPha.ch curated ATC-to-ATC interactions, substance-level matches, and ATC class-level keyword matching in Swissmedic FachInfo text. Each interaction shows its source (EPha.ch or Swissmedic FI) and a directional severity hint when the FachInfo rates the interaction differently in each direction.
+* **SDIF Interactions**: Drug interaction checking uses the [SDIF (Swiss Drug Interactions Finder)](https://github.com/zdavatz/sdif) SQLite database (`data/sqlite/interactions.db`). Three sources: EPha.ch curated ATC-to-ATC interactions, substance-level matches, and ATC class-level keyword matching in Swissmedic FachInfo text. Each interaction shows its source (EPha.ch or Swissmedic FI). FI results display a "Gegenrichtung hat höhere Einstufung" hint when their severity is below the pair maximum across all interaction types. EPha results show the hint only for asymmetric EPha ratings between directions.
 * Twitter share and mail/notify icons have been removed from drug search result lists.
 * Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/oddb.yml
 * If you install oddb.org via gem please also see these [instructions](http://dev.ywesee.com/Niklaus/Index).
