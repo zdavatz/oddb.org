@@ -11,7 +11,7 @@ module ODDB
     # Severity ratings aligned with SDIF/EPha risk classes
     # A=0, B=1, C=1, D=2, X=3
     Ratings = {
-      "0" => "Keine Massnahmen notwendig",
+      "0" => "Keine Einstufung",
       "1" => "Vorsichtsmassnahmen",
       "2" => "Kombination vermeiden",
       "3" => "Kontraindiziert"

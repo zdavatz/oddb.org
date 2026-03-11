@@ -11,7 +11,7 @@ require "stub/odba"
 module ODDB
   class TestEphaInteraction < Minitest::Test
     def test_ratings
-      assert_equal "Keine Massnahmen notwendig", ODDB::EphaInteractions::Ratings["0"]
+      assert_equal "Keine Einstufung", ODDB::EphaInteractions::Ratings["0"]
       assert_equal "Vorsichtsmassnahmen", ODDB::EphaInteractions::Ratings["1"]
       assert_equal "Kombination vermeiden", ODDB::EphaInteractions::Ratings["2"]
       assert_equal "Kontraindiziert", ODDB::EphaInteractions::Ratings["3"]
