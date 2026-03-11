@@ -42,6 +42,7 @@ module ODDB
       @db&.close rescue nil
       @db = nil
       @atc_keywords = nil
+      @epha_table_exists = nil
       db
     end
 
@@ -90,14 +91,21 @@ module ODDB
       row&.dig("interactions_text")
     end
 
-    # Look up curated EPha interaction between two ATC codes
+    # Look up curated EPha interaction between two ATC codes.
+    # Returns nil if the epha_interactions table doesn't exist (SDIF built without --epha).
     def self.find_epha_interaction(atc1, atc2)
       return nil unless db
+      return nil unless epha_table_exists?
       row = db.execute(
         "SELECT * FROM epha_interactions WHERE atc1 = ? AND atc2 = ? LIMIT 1",
         [atc1, atc2]
       ).first
       row
+    end
+
+    def self.epha_table_exists?
+      return @epha_table_exists unless @epha_table_exists.nil?
+      @epha_table_exists = db && !db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='epha_interactions'").empty?
     end
 
     # Extract context sentence around a keyword match in text.
@@ -172,12 +180,13 @@ module ODDB
           end
           severity_s = severity.to_s
           header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
-          text = "ATC-Klasse (FI-Text)<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}#{hint}"
+          source = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
+          text = "ATC-Klasse<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}#{hint}"
           results << {
             header: header,
             severity: severity_s,
             color: Colors[severity_s],
-            text: "#{severity_s}: #{Ratings[severity_s]}<br>#{text}"
+            text: "#{source}#{severity_s}: #{Ratings[severity_s]}<br>#{text}"
           }
           break # one match per ATC prefix is enough
         end
@@ -185,7 +194,8 @@ module ODDB
       results
     end
 
-    # Build EPha interaction result for display
+    # Build EPha interaction result for display.
+    # Also checks FachInfo text severity in both directions for Gegenrichtung hint.
     def self.build_epha_result(epha_row, my_drug, my_atc_code, other_drug, other_atc_code)
       severity_s = epha_row["severity_score"].to_s
       risk_label = epha_row["risk_label"]
@@ -193,11 +203,24 @@ module ODDB
       mechanism = epha_row["mechanism"]
       measures = epha_row["measures"]
 
+      # Check FachInfo text severity in both directions
+      fi_severity_forward = class_severity_for_direction(my_atc_code, other_atc_code)
+      fi_severity_reverse = class_severity_for_direction(other_atc_code, my_atc_code)
+
       header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
-      parts = ["#{severity_s}: #{risk_label}"]
+      parts = ["<span style='background-color: #dde8f0; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: EPha.ch</span><br>"]
+      parts << "#{severity_s}: #{risk_label}"
       parts << "<br><b>#{effect}</b>" unless effect.to_s.empty?
       parts << "<br>#{mechanism}" unless mechanism.to_s.empty?
       parts << "<br><i>Massnahmen: #{measures}</i>" unless measures.to_s.empty?
+
+      if fi_severity_forward > 0 || fi_severity_reverse > 0
+        if fi_severity_reverse > fi_severity_forward
+          parts << "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Swissmedic FI: Gegenrichtung hat höhere Einstufung (#{Ratings[fi_severity_reverse.to_s]} vs #{Ratings[fi_severity_forward.to_s]})</span>"
+        elsif fi_severity_forward > fi_severity_reverse
+          parts << "<br><span style='background-color: #ffec8b; padding: 2px 6px; font-size: 11px;'>Swissmedic FI: Diese Richtung hat höhere Einstufung (#{Ratings[fi_severity_forward.to_s]} vs #{Ratings[fi_severity_reverse.to_s]})</span>"
+        end
+      end
 
       {
         header: header,
@@ -265,7 +288,8 @@ module ODDB
             if row["interacting_brands"] && !row["interacting_brands"].empty?
               header += " (#{row["interacting_brands"].split(",").first(3).join(", ")})"
             end
-            text = "#{severity}: #{Ratings[severity]}"
+            text = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
+            text += "#{severity}: #{Ratings[severity]}"
             text += "<br>#{row["description"]}<br>" if row["description"] && !row["description"].empty?
 
             results << {

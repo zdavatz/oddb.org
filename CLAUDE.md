@@ -111,9 +111,10 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Core model: `src/model/sdif_interaction.rb` (module `ODDB::EphaInteractions` — name kept for backward compatibility)
 - **DB tables**: `epha_interactions` (curated ATC-to-ATC, 15k+ pairs), `interactions` (substance-level from FachInfo), `drugs` (brand/ATC/substances/interactions_text), `class_keywords` (ATC prefix keywords), `cyp_rules` (CYP enzyme rules)
 - **Three lookup strategies** (in priority order):
-  1. **EPha curated**: Direct ATC-to-ATC lookup in `epha_interactions` table — highest quality, has risk_class (A/B/C/D/X), effect, mechanism, measures
-  2. **Substance-level**: Look up SDIF substance names via ATC code (`sdif_substances_for_atc`), query `interactions` table for direct matches
-  3. **ATC class-level**: Load drug's `interactions_text` from `drugs` table, search for keywords from `class_keywords` table matching other drug's ATC prefix, extract sentence context, score severity. Shows "Gegenrichtung hat höhere Einstufung" hint when reverse direction has higher severity.
+  1. **EPha curated** (label: "Quelle: EPha.ch"): Direct ATC-to-ATC lookup in `epha_interactions` table — risk_class (A/B/C/D/X), effect, mechanism, measures. Table only present if SDIF was built with `--epha` flag; gracefully skipped otherwise.
+  2. **Substance-level** (label: "Quelle: Swissmedic FI"): Look up SDIF substance names via ATC code (`sdif_substances_for_atc`), query `interactions` table for direct matches
+  3. **ATC class-level** (label: "Quelle: Swissmedic FI"): Load drug's `interactions_text` from `drugs` table, search for keywords from `class_keywords` table matching other drug's ATC prefix, extract sentence context, score severity
+- **Directional FI hint**: All results compare Swissmedic FachInfo severity in both directions. Shows "Gegenrichtung hat höhere Einstufung" or "Diese Richtung hat höhere Einstufung" when the FI rates the interaction asymmetrically.
 - **Severity scoring**: A=0 (Keine Massnahmen), B/C=1 (Vorsichtsmassnahmen), D=2 (Kombination vermeiden), X=3 (Kontraindiziert)
 - **Autocomplete**: Vanilla JS with fetch() to `/ajax_matches` endpoint, 200ms debounce, custom dropdown. Uses inline `onkeydown` attribute for keyboard handling (Enter key must be caught before browser form submission). Dojo toolkit replaced with minimal shim at `doc/resources/dojo/dojo/dojo.js`.
 - Key files: `src/view/searchbar.rb` (autocomplete), `src/view/interactions/interaction_chooser.rb` (form), `src/plugin/epha_interactions.rb` (DB update plugin)
