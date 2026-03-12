@@ -42,6 +42,7 @@ module ODDB
       @db&.close rescue nil
       @db = nil
       @atc_keywords = nil
+      @cyp_rules = nil
       @epha_table_exists = nil
       db
     end
@@ -60,6 +61,29 @@ module ODDB
         end
         keywords
       end
+    end
+
+    # Load CYP450 rules from cyp_rules table
+    def self.cyp_rules
+      @cyp_rules ||= begin
+        rules = []
+        if db
+          db.execute("SELECT enzyme, text_pattern, role, atc_prefix, substance FROM cyp_rules").each do |row|
+            rules << row
+          end
+        end
+        rules
+      end
+    end
+
+    # Look up full SDIF drug info for an ATC code
+    def self.sdif_drug_info_for_atc(atc_code)
+      return nil unless db && atc_code
+      row = db.execute(
+        "SELECT brand_name, active_substances, interactions_text, route, combo_hint FROM drugs WHERE atc_code = ? AND length(interactions_text) > 0 ORDER BY length(interactions_text) DESC LIMIT 1",
+        [atc_code]
+      ).first
+      row
     end
 
     def self.calculate_atc_codes(drugs)
@@ -115,6 +139,7 @@ module ODDB
       txt_lower = text.downcase
       best_sentence = nil
       best_score = -1
+      best_is_animal = false
       offset = 0
       while (idx = txt_lower.index(kw_lower, offset))
         start_pos = text.rindex(/[.:]/, [idx - 1, 0].max) || 0
@@ -123,8 +148,15 @@ module ODDB
         sentence = text[start_pos..end_pos].strip
         sentence = sentence[0, 500] if sentence.length > 500
         sev = score_severity(sentence)
-        if sev > best_score
-          best_score = sev
+
+        # Deprioritize if substance appears after Tiermodell/Tierstudie/Tierversuch
+        prefix_lower = txt_lower[start_pos...idx]
+        is_animal = prefix_lower.include?("tiermodell") || prefix_lower.include?("tierstudie") || prefix_lower.include?("tierversuch")
+        effective_sev = is_animal ? 0 : sev
+
+        if effective_sev > best_score || (effective_sev == best_score && best_is_animal && !is_animal) || best_sentence.nil?
+          best_score = effective_sev
+          best_is_animal = is_animal
           best_sentence = sentence
         end
         offset = idx + keyword.length
@@ -135,9 +167,9 @@ module ODDB
     # Score severity of a text context based on clinical language
     def self.score_severity(text)
       t = text.downcase
-      return 3 if t.match?(/kontraindiziert|nicht anwenden|darf nicht|kontraindikation/)
-      return 2 if t.match?(/gefährlich|schwerwiegend|lebensbedroh|erhöhtes.*blutungsrisiko/)
-      return 1 if t.match?(/vorsicht|warnung|überwach|achten|kontrolle|erhöht.*risiko|verstärkt/)
+      return 3 if t.match?(/kontraindiziert|kontraindikation|darf nicht|nicht angewendet werden|nicht verabreicht werden|nicht kombiniert werden|nicht gleichzeitig|ist verboten|nicht zusammen|nicht eingenommen werden|nicht anwenden/)
+      return 2 if t.match?(/erhöhtes risiko|erhöhte gefahr|schwerwiegend|schwere|lebensbedrohlich|lebensgefährlich|gefährlich|stark erhöht|stark verstärkt|toxisch|toxizität|nephrotoxisch|hepatotoxisch|ototoxisch|neurotoxisch|kardiotoxisch|tödlich|fatale|blutungsrisiko|blutungsgefahr|serotoninsyndrom|serotonin-syndrom|qt-verlängerung|qt-zeit-verlängerung|torsade|rhabdomyolyse|nierenversagen|niereninsuffizienz|nierenfunktionsstörung|leberversagen|atemdepression|herzstillstand|arrhythmie|hyperkaliämie|agranulozytose|stevens-johnson|anaphyla|lymphoproliferation|immundepression|immunsuppression|panzytopenie|abgeraten|wird nicht empfohlen/)
+      return 1 if t.match?(/vorsicht|überwach|monitor|kontroll|engmaschig|dosisanpassung|dosis reduz|dosis anpassen|dosisreduktion|sorgfältig|regelmässig|regelmäßig|aufmerksam|cave|beobacht|verstärkt|vermindert|abgeschwächt|erhöh|erniedrigt|beeinflusst|wechselwirkung|plasmaspiegel|plasmakonzentration|serumkonzentration|bioverfügbarkeit|subtherapeutisch|supratherapeutisch|therapieversagen|wirkungsverlust|wirkverlust/)
       0
     end
 
@@ -172,7 +204,9 @@ module ODDB
           next unless context
           severity = score_severity(context)
           severity_s = severity.to_s
-          header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
+          my_route = route_span(my_atc_code)
+          other_route = route_span(other_atc_code)
+          header = "#{my_drug.name_with_size}#{my_route} [#{my_atc_code}] \u2194 #{other_drug.name_with_size}#{other_route} [#{other_atc_code}]"
           source = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
           text = "ATC-Klasse<br><i>Keyword «#{kw}» gefunden in Fachinformation von #{my_drug.name_with_size}</i><br>#{context}"
           results << {
@@ -189,6 +223,92 @@ module ODDB
       results
     end
 
+    # Find CYP enzyme-mediated interactions
+    def self.find_cyp_interactions(my_atc_code, my_drug, other_atc_code, other_drug, other_substances)
+      fi_text = interactions_text_for_atc(my_atc_code)
+      return [] unless fi_text
+
+      text_lower = fi_text.downcase
+      other_subst_lower = other_substances.map(&:downcase)
+      rules = cyp_rules
+      return [] if rules.empty?
+
+      # Group rules by enzyme
+      rules_by_enzyme = rules.group_by { |r| r["enzyme"] }
+      results = []
+      matched_enzymes = Set.new
+
+      rules_by_enzyme.each do |enzyme, enzyme_rules|
+        # Check if interaction text mentions this CYP enzyme
+        matched_pattern = nil
+        enzyme_rules.each do |rule|
+          if text_lower.include?(rule["text_pattern"].downcase)
+            matched_pattern = rule["text_pattern"]
+            break
+          end
+        end
+        next unless matched_pattern
+
+        # Check if other drug matches any inhibitor or inducer rule
+        is_inhibitor = false
+        is_inducer = false
+        enzyme_rules.each do |rule|
+          matches = false
+          if rule["atc_prefix"] && !rule["atc_prefix"].empty? && other_atc_code&.start_with?(rule["atc_prefix"])
+            matches = true
+          end
+          if rule["substance"] && !rule["substance"].empty? && other_subst_lower.include?(rule["substance"].downcase)
+            matches = true
+          end
+          if matches
+            is_inhibitor = true if rule["role"] == "inhibitor"
+            is_inducer = true if rule["role"] == "inducer"
+          end
+        end
+
+        if (is_inhibitor || is_inducer) && !matched_enzymes.include?(enzyme)
+          matched_enzymes << enzyme
+          role = is_inhibitor ? "Hemmer" : "Induktor"
+          context = extract_context(fi_text, matched_pattern)
+          next unless context
+          severity = score_severity(context)
+          severity_s = severity.to_s
+          my_route = route_span(my_atc_code)
+          other_route = route_span(other_atc_code)
+          header = "#{my_drug.name_with_size}#{my_route} [#{my_atc_code}] \u2194 #{other_drug.name_with_size}#{other_route} [#{other_atc_code}]"
+          source = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
+          text = "CYP<br><i>#{other_drug.name_with_size} ist #{enzyme}-#{role} — Fachinformation von #{my_drug.name_with_size} erwähnt dieses Enzym</i><br>#{context}"
+          results << {
+            header: header,
+            severity: severity_s,
+            color: Colors[severity_s],
+            text: "#{source}#{severity_s}: #{Ratings[severity_s]}<br>#{text}",
+            source: "fi",
+            atc_pair: [my_atc_code, other_atc_code].sort
+          }
+        end
+      end
+      results
+    end
+
+    # Format route indicator span
+    def self.route_span(atc_code)
+      info = sdif_drug_info_for_atc(atc_code)
+      return "" unless info
+      route = info["route"].to_s
+      return "" if route.empty?
+      " <span style='background-color: #e8e0f0; padding: 1px 4px; font-size: 10px; border-radius: 2px;'>#{route}</span>"
+    end
+
+    # Format combo_hint span
+    def self.combo_span(atc_code)
+      info = sdif_drug_info_for_atc(atc_code)
+      return "" unless info
+      combo = info["combo_hint"].to_s
+      return "" if combo.empty?
+      " <span style='background-color: #dff0d8; padding: 1px 4px; font-size: 10px; border-radius: 2px;'>#{combo}</span>"
+    end
+
     # Build EPha interaction result for display.
     # Checks if EPha severity differs between directions (asymmetric EPha rating).
     def self.build_epha_result(epha_row, my_drug, my_atc_code, other_drug, other_atc_code)
@@ -198,7 +318,9 @@ module ODDB
       mechanism = epha_row["mechanism"]
       measures = epha_row["measures"]
 
-      header = "#{my_drug.name_with_size} [#{my_atc_code}] \u2194 #{other_drug.name_with_size} [#{other_atc_code}]"
+      my_route = route_span(my_atc_code)
+      other_route = route_span(other_atc_code)
+      header = "#{my_drug.name_with_size}#{my_route} [#{my_atc_code}] \u2194 #{other_drug.name_with_size}#{other_route} [#{other_atc_code}]"
       parts = ["<span style='background-color: #dde8f0; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: EPha.ch</span><br>"]
       parts << "#{severity_s}: #{risk_label}"
       parts << "<br><b>#{effect}</b>" unless effect.to_s.empty?
@@ -226,10 +348,11 @@ module ODDB
     end
 
     # Get interactions for a specific drug against all other drugs in the basket.
-    # Three lookup strategies:
+    # Four lookup strategies:
     # 1. EPha curated ATC-to-ATC interactions (epha_interactions table)
     # 2. Substance-level interactions (interactions table via ATC code)
     # 3. Class-level interactions (class_keywords + interactions_text)
+    # 4. CYP enzyme-mediated interactions (cyp_rules table)
     def self.get_interactions(my_atc_code, drugs)
       return [] unless db && drugs && !drugs.empty?
 
@@ -284,9 +407,12 @@ module ODDB
           rows = db.execute(sql, [my_sub] + other_substances)
           rows.each do |row|
             severity = row["severity_score"].to_s
-            header = "#{my_sub} (#{my_drug.name_with_size}) => #{row["interacting_substance"]}"
+            my_route = route_span(my_atc_code)
+            other_atc_for_route = substance_to_atc[row["interacting_substance"].to_s.downcase]
+            other_route = other_atc_for_route ? route_span(other_atc_for_route) : ""
+            header = "#{my_sub} (#{my_drug.name_with_size})#{my_route} => #{row["interacting_substance"]}"
             if row["interacting_brands"] && !row["interacting_brands"].empty?
-              header += " (#{row["interacting_brands"].split(",").first(3).join(", ")})"
+              header += " (#{row["interacting_brands"].split(",").first(3).join(", ")})#{other_route}"
             end
             text = "<span style='background-color: #d5ecd5; padding: 1px 6px; font-size: 11px; border-radius: 3px;'>Quelle: Swissmedic FI</span><br>"
             text += "#{severity}: #{Ratings[severity]}"
@@ -313,8 +439,21 @@ module ODDB
         results.concat(class_results)
       end
 
+      # 4. CYP enzyme interactions (for all drug pairs)
+      other_drugs.each do |other_drug|
+        other_atc = other_drug&.atc_class&.code
+        next unless other_atc
+        other_subs = sdif_substances_for_atc(other_atc)
+        cyp_results = find_cyp_interactions(my_atc_code, my_drug, other_atc, other_drug, other_subs)
+        results.concat(cyp_results)
+        # Reverse direction
+        my_subs = sdif_substances_for_atc(my_atc_code)
+        reverse_cyp = find_cyp_interactions(other_atc, other_drug, my_atc_code, my_drug, my_subs)
+        results.concat(reverse_cyp)
+      end
+
       # Compute pair-max severity across all interaction types for this drug
-      # Include EPha and class-level severities from both directions
+      # Include EPha, class-level, and CYP severities from both directions
       pair_max = {}
       results.each do |r|
         key = r[:atc_pair]
