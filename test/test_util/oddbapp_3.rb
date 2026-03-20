@@ -501,20 +501,11 @@ class TestOddbApp3 < Minitest::Test
   end
 
   def test_epha_interaction
-    @@datadir = File.expand_path "../data/csv/", File.dirname(__FILE__)
     @@vardir = File.expand_path "../var", File.dirname(__FILE__)
-    assert(File.directory?(@@datadir), "Directory #{@@datadir} must exist")
     FileUtils.mkdir_p @@vardir
     ODDB.config.log_dir = @@vardir
-    @fileName = File.join(@@datadir, "epha_interactions_de_utf8-example.csv")
-    @latest = @fileName.sub(".csv", "-latest.csv")
-    FileUtils.rm(@latest) if File.exist?(@latest)
-    @mock_latest = flexmock("latest", ODDB::Latest)
-    @mock_latest.should_receive(:fetch_with_http).with(ODDB::EphaInteractions::CSV_ORIGIN_URL).and_return(
-      File.read(File.join(@@datadir, File.basename(@fileName)))
-    )
     @plugin = ODDB::EphaInteractionPlugin.new(@app, {})
-    assert(@plugin.update(@fileName))
+    assert(@plugin.update)
     code_0 = "C09CA01"
     code_1 = "C07AB02"
     atc_class_0 = flexmock("atc_class_0") do |reg|

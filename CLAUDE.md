@@ -38,7 +38,12 @@ bundle exec rackup
 rake docs
 ```
 
-Ruby 3.4 is required. System dependencies: `libmagickcore-dev`, `graphicsmagick`, `uuid-dev`.
+Ruby 3.4 is required.
+
+- **Linux**: `sudo apt-get install libmagickcore-dev graphicsmagick uuid-dev libpq-dev`
+- **macOS**: `brew install libpq graphicsmagick ossp-uuid` and `bundle config build.pg --with-pg-config=$(brew --prefix libpq)/bin/pg_config`
+
+The codebase is cross-platform (Linux and macOS). System-level calls (e.g. memory/process stats via `/proc/`) have macOS fallbacks using `vm_stat`/`ps`.
 
 ## Architecture
 

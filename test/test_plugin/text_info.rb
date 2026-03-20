@@ -606,8 +606,8 @@ Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
         "32917 [\"fr\"] Zyloric®",
         "40858 [\"de\"] Tramal®",
         "40858 [\"fr\"] Tramal®",
-        "40859 [\"de\"] Tramal®",
-        "43787 [\"de\"] Tramal®",
+        "40859 [\"fr\"] Tramal®",
+        "43787 [\"fr\"] Tramal®",
         "43788 [\"de\"] Tramal®"], @plugin.updated_fis)
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
       assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must match")

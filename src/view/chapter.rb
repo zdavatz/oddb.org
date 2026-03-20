@@ -168,8 +168,8 @@ module ODDB
             context.tr {
               row.collect { |cell|
                 td_attrs = {}
-                td_attrs["colspan"] = cell.col_span if cell.col_span > 1
-                td_attrs["rowspan"] = cell.row_span if cell.row_span > 1
+                td_attrs["colspan"] = cell.col_span if cell.col_span.to_i > 1
+                td_attrs["rowspan"] = cell.row_span if cell.row_span.to_i > 1
                 if cell.is_a? Text::MultiCell
                   context.td(td_attrs) {
                     paragraphs(context, cell.contents, true)

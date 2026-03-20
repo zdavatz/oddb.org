@@ -72,12 +72,10 @@ module ODDB
     end
   end
 
-  class XlsExportPlugin < Plugin
-    @@today = Date.new(2011, 2, 3)
-  end
-
   class TestXlsExportPlugin < Minitest::Test
     def test_export_patents
+      saved_today = @@today
+      @@today = Date.new(2011, 2, 3)
       patent = flexmock("patent", expiry_date: Date.new(2011, 2, 4))
       registration = flexmock("registration",
         patent: patent,
@@ -87,6 +85,8 @@ module ODDB
       replace_constant("ODDB::XlsExportPlugin::EXPORT_SERVER", server) do
         assert_equal("export_patent_xls", @plugin.export_patents)
       end
+    ensure
+      @@today = saved_today
     end
   end
 end # ODDB

@@ -31,56 +31,13 @@ module ODDB
         end
 
         def test_init
-          expected = ["require([\"dojo/parser\", \"dijit/ProgressBar\"], function(){
-  show_progressbar = function(searchbar_id){
-    var progressBar = searchProgressBar.set({
-      style: \"display:block;\",
-      value: Infinity,
-    });
-    var searchbar = dojo.byId(searchbar_id);
-    searchbar.style.display = \"none\";
-  };
-});
-", "function initMatches() {
-  var searchbar = dojo.byId('searchbar');
-  dojo.connect(searchbar, 'onkeypress', function(e) {
-    if(e.keyCode == dojo.keys.ENTER) {
-      setTimeout('show_progressbar(\\'widget_searchbar\\')', 10);
-      searchbar.form.submit();
-    }
-  });
-  dojo.connect(searchbar, 'onfocus', function(e) {
-    if(searchbar.value == 'lookup')          { searchbar.value = ''; }
-    if(searchbar.value.match(/^(\\d{13})$/)) { searchbar.value = ''; }
-  });
-  dojo.connect(searchbar, 'onblur', function(e) {
-    if(searchbar.value == '') { searchbar.value = 'lookup'; }
-  });
-}
-function selectSubmit() {
-  var popup = dojo.byId('searchbar_popup');
-  var searchbar = dojo.byId('searchbar');
-  if (popup && (popup.style.overflowX.match(/auto/) || popup.style.overflowX.match(/hidden/)) && searchbar.value != '') {
-    searchbar.form.submit();
-  }
-}
-require(['dojo/ready'], function(ready) {
-  ready(function() {
-    initMatches();
-  });
-});
-", "require([\"dojo/parser\", \"dijit/ProgressBar\"], function(){
-  show_progressbar = function(searchbar_id){
-    var progressBar = searchProgressBar.set({
-      style: \"display:block;\",
-      value: Infinity,
-    });
-    var searchbar = dojo.byId(searchbar_id);
-    searchbar.style.display = \"none\";
-  };
-});
-"]
-          assert_equal(expected, @form.init)
+          result = @form.init
+          assert_kind_of(Array, result)
+          # The autocomplete JS now uses vanilla JS with fetch() instead of Dojo
+          js_text = result.join
+          assert_match(/show_progressbar/, js_text, "must contain progressbar JS")
+          assert_match(/DOMContentLoaded/, js_text, "must contain vanilla JS autocomplete")
+          assert_match(/fetchMatches/, js_text, "must contain fetch-based autocomplete")
         end
       end
     end # Drugs

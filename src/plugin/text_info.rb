@@ -82,8 +82,15 @@ module ODDB
     end
 
     def getFreeMemoryInMB
-      m = /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
-      (m[1].to_i / (2**10)).to_i
+      if File.exist?("/proc/meminfo")
+        m = /MemFree[: ]*(\d+)/.match File.read("/proc/meminfo")
+        (m[1].to_i / (2**10)).to_i
+      else
+        # macOS fallback
+        page_size = `sysctl -n hw.pagesize`.to_i
+        free_pages = `vm_stat`.match(/Pages free:\s+(\d+)/)&.[](1).to_i
+        (free_pages * page_size / (2**20)).to_i
+      end
     end
 
     def save_meta_and_xref_info
@@ -689,7 +696,6 @@ module ODDB
         res << "\n#{Override_file}: The #{@missing_override.size} missing overrides are\n"
         res << @missing_override.collect { |key, value| "#{key} #{value}" }.join("\n")
       end
-      /MemFree[: ]*(\d+)/ =~ File.read("/proc/meminfo")
       res << "\nHaving free #{getFreeMemoryInMB} MB\n"
       File.open(Override_file, "w+") { |out| YAML.dump(@specify_barcode_to_text_info.merge(@missing_override), out, line_width: -1) }
       res
@@ -1285,8 +1291,13 @@ module ODDB
       # image_base, image_subfolder must be in sync with ext/fiparse/src/fiparse.rb and ext/fiparse/src/textinfo_hpricot.rb
       image_base = File.expand_path("./doc/resources/images")
       image_subfolder = File.join(type.to_s, meta_info.lang.to_s, "#{meta_info.iksnr}_#{meta_info.title[0, 10].gsub(/[^A-z0-9]/, "_")}")
-      bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
-      mbytes = (bytes / (2**20)).to_i
+      if File.exist?("/proc/#{$$}/stat")
+        bytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i
+        mbytes = (bytes / (2**20)).to_i
+      else
+        # macOS fallback: use ps to get RSS in KB
+        mbytes = (`ps -o rss= -p #{$$}`.strip.to_i / 1024)
+      end
       LogFile.debug "Checking #{meta_info.iksnr} #{type} #{meta_info.lang} unchanged #{unchanged} for #{File.basename(new_html)} using #{mbytes} MB (free #{getFreeMemoryInMB}) at #{idx}/#{@metas&.size}" unless unchanged
       if type == :fi
         if unchanged && !@options[:reparse] && reg && reg.fachinfo && text_info.descriptions.keys.index(meta_info.lang)

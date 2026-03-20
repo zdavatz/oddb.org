@@ -92,7 +92,7 @@ module ODDB
             feed.image.title = @lookandfeel.lookup(:logo)
             feed.encoding = "UTF-8"
             feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
-            mbytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20)
+            mbytes = if File.exist?("/proc/#{$$}/stat") then File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20) else (`ps -o rss= -p #{$$}`.strip.to_i / 1024) end
             LogFile.debug "Starting RSS.to_html  #{feed.channel.language} for #{@model.size} FI. Using #{mbytes} MBs"
             @model.each do |fachinfo|
               if fachinfo.localized_name
@@ -104,10 +104,10 @@ module ODDB
                 item_to_html(context, fachinfo, feed)
               end
             end
-            mbytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20)
+            mbytes = if File.exist?("/proc/#{$$}/stat") then File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20) else (`ps -o rss= -p #{$$}`.strip.to_i / 1024) end
             LogFile.debug "Sleeping 0.1 seconds in item_to_html to give cleanup some time #{@model.size} FIs @year #{@year}. Using #{mbytes} MB"
             sleep 0.1 unless defined?(Minitest)
-            mbytes = File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20)
+            mbytes = if File.exist?("/proc/#{$$}/stat") then File.read("/proc/#{$$}/stat").split(" ").at(22).to_i / (2**20) else (`ps -o rss= -p #{$$}`.strip.to_i / 1024) end
             LogFile.debug "Finished RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"
             GC.start
             LogFile.debug "Finished and collected garbage RSS.to_html for #{@model.size} FIs. Using #{mbytes} MB"

@@ -75,22 +75,12 @@ return false;
       end
 
       def test_init
-        expected = {
-          "queryExpr" => "${0}",
-          "name" => "name",
-          "data-dojo-type" => "dijit.form.ComboBox",
-          "searchAttr" => "search_query",
-          "jsId" => "searchbar",
-          "labelAttr" => "",
-          "type" => "text",
-          "id" => "searchbar",
-          "store" => "search_matches",
-          "hasDownArrow" => "false",
-          "value" => "persistent_user_input",
-          "autoComplete" => "false",
-          "onChange" => "selectSubmit"
-        }
-        assert_equal(expected, @inputtext.init)
+        # AutocompleteSearchBar now uses vanilla JS autocomplete instead of Dojo
+        # init sets up @attributes with id, autocomplete, and value
+        attrs = @inputtext.instance_variable_get(:@attributes)
+        assert_equal("searchbar", attrs["id"])
+        assert_equal("off", attrs["autocomplete"])
+        assert_equal("persistent_user_input", attrs["value"])
       end
 
       def test_to_html
@@ -98,7 +88,7 @@ return false;
           div: "div",
           input: "input")
         flexmock(@container, index_name: "index_name")
-        assert_equal("divinput", @inputtext.to_html(context))
+        assert_equal("inputdiv", @inputtext.to_html(context))
       end
     end
 
