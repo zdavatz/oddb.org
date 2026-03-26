@@ -5,6 +5,7 @@
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require "odba"
+require "util/odba_connection_patch"
 require "odba/index_definition"
 require "odba/drbwrapper"
 require "odba/18_19_loading_compatibility"
