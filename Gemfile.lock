@@ -173,7 +173,7 @@ GEM
       stringio
     public_suffix (7.0.5)
     racc (1.8.1)
-    rack (2.2.22)
+    rack (2.2.23)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rackup (0.1.0)
