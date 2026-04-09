@@ -38,8 +38,8 @@ module ODDB
       begin
         file2save = File.join(ODDB::WORK_DIR, "xml", "refdata_jur.xml")
         FileUtils.rm_f(file2save, verbose: false)
-        api_key = ENV["REFDATA_API_KEY"]
-        raise "REFDATA_API_KEY environment variable not set. Register at developer.refdata.ch to obtain a key." if api_key.to_s.empty?
+        api_key = ODDB.config.refdata_api_key || ENV["REFDATA_API_KEY"]
+        raise "refdata_api_key not set in etc/oddb.yml (or REFDATA_API_KEY env var). Register at developer.refdata.ch to obtain a key." if api_key.to_s.empty?
         @client = Savon.client(
           endpoint: "https://api.refdata.ch/partner/1.0/Partner.asmx",
           namespace: "http://refdatabase.refdata.ch/",

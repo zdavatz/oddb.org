@@ -143,7 +143,7 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 
 Refdata migrated their platform on 2026-04-01. The Partner SOAP service now requires:
 - **Endpoint**: `https://api.refdata.ch/partner/1.0/Partner.asmx` (was `refdatabase.refdata.ch/Service/Partner.asmx`)
-- **Authentication**: `X-API-Key` HTTP header, read from the `REFDATA_API_KEY` environment variable
+- **Authentication**: `X-API-Key` HTTP header, read from `refdata_api_key` in `etc/oddb.yml` (falls back to `REFDATA_API_KEY` env var)
 - Register at [developer.refdata.ch](https://developer.refdata.ch) to obtain an API key
 - Used by `src/plugin/refdata_jur.rb` (companies) and `src/plugin/refdata_nat.rb` (doctors)
 
