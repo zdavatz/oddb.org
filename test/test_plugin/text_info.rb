@@ -606,8 +606,8 @@ Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
         "32917 [\"fr\"] Zyloric®",
         "40858 [\"de\"] Tramal®",
         "40858 [\"fr\"] Tramal®",
-        "40859 [\"fr\"] Tramal®",
-        "43787 [\"fr\"] Tramal®",
+        "40859 [\"de\"] Tramal®",
+        "43787 [\"de\"] Tramal®",
         "43788 [\"de\"] Tramal®"], @plugin.updated_fis)
       assert_equal(0, @plugin.updated_pis.size, "nr updated pis must match")
       assert_equal([], @plugin.pis_are_up2date, "pis_are_up2date must match")
@@ -677,6 +677,10 @@ Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
 
     def test_import_daily_packungen
       @options[:target] = :pi
+      @latest_from = File.join(ODDB::TEST_DATA_DIR, "xlsx", "Packungen-2021.04.01.xlsx")
+      latest_to = File.join(ODDB::WORK_DIR, "xls", "Packungen-latest.xlsx")
+      FileUtils.mkdir_p(File.dirname(latest_to))
+      FileUtils.cp(@latest_from, latest_to, verbose: false, preserve: true)
       prepare_plugin(remove_details: true)
       @plugin.import_swissmedicinfo(@options)
       # Add tests that patinfo gets updated
