@@ -50,7 +50,7 @@ module ODDB
     </DownloadPartnerInput>
   </soap:Body>
 </soap:Envelope>)
-        response = @client.call(:download, xml: soap)
+        response = @client.call(:download, xml: soap, soap_action: "http://refdatabase.refdata.ch/Download")
 
         if response.success? && (xml = response.to_xml)
           FileUtils.makedirs(File.dirname(file2save))
@@ -59,7 +59,7 @@ module ODDB
         else
           raise Timeout::Error
         end
-      rescue Timeout::Error, Errno::ETIMEDOUT
+      rescue Timeout::Error, Errno::ETIMEDOUT, Savon::SOAPFault
         retries -= 1
         retry if retries > 0
         raise
