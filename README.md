@@ -39,6 +39,9 @@ The app uses [Swiyu](https://www.eid.admin.ch/en/swiyu) wallet-based authenticat
 ### BSV FHIR Import
 The BSV SL (Spezialitätenliste) data is imported from FHIR NDJSON exports via `jobs/import_bsv_fhir`. The FHIR data follows the [ch-epl Implementation Guide](https://fhir.ch/ig/ch-epl/index.html). As of the Feb 2026 IG update, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` resources.
 
+### Refdata Partner API
+Refdata migrated their platform on 2026-04-01. The Partner SOAP service (used for company and doctor imports) now requires the `REFDATA_API_KEY` environment variable. Register at [developer.refdata.ch](https://developer.refdata.ch) to obtain a key.
+
 ### Stale PostgreSQL Connections
 If the app crashes with `PQsocket() can't get socket descriptor`, the ODBA connection pool holds dead database connections. A monkey-patch in `src/util/odba_connection_patch.rb` automatically detects stale connections and reconnects with up to 3 retries. This handles PostgreSQL restarts, idle timeouts, and other connection drops transparently.
 

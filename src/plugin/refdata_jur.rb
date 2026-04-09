@@ -34,10 +34,17 @@ module ODDB
 
     def self.download_partners_xml
       xml = nil
+      retries = 3
       begin
         file2save = File.join(ODDB::WORK_DIR, "xml", "refdata_jur.xml")
         FileUtils.rm_f(file2save, verbose: false)
-        @client = Savon.client(wsdl: "https://refdatabase.refdata.ch/Service/Partner.asmx?WSDL")
+        api_key = ENV["REFDATA_API_KEY"]
+        raise "REFDATA_API_KEY environment variable not set. Register at developer.refdata.ch to obtain a key." if api_key.to_s.empty?
+        @client = Savon.client(
+          endpoint: "https://api.refdata.ch/partner/1.0/Partner.asmx",
+          namespace: "http://refdatabase.refdata.ch/",
+          headers: {"X-API-Key" => api_key}
+        )
         # TYPE Search Type
         # PTYPE Partner Type, JUR or NAT
         # Search Term dependant of the search type: DATE -> mutationDate (dd.MM.yyyy), GLN -> Gln, NAME -> Name
@@ -60,7 +67,9 @@ module ODDB
           raise Timeout::Error
         end
       rescue Timeout::Error, Errno::ETIMEDOUT
-        retrievable? ? retry : raise
+        retries -= 1
+        retry if retries > 0
+        raise
       end
       xml
     end

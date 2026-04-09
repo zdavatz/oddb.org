@@ -139,6 +139,14 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
   ```
   For example: `bundle exec ruby jobs/rebuild_indices sequence_index`
 
+### Refdata Partner API
+
+Refdata migrated their platform on 2026-04-01. The Partner SOAP service now requires:
+- **Endpoint**: `https://api.refdata.ch/partner/1.0/Partner.asmx` (was `refdatabase.refdata.ch/Service/Partner.asmx`)
+- **Authentication**: `X-API-Key` HTTP header, read from the `REFDATA_API_KEY` environment variable
+- Register at [developer.refdata.ch](https://developer.refdata.ch) to obtain an API key
+- Used by `src/plugin/refdata_jur.rb` (companies) and `src/plugin/refdata_nat.rb` (doctors)
+
 ### Configuration
 
 - `etc/oddb.yml` — primary app config (loaded via RCLConf)
