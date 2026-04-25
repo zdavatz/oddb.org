@@ -108,6 +108,8 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - Core implementation in `src/plugin/bsv_fhir.rb` (`BsvFhirPlugin`)
 - FHIR data follows the [ch-epl IG](https://fhir.ch/ig/ch-epl/index.html). As of Feb 2026, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` (type code `756000002003`). The `extract_prices` method navigates: `RegulatedAuthorization.extension[reimbursementSL].extension[productPrice]`.
 - Price type codes: `756002005001` = public (retail), `756002005002` = ex-factory
+- **Per-language NDJSON** (April 2026): downloads three files directly from `epl.bag.admin.ch/static/fhir/foph-sl-export-latest-{de,fr,it}.ndjson`. Each file contains a single language of free-text content (limitation texts, descriptions). The de file is processed as primary; fr/it files are pre-loaded into a SwissmedicNo8-keyed index so `merge_translation_names` and `merge_translation_limitations` can populate FR/IT translations per pack. SwissmedicNo8 is used as the lookup key (not iksnr) because a single iksnr can span many bundles (one per dose variant).
+- Swissmedic category codes: `756005022001`=A, `756005022003`=B, `756005022008`=D
 - NDJSON files are stored in `data/ndjson/`
 
 ### SDIF Drug Interactions

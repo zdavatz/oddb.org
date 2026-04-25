@@ -12,7 +12,6 @@ require "delegate"
 require "drb"
 require "fileutils"
 require "json"
-require "mechanize"
 require "model/text"
 require "net/http"
 require "uri"
@@ -25,6 +24,7 @@ require "util/logfile"
 module ODDB
   class BsvFhirPlugin < BsvXmlPlugin
     FHIR_BASE_URL = "https://epl.bag.admin.ch/static/fhir/".freeze
+    FHIR_LANGUAGES = [:de, :fr, :it].freeze
 
     # FHIR code mappings to existing XML equivalents
     PRODUCT_TYPE_MAP = {
@@ -71,7 +71,7 @@ module ODDB
     }.freeze
 
     def initialize(*args)
-      @latest = File.join(ODDB::WORK_DIR, "ndjson", "foph-sl-export-latest.ndjson")
+      @latest = File.join(ODDB::WORK_DIR, "ndjson", "foph-sl-export-latest-de.ndjson")
       super
     end
 
@@ -79,33 +79,51 @@ module ODDB
     def update
       LogFile.append("oddb/debug", " bsv_fhir: getting BsvFhirPlugin.update", Time.now)
 
-      target_url = latest_fhir_export_url
-      unless target_url
-        LogFile.append("oddb/debug", " bsv_fhir: no FHIR export URL found, aborting", Time.now)
+      save_dir = File.join(ODDB::WORK_DIR, "ndjson")
+      paths = {}
+      changed = false
+      FHIR_LANGUAGES.each do |lang|
+        url = "#{FHIR_BASE_URL}foph-sl-export-latest-#{lang}.ndjson"
+        file_name = "foph-sl-export-latest-#{lang}.ndjson"
+        LogFile.append("oddb/debug", " bsv_fhir: target_url = #{url}", Time.now)
+        path = download_ndjson(url, save_dir, file_name)
+        if path
+          changed = true
+          paths[lang] = path
+        else
+          # download_ndjson returns nil when the file is unchanged; reuse the cached copy
+          cached = File.join(save_dir, file_name)
+          paths[lang] = cached if File.exist?(cached)
+        end
+      end
+
+      LogFile.append("oddb/debug", " bsv_fhir: paths = #{paths.inspect}", Time.now)
+
+      unless paths[:de]
+        LogFile.append("oddb/debug", " bsv_fhir: no German FHIR file available, aborting", Time.now)
         return nil
       end
-      @fhir_url = target_url
 
-      save_dir = File.join(ODDB::WORK_DIR, "ndjson")
-      file_name = File.basename(URI.parse(target_url).path)
+      @fhir_url = "#{FHIR_BASE_URL}foph-sl-export-latest-de.ndjson"
 
-      LogFile.append("oddb/debug", " bsv_fhir: target_url = #{target_url}", Time.now)
-      LogFile.append("oddb/debug", " bsv_fhir: save_dir   = #{save_dir}", Time.now)
-
-      path = download_ndjson(target_url, save_dir, file_name)
-      LogFile.append("oddb/debug", " bsv_fhir: path = #{path.inspect}", Time.now)
-
-      if path
-        _update(path)
+      if changed
+        _update(paths)
       end
-      path
+      changed ? paths[:de] : nil
     end
 
-    def _update(path = @latest)
+    def _update(paths = @latest)
+      paths = {de: paths} if paths.is_a?(String)
+      paths = paths.transform_keys(&:to_sym)
+
+      preload_translation_bundles(paths)
+
       LogFile.append("oddb/debug", " bsv_fhir: update_preparations_from_fhir", Time.now)
-      File.open(path, "r:utf-8") do |io|
+      File.open(paths[:de], "r:utf-8") do |io|
         update_preparations_from_fhir(io)
       end
+    ensure
+      @translation_bundles = nil
     end
 
     # Parse the FHIR NDJSON and feed the PreparationsListener-compatible data
@@ -143,23 +161,18 @@ module ODDB
 
     private
 
-    def latest_fhir_export_url
-      agent = Mechanize.new
-      response = agent.get "https://epl.bag.admin.ch/api/sl/public/resources/current"
-      resources = JSON.parse(response.body)
-      "https://epl.bag.admin.ch/static/" + resources["fhir"]["fileUrl"]
-    end
-
+    # Download `target_url` to <save_dir>/<file_name>, replacing the existing
+    # file only if the contents changed. Returns the save path when the file
+    # was updated, nil if it was unchanged or the download failed.
     def download_ndjson(target_url, save_dir, file_name)
       LogFile.append("oddb/debug", " bsv_fhir: getting download_ndjson", Time.now)
 
       FileUtils.mkdir_p(save_dir)
 
       save_file = File.join(save_dir, file_name)
-      latest_file = File.join(save_dir, "foph-sl-export-latest.ndjson")
+      tmp_file = "#{save_file}.tmp"
 
-      LogFile.append("oddb/debug", " bsv_fhir: save_file   = #{save_file}", Time.now)
-      LogFile.append("oddb/debug", " bsv_fhir: latest_file = #{latest_file}", Time.now)
+      LogFile.append("oddb/debug", " bsv_fhir: save_file = #{save_file}", Time.now)
 
       uri = URI.parse(target_url)
       response = Net::HTTP.get_response(uri)
@@ -168,19 +181,14 @@ module ODDB
         return nil
       end
 
-      File.open(save_file, "wb") { |f| f.write(response.body) }
-      LogFile.append("oddb/debug", " bsv_fhir: downloaded #{File.size(save_file)} bytes to #{save_file}", Time.now)
+      File.open(tmp_file, "wb") { |f| f.write(response.body) }
+      LogFile.append("oddb/debug", " bsv_fhir: downloaded #{File.size(tmp_file)} bytes to #{tmp_file}", Time.now)
 
-      LogFile.append("oddb/debug", " bsv_fhir: File.exist?(#{latest_file}) = #{File.exist?(latest_file)}", Time.now)
-      if File.exist?(latest_file)
-        LogFile.append("oddb/debug", " bsv_fhir: FileUtils.compare_file = #{FileUtils.compare_file(save_file, latest_file)}", Time.now)
-      end
-
-      if File.exist?(latest_file) && FileUtils.compare_file(save_file, latest_file)
-        FileUtils.rm_f(save_file, verbose: true)
+      if File.exist?(save_file) && FileUtils.compare_file(tmp_file, save_file)
+        FileUtils.rm_f(tmp_file)
         nil
       else
-        FileUtils.cp(save_file, latest_file, verbose: true)
+        FileUtils.mv(tmp_file, save_file)
         save_file
       end
     rescue EOFError, Errno::ECONNRESET, Net::ReadTimeout => e
@@ -190,26 +198,15 @@ module ODDB
         sleep(10 - retries)
         retry
       else
-        FileUtils.rm_f(save_file) if save_file && File.exist?(save_file)
+        FileUtils.rm_f(tmp_file) if defined?(tmp_file) && tmp_file && File.exist?(tmp_file)
         raise
       end
     end
 
     # Process one FHIR Bundle (= one line in the NDJSON = one Preparation)
     def process_bundle(bundle, origin)
-      entries = bundle["entry"] || []
-      return if entries.empty?
-
-      # Index resources by type and id
-      resources = {}
-      entries.each do |entry|
-        res = entry["resource"]
-        next unless res
-        rtype = res["resourceType"]
-        rid = res["id"]
-        resources[rtype] ||= {}
-        resources[rtype][rid] = res
-      end
+      resources = index_resources_by_type(bundle)
+      return if resources.nil?
 
       # Extract the MedicinalProductDefinition (= Preparation level)
       med_products = resources["MedicinalProductDefinition"] || {}
@@ -225,16 +222,15 @@ module ODDB
 
       # Find the Marketing Authorisation for the product -> SwissmedicNo5
       reg_auths = resources["RegulatedAuthorization"] || {}
-      iksnr = nil
-      product_auth = reg_auths.values.find do |ra|
-        is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("MedicinalProductDefinition/") && !s["reference"].to_s.include?("PackagedProductDefinition/") }
-      end
-      if product_auth
-        iksnr = extract_identifier(product_auth)
-        iksnr = "%05i" % iksnr.to_i if iksnr
-      end
+      iksnr = extract_iksnr_from_reg_auths(reg_auths)
 
       return unless iksnr && iksnr != "00000"
+
+      # Per-language NDJSON files contain only one language of free-text content
+      # per bundle (limitation texts, descriptions). Look up the matching FR/IT
+      # bundles by SwissmedicNo8 and merge translated product names into `names`.
+      bundle_no8s = extract_swissmedic_no8s(resources)
+      merge_translation_names(names, bundle_no8s)
 
       # Find registration
       registration = @app.registration(iksnr)
@@ -401,7 +397,8 @@ module ODDB
           end
 
           # Limitations from indication[].extension[regulatedAuthorization-limitation]
-          lim_data = extract_limitation_data(reimbursement, names, it_codes)
+          lim_data = extract_limitation_data(reimbursement, names, it_codes, :de)
+          merge_translation_limitations(lim_data, swissmedic_no8, names, it_codes)
           if !lim_data.empty?
             sl_data[:limitation] = true
           end
@@ -643,6 +640,140 @@ module ODDB
 
     # ---- FHIR Resource extraction helpers (cont.) ----
 
+    # Index a FHIR Bundle's entry resources by type and id.
+    # Returns nil if the bundle is empty.
+    def index_resources_by_type(bundle)
+      entries = bundle["entry"] || []
+      return nil if entries.empty?
+      resources = {}
+      entries.each do |entry|
+        res = entry["resource"]
+        next unless res
+        rtype = res["resourceType"]
+        rid = res["id"]
+        resources[rtype] ||= {}
+        resources[rtype][rid] = res
+      end
+      resources
+    end
+
+    def extract_iksnr_from_reg_auths(reg_auths)
+      product_auth = reg_auths.values.find do |ra|
+        is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("MedicinalProductDefinition/") && !s["reference"].to_s.include?("PackagedProductDefinition/") }
+      end
+      return nil unless product_auth
+      iksnr = extract_identifier(product_auth)
+      iksnr ? "%05i" % iksnr.to_i : nil
+    end
+
+    # Pre-load the FR and IT NDJSON files into a hash keyed by SwissmedicNo8 so
+    # `process_bundle` can look up matching translated bundles when iterating
+    # the de file. Each bundle is indexed under every SwissmedicNo8 it contains
+    # because a single iksnr can span many bundles (one per dose variant).
+    # The de path is skipped — its bundles are streamed directly.
+    def preload_translation_bundles(paths)
+      @translation_bundles = {}
+      FHIR_LANGUAGES.each do |lang|
+        next if lang == :de
+        path = paths[lang]
+        next unless path && File.exist?(path)
+        index = {}
+        bundle_count = 0
+        File.open(path, "r:utf-8") do |io|
+          io.each_line do |line|
+            line.strip!
+            next if line.empty?
+            bundle = begin
+              JSON.parse(line)
+            rescue JSON::ParserError
+              next
+            end
+            resources = index_resources_by_type(bundle)
+            next unless resources
+            no8s = extract_swissmedic_no8s(resources)
+            next if no8s.empty?
+            no8s.each { |no8| index[no8] = bundle }
+            bundle_count += 1
+          end
+        end
+        @translation_bundles[lang] = index
+        LogFile.append("oddb/debug", " bsv_fhir: pre-loaded #{bundle_count} #{lang} bundles (#{index.size} no8 keys)", Time.now)
+      end
+    end
+
+    def extract_swissmedic_no8s(resources)
+      reg_auths = resources["RegulatedAuthorization"] || {}
+      no8s = []
+      reg_auths.values.each do |ra|
+        next unless is_marketing_auth?(ra)
+        next unless (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("PackagedProductDefinition/") }
+        v = extract_identifier(ra)
+        no8s << v if v
+      end
+      no8s
+    end
+
+    # Merge translated product names from FR/IT bundles into `names`. Uses the
+    # first available SwissmedicNo8 from the de bundle as lookup key.
+    def merge_translation_names(names, no8_lookup_keys)
+      return unless @translation_bundles
+      return if no8_lookup_keys.empty?
+      FHIR_LANGUAGES.each do |lang|
+        next if lang == :de
+        index = @translation_bundles[lang] or next
+        trans_bundle = no8_lookup_keys.lazy.map { |k| index[k] }.find { |b| b }
+        next unless trans_bundle
+        trans_resources = index_resources_by_type(trans_bundle)
+        next unless trans_resources
+        trans_med = (trans_resources["MedicinalProductDefinition"] || {}).values.first
+        next unless trans_med
+        trans_names = extract_names(trans_med)
+        translated = trans_names[lang] || trans_names[:de] || trans_names.values.compact.first
+        names[lang] = translated if translated
+      end
+    end
+
+    # Merge translated limitation chapters from FR/IT bundles into `lim_data`
+    # by looking up the bundle that contains a matching SwissmedicNo8.
+    def merge_translation_limitations(lim_data, swissmedic_no8, names, it_codes)
+      return unless @translation_bundles
+      return unless swissmedic_no8
+      FHIR_LANGUAGES.each do |lang|
+        next if lang == :de
+        trans_bundle = @translation_bundles.dig(lang, swissmedic_no8)
+        next unless trans_bundle
+        trans_resources = index_resources_by_type(trans_bundle)
+        next unless trans_resources
+        trans_reimbursement = find_reimbursement_for_pack(trans_resources, swissmedic_no8)
+        next unless trans_reimbursement
+        extract_limitation_data(trans_reimbursement, names, it_codes, lang, lim_data)
+      end
+    end
+
+    # Find the reimbursement-SL RegulatedAuthorization in `resources` whose
+    # subject references the PackagedProductDefinition with the given
+    # SwissmedicNo8 (looked up via its marketing authorization).
+    def find_reimbursement_for_pack(resources, swissmedic_no8)
+      reg_auths = resources["RegulatedAuthorization"] || {}
+      packaged_products = resources["PackagedProductDefinition"] || {}
+
+      ppd_id = nil
+      packaged_products.each_key do |id|
+        marketing = reg_auths.values.find do |ra|
+          is_marketing_auth?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("PackagedProductDefinition/#{id}") }
+        end
+        if marketing && extract_identifier(marketing) == swissmedic_no8
+          ppd_id = id
+          break
+        end
+      end
+      return nil unless ppd_id
+
+      reg_auths.values.find do |ra|
+        is_reimbursement_sl?(ra) && (ra["subject"] || []).any? { |s| s["reference"].to_s.include?("PackagedProductDefinition/#{ppd_id}") }
+      end
+    end
+
     def extract_names(med_product)
       names = {}
       (med_product["name"] || []).each do |name_entry|
@@ -691,10 +822,12 @@ module ODDB
     end
 
     # Extract limitation data from RegulatedAuthorization indication extensions.
-    # Builds Text::Chapter objects per language, matching the XML plugin's
-    # lim_data format: { de: Text::Chapter, fr: Text::Chapter, it: Text::Chapter }
-    def extract_limitation_data(regulated_auth, names, it_codes)
-      lim_data = {}
+    # Builds a Text::Chapter for the given lang_key (default :de), matching the
+    # XML plugin's lim_data format: { de: Text::Chapter, fr: Text::Chapter, it: Text::Chapter }.
+    # Per-language NDJSON files contain only one language of text per bundle, so
+    # callers pass the language matching the source file. Pass an existing
+    # `lim_data` hash to merge additional languages into.
+    def extract_limitation_data(regulated_auth, names, it_codes, lang_key = :de, lim_data = {})
       indications = regulated_auth["indication"] || []
       return lim_data if indications.empty?
 
@@ -716,8 +849,6 @@ module ODDB
 
           next unless limitation_text && !limitation_text.empty?
 
-          # Build a subheading from the indication code + IT code description,
-          # matching how the XML plugin builds limitation text with IT code context
           subheading = nil
           if indication_code && it_codes && !it_codes.empty?
             it_desc = it_codes.max_by { |c| c[:code].length }
@@ -726,10 +857,7 @@ module ODDB
             subheading = indication_code
           end
 
-          # The XML plugin stores limitation texts per language (de/fr/it).
-          # The FHIR export only provides a single language text.
-          # We store it as :de (German) which is the primary language.
-          chp = lim_data[:de] ||= Text::Chapter.new
+          chp = lim_data[lang_key] ||= Text::Chapter.new
           sec = chp.next_section
           if subheading
             sec.subheading += subheading.to_s + "\n"

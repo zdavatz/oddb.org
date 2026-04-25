@@ -37,7 +37,7 @@ Tables from swissmedicinfo are parsed by `detect_table?` in `ext/fiparse/src/tex
 The app uses [Swiyu](https://www.eid.admin.ch/en/swiyu) wallet-based authentication (OID4VP). After exceeding the 5-search query limit, users are prompted to log in. The login flow passes a `return_url` parameter so users are redirected back to their last search result after authentication.
 
 ### BSV FHIR Import
-The BSV SL (Spezialitätenliste) data is imported from FHIR NDJSON exports via `jobs/import_bsv_fhir`. The FHIR data follows the [ch-epl Implementation Guide](https://fhir.ch/ig/ch-epl/index.html). As of the Feb 2026 IG update, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` resources.
+The BSV SL (Spezialitätenliste) data is imported from FHIR NDJSON exports via `jobs/import_bsv_fhir`. The FHIR data follows the [ch-epl Implementation Guide](https://fhir.ch/ig/ch-epl/index.html). As of the Feb 2026 IG update, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` resources. As of April 2026, the import downloads three per-language NDJSON files directly (`foph-sl-export-latest-{de,fr,it}.ndjson`) so French and Italian product names and limitation texts are populated alongside the German source.
 
 ### Refdata Partner API
 Refdata migrated their platform on 2026-04-01. The Partner SOAP service (used for company and doctor imports) requires an API key. Set `refdata_api_key` in `etc/oddb.yml` (or the `REFDATA_API_KEY` env var). Register at [developer.refdata.ch](https://developer.refdata.ch) to obtain a key.
