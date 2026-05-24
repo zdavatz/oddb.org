@@ -128,7 +128,7 @@ module ODDB
       @package_no_changes.should_receive(:shortage_state).and_return("aktuell keine Lieferungen")
       @package_no_changes.should_receive(:shortage_last_update).and_return("2017-01-13")
       @package_no_changes.should_receive(:shortage_delivery_date).and_return("offen")
-      @package_no_changes.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680519690140")
+      @package_no_changes.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2786")
       @package_never_in_short = add_mock_package("package_never_in_short", TestGtinNeverShortage)
       @package_deleted_in_short = add_mock_package("package_deleted_in_short", TestGtinNoShortage)
       @package_new_in_short = add_mock_package("package_never_in_short", TestGtinShortage)
@@ -153,7 +153,7 @@ module ODDB
     def expected_test_result
       @plugin.duration_in_secs = 25
       %(Update job took #{sprintf("%3i", @plugin.duration_in_secs)} seconds
-Found             2 shortages in https://www.drugshortage.ch/api_suche.php?q=%25
+Found             2 shortages in https://www.drugshortage.ch/api_engpaesse.php
 Deleted           2 shortages
 Changed           2 shortages
 Found             2 nomarketings packages for
@@ -184,10 +184,10 @@ IKSNR not found in oddb database:
 DrugShortag changes:
 7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-02-22
               shortage_delivery_date: shortage_delivery_date => 2024
-              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680623550019
+              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2934
 7680519690140;atc;pack_mock shortage_last_update: shortage_state => 2017-01-13
               shortage_delivery_date: shortage_delivery_date => 2024
-              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680519690140
+              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2786
 
 DrugShortag deletions:
 7680490590777;atc;name
@@ -203,8 +203,8 @@ DrugShortag deletions:
     def test_changes_with_test_file
       @plugin.update(@agent)
       expected = {
-        "7680623550019;atc;pack_mock" => ["shortage_last_update: shortage_state => 2017-02-22", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680623550019"],
-        "7680519690140;atc;pack_mock" => ["shortage_last_update: shortage_state => 2017-01-13", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680519690140"]
+        "7680623550019;atc;pack_mock" => ["shortage_last_update: shortage_state => 2017-02-22", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2934"],
+        "7680519690140;atc;pack_mock" => ["shortage_last_update: shortage_state => 2017-01-13", "shortage_delivery_date: shortage_delivery_date => 2024", "shortage_link: shortage_link => https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2786"]
       }
       assert_equal(expected, @plugin.changes_shortages)
     end
@@ -213,7 +213,7 @@ DrugShortag deletions:
       lines = content.split("\n")
       assert_equal("GTIN;ATC-Code;Präparatbezeichnung;Datum der Meldung (Swissmedic);Nicht-Inverkehrbringen ab (Swissmedic);Vertriebsunterbruch ab (Swissmedic);Link (Swissmedic);Datum letzte Mutation (Drugshortage);Status (Drugshortage);Datum Lieferfähigkeit (Drugshortage);Link (Drugshortage)",
         lines.first.strip)
-      assert(lines.find { |line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;2024;https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680519690140") },
+      assert(lines.find { |line| line.strip.eql?("7680519690140;atc;pack_mock;;;;;2017-01-13;aktuell keine Lieferungen;2024;https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2786") },
         "Must find a shortage search URL")
     end
 
@@ -242,9 +242,9 @@ DrugShortag deletions:
       @package_changed_7680623550019.should_receive(:shortage_last_update).and_return(Date.new(2017, 0o2, 24))
       @package_changed_7680623550019.should_receive(:shortage_delivery_date).and_return("offen")
       if add_date_change
-        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680623550019")
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2934")
       else
-        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680623550019")
+        @package_changed_7680623550019.should_receive(:shortage_link).and_return("https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2934")
       end
       @app.should_receive(:package_by_ean13).with("7680623550019").and_return(@package_changed_7680623550019)
       @app.should_receive(:package_by_ean13).with("7680519690140").and_return(@package_no_changes)
@@ -302,7 +302,7 @@ DrugShortag deletions:
       expected = %(DrugShortag changes:
 7680623550019;atc;pack_mock shortage_last_update: shortage_state => 2017-04-22
               shortage_delivery_date: shortage_delivery_date => 2024
-              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=7680623550019
+              shortage_link: shortage_link => https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=2934
 )
       assert(result.index(expected))
       FileUtils.rm_f(@plugin.latest_shortage)

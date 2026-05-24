@@ -18,9 +18,10 @@ module ODDB
     BASE_URI = "https://www.drugshortage.ch"
     # drugshortage.ch migrated from ASP.NET to WordPress in 2026. The old
     # UebersichtaktuelleLieferengpaesse2.aspx now returns HTTP 500. The new
-    # site exposes a JSON search API; q=% returns every record in one call.
-    SOURCE_URI = BASE_URI + "/api_suche.php?q=%25"
-    SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/suche-aktuelle-lieferengpaesse-2/?q="
+    # site exposes JSON APIs; api_engpaesse.php is the "show all current
+    # shortages" endpoint backing the uebersicht-nach-firmen page.
+    SOURCE_URI = BASE_URI + "/api_engpaesse.php"
+    SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/detail-lieferengpass/?ID="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
 
     def initialize app, opts = {reparse: false}
@@ -186,11 +187,9 @@ module ODDB
       content = File.open(@latest_shortage, "r:UTF-8", &:read)
       puts "content is #{content.size} long and #{content.encoding}."
       data = JSON.parse(content)
-      records = data["resultate"] || []
+      records = data["engpaesse"] || []
       gtin_regex = /^\d{13}$/
-      @shortages = records.find_all do |r|
-        gtin_regex.match(r["gtin"].to_s) && r["status"].to_s !~ /\A0\z/
-      end
+      @shortages = records.find_all { |r| gtin_regex.match(r["gtin"].to_s) }
       if @shortages.size == 0
         puts(msg = "unable to parse #{SOURCE_URI} via #{@latest_shortage} #{File.size(@latest_shortage)} bytes — found 0 records with gtin in #{records.size} entries")
         raise msg
@@ -198,11 +197,10 @@ module ODDB
       @shortages.each do |record|
         added_info = OpenStruct.new
         added_info.gtin = record["gtin"]
-        last_update_raw = record["mutation"] || record["ersteMeldung"]
-        added_info.shortage_last_update = Date.strptime(last_update_raw, "%d.%m.%Y").to_s
+        added_info.shortage_last_update = Date.strptime(record["mutation"], "%d.%m.%Y").to_s
         added_info.shortage_state = record["status"].to_s
         added_info.shortage_delivery_date = record["lieferdatum"].to_s
-        added_info.shortage_link = SHORTAGE_DETAIL_URL + added_info.gtin
+        added_info.shortage_link = SHORTAGE_DETAIL_URL + record["id"].to_s
         @found_shortages[added_info.gtin] = added_info
       end
       old_packages_with_shortage = @app.active_packages.find_all do |package|

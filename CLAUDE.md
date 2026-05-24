@@ -145,11 +145,10 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 
 - Imports current Swiss drug shortages from drugshortage.ch into the `shortage_*` fields on `Package` objects (`shortage_state`, `shortage_last_update`, `shortage_delivery_date`, `shortage_link`)
 - Core implementation in `src/plugin/shortage.rb` (`ShortagePlugin`)
-- **May 2026 migration**: drugshortage.ch retired its ASP.NET `UebersichtaktuelleLieferengpaesse2.aspx` page (now returns HTTP 500) and switched to a WordPress site with a JSON search API. The plugin now fetches `https://www.drugshortage.ch/api_suche.php?q=%25` — passing `q=%` returns every record (~775) in a single JSON call.
-- JSON field mapping: `gtin` → `gtin`, `mutation` (DD.MM.YYYY) → `shortage_last_update`, `status` → `shortage_state`, `lieferdatum` → `shortage_delivery_date`. Records with `status == "0"` are filtered out (cleared shortages).
-- **`shortage_link`** is now constructed as `https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=<gtin>` (search page filtered by GTIN), because the new site has no per-shortage detail URL like the old `detail_lieferengpass.aspx?ID=...`.
+- **May 2026 migration**: drugshortage.ch retired its ASP.NET `UebersichtaktuelleLieferengpaesse2.aspx` page (now returns HTTP 500) and switched to a WordPress site with JSON APIs. The plugin fetches `https://www.drugshortage.ch/api_engpaesse.php` — the official "show all current shortages" endpoint backing the `uebersicht-nach-firmen` page. Returns ~713 active shortages as JSON in a single call, under the top-level `engpaesse` key.
+- JSON field mapping: `gtin` → `gtin`, `mutation` (DD.MM.YYYY) → `shortage_last_update`, `status` → `shortage_state`, `lieferdatum` → `shortage_delivery_date`, `id` → used to construct `shortage_link`.
+- **`shortage_link`** is constructed as `https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=<id>` where `<id>` is the stable upstream record id from `engpaesse[].id`. This is the new per-shortage detail page (replaces the old `detail_lieferengpass.aspx?ID=...`).
 - Change-detection still uses `Latest.get_latest_file`'s byte-size comparison (`src/util/latest.rb`); fresh fetch is skipped if today's downloaded size matches the cached `data/json/drugshortage-latest.json`.
-- Watch out for `%` in `SOURCE_URI`: never embed it via string interpolation into a `sprintf` format string — pass it as a `%s` argument instead. `%25` gets parsed as a malformed format directive otherwise.
 
 ### Refdata Partner API
 

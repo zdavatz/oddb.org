@@ -1,45 +1,46 @@
 {
-  "q": "%",
-  "anzahl": 2,
-  "resultate": [
+  "anzahlPackungen": 3,
+  "anzahlProdukte": 3,
+  "engpaesse": [
     {
       "id": 2934,
-      "pharmacode": "6198724",
-      "gtin": "7680623550019",
       "bezeichnung": "ALENDRON D3-Mepha Wochentabl 70/5600 12 Stk",
       "firma": "Mepha Pharma AG",
-      "bewertung": 1,
-      "ersteMeldung": "22.02.2017",
-      "lieferdatum": "2024",
       "status": "aktuell keine Lieferungen",
-      "bemerkungen": "Aktualisiert",
-      "mutation": "22.04.2017"
+      "gtin": "7680623550019",
+      "pharmacode": "6198724",
+      "atc": "M05BB03",
+      "tage": 360,
+      "lieferdatum": "2024",
+      "mutation": "22.04.2017",
+      "bewertung": 1,
+      "bemerkungen": "Aktualisiert"
     },
     {
       "id": 3056,
-      "pharmacode": "5421047",
-      "gtin": "762860504332",
       "bezeichnung": "ALENDRONAT Sandoz Filmtabl 70 mg 12 Stk",
       "firma": "Sandoz Pharmaceuticals AG",
-      "bewertung": 1,
-      "ersteMeldung": "14.04.2017",
-      "lieferdatum": "2024",
       "status": "aktuell keine Lieferungen",
-      "bemerkungen": null,
-      "mutation": "14.04.2017"
+      "gtin": "762860504332",
+      "pharmacode": "5421047",
+      "atc": "M05BA04",
+      "tage": 250,
+      "lieferdatum": "2024",
+      "mutation": "14.04.2017",
+      "bewertung": 1
     },
     {
       "id": 2786,
-      "pharmacode": "3145147",
-      "gtin": "7680519690140",
       "bezeichnung": "ALGIFOR Filmtabl 200 mg 20 Stk",
       "firma": "Vifor Consumer Health SA",
-      "bewertung": 1,
-      "ersteMeldung": "13.01.2017",
-      "lieferdatum": "2024",
       "status": "aktuell keine Lieferungen",
-      "bemerkungen": null,
-      "mutation": "13.01.2017"
+      "gtin": "7680519690140",
+      "pharmacode": "3145147",
+      "atc": "M01AE01",
+      "tage": 350,
+      "lieferdatum": "2024",
+      "mutation": "13.01.2017",
+      "bewertung": 1
     }
   ]
 }
