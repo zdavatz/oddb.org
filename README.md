@@ -42,6 +42,9 @@ The BSV SL (Spezialitätenliste) data is imported from FHIR NDJSON exports via `
 ### Refdata Partner API
 Refdata migrated their platform on 2026-04-01. The Partner SOAP service (used for company and doctor imports) requires an API key. Set `refdata_api_key` in `etc/oddb.yml` (or the `REFDATA_API_KEY` env var). Register at [developer.refdata.ch](https://developer.refdata.ch) to obtain a key.
 
+### Drug Shortage Import
+`jobs/update_drugshortage` imports current Swiss drug shortages from [drugshortage.ch](https://www.drugshortage.ch). In May 2026 the upstream site migrated from an ASP.NET HTML page to a WordPress + JSON API; the plugin now fetches `https://www.drugshortage.ch/api_suche.php?q=%25` (returns all records as JSON) and parses `gtin`, `mutation`, `status`, `lieferdatum` per record. Per-shortage detail URLs no longer exist upstream, so `shortage_link` now points at the search page filtered by GTIN. Cached fixture lives at `data/json/drugshortage-latest.json`.
+
 ### Stale PostgreSQL Connections
 If the app crashes with `PQsocket() can't get socket descriptor`, the ODBA connection pool holds dead database connections. A monkey-patch in `src/util/odba_connection_patch.rb` automatically detects stale connections and reconnects with up to 3 retries. This handles PostgreSQL restarts, idle timeouts, and other connection drops transparently.
 

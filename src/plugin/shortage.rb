@@ -9,13 +9,18 @@ require "mechanize"
 require "drb"
 require "util/latest"
 require "date"
+require "json"
 require "simple_xlsx_reader"
 require "csv"
 
 module ODDB
   class ShortagePlugin < Plugin
     BASE_URI = "https://www.drugshortage.ch"
-    SOURCE_URI = BASE_URI + "/UebersichtaktuelleLieferengpaesse2.aspx"
+    # drugshortage.ch migrated from ASP.NET to WordPress in 2026. The old
+    # UebersichtaktuelleLieferengpaesse2.aspx now returns HTTP 500. The new
+    # site exposes a JSON search API; q=% returns every record in one call.
+    SOURCE_URI = BASE_URI + "/api_suche.php?q=%25"
+    SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/suche-aktuelle-lieferengpaesse-2/?q="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
 
     def initialize app, opts = {reparse: false}
@@ -23,7 +28,7 @@ module ODDB
       @@logInfo = []
       @options = opts
       @options ||= {}
-      @latest_shortage = File.join(ODDB::WORK_DIR, "html/drugshortage-latest.html")
+      @latest_shortage = File.join(ODDB::WORK_DIR, "json/drugshortage-latest.json")
       @latest_nomarketing = File.join(ODDB::WORK_DIR, "data/xlsx/nomarketing-latest.xlsx")
       @csv_file_path = File.join(ODDB::EXPORT_DIR, "drugshortage.csv")
       @yesterday_csv_file_path = File.join(ODDB::EXPORT_DIR, "drugshortage-#{(@@today - 1).strftime("%Y.%m.%d")}.csv")
@@ -129,7 +134,7 @@ module ODDB
         return
       end
       @report_shortage = []
-      @report_summary << sprintf("Found           %3i shortages in #{SOURCE_URI}", @found_shortages.size)
+      @report_summary << sprintf("Found           %3i shortages in %s", @found_shortages.size, SOURCE_URI)
       @report_summary << sprintf("Deleted         %3i shortages", @deleted_shortages.size)
       @report_summary << sprintf("Changed         %3i shortages", @changes_shortages.size)
       @report_shortage << "\nDrugShortag changes:"
@@ -179,30 +184,25 @@ module ODDB
       return unless latest
       puts "\nupdate_drugshortage latest is #{latest}  #{latest && File.exist?(latest)} @latest_shortage #{@latest_shortage} #{File.exist?(@latest_shortage)}"
       content = File.open(@latest_shortage, "r:UTF-8", &:read)
-      puts "content is #{content.size} long and #{content.encoding}. Using Nokogiri::VERSION #{Nokogiri::VERSION} RUBY_VERSION #{RUBY_VERSION}"
-      page = Nokogiri::HTML(content)
+      puts "content is #{content.size} long and #{content.encoding}."
+      data = JSON.parse(content)
+      records = data["resultate"] || []
       gtin_regex = /^\d{13}$/
-      @shortages = page.css("td").find_all { |x| gtin_regex.match(x.text) }
+      @shortages = records.find_all do |r|
+        gtin_regex.match(r["gtin"].to_s) && r["status"].to_s !~ /\A0\z/
+      end
       if @shortages.size == 0
-        puts "Page has #{page.css("td").size} TD elements found via css"
-        puts "Dumping TD is"
-        puts page.css("td").collect { |x| x.text }
-        puts "Page is "
-        puts page.elements.first.text
-        puts(msg = "unable to parse #{SOURCE_URI} via #{@latest_shortage}  #{File.size(@latest_shortage)} page has #{page.elements.size} elements")
+        puts(msg = "unable to parse #{SOURCE_URI} via #{@latest_shortage} #{File.size(@latest_shortage)} bytes — found 0 records with gtin in #{records.size} entries")
         raise msg
       end
-      @shortages.each do |shortage|
+      @shortages.each do |record|
         added_info = OpenStruct.new
-        if shortage.parent.css("td").size != 11 && shortage.parent.css("td").size != 27
-          raise "Unable to parse #{shortage.text} in #{SOURCE_URI}. Found only #{shortage.parent.css("td").size} tds"
-        end
-        added_info.gtin = shortage.text
-        shortage.parent.text.split("\n")
-        added_info.shortage_last_update = Date.strptime(shortage.parent.css("td")[4].text, "%d.%m.%Y").to_s
-        added_info.shortage_state = shortage.parent.css("td")[3].text
-        added_info.shortage_delivery_date = shortage.parent.css("td")[1].text
-        added_info.shortage_link = shortage.parent.css("td")[0].children.first.attributes.first.last.value.clone
+        added_info.gtin = record["gtin"]
+        last_update_raw = record["mutation"] || record["ersteMeldung"]
+        added_info.shortage_last_update = Date.strptime(last_update_raw, "%d.%m.%Y").to_s
+        added_info.shortage_state = record["status"].to_s
+        added_info.shortage_delivery_date = record["lieferdatum"].to_s
+        added_info.shortage_link = SHORTAGE_DETAIL_URL + added_info.gtin
         @found_shortages[added_info.gtin] = added_info
       end
       old_packages_with_shortage = @app.active_packages.find_all do |package|

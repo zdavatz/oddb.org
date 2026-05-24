@@ -141,6 +141,16 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
   ```
   For example: `bundle exec ruby jobs/rebuild_indices sequence_index`
 
+### Drug Shortage Import (`jobs/update_drugshortage`)
+
+- Imports current Swiss drug shortages from drugshortage.ch into the `shortage_*` fields on `Package` objects (`shortage_state`, `shortage_last_update`, `shortage_delivery_date`, `shortage_link`)
+- Core implementation in `src/plugin/shortage.rb` (`ShortagePlugin`)
+- **May 2026 migration**: drugshortage.ch retired its ASP.NET `UebersichtaktuelleLieferengpaesse2.aspx` page (now returns HTTP 500) and switched to a WordPress site with a JSON search API. The plugin now fetches `https://www.drugshortage.ch/api_suche.php?q=%25` — passing `q=%` returns every record (~775) in a single JSON call.
+- JSON field mapping: `gtin` → `gtin`, `mutation` (DD.MM.YYYY) → `shortage_last_update`, `status` → `shortage_state`, `lieferdatum` → `shortage_delivery_date`. Records with `status == "0"` are filtered out (cleared shortages).
+- **`shortage_link`** is now constructed as `https://www.drugshortage.ch/index.php/suche-aktuelle-lieferengpaesse-2/?q=<gtin>` (search page filtered by GTIN), because the new site has no per-shortage detail URL like the old `detail_lieferengpass.aspx?ID=...`.
+- Change-detection still uses `Latest.get_latest_file`'s byte-size comparison (`src/util/latest.rb`); fresh fetch is skipped if today's downloaded size matches the cached `data/json/drugshortage-latest.json`.
+- Watch out for `%` in `SOURCE_URI`: never embed it via string interpolation into a `sprintf` format string — pass it as a `%s` argument instead. `%25` gets parsed as a malformed format directive otherwise.
+
 ### Refdata Partner API
 
 Refdata migrated their platform on 2026-04-01. The Partner SOAP service now requires:
