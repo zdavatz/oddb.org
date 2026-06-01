@@ -104,6 +104,7 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 
 ### BSV FHIR Import (`jobs/import_bsv_fhir`)
 
+- **Default source (June 2026):** `jobs/import_bsv` now runs the FHIR NDJSON import (`update_bsv_fhir`) by default, mirroring oddb2xml. Pass `--no-fhir` to fall back to the legacy XML (`XMLPublications.zip` / `update_bsv`) path. `jobs/import_bsv_fhir` remains as an explicit FHIR alias; `jobs/import_bsv_only` is the legacy XML-only job. Limitation flags and limitation texts (incl. FR/IT translations) are imported the same way as the XML path.
 - Imports SL (Spezialitätenliste) data from FHIR NDJSON exports downloaded from `epl.bag.admin.ch`
 - Core implementation in `src/plugin/bsv_fhir.rb` (`BsvFhirPlugin`)
 - FHIR data follows the [ch-epl IG](https://fhir.ch/ig/ch-epl/index.html). As of Feb 2026, `productPrice` and `costShare` are nested inside the `reimbursementSL` extension on `RegulatedAuthorization` (type code `756000002003`). The `extract_prices` method navigates: `RegulatedAuthorization.extension[reimbursementSL].extension[productPrice]`.

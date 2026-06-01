@@ -9,9 +9,14 @@ require "util/updater"
 
 module ODDB
   module Util
+    # FHIR NDJSON (FOPH/BAG) is the default source since June 2026, mirroring
+    # oddb2xml. Opt out with --no-fhir to fall back to the legacy
+    # XMLPublications.zip (Spezialitätenliste) import.
+    use_fhir = !ARGV.delete("--no-fhir")
     Job.run do |system|
       updater = Updater.new system
-      if updater.update_bsv
+      updated = use_fhir ? updater.update_bsv_fhir : updater.update_bsv
+      if updated
         updater.update_bsv_followers
       end
     end
