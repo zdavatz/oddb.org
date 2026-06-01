@@ -15,8 +15,8 @@ module ODDB
       latest_name.sub("latest", @@today.strftime("%Y.%m.%d"))
     end
 
-    def self.fetch_with_http(url)
-      URI.open(url) do |input|
+    def self.fetch_with_http(url, headers = {})
+      URI.open(url, headers) do |input|
         input.read
       end
     end
@@ -24,7 +24,7 @@ module ODDB
     # get_latest_file
     # returns name of downloaded if it has been already downloaded today and its size
     # is different from the latest downloaded file.
-    def self.get_latest_file(latest, download_url, must_unzip = false)
+    def self.get_latest_file(latest, download_url, must_unzip = false, headers = {})
       file_today = get_daily_name(latest)
       file_yesterday = latest.sub("latest", (@@today.to_date - 1).strftime("%Y.%m.%d"))
       if File.exist?(file_today) and File.exist?(file_yesterday) and File.size(file_yesterday) == File.size(file_today)
@@ -35,7 +35,7 @@ module ODDB
         Latest.log "found #{file_today} and same size as latest #{File.size(file_today)} bytes."
         return false
       else
-        download = Latest.fetch_with_http(download_url)
+        download = Latest.fetch_with_http(download_url, headers)
         FileUtils.makedirs(File.dirname(file_today)) unless File.exist?(File.dirname(file_today))
         File.write(file_today, download)
         if !File.exist?(latest) or File.size(file_today) != File.size(latest)

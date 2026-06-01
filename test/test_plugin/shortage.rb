@@ -146,8 +146,8 @@ module ODDB
       @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001]) # .by_default
       @plugin = flexmock("ShortagePlugin", ShortagePlugin.new(@app))
       @latest = flexmock("latest", Latest)
-      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::SOURCE_URI).and_return(File.read(@drugshortage_name)).by_default
-      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::NoMarketingSource).and_return(File.read(@nomarketing_xlsx_name)).by_default
+      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::SOURCE_URI, ODDB::ShortagePlugin::SOURCE_HEADERS).and_return(File.read(@drugshortage_name)).by_default
+      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::NoMarketingSource, {}).and_return(File.read(@nomarketing_xlsx_name)).by_default
     end
 
     def expected_test_result
@@ -293,8 +293,8 @@ DrugShortag deletions:
       @plugin.update(@agent)
       Plugin.next_day
       FileUtils.cp(@drugshortage_changed_name, @plugin.latest_shortage.sub("latest", @@today.strftime("%Y.%m.%d")), verbose: true)
-      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::SOURCE_URI).and_return(File.read(@drugshortage_changed_name))
-      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::NoMarketingSource).and_return(File.read(@nomarketing_xlsx_name))
+      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::SOURCE_URI, ODDB::ShortagePlugin::SOURCE_HEADERS).and_return(File.read(@drugshortage_changed_name))
+      @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::NoMarketingSource, {}).and_return(File.read(@nomarketing_xlsx_name))
       @plugin.update(@agent)
       result = @plugin.report
       assert_equal(false, result.empty?)

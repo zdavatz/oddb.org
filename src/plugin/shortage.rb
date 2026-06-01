@@ -20,7 +20,10 @@ module ODDB
     # UebersichtaktuelleLieferengpaesse2.aspx now returns HTTP 500. The new
     # site exposes JSON APIs; api_engpaesse.php is the "show all current
     # shortages" endpoint backing the uebersicht-nach-firmen page.
+    # The endpoint requires a same-origin Referer; without it the server
+    # responds with HTTP 403 "Zugriff verweigert".
     SOURCE_URI = BASE_URI + "/api_engpaesse.php"
+    SOURCE_HEADERS = {"Referer" => BASE_URI + "/"}
     SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/detail-lieferengpass/?ID="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
 
@@ -181,7 +184,7 @@ module ODDB
       @found_shortages = {}
       @shortages = []
       @agent = agent
-      latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI)
+      latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, false, SOURCE_HEADERS)
       return unless latest
       puts "\nupdate_drugshortage latest is #{latest}  #{latest && File.exist?(latest)} @latest_shortage #{@latest_shortage} #{File.exist?(@latest_shortage)}"
       content = File.open(@latest_shortage, "r:UTF-8", &:read)
