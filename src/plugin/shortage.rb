@@ -19,10 +19,11 @@ module ODDB
     # drugshortage.ch migrated from ASP.NET to WordPress in 2026. The old
     # UebersichtaktuelleLieferengpaesse2.aspx now returns HTTP 500. The new
     # site exposes JSON APIs; api_engpaesse.php is the "show all current
-    # shortages" endpoint backing the uebersicht-nach-firmen page.
-    # The endpoint requires a same-origin Referer; without it the server
-    # responds with HTTP 403 "Zugriff verweigert".
-    SOURCE_URI = BASE_URI + "/api_engpaesse.php"
+    # shortages" endpoint backing the uebersicht-nach-firmen page. As of
+    # June 2026 the endpoint moved under /api/ and status values gained a
+    # leading category-number prefix (e.g. "1 aktuell keine Lieferungen").
+    # The Referer header is sent defensively (was required briefly in May 2026).
+    SOURCE_URI = BASE_URI + "/api/api_engpaesse.php"
     SOURCE_HEADERS = {"Referer" => BASE_URI + "/"}
     SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/detail-lieferengpass/?ID="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
@@ -201,7 +202,7 @@ module ODDB
         added_info = OpenStruct.new
         added_info.gtin = record["gtin"]
         added_info.shortage_last_update = Date.strptime(record["mutation"], "%d.%m.%Y").to_s
-        added_info.shortage_state = record["status"].to_s
+        added_info.shortage_state = record["status"].to_s.sub(/\A\d+\s+/, "")
         added_info.shortage_delivery_date = record["lieferdatum"].to_s
         added_info.shortage_link = SHORTAGE_DETAIL_URL + record["id"].to_s
         @found_shortages[added_info.gtin] = added_info

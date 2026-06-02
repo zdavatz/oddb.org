@@ -153,7 +153,7 @@ module ODDB
     def expected_test_result
       @plugin.duration_in_secs = 25
       %(Update job took #{sprintf("%3i", @plugin.duration_in_secs)} seconds
-Found             2 shortages in https://www.drugshortage.ch/api_engpaesse.php
+Found             2 shortages in https://www.drugshortage.ch/api/api_engpaesse.php
 Deleted           2 shortages
 Changed           2 shortages
 Found             2 nomarketings packages for
