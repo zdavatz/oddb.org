@@ -83,10 +83,10 @@ module ODDB
       paths = {}
       changed = false
       FHIR_LANGUAGES.each do |lang|
-        url = "#{FHIR_BASE_URL}foph-sl-export-latest-#{lang}.ndjson"
+        latest_url = "#{FHIR_BASE_URL}foph-sl-export-latest-#{lang}.ndjson"
         file_name = "foph-sl-export-latest-#{lang}.ndjson"
-        LogFile.append("oddb/debug", " bsv_fhir: target_url = #{url}", Time.now)
-        path = download_ndjson(url, save_dir, file_name)
+        LogFile.append("oddb/debug", " bsv_fhir: latest_url = #{latest_url}", Time.now)
+        path = download_ndjson(latest_url, save_dir, file_name, lang)
         if path
           changed = true
           paths[lang] = path
@@ -161,36 +161,95 @@ module ODDB
 
     private
 
-    # Download `target_url` to <save_dir>/<file_name>, replacing the existing
-    # file only if the contents changed. Returns the save path when the file
-    # was updated, nil if it was unchanged or the download failed.
-    def download_ndjson(target_url, save_dir, file_name)
+    # Download the BAG FHIR NDJSON for `lang` only when a newer dated export is
+    # published. BAG publishes immutable dated snapshots
+    # (foph-sl-export-<YYYYMMDD>-<lang>.ndjson) plus a moving -latest- alias; the
+    # date in the dated link equals the -latest- file's Last-Modified date. We
+    # read that date cheaply with an HTTP HEAD (no 90+ MB body), build the dated
+    # link, and persist it in a ".source" sidecar next to the cached file. While
+    # the date is unchanged we skip the download entirely. Returns the save path
+    # when (re)downloaded, nil when unchanged or on failure.
+    def download_ndjson(latest_url, save_dir, file_name, lang)
       LogFile.append("oddb/debug", " bsv_fhir: getting download_ndjson", Time.now)
 
       FileUtils.mkdir_p(save_dir)
 
       save_file = File.join(save_dir, file_name)
+      marker_file = "#{save_file}.source"
       tmp_file = "#{save_file}.tmp"
 
       LogFile.append("oddb/debug", " bsv_fhir: save_file = #{save_file}", Time.now)
 
-      uri = URI.parse(target_url)
-      response = Net::HTTP.get_response(uri)
-      unless response.is_a?(Net::HTTPSuccess)
-        LogFile.append("oddb/debug", " bsv_fhir: HTTP #{response.code} for #{target_url}", Time.now)
+      dated_url = current_dated_url(latest_url, lang)
+
+      # Fast path: the published date is known and has not moved -> nothing to do.
+      if dated_url
+        saved_url = File.exist?(marker_file) ? File.read(marker_file).strip : nil
+        if saved_url == dated_url && File.exist?(save_file)
+          LogFile.append("oddb/debug", " bsv_fhir: #{lang} unchanged, keeping #{dated_url}", Time.now)
+          return nil
+        end
+      end
+
+      # Prefer the immutable dated snapshot (race-safe against -latest- rotating
+      # mid-run); fall back to -latest- if the dated file is not published yet.
+      download_url = dated_url || latest_url
+      ok = http_download(download_url, tmp_file)
+      if !ok && dated_url && dated_url != latest_url
+        LogFile.append("oddb/debug", " bsv_fhir: dated #{dated_url} unavailable, using #{latest_url}", Time.now)
+        ok = http_download(latest_url, tmp_file)
+      end
+      return nil unless ok
+
+      # When the HEAD failed we never learned the date; fall back to a content
+      # comparison so an unchanged export does not trigger a needless reparse.
+      if dated_url.nil? && File.exist?(save_file) && FileUtils.compare_file(tmp_file, save_file)
+        FileUtils.rm_f(tmp_file)
         return nil
       end
 
-      File.open(tmp_file, "wb") { |f| f.write(response.body) }
-      LogFile.append("oddb/debug", " bsv_fhir: downloaded #{File.size(tmp_file)} bytes to #{tmp_file}", Time.now)
+      FileUtils.mv(tmp_file, save_file)
+      File.write(marker_file, dated_url) if dated_url
+      LogFile.append("oddb/debug", " bsv_fhir: #{lang} updated -> #{dated_url || latest_url}", Time.now)
+      save_file
+    end
 
-      if File.exist?(save_file) && FileUtils.compare_file(tmp_file, save_file)
-        FileUtils.rm_f(tmp_file)
-        nil
-      else
-        FileUtils.mv(tmp_file, save_file)
-        save_file
+    # Resolve the current immutable dated link for `lang` from the -latest-
+    # file's Last-Modified date. Returns nil when the HEAD request fails.
+    def current_dated_url(latest_url, lang)
+      last_modified = head_last_modified(latest_url)
+      return nil unless last_modified
+      date = last_modified.utc.strftime("%Y%m%d")
+      "#{FHIR_BASE_URL}foph-sl-export-#{date}-#{lang}.ndjson"
+    end
+
+    # HEAD `url` and return its Last-Modified as a Time, or nil on any failure
+    # (the caller then falls back to an unconditional download + content compare).
+    def head_last_modified(url)
+      uri = URI.parse(url)
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+        http.head(uri.request_uri)
       end
+      return nil unless response.is_a?(Net::HTTPSuccess)
+      lm = response["last-modified"]
+      lm && Time.httpdate(lm)
+    rescue => e
+      LogFile.append("oddb/debug", " bsv_fhir: HEAD failed for #{url}: #{e.message}", Time.now)
+      nil
+    end
+
+    # GET `url` into `tmp_file`. Returns true on success, false on a non-2xx
+    # response; retries transient network errors a few times before re-raising.
+    def http_download(url, tmp_file)
+      uri = URI.parse(url)
+      response = Net::HTTP.get_response(uri)
+      unless response.is_a?(Net::HTTPSuccess)
+        LogFile.append("oddb/debug", " bsv_fhir: HTTP #{response.code} for #{url}", Time.now)
+        return false
+      end
+      File.open(tmp_file, "wb") { |f| f.write(response.body) }
+      LogFile.append("oddb/debug", " bsv_fhir: downloaded #{File.size(tmp_file)} bytes from #{url}", Time.now)
+      true
     rescue EOFError, Errno::ECONNRESET, Net::ReadTimeout => e
       retries ||= 10
       if retries > 0
