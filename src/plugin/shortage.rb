@@ -29,12 +29,12 @@ module ODDB
     # with HTTP 403 ({"fehler":"Zugriff verweigert – fehlende Header"}). Every
     # call must now carry an HMAC-SHA256 signature over
     # "<timestamp>|<nonce>|<api_name>" together with the X-Timestamp / X-Nonce /
-    # X-Signature / X-Requested-With headers. The shared secret and api name are
-    # taken verbatim from the site's inline signing JS (the same scheme backs
-    # ds.php and api_engpaesse.php); see #shortage_source_headers. A browser
-    # User-Agent and Referer are sent defensively.
+    # X-Signature / X-Requested-With headers. The api name is taken verbatim from
+    # the site's inline signing JS (the same scheme backs ds.php and
+    # api_engpaesse.php); see #shortage_source_headers. The shared secret is NOT
+    # hardcoded — it lives in etc/oddb.yml as drugshortage_hmac_secret (read from
+    # the same page source). A browser User-Agent and Referer are sent defensively.
     SHORTAGE_API_NAME = "api_engpaesse"
-    SHORTAGE_HMAC_SECRET = "N8xK3mV7qP1rT9cY5wH2zL6dF4sJ0uB8eR7nQ3kW1pX9tM5vC2yD6hG4aZ8fL1"
     SHORTAGE_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
     SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/detail-lieferengpass/?ID="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
@@ -195,10 +195,12 @@ module ODDB
     # the shared secret and rejects stale/replayed requests, so a new timestamp
     # and nonce are generated on every call.
     def shortage_source_headers
+      secret = ODDB.config.drugshortage_hmac_secret || ENV["DRUGSHORTAGE_HMAC_SECRET"]
+      raise "drugshortage_hmac_secret not set in etc/oddb.yml (or DRUGSHORTAGE_HMAC_SECRET env var). Copy the HMAC_SECRET from the drugshortage.ch page source (uebersicht-nach-firmen)." if secret.to_s.empty?
       timestamp = Time.now.to_i.to_s
       nonce = SecureRandom.hex(8)
       message = "#{timestamp}|#{nonce}|#{SHORTAGE_API_NAME}"
-      signature = OpenSSL::HMAC.hexdigest("SHA256", SHORTAGE_HMAC_SECRET, message)
+      signature = OpenSSL::HMAC.hexdigest("SHA256", secret, message)
       {
         "User-Agent" => SHORTAGE_USER_AGENT,
         "Referer" => BASE_URI + "/",

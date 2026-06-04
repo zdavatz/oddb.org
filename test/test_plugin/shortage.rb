@@ -146,6 +146,9 @@ module ODDB
       @reg_59893.should_receive(:active_packages).and_return([@pack_59893_001]) # .by_default
       @plugin = flexmock("ShortagePlugin", ShortagePlugin.new(@app))
       @latest = flexmock("latest", Latest)
+      # The HMAC secret lives in the gitignored etc/oddb.yml; stub it so the test
+      # is self-contained (the signature value is irrelevant — fetch is mocked).
+      flexmock(ODDB.config, drugshortage_hmac_secret: "test-hmac-secret")
       @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::SOURCE_URI, Hash).and_return(File.read(@drugshortage_name)).by_default
       @latest.should_receive(:fetch_with_http).with(ODDB::ShortagePlugin::NoMarketingSource, {}).and_return(File.read(@nomarketing_xlsx_name)).by_default
     end

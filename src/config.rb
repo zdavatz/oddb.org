@@ -58,7 +58,8 @@ module ODDB
     "paypal_server" => "www.paypal.com",     # or www.sandbox.paypal.com
     "paypal_receiver" => "zdavatz@ywesee.com", # or test_paypal@ywesee.com
     "refdata_api_key" => nil,
-    "refdata_api_key_secondary" => nil
+    "refdata_api_key_secondary" => nil,
+    "drugshortage_hmac_secret" => nil
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)
