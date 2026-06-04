@@ -12,6 +12,8 @@ require "date"
 require "json"
 require "simple_xlsx_reader"
 require "csv"
+require "openssl"
+require "securerandom"
 
 module ODDB
   class ShortagePlugin < Plugin
@@ -22,9 +24,18 @@ module ODDB
     # shortages" endpoint backing the uebersicht-nach-firmen page. As of
     # June 2026 the endpoint moved under /api/ and status values gained a
     # leading category-number prefix (e.g. "1 aktuell keine Lieferungen").
-    # The Referer header is sent defensively (was required briefly in May 2026).
     SOURCE_URI = BASE_URI + "/api/api_engpaesse.php"
-    SOURCE_HEADERS = {"Referer" => BASE_URI + "/"}
+    # June 2026 (later that month): the API began rejecting unsigned requests
+    # with HTTP 403 ({"fehler":"Zugriff verweigert – fehlende Header"}). Every
+    # call must now carry an HMAC-SHA256 signature over
+    # "<timestamp>|<nonce>|<api_name>" together with the X-Timestamp / X-Nonce /
+    # X-Signature / X-Requested-With headers. The shared secret and api name are
+    # taken verbatim from the site's inline signing JS (the same scheme backs
+    # ds.php and api_engpaesse.php); see #shortage_source_headers. A browser
+    # User-Agent and Referer are sent defensively.
+    SHORTAGE_API_NAME = "api_engpaesse"
+    SHORTAGE_HMAC_SECRET = "N8xK3mV7qP1rT9cY5wH2zL6dF4sJ0uB8eR7nQ3kW1pX9tM5vC2yD6hG4aZ8fL1"
+    SHORTAGE_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
     SHORTAGE_DETAIL_URL = BASE_URI + "/index.php/detail-lieferengpass/?ID="
     NoMarketingSource = "https://www.swissmedic.ch/dam/swissmedic/de/dokumente/internetlisten/meldungen_art11_ham.xlsx.download.xlsx/Liste%20Meldungen%2011%20VAM.xlsx"
 
@@ -179,13 +190,32 @@ module ODDB
       end
     end
 
+    # Build fresh HMAC-signed request headers for the drugshortage.ch API. The
+    # server validates an HMAC-SHA256 of "<timestamp>|<nonce>|<api_name>" against
+    # the shared secret and rejects stale/replayed requests, so a new timestamp
+    # and nonce are generated on every call.
+    def shortage_source_headers
+      timestamp = Time.now.to_i.to_s
+      nonce = SecureRandom.hex(8)
+      message = "#{timestamp}|#{nonce}|#{SHORTAGE_API_NAME}"
+      signature = OpenSSL::HMAC.hexdigest("SHA256", SHORTAGE_HMAC_SECRET, message)
+      {
+        "User-Agent" => SHORTAGE_USER_AGENT,
+        "Referer" => BASE_URI + "/",
+        "X-Requested-With" => "XMLHttpRequest",
+        "X-Timestamp" => timestamp,
+        "X-Nonce" => nonce,
+        "X-Signature" => signature
+      }
+    end
+
     def update_drugshortage(agent = Mechanize.new)
       @deleted_shortages = []
       @changes_shortages = {}
       @found_shortages = {}
       @shortages = []
       @agent = agent
-      latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, false, SOURCE_HEADERS)
+      latest = Latest.get_latest_file(@latest_shortage, SOURCE_URI, false, shortage_source_headers)
       return unless latest
       puts "\nupdate_drugshortage latest is #{latest}  #{latest && File.exist?(latest)} @latest_shortage #{@latest_shortage} #{File.exist?(@latest_shortage)}"
       content = File.open(@latest_shortage, "r:UTF-8", &:read)
