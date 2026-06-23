@@ -233,6 +233,12 @@ class TestRefdataNatPlugin < Minitest::Test
   end
 
   def test_get_latest_file
+    # Hits the live refdata Partner API, which requires an API key. Skip when
+    # no key is configured (e.g. in CI) so the suite stays green without
+    # depending on an external service.
+    if (ODDB.config.refdata_api_key || ENV["REFDATA_API_KEY"]).to_s.empty?
+      skip "refdata_api_key not set (etc/oddb.yml or REFDATA_API_KEY env var)"
+    end
     latest = File.join(ODDB::WORK_DIR, "xml/refdata_nat_latest.xml")
     current = File.join(ODDB::WORK_DIR, "xml/refdata_nat_#{Time.now.strftime("%Y.%m.%d")}.xml")
     FileUtils.rm_f(current) if File.exist?(current)

@@ -36,6 +36,11 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Run tests via test/suite.rb
+      env:
+        # Lets the refdata Partner API tests run. Absent on forked-PR /
+        # dependabot runs (Actions secrets aren't shared there); those tests
+        # skip themselves when the key is empty.
+        REFDATA_API_KEY: ${{ secrets.REFDATA_API_KEY }}
       run: bundle exec ruby test/suite.rb
 
     - name: Run spec tests for compositions
