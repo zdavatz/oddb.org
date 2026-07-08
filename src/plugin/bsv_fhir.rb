@@ -1119,7 +1119,14 @@ module ODDB
       last = Time.local(today.year, today.month, today.day)
       range = first..last
       if range.cover?(price_public.valid_from)
-        previous = pack.price_public
+        # Unlike the XML plugin (which flags before storing the price), we are
+        # called *after* `pack.price_public = price_public` has unshifted the new
+        # price to index 0. The previous price therefore lives at index 1, so we
+        # must read price_public(1) here — reading price_public(0) would always
+        # return the freshly stored price and never flag :sl_entry / :price_cut /
+        # :price_rise. This mirrors the RSS logic (src/plugin/rss.rb: previous =
+        # package.price_public(1)).
+        previous = pack.price_public(1)
         if previous.nil?
           if price_public.authority == :sl
             @preparations_listener.flag_change(pack.pointer, :sl_entry)
