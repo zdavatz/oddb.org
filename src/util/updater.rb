@@ -437,7 +437,8 @@ end
         if (return_value_plug_update = plug.update(*args))
           month = @@today << 1
           pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
-          log = @app.update(pointer.creator, log_info(plug))
+          values = merge_previous_change_flags(pointer, log_info(plug))
+          log = @app.update(pointer.creator, values)
           log.notify("Swissmedic XLS")
         end
       }
@@ -481,31 +482,53 @@ end
 
     private
 
+    # Merge the change_flags already stored under +pointer+ into +values+.
+    #
+    # A monthly log is written once per import run, and each run only reports
+    # what changed since the *previous download*. Without this merge a later run
+    # silently discards everything an earlier run recorded for the same month.
+    #
+    # That is not hypothetical: Swissmedic published a corrupt "Zugelassene
+    # Packungen" file on 2026-07-04 (wrong Packungsgrösse on ~3200 packages) and
+    # republished it corrected on 2026-07-08. The 07-08 run diffed the corrected
+    # file against the corrupt one, produced a :size-only mass diff (1182
+    # registrations) and overwrote the 27 :new registrations the 07-04 run had
+    # recorded. :size is not in OuwerkerkPlugin::NUMERIC_FLAGS, so the whole
+    # Swissmedic section then dropped out of the med-drugs export.
+    def merge_previous_change_flags(pointer, values)
+      if !@prevalence && !defined?(Minitest)
+        @prevalence = ODBA.cache.fetch_named("oddbapp", self) { OddbPrevalence.new }
+      end
+      if (log = @prevalence ? pointer.resolve(@prevalence) : OpenStruct.new)
+        change_flags = values[:change_flags]
+        if change_flags && (previous = log.change_flags)
+          previous.each do |ptr, flgs|
+            # It seems like a bug caused nil key to be saved, it's fixed but we have to remove the existing nil key from the database
+            # https://github.com/zdavatz/oddb.org/issues/175
+            next if ptr.nil?
+            if (flags = change_flags[ptr])
+              flags.concat flgs
+              flags.uniq!
+            else
+              change_flags[ptr] = flgs
+            end
+          end
+        end
+      end
+      values
+    rescue Persistence::UninitializedPathError, Persistence::InvalidPathError => error
+      # No log stored for that month yet (or the path cannot be walked) - there
+      # is simply nothing to merge. Never let this abort the import.
+      LogFile.append("oddb/debug", " merge_previous_change_flags: #{error.class} #{error.message}", Time.now)
+      values
+    end
+
     def log_notify_bsv(plug, date, subj, pointer)
       LogFile.append("oddb/debug", " getting log_notify_bsv", Time.now)
       LogFile.append("oddb/debug", " date=" + date.inspect, Time.now)
       values = log_info(plug)
       LogFile.append("oddb/debug", " after log_info(plug)", Time.now)
-      if !@prevalence && !defined?(Minitest)
-        @prevalence = ODBA.cache.fetch_named("oddbapp", self) { OddbPrevalence.new }
-      end
-      if log = @prevalence ? pointer.resolve(@prevalence) : OpenStruct.new
-        change_flags = values[:change_flags]
-        if previous = log.change_flags
-          previous.each do |ptr, flgs|
-            # It seems like a bug caused nil key to be saved, it's fixed but we have to remove the existing nil key from the database
-            # https://github.com/zdavatz/oddb.org/issues/175
-            if !ptr.nil?
-              if flags = change_flags[ptr]
-                flags.concat flgs
-                flags.uniq!
-              else
-                change_flags[ptr] = flgs
-              end
-            end
-          end
-        end
-      end
+      merge_previous_change_flags(pointer, values)
       LogFile.append("oddb/debug", " before @app.update @prevalence #{@prevalence.class}", Time.now)
       log = @app.update(pointer.creator, values)
 

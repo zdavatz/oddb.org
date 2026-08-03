@@ -368,6 +368,7 @@ module ODDB
           LogFile.debug " cp #{file2open} #{@latest_packungen} after #{@update_time} minutes"
           FileUtils.cp file2open, @latest_packungen, verbose: true
         end
+        warn_if_degenerate_diff(@diff.changes)
         @change_flags = @diff.changes.each_with_object({}) { |(iksnr, flags), memo|
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
         }
@@ -387,6 +388,36 @@ module ODDB
       @update_comps ? true : @diff
     ensure
       $swissmedic_do_tracing = false
+    end
+
+    # A healthy monthly Packungen diff touches a few hundred registrations with a
+    # broad mix of flags (:new, :name_base, :composition, :expiry_date, ...). A
+    # diff where a large share of the changed registrations carry nothing but a
+    # single cosmetic field usually means one of the two compared files is
+    # corrupt rather than that the data really changed.
+    #
+    # This happened on 2026-07-08: Swissmedic had published a broken "Zugelassene
+    # Packungen" file on 07-04 (wrong Packungsgrösse on ~3200 packages) and
+    # republished it corrected on 07-08, so the 07-08 run compared correct
+    # against corrupt and saw a :size-only mass diff of 1182 registrations.
+    #
+    # We only warn: applying the data of the newer file is still correct and
+    # desirable (it repairs the wrong sizes), and the previously recorded flags
+    # are no longer lost thanks to Updater#merge_previous_change_flags.
+    SUSPECT_MIN_CHANGES = 500
+    SUSPECT_SINGLE_FLAG_SHARE = 0.5
+    def warn_if_degenerate_diff(changes)
+      return if changes.nil? || changes.size < SUSPECT_MIN_CHANGES
+      single = changes.count { |_iksnr, flags| Array(flags).size == 1 }
+      return if single < changes.size * SUSPECT_SINGLE_FLAG_SHARE
+      hist = Hash.new(0)
+      changes.each_value { |flags| Array(flags).each { |flag| hist[flag] += 1 } }
+      dominant, count = hist.max_by { |_flag, nr| nr }
+      LogFile.debug("SwissmedicDiff SUSPECT: #{changes.size} changed registrations, " \
+                    "#{single} of them with a single flag only; dominant flag " \
+                    "#{dominant.inspect} (#{count}). One of the compared Packungen " \
+                    "files may be corrupt - please check #{@latest_packungen} " \
+                    "before trusting these change flags.")
     end
 
     # check diff from overwritten stored-objects by admin
