@@ -456,7 +456,8 @@ module ODDB
           end
 
           # Limitations from indication[].extension[regulatedAuthorization-limitation]
-          lim_data = extract_limitation_data(reimbursement, names, it_codes, :de)
+          lim_data = extract_limitation_data(reimbursement, names, it_codes, :de, {},
+            resources["ClinicalUseDefinition"])
           merge_translation_limitations(lim_data, swissmedic_no8, names, it_codes)
           if !lim_data.empty?
             sl_data[:limitation] = true
@@ -805,7 +806,8 @@ module ODDB
         next unless trans_resources
         trans_reimbursement = find_reimbursement_for_pack(trans_resources, swissmedic_no8)
         next unless trans_reimbursement
-        extract_limitation_data(trans_reimbursement, names, it_codes, lang, lim_data)
+        extract_limitation_data(trans_reimbursement, names, it_codes, lang, lim_data,
+          trans_resources["ClinicalUseDefinition"])
       end
     end
 
@@ -880,13 +882,44 @@ module ODDB
       codes
     end
 
+    # Resolve the limitation text behind a `limitationIndication` reference.
+    #
+    # Until 2026 the text was inlined as a `limitationText` sub-extension. BAG
+    # then moved it into a separate ClinicalUseDefinition resource that the
+    # limitation references; `limitationText` no longer occurs in the export at
+    # all, so without following the reference every limitation is skipped and no
+    # limitation texts are imported (that regression left only 16 legacy texts in
+    # the DB while the export carries ~6300).
+    #
+    # The resource id is the LimitationCode (e.g. "ABEVMY.07"). Per BAG (EPL,
+    # 03.08.2026) it is limitation-specific, stable across publications, and
+    # truncated to 64 characters for FHIR without collisions. The resource always
+    # travels in the same bundle as the RegulatedAuthorization that references it.
+    def limitation_text_from_reference(reference, clinical_use_defs)
+      return nil if clinical_use_defs.nil? || clinical_use_defs.empty?
+      id = reference.to_s.split("/").last
+      return nil if id.empty?
+      cud = clinical_use_defs[id]
+      return nil unless cud
+      # Prefer the structured concept text - same content as the generated
+      # narrative but without the surrounding xhtml.
+      text = cud.dig("indication", "diseaseSymptomProcedure", "concept", "text")
+      if text.to_s.strip.empty?
+        text = cud.dig("text", "div").to_s.gsub(/<[^>]*>/, " ")
+      end
+      text = text.to_s.gsub(/[ \t]+/, " ").strip
+      text.empty? ? nil : text
+    end
+
     # Extract limitation data from RegulatedAuthorization indication extensions.
     # Builds a Text::Chapter for the given lang_key (default :de), matching the
     # XML plugin's lim_data format: { de: Text::Chapter, fr: Text::Chapter, it: Text::Chapter }.
     # Per-language NDJSON files contain only one language of text per bundle, so
     # callers pass the language matching the source file. Pass an existing
-    # `lim_data` hash to merge additional languages into.
-    def extract_limitation_data(regulated_auth, names, it_codes, lang_key = :de, lim_data = {})
+    # `lim_data` hash to merge additional languages into. `clinical_use_defs` is
+    # the bundle's ClinicalUseDefinition index ({id => resource}) - see
+    # limitation_text_from_reference for why it is needed.
+    def extract_limitation_data(regulated_auth, names, it_codes, lang_key = :de, lim_data = {}, clinical_use_defs = nil)
       indications = regulated_auth["indication"] || []
       return lim_data if indications.empty?
 
@@ -896,14 +929,23 @@ module ODDB
 
           limitation_text = nil
           indication_code = nil
+          limitation_ref = nil
 
           (ext["extension"] || []).each do |sub_ext|
             case sub_ext["url"]
             when "limitationText"
+              # Inline text: gone from the BAG export since 2026, kept as a
+              # fallback in case it ever comes back.
               limitation_text = sub_ext["valueString"]
             when "indicationCode"
               indication_code = sub_ext["valueString"]
+            when "limitationIndication"
+              limitation_ref = sub_ext.dig("valueReference", "reference")
             end
+          end
+
+          if limitation_text.to_s.empty? && limitation_ref
+            limitation_text = limitation_text_from_reference(limitation_ref, clinical_use_defs)
           end
 
           next unless limitation_text && !limitation_text.empty?

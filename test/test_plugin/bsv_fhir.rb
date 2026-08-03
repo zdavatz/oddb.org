@@ -101,4 +101,113 @@ module ODDB
       assert_nil(@plugin.send(:fix_flags_with_rss_logic_for, pack, nil, "12345"))
     end
   end
+
+  # Until 2026 the limitation text was inlined as a `limitationText`
+  # sub-extension. BAG moved it into a ClinicalUseDefinition resource referenced
+  # by `limitationIndication`, and dropped `limitationText` from the export
+  # entirely - so the old extractor silently skipped every limitation.
+  class TestBsvFhirPluginLimitations < Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+
+    def setup
+      @plugin = BsvFhirPlugin.new(flexmock("app"))
+    end
+
+    def limitation_extension(subs)
+      {
+        "url" => "http://fhir.ch/ig/ch-epl/StructureDefinition/regulatedAuthorization-limitation",
+        "extension" => subs
+      }
+    end
+
+    def reg_auth(subs)
+      {"indication" => [{"extension" => [limitation_extension(subs)]}]}
+    end
+
+    def clinical_use_def(id, text)
+      {id => {
+        "resourceType" => "ClinicalUseDefinition",
+        "id" => id,
+        "type" => "indication",
+        "text" => {"div" => "<div xmlns=\"http://www.w3.org/1999/xhtml\">#{text}</div>"},
+        "indication" => {"diseaseSymptomProcedure" => {"concept" => {"text" => text}}}
+      }}
+    end
+
+    def first_section(lim_data)
+      lim_data[:de].sections.first
+    end
+
+    def test_resolves_text_via_limitation_indication_reference
+      ra = reg_auth([
+        {"url" => "indicationCode", "valueString" => "22064.07"},
+        {"url" => "limitationIndication",
+         "valueReference" => {"reference" => "ClinicalUseDefinition/ABEVMY.07"}}
+      ])
+      cuds = clinical_use_def("ABEVMY.07", "Glioblastom Nach Kostengutsprache")
+      lim_data = @plugin.send(:extract_limitation_data, ra, {}, [], :de, {}, cuds)
+      refute_empty(lim_data, "limitation must be imported via the reference")
+      sec = first_section(lim_data)
+      assert_match(/Glioblastom Nach Kostengutsprache/, sec.paragraphs.map(&:to_s).join(" "))
+    end
+
+    # This is what makes the IndC code visible: View::Chapter renders subheadings.
+    def test_indication_code_becomes_subheading
+      ra = reg_auth([
+        {"url" => "indicationCode", "valueString" => "22064.07"},
+        {"url" => "limitationIndication",
+         "valueReference" => {"reference" => "ClinicalUseDefinition/ABEVMY.07"}}
+      ])
+      cuds = clinical_use_def("ABEVMY.07", "Glioblastom")
+      lim_data = @plugin.send(:extract_limitation_data, ra, {}, [], :de, {}, cuds)
+      assert_equal("22064.07", first_section(lim_data).subheading.strip)
+    end
+
+    def test_imports_limitation_without_indication_code
+      ra = reg_auth([
+        {"url" => "limitationIndication",
+         "valueReference" => {"reference" => "ClinicalUseDefinition/XYZ.01"}}
+      ])
+      cuds = clinical_use_def("XYZ.01", "Nur 1 Packung pro Patient.")
+      lim_data = @plugin.send(:extract_limitation_data, ra, {}, [], :de, {}, cuds)
+      refute_empty(lim_data)
+      assert_equal("", first_section(lim_data).subheading.strip)
+    end
+
+    # Backward compatibility: if BAG ever re-adds the inline text, prefer it.
+    def test_still_accepts_inline_limitation_text
+      ra = reg_auth([{"url" => "limitationText", "valueString" => "Inline Limitation"}])
+      lim_data = @plugin.send(:extract_limitation_data, ra, {}, [], :de, {}, nil)
+      refute_empty(lim_data)
+      assert_match(/Inline Limitation/, first_section(lim_data).paragraphs.map(&:to_s).join(" "))
+    end
+
+    def test_skips_when_referenced_resource_is_missing
+      ra = reg_auth([
+        {"url" => "limitationIndication",
+         "valueReference" => {"reference" => "ClinicalUseDefinition/NOT_THERE"}}
+      ])
+      lim_data = @plugin.send(:extract_limitation_data, ra, {}, [], :de, {},
+        clinical_use_def("OTHER.01", "irrelevant"))
+      assert_empty(lim_data)
+    end
+
+    def test_falls_back_to_narrative_when_concept_text_missing
+      cud = {"NARR.01" => {
+        "resourceType" => "ClinicalUseDefinition",
+        "id" => "NARR.01",
+        "text" => {"div" => "<div xmlns=\"http://www.w3.org/1999/xhtml\">Nur   bei Erwachsenen</div>"}
+      }}
+      text = @plugin.send(:limitation_text_from_reference, "ClinicalUseDefinition/NARR.01", cud)
+      assert_equal("Nur bei Erwachsenen", text)
+    end
+
+    def test_reference_helper_handles_missing_index
+      assert_nil(@plugin.send(:limitation_text_from_reference, "ClinicalUseDefinition/X", nil))
+      assert_nil(@plugin.send(:limitation_text_from_reference, "ClinicalUseDefinition/X", {}))
+    end
+  end
 end
