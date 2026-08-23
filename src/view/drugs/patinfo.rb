@@ -19,11 +19,15 @@ module ODDB
         if ikscd
           return [:reg, reg, :seq, seq, :pack, ikscd]
         elsif seq
-          package = session.app.registration(reg).sequence(seq).packages.values.first
-          return [:reg, reg, :seq, seq, :pack, package.ikscd]
+          # A url may name a registration or a sequence that does not exist (or
+          # a sequence without packages) - degrade to the args we do know
+          # instead of raising NoMethodError on nil, which used to be the single
+          # most frequent 500 in this file (529 in August 2026).
+          package = session.app.registration(reg)&.sequence(seq)&.packages&.values&.first
+          return package ? [:reg, reg, :seq, seq, :pack, package.ikscd] : [:reg, reg, :seq, seq]
         elsif reg
-          package = session.app.registration(reg).packages.first
-          return [:reg, reg, :seq, package.seqnr, :pack, package.ikscd]
+          package = session.app.registration(reg)&.packages&.first
+          return package ? [:reg, reg, :seq, package.seqnr, :pack, package.ikscd] : [:reg, reg]
         end
         args = if model.sequences.first
           [:reg, model.sequences.first.registration.iksnr]
@@ -43,24 +47,25 @@ module ODDB
         args
       end
 
+      # #change_log is declared as an Array, but the reference can resolve to an
+      # unrelated ODBA object (137 of the 500s in August 2026 were
+      # "undefined method 'size' for an instance of ODDB::PatinfoDocument").
+      # Treat anything that cannot answer #size as "no change log".
+      def self.change_log_size(document)
+        change_log = document.change_log
+        change_log.respond_to?(:size) ? change_log.size : 0
+      rescue => error
+        LogFile.debug("View::Drugs.change_log_size: #{error.class} #{error.message}")
+        0
+      end
+
       class Patinfo2001; end
 
       class PiChapterChooserLink < HtmlGrid::Link
         def init
           @document = @model.send(@session.language)
           @value ||= @lookandfeel.lookup("pi_" << @name.to_s)
-          @attributes["title"] = if @document.respond_to?(@name) \
-            && (@document.send(@name).is_a? Text::Chapter)
-            chapter = @document.send(@name)
-            title = chapter.heading
-            if title.empty? && (section = chapter.sections.first)
-              section.subheading
-            else
-              title
-            end
-          else
-            @lookandfeel.lookup(@name)
-          end
+          @attributes["title"] = chapter_title
           args = Drugs.get_args(model, @session)
           args += [:chapter, @name]
           unless @session.user_input(:chapter) == @name.to_s
@@ -69,6 +74,27 @@ module ODDB
             else
               @lookandfeel._event_url(:patinfo, args)
             end
+          end
+        end
+
+        # ODBA holds chapter references whose stub declares ODDB::Text::Chapter
+        # while its odba_id actually points at something else - 253 of 48934
+        # chapter stubs sampled in August 2026 resolve to a PatinfoDocument.
+        # ODBA::Stub#is_a? short-circuits on that *declared* class without ever
+        # resolving the stub, so the old `is_a? Text::Chapter` guard happily
+        # passed and the following #heading then raised NoMethodError (499 of
+        # the 500s in August). Stub#respond_to? does resolve, so unlike #is_a?
+        # it tells us what the reference really is.
+        def chapter_title
+          chapter = @document.send(@name) if @document.respond_to?(@name)
+          unless chapter.respond_to?(:heading) && chapter.respond_to?(:sections)
+            return @lookandfeel.lookup(@name)
+          end
+          title = chapter.heading.to_s
+          if title.empty? && (section = chapter.sections.first)
+            section.subheading
+          else
+            title
           end
         end
       end
@@ -95,7 +121,9 @@ module ODDB
           }
           unless @model.pointer.skeleton == [:create]
             document = @model.send(@session.language)
-            if !document.empty? && document.change_log.size > 0
+            # #change_log can come back as a mis-referenced ODBA object rather
+            # than the Array it is declared as - see chapter_title above
+            if document && !document.empty? && Drugs.change_log_size(document) > 0
               components.store([next_offset, 0], :change_log)
               @css_map.store([next_offset, 0], "chapter-tab")
               next_offset += 1
@@ -145,8 +173,9 @@ module ODDB
         end
 
         def change_log(model, session = @session, key = :change_log)
-          if @model.description(@session.language).is_a?(ODDB::PatinfoDocument) &&
-              @model.description(@session.language).change_log.size > 0
+          description = @model.description(@session.language)
+          if description.is_a?(ODDB::PatinfoDocument) &&
+              Drugs.change_log_size(description) > 0
             link = HtmlGrid::Link.new(key, model, session, self)
             link.set_attribute("title", @lookandfeel.lookup(:change_log))
             args = Drugs.get_args(model, @session)
@@ -222,8 +251,15 @@ module ODDB
           [1, 0] => "th right"
         }
         DEFAULT_CLASS = HtmlGrid::Value
+        # `unless model&.empty?` ran the body for a nil model (nil is falsy, so
+        # the guard passed) and then crashed on nil.name - 114 of the 500s in
+        # August. The other 155 came from mis-referenced ODBA objects arriving
+        # here as ActiveAgent, Package, Part, ODBA::Index, Array or Hash, none
+        # of which answer both #empty? and #name.
         def patinfo_name(model, session)
-          @lookandfeel.lookup(:patinfo_name, model.name) unless model&.empty?
+          return unless model.respond_to?(:empty?) && model.respond_to?(:name)
+          return if model.empty?
+          @lookandfeel.lookup(:patinfo_name, model.name)
         end
       end
 

@@ -450,4 +450,54 @@ b m(image)
       # puts "size  #{nr} chunks  #{nr_additions} nr_additions #{nr_deletions} nr_deletions"
     end
   end
+
+  # Broken ODBA references in @links used to 500 the whole Fachinfo page
+  # (560 of them in August 2026).
+  class TestFachinfoLinks < Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+
+    def setup
+      @fachinfo = ODDB::Fachinfo.new
+    end
+
+    def link(created)
+      flexmock("link", created: created)
+    end
+
+    def test_returns_empty_when_no_links
+      assert_equal([], @fachinfo.links)
+    end
+
+    def test_sorts_newest_first_and_drops_nils
+      old = link(Date.new(2020, 1, 1))
+      new = link(Date.new(2024, 1, 1))
+      @fachinfo.instance_variable_set(:@links, [old, nil, new])
+      assert_equal([new, old], @fachinfo.links)
+    end
+
+    # "undefined method 'compact' for an instance of ODDB::Text::Chapter"
+    def test_returns_empty_when_links_is_not_a_collection
+      @fachinfo.instance_variable_set(:@links, ODDB::Text::Chapter.new)
+      assert_equal([], @fachinfo.links)
+    end
+
+    # "ODBA::Stub was unable to replace #58046789 from ODDB::Fachinfo:#29649118"
+    # - the referenced object really is gone from the database.
+    def test_returns_empty_when_the_reference_is_dangling
+      dangling = flexmock("dangling")
+      dangling.should_receive(:respond_to?).with(:compact).and_raise(ODBA::OdbaError)
+      @fachinfo.instance_variable_set(:@links, dangling)
+      assert_equal([], @fachinfo.links)
+    end
+
+    def test_returns_empty_when_an_element_is_dangling
+      broken = flexmock("broken_link")
+      broken.should_receive(:created).and_raise(ODBA::OdbaError)
+      @fachinfo.instance_variable_set(:@links, [broken])
+      assert_equal([], @fachinfo.links)
+    end
+  end
 end

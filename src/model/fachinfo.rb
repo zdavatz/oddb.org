@@ -46,9 +46,24 @@ module ODDB
       codes
     end
 
+    # @links is declared as an Array of Link objects, but two kinds of broken
+    # ODBA references reach production and used to take the whole Fachinfo page
+    # down with a 500 - together 560 of them in August 2026:
+    #
+    #   * the reference resolves to an unrelated object, e.g.
+    #     "undefined method 'compact' for an instance of ODDB::Text::Chapter"
+    #   * the referenced odba_id no longer exists, so resolving the stub raises
+    #     ODBA::OdbaError ("ODBA::Stub was unable to replace #58046789 from
+    #     ODDB::Fachinfo:#29649118" - that object really is gone from the DB)
+    #
+    # A missing link list is not worth a 500, so fall back to none.
     def links
       @links ||= []
+      return [] unless @links.respond_to?(:compact)
       @links.compact.sort_by { |link| link.created }.reverse
+    rescue ODBA::OdbaError, NoMethodError, ArgumentError => error
+      LogFile.debug("Fachinfo#links: #{error.class} #{error.message}")
+      []
     end
 
     def atc_class
