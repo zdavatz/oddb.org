@@ -1,13 +1,52 @@
 #!/usr/bin/env ruby
 
+require "diffy"
+require "util/logfile"
+require "htmlgrid/composite"
 require "htmlgrid/div"
+require "htmlgrid/form"
 require "htmlgrid/image"
 require "htmlgrid/link"
+require "htmlgrid/list"
+require "htmlgrid/span"
 require "htmlgrid/value"
+require "view/drugs/privatetemplate"
 
 module ODDB
   module View
     module Drugs
+      # By far the most frequent 500 on ch.oddb.org (21960 of ~25000 in August
+      # 2026), on exactly the /diff/ pages Google crawls and then reports as
+      # "Serverfehler (5xx)".
+      #
+      # The strings a ChangeLogItem stores in ODBA are clean UTF-8 - the binary
+      # tag appears only while rendering: Diffy runs the external `diff` and
+      # force-encodes its output to ASCII-8BIT whenever it is not valid UTF-8
+      # (ydiffy diff.rb:60). The html formatter then re-diffs every chunk
+      # character by character, and split_characters' String#split('') on a
+      # binary string splits multi-byte UTF-8 sequences into single bytes. Those
+      # go into a Tempfile, and because config.ru sets
+      # Encoding.default_internal = UTF-8 that write transcodes and raises
+      # Encoding::UndefinedConversionError ("\xC3" from ASCII-8BIT to UTF-8).
+      #
+      # Returns a copy whose diff text is tagged UTF-8, scrubbing only the bytes
+      # that are really invalid so umlauts survive. The memoized @diff is preset,
+      # so no second `diff` subprocess is spawned and the cached model object is
+      # left untouched.
+      def self.utf8_diff(diffy)
+        raw = diffy.diff
+        return diffy unless raw.is_a?(String)
+        return diffy if raw.encoding == Encoding::UTF_8 && raw.valid_encoding?
+        text = raw.dup.force_encoding(Encoding::UTF_8)
+        text = text.scrub("?") unless text.valid_encoding?
+        copy = Diffy::Diff.new(diffy.string1.to_s, diffy.string2.to_s, diffy.options)
+        copy.instance_variable_set(:@diff, text)
+        copy
+      rescue => error
+        LogFile.debug("View::Drugs.utf8_diff: #{error.class} #{error.message}")
+        diffy
+      end
+
       def self.get_show_change_link_href(model, pack_or_reg, lnf, supress_date = false)
         may_be_date = supress_date ? [] : [model.time.strftime("%d.%m.%Y")]
         if pack_or_reg.is_a?(ODDB::Registration)
@@ -66,7 +105,7 @@ module ODDB
         end
 
         def diff(model)
-          model.diff.to_s(:html)
+          Drugs.utf8_diff(model.diff).to_s(:html)
         end
 
         def nr_chunks(model)
