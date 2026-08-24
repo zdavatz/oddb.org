@@ -1,5 +1,13 @@
 #!/bin/sh
-# Nightly Let's Encrypt renewal, run from /etc/crontab as root.
+# Nightly Let's Encrypt renewal.
+#
+# THIS COPY IS NOT THE ONE THAT RUNS. Cron executes
+# /usr/local/src/certbot_renew, which is root-owned, and it should stay that
+# way: a root cron job running a script owned by zdavatz would mean anyone able
+# to write as that user - including through the web application, which runs as
+# zdavatz - gets root at 01:00. This file is the versioned reference; after
+# changing it, install with
+#   sudo install -o root -g root -m 755 bin/certbot_renew /usr/local/src/certbot_renew
 #
 # Apache is stopped for the duration because the oddb certificates renew with
 # the standalone authenticator, which binds port 80 itself and cannot do so

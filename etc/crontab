@@ -26,7 +26,10 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 
 # --- system ------------------------------------------------------------------
 # Renews Let's Encrypt certificates; stops Apache for the duration (standalone
-# authenticator). Script lives in the repo as bin/certbot_renew.
+# authenticator). bin/certbot_renew in the repo is the versioned reference, but
+# the path below stays as it is on purpose: it is root-owned, and pointing a
+# root cron job at a zdavatz-owned file under /var/www would hand root to
+# anyone who can write there.
 0 1	* * *	root	/usr/local/src/certbot_renew > /dev/null
 0 22	* * *	root	/usr/bin/nice /usr/local/sbin/ywesee-backup > /dev/null
 
