@@ -83,7 +83,10 @@ module ODDB
     "gsc_site_urls" => {
       "ch.oddb.org" => "sc-domain:ch.oddb.org",
       "oddb.org" => "sc-domain:oddb.org",
-      "generika.cc" => "sc-domain:generika.cc"
+      # URL-prefix property, not sc-domain: it was verified through the Site
+      # Verification API with the FILE method (doc/googleae704f5f3e3a1945.html),
+      # which needs no DNS access. The trailing slash is part of the name.
+      "generika.cc" => "https://generika.cc/"
     }
   }
 
