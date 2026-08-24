@@ -74,13 +74,16 @@ module ODDB
     # IndexingCheck.site_url_for resolves a host to the longest matching entry.
     # Hosts without an entry are skipped instead of spending quota on them.
     # Override in etc/oddb.yml once you know which properties really exist.
-    # As of August 2026 the only oddb property is sc-domain:ch.oddb.org - a
-    # property on the *subdomain*, which covers i.ch.oddb.org but neither
-    # oddb.org itself nor siblings like oekk.oddb.org or desitin.oddb.org.
-    # Run jobs/check_indexing --list-sites to see what the service account can
-    # actually reach, and add entries here as properties are created.
+    # The longest matching entry wins, so the ch.oddb.org property keeps
+    # serving ch.oddb.org and i.ch.oddb.org even once the wider oddb.org
+    # property exists; oddb.org then picks up oekk.oddb.org, desitin.oddb.org
+    # and oddb.org itself. Run jobs/check_indexing --list-sites to see what the
+    # service account can actually reach - an entry for a property that does
+    # not exist yet, or that the account was not added to, answers 403 per url.
     "gsc_site_urls" => {
-      "ch.oddb.org" => "sc-domain:ch.oddb.org"
+      "ch.oddb.org" => "sc-domain:ch.oddb.org",
+      "oddb.org" => "sc-domain:oddb.org",
+      "generika.cc" => "sc-domain:generika.cc"
     }
   }
 
