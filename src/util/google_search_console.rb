@@ -55,6 +55,17 @@ module ODDB
       raise Error, "gsc_service_account_json is not configured" unless @key_file
       raise Error, "service account key not found: #{@key_file}" unless File.exist?(@key_file)
       @credentials = JSON.parse(File.read(@key_file))
+      # Easy to grab the wrong file in the Cloud Console: an OAuth client for a
+      # desktop app looks like {"installed": {"client_id", "client_secret"}} and
+      # needs an interactive browser consent, which is a different flow
+      # entirely. Say so rather than failing later on a missing private_key.
+      %w[installed web].each do |kind|
+        next unless @credentials[kind]
+        raise Error, "#{@key_file} is an OAuth client (#{kind}), not a service " \
+          "account key. Create a service account under " \
+          "console.cloud.google.com/iam-admin/serviceaccounts and download its " \
+          "JSON key - it has \"type\": \"service_account\" and a private_key."
+      end
       %w[client_email private_key].each do |field|
         raise Error, "service account key has no #{field}" unless @credentials[field]
       end

@@ -239,6 +239,27 @@ module ODDB
       assert_match("private_key", error.message)
     end
 
+    # The Cloud Console hands out OAuth clients right next to service accounts,
+    # and they look nothing alike once you try to use them.
+    def test_names_an_oauth_client_for_what_it_is
+      path = File.join(@dir, "oauth_client.json")
+      File.write(path, JSON.generate("installed" => {
+        "client_id" => "123.apps.googleusercontent.com",
+        "client_secret" => "secret",
+        "redirect_uris" => ["http://localhost"]
+      }))
+      error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(path) }
+      assert_match("OAuth client", error.message)
+      assert_match("service_account", error.message)
+    end
+
+    def test_names_a_web_oauth_client_too
+      path = File.join(@dir, "web_client.json")
+      File.write(path, JSON.generate("web" => {"client_id" => "123", "client_secret" => "s"}))
+      error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(path) }
+      assert_match("OAuth client", error.message)
+    end
+
     # The assertion must be a real RS256 JWT or Google rejects it, so verify
     # the signature rather than just the shape.
     def test_signs_a_verifiable_rs256_jwt
