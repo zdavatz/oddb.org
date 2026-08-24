@@ -22,6 +22,24 @@
 #   sdif/update_interactions      github.com/zdavatz/sdif
 #   swissmedicinfo                github.com/zdavatz/swissmedicinfo
 
+# Why the crontab points at /usr/local/sbin and not straight at this file in
+# the repository: cron runs certbot-renew and backup as root, and this tree
+# belongs to zdavatz - the user the web application runs as. A root cron line
+# under /var/www would turn a compromised application into root access.
+# bin/install_crontab copies this here as root:root 755.
+#
+# Which certificates renew how (see /etc/letsencrypt/renewal):
+#   ch.oddb.org      standalone   ch.oddb.org, m.oddb.org, generika.cc, oekk.oddb.org
+#   desitin.oddb.org standalone
+#   sdif.oddb.org    apache
+#
+# import_bsv (08:00) and import_swissmedic (08:15) overlap deliberately.
+# Everything matching ^update|^import|^rebuild|^repair shares log/job.pid, so
+# whichever fires first holds it and the second exits with a "Duplicate Job"
+# notice. BSV publishes on the 1st of the month, Swissmedic somewhere in the
+# first week; whichever wins the race gets that day and the other catches up
+# the next morning.
+
 ODDB_ROOT=${ODDB_ROOT:-/var/www/oddb.org}
 
 usage() {

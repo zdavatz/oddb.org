@@ -1,22 +1,15 @@
 # /etc/crontab: system-wide crontab
-# Unlike any other crontab you don't have to run the `crontab'
-# command to install the new version when you edit this file
-# and files in /etc/cron.d. These files also have username fields,
-# that none of the other crontabs do.
 #
-# Kept under version control as etc/crontab in the oddb.org repository.
-# After editing, install with:  sudo cp etc/crontab /etc/crontab
+# Versioned as etc/crontab in the oddb.org repository. Install with
+#   sudo bin/install_crontab --apply
+# which also installs bin/oddb_cron to /usr/local/sbin/oddb_cron as root.
+# See bin/oddb_cron for what the subcommands do and why the paths look like
+# this.
 
 SHELL=/bin/sh
 PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-# .---------------- minute (0 - 59)
-# |  .------------- hour (0 - 23)
-# |  |  .---------- day of month (1 - 31)
-# |  |  |  .------- month (1 - 12) OR jan,feb,mar ...
-# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon ...
-# |  |  |  |  |
-# *  *  *  *  * user-name command
+# m h dom mon dow user     command
 
 # --- Debian defaults ---------------------------------------------------------
 17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
@@ -25,26 +18,13 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 
 # --- system ------------------------------------------------------------------
-# Everything below goes through /usr/local/sbin/oddb_cron, installed from
-# bin/oddb_cron by bin/install_crontab and owned by root. The repo copy is the
-# source, never the file root executes: this tree belongs to zdavatz, the user
-# the web application runs as, so a root cron line pointing into /var/www would
-# turn a compromised application into root access.
-# certbot-renew stops Apache for the duration (standalone authenticator).
 0 1	* * *	root	/usr/local/sbin/oddb_cron certbot-renew > /dev/null
 0 22	* * *	root	/usr/bin/nice /usr/local/sbin/oddb_cron backup > /dev/null
 
 # --- ch.oddb.org jobs --------------------------------------------------------
-# "oddb_cron job X" does the cd + bundle exec and keeps each run's output in
-# log/cron/<job>-<YYYY-MM>.log, instead of the >/dev/null 2>&1 these lines used
-# to carry - a failing import used to look exactly like a successful one.
-#
-# These jobs share log/job.pid (anything matching ^update|^import|^rebuild|
-# ^repair), so whichever fires first holds it and a second one exits with a
-# "Duplicate Job" notice rather than running concurrently. import_bsv at 08:00
-# and import_swissmedic at 08:15 overlap on purpose: BSV publishes on the 1st
-# of the month, Swissmedic somewhere in the first week, and whichever wins the
-# race gets the day - the other one catches up the next morning.
+# Output goes to log/cron/<job>-<YYYY-MM>.log, not /dev/null.
+# import_bsv and import_swissmedic overlap on purpose - they share log/job.pid,
+# so the first to fire gets the day and the other catches up tomorrow.
 19 1	* * *	zdavatz	/usr/local/sbin/oddb_cron job rebuild_indices
 1 5	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_today
 1 7	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_drugshortage_hpc_dhcp
@@ -55,6 +35,6 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 50 8	20 * *	zdavatz	/usr/local/sbin/oddb_cron job import_whocc
 1 20	11 * *	zdavatz	/usr/local/sbin/oddb_cron job import_refdata_nat
 
-# --- other tools -------------------------------------------------------------
+# --- other repositories ------------------------------------------------------
 51 4	* * *	zdavatz	/home/zdavatz/sofware/swissmedicinfo/target/debug/swissmedicinfo --download --local >/dev/null 2>&1
 0 7	* * *	zdavatz	/home/zdavatz/sofware/sdif/update_interactions
