@@ -374,7 +374,6 @@ module ODDB
     end
 
     def test_hostname_flavors_survive_validation
-      assert_equal("desitin", flavor_for("desitin.oddb.org", "/de/desitin/"))
       assert_equal("generika", flavor_for("generika.cc", "/de/generika/"))
       assert_equal("phyto-pharma", flavor_for("phyto-pharma.ch", "/de/phyto-pharma/"))
       assert_equal("phyto-pharma", flavor_for("phytotherapeutika.ch", "/de/phyto-pharma/"))
@@ -386,7 +385,15 @@ module ODDB
     end
 
     def test_plain_flavor_from_the_path
-      assert_equal("desitin", flavor_for("nachahmer.ch", "/de/desitin/"))
+      assert_equal("oekk", flavor_for("nachahmer.ch", "/de/oekk/"))
+    end
+
+    # Retired August 2026. The hostname branch still resolves "desitin" from
+    # "desitin." matching a CssTemplate::FLAVORS key - the validation against
+    # LookandfeelFactory is what turns it back into the default.
+    def test_retired_desitin_falls_back_to_the_default
+      assert_equal("gcc", flavor_for("desitin.oddb.org", "/de/desitin/"))
+      assert_equal("gcc", flavor_for("nachahmer.ch", "/de/desitin/"))
     end
 
     # "just-medical" is retired, so it must not come back as a flavor - it used

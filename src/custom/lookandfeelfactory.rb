@@ -11,9 +11,13 @@ module ODDB
   class LookandfeelFactory < SBSM::LookandfeelFactory
     BASE = LookandfeelBase
     WRAPPERS = {
-      "desitin" => [
-        LookandfeelDesitin
-      ],
+      # "desitin" retired in August 2026 alongside just-medical. Sessions asking
+      # for it now fall back to DEFAULT_FLAVOR ("gcc"). LookandfeelDesitin, its
+      # css theme and the desitin branches in State::Global and Util::ResultSort
+      # stay in the tree, so restoring the entry revives the flavor.
+      # It was not dead like just-medical was - 1206 requests from 459 distinct
+      # addresses in August 2026, on real content paths - so this is a decision,
+      # not a cleanup.
       "generika"	=>	[
         LookandfeelLanguages,
         LookandfeelExtern,

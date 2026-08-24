@@ -31,9 +31,11 @@
 # bin/install_crontab copies this here as root:root 755.
 #
 # Which certificates renew how (see /etc/letsencrypt/renewal):
-#   ch.oddb.org      standalone   ch.oddb.org, m.oddb.org, generika.cc, oekk.oddb.org
-#   desitin.oddb.org standalone
-#   sdif.oddb.org    apache
+#   ch.oddb.org   standalone   ch.oddb.org, m.oddb.org, generika.cc,
+#                              oekk.oddb.org, oddb.org, www.oddb.org
+#   sdif.oddb.org apache
+# (desitin.oddb.org was deleted in August 2026 with the flavor - it renewed a
+# certificate Apache never served.)
 #
 # import_bsv (08:00) and import_swissmedic (08:15) overlap deliberately.
 # Everything matching ^update|^import|^rebuild|^repair shares log/job.pid, so
@@ -90,11 +92,6 @@ cmd_job() {
 # The chown afterwards is not incidental: Apache runs as root and recreates log
 # files under its own ownership on start, which would then stop the jobs
 # running as zdavatz from writing them.
-#
-# Certificates and their authenticators live in /etc/letsencrypt/renewal:
-#   ch.oddb.org      standalone   ch.oddb.org, m.oddb.org, generika.cc, oekk.oddb.org
-#   desitin.oddb.org standalone
-#   sdif.oddb.org    apache
 #
 # To add a hostname, reissue with --expand. Hosts whose DNS does not resolve
 # cannot be validated and fail the whole run - that is why just-medical.oddb.org
