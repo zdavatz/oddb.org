@@ -33,11 +33,13 @@ module ODDB
       @plugin = flexmock("rss_plugin", RssPlugin.new(@app))
     end
 
+    FLAVORS_UNDER_TEST = %w[just-medical test-flavor]
+
     def teardown
       path = RssPlugin::RSS_PATH
       %w[recall hpc].each do |feed|
         %w[de fr en].each do |lang|
-          %w[just-medical].each do |flavor|
+          FLAVORS_UNDER_TEST.each do |flavor|
             file = File.join(path, lang, "#{feed}-#{flavor}.rss")
             if File.exist?(file)
               File.unlink(file)
@@ -65,20 +67,44 @@ module ODDB
       assert_empty(@plugin.swissmedic_entries_of(:invalid_type))
     end
 
-    def test_generate_flavored_rss__with_recall
-      expected = ["just-medical"]
-      assert_equal(expected, @plugin.generate_flavored_rss("recall.rss"))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "de", "recall-just-medical.rss")))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "fr", "recall-just-medical.rss")))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "en", "recall-just-medical.rss")))
+    # FLAVORED_RSS is empty since the just-medical flavor was retired, so no
+    # flavored copies are written any more.
+    def test_generate_flavored_rss__writes_nothing_when_no_flavors
+      assert_equal([], @plugin.generate_flavored_rss("recall.rss"))
+      %w[de fr en].each do |lang|
+        refute(File.exist?(File.join(RssPlugin::RSS_PATH, lang, "recall-just-medical.rss")))
+      end
+    end
+
+    # The mechanism itself must keep working, so a flavor can be added back.
+    def test_generate_flavored_rss__copies_and_rewrites_links_for_a_flavor
+      stub_const_flavors(["test-flavor"]) do
+        assert_equal(["test-flavor"], @plugin.generate_flavored_rss("recall.rss"))
+        %w[de fr en].each do |lang|
+          path = File.join(RssPlugin::RSS_PATH, lang, "recall-test-flavor.rss")
+          assert(File.exist?(path), "must write #{path}")
+          refute_match("/gcc/", File.read(path), "/gcc/ links must be rewritten")
+        end
+      end
     end
 
     def test_generate_flavored_rss__with_hpc
-      expected = ["just-medical"]
-      assert_equal(expected, @plugin.generate_flavored_rss("hpc.rss"))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "de", "hpc-just-medical.rss")))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "fr", "hpc-just-medical.rss")))
-      assert(File.exist?(File.join(RssPlugin::RSS_PATH, "en", "hpc-just-medical.rss")))
+      stub_const_flavors(["test-flavor"]) do
+        assert_equal(["test-flavor"], @plugin.generate_flavored_rss("hpc.rss"))
+        %w[de fr en].each do |lang|
+          assert(File.exist?(File.join(RssPlugin::RSS_PATH, lang, "hpc-test-flavor.rss")))
+        end
+      end
+    end
+
+    def stub_const_flavors(flavors)
+      previous = RssPlugin::FLAVORED_RSS
+      RssPlugin.send(:remove_const, :FLAVORED_RSS)
+      RssPlugin.const_set(:FLAVORED_RSS, flavors)
+      yield
+    ensure
+      RssPlugin.send(:remove_const, :FLAVORED_RSS)
+      RssPlugin.const_set(:FLAVORED_RSS, previous)
     end
 
     def test_update_swissmedic_feed__with_recall

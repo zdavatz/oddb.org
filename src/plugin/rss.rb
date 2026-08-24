@@ -55,9 +55,11 @@ module ODDB
       RSS_URLS[lang][:hpc] [:index] = RSS_URLS[lang][:hpc] [:human].sub(/\.html$/, "/_jcr_content/par/columncontrols/items/0/column/teaserlist.content.paging-1.html?pageIndex=1")
     end
 
-    FLAVORED_RSS = %w[
-      just-medical
-    ]
+    # Held only "just-medical" until that flavor was retired in August 2026 -
+    # it produced no files and served no requests. generate_flavored_rss is a
+    # no-op while this is empty; add a flavor here to rewrite /gcc/ links in
+    # the generated feeds for it.
+    FLAVORED_RSS = %w[]
     attr_reader :report
     def initialize(app)
       super

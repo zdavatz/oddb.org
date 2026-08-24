@@ -19,10 +19,14 @@ module ODDB
         LookandfeelExtern,
         LookandfeelGenerika
       ],
-      "just-medical" =>	[
-        LookandfeelLanguages,
-        LookandfeelJustMedical
-      ],
+      # "just-medical" retired in August 2026: just-medical.oddb.org no longer
+      # resolves (NXDOMAIN), the path flavor saw no traffic at all, and the
+      # partner's external stylesheet only answers from old.just-medical.ch.
+      # Sessions asking for it now fall back to DEFAULT_FLAVOR ("gcc").
+      # LookandfeelJustMedical and its theme are still in the tree, so putting
+      # the entry back is all it takes to revive the flavor.
+      # Unrelated to the med-drugs xls export, which mails
+      # med-drugs@just-medical.com via the "ouwerkerk" list.
       "mobile"	=>	[
         LookandfeelLanguages,
         LookandfeelMobile
