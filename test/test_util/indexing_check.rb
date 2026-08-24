@@ -289,10 +289,16 @@ module ODDB
         Base64.urlsafe_decode64(signature), [header, payload].join(".")))
     end
 
+    # Must not depend on whether this machine happens to have the address
+    # configured - on the production box it does.
     def test_p12_without_an_email_says_what_is_missing
+      previous = ODDB.config.gsc_service_account_email
+      ODDB.config.gsc_service_account_email = nil
       error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(p12_file) }
       assert_match("does not contain the service account address", error.message)
       assert_match("gsc_service_account_email", error.message)
+    ensure
+      ODDB.config.gsc_service_account_email = previous
     end
 
     # A p12 named .json would otherwise blow up as a JSON parse error.
@@ -300,6 +306,29 @@ module ODDB
       path = p12_file("misnamed.json")
       error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(path) }
       assert_match("must be named .p12", error.message)
+    end
+
+    def client_with_sites_response(response)
+      client = GoogleSearchConsole.new(@key_file)
+      flexmock(client).should_receive(:get_json)
+        .with(GoogleSearchConsole::SITES_URI).and_return(response)
+      client
+    end
+
+    def test_sites_lists_url_and_permission
+      client = client_with_sites_response("siteEntry" => [
+        {"siteUrl" => "sc-domain:oddb.org", "permissionLevel" => "siteOwner"},
+        {"siteUrl" => "https://generika.cc/", "permissionLevel" => "siteFullUser"}
+      ])
+      assert_equal([["sc-domain:oddb.org", "siteOwner"],
+        ["https://generika.cc/", "siteFullUser"]], client.sites)
+    end
+
+    # An account that was never added to any property gets an empty list, not
+    # an error - which is exactly the case worth telling apart from a 403 on a
+    # single url.
+    def test_sites_is_empty_without_any_property
+      assert_empty(client_with_sites_response({}).sites)
     end
 
     # The assertion must be a real RS256 JWT or Google rejects it, so verify

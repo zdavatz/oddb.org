@@ -35,6 +35,7 @@ module ODDB
 
     TOKEN_URI = "https://oauth2.googleapis.com/token"
     INSPECT_URI = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
+    SITES_URI = "https://searchconsole.googleapis.com/webmasters/v3/sites"
     SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
     JWT_GRANT = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 
@@ -63,6 +64,18 @@ module ODDB
         load_json(client_email)
       end
       @last_call_at = nil
+    end
+
+    # The properties this service account can actually see, as
+    # [[siteUrl, permissionLevel], ...]. Inspecting a url returns a flat 403
+    # whether the account was never added or the property is spelled
+    # differently (a URL-prefix property rather than sc-domain:), so this is
+    # what tells the two apart.
+    def sites
+      response = get_json(SITES_URI)
+      Array(response["siteEntry"]).collect { |entry|
+        [entry["siteUrl"], entry["permissionLevel"]]
+      }
     end
 
     # Look one url up. Returns the indexStatusResult hash, or raises Error.
@@ -189,6 +202,12 @@ module ODDB
     def post_form(uri, params)
       request = Net::HTTP::Post.new(URI(uri))
       request.set_form_data(params)
+      perform(uri, request)
+    end
+
+    def get_json(uri)
+      request = Net::HTTP::Get.new(URI(uri))
+      request["Authorization"] = "Bearer #{access_token}"
       perform(uri, request)
     end
 

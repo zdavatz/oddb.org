@@ -27,7 +27,7 @@ require "util/mail"
 module ODDB
   module Util
     Job.run do |system|
-      opts = {days: 7, limit: 200, dry_run: false, urls: [], mail: false}
+      opts = {days: 7, limit: 200, dry_run: false, urls: [], mail: false, list_sites: false}
       ARGV.each do |arg|
         case arg
         when /^--days=(\d+)/ then opts[:days] = $1.to_i
@@ -35,10 +35,28 @@ module ODDB
         when /^--url=(.+)/ then opts[:urls] << $1
         when "--dry-run" then opts[:dry_run] = true
         when "--mail" then opts[:mail] = true
+        when "--list-sites" then opts[:list_sites] = true
         end
       end
 
       site_urls = ODDB.config.gsc_site_urls || {}
+
+      # Setup aid: shows the properties the service account can see, spelled
+      # exactly as gsc_site_urls needs them.
+      if opts[:list_sites]
+        client = GoogleSearchConsole.new
+        warn "service account: #{client.client_email}"
+        entries = client.sites
+        if entries.empty?
+          warn "This account is not a user of any property. Add"
+          warn "  #{client.client_email}"
+          warn "under Settings -> Users and permissions of each property in"
+          warn "search.google.com/search-console, with permission \"Full\"."
+        else
+          entries.each { |site, permission| puts format("  %-40s %s", site, permission) }
+        end
+        next
+      end
 
       urls_by_host = if opts[:urls].empty?
         files = IndexingCheck.log_files(opts[:days])
