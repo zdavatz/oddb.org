@@ -12,9 +12,13 @@
 # scripts this replaces were owned by zdavatz, the user the web application
 # runs as, which was a path from a compromised application to root at 22:00.
 #
-# Superseded and safe to delete once this has been applied:
+# Left in place but no longer called by anything once this has been applied:
 #   /usr/local/src/certbot_renew
 #   /usr/local/sbin/ywesee-backup
+# Edit bin/oddb_cron, not those - they are dormant copies now. Leaving the
+# second one is safe precisely because nothing invokes it any more: it is owned
+# by zdavatz, and it was cron running it as root at 22:00 that made that a
+# problem.
 #
 # Not installed from here, deliberately:
 #   /usr/local/sbin/pg_backup.sh   carries the postgres password in clear text

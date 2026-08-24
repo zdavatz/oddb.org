@@ -12,6 +12,10 @@
 # root cron line straight at /var/www/oddb.org/bin would turn a compromised
 # application into root access. The repo holds the source; root runs the copy.
 #
+# Replaces, but does not remove, /usr/local/src/certbot_renew and
+# /usr/local/sbin/ywesee-backup. Those stay on disk, dormant - nothing calls
+# them once the new crontab is installed. Change behaviour here, not there.
+#
 # Not absorbed into this script:
 #   /usr/local/sbin/pg_backup.sh  carries the postgres password in clear text,
 #                                 so it stays out of version control
