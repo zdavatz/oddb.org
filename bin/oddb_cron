@@ -1,7 +1,9 @@
 #!/bin/sh
 # Every script /etc/crontab calls, in one place.
 #
-#   oddb_cron job <name> [args...]   run jobs/<name> (as zdavatz)
+#   oddb_cron schedule               run whatever is due this minute (as zdavatz)
+#   oddb_cron schedule-list          show the schedule
+#   oddb_cron job <name> [args...]   run one job by hand
 #   oddb_cron certbot-renew          renew Let's Encrypt certificates (as root)
 #   oddb_cron backup                 back up the database (as root)
 #
@@ -43,7 +45,7 @@
 ODDB_ROOT=${ODDB_ROOT:-/var/www/oddb.org}
 
 usage() {
-  sed -n '3,6p' "$0" | sed 's/^# \{0,2\}//'
+  sed -n '3,8p' "$0" | sed 's/^# \{0,2\}//'
   exit 2
 }
 
@@ -119,8 +121,57 @@ cmd_backup() {
   done
 }
 
+# The schedule, so /etc/crontab needs one line for all nine jobs instead of
+# nine. Fields: minute, hour, day-of-month ("*" for every day), job name.
+# Keep them sorted by time; cron itself no longer knows about any of this.
+#
+# import_bsv and import_swissmedic overlap deliberately - see above.
+SCHEDULE="
+19  1   *   rebuild_indices
+1   5   *   update_today
+1   7   *   update_drugshortage_hpc_dhcp
+0   8   *   import_bsv
+15  8   *   import_swissmedic
+50  15  *   update_drugshortage
+1   19  *   update_fachinfo_rss_feeds
+50  8   20  import_whocc
+1   20  11  import_refdata_nat
+"
+
+# Runs whatever is due this minute. Invoked once a minute from cron, so it has
+# to stay cheap: on all but nine minutes of the day it matches nothing and
+# exits. Times are compared without leading zeros so "08" from date matches "8".
+cmd_schedule() {
+  now_min=$(date +%-M)
+  now_hour=$(date +%-H)
+  now_dom=$(date +%-d)
+  status=0
+  # Fed by here-doc, not a pipe: a piped while runs in a subshell, and $status
+  # set inside it would be lost - cron would never see a failing job.
+  while read -r min hour dom job; do
+    [ -n "$job" ] || continue
+    [ "$min" = "$now_min" ] || continue
+    [ "$hour" = "$now_hour" ] || continue
+    [ "$dom" = "*" ] || [ "$dom" = "$now_dom" ] || continue
+    cmd_job "$job" || status=1
+  done <<SCHEDULE_EOF
+$SCHEDULE
+SCHEDULE_EOF
+  return $status
+}
+
+# Prints the schedule, to check what this replaced the crontab lines with.
+cmd_schedule_list() {
+  echo "$SCHEDULE" | while read -r min hour dom job; do
+    [ -n "$job" ] || continue
+    printf "  %2s %2s %2s  %s\n" "$min" "$hour" "$dom" "$job"
+  done
+}
+
 case "$1" in
   job)            shift; cmd_job "$@" ;;
+  schedule)       cmd_schedule ;;
+  schedule-list)  cmd_schedule_list ;;
   certbot-renew)  cmd_certbot_renew ;;
   backup)         cmd_backup ;;
   *)              usage ;;

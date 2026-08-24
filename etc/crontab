@@ -3,8 +3,11 @@
 # Versioned as etc/crontab in the oddb.org repository. Install with
 #   sudo bin/install_crontab --apply
 # which also installs bin/oddb_cron to /usr/local/sbin/oddb_cron as root.
-# See bin/oddb_cron for what the subcommands do and why the paths look like
-# this.
+#
+# The nine ch.oddb.org jobs are no longer listed here - their times live in
+# bin/oddb_cron, and the "schedule" line below runs whatever is due. See what
+# that means in practice with:
+#   oddb_cron schedule-list
 
 SHELL=/bin/sh
 PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -17,24 +20,14 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
 52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 
-# --- system ------------------------------------------------------------------
+# --- root ---------------------------------------------------------------------
+# Separate lines because cron takes one user per line and these two are root.
 0 1	* * *	root	/usr/local/sbin/oddb_cron certbot-renew > /dev/null
 0 22	* * *	root	/usr/bin/nice /usr/local/sbin/oddb_cron backup > /dev/null
 
-# --- ch.oddb.org jobs --------------------------------------------------------
-# Output goes to log/cron/<job>-<YYYY-MM>.log, not /dev/null.
-# import_bsv and import_swissmedic overlap on purpose - they share log/job.pid,
-# so the first to fire gets the day and the other catches up tomorrow.
-19 1	* * *	zdavatz	/usr/local/sbin/oddb_cron job rebuild_indices
-1 5	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_today
-1 7	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_drugshortage_hpc_dhcp
-0 8	* * *	zdavatz	/usr/local/sbin/oddb_cron job import_bsv
-15 8	* * *	zdavatz	/usr/local/sbin/oddb_cron job import_swissmedic
-50 15	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_drugshortage
-1 19	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_fachinfo_rss_feeds
-50 8	20 * *	zdavatz	/usr/local/sbin/oddb_cron job import_whocc
-1 20	11 * *	zdavatz	/usr/local/sbin/oddb_cron job import_refdata_nat
+# --- ch.oddb.org --------------------------------------------------------------
+* *	* * *	zdavatz	/usr/local/sbin/oddb_cron schedule
 
-# --- other repositories ------------------------------------------------------
+# --- other repositories -------------------------------------------------------
 51 4	* * *	zdavatz	/home/zdavatz/sofware/swissmedicinfo/target/debug/swissmedicinfo --download --local >/dev/null 2>&1
 0 7	* * *	zdavatz	/home/zdavatz/sofware/sdif/update_interactions
