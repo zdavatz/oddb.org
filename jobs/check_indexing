@@ -1,0 +1,87 @@
+#!/usr/local/bin/ruby-271
+# must be scheduled in crontab to run as the same user as oddb
+#
+# Asks the Google Search Console URL Inspection API what it currently knows
+# about the urls that returned 500 in our own app log - i.e. whether the pages
+# behind a "Serverfehler (5xx)" report in the Search Console are fixed.
+#
+# There is no api that lists the urls behind that report, so the candidates
+# come from log/YYYY/MM/DD/oddb_log. Quota is 2000 inspections per property
+# per day, which --limit caps (default 200).
+#
+# Usage:
+#   bundle exec ruby jobs/check_indexing                 # last 7 days, 200 urls/host
+#   bundle exec ruby jobs/check_indexing --days=30 --limit=500
+#   bundle exec ruby jobs/check_indexing --dry-run       # list urls, call nothing
+#   bundle exec ruby jobs/check_indexing --url=https://ch.oddb.org/de/gcc/...
+#
+# Needs gsc_service_account_json in etc/oddb.yml; see util/google_search_console.rb.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/indexing_check"
+require "util/mail"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      opts = {days: 7, limit: 200, dry_run: false, urls: [], mail: false}
+      ARGV.each do |arg|
+        case arg
+        when /^--days=(\d+)/ then opts[:days] = $1.to_i
+        when /^--limit=(\d+)/ then opts[:limit] = $1.to_i
+        when /^--url=(.+)/ then opts[:urls] << $1
+        when "--dry-run" then opts[:dry_run] = true
+        when "--mail" then opts[:mail] = true
+        end
+      end
+
+      site_urls = ODDB.config.gsc_site_urls || {}
+
+      urls_by_host = if opts[:urls].empty?
+        files = IndexingCheck.log_files(opts[:days])
+        warn "reading #{files.size} log files (#{opts[:days]} days)"
+        IndexingCheck.failing_urls(files, opts[:limit])
+      else
+        opts[:urls].group_by { |url| URI(url).host }
+      end
+
+      if urls_by_host.empty?
+        warn "no urls returned 500 in the last #{opts[:days]} days - nothing to check"
+        next
+      end
+
+      urls_by_host.each do |host, urls|
+        property = IndexingCheck.site_url_for(host, site_urls)
+        warn "  #{host}: #{urls.size} distinct urls (property: #{property || "NOT CONFIGURED, will be skipped"})"
+      end
+
+      if opts[:dry_run]
+        urls_by_host.each_value { |urls| urls.each { |url| puts url } }
+        next
+      end
+
+      check = IndexingCheck.new
+      begin
+        warn "service account: #{check.client.client_email}"
+      rescue GoogleSearchConsole::Error => error
+        warn "Search Console is not set up: #{error.message}"
+        warn "Add gsc_service_account_json to etc/oddb.yml, pointing at a service"
+        warn "account key whose client_email is a Full user of the properties above."
+        warn "Use --dry-run to see which urls would be inspected."
+        next
+      end
+      report = check.check(urls_by_host, site_urls)
+      puts report
+
+      if opts[:mail]
+        # "oddb" is the general admin list in etc/oddb.yml; send_mail raises
+        # unless at least one recipient resolves to a configured list.
+        subject = "Indexing check #{Date.today.strftime("%d.%m.%Y")}"
+        Util.send_mail(["oddb"], subject, report)
+      end
+    end
+  end
+end

@@ -59,7 +59,23 @@ module ODDB
     "paypal_receiver" => "zdavatz@ywesee.com", # or test_paypal@ywesee.com
     "refdata_api_key" => nil,
     "refdata_api_key_secondary" => nil,
-    "drugshortage_hmac_secret" => nil
+    "drugshortage_hmac_secret" => nil,
+    # Path to a Google service account JSON key, for jobs/check_indexing.
+    # The account must be a Full user of the Search Console properties below.
+    "gsc_service_account_json" => nil,
+    # Search Console property per domain, spelled as in Search Console itself:
+    # either "sc-domain:oddb.org" or "https://ch.oddb.org/" with the slash.
+    # A sc-domain: property covers its subdomains, so the oddb.org entry also
+    # serves ch.oddb.org, i.ch.oddb.org, oekk.oddb.org and desitin.oddb.org -
+    # IndexingCheck.site_url_for resolves a host to the longest matching entry.
+    # Hosts without an entry are skipped instead of spending quota on them.
+    # Override in etc/oddb.yml once you know which properties really exist.
+    "gsc_site_urls" => {
+      "oddb.org" => "sc-domain:oddb.org",
+      "generika.cc" => "sc-domain:generika.cc",
+      "nachahmer.ch" => "sc-domain:nachahmer.ch",
+      "anthroposophika.ch" => "sc-domain:anthroposophika.ch"
+    }
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)

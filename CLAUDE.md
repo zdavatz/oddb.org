@@ -165,6 +165,18 @@ The app runs alongside several daemons (in `ext/`): export, meddata, refdata, sw
 - **`shortage_link`** is constructed as `https://www.drugshortage.ch/index.php/detail-lieferengpass/?ID=<id>` where `<id>` is the stable upstream record id from `engpaesse[].id`. This is the new per-shortage detail page (replaces the old `detail_lieferengpass.aspx?ID=...`).
 - Change-detection still uses `Latest.get_latest_file`'s byte-size comparison (`src/util/latest.rb`); fresh fetch is skipped if today's downloaded size matches the cached `data/json/drugshortage-latest.json`.
 
+### Google Search Console Indexing Check (`jobs/check_indexing`)
+
+- Verifies whether the pages behind a Search Console "Serverfehler (5xx)" report still fail for Google.
+- **There is no API for the Page Indexing report.** `urlcrawlerrorssamples` was shut down in 2019 and never replaced; the API has only Search Analytics, Sitemaps, Sites and URL Inspection. The URL list must therefore come from our side.
+- Candidates are read from `log/YYYY/MM/DD/oddb_log` (lines with status 500) by `IndexingCheck.failing_urls`, then looked up one by one via `POST https://searchconsole.googleapis.com/v1/urlInspection/index:inspect`.
+- Response fields used: `pageFetchState` (`SERVER_ERROR`, `INTERNAL_CRAWL_ERROR`, `SOFT_404`, `REDIRECT_ERROR` count as still-failing; `SUCCESSFUL` is the goal), `verdict`, `lastCrawlTime`.
+- **Quota**: 2000 inspections per property per day, 600/min. `--limit` caps the daily volume (default 200); `MIN_SECONDS_BETWEEN_CALLS` throttles the rate.
+- **Auth**: service account, RS256 JWT signed with stdlib `openssl` and traded for an access token — deliberately no `googleauth`/`signet`/`google-apis-*` dependency. Key path in `gsc_service_account_json` (`etc/oddb.yml`, gitignored). The account's `client_email` must be a **Full** user of the property; Restricted is not enough.
+- **Property resolution**: `gsc_site_urls` maps domain → property. `IndexingCheck.site_url_for` matches the exact host first, then strips labels from the left, because a `sc-domain:` property covers its subdomains (`sc-domain:oddb.org` serves `ch.oddb.org`, `i.ch.oddb.org`, `oekk.oddb.org`, `desitin.oddb.org`). Hosts with no property — including malformed ones crawlers send, e.g. `chahmer.ch` or `.oddb.org` — are skipped without spending quota.
+- Key files: `src/util/google_search_console.rb` (API client), `src/util/indexing_check.rb` (log parsing + report), `jobs/check_indexing`. Tests: `test/test_util/indexing_check.rb`.
+- **Watch the routing**, not just the code: Apache proxies UA `google` to **port 8112 (`google_crawler`)** and other bots to 8212 (`crawler`), via `RewriteCond %{HTTP_USER_AGENT}` in `etc/20_oddb.org.rack.conf`. In August 2026 `google_crawler` was dead for 9.7 days while `svstat` still reported "up" (the PID did not exist), so Googlebot got a blanket 503 — a far bigger cause of 5xx reports than any application bug. Check `ps -p <pid>` and not just `svstat`.
+
 ### Refdata Partner API
 
 Refdata migrated their platform on 2026-04-01. The Partner SOAP service now requires:
