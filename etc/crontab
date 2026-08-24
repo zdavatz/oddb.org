@@ -25,16 +25,17 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 
 # --- system ------------------------------------------------------------------
-# Renews Let's Encrypt certificates; stops Apache for the duration (standalone
-# authenticator). bin/certbot_renew in the repo is the versioned reference, but
-# the path below stays as it is on purpose: it is root-owned, and pointing a
-# root cron job at a zdavatz-owned file under /var/www would hand root to
-# anyone who can write there.
-0 1	* * *	root	/usr/local/src/certbot_renew > /dev/null
-0 22	* * *	root	/usr/bin/nice /usr/local/sbin/ywesee-backup > /dev/null
+# Everything below goes through /usr/local/sbin/oddb_cron, installed from
+# bin/oddb_cron by bin/install_crontab and owned by root. The repo copy is the
+# source, never the file root executes: this tree belongs to zdavatz, the user
+# the web application runs as, so a root cron line pointing into /var/www would
+# turn a compromised application into root access.
+# certbot-renew stops Apache for the duration (standalone authenticator).
+0 1	* * *	root	/usr/local/sbin/oddb_cron certbot-renew > /dev/null
+0 22	* * *	root	/usr/bin/nice /usr/local/sbin/oddb_cron backup > /dev/null
 
 # --- ch.oddb.org jobs --------------------------------------------------------
-# bin/cron_job does the cd + bundle exec and keeps each run's output in
+# "oddb_cron job X" does the cd + bundle exec and keeps each run's output in
 # log/cron/<job>-<YYYY-MM>.log, instead of the >/dev/null 2>&1 these lines used
 # to carry - a failing import used to look exactly like a successful one.
 #
@@ -44,15 +45,15 @@ PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/us
 # and import_swissmedic at 08:15 overlap on purpose: BSV publishes on the 1st
 # of the month, Swissmedic somewhere in the first week, and whichever wins the
 # race gets the day - the other one catches up the next morning.
-19 1	* * *	zdavatz	/var/www/oddb.org/bin/cron_job rebuild_indices
-1 5	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_today
-1 7	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_drugshortage_hpc_dhcp
-0 8	* * *	zdavatz	/var/www/oddb.org/bin/cron_job import_bsv
-15 8	* * *	zdavatz	/var/www/oddb.org/bin/cron_job import_swissmedic
-50 15	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_drugshortage
-1 19	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_fachinfo_rss_feeds
-50 8	20 * *	zdavatz	/var/www/oddb.org/bin/cron_job import_whocc
-1 20	11 * *	zdavatz	/var/www/oddb.org/bin/cron_job import_refdata_nat
+19 1	* * *	zdavatz	/usr/local/sbin/oddb_cron job rebuild_indices
+1 5	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_today
+1 7	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_drugshortage_hpc_dhcp
+0 8	* * *	zdavatz	/usr/local/sbin/oddb_cron job import_bsv
+15 8	* * *	zdavatz	/usr/local/sbin/oddb_cron job import_swissmedic
+50 15	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_drugshortage
+1 19	* * *	zdavatz	/usr/local/sbin/oddb_cron job update_fachinfo_rss_feeds
+50 8	20 * *	zdavatz	/usr/local/sbin/oddb_cron job import_whocc
+1 20	11 * *	zdavatz	/usr/local/sbin/oddb_cron job import_refdata_nat
 
 # --- other tools -------------------------------------------------------------
 51 4	* * *	zdavatz	/home/zdavatz/sofware/swissmedicinfo/target/debug/swissmedicinfo --download --local >/dev/null 2>&1

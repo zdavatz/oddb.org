@@ -1,0 +1,81 @@
+#!/bin/sh
+# Installs the versioned crontab and the scripts it calls. Run with sudo.
+#
+#   sudo bin/install_crontab           # show what would change
+#   sudo bin/install_crontab --apply   # do it
+#
+# Two files: the crontab, and bin/oddb_cron - which holds every script the
+# crontab calls, as subcommands.
+#
+# Both end up owned by root, on purpose. cron runs the certbot and backup lines
+# as root, so what it executes must not be writable by anyone else. The
+# scripts this replaces were owned by zdavatz, the user the web application
+# runs as, which was a path from a compromised application to root at 22:00.
+#
+# Superseded and safe to delete once this has been applied:
+#   /usr/local/src/certbot_renew
+#   /usr/local/sbin/ywesee-backup
+#
+# Not installed from here, deliberately:
+#   /usr/local/sbin/pg_backup.sh   carries the postgres password in clear text
+#   sdif/update_interactions       lives in github.com/zdavatz/sdif
+#   swissmedicinfo                 lives in github.com/zdavatz/swissmedicinfo
+
+root=$(cd "$(dirname "$0")/.." && pwd)
+apply=no
+[ "$1" = "--apply" ] && apply=yes
+
+[ "$(id -u)" = "0" ] || { echo "must run as root (use sudo)" >&2; exit 1; }
+
+backup_dir=/var/backups/oddb-config
+stamp=$(date +%Y%m%d-%H%M%S)
+
+# src : dest : mode
+set -- \
+  "$root/etc/crontab:/etc/crontab:644" \
+  "$root/bin/oddb_cron:/usr/local/sbin/oddb_cron:755"
+
+status=0
+for entry in "$@"; do
+  src=${entry%%:*}
+  rest=${entry#*:}
+  dest=${rest%%:*}
+  mode=${rest#*:}
+
+  if [ ! -f "$src" ]; then
+    echo "MISSING  $src" >&2
+    status=1
+    continue
+  fi
+
+  if [ -f "$dest" ] && diff -q "$src" "$dest" >/dev/null 2>&1; then
+    owner=$(stat -c '%U:%G %a' "$dest")
+    if [ "$owner" = "root:root $mode" ]; then
+      echo "ok       $dest"
+      continue
+    fi
+    echo "CHOWN    $dest (is $owner, want root:root $mode)"
+  elif [ -f "$dest" ]; then
+    echo "UPDATE   $dest"
+    diff -u "$dest" "$src" | sed 's/^/         /' | head -20
+  else
+    echo "CREATE   $dest"
+  fi
+
+  [ "$apply" = "yes" ] || continue
+
+  if [ -f "$dest" ]; then
+    mkdir -p "$backup_dir"
+    cp -a "$dest" "$backup_dir/$(basename "$dest").$stamp"
+  fi
+  install -o root -g root -m "$mode" "$src" "$dest" || status=1
+done
+
+if [ "$apply" = "yes" ]; then
+  echo
+  echo "backups in $backup_dir"
+else
+  echo
+  echo "nothing changed - re-run with --apply"
+fi
+exit $status

@@ -1,0 +1,105 @@
+#!/bin/sh
+# Every script /etc/crontab calls, in one place.
+#
+#   oddb_cron job <name> [args...]   run jobs/<name> (as zdavatz)
+#   oddb_cron certbot-renew          renew Let's Encrypt certificates (as root)
+#   oddb_cron backup                 back up the database (as root)
+#
+# Installed to /usr/local/sbin/oddb_cron by bin/install_crontab, which makes it
+# root-owned. That matters: cron runs certbot-renew and backup as root, and a
+# script root executes must not be writable by anyone else. This repository is
+# owned by zdavatz - the same user the web application runs as - so pointing a
+# root cron line straight at /var/www/oddb.org/bin would turn a compromised
+# application into root access. The repo holds the source; root runs the copy.
+#
+# Not absorbed into this script:
+#   /usr/local/sbin/pg_backup.sh  carries the postgres password in clear text,
+#                                 so it stays out of version control
+#   sdif/update_interactions      github.com/zdavatz/sdif
+#   swissmedicinfo                github.com/zdavatz/swissmedicinfo
+
+ODDB_ROOT=${ODDB_ROOT:-/var/www/oddb.org}
+
+usage() {
+  sed -n '3,6p' "$0" | sed 's/^# \{0,2\}//'
+  exit 2
+}
+
+require_root() {
+  [ "$(id -u)" = "0" ] || { echo "$1 must run as root" >&2; exit 1; }
+}
+
+# Runs one of the jobs/ scripts, keeping its output.
+#
+# The crontab used to carry "bundle exec ruby jobs/X
+# >/dev/null 2>&1" per line. Losing that redirect is the point: it threw away
+# every error these jobs produced, so a failing import looked exactly like a
+# successful one. Output goes to log/cron/<job>-<YYYY-MM>.log, one file per job
+# per month, and the exit status is preserved so cron still mails a failure.
+#
+# The jobs guard themselves against overlapping: everything matching
+# ^update|^import|^rebuild|^repair shares log/job.pid, so whichever fires first
+# holds it and a second exits with a "Duplicate Job" notice.
+cmd_job() {
+  job=$1
+  [ -n "$job" ] || usage
+  shift
+  [ -f "$ODDB_ROOT/jobs/$job" ] || { echo "no such job: jobs/$job" >&2; exit 2; }
+
+  log_dir=$ODDB_ROOT/log/cron
+  mkdir -p "$log_dir" || exit 1
+  log=$log_dir/$job-$(date +%Y-%m).log
+
+  cd "$ODDB_ROOT" || exit 1
+  echo "=== $job started $(date '+%Y-%m-%d %H:%M:%S %z') ===" >> "$log"
+  # No set -e: the exit status has to survive to be logged and passed to cron.
+  bundle exec ruby "jobs/$job" "$@" >> "$log" 2>&1
+  status=$?
+  echo "=== $job finished $(date '+%Y-%m-%d %H:%M:%S %z') (exit $status) ===" >> "$log"
+  return $status
+}
+
+# Apache is stopped for the duration because the oddb certificates renew with
+# the standalone authenticator, which binds port 80 itself and cannot while
+# Apache holds it - hence a short outage every night, and hence 01:00.
+#
+# The chown afterwards is not incidental: Apache runs as root and recreates log
+# files under its own ownership on start, which would then stop the jobs
+# running as zdavatz from writing them.
+#
+# Certificates and their authenticators live in /etc/letsencrypt/renewal:
+#   ch.oddb.org      standalone   ch.oddb.org, m.oddb.org, generika.cc, oekk.oddb.org
+#   desitin.oddb.org standalone
+#   sdif.oddb.org    apache
+#
+# To add a hostname, reissue with --expand. Hosts whose DNS does not resolve
+# cannot be validated and fail the whole run - that is why just-medical.oddb.org
+# is no longer in the list.
+cmd_certbot_renew() {
+  require_root certbot-renew
+  /etc/init.d/apache2 stop
+  certbot renew
+  /etc/init.d/apache2 start
+  chown -R zdavatz:zdavatz "$ODDB_ROOT/log/"
+}
+
+# What this does NOT do, despite the crontab having called it "backup to
+# backup-disk": every rsync in the original was commented out, so nothing but
+# the database is saved, and the dump lands in /var/backups on the same single
+# disk as everything else. A disk failure takes the database, the dumps, the
+# Apache config and the application with it.
+cmd_backup() {
+  require_root backup
+  /usr/local/sbin/pg_backup.sh bv
+  # keep five days of dumps
+  for file in $(find /var/backups/db/postgresql -daystart -ctime +5); do
+    rm -rf "$file"
+  done
+}
+
+case "$1" in
+  job)            shift; cmd_job "$@" ;;
+  certbot-renew)  cmd_certbot_renew ;;
+  backup)         cmd_backup ;;
+  *)              usage ;;
+esac
