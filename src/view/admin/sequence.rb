@@ -65,10 +65,15 @@ module ODDB
           end
         end
 
+        # model is an ActiveAgent, but a broken ODBA reference can put something
+        # else here - an Array in the case observed on
+        # /de/gcc/show/reg/52492/seq/01/pack/017. Same shape as the patinfo and
+        # fachinfo guards: ODBA::Stub#is_a? answers from the declared class
+        # without resolving, #respond_to? resolves.
         def substances(model)
-          if model && sub = model.substance
-            sub.send(@session.language)
-          end
+          return unless model.respond_to?(:substance)
+          sub = model.substance
+          sub.send(@session.language) if sub.respond_to?(@session.language)
         end
 
         def lookandfeel_key(component)
@@ -107,10 +112,11 @@ module ODDB
           end
         end
 
+        # See substances above.
         def inactive_agents(model)
-          if model && sub = model.substance
-            sub.send(@session.language)
-          end
+          return unless model.respond_to?(:substance)
+          sub = model.substance
+          sub.send(@session.language) if sub.respond_to?(@session.language)
         end
       end
 
@@ -284,7 +290,10 @@ module ODDB
 
         def active_agents(model, session = @session)
           agents = model.active_agents
-          return nil unless agents.size > 0
+          return nil unless agents.respond_to?(:size) && agents.size > 0
+          # One agent that does not resolve must not take the whole page down.
+          agents = agents.select { |agent| agent.respond_to?(:substance) }
+          return nil if agents.empty?
           elem = View::Admin::ActiveAgents.new(agents.sort { |a, b| a.substance.to_s <=> b.substance.to_s }, @session, self)
           elem.css_class = "left italic"
           elem
@@ -487,7 +496,11 @@ module ODDB
             evt = @session.state.respond_to?(:suggest_choose) ? :suggest_choose : :show
             link = HtmlGrid::Link.new(:ikscd, model, @session, self)
             link.value = model.ikscd
-            smart_link_format = model.pointer.to_csv.gsub("registration", "reg").gsub("sequence", "seq").gsub("package", "pack").split(",")
+            # model.pointer comes back nil for a package whose reference no
+            # longer resolves, and nil.to_csv was 50 of the 500s in August 2026.
+            pointer = model.pointer
+            return link unless pointer.respond_to?(:to_csv)
+            smart_link_format = pointer.to_csv.gsub("registration", "reg").gsub("sequence", "seq").gsub("package", "pack").split(",")
             if evt == :show and smart_link_format.include?("reg")
               link.href = @lookandfeel.event_url(evt, smart_link_format)
             else

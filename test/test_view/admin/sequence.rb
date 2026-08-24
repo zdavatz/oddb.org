@@ -12,6 +12,7 @@ require "view/additional_information"
 require "view/admin/sequence"
 require "htmlgrid/span"
 require "model/sequence"
+require "util/language"
 require "view/admin/registration"
 
 class TestRootActiveAgents < Minitest::Test
@@ -601,5 +602,93 @@ class TestResellerSequenceComposite < Minitest::Test
 
   def test_compositions
     assert_kind_of(ODDB::View::Admin::RootCompositions, @composite.compositions(@model, @session))
+  end
+end
+
+# Broken ODBA references reach these views: a stub whose declared class says
+# ActiveAgent can resolve to something else entirely, and model.pointer can come
+# back nil. ODBA::Stub#is_a? answers from the declared class without resolving,
+# so only #respond_to? tells the truth. Observed in August 2026 as
+# "undefined method 'substance' for an instance of Array" and
+# "undefined method 'to_csv' for nil" - 50 of the latter alone.
+#
+# They are intermittent: the same url answers 500 once and 200 minutes later,
+# because whether a stub resolves depends on cache and connection state. That
+# is exactly why they need a guard rather than a repair.
+class TestSequenceBrokenReferences < Minitest::Test
+  def setup
+    @lnf = flexmock("lookandfeel")
+    @lnf.should_receive(:lookup).and_return("lookup")
+    @session = flexmock("session", lookandfeel: @lnf, language: "de")
+  end
+
+  def agents_view(klass)
+    view = klass.allocate
+    view.instance_variable_set(:@session, @session)
+    view.instance_variable_set(:@lookandfeel, @lnf)
+    view
+  end
+
+  # Not a flexmock: its mocks answer #respond_to? with false for methods set up
+  # through should_receive, which is exactly what the guard tests. Real
+  # substances answer true - SimpleLanguage overrides respond_to? to accept any
+  # two-letter symbol and routes it through method_missing.
+  class RealSubstance
+    def de = "Acidum"
+  end
+
+  def test_substances_reads_a_real_agent
+    model = flexmock("agent", substance: RealSubstance.new)
+    assert_equal("Acidum", agents_view(ODDB::View::Admin::ActiveAgents).substances(model))
+  end
+
+  # A substance carries its names through SimpleLanguage, which has no de/fr/it
+  # methods at all - method_missing handles any two-letter symbol and
+  # respond_to? is overridden to match. The guard has to accept that, or it
+  # would reject every real substance.
+  class LanguageBacked
+    include ODDB::SimpleLanguage
+
+    def initialize = descriptions.store("de", "Acidum")
+  end
+
+  def test_substances_accepts_a_simple_language_object
+    substance = LanguageBacked.new
+    refute(substance.methods.include?(:de), "premise: de is not a defined method")
+    # A String on purpose: @session.language is one, and that is what the guard
+    # hands to respond_to?.
+    assert(substance.respond_to?("de"), "premise: respond_to? accepts it") # standard:disable Performance/StringIdentifierArgument
+    model = flexmock("agent", substance: substance)
+    assert_equal("Acidum", agents_view(ODDB::View::Admin::ActiveAgents).substances(model))
+  end
+
+  # The production case: the reference resolved to an Array.
+  def test_substances_survives_a_model_that_is_not_an_agent
+    view = agents_view(ODDB::View::Admin::ActiveAgents)
+    assert_nil(view.substances([]))
+    assert_nil(view.substances(nil))
+  end
+
+  # And one where the agent resolves but its substance does not.
+  def test_substances_survives_a_substance_without_the_language
+    model = flexmock("agent", substance: [])
+    assert_nil(agents_view(ODDB::View::Admin::ActiveAgents).substances(model))
+  end
+
+  def test_inactive_agents_is_guarded_the_same_way
+    view = agents_view(ODDB::View::Admin::InactiveAgents)
+    assert_nil(view.inactive_agents([]))
+    assert_nil(view.inactive_agents(nil))
+  end
+
+  def test_active_agents_drops_an_agent_that_does_not_resolve
+    view = ODDB::View::Admin::CompositionList.allocate
+    view.instance_variable_set(:@session, @session)
+    view.instance_variable_set(:@lookandfeel, @lnf)
+    # every agent broken -> nothing to show, and no crash
+    model = flexmock("composition", active_agents: [[], nil])
+    assert_nil(view.active_agents(model, @session))
+    # active_agents itself not even a collection
+    assert_nil(view.active_agents(flexmock("c", active_agents: nil), @session))
   end
 end
