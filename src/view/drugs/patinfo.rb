@@ -185,12 +185,15 @@ module ODDB
           end
         end
 
+        # Same safe-navigation trap as patinfo_name below: PatinfoDocument#empty?
+        # returns nil, so a real document is meant to fall through to
+        # chapter_names - but `document&.empty?` is nil for a *nil* document
+        # too, and that ended in nil.chapter_names. Only visible since
+        # patinfo_name stopped raising first on the very same pages.
         def display_names(document)
-          if document&.empty?
-            []
-          else
-            document.chapter_names
-          end
+          return [] unless document.respond_to?(:chapter_names)
+          return [] if document.respond_to?(:empty?) && document.empty?
+          document.chapter_names
         end
 
         def full_text(model, session)
@@ -224,7 +227,8 @@ module ODDB
         COMPONENTS = {}
         DEFAULT_CLASS = View::Chapter
         def init
-          unless @model&.empty?
+          # `unless @model&.empty?` let a nil model through - see display_names
+          if @model.respond_to?(:chapter_names) && !@model.empty?
             @model.chapter_names.each_with_index { |name, idx|
               if @model.respond_to?(name) &&
                   (chapter = @model.send(name)) && !chapter.empty?

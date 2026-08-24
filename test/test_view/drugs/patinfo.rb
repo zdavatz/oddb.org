@@ -179,6 +179,41 @@ module ODDB
           assert_nil(preview.patinfo_name([], nil))
         end
 
+        def chooser
+          chooser = ODDB::View::Drugs::PiChapterChooser.allocate
+          chooser.instance_variable_set(:@lookandfeel, @lnf)
+          chooser
+        end
+
+        def test_display_names_returns_the_chapter_names
+          document = flexmock("document", empty?: nil, chapter_names: [:usage, :date])
+          assert_equal([:usage, :date], chooser.display_names(document))
+        end
+
+        def test_display_names_is_empty_for_an_empty_document
+          document = flexmock("document", empty?: true, chapter_names: [:usage])
+          assert_equal([], chooser.display_names(document))
+        end
+
+        # `document&.empty?` is nil for a nil document, so the guard passed and
+        # nil.chapter_names raised. Only reachable since patinfo_name stopped
+        # raising first on the same pages.
+        def test_display_names_survives_a_nil_document
+          assert_equal([], chooser.display_names(nil))
+        end
+
+        def test_display_names_survives_a_mis_referenced_document
+          assert_equal([], chooser.display_names(ODDB::ActiveAgent.new("Acidum")))
+        end
+
+        # Same trap in PatinfoInnerComposite#init: a nil model reached
+        # nil.chapter_names. Constructing the composite runs init.
+        def test_inner_composite_survives_a_nil_model
+          session = flexmock("session", lookandfeel: @lnf)
+          composite = ODDB::View::Drugs::PatinfoInnerComposite.new(nil, session)
+          assert_empty(composite.send(:components))
+        end
+
         def test_get_args_without_packages_degrades_instead_of_raising
           sequence = flexmock("sequence", packages: {})
           registration = flexmock("registration", sequence: sequence)
