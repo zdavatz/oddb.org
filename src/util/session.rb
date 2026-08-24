@@ -105,12 +105,25 @@ module ODDB
           when /^(www\.|)(phyto-pharma|phytotherapeutika)\./i
             @flavor = "phyto-pharma"
           else
-            if (m = /^\/[a-z]{2}\/([a-z]+)/.match(request_path))
+            # [a-z]+ stopped at the hyphen, so "/de/phyto-pharma/" yielded the
+            # flavor "phyto" (and "/de/just-medical/" yielded "just"). Today
+            # both are caught by the cases above before they get here, so this
+            # was latent - but any hyphenated flavor requested on a host
+            # without its own case landed here truncated.
+            if (m = /^\/[a-z]{2}\/([a-z][a-z0-9-]*)/.match(request_path))
               @flavor = m[1]
             end
           end
         end
-        @flavor ||= "gcc"
+        # Unlike the hostname cases above, a path segment is whatever the
+        # visitor typed. Validate it the way SBSM::Session#flavor does, so an
+        # unknown or retired flavor falls back to the default instead of
+        # becoming the flavor - it used to leak into resource urls, e.g.
+        # /resources/just/oddb.css for "/de/just-medical/".
+        if @flavor && !LF_FACTORY.include?(@flavor.to_s)
+          @flavor = nil
+        end
+        @flavor ||= self.class::DEFAULT_FLAVOR
         @flavor = @flavor.to_s if @flavor
       end
       @flavor ||= @valid_input[:partner] || super

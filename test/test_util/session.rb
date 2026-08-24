@@ -346,4 +346,59 @@ module ODDB
       assert_equal("https://www.oddb.org", @session.root_url)
     end
   end
+
+  # Session#flavor resolves the flavor from the hostname, or - for hosts
+  # without a case of their own - from the first path segment. That path
+  # segment is whatever the visitor typed, so it has to be validated.
+  class TestSessionFlavor < Minitest::Test
+    def teardown
+      ODBA.storage = nil
+      super
+    end
+
+    def setup
+      @app = flexmock("app", unknown_user: flexmock("user", valid?: false))
+    end
+
+    def flavor_for(server_name, request_path)
+      session = ODDB::Session.new(app: @app)
+      session.instance_variable_set(:@server_name, server_name)
+      session.instance_variable_set(:@request_path, request_path)
+      session.flavor
+    end
+
+    def test_hostname_wins_over_the_path
+      assert_equal("mobile", flavor_for("i.ch.oddb.org", "/de/gcc/"))
+      assert_equal("oekk", flavor_for("oekk.oddb.org", "/de/gcc/"))
+      assert_equal("anthroposophy", flavor_for("www.anthroposophika.ch", "/de/gcc/"))
+    end
+
+    def test_hostname_flavors_survive_validation
+      assert_equal("desitin", flavor_for("desitin.oddb.org", "/de/desitin/"))
+      assert_equal("generika", flavor_for("generika.cc", "/de/generika/"))
+      assert_equal("phyto-pharma", flavor_for("phyto-pharma.ch", "/de/phyto-pharma/"))
+      assert_equal("phyto-pharma", flavor_for("phytotherapeutika.ch", "/de/phyto-pharma/"))
+    end
+
+    # The regression: [a-z]+ stopped at the hyphen, so this used to be "phyto".
+    def test_hyphenated_flavor_from_the_path_is_not_truncated
+      assert_equal("phyto-pharma", flavor_for("nachahmer.ch", "/de/phyto-pharma/"))
+    end
+
+    def test_plain_flavor_from_the_path
+      assert_equal("desitin", flavor_for("nachahmer.ch", "/de/desitin/"))
+    end
+
+    # "just-medical" is retired, so it must not come back as a flavor - it used
+    # to arrive truncated as "just" and leak into /resources/just/oddb.css.
+    def test_retired_flavor_falls_back_to_the_default
+      assert_equal("gcc", flavor_for("nachahmer.ch", "/de/just-medical/"))
+    end
+
+    def test_unknown_path_segment_falls_back_to_the_default
+      assert_equal("gcc", flavor_for("nachahmer.ch", "/de/nonsense/"))
+      assert_equal("gcc", flavor_for("nachahmer.ch", "/de/gcc/"))
+      assert_equal("gcc", flavor_for("nachahmer.ch", "/"))
+    end
+  end
 end # ODDB
