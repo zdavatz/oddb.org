@@ -1,0 +1,27 @@
+#!/bin/sh
+# Nightly Let's Encrypt renewal, run from /etc/crontab as root.
+#
+# Apache is stopped for the duration because the oddb certificates renew with
+# the standalone authenticator, which binds port 80 itself and cannot do so
+# while Apache holds it. That means a short outage every night - the reason
+# this runs at 01:00.
+#
+# The chown afterwards is not incidental: Apache runs as root here and
+# recreates log files under its own ownership on start, which would then stop
+# the jobs running as zdavatz from writing them.
+#
+# Certificates and their authenticators live in /etc/letsencrypt/renewal:
+#   ch.oddb.org      standalone   ch.oddb.org, m.oddb.org, generika.cc, oekk.oddb.org
+#   desitin.oddb.org standalone
+#   sdif.oddb.org    apache
+#
+# To add a hostname to a certificate, reissue it with --expand, e.g.
+#   certbot certonly --standalone --expand -d ch.oddb.org -d m.oddb.org \
+#     -d generika.cc -d oekk.oddb.org -d <new-host>
+# Hosts whose DNS does not resolve cannot be validated and will fail the whole
+# run - that is why just-medical.oddb.org is no longer in the list.
+
+/etc/init.d/apache2 stop
+certbot renew
+/etc/init.d/apache2 start
+chown -R zdavatz:zdavatz /var/www/oddb.org/log/

@@ -1,0 +1,56 @@
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+#
+# Kept under version control as etc/crontab in the oddb.org repository.
+# After editing, install with:  sudo cp etc/crontab /etc/crontab
+
+SHELL=/bin/sh
+PATH=/home/zdavatz/.rbenv/versions/3.4.5/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon ...
+# |  |  |  |  |
+# *  *  *  *  * user-name command
+
+# --- Debian defaults ---------------------------------------------------------
+17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+
+# --- system ------------------------------------------------------------------
+# Renews Let's Encrypt certificates; stops Apache for the duration (standalone
+# authenticator). Script lives in the repo as bin/certbot_renew.
+0 1	* * *	root	/usr/local/src/certbot_renew > /dev/null
+0 22	* * *	root	/usr/bin/nice /usr/local/sbin/ywesee-backup > /dev/null
+
+# --- ch.oddb.org jobs --------------------------------------------------------
+# bin/cron_job does the cd + bundle exec and keeps each run's output in
+# log/cron/<job>-<YYYY-MM>.log, instead of the >/dev/null 2>&1 these lines used
+# to carry - a failing import used to look exactly like a successful one.
+#
+# These jobs share log/job.pid (anything matching ^update|^import|^rebuild|
+# ^repair), so whichever fires first holds it and a second one exits with a
+# "Duplicate Job" notice rather than running concurrently. import_bsv at 08:00
+# and import_swissmedic at 08:15 overlap on purpose: BSV publishes on the 1st
+# of the month, Swissmedic somewhere in the first week, and whichever wins the
+# race gets the day - the other one catches up the next morning.
+19 1	* * *	zdavatz	/var/www/oddb.org/bin/cron_job rebuild_indices
+1 5	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_today
+1 7	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_drugshortage_hpc_dhcp
+0 8	* * *	zdavatz	/var/www/oddb.org/bin/cron_job import_bsv
+15 8	* * *	zdavatz	/var/www/oddb.org/bin/cron_job import_swissmedic
+50 15	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_drugshortage
+1 19	* * *	zdavatz	/var/www/oddb.org/bin/cron_job update_fachinfo_rss_feeds
+50 8	20 * *	zdavatz	/var/www/oddb.org/bin/cron_job import_whocc
+1 20	11 * *	zdavatz	/var/www/oddb.org/bin/cron_job import_refdata_nat
+
+# --- other tools -------------------------------------------------------------
+51 4	* * *	zdavatz	/home/zdavatz/sofware/swissmedicinfo/target/debug/swissmedicinfo --download --local >/dev/null 2>&1
+0 7	* * *	zdavatz	/home/zdavatz/sofware/sdif/update_interactions
