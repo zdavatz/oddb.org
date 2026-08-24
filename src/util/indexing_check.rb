@@ -15,6 +15,9 @@ require "util/workdir"
 
 module ODDB
   class IndexingCheck
+    # How often check_host reports how far it has got.
+    PROGRESS_EVERY = 25
+
     # Google reports these as "Serverfehler (5xx)" / "Seite mit Weiterleitung"
     # etc. SUCCESSFUL is the one we are working towards.
     BAD_FETCH_STATES = %w[
@@ -119,8 +122,17 @@ module ODDB
       coverage = Hash.new(0)
       still_failing = []
       errors = []
+      done = 0
 
+      # A full run is well over an hour - roughly 3.5 s per url, most of it
+      # waiting on Google - and the report only prints at the end, so without
+      # this there is no way to tell a working run from a hung one.
+      warn "#{host}: inspecting #{urls.size} urls via #{site_url} ..."
       client.inspect_urls(urls, site_url) do |url, status, error|
+        done += 1
+        if (done % PROGRESS_EVERY).zero? || done == urls.size
+          warn "  #{host}: #{done}/#{urls.size}"
+        end
         if error
           errors << "#{url}: #{error.message}"
           next
