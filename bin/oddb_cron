@@ -6,6 +6,9 @@
 #   oddb_cron job <name> [args...]   run one job by hand
 #   oddb_cron certbot-renew          renew Let's Encrypt certificates (as root)
 #   oddb_cron backup                 back up the database (as root)
+#   oddb_cron healthcheck            restart a rack backend that stopped
+#                                    answering (--dry-run to look only; also
+#                                    runs as part of schedule, every minute)
 #
 # Installed to /usr/local/sbin/oddb_cron by bin/install_crontab, which makes it
 # root-owned. That matters: cron runs certbot-renew and backup as root, and a
@@ -47,7 +50,7 @@
 ODDB_ROOT=${ODDB_ROOT:-/var/www/oddb.org}
 
 usage() {
-  sed -n '3,8p' "$0" | sed 's/^# \{0,2\}//'
+  sed -n '3,11p' "$0" | sed 's/^# \{0,2\}//'
   exit 2
 }
 
@@ -118,6 +121,124 @@ cmd_backup() {
   done
 }
 
+# The four rack processes Apache proxies to, and the port each listens on.
+# Everything else under /etc/service is a DRb daemon with no HTTP port to ask.
+# Fields: service name under /etc/service, port.
+#
+# generika is a process of its own, which is why it can - and did - fail on its
+# own while ch.oddb.org kept serving.
+HEALTH="
+oddb            8012
+google_crawler  8112
+crawler         8212
+generika        8512
+"
+
+# Consecutive failed minutes before this touches anything.
+#
+# These processes restart themselves constantly and that is by design: past
+# MEMORY_LIMIT_CRAWLER (4000 MB, src/util/oddbapp.rb) the app raises SystemExit
+# and daemontools brings it straight back. It needs roughly forty seconds to
+# answer again, so one or two failures in a row are the normal cycle and must
+# not trigger anything.
+#
+# What this is for is the other case. In August 2026 crawler was dead for 18.6
+# days, generika for 10.3 and google_crawler for 9.7 - Apache answered every
+# Googlebot request with a 503 the whole time, which is what Search Console
+# then reported as "Serverfehler (5xx)". Nothing noticed, because svstat keeps
+# reporting "up" as long as supervise itself runs, whether or not the child is
+# there or listening. Five minutes is far past a restart and far short of that.
+HEALTH_GRACE=5
+
+# Alive means "something answered on the port", not "answered 200": a 500 from
+# the application still proves the process is up, and this check has no
+# business judging content. curl reports 000 when the connection is refused,
+# which is exactly the state a missing backend leaves the port in. HEAD, so a
+# probe every minute costs a header and not a rendered page.
+health_probe() {
+  code=$(curl -s -I -o /dev/null -m 5 -w '%{http_code}' "http://localhost:$1/" 2>/dev/null)
+  case "$code" in
+    "" | 000) return 1 ;;
+    *) return 0 ;;
+  esac
+}
+
+# Restarts a backend that has stopped answering.
+#
+# Runs as zdavatz, out of the same once-a-minute schedule line, so /etc/crontab
+# still needs no entry of its own and nothing here runs as root. That works
+# because svc only needs write access to /etc/service/<name>/supervise, which
+# has nothing to do with the user the service itself runs as: crawler and
+# google_crawler run as root behind a zdavatz-owned supervise directory, and
+# generika runs as zdavatz. Should a supervise directory ever be root-owned
+# again, svc fails and the failure is logged rather than swallowed.
+#
+# Silent while everything answers, so cron mails only when it acts.
+cmd_healthcheck() {
+  dry=""
+  [ "$1" = "--dry-run" ] && dry=1
+
+  state=$ODDB_ROOT/log/cron/health
+  log=$ODDB_ROOT/log/cron/healthcheck-$(date +%Y-%m).log
+  mkdir -p "$state" || exit 1
+
+  while read -r name port; do
+    [ -n "$port" ] || continue
+    counter=$state/$name
+    failures=$(cat "$counter" 2>/dev/null || echo 0)
+
+    # svstat says "down" only after somebody ran svc -d. That is a decision,
+    # not a fault - leave it alone.
+    case "$(svstat "/etc/service/$name" 2>&1)" in
+      *": down"*)
+        [ -n "$dry" ] && echo "  $name: taken down deliberately, skipped"
+        [ -n "$dry" ] || echo 0 > "$counter"
+        continue
+        ;;
+    esac
+
+    if health_probe "$port"; then
+      [ -n "$dry" ] && echo "  $name: port $port answers"
+      [ -n "$dry" ] && continue
+      if [ "$failures" -gt 0 ]; then
+        health_log "$log" "$name back after $failures min"
+      fi
+      echo 0 > "$counter"
+      continue
+    fi
+
+    [ -n "$dry" ] && { echo "  $name: port $port SILENT (${failures} failed min so far)"; continue; }
+
+    failures=$((failures + 1))
+    echo "$failures" > "$counter"
+    [ "$failures" = 1 ] && health_log "$log" "$name silent on port $port"
+    [ "$failures" -ge "$HEALTH_GRACE" ] || continue
+
+    # Act once every HEALTH_GRACE minutes rather than every minute: a restarted
+    # process needs about forty seconds before it answers, and signalling it
+    # again each minute would never let it get there. TERM first; if three
+    # rounds of that changed nothing the process is wedged, so KILL.
+    [ $((failures % HEALTH_GRACE)) -eq 0 ] || continue
+    if [ "$failures" -ge $((HEALTH_GRACE * 3)) ]; then signal=-k; else signal=-t; fi
+    health_log "$log" "$name silent for $failures min, svc $signal"
+    echo "oddb_cron healthcheck: $name silent for $failures min on port $port, svc $signal"
+    svc "$signal" "/etc/service/$name" 2>&1 ||
+      health_log "$log" "$name svc $signal FAILED - check who owns /etc/service/$name/supervise"
+  done <<HEALTH_EOF
+$HEALTH
+HEALTH_EOF
+}
+
+# Root writing into log/ would leave files the jobs running as zdavatz cannot
+# append to - the same trap cmd_certbot_renew chowns its way out of.
+health_log() {
+  file=$1
+  shift
+  echo "$(date '+%Y-%m-%d %H:%M:%S %z') $*" >> "$file"
+  [ "$(id -u)" = "0" ] && chown zdavatz:zdavatz "$file" 2>/dev/null
+  return 0
+}
+
 # The schedule, so /etc/crontab needs one line for all nine jobs instead of
 # nine. Fields: minute, hour, day-of-month ("*" for every day), job name.
 # Keep them sorted by time; cron itself no longer knows about any of this.
@@ -139,6 +260,12 @@ SCHEDULE="
 # to stay cheap: on all but nine minutes of the day it matches nothing and
 # exits. Times are compared without leading zeros so "08" from date matches "8".
 cmd_schedule() {
+  # Before the jobs, not after: a job can hold this invocation for an hour, and
+  # the check is worth four HEAD requests a minute. Its exit status is
+  # deliberately ignored - a wedged backend is not a failed schedule, and it
+  # reports itself by printing, which cron turns into mail.
+  cmd_healthcheck || true
+
   now_min=$(date +%-M)
   now_hour=$(date +%-H)
   now_dom=$(date +%-d)
@@ -171,5 +298,6 @@ case "$1" in
   schedule-list)  cmd_schedule_list ;;
   certbot-renew)  cmd_certbot_renew ;;
   backup)         cmd_backup ;;
+  healthcheck)    shift; cmd_healthcheck "$@" ;;
   *)              usage ;;
 esac
