@@ -60,9 +60,13 @@ module ODDB
     "refdata_api_key" => nil,
     "refdata_api_key_secondary" => nil,
     "drugshortage_hmac_secret" => nil,
-    # Path to a Google service account JSON key, for jobs/check_indexing.
-    # The account must be a Full user of the Search Console properties below.
+    # Path to a Google service account key for jobs/check_indexing - either the
+    # JSON key or a legacy .p12 (recognised by the extension). The account must
+    # be a Full user of the Search Console properties below.
     "gsc_service_account_json" => nil,
+    # Only needed for a .p12 key: unlike the JSON key it carries no metadata,
+    # so the ...iam.gserviceaccount.com address has to be given here.
+    "gsc_service_account_email" => nil,
     # Search Console property per domain, spelled as in Search Console itself:
     # either "sc-domain:oddb.org" or "https://ch.oddb.org/" with the slash.
     # A sc-domain: property covers its subdomains, so the oddb.org entry also

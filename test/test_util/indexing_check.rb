@@ -260,6 +260,48 @@ module ODDB
       assert_match("OAuth client", error.message)
     end
 
+    def p12_file(name = "key.p12")
+      certificate = OpenSSL::X509::Certificate.new
+      certificate.subject = certificate.issuer = OpenSSL::X509::Name.parse("/CN=102017530091058451251")
+      certificate.not_before = Time.now - 60
+      certificate.not_after = Time.now + 3600
+      certificate.public_key = @key.public_key
+      certificate.serial = 1
+      certificate.version = 2
+      certificate.sign(@key, OpenSSL::Digest.new("SHA256"))
+      p12 = OpenSSL::PKCS12.create(GoogleSearchConsole::P12_PASSPHRASE, "key", @key, certificate)
+      path = File.join(@dir, name)
+      File.binwrite(path, p12.to_der)
+      path
+    end
+
+    # Google's legacy p12 keys carry the private key but no metadata, so the
+    # address has to be supplied separately.
+    def test_reads_a_p12_key_with_an_explicit_email
+      client = GoogleSearchConsole.new(p12_file, "oddb@example.iam.gserviceaccount.com")
+      assert_equal("oddb@example.iam.gserviceaccount.com", client.client_email)
+    end
+
+    def test_p12_signs_a_jwt_that_verifies
+      client = GoogleSearchConsole.new(p12_file, "oddb@example.iam.gserviceaccount.com")
+      header, payload, signature = client.send(:signed_jwt, {"iss" => "x"}).split(".")
+      assert(@key.verify(OpenSSL::Digest.new("SHA256"),
+        Base64.urlsafe_decode64(signature), [header, payload].join(".")))
+    end
+
+    def test_p12_without_an_email_says_what_is_missing
+      error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(p12_file) }
+      assert_match("does not contain the service account address", error.message)
+      assert_match("gsc_service_account_email", error.message)
+    end
+
+    # A p12 named .json would otherwise blow up as a JSON parse error.
+    def test_a_misnamed_p12_points_at_the_extension
+      path = p12_file("misnamed.json")
+      error = assert_raises(GoogleSearchConsole::Error) { GoogleSearchConsole.new(path) }
+      assert_match("must be named .p12", error.message)
+    end
+
     # The assertion must be a real RS256 JWT or Google rejects it, so verify
     # the signature rather than just the shape.
     def test_signs_a_verifiable_rs256_jwt

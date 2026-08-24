@@ -48,32 +48,21 @@ module ODDB
     TOKEN_LIFETIME = 3600
     TOKEN_REFRESH_MARGIN = 300
 
-    attr_reader :key_file
+    # Google's legacy p12 keys are all encrypted with this fixed passphrase.
+    P12_PASSPHRASE = "notasecret"
 
-    def initialize(key_file = nil)
+    attr_reader :key_file, :client_email
+
+    def initialize(key_file = nil, client_email = nil)
       @key_file = key_file || ODDB.config.gsc_service_account_json
       raise Error, "gsc_service_account_json is not configured" unless @key_file
       raise Error, "service account key not found: #{@key_file}" unless File.exist?(@key_file)
-      @credentials = JSON.parse(File.read(@key_file))
-      # Easy to grab the wrong file in the Cloud Console: an OAuth client for a
-      # desktop app looks like {"installed": {"client_id", "client_secret"}} and
-      # needs an interactive browser consent, which is a different flow
-      # entirely. Say so rather than failing later on a missing private_key.
-      %w[installed web].each do |kind|
-        next unless @credentials[kind]
-        raise Error, "#{@key_file} is an OAuth client (#{kind}), not a service " \
-          "account key. Create a service account under " \
-          "console.cloud.google.com/iam-admin/serviceaccounts and download its " \
-          "JSON key - it has \"type\": \"service_account\" and a private_key."
-      end
-      %w[client_email private_key].each do |field|
-        raise Error, "service account key has no #{field}" unless @credentials[field]
+      if /\.p12\z/i.match?(@key_file)
+        load_p12(client_email)
+      else
+        load_json(client_email)
       end
       @last_call_at = nil
-    end
-
-    def client_email
-      @credentials["client_email"]
     end
 
     # Look one url up. Returns the indexStatusResult hash, or raises Error.
@@ -106,6 +95,50 @@ module ODDB
 
     private
 
+    def load_json(client_email)
+      @credentials = JSON.parse(File.read(@key_file))
+      # Easy to grab the wrong file in the Cloud Console: an OAuth client for a
+      # desktop app looks like {"installed": {"client_id", "client_secret"}} and
+      # needs an interactive browser consent, which is a different flow
+      # entirely. Say so rather than failing later on a missing private_key.
+      %w[installed web].each do |kind|
+        next unless @credentials[kind]
+        raise Error, "#{@key_file} is an OAuth client (#{kind}), not a service " \
+          "account key. Create a service account under " \
+          "console.cloud.google.com/iam-admin/serviceaccounts and download its " \
+          "JSON key - it has \"type\": \"service_account\" and a private_key."
+      end
+      %w[client_email private_key].each do |field|
+        raise Error, "service account key has no #{field}" unless @credentials[field]
+      end
+      @client_email = client_email || @credentials["client_email"]
+      @private_key = OpenSSL::PKey::RSA.new(@credentials["private_key"])
+      @token_uri = @credentials["token_uri"] || TOKEN_URI
+    rescue JSON::ParserError
+      raise Error, "#{@key_file} is not valid JSON. A .p12 key must be named .p12."
+    end
+
+    # Legacy p12 keys carry the private key but no metadata - the certificate
+    # CN is the service account's numeric unique id, not its email - so the
+    # address has to come from gsc_service_account_email.
+    def load_p12(client_email)
+      @client_email = client_email || ODDB.config.gsc_service_account_email
+      unless @client_email
+        raise Error, "#{@key_file} is a p12 key, which does not contain the " \
+          "service account address. Set gsc_service_account_email in " \
+          "etc/oddb.yml to the account's ...iam.gserviceaccount.com address, " \
+          "or download the JSON key instead, which carries both."
+      end
+      p12 = OpenSSL::PKCS12.new(File.binread(@key_file), P12_PASSPHRASE)
+      @private_key = p12.key
+      raise Error, "#{@key_file} contains no private key" unless @private_key
+      @credentials = {}
+      @token_uri = TOKEN_URI
+    rescue OpenSSL::PKCS12::PKCS12Error => error
+      raise Error, "cannot read #{@key_file} as a p12 key (#{error.message}). " \
+        "Google's p12 keys use the passphrase #{P12_PASSPHRASE.inspect}."
+    end
+
     def throttle
       return unless @last_call_at
       elapsed = Time.now - @last_call_at
@@ -124,13 +157,13 @@ module ODDB
     def fetch_access_token
       issued_at = Time.now.to_i
       claim = {
-        "iss" => @credentials["client_email"],
+        "iss" => @client_email,
         "scope" => SCOPE,
-        "aud" => @credentials["token_uri"] || TOKEN_URI,
+        "aud" => @token_uri,
         "exp" => issued_at + TOKEN_LIFETIME,
         "iat" => issued_at
       }
-      response = post_form(@credentials["token_uri"] || TOKEN_URI,
+      response = post_form(@token_uri,
         "grant_type" => JWT_GRANT,
         "assertion" => signed_jwt(claim))
       token = response["access_token"]
@@ -145,8 +178,7 @@ module ODDB
       segments = [{"alg" => "RS256", "typ" => "JWT"}, claim].collect { |part|
         base64url(JSON.generate(part))
       }
-      key = OpenSSL::PKey::RSA.new(@credentials["private_key"])
-      signature = key.sign(OpenSSL::Digest.new("SHA256"), segments.join("."))
+      signature = @private_key.sign(OpenSSL::Digest.new("SHA256"), segments.join("."))
       (segments << base64url(signature)).join(".")
     end
 
