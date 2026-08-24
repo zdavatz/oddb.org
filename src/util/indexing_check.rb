@@ -112,6 +112,11 @@ module ODDB
     def check_host(host, urls, site_url)
       states = Hash.new(0)
       verdicts = Hash.new(0)
+      # coverageState is the plain-text line Search Console itself shows
+      # ("URL is unknown to Google", "Crawled - currently not indexed", …) and
+      # is far more telling than the enums, especially when pageFetchState
+      # comes back UNSPECIFIED because Google never fetched the url at all.
+      coverage = Hash.new(0)
       still_failing = []
       errors = []
 
@@ -123,6 +128,7 @@ module ODDB
         fetch_state = status["pageFetchState"].to_s
         states[fetch_state.empty? ? "UNKNOWN" : fetch_state] += 1
         verdicts[status["verdict"].to_s] += 1
+        coverage[status["coverageState"].to_s] += 1
         @results[url] = status
         if BAD_FETCH_STATES.include?(fetch_state)
           still_failing << [url, fetch_state, status["lastCrawlTime"]]
@@ -130,11 +136,14 @@ module ODDB
       end
 
       @report_lines << "#{host} (#{site_url}): #{urls.size} urls inspected"
+      coverage.sort_by { |_, count| -count }.each do |state, count|
+        @report_lines << format("  %-44s %5d", state.empty? ? "(no coverageState)" : state, count)
+      end
       states.sort_by { |_, count| -count }.each do |state, count|
-        @report_lines << format("  %-24s %5d", state, count)
+        @report_lines << format("  fetch   %-36s %5d", state, count)
       end
       verdicts.sort_by { |_, count| -count }.each do |verdict, count|
-        @report_lines << format("  verdict %-16s %5d", verdict, count)
+        @report_lines << format("  verdict %-36s %5d", verdict, count)
       end
       unless still_failing.empty?
         @report_lines << "  still failing for Google (#{still_failing.size}):"

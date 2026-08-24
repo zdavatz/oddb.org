@@ -117,6 +117,32 @@ module ODDB
       refute_match("still failing", report)
     end
 
+    # coverageState is the plain-text line Search Console shows, and the only
+    # useful signal when pageFetchState is UNSPECIFIED.
+    def test_reports_the_coverage_state
+      check = IndexingCheck.new(stub_client(
+        "https://ch.oddb.org/a" => {"coverageState" => "Gesendet und indexiert",
+                                    "pageFetchState" => "SUCCESSFUL", "verdict" => "PASS"},
+        "https://ch.oddb.org/b" => {"coverageState" => "URL ist Google nicht bekannt",
+                                    "pageFetchState" => "PAGE_FETCH_STATE_UNSPECIFIED",
+                                    "verdict" => "NEUTRAL"}
+      ))
+      report = check.check(
+        {"ch.oddb.org" => ["https://ch.oddb.org/a", "https://ch.oddb.org/b"]}, SITE_URLS
+      )
+      assert_match("Gesendet und indexiert", report)
+      assert_match("URL ist Google nicht bekannt", report)
+      refute_match("still failing", report)
+    end
+
+    def test_names_a_missing_coverage_state
+      check = IndexingCheck.new(stub_client(
+        "https://ch.oddb.org/a" => {"pageFetchState" => "SUCCESSFUL"}
+      ))
+      report = check.check({"ch.oddb.org" => ["https://ch.oddb.org/a"]}, SITE_URLS)
+      assert_match("(no coverageState)", report)
+    end
+
     def test_lists_urls_google_still_sees_as_failing
       check = IndexingCheck.new(stub_client(
         "https://ch.oddb.org/a" => {"pageFetchState" => "SERVER_ERROR",
