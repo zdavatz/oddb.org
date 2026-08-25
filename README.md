@@ -83,6 +83,13 @@ If searches fail with `NoMethodError: undefined method 'fetch_ids'`, an ODBA ind
 
 For example: `bundle exec ruby jobs/rebuild_indices sequence_index`
 
+### Orphaned Fach- and Patinfo diffs
+A `change_log` lives on the `FachinfoDocument` / `PatinfoDocument`, not on `Fachinfo` / `Patinfo`. Replace a document without carrying the history over and nothing points at it any more. In August 2026 **31447 of 125403 change log items** — a quarter of the entire diff history — were unreachable: `/show/fachinfo/51886/diff` listed 7 revisions with 61 more from 2015–2017 lying beside them, `/show/patinfo/49537/01/002/diff` listed none at all against 59 stored ones. All the drugs still existed; every `Registration`, `Sequence` and `Migel::Item` was reachable, so what was lost were superseded *versions of the texts*.
+
+`jobs/repair_orphaned_change_logs` hangs them back on. Attribution comes out of the text itself: every Fach- and Patienteninformation ends with its registration number, and `Diffy::Diff` stores the complete old and new text, so the entry carries its own drug with it — which is also why the database is 19 GB. It runs in two steps so what gets written is a file somebody can read: `--plan` writes `item, document, verdict`, and `--from-plan --apply` attaches exactly those pairs without deciding anything again. The verdict is a check against the target: does the document's own text carry the same number? 20167 said yes, 721 said no — often a neighbour like 59410 against 59411, the same substance in another strength — and those were left alone. 20105 were reattached, taking the orphans down to 11340.
+
+Note that `odba_isolated_store` on a document does **not** write its `change_log`: that is a separate ODBA object with its own `odba_id`, replaced by a stub when the document is dumped. The list has to be stored itself, before the document. Getting this wrong produces a run that reports success and changes nothing — and the same shape of mistake sits in the data already, as 7614 dangling edges where an object references a child that was never written (4091 of them on `Package`, 1120 on `SimpleLanguage::Descriptions`).
+
 ## Tests
 
 * to run the Tests you need to do
