@@ -244,14 +244,25 @@ health_log() {
 # Keep them sorted by time; cron itself no longer knows about any of this.
 #
 # import_bsv and import_swissmedic overlap deliberately - see above.
+#
+# update_fachinfo_rss_feeds shares the 05:01 slot with update_today, and the
+# order in this table is the order they run in: two entries for the same minute
+# are dispatched one after the other by the loop below, so the second starts
+# only once the first has released log/job.pid. It used to sit at 19:01, which
+# meant /fachinfo.rss carried yesterday's Fachinfos all day - the texts arrive
+# at 04:51 (swissmedicinfo) and are stored by update_today around 05:05, but
+# the feed is a file on disk that Rss::PassThru serves verbatim, so it showed
+# nothing new until the evening. update_today takes ~4 minutes, the feed ~5 for
+# de, 10 for de/fr/en together and 30 with the yearly feeds. There is no
+# data/rss/it - we currently have no Fachinfos in Italian, so that is expected.
 SCHEDULE="
 19  1   *   rebuild_indices
 1   5   *   update_today
+1   5   *   update_fachinfo_rss_feeds
 1   7   *   update_drugshortage_hpc_dhcp
 0   8   *   import_bsv
 15  8   *   import_swissmedic
 50  15  *   update_drugshortage
-1   19  *   update_fachinfo_rss_feeds
 50  8   20  import_whocc
 1   20  11  import_refdata_nat
 "
