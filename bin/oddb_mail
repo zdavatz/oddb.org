@@ -1,0 +1,109 @@
+#!/usr/bin/env ruby
+# Legt einen Mail-Entwurf im ywesee-Postfach an - siehe src/util/gmail_api.rb.
+#
+#   bin/oddb_mail authorize
+#       einmalig: Adresse ausgeben, Zustimmung einholen, Refresh-Token merken
+#
+#   bin/oddb_mail draft --to=jemand@example.com \
+#                       --subject="Betreff" \
+#                       --body=datei.txt [--cc=...] [--mailbox=...]
+#
+# Der Text kommt aus einer Datei oder von stdin. Es wird nur ein Entwurf
+# angelegt, nie versendet.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "config"
+require "util/gmail_api"
+require "yaml"
+
+# Die numerische client_id steht im CN des Zertifikats im p12-Schluessel -
+# anders als beim json-Schluessel, der sie als Feld fuehrt.
+def client_id_hint
+  key = ODDB.config.gsc_service_account_json.to_s
+  if key.end_with?(".p12")
+    require "openssl"
+    OpenSSL::PKCS12.new(File.binread(key), "notasecret")
+      .certificate&.subject&.to_a&.assoc("CN")&.at(1) || "(siehe Cloud Console)"
+  else
+    require "json"
+    JSON.parse(File.read(key))["client_id"] || "(siehe Cloud Console)"
+  end
+rescue
+  "(siehe Cloud Console, Projekt oddb-506507)"
+end
+
+def option(name)
+  arg = ARGV.find { |a| a.start_with?("--#{name}=") }
+  arg&.split("=", 2)&.last
+end
+
+# Traegt einen Schluessel in etc/oddb.yml nach, ohne den Rest anzufassen.
+def remember(key, value)
+  path = File.expand_path("../etc/oddb.yml", File.dirname(__FILE__))
+  lines = File.readlines(path)
+  line = "#{key}: #{value}\n"
+  index = lines.index { |l| l.start_with?("#{key}:") }
+  index ? lines[index] = line : lines << line
+  File.write(path, lines.join)
+  puts "#{key} in etc/oddb.yml gespeichert"
+end
+
+command = ARGV.shift
+
+case command
+when "authorize"
+  oauth = ODDB::GoogleOAuth.new
+  puts "1. Diese Adresse im Browser oeffnen und als #{ODDB.config.gmail_draft_mailbox} zustimmen:"
+  puts
+  puts "   " + oauth.authorization_url(ODDB::GmailApi::SCOPE)
+  puts
+  puts "2. Der Browser landet danach auf #{ODDB::GoogleOAuth::REDIRECT_URI} und"
+  puts "   zeigt einen Fehler - das ist richtig so, hier laeuft kein Server."
+  puts "   Aus der Adresszeile den Wert hinter code= abschreiben (bis zum"
+  puts "   naechsten & oder Zeilenende) und hier einfuegen."
+  puts
+  print "code: "
+  code = $stdin.gets.to_s.strip
+  code = Regexp.last_match(1) if code =~ /[?&]code=([^&]+)/
+  code = URI.decode_www_form_component(code)
+  abort "kein Code eingegeben" if code.empty?
+  remember("gmail_oauth_refresh_token", oauth.exchange(code))
+  puts "Fertig. bin/oddb_mail draft legt jetzt Entwuerfe an."
+  exit 0
+
+when "draft"
+  to = option("to")&.split(",")
+  subject = option("subject")
+  cc = option("cc")&.split(",")
+  body_file = option("body")
+  unless to && subject
+    warn "--to und --subject sind noetig"
+    exit 2
+  end
+  body = body_file ? File.read(body_file) : $stdin.read
+  begin
+    api = ODDB::GmailApi.new(option("mailbox"))
+    id = api.create_draft(to: to, subject: subject, body: body, cc: cc)
+    puts "Entwurf #{id} in #{api.mailbox} angelegt"
+  rescue ODDB::GmailApi::Error, ODDB::GoogleOAuth::Error => error
+    warn "fehlgeschlagen: #{error.message}"
+    if /unauthorized_client|Client is unauthorized/.match?(error.message)
+      warn ""
+      warn "Das Dienstkonto darf das Postfach nicht uebernehmen. Entweder"
+      warn "bin/oddb_mail authorize verwenden (kein Administrator noetig),"
+      warn "oder in admin.google.com unter Sicherheit -> Zugriffs- und"
+      warn "Datenkontrolle -> API-Steuerung -> Domainweite Delegation"
+      warn "eintragen:"
+      warn "  Client-ID: #{client_id_hint}"
+      warn "  Bereich:   #{ODDB::GmailApi::SCOPE}"
+    end
+    exit 1
+  end
+
+else
+  warn "usage: #{$0} authorize"
+  warn "       #{$0} draft --to=<adresse> --subject=<betreff> [--body=<datei>] [--cc=<adresse>] [--mailbox=<postfach>]"
+  exit 2
+end
