@@ -90,6 +90,13 @@ A `change_log` lives on the `FachinfoDocument` / `PatinfoDocument`, not on `Fach
 
 Note that `odba_isolated_store` on a document does **not** write its `change_log`: that is a separate ODBA object with its own `odba_id`, replaced by a stub when the document is dumped. The list has to be stored itself, before the document. Getting this wrong produces a run that reports success and changes nothing — and the same shape of mistake sits in the data already, as 7614 dangling edges where an object references a child that was never written (4091 of them on `Package`, 1120 on `SimpleLanguage::Descriptions`).
 
+### Dangling ODBA references
+`checkout` deletes an object's children from the database. Until August 2026 it left the reference standing: `Package#checkout` called `odba_delete` on `@sl_entry` and `@parts` and cleared neither, so the package kept a stub to something that no longer existed. **3950 packages** were in that state — every `package.limitation` and `limitation_text` raised `ODBA::OdbaError`, while price, deductible, generic type and name came from other fields and kept working, which is why nobody noticed. `delete_sl_entry`, twenty lines below in the same file, had always done it right. `Sequence`, `Registration` and `Composition` had the same shape and got the same fix. Note there is deliberately no `odba_isolated_store`: `checkout` runs immediately before or after the `odba_delete` of the object itself, and storing would recreate what was just deleted.
+
+`jobs/repair_dangling_references` cleans up what the bug left behind — the edge list comes from `SELECT c.origin_id, c.target_id FROM object_connection c WHERE NOT EXISTS (SELECT 1 FROM object o WHERE o.odba_id = c.target_id)`. It clears the ivar rather than restoring the target, because there is nothing to restore: of the 3924 affected packages only 135 are still in the BAG export, the other 3789 have left the Spezialitätenliste, so the reference was not just broken but moot. 4410 objects cleaned, dangling edges down from 7502 to 3258, and `limitation` answers on 300 of 300 sampled packages instead of failing on 292. Among them 257 `@connection_keys` on `Substance` — an ivar that appears nowhere in the code or in the odba gem any more.
+
+What is left alone: the 1120 `SimpleLanguage::Descriptions`, whose broken links are hash entries rather than ivars. 6652 probes of the ATC guidelines they serve raised nothing, because `Text::Document` declares `@descriptions` as `ODBA_SERIALIZABLE` and no longer follows that path at all.
+
 ## Tests
 
 * to run the Tests you need to do
