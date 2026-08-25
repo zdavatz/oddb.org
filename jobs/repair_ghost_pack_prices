@@ -1,0 +1,53 @@
+#!/usr/local/bin/ruby
+# Setzt Publikumspreise, die durch eine Geisterpackung des BAG verfaelscht
+# wurden, auf den Packungspreis zurueck.
+#
+# Hintergrund: der SL-Export fuehrt einzelne Packungen zweimal unter derselben
+# Swissmedic-Nummer - einmal mit GTIN und Packungspreis, einmal ohne GTIN mit
+# dem Preis pro Stueck. Beide landeten auf derselben ODDB-Packung, und stehen
+# blieb, was zuletzt kam. BsvFhirPlugin#ghost_pack? verhindert das kuenftig,
+# repariert aber nicht, was schon gespeichert ist. Siehe Issue #445.
+#
+# Aufruf, mit Preisen aus dem Export (GTIN und Publikumspreis je Zeile):
+#   bundle exec ruby jobs/repair_ghost_pack_prices 7680701450026=3545.85
+#   bundle exec ruby jobs/repair_ghost_pack_prices 7680701450026=3545.85 --apply
+#
+# Ohne --apply wird nichts geschrieben. Der alte Preis bleibt in der Historie
+# stehen - price_public= schiebt den neuen davor, statt zu ersetzen.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/money"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      paare = ARGV.reject { |a| a.start_with?("--") }.collect { |a| a.split("=", 2) }
+      abort "usage: #{$0} <gtin>=<preis> [...] [--apply]" if paare.empty?
+
+      paare.each do |gtin, soll|
+        pack = system.package_by_ean13(gtin)
+        unless pack
+          puts "  #{gtin}: keine Packung gefunden"
+          next
+        end
+        ist = pack.price_public
+        if ist.to_s == soll.to_s
+          puts "  #{gtin} #{pack.name}: steht schon auf #{soll}"
+          next
+        end
+        puts "  #{gtin} #{pack.name}: #{ist} -> #{soll}#{"  (Trockenlauf)" unless apply}"
+        next unless apply
+        money = Money.new(soll.to_f, :public, "CH")
+        money.origin = "Korrektur Geisterpackung, Issue #445"
+        money.authority = :sl
+        pack.price_public = money
+        pack.odba_isolated_store
+        puts "    gespeichert, Historie: #{[0, 1, 2].collect { |i| pack.price_public(i) }.compact.join(", ")}"
+      end
+    end
+  end
+end

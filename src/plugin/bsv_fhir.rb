@@ -421,10 +421,20 @@ module ODDB
         reg_data[:index_therapeuticus] = itcode[:code]
       end
 
+      # Zulassungsnummern, zu denen es in diesem Buendel eine Packung mit GTIN
+      # gibt. Siehe ghost_pack? - dort steht, wozu.
+      numbered = packaged_products.each_value.with_object({}) { |ppd, seen|
+        next unless extract_gtin(ppd)
+        auth = (pack_auths[ppd["id"]] || {})[:marketing]
+        no8 = auth && extract_identifier(auth)
+        seen[no8.to_s] = true if no8
+      }
+
       # Process each PackagedProductDefinition
       packaged_products.each_value do |ppd|
         ppd_id = ppd["id"]
         auths = pack_auths[ppd_id] || {}
+        next if ghost_pack?(ppd, auths, numbered)
 
         # SwissmedicNo8 from Marketing Authorisation identifier
         marketing_auth = auths[:marketing]
@@ -1112,6 +1122,31 @@ module ODDB
         return result
       end
       nil
+    end
+
+    # Eine Packung ohne GTIN, zu deren Zulassungsnummer es im selben Buendel
+    # eine Packung *mit* GTIN gibt.
+    #
+    # BAG liefert fuer einige Impfstoffe zwei Packungen unter derselben
+    # Swissmedic-Nummer: die echte mit GTIN und Packungspreis, und eine ohne
+    # GTIN mit der Beschreibung "1 Stk" und dem Preis pro Stueck. Beide werden
+    # ueber package_by_ikskey auf dieselbe ODDB-Packung abgebildet, beide
+    # Preise geschrieben - und stehen bleibt, was zuletzt kam. Am 25.08.2026
+    # zeigte ch.oddb.org fuer Enflonsia 354.60 statt 3545.85 und fuer Menveo
+    # 37.75 statt 188.75, also ein Zehntel bzw. ein Fuenftel des Preises.
+    #
+    # Nicht pauschal jede Packung ohne GTIN verwerfen: 49 der 10255 Packungen
+    # im Export haben legitim keine (Candesartan CPS und andere) und sind die
+    # einzigen unter ihrer Nummer. Erst der Zwilling macht den Geist aus.
+    def ghost_pack?(ppd, auths, numbered)
+      return false if extract_gtin(ppd)
+      auth = auths[:marketing]
+      no8 = auth && extract_identifier(auth)
+      return false unless no8 && numbered[no8.to_s]
+      LogFile.append("oddb/debug",
+        " bsv_fhir: skipping #{no8} without GTIN (#{ppd["description"]}) - " \
+        "same number already has a pack with GTIN", Time.now)
+      true
     end
 
     def extract_prices(regulated_auth)

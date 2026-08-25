@@ -268,4 +268,54 @@ module ODDB
       assert_nil(@plugin.send(:date_of, nil))
     end
   end
+
+  # BAG liefert fuer einige Impfstoffe zwei Packungen unter derselben
+  # Swissmedic-Nummer: die echte mit GTIN und Packungspreis, und eine ohne
+  # GTIN mit "1 Stk" und dem Preis pro Stueck.
+  class TestBsvFhirPluginGhostPack < Minitest::Test
+    def setup
+      @plugin = BsvFhirPlugin.new(flexmock("app"))
+    end
+
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
+
+    def pack(gtin, description)
+      ppd = {"id" => "x", "description" => description}
+      # Die GTIN steht unter dem OID 2.51.1.1 - extract_gtin prueft das System,
+      # nicht bloss die Anwesenheit eines identifier.
+      if gtin
+        ppd["packaging"] = {"identifier" => [{"system" => "urn:oid:2.51.1.1", "value" => gtin}]}
+      end
+      ppd
+    end
+
+    def auth_for(no8)
+      {marketing: {"identifier" => [{"value" => no8}]}}
+    end
+
+    def ghost?(gtin, description, no8, numbered)
+      @plugin.send(:ghost_pack?, pack(gtin, description), auth_for(no8), numbered)
+    end
+
+    def test_drops_the_gtin_less_twin
+      assert(ghost?(nil, "Enflonsia Fertspr 1 Stk", "70145002", {"70145002" => true}))
+    end
+
+    def test_keeps_the_real_pack
+      refute(ghost?("7680701450026", "Enflonsia Fertspr 10 Stk", "70145002", {"70145002" => true}))
+    end
+
+    def test_keeps_a_pack_that_has_no_gtin_and_no_twin
+      # 49 der 10255 Packungen im Export haben legitim keine GTIN und sind die
+      # einzigen unter ihrer Nummer - ein pauschaler Filter verlöre sie.
+      refute(ghost?(nil, "Candesartan CPS Tabl 4 mg Blist 7 Stk", "62569016", {}))
+    end
+
+    def test_keeps_a_pack_whose_authorisation_carries_no_number
+      refute(@plugin.send(:ghost_pack?, pack(nil, "ohne Zulassung"), {}, {"70145002" => true}))
+    end
+  end
 end
