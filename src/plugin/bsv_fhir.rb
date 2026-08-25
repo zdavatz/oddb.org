@@ -3,7 +3,7 @@
 # ODDB::BsvFhirPlugin -- oddb.org -- 2026
 # FHIR NDJSON variant of BsvXmlPlugin
 # Processes the BAG SL export in FHIR NDJSON format from
-# https://epl.bag.admin.ch/static/fhir/foph-sl-export-*.ndjson
+# https://epl.bag.admin.ch/static/sl/publication/fhir/foph-sl-publication-*.ndjson
 # and maps it to the same internal data structures as BsvXmlPlugin.
 
 require "config"
@@ -23,7 +23,14 @@ require "util/logfile"
 
 module ODDB
   class BsvFhirPlugin < BsvXmlPlugin
-    FHIR_BASE_URL = "https://epl.bag.admin.ch/static/fhir/".freeze
+    # BAG zog den Export im August 2026 um: aus /static/fhir/foph-sl-export-*
+    # wurde /static/sl/publication/fhir/foph-sl-publication-*. Der alte Ort
+    # antwortet fuer -latest- mit 404, waehrend die alten datierten
+    # Schnappschuesse dort noch liegen - ein Import, der nur auf -latest-
+    # schaut, meldet seither jeden Morgen Erfolg und laedt nichts. Letzter
+    # Stand vor dem Fund: 13.08.2026.
+    FHIR_BASE_URL = "https://epl.bag.admin.ch/static/sl/publication/fhir/".freeze
+    FHIR_FILE_PREFIX = "foph-sl-publication".freeze
     FHIR_LANGUAGES = [:de, :fr, :it].freeze
 
     # FHIR code mappings to existing XML equivalents
@@ -71,7 +78,7 @@ module ODDB
     }.freeze
 
     def initialize(*args)
-      @latest = File.join(ODDB::WORK_DIR, "ndjson", "foph-sl-export-latest-de.ndjson")
+      @latest = File.join(ODDB::WORK_DIR, "ndjson", "#{FHIR_FILE_PREFIX}-latest-de.ndjson")
       super
     end
 
@@ -83,8 +90,8 @@ module ODDB
       paths = {}
       changed = false
       FHIR_LANGUAGES.each do |lang|
-        latest_url = "#{FHIR_BASE_URL}foph-sl-export-latest-#{lang}.ndjson"
-        file_name = "foph-sl-export-latest-#{lang}.ndjson"
+        latest_url = "#{FHIR_BASE_URL}#{FHIR_FILE_PREFIX}-latest-#{lang}.ndjson"
+        file_name = "#{FHIR_FILE_PREFIX}-latest-#{lang}.ndjson"
         LogFile.append("oddb/debug", " bsv_fhir: latest_url = #{latest_url}", Time.now)
         path = download_ndjson(latest_url, save_dir, file_name, lang)
         if path
@@ -104,7 +111,7 @@ module ODDB
         return nil
       end
 
-      @fhir_url = "#{FHIR_BASE_URL}foph-sl-export-latest-de.ndjson"
+      @fhir_url = "#{FHIR_BASE_URL}#{FHIR_FILE_PREFIX}-latest-de.ndjson"
 
       if changed
         _update(paths)
@@ -163,7 +170,7 @@ module ODDB
 
     # Download the BAG FHIR NDJSON for `lang` only when a newer dated export is
     # published. BAG publishes immutable dated snapshots
-    # (foph-sl-export-<YYYYMMDD>-<lang>.ndjson) plus a moving -latest- alias; the
+    # (foph-sl-publication-<YYYYMMDD>-<lang>.ndjson) plus a moving -latest- alias; the
     # date in the dated link equals the -latest- file's Last-Modified date. We
     # read that date cheaply with an HTTP HEAD (no 90+ MB body), build the dated
     # link, and persist it in a ".source" sidecar next to the cached file. While
@@ -180,11 +187,11 @@ module ODDB
 
       LogFile.append("oddb/debug", " bsv_fhir: save_file = #{save_file}", Time.now)
 
-      dated_url = current_dated_url(latest_url, lang)
+      saved_url = File.exist?(marker_file) ? File.read(marker_file).strip : nil
+      dated_url = current_dated_url(latest_url, lang, date_of(saved_url))
 
       # Fast path: the published date is known and has not moved -> nothing to do.
       if dated_url
-        saved_url = File.exist?(marker_file) ? File.read(marker_file).strip : nil
         if saved_url == dated_url && File.exist?(save_file)
           LogFile.append("oddb/debug", " bsv_fhir: #{lang} unchanged, keeping #{dated_url}", Time.now)
           return nil
@@ -214,13 +221,64 @@ module ODDB
       save_file
     end
 
-    # Resolve the current immutable dated link for `lang` from the -latest-
-    # file's Last-Modified date. Returns nil when the HEAD request fails.
-    def current_dated_url(latest_url, lang)
+    # How far back to look for the newest dated export when the marker file
+    # gives no starting point. BAG publishes on the 1st of the month, so a
+    # month and a half covers a missed publication without probing forever.
+    DATED_LOOKBACK_DAYS = 45
+
+    # Resolve the current immutable dated link for `lang`.
+    #
+    # Until August 2026 this read the Last-Modified date off the moving
+    # -latest- alias. BAG withdrew that alias - it answers 404 in all three
+    # languages - while the dated snapshots stay available, so the date now has
+    # to be found by asking for it. We walk back from today and take the first
+    # day that answers, stopping at the date already in the marker file: is
+    # nothing newer than what we hold, there is nothing to do.
+    #
+    # The -latest- alias is still tried first, so this costs one HEAD and no
+    # searching should BAG ever bring it back.
+    def current_dated_url(latest_url, lang, known_date = nil)
       last_modified = head_last_modified(latest_url)
-      return nil unless last_modified
-      date = last_modified.utc.strftime("%Y%m%d")
-      "#{FHIR_BASE_URL}foph-sl-export-#{date}-#{lang}.ndjson"
+      if last_modified
+        date = last_modified.utc.strftime("%Y%m%d")
+        return "#{FHIR_BASE_URL}#{FHIR_FILE_PREFIX}-#{date}-#{lang}.ndjson"
+      end
+      newest_dated_url(lang, known_date)
+    end
+
+    # The newest dated export for `lang`, or nil if none of the last
+    # DATED_LOOKBACK_DAYS days has one. `known_date` is where the search stops:
+    # anything at or before it we already have.
+    def newest_dated_url(lang, known_date = nil, today = @@today)
+      DATED_LOOKBACK_DAYS.times do |back|
+        date = (today - back).strftime("%Y%m%d")
+        return nil if known_date && date <= known_date
+        url = "#{FHIR_BASE_URL}#{FHIR_FILE_PREFIX}-#{date}-#{lang}.ndjson"
+        return url if dated_url_exists?(url)
+      end
+      LogFile.append("oddb/debug",
+        " bsv_fhir: no dated export for #{lang} in the last " \
+        "#{DATED_LOOKBACK_DAYS} days", Time.now)
+      nil
+    end
+
+    # A plain HEAD - the dated files are immutable, so existence is the whole
+    # question and Last-Modified does not matter.
+    def dated_url_exists?(url)
+      uri = URI.parse(url)
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+        http.head(uri.request_uri)
+      end
+      response.is_a?(Net::HTTPSuccess)
+    rescue => e
+      LogFile.append("oddb/debug", " bsv_fhir: HEAD failed for #{url}: #{e.message}", Time.now)
+      false
+    end
+
+    # The date in a marker file, e.g. "20260813" - the search for something
+    # newer stops there.
+    def date_of(url)
+      url.to_s[/#{FHIR_FILE_PREFIX}-(\d{8})-/, 1]
     end
 
     # HEAD `url` and return its Last-Modified as a Time, or nil on any failure

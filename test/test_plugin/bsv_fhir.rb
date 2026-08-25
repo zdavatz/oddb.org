@@ -210,4 +210,62 @@ module ODDB
       assert_nil(@plugin.send(:limitation_text_from_reference, "ClinicalUseDefinition/X", {}))
     end
   end
+
+  # Wie der Import den aktuellen Export findet, nachdem BAG ihn im August 2026
+  # von /static/fhir/foph-sl-export-* nach
+  # /static/sl/publication/fhir/foph-sl-publication-* verschoben hat.
+  class TestBsvFhirPluginDatedUrl < Minitest::Test
+    def setup
+      @plugin = BsvFhirPlugin.new(flexmock("app"))
+      @vorhanden = []
+      @gefragt = []
+      @plugin.define_singleton_method(:dated_url_exists?) do |url|
+        @gefragt.push(url)
+        @vorhanden.any? { |datum| url.include?(datum) }
+      end
+      @plugin.instance_variable_set(:@vorhanden, @vorhanden)
+      @plugin.instance_variable_set(:@gefragt, @gefragt)
+    end
+
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
+
+    def newest(lang, known = nil, today = Date.new(2026, 8, 25))
+      @plugin.send(:newest_dated_url, lang, known, today)
+    end
+
+    def test_takes_the_newest_day_that_answers
+      @vorhanden.replace(%w[20260813 20260801])
+      assert_equal("#{BsvFhirPlugin::FHIR_BASE_URL}foph-sl-publication-20260813-de.ndjson",
+        newest("de"))
+    end
+
+    def test_stops_at_what_we_already_have
+      # Nichts Neueres als der Marker: dann gar nicht erst laden. Und keine
+      # weiteren Anfragen, sobald die Suche das bekannte Datum erreicht.
+      @vorhanden.replace(%w[20260813])
+      assert_nil(newest("de", "20260813"))
+      refute_includes(@gefragt.join, "20260812")
+    end
+
+    def test_finds_something_newer_than_the_marker
+      @vorhanden.replace(%w[20260825 20260813])
+      assert_equal("#{BsvFhirPlugin::FHIR_BASE_URL}foph-sl-publication-20260825-de.ndjson",
+        newest("de", "20260813"))
+    end
+
+    def test_gives_up_after_the_lookback_window
+      @vorhanden.clear
+      assert_nil(newest("de"))
+      assert_equal(BsvFhirPlugin::DATED_LOOKBACK_DAYS, @gefragt.size)
+    end
+
+    def test_date_of_reads_the_marker_file_url
+      url = "#{BsvFhirPlugin::FHIR_BASE_URL}foph-sl-publication-20260825-fr.ndjson"
+      assert_equal("20260825", @plugin.send(:date_of, url))
+      assert_nil(@plugin.send(:date_of, nil))
+    end
+  end
 end
