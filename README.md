@@ -101,6 +101,20 @@ Note that `odba_isolated_store` on a document does **not** write its `change_log
 
 What is left alone: the 1120 `SimpleLanguage::Descriptions`, whose broken links are hash entries rather than ivars. 6652 probes of the ATC guidelines they serve raised nothing, because `Text::Document` declares `@descriptions` as `ODBA_SERIALIZABLE` and no longer follows that path at all.
 
+### Ghost packs in the BAG export
+The SL export lists some packs **twice under one Swissmedic number**: once properly, with a GTIN and the pack price, and once without a GTIN, described as "1 Stk", carrying the price *per unit*. Both resolve to the same package through `package_by_ikskey`, both prices get written, and what survives is whichever came last. On 25.08.2026 Enflonsia stood at 354.60 instead of 3545.85 and Menveo at 37.75 instead of 188.75 — a tenth and a fifth of the real price. Encepur, FSME Immun Junior and Comirnaty happened to end on the right value, which is the same bug wearing a friendlier face.
+
+`BsvFhirPlugin#ghost_pack?` drops a GTIN-less pack **only when another pack with a GTIN shares its number**. A blanket filter would have been wrong: 55 of the 10255 packs have no GTIN and 49 of those are the only pack under their number (Candesartan CPS and others), entirely legitimate. `jobs/repair_ghost_pack_prices <gtin>=<preis> --apply` fixes what is already stored — the filter prevents recurrence but does not repair. Reported to BAG; see [issue #445](https://github.com/zdavatz/oddb.org/issues/445).
+
+Worth knowing for any price question: comparing all stored public prices against the GTIN-matched prices in the export takes a few minutes and gives a flat answer — 10010 of 10013 matched, one pack had no price here, and the two above were the only wrong ones.
+
+### Mail drafts
+`bin/oddb_mail draft --to=… --subject=… --body=datei` creates a draft in `zdavatz@ywesee.com`. Only ever a draft, never a send.
+
+Two routes to a token. A **service account** would have to impersonate the mailbox, which needs domain-wide delegation in the Workspace console (`admin.google.com` → Security → Access and data control → API controls) and answers `Client is unauthorized to retrieve access tokens` until an admin adds the client id with the `gmail.compose` scope. An **OAuth client** asks the mailbox owner once instead and a refresh token carries it from there — no admin, no delegation. `bin/oddb_mail authorize` walks through it; the browser lands on `http://localhost` and fails to load, which is expected, and the `code=` is copied out of the address bar. `GmailApi` prefers OAuth and falls back to the service account, which exists anyway for the Search Console.
+
+Two traps sit in the Google side of this. Its token endpoint returns `error` as a plain **string** while the other services return an object with `message`, so `parsed.dig("error", "message")` raises `TypeError` and hides the very message you need — the same line still sits in `google_search_console.rb`. And `RCLConf` raises `NoMethodError` for keys that are not set rather than returning nil, so the usual `|| default` never runs. Secrets live in `etc/oddb.yml`, gitignored and mode 600.
+
 ## Tests
 
 * to run the Tests you need to do
