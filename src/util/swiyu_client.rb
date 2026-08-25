@@ -41,7 +41,9 @@ module ODDB
         accepted_issuer_dids: [
           SwiyuRoles.instance.accepted_issuer_did
         ],
-        response_mode: "direct_post",
+        response_mode: "direct_post.jwt",
+        # Wallet ab 1.17 erzwingt verschluesselte Antworten (direct_post.jwt),
+        # direct_post wird mit invalid_request abgelehnt.
         # OID4VP 1.0: der swiyu-Verifier ab 4.x akzeptiert nur noch DCQL,
         # presentation_definition wird mit "dcqlQuery: must not be null" abgelehnt.
         dcql_query: {
