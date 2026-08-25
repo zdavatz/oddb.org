@@ -1,0 +1,37 @@
+#!/usr/local/bin/ruby
+# Setzt Verweise auf geloeschte Objekte zurueck - siehe
+# src/util/dangling_reference_repair.rb fuer das Warum.
+#
+# Eingabe: je Zeile "origin_id target_id", erzeugt mit
+#
+#   psql -c "SELECT c.origin_id, c.target_id FROM object_connection c
+#            WHERE NOT EXISTS (SELECT 1 FROM object o
+#                              WHERE o.odba_id = c.target_id);"
+#
+# Aufruf:
+#   bundle exec ruby jobs/repair_dangling_references dangling.txt
+#   bundle exec ruby jobs/repair_dangling_references dangling.txt --apply
+#
+# Ohne --apply wird nichts geschrieben. Mit --apply entsteht <datei>.undo mit
+# je einer Zeile "odba_id @feld=alte_ziel_id ...".
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/dangling_reference_repair"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      input = ARGV.find { |a| !a.start_with?("--") }
+      abort "usage: #{$0} <datei> [--apply]" unless input && File.exist?(input)
+      pairs = File.readlines(input).collect { |line|
+        origin, target = line.split
+        [origin.to_i, target.to_i] if origin && target
+      }.compact
+      DanglingReferenceRepair.new(system, apply: ARGV.include?("--apply"),
+        undo_log: "#{input}.undo").run(pairs)
+    end
+  end
+end
