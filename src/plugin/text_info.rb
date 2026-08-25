@@ -354,27 +354,57 @@ module ODDB
       end
     end
 
+    # True when a descriptions entry really is a patient information.
+    #
+    # The check has to resolve the value before judging it, because a
+    # descriptions entry is usually an ODBA::Stub, and this database is known
+    # to hold stubs whose declared class no longer matches what their odba_id
+    # actually holds. Resolving is what catches those, and dropping them is
+    # what this method exists for.
+    #
+    # instance_of?, which this used to ask, does resolve - ODBA::Stub generates
+    # a forwarder for it (stub.rb:104 overrides Object.public_methods minus a
+    # short exception list, and instance_of? is not on that list). What it gets
+    # wrong is that it is exact: PatinfoDocument2001 < PatinfoDocument, so a
+    # 2001 document was taken for corruption and deleted - and @change_log
+    # lives on the document rather than on Patinfo, so that language's whole
+    # diff history went with it.
+    #
+    # is_a? on the resolved object accepts the subclass. Note that is_a? on the
+    # *stub* would not do: it answers from the declared class without
+    # resolving, so a broken reference would pass. Hence odba_instance first,
+    # which Object defines as self, so a plain document or a String works too.
+    def patinfo_document?(value)
+      value.odba_instance.is_a?(ODDB::PatinfoDocument)
+    rescue
+      false
+    end
+
     def fix_odba_error_in_patinfo(package, lang)
+      # Declared out here so the rescue below can see it. It used to be the
+      # global $key, which survived between calls, so a failure with no
+      # iteration behind it could delete whatever key the previous package had
+      # left behind.
+      last_key = nil
       begin
         # Workaround and fix a problem in the database
         return false unless package.sequence.has_patinfo?
         bad = package.patinfo.descriptions.find_all do |key, value|
-          $key = key
-          $value = value
-          !value.instance_of?(ODDB::PatinfoDocument)
+          last_key = key
+          !patinfo_document?(value)
         end
         if bad.size > 0
           LogFile.debug "Deleting lang #{lang} from patinfo #{package.iksnr} odba_id #{package.odba_id} bad #{bad}"
-          package.patinfo.descriptions.delete_if { |key, value| !value.instance_of?(ODDB::PatinfoDocument) }
+          package.patinfo.descriptions.delete_if { |key, value| !patinfo_document?(value) }
           package.odba_store
           return true
         end
       rescue
-        if $key
-          LogFile.debug "Deleting lang #{lang} from patinfo #{package.iksnr} odba_id #{package.odba_id} bad #{$key}"
-          package.patinfo.descriptions.delete_if { |key, value| key.eql?($key) }
+        if last_key
+          LogFile.debug "Deleting lang #{lang} from patinfo #{package.iksnr} odba_id #{package.odba_id} bad #{last_key}"
+          package.patinfo.descriptions.delete_if { |key, value| key.eql?(last_key) }
           package.odba_store
-          package.patinfo.descriptions.find_all { |key, value| !value.instance_of?(ODDB::PatinfoDocument) }
+          package.patinfo.descriptions.find_all { |key, value| !patinfo_document?(value) }
         end
         return true
       end

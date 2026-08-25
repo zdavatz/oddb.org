@@ -697,4 +697,95 @@ Tramal Injektionslösung: Packungen zu 5 und 50 Ampullen à 2 ml [A].)
       @finished_successful = true
     end
   end
+
+  # Regression coverage for the guard in fix_odba_error_in_patinfo.
+  #
+  # That method drops descriptions entries that are no longer usable, and it
+  # has to: this database holds stubs whose declared class no longer matches
+  # what their odba_id resolves to. What it got wrong was asking instance_of?,
+  # which is exact - PatinfoDocument2001 < PatinfoDocument, so a 2001 document
+  # counted as corruption and was deleted, and @change_log lives on the
+  # document rather than on Patinfo, so that language's diff history went too.
+  class TestPatinfoDocumentGuard < Minitest::Test
+    def setup
+      super
+      @plugin = TextInfoPlugin.new(flexmock("application"))
+    end
+
+    def teardown
+      ODBA.storage = nil
+      super # to clean up FlexMock
+    end
+
+    # A stub that resolves without a cache, the way ODBA hands one out before
+    # anything has touched the value behind it.
+    def stub_for(document)
+      stub = ODBA::Stub.new(1, nil, document)
+      stub.instance_variable_set(:@receiver, document)
+      stub
+    end
+
+    def test_accepts_a_stub_of_a_document
+      assert(@plugin.patinfo_document?(stub_for(PatinfoDocument.new)))
+    end
+
+    def test_instance_of_is_what_got_this_wrong
+      refute(PatinfoDocument2001.new.instance_of?(ODDB::PatinfoDocument),
+        "instance_of? is exact, which is why the 2001 subclass was deleted")
+      refute(stub_for(PatinfoDocument2001.new).instance_of?(ODDB::PatinfoDocument),
+        "and the same through a stub, which does resolve and forward")
+    end
+
+    def test_a_stub_whose_declared_class_lies_is_still_dropped
+      # The corruption this method is really for: the stub says
+      # PatinfoDocument, the odba_id holds something else. is_a? on the stub
+      # would believe the declaration, so the guard has to resolve first.
+      liar = ODBA::Stub.new(1, nil, PatinfoDocument.new)
+      liar.instance_variable_set(:@receiver, "not a document at all")
+      assert(liar.is_a?(ODDB::PatinfoDocument), "the stub still claims to be one")
+      refute(@plugin.patinfo_document?(liar), "but the guard must not believe it")
+    end
+
+    def test_accepts_a_plain_document_and_the_2001_subclass
+      assert(@plugin.patinfo_document?(PatinfoDocument.new))
+      assert(@plugin.patinfo_document?(PatinfoDocument2001.new))
+      assert(@plugin.patinfo_document?(stub_for(PatinfoDocument2001.new)))
+    end
+
+    def test_rejects_what_is_really_not_a_document
+      refute(@plugin.patinfo_document?("kaputt"))
+      refute(@plugin.patinfo_document?(nil))
+      refute(@plugin.patinfo_document?(23))
+    end
+
+    def test_rejects_a_stub_that_no_longer_resolves
+      # No receiver and no usable cache: this is the case the method is for.
+      refute(@plugin.patinfo_document?(ODBA::Stub.new(1, nil, PatinfoDocument.new)),
+        "a reference that cannot be followed still has to be cleaned up")
+    end
+
+    def package_with(descriptions)
+      patinfo = flexmock("patinfo", descriptions: descriptions)
+      flexmock("package",
+        sequence: flexmock("sequence", has_patinfo?: true),
+        patinfo: patinfo,
+        iksnr: "35941",
+        odba_id: 230457,
+        odba_store: nil)
+    end
+
+    def test_leaves_a_hash_of_stubs_alone
+      descriptions = {"de" => stub_for(PatinfoDocument.new),
+                      "fr" => stub_for(PatinfoDocument.new)}
+      refute(@plugin.fix_odba_error_in_patinfo(package_with(descriptions), "de"))
+      assert_equal(["de", "fr"], descriptions.keys.sort,
+        "both languages survive - this is the diff loss the fix is about")
+    end
+
+    def test_still_deletes_what_is_genuinely_broken
+      descriptions = {"de" => stub_for(PatinfoDocument.new), "fr" => "kaputt"}
+      assert(@plugin.fix_odba_error_in_patinfo(package_with(descriptions), "de"))
+      assert_equal(["de"], descriptions.keys, "only the broken entry goes")
+    end
+  end
 end
