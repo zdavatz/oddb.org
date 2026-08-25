@@ -12,6 +12,11 @@ module ODDB
       "Content-Type" => "application/json"
     }.freeze
 
+    # Format, in dem der Issuer die Arztausweise ausstellt. Der Verifier
+    # akzeptiert waehrend der Migrationsphase weiterhin "vc+sd-jwt";
+    # "dc+sd-jwt" ist der kanonische Typ nach draft-ietf-oauth-sd-jwt-vc-09.
+    CREDENTIAL_FORMAT = "vc+sd-jwt"
+
     def create_verification
       uri = URI("#{BASE_URL}/verifications")
       req = Net::HTTP::Post.new(uri)
@@ -37,31 +42,19 @@ module ODDB
           SwiyuRoles.instance.accepted_issuer_did
         ],
         response_mode: "direct_post",
-        presentation_definition: {
-          id: SecureRandom.uuid,
-          input_descriptors: [
+        # OID4VP 1.0: der swiyu-Verifier ab 4.x akzeptiert nur noch DCQL,
+        # presentation_definition wird mit "dcqlQuery: must not be null" abgelehnt.
+        dcql_query: {
+          credentials: [
             {
-              id: "doctor-credential",
-              format: {
-                "vc+sd-jwt": {
-                  "sd-jwt_alg_values": ["ES256"],
-                  "kb-jwt_alg_values": ["ES256"]
-                }
-              },
-              constraints: {
-                fields: [
-                  {
-                    path: ["$.vct"],
-                    filter: {
-                      type: "string",
-                      const: "doctor-credential-sdjwt"
-                    }
-                  },
-                  {path: ["$.firstName"]},
-                  {path: ["$.lastName"]},
-                  {path: ["$.gln"]}
-                ]
-              }
+              id: "doctor_credential",
+              format: CREDENTIAL_FORMAT,
+              meta: {vct_values: ["doctor-credential-sdjwt"]},
+              claims: [
+                {path: ["firstName"]},
+                {path: ["lastName"]},
+                {path: ["gln"]}
+              ]
             }
           ]
         }
