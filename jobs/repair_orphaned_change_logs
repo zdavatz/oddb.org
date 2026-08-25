@@ -1,0 +1,95 @@
+#!/usr/local/bin/ruby
+# Hängt verwaiste Diffs wieder an ihr Präparat.
+#
+# 31447 ChangeLogItems sind von der Wurzel aus nicht mehr erreichbar: das
+# Dokument, an dem ihr change_log hing, wurde ersetzt, ohne die Historie
+# mitzunehmen. Die Diffs selbst liegen unversehrt in der Datenbank, nur zeigt
+# nichts mehr auf sie - /show/fachinfo/51886/diff listet 7 Stände, während 61
+# weitere aus 2015-2017 unerreichbar danebenliegen.
+#
+# Zuordnen lassen sie sich, weil jede Fach- und Patienteninformation ihre
+# Zulassungsnummer im Text trägt ("Zulassungsnummer 12345 (Swissmedic)"), und
+# Diffy::Diff den ganzen alten und neuen Text speichert. Ausgerechnet die
+# Doppelspeicherung, die die Datenbank aufbläht, rettet hier die Zuordnung.
+#
+# Die Liste der verwaisten odba_ids kommt von aussen, weil sie eine
+# Breitensuche über 7,4 Mio. Kanten braucht:
+#
+#   CREATE TEMP TABLE roots(odba_id int);
+#   INSERT INTO roots
+#     SELECT target_id FROM <jede Indextabelle mit target_id, ausser
+#                            object_connection> UNION ...
+#     SELECT odba_id FROM object WHERE name IS NOT NULL
+#     UNION SELECT odba_id FROM object WHERE prefetchable;
+#   WITH RECURSIVE r AS (
+#     SELECT DISTINCT odba_id FROM roots
+#     UNION SELECT c.target_id FROM object_connection c JOIN r ON r.odba_id = c.origin_id)
+#   SELECT o.odba_id FROM object o
+#   WHERE o.extent IN ('ODDB::FachinfoDocument::ChangeLogItem',
+#                      'ODDB::PatinfoDocument::ChangeLogItem')
+#     AND o.odba_id NOT IN (SELECT odba_id FROM r);
+#
+# In zwei Schritten, damit sichtbar und nachlesbar ist, was geschrieben wird:
+#
+#   # 1. Trockenlauf, schreibt nur den Plan
+#   bundle exec ruby jobs/repair_orphaned_change_logs ids.txt --plan=plan.tsv
+#
+#   # 2. Plan filtern - der Status steht in Spalte 3
+#   grep -P '\tbestaetigt$' plan.tsv > plan_bestaetigt.tsv
+#
+#   # 3. genau diese Paare anhängen
+#   bundle exec ruby jobs/repair_orphaned_change_logs plan_bestaetigt.tsv \
+#     --from-plan --apply
+#
+# Der Plan hat die Spalten item_odba_id, dokument_odba_id, status. Der Status
+# ist "bestaetigt", wenn der heutige Text des Zieldokuments dieselbe
+# Zulassungsnummer trägt wie der verwaiste Diff; "zweifelhaft", wenn er eine
+# andere trägt - das sind oft Nachbarnummern wie 59410 gegen 59411, also
+# dieselbe Substanz in anderer Stärke; "ziel_ohne_nummer", wenn sich das Ziel
+# nicht prüfen ließ.
+#
+# Ohne --apply wird nichts geschrieben. Mit --apply entsteht neben der
+# Eingabedatei ein Protokoll <datei>.undo mit je einer Zeile
+# "dokument_odba_id item_odba_id" - damit ist jedes Anhängen einzeln
+# rückgängig zu machen. Angehängt wird nur, nie gelöscht.
+#
+# Parallel nur nach Zieldokument partitioniert: zwei Prozesse, die Einträge an
+# dasselbe change_log hängen, machen beide Lesen-Ändern-Schreiben auf demselben
+# ODBA-Objekt, und der zweite überschreibt den ersten.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/orphaned_change_log_repair"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      input = ARGV.find { |a| !a.start_with?("--") }
+      apply = ARGV.include?("--apply")
+      plan_out = ARGV.find { |a| a.start_with?("--plan=") }&.split("=", 2)&.last
+      from_plan = ARGV.include?("--from-plan")
+      abort "usage: #{$0} <datei> [--plan=<datei>] [--from-plan] [--apply]" unless input && File.exist?(input)
+
+      repair = ODDB::OrphanedChangeLogRepair.new(system, apply: apply,
+        undo_log: "#{input}.undo", plan: plan_out)
+      begin
+        if from_plan
+          # Der Plan hat drei Spalten: item, dokument, status. Gefiltert wird
+          # vorher, mit grep - so ist an der Kommandozeile sichtbar, was
+          # angehaengt wird, statt es in einem Schalter zu verstecken.
+          pairs = File.readlines(input).collect { |line|
+            item, document, = line.split
+            [item.to_i, document.to_i] if item && document
+          }.compact
+          repair.run_plan(pairs)
+        else
+          repair.run(File.readlines(input).collect { |l| l[/\d+/] }.compact.collect(&:to_i))
+        end
+      ensure
+        repair.close
+      end
+    end
+  end
+end
