@@ -72,6 +72,7 @@ module ODDB
         act.odba_delete
       }
       @active_agents.odba_delete
+      @active_agents = []
     end
 
     def create_active_agent(substance_name)

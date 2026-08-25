@@ -125,11 +125,13 @@ module ODDB
         pac.odba_delete
       }
       @packages.odba_delete
+      @packages = {}
       @compositions.dup.each { |comp|
         comp.checkout
         comp.odba_delete
       }
       @compositions.odba_delete
+      @compositions = []
     end
 
     def comparables(factor = 1.0)

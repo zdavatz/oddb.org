@@ -238,6 +238,21 @@ module ODDB
       end
     end
 
+    # Was aus der Datenbank geloescht wird, muss auch hier verschwinden.
+    #
+    # Bis August 2026 blieben @parts und @sl_entry nach dem odba_delete
+    # gesetzt, also zeigte das Package weiter auf ein Objekt, das es nicht mehr
+    # gab. In der Datenbank standen dadurch 3950 Packungen mit einem toten
+    # @sl_entry und 141 mit toten @parts; jeder Zugriff auf package.limitation
+    # oder limitation_text warf ODBA::OdbaError. Preis, Selbstbehalt und Name
+    # kommen aus anderen Feldern und funktionierten weiter, weshalb es
+    # jahrelang nicht auffiel. delete_sl_entry weiter unten macht es richtig
+    # und ist die Vorlage.
+    #
+    # Bewusst ohne odba_isolated_store: checkout laeuft unmittelbar vor oder
+    # nach dem odba_delete des Packages selbst (util/persistence.rb:283-291,
+    # model/sequence.rb:124), und ein Speichern wuerde das eben Geloeschte
+    # wieder anlegen.
     def checkout
       checkout_helper([@generic_group], :remove_package)
       if @parts
@@ -246,10 +261,12 @@ module ODDB
           part.odba_delete
         }
         @parts.odba_delete
+        @parts = []
       end
       if @sl_entry.respond_to?(:checkout)
         @sl_entry.checkout
         @sl_entry.odba_delete
+        @sl_entry = nil
       end
       delete_all_mail_order_prices
     end

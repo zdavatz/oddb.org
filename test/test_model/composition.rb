@@ -63,7 +63,12 @@ module ODDB
         is_active_agent: true)
       agents = flexmock([agent], odba_delete: "odba_delete")
       @composition.instance_eval("@active_agents = agents", __FILE__, __LINE__)
-      assert_equal("odba_delete", @composition.checkout)
+      @composition.checkout
+      # Frueher stand hier der Rueckgabewert von checkout, der zufaellig der
+      # von odba_delete war. Geprueft gehoert, dass die Liste danach leer ist:
+      # was aus der Datenbank geloescht wurde, darf hier nicht mehr stehen,
+      # sonst haelt das Objekt einen Stub auf etwas, das es nicht mehr gibt.
+      assert_equal([], @composition.instance_variable_get(:@active_agents))
     end
 
     def test_create_active_agent

@@ -356,6 +356,14 @@ class TestPackage < Minitest::Test
     slentry.should_receive(:odba_delete).times(1).and_return { assert true }
     @package.instance_variable_set :@sl_entry, slentry
     @package.checkout
+    # Was aus der Datenbank geloescht wurde, darf hier nicht mehr stehen.
+    # Blieb es stehen, hielt das Package einen Stub auf ein Objekt, das es
+    # nicht mehr gibt, und jedes package.limitation warf ODBA::OdbaError -
+    # 3950 Packungen waren im August 2026 in diesem Zustand.
+    assert_nil(@package.instance_variable_get(:@sl_entry),
+      "sl_entry muss nach dem odba_delete geloescht sein")
+    assert_equal([], @package.instance_variable_get(:@parts),
+      "parts muss nach dem odba_delete leer sein")
   end
 
   def test_commercial_forms

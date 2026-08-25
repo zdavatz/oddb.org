@@ -130,6 +130,7 @@ module ODDB
         seq.odba_delete
       }
       @sequences.odba_delete
+      @sequences = {}
     end
 
     def company_name
