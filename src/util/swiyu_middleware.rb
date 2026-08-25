@@ -143,7 +143,15 @@ module ODDB
     end
 
     def extract_claims(result)
-      result.dig("wallet_response", "credential_subject_data") || {}
+      data = result.dig("wallet_response", "credential_subject_data")
+      return {} unless data.is_a?(Hash)
+      # Alte Struktur (presentation_definition): Claims lagen flach.
+      return data if data.key?("vct")
+      # DCQL (swiyu-verifier 4.x): nach der Query-ID gruppiert, und der Wert
+      # ist ein Array, weil eine Abfrage mehrere passende Nachweise liefern kann.
+      entry = data[SwiyuClient::DCQL_CREDENTIAL_ID] || data.values.first
+      entry = entry.first if entry.is_a?(Array)
+      entry.is_a?(Hash) ? entry : {}
     end
 
     def json_response(data, status = 200)

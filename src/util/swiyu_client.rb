@@ -17,6 +17,10 @@ module ODDB
     # "dc+sd-jwt" ist der kanonische Typ nach draft-ietf-oauth-sd-jwt-vc-09.
     CREDENTIAL_FORMAT = "vc+sd-jwt"
 
+    # ID der DCQL-Abfrage. Der Verifier gruppiert die zurueckgelieferten Claims
+    # unter diesem Schluessel, siehe SwiyuMiddleware#extract_claims.
+    DCQL_CREDENTIAL_ID = "doctor_credential"
+
     def create_verification
       uri = URI("#{BASE_URL}/verifications")
       req = Net::HTTP::Post.new(uri)
@@ -49,7 +53,7 @@ module ODDB
         dcql_query: {
           credentials: [
             {
-              id: "doctor_credential",
+              id: DCQL_CREDENTIAL_ID,
               format: CREDENTIAL_FORMAT,
               meta: {vct_values: ["doctor-credential-sdjwt"]},
               claims: [
