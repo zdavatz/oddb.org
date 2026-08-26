@@ -149,15 +149,35 @@ Two of the fixes were **specificity**, the same trap dark mode fell into: `table
 
 The 16px on inputs is not taste: Safari zooms the whole page when a field under 16px takes focus, and does not zoom back out.
 
+Two things CSS turned out not to be able to do here, and both are in `doc/resources/javascript/compactdetail.js` instead. A cell holding only `&nbsp;` is not `:empty` and CSS cannot look at text, so blank field pairs in the detail view and blank cells in the cards are hidden by script — 12 pairs on a detail page, 58 cells on a result list, 73 on the query-limit page. And `flex-grow` cannot force a line break: a flex container fills a line first and distributes leftover space afterwards, so the FI/PI marks kept sliding up beside the price whenever the name and price left room. An empty cell with `flex-basis: 100%` in front of the first mark is what actually breaks the line.
+
+The recurring mistake was specificity, four times in one day. The rule that turns the nested layout tables into blocks carries a `:not(:has(…))` per exception, and each one raises its specificity above anything further down that wants a different `display` — it beat the card rows twice, then the header rows, the chapter navigation and the footer. Exceptions belong in that rule, not in an answer to it. The other half of the same lesson: `table.composite` is both the page skeleton and real data tables, and the difference is that a data table has a `th` header row. Treating both alike turned a package list into a column of right-aligned single values.
+
+### External links
+
+Every link to a foreign host — ywesee.com, swissmedic.ch, drugbank.ca, the app stores, whatever a Fachinfo happens to link — opens in a new tab, with `rel="noopener noreferrer"`, because without `noopener` the opened page can reach back through `window.opener`. One script rather than edits in the views: the links are built in over two hundred places, and a good part of them sits inside text that comes out of a parser. Own-host links stay put, absolute ones included; `mailto:`, `tel:` and bare anchors are skipped.
+
 ### The RSS feeds as pages
 
 Clicking a feed on the home page used to land you in raw XML. `jobs`-generated feeds now also render as HTML in the site's own look and feel — `/de/gcc/rss_html/channel/recall.rss`, opened in a new tab from the feed title, while the feed icon still points at the XML.
 
 `ODDB::RssReader` reads the file **line by line and stops at fifty entries**, deliberately without an XML parser: `fachinfo.rss` is 248 MB, and a DOM of it per request would be a multiple of that. It answers in 0.1s. Descriptions are shown only when they are short and not a whole HTML document — the price feeds carry a rendered 28 KB detail page in every item.
 
+The pages page by year, the way `/recent_registrations/` does, and the title says which period is on screen. There are two shapes of history behind that: fachinfo keeps yearly files next to the big one, so a year view reads `fachinfo-2015.rss` and never touches the 248 MB file; the other channels are a single small file where the years come from the entries' own dates.
+
+Three feeds have no history to show, and that is not the page's fault: `update_price_feeds` computes a one-month window and **overwrites** `sl_introduction.rss`, `price_cut.rss` and `price_rise.rss` on every run — 37, 40 and one entry respectively, all from the current month, while `recall.rss` reaches back to 2018. The data is in the packages' price history, but recomputing it per request means walking 10 000 packages per month. Real history means writing monthly archives and backfilling them once.
+
 The XML is going nowhere. Feedly polls the five small channels about 290 times a day between them; those are real subscribers. What is worth questioning is the fachinfo side: `fachinfo.rss` plus 21 yearly variants take **1226 seconds and up to 3.9 GB** every night and occupy 2.1 GB on disk, for two requests a day.
 
 Adding an event needs three places, not one: the method on the state, `require` for the state class, and the name in `EVENTS` in `src/util/validator.rb`. Without the third, SBSM silently never triggers it and you get the previous page back with status 200.
+
+### The app-down page does not appear
+
+Measured during a restart, once a second: `https://ch.oddb.org/de/gcc/home/` answers HTTP 500 with 2537 bytes of Anubis' own error page for the entire outage — the appdown page never shows. Two causes, and both need fixing.
+
+`ErrorDocument 500/503 /var/www/oddb.org/doc/resources/errors/appdown.html` is a filesystem path where Apache expects a URL: a value with a leading `/` is a local URL, so under `DocumentRoot /var/www/oddb.org/doc` it resolves to `…/doc/var/www/oddb.org/doc/…`, fails, and falls through to the proxy that is down. It should be `/resources/errors/appdown.html`.
+
+And `ch.oddb.org:443` proxies to Anubis, not to the application. With the app down and Anubis up, Apache gets a valid response from a healthy proxy and `ErrorDocument` never fires; `ProxyErrorOverride` is set nowhere. The catch that makes this a decision rather than a fix: Anubis answers 500, not 502 or 503, so a narrow override catches nothing and a blanket one would also replace the application's genuine 500s with the appdown page.
 
 ### Do not update sbsm to 1.6.3
 
