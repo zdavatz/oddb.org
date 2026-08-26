@@ -60,7 +60,10 @@ end
 def feeds_in(dir, wanted)
   names = Dir.glob(File.join(dir, "*.rss")).collect { |p| File.basename(p) }
   # Was schon ein Archiv ist, wird nicht noch einmal geteilt.
-  names = names.reject { |n| /-\d{4}(-\d{2})?\.rss\z/.match?(n) }
+  # Jahresdateien werden nur geteilt, wenn sie ausdruecklich genannt sind -
+  # fachinfo-2026.rss ist 242 MB je Sprache, das will man nicht versehentlich.
+  names = names.reject { |n| /-\d{4}-\d{2}\.rss\z/.match?(n) }
+  names = names.reject { |n| /-\d{4}\.rss\z/.match?(n) } if wanted.empty?
   names = names.reject { |n| /-(gcc|generika|just-medical|mobile|oekk)\.rss\z/.match?(n) }
   wanted.empty? ? names.sort : names.select { |n| wanted.include?(n) }
 end
