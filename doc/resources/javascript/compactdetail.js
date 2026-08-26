@@ -1,7 +1,8 @@
 // compactdetail.js -- oddb.org -- 26.08.2026
 //
-// Blendet auf schmalen Bildschirmen die Feldpaare der Detailansicht aus, deren
-// Wert leer ist.
+// Blendet auf schmalen Bildschirmen aus, was nur Platz kostet: die Feldpaare
+// der Detailansicht ohne Wert, und in den Karten der Trefferliste die Zellen,
+// die nur ein &nbsp; enthalten.
 //
 // Die Detailansicht ist eine Tabelle aus Label/Wert-Paaren, und ein Feld ohne
 // Inhalt kommt als <TD class="list">&nbsp;</TD>. Gestapelt wird daraus eine
@@ -35,6 +36,24 @@
       var hide = narrow && blank(value);
       cell.classList.toggle(HIDDEN, hide);
       value.classList.toggle(HIDDEN, hide);
+    }
+    cards(narrow);
+  }
+
+  // Dasselbe in den Karten der Trefferliste. Eine Packung ohne Preis hat dort
+  // Zellen, die nur ein &nbsp; enthalten - und weil der Selbstbehalt eine
+  // ganze Zeile breit ist, klaffte zwischen Name und Marken eine leere
+  // Flaeche. :empty greift auch hier nicht.
+  function cards(narrow) {
+    var names = document.querySelectorAll("td.col-name_base");
+    for (var i = 0; i < names.length; i++) {
+      var row = names[i].parentNode;
+      var cells = row.children;
+      for (var j = 0; j < cells.length; j++) {
+        var cell = cells[j];
+        if (cell === names[i]) { continue; }
+        cell.classList.toggle(HIDDEN, narrow && blank(cell));
+      }
     }
   }
 
