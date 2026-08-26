@@ -180,14 +180,37 @@
     font-size: 16px;
   }
 
+  /* Suchfeld und Knopf gehoeren auf eine Zeile. Mit width:100% am Feld
+     allein wurde der Knopf "Suchen" auf die naechste Zeile und ueber den
+     rechten Rand hinaus geschoben. Der Kasten darum ist je nach Seite ein
+     <DIV class="right"> (Abfragebeschraenkung) oder ein nacktes <DIV>
+     (Trefferliste), deshalb ueber :has() statt ueber die Klasse. */
+  div:has(> input.search) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 6px;
+    float: none;
+  }
+
   input.search,
   td.center input.search {
-    width: 100%;
+    flex: 1 1 12em;
+    width: auto;
+    min-width: 0;
     max-width: 100%;
     min-height: 44px;
     box-sizing: border-box;
     padding: 0 10px;
     margin: 0;
+  }
+
+  div:has(> input.search) > input[type="submit"],
+  div:has(> input.search) > input.button,
+  div:has(> input.search) > select {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 44px;
   }
 
   /* Auf der Startseite steht das Suchfeld allein in der Mitte der Spalte -
@@ -200,7 +223,9 @@
     text-align: center;
   }
 
-  td.center select {
+  /* Auf der Startseite steht die Art der Suche allein auf ihrer Zeile. */
+  td.center div:has(> input.search) > select {
+    flex: 1 1 100%;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
