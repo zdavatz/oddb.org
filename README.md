@@ -125,6 +125,16 @@ Two things worth carrying away from that hunt. `ODBA::Stub#is_a?` answers from t
 
 `jobs/repair_broken_active_agents` rebuilds a lost agent from the composition text by position, and refuses to act unless the intact neighbours sit where the text puts them.
 
+### Dark mode
+
+A toggle in the top right corner switches between light and dark; the choice lives in the browser and follows `prefers-color-scheme` until someone decides otherwise. `doc/resources/dark.css` is an overlay keyed on `html[data-theme="dark"]`, so without that attribute it does nothing and the light page is untouched — worth insisting on, because the file is embedded into every page. One overlay serves all eight flavor stylesheets, which share 249 of 253 selectors.
+
+It deliberately does not use the existing colour choice (`:styles`, `oddb-blue.css` and siblings). That mechanism has been dead since the stylesheet started being inlined rather than linked: `css_link` substitutes `oddb.css` for `oddb-<style>.css` inside a `<style>` block whose content is the CSS itself, where the filename never appears — which is why picking blue or red today only changes the logo.
+
+### Search performance
+
+`bundle exec ruby jobs/search_performance` prints impressions, clicks, click rate and average position per property, broken down by day, query, page, country and device. Search Analytics is one of only four areas the Search Console API still covers — the Page Indexing report has none at all. Google lags two to three days, so a range ending today simply returns fewer days.
+
 ## Tests
 
 * to run the Tests you need to do

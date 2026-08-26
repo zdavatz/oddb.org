@@ -251,6 +251,23 @@ None of this repairs the underlying data; it stops one broken reference from tak
 - **You cannot delete it by value.** `Array#delete` compares with `==`, which for a stub goes through `ActiveAgentCommon#==` and calls `.substance` on the other element — precisely the broken one. Use `object_id`: it is on ODBA's `no_override` list (`stub.rb:83`), `equal?` is **not** and would resolve the stub. standardrb suggests `equal?` here; that suggestion is wrong and is disabled in place with the reason.
 - `jobs/repair_broken_active_agents` rebuilds such elements from the composition text **by position**, and refuses to act unless the intact neighbours sit where the text puts them. Both `resolve_origin` expressions are guarded now, so one bad element can never cost an index again. Tests: `test/test_util/searchterms.rb`.
 
+### Dark mode (`doc/resources/dark.css`, `doc/resources/javascript/darkmode.js`)
+
+- An **overlay**, not a second stylesheet. `oddb.css` is 1099 lines, 88 colour values, zero CSS variables, and it exists **eight times** — one copy per flavor with different accent colours. gcc and generika share 249 of 253 selectors, gcc and mobile 248, so one file keyed on the shared class names covers every flavor.
+- **Everything hangs on `html[data-theme="dark"]`.** Without that attribute the file does nothing, which matters because it is embedded into every page — a user who never switches must see exactly what they saw before. `test/test_view/darkmode.rb` asserts that every colour-setting rule is scoped that way (the only exceptions are `:root` variables and the toggle button itself).
+- **The existing colour choice is dead, and that is why this does not use it.** `:styles` / `oddb-blue.css` and siblings differ in 124 lines each, but `PublicTemplate#css_link` does `link.gsub!("oddb.css", "oddb-#{style}.css")` on a `<style>` block whose content *is* the CSS — the filename does not occur in it (0 occurrences in a rendered page), the substitution matches nothing, and `gsub!` returns nil while the method returns the unchanged block. Picking blue or red therefore only changes the logo. Broken since the stylesheet started being inlined by `HtmlGrid::TemplateMethods.get_inline`.
+- **Wired into `css_links`, not `javascripts`** — `centeredsearchform`, `patinfo`, `fachinfo` and `interaction_chooser` all override `javascripts` **without calling `super`** (they start with `scripts = ""`), so a hook there is lost on the most visited pages. `css_links` is overridden nowhere in the tree and renders last in the `<head>`, which is exactly the order an overlay needs.
+- The choice lives in `localStorage`, is applied before first paint, and follows `prefers-color-scheme` until the user decides otherwise. Both storage calls are wrapped in try/catch — `localStorage` throws in private windows and with site data blocked.
+- **`dark.css` needs `git add -f`**: `.gitignore` excludes `doc/resources/**/*.css` (aimed at vendored dojo and logo material), yet all 18 of the project's own stylesheets are tracked through it the same way.
+- A template change needs an app restart (`svc -t /etc/service/oddb`); the static files under `doc/resources/` do not.
+
+### Search performance (`jobs/search_performance`)
+
+- `GoogleSearchConsole#search_analytics` / `#search_totals` read impressions, clicks, CTR and average position by date, query, page, country and device. Together with Sitemaps, Sites and URL Inspection this is **all** the API offers — the Page Indexing report has no API (see `jobs/check_indexing`).
+- **Google lags two to three days.** A range ending today returns fewer days; that is not an error.
+- As of 26.08.2026: `sc-domain:ch.oddb.org` 36057 impressions / 408 clicks / position 27.1 over 30 days, `sc-domain:oddb.org` 1800 / 16 on its first day (24.08., the DNS-verified property starting to collect), `https://generika.cc/` 72 / 7 — a tenth of the volume at ten times the click rate.
+- **Nine of the twelve most-shown pages are `/print/` variants.** Google indexes the print view rather than the page, so visitors land on a view with no navigation. A `rel=canonical` from print to normal would fold them together.
+
 ### Flavors
 
 - Registered in `LookandfeelFactory::WRAPPERS` (`src/custom/lookandfeelfactory.rb`). Removing an entry retires a flavor: `SBSM::Session#flavor` validates against `LookandfeelFactory.include?` and falls back to `DEFAULT_FLAVOR` (`"gcc"`), so the URL keeps working and renders as gcc. The wrapper class, css theme and view branches stay in the tree — putting the entry back revives it.
