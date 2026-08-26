@@ -191,6 +191,27 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Eine scrollende Tabelle darf nicht zugleich width:100% haben - sonst
+     quetscht sie sich in die Bildschirmbreite, statt zu scrollen, und aus
+     "4.13" werden drei Zeilen. max-content laesst sie ihre natuerliche
+     Breite nehmen, min-width:100% fuellt den Kasten, wenn sie schmaler ist. */
+  table.composite:has(> tbody > tr > th):not(:has(> tbody > tr > th.col-name_base)) > tbody {
+    display: table;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  /* Zahlen brechen nie. overflow-wrap:anywhere auf td.list ist fuer lange
+     Wirkstoffnamen da und hat hier Preise in Einzelziffern zerlegt. */
+  td.right,
+  td.list.right,
+  td[class*="price"],
+  td.col-comparable_size {
+    overflow-wrap: normal;
+    word-break: keep-all;
+    white-space: nowrap;
+  }
+
   /* Die Packungszeilen sind ausgenommen - sie werden weiter unten Flexboxen.
      Ohne das :not() gewinnt diese Regel mit (0,1,3) gegen
      tr:has(> td.col-name_base) mit (0,1,2), und die Karten fallen wieder in
