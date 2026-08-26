@@ -477,6 +477,15 @@
   tr:has(> td.tabnavigation) > td {
     display: block;
     width: auto;
+  }
+
+  /* Zentriert nur die Fusszeile - sie ist daran zu erkennen, dass sie eine
+     rechte Haelfte hat. Die einspaltigen Abschnittsbaender ("C07AA05 -
+     Propranolol", "Zusammensetzung") tragen dieselbe Klasse und gehoeren
+     linksbuendig. */
+  tr:has(> td.subheading.right) > td,
+  tr:has(> td.navigation.right) > td,
+  tr:has(> td.tabnavigation) > td {
     text-align: center;
   }
 
@@ -1053,6 +1062,19 @@
     width: 100%;
     max-width: 100%;
     table-layout: fixed;
+  }
+
+  /* Die WHO-DDD-Seite baut ihre Tabelle als table.component, nicht als
+     table.composite - sie bekam deshalb nichts ab und stand als schmaler
+     Streifen am linken Rand. */
+  table.component {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  table.component th,
+  table.component td {
+    padding: 6px 8px;
   }
 
   table.left th.subheading,
