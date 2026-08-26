@@ -604,7 +604,6 @@
     column-gap: 4px;
   }
 
-  a.tabnavigation,
   a.navigation,
   a.subheading {
     display: inline-block;
@@ -613,6 +612,22 @@
     padding: 0 8px;
     font-size: 15px;
     white-space: nowrap;
+  }
+
+  /* Die Zonen-Navigation etwas enger, damit die vier Eintraege des
+     mobile-Flavors auf eine Zeile passen. gcc hat acht und bricht weiterhin
+     um - das laesst sich auf 390px nicht vermeiden. */
+  a.tabnavigation {
+    display: inline-block;
+    min-height: 40px;
+    line-height: 40px;
+    padding: 0 5px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  table.tabnavigation > tbody > tr {
+    column-gap: 0;
   }
 
   /* "Willkommen Zeno Davatz!" steht in einem div.personal, das oddb.css auf
