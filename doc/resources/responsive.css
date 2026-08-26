@@ -104,7 +104,11 @@
   pre,
   table.chapter {
     display: block;
-    max-width: 100%;
+    /* 100vw und nicht 100%: die Zelle, in der das pre steckt, wird von ihm
+       selbst breit gemacht - max-width:100% davon ist zirkulaer und hat die
+       Fachinfo-Seite auf 992px gezogen. vw haengt am Fenster und nicht am
+       Elternteil, also kann der Kasten die Tabelle nicht mehr aufziehen. */
+    max-width: calc(100vw - 24px);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -138,10 +142,27 @@
   }
 
   /* Die Seite ist aus verschachtelten Tabellen gebaut. Ohne das hier zwingt
-     eine einzige feste Breite tief drin die ganze Seite ins Querscrollen. */
+     eine einzige feste Breite tief drin die ganze Seite ins Querscrollen.
+     Die aeusserste Tabelle wird zusaetzlich ans Fenster gebunden: max-width
+     in Prozent rechnet gegen den Elternteil, den die Tabelle selbst breit
+     macht, vw dagegen gegen das Fenster - das ist der Riegel, an dem eine zu
+     breite Zelle tief drin haengen bleibt. */
+  /* table-layout: fixed ist hier der einzige harte Riegel. max-width zwingt
+     eine Tabelle NICHT unter ihre minimale Inhaltsbreite - deshalb blieb die
+     Fachinfo-Seite bei 536px, obwohl die aeusserste Tabelle bei 485 gedeckelt
+     war: die innere Kopftabelle war so breit wie ihr Titel. Bei fester
+     Aufteilung zaehlt der Inhalt fuer die Breite gar nicht mehr mit. Die
+     Zeilen dieser Tabellen sind auf dem Telefon ohnehin gestapelt, es gibt
+     also keine Spaltenaufteilung, die dabei verloren gehen koennte. */
   table.composite {
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
+    table-layout: fixed;
+  }
+
+  body > table.composite {
+    max-width: 100vw;
+    table-layout: fixed;
   }
 
   td.list,
@@ -610,6 +631,9 @@
   /* Marken auf Fingergroesse - aber nicht die, die mitten im Namen stehen
      (das "T" fuer teilbar) oder im ATC-Band ("DrugBank.ca"): die zerschlagen
      als 44px-Kloetze die Zeile, in der sie stehen. */
+  /* Fingergerecht, aber nicht dominant: mit 44x44 waren die Marken die
+     groessten Flaechen der Karte und erschlugen den Praeparatenamen. 34px
+     hoch trifft man immer noch sicher. */
   td.list a.square,
   td.list span.square,
   td.infos a.square,
@@ -617,10 +641,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0 12px;
-    font-size: 13px;
+    min-width: 38px;
+    min-height: 34px;
+    padding: 0 9px;
+    font-size: 12px;
     box-sizing: border-box;
   }
 
@@ -669,17 +693,33 @@
 
   tr:has(> td.list > label) > td.list {
     display: block;
-    padding: 2px 12px;
+  }
+
+  tr:has(> td.list > label) > td.list:empty {
+    display: none;
+  }
+
+  /* Feldpaare ohne Wert. compactdetail.js setzt die Klasse - ein Kasten mit
+     nichts als einem &nbsp; darin ist fuer :empty nicht leer, und CSS kann
+     Textinhalt nicht pruefen. */
+  td.oddb-empty-pair {
+    display: none;
+  }
+
+  /* Die Paare enger zusammen: gestapelt braucht es zwischen Beschriftung und
+     Wert keinen Abstand, zwischen den Paaren schon. */
+  tr:has(> td.list > label) {
+    padding: 0;
+  }
+
+  tr:has(> td.list > label) > td.list {
+    padding: 0 12px 6px;
   }
 
   tr:has(> td.list > label) > td.list:has(> label) {
-    padding-top: 10px;
+    padding-top: 12px;
+    padding-bottom: 1px;
     font-size: 13px;
-  }
-
-  tr:has(> td.list > label) > td.list:empty,
-  tr:has(> td.list > label) > td.list:has(> label):empty {
-    display: none;
   }
 
   label {
@@ -707,13 +747,57 @@
     line-height: 1.3;
   }
 
-  a.chapter-tab,
+  /* Die Kapitelnavigation der Fachinfo ist eine Tabelle mit sechs Zeilen zu
+     je vier Zellen, jede mit gruenem Grund und schwarzem Strich darunter.
+     Auf dem Telefon ergab das eine Treppe mit ausgefransten rechten Kanten,
+     weil jede Zeile anders breit wird. Als ein einziger umbrechender Streifen
+     gelesen: display:contents loest Tabellenkoerper und Zeilen auf, sodass
+     alle Zellen Flex-Kinder derselben Reihe werden, und flex-grow fuellt jede
+     Zeile bis zum Rand. */
+  table:has(> tbody > tr > td.chapter-tab) {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  table:has(> tbody > tr > td.chapter-tab) > tbody,
+  table:has(> tbody > tr > td.chapter-tab) > tbody > tr {
+    display: contents;
+  }
+
   td.chapter-tab {
-    display: inline-block;
+    flex: 1 1 auto;
+    border: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  /* Die Fuellzellen mit nichts als einem &nbsp; darin. */
+  td.chapter-tab:not(:has(a)) {
+    display: none;
+  }
+
+  a.chapter-tab,
+  td.chapter-tab > a {
+    display: block;
     min-height: 44px;
     line-height: 44px;
     padding: 0 8px;
     font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* Kopfzeile der Fachinfo: Titel links, Firma rechts - gestapelt beides
+     linksbuendig, statt die Firma in drei Zeilen an den rechten Rand zu
+     draengen. */
+  tr:has(> td.th) {
+    display: block;
+  }
+
+  tr:has(> td.th) > td.th {
+    display: block;
+    width: auto;
+    text-align: left;
   }
 
   td.legal-note {
@@ -721,12 +805,19 @@
   }
 
   /* Lange Wirkstoffnamen und GTINs sprengen sonst die Breite.
-     Nicht auf td.atc anwenden - die braucht anywhere, siehe oben. Beide
-     Selektoren haben die Spezifitaet (0,1,1), und td.list stand hier zuerst
-     spaeter in der Datei und hat das anywhere wieder auf break-word gesetzt. */
-  td.list:not(.atc),
-  td.infos {
-    overflow-wrap: break-word;
+     anywhere und nicht break-word: nur anywhere senkt die minimale Breite des
+     Kastens, und genau die ist es, an der eine Tabelle haengen bleibt - eine
+     Tabelle kann nicht schmaler werden als ihr breitester Inhalt. In den
+     Fachinfos stehen Namen wie "Hydroxypropylmethylcellulose-Phthalat", die
+     die Seite auf 536px zogen. */
+  td.list,
+  td.infos,
+  td.th,
+  td.subheading,
+  th,
+  div:has(> h3) > p,
+  div:has(> h3) > p > span {
+    overflow-wrap: anywhere;
   }
 }
 

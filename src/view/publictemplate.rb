@@ -34,6 +34,7 @@ module ODDB
       DARK_MODE_CSS = "/resources/dark.css"
       DARK_MODE_JS = "darkmode.js"
       EXTERNAL_LINKS_JS = "externallinks.js"
+      COMPACT_DETAIL_JS = "compactdetail.js"
       CONTENT = nil
       CSS_CLASS = "composite"
       COMPONENTS = {
@@ -130,6 +131,11 @@ module ODDB
           "type" => "text/javascript",
           "language" => "JavaScript",
           "src" => @lookandfeel.resource_global(:javascript, EXTERNAL_LINKS_JS)
+        )
+        links << context.script(
+          "type" => "text/javascript",
+          "language" => "JavaScript",
+          "src" => @lookandfeel.resource_global(:javascript, COMPACT_DETAIL_JS)
         )
         links
       end
