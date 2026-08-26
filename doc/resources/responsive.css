@@ -147,22 +147,42 @@
      in Prozent rechnet gegen den Elternteil, den die Tabelle selbst breit
      macht, vw dagegen gegen das Fenster - das ist der Riegel, an dem eine zu
      breite Zelle tief drin haengen bleibt. */
-  /* table-layout: fixed ist hier der einzige harte Riegel. max-width zwingt
-     eine Tabelle NICHT unter ihre minimale Inhaltsbreite - deshalb blieb die
-     Fachinfo-Seite bei 536px, obwohl die aeusserste Tabelle bei 485 gedeckelt
-     war: die innere Kopftabelle war so breit wie ihr Titel. Bei fester
-     Aufteilung zaehlt der Inhalt fuer die Breite gar nicht mehr mit. Die
-     Zeilen dieser Tabellen sind auf dem Telefon ohnehin gestapelt, es gibt
-     also keine Spaltenaufteilung, die dabei verloren gehen koennte. */
+  /* KEIN table-layout: fixed hier. Der Versuch, damit die letzten 50px
+     Querscrollen der Fachinfo-Seite wegzubekommen, hat am 26.08.2026 die
+     Karten der Trefferliste zerlegt: die aeusseren composite-Tabellen
+     verteilen bei fester Aufteilung ihre Spalten nach der ersten Zeile, und
+     die Namensspalte wurde so schmal, dass jeder Buchstabe auf einer eigenen
+     Zeile stand. Fuenfzig Pixel Ueberhang auf einer Seite sind das nicht
+     wert. */
   table.composite {
     width: 100%;
-    max-width: 100vw;
-    table-layout: fixed;
+    max-width: 100%;
   }
 
   body > table.composite {
     max-width: 100vw;
-    table-layout: fixed;
+  }
+
+  /* Das Seitengeruest sind verschachtelte composite-Tabellen, die nur der
+     Aufteilung dienen und auf einem Telefon nichts aufzuteilen haben. Als
+     Bloecke nehmen sie die Breite ihres Elternteils, statt sie von ihrem
+     Inhalt zu bekommen - das ist der Unterschied zwischen "passt" und "die
+     Fachinfo-Seite ist 536px breit, weil ein Titel darin so lang ist".
+     Die Karten der Trefferliste ueberschreiben das weiter unten mit flex. */
+  table.composite,
+  table.composite > tbody {
+    display: block;
+    width: auto;
+  }
+
+  /* Die Packungszeilen sind ausgenommen - sie werden weiter unten Flexboxen.
+     Ohne das :not() gewinnt diese Regel mit (0,1,3) gegen
+     tr:has(> td.col-name_base) mit (0,1,2), und die Karten fallen wieder in
+     Einzelzeilen auseinander. Genau das ist am 26.08.2026 zweimal passiert. */
+  table.composite > tbody > tr:not(:has(> td.col-name_base)),
+  table.composite > tbody > tr:not(:has(> td.col-name_base)) > td {
+    display: block;
+    width: auto;
   }
 
   td.list,
@@ -499,6 +519,10 @@
    * Packungszeilen keine table-rows mehr, hat die Tabelle keine Spalten mehr,
    * an denen sich etwas ausrichten koennte.
    */
+  /* Mit derselben Spezifitaet wie die Geruest-Regel oben (0,1,3) und spaeter
+     in der Datei - sonst gewinnt deren display:block und die Kopfzeile steht
+     wieder ueber den Karten. */
+  table.composite > tbody > tr:has(> th.col-name_base),
   tr:has(> th.col-name_base) {
     display: none;
   }
@@ -527,8 +551,9 @@
      wie das Praeparat heisst und was es kostet. */
   td.col-name_base {
     order: 1;
-    flex: 1 1 auto;
-    font-size: 21px;
+    flex: 1 1 60%;
+    min-width: 0;
+    font-size: 23px;
     line-height: 1.2;
   }
 
@@ -560,6 +585,10 @@
 
   /* Der Preisunterschied steht unter dem Preis, rechtsbuendig: flex-basis
      100% bricht die Zeile um, text-align:right stellt ihn unter die Zahl. */
+  td.col-price_difference:empty {
+    display: none;
+  }
+
   td.col-price_difference {
     order: 4;
     flex: 0 0 100%;
@@ -575,14 +604,14 @@
   td.col-compositions,
   td.col-substances,
   td.col-active_agents {
-    order: 5;
+    order: 6;
     flex: 0 0 100%;
     font-size: 13px;
     line-height: 1.35;
   }
 
   td.col-company_name {
-    order: 6;
+    order: 7;
     flex: 0 0 100%;
     font-size: 14px;
   }
@@ -594,7 +623,7 @@
   td.col-ddd_price,
   td.col-deductible,
   td.col-registration_date {
-    order: 7;
+    order: 5;
     flex: 0 0 auto;
     font-size: 14px;
     text-align: left;
@@ -610,7 +639,7 @@
   td.col-feedback,
   td.col-google_search,
   td.col-notify {
-    order: 8;
+    order: 5;
     flex: 0 0 auto;
     text-align: left;
   }
