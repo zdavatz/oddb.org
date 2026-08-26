@@ -265,6 +265,16 @@ None of this repairs the underlying data; it stops one broken reference from tak
 - **`dark.css` needs `git add -f`**: `.gitignore` excludes `doc/resources/**/*.css` (aimed at vendored dojo and logo material), yet all 18 of the project's own stylesheets are tracked through it the same way.
 - A template change needs an app restart (`svc -t /etc/service/oddb`); the static files under `doc/resources/` do not.
 
+### LinkedIn (`bin/oddb_linkedin`, `src/util/linkedin_api.rb`)
+
+- `authorize` → `post --body=text.txt [--image=path::alttext]` → `delete --id=urn`. Credentials in `etc/oddb.yml` (gitignored, mode 600): `linkedin_client_id`, `linkedin_client_secret`, `linkedin_access_token`, `linkedin_author_urn`.
+- **An image uploaded as `application/octet-stream` vanishes silently.** LinkedIn answers 201, hands back a valid urn, and creates the post without complaint — the image is simply not there. `GET /rest/images/<urn>` is what tells the two apart: with `image/png` it has a `downloadUrl`. `mime_for` derives the type from the extension.
+- **Scopes are stamped into a token when it is issued.** Enabling a product (*Share on LinkedIn*, *Sign In with LinkedIn using OpenID Connect*) or verifying the app changes nothing for existing tokens — they keep answering **403 with an empty message**. Re-run `authorize`. That empty 403 looks identical whether a product is missing, the app is unverified, or the author urn is nonsense: posting with a deliberately absurd author returns exactly the same, which is how the author was ruled out as the cause.
+- **The `profileId` in a profile's page source is not the OpenID subject.** `ACoAAABS404B…` and `B7IDuzOVBE` are the same person; only the second works as `author`. Scraping for it is pointless anyway — LinkedIn answers **HTTP 999** to automated fetches of a profile.
+- **`202601` is the only active `LinkedIn-Version`**; everything older answers `NONEXISTENT_VERSION`. Probe with an empty body (`{}` → 422 "author is required" means the version is live) so nothing gets published while testing.
+- `w_member_social` is **write-only** — a published post cannot be read back, so verify in the browser. Posting is immediate: this API has **no drafts**, unlike `bin/oddb_mail`. Images cannot be added afterwards, hence `delete_post`. One image goes to `content.media`, several to `content.multiImage`.
+- The redirect uri must match the registered one character for character (`https://localhost` here); a mismatch is the only thing LinkedIn says out loud.
+
 ### Search performance (`jobs/search_performance`)
 
 - `GoogleSearchConsole#search_analytics` / `#search_totals` read impressions, clicks, CTR and average position by date, query, page, country and device. Together with Sitemaps, Sites and URL Inspection this is **all** the API offers — the Page Indexing report has no API (see `jobs/check_indexing`).

@@ -133,6 +133,14 @@ The overlay is **generated** from the source stylesheets — `python3 bin/genera
 
 It deliberately does not use the existing colour choice (`:styles`, `oddb-blue.css` and siblings). That mechanism has been dead since the stylesheet started being inlined rather than linked: `css_link` substitutes `oddb.css` for `oddb-<style>.css` inside a `<style>` block whose content is the CSS itself, where the filename never appears — which is why picking blue or red today only changes the logo.
 
+### Posting to LinkedIn
+
+`bin/oddb_linkedin authorize`, then `bin/oddb_linkedin post --body=text.txt --image=shot.png::alt text`. Credentials live in the gitignored `etc/oddb.yml`.
+
+Three things about this API are worth knowing before reaching for it. An image uploaded as `application/octet-stream` **vanishes silently** — 201, a valid urn, a post created, and no image; only `image/png` works. Scopes are stamped into a token when it is issued, so enabling a product or verifying the app does nothing for tokens that already exist, and they keep answering 403 with an empty body. And the `profileId` in a profile's page source is not the OpenID subject — only the `sub` from `userinfo` works as an author.
+
+Posting is immediate; this API has no drafts, and images cannot be added to a post afterwards, which is what `delete` is for.
+
 ### Search performance
 
 `bundle exec ruby jobs/search_performance` prints impressions, clicks, click rate and average position per property, broken down by day, query, page, country and device. Search Analytics is one of only four areas the Search Console API still covers — the Page Indexing report has none at all. Google lags two to three days, so a range ending today simply returns fewer days.
