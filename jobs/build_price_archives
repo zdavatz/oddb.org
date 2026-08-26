@@ -1,0 +1,145 @@
+#!/usr/local/bin/ruby
+# Baut Monatsarchive fuer sl_introduction, price_cut und price_rise aus der
+# Preishistorie der Packungen.
+#
+#   bundle exec ruby jobs/build_price_archives            # nur messen
+#   bundle exec ruby jobs/build_price_archives --apply
+#
+# Warum nicht aus den Feeds: update_price_feeds rechnet ein Ein-Monats-Fenster
+# und ueberschreibt die drei Dateien bei jedem Lauf. Gemessen am 26.08.2026
+# enthielten sie 37, 40 und einen Eintrag, alle aus demselben Monat. Die
+# einzige Quelle ist die Preishistorie an den Package-Objekten.
+#
+# Warum nicht durch View::Rss::Package: der rechnet mit price_public(0) und
+# (1), also dem heutigen Preispaar. Ein Archiv durch ihn gebaut zeigte unter
+# einem Datum von 2019 den Preis von heute. Die Eintraege entstehen hier aus
+# dem damaligen Paar.
+#
+# Ein Durchgang ueber alle Packungen fuellt alle Monate auf einmal - nicht ein
+# Durchgang je Monat, das waeren bei zwanzig Jahren 240.
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require "util/job"
+require "util/money"
+require "fileutils"
+require "cgi"
+
+module ODDB
+  module Util
+    Job.run do |system|
+      apply = ARGV.include?("--apply")
+      root = File.expand_path("../data/rss", File.dirname(__FILE__))
+
+      # kind => { "YYYY-MM" => [entry, ...] }
+      buckets = {sl_introduction: {}, price_cut: {}, price_rise: {}}
+      packs = 0
+      changes = 0
+
+      system.each_package { |pack|
+        packs += 1
+        history = []
+        index = 0
+        while (price = pack.price_public(index))
+          history << price
+          index += 1
+          break if index > 500 # Schutz gegen eine kaputte Kette
+        end
+        next if history.empty?
+        # history[0] ist der neueste. Von alt nach neu vergleichen.
+        history = history.reverse
+        history.each_with_index { |price, i|
+          valid = price.valid_from
+          next unless valid
+          previous = (i > 0) ? history[i - 1] : nil
+          kind = if previous.nil?
+            (price.authority == :sl) ? :sl_introduction : nil
+          elsif previous > price
+            :price_cut
+          elsif price > previous
+            :price_rise
+          end
+          next unless kind
+          changes += 1
+          month = valid.strftime("%Y-%m")
+          percent = if previous && previous.to_f > 1e-10
+            (price - previous) / previous.to_f * 100.0
+          end
+          (buckets[kind][month] ||= []) << {
+            date: valid,
+            name: pack.name.to_s,
+            size: pack.size.to_s,
+            price: price,
+            percent: percent,
+            iksnr: pack.iksnr, seqnr: pack.seqnr, ikscd: pack.ikscd
+          }
+        }
+      }
+
+      puts "Packungen durchgegangen: #{packs}"
+      puts "Preiswechsel gefunden:   #{changes}"
+      buckets.each { |kind, months|
+        next if months.empty?
+        keys = months.keys.sort
+        total = months.values.sum(&:size)
+        puts format("  %-16s %5d Eintraege in %3d Monaten  %s .. %s",
+          kind, total, months.size, keys.first, keys.last)
+      }
+
+      unless apply
+        puts
+        puts "ohne --apply nichts geschrieben"
+        next
+      end
+
+      def self.write_feed(path, title, description, entries)
+        FileUtils.mkdir_p(File.dirname(path))
+        tmp = File.join(File.dirname(path), "." + File.basename(path))
+        File.open(tmp, "w:utf-8") { |fh|
+          fh.puts %(<?xml version="1.0" encoding="UTF-8"?>)
+          fh.puts %(<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">)
+          fh.puts "  <channel>"
+          fh.puts "    <title>#{CGI.escapeHTML(title)}</title>"
+          fh.puts "    <link>https://ch.oddb.org/de/gcc/home/</link>"
+          fh.puts "    <description>#{CGI.escapeHTML(description)}</description>"
+          entries.sort_by { |e| e[:date] }.reverse_each { |e|
+            head = e[:date].strftime("%d.%m.%Y")
+            parts = [e[:name], e[:size], e[:price].to_s]
+            parts << format("%+.1f%%", e[:percent]) if e[:percent]
+            title_line = "#{head}: #{parts.reject(&:empty?).join(", ")}"
+            url = "https://ch.oddb.org/de/gcc/show/reg/#{e[:iksnr]}/seq/#{e[:seqnr]}/pack/#{e[:ikscd]}"
+            fh.puts "    <item>"
+            fh.puts "      <title>#{CGI.escapeHTML(title_line)}</title>"
+            fh.puts "      <link>#{CGI.escapeHTML(url)}</link>"
+            fh.puts "      <author>ODDB.org</author>"
+            fh.puts "      <pubDate>#{e[:date].to_time.rfc2822}</pubDate>"
+            fh.puts "      <dc:date>#{e[:date].to_time.utc.iso8601}</dc:date>"
+            fh.puts "    </item>"
+          }
+          fh.puts "  </channel>"
+          fh.puts "</rss>"
+        }
+        FileUtils.mv(tmp, path)
+      end
+
+      titles = {
+        sl_introduction: ["SL Neuaufnahmen", "Neuaufnahme von Produkten in die Spezialitäten-Liste"],
+        price_cut: ["Preissenkungen SL/LPPV", "Preissenkungen von Produkten in der Spezialitäten-Liste"],
+        price_rise: ["Preiserhöhungen SL/LPPV", "Preiserhöhungen von Produkten in der Spezialitäten-Liste"]
+      }
+      written = 0
+      Dir.glob(File.join(root, "*")).select { |d| File.directory?(d) }.each { |dir|
+        buckets.each { |kind, months|
+          title, description = titles[kind]
+          months.each { |month, entries|
+            write_feed(File.join(dir, "#{kind}-#{month}.rss"), title, description, entries)
+            written += 1
+          }
+        }
+      }
+      puts
+      puts "#{written} Monatsarchive geschrieben"
+    end
+  end
+end
