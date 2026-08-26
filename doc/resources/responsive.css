@@ -309,6 +309,31 @@
     width: 100%;
   }
 
+  /* Die erste Zelle der Fusszeile ist ein reiner Platzhalter - ein DIV mit
+     nichts als &nbsp; darin, das im zweispaltigen Entwurf die linke Haelfte
+     fuellt. Gestapelt wurde daraus eine leere Zeile ueber den Verweisen, also
+     der dunkelgruene Balken mit dem Loch darin. Auf allen vier geprueften
+     Seiten enthaelt es nie etwas anderes. */
+  td.navigation:has(> div.navigation) {
+    display: none;
+  }
+
+  /* Die Balken sollen nicht dreimal so hoch sein wie ihr Inhalt: die Hoehe
+     kommt von den 44px der Verweise, nicht zusaetzlich von der Zelle. */
+  td.navigation,
+  td.subheading,
+  td.tabnavigation {
+    padding: 0 8px;
+  }
+
+  /* Damit "2026 ©ywesee GmbH" und die Verweise darunter buendig beginnen -
+     der erste Verweis bringt sonst seine eigenen 8px mit. */
+  table.subheading > tbody > tr > td:first-child > a,
+  table.navigation > tbody > tr > td:first-child > a,
+  table.tabnavigation > tbody > tr > td:first-child > a {
+    padding-left: 0;
+  }
+
   /* Ohne row-gap standen die umgebrochenen Zeilen weit auseinander, weil
      jeder Eintrag schon 44px hoch ist. */
   table.tabnavigation > tbody > tr,
@@ -348,6 +373,28 @@
   iframe {
     width: 100% !important;
     max-width: 100% !important;
+  }
+
+  /* ---- Startseite: drei Spalten werden eine ----
+   *
+   * GoogleAdSenseComposite setzt die Startseite als rss_feeds_left | content |
+   * rss_feeds_right. Die beiden Randspalten sind je 199px breit und gaben der
+   * Seite zusammen 584px - mehr als der Bildschirm hat. Untereinander, und die
+   * Suche zuerst: wer die Seite auf dem Telefon oeffnet, will suchen, nicht
+   * zuerst durch die Nachrichtenkaesten scrollen.
+   */
+  tr:has(> td.sidebar) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  tr:has(> td.sidebar) > td {
+    display: block;
+    width: auto;
+  }
+
+  tr:has(> td.sidebar) > td.sidebar {
+    order: 2;
   }
 
   /* ---- Trefferliste: aus der Tabelle wird eine Karte pro Packung ----
@@ -394,8 +441,8 @@
   td.col-name_base {
     order: 1;
     flex: 1 1 auto;
-    font-size: 18px;
-    line-height: 1.25;
+    font-size: 21px;
+    line-height: 1.2;
   }
 
   /* Preisunterschied, Packungsgroesse und Preis stehen als Gruppe rechts
@@ -437,13 +484,16 @@
     margin-left: auto;
   }
 
+  /* Die Zusammensetzung ist die laengste Zeile der Karte und darf dem Namen
+     nicht die Schau stehlen. */
   td.col-galenic_form,
   td.col-compositions,
   td.col-substances,
   td.col-active_agents {
     order: 5;
     flex: 0 0 100%;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.35;
   }
 
   td.col-company_name {
@@ -493,7 +543,9 @@
     background: none;
   }
 
-  /* Marken auf Fingergroesse. */
+  /* Marken auf Fingergroesse - aber nicht die, die mitten im Namen stehen
+     (das "T" fuer teilbar) oder im ATC-Band ("DrugBank.ca"): die zerschlagen
+     als 44px-Kloetze die Zeile, in der sie stehen. */
   td.list a.square,
   td.list span.square,
   td.infos a.square,
@@ -506,6 +558,17 @@
     padding: 0 12px;
     font-size: 13px;
     box-sizing: border-box;
+  }
+
+  td.col-name_base a.square,
+  td.col-name_base span.square,
+  td.atc a.square,
+  td.atc span.square {
+    display: inline;
+    min-width: 0;
+    min-height: 0;
+    padding: 2px 5px;
+    font-size: 12px;
   }
 
   span.deductible_g,
