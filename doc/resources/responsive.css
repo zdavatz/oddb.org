@@ -231,13 +231,15 @@
   /* Hinweis und "Legende einblenden" stehen in zwei Zellen einer Zeile.
      Gestapelt kostete das eine ganze Zeile gruenen Balken fuer einen
      einzigen Verweis; als Flexzeile haengt er sich hinten an. */
+  /* Gleiche Polsterung wie der Fussbalken, damit die beiden gleich
+     aussehen - der obere hatte sonst sichtbar mehr Luft. */
   tr:has(> td.explain) {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: baseline;
     column-gap: 8px;
-    padding: 8px 12px;
+    padding: 6px 8px;
   }
 
   tr:has(> td.explain) > td.explain {
@@ -959,7 +961,8 @@
      Textinhalt nicht pruefen. */
   td.oddb-empty-pair,
   td.navigation.oddb-empty-pair,
-  td.atc.oddb-empty-pair {
+  td.atc.oddb-empty-pair,
+  td.explain.oddb-empty-pair {
     display: none;
   }
 

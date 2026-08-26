@@ -63,7 +63,7 @@
   // Begruessung, die bleiben muss - deshalb wird der Inhalt geprueft und
   // nicht die Klasse) und die zweite Zelle des ATC-Bandes.
   function spacers(narrow) {
-    var cells = document.querySelectorAll("td.navigation, td.atc");
+    var cells = document.querySelectorAll("td.navigation, td.atc, td.explain");
     for (var i = 0; i < cells.length; i++) {
       cells[i].classList.toggle(HIDDEN, narrow && blank(cells[i]));
     }
