@@ -117,6 +117,14 @@ Two routes to a token. A **service account** would have to impersonate the mailb
 
 Two traps sit in the Google side of this. Its token endpoint returns `error` as a plain **string** while the other services return an object with `message`, so `parsed.dig("error", "message")` raises `TypeError` and hides the very message you need — the same line still sits in `google_search_console.rb`. And `RCLConf` raises `NoMethodError` for keys that are not set rather than returning nil, so the usual `|| default` never runs. Secrets live in `etc/oddb.yml`, gitignored and mode 600.
 
+### Indices that never rebuilt
+
+`jobs/rebuild_indices` failed on six indices every night from at least January 2026 until 26.08.2026, and reported it to `/dev/null` — `substance_index_atc` had no table at all, because the index is dropped before the rebuild and the rebuild never finished. Three unrelated causes: a Latin-1 string that `valid_encoding?` calls valid, so the encoding guard passed it straight into a UTF-8 regexp; one corrupt object out of 41801 that cost two entire indices, because they call `.substance` on every element of `active_agents`; and an index definition resolving its target with `active_sequences`, a method that exists on the app and not on `Substance`. See [issue #447](https://github.com/zdavatz/oddb.org/issues/447).
+
+Two things worth carrying away from that hunt. `ODBA::Stub#is_a?` answers from the declared class **without resolving**, so a broken reference passes every `is_a?` check in the codebase — only `respond_to?` resolves and tells the truth. And `Array#delete` cannot remove such an element, because comparing it is what resolves it: use `object_id`, which is on ODBA's no-override list, never `equal?`, which is not.
+
+`jobs/repair_broken_active_agents` rebuilds a lost agent from the composition text by position, and refuses to act unless the intact neighbours sit where the text puts them.
+
 ## Tests
 
 * to run the Tests you need to do
