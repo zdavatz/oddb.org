@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+#
+# Beitraege auf LinkedIn.
+#
+#   bin/oddb_linkedin authorize            # Freigabe holen, Token speichern
+#   bin/oddb_linkedin whoami               # zeigt, als wer veroeffentlicht wuerde
+#   bin/oddb_linkedin post --body=datei.txt [--visibility=PUBLIC|CONNECTIONS]
+#
+# Der Text kommt aus einer Datei oder von stdin. post veroeffentlicht sofort -
+# LinkedIn kennt keine Entwuerfe ueber die Schnittstelle.
+#
+$LOAD_PATH.unshift File.expand_path("../src", __dir__)
+$LOAD_PATH.unshift File.expand_path("..", __dir__)
+require "config"
+require "util/linkedin_api"
+
+def option(name, fallback = nil)
+  arg = ARGV.find { |a| a.start_with?("--#{name}=") }
+  arg ? arg.split("=", 2).last : fallback
+end
+
+def remember(key, value)
+  path = File.expand_path("../etc/oddb.yml", __dir__)
+  lines = File.readlines(path)
+  entry = "#{key}: '#{value}'\n"
+  index = lines.index { |line| line.start_with?("#{key}:") }
+  index ? lines[index] = entry : lines.push(entry)
+  File.write(path, lines.join)
+  File.chmod(0o600, path)
+  puts "#{key} in etc/oddb.yml gespeichert"
+end
+
+command = ARGV.shift
+
+case command
+when "authorize"
+  api = ODDB::LinkedInApi.new
+  puts "1. Diese Adresse im Browser oeffnen und freigeben:"
+  puts
+  puts "   " + api.authorization_url
+  puts
+  puts "2. Der Browser landet danach auf #{ODDB::LinkedInApi::REDIRECT_URI} und"
+  puts "   zeigt einen Fehler - richtig so, hier laeuft kein Server. Aus der"
+  puts "   Adresszeile den Wert hinter code= abschreiben (bis zum naechsten &)."
+  puts
+  print "code: "
+  code = $stdin.gets.to_s.strip
+  if code.empty?
+    warn "kein Code eingegeben"
+    exit 1
+  end
+  result = api.exchange(code)
+  remember("linkedin_access_token", result["access_token"])
+  puts "Fertig. Gueltig #{result["expires_in"].to_i / 86400} Tage."
+
+when "whoami"
+  api = ODDB::LinkedInApi.new
+  puts api.author_urn
+
+when "post"
+  text = if (path = option("body"))
+    File.read(path)
+  else
+    $stdin.read
+  end
+  if text.to_s.strip.empty?
+    warn "kein Text - --body=datei.txt oder ueber stdin"
+    exit 1
+  end
+  # --image=pfad[:alternativtext], mehrfach moeglich
+  images = ARGV.select { |a| a.start_with?("--image=") }.collect { |a|
+    value = a.split("=", 2).last
+    path, alt = value.split("::", 2)
+    [path, alt.to_s]
+  }
+  api = ODDB::LinkedInApi.new
+  result = api.create_post(text.strip, visibility: option("visibility", "PUBLIC"), images: images)
+  puts "veroeffentlicht: #{result["id"]}"
+  puts "https://www.linkedin.com/feed/update/#{result["id"]}/" if result["id"]
+
+when "delete"
+  urn = option("id") || ARGV.shift
+  if urn.to_s.empty?
+    warn "--id=urn:li:share:... ist noetig"
+    exit 1
+  end
+  ODDB::LinkedInApi.new.delete_post(urn)
+  puts "geloescht: #{urn}"
+
+else
+  warn "bin/oddb_linkedin authorize | whoami | post --body=datei.txt [--image=pfad::alt] | delete --id=urn"
+  exit 1
+end
