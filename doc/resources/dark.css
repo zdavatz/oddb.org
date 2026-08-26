@@ -459,6 +459,18 @@ html[data-theme="dark"] img[src*="logo"] {
   filter: brightness(1.7);
 }
 
+/* Das generika-Logo ist etwas anderes: ein mehrfarbiges Raster mit schwarzem
+   Text ("cc: an alle.", "betreff:", ".cc") neben Gruen und Rot. Aufhellen
+   macht den schwarzen Text nicht sichtbar, sondern zerfranst nur die Kanten.
+   Es bekommt sein Blatt Papier, wie die Abbildungen in den Fachinfos - die
+   Markenfarben bleiben, wie sie sind. */
+html[data-theme="dark"] img[src*="/generika/logo"] {
+  filter: none;
+  background: #ffffff;
+  padding: 8px 10px;
+  border-radius: 3px;
+}
+
 /* Kurzschreibweise, die der Erzeuger nicht aufloest:
    background: none repeat scroll 0 0 gray */
 html[data-theme="dark"] .diff li.diff-block-info {
